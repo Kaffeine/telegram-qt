@@ -41,6 +41,8 @@ public:
 
     CTelegramStream &operator>>(TLValues &v);
 
+    CTelegramStream &operator>>(QString &str);
+
     CTelegramStream &operator<<(qint32 i);
     CTelegramStream &operator<<(quint32 i);
     CTelegramStream &operator<<(qint64 i);

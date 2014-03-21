@@ -37,6 +37,8 @@ private slots:
     void writeLongString();
     void writeInt();
 
+    void readShortString();
+
 };
 
 tst_CTelegramStream::tst_CTelegramStream(QObject *parent) :
@@ -197,6 +199,35 @@ void tst_CTelegramStream::writeInt()
         stream << data.at(i).value.value<quint32>();
 
         QCOMPARE(device.data(), data.at(i).serializedValue);
+    }
+}
+
+void tst_CTelegramStream::readShortString()
+{
+    QList<STestData> data;
+
+    const char serializedChars1[8] = { char(4), 't', 'e', 's', 't', 0, 0, 0 };
+    const char serializedChars2[8] = { char(5), 't', 'e', 's', 't', '5', 0, 0 };
+    const char serializedChars3[8] = { char(6), 't', 'e', 's', 't', '6', '6', 0 };
+    const char serializedChars4[8] = { char(7), '7', 's', 'e', 'v', 'e', 'n', '7' };
+
+    data.append(STestData(QLatin1String("test"), QByteArray(serializedChars1, sizeof(serializedChars1))));
+    data.append(STestData(QLatin1String("test5"), QByteArray(serializedChars2, sizeof(serializedChars2))));
+    data.append(STestData(QLatin1String("test66"), QByteArray(serializedChars3, sizeof(serializedChars3))));
+    data.append(STestData(QLatin1String("7seven7"), QByteArray(serializedChars4, sizeof(serializedChars4))));
+
+    for (int i = 0; i < data.count(); ++i) {
+        QBuffer device;
+        device.setData(data.at(i).serializedValue);
+        device.open(QBuffer::ReadOnly);
+
+        CTelegramStream stream(&device);
+
+        QString result;
+
+        stream >> result;
+
+        QCOMPARE(result, data.at(i).value.toString());
     }
 }
 

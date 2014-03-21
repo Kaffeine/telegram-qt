@@ -55,6 +55,11 @@ CTelegramStream &CTelegramStream::operator>>(qint64 &i)
     return *this;
 }
 
+CTelegramStream &CTelegramStream::operator>>(QString &str)
+{
+    return *this;
+}
+
 CTelegramStream &CTelegramStream::operator<<(qint32 i)
 {
     m_device->write((const char *) &i, 4);
