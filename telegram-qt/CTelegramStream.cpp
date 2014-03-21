@@ -43,11 +43,15 @@ bool CTelegramStream::atEnd() const
 
 CTelegramStream &CTelegramStream::operator>>(qint32 &i)
 {
+    m_device->read((char *)&i, 4);
+
     return *this;
 }
 
 CTelegramStream &CTelegramStream::operator>>(qint64 &i)
 {
+    m_device->read((char *)&i, 8);
+
     return *this;
 }
 
