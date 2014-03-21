@@ -16,10 +16,12 @@
 
 #include <qglobal.h>
 
+#include <QByteArray>
+#include <QString>
+
 #include "TLValues.h"
 
 QT_BEGIN_NAMESPACE
-class QByteArray;
 class QIODevice;
 QT_END_NAMESPACE
 
@@ -41,6 +43,7 @@ public:
 
     CTelegramStream &operator>>(TLValues &v);
 
+    CTelegramStream &operator>>(QByteArray &data);
     CTelegramStream &operator>>(QString &str);
 
     CTelegramStream &operator<<(qint32 i);
@@ -50,6 +53,7 @@ public:
 
     CTelegramStream &operator<<(TLValues v);
 
+    CTelegramStream &operator<<(const QByteArray &data);
     CTelegramStream &operator<<(const QString &str);
 
 private:
@@ -74,6 +78,14 @@ inline CTelegramStream &CTelegramStream::operator>>(TLValues &v)
     return *this;
 }
 
+inline CTelegramStream &CTelegramStream::operator>>(QString &str)
+{
+    QByteArray data;
+    *this >> data;
+    str = QString::fromUtf8(data);
+    return *this;
+}
+
 inline CTelegramStream &CTelegramStream::operator<<(quint32 i)
 {
     return *this << qint32(i);
@@ -87,6 +99,11 @@ inline CTelegramStream &CTelegramStream::operator<<(quint64 i)
 inline CTelegramStream &CTelegramStream::operator<<(TLValues v)
 {
     return *this << quint32(v);
+}
+
+inline CTelegramStream &CTelegramStream::operator<<(const QString &str)
+{
+    return *this << str.toUtf8();
 }
 
 #endif // CTELEGRAMSTREAM_HPP

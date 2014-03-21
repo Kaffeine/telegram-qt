@@ -55,12 +55,10 @@ CTelegramStream &CTelegramStream::operator>>(qint64 &i)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(QString &str)
+CTelegramStream &CTelegramStream::operator>>(QByteArray &data)
 {
     quint32 length = 0;
     m_device->getChar((char *) &length);
-
-    QByteArray data;
 
     if (length < 0xfe) {
         data.resize(length);
@@ -77,7 +75,6 @@ CTelegramStream &CTelegramStream::operator>>(QString &str)
         m_device->read(4 - (length & 3));
     }
 
-    str = QString::fromUtf8(data);
     return *this;
 }
 
@@ -95,19 +92,19 @@ CTelegramStream &CTelegramStream::operator<<(qint64 i)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const QString &str)
+CTelegramStream &CTelegramStream::operator<<(const QByteArray &data)
 {
-    quint32 length = str.length();
+    quint32 length = data.size();
 
     if (length < 0xfe) {
         const char lengthToWrite = length;
         m_device->putChar(lengthToWrite);
-        m_device->write(str.toUtf8());
+        m_device->write(data);
         length += 1;
 
     } else {
         *this << quint32((length << 8) + 0xfe);
-        m_device->write(str.toUtf8());
+        m_device->write(data);
         length += 4;
     }
 
