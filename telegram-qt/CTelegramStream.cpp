@@ -57,6 +57,27 @@ CTelegramStream &CTelegramStream::operator>>(qint64 &i)
 
 CTelegramStream &CTelegramStream::operator>>(QString &str)
 {
+    quint32 length = 0;
+    m_device->getChar((char *) &length);
+
+    QByteArray data;
+
+    if (length < 0xfe) {
+        data.resize(length);
+        length += 1; // Plus one byte before data
+    } else {
+        m_device->read((char *) &length, 3);
+        data.resize(length);
+        length += 4; // Plus four bytes before data
+    }
+
+    m_device->read(data.data(), data.size());
+
+    if (length & 3) {
+        m_device->read(4 - (length & 3));
+    }
+
+    str = QString::fromUtf8(data);
     return *this;
 }
 
