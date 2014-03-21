@@ -67,22 +67,22 @@ CTelegramStream &CTelegramStream::operator<<(qint64 i)
 
 CTelegramStream &CTelegramStream::operator<<(const QString &str)
 {
-    if (str.length() < 0xfe) {
-        const char lengthToWrite = str.length();
+    quint32 length = str.length();
+
+    if (length < 0xfe) {
+        const char lengthToWrite = length;
         m_device->putChar(lengthToWrite);
         m_device->write(str.toUtf8());
-
-        if ((str.length() + 1) & 3) {
-            m_device->write(s_nulls, 4 - ((str.length() + 1) & 3));
-        }
+        length += 1;
 
     } else {
-        *this << quint32((str.length() << 8) + 0xfe);
+        *this << quint32((length << 8) + 0xfe);
         m_device->write(str.toUtf8());
+        length += 4;
+    }
 
-        if (str.length() & 3) {
-            m_device->write(s_nulls, 4 - (str.length() & 3));
-        }
+    if (length & 3) {
+        m_device->write(s_nulls, 4 - (length & 3));
     }
 
     return *this;
