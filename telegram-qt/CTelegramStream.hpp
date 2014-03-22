@@ -17,6 +17,7 @@
 #include <qglobal.h>
 
 #include <QByteArray>
+#include <QVector>
 #include <QString>
 
 #include "TLValues.h"
@@ -46,6 +47,9 @@ public:
     CTelegramStream &operator>>(QByteArray &data);
     CTelegramStream &operator>>(QString &str);
 
+    template <typename T>
+    CTelegramStream &operator>>(QVector<T> &v);
+
     CTelegramStream &operator<<(qint32 i);
     CTelegramStream &operator<<(quint32 i);
     CTelegramStream &operator<<(qint64 i);
@@ -55,6 +59,9 @@ public:
 
     CTelegramStream &operator<<(const QByteArray &data);
     CTelegramStream &operator<<(const QString &str);
+
+    template <typename T>
+    CTelegramStream &operator<<(const QVector<T> &v);
 
 private:
     QIODevice *m_device;

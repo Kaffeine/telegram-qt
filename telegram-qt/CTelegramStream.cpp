@@ -20,6 +20,16 @@
 
 static const char s_nulls[4] = { 0, 0, 0, 0 };
 
+template CTelegramStream &CTelegramStream::operator>>(QVector<qint32> &v);
+template CTelegramStream &CTelegramStream::operator>>(QVector<quint32> &v);
+template CTelegramStream &CTelegramStream::operator>>(QVector<qint64> &v);
+template CTelegramStream &CTelegramStream::operator>>(QVector<quint64> &v);
+
+template CTelegramStream &CTelegramStream::operator<<(const QVector<qint32> &v);
+template CTelegramStream &CTelegramStream::operator<<(const QVector<quint32> &v);
+template CTelegramStream &CTelegramStream::operator<<(const QVector<qint64> &v);
+template CTelegramStream &CTelegramStream::operator<<(const QVector<quint64> &v);
+
 CTelegramStream::CTelegramStream(QIODevice *d) :
     m_device(d)
 {
@@ -78,6 +88,29 @@ CTelegramStream &CTelegramStream::operator>>(QByteArray &data)
     return *this;
 }
 
+template <typename T>
+CTelegramStream &CTelegramStream::operator>>(QVector<T> &v)
+{
+    QVector<T> result;
+
+    TLValues vectorHash;
+
+    *this >> vectorHash;
+
+    if (vectorHash == Vector) {
+        quint32 length = 0;
+        *this >> length;
+        for (int i = 0; i < length; ++i) {
+            T value;
+            *this >> value;
+            result.append(value);
+        }
+    }
+
+    v = result;
+    return *this;
+}
+
 CTelegramStream &CTelegramStream::operator<<(qint32 i)
 {
     m_device->write((const char *) &i, 4);
@@ -88,6 +121,19 @@ CTelegramStream &CTelegramStream::operator<<(qint32 i)
 CTelegramStream &CTelegramStream::operator<<(qint64 i)
 {
     m_device->write((const char *) &i, 8);
+
+    return *this;
+}
+
+template <typename T>
+CTelegramStream &CTelegramStream::operator<<(const QVector<T> &v)
+{
+    *this << Vector;
+    *this << quint32(v.count());
+
+    for (int i = 0; i < v.count(); ++i) {
+        *this << v.at(i);
+    }
 
     return *this;
 }

@@ -36,6 +36,7 @@ private slots:
     void shortStringSerialization();
     void longStringSerialization();
     void intSerialization();
+    void vectorOfIntsSerialization();
 
 };
 
@@ -257,6 +258,37 @@ void tst_CTelegramStream::intSerialization()
         stream >> result;
 
         QCOMPARE(result, data.at(i).value.value<quint32>());
+    }
+}
+
+void tst_CTelegramStream::vectorOfIntsSerialization()
+{
+    QVector<quint64> vector;
+    vector.append(0x12345678);
+    QByteArray encoded = QByteArray::fromHex("15c4b51c010000007856341200000000");
+
+    {
+        QBuffer device;
+        device.open(QBuffer::WriteOnly);
+
+        CTelegramStream stream(&device);
+
+        stream << vector;
+        QCOMPARE(device.data(), encoded);
+    }
+
+    {
+        QBuffer device;
+        device.setData(encoded);
+        device.open(QBuffer::ReadOnly);
+
+        CTelegramStream stream(&device);
+
+        QVector<quint64> value;
+
+        stream >> value;
+
+        QCOMPARE(value, vector);
     }
 }
 
