@@ -7,10 +7,14 @@ CONFIG  += dll
 
 SOURCES = CTelegramCore.cpp \
     CTelegramStream.cpp \
-    Utils.cpp
+    Utils.cpp \
+    CTcpTransport.cpp
 HEADERS = CTelegramCore.hpp \
     CTelegramStream.hpp \
-    Utils.hpp
+    Utils.hpp \
+    CTelegramTransport.hpp \
+    CTcpTransport.hpp
+
 HEADERS += TLValues.h
 
 LIBS += -lssl

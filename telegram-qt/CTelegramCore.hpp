@@ -17,55 +17,45 @@
 #include <QObject>
 #include <QByteArray>
 
-QT_BEGIN_NAMESPACE
-class QTcpSocket;
-QT_END_NAMESPACE
-
-struct SDataCenter {
-    QString address;
-    quint16 port;
-};
-
 class CTelegramStream;
+class CTelegramTransport;
+
+union MyQuint128 {
+    unsigned char data[16];
+    struct {
+        quint64 little;
+        quint64 big;
+    } parts;
+
+    MyQuint128() {
+        parts.little = 0;
+        parts.big = 0;
+    }
+};
 
 class CTelegramCore : public QObject
 {
     Q_OBJECT
 public:
-    static const quint32 appId;
-    static const QString appHash;
-
     explicit CTelegramCore(QObject *parent = 0);
 
-    void setLogfile(const QString &output);
+    void setAppId(quint32 newId);
+    bool setAppHash(const QString &newHash);
+
+    void setTransport(CTelegramTransport *newTransport);
 
     static quint64 formatTimeStamp(qint64 timeInMs);
     static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~3UL; }
 
-signals:
-    void connected();
-
-public slots:
-    void sendCode(const QString &phoneNumber);
-
-private slots:
-    void whenConnected();
-    void acceptData();
-    void stateChanged();
+    void requestPqAuthorization();
 
 private:
-    void addHeader(CTelegramStream *stream);
-    void sendPackage(const QByteArray &package);
+    quint32 m_appId;
+    QString m_appHash;
 
-    void connectToDC(const SDataCenter &dc);
+    CTelegramTransport *m_transport;
 
-    QTcpSocket *m_socket;
-
-    bool m_enableSendInformation;
-
-    QString m_dumpFilename;
-
-    unsigned char m_nonce[256];
+    MyQuint128 m_nonce;
 
 };
 
