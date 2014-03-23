@@ -42,12 +42,15 @@ public:
     void setAppId(quint32 newId);
     bool setAppHash(const QString &newHash);
 
+    CTelegramTransport *transport() const { return m_transport; }
     void setTransport(CTelegramTransport *newTransport);
 
     static quint64 formatTimeStamp(qint64 timeInMs);
     static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~3UL; }
 
     void requestPqAuthorization();
+
+    inline MyQuint128 nonce() const { return m_nonce; }
 
 private:
     quint32 m_appId;

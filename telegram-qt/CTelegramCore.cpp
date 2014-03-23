@@ -50,7 +50,6 @@ bool CTelegramCore::setAppHash(const QString &newHash)
 void CTelegramCore::setTransport(CTelegramTransport *newTransport)
 {
     m_transport = newTransport;
-    m_transport->setCore(this);
 }
 
 quint64 CTelegramCore::formatTimeStamp(qint64 timeInMs)
