@@ -37,6 +37,8 @@ public:
     static quint64 formatTimeStamp(qint64 timeInMs);
     static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~3UL; }
 
+    static quint64 timeStampToMSecsSinceEpoch(quint64 ts);
+
     void requestPqAuthorization();
     bool answerPqAuthorization(const QByteArray &payload);
 

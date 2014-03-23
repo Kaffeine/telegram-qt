@@ -30,6 +30,7 @@ public:
 private slots:
     void testTimestampAlwaysGrow();
     void testClientTimestampNeverOdd();
+    void testTimestampConversion();
     void testPQAuthRequest();
 
 };
@@ -64,6 +65,18 @@ void tst_CTelegramCore::testClientTimestampNeverOdd()
             break;
         }
     }
+}
+
+void tst_CTelegramCore::testTimestampConversion()
+{
+    quint64 time = 1395335796550;
+    quint64 ts = CTelegramCore::formatTimeStamp(time);
+    QCOMPARE(CTelegramCore::timeStampToMSecsSinceEpoch(ts), time);
+
+    ts = 0x532ea31d36cecc00;
+    time = 1395565341214;
+
+    QCOMPARE(CTelegramCore::timeStampToMSecsSinceEpoch(ts), time);
 }
 
 void tst_CTelegramCore::testPQAuthRequest()
