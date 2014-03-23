@@ -5,7 +5,6 @@
 
 template <int Size> union TLNumbers {
     char data[Size / 8];
-    unsigned char udata[Size / 8];
     quint64 parts[Size / 8 / 8];
 
     int size() { return Size / 8; }

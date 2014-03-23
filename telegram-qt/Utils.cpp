@@ -22,9 +22,9 @@ Utils::Utils(QObject *parent) :
 {
 }
 
-int Utils::randomBytes(unsigned char *buffer, int count)
+int Utils::randomBytes(char *buffer, int count)
 {
-    return RAND_bytes(buffer, count);
+    return RAND_bytes((unsigned char *) buffer, count);
 }
 
 // Slightly modified version of Euclidean algorithm. Once we are looking for prime numbers, we can drop parity of asked numbers.

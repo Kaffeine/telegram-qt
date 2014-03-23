@@ -22,7 +22,7 @@ class Utils : public QObject
     Q_OBJECT
 public:
     explicit Utils(QObject *parent = 0);
-    static int randomBytes(unsigned char *buffer, int count);
+    static int randomBytes(char *buffer, int count);
     static quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
     static quint64 findDivider(quint64 number);
     static QByteArray sha1(const QByteArray &data);

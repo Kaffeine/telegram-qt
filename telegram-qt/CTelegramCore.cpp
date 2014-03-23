@@ -32,7 +32,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_transport(0),
     m_serverPublicFingersprint(0)
 {
-    Utils::randomBytes(m_clientNonce.udata, 16);
+    Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
 }
 
 void CTelegramCore::setAppId(quint32 newId)
