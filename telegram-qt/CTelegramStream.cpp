@@ -168,5 +168,5 @@ QByteArray CTelegramStream::readBytes(int count)
 
 int CTelegramStream::bytesRemaining() const
 {
-    m_device->bytesAvailable();
+    return m_device->bytesAvailable();
 }
