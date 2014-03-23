@@ -56,6 +56,8 @@ private slots:
     void whenReadyRead();
 
 private:
+    void sendPackage(const QByteArray &buffer);
+
     quint32 m_appId;
     QString m_appHash;
 
@@ -67,6 +69,8 @@ private:
     quint64 m_pq;
     quint64 m_p;
     quint64 m_q;
+
+    quint64 m_serverPublicFingersprint;
 
 };
 

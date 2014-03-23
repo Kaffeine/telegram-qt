@@ -29,7 +29,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     QObject(parent),
     m_appId(0),
     m_appHash(QLatin1String("00000000000000000000000000000000")),
-    m_transport(0)
+    m_transport(0),
+    m_serverPublicFingersprint(0)
 {
     Utils::randomBytes(m_clientNonce.udata, 16);
 }
@@ -89,13 +90,10 @@ void CTelegramCore::requestPqAuthorization()
     output.open(QIODevice::WriteOnly);
     CTelegramStream outputStream(&output);
 
-    outputStream << quint64(0); // Zero auth for this message
-    outputStream << formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch());
-    outputStream << quint32(20); // Message is 20 bytes in length
     outputStream << ReqPQ;
     outputStream << m_clientNonce;
 
-    m_transport->sendPackage(output.buffer());
+    sendPackage(output.buffer());
 }
 
 bool CTelegramCore::answerPqAuthorization(const QByteArray &payload)
@@ -161,6 +159,13 @@ bool CTelegramCore::answerPqAuthorization(const QByteArray &payload)
 
     inputStream >> fingersprints;
 
+    if (fingersprints.count() != 1) {
+        qDebug() << "Error: Unexpected server's' fingersprint vector.";
+        return false;
+    }
+
+    m_serverPublicFingersprint = fingersprints.at(0);
+
     emit pqReceived();
 
     return true;
@@ -190,4 +195,17 @@ void CTelegramCore::whenReadyRead()
     QByteArray payload = inputStream.readBytes(length);
 
     answerPqAuthorization(payload);
+}
+
+void CTelegramCore::sendPackage(const QByteArray &buffer)
+{
+    QBuffer output;
+    output.open(QIODevice::WriteOnly);
+    CTelegramStream outputStream(&output);
+
+    outputStream << quint64(0); // Zero auth for initial messages
+    outputStream << formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch());
+    outputStream << quint32(buffer.length());
+
+    m_transport->sendPackage(output.buffer() + buffer);
 }
