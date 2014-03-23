@@ -1,4 +1,7 @@
 
+QT += core network testlib
+TEMPLATE = app
+
 INCLUDEPATH += $$PWD/../telegram-qt
 
 LIBS += -lTelegramQt
