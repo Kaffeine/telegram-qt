@@ -49,6 +49,8 @@ private:
 
     QTcpSocket *m_socket;
 
+    bool m_firstPackage;
+
 };
 
 #endif // CTCPTRANSPORT_HPP

@@ -45,7 +45,12 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
     // Payload
 
     QByteArray package;
-    package.append(char(0xef));
+
+    if (m_firstPackage) {
+        package.append(char(0xef)); // Start session in Abridged format
+        m_firstPackage = false;
+    }
+
     quint32 length = 0;
     length += payload.length();
 
@@ -60,6 +65,7 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
 void CTcpTransport::whenConnected()
 {
     m_expectedLength = 0;
+    m_firstPackage = true;
     emit connected();
 }
 
