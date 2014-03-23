@@ -15,6 +15,8 @@
 
 #include <openssl/rand.h>
 
+#include <QCryptographicHash>
+
 Utils::Utils(QObject *parent) :
     QObject(parent)
 {
@@ -90,4 +92,9 @@ quint64 Utils::findDivider(quint64 number)
     }
 
     return 1;
+}
+
+QByteArray Utils::sha1(const QByteArray &data)
+{
+    return QCryptographicHash::hash(data, QCryptographicHash::Sha1);
 }
