@@ -37,6 +37,7 @@ private slots:
     void longStringSerialization();
     void intSerialization();
     void vectorOfIntsSerialization();
+    void tlNumbersSerialization();
 
 };
 
@@ -289,6 +290,55 @@ void tst_CTelegramStream::vectorOfIntsSerialization()
         stream >> value;
 
         QCOMPARE(value, vector);
+    }
+}
+
+void tst_CTelegramStream::tlNumbersSerialization()
+{
+    QVector<TLNumber128> vector128;
+    QVector<QByteArray> encoded128;
+
+    TLNumber128 num128;
+    QByteArray encoded;
+
+    num128.parts[0] = 1;
+    num128.parts[1] = 0;
+    encoded = QByteArray::fromHex("01000000000000000000000000000000");
+    vector128.append(num128);
+    encoded128.append(encoded);
+    num128.parts[0] = 0;
+    num128.parts[1] = 1;
+    encoded = QByteArray::fromHex("00000000000000000100000000000000");
+    vector128.append(num128);
+    encoded128.append(encoded);
+    num128.parts[0] = 0x00001000;
+    num128.parts[1] = 0xdeadbeef;
+    encoded = QByteArray::fromHex("0010000000000000efbeadde00000000");
+    vector128.append(num128);
+    encoded128.append(encoded);
+
+    for (int i = 0; i < vector128.count(); ++i) {
+        QBuffer device;
+        device.open(QBuffer::WriteOnly);
+
+        CTelegramStream stream(&device);
+
+        stream << vector128.at(i);
+        QCOMPARE(device.data(), encoded128.at(i));
+    }
+
+    for (int i = 0; i < vector128.count(); ++i) {
+        QBuffer device;
+        device.setData(encoded128.at(i));
+        device.open(QBuffer::ReadOnly);
+
+        CTelegramStream stream(&device);
+
+        TLNumber128 value;
+
+        stream >> value;
+
+        QCOMPARE(value, vector128.at(i));
     }
 }
 

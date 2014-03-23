@@ -25,10 +25,16 @@ template CTelegramStream &CTelegramStream::operator>>(QVector<quint32> &v);
 template CTelegramStream &CTelegramStream::operator>>(QVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator>>(QVector<quint64> &v);
 
+template CTelegramStream &CTelegramStream::operator>>(TLNumber128 &v);
+template CTelegramStream &CTelegramStream::operator>>(TLNumber256 &v);
+
 template CTelegramStream &CTelegramStream::operator<<(const QVector<qint32> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<quint32> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<quint64> &v);
+
+template CTelegramStream &CTelegramStream::operator<<(const TLNumber128 &v);
+template CTelegramStream &CTelegramStream::operator<<(const TLNumber256 &v);
 
 CTelegramStream::CTelegramStream(QIODevice *d) :
     m_device(d)

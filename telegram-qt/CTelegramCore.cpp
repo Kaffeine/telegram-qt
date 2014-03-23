@@ -114,8 +114,8 @@ bool CTelegramCore::answerPqAuthorization(const QByteArray &payload)
         return false;
     }
 
-    MyQuint128 clientNonce;
-    MyQuint128 serverNonce;
+    TLNumber128 clientNonce;
+    TLNumber128 serverNonce;
 
     inputStream >> clientNonce;
 

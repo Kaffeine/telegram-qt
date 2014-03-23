@@ -42,8 +42,8 @@ public:
     void requestPqAuthorization();
     bool answerPqAuthorization(const QByteArray &payload);
 
-    inline MyQuint128 clientNonce() const { return m_clientNonce; }
-    inline MyQuint128 serverNonce() const { return m_serverNonce; }
+    inline TLNumber128 clientNonce() const { return m_clientNonce; }
+    inline TLNumber128 serverNonce() const { return m_serverNonce; }
 
     inline quint64 pq() const { return m_pq; }
     inline quint64 p() const { return m_p; }
@@ -63,8 +63,8 @@ private:
 
     CTelegramTransport *m_transport;
 
-    MyQuint128 m_clientNonce;
-    MyQuint128 m_serverNonce;
+    TLNumber128 m_clientNonce;
+    TLNumber128 m_serverNonce;
 
     quint64 m_pq;
     quint64 m_p;

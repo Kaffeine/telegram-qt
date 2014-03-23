@@ -43,7 +43,8 @@ public:
     CTelegramStream &operator>>(qint64 &i);
     CTelegramStream &operator>>(quint64 &i);
 
-    CTelegramStream &operator>>(MyQuint128 &i);
+    template <int Size>
+    CTelegramStream &operator>>(TLNumbers<Size> &n);
 
     CTelegramStream &operator>>(TLValues &v);
 
@@ -58,7 +59,8 @@ public:
     CTelegramStream &operator<<(qint64 i);
     CTelegramStream &operator<<(quint64 i);
 
-    CTelegramStream &operator<<(const MyQuint128 &i);
+    template <int Size>
+    CTelegramStream &operator<<(const TLNumbers<Size> &n);
 
     CTelegramStream &operator<<(TLValues v);
 
@@ -85,10 +87,12 @@ inline CTelegramStream &CTelegramStream::operator>>(quint64 &i)
     return *this >> reinterpret_cast<qint64&>(i);
 }
 
-inline CTelegramStream &CTelegramStream::operator>>(MyQuint128 &i)
+template <int Size>
+CTelegramStream &CTelegramStream::operator>>(TLNumbers<Size> &n)
 {
-    *this >> i.parts.little;
-    *this >> i.parts.big;
+    for (int i = 0; i < Size / /* Size of byte */ 8 / /* Size of quint64 (one of parts) */ 8; ++i) {
+        *this >> n.parts[i];
+    }
     return *this;
 }
 
@@ -118,10 +122,12 @@ inline CTelegramStream &CTelegramStream::operator<<(quint64 i)
     return *this << qint64(i);
 }
 
-inline CTelegramStream &CTelegramStream::operator<<(const MyQuint128 &i)
+template <int Size>
+CTelegramStream &CTelegramStream::operator<<(const TLNumbers<Size> &n)
 {
-    *this << i.parts.little;
-    *this << i.parts.big;
+    for (int i = 0; i < Size / 8 / 8; ++i) {
+        *this << n.parts[i];
+    }
     return *this;
 }
 
