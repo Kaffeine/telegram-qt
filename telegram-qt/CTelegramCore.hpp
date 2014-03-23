@@ -17,21 +17,10 @@
 #include <QObject>
 #include <QByteArray>
 
+#include "TLTypes.hpp"
+
 class CTelegramStream;
 class CTelegramTransport;
-
-union MyQuint128 {
-    unsigned char data[16];
-    struct {
-        quint64 little;
-        quint64 big;
-    } parts;
-
-    MyQuint128() {
-        parts.little = 0;
-        parts.big = 0;
-    }
-};
 
 class CTelegramCore : public QObject
 {
@@ -49,8 +38,20 @@ public:
     static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~3UL; }
 
     void requestPqAuthorization();
+    bool answerPqAuthorization(const QByteArray &payload);
 
-    inline MyQuint128 nonce() const { return m_nonce; }
+    inline MyQuint128 clientNonce() const { return m_clientNonce; }
+    inline MyQuint128 serverNonce() const { return m_serverNonce; }
+
+    inline quint64 pq() const { return m_pq; }
+    inline quint64 p() const { return m_p; }
+    inline quint64 q() const { return m_q; }
+
+signals:
+    void pqReceived();
+
+private slots:
+    void whenReadyRead();
 
 private:
     quint32 m_appId;
@@ -58,7 +59,12 @@ private:
 
     CTelegramTransport *m_transport;
 
-    MyQuint128 m_nonce;
+    MyQuint128 m_clientNonce;
+    MyQuint128 m_serverNonce;
+
+    quint64 m_pq;
+    quint64 m_p;
+    quint64 m_q;
 
 };
 

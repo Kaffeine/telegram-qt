@@ -160,3 +160,13 @@ CTelegramStream &CTelegramStream::operator<<(const QByteArray &data)
 
     return *this;
 }
+
+QByteArray CTelegramStream::readBytes(int count)
+{
+    return m_device->read(count);
+}
+
+int CTelegramStream::bytesRemaining() const
+{
+    m_device->bytesAvailable();
+}

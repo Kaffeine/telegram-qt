@@ -20,6 +20,7 @@
 #include <QVector>
 #include <QString>
 
+#include "TLTypes.hpp"
 #include "TLValues.h"
 
 QT_BEGIN_NAMESPACE
@@ -42,6 +43,8 @@ public:
     CTelegramStream &operator>>(qint64 &i);
     CTelegramStream &operator>>(quint64 &i);
 
+    CTelegramStream &operator>>(MyQuint128 &i);
+
     CTelegramStream &operator>>(TLValues &v);
 
     CTelegramStream &operator>>(QByteArray &data);
@@ -55,6 +58,8 @@ public:
     CTelegramStream &operator<<(qint64 i);
     CTelegramStream &operator<<(quint64 i);
 
+    CTelegramStream &operator<<(const MyQuint128 &i);
+
     CTelegramStream &operator<<(TLValues v);
 
     CTelegramStream &operator<<(const QByteArray &data);
@@ -62,6 +67,9 @@ public:
 
     template <typename T>
     CTelegramStream &operator<<(const QVector<T> &v);
+
+    QByteArray readBytes(int count);
+    int bytesRemaining() const;
 
 private:
     QIODevice *m_device;
@@ -75,6 +83,13 @@ inline CTelegramStream &CTelegramStream::operator>>(quint32 &i)
 inline CTelegramStream &CTelegramStream::operator>>(quint64 &i)
 {
     return *this >> reinterpret_cast<qint64&>(i);
+}
+
+inline CTelegramStream &CTelegramStream::operator>>(MyQuint128 &i)
+{
+    *this >> i.parts.little;
+    *this >> i.parts.big;
+    return *this;
 }
 
 inline CTelegramStream &CTelegramStream::operator>>(TLValues &v)
@@ -101,6 +116,13 @@ inline CTelegramStream &CTelegramStream::operator<<(quint32 i)
 inline CTelegramStream &CTelegramStream::operator<<(quint64 i)
 {
     return *this << qint64(i);
+}
+
+inline CTelegramStream &CTelegramStream::operator<<(const MyQuint128 &i)
+{
+    *this << i.parts.little;
+    *this << i.parts.big;
+    return *this;
 }
 
 inline CTelegramStream &CTelegramStream::operator<<(TLValues v)

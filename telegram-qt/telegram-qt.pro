@@ -1,5 +1,5 @@
 
-QT = core
+QT = core network
 
 TEMPLATE = lib
 TARGET   = TelegramQt
@@ -13,7 +13,8 @@ HEADERS = CTelegramCore.hpp \
     CTelegramStream.hpp \
     Utils.hpp \
     CTelegramTransport.hpp \
-    CTcpTransport.hpp
+    CTcpTransport.hpp \
+    TLTypes.hpp
 
 HEADERS += TLValues.h
 

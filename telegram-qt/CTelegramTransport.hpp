@@ -14,18 +14,34 @@
 #ifndef CTELEGRAMTRANSPORT_HPP
 #define CTELEGRAMTRANSPORT_HPP
 
+#include <QObject>
+
 #include <QByteArray>
 
 class CTelegramCore;
 
-class CTelegramTransport {
+struct SDataCenter {
+    QString address;
+    quint16 port;
+};
 
+class CTelegramTransport : public QObject
+{
+    Q_OBJECT
 public:
+    CTelegramTransport(QObject *parent = 0) : QObject(parent) { }
     virtual void sendPackage(const QByteArray &package) = 0;
-    virtual void setCore(CTelegramCore *core) = 0;
+
+    virtual void connectToDc(const SDataCenter &dc) = 0;
+
+    virtual QByteArray getPackage() = 0;
 
     // Method for testing
     virtual QByteArray lastPackage() const = 0;
+
+signals:
+    void connected();
+    void readyRead();
 
 };
 
