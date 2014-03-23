@@ -13,24 +13,21 @@
 
 #include "CTcpTransport.hpp"
 
+#include <QTcpSocket>
+
 #include <QDebug>
 
 CTcpTransport::CTcpTransport(QObject *parent) :
-    QObject(parent)
+    CTelegramTransport(parent),
+    m_socket(new QTcpSocket(this))
 {
-//    SDataCenter testDC;
-//    testDC.address = "173.240.5.253";
-//    testDC.port = 443;
-
-//    SDataCenter dC;
-//    dC.address = "173.240.5.1";
-//    dC.port = 443;
-    //    connectToDC(testDC);
+    connect(m_socket, SIGNAL(connected()), SLOT(whenConnected()));
+    connect(m_socket, SIGNAL(readyRead()), SLOT(whenReadyRead()));
 }
 
-void CTcpTransport::setCore(CTelegramCore *core)
+void CTcpTransport::connectToDc(const SDataCenter &dc)
 {
-    m_core = core;
+    m_socket->connectToHost(dc.address, dc.port);
 }
 
 void CTcpTransport::sendPackage(const QByteArray &payload)
@@ -56,4 +53,36 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
     package.append(payload);
 
     m_lastPackage = package;
+
+    m_socket->write(package);
+}
+
+void CTcpTransport::whenConnected()
+{
+    m_expectedLength = 0;
+    emit connected();
+}
+
+void CTcpTransport::whenReadyRead()
+{
+    if (m_socket->bytesAvailable() < 1)
+        return;
+
+    if (m_expectedLength == 0) {
+        char length;
+        m_socket->getChar(&length);
+
+        // Full (not abridged) version is not implemented yet!
+//        if (length == char(0xef)) ...
+
+        m_expectedLength = length * 4;
+    }
+
+    if (m_socket->bytesAvailable() < m_expectedLength)
+        return;
+
+    m_receivedPackage = m_socket->read(m_expectedLength);
+
+    m_expectedLength = 0;
+    emit readyRead();
 }

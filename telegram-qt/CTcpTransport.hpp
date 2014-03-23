@@ -14,33 +14,40 @@
 
 #define CTCPTRANSPORT_HPP
 
-#include <QObject>
 
 #include "CTelegramTransport.hpp"
 
-struct SDataCenter {
-    QString address;
-    quint16 port;
-};
+QT_BEGIN_NAMESPACE
+class QTcpSocket;
+QT_END_NAMESPACE
 
-class CTcpTransport : public QObject, public CTelegramTransport
+class CTcpTransport : public CTelegramTransport
 {
     Q_OBJECT
 public:
     explicit CTcpTransport(QObject *parent = 0);
-    void setCore(CTelegramCore *core);
-    QByteArray lastPackage() const { return m_lastPackage; }
 
-signals:
+    void connectToDc(const SDataCenter &dc);
+
+    QByteArray getPackage() { return m_receivedPackage; }
+
+    QByteArray lastPackage() const { return m_lastPackage; }
 
 public slots:
     void sendPackage(const QByteArray &payload);
 
-private:
-    CTelegramCore *m_core;
-    quint32 m_packetNumber;
+private slots:
+    void whenConnected();
+    void whenReadyRead();
 
+private:
+    quint32 m_packetNumber;
+    quint32 m_expectedLength;
+
+    QByteArray m_receivedPackage;
     QByteArray m_lastPackage;
+
+    QTcpSocket *m_socket;
 
 };
 
