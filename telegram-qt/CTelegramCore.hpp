@@ -67,8 +67,8 @@ private:
     TLNumber128 m_serverNonce;
 
     quint64 m_pq;
-    quint64 m_p;
-    quint64 m_q;
+    quint32 m_p;
+    quint32 m_q;
 
     quint64 m_serverPublicFingersprint;
 
