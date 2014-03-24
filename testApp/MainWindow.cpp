@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(m_core->transport(), SIGNAL(connected()), SLOT(whenConnected()));
     connect(m_core, SIGNAL(pqReceived()), SLOT(whenPqReceived()));
+    connect(m_core, SIGNAL(authStateChanged()), SLOT(whenAuthChanged()));
 }
 
 MainWindow::~MainWindow()
@@ -36,6 +37,14 @@ void MainWindow::whenPqReceived()
     ui->q->setText(QString::number(m_core->q()));
 
     ui->serverPublicFingersprint->setText(QString::number(m_core->serverPublicFingersprint(), 16));
+}
+
+void MainWindow::whenAuthChanged()
+{
+    if (m_core->authState() == CTelegramCore::AuthSuccess)
+        ui->authState->setText(tr("Success!"));
+    else
+        ui->authState->setText(QString::number(m_core->authState()));
 }
 
 void MainWindow::on_connectButton_clicked()
