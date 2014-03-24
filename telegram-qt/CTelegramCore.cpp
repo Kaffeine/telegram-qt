@@ -33,6 +33,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_serverPublicFingersprint(0)
 {
     Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
+
+    m_rsaKey = Utils::loadKey();
 }
 
 void CTelegramCore::setAppId(quint32 newId)
@@ -160,7 +162,7 @@ bool CTelegramCore::answerPqAuthorization(const QByteArray &payload)
     inputStream >> fingersprints;
 
     if (fingersprints.count() != 1) {
-        qDebug() << "Error: Unexpected server's' fingersprint vector.";
+        qDebug() << "Error: Unexpected Server RSA Fingersprints vector.";
         return false;
     }
 
@@ -168,7 +170,72 @@ bool CTelegramCore::answerPqAuthorization(const QByteArray &payload)
 
     emit pqReceived();
 
+    if (m_rsaKey.fingersprint != m_serverPublicFingersprint) {
+        qDebug() << "Error: Server RSA Fingersprint does not match to loaded key";
+        return false;
+    }
+
     return true;
+}
+
+void CTelegramCore::requestDhParameters()
+{
+    Utils::randomBytes(m_newNonce.data, m_newNonce.size());
+
+    QByteArray bigEndianNumber;
+    bigEndianNumber.fill(char(0), 8);
+
+    QByteArray encryptedPackage;
+    {
+        static const int requestedEncryptedPackageLength = 255;
+        QBuffer innerData;
+        innerData.open(QIODevice::WriteOnly);
+        CTelegramStream encryptedStream(&innerData);
+
+        encryptedStream << PQInnerData;
+
+        qToBigEndian(m_pq, (uchar *) bigEndianNumber.data());
+        encryptedStream << bigEndianNumber;
+
+        bigEndianNumber.fill(char(0), 4);
+        qToBigEndian(m_p, (uchar *) bigEndianNumber.data());
+        encryptedStream << bigEndianNumber;
+
+        qToBigEndian(m_q, (uchar *) bigEndianNumber.data());
+        encryptedStream << bigEndianNumber;
+
+        encryptedStream << m_clientNonce;
+        encryptedStream << m_serverNonce;
+        encryptedStream << m_newNonce;
+
+        QByteArray sha = Utils::sha1(innerData.data());
+        QByteArray randomPadding;
+        randomPadding.resize(requestedEncryptedPackageLength - (sha.length() + innerData.data().length()));
+        Utils::randomBytes(randomPadding.data(), randomPadding.size());
+
+        encryptedPackage = Utils::rsa(sha + innerData.data() + randomPadding, m_rsaKey);
+    }
+
+    QBuffer output;
+    output.open(QIODevice::WriteOnly);
+    CTelegramStream outputStream(&output);
+
+    outputStream << ReqDHParams;
+    outputStream << m_clientNonce;
+    outputStream << m_serverNonce;
+
+    bigEndianNumber.fill(char(0), 4);
+    qToBigEndian(m_p, (uchar *) bigEndianNumber.data());
+    outputStream << bigEndianNumber;
+
+    qToBigEndian(m_q, (uchar *) bigEndianNumber.data());
+    outputStream << bigEndianNumber;
+
+    outputStream << m_serverPublicFingersprint;
+
+    outputStream << encryptedPackage;
+
+    sendPackage(output.buffer());
 }
 
 void CTelegramCore::whenReadyRead()
@@ -194,7 +261,15 @@ void CTelegramCore::whenReadyRead()
 
     QByteArray payload = inputStream.readBytes(length);
 
-    answerPqAuthorization(payload);
+    /* Will be implemented later */
+    static int pn = 0;
+
+    if (pn == 0)
+        answerPqAuthorization(payload);
+    else {
+    }
+
+    ++pn;
 }
 
 void CTelegramCore::sendPackage(const QByteArray &buffer)

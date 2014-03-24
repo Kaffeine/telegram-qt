@@ -29,6 +29,7 @@ public:
     static quint64 findDivider(quint64 number);
     static QByteArray sha1(const QByteArray &data);
     static SRsaKey loadKey();
+    static QByteArray rsa(const QByteArray &data, const SRsaKey &key);
 
 };
 

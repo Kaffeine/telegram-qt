@@ -19,6 +19,7 @@ enum TLValues {
     ReqPQ = 0x60469778,
     ResPQ = 0x05162463,
     ReqDHParams = 0xd712e4be,
+    PQInnerData = 0x83c95aec,
 
     // https://core.telegram.org/schema by generator
     BoolFalse = 0xbc799737,

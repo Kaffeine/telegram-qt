@@ -18,6 +18,7 @@
 #include <QByteArray>
 
 #include "TLTypes.hpp"
+#include "crypto-rsa.hpp"
 
 class CTelegramStream;
 class CTelegramTransport;
@@ -41,6 +42,7 @@ public:
 
     void requestPqAuthorization();
     bool answerPqAuthorization(const QByteArray &payload);
+    void requestDhParameters();
 
     inline TLNumber128 clientNonce() const { return m_clientNonce; }
     inline TLNumber128 serverNonce() const { return m_serverNonce; }
@@ -48,6 +50,8 @@ public:
     inline quint64 pq() const { return m_pq; }
     inline quint64 p() const { return m_p; }
     inline quint64 q() const { return m_q; }
+
+    inline quint64 serverPublicFingersprint() const { return m_serverPublicFingersprint; }
 
 signals:
     void pqReceived();
@@ -65,12 +69,14 @@ private:
 
     TLNumber128 m_clientNonce;
     TLNumber128 m_serverNonce;
+    TLNumber256 m_newNonce;
 
     quint64 m_pq;
     quint32 m_p;
     quint32 m_q;
 
     quint64 m_serverPublicFingersprint;
+    SRsaKey m_rsaKey;
 
 };
 
