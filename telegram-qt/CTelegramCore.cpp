@@ -30,7 +30,9 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_appId(0),
     m_appHash(QLatin1String("00000000000000000000000000000000")),
     m_transport(0),
-    m_serverPublicFingersprint(0)
+    m_serverPublicFingersprint(0),
+    m_authState(AuthNone),
+    m_authId(0)
 {
     Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
 
@@ -86,6 +88,13 @@ quint64 CTelegramCore::timeStampToMSecsSinceEpoch(quint64 ts)
     return secs * 1000 + msecs;
 }
 
+void CTelegramCore::initAuth()
+{
+    if (m_authState == AuthNone) {
+        requestPqAuthorization();
+    }
+}
+
 void CTelegramCore::requestPqAuthorization()
 {
     QBuffer output;
@@ -96,6 +105,8 @@ void CTelegramCore::requestPqAuthorization()
     outputStream << m_clientNonce;
 
     sendPackage(output.buffer());
+
+    m_authState = AuthPqRequested;
 }
 
 bool CTelegramCore::answerPqAuthorization(const QByteArray &payload)
@@ -236,6 +247,8 @@ void CTelegramCore::requestDhParameters()
     outputStream << encryptedPackage;
 
     sendPackage(output.buffer());
+
+    m_authState = AuthDhRequested;
 }
 
 bool CTelegramCore::answerDh(const QByteArray &payload)
@@ -329,6 +342,11 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
     return true;
 }
 
+void CTelegramCore::requestDhGenerationResult()
+{
+//    m_authState = AuthDhGenerationResultRequested;
+}
+
 void CTelegramCore::whenReadyRead()
 {
     QByteArray incoming = m_transport->getPackage();
@@ -352,16 +370,22 @@ void CTelegramCore::whenReadyRead()
 
     QByteArray payload = inputStream.readBytes(length);
 
-    /* Will be implemented later */
-    static int pn = 0;
+    /* Will be reimplemented later */
 
-    if (pn == 0)
-        answerPqAuthorization(payload);
-    else {
-        answerDh(payload);
+    switch (m_authState) {
+    case AuthPqRequested:
+        if (answerPqAuthorization(payload)) {
+            requestDhParameters();
+        }
+        break;
+    case AuthDhRequested:
+        if (answerDh(payload)) {
+            requestDhGenerationResult();
+        }
+        break;
+    default:
+        break;
     }
-
-    ++pn;
 }
 
 void CTelegramCore::initTmpAesKeys()
@@ -386,7 +410,7 @@ void CTelegramCore::sendPackage(const QByteArray &buffer)
     output.open(QIODevice::WriteOnly);
     CTelegramStream outputStream(&output);
 
-    outputStream << quint64(0); // Zero auth for initial messages
+    outputStream << m_authId;
     outputStream << formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch());
     outputStream << quint32(buffer.length());
 

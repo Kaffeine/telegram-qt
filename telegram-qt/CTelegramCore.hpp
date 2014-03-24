@@ -27,6 +27,14 @@ class CTelegramCore : public QObject
 {
     Q_OBJECT
 public:
+    enum AuthState {
+        AuthNone,
+        AuthPqRequested,
+        AuthDhRequested,
+        AuthDhGenerationResultRequested,
+        AuthSuccess
+    };
+
     explicit CTelegramCore(QObject *parent = 0);
 
     void setAppId(quint32 newId);
@@ -40,10 +48,13 @@ public:
 
     static quint64 timeStampToMSecsSinceEpoch(quint64 ts);
 
+    void initAuth();
+
     void requestPqAuthorization();
     bool answerPqAuthorization(const QByteArray &payload);
     void requestDhParameters();
     bool answerDh(const QByteArray &payload);
+    void requestDhGenerationResult();
 
     inline TLNumber128 clientNonce() const { return m_clientNonce; }
     inline TLNumber128 serverNonce() const { return m_serverNonce; }
@@ -89,6 +100,9 @@ private:
     QByteArray m_dhPrime;
     QByteArray m_gA;
     QByteArray m_b;
+
+    AuthState m_authState;
+    quint64 m_authId;
 
 };
 
