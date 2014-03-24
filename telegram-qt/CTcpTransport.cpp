@@ -75,13 +75,22 @@ void CTcpTransport::whenReadyRead()
         return;
 
     if (m_expectedLength == 0) {
+        if (m_socket->bytesAvailable() < 4) {
+            // Four bytes is minimum readable size for new package
+            return;
+        }
+
         char length;
         m_socket->getChar(&length);
 
-        // Full (not abridged) version is not implemented yet!
-//        if (length == char(0xef)) ...
-
-        m_expectedLength = length * 4;
+        if (length < char(0x7f)) {
+            m_expectedLength = length * 4;
+        } else if (length == char(0x7f)) {
+            m_socket->read((char *) &m_expectedLength, 3);
+            m_expectedLength *= 4;
+        } else {
+            qDebug() << "Incorrect TCP package!";
+        }
     }
 
     if (m_socket->bytesAvailable() < m_expectedLength)
