@@ -22,10 +22,7 @@ private slots:
     void whenPqReceived();
 
     void on_connectButton_clicked();
-
-    void on_reqPqButton_clicked();
-
-    void on_dhParametersButton_clicked();
+    void on_authButton_clicked();
 
 private:
     Ui::MainWindow *ui;

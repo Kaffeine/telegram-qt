@@ -211,16 +211,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="reqPqButton">
+         <widget class="QPushButton" name="authButton">
           <property name="text">
-           <string>ReqPQ</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="dhParametersButton">
-          <property name="text">
-           <string>DhParameters</string>
+           <string>Auth</string>
           </property>
          </widget>
         </item>
