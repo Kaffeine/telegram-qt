@@ -107,7 +107,7 @@ void CTelegramCore::requestPqAuthorization()
 
     sendPackage(output.buffer());
 
-    m_authState = AuthPqRequested;
+    setAuthState(AuthPqRequested);
 }
 
 bool CTelegramCore::answerPqAuthorization(const QByteArray &payload)
@@ -249,7 +249,7 @@ void CTelegramCore::requestDhParameters()
 
     sendPackage(output.buffer());
 
-    m_authState = AuthDhRequested;
+    setAuthState(AuthDhRequested);
 }
 
 bool CTelegramCore::answerDh(const QByteArray &payload)
@@ -387,7 +387,7 @@ void CTelegramCore::requestDhGenerationResult()
     outputStream << encryptedPackage;
 
     sendPackage(output.buffer());
-    m_authState = AuthDhGenerationResultRequested;
+    setAuthState(AuthDhGenerationResultRequested);
 }
 
 bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
@@ -403,7 +403,7 @@ bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
 
     if (responseTLValue == DhGenOk) {
         qDebug() << "OK";
-        m_authState = AuthSuccess;
+        setAuthState(AuthSuccess);
         return true;
     } else if (responseTLValue == DhGenRetry) {
         qDebug() << "RETRY";
@@ -498,4 +498,13 @@ void CTelegramCore::sendPackage(const QByteArray &buffer)
     outputStream << quint32(buffer.length());
 
     m_transport->sendPackage(output.buffer() + buffer);
+}
+
+void CTelegramCore::setAuthState(CTelegramCore::AuthState newState)
+{
+    if (m_authState == newState)
+        return;
+
+    m_authState = newState;
+    emit authStateChanged();
 }

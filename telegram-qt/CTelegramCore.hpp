@@ -50,6 +50,8 @@ public:
 
     void initAuth();
 
+    AuthState authState() { return m_authState; }
+
     void requestPqAuthorization();
     bool answerPqAuthorization(const QByteArray &payload);
     void requestDhParameters();
@@ -68,6 +70,7 @@ public:
 
 signals:
     void pqReceived();
+    void authStateChanged();
 
 private slots:
     void whenReadyRead();
@@ -77,6 +80,8 @@ private:
     void generateGb();
 
     void sendPackage(const QByteArray &buffer);
+
+    void setAuthState(AuthState newState);
 
     quint32 m_appId;
     QString m_appHash;
