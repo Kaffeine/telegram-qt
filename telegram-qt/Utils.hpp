@@ -24,6 +24,7 @@ class Utils : public QObject
     Q_OBJECT
 public:
     explicit Utils(QObject *parent = 0);
+    static int randomBytes(QByteArray *array);
     static int randomBytes(char *buffer, int count);
     static quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
     static quint64 findDivider(quint64 number);
@@ -33,5 +34,10 @@ public:
     static QByteArray aesDecrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv);
 
 };
+
+inline int Utils::randomBytes(QByteArray *array)
+{
+    return randomBytes(array->data(), array->size());
+}
 
 #endif // UTILS_HPP

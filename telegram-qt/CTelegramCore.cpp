@@ -211,7 +211,7 @@ void CTelegramCore::requestDhParameters()
         QByteArray sha = Utils::sha1(innerData.data());
         QByteArray randomPadding;
         randomPadding.resize(requestedEncryptedPackageLength - (sha.length() + innerData.data().length()));
-        Utils::randomBytes(randomPadding.data(), randomPadding.size());
+        Utils::randomBytes(&randomPadding);
 
         encryptedPackage = Utils::rsa(sha + innerData.data() + randomPadding, m_rsaKey);
     }
@@ -324,7 +324,7 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
     qDebug() << serverTime << "vs" << QDateTime::currentMSecsSinceEpoch() / 1000;
 
     m_b.resize(256);
-    Utils::randomBytes(m_b.data(), m_b.size());
+    Utils::randomBytes(&m_b);
 
     return true;
 }
