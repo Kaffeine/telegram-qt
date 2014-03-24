@@ -32,6 +32,7 @@ public:
     static SRsaKey loadKey();
     static QByteArray rsa(const QByteArray &data, const SRsaKey &key);
     static QByteArray aesDecrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv);
+    static QByteArray aesEncrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv);
 
 };
 

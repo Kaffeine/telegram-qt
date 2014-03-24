@@ -204,7 +204,7 @@ QByteArray Utils::rsa(const QByteArray &data, const SRsaKey &key)
 QByteArray Utils::aesDecrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv)
 {
     QByteArray result;
-    result.resize(20480); // TODO: Find out real length
+    result.fill(char(0), 20480); // TODO: Find out real length
 
     QByteArray initVector = iv;
 
@@ -212,6 +212,20 @@ QByteArray Utils::aesDecrypt(const QByteArray &data, const QByteArray &key, cons
     AES_set_decrypt_key((const uchar *) key.constData(), key.length() * 8, &dec_key);
 
     AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length() * 8, &dec_key, (uchar *) initVector.data(), AES_DECRYPT);
+    return result;
+}
 
+QByteArray Utils::aesEncrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv)
+{
+    QByteArray result;
+
+    result.fill(char(0), 20480); // TODO: Find out real length
+
+    QByteArray initVector = iv;
+
+    AES_KEY enc_key;
+    AES_set_encrypt_key((const uchar *) key.constData(), key.length() * 8, &enc_key);
+
+    AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length() * 8, &enc_key, (uchar *) initVector.data(), AES_ENCRYPT);
     return result;
 }
