@@ -13,6 +13,7 @@
 
 #include "Utils.hpp"
 
+#include <openssl/aes.h>
 #include <openssl/bn.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
@@ -196,6 +197,21 @@ QByteArray Utils::rsa(const QByteArray &data, const SRsaKey &key)
     BN_free(dataNum);
 
     BN_CTX_free(bn_context);
+
+    return result;
+}
+
+QByteArray Utils::aesDecrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv)
+{
+    QByteArray result;
+    result.resize(20480); // TODO: Find out real length
+
+    QByteArray initVector = iv;
+
+    AES_KEY dec_key;
+    AES_set_decrypt_key((const uchar *) key.constData(), key.length() * 8, &dec_key);
+
+    AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length() * 8, &dec_key, (uchar *) initVector.data(), AES_DECRYPT);
 
     return result;
 }
