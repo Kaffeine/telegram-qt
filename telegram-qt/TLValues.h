@@ -14,6 +14,8 @@
 #ifndef TLVALUES_H
 #define TLVALUES_H
 
+// TODO: Namespace?
+
 enum TLValues {
     // https://core.telegram.org/mtproto/auth_key
     ReqPQ = 0x60469778,
@@ -23,6 +25,11 @@ enum TLValues {
     ServerDHParamsOK = 0xd0e8075c,
     ServerDHParamsFail = 0x79cb045d,
     ServerDHInnerData = 0xb5890dba,
+    ClientDHInnerData = 0x6643b654,
+    SetClientDHParams = 0xf5045f1f,
+    DhGenOk           = 0x3bcbf734,
+    DhGenRetry        = 0x46dc1fb9,
+    DhGenFail         = 0xa69dae02,
 
     // https://core.telegram.org/schema by generator
     BoolFalse = 0xbc799737,

@@ -55,6 +55,7 @@ public:
     void requestDhParameters();
     bool answerDh(const QByteArray &payload);
     void requestDhGenerationResult();
+    bool processServersDHAnswer(const QByteArray &payload);
 
     inline TLNumber128 clientNonce() const { return m_clientNonce; }
     inline TLNumber128 serverNonce() const { return m_serverNonce; }
@@ -73,6 +74,7 @@ private slots:
 
 private:
     void initTmpAesKeys();
+    void generateGb();
 
     void sendPackage(const QByteArray &buffer);
 
@@ -99,10 +101,13 @@ private:
 
     QByteArray m_dhPrime;
     QByteArray m_gA;
+    QByteArray m_gB;
     QByteArray m_b;
 
     AuthState m_authState;
     quint64 m_authId;
+
+    quint64 m_authRetryId;
 
 };
 

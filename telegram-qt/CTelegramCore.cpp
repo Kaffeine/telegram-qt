@@ -91,6 +91,7 @@ quint64 CTelegramCore::timeStampToMSecsSinceEpoch(quint64 ts)
 void CTelegramCore::initAuth()
 {
     if (m_authState == AuthNone) {
+        m_authRetryId = 0;
         requestPqAuthorization();
     }
 }
@@ -344,7 +345,75 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
 
 void CTelegramCore::requestDhGenerationResult()
 {
-//    m_authState = AuthDhGenerationResultRequested;
+    QBuffer output;
+    output.open(QIODevice::WriteOnly);
+    CTelegramStream outputStream(&output);
+
+    outputStream << SetClientDHParams;
+    outputStream << m_clientNonce;
+    outputStream << m_serverNonce;
+
+    generateGb();
+
+    QByteArray encryptedPackage;
+    {
+        QBuffer innerData;
+        innerData.open(QIODevice::WriteOnly);
+        CTelegramStream encryptedStream(&innerData);
+
+        encryptedStream << ClientDHInnerData;
+
+        encryptedStream << m_clientNonce;
+        encryptedStream << m_serverNonce;
+        encryptedStream << m_authRetryId;
+        encryptedStream << m_gB;
+
+        QByteArray sha = Utils::sha1(innerData.data());
+        QByteArray randomPadding;
+
+        int packageLength = sha.length() + innerData.data().length();
+        if ((packageLength) % 16) {
+            randomPadding.resize(16 - (packageLength % 16));
+            Utils::randomBytes(&randomPadding);
+
+            packageLength += randomPadding.size();
+        }
+
+        encryptedPackage = Utils::aesEncrypt(sha + innerData.data() + randomPadding, m_tmpAesKey, m_tmpAesIv);
+
+        encryptedPackage.truncate(packageLength);
+    }
+
+    outputStream << encryptedPackage;
+
+    sendPackage(output.buffer());
+    m_authState = AuthDhGenerationResultRequested;
+}
+
+bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
+{
+    QByteArray data = payload;
+    QBuffer input;
+    input.setBuffer(&data);
+    input.open(QIODevice::ReadOnly);
+    CTelegramStream inputStream(&input);
+
+    TLValues responseTLValue;
+    inputStream >> responseTLValue;
+
+    if (responseTLValue == DhGenOk) {
+        qDebug() << "OK";
+        m_authState = AuthSuccess;
+        return true;
+    } else if (responseTLValue == DhGenRetry) {
+        qDebug() << "RETRY";
+    } else if (responseTLValue == DhGenFail) {
+        qDebug() << "Fail1";
+    }
+
+    qDebug() << "Fail 2";
+
+    return false;
 }
 
 void CTelegramCore::whenReadyRead()
@@ -383,6 +452,9 @@ void CTelegramCore::whenReadyRead()
             requestDhGenerationResult();
         }
         break;
+    case AuthDhGenerationResultRequested:
+        processServersDHAnswer(payload);
+        break;
     default:
         break;
     }
@@ -402,6 +474,17 @@ void CTelegramCore::initTmpAesKeys()
 
     m_tmpAesKey = Utils::sha1(newNonceAndServerNonce) + Utils::sha1(serverNonceAndNewNonce).mid(0, 12);
     m_tmpAesIv = Utils::sha1(serverNonceAndNewNonce).mid(12, 8) + Utils::sha1(newNonceAndNewNonce) + QByteArray(m_newNonce.data, 4);
+}
+
+void CTelegramCore::generateGb()
+{
+    SRsaKey key(m_b, m_dhPrime);
+
+    QByteArray binOfG;
+    binOfG.resize(sizeof(m_g));
+    qToBigEndian(m_g, (uchar *) binOfG.data());
+
+    m_gB = Utils::rsa(binOfG, key);
 }
 
 void CTelegramCore::sendPackage(const QByteArray &buffer)
