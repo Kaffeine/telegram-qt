@@ -272,6 +272,22 @@ void CTelegramCore::whenReadyRead()
     ++pn;
 }
 
+void CTelegramCore::initTmpAesKeys()
+{
+    QByteArray newNonceAndServerNonce;
+    newNonceAndServerNonce.append(m_newNonce.data, m_newNonce.size());
+    newNonceAndServerNonce.append(m_serverNonce.data, m_serverNonce.size());
+    QByteArray serverNonceAndNewNonce;
+    serverNonceAndNewNonce.append(m_serverNonce.data, m_serverNonce.size());
+    serverNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
+    QByteArray newNonceAndNewNonce;
+    newNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
+    newNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
+
+    m_tmpAesKey = Utils::sha1(newNonceAndServerNonce) + Utils::sha1(serverNonceAndNewNonce).mid(0, 12);
+    m_tmpAesIv = Utils::sha1(serverNonceAndNewNonce).mid(12, 8) + Utils::sha1(newNonceAndNewNonce) + QByteArray(m_newNonce.data, 4);
+}
+
 void CTelegramCore::sendPackage(const QByteArray &buffer)
 {
     QBuffer output;

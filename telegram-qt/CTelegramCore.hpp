@@ -60,6 +60,8 @@ private slots:
     void whenReadyRead();
 
 private:
+    void initTmpAesKeys();
+
     void sendPackage(const QByteArray &buffer);
 
     quint32 m_appId;
@@ -77,6 +79,9 @@ private:
 
     quint64 m_serverPublicFingersprint;
     SRsaKey m_rsaKey;
+
+    QByteArray m_tmpAesKey;
+    QByteArray m_tmpAesIv;
 
 };
 
