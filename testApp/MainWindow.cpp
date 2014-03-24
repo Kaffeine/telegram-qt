@@ -34,6 +34,8 @@ void MainWindow::whenPqReceived()
     ui->pq->setText(QString::number(m_core->pq()));
     ui->p->setText(QString::number(m_core->p()));
     ui->q->setText(QString::number(m_core->q()));
+
+    ui->serverPublicFingersprint->setText(QString::number(m_core->serverPublicFingersprint(), 16));
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -56,4 +58,9 @@ void MainWindow::on_connectButton_clicked()
 void MainWindow::on_reqPqButton_clicked()
 {
     m_core->requestPqAuthorization();
+}
+
+void MainWindow::on_dhParametersButton_clicked()
+{
+    m_core->requestDhParameters();
 }

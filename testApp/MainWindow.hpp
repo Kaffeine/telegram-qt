@@ -25,6 +25,8 @@ private slots:
 
     void on_reqPqButton_clicked();
 
+    void on_dhParametersButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 
