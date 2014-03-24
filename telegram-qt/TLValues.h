@@ -20,6 +20,9 @@ enum TLValues {
     ResPQ = 0x05162463,
     ReqDHParams = 0xd712e4be,
     PQInnerData = 0x83c95aec,
+    ServerDHParamsOK = 0xd0e8075c,
+    ServerDHParamsFail = 0x79cb045d,
+    ServerDHInnerData = 0xb5890dba,
 
     // https://core.telegram.org/schema by generator
     BoolFalse = 0xbc799737,

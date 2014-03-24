@@ -43,6 +43,7 @@ public:
     void requestPqAuthorization();
     bool answerPqAuthorization(const QByteArray &payload);
     void requestDhParameters();
+    bool answerDh(const QByteArray &payload);
 
     inline TLNumber128 clientNonce() const { return m_clientNonce; }
     inline TLNumber128 serverNonce() const { return m_serverNonce; }
@@ -82,6 +83,12 @@ private:
 
     QByteArray m_tmpAesKey;
     QByteArray m_tmpAesIv;
+
+    quint32 m_g;
+
+    QByteArray m_dhPrime;
+    QByteArray m_gA;
+    QByteArray m_b;
 
 };
 

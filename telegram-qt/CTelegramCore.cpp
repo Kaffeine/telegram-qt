@@ -238,6 +238,97 @@ void CTelegramCore::requestDhParameters()
     sendPackage(output.buffer());
 }
 
+bool CTelegramCore::answerDh(const QByteArray &payload)
+{
+    QByteArray data = payload;
+    QBuffer input;
+    input.setBuffer(&data);
+    input.open(QIODevice::ReadOnly);
+    CTelegramStream inputStream(&input);
+
+    TLValues responseTLValue;
+    inputStream >> responseTLValue;
+
+    if (responseTLValue != ServerDHParamsOK) {
+        qDebug() << "Error: Server did not accept our DH params";
+        return false;
+    }
+
+    TLNumber128 clientNonce;
+    TLNumber128 serverNonce;
+
+    inputStream >> clientNonce;
+
+    if (clientNonce != m_clientNonce) {
+        qDebug() << "Error: Client nonce in incoming package is different from our own.";
+        return false;
+    }
+
+    inputStream >> serverNonce;
+
+    if (serverNonce != m_serverNonce) {
+        qDebug() << "Error: Server nonce in incoming package is different from known early.";
+        return false;
+    }
+
+    QByteArray encryptedAnswer;
+
+    inputStream >> encryptedAnswer;
+
+    initTmpAesKeys();
+
+    QByteArray answer = Utils::aesDecrypt(encryptedAnswer, m_tmpAesKey, m_tmpAesIv);
+
+    QByteArray sha1OfAnswer = answer.mid(0, 20);
+    answer = answer.mid(20, 564);
+
+    if (Utils::sha1(answer) != sha1OfAnswer) {
+        qDebug() << "Error: SHA1 of encrypted answer is different from announced.";
+        return false;
+    }
+
+    QBuffer encryptedInput;
+    encryptedInput.setBuffer(&answer);
+    encryptedInput.open(QIODevice::ReadOnly);
+    CTelegramStream encryptedInputStream(&encryptedInput);
+
+    encryptedInputStream >> responseTLValue;
+
+    if (responseTLValue != ServerDHInnerData) {
+        qDebug() << "Error: Unexpected TL Value in encrypted answer";
+        return false;
+    }
+
+    encryptedInputStream >> clientNonce;
+
+    if (clientNonce != m_clientNonce) {
+        qDebug() << "Error: Client nonce in incoming package is different from our own.";
+        return false;
+    }
+
+    encryptedInputStream >> serverNonce;
+
+    if (serverNonce != m_serverNonce) {
+        qDebug() << "Error: Server nonce in incoming package is different from known early.";
+        return false;
+    }
+
+    encryptedInputStream >> m_g;
+    encryptedInputStream >> m_dhPrime;
+    encryptedInputStream >> m_gA;
+
+    quint32 serverTime;
+
+    encryptedInputStream >> serverTime;
+
+    qDebug() << serverTime << "vs" << QDateTime::currentMSecsSinceEpoch() / 1000;
+
+    m_b.resize(256);
+    Utils::randomBytes(m_b.data(), m_b.size());
+
+    return true;
+}
+
 void CTelegramCore::whenReadyRead()
 {
     QByteArray incoming = m_transport->getPackage();
@@ -267,6 +358,7 @@ void CTelegramCore::whenReadyRead()
     if (pn == 0)
         answerPqAuthorization(payload);
     else {
+        answerDh(payload);
     }
 
     ++pn;
