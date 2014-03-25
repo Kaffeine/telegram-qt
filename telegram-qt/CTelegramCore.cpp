@@ -478,13 +478,11 @@ void CTelegramCore::initTmpAesKeys()
 
 void CTelegramCore::generateGb()
 {
-    SRsaKey key(m_b, m_dhPrime);
-
     QByteArray binOfG;
     binOfG.resize(sizeof(m_g));
     qToBigEndian(m_g, (uchar *) binOfG.data());
 
-    m_gB = Utils::rsa(binOfG, key);
+    m_gB = Utils::binaryNumbersModExp(binOfG, m_b, m_dhPrime);
 }
 
 void CTelegramCore::sendPackage(const QByteArray &buffer)
