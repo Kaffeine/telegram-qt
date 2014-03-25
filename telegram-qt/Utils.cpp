@@ -104,7 +104,7 @@ QByteArray Utils::sha1(const QByteArray &data)
     return QCryptographicHash::hash(data, QCryptographicHash::Sha1);
 }
 
-QByteArray bnToByteArray(const BIGNUM *n)
+QByteArray bnToBinArray(const BIGNUM *n)
 {
     QByteArray result;
     result.resize(BN_num_bytes(n));
@@ -124,6 +124,11 @@ QByteArray bnToHexArray(const BIGNUM *n)
 bool hexArrayToBN(const QByteArray &hex, BIGNUM **n)
 {
     return BN_hex2bn(n, hex.constData()) != 0;
+}
+
+bool binArrayToBN(const QByteArray &bin, BIGNUM **n)
+{
+    return BN_bin2bn((uchar *) bin.constData(), bin.length(), *n) != 0;
 }
 
 static const SRsaKey hardcodedRsa(QByteArray("0c150023e2f70db7985ded064759cfecf0af328e69a41daf4d6f01b53813"
