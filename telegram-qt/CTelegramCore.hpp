@@ -76,7 +76,7 @@ private slots:
     void whenReadyRead();
 
 private:
-    void initTmpAesKeys();
+    void initTmpAesKey();
     void generateGb();
 
     void sendPackage(const QByteArray &buffer);

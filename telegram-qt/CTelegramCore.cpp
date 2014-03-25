@@ -289,7 +289,7 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
 
     inputStream >> encryptedAnswer;
 
-    initTmpAesKeys();
+    initTmpAesKey();
 
     QByteArray answer = Utils::aesDecrypt(encryptedAnswer, m_tmpAesKey, m_tmpAesIv);
 
@@ -460,7 +460,7 @@ void CTelegramCore::whenReadyRead()
     }
 }
 
-void CTelegramCore::initTmpAesKeys()
+void CTelegramCore::initTmpAesKey()
 {
     QByteArray newNonceAndServerNonce;
     newNonceAndServerNonce.append(m_newNonce.data, m_newNonce.size());
@@ -482,7 +482,7 @@ void CTelegramCore::generateGb()
     binOfG.resize(sizeof(m_g));
     qToBigEndian(m_g, (uchar *) binOfG.data());
 
-    m_gB = Utils::binaryNumbersModExp(binOfG, m_b, m_dhPrime);
+    m_gB = Utils::binaryNumberModExp(binOfG, m_b, m_dhPrime);
 }
 
 void CTelegramCore::sendPackage(const QByteArray &buffer)
