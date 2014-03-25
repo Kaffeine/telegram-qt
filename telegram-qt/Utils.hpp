@@ -33,6 +33,7 @@ public:
     static SRsaKey loadHardcodedKey();
     static SRsaKey loadRsaKeyFromFile(const QString &fileName);
     static SRsaKey loadRsaKey();
+    static QByteArray binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp);
     static QByteArray rsa(const QByteArray &data, const SRsaKey &key);
     static QByteArray aesDecrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv);
     static QByteArray aesEncrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv);
@@ -42,6 +43,11 @@ public:
 inline int Utils::randomBytes(QByteArray *array)
 {
     return randomBytes(array->data(), array->size());
+}
+
+inline QByteArray Utils::rsa(const QByteArray &data, const SRsaKey &key)
+{
+    return binaryNumberModExp(data, key.key, key.exp);
 }
 
 #endif // UTILS_HPP

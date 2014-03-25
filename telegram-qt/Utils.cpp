@@ -215,7 +215,7 @@ SRsaKey Utils::loadRsaKey()
 //    return loadRsaKeyFromFile("telegram_server_key.pub");
 }
 
-QByteArray Utils::rsa(const QByteArray &data, const SRsaKey &key)
+QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp)
 {
     QByteArray result;
     result.fill(char(0), 256);
@@ -227,8 +227,8 @@ QByteArray Utils::rsa(const QByteArray &data, const SRsaKey &key)
     BIGNUM *resultNum = BN_new();
     BIGNUM *dataNum = BN_new();
 
-    binArrayToBN(key.key, &pubModulus);
-    binArrayToBN(key.exp, &pubExponent);
+    binArrayToBN(mod, &pubModulus);
+    binArrayToBN(exp, &pubExponent);
 
     BN_bin2bn((uchar *) data.constData(), data.length(), dataNum);
 
