@@ -36,7 +36,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
 {
     Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
 
-    m_rsaKey = Utils::loadKey();
+    m_rsaKey = Utils::loadRsaKey();
 }
 
 void CTelegramCore::setAppId(quint32 newId)

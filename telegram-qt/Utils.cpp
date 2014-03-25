@@ -19,8 +19,23 @@
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
 
+#include <QBuffer>
 #include <QCryptographicHash>
 #include <QDebug>
+
+#include "CTelegramStream.hpp"
+
+static const QByteArray s_hardcodedRsaDataKey("0c150023e2f70db7985ded064759cfecf0af328e69a41daf4d6f01b53813"
+                                              "5a6f91f8f8b2a0ec9ba9720ce352efcf6c5680ffc424bd634864902de0b4"
+                                              "bd6d49f4e580230e3ae97d95c8b19442b3c0a10d8f5633fecedd6926a7f6"
+                                              "dab0ddb7d457f9ea81b8465fcd6fffeed114011df91c059caedaf97625f6"
+                                              "c96ecc74725556934ef781d866b34f011fce4d835a090196e9a5f0e4449a"
+                                              "f7eb697ddb9076494ca5f81104a305b6dd27665722c46b60e5df680fb16b"
+                                              "210607ef217652e60236c255f6a28315f4083a96791d7214bf64c1df4fd0"
+                                              "db1944fb26a2a57031b32eee64ad15a8ba68885cde74a5bfc920f6abf59b"
+                                              "a5c75506373e7130f9042da922179251f");
+static const QByteArray s_hardcodedRsaDataExp("010001");
+static const quint64 s_hardcodedRsaDataFingersprint(0xc3b42b026ce86b21);
 
 Utils::Utils(QObject *parent) :
     QObject(parent)
@@ -131,50 +146,73 @@ bool binArrayToBN(const QByteArray &bin, BIGNUM **n)
     return BN_bin2bn((uchar *) bin.constData(), bin.length(), *n) != 0;
 }
 
-static const SRsaKey hardcodedRsa(QByteArray("0c150023e2f70db7985ded064759cfecf0af328e69a41daf4d6f01b53813"
-                                             "5a6f91f8f8b2a0ec9ba9720ce352efcf6c5680ffc424bd634864902de0b4"
-                                             "bd6d49f4e580230e3ae97d95c8b19442b3c0a10d8f5633fecedd6926a7f6"
-                                             "dab0ddb7d457f9ea81b8465fcd6fffeed114011df91c059caedaf97625f6"
-                                             "c96ecc74725556934ef781d866b34f011fce4d835a090196e9a5f0e4449a"
-                                             "f7eb697ddb9076494ca5f81104a305b6dd27665722c46b60e5df680fb16b"
-                                             "210607ef217652e60236c255f6a28315f4083a96791d7214bf64c1df4fd0"
-                                             "db1944fb26a2a57031b32eee64ad15a8ba68885cde74a5bfc920f6abf59b"
-                                             "a5c75506373e7130f9042da922179251f"),
-                                  QByteArray("010001"),
-                                  0xc3b42b026ce86b21);
+quint64 Utils::getRsaFingersprint(const SRsaKey &key)
+{
+    QBuffer buffer;
+    buffer.open(QIODevice::WriteOnly);
+    CTelegramStream stream(&buffer);
 
-SRsaKey loadRsaFromFile(const char *filename)
+    stream << key.key;
+    stream << key.exp;
+
+    QByteArray shaSum = sha1(buffer.data());
+
+    return *((quint64 *) shaSum.mid(12).constData());
+}
+
+SRsaKey Utils::loadHardcodedKey()
+{
+    SRsaKey result;
+
+    BIGNUM *tmpBN = BN_new();
+
+    hexArrayToBN(s_hardcodedRsaDataKey, &tmpBN);
+
+    result.key = bnToBinArray(tmpBN);
+
+    hexArrayToBN(s_hardcodedRsaDataExp, &tmpBN);
+
+    result.exp = bnToBinArray(tmpBN);
+
+    result.fingersprint = s_hardcodedRsaDataFingersprint;
+
+    BN_free(tmpBN);
+
+    return result;
+}
+
+SRsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
 {
     SRsaKey result;
     RSA *pubKey = NULL;
-    FILE *f = fopen(filename, "r");
+    FILE *file = fopen(fileName.toLocal8Bit().constData(), "r");
 
-    if (!f) {
-        qDebug() << "!f";
+    if (!file) {
+        qDebug() << "Can not open RSA key file.";
         return result;
     }
 
-    pubKey = PEM_read_RSAPublicKey(f, 0, 0, 0);
-    fclose (f);
+    pubKey = PEM_read_RSAPublicKey(file, 0, 0, 0);
+    fclose(file);
 
     if (pubKey == NULL) {
-        qDebug() << "Null";
+        qDebug() << "Can not read RSA key.";
         return result;
     }
 
-    result.key = bnToHexArray(pubKey->n);
-    result.exp = bnToHexArray(pubKey->e);
-    // TODO: Fingersprint
+    result.key = bnToBinArray(pubKey->n);
+    result.exp = bnToBinArray(pubKey->e);
+    result.fingersprint = getRsaFingersprint(result);
 
     RSA_free(pubKey);
 
     return result;
 }
 
-SRsaKey Utils::loadKey()
+SRsaKey Utils::loadRsaKey()
 {
-    return hardcodedRsa;
-//    return loadRsaFromFile("telegram_server_key.pub");
+    return loadHardcodedKey();
+//    return loadRsaKeyFromFile("telegram_server_key.pub");
 }
 
 QByteArray Utils::rsa(const QByteArray &data, const SRsaKey &key)
@@ -189,8 +227,8 @@ QByteArray Utils::rsa(const QByteArray &data, const SRsaKey &key)
     BIGNUM *resultNum = BN_new();
     BIGNUM *dataNum = BN_new();
 
-    hexArrayToBN(key.key, &pubModulus);
-    hexArrayToBN(key.exp, &pubExponent);
+    binArrayToBN(key.key, &pubModulus);
+    binArrayToBN(key.exp, &pubExponent);
 
     BN_bin2bn((uchar *) data.constData(), data.length(), dataNum);
 

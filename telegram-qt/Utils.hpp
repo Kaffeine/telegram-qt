@@ -29,7 +29,10 @@ public:
     static quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
     static quint64 findDivider(quint64 number);
     static QByteArray sha1(const QByteArray &data);
-    static SRsaKey loadKey();
+    static quint64 getRsaFingersprint(const SRsaKey &key);
+    static SRsaKey loadHardcodedKey();
+    static SRsaKey loadRsaKeyFromFile(const QString &fileName);
+    static SRsaKey loadRsaKey();
     static QByteArray rsa(const QByteArray &data, const SRsaKey &key);
     static QByteArray aesDecrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv);
     static QByteArray aesEncrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv);
