@@ -353,8 +353,6 @@ void CTelegramCore::requestDhGenerationResult()
     outputStream << m_clientNonce;
     outputStream << m_serverNonce;
 
-    generateGb();
-
     QByteArray encryptedPackage;
     {
         QBuffer innerData;
@@ -366,7 +364,14 @@ void CTelegramCore::requestDhGenerationResult()
         encryptedStream << m_clientNonce;
         encryptedStream << m_serverNonce;
         encryptedStream << m_authRetryId;
-        encryptedStream << m_gB;
+
+        QByteArray binNumber;
+        binNumber.resize(sizeof(m_g));
+        qToBigEndian(m_g, (uchar *) binNumber.data());
+
+        binNumber = Utils::binaryNumberModExp(binNumber, m_dhPrime, m_b);
+
+        encryptedStream << binNumber;
 
         QByteArray sha = Utils::sha1(innerData.data());
         QByteArray randomPadding;
@@ -474,15 +479,6 @@ void CTelegramCore::initTmpAesKey()
 
     m_tmpAesKey = Utils::sha1(newNonceAndServerNonce) + Utils::sha1(serverNonceAndNewNonce).mid(0, 12);
     m_tmpAesIv = Utils::sha1(serverNonceAndNewNonce).mid(12, 8) + Utils::sha1(newNonceAndNewNonce) + QByteArray(m_newNonce.data, 4);
-}
-
-void CTelegramCore::generateGb()
-{
-    QByteArray binOfG;
-    binOfG.resize(sizeof(m_g));
-    qToBigEndian(m_g, (uchar *) binOfG.data());
-
-    m_gB = Utils::binaryNumberModExp(binOfG, m_b, m_dhPrime);
 }
 
 void CTelegramCore::sendPackage(const QByteArray &buffer)

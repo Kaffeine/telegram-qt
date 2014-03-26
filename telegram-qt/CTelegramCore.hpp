@@ -77,7 +77,6 @@ private slots:
 
 private:
     void initTmpAesKey();
-    void generateGb();
 
     void sendPackage(const QByteArray &buffer);
 
@@ -106,7 +105,6 @@ private:
 
     QByteArray m_dhPrime;
     QByteArray m_gA;
-    QByteArray m_gB;
     QByteArray m_b;
 
     AuthState m_authState;
