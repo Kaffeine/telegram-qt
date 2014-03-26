@@ -87,6 +87,12 @@ protected:
 
     CTelegramTransport *m_transport;
 
+    AuthState m_authState;
+
+    quint64 m_authId;
+    QByteArray m_authKey;
+    quint64 m_authKeyAuxHash;
+
     TLNumber128 m_clientNonce;
     TLNumber128 m_serverNonce;
     TLNumber256 m_newNonce;
@@ -102,14 +108,9 @@ protected:
     QByteArray m_tmpAesIv;
 
     quint32 m_g;
-
     QByteArray m_dhPrime;
     QByteArray m_gA;
     QByteArray m_b;
-
-    AuthState m_authState;
-    QByteArray m_authKey;
-    quint64 m_authId;
 
     quint64 m_authRetryId;
 

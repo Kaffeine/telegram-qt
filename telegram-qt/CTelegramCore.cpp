@@ -30,9 +30,9 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_appId(0),
     m_appHash(QLatin1String("00000000000000000000000000000000")),
     m_transport(0),
-    m_serverPublicFingersprint(0),
     m_authState(AuthNone),
-    m_authId(0)
+    m_authId(0),
+    m_serverPublicFingersprint(0)
 {
     Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
 
@@ -393,6 +393,10 @@ void CTelegramCore::requestDhGenerationResult()
 
     sendPackage(output.buffer());
     setAuthState(AuthDhGenerationResultRequested);
+
+    m_authKey = Utils::binaryNumberModExp(m_gA, m_dhPrime, m_b);
+    m_authId = Utils::getFingersprint(m_authKey);
+    m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
 }
 
 bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
@@ -406,17 +410,63 @@ bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
     TLValues responseTLValue;
     inputStream >> responseTLValue;
 
+    TLNumber128 clientNonce;
+    TLNumber128 serverNonce;
+
+    inputStream >> clientNonce;
+
+    if (clientNonce != m_clientNonce) {
+        qDebug() << "Error: Client nonce in incoming package is different from our own.";
+        return false;
+    }
+
+    inputStream >> serverNonce;
+
+    if (serverNonce != m_serverNonce) {
+        qDebug() << "Error: Server nonce in incoming package is different from known early.";
+        return false;
+    }
+
+    TLNumber128 newNonceHashLower128;
+
+    inputStream >> newNonceHashLower128;
+
+    QByteArray readedHashPart(newNonceHashLower128.data, newNonceHashLower128.size());
+
+    QByteArray expectedHashData(m_newNonce.data, m_newNonce.size());
+
+    expectedHashData.append(Utils::sha1(m_authKey).left(8));
+
     if (responseTLValue == DhGenOk) {
-        qDebug() << "OK";
+//        qDebug() << "Answer OK";
+
+        expectedHashData.insert(32, char(1));
+        if (Utils::sha1(expectedHashData).mid(4) != readedHashPart) {
+            qDebug() << "Error: Server (newNonce + auth key) hash is not correct.";
+            return false;
+        }
+
         setAuthState(AuthSuccess);
         return true;
     } else if (responseTLValue == DhGenRetry) {
-        qDebug() << "RETRY";
+        qDebug() << "Answer RETRY";
+
+        expectedHashData.insert(32, char(2));
+        if (Utils::sha1(expectedHashData).mid(4) != readedHashPart) {
+            qDebug() << "Error: Server (newNonce + auth key) hash is not correct.";
+            return false;
+        }
     } else if (responseTLValue == DhGenFail) {
-        qDebug() << "Fail1";
+        qDebug() << "Answer FAIL";
+
+        expectedHashData.insert(32, char(3));
+        if (Utils::sha1(expectedHashData).mid(4) != readedHashPart) {
+            qDebug() << "Error: Server (newNonce + auth key) hash is not correct.";
+            return false;
+        }
     }
 
-    qDebug() << "Fail 2";
+    qDebug() << "Error: Unexpected server response.";
 
     return false;
 }
