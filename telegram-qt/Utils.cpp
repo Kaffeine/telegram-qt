@@ -146,11 +146,15 @@ bool binArrayToBN(const QByteArray &bin, BIGNUM **n)
     return BN_bin2bn((uchar *) bin.constData(), bin.length(), *n) != 0;
 }
 
-quint64 Utils::getFingersprint(const QByteArray &data)
+quint64 Utils::getFingersprint(const QByteArray &data, bool lowerOrderBits)
 {
     QByteArray shaSum = sha1(data);
 
-    return *((quint64 *) shaSum.mid(12).constData());
+    if (lowerOrderBits) {
+        return *((quint64 *) shaSum.mid(12).constData());
+    } else {
+        return *((quint64 *) shaSum.constData());
+    }
 }
 
 quint64 Utils::getRsaFingersprint(const SRsaKey &key)
