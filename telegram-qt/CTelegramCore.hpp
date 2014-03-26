@@ -75,7 +75,7 @@ signals:
 private slots:
     void whenReadyRead();
 
-private:
+protected:
     void initTmpAesKey();
 
     void sendPackage(const QByteArray &buffer);
@@ -108,6 +108,7 @@ private:
     QByteArray m_b;
 
     AuthState m_authState;
+    QByteArray m_authKey;
     quint64 m_authId;
 
     quint64 m_authRetryId;
