@@ -63,19 +63,19 @@ void CTelegramCore::setTransport(CTelegramTransport *newTransport)
 
 quint64 CTelegramCore::formatTimeStamp(qint64 timeInMs)
 {
-    static const quint64 maxMsecValue = (1UL << 32) - 1;
+    static const quint64 maxMsecValue = (quint64(1) << 32) - 1;
 
-    quint64 secs = timeInMs / 1000;
-    quint64 msecs = maxMsecValue / 1000 * (timeInMs % 1000);
+    const quint64 secs = timeInMs / 1000;
+    const quint64 msecs = maxMsecValue / 1000 * (timeInMs % 1000);
 
     return (secs << 32) + msecs;
 }
 
 quint64 CTelegramCore::timeStampToMSecsSinceEpoch(quint64 ts)
 {
-    static const quint64 maxMsecValue = (1UL << 32) - 1;
+    static const quint64 maxMsecValue = (quint64(1) << 32) - 1;
 
-    quint64 secs = ts >> 32;
+    const quint64 secs = ts >> 32;
     quint64 msecs = ts & maxMsecValue;
 
     msecs = msecs * 10000 / maxMsecValue;

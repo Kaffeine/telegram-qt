@@ -44,7 +44,7 @@ public:
     void setTransport(CTelegramTransport *newTransport);
 
     static quint64 formatTimeStamp(qint64 timeInMs);
-    static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~3UL; }
+    static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~quint64(3); }
 
     static quint64 timeStampToMSecsSinceEpoch(quint64 ts);
 
