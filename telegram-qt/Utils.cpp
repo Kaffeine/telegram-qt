@@ -74,15 +74,17 @@ quint64 Utils::greatestCommonOddDivisor(quint64 a, quint64 b)
 quint64 Utils::findDivider(quint64 number)
 {
     int it = 0;
-    unsigned long long g = 0;
+    quint64 g = 0;
     for (int i = 0; i < 3 || it < 10000; i++) {
-        int q = ((lrand48() & 15) + 17) % number;
-        unsigned long long x = (long long)lrand48 () % (number - 1) + 1, y = x;
-        int lim = 1 << (i + 18);
-        int j;
-        for (j = 1; j < lim; j++) {
+        const quint64 q = ((rand() & 15) + 17) % number;
+        quint64 x = (quint64) rand() % (number - 1) + 1;
+        quint64 y = x;
+        const quint32 lim = 1 << (i + 18);
+        for (quint32 j = 1; j < lim; j++) {
             ++it;
-            unsigned long long a = x, b = x, c = q;
+            quint64 a = x;
+            quint64 b = x;
+            quint64 c = q;
             while (b) {
                 if (b & 1) {
                     c += a;
@@ -97,8 +99,8 @@ quint64 Utils::findDivider(quint64 number)
                 b >>= 1;
             }
             x = c;
-            unsigned long long z = x < y ? number + x - y : x - y;
-            g = greatestCommonOddDivisor (z, number);
+            const quint64 z = x < y ? number + x - y : x - y;
+            g = greatestCommonOddDivisor(z, number);
             if (g != 1) {
                 return g;
             }
@@ -106,6 +108,7 @@ quint64 Utils::findDivider(quint64 number)
                 y = x;
             }
         }
+
         if (g > 1 && g < number) {
             return g;
         }
