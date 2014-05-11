@@ -88,12 +88,12 @@ void tst_CTelegramCore::testTimestampConversion()
 
 void tst_CTelegramCore::testPQAuthRequest()
 {
-    CTelegramTransport *transport = new CTcpTransport();
+    CTcpTransport transport;
     CTelegramCore core;
-    core.setTransport(transport);
+    core.setTransport(&transport);
     core.requestPqAuthorization();
 
-    QByteArray encoded = transport->lastPackage();
+    QByteArray encoded = transport.lastPackage();
 
     QVERIFY2(encoded.at(0) == char(0xef), "Abridged version marker");
     QCOMPARE(encoded.at(1), char(0x0a)); // Package length information should be equal to 0x0a (real size / 4)
