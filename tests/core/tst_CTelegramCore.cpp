@@ -43,16 +43,22 @@ tst_CTelegramCore::tst_CTelegramCore(QObject *parent) :
 
 void tst_CTelegramCore::testTimestampAlwaysGrow()
 {
-    quint64 time = 1395335796550;
+    const quint64 time = 1395335796550;
 
-    quint64 retTime = 0;
+    quint64 previousTimeStamp = CTelegramCore::formatClientTimeStamp(time - 1);
     for (int i = 0; i < 2000; ++i) {
-        if (retTime >= CTelegramCore::formatClientTimeStamp(time + i)) {
-            QCOMPARE(retTime, CTelegramCore::formatClientTimeStamp(time + i));
-            break;
+        const quint64 newTimeStamp = CTelegramCore::formatClientTimeStamp(time + i);
+        if (newTimeStamp < previousTimeStamp) {
+            // Print erroneous method results and arguments.
+            qDebug() << "previous:" << previousTimeStamp << time + i - 1;
+            qDebug() << "new:" << newTimeStamp << time + i;
+            qDebug() << "iteration:" << i;
+            // Make same call to erroneous CTelegramCore::formatClientTimeStamp() to simplify debugging via break point.
+            const quint64 timeStamp = CTelegramCore::formatClientTimeStamp(time + i);
+            Q_UNUSED(timeStamp)
         }
-
-        retTime = CTelegramCore::formatClientTimeStamp(time + i);
+        QVERIFY2(newTimeStamp > previousTimeStamp, "New timestamp should be more or equal than previous");
+        previousTimeStamp = newTimeStamp;
     }
 }
 
