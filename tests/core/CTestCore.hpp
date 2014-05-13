@@ -13,6 +13,7 @@ public:
     void setNewNonce(TLNumber256 newNewNonce);
     void setAuthKey(const QByteArray &newKey);
 
+    SAesKey testGenerateClientToServerAesKey(const QByteArray &messageKey) const;
 };
 
 #endif // CTESTCORE_HPP
