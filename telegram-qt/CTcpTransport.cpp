@@ -19,7 +19,8 @@
 
 CTcpTransport::CTcpTransport(QObject *parent) :
     CTelegramTransport(parent),
-    m_socket(new QTcpSocket(this))
+    m_socket(new QTcpSocket(this)),
+    m_firstPackage(true)
 {
     connect(m_socket, SIGNAL(connected()), SLOT(whenConnected()));
     connect(m_socket, SIGNAL(readyRead()), SLOT(whenReadyRead()));
