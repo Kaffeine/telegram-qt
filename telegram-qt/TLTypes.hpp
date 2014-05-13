@@ -7,7 +7,7 @@ template <int Size> union TLNumbers {
     char data[Size / 8];
     quint64 parts[Size / 8 / 8];
 
-    int size() { return Size / 8; }
+    int size() const { return Size / 8; }
 
     TLNumbers() {
         for (int i = 0; i < Size / 8 / 8; ++i)
