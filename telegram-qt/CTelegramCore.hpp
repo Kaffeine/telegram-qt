@@ -78,7 +78,7 @@ private slots:
 protected:
     void initTmpAesKey();
 
-    void sendPackage(const QByteArray &buffer);
+    void sendPlainPackage(const QByteArray &buffer);
 
     void setAuthState(AuthState newState);
 

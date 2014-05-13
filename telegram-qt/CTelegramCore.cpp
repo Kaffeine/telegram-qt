@@ -106,7 +106,7 @@ void CTelegramCore::requestPqAuthorization()
     outputStream << ReqPQ;
     outputStream << m_clientNonce;
 
-    sendPackage(output.buffer());
+    sendPlainPackage(output.buffer());
 
     setAuthState(AuthPqRequested);
 }
@@ -248,7 +248,7 @@ void CTelegramCore::requestDhParameters()
 
     outputStream << encryptedPackage;
 
-    sendPackage(output.buffer());
+    sendPlainPackage(output.buffer());
 
     setAuthState(AuthDhRequested);
 }
@@ -392,7 +392,7 @@ void CTelegramCore::requestDhGenerationResult()
 
     outputStream << encryptedPackage;
 
-    sendPackage(output.buffer());
+    sendPlainPackage(output.buffer());
     setAuthState(AuthDhGenerationResultRequested);
 
     m_authKey = Utils::binaryNumberModExp(m_gA, m_dhPrime, m_b);
@@ -532,13 +532,13 @@ void CTelegramCore::initTmpAesKey()
     m_tmpAesIv = Utils::sha1(serverNonceAndNewNonce).mid(12, 8) + Utils::sha1(newNonceAndNewNonce) + QByteArray(m_newNonce.data, 4);
 }
 
-void CTelegramCore::sendPackage(const QByteArray &buffer)
+void CTelegramCore::sendPlainPackage(const QByteArray &buffer)
 {
     QBuffer output;
     output.open(QIODevice::WriteOnly);
     CTelegramStream outputStream(&output);
 
-    outputStream << m_authId;
+    outputStream << quint64(0);
     outputStream << newMessageId();
     outputStream << quint32(buffer.length());
 
