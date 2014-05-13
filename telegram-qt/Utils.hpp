@@ -18,6 +18,7 @@
 #include <QByteArray>
 
 #include "crypto-rsa.hpp"
+#include "crypto-aes.hpp"
 
 class Utils : public QObject
 {
@@ -37,8 +38,8 @@ public:
     static SRsaKey loadRsaKey();
     static QByteArray binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp);
     static QByteArray rsa(const QByteArray &data, const SRsaKey &key);
-    static QByteArray aesDecrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv);
-    static QByteArray aesEncrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv);
+    static QByteArray aesDecrypt(const QByteArray &data, const SAesKey &key);
+    static QByteArray aesEncrypt(const QByteArray &data, const SAesKey &key);
 
 };
 

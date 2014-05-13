@@ -256,30 +256,30 @@ QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &m
     return result;
 }
 
-QByteArray Utils::aesDecrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv)
+QByteArray Utils::aesDecrypt(const QByteArray &data, const SAesKey &key)
 {
     QByteArray result;
     result.fill(char(0), 20480); // TODO: Find out real length
 
-    QByteArray initVector = iv;
+    QByteArray initVector = key.iv;
 
     AES_KEY dec_key;
-    AES_set_decrypt_key((const uchar *) key.constData(), key.length() * 8, &dec_key);
+    AES_set_decrypt_key((const uchar *) key.key.constData(), key.key.length() * 8, &dec_key);
 
     AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length() * 8, &dec_key, (uchar *) initVector.data(), AES_DECRYPT);
     return result;
 }
 
-QByteArray Utils::aesEncrypt(const QByteArray &data, const QByteArray &key, const QByteArray &iv)
+QByteArray Utils::aesEncrypt(const QByteArray &data, const SAesKey &key)
 {
     QByteArray result;
 
     result.fill(char(0), 20480); // TODO: Find out real length
 
-    QByteArray initVector = iv;
+    QByteArray initVector = key.iv;
 
     AES_KEY enc_key;
-    AES_set_encrypt_key((const uchar *) key.constData(), key.length() * 8, &enc_key);
+    AES_set_encrypt_key((const uchar *) key.key.constData(), key.key.length() * 8, &enc_key);
 
     AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length() * 8, &enc_key, (uchar *) initVector.data(), AES_ENCRYPT);
     return result;

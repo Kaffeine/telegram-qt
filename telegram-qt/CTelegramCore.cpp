@@ -290,9 +290,9 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
 
     inputStream >> encryptedAnswer;
 
-    initTmpAesKey();
+    m_tmpAesKey = generateTmpAesKey();
 
-    QByteArray answer = Utils::aesDecrypt(encryptedAnswer, m_tmpAesKey, m_tmpAesIv);
+    QByteArray answer = Utils::aesDecrypt(encryptedAnswer, m_tmpAesKey);
 
     QByteArray sha1OfAnswer = answer.mid(0, 20);
     answer = answer.mid(20, 564);
@@ -385,7 +385,7 @@ void CTelegramCore::requestDhGenerationResult()
             packageLength += randomPadding.size();
         }
 
-        encryptedPackage = Utils::aesEncrypt(sha + innerData.data() + randomPadding, m_tmpAesKey, m_tmpAesIv);
+        encryptedPackage = Utils::aesEncrypt(sha + innerData.data() + randomPadding, m_tmpAesKey);
 
         encryptedPackage.truncate(packageLength);
     }
@@ -516,7 +516,7 @@ void CTelegramCore::whenReadyRead()
     }
 }
 
-void CTelegramCore::initTmpAesKey()
+SAesKey CTelegramCore::generateTmpAesKey() const
 {
     QByteArray newNonceAndServerNonce;
     newNonceAndServerNonce.append(m_newNonce.data, m_newNonce.size());
@@ -528,8 +528,10 @@ void CTelegramCore::initTmpAesKey()
     newNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
     newNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
 
-    m_tmpAesKey = Utils::sha1(newNonceAndServerNonce) + Utils::sha1(serverNonceAndNewNonce).mid(0, 12);
-    m_tmpAesIv = Utils::sha1(serverNonceAndNewNonce).mid(12, 8) + Utils::sha1(newNonceAndNewNonce) + QByteArray(m_newNonce.data, 4);
+    const QByteArray key = Utils::sha1(newNonceAndServerNonce) + Utils::sha1(serverNonceAndNewNonce).mid(0, 12);
+    const QByteArray iv  = Utils::sha1(serverNonceAndNewNonce).mid(12, 8) + Utils::sha1(newNonceAndNewNonce) + QByteArray(m_newNonce.data, 4);
+
+    return SAesKey(key, iv);
 }
 
 void CTelegramCore::sendPlainPackage(const QByteArray &buffer)

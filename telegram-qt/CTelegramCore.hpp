@@ -19,6 +19,7 @@
 
 #include "TLTypes.hpp"
 #include "crypto-rsa.hpp"
+#include "crypto-aes.hpp"
 
 class CTelegramStream;
 class CTelegramTransport;
@@ -76,7 +77,7 @@ private slots:
     void whenReadyRead();
 
 protected:
-    void initTmpAesKey();
+    SAesKey generateTmpAesKey() const;
 
     void sendPlainPackage(const QByteArray &buffer);
 
@@ -107,9 +108,7 @@ protected:
 
     quint64 m_serverPublicFingersprint;
     SRsaKey m_rsaKey;
-
-    QByteArray m_tmpAesKey;
-    QByteArray m_tmpAesIv;
+    SAesKey m_tmpAesKey;
 
     quint32 m_g;
     QByteArray m_dhPrime;
