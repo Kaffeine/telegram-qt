@@ -534,6 +534,19 @@ SAesKey CTelegramCore::generateTmpAesKey() const
     return SAesKey(key, iv);
 }
 
+SAesKey CTelegramCore::generateAesKey(const QByteArray &messageKey, int x) const
+{
+    QByteArray sha1_a = Utils::sha1(messageKey + m_authKey.mid(x, 32));
+    QByteArray sha1_b = Utils::sha1(m_authKey.mid(32 + x, 16) + messageKey + m_authKey.mid(48 + x, 16));
+    QByteArray sha1_c = Utils::sha1(m_authKey.mid(64 + x, 32) + messageKey);
+    QByteArray sha1_d = Utils::sha1(messageKey + m_authKey.mid(96 + x, 32));
+
+    const QByteArray key = sha1_a.mid(0, 8) + sha1_b.mid(8, 12) + sha1_c.mid(4, 12);
+    const QByteArray iv  = sha1_a.mid(8, 12) + sha1_b.mid(0, 8) + sha1_c.mid(16, 4) + sha1_d.mid(0, 8);
+
+    return SAesKey(key, iv);
+}
+
 void CTelegramCore::sendPlainPackage(const QByteArray &buffer)
 {
     QBuffer output;

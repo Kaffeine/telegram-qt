@@ -78,6 +78,10 @@ private slots:
 
 protected:
     SAesKey generateTmpAesKey() const;
+    SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const;
+    SAesKey generateServerToClientAesKey(const QByteArray &messageKey) const;
+
+    SAesKey generateAesKey(const QByteArray &messageKey, int xValue) const;
 
     void sendPlainPackage(const QByteArray &buffer);
 
@@ -118,5 +122,15 @@ protected:
     quint64 m_authRetryId;
 
 };
+
+inline SAesKey CTelegramCore::generateClientToServerAesKey(const QByteArray &messageKey) const
+{
+    return generateAesKey(messageKey, 0);
+}
+
+inline SAesKey CTelegramCore::generateServerToClientAesKey(const QByteArray &messageKey) const
+{
+    return generateAesKey(messageKey, 8);
+}
 
 #endif // CTELECORE_HPP
