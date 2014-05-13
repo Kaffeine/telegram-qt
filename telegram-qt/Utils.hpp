@@ -25,6 +25,7 @@ class Utils : public QObject
 public:
     explicit Utils(QObject *parent = 0);
     static int randomBytes(QByteArray *array);
+    static int randomBytes(quint64 *number);
     static int randomBytes(char *buffer, int count);
     static quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
     static quint64 findDivider(quint64 number);
@@ -44,6 +45,11 @@ public:
 inline int Utils::randomBytes(QByteArray *array)
 {
     return randomBytes(array->data(), array->size());
+}
+
+inline int Utils::randomBytes(quint64 *number)
+{
+    return randomBytes((char *) number, 8);
 }
 
 inline QByteArray Utils::rsa(const QByteArray &data, const SRsaKey &key)
