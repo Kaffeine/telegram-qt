@@ -32,6 +32,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_transport(0),
     m_authState(AuthNone),
     m_authId(0),
+    m_lastMessageId(0),
     m_serverPublicFingersprint(0)
 {
     Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
@@ -538,7 +539,7 @@ void CTelegramCore::sendPackage(const QByteArray &buffer)
     CTelegramStream outputStream(&output);
 
     outputStream << m_authId;
-    outputStream << formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch());
+    outputStream << newMessageId();
     outputStream << quint32(buffer.length());
 
     m_transport->sendPackage(output.buffer() + buffer);
@@ -551,4 +552,22 @@ void CTelegramCore::setAuthState(CTelegramCore::AuthState newState)
 
     m_authState = newState;
     emit authStateChanged();
+}
+
+quint64 CTelegramCore::newMessageId()
+{
+    quint64 newLastMessageId = formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch());
+
+    if (newLastMessageId == m_lastMessageId) {
+        newLastMessageId += 4; // Client's outgoing message id should be divisible by 4 and be greater than previous message id.
+    }
+
+    if (!(newLastMessageId & quint64(0xffffff))) {
+        // The lower 32 bits of messageId passed by the client must not contain that many zeroes.
+        newLastMessageId += quint64(0x1230);
+    }
+
+    m_lastMessageId = newLastMessageId;
+
+    return m_lastMessageId;
 }

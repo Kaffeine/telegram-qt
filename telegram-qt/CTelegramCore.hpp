@@ -82,6 +82,8 @@ protected:
 
     void setAuthState(AuthState newState);
 
+    quint64 newMessageId();
+
     quint32 m_appId;
     QString m_appHash;
 
@@ -92,6 +94,8 @@ protected:
     quint64 m_authId;
     QByteArray m_authKey;
     quint64 m_authKeyAuxHash;
+
+    quint64 m_lastMessageId;
 
     TLNumber128 m_clientNonce;
     TLNumber128 m_serverNonce;
