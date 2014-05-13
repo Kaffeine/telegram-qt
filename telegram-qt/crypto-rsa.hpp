@@ -8,10 +8,10 @@ struct SRsaKey {
     QByteArray exp;
     quint64 fingersprint;
 
-    SRsaKey(const QByteArray &initialKey = QByteArray(), const QByteArray &initialExp = QByteArray(), const quint64 initialFingersprint = 0) :
+    inline SRsaKey(const QByteArray &initialKey = QByteArray(), const QByteArray &initialExp = QByteArray(), const quint64 initialFingersprint = 0) :
         key(initialKey), exp(initialExp), fingersprint(initialFingersprint) { }
 
-    SRsaKey &operator=(const SRsaKey &anotherKey)
+    inline SRsaKey &operator=(const SRsaKey &anotherKey)
     {
         key = anotherKey.key;
         exp = anotherKey.exp;
