@@ -79,3 +79,10 @@ CRawStream &CRawStream::operator<<(qint64 i)
 
     return *this;
 }
+
+CRawStream &CRawStream::operator<<(const QByteArray &data)
+{
+    m_device->write(data);
+
+    return *this;
+}

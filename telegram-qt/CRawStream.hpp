@@ -59,6 +59,8 @@ public:
 
     CRawStream &operator<<(TLValues v);
 
+    CRawStream &operator<<(const QByteArray &data);
+
 protected:
     QIODevice *m_device;
 
