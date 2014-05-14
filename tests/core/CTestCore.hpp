@@ -12,6 +12,9 @@ public:
     void setServerNonce(TLNumber128 newServerNonce);
     void setNewNonce(TLNumber256 newNewNonce);
     void setAuthKey(const QByteArray &newKey);
+    void setGA(const QByteArray &newGA);
+    void setPrime(const QByteArray &newPrime);
+    void setB(const QByteArray &newB);
 
     SAesKey testGenerateClientToServerAesKey(const QByteArray &messageKey) const;
 };

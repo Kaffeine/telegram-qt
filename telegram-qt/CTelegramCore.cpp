@@ -394,10 +394,6 @@ void CTelegramCore::requestDhGenerationResult()
 
     sendPlainPackage(output.buffer());
     setAuthState(AuthDhGenerationResultRequested);
-
-    m_authKey = Utils::binaryNumberModExp(m_gA, m_dhPrime, m_b);
-    m_authId = Utils::getFingersprint(m_authKey);
-    m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
 }
 
 bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
@@ -436,7 +432,9 @@ bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
 
     QByteArray expectedHashData(m_newNonce.data, m_newNonce.size());
 
-    expectedHashData.append(Utils::sha1(m_authKey).left(8));
+    QByteArray newAuthKey = Utils::binaryNumberModExp(m_gA, m_dhPrime, m_b);
+
+    expectedHashData.append(Utils::sha1(newAuthKey).left(8));
 
     if (responseTLValue == DhGenOk) {
 //        qDebug() << "Answer OK";
@@ -448,6 +446,11 @@ bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
         }
 
         setAuthState(AuthSuccess);
+
+        m_authKey = newAuthKey;
+        m_authId = Utils::getFingersprint(m_authKey);
+        m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
+
         return true;
     } else if (responseTLValue == DhGenRetry) {
         qDebug() << "Answer RETRY";

@@ -25,6 +25,21 @@ void CTestCore::setAuthKey(const QByteArray &newKey)
     m_authKey = newKey;
 }
 
+void CTestCore::setGA(const QByteArray &newGA)
+{
+    m_gA = newGA;
+}
+
+void CTestCore::setPrime(const QByteArray &newPrime)
+{
+    m_dhPrime = newPrime;
+}
+
+void CTestCore::setB(const QByteArray &newB)
+{
+    m_b = newB;
+}
+
 SAesKey CTestCore::testGenerateClientToServerAesKey(const QByteArray &messageKey) const
 {
     return generateClientToServerAesKey(messageKey);
