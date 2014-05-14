@@ -32,6 +32,9 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_transport(0),
     m_authState(AuthNone),
     m_authId(0),
+    m_authKeyAuxHash(0),
+    m_serverSalt(0),
+    m_sessionId(0),
     m_lastMessageId(0),
     m_serverPublicFingersprint(0)
 {
@@ -450,6 +453,9 @@ bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
         m_authKey = newAuthKey;
         m_authId = Utils::getFingersprint(m_authKey);
         m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
+        m_serverSalt = m_serverNonce.parts[0] ^ m_newNonce.parts[0];
+
+        Utils::randomBytes(&m_sessionId);
 
         return true;
     } else if (responseTLValue == DhGenRetry) {

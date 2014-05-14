@@ -69,6 +69,11 @@ public:
 
     inline quint64 serverPublicFingersprint() const { return m_serverPublicFingersprint; }
 
+    inline QByteArray authKey() const { return m_authKey; }
+    inline quint64 authId() const { return m_authId; }
+    inline quint64 serverSalt() const { return m_serverSalt; }
+    inline quint64 sessionId() const { return m_sessionId; }
+
 signals:
     void pqReceived();
     void authStateChanged();
@@ -96,10 +101,11 @@ protected:
 
     AuthState m_authState;
 
-    quint64 m_authId;
     QByteArray m_authKey;
+    quint64 m_authId;
     quint64 m_authKeyAuxHash;
-
+    quint64 m_serverSalt;
+    quint64 m_sessionId;
     quint64 m_lastMessageId;
 
     TLNumber128 m_clientNonce;
