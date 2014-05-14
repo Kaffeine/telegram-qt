@@ -25,50 +25,15 @@ template CTelegramStream &CTelegramStream::operator>>(QVector<quint32> &v);
 template CTelegramStream &CTelegramStream::operator>>(QVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator>>(QVector<quint64> &v);
 
-template CTelegramStream &CTelegramStream::operator>>(TLNumber128 &v);
-template CTelegramStream &CTelegramStream::operator>>(TLNumber256 &v);
-
 template CTelegramStream &CTelegramStream::operator<<(const QVector<qint32> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<quint32> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<quint64> &v);
 
-template CTelegramStream &CTelegramStream::operator<<(const TLNumber128 &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLNumber256 &v);
-
 CTelegramStream::CTelegramStream(QIODevice *d) :
-    m_device(d)
+    CRawStream(d)
 {
 
-}
-
-void CTelegramStream::setDevice(QIODevice *newDevice)
-{
-    m_device = newDevice;
-}
-
-void CTelegramStream::unsetDevice()
-{
-    m_device = 0;
-}
-
-bool CTelegramStream::atEnd() const
-{
-    return m_device ? m_device->atEnd() : true;
-}
-
-CTelegramStream &CTelegramStream::operator>>(qint32 &i)
-{
-    m_device->read((char *)&i, 4);
-
-    return *this;
-}
-
-CTelegramStream &CTelegramStream::operator>>(qint64 &i)
-{
-    m_device->read((char *)&i, 8);
-
-    return *this;
 }
 
 CTelegramStream &CTelegramStream::operator>>(QByteArray &data)
@@ -117,20 +82,6 @@ CTelegramStream &CTelegramStream::operator>>(QVector<T> &v)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(qint32 i)
-{
-    m_device->write((const char *) &i, 4);
-
-    return *this;
-}
-
-CTelegramStream &CTelegramStream::operator<<(qint64 i)
-{
-    m_device->write((const char *) &i, 8);
-
-    return *this;
-}
-
 template <typename T>
 CTelegramStream &CTelegramStream::operator<<(const QVector<T> &v)
 {
@@ -165,14 +116,4 @@ CTelegramStream &CTelegramStream::operator<<(const QByteArray &data)
     }
 
     return *this;
-}
-
-QByteArray CTelegramStream::readBytes(int count)
-{
-    return m_device->read(count);
-}
-
-int CTelegramStream::bytesRemaining() const
-{
-    return m_device->bytesAvailable();
 }

@@ -6,11 +6,13 @@ TARGET   = TelegramQt
 CONFIG  += dll
 
 SOURCES = CTelegramCore.cpp \
+    CRawStream.cpp \
     CTelegramStream.cpp \
     Utils.cpp \
     CTcpTransport.cpp
 HEADERS = CTelegramCore.hpp \
     CTelegramStream.hpp \
+    CRawStream.hpp \
     Utils.hpp \
     CTelegramTransport.hpp \
     CTcpTransport.hpp \
