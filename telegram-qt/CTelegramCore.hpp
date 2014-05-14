@@ -108,6 +108,8 @@ protected:
     quint64 m_sessionId;
     quint64 m_lastMessageId;
 
+    qint32 m_deltaTime;
+
     TLNumber128 m_clientNonce;
     TLNumber128 m_serverNonce;
     TLNumber256 m_newNonce;

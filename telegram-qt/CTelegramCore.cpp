@@ -36,6 +36,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_serverSalt(0),
     m_sessionId(0),
     m_lastMessageId(0),
+    m_deltaTime(0),
     m_serverPublicFingersprint(0)
 {
     Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
@@ -339,7 +340,7 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
 
     encryptedInputStream >> serverTime;
 
-    qDebug() << serverTime << "vs" << QDateTime::currentMSecsSinceEpoch() / 1000;
+    m_deltaTime = qint64(serverTime) - (QDateTime::currentMSecsSinceEpoch() / 1000);
 
     m_b.resize(256);
     Utils::randomBytes(&m_b);
@@ -580,7 +581,7 @@ void CTelegramCore::setAuthState(CTelegramCore::AuthState newState)
 
 quint64 CTelegramCore::newMessageId()
 {
-    quint64 newLastMessageId = formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch());
+    quint64 newLastMessageId = formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch() + m_deltaTime * 1000);
 
     if (newLastMessageId == m_lastMessageId) {
         newLastMessageId += 4; // Client's outgoing message id should be divisible by 4 and be greater than previous message id.
