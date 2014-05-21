@@ -64,7 +64,7 @@ CTelegramStream &CTelegramStream::operator>>(QVector<T> &v)
 {
     QVector<T> result;
 
-    TLValues vectorHash;
+    TLValue vectorHash;
 
     *this >> vectorHash;
 

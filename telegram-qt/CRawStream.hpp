@@ -47,7 +47,7 @@ public:
     template <int Size>
     CRawStream &operator>>(TLNumbers<Size> &n);
 
-    CRawStream &operator>>(TLValues &v);
+    CRawStream &operator>>(TLValue &v);
 
     CRawStream &operator<<(qint32 i);
     CRawStream &operator<<(quint32 i);
@@ -57,7 +57,7 @@ public:
     template <int Size>
     CRawStream &operator<<(const TLNumbers<Size> &n);
 
-    CRawStream &operator<<(TLValues v);
+    CRawStream &operator<<(TLValue v);
 
     CRawStream &operator<<(const QByteArray &data);
 
@@ -85,11 +85,11 @@ CRawStream &CRawStream::operator>>(TLNumbers<Size> &n)
     return *this;
 }
 
-inline CRawStream &CRawStream::operator>>(TLValues &v)
+inline CRawStream &CRawStream::operator>>(TLValue &v)
 {
     quint32 i;
     *this >> i;
-    v = TLValues(i);
+    v = TLValue(i);
     return *this;
 }
 
@@ -112,7 +112,7 @@ CRawStream &CRawStream::operator<<(const TLNumbers<Size> &n)
     return *this;
 }
 
-inline CRawStream &CRawStream::operator<<(TLValues v)
+inline CRawStream &CRawStream::operator<<(TLValue v)
 {
     return *this << quint32(v);
 }

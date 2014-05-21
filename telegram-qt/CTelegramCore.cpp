@@ -125,7 +125,7 @@ bool CTelegramCore::answerPqAuthorization(const QByteArray &payload)
     input.open(QIODevice::ReadOnly);
     CTelegramStream inputStream(&input);
 
-    TLValues responsePqValue;
+    TLValue responsePqValue;
     inputStream >> responsePqValue;
 
     if (responsePqValue != ResPQ) {
@@ -265,7 +265,7 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
     input.open(QIODevice::ReadOnly);
     CTelegramStream inputStream(&input);
 
-    TLValues responseTLValue;
+    TLValue responseTLValue;
     inputStream >> responseTLValue;
 
     if (responseTLValue != ServerDHParamsOk) {
@@ -408,7 +408,7 @@ bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
     input.open(QIODevice::ReadOnly);
     CTelegramStream inputStream(&input);
 
-    TLValues responseTLValue;
+    TLValue responseTLValue;
     inputStream >> responseTLValue;
 
     TLNumber128 clientNonce;

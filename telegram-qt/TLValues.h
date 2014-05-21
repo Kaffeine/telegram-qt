@@ -16,7 +16,7 @@
 
 // TODO: Namespace?
 
-enum TLValues {
+enum TLValue {
     Config_BeforeLayer12 = 0x232d5905,
 
     // Generated TLValues
