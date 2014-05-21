@@ -1,4 +1,6 @@
- 
+
+--- https://core.telegram.org/schema ---
+
 boolFalse#bc799737 = Bool;
 boolTrue#997275b5 = Bool;
 
@@ -118,7 +120,7 @@ messageActionChatDeletePhoto#95e3fbef = MessageAction;
 messageActionChatAddUser#5e3cfc4b user_id:int = MessageAction;
 messageActionChatDeleteUser#b2ae9b0c user_id:int = MessageAction;
 
-dialog#214a8cdf peer:Peer top_message:int unread_count:int = Dialog;
+dialog#ab3a99ac peer:Peer top_message:int unread_count:int notify_settings:PeerNotifySettings = Dialog;
 
 photoEmpty#2331b22d id:long = Photo;
 photo#22b56751 id:long access_hash:long user_id:int date:int caption:string geo:GeoPoint sizes:Vector<PhotoSize> = Photo;
@@ -386,8 +388,17 @@ help.support#17c6b5f6 phone_number:string user:User = help.Support;
 
 decryptedMessageActionReadMessages#c4f40be random_ids:Vector<long> = DecryptedMessageAction;
 decryptedMessageActionDeleteMessages#65614304 random_ids:Vector<long> = DecryptedMessageAction;
+decryptedMessageActionScreenshotMessages#8ac1f475 random_ids:Vector<long> = DecryptedMessageAction;
 decryptedMessageActionFlushHistory#6719e45c = DecryptedMessageAction;
 decryptedMessageActionNotifyLayer#f3048883 layer:int = DecryptedMessageAction;
+
+notifyPeer#9fd40bd8 peer:Peer = NotifyPeer;
+notifyUsers#b4c83b4c = NotifyPeer;
+notifyChats#c007cec3 = NotifyPeer;
+notifyAll#74d07c60 = NotifyPeer;
+
+updateUserBlocked#80ece81a user_id:int blocked:Bool = Update;
+updateNotifySettings#bec268ef peer:NotifyPeer notify_settings:PeerNotifySettings = Update;
 
 ---functions---
 
@@ -500,4 +511,4 @@ initConnection#69796de9 api_id:int device_model:string system_version:string app
 
 help.getSupport#9cdf08cd = help.Support;
 
-invokeWithLayer13#427c8ea2 query:!X = X;
+invokeWithLayer14#2b9b08fa query:!X = X;
