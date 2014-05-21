@@ -17,6 +17,8 @@
 // TODO: Namespace?
 
 enum TLValues {
+    Config_BeforeLayer12 = 0x232d5905,
+
     // Generated TLValues
     // From 10-mtproto-schema.txt:
     ResPQ = 0x05162463,
