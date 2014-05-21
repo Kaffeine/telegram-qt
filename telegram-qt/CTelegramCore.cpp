@@ -107,7 +107,7 @@ void CTelegramCore::requestPqAuthorization()
     output.open(QIODevice::WriteOnly);
     CTelegramStream outputStream(&output);
 
-    outputStream << ReqPQ;
+    outputStream << ReqPq;
     outputStream << m_clientNonce;
 
     sendPlainPackage(output.buffer());
@@ -268,7 +268,7 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
     TLValues responseTLValue;
     inputStream >> responseTLValue;
 
-    if (responseTLValue != ServerDHParamsOK) {
+    if (responseTLValue != ServerDHParamsOk) {
         qDebug() << "Error: Server did not accept our DH params";
         return false;
     }
