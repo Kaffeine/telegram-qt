@@ -39,6 +39,8 @@ public:
     template <typename T>
     CTelegramStream &operator<<(const QVector<T> &v);
 
+    CTelegramStream &operator>>(TLDcOption &option);
+
 };
 
 inline CTelegramStream &CTelegramStream::operator>>(QString &str)
