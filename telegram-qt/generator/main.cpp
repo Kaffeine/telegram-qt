@@ -20,6 +20,20 @@
 
 const static int hashMaxLength = 8;
 
+inline int indexOfSeparator(const QString &str, int minIndex)
+{
+    int dotIndex = str.indexOf(QChar('.'), minIndex);
+    int underscoreIndex = str.indexOf(QChar('_'), minIndex);
+
+    if (dotIndex < 0) {
+        return underscoreIndex;
+    } else if (underscoreIndex < 0) {
+        return dotIndex;
+    }
+
+    return dotIndex < underscoreIndex ? dotIndex : underscoreIndex;
+}
+
 int main(int argc, char *argv[])
 {
     if (argc != 2) {
@@ -53,14 +67,14 @@ int main(int argc, char *argv[])
 
         name[0] = name.at(0).toUpper();
 
-        int dotIndex = 0;
-        while ((dotIndex = name.indexOf(QChar('.'), dotIndex)) > 0) {
-            if ((name.length() < dotIndex + 1) || (!name.at(dotIndex + 1).isLetter())) {
+        int separatorIndex = 0;
+        while ((separatorIndex = indexOfSeparator(name, separatorIndex)) > 0) {
+            if ((name.length() < separatorIndex + 1) || (!name.at(separatorIndex + 1).isLetter())) {
                 printf("Bad name: %s (line %d)\n", name.toLatin1().constData(), currentLine);
                 return -2;
             }
-            name[dotIndex + 1] = name.at(dotIndex + 1).toUpper();
-            name.remove(dotIndex, 1);
+            name[separatorIndex + 1] = name.at(separatorIndex + 1).toUpper();
+            name.remove(separatorIndex, 1);
         }
 
         QString value = line.mid(hashIndex + 1, hashMaxLength);
