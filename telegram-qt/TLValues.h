@@ -17,6 +17,7 @@
 // TODO: Namespace?
 
 enum TLValues {
+    // Generated TLValues
     // https://core.telegram.org/mtproto/auth_key
     ReqPQ = 0x60469778,
     ResPQ = 0x05162463,
@@ -391,6 +392,7 @@ enum TLValues {
     InitConnection = 0x69796de9,
     HelpGetSupport = 0x9cdf08cd,
     InvokeWithLayer13 = 0x427c8ea2
+    // End of generated TLValues
 };
 
 #endif // TLVALUES_H
