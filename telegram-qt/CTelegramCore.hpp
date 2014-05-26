@@ -82,6 +82,8 @@ private slots:
     void whenReadyRead();
 
 protected:
+    void processRpcQuery(CTelegramStream &stream);
+
     SAesKey generateTmpAesKey() const;
     SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const;
     SAesKey generateServerToClientAesKey(const QByteArray &messageKey) const;

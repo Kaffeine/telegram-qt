@@ -483,47 +483,120 @@ bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
     return false;
 }
 
+void CTelegramCore::processRpcQuery(CTelegramStream &stream)
+{
+    TLValue val;
+
+    stream >> val;
+
+    switch (val) {
+    default:
+        qDebug() << "TLValue " << QString::number(val, 16) << "in rpc query is not implemented yet.";
+        break;
+    }
+}
+
 void CTelegramCore::whenReadyRead()
 {
     QByteArray incoming = m_transport->getPackage();
+
     QBuffer input;
     input.setBuffer(&incoming);
     input.open(QIODevice::ReadOnly);
-    CTelegramStream inputStream(&input);
+    CRawStream inputStream(&input);
 
     quint64 auth = 0;
     quint64 timeStamp = 0;
     quint32 length = 0;
+    QByteArray payload;
 
     inputStream >> auth;
-    inputStream >> timeStamp;
-    inputStream >> length;
-
-    if (inputStream.bytesRemaining() != length) {
-        qDebug() << "Corrupted packet. Specified length does not equal to real length";
-        return;
-    }
-
-    QByteArray payload = inputStream.readBytes(length);
 
     /* Will be reimplemented later */
 
-    switch (m_authState) {
-    case AuthPqRequested:
-        if (answerPqAuthorization(payload)) {
-            requestDhParameters();
+    if (!auth) {
+        // Plain Message
+        inputStream >> timeStamp;
+        inputStream >> length;
+
+        if (inputStream.bytesRemaining() != length) {
+            qDebug() << "Corrupted packet. Specified length does not equal to real length";
+            return;
         }
-        break;
-    case AuthDhRequested:
-        if (answerDh(payload)) {
-            requestDhGenerationResult();
+
+        payload = inputStream.readBytes(length);
+
+        switch (m_authState) {
+        case AuthPqRequested:
+            if (answerPqAuthorization(payload)) {
+                requestDhParameters();
+            }
+            break;
+        case AuthDhRequested:
+            if (answerDh(payload)) {
+                requestDhGenerationResult();
+            }
+            break;
+        case AuthDhGenerationResultRequested:
+            processServersDHAnswer(payload);
+            break;
+        default:
+            break;
         }
-        break;
-    case AuthDhGenerationResultRequested:
-        processServersDHAnswer(payload);
-        break;
-    default:
-        break;
+    } else if (m_authState == AuthSuccess) {
+        if (auth != m_authId) {
+            qDebug() << "Incorrect auth id.";
+            return;
+        }
+        // Encrypted Message
+        const QByteArray messageKey = inputStream.readBytes(16);
+        const QByteArray data = inputStream.readBytes(inputStream.bytesRemaining());
+
+        const SAesKey key = generateServerToClientAesKey(messageKey);
+
+        QByteArray decryptedData = Utils::aesDecrypt(data, key).left(data.length());
+
+        QBuffer decryptedInput;
+        decryptedInput.setBuffer(&decryptedData);
+        decryptedInput.open(QIODevice::ReadOnly);
+        CTelegramStream decryptedStream(&decryptedInput);
+
+        quint64 salt = 0;
+        quint64 sessionId = 0;
+        quint64 messageId  = 0;
+        quint32 sequence = 0;
+        quint32 contentLength = 0;
+
+        decryptedStream >> salt;
+        decryptedStream >> sessionId;
+        decryptedStream >> messageId;
+        decryptedStream >> sequence;
+        decryptedStream >> contentLength;
+
+        if (m_serverSalt != salt) {
+            qDebug() << "Salt is wrong.";
+            return;
+        }
+
+        if (m_sessionId != sessionId) {
+            qDebug() << "Session Id is wrong.";
+            return;
+        }
+
+        if (contentLength > decryptedData.length()) {
+            qDebug() << "Expected data length is more, than actual.";
+            return;
+        }
+
+        const int headerLength = sizeof(salt) + sizeof(sessionId) + sizeof(messageId) + sizeof(sequence) + sizeof(contentLength);
+        QByteArray expectedMessageKey = Utils::sha1(decryptedData.left(headerLength + contentLength)).mid(4);
+
+        if (messageKey != expectedMessageKey) {
+            qDebug() << "Wrong message key";
+            return;
+        }
+
+        processRpcQuery(decryptedStream);
     }
 }
 
