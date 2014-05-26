@@ -562,13 +562,14 @@ void CTelegramCore::sendPlainPackage(const QByteArray &buffer)
 {
     QBuffer output;
     output.open(QIODevice::WriteOnly);
-    CTelegramStream outputStream(&output);
+    CRawStream outputStream(&output);
 
     outputStream << quint64(0);
     outputStream << newMessageId();
     outputStream << quint32(buffer.length());
+    outputStream << buffer;
 
-    m_transport->sendPackage(output.buffer() + buffer);
+    m_transport->sendPackage(output.buffer());
 }
 
 void CTelegramCore::sendEncryptedPackage(const QByteArray &buffer)
