@@ -13,8 +13,6 @@
 
 #include "CTelegramCore.hpp"
 
-#include <QFile>
-#include <QBuffer>
 #include <QDebug>
 
 #include <QDateTime>
@@ -104,27 +102,32 @@ void CTelegramCore::initAuth()
 
 void CTelegramCore::requestPqAuthorization()
 {
-    QBuffer output;
-    output.open(QIODevice::WriteOnly);
-    CTelegramStream outputStream(&output);
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
 
     outputStream << ReqPq;
     outputStream << m_clientNonce;
 
-    sendPlainPackage(output.buffer());
+    sendPlainPackage(output);
 
     setAuthState(AuthPqRequested);
+}
+
+void CTelegramCore::getConfiguration()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << HelpGetConfig;
+
+    sendEncryptedPackage(output);
 }
 
 bool CTelegramCore::answerPqAuthorization(const QByteArray &payload)
 {
     // Payload is passed as const, but we open device in read-only mode, so
     // Let's workaround const by construction variable copy with COW-feature.
-    QByteArray data = payload;
-    QBuffer input;
-    input.setBuffer(&data);
-    input.open(QIODevice::ReadOnly);
-    CTelegramStream inputStream(&input);
+    CTelegramStream inputStream(payload);
 
     TLValue responsePqValue;
     inputStream >> responsePqValue;
@@ -206,9 +209,8 @@ void CTelegramCore::requestDhParameters()
     QByteArray encryptedPackage;
     {
         static const int requestedEncryptedPackageLength = 255;
-        QBuffer innerData;
-        innerData.open(QIODevice::WriteOnly);
-        CTelegramStream encryptedStream(&innerData);
+        QByteArray innerData;
+        CTelegramStream encryptedStream(&innerData, /* write */ true);
 
         encryptedStream << PQInnerData;
 
@@ -226,17 +228,16 @@ void CTelegramCore::requestDhParameters()
         encryptedStream << m_serverNonce;
         encryptedStream << m_newNonce;
 
-        QByteArray sha = Utils::sha1(innerData.data());
+        QByteArray sha = Utils::sha1(innerData);
         QByteArray randomPadding;
-        randomPadding.resize(requestedEncryptedPackageLength - (sha.length() + innerData.data().length()));
+        randomPadding.resize(requestedEncryptedPackageLength - (sha.length() + innerData.length()));
         Utils::randomBytes(&randomPadding);
 
-        encryptedPackage = Utils::rsa(sha + innerData.data() + randomPadding, m_rsaKey);
+        encryptedPackage = Utils::rsa(sha + innerData + randomPadding, m_rsaKey);
     }
 
-    QBuffer output;
-    output.open(QIODevice::WriteOnly);
-    CTelegramStream outputStream(&output);
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
 
     outputStream << ReqDHParams;
     outputStream << m_clientNonce;
@@ -253,18 +254,14 @@ void CTelegramCore::requestDhParameters()
 
     outputStream << encryptedPackage;
 
-    sendPlainPackage(output.buffer());
+    sendPlainPackage(output);
 
     setAuthState(AuthDhRequested);
 }
 
 bool CTelegramCore::answerDh(const QByteArray &payload)
 {
-    QByteArray data = payload;
-    QBuffer input;
-    input.setBuffer(&data);
-    input.open(QIODevice::ReadOnly);
-    CTelegramStream inputStream(&input);
+    CTelegramStream inputStream(payload);
 
     TLValue responseTLValue;
     inputStream >> responseTLValue;
@@ -307,10 +304,7 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
         return false;
     }
 
-    QBuffer encryptedInput;
-    encryptedInput.setBuffer(&answer);
-    encryptedInput.open(QIODevice::ReadOnly);
-    CTelegramStream encryptedInputStream(&encryptedInput);
+    CTelegramStream encryptedInputStream(answer);
 
     encryptedInputStream >> responseTLValue;
 
@@ -351,9 +345,8 @@ bool CTelegramCore::answerDh(const QByteArray &payload)
 
 void CTelegramCore::requestDhGenerationResult()
 {
-    QBuffer output;
-    output.open(QIODevice::WriteOnly);
-    CTelegramStream outputStream(&output);
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
 
     outputStream << SetClientDHParams;
     outputStream << m_clientNonce;
@@ -361,9 +354,8 @@ void CTelegramCore::requestDhGenerationResult()
 
     QByteArray encryptedPackage;
     {
-        QBuffer innerData;
-        innerData.open(QIODevice::WriteOnly);
-        CTelegramStream encryptedStream(&innerData);
+        QByteArray innerData;
+        CTelegramStream encryptedStream(&innerData, /* write */ true);
 
         encryptedStream << ClientDHInnerData;
 
@@ -379,10 +371,10 @@ void CTelegramCore::requestDhGenerationResult()
 
         encryptedStream << binNumber;
 
-        QByteArray sha = Utils::sha1(innerData.data());
+        QByteArray sha = Utils::sha1(innerData);
         QByteArray randomPadding;
 
-        int packageLength = sha.length() + innerData.data().length();
+        int packageLength = sha.length() + innerData.length();
         if ((packageLength) % 16) {
             randomPadding.resize(16 - (packageLength % 16));
             Utils::randomBytes(&randomPadding);
@@ -390,24 +382,20 @@ void CTelegramCore::requestDhGenerationResult()
             packageLength += randomPadding.size();
         }
 
-        encryptedPackage = Utils::aesEncrypt(sha + innerData.data() + randomPadding, m_tmpAesKey);
+        encryptedPackage = Utils::aesEncrypt(sha + innerData + randomPadding, m_tmpAesKey);
 
         encryptedPackage.truncate(packageLength);
     }
 
     outputStream << encryptedPackage;
 
-    sendPlainPackage(output.buffer());
+    sendPlainPackage(output);
     setAuthState(AuthDhGenerationResultRequested);
 }
 
 bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
 {
-    QByteArray data = payload;
-    QBuffer input;
-    input.setBuffer(&data);
-    input.open(QIODevice::ReadOnly);
-    CTelegramStream inputStream(&input);
+    CTelegramStream inputStream(payload);
 
     TLValue responseTLValue;
     inputStream >> responseTLValue;
@@ -483,27 +471,135 @@ bool CTelegramCore::processServersDHAnswer(const QByteArray &payload)
     return false;
 }
 
-void CTelegramCore::processRpcQuery(CTelegramStream &stream)
+void CTelegramCore::processRpcQuery(const QByteArray &data)
 {
+    CTelegramStream stream(data);
     TLValue val;
 
     stream >> val;
 
     switch (val) {
+    case NewSessionCreated:
+        processSessionCreated(stream);
+        break;
+    case MsgContainer:
+        processContainer(stream);
+        break;
+    case RpcResult:
+        processRpcResult(stream);
+        break;
+    case MsgsAck:
+        processMessageAck(stream);
+        break;
     default:
-        qDebug() << "TLValue " << QString::number(val, 16) << "in rpc query is not implemented yet.";
+        qDebug() << "VAL:" << QString::number(val, 16);
         break;
     }
 }
 
+void CTelegramCore::processSessionCreated(CTelegramStream &stream)
+{
+    // https://core.telegram.org/mtproto/service_messages#new-session-creation-notification
+    quint64 n;
+
+    stream >> n;
+    stream >> n;
+    stream >> n;
+}
+
+void CTelegramCore::processContainer(CTelegramStream &stream)
+{
+    // https://core.telegram.org/mtproto/service_messages#simple-container
+    quint32 itemsCount;
+
+    stream >> itemsCount;
+
+    for (quint32 i = 0; i < itemsCount; ++i) {
+        quint64 id;
+        stream >> id;
+        //todo: ack
+
+        quint32 seqNo;
+
+        stream >> seqNo;
+
+        quint32 size;
+
+        stream >> size;
+
+        processRpcQuery(stream.readBytes(size));
+    }
+}
+
+void CTelegramCore::processRpcResult(CTelegramStream &stream)
+{
+    quint64 id;
+    stream >> id;
+
+    TLValue result;
+
+    stream >> result;
+
+    switch (result) {
+    case Config_BeforeLayer12:
+        processConfig(stream, id, /* oldVersion */ true);
+        break;
+    default:
+        qDebug() << "RPC Result " << QString::number(result, 16) << "is not implemented yet.";
+    }
+}
+
+void CTelegramCore::processMessageAck(CTelegramStream &stream)
+{
+    QVector<quint64> idsVector;
+
+    stream >> idsVector;
+}
+
+void CTelegramCore::processConfig(CTelegramStream &stream, quint64 id, bool oldVersion)
+{
+    quint32 date;
+    stream >> date;
+
+    TLValue testMode;
+    stream >> testMode;
+
+    switch (testMode) {
+    case BoolTrue:
+    case BoolFalse:
+    default:
+        break;
+    }
+
+    quint32 thisDc;
+    stream >> thisDc;
+
+    QVector<TLDcOption> options;
+
+    stream >> options;
+
+    qDebug() << "DC Configuration:";
+    for (int i = 0; i < options.count(); ++i) {
+        qDebug() << options.at(i).id << ": " << options.at(i).ipAddress << ":"<< options.at(i).port;
+    }
+
+    quint32 chatMaxSize;
+
+    stream >> chatMaxSize;
+
+    if (oldVersion) {
+        return;
+    }
+
+    quint32 broadcastMaxSize;
+
+    stream >> broadcastMaxSize;
+}
+
 void CTelegramCore::whenReadyRead()
 {
-    QByteArray incoming = m_transport->getPackage();
-
-    QBuffer input;
-    input.setBuffer(&incoming);
-    input.open(QIODevice::ReadOnly);
-    CRawStream inputStream(&input);
+    QByteArray input = m_transport->getPackage();
+    CRawStream inputStream(input);
 
     quint64 auth = 0;
     quint64 timeStamp = 0;
@@ -555,11 +651,7 @@ void CTelegramCore::whenReadyRead()
         const SAesKey key = generateServerToClientAesKey(messageKey);
 
         QByteArray decryptedData = Utils::aesDecrypt(data, key).left(data.length());
-
-        QBuffer decryptedInput;
-        decryptedInput.setBuffer(&decryptedData);
-        decryptedInput.open(QIODevice::ReadOnly);
-        CTelegramStream decryptedStream(&decryptedInput);
+        CRawStream decryptedStream(decryptedData);
 
         quint64 salt = 0;
         quint64 sessionId = 0;
@@ -596,7 +688,7 @@ void CTelegramCore::whenReadyRead()
             return;
         }
 
-        processRpcQuery(decryptedStream);
+        processRpcQuery(decryptedStream.readRemainingBytes());
     }
 }
 
@@ -633,16 +725,15 @@ SAesKey CTelegramCore::generateAesKey(const QByteArray &messageKey, int x) const
 
 void CTelegramCore::sendPlainPackage(const QByteArray &buffer)
 {
-    QBuffer output;
-    output.open(QIODevice::WriteOnly);
-    CRawStream outputStream(&output);
+    QByteArray output;
+    CRawStream outputStream(&output, /* write */ true);
 
     outputStream << quint64(0);
     outputStream << newMessageId();
     outputStream << quint32(buffer.length());
     outputStream << buffer;
 
-    m_transport->sendPackage(output.buffer());
+    m_transport->sendPackage(output);
 }
 
 void CTelegramCore::sendEncryptedPackage(const QByteArray &buffer)
@@ -655,9 +746,8 @@ void CTelegramCore::sendEncryptedPackage(const QByteArray &buffer)
 
         messageId = newMessageId();
 
-        QBuffer innerData;
-        innerData.open(QIODevice::WriteOnly);
-        CRawStream stream(&innerData);
+        QByteArray innerData;
+        CRawStream stream(&innerData, /* write */ true);
 
         stream << m_serverSalt;
         stream << m_sessionId;
@@ -666,10 +756,10 @@ void CTelegramCore::sendEncryptedPackage(const QByteArray &buffer)
         stream << quint32(buffer.length());
         stream << buffer;
 
-        messageKey = Utils::sha1(innerData.data()).mid(4);
+        messageKey = Utils::sha1(innerData).mid(4);
         const SAesKey key = generateClientToServerAesKey(messageKey);
 
-        quint32 packageLength = innerData.data().length();
+        quint32 packageLength = innerData.length();
 
         if ((packageLength) % 16) {
             QByteArray randomPadding;
@@ -681,18 +771,17 @@ void CTelegramCore::sendEncryptedPackage(const QByteArray &buffer)
             stream << randomPadding;
         }
 
-        encryptedPackage = Utils::aesEncrypt(innerData.data(), key).left(packageLength);
+        encryptedPackage = Utils::aesEncrypt(innerData, key).left(packageLength);
     }
 
-    QBuffer output;
-    output.open(QIODevice::WriteOnly);
-    CRawStream outputStream(&output);
+    QByteArray output;
+    CRawStream outputStream(&output, /* write */ true);
 
     outputStream << m_authId;
     outputStream << messageKey;
     outputStream << encryptedPackage;
 
-    m_transport->sendPackage(output.buffer());
+    m_transport->sendPackage(output);
 }
 
 void CTelegramCore::setAuthState(CTelegramCore::AuthState newState)

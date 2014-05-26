@@ -23,6 +23,7 @@
 
 class CTelegramStream;
 class CTelegramTransport;
+class CRawStream;
 
 class CTelegramCore : public QObject
 {
@@ -50,6 +51,7 @@ public:
     static quint64 timeStampToMSecsSinceEpoch(quint64 ts);
 
     void initAuth();
+    void getConfiguration();
 
     AuthState authState() { return m_authState; }
 
@@ -82,7 +84,14 @@ private slots:
     void whenReadyRead();
 
 protected:
-    void processRpcQuery(CTelegramStream &stream);
+    void processRpcQuery(const QByteArray &data);
+
+    void processSessionCreated(CTelegramStream &stream);
+    void processContainer(CTelegramStream &stream);
+    void processRpcResult(CTelegramStream &stream);
+
+    void processMessageAck(CTelegramStream &stream);
+    void processConfig(CTelegramStream &stream, quint64 id, bool oldVersion = false);
 
     SAesKey generateTmpAesKey() const;
     SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const;
