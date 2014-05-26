@@ -25,6 +25,8 @@ private slots:
     void on_connectButton_clicked();
     void on_authButton_clicked();
 
+    void on_dcHelpButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 

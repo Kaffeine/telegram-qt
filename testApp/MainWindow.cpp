@@ -68,3 +68,8 @@ void MainWindow::on_authButton_clicked()
 {
     m_core->initAuth();
 }
+
+void MainWindow::on_dcHelpButton_clicked()
+{
+    m_core->getConfiguration();
+}

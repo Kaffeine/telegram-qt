@@ -232,6 +232,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="dcHelpButton">
+          <property name="text">
+           <string>DC Info</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
