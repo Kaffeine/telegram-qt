@@ -36,6 +36,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_serverSalt(0),
     m_sessionId(0),
     m_lastMessageId(0),
+    m_sequenceNumber(0),
     m_deltaTime(0),
     m_serverPublicFingersprint(0)
 {
@@ -568,6 +569,56 @@ void CTelegramCore::sendPlainPackage(const QByteArray &buffer)
     outputStream << quint32(buffer.length());
 
     m_transport->sendPackage(output.buffer() + buffer);
+}
+
+void CTelegramCore::sendEncryptedPackage(const QByteArray &buffer)
+{
+    QByteArray encryptedPackage;
+    QByteArray messageKey;
+    quint64 messageId;
+    {
+        m_sequenceNumber += 1;
+
+        messageId = newMessageId();
+
+        QBuffer innerData;
+        innerData.open(QIODevice::WriteOnly);
+        CRawStream stream(&innerData);
+
+        stream << m_serverSalt;
+        stream << m_sessionId;
+        stream << messageId;
+        stream << m_sequenceNumber;
+        stream << quint32(buffer.length());
+        stream << buffer;
+
+        messageKey = Utils::sha1(innerData.data()).mid(4);
+        const SAesKey key = generateClientToServerAesKey(messageKey);
+
+        quint32 packageLength = innerData.data().length();
+
+        if ((packageLength) % 16) {
+            QByteArray randomPadding;
+            randomPadding.resize(16 - (packageLength % 16));
+            Utils::randomBytes(&randomPadding);
+
+            packageLength += randomPadding.size();
+
+            stream << randomPadding;
+        }
+
+        encryptedPackage = Utils::aesEncrypt(innerData.data(), key).left(packageLength);
+    }
+
+    QBuffer output;
+    output.open(QIODevice::WriteOnly);
+    CRawStream outputStream(&output);
+
+    outputStream << m_authId;
+    outputStream << messageKey;
+    outputStream << encryptedPackage;
+
+    m_transport->sendPackage(output.buffer());
 }
 
 void CTelegramCore::setAuthState(CTelegramCore::AuthState newState)

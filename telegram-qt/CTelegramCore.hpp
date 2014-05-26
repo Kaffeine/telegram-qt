@@ -89,6 +89,7 @@ protected:
     SAesKey generateAesKey(const QByteArray &messageKey, int xValue) const;
 
     void sendPlainPackage(const QByteArray &buffer);
+    void sendEncryptedPackage(const QByteArray &buffer);
 
     void setAuthState(AuthState newState);
 
@@ -107,6 +108,7 @@ protected:
     quint64 m_serverSalt;
     quint64 m_sessionId;
     quint64 m_lastMessageId;
+    quint32 m_sequenceNumber;
 
     qint32 m_deltaTime;
 
