@@ -42,6 +42,8 @@ public:
 
     QByteArray readBytes(int count);
 
+    QByteArray readRemainingBytes();
+
     CRawStream &operator>>(qint32 &i);
     CRawStream &operator>>(quint32 &i);
     CRawStream &operator>>(qint64 &i);
@@ -71,6 +73,11 @@ private:
     bool m_ownDevice;
 
 };
+
+inline QByteArray CRawStream::readRemainingBytes()
+{
+    return readBytes(bytesRemaining());
+}
 
 inline CRawStream &CRawStream::operator>>(quint32 &i)
 {
