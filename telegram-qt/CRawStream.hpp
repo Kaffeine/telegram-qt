@@ -28,6 +28,9 @@ QT_END_NAMESPACE
 class CRawStream
 {
 public:
+    explicit CRawStream(QByteArray *data, bool write);
+    explicit CRawStream(const QByteArray &data);
+
     explicit CRawStream(QIODevice *d = 0);
 
     inline QIODevice *device() const { return m_device; }
@@ -63,6 +66,9 @@ public:
 
 protected:
     QIODevice *m_device;
+
+private:
+    bool m_ownDevice;
 
 };
 

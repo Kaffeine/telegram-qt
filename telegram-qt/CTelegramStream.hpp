@@ -22,6 +22,9 @@
 class CTelegramStream : public CRawStream
 {
 public:
+    explicit CTelegramStream(QByteArray *data, bool write);
+    explicit CTelegramStream(const QByteArray &data);
+
     explicit CTelegramStream(QIODevice *d = 0);
 
     using CRawStream::operator <<;

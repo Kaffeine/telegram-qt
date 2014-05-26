@@ -32,6 +32,18 @@ template CTelegramStream &CTelegramStream::operator<<(const QVector<quint64> &v)
 
 template CTelegramStream &CTelegramStream::operator>>(QVector<TLDcOption> &v);
 
+CTelegramStream::CTelegramStream(QByteArray *data, bool write) :
+    CRawStream(data, write)
+{
+
+}
+
+CTelegramStream::CTelegramStream(const QByteArray &data) :
+    CRawStream(data)
+{
+
+}
+
 CTelegramStream::CTelegramStream(QIODevice *d) :
     CRawStream(d)
 {

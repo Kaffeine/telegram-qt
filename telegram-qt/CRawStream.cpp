@@ -14,6 +14,7 @@
 #include "CRawStream.hpp"
 
 #include <QIODevice>
+#include <QBuffer>
 
 template CRawStream &CRawStream::operator>>(TLNumber128 &v);
 template CRawStream &CRawStream::operator>>(TLNumber256 &v);
@@ -21,20 +22,48 @@ template CRawStream &CRawStream::operator>>(TLNumber256 &v);
 template CRawStream &CRawStream::operator<<(const TLNumber128 &v);
 template CRawStream &CRawStream::operator<<(const TLNumber256 &v);
 
-CRawStream::CRawStream(QIODevice *d) :
-    m_device(d)
+CRawStream::CRawStream(QByteArray *data, bool write) :
+    m_device(new QBuffer(data)),
+    m_ownDevice(true)
 {
+    if (write) {
+        m_device->open(QIODevice::WriteOnly);
+    } else {
+        m_device->open(QIODevice::ReadOnly);
+    }
+}
 
+CRawStream::CRawStream(const QByteArray &data) :
+    m_device(0),
+    m_ownDevice(true)
+{
+    QBuffer *buffer = new QBuffer();
+    buffer->setData(data);
+    m_device = buffer;
+
+    m_device->open(QIODevice::ReadOnly);
+}
+
+CRawStream::CRawStream(QIODevice *d) :
+    m_device(d),
+    m_ownDevice(false)
+{
 }
 
 void CRawStream::setDevice(QIODevice *newDevice)
 {
+    if (m_device) {
+        if (m_ownDevice) {
+            delete m_device;
+        }
+    }
+
     m_device = newDevice;
 }
 
 void CRawStream::unsetDevice()
 {
-    m_device = 0;
+    setDevice(0);
 }
 
 bool CRawStream::atEnd() const
