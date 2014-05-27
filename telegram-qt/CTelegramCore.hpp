@@ -91,6 +91,8 @@ protected:
     void processRpcResult(CTelegramStream &stream);
 
     void processMessageAck(CTelegramStream &stream);
+    void processBadMessageNotification(CTelegramStream &stream);
+
     void processConfig(CTelegramStream &stream, quint64 id, bool oldVersion = false);
 
     SAesKey generateTmpAesKey() const;

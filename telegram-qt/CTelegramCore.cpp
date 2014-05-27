@@ -491,6 +491,9 @@ void CTelegramCore::processRpcQuery(const QByteArray &data)
     case MsgsAck:
         processMessageAck(stream);
         break;
+    case BadMsgNotification:
+        processBadMessageNotification(stream);
+        break;
     default:
         qDebug() << "VAL:" << QString::number(val, 16);
         break;
@@ -520,7 +523,6 @@ void CTelegramCore::processContainer(CTelegramStream &stream)
         //todo: ack
 
         quint32 seqNo;
-
         stream >> seqNo;
 
         quint32 size;
@@ -554,6 +556,60 @@ void CTelegramCore::processMessageAck(CTelegramStream &stream)
     QVector<quint64> idsVector;
 
     stream >> idsVector;
+}
+
+void CTelegramCore::processBadMessageNotification(CTelegramStream &stream)
+{
+    // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
+    quint64 id;
+    stream >> id;
+
+    quint32 seqNo;
+    stream >> seqNo;
+
+    quint32 errorCode;
+    stream >> errorCode;
+
+    QString errorText;
+    switch (errorCode) {
+    case 16:
+        errorText = QLatin1String("Id too low");
+        break;
+    case 17:
+        errorText = QLatin1String("Id too high");
+        break;
+    case 18:
+        errorText = QLatin1String("Incorrect two lower order id bits");
+        break;
+    case 19:
+        errorText = QLatin1String("Container id is the same as id of a previously received message");
+        break;
+    case 20:
+        errorText = QLatin1String("Message too old, and it cannot be verified whether the server has received a message with this id or not");
+        break;
+    case 32:
+        errorText = QLatin1String("Sequence number too low");
+        break;
+    case 33:
+        errorText = QLatin1String("Sequence number too high");
+        break;
+    case 34:
+        errorText = QLatin1String("An even sequence number expected");
+        break;
+    case 35:
+        errorText = QLatin1String("Odd sequence number expected");
+        break;
+    case 48:
+        errorText = QLatin1String("Incorrect server salt");
+        break;
+    case 64:
+        errorText = QLatin1String("Invalid container");
+        break;
+    default:
+        errorText = QString("Unknown error code");
+        break;
+    }
+    qDebug() << QString("Bad message %1/%2: Code %3 (%4).").arg(id).arg(seqNo).arg(errorCode).arg(errorText);
 }
 
 void CTelegramCore::processConfig(CTelegramStream &stream, quint64 id, bool oldVersion)
