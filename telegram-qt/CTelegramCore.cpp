@@ -544,12 +544,26 @@ void CTelegramCore::processRpcResult(CTelegramStream &stream)
     stream >> result;
 
     switch (result) {
+    case RpcError:
+        processRpcError(stream);
+        break;
     case Config_BeforeLayer12:
         processConfig(stream, id, /* oldVersion */ true);
         break;
     default:
         qDebug() << "RPC Result " << QString::number(result, 16) << "is not implemented yet.";
     }
+}
+
+void CTelegramCore::processRpcError(CTelegramStream &stream)
+{
+    quint32 errorCode;
+    stream >> errorCode;
+
+    QString errorMessage;
+    stream >> errorMessage;
+
+    qDebug() << "RPC Error" << errorCode << ":" << errorMessage;
 }
 
 void CTelegramCore::processMessageAck(CTelegramStream &stream)

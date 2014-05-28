@@ -89,6 +89,7 @@ protected:
     void processSessionCreated(CTelegramStream &stream);
     void processContainer(CTelegramStream &stream);
     void processRpcResult(CTelegramStream &stream);
+    void processRpcError(CTelegramStream &stream);
 
     void processMessageAck(CTelegramStream &stream);
     void processBadMessageNotification(CTelegramStream &stream);
