@@ -35,6 +35,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_sessionId(0),
     m_lastMessageId(0),
     m_sequenceNumber(0),
+    m_contentRelatedMessages(0),
     m_deltaTime(0),
     m_serverPublicFingersprint(0)
 {
@@ -798,7 +799,8 @@ void CTelegramCore::sendEncryptedPackage(const QByteArray &buffer)
     QByteArray messageKey;
     quint64 messageId;
     {
-        m_sequenceNumber += 1;
+        m_sequenceNumber = m_contentRelatedMessages * 2 + 1;
+        ++m_contentRelatedMessages;
 
         messageId = newMessageId();
 

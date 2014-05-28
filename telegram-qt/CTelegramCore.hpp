@@ -122,6 +122,7 @@ protected:
     quint64 m_sessionId;
     quint64 m_lastMessageId;
     quint32 m_sequenceNumber;
+    quint32 m_contentRelatedMessages;
 
     qint32 m_deltaTime;
 
