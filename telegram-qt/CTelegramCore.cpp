@@ -51,7 +51,7 @@ void CTelegramCore::setAppId(quint32 newId)
 
 bool CTelegramCore::setAppHash(const QString &newHash)
 {
-    if (newHash.length() != 16)
+    if (newHash.length() != 32)
         return false;
 
     m_appHash = newHash;
