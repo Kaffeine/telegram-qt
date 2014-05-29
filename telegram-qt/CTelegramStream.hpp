@@ -18,6 +18,7 @@
 #include <QString>
 
 #include "CRawStream.hpp"
+#include "SDcInfo.hpp"
 
 class CTelegramStream : public CRawStream
 {
@@ -46,7 +47,7 @@ public:
     template <typename T>
     CTelegramStream &operator<<(const QVector<T> &v);
 
-    CTelegramStream &operator>>(TLDcOption &option);
+    CTelegramStream &operator>>(SDcInfo &option);
 
 };
 

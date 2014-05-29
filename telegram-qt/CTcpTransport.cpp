@@ -26,9 +26,9 @@ CTcpTransport::CTcpTransport(QObject *parent) :
     connect(m_socket, SIGNAL(readyRead()), SLOT(whenReadyRead()));
 }
 
-void CTcpTransport::connectToDc(const SDataCenter &dc)
+void CTcpTransport::connectToDc(const QString &ipAddress, quint32 port)
 {
-    m_socket->connectToHost(dc.address, dc.port);
+    m_socket->connectToHost(ipAddress, port);
 }
 
 void CTcpTransport::sendPackage(const QByteArray &payload)

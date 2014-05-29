@@ -645,7 +645,7 @@ void CTelegramCore::processConfig(CTelegramStream &stream, quint64 id, bool oldV
     quint32 thisDc;
     stream >> thisDc;
 
-    QVector<TLDcOption> options;
+    QVector<SDcInfo> options;
 
     stream >> options;
 

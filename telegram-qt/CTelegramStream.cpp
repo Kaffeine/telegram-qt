@@ -30,7 +30,7 @@ template CTelegramStream &CTelegramStream::operator<<(const QVector<quint32> &v)
 template CTelegramStream &CTelegramStream::operator<<(const QVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<quint64> &v);
 
-template CTelegramStream &CTelegramStream::operator>>(QVector<TLDcOption> &v);
+template CTelegramStream &CTelegramStream::operator>>(QVector<SDcInfo> &v);
 
 CTelegramStream::CTelegramStream(QByteArray *data, bool write) :
     CRawStream(data, write)
@@ -132,7 +132,7 @@ CTelegramStream &CTelegramStream::operator<<(const QByteArray &data)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDcOption &option)
+CTelegramStream &CTelegramStream::operator>>(SDcInfo &info)
 {
     TLValue optionCode;
     *this >> optionCode;
@@ -142,10 +142,10 @@ CTelegramStream &CTelegramStream::operator>>(TLDcOption &option)
         return *this;
     }
 
-    *this >> option.id;
-    *this >> option.hostname;
-    *this >> option.ipAddress;
-    *this >> option.port;
+    *this >> info.id;
+    *this >> info.hostName;
+    *this >> info.ipAddress;
+    *this >> info.port;
 
     return *this;
 }

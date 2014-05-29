@@ -18,7 +18,8 @@ HEADERS = CTelegramCore.hpp \
     CTcpTransport.hpp \
     TLTypes.hpp \
     crypto-aes.hpp \
-    crypto-rsa.hpp
+    crypto-rsa.hpp \
+    SDcInfo.hpp
 
 HEADERS += TLValues.h
 

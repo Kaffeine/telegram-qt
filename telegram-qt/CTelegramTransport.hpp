@@ -18,21 +18,13 @@
 
 #include <QByteArray>
 
-class CTelegramCore;
-
-struct SDataCenter {
-    QString address;
-    quint16 port;
-};
-
 class CTelegramTransport : public QObject
 {
     Q_OBJECT
 public:
     CTelegramTransport(QObject *parent = 0) : QObject(parent) { }
     virtual void sendPackage(const QByteArray &package) = 0;
-
-    virtual void connectToDc(const SDataCenter &dc) = 0;
+    virtual void connectToDc(const QString &ipAddress, quint32 port) = 0;
 
     virtual QByteArray getPackage() = 0;
 

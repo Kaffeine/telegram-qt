@@ -27,7 +27,7 @@ class CTcpTransport : public CTelegramTransport
 public:
     explicit CTcpTransport(QObject *parent = 0);
 
-    void connectToDc(const SDataCenter &dc);
+    void connectToDc(const QString &ipAddress, quint32 port);
 
     QByteArray getPackage() { return m_receivedPackage; }
 

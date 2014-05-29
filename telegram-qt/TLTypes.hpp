@@ -2,7 +2,6 @@
 #define TLTYPES_HPP
 
 #include <qglobal.h>
-#include <QString>
 
 template <int Size> union TLNumbers {
     char data[Size / 8];
@@ -39,13 +38,6 @@ template <int Size> union TLNumbers {
         }
         return false;
     }
-};
-
-struct TLDcOption {
-    quint32 id;
-    QString hostname;
-    QString ipAddress;
-    quint32 port;
 };
 
 typedef TLNumbers<128> TLNumber128;

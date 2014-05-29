@@ -49,18 +49,12 @@ void MainWindow::whenAuthChanged()
 
 void MainWindow::on_connectButton_clicked()
 {
-    SDataCenter testingDc;
-    testingDc.address = "173.240.5.253";
-    testingDc.port = 443;
-
-    SDataCenter mainDc;
-    mainDc.address = "173.240.5.1";
-    mainDc.port = 443;
-
     if (ui->mainDcRadio->isChecked()) {
-        m_core->transport()->connectToDc(mainDc);
+        // MainDC
+        m_core->transport()->connectToDc("173.240.5.1", 443);
     } else {
-        m_core->transport()->connectToDc(testingDc);
+        // TestingDC
+        m_core->transport()->connectToDc("173.240.5.253", 443);
     }
 }
 
