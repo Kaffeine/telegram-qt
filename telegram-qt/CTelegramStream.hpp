@@ -33,11 +33,15 @@ public:
     CTelegramStream &operator>>(QByteArray &data);
     CTelegramStream &operator>>(QString &str);
 
+    CTelegramStream &operator>>(bool &data);
+
     template <typename T>
     CTelegramStream &operator>>(QVector<T> &v);
 
     CTelegramStream &operator<<(const QByteArray &data);
     CTelegramStream &operator<<(const QString &str);
+
+    CTelegramStream &operator<<(const bool &data);
 
     template <typename T>
     CTelegramStream &operator<<(const QVector<T> &v);
@@ -54,9 +58,34 @@ inline CTelegramStream &CTelegramStream::operator>>(QString &str)
     return *this;
 }
 
+inline CTelegramStream &CTelegramStream::operator>>(bool &data)
+{
+    TLValue val;
+    *this >> val;
+
+    if (val == BoolTrue) {
+        data = true;
+    } else if (val == BoolFalse) {
+        data = false;
+    }
+
+    return *this;
+}
+
 inline CTelegramStream &CTelegramStream::operator<<(const QString &str)
 {
     return *this << str.toUtf8();
+}
+
+inline CTelegramStream &CTelegramStream::operator<<(const bool &data)
+{
+    if (data) {
+        *this << BoolTrue;
+    } else {
+        *this << BoolFalse;
+    }
+
+    return *this;
 }
 
 #endif // CTELEGRAMSTREAM_HPP
