@@ -10,11 +10,18 @@ struct SDcInfo {
         ipAddress(newIpAddress),
         port(newPort) { }
 
-    SDcInfo(const SDcInfo &otherDcInfo) :
-        id(otherDcInfo.id),
-        hostName(otherDcInfo.hostName),
-        ipAddress(otherDcInfo.ipAddress),
-        port(otherDcInfo.port) { }
+    SDcInfo(const SDcInfo &anotherInfo) :
+        id(anotherInfo.id),
+        hostName(anotherInfo.hostName),
+        ipAddress(anotherInfo.ipAddress),
+        port(anotherInfo.port) { }
+
+    SDcInfo &operator=(const SDcInfo &anotherInfo) {
+        id = anotherInfo.id;
+        hostName = anotherInfo.hostName;
+        ipAddress = anotherInfo.ipAddress;
+        port = anotherInfo.port;
+    }
 
     quint32 id;
     QString hostName;
