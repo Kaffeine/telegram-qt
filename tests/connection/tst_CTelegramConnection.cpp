@@ -13,19 +13,19 @@
 
 #include <QObject>
 
-#include "CTestCore.hpp"
-#include "CTcpTransport.hpp"
+#include "CTestConnection.hpp"
+#include "CTelegramTransport.hpp"
 
 #include <QTest>
 #include <QDebug>
 
 #include <QDateTime>
 
-class tst_CTelegramCore : public QObject
+class tst_CTelegramConnection : public QObject
 {
     Q_OBJECT
 public:
-    explicit tst_CTelegramCore(QObject *parent = 0);
+    explicit tst_CTelegramConnection(QObject *parent = 0);
 
 private slots:
     void testTimestampAlwaysGrow();
@@ -37,25 +37,25 @@ private slots:
 
 };
 
-tst_CTelegramCore::tst_CTelegramCore(QObject *parent) :
+tst_CTelegramConnection::tst_CTelegramConnection(QObject *parent) :
     QObject(parent)
 {
 }
 
-void tst_CTelegramCore::testTimestampAlwaysGrow()
+void tst_CTelegramConnection::testTimestampAlwaysGrow()
 {
     const quint64 time = 1395335796550;
 
-    quint64 previousTimeStamp = CTelegramCore::formatClientTimeStamp(time - 1);
+    quint64 previousTimeStamp = CTelegramConnection::formatClientTimeStamp(time - 1);
     for (int i = 0; i < 2000; ++i) {
-        const quint64 newTimeStamp = CTelegramCore::formatClientTimeStamp(time + i);
+        const quint64 newTimeStamp = CTelegramConnection::formatClientTimeStamp(time + i);
         if (newTimeStamp < previousTimeStamp) {
             // Print erroneous method results and arguments.
             qDebug() << "previous:" << previousTimeStamp << time + i - 1;
             qDebug() << "new:" << newTimeStamp << time + i;
             qDebug() << "iteration:" << i;
             // Make same call to erroneous CTelegramCore::formatClientTimeStamp() to simplify debugging via break point.
-            const quint64 timeStamp = CTelegramCore::formatClientTimeStamp(time + i);
+            const quint64 timeStamp = CTelegramConnection::formatClientTimeStamp(time + i);
             Q_UNUSED(timeStamp)
         }
         QVERIFY2(newTimeStamp > previousTimeStamp, "New timestamp should be more or equal than previous");
@@ -63,38 +63,36 @@ void tst_CTelegramCore::testTimestampAlwaysGrow()
     }
 }
 
-void tst_CTelegramCore::testClientTimestampNeverOdd()
+void tst_CTelegramConnection::testClientTimestampNeverOdd()
 {
     quint64 time = 1395335796550;
 
     for (int i = 0; i < 2000; ++i) {
-        if (CTelegramCore::formatClientTimeStamp(time + i) & 3) {
-            QVERIFY(!(CTelegramCore::formatClientTimeStamp(time + i) & 3));
+        if (CTelegramConnection::formatClientTimeStamp(time + i) & 3) {
+            QVERIFY(!(CTelegramConnection::formatClientTimeStamp(time + i) & 3));
             break;
         }
     }
 }
 
-void tst_CTelegramCore::testTimestampConversion()
+void tst_CTelegramConnection::testTimestampConversion()
 {
     quint64 time = 1395335796550;
-    quint64 ts = CTelegramCore::formatTimeStamp(time);
-    QCOMPARE(CTelegramCore::timeStampToMSecsSinceEpoch(ts), time);
+    quint64 ts = CTelegramConnection::formatTimeStamp(time);
+    QCOMPARE(CTelegramConnection::timeStampToMSecsSinceEpoch(ts), time);
 
     ts = 0x532ea31d36cecc00;
     time = 1395565341214;
 
-    QCOMPARE(CTelegramCore::timeStampToMSecsSinceEpoch(ts), time);
+    QCOMPARE(CTelegramConnection::timeStampToMSecsSinceEpoch(ts), time);
 }
 
-void tst_CTelegramCore::testPQAuthRequest()
+void tst_CTelegramConnection::testPQAuthRequest()
 {
-    CTcpTransport transport;
-    CTelegramCore core;
-    core.setTransport(&transport);
-    core.requestPqAuthorization();
+    CTestConnection connection;
+    connection.requestPqAuthorization();
 
-    QByteArray encoded = transport.lastPackage();
+    QByteArray encoded = connection.transport()->lastPackage();
 
     QVERIFY2(encoded.at(0) == char(0xef), "Abridged version marker");
     QCOMPARE(encoded.at(1), char(0x0a)); // Package length information should be equal to 0x0a (real size / 4)
@@ -116,9 +114,9 @@ void tst_CTelegramCore::testPQAuthRequest()
     QCOMPARE(encoded.mid(22, 4), reqPqRaw); // Expected payload length is 20 bytes
 }
 
-void tst_CTelegramCore::testAuth()
+void tst_CTelegramConnection::testAuth()
 {
-    CTestCore core;
+    CTestConnection core;
 
     unsigned char clientNonceData[16] = {
         0xda, 0xc1, 0xe2, 0xf1, 0xbf, 0x26, 0x33, 0x26,
@@ -292,7 +290,7 @@ void tst_CTelegramCore::testAuth()
     QVERIFY(core.processServersDHAnswer(payload));
 }
 
-void tst_CTelegramCore::testAesKeyGeneration()
+void tst_CTelegramConnection::testAesKeyGeneration()
 {
     unsigned char auth[192] = {
         0x26, 0x40, 0xa5, 0xb0, 0x79, 0x4a, 0x7b, 0xed,
@@ -352,7 +350,7 @@ void tst_CTelegramCore::testAesKeyGeneration()
     QByteArray aesIvArray;
     aesIvArray.append((char *) expectedIv, 32);
 
-    CTestCore core;
+    CTestConnection core;
 
     core.setAuthKey(authArray);
 
@@ -362,6 +360,6 @@ void tst_CTelegramCore::testAesKeyGeneration()
     QCOMPARE(result.iv , aesIvArray);
 }
 
-QTEST_MAIN(tst_CTelegramCore)
+QTEST_MAIN(tst_CTelegramConnection)
 
-#include "tst_CTelegramCore.moc"
+#include "tst_CTelegramConnection.moc"

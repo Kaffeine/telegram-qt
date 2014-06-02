@@ -21,6 +21,8 @@ struct SDcInfo {
         hostName = anotherInfo.hostName;
         ipAddress = anotherInfo.ipAddress;
         port = anotherInfo.port;
+
+        return *this;
     }
 
     quint32 id;

@@ -1,13 +1,16 @@
-#ifndef CTESTCORE_HPP
-#define CTESTCORE_HPP
+#ifndef CTESTCONNECTION_HPP
+#define CTESTCONNECTION_HPP
 
-#include "CTelegramCore.hpp"
+#include "CTelegramConnection.hpp"
 
-class CTestCore : public CTelegramCore
+class CTestConnection : public CTelegramConnection
 {
     Q_OBJECT
 public:
-    explicit CTestCore(QObject *parent = 0);
+    explicit CTestConnection(QObject *parent = 0);
+
+    inline CTelegramTransport *transport() const { return m_transport; }
+
     void setClientNonce(TLNumber128 newClientNonce);
     void setServerNonce(TLNumber128 newServerNonce);
     void setNewNonce(TLNumber256 newNewNonce);
@@ -19,4 +22,4 @@ public:
     SAesKey testGenerateClientToServerAesKey(const QByteArray &messageKey) const;
 };
 
-#endif // CTESTCORE_HPP
+#endif // CTESTCONNECTION_HPP

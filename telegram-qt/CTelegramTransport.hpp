@@ -24,7 +24,7 @@ class CTelegramTransport : public QObject
 public:
     CTelegramTransport(QObject *parent = 0) : QObject(parent) { }
     virtual void sendPackage(const QByteArray &package) = 0;
-    virtual void connectToDc(const QString &ipAddress, quint32 port) = 0;
+    virtual void connectToHost(const QString &ipAddress, quint32 port) = 0;
 
     virtual QByteArray getPackage() = 0;
 

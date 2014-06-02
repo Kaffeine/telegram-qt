@@ -19,13 +19,9 @@ public:
 
 private slots:
     void whenConnected();
-    void whenPqReceived();
-    void whenAuthChanged();
 
     void on_connectButton_clicked();
     void on_authButton_clicked();
-
-    void on_dcHelpButton_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -15,147 +15,43 @@
 #define CTELEGRAMCORE_HPP
 
 #include <QObject>
-#include <QByteArray>
+#include <QMap>
+#include <QVector>
 
-#include "TLTypes.hpp"
-#include "crypto-rsa.hpp"
-#include "crypto-aes.hpp"
+#include "SDcInfo.hpp"
 
-class CTelegramStream;
-class CTelegramTransport;
-class CRawStream;
+class CTelegramConnection;
 
 class CTelegramCore : public QObject
 {
     Q_OBJECT
 public:
-    enum AuthState {
-        AuthNone,
-        AuthPqRequested,
-        AuthDhRequested,
-        AuthDhGenerationResultRequested,
-        AuthSuccess
-    };
-
     explicit CTelegramCore(QObject *parent = 0);
 
     void setAppId(quint32 newId);
     bool setAppHash(const QString &newHash);
 
-    CTelegramTransport *transport() const { return m_transport; }
-    void setTransport(CTelegramTransport *newTransport);
-
-    static quint64 formatTimeStamp(qint64 timeInMs);
-    static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~quint64(3); }
-
-    static quint64 timeStampToMSecsSinceEpoch(quint64 ts);
-
-    void initAuth();
-    void getConfiguration();
-
-    AuthState authState() { return m_authState; }
-
-    void requestPqAuthorization();
-    bool answerPqAuthorization(const QByteArray &payload);
-    void requestDhParameters();
-    bool answerDh(const QByteArray &payload);
-    void requestDhGenerationResult();
-    bool processServersDHAnswer(const QByteArray &payload);
-
-    inline TLNumber128 clientNonce() const { return m_clientNonce; }
-    inline TLNumber128 serverNonce() const { return m_serverNonce; }
-
-    inline quint64 pq() const { return m_pq; }
-    inline quint64 p() const { return m_p; }
-    inline quint64 q() const { return m_q; }
-
-    inline quint64 serverPublicFingersprint() const { return m_serverPublicFingersprint; }
-
-    inline QByteArray authKey() const { return m_authKey; }
-    inline quint64 authId() const { return m_authId; }
-    inline quint64 serverSalt() const { return m_serverSalt; }
-    inline quint64 sessionId() const { return m_sessionId; }
+    void initConnection(const QString &address, quint32 port);
 
 signals:
-    void pqReceived();
-    void authStateChanged();
+    void configurationChanged();
 
-private slots:
-    void whenReadyRead();
+protected slots:
+    void whenConnectionAuthChanged(int dc, int newState);
+    void whenConnectionConfigurationUpdated(int dc);
+    void whenConnectionDcIdUpdated(int connectionId, int newDcId);
 
 protected:
-    void processRpcQuery(const QByteArray &data);
-
-    void processSessionCreated(CTelegramStream &stream);
-    void processContainer(CTelegramStream &stream);
-    void processRpcResult(CTelegramStream &stream);
-    void processRpcError(CTelegramStream &stream);
-
-    void processMessageAck(CTelegramStream &stream);
-    void processBadMessageNotification(CTelegramStream &stream);
-
-    void processConfig(CTelegramStream &stream, quint64 id, bool oldVersion = false);
-
-    SAesKey generateTmpAesKey() const;
-    SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const;
-    SAesKey generateServerToClientAesKey(const QByteArray &messageKey) const;
-
-    SAesKey generateAesKey(const QByteArray &messageKey, int xValue) const;
-
-    void sendPlainPackage(const QByteArray &buffer);
-    void sendEncryptedPackage(const QByteArray &buffer);
-
-    void setAuthState(AuthState newState);
-
-    quint64 newMessageId();
+    CTelegramConnection *createConnection(const SDcInfo &dc);
 
     quint32 m_appId;
     QString m_appHash;
 
-    CTelegramTransport *m_transport;
+    int m_activeDc;
 
-    AuthState m_authState;
+    QMap<int, CTelegramConnection *> m_connections;
 
-    QByteArray m_authKey;
-    quint64 m_authId;
-    quint64 m_authKeyAuxHash;
-    quint64 m_serverSalt;
-    quint64 m_sessionId;
-    quint64 m_lastMessageId;
-    quint32 m_sequenceNumber;
-    quint32 m_contentRelatedMessages;
-
-    qint32 m_deltaTime;
-
-    TLNumber128 m_clientNonce;
-    TLNumber128 m_serverNonce;
-    TLNumber256 m_newNonce;
-
-    quint64 m_pq;
-    quint32 m_p;
-    quint32 m_q;
-
-    quint64 m_serverPublicFingersprint;
-    SRsaKey m_rsaKey;
-    SAesKey m_tmpAesKey;
-
-    quint32 m_g;
-    QByteArray m_dhPrime;
-    QByteArray m_gA;
-    QByteArray m_b;
-
-    quint64 m_authRetryId;
-
+    QVector<SDcInfo> m_dcConfiguration;
 };
-
-inline SAesKey CTelegramCore::generateClientToServerAesKey(const QByteArray &messageKey) const
-{
-    return generateAesKey(messageKey, 0);
-}
-
-inline SAesKey CTelegramCore::generateServerToClientAesKey(const QByteArray &messageKey) const
-{
-    return generateAesKey(messageKey, 8);
-}
 
 #endif // CTELECORE_HPP

@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = core stream
+SUBDIRS = connection stream

@@ -9,7 +9,8 @@ SOURCES = CTelegramCore.cpp \
     CRawStream.cpp \
     CTelegramStream.cpp \
     Utils.cpp \
-    CTcpTransport.cpp
+    CTcpTransport.cpp \
+    CTelegramConnection.cpp
 HEADERS = CTelegramCore.hpp \
     CTelegramStream.hpp \
     CRawStream.hpp \
@@ -19,7 +20,8 @@ HEADERS = CTelegramCore.hpp \
     TLTypes.hpp \
     crypto-aes.hpp \
     crypto-rsa.hpp \
-    SDcInfo.hpp
+    SDcInfo.hpp \
+    CTelegramConnection.hpp
 
 HEADERS += TLValues.h
 
