@@ -17,6 +17,7 @@
 #include <QObject>
 #include <QByteArray>
 #include <QVector>
+#include <QMap>
 
 #include "TLTypes.hpp"
 #include "crypto-rsa.hpp"
@@ -98,12 +99,14 @@ protected:
     void processSessionCreated(CTelegramStream &stream);
     void processContainer(CTelegramStream &stream);
     void processRpcResult(CTelegramStream &stream);
-    void processRpcError(CTelegramStream &stream);
+    void processRpcError(CTelegramStream &stream, quint64 id);
 
     void processMessageAck(CTelegramStream &stream);
     void processBadMessageNotification(CTelegramStream &stream);
 
     void processConfig(CTelegramStream &stream, quint64 id, bool oldVersion = false);
+
+    bool processSeeOther(const QString errorMessage, quint64 id);
 
     SAesKey generateTmpAesKey() const;
     SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const;
@@ -118,6 +121,8 @@ protected:
     void setAuthState(AuthState newState);
 
     quint64 newMessageId();
+
+    QMap<quint64, QByteArray> m_submittedPackages; // <message id, package data>
 
     quint32 m_appId;
     QString m_appHash;

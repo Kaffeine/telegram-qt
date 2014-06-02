@@ -555,7 +555,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
 
     switch (result) {
     case RpcError:
-        processRpcError(stream);
+        processRpcError(stream, id);
         break;
     case Config_BeforeLayer12:
         processConfig(stream, id, /* oldVersion */ true);
@@ -565,7 +565,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
     }
 }
 
-void CTelegramConnection::processRpcError(CTelegramStream &stream)
+void CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id)
 {
     quint32 errorCode;
     stream >> errorCode;
@@ -573,7 +573,15 @@ void CTelegramConnection::processRpcError(CTelegramStream &stream)
     QString errorMessage;
     stream >> errorMessage;
 
-    qDebug() << "RPC Error" << errorCode << ":" << errorMessage;
+    qDebug() << "RPC Error" << errorCode << ":" << errorMessage << "for message" << id;
+
+    if (errorCode == 303) { // ERROR_SEE_OTHER
+        if (processErrorSeeOther(errorMessage, id)) {
+            return;
+        }
+    }
+
+    qDebug() << "RPC Error can not be handled.";
 }
 
 void CTelegramConnection::processMessageAck(CTelegramStream &stream)
@@ -581,6 +589,10 @@ void CTelegramConnection::processMessageAck(CTelegramStream &stream)
     QVector<quint64> idsVector;
 
     stream >> idsVector;
+
+    foreach (quint64 id, idsVector) {
+        m_submittedPackages.remove(id);
+    }
 }
 
 void CTelegramConnection::processBadMessageNotification(CTelegramStream &stream)
@@ -678,6 +690,39 @@ void CTelegramConnection::processConfig(CTelegramStream &stream, quint64 id, boo
     }
 
     emit dcConfigurationReceived(m_dcInfo.id);
+}
+
+bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)
+{
+    int lastSectionIndex = errorMessage.lastIndexOf(QChar(QLatin1Char('_')));
+    if (lastSectionIndex < 0) {
+        return false;
+    }
+
+    quint16 dc = 0;
+
+    bool ok;
+
+    const QString dcStr = errorMessage.mid(lastSectionIndex + 1);
+    dc = dcStr.toUInt(&ok);
+
+    if (!ok) {
+        return false;
+    }
+
+    QByteArray data = m_submittedPackages.take(id);
+
+    if (data.isEmpty()) {
+        qDebug() << "Can not restore message" << id;
+        return false;
+    }
+
+    CTelegramStream stream(data);
+    TLValue val;
+
+    stream >> val;
+
+    return false;
 }
 
 void CTelegramConnection::whenConnected()
@@ -835,6 +880,8 @@ void CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
         ++m_contentRelatedMessages;
 
         messageId = newMessageId();
+
+        m_submittedPackages.insert(messageId, buffer);
 
         QByteArray innerData;
         CRawStream stream(&innerData, /* write */ true);
