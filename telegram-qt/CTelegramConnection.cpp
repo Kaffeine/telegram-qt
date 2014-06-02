@@ -137,6 +137,22 @@ void CTelegramConnection::getConfiguration()
     sendEncryptedPackage(output);
 }
 
+void CTelegramConnection::requestAuthCode(const QString &phoneNumber)
+{
+    qDebug() << "AuthSendCode" << phoneNumber << m_dcInfo.id;
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthSendCode;
+    outputStream << phoneNumber;
+    outputStream << quint32(0);
+    outputStream << m_appId;
+    outputStream << m_appHash;
+    outputStream << QLatin1String("en");
+
+    sendEncryptedPackage(output);
+}
+
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
     // Payload is passed as const, but we open device in read-only mode, so
@@ -721,6 +737,15 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
     TLValue val;
 
     stream >> val;
+
+    if (val == AuthSendCode) {
+        QString phoneNumber;
+        stream >> phoneNumber;
+
+        emit authCodeRedirected(phoneNumber, dc);
+
+        return true;
+    }
 
     return false;
 }

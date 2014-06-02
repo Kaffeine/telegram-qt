@@ -58,6 +58,7 @@ public:
 
     void initAuth();
     void getConfiguration();
+    void requestAuthCode(const QString &phoneNumber);
 
     AuthState authState() { return m_authState; }
 
@@ -85,6 +86,8 @@ public:
     inline QVector<SDcInfo> dcConfiguration() { return m_dcConfiguration; }
 
 signals:
+    void authCodeRedirected(const QString &phoneNumber, int dc);
+
     void authStateChanged(int dc, int state);
     void actualDcIdReceived(int dc, int newDcId);
     void dcConfigurationReceived(int dc);
@@ -106,7 +109,7 @@ protected:
 
     void processConfig(CTelegramStream &stream, quint64 id, bool oldVersion = false);
 
-    bool processSeeOther(const QString errorMessage, quint64 id);
+    bool processErrorSeeOther(const QString errorMessage, quint64 id);
 
     SAesKey generateTmpAesKey() const;
     SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const;
