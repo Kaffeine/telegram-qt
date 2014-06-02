@@ -10,6 +10,10 @@ struct SDcInfo {
         ipAddress(newIpAddress),
         port(newPort) { }
 
+    bool isValid() const {
+        return (port > 0) && !ipAddress.isEmpty();
+    }
+
     SDcInfo(const SDcInfo &anotherInfo) :
         id(anotherInfo.id),
         hostName(anotherInfo.hostName),
