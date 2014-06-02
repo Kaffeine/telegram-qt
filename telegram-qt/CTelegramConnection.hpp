@@ -33,11 +33,11 @@ class CTelegramConnection : public QObject
     Q_OBJECT
 public:
     enum AuthState {
-        AuthNone,
-        AuthPqRequested,
-        AuthDhRequested,
-        AuthDhGenerationResultRequested,
-        AuthSuccess
+        AuthStateNone,
+        AuthStatePqRequested,
+        AuthStateDhRequested,
+        AuthStateDhGenerationResultRequested,
+        AuthStateSuccess
     };
 
     explicit CTelegramConnection(QObject *parent = 0);

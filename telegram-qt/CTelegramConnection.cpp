@@ -28,7 +28,7 @@ CTelegramConnection::CTelegramConnection(QObject *parent) :
     m_appId(0),
     m_appHash(QLatin1String("00000000000000000000000000000000")),
     m_transport(0),
-    m_authState(AuthNone),
+    m_authState(AuthStateNone),
     m_authId(0),
     m_authKeyAuxHash(0),
     m_serverSalt(0),
@@ -108,7 +108,7 @@ quint64 CTelegramConnection::timeStampToMSecsSinceEpoch(quint64 ts)
 
 void CTelegramConnection::initAuth()
 {
-    if (m_authState == AuthNone) {
+    if (m_authState == AuthStateNone) {
         m_authRetryId = 0;
         requestPqAuthorization();
     }
@@ -124,7 +124,7 @@ void CTelegramConnection::requestPqAuthorization()
 
     sendPlainPackage(output);
 
-    setAuthState(AuthPqRequested);
+    setAuthState(AuthStatePqRequested);
 }
 
 void CTelegramConnection::getConfiguration()
@@ -284,7 +284,7 @@ void CTelegramConnection::requestDhParameters()
 
     sendPlainPackage(output);
 
-    setAuthState(AuthDhRequested);
+    setAuthState(AuthStateDhRequested);
 }
 
 bool CTelegramConnection::answerDh(const QByteArray &payload)
@@ -418,7 +418,7 @@ void CTelegramConnection::requestDhGenerationResult()
     outputStream << encryptedPackage;
 
     sendPlainPackage(output);
-    setAuthState(AuthDhGenerationResultRequested);
+    setAuthState(AuthStateDhGenerationResultRequested);
 }
 
 bool CTelegramConnection::processServersDHAnswer(const QByteArray &payload)
@@ -473,7 +473,7 @@ bool CTelegramConnection::processServersDHAnswer(const QByteArray &payload)
 
         Utils::randomBytes(&m_sessionId);
 
-        setAuthState(AuthSuccess);
+        setAuthState(AuthStateSuccess);
         return true;
     } else if (responseTLValue == DhGenRetry) {
         qDebug() << "Answer RETRY";
@@ -782,23 +782,23 @@ void CTelegramConnection::whenReadyRead()
         payload = inputStream.readBytes(length);
 
         switch (m_authState) {
-        case AuthPqRequested:
+        case AuthStatePqRequested:
             if (answerPqAuthorization(payload)) {
                 requestDhParameters();
             }
             break;
-        case AuthDhRequested:
+        case AuthStateDhRequested:
             if (answerDh(payload)) {
                 requestDhGenerationResult();
             }
             break;
-        case AuthDhGenerationResultRequested:
+        case AuthStateDhGenerationResultRequested:
             processServersDHAnswer(payload);
             break;
         default:
             break;
         }
-    } else if (m_authState == AuthSuccess) {
+    } else if (m_authState == AuthStateSuccess) {
         if (auth != m_authId) {
             qDebug() << "Incorrect auth id.";
             return;
