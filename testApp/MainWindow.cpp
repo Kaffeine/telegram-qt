@@ -34,5 +34,15 @@ void MainWindow::on_connectButton_clicked()
 
 void MainWindow::on_authButton_clicked()
 {
-//    m_core->requestAuthCode(ui->phoneNumber->text());
+    m_core->requestAuthCode(ui->phoneNumber->text());
+}
+
+void MainWindow::on_signInButton_clicked()
+{
+    m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
+}
+
+void MainWindow::on_contactList_clicked()
+{
+    m_core->getContacts();
 }

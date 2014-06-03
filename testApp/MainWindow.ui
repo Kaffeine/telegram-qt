@@ -168,7 +168,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="confirmButton">
+         <widget class="QPushButton" name="signInButton">
           <property name="text">
            <string>Confirm</string>
           </property>

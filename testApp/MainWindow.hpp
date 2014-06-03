@@ -23,6 +23,10 @@ private slots:
     void on_connectButton_clicked();
     void on_authButton_clicked();
 
+    void on_signInButton_clicked();
+
+    void on_contactList_clicked();
+
 private:
     Ui::MainWindow *ui;
 
