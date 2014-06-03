@@ -31,6 +31,7 @@ template CTelegramStream &CTelegramStream::operator<<(const QVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<quint64> &v);
 
 template CTelegramStream &CTelegramStream::operator>>(QVector<SDcInfo> &v);
+template CTelegramStream &CTelegramStream::operator>>(QVector<TLUser> &v);
 
 CTelegramStream::CTelegramStream(QByteArray *data, bool write) :
     CRawStream(data, write)
@@ -93,6 +94,147 @@ CTelegramStream &CTelegramStream::operator>>(QVector<T> &v)
     }
 
     v = result;
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator>>(TLFileLocation &fileLocation)
+{
+    // https://core.telegram.org/type/FileLocation
+
+    TLFileLocation result;
+
+    TLValue type;
+    *this >> type;
+
+    switch (type) {
+    case FileLocationUnavailable:
+        *this >> result.volumeId;
+        *this >> result.localId;
+        *this >> result.secret;
+        break;
+    case FileLocation:
+        *this >> result.dc;
+        *this >> result.volumeId;
+        *this >> result.localId;
+        *this >> result.secret;
+        break;
+    default:
+        // ERROR!
+        break;
+    }
+
+    fileLocation = result;
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator>>(TLUserProfilePhoto &photo)
+{
+    // https://core.telegram.org/type/UserProfilePhoto
+
+    TLUserProfilePhoto result;
+
+    TLValue type;
+    *this >> type;
+
+    switch (type) {
+    case UserProfilePhotoEmpty:
+        break;
+    case UserProfilePhoto:
+        *this >> result.id;
+        *this >> result.small;
+        *this >> result.big;
+        break;
+    default:
+        // ERROR!
+        break;
+    }
+
+    photo = result;
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator>>(TLUserStatus &status)
+{
+    // https://core.telegram.org/type/UserStatus
+    TLUserStatus result;
+
+    TLValue type;
+    *this >> type;
+
+    switch (type) {
+    case UserStatusEmpty:
+        result.type = TLUserStatus::Empty;
+        break;
+    case UserStatusOnline:
+        result.type = TLUserStatus::Online;
+        *this >> result.expires;
+        break;
+    case UserStatusOffline:
+        result.type = TLUserStatus::Offline;
+        *this >> result.wasOnline;
+        break;
+    default:
+        // ERROR!
+        break;
+    }
+
+    status = result;
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator>>(TLUser &user)
+{
+    // https://core.telegram.org/type/User
+    TLUser result;
+
+    TLValue type;
+    *this >> type;
+
+    switch (type) {
+    case UserEmpty:
+        *this >> result.id;
+        break;
+    case UserSelf:
+        *this >> result.id;
+        *this >> result.firstName;
+        *this >> result.lastName;
+        *this >> result.phone;
+        *this >> result.photo;
+        *this >> result.status;
+        *this >> result.inActive;
+        break;
+    case UserContact:
+    case UserRequest:
+        *this >> result.id;
+        *this >> result.firstName;
+        *this >> result.lastName;
+        *this >> result.accessHash;
+        *this >> result.phone;
+        *this >> result.photo;
+        *this >> result.status;
+        break;
+    case UserForeign:
+        *this >> result.id;
+        *this >> result.firstName;
+        *this >> result.lastName;
+        *this >> result.accessHash;
+        *this >> result.photo;
+        *this >> result.status;
+        break;
+    case UserDeleted:
+        *this >> result.id;
+        *this >> result.firstName;
+        *this >> result.lastName;
+        break;
+    default:
+        // ERROR!
+        break;
+    }
+
+    user = result;
     return *this;
 }
 

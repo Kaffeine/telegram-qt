@@ -40,6 +40,11 @@ public:
     template <typename T>
     CTelegramStream &operator>>(QVector<T> &v);
 
+    CTelegramStream &operator>>(TLFileLocation &fileLocation);
+    CTelegramStream &operator>>(TLUserProfilePhoto &photo);
+    CTelegramStream &operator>>(TLUserStatus &status);
+    CTelegramStream &operator>>(TLUser &user);
+
     CTelegramStream &operator<<(const QByteArray &data);
     CTelegramStream &operator<<(const QString &str);
 
