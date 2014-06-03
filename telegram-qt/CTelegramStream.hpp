@@ -19,6 +19,7 @@
 
 #include "CRawStream.hpp"
 #include "SDcInfo.hpp"
+#include "TLTypes.hpp"
 
 class CTelegramStream : public CRawStream
 {

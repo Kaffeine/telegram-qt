@@ -18,7 +18,7 @@
 
 #include <QByteArray>
 
-#include "TLTypes.hpp"
+#include "TLNumbers.hpp"
 #include "TLValues.h"
 
 QT_BEGIN_NAMESPACE
