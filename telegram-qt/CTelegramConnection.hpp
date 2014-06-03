@@ -61,6 +61,8 @@ public:
     void initAuth();
     void getConfiguration();
     void requestAuthCode(const QString &phoneNumber);
+    void signIn(const QString &phoneNumber, const QString &authCode);
+    void getContacts();
 
     AuthState authState() { return m_authState; }
 
@@ -114,6 +116,9 @@ protected:
 
     void processConfig(CTelegramStream &stream, quint64 id, bool oldVersion = false);
     void processAuthSentCode(CTelegramStream &stream, quint64 id, bool oldVersion = false);
+    void processAuthAuthorization(CTelegramStream &stream, quint64 id);
+
+    void processContactsContacts(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 
@@ -173,6 +178,8 @@ protected:
     SDcInfo m_dcInfo;
 
     QVector<SDcInfo> m_dcConfiguration;
+
+    QString m_authCodeHash;
 
 };
 

@@ -158,6 +158,33 @@ void CTelegramConnection::requestAuthCode(const QString &phoneNumber)
     sendEncryptedPackage(output);
 }
 
+void CTelegramConnection::signIn(const QString &phoneNumber, const QString &authCode)
+{
+    qDebug() << "SignIn" << phoneNumber << authCode;
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthSignIn;
+    outputStream << phoneNumber;
+    outputStream << m_authCodeHash;
+    outputStream << authCode;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::getContacts()
+{
+    qDebug() << "GetContacts";
+
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsGetContacts;
+    outputStream << QString(); // Hash
+
+    sendEncryptedPackage(output);
+}
+
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
     // Payload is passed as const, but we open device in read-only mode, so
@@ -599,6 +626,12 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
     case AuthSentCode_BeforeLayer12:
         processAuthSentCode(stream, id, /* oldVersion */ true);
         break;
+    case AuthAuthorization:
+        processAuthAuthorization(stream, id);
+        break;
+    case ContactsContacts:
+        processContactsContacts(stream, id);
+        break;
     default:
         qDebug() << "RPC Result " << QString::number(result, 16) << "is not implemented yet.";
     }
@@ -738,9 +771,7 @@ void CTelegramConnection::processAuthSentCode(CTelegramStream &stream, quint64 i
 
     stream >> phoneRegistered;
 
-    QString codeHash;
-
-    stream >> codeHash;
+    stream >> m_authCodeHash;
 
     if (!oldVersion) {
         quint32 timeout;
@@ -751,8 +782,37 @@ void CTelegramConnection::processAuthSentCode(CTelegramStream &stream, quint64 i
 
         stream >> isPassword;
     }
+}
 
-    qDebug() << "codeHash:" << codeHash;
+void CTelegramConnection::processAuthAuthorization(CTelegramStream &stream, quint64 id)
+{
+    quint32 expires;
+
+    stream >> expires;
+
+    TLUser user;
+
+    stream >> user;
+    qDebug() << "AuthAuthorization" << user.phone << expires;
+}
+
+void CTelegramConnection::processContactsContacts(CTelegramStream &stream, quint64 id)
+{
+    QVector<TLContact> contacts;
+
+    stream >> contacts;
+
+    QVector<TLUser> users;
+
+    stream >> users;
+
+    qDebug() << "ContactListUsers:";
+    foreach (const TLUser &user, users) {
+        qDebug() << user.id;
+        qDebug() << user.firstName;
+        qDebug() << user.lastName;
+        qDebug() << user.phone;
+    }
 }
 
 bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)

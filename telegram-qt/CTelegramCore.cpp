@@ -55,6 +55,16 @@ void CTelegramCore::requestAuthCode(const QString &phoneNumber)
     activeConnection()->requestAuthCode(phoneNumber);
 }
 
+void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)
+{
+    activeConnection()->signIn(phoneNumber, authCode);
+}
+
+void CTelegramCore::getContacts()
+{
+    activeConnection()->getContacts();
+}
+
 void CTelegramCore::whenConnectionAuthChanged(int dc, int newState)
 {
     CTelegramConnection *connection = m_connections.value(dc);

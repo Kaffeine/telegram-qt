@@ -34,6 +34,8 @@ public:
     void initialConnection(const QString &address, quint32 port);
 
     void requestAuthCode(const QString &phoneNumber);
+    void signIn(const QString &phoneNumber, const QString &authCode);
+    void getContacts();
 
 signals:
     void configurationChanged();
