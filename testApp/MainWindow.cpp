@@ -9,6 +9,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     m_core = new CTelegramCore(this);
+
+    connect(m_core, SIGNAL(dcConfigurationObtained()), SLOT(whenConnected()));
+    connect(m_core, SIGNAL(needsAuthCode()), SLOT(whenNeedCode()));
+    connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
 }
 
 MainWindow::~MainWindow()
@@ -18,7 +22,26 @@ MainWindow::~MainWindow()
 
 void MainWindow::whenConnected()
 {
+    ui->connectButton->setEnabled(false);
+
     ui->connectionState->setText(tr("Connected"));
+    ui->authButton->setEnabled(true);
+}
+
+void MainWindow::whenNeedCode()
+{
+    ui->authButton->setEnabled(false);
+
+    ui->confirmationCode->setEnabled(true);
+    ui->confirmationCode->setFocus();
+    ui->signInButton->setEnabled(true);
+}
+
+void MainWindow::whenAuthenticated()
+{
+    ui->signInButton->setEnabled(false);
+
+    ui->contactList->setEnabled(true);
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -34,6 +57,15 @@ void MainWindow::on_connectButton_clicked()
 
 void MainWindow::on_authButton_clicked()
 {
+    if (!m_core->appId() || m_core->appHash().isEmpty()) {
+        ui->connectionState->setText(tr("Application id and hash is not setted."));
+        return;
+    }
+
+    if (ui->phoneNumber->text().isEmpty()) {
+        return;
+    }
+
     m_core->requestAuthCode(ui->phoneNumber->text());
 }
 

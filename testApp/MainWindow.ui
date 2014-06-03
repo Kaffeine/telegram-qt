@@ -91,7 +91,11 @@
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QLineEdit" name="confirmationCode"/>
+         <widget class="QLineEdit" name="confirmationCode">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -162,6 +166,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="authButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Auth</string>
           </property>
@@ -169,6 +176,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="signInButton">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Confirm</string>
           </property>
@@ -176,6 +186,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="contactList">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Contact-list</string>
           </property>

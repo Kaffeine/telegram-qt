@@ -19,6 +19,8 @@ public:
 
 private slots:
     void whenConnected();
+    void whenNeedCode();
+    void whenAuthenticated();
 
     void on_connectButton_clicked();
     void on_authButton_clicked();
