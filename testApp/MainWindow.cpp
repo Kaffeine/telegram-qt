@@ -25,10 +25,10 @@ void MainWindow::on_connectButton_clicked()
 {
     if (ui->mainDcRadio->isChecked()) {
         // MainDC
-        m_core->initConnection("173.240.5.1", 443);
+        m_core->initialConnection("173.240.5.1", 443);
     } else {
         // TestingDC
-        m_core->initConnection("173.240.5.253", 443);
+        m_core->initialConnection("173.240.5.253", 443);
     }
 }
 

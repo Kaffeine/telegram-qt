@@ -40,13 +40,18 @@ bool CTelegramCore::setAppHash(const QString &newHash)
     return true;
 }
 
-void CTelegramCore::initConnection(const QString &address, quint32 port)
+void CTelegramCore::initialConnection(const QString &address, quint32 port)
 {
     CTelegramConnection *connection = createConnection(SDcInfo(address, port));
     m_connections.insert(0, connection);
     connection->connectToDc();
 
     m_activeDc = 0;
+}
+
+void CTelegramCore::requestAuthCode(const QString &phoneNumber)
+{
+    activeConnection()->requestAuthCode(phoneNumber);
 }
 
 void CTelegramCore::whenConnectionAuthChanged(int dc, int newState)
@@ -57,10 +62,16 @@ void CTelegramCore::whenConnectionAuthChanged(int dc, int newState)
         return;
     }
 
-    if (newState == CTelegramConnection::AuthSuccess) {
+    if (newState == CTelegramConnection::AuthStateSuccess) {
         if (m_dcConfiguration.isEmpty()) {
             connection->getConfiguration();
         }
+
+        foreach (const QByteArray &data, m_delayedPackages.values(dc)) {
+            connection->processRedirectedPackage(data);
+        }
+
+        m_delayedPackages.remove(dc);
     }
 }
 
@@ -106,6 +117,18 @@ void CTelegramCore::whenConnectionDcIdUpdated(int connectionId, int newDcId)
     }
 }
 
+void CTelegramCore::whenPackageRedirected(const QByteArray &data, int dc)
+{
+    CTelegramConnection *connection = m_connections.value(dc);
+
+    if (connection && connection->authState() == CTelegramConnection::AuthStateSuccess) {
+        connection->processRedirectedPackage(data);
+    } else {
+        m_delayedPackages.insertMulti(dc, data);
+        establishConnectionToDc(dc);
+    }
+}
+
 CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
 {
     CTelegramConnection *connection = new CTelegramConnection(this);
@@ -113,10 +136,44 @@ CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
     connect(connection, SIGNAL(authStateChanged(int,int)), SLOT(whenConnectionAuthChanged(int,int)));
     connect(connection, SIGNAL(dcConfigurationReceived(int)), SLOT(whenConnectionConfigurationUpdated(int)));
     connect(connection, SIGNAL(actualDcIdReceived(int,int)), SLOT(whenConnectionDcIdUpdated(int,int)));
+    connect(connection, SIGNAL(newRedirectedPackage(QByteArray,int)), SLOT(whenPackageRedirected(QByteArray,int)));
 
     connection->setDcInfo(dc);
     connection->setAppId(m_appId);
     connection->setAppHash(m_appHash);
 
     return connection;
+}
+
+CTelegramConnection *CTelegramCore::establishConnectionToDc(int dc)
+{
+    SDcInfo info = infoById(dc);
+
+    if (!info.isValid()) {
+        qDebug() << "Error: Attempt to connect to unknown DC" << dc;
+        return 0;
+    }
+
+    CTelegramConnection *connection = m_connections.value(dc);
+    if (!connection) {
+        connection = createConnection(info);
+        m_connections.insert(dc, connection);
+    }
+
+    if (!connection->isConnected()) {
+        connection->connectToDc(); // There is incorrectess in SocketState to bool isConnected() mapping.
+    }
+
+    return connection;
+}
+
+SDcInfo CTelegramCore::infoById(int id) const
+{
+    foreach (SDcInfo info, m_dcConfiguration) {
+        if (info.id == id) {
+            return info;
+        }
+    }
+
+    return SDcInfo();
 }
