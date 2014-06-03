@@ -122,4 +122,24 @@ struct TLUser {
     bool inActive;
 };
 
+struct TLContact {
+    TLContact() :
+        id(0),
+        mutual(false) { }
+
+    TLContact(const TLContact &anotherContact) :
+        id(anotherContact.id),
+        mutual(anotherContact.mutual) { }
+
+    TLContact &operator=(const TLContact &anotherContact) {
+        id = anotherContact.id;
+        mutual = anotherContact.mutual;
+
+        return *this;
+    }
+
+    quint32 id;
+    bool mutual;
+};
+
 #endif // TLTYPES_HPP
