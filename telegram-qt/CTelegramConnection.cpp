@@ -71,6 +71,11 @@ void CTelegramConnection::connectToDc()
     m_transport->connectToHost(m_dcInfo.ipAddress, m_dcInfo.port);
 }
 
+bool CTelegramConnection::isConnected() const
+{
+    return m_transport->isConnected();
+}
+
 void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
 {
     m_transport = newTransport;
@@ -498,6 +503,21 @@ bool CTelegramConnection::processServersDHAnswer(const QByteArray &payload)
     return false;
 }
 
+void CTelegramConnection::processRedirectedPackage(const QByteArray &data)
+{
+    CTelegramStream stream(data);
+    TLValue val;
+
+    stream >> val;
+
+    if (val == AuthSendCode) {
+        QString phoneNumber;
+        stream >> phoneNumber;
+
+        return requestAuthCode(phoneNumber);
+    }
+}
+
 void CTelegramConnection::processRpcQuery(const QByteArray &data)
 {
     CTelegramStream stream(data);
@@ -733,21 +753,9 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
         return false;
     }
 
-    CTelegramStream stream(data);
-    TLValue val;
+    emit newRedirectedPackage(data, dc);
 
-    stream >> val;
-
-    if (val == AuthSendCode) {
-        QString phoneNumber;
-        stream >> phoneNumber;
-
-        emit authCodeRedirected(phoneNumber, dc);
-
-        return true;
-    }
-
-    return false;
+    return true;
 }
 
 void CTelegramConnection::whenConnected()

@@ -51,6 +51,8 @@ public:
 
     void connectToDc();
 
+    bool isConnected() const;
+
     static quint64 formatTimeStamp(qint64 timeInMs);
     static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~quint64(3); }
 
@@ -85,8 +87,10 @@ public:
 
     inline QVector<SDcInfo> dcConfiguration() { return m_dcConfiguration; }
 
+    void processRedirectedPackage(const QByteArray &data);
+
 signals:
-    void authCodeRedirected(const QString &phoneNumber, int dc);
+    void newRedirectedPackage(const QByteArray &data, int dc);
 
     void authStateChanged(int dc, int state);
     void actualDcIdReceived(int dc, int newDcId);
