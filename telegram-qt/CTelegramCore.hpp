@@ -43,13 +43,16 @@ protected slots:
     void whenConnectionConfigurationUpdated(int dc);
     void whenConnectionDcIdUpdated(int connectionId, int newDcId);
     void whenPackageRedirected(const QByteArray &data, int dc);
+    void whenWantedActiveDcChanged(int dc);
 
 protected:
+    void setActiveDc(int dc, bool syncWantedDc = true);
+
     CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
     CTelegramConnection *createConnection(const SDcInfo &dc);
     CTelegramConnection *establishConnectionToDc(int dc);
 
-    SDcInfo infoById(int id) const;
+    SDcInfo infoById(quint32 id) const;
 
     quint32 m_appId;
     QString m_appHash;
@@ -61,6 +64,8 @@ protected:
     QMap<int, QByteArray> m_delayedPackages; // dc, package data
 
     QVector<SDcInfo> m_dcConfiguration;
+
+    int m_wantedActiveDc;
 };
 
 #endif // CTELECORE_HPP

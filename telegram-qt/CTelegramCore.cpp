@@ -21,7 +21,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     QObject(parent),
     m_appId(0),
     m_appHash(QLatin1String("00000000000000000000000000000000")),
-    m_activeDc(0)
+    m_activeDc(0),
+    m_wantedActiveDc(0)
 {
 }
 
@@ -46,7 +47,7 @@ void CTelegramCore::initialConnection(const QString &address, quint32 port)
     m_connections.insert(0, connection);
     connection->connectToDc();
 
-    m_activeDc = 0;
+    setActiveDc(0);
 }
 
 void CTelegramCore::requestAuthCode(const QString &phoneNumber)
@@ -65,6 +66,10 @@ void CTelegramCore::whenConnectionAuthChanged(int dc, int newState)
     if (newState == CTelegramConnection::AuthStateSuccess) {
         if (m_dcConfiguration.isEmpty()) {
             connection->getConfiguration();
+        }
+
+        if (m_wantedActiveDc == dc) {
+            setActiveDc(dc);
         }
 
         foreach (const QByteArray &data, m_delayedPackages.values(dc)) {
@@ -110,7 +115,12 @@ void CTelegramCore::whenConnectionDcIdUpdated(int connectionId, int newDcId)
         connection->setDcInfo(info);
 
         if (m_activeDc == connectionId) {
-            m_activeDc = newDcId;
+
+            if (m_wantedActiveDc == m_activeDc) {
+                m_wantedActiveDc = newDcId;
+            }
+
+            setActiveDc(newDcId);
         }
 
         qDebug() << "Connection DC Id changed from" << connectionId << "to" << newDcId;
@@ -129,6 +139,29 @@ void CTelegramCore::whenPackageRedirected(const QByteArray &data, int dc)
     }
 }
 
+void CTelegramCore::whenWantedActiveDcChanged(int dc)
+{
+    CTelegramConnection *connection = m_connections.value(dc);
+
+    if (connection && connection->authState() == CTelegramConnection::AuthStateSuccess) {
+        setActiveDc(dc);
+    } else {
+        m_wantedActiveDc = dc;
+        establishConnectionToDc(dc);
+    }
+}
+
+void CTelegramCore::setActiveDc(int dc, bool syncWantedDc)
+{
+    m_activeDc = dc;
+
+    if (syncWantedDc) {
+        m_wantedActiveDc = dc;
+    }
+
+    qDebug() << "New active dc:" << dc;
+}
+
 CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
 {
     CTelegramConnection *connection = new CTelegramConnection(this);
@@ -137,6 +170,7 @@ CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
     connect(connection, SIGNAL(dcConfigurationReceived(int)), SLOT(whenConnectionConfigurationUpdated(int)));
     connect(connection, SIGNAL(actualDcIdReceived(int,int)), SLOT(whenConnectionDcIdUpdated(int,int)));
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,int)), SLOT(whenPackageRedirected(QByteArray,int)));
+    connect(connection, SIGNAL(wantedActiveDcChanged(int)), SLOT(whenWantedActiveDcChanged(int)));
 
     connection->setDcInfo(dc);
     connection->setAppId(m_appId);
@@ -167,7 +201,7 @@ CTelegramConnection *CTelegramCore::establishConnectionToDc(int dc)
     return connection;
 }
 
-SDcInfo CTelegramCore::infoById(int id) const
+SDcInfo CTelegramCore::infoById(quint32 id) const
 {
     foreach (SDcInfo info, m_dcConfiguration) {
         if (info.id == id) {
