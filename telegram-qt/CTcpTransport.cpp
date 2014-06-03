@@ -31,6 +31,11 @@ void CTcpTransport::connectToHost(const QString &ipAddress, quint32 port)
     m_socket->connectToHost(ipAddress, port);
 }
 
+bool CTcpTransport::isConnected() const
+{
+    return m_socket && (m_socket->state() == QAbstractSocket::ConnectedState);
+}
+
 void CTcpTransport::sendPackage(const QByteArray &payload)
 {
     // quint32 length (included length itself + packet number + crc32 + payload // Length MUST be divisible by 4

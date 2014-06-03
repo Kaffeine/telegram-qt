@@ -28,6 +28,8 @@ public:
 
     virtual QByteArray getPackage() = 0;
 
+    virtual bool isConnected() const = 0;
+
     // Method for testing
     virtual QByteArray lastPackage() const = 0;
 

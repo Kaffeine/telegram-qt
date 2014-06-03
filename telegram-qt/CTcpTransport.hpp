@@ -31,6 +31,8 @@ public:
 
     QByteArray getPackage() { return m_receivedPackage; }
 
+    bool isConnected() const;
+
     QByteArray lastPackage() const { return m_lastPackage; }
 
 public slots:
