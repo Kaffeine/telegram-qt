@@ -746,11 +746,19 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
         return false;
     }
 
-    QByteArray data = m_submittedPackages.take(id);
+    const QByteArray data = m_submittedPackages.take(id);
 
     if (data.isEmpty()) {
         qDebug() << "Can not restore message" << id;
         return false;
+    }
+
+    CTelegramStream stream(data);
+    TLValue value;
+    stream >> value;
+
+    if (value == AuthSendCode) {
+        emit wantedActiveDcChanged(dc);
     }
 
     emit newRedirectedPackage(data, dc);

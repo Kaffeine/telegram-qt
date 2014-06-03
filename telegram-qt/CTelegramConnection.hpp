@@ -90,6 +90,7 @@ public:
     void processRedirectedPackage(const QByteArray &data);
 
 signals:
+    void wantedActiveDcChanged(int dc);
     void newRedirectedPackage(const QByteArray &data, int dc);
 
     void authStateChanged(int dc, int state);
