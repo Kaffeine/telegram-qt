@@ -28,6 +28,9 @@ class CTelegramCore : public QObject
 public:
     explicit CTelegramCore(QObject *parent = 0);
 
+    inline quint32 appId() const { return m_appId; }
+    inline QString appHash() const { return m_appHash; }
+
     void setAppId(quint32 newId);
     bool setAppHash(const QString &newHash);
 
@@ -38,7 +41,9 @@ public:
     void getContacts();
 
 signals:
-    void configurationChanged();
+    void dcConfigurationObtained();
+    void needsAuthCode();
+    void authenticated();
 
 protected slots:
     void whenConnectionAuthChanged(int dc, int newState);

@@ -88,6 +88,10 @@ void CTelegramCore::whenConnectionAuthChanged(int dc, int newState)
 
         m_delayedPackages.remove(dc);
     }
+
+    if (newState == CTelegramConnection::AuthStateSignedIn) {
+        emit authenticated();
+    }
 }
 
 void CTelegramCore::whenConnectionConfigurationUpdated(int dc)
@@ -104,6 +108,8 @@ void CTelegramCore::whenConnectionConfigurationUpdated(int dc)
     for (int i = 0; i < m_dcConfiguration.count(); ++i) {
         qDebug() << m_dcConfiguration.at(i).id << ": " << m_dcConfiguration.at(i).ipAddress << ":"<< m_dcConfiguration.at(i).port;
     }
+
+    emit dcConfigurationObtained();
 }
 
 void CTelegramCore::whenConnectionDcIdUpdated(int connectionId, int newDcId)
@@ -181,6 +187,8 @@ CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
     connect(connection, SIGNAL(actualDcIdReceived(int,int)), SLOT(whenConnectionDcIdUpdated(int,int)));
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,int)), SLOT(whenPackageRedirected(QByteArray,int)));
     connect(connection, SIGNAL(wantedActiveDcChanged(int)), SLOT(whenWantedActiveDcChanged(int)));
+
+    connect(connection, SIGNAL(authCodeHashReceived()), SIGNAL(needsAuthCode()));
 
     connection->setDcInfo(dc);
     connection->setAppId(m_appId);

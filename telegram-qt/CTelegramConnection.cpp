@@ -782,6 +782,8 @@ void CTelegramConnection::processAuthSentCode(CTelegramStream &stream, quint64 i
 
         stream >> isPassword;
     }
+
+    emit authCodeHashReceived();
 }
 
 void CTelegramConnection::processAuthAuthorization(CTelegramStream &stream, quint64 id)
@@ -794,6 +796,8 @@ void CTelegramConnection::processAuthAuthorization(CTelegramStream &stream, quin
 
     stream >> user;
     qDebug() << "AuthAuthorization" << user.phone << expires;
+
+    setAuthState(AuthStateSignedIn);
 }
 
 void CTelegramConnection::processContactsContacts(CTelegramStream &stream, quint64 id)
@@ -901,7 +905,7 @@ void CTelegramConnection::whenReadyRead()
         default:
             break;
         }
-    } else if (m_authState == AuthStateSuccess) {
+    } else if (m_authState >= AuthStateSuccess) {
         if (auth != m_authId) {
             qDebug() << "Incorrect auth id.";
             return;

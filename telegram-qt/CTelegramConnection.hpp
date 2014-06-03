@@ -37,7 +37,8 @@ public:
         AuthStatePqRequested,
         AuthStateDhRequested,
         AuthStateDhGenerationResultRequested,
-        AuthStateSuccess
+        AuthStateSuccess,
+        AuthStateSignedIn
     };
 
     explicit CTelegramConnection(QObject *parent = 0);
@@ -98,6 +99,7 @@ signals:
     void authStateChanged(int dc, int state);
     void actualDcIdReceived(int dc, int newDcId);
     void dcConfigurationReceived(int dc);
+    void authCodeHashReceived();
 
 private slots:
     void whenConnected();
