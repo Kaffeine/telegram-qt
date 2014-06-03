@@ -44,6 +44,7 @@ public:
     CTelegramStream &operator>>(TLUserProfilePhoto &photo);
     CTelegramStream &operator>>(TLUserStatus &status);
     CTelegramStream &operator>>(TLUser &user);
+    CTelegramStream &operator>>(TLContact &contact);
 
     CTelegramStream &operator<<(const QByteArray &data);
     CTelegramStream &operator<<(const QString &str);

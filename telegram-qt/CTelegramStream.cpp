@@ -31,7 +31,9 @@ template CTelegramStream &CTelegramStream::operator<<(const QVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<quint64> &v);
 
 template CTelegramStream &CTelegramStream::operator>>(QVector<SDcInfo> &v);
+
 template CTelegramStream &CTelegramStream::operator>>(QVector<TLUser> &v);
+template CTelegramStream &CTelegramStream::operator>>(QVector<TLContact> &v);
 
 CTelegramStream::CTelegramStream(QByteArray *data, bool write) :
     CRawStream(data, write)
@@ -235,6 +237,23 @@ CTelegramStream &CTelegramStream::operator>>(TLUser &user)
     }
 
     user = result;
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator>>(TLContact &contact)
+{
+    // https://core.telegram.org/type/Contact
+    TLContact result;
+
+    TLValue contactValue;
+    *this >> contactValue;
+
+    if (contactValue == Contact) {
+        *this >> result.id;
+        *this >> result.mutual;
+    }
+
+    contact = result;
     return *this;
 }
 
