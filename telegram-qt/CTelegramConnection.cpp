@@ -596,6 +596,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
     case Config_BeforeLayer12:
         processConfig(stream, id, /* oldVersion */ true);
         break;
+    case AuthSentCode_BeforeLayer12:
+        processAuthSentCode(stream, id, /* oldVersion */ true);
+        break;
     default:
         qDebug() << "RPC Result " << QString::number(result, 16) << "is not implemented yet.";
     }
@@ -627,6 +630,7 @@ void CTelegramConnection::processMessageAck(CTelegramStream &stream)
     stream >> idsVector;
 
     foreach (quint64 id, idsVector) {
+        qDebug() << "Packaged" << id << "acked";
         m_submittedPackages.remove(id);
     }
 }
@@ -726,6 +730,29 @@ void CTelegramConnection::processConfig(CTelegramStream &stream, quint64 id, boo
     }
 
     emit dcConfigurationReceived(m_dcInfo.id);
+}
+
+void CTelegramConnection::processAuthSentCode(CTelegramStream &stream, quint64 id, bool oldVersion)
+{
+    bool phoneRegistered;
+
+    stream >> phoneRegistered;
+
+    QString codeHash;
+
+    stream >> codeHash;
+
+    if (!oldVersion) {
+        quint32 timeout;
+
+        stream >> timeout;
+
+        bool isPassword;
+
+        stream >> isPassword;
+    }
+
+    qDebug() << "codeHash:" << codeHash;
 }
 
 bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)

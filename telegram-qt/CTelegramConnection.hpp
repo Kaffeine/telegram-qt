@@ -113,6 +113,7 @@ protected:
     void processBadMessageNotification(CTelegramStream &stream);
 
     void processConfig(CTelegramStream &stream, quint64 id, bool oldVersion = false);
+    void processAuthSentCode(CTelegramStream &stream, quint64 id, bool oldVersion = false);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 
