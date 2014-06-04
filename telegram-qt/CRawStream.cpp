@@ -27,7 +27,7 @@ CRawStream::CRawStream(QByteArray *data, bool write) :
     m_ownDevice(true)
 {
     if (write) {
-        m_device->open(QIODevice::WriteOnly);
+        m_device->open(QIODevice::Append);
     } else {
         m_device->open(QIODevice::ReadOnly);
     }
