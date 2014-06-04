@@ -146,6 +146,7 @@ void CTelegramConnection::requestAuthCode(const QString &phoneNumber)
 {
     qDebug() << "AuthSendCode" << phoneNumber << m_dcInfo.id;
     QByteArray output;
+
     CTelegramStream outputStream(&output, /* write */ true);
 
     outputStream << AuthSendCode;
@@ -155,7 +156,7 @@ void CTelegramConnection::requestAuthCode(const QString &phoneNumber)
     outputStream << m_appHash;
     outputStream << QLatin1String("en");
 
-    sendEncryptedPackage(output);
+    sendEncryptedPackage(output, /* Insert init header */ true);
 }
 
 void CTelegramConnection::signIn(const QString &phoneNumber, const QString &authCode)
@@ -620,8 +621,14 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
     case RpcError:
         processRpcError(stream, id);
         break;
+    case Config:
+        processConfig(stream, id);
+        break;
     case Config_BeforeLayer12:
         processConfig(stream, id, /* oldVersion */ true);
+        break;
+    case AuthSentCode:
+        processAuthSentCode(stream, id);
         break;
     case AuthSentCode_BeforeLayer12:
         processAuthSentCode(stream, id, /* oldVersion */ true);
@@ -989,6 +996,20 @@ SAesKey CTelegramConnection::generateAesKey(const QByteArray &messageKey, int x)
     return SAesKey(key, iv);
 }
 
+void CTelegramConnection::insertInitConnection(QByteArray *data) const
+{
+    CTelegramStream outputStream(data, /* write */ true);
+
+    outputStream << InvokeWithLayer14;
+    outputStream << InitConnection;
+    outputStream << m_appId;
+
+    outputStream << QString("pc"); // Device Info
+    outputStream << QString("GNU/Linux"); // OS Info
+    outputStream << QString("0.1"); // App version
+    outputStream << QString("en");
+}
+
 void CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
 {
     QByteArray output;
@@ -1002,7 +1023,7 @@ void CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
     m_transport->sendPackage(output);
 }
 
-void CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
+void CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool insertInitHeader)
 {
     QByteArray encryptedPackage;
     QByteArray messageKey;
@@ -1022,8 +1043,14 @@ void CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
         stream << m_sessionId;
         stream << messageId;
         stream << m_sequenceNumber;
-        stream << quint32(buffer.length());
-        stream << buffer;
+
+        QByteArray header;
+        if (insertInitHeader) {
+            insertInitConnection(&header);
+        }
+
+        stream << quint32(header.length() + buffer.length());
+        stream << header + buffer;
 
         messageKey = Utils::sha1(innerData).mid(4);
         const SAesKey key = generateClientToServerAesKey(messageKey);
