@@ -24,6 +24,7 @@
 #include "crypto-aes.hpp"
 #include "SDcInfo.hpp"
 
+class CAppInformation;
 class CTelegramStream;
 class CTelegramTransport;
 class CRawStream;
@@ -41,14 +42,11 @@ public:
         AuthStateSignedIn
     };
 
-    explicit CTelegramConnection(QObject *parent = 0);
+    explicit CTelegramConnection(const CAppInformation *appInfo, QObject *parent = 0);
 
     void setDcInfo(const SDcInfo &dc);
 
     inline SDcInfo dcInfo() const { return m_dcInfo; }
-
-    void setAppId(quint32 newId);
-    bool setAppHash(const QString &newHash);
 
     void connectToDc();
 
@@ -142,8 +140,7 @@ protected:
 
     QMap<quint64, QByteArray> m_submittedPackages; // <message id, package data>
 
-    quint32 m_appId;
-    QString m_appHash;
+    const CAppInformation *m_appInfo;
 
     CTelegramTransport *m_transport;
 

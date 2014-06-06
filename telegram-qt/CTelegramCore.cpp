@@ -15,39 +15,45 @@
 
 #include <QDebug>
 
+#include "CAppInformation.hpp"
 #include "CTelegramConnection.hpp"
 
 CTelegramCore::CTelegramCore(QObject *parent) :
     QObject(parent),
-    m_appId(0),
-    m_appHash(QLatin1String("00000000000000000000000000000000")),
+    m_appInfo(0),
     m_activeDc(0),
     m_wantedActiveDc(0)
 {
 }
 
-void CTelegramCore::setAppId(quint32 newId)
+CTelegramCore::~CTelegramCore()
 {
-    m_appId = newId;
+    delete m_appInfo;
 }
 
-bool CTelegramCore::setAppHash(const QString &newHash)
+void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
 {
-    if (newHash.length() != 32)
+    if (!newAppInfo) {
+        return;
+    }
+
+    m_appInfo = new CAppInformation(newAppInfo);
+}
+
+bool CTelegramCore::initialConnection(const QString &address, quint32 port)
+{
+    if (!m_appInfo || !m_appInfo->isValid()) {
+        qDebug() << "CTelegramCore: Can not init connection: App information is null or is not valid.";
         return false;
+    }
 
-    m_appHash = newHash;
-
-    return true;
-}
-
-void CTelegramCore::initialConnection(const QString &address, quint32 port)
-{
     CTelegramConnection *connection = createConnection(SDcInfo(address, port));
     m_connections.insert(0, connection);
     connection->connectToDc();
 
     setActiveDc(0);
+
+    return true;
 }
 
 void CTelegramCore::requestAuthCode(const QString &phoneNumber)
@@ -180,7 +186,7 @@ void CTelegramCore::setActiveDc(int dc, bool syncWantedDc)
 
 CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
 {
-    CTelegramConnection *connection = new CTelegramConnection(this);
+    CTelegramConnection *connection = new CTelegramConnection(appInfo(), this);
 
     connect(connection, SIGNAL(authStateChanged(int,int)), SLOT(whenConnectionAuthChanged(int,int)));
     connect(connection, SIGNAL(dcConfigurationReceived(int)), SLOT(whenConnectionConfigurationUpdated(int)));
@@ -191,8 +197,6 @@ CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
     connect(connection, SIGNAL(authCodeHashReceived()), SIGNAL(needsAuthCode()));
 
     connection->setDcInfo(dc);
-    connection->setAppId(m_appId);
-    connection->setAppHash(m_appHash);
 
     return connection;
 }

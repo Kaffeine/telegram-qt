@@ -19,14 +19,14 @@
 
 #include <QtEndian>
 
+#include "CAppInformation.hpp"
 #include "CTelegramStream.hpp"
 #include "CTcpTransport.hpp"
 #include "Utils.hpp"
 
-CTelegramConnection::CTelegramConnection(QObject *parent) :
+CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
-    m_appId(0),
-    m_appHash(QLatin1String("00000000000000000000000000000000")),
+    m_appInfo(appInfo),
     m_transport(0),
     m_authState(AuthStateNone),
     m_authId(0),
@@ -49,21 +49,6 @@ CTelegramConnection::CTelegramConnection(QObject *parent) :
 void CTelegramConnection::setDcInfo(const SDcInfo &dc)
 {
     m_dcInfo = dc;
-}
-
-void CTelegramConnection::setAppId(quint32 newId)
-{
-    m_appId = newId;
-}
-
-bool CTelegramConnection::setAppHash(const QString &newHash)
-{
-    if (newHash.length() != 32)
-        return false;
-
-    m_appHash = newHash;
-
-    return true;
 }
 
 void CTelegramConnection::connectToDc()
@@ -152,9 +137,9 @@ void CTelegramConnection::requestAuthCode(const QString &phoneNumber)
     outputStream << AuthSendCode;
     outputStream << phoneNumber;
     outputStream << quint32(0);
-    outputStream << m_appId;
-    outputStream << m_appHash;
-    outputStream << QLatin1String("en");
+    outputStream << m_appInfo->appId();
+    outputStream << m_appInfo->appHash();
+    outputStream << m_appInfo->languageCode();
 
     sendEncryptedPackage(output, /* Insert init header */ true);
 }
@@ -1002,12 +987,12 @@ void CTelegramConnection::insertInitConnection(QByteArray *data) const
 
     outputStream << InvokeWithLayer14;
     outputStream << InitConnection;
-    outputStream << m_appId;
 
-    outputStream << QString("pc"); // Device Info
-    outputStream << QString("GNU/Linux"); // OS Info
-    outputStream << QString("0.1"); // App version
-    outputStream << QString("en");
+    outputStream << m_appInfo->appId();
+    outputStream << m_appInfo->deviceInfo();
+    outputStream << m_appInfo->osInfo();
+    outputStream << m_appInfo->appVersion();
+    outputStream << m_appInfo->languageCode();
 }
 
 void CTelegramConnection::sendPlainPackage(const QByteArray &buffer)

@@ -1,6 +1,7 @@
 #include "MainWindow.hpp"
 #include "ui_MainWindow.h"
 
+#include "CAppInformation.hpp"
 #include "CTelegramCore.hpp"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -8,7 +9,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    CAppInformation appInfo;
+    appInfo.setAppId(0);
+    appInfo.setAppHash(QLatin1String(""));
+    appInfo.setAppVersion(QLatin1String("0"));
+    appInfo.setDeviceInfo(QLatin1String("pc"));
+    appInfo.setOsInfo(QLatin1String("GNU/Linux"));
+    appInfo.setLanguageCode(QLatin1String("en"));
+
     m_core = new CTelegramCore(this);
+    m_core->setAppInformation(&appInfo);
 
     connect(m_core, SIGNAL(dcConfigurationObtained()), SLOT(whenConnected()));
     connect(m_core, SIGNAL(needsAuthCode()), SLOT(whenNeedCode()));
@@ -57,11 +68,6 @@ void MainWindow::on_connectButton_clicked()
 
 void MainWindow::on_authButton_clicked()
 {
-    if (!m_core->appId() || m_core->appHash().isEmpty()) {
-        ui->connectionState->setText(tr("Application id and hash is not setted."));
-        return;
-    }
-
     if (ui->phoneNumber->text().isEmpty()) {
         return;
     }

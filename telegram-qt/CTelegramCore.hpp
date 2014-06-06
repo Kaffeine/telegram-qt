@@ -20,6 +20,7 @@
 
 #include "SDcInfo.hpp"
 
+class CAppInformation;
 class CTelegramConnection;
 
 class CTelegramCore : public QObject
@@ -27,14 +28,12 @@ class CTelegramCore : public QObject
     Q_OBJECT
 public:
     explicit CTelegramCore(QObject *parent = 0);
+    ~CTelegramCore();
 
-    inline quint32 appId() const { return m_appId; }
-    inline QString appHash() const { return m_appHash; }
+    inline const CAppInformation *appInfo() { return m_appInfo; }
+    void setAppInformation(const CAppInformation *newAppInfo);
 
-    void setAppId(quint32 newId);
-    bool setAppHash(const QString &newHash);
-
-    void initialConnection(const QString &address, quint32 port);
+    bool initialConnection(const QString &address, quint32 port);
 
     void requestAuthCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
@@ -61,8 +60,7 @@ protected:
 
     SDcInfo infoById(quint32 id) const;
 
-    quint32 m_appId;
-    QString m_appHash;
+    const CAppInformation *m_appInfo;
 
     int m_activeDc;
 

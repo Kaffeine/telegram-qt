@@ -1,7 +1,7 @@
 #include "CTestConnection.hpp"
 
 CTestConnection::CTestConnection(QObject *parent) :
-    CTelegramConnection(parent)
+    CTelegramConnection(0, parent)
 {
 }
 
