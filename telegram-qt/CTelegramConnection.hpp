@@ -81,8 +81,13 @@ public:
 
     inline quint64 serverPublicFingersprint() const { return m_serverPublicFingersprint; }
 
+    void setAuthKey(const QByteArray &newAuthKey);
     inline QByteArray authKey() const { return m_authKey; }
     inline quint64 authId() const { return m_authId; }
+
+    void setServerSaltArray(const QByteArray &newServerSalt);
+    QByteArray serverSaltArray() const;
+
     inline quint64 serverSalt() const { return m_serverSalt; }
     inline quint64 sessionId() const { return m_sessionId; }
 

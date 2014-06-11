@@ -65,6 +65,28 @@ void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
     connect(m_transport, SIGNAL(readyRead()), SLOT(whenReadyRead()));
 }
 
+void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
+{
+    m_authKey = newAuthKey;
+    m_authId = Utils::getFingersprint(m_authKey);
+    m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
+}
+
+void CTelegramConnection::setServerSaltArray(const QByteArray &newServerSalt)
+{
+    CRawStream str(newServerSalt);
+    str >> m_serverSalt;
+}
+
+QByteArray CTelegramConnection::serverSaltArray() const
+{
+    QByteArray result;
+    CRawStream str(&result, true);
+    str << m_serverSalt;
+
+    return result;
+}
+
 quint64 CTelegramConnection::formatTimeStamp(qint64 timeInMs)
 {
     static const quint64 maxMsecValue = (quint64(1) << 32) - 1;
@@ -483,9 +505,7 @@ bool CTelegramConnection::processServersDHAnswer(const QByteArray &payload)
             return false;
         }
 
-        m_authKey = newAuthKey;
-        m_authId = Utils::getFingersprint(m_authKey);
-        m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
+        setAuthKey(newAuthKey);
         m_serverSalt = m_serverNonce.parts[0] ^ m_newNonce.parts[0];
 
         setAuthState(AuthStateSuccess);
