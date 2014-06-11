@@ -868,7 +868,11 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
 
 void CTelegramConnection::whenConnected()
 {
-    initAuth();
+    if (m_authKey.isEmpty()) {
+        initAuth();
+    } else {
+        setAuthState(AuthStateSignedIn);
+    }
 }
 
 void CTelegramConnection::whenReadyRead()
