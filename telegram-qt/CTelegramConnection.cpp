@@ -39,10 +39,6 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_deltaTime(0),
     m_serverPublicFingersprint(0)
 {
-    Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
-
-    m_rsaKey = Utils::loadRsaKey();
-
     setTransport(new CTcpTransport(this));
 }
 
@@ -100,6 +96,9 @@ void CTelegramConnection::initAuth()
 {
     if (m_authState == AuthStateNone) {
         m_authRetryId = 0;
+        m_rsaKey = Utils::loadRsaKey();
+        Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
+
         requestPqAuthorization();
     }
 }
@@ -488,8 +487,6 @@ bool CTelegramConnection::processServersDHAnswer(const QByteArray &payload)
         m_authId = Utils::getFingersprint(m_authKey);
         m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
         m_serverSalt = m_serverNonce.parts[0] ^ m_newNonce.parts[0];
-
-        Utils::randomBytes(&m_sessionId);
 
         setAuthState(AuthStateSuccess);
         return true;
@@ -1072,6 +1069,11 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
         return;
 
     m_authState = newState;
+
+    if ((m_authState >= AuthStateSuccess) && !m_sessionId) {
+        Utils::randomBytes(&m_sessionId);
+    }
+
     emit authStateChanged(m_dcInfo.id, m_authState);
 }
 
