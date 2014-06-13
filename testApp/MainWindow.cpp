@@ -10,10 +10,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Telepathy Morse app info
     CAppInformation appInfo;
-    appInfo.setAppId(0);
-    appInfo.setAppHash(QLatin1String(""));
-    appInfo.setAppVersion(QLatin1String("0"));
+    appInfo.setAppId(14617);
+    appInfo.setAppHash(QLatin1String("e17ac360fd072f83d5d08db45ce9a121"));
+    appInfo.setAppVersion(QLatin1String("0.1"));
     appInfo.setDeviceInfo(QLatin1String("pc"));
     appInfo.setOsInfo(QLatin1String("GNU/Linux"));
     appInfo.setLanguageCode(QLatin1String("en"));
