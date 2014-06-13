@@ -115,7 +115,7 @@ CTelegramStream &CTelegramStream::operator>>(TLFileLocation &fileLocation)
         *this >> result.secret;
         break;
     case FileLocation:
-        *this >> result.dc;
+        *this >> result.dcId;
         *this >> result.volumeId;
         *this >> result.localId;
         *this >> result.secret;
@@ -143,9 +143,9 @@ CTelegramStream &CTelegramStream::operator>>(TLUserProfilePhoto &photo)
     case UserProfilePhotoEmpty:
         break;
     case UserProfilePhoto:
-        *this >> result.id;
-        *this >> result.small;
-        *this >> result.big;
+        *this >> result.photoId;
+        *this >> result.photoSmall;
+        *this >> result.photoBig;
         break;
     default:
         // ERROR!
@@ -167,14 +167,14 @@ CTelegramStream &CTelegramStream::operator>>(TLUserStatus &status)
 
     switch (type) {
     case UserStatusEmpty:
-        result.type = TLUserStatus::Empty;
+        result.tlType = type;
         break;
     case UserStatusOnline:
-        result.type = TLUserStatus::Online;
+        result.tlType = type;
         *this >> result.expires;
         break;
     case UserStatusOffline:
-        result.type = TLUserStatus::Offline;
+        result.tlType = type;
         *this >> result.wasOnline;
         break;
     default:
@@ -206,7 +206,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUser &user)
         *this >> result.phone;
         *this >> result.photo;
         *this >> result.status;
-        *this >> result.inActive;
+        *this >> result.inactive;
         break;
     case UserContact:
     case UserRequest:
@@ -249,7 +249,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContact &contact)
     *this >> contactValue;
 
     if (contactValue == Contact) {
-        *this >> result.id;
+        *this >> result.userId;
         *this >> result.mutual;
     }
 
