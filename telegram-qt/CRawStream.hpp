@@ -49,6 +49,8 @@ public:
     CRawStream &operator>>(qint64 &i);
     CRawStream &operator>>(quint64 &i);
 
+    CRawStream &operator>>(double &d);
+
     template <int Size>
     CRawStream &operator>>(TLNumbers<Size> &n);
 
@@ -58,6 +60,8 @@ public:
     CRawStream &operator<<(quint32 i);
     CRawStream &operator<<(qint64 i);
     CRawStream &operator<<(quint64 i);
+
+    CRawStream &operator<<(const double &d);
 
     template <int Size>
     CRawStream &operator<<(const TLNumbers<Size> &n);

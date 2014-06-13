@@ -95,6 +95,13 @@ CRawStream &CRawStream::operator>>(qint64 &i)
     return *this;
 }
 
+CRawStream &CRawStream::operator>>(double &d)
+{
+    m_device->read((char *)&d, 8);
+
+    return *this;
+}
+
 CRawStream &CRawStream::operator<<(qint32 i)
 {
     m_device->write((const char *) &i, 4);
@@ -105,6 +112,13 @@ CRawStream &CRawStream::operator<<(qint32 i)
 CRawStream &CRawStream::operator<<(qint64 i)
 {
     m_device->write((const char *) &i, 8);
+
+    return *this;
+}
+
+CRawStream &CRawStream::operator<<(const double &d)
+{
+    m_device->write((const char *) &d, 8);
 
     return *this;
 }
