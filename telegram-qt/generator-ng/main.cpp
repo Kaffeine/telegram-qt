@@ -339,6 +339,7 @@ int main(int argc, char *argv[])
                 const QString paramType = paramObj.value("type").toString();
 
                 if (!tlType.members.isEmpty() && (tlType.members.last().name == tlTypeMember)) {
+                    // Keep tlTypeMember as last member.
                     tlType.members.insert(tlType.members.count() - 1, TLTypeMember(paramName, formatType(paramType)));
                 } else {
                     tlType.members.append(TLTypeMember(paramName, formatType(paramType)));
@@ -363,6 +364,7 @@ int main(int argc, char *argv[])
 
     int previousSolvedTypesCount = -1;
 
+    // In order to successful compilation, type must rely only on defined types.
     while (solvedTypes.count() != previousSolvedTypesCount) { // Check for infinity loop
         previousSolvedTypesCount = solvedTypes.count();
         foreach(const QString &typeName, types.keys()) {
