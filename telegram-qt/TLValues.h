@@ -220,6 +220,7 @@ enum TLValue {
     InputMessagesFilterVideo = 0x9fc00e65,
     InputMessagesFilterPhotoVideo = 0x56e9f0e4,
     InputMessagesFilterDocument = 0x9eddf188,
+    InputMessagesFilterAudio = 0xcfc87522,
     UpdateNewMessage = 0x13abdb3,
     UpdateMessageID = 0x4e90bfd6,
     UpdateReadMessages = 0xc6649e31,
