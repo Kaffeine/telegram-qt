@@ -7,659 +7,6 @@
 #include <QVector>
 
 // Generated TLTypes
-struct TLContactStatus {
-    TLContactStatus() :
-        userId(0),
-        expires(0) { }
-
-    TLContactStatus(const TLContactStatus &anotherContactStatus) :
-        userId(anotherContactStatus.userId),
-        expires(anotherContactStatus.expires) { }
-
-    TLContactStatus &operator=(const TLContactStatus &anotherContactStatus) {
-        userId = anotherContactStatus.userId;
-        expires = anotherContactStatus.expires;
-
-        return *this;
-    }
-
-    quint32 userId;
-    quint32 expires;
-};
-
-struct TLInputPhoto {
-    TLInputPhoto() :
-        id(0),
-        accessHash(0),
-        tlType(InputPhotoEmpty) { }
-
-    TLInputPhoto(const TLInputPhoto &anotherInputPhoto) :
-        id(anotherInputPhoto.id),
-        accessHash(anotherInputPhoto.accessHash),
-        tlType(anotherInputPhoto.tlType) { }
-
-    TLInputPhoto &operator=(const TLInputPhoto &anotherInputPhoto) {
-        id = anotherInputPhoto.id;
-        accessHash = anotherInputPhoto.accessHash;
-        tlType = anotherInputPhoto.tlType;
-
-        return *this;
-    }
-
-    quint64 id;
-    quint64 accessHash;
-    TLValue tlType;
-};
-
-struct TLInputPeerNotifyEvents {
-    TLInputPeerNotifyEvents() :
-        tlType(InputPeerNotifyEventsEmpty) { }
-
-    TLInputPeerNotifyEvents(const TLInputPeerNotifyEvents &anotherInputPeerNotifyEvents) :
-        tlType(anotherInputPeerNotifyEvents.tlType) { }
-
-    TLInputPeerNotifyEvents &operator=(const TLInputPeerNotifyEvents &anotherInputPeerNotifyEvents) {
-        tlType = anotherInputPeerNotifyEvents.tlType;
-
-        return *this;
-    }
-
-    TLValue tlType;
-};
-
-struct TLChatLocated {
-    TLChatLocated() :
-        chatId(0),
-        distance(0) { }
-
-    TLChatLocated(const TLChatLocated &anotherChatLocated) :
-        chatId(anotherChatLocated.chatId),
-        distance(anotherChatLocated.distance) { }
-
-    TLChatLocated &operator=(const TLChatLocated &anotherChatLocated) {
-        chatId = anotherChatLocated.chatId;
-        distance = anotherChatLocated.distance;
-
-        return *this;
-    }
-
-    quint32 chatId;
-    quint32 distance;
-};
-
-struct TLInputUser {
-    TLInputUser() :
-        userId(0),
-        accessHash(0),
-        tlType(InputUserEmpty) { }
-
-    TLInputUser(const TLInputUser &anotherInputUser) :
-        userId(anotherInputUser.userId),
-        accessHash(anotherInputUser.accessHash),
-        tlType(anotherInputUser.tlType) { }
-
-    TLInputUser &operator=(const TLInputUser &anotherInputUser) {
-        userId = anotherInputUser.userId;
-        accessHash = anotherInputUser.accessHash;
-        tlType = anotherInputUser.tlType;
-
-        return *this;
-    }
-
-    quint32 userId;
-    quint64 accessHash;
-    TLValue tlType;
-};
-
-struct TLDecryptedMessageAction {
-    TLDecryptedMessageAction() :
-        ttlSeconds(0),
-        layer(0),
-        tlType(DecryptedMessageActionSetMessageTTL) { }
-
-    TLDecryptedMessageAction(const TLDecryptedMessageAction &anotherDecryptedMessageAction) :
-        ttlSeconds(anotherDecryptedMessageAction.ttlSeconds),
-        randomIds(anotherDecryptedMessageAction.randomIds),
-        layer(anotherDecryptedMessageAction.layer),
-        tlType(anotherDecryptedMessageAction.tlType) { }
-
-    TLDecryptedMessageAction &operator=(const TLDecryptedMessageAction &anotherDecryptedMessageAction) {
-        ttlSeconds = anotherDecryptedMessageAction.ttlSeconds;
-        randomIds = anotherDecryptedMessageAction.randomIds;
-        layer = anotherDecryptedMessageAction.layer;
-        tlType = anotherDecryptedMessageAction.tlType;
-
-        return *this;
-    }
-
-    quint32 ttlSeconds;
-    QVector<quint64> randomIds;
-    quint32 layer;
-    TLValue tlType;
-};
-
-struct TLInputFile {
-    TLInputFile() :
-        id(0),
-        parts(0),
-        tlType(InputFile) { }
-
-    TLInputFile(const TLInputFile &anotherInputFile) :
-        id(anotherInputFile.id),
-        parts(anotherInputFile.parts),
-        name(anotherInputFile.name),
-        md5Checksum(anotherInputFile.md5Checksum),
-        tlType(anotherInputFile.tlType) { }
-
-    TLInputFile &operator=(const TLInputFile &anotherInputFile) {
-        id = anotherInputFile.id;
-        parts = anotherInputFile.parts;
-        name = anotherInputFile.name;
-        md5Checksum = anotherInputFile.md5Checksum;
-        tlType = anotherInputFile.tlType;
-
-        return *this;
-    }
-
-    quint64 id;
-    quint32 parts;
-    QString name;
-    QString md5Checksum;
-    TLValue tlType;
-};
-
-struct TLContactsForeignLink {
-    TLContactsForeignLink() :
-        hasPhone(false),
-        tlType(ContactsForeignLinkUnknown) { }
-
-    TLContactsForeignLink(const TLContactsForeignLink &anotherContactsForeignLink) :
-        hasPhone(anotherContactsForeignLink.hasPhone),
-        tlType(anotherContactsForeignLink.tlType) { }
-
-    TLContactsForeignLink &operator=(const TLContactsForeignLink &anotherContactsForeignLink) {
-        hasPhone = anotherContactsForeignLink.hasPhone;
-        tlType = anotherContactsForeignLink.tlType;
-
-        return *this;
-    }
-
-    bool hasPhone;
-    TLValue tlType;
-};
-
-struct TLHelpAppUpdate {
-    TLHelpAppUpdate() :
-        id(0),
-        critical(false),
-        tlType(HelpAppUpdate) { }
-
-    TLHelpAppUpdate(const TLHelpAppUpdate &anotherHelpAppUpdate) :
-        id(anotherHelpAppUpdate.id),
-        critical(anotherHelpAppUpdate.critical),
-        url(anotherHelpAppUpdate.url),
-        text(anotherHelpAppUpdate.text),
-        tlType(anotherHelpAppUpdate.tlType) { }
-
-    TLHelpAppUpdate &operator=(const TLHelpAppUpdate &anotherHelpAppUpdate) {
-        id = anotherHelpAppUpdate.id;
-        critical = anotherHelpAppUpdate.critical;
-        url = anotherHelpAppUpdate.url;
-        text = anotherHelpAppUpdate.text;
-        tlType = anotherHelpAppUpdate.tlType;
-
-        return *this;
-    }
-
-    quint32 id;
-    bool critical;
-    QString url;
-    QString text;
-    TLValue tlType;
-};
-
-struct TLNearestDc {
-    TLNearestDc() :
-        thisDc(0),
-        nearestDc(0) { }
-
-    TLNearestDc(const TLNearestDc &anotherNearestDc) :
-        country(anotherNearestDc.country),
-        thisDc(anotherNearestDc.thisDc),
-        nearestDc(anotherNearestDc.nearestDc) { }
-
-    TLNearestDc &operator=(const TLNearestDc &anotherNearestDc) {
-        country = anotherNearestDc.country;
-        thisDc = anotherNearestDc.thisDc;
-        nearestDc = anotherNearestDc.nearestDc;
-
-        return *this;
-    }
-
-    QString country;
-    quint32 thisDc;
-    quint32 nearestDc;
-};
-
-struct TLPeer {
-    TLPeer() :
-        userId(0),
-        chatId(0),
-        tlType(PeerUser) { }
-
-    TLPeer(const TLPeer &anotherPeer) :
-        userId(anotherPeer.userId),
-        chatId(anotherPeer.chatId),
-        tlType(anotherPeer.tlType) { }
-
-    TLPeer &operator=(const TLPeer &anotherPeer) {
-        userId = anotherPeer.userId;
-        chatId = anotherPeer.chatId;
-        tlType = anotherPeer.tlType;
-
-        return *this;
-    }
-
-    quint32 userId;
-    quint32 chatId;
-    TLValue tlType;
-};
-
-struct TLMessagesFilter {
-    TLMessagesFilter() :
-        tlType(InputMessagesFilterEmpty) { }
-
-    TLMessagesFilter(const TLMessagesFilter &anotherMessagesFilter) :
-        tlType(anotherMessagesFilter.tlType) { }
-
-    TLMessagesFilter &operator=(const TLMessagesFilter &anotherMessagesFilter) {
-        tlType = anotherMessagesFilter.tlType;
-
-        return *this;
-    }
-
-    TLValue tlType;
-};
-
-struct TLInputPeerNotifySettings {
-    TLInputPeerNotifySettings() :
-        muteUntil(0),
-        showPreviews(false),
-        eventsMask(0) { }
-
-    TLInputPeerNotifySettings(const TLInputPeerNotifySettings &anotherInputPeerNotifySettings) :
-        muteUntil(anotherInputPeerNotifySettings.muteUntil),
-        sound(anotherInputPeerNotifySettings.sound),
-        showPreviews(anotherInputPeerNotifySettings.showPreviews),
-        eventsMask(anotherInputPeerNotifySettings.eventsMask) { }
-
-    TLInputPeerNotifySettings &operator=(const TLInputPeerNotifySettings &anotherInputPeerNotifySettings) {
-        muteUntil = anotherInputPeerNotifySettings.muteUntil;
-        sound = anotherInputPeerNotifySettings.sound;
-        showPreviews = anotherInputPeerNotifySettings.showPreviews;
-        eventsMask = anotherInputPeerNotifySettings.eventsMask;
-
-        return *this;
-    }
-
-    quint32 muteUntil;
-    QString sound;
-    bool showPreviews;
-    quint32 eventsMask;
-};
-
-struct TLUpdatesState {
-    TLUpdatesState() :
-        pts(0),
-        qts(0),
-        date(0),
-        seq(0),
-        unreadCount(0) { }
-
-    TLUpdatesState(const TLUpdatesState &anotherUpdatesState) :
-        pts(anotherUpdatesState.pts),
-        qts(anotherUpdatesState.qts),
-        date(anotherUpdatesState.date),
-        seq(anotherUpdatesState.seq),
-        unreadCount(anotherUpdatesState.unreadCount) { }
-
-    TLUpdatesState &operator=(const TLUpdatesState &anotherUpdatesState) {
-        pts = anotherUpdatesState.pts;
-        qts = anotherUpdatesState.qts;
-        date = anotherUpdatesState.date;
-        seq = anotherUpdatesState.seq;
-        unreadCount = anotherUpdatesState.unreadCount;
-
-        return *this;
-    }
-
-    quint32 pts;
-    quint32 qts;
-    quint32 date;
-    quint32 seq;
-    quint32 unreadCount;
-};
-
-struct TLContactSuggested {
-    TLContactSuggested() :
-        userId(0),
-        mutualContacts(0) { }
-
-    TLContactSuggested(const TLContactSuggested &anotherContactSuggested) :
-        userId(anotherContactSuggested.userId),
-        mutualContacts(anotherContactSuggested.mutualContacts) { }
-
-    TLContactSuggested &operator=(const TLContactSuggested &anotherContactSuggested) {
-        userId = anotherContactSuggested.userId;
-        mutualContacts = anotherContactSuggested.mutualContacts;
-
-        return *this;
-    }
-
-    quint32 userId;
-    quint32 mutualContacts;
-};
-
-struct TLMessagesAffectedHistory {
-    TLMessagesAffectedHistory() :
-        pts(0),
-        seq(0),
-        offset(0) { }
-
-    TLMessagesAffectedHistory(const TLMessagesAffectedHistory &anotherMessagesAffectedHistory) :
-        pts(anotherMessagesAffectedHistory.pts),
-        seq(anotherMessagesAffectedHistory.seq),
-        offset(anotherMessagesAffectedHistory.offset) { }
-
-    TLMessagesAffectedHistory &operator=(const TLMessagesAffectedHistory &anotherMessagesAffectedHistory) {
-        pts = anotherMessagesAffectedHistory.pts;
-        seq = anotherMessagesAffectedHistory.seq;
-        offset = anotherMessagesAffectedHistory.offset;
-
-        return *this;
-    }
-
-    quint32 pts;
-    quint32 seq;
-    quint32 offset;
-};
-
-struct TLDcOption {
-    TLDcOption() :
-        id(0),
-        port(0) { }
-
-    TLDcOption(const TLDcOption &anotherDcOption) :
-        id(anotherDcOption.id),
-        hostname(anotherDcOption.hostname),
-        ipAddress(anotherDcOption.ipAddress),
-        port(anotherDcOption.port) { }
-
-    TLDcOption &operator=(const TLDcOption &anotherDcOption) {
-        id = anotherDcOption.id;
-        hostname = anotherDcOption.hostname;
-        ipAddress = anotherDcOption.ipAddress;
-        port = anotherDcOption.port;
-
-        return *this;
-    }
-
-    quint32 id;
-    QString hostname;
-    QString ipAddress;
-    quint32 port;
-};
-
-struct TLAuthCheckedPhone {
-    TLAuthCheckedPhone() :
-        phoneRegistered(false),
-        phoneInvited(false) { }
-
-    TLAuthCheckedPhone(const TLAuthCheckedPhone &anotherAuthCheckedPhone) :
-        phoneRegistered(anotherAuthCheckedPhone.phoneRegistered),
-        phoneInvited(anotherAuthCheckedPhone.phoneInvited) { }
-
-    TLAuthCheckedPhone &operator=(const TLAuthCheckedPhone &anotherAuthCheckedPhone) {
-        phoneRegistered = anotherAuthCheckedPhone.phoneRegistered;
-        phoneInvited = anotherAuthCheckedPhone.phoneInvited;
-
-        return *this;
-    }
-
-    bool phoneRegistered;
-    bool phoneInvited;
-};
-
-struct TLContactsMyLink {
-    TLContactsMyLink() :
-        contact(false),
-        tlType(ContactsMyLinkEmpty) { }
-
-    TLContactsMyLink(const TLContactsMyLink &anotherContactsMyLink) :
-        contact(anotherContactsMyLink.contact),
-        tlType(anotherContactsMyLink.tlType) { }
-
-    TLContactsMyLink &operator=(const TLContactsMyLink &anotherContactsMyLink) {
-        contact = anotherContactsMyLink.contact;
-        tlType = anotherContactsMyLink.tlType;
-
-        return *this;
-    }
-
-    bool contact;
-    TLValue tlType;
-};
-
-struct TLInputEncryptedChat {
-    TLInputEncryptedChat() :
-        chatId(0),
-        accessHash(0) { }
-
-    TLInputEncryptedChat(const TLInputEncryptedChat &anotherInputEncryptedChat) :
-        chatId(anotherInputEncryptedChat.chatId),
-        accessHash(anotherInputEncryptedChat.accessHash) { }
-
-    TLInputEncryptedChat &operator=(const TLInputEncryptedChat &anotherInputEncryptedChat) {
-        chatId = anotherInputEncryptedChat.chatId;
-        accessHash = anotherInputEncryptedChat.accessHash;
-
-        return *this;
-    }
-
-    quint32 chatId;
-    quint64 accessHash;
-};
-
-struct TLPeerNotifyEvents {
-    TLPeerNotifyEvents() :
-        tlType(PeerNotifyEventsEmpty) { }
-
-    TLPeerNotifyEvents(const TLPeerNotifyEvents &anotherPeerNotifyEvents) :
-        tlType(anotherPeerNotifyEvents.tlType) { }
-
-    TLPeerNotifyEvents &operator=(const TLPeerNotifyEvents &anotherPeerNotifyEvents) {
-        tlType = anotherPeerNotifyEvents.tlType;
-
-        return *this;
-    }
-
-    TLValue tlType;
-};
-
-struct TLGeoPoint {
-    TLGeoPoint() :
-        longitude(0),
-        latitude(0),
-        tlType(GeoPointEmpty) { }
-
-    TLGeoPoint(const TLGeoPoint &anotherGeoPoint) :
-        longitude(anotherGeoPoint.longitude),
-        latitude(anotherGeoPoint.latitude),
-        tlType(anotherGeoPoint.tlType) { }
-
-    TLGeoPoint &operator=(const TLGeoPoint &anotherGeoPoint) {
-        longitude = anotherGeoPoint.longitude;
-        latitude = anotherGeoPoint.latitude;
-        tlType = anotherGeoPoint.tlType;
-
-        return *this;
-    }
-
-    double longitude;
-    double latitude;
-    TLValue tlType;
-};
-
-struct TLHelpInviteText {
-    TLHelpInviteText()  { }
-
-    TLHelpInviteText(const TLHelpInviteText &anotherHelpInviteText) :
-        message(anotherHelpInviteText.message) { }
-
-    TLHelpInviteText &operator=(const TLHelpInviteText &anotherHelpInviteText) {
-        message = anotherHelpInviteText.message;
-
-        return *this;
-    }
-
-    QString message;
-};
-
-struct TLInputDocument {
-    TLInputDocument() :
-        id(0),
-        accessHash(0),
-        tlType(InputDocumentEmpty) { }
-
-    TLInputDocument(const TLInputDocument &anotherInputDocument) :
-        id(anotherInputDocument.id),
-        accessHash(anotherInputDocument.accessHash),
-        tlType(anotherInputDocument.tlType) { }
-
-    TLInputDocument &operator=(const TLInputDocument &anotherInputDocument) {
-        id = anotherInputDocument.id;
-        accessHash = anotherInputDocument.accessHash;
-        tlType = anotherInputDocument.tlType;
-
-        return *this;
-    }
-
-    quint64 id;
-    quint64 accessHash;
-    TLValue tlType;
-};
-
-struct TLInputPeer {
-    TLInputPeer() :
-        userId(0),
-        accessHash(0),
-        chatId(0),
-        tlType(InputPeerEmpty) { }
-
-    TLInputPeer(const TLInputPeer &anotherInputPeer) :
-        userId(anotherInputPeer.userId),
-        accessHash(anotherInputPeer.accessHash),
-        chatId(anotherInputPeer.chatId),
-        tlType(anotherInputPeer.tlType) { }
-
-    TLInputPeer &operator=(const TLInputPeer &anotherInputPeer) {
-        userId = anotherInputPeer.userId;
-        accessHash = anotherInputPeer.accessHash;
-        chatId = anotherInputPeer.chatId;
-        tlType = anotherInputPeer.tlType;
-
-        return *this;
-    }
-
-    quint32 userId;
-    quint64 accessHash;
-    quint32 chatId;
-    TLValue tlType;
-};
-
-struct TLInputEncryptedFile {
-    TLInputEncryptedFile() :
-        id(0),
-        parts(0),
-        keyFingerprint(0),
-        accessHash(0),
-        tlType(InputEncryptedFileEmpty) { }
-
-    TLInputEncryptedFile(const TLInputEncryptedFile &anotherInputEncryptedFile) :
-        id(anotherInputEncryptedFile.id),
-        parts(anotherInputEncryptedFile.parts),
-        md5Checksum(anotherInputEncryptedFile.md5Checksum),
-        keyFingerprint(anotherInputEncryptedFile.keyFingerprint),
-        accessHash(anotherInputEncryptedFile.accessHash),
-        tlType(anotherInputEncryptedFile.tlType) { }
-
-    TLInputEncryptedFile &operator=(const TLInputEncryptedFile &anotherInputEncryptedFile) {
-        id = anotherInputEncryptedFile.id;
-        parts = anotherInputEncryptedFile.parts;
-        md5Checksum = anotherInputEncryptedFile.md5Checksum;
-        keyFingerprint = anotherInputEncryptedFile.keyFingerprint;
-        accessHash = anotherInputEncryptedFile.accessHash;
-        tlType = anotherInputEncryptedFile.tlType;
-
-        return *this;
-    }
-
-    quint64 id;
-    quint32 parts;
-    QString md5Checksum;
-    quint32 keyFingerprint;
-    quint64 accessHash;
-    TLValue tlType;
-};
-
-struct TLChatParticipant {
-    TLChatParticipant() :
-        userId(0),
-        inviterId(0),
-        date(0) { }
-
-    TLChatParticipant(const TLChatParticipant &anotherChatParticipant) :
-        userId(anotherChatParticipant.userId),
-        inviterId(anotherChatParticipant.inviterId),
-        date(anotherChatParticipant.date) { }
-
-    TLChatParticipant &operator=(const TLChatParticipant &anotherChatParticipant) {
-        userId = anotherChatParticipant.userId;
-        inviterId = anotherChatParticipant.inviterId;
-        date = anotherChatParticipant.date;
-
-        return *this;
-    }
-
-    quint32 userId;
-    quint32 inviterId;
-    quint32 date;
-};
-
-struct TLInputAudio {
-    TLInputAudio() :
-        id(0),
-        accessHash(0),
-        tlType(InputAudioEmpty) { }
-
-    TLInputAudio(const TLInputAudio &anotherInputAudio) :
-        id(anotherInputAudio.id),
-        accessHash(anotherInputAudio.accessHash),
-        tlType(anotherInputAudio.tlType) { }
-
-    TLInputAudio &operator=(const TLInputAudio &anotherInputAudio) {
-        id = anotherInputAudio.id;
-        accessHash = anotherInputAudio.accessHash;
-        tlType = anotherInputAudio.tlType;
-
-        return *this;
-    }
-
-    quint64 id;
-    quint64 accessHash;
-    TLValue tlType;
-};
-
 struct TLAudio {
     TLAudio() :
         id(0),
@@ -707,69 +54,114 @@ struct TLAudio {
     TLValue tlType;
 };
 
-struct TLEncryptedChat {
-    TLEncryptedChat() :
-        id(0),
-        accessHash(0),
-        date(0),
-        adminId(0),
-        participantId(0),
-        keyFingerprint(0),
-        tlType(EncryptedChatEmpty) { }
+struct TLAuthCheckedPhone {
+    TLAuthCheckedPhone() :
+        phoneRegistered(false),
+        phoneInvited(false) { }
 
-    TLEncryptedChat(const TLEncryptedChat &anotherEncryptedChat) :
-        id(anotherEncryptedChat.id),
-        accessHash(anotherEncryptedChat.accessHash),
-        date(anotherEncryptedChat.date),
-        adminId(anotherEncryptedChat.adminId),
-        participantId(anotherEncryptedChat.participantId),
-        gA(anotherEncryptedChat.gA),
-        gAOrB(anotherEncryptedChat.gAOrB),
-        keyFingerprint(anotherEncryptedChat.keyFingerprint),
-        tlType(anotherEncryptedChat.tlType) { }
+    TLAuthCheckedPhone(const TLAuthCheckedPhone &anotherAuthCheckedPhone) :
+        phoneRegistered(anotherAuthCheckedPhone.phoneRegistered),
+        phoneInvited(anotherAuthCheckedPhone.phoneInvited) { }
 
-    TLEncryptedChat &operator=(const TLEncryptedChat &anotherEncryptedChat) {
-        id = anotherEncryptedChat.id;
-        accessHash = anotherEncryptedChat.accessHash;
-        date = anotherEncryptedChat.date;
-        adminId = anotherEncryptedChat.adminId;
-        participantId = anotherEncryptedChat.participantId;
-        gA = anotherEncryptedChat.gA;
-        gAOrB = anotherEncryptedChat.gAOrB;
-        keyFingerprint = anotherEncryptedChat.keyFingerprint;
-        tlType = anotherEncryptedChat.tlType;
+    TLAuthCheckedPhone &operator=(const TLAuthCheckedPhone &anotherAuthCheckedPhone) {
+        phoneRegistered = anotherAuthCheckedPhone.phoneRegistered;
+        phoneInvited = anotherAuthCheckedPhone.phoneInvited;
+
+        return *this;
+    }
+
+    bool phoneRegistered;
+    bool phoneInvited;
+};
+
+struct TLAuthExportedAuthorization {
+    TLAuthExportedAuthorization() :
+        id(0) { }
+
+    TLAuthExportedAuthorization(const TLAuthExportedAuthorization &anotherAuthExportedAuthorization) :
+        id(anotherAuthExportedAuthorization.id),
+        bytes(anotherAuthExportedAuthorization.bytes) { }
+
+    TLAuthExportedAuthorization &operator=(const TLAuthExportedAuthorization &anotherAuthExportedAuthorization) {
+        id = anotherAuthExportedAuthorization.id;
+        bytes = anotherAuthExportedAuthorization.bytes;
 
         return *this;
     }
 
     quint32 id;
-    quint64 accessHash;
-    quint32 date;
-    quint32 adminId;
-    quint32 participantId;
-    QByteArray gA;
-    QByteArray gAOrB;
-    quint64 keyFingerprint;
-    TLValue tlType;
+    QByteArray bytes;
 };
 
-struct TLError {
-    TLError() :
-        code(0) { }
+struct TLAuthSentCode {
+    TLAuthSentCode() :
+        phoneRegistered(false),
+        sendCallTimeout(0),
+        isPassword(false) { }
 
-    TLError(const TLError &anotherError) :
-        code(anotherError.code),
-        text(anotherError.text) { }
+    TLAuthSentCode(const TLAuthSentCode &anotherAuthSentCode) :
+        phoneRegistered(anotherAuthSentCode.phoneRegistered),
+        phoneCodeHash(anotherAuthSentCode.phoneCodeHash),
+        sendCallTimeout(anotherAuthSentCode.sendCallTimeout),
+        isPassword(anotherAuthSentCode.isPassword) { }
 
-    TLError &operator=(const TLError &anotherError) {
-        code = anotherError.code;
-        text = anotherError.text;
+    TLAuthSentCode &operator=(const TLAuthSentCode &anotherAuthSentCode) {
+        phoneRegistered = anotherAuthSentCode.phoneRegistered;
+        phoneCodeHash = anotherAuthSentCode.phoneCodeHash;
+        sendCallTimeout = anotherAuthSentCode.sendCallTimeout;
+        isPassword = anotherAuthSentCode.isPassword;
 
         return *this;
     }
 
-    quint32 code;
-    QString text;
+    bool phoneRegistered;
+    QString phoneCodeHash;
+    quint32 sendCallTimeout;
+    bool isPassword;
+};
+
+struct TLChatLocated {
+    TLChatLocated() :
+        chatId(0),
+        distance(0) { }
+
+    TLChatLocated(const TLChatLocated &anotherChatLocated) :
+        chatId(anotherChatLocated.chatId),
+        distance(anotherChatLocated.distance) { }
+
+    TLChatLocated &operator=(const TLChatLocated &anotherChatLocated) {
+        chatId = anotherChatLocated.chatId;
+        distance = anotherChatLocated.distance;
+
+        return *this;
+    }
+
+    quint32 chatId;
+    quint32 distance;
+};
+
+struct TLChatParticipant {
+    TLChatParticipant() :
+        userId(0),
+        inviterId(0),
+        date(0) { }
+
+    TLChatParticipant(const TLChatParticipant &anotherChatParticipant) :
+        userId(anotherChatParticipant.userId),
+        inviterId(anotherChatParticipant.inviterId),
+        date(anotherChatParticipant.date) { }
+
+    TLChatParticipant &operator=(const TLChatParticipant &anotherChatParticipant) {
+        userId = anotherChatParticipant.userId;
+        inviterId = anotherChatParticipant.inviterId;
+        date = anotherChatParticipant.date;
+
+        return *this;
+    }
+
+    quint32 userId;
+    quint32 inviterId;
+    quint32 date;
 };
 
 struct TLChatParticipants {
@@ -800,6 +192,195 @@ struct TLChatParticipants {
     quint32 adminId;
     QVector<TLChatParticipant> participants;
     quint32 version;
+    TLValue tlType;
+};
+
+struct TLContact {
+    TLContact() :
+        userId(0),
+        mutual(false) { }
+
+    TLContact(const TLContact &anotherContact) :
+        userId(anotherContact.userId),
+        mutual(anotherContact.mutual) { }
+
+    TLContact &operator=(const TLContact &anotherContact) {
+        userId = anotherContact.userId;
+        mutual = anotherContact.mutual;
+
+        return *this;
+    }
+
+    quint32 userId;
+    bool mutual;
+};
+
+struct TLContactBlocked {
+    TLContactBlocked() :
+        userId(0),
+        date(0) { }
+
+    TLContactBlocked(const TLContactBlocked &anotherContactBlocked) :
+        userId(anotherContactBlocked.userId),
+        date(anotherContactBlocked.date) { }
+
+    TLContactBlocked &operator=(const TLContactBlocked &anotherContactBlocked) {
+        userId = anotherContactBlocked.userId;
+        date = anotherContactBlocked.date;
+
+        return *this;
+    }
+
+    quint32 userId;
+    quint32 date;
+};
+
+struct TLContactFound {
+    TLContactFound() :
+        userId(0) { }
+
+    TLContactFound(const TLContactFound &anotherContactFound) :
+        userId(anotherContactFound.userId) { }
+
+    TLContactFound &operator=(const TLContactFound &anotherContactFound) {
+        userId = anotherContactFound.userId;
+
+        return *this;
+    }
+
+    quint32 userId;
+};
+
+struct TLContactStatus {
+    TLContactStatus() :
+        userId(0),
+        expires(0) { }
+
+    TLContactStatus(const TLContactStatus &anotherContactStatus) :
+        userId(anotherContactStatus.userId),
+        expires(anotherContactStatus.expires) { }
+
+    TLContactStatus &operator=(const TLContactStatus &anotherContactStatus) {
+        userId = anotherContactStatus.userId;
+        expires = anotherContactStatus.expires;
+
+        return *this;
+    }
+
+    quint32 userId;
+    quint32 expires;
+};
+
+struct TLContactSuggested {
+    TLContactSuggested() :
+        userId(0),
+        mutualContacts(0) { }
+
+    TLContactSuggested(const TLContactSuggested &anotherContactSuggested) :
+        userId(anotherContactSuggested.userId),
+        mutualContacts(anotherContactSuggested.mutualContacts) { }
+
+    TLContactSuggested &operator=(const TLContactSuggested &anotherContactSuggested) {
+        userId = anotherContactSuggested.userId;
+        mutualContacts = anotherContactSuggested.mutualContacts;
+
+        return *this;
+    }
+
+    quint32 userId;
+    quint32 mutualContacts;
+};
+
+struct TLContactsForeignLink {
+    TLContactsForeignLink() :
+        hasPhone(false),
+        tlType(ContactsForeignLinkUnknown) { }
+
+    TLContactsForeignLink(const TLContactsForeignLink &anotherContactsForeignLink) :
+        hasPhone(anotherContactsForeignLink.hasPhone),
+        tlType(anotherContactsForeignLink.tlType) { }
+
+    TLContactsForeignLink &operator=(const TLContactsForeignLink &anotherContactsForeignLink) {
+        hasPhone = anotherContactsForeignLink.hasPhone;
+        tlType = anotherContactsForeignLink.tlType;
+
+        return *this;
+    }
+
+    bool hasPhone;
+    TLValue tlType;
+};
+
+struct TLContactsMyLink {
+    TLContactsMyLink() :
+        contact(false),
+        tlType(ContactsMyLinkEmpty) { }
+
+    TLContactsMyLink(const TLContactsMyLink &anotherContactsMyLink) :
+        contact(anotherContactsMyLink.contact),
+        tlType(anotherContactsMyLink.tlType) { }
+
+    TLContactsMyLink &operator=(const TLContactsMyLink &anotherContactsMyLink) {
+        contact = anotherContactsMyLink.contact;
+        tlType = anotherContactsMyLink.tlType;
+
+        return *this;
+    }
+
+    bool contact;
+    TLValue tlType;
+};
+
+struct TLDcOption {
+    TLDcOption() :
+        id(0),
+        port(0) { }
+
+    TLDcOption(const TLDcOption &anotherDcOption) :
+        id(anotherDcOption.id),
+        hostname(anotherDcOption.hostname),
+        ipAddress(anotherDcOption.ipAddress),
+        port(anotherDcOption.port) { }
+
+    TLDcOption &operator=(const TLDcOption &anotherDcOption) {
+        id = anotherDcOption.id;
+        hostname = anotherDcOption.hostname;
+        ipAddress = anotherDcOption.ipAddress;
+        port = anotherDcOption.port;
+
+        return *this;
+    }
+
+    quint32 id;
+    QString hostname;
+    QString ipAddress;
+    quint32 port;
+};
+
+struct TLDecryptedMessageAction {
+    TLDecryptedMessageAction() :
+        ttlSeconds(0),
+        layer(0),
+        tlType(DecryptedMessageActionSetMessageTTL) { }
+
+    TLDecryptedMessageAction(const TLDecryptedMessageAction &anotherDecryptedMessageAction) :
+        ttlSeconds(anotherDecryptedMessageAction.ttlSeconds),
+        randomIds(anotherDecryptedMessageAction.randomIds),
+        layer(anotherDecryptedMessageAction.layer),
+        tlType(anotherDecryptedMessageAction.tlType) { }
+
+    TLDecryptedMessageAction &operator=(const TLDecryptedMessageAction &anotherDecryptedMessageAction) {
+        ttlSeconds = anotherDecryptedMessageAction.ttlSeconds;
+        randomIds = anotherDecryptedMessageAction.randomIds;
+        layer = anotherDecryptedMessageAction.layer;
+        tlType = anotherDecryptedMessageAction.tlType;
+
+        return *this;
+    }
+
+    quint32 ttlSeconds;
+    QVector<quint64> randomIds;
+    quint32 layer;
     TLValue tlType;
 };
 
@@ -879,20 +460,50 @@ struct TLDecryptedMessageMedia {
     TLValue tlType;
 };
 
-struct TLContactFound {
-    TLContactFound() :
-        userId(0) { }
+struct TLEncryptedChat {
+    TLEncryptedChat() :
+        id(0),
+        accessHash(0),
+        date(0),
+        adminId(0),
+        participantId(0),
+        keyFingerprint(0),
+        tlType(EncryptedChatEmpty) { }
 
-    TLContactFound(const TLContactFound &anotherContactFound) :
-        userId(anotherContactFound.userId) { }
+    TLEncryptedChat(const TLEncryptedChat &anotherEncryptedChat) :
+        id(anotherEncryptedChat.id),
+        accessHash(anotherEncryptedChat.accessHash),
+        date(anotherEncryptedChat.date),
+        adminId(anotherEncryptedChat.adminId),
+        participantId(anotherEncryptedChat.participantId),
+        gA(anotherEncryptedChat.gA),
+        gAOrB(anotherEncryptedChat.gAOrB),
+        keyFingerprint(anotherEncryptedChat.keyFingerprint),
+        tlType(anotherEncryptedChat.tlType) { }
 
-    TLContactFound &operator=(const TLContactFound &anotherContactFound) {
-        userId = anotherContactFound.userId;
+    TLEncryptedChat &operator=(const TLEncryptedChat &anotherEncryptedChat) {
+        id = anotherEncryptedChat.id;
+        accessHash = anotherEncryptedChat.accessHash;
+        date = anotherEncryptedChat.date;
+        adminId = anotherEncryptedChat.adminId;
+        participantId = anotherEncryptedChat.participantId;
+        gA = anotherEncryptedChat.gA;
+        gAOrB = anotherEncryptedChat.gAOrB;
+        keyFingerprint = anotherEncryptedChat.keyFingerprint;
+        tlType = anotherEncryptedChat.tlType;
 
         return *this;
     }
 
-    quint32 userId;
+    quint32 id;
+    quint64 accessHash;
+    quint32 date;
+    quint32 adminId;
+    quint32 participantId;
+    QByteArray gA;
+    QByteArray gAOrB;
+    quint64 keyFingerprint;
+    TLValue tlType;
 };
 
 struct TLEncryptedFile {
@@ -931,324 +542,57 @@ struct TLEncryptedFile {
     TLValue tlType;
 };
 
-struct TLAuthSentCode {
-    TLAuthSentCode() :
-        phoneRegistered(false),
-        sendCallTimeout(0),
-        isPassword(false) { }
-
-    TLAuthSentCode(const TLAuthSentCode &anotherAuthSentCode) :
-        phoneRegistered(anotherAuthSentCode.phoneRegistered),
-        phoneCodeHash(anotherAuthSentCode.phoneCodeHash),
-        sendCallTimeout(anotherAuthSentCode.sendCallTimeout),
-        isPassword(anotherAuthSentCode.isPassword) { }
-
-    TLAuthSentCode &operator=(const TLAuthSentCode &anotherAuthSentCode) {
-        phoneRegistered = anotherAuthSentCode.phoneRegistered;
-        phoneCodeHash = anotherAuthSentCode.phoneCodeHash;
-        sendCallTimeout = anotherAuthSentCode.sendCallTimeout;
-        isPassword = anotherAuthSentCode.isPassword;
-
-        return *this;
-    }
-
-    bool phoneRegistered;
-    QString phoneCodeHash;
-    quint32 sendCallTimeout;
-    bool isPassword;
-};
-
-struct TLAuthExportedAuthorization {
-    TLAuthExportedAuthorization() :
-        id(0) { }
-
-    TLAuthExportedAuthorization(const TLAuthExportedAuthorization &anotherAuthExportedAuthorization) :
-        id(anotherAuthExportedAuthorization.id),
-        bytes(anotherAuthExportedAuthorization.bytes) { }
-
-    TLAuthExportedAuthorization &operator=(const TLAuthExportedAuthorization &anotherAuthExportedAuthorization) {
-        id = anotherAuthExportedAuthorization.id;
-        bytes = anotherAuthExportedAuthorization.bytes;
-
-        return *this;
-    }
-
-    quint32 id;
-    QByteArray bytes;
-};
-
-struct TLInputAppEvent {
-    TLInputAppEvent() :
-        time(0),
-        peer(0) { }
-
-    TLInputAppEvent(const TLInputAppEvent &anotherInputAppEvent) :
-        time(anotherInputAppEvent.time),
-        type(anotherInputAppEvent.type),
-        peer(anotherInputAppEvent.peer),
-        data(anotherInputAppEvent.data) { }
-
-    TLInputAppEvent &operator=(const TLInputAppEvent &anotherInputAppEvent) {
-        time = anotherInputAppEvent.time;
-        type = anotherInputAppEvent.type;
-        peer = anotherInputAppEvent.peer;
-        data = anotherInputAppEvent.data;
-
-        return *this;
-    }
-
-    double time;
-    QString type;
-    quint64 peer;
-    QString data;
-};
-
-struct TLContact {
-    TLContact() :
-        userId(0),
-        mutual(false) { }
-
-    TLContact(const TLContact &anotherContact) :
-        userId(anotherContact.userId),
-        mutual(anotherContact.mutual) { }
-
-    TLContact &operator=(const TLContact &anotherContact) {
-        userId = anotherContact.userId;
-        mutual = anotherContact.mutual;
-
-        return *this;
-    }
-
-    quint32 userId;
-    bool mutual;
-};
-
-struct TLStorageFileType {
-    TLStorageFileType() :
-        tlType(StorageFileUnknown) { }
-
-    TLStorageFileType(const TLStorageFileType &anotherStorageFileType) :
-        tlType(anotherStorageFileType.tlType) { }
-
-    TLStorageFileType &operator=(const TLStorageFileType &anotherStorageFileType) {
-        tlType = anotherStorageFileType.tlType;
-
-        return *this;
-    }
-
-    TLValue tlType;
-};
-
-struct TLInputContact {
-    TLInputContact() :
-        clientId(0) { }
-
-    TLInputContact(const TLInputContact &anotherInputContact) :
-        clientId(anotherInputContact.clientId),
-        phone(anotherInputContact.phone),
-        firstName(anotherInputContact.firstName),
-        lastName(anotherInputContact.lastName) { }
-
-    TLInputContact &operator=(const TLInputContact &anotherInputContact) {
-        clientId = anotherInputContact.clientId;
-        phone = anotherInputContact.phone;
-        firstName = anotherInputContact.firstName;
-        lastName = anotherInputContact.lastName;
-
-        return *this;
-    }
-
-    quint64 clientId;
-    QString phone;
-    QString firstName;
-    QString lastName;
-};
-
-struct TLInputPhotoCrop {
-    TLInputPhotoCrop() :
-        cropLeft(0),
-        cropTop(0),
-        cropWidth(0),
-        tlType(InputPhotoCropAuto) { }
-
-    TLInputPhotoCrop(const TLInputPhotoCrop &anotherInputPhotoCrop) :
-        cropLeft(anotherInputPhotoCrop.cropLeft),
-        cropTop(anotherInputPhotoCrop.cropTop),
-        cropWidth(anotherInputPhotoCrop.cropWidth),
-        tlType(anotherInputPhotoCrop.tlType) { }
-
-    TLInputPhotoCrop &operator=(const TLInputPhotoCrop &anotherInputPhotoCrop) {
-        cropLeft = anotherInputPhotoCrop.cropLeft;
-        cropTop = anotherInputPhotoCrop.cropTop;
-        cropWidth = anotherInputPhotoCrop.cropWidth;
-        tlType = anotherInputPhotoCrop.tlType;
-
-        return *this;
-    }
-
-    double cropLeft;
-    double cropTop;
-    double cropWidth;
-    TLValue tlType;
-};
-
-struct TLUserStatus {
-    TLUserStatus() :
-        expires(0),
-        wasOnline(0),
-        tlType(UserStatusEmpty) { }
-
-    TLUserStatus(const TLUserStatus &anotherUserStatus) :
-        expires(anotherUserStatus.expires),
-        wasOnline(anotherUserStatus.wasOnline),
-        tlType(anotherUserStatus.tlType) { }
-
-    TLUserStatus &operator=(const TLUserStatus &anotherUserStatus) {
-        expires = anotherUserStatus.expires;
-        wasOnline = anotherUserStatus.wasOnline;
-        tlType = anotherUserStatus.tlType;
-
-        return *this;
-    }
-
-    quint32 expires;
-    quint32 wasOnline;
-    TLValue tlType;
-};
-
-struct TLDecryptedMessage {
-    TLDecryptedMessage() :
+struct TLEncryptedMessage {
+    TLEncryptedMessage() :
         randomId(0),
-        tlType(DecryptedMessage) { }
+        chatId(0),
+        date(0),
+        tlType(EncryptedMessage) { }
 
-    TLDecryptedMessage(const TLDecryptedMessage &anotherDecryptedMessage) :
-        randomId(anotherDecryptedMessage.randomId),
-        randomBytes(anotherDecryptedMessage.randomBytes),
-        message(anotherDecryptedMessage.message),
-        media(anotherDecryptedMessage.media),
-        action(anotherDecryptedMessage.action),
-        tlType(anotherDecryptedMessage.tlType) { }
+    TLEncryptedMessage(const TLEncryptedMessage &anotherEncryptedMessage) :
+        randomId(anotherEncryptedMessage.randomId),
+        chatId(anotherEncryptedMessage.chatId),
+        date(anotherEncryptedMessage.date),
+        bytes(anotherEncryptedMessage.bytes),
+        file(anotherEncryptedMessage.file),
+        tlType(anotherEncryptedMessage.tlType) { }
 
-    TLDecryptedMessage &operator=(const TLDecryptedMessage &anotherDecryptedMessage) {
-        randomId = anotherDecryptedMessage.randomId;
-        randomBytes = anotherDecryptedMessage.randomBytes;
-        message = anotherDecryptedMessage.message;
-        media = anotherDecryptedMessage.media;
-        action = anotherDecryptedMessage.action;
-        tlType = anotherDecryptedMessage.tlType;
+    TLEncryptedMessage &operator=(const TLEncryptedMessage &anotherEncryptedMessage) {
+        randomId = anotherEncryptedMessage.randomId;
+        chatId = anotherEncryptedMessage.chatId;
+        date = anotherEncryptedMessage.date;
+        bytes = anotherEncryptedMessage.bytes;
+        file = anotherEncryptedMessage.file;
+        tlType = anotherEncryptedMessage.tlType;
 
         return *this;
     }
 
     quint64 randomId;
-    QByteArray randomBytes;
-    QString message;
-    TLDecryptedMessageMedia media;
-    TLDecryptedMessageAction action;
+    quint32 chatId;
+    quint32 date;
+    QByteArray bytes;
+    TLEncryptedFile file;
     TLValue tlType;
 };
 
-struct TLInputChatPhoto {
-    TLInputChatPhoto() :
-        tlType(InputChatPhotoEmpty) { }
+struct TLError {
+    TLError() :
+        code(0) { }
 
-    TLInputChatPhoto(const TLInputChatPhoto &anotherInputChatPhoto) :
-        file(anotherInputChatPhoto.file),
-        crop(anotherInputChatPhoto.crop),
-        id(anotherInputChatPhoto.id),
-        tlType(anotherInputChatPhoto.tlType) { }
+    TLError(const TLError &anotherError) :
+        code(anotherError.code),
+        text(anotherError.text) { }
 
-    TLInputChatPhoto &operator=(const TLInputChatPhoto &anotherInputChatPhoto) {
-        file = anotherInputChatPhoto.file;
-        crop = anotherInputChatPhoto.crop;
-        id = anotherInputChatPhoto.id;
-        tlType = anotherInputChatPhoto.tlType;
+    TLError &operator=(const TLError &anotherError) {
+        code = anotherError.code;
+        text = anotherError.text;
 
         return *this;
     }
 
-    TLInputFile file;
-    TLInputPhotoCrop crop;
-    TLInputPhoto id;
-    TLValue tlType;
-};
-
-struct TLInputGeoPoint {
-    TLInputGeoPoint() :
-        latitude(0),
-        longitude(0),
-        tlType(InputGeoPointEmpty) { }
-
-    TLInputGeoPoint(const TLInputGeoPoint &anotherInputGeoPoint) :
-        latitude(anotherInputGeoPoint.latitude),
-        longitude(anotherInputGeoPoint.longitude),
-        tlType(anotherInputGeoPoint.tlType) { }
-
-    TLInputGeoPoint &operator=(const TLInputGeoPoint &anotherInputGeoPoint) {
-        latitude = anotherInputGeoPoint.latitude;
-        longitude = anotherInputGeoPoint.longitude;
-        tlType = anotherInputGeoPoint.tlType;
-
-        return *this;
-    }
-
-    double latitude;
-    double longitude;
-    TLValue tlType;
-};
-
-struct TLMessagesDhConfig {
-    TLMessagesDhConfig() :
-        g(0),
-        version(0),
-        tlType(MessagesDhConfigNotModified) { }
-
-    TLMessagesDhConfig(const TLMessagesDhConfig &anotherMessagesDhConfig) :
-        random(anotherMessagesDhConfig.random),
-        g(anotherMessagesDhConfig.g),
-        p(anotherMessagesDhConfig.p),
-        version(anotherMessagesDhConfig.version),
-        tlType(anotherMessagesDhConfig.tlType) { }
-
-    TLMessagesDhConfig &operator=(const TLMessagesDhConfig &anotherMessagesDhConfig) {
-        random = anotherMessagesDhConfig.random;
-        g = anotherMessagesDhConfig.g;
-        p = anotherMessagesDhConfig.p;
-        version = anotherMessagesDhConfig.version;
-        tlType = anotherMessagesDhConfig.tlType;
-
-        return *this;
-    }
-
-    QByteArray random;
-    quint32 g;
-    QByteArray p;
-    quint32 version;
-    TLValue tlType;
-};
-
-struct TLInputVideo {
-    TLInputVideo() :
-        id(0),
-        accessHash(0),
-        tlType(InputVideoEmpty) { }
-
-    TLInputVideo(const TLInputVideo &anotherInputVideo) :
-        id(anotherInputVideo.id),
-        accessHash(anotherInputVideo.accessHash),
-        tlType(anotherInputVideo.tlType) { }
-
-    TLInputVideo &operator=(const TLInputVideo &anotherInputVideo) {
-        id = anotherInputVideo.id;
-        accessHash = anotherInputVideo.accessHash;
-        tlType = anotherInputVideo.tlType;
-
-        return *this;
-    }
-
-    quint64 id;
-    quint64 accessHash;
-    TLValue tlType;
+    quint32 code;
+    QString text;
 };
 
 struct TLFileLocation {
@@ -1283,23 +627,73 @@ struct TLFileLocation {
     TLValue tlType;
 };
 
-struct TLNotifyPeer {
-    TLNotifyPeer() :
-        tlType(NotifyPeer) { }
+struct TLGeoPoint {
+    TLGeoPoint() :
+        longitude(0),
+        latitude(0),
+        tlType(GeoPointEmpty) { }
 
-    TLNotifyPeer(const TLNotifyPeer &anotherNotifyPeer) :
-        peer(anotherNotifyPeer.peer),
-        tlType(anotherNotifyPeer.tlType) { }
+    TLGeoPoint(const TLGeoPoint &anotherGeoPoint) :
+        longitude(anotherGeoPoint.longitude),
+        latitude(anotherGeoPoint.latitude),
+        tlType(anotherGeoPoint.tlType) { }
 
-    TLNotifyPeer &operator=(const TLNotifyPeer &anotherNotifyPeer) {
-        peer = anotherNotifyPeer.peer;
-        tlType = anotherNotifyPeer.tlType;
+    TLGeoPoint &operator=(const TLGeoPoint &anotherGeoPoint) {
+        longitude = anotherGeoPoint.longitude;
+        latitude = anotherGeoPoint.latitude;
+        tlType = anotherGeoPoint.tlType;
 
         return *this;
     }
 
-    TLPeer peer;
+    double longitude;
+    double latitude;
     TLValue tlType;
+};
+
+struct TLHelpAppUpdate {
+    TLHelpAppUpdate() :
+        id(0),
+        critical(false),
+        tlType(HelpAppUpdate) { }
+
+    TLHelpAppUpdate(const TLHelpAppUpdate &anotherHelpAppUpdate) :
+        id(anotherHelpAppUpdate.id),
+        critical(anotherHelpAppUpdate.critical),
+        url(anotherHelpAppUpdate.url),
+        text(anotherHelpAppUpdate.text),
+        tlType(anotherHelpAppUpdate.tlType) { }
+
+    TLHelpAppUpdate &operator=(const TLHelpAppUpdate &anotherHelpAppUpdate) {
+        id = anotherHelpAppUpdate.id;
+        critical = anotherHelpAppUpdate.critical;
+        url = anotherHelpAppUpdate.url;
+        text = anotherHelpAppUpdate.text;
+        tlType = anotherHelpAppUpdate.tlType;
+
+        return *this;
+    }
+
+    quint32 id;
+    bool critical;
+    QString url;
+    QString text;
+    TLValue tlType;
+};
+
+struct TLHelpInviteText {
+    TLHelpInviteText()  { }
+
+    TLHelpInviteText(const TLHelpInviteText &anotherHelpInviteText) :
+        message(anotherHelpInviteText.message) { }
+
+    TLHelpInviteText &operator=(const TLHelpInviteText &anotherHelpInviteText) {
+        message = anotherHelpInviteText.message;
+
+        return *this;
+    }
+
+    QString message;
 };
 
 struct TLImportedContact {
@@ -1322,49 +716,117 @@ struct TLImportedContact {
     quint64 clientId;
 };
 
-struct TLPeerNotifySettings {
-    TLPeerNotifySettings() :
-        muteUntil(0),
-        showPreviews(false),
-        eventsMask(0),
-        tlType(PeerNotifySettingsEmpty) { }
+struct TLInputAppEvent {
+    TLInputAppEvent() :
+        time(0),
+        peer(0) { }
 
-    TLPeerNotifySettings(const TLPeerNotifySettings &anotherPeerNotifySettings) :
-        muteUntil(anotherPeerNotifySettings.muteUntil),
-        sound(anotherPeerNotifySettings.sound),
-        showPreviews(anotherPeerNotifySettings.showPreviews),
-        eventsMask(anotherPeerNotifySettings.eventsMask),
-        tlType(anotherPeerNotifySettings.tlType) { }
+    TLInputAppEvent(const TLInputAppEvent &anotherInputAppEvent) :
+        time(anotherInputAppEvent.time),
+        type(anotherInputAppEvent.type),
+        peer(anotherInputAppEvent.peer),
+        data(anotherInputAppEvent.data) { }
 
-    TLPeerNotifySettings &operator=(const TLPeerNotifySettings &anotherPeerNotifySettings) {
-        muteUntil = anotherPeerNotifySettings.muteUntil;
-        sound = anotherPeerNotifySettings.sound;
-        showPreviews = anotherPeerNotifySettings.showPreviews;
-        eventsMask = anotherPeerNotifySettings.eventsMask;
-        tlType = anotherPeerNotifySettings.tlType;
+    TLInputAppEvent &operator=(const TLInputAppEvent &anotherInputAppEvent) {
+        time = anotherInputAppEvent.time;
+        type = anotherInputAppEvent.type;
+        peer = anotherInputAppEvent.peer;
+        data = anotherInputAppEvent.data;
 
         return *this;
     }
 
-    quint32 muteUntil;
-    QString sound;
-    bool showPreviews;
-    quint32 eventsMask;
+    double time;
+    QString type;
+    quint64 peer;
+    QString data;
+};
+
+struct TLInputAudio {
+    TLInputAudio() :
+        id(0),
+        accessHash(0),
+        tlType(InputAudioEmpty) { }
+
+    TLInputAudio(const TLInputAudio &anotherInputAudio) :
+        id(anotherInputAudio.id),
+        accessHash(anotherInputAudio.accessHash),
+        tlType(anotherInputAudio.tlType) { }
+
+    TLInputAudio &operator=(const TLInputAudio &anotherInputAudio) {
+        id = anotherInputAudio.id;
+        accessHash = anotherInputAudio.accessHash;
+        tlType = anotherInputAudio.tlType;
+
+        return *this;
+    }
+
+    quint64 id;
+    quint64 accessHash;
     TLValue tlType;
 };
 
-struct TLInputGeoChat {
-    TLInputGeoChat() :
+struct TLInputContact {
+    TLInputContact() :
+        clientId(0) { }
+
+    TLInputContact(const TLInputContact &anotherInputContact) :
+        clientId(anotherInputContact.clientId),
+        phone(anotherInputContact.phone),
+        firstName(anotherInputContact.firstName),
+        lastName(anotherInputContact.lastName) { }
+
+    TLInputContact &operator=(const TLInputContact &anotherInputContact) {
+        clientId = anotherInputContact.clientId;
+        phone = anotherInputContact.phone;
+        firstName = anotherInputContact.firstName;
+        lastName = anotherInputContact.lastName;
+
+        return *this;
+    }
+
+    quint64 clientId;
+    QString phone;
+    QString firstName;
+    QString lastName;
+};
+
+struct TLInputDocument {
+    TLInputDocument() :
+        id(0),
+        accessHash(0),
+        tlType(InputDocumentEmpty) { }
+
+    TLInputDocument(const TLInputDocument &anotherInputDocument) :
+        id(anotherInputDocument.id),
+        accessHash(anotherInputDocument.accessHash),
+        tlType(anotherInputDocument.tlType) { }
+
+    TLInputDocument &operator=(const TLInputDocument &anotherInputDocument) {
+        id = anotherInputDocument.id;
+        accessHash = anotherInputDocument.accessHash;
+        tlType = anotherInputDocument.tlType;
+
+        return *this;
+    }
+
+    quint64 id;
+    quint64 accessHash;
+    TLValue tlType;
+};
+
+struct TLInputEncryptedChat {
+    TLInputEncryptedChat() :
         chatId(0),
         accessHash(0) { }
 
-    TLInputGeoChat(const TLInputGeoChat &anotherInputGeoChat) :
-        chatId(anotherInputGeoChat.chatId),
-        accessHash(anotherInputGeoChat.accessHash) { }
+    TLInputEncryptedChat(const TLInputEncryptedChat &anotherInputEncryptedChat) :
+        chatId(anotherInputEncryptedChat.chatId),
+        accessHash(anotherInputEncryptedChat.accessHash) { }
 
-    TLInputGeoChat &operator=(const TLInputGeoChat &anotherInputGeoChat) {
-        chatId = anotherInputGeoChat.chatId;
-        accessHash = anotherInputGeoChat.accessHash;
+    TLInputEncryptedChat &operator=(const TLInputEncryptedChat &anotherInputEncryptedChat) {
+        chatId = anotherInputEncryptedChat.chatId;
+        accessHash = anotherInputEncryptedChat.accessHash;
 
         return *this;
     }
@@ -1373,24 +835,69 @@ struct TLInputGeoChat {
     quint64 accessHash;
 };
 
-struct TLContactBlocked {
-    TLContactBlocked() :
-        userId(0),
-        date(0) { }
+struct TLInputEncryptedFile {
+    TLInputEncryptedFile() :
+        id(0),
+        parts(0),
+        keyFingerprint(0),
+        accessHash(0),
+        tlType(InputEncryptedFileEmpty) { }
 
-    TLContactBlocked(const TLContactBlocked &anotherContactBlocked) :
-        userId(anotherContactBlocked.userId),
-        date(anotherContactBlocked.date) { }
+    TLInputEncryptedFile(const TLInputEncryptedFile &anotherInputEncryptedFile) :
+        id(anotherInputEncryptedFile.id),
+        parts(anotherInputEncryptedFile.parts),
+        md5Checksum(anotherInputEncryptedFile.md5Checksum),
+        keyFingerprint(anotherInputEncryptedFile.keyFingerprint),
+        accessHash(anotherInputEncryptedFile.accessHash),
+        tlType(anotherInputEncryptedFile.tlType) { }
 
-    TLContactBlocked &operator=(const TLContactBlocked &anotherContactBlocked) {
-        userId = anotherContactBlocked.userId;
-        date = anotherContactBlocked.date;
+    TLInputEncryptedFile &operator=(const TLInputEncryptedFile &anotherInputEncryptedFile) {
+        id = anotherInputEncryptedFile.id;
+        parts = anotherInputEncryptedFile.parts;
+        md5Checksum = anotherInputEncryptedFile.md5Checksum;
+        keyFingerprint = anotherInputEncryptedFile.keyFingerprint;
+        accessHash = anotherInputEncryptedFile.accessHash;
+        tlType = anotherInputEncryptedFile.tlType;
 
         return *this;
     }
 
-    quint32 userId;
-    quint32 date;
+    quint64 id;
+    quint32 parts;
+    QString md5Checksum;
+    quint32 keyFingerprint;
+    quint64 accessHash;
+    TLValue tlType;
+};
+
+struct TLInputFile {
+    TLInputFile() :
+        id(0),
+        parts(0),
+        tlType(InputFile) { }
+
+    TLInputFile(const TLInputFile &anotherInputFile) :
+        id(anotherInputFile.id),
+        parts(anotherInputFile.parts),
+        name(anotherInputFile.name),
+        md5Checksum(anotherInputFile.md5Checksum),
+        tlType(anotherInputFile.tlType) { }
+
+    TLInputFile &operator=(const TLInputFile &anotherInputFile) {
+        id = anotherInputFile.id;
+        parts = anotherInputFile.parts;
+        name = anotherInputFile.name;
+        md5Checksum = anotherInputFile.md5Checksum;
+        tlType = anotherInputFile.tlType;
+
+        return *this;
+    }
+
+    quint64 id;
+    quint32 parts;
+    QString name;
+    QString md5Checksum;
+    TLValue tlType;
 };
 
 struct TLInputFileLocation {
@@ -1429,6 +936,682 @@ struct TLInputFileLocation {
     TLValue tlType;
 };
 
+struct TLInputGeoChat {
+    TLInputGeoChat() :
+        chatId(0),
+        accessHash(0) { }
+
+    TLInputGeoChat(const TLInputGeoChat &anotherInputGeoChat) :
+        chatId(anotherInputGeoChat.chatId),
+        accessHash(anotherInputGeoChat.accessHash) { }
+
+    TLInputGeoChat &operator=(const TLInputGeoChat &anotherInputGeoChat) {
+        chatId = anotherInputGeoChat.chatId;
+        accessHash = anotherInputGeoChat.accessHash;
+
+        return *this;
+    }
+
+    quint32 chatId;
+    quint64 accessHash;
+};
+
+struct TLInputGeoPoint {
+    TLInputGeoPoint() :
+        latitude(0),
+        longitude(0),
+        tlType(InputGeoPointEmpty) { }
+
+    TLInputGeoPoint(const TLInputGeoPoint &anotherInputGeoPoint) :
+        latitude(anotherInputGeoPoint.latitude),
+        longitude(anotherInputGeoPoint.longitude),
+        tlType(anotherInputGeoPoint.tlType) { }
+
+    TLInputGeoPoint &operator=(const TLInputGeoPoint &anotherInputGeoPoint) {
+        latitude = anotherInputGeoPoint.latitude;
+        longitude = anotherInputGeoPoint.longitude;
+        tlType = anotherInputGeoPoint.tlType;
+
+        return *this;
+    }
+
+    double latitude;
+    double longitude;
+    TLValue tlType;
+};
+
+struct TLInputPeer {
+    TLInputPeer() :
+        userId(0),
+        accessHash(0),
+        chatId(0),
+        tlType(InputPeerEmpty) { }
+
+    TLInputPeer(const TLInputPeer &anotherInputPeer) :
+        userId(anotherInputPeer.userId),
+        accessHash(anotherInputPeer.accessHash),
+        chatId(anotherInputPeer.chatId),
+        tlType(anotherInputPeer.tlType) { }
+
+    TLInputPeer &operator=(const TLInputPeer &anotherInputPeer) {
+        userId = anotherInputPeer.userId;
+        accessHash = anotherInputPeer.accessHash;
+        chatId = anotherInputPeer.chatId;
+        tlType = anotherInputPeer.tlType;
+
+        return *this;
+    }
+
+    quint32 userId;
+    quint64 accessHash;
+    quint32 chatId;
+    TLValue tlType;
+};
+
+struct TLInputPeerNotifyEvents {
+    TLInputPeerNotifyEvents() :
+        tlType(InputPeerNotifyEventsEmpty) { }
+
+    TLInputPeerNotifyEvents(const TLInputPeerNotifyEvents &anotherInputPeerNotifyEvents) :
+        tlType(anotherInputPeerNotifyEvents.tlType) { }
+
+    TLInputPeerNotifyEvents &operator=(const TLInputPeerNotifyEvents &anotherInputPeerNotifyEvents) {
+        tlType = anotherInputPeerNotifyEvents.tlType;
+
+        return *this;
+    }
+
+    TLValue tlType;
+};
+
+struct TLInputPeerNotifySettings {
+    TLInputPeerNotifySettings() :
+        muteUntil(0),
+        showPreviews(false),
+        eventsMask(0) { }
+
+    TLInputPeerNotifySettings(const TLInputPeerNotifySettings &anotherInputPeerNotifySettings) :
+        muteUntil(anotherInputPeerNotifySettings.muteUntil),
+        sound(anotherInputPeerNotifySettings.sound),
+        showPreviews(anotherInputPeerNotifySettings.showPreviews),
+        eventsMask(anotherInputPeerNotifySettings.eventsMask) { }
+
+    TLInputPeerNotifySettings &operator=(const TLInputPeerNotifySettings &anotherInputPeerNotifySettings) {
+        muteUntil = anotherInputPeerNotifySettings.muteUntil;
+        sound = anotherInputPeerNotifySettings.sound;
+        showPreviews = anotherInputPeerNotifySettings.showPreviews;
+        eventsMask = anotherInputPeerNotifySettings.eventsMask;
+
+        return *this;
+    }
+
+    quint32 muteUntil;
+    QString sound;
+    bool showPreviews;
+    quint32 eventsMask;
+};
+
+struct TLInputPhoto {
+    TLInputPhoto() :
+        id(0),
+        accessHash(0),
+        tlType(InputPhotoEmpty) { }
+
+    TLInputPhoto(const TLInputPhoto &anotherInputPhoto) :
+        id(anotherInputPhoto.id),
+        accessHash(anotherInputPhoto.accessHash),
+        tlType(anotherInputPhoto.tlType) { }
+
+    TLInputPhoto &operator=(const TLInputPhoto &anotherInputPhoto) {
+        id = anotherInputPhoto.id;
+        accessHash = anotherInputPhoto.accessHash;
+        tlType = anotherInputPhoto.tlType;
+
+        return *this;
+    }
+
+    quint64 id;
+    quint64 accessHash;
+    TLValue tlType;
+};
+
+struct TLInputPhotoCrop {
+    TLInputPhotoCrop() :
+        cropLeft(0),
+        cropTop(0),
+        cropWidth(0),
+        tlType(InputPhotoCropAuto) { }
+
+    TLInputPhotoCrop(const TLInputPhotoCrop &anotherInputPhotoCrop) :
+        cropLeft(anotherInputPhotoCrop.cropLeft),
+        cropTop(anotherInputPhotoCrop.cropTop),
+        cropWidth(anotherInputPhotoCrop.cropWidth),
+        tlType(anotherInputPhotoCrop.tlType) { }
+
+    TLInputPhotoCrop &operator=(const TLInputPhotoCrop &anotherInputPhotoCrop) {
+        cropLeft = anotherInputPhotoCrop.cropLeft;
+        cropTop = anotherInputPhotoCrop.cropTop;
+        cropWidth = anotherInputPhotoCrop.cropWidth;
+        tlType = anotherInputPhotoCrop.tlType;
+
+        return *this;
+    }
+
+    double cropLeft;
+    double cropTop;
+    double cropWidth;
+    TLValue tlType;
+};
+
+struct TLInputUser {
+    TLInputUser() :
+        userId(0),
+        accessHash(0),
+        tlType(InputUserEmpty) { }
+
+    TLInputUser(const TLInputUser &anotherInputUser) :
+        userId(anotherInputUser.userId),
+        accessHash(anotherInputUser.accessHash),
+        tlType(anotherInputUser.tlType) { }
+
+    TLInputUser &operator=(const TLInputUser &anotherInputUser) {
+        userId = anotherInputUser.userId;
+        accessHash = anotherInputUser.accessHash;
+        tlType = anotherInputUser.tlType;
+
+        return *this;
+    }
+
+    quint32 userId;
+    quint64 accessHash;
+    TLValue tlType;
+};
+
+struct TLInputVideo {
+    TLInputVideo() :
+        id(0),
+        accessHash(0),
+        tlType(InputVideoEmpty) { }
+
+    TLInputVideo(const TLInputVideo &anotherInputVideo) :
+        id(anotherInputVideo.id),
+        accessHash(anotherInputVideo.accessHash),
+        tlType(anotherInputVideo.tlType) { }
+
+    TLInputVideo &operator=(const TLInputVideo &anotherInputVideo) {
+        id = anotherInputVideo.id;
+        accessHash = anotherInputVideo.accessHash;
+        tlType = anotherInputVideo.tlType;
+
+        return *this;
+    }
+
+    quint64 id;
+    quint64 accessHash;
+    TLValue tlType;
+};
+
+struct TLMessagesAffectedHistory {
+    TLMessagesAffectedHistory() :
+        pts(0),
+        seq(0),
+        offset(0) { }
+
+    TLMessagesAffectedHistory(const TLMessagesAffectedHistory &anotherMessagesAffectedHistory) :
+        pts(anotherMessagesAffectedHistory.pts),
+        seq(anotherMessagesAffectedHistory.seq),
+        offset(anotherMessagesAffectedHistory.offset) { }
+
+    TLMessagesAffectedHistory &operator=(const TLMessagesAffectedHistory &anotherMessagesAffectedHistory) {
+        pts = anotherMessagesAffectedHistory.pts;
+        seq = anotherMessagesAffectedHistory.seq;
+        offset = anotherMessagesAffectedHistory.offset;
+
+        return *this;
+    }
+
+    quint32 pts;
+    quint32 seq;
+    quint32 offset;
+};
+
+struct TLMessagesDhConfig {
+    TLMessagesDhConfig() :
+        g(0),
+        version(0),
+        tlType(MessagesDhConfigNotModified) { }
+
+    TLMessagesDhConfig(const TLMessagesDhConfig &anotherMessagesDhConfig) :
+        random(anotherMessagesDhConfig.random),
+        g(anotherMessagesDhConfig.g),
+        p(anotherMessagesDhConfig.p),
+        version(anotherMessagesDhConfig.version),
+        tlType(anotherMessagesDhConfig.tlType) { }
+
+    TLMessagesDhConfig &operator=(const TLMessagesDhConfig &anotherMessagesDhConfig) {
+        random = anotherMessagesDhConfig.random;
+        g = anotherMessagesDhConfig.g;
+        p = anotherMessagesDhConfig.p;
+        version = anotherMessagesDhConfig.version;
+        tlType = anotherMessagesDhConfig.tlType;
+
+        return *this;
+    }
+
+    QByteArray random;
+    quint32 g;
+    QByteArray p;
+    quint32 version;
+    TLValue tlType;
+};
+
+struct TLMessagesFilter {
+    TLMessagesFilter() :
+        tlType(InputMessagesFilterEmpty) { }
+
+    TLMessagesFilter(const TLMessagesFilter &anotherMessagesFilter) :
+        tlType(anotherMessagesFilter.tlType) { }
+
+    TLMessagesFilter &operator=(const TLMessagesFilter &anotherMessagesFilter) {
+        tlType = anotherMessagesFilter.tlType;
+
+        return *this;
+    }
+
+    TLValue tlType;
+};
+
+struct TLMessagesSentEncryptedMessage {
+    TLMessagesSentEncryptedMessage() :
+        date(0),
+        tlType(MessagesSentEncryptedMessage) { }
+
+    TLMessagesSentEncryptedMessage(const TLMessagesSentEncryptedMessage &anotherMessagesSentEncryptedMessage) :
+        date(anotherMessagesSentEncryptedMessage.date),
+        file(anotherMessagesSentEncryptedMessage.file),
+        tlType(anotherMessagesSentEncryptedMessage.tlType) { }
+
+    TLMessagesSentEncryptedMessage &operator=(const TLMessagesSentEncryptedMessage &anotherMessagesSentEncryptedMessage) {
+        date = anotherMessagesSentEncryptedMessage.date;
+        file = anotherMessagesSentEncryptedMessage.file;
+        tlType = anotherMessagesSentEncryptedMessage.tlType;
+
+        return *this;
+    }
+
+    quint32 date;
+    TLEncryptedFile file;
+    TLValue tlType;
+};
+
+struct TLNearestDc {
+    TLNearestDc() :
+        thisDc(0),
+        nearestDc(0) { }
+
+    TLNearestDc(const TLNearestDc &anotherNearestDc) :
+        country(anotherNearestDc.country),
+        thisDc(anotherNearestDc.thisDc),
+        nearestDc(anotherNearestDc.nearestDc) { }
+
+    TLNearestDc &operator=(const TLNearestDc &anotherNearestDc) {
+        country = anotherNearestDc.country;
+        thisDc = anotherNearestDc.thisDc;
+        nearestDc = anotherNearestDc.nearestDc;
+
+        return *this;
+    }
+
+    QString country;
+    quint32 thisDc;
+    quint32 nearestDc;
+};
+
+struct TLPeer {
+    TLPeer() :
+        userId(0),
+        chatId(0),
+        tlType(PeerUser) { }
+
+    TLPeer(const TLPeer &anotherPeer) :
+        userId(anotherPeer.userId),
+        chatId(anotherPeer.chatId),
+        tlType(anotherPeer.tlType) { }
+
+    TLPeer &operator=(const TLPeer &anotherPeer) {
+        userId = anotherPeer.userId;
+        chatId = anotherPeer.chatId;
+        tlType = anotherPeer.tlType;
+
+        return *this;
+    }
+
+    quint32 userId;
+    quint32 chatId;
+    TLValue tlType;
+};
+
+struct TLPeerNotifyEvents {
+    TLPeerNotifyEvents() :
+        tlType(PeerNotifyEventsEmpty) { }
+
+    TLPeerNotifyEvents(const TLPeerNotifyEvents &anotherPeerNotifyEvents) :
+        tlType(anotherPeerNotifyEvents.tlType) { }
+
+    TLPeerNotifyEvents &operator=(const TLPeerNotifyEvents &anotherPeerNotifyEvents) {
+        tlType = anotherPeerNotifyEvents.tlType;
+
+        return *this;
+    }
+
+    TLValue tlType;
+};
+
+struct TLPeerNotifySettings {
+    TLPeerNotifySettings() :
+        muteUntil(0),
+        showPreviews(false),
+        eventsMask(0),
+        tlType(PeerNotifySettingsEmpty) { }
+
+    TLPeerNotifySettings(const TLPeerNotifySettings &anotherPeerNotifySettings) :
+        muteUntil(anotherPeerNotifySettings.muteUntil),
+        sound(anotherPeerNotifySettings.sound),
+        showPreviews(anotherPeerNotifySettings.showPreviews),
+        eventsMask(anotherPeerNotifySettings.eventsMask),
+        tlType(anotherPeerNotifySettings.tlType) { }
+
+    TLPeerNotifySettings &operator=(const TLPeerNotifySettings &anotherPeerNotifySettings) {
+        muteUntil = anotherPeerNotifySettings.muteUntil;
+        sound = anotherPeerNotifySettings.sound;
+        showPreviews = anotherPeerNotifySettings.showPreviews;
+        eventsMask = anotherPeerNotifySettings.eventsMask;
+        tlType = anotherPeerNotifySettings.tlType;
+
+        return *this;
+    }
+
+    quint32 muteUntil;
+    QString sound;
+    bool showPreviews;
+    quint32 eventsMask;
+    TLValue tlType;
+};
+
+struct TLPhotoSize {
+    TLPhotoSize() :
+        w(0),
+        h(0),
+        size(0),
+        tlType(PhotoSizeEmpty) { }
+
+    TLPhotoSize(const TLPhotoSize &anotherPhotoSize) :
+        type(anotherPhotoSize.type),
+        location(anotherPhotoSize.location),
+        w(anotherPhotoSize.w),
+        h(anotherPhotoSize.h),
+        size(anotherPhotoSize.size),
+        bytes(anotherPhotoSize.bytes),
+        tlType(anotherPhotoSize.tlType) { }
+
+    TLPhotoSize &operator=(const TLPhotoSize &anotherPhotoSize) {
+        type = anotherPhotoSize.type;
+        location = anotherPhotoSize.location;
+        w = anotherPhotoSize.w;
+        h = anotherPhotoSize.h;
+        size = anotherPhotoSize.size;
+        bytes = anotherPhotoSize.bytes;
+        tlType = anotherPhotoSize.tlType;
+
+        return *this;
+    }
+
+    QString type;
+    TLFileLocation location;
+    quint32 w;
+    quint32 h;
+    quint32 size;
+    QByteArray bytes;
+    TLValue tlType;
+};
+
+struct TLStorageFileType {
+    TLStorageFileType() :
+        tlType(StorageFileUnknown) { }
+
+    TLStorageFileType(const TLStorageFileType &anotherStorageFileType) :
+        tlType(anotherStorageFileType.tlType) { }
+
+    TLStorageFileType &operator=(const TLStorageFileType &anotherStorageFileType) {
+        tlType = anotherStorageFileType.tlType;
+
+        return *this;
+    }
+
+    TLValue tlType;
+};
+
+struct TLUpdatesState {
+    TLUpdatesState() :
+        pts(0),
+        qts(0),
+        date(0),
+        seq(0),
+        unreadCount(0) { }
+
+    TLUpdatesState(const TLUpdatesState &anotherUpdatesState) :
+        pts(anotherUpdatesState.pts),
+        qts(anotherUpdatesState.qts),
+        date(anotherUpdatesState.date),
+        seq(anotherUpdatesState.seq),
+        unreadCount(anotherUpdatesState.unreadCount) { }
+
+    TLUpdatesState &operator=(const TLUpdatesState &anotherUpdatesState) {
+        pts = anotherUpdatesState.pts;
+        qts = anotherUpdatesState.qts;
+        date = anotherUpdatesState.date;
+        seq = anotherUpdatesState.seq;
+        unreadCount = anotherUpdatesState.unreadCount;
+
+        return *this;
+    }
+
+    quint32 pts;
+    quint32 qts;
+    quint32 date;
+    quint32 seq;
+    quint32 unreadCount;
+};
+
+struct TLUploadFile {
+    TLUploadFile() :
+        mtime(0) { }
+
+    TLUploadFile(const TLUploadFile &anotherUploadFile) :
+        type(anotherUploadFile.type),
+        mtime(anotherUploadFile.mtime),
+        bytes(anotherUploadFile.bytes) { }
+
+    TLUploadFile &operator=(const TLUploadFile &anotherUploadFile) {
+        type = anotherUploadFile.type;
+        mtime = anotherUploadFile.mtime;
+        bytes = anotherUploadFile.bytes;
+
+        return *this;
+    }
+
+    TLStorageFileType type;
+    quint32 mtime;
+    QByteArray bytes;
+};
+
+struct TLUserProfilePhoto {
+    TLUserProfilePhoto() :
+        photoId(0),
+        tlType(UserProfilePhotoEmpty) { }
+
+    TLUserProfilePhoto(const TLUserProfilePhoto &anotherUserProfilePhoto) :
+        photoId(anotherUserProfilePhoto.photoId),
+        photoSmall(anotherUserProfilePhoto.photoSmall),
+        photoBig(anotherUserProfilePhoto.photoBig),
+        tlType(anotherUserProfilePhoto.tlType) { }
+
+    TLUserProfilePhoto &operator=(const TLUserProfilePhoto &anotherUserProfilePhoto) {
+        photoId = anotherUserProfilePhoto.photoId;
+        photoSmall = anotherUserProfilePhoto.photoSmall;
+        photoBig = anotherUserProfilePhoto.photoBig;
+        tlType = anotherUserProfilePhoto.tlType;
+
+        return *this;
+    }
+
+    quint64 photoId;
+    TLFileLocation photoSmall;
+    TLFileLocation photoBig;
+    TLValue tlType;
+};
+
+struct TLUserStatus {
+    TLUserStatus() :
+        expires(0),
+        wasOnline(0),
+        tlType(UserStatusEmpty) { }
+
+    TLUserStatus(const TLUserStatus &anotherUserStatus) :
+        expires(anotherUserStatus.expires),
+        wasOnline(anotherUserStatus.wasOnline),
+        tlType(anotherUserStatus.tlType) { }
+
+    TLUserStatus &operator=(const TLUserStatus &anotherUserStatus) {
+        expires = anotherUserStatus.expires;
+        wasOnline = anotherUserStatus.wasOnline;
+        tlType = anotherUserStatus.tlType;
+
+        return *this;
+    }
+
+    quint32 expires;
+    quint32 wasOnline;
+    TLValue tlType;
+};
+
+struct TLVideo {
+    TLVideo() :
+        id(0),
+        accessHash(0),
+        userId(0),
+        date(0),
+        duration(0),
+        size(0),
+        dcId(0),
+        w(0),
+        h(0),
+        tlType(VideoEmpty) { }
+
+    TLVideo(const TLVideo &anotherVideo) :
+        id(anotherVideo.id),
+        accessHash(anotherVideo.accessHash),
+        userId(anotherVideo.userId),
+        date(anotherVideo.date),
+        caption(anotherVideo.caption),
+        duration(anotherVideo.duration),
+        mimeType(anotherVideo.mimeType),
+        size(anotherVideo.size),
+        thumb(anotherVideo.thumb),
+        dcId(anotherVideo.dcId),
+        w(anotherVideo.w),
+        h(anotherVideo.h),
+        tlType(anotherVideo.tlType) { }
+
+    TLVideo &operator=(const TLVideo &anotherVideo) {
+        id = anotherVideo.id;
+        accessHash = anotherVideo.accessHash;
+        userId = anotherVideo.userId;
+        date = anotherVideo.date;
+        caption = anotherVideo.caption;
+        duration = anotherVideo.duration;
+        mimeType = anotherVideo.mimeType;
+        size = anotherVideo.size;
+        thumb = anotherVideo.thumb;
+        dcId = anotherVideo.dcId;
+        w = anotherVideo.w;
+        h = anotherVideo.h;
+        tlType = anotherVideo.tlType;
+
+        return *this;
+    }
+
+    quint64 id;
+    quint64 accessHash;
+    quint32 userId;
+    quint32 date;
+    QString caption;
+    quint32 duration;
+    QString mimeType;
+    quint32 size;
+    TLPhotoSize thumb;
+    quint32 dcId;
+    quint32 w;
+    quint32 h;
+    TLValue tlType;
+};
+
+struct TLWallPaper {
+    TLWallPaper() :
+        id(0),
+        color(0),
+        bgColor(0),
+        tlType(WallPaper) { }
+
+    TLWallPaper(const TLWallPaper &anotherWallPaper) :
+        id(anotherWallPaper.id),
+        title(anotherWallPaper.title),
+        sizes(anotherWallPaper.sizes),
+        color(anotherWallPaper.color),
+        bgColor(anotherWallPaper.bgColor),
+        tlType(anotherWallPaper.tlType) { }
+
+    TLWallPaper &operator=(const TLWallPaper &anotherWallPaper) {
+        id = anotherWallPaper.id;
+        title = anotherWallPaper.title;
+        sizes = anotherWallPaper.sizes;
+        color = anotherWallPaper.color;
+        bgColor = anotherWallPaper.bgColor;
+        tlType = anotherWallPaper.tlType;
+
+        return *this;
+    }
+
+    quint32 id;
+    QString title;
+    QVector<TLPhotoSize> sizes;
+    quint32 color;
+    quint32 bgColor;
+    TLValue tlType;
+};
+
+struct TLChatPhoto {
+    TLChatPhoto() :
+        tlType(ChatPhotoEmpty) { }
+
+    TLChatPhoto(const TLChatPhoto &anotherChatPhoto) :
+        photoSmall(anotherChatPhoto.photoSmall),
+        photoBig(anotherChatPhoto.photoBig),
+        tlType(anotherChatPhoto.tlType) { }
+
+    TLChatPhoto &operator=(const TLChatPhoto &anotherChatPhoto) {
+        photoSmall = anotherChatPhoto.photoSmall;
+        photoBig = anotherChatPhoto.photoBig;
+        tlType = anotherChatPhoto.tlType;
+
+        return *this;
+    }
+
+    TLFileLocation photoSmall;
+    TLFileLocation photoBig;
+    TLValue tlType;
+};
+
 struct TLConfig {
     TLConfig() :
         date(0),
@@ -1462,6 +1645,157 @@ struct TLConfig {
     QVector<TLDcOption> dcOptions;
     quint32 chatSizeMax;
     quint32 broadcastSizeMax;
+};
+
+struct TLDecryptedMessage {
+    TLDecryptedMessage() :
+        randomId(0),
+        tlType(DecryptedMessage) { }
+
+    TLDecryptedMessage(const TLDecryptedMessage &anotherDecryptedMessage) :
+        randomId(anotherDecryptedMessage.randomId),
+        randomBytes(anotherDecryptedMessage.randomBytes),
+        message(anotherDecryptedMessage.message),
+        media(anotherDecryptedMessage.media),
+        action(anotherDecryptedMessage.action),
+        tlType(anotherDecryptedMessage.tlType) { }
+
+    TLDecryptedMessage &operator=(const TLDecryptedMessage &anotherDecryptedMessage) {
+        randomId = anotherDecryptedMessage.randomId;
+        randomBytes = anotherDecryptedMessage.randomBytes;
+        message = anotherDecryptedMessage.message;
+        media = anotherDecryptedMessage.media;
+        action = anotherDecryptedMessage.action;
+        tlType = anotherDecryptedMessage.tlType;
+
+        return *this;
+    }
+
+    quint64 randomId;
+    QByteArray randomBytes;
+    QString message;
+    TLDecryptedMessageMedia media;
+    TLDecryptedMessageAction action;
+    TLValue tlType;
+};
+
+struct TLDecryptedMessageLayer {
+    TLDecryptedMessageLayer() :
+        layer(0) { }
+
+    TLDecryptedMessageLayer(const TLDecryptedMessageLayer &anotherDecryptedMessageLayer) :
+        layer(anotherDecryptedMessageLayer.layer),
+        message(anotherDecryptedMessageLayer.message) { }
+
+    TLDecryptedMessageLayer &operator=(const TLDecryptedMessageLayer &anotherDecryptedMessageLayer) {
+        layer = anotherDecryptedMessageLayer.layer;
+        message = anotherDecryptedMessageLayer.message;
+
+        return *this;
+    }
+
+    quint32 layer;
+    TLDecryptedMessage message;
+};
+
+struct TLDialog {
+    TLDialog() :
+        topMessage(0),
+        unreadCount(0) { }
+
+    TLDialog(const TLDialog &anotherDialog) :
+        peer(anotherDialog.peer),
+        topMessage(anotherDialog.topMessage),
+        unreadCount(anotherDialog.unreadCount),
+        notifySettings(anotherDialog.notifySettings) { }
+
+    TLDialog &operator=(const TLDialog &anotherDialog) {
+        peer = anotherDialog.peer;
+        topMessage = anotherDialog.topMessage;
+        unreadCount = anotherDialog.unreadCount;
+        notifySettings = anotherDialog.notifySettings;
+
+        return *this;
+    }
+
+    TLPeer peer;
+    quint32 topMessage;
+    quint32 unreadCount;
+    TLPeerNotifySettings notifySettings;
+};
+
+struct TLDocument {
+    TLDocument() :
+        id(0),
+        accessHash(0),
+        userId(0),
+        date(0),
+        size(0),
+        dcId(0),
+        tlType(DocumentEmpty) { }
+
+    TLDocument(const TLDocument &anotherDocument) :
+        id(anotherDocument.id),
+        accessHash(anotherDocument.accessHash),
+        userId(anotherDocument.userId),
+        date(anotherDocument.date),
+        fileName(anotherDocument.fileName),
+        mimeType(anotherDocument.mimeType),
+        size(anotherDocument.size),
+        thumb(anotherDocument.thumb),
+        dcId(anotherDocument.dcId),
+        tlType(anotherDocument.tlType) { }
+
+    TLDocument &operator=(const TLDocument &anotherDocument) {
+        id = anotherDocument.id;
+        accessHash = anotherDocument.accessHash;
+        userId = anotherDocument.userId;
+        date = anotherDocument.date;
+        fileName = anotherDocument.fileName;
+        mimeType = anotherDocument.mimeType;
+        size = anotherDocument.size;
+        thumb = anotherDocument.thumb;
+        dcId = anotherDocument.dcId;
+        tlType = anotherDocument.tlType;
+
+        return *this;
+    }
+
+    quint64 id;
+    quint64 accessHash;
+    quint32 userId;
+    quint32 date;
+    QString fileName;
+    QString mimeType;
+    quint32 size;
+    TLPhotoSize thumb;
+    quint32 dcId;
+    TLValue tlType;
+};
+
+struct TLInputChatPhoto {
+    TLInputChatPhoto() :
+        tlType(InputChatPhotoEmpty) { }
+
+    TLInputChatPhoto(const TLInputChatPhoto &anotherInputChatPhoto) :
+        file(anotherInputChatPhoto.file),
+        crop(anotherInputChatPhoto.crop),
+        id(anotherInputChatPhoto.id),
+        tlType(anotherInputChatPhoto.tlType) { }
+
+    TLInputChatPhoto &operator=(const TLInputChatPhoto &anotherInputChatPhoto) {
+        file = anotherInputChatPhoto.file;
+        crop = anotherInputChatPhoto.crop;
+        id = anotherInputChatPhoto.id;
+        tlType = anotherInputChatPhoto.tlType;
+
+        return *this;
+    }
+
+    TLInputFile file;
+    TLInputPhotoCrop crop;
+    TLInputPhoto id;
+    TLValue tlType;
 };
 
 struct TLInputMedia {
@@ -1538,306 +1872,52 @@ struct TLInputNotifyPeer {
     TLValue tlType;
 };
 
-struct TLDecryptedMessageLayer {
-    TLDecryptedMessageLayer() :
-        layer(0) { }
+struct TLNotifyPeer {
+    TLNotifyPeer() :
+        tlType(NotifyPeer) { }
 
-    TLDecryptedMessageLayer(const TLDecryptedMessageLayer &anotherDecryptedMessageLayer) :
-        layer(anotherDecryptedMessageLayer.layer),
-        message(anotherDecryptedMessageLayer.message) { }
+    TLNotifyPeer(const TLNotifyPeer &anotherNotifyPeer) :
+        peer(anotherNotifyPeer.peer),
+        tlType(anotherNotifyPeer.tlType) { }
 
-    TLDecryptedMessageLayer &operator=(const TLDecryptedMessageLayer &anotherDecryptedMessageLayer) {
-        layer = anotherDecryptedMessageLayer.layer;
-        message = anotherDecryptedMessageLayer.message;
-
-        return *this;
-    }
-
-    quint32 layer;
-    TLDecryptedMessage message;
-};
-
-struct TLMessagesSentEncryptedMessage {
-    TLMessagesSentEncryptedMessage() :
-        date(0),
-        tlType(MessagesSentEncryptedMessage) { }
-
-    TLMessagesSentEncryptedMessage(const TLMessagesSentEncryptedMessage &anotherMessagesSentEncryptedMessage) :
-        date(anotherMessagesSentEncryptedMessage.date),
-        file(anotherMessagesSentEncryptedMessage.file),
-        tlType(anotherMessagesSentEncryptedMessage.tlType) { }
-
-    TLMessagesSentEncryptedMessage &operator=(const TLMessagesSentEncryptedMessage &anotherMessagesSentEncryptedMessage) {
-        date = anotherMessagesSentEncryptedMessage.date;
-        file = anotherMessagesSentEncryptedMessage.file;
-        tlType = anotherMessagesSentEncryptedMessage.tlType;
-
-        return *this;
-    }
-
-    quint32 date;
-    TLEncryptedFile file;
-    TLValue tlType;
-};
-
-struct TLEncryptedMessage {
-    TLEncryptedMessage() :
-        randomId(0),
-        chatId(0),
-        date(0),
-        tlType(EncryptedMessage) { }
-
-    TLEncryptedMessage(const TLEncryptedMessage &anotherEncryptedMessage) :
-        randomId(anotherEncryptedMessage.randomId),
-        chatId(anotherEncryptedMessage.chatId),
-        date(anotherEncryptedMessage.date),
-        bytes(anotherEncryptedMessage.bytes),
-        file(anotherEncryptedMessage.file),
-        tlType(anotherEncryptedMessage.tlType) { }
-
-    TLEncryptedMessage &operator=(const TLEncryptedMessage &anotherEncryptedMessage) {
-        randomId = anotherEncryptedMessage.randomId;
-        chatId = anotherEncryptedMessage.chatId;
-        date = anotherEncryptedMessage.date;
-        bytes = anotherEncryptedMessage.bytes;
-        file = anotherEncryptedMessage.file;
-        tlType = anotherEncryptedMessage.tlType;
-
-        return *this;
-    }
-
-    quint64 randomId;
-    quint32 chatId;
-    quint32 date;
-    QByteArray bytes;
-    TLEncryptedFile file;
-    TLValue tlType;
-};
-
-struct TLUploadFile {
-    TLUploadFile() :
-        mtime(0) { }
-
-    TLUploadFile(const TLUploadFile &anotherUploadFile) :
-        type(anotherUploadFile.type),
-        mtime(anotherUploadFile.mtime),
-        bytes(anotherUploadFile.bytes) { }
-
-    TLUploadFile &operator=(const TLUploadFile &anotherUploadFile) {
-        type = anotherUploadFile.type;
-        mtime = anotherUploadFile.mtime;
-        bytes = anotherUploadFile.bytes;
-
-        return *this;
-    }
-
-    TLStorageFileType type;
-    quint32 mtime;
-    QByteArray bytes;
-};
-
-struct TLChatPhoto {
-    TLChatPhoto() :
-        tlType(ChatPhotoEmpty) { }
-
-    TLChatPhoto(const TLChatPhoto &anotherChatPhoto) :
-        photoSmall(anotherChatPhoto.photoSmall),
-        photoBig(anotherChatPhoto.photoBig),
-        tlType(anotherChatPhoto.tlType) { }
-
-    TLChatPhoto &operator=(const TLChatPhoto &anotherChatPhoto) {
-        photoSmall = anotherChatPhoto.photoSmall;
-        photoBig = anotherChatPhoto.photoBig;
-        tlType = anotherChatPhoto.tlType;
-
-        return *this;
-    }
-
-    TLFileLocation photoSmall;
-    TLFileLocation photoBig;
-    TLValue tlType;
-};
-
-struct TLUserProfilePhoto {
-    TLUserProfilePhoto() :
-        photoId(0),
-        tlType(UserProfilePhotoEmpty) { }
-
-    TLUserProfilePhoto(const TLUserProfilePhoto &anotherUserProfilePhoto) :
-        photoId(anotherUserProfilePhoto.photoId),
-        photoSmall(anotherUserProfilePhoto.photoSmall),
-        photoBig(anotherUserProfilePhoto.photoBig),
-        tlType(anotherUserProfilePhoto.tlType) { }
-
-    TLUserProfilePhoto &operator=(const TLUserProfilePhoto &anotherUserProfilePhoto) {
-        photoId = anotherUserProfilePhoto.photoId;
-        photoSmall = anotherUserProfilePhoto.photoSmall;
-        photoBig = anotherUserProfilePhoto.photoBig;
-        tlType = anotherUserProfilePhoto.tlType;
-
-        return *this;
-    }
-
-    quint64 photoId;
-    TLFileLocation photoSmall;
-    TLFileLocation photoBig;
-    TLValue tlType;
-};
-
-struct TLDialog {
-    TLDialog() :
-        topMessage(0),
-        unreadCount(0) { }
-
-    TLDialog(const TLDialog &anotherDialog) :
-        peer(anotherDialog.peer),
-        topMessage(anotherDialog.topMessage),
-        unreadCount(anotherDialog.unreadCount),
-        notifySettings(anotherDialog.notifySettings) { }
-
-    TLDialog &operator=(const TLDialog &anotherDialog) {
-        peer = anotherDialog.peer;
-        topMessage = anotherDialog.topMessage;
-        unreadCount = anotherDialog.unreadCount;
-        notifySettings = anotherDialog.notifySettings;
+    TLNotifyPeer &operator=(const TLNotifyPeer &anotherNotifyPeer) {
+        peer = anotherNotifyPeer.peer;
+        tlType = anotherNotifyPeer.tlType;
 
         return *this;
     }
 
     TLPeer peer;
-    quint32 topMessage;
-    quint32 unreadCount;
-    TLPeerNotifySettings notifySettings;
-};
-
-struct TLPhotoSize {
-    TLPhotoSize() :
-        w(0),
-        h(0),
-        size(0),
-        tlType(PhotoSizeEmpty) { }
-
-    TLPhotoSize(const TLPhotoSize &anotherPhotoSize) :
-        type(anotherPhotoSize.type),
-        location(anotherPhotoSize.location),
-        w(anotherPhotoSize.w),
-        h(anotherPhotoSize.h),
-        size(anotherPhotoSize.size),
-        bytes(anotherPhotoSize.bytes),
-        tlType(anotherPhotoSize.tlType) { }
-
-    TLPhotoSize &operator=(const TLPhotoSize &anotherPhotoSize) {
-        type = anotherPhotoSize.type;
-        location = anotherPhotoSize.location;
-        w = anotherPhotoSize.w;
-        h = anotherPhotoSize.h;
-        size = anotherPhotoSize.size;
-        bytes = anotherPhotoSize.bytes;
-        tlType = anotherPhotoSize.tlType;
-
-        return *this;
-    }
-
-    QString type;
-    TLFileLocation location;
-    quint32 w;
-    quint32 h;
-    quint32 size;
-    QByteArray bytes;
     TLValue tlType;
 };
 
-struct TLDocument {
-    TLDocument() :
+struct TLPhoto {
+    TLPhoto() :
         id(0),
         accessHash(0),
         userId(0),
         date(0),
-        size(0),
-        dcId(0),
-        tlType(DocumentEmpty) { }
+        tlType(PhotoEmpty) { }
 
-    TLDocument(const TLDocument &anotherDocument) :
-        id(anotherDocument.id),
-        accessHash(anotherDocument.accessHash),
-        userId(anotherDocument.userId),
-        date(anotherDocument.date),
-        fileName(anotherDocument.fileName),
-        mimeType(anotherDocument.mimeType),
-        size(anotherDocument.size),
-        thumb(anotherDocument.thumb),
-        dcId(anotherDocument.dcId),
-        tlType(anotherDocument.tlType) { }
+    TLPhoto(const TLPhoto &anotherPhoto) :
+        id(anotherPhoto.id),
+        accessHash(anotherPhoto.accessHash),
+        userId(anotherPhoto.userId),
+        date(anotherPhoto.date),
+        caption(anotherPhoto.caption),
+        geo(anotherPhoto.geo),
+        sizes(anotherPhoto.sizes),
+        tlType(anotherPhoto.tlType) { }
 
-    TLDocument &operator=(const TLDocument &anotherDocument) {
-        id = anotherDocument.id;
-        accessHash = anotherDocument.accessHash;
-        userId = anotherDocument.userId;
-        date = anotherDocument.date;
-        fileName = anotherDocument.fileName;
-        mimeType = anotherDocument.mimeType;
-        size = anotherDocument.size;
-        thumb = anotherDocument.thumb;
-        dcId = anotherDocument.dcId;
-        tlType = anotherDocument.tlType;
-
-        return *this;
-    }
-
-    quint64 id;
-    quint64 accessHash;
-    quint32 userId;
-    quint32 date;
-    QString fileName;
-    QString mimeType;
-    quint32 size;
-    TLPhotoSize thumb;
-    quint32 dcId;
-    TLValue tlType;
-};
-
-struct TLVideo {
-    TLVideo() :
-        id(0),
-        accessHash(0),
-        userId(0),
-        date(0),
-        duration(0),
-        size(0),
-        dcId(0),
-        w(0),
-        h(0),
-        tlType(VideoEmpty) { }
-
-    TLVideo(const TLVideo &anotherVideo) :
-        id(anotherVideo.id),
-        accessHash(anotherVideo.accessHash),
-        userId(anotherVideo.userId),
-        date(anotherVideo.date),
-        caption(anotherVideo.caption),
-        duration(anotherVideo.duration),
-        mimeType(anotherVideo.mimeType),
-        size(anotherVideo.size),
-        thumb(anotherVideo.thumb),
-        dcId(anotherVideo.dcId),
-        w(anotherVideo.w),
-        h(anotherVideo.h),
-        tlType(anotherVideo.tlType) { }
-
-    TLVideo &operator=(const TLVideo &anotherVideo) {
-        id = anotherVideo.id;
-        accessHash = anotherVideo.accessHash;
-        userId = anotherVideo.userId;
-        date = anotherVideo.date;
-        caption = anotherVideo.caption;
-        duration = anotherVideo.duration;
-        mimeType = anotherVideo.mimeType;
-        size = anotherVideo.size;
-        thumb = anotherVideo.thumb;
-        dcId = anotherVideo.dcId;
-        w = anotherVideo.w;
-        h = anotherVideo.h;
-        tlType = anotherVideo.tlType;
+    TLPhoto &operator=(const TLPhoto &anotherPhoto) {
+        id = anotherPhoto.id;
+        accessHash = anotherPhoto.accessHash;
+        userId = anotherPhoto.userId;
+        date = anotherPhoto.date;
+        caption = anotherPhoto.caption;
+        geo = anotherPhoto.geo;
+        sizes = anotherPhoto.sizes;
+        tlType = anotherPhoto.tlType;
 
         return *this;
     }
@@ -1847,14 +1927,71 @@ struct TLVideo {
     quint32 userId;
     quint32 date;
     QString caption;
-    quint32 duration;
-    QString mimeType;
-    quint32 size;
-    TLPhotoSize thumb;
-    quint32 dcId;
-    quint32 w;
-    quint32 h;
+    TLGeoPoint geo;
+    QVector<TLPhotoSize> sizes;
     TLValue tlType;
+};
+
+struct TLUser {
+    TLUser() :
+        id(0),
+        inactive(false),
+        accessHash(0),
+        tlType(UserEmpty) { }
+
+    TLUser(const TLUser &anotherUser) :
+        id(anotherUser.id),
+        firstName(anotherUser.firstName),
+        lastName(anotherUser.lastName),
+        phone(anotherUser.phone),
+        photo(anotherUser.photo),
+        status(anotherUser.status),
+        inactive(anotherUser.inactive),
+        accessHash(anotherUser.accessHash),
+        tlType(anotherUser.tlType) { }
+
+    TLUser &operator=(const TLUser &anotherUser) {
+        id = anotherUser.id;
+        firstName = anotherUser.firstName;
+        lastName = anotherUser.lastName;
+        phone = anotherUser.phone;
+        photo = anotherUser.photo;
+        status = anotherUser.status;
+        inactive = anotherUser.inactive;
+        accessHash = anotherUser.accessHash;
+        tlType = anotherUser.tlType;
+
+        return *this;
+    }
+
+    quint32 id;
+    QString firstName;
+    QString lastName;
+    QString phone;
+    TLUserProfilePhoto photo;
+    TLUserStatus status;
+    bool inactive;
+    quint64 accessHash;
+    TLValue tlType;
+};
+
+struct TLAuthAuthorization {
+    TLAuthAuthorization() :
+        expires(0) { }
+
+    TLAuthAuthorization(const TLAuthAuthorization &anotherAuthAuthorization) :
+        expires(anotherAuthAuthorization.expires),
+        user(anotherAuthAuthorization.user) { }
+
+    TLAuthAuthorization &operator=(const TLAuthAuthorization &anotherAuthAuthorization) {
+        expires = anotherAuthAuthorization.expires;
+        user = anotherAuthAuthorization.user;
+
+        return *this;
+    }
+
+    quint32 expires;
+    TLUser user;
 };
 
 struct TLChat {
@@ -1916,87 +2053,76 @@ struct TLChat {
     TLValue tlType;
 };
 
-struct TLUser {
-    TLUser() :
-        id(0),
-        inactive(false),
-        accessHash(0),
-        tlType(UserEmpty) { }
+struct TLChatFull {
+    TLChatFull() :
+        id(0) { }
 
-    TLUser(const TLUser &anotherUser) :
-        id(anotherUser.id),
-        firstName(anotherUser.firstName),
-        lastName(anotherUser.lastName),
-        phone(anotherUser.phone),
-        photo(anotherUser.photo),
-        status(anotherUser.status),
-        inactive(anotherUser.inactive),
-        accessHash(anotherUser.accessHash),
-        tlType(anotherUser.tlType) { }
+    TLChatFull(const TLChatFull &anotherChatFull) :
+        id(anotherChatFull.id),
+        participants(anotherChatFull.participants),
+        chatPhoto(anotherChatFull.chatPhoto),
+        notifySettings(anotherChatFull.notifySettings) { }
 
-    TLUser &operator=(const TLUser &anotherUser) {
-        id = anotherUser.id;
-        firstName = anotherUser.firstName;
-        lastName = anotherUser.lastName;
-        phone = anotherUser.phone;
-        photo = anotherUser.photo;
-        status = anotherUser.status;
-        inactive = anotherUser.inactive;
-        accessHash = anotherUser.accessHash;
-        tlType = anotherUser.tlType;
+    TLChatFull &operator=(const TLChatFull &anotherChatFull) {
+        id = anotherChatFull.id;
+        participants = anotherChatFull.participants;
+        chatPhoto = anotherChatFull.chatPhoto;
+        notifySettings = anotherChatFull.notifySettings;
 
         return *this;
     }
 
     quint32 id;
-    QString firstName;
-    QString lastName;
-    QString phone;
-    TLUserProfilePhoto photo;
-    TLUserStatus status;
-    bool inactive;
-    quint64 accessHash;
-    TLValue tlType;
+    TLChatParticipants participants;
+    TLPhoto chatPhoto;
+    TLPeerNotifySettings notifySettings;
 };
 
-struct TLPhoto {
-    TLPhoto() :
-        id(0),
-        accessHash(0),
-        userId(0),
-        date(0),
-        tlType(PhotoEmpty) { }
+struct TLContactsBlocked {
+    TLContactsBlocked() :
+        count(0),
+        tlType(ContactsBlocked) { }
 
-    TLPhoto(const TLPhoto &anotherPhoto) :
-        id(anotherPhoto.id),
-        accessHash(anotherPhoto.accessHash),
-        userId(anotherPhoto.userId),
-        date(anotherPhoto.date),
-        caption(anotherPhoto.caption),
-        geo(anotherPhoto.geo),
-        sizes(anotherPhoto.sizes),
-        tlType(anotherPhoto.tlType) { }
+    TLContactsBlocked(const TLContactsBlocked &anotherContactsBlocked) :
+        blocked(anotherContactsBlocked.blocked),
+        users(anotherContactsBlocked.users),
+        count(anotherContactsBlocked.count),
+        tlType(anotherContactsBlocked.tlType) { }
 
-    TLPhoto &operator=(const TLPhoto &anotherPhoto) {
-        id = anotherPhoto.id;
-        accessHash = anotherPhoto.accessHash;
-        userId = anotherPhoto.userId;
-        date = anotherPhoto.date;
-        caption = anotherPhoto.caption;
-        geo = anotherPhoto.geo;
-        sizes = anotherPhoto.sizes;
-        tlType = anotherPhoto.tlType;
+    TLContactsBlocked &operator=(const TLContactsBlocked &anotherContactsBlocked) {
+        blocked = anotherContactsBlocked.blocked;
+        users = anotherContactsBlocked.users;
+        count = anotherContactsBlocked.count;
+        tlType = anotherContactsBlocked.tlType;
 
         return *this;
     }
 
-    quint64 id;
-    quint64 accessHash;
-    quint32 userId;
-    quint32 date;
-    QString caption;
-    TLGeoPoint geo;
-    QVector<TLPhotoSize> sizes;
+    QVector<TLContactBlocked> blocked;
+    QVector<TLUser> users;
+    quint32 count;
+    TLValue tlType;
+};
+
+struct TLContactsContacts {
+    TLContactsContacts() :
+        tlType(ContactsContacts) { }
+
+    TLContactsContacts(const TLContactsContacts &anotherContactsContacts) :
+        contacts(anotherContactsContacts.contacts),
+        users(anotherContactsContacts.users),
+        tlType(anotherContactsContacts.tlType) { }
+
+    TLContactsContacts &operator=(const TLContactsContacts &anotherContactsContacts) {
+        contacts = anotherContactsContacts.contacts;
+        users = anotherContactsContacts.users;
+        tlType = anotherContactsContacts.tlType;
+
+        return *this;
+    }
+
+    QVector<TLContact> contacts;
+    QVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2018,30 +2144,25 @@ struct TLContactsFound {
     QVector<TLUser> users;
 };
 
-struct TLPhotosPhotos {
-    TLPhotosPhotos() :
-        count(0),
-        tlType(PhotosPhotos) { }
+struct TLContactsImportedContacts {
+    TLContactsImportedContacts()  { }
 
-    TLPhotosPhotos(const TLPhotosPhotos &anotherPhotosPhotos) :
-        photos(anotherPhotosPhotos.photos),
-        users(anotherPhotosPhotos.users),
-        count(anotherPhotosPhotos.count),
-        tlType(anotherPhotosPhotos.tlType) { }
+    TLContactsImportedContacts(const TLContactsImportedContacts &anotherContactsImportedContacts) :
+        imported(anotherContactsImportedContacts.imported),
+        retryContacts(anotherContactsImportedContacts.retryContacts),
+        users(anotherContactsImportedContacts.users) { }
 
-    TLPhotosPhotos &operator=(const TLPhotosPhotos &anotherPhotosPhotos) {
-        photos = anotherPhotosPhotos.photos;
-        users = anotherPhotosPhotos.users;
-        count = anotherPhotosPhotos.count;
-        tlType = anotherPhotosPhotos.tlType;
+    TLContactsImportedContacts &operator=(const TLContactsImportedContacts &anotherContactsImportedContacts) {
+        imported = anotherContactsImportedContacts.imported;
+        retryContacts = anotherContactsImportedContacts.retryContacts;
+        users = anotherContactsImportedContacts.users;
 
         return *this;
     }
 
-    QVector<TLPhoto> photos;
+    QVector<TLImportedContact> imported;
+    QVector<quint64> retryContacts;
     QVector<TLUser> users;
-    quint32 count;
-    TLValue tlType;
 };
 
 struct TLContactsLink {
@@ -2065,38 +2186,22 @@ struct TLContactsLink {
     TLUser user;
 };
 
-struct TLWallPaper {
-    TLWallPaper() :
-        id(0),
-        color(0),
-        bgColor(0),
-        tlType(WallPaper) { }
+struct TLContactsSuggested {
+    TLContactsSuggested()  { }
 
-    TLWallPaper(const TLWallPaper &anotherWallPaper) :
-        id(anotherWallPaper.id),
-        title(anotherWallPaper.title),
-        sizes(anotherWallPaper.sizes),
-        color(anotherWallPaper.color),
-        bgColor(anotherWallPaper.bgColor),
-        tlType(anotherWallPaper.tlType) { }
+    TLContactsSuggested(const TLContactsSuggested &anotherContactsSuggested) :
+        results(anotherContactsSuggested.results),
+        users(anotherContactsSuggested.users) { }
 
-    TLWallPaper &operator=(const TLWallPaper &anotherWallPaper) {
-        id = anotherWallPaper.id;
-        title = anotherWallPaper.title;
-        sizes = anotherWallPaper.sizes;
-        color = anotherWallPaper.color;
-        bgColor = anotherWallPaper.bgColor;
-        tlType = anotherWallPaper.tlType;
+    TLContactsSuggested &operator=(const TLContactsSuggested &anotherContactsSuggested) {
+        results = anotherContactsSuggested.results;
+        users = anotherContactsSuggested.users;
 
         return *this;
     }
 
-    quint32 id;
-    QString title;
-    QVector<TLPhotoSize> sizes;
-    quint32 color;
-    quint32 bgColor;
-    TLValue tlType;
+    QVector<TLContactSuggested> results;
+    QVector<TLUser> users;
 };
 
 struct TLHelpSupport {
@@ -2117,23 +2222,36 @@ struct TLHelpSupport {
     TLUser user;
 };
 
-struct TLAuthAuthorization {
-    TLAuthAuthorization() :
-        expires(0) { }
+struct TLMessageAction {
+    TLMessageAction() :
+        userId(0),
+        tlType(MessageActionEmpty) { }
 
-    TLAuthAuthorization(const TLAuthAuthorization &anotherAuthAuthorization) :
-        expires(anotherAuthAuthorization.expires),
-        user(anotherAuthAuthorization.user) { }
+    TLMessageAction(const TLMessageAction &anotherMessageAction) :
+        title(anotherMessageAction.title),
+        users(anotherMessageAction.users),
+        photo(anotherMessageAction.photo),
+        userId(anotherMessageAction.userId),
+        address(anotherMessageAction.address),
+        tlType(anotherMessageAction.tlType) { }
 
-    TLAuthAuthorization &operator=(const TLAuthAuthorization &anotherAuthAuthorization) {
-        expires = anotherAuthAuthorization.expires;
-        user = anotherAuthAuthorization.user;
+    TLMessageAction &operator=(const TLMessageAction &anotherMessageAction) {
+        title = anotherMessageAction.title;
+        users = anotherMessageAction.users;
+        photo = anotherMessageAction.photo;
+        userId = anotherMessageAction.userId;
+        address = anotherMessageAction.address;
+        tlType = anotherMessageAction.tlType;
 
         return *this;
     }
 
-    quint32 expires;
-    TLUser user;
+    QString title;
+    QVector<quint32> users;
+    TLPhoto photo;
+    quint32 userId;
+    QString address;
+    TLValue tlType;
 };
 
 struct TLMessageMedia {
@@ -2183,50 +2301,42 @@ struct TLMessageMedia {
     TLValue tlType;
 };
 
-struct TLContactsBlocked {
-    TLContactsBlocked() :
-        count(0),
-        tlType(ContactsBlocked) { }
+struct TLMessagesChat {
+    TLMessagesChat()  { }
 
-    TLContactsBlocked(const TLContactsBlocked &anotherContactsBlocked) :
-        blocked(anotherContactsBlocked.blocked),
-        users(anotherContactsBlocked.users),
-        count(anotherContactsBlocked.count),
-        tlType(anotherContactsBlocked.tlType) { }
+    TLMessagesChat(const TLMessagesChat &anotherMessagesChat) :
+        chat(anotherMessagesChat.chat),
+        users(anotherMessagesChat.users) { }
 
-    TLContactsBlocked &operator=(const TLContactsBlocked &anotherContactsBlocked) {
-        blocked = anotherContactsBlocked.blocked;
-        users = anotherContactsBlocked.users;
-        count = anotherContactsBlocked.count;
-        tlType = anotherContactsBlocked.tlType;
+    TLMessagesChat &operator=(const TLMessagesChat &anotherMessagesChat) {
+        chat = anotherMessagesChat.chat;
+        users = anotherMessagesChat.users;
 
         return *this;
     }
 
-    QVector<TLContactBlocked> blocked;
+    TLChat chat;
     QVector<TLUser> users;
-    quint32 count;
-    TLValue tlType;
 };
 
-struct TLContactsImportedContacts {
-    TLContactsImportedContacts()  { }
+struct TLMessagesChatFull {
+    TLMessagesChatFull()  { }
 
-    TLContactsImportedContacts(const TLContactsImportedContacts &anotherContactsImportedContacts) :
-        imported(anotherContactsImportedContacts.imported),
-        retryContacts(anotherContactsImportedContacts.retryContacts),
-        users(anotherContactsImportedContacts.users) { }
+    TLMessagesChatFull(const TLMessagesChatFull &anotherMessagesChatFull) :
+        fullChat(anotherMessagesChatFull.fullChat),
+        chats(anotherMessagesChatFull.chats),
+        users(anotherMessagesChatFull.users) { }
 
-    TLContactsImportedContacts &operator=(const TLContactsImportedContacts &anotherContactsImportedContacts) {
-        imported = anotherContactsImportedContacts.imported;
-        retryContacts = anotherContactsImportedContacts.retryContacts;
-        users = anotherContactsImportedContacts.users;
+    TLMessagesChatFull &operator=(const TLMessagesChatFull &anotherMessagesChatFull) {
+        fullChat = anotherMessagesChatFull.fullChat;
+        chats = anotherMessagesChatFull.chats;
+        users = anotherMessagesChatFull.users;
 
         return *this;
     }
 
-    QVector<TLImportedContact> imported;
-    QVector<quint64> retryContacts;
+    TLChatFull fullChat;
+    QVector<TLChat> chats;
     QVector<TLUser> users;
 };
 
@@ -2246,139 +2356,6 @@ struct TLMessagesChats {
 
     QVector<TLChat> chats;
     QVector<TLUser> users;
-};
-
-struct TLMessagesChat {
-    TLMessagesChat()  { }
-
-    TLMessagesChat(const TLMessagesChat &anotherMessagesChat) :
-        chat(anotherMessagesChat.chat),
-        users(anotherMessagesChat.users) { }
-
-    TLMessagesChat &operator=(const TLMessagesChat &anotherMessagesChat) {
-        chat = anotherMessagesChat.chat;
-        users = anotherMessagesChat.users;
-
-        return *this;
-    }
-
-    TLChat chat;
-    QVector<TLUser> users;
-};
-
-struct TLContactsSuggested {
-    TLContactsSuggested()  { }
-
-    TLContactsSuggested(const TLContactsSuggested &anotherContactsSuggested) :
-        results(anotherContactsSuggested.results),
-        users(anotherContactsSuggested.users) { }
-
-    TLContactsSuggested &operator=(const TLContactsSuggested &anotherContactsSuggested) {
-        results = anotherContactsSuggested.results;
-        users = anotherContactsSuggested.users;
-
-        return *this;
-    }
-
-    QVector<TLContactSuggested> results;
-    QVector<TLUser> users;
-};
-
-struct TLPhotosPhoto {
-    TLPhotosPhoto()  { }
-
-    TLPhotosPhoto(const TLPhotosPhoto &anotherPhotosPhoto) :
-        photo(anotherPhotosPhoto.photo),
-        users(anotherPhotosPhoto.users) { }
-
-    TLPhotosPhoto &operator=(const TLPhotosPhoto &anotherPhotosPhoto) {
-        photo = anotherPhotosPhoto.photo;
-        users = anotherPhotosPhoto.users;
-
-        return *this;
-    }
-
-    TLPhoto photo;
-    QVector<TLUser> users;
-};
-
-struct TLContactsContacts {
-    TLContactsContacts() :
-        tlType(ContactsContacts) { }
-
-    TLContactsContacts(const TLContactsContacts &anotherContactsContacts) :
-        contacts(anotherContactsContacts.contacts),
-        users(anotherContactsContacts.users),
-        tlType(anotherContactsContacts.tlType) { }
-
-    TLContactsContacts &operator=(const TLContactsContacts &anotherContactsContacts) {
-        contacts = anotherContactsContacts.contacts;
-        users = anotherContactsContacts.users;
-        tlType = anotherContactsContacts.tlType;
-
-        return *this;
-    }
-
-    QVector<TLContact> contacts;
-    QVector<TLUser> users;
-    TLValue tlType;
-};
-
-struct TLChatFull {
-    TLChatFull() :
-        id(0) { }
-
-    TLChatFull(const TLChatFull &anotherChatFull) :
-        id(anotherChatFull.id),
-        participants(anotherChatFull.participants),
-        chatPhoto(anotherChatFull.chatPhoto),
-        notifySettings(anotherChatFull.notifySettings) { }
-
-    TLChatFull &operator=(const TLChatFull &anotherChatFull) {
-        id = anotherChatFull.id;
-        participants = anotherChatFull.participants;
-        chatPhoto = anotherChatFull.chatPhoto;
-        notifySettings = anotherChatFull.notifySettings;
-
-        return *this;
-    }
-
-    quint32 id;
-    TLChatParticipants participants;
-    TLPhoto chatPhoto;
-    TLPeerNotifySettings notifySettings;
-};
-
-struct TLMessageAction {
-    TLMessageAction() :
-        userId(0),
-        tlType(MessageActionEmpty) { }
-
-    TLMessageAction(const TLMessageAction &anotherMessageAction) :
-        title(anotherMessageAction.title),
-        users(anotherMessageAction.users),
-        photo(anotherMessageAction.photo),
-        userId(anotherMessageAction.userId),
-        address(anotherMessageAction.address),
-        tlType(anotherMessageAction.tlType) { }
-
-    TLMessageAction &operator=(const TLMessageAction &anotherMessageAction) {
-        title = anotherMessageAction.title;
-        users = anotherMessageAction.users;
-        photo = anotherMessageAction.photo;
-        userId = anotherMessageAction.userId;
-        address = anotherMessageAction.address;
-        tlType = anotherMessageAction.tlType;
-
-        return *this;
-    }
-
-    QString title;
-    QVector<quint32> users;
-    TLPhoto photo;
-    quint32 userId;
-    QString address;
-    TLValue tlType;
 };
 
 struct TLMessagesSentMessage {
@@ -2414,6 +2391,84 @@ struct TLMessagesSentMessage {
     quint32 seq;
     QVector<TLContactsLink> links;
     TLValue tlType;
+};
+
+struct TLPhotosPhoto {
+    TLPhotosPhoto()  { }
+
+    TLPhotosPhoto(const TLPhotosPhoto &anotherPhotosPhoto) :
+        photo(anotherPhotosPhoto.photo),
+        users(anotherPhotosPhoto.users) { }
+
+    TLPhotosPhoto &operator=(const TLPhotosPhoto &anotherPhotosPhoto) {
+        photo = anotherPhotosPhoto.photo;
+        users = anotherPhotosPhoto.users;
+
+        return *this;
+    }
+
+    TLPhoto photo;
+    QVector<TLUser> users;
+};
+
+struct TLPhotosPhotos {
+    TLPhotosPhotos() :
+        count(0),
+        tlType(PhotosPhotos) { }
+
+    TLPhotosPhotos(const TLPhotosPhotos &anotherPhotosPhotos) :
+        photos(anotherPhotosPhotos.photos),
+        users(anotherPhotosPhotos.users),
+        count(anotherPhotosPhotos.count),
+        tlType(anotherPhotosPhotos.tlType) { }
+
+    TLPhotosPhotos &operator=(const TLPhotosPhotos &anotherPhotosPhotos) {
+        photos = anotherPhotosPhotos.photos;
+        users = anotherPhotosPhotos.users;
+        count = anotherPhotosPhotos.count;
+        tlType = anotherPhotosPhotos.tlType;
+
+        return *this;
+    }
+
+    QVector<TLPhoto> photos;
+    QVector<TLUser> users;
+    quint32 count;
+    TLValue tlType;
+};
+
+struct TLUserFull {
+    TLUserFull() :
+        blocked(false) { }
+
+    TLUserFull(const TLUserFull &anotherUserFull) :
+        user(anotherUserFull.user),
+        link(anotherUserFull.link),
+        profilePhoto(anotherUserFull.profilePhoto),
+        notifySettings(anotherUserFull.notifySettings),
+        blocked(anotherUserFull.blocked),
+        realFirstName(anotherUserFull.realFirstName),
+        realLastName(anotherUserFull.realLastName) { }
+
+    TLUserFull &operator=(const TLUserFull &anotherUserFull) {
+        user = anotherUserFull.user;
+        link = anotherUserFull.link;
+        profilePhoto = anotherUserFull.profilePhoto;
+        notifySettings = anotherUserFull.notifySettings;
+        blocked = anotherUserFull.blocked;
+        realFirstName = anotherUserFull.realFirstName;
+        realLastName = anotherUserFull.realLastName;
+
+        return *this;
+    }
+
+    TLUser user;
+    TLContactsLink link;
+    TLPhoto profilePhoto;
+    TLPeerNotifySettings notifySettings;
+    bool blocked;
+    QString realFirstName;
+    QString realLastName;
 };
 
 struct TLGeoChatMessage {
@@ -2457,38 +2512,82 @@ struct TLGeoChatMessage {
     TLValue tlType;
 };
 
-struct TLUserFull {
-    TLUserFull() :
-        blocked(false) { }
+struct TLGeochatsLocated {
+    TLGeochatsLocated()  { }
 
-    TLUserFull(const TLUserFull &anotherUserFull) :
-        user(anotherUserFull.user),
-        link(anotherUserFull.link),
-        profilePhoto(anotherUserFull.profilePhoto),
-        notifySettings(anotherUserFull.notifySettings),
-        blocked(anotherUserFull.blocked),
-        realFirstName(anotherUserFull.realFirstName),
-        realLastName(anotherUserFull.realLastName) { }
+    TLGeochatsLocated(const TLGeochatsLocated &anotherGeochatsLocated) :
+        results(anotherGeochatsLocated.results),
+        messages(anotherGeochatsLocated.messages),
+        chats(anotherGeochatsLocated.chats),
+        users(anotherGeochatsLocated.users) { }
 
-    TLUserFull &operator=(const TLUserFull &anotherUserFull) {
-        user = anotherUserFull.user;
-        link = anotherUserFull.link;
-        profilePhoto = anotherUserFull.profilePhoto;
-        notifySettings = anotherUserFull.notifySettings;
-        blocked = anotherUserFull.blocked;
-        realFirstName = anotherUserFull.realFirstName;
-        realLastName = anotherUserFull.realLastName;
+    TLGeochatsLocated &operator=(const TLGeochatsLocated &anotherGeochatsLocated) {
+        results = anotherGeochatsLocated.results;
+        messages = anotherGeochatsLocated.messages;
+        chats = anotherGeochatsLocated.chats;
+        users = anotherGeochatsLocated.users;
 
         return *this;
     }
 
-    TLUser user;
-    TLContactsLink link;
-    TLPhoto profilePhoto;
-    TLPeerNotifySettings notifySettings;
-    bool blocked;
-    QString realFirstName;
-    QString realLastName;
+    QVector<TLChatLocated> results;
+    QVector<TLGeoChatMessage> messages;
+    QVector<TLChat> chats;
+    QVector<TLUser> users;
+};
+
+struct TLGeochatsMessages {
+    TLGeochatsMessages() :
+        count(0),
+        tlType(GeochatsMessages) { }
+
+    TLGeochatsMessages(const TLGeochatsMessages &anotherGeochatsMessages) :
+        messages(anotherGeochatsMessages.messages),
+        chats(anotherGeochatsMessages.chats),
+        users(anotherGeochatsMessages.users),
+        count(anotherGeochatsMessages.count),
+        tlType(anotherGeochatsMessages.tlType) { }
+
+    TLGeochatsMessages &operator=(const TLGeochatsMessages &anotherGeochatsMessages) {
+        messages = anotherGeochatsMessages.messages;
+        chats = anotherGeochatsMessages.chats;
+        users = anotherGeochatsMessages.users;
+        count = anotherGeochatsMessages.count;
+        tlType = anotherGeochatsMessages.tlType;
+
+        return *this;
+    }
+
+    QVector<TLGeoChatMessage> messages;
+    QVector<TLChat> chats;
+    QVector<TLUser> users;
+    quint32 count;
+    TLValue tlType;
+};
+
+struct TLGeochatsStatedMessage {
+    TLGeochatsStatedMessage() :
+        seq(0) { }
+
+    TLGeochatsStatedMessage(const TLGeochatsStatedMessage &anotherGeochatsStatedMessage) :
+        message(anotherGeochatsStatedMessage.message),
+        chats(anotherGeochatsStatedMessage.chats),
+        users(anotherGeochatsStatedMessage.users),
+        seq(anotherGeochatsStatedMessage.seq) { }
+
+    TLGeochatsStatedMessage &operator=(const TLGeochatsStatedMessage &anotherGeochatsStatedMessage) {
+        message = anotherGeochatsStatedMessage.message;
+        chats = anotherGeochatsStatedMessage.chats;
+        users = anotherGeochatsStatedMessage.users;
+        seq = anotherGeochatsStatedMessage.seq;
+
+        return *this;
+    }
+
+    TLGeoChatMessage message;
+    QVector<TLChat> chats;
+    QVector<TLUser> users;
+    quint32 seq;
 };
 
 struct TLMessage {
@@ -2547,78 +2646,162 @@ struct TLMessage {
     TLValue tlType;
 };
 
-struct TLGeochatsMessages {
-    TLGeochatsMessages() :
+struct TLMessagesDialogs {
+    TLMessagesDialogs() :
         count(0),
-        tlType(GeochatsMessages) { }
+        tlType(MessagesDialogs) { }
 
-    TLGeochatsMessages(const TLGeochatsMessages &anotherGeochatsMessages) :
-        messages(anotherGeochatsMessages.messages),
-        chats(anotherGeochatsMessages.chats),
-        users(anotherGeochatsMessages.users),
-        count(anotherGeochatsMessages.count),
-        tlType(anotherGeochatsMessages.tlType) { }
+    TLMessagesDialogs(const TLMessagesDialogs &anotherMessagesDialogs) :
+        dialogs(anotherMessagesDialogs.dialogs),
+        messages(anotherMessagesDialogs.messages),
+        chats(anotherMessagesDialogs.chats),
+        users(anotherMessagesDialogs.users),
+        count(anotherMessagesDialogs.count),
+        tlType(anotherMessagesDialogs.tlType) { }
 
-    TLGeochatsMessages &operator=(const TLGeochatsMessages &anotherGeochatsMessages) {
-        messages = anotherGeochatsMessages.messages;
-        chats = anotherGeochatsMessages.chats;
-        users = anotherGeochatsMessages.users;
-        count = anotherGeochatsMessages.count;
-        tlType = anotherGeochatsMessages.tlType;
+    TLMessagesDialogs &operator=(const TLMessagesDialogs &anotherMessagesDialogs) {
+        dialogs = anotherMessagesDialogs.dialogs;
+        messages = anotherMessagesDialogs.messages;
+        chats = anotherMessagesDialogs.chats;
+        users = anotherMessagesDialogs.users;
+        count = anotherMessagesDialogs.count;
+        tlType = anotherMessagesDialogs.tlType;
 
         return *this;
     }
 
-    QVector<TLGeoChatMessage> messages;
+    QVector<TLDialog> dialogs;
+    QVector<TLMessage> messages;
     QVector<TLChat> chats;
     QVector<TLUser> users;
     quint32 count;
     TLValue tlType;
 };
 
-struct TLGeochatsLocated {
-    TLGeochatsLocated()  { }
+struct TLMessagesMessage {
+    TLMessagesMessage() :
+        tlType(MessagesMessageEmpty) { }
 
-    TLGeochatsLocated(const TLGeochatsLocated &anotherGeochatsLocated) :
-        results(anotherGeochatsLocated.results),
-        messages(anotherGeochatsLocated.messages),
-        chats(anotherGeochatsLocated.chats),
-        users(anotherGeochatsLocated.users) { }
+    TLMessagesMessage(const TLMessagesMessage &anotherMessagesMessage) :
+        message(anotherMessagesMessage.message),
+        chats(anotherMessagesMessage.chats),
+        users(anotherMessagesMessage.users),
+        tlType(anotherMessagesMessage.tlType) { }
 
-    TLGeochatsLocated &operator=(const TLGeochatsLocated &anotherGeochatsLocated) {
-        results = anotherGeochatsLocated.results;
-        messages = anotherGeochatsLocated.messages;
-        chats = anotherGeochatsLocated.chats;
-        users = anotherGeochatsLocated.users;
+    TLMessagesMessage &operator=(const TLMessagesMessage &anotherMessagesMessage) {
+        message = anotherMessagesMessage.message;
+        chats = anotherMessagesMessage.chats;
+        users = anotherMessagesMessage.users;
+        tlType = anotherMessagesMessage.tlType;
 
         return *this;
     }
 
-    QVector<TLChatLocated> results;
-    QVector<TLGeoChatMessage> messages;
+    TLMessage message;
     QVector<TLChat> chats;
     QVector<TLUser> users;
+    TLValue tlType;
 };
 
-struct TLMessagesChatFull {
-    TLMessagesChatFull()  { }
+struct TLMessagesMessages {
+    TLMessagesMessages() :
+        count(0),
+        tlType(MessagesMessages) { }
 
-    TLMessagesChatFull(const TLMessagesChatFull &anotherMessagesChatFull) :
-        fullChat(anotherMessagesChatFull.fullChat),
-        chats(anotherMessagesChatFull.chats),
-        users(anotherMessagesChatFull.users) { }
+    TLMessagesMessages(const TLMessagesMessages &anotherMessagesMessages) :
+        messages(anotherMessagesMessages.messages),
+        chats(anotherMessagesMessages.chats),
+        users(anotherMessagesMessages.users),
+        count(anotherMessagesMessages.count),
+        tlType(anotherMessagesMessages.tlType) { }
 
-    TLMessagesChatFull &operator=(const TLMessagesChatFull &anotherMessagesChatFull) {
-        fullChat = anotherMessagesChatFull.fullChat;
-        chats = anotherMessagesChatFull.chats;
-        users = anotherMessagesChatFull.users;
+    TLMessagesMessages &operator=(const TLMessagesMessages &anotherMessagesMessages) {
+        messages = anotherMessagesMessages.messages;
+        chats = anotherMessagesMessages.chats;
+        users = anotherMessagesMessages.users;
+        count = anotherMessagesMessages.count;
+        tlType = anotherMessagesMessages.tlType;
 
         return *this;
     }
 
-    TLChatFull fullChat;
+    QVector<TLMessage> messages;
     QVector<TLChat> chats;
     QVector<TLUser> users;
+    quint32 count;
+    TLValue tlType;
+};
+
+struct TLMessagesStatedMessage {
+    TLMessagesStatedMessage() :
+        pts(0),
+        seq(0),
+        tlType(MessagesStatedMessage) { }
+
+    TLMessagesStatedMessage(const TLMessagesStatedMessage &anotherMessagesStatedMessage) :
+        message(anotherMessagesStatedMessage.message),
+        chats(anotherMessagesStatedMessage.chats),
+        users(anotherMessagesStatedMessage.users),
+        pts(anotherMessagesStatedMessage.pts),
+        seq(anotherMessagesStatedMessage.seq),
+        links(anotherMessagesStatedMessage.links),
+        tlType(anotherMessagesStatedMessage.tlType) { }
+
+    TLMessagesStatedMessage &operator=(const TLMessagesStatedMessage &anotherMessagesStatedMessage) {
+        message = anotherMessagesStatedMessage.message;
+        chats = anotherMessagesStatedMessage.chats;
+        users = anotherMessagesStatedMessage.users;
+        pts = anotherMessagesStatedMessage.pts;
+        seq = anotherMessagesStatedMessage.seq;
+        links = anotherMessagesStatedMessage.links;
+        tlType = anotherMessagesStatedMessage.tlType;
+
+        return *this;
+    }
+
+    TLMessage message;
+    QVector<TLChat> chats;
+    QVector<TLUser> users;
+    quint32 pts;
+    quint32 seq;
+    QVector<TLContactsLink> links;
+    TLValue tlType;
+};
+
+struct TLMessagesStatedMessages {
+    TLMessagesStatedMessages() :
+        pts(0),
+        seq(0),
+        tlType(MessagesStatedMessages) { }
+
+    TLMessagesStatedMessages(const TLMessagesStatedMessages &anotherMessagesStatedMessages) :
+        messages(anotherMessagesStatedMessages.messages),
+        chats(anotherMessagesStatedMessages.chats),
+        users(anotherMessagesStatedMessages.users),
+        pts(anotherMessagesStatedMessages.pts),
+        seq(anotherMessagesStatedMessages.seq),
+        links(anotherMessagesStatedMessages.links),
+        tlType(anotherMessagesStatedMessages.tlType) { }
+
+    TLMessagesStatedMessages &operator=(const TLMessagesStatedMessages &anotherMessagesStatedMessages) {
+        messages = anotherMessagesStatedMessages.messages;
+        chats = anotherMessagesStatedMessages.chats;
+        users = anotherMessagesStatedMessages.users;
+        pts = anotherMessagesStatedMessages.pts;
+        seq = anotherMessagesStatedMessages.seq;
+        links = anotherMessagesStatedMessages.links;
+        tlType = anotherMessagesStatedMessages.tlType;
+
+        return *this;
+    }
+
+    QVector<TLMessage> messages;
+    QVector<TLChat> chats;
+    QVector<TLUser> users;
+    quint32 pts;
+    quint32 seq;
+    QVector<TLContactsLink> links;
+    TLValue tlType;
 };
 
 struct TLUpdate {
@@ -2734,67 +2917,6 @@ struct TLUpdate {
     TLValue tlType;
 };
 
-struct TLMessagesStatedMessage {
-    TLMessagesStatedMessage() :
-        pts(0),
-        seq(0),
-        tlType(MessagesStatedMessage) { }
-
-    TLMessagesStatedMessage(const TLMessagesStatedMessage &anotherMessagesStatedMessage) :
-        message(anotherMessagesStatedMessage.message),
-        chats(anotherMessagesStatedMessage.chats),
-        users(anotherMessagesStatedMessage.users),
-        pts(anotherMessagesStatedMessage.pts),
-        seq(anotherMessagesStatedMessage.seq),
-        links(anotherMessagesStatedMessage.links),
-        tlType(anotherMessagesStatedMessage.tlType) { }
-
-    TLMessagesStatedMessage &operator=(const TLMessagesStatedMessage &anotherMessagesStatedMessage) {
-        message = anotherMessagesStatedMessage.message;
-        chats = anotherMessagesStatedMessage.chats;
-        users = anotherMessagesStatedMessage.users;
-        pts = anotherMessagesStatedMessage.pts;
-        seq = anotherMessagesStatedMessage.seq;
-        links = anotherMessagesStatedMessage.links;
-        tlType = anotherMessagesStatedMessage.tlType;
-
-        return *this;
-    }
-
-    TLMessage message;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
-    quint32 pts;
-    quint32 seq;
-    QVector<TLContactsLink> links;
-    TLValue tlType;
-};
-
-struct TLMessagesMessage {
-    TLMessagesMessage() :
-        tlType(MessagesMessageEmpty) { }
-
-    TLMessagesMessage(const TLMessagesMessage &anotherMessagesMessage) :
-        message(anotherMessagesMessage.message),
-        chats(anotherMessagesMessage.chats),
-        users(anotherMessagesMessage.users),
-        tlType(anotherMessagesMessage.tlType) { }
-
-    TLMessagesMessage &operator=(const TLMessagesMessage &anotherMessagesMessage) {
-        message = anotherMessagesMessage.message;
-        chats = anotherMessagesMessage.chats;
-        users = anotherMessagesMessage.users;
-        tlType = anotherMessagesMessage.tlType;
-
-        return *this;
-    }
-
-    TLMessage message;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
-    TLValue tlType;
-};
-
 struct TLUpdates {
     TLUpdates() :
         id(0),
@@ -2851,128 +2973,6 @@ struct TLUpdates {
     QVector<TLUser> users;
     QVector<TLChat> chats;
     quint32 seqStart;
-    TLValue tlType;
-};
-
-struct TLMessagesStatedMessages {
-    TLMessagesStatedMessages() :
-        pts(0),
-        seq(0),
-        tlType(MessagesStatedMessages) { }
-
-    TLMessagesStatedMessages(const TLMessagesStatedMessages &anotherMessagesStatedMessages) :
-        messages(anotherMessagesStatedMessages.messages),
-        chats(anotherMessagesStatedMessages.chats),
-        users(anotherMessagesStatedMessages.users),
-        pts(anotherMessagesStatedMessages.pts),
-        seq(anotherMessagesStatedMessages.seq),
-        links(anotherMessagesStatedMessages.links),
-        tlType(anotherMessagesStatedMessages.tlType) { }
-
-    TLMessagesStatedMessages &operator=(const TLMessagesStatedMessages &anotherMessagesStatedMessages) {
-        messages = anotherMessagesStatedMessages.messages;
-        chats = anotherMessagesStatedMessages.chats;
-        users = anotherMessagesStatedMessages.users;
-        pts = anotherMessagesStatedMessages.pts;
-        seq = anotherMessagesStatedMessages.seq;
-        links = anotherMessagesStatedMessages.links;
-        tlType = anotherMessagesStatedMessages.tlType;
-
-        return *this;
-    }
-
-    QVector<TLMessage> messages;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
-    quint32 pts;
-    quint32 seq;
-    QVector<TLContactsLink> links;
-    TLValue tlType;
-};
-
-struct TLMessagesDialogs {
-    TLMessagesDialogs() :
-        count(0),
-        tlType(MessagesDialogs) { }
-
-    TLMessagesDialogs(const TLMessagesDialogs &anotherMessagesDialogs) :
-        dialogs(anotherMessagesDialogs.dialogs),
-        messages(anotherMessagesDialogs.messages),
-        chats(anotherMessagesDialogs.chats),
-        users(anotherMessagesDialogs.users),
-        count(anotherMessagesDialogs.count),
-        tlType(anotherMessagesDialogs.tlType) { }
-
-    TLMessagesDialogs &operator=(const TLMessagesDialogs &anotherMessagesDialogs) {
-        dialogs = anotherMessagesDialogs.dialogs;
-        messages = anotherMessagesDialogs.messages;
-        chats = anotherMessagesDialogs.chats;
-        users = anotherMessagesDialogs.users;
-        count = anotherMessagesDialogs.count;
-        tlType = anotherMessagesDialogs.tlType;
-
-        return *this;
-    }
-
-    QVector<TLDialog> dialogs;
-    QVector<TLMessage> messages;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
-    quint32 count;
-    TLValue tlType;
-};
-
-struct TLGeochatsStatedMessage {
-    TLGeochatsStatedMessage() :
-        seq(0) { }
-
-    TLGeochatsStatedMessage(const TLGeochatsStatedMessage &anotherGeochatsStatedMessage) :
-        message(anotherGeochatsStatedMessage.message),
-        chats(anotherGeochatsStatedMessage.chats),
-        users(anotherGeochatsStatedMessage.users),
-        seq(anotherGeochatsStatedMessage.seq) { }
-
-    TLGeochatsStatedMessage &operator=(const TLGeochatsStatedMessage &anotherGeochatsStatedMessage) {
-        message = anotherGeochatsStatedMessage.message;
-        chats = anotherGeochatsStatedMessage.chats;
-        users = anotherGeochatsStatedMessage.users;
-        seq = anotherGeochatsStatedMessage.seq;
-
-        return *this;
-    }
-
-    TLGeoChatMessage message;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
-    quint32 seq;
-};
-
-struct TLMessagesMessages {
-    TLMessagesMessages() :
-        count(0),
-        tlType(MessagesMessages) { }
-
-    TLMessagesMessages(const TLMessagesMessages &anotherMessagesMessages) :
-        messages(anotherMessagesMessages.messages),
-        chats(anotherMessagesMessages.chats),
-        users(anotherMessagesMessages.users),
-        count(anotherMessagesMessages.count),
-        tlType(anotherMessagesMessages.tlType) { }
-
-    TLMessagesMessages &operator=(const TLMessagesMessages &anotherMessagesMessages) {
-        messages = anotherMessagesMessages.messages;
-        chats = anotherMessagesMessages.chats;
-        users = anotherMessagesMessages.users;
-        count = anotherMessagesMessages.count;
-        tlType = anotherMessagesMessages.tlType;
-
-        return *this;
-    }
-
-    QVector<TLMessage> messages;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
-    quint32 count;
     TLValue tlType;
 };
 
