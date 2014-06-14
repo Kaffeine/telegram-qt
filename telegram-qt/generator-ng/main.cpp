@@ -18,7 +18,7 @@
 #include <QJsonDocument>
 
 #include <QList>
-#include <QHash>
+#include <QMap>
 
 /* Replacing helper */
 bool replaceSection(const QString &fileName, const QString &startMarker, const QString &endMarker, const QString &newContent)
@@ -298,8 +298,7 @@ int main(int argc, char *argv[])
 
     const QJsonArray constructors = json.object().value("constructors").toArray();
 
-
-    QHash<QString, TLType> types;
+    QMap<QString, TLType> types;
 
     for (int i = 0; i < constructors.count(); ++i) {
         const QJsonObject obj = constructors.at(i).toObject();
