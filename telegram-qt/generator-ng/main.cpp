@@ -109,6 +109,8 @@ static const QStringList badNamesReplacers = QStringList() << "latitude"<< "long
 static const QString spacing = QString(4, QLatin1Char(' '));
 static const QString doubleSpacing = spacing + spacing;
 
+static const QString streamClassName = QLatin1String("CTelegramStream");
+
 inline int indexOfSeparator(const QString &str, int minIndex)
 {
     int dotIndex = str.indexOf(QChar('.'), minIndex);
@@ -311,6 +313,46 @@ QString generateTLType(const TLType &type)
     return code;
 }
 
+QString generateStreamOperatorDeclaration(const TLType &type)
+{
+    QString argName = removePrefix(type.name);
+    argName[0] = argName.at(0).toLower();
+    return QString("%1%2 &operator>>(%3 &%4);\n").arg(spacing).arg(streamClassName).arg(type.name).arg(argName);
+}
+
+QString generateStreamOperatorDefinition(const TLType &type)
+{
+    QString code;
+
+    QString argName = removePrefix(type.name);
+    argName[0] = argName.at(0).toLower();
+
+    code.append(QString("%1 &%1::operator>>(%2 &%3)\n{\n").arg(streamClassName).arg(type.name).arg(argName));
+    code.append(QString("%1%2 result;\n\n").arg(spacing).arg(type.name));
+    code.append(QString("%1%2 type;\n").arg(spacing).arg(tlValueName));
+    code.append(QString("%1*this >> type;\n\n%1switch (type) {\n").arg(spacing));
+
+    foreach (const TLSubType &subType, type.subTypes) {
+        code.append(QString("%1case %2:\n").arg(spacing).arg(subType.name));
+
+        foreach (const TLTypeMember &member, subType.members) {
+            code.append(QString("%1*this >> result.%2;\n").arg(doubleSpacing).arg(member.name));
+        }
+
+        code.append(QString("%1break;\n").arg(doubleSpacing));
+    }
+
+    code.append(QString("%1default:\n%1%1break;\n%1}\n\n").arg(spacing));
+
+    if (type.subTypes.count() > 1) {
+        code.append(QString("%1result.%2 = type;\n").arg(spacing).arg(tlTypeMember));
+    }
+
+    code.append(QString("%1%2 = result;\n\n%1return *this;\n}\n\n").arg(spacing).arg(argName));
+
+    return code;
+}
+
 int main(int argc, char *argv[])
 {
     QFile specsFile("json");
@@ -414,6 +456,8 @@ int main(int argc, char *argv[])
     qDebug() << "Unresolved:" << types.count();
 
     QString codeOfTLTypes;
+    QString codeStreamDeclarations;
+    QString codeStreamDefinition;
 
     foreach (const TLType &type, solvedTypes) {
         if ((type.subTypes.count() == 1) && (type.subTypes.first().members.isEmpty())) {
@@ -422,9 +466,13 @@ int main(int argc, char *argv[])
         }
 
         codeOfTLTypes.append(generateTLType(type));
+        codeStreamDeclarations.append(generateStreamOperatorDeclaration(type));
+        codeStreamDefinition.append(generateStreamOperatorDefinition(type));
     }
 
     replacingHelper(QLatin1String("../TLTypes.hpp"), 0, QLatin1String("TLTypes"), codeOfTLTypes);
+    replacingHelper(QLatin1String("../CTelegramStream.hpp"), 0, QLatin1String("operators"), codeStreamDeclarations);
+    replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("operators implementation"), codeStreamDefinition);
 
     return 0;
 }
