@@ -106,6 +106,9 @@ static const QStringList actualTypes = QStringList() << "bool" << "quint32" << "
 static const QStringList badNames = QStringList() << "lat"<< "long" ;
 static const QStringList badNamesReplacers = QStringList() << "latitude"<< "longitude";
 
+static const QString spacing = QString(4, QLatin1Char(' '));
+static const QString doubleSpacing = spacing + spacing;
+
 inline int indexOfSeparator(const QString &str, int minIndex)
 {
     int dotIndex = str.indexOf(QChar('.'), minIndex);
@@ -132,6 +135,15 @@ QString formatName(QString name)
     }
 
     return name;
+}
+
+inline QString removePrefix(const QString &str)
+{
+    if (str.startsWith(tlPrefix)) {
+        return str.mid(tlPrefix.size());
+    } else {
+        return str;
+    }
 }
 
 QString formatMember(QString name)
@@ -189,15 +201,13 @@ struct TLTypeMember {
     }
 };
 
-struct TLType {
+struct TLSubType {
     QString name;
     QList<TLTypeMember> members;
-    QStringList types;
 
-    TLType &operator=(const TLType &anotherType) {
+    TLSubType &operator=(const TLSubType &anotherType) {
         name = anotherType.name;
         members = anotherType.members;
-        types = anotherType.types;
 
         return *this;
     }
@@ -213,12 +223,26 @@ struct TLType {
     }
 };
 
+struct TLType {
+    QString name;
+    QList<TLSubType> subTypes;
+
+    TLType &operator=(const TLType &anotherType) {
+        name = anotherType.name;
+        subTypes = anotherType.subTypes;
+
+        return *this;
+    }
+};
+
 void debugType(const TLType &type)
 {
     qDebug() << type.name;
-    qDebug() << type.types;
-    foreach (const TLTypeMember &member, type.members) {
-        qDebug() << "    " << member.type << member.name;
+    foreach (const TLSubType &subType, type.subTypes) {
+        qDebug() << "    " << subType.name;
+        foreach (const TLTypeMember &member, subType.members) {
+            qDebug() << "        " << member.type << member.name;
+        }
     }
 }
 
@@ -226,15 +250,10 @@ QString generateTLType(const TLType &type)
 {
     QString code;
 
-    static const QString spacing = QString(4, QLatin1Char(' '));
-
     code.append(QString("struct %1 {\n").arg(type.name));
 
-    QString anotherName = type.name;
-    if (anotherName.startsWith(tlPrefix)) {
-        anotherName = anotherName.mid(tlPrefix.size());
-    }
-
+    QString anotherName = removePrefix(type.name);
+    anotherName[0] = anotherName.at(0).toUpper();
     anotherName.prepend(QLatin1String("another"));
 
     QString constructor = spacing + QString("%1() :\n").arg(type.name);
@@ -242,27 +261,34 @@ QString generateTLType(const TLType &type)
     QString copyOperator = spacing + QString("%1 &operator=(const %1 &%2) {\n").arg(type.name).arg(anotherName);
     QString membersCode;
 
-    for (int i = 0; i < type.members.count(); ++i) {
-        static const QString doubleSpacing = spacing + spacing;
+    QStringList addedMembers;
+    foreach (const TLSubType &subType, type.subTypes) {
+        foreach (const TLTypeMember &member, subType.members) {
+            if (addedMembers.contains(member.name)) {
+                continue;
+            }
 
-        const TLTypeMember &member = type.members.at(i);
+            addedMembers.append(member.name);
 
-        copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
-        copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
+            copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
+            copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
 
-        membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(member.type).arg(member.name));
+            membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(member.type).arg(member.name));
 
-        if (!typesToInit.contains(member.type)) {
-            continue;
+            if (!typesToInit.contains(member.type)) {
+                continue;
+            }
+
+            const QString initialValue = initTypesValues.at(typesToInit.indexOf(member.type));
+            constructor += QString("%1%2(%3),\n").arg(doubleSpacing).arg(member.name).arg(initialValue);
         }
+    }
 
-        QString initialValue;
-        if (member.name == tlTypeMember) {
-            initialValue = type.types.first(); // ?
-        } else {
-            initialValue = initTypesValues.at(typesToInit.indexOf(member.type));
-        }
-        constructor += QString("%1%2(%3),\n").arg(doubleSpacing).arg(member.name).arg(initialValue);
+    if (type.subTypes.count() > 1) {
+        constructor += QString("%1%2(%3),\n").arg(doubleSpacing).arg(tlTypeMember).arg(type.subTypes.first().name);
+        copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
+        copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
+        membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(tlValueName).arg(tlTypeMember));
     }
 
     constructor.chop(2);
@@ -303,17 +329,17 @@ int main(int argc, char *argv[])
     for (int i = 0; i < constructors.count(); ++i) {
         const QJsonObject obj = constructors.at(i).toObject();
 
-        QString name = obj.value("predicate").toString();
+        QString predicateName = obj.value("predicate").toString();
 
-        name[0] = name.at(0).toUpper();
+        predicateName[0] = predicateName.at(0).toUpper();
 
         int separatorIndex = 0;
-        while ((separatorIndex = indexOfSeparator(name, separatorIndex)) > 0) {
-            if ((name.length() < separatorIndex + 1) || (!name.at(separatorIndex + 1).isLetter())) {
+        while ((separatorIndex = indexOfSeparator(predicateName, separatorIndex)) > 0) {
+            if ((predicateName.length() < separatorIndex + 1) || (!predicateName.at(separatorIndex + 1).isLetter())) {
                 return -1;
             }
-            name[separatorIndex + 1] = name.at(separatorIndex + 1).toUpper();
-            name.remove(separatorIndex, 1);
+            predicateName[separatorIndex + 1] = predicateName.at(separatorIndex + 1).toUpper();
+            predicateName.remove(separatorIndex, 1);
         }
 
         quint32 id = obj.value("id").toString().toInt();
@@ -323,7 +349,9 @@ int main(int argc, char *argv[])
         if (!actualTypes.contains(typeName)) {
             TLType tlType = types.value(typeName);
             tlType.name = typeName;
-            tlType.types.append(name);
+
+            TLSubType tlSubType;
+            tlSubType.name = predicateName;
 
             const QJsonArray params = obj.value("params").toArray();
 
@@ -331,31 +359,17 @@ int main(int argc, char *argv[])
                 const QJsonObject &paramObj = paramValue.toObject();
                 const QString paramName = formatMember(paramObj.value("name").toString());
 
-                if (tlType.haveMember(paramName)) {
-                    continue;
-                }
-
                 const QString paramType = paramObj.value("type").toString();
 
-                if (!tlType.members.isEmpty() && (tlType.members.last().name == tlTypeMember)) {
-                    // Keep tlTypeMember as last member.
-                    tlType.members.insert(tlType.members.count() - 1, TLTypeMember(paramName, formatType(paramType)));
-                } else {
-                    tlType.members.append(TLTypeMember(paramName, formatType(paramType)));
-                }
+                tlSubType.members.append(TLTypeMember(paramName, formatType(paramType)));
             }
 
-            if (tlType.types.count() == 2) {
-                tlType.members.append(TLTypeMember(tlTypeMember, tlValueName));
-            }
-
+            tlType.subTypes.append(tlSubType);
             types.insert(typeName, tlType);
         }
 
-        qDebug() << name << QString::number(id, 0x10);
+//        qDebug() << name << QString::number(id, 0x10);
     }
-
-    QString code;
 
     QList<TLType> solvedTypes;
     QStringList solvedTypesNames = actualTypes;
@@ -371,14 +385,21 @@ int main(int argc, char *argv[])
 
             bool solved = true;
 
-            foreach (const TLTypeMember &member, type.members) {
-                QString memberType = getTypeOrVectorType(member.type);
+            foreach (const TLSubType &subType, type.subTypes) {
+                foreach (const TLTypeMember &member, subType.members) {
+                    QString memberType = getTypeOrVectorType(member.type);
 
-                if (!solvedTypesNames.contains(memberType)) {
-                    solved = false;
+                    if (!solvedTypesNames.contains(memberType)) {
+                        solved = false;
+                        break;
+                    }
+                }
+
+                if (!solved) {
                     break;
                 }
             }
+
 
             if (solved) {
                 solvedTypes.append(type);
@@ -392,16 +413,18 @@ int main(int argc, char *argv[])
 
     qDebug() << "Unresolved:" << types.count();
 
+    QString codeOfTLTypes;
+
     foreach (const TLType &type, solvedTypes) {
-        if (type.members.isEmpty()) {
+        if ((type.subTypes.count() == 1) && (type.subTypes.first().members.isEmpty())) {
             qDebug() << "Empty type" << type.name;
             continue;
         }
 
-        code.append(generateTLType(type));
+        codeOfTLTypes.append(generateTLType(type));
     }
 
-    replacingHelper(QLatin1String("../TLTypes.hpp"), 0, QLatin1String("TLTypes"), code);
+    replacingHelper(QLatin1String("../TLTypes.hpp"), 0, QLatin1String("TLTypes"), codeOfTLTypes);
 
     return 0;
 }
