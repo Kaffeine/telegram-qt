@@ -19,7 +19,7 @@ public:
 
 private slots:
     void whenConnected();
-    void whenNeedCode();
+    void whenNeedsAuthCode();
     void whenAuthenticated();
 
     void on_connectButton_clicked();
@@ -28,6 +28,8 @@ private slots:
     void on_signInButton_clicked();
 
     void on_contactList_clicked();
+
+    void on_getAuthKey_clicked();
 
 private:
     Ui::MainWindow *ui;

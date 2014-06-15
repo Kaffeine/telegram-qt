@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_core->setAppInformation(&appInfo);
 
     connect(m_core, SIGNAL(dcConfigurationObtained()), SLOT(whenConnected()));
-    connect(m_core, SIGNAL(needsAuthCode()), SLOT(whenNeedCode()));
+    connect(m_core, SIGNAL(needsAuthCode()), SLOT(whenNeedsAuthCode()));
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
 }
 
@@ -38,9 +38,11 @@ void MainWindow::whenConnected()
 
     ui->connectionState->setText(tr("Connected"));
     ui->authButton->setEnabled(true);
+    ui->phoneNumber->setFocus();
+    ui->signInButton->setEnabled(true);
 }
 
-void MainWindow::whenNeedCode()
+void MainWindow::whenNeedsAuthCode()
 {
     ui->authButton->setEnabled(false);
 
@@ -58,9 +60,18 @@ void MainWindow::whenAuthenticated()
 
 void MainWindow::on_connectButton_clicked()
 {
+    QByteArray key  = QByteArray::fromHex(ui->authKey->toPlainText().toLatin1());
+    QByteArray salt = QByteArray::fromHex(ui->serverSalt->text().toLatin1());
+
     if (ui->mainDcRadio->isChecked()) {
         // MainDC
-        m_core->initialConnection("173.240.5.1", 443);
+
+        if (key.isEmpty() || salt.isEmpty())
+            m_core->initialConnection("173.240.5.1", 443);
+        else {
+            m_core->initialConnection("173.240.5.1", 443, key, salt);
+        }
+
     } else {
         // TestingDC
         m_core->initialConnection("173.240.5.253", 443);
@@ -84,4 +95,10 @@ void MainWindow::on_signInButton_clicked()
 void MainWindow::on_contactList_clicked()
 {
     m_core->getContacts();
+}
+
+void MainWindow::on_getAuthKey_clicked()
+{
+    ui->authKey->setPlainText(m_core->activeAuthKey().toHex());
+    ui->serverSalt->setText(m_core->activeServerSalt().toHex());
 }

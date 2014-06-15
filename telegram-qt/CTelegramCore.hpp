@@ -34,10 +34,14 @@ public:
     void setAppInformation(const CAppInformation *newAppInfo);
 
     bool initialConnection(const QString &address, quint32 port);
+    bool initialConnection(const QString &address, quint32 port, const QByteArray &authKey, const QByteArray &serverSalt);
 
     void requestAuthCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
     void getContacts();
+
+    QByteArray activeAuthKey() const;
+    QByteArray activeServerSalt() const;
 
 signals:
     void dcConfigurationObtained();

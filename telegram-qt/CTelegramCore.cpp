@@ -56,6 +56,24 @@ bool CTelegramCore::initialConnection(const QString &address, quint32 port)
     return true;
 }
 
+bool CTelegramCore::initialConnection(const QString &address, quint32 port, const QByteArray &authKey, const QByteArray &serverSalt)
+{
+    if (!m_appInfo || !m_appInfo->isValid()) {
+        qDebug() << "CTelegramCore: Can not init connection: App information is null or is not valid.";
+        return false;
+    }
+
+    CTelegramConnection *connection = createConnection(SDcInfo(address, port));
+    connection->setAuthKey(authKey);
+    connection->setServerSaltArray(serverSalt);
+    m_connections.insert(0, connection);
+    connection->connectToDc();
+
+    setActiveDc(0);
+
+    return true;
+}
+
 void CTelegramCore::requestAuthCode(const QString &phoneNumber)
 {
     activeConnection()->requestAuthCode(phoneNumber);
@@ -69,6 +87,24 @@ void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)
 void CTelegramCore::getContacts()
 {
     activeConnection()->getContacts();
+}
+
+QByteArray CTelegramCore::activeAuthKey() const
+{
+    if (!activeConnection()) {
+        return QByteArray();
+    }
+
+    return activeConnection()->authKey();
+}
+
+QByteArray CTelegramCore::activeServerSalt() const
+{
+    if (!activeConnection()) {
+        return QByteArray();
+    }
+
+    return activeConnection()->serverSaltArray();
 }
 
 void CTelegramCore::whenConnectionAuthChanged(int dc, int newState)
