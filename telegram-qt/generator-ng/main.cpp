@@ -471,7 +471,7 @@ int main(int argc, char *argv[])
     }
 
     replacingHelper(QLatin1String("../TLTypes.hpp"), 0, QLatin1String("TLTypes"), codeOfTLTypes);
-    replacingHelper(QLatin1String("../CTelegramStream.hpp"), 0, QLatin1String("operators"), codeStreamDeclarations);
+    replacingHelper(QLatin1String("../CTelegramStream.hpp"), 4, QLatin1String("operators"), codeStreamDeclarations);
     replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("operators implementation"), codeStreamDefinition);
 
     return 0;

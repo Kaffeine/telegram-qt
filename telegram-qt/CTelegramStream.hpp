@@ -144,7 +144,7 @@ public:
     CTelegramStream &operator>>(TLUpdate &update);
     CTelegramStream &operator>>(TLUpdates &updates);
     CTelegramStream &operator>>(TLUpdatesDifference &updatesDifference);
-// End of generated operators
+    // End of generated operators
 
     CTelegramStream &operator<<(const QByteArray &data);
     CTelegramStream &operator<<(const QString &str);
