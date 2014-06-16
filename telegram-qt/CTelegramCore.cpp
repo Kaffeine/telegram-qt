@@ -144,7 +144,11 @@ void CTelegramCore::whenConnectionConfigurationUpdated(int dc)
         return;
     }
 
-    m_dcConfiguration = connection->dcConfiguration();
+    m_dcConfiguration.clear();
+
+    foreach (const TLDcOption &option, connection->dcConfiguration()) {
+        m_dcConfiguration.append(SDcInfo(option.ipAddress, option.port, option.id));
+    }
 
     qDebug() << "Core: DC Configuration:";
     for (int i = 0; i < m_dcConfiguration.count(); ++i) {
@@ -168,7 +172,7 @@ void CTelegramCore::whenConnectionDcIdUpdated(int connectionId, int newDcId)
         m_connections.remove(connectionId);
         m_connections.insert(newDcId, connection);
 
-        SDcInfo info = connection->dcInfo();
+        TLDcOption info = connection->dcInfo();
         info.id = newDcId;
         connection->setDcInfo(info);
 
@@ -232,7 +236,13 @@ CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
 
     connect(connection, SIGNAL(authCodeHashReceived()), SIGNAL(needsAuthCode()));
 
-    connection->setDcInfo(dc);
+    TLDcOption dcInfo;
+
+    dcInfo.id        = dc.id;
+    dcInfo.ipAddress = dc.ipAddress;
+    dcInfo.port      = dc.port;
+
+    connection->setDcInfo(dcInfo);
 
     return connection;
 }

@@ -383,7 +383,7 @@ void tst_CTelegramStream::tlDcOptionDeserialization()
 
     CTelegramStream stream(&device);
 
-    QVector<SDcInfo> optionsVector;
+    QVector<TLDcOption> optionsVector;
 
     stream >> optionsVector;
 
@@ -395,7 +395,7 @@ void tst_CTelegramStream::tlDcOptionDeserialization()
     QCOMPARE(optionsVector.at(0).port, quint32(25));
 
     QCOMPARE(optionsVector.at(5).id       , quint32(3));
-    QCOMPARE(optionsVector.at(5).hostName , QString("localhost"));
+    QCOMPARE(optionsVector.at(5).hostname , QString("localhost"));
     QCOMPARE(optionsVector.at(5).ipAddress, QString("174.140.142.5"));
     QCOMPARE(optionsVector.at(5).port     , quint32(80));
 }

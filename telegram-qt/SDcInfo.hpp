@@ -5,8 +5,8 @@
 #include <QString>
 
 struct SDcInfo {
-    SDcInfo(const QString &newIpAddress = QString(), const quint32 &newPort = 0) :
-        id(0),
+    SDcInfo(const QString &newIpAddress = QString(), const quint32 &newPort = 0, const quint32 &newId = 0) :
+        id(newId),
         ipAddress(newIpAddress),
         port(newPort) { }
 

@@ -42,9 +42,9 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     setTransport(new CTcpTransport(this));
 }
 
-void CTelegramConnection::setDcInfo(const SDcInfo &dc)
+void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
 {
-    m_dcInfo = dc;
+    m_dcInfo = newDcInfo;
 }
 
 void CTelegramConnection::connectToDc()
@@ -749,7 +749,7 @@ void CTelegramConnection::processConfig(CTelegramStream &stream, quint64 id, boo
     quint32 thisDc;
     stream >> thisDc;
 
-    QVector<SDcInfo> options;
+    QVector<TLDcOption> options;
 
     stream >> options;
 

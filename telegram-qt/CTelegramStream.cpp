@@ -30,8 +30,6 @@ template CTelegramStream &CTelegramStream::operator<<(const QVector<quint32> &v)
 template CTelegramStream &CTelegramStream::operator<<(const QVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator<<(const QVector<quint64> &v);
 
-template CTelegramStream &CTelegramStream::operator>>(QVector<SDcInfo> &v);
-
 template CTelegramStream &CTelegramStream::operator>>(QVector<TLUser> &v);
 template CTelegramStream &CTelegramStream::operator>>(QVector<TLContact> &v);
 
@@ -3185,24 +3183,6 @@ CTelegramStream &CTelegramStream::operator<<(const QByteArray &data)
     if (length & 3) {
         m_device->write(s_nulls, 4 - (length & 3));
     }
-
-    return *this;
-}
-
-CTelegramStream &CTelegramStream::operator>>(SDcInfo &info)
-{
-    TLValue optionCode;
-    *this >> optionCode;
-
-    if (optionCode != DcOption) {
-        // ERROR!
-        return *this;
-    }
-
-    *this >> info.id;
-    *this >> info.hostName;
-    *this >> info.ipAddress;
-    *this >> info.port;
 
     return *this;
 }

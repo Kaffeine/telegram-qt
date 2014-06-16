@@ -22,7 +22,6 @@
 #include "TLTypes.hpp"
 #include "crypto-rsa.hpp"
 #include "crypto-aes.hpp"
-#include "SDcInfo.hpp"
 
 class CAppInformation;
 class CTelegramStream;
@@ -44,9 +43,9 @@ public:
 
     explicit CTelegramConnection(const CAppInformation *appInfo, QObject *parent = 0);
 
-    void setDcInfo(const SDcInfo &dc);
+    void setDcInfo(const TLDcOption &newDcInfo);
 
-    inline SDcInfo dcInfo() const { return m_dcInfo; }
+    inline TLDcOption dcInfo() const { return m_dcInfo; }
 
     void connectToDc();
 
@@ -91,7 +90,7 @@ public:
     inline quint64 serverSalt() const { return m_serverSalt; }
     inline quint64 sessionId() const { return m_sessionId; }
 
-    inline QVector<SDcInfo> dcConfiguration() { return m_dcConfiguration; }
+    inline QVector<TLDcOption> dcConfiguration() const { return m_dcConfiguration; }
 
     void processRedirectedPackage(const QByteArray &data);
 
@@ -181,9 +180,9 @@ protected:
 
     quint64 m_authRetryId;
 
-    SDcInfo m_dcInfo;
+    TLDcOption m_dcInfo;
 
-    QVector<SDcInfo> m_dcConfiguration;
+    QVector<TLDcOption> m_dcConfiguration;
 
     QString m_authCodeHash;
 
