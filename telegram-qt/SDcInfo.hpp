@@ -1,7 +1,6 @@
 #ifndef SDCINFO_HPP
 #define SDCINFO_HPP
 
-#include <qglobal.h>
 #include <QString>
 
 struct SDcInfo {

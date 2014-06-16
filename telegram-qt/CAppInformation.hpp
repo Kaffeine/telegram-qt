@@ -1,9 +1,11 @@
 #ifndef CAPPINFORMATION_HPP
 #define CAPPINFORMATION_HPP
 
+#include "telegramqt_export.h"
+
 #include <QString>
 
-class CAppInformation
+class TELEGRAMQT_EXPORT CAppInformation
 {
 public:
     CAppInformation();

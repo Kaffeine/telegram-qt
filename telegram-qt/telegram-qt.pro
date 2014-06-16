@@ -5,6 +5,8 @@ TEMPLATE = lib
 TARGET   = TelegramQt
 CONFIG  += dll
 
+DEFINES += TELEGRAMQT_LIBRARY
+
 SOURCES = CTelegramCore.cpp \
     CAppInformation.cpp \
     CRawStream.cpp \
@@ -24,7 +26,8 @@ HEADERS = CTelegramCore.hpp \
     crypto-aes.hpp \
     crypto-rsa.hpp \
     SDcInfo.hpp \
-    CTelegramConnection.hpp
+    CTelegramConnection.hpp \
+    telegramqt_export.h
 
 HEADERS += TLValues.h
 

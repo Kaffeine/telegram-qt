@@ -1,0 +1,12 @@
+#ifndef TELEGRAMQT_EXPORT_H
+#define TELEGRAMQT_EXPORT_H
+
+#include <QtCore/QtGlobal>
+
+#if defined(TELEGRAMQT_LIBRARY)
+#define TELEGRAMQT_EXPORT Q_DECL_EXPORT
+#else
+#define TELEGRAMQT_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // TELEGRAMQT_EXPORT_H

@@ -14,6 +14,8 @@
 #ifndef CTELEGRAMCORE_HPP
 #define CTELEGRAMCORE_HPP
 
+#include "telegramqt_export.h"
+
 #include <QObject>
 #include <QMap>
 #include <QVector>
@@ -23,7 +25,7 @@
 class CAppInformation;
 class CTelegramConnection;
 
-class CTelegramCore : public QObject
+class TELEGRAMQT_EXPORT CTelegramCore : public QObject
 {
     Q_OBJECT
 public:
