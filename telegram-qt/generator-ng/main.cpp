@@ -286,12 +286,10 @@ QString generateTLType(const TLType &type)
         }
     }
 
-    if (type.subTypes.count() > 1) {
-        constructor += QString("%1%2(%3),\n").arg(doubleSpacing).arg(tlTypeMember).arg(type.subTypes.first().name);
-        copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
-        copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
-        membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(tlValueName).arg(tlTypeMember));
-    }
+    constructor += QString("%1%2(%3),\n").arg(doubleSpacing).arg(tlTypeMember).arg(type.subTypes.first().name);
+    copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
+    copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
+    membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(tlValueName).arg(tlTypeMember));
 
     constructor.chop(2);
     constructor.append(QLatin1String(" { }\n\n"));
@@ -343,11 +341,7 @@ QString generateStreamOperatorDefinition(const TLType &type)
     }
 
     code.append(QString("%1default:\n%1%1break;\n%1}\n\n").arg(spacing));
-
-    if (type.subTypes.count() > 1) {
-        code.append(QString("%1result.%2 = type;\n").arg(spacing).arg(tlTypeMember));
-    }
-
+    code.append(QString("%1result.%2 = type;\n").arg(spacing).arg(tlTypeMember));
     code.append(QString("%1%2 = result;\n\n%1return *this;\n}\n\n").arg(spacing).arg(argName));
 
     return code;
