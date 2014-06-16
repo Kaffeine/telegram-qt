@@ -147,6 +147,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthCheckedPhone &authCheckedPhon
         break;
     }
 
+    result.tlType = type;
     authCheckedPhone = result;
 
     return *this;
@@ -168,6 +169,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthExportedAuthorization &authEx
         break;
     }
 
+    result.tlType = type;
     authExportedAuthorization = result;
 
     return *this;
@@ -191,6 +193,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthSentCode &authSentCode)
         break;
     }
 
+    result.tlType = type;
     authSentCode = result;
 
     return *this;
@@ -212,6 +215,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChatLocated &chatLocated)
         break;
     }
 
+    result.tlType = type;
     chatLocated = result;
 
     return *this;
@@ -234,6 +238,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChatParticipant &chatParticipant)
         break;
     }
 
+    result.tlType = type;
     chatParticipant = result;
 
     return *this;
@@ -282,6 +287,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContact &contact)
         break;
     }
 
+    result.tlType = type;
     contact = result;
 
     return *this;
@@ -303,6 +309,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactBlocked &contactBlocked)
         break;
     }
 
+    result.tlType = type;
     contactBlocked = result;
 
     return *this;
@@ -323,6 +330,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactFound &contactFound)
         break;
     }
 
+    result.tlType = type;
     contactFound = result;
 
     return *this;
@@ -344,6 +352,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactStatus &contactStatus)
         break;
     }
 
+    result.tlType = type;
     contactStatus = result;
 
     return *this;
@@ -365,6 +374,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactSuggested &contactSuggeste
         break;
     }
 
+    result.tlType = type;
     contactSuggested = result;
 
     return *this;
@@ -438,6 +448,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDcOption &dcOption)
         break;
     }
 
+    result.tlType = type;
     dcOption = result;
 
     return *this;
@@ -669,6 +680,7 @@ CTelegramStream &CTelegramStream::operator>>(TLError &error)
         break;
     }
 
+    result.tlType = type;
     error = result;
 
     return *this;
@@ -768,6 +780,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpInviteText &helpInviteText)
         break;
     }
 
+    result.tlType = type;
     helpInviteText = result;
 
     return *this;
@@ -789,6 +802,7 @@ CTelegramStream &CTelegramStream::operator>>(TLImportedContact &importedContact)
         break;
     }
 
+    result.tlType = type;
     importedContact = result;
 
     return *this;
@@ -812,6 +826,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputAppEvent &inputAppEvent)
         break;
     }
 
+    result.tlType = type;
     inputAppEvent = result;
 
     return *this;
@@ -859,6 +874,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputContact &inputContact)
         break;
     }
 
+    result.tlType = type;
     inputContact = result;
 
     return *this;
@@ -904,6 +920,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedChat &inputEncrypte
         break;
     }
 
+    result.tlType = type;
     inputEncryptedChat = result;
 
     return *this;
@@ -1028,6 +1045,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputGeoChat &inputGeoChat)
         break;
     }
 
+    result.tlType = type;
     inputGeoChat = result;
 
     return *this;
@@ -1129,6 +1147,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifySettings &inputPee
         break;
     }
 
+    result.tlType = type;
     inputPeerNotifySettings = result;
 
     return *this;
@@ -1253,6 +1272,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedHistory &messages
         break;
     }
 
+    result.tlType = type;
     messagesAffectedHistory = result;
 
     return *this;
@@ -1357,6 +1377,7 @@ CTelegramStream &CTelegramStream::operator>>(TLNearestDc &nearestDc)
         break;
     }
 
+    result.tlType = type;
     nearestDc = result;
 
     return *this;
@@ -1526,6 +1547,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdatesState &updatesState)
         break;
     }
 
+    result.tlType = type;
     updatesState = result;
 
     return *this;
@@ -1548,6 +1570,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUploadFile &uploadFile)
         break;
     }
 
+    result.tlType = type;
     uploadFile = result;
 
     return *this;
@@ -1713,6 +1736,7 @@ CTelegramStream &CTelegramStream::operator>>(TLConfig &config)
         break;
     }
 
+    result.tlType = type;
     config = result;
 
     return *this;
@@ -1763,6 +1787,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDecryptedMessageLayer &decryptedM
         break;
     }
 
+    result.tlType = type;
     decryptedMessageLayer = result;
 
     return *this;
@@ -1786,6 +1811,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDialog &dialog)
         break;
     }
 
+    result.tlType = type;
     dialog = result;
 
     return *this;
@@ -2089,6 +2115,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthAuthorization &authAuthorizat
         break;
     }
 
+    result.tlType = type;
     authAuthorization = result;
 
     return *this;
@@ -2160,6 +2187,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChatFull &chatFull)
         break;
     }
 
+    result.tlType = type;
     chatFull = result;
 
     return *this;
@@ -2232,6 +2260,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsFound &contactsFound)
         break;
     }
 
+    result.tlType = type;
     contactsFound = result;
 
     return *this;
@@ -2254,6 +2283,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsImportedContacts &contact
         break;
     }
 
+    result.tlType = type;
     contactsImportedContacts = result;
 
     return *this;
@@ -2276,6 +2306,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsLink &contactsLink)
         break;
     }
 
+    result.tlType = type;
     contactsLink = result;
 
     return *this;
@@ -2297,6 +2328,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsSuggested &contactsSugges
         break;
     }
 
+    result.tlType = type;
     contactsSuggested = result;
 
     return *this;
@@ -2318,6 +2350,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpSupport &helpSupport)
         break;
     }
 
+    result.tlType = type;
     helpSupport = result;
 
     return *this;
@@ -2427,6 +2460,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesChat &messagesChat)
         break;
     }
 
+    result.tlType = type;
     messagesChat = result;
 
     return *this;
@@ -2449,6 +2483,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesChatFull &messagesChatFul
         break;
     }
 
+    result.tlType = type;
     messagesChatFull = result;
 
     return *this;
@@ -2470,6 +2505,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesChats &messagesChats)
         break;
     }
 
+    result.tlType = type;
     messagesChats = result;
 
     return *this;
@@ -2522,6 +2558,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhotosPhoto &photosPhoto)
         break;
     }
 
+    result.tlType = type;
     photosPhoto = result;
 
     return *this;
@@ -2575,6 +2612,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUserFull &userFull)
         break;
     }
 
+    result.tlType = type;
     userFull = result;
 
     return *this;
@@ -2635,6 +2673,7 @@ CTelegramStream &CTelegramStream::operator>>(TLGeochatsLocated &geochatsLocated)
         break;
     }
 
+    result.tlType = type;
     geochatsLocated = result;
 
     return *this;
@@ -2687,6 +2726,7 @@ CTelegramStream &CTelegramStream::operator>>(TLGeochatsStatedMessage &geochatsSt
         break;
     }
 
+    result.tlType = type;
     geochatsStatedMessage = result;
 
     return *this;
