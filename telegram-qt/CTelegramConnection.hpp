@@ -118,11 +118,10 @@ protected:
     void processMessageAck(CTelegramStream &stream);
     void processBadMessageNotification(CTelegramStream &stream);
 
-    void processConfig(CTelegramStream &stream, quint64 id, bool oldVersion = false);
-    void processAuthSentCode(CTelegramStream &stream, quint64 id, bool oldVersion = false);
-    void processAuthAuthorization(CTelegramStream &stream, quint64 id);
-
-    void processContactsContacts(CTelegramStream &stream, quint64 id);
+    TLValue processHelpGetConfig(CTelegramStream &stream, quint64 id);
+    TLValue processContactsGetContacts(CTelegramStream &stream, quint64 id);
+    TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
+    TLValue processAuthSignIn(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 

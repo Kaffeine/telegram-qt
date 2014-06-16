@@ -616,33 +616,44 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
     stream >> id;
 
     TLValue result;
+    TLValue processingResult;
 
-    stream >> result;
+    const QByteArray &request = m_submittedPackages.value(id);
 
-    switch (result) {
-    case RpcError:
-        processRpcError(stream, id);
-        break;
-    case Config:
-        processConfig(stream, id);
-        break;
-    case Config_BeforeLayer12:
-        processConfig(stream, id, /* oldVersion */ true);
-        break;
-    case AuthSentCode:
-        processAuthSentCode(stream, id);
-        break;
-    case AuthSentCode_BeforeLayer12:
-        processAuthSentCode(stream, id, /* oldVersion */ true);
-        break;
-    case AuthAuthorization:
-        processAuthAuthorization(stream, id);
-        break;
-    case ContactsContacts:
-        processContactsContacts(stream, id);
-        break;
-    default:
-        qDebug() << "RPC Result " << QString::number(result, 16) << "is not implemented yet.";
+    qDebug() << m_submittedPackages.keys();
+
+    if (!request.isEmpty()) {
+        CTelegramStream storedStream(request);
+
+        storedStream >> result;
+
+        switch (result) {
+        case ContactsGetContacts:
+            processingResult = processContactsGetContacts(stream, id);
+            break;
+        case AuthSignIn:
+            processingResult = processAuthSignIn(stream, id);
+            break;
+        case HelpGetConfig:
+            processingResult = processHelpGetConfig(stream, id);
+            break;
+        case AuthSendCode:
+            processingResult = processAuthSendCode(stream, id);
+            break;
+        default:
+            break;
+        }
+
+        switch (processingResult) {
+        case RpcError:
+            processRpcError(stream, id);
+            break;
+        default:
+            break;
+        }
+    } else {
+        stream >> result;
+        qDebug() << "Unexpected RPC message:" << QString::number(result, 16);
     }
 }
 
@@ -673,7 +684,7 @@ void CTelegramConnection::processMessageAck(CTelegramStream &stream)
 
     foreach (quint64 id, idsVector) {
         qDebug() << "Packaged" << id << "acked";
-        m_submittedPackages.remove(id);
+//        m_submittedPackages.remove(id);
     }
 }
 
@@ -731,101 +742,73 @@ void CTelegramConnection::processBadMessageNotification(CTelegramStream &stream)
     qDebug() << QString("Bad message %1/%2: Code %3 (%4).").arg(id).arg(seqNo).arg(errorCode).arg(errorText);
 }
 
-void CTelegramConnection::processConfig(CTelegramStream &stream, quint64 id, bool oldVersion)
+TLValue CTelegramConnection::processHelpGetConfig(CTelegramStream &stream, quint64 id)
 {
-    quint32 date;
-    stream >> date;
+    TLConfig result;
+    stream >> result;
 
-    TLValue testMode;
-    stream >> testMode;
+    if (result.tlType == Config) {
+        m_dcConfiguration = result.dcOptions;
 
-    switch (testMode) {
-    case BoolTrue:
-    case BoolFalse:
-    default:
-        break;
+        if (m_dcInfo.id != result.thisDc) {
+            emit actualDcIdReceived(m_dcInfo.id, result.thisDc);
+        }
+
+        emit dcConfigurationReceived(m_dcInfo.id);
+
+        m_submittedPackages.remove(id);
     }
 
-    quint32 thisDc;
-    stream >> thisDc;
-
-    QVector<TLDcOption> options;
-
-    stream >> options;
-
-    quint32 chatMaxSize;
-
-    stream >> chatMaxSize;
-
-    if (!oldVersion) {
-        quint32 broadcastMaxSize;
-
-        stream >> broadcastMaxSize;
-
-        return;
-    }
-
-    m_dcConfiguration = options;
-
-    if (m_dcInfo.id != thisDc) {
-        emit actualDcIdReceived(m_dcInfo.id, thisDc);
-    }
-
-    emit dcConfigurationReceived(m_dcInfo.id);
+    return result.tlType;
 }
 
-void CTelegramConnection::processAuthSentCode(CTelegramStream &stream, quint64 id, bool oldVersion)
+TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream, quint64 id)
 {
-    bool phoneRegistered;
+    TLContactsContacts result;
+    stream >> result;
 
-    stream >> phoneRegistered;
-
-    stream >> m_authCodeHash;
-
-    if (!oldVersion) {
-        quint32 timeout;
-
-        stream >> timeout;
-
-        bool isPassword;
-
-        stream >> isPassword;
-    }
-
-    emit authCodeHashReceived();
-}
-
-void CTelegramConnection::processAuthAuthorization(CTelegramStream &stream, quint64 id)
-{
-    quint32 expires;
-
-    stream >> expires;
-
-    TLUser user;
-
-    stream >> user;
-    qDebug() << "AuthAuthorization" << user.phone << expires;
-
-    setAuthState(AuthStateSignedIn);
-}
-
-void CTelegramConnection::processContactsContacts(CTelegramStream &stream, quint64 id)
-{
-    QVector<TLContact> contacts;
-
-    stream >> contacts;
-
-    QVector<TLUser> users;
-
-    stream >> users;
-
-    qDebug() << "ContactListUsers:";
-    foreach (const TLUser &user, users) {
+    foreach (const TLUser &user, result.users) {
         qDebug() << user.id;
         qDebug() << user.firstName;
         qDebug() << user.lastName;
         qDebug() << user.phone;
+
+        m_submittedPackages.remove(id);
     }
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processAuthSendCode(CTelegramStream &stream, quint64 id)
+{
+    TLAuthSentCode result;
+    stream >> result;
+
+    if (result.tlType == AuthSentCode) {
+        m_authCodeHash = result.phoneCodeHash;
+
+        emit authCodeHashReceived();
+
+        m_submittedPackages.remove(id);
+    }
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processAuthSignIn(CTelegramStream &stream, quint64 id)
+{
+    TLAuthAuthorization result;
+    stream >> result;
+
+    qDebug() << "AuthAuthorization" << result.user.phone << result.expires;
+
+    if (result.tlType == AuthAuthorization) {
+        setAuthState(AuthStateSignedIn);
+
+        m_submittedPackages.remove(id);
+    }
+
+    return result.tlType;
 }
 
 bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)

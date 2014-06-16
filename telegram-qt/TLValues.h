@@ -17,9 +17,6 @@
 // TODO: Namespace?
 
 enum TLValue {
-    Config_BeforeLayer12 = 0x232d5905,
-    AuthSentCode_BeforeLayer12 = 0x2215bcbd,
-
     // Generated TLValues
     // From 10-mtproto-schema.txt:
     ResPQ = 0x05162463,
