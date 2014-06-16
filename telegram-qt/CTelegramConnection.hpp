@@ -136,7 +136,7 @@ protected:
     void insertInitConnection(QByteArray *data) const;
 
     void sendPlainPackage(const QByteArray &buffer);
-    void sendEncryptedPackage(const QByteArray &buffer, bool insertInitHeader = false);
+    void sendEncryptedPackage(const QByteArray &buffer);
     void setTransport(CTelegramTransport *newTransport);
 
     void setAuthState(AuthState newState);

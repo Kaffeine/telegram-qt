@@ -162,7 +162,7 @@ void CTelegramConnection::requestAuthCode(const QString &phoneNumber)
     outputStream << m_appInfo->appHash();
     outputStream << m_appInfo->languageCode();
 
-    sendEncryptedPackage(output, /* Insert init header */ true);
+    sendEncryptedPackage(output);
 }
 
 void CTelegramConnection::signIn(const QString &phoneNumber, const QString &authCode)
@@ -1029,7 +1029,7 @@ void CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
     m_transport->sendPackage(output);
 }
 
-void CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool insertInitHeader)
+void CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
 {
     QByteArray encryptedPackage;
     QByteArray messageKey;
@@ -1051,7 +1051,7 @@ void CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool in
         stream << m_sequenceNumber;
 
         QByteArray header;
-        if (insertInitHeader) {
+        if (m_sequenceNumber == 1) {
             insertInitConnection(&header);
         }
 
