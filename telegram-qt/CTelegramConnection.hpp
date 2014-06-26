@@ -26,7 +26,6 @@
 class CAppInformation;
 class CTelegramStream;
 class CTelegramTransport;
-class CRawStream;
 
 class CTelegramConnection : public QObject
 {
