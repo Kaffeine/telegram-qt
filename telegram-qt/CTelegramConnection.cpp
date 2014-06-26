@@ -16,6 +16,7 @@
 #include <QDebug>
 
 #include <QDateTime>
+#include <QStringList>
 
 #include <QtEndian>
 
@@ -548,6 +549,17 @@ void CTelegramConnection::processRedirectedPackage(const QByteArray &data)
     }
 }
 
+QStringList CTelegramConnection::contacts() const
+{
+    QStringList contactsList;
+
+    foreach (const TLUser &user, m_users) {
+        contactsList.append(user.phone);
+    }
+
+    return contactsList;
+}
+
 void CTelegramConnection::processRpcQuery(const QByteArray &data)
 {
     CTelegramStream stream(data);
@@ -777,14 +789,11 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
     TLContactsContacts result;
     stream >> result;
 
-    foreach (const TLUser &user, result.users) {
-        qDebug() << user.id;
-        qDebug() << user.firstName;
-        qDebug() << user.lastName;
-        qDebug() << user.phone;
+    m_users = result.users;
 
-        m_submittedPackages.remove(id);
-    }
+    m_submittedPackages.remove(id);
+
+    emit contactListReceived();
 
     return result.tlType;
 }

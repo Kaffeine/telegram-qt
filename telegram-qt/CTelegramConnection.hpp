@@ -93,6 +93,8 @@ public:
 
     void processRedirectedPackage(const QByteArray &data);
 
+    QStringList contacts() const;
+
 signals:
     void wantedActiveDcChanged(int dc);
     void newRedirectedPackage(const QByteArray &data, int dc);
@@ -102,6 +104,7 @@ signals:
     void dcConfigurationReceived(int dc);
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
+    void contactListReceived();
 
 private slots:
     void whenConnected();
@@ -184,6 +187,8 @@ protected:
     QVector<TLDcOption> m_dcConfiguration;
 
     QString m_authCodeHash;
+
+    QVector<TLUser> m_users;
 
 };
 

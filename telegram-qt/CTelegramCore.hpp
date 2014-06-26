@@ -19,6 +19,7 @@
 #include <QObject>
 #include <QMap>
 #include <QVector>
+#include <QStringList>
 
 #include "SDcInfo.hpp"
 
@@ -40,16 +41,19 @@ public:
 
     void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
-    void getContacts();
+    void requestContactList();
 
     QByteArray activeAuthKey() const;
     QByteArray activeServerSalt() const;
+
+    QStringList contacts() const;
 
 signals:
     void dcConfigurationObtained();
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void authenticated();
+    void gotContactList();
 
 protected slots:
     void whenConnectionAuthChanged(int dc, int newState);
