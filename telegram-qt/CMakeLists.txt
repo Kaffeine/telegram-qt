@@ -14,7 +14,11 @@ set(telegram_qt_HEADERS
     telegramqt_export.h
     SDcInfo.hpp
     CTelegramCore.hpp
+    CTelegramConnection.hpp
+    TLTypes.hpp
     CAppInformation.hpp
+    crypto-rsa.hpp
+    crypto-aes.hpp
 )
 
 include_directories(${CMAKE_SOURCE_DIR}
