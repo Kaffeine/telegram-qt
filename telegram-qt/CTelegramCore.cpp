@@ -74,9 +74,9 @@ bool CTelegramCore::initialConnection(const QString &address, quint32 port, cons
     return true;
 }
 
-void CTelegramCore::requestAuthCode(const QString &phoneNumber)
+void CTelegramCore::requestPhoneCode(const QString &phoneNumber)
 {
-    activeConnection()->requestAuthCode(phoneNumber);
+    activeConnection()->requestPhoneCode(phoneNumber);
 }
 
 void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)
@@ -234,7 +234,7 @@ CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,int)), SLOT(whenPackageRedirected(QByteArray,int)));
     connect(connection, SIGNAL(wantedActiveDcChanged(int)), SLOT(whenWantedActiveDcChanged(int)));
 
-    connect(connection, SIGNAL(authCodeHashReceived()), SIGNAL(needsAuthCode()));
+    connect(connection, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(connection, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
 
     TLDcOption dcInfo;

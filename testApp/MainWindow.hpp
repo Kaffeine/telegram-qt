@@ -19,7 +19,7 @@ public:
 
 private slots:
     void whenConnected();
-    void whenNeedsAuthCode();
+    void whenPhoneCodeRequested();
     void whenPhoneCodeIsInvalid();
     void whenAuthenticated();
 

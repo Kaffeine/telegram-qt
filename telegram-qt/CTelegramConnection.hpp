@@ -58,7 +58,7 @@ public:
 
     void initAuth();
     void getConfiguration();
-    void requestAuthCode(const QString &phoneNumber);
+    void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
     void getContacts();
 
@@ -101,7 +101,7 @@ signals:
     void authStateChanged(int dc, int state);
     void actualDcIdReceived(int dc, int newDcId);
     void dcConfigurationReceived(int dc);
-    void authCodeHashReceived();
+    void phoneCodeRequired();
     void phoneCodeIsInvalid();
 
 private slots:

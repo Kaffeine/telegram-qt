@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_core->setAppInformation(&appInfo);
 
     connect(m_core, SIGNAL(dcConfigurationObtained()), SLOT(whenConnected()));
-    connect(m_core, SIGNAL(needsAuthCode()), SLOT(whenNeedsAuthCode()));
+    connect(m_core, SIGNAL(phoneCodeRequired()), SLOT(whenPhoneCodeRequested()));
     connect(m_core, SIGNAL(phoneCodeIsInvalid()), SLOT(whenPhoneCodeIsInvalid()));
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
 }
@@ -45,7 +45,7 @@ void MainWindow::whenConnected()
     ui->signInButton->setEnabled(true);
 }
 
-void MainWindow::whenNeedsAuthCode()
+void MainWindow::whenPhoneCodeRequested()
 {
     ui->authButton->setEnabled(false);
 
@@ -94,7 +94,7 @@ void MainWindow::on_authButton_clicked()
         return;
     }
 
-    m_core->requestAuthCode(ui->phoneNumber->text());
+    m_core->requestPhoneCode(ui->phoneNumber->text());
 }
 
 void MainWindow::on_signInButton_clicked()
@@ -104,7 +104,7 @@ void MainWindow::on_signInButton_clicked()
 
 void MainWindow::on_contactList_clicked()
 {
-    m_core->getContacts();
+    m_core->requestContactList();
 }
 
 void MainWindow::on_getAuthKey_clicked()

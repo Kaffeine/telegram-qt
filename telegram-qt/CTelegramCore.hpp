@@ -38,7 +38,7 @@ public:
     bool initialConnection(const QString &address, quint32 port);
     bool initialConnection(const QString &address, quint32 port, const QByteArray &authKey, const QByteArray &serverSalt);
 
-    void requestAuthCode(const QString &phoneNumber);
+    void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
     void getContacts();
 
@@ -47,9 +47,9 @@ public:
 
 signals:
     void dcConfigurationObtained();
-    void needsAuthCode();
-    void authenticated();
+    void phoneCodeRequired();
     void phoneCodeIsInvalid();
+    void authenticated();
 
 protected slots:
     void whenConnectionAuthChanged(int dc, int newState);

@@ -148,9 +148,9 @@ void CTelegramConnection::getConfiguration()
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::requestAuthCode(const QString &phoneNumber)
+void CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
 {
-    qDebug() << "AuthSendCode" << phoneNumber << m_dcInfo.id;
+    qDebug() << "requestPhoneCode" << phoneNumber << m_dcInfo.id;
     QByteArray output;
 
     CTelegramStream outputStream(&output, /* write */ true);
@@ -544,7 +544,7 @@ void CTelegramConnection::processRedirectedPackage(const QByteArray &data)
         QString phoneNumber;
         stream >> phoneNumber;
 
-        return requestAuthCode(phoneNumber);
+        return requestPhoneCode(phoneNumber);
     }
 }
 
@@ -797,7 +797,7 @@ TLValue CTelegramConnection::processAuthSendCode(CTelegramStream &stream, quint6
     if (result.tlType == AuthSentCode) {
         m_authCodeHash = result.phoneCodeHash;
 
-        emit authCodeHashReceived();
+        emit phoneCodeRequired();
 
         m_submittedPackages.remove(id);
     }
