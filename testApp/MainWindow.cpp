@@ -5,6 +5,7 @@
 #include "CTelegramCore.hpp"
 
 #include <QToolTip>
+#include <QStringListModel>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -28,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(phoneCodeRequired()), SLOT(whenPhoneCodeRequested()));
     connect(m_core, SIGNAL(phoneCodeIsInvalid()), SLOT(whenPhoneCodeIsInvalid()));
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
+    connect(m_core, SIGNAL(gotContactList()), SLOT(whenGotContactList()));
 }
 
 MainWindow::~MainWindow()
@@ -65,7 +67,13 @@ void MainWindow::whenAuthenticated()
 {
     ui->signInButton->setEnabled(false);
 
-    ui->contactList->setEnabled(true);
+    ui->getContactList->setEnabled(true);
+}
+
+void MainWindow::whenGotContactList()
+{
+    QStringListModel *model = new QStringListModel(m_core->contacts(), ui->contactListTable);
+    ui->contactListTable->setModel(model);
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -102,7 +110,7 @@ void MainWindow::on_signInButton_clicked()
     m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
 }
 
-void MainWindow::on_contactList_clicked()
+void MainWindow::on_getContactList_clicked()
 {
     m_core->requestContactList();
 }
