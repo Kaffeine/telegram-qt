@@ -4,6 +4,8 @@
 #include "CAppInformation.hpp"
 #include "CTelegramCore.hpp"
 
+#include <QToolTip>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -24,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(m_core, SIGNAL(dcConfigurationObtained()), SLOT(whenConnected()));
     connect(m_core, SIGNAL(needsAuthCode()), SLOT(whenNeedsAuthCode()));
+    connect(m_core, SIGNAL(phoneCodeIsInvalid()), SLOT(whenPhoneCodeIsInvalid()));
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
 }
 
@@ -49,6 +52,13 @@ void MainWindow::whenNeedsAuthCode()
     ui->confirmationCode->setEnabled(true);
     ui->confirmationCode->setFocus();
     ui->signInButton->setEnabled(true);
+}
+
+void MainWindow::whenPhoneCodeIsInvalid()
+{
+    ui->confirmationCode->setFocus();
+
+    QToolTip::showText(ui->confirmationCode->mapToGlobal(QPoint(0, 0)), tr("Phone code is invalid"));
 }
 
 void MainWindow::whenAuthenticated()

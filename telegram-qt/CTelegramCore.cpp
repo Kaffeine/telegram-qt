@@ -235,6 +235,7 @@ CTelegramConnection *CTelegramCore::createConnection(const SDcInfo &dc)
     connect(connection, SIGNAL(wantedActiveDcChanged(int)), SLOT(whenWantedActiveDcChanged(int)));
 
     connect(connection, SIGNAL(authCodeHashReceived()), SIGNAL(needsAuthCode()));
+    connect(connection, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
 
     TLDcOption dcInfo;
 

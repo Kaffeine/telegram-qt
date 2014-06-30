@@ -102,6 +102,7 @@ signals:
     void actualDcIdReceived(int dc, int newDcId);
     void dcConfigurationReceived(int dc);
     void authCodeHashReceived();
+    void phoneCodeIsInvalid();
 
 private slots:
     void whenConnected();
@@ -113,7 +114,7 @@ protected:
     void processSessionCreated(CTelegramStream &stream);
     void processContainer(CTelegramStream &stream);
     void processRpcResult(CTelegramStream &stream);
-    void processRpcError(CTelegramStream &stream, quint64 id);
+    bool processRpcError(CTelegramStream &stream, quint64 id, TLValue request);
 
     void processMessageAck(CTelegramStream &stream);
     void processBadMessageNotification(CTelegramStream &stream);

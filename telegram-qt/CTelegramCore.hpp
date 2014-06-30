@@ -49,6 +49,7 @@ signals:
     void dcConfigurationObtained();
     void needsAuthCode();
     void authenticated();
+    void phoneCodeIsInvalid();
 
 protected slots:
     void whenConnectionAuthChanged(int dc, int newState);

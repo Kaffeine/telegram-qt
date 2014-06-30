@@ -615,19 +615,19 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
     quint64 id;
     stream >> id;
 
-    TLValue result;
+    TLValue request;
     TLValue processingResult;
 
-    const QByteArray &request = m_submittedPackages.value(id);
+    const QByteArray &requestData = m_submittedPackages.value(id);
 
     qDebug() << m_submittedPackages.keys();
 
-    if (!request.isEmpty()) {
-        CTelegramStream storedStream(request);
+    if (!requestData.isEmpty()) {
+        CTelegramStream storedStream(requestData);
 
-        storedStream >> result;
+        storedStream >> request;
 
-        switch (result) {
+        switch (request) {
         case ContactsGetContacts:
             processingResult = processContactsGetContacts(stream, id);
             break;
@@ -646,18 +646,18 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
 
         switch (processingResult) {
         case RpcError:
-            processRpcError(stream, id);
+            processRpcError(stream, id, request);
             break;
         default:
             break;
         }
     } else {
-        stream >> result;
-        qDebug() << "Unexpected RPC message:" << QString::number(result, 16);
+        stream >> request;
+        qDebug() << "Unexpected RPC message:" << QString::number(request, 16);
     }
 }
 
-void CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id)
+bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, TLValue request)
 {
     quint32 errorCode;
     stream >> errorCode;
@@ -667,13 +667,23 @@ void CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id)
 
     qDebug() << "RPC Error" << errorCode << ":" << errorMessage << "for message" << id;
 
-    if (errorCode == 303) { // ERROR_SEE_OTHER
+    switch (errorCode) {
+    case 303: // ERROR_SEE_OTHER
         if (processErrorSeeOther(errorMessage, id)) {
-            return;
+            return true;
         }
+        break;
+    case 400:
+        if (request == AuthSignIn) {
+            emit phoneCodeIsInvalid();
+            return true;
+        }
+    default:
+        qDebug() << "RPC Error can not be handled.";
+        break;
     }
 
-    qDebug() << "RPC Error can not be handled.";
+    return false;
 }
 
 void CTelegramConnection::processMessageAck(CTelegramStream &stream)
