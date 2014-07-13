@@ -31,20 +31,37 @@ add_library(telegram-qt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES})
 
 set_target_properties(telegram-qt${QT_VERSION_MAJOR} PROPERTIES AUTOMOC TRUE)
 
+set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/telegram-qt${QT_VERSION_MAJOR})
+set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
+
 install(
     TARGETS telegram-qt${QT_VERSION_MAJOR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${TELEGRAM_QT_LIB_DIR}
     COMPONENT Library
 )
 
 install(
     DIRECTORY TelegramQt
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/telegram-qt${QT_VERSION_MAJOR}
+    DESTINATION ${TELEGRAM_QT_INCLUDE_DIR}
     COMPONENT Devel
 )
 
 install(
     FILES ${telegram_qt_HEADERS}
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/telegram-qt${QT_VERSION_MAJOR}/TelegramQt
+    DESTINATION ${TELEGRAM_QT_INCLUDE_DIR}/TelegramQt
+    COMPONENT Devel
+)
+
+# CMake find package stuff
+include(CMakePackageConfigHelpers)
+
+configure_file(TelegramQtConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}Config.cmake" @ONLY)
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}ConfigVersion.cmake"
+                                    VERSION ${TELEGRAM_QT_VERSION}
+                                    COMPATIBILITY ExactVersion)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}ConfigVersion.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}Config.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/TelegramQt${QT_VERSION_MAJOR}
     COMPONENT Devel
 )
