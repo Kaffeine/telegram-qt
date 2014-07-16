@@ -4,6 +4,7 @@
 #include "TLNumbers.hpp"
 #include "TLValues.h"
 
+#include <QMetaType>
 #include <QVector>
 
 // Generated TLTypes
@@ -3182,5 +3183,7 @@ struct TLUpdatesDifference {
 };
 
 // End of generated TLTypes
+
+Q_DECLARE_METATYPE(TLUploadFile)
 
 #endif // TLTYPES_HPP
