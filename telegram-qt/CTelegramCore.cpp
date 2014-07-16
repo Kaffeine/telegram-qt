@@ -45,6 +45,11 @@ void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
     m_appInfo = new CAppInformation(newAppInfo);
 }
 
+QByteArray CTelegramCore::connectionSecretInfo() const
+{
+    return m_dispatcher->connectionSecretInfo();
+}
+
 bool CTelegramCore::initConnection(const QString &address, quint32 port)
 {
     if (!m_appInfo || !m_appInfo->isValid()) {
@@ -58,16 +63,10 @@ bool CTelegramCore::initConnection(const QString &address, quint32 port)
     return true;
 }
 
-bool CTelegramCore::restoreConnection(const QString &address, quint32 port, const QByteArray &authKey, const QByteArray &serverSalt)
+bool CTelegramCore::restoreConnection(const QByteArray &secret)
 {
-    Q_UNUSED(address)
-    Q_UNUSED(port)
-    Q_UNUSED(authKey)
-    Q_UNUSED(serverSalt)
-
-    qDebug() << Q_FUNC_INFO << "not implemented";
-
-    return false;
+    m_dispatcher->setAppInformation(m_appInfo);
+    return m_dispatcher->restoreConnection(secret);
 }
 
 void CTelegramCore::requestPhoneCode(const QString &phoneNumber)

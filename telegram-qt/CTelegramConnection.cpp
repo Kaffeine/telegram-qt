@@ -73,21 +73,6 @@ void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
     m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
 }
 
-void CTelegramConnection::setServerSaltArray(const QByteArray &newServerSalt)
-{
-    CRawStream str(newServerSalt);
-    str >> m_serverSalt;
-}
-
-QByteArray CTelegramConnection::serverSaltArray() const
-{
-    QByteArray result;
-    CRawStream str(&result, true);
-    str << m_serverSalt;
-
-    return result;
-}
-
 quint64 CTelegramConnection::formatTimeStamp(qint64 timeInMs)
 {
     static const quint64 maxMsecValue = (quint64(1) << 32) - 1;

@@ -82,17 +82,18 @@ public:
 
     inline quint64 serverPublicFingersprint() const { return m_serverPublicFingersprint; }
 
-    void setAuthKey(const QByteArray &newAuthKey);
     inline QByteArray authKey() const { return m_authKey; }
+    void setAuthKey(const QByteArray &newAuthKey);
     inline quint64 authId() const { return m_authId; }
 
-    void setServerSaltArray(const QByteArray &newServerSalt);
-    QByteArray serverSaltArray() const;
-
     inline quint64 serverSalt() const { return m_serverSalt; }
+    void setServerSalt(const quint64 salt) { m_serverSalt = salt; }
     inline quint64 sessionId() const { return m_sessionId; }
 
     inline QVector<TLDcOption> dcConfiguration() const { return m_dcConfiguration; }
+
+    inline qint32 deltaTime() const { return m_deltaTime; }
+    void setDeltaTime(const qint32 delta) { m_deltaTime = delta; }
 
     void processRedirectedPackage(const QByteArray &data);
 

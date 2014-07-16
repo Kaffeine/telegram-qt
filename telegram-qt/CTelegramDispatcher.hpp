@@ -34,7 +34,10 @@ public:
 
     QStringList contactList() const { return m_contactList; }
 
+    QByteArray connectionSecretInfo() const;
+
     void initConnection(const QString &address, quint32 port);
+    bool restoreConnection(const QByteArray &secret);
 
     void signIn(const QString &phoneNumber, const QString &authCode);
 

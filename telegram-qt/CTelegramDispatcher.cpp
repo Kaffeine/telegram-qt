@@ -14,8 +14,11 @@
 #include "CTelegramDispatcher.hpp"
 
 #include "CTelegramConnection.hpp"
+#include "CTelegramStream.hpp"
 
 #include <QDebug>
+
+const quint32 secretFormatVersion = 0;
 
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
@@ -30,6 +33,25 @@ void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
     m_appInformation = newAppInfo;
 }
 
+QByteArray CTelegramDispatcher::connectionSecretInfo() const
+{
+    if (!activeConnection()) {
+        return QByteArray();
+    }
+
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << secretFormatVersion;
+    outputStream << activeConnection()->deltaTime();
+    outputStream << activeConnection()->dcInfo();
+    outputStream << activeConnection()->authKey();
+    outputStream << activeConnection()->authId();
+    outputStream << activeConnection()->serverSalt();
+
+    return output;
+}
+
 void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
 {
     TLDcOption dcInfo;
@@ -42,6 +64,51 @@ void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
     connection->connectToDc();
 
     setActiveDc(0);
+}
+
+bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
+{
+    CTelegramStream inputStream(secret);
+
+    quint32 format;
+    qint32 deltaTime;
+    TLDcOption dcInfo;
+    QByteArray authKey;
+    quint64 authId;
+    quint64 serverSalt;
+
+    inputStream >> format;
+
+    if (format != secretFormatVersion) {
+        qDebug() << "Unknown format version";
+        return false;
+    }
+
+    inputStream >> deltaTime;
+    inputStream >> dcInfo;
+    inputStream >> authKey;
+    inputStream >> authId;
+    inputStream >> serverSalt;
+
+    CTelegramConnection *connection = createConnection(dcInfo);
+
+    connection->setDeltaTime(deltaTime);
+    connection->setAuthKey(authKey);
+    connection->setServerSalt(serverSalt);
+
+    if (connection->authId() != authId) {
+        qDebug() << "Invalid auth data.";
+        delete connection;
+        return false;
+    }
+
+    m_connections.insert(dcInfo.id, connection);
+
+    setActiveDc(dcInfo.id);
+
+    connection->connectToDc();
+
+    return true;
 }
 
 void CTelegramDispatcher::signIn(const QString &phoneNumber, const QString &authCode)

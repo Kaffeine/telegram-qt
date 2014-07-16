@@ -33,8 +33,10 @@ public:
     inline const CAppInformation *appInfo() { return m_appInfo; }
     void setAppInformation(const CAppInformation *newAppInfo);
 
+    QByteArray connectionSecretInfo() const;
+
     bool initConnection(const QString &address, quint32 port);
-    bool restoreConnection(const QString &address, quint32 port, const QByteArray &authKey = QByteArray(), const QByteArray &serverSalt = QByteArray());
+    bool restoreConnection(const QByteArray &secret);
 
     void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
