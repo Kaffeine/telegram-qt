@@ -1005,20 +1005,24 @@ void CTelegramConnection::insertInitConnection(QByteArray *data) const
     outputStream << m_appInfo->languageCode();
 }
 
-void CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
+quint64 CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
 {
+    quint64 messageId = newMessageId();
+
     QByteArray output;
     CRawStream outputStream(&output, /* write */ true);
 
     outputStream << quint64(0);
-    outputStream << newMessageId();
+    outputStream << messageId;
     outputStream << quint32(buffer.length());
     outputStream << buffer;
 
     m_transport->sendPackage(output);
+
+    return messageId;
 }
 
-void CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
+quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
 {
     QByteArray encryptedPackage;
     QByteArray messageKey;
@@ -1073,6 +1077,8 @@ void CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
     outputStream << encryptedPackage;
 
     m_transport->sendPackage(output);
+
+    return messageId;
 }
 
 void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)

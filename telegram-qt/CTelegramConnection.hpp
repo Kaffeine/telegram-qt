@@ -138,8 +138,8 @@ protected:
 
     void insertInitConnection(QByteArray *data) const;
 
-    void sendPlainPackage(const QByteArray &buffer);
-    void sendEncryptedPackage(const QByteArray &buffer);
+    quint64 sendPlainPackage(const QByteArray &buffer);
+    quint64 sendEncryptedPackage(const QByteArray &buffer);
     void setTransport(CTelegramTransport *newTransport);
 
     void setAuthState(AuthState newState);
