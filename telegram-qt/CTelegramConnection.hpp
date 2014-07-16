@@ -96,8 +96,6 @@ public:
 
     void processRedirectedPackage(const QByteArray &data);
 
-    QStringList contactList() const { return m_contactList; }
-
 signals:
     void wantedActiveDcChanged(int dc);
     void newRedirectedPackage(const QByteArray &data, int dc);
@@ -107,7 +105,7 @@ signals:
     void dcConfigurationReceived(int dc);
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
-    void contactListChanged();
+    void usersReceived(const QVector<TLUser> &users);
     void fileReceived(const TLUploadFile &file, quint32 fileId);
 
 private slots:
@@ -146,8 +144,6 @@ protected:
     void setTransport(CTelegramTransport *newTransport);
 
     void setAuthState(AuthState newState);
-
-    void setUsers(const QVector<TLUser> &users);
 
     quint64 newMessageId();
 
@@ -195,9 +191,6 @@ protected:
     QVector<TLDcOption> m_dcConfiguration;
 
     QString m_authCodeHash;
-
-    QVector<TLUser> m_users;
-    QStringList m_contactList;
 
 };
 

@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_core = new CTelegramCore(this);
     m_core->setAppInformation(&appInfo);
 
-    connect(m_core, SIGNAL(dcConfigurationObtained()), SLOT(whenConnected()));
+    connect(m_core, SIGNAL(connected()), SLOT(whenConnected()));
     connect(m_core, SIGNAL(phoneCodeRequired()), SLOT(whenPhoneCodeRequested()));
     connect(m_core, SIGNAL(phoneCodeIsInvalid()), SLOT(whenPhoneCodeIsInvalid()));
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
@@ -85,14 +85,14 @@ void MainWindow::on_connectButton_clicked()
         // MainDC
 
         if (key.isEmpty() || salt.isEmpty())
-            m_core->initialConnection("173.240.5.1", 443);
+            m_core->initConnection("173.240.5.1", 443);
         else {
-            m_core->initialConnection("173.240.5.1", 443, key, salt);
+            m_core->restoreConnection("173.240.5.1", 443, key, salt);
         }
 
     } else {
         // TestingDC
-        m_core->initialConnection("173.240.5.253", 443);
+        m_core->initConnection("173.240.5.253", 443);
     }
 }
 

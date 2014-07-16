@@ -636,8 +636,6 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
 
     const QByteArray &requestData = m_submittedPackages.value(id);
 
-    qDebug() << m_submittedPackages.keys();
-
     if (!requestData.isEmpty()) {
         CTelegramStream storedStream(requestData);
 
@@ -796,7 +794,7 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
     TLContactsContacts result;
     stream >> result;
 
-    setUsers(result.users);
+    emit usersReceived(result.users);
 
     m_submittedPackages.remove(id);
 
@@ -1124,23 +1122,6 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
     }
 
     emit authStateChanged(m_dcInfo.id, m_authState);
-}
-
-void CTelegramConnection::setUsers(const QVector<TLUser> &users)
-{
-    m_users = users;
-
-    QStringList contactIds;
-    contactIds.reserve(m_users.count());
-
-    foreach (const TLUser &user, m_users) {
-        contactIds.append(user.phone);
-    }
-
-    if (m_contactList != contactIds) {
-        m_contactList = contactIds;
-        emit contactListChanged();
-    }
 }
 
 quint64 CTelegramConnection::newMessageId()

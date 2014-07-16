@@ -17,14 +17,12 @@
 #include "telegramqt_export.h"
 
 #include <QObject>
-#include <QMap>
 #include <QVector>
 #include <QStringList>
 
-#include "SDcInfo.hpp"
-
 class CAppInformation;
 class CTelegramConnection;
+class CTelegramDispatcher;
 
 class TELEGRAMQT_EXPORT CTelegramCore : public QObject
 {
@@ -36,11 +34,12 @@ public:
     inline const CAppInformation *appInfo() { return m_appInfo; }
     void setAppInformation(const CAppInformation *newAppInfo);
 
-    bool initialConnection(const QString &address, quint32 port);
-    bool initialConnection(const QString &address, quint32 port, const QByteArray &authKey, const QByteArray &serverSalt);
+    bool initConnection(const QString &address, quint32 port);
+    bool restoreConnection(const QString &address, quint32 port, const QByteArray &authKey = QByteArray(), const QByteArray &serverSalt = QByteArray());
 
     void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
+
     void requestContactList();
 
     QByteArray activeAuthKey() const;
@@ -49,39 +48,19 @@ public:
     QStringList contactList() const;
 
 signals:
-    void dcConfigurationObtained();
+    void connected();
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void authenticated();
     void contactListChanged();
 
-protected slots:
-    void whenConnectionAuthChanged(int dc, int newState);
-    void whenConnectionConfigurationUpdated(int dc);
-    void whenConnectionDcIdUpdated(int connectionId, int newDcId);
-    void whenPackageRedirected(const QByteArray &data, int dc);
-    void whenWantedActiveDcChanged(int dc);
-
 protected:
-    void setActiveDc(int dc, bool syncWantedDc = true);
+    CTelegramConnection *activeConnection() const;
 
-    CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
-    CTelegramConnection *createConnection(const SDcInfo &dc);
-    CTelegramConnection *establishConnectionToDc(int dc);
-
-    SDcInfo infoById(quint32 id) const;
+    CTelegramDispatcher *m_dispatcher;
 
     const CAppInformation *m_appInfo;
 
-    int m_activeDc;
-
-    QMap<int, CTelegramConnection *> m_connections;
-
-    QMap<int, QByteArray> m_delayedPackages; // dc, package data
-
-    QVector<SDcInfo> m_dcConfiguration;
-
-    int m_wantedActiveDc;
 };
 
 #endif // CTELECORE_HPP

@@ -2,6 +2,7 @@
 set(telegram_qt_SOURCES
     CAppInformation.cpp
     CTelegramCore.cpp
+    CTelegramDispatcher.cpp
     CTelegramConnection.cpp
     CTelegramTransport.hpp
     CTelegramStream.cpp
@@ -12,8 +13,8 @@ set(telegram_qt_SOURCES
 
 set(telegram_qt_HEADERS
     telegramqt_export.h
-    SDcInfo.hpp
     CTelegramCore.hpp
+    CTelegramDispatcher.hpp
     CTelegramConnection.hpp
     TLTypes.hpp
     CAppInformation.hpp

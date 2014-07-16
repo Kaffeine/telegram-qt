@@ -3185,5 +3185,6 @@ struct TLUpdatesDifference {
 // End of generated TLTypes
 
 Q_DECLARE_METATYPE(TLUploadFile)
+Q_DECLARE_METATYPE(QVector<TLUser>)
 
 #endif // TLTYPES_HPP
