@@ -32,7 +32,7 @@ private slots:
 
     void on_getContactList_clicked();
 
-    void on_getAuthKey_clicked();
+    void on_getSecretInfo_clicked();
 
 private:
     Ui::MainWindow *ui;

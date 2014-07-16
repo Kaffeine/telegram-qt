@@ -99,16 +99,15 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
 
 void MainWindow::on_connectButton_clicked()
 {
-    QByteArray key  = QByteArray::fromHex(ui->authKey->toPlainText().toLatin1());
-    QByteArray salt = QByteArray::fromHex(ui->serverSalt->text().toLatin1());
+    QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
 
     if (ui->mainDcRadio->isChecked()) {
         // MainDC
 
-        if (key.isEmpty() || salt.isEmpty())
+        if (secretInfo.isEmpty())
             m_core->initConnection("173.240.5.1", 443);
         else {
-            m_core->restoreConnection("173.240.5.1", 443, key, salt);
+            m_core->restoreConnection(secretInfo);
         }
 
     } else {
@@ -136,7 +135,7 @@ void MainWindow::on_getContactList_clicked()
     m_core->requestContactList();
 }
 
-void MainWindow::on_getAuthKey_clicked()
+void MainWindow::on_getSecretInfo_clicked()
 {
-
+    ui->secretInfo->setPlainText(m_core->connectionSecretInfo().toHex());
 }
