@@ -62,6 +62,7 @@ public:
     void signIn(const QString &phoneNumber, const QString &authCode);
 
     void requestContacts();
+    void getFile(const TLInputFileLocation &location, quint32 fileId);
 
     AuthState authState() { return m_authState; }
 
@@ -107,6 +108,7 @@ signals:
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void contactListChanged();
+    void fileReceived(const TLUploadFile &file, quint32 fileId);
 
 private slots:
     void whenConnected();
@@ -127,6 +129,7 @@ protected:
     TLValue processContactsGetContacts(CTelegramStream &stream, quint64 id);
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
     TLValue processAuthSignIn(CTelegramStream &stream, quint64 id);
+    TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 
@@ -148,9 +151,10 @@ protected:
 
     quint64 newMessageId();
 
-    QMap<quint64, QByteArray> m_submittedPackages; // <message id, package data>
-
     const CAppInformation *m_appInfo;
+
+    QMap<quint64, QByteArray> m_submittedPackages; // <message id, package data>
+    QMap<quint64, quint32> m_requestedFilesIds; // <message id, file id>
 
     CTelegramTransport *m_transport;
 

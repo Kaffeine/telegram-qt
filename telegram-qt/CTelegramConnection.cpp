@@ -193,6 +193,21 @@ void CTelegramConnection::requestContacts()
     sendEncryptedPackage(output);
 }
 
+void CTelegramConnection::getFile(const TLInputFileLocation &location, quint32 fileId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << UploadGetFile;
+    outputStream << location;
+    outputStream << quint32(0); // Offset
+    outputStream << quint32(512 * 1024); // Limit
+
+    const quint64 messageId = sendEncryptedPackage(output);
+
+    m_requestedFilesIds.insert(messageId, fileId);
+}
+
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
     // Payload is passed as const, but we open device in read-only mode, so
@@ -632,6 +647,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
         case ContactsGetContacts:
             processingResult = processContactsGetContacts(stream, id);
             break;
+        case UploadGetFile:
+            processingResult = processUploadGetFile(stream, id);
+            break;
         case AuthSignIn:
             processingResult = processAuthSignIn(stream, id);
             break;
@@ -815,6 +833,18 @@ TLValue CTelegramConnection::processAuthSignIn(CTelegramStream &stream, quint64 
     }
 
     return result.tlType;
+}
+
+TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint64 id)
+{
+    TLUploadFile file;
+    stream >> file;
+
+    emit fileReceived(file, m_requestedFilesIds.value(id));
+
+    m_requestedFilesIds.remove(id);
+
+    return file.tlType;
 }
 
 bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)
