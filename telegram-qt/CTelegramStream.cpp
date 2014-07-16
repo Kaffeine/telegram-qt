@@ -3187,6 +3187,18 @@ CTelegramStream &CTelegramStream::operator<<(const QByteArray &data)
     return *this;
 }
 
+CTelegramStream &CTelegramStream::operator<<(const TLDcOption &dcOption)
+{
+    *this << dcOption.tlType;
+
+    *this << dcOption.id;
+    *this << dcOption.hostname;
+    *this << dcOption.ipAddress;
+    *this << dcOption.port;
+
+    return *this;
+}
+
 CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFileLocation)
 {
     *this << inputFileLocation.tlType;

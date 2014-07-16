@@ -150,6 +150,7 @@ public:
 
     CTelegramStream &operator<<(const bool &data);
 
+    CTelegramStream &operator<<(const TLDcOption &dcOption);
     CTelegramStream &operator<<(const TLInputFileLocation &inputFileLocation);
 
     template <typename T>
