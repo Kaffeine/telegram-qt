@@ -44,6 +44,26 @@ void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
     setActiveDc(0);
 }
 
+void CTelegramDispatcher::signIn(const QString &phoneNumber, const QString &authCode)
+{
+    activeConnection()->signIn(phoneNumber, authCode);
+}
+
+void CTelegramDispatcher::requestPhoneCode(const QString &phoneNumber)
+{
+    if (!activeConnection()) {
+        qDebug() << "Can't request phone code: there is no active connection.";
+        return;
+    }
+
+    if (m_dcConfiguration.isEmpty()) {
+        qDebug() << "Can't request phone code: DC Configuration is unknown.";
+        return;
+    }
+
+    activeConnection()->requestPhoneCode(phoneNumber);
+}
+
 void CTelegramDispatcher::requestContactList()
 {
     activeConnection()->requestContacts();

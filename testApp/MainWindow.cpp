@@ -138,6 +138,5 @@ void MainWindow::on_getContactList_clicked()
 
 void MainWindow::on_getAuthKey_clicked()
 {
-    ui->authKey->setPlainText(m_core->activeAuthKey().toHex());
-    ui->serverSalt->setText(m_core->activeServerSalt().toHex());
+
 }

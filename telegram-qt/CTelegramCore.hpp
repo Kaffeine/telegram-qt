@@ -21,7 +21,6 @@
 #include <QStringList>
 
 class CAppInformation;
-class CTelegramConnection;
 class CTelegramDispatcher;
 
 class TELEGRAMQT_EXPORT CTelegramCore : public QObject
@@ -43,9 +42,6 @@ public:
     void requestContactList();
     void requestContactAvatar(const QString &contact);
 
-    QByteArray activeAuthKey() const;
-    QByteArray activeServerSalt() const;
-
     QStringList contactList() const;
 
 signals:
@@ -57,8 +53,6 @@ signals:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
 protected:
-    CTelegramConnection *activeConnection() const;
-
     CTelegramDispatcher *m_dispatcher;
 
     const CAppInformation *m_appInfo;

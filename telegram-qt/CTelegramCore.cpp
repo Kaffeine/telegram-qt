@@ -16,7 +16,6 @@
 #include <QDebug>
 
 #include "CAppInformation.hpp"
-#include "CTelegramConnection.hpp"
 #include "CTelegramDispatcher.hpp"
 
 CTelegramCore::CTelegramCore(QObject *parent) :
@@ -73,22 +72,12 @@ bool CTelegramCore::restoreConnection(const QString &address, quint32 port, cons
 
 void CTelegramCore::requestPhoneCode(const QString &phoneNumber)
 {
-    if (!activeConnection()) {
-        qDebug() << "Can't request phone code: there is no active connection.";
-        return;
-    }
-
-//    if (m_dcConfiguration.isEmpty()) {
-//        qDebug() << "Can't request phone code: DC Configuration is unknown.";
-//        return;
-//    }
-
-    activeConnection()->requestPhoneCode(phoneNumber);
+    return m_dispatcher->requestPhoneCode(phoneNumber);
 }
 
 void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)
 {
-    activeConnection()->signIn(phoneNumber, authCode);
+    m_dispatcher->signIn(phoneNumber, authCode);
 }
 
 void CTelegramCore::requestContactList()
@@ -101,30 +90,7 @@ void CTelegramCore::requestContactAvatar(const QString &contact)
     m_dispatcher->requestContactAvatar(contact);
 }
 
-QByteArray CTelegramCore::activeAuthKey() const
-{
-    if (!activeConnection()) {
-        return QByteArray();
-    }
-
-    return activeConnection()->authKey();
-}
-
-QByteArray CTelegramCore::activeServerSalt() const
-{
-    if (!activeConnection()) {
-        return QByteArray();
-    }
-
-    return activeConnection()->serverSaltArray();
-}
-
 QStringList CTelegramCore::contactList() const
 {
     return m_dispatcher->contactList();
-}
-
-CTelegramConnection *CTelegramCore::activeConnection() const
-{
-    return m_dispatcher->activeConnection();
 }

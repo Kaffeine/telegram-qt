@@ -34,10 +34,11 @@ public:
 
     QStringList contactList() const { return m_contactList; }
 
-    CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
-
     void initConnection(const QString &address, quint32 port);
 
+    void signIn(const QString &phoneNumber, const QString &authCode);
+
+    void requestPhoneCode(const QString &phoneNumber);
     void requestContactList();
     void requestContactAvatar(const QString &contact);
 
@@ -64,6 +65,8 @@ protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
 
 private:
+    CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
+
     CTelegramConnection *createConnection(const TLDcOption &dc);
     CTelegramConnection *establishConnectionToDc(int dc);
 
