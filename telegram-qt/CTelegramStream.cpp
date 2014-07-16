@@ -3186,3 +3186,36 @@ CTelegramStream &CTelegramStream::operator<<(const QByteArray &data)
 
     return *this;
 }
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFileLocation)
+{
+    *this << inputFileLocation.tlType;
+
+    switch (inputFileLocation.tlType) {
+    case InputFileLocation:
+        *this << inputFileLocation.volumeId;
+        *this << inputFileLocation.localId;
+        *this << inputFileLocation.secret;
+        break;
+    case InputVideoFileLocation:
+        *this << inputFileLocation.id;
+        *this << inputFileLocation.accessHash;
+        break;
+    case InputEncryptedFileLocation:
+        *this << inputFileLocation.id;
+        *this << inputFileLocation.accessHash;
+        break;
+    case InputAudioFileLocation:
+        *this << inputFileLocation.id;
+        *this << inputFileLocation.accessHash;
+        break;
+    case InputDocumentFileLocation:
+        *this << inputFileLocation.id;
+        *this << inputFileLocation.accessHash;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}

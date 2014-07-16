@@ -150,6 +150,8 @@ public:
 
     CTelegramStream &operator<<(const bool &data);
 
+    CTelegramStream &operator<<(const TLInputFileLocation &inputFileLocation);
+
     template <typename T>
     CTelegramStream &operator<<(const QVector<T> &v);
 
