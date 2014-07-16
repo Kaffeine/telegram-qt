@@ -585,7 +585,8 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
         processMessageAck(stream);
         break;
     case BadMsgNotification:
-        processBadMessageNotification(stream);
+    case BadServerSalt:
+        processIgnoredMessageNotification(stream);
         break;
     default:
         qDebug() << "VAL:" << QString::number(val, 16);
@@ -715,7 +716,7 @@ void CTelegramConnection::processMessageAck(CTelegramStream &stream)
     }
 }
 
-void CTelegramConnection::processBadMessageNotification(CTelegramStream &stream)
+void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &stream)
 {
     // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
     quint64 id;
@@ -767,6 +768,12 @@ void CTelegramConnection::processBadMessageNotification(CTelegramStream &stream)
         break;
     }
     qDebug() << QString("Bad message %1/%2: Code %3 (%4).").arg(id).arg(seqNo).arg(errorCode).arg(errorText);
+
+    if (errorCode == 48) {
+        m_serverSalt = m_receivedServerSalt;
+        sendEncryptedPackage(m_submittedPackages.take(id));
+        qDebug() << "Local serverSalt fixed to " << m_serverSalt;
+    }
 }
 
 TLValue CTelegramConnection::processHelpGetConfig(CTelegramStream &stream, quint64 id)
@@ -949,21 +956,20 @@ void CTelegramConnection::whenReadyRead()
         QByteArray decryptedData = Utils::aesDecrypt(data, key).left(data.length());
         CRawStream decryptedStream(decryptedData);
 
-        quint64 salt = 0;
         quint64 sessionId = 0;
         quint64 messageId  = 0;
         quint32 sequence = 0;
         quint32 contentLength = 0;
 
-        decryptedStream >> salt;
+        decryptedStream >> m_receivedServerSalt;
         decryptedStream >> sessionId;
         decryptedStream >> messageId;
         decryptedStream >> sequence;
         decryptedStream >> contentLength;
 
-        if (m_serverSalt != salt) {
-            qDebug() << "Salt is wrong.";
-            return;
+        if (m_serverSalt != m_receivedServerSalt) {
+            qDebug() << "Received different server salt:" << m_receivedServerSalt << "(remove) vs" << m_serverSalt << "(local)";
+//            return;
         }
 
         if (m_sessionId != sessionId) {
@@ -976,7 +982,7 @@ void CTelegramConnection::whenReadyRead()
             return;
         }
 
-        const int headerLength = sizeof(salt) + sizeof(sessionId) + sizeof(messageId) + sizeof(sequence) + sizeof(contentLength);
+        const int headerLength = sizeof(m_receivedServerSalt) + sizeof(sessionId) + sizeof(messageId) + sizeof(sequence) + sizeof(contentLength);
         QByteArray expectedMessageKey = Utils::sha1(decryptedData.left(headerLength + contentLength)).mid(4);
 
         if (messageKey != expectedMessageKey) {

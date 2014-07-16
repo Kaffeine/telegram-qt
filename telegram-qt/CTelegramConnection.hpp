@@ -121,7 +121,7 @@ protected:
     bool processRpcError(CTelegramStream &stream, quint64 id, TLValue request);
 
     void processMessageAck(CTelegramStream &stream);
-    void processBadMessageNotification(CTelegramStream &stream);
+    void processIgnoredMessageNotification(CTelegramStream &stream);
 
     TLValue processHelpGetConfig(CTelegramStream &stream, quint64 id);
     TLValue processContactsGetContacts(CTelegramStream &stream, quint64 id);
@@ -160,6 +160,7 @@ protected:
     quint64 m_authId;
     quint64 m_authKeyAuxHash;
     quint64 m_serverSalt;
+    quint64 m_receivedServerSalt;
     quint64 m_sessionId;
     quint64 m_lastMessageId;
     quint32 m_sequenceNumber;
