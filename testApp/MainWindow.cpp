@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(phoneCodeRequired()), SLOT(whenPhoneCodeRequested()));
     connect(m_core, SIGNAL(phoneCodeIsInvalid()), SLOT(whenPhoneCodeIsInvalid()));
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
-    connect(m_core, SIGNAL(gotContactList()), SLOT(whenGotContactList()));
+    connect(m_core, SIGNAL(contactListChanged()), SLOT(whenContactListChanged()));
 }
 
 MainWindow::~MainWindow()
@@ -70,9 +70,9 @@ void MainWindow::whenAuthenticated()
     ui->getContactList->setEnabled(true);
 }
 
-void MainWindow::whenGotContactList()
+void MainWindow::whenContactListChanged()
 {
-    QStringListModel *model = new QStringListModel(m_core->contacts(), ui->contactListTable);
+    QStringListModel *model = new QStringListModel(m_core->contactList(), ui->contactListTable);
     ui->contactListTable->setModel(model);
 }
 

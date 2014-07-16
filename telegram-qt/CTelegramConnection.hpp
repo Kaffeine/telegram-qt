@@ -18,6 +18,7 @@
 #include <QByteArray>
 #include <QVector>
 #include <QMap>
+#include <QStringList>
 
 #include "TLTypes.hpp"
 #include "crypto-rsa.hpp"
@@ -59,6 +60,7 @@ public:
     void getConfiguration();
     void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
+
     void requestContacts();
 
     AuthState authState() { return m_authState; }
@@ -93,7 +95,7 @@ public:
 
     void processRedirectedPackage(const QByteArray &data);
 
-    QStringList contacts() const;
+    QStringList contactList() const { return m_contactList; }
 
 signals:
     void wantedActiveDcChanged(int dc);
@@ -104,7 +106,7 @@ signals:
     void dcConfigurationReceived(int dc);
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
-    void contactListReceived();
+    void contactListChanged();
 
 private slots:
     void whenConnected();
@@ -141,6 +143,8 @@ protected:
     void setTransport(CTelegramTransport *newTransport);
 
     void setAuthState(AuthState newState);
+
+    void setUsers(const QVector<TLUser> &users);
 
     quint64 newMessageId();
 
@@ -189,6 +193,7 @@ protected:
     QString m_authCodeHash;
 
     QVector<TLUser> m_users;
+    QStringList m_contactList;
 
 };
 

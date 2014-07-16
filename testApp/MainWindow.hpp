@@ -22,7 +22,7 @@ private slots:
     void whenPhoneCodeRequested();
     void whenPhoneCodeIsInvalid();
     void whenAuthenticated();
-    void whenGotContactList();
+    void whenContactListChanged();
 
     void on_connectButton_clicked();
     void on_authButton_clicked();

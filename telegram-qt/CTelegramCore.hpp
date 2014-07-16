@@ -46,14 +46,14 @@ public:
     QByteArray activeAuthKey() const;
     QByteArray activeServerSalt() const;
 
-    QStringList contacts() const;
+    QStringList contactList() const;
 
 signals:
     void dcConfigurationObtained();
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void authenticated();
-    void gotContactList();
+    void contactListChanged();
 
 protected slots:
     void whenConnectionAuthChanged(int dc, int newState);

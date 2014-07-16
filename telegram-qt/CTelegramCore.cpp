@@ -117,9 +117,9 @@ QByteArray CTelegramCore::activeServerSalt() const
     return activeConnection()->serverSaltArray();
 }
 
-QStringList CTelegramCore::contacts() const
+QStringList CTelegramCore::contactList() const
 {
-    return activeConnection()->contacts();
+    return activeConnection()->contactList();
 }
 
 void CTelegramCore::whenConnectionAuthChanged(int dc, int newState)
@@ -147,7 +147,7 @@ void CTelegramCore::whenConnectionAuthChanged(int dc, int newState)
     }
 
     if (newState == CTelegramConnection::AuthStateSignedIn) {
-        connect(connection, SIGNAL(contactListReceived()), SIGNAL(gotContactList()));
+        connect(connection, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
 
         emit authenticated();
     }

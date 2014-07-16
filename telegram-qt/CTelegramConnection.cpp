@@ -549,17 +549,6 @@ void CTelegramConnection::processRedirectedPackage(const QByteArray &data)
     }
 }
 
-QStringList CTelegramConnection::contacts() const
-{
-    QStringList contactsList;
-
-    foreach (const TLUser &user, m_users) {
-        contactsList.append(user.phone);
-    }
-
-    return contactsList;
-}
-
 void CTelegramConnection::processRpcQuery(const QByteArray &data)
 {
     CTelegramStream stream(data);
@@ -789,11 +778,9 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
     TLContactsContacts result;
     stream >> result;
 
-    m_users = result.users;
+    setUsers(result.users);
 
     m_submittedPackages.remove(id);
-
-    emit contactListReceived();
 
     return result.tlType;
 }
@@ -1101,6 +1088,23 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
     }
 
     emit authStateChanged(m_dcInfo.id, m_authState);
+}
+
+void CTelegramConnection::setUsers(const QVector<TLUser> &users)
+{
+    m_users = users;
+
+    QStringList contactIds;
+    contactIds.reserve(m_users.count());
+
+    foreach (const TLUser &user, m_users) {
+        contactIds.append(user.phone);
+    }
+
+    if (m_contactList != contactIds) {
+        m_contactList = contactIds;
+        emit contactListChanged();
+    }
 }
 
 quint64 CTelegramConnection::newMessageId()
