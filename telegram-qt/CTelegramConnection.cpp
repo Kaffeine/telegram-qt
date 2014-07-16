@@ -180,7 +180,7 @@ void CTelegramConnection::signIn(const QString &phoneNumber, const QString &auth
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::getContacts()
+void CTelegramConnection::requestContacts()
 {
     qDebug() << "GetContacts";
 

@@ -96,7 +96,7 @@ void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)
 
 void CTelegramCore::requestContactList()
 {
-    activeConnection()->getContacts();
+    activeConnection()->requestContacts();
 }
 
 QByteArray CTelegramCore::activeAuthKey() const

@@ -59,7 +59,7 @@ public:
     void getConfiguration();
     void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
-    void getContacts();
+    void requestContacts();
 
     AuthState authState() { return m_authState; }
 
