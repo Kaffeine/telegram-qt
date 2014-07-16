@@ -769,10 +769,18 @@ void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &str
     }
     qDebug() << QString("Bad message %1/%2: Code %3 (%4).").arg(id).arg(seqNo).arg(errorCode).arg(errorText);
 
-    if (errorCode == 48) {
+    if (errorCode == 16) {
+        m_deltaTime += 100;
+        sendEncryptedPackage(m_submittedPackages.take(id));
+        qDebug() << "DeltaTime factor increased to" << m_deltaTime;
+    } else if (errorCode == 17) {
+        m_deltaTime -= 100;
+        qDebug() << "DeltaTime factor reduced to" << m_deltaTime;
+        sendEncryptedPackage(m_submittedPackages.take(id));
+    } else if (errorCode == 48) {
         m_serverSalt = m_receivedServerSalt;
         sendEncryptedPackage(m_submittedPackages.take(id));
-        qDebug() << "Local serverSalt fixed to " << m_serverSalt;
+        qDebug() << "Local serverSalt fixed to" << m_serverSalt;
     }
 }
 
