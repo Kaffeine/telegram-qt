@@ -29,6 +29,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
     connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
     connect(m_dispatcher, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
+    connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString)));
 }
 
 CTelegramCore::~CTelegramCore()
@@ -93,6 +94,11 @@ void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)
 void CTelegramCore::requestContactList()
 {
     m_dispatcher->requestContactList();
+}
+
+void CTelegramCore::requestContactAvatar(const QString &contact)
+{
+    m_dispatcher->requestContactAvatar(contact);
 }
 
 QByteArray CTelegramCore::activeAuthKey() const

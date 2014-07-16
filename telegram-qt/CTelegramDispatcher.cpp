@@ -49,6 +49,38 @@ void CTelegramDispatcher::requestContactList()
     activeConnection()->requestContacts();
 }
 
+void CTelegramDispatcher::requestContactAvatar(const QString &contact)
+{
+    qDebug() << Q_FUNC_INFO << contact;
+
+    int contactIndex = m_contactList.indexOf(contact);
+
+    if (contactIndex < 0) {
+        qDebug() << Q_FUNC_INFO << "Unknown contact" << contact;
+        return;
+    }
+
+    if (m_users.at(contactIndex).photo.tlType == UserProfilePhotoEmpty) {
+        qDebug() << Q_FUNC_INFO << "Contact" << contact << "have no avatar";
+        return;
+    }
+
+    TLFileLocation avatarLocation = m_users.at(contactIndex).photo.photoSmall;
+
+    if (avatarLocation.tlType == FileLocationUnavailable) {
+        qDebug() << Q_FUNC_INFO << "Contact" << contact << "avatar is not available";
+        return;
+    }
+
+    TLInputFileLocation inputFile;
+    inputFile.volumeId = avatarLocation.volumeId;
+    inputFile.localId  = avatarLocation.localId;
+    inputFile.secret   = avatarLocation.secret;
+
+    requestFile(inputFile, avatarLocation.dcId, contactIndex);
+    qDebug() << Q_FUNC_INFO << "Requested avatar for contact " << contactIndex << contact;
+}
+
 void CTelegramDispatcher::setUsers(const QVector<TLUser> &users)
 {
     m_users = users;
@@ -63,6 +95,22 @@ void CTelegramDispatcher::setUsers(const QVector<TLUser> &users)
     if (m_contactList != contactIds) {
         m_contactList = contactIds;
         emit contactListChanged();
+    }
+}
+
+void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId)
+{
+    CTelegramConnection *connection = m_connections.value(dc);
+
+    if (!connection) {
+        qDebug() << "No connection";
+    }
+
+    if (connection && (connection->authState() == CTelegramConnection::AuthStateSignedIn)) {
+        connection->getFile(location, fileId);
+    } else {
+        qDebug() << Q_FUNC_INFO << "There is no connection to dest dc. Not implemented." << dc;
+        // TODO
     }
 }
 
@@ -150,7 +198,7 @@ void CTelegramDispatcher::whenPackageRedirected(const QByteArray &data, int dc)
 {
     CTelegramConnection *connection = m_connections.value(dc);
 
-    if (connection && connection->authState() == CTelegramConnection::AuthStateSuccess) {
+    if (connection && connection->authState() >= CTelegramConnection::AuthStateSuccess) {
         connection->processRedirectedPackage(data);
     } else {
         m_delayedPackages.insertMulti(dc, data);
@@ -162,12 +210,28 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(int dc)
 {
     CTelegramConnection *connection = m_connections.value(dc);
 
-    if (connection && connection->authState() == CTelegramConnection::AuthStateSuccess) {
+    if (connection && connection->authState() >= CTelegramConnection::AuthStateSuccess) {
         setActiveDc(dc);
     } else {
         m_wantedActiveDc = dc;
         establishConnectionToDc(dc);
     }
+}
+
+void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fileId)
+{
+    // Proto version.
+
+    QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
+
+    if (m_contactList.count() < fileId) {
+        qDebug() << Q_FUNC_INFO << "Unexpected fileId" << fileId << "contact-list:" << m_contactList;
+        return;
+    }
+
+    QString contact = m_contactList.at(fileId);
+
+    emit avatarReceived(contact, file.bytes, mimeType);
 }
 
 void CTelegramDispatcher::setActiveDc(int dc, bool syncWantedDc)
@@ -193,6 +257,8 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
 
     connect(connection, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(connection, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
+
+    connect(connection, SIGNAL(fileReceived(TLUploadFile,quint32)), SLOT(whenFileReceived(TLUploadFile,quint32)));
 
     connection->setDcInfo(dc);
 
@@ -231,4 +297,28 @@ TLDcOption CTelegramDispatcher::dcInfoById(quint32 dc)
     }
 
     return TLDcOption();
+}
+
+QString CTelegramDispatcher::mimeTypeByStorageFileType(TLValue type)
+{
+    switch (type) {
+    case StorageFileJpeg:
+        return QLatin1String("image/jpeg");
+    case StorageFileGif:
+        return QLatin1String("image/gif");
+    case StorageFilePng:
+        return QLatin1String("image/png");
+    case StorageFilePdf:
+        return QLatin1String("application/pdf");
+    case StorageFileMp3:
+        return QLatin1String("audio/mpeg");
+    case StorageFileMov:
+        return QLatin1String("video/quicktime");
+    case StorageFileMp4:
+        return QLatin1String("audio/mp4");
+    case StorageFileWebp:
+        return QLatin1String("image/webp");
+    default:
+        return QString();
+    }
 }

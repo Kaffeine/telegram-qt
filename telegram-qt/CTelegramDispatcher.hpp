@@ -39,6 +39,7 @@ public:
     void initConnection(const QString &address, quint32 port);
 
     void requestContactList();
+    void requestContactAvatar(const QString &contact);
 
 signals:
     void dcConfigurationObtained();
@@ -46,6 +47,7 @@ signals:
     void phoneCodeIsInvalid();
     void authenticated();
     void contactListChanged();
+    void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
 protected slots:
     void whenConnectionAuthChanged(int dc, int newState);
@@ -54,13 +56,20 @@ protected slots:
     void whenPackageRedirected(const QByteArray &data, int dc);
     void whenWantedActiveDcChanged(int dc);
 
+    void whenFileReceived(const TLUploadFile &file, quint32 fileId);
+
     void setUsers(const QVector<TLUser> &users);
+
+protected:
+    void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
 
 private:
     CTelegramConnection *createConnection(const TLDcOption &dc);
     CTelegramConnection *establishConnectionToDc(int dc);
 
     TLDcOption dcInfoById(quint32 dc);
+
+    QString mimeTypeByStorageFileType(TLValue type);
 
     void setActiveDc(int dc, bool syncWantedDc = true);
 
@@ -76,6 +85,8 @@ private:
 
     QVector<TLUser> m_users;
     QStringList m_contactList;
+
+    QList<quint32> m_requestedFilesMessageIds;
 
 };
 

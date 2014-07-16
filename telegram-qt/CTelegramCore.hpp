@@ -41,6 +41,7 @@ public:
     void signIn(const QString &phoneNumber, const QString &authCode);
 
     void requestContactList();
+    void requestContactAvatar(const QString &contact);
 
     QByteArray activeAuthKey() const;
     QByteArray activeServerSalt() const;
@@ -53,6 +54,7 @@ signals:
     void phoneCodeIsInvalid();
     void authenticated();
     void contactListChanged();
+    void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
 protected:
     CTelegramConnection *activeConnection() const;

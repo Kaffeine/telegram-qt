@@ -23,6 +23,7 @@ private slots:
     void whenPhoneCodeIsInvalid();
     void whenAuthenticated();
     void whenContactListChanged();
+    void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
     void on_connectButton_clicked();
     void on_authButton_clicked();

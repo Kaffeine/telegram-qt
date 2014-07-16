@@ -7,6 +7,9 @@
 #include <QToolTip>
 #include <QStringListModel>
 
+#include <QDir>
+#include <QFile>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -30,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(phoneCodeIsInvalid()), SLOT(whenPhoneCodeIsInvalid()));
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
     connect(m_core, SIGNAL(contactListChanged()), SLOT(whenContactListChanged()));
+    connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
 }
 
 MainWindow::~MainWindow()
@@ -74,6 +78,23 @@ void MainWindow::whenContactListChanged()
 {
     QStringListModel *model = new QStringListModel(m_core->contactList(), ui->contactListTable);
     ui->contactListTable->setModel(model);
+
+    foreach (const QString &contact, m_core->contactList()) {
+        m_core->requestContactAvatar(contact);
+    }
+}
+
+void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType)
+{
+    Q_UNUSED(mimeType);
+
+    QDir dir;
+    dir.mkdir("avatars");
+
+    QFile avatarFile(QString("avatars/%1.jpg").arg(contact));
+    avatarFile.open(QIODevice::WriteOnly);
+    avatarFile.write(data);
+    avatarFile.close();
 }
 
 void MainWindow::on_connectButton_clicked()
