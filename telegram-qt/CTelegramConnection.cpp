@@ -609,9 +609,13 @@ void CTelegramConnection::processRedirectedPackage(const QByteArray &data)
 void CTelegramConnection::processRpcQuery(const QByteArray &data)
 {
     CTelegramStream stream(data);
-    TLValue val;
 
-    stream >> val;
+    bool isUpdate;
+    TLValue val = processUpdate(stream, &isUpdate); // Doubtfully that this approach will work in next time.
+
+    if (isUpdate) {
+        return;
+    }
 
     switch (val) {
     case NewSessionCreated:
@@ -1014,6 +1018,29 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
     emit newRedirectedPackage(data, dc);
 
     return true;
+}
+
+TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok)
+{
+    TLUpdates updates;
+    stream >> updates;
+
+    switch (updates.tlType) {
+    case UpdatesTooLong:
+    case UpdateShortMessage:
+    case UpdateShortChatMessage:
+    case UpdateShort:
+    case UpdatesCombined:
+    case Updates:
+        emit updatesReceived(updates);
+        break;
+        *ok = true;
+    default:
+        *ok = false;
+        break;
+    }
+
+    return updates.tlType;
 }
 
 void CTelegramConnection::whenConnected()

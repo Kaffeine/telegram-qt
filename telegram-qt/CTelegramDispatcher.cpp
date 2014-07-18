@@ -265,6 +265,17 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
     return inputPeer;
 }
 
+QString CTelegramDispatcher::userIdToPhoneNumber(const quint32 id)
+{
+    foreach (const TLUser &user, m_users) {
+        if (user.id == id) {
+            return user.phone;
+        }
+    }
+
+    return QString(QLatin1String("unknown%1")).arg(id);
+}
+
 void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
 {
     CTelegramConnection *connection = m_connections.value(dc);
@@ -292,6 +303,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
     if (newState == CTelegramConnection::AuthStateSignedIn) {
         connect(connection, SIGNAL(usersReceived(QVector<TLUser>)), SLOT(setUsers(QVector<TLUser>)));
         connect(connection, SIGNAL(usersAdded(QVector<TLUser>))   , SLOT(addUsers(QVector<TLUser>)));
+        connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
 
         emit authenticated();
     }
@@ -384,6 +396,26 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
     QString contact = m_contactList.at(fileId);
 
     emit avatarReceived(contact, file.bytes, mimeType);
+}
+
+void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
+{
+    switch (updates.tlType) {
+    case UpdatesTooLong:
+        break;
+    case UpdateShortMessage:
+        emit messageReceived(userIdToPhoneNumber(updates.fromId), updates.message);
+        break;
+    case UpdateShortChatMessage:
+        break;
+    case UpdateShort:
+        break;
+    case UpdatesCombined:
+        break;
+    case Updates:
+    default:
+        break;
+    }
 }
 
 void CTelegramDispatcher::setActiveDc(int dc, bool syncWantedDc)

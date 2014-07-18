@@ -125,6 +125,8 @@ signals:
     void usersAdded(const QVector<TLUser> &users);
     void fileReceived(const TLUploadFile &file, quint32 fileId);
 
+    void updatesReceived(const TLUpdates &update);
+
 private slots:
     void whenConnected();
     void whenReadyRead();
@@ -150,6 +152,8 @@ protected:
     TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
+
+    TLValue processUpdate(CTelegramStream &stream);
 
     SAesKey generateTmpAesKey() const;
     SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const;

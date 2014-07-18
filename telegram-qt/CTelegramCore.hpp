@@ -61,6 +61,8 @@ signals:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
+    void messageReceived(const QString &phone, const QString &message);
+
 protected:
     CTelegramDispatcher *m_dispatcher;
 

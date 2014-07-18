@@ -59,6 +59,7 @@ signals:
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
+    void messageReceived(const QString &phone, const QString &message);
 
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
@@ -69,6 +70,7 @@ protected slots:
     void whenWantedActiveDcChanged(int dc);
 
     void whenFileReceived(const TLUploadFile &file, quint32 fileId);
+    void whenUpdatesReceived(const TLUpdates &updates);
 
     void setUsers(const QVector<TLUser> &users);
     void addUsers(const QVector<TLUser> &users);
@@ -78,6 +80,7 @@ protected:
 
 private:
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
+    QString userIdToPhoneNumber(const quint32 id);
 
     CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
 
