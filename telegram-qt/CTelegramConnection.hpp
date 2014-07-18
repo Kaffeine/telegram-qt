@@ -41,6 +41,12 @@ public:
         AuthStateSignedIn
     };
 
+    enum DeltaTimeHeuristicState {
+        DeltaTimeIsOk,
+        DeltaTimeCorrectionForward,
+        DeltaTimeCorrectionBackward,
+    };
+
     explicit CTelegramConnection(const CAppInformation *appInfo, QObject *parent = 0);
 
     void setDcInfo(const TLDcOption &newDcInfo);
@@ -177,6 +183,7 @@ protected:
     quint32 m_contentRelatedMessages;
 
     qint32 m_deltaTime;
+    DeltaTimeHeuristicState m_deltaTimeHeuristicState;
 
     TLNumber128 m_clientNonce;
     TLNumber128 m_serverNonce;

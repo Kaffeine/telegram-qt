@@ -38,6 +38,7 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_sequenceNumber(0),
     m_contentRelatedMessages(0),
     m_deltaTime(0),
+    m_deltaTimeHeuristicState(DeltaTimeIsOk),
     m_serverPublicFingersprint(0)
 {
     setTransport(new CTcpTransport(this));
@@ -453,6 +454,7 @@ bool CTelegramConnection::answerDh(const QByteArray &payload)
     encryptedInputStream >> serverTime;
 
     m_deltaTime = qint64(serverTime) - (QDateTime::currentMSecsSinceEpoch() / 1000);
+    m_deltaTimeHeuristicState = DeltaTimeIsOk;
 
     m_b.resize(256);
     Utils::randomBytes(&m_b);
@@ -615,6 +617,11 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
     default:
         qDebug() << "VAL:" << QString::number(val, 16);
         break;
+    }
+
+    if ((val != BadMsgNotification) && (m_deltaTimeHeuristicState != DeltaTimeIsOk)) {
+        // If we have no bad message notification, then time is synced.
+        m_deltaTimeHeuristicState = DeltaTimeIsOk;
     }
 }
 
@@ -803,11 +810,29 @@ void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &str
     qDebug() << QString("Bad message %1/%2: Code %3 (%4).").arg(id).arg(seqNo).arg(errorCode).arg(errorText);
 
     if (errorCode == 16) {
-        m_deltaTime += 100;
+        if (m_deltaTimeHeuristicState == DeltaTimeIsOk) {
+            m_deltaTimeHeuristicState = DeltaTimeCorrectionForward;
+        }
+
+        if (m_deltaTimeHeuristicState == DeltaTimeCorrectionForward) {
+            m_deltaTime += 1000;
+        } else {
+            m_deltaTime += 100;
+        }
+
         sendEncryptedPackage(m_submittedPackages.take(id));
         qDebug() << "DeltaTime factor increased to" << m_deltaTime;
     } else if (errorCode == 17) {
-        m_deltaTime -= 100;
+        if (m_deltaTimeHeuristicState == DeltaTimeIsOk) {
+            m_deltaTimeHeuristicState = DeltaTimeCorrectionBackward;
+        }
+
+        if (m_deltaTimeHeuristicState == DeltaTimeCorrectionBackward) {
+            m_deltaTime -= 1000;
+        } else {
+            m_deltaTime -= 100;
+        }
+
         qDebug() << "DeltaTime factor reduced to" << m_deltaTime;
         sendEncryptedPackage(m_submittedPackages.take(id));
     } else if (errorCode == 48) {
