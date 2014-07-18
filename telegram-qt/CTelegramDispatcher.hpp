@@ -77,6 +77,7 @@ protected slots:
 
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
+    void processUpdate(const TLUpdate &update);
 
 private:
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;

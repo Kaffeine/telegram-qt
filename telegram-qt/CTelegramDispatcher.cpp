@@ -248,6 +248,119 @@ void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint
     }
 }
 
+void CTelegramDispatcher::processUpdate(const TLUpdate &update)
+{
+    qDebug() << "Type:" << QString::number(update.tlType, 16);
+    switch (update.tlType) {
+//    case UpdateNewMessage:
+//        update.message;
+//        update.pts;
+//        break;
+//    case UpdateMessageID:
+//        update.id;
+//        update.randomId;
+//        break;
+//    case UpdateReadMessages:
+//        update.messages;
+//        update.pts;
+//        break;
+//    case UpdateDeleteMessages:
+//        update.messages;
+//        update.pts;
+//        break;
+//    case UpdateRestoreMessages:
+//        update.messages;
+//        update.pts;
+//        break;
+//    case UpdateUserTyping:
+//        update.userId;
+//        break;
+//    case UpdateChatUserTyping:
+//        update.chatId;
+//        update.userId;
+//        break;
+//    case UpdateChatParticipants:
+//        update.participants;
+//        break;
+//    case UpdateUserStatus:
+//        update.userId;
+//        update.status;
+//        break;
+//    case UpdateUserName:
+//        update.userId;
+//        update.firstName;
+//        update.lastName;
+//        break;
+//    case UpdateUserPhoto:
+//        update.userId;
+//        update.date;
+//        update.photo;
+//        update.previous;
+//        break;
+//    case UpdateContactRegistered:
+//        update.userId;
+//        update.date;
+//        break;
+//    case UpdateContactLink:
+//        update.userId;
+//        update.myLink;
+//        update.foreignLink;
+//        break;
+//    case UpdateActivation:
+//        update.userId;
+//        break;
+//    case UpdateNewAuthorization:
+//        update.authKeyId;
+//        update.date;
+//        update.device;
+//        update.location;
+//        break;
+//    case UpdateNewGeoChatMessage:
+//        update.message;
+//        break;
+//    case UpdateNewEncryptedMessage:
+//        update.message;
+//        update.qts;
+//        break;
+//    case UpdateEncryptedChatTyping:
+//        update.chatId;
+//        break;
+//    case UpdateEncryption:
+//        update.chat;
+//        update.date;
+//        break;
+//    case UpdateEncryptedMessagesRead:
+//        update.chatId;
+//        update.maxDate;
+//        update.date;
+//        break;
+//    case UpdateChatParticipantAdd:
+//        update.chatId;
+//        update.userId;
+//        update.inviterId;
+//        update.version;
+//        break;
+//    case UpdateChatParticipantDelete:
+//        update.chatId;
+//        update.userId;
+//        update.version;
+//        break;
+//    case UpdateDcOptions:
+//        update.dcOptions;
+//        break;
+//    case UpdateUserBlocked:
+//        update.userId;
+//        update.blocked;
+//        break;
+//    case UpdateNotifySettings:
+//        update.peer;
+//        update.notifySettings;
+//        break;
+    default:
+        break;
+    }
+}
+
 TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumber) const
 {
     TLInputPeer inputPeer;
@@ -402,17 +515,22 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
 {
     switch (updates.tlType) {
     case UpdatesTooLong:
+        qDebug() << Q_FUNC_INFO << "UpdatesTooLong processing is not implemented yet.";
         break;
     case UpdateShortMessage:
         emit messageReceived(userIdToPhoneNumber(updates.fromId), updates.message);
         break;
     case UpdateShortChatMessage:
+        qDebug() << Q_FUNC_INFO << "UpdateShortChatMessage processing is not implemented yet.";
         break;
     case UpdateShort:
+        processUpdate(updates.update);
         break;
     case UpdatesCombined:
+        qDebug() << Q_FUNC_INFO << "UpdatesCombined processing is not implemented yet.";
         break;
     case Updates:
+        qDebug() << Q_FUNC_INFO << "Updates processing is not implemented yet.";
     default:
         break;
     }
