@@ -627,9 +627,6 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
     case RpcResult:
         processRpcResult(stream);
         break;
-    case GzipPacked:
-        processGzipPacked(stream);
-        break;
     case MsgsAck:
         processMessageAck(stream);
         break;
@@ -681,10 +678,13 @@ void CTelegramConnection::processContainer(CTelegramStream &stream)
     }
 }
 
-void CTelegramConnection::processRpcResult(CTelegramStream &stream)
+void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHint)
 {
-    quint64 id;
-    stream >> id;
+    quint64 id = idHint;
+
+    if (!id) {
+        stream >> id;
+    }
 
     TLValue request;
     TLValue processingResult;
@@ -731,6 +731,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
         case RpcError:
             processRpcError(stream, id, request);
             break;
+        case GzipPacked:
+            processGzipPacked(stream, id);
+            break;
         default:
             // Any other results considered as success
             m_submittedPackages.remove(id);
@@ -742,7 +745,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
     }
 }
 
-void CTelegramConnection::processGzipPacked(CTelegramStream &stream)
+void CTelegramConnection::processGzipPacked(CTelegramStream &stream, quint64 id)
 {
     QByteArray packedData;
     stream >> packedData;
@@ -750,7 +753,8 @@ void CTelegramConnection::processGzipPacked(CTelegramStream &stream)
     const QByteArray data = Utils::unpackGZip(packedData);
 
     if (!data.isEmpty()) {
-        processRpcQuery(data);
+        CTelegramStream unpackedStream(data);
+        processRpcResult(unpackedStream, id);
     }
 }
 

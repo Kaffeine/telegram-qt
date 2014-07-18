@@ -136,8 +136,8 @@ protected:
 
     void processSessionCreated(CTelegramStream &stream);
     void processContainer(CTelegramStream &stream);
-    void processRpcResult(CTelegramStream &stream);
-    void processGzipPacked(CTelegramStream &stream);
+    void processRpcResult(CTelegramStream &stream, quint64 idHint = 0);
+    void processGzipPacked(CTelegramStream &stream, quint64 id);
     bool processRpcError(CTelegramStream &stream, quint64 id, TLValue request);
 
     void processMessageAck(CTelegramStream &stream);
