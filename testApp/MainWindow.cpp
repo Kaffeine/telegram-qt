@@ -170,3 +170,9 @@ void MainWindow::setRegistered(bool newRegistered)
         ui->signButton->setText(tr("Sign up"));
     }
 }
+
+void MainWindow::on_addContact_clicked()
+{
+    m_core->addContact(ui->newContact->text());
+    ui->newContact->clear();
+}

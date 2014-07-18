@@ -68,7 +68,7 @@
          <attribute name="title">
           <string>Main</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout_6">
+         <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,0,0,0,0,1,0">
           <item row="3" column="2">
            <widget class="QLabel" name="firstNameLabel">
             <property name="enabled">
@@ -79,30 +79,20 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Phone number:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>453</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
           <item row="4" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>Contact list:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="5">
+           <widget class="QLineEdit" name="phoneNumber"/>
+          </item>
+          <item row="3" column="5">
+           <widget class="QLineEdit" name="lastName">
+            <property name="enabled">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -113,27 +103,10 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Auth code:</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
              <string>Connection state:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="4">
-           <widget class="QLabel" name="lastNameLabel">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Last name:</string>
             </property>
            </widget>
           </item>
@@ -144,25 +117,12 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="3">
-           <widget class="QLineEdit" name="firstName">
-            <property name="enabled">
-             <bool>false</bool>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Auth code:</string>
             </property>
            </widget>
-          </item>
-          <item row="3" column="5">
-           <widget class="QLineEdit" name="lastName">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1" rowspan="2" colspan="5">
-           <widget class="QTableView" name="contactListTable"/>
-          </item>
-          <item row="1" column="1" colspan="5">
-           <widget class="QLineEdit" name="phoneNumber"/>
           </item>
           <item row="2" column="1" colspan="5">
            <widget class="QLabel" name="phoneStatus">
@@ -177,6 +137,60 @@
              <string>Disconnected</string>
             </property>
            </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Phone number:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" rowspan="2" colspan="5">
+           <widget class="QTableView" name="contactListTable"/>
+          </item>
+          <item row="3" column="3">
+           <widget class="QLineEdit" name="firstName">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="4">
+           <widget class="QLabel" name="lastNameLabel">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Last name:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" rowspan="2">
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>453</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="6" column="1" colspan="5">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLineEdit" name="newContact"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="addContact">
+              <property name="text">
+               <string>Add contact</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
