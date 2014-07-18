@@ -219,7 +219,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         return;
     }
 
-    if (newState == CTelegramConnection::AuthStateSuccess) {
+    if (newState >= CTelegramConnection::AuthStateSuccess) {
         if (m_dcConfiguration.isEmpty()) {
             connection->getConfiguration();
         }
