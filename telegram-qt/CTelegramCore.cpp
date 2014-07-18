@@ -109,3 +109,8 @@ QStringList CTelegramCore::contactList() const
 {
     return m_dispatcher->contactList();
 }
+
+void CTelegramCore::sendMessage(const QString &phone, const QString &message)
+{
+    return m_dispatcher->sendMessageToContact(phone, message);
+}

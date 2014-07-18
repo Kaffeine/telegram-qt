@@ -49,6 +49,8 @@ public:
     void requestContactList();
     void requestContactAvatar(const QString &contact);
 
+    void sendMessageToContact(const QString &phone, const QString &message);
+
 signals:
     void dcConfigurationObtained();
     void phoneCodeRequired();
@@ -75,6 +77,8 @@ protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
 
 private:
+    TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
+
     CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
 
     CTelegramConnection *createConnection(const TLDcOption &dc);

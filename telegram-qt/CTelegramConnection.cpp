@@ -243,6 +243,22 @@ void CTelegramConnection::addContacts(const QStringList &phoneNumbers, bool repl
     sendEncryptedPackage(output);
 }
 
+void CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString &message)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    quint64 randomMessageId;
+    Utils::randomBytes(&randomMessageId);
+
+    outputStream << MessagesSendMessage;
+    outputStream << peer; // Hash
+    outputStream << message;
+    outputStream << randomMessageId;
+
+    sendEncryptedPackage(output);
+}
+
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
     // Payload is passed as const, but we open device in read-only mode, so
@@ -696,6 +712,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
         case AuthSendCode:
             processingResult = processAuthSendCode(stream, id);
             break;
+        case MessagesSendMessage:
+            processingResult = processMessagesSendMessage(stream, id);
+            break;
         default:
             qDebug() << "Unknown outgoing RPC type:" << QString::number(request, 16);
             break;
@@ -949,6 +968,14 @@ TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint
     }
 
     return file.tlType;
+}
+
+TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream, quint64 id)
+{
+    TLMessagesSentMessage result;
+    stream >> result;
+
+    return result.tlType;
 }
 
 bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)

@@ -50,6 +50,8 @@ public:
 
     QStringList contactList() const;
 
+    void sendMessage(const QString &phone, const QString &message);
+
 signals:
     void connected();
     void phoneCodeRequired();

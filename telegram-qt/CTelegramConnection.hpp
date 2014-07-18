@@ -75,6 +75,8 @@ public:
 
     void addContacts(const QStringList &phoneNumbers, bool replace);
 
+    void sendMessage(const TLInputPeer &peer, const QString &message);
+
     AuthState authState() { return m_authState; }
 
     void requestPqAuthorization();
@@ -145,6 +147,7 @@ protected:
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
     TLValue processAuthSign(CTelegramStream &stream, quint64 id);
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 

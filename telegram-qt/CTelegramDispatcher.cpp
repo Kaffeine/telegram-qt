@@ -185,6 +185,18 @@ void CTelegramDispatcher::requestContactAvatar(const QString &contact)
     qDebug() << Q_FUNC_INFO << "Requested avatar for contact " << contactIndex << contact;
 }
 
+void CTelegramDispatcher::sendMessageToContact(const QString &phone, const QString &message)
+{
+    TLInputPeer peer = phoneNumberToInputPeer(phone);
+
+    if (peer.tlType == InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << phone;
+        return;
+    }
+
+    activeConnection()->sendMessage(peer, message);
+}
+
 void CTelegramDispatcher::whenSelfPhoneReceived(const QString &phone)
 {
     m_selfPhone = phone;
@@ -234,6 +246,23 @@ void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint
         qDebug() << Q_FUNC_INFO << "There is no connection to dest dc. Not implemented." << dc;
         // TODO
     }
+}
+
+TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumber) const
+{
+    TLInputPeer inputPeer;
+
+    if (phoneNumber == m_selfPhone) {
+        inputPeer.tlType = InputPeerSelf;
+    } else {
+        const int indexOfContact = m_contactList.indexOf(phoneNumber);
+        if (indexOfContact >= 0) {
+            inputPeer.tlType = InputPeerContact;
+            inputPeer.userId = m_users.at(indexOfContact).id;
+        }
+    }
+
+    return inputPeer;
 }
 
 void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
