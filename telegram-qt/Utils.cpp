@@ -19,6 +19,8 @@
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
 
+#include <zlib.h>
+
 #include <QBuffer>
 #include <QCryptographicHash>
 #include <QDebug>
@@ -279,5 +281,58 @@ QByteArray Utils::aesEncrypt(const QByteArray &data, const SAesKey &key)
     AES_set_encrypt_key((const uchar *) key.key.constData(), key.key.length() * 8, &enc_key);
 
     AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length(), &enc_key, (uchar *) initVector.data(), AES_ENCRYPT);
+    return result;
+}
+
+QByteArray Utils::unpackGZip(const QByteArray &data)
+{
+    if (data.size() <= 4) {
+        qDebug() << Q_FUNC_INFO << "Input data is too small to be gzip package";
+        return QByteArray();
+    }
+
+    QByteArray result;
+
+    int inflateResult;
+    z_stream stream;
+    static const int CHUNK_SIZE = 1024;
+    char out[CHUNK_SIZE];
+
+    /* allocate inflate state */
+    stream.zalloc = Z_NULL;
+    stream.zfree = Z_NULL;
+    stream.opaque = Z_NULL;
+    stream.avail_in = data.size();
+    stream.next_in = (Bytef*)(data.data());
+
+    inflateResult = inflateInit2(&stream, 15 + 32); // gzip decoding
+
+    if (inflateResult != Z_OK) {
+        return QByteArray();
+    }
+
+    do {
+        stream.avail_out = CHUNK_SIZE;
+        stream.next_out = (Bytef*)(out);
+
+        inflateResult = inflate(&stream, Z_NO_FLUSH);
+
+        switch (inflateResult) {
+        case Z_NEED_DICT:
+            inflateResult = Z_DATA_ERROR;     // and fall through
+        case Z_DATA_ERROR:
+        case Z_MEM_ERROR:
+        case Z_STREAM_ERROR:
+            inflateEnd(&stream);
+            return QByteArray();
+        default:
+            break;
+        }
+
+        result.append(out, CHUNK_SIZE - stream.avail_out);
+    } while (stream.avail_out == 0);
+
+    inflateEnd(&stream);
+
     return result;
 }

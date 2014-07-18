@@ -627,6 +627,9 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
     case RpcResult:
         processRpcResult(stream);
         break;
+    case GzipPacked:
+        processGzipPacked(stream);
+        break;
     case MsgsAck:
         processMessageAck(stream);
         break;
@@ -736,6 +739,18 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
     } else {
         stream >> request;
         qDebug() << "Unexpected RPC message:" << QString::number(request, 16);
+    }
+}
+
+void CTelegramConnection::processGzipPacked(CTelegramStream &stream)
+{
+    QByteArray packedData;
+    stream >> packedData;
+
+    const QByteArray data = Utils::unpackGZip(packedData);
+
+    if (!data.isEmpty()) {
+        processRpcQuery(data);
     }
 }
 

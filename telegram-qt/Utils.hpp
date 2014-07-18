@@ -40,6 +40,7 @@ public:
     static QByteArray rsa(const QByteArray &data, const SRsaKey &key);
     static QByteArray aesDecrypt(const QByteArray &data, const SAesKey &key);
     static QByteArray aesEncrypt(const QByteArray &data, const SAesKey &key);
+    static QByteArray unpackGZip(const QByteArray &data);
 
 };
 
