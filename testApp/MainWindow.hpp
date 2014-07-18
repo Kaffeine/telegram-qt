@@ -29,7 +29,7 @@ private slots:
     void on_connectButton_clicked();
     void on_authButton_clicked();
 
-    void on_signInButton_clicked();
+    void on_signButton_clicked();
 
     void on_getContactList_clicked();
 
@@ -39,6 +39,10 @@ private:
     Ui::MainWindow *ui;
 
     CTelegramCore *m_core;
+
+    void setRegistered(bool newRegistered);
+
+    bool m_registered;
 
 };
 

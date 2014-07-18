@@ -51,7 +51,7 @@ void MainWindow::whenConnected()
     ui->connectionState->setText(tr("Connected"));
     ui->authButton->setEnabled(true);
     ui->phoneNumber->setFocus();
-    ui->signInButton->setEnabled(true);
+    ui->signButton->setEnabled(true);
 }
 
 void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered, bool invited)
@@ -60,6 +60,9 @@ void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered, 
         QString registeredText = registered ? tr("Registered") : tr("Not registered");
         QString invitedText = invited ? tr("invited") : tr("not invited");
         ui->phoneStatus->setText(QString(QLatin1String("%1, %2")).arg(registeredText).arg(invitedText));
+
+        setRegistered(registered);
+        ui->signButton->setEnabled(true);
     } else {
         qDebug() << "Warning: Received status for different phone number" << phone << registered << invited;
     }
@@ -71,7 +74,6 @@ void MainWindow::whenPhoneCodeRequested()
 
     ui->confirmationCode->setEnabled(true);
     ui->confirmationCode->setFocus();
-    ui->signInButton->setEnabled(true);
 }
 
 void MainWindow::whenPhoneCodeIsInvalid()
@@ -83,7 +85,7 @@ void MainWindow::whenPhoneCodeIsInvalid()
 
 void MainWindow::whenAuthenticated()
 {
-    ui->signInButton->setEnabled(false);
+    ui->signButton->setEnabled(false);
 
     ui->getContactList->setEnabled(true);
 }
@@ -115,18 +117,12 @@ void MainWindow::on_connectButton_clicked()
 {
     QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
 
-    if (ui->mainDcRadio->isChecked()) {
-        // MainDC
+    QString serverIp = ui->mainDcRadio->isChecked() ? QLatin1String("173.240.5.1") : QLatin1String("173.240.5.253");
 
-        if (secretInfo.isEmpty())
-            m_core->initConnection("173.240.5.1", 443);
-        else {
-            m_core->restoreConnection(secretInfo);
-        }
-
-    } else {
-        // TestingDC
-        m_core->initConnection("173.240.5.253", 443);
+    if (secretInfo.isEmpty())
+        m_core->initConnection(serverIp, 443);
+    else {
+        m_core->restoreConnection(secretInfo);
     }
 }
 
@@ -140,9 +136,13 @@ void MainWindow::on_authButton_clicked()
     m_core->requestPhoneCode(ui->phoneNumber->text());
 }
 
-void MainWindow::on_signInButton_clicked()
+void MainWindow::on_signButton_clicked()
 {
-    m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
+    if (m_registered) {
+        m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
+    } else {
+        m_core->signUp(ui->phoneNumber->text(), ui->confirmationCode->text(), ui->firstName->text(), ui->lastName->text());
+    }
 }
 
 void MainWindow::on_getContactList_clicked()
@@ -153,4 +153,20 @@ void MainWindow::on_getContactList_clicked()
 void MainWindow::on_getSecretInfo_clicked()
 {
     ui->secretInfo->setPlainText(m_core->connectionSecretInfo().toHex());
+}
+
+void MainWindow::setRegistered(bool newRegistered)
+{
+    m_registered = newRegistered;
+
+    ui->firstName->setDisabled(m_registered);
+    ui->firstNameLabel->setDisabled(m_registered);
+    ui->lastName->setDisabled(m_registered);
+    ui->lastNameLabel->setDisabled(m_registered);
+
+    if (m_registered) {
+        ui->signButton->setText(tr("Sign in"));
+    } else {
+        ui->signButton->setText(tr("Sign up"));
+    }
 }
