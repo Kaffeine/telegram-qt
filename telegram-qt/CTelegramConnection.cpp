@@ -697,6 +697,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
             processingResult = processAuthSendCode(stream, id);
             break;
         default:
+            qDebug() << "Unknown outgoing RPC type:" << QString::number(request, 16);
             break;
         }
 
