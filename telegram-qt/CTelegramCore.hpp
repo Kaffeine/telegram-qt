@@ -43,6 +43,8 @@ public:
     void signIn(const QString &phoneNumber, const QString &authCode);
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
+    void addContact(const QString &phoneNumber);
+
     void requestContactList();
     void requestContactAvatar(const QString &contact);
 

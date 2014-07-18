@@ -220,6 +220,28 @@ void CTelegramConnection::getFile(const TLInputFileLocation &location, quint32 f
     m_requestedFilesIds.insert(messageId, fileId);
 }
 
+void CTelegramConnection::addContacts(const QStringList &phoneNumbers, bool replace)
+{
+    qDebug() << "addContacts" << phoneNumbers;
+
+    QVector<TLInputContact> contactsVector;
+    for (int i = 0; i < phoneNumbers.count(); ++i) {
+        TLInputContact contact;
+        contact.clientId = i;
+        contact.phone = phoneNumbers.at(i);
+        contactsVector.append(contact);
+    }
+
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsImportContacts;
+    outputStream << contactsVector; // Hash
+    outputStream << replace;
+
+    sendEncryptedPackage(output);
+}
+
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
     // Payload is passed as const, but we open device in read-only mode, so
@@ -648,6 +670,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
         case ContactsGetContacts:
             processingResult = processContactsGetContacts(stream, id);
             break;
+        case ContactsImportContacts:
+            processingResult = processContactsImportContacts(stream, id);
+            break;
         case UploadGetFile:
             processingResult = processUploadGetFile(stream, id);
             break;
@@ -817,6 +842,18 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
 
     if (result.tlType == ContactsContacts) {
         emit usersReceived(result.users);
+    }
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processContactsImportContacts(CTelegramStream &stream, quint64 id)
+{
+    TLContactsImportedContacts result;
+    stream >> result;
+
+    if (result.tlType == ContactsImportedContacts) {
+        emit usersAdded(result.users);
     }
 
     return result.tlType;

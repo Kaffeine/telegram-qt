@@ -34,6 +34,8 @@ public:
 
     QStringList contactList() const { return m_contactList; }
 
+    void addContacts(const QStringList &phoneNumbers, bool replace = false);
+
     QByteArray connectionSecretInfo() const;
 
     void initConnection(const QString &address, quint32 port);
@@ -66,6 +68,7 @@ protected slots:
     void whenFileReceived(const TLUploadFile &file, quint32 fileId);
 
     void setUsers(const QVector<TLUser> &users);
+    void addUsers(const QVector<TLUser> &users);
 
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);

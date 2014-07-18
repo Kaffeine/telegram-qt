@@ -33,6 +33,11 @@ void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
     m_appInformation = newAppInfo;
 }
 
+void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
+{
+    activeConnection()->addContacts(phoneNumbers, replace);
+}
+
 QByteArray CTelegramDispatcher::connectionSecretInfo() const
 {
     if (!activeConnection()) {
@@ -195,6 +200,19 @@ void CTelegramDispatcher::setUsers(const QVector<TLUser> &users)
     }
 }
 
+void CTelegramDispatcher::addUsers(const QVector<TLUser> &users)
+{
+    m_users += users;
+
+    m_contactList.reserve(m_users.count());
+
+    foreach (const TLUser &user, users) {
+        m_contactList.append(user.phone);
+    }
+
+    emit contactListChanged();
+}
+
 void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId)
 {
     CTelegramConnection *connection = m_connections.value(dc);
@@ -237,6 +255,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
 
     if (newState == CTelegramConnection::AuthStateSignedIn) {
         connect(connection, SIGNAL(usersReceived(QVector<TLUser>)), SLOT(setUsers(QVector<TLUser>)));
+        connect(connection, SIGNAL(usersAdded(QVector<TLUser>))   , SLOT(addUsers(QVector<TLUser>)));
 
         emit authenticated();
     }

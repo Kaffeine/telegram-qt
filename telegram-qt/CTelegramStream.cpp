@@ -33,6 +33,8 @@ template CTelegramStream &CTelegramStream::operator<<(const QVector<quint64> &v)
 template CTelegramStream &CTelegramStream::operator>>(QVector<TLUser> &v);
 template CTelegramStream &CTelegramStream::operator>>(QVector<TLContact> &v);
 
+template CTelegramStream &CTelegramStream::operator<<(const QVector<TLInputContact> &v);
+
 CTelegramStream::CTelegramStream(QByteArray *data, bool write) :
     CRawStream(data, write)
 {
@@ -3228,6 +3230,18 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFil
     default:
         break;
     }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputContact &inputContact)
+{
+    *this << inputContact.tlType;
+
+    *this << inputContact.clientId;
+    *this << inputContact.phone;
+    *this << inputContact.firstName;
+    *this << inputContact.lastName;
 
     return *this;
 }
