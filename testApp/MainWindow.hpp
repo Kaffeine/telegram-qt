@@ -37,6 +37,8 @@ private slots:
 
     void on_addContact_clicked();
 
+    void on_messagingSendButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 

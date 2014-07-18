@@ -4,6 +4,7 @@
 #include "CAppInformation.hpp"
 #include "CTelegramCore.hpp"
 
+#include <QCompleter>
 #include <QToolTip>
 #include <QStringListModel>
 
@@ -95,6 +96,11 @@ void MainWindow::whenContactListChanged()
     QStringListModel *model = new QStringListModel(m_core->contactList(), ui->contactListTable);
     ui->contactListTable->setModel(model);
 
+    static QCompleter messagingContactPhoneCompleter;
+    messagingContactPhoneCompleter.setModel(model);
+
+    ui->messagingContactPhone->setCompleter(&messagingContactPhoneCompleter);
+
     foreach (const QString &contact, m_core->contactList()) {
         m_core->requestContactAvatar(contact);
     }
@@ -175,4 +181,9 @@ void MainWindow::on_addContact_clicked()
 {
     m_core->addContact(ui->newContact->text());
     ui->newContact->clear();
+}
+
+void MainWindow::on_messagingSendButton_clicked()
+{
+    m_core->sendMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text());
 }
