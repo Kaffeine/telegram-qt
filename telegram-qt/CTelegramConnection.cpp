@@ -164,7 +164,7 @@ void CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
 
 void CTelegramConnection::signIn(const QString &phoneNumber, const QString &authCode)
 {
-    qDebug() << "SignIn" << phoneNumber << authCode;
+    qDebug() << "SignIn" << phoneNumber;
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
 
@@ -172,6 +172,22 @@ void CTelegramConnection::signIn(const QString &phoneNumber, const QString &auth
     outputStream << phoneNumber;
     outputStream << m_authCodeHash;
     outputStream << authCode;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
+{
+    qDebug() << "SignUp" << phoneNumber;
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthSignUp;
+    outputStream << phoneNumber;
+    outputStream << m_authCodeHash;
+    outputStream << authCode;
+    outputStream << firstName;
+    outputStream << lastName;
 
     sendEncryptedPackage(output);
 }
@@ -636,7 +652,8 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
             processingResult = processUploadGetFile(stream, id);
             break;
         case AuthSignIn:
-            processingResult = processAuthSignIn(stream, id);
+        case AuthSignUp:
+            processingResult = processAuthSign(stream, id);
             break;
         case HelpGetConfig:
             processingResult = processHelpGetConfig(stream, id);
@@ -848,7 +865,7 @@ TLValue CTelegramConnection::processAuthSendCode(CTelegramStream &stream, quint6
     return result.tlType;
 }
 
-TLValue CTelegramConnection::processAuthSignIn(CTelegramStream &stream, quint64 id)
+TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id)
 {
     TLAuthAuthorization result;
     stream >> result;

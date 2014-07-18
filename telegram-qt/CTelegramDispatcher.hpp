@@ -41,6 +41,7 @@ public:
 
     void requestPhoneStatus(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
+    void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
     void requestPhoneCode(const QString &phoneNumber);
     void requestContactList();

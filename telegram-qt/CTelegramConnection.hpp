@@ -62,6 +62,7 @@ public:
     void requestPhoneStatus(const QString &phoneNumber);
     void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
+    void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
     void requestContacts();
     void getFile(const TLInputFileLocation &location, quint32 fileId);
@@ -131,7 +132,7 @@ protected:
     TLValue processContactsGetContacts(CTelegramStream &stream, quint64 id);
     TLValue processAuthCheckPhone(CTelegramStream &stream, quint64 id);
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
-    TLValue processAuthSignIn(CTelegramStream &stream, quint64 id);
+    TLValue processAuthSign(CTelegramStream &stream, quint64 id);
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);

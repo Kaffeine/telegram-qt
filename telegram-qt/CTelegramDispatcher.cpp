@@ -121,6 +121,11 @@ void CTelegramDispatcher::signIn(const QString &phoneNumber, const QString &auth
     activeConnection()->signIn(phoneNumber, authCode);
 }
 
+void CTelegramDispatcher::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
+{
+    activeConnection()->signUp(phoneNumber, authCode, firstName, lastName);
+}
+
 void CTelegramDispatcher::requestPhoneCode(const QString &phoneNumber)
 {
     if (!activeConnection()) {
