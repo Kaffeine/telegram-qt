@@ -153,26 +153,25 @@ void CTelegramDispatcher::requestContactList()
     activeConnection()->requestContacts();
 }
 
-void CTelegramDispatcher::requestContactAvatar(const QString &contact)
+void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
 {
-    qDebug() << Q_FUNC_INFO << contact;
+    qDebug() << Q_FUNC_INFO << phoneNumber;
 
-    int contactIndex = m_contactList.indexOf(contact);
-
-    if (contactIndex < 0) {
-        qDebug() << Q_FUNC_INFO << "Unknown contact" << contact;
+    const TLUser *user = phoneNumberToUser(phoneNumber);
+    if (!user) {
+        qDebug() << Q_FUNC_INFO << "Unknown user" << phoneNumber;
         return;
     }
 
-    if (m_users.at(contactIndex).photo.tlType == UserProfilePhotoEmpty) {
-        qDebug() << Q_FUNC_INFO << "Contact" << contact << "have no avatar";
+    if (user->photo.tlType == UserProfilePhotoEmpty) {
+        qDebug() << Q_FUNC_INFO << "User" << phoneNumber << "have no avatar";
         return;
     }
 
-    TLFileLocation avatarLocation = m_users.at(contactIndex).photo.photoSmall;
+    TLFileLocation avatarLocation = user->photo.photoSmall;
 
     if (avatarLocation.tlType == FileLocationUnavailable) {
-        qDebug() << Q_FUNC_INFO << "Contact" << contact << "avatar is not available";
+        qDebug() << Q_FUNC_INFO << "Contact" << phoneNumber << "avatar is not available";
         return;
     }
 
@@ -181,8 +180,8 @@ void CTelegramDispatcher::requestContactAvatar(const QString &contact)
     inputFile.localId  = avatarLocation.localId;
     inputFile.secret   = avatarLocation.secret;
 
-    requestFile(inputFile, avatarLocation.dcId, contactIndex);
-    qDebug() << Q_FUNC_INFO << "Requested avatar for contact " << contactIndex << contact;
+    requestFile(inputFile, avatarLocation.dcId, user->id);
+    qDebug() << Q_FUNC_INFO << "Requested avatar for user " << phoneNumber;
 }
 
 void CTelegramDispatcher::sendMessageToContact(const QString &phone, const QString &message)
@@ -202,34 +201,47 @@ void CTelegramDispatcher::whenSelfPhoneReceived(const QString &phone)
     m_selfPhone = phone;
 }
 
-void CTelegramDispatcher::setUsers(const QVector<TLUser> &users)
+void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
 {
-    m_users = users;
+    foreach (const TLUser &user, users) {
+        TLUser *existsUser = m_users.value(user.id);
 
-    QStringList contactIds;
-    contactIds.reserve(m_users.count());
-
-    foreach (const TLUser &user, m_users) {
-        contactIds.append(user.phone);
+        if (existsUser) {
+            *existsUser = user;
+        } else {
+            m_users.insert(user.id, new TLUser(user));
+        }
     }
+}
 
-    if (m_contactList != contactIds) {
-        m_contactList = contactIds;
+void CTelegramDispatcher::whenContactListReceived(const QStringList &contactList)
+{
+    QStringList newContactList = contactList;
+    newContactList.sort();
+
+    if (m_contactList != newContactList) {
+        m_contactList = newContactList;
         emit contactListChanged();
     }
 }
 
-void CTelegramDispatcher::addUsers(const QVector<TLUser> &users)
+void CTelegramDispatcher::whenContactListChanged(const QStringList &added, const QStringList &removed)
 {
-    m_users += users;
+    QStringList newContactList = m_contactList;
 
-    m_contactList.reserve(m_users.count());
+    newContactList.append(added);
+    newContactList.removeDuplicates();
 
-    foreach (const TLUser &user, users) {
-        m_contactList.append(user.phone);
+    foreach (const QString &contact, removed) {
+        newContactList.removeAll(contact);
     }
 
-    emit contactListChanged();
+    newContactList.sort();
+
+    if (m_contactList != newContactList) {
+        m_contactList = newContactList;
+        emit contactListChanged();
+    }
 }
 
 void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId)
@@ -252,7 +264,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 {
     qDebug() << "Type:" << QString::number(update.tlType, 16);
     switch (update.tlType) {
-//    case UpdateNewMessage:
+    case UpdateNewMessage:
 //        update.message;
 //        update.pts;
 //        break;
@@ -282,10 +294,10 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //    case UpdateChatParticipants:
 //        update.participants;
 //        break;
-//    case UpdateUserStatus:
-//        update.userId;
-//        update.status;
-//        break;
+    case UpdateUserStatus:
+        update.userId;
+        update.status;
+        break;
 //    case UpdateUserName:
 //        update.userId;
 //        update.firstName;
@@ -367,26 +379,54 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
 
     if (phoneNumber == m_selfPhone) {
         inputPeer.tlType = InputPeerSelf;
-    } else {
-        const int indexOfContact = m_contactList.indexOf(phoneNumber);
-        if (indexOfContact >= 0) {
+        return inputPeer;
+    }
+
+    const TLUser *user = phoneNumberToUser(phoneNumber);
+
+    if (user) {
+        if (user->tlType == UserContact) {
             inputPeer.tlType = InputPeerContact;
-            inputPeer.userId = m_users.at(indexOfContact).id;
+            inputPeer.userId = user->id;
+        } else if (user->tlType == UserForeign) {
+            inputPeer.tlType = InputPeerForeign;
+            inputPeer.userId = user->id;
+            inputPeer.accessHash = user->accessHash;
+        } else {
+            qDebug() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
         }
+    } else {
+        qDebug() << Q_FUNC_INFO << "Unknown user.";
     }
 
     return inputPeer;
 }
 
-QString CTelegramDispatcher::userIdToPhoneNumber(const quint32 id)
+QString CTelegramDispatcher::userIdToPhoneNumber(const quint32 id) const
 {
-    foreach (const TLUser &user, m_users) {
-        if (user.id == id) {
-            return user.phone;
-        }
+    const TLUser *user = m_users.value(id);
+
+    if (user) {
+        return user->phone;
     }
 
     return QString(QLatin1String("unknown%1")).arg(id);
+}
+
+quint32 CTelegramDispatcher::phoneNumberToUserId(const QString &phoneNumber) const
+{
+    foreach (const TLUser *user, m_users) {
+        if (user->phone == phoneNumber) {
+            return user->id;
+        }
+    }
+
+    return 0;
+}
+
+TLUser *CTelegramDispatcher::phoneNumberToUser(const QString &phoneNumber) const
+{
+    return m_users.value(phoneNumberToUserId(phoneNumber));
 }
 
 void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
@@ -414,8 +454,9 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
     }
 
     if (newState == CTelegramConnection::AuthStateSignedIn) {
-        connect(connection, SIGNAL(usersReceived(QVector<TLUser>)), SLOT(setUsers(QVector<TLUser>)));
-        connect(connection, SIGNAL(usersAdded(QVector<TLUser>))   , SLOT(addUsers(QVector<TLUser>)));
+        connect(connection, SIGNAL(usersReceived(QVector<TLUser>)), SLOT(whenUsersReceived(QVector<TLUser>)));
+        connect(connection, SIGNAL(contactListReceived(QStringList)), SLOT(whenContactListReceived(QStringList)));
+        connect(connection, SIGNAL(contactListChanged(QStringList,QStringList)), SLOT(whenContactListChanged(QStringList,QStringList)));
         connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
 
         emit authenticated();
@@ -501,14 +542,14 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
 
     QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
 
-    if (m_contactList.count() < fileId) {
-        qDebug() << Q_FUNC_INFO << "Unexpected fileId" << fileId << "contact-list:" << m_contactList;
+    TLUser *user = m_users.value(fileId);
+
+    if (!user) {
+        qDebug() << Q_FUNC_INFO << "Unexpected fileId" << fileId;
         return;
     }
 
-    QString contact = m_contactList.at(fileId);
-
-    emit avatarReceived(contact, file.bytes, mimeType);
+    emit avatarReceived(user->phone, file.bytes, mimeType);
 }
 
 void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)

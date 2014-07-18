@@ -72,8 +72,10 @@ protected slots:
     void whenFileReceived(const TLUploadFile &file, quint32 fileId);
     void whenUpdatesReceived(const TLUpdates &updates);
 
-    void setUsers(const QVector<TLUser> &users);
-    void addUsers(const QVector<TLUser> &users);
+    void whenUsersReceived(const QVector<TLUser> &users);
+
+    void whenContactListReceived(const QStringList &contactList);
+    void whenContactListChanged(const QStringList &added, const QStringList &removed);
 
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
@@ -81,7 +83,9 @@ protected:
 
 private:
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
-    QString userIdToPhoneNumber(const quint32 id);
+    QString userIdToPhoneNumber(const quint32 id) const;
+    quint32 phoneNumberToUserId(const QString &phoneNumber) const;
+    TLUser *phoneNumberToUser(const QString &phoneNumber) const;
 
     CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
 
@@ -103,10 +107,10 @@ private:
     QMap<int, CTelegramConnection *> m_connections;
 
     QMap<int, QByteArray> m_delayedPackages; // dc, package data
+    QMap<quint32, TLUser*> m_users;
 
     QString m_selfPhone;
 
-    QVector<TLUser> m_users;
     QStringList m_contactList;
 
     QList<quint32> m_requestedFilesMessageIds;

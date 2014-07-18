@@ -910,6 +910,13 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
 
     if (result.tlType == ContactsContacts) {
         emit usersReceived(result.users);
+
+        QStringList contactList;
+        foreach (const TLUser &user, result.users) {
+            contactList.append(user.phone);
+        }
+
+        emit contactListReceived(contactList);
     }
 
     return result.tlType;
@@ -921,7 +928,14 @@ TLValue CTelegramConnection::processContactsImportContacts(CTelegramStream &stre
     stream >> result;
 
     if (result.tlType == ContactsImportedContacts) {
-        emit usersAdded(result.users);
+        emit usersReceived(result.users);
+
+        QStringList addedList;
+        foreach (const TLUser &user, result.users) {
+            addedList.append(user.phone);
+        }
+
+        emit contactListChanged(addedList, QStringList());
     }
 
     return result.tlType;

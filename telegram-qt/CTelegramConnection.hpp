@@ -122,7 +122,8 @@ signals:
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void usersReceived(const QVector<TLUser> &users);
-    void usersAdded(const QVector<TLUser> &users);
+    void contactListReceived(const QStringList &contactList);
+    void contactListChanged(const QStringList &added, const QStringList &removed);
     void fileReceived(const TLUploadFile &file, quint32 fileId);
 
     void updatesReceived(const TLUpdates &update);
