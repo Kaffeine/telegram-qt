@@ -673,6 +673,8 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
             processRpcError(stream, id, request);
             break;
         default:
+            // Any other results considered as success
+            m_submittedPackages.remove(id);
             break;
         }
     } else {
@@ -803,8 +805,6 @@ TLValue CTelegramConnection::processHelpGetConfig(CTelegramStream &stream, quint
         }
 
         emit dcConfigurationReceived(m_dcInfo.id);
-
-        m_submittedPackages.remove(id);
     }
 
     return result.tlType;
@@ -817,8 +817,6 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
 
     if (result.tlType == ContactsContacts) {
         emit usersReceived(result.users);
-
-        m_submittedPackages.remove(id);
     }
 
     return result.tlType;
@@ -844,8 +842,6 @@ TLValue CTelegramConnection::processAuthCheckPhone(CTelegramStream &stream, quin
         stream >> phone;
 
         emit phoneStatusReceived(phone, result.phoneRegistered, result.phoneInvited);
-
-        m_submittedPackages.remove(id);
     }
 
     return result.tlType;
@@ -860,8 +856,6 @@ TLValue CTelegramConnection::processAuthSendCode(CTelegramStream &stream, quint6
         m_authCodeHash = result.phoneCodeHash;
 
         emit phoneCodeRequired();
-
-        m_submittedPackages.remove(id);
     }
 
     return result.tlType;
@@ -876,8 +870,6 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
 
     if (result.tlType == AuthAuthorization) {
         setAuthState(AuthStateSignedIn);
-
-        m_submittedPackages.remove(id);
     }
 
     return result.tlType;
@@ -890,8 +882,6 @@ TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint
 
     if (file.tlType == UploadFile) {
         emit fileReceived(file, m_requestedFilesIds.value(id));
-
-        m_requestedFilesIds.remove(id);
     }
 
     return file.tlType;
