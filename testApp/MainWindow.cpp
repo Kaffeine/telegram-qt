@@ -7,6 +7,8 @@
 #include <QToolTip>
 #include <QStringListModel>
 
+#include <QDebug>
+
 #include <QDir>
 #include <QFile>
 
@@ -29,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_core->setAppInformation(&appInfo);
 
     connect(m_core, SIGNAL(connected()), SLOT(whenConnected()));
+    connect(m_core, SIGNAL(phoneStatusReceived(QString,bool,bool)), SLOT(whenPhoneStatusReceived(QString,bool,bool)));
     connect(m_core, SIGNAL(phoneCodeRequired()), SLOT(whenPhoneCodeRequested()));
     connect(m_core, SIGNAL(phoneCodeIsInvalid()), SLOT(whenPhoneCodeIsInvalid()));
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
@@ -49,6 +52,17 @@ void MainWindow::whenConnected()
     ui->authButton->setEnabled(true);
     ui->phoneNumber->setFocus();
     ui->signInButton->setEnabled(true);
+}
+
+void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered, bool invited)
+{
+    if (phone == ui->phoneNumber->text()) {
+        QString registeredText = registered ? tr("Registered") : tr("Not registered");
+        QString invitedText = invited ? tr("invited") : tr("not invited");
+        ui->phoneStatus->setText(QString(QLatin1String("%1, %2")).arg(registeredText).arg(invitedText));
+    } else {
+        qDebug() << "Warning: Received status for different phone number" << phone << registered << invited;
+    }
 }
 
 void MainWindow::whenPhoneCodeRequested()
@@ -122,6 +136,7 @@ void MainWindow::on_authButton_clicked()
         return;
     }
 
+    m_core->requestPhoneStatus(ui->phoneNumber->text());
     m_core->requestPhoneCode(ui->phoneNumber->text());
 }
 

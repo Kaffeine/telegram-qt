@@ -19,6 +19,7 @@ public:
 
 private slots:
     void whenConnected();
+    void whenPhoneStatusReceived(const QString &phone, bool registered, bool invited);
     void whenPhoneCodeRequested();
     void whenPhoneCodeIsInvalid();
     void whenAuthenticated();
