@@ -154,7 +154,7 @@ protected:
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 
-    TLValue processUpdate(CTelegramStream &stream);
+    TLValue processUpdate(CTelegramStream &stream, bool *ok);
 
     SAesKey generateTmpAesKey() const;
     SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const;
