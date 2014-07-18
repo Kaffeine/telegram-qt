@@ -24,6 +24,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_appInfo(0)
 {
     connect(m_dispatcher, SIGNAL(dcConfigurationObtained()), SIGNAL(connected()));
+    connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(m_dispatcher, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(m_dispatcher, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
     connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
@@ -69,9 +70,14 @@ bool CTelegramCore::restoreConnection(const QByteArray &secret)
     return m_dispatcher->restoreConnection(secret);
 }
 
+void CTelegramCore::requestPhoneStatus(const QString &phoneNumber)
+{
+    m_dispatcher->requestPhoneStatus(phoneNumber);
+}
+
 void CTelegramCore::requestPhoneCode(const QString &phoneNumber)
 {
-    return m_dispatcher->requestPhoneCode(phoneNumber);
+    m_dispatcher->requestPhoneCode(phoneNumber);
 }
 
 void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)

@@ -134,6 +134,17 @@ void CTelegramConnection::getConfiguration()
     sendEncryptedPackage(output);
 }
 
+void CTelegramConnection::requestPhoneStatus(const QString &phoneNumber)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthCheckPhone;
+    outputStream << phoneNumber;
+
+    sendEncryptedPackage(output);
+}
+
 void CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
 {
     qDebug() << "requestPhoneCode" << phoneNumber << m_dcInfo.id;
@@ -630,6 +641,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream)
         case HelpGetConfig:
             processingResult = processHelpGetConfig(stream, id);
             break;
+        case AuthCheckPhone:
+            processingResult = processAuthCheckPhone(stream, id);
+            break;
         case AuthSendCode:
             processingResult = processAuthSendCode(stream, id);
             break;
@@ -787,6 +801,33 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
     emit usersReceived(result.users);
 
     m_submittedPackages.remove(id);
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processAuthCheckPhone(CTelegramStream &stream, quint64 id)
+{
+    TLAuthCheckedPhone result;
+    stream >> result;
+
+    if (result.tlType == AuthCheckedPhone) {
+        const QByteArray data = m_submittedPackages.take(id);
+
+        if (data.isEmpty()) {
+            qDebug() << Q_FUNC_INFO << "Can not restore message" << id;
+            return result.tlType;
+        }
+
+        CTelegramStream stream(data);
+        TLValue value;
+        QString phone;
+        stream >> value;
+        stream >> phone;
+
+        emit phoneStatusReceived(phone, result.phoneRegistered, result.phoneInvited);
+
+        m_submittedPackages.remove(id);
+    }
 
     return result.tlType;
 }

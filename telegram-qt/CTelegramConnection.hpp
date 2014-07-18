@@ -58,6 +58,8 @@ public:
 
     void initAuth();
     void getConfiguration();
+
+    void requestPhoneStatus(const QString &phoneNumber);
     void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
 
@@ -104,6 +106,7 @@ signals:
     void authStateChanged(int dc, int state);
     void actualDcIdReceived(int dc, int newDcId);
     void dcConfigurationReceived(int dc);
+    void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void usersReceived(const QVector<TLUser> &users);
@@ -126,6 +129,7 @@ protected:
 
     TLValue processHelpGetConfig(CTelegramStream &stream, quint64 id);
     TLValue processContactsGetContacts(CTelegramStream &stream, quint64 id);
+    TLValue processAuthCheckPhone(CTelegramStream &stream, quint64 id);
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
     TLValue processAuthSignIn(CTelegramStream &stream, quint64 id);
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);

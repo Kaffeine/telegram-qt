@@ -39,6 +39,7 @@ public:
     void initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
 
+    void requestPhoneStatus(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
 
     void requestPhoneCode(const QString &phoneNumber);
@@ -51,6 +52,7 @@ signals:
     void phoneCodeIsInvalid();
     void authenticated();
     void contactListChanged();
+    void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
 protected slots:

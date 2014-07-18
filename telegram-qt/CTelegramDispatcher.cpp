@@ -111,6 +111,11 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     return true;
 }
 
+void CTelegramDispatcher::requestPhoneStatus(const QString &phoneNumber)
+{
+    activeConnection()->requestPhoneStatus(phoneNumber);
+}
+
 void CTelegramDispatcher::signIn(const QString &phoneNumber, const QString &authCode)
 {
     activeConnection()->signIn(phoneNumber, authCode);
@@ -342,6 +347,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,int)), SLOT(whenPackageRedirected(QByteArray,int)));
     connect(connection, SIGNAL(wantedActiveDcChanged(int)), SLOT(whenWantedActiveDcChanged(int)));
 
+    connect(connection, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(connection, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(connection, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
 
