@@ -815,9 +815,11 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
     TLContactsContacts result;
     stream >> result;
 
-    emit usersReceived(result.users);
+    if (result.tlType == ContactsContacts) {
+        emit usersReceived(result.users);
 
-    m_submittedPackages.remove(id);
+        m_submittedPackages.remove(id);
+    }
 
     return result.tlType;
 }
@@ -886,9 +888,11 @@ TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint
     TLUploadFile file;
     stream >> file;
 
-    emit fileReceived(file, m_requestedFilesIds.value(id));
+    if (file.tlType == UploadFile) {
+        emit fileReceived(file, m_requestedFilesIds.value(id));
 
-    m_requestedFilesIds.remove(id);
+        m_requestedFilesIds.remove(id);
+    }
 
     return file.tlType;
 }
