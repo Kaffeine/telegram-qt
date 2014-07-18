@@ -536,17 +536,7 @@ bool CTelegramConnection::processServersDHAnswer(const QByteArray &payload)
 
 void CTelegramConnection::processRedirectedPackage(const QByteArray &data)
 {
-    CTelegramStream stream(data);
-    TLValue val;
-
-    stream >> val;
-
-    if (val == AuthSendCode) {
-        QString phoneNumber;
-        stream >> phoneNumber;
-
-        return requestPhoneCode(phoneNumber);
-    }
+    sendEncryptedPackage(data);
 }
 
 void CTelegramConnection::processRpcQuery(const QByteArray &data)
