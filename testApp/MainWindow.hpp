@@ -25,6 +25,7 @@ private slots:
     void whenAuthenticated();
     void whenContactListChanged();
     void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
+    void whenMessageReceived(const QString &phone, const QString &message);
 
     void on_connectButton_clicked();
     void on_authButton_clicked();

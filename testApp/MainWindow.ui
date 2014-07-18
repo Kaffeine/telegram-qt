@@ -200,7 +200,7 @@
          </attribute>
          <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,1,0">
           <item row="0" column="0" colspan="5">
-           <widget class="QPlainTextEdit" name="plainTextEdit">
+           <widget class="QPlainTextEdit" name="messagingLogs">
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -358,5 +358,38 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>messagingMessage</sender>
+   <signal>returnPressed()</signal>
+   <receiver>messagingSendButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>635</x>
+     <y>566</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>722</x>
+     <y>571</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>confirmationCode</sender>
+   <signal>returnPressed()</signal>
+   <receiver>signButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>318</x>
+     <y>160</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>446</x>
+     <y>614</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

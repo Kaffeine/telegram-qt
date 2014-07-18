@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
     connect(m_core, SIGNAL(contactListChanged()), SLOT(whenContactListChanged()));
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
+    connect(m_core, SIGNAL(messageReceived(QString,QString)), SLOT(whenMessageReceived(QString,QString)));
 }
 
 MainWindow::~MainWindow()
@@ -119,6 +120,11 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
     avatarFile.close();
 }
 
+void MainWindow::whenMessageReceived(const QString &phone, const QString &message)
+{
+    ui->messagingLogs->appendPlainText(QString(QLatin1String("From %1: %2\n")).arg(phone).arg(message));
+}
+
 void MainWindow::on_connectButton_clicked()
 {
     QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
@@ -186,4 +192,8 @@ void MainWindow::on_addContact_clicked()
 void MainWindow::on_messagingSendButton_clicked()
 {
     m_core->sendMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text());
+
+    ui->messagingLogs->appendPlainText(QString(QLatin1String("To %1: %2\n")).arg(ui->messagingContactPhone->text()).arg(ui->messagingMessage->text()));
+
+    ui->messagingMessage->clear();
 }
