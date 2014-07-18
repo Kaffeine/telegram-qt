@@ -1048,8 +1048,8 @@ TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok)
     case UpdatesCombined:
     case Updates:
         emit updatesReceived(updates);
-        break;
         *ok = true;
+        break;
     default:
         *ok = false;
         break;
