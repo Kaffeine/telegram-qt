@@ -3245,3 +3245,29 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputContact &inputContact)
 
     return *this;
 }
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputPeer &inputPeer)
+{
+    *this << inputPeer.tlType;
+
+    switch (inputPeer.tlType) {
+    case InputPeerEmpty:
+        break;
+    case InputPeerSelf:
+        break;
+    case InputPeerContact:
+        *this << inputPeer.userId;
+        break;
+    case InputPeerForeign:
+        *this << inputPeer.userId;
+        *this << inputPeer.accessHash;
+        break;
+    case InputPeerChat:
+        *this << inputPeer.chatId;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}

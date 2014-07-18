@@ -153,6 +153,7 @@ public:
     CTelegramStream &operator<<(const TLDcOption &dcOption);
     CTelegramStream &operator<<(const TLInputFileLocation &inputFileLocation);
     CTelegramStream &operator<<(const TLInputContact &inputContact);
+    CTelegramStream &operator<<(const TLInputPeer &inputPeer);
 
     template <typename T>
     CTelegramStream &operator<<(const QVector<T> &v);
