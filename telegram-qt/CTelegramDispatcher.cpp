@@ -50,6 +50,7 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
     outputStream << secretFormatVersion;
     outputStream << activeConnection()->deltaTime();
     outputStream << activeConnection()->dcInfo();
+    outputStream << m_selfPhone;
     outputStream << activeConnection()->authKey();
     outputStream << activeConnection()->authId();
     outputStream << activeConnection()->serverSalt();
@@ -91,6 +92,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 
     inputStream >> deltaTime;
     inputStream >> dcInfo;
+    inputStream >> m_selfPhone;
     inputStream >> authKey;
     inputStream >> authId;
     inputStream >> serverSalt;
@@ -181,6 +183,11 @@ void CTelegramDispatcher::requestContactAvatar(const QString &contact)
 
     requestFile(inputFile, avatarLocation.dcId, contactIndex);
     qDebug() << Q_FUNC_INFO << "Requested avatar for contact " << contactIndex << contact;
+}
+
+void CTelegramDispatcher::whenSelfPhoneReceived(const QString &phone)
+{
+    m_selfPhone = phone;
 }
 
 void CTelegramDispatcher::setUsers(const QVector<TLUser> &users)
@@ -365,6 +372,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
 {
     CTelegramConnection *connection = new CTelegramConnection(m_appInformation, this);
 
+    connect(connection, SIGNAL(selfPhoneReceived(QString)), SLOT(whenSelfPhoneReceived(QString)));
     connect(connection, SIGNAL(authStateChanged(int,int)), SLOT(whenConnectionAuthChanged(int,int)));
     connect(connection, SIGNAL(dcConfigurationReceived(int)), SLOT(whenConnectionConfigurationUpdated(int)));
     connect(connection, SIGNAL(actualDcIdReceived(int,int)), SLOT(whenConnectionDcIdUpdated(int,int)));

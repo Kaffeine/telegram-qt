@@ -59,6 +59,7 @@ signals:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
 protected slots:
+    void whenSelfPhoneReceived(const QString &phone);
     void whenConnectionAuthChanged(int dc, int newState);
     void whenConnectionConfigurationUpdated(int dc);
     void whenConnectionDcIdUpdated(int connectionId, int newDcId);
@@ -94,6 +95,8 @@ private:
     QMap<int, CTelegramConnection *> m_connections;
 
     QMap<int, QByteArray> m_delayedPackages; // dc, package data
+
+    QString m_selfPhone;
 
     QVector<TLUser> m_users;
     QStringList m_contactList;

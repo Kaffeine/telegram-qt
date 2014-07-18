@@ -932,6 +932,7 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
 
     if (result.tlType == AuthAuthorization) {
         setAuthState(AuthStateSignedIn);
+        emit selfPhoneReceived(result.user.phone);
     }
 
     return result.tlType;

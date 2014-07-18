@@ -112,6 +112,7 @@ signals:
     void wantedActiveDcChanged(int dc);
     void newRedirectedPackage(const QByteArray &data, int dc);
 
+    void selfPhoneReceived(const QString &phoneNumber);
     void authStateChanged(int dc, int state);
     void actualDcIdReceived(int dc, int newDcId);
     void dcConfigurationReceived(int dc);
