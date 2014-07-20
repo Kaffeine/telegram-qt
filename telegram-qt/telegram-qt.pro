@@ -14,6 +14,7 @@ SOURCES = CTelegramCore.cpp \
     CTelegramStream.cpp \
     Utils.cpp \
     CTcpTransport.cpp \
+    TelegramNamespace.cpp \
     CTelegramConnection.cpp
 
 HEADERS = CTelegramCore.hpp \
@@ -29,6 +30,7 @@ HEADERS = CTelegramCore.hpp \
     crypto-aes.hpp \
     crypto-rsa.hpp \
     CTelegramConnection.hpp \
+    TelegramNamespace.hpp \
     telegramqt_export.h
 
 HEADERS += TLValues.h

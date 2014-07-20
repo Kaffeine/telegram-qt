@@ -13,6 +13,7 @@
 
 #include "CTelegramDispatcher.hpp"
 
+#include "TelegramNamespace.hpp"
 #include "CTelegramConnection.hpp"
 #include "CTelegramStream.hpp"
 
@@ -262,9 +263,8 @@ void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint
 
 void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 {
-    qDebug() << "Type:" << QString::number(update.tlType, 16);
     switch (update.tlType) {
-    case UpdateNewMessage:
+//    case UpdateNewMessage:
 //        update.message;
 //        update.pts;
 //        break;
@@ -294,10 +294,14 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //    case UpdateChatParticipants:
 //        update.participants;
 //        break;
-    case UpdateUserStatus:
-        update.userId;
-        update.status;
+    case UpdateUserStatus: {
+        TLUser *user = m_users.value(update.userId);
+        if (user) {
+            user->status = update.status;
+            emit contactStatusChanged(user->phone, decodeContactStatus(user->status.tlType));
+        }
         break;
+    }
 //    case UpdateUserName:
 //        update.userId;
 //        update.firstName;
@@ -369,6 +373,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.notifySettings;
 //        break;
     default:
+        qDebug() << Q_FUNC_INFO << "Update type" << QString::number(update.tlType, 16) << "is not implemented yet.";
         break;
     }
 }
@@ -427,6 +432,19 @@ quint32 CTelegramDispatcher::phoneNumberToUserId(const QString &phoneNumber) con
 TLUser *CTelegramDispatcher::phoneNumberToUser(const QString &phoneNumber) const
 {
     return m_users.value(phoneNumberToUserId(phoneNumber));
+}
+
+TelegramNamespace::ContactStatus CTelegramDispatcher::decodeContactStatus(TLValue status) const
+{
+    switch (status) {
+    default:
+    case UserStatusEmpty:
+        return TelegramNamespace::ContactStatusUnknown;
+    case UserStatusOnline:
+        return TelegramNamespace::ContactStatusOnline;
+    case UserStatusOffline:
+        return TelegramNamespace::ContactStatusOffline;
+    }
 }
 
 void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)

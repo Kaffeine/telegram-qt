@@ -1,5 +1,6 @@
 
 set(telegram_qt_SOURCES
+    TelegramNamespace.cpp
     CAppInformation.cpp
     CTelegramCore.cpp
     CTelegramDispatcher.cpp
@@ -13,6 +14,7 @@ set(telegram_qt_SOURCES
 
 set(telegram_qt_HEADERS
     telegramqt_export.h
+    TelegramNamespace.hpp
     CTelegramCore.hpp
     CTelegramDispatcher.hpp
     CTelegramConnection.hpp

@@ -15,6 +15,7 @@
 #define CTELEGRAMCORE_HPP
 
 #include "telegramqt_export.h"
+#include "TelegramNamespace.hpp"
 
 #include <QObject>
 #include <QVector>
@@ -62,6 +63,7 @@ signals:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
     void messageReceived(const QString &phone, const QString &message);
+    void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
 
 protected:
     CTelegramDispatcher *m_dispatcher;

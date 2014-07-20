@@ -20,6 +20,7 @@
 #include <QStringList>
 
 #include "TLTypes.hpp"
+#include "TelegramNamespace.hpp"
 
 class CAppInformation;
 class CTelegramConnection;
@@ -60,6 +61,7 @@ signals:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
     void messageReceived(const QString &phone, const QString &message);
+    void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
 
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
@@ -86,6 +88,8 @@ private:
     QString userIdToPhoneNumber(const quint32 id) const;
     quint32 phoneNumberToUserId(const QString &phoneNumber) const;
     TLUser *phoneNumberToUser(const QString &phoneNumber) const;
+
+    TelegramNamespace::ContactStatus decodeContactStatus(TLValue status) const;
 
     CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
 
