@@ -8,6 +8,7 @@ class MainWindow;
 }
 
 class CTelegramCore;
+class CContactsModel;
 
 class MainWindow : public QMainWindow
 {
@@ -41,11 +42,12 @@ private slots:
     void on_messagingSendButton_clicked();
 
 private:
+    void setRegistered(bool newRegistered);
+
     Ui::MainWindow *ui;
 
+    CContactsModel *m_contactsModel;
     CTelegramCore *m_core;
-
-    void setRegistered(bool newRegistered);
 
     bool m_registered;
 

@@ -3,6 +3,7 @@
 
 #include "CAppInformation.hpp"
 #include "CTelegramCore.hpp"
+#include "CContactModel.hpp"
 
 #include <QCompleter>
 #include <QToolTip>
@@ -15,9 +16,14 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_contactsModel(new CContactsModel(this))
 {
     ui->setupUi(this);
+    ui->contactListTable->setModel(m_contactsModel);
+
+    QCompleter *comp = new QCompleter(m_contactsModel, this);
+    ui->messagingContactPhone->setCompleter(comp);
 
     // Telepathy Morse app info
     CAppInformation appInfo;
@@ -39,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(contactListChanged()), SLOT(whenContactListChanged()));
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
     connect(m_core, SIGNAL(messageReceived(QString,QString)), SLOT(whenMessageReceived(QString,QString)));
+    connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
 }
 
 MainWindow::~MainWindow()
@@ -94,13 +101,7 @@ void MainWindow::whenAuthenticated()
 
 void MainWindow::whenContactListChanged()
 {
-    QStringListModel *model = new QStringListModel(m_core->contactList(), ui->contactListTable);
-    ui->contactListTable->setModel(model);
-
-    static QCompleter messagingContactPhoneCompleter;
-    messagingContactPhoneCompleter.setModel(model);
-
-    ui->messagingContactPhone->setCompleter(&messagingContactPhoneCompleter);
+    m_contactsModel->setContactList(m_core->contactList());
 
     foreach (const QString &contact, m_core->contactList()) {
         m_core->requestContactAvatar(contact);
