@@ -24,6 +24,13 @@ set(telegram_qt_HEADERS
     crypto-aes.hpp
 )
 
+set(telegram_qt_public_HEADERS
+    telegramqt_export.h
+    CAppInformation.hpp
+    TelegramNamespace.hpp
+    CTelegramCore.hpp
+)
+
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_BINARY_DIR}
                     ${QT_INCLUDES})
@@ -50,7 +57,7 @@ install(
 )
 
 install(
-    FILES ${telegram_qt_HEADERS}
+    FILES ${telegram_qt_public_HEADERS}
     DESTINATION ${TELEGRAM_QT_INCLUDE_DIR}/TelegramQt
     COMPONENT Devel
 )
