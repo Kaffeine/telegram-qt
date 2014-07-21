@@ -687,12 +687,12 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
     }
 
     TLValue request;
-    TLValue processingResult;
 
     const QByteArray &requestData = m_submittedPackages.value(id);
 
     if (!requestData.isEmpty()) {
         CTelegramStream storedStream(requestData);
+        TLValue processingResult = Null; // Not really meaningful value, just a way to fix warning.
 
         storedStream >> request;
 
@@ -847,10 +847,10 @@ void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &str
         errorText = QLatin1String("Invalid container");
         break;
     default:
-        errorText = QString("Unknown error code");
+        errorText = QLatin1String("Unknown error code");
         break;
     }
-    qDebug() << QString("Bad message %1/%2: Code %3 (%4).").arg(id).arg(seqNo).arg(errorCode).arg(errorText);
+    qDebug() << QString(QLatin1String("Bad message %1/%2: Code %3 (%4).")).arg(id).arg(seqNo).arg(errorCode).arg(errorText);
 
     if (errorCode == 16) {
         if (m_deltaTimeHeuristicState == DeltaTimeIsOk) {
@@ -1104,7 +1104,7 @@ void CTelegramConnection::whenReadyRead()
         inputStream >> timeStamp;
         inputStream >> length;
 
-        if (inputStream.bytesRemaining() != length) {
+        if (inputStream.bytesRemaining() != int(length)) {
             qDebug() << "Corrupted packet. Specified length does not equal to real length";
             return;
         }
@@ -1163,7 +1163,7 @@ void CTelegramConnection::whenReadyRead()
             return;
         }
 
-        if (contentLength > decryptedData.length()) {
+        if (int(contentLength) > decryptedData.length()) {
             qDebug() << "Expected data length is more, than actual.";
             return;
         }
