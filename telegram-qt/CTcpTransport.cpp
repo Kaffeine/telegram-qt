@@ -66,6 +66,11 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
     m_lastPackage = package;
 
     m_socket->write(package);
+
+    // Looks like server accept only first high-level package in tcp package.
+    // So, to send several packages in one execution branch, client have to place packages into container.
+    // To workaround this situation until containers implementation, we manually invoke sending of tcp packages.
+    m_socket->waitForBytesWritten();
 }
 
 void CTcpTransport::whenConnected()
