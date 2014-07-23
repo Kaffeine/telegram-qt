@@ -112,6 +112,11 @@ QStringList CTelegramCore::contactList() const
     return m_dispatcher->contactList();
 }
 
+TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &phone) const
+{
+    return m_dispatcher->contactStatus(phone);
+}
+
 void CTelegramCore::sendMessage(const QString &phone, const QString &message)
 {
     return m_dispatcher->sendMessageToContact(phone, message);

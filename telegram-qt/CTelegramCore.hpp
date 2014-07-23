@@ -51,6 +51,8 @@ public:
 
     QStringList contactList() const;
 
+    TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
+
     void sendMessage(const QString &phone, const QString &message);
 
 signals:

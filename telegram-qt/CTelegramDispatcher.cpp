@@ -197,6 +197,17 @@ void CTelegramDispatcher::sendMessageToContact(const QString &phone, const QStri
     activeConnection()->sendMessage(peer, message);
 }
 
+TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QString &phone) const
+{
+    const TLUser *user = phoneNumberToUser(phone);
+
+    if (user) {
+        return decodeContactStatus(user->status.tlType);
+    }
+
+    return TelegramNamespace::ContactStatusUnknown;
+}
+
 void CTelegramDispatcher::whenSelfPhoneReceived(const QString &phone)
 {
     m_selfPhone = phone;

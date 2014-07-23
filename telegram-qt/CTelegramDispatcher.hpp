@@ -52,6 +52,8 @@ public:
 
     void sendMessageToContact(const QString &phone, const QString &message);
 
+    TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
+
 signals:
     void dcConfigurationObtained();
     void phoneCodeRequired();
