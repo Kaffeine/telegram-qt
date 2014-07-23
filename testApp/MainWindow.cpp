@@ -105,6 +105,7 @@ void MainWindow::whenContactListChanged()
 
     foreach (const QString &contact, m_core->contactList()) {
         m_core->requestContactAvatar(contact);
+        m_contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
     }
 }
 
