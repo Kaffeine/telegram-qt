@@ -109,6 +109,8 @@ private:
 
     void setActiveDc(int dc, bool syncWantedDc = true);
 
+    void ensureTypingUpdateTimer(int interval);
+
     const CAppInformation *m_appInformation;
 
     int m_activeDc;
@@ -126,8 +128,9 @@ private:
 
     QList<quint32> m_requestedFilesMessageIds;
 
-    QTimer *m_userTypingTimer;
+    QTimer *m_typingUpdateTimer;
     QMap<quint32, int> m_userTypingMap; // user id, typing time
+    QMap<QString, int> m_localTypingMap; // phone, typing time
 
 };
 

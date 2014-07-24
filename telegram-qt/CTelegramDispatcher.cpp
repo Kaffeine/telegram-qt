@@ -23,6 +23,7 @@
 
 const quint32 secretFormatVersion = 0;
 const int s_userTypingActionPeriod = 6000; // 6 sec
+const int s_localTypingActionPeriod = 5000; // 5 sec
 
 #if QT_VERSION < 0x050000
 const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typing time deviation in Qt4 by this value.
@@ -33,10 +34,10 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_appInformation(0),
     m_activeDc(0),
     m_wantedActiveDc(0),
-    m_userTypingTimer(new QTimer(this))
+    m_typingUpdateTimer(new QTimer(this))
 {
-    m_userTypingTimer->setSingleShot(true);
-    connect(m_userTypingTimer, SIGNAL(timeout()), SLOT(whenUserTypingTimeout()));
+    m_typingUpdateTimer->setSingleShot(true);
+    connect(m_typingUpdateTimer, SIGNAL(timeout()), SLOT(whenUserTypingTimeout()));
 }
 
 void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
@@ -209,6 +210,10 @@ void CTelegramDispatcher::sendMessageToContact(const QString &phone, const QStri
 
 void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
 {
+    if (m_localTypingMap.contains(phone)) {
+        return; // Avoid flood
+    }
+
     TLInputPeer peer = phoneNumberToInputPeer(phone);
 
     if (peer.tlType == InputPeerEmpty) {
@@ -217,6 +222,9 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
     }
 
     activeConnection()->setTyping(peer, typingStatus);
+
+    m_localTypingMap.insert(phone, s_localTypingActionPeriod);
+    ensureTypingUpdateTimer(s_localTypingActionPeriod);
 }
 
 TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QString &phone) const
@@ -280,7 +288,7 @@ void CTelegramDispatcher::whenContactListChanged(const QStringList &added, const
 
 void CTelegramDispatcher::whenUserTypingTimeout()
 {
-    QList<quint32> users = m_userTypingMap.keys();
+    const QList<quint32> users = m_userTypingMap.keys();
 
 #if QT_VERSION >= 0x050000
     int minTime = s_userTypingActionPeriod;
@@ -289,8 +297,8 @@ void CTelegramDispatcher::whenUserTypingTimeout()
 #endif
 
     foreach (quint32 userId, users) {
-        int timeRemains = m_userTypingMap.value(userId) - m_userTypingTimer->interval();
-        if (timeRemains < 0) {
+        int timeRemains = m_userTypingMap.value(userId) - m_typingUpdateTimer->interval();
+        if (timeRemains < 5) { // Let 5 ms be allowed correction
             m_userTypingMap.remove(userId);
             emit contactTypingStatusChanged(userIdToPhoneNumber(userId), /* typingStatus */ false);
         } else {
@@ -301,8 +309,22 @@ void CTelegramDispatcher::whenUserTypingTimeout()
         }
     }
 
-    if (!users.isEmpty()) {
-        m_userTypingTimer->start(minTime);
+    const QList<QString> phones = m_localTypingMap.keys();
+
+    foreach (const QString &phone, phones) {
+        int timeRemains = m_localTypingMap.value(phone) - m_typingUpdateTimer->interval();
+        if (timeRemains < 5) { // Let 5 ms be allowed correction
+            m_localTypingMap.remove(phone);
+        } else {
+            m_localTypingMap.insert(phone, timeRemains);
+            if (minTime > timeRemains) {
+                minTime = timeRemains;
+            }
+        }
+    }
+
+    if (!m_userTypingMap.isEmpty() || !m_localTypingMap.isEmpty()) {
+        m_typingUpdateTimer->start(minTime);
     }
 }
 
@@ -354,13 +376,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 #else
             m_userTypingMap.insert(user->id, s_userTypingActionPeriod); // Missed timer remaining time method can leads to typing time period deviation.
 #endif
-            if (!m_userTypingTimer->isActive()) {
-#if QT_VERSION >= 0x050000
-                m_userTypingTimer->start(s_userTypingActionPeriod);
-#else
-                m_userTypingTimer->start(s_timerMaxInterval);
-#endif
-            }
+            ensureTypingUpdateTimer(s_userTypingActionPeriod);
         }
         break;
     }
@@ -681,6 +697,18 @@ void CTelegramDispatcher::setActiveDc(int dc, bool syncWantedDc)
     }
 
     qDebug() << "New active dc:" << dc;
+}
+
+void CTelegramDispatcher::ensureTypingUpdateTimer(int interval)
+{
+    if (!m_typingUpdateTimer->isActive()) {
+#if QT_VERSION >= 0x050000
+        m_userTypingTimer->start(interval);
+#else
+        Q_UNUSED(interval);
+        m_typingUpdateTimer->start(s_timerMaxInterval);
+#endif
+    }
 }
 
 CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
