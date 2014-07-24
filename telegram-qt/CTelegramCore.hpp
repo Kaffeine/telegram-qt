@@ -54,6 +54,7 @@ public:
     TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
 
     void sendMessage(const QString &phone, const QString &message);
+    void setTyping(const QString &phone, bool typingStatus);
 
 signals:
     void connected();

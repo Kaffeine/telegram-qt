@@ -51,6 +51,7 @@ public:
     void requestContactAvatar(const QString &contact);
 
     void sendMessageToContact(const QString &phone, const QString &message);
+    void setTyping(const QString &phone, bool typingStatus);
 
     TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
 

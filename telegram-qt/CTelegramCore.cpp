@@ -121,3 +121,8 @@ void CTelegramCore::sendMessage(const QString &phone, const QString &message)
 {
     return m_dispatcher->sendMessageToContact(phone, message);
 }
+
+void CTelegramCore::setTyping(const QString &phone, bool typingStatus)
+{
+    m_dispatcher->setTyping(phone, typingStatus);
+}

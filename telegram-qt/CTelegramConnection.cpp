@@ -259,6 +259,18 @@ void CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString &me
     sendEncryptedPackage(output);
 }
 
+void CTelegramConnection::setTyping(const TLInputPeer &peer, bool typingStatus)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSetTyping;
+    outputStream << peer; // Hash
+    outputStream << typingStatus;
+
+    sendEncryptedPackage(output);
+}
+
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
     // Payload is passed as const, but we open device in read-only mode, so

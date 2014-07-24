@@ -197,6 +197,18 @@ void CTelegramDispatcher::sendMessageToContact(const QString &phone, const QStri
     activeConnection()->sendMessage(peer, message);
 }
 
+void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
+{
+    TLInputPeer peer = phoneNumberToInputPeer(phone);
+
+    if (peer.tlType == InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << phone;
+        return;
+    }
+
+    activeConnection()->setTyping(peer, typingStatus);
+}
+
 TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QString &phone) const
 {
     const TLUser *user = phoneNumberToUser(phone);

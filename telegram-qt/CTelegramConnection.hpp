@@ -76,6 +76,7 @@ public:
     void addContacts(const QStringList &phoneNumbers, bool replace);
 
     void sendMessage(const TLInputPeer &peer, const QString &message);
+    void setTyping(const TLInputPeer &peer, bool typingStatus);
 
     AuthState authState() { return m_authState; }
 
