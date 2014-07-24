@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
     connect(m_core, SIGNAL(messageReceived(QString,QString)), SLOT(whenMessageReceived(QString,QString)));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
+    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), m_contactsModel, SLOT(setTypingStatus(QString,bool)));
 }
 
 MainWindow::~MainWindow()
@@ -198,4 +199,11 @@ void MainWindow::on_messagingSendButton_clicked()
     ui->messagingLogs->appendPlainText(QString(QLatin1String("To %1: %2\n")).arg(ui->messagingContactPhone->text()).arg(ui->messagingMessage->text()));
 
     ui->messagingMessage->clear();
+}
+
+void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
+{
+    Q_UNUSED(arg1)
+
+    m_core->setTyping(ui->messagingContactPhone->text(), true);
 }

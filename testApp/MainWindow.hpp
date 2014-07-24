@@ -41,6 +41,8 @@ private slots:
 
     void on_messagingSendButton_clicked();
 
+    void on_messagingMessage_textChanged(const QString &arg1);
+
 private:
     void setRegistered(bool newRegistered);
 

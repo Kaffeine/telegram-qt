@@ -10,10 +10,13 @@
 struct SContact {
     SContact(const QString &p = QString(), TelegramNamespace::ContactStatus s = TelegramNamespace::ContactStatusUnknown) :
         phone(p),
-        status(s) { }
+        status(s),
+        typing(false)
+    { }
 
     QString phone;
     TelegramNamespace::ContactStatus status;
+    bool typing;
 };
 
 class CContactsModel : public QAbstractTableModel
@@ -23,6 +26,7 @@ public:
     enum Columns {
         Phone,
         Status,
+        TypingStatus,
         ColumnsCount
     };
 
@@ -37,6 +41,7 @@ public:
 public slots:
     void setContactList(const QStringList &list);
     void setContactStatus(const QString &phone, TelegramNamespace::ContactStatus status);
+    void setTypingStatus(const QString &phone, bool typingStatus);
 
 private:
     int indexOfContact(const QString &phone) const;

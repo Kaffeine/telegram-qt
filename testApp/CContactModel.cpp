@@ -20,6 +20,8 @@ QVariant CContactsModel::headerData(int section, Qt::Orientation orientation, in
         return tr("Phone");
     case Status:
         return tr("Status");
+    case TypingStatus:
+        return tr("Typing status");
     default:
         break;
     }
@@ -45,6 +47,8 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
         return m_contacts.at(contactIndex).phone;
     case Status:
         return statusToStr(m_contacts.at(contactIndex).status);
+    case TypingStatus:
+        return m_contacts.at(contactIndex).typing;
     default:
         break;
     }
@@ -73,6 +77,18 @@ void CContactsModel::setContactStatus(const QString &phone, TelegramNamespace::C
     }
 
     QModelIndex modelIndex = createIndex(index, Status);
+    emit dataChanged(modelIndex, modelIndex);
+}
+
+void CContactsModel::setTypingStatus(const QString &phone, bool typingStatus)
+{
+    int index = indexOfContact(phone);
+
+    if (index > 0) {
+        m_contacts[index].typing = typingStatus;
+    }
+
+    QModelIndex modelIndex = createIndex(index, TypingStatus);
     emit dataChanged(modelIndex, modelIndex);
 }
 
