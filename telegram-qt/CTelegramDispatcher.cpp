@@ -45,6 +45,11 @@ void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
     m_appInformation = newAppInfo;
 }
 
+bool CTelegramDispatcher::isAuthenticated()
+{
+    return activeConnection() && activeConnection()->authState() == CTelegramConnection::AuthStateSignedIn;
+}
+
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
 {
     activeConnection()->addContacts(phoneNumbers, replace);

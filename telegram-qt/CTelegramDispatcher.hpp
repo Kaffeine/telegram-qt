@@ -35,6 +35,8 @@ public:
 
     void setAppInformation(const CAppInformation *newAppInfo);
 
+    bool isAuthenticated();
+
     QStringList contactList() const { return m_contactList; }
 
     void addContacts(const QStringList &phoneNumbers, bool replace = false);

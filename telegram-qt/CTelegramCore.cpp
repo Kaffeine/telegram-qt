@@ -54,6 +54,11 @@ QByteArray CTelegramCore::connectionSecretInfo() const
     return m_dispatcher->connectionSecretInfo();
 }
 
+bool CTelegramCore::isAuthenticated()
+{
+    return m_dispatcher->isAuthenticated();
+}
+
 bool CTelegramCore::initConnection(const QString &address, quint32 port)
 {
     if (!m_appInfo || !m_appInfo->isValid()) {

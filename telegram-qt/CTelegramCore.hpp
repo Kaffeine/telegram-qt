@@ -36,6 +36,8 @@ public:
 
     QByteArray connectionSecretInfo() const;
 
+    bool isAuthenticated();
+
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
 
