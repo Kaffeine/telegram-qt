@@ -17,16 +17,26 @@
 #include "CTelegramConnection.hpp"
 #include "CTelegramStream.hpp"
 
+#include <QTimer>
+
 #include <QDebug>
 
 const quint32 secretFormatVersion = 0;
+const int s_userTypingActionPeriod = 6000; // 6 sec
+
+#if QT_VERSION < 0x050000
+const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typing time deviation in Qt4 by this value.
+#endif
 
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_appInformation(0),
     m_activeDc(0),
-    m_wantedActiveDc(0)
+    m_wantedActiveDc(0),
+    m_userTypingTimer(new QTimer(this))
 {
+    m_userTypingTimer->setSingleShot(true);
+    connect(m_userTypingTimer, SIGNAL(timeout()), SLOT(whenUserTypingTimeout()));
 }
 
 void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
@@ -268,6 +278,34 @@ void CTelegramDispatcher::whenContactListChanged(const QStringList &added, const
     }
 }
 
+void CTelegramDispatcher::whenUserTypingTimeout()
+{
+    QList<quint32> users = m_userTypingMap.keys();
+
+#if QT_VERSION >= 0x050000
+    int minTime = s_userTypingActionPeriod;
+#else
+    int minTime = s_timerMaxInterval;
+#endif
+
+    foreach (quint32 userId, users) {
+        int timeRemains = m_userTypingMap.value(userId) - m_userTypingTimer->interval();
+        if (timeRemains < 0) {
+            m_userTypingMap.remove(userId);
+            emit contactTypingStatusChanged(userIdToPhoneNumber(userId), /* typingStatus */ false);
+        } else {
+            m_userTypingMap.insert(userId, timeRemains);
+            if (minTime > timeRemains) {
+                minTime = timeRemains;
+            }
+        }
+    }
+
+    if (!users.isEmpty()) {
+        m_userTypingTimer->start(minTime);
+    }
+}
+
 void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId)
 {
     CTelegramConnection *connection = m_connections.value(dc);
@@ -307,9 +345,25 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.messages;
 //        update.pts;
 //        break;
-//    case UpdateUserTyping:
-//        update.userId;
-//        break;
+    case UpdateUserTyping:{
+        TLUser *user = m_users.value(update.userId);
+        if (user) {
+            emit contactTypingStatusChanged(user->phone, /* typingStatus */ true);
+#if QT_VERSION >= 0x050000
+            m_userTypingMap.insert(user->id, m_userTypingTimer->remainingTime() + UserTypingActionPeriod);
+#else
+            m_userTypingMap.insert(user->id, s_userTypingActionPeriod); // Missed timer remaining time method can leads to typing time period deviation.
+#endif
+            if (!m_userTypingTimer->isActive()) {
+#if QT_VERSION >= 0x050000
+                m_userTypingTimer->start(s_userTypingActionPeriod);
+#else
+                m_userTypingTimer->start(s_timerMaxInterval);
+#endif
+            }
+        }
+        break;
+    }
 //    case UpdateChatUserTyping:
 //        update.chatId;
 //        update.userId;

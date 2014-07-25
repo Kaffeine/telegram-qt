@@ -67,6 +67,7 @@ signals:
 
     void messageReceived(const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
+    void contactTypingStatusChanged(const QString &phone, bool typingStatus);
 
 protected:
     CTelegramDispatcher *m_dispatcher;

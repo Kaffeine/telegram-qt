@@ -22,6 +22,8 @@
 #include "TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
+class QTimer;
+
 class CAppInformation;
 class CTelegramConnection;
 
@@ -65,6 +67,7 @@ signals:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
     void messageReceived(const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
+    void contactTypingStatusChanged(const QString &phone, bool typingStatus);
 
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
@@ -81,6 +84,7 @@ protected slots:
 
     void whenContactListReceived(const QStringList &contactList);
     void whenContactListChanged(const QStringList &added, const QStringList &removed);
+    void whenUserTypingTimeout();
 
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
@@ -121,6 +125,9 @@ private:
     QStringList m_contactList;
 
     QList<quint32> m_requestedFilesMessageIds;
+
+    QTimer *m_userTypingTimer;
+    QMap<quint32, int> m_userTypingMap; // user id, typing time
 
 };
 

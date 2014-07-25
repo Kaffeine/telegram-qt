@@ -32,6 +32,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString)));
     connect(m_dispatcher, SIGNAL(messageReceived(QString,QString)), SIGNAL(messageReceived(QString,QString)));
     connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
+    connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,bool)), SIGNAL(contactTypingStatusChanged(QString,bool)));
 }
 
 CTelegramCore::~CTelegramCore()

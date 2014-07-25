@@ -734,6 +734,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case MessagesSendMessage:
             processingResult = processMessagesSendMessage(stream, id);
             break;
+        case MessagesSetTyping:
+            processingResult = processMessagesSetTyping(stream, id);
+            break;
         default:
             qDebug() << "Unknown outgoing RPC type:" << QString::number(request, 16);
             break;
@@ -1025,6 +1028,14 @@ TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream,
     stream >> result;
 
     return result.tlType;
+}
+
+TLValue CTelegramConnection::processMessagesSetTyping(CTelegramStream &stream, quint64 id)
+{
+    TLValue result;
+    stream >> result;
+
+    return result;
 }
 
 bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)

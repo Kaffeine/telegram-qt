@@ -153,6 +153,7 @@ protected:
     TLValue processAuthSign(CTelegramStream &stream, quint64 id);
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 
