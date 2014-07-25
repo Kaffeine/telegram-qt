@@ -227,6 +227,11 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
     ensureTypingUpdateTimer(s_localTypingActionPeriod);
 }
 
+void CTelegramDispatcher::setOnlineStatus(bool onlineStatus)
+{
+    activeConnection()->accountUpdateStatus(!onlineStatus); // updateStatus accepts bool "offline"
+}
+
 TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QString &phone) const
 {
     const TLUser *user = phoneNumberToUser(phone);

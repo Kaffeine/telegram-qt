@@ -78,6 +78,8 @@ public:
     void sendMessage(const TLInputPeer &peer, const QString &message);
     void setTyping(const TLInputPeer &peer, bool typingStatus);
 
+    void accountUpdateStatus(bool offline);
+
     AuthState authState() { return m_authState; }
 
     void requestPqAuthorization();
@@ -154,6 +156,7 @@ protected:
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
+    TLValue processAccountUpdateStatus(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 

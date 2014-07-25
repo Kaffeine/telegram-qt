@@ -271,6 +271,17 @@ void CTelegramConnection::setTyping(const TLInputPeer &peer, bool typingStatus)
     sendEncryptedPackage(output);
 }
 
+void CTelegramConnection::accountUpdateStatus(bool offline)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AccountUpdateStatus;
+    outputStream << offline;
+
+    sendEncryptedPackage(output);
+}
+
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
     // Payload is passed as const, but we open device in read-only mode, so
@@ -737,6 +748,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case MessagesSetTyping:
             processingResult = processMessagesSetTyping(stream, id);
             break;
+        case AccountUpdateStatus:
+            processingResult = processAccountUpdateStatus(stream, id);
+            break;
         default:
             qDebug() << "Unknown outgoing RPC type:" << QString::number(request, 16);
             break;
@@ -1031,6 +1045,14 @@ TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream,
 }
 
 TLValue CTelegramConnection::processMessagesSetTyping(CTelegramStream &stream, quint64 id)
+{
+    TLValue result;
+    stream >> result;
+
+    return result;
+}
+
+TLValue CTelegramConnection::processAccountUpdateStatus(CTelegramStream &stream, quint64 id)
 {
     TLValue result;
     stream >> result;

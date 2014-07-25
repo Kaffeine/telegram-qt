@@ -56,6 +56,9 @@ public:
     void sendMessage(const QString &phone, const QString &message);
     void setTyping(const QString &phone, bool typingStatus);
 
+    // Set visible (not actual) online status.
+    void setOnlineStatus(bool onlineStatus);
+
 signals:
     void connected();
     void phoneCodeRequired();

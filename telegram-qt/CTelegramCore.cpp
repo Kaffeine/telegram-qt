@@ -127,3 +127,8 @@ void CTelegramCore::setTyping(const QString &phone, bool typingStatus)
 {
     m_dispatcher->setTyping(phone, typingStatus);
 }
+
+void CTelegramCore::setOnlineStatus(bool onlineStatus)
+{
+    m_dispatcher->setOnlineStatus(onlineStatus);
+}
