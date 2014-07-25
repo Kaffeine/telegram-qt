@@ -4,6 +4,7 @@
 #include <QAbstractTableModel>
 #include <QList>
 #include <QStringList>
+#include <QPixmap>
 
 #include "TelegramNamespace.hpp"
 
@@ -17,6 +18,7 @@ struct SContact {
     QString phone;
     TelegramNamespace::ContactStatus status;
     bool typing;
+    QPixmap avatar;
 };
 
 class CContactsModel : public QAbstractTableModel
@@ -27,6 +29,7 @@ public:
         Phone,
         Status,
         TypingStatus,
+        Avatar,
         ColumnsCount
     };
 
@@ -42,6 +45,7 @@ public slots:
     void setContactList(const QStringList &list);
     void setContactStatus(const QString &phone, TelegramNamespace::ContactStatus status);
     void setTypingStatus(const QString &phone, bool typingStatus);
+    void setContactAvatar(const QString &phone, const QString &avatarFileName);
 
 private:
     int indexOfContact(const QString &phone) const;

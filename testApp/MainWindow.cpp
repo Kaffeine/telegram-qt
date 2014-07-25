@@ -108,6 +108,10 @@ void MainWindow::whenContactListChanged()
         m_core->requestContactAvatar(contact);
         m_contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
     }
+
+    for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
+        ui->contactListTable->setRowHeight(i, 64);
+    }
 }
 
 void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType)
@@ -121,6 +125,8 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
     avatarFile.open(QIODevice::WriteOnly);
     avatarFile.write(data);
     avatarFile.close();
+
+    m_contactsModel->setContactAvatar(contact, avatarFile.fileName());
 }
 
 void MainWindow::whenMessageReceived(const QString &phone, const QString &message)

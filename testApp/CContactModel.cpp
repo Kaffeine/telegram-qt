@@ -1,5 +1,6 @@
 #include "CContactModel.hpp"
 
+
 CContactsModel::CContactsModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
@@ -22,6 +23,8 @@ QVariant CContactsModel::headerData(int section, Qt::Orientation orientation, in
         return tr("Status");
     case TypingStatus:
         return tr("Typing status");
+    case Avatar:
+        return tr("Avatar");
     default:
         break;
     }
@@ -31,12 +34,20 @@ QVariant CContactsModel::headerData(int section, Qt::Orientation orientation, in
 
 QVariant CContactsModel::data(const QModelIndex &index, int role) const
 {
-    if ((role != Qt::DisplayRole) && (role != Qt::EditRole)) {
+    int section = index.column();
+    uint contactIndex = index.row();
+
+    if ((role == Qt::DecorationRole) && (section == Avatar)) {
+        if (!m_contacts.at(contactIndex).avatar.isNull()) {
+            return m_contacts.at(contactIndex).avatar;
+        }
+
         return QVariant();
     }
 
-    int section = index.column();
-    uint contactIndex = index.row();
+    if ((role != Qt::DisplayRole) && (role != Qt::EditRole)) {
+        return QVariant();
+    }
 
     if (contactIndex > rowCount()) {
         return QVariant();
@@ -72,9 +83,11 @@ void CContactsModel::setContactStatus(const QString &phone, TelegramNamespace::C
 {
     int index = indexOfContact(phone);
 
-    if (index > 0) {
-        m_contacts[index].status = status;
+    if (index < 0) {
+        return;
     }
+
+    m_contacts[index].status = status;
 
     QModelIndex modelIndex = createIndex(index, Status);
     emit dataChanged(modelIndex, modelIndex);
@@ -84,12 +97,29 @@ void CContactsModel::setTypingStatus(const QString &phone, bool typingStatus)
 {
     int index = indexOfContact(phone);
 
-    if (index > 0) {
-        m_contacts[index].typing = typingStatus;
+    if (index < 0) {
+        return;
     }
+
+    m_contacts[index].typing = typingStatus;
 
     QModelIndex modelIndex = createIndex(index, TypingStatus);
     emit dataChanged(modelIndex, modelIndex);
+}
+
+void CContactsModel::setContactAvatar(const QString &phone, const QString &avatarFileName)
+{
+    int index = indexOfContact(phone);
+
+    if (index < 0) {
+        return;
+    }
+
+    m_contacts[index].avatar = QPixmap(avatarFileName).scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    QModelIndex modelIndex = createIndex(index, Avatar);
+    emit dataChanged(modelIndex, modelIndex);
+
 }
 
 int CContactsModel::indexOfContact(const QString &phone) const
