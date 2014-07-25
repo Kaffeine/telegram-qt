@@ -224,3 +224,13 @@ void MainWindow::on_messagingContactPhone_textChanged(const QString &arg1)
 {
     ui->messagingContactTypingStatus->setText(m_contactsModel->data(arg1, CContactsModel::TypingStatus).toString());
 }
+
+void MainWindow::on_setStatusOnline_clicked()
+{
+    m_core->setOnlineStatus(/* online */ true);
+}
+
+void MainWindow::on_setStatusOffline_clicked()
+{
+    m_core->setOnlineStatus(/* online */ false);
+}

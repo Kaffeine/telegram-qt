@@ -46,6 +46,10 @@ private slots:
 
     void on_messagingContactPhone_textChanged(const QString &arg1);
 
+    void on_setStatusOnline_clicked();
+
+    void on_setStatusOffline_clicked();
+
 private:
     void setRegistered(bool newRegistered);
 
