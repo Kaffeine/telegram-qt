@@ -62,7 +62,7 @@
       <item row="0" column="1" rowspan="2">
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
@@ -198,13 +198,9 @@
          <attribute name="title">
           <string>Messaging</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,1,0">
-          <item row="0" column="0" colspan="5">
-           <widget class="QPlainTextEdit" name="messagingLogs">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
+         <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,1,0,0,0">
+          <item row="1" column="5">
+           <widget class="QLineEdit" name="messagingMessage"/>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_7">
@@ -213,23 +209,41 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="messagingContactPhone"/>
+          <item row="1" column="3">
+           <widget class="QLabel" name="messagingContactTypingStatus">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
           </item>
-          <item row="1" column="2">
+          <item row="1" column="6">
+           <widget class="QPushButton" name="messagingSendButton">
+            <property name="text">
+             <string>Send</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
            <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Message:</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="3">
-           <widget class="QLineEdit" name="messagingMessage"/>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="messagingContactPhone"/>
           </item>
-          <item row="1" column="4">
-           <widget class="QPushButton" name="messagingSendButton">
+          <item row="0" column="0" colspan="7">
+           <widget class="QPlainTextEdit" name="messagingLogs">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>Send</string>
+             <string>Typing:</string>
             </property>
            </widget>
           </item>

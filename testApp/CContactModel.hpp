@@ -40,6 +40,9 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role) const;
+    QVariant data(const QString &phone, int column) const;
+
+    int indexOfContact(const QString &phone) const;
 
 public slots:
     void setContactList(const QStringList &list);
@@ -48,7 +51,6 @@ public slots:
     void setContactAvatar(const QString &phone, const QString &avatarFileName);
 
 private:
-    int indexOfContact(const QString &phone) const;
     QString statusToStr(TelegramNamespace::ContactStatus status) const;
 
     QList<SContact> m_contacts;

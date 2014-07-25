@@ -59,12 +59,34 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
     case Status:
         return statusToStr(m_contacts.at(contactIndex).status);
     case TypingStatus:
-        return m_contacts.at(contactIndex).typing;
+        return m_contacts.at(contactIndex).typing ? tr("true") : tr("false");
     default:
         break;
     }
 
     return QVariant();
+}
+
+QVariant CContactsModel::data(const QString &phone, int column) const
+{
+    int contactIndex = indexOfContact(phone);
+
+    if (contactIndex < 0) {
+        return QVariant();
+    }
+
+    switch (column) {
+    case Phone:
+        return m_contacts.at(contactIndex).phone;
+    case Status:
+        return statusToStr(m_contacts.at(contactIndex).status);
+    case TypingStatus:
+        return m_contacts.at(contactIndex).typing;
+    case Avatar:
+        return m_contacts.at(contactIndex).avatar;
+    default:
+        return QVariant();
+    }
 }
 
 void CContactsModel::setContactList(const QStringList &list)

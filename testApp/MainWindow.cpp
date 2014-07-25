@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(messageReceived(QString,QString)), SLOT(whenMessageReceived(QString,QString)));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), m_contactsModel, SLOT(setTypingStatus(QString,bool)));
+    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), this, SLOT(whenContactTypingStatusChanged()));
 }
 
 MainWindow::~MainWindow()
@@ -134,6 +135,11 @@ void MainWindow::whenMessageReceived(const QString &phone, const QString &messag
     ui->messagingLogs->appendPlainText(QString(QLatin1String("From %1: %2\n")).arg(phone).arg(message));
 }
 
+void MainWindow::whenContactTypingStatusChanged()
+{
+    ui->messagingContactTypingStatus->setText(m_contactsModel->data(ui->messagingContactPhone->text(), CContactsModel::TypingStatus).toString());
+}
+
 void MainWindow::on_connectButton_clicked()
 {
     QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
@@ -212,4 +218,9 @@ void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
     Q_UNUSED(arg1)
 
     m_core->setTyping(ui->messagingContactPhone->text(), true);
+}
+
+void MainWindow::on_messagingContactPhone_textChanged(const QString &arg1)
+{
+    ui->messagingContactTypingStatus->setText(m_contactsModel->data(arg1, CContactsModel::TypingStatus).toString());
 }

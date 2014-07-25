@@ -27,6 +27,7 @@ private slots:
     void whenContactListChanged();
     void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
     void whenMessageReceived(const QString &phone, const QString &message);
+    void whenContactTypingStatusChanged();
 
     void on_connectButton_clicked();
     void on_authButton_clicked();
@@ -42,6 +43,8 @@ private slots:
     void on_messagingSendButton_clicked();
 
     void on_messagingMessage_textChanged(const QString &arg1);
+
+    void on_messagingContactPhone_textChanged(const QString &arg1);
 
 private:
     void setRegistered(bool newRegistered);
