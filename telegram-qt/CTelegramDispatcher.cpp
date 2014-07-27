@@ -382,7 +382,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         if (user) {
             emit contactTypingStatusChanged(user->phone, /* typingStatus */ true);
 #if QT_VERSION >= 0x050000
-            m_userTypingMap.insert(user->id, m_userTypingTimer->remainingTime() + UserTypingActionPeriod);
+            m_userTypingMap.insert(user->id, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
 #else
             m_userTypingMap.insert(user->id, s_userTypingActionPeriod); // Missed timer remaining time method can leads to typing time period deviation.
 #endif
@@ -713,7 +713,7 @@ void CTelegramDispatcher::ensureTypingUpdateTimer(int interval)
 {
     if (!m_typingUpdateTimer->isActive()) {
 #if QT_VERSION >= 0x050000
-        m_userTypingTimer->start(interval);
+        m_typingUpdateTimer->start(interval);
 #else
         Q_UNUSED(interval);
         m_typingUpdateTimer->start(s_timerMaxInterval);
