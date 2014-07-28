@@ -738,7 +738,11 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         qDebug() << Q_FUNC_INFO << "UpdatesCombined processing is not implemented yet.";
         break;
     case Updates:
-        qDebug() << Q_FUNC_INFO << "Updates processing is not implemented yet.";
+        // Initial implementation
+        for (int i = 0; i < updates.updates.count(); ++i) {
+            processUpdate(updates.updates.at(i));
+        }
+        break;
     default:
         break;
     }
