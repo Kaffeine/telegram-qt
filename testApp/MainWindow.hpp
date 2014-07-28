@@ -39,6 +39,7 @@ private slots:
     void on_getSecretInfo_clicked();
 
     void on_addContact_clicked();
+    void on_deleteContact_clicked();
 
     void on_messagingSendButton_clicked();
 

@@ -200,8 +200,14 @@ void MainWindow::setRegistered(bool newRegistered)
 
 void MainWindow::on_addContact_clicked()
 {
-    m_core->addContact(ui->newContact->text());
-    ui->newContact->clear();
+    m_core->addContact(ui->currentContact->text());
+    ui->currentContact->clear();
+}
+
+void MainWindow::on_deleteContact_clicked()
+{
+    m_core->deleteContact(ui->currentContact->text());
+    ui->currentContact->clear();
 }
 
 void MainWindow::on_messagingSendButton_clicked()
