@@ -34,6 +34,7 @@ template CTelegramStream &CTelegramStream::operator>>(QVector<TLUser> &v);
 template CTelegramStream &CTelegramStream::operator>>(QVector<TLContact> &v);
 
 template CTelegramStream &CTelegramStream::operator<<(const QVector<TLInputContact> &v);
+template CTelegramStream &CTelegramStream::operator<<(const QVector<TLInputUser> &v);
 
 CTelegramStream::CTelegramStream(QByteArray *data, bool write) :
     CRawStream(data, write)
@@ -3264,6 +3265,29 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPeer &inputPeer)
         break;
     case InputPeerChat:
         *this << inputPeer.chatId;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputUser &inputUser)
+{
+    *this << inputUser.tlType;
+
+    switch (inputUser.tlType) {
+    case InputUserEmpty:
+        break;
+    case InputUserSelf:
+        break;
+    case InputUserContact:
+        *this << inputUser.userId;
+        break;
+    case InputUserForeign:
+        *this << inputUser.userId;
+        *this << inputUser.accessHash;
         break;
     default:
         break;
