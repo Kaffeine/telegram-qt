@@ -47,6 +47,7 @@ public:
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
     void addContact(const QString &phoneNumber);
+    void addContacts(const QStringList &phoneNumbers);
 
     void requestContactList();
     void requestContactAvatar(const QString &contact);
@@ -80,5 +81,10 @@ protected:
     const CAppInformation *m_appInfo;
 
 };
+
+inline void CTelegramCore::addContact(const QString &phoneNumber)
+{
+    addContacts(QStringList() << phoneNumber);
+}
 
 #endif // CTELECORE_HPP

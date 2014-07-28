@@ -98,9 +98,9 @@ void CTelegramCore::signUp(const QString &phoneNumber, const QString &authCode, 
     m_dispatcher->signUp(phoneNumber, authCode, firstName, lastName);
 }
 
-void CTelegramCore::addContact(const QString &phoneNumber)
+void CTelegramCore::addContacts(const QStringList &phoneNumbers)
 {
-    m_dispatcher->addContacts(QStringList() << phoneNumber);
+    m_dispatcher->addContacts(phoneNumbers);
 }
 
 void CTelegramCore::requestContactList()
