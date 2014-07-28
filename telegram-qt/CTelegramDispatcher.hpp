@@ -40,6 +40,7 @@ public:
     QStringList contactList() const { return m_contactList; }
 
     void addContacts(const QStringList &phoneNumbers, bool replace = false);
+    void deleteContacts(const QStringList &phoneNumbers);
 
     QByteArray connectionSecretInfo() const;
 
@@ -96,6 +97,7 @@ protected:
 
 private:
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
+    TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
     QString userIdToPhoneNumber(const quint32 id) const;
     quint32 phoneNumberToUserId(const QString &phoneNumber) const;
     TLUser *phoneNumberToUser(const QString &phoneNumber) const;

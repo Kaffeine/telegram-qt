@@ -221,6 +221,19 @@ void CTelegramConnection::getFile(const TLInputFileLocation &location, quint32 f
     m_requestedFilesIds.insert(messageId, fileId);
 }
 
+void CTelegramConnection::contactsDeleteContacts(const QVector<TLInputUser> users)
+{
+    qDebug() << Q_FUNC_INFO << users.count();
+
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsDeleteContacts;
+    outputStream << users;
+
+    sendEncryptedPackage(output);
+}
+
 void CTelegramConnection::addContacts(const QStringList &phoneNumbers, bool replace)
 {
     qDebug() << "addContacts" << phoneNumbers;
@@ -726,6 +739,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case ContactsImportContacts:
             processingResult = processContactsImportContacts(stream, id);
             break;
+        case ContactsDeleteContacts:
+            processingResult = processContactsDeleteContacts(stream, id);
+            break;
         case UploadGetFile:
             processingResult = processUploadGetFile(stream, id);
             break;
@@ -968,6 +984,14 @@ TLValue CTelegramConnection::processContactsImportContacts(CTelegramStream &stre
     }
 
     return result.tlType;
+}
+
+TLValue CTelegramConnection::processContactsDeleteContacts(CTelegramStream &stream, quint64 id)
+{
+    TLValue result;
+    stream >> result;
+
+    return result;
 }
 
 TLValue CTelegramConnection::processAuthCheckPhone(CTelegramStream &stream, quint64 id)

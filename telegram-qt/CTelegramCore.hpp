@@ -49,6 +49,9 @@ public:
     void addContact(const QString &phoneNumber);
     void addContacts(const QStringList &phoneNumbers);
 
+    void deleteContact(const QString &phoneNumber);
+    void deleteContacts(const QStringList &phoneNumbers);
+
     void requestContactList();
     void requestContactAvatar(const QString &contact);
 
@@ -85,6 +88,11 @@ protected:
 inline void CTelegramCore::addContact(const QString &phoneNumber)
 {
     addContacts(QStringList() << phoneNumber);
+}
+
+inline void CTelegramCore::deleteContact(const QString &phoneNumber)
+{
+    deleteContacts(QStringList() << phoneNumber);
 }
 
 #endif // CTELECORE_HPP

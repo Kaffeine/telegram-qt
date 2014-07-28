@@ -73,6 +73,7 @@ public:
     void requestContacts();
     void getFile(const TLInputFileLocation &location, quint32 fileId);
 
+    void contactsDeleteContacts(const QVector<TLInputUser> users);
     void addContacts(const QStringList &phoneNumbers, bool replace);
 
     void sendMessage(const TLInputPeer &peer, const QString &message);
@@ -150,6 +151,7 @@ protected:
     TLValue processHelpGetConfig(CTelegramStream &stream, quint64 id);
     TLValue processContactsGetContacts(CTelegramStream &stream, quint64 id);
     TLValue processContactsImportContacts(CTelegramStream &stream, quint64 id);
+    TLValue processContactsDeleteContacts(CTelegramStream &stream, quint64 id);
     TLValue processAuthCheckPhone(CTelegramStream &stream, quint64 id);
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
     TLValue processAuthSign(CTelegramStream &stream, quint64 id);

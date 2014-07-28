@@ -55,6 +55,23 @@ void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool repl
     activeConnection()->addContacts(phoneNumbers, replace);
 }
 
+void CTelegramDispatcher::deleteContacts(const QStringList &phoneNumbers)
+{
+    QVector<TLInputUser> users;
+    users.reserve(phoneNumbers.count());
+
+    foreach (const QString &phoneNumber, phoneNumbers) {
+        TLInputUser inputUser = phoneNumberToInputUser(phoneNumber);
+        if (inputUser.tlType != InputUserEmpty) {
+            users.append(inputUser);
+        }
+    }
+
+    if (!users.isEmpty()) {
+        activeConnection()->contactsDeleteContacts(users);
+    }
+}
+
 QByteArray CTelegramDispatcher::connectionSecretInfo() const
 {
     if (!activeConnection()) {
@@ -508,6 +525,35 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
     }
 
     return inputPeer;
+}
+
+TLInputUser CTelegramDispatcher::phoneNumberToInputUser(const QString &phoneNumber) const
+{
+    TLInputUser inputUser;
+
+    if (phoneNumber == m_selfPhone) {
+        inputUser.tlType = InputUserSelf;
+        return inputUser;
+    }
+
+    const TLUser *user = phoneNumberToUser(phoneNumber);
+
+    if (user) {
+        if (user->tlType == UserContact) {
+            inputUser.tlType = InputUserContact;
+            inputUser.userId = user->id;
+        } else if (user->tlType == UserForeign) {
+            inputUser.tlType = InputUserForeign;
+            inputUser.userId = user->id;
+            inputUser.accessHash = user->accessHash;
+        } else {
+            qDebug() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
+        }
+    } else {
+        qDebug() << Q_FUNC_INFO << "Unknown user.";
+    }
+
+    return inputUser;
 }
 
 QString CTelegramDispatcher::userIdToPhoneNumber(const quint32 id) const

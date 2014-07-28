@@ -103,6 +103,11 @@ void CTelegramCore::addContacts(const QStringList &phoneNumbers)
     m_dispatcher->addContacts(phoneNumbers);
 }
 
+void CTelegramCore::deleteContacts(const QStringList &phoneNumbers)
+{
+    m_dispatcher->deleteContacts(phoneNumbers);
+}
+
 void CTelegramCore::requestContactList()
 {
     m_dispatcher->requestContactList();
