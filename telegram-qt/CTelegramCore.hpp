@@ -59,6 +59,9 @@ public:
 
     TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
 
+    QString contactFirstName(const QString &phone) const;
+    QString contactLastName(const QString &phone) const;
+
     void sendMessage(const QString &phone, const QString &message);
     void setTyping(const QString &phone, bool typingStatus);
 

@@ -128,6 +128,16 @@ TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &pho
     return m_dispatcher->contactStatus(phone);
 }
 
+QString CTelegramCore::contactFirstName(const QString &phone) const
+{
+    return m_dispatcher->contactFirstName(phone);
+}
+
+QString CTelegramCore::contactLastName(const QString &phone) const
+{
+    return m_dispatcher->contactLastName(phone);
+}
+
 void CTelegramCore::sendMessage(const QString &phone, const QString &message)
 {
     return m_dispatcher->sendMessageToContact(phone, message);

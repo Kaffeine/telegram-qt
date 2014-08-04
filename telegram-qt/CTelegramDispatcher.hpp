@@ -62,6 +62,9 @@ public:
 
     TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
 
+    QString contactFirstName(const QString &phone) const;
+    QString contactLastName(const QString &phone) const;
+
 signals:
     void dcConfigurationObtained();
     void phoneCodeRequired();

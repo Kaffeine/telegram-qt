@@ -265,6 +265,28 @@ TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QStrin
     return TelegramNamespace::ContactStatusUnknown;
 }
 
+QString CTelegramDispatcher::contactFirstName(const QString &phone) const
+{
+    const TLUser *user = phoneNumberToUser(phone);
+
+    if (user) {
+        return user->firstName;
+    } else {
+        return QString();
+    }
+}
+
+QString CTelegramDispatcher::contactLastName(const QString &phone) const
+{
+    const TLUser *user = phoneNumberToUser(phone);
+
+    if (user) {
+        return user->lastName;
+    } else {
+        return QString();
+    }
+}
+
 void CTelegramDispatcher::whenSelfPhoneReceived(const QString &phone)
 {
     m_selfPhone = phone;
