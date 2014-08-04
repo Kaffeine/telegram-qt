@@ -1,6 +1,5 @@
 #include "CContactModel.hpp"
 
-
 CContactsModel::CContactsModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
@@ -56,6 +55,8 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
     switch (section) {
     case Phone:
         return m_contacts.at(contactIndex).phone;
+    case FullName:
+        return m_contacts.at(contactIndex).fullName;
     case Status:
         return statusToStr(m_contacts.at(contactIndex).status);
     case TypingStatus:
@@ -78,6 +79,8 @@ QVariant CContactsModel::data(const QString &phone, int column) const
     switch (column) {
     case Phone:
         return m_contacts.at(contactIndex).phone;
+    case FullName:
+        return m_contacts.at(contactIndex).fullName;
     case Status:
         return statusToStr(m_contacts.at(contactIndex).status);
     case TypingStatus:
@@ -142,6 +145,20 @@ void CContactsModel::setContactAvatar(const QString &phone, const QString &avata
     QModelIndex modelIndex = createIndex(index, Avatar);
     emit dataChanged(modelIndex, modelIndex);
 
+}
+
+void CContactsModel::setContactFullName(const QString &phone, const QString &fullName)
+{
+    int index = indexOfContact(phone);
+
+    if (index < 0) {
+        return;
+    }
+
+    m_contacts[index].fullName = fullName;
+
+    QModelIndex modelIndex = createIndex(index, FullName);
+    emit dataChanged(modelIndex, modelIndex);
 }
 
 int CContactsModel::indexOfContact(const QString &phone) const

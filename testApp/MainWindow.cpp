@@ -108,6 +108,7 @@ void MainWindow::whenContactListChanged()
     foreach (const QString &contact, m_core->contactList()) {
         m_core->requestContactAvatar(contact);
         m_contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
+        m_contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
     }
 
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {

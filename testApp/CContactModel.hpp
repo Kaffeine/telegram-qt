@@ -16,6 +16,7 @@ struct SContact {
     { }
 
     QString phone;
+    QString fullName;
     TelegramNamespace::ContactStatus status;
     bool typing;
     QPixmap avatar;
@@ -27,6 +28,7 @@ class CContactsModel : public QAbstractTableModel
 public:
     enum Columns {
         Phone,
+        FullName,
         Status,
         TypingStatus,
         Avatar,
@@ -49,6 +51,7 @@ public slots:
     void setContactStatus(const QString &phone, TelegramNamespace::ContactStatus status);
     void setTypingStatus(const QString &phone, bool typingStatus);
     void setContactAvatar(const QString &phone, const QString &avatarFileName);
+    void setContactFullName(const QString &phone, const QString &fullName);
 
 private:
     QString statusToStr(TelegramNamespace::ContactStatus status) const;
