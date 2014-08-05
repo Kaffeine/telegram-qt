@@ -10,16 +10,13 @@ set(TELEGRAM_QT_VERSION "${TELEGRAM_QT_VERSION_MAJOR}.${TELEGRAM_QT_VERSION_MINO
 
 # Required dependencies
 # Find qt4 version >= 4.6 or qt5 >= 5.0.0
-set(QT4_MIN_VERSION "4.6.0")
-set(QT4_MAX_VERSION "5.0.0")
-set(QT5_MIN_VERSION "5.0.0")
-set(QT5_MAX_VERSION "6.0.0")
-find_package(Qt REQUIRED)
-
-IF(QT_VERSION_MAJOR MATCHES 5)
-    # It is QtCore for Qt4 but Qt5Core for Qt5 in pkg-config
-    SET(QT_VERSION_PC 5)
-ENDIF(QT_VERSION_MAJOR MATCHES 5)
+if (USE_QT4)
+    set(QT_VERSION_MAJOR "4")
+    find_package(Qt4 4.6.0 REQUIRED QtCore QtNetwork)
+else()
+    set(QT_VERSION_MAJOR "5")
+    find_package(Qt5 REQUIRED COMPONENTS Network)
+endif()
 
 include(GNUInstallDirs)
                     

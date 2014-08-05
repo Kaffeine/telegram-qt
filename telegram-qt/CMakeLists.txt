@@ -33,11 +33,14 @@ set(telegram_qt_public_HEADERS
 
 include_directories(${CMAKE_SOURCE_DIR}
                     ${CMAKE_BINARY_DIR}
-                    ${QT_INCLUDES})
+                    ${QT_INCLUDES} ${QT5_INCLUDES})
                     
 add_definitions(-DTELEGRAMQT_LIBRARY)
 
 add_library(telegram-qt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES})
+if(NOT QT_USEQT4)
+    target_link_libraries(telegram-qt${QT_VERSION_MAJOR} PUBLIC Qt5::Network)
+endif()
 
 set_target_properties(telegram-qt${QT_VERSION_MAJOR} PROPERTIES AUTOMOC TRUE)
 
