@@ -91,33 +91,33 @@ void CTcpTransport::whenConnected()
 
 void CTcpTransport::whenReadyRead()
 {
-    if (m_socket->bytesAvailable() < 1)
-        return;
+    while (m_socket->bytesAvailable() > 0) {
+        if (m_expectedLength == 0) {
+            if (m_socket->bytesAvailable() < 4) {
+                // Four bytes is minimum readable size for new package
+                return;
+            }
 
-    if (m_expectedLength == 0) {
-        if (m_socket->bytesAvailable() < 4) {
-            // Four bytes is minimum readable size for new package
+            char length;
+            m_socket->getChar(&length);
+
+            if (length < char(0x7f)) {
+                m_expectedLength = length * 4;
+            } else if (length == char(0x7f)) {
+                m_socket->read((char *) &m_expectedLength, 3);
+                m_expectedLength *= 4;
+            } else {
+                qDebug() << "Incorrect TCP package!";
+            }
+        }
+
+        if (m_socket->bytesAvailable() < m_expectedLength)
             return;
-        }
 
-        char length;
-        m_socket->getChar(&length);
+        m_receivedPackage = m_socket->read(m_expectedLength);
 
-        if (length < char(0x7f)) {
-            m_expectedLength = length * 4;
-        } else if (length == char(0x7f)) {
-            m_socket->read((char *) &m_expectedLength, 3);
-            m_expectedLength *= 4;
-        } else {
-            qDebug() << "Incorrect TCP package!";
-        }
+        m_expectedLength = 0;
+
+        emit readyRead();
     }
-
-    if (m_socket->bytesAvailable() < m_expectedLength)
-        return;
-
-    m_receivedPackage = m_socket->read(m_expectedLength);
-
-    m_expectedLength = 0;
-    emit readyRead();
 }
