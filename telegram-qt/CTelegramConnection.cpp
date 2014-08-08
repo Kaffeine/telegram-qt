@@ -670,6 +670,9 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
     case BadServerSalt:
         processIgnoredMessageNotification(stream);
         break;
+    case GzipPacked:
+        processGzipPackedRpcQuery(stream);
+        break;
     default:
         qDebug() << "VAL:" << QString::number(val, 16);
         break;
@@ -777,7 +780,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
             processRpcError(stream, id, request);
             break;
         case GzipPacked:
-            processGzipPacked(stream, id);
+            processGzipPackedRpcResult(stream, id);
             break;
         default:
             // Any other results considered as success
@@ -790,7 +793,19 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
     }
 }
 
-void CTelegramConnection::processGzipPacked(CTelegramStream &stream, quint64 id)
+void CTelegramConnection::processGzipPackedRpcQuery(CTelegramStream &stream)
+{
+    QByteArray packedData;
+    stream >> packedData;
+
+    const QByteArray data = Utils::unpackGZip(packedData);
+
+    if (!data.isEmpty()) {
+        processRpcQuery(data);
+    }
+}
+
+void CTelegramConnection::processGzipPackedRpcResult(CTelegramStream &stream, quint64 id)
 {
     QByteArray packedData;
     stream >> packedData;
