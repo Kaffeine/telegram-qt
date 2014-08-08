@@ -26,6 +26,7 @@ class CTcpTransport : public CTelegramTransport
     Q_OBJECT
 public:
     explicit CTcpTransport(QObject *parent = 0);
+    ~CTcpTransport();
 
     void connectToHost(const QString &ipAddress, quint32 port);
 

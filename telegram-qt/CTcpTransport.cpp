@@ -26,6 +26,14 @@ CTcpTransport::CTcpTransport(QObject *parent) :
     connect(m_socket, SIGNAL(readyRead()), SLOT(whenReadyRead()));
 }
 
+CTcpTransport::~CTcpTransport()
+{
+    if (m_socket->isWritable()) {
+        m_socket->waitForBytesWritten(100);
+        m_socket->disconnectFromHost();
+    }
+}
+
 void CTcpTransport::connectToHost(const QString &ipAddress, quint32 port)
 {
     m_socket->connectToHost(ipAddress, port);
