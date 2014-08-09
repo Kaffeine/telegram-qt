@@ -47,7 +47,7 @@ void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
 
 bool CTelegramDispatcher::isAuthenticated()
 {
-    return activeConnection() && activeConnection()->authState() == CTelegramConnection::AuthStateSignedIn;
+    return activeConnection() && (activeConnection()->authState() == CTelegramConnection::AuthStateSignedIn) && !m_dcConfiguration.isEmpty();
 }
 
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
@@ -648,7 +648,9 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         connect(connection, SIGNAL(contactListChanged(QStringList,QStringList)), SLOT(whenContactListChanged(QStringList,QStringList)));
         connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
 
-        emit authenticated();
+        if (isAuthenticated()) {
+            emit authenticated();
+        }
     }
 }
 
@@ -662,12 +664,13 @@ void CTelegramDispatcher::whenConnectionConfigurationUpdated(int dc)
 
     m_dcConfiguration = connection->dcConfiguration();
 
-    qDebug() << "Core: DC Configuration:";
-    for (int i = 0; i < m_dcConfiguration.count(); ++i) {
-        qDebug() << m_dcConfiguration.at(i).id << ": " << m_dcConfiguration.at(i).ipAddress << ":"<< m_dcConfiguration.at(i).port;
-    }
+    qDebug() << "Core: Got DC Configuration.";
 
     emit dcConfigurationObtained();
+
+    if (isAuthenticated()) {
+        emit authenticated();
+    }
 }
 
 void CTelegramDispatcher::whenConnectionDcIdUpdated(int connectionId, int newDcId)
