@@ -520,6 +520,20 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     }
 }
 
+void CTelegramDispatcher::processMessageReceived(const QString &phone, const QString &message)
+{
+    emit messageReceived(phone, message);
+
+    const quint32 userId = phoneNumberToUserId(phone);
+
+    if (userId) {
+        if (m_userTypingMap.value(userId, 0) > 0) {
+            m_userTypingMap.remove(userId);
+            emit contactTypingStatusChanged(phone, /* typingStatus */ false);
+        }
+    }
+}
+
 TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumber) const
 {
     TLInputPeer inputPeer;
@@ -751,7 +765,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         qDebug() << Q_FUNC_INFO << "UpdatesTooLong processing is not implemented yet.";
         break;
     case UpdateShortMessage:
-        emit messageReceived(userIdToPhoneNumber(updates.fromId), updates.message);
+        processMessageReceived(userIdToPhoneNumber(updates.fromId), updates.message);
         break;
     case UpdateShortChatMessage:
         qDebug() << Q_FUNC_INFO << "UpdateShortChatMessage processing is not implemented yet.";
