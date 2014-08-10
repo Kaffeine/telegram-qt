@@ -41,15 +41,14 @@ private slots:
     void on_addContact_clicked();
     void on_deleteContact_clicked();
 
-    void on_messagingSendButton_clicked();
-
-    void on_messagingMessage_textChanged(const QString &arg1);
-
-    void on_messagingContactPhone_textChanged(const QString &arg1);
+    void on_contactListTable_doubleClicked(const QModelIndex &index);
 
     void on_setStatusOnline_clicked();
-
     void on_setStatusOffline_clicked();
+
+    void on_messagingSendButton_clicked();
+    void on_messagingMessage_textChanged(const QString &arg1);
+    void on_messagingContactPhone_textChanged(const QString &arg1);
 
 private:
     void setRegistered(bool newRegistered);

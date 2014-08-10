@@ -41,7 +41,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
-    QVariant data(const QModelIndex &index, int role) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QVariant data(const QString &phone, int column) const;
 
     int indexOfContact(const QString &phone) const;

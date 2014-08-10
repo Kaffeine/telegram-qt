@@ -241,3 +241,12 @@ void MainWindow::on_setStatusOffline_clicked()
 {
     m_core->setOnlineStatus(/* online */ false);
 }
+
+void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
+{
+    const QModelIndex phoneIndex = m_contactsModel->index(index.row(), CContactsModel::Phone);
+
+    ui->messagingContactPhone->setText(m_contactsModel->data(phoneIndex).toString());
+    ui->tabWidget->setCurrentWidget(ui->tabMessaging);
+    ui->messagingMessage->setFocus();
+}

@@ -64,7 +64,7 @@
         <property name="currentIndex">
          <number>0</number>
         </property>
-        <widget class="QWidget" name="tab">
+        <widget class="QWidget" name="tabMain">
          <attribute name="title">
           <string>Main</string>
          </attribute>
@@ -201,7 +201,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_3">
+        <widget class="QWidget" name="tabMessaging">
          <attribute name="title">
           <string>Messaging</string>
          </attribute>
@@ -256,7 +256,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="tab_2">
+        <widget class="QWidget" name="tabSecret">
          <attribute name="title">
           <string>Secret</string>
          </attribute>
