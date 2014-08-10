@@ -228,11 +228,15 @@ void CTelegramDispatcher::sendMessageToContact(const QString &phone, const QStri
     }
 
     activeConnection()->sendMessage(peer, message);
+
+    if (m_localTypingMap.contains(phone)) {
+        m_localTypingMap.remove(phone);
+    }
 }
 
 void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
 {
-    if (m_localTypingMap.contains(phone)) {
+    if (typingStatus == m_localTypingMap.contains(phone)) {
         return; // Avoid flood
     }
 
@@ -364,6 +368,7 @@ void CTelegramDispatcher::whenUserTypingTimeout()
         int timeRemains = m_localTypingMap.value(phone) - m_typingUpdateTimer->interval();
         if (timeRemains < 5) { // Let 5 ms be allowed correction
             m_localTypingMap.remove(phone);
+            setTyping(phone, false);
         } else {
             m_localTypingMap.insert(phone, timeRemains);
             if (minTime > timeRemains) {
