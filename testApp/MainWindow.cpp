@@ -224,7 +224,7 @@ void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
 {
     Q_UNUSED(arg1)
 
-    m_core->setTyping(ui->messagingContactPhone->text(), true);
+    m_core->setTyping(ui->messagingContactPhone->text(), !ui->messagingMessage->text().isEmpty());
 }
 
 void MainWindow::on_messagingContactPhone_textChanged(const QString &arg1)
