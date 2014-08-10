@@ -36,8 +36,13 @@ public:
 
     QByteArray connectionSecretInfo() const;
 
-    bool isAuthenticated();
+    Q_INVOKABLE bool isAuthenticated();
+    Q_INVOKABLE QStringList contactList() const;
+    Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
+    Q_INVOKABLE QString contactFirstName(const QString &phone) const;
+    Q_INVOKABLE QString contactLastName(const QString &phone) const;
 
+public Q_SLOTS:
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
 
@@ -55,20 +60,13 @@ public:
     void requestContactList();
     void requestContactAvatar(const QString &contact);
 
-    QStringList contactList() const;
-
-    TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
-
-    QString contactFirstName(const QString &phone) const;
-    QString contactLastName(const QString &phone) const;
-
     void sendMessage(const QString &phone, const QString &message);
     void setTyping(const QString &phone, bool typingStatus);
 
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
 
-signals:
+Q_SIGNALS:
     void connected();
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
@@ -81,7 +79,7 @@ signals:
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
 
-protected:
+private:
     CTelegramDispatcher *m_dispatcher;
 
     const CAppInformation *m_appInfo;
