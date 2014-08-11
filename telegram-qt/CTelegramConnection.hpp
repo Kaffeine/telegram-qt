@@ -77,7 +77,10 @@ public:
 
     void getFile(const TLInputFileLocation &location, quint32 fileId);
 
-    void contactsDeleteContacts(const QVector<TLInputUser> users);
+    void usersGetUsers(const QVector<TLInputUser> &users);
+    void usersGetFullUser(const TLInputUser &user);
+
+    void contactsDeleteContacts(const QVector<TLInputUser> &users);
     void addContacts(const QStringList &phoneNumbers, bool replace);
 
     void sendMessage(const TLInputPeer &peer, const QString &message);
@@ -134,6 +137,8 @@ signals:
     void contactListChanged(const QStringList &added, const QStringList &removed);
     void fileReceived(const TLUploadFile &file, quint32 fileId);
 
+    void fullUserReceived(const TLUserFull &userFull);
+
     void updatesReceived(const TLUpdates &update);
     void updatesStateReceived(const TLUpdatesState &updatesState);
     void updatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
@@ -165,6 +170,8 @@ protected:
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
     TLValue processAuthSign(CTelegramStream &stream, quint64 id);
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
+    TLValue processUsersGetUsers(CTelegramStream &stream, quint64 id);
+    TLValue processUsersGetFullUser(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
     TLValue processAccountUpdateStatus(CTelegramStream &stream, quint64 id);

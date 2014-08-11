@@ -244,7 +244,29 @@ void CTelegramConnection::getFile(const TLInputFileLocation &location, quint32 f
     m_requestedFilesIds.insert(messageId, fileId);
 }
 
-void CTelegramConnection::contactsDeleteContacts(const QVector<TLInputUser> users)
+void CTelegramConnection::usersGetUsers(const QVector<TLInputUser> &users)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << UsersGetUsers;
+    outputStream << users;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::usersGetFullUser(const TLInputUser &user)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << UsersGetFullUser;
+    outputStream << user;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::contactsDeleteContacts(const QVector<TLInputUser> &users)
 {
     qDebug() << Q_FUNC_INFO << users.count();
 
@@ -777,6 +799,12 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case UploadGetFile:
             processingResult = processUploadGetFile(stream, id);
             break;
+        case UsersGetUsers:
+            processingResult = processUsersGetUsers(stream, id);
+            break;
+        case UsersGetFullUser:
+            processingResult = processUsersGetFullUser(stream, id);
+            break;
         case AuthSignIn:
         case AuthSignUp:
             processingResult = processAuthSign(stream, id);
@@ -1136,6 +1164,35 @@ TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint
     }
 
     return file.tlType;
+}
+
+TLValue CTelegramConnection::processUsersGetUsers(CTelegramStream &stream, quint64 id)
+{
+    QVector<TLUser> result;
+
+    stream >> result;
+
+    emit usersReceived(result);
+
+    // Warning: Incorrect behavior! Possible TODO: Introduce TLVector type to store vector AND it's TLValue.
+    return Vector;
+}
+
+TLValue CTelegramConnection::processUsersGetFullUser(CTelegramStream &stream, quint64 id)
+{
+    TLUserFull result;
+
+    stream >> result;
+
+    switch (result.tlType) {
+    case UserFull:
+        emit fullUserReceived(result);
+        break;
+    default:
+        break;
+    }
+
+    return result.tlType;
 }
 
 TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream, quint64 id)
