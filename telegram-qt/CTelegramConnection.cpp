@@ -206,6 +206,29 @@ void CTelegramConnection::requestContacts()
     sendEncryptedPackage(output);
 }
 
+void CTelegramConnection::updatesGetState()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << UpdatesGetState;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::updatesGetDifference(quint32 pts, quint32 date, quint32 qts)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << UpdatesGetDifference;
+    outputStream << pts;
+    outputStream << date;
+    outputStream << qts;
+
+    sendEncryptedPackage(output);
+}
+
 void CTelegramConnection::getFile(const TLInputFileLocation &location, quint32 fileId)
 {
     QByteArray output;
@@ -745,6 +768,12 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case ContactsDeleteContacts:
             processingResult = processContactsDeleteContacts(stream, id);
             break;
+        case UpdatesGetState:
+            processingResult = processUpdatesGetState(stream, id);
+            break;
+        case UpdatesGetDifference:
+            processingResult = processUpdatesGetDifference(stream, id);
+            break;
         case UploadGetFile:
             processingResult = processUploadGetFile(stream, id);
             break;
@@ -1007,6 +1036,40 @@ TLValue CTelegramConnection::processContactsDeleteContacts(CTelegramStream &stre
     stream >> result;
 
     return result;
+}
+
+TLValue CTelegramConnection::processUpdatesGetState(CTelegramStream &stream, quint64 id)
+{
+    TLUpdatesState result;
+    stream >> result;
+
+    switch (result.tlType) {
+    case UpdatesState:
+        emit updatesStateReceived(result);
+        break;
+    default:
+        break;
+    }
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processUpdatesGetDifference(CTelegramStream &stream, quint64 id)
+{
+    TLUpdatesDifference result;
+    stream >> result;
+
+    switch (result.tlType) {
+    case UpdatesDifference:
+    case UpdatesDifferenceSlice:
+    case UpdatesDifferenceEmpty:
+        emit updatesDifferenceReceived(result);
+        break;
+    default:
+        break;
+    }
+
+    return result.tlType;
 }
 
 TLValue CTelegramConnection::processAuthCheckPhone(CTelegramStream &stream, quint64 id)

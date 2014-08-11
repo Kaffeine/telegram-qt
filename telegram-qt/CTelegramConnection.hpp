@@ -71,6 +71,10 @@ public:
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
     void requestContacts();
+
+    void updatesGetState();
+    void updatesGetDifference(quint32 pts, quint32 date, quint32 qts);
+
     void getFile(const TLInputFileLocation &location, quint32 fileId);
 
     void contactsDeleteContacts(const QVector<TLInputUser> users);
@@ -131,6 +135,8 @@ signals:
     void fileReceived(const TLUploadFile &file, quint32 fileId);
 
     void updatesReceived(const TLUpdates &update);
+    void updatesStateReceived(const TLUpdatesState &updatesState);
+    void updatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
 private slots:
     void whenConnected();
@@ -153,6 +159,8 @@ protected:
     TLValue processContactsGetContacts(CTelegramStream &stream, quint64 id);
     TLValue processContactsImportContacts(CTelegramStream &stream, quint64 id);
     TLValue processContactsDeleteContacts(CTelegramStream &stream, quint64 id);
+    TLValue processUpdatesGetState(CTelegramStream &stream, quint64 id);
+    TLValue processUpdatesGetDifference(CTelegramStream &stream, quint64 id);
     TLValue processAuthCheckPhone(CTelegramStream &stream, quint64 id);
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
     TLValue processAuthSign(CTelegramStream &stream, quint64 id);
