@@ -159,7 +159,7 @@ QString formatMember(QString name)
 
 QString getTypeOrVectorType(const QString &str)
 {
-    if (!str.startsWith(QLatin1String("QVector<"))) {
+    if (!str.startsWith(QLatin1String("TLVector<"))) {
         return str;
     }
 
@@ -175,11 +175,10 @@ QString formatType(QString type)
     if (plainTypes.contains(type)) {
         return actualTypes.at(plainTypes.indexOf(type));
     } else if (type.startsWith(QLatin1String("Vector<"))) {
-
         int firstIndex = type.indexOf(QLatin1Char('<')) + 1;
         int lastIndex = type.indexOf(QLatin1Char('>'));
         QString subType = type.mid(firstIndex, lastIndex - firstIndex);
-        return QString("QVector<%1>").arg(formatType(subType));
+        return QString("TLVector<%1>").arg(formatType(subType));
     } else {
         type[0] = type.at(0).toUpper();
 
@@ -327,8 +326,7 @@ QString generateStreamOperatorDefinition(const TLType &type)
 
     code.append(QString("%1 &%1::operator>>(%2 &%3)\n{\n").arg(streamClassName).arg(type.name).arg(argName));
     code.append(QString("%1%2 result;\n\n").arg(spacing).arg(type.name));
-    code.append(QString("%1%2 type;\n").arg(spacing).arg(tlValueName));
-    code.append(QString("%1*this >> type;\n\n%1switch (type) {\n").arg(spacing));
+    code.append(QString("%1*this >> result.tlType;\n\n%1switch (result.tlType) {\n").arg(spacing));
 
     foreach (const TLSubType &subType, type.subTypes) {
         code.append(QString("%1case %2:\n").arg(spacing).arg(subType.name));
@@ -341,7 +339,6 @@ QString generateStreamOperatorDefinition(const TLType &type)
     }
 
     code.append(QString("%1default:\n%1%1break;\n%1}\n\n").arg(spacing));
-    code.append(QString("%1result.%2 = type;\n").arg(spacing).arg(tlTypeMember));
     code.append(QString("%1%2 = result;\n\n%1return *this;\n}\n\n").arg(spacing).arg(argName));
 
     return code;
@@ -353,6 +350,10 @@ int main(int argc, char *argv[])
     specsFile.open(QIODevice::ReadOnly);
 
     const QByteArray data = specsFile.readAll();
+
+    if (data.isEmpty()) {
+        return 1;
+    }
 
     specsFile.close();
 
