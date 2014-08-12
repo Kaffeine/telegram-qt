@@ -82,10 +82,9 @@ CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
 {
     TLVector<T> result;
 
-    TLValue type;
-    *this >> type;
+    *this >> result.tlType;
 
-    if (type == Vector) {
+    if (result.tlType == Vector) {
         quint32 length = 0;
         *this >> length;
         for (int i = 0; i < length; ++i) {
@@ -2951,10 +2950,13 @@ template <typename T>
 CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
 {
     *this << v.tlType;
-    *this << quint32(v.count());
 
-    for (int i = 0; i < v.count(); ++i) {
-        *this << v.at(i);
+    if (v.tlType == Vector) {
+        *this << quint32(v.count());
+
+        for (int i = 0; i < v.count(); ++i) {
+            *this << v.at(i);
+        }
     }
 
     return *this;
