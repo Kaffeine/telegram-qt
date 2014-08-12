@@ -244,7 +244,7 @@ void CTelegramConnection::getFile(const TLInputFileLocation &location, quint32 f
     m_requestedFilesIds.insert(messageId, fileId);
 }
 
-void CTelegramConnection::usersGetUsers(const QVector<TLInputUser> &users)
+void CTelegramConnection::usersGetUsers(const TLVector<TLInputUser> &users)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
@@ -266,7 +266,7 @@ void CTelegramConnection::usersGetFullUser(const TLInputUser &user)
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::contactsDeleteContacts(const QVector<TLInputUser> &users)
+void CTelegramConnection::contactsDeleteContacts(const TLVector<TLInputUser> &users)
 {
     qDebug() << Q_FUNC_INFO << users.count();
 
@@ -283,7 +283,7 @@ void CTelegramConnection::addContacts(const QStringList &phoneNumbers, bool repl
 {
     qDebug() << "addContacts" << phoneNumbers;
 
-    QVector<TLInputContact> contactsVector;
+    TLVector<TLInputContact> contactsVector;
     for (int i = 0; i < phoneNumbers.count(); ++i) {
         TLInputContact contact;
         contact.clientId = i;
@@ -395,7 +395,7 @@ bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
         m_q = div1;
     }
 
-    QVector<quint64> fingersprints;
+    TLVector<quint64> fingersprints;
 
     inputStream >> fingersprints;
 
@@ -906,7 +906,7 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
 
 void CTelegramConnection::processMessageAck(CTelegramStream &stream)
 {
-    QVector<quint64> idsVector;
+    TLVector<quint64> idsVector;
 
     stream >> idsVector;
 
@@ -1168,7 +1168,7 @@ TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint
 
 TLValue CTelegramConnection::processUsersGetUsers(CTelegramStream &stream, quint64 id)
 {
-    QVector<TLUser> result;
+    TLVector<TLUser> result;
 
     stream >> result;
 

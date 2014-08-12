@@ -77,10 +77,10 @@ public:
 
     void getFile(const TLInputFileLocation &location, quint32 fileId);
 
-    void usersGetUsers(const QVector<TLInputUser> &users);
+    void usersGetUsers(const TLVector<TLInputUser> &users);
     void usersGetFullUser(const TLInputUser &user);
 
-    void contactsDeleteContacts(const QVector<TLInputUser> &users);
+    void contactsDeleteContacts(const TLVector<TLInputUser> &users);
     void addContacts(const QStringList &phoneNumbers, bool replace);
 
     void sendMessage(const TLInputPeer &peer, const QString &message);

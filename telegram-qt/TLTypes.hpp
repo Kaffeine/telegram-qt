@@ -230,7 +230,7 @@ struct TLChatParticipants {
 
     quint32 chatId;
     quint32 adminId;
-    QVector<TLChatParticipant> participants;
+    TLVector<TLChatParticipant> participants;
     quint32 version;
     TLValue tlType;
 };
@@ -443,7 +443,7 @@ struct TLDecryptedMessageAction {
     }
 
     quint32 ttlSeconds;
-    QVector<quint64> randomIds;
+    TLVector<quint64> randomIds;
     quint32 layer;
     TLValue tlType;
 };
@@ -1696,7 +1696,7 @@ struct TLWallPaper {
 
     quint32 id;
     QString title;
-    QVector<TLPhotoSize> sizes;
+    TLVector<TLPhotoSize> sizes;
     quint32 color;
     quint32 bgColor;
     TLValue tlType;
@@ -1757,7 +1757,7 @@ struct TLConfig {
     quint32 date;
     bool testMode;
     quint32 thisDc;
-    QVector<TLDcOption> dcOptions;
+    TLVector<TLDcOption> dcOptions;
     quint32 chatSizeMax;
     quint32 broadcastSizeMax;
     TLValue tlType;
@@ -2052,7 +2052,7 @@ struct TLPhoto {
     quint32 date;
     QString caption;
     TLGeoPoint geo;
-    QVector<TLPhotoSize> sizes;
+    TLVector<TLPhotoSize> sizes;
     TLValue tlType;
 };
 
@@ -2230,8 +2230,8 @@ struct TLContactsBlocked {
         return *this;
     }
 
-    QVector<TLContactBlocked> blocked;
-    QVector<TLUser> users;
+    TLVector<TLContactBlocked> blocked;
+    TLVector<TLUser> users;
     quint32 count;
     TLValue tlType;
 };
@@ -2253,8 +2253,8 @@ struct TLContactsContacts {
         return *this;
     }
 
-    QVector<TLContact> contacts;
-    QVector<TLUser> users;
+    TLVector<TLContact> contacts;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2275,8 +2275,8 @@ struct TLContactsFound {
         return *this;
     }
 
-    QVector<TLContactFound> results;
-    QVector<TLUser> users;
+    TLVector<TLContactFound> results;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2299,9 +2299,9 @@ struct TLContactsImportedContacts {
         return *this;
     }
 
-    QVector<TLImportedContact> imported;
-    QVector<quint64> retryContacts;
-    QVector<TLUser> users;
+    TLVector<TLImportedContact> imported;
+    TLVector<quint64> retryContacts;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2347,8 +2347,8 @@ struct TLContactsSuggested {
         return *this;
     }
 
-    QVector<TLContactSuggested> results;
-    QVector<TLUser> users;
+    TLVector<TLContactSuggested> results;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2399,7 +2399,7 @@ struct TLMessageAction {
     }
 
     QString title;
-    QVector<quint32> users;
+    TLVector<quint32> users;
     TLPhoto photo;
     quint32 userId;
     QString address;
@@ -2471,7 +2471,7 @@ struct TLMessagesChat {
     }
 
     TLChat chat;
-    QVector<TLUser> users;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2495,8 +2495,8 @@ struct TLMessagesChatFull {
     }
 
     TLChatFull fullChat;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2517,8 +2517,8 @@ struct TLMessagesChats {
         return *this;
     }
 
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2553,7 +2553,7 @@ struct TLMessagesSentMessage {
     quint32 date;
     quint32 pts;
     quint32 seq;
-    QVector<TLContactsLink> links;
+    TLVector<TLContactsLink> links;
     TLValue tlType;
 };
 
@@ -2575,7 +2575,7 @@ struct TLPhotosPhoto {
     }
 
     TLPhoto photo;
-    QVector<TLUser> users;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2599,8 +2599,8 @@ struct TLPhotosPhotos {
         return *this;
     }
 
-    QVector<TLPhoto> photos;
-    QVector<TLUser> users;
+    TLVector<TLPhoto> photos;
+    TLVector<TLUser> users;
     quint32 count;
     TLValue tlType;
 };
@@ -2705,10 +2705,10 @@ struct TLGeochatsLocated {
         return *this;
     }
 
-    QVector<TLChatLocated> results;
-    QVector<TLGeoChatMessage> messages;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLChatLocated> results;
+    TLVector<TLGeoChatMessage> messages;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2734,9 +2734,9 @@ struct TLGeochatsMessages {
         return *this;
     }
 
-    QVector<TLGeoChatMessage> messages;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLGeoChatMessage> messages;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     quint32 count;
     TLValue tlType;
 };
@@ -2764,8 +2764,8 @@ struct TLGeochatsStatedMessage {
     }
 
     TLGeoChatMessage message;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     quint32 seq;
     TLValue tlType;
 };
@@ -2850,10 +2850,10 @@ struct TLMessagesDialogs {
         return *this;
     }
 
-    QVector<TLDialog> dialogs;
-    QVector<TLMessage> messages;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLDialog> dialogs;
+    TLVector<TLMessage> messages;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     quint32 count;
     TLValue tlType;
 };
@@ -2878,8 +2878,8 @@ struct TLMessagesMessage {
     }
 
     TLMessage message;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -2905,9 +2905,9 @@ struct TLMessagesMessages {
         return *this;
     }
 
-    QVector<TLMessage> messages;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLMessage> messages;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     quint32 count;
     TLValue tlType;
 };
@@ -2940,11 +2940,11 @@ struct TLMessagesStatedMessage {
     }
 
     TLMessage message;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     quint32 pts;
     quint32 seq;
-    QVector<TLContactsLink> links;
+    TLVector<TLContactsLink> links;
     TLValue tlType;
 };
 
@@ -2975,12 +2975,12 @@ struct TLMessagesStatedMessages {
         return *this;
     }
 
-    QVector<TLMessage> messages;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLMessage> messages;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     quint32 pts;
     quint32 seq;
-    QVector<TLContactsLink> links;
+    TLVector<TLContactsLink> links;
     TLValue tlType;
 };
 
@@ -3070,7 +3070,7 @@ struct TLUpdate {
     quint32 pts;
     quint32 id;
     quint64 randomId;
-    QVector<quint32> messages;
+    TLVector<quint32> messages;
     quint32 userId;
     quint32 chatId;
     TLChatParticipants participants;
@@ -3090,7 +3090,7 @@ struct TLUpdate {
     quint32 maxDate;
     quint32 inviterId;
     quint32 version;
-    QVector<TLDcOption> dcOptions;
+    TLVector<TLDcOption> dcOptions;
     bool blocked;
     TLNotifyPeer peer;
     TLPeerNotifySettings notifySettings;
@@ -3149,9 +3149,9 @@ struct TLUpdates {
     quint32 seq;
     quint32 chatId;
     TLUpdate update;
-    QVector<TLUpdate> updates;
-    QVector<TLUser> users;
-    QVector<TLChat> chats;
+    TLVector<TLUpdate> updates;
+    TLVector<TLUser> users;
+    TLVector<TLChat> chats;
     quint32 seqStart;
     TLValue tlType;
 };
@@ -3191,11 +3191,11 @@ struct TLUpdatesDifference {
 
     quint32 date;
     quint32 seq;
-    QVector<TLMessage> newMessages;
-    QVector<TLEncryptedMessage> newEncryptedMessages;
-    QVector<TLUpdate> otherUpdates;
-    QVector<TLChat> chats;
-    QVector<TLUser> users;
+    TLVector<TLMessage> newMessages;
+    TLVector<TLEncryptedMessage> newEncryptedMessages;
+    TLVector<TLUpdate> otherUpdates;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     TLUpdatesState state;
     TLUpdatesState intermediateState;
     TLValue tlType;

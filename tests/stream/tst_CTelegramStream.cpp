@@ -265,7 +265,7 @@ void tst_CTelegramStream::intSerialization()
 
 void tst_CTelegramStream::vectorOfIntsSerialization()
 {
-    QVector<quint64> vector;
+    TLVector<quint64> vector;
     vector.append(0x12345678);
     QByteArray encoded = QByteArray::fromHex("15c4b51c010000007856341200000000");
 
@@ -286,7 +286,7 @@ void tst_CTelegramStream::vectorOfIntsSerialization()
 
         CTelegramStream stream(&device);
 
-        QVector<quint64> value;
+        TLVector<quint64> value;
 
         stream >> value;
 
@@ -383,7 +383,7 @@ void tst_CTelegramStream::tlDcOptionDeserialization()
 
     CTelegramStream stream(&device);
 
-    QVector<TLDcOption> optionsVector;
+    TLVector<TLDcOption> optionsVector;
 
     stream >> optionsVector;
 

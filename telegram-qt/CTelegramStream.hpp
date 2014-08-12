@@ -37,7 +37,7 @@ public:
     CTelegramStream &operator>>(bool &data);
 
     template <typename T>
-    CTelegramStream &operator>>(QVector<T> &v);
+    CTelegramStream &operator>>(TLVector<T> &v);
 
     // Generated operators
     CTelegramStream &operator>>(TLAudio &audio);
@@ -157,7 +157,7 @@ public:
     CTelegramStream &operator<<(const TLInputUser &inputUser);
 
     template <typename T>
-    CTelegramStream &operator<<(const QVector<T> &v);
+    CTelegramStream &operator<<(const TLVector<T> &v);
 
 };
 
