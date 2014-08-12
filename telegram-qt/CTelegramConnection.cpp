@@ -1172,10 +1172,11 @@ TLValue CTelegramConnection::processUsersGetUsers(CTelegramStream &stream, quint
 
     stream >> result;
 
-    emit usersReceived(result);
+    if (result.tlType == Vector) {
+        emit usersReceived(result);
+    }
 
-    // Warning: Incorrect behavior! Possible TODO: Introduce TLVector type to store vector AND it's TLValue.
-    return Vector;
+    return result.tlType;
 }
 
 TLValue CTelegramConnection::processUsersGetFullUser(CTelegramStream &stream, quint64 id)
