@@ -37,6 +37,7 @@ private slots:
     void longStringSerialization();
     void intSerialization();
     void vectorOfIntsSerialization();
+    void vectorDeserializationError();
     void tlNumbersSerialization();
     void tlDcOptionDeserialization();
 
@@ -291,6 +292,20 @@ void tst_CTelegramStream::vectorOfIntsSerialization()
         stream >> value;
 
         QCOMPARE(value, vector);
+    }
+}
+
+void tst_CTelegramStream::vectorDeserializationError()
+{
+    TLVector<quint32> vector;
+
+    const QByteArray encoded = QByteArray::fromHex("a1cf7230");
+
+    {
+        CTelegramStream stream(encoded);
+
+        stream >> vector;
+        QCOMPARE(vector.tlType, GzipPacked);
     }
 }
 
