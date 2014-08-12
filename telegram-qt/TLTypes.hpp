@@ -7,6 +7,25 @@
 #include <QMetaType>
 #include <QVector>
 
+template <typename T>
+class TLVector : public QVector<T>
+{
+public:
+    inline TLVector() : QVector<T>(), tlType(Vector) { }
+    explicit TLVector(int size) : QVector<T>(size), tlType(Vector) { }
+    TLVector(int size, const T &t) : QVector<T>(size, t), tlType(Vector) { }
+    inline TLVector(const TLVector<T> &v) : QVector<T>(v), tlType(v.tlType) { }
+    inline TLVector(const QVector<T> &v) : QVector<T>(v), tlType(Vector) { }
+
+    TLVector &operator=(const TLVector &v) {
+        tlType = v.tlType;
+        QVector<T>::operator =(v);
+        return *this;
+    }
+
+    TLValue tlType;
+};
+
 // Generated TLTypes
 struct TLAudio {
     TLAudio() :
