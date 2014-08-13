@@ -16,6 +16,7 @@
 #include "TelegramNamespace.hpp"
 #include "CTelegramConnection.hpp"
 #include "CTelegramStream.hpp"
+#include "Utils.hpp"
 
 #include <QTimer>
 
@@ -227,7 +228,10 @@ void CTelegramDispatcher::sendMessageToContact(const QString &phone, const QStri
         return;
     }
 
-    activeConnection()->sendMessage(peer, message);
+    quint64 randomMessageId;
+    Utils::randomBytes(&randomMessageId);
+
+    activeConnection()->messagesSendMessage(peer, message, randomMessageId);
 
     if (m_localTypingMap.contains(phone)) {
         m_localTypingMap.remove(phone);
@@ -247,7 +251,7 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
         return;
     }
 
-    activeConnection()->setTyping(peer, typingStatus);
+    activeConnection()->messagesSetTyping(peer, typingStatus);
 
     m_localTypingMap.insert(phone, s_localTypingActionPeriod);
     ensureTypingUpdateTimer(s_localTypingActionPeriod);

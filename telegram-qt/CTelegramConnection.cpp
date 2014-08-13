@@ -301,30 +301,27 @@ void CTelegramConnection::addContacts(const QStringList &phoneNumbers, bool repl
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString &message)
+void CTelegramConnection::messagesSendMessage(const TLInputPeer &peer, const QString &message, quint64 randomId)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
 
-    quint64 randomMessageId;
-    Utils::randomBytes(&randomMessageId);
-
     outputStream << MessagesSendMessage;
     outputStream << peer; // Hash
     outputStream << message;
-    outputStream << randomMessageId;
+    outputStream << randomId;
 
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::setTyping(const TLInputPeer &peer, bool typingStatus)
+void CTelegramConnection::messagesSetTyping(const TLInputPeer &peer, bool typing)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
 
     outputStream << MessagesSetTyping;
     outputStream << peer; // Hash
-    outputStream << typingStatus;
+    outputStream << typing;
 
     sendEncryptedPackage(output);
 }

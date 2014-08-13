@@ -83,8 +83,8 @@ public:
     void contactsDeleteContacts(const TLVector<TLInputUser> &users);
     void addContacts(const QStringList &phoneNumbers, bool replace);
 
-    void sendMessage(const TLInputPeer &peer, const QString &message);
-    void setTyping(const TLInputPeer &peer, bool typingStatus);
+    void messagesSendMessage(const TLInputPeer &peer, const QString &message, quint64 randomId);
+    void messagesSetTyping(const TLInputPeer &peer, bool typing);
 
     void accountUpdateStatus(bool offline);
 
