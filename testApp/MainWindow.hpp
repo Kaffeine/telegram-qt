@@ -10,6 +10,8 @@ class MainWindow;
 class CTelegramCore;
 class CContactsModel;
 
+class QModelIndex;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
