@@ -344,22 +344,9 @@ QString generateStreamOperatorDefinition(const TLType &type)
     return code;
 }
 
-int main(int argc, char *argv[])
+QMap<QString, TLType> readTypes(const QJsonDocument &document)
 {
-    QFile specsFile("json");
-    specsFile.open(QIODevice::ReadOnly);
-
-    const QByteArray data = specsFile.readAll();
-
-    if (data.isEmpty()) {
-        return 1;
-    }
-
-    specsFile.close();
-
-    const QJsonDocument json = QJsonDocument::fromJson(data);
-
-    const QJsonArray constructors = json.object().value("constructors").toArray();
+    const QJsonArray constructors = document.object().value("constructors").toArray();
 
     QMap<QString, TLType> types;
 
@@ -373,13 +360,11 @@ int main(int argc, char *argv[])
         int separatorIndex = 0;
         while ((separatorIndex = indexOfSeparator(predicateName, separatorIndex)) > 0) {
             if ((predicateName.length() < separatorIndex + 1) || (!predicateName.at(separatorIndex + 1).isLetter())) {
-                return -1;
+                return QMap<QString, TLType>();
             }
             predicateName[separatorIndex + 1] = predicateName.at(separatorIndex + 1).toUpper();
             predicateName.remove(separatorIndex, 1);
         }
-
-        quint32 id = obj.value("id").toString().toInt();
 
         const QString typeName = formatType(obj.value("type").toString());
 
@@ -405,8 +390,29 @@ int main(int argc, char *argv[])
             types.insert(typeName, tlType);
         }
 
+//        quint32 id = obj.value("id").toString().toInt();
 //        qDebug() << name << QString::number(id, 0x10);
     }
+
+    return types;
+}
+
+int main(int argc, char *argv[])
+{
+    QFile specsFile("json");
+    specsFile.open(QIODevice::ReadOnly);
+
+    const QByteArray data = specsFile.readAll();
+
+    if (data.isEmpty()) {
+        return 1;
+    }
+
+    specsFile.close();
+
+    const QJsonDocument json = QJsonDocument::fromJson(data);
+
+    QMap<QString, TLType> types = readTypes(json);
 
     QList<TLType> solvedTypes;
     QStringList solvedTypesNames = actualTypes;
