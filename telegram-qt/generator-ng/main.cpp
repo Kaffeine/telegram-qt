@@ -110,6 +110,7 @@ static const QString spacing = QString(4, QLatin1Char(' '));
 static const QString doubleSpacing = spacing + spacing;
 
 static const QString streamClassName = QLatin1String("CTelegramStream");
+static const QString methodsClassName = QLatin1String("CTelegramConnection");
 
 inline int indexOfSeparator(const QString &str, int minIndex)
 {
@@ -246,6 +247,18 @@ struct TLType {
     }
 };
 
+struct TLMethod {
+    QString name;
+    QList< TLParam > params;
+
+    TLMethod &operator=(const TLMethod &anotherMethod) {
+        name = anotherMethod.name;
+        params = anotherMethod.params;
+
+        return *this;
+    }
+};
+
 void debugType(const TLType &type)
 {
     qDebug() << type.name;
@@ -354,6 +367,54 @@ QString generateStreamOperatorDefinition(const TLType &type)
     return code;
 }
 
+QString formatMethodParam(const TLParam &param)
+{
+    if (podTypes.contains(param.type)) {
+        return QString("%1 %2").arg(param.type).arg(param.name);
+    } else {
+        return  QString("const %1 &%2").arg(param.type).arg(param.name);
+    }
+}
+
+QString formatMethodParams(const TLMethod &method)
+{
+    QString result;
+
+    foreach (const TLParam &param, method.params) {
+        if (!result.isEmpty()) {
+            result += QLatin1String(", ");
+        }
+
+        result += formatMethodParam(param);
+    }
+
+    return result;
+}
+
+QString generateConnectionMethodDeclaration(const TLMethod &method)
+{
+    return QString("%1void %2(%3);\n").arg(spacing).arg(method.name).arg(formatMethodParams(method));
+}
+
+QString generateConnectionMethodDefinition(const TLMethod &method)
+{
+    QString result;
+    result += QString("void %1::%2(%3)\n{\n").arg(methodsClassName).arg(method.name).arg(formatMethodParams(method));
+    result += spacing + QLatin1String("QByteArray output;\n");
+    result += spacing + QLatin1String("CTelegramStream outputStream(&output, /* write */ true);\n\n");
+
+    result += spacing + QString("outputStream << %1;\n").arg(formatName1stCapital(method.name));
+
+    foreach (const TLParam &param, method.params) {
+        result += spacing + QString("outputStream << %1;\n").arg(param.name);
+    }
+
+    result += QLatin1Char('\n');
+    result += spacing + QLatin1String("sendEncryptedPackage(output);\n}\n\n");
+
+    return result;
+}
+
 QMap<QString, TLType> readTypes(const QJsonDocument &document)
 {
     const QJsonArray constructors = document.object().value("constructors").toArray();
@@ -393,6 +454,40 @@ QMap<QString, TLType> readTypes(const QJsonDocument &document)
     }
 
     return types;
+}
+
+QMap<QString, TLMethod> readMethods(const QJsonDocument &document)
+{
+    const QJsonArray methods = document.object().value("methods").toArray();
+
+    QMap<QString, TLMethod> result;
+
+    for (int i = 0; i < methods.count(); ++i) {
+        const QJsonObject obj = methods.at(i).toObject();
+
+        const QString methodName = formatName(obj.value("method").toString());
+
+        TLMethod tlMethod;
+        tlMethod.name = methodName;
+
+        const QJsonArray params = obj.value("params").toArray();
+
+        foreach (const QJsonValue &paramValue, params) {
+            const QJsonObject &paramObj = paramValue.toObject();
+            const QString paramName = formatMember(paramObj.value("name").toString());
+
+            const QString paramType = paramObj.value("type").toString();
+
+            tlMethod.params.append(TLParam(paramName, formatType(paramType)));
+        }
+
+        result.insert(methodName, tlMethod);
+
+//        quint32 id = obj.value("id").toString().toInt();
+//        qDebug() << name << QString::number(id, 0x10);
+    }
+
+    return result;
 }
 
 QList<TLType> solveTypes(QMap<QString, TLType> types)
@@ -460,9 +555,13 @@ int main(int argc, char *argv[])
     const QMap<QString, TLType> types = readTypes(document);
     const QList<TLType> solvedTypes = solveTypes(types);
 
+    const QMap<QString, TLMethod> methods = readMethods(document);
+
     QString codeOfTLTypes;
     QString codeStreamDeclarations;
     QString codeStreamDefinition;
+    QString codeConnectionDeclaration;
+    QString codeConnectionDefinition;
 
     foreach (const TLType &type, solvedTypes) {
         if ((type.subTypes.count() == 1) && (type.subTypes.first().members.isEmpty())) {
@@ -475,9 +574,20 @@ int main(int argc, char *argv[])
         codeStreamDefinition.append(generateStreamOperatorDefinition(type));
     }
 
+    foreach (const TLMethod &method, methods) {
+        if (!method.name.startsWith(QLatin1String("messages"))) {
+            continue;
+        }
+
+        codeConnectionDeclaration.append(generateConnectionMethodDeclaration(method));
+        codeConnectionDefinition.append(generateConnectionMethodDefinition(method));
+    }
+
     replacingHelper(QLatin1String("../TLTypes.hpp"), 0, QLatin1String("TLTypes"), codeOfTLTypes);
     replacingHelper(QLatin1String("../CTelegramStream.hpp"), 4, QLatin1String("operators"), codeStreamDeclarations);
     replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("operators implementation"), codeStreamDefinition);
+    replacingHelper(QLatin1String("../CTelegramConnection.hpp"), 4, QLatin1String("Telegram API methods declaration"), codeConnectionDeclaration);
+    replacingHelper(QLatin1String("../CTelegramConnection.cpp"), 0, QLatin1String("Telegram API methods implementation"), codeConnectionDefinition);
 
     return 0;
 }
