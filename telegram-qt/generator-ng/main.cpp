@@ -101,7 +101,7 @@ static const QString tlTypeMember = QLatin1String("tlType");
 static const QStringList typesToInit = QStringList() << "bool" << "quint32" << "quint64" << "double" << tlValueName;
 static const QStringList initTypesValues = QStringList() << "false" << "0" << "0" << "0" << "0";
 static const QStringList plainTypes = QStringList() << "Bool" << "int" << "long" << "double" << "string" << "bytes";
-static const QStringList actualTypes = QStringList() << "bool" << "quint32" << "quint64" << "double" << "QString" << "QByteArray";
+static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "quint64" << "double" << "QString" << "QByteArray";
 
 static const QStringList badNames = QStringList() << "lat"<< "long" ;
 static const QStringList badNamesReplacers = QStringList() << "latitude"<< "longitude";
@@ -173,7 +173,7 @@ QString getTypeOrVectorType(const QString &str)
 QString formatType(QString type)
 {
     if (plainTypes.contains(type)) {
-        return actualTypes.at(plainTypes.indexOf(type));
+        return nativeTypes.at(plainTypes.indexOf(type));
     } else if (type.startsWith(QLatin1String("Vector<"))) {
         int firstIndex = type.indexOf(QLatin1Char('<')) + 1;
         int lastIndex = type.indexOf(QLatin1Char('>'));
@@ -368,7 +368,7 @@ QMap<QString, TLType> readTypes(const QJsonDocument &document)
 
         const QString typeName = formatType(obj.value("type").toString());
 
-        if (!actualTypes.contains(typeName)) {
+        if (!nativeTypes.contains(typeName)) {
             TLType tlType = types.value(typeName);
             tlType.name = typeName;
 
@@ -397,25 +397,10 @@ QMap<QString, TLType> readTypes(const QJsonDocument &document)
     return types;
 }
 
-int main(int argc, char *argv[])
+QList<TLType> solveTypes(QMap<QString, TLType> types)
 {
-    QFile specsFile("json");
-    specsFile.open(QIODevice::ReadOnly);
-
-    const QByteArray data = specsFile.readAll();
-
-    if (data.isEmpty()) {
-        return 1;
-    }
-
-    specsFile.close();
-
-    const QJsonDocument json = QJsonDocument::fromJson(data);
-
-    QMap<QString, TLType> types = readTypes(json);
-
     QList<TLType> solvedTypes;
-    QStringList solvedTypesNames = actualTypes;
+    QStringList solvedTypesNames = nativeTypes;
     solvedTypesNames.append(tlValueName);
 
     int previousSolvedTypesCount = -1;
@@ -455,6 +440,27 @@ int main(int argc, char *argv[])
     }
 
     qDebug() << "Unresolved:" << types.count();
+
+    return solvedTypes;
+}
+
+int main(int argc, char *argv[])
+{
+    QFile specsFile("json");
+    specsFile.open(QIODevice::ReadOnly);
+
+    const QByteArray data = specsFile.readAll();
+
+    if (data.isEmpty()) {
+        return 1;
+    }
+
+    specsFile.close();
+
+    const QJsonDocument document = QJsonDocument::fromJson(data);
+
+    const QMap<QString, TLType> types = readTypes(document);
+    const QList<TLType> solvedTypes = solveTypes(types);
 
     QString codeOfTLTypes;
     QString codeStreamDeclarations;
