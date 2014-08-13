@@ -155,6 +155,7 @@ public:
     CTelegramStream &operator<<(const TLInputContact &inputContact);
     CTelegramStream &operator<<(const TLInputPeer &inputPeer);
     CTelegramStream &operator<<(const TLInputUser &inputUser);
+    CTelegramStream &operator<<(const TLInputEncryptedChat &inputEncryptedChat);
 
     template <typename T>
     CTelegramStream &operator<<(const TLVector<T> &v);

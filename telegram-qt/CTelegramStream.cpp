@@ -3090,3 +3090,19 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputUser &inputUser)
 
     return *this;
 }
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedChat &inputEncryptedChat)
+{
+    *this << inputEncryptedChat.tlType;
+
+    switch (inputEncryptedChat.tlType) {
+    case InputEncryptedChat:
+        *this << inputEncryptedChat.chatId;
+        *this << inputEncryptedChat.accessHash;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
