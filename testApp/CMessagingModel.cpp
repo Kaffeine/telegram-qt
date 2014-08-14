@@ -75,6 +75,7 @@ QVariant CMessagingModel::data(const QModelIndex &index, int role) const
 
     return QVariant();
 }
+
 void CMessagingModel::addMessage(const QString &phone, const QString &message, quint64 messageId)
 {
     beginResetModel();
@@ -84,8 +85,9 @@ void CMessagingModel::addMessage(const QString &phone, const QString &message, q
     endResetModel();
 }
 
-void CMessagingModel::setMessageDeliveryStatus(quint64 messageId, TelegramNamespace::MessageDeliveryStatus status)
+void CMessagingModel::setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status)
 {
+    Q_UNUSED(phone);
     for (int i = 0; i < m_messages.count(); ++i) {
         if (m_messages.at(i).messageId == messageId) {
             m_messages[i].status = status;

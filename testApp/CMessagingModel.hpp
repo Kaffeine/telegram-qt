@@ -42,7 +42,7 @@ public:
 
 public slots:
     void addMessage(const QString &phone, const QString &message, quint64 messageId = 0);
-    void setMessageDeliveryStatus(quint64 messageId, TelegramNamespace::MessageDeliveryStatus status);
+    void setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status);
 
 private:
     QList<SMessageEntry> m_messages;
