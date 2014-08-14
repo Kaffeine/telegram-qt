@@ -397,11 +397,14 @@ void CTelegramDispatcher::whenUserTypingTimeout()
     }
 }
 
-void CTelegramDispatcher::whenMessageSentInfoReceived(quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq)
+void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq)
 {
-    m_messagesMap.insert(messageId, randomId);
+    const QString phone = userIdToPhoneNumber(peer.userId);
+    QPair<QString, quint64> phoneAndId(phone, randomId);
 
-    emit sentMessageStatusChanged(randomId, TelegramNamespace::MessageDeliveryStatusSent);
+    m_messagesMap.insert(messageId, phoneAndId);
+
+    emit sentMessageStatusChanged(phoneAndId.first, phoneAndId.second, TelegramNamespace::MessageDeliveryStatusSent);
 }
 
 void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId)
@@ -433,7 +436,8 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        break;
     case UpdateReadMessages:
         foreach (quint32 messageId, update.messages) {
-            emit sentMessageStatusChanged(m_messagesMap.value(messageId), TelegramNamespace::MessageDeliveryStatusRead);
+            const QPair<QString, quint64> phoneAndId = m_messagesMap.value(messageId);
+            emit sentMessageStatusChanged(phoneAndId.first, phoneAndId.second, TelegramNamespace::MessageDeliveryStatusRead);
         }
 
 //        update.pts;
@@ -691,7 +695,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         connect(connection, SIGNAL(contactListReceived(QStringList)), SLOT(whenContactListReceived(QStringList)));
         connect(connection, SIGNAL(contactListChanged(QStringList,QStringList)), SLOT(whenContactListChanged(QStringList,QStringList)));
         connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
-        connect(connection, SIGNAL(messageSentInfoReceived(quint64,quint32,quint32,quint32,quint32)), SLOT(whenMessageSentInfoReceived(quint64,quint32,quint32,quint32,quint32)));
+        connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)), SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
 
         if (isAuthenticated()) {
             emit authenticated();

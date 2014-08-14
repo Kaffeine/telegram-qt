@@ -17,6 +17,7 @@
 #include <QObject>
 
 #include <QMap>
+#include <QPair>
 #include <QStringList>
 
 #include "TLTypes.hpp"
@@ -79,7 +80,7 @@ signals:
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
 
-    void sentMessageStatusChanged(quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
+    void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
 
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
@@ -98,7 +99,7 @@ protected slots:
     void whenContactListChanged(const QStringList &added, const QStringList &removed);
     void whenUserTypingTimeout();
 
-    void whenMessageSentInfoReceived(quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
+    void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
 
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
@@ -138,7 +139,7 @@ private:
     QMap<int, QByteArray> m_delayedPackages; // dc, package data
     QMap<quint32, TLUser*> m_users;
 
-    QMap<quint32, quint64> m_messagesMap; // message id to big_random message id
+    QMap<quint32, QPair<QString, quint64> >m_messagesMap; // message id to phone and big_random message id
 
     QString m_selfPhone;
 

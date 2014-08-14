@@ -81,7 +81,7 @@ Q_SIGNALS:
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
 
-    void sentMessageStatusChanged(quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
+    void sentMessageStatusChanged(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
 
 private:
     CTelegramDispatcher *m_dispatcher;
