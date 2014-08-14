@@ -15,12 +15,13 @@
 #define GENERATORNG_HPP
 
 #include <QtGlobal>
+
 #include <QString>
+#include <QList>
+#include <QStringList>
+#include <QMap>
 
 #include <QJsonDocument>
-
-#include <QList>
-#include <QMap>
 
 struct TLParam {
     TLParam() { }
@@ -90,22 +91,26 @@ public:
     bool loadData(const QByteArray &data);
     void generate();
 
-    static QString generateTLType(const TLType &type);
-    static QString generateStreamOperatorDeclaration(const TLType &type);
-    static QString generateStreamOperatorDefinition(const TLType &type);
+    QString generateTLType(const TLType &type);
+    QString generateStreamReadOperatorDeclaration(const TLType &type) const;
+    QString generateStreamWriteOperatorDeclaration(const TLType &type) const;
+    QString generateStreamReadOperatorImplementation(const TLType &type) const;
+    QString generateStreamWriteOperatorImplementation(const TLType &type) const;
 
-    static QString generateConnectionMethodDeclaration(const TLMethod &method);
-    static QString generateConnectionMethodDefinition(const TLMethod &method);
+    QString generateConnectionMethodDeclaration(const TLMethod &method);
+    QString generateConnectionMethodDefinition(const TLMethod &method);
 
     static QMap<QString, TLType> readTypes(const QJsonDocument &document);
     static QMap<QString, TLMethod> readMethods(const QJsonDocument &document);
     static QList<TLType> solveTypes(QMap<QString, TLType> types);
 
     QString codeOfTLTypes;
-    QString codeStreamDeclarations;
-    QString codeStreamDefinition;
+    QString codeStreamReadDeclarations;
+    QString codeStreamWriteDeclarations;
+    QString codeStreamReadImplementation;
+    QString codeStreamWriteImplementation;
     QString codeConnectionDeclaration;
-    QString codeConnectionDefinition;
+    QString codeConnectionImplementation;
 
 private:
     static QString formatType(QString type);
@@ -125,6 +130,7 @@ private:
     QList<TLType> m_solvedTypes;
     QMap<QString, TLMethod> m_methods;
 
+    QStringList m_usedWriteOperators;
 };
 
 #endif // GENERATORNG_HPP

@@ -120,10 +120,12 @@ int main(int argc, char *argv[])
     generator.generate();
 
     replacingHelper(QLatin1String("../TLTypes.hpp"), 0, QLatin1String("TLTypes"), generator.codeOfTLTypes);
-    replacingHelper(QLatin1String("../CTelegramStream.hpp"), 4, QLatin1String("operators"), generator.codeStreamDeclarations);
-    replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("operators implementation"), generator.codeStreamDefinition);
+    replacingHelper(QLatin1String("../CTelegramStream.hpp"), 4, QLatin1String("read operators"), generator.codeStreamReadDeclarations);
+    replacingHelper(QLatin1String("../CTelegramStream.hpp"), 4, QLatin1String("write operators"), generator.codeStreamWriteDeclarations);
+    replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("read operators implementation"), generator.codeStreamReadImplementation);
+    replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("write operators implementation"), generator.codeStreamWriteImplementation);
     replacingHelper(QLatin1String("../CTelegramConnection.hpp"), 4, QLatin1String("Telegram API methods declaration"), generator.codeConnectionDeclaration);
-    replacingHelper(QLatin1String("../CTelegramConnection.cpp"), 0, QLatin1String("Telegram API methods implementation"), generator.codeConnectionDefinition);
+    replacingHelper(QLatin1String("../CTelegramConnection.cpp"), 0, QLatin1String("Telegram API methods implementation"), generator.codeConnectionImplementation);
 
     return 0;
 }

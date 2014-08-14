@@ -20,6 +20,7 @@
 static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
 static const QString tlTypeMember = QLatin1String("tlType");
+static const QString tlVectorType = QLatin1String("TLVector");
 static const QStringList podTypes = QStringList() << "bool" << "quint32" << "quint64" << "double" << tlValueName;
 static const QStringList initTypesValues = QStringList() << "false" << "0" << "0" << "0" << "0";
 static const QStringList plainTypes = QStringList() << "Bool" << "int" << "long" << "double" << "string" << "bytes";
@@ -92,7 +93,7 @@ QString GeneratorNG::formatMember(QString name)
 
 QString GeneratorNG::getTypeOrVectorType(const QString &str)
 {
-    if (!str.startsWith(QLatin1String("TLVector<"))) {
+    if (!str.startsWith(tlVectorType + QLatin1Char('<'))) {
         return str;
     }
 
@@ -111,7 +112,7 @@ QString GeneratorNG::formatType(QString type)
         int firstIndex = type.indexOf(QLatin1Char('<')) + 1;
         int lastIndex = type.indexOf(QLatin1Char('>'));
         QString subType = type.mid(firstIndex, lastIndex - firstIndex);
-        return QString("TLVector<%1>").arg(formatType(subType));
+        return QString("%1<%2>").arg(tlVectorType).arg(formatType(subType));
     } else {
         type[0] = type.at(0).toUpper();
 
@@ -182,14 +183,21 @@ QString GeneratorNG::generateTLType(const TLType &type)
     return code;
 }
 
-QString GeneratorNG::generateStreamOperatorDeclaration(const TLType &type)
+QString GeneratorNG::generateStreamReadOperatorDeclaration(const TLType &type) const
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
-    return QString("%1%2 &operator>>(%3 &%4);\n").arg(spacing).arg(streamClassName).arg(type.name).arg(argName);
+    return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
-QString GeneratorNG::generateStreamOperatorDefinition(const TLType &type)
+QString GeneratorNG::generateStreamWriteOperatorDeclaration(const TLType &type) const
+{
+    QString argName = removePrefix(type.name);
+    argName[0] = argName.at(0).toLower();
+    return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
+}
+
+QString GeneratorNG::generateStreamReadOperatorImplementation(const TLType &type) const
 {
     QString code;
 
@@ -212,6 +220,32 @@ QString GeneratorNG::generateStreamOperatorDefinition(const TLType &type)
 
     code.append(QString("%1default:\n%1%1break;\n%1}\n\n").arg(spacing));
     code.append(QString("%1%2 = result;\n\n%1return *this;\n}\n\n").arg(spacing).arg(argName));
+
+    return code;
+}
+
+QString GeneratorNG::generateStreamWriteOperatorImplementation(const TLType &type) const
+{
+    QString code;
+
+    QString argName = removePrefix(type.name);
+    argName[0] = argName.at(0).toLower();
+
+    code.append(QString("%1 &%1::operator<<(const %2 &%3)\n{\n").arg(streamClassName).arg(type.name).arg(argName));
+    code.append(QString("%1*this << %2.tlType;\n\n%1switch (%2.tlType) {\n").arg(spacing).arg(argName));
+
+    foreach (const TLSubType &subType, type.subTypes) {
+        code.append(QString("%1case %2:\n").arg(spacing).arg(subType.name));
+
+        foreach (const TLParam &member, subType.members) {
+            code.append(doubleSpacing + QString("*this << %1.%2;\n").arg(argName).arg(member.name));
+        }
+
+        code.append(QString("%1break;\n").arg(doubleSpacing));
+    }
+
+    code.append(QString("%1default:\n%1%1break;\n%1}\n\n").arg(spacing));
+    code.append(spacing + QString("return *this;\n}\n\n").arg(spacing));
 
     return code;
 }
@@ -256,6 +290,18 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method)
 
     foreach (const TLParam &param, method.params) {
         result += spacing + QString("outputStream << %1;\n").arg(param.name);
+
+        if (!nativeTypes.contains(param.type)) {
+            m_usedWriteOperators.append(param.type);
+
+            const QString subType = getTypeOrVectorType(param.type);
+            if (subType != param.type) {
+
+                if (!nativeTypes.contains(subType)) {
+                    m_usedWriteOperators.append(subType);
+                }
+            }
+        }
     }
 
     result += QLatin1Char('\n');
@@ -400,6 +446,38 @@ bool GeneratorNG::loadData(const QByteArray &data)
 
 void GeneratorNG::generate()
 {
+    codeOfTLTypes.clear();
+    codeStreamReadDeclarations.clear();
+    codeStreamWriteDeclarations.clear();
+    codeStreamReadImplementation.clear();
+    codeStreamWriteImplementation.clear();
+    codeConnectionDeclaration.clear();
+    codeConnectionImplementation.clear();
+
+    foreach (const TLMethod &method, m_methods) {
+        if (!method.name.startsWith(QLatin1String("messages"))) {
+            generateConnectionMethodDefinition(method);
+            continue;
+        }
+
+        codeConnectionDeclaration.append(generateConnectionMethodDeclaration(method));
+        codeConnectionImplementation.append(generateConnectionMethodDefinition(method));
+    }
+
+    m_usedWriteOperators.removeDuplicates();
+
+    foreach (const QString &str, m_usedWriteOperators) {
+        if (str.startsWith(tlVectorType)) {
+            qDebug() << str;
+        }
+    }
+
+    foreach (const QString &str, m_usedWriteOperators) {
+        if (!str.startsWith(tlVectorType)) {
+            qDebug() << str;
+        }
+    }
+
     foreach (const TLType &type, m_solvedTypes) {
         if ((type.subTypes.count() == 1) && (type.subTypes.first().members.isEmpty())) {
             qDebug() << "Empty type" << type.name;
@@ -407,16 +485,13 @@ void GeneratorNG::generate()
         }
 
         codeOfTLTypes.append(generateTLType(type));
-        codeStreamDeclarations.append(generateStreamOperatorDeclaration(type));
-        codeStreamDefinition.append(generateStreamOperatorDefinition(type));
-    }
 
-    foreach (const TLMethod &method, m_methods) {
-        if (!method.name.startsWith(QLatin1String("messages"))) {
-            continue;
+        codeStreamReadDeclarations.append(generateStreamReadOperatorDeclaration(type));
+        codeStreamReadImplementation.append(generateStreamReadOperatorImplementation(type));
+
+        if (m_usedWriteOperators.contains(type.name)) {
+            codeStreamWriteDeclarations.append(generateStreamWriteOperatorDeclaration(type));
+            codeStreamWriteImplementation.append(generateStreamWriteOperatorImplementation(type));
         }
-
-        codeConnectionDeclaration.append(generateConnectionMethodDeclaration(method));
-        codeConnectionDefinition.append(generateConnectionMethodDefinition(method));
     }
 }
