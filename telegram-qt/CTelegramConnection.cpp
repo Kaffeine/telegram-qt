@@ -301,31 +301,6 @@ void CTelegramConnection::addContacts(const QStringList &phoneNumbers, bool repl
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::messagesSendMessage(const TLInputPeer &peer, const QString &message, quint64 randomId)
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << MessagesSendMessage;
-    outputStream << peer; // Hash
-    outputStream << message;
-    outputStream << randomId;
-
-    sendEncryptedPackage(output);
-}
-
-void CTelegramConnection::messagesSetTyping(const TLInputPeer &peer, bool typing)
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << MessagesSetTyping;
-    outputStream << peer; // Hash
-    outputStream << typing;
-
-    sendEncryptedPackage(output);
-}
-
 void CTelegramConnection::accountUpdateStatus(bool offline)
 {
     QByteArray output;
@@ -336,6 +311,406 @@ void CTelegramConnection::accountUpdateStatus(bool offline)
 
     sendEncryptedPackage(output);
 }
+
+// Generated Telegram API methods implementation
+void CTelegramConnection::messagesAcceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesAcceptEncryption;
+    outputStream << peer;
+    outputStream << gB;
+    outputStream << keyFingerprint;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesAddChatUser(quint32 chatId, const TLInputUser &userId, quint32 fwdLimit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesAddChatUser;
+    outputStream << chatId;
+    outputStream << userId;
+    outputStream << fwdLimit;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesCreateChat(const TLVector<TLInputUser> &users, const QString &title)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesCreateChat;
+    outputStream << users;
+    outputStream << title;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesDeleteChatUser(quint32 chatId, const TLInputUser &userId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesDeleteChatUser;
+    outputStream << chatId;
+    outputStream << userId;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesDeleteHistory(const TLInputPeer &peer, quint32 offset)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesDeleteHistory;
+    outputStream << peer;
+    outputStream << offset;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesDeleteMessages(const TLVector<quint32> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesDeleteMessages;
+    outputStream << id;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesDiscardEncryption(quint32 chatId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesDiscardEncryption;
+    outputStream << chatId;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesEditChatPhoto(quint32 chatId, const TLInputChatPhoto &photo)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesEditChatPhoto;
+    outputStream << chatId;
+    outputStream << photo;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesEditChatTitle(quint32 chatId, const QString &title)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesEditChatTitle;
+    outputStream << chatId;
+    outputStream << title;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesForwardMessage(const TLInputPeer &peer, quint32 id, quint64 randomId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesForwardMessage;
+    outputStream << peer;
+    outputStream << id;
+    outputStream << randomId;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesForwardMessages(const TLInputPeer &peer, const TLVector<quint32> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesForwardMessages;
+    outputStream << peer;
+    outputStream << id;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesGetChats(const TLVector<quint32> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesGetChats;
+    outputStream << id;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesGetDhConfig(quint32 version, quint32 randomLength)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesGetDhConfig;
+    outputStream << version;
+    outputStream << randomLength;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesGetDialogs(quint32 offset, quint32 maxId, quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesGetDialogs;
+    outputStream << offset;
+    outputStream << maxId;
+    outputStream << limit;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesGetFullChat(quint32 chatId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesGetFullChat;
+    outputStream << chatId;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesGetHistory(const TLInputPeer &peer, quint32 offset, quint32 maxId, quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesGetHistory;
+    outputStream << peer;
+    outputStream << offset;
+    outputStream << maxId;
+    outputStream << limit;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesGetMessages(const TLVector<quint32> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesGetMessages;
+    outputStream << id;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesReadEncryptedHistory(const TLInputEncryptedChat &peer, quint32 maxDate)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesReadEncryptedHistory;
+    outputStream << peer;
+    outputStream << maxDate;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesReadHistory(const TLInputPeer &peer, quint32 maxId, quint32 offset)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesReadHistory;
+    outputStream << peer;
+    outputStream << maxId;
+    outputStream << offset;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesReceivedMessages(quint32 maxId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesReceivedMessages;
+    outputStream << maxId;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesReceivedQueue(quint32 maxQts)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesReceivedQueue;
+    outputStream << maxQts;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesRequestEncryption(const TLInputUser &userId, quint32 randomId, const QByteArray &gA)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesRequestEncryption;
+    outputStream << userId;
+    outputStream << randomId;
+    outputStream << gA;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesRestoreMessages(const TLVector<quint32> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesRestoreMessages;
+    outputStream << id;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesSearch(const TLInputPeer &peer, const QString &q, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offset, quint32 maxId, quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSearch;
+    outputStream << peer;
+    outputStream << q;
+    outputStream << filter;
+    outputStream << minDate;
+    outputStream << maxDate;
+    outputStream << offset;
+    outputStream << maxId;
+    outputStream << limit;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesSendBroadcast(const TLVector<TLInputUser> &contacts, const QString &message, const TLInputMedia &media)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSendBroadcast;
+    outputStream << contacts;
+    outputStream << message;
+    outputStream << media;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesSendEncrypted(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSendEncrypted;
+    outputStream << peer;
+    outputStream << randomId;
+    outputStream << data;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesSendEncryptedFile(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data, const TLInputEncryptedFile &file)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSendEncryptedFile;
+    outputStream << peer;
+    outputStream << randomId;
+    outputStream << data;
+    outputStream << file;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesSendEncryptedService(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSendEncryptedService;
+    outputStream << peer;
+    outputStream << randomId;
+    outputStream << data;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesSendMedia(const TLInputPeer &peer, const TLInputMedia &media, quint64 randomId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSendMedia;
+    outputStream << peer;
+    outputStream << media;
+    outputStream << randomId;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesSendMessage(const TLInputPeer &peer, const QString &message, quint64 randomId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSendMessage;
+    outputStream << peer;
+    outputStream << message;
+    outputStream << randomId;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesSetEncryptedTyping(const TLInputEncryptedChat &peer, bool typing)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSetEncryptedTyping;
+    outputStream << peer;
+    outputStream << typing;
+
+    sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::messagesSetTyping(const TLInputPeer &peer, bool typing)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesSetTyping;
+    outputStream << peer;
+    outputStream << typing;
+
+    sendEncryptedPackage(output);
+}
+
+// End of generated Telegram API methods implementation
 
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
@@ -821,6 +1196,12 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case MessagesSetTyping:
             processingResult = processMessagesSetTyping(stream, id);
             break;
+        case MessagesReadHistory:
+            processingResult = processMessagesReadHistory(stream, id);
+            break;
+        case MessagesReceivedMessages:
+            processingResult = processMessagesReceivedMessages(stream, id);
+            break;
         case AccountUpdateStatus:
             processingResult = processAccountUpdateStatus(stream, id);
             break;
@@ -1207,6 +1588,22 @@ TLValue CTelegramConnection::processMessagesSetTyping(CTelegramStream &stream, q
     stream >> result;
 
     return result;
+}
+
+TLValue CTelegramConnection::processMessagesReadHistory(CTelegramStream &stream, quint64 id)
+{
+    TLMessagesAffectedHistory result;
+    stream >> result;
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processMessagesReceivedMessages(CTelegramStream &stream, quint64 id)
+{
+    TLVector<quint32> result;
+    stream >> result;
+
+    return result.tlType;
 }
 
 TLValue CTelegramConnection::processAccountUpdateStatus(CTelegramStream &stream, quint64 id)

@@ -65,6 +65,41 @@ public:
     void initAuth();
     void getConfiguration();
 
+    // Generated Telegram API methods declaration
+    void messagesAcceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint);
+    void messagesAddChatUser(quint32 chatId, const TLInputUser &userId, quint32 fwdLimit);
+    void messagesCreateChat(const TLVector<TLInputUser> &users, const QString &title);
+    void messagesDeleteChatUser(quint32 chatId, const TLInputUser &userId);
+    void messagesDeleteHistory(const TLInputPeer &peer, quint32 offset);
+    void messagesDeleteMessages(const TLVector<quint32> &id);
+    void messagesDiscardEncryption(quint32 chatId);
+    void messagesEditChatPhoto(quint32 chatId, const TLInputChatPhoto &photo);
+    void messagesEditChatTitle(quint32 chatId, const QString &title);
+    void messagesForwardMessage(const TLInputPeer &peer, quint32 id, quint64 randomId);
+    void messagesForwardMessages(const TLInputPeer &peer, const TLVector<quint32> &id);
+    void messagesGetChats(const TLVector<quint32> &id);
+    void messagesGetDhConfig(quint32 version, quint32 randomLength);
+    void messagesGetDialogs(quint32 offset, quint32 maxId, quint32 limit);
+    void messagesGetFullChat(quint32 chatId);
+    void messagesGetHistory(const TLInputPeer &peer, quint32 offset, quint32 maxId, quint32 limit);
+    void messagesGetMessages(const TLVector<quint32> &id);
+    void messagesReadEncryptedHistory(const TLInputEncryptedChat &peer, quint32 maxDate);
+    void messagesReadHistory(const TLInputPeer &peer, quint32 maxId, quint32 offset);
+    void messagesReceivedMessages(quint32 maxId);
+    void messagesReceivedQueue(quint32 maxQts);
+    void messagesRequestEncryption(const TLInputUser &userId, quint32 randomId, const QByteArray &gA);
+    void messagesRestoreMessages(const TLVector<quint32> &id);
+    void messagesSearch(const TLInputPeer &peer, const QString &q, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offset, quint32 maxId, quint32 limit);
+    void messagesSendBroadcast(const TLVector<TLInputUser> &contacts, const QString &message, const TLInputMedia &media);
+    void messagesSendEncrypted(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data);
+    void messagesSendEncryptedFile(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data, const TLInputEncryptedFile &file);
+    void messagesSendEncryptedService(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data);
+    void messagesSendMedia(const TLInputPeer &peer, const TLInputMedia &media, quint64 randomId);
+    void messagesSendMessage(const TLInputPeer &peer, const QString &message, quint64 randomId);
+    void messagesSetEncryptedTyping(const TLInputEncryptedChat &peer, bool typing);
+    void messagesSetTyping(const TLInputPeer &peer, bool typing);
+    // End of generated Telegram API methods declaration
+
     void requestPhoneStatus(const QString &phoneNumber);
     void requestPhoneCode(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
@@ -82,9 +117,6 @@ public:
 
     void contactsDeleteContacts(const TLVector<TLInputUser> &users);
     void addContacts(const QStringList &phoneNumbers, bool replace);
-
-    void messagesSendMessage(const TLInputPeer &peer, const QString &message, quint64 randomId);
-    void messagesSetTyping(const TLInputPeer &peer, bool typing);
 
     void accountUpdateStatus(bool offline);
 
@@ -174,6 +206,8 @@ protected:
     TLValue processUsersGetFullUser(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesReadHistory(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesReceivedMessages(CTelegramStream &stream, quint64 id);
     TLValue processAccountUpdateStatus(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
