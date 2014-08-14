@@ -34,7 +34,7 @@ QVariant CContactsModel::headerData(int section, Qt::Orientation orientation, in
 QVariant CContactsModel::data(const QModelIndex &index, int role) const
 {
     int section = index.column();
-    uint contactIndex = index.row();
+    int contactIndex = index.row();
 
     if ((role == Qt::DecorationRole) && (section == Avatar)) {
         if (!m_contacts.at(contactIndex).avatar.isNull()) {
@@ -48,7 +48,7 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if (contactIndex > rowCount()) {
+    if (contactIndex >= rowCount()) {
         return QVariant();
     }
 

@@ -205,7 +205,14 @@
          <attribute name="title">
           <string>Messaging</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,1,0,0,0">
+         <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,0,0,0,0">
+          <item row="1" column="4">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Message:</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="5">
            <widget class="QLineEdit" name="messagingMessage"/>
           </item>
@@ -230,10 +237,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="4">
-           <widget class="QLabel" name="label_8">
+          <item row="1" column="2">
+           <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>Message:</string>
+             <string>Typing:</string>
             </property>
            </widget>
           </item>
@@ -241,18 +248,7 @@
            <widget class="QLineEdit" name="messagingContactPhone"/>
           </item>
           <item row="0" column="0" colspan="7">
-           <widget class="QPlainTextEdit" name="messagingLogs">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Typing:</string>
-            </property>
-           </widget>
+           <widget class="QTableView" name="messagingView"/>
           </item>
          </layout>
         </widget>

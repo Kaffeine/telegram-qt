@@ -4,6 +4,7 @@
 #include "CAppInformation.hpp"
 #include "CTelegramCore.hpp"
 #include "CContactModel.hpp"
+#include "CMessagingModel.hpp"
 
 #include <QCompleter>
 #include <QToolTip>
@@ -17,10 +18,12 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_contactsModel(new CContactsModel(this))
+    m_contactsModel(new CContactsModel(this)),
+    m_messagingModel(new CMessagingModel(this))
 {
     ui->setupUi(this);
     ui->contactListTable->setModel(m_contactsModel);
+    ui->messagingView->setModel(m_messagingModel);
 
     QCompleter *comp = new QCompleter(m_contactsModel, this);
     ui->messagingContactPhone->setCompleter(comp);
@@ -44,10 +47,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
     connect(m_core, SIGNAL(contactListChanged()), SLOT(whenContactListChanged()));
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
-    connect(m_core, SIGNAL(messageReceived(QString,QString)), SLOT(whenMessageReceived(QString,QString)));
+    connect(m_core, SIGNAL(messageReceived(QString,QString,quint32)), SLOT(whenMessageReceived(QString,QString,quint32)));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), m_contactsModel, SLOT(setTypingStatus(QString,bool)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), this, SLOT(whenContactTypingStatusChanged()));
+    connect(m_core, SIGNAL(sentMessageStatusChanged(quint64,TelegramNamespace::MessageDeliveryStatus)), m_messagingModel, SLOT(setMessageDeliveryStatus(quint64,TelegramNamespace::MessageDeliveryStatus)));
 }
 
 MainWindow::~MainWindow()
@@ -131,9 +135,9 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
     m_contactsModel->setContactAvatar(contact, avatarFile.fileName());
 }
 
-void MainWindow::whenMessageReceived(const QString &phone, const QString &message)
+void MainWindow::whenMessageReceived(const QString &phone, const QString &message, quint32 messageId)
 {
-    ui->messagingLogs->appendPlainText(QString(QLatin1String("From %1: %2\n")).arg(phone).arg(message));
+    m_messagingModel->addMessage(phone, message, messageId);
 }
 
 void MainWindow::whenContactTypingStatusChanged()
@@ -213,9 +217,9 @@ void MainWindow::on_deleteContact_clicked()
 
 void MainWindow::on_messagingSendButton_clicked()
 {
-    m_core->sendMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text());
+    quint64 id = m_core->sendMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text());
 
-    ui->messagingLogs->appendPlainText(QString(QLatin1String("To %1: %2\n")).arg(ui->messagingContactPhone->text()).arg(ui->messagingMessage->text()));
+    m_messagingModel->addMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text(), id);
 
     ui->messagingMessage->clear();
 }
@@ -249,4 +253,22 @@ void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
     ui->messagingContactPhone->setText(m_contactsModel->data(phoneIndex).toString());
     ui->tabWidget->setCurrentWidget(ui->tabMessaging);
     ui->messagingMessage->setFocus();
+}
+
+void MainWindow::on_messagingView_doubleClicked(const QModelIndex &index)
+{
+    const QModelIndex phoneIndex = m_messagingModel->index(index.row(), CMessagingModel::Phone);
+
+    ui->messagingContactPhone->setText(m_messagingModel->data(phoneIndex).toString());
+    ui->tabWidget->setCurrentWidget(ui->tabMessaging);
+    ui->messagingMessage->setFocus();
+}
+
+void MainWindow::on_tabWidget_currentChanged(int index)
+{
+    Q_UNUSED(index);
+
+    if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
+        // TODO: Read messages
+    }
 }

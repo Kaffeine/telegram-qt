@@ -21,9 +21,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         MainWindow.cpp \
-    CContactModel.cpp
+    CContactModel.cpp \
+    CMessagingModel.cpp
 
 HEADERS  += MainWindow.hpp \
-    CContactModel.hpp
+    CContactModel.hpp \
+    CMessagingModel.hpp
 
 FORMS    += MainWindow.ui

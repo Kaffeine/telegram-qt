@@ -3,12 +3,15 @@
 
 #include <QMainWindow>
 
+#include "TelegramNamespace.hpp"
+
 namespace Ui {
 class MainWindow;
 }
 
 class CTelegramCore;
 class CContactsModel;
+class CMessagingModel;
 
 class QModelIndex;
 
@@ -28,7 +31,7 @@ private slots:
     void whenAuthenticated();
     void whenContactListChanged();
     void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
-    void whenMessageReceived(const QString &phone, const QString &message);
+    void whenMessageReceived(const QString &phone, const QString &message, quint32 messageId);
     void whenContactTypingStatusChanged();
 
     void on_connectButton_clicked();
@@ -44,6 +47,7 @@ private slots:
     void on_deleteContact_clicked();
 
     void on_contactListTable_doubleClicked(const QModelIndex &index);
+    void on_messagingView_doubleClicked(const QModelIndex &index);
 
     void on_setStatusOnline_clicked();
     void on_setStatusOffline_clicked();
@@ -52,12 +56,15 @@ private slots:
     void on_messagingMessage_textChanged(const QString &arg1);
     void on_messagingContactPhone_textChanged(const QString &arg1);
 
+    void on_tabWidget_currentChanged(int index);
+
 private:
     void setRegistered(bool newRegistered);
 
     Ui::MainWindow *ui;
 
     CContactsModel *m_contactsModel;
+    CMessagingModel *m_messagingModel;
     CTelegramCore *m_core;
 
     bool m_registered;
