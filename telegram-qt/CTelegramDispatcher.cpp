@@ -219,13 +219,13 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
     qDebug() << Q_FUNC_INFO << "Requested avatar for user " << phoneNumber;
 }
 
-void CTelegramDispatcher::sendMessageToContact(const QString &phone, const QString &message)
+quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QString &message)
 {
-    TLInputPeer peer = phoneNumberToInputPeer(phone);
+    const TLInputPeer peer = phoneNumberToInputPeer(phone);
 
     if (peer.tlType == InputPeerEmpty) {
         qDebug() << Q_FUNC_INFO << "Can not resolve contact" << phone;
-        return;
+        return 0;
     }
 
     quint64 randomMessageId;
@@ -236,6 +236,8 @@ void CTelegramDispatcher::sendMessageToContact(const QString &phone, const QStri
     if (m_localTypingMap.contains(phone)) {
         m_localTypingMap.remove(phone);
     }
+
+    return randomMessageId;
 }
 
 void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
@@ -255,6 +257,15 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
 
     m_localTypingMap.insert(phone, s_localTypingActionPeriod);
     ensureTypingUpdateTimer(s_localTypingActionPeriod);
+}
+
+void CTelegramDispatcher::setMessageRead(const QString &phone, quint32 messageId)
+{
+    const TLInputPeer peer = phoneNumberToInputPeer(phone);
+
+    if (peer.tlType != InputPeerEmpty) {
+        activeConnection()->messagesReadHistory(peer, messageId, 0);
+    }
 }
 
 void CTelegramDispatcher::setOnlineStatus(bool onlineStatus)
@@ -386,6 +397,13 @@ void CTelegramDispatcher::whenUserTypingTimeout()
     }
 }
 
+void CTelegramDispatcher::whenMessageSentInfoReceived(quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq)
+{
+    m_messagesMap.insert(messageId, randomId);
+
+    emit sentMessageStatusChanged(randomId, TelegramNamespace::MessageDeliveryStatusSent);
+}
+
 void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId)
 {
     CTelegramConnection *connection = m_connections.value(dc);
@@ -413,10 +431,13 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.id;
 //        update.randomId;
 //        break;
-//    case UpdateReadMessages:
-//        update.messages;
+    case UpdateReadMessages:
+        foreach (quint32 messageId, update.messages) {
+            emit sentMessageStatusChanged(m_messagesMap.value(messageId), TelegramNamespace::MessageDeliveryStatusRead);
+        }
+
 //        update.pts;
-//        break;
+        break;
 //    case UpdateDeleteMessages:
 //        update.messages;
 //        update.pts;
@@ -425,7 +446,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.messages;
 //        update.pts;
 //        break;
-    case UpdateUserTyping:{
+    case UpdateUserTyping: {
         TLUser *user = m_users.value(update.userId);
         if (user) {
             emit contactTypingStatusChanged(user->phone, /* typingStatus */ true);
@@ -529,9 +550,9 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     }
 }
 
-void CTelegramDispatcher::processMessageReceived(const QString &phone, const QString &message)
+void CTelegramDispatcher::processMessageReceived(quint32 messageId, const QString &phone, const QString &message)
 {
-    emit messageReceived(phone, message);
+    emit messageReceived(phone, message, messageId);
 
     const quint32 userId = phoneNumberToUserId(phone);
 
@@ -670,6 +691,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         connect(connection, SIGNAL(contactListReceived(QStringList)), SLOT(whenContactListReceived(QStringList)));
         connect(connection, SIGNAL(contactListChanged(QStringList,QStringList)), SLOT(whenContactListChanged(QStringList,QStringList)));
         connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
+        connect(connection, SIGNAL(messageSentInfoReceived(quint64,quint32,quint32,quint32,quint32)), SLOT(whenMessageSentInfoReceived(quint64,quint32,quint32,quint32,quint32)));
 
         if (isAuthenticated()) {
             emit authenticated();
@@ -774,7 +796,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         qDebug() << Q_FUNC_INFO << "UpdatesTooLong processing is not implemented yet.";
         break;
     case UpdateShortMessage:
-        processMessageReceived(userIdToPhoneNumber(updates.fromId), updates.message);
+        processMessageReceived(updates.id, userIdToPhoneNumber(updates.fromId), updates.message);
         break;
     case UpdateShortChatMessage:
         qDebug() << Q_FUNC_INFO << "UpdateShortChatMessage processing is not implemented yet.";

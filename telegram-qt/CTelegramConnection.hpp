@@ -175,6 +175,8 @@ signals:
     void updatesStateReceived(const TLUpdatesState &updatesState);
     void updatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
+    void messageSentInfoReceived(quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
+
 private slots:
     void whenConnected();
     void whenReadyRead();

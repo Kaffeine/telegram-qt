@@ -30,9 +30,10 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
     connect(m_dispatcher, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString)));
-    connect(m_dispatcher, SIGNAL(messageReceived(QString,QString)), SIGNAL(messageReceived(QString,QString)));
+    connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,quint32)), SIGNAL(messageReceived(QString,QString,quint32)));
     connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
     connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,bool)), SIGNAL(contactTypingStatusChanged(QString,bool)));
+    connect(m_dispatcher, SIGNAL(sentMessageStatusChanged(quint64,TelegramNamespace::MessageDeliveryStatus)), SIGNAL(sentMessageStatusChanged(quint64,TelegramNamespace::MessageDeliveryStatus)));
 }
 
 CTelegramCore::~CTelegramCore()
@@ -138,7 +139,7 @@ QString CTelegramCore::contactLastName(const QString &phone) const
     return m_dispatcher->contactLastName(phone);
 }
 
-void CTelegramCore::sendMessage(const QString &phone, const QString &message)
+quint64 CTelegramCore::sendMessage(const QString &phone, const QString &message)
 {
     return m_dispatcher->sendMessageToContact(phone, message);
 }
@@ -146,6 +147,11 @@ void CTelegramCore::sendMessage(const QString &phone, const QString &message)
 void CTelegramCore::setTyping(const QString &phone, bool typingStatus)
 {
     m_dispatcher->setTyping(phone, typingStatus);
+}
+
+void CTelegramCore::setMessageRead(const QString &phone, quint32 messageId)
+{
+    m_dispatcher->setMessageRead(phone, messageId);
 }
 
 void CTelegramCore::setOnlineStatus(bool onlineStatus)

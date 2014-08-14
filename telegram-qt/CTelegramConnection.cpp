@@ -1579,6 +1579,24 @@ TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream,
     TLMessagesSentMessage result;
     stream >> result;
 
+    {
+        const QByteArray data = m_submittedPackages.take(id);
+
+        CTelegramStream outputStream(data);
+
+        TLValue method;
+        TLInputPeer peer;
+        QString message;
+        quint64 randomId;
+
+        outputStream >> method;
+        outputStream >> peer;
+        outputStream >> message;
+        outputStream >> randomId;
+
+        emit messageSentInfoReceived(randomId, result.id, result.pts, result.date, result.seq);
+    }
+
     return result.tlType;
 }
 

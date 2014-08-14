@@ -18,6 +18,12 @@ public:
         ContactStatusOnline
     };
 
+    enum MessageDeliveryStatus {
+        MessageDeliveryStatusUnknown,
+        MessageDeliveryStatusSent,
+        MessageDeliveryStatusRead,
+        MessageDeliveryStatusDeleted
+    };
 };
 
 #endif // TELEGRAMNAMESPACE_HPP

@@ -55,8 +55,10 @@ public:
     void requestContactList();
     void requestContactAvatar(const QString &contact);
 
-    void sendMessageToContact(const QString &phone, const QString &message);
+    quint64 sendMessageToContact(const QString &phone, const QString &message);
     void setTyping(const QString &phone, bool typingStatus);
+
+    void setMessageRead(const QString &phone, quint32 messageId);
 
     void setOnlineStatus(bool onlineStatus);
 
@@ -73,9 +75,11 @@ signals:
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
-    void messageReceived(const QString &phone, const QString &message);
+    void messageReceived(const QString &phone, const QString &message, quint32 messageId);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
+
+    void sentMessageStatusChanged(quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
 
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
@@ -94,10 +98,12 @@ protected slots:
     void whenContactListChanged(const QStringList &added, const QStringList &removed);
     void whenUserTypingTimeout();
 
+    void whenMessageSentInfoReceived(quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
+
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
     void processUpdate(const TLUpdate &update);
-    void processMessageReceived(const QString &phone, const QString &message);
+    void processMessageReceived(quint32 messageId, const QString &phone, const QString &message);
 
 private:
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
@@ -131,6 +137,8 @@ private:
 
     QMap<int, QByteArray> m_delayedPackages; // dc, package data
     QMap<quint32, TLUser*> m_users;
+
+    QMap<quint32, quint64> m_messagesMap; // message id to big_random message id
 
     QString m_selfPhone;
 

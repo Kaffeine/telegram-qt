@@ -60,8 +60,10 @@ public Q_SLOTS:
     void requestContactList();
     void requestContactAvatar(const QString &contact);
 
-    void sendMessage(const QString &phone, const QString &message);
+    quint64 sendMessage(const QString &phone, const QString &message); // Message id is random number
     void setTyping(const QString &phone, bool typingStatus);
+
+    void setMessageRead(const QString &phone, quint32 messageId);
 
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
@@ -75,9 +77,11 @@ Q_SIGNALS:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
-    void messageReceived(const QString &phone, const QString &message);
+    void messageReceived(const QString &phone, const QString &message, quint32 messageId); // Message id is incremental number
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
+
+    void sentMessageStatusChanged(quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
 
 private:
     CTelegramDispatcher *m_dispatcher;
