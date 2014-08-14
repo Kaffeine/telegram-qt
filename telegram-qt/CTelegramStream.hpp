@@ -39,7 +39,7 @@ public:
     template <typename T>
     CTelegramStream &operator>>(TLVector<T> &v);
 
-    // Generated operators
+    // Generated read operators
     CTelegramStream &operator>>(TLAudio &audio);
     CTelegramStream &operator>>(TLAuthCheckedPhone &authCheckedPhone);
     CTelegramStream &operator>>(TLAuthExportedAuthorization &authExportedAuthorization);
@@ -143,7 +143,7 @@ public:
     CTelegramStream &operator>>(TLUpdate &update);
     CTelegramStream &operator>>(TLUpdates &updates);
     CTelegramStream &operator>>(TLUpdatesDifference &updatesDifference);
-    // End of generated operators
+    // End of generated read operators
 
     CTelegramStream &operator<<(const QByteArray &data);
     CTelegramStream &operator<<(const QString &str);
@@ -151,11 +151,26 @@ public:
     CTelegramStream &operator<<(const bool &data);
 
     CTelegramStream &operator<<(const TLDcOption &dcOption);
-    CTelegramStream &operator<<(const TLInputFileLocation &inputFileLocation);
+
+    // Generated write operators
+    CTelegramStream &operator<<(const TLInputAppEvent &inputAppEvent);
     CTelegramStream &operator<<(const TLInputContact &inputContact);
-    CTelegramStream &operator<<(const TLInputPeer &inputPeer);
-    CTelegramStream &operator<<(const TLInputUser &inputUser);
     CTelegramStream &operator<<(const TLInputEncryptedChat &inputEncryptedChat);
+    CTelegramStream &operator<<(const TLInputEncryptedFile &inputEncryptedFile);
+    CTelegramStream &operator<<(const TLInputFile &inputFile);
+    CTelegramStream &operator<<(const TLInputFileLocation &inputFileLocation);
+    CTelegramStream &operator<<(const TLInputGeoChat &inputGeoChat);
+    CTelegramStream &operator<<(const TLInputGeoPoint &inputGeoPoint);
+    CTelegramStream &operator<<(const TLInputPeer &inputPeer);
+    CTelegramStream &operator<<(const TLInputPeerNotifySettings &inputPeerNotifySettings);
+    CTelegramStream &operator<<(const TLInputPhoto &inputPhoto);
+    CTelegramStream &operator<<(const TLInputPhotoCrop &inputPhotoCrop);
+    CTelegramStream &operator<<(const TLInputUser &inputUser);
+    CTelegramStream &operator<<(const TLMessagesFilter &messagesFilter);
+    CTelegramStream &operator<<(const TLInputChatPhoto &inputChatPhoto);
+    CTelegramStream &operator<<(const TLInputMedia &inputMedia);
+    CTelegramStream &operator<<(const TLInputNotifyPeer &inputNotifyPeer);
+    // End of generated write operators
 
     template <typename T>
     CTelegramStream &operator<<(const TLVector<T> &v);

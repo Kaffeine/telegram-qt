@@ -98,7 +98,7 @@ CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
     return *this;
 }
 
-// Generated operators implementation
+// Generated read operators implementation
 CTelegramStream &CTelegramStream::operator>>(TLAudio &audio)
 {
     TLAudio result;
@@ -2944,7 +2944,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdatesDifference &updatesDiffere
     return *this;
 }
 
-// End of generated operators implementation
+// End of generated read operators implementation
 
 template <typename T>
 CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
@@ -2997,6 +2997,111 @@ CTelegramStream &CTelegramStream::operator<<(const TLDcOption &dcOption)
     return *this;
 }
 
+// Generated write operators implementation
+CTelegramStream &CTelegramStream::operator<<(const TLInputAppEvent &inputAppEvent)
+{
+    *this << inputAppEvent.tlType;
+
+    switch (inputAppEvent.tlType) {
+    case InputAppEvent:
+        *this << inputAppEvent.time;
+        *this << inputAppEvent.type;
+        *this << inputAppEvent.peer;
+        *this << inputAppEvent.data;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputContact &inputContact)
+{
+    *this << inputContact.tlType;
+
+    switch (inputContact.tlType) {
+    case InputPhoneContact:
+        *this << inputContact.clientId;
+        *this << inputContact.phone;
+        *this << inputContact.firstName;
+        *this << inputContact.lastName;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedChat &inputEncryptedChat)
+{
+    *this << inputEncryptedChat.tlType;
+
+    switch (inputEncryptedChat.tlType) {
+    case InputEncryptedChat:
+        *this << inputEncryptedChat.chatId;
+        *this << inputEncryptedChat.accessHash;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedFile &inputEncryptedFile)
+{
+    *this << inputEncryptedFile.tlType;
+
+    switch (inputEncryptedFile.tlType) {
+    case InputEncryptedFileEmpty:
+        break;
+    case InputEncryptedFileUploaded:
+        *this << inputEncryptedFile.id;
+        *this << inputEncryptedFile.parts;
+        *this << inputEncryptedFile.md5Checksum;
+        *this << inputEncryptedFile.keyFingerprint;
+        break;
+    case InputEncryptedFile:
+        *this << inputEncryptedFile.id;
+        *this << inputEncryptedFile.accessHash;
+        break;
+    case InputEncryptedFileBigUploaded:
+        *this << inputEncryptedFile.id;
+        *this << inputEncryptedFile.parts;
+        *this << inputEncryptedFile.keyFingerprint;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputFile &inputFile)
+{
+    *this << inputFile.tlType;
+
+    switch (inputFile.tlType) {
+    case InputFile:
+        *this << inputFile.id;
+        *this << inputFile.parts;
+        *this << inputFile.name;
+        *this << inputFile.md5Checksum;
+        break;
+    case InputFileBig:
+        *this << inputFile.id;
+        *this << inputFile.parts;
+        *this << inputFile.name;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
 CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFileLocation)
 {
     *this << inputFileLocation.tlType;
@@ -3030,14 +3135,36 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFil
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputContact &inputContact)
+CTelegramStream &CTelegramStream::operator<<(const TLInputGeoChat &inputGeoChat)
 {
-    *this << inputContact.tlType;
+    *this << inputGeoChat.tlType;
 
-    *this << inputContact.clientId;
-    *this << inputContact.phone;
-    *this << inputContact.firstName;
-    *this << inputContact.lastName;
+    switch (inputGeoChat.tlType) {
+    case InputGeoChat:
+        *this << inputGeoChat.chatId;
+        *this << inputGeoChat.accessHash;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputGeoPoint &inputGeoPoint)
+{
+    *this << inputGeoPoint.tlType;
+
+    switch (inputGeoPoint.tlType) {
+    case InputGeoPointEmpty:
+        break;
+    case InputGeoPoint:
+        *this << inputGeoPoint.latitude;
+        *this << inputGeoPoint.longitude;
+        break;
+    default:
+        break;
+    }
 
     return *this;
 }
@@ -3060,6 +3187,61 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPeer &inputPeer)
         break;
     case InputPeerChat:
         *this << inputPeer.chatId;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputPeerNotifySettings &inputPeerNotifySettings)
+{
+    *this << inputPeerNotifySettings.tlType;
+
+    switch (inputPeerNotifySettings.tlType) {
+    case InputPeerNotifySettings:
+        *this << inputPeerNotifySettings.muteUntil;
+        *this << inputPeerNotifySettings.sound;
+        *this << inputPeerNotifySettings.showPreviews;
+        *this << inputPeerNotifySettings.eventsMask;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputPhoto &inputPhoto)
+{
+    *this << inputPhoto.tlType;
+
+    switch (inputPhoto.tlType) {
+    case InputPhotoEmpty:
+        break;
+    case InputPhoto:
+        *this << inputPhoto.id;
+        *this << inputPhoto.accessHash;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputPhotoCrop &inputPhotoCrop)
+{
+    *this << inputPhotoCrop.tlType;
+
+    switch (inputPhotoCrop.tlType) {
+    case InputPhotoCropAuto:
+        break;
+    case InputPhotoCrop:
+        *this << inputPhotoCrop.cropLeft;
+        *this << inputPhotoCrop.cropTop;
+        *this << inputPhotoCrop.cropWidth;
         break;
     default:
         break;
@@ -3091,14 +3273,22 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputUser &inputUser)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedChat &inputEncryptedChat)
+CTelegramStream &CTelegramStream::operator<<(const TLMessagesFilter &messagesFilter)
 {
-    *this << inputEncryptedChat.tlType;
+    *this << messagesFilter.tlType;
 
-    switch (inputEncryptedChat.tlType) {
-    case InputEncryptedChat:
-        *this << inputEncryptedChat.chatId;
-        *this << inputEncryptedChat.accessHash;
+    switch (messagesFilter.tlType) {
+    case InputMessagesFilterEmpty:
+        break;
+    case InputMessagesFilterPhotos:
+        break;
+    case InputMessagesFilterVideo:
+        break;
+    case InputMessagesFilterPhotoVideo:
+        break;
+    case InputMessagesFilterDocument:
+        break;
+    case InputMessagesFilterAudio:
         break;
     default:
         break;
@@ -3106,3 +3296,119 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedChat &inputEn
 
     return *this;
 }
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputChatPhoto &inputChatPhoto)
+{
+    *this << inputChatPhoto.tlType;
+
+    switch (inputChatPhoto.tlType) {
+    case InputChatPhotoEmpty:
+        break;
+    case InputChatUploadedPhoto:
+        *this << inputChatPhoto.file;
+        *this << inputChatPhoto.crop;
+        break;
+    case InputChatPhoto:
+        *this << inputChatPhoto.id;
+        *this << inputChatPhoto.crop;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMedia)
+{
+    *this << inputMedia.tlType;
+
+    switch (inputMedia.tlType) {
+    case InputMediaEmpty:
+        break;
+    case InputMediaUploadedPhoto:
+        *this << inputMedia.file;
+        break;
+    case InputMediaPhoto:
+        *this << inputMedia.id;
+        break;
+    case InputMediaGeoPoint:
+        *this << inputMedia.geoPoint;
+        break;
+    case InputMediaContact:
+        *this << inputMedia.phoneNumber;
+        *this << inputMedia.firstName;
+        *this << inputMedia.lastName;
+        break;
+    case InputMediaUploadedVideo:
+        *this << inputMedia.file;
+        *this << inputMedia.duration;
+        *this << inputMedia.w;
+        *this << inputMedia.h;
+        *this << inputMedia.mimeType;
+        break;
+    case InputMediaUploadedThumbVideo:
+        *this << inputMedia.file;
+        *this << inputMedia.thumb;
+        *this << inputMedia.duration;
+        *this << inputMedia.w;
+        *this << inputMedia.h;
+        *this << inputMedia.mimeType;
+        break;
+    case InputMediaVideo:
+        *this << inputMedia.id;
+        break;
+    case InputMediaUploadedAudio:
+        *this << inputMedia.file;
+        *this << inputMedia.duration;
+        *this << inputMedia.mimeType;
+        break;
+    case InputMediaAudio:
+        *this << inputMedia.id;
+        break;
+    case InputMediaUploadedDocument:
+        *this << inputMedia.file;
+        *this << inputMedia.fileName;
+        *this << inputMedia.mimeType;
+        break;
+    case InputMediaUploadedThumbDocument:
+        *this << inputMedia.file;
+        *this << inputMedia.thumb;
+        *this << inputMedia.fileName;
+        *this << inputMedia.mimeType;
+        break;
+    case InputMediaDocument:
+        *this << inputMedia.id;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotifyPeer)
+{
+    *this << inputNotifyPeer.tlType;
+
+    switch (inputNotifyPeer.tlType) {
+    case InputNotifyPeer:
+        *this << inputNotifyPeer.peer;
+        break;
+    case InputNotifyUsers:
+        break;
+    case InputNotifyChats:
+        break;
+    case InputNotifyAll:
+        break;
+    case InputNotifyGeoChatPeer:
+        *this << inputNotifyPeer.peer;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+// End of generated write operators implementation
