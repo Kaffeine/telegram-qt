@@ -245,7 +245,7 @@ QString GeneratorNG::generateStreamWriteOperatorImplementation(const TLType &typ
     }
 
     code.append(QString("%1default:\n%1%1break;\n%1}\n\n").arg(spacing));
-    code.append(spacing + QString("return *this;\n}\n\n").arg(spacing));
+    code.append(spacing + QString("return *this;\n}\n\n"));
 
     return code;
 }
@@ -276,13 +276,13 @@ QString GeneratorNG::formatMethodParams(const TLMethod &method)
 
 QString GeneratorNG::generateConnectionMethodDeclaration(const TLMethod &method)
 {
-    return QString("%1void %2(%3);\n").arg(spacing).arg(method.name).arg(formatMethodParams(method));
+    return spacing + QString("quint64 %1(%2);\n").arg(method.name).arg(formatMethodParams(method));
 }
 
 QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method)
 {
     QString result;
-    result += QString("void %1::%2(%3)\n{\n").arg(methodsClassName).arg(method.name).arg(formatMethodParams(method));
+    result += QString("quint64 %1::%2(%3)\n{\n").arg(methodsClassName).arg(method.name).arg(formatMethodParams(method));
     result += spacing + QLatin1String("QByteArray output;\n");
     result += spacing + QLatin1String("CTelegramStream outputStream(&output, /* write */ true);\n\n");
 
@@ -305,7 +305,7 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method)
     }
 
     result += QLatin1Char('\n');
-    result += spacing + QLatin1String("sendEncryptedPackage(output);\n}\n\n");
+    result += spacing + QLatin1String("return sendEncryptedPackage(output);\n}\n\n");
 
     return result;
 }
