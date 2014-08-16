@@ -18,6 +18,8 @@ QVariant CContactsModel::headerData(int section, Qt::Orientation orientation, in
     switch (section) {
     case Phone:
         return tr("Phone");
+    case FullName:
+        return tr("Full name");
     case Status:
         return tr("Status");
     case TypingStatus:
