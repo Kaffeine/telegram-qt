@@ -321,6 +321,10 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
         } else {
             m_users.insert(user.id, new TLUser(user));
         }
+
+        if (user.tlType == UserSelf) {
+            m_selfUserId = user.id;
+        }
     }
 }
 
@@ -696,6 +700,12 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         connect(connection, SIGNAL(contactListChanged(QStringList,QStringList)), SLOT(whenContactListChanged(QStringList,QStringList)));
         connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
         connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)), SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
+
+        if (!m_selfUserId) {
+            TLInputUser selfUser;
+            selfUser.tlType = InputUserSelf;
+            connection->usersGetUsers(QVector<TLInputUser>() << selfUser); // Get self-info
+        }
 
         if (isAuthenticated()) {
             emit authenticated();

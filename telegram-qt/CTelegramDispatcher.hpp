@@ -141,6 +141,7 @@ private:
 
     QMap<quint32, QPair<QString, quint64> >m_messagesMap; // message id to phone and big_random message id
 
+    quint32 m_selfUserId;
     QString m_selfPhone;
 
     QStringList m_contactList;
