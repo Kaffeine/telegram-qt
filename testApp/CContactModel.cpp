@@ -92,6 +92,30 @@ QVariant CContactsModel::data(const QString &phone, int column) const
     }
 }
 
+void CContactsModel::addContact(const QString &phone)
+{
+    beginInsertRows(QModelIndex(), m_contacts.count(), m_contacts.count());
+    m_contacts.append(SContact(phone));
+    endInsertRows();
+}
+
+bool CContactsModel::removeContact(const QString &phone)
+{
+    for (int i = 0; i < m_contacts.count(); ++i) {
+        if (m_contacts.at(i).phone != phone) {
+            continue;
+        }
+
+        beginRemoveRows(QModelIndex(), i, i);
+        m_contacts.removeAt(i);
+        endRemoveRows();
+
+        return true;
+    }
+
+    return false;
+}
+
 void CContactsModel::setContactList(const QStringList &list)
 {
     beginResetModel();
@@ -170,6 +194,17 @@ int CContactsModel::indexOfContact(const QString &phone) const
     }
 
     return -1;
+}
+
+QStringList CContactsModel::contacts() const
+{
+    QStringList phones;
+
+    for (int i = 0; i < m_contacts.count(); ++i) {
+        phones.append(m_contacts.at(i).phone);
+    }
+
+    return phones;
 }
 
 QString CContactsModel::statusToStr(TelegramNamespace::ContactStatus status) const

@@ -46,7 +46,11 @@ public:
 
     int indexOfContact(const QString &phone) const;
 
+    QStringList contacts() const;
+
 public slots:
+    void addContact(const QString &phone);
+    bool removeContact(const QString &phone);
     void setContactList(const QStringList &list);
     void setContactStatus(const QString &phone, TelegramNamespace::ContactStatus status);
     void setTypingStatus(const QString &phone, bool typingStatus);
