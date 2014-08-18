@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>795</width>
-    <height>653</height>
+    <width>1043</width>
+    <height>704</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -252,6 +252,91 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="tabChats">
+         <attribute name="title">
+          <string>Group Chat</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0">
+           <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,1,0,0,0,0,0">
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_13">
+              <property name="text">
+               <string>Message:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3" colspan="4">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Contacts:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="4">
+             <widget class="QLineEdit" name="groupChatContactPhone"/>
+            </item>
+            <item row="3" column="6">
+             <widget class="QPushButton" name="groupChatRemoveContact">
+              <property name="text">
+               <string>Remove</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="3" colspan="4">
+             <widget class="QPushButton" name="groupChatCreateChat">
+              <property name="text">
+               <string>Create chat</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="2">
+             <widget class="QPushButton" name="groupChatSendButton">
+              <property name="text">
+               <string>Send</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="5">
+             <widget class="QPushButton" name="groupChatAddContact">
+              <property name="text">
+               <string>Add</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3" colspan="4">
+             <widget class="QTableView" name="groupChatContacts"/>
+            </item>
+            <item row="3" column="3">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>Contact phone:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QLineEdit" name="groupChatMessage"/>
+            </item>
+            <item row="1" column="0" rowspan="2" colspan="3">
+             <widget class="QTableView" name="groupChatMessagingView"/>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_11">
+              <property name="text">
+               <string>Chat name:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" colspan="6">
+             <widget class="QLineEdit" name="groupChatName"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
         <widget class="QWidget" name="tabSecret">
          <attribute name="title">
           <string>Secret</string>
@@ -372,7 +457,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>795</width>
+     <width>1043</width>
      <height>21</height>
     </rect>
    </property>

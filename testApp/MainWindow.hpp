@@ -32,7 +32,10 @@ private slots:
     void whenContactListChanged();
     void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
     void whenMessageReceived(const QString &phone, const QString &message, quint32 messageId);
+    void whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
     void whenContactTypingStatusChanged();
+    void whenChatAdded(quint32 chatId);
+    void whenChatChanged(quint32 chatId);
 
     void on_connectButton_clicked();
     void on_authButton_clicked();
@@ -58,6 +61,12 @@ private slots:
 
     void on_tabWidget_currentChanged(int index);
 
+    void on_groupChatCreateChat_clicked();
+    void on_groupChatAddContact_clicked();
+    void on_groupChatRemoveContact_clicked();
+
+    void on_groupChatSendButton_clicked();
+
 private:
     void setRegistered(bool newRegistered);
 
@@ -65,6 +74,12 @@ private:
 
     CContactsModel *m_contactsModel;
     CMessagingModel *m_messagingModel;
+
+    CContactsModel *m_chatContactsModel;
+    CMessagingModel *m_chatMessagingModel;
+
+    quint32 m_chatId;
+
     CTelegramCore *m_core;
 
     bool m_registered;

@@ -19,14 +19,21 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_contactsModel(new CContactsModel(this)),
-    m_messagingModel(new CMessagingModel(this))
+    m_messagingModel(new CMessagingModel(this)),
+    m_chatContactsModel(new CContactsModel(this)),
+    m_chatMessagingModel(new CMessagingModel(this)),
+    m_chatId(0)
 {
     ui->setupUi(this);
     ui->contactListTable->setModel(m_contactsModel);
     ui->messagingView->setModel(m_messagingModel);
+    ui->groupChatContacts->setModel(m_chatContactsModel);
+    ui->groupChatContacts->hideColumn(CContactsModel::Avatar);
+    ui->groupChatMessagingView->setModel(m_chatMessagingModel);
 
     QCompleter *comp = new QCompleter(m_contactsModel, this);
     ui->messagingContactPhone->setCompleter(comp);
+    ui->groupChatContactPhone->setCompleter(comp);
 
     // Telepathy Morse app info
     CAppInformation appInfo;
@@ -48,11 +55,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(contactListChanged()), SLOT(whenContactListChanged()));
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
     connect(m_core, SIGNAL(messageReceived(QString,QString,quint32)), SLOT(whenMessageReceived(QString,QString,quint32)));
+    connect(m_core, SIGNAL(chatMessageReceived(quint32,QString,QString)), SLOT(whenChatMessageReceived(quint32,QString,QString)));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), m_contactsModel, SLOT(setTypingStatus(QString,bool)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), this, SLOT(whenContactTypingStatusChanged()));
     connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
             m_messagingModel, SLOT(setMessageDeliveryStatus(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
+
+    connect(m_core, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
+    connect(m_core, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
 }
 
 MainWindow::~MainWindow()
@@ -141,9 +152,37 @@ void MainWindow::whenMessageReceived(const QString &phone, const QString &messag
     m_messagingModel->addMessage(phone, message, messageId);
 }
 
+void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message)
+{
+    if (m_chatId != chatId) {
+        return;
+    }
+
+    m_chatMessagingModel->addMessage(phone, message);
+}
+
 void MainWindow::whenContactTypingStatusChanged()
 {
     ui->messagingContactTypingStatus->setText(m_contactsModel->data(ui->messagingContactPhone->text(), CContactsModel::TypingStatus).toString());
+}
+
+void MainWindow::whenChatAdded(quint32 chatId)
+{
+    m_chatId = chatId;
+    qDebug() << m_chatId;
+    whenChatChanged(m_chatId);
+}
+
+void MainWindow::whenChatChanged(quint32 chatId)
+{
+    if (chatId != m_chatId) {
+        return;
+    }
+
+    m_chatContactsModel->setContactList(m_core->chatParticipants(chatId));
+
+    ui->groupChatCreateChat->setText(tr("Leave chat"));
+    ui->groupChatCreateChat->setEnabled(false);
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -272,4 +311,34 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
         // TODO: Read messages
     }
+}
+
+void MainWindow::on_groupChatCreateChat_clicked()
+{
+    m_chatId = m_core->createChat(m_chatContactsModel->contacts(), ui->groupChatName->text());
+    m_chatContactsModel->addContact(m_core->selfPhone());
+
+    ui->groupChatCreateChat->setText(tr("Leave chat"));
+    ui->groupChatCreateChat->setEnabled(false);
+}
+
+void MainWindow::on_groupChatAddContact_clicked()
+{
+    m_chatContactsModel->addContact(ui->groupChatContactPhone->text());
+    ui->groupChatContactPhone->clear();
+}
+
+void MainWindow::on_groupChatRemoveContact_clicked()
+{
+    m_chatContactsModel->removeContact(ui->groupChatContactPhone->text());
+    ui->groupChatContactPhone->clear();
+}
+
+void MainWindow::on_groupChatSendButton_clicked()
+{
+    m_core->sendChatMessage(1, ui->groupChatMessage->text());
+
+    m_chatMessagingModel->addMessage(m_core->selfPhone(), ui->groupChatMessage->text());
+
+    ui->groupChatMessage->clear();
 }
