@@ -240,6 +240,40 @@ quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QS
     return randomMessageId;
 }
 
+quint64 CTelegramDispatcher::sendMessageToChat(quint32 publicChatId, const QString &message)
+{
+    const TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
+
+    if (peer.tlType == InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve chat" << publicChatId;
+        return 0;
+    }
+
+    quint64 randomMessageId;
+    Utils::randomBytes(&randomMessageId);
+
+    activeConnection()->messagesSendMessage(peer, message, randomMessageId);
+
+    return randomMessageId;
+}
+
+quint32 CTelegramDispatcher::createChat(const QStringList &phones, const QString chatName)
+{
+    TLVector<TLInputUser> users;
+
+    foreach (const QString &phone, phones) {
+        const TLInputUser user = phoneNumberToInputUser(phone);
+        users.append(user);
+    }
+
+    quint32 publicChatId = m_chatIdMap.count() + 1;
+    quint64 apiCallId = activeConnection()->messagesCreateChat(users, chatName);
+
+    m_temporaryChatIdMap.insert(apiCallId, publicChatId);
+
+    return publicChatId;
+}
+
 void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
 {
     if (typingStatus == m_localTypingMap.contains(phone)) {
@@ -306,6 +340,23 @@ QString CTelegramDispatcher::contactLastName(const QString &phone) const
     }
 }
 
+QStringList CTelegramDispatcher::chatParticipants(quint32 publicChatId) const
+{
+    if (!m_chatIdMap.contains(publicChatId)) {
+        return QStringList();
+    }
+
+    const TLChatFull &fullChat = m_chatInfo.value(m_chatIdMap.value(publicChatId)).second;
+
+    QStringList result;
+
+    foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
+        result.append(userIdToPhoneNumber(participant.userId));
+    }
+
+    return result;
+}
+
 void CTelegramDispatcher::whenSelfPhoneReceived(const QString &phone)
 {
     m_selfPhone = phone;
@@ -324,6 +375,7 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
 
         if (user.tlType == UserSelf) {
             m_selfUserId = user.id;
+            m_selfPhone = user.phone;
         }
     }
 }
@@ -401,6 +453,24 @@ void CTelegramDispatcher::whenUserTypingTimeout()
     }
 }
 
+void CTelegramDispatcher::whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId)
+{
+    qDebug() << Q_FUNC_INFO << m_temporaryChatIdMap;
+
+    if (m_temporaryChatIdMap.contains(messageId)) {
+        if (statedMessage.chats.isEmpty()) {
+            qDebug() << "Stated message expected to have chat id, but it haven't";
+            return;
+        }
+
+        qDebug() << "chat id resolved to" << statedMessage.chats.first().id;
+
+        m_chatIdMap.insert(m_temporaryChatIdMap.take(messageId), statedMessage.chats.first().id);
+        qDebug() << m_chatIdMap;
+        qDebug() << m_chatIdMap.keys() << m_chatIdMap.values();
+    }
+}
+
 void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq)
 {
     const QString phone = userIdToPhoneNumber(peer.userId);
@@ -430,10 +500,16 @@ void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint
 void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 {
     switch (update.tlType) {
-//    case UpdateNewMessage:
-//        update.message;
+    case UpdateNewMessage:
+        qDebug() << "UpdateNewMessage";
+        qDebug() << "from:" << update.message.fromId;
+        qDebug() << "fwdFromId:" << update.message.fwdFromId;
+        qDebug() << "to type:" << update.message.toId.tlType;
+        qDebug() << "to userId:" << update.message.toId.userId;
+        qDebug() << "to chatId:" << update.message.toId.chatId;
+        qDebug() << "message:" << update.message.message;
 //        update.pts;
-//        break;
+        break;
 //    case UpdateMessageID:
 //        update.id;
 //        update.randomId;
@@ -471,9 +547,15 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.chatId;
 //        update.userId;
 //        break;
-//    case UpdateChatParticipants:
-//        update.participants;
-//        break;
+    case UpdateChatParticipants: {
+        TLChatFull newChatState = m_chatInfo.value(update.participants.chatId).second;
+        newChatState.id = update.participants.chatId; // newChatState can be newly created emtpy chat
+        newChatState.participants = update.participants;
+        setFullChat(newChatState);
+
+        qDebug() << "chat id resolved to" << update.participants.chatId;
+        break;
+    }
     case UpdateUserStatus: {
         TLUser *user = m_users.value(update.userId);
         if (user) {
@@ -564,12 +646,58 @@ void CTelegramDispatcher::processMessageReceived(quint32 messageId, quint32 from
 
     emit messageReceived(phone, message, messageId);
 
-    if (userId) {
+    if (!phone.isEmpty()) {
         if (m_userTypingMap.value(fromId, 0) > 0) {
             m_userTypingMap.remove(fromId);
             emit contactTypingStatusChanged(phone, /* typingStatus */ false);
         }
     }
+}
+
+void CTelegramDispatcher::processChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message)
+{
+    Q_UNUSED(messageId)
+
+    const QString phone = userIdToPhoneNumber(fromId);
+    const quint32 publicChatId = m_chatIdMap.key(chatId);
+
+    emit chatMessageReceived(publicChatId, phone, message);
+}
+
+void CTelegramDispatcher::setFullChat(const TLChatFull &newChat)
+{
+    if (!m_chatInfo.contains(newChat.id)) {
+        QPair<TLChat, TLChatFull> pair;
+        pair.second = newChat;
+
+        m_chatInfo.insert(newChat.id, pair);
+
+        quint32 publicChatId = m_chatIdMap.count() + 1;
+        m_chatIdMap.insert(publicChatId, newChat.id);
+
+        emit chatAdded(publicChatId);
+    } else {
+        m_chatInfo[newChat.id].second = newChat;
+        emit chatChanged(m_chatIdMap.key(newChat.id));
+    }
+}
+
+TLInputPeer CTelegramDispatcher::publicChatIdToInputPeer(quint32 publicChatId) const
+{
+    qDebug() << Q_FUNC_INFO << m_chatIdMap;
+
+    TLInputPeer inputPeer;
+
+    quint32 chatId = m_chatIdMap.value(publicChatId);
+
+    if (!chatId) {
+        return inputPeer;
+    }
+
+    inputPeer.tlType = InputPeerChat;
+    inputPeer.chatId = chatId;
+
+    return inputPeer;
 }
 
 TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumber) const
@@ -700,6 +828,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         connect(connection, SIGNAL(contactListChanged(QStringList,QStringList)), SLOT(whenContactListChanged(QStringList,QStringList)));
         connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
         connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)), SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
+        connect(connection, SIGNAL(statedMessageReceived(TLMessagesStatedMessage,quint64)), SLOT(whenStatedMessageReceived(TLMessagesStatedMessage,quint64)));
 
         if (!m_selfUserId) {
             TLInputUser selfUser;
@@ -813,7 +942,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         processMessageReceived(updates.id, updates.fromId, updates.message);
         break;
     case UpdateShortChatMessage:
-        qDebug() << Q_FUNC_INFO << "UpdateShortChatMessage processing is not implemented yet.";
+        processChatMessageReceived(updates.id, updates.chatId, updates.fromId, updates.message);
         break;
     case UpdateShort:
         processUpdate(updates.update);

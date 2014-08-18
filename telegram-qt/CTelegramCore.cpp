@@ -31,9 +31,12 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString)));
     connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,quint32)), SIGNAL(messageReceived(QString,QString,quint32)));
+    connect(m_dispatcher, SIGNAL(chatMessageReceived(quint32,QString,QString)), SIGNAL(chatMessageReceived(quint32,QString,QString)));
     connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
     connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,bool)), SIGNAL(contactTypingStatusChanged(QString,bool)));
     connect(m_dispatcher, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)), SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
+    connect(m_dispatcher, SIGNAL(chatAdded(quint32)), SIGNAL(chatAdded(quint32)));
+    connect(m_dispatcher, SIGNAL(chatChanged(quint32)), SIGNAL(chatChanged(quint32)));
 }
 
 CTelegramCore::~CTelegramCore()
@@ -139,9 +142,24 @@ QString CTelegramCore::contactLastName(const QString &phone) const
     return m_dispatcher->contactLastName(phone);
 }
 
+QStringList CTelegramCore::chatParticipants(quint32 publicChatId) const
+{
+    return m_dispatcher->chatParticipants(publicChatId);
+}
+
+QString CTelegramCore::selfPhone() const
+{
+    return m_dispatcher->selfPhone();
+}
+
 quint64 CTelegramCore::sendMessage(const QString &phone, const QString &message)
 {
     return m_dispatcher->sendMessageToContact(phone, message);
+}
+
+quint64 CTelegramCore::sendChatMessage(quint32 chatId, const QString &message)
+{
+    return m_dispatcher->sendMessageToChat(chatId, message);
 }
 
 void CTelegramCore::setTyping(const QString &phone, bool typingStatus)
@@ -157,4 +175,9 @@ void CTelegramCore::setMessageRead(const QString &phone, quint32 messageId)
 void CTelegramCore::setOnlineStatus(bool onlineStatus)
 {
     m_dispatcher->setOnlineStatus(onlineStatus);
+}
+
+quint32 CTelegramCore::createChat(const QStringList &phones, const QString chatName)
+{
+    return m_dispatcher->createChat(phones, chatName);
 }

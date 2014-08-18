@@ -37,10 +37,12 @@ public:
     QByteArray connectionSecretInfo() const;
 
     Q_INVOKABLE bool isAuthenticated();
+    Q_INVOKABLE QString selfPhone() const;
     Q_INVOKABLE QStringList contactList() const;
     Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
     Q_INVOKABLE QString contactFirstName(const QString &phone) const;
     Q_INVOKABLE QString contactLastName(const QString &phone) const;
+    Q_INVOKABLE QStringList chatParticipants(quint32 publicChatId) const;
 
 public Q_SLOTS:
     bool initConnection(const QString &address, quint32 port);
@@ -61,12 +63,15 @@ public Q_SLOTS:
     void requestContactAvatar(const QString &contact);
 
     quint64 sendMessage(const QString &phone, const QString &message); // Message id is random number
+    quint64 sendChatMessage(quint32 chatId, const QString &message); // Message id is random number
     void setTyping(const QString &phone, bool typingStatus);
 
     void setMessageRead(const QString &phone, quint32 messageId);
 
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
+
+    quint32 createChat(const QStringList &phones, const QString chatName);
 
 Q_SIGNALS:
     void connected();
@@ -78,10 +83,14 @@ Q_SIGNALS:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
     void messageReceived(const QString &phone, const QString &message, quint32 messageId); // Message id is incremental number
+    void chatMessageReceived(const quint32 chatId, const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
 
     void sentMessageStatusChanged(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
+
+    void chatAdded(quint32 publichChatId);
+    void chatChanged(quint32 publichChatId);
 
 private:
     CTelegramDispatcher *m_dispatcher;

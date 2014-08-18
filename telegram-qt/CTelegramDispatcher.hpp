@@ -37,6 +37,7 @@ public:
     void setAppInformation(const CAppInformation *newAppInfo);
 
     bool isAuthenticated();
+    QString selfPhone() const { return m_selfPhone; }
 
     QStringList contactList() const { return m_contactList; }
 
@@ -57,6 +58,10 @@ public:
     void requestContactAvatar(const QString &contact);
 
     quint64 sendMessageToContact(const QString &phone, const QString &message);
+    quint64 sendMessageToChat(quint32 publicChatId, const QString &message);
+
+    quint32 createChat(const QStringList &phones, const QString chatName);
+
     void setTyping(const QString &phone, bool typingStatus);
 
     void setMessageRead(const QString &phone, quint32 messageId);
@@ -68,6 +73,8 @@ public:
     QString contactFirstName(const QString &phone) const;
     QString contactLastName(const QString &phone) const;
 
+    QStringList chatParticipants(quint32 publicChatId) const;
+
 signals:
     void dcConfigurationObtained();
     void phoneCodeRequired();
@@ -77,10 +84,14 @@ signals:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
     void messageReceived(const QString &phone, const QString &message, quint32 messageId);
+    void chatMessageReceived(const quint32 chatId, const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
 
     void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
+
+    void chatAdded(quint32 publichChatId);
+    void chatChanged(quint32 publichChatId);
 
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
@@ -99,14 +110,20 @@ protected slots:
     void whenContactListChanged(const QStringList &added, const QStringList &removed);
     void whenUserTypingTimeout();
 
+    void whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
     void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
 
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
     void processUpdate(const TLUpdate &update);
+
     void processMessageReceived(quint32 messageId, quint32 fromId, const QString &message);
+    void processChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message);
+
+    void setFullChat(const TLChatFull &newChat);
 
 private:
+    TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
     QString userIdToPhoneNumber(const quint32 id) const;
@@ -151,6 +168,11 @@ private:
     QTimer *m_typingUpdateTimer;
     QMap<quint32, int> m_userTypingMap; // user id, typing time
     QMap<QString, int> m_localTypingMap; // phone, typing time
+
+    QMap<quint32, quint32> m_chatIdMap; // Public chat id to internal telegram chat id map
+    QMap<quint64, quint32> m_temporaryChatIdMap; // API Call id to public chat id map
+
+    QMap<quint32, QPair<TLChat, TLChatFull> >m_chatInfo; // Internal telegram chat id to ChatFull map
 
 };
 

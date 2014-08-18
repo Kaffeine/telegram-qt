@@ -170,6 +170,7 @@ signals:
     void fileReceived(const TLUploadFile &file, quint32 fileId);
 
     void fullUserReceived(const TLUserFull &userFull);
+    void statedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
 
     void updatesReceived(const TLUpdates &update);
     void updatesStateReceived(const TLUpdatesState &updatesState);
@@ -206,6 +207,7 @@ protected:
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetUsers(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetFullUser(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesCreateChat(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReadHistory(CTelegramStream &stream, quint64 id);
