@@ -34,6 +34,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(chatMessageReceived(quint32,QString,QString)), SIGNAL(chatMessageReceived(quint32,QString,QString)));
     connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
     connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,bool)), SIGNAL(contactTypingStatusChanged(QString,bool)));
+    connect(m_dispatcher, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)), SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)));
     connect(m_dispatcher, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)), SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
     connect(m_dispatcher, SIGNAL(chatAdded(quint32)), SIGNAL(chatAdded(quint32)));
     connect(m_dispatcher, SIGNAL(chatChanged(quint32)), SIGNAL(chatChanged(quint32)));
@@ -165,6 +166,11 @@ quint64 CTelegramCore::sendChatMessage(quint32 chatId, const QString &message)
 void CTelegramCore::setTyping(const QString &phone, bool typingStatus)
 {
     m_dispatcher->setTyping(phone, typingStatus);
+}
+
+void CTelegramCore::setChatTyping(quint32 chatId, bool typingStatus)
+{
+    m_dispatcher->setChatTyping(chatId, typingStatus);
 }
 
 void CTelegramCore::setMessageRead(const QString &phone, quint32 messageId)

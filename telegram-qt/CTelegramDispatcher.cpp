@@ -38,7 +38,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_typingUpdateTimer(new QTimer(this))
 {
     m_typingUpdateTimer->setSingleShot(true);
-    connect(m_typingUpdateTimer, SIGNAL(timeout()), SLOT(whenUserTypingTimeout()));
+    connect(m_typingUpdateTimer, SIGNAL(timeout()), SLOT(whenUserTypingTimerTimeout()));
 }
 
 void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
@@ -254,6 +254,10 @@ quint64 CTelegramDispatcher::sendMessageToChat(quint32 publicChatId, const QStri
 
     activeConnection()->messagesSendMessage(peer, message, randomMessageId);
 
+    if (m_localChatTypingMap.contains(publicChatId)) {
+        m_localChatTypingMap.remove(publicChatId);
+    }
+
     return randomMessageId;
 }
 
@@ -290,6 +294,25 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
     activeConnection()->messagesSetTyping(peer, typingStatus);
 
     m_localTypingMap.insert(phone, s_localTypingActionPeriod);
+    ensureTypingUpdateTimer(s_localTypingActionPeriod);
+}
+
+void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
+{
+    if (typingStatus == m_localChatTypingMap.contains(publicChatId)) {
+        return; // Avoid flood
+    }
+
+    const TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
+
+    if (peer.tlType == InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve chat" << publicChatId;
+        return;
+    }
+
+    activeConnection()->messagesSetTyping(peer, typingStatus);
+
+    m_localChatTypingMap.insert(publicChatId, s_localTypingActionPeriod);
     ensureTypingUpdateTimer(s_localTypingActionPeriod);
 }
 
@@ -410,9 +433,8 @@ void CTelegramDispatcher::whenContactListChanged(const QStringList &added, const
     }
 }
 
-void CTelegramDispatcher::whenUserTypingTimeout()
+void CTelegramDispatcher::whenUserTypingTimerTimeout()
 {
-    const QList<quint32> users = m_userTypingMap.keys();
 
 #if QT_VERSION >= 0x050000
     int minTime = s_userTypingActionPeriod;
@@ -420,6 +442,7 @@ void CTelegramDispatcher::whenUserTypingTimeout()
     int minTime = s_timerMaxInterval;
 #endif
 
+    const QList<quint32> users = m_userTypingMap.keys();
     foreach (quint32 userId, users) {
         int timeRemains = m_userTypingMap.value(userId) - m_typingUpdateTimer->interval();
         if (timeRemains < 5) { // Let 5 ms be allowed correction
@@ -433,8 +456,22 @@ void CTelegramDispatcher::whenUserTypingTimeout()
         }
     }
 
-    const QList<QString> phones = m_localTypingMap.keys();
+    const QList<QPair<quint32, quint32> > usersInChat = m_userChatTypingMap.keys();
+    QPair<quint32, quint32> userInChat;
+    foreach (userInChat, usersInChat) {
+        int timeRemains = m_userChatTypingMap.value(userInChat) - m_typingUpdateTimer->interval();
+        if (timeRemains < 5) { // Let 5 ms be allowed correction
+            m_userChatTypingMap.remove(userInChat);
+            emit contactChatTypingStatusChanged(userInChat.first, userIdToPhoneNumber(userInChat.second), /* typingStatus */ false);
+        } else {
+            m_userChatTypingMap.insert(userInChat, timeRemains);
+            if (minTime > timeRemains) {
+                minTime = timeRemains;
+            }
+        }
+    }
 
+    const QList<QString> phones = m_localTypingMap.keys();
     foreach (const QString &phone, phones) {
         int timeRemains = m_localTypingMap.value(phone) - m_typingUpdateTimer->interval();
         if (timeRemains < 5) { // Let 5 ms be allowed correction
@@ -448,7 +485,21 @@ void CTelegramDispatcher::whenUserTypingTimeout()
         }
     }
 
-    if (!m_userTypingMap.isEmpty() || !m_localTypingMap.isEmpty()) {
+    const QList<quint32> chats = m_localChatTypingMap.keys();
+    foreach (quint32 chat, chats) {
+        int timeRemains = m_localChatTypingMap.value(chat) - m_typingUpdateTimer->interval();
+        if (timeRemains < 5) { // Let 5 ms be allowed correction
+            m_localChatTypingMap.remove(chat);
+            setChatTyping(chat, false);
+        } else {
+            m_localChatTypingMap.insert(chat, timeRemains);
+            if (minTime > timeRemains) {
+                minTime = timeRemains;
+            }
+        }
+    }
+
+    if (!m_userTypingMap.isEmpty() || !m_userChatTypingMap.isEmpty() || !m_localTypingMap.isEmpty() || !m_localChatTypingMap.isEmpty()) {
         m_typingUpdateTimer->start(minTime);
     }
 }
@@ -543,10 +594,22 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         }
         break;
     }
-//    case UpdateChatUserTyping:
-//        update.chatId;
-//        update.userId;
-//        break;
+    case UpdateChatUserTyping: {
+        update.chatId;
+
+        TLUser *user = m_users.value(update.userId);
+        if (user) {
+            emit contactChatTypingStatusChanged(m_chatIdMap.key(update.chatId), user->phone, /* typingStatus */ true);
+            const QPair<quint32,quint32> key(m_chatIdMap.key(update.chatId), update.userId);
+#if QT_VERSION >= 0x050000
+            m_userChatTypingMap.insert(key, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
+#else
+            m_userChatTypingMap.insert(key, s_userTypingActionPeriod); // Missed timer remaining time method can leads to typing time period deviation.
+#endif
+            ensureTypingUpdateTimer(s_userTypingActionPeriod);
+        }
+        break;
+    }
     case UpdateChatParticipants: {
         TLChatFull newChatState = m_chatInfo.value(update.participants.chatId).second;
         newChatState.id = update.participants.chatId; // newChatState can be newly created emtpy chat
@@ -662,6 +725,13 @@ void CTelegramDispatcher::processChatMessageReceived(quint32 messageId, quint32 
     const quint32 publicChatId = m_chatIdMap.key(chatId);
 
     emit chatMessageReceived(publicChatId, phone, message);
+
+    const QPair<quint32,quint32> key(m_chatIdMap.key(chatId), fromId);
+
+    if (m_userChatTypingMap.contains(key)) {
+        m_userChatTypingMap.remove(key);
+        emit contactChatTypingStatusChanged(publicChatId, phone, /* typingStatus */ false);
+    }
 }
 
 void CTelegramDispatcher::setFullChat(const TLChatFull &newChat)

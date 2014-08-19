@@ -63,6 +63,7 @@ public:
     quint32 createChat(const QStringList &phones, const QString chatName);
 
     void setTyping(const QString &phone, bool typingStatus);
+    void setChatTyping(quint32 publicChatId, bool typingStatus);
 
     void setMessageRead(const QString &phone, quint32 messageId);
 
@@ -84,9 +85,10 @@ signals:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
     void messageReceived(const QString &phone, const QString &message, quint32 messageId);
-    void chatMessageReceived(const quint32 chatId, const QString &phone, const QString &message);
+    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
+    void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, bool typingStatus);
 
     void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
 
@@ -108,7 +110,7 @@ protected slots:
 
     void whenContactListReceived(const QStringList &contactList);
     void whenContactListChanged(const QStringList &added, const QStringList &removed);
-    void whenUserTypingTimeout();
+    void whenUserTypingTimerTimeout();
 
     void whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
     void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
@@ -166,8 +168,10 @@ private:
     QList<quint32> m_requestedFilesMessageIds;
 
     QTimer *m_typingUpdateTimer;
-    QMap<quint32, int> m_userTypingMap; // user id, typing time
-    QMap<QString, int> m_localTypingMap; // phone, typing time
+    QMap<quint32, int> m_userTypingMap; // user id, typing time (ms)
+    QMap<QPair<quint32, quint32>, int> m_userChatTypingMap; // <public chat id, user id>, typing time (ms)
+    QMap<QString, int> m_localTypingMap; // phone, typing time (ms)
+    QMap<quint32, int> m_localChatTypingMap; // public chat id, typing time (ms)
 
     QMap<quint32, quint32> m_chatIdMap; // Public chat id to internal telegram chat id map
     QMap<quint64, quint32> m_temporaryChatIdMap; // API Call id to public chat id map

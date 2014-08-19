@@ -65,6 +65,7 @@ public Q_SLOTS:
     quint64 sendMessage(const QString &phone, const QString &message); // Message id is random number
     quint64 sendChatMessage(quint32 chatId, const QString &message); // Message id is random number
     void setTyping(const QString &phone, bool typingStatus);
+    void setChatTyping(quint32 chatId, bool typingStatus);
 
     void setMessageRead(const QString &phone, quint32 messageId);
 
@@ -83,9 +84,10 @@ Q_SIGNALS:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
 
     void messageReceived(const QString &phone, const QString &message, quint32 messageId); // Message id is incremental number
-    void chatMessageReceived(const quint32 chatId, const QString &phone, const QString &message);
+    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
+    void contactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool typingStatus);
 
     void sentMessageStatusChanged(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
 
