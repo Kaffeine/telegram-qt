@@ -58,6 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(chatMessageReceived(quint32,QString,QString)), SLOT(whenChatMessageReceived(quint32,QString,QString)));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), m_contactsModel, SLOT(setTypingStatus(QString,bool)));
+    connect(m_core, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)), SLOT(whenContactChatTypingStatusChanged(quint32,QString,bool)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), this, SLOT(whenContactTypingStatusChanged()));
     connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
             m_messagingModel, SLOT(setMessageDeliveryStatus(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
@@ -159,6 +160,15 @@ void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, c
     }
 
     m_chatMessagingModel->addMessage(phone, message);
+}
+
+void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status)
+{
+    if (m_chatId != chatId) {
+        return;
+    }
+
+    m_chatContactsModel->setTypingStatus(phone, status);
 }
 
 void MainWindow::whenContactTypingStatusChanged()
@@ -266,9 +276,7 @@ void MainWindow::on_messagingSendButton_clicked()
 
 void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
 {
-    Q_UNUSED(arg1)
-
-    m_core->setTyping(ui->messagingContactPhone->text(), !ui->messagingMessage->text().isEmpty());
+    m_core->setTyping(ui->messagingContactPhone->text(), !arg1.isEmpty());
 }
 
 void MainWindow::on_messagingContactPhone_textChanged(const QString &arg1)
@@ -339,6 +347,10 @@ void MainWindow::on_groupChatSendButton_clicked()
     m_core->sendChatMessage(1, ui->groupChatMessage->text());
 
     m_chatMessagingModel->addMessage(m_core->selfPhone(), ui->groupChatMessage->text());
-
     ui->groupChatMessage->clear();
+}
+
+void MainWindow::on_groupChatMessage_textChanged(const QString &arg1)
+{
+    m_core->setChatTyping(m_chatId, !arg1.isEmpty());
 }

@@ -33,6 +33,7 @@ private slots:
     void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
     void whenMessageReceived(const QString &phone, const QString &message, quint32 messageId);
     void whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
+    void whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status);
     void whenContactTypingStatusChanged();
     void whenChatAdded(quint32 chatId);
     void whenChatChanged(quint32 chatId);
@@ -66,6 +67,8 @@ private slots:
     void on_groupChatRemoveContact_clicked();
 
     void on_groupChatSendButton_clicked();
+
+    void on_groupChatMessage_textChanged(const QString &arg1);
 
 private:
     void setRegistered(bool newRegistered);
