@@ -374,7 +374,7 @@ QStringList CTelegramDispatcher::chatParticipants(quint32 publicChatId) const
     QStringList result;
 
     foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
-        result.append(userIdToPhoneNumber(participant.userId));
+        result.append(userIdToIdentifier(participant.userId));
     }
 
     return result;
@@ -447,7 +447,7 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
         int timeRemains = m_userTypingMap.value(userId) - m_typingUpdateTimer->interval();
         if (timeRemains < 5) { // Let 5 ms be allowed correction
             m_userTypingMap.remove(userId);
-            emit contactTypingStatusChanged(userIdToPhoneNumber(userId), /* typingStatus */ false);
+            emit contactTypingStatusChanged(userIdToIdentifier(userId), /* typingStatus */ false);
         } else {
             m_userTypingMap.insert(userId, timeRemains);
             if (minTime > timeRemains) {
@@ -462,7 +462,7 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
         int timeRemains = m_userChatTypingMap.value(userInChat) - m_typingUpdateTimer->interval();
         if (timeRemains < 5) { // Let 5 ms be allowed correction
             m_userChatTypingMap.remove(userInChat);
-            emit contactChatTypingStatusChanged(userInChat.first, userIdToPhoneNumber(userInChat.second), /* typingStatus */ false);
+            emit contactChatTypingStatusChanged(userInChat.first, userIdToIdentifier(userInChat.second), /* typingStatus */ false);
         } else {
             m_userChatTypingMap.insert(userInChat, timeRemains);
             if (minTime > timeRemains) {
@@ -524,7 +524,7 @@ void CTelegramDispatcher::whenStatedMessageReceived(const TLMessagesStatedMessag
 
 void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq)
 {
-    const QString phone = userIdToPhoneNumber(peer.userId);
+    const QString phone = userIdToIdentifier(peer.userId);
     QPair<QString, quint64> phoneAndId(phone, randomId);
 
     m_messagesMap.insert(messageId, phoneAndId);
@@ -581,25 +581,19 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.messages;
 //        update.pts;
 //        break;
-    case UpdateUserTyping: {
-        TLUser *user = m_users.value(update.userId);
-        if (user) {
-            emit contactTypingStatusChanged(user->phone, /* typingStatus */ true);
+    case UpdateUserTyping:
+        if (m_users.contains(update.userId)) {
+            emit contactTypingStatusChanged(userIdToIdentifier(update.userId), /* typingStatus */ true);
 #if QT_VERSION >= 0x050000
-            m_userTypingMap.insert(user->id, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
+            m_userTypingMap.insert(update.userId, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
 #else
-            m_userTypingMap.insert(user->id, s_userTypingActionPeriod); // Missed timer remaining time method can leads to typing time period deviation.
+            m_userTypingMap.insert(update.userId, s_userTypingActionPeriod); // Missed timer remaining time method can leads to typing time period deviation.
 #endif
             ensureTypingUpdateTimer(s_userTypingActionPeriod);
         }
-        break;
-    }
-    case UpdateChatUserTyping: {
-        update.chatId;
-
-        TLUser *user = m_users.value(update.userId);
-        if (user) {
-            emit contactChatTypingStatusChanged(m_chatIdMap.key(update.chatId), user->phone, /* typingStatus */ true);
+    case UpdateChatUserTyping:
+        if (m_users.contains(update.userId)) {
+            emit contactChatTypingStatusChanged(m_chatIdMap.key(update.chatId), userIdToIdentifier(update.userId), /* typingStatus */ true);
             const QPair<quint32,quint32> key(m_chatIdMap.key(update.chatId), update.userId);
 #if QT_VERSION >= 0x050000
             m_userChatTypingMap.insert(key, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
@@ -609,7 +603,6 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             ensureTypingUpdateTimer(s_userTypingActionPeriod);
         }
         break;
-    }
     case UpdateChatParticipants: {
         TLChatFull newChatState = m_chatInfo.value(update.participants.chatId).second;
         newChatState.id = update.participants.chatId; // newChatState can be newly created emtpy chat
@@ -705,7 +698,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 
 void CTelegramDispatcher::processMessageReceived(quint32 messageId, quint32 fromId, const QString &message)
 {
-    const QString phone = userIdToPhoneNumber(fromId);
+    const QString phone = userIdToIdentifier(fromId);
 
     emit messageReceived(phone, message, messageId);
 
@@ -721,7 +714,7 @@ void CTelegramDispatcher::processChatMessageReceived(quint32 messageId, quint32 
 {
     Q_UNUSED(messageId)
 
-    const QString phone = userIdToPhoneNumber(fromId);
+    const QString phone = userIdToIdentifier(fromId);
     const quint32 publicChatId = m_chatIdMap.key(chatId);
 
     emit chatMessageReceived(publicChatId, phone, message);
@@ -828,12 +821,14 @@ TLInputUser CTelegramDispatcher::phoneNumberToInputUser(const QString &phoneNumb
     return inputUser;
 }
 
-QString CTelegramDispatcher::userIdToPhoneNumber(const quint32 id) const
+QString CTelegramDispatcher::userIdToIdentifier(const quint32 id) const
 {
     const TLUser *user = m_users.value(id);
 
     if (user) {
-        return user->phone;
+        if (!user->phone.isEmpty()) {
+            return user->phone;
+        }
     }
 
     return QString(QLatin1String("unknown%1")).arg(id);

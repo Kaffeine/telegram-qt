@@ -128,7 +128,7 @@ private:
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
-    QString userIdToPhoneNumber(const quint32 id) const;
+    QString userIdToIdentifier(const quint32 id) const;
     quint32 phoneNumberToUserId(const QString &phoneNumber) const;
     TLUser *phoneNumberToUser(const QString &phoneNumber) const;
 
