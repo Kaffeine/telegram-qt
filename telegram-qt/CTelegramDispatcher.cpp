@@ -33,8 +33,11 @@ const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typ
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_appInformation(0),
+    m_initState(InitNone),
     m_activeDc(0),
     m_wantedActiveDc(0),
+    m_updatesStateIsLocked(false),
+    m_selfUserId(0),
     m_typingUpdateTimer(new QTimer(this))
 {
     m_typingUpdateTimer->setSingleShot(true);
@@ -98,8 +101,6 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
 
 void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
 {
-    m_initState = InitNone;
-
     TLDcOption dcInfo;
     dcInfo.ipAddress = address;
     dcInfo.port = port;
@@ -108,20 +109,15 @@ void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
     m_updatesState.qts = 1;
     m_updatesState.date = 1;
 
-    m_actualState = TLUpdatesState(); // Reset
-
     CTelegramConnection *connection = createConnection(dcInfo);
 
     m_connections.insert(0, connection);
-    connection->connectToDc();
 
-    setActiveDc(0);
+    initConnectionSharedFinal();
 }
 
 bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 {
-    m_initState = InitNone;
-
     CTelegramStream inputStream(secret);
 
     quint32 format;
@@ -155,8 +151,6 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
         m_updatesState.date = 1;
     }
 
-    m_actualState = TLUpdatesState(); // Reset
-
     CTelegramConnection *connection = createConnection(dcInfo);
 
     connection->setDeltaTime(deltaTime);
@@ -171,11 +165,19 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 
     m_connections.insert(dcInfo.id, connection);
 
-    setActiveDc(dcInfo.id);
-
-    connection->connectToDc();
+    initConnectionSharedFinal(dcInfo.id);
 
     return true;
+}
+
+void CTelegramDispatcher::initConnectionSharedFinal(int activeDc)
+{
+    m_initState = InitNone;
+    m_selfUserId = 0;
+    m_actualState = TLUpdatesState();
+
+    setActiveDc(activeDc);
+    activeConnection()->connectToDc();
 }
 
 void CTelegramDispatcher::requestPhoneStatus(const QString &phoneNumber)

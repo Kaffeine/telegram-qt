@@ -141,6 +141,8 @@ protected:
 
     void setFullChat(const TLChatFull &newChat);
 
+    void initConnectionSharedFinal(int activeDc = 0);
+
 private:
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
