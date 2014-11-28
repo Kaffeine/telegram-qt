@@ -1109,7 +1109,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
 {
     switch (updates.tlType) {
     case UpdatesTooLong:
-        qDebug() << Q_FUNC_INFO << "UpdatesTooLong processing is not implemented yet.";
+        getState();
         break;
     case UpdateShortMessage:
         processMessageReceived(updates.id, updates.fromId, updates.message);
