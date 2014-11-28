@@ -28,6 +28,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(m_dispatcher, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
     connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
+    connect(m_dispatcher, SIGNAL(initializated()), SIGNAL(initializated()));
     connect(m_dispatcher, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString)));
     connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,quint32)), SIGNAL(messageReceived(QString,QString,quint32)));
@@ -115,7 +116,7 @@ void CTelegramCore::deleteContacts(const QStringList &phoneNumbers)
 
 void CTelegramCore::requestContactList()
 {
-    m_dispatcher->requestContactList();
+    qDebug() << Q_FUNC_INFO << "deprecated. Makes no sense.";
 }
 
 void CTelegramCore::requestContactAvatar(const QString &contact)

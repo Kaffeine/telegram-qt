@@ -105,7 +105,7 @@ public:
     void signIn(const QString &phoneNumber, const QString &authCode);
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
-    void requestContacts();
+    void contactsGetContacts();
 
     void updatesGetState();
     void updatesGetDifference(quint32 pts, quint32 date, quint32 qts);

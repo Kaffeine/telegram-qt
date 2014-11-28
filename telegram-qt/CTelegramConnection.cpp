@@ -193,7 +193,7 @@ void CTelegramConnection::signUp(const QString &phoneNumber, const QString &auth
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::requestContacts()
+void CTelegramConnection::contactsGetContacts()
 {
     qDebug() << "GetContacts";
 

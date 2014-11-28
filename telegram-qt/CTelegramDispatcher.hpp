@@ -32,6 +32,13 @@ class CTelegramDispatcher : public QObject
 {
     Q_OBJECT
 public:
+    enum InitializationState {
+        InitNone,
+        InitGetSelf,
+        InitGetContactList,
+        InitDone
+    };
+
     explicit CTelegramDispatcher(QObject *parent = 0);
 
     void setAppInformation(const CAppInformation *newAppInfo);
@@ -54,7 +61,6 @@ public:
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
     void requestPhoneCode(const QString &phoneNumber);
-    void requestContactList();
     void requestContactAvatar(const QString &contact);
 
     quint64 sendMessageToContact(const QString &phone, const QString &message);
@@ -94,6 +100,7 @@ signals:
 
     void chatAdded(quint32 publichChatId);
     void chatChanged(quint32 publichChatId);
+    void initializated();
 
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
@@ -114,6 +121,9 @@ protected slots:
 
     void whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
     void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
+
+    void getSelfUser();
+    void getContacts();
 
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
@@ -147,7 +157,11 @@ private:
 
     void ensureTypingUpdateTimer(int interval);
 
+    void continueInitialization();
+
     const CAppInformation *m_appInformation;
+
+    InitializationState m_initState;
 
     int m_activeDc;
     int m_wantedActiveDc;
