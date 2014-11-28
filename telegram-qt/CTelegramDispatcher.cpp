@@ -591,6 +591,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 #endif
             ensureTypingUpdateTimer(s_userTypingActionPeriod);
         }
+        break;
     case UpdateChatUserTyping:
         if (m_users.contains(update.userId)) {
             emit contactChatTypingStatusChanged(m_chatIdMap.key(update.chatId), userIdToIdentifier(update.userId), /* typingStatus */ true);
