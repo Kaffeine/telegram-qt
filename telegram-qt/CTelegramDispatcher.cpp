@@ -22,7 +22,7 @@
 
 #include <QDebug>
 
-const quint32 secretFormatVersion = 0;
+const quint32 secretFormatVersion = 1;
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingActionPeriod = 5000; // 5 sec
 
@@ -89,6 +89,9 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
     outputStream << activeConnection()->authKey();
     outputStream << activeConnection()->authId();
     outputStream << activeConnection()->serverSalt();
+    outputStream << m_updatesState.pts;
+    outputStream << m_updatesState.qts;
+    outputStream << m_updatesState.date;
 
     return output;
 }
@@ -100,6 +103,12 @@ void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
     TLDcOption dcInfo;
     dcInfo.ipAddress = address;
     dcInfo.port = port;
+
+    m_updatesState.pts = 1;
+    m_updatesState.qts = 1;
+    m_updatesState.date = 1;
+
+    m_actualState = TLUpdatesState(); // Reset
 
     CTelegramConnection *connection = createConnection(dcInfo);
 
@@ -124,7 +133,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 
     inputStream >> format;
 
-    if (format != secretFormatVersion) {
+    if (format > secretFormatVersion) {
         qDebug() << "Unknown format version";
         return false;
     }
@@ -135,6 +144,18 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     inputStream >> authKey;
     inputStream >> authId;
     inputStream >> serverSalt;
+
+    if (format >= 1) {
+        inputStream >> m_updatesState.pts;
+        inputStream >> m_updatesState.qts;
+        inputStream >> m_updatesState.date;
+    } else {
+        m_updatesState.pts = 1;
+        m_updatesState.qts = 1;
+        m_updatesState.date = 1;
+    }
+
+    m_actualState = TLUpdatesState(); // Reset
 
     CTelegramConnection *connection = createConnection(dcInfo);
 
@@ -185,11 +206,6 @@ void CTelegramDispatcher::requestPhoneCode(const QString &phoneNumber)
     }
 
     activeConnection()->requestPhoneCode(phoneNumber);
-}
-
-void CTelegramDispatcher::getContacts()
-{
-    activeConnection()->contactsGetContacts();
 }
 
 void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
@@ -520,6 +536,8 @@ void CTelegramDispatcher::whenStatedMessageReceived(const TLMessagesStatedMessag
 {
     qDebug() << Q_FUNC_INFO << m_temporaryChatIdMap;
 
+    ensureUpdateState(statedMessage.pts, statedMessage.seq);
+
     if (m_temporaryChatIdMap.contains(messageId)) {
         if (statedMessage.chats.isEmpty()) {
             qDebug() << "Stated message expected to have chat id, but it haven't";
@@ -542,6 +560,8 @@ void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, q
     m_messagesMap.insert(messageId, phoneAndId);
 
     emit sentMessageStatusChanged(phoneAndId.first, phoneAndId.second, TelegramNamespace::MessageDeliveryStatusSent);
+
+    ensureUpdateState(pts, seq, date);
 }
 
 void CTelegramDispatcher::getSelfUser()
@@ -551,6 +571,71 @@ void CTelegramDispatcher::getSelfUser()
         selfUser.tlType = InputUserSelf;
         activeConnection()->usersGetUsers(QVector<TLInputUser>() << selfUser); // Get self-info
     }
+}
+
+void CTelegramDispatcher::getContacts()
+{
+    activeConnection()->contactsGetContacts();
+}
+
+void CTelegramDispatcher::getState()
+{
+    m_updatesStateIsLocked = true;
+    activeConnection()->updatesGetState();
+}
+
+void CTelegramDispatcher::whenUpdatesStateReceived(const TLUpdatesState &updatesState)
+{
+    m_actualState = updatesState;
+    checkStateAndCallGetDifference();
+}
+
+// Should be called via checkStateAndCallGetDifference()
+void CTelegramDispatcher::getDifference()
+{
+    activeConnection()->updatesGetDifference(m_updatesState.pts, m_updatesState.date, m_updatesState.qts);
+}
+
+void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference)
+{
+    switch (updatesDifference.tlType) {
+    case UpdatesDifference:
+        qDebug() << "difference" << updatesDifference.newMessages.count();
+        foreach (const TLMessage &message, updatesDifference.newMessages) {
+//            qDebug() << "added message" << message.message;
+            if (message.tlType != Message) {
+                continue;
+            }
+            emit messageReceived(userIdToIdentifier(message.fromId), message.message, message.id);
+        }
+        m_updatesState = updatesDifference.state;
+        break;
+    case UpdatesDifferenceSlice:
+        qDebug() << "difference slice" << updatesDifference.newMessages.count();
+        foreach (const TLMessage &message, updatesDifference.newMessages) {
+//            qDebug() << "added message" << message.message;
+            if (message.tlType != Message) {
+                continue;
+            }
+            emit messageReceived(userIdToIdentifier(message.fromId), message.message, message.id);
+        }
+        m_updatesState = updatesDifference.intermediateState;
+
+
+        break;
+    case UpdatesDifferenceEmpty:
+        qDebug() << "difference_empty";
+
+        // Try to update actual and local state in this weird case.
+        QTimer::singleShot(10, this, SLOT(getState()));
+        return;
+        break;
+    default:
+        qDebug() << "unknown type of updatesDifference";
+        break;
+    }
+
+    checkStateAndCallGetDifference();
 }
 
 void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId)
@@ -580,7 +665,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         qDebug() << "to userId:" << update.message.toId.userId;
         qDebug() << "to chatId:" << update.message.toId.chatId;
         qDebug() << "message:" << update.message.message;
-//        update.pts;
+        ensureUpdateState(update.pts);
         break;
 //    case UpdateMessageID:
 //        update.id;
@@ -591,16 +676,15 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             const QPair<QString, quint64> phoneAndId = m_messagesMap.value(messageId);
             emit sentMessageStatusChanged(phoneAndId.first, phoneAndId.second, TelegramNamespace::MessageDeliveryStatusRead);
         }
-
-//        update.pts;
+        ensureUpdateState(update.pts);
         break;
 //    case UpdateDeleteMessages:
 //        update.messages;
-//        update.pts;
+//        ensureUpdateState(update.pts);
 //        break;
 //    case UpdateRestoreMessages:
 //        update.messages;
-//        update.pts;
+//        ensureUpdateState(update.pts);
 //        break;
     case UpdateUserTyping:
         if (m_users.contains(update.userId)) {
@@ -916,6 +1000,8 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
         connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)), SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
         connect(connection, SIGNAL(statedMessageReceived(TLMessagesStatedMessage,quint64)), SLOT(whenStatedMessageReceived(TLMessagesStatedMessage,quint64)));
+        connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)), SLOT(whenUpdatesStateReceived(TLUpdatesState)));
+        connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)), SLOT(whenUpdatesDifferenceReceived(TLUpdatesDifference)));
 
         if (isAuthenticated()) {
             emit authenticated();
@@ -1023,9 +1109,11 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         break;
     case UpdateShortMessage:
         processMessageReceived(updates.id, updates.fromId, updates.message);
+        ensureUpdateState(updates.pts);
         break;
     case UpdateShortChatMessage:
         processChatMessageReceived(updates.id, updates.chatId, updates.fromId, updates.message);
+        ensureUpdateState(updates.pts);
         break;
     case UpdateShort:
         processUpdate(updates.update);
@@ -1084,11 +1172,44 @@ void CTelegramDispatcher::continueInitialization()
     case InitGetContactList:
         getContacts();
         break;
+    case InitCheckUpdates:
+        getState();
+        break;
     case InitDone:
         emit initializated();
         break;
     default:
         break;
+    }
+}
+
+void CTelegramDispatcher::ensureUpdateState(quint32 pts, quint32 seq, quint32 date)
+{
+    if (m_updatesStateIsLocked) {
+        return; // Prevent m_updateState from updating before UpdatesGetState answer receiving to avoid m_updateState <-> m_actualState messing (which may lead to ignore offline-messages)
+    }
+
+    if (pts > m_updatesState.pts) {
+        m_updatesState.pts = pts;
+    }
+
+    if (seq > m_updatesState.seq) {
+        m_updatesState.seq = seq;
+    }
+
+    if (date > m_updatesState.date) {
+        m_updatesState.date = date;
+    }
+}
+
+void CTelegramDispatcher::checkStateAndCallGetDifference()
+{
+    m_updatesStateIsLocked = m_actualState.pts > m_updatesState.pts;
+
+    if (m_updatesStateIsLocked) {
+        QTimer::singleShot(10, this, SLOT(getDifference()));
+    } else if (m_initState == InitCheckUpdates) {
+        continueInitialization();
     }
 }
 

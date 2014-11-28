@@ -36,6 +36,7 @@ public:
         InitNone,
         InitGetSelf,
         InitGetContactList,
+        InitCheckUpdates,
         InitDone
     };
 
@@ -125,6 +126,12 @@ protected slots:
     void getSelfUser();
     void getContacts();
 
+    void getState();
+    void whenUpdatesStateReceived(const TLUpdatesState &updatesState);
+
+    void getDifference();
+    void whenUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
+
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
     void processUpdate(const TLUpdate &update);
@@ -156,6 +163,9 @@ private:
     void setActiveDc(int dc, bool syncWantedDc = true);
 
     void ensureTypingUpdateTimer(int interval);
+    void ensureUpdateState(quint32 pts = 0, quint32 seq = 0, quint32 date = 0);
+
+    void checkStateAndCallGetDifference();
 
     void continueInitialization();
 
@@ -168,6 +178,10 @@ private:
 
     QVector<TLDcOption> m_dcConfiguration;
     QMap<int, CTelegramConnection *> m_connections;
+
+    TLUpdatesState m_updatesState; // Current application update state (may be older than actual server-side message box state)
+    TLUpdatesState m_actualState; // State reported by server as actual
+    bool m_updatesStateIsLocked; // True if we are (going to) getting updatesDifference.
 
     QMap<int, QByteArray> m_delayedPackages; // dc, package data
     QMap<quint32, TLUser*> m_users;
