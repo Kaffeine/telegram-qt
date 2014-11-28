@@ -566,6 +566,11 @@ void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, q
     ensureUpdateState(pts, seq, date);
 }
 
+void CTelegramDispatcher::getDcConfiguration()
+{
+    activeConnection()->getConfiguration();
+}
+
 void CTelegramDispatcher::getSelfUser()
 {
     if (!m_selfUserId) {
@@ -980,10 +985,6 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
     }
 
     if (newState >= CTelegramConnection::AuthStateSuccess) {
-        if (m_dcConfiguration.isEmpty()) {
-            connection->getConfiguration();
-        }
-
         if (m_wantedActiveDc == dc) {
             setActiveDc(dc);
         }
@@ -1005,11 +1006,9 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)), SLOT(whenUpdatesStateReceived(TLUpdatesState)));
         connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)), SLOT(whenUpdatesDifferenceReceived(TLUpdatesDifference)));
 
-        if (isAuthenticated()) {
-            emit authenticated();
-            continueInitialization();
-        }
+        continueInitialization();
     }
+
 }
 
 void CTelegramDispatcher::whenConnectionConfigurationUpdated(int dc)
@@ -1028,6 +1027,9 @@ void CTelegramDispatcher::whenConnectionConfigurationUpdated(int dc)
 
     if (isAuthenticated()) {
         emit authenticated();
+    }
+
+    if (m_initState == InitGetDcConfiguration) {
         continueInitialization();
     }
 }
@@ -1168,6 +1170,9 @@ void CTelegramDispatcher::continueInitialization()
 
     // m_initState contains "what is in progress"
     switch (m_initState) {
+    case InitGetDcConfiguration:
+        getDcConfiguration();
+        break;
     case InitGetSelf:
         getSelfUser();
         break;

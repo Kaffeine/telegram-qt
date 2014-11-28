@@ -34,6 +34,7 @@ class CTelegramDispatcher : public QObject
 public:
     enum InitializationState {
         InitNone,
+        InitGetDcConfiguration,
         InitGetSelf,
         InitGetContactList,
         InitCheckUpdates,
@@ -123,6 +124,7 @@ protected slots:
     void whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
     void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
 
+    void getDcConfiguration();
     void getSelfUser();
     void getContacts();
 
