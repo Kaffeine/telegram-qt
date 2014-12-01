@@ -65,6 +65,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(m_core, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
     connect(m_core, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
+
+    ui->mainSplitter->setSizes(QList<int>() << 0 << 100);
 }
 
 MainWindow::~MainWindow()
@@ -116,6 +118,10 @@ void MainWindow::whenAuthenticated()
     ui->signButton->setEnabled(false);
 
     ui->getContactList->setEnabled(true);
+
+    if (ui->workLikeClient->isChecked()) {
+        m_core->setOnlineStatus(true);
+    }
 }
 
 void MainWindow::whenContactListChanged()
@@ -353,4 +359,13 @@ void MainWindow::on_groupChatSendButton_clicked()
 void MainWindow::on_groupChatMessage_textChanged(const QString &arg1)
 {
     m_core->setChatTyping(m_chatId, !arg1.isEmpty());
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    Q_UNUSED(event)
+
+    if (ui->workLikeClient->isChecked()) {
+        m_core->setOnlineStatus(false);
+    }
 }

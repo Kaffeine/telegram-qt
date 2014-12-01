@@ -14,362 +14,389 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QGroupBox" name="groupBox">
-        <property name="title">
-         <string>Data center</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="0">
-          <widget class="QRadioButton" name="mainDcRadio">
-           <property name="text">
-            <string>&amp;Main DC</string>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <widget class="QSplitter" name="mainSplitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <layout class="QVBoxLayout" name="leftPanel">
+        <item>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string>Data center</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="1" column="0">
+            <widget class="QRadioButton" name="mainDcRadio">
+             <property name="text">
+              <string>&amp;Main DC</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QRadioButton" name="testingDcRadio">
+             <property name="text">
+              <string>Testing DC</string>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_2">
+          <property name="title">
+           <string>Settings</string>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_8">
+           <item row="0" column="0">
+            <widget class="QCheckBox" name="workLikeClient">
+             <property name="toolTip">
+              <string>Set checked to enable client behavior. E.g. set online status on connection and set offline status on app quit.</string>
+             </property>
+             <property name="text">
+              <string>Work like client</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tabMain">
+        <attribute name="title">
+         <string>Main</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,0,0,0,0,1,0">
+         <item row="3" column="2">
+          <widget class="QLabel" name="firstNameLabel">
+           <property name="enabled">
+            <bool>false</bool>
            </property>
-           <property name="checked">
-            <bool>true</bool>
+           <property name="text">
+            <string>First name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Contact list:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="5">
+          <widget class="QLineEdit" name="phoneNumber"/>
+         </item>
+         <item row="3" column="5">
+          <widget class="QLineEdit" name="lastName">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="confirmationCode">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Connection state:</string>
            </property>
           </widget>
          </item>
          <item row="2" column="0">
-          <widget class="QRadioButton" name="testingDcRadio">
+          <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>Testing DC</string>
+            <string>Phone status:</string>
            </property>
-           <property name="checked">
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Auth code:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" colspan="5">
+          <widget class="QLabel" name="phoneStatus">
+           <property name="text">
+            <string>unknown</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Phone number:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="1" rowspan="2" colspan="5">
+          <widget class="QTableView" name="contactListTable"/>
+         </item>
+         <item row="3" column="3">
+          <widget class="QLineEdit" name="firstName">
+           <property name="enabled">
             <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="4">
+          <widget class="QLabel" name="lastNameLabel">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Last name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0" rowspan="2">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>453</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="6" column="1" colspan="5">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLineEdit" name="currentContact"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="addContact">
+             <property name="text">
+              <string>Add contact</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="deleteContact">
+             <property name="text">
+              <string>Delete contact</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLabel" name="connectionState">
+           <property name="text">
+            <string>Disconnected</string>
            </property>
           </widget>
          </item>
         </layout>
        </widget>
-      </item>
-      <item row="1" column="0">
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="1" rowspan="2">
-       <widget class="QTabWidget" name="tabWidget">
-        <property name="currentIndex">
-         <number>0</number>
-        </property>
-        <widget class="QWidget" name="tabMain">
-         <attribute name="title">
-          <string>Main</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,0,0,0,0,1,0">
-          <item row="3" column="2">
-           <widget class="QLabel" name="firstNameLabel">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>First name:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Contact list:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" colspan="5">
-           <widget class="QLineEdit" name="phoneNumber"/>
-          </item>
-          <item row="3" column="5">
-           <widget class="QLineEdit" name="lastName">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="confirmationCode">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Connection state:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Phone status:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>Auth code:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="5">
-           <widget class="QLabel" name="phoneStatus">
-            <property name="text">
-             <string>unknown</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>Phone number:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1" rowspan="2" colspan="5">
-           <widget class="QTableView" name="contactListTable"/>
-          </item>
-          <item row="3" column="3">
-           <widget class="QLineEdit" name="firstName">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="4">
-           <widget class="QLabel" name="lastNameLabel">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Last name:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0" rowspan="2">
-           <spacer name="verticalSpacer_3">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>453</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="6" column="1" colspan="5">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLineEdit" name="currentContact"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="addContact">
-              <property name="text">
-               <string>Add contact</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="deleteContact">
-              <property name="text">
-               <string>Delete contact</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="connectionState">
-            <property name="text">
-             <string>Disconnected</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tabMessaging">
-         <attribute name="title">
-          <string>Messaging</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,0,0,0,0">
-          <item row="1" column="4">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>Message:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="5">
-           <widget class="QLineEdit" name="messagingMessage"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Contact:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QLabel" name="messagingContactTypingStatus">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="6">
-           <widget class="QPushButton" name="messagingSendButton">
-            <property name="text">
-             <string>Send</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Typing:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLineEdit" name="messagingContactPhone"/>
-          </item>
-          <item row="0" column="0" colspan="7">
-           <widget class="QTableView" name="messagingView"/>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tabChats">
-         <attribute name="title">
-          <string>Group Chat</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="0">
-           <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,1,0,0,0,0,0">
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_13">
-              <property name="text">
-               <string>Message:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="3" colspan="4">
-             <widget class="QLabel" name="label_10">
-              <property name="text">
-               <string>Contacts:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="4">
-             <widget class="QLineEdit" name="groupChatContactPhone"/>
-            </item>
-            <item row="3" column="6">
-             <widget class="QPushButton" name="groupChatRemoveContact">
-              <property name="text">
-               <string>Remove</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="3" colspan="4">
-             <widget class="QPushButton" name="groupChatCreateChat">
-              <property name="text">
-               <string>Create chat</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="2">
-             <widget class="QPushButton" name="groupChatSendButton">
-              <property name="text">
-               <string>Send</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="5">
-             <widget class="QPushButton" name="groupChatAddContact">
-              <property name="text">
-               <string>Add</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="3" colspan="4">
-             <widget class="QTableView" name="groupChatContacts"/>
-            </item>
-            <item row="3" column="3">
-             <widget class="QLabel" name="label_12">
-              <property name="text">
-               <string>Contact phone:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QLineEdit" name="groupChatMessage"/>
-            </item>
-            <item row="1" column="0" rowspan="2" colspan="3">
-             <widget class="QTableView" name="groupChatMessagingView"/>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_11">
-              <property name="text">
-               <string>Chat name:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1" colspan="6">
-             <widget class="QLineEdit" name="groupChatName"/>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-        <widget class="QWidget" name="tabSecret">
-         <attribute name="title">
-          <string>Secret</string>
-         </attribute>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Secret:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="getSecretInfo">
-            <property name="text">
-             <string>Get info</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPlainTextEdit" name="secretInfo">
-            <property name="plainText">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+       <widget class="QWidget" name="tabMessaging">
+        <attribute name="title">
+         <string>Messaging</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,0,0,0,0,0,0">
+         <item row="1" column="4">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Message:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="5">
+          <widget class="QLineEdit" name="messagingMessage"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Contact:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
+          <widget class="QLabel" name="messagingContactTypingStatus">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="6">
+          <widget class="QPushButton" name="messagingSendButton">
+           <property name="text">
+            <string>Send</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>Typing:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="messagingContactPhone"/>
+         </item>
+         <item row="0" column="0" colspan="7">
+          <widget class="QTableView" name="messagingView"/>
+         </item>
+        </layout>
        </widget>
-      </item>
-     </layout>
+       <widget class="QWidget" name="tabChats">
+        <attribute name="title">
+         <string>Group Chat</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_7">
+         <item row="0" column="0">
+          <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,1,0,0,0,0,0">
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>Message:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="3" colspan="4">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Contacts:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="4">
+            <widget class="QLineEdit" name="groupChatContactPhone"/>
+           </item>
+           <item row="3" column="6">
+            <widget class="QPushButton" name="groupChatRemoveContact">
+             <property name="text">
+              <string>Remove</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="3" colspan="4">
+            <widget class="QPushButton" name="groupChatCreateChat">
+             <property name="text">
+              <string>Create chat</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="2">
+            <widget class="QPushButton" name="groupChatSendButton">
+             <property name="text">
+              <string>Send</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="5">
+            <widget class="QPushButton" name="groupChatAddContact">
+             <property name="text">
+              <string>Add</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="3" colspan="4">
+            <widget class="QTableView" name="groupChatContacts"/>
+           </item>
+           <item row="3" column="3">
+            <widget class="QLabel" name="label_12">
+             <property name="text">
+              <string>Contact phone:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="groupChatMessage"/>
+           </item>
+           <item row="1" column="0" rowspan="2" colspan="3">
+            <widget class="QTableView" name="groupChatMessagingView"/>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Chat name:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" colspan="6">
+            <widget class="QLineEdit" name="groupChatName"/>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tabSecret">
+        <attribute name="title">
+         <string>Secret</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Secret:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="getSecretInfo">
+           <property name="text">
+            <string>Get info</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPlainTextEdit" name="secretInfo">
+           <property name="plainText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
     </item>
-    <item>
+    <item row="1" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
        <spacer name="horizontalSpacer_3">
@@ -458,7 +485,7 @@
      <x>0</x>
      <y>0</y>
      <width>1043</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
   </widget>

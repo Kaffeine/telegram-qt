@@ -70,6 +70,9 @@ private slots:
 
     void on_groupChatMessage_textChanged(const QString &arg1);
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private:
     void setRegistered(bool newRegistered);
 
