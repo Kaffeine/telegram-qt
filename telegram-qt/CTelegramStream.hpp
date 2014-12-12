@@ -19,8 +19,9 @@
 
 #include "CRawStream.hpp"
 #include "TLTypes.hpp"
+#include "telegramqt_export.h"
 
-class CTelegramStream : public CRawStream
+class TELEGRAMQT_EXPORT CTelegramStream : public CRawStream
 {
 public:
     explicit CTelegramStream(QByteArray *data, bool write);
@@ -38,6 +39,66 @@ public:
 
     template <typename T>
     CTelegramStream &operator>>(TLVector<T> &v);
+
+    CTelegramStream &operator>>(TLVector<unsigned __int64> &v)
+    {
+        TLVector<unsigned __int64> result;
+
+        *this >> result.tlType;
+
+        if (result.tlType == Vector) {
+            quint32 length = 0;
+            *this >> length;
+            for (quint32 i = 0; i < length; ++i) {
+                unsigned __int64 value;
+                *this >> value;
+                result.append(value);
+            }
+        }
+
+        v = result;
+        return *this;
+    }
+
+    CTelegramStream &operator>>(TLVector<unsigned int> &v)
+    {
+        TLVector<unsigned int> result;
+
+        *this >> result.tlType;
+
+        if (result.tlType == Vector) {
+            quint32 length = 0;
+            *this >> length;
+            for (quint32 i = 0; i < length; ++i) {
+                unsigned int value;
+                *this >> value;
+                result.append(value);
+            }
+        }
+
+        v = result;
+        return *this;
+    }
+
+    CTelegramStream &operator>>(TLVector<TLDcOption> &v)
+    {
+        TLVector<TLDcOption> result;
+
+        *this >> result.tlType;
+
+        if (result.tlType == Vector) {
+            quint32 length = 0;
+            *this >> length;
+            for (quint32 i = 0; i < length; ++i) {
+                TLDcOption value;
+                *this >> value;
+                result.append(value);
+            }
+        }
+
+        v = result;
+        return *this;
+    }
 
     // Generated read operators
     CTelegramStream &operator>>(TLAudio &audio);
@@ -175,6 +236,20 @@ public:
     template <typename T>
     CTelegramStream &operator<<(const TLVector<T> &v);
 
+    CTelegramStream &operator<<(const TLVector<quint64> &v)
+    {
+        *this << v.tlType;
+
+        if (v.tlType == Vector) {
+            *this << v.count();
+
+            for (int i = 0; i < v.count(); ++i) {
+                *this << v.at(i);
+            }
+        }
+
+        return *this;
+    }
 };
 
 inline CTelegramStream &CTelegramStream::operator>>(QString &str)

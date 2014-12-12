@@ -35,4 +35,23 @@ HEADERS = CTelegramCore.hpp \
 
 HEADERS += TLValues.h
 
-LIBS += -lssl
+win32 {
+    INCLUDEPATH += ../3rdParty/zlib
+    DEFINES += _CRT_SECURE_NO_WARNINGS
+    LIBS += -lUser32 -lAdvapi32 -lGdi32
+    SOURCES += ../3rdParty/zlib/inflate.c \
+        ../3rdParty/zlib/adler32.c \
+        ../3rdParty/zlib/crc32.c \
+        ../3rdParty/zlib/zutil.c \
+        ../3rdParty/zlib/inftrees.c \
+        ../3rdParty/zlib/inffast.c
+    CONFIG(debug) {
+        DESTDIR = ../bin/debug
+        LIBS += -lssleay32MDd -llibeay32MDd
+    } else {
+        DESTDIR = ../bin/release
+        LIBS += -lssleay32MD -llibeay32MD
+    }
+} else {
+    LIBS += -lssl
+}

@@ -11,6 +11,7 @@
 
 */
 
+#include <array>
 #include <QObject>
 
 #include "CTestConnection.hpp"
@@ -104,14 +105,10 @@ void tst_CTelegramConnection::testPQAuthRequest()
 
     QCOMPARE(encoded.mid(18, 4), messageBodyLength); // Expected payload length is 20 bytes
 
-    QByteArray reqPqRaw;
-    reqPqRaw.resize(4);
-    reqPqRaw[0] = 0x78;
-    reqPqRaw[1] = 0x97;
-    reqPqRaw[2] = 0x46;
-    reqPqRaw[3] = 0x60;
+    std::array<quint8, 4> reqPqRaw {{0x78, 0x97, 0x46, 0x60}};
 
-    QCOMPARE(encoded.mid(22, 4), reqPqRaw); // Expected payload length is 20 bytes
+    QCOMPARE(encoded.mid(22, 4), QByteArray(reinterpret_cast<char*>(reqPqRaw.data()),
+        static_cast<int>(reqPqRaw.size()))); // Expected payload length is 20 bytes
 }
 
 void tst_CTelegramConnection::testAuth()

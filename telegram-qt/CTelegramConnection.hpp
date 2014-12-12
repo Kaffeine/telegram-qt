@@ -23,12 +23,13 @@
 #include "TLTypes.hpp"
 #include "crypto-rsa.hpp"
 #include "crypto-aes.hpp"
+#include "telegramqt_export.h"
 
 class CAppInformation;
 class CTelegramStream;
 class CTelegramTransport;
 
-class CTelegramConnection : public QObject
+class TELEGRAMQT_EXPORT CTelegramConnection : public QObject
 {
     Q_OBJECT
 public:
