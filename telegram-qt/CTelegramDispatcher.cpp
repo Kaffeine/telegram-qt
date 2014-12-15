@@ -647,6 +647,30 @@ void CTelegramDispatcher::getSelfUser()
     }
 }
 
+void CTelegramDispatcher::getUser(quint32 id)
+{
+    TLInputUser user;
+    user.tlType = InputUserContact;
+    user.userId = id;
+    activeConnection()->usersGetUsers(QVector<TLInputUser>() << user);
+}
+
+void CTelegramDispatcher::getInitialUsers()
+{
+    QVector<TLInputUser> users;
+
+    TLInputUser user;
+
+    user.tlType = InputUserSelf;
+    users << user;
+
+    user.tlType = InputUserContact;
+    user.userId = 777000;
+    users << user;
+
+    activeConnection()->usersGetUsers(users);
+}
+
 void CTelegramDispatcher::getContacts()
 {
     activeConnection()->contactsGetContacts();
@@ -1256,7 +1280,7 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     }
 
     if (m_initState == (InitHaveDcConfiguration|InitIsSignIn)) {
-        getSelfUser();
+        getInitialUsers();
         // Sadly, we don't support creation of RPC messages containers, so we fails on attempt to send more than one package in time. (Got "Sequence number too high")
         // That is why we have to comment out this getContacts() and add BadCode1.
 //        getContacts();

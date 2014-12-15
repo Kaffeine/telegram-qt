@@ -150,6 +150,9 @@ protected:
 
     void initConnectionSharedFinal(int activeDc = 0);
 
+    void getUser(quint32 id);
+    void getInitialUsers();
+
 private:
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
