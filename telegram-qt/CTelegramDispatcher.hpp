@@ -43,10 +43,12 @@ public:
     };
 
     explicit CTelegramDispatcher(QObject *parent = 0);
+    ~CTelegramDispatcher();
 
     void setAppInformation(const CAppInformation *newAppInfo);
 
-    bool isAuthenticated();
+    bool isConnected() const;
+    bool isAuthenticated() const;
     QString selfPhone() const { return m_selfPhone; }
 
     QStringList contactList() const { return m_contactList; }
@@ -58,6 +60,7 @@ public:
 
     void initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
+    void closeConnection();
 
     void requestPhoneStatus(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);

@@ -44,14 +44,25 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     connect(m_typingUpdateTimer, SIGNAL(timeout()), SLOT(whenUserTypingTimerTimeout()));
 }
 
+CTelegramDispatcher::~CTelegramDispatcher()
+{
+    qDeleteAll(m_connections);
+    qDeleteAll(m_users);
+}
+
 void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
 {
     m_appInformation = newAppInfo;
 }
 
-bool CTelegramDispatcher::isAuthenticated()
+bool CTelegramDispatcher::isConnected() const
 {
-    return activeConnection() && (activeConnection()->authState() == CTelegramConnection::AuthStateSignedIn) && !m_dcConfiguration.isEmpty();
+    return activeConnection() && !m_dcConfiguration.isEmpty();
+}
+
+bool CTelegramDispatcher::isAuthenticated() const
+{
+    return isConnected() && (activeConnection()->authState() == CTelegramConnection::AuthStateSignedIn);
 }
 
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
@@ -173,11 +184,37 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 void CTelegramDispatcher::initConnectionSharedFinal(int activeDc)
 {
     m_initState = InitNothing;
+    setActiveDc(activeDc);
+    m_updatesStateIsLocked = false;
     m_selfUserId = 0;
+
     m_actualState = TLUpdatesState();
 
-    setActiveDc(activeDc);
     activeConnection()->connectToDc();
+}
+
+void CTelegramDispatcher::closeConnection()
+{
+    foreach (CTelegramConnection *o, m_connections) {
+        o->disconnect(this);
+        o->deleteLater();
+    }
+
+    m_connections.clear();
+    m_dcConfiguration.clear();
+    m_delayedPackages.clear();
+    qDeleteAll(m_users);
+    m_users.clear();
+    m_messagesMap.clear();
+    m_contactList.clear();
+    m_requestedFilesMessageIds.clear();
+    m_userTypingMap.clear();
+    m_userChatTypingMap.clear();
+    m_localTypingMap.clear();
+    m_localChatTypingMap.clear();
+    m_chatIdMap.clear();
+    m_temporaryChatIdMap.clear();
+    m_chatInfo.clear();
 }
 
 void CTelegramDispatcher::requestPhoneStatus(const QString &phoneNumber)
