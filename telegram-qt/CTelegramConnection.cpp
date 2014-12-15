@@ -1264,7 +1264,7 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
     QString errorMessage;
     stream >> errorMessage;
 
-    qDebug() << "RPC Error" << errorCode << ":" << errorMessage << "for message" << id;
+    qDebug() << "RPC Error" << errorCode << ":" << errorMessage << "for message" << id << QString::number(request, 16);
 
     switch (errorCode) {
     case 303: // ERROR_SEE_OTHER
