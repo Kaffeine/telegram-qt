@@ -33,12 +33,13 @@ class CTelegramDispatcher : public QObject
     Q_OBJECT
 public:
     enum InitializationState {
-        InitNone,
-        InitGetDcConfiguration,
-        InitGetSelf,
-        InitGetContactList,
-        InitCheckUpdates,
-        InitDone
+        InitNothing,
+        InitHaveDcConfiguration = 1 << 0,
+        InitIsSignIn            = 1 << 1,
+        InitKnowSelf            = 1 << 2,
+        InitHaveContactList     = 1 << 3,
+        InitHaveUpdates         = 1 << 4,
+        InitDone                = InitHaveDcConfiguration|InitIsSignIn|InitKnowSelf|InitHaveContactList|InitHaveUpdates
     };
 
     explicit CTelegramDispatcher(QObject *parent = 0);
@@ -85,7 +86,7 @@ public:
     QStringList chatParticipants(quint32 publicChatId) const;
 
 signals:
-    void dcConfigurationObtained();
+    void connected();
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void authenticated();
@@ -107,7 +108,7 @@ signals:
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
     void whenConnectionAuthChanged(int dc, int newState);
-    void whenConnectionConfigurationUpdated(int dc);
+    void whenDcConfigurationUpdated(int dc);
     void whenConnectionDcIdUpdated(int connectionId, int newDcId);
     void whenPackageRedirected(const QByteArray &data, int dc);
     void whenWantedActiveDcChanged(int dc);
@@ -128,7 +129,7 @@ protected slots:
     void getSelfUser();
     void getContacts();
 
-    void getState();
+    void getUpdatesState();
     void whenUpdatesStateReceived(const TLUpdatesState &updatesState);
 
     void getDifference();
@@ -171,7 +172,7 @@ private:
 
     void checkStateAndCallGetDifference();
 
-    void continueInitialization();
+    void continueInitialization(InitializationState justDone);
 
     const CAppInformation *m_appInformation;
 

@@ -33,7 +33,7 @@ const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typ
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_appInformation(0),
-    m_initState(InitNone),
+    m_initState(InitNothing),
     m_activeDc(0),
     m_wantedActiveDc(0),
     m_updatesStateIsLocked(false),
@@ -172,7 +172,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 
 void CTelegramDispatcher::initConnectionSharedFinal(int activeDc)
 {
-    m_initState = InitNone;
+    m_initState = InitNothing;
     m_selfUserId = 0;
     m_actualState = TLUpdatesState();
 
@@ -422,9 +422,7 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
             m_selfUserId = user.id;
             m_selfPhone = user.phone;
 
-            if (m_initState == InitGetSelf) {
-                continueInitialization();
-            }
+            continueInitialization(InitKnowSelf);
         }
     }
 }
@@ -439,9 +437,7 @@ void CTelegramDispatcher::whenContactListReceived(const QStringList &contactList
         emit contactListChanged();
     }
 
-    if (m_initState == InitGetContactList) {
-        continueInitialization();
-    }
+    continueInitialization(InitHaveContactList);
 }
 
 void CTelegramDispatcher::whenContactListChanged(const QStringList &added, const QStringList &removed)
@@ -585,7 +581,7 @@ void CTelegramDispatcher::getContacts()
     activeConnection()->contactsGetContacts();
 }
 
-void CTelegramDispatcher::getState()
+void CTelegramDispatcher::getUpdatesState()
 {
     m_updatesStateIsLocked = true;
     activeConnection()->updatesGetState();
@@ -627,14 +623,12 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
             emit messageReceived(userIdToIdentifier(message.fromId), message.message, message.id);
         }
         m_updatesState = updatesDifference.intermediateState;
-
-
         break;
     case UpdatesDifferenceEmpty:
         qDebug() << "difference_empty";
 
         // Try to update actual and local state in this weird case.
-        QTimer::singleShot(10, this, SLOT(getState()));
+        QTimer::singleShot(10, this, SLOT(getUpdatesState()));
         return;
         break;
     default:
@@ -994,6 +988,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         }
 
         m_delayedPackages.remove(dc);
+        continueInitialization(InitNothing);
     }
 
     if (newState == CTelegramConnection::AuthStateSignedIn) {
@@ -1006,12 +1001,12 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
         connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)), SLOT(whenUpdatesStateReceived(TLUpdatesState)));
         connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)), SLOT(whenUpdatesDifferenceReceived(TLUpdatesDifference)));
 
-        continueInitialization();
+        continueInitialization(InitIsSignIn);
     }
 
 }
 
-void CTelegramDispatcher::whenConnectionConfigurationUpdated(int dc)
+void CTelegramDispatcher::whenDcConfigurationUpdated(int dc)
 {
     CTelegramConnection *connection = m_connections.value(dc);
 
@@ -1023,15 +1018,7 @@ void CTelegramDispatcher::whenConnectionConfigurationUpdated(int dc)
 
     qDebug() << "Core: Got DC Configuration.";
 
-    emit dcConfigurationObtained();
-
-    if (isAuthenticated()) {
-        emit authenticated();
-    }
-
-    if (m_initState == InitGetDcConfiguration) {
-        continueInitialization();
-    }
+    continueInitialization(InitHaveDcConfiguration);
 }
 
 void CTelegramDispatcher::whenConnectionDcIdUpdated(int connectionId, int newDcId)
@@ -1109,7 +1096,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
 {
     switch (updates.tlType) {
     case UpdatesTooLong:
-        getState();
+        getUpdatesState();
         break;
     case UpdateShortMessage:
         processMessageReceived(updates.id, updates.fromId, updates.message);
@@ -1159,34 +1146,46 @@ void CTelegramDispatcher::ensureTypingUpdateTimer(int interval)
     }
 }
 
-void CTelegramDispatcher::continueInitialization()
+void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::InitializationState justDone)
 {
-    if (m_initState == InitDone) {
-        // Should never happen.
+    if (justDone == InitNothing) {
+        if (m_initState == InitNothing) {
+            getDcConfiguration();
+        } else {
+            qDebug() << "Invalid initialization order.";
+        }
         return;
     }
 
-    m_initState = InitializationState(m_initState + 1);
+    if ((m_initState | justDone) == m_initState) {
+        return; // Nothing new
+    }
 
-    // m_initState contains "what is in progress"
-    switch (m_initState) {
-    case InitGetDcConfiguration:
-        getDcConfiguration();
-        break;
-    case InitGetSelf:
+    m_initState = InitializationState(m_initState|justDone);
+
+    if (justDone == InitHaveDcConfiguration) {
+        emit connected();
+    }
+
+    if (m_initState == (InitHaveDcConfiguration|InitIsSignIn)) {
+        emit authenticated();
         getSelfUser();
-        break;
-    case InitGetContactList:
-        getContacts();
-        break;
-    case InitCheckUpdates:
-        getState();
-        break;
-    case InitDone:
+//        getContacts(); // Sadly, we don't support messages packing into container, so we fails on attempt to send more than one package in time. (Got "Sequence number too high")
+    }
+
+    if (justDone == InitKnowSelf) {
+        if (!(m_initState & InitHaveContactList)) {
+            getContacts();
+        }
+    }
+
+    if (m_initState == InitDone) {
         emit initializated();
-        break;
-    default:
-        break;
+        return;
+    }
+
+    if ((m_initState & InitHaveContactList) && (m_initState & InitKnowSelf)) {
+        getUpdatesState();
     }
 }
 
@@ -1215,8 +1214,8 @@ void CTelegramDispatcher::checkStateAndCallGetDifference()
 
     if (m_updatesStateIsLocked) {
         QTimer::singleShot(10, this, SLOT(getDifference()));
-    } else if (m_initState == InitCheckUpdates) {
-        continueInitialization();
+    } else {
+        continueInitialization(InitHaveUpdates);
     }
 }
 
@@ -1226,7 +1225,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
 
     connect(connection, SIGNAL(selfPhoneReceived(QString)), SLOT(whenSelfPhoneReceived(QString)));
     connect(connection, SIGNAL(authStateChanged(int,int)), SLOT(whenConnectionAuthChanged(int,int)));
-    connect(connection, SIGNAL(dcConfigurationReceived(int)), SLOT(whenConnectionConfigurationUpdated(int)));
+    connect(connection, SIGNAL(dcConfigurationReceived(int)), SLOT(whenDcConfigurationUpdated(int)));
     connect(connection, SIGNAL(actualDcIdReceived(int,int)), SLOT(whenConnectionDcIdUpdated(int,int)));
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,int)), SLOT(whenPackageRedirected(QByteArray,int)));
     connect(connection, SIGNAL(wantedActiveDcChanged(int)), SLOT(whenWantedActiveDcChanged(int)));

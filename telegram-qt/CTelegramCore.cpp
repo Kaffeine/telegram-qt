@@ -23,12 +23,12 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_dispatcher(new CTelegramDispatcher(this)),
     m_appInfo(0)
 {
-    connect(m_dispatcher, SIGNAL(dcConfigurationObtained()), SIGNAL(connected()));
+    connect(m_dispatcher, SIGNAL(connected()), SIGNAL(connected()));
+    connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
+    connect(m_dispatcher, SIGNAL(initializated()), SIGNAL(initializated()));
     connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(m_dispatcher, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(m_dispatcher, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
-    connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
-    connect(m_dispatcher, SIGNAL(initializated()), SIGNAL(initializated()));
     connect(m_dispatcher, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString)));
     connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,quint32)), SIGNAL(messageReceived(QString,QString,quint32)));
