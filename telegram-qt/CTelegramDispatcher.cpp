@@ -38,6 +38,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_activeDc(0),
     m_wantedActiveDc(0),
     m_updatesStateIsLocked(false),
+    m_emitOnlyUnreadMessages(true),
     m_selfUserId(0),
     m_typingUpdateTimer(new QTimer(this))
 {
@@ -679,6 +680,9 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
             if (message.tlType != Message) {
                 continue;
             }
+            if (m_emitOnlyUnreadMessages && !message.unread) {
+                continue;
+            }
             emit messageReceived(userIdToIdentifier(message.fromId), message.message, message.id);
         }
         m_updatesState = updatesDifference.state;
@@ -688,6 +692,9 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
         foreach (const TLMessage &message, updatesDifference.newMessages) {
 //            qDebug() << "added message" << message.message;
             if (message.tlType != Message) {
+                continue;
+            }
+            if (m_emitOnlyUnreadMessages && !message.unread) {
                 continue;
             }
             emit messageReceived(userIdToIdentifier(message.fromId), message.message, message.id);

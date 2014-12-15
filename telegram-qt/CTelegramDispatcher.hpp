@@ -193,6 +193,7 @@ private:
     TLUpdatesState m_updatesState; // Current application update state (may be older than actual server-side message box state)
     TLUpdatesState m_actualState; // State reported by server as actual
     bool m_updatesStateIsLocked; // True if we are (going to) getting updatesDifference.
+    bool m_emitOnlyUnreadMessages;
 
     QMap<int, QByteArray> m_delayedPackages; // dc, package data
     QMap<quint32, TLUser*> m_users;
