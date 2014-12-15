@@ -24,6 +24,8 @@ public:
         MessageDeliveryStatusRead,
         MessageDeliveryStatusDeleted
     };
+
+    static void registerTypes();
 };
 
 #endif // TELEGRAMNAMESPACE_HPP

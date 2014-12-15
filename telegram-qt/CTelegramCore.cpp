@@ -23,6 +23,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_dispatcher(new CTelegramDispatcher(this)),
     m_appInfo(0)
 {
+    TelegramNamespace::registerTypes();
+
     connect(m_dispatcher, SIGNAL(connected()), SIGNAL(connected()));
     connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
     connect(m_dispatcher, SIGNAL(initializated()), SIGNAL(initializated()));
