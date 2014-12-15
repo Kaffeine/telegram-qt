@@ -78,6 +78,11 @@ bool CTelegramCore::initConnection(const QString &address, quint32 port)
     return true;
 }
 
+void CTelegramCore::closeConnection()
+{
+    return m_dispatcher->closeConnection();
+}
+
 bool CTelegramCore::restoreConnection(const QByteArray &secret)
 {
     m_dispatcher->setAppInformation(m_appInfo);

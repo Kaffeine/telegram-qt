@@ -47,6 +47,7 @@ public:
 public Q_SLOTS:
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
+    void closeConnection();
 
     void requestPhoneStatus(const QString &phoneNumber);
     void requestPhoneCode(const QString &phoneNumber);
@@ -75,10 +76,11 @@ public Q_SLOTS:
     quint32 createChat(const QStringList &phones, const QString chatName);
 
 Q_SIGNALS:
-    void connected();
+    void connected(); // Telegram protocol connection established.
+    void authenticated(); // Signed in.
+    void initializated(); // Contact list and updates received.
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
-    void authenticated();
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
