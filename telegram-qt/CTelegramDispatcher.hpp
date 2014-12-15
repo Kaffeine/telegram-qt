@@ -33,7 +33,7 @@ class CTelegramDispatcher : public QObject
     Q_OBJECT
 public:
     enum InitializationState {
-        InitNothing,
+        InitNothing             = 0,
         InitHaveDcConfiguration = 1 << 0,
         InitIsSignIn            = 1 << 1,
         InitKnowSelf            = 1 << 2,
@@ -177,10 +177,12 @@ private:
     void checkStateAndCallGetDifference();
 
     void continueInitialization(InitializationState justDone);
+    void setAuthenticated(bool newAuth);
 
     const CAppInformation *m_appInformation;
 
     InitializationState m_initState;
+    bool m_isAuthenticated;
 
     int m_activeDc;
     int m_wantedActiveDc;

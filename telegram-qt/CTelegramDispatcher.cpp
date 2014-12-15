@@ -34,6 +34,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_appInformation(0),
     m_initState(InitNothing),
+    m_isAuthenticated(false),
     m_activeDc(0),
     m_wantedActiveDc(0),
     m_updatesStateIsLocked(false),
@@ -62,7 +63,7 @@ bool CTelegramDispatcher::isConnected() const
 
 bool CTelegramDispatcher::isAuthenticated() const
 {
-    return isConnected() && (activeConnection()->authState() == CTelegramConnection::AuthStateSignedIn);
+    return isConnected() && m_isAuthenticated;
 }
 
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
@@ -184,6 +185,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 void CTelegramDispatcher::initConnectionSharedFinal(int activeDc)
 {
     m_initState = InitNothing;
+    m_isAuthenticated = false;
     setActiveDc(activeDc);
     m_updatesStateIsLocked = false;
     m_selfUserId = 0;
@@ -200,6 +202,7 @@ void CTelegramDispatcher::closeConnection()
         o->deleteLater();
     }
 
+    m_isAuthenticated = false;
     m_connections.clear();
     m_dcConfiguration.clear();
     m_delayedPackages.clear();
@@ -1205,11 +1208,18 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     }
 
     if (m_initState == (InitHaveDcConfiguration|InitIsSignIn)) {
-        emit authenticated();
         getSelfUser();
-//        getContacts(); // Sadly, we don't support messages packing into container, so we fails on attempt to send more than one package in time. (Got "Sequence number too high")
+        // Sadly, we don't support creation of RPC messages containers, so we fails on attempt to send more than one package in time. (Got "Sequence number too high")
+        // That is why we have to comment out this getContacts() and add BadCode1.
+//        getContacts();
+        return;
     }
 
+    if (m_initState & ~(InitHaveDcConfiguration|InitIsSignIn)) { // Have something more than config and sign in
+        setAuthenticated(true);
+    }
+
+    // BadCode1
     if (justDone == InitKnowSelf) {
         if (!(m_initState & InitHaveContactList)) {
             getContacts();
@@ -1223,6 +1233,20 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
 
     if ((m_initState & InitHaveContactList) && (m_initState & InitKnowSelf)) {
         getUpdatesState();
+        return;
+    }
+}
+
+void CTelegramDispatcher::setAuthenticated(bool newAuth)
+{
+    if (m_isAuthenticated == newAuth) {
+        return;
+    }
+
+    m_isAuthenticated = newAuth;
+
+    if (m_isAuthenticated) {
+        emit authenticated();
     }
 }
 
