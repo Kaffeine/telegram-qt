@@ -25,6 +25,16 @@
 #include "CTcpTransport.hpp"
 #include "Utils.hpp"
 
+// Have a copy in CTelegramDispatcher
+static QString maskPhoneNumber(const QString &phoneNumber)
+{
+    if (phoneNumber.isEmpty()) {
+        return QString();
+    }
+
+    return phoneNumber.mid(0, phoneNumber.size() / 4) + QString(phoneNumber.size() - phoneNumber.size() / 4, QLatin1Char('x')); // + QLatin1String(" (hidden)");
+}
+
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
     m_appInfo(appInfo),
@@ -165,7 +175,7 @@ void CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
 
 void CTelegramConnection::signIn(const QString &phoneNumber, const QString &authCode)
 {
-    qDebug() << "SignIn" << phoneNumber;
+    qDebug() << "SignIn with number " << maskPhoneNumber(phoneNumber);
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
 
@@ -179,7 +189,7 @@ void CTelegramConnection::signIn(const QString &phoneNumber, const QString &auth
 
 void CTelegramConnection::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
 {
-    qDebug() << "SignUp" << phoneNumber;
+    qDebug() << "SignUp with number " << maskPhoneNumber(phoneNumber);
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
 

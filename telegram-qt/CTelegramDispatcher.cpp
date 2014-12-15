@@ -22,6 +22,29 @@
 
 #include <QDebug>
 
+// Have a copy in CTelegramConnection
+static QString maskPhoneNumber(const QString &phoneNumber)
+{
+    if (phoneNumber.isEmpty()) {
+        return QString();
+    }
+
+    // We don't want to mask "numbers" like unknown777000, so lets check if phoneNumber is consist of digits only.
+    bool ok1, ok2;
+    phoneNumber.mid(0, phoneNumber.size() / 2).toInt(&ok1);
+
+    if (ok1) {
+        phoneNumber.mid(phoneNumber.size() / 2).toInt(&ok2);
+    }
+
+    if (ok1 && ok2) {
+        // Expected something like: 55xxxxxxxx (hidden).
+        return phoneNumber.mid(0, phoneNumber.size() / 4) + QString(phoneNumber.size() - phoneNumber.size() / 4, QLatin1Char('x')); // + QLatin1String(" (hidden)");
+    } else {
+        return phoneNumber;
+    }
+}
+
 const quint32 secretFormatVersion = 1;
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingActionPeriod = 5000; // 5 sec
@@ -262,23 +285,23 @@ void CTelegramDispatcher::requestPhoneCode(const QString &phoneNumber)
 
 void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
 {
-    qDebug() << Q_FUNC_INFO << phoneNumber;
+    qDebug() << Q_FUNC_INFO << maskPhoneNumber(phoneNumber);
 
     const TLUser *user = phoneNumberToUser(phoneNumber);
     if (!user) {
-        qDebug() << Q_FUNC_INFO << "Unknown user" << phoneNumber;
+        qDebug() << Q_FUNC_INFO << "Unknown user" << maskPhoneNumber(phoneNumber);
         return;
     }
 
     if (user->photo.tlType == UserProfilePhotoEmpty) {
-        qDebug() << Q_FUNC_INFO << "User" << phoneNumber << "have no avatar";
+        qDebug() << Q_FUNC_INFO << "User" << maskPhoneNumber(phoneNumber) << "have no avatar";
         return;
     }
 
     TLFileLocation avatarLocation = user->photo.photoSmall;
 
     if (avatarLocation.tlType == FileLocationUnavailable) {
-        qDebug() << Q_FUNC_INFO << "Contact" << phoneNumber << "avatar is not available";
+        qDebug() << Q_FUNC_INFO << "Contact" << maskPhoneNumber(phoneNumber) << "avatar is not available";
         return;
     }
 
@@ -288,7 +311,7 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
     inputFile.secret   = avatarLocation.secret;
 
     requestFile(inputFile, avatarLocation.dcId, user->id);
-    qDebug() << Q_FUNC_INFO << "Requested avatar for user " << phoneNumber;
+    qDebug() << Q_FUNC_INFO << "Requested avatar for user " << maskPhoneNumber(phoneNumber);
 }
 
 quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QString &message)
@@ -299,7 +322,7 @@ quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QS
     const TLInputPeer peer = phoneNumberToInputPeer(phone);
 
     if (peer.tlType == InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << phone;
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(phone);
         return 0;
     }
 
@@ -371,7 +394,7 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
     TLInputPeer peer = phoneNumberToInputPeer(phone);
 
     if (peer.tlType == InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << phone;
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(phone);
         return;
     }
 
