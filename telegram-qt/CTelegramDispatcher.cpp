@@ -1192,7 +1192,10 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         if (m_initState == InitNothing) {
             getDcConfiguration();
         } else {
-            qDebug() << "Invalid initialization order.";
+            // We can have Dc Configuration obtained from *not* our primary dc. Silence this case.
+            if (m_initState != InitHaveDcConfiguration) {
+                qDebug() << "Invalid initialization order." << justDone;
+            }
         }
         return;
     }
