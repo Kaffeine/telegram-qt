@@ -96,7 +96,7 @@ Q_SIGNALS:
     void chatAdded(quint32 publichChatId);
     void chatChanged(quint32 publichChatId);
 
-    void initializated();
+    void authorizationErrorReceived();
 
 private:
     CTelegramDispatcher *m_dispatcher;

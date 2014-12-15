@@ -93,6 +93,7 @@ signals:
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void authenticated();
+    void authorizationErrorReceived();
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);

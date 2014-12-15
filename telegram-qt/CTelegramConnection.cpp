@@ -1272,11 +1272,14 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
             return true;
         }
         break;
-    case 400:
+    case 400: // BAD_REQUEST
         if (request == AuthSignIn) {
             emit phoneCodeIsInvalid();
             return true;
         }
+    case 401: // UNAUTHORIZED
+        emit authorizationErrorReceived();
+        break;
     default:
         qDebug() << "RPC Error can not be handled.";
         break;
