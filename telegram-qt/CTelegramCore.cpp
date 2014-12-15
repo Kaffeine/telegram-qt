@@ -53,6 +53,10 @@ void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
         return;
     }
 
+    if (m_appInfo) {
+        delete m_appInfo;
+    }
+
     m_appInfo = new CAppInformation(newAppInfo);
 }
 
