@@ -222,16 +222,25 @@ void CTelegramDispatcher::closeConnection()
 
 void CTelegramDispatcher::requestPhoneStatus(const QString &phoneNumber)
 {
+    if (!activeConnection()) {
+        return;
+    }
     activeConnection()->requestPhoneStatus(phoneNumber);
 }
 
 void CTelegramDispatcher::signIn(const QString &phoneNumber, const QString &authCode)
 {
+    if (!activeConnection()) {
+        return;
+    }
     activeConnection()->signIn(phoneNumber, authCode);
 }
 
 void CTelegramDispatcher::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
 {
+    if (!activeConnection()) {
+        return;
+    }
     activeConnection()->signUp(phoneNumber, authCode, firstName, lastName);
 }
 
@@ -283,6 +292,9 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
 
 quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QString &message)
 {
+    if (!activeConnection()) {
+        return 0;
+    }
     const TLInputPeer peer = phoneNumberToInputPeer(phone);
 
     if (peer.tlType == InputPeerEmpty) {
@@ -304,6 +316,9 @@ quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QS
 
 quint64 CTelegramDispatcher::sendMessageToChat(quint32 publicChatId, const QString &message)
 {
+    if (!activeConnection()) {
+        return 0;
+    }
     const TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
 
     if (peer.tlType == InputPeerEmpty) {
@@ -325,6 +340,9 @@ quint64 CTelegramDispatcher::sendMessageToChat(quint32 publicChatId, const QStri
 
 quint32 CTelegramDispatcher::createChat(const QStringList &phones, const QString chatName)
 {
+    if (!activeConnection()) {
+        return 0;
+    }
     TLVector<TLInputUser> users;
 
     foreach (const QString &phone, phones) {
@@ -342,6 +360,9 @@ quint32 CTelegramDispatcher::createChat(const QStringList &phones, const QString
 
 void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
 {
+    if (!activeConnection()) {
+        return;
+    }
     if (typingStatus == m_localTypingMap.contains(phone)) {
         return; // Avoid flood
     }
@@ -361,6 +382,9 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
 
 void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
 {
+    if (!activeConnection()) {
+        return;
+    }
     if (typingStatus == m_localChatTypingMap.contains(publicChatId)) {
         return; // Avoid flood
     }
@@ -380,6 +404,9 @@ void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
 
 void CTelegramDispatcher::setMessageRead(const QString &phone, quint32 messageId)
 {
+    if (!activeConnection()) {
+        return;
+    }
     const TLInputPeer peer = phoneNumberToInputPeer(phone);
 
     if (peer.tlType != InputPeerEmpty) {
@@ -389,6 +416,9 @@ void CTelegramDispatcher::setMessageRead(const QString &phone, quint32 messageId
 
 void CTelegramDispatcher::setOnlineStatus(bool onlineStatus)
 {
+    if (!activeConnection()) {
+        return;
+    }
     activeConnection()->accountUpdateStatus(!onlineStatus); // updateStatus accepts bool "offline"
 }
 
