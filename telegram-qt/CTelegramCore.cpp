@@ -124,11 +124,6 @@ void CTelegramCore::deleteContacts(const QStringList &phoneNumbers)
     m_dispatcher->deleteContacts(phoneNumbers);
 }
 
-void CTelegramCore::requestContactList()
-{
-    qDebug() << Q_FUNC_INFO << "deprecated. Makes no sense.";
-}
-
 void CTelegramCore::requestContactAvatar(const QString &contact)
 {
     m_dispatcher->requestContactAvatar(contact);

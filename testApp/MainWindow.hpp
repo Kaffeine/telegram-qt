@@ -43,8 +43,6 @@ private slots:
 
     void on_signButton_clicked();
 
-    void on_getContactList_clicked();
-
     void on_getSecretInfo_clicked();
 
     void on_addContact_clicked();

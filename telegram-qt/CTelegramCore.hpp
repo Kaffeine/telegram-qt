@@ -60,7 +60,6 @@ public Q_SLOTS:
     void deleteContact(const QString &phoneNumber);
     void deleteContacts(const QStringList &phoneNumbers);
 
-    void requestContactList();
     void requestContactAvatar(const QString &contact);
 
     quint64 sendMessage(const QString &phone, const QString &message); // Message id is random number

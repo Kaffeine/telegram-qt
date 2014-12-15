@@ -117,8 +117,6 @@ void MainWindow::whenAuthenticated()
 {
     ui->signButton->setEnabled(false);
 
-    ui->getContactList->setEnabled(true);
-
     if (ui->workLikeClient->isChecked()) {
         m_core->setOnlineStatus(true);
     }
@@ -231,11 +229,6 @@ void MainWindow::on_signButton_clicked()
     } else {
         m_core->signUp(ui->phoneNumber->text(), ui->confirmationCode->text(), ui->firstName->text(), ui->lastName->text());
     }
-}
-
-void MainWindow::on_getContactList_clicked()
-{
-    m_core->requestContactList();
 }
 
 void MainWindow::on_getSecretInfo_clicked()

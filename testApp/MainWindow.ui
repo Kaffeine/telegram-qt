@@ -439,16 +439,6 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="getContactList">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Contact-list</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QPushButton" name="setStatusOffline">
         <property name="text">
          <string>Set status offline</string>
@@ -485,7 +475,7 @@
      <x>0</x>
      <y>0</y>
      <width>1043</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
