@@ -966,6 +966,10 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
             inputPeer.tlType = InputPeerForeign;
             inputPeer.userId = user->id;
             inputPeer.accessHash = user->accessHash;
+        } else if (user->tlType == UserRequest) {
+            inputPeer.tlType = InputPeerContact; // TODO: Check if there should be InputPeerForeign. Seems like working as-is; can't test at this time.
+            inputPeer.userId = user->id;
+            inputPeer.accessHash = user->accessHash; // Seems to be useless.
         } else {
             qDebug() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
         }
@@ -995,6 +999,10 @@ TLInputUser CTelegramDispatcher::phoneNumberToInputUser(const QString &phoneNumb
             inputUser.tlType = InputUserForeign;
             inputUser.userId = user->id;
             inputUser.accessHash = user->accessHash;
+        } else if (user->tlType == UserRequest) { // TODO: Check if there should be InputPeerForeign. Seems like working as-is; can't test at this time.
+            inputUser.tlType = InputUserContact;
+            inputUser.userId = user->id;
+            inputUser.accessHash = user->accessHash; // Seems to be useless.
         } else {
             qDebug() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
         }
