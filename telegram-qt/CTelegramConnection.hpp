@@ -66,6 +66,16 @@ public:
     void getConfiguration();
 
     // Generated Telegram API methods declaration
+    quint64 authCheckPhone(const QString &phoneNumber);
+    quint64 authExportAuthorization(quint32 dcId);
+    quint64 authImportAuthorization(quint32 id, const QByteArray &bytes);
+    quint64 authLogOut();
+    quint64 authResetAuthorizations();
+    quint64 authSendCall(const QString &phoneNumber, const QString &phoneCodeHash);
+    quint64 authSendCode(const QString &phoneNumber, quint32 smsType, quint32 apiId, const QString &apiHash, const QString &langCode);
+    quint64 authSendInvites(const TLVector<QString> &phoneNumbers, const QString &message);
+    quint64 authSignIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
+    quint64 authSignUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName);
     quint64 messagesAcceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint);
     quint64 messagesAddChatUser(quint32 chatId, const TLInputUser &userId, quint32 fwdLimit);
     quint64 messagesCreateChat(const TLVector<TLInputUser> &users, const QString &title);
@@ -100,10 +110,9 @@ public:
     quint64 messagesSetTyping(const TLInputPeer &peer, bool typing);
     // End of generated Telegram API methods declaration
 
-    void requestPhoneStatus(const QString &phoneNumber);
-    void requestPhoneCode(const QString &phoneNumber);
-    void signIn(const QString &phoneNumber, const QString &authCode);
-    void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
+    quint64 requestPhoneCode(const QString &phoneNumber);
+    quint64 signIn(const QString &phoneNumber, const QString &authCode);
+    quint64 signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
     void contactsGetContacts();
 

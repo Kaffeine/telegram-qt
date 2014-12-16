@@ -274,7 +274,7 @@ void CTelegramDispatcher::requestPhoneStatus(const QString &phoneNumber)
     if (!activeConnection()) {
         return;
     }
-    activeConnection()->requestPhoneStatus(phoneNumber);
+    activeConnection()->authCheckPhone(phoneNumber);
 }
 
 void CTelegramDispatcher::signIn(const QString &phoneNumber, const QString &authCode)

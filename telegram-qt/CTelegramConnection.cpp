@@ -164,62 +164,24 @@ void CTelegramConnection::getConfiguration()
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::requestPhoneStatus(const QString &phoneNumber)
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << AuthCheckPhone;
-    outputStream << phoneNumber;
-
-    sendEncryptedPackage(output);
-}
-
-void CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
+quint64 CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
 {
     qDebug() << "requestPhoneCode" << maskPhoneNumber(phoneNumber) << m_dcInfo.id;
-    QByteArray output;
 
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << AuthSendCode;
-    outputStream << phoneNumber;
-    outputStream << quint32(0);
-    outputStream << m_appInfo->appId();
-    outputStream << m_appInfo->appHash();
-    outputStream << m_appInfo->languageCode();
-
-    sendEncryptedPackage(output);
+    return authSendCode(phoneNumber, 0, m_appInfo->appId(), m_appInfo->appHash(), m_appInfo->languageCode());
 }
 
-void CTelegramConnection::signIn(const QString &phoneNumber, const QString &authCode)
+quint64 CTelegramConnection::signIn(const QString &phoneNumber, const QString &authCode)
 {
     qDebug() << "SignIn with number " << maskPhoneNumber(phoneNumber);
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
 
-    outputStream << AuthSignIn;
-    outputStream << phoneNumber;
-    outputStream << m_authCodeHash;
-    outputStream << authCode;
-
-    sendEncryptedPackage(output);
+    return authSignIn(phoneNumber, m_authCodeHash, authCode);
 }
 
-void CTelegramConnection::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
+quint64 CTelegramConnection::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
 {
     qDebug() << "SignUp with number " << maskPhoneNumber(phoneNumber);
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << AuthSignUp;
-    outputStream << phoneNumber;
-    outputStream << m_authCodeHash;
-    outputStream << authCode;
-    outputStream << firstName;
-    outputStream << lastName;
-
-    sendEncryptedPackage(output);
+    return authSignUp(phoneNumber, m_authCodeHash, authCode, firstName, lastName);
 }
 
 void CTelegramConnection::contactsGetContacts()
@@ -342,6 +304,127 @@ void CTelegramConnection::accountUpdateStatus(bool offline)
 }
 
 // Generated Telegram API methods implementation
+quint64 CTelegramConnection::authCheckPhone(const QString &phoneNumber)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthCheckPhone;
+    outputStream << phoneNumber;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::authExportAuthorization(quint32 dcId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthExportAuthorization;
+    outputStream << dcId;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::authImportAuthorization(quint32 id, const QByteArray &bytes)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthImportAuthorization;
+    outputStream << id;
+    outputStream << bytes;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::authLogOut()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthLogOut;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::authResetAuthorizations()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthResetAuthorizations;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::authSendCall(const QString &phoneNumber, const QString &phoneCodeHash)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthSendCall;
+    outputStream << phoneNumber;
+    outputStream << phoneCodeHash;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::authSendCode(const QString &phoneNumber, quint32 smsType, quint32 apiId, const QString &apiHash, const QString &langCode)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthSendCode;
+    outputStream << phoneNumber;
+    outputStream << smsType;
+    outputStream << apiId;
+    outputStream << apiHash;
+    outputStream << langCode;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::authSendInvites(const TLVector<QString> &phoneNumbers, const QString &message)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthSendInvites;
+    outputStream << phoneNumbers;
+    outputStream << message;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::authSignIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthSignIn;
+    outputStream << phoneNumber;
+    outputStream << phoneCodeHash;
+    outputStream << phoneCode;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::authSignUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthSignUp;
+    outputStream << phoneNumber;
+    outputStream << phoneCodeHash;
+    outputStream << phoneCode;
+    outputStream << firstName;
+    outputStream << lastName;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::messagesAcceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint)
 {
     QByteArray output;
