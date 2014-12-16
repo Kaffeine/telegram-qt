@@ -24,17 +24,21 @@ template CTelegramStream &CTelegramStream::operator>>(TLVector<qint32> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<quint32> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<quint64> &v);
+template CTelegramStream &CTelegramStream::operator>>(TLVector<QString> &v);
 
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<qint32> &v);
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<quint32> &v);
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<qint64> &v);
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<quint64> &v);
+template CTelegramStream &CTelegramStream::operator<<(const TLVector<QString> &v);
 
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLUser> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLContact> &v);
+template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDcOption> &v);
 
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputContact> &v);
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputUser> &v);
+template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLDcOption> &v);
 
 CTelegramStream::CTelegramStream(QByteArray *data, bool write) :
     CRawStream(data, write)
