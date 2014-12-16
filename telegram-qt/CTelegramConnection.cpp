@@ -56,6 +56,7 @@ static QStringList maskPhoneNumberList(const QStringList &list)
 
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
+    m_status(ConnectionStatusNone),
     m_appInfo(appInfo),
     m_transport(0),
     m_authState(AuthStateNone),
@@ -80,6 +81,11 @@ void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
 
 void CTelegramConnection::connectToDc()
 {
+    if (isConnected() || (m_status == ConnectionStatusConnecting)) {
+        return;
+    }
+
+    setStatus(ConnectionStatusConnecting);
     m_transport->connectToHost(m_dcInfo.ipAddress, m_dcInfo.port);
 }
 
@@ -1829,6 +1835,8 @@ TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok)
 
 void CTelegramConnection::whenConnected()
 {
+    setStatus(ConnectionStatusConnected);
+
     if (m_authKey.isEmpty()) {
         initAuth();
     } else {
@@ -2052,6 +2060,15 @@ quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
     return messageId;
 }
 
+void CTelegramConnection::setStatus(CTelegramConnection::ConnectionStatus status)
+{
+    if (m_status == status) {
+        return;
+    }
+
+    m_status = status;
+}
+
 void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
 {
     qDebug() << "NAS:" << newState;
@@ -2065,6 +2082,12 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
     }
 
     emit authStateChanged(m_dcInfo.id, m_authState);
+
+    if (m_authState >= AuthStateSignedIn) {
+        setStatus(ConnectionStatusSigned);
+    } else if (m_authState >= AuthStateSuccess) {
+        setStatus(ConnectionStatusAuthenticated);
+    }
 }
 
 quint64 CTelegramConnection::newMessageId()

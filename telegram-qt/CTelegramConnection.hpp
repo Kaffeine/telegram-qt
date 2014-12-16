@@ -32,6 +32,14 @@ class CTelegramConnection : public QObject
 {
     Q_OBJECT
 public:
+    enum ConnectionStatus {
+        ConnectionStatusNone,
+        ConnectionStatusConnecting,
+        ConnectionStatusConnected,
+        ConnectionStatusAuthenticated,
+        ConnectionStatusSigned
+    };
+
     enum AuthState {
         AuthStateNone,
         AuthStatePqRequested,
@@ -54,6 +62,8 @@ public:
     inline TLDcOption dcInfo() const { return m_dcInfo; }
 
     void connectToDc();
+
+    inline ConnectionStatus status() const { return m_status; }
 
     bool isConnected() const;
 
@@ -167,7 +177,7 @@ signals:
     void newRedirectedPackage(const QByteArray &data, int dc);
 
     void selfPhoneReceived(const QString &phoneNumber);
-    void authStateChanged(int dc, int state);
+    void authStateChanged(int dc, int status);
     void actualDcIdReceived(int dc, int newDcId);
     void dcConfigurationReceived(int dc);
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
@@ -240,10 +250,12 @@ protected:
     quint64 sendEncryptedPackage(const QByteArray &buffer);
     void setTransport(CTelegramTransport *newTransport);
 
+    void setStatus(ConnectionStatus status);
     void setAuthState(AuthState newState);
 
     quint64 newMessageId();
 
+    ConnectionStatus m_status;
     const CAppInformation *m_appInfo;
 
     QMap<quint64, QByteArray> m_submittedPackages; // <message id, package data>
