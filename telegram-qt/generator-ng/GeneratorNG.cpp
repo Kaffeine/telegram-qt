@@ -454,14 +454,23 @@ void GeneratorNG::generate()
     codeConnectionDeclaration.clear();
     codeConnectionImplementation.clear();
 
-    foreach (const TLMethod &method, m_methods) {
-        if (!method.name.startsWith(QLatin1String("messages"))) {
-            generateConnectionMethodDefinition(method);
-            continue;
-        }
+    static const QStringList whiteList = QStringList() << QLatin1String("messages") << QLatin1String("auth");
 
-        codeConnectionDeclaration.append(generateConnectionMethodDeclaration(method));
-        codeConnectionImplementation.append(generateConnectionMethodDefinition(method));
+    foreach (const TLMethod &method, m_methods) {
+        bool addImplementation = false;
+        foreach (const QString &white, whiteList) {
+            if (method.name.startsWith(white)) {
+                addImplementation = true;
+                break;
+            }
+        }
+        if (addImplementation) {
+            codeConnectionDeclaration.append(generateConnectionMethodDeclaration(method));
+            codeConnectionImplementation.append(generateConnectionMethodDefinition(method));
+        } else {
+            // It's still necessary to generate definition to figure out used stream write operators
+            generateConnectionMethodDefinition(method);
+        }
     }
 
     m_usedWriteOperators.removeDuplicates();
