@@ -45,6 +45,29 @@ static QString maskPhoneNumber(const QString &phoneNumber)
     }
 }
 
+// Have a copy in CTelegramConnection
+static QStringList maskPhoneNumberList(const QStringList &list)
+{
+    if (list.count() == 1) {
+        return QStringList() << maskPhoneNumber(list.first());
+    }
+
+    QStringList result;
+
+    const int listDigits = QString::number(list.count()).size();
+
+    foreach (const QString &number, list) {
+        if (number.length() >= 5 + listDigits) {
+            QString masked = QString("%1xx%2%3").arg(number.mid(0, 2)).arg(list.indexOf(number), listDigits, 10, QLatin1Char('0')).arg(QString(number.length() - 4 - listDigits, QLatin1Char('x')));
+            result.append(masked);
+        } else { // fallback
+            result.append(maskPhoneNumber(number) + QLatin1String(" (fallback)"));
+        }
+    }
+
+    return result;
+}
+
 const quint32 secretFormatVersion = 1;
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingActionPeriod = 5000; // 5 sec
@@ -97,6 +120,8 @@ void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool repl
 
 void CTelegramDispatcher::deleteContacts(const QStringList &phoneNumbers)
 {
+    qDebug() << Q_FUNC_INFO << maskPhoneNumberList(phoneNumbers);
+
     QVector<TLInputUser> users;
     users.reserve(phoneNumbers.count());
 
@@ -523,6 +548,8 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
 
 void CTelegramDispatcher::whenContactListReceived(const QStringList &contactList)
 {
+    qDebug() << Q_FUNC_INFO << maskPhoneNumberList(contactList);
+
     QStringList newContactList = contactList;
     newContactList.sort();
 

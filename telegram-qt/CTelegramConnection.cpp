@@ -35,6 +35,25 @@ static QString maskPhoneNumber(const QString &phoneNumber)
     return phoneNumber.mid(0, phoneNumber.size() / 4) + QString(phoneNumber.size() - phoneNumber.size() / 4, QLatin1Char('x')); // + QLatin1String(" (hidden)");
 }
 
+// Have a copy in CTelegramDispatcher
+static QStringList maskPhoneNumberList(const QStringList &list)
+{
+    QStringList result;
+
+    const int listDigits = QString::number(list.count()).size();
+
+    foreach (const QString &number, list) {
+        if (number.length() >= 5 + listDigits) {
+            QString masked = QString("%1xx%2%3").arg(number.mid(0, 2)).arg(list.indexOf(number), listDigits, 10, QLatin1Char('0')).arg(QString(number.length() - 4 - listDigits, QLatin1Char('x')));
+            result.append(masked);
+        } else { // fallback
+            result.append(maskPhoneNumber(number));
+        }
+    }
+
+    return result;
+}
+
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
     m_appInfo(appInfo),
@@ -158,7 +177,7 @@ void CTelegramConnection::requestPhoneStatus(const QString &phoneNumber)
 
 void CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
 {
-    qDebug() << "requestPhoneCode" << phoneNumber << m_dcInfo.id;
+    qDebug() << "requestPhoneCode" << maskPhoneNumber(phoneNumber) << m_dcInfo.id;
     QByteArray output;
 
     CTelegramStream outputStream(&output, /* write */ true);
@@ -291,7 +310,7 @@ void CTelegramConnection::contactsDeleteContacts(const TLVector<TLInputUser> &us
 
 void CTelegramConnection::addContacts(const QStringList &phoneNumbers, bool replace)
 {
-    qDebug() << "addContacts" << phoneNumbers;
+    qDebug() << "addContacts" << maskPhoneNumberList(phoneNumbers);
 
     TLVector<TLInputContact> contactsVector;
     for (int i = 0; i < phoneNumbers.count(); ++i) {
@@ -1538,7 +1557,7 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
     TLAuthAuthorization result;
     stream >> result;
 
-    qDebug() << "AuthAuthorization" << result.user.phone << result.expires;
+    qDebug() << "AuthAuthorization" << maskPhoneNumber(result.user.phone) << result.expires;
 
     if (result.tlType == AuthAuthorization) {
         setAuthState(AuthStateSignedIn);
