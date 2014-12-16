@@ -231,7 +231,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     return true;
 }
 
-void CTelegramDispatcher::initConnectionSharedFinal(int activeDc)
+void CTelegramDispatcher::initConnectionSharedFinal(quint32 activeDc)
 {
     m_initState = InitNothing;
     m_isAuthenticated = false;
@@ -1129,7 +1129,7 @@ TelegramNamespace::ContactStatus CTelegramDispatcher::decodeContactStatus(TLValu
     }
 }
 
-void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
+void CTelegramDispatcher::whenConnectionAuthChanged(quint32 dc, int newState)
 {
     CTelegramConnection *connection = m_connections.value(dc);
 
@@ -1165,7 +1165,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int dc, int newState)
 
 }
 
-void CTelegramDispatcher::whenDcConfigurationUpdated(int dc)
+void CTelegramDispatcher::whenDcConfigurationUpdated(quint32 dc)
 {
     CTelegramConnection *connection = m_connections.value(dc);
 
@@ -1180,7 +1180,7 @@ void CTelegramDispatcher::whenDcConfigurationUpdated(int dc)
     continueInitialization(InitHaveDcConfiguration);
 }
 
-void CTelegramDispatcher::whenConnectionDcIdUpdated(int connectionId, int newDcId)
+void CTelegramDispatcher::whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId)
 {
     CTelegramConnection *connection = m_connections.value(connectionId);
 
@@ -1211,7 +1211,7 @@ void CTelegramDispatcher::whenConnectionDcIdUpdated(int connectionId, int newDcI
     }
 }
 
-void CTelegramDispatcher::whenPackageRedirected(const QByteArray &data, int dc)
+void CTelegramDispatcher::whenPackageRedirected(const QByteArray &data, quint32 dc)
 {
     CTelegramConnection *connection = m_connections.value(dc);
 
@@ -1223,7 +1223,7 @@ void CTelegramDispatcher::whenPackageRedirected(const QByteArray &data, int dc)
     }
 }
 
-void CTelegramDispatcher::whenWantedActiveDcChanged(int dc)
+void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
 {
     CTelegramConnection *connection = m_connections.value(dc);
 
@@ -1282,7 +1282,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
     }
 }
 
-void CTelegramDispatcher::setActiveDc(int dc, bool syncWantedDc)
+void CTelegramDispatcher::setActiveDc(quint32 dc, bool syncWantedDc)
 {
     m_activeDc = dc;
 
@@ -1407,11 +1407,11 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
     CTelegramConnection *connection = new CTelegramConnection(m_appInformation, this);
 
     connect(connection, SIGNAL(selfPhoneReceived(QString)), SLOT(whenSelfPhoneReceived(QString)));
-    connect(connection, SIGNAL(authStateChanged(int,int)), SLOT(whenConnectionAuthChanged(int,int)));
-    connect(connection, SIGNAL(dcConfigurationReceived(int)), SLOT(whenDcConfigurationUpdated(int)));
-    connect(connection, SIGNAL(actualDcIdReceived(int,int)), SLOT(whenConnectionDcIdUpdated(int,int)));
-    connect(connection, SIGNAL(newRedirectedPackage(QByteArray,int)), SLOT(whenPackageRedirected(QByteArray,int)));
-    connect(connection, SIGNAL(wantedActiveDcChanged(int)), SLOT(whenWantedActiveDcChanged(int)));
+    connect(connection, SIGNAL(authStateChanged(quint32,int)), SLOT(whenConnectionAuthChanged(quint32,int)));
+    connect(connection, SIGNAL(dcConfigurationReceived(quint32)), SLOT(whenDcConfigurationUpdated(quint32)));
+    connect(connection, SIGNAL(actualDcIdReceived(quint32,quint32)), SLOT(whenConnectionDcIdUpdated(quint32,quint32)));
+    connect(connection, SIGNAL(newRedirectedPackage(QByteArray,quint32)), SLOT(whenPackageRedirected(QByteArray,quint32)));
+    connect(connection, SIGNAL(wantedActiveDcChanged(quint32)), SLOT(whenWantedActiveDcChanged(quint32)));
 
     connect(connection, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(connection, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
@@ -1425,7 +1425,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
     return connection;
 }
 
-CTelegramConnection *CTelegramDispatcher::establishConnectionToDc(int dc)
+CTelegramConnection *CTelegramDispatcher::establishConnectionToDc(quint32 dc)
 {
     CTelegramConnection *connection = m_connections.value(dc);
 

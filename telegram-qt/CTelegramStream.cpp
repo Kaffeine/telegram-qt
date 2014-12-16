@@ -91,7 +91,7 @@ CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
     if (result.tlType == Vector) {
         quint32 length = 0;
         *this >> length;
-        for (int i = 0; i < length; ++i) {
+        for (quint32 i = 0; i < length; ++i) {
             T value;
             *this >> value;
             result.append(value);

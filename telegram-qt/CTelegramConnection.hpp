@@ -173,13 +173,13 @@ public:
     void processRedirectedPackage(const QByteArray &data);
 
 signals:
-    void wantedActiveDcChanged(int dc);
-    void newRedirectedPackage(const QByteArray &data, int dc);
+    void wantedActiveDcChanged(quint32 dc);
+    void newRedirectedPackage(const QByteArray &data, quint32 dc);
 
     void selfPhoneReceived(const QString &phoneNumber);
-    void authStateChanged(int dc, int status);
-    void actualDcIdReceived(int dc, int newDcId);
-    void dcConfigurationReceived(int dc);
+    void authStateChanged(quint32 dc, int status);
+    void actualDcIdReceived(quint32 dc, quint32 newDcId);
+    void dcConfigurationReceived(quint32 dc);
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void phoneCodeRequired();
     void phoneCodeIsInvalid();

@@ -111,11 +111,11 @@ signals:
 
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
-    void whenConnectionAuthChanged(int dc, int newState);
-    void whenDcConfigurationUpdated(int dc);
-    void whenConnectionDcIdUpdated(int connectionId, int newDcId);
-    void whenPackageRedirected(const QByteArray &data, int dc);
-    void whenWantedActiveDcChanged(int dc);
+    void whenConnectionAuthChanged(quint32 dc, int newState);
+    void whenDcConfigurationUpdated(quint32 dc);
+    void whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
+    void whenPackageRedirected(const QByteArray &data, quint32 dc);
+    void whenWantedActiveDcChanged(quint32 dc);
 
     void whenFileReceived(const TLUploadFile &file, quint32 fileId);
     void whenUpdatesReceived(const TLUpdates &updates);
@@ -148,7 +148,7 @@ protected:
 
     void setFullChat(const TLChatFull &newChat);
 
-    void initConnectionSharedFinal(int activeDc = 0);
+    void initConnectionSharedFinal(quint32 activeDc = 0);
 
     void getUser(quint32 id);
     void getInitialUsers();
@@ -166,13 +166,13 @@ private:
     CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
 
     CTelegramConnection *createConnection(const TLDcOption &dc);
-    CTelegramConnection *establishConnectionToDc(int dc);
+    CTelegramConnection *establishConnectionToDc(quint32 dc);
 
     TLDcOption dcInfoById(quint32 dc);
 
     QString mimeTypeByStorageFileType(TLValue type);
 
-    void setActiveDc(int dc, bool syncWantedDc = true);
+    void setActiveDc(quint32 dc, bool syncWantedDc = true);
 
     void ensureTypingUpdateTimer(int interval);
     void ensureUpdateState(quint32 pts = 0, quint32 seq = 0, quint32 date = 0);
@@ -187,8 +187,8 @@ private:
     InitializationState m_initState;
     bool m_isAuthenticated;
 
-    int m_activeDc;
-    int m_wantedActiveDc;
+    quint32 m_activeDc;
+    quint32 m_wantedActiveDc;
 
     QVector<TLDcOption> m_dcConfiguration;
     QMap<int, CTelegramConnection *> m_connections;
@@ -198,7 +198,7 @@ private:
     bool m_updatesStateIsLocked; // True if we are (going to) getting updatesDifference.
     bool m_emitOnlyUnreadMessages;
 
-    QMap<int, QByteArray> m_delayedPackages; // dc, package data
+    QMap<quint32, QByteArray> m_delayedPackages; // dc, package data
     QMap<quint32, TLUser*> m_users;
 
     QMap<quint32, QPair<QString, quint64> >m_messagesMap; // message id to phone and big_random message id
