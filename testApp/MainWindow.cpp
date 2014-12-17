@@ -116,6 +116,7 @@ void MainWindow::whenPhoneCodeIsInvalid()
 void MainWindow::whenAuthenticated()
 {
     ui->signButton->setEnabled(false);
+    ui->phoneNumber->setText(m_core->selfPhone());
 
     if (ui->workLikeClient->isChecked()) {
         m_core->setOnlineStatus(true);
@@ -210,6 +211,12 @@ void MainWindow::on_connectButton_clicked()
     else {
         m_core->restoreConnection(secretInfo);
     }
+}
+
+void MainWindow::on_secondConnectButton_clicked()
+{
+    ui->tabWidget->setCurrentWidget(ui->tabMain);
+    on_connectButton_clicked();
 }
 
 void MainWindow::on_authButton_clicked()
@@ -361,4 +368,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if (ui->workLikeClient->isChecked()) {
         m_core->setOnlineStatus(false);
     }
+}
+
+void MainWindow::on_contactListTable_clicked(const QModelIndex &index)
+{
+    const QModelIndex correctIndex = m_contactsModel->index(index.row(), CContactsModel::Phone);
+    ui->currentContact->setText(correctIndex.data().toString());
 }

@@ -26,6 +26,8 @@ QVariant CContactsModel::headerData(int section, Qt::Orientation orientation, in
         return tr("Typing status");
     case Avatar:
         return tr("Avatar");
+    case Blocked:
+        return tr("Blocked");
     default:
         break;
     }
@@ -63,6 +65,8 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
         return statusToStr(m_contacts.at(contactIndex).status);
     case TypingStatus:
         return m_contacts.at(contactIndex).typing ? tr("true") : tr("false");
+    case Blocked:
+        return m_contacts.at(contactIndex).blocked ? tr("true") : tr("false");
     default:
         break;
     }
@@ -87,6 +91,8 @@ QVariant CContactsModel::data(const QString &phone, int column) const
         return statusToStr(m_contacts.at(contactIndex).status);
     case TypingStatus:
         return m_contacts.at(contactIndex).typing;
+    case Blocked:
+        return m_contacts.at(contactIndex).blocked;
     case Avatar:
         return m_contacts.at(contactIndex).avatar;
     default:

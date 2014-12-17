@@ -12,13 +12,15 @@ struct SContact {
     SContact(const QString &p = QString(), TelegramNamespace::ContactStatus s = TelegramNamespace::ContactStatusUnknown) :
         phone(p),
         status(s),
-        typing(false)
+        typing(false),
+        blocked(false)
     { }
 
     QString phone;
     QString fullName;
     TelegramNamespace::ContactStatus status;
     bool typing;
+    bool blocked;
     QPixmap avatar;
 };
 
@@ -32,6 +34,7 @@ public:
         Status,
         TypingStatus,
         Avatar,
+        Blocked,
         ColumnsCount
     };
 

@@ -39,6 +39,7 @@ private slots:
     void whenChatChanged(quint32 chatId);
 
     void on_connectButton_clicked();
+    void on_secondConnectButton_clicked();
     void on_authButton_clicked();
 
     void on_signButton_clicked();
@@ -67,6 +68,8 @@ private slots:
     void on_groupChatSendButton_clicked();
 
     void on_groupChatMessage_textChanged(const QString &arg1);
+
+    void on_contactListTable_clicked(const QModelIndex &index);
 
 protected:
     void closeEvent(QCloseEvent *event);
