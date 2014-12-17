@@ -130,6 +130,8 @@ public:
     quint64 messagesSetTyping(const TLInputPeer &peer, bool typing);
     quint64 updatesGetDifference(quint32 pts, quint32 date, quint32 qts);
     quint64 updatesGetState();
+    quint64 usersGetFullUser(const TLInputUser &id);
+    quint64 usersGetUsers(const TLVector<TLInputUser> &id);
     // End of generated Telegram API methods declaration
 
     quint64 requestPhoneCode(const QString &phoneNumber);
@@ -137,9 +139,6 @@ public:
     quint64 signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
     void getFile(const TLInputFileLocation &location, quint32 fileId);
-
-    void usersGetUsers(const TLVector<TLInputUser> &users);
-    void usersGetFullUser(const TLInputUser &user);
 
     void accountUpdateStatus(bool offline);
 

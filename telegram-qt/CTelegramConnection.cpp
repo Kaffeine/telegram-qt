@@ -186,28 +186,6 @@ void CTelegramConnection::getFile(const TLInputFileLocation &location, quint32 f
     m_requestedFilesIds.insert(messageId, fileId);
 }
 
-void CTelegramConnection::usersGetUsers(const TLVector<TLInputUser> &users)
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << UsersGetUsers;
-    outputStream << users;
-
-    sendEncryptedPackage(output);
-}
-
-void CTelegramConnection::usersGetFullUser(const TLInputUser &user)
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << UsersGetFullUser;
-    outputStream << user;
-
-    sendEncryptedPackage(output);
-}
-
 void CTelegramConnection::accountUpdateStatus(bool offline)
 {
     QByteArray output;
@@ -869,6 +847,28 @@ quint64 CTelegramConnection::updatesGetState()
     CTelegramStream outputStream(&output, /* write */ true);
 
     outputStream << UpdatesGetState;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::usersGetFullUser(const TLInputUser &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << UsersGetFullUser;
+    outputStream << id;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::usersGetUsers(const TLVector<TLInputUser> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << UsersGetUsers;
+    outputStream << id;
 
     return sendEncryptedPackage(output);
 }
