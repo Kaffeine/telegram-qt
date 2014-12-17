@@ -2096,11 +2096,12 @@ void CTelegramConnection::setStatus(CTelegramConnection::ConnectionStatus status
     }
 
     m_status = status;
+    emit statusChanged(status, m_dcInfo.id);
 }
 
 void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
 {
-    qDebug() << "NAS:" << newState;
+    qDebug() << Q_FUNC_INFO << newState;
     if (m_authState == newState)
         return;
 
@@ -2110,7 +2111,7 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
         Utils::randomBytes(&m_sessionId);
     }
 
-    emit authStateChanged(m_dcInfo.id, m_authState);
+    emit authStateChanged(m_authState, m_dcInfo.id);
 
     if (m_authState >= AuthStateSignedIn) {
         setStatus(ConnectionStatusSigned);

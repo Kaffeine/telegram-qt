@@ -177,7 +177,8 @@ signals:
     void newRedirectedPackage(const QByteArray &data, quint32 dc);
 
     void selfPhoneReceived(const QString &phoneNumber);
-    void authStateChanged(quint32 dc, int status);
+    void statusChanged(int status, quint32 dc);
+    void authStateChanged(int status, quint32 dc);
     void actualDcIdReceived(quint32 dc, quint32 newDcId);
     void dcConfigurationReceived(quint32 dc);
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);

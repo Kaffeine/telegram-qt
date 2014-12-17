@@ -1129,7 +1129,7 @@ TelegramNamespace::ContactStatus CTelegramDispatcher::decodeContactStatus(TLValu
     }
 }
 
-void CTelegramDispatcher::whenConnectionAuthChanged(quint32 dc, int newState)
+void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
 {
     CTelegramConnection *connection = m_connections.value(dc);
 
@@ -1407,7 +1407,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
     CTelegramConnection *connection = new CTelegramConnection(m_appInformation, this);
 
     connect(connection, SIGNAL(selfPhoneReceived(QString)), SLOT(whenSelfPhoneReceived(QString)));
-    connect(connection, SIGNAL(authStateChanged(quint32,int)), SLOT(whenConnectionAuthChanged(quint32,int)));
+    connect(connection, SIGNAL(authStateChanged(int,quint32)), SLOT(whenConnectionAuthChanged(int,quint32)));
     connect(connection, SIGNAL(dcConfigurationReceived(quint32)), SLOT(whenDcConfigurationUpdated(quint32)));
     connect(connection, SIGNAL(actualDcIdReceived(quint32,quint32)), SLOT(whenConnectionDcIdUpdated(quint32,quint32)));
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,quint32)), SLOT(whenPackageRedirected(QByteArray,quint32)));

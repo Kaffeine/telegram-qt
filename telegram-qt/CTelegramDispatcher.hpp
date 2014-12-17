@@ -111,7 +111,7 @@ signals:
 
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
-    void whenConnectionAuthChanged(quint32 dc, int newState);
+    void whenConnectionAuthChanged(int newState, quint32 dc);
     void whenDcConfigurationUpdated(quint32 dc);
     void whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
     void whenPackageRedirected(const QByteArray &data, quint32 dc);
