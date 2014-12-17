@@ -877,8 +877,6 @@ quint64 CTelegramConnection::usersGetUsers(const TLVector<TLInputUser> &id)
 
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
-    // Payload is passed as const, but we open device in read-only mode, so
-    // Let's workaround const by construction variable copy with COW-feature.
     CTelegramStream inputStream(payload);
 
     TLValue responsePqValue;
@@ -1017,7 +1015,7 @@ bool CTelegramConnection::answerDh(const QByteArray &payload)
     inputStream >> responseTLValue;
 
     if (responseTLValue != ServerDHParamsOk) {
-        qDebug() << "Error: Server did not accept our DH params";
+        qDebug() << "Error: Server did not accept our DH params.";
         return false;
     }
 
@@ -1059,7 +1057,7 @@ bool CTelegramConnection::answerDh(const QByteArray &payload)
     encryptedInputStream >> responseTLValue;
 
     if (responseTLValue != ServerDHInnerData) {
-        qDebug() << "Error: Unexpected TL Value in encrypted answer";
+        qDebug() << "Error: Unexpected TL Value in encrypted answer.";
         return false;
     }
 
@@ -1080,6 +1078,21 @@ bool CTelegramConnection::answerDh(const QByteArray &payload)
     encryptedInputStream >> m_g;
     encryptedInputStream >> m_dhPrime;
     encryptedInputStream >> m_gA;
+
+    if ((m_g < 2) || (m_g > 7)) {
+        qDebug() << "Error: Received 'g' number is out of acceptable range [2-7].";
+        return false;
+    }
+
+    if (m_dhPrime.length() != 2048 / 8) {
+        qDebug() << "Error: Received dhPrime number length is not correct." << m_dhPrime.length() << 2048 / 8;
+        return false;
+    }
+
+    if (!(m_dhPrime.at(0) & 128)) {
+        qDebug() << "Error: Received dhPrime is too small.";
+        return false;
+    }
 
     quint32 serverTime;
 
