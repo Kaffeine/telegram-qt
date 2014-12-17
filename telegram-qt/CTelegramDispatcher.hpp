@@ -17,6 +17,7 @@
 #include <QObject>
 
 #include <QMap>
+#include <QMultiMap>
 #include <QPair>
 #include <QStringList>
 
@@ -27,6 +28,26 @@ class QTimer;
 
 class CAppInformation;
 class CTelegramConnection;
+
+struct SRequestedFile
+{
+    SRequestedFile(const SRequestedFile &rf) :
+        location(rf.location),
+        fileId(rf.fileId)
+    {
+    }
+
+    SRequestedFile(const TLInputFileLocation &l, quint32 id) :
+        location(l),
+        fileId(id)
+    {
+    }
+
+    TLInputFileLocation location;
+    quint32 fileId;
+};
+
+Q_DECLARE_TYPEINFO(SRequestedFile, Q_MOVABLE_TYPE);
 
 class CTelegramDispatcher : public QObject
 {
@@ -112,6 +133,7 @@ signals:
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
     void whenConnectionAuthChanged(int newState, quint32 dc);
+    void whenConnectionStatusChanged(int newStatus, quint32 dc);
     void whenDcConfigurationUpdated(quint32 dc);
     void whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
     void whenPackageRedirected(const QByteArray &data, quint32 dc);
@@ -119,6 +141,7 @@ protected slots:
 
     void whenFileReceived(const TLUploadFile &file, quint32 fileId);
     void whenUpdatesReceived(const TLUpdates &updates);
+    void whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
     void whenUsersReceived(const QVector<TLUser> &users);
 
@@ -167,6 +190,7 @@ private:
 
     CTelegramConnection *createConnection(const TLDcOption &dc);
     CTelegramConnection *establishConnectionToDc(quint32 dc);
+    void ensureSignedConnection(quint32 dc);
 
     TLDcOption dcInfoById(quint32 dc);
 
@@ -198,6 +222,7 @@ private:
     bool m_updatesStateIsLocked; // True if we are (going to) getting updatesDifference.
     bool m_emitOnlyUnreadMessages;
 
+    QMap<quint32, QPair<quint32,QByteArray> > m_exportedAuthentications; // dc, <id, auth data>
     QMap<quint32, QByteArray> m_delayedPackages; // dc, package data
     QMap<quint32, TLUser*> m_users;
 
@@ -208,7 +233,7 @@ private:
 
     QStringList m_contactList;
 
-    QList<quint32> m_requestedFilesMessageIds;
+    QMultiMap<quint32, SRequestedFile> m_requestedFiles; // dc, <file location, fileId>
 
     QTimer *m_typingUpdateTimer;
     QMap<quint32, int> m_userTypingMap; // user id, typing time (ms)
