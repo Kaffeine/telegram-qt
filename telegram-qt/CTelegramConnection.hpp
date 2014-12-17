@@ -86,6 +86,16 @@ public:
     quint64 authSendInvites(const TLVector<QString> &phoneNumbers, const QString &message);
     quint64 authSignIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
     quint64 authSignUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName);
+    quint64 contactsBlock(const TLInputUser &id);
+    quint64 contactsDeleteContact(const TLInputUser &id);
+    quint64 contactsDeleteContacts(const TLVector<TLInputUser> &id);
+    quint64 contactsGetBlocked(quint32 offset, quint32 limit);
+    quint64 contactsGetContacts(const QString &hash);
+    quint64 contactsGetStatuses();
+    quint64 contactsGetSuggested(quint32 limit);
+    quint64 contactsImportContacts(const TLVector<TLInputContact> &contacts, bool replace);
+    quint64 contactsSearch(const QString &q, quint32 limit);
+    quint64 contactsUnblock(const TLInputUser &id);
     quint64 messagesAcceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint);
     quint64 messagesAddChatUser(quint32 chatId, const TLInputUser &userId, quint32 fwdLimit);
     quint64 messagesCreateChat(const TLVector<TLInputUser> &users, const QString &title);
@@ -124,8 +134,6 @@ public:
     quint64 signIn(const QString &phoneNumber, const QString &authCode);
     quint64 signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
-    void contactsGetContacts();
-
     void updatesGetState();
     void updatesGetDifference(quint32 pts, quint32 date, quint32 qts);
 
@@ -133,9 +141,6 @@ public:
 
     void usersGetUsers(const TLVector<TLInputUser> &users);
     void usersGetFullUser(const TLInputUser &user);
-
-    void contactsDeleteContacts(const TLVector<TLInputUser> &users);
-    void addContacts(const QStringList &phoneNumbers, bool replace);
 
     void accountUpdateStatus(bool offline);
 

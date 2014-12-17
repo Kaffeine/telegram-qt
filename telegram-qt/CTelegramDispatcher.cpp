@@ -115,7 +115,19 @@ bool CTelegramDispatcher::isAuthenticated() const
 
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
 {
-    activeConnection()->addContacts(phoneNumbers, replace);
+    qDebug() << "addContacts" << maskPhoneNumberList(phoneNumbers);
+    if (activeConnection()) {
+        TLVector<TLInputContact> contactsVector;
+        for (int i = 0; i < phoneNumbers.count(); ++i) {
+            TLInputContact contact;
+            contact.clientId = i;
+            contact.phone = phoneNumbers.at(i);
+            contactsVector.append(contact);
+        }
+        activeConnection()->contactsImportContacts(contactsVector, replace);
+    } else {
+        qDebug() << Q_FUNC_INFO << "No active connection.";
+    }
 }
 
 void CTelegramDispatcher::deleteContacts(const QStringList &phoneNumbers)
@@ -723,7 +735,7 @@ void CTelegramDispatcher::getInitialUsers()
 
 void CTelegramDispatcher::getContacts()
 {
-    activeConnection()->contactsGetContacts();
+    activeConnection()->contactsGetContacts(QString()); // Empty hash argument for now.
 }
 
 void CTelegramDispatcher::getUpdatesState()

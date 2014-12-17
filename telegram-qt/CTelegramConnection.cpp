@@ -35,25 +35,6 @@ static QString maskPhoneNumber(const QString &phoneNumber)
     return phoneNumber.mid(0, phoneNumber.size() / 4) + QString(phoneNumber.size() - phoneNumber.size() / 4, QLatin1Char('x')); // + QLatin1String(" (hidden)");
 }
 
-// Have a copy in CTelegramDispatcher
-static QStringList maskPhoneNumberList(const QStringList &list)
-{
-    QStringList result;
-
-    const int listDigits = QString::number(list.count()).size();
-
-    foreach (const QString &number, list) {
-        if (number.length() >= 5 + listDigits) {
-            QString masked = QString("%1xx%2%3").arg(number.mid(0, 2)).arg(list.indexOf(number), listDigits, 10, QLatin1Char('0')).arg(QString(number.length() - 4 - listDigits, QLatin1Char('x')));
-            result.append(masked);
-        } else { // fallback
-            result.append(maskPhoneNumber(number));
-        }
-    }
-
-    return result;
-}
-
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
     m_status(ConnectionStatusNone),
@@ -190,19 +171,6 @@ quint64 CTelegramConnection::signUp(const QString &phoneNumber, const QString &a
     return authSignUp(phoneNumber, m_authCodeHash, authCode, firstName, lastName);
 }
 
-void CTelegramConnection::contactsGetContacts()
-{
-    qDebug() << "GetContacts";
-
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << ContactsGetContacts;
-    outputStream << QString(); // Hash
-
-    sendEncryptedPackage(output);
-}
-
 void CTelegramConnection::updatesGetState()
 {
     QByteArray output;
@@ -259,41 +227,6 @@ void CTelegramConnection::usersGetFullUser(const TLInputUser &user)
 
     outputStream << UsersGetFullUser;
     outputStream << user;
-
-    sendEncryptedPackage(output);
-}
-
-void CTelegramConnection::contactsDeleteContacts(const TLVector<TLInputUser> &users)
-{
-    qDebug() << Q_FUNC_INFO << users.count();
-
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << ContactsDeleteContacts;
-    outputStream << users;
-
-    sendEncryptedPackage(output);
-}
-
-void CTelegramConnection::addContacts(const QStringList &phoneNumbers, bool replace)
-{
-    qDebug() << "addContacts" << maskPhoneNumberList(phoneNumbers);
-
-    TLVector<TLInputContact> contactsVector;
-    for (int i = 0; i < phoneNumbers.count(); ++i) {
-        TLInputContact contact;
-        contact.clientId = i;
-        contact.phone = phoneNumbers.at(i);
-        contactsVector.append(contact);
-    }
-
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << ContactsImportContacts;
-    outputStream << contactsVector; // Hash
-    outputStream << replace;
 
     sendEncryptedPackage(output);
 }
@@ -427,6 +360,118 @@ quint64 CTelegramConnection::authSignUp(const QString &phoneNumber, const QStrin
     outputStream << phoneCode;
     outputStream << firstName;
     outputStream << lastName;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsBlock(const TLInputUser &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsBlock;
+    outputStream << id;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsDeleteContact(const TLInputUser &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsDeleteContact;
+    outputStream << id;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsDeleteContacts(const TLVector<TLInputUser> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsDeleteContacts;
+    outputStream << id;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsGetBlocked(quint32 offset, quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsGetBlocked;
+    outputStream << offset;
+    outputStream << limit;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsGetContacts(const QString &hash)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsGetContacts;
+    outputStream << hash;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsGetStatuses()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsGetStatuses;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsGetSuggested(quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsGetSuggested;
+    outputStream << limit;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsImportContacts(const TLVector<TLInputContact> &contacts, bool replace)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsImportContacts;
+    outputStream << contacts;
+    outputStream << replace;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsSearch(const QString &q, quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsSearch;
+    outputStream << q;
+    outputStream << limit;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsUnblock(const TLInputUser &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsUnblock;
+    outputStream << id;
 
     return sendEncryptedPackage(output);
 }
