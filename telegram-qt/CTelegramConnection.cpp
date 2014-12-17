@@ -1295,6 +1295,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case UsersGetFullUser:
             processingResult = processUsersGetFullUser(stream, id);
             break;
+        case AuthImportAuthorization:
         case AuthSignIn:
         case AuthSignUp:
             processingResult = processAuthSign(stream, id);
@@ -1304,6 +1305,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
             break;
         case AuthCheckPhone:
             processingResult = processAuthCheckPhone(stream, id);
+            break;
+        case AuthExportAuthorization:
+            processingResult = processAuthExportAuthorization(stream, id);
             break;
         case AuthSendCode:
             processingResult = processAuthSendCode(stream, id);
@@ -1608,10 +1612,10 @@ TLValue CTelegramConnection::processAuthCheckPhone(CTelegramStream &stream, quin
     stream >> result;
 
     if (result.tlType == AuthCheckedPhone) {
-        const QByteArray data = m_submittedPackages.take(id);
+        const QByteArray data = m_submittedPackages.value(id);
 
         if (data.isEmpty()) {
-            qDebug() << Q_FUNC_INFO << "Can not restore message" << id;
+            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
             return result.tlType;
         }
 
@@ -1622,6 +1626,31 @@ TLValue CTelegramConnection::processAuthCheckPhone(CTelegramStream &stream, quin
         stream >> phone;
 
         emit phoneStatusReceived(phone, result.phoneRegistered, result.phoneInvited);
+    }
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processAuthExportAuthorization(CTelegramStream &stream, quint64 id)
+{
+    TLAuthExportedAuthorization result;
+    stream >> result;
+
+    if (result.tlType == AuthExportedAuthorization) {
+        const QByteArray data = m_submittedPackages.value(id);
+
+        if (data.isEmpty()) {
+            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
+            return result.tlType;
+        }
+
+        CTelegramStream stream(data);
+        TLValue value;
+        quint32 dc;
+        stream >> value;
+        stream >> dc;
+
+        emit authExportedAuthorizationReceived(dc, result.id, result.bytes);
     }
 
     return result.tlType;

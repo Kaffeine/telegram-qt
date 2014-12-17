@@ -197,6 +197,7 @@ signals:
     void updatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
     void messageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
+    void authExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
 private slots:
     void whenConnected();
@@ -222,6 +223,7 @@ protected:
     TLValue processUpdatesGetState(CTelegramStream &stream, quint64 id);
     TLValue processUpdatesGetDifference(CTelegramStream &stream, quint64 id);
     TLValue processAuthCheckPhone(CTelegramStream &stream, quint64 id);
+    TLValue processAuthExportAuthorization(CTelegramStream &stream, quint64 id);
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
     TLValue processAuthSign(CTelegramStream &stream, quint64 id);
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
