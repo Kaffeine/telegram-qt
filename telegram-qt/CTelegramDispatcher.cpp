@@ -58,7 +58,7 @@ static QStringList maskPhoneNumberList(const QStringList &list)
 
     foreach (const QString &number, list) {
         if (number.length() >= 5 + listDigits) {
-            QString masked = QString("%1xx%2%3").arg(number.mid(0, 2)).arg(list.indexOf(number), listDigits, 10, QLatin1Char('0')).arg(QString(number.length() - 4 - listDigits, QLatin1Char('x')));
+            QString masked = QString(QLatin1String("%1xx%2%3")).arg(number.mid(0, 2)).arg(list.indexOf(number), listDigits, 10, QLatin1Char('0')).arg(QString(number.length() - 4 - listDigits, QLatin1Char('x')));
             result.append(masked);
         } else { // fallback
             result.append(maskPhoneNumber(number) + QLatin1String(" (fallback)"));
