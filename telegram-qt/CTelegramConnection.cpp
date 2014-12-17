@@ -1429,6 +1429,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case AuthSendCode:
             processingResult = processAuthSendCode(stream, id);
             break;
+        case AuthSendSms:
+            processingResult = processAuthSendSms(stream, id);
+            break;
         case MessagesCreateChat:
             processingResult = processMessagesCreateChat(stream, id);
             break;
@@ -1782,9 +1785,35 @@ TLValue CTelegramConnection::processAuthSendCode(CTelegramStream &stream, quint6
         m_authCodeHash = result.phoneCodeHash;
 
         emit phoneCodeRequired();
+    } else if (result.tlType == AuthSentAppCode) {
+        qDebug() << Q_FUNC_INFO << "AuthSentAppCode";
+        m_authCodeHash = result.phoneCodeHash;
+
+        const QByteArray data = m_submittedPackages.value(id);
+
+        if (data.isEmpty()) {
+            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
+            return result.tlType;
+        }
+
+        CTelegramStream stream(data);
+        TLValue value;
+        QString phoneNumber;
+        stream >> value;
+        stream >> phoneNumber;
+
+        authSendSms(phoneNumber, m_authCodeHash);
     }
 
     return result.tlType;
+}
+
+TLValue CTelegramConnection::processAuthSendSms(CTelegramStream &stream, quint64 id)
+{
+    TLValue result;
+    stream >> result;
+
+    return result;
 }
 
 TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id)

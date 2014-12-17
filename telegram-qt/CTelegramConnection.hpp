@@ -234,6 +234,7 @@ protected:
     TLValue processAuthCheckPhone(CTelegramStream &stream, quint64 id);
     TLValue processAuthExportAuthorization(CTelegramStream &stream, quint64 id);
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
+    TLValue processAuthSendSms(CTelegramStream &stream, quint64 id);
     TLValue processAuthSign(CTelegramStream &stream, quint64 id);
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetUsers(CTelegramStream &stream, quint64 id);
