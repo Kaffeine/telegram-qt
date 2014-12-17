@@ -176,6 +176,8 @@ protected:
     void getUser(quint32 id);
     void getInitialUsers();
 
+    quint64 sendMessages(const TLInputPeer &peer, const QString &message);
+
 private:
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;

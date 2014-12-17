@@ -363,16 +363,11 @@ quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QS
         return 0;
     }
 
-    quint64 randomMessageId;
-    Utils::randomBytes(&randomMessageId);
-
-    activeConnection()->messagesSendMessage(peer, message, randomMessageId);
-
     if (m_localTypingMap.contains(phone)) {
         m_localTypingMap.remove(phone);
     }
 
-    return randomMessageId;
+    return sendMessages(peer, message);
 }
 
 quint64 CTelegramDispatcher::sendMessageToChat(quint32 publicChatId, const QString &message)
@@ -387,14 +382,30 @@ quint64 CTelegramDispatcher::sendMessageToChat(quint32 publicChatId, const QStri
         return 0;
     }
 
-    quint64 randomMessageId;
-    Utils::randomBytes(&randomMessageId);
-
-    activeConnection()->messagesSendMessage(peer, message, randomMessageId);
-
     if (m_localChatTypingMap.contains(publicChatId)) {
         m_localChatTypingMap.remove(publicChatId);
     }
+
+    return sendMessages(peer, message);
+}
+
+quint64 CTelegramDispatcher::sendMessages(const TLInputPeer &peer, const QString &message)
+{
+    quint64 randomMessageId;
+    Utils::randomBytes(&randomMessageId);
+
+    // Probably we have to implement GZip packing to fix this bug.
+    if (message.length() > 400) {
+        qDebug() << Q_FUNC_INFO << "Can not send such long message due to a bug. Current maximum length is 400 characters.";
+        return 0;
+    }
+
+    if (message.length() > 4095) { // 4096 - 1
+        qDebug() << Q_FUNC_INFO << "Can not send such long message due to server limitation. Current maximum length is 4095 characters.";
+        return 0;
+    }
+
+    activeConnection()->messagesSendMessage(peer, message, randomMessageId);
 
     return randomMessageId;
 }
