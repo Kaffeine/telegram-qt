@@ -171,29 +171,6 @@ quint64 CTelegramConnection::signUp(const QString &phoneNumber, const QString &a
     return authSignUp(phoneNumber, m_authCodeHash, authCode, firstName, lastName);
 }
 
-void CTelegramConnection::updatesGetState()
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << UpdatesGetState;
-
-    sendEncryptedPackage(output);
-}
-
-void CTelegramConnection::updatesGetDifference(quint32 pts, quint32 date, quint32 qts)
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << UpdatesGetDifference;
-    outputStream << pts;
-    outputStream << date;
-    outputStream << qts;
-
-    sendEncryptedPackage(output);
-}
-
 void CTelegramConnection::getFile(const TLInputFileLocation &location, quint32 fileId)
 {
     QByteArray output;
@@ -869,6 +846,29 @@ quint64 CTelegramConnection::messagesSetTyping(const TLInputPeer &peer, bool typ
     outputStream << MessagesSetTyping;
     outputStream << peer;
     outputStream << typing;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::updatesGetDifference(quint32 pts, quint32 date, quint32 qts)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << UpdatesGetDifference;
+    outputStream << pts;
+    outputStream << date;
+    outputStream << qts;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::updatesGetState()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << UpdatesGetState;
 
     return sendEncryptedPackage(output);
 }

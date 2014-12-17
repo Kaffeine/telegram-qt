@@ -128,14 +128,13 @@ public:
     quint64 messagesSendMessage(const TLInputPeer &peer, const QString &message, quint64 randomId);
     quint64 messagesSetEncryptedTyping(const TLInputEncryptedChat &peer, bool typing);
     quint64 messagesSetTyping(const TLInputPeer &peer, bool typing);
+    quint64 updatesGetDifference(quint32 pts, quint32 date, quint32 qts);
+    quint64 updatesGetState();
     // End of generated Telegram API methods declaration
 
     quint64 requestPhoneCode(const QString &phoneNumber);
     quint64 signIn(const QString &phoneNumber, const QString &authCode);
     quint64 signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
-
-    void updatesGetState();
-    void updatesGetDifference(quint32 pts, quint32 date, quint32 qts);
 
     void getFile(const TLInputFileLocation &location, quint32 fileId);
 

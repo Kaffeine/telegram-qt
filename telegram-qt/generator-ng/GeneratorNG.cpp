@@ -454,7 +454,7 @@ void GeneratorNG::generate()
     codeConnectionDeclaration.clear();
     codeConnectionImplementation.clear();
 
-    static const QStringList whiteList = QStringList() << QLatin1String("messages") << QLatin1String("auth") << QLatin1String("contacts");
+    static const QStringList whiteList = QStringList()<< QLatin1String("auth") << QLatin1String("messages") << QLatin1String("contacts") << QLatin1String("updates");
 
     foreach (const TLMethod &method, m_methods) {
         bool addImplementation = false;
