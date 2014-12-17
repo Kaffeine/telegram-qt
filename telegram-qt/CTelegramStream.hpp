@@ -55,14 +55,13 @@ public:
     CTelegramStream &operator>>(TLContactsForeignLink &contactsForeignLink);
     CTelegramStream &operator>>(TLContactsMyLink &contactsMyLink);
     CTelegramStream &operator>>(TLDcOption &dcOption);
-    CTelegramStream &operator>>(TLDecryptedMessageAction &decryptedMessageAction);
-    CTelegramStream &operator>>(TLDecryptedMessageMedia &decryptedMessageMedia);
     CTelegramStream &operator>>(TLEncryptedChat &encryptedChat);
     CTelegramStream &operator>>(TLEncryptedFile &encryptedFile);
     CTelegramStream &operator>>(TLEncryptedMessage &encryptedMessage);
     CTelegramStream &operator>>(TLError &error);
     CTelegramStream &operator>>(TLFileLocation &fileLocation);
     CTelegramStream &operator>>(TLGeoPoint &geoPoint);
+    CTelegramStream &operator>>(TLGlobalPrivacySettings &globalPrivacySettings);
     CTelegramStream &operator>>(TLHelpAppUpdate &helpAppUpdate);
     CTelegramStream &operator>>(TLHelpInviteText &helpInviteText);
     CTelegramStream &operator>>(TLImportedContact &importedContact);
@@ -92,6 +91,7 @@ public:
     CTelegramStream &operator>>(TLPeerNotifyEvents &peerNotifyEvents);
     CTelegramStream &operator>>(TLPeerNotifySettings &peerNotifySettings);
     CTelegramStream &operator>>(TLPhotoSize &photoSize);
+    CTelegramStream &operator>>(TLSendMessageAction &sendMessageAction);
     CTelegramStream &operator>>(TLStorageFileType &storageFileType);
     CTelegramStream &operator>>(TLUpdatesState &updatesState);
     CTelegramStream &operator>>(TLUploadFile &uploadFile);
@@ -101,8 +101,6 @@ public:
     CTelegramStream &operator>>(TLWallPaper &wallPaper);
     CTelegramStream &operator>>(TLChatPhoto &chatPhoto);
     CTelegramStream &operator>>(TLConfig &config);
-    CTelegramStream &operator>>(TLDecryptedMessage &decryptedMessage);
-    CTelegramStream &operator>>(TLDecryptedMessageLayer &decryptedMessageLayer);
     CTelegramStream &operator>>(TLDialog &dialog);
     CTelegramStream &operator>>(TLDocument &document);
     CTelegramStream &operator>>(TLInputChatPhoto &inputChatPhoto);
@@ -167,6 +165,7 @@ public:
     CTelegramStream &operator<<(const TLInputPhotoCrop &inputPhotoCrop);
     CTelegramStream &operator<<(const TLInputUser &inputUser);
     CTelegramStream &operator<<(const TLMessagesFilter &messagesFilter);
+    CTelegramStream &operator<<(const TLSendMessageAction &sendMessageAction);
     CTelegramStream &operator<<(const TLInputChatPhoto &inputChatPhoto);
     CTelegramStream &operator<<(const TLInputMedia &inputMedia);
     CTelegramStream &operator<<(const TLInputNotifyPeer &inputNotifyPeer);

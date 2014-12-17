@@ -446,7 +446,14 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
         return;
     }
 
-    activeConnection()->messagesSetTyping(peer, typingStatus);
+    TLSendMessageAction action;
+    if (typingStatus) {
+        action.tlType = SendMessageTypingAction;
+    } else {
+        action.tlType = SendMessageCancelAction;
+    }
+
+    activeConnection()->messagesSetTyping(peer, action);
 
     m_localTypingMap.insert(phone, s_localTypingActionPeriod);
     ensureTypingUpdateTimer(s_localTypingActionPeriod);
@@ -468,7 +475,14 @@ void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
         return;
     }
 
-    activeConnection()->messagesSetTyping(peer, typingStatus);
+    TLSendMessageAction action;
+    if (typingStatus) {
+        action.tlType = SendMessageTypingAction;
+    } else {
+        action.tlType = SendMessageCancelAction;
+    }
+
+    activeConnection()->messagesSetTyping(peer, action);
 
     m_localChatTypingMap.insert(publicChatId, s_localTypingActionPeriod);
     ensureTypingUpdateTimer(s_localTypingActionPeriod);
@@ -482,7 +496,7 @@ void CTelegramDispatcher::setMessageRead(const QString &phone, quint32 messageId
     const TLInputPeer peer = phoneNumberToInputPeer(phone);
 
     if (peer.tlType != InputPeerEmpty) {
-        activeConnection()->messagesReadHistory(peer, messageId, 0);
+        activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0, /* readContents */ false);
     }
 }
 
@@ -777,7 +791,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
             if (message.tlType != Message) {
                 continue;
             }
-            if (m_emitOnlyUnreadMessages && !message.unread) {
+            if (m_emitOnlyUnreadMessages && !message.flags & MessageFlagUnread) {
                 continue;
             }
             emit messageReceived(userIdToIdentifier(message.fromId), message.message, message.id);
@@ -791,7 +805,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
             if (message.tlType != Message) {
                 continue;
             }
-            if (m_emitOnlyUnreadMessages && !message.unread) {
+            if (m_emitOnlyUnreadMessages && !message.flags & MessageFlagUnread) {
                 continue;
             }
             emit messageReceived(userIdToIdentifier(message.fromId), message.message, message.id);

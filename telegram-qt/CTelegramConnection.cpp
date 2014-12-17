@@ -198,6 +198,20 @@ void CTelegramConnection::accountUpdateStatus(bool offline)
 }
 
 // Generated Telegram API methods implementation
+quint64 CTelegramConnection::authBindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthBindTempAuthKey;
+    outputStream << permAuthKeyId;
+    outputStream << nonce;
+    outputStream << expiresAt;
+    outputStream << encryptedMessage;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::authCheckPhone(const QString &phoneNumber)
 {
     QByteArray output;
@@ -291,6 +305,18 @@ quint64 CTelegramConnection::authSendInvites(const TLVector<QString> &phoneNumbe
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::authSendSms(const QString &phoneNumber, const QString &phoneCodeHash)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << AuthSendSms;
+    outputStream << phoneNumber;
+    outputStream << phoneCodeHash;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::authSignIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode)
 {
     QByteArray output;
@@ -352,6 +378,16 @@ quint64 CTelegramConnection::contactsDeleteContacts(const TLVector<TLInputUser> 
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::contactsExportCard()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsExportCard;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::contactsGetBlocked(quint32 offset, quint32 limit)
 {
     QByteArray output;
@@ -392,6 +428,17 @@ quint64 CTelegramConnection::contactsGetSuggested(quint32 limit)
 
     outputStream << ContactsGetSuggested;
     outputStream << limit;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::contactsImportCard(const TLVector<quint32> &exportCard)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << ContactsImportCard;
+    outputStream << exportCard;
 
     return sendEncryptedPackage(output);
 }
@@ -648,7 +695,7 @@ quint64 CTelegramConnection::messagesReadEncryptedHistory(const TLInputEncrypted
     return sendEncryptedPackage(output);
 }
 
-quint64 CTelegramConnection::messagesReadHistory(const TLInputPeer &peer, quint32 maxId, quint32 offset)
+quint64 CTelegramConnection::messagesReadHistory(const TLInputPeer &peer, quint32 maxId, quint32 offset, bool readContents)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
@@ -657,6 +704,18 @@ quint64 CTelegramConnection::messagesReadHistory(const TLInputPeer &peer, quint3
     outputStream << peer;
     outputStream << maxId;
     outputStream << offset;
+    outputStream << readContents;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::messagesReadMessageContents(const TLVector<quint32> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << MessagesReadMessageContents;
+    outputStream << id;
 
     return sendEncryptedPackage(output);
 }
@@ -816,14 +875,14 @@ quint64 CTelegramConnection::messagesSetEncryptedTyping(const TLInputEncryptedCh
     return sendEncryptedPackage(output);
 }
 
-quint64 CTelegramConnection::messagesSetTyping(const TLInputPeer &peer, bool typing)
+quint64 CTelegramConnection::messagesSetTyping(const TLInputPeer &peer, const TLSendMessageAction &action)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
 
     outputStream << MessagesSetTyping;
     outputStream << peer;
-    outputStream << typing;
+    outputStream << action;
 
     return sendEncryptedPackage(output);
 }
@@ -2061,7 +2120,7 @@ void CTelegramConnection::insertInitConnection(QByteArray *data) const
 {
     CTelegramStream outputStream(data, /* write */ true);
 
-    outputStream << InvokeWithLayer14;
+    outputStream << InvokeWithLayer18;
     outputStream << InitConnection;
 
     outputStream << m_appInfo->appId();

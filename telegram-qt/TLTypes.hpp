@@ -421,109 +421,6 @@ struct TLDcOption {
     TLValue tlType;
 };
 
-struct TLDecryptedMessageAction {
-    TLDecryptedMessageAction() :
-        ttlSeconds(0),
-        layer(0),
-        tlType(DecryptedMessageActionSetMessageTTL) { }
-
-    TLDecryptedMessageAction(const TLDecryptedMessageAction &anotherDecryptedMessageAction) :
-        ttlSeconds(anotherDecryptedMessageAction.ttlSeconds),
-        randomIds(anotherDecryptedMessageAction.randomIds),
-        layer(anotherDecryptedMessageAction.layer),
-        tlType(anotherDecryptedMessageAction.tlType) { }
-
-    TLDecryptedMessageAction &operator=(const TLDecryptedMessageAction &anotherDecryptedMessageAction) {
-        ttlSeconds = anotherDecryptedMessageAction.ttlSeconds;
-        randomIds = anotherDecryptedMessageAction.randomIds;
-        layer = anotherDecryptedMessageAction.layer;
-        tlType = anotherDecryptedMessageAction.tlType;
-
-        return *this;
-    }
-
-    quint32 ttlSeconds;
-    TLVector<quint64> randomIds;
-    quint32 layer;
-    TLValue tlType;
-};
-
-struct TLDecryptedMessageMedia {
-    TLDecryptedMessageMedia() :
-        thumbW(0),
-        thumbH(0),
-        w(0),
-        h(0),
-        size(0),
-        duration(0),
-        latitude(0),
-        longitude(0),
-        userId(0),
-        tlType(DecryptedMessageMediaEmpty) { }
-
-    TLDecryptedMessageMedia(const TLDecryptedMessageMedia &anotherDecryptedMessageMedia) :
-        thumb(anotherDecryptedMessageMedia.thumb),
-        thumbW(anotherDecryptedMessageMedia.thumbW),
-        thumbH(anotherDecryptedMessageMedia.thumbH),
-        w(anotherDecryptedMessageMedia.w),
-        h(anotherDecryptedMessageMedia.h),
-        size(anotherDecryptedMessageMedia.size),
-        key(anotherDecryptedMessageMedia.key),
-        iv(anotherDecryptedMessageMedia.iv),
-        duration(anotherDecryptedMessageMedia.duration),
-        mimeType(anotherDecryptedMessageMedia.mimeType),
-        latitude(anotherDecryptedMessageMedia.latitude),
-        longitude(anotherDecryptedMessageMedia.longitude),
-        phoneNumber(anotherDecryptedMessageMedia.phoneNumber),
-        firstName(anotherDecryptedMessageMedia.firstName),
-        lastName(anotherDecryptedMessageMedia.lastName),
-        userId(anotherDecryptedMessageMedia.userId),
-        fileName(anotherDecryptedMessageMedia.fileName),
-        tlType(anotherDecryptedMessageMedia.tlType) { }
-
-    TLDecryptedMessageMedia &operator=(const TLDecryptedMessageMedia &anotherDecryptedMessageMedia) {
-        thumb = anotherDecryptedMessageMedia.thumb;
-        thumbW = anotherDecryptedMessageMedia.thumbW;
-        thumbH = anotherDecryptedMessageMedia.thumbH;
-        w = anotherDecryptedMessageMedia.w;
-        h = anotherDecryptedMessageMedia.h;
-        size = anotherDecryptedMessageMedia.size;
-        key = anotherDecryptedMessageMedia.key;
-        iv = anotherDecryptedMessageMedia.iv;
-        duration = anotherDecryptedMessageMedia.duration;
-        mimeType = anotherDecryptedMessageMedia.mimeType;
-        latitude = anotherDecryptedMessageMedia.latitude;
-        longitude = anotherDecryptedMessageMedia.longitude;
-        phoneNumber = anotherDecryptedMessageMedia.phoneNumber;
-        firstName = anotherDecryptedMessageMedia.firstName;
-        lastName = anotherDecryptedMessageMedia.lastName;
-        userId = anotherDecryptedMessageMedia.userId;
-        fileName = anotherDecryptedMessageMedia.fileName;
-        tlType = anotherDecryptedMessageMedia.tlType;
-
-        return *this;
-    }
-
-    QByteArray thumb;
-    quint32 thumbW;
-    quint32 thumbH;
-    quint32 w;
-    quint32 h;
-    quint32 size;
-    QByteArray key;
-    QByteArray iv;
-    quint32 duration;
-    QString mimeType;
-    double latitude;
-    double longitude;
-    QString phoneNumber;
-    QString firstName;
-    QString lastName;
-    quint32 userId;
-    QString fileName;
-    TLValue tlType;
-};
-
 struct TLEncryptedChat {
     TLEncryptedChat() :
         id(0),
@@ -716,6 +613,38 @@ struct TLGeoPoint {
 
     double longitude;
     double latitude;
+    TLValue tlType;
+};
+
+struct TLGlobalPrivacySettings {
+    TLGlobalPrivacySettings() :
+        noSuggestions(false),
+        hideContacts(false),
+        hideLocated(false),
+        hideLastVisit(false),
+        tlType(GlobalPrivacySettings) { }
+
+    TLGlobalPrivacySettings(const TLGlobalPrivacySettings &anotherGlobalPrivacySettings) :
+        noSuggestions(anotherGlobalPrivacySettings.noSuggestions),
+        hideContacts(anotherGlobalPrivacySettings.hideContacts),
+        hideLocated(anotherGlobalPrivacySettings.hideLocated),
+        hideLastVisit(anotherGlobalPrivacySettings.hideLastVisit),
+        tlType(anotherGlobalPrivacySettings.tlType) { }
+
+    TLGlobalPrivacySettings &operator=(const TLGlobalPrivacySettings &anotherGlobalPrivacySettings) {
+        noSuggestions = anotherGlobalPrivacySettings.noSuggestions;
+        hideContacts = anotherGlobalPrivacySettings.hideContacts;
+        hideLocated = anotherGlobalPrivacySettings.hideLocated;
+        hideLastVisit = anotherGlobalPrivacySettings.hideLastVisit;
+        tlType = anotherGlobalPrivacySettings.tlType;
+
+        return *this;
+    }
+
+    bool noSuggestions;
+    bool hideContacts;
+    bool hideLocated;
+    bool hideLastVisit;
     TLValue tlType;
 };
 
@@ -1479,6 +1408,22 @@ struct TLPhotoSize {
     TLValue tlType;
 };
 
+struct TLSendMessageAction {
+    TLSendMessageAction() :
+        tlType(SendMessageTypingAction) { }
+
+    TLSendMessageAction(const TLSendMessageAction &anotherSendMessageAction) :
+        tlType(anotherSendMessageAction.tlType) { }
+
+    TLSendMessageAction &operator=(const TLSendMessageAction &anotherSendMessageAction) {
+        tlType = anotherSendMessageAction.tlType;
+
+        return *this;
+    }
+
+    TLValue tlType;
+};
+
 struct TLStorageFileType {
     TLStorageFileType() :
         tlType(StorageFileUnknown) { }
@@ -1763,61 +1708,6 @@ struct TLConfig {
     TLValue tlType;
 };
 
-struct TLDecryptedMessage {
-    TLDecryptedMessage() :
-        randomId(0),
-        tlType(DecryptedMessage) { }
-
-    TLDecryptedMessage(const TLDecryptedMessage &anotherDecryptedMessage) :
-        randomId(anotherDecryptedMessage.randomId),
-        randomBytes(anotherDecryptedMessage.randomBytes),
-        message(anotherDecryptedMessage.message),
-        media(anotherDecryptedMessage.media),
-        action(anotherDecryptedMessage.action),
-        tlType(anotherDecryptedMessage.tlType) { }
-
-    TLDecryptedMessage &operator=(const TLDecryptedMessage &anotherDecryptedMessage) {
-        randomId = anotherDecryptedMessage.randomId;
-        randomBytes = anotherDecryptedMessage.randomBytes;
-        message = anotherDecryptedMessage.message;
-        media = anotherDecryptedMessage.media;
-        action = anotherDecryptedMessage.action;
-        tlType = anotherDecryptedMessage.tlType;
-
-        return *this;
-    }
-
-    quint64 randomId;
-    QByteArray randomBytes;
-    QString message;
-    TLDecryptedMessageMedia media;
-    TLDecryptedMessageAction action;
-    TLValue tlType;
-};
-
-struct TLDecryptedMessageLayer {
-    TLDecryptedMessageLayer() :
-        layer(0),
-        tlType(DecryptedMessageLayer) { }
-
-    TLDecryptedMessageLayer(const TLDecryptedMessageLayer &anotherDecryptedMessageLayer) :
-        layer(anotherDecryptedMessageLayer.layer),
-        message(anotherDecryptedMessageLayer.message),
-        tlType(anotherDecryptedMessageLayer.tlType) { }
-
-    TLDecryptedMessageLayer &operator=(const TLDecryptedMessageLayer &anotherDecryptedMessageLayer) {
-        layer = anotherDecryptedMessageLayer.layer;
-        message = anotherDecryptedMessageLayer.message;
-        tlType = anotherDecryptedMessageLayer.tlType;
-
-        return *this;
-    }
-
-    quint32 layer;
-    TLDecryptedMessage message;
-    TLValue tlType;
-};
-
 struct TLDialog {
     TLDialog() :
         topMessage(0),
@@ -2067,6 +1957,7 @@ struct TLUser {
         id(anotherUser.id),
         firstName(anotherUser.firstName),
         lastName(anotherUser.lastName),
+        username(anotherUser.username),
         phone(anotherUser.phone),
         photo(anotherUser.photo),
         status(anotherUser.status),
@@ -2078,6 +1969,7 @@ struct TLUser {
         id = anotherUser.id;
         firstName = anotherUser.firstName;
         lastName = anotherUser.lastName;
+        username = anotherUser.username;
         phone = anotherUser.phone;
         photo = anotherUser.photo;
         status = anotherUser.status;
@@ -2091,6 +1983,7 @@ struct TLUser {
     quint32 id;
     QString firstName;
     QString lastName;
+    QString username;
     QString phone;
     TLUserProfilePhoto photo;
     TLUserStatus status;
@@ -2773,9 +2666,8 @@ struct TLGeochatsStatedMessage {
 struct TLMessage {
     TLMessage() :
         id(0),
+        flags(0),
         fromId(0),
-        out(false),
-        unread(false),
         date(0),
         fwdFromId(0),
         fwdDate(0),
@@ -2783,10 +2675,9 @@ struct TLMessage {
 
     TLMessage(const TLMessage &anotherMessage) :
         id(anotherMessage.id),
+        flags(anotherMessage.flags),
         fromId(anotherMessage.fromId),
         toId(anotherMessage.toId),
-        out(anotherMessage.out),
-        unread(anotherMessage.unread),
         date(anotherMessage.date),
         message(anotherMessage.message),
         media(anotherMessage.media),
@@ -2797,10 +2688,9 @@ struct TLMessage {
 
     TLMessage &operator=(const TLMessage &anotherMessage) {
         id = anotherMessage.id;
+        flags = anotherMessage.flags;
         fromId = anotherMessage.fromId;
         toId = anotherMessage.toId;
-        out = anotherMessage.out;
-        unread = anotherMessage.unread;
         date = anotherMessage.date;
         message = anotherMessage.message;
         media = anotherMessage.media;
@@ -2813,10 +2703,9 @@ struct TLMessage {
     }
 
     quint32 id;
+    quint32 flags;
     quint32 fromId;
     TLPeer toId;
-    bool out;
-    bool unread;
     quint32 date;
     QString message;
     TLMessageMedia media;
@@ -2999,6 +2888,7 @@ struct TLUpdate {
         inviterId(0),
         version(0),
         blocked(false),
+        popup(false),
         tlType(UpdateNewMessage) { }
 
     TLUpdate(const TLUpdate &anotherUpdate) :
@@ -3008,11 +2898,13 @@ struct TLUpdate {
         randomId(anotherUpdate.randomId),
         messages(anotherUpdate.messages),
         userId(anotherUpdate.userId),
+        action(anotherUpdate.action),
         chatId(anotherUpdate.chatId),
         participants(anotherUpdate.participants),
         status(anotherUpdate.status),
         firstName(anotherUpdate.firstName),
         lastName(anotherUpdate.lastName),
+        username(anotherUpdate.username),
         date(anotherUpdate.date),
         photo(anotherUpdate.photo),
         previous(anotherUpdate.previous),
@@ -3030,6 +2922,9 @@ struct TLUpdate {
         blocked(anotherUpdate.blocked),
         peer(anotherUpdate.peer),
         notifySettings(anotherUpdate.notifySettings),
+        type(anotherUpdate.type),
+        media(anotherUpdate.media),
+        popup(anotherUpdate.popup),
         tlType(anotherUpdate.tlType) { }
 
     TLUpdate &operator=(const TLUpdate &anotherUpdate) {
@@ -3039,11 +2934,13 @@ struct TLUpdate {
         randomId = anotherUpdate.randomId;
         messages = anotherUpdate.messages;
         userId = anotherUpdate.userId;
+        action = anotherUpdate.action;
         chatId = anotherUpdate.chatId;
         participants = anotherUpdate.participants;
         status = anotherUpdate.status;
         firstName = anotherUpdate.firstName;
         lastName = anotherUpdate.lastName;
+        username = anotherUpdate.username;
         date = anotherUpdate.date;
         photo = anotherUpdate.photo;
         previous = anotherUpdate.previous;
@@ -3061,6 +2958,9 @@ struct TLUpdate {
         blocked = anotherUpdate.blocked;
         peer = anotherUpdate.peer;
         notifySettings = anotherUpdate.notifySettings;
+        type = anotherUpdate.type;
+        media = anotherUpdate.media;
+        popup = anotherUpdate.popup;
         tlType = anotherUpdate.tlType;
 
         return *this;
@@ -3072,11 +2972,13 @@ struct TLUpdate {
     quint64 randomId;
     TLVector<quint32> messages;
     quint32 userId;
+    TLSendMessageAction action;
     quint32 chatId;
     TLChatParticipants participants;
     TLUserStatus status;
     QString firstName;
     QString lastName;
+    QString username;
     quint32 date;
     TLUserProfilePhoto photo;
     bool previous;
@@ -3094,6 +2996,9 @@ struct TLUpdate {
     bool blocked;
     TLNotifyPeer peer;
     TLPeerNotifySettings notifySettings;
+    QString type;
+    TLMessageMedia media;
+    bool popup;
     TLValue tlType;
 };
 

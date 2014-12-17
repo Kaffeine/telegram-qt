@@ -76,6 +76,7 @@ public:
     void getConfiguration();
 
     // Generated Telegram API methods declaration
+    quint64 authBindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage);
     quint64 authCheckPhone(const QString &phoneNumber);
     quint64 authExportAuthorization(quint32 dcId);
     quint64 authImportAuthorization(quint32 id, const QByteArray &bytes);
@@ -84,15 +85,18 @@ public:
     quint64 authSendCall(const QString &phoneNumber, const QString &phoneCodeHash);
     quint64 authSendCode(const QString &phoneNumber, quint32 smsType, quint32 apiId, const QString &apiHash, const QString &langCode);
     quint64 authSendInvites(const TLVector<QString> &phoneNumbers, const QString &message);
+    quint64 authSendSms(const QString &phoneNumber, const QString &phoneCodeHash);
     quint64 authSignIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
     quint64 authSignUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName);
     quint64 contactsBlock(const TLInputUser &id);
     quint64 contactsDeleteContact(const TLInputUser &id);
     quint64 contactsDeleteContacts(const TLVector<TLInputUser> &id);
+    quint64 contactsExportCard();
     quint64 contactsGetBlocked(quint32 offset, quint32 limit);
     quint64 contactsGetContacts(const QString &hash);
     quint64 contactsGetStatuses();
     quint64 contactsGetSuggested(quint32 limit);
+    quint64 contactsImportCard(const TLVector<quint32> &exportCard);
     quint64 contactsImportContacts(const TLVector<TLInputContact> &contacts, bool replace);
     quint64 contactsSearch(const QString &q, quint32 limit);
     quint64 contactsUnblock(const TLInputUser &id);
@@ -114,7 +118,8 @@ public:
     quint64 messagesGetHistory(const TLInputPeer &peer, quint32 offset, quint32 maxId, quint32 limit);
     quint64 messagesGetMessages(const TLVector<quint32> &id);
     quint64 messagesReadEncryptedHistory(const TLInputEncryptedChat &peer, quint32 maxDate);
-    quint64 messagesReadHistory(const TLInputPeer &peer, quint32 maxId, quint32 offset);
+    quint64 messagesReadHistory(const TLInputPeer &peer, quint32 maxId, quint32 offset, bool readContents);
+    quint64 messagesReadMessageContents(const TLVector<quint32> &id);
     quint64 messagesReceivedMessages(quint32 maxId);
     quint64 messagesReceivedQueue(quint32 maxQts);
     quint64 messagesRequestEncryption(const TLInputUser &userId, quint32 randomId, const QByteArray &gA);
@@ -127,7 +132,7 @@ public:
     quint64 messagesSendMedia(const TLInputPeer &peer, const TLInputMedia &media, quint64 randomId);
     quint64 messagesSendMessage(const TLInputPeer &peer, const QString &message, quint64 randomId);
     quint64 messagesSetEncryptedTyping(const TLInputEncryptedChat &peer, bool typing);
-    quint64 messagesSetTyping(const TLInputPeer &peer, bool typing);
+    quint64 messagesSetTyping(const TLInputPeer &peer, const TLSendMessageAction &action);
     quint64 updatesGetDifference(quint32 pts, quint32 date, quint32 qts);
     quint64 updatesGetState();
     quint64 usersGetFullUser(const TLInputUser &id);
