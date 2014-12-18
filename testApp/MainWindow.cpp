@@ -67,6 +67,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
 
     ui->mainSplitter->setSizes(QList<int>() << 0 << 100);
+
+    ui->blockContact->hide();
+    ui->unblockContact->hide();
 }
 
 MainWindow::~MainWindow()
