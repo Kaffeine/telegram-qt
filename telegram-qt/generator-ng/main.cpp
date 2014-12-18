@@ -104,6 +104,9 @@ void debugType(const TLType &type)
 
 int main(int argc, char *argv[])
 {
+    Q_UNUSED(argc)
+    Q_UNUSED(argv)
+
     QFile specsFile("json");
     specsFile.open(QIODevice::ReadOnly);
 

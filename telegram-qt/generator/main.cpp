@@ -98,7 +98,7 @@ bool replacingHelper(const QString &fileName, int spacing, const QString &marker
     if (!replaceSection(fileName,
                         QString("%1// Generated %2\n").arg(space).arg(marker),
                         QString("%1// End of generated %2\n").arg(space).arg(marker), newContent)) {
-        printf("Can not update file %s with marker %2.\n", fileName.toLatin1().constData(), marker.toLatin1().constData());
+        printf("Can not update file %s with marker %s.\n", fileName.toLatin1().constData(), marker.toLatin1().constData());
         return false;
     } else {
         return true;
