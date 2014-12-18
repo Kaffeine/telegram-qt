@@ -7,11 +7,11 @@ If you do not have "secret".
 4) Once "Connection state" become "Connected", press "Request code" button.
 5) Wait for confirmation code. Once you get it, enter the code to "Auth code" field.
 6) Press "Sign in".
-7) (Optional) Open "Secret" tab and click on "Get info" button. Copy and save "secret" information to skip "long confirmation code" way at next time.
+7) (Optional) Open "Secret" tab and click on "Get info" button. Save "secret" information (via copy-paste or "Save as..." button) to skip "long confirmation code" way at next time.
 
 If you have "secret":
 1) Open "Secret" tab.
-2) Enter (paste) your secret info.
+2) Open your secret file via "Open file..." button or enter (paste) your secret info.
 3) Press "Connect".
 
 Usage:

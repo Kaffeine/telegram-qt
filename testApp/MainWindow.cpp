@@ -16,6 +16,7 @@
 #include <QFile>
 
 #include <QFile>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -124,6 +125,9 @@ void MainWindow::whenPhoneCodeIsInvalid()
 
 void MainWindow::whenAuthenticated()
 {
+    ui->connectionState->setText(tr("Signed in"));
+
+    ui->authButton->setEnabled(false);
     ui->signButton->setEnabled(false);
     ui->phoneNumber->setText(m_core->selfPhone());
 
@@ -383,4 +387,34 @@ void MainWindow::on_contactListTable_clicked(const QModelIndex &index)
 {
     const QModelIndex correctIndex = m_contactsModel->index(index.row(), CContactsModel::Phone);
     ui->currentContact->setText(correctIndex.data().toString());
+}
+
+void MainWindow::on_secretSaveAs_clicked()
+{
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save secret info..."));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        return;
+    }
+
+    file.write(ui->secretInfo->toPlainText().toLatin1());
+}
+
+void MainWindow::on_secretOpenFile_clicked()
+{
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Load secret info..."));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
+    }
+
+    ui->secretInfo->setPlainText(file.readAll());
 }

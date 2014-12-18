@@ -71,6 +71,10 @@ private slots:
 
     void on_contactListTable_clicked(const QModelIndex &index);
 
+    void on_secretSaveAs_clicked();
+
+    void on_secretOpenFile_clicked();
+
 protected:
     void closeEvent(QCloseEvent *event);
 
