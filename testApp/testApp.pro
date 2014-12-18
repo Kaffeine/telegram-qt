@@ -29,3 +29,6 @@ HEADERS  += MainWindow.hpp \
     CMessagingModel.hpp
 
 FORMS    += MainWindow.ui
+
+RESOURCES += \
+    resources.qrc

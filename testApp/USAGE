@@ -1,0 +1,19 @@
+Usage (connection):
+
+If you do not have "secret".
+1) Open "Connection" tab.
+2) Enter your phone number without leading plus to "Phone number" field.
+3) Press "Connect" button.
+4) Once "Connection state" become "Connected", press "Request code" button.
+5) Wait for confirmation code. Once you get it, enter the code to "Auth code" field.
+6) Press "Sign in".
+7) (Optional) Open "Secret" tab and click on "Get info" button. Copy and save "secret" information to skip "long confirmation code" way at next time.
+
+If you have "secret":
+1) Open "Secret" tab.
+2) Enter (paste) your secret info.
+3) Press "Connect".
+
+Usage:
+Now you can list your contacts on "Contacts tab". Double click on contact to chat.
+You can add contact by entering it's phone number to "Contact" field on the bottom of "Contacts" tab and pressing "Add contact".

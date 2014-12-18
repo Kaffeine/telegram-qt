@@ -15,6 +15,8 @@
 #include <QDir>
 #include <QFile>
 
+#include <QFile>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -70,6 +72,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->blockContact->hide();
     ui->unblockContact->hide();
+
+    QFile helpFile(QLatin1String(":/USAGE"));
+    helpFile.open(QIODevice::ReadOnly);
+    ui->helpView->setPlainText(helpFile.readAll());
 }
 
 MainWindow::~MainWindow()

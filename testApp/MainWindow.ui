@@ -502,6 +502,20 @@
          </item>
         </layout>
        </widget>
+       <widget class="QWidget" name="tabHelp">
+        <attribute name="title">
+         <string>Help</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_10">
+         <item row="0" column="0">
+          <widget class="QPlainTextEdit" name="helpView">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>
