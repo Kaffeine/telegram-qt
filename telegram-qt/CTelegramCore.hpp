@@ -42,6 +42,7 @@ public:
     Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
     Q_INVOKABLE QString contactFirstName(const QString &phone) const;
     Q_INVOKABLE QString contactLastName(const QString &phone) const;
+    Q_INVOKABLE QString contactAvatarToken(const QString &phone) const;
     Q_INVOKABLE QStringList chatParticipants(quint32 publicChatId) const;
 
 public Q_SLOTS:
@@ -82,7 +83,7 @@ Q_SIGNALS:
     void phoneCodeIsInvalid();
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
-    void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
+    void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
 
     void messageReceived(const QString &phone, const QString &message, quint32 messageId); // Message id is incremental number
     void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);

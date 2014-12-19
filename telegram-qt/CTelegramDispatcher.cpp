@@ -541,6 +541,18 @@ QString CTelegramDispatcher::contactLastName(const QString &phone) const
     }
 }
 
+QString CTelegramDispatcher::contactAvatarToken(const QString &identifier) const
+{
+    const TLUser *user = phoneNumberToUser(identifier);
+
+    if (!user) {
+        qDebug() << Q_FUNC_INFO << "Unknown identifier" << maskPhoneNumber(identifier);
+        return QString();
+    }
+
+    return userAvatarToken(user);
+}
+
 QStringList CTelegramDispatcher::chatParticipants(quint32 publicChatId) const
 {
     if (!m_chatIdMap.contains(publicChatId)) {
@@ -1154,6 +1166,20 @@ TLUser *CTelegramDispatcher::phoneNumberToUser(const QString &phoneNumber) const
     return m_users.value(phoneNumberToUserId(phoneNumber));
 }
 
+QString CTelegramDispatcher::userAvatarToken(const TLUser *user) const
+{
+    const TLFileLocation &avatar = user->photo.photoSmall;
+
+    if (avatar.tlType == FileLocationUnavailable) {
+        return QString();
+    } else {
+        return QString(QLatin1String("%1%2%3"))
+                .arg(avatar.dcId, sizeof(avatar.dcId) * 2, 16, QLatin1Char('0'))
+                .arg(avatar.volumeId, sizeof(avatar.dcId) * 2, 16, QLatin1Char('0'))
+                .arg(avatar.localId, sizeof(avatar.dcId) * 2, 16, QLatin1Char('0'));
+    }
+}
+
 TelegramNamespace::ContactStatus CTelegramDispatcher::decodeContactStatus(TLValue status) const
 {
     switch (status) {
@@ -1312,7 +1338,7 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
         return;
     }
 
-    emit avatarReceived(user->phone, file.bytes, mimeType);
+    emit avatarReceived(user->phone, file.bytes, mimeType, userAvatarToken(user));
 }
 
 void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)

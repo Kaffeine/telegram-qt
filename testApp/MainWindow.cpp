@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(phoneCodeIsInvalid()), SLOT(whenPhoneCodeIsInvalid()));
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
     connect(m_core, SIGNAL(contactListChanged()), SLOT(whenContactListChanged()));
-    connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
+    connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
     connect(m_core, SIGNAL(messageReceived(QString,QString,quint32)), SLOT(whenMessageReceived(QString,QString,quint32)));
     connect(m_core, SIGNAL(chatMessageReceived(quint32,QString,QString)), SLOT(whenChatMessageReceived(quint32,QString,QString)));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));

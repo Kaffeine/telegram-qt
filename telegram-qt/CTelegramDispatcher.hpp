@@ -106,6 +106,7 @@ public:
 
     QString contactFirstName(const QString &phone) const;
     QString contactLastName(const QString &phone) const;
+    QString contactAvatarToken(const QString &identifier) const;
 
     QStringList chatParticipants(quint32 publicChatId) const;
 
@@ -117,7 +118,7 @@ signals:
     void authorizationErrorReceived();
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
-    void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
+    void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
     void messageReceived(const QString &phone, const QString &message, quint32 messageId);
     void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
@@ -185,6 +186,8 @@ private:
     QString userIdToIdentifier(const quint32 id) const;
     quint32 phoneNumberToUserId(const QString &phoneNumber) const;
     TLUser *phoneNumberToUser(const QString &phoneNumber) const;
+
+    QString userAvatarToken(const TLUser *user) const;
 
     TelegramNamespace::ContactStatus decodeContactStatus(TLValue status) const;
 
