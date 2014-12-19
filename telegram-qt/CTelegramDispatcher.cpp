@@ -1429,6 +1429,10 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
 
     m_initState = InitializationState(m_initState|justDone);
 
+    if ((m_initState & InitHaveDcConfiguration) && (m_initState & InitIsSignIn)) { // Have config and sign in
+        setAuthenticated(true);
+    }
+
     if (justDone == InitHaveDcConfiguration) {
         emit connected();
     }
@@ -1439,10 +1443,6 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         // That is why we have to comment out this getContacts() and add BadCode1.
 //        getContacts();
         return;
-    }
-
-    if (m_initState & ~(InitHaveDcConfiguration|InitIsSignIn)) { // Have something more than config and sign in
-        setAuthenticated(true);
     }
 
     // BadCode1
