@@ -170,7 +170,8 @@ protected:
     void processMessageReceived(quint32 messageId, quint32 fromId, const QString &message);
     void processChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message);
 
-    void setFullChat(const TLChatFull &newChat);
+    void updateChat(const TLChat &newChat);
+    void updateFullChat(const TLChatFull &newChat);
 
     void initConnectionSharedFinal(quint32 activeDc = 0);
 
@@ -246,10 +247,11 @@ private:
     QMap<QString, int> m_localTypingMap; // phone, typing time (ms)
     QMap<quint32, int> m_localChatTypingMap; // public chat id, typing time (ms)
 
-    QMap<quint32, quint32> m_chatIdMap; // Public chat id to internal telegram chat id map
-    QMap<quint64, quint32> m_temporaryChatIdMap; // API Call id to public chat id map
+    QMap<quint32, quint32> m_chatIdMap; // Public chat id to telegram chat id map
+    QMap<quint64, quint32> m_temporaryChatIdMap; // RPC message (request) id to public chat id map
 
-    QMap<quint32, QPair<TLChat, TLChatFull> >m_chatInfo; // Internal telegram chat id to ChatFull map
+    QMap<quint32, TLChat> m_chatInfo; // Telegram chat id to Chat map
+    QMap<quint32, TLChatFull> m_chatFullInfo; // Telegram chat id to ChatFull map
 
 };
 
