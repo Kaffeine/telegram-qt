@@ -198,6 +198,9 @@ signals:
     void contactListChanged(const QStringList &added, const QStringList &removed);
     void fileReceived(const TLUploadFile &file, quint32 fileId);
 
+    void messagesChatsReceived(const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void messagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+
     void fullUserReceived(const TLUserFull &userFull);
     void statedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
 
@@ -244,6 +247,8 @@ protected:
     TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReadHistory(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReceivedMessages(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesGetChats(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesGetFullChat(CTelegramStream &stream, quint64 id);
     TLValue processAccountUpdateStatus(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
