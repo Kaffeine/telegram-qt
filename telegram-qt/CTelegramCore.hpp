@@ -43,7 +43,11 @@ public:
     Q_INVOKABLE QString contactFirstName(const QString &phone) const;
     Q_INVOKABLE QString contactLastName(const QString &phone) const;
     Q_INVOKABLE QString contactAvatarToken(const QString &phone) const;
-    Q_INVOKABLE QStringList chatParticipants(quint32 publicChatId) const;
+    Q_INVOKABLE QString chatTitle(quint32 chatId) const;
+    Q_INVOKABLE QStringList chatParticipants(quint32 chatId) const;
+
+    bool getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const;
+    bool getChatParticipants(QStringList *participants, quint32 chatId);
 
 public Q_SLOTS:
     bool initConnection(const QString &address, quint32 port);

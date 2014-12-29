@@ -26,6 +26,35 @@ public:
     };
 
     static void registerTypes();
+
+    struct GroupChat
+    {
+        GroupChat(quint32 id = 0) :
+            id(id),
+            participantsCount(0) {
+        }
+
+        GroupChat(const GroupChat &anotherChat) :
+            id(anotherChat.id),
+            title(anotherChat.title),
+            participantsCount(anotherChat.participantsCount) {
+        }
+
+        GroupChat &operator =(const GroupChat &anotherChat) {
+            id = anotherChat.id;
+            title = anotherChat.title;
+            participantsCount = anotherChat.participantsCount;
+
+            return *this;
+        }
+
+        quint32 id;
+        QString title;
+        quint32 participantsCount;
+    };
+
 };
+
+Q_DECLARE_TYPEINFO(TelegramNamespace::GroupChat, Q_MOVABLE_TYPE);
 
 #endif // TELEGRAMNAMESPACE_HPP

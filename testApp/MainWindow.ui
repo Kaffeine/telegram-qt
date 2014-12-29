@@ -20,7 +20,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="layoutWidget">
+      <widget class="QWidget" name="layoutWidget1">
        <layout class="QVBoxLayout" name="leftPanel">
         <item>
          <widget class="QGroupBox" name="groupBox">
@@ -388,82 +388,110 @@
         </attribute>
         <layout class="QGridLayout" name="gridLayout_7">
          <item row="0" column="0">
-          <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,1,0,0,0,0,0">
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>Message:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="3" colspan="4">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>Contacts:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="4">
-            <widget class="QLineEdit" name="groupChatContactPhone"/>
-           </item>
-           <item row="3" column="6">
-            <widget class="QPushButton" name="groupChatRemoveContact">
-             <property name="text">
-              <string>Remove</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="3" colspan="4">
-            <widget class="QPushButton" name="groupChatCreateChat">
-             <property name="text">
-              <string>Create chat</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="2">
-            <widget class="QPushButton" name="groupChatSendButton">
-             <property name="text">
-              <string>Send</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="5">
-            <widget class="QPushButton" name="groupChatAddContact">
-             <property name="text">
-              <string>Add</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="3" colspan="4">
-            <widget class="QTableView" name="groupChatContacts"/>
-           </item>
-           <item row="3" column="3">
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>Contact phone:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLineEdit" name="groupChatMessage"/>
-           </item>
-           <item row="1" column="0" rowspan="2" colspan="3">
-            <widget class="QTableView" name="groupChatMessagingView"/>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>Chat name:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1" colspan="6">
-            <widget class="QLineEdit" name="groupChatName"/>
-           </item>
-          </layout>
+          <widget class="QLabel" name="label_11">
+           <property name="text">
+            <string>Chat name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="groupChatName"/>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QSplitter" name="groupChatSplitter">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <widget class="QWidget" name="layoutWidget2">
+            <layout class="QGridLayout" name="groupChatMessagingGrid">
+             <item row="0" column="0" colspan="3">
+              <widget class="QTableView" name="groupChatMessagingView"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>Message:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="groupChatMessage"/>
+             </item>
+             <item row="1" column="2">
+              <widget class="QPushButton" name="groupChatSendButton">
+               <property name="text">
+                <string>Send</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="layoutWidget3">
+            <layout class="QGridLayout" name="groupChatContactsGrid">
+             <item row="0" column="0" colspan="4">
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>Contacts:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="4">
+              <widget class="QTableView" name="groupChatContacts"/>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Contact phone:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QPushButton" name="groupChatAddContact">
+               <property name="text">
+                <string>Add</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QPushButton" name="groupChatRemoveContact">
+               <property name="text">
+                <string>Remove</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="groupChatContactPhone"/>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="layoutWidget4">
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>Chats list:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QPushButton" name="groupChatCreateChat">
+               <property name="text">
+                <string>Create chat</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QTableView" name="groupChatChatsList"/>
+             </item>
+            </layout>
+           </widget>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -545,7 +573,7 @@
      <x>0</x>
      <y>0</y>
      <width>1043</width>
-     <height>19</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

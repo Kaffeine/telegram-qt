@@ -20,13 +20,15 @@ TARGET = testApp
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        MainWindow.cpp \
+    MainWindow.cpp \
     CContactModel.cpp \
-    CMessagingModel.cpp
+    CMessagingModel.cpp \
+    CChatInfoModel.cpp
 
 HEADERS  += MainWindow.hpp \
     CContactModel.hpp \
-    CMessagingModel.hpp
+    CMessagingModel.hpp \
+    CChatInfoModel.hpp
 
 FORMS    += MainWindow.ui
 

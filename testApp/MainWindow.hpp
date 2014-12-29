@@ -12,6 +12,7 @@ class MainWindow;
 class CTelegramCore;
 class CContactsModel;
 class CMessagingModel;
+class CChatInfoModel;
 
 class QModelIndex;
 
@@ -75,6 +76,8 @@ private slots:
 
     void on_secretOpenFile_clicked();
 
+    void setActiveChat(quint32 id);
+
 protected:
     void closeEvent(QCloseEvent *event);
 
@@ -89,7 +92,9 @@ private:
     CContactsModel *m_chatContactsModel;
     CMessagingModel *m_chatMessagingModel;
 
-    quint32 m_chatId;
+    CChatInfoModel *m_chatInfoModel;
+
+    quint32 m_activeChatId;
 
     CTelegramCore *m_core;
 

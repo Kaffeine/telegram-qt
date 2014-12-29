@@ -20,6 +20,7 @@
 #include <QMultiMap>
 #include <QPair>
 #include <QStringList>
+#include <QVector>
 
 #include "TLTypes.hpp"
 #include "TelegramNamespace.hpp"
@@ -59,8 +60,9 @@ public:
         InitIsSignIn            = 1 << 1,
         InitKnowSelf            = 1 << 2,
         InitHaveContactList     = 1 << 3,
-        InitHaveUpdates         = 1 << 4,
-        InitDone                = InitHaveDcConfiguration|InitIsSignIn|InitKnowSelf|InitHaveContactList|InitHaveUpdates
+        InitKnowChats           = 1 << 4,
+        InitHaveUpdates         = 1 << 5,
+        InitDone                = InitHaveDcConfiguration|InitIsSignIn|InitKnowSelf|InitHaveContactList|InitKnowChats|InitHaveUpdates
     };
 
     explicit CTelegramDispatcher(QObject *parent = 0);
@@ -108,7 +110,11 @@ public:
     QString contactLastName(const QString &phone) const;
     QString contactAvatarToken(const QString &identifier) const;
 
+    QString chatTitle(quint32 publicChatId) const;
     QStringList chatParticipants(quint32 publicChatId) const;
+
+    bool getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 publicChatId) const;
+    bool getChatParticipants(QStringList *participants, quint32 publicChatId);
 
 signals:
     void connected();
@@ -156,12 +162,14 @@ protected slots:
     void getDcConfiguration();
     void getSelfUser();
     void getContacts();
-
+    void getChatsInfo();
     void getUpdatesState();
     void whenUpdatesStateReceived(const TLUpdatesState &updatesState);
 
     void getDifference();
     void whenUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
+
+    void whenMessagesChatsReceived(const QVector<TLChat> &chats);
 
 protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
@@ -212,6 +220,10 @@ private:
     void continueInitialization(InitializationState justDone);
     void setAuthenticated(bool newAuth);
 
+    qint32 telegramChatIdToPublicId(quint32 telegramChatId) const;
+    quint32 insertTelegramChatId(quint32 telegramChatId);
+    bool havePublicChatId(quint32 publicChatId) const;
+
     const CAppInformation *m_appInformation;
 
     InitializationState m_initState;
@@ -247,7 +259,7 @@ private:
     QMap<QString, int> m_localTypingMap; // phone, typing time (ms)
     QMap<quint32, int> m_localChatTypingMap; // public chat id, typing time (ms)
 
-    QMap<quint32, quint32> m_chatIdMap; // Public chat id to telegram chat id map
+    TLVector<quint32> m_chatIds; // Telegram chat ids vector. Index is "public chat id".
     QMap<quint64, quint32> m_temporaryChatIdMap; // RPC message (request) id to public chat id map
 
     QMap<quint32, TLChat> m_chatInfo; // Telegram chat id to Chat map

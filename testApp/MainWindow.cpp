@@ -5,6 +5,7 @@
 #include "CTelegramCore.hpp"
 #include "CContactModel.hpp"
 #include "CMessagingModel.hpp"
+#include "CChatInfoModel.hpp"
 
 #include <QCompleter>
 #include <QToolTip>
@@ -25,13 +26,16 @@ MainWindow::MainWindow(QWidget *parent) :
     m_messagingModel(new CMessagingModel(this)),
     m_chatContactsModel(new CContactsModel(this)),
     m_chatMessagingModel(new CMessagingModel(this)),
-    m_chatId(0)
+    m_chatInfoModel(new CChatInfoModel(this)),
+    m_activeChatId(0),
+    m_core(new CTelegramCore(this))
 {
     ui->setupUi(this);
     ui->contactListTable->setModel(m_contactsModel);
     ui->messagingView->setModel(m_messagingModel);
     ui->groupChatContacts->setModel(m_chatContactsModel);
     ui->groupChatContacts->hideColumn(CContactsModel::Avatar);
+    ui->groupChatChatsList->setModel(m_chatInfoModel);
     ui->groupChatMessagingView->setModel(m_chatMessagingModel);
 
     QCompleter *comp = new QCompleter(m_contactsModel, this);
@@ -47,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent) :
     appInfo.setOsInfo(QLatin1String("GNU/Linux"));
     appInfo.setLanguageCode(QLatin1String("en"));
 
-    m_core = new CTelegramCore(this);
     m_core->setAppInformation(&appInfo);
 
     connect(m_core, SIGNAL(connected()), SLOT(whenConnected()));
@@ -69,7 +72,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
     connect(m_core, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
 
+    ui->groupChatContacts->hideColumn(CContactsModel::Blocked);
+
     ui->mainSplitter->setSizes(QList<int>() << 0 << 100);
+    ui->groupChatSplitter->setSizes(QList<int>() << 550 << 450 << 300);
+
+    ui->groupChatChatsList->setColumnWidth(CChatInfoModel::Id, 30);
 
     ui->blockContact->hide();
     ui->unblockContact->hide();
@@ -155,6 +163,7 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
 {
     Q_UNUSED(mimeType);
 
+    qDebug() << mimeType;
     QDir dir;
     dir.mkdir("avatars");
 
@@ -173,7 +182,7 @@ void MainWindow::whenMessageReceived(const QString &phone, const QString &messag
 
 void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message)
 {
-    if (m_chatId != chatId) {
+    if (m_activeChatId != chatId) {
         return;
     }
 
@@ -182,7 +191,7 @@ void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, c
 
 void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status)
 {
-    if (m_chatId != chatId) {
+    if (m_activeChatId != chatId) {
         return;
     }
 
@@ -196,21 +205,28 @@ void MainWindow::whenContactTypingStatusChanged()
 
 void MainWindow::whenChatAdded(quint32 chatId)
 {
-    m_chatId = chatId;
-    qDebug() << m_chatId;
-    whenChatChanged(m_chatId);
+    m_chatInfoModel->addChat(chatId);
+    setActiveChat(chatId);
+    whenChatChanged(chatId);
 }
 
 void MainWindow::whenChatChanged(quint32 chatId)
 {
-    if (chatId != m_chatId) {
+    if (!m_chatInfoModel->haveChat(chatId)) {
+        // Workaround for temporary TelegramQt issues
+        m_chatInfoModel->addChat(chatId);
+    }
+
+    TelegramNamespace::GroupChat chat;
+    if (m_core->getChatInfo(&chat, chatId)) {
+        m_chatInfoModel->setChat(chat);
+    }
+
+    if (chatId != m_activeChatId) {
         return;
     }
 
     m_chatContactsModel->setContactList(m_core->chatParticipants(chatId));
-
-    ui->groupChatCreateChat->setText(tr("Leave chat"));
-    ui->groupChatCreateChat->setEnabled(false);
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -342,7 +358,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 
 void MainWindow::on_groupChatCreateChat_clicked()
 {
-    m_chatId = m_core->createChat(m_chatContactsModel->contacts(), ui->groupChatName->text());
+    m_activeChatId = m_core->createChat(m_chatContactsModel->contacts(), ui->groupChatName->text());
     m_chatContactsModel->addContact(m_core->selfPhone());
 
     ui->groupChatCreateChat->setText(tr("Leave chat"));
@@ -371,7 +387,7 @@ void MainWindow::on_groupChatSendButton_clicked()
 
 void MainWindow::on_groupChatMessage_textChanged(const QString &arg1)
 {
-    m_core->setChatTyping(m_chatId, !arg1.isEmpty());
+    m_core->setChatTyping(m_activeChatId, !arg1.isEmpty());
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -417,4 +433,9 @@ void MainWindow::on_secretOpenFile_clicked()
     }
 
     ui->secretInfo->setPlainText(file.readAll());
+}
+
+void MainWindow::setActiveChat(quint32 id)
+{
+    m_activeChatId = id;
 }

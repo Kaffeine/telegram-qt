@@ -156,9 +156,24 @@ QString CTelegramCore::contactAvatarToken(const QString &phone) const
     return m_dispatcher->contactAvatarToken(phone);
 }
 
-QStringList CTelegramCore::chatParticipants(quint32 publicChatId) const
+QString CTelegramCore::chatTitle(quint32 chatId) const
 {
-    return m_dispatcher->chatParticipants(publicChatId);
+    return m_dispatcher->chatTitle(chatId);
+}
+
+QStringList CTelegramCore::chatParticipants(quint32 chatId) const
+{
+    return m_dispatcher->chatParticipants(chatId);
+}
+
+bool CTelegramCore::getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const
+{
+    return m_dispatcher->getChatInfo(chatInfo, chatId);
+}
+
+bool CTelegramCore::getChatParticipants(QStringList *participants, quint32 chatId)
+{
+    return m_dispatcher->getChatParticipants(participants, chatId);
 }
 
 QString CTelegramCore::selfPhone() const
