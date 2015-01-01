@@ -2118,7 +2118,7 @@ void CTelegramConnection::whenReadyRead()
         decryptedStream >> contentLength;
 
         if (m_serverSalt != m_receivedServerSalt) {
-            qDebug() << "Received different server salt:" << m_receivedServerSalt << "(remove) vs" << m_serverSalt << "(local)";
+            qDebug() << "Received different server salt:" << m_receivedServerSalt << "(remote) vs" << m_serverSalt << "(local)";
 //            return;
         }
 

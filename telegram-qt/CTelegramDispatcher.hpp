@@ -70,6 +70,8 @@ public:
 
     void setAppInformation(const CAppInformation *newAppInfo);
 
+    static qint32 localTypingRecommendedRepeatInterval();
+
     bool isConnected() const;
     bool isAuthenticated() const;
     QString selfPhone() const { return m_selfPhone; }

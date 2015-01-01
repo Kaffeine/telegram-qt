@@ -70,7 +70,8 @@ static QStringList maskPhoneNumberList(const QStringList &list)
 
 const quint32 secretFormatVersion = 2;
 const int s_userTypingActionPeriod = 6000; // 6 sec
-const int s_localTypingActionPeriod = 5000; // 5 sec
+const int s_localTypingDuration = 5000; // 5 sec
+const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPeriod - s_localTypingDuration) / 2. Minus 100 ms for insurance.
 
 #if QT_VERSION < 0x050000
 const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typing time deviation in Qt4 by this value.
@@ -101,6 +102,11 @@ CTelegramDispatcher::~CTelegramDispatcher()
 void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
 {
     m_appInformation = newAppInfo;
+}
+
+qint32 CTelegramDispatcher::localTypingRecommendedRepeatInterval()
+{
+    return s_localTypingRecommendedRepeatInterval;
 }
 
 bool CTelegramDispatcher::isConnected() const
@@ -464,8 +470,12 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
 
     activeConnection()->messagesSetTyping(peer, action);
 
-    m_localTypingMap.insert(phone, s_localTypingActionPeriod);
-    ensureTypingUpdateTimer(s_localTypingActionPeriod);
+    if (typingStatus) {
+        m_localTypingMap.insert(phone, s_localTypingDuration);
+        ensureTypingUpdateTimer(s_localTypingDuration);
+    } else {
+        m_localTypingMap.remove(phone);
+    }
 }
 
 void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
@@ -477,7 +487,7 @@ void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
         return; // Avoid flood
     }
 
-    const TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
+    TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
 
     if (peer.tlType == InputPeerEmpty) {
         qDebug() << Q_FUNC_INFO << "Can not resolve chat" << publicChatId;
@@ -493,8 +503,12 @@ void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
 
     activeConnection()->messagesSetTyping(peer, action);
 
-    m_localChatTypingMap.insert(publicChatId, s_localTypingActionPeriod);
-    ensureTypingUpdateTimer(s_localTypingActionPeriod);
+    if (typingStatus) {
+        m_localChatTypingMap.insert(publicChatId, s_localTypingDuration);
+        ensureTypingUpdateTimer(s_localTypingDuration);
+    } else {
+        m_localChatTypingMap.remove(publicChatId);
+    }
 }
 
 void CTelegramDispatcher::setMessageRead(const QString &phone, quint32 messageId)
@@ -760,7 +774,6 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
         int timeRemains = m_localTypingMap.value(phone) - m_typingUpdateTimer->interval();
         if (timeRemains < 5) { // Let 5 ms be allowed correction
             m_localTypingMap.remove(phone);
-            setTyping(phone, false);
         } else {
             m_localTypingMap.insert(phone, timeRemains);
             if (minTime > timeRemains) {
@@ -770,13 +783,13 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
     }
 
     const QList<quint32> chats = m_localChatTypingMap.keys();
-    foreach (quint32 chat, chats) {
-        int timeRemains = m_localChatTypingMap.value(chat) - m_typingUpdateTimer->interval();
+    foreach (quint32 publicChatId, chats) {
+        int timeRemains = m_localChatTypingMap.value(publicChatId) - m_typingUpdateTimer->interval();
+
         if (timeRemains < 5) { // Let 5 ms be allowed correction
-            m_localChatTypingMap.remove(chat);
-            setChatTyping(chat, false);
+            m_localChatTypingMap.remove(publicChatId);
         } else {
-            m_localChatTypingMap.insert(chat, timeRemains);
+            m_localChatTypingMap.insert(publicChatId, timeRemains);
             if (minTime > timeRemains) {
                 minTime = timeRemains;
             }
@@ -993,7 +1006,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        break;
     case UpdateUserTyping:
         if (m_users.contains(update.userId)) {
-            emit contactTypingStatusChanged(userIdToIdentifier(update.userId), /* typingStatus */ true);
+            emit contactTypingStatusChanged(userIdToIdentifier(update.userId), update.action.tlType == SendMessageTypingAction);
 #if QT_VERSION >= 0x050000
             m_userTypingMap.insert(update.userId, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
 #else
@@ -1004,7 +1017,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         break;
     case UpdateChatUserTyping:
         if (m_users.contains(update.userId)) {
-            emit contactChatTypingStatusChanged(telegramChatIdToPublicId(update.chatId), userIdToIdentifier(update.userId), /* typingStatus */ true);
+            emit contactChatTypingStatusChanged(telegramChatIdToPublicId(update.chatId), userIdToIdentifier(update.userId), update.action.tlType == SendMessageTypingAction);
             const QPair<quint32,quint32> key(telegramChatIdToPublicId(update.chatId), update.userId);
 #if QT_VERSION >= 0x050000
             m_userChatTypingMap.insert(key, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);

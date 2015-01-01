@@ -46,6 +46,8 @@ public:
     Q_INVOKABLE QString chatTitle(quint32 chatId) const;
     Q_INVOKABLE QStringList chatParticipants(quint32 chatId) const;
 
+    static qint32 localTypingRecommendedRepeatInterval(); // Recommended application local typing state re-set interval.
+
     bool getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const;
     bool getChatParticipants(QStringList *participants, quint32 chatId);
 
@@ -69,6 +71,8 @@ public Q_SLOTS:
 
     quint64 sendMessage(const QString &phone, const QString &message); // Message id is random number
     quint64 sendChatMessage(quint32 chatId, const QString &message); // Message id is random number
+
+    /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
     void setTyping(const QString &phone, bool typingStatus);
     void setChatTyping(quint32 chatId, bool typingStatus);
 
