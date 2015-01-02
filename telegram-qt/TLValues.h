@@ -16,11 +16,6 @@
 
 // TODO: Namespace?
 
-enum MessageFlags {
-    MessageFlagUnread = 0x1,
-    MessageFlagOut = 0x2
-};
-
 enum TLValue {
     // Generated TLValues
     // From 10-mtproto-schema.txt:

@@ -10,8 +10,6 @@ class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
     Q_OBJECT
     Q_ENUMS(ContactStatus)
 public:
-    explicit TelegramNamespace(QObject *parent = 0);
-
     enum ContactStatus {
         ContactStatusUnknown,
         ContactStatusOffline,
@@ -23,6 +21,12 @@ public:
         MessageDeliveryStatusSent,
         MessageDeliveryStatusRead,
         MessageDeliveryStatusDeleted
+    };
+
+    enum MessageFlags {
+        MessageFlagNone   = 0x0,
+        MessageFlagUnread = 0x1,
+        MessageFlagOut    = 0x2
     };
 
     static void registerTypes();

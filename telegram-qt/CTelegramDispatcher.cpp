@@ -921,7 +921,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
                 continue;
             }
             if (m_emitOnlyIncomingUnreadMessages) {
-                if ((message.flags & MessageFlagOut) || !(message.flags & MessageFlagUnread)) {
+                if ((message.flags & TelegramNamespace::MessageFlagOut) || !(message.flags & TelegramNamespace::MessageFlagUnread)) {
                     continue;
                 }
             }

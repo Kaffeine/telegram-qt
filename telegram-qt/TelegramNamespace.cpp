@@ -2,17 +2,13 @@
 
 #include <QMetaType>
 
-TelegramNamespace::TelegramNamespace(QObject *parent) :
-    QObject(parent)
-{
-}
-
 void TelegramNamespace::registerTypes()
 {
-    bool registered = false;
+    static bool registered = false;
     if (!registered) {
         qRegisterMetaType<TelegramNamespace::ContactStatus>("TelegramNamespace::ContactStatus");
         qRegisterMetaType<TelegramNamespace::MessageDeliveryStatus>("TelegramNamespace::MessageDeliveryStatus");
+        qRegisterMetaType<TelegramNamespace::MessageFlags>("TelegramNamespace::MessageFlags");
         registered = true;
     }
 }
