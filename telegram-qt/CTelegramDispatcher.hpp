@@ -83,6 +83,9 @@ public:
 
     QByteArray connectionSecretInfo() const;
 
+    inline TelegramNamespace::MessageFlags messageReceivingFilterFlags() const { return m_messageReceivingFilterFlags; }
+    void setMessageReceivingFilterFlags(TelegramNamespace::MessageFlags flags);
+
     void initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
@@ -127,7 +130,7 @@ signals:
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
-    void messageReceived(const QString &phone, const QString &message, quint32 messageId);
+    void messageReceived(const QString &phone, const QString &message, quint32 messageId, TelegramNamespace::MessageFlags flags);
     void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
@@ -190,6 +193,8 @@ protected:
 
     quint64 sendMessages(const TLInputPeer &peer, const QString &message);
 
+    bool filterReceivedMessage(quint32 messageFlags) const;
+
 private:
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
@@ -227,6 +232,8 @@ private:
     bool havePublicChatId(quint32 publicChatId) const;
 
     const CAppInformation *m_appInformation;
+
+    TelegramNamespace::MessageFlags m_messageReceivingFilterFlags;
 
     InitializationState m_initState;
     bool m_isAuthenticated;
