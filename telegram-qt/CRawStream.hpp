@@ -20,12 +20,13 @@
 
 #include "TLNumbers.hpp"
 #include "TLValues.h"
+#include "telegramqt_export.h"
 
 QT_BEGIN_NAMESPACE
 class QIODevice;
 QT_END_NAMESPACE
 
-class CRawStream
+class TELEGRAMQT_EXPORT CRawStream
 {
 public:
     explicit CRawStream(QByteArray *data, bool write);
