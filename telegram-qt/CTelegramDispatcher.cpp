@@ -1059,6 +1059,10 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         break;
     }
     case UpdateUserStatus: {
+        if (update.userId == m_selfUserId) {
+            break;
+        }
+
         TLUser *user = m_users.value(update.userId);
         if (user) {
             user->status = update.status;
