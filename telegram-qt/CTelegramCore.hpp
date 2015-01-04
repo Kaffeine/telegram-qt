@@ -85,6 +85,7 @@ Q_SIGNALS:
     void initializated(); // Contact list and updates received.
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
+    void phoneNumberInvalid();
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);

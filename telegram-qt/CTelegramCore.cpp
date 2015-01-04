@@ -31,6 +31,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(m_dispatcher, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(m_dispatcher, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
+    connect(m_dispatcher, SIGNAL(phoneNumberInvalid()), SIGNAL(phoneNumberInvalid()));
     connect(m_dispatcher, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString,QString)));
     connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,quint32)), SIGNAL(messageReceived(QString,QString,quint32)));
