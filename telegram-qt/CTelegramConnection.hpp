@@ -192,6 +192,7 @@ signals:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
+    void phoneNumberInvalid();
     void authorizationErrorReceived();
     void usersReceived(const QVector<TLUser> &users);
     void contactListReceived(const QStringList &contactList);

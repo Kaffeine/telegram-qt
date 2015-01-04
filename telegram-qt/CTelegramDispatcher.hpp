@@ -120,6 +120,7 @@ signals:
     void connected();
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
+    void phoneNumberInvalid();
     void authenticated();
     void authorizationErrorReceived();
     void contactListChanged();
