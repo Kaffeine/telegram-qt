@@ -1,7 +1,5 @@
 #include "CChatInfoModel.hpp"
 
-#include <QDebug>
-
 CChatInfoModel::CChatInfoModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
@@ -87,6 +85,4 @@ void CChatInfoModel::setChat(const TelegramNamespace::GroupChat &chat)
         emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
         return;
     }
-
-    qDebug() << Q_FUNC_INFO << "id" << chat.id << "not found.";
 }

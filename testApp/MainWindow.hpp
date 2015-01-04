@@ -32,7 +32,7 @@ private slots:
     void whenAuthenticated();
     void whenContactListChanged();
     void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
-    void whenMessageReceived(const QString &phone, const QString &message, quint32 messageId);
+    void whenMessageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp);
     void whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
     void whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status);
     void whenContactTypingStatusChanged();

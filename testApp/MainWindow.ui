@@ -57,6 +57,16 @@
            <string>Settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
+           <item row="1" column="0">
+            <widget class="QCheckBox" name="settingsReceivingFilterOutMessages">
+             <property name="toolTip">
+              <string>If this box is checked, application will receive outgoing messages (in addition to other types).</string>
+             </property>
+             <property name="text">
+              <string>Receive outgoing messages</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
             <widget class="QCheckBox" name="workLikeClient">
              <property name="toolTip">
@@ -64,6 +74,19 @@
              </property>
              <property name="text">
               <string>Work like client</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="settingsReceivingFilterOnlyUnreadMessages">
+             <property name="toolTip">
+              <string>If this box is checked, application will ignore read messages.</string>
+             </property>
+             <property name="text">
+              <string>Receive only unread messages</string>
              </property>
              <property name="checked">
               <bool>true</bool>
@@ -141,15 +164,21 @@
            </item>
            <item>
             <widget class="QPushButton" name="setStatusOffline">
+             <property name="toolTip">
+              <string>Set visible status to offline. Actual connection status will not be changed.</string>
+             </property>
              <property name="text">
-              <string>Set status offline</string>
+              <string>Set status to offline</string>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QPushButton" name="setStatusOnline">
+             <property name="toolTip">
+              <string>Set visible status to online. Actual connection status will not be changed.</string>
+             </property>
              <property name="text">
-              <string>Set status online</string>
+              <string>Set status to online</string>
              </property>
             </widget>
            </item>

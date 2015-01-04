@@ -52,6 +52,7 @@ public:
     bool getChatParticipants(QStringList *participants, quint32 chatId);
 
 public Q_SLOTS:
+    void setMessageReceivingFilterFlags(quint32 flags); // TelegramNamespace::MessageFlags
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
@@ -93,7 +94,7 @@ Q_SIGNALS:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
 
-    void messageReceived(const QString &phone, const QString &message, quint32 messageId); // Message id is incremental number
+    void messageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp); // Message id is incremental number
     void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);

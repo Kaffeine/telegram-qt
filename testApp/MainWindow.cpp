@@ -60,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
     connect(m_core, SIGNAL(contactListChanged()), SLOT(whenContactListChanged()));
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
-    connect(m_core, SIGNAL(messageReceived(QString,QString,quint32)), SLOT(whenMessageReceived(QString,QString,quint32)));
+    connect(m_core, SIGNAL(messageReceived(QString,QString,quint32,quint32,quint32)), SLOT(whenMessageReceived(QString,QString,quint32,quint32,quint32)));
     connect(m_core, SIGNAL(chatMessageReceived(quint32,QString,QString)), SLOT(whenChatMessageReceived(quint32,QString,QString)));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), m_contactsModel, SLOT(setTypingStatus(QString,bool)));
@@ -175,9 +175,9 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
     m_contactsModel->setContactAvatar(contact, avatarFile.fileName());
 }
 
-void MainWindow::whenMessageReceived(const QString &phone, const QString &message, quint32 messageId)
+void MainWindow::whenMessageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp)
 {
-    m_messagingModel->addMessage(phone, message, messageId);
+    m_messagingModel->addMessage(phone, message, flags & TelegramNamespace::MessageFlagOut, messageId, timestamp);
 }
 
 void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message)
@@ -186,7 +186,7 @@ void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, c
         return;
     }
 
-    m_chatMessagingModel->addMessage(phone, message);
+    m_chatMessagingModel->addMessage(phone, message, /* outgoing */ false);
 }
 
 void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status)
@@ -234,6 +234,15 @@ void MainWindow::on_connectButton_clicked()
     QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
 
     QString serverIp = ui->mainDcRadio->isChecked() ? QLatin1String("173.240.5.1") : QLatin1String("173.240.5.253");
+
+    quint32 flags = 0;
+    if (ui->settingsReceivingFilterOnlyUnreadMessages->isChecked()) {
+        flags |= TelegramNamespace::MessageFlagUnread;
+    }
+    if (ui->settingsReceivingFilterOutMessages->isChecked()) {
+        flags |= TelegramNamespace::MessageFlagOut;
+    }
+    m_core->setMessageReceivingFilterFlags(flags);
 
     if (secretInfo.isEmpty())
         m_core->initConnection(serverIp, 443);
@@ -304,7 +313,7 @@ void MainWindow::on_messagingSendButton_clicked()
 {
     quint64 id = m_core->sendMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text());
 
-    m_messagingModel->addMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text(), id);
+    m_messagingModel->addMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text(), /* outgoing */ true, id);
 
     ui->messagingMessage->clear();
 }
@@ -381,7 +390,7 @@ void MainWindow::on_groupChatSendButton_clicked()
 {
     m_core->sendChatMessage(1, ui->groupChatMessage->text());
 
-    m_chatMessagingModel->addMessage(m_core->selfPhone(), ui->groupChatMessage->text());
+    m_chatMessagingModel->addMessage(m_core->selfPhone(), ui->groupChatMessage->text(), /* outgoing */ true);
     ui->groupChatMessage->clear();
 }
 

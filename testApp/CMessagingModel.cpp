@@ -1,5 +1,7 @@
 #include "CMessagingModel.hpp"
 
+#include <QDateTime>
+
 QString messageDeliveryStatusStr(TelegramNamespace::MessageDeliveryStatus status)
 {
     switch (status) {
@@ -34,6 +36,11 @@ QVariant CMessagingModel::headerData(int section, Qt::Orientation orientation, i
     switch (section) {
     case Phone:
         return tr("Phone");
+    case Direction:
+        return tr("Direction");
+    case Timestamp:
+        return tr("Timestamp");
+        break;
     case MessageId:
         return tr("Message Id");
     case Message:
@@ -63,6 +70,10 @@ QVariant CMessagingModel::data(const QModelIndex &index, int role) const
     switch (section) {
     case Phone:
         return m_messages.at(messageIndex).phone;
+    case Direction:
+        return m_messages.at(messageIndex).outgoing ? tr("out") : tr("in");
+    case Timestamp:
+        return QDateTime::fromMSecsSinceEpoch(quint64(m_messages.at(messageIndex).timestamp) * 1000);
     case MessageId:
         return m_messages.at(messageIndex).messageId;
     case Message:
@@ -76,11 +87,20 @@ QVariant CMessagingModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void CMessagingModel::addMessage(const QString &phone, const QString &message, quint64 messageId)
+#include <QDebug>
+
+void CMessagingModel::addMessage(const QString &phone, const QString &message, bool outgoing, quint64 messageId, quint32 timestamp)
 {
     beginResetModel();
 
-    m_messages.append(SMessageEntry(phone, message, messageId));
+    if (!timestamp) {
+        timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
+    }
+
+    qDebug() << "timestamp:" << timestamp << QDateTime::currentMSecsSinceEpoch() / 1000;
+
+    m_messages.append(SMessageEntry(phone, message, messageId, timestamp));
+    m_messages.last().outgoing = outgoing;
 
     endResetModel();
 }

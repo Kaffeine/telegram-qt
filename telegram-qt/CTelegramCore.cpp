@@ -33,7 +33,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
     connect(m_dispatcher, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString,QString)));
-    connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,quint32,TelegramNamespace::MessageFlags)), SIGNAL(messageReceived(QString,QString,quint32)));
+    connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,quint32,quint32,quint32)), SIGNAL(messageReceived(QString,QString,quint32,quint32,quint32)));
     connect(m_dispatcher, SIGNAL(chatMessageReceived(quint32,QString,QString)), SIGNAL(chatMessageReceived(quint32,QString,QString)));
     connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
     connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,bool)), SIGNAL(contactTypingStatusChanged(QString,bool)));
@@ -179,6 +179,11 @@ bool CTelegramCore::getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 
 bool CTelegramCore::getChatParticipants(QStringList *participants, quint32 chatId)
 {
     return m_dispatcher->getChatParticipants(participants, chatId);
+}
+
+void CTelegramCore::setMessageReceivingFilterFlags(quint32 flags)
+{
+    return m_dispatcher->setMessageReceivingFilterFlags(flags);
 }
 
 QString CTelegramCore::selfPhone() const

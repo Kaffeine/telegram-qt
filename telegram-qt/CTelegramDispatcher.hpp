@@ -83,8 +83,8 @@ public:
 
     QByteArray connectionSecretInfo() const;
 
-    inline TelegramNamespace::MessageFlags messageReceivingFilterFlags() const { return m_messageReceivingFilterFlags; }
-    void setMessageReceivingFilterFlags(TelegramNamespace::MessageFlags flags);
+    inline quint32 messageReceivingFilterFlags() const { return m_messageReceivingFilterFlags; }
+    void setMessageReceivingFilterFlags(quint32 flags);
 
     void initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
@@ -130,7 +130,7 @@ signals:
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
-    void messageReceived(const QString &phone, const QString &message, quint32 messageId, TelegramNamespace::MessageFlags flags);
+    void messageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp);
     void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
@@ -180,8 +180,8 @@ protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
     void processUpdate(const TLUpdate &update);
 
-    void processMessageReceived(quint32 messageId, quint32 fromId, const QString &message);
-    void processChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message);
+    void processShortMessageReceived(quint32 messageId, quint32 fromId, const QString &message, quint32 date);
+    void processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message);
 
     void updateChat(const TLChat &newChat);
     void updateFullChat(const TLChatFull &newChat);
@@ -233,7 +233,7 @@ private:
 
     const CAppInformation *m_appInformation;
 
-    TelegramNamespace::MessageFlags m_messageReceivingFilterFlags;
+    quint32 m_messageReceivingFilterFlags;
 
     InitializationState m_initState;
     bool m_isAuthenticated;

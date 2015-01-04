@@ -1543,7 +1543,7 @@ void CTelegramConnection::processMessageAck(CTelegramStream &stream)
     stream >> idsVector;
 
     foreach (quint64 id, idsVector) {
-        qDebug() << "Packaged" << id << "acked";
+        qDebug() << "Package" << id << "acked";
 //        m_submittedPackages.remove(id);
     }
 }
@@ -2277,7 +2277,6 @@ void CTelegramConnection::setStatus(CTelegramConnection::ConnectionStatus status
 
 void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
 {
-    qDebug() << Q_FUNC_INFO << newState;
     if (m_authState == newState)
         return;
 

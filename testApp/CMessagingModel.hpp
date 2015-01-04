@@ -6,18 +6,22 @@
 #include "TelegramNamespace.hpp"
 
 struct SMessageEntry {
-    SMessageEntry(const QString &p = QString(), const QString &m = QString(), quint64 id = 0,
+    SMessageEntry(const QString &p = QString(), const QString &m = QString(), quint64 id = 0, quint32 t = 0,
                   TelegramNamespace::MessageDeliveryStatus s = TelegramNamespace::MessageDeliveryStatusUnknown) :
         phone(p),
         message(m),
         messageId(id),
-        status(s)
+        timestamp(t),
+        status(s),
+        outgoing(true)
     { }
 
     QString phone;
     QString message;
     quint64 messageId;
+    quint32 timestamp;
     TelegramNamespace::MessageDeliveryStatus status;
+    bool outgoing;
 };
 
 class CMessagingModel : public QAbstractTableModel
@@ -26,6 +30,8 @@ class CMessagingModel : public QAbstractTableModel
 public:
     enum Columns {
         Phone,
+        Direction,
+        Timestamp,
         MessageId,
         Message,
         Status,
@@ -41,7 +47,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 public slots:
-    void addMessage(const QString &phone, const QString &message, quint64 messageId = 0);
+    void addMessage(const QString &phone, const QString &message, bool outgoing, quint64 messageId = 0, quint32 timestamp = 0);
     void setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status);
 
 private:
