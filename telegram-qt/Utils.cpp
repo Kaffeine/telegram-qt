@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2014 Alexandr Akulich <akulichalexander@gmail.com>
+    Copyright (C) 2014-2015 Alexandr Akulich <akulichalexander@gmail.com>
 
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
