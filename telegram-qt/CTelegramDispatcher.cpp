@@ -149,6 +149,11 @@ void CTelegramDispatcher::deleteContacts(const QStringList &phoneNumbers)
     }
 }
 
+void CTelegramDispatcher::getDialogs(quint32 offset, quint32 maxId, quint32 limit)
+{
+    activeConnection()->messagesGetDialogs(offset, maxId, limit);
+}
+
 QByteArray CTelegramDispatcher::connectionSecretInfo() const
 {
     if (!activeConnection()) {

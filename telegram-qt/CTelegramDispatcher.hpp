@@ -79,6 +79,8 @@ public:
     void addContacts(const QStringList &phoneNumbers, bool replace = false);
     void deleteContacts(const QStringList &phoneNumbers);
 
+    void getDialogs(quint32 offset, quint32 maxId, quint32 limit);
+
     QByteArray connectionSecretInfo() const;
 
     void initConnection(const QString &address, quint32 port);
@@ -131,6 +133,8 @@ signals:
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, bool typingStatus);
+    void messagesDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void messagesDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
     void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
 

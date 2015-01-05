@@ -1453,6 +1453,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case MessagesGetFullChat:
             processingResult = processMessagesGetFullChat(stream, id);
             break;
+        case MessagesGetDialogs:
+            processingResult = processMessagesGetDialogs(stream, id);
+            break;
         case AccountUpdateStatus:
             processingResult = processAccountUpdateStatus(stream, id);
             break;
@@ -1968,6 +1971,20 @@ TLValue CTelegramConnection::processMessagesGetFullChat(CTelegramStream &stream,
 
     if (result.tlType == MessagesChatFull) {
         emit messagesFullChatReceived(result.fullChat, result.chats, result.users);
+    }
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processMessagesGetDialogs(CTelegramStream &stream, quint64 id)
+{
+    TLMessagesDialogs result;
+    stream >> result;
+
+    if (result.tlType == MessagesDialogs) {
+        emit messagesDialogsReceived(result.dialogs, result.chats, result.users);
+    } else if (result.tlType == MessagesDialogsSlice) {
+        emit messagesDialogsSliceReceived(result.count, result.dialogs, result.chats, result.users);
     }
 
     return result.tlType;
