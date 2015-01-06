@@ -61,8 +61,9 @@ public:
         InitKnowSelf            = 1 << 2,
         InitHaveContactList     = 1 << 3,
         InitKnowChats           = 1 << 4,
-        InitHaveUpdates         = 1 << 5,
-        InitDone                = InitHaveDcConfiguration|InitIsSignIn|InitKnowSelf|InitHaveContactList|InitKnowChats|InitHaveUpdates
+        InitHaveDialogs         = 1 << 5,
+        InitHaveUpdates         = 1 << 6,
+        InitDone                = InitHaveDcConfiguration|InitIsSignIn|InitKnowSelf|InitHaveContactList|InitKnowChats|InitHaveDialogs|InitHaveUpdates
     };
 
     explicit CTelegramDispatcher(QObject *parent = 0);
@@ -75,6 +76,7 @@ public:
     QString selfPhone() const { return m_selfPhone; }
 
     QStringList contactList() const { return m_contactList; }
+    TLMessagesDialogs dialogs() const { return m_dialogs; }
 
     void addContacts(const QStringList &phoneNumbers, bool replace = false);
     void deleteContacts(const QStringList &phoneNumbers);
@@ -133,6 +135,7 @@ signals:
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, bool typingStatus);
+    void dialogsChanged();
     void messagesDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
     void messagesDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
@@ -164,10 +167,15 @@ protected slots:
     void whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
     void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
 
+    void whenDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void whenDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+
+
     void getDcConfiguration();
     void getSelfUser();
     void getContacts();
     void getChatsInfo();
+    void getDialogs();
     void getUpdatesState();
     void whenUpdatesStateReceived(const TLUpdatesState &updatesState);
 
@@ -270,6 +278,7 @@ private:
     QMap<quint32, TLChat> m_chatInfo; // Telegram chat id to Chat map
     QMap<quint32, TLChatFull> m_chatFullInfo; // Telegram chat id to ChatFull map
 
+    TLMessagesDialogs m_dialogs;
 };
 
 #endif // CTELEGRAMDISPATCHER_HPP

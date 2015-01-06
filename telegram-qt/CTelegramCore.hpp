@@ -16,6 +16,7 @@
 
 #include "telegramqt_export.h"
 #include "TelegramNamespace.hpp"
+#include "TLTypes.hpp"
 
 #include <QObject>
 #include <QVector>
@@ -39,6 +40,7 @@ public:
     Q_INVOKABLE bool isAuthenticated();
     Q_INVOKABLE QString selfPhone() const;
     Q_INVOKABLE QStringList contactList() const;
+    Q_INVOKABLE TLMessagesDialogs dialogs() const;
     Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
     Q_INVOKABLE QString contactFirstName(const QString &phone) const;
     Q_INVOKABLE QString contactLastName(const QString &phone) const;
