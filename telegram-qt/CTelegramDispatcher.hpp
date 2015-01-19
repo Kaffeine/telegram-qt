@@ -136,8 +136,8 @@ signals:
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, bool typingStatus);
     void dialogsChanged();
-    void messagesDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
-    void messagesDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void messagesDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void messagesDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLMessage> messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
     void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
 
@@ -167,8 +167,8 @@ protected slots:
     void whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
     void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
 
-    void whenDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
-    void whenDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void whenDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void whenDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
 
     void getDcConfiguration();

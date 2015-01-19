@@ -1982,9 +1982,9 @@ TLValue CTelegramConnection::processMessagesGetDialogs(CTelegramStream &stream, 
     stream >> result;
 
     if (result.tlType == MessagesDialogs) {
-        emit messagesDialogsReceived(result.dialogs, result.chats, result.users);
+        emit messagesDialogsReceived(result.dialogs, result.messages, result.chats, result.users);
     } else if (result.tlType == MessagesDialogsSlice) {
-        emit messagesDialogsSliceReceived(result.count, result.dialogs, result.chats, result.users);
+        emit messagesDialogsSliceReceived(result.count, result.dialogs, result.messages, result.chats, result.users);
     }
 
     return result.tlType;

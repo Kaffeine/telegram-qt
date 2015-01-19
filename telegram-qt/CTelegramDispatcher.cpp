@@ -889,11 +889,13 @@ void CTelegramDispatcher::getDialogs()
     getDialogs(0, 0, 100);
 }
 
-void CTelegramDispatcher::whenDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users)
+void CTelegramDispatcher::whenDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users)
 {
-    qDebug() << "Received and stored full dialog list";
+    qDebug() << "Received and stored full dialog list of size " << chats.size();
+    qDebug() << "Dialogs: " << dialogs.size() << " Chats: " << chats.size() << " Users: " << users.size();
 
     m_dialogs.dialogs = dialogs;
+    m_dialogs.messages = messages;
     m_dialogs.chats = chats;
     m_dialogs.users = users;
 
@@ -901,7 +903,7 @@ void CTelegramDispatcher::whenDialogsReceived(const QVector<TLDialog> &dialogs, 
     continueInitialization(InitHaveDialogs);
 }
 
-void CTelegramDispatcher::whenDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLChat> &chats, const QVector<TLUser> &users)
+void CTelegramDispatcher::whenDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users)
 {
     qDebug() << "Received dialog slice";
 
@@ -909,6 +911,10 @@ void CTelegramDispatcher::whenDialogsSliceReceived(quint32 count, const QVector<
 
     foreach(const TLDialog &dialog, dialogs) {
         m_dialogs.dialogs.append(dialog);
+    }
+
+    foreach(const TLMessage &message, messages) {
+        m_dialogs.messages.append(message);
     }
 
     foreach(const TLChat &chat, chats) {
@@ -1404,8 +1410,8 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
             connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
             connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)), SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
             connect(connection, SIGNAL(statedMessageReceived(TLMessagesStatedMessage,quint64)), SLOT(whenStatedMessageReceived(TLMessagesStatedMessage,quint64)));
-            connect(connection, SIGNAL(messagesDialogsReceived(QVector<TLDialog>, QVector<TLChat>, QVector<TLUser>)), SLOT(whenDialogsReceived(QVector<TLDialog>, QVector<TLChat>, QVector<TLUser>)));
-            connect(connection, SIGNAL(messagesDialogsSliceReceived(quint32, QVector<TLDialog>, QVector<TLChat>, QVector<TLUser>)), SLOT(whenDialogsSliceReceived(quint32, QVector<TLDialog>, QVector<TLChat>, QVector<TLUser>)));
+            connect(connection, SIGNAL(messagesDialogsReceived(QVector<TLDialog>, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SLOT(whenDialogsReceived(QVector<TLDialog>, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
+            connect(connection, SIGNAL(messagesDialogsSliceReceived(quint32, QVector<TLDialog>, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SLOT(whenDialogsSliceReceived(quint32, QVector<TLDialog>, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)), SLOT(whenUpdatesStateReceived(TLUpdatesState)));
             connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)), SLOT(whenUpdatesDifferenceReceived(TLUpdatesDifference)));
             connect(connection, SIGNAL(authExportedAuthorizationReceived(quint32,quint32,QByteArray)), SLOT(whenAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
