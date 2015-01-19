@@ -100,6 +100,8 @@ Q_SIGNALS:
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool typingStatus);
 
+    void dialogsChanged();
+
     void sentMessageStatusChanged(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
 
     void chatAdded(quint32 publichChatId);
