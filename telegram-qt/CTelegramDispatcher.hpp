@@ -123,6 +123,7 @@ public:
 
 signals:
     void connected();
+    void connectionStatusChanged(int newStatus);
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void authenticated();

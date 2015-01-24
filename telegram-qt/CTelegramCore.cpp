@@ -26,6 +26,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     TelegramNamespace::registerTypes();
 
     connect(m_dispatcher, SIGNAL(connected()), SIGNAL(connected()));
+    connect(m_dispatcher, SIGNAL(connectionStatusChanged(int)), this, SIGNAL(connectionStatusChanged(int)));
+    connect(m_dispatcher, SIGNAL(connectionStatusChanged(int)), this, SLOT(whenConnectionStatusChanged(int)));
     connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
     connect(m_dispatcher, SIGNAL(initializated()), SIGNAL(initializated()));
     connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));

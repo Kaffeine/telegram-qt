@@ -1420,6 +1420,9 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
             break;
         }
     }
+
+    emit connectionStatusChanged(newStatus);
+
 }
 
 void CTelegramDispatcher::whenDcConfigurationUpdated(quint32 dc)

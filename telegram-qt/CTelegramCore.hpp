@@ -86,6 +86,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void connected(); // Telegram protocol connection established.
+    void connectionStatusChanged(int newStatus);
     void authenticated(); // Signed in.
     void initializated(); // Contact list and updates received.
     void phoneCodeRequired();
