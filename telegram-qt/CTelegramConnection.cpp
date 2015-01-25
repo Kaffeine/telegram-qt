@@ -1456,6 +1456,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case MessagesGetDialogs:
             processingResult = processMessagesGetDialogs(stream, id);
             break;
+        case MessagesGetHistory:
+            processingResult = processMessagesGetHistory(stream, id);
+            break;
         case AccountUpdateStatus:
             processingResult = processAccountUpdateStatus(stream, id);
             break;
@@ -1985,6 +1988,32 @@ TLValue CTelegramConnection::processMessagesGetDialogs(CTelegramStream &stream, 
         emit messagesDialogsReceived(result.dialogs, result.messages, result.chats, result.users);
     } else if (result.tlType == MessagesDialogsSlice) {
         emit messagesDialogsSliceReceived(result.count, result.dialogs, result.messages, result.chats, result.users);
+    }
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processMessagesGetHistory(CTelegramStream &stream, quint64 id)
+{
+    TLMessagesMessages result;
+
+    stream >> result;
+
+    if(result.tlType == MessagesMessages) {
+        qDebug() << "Received messages";
+        // TODO emit messages received
+
+        foreach(const TLMessage& m, result.messages) {
+            qDebug() << m.message;
+        }
+    } else if(result.tlType == MessagesMessagesSlice) {
+        qDebug() << "Received messages slice";
+
+        foreach(const TLMessage& m, result.messages) {
+            qDebug() << m.message;
+        }
+
+        // TODO emit messagesSlice received
     }
 
     return result.tlType;

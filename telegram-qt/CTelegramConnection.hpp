@@ -254,6 +254,7 @@ protected:
     TLValue processMessagesGetChats(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetFullChat(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetDialogs(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesGetHistory(CTelegramStream &stream, quint64 id);
     TLValue processAccountUpdateStatus(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);

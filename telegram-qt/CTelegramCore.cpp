@@ -133,6 +133,11 @@ void CTelegramCore::getDialogs(quint32 offset, quint32 maxId, quint32 limit)
     m_dispatcher->getDialogs(offset, maxId, limit);
 }
 
+void CTelegramCore::getHistory(const QString &peer, quint32 offset, quint32 maxId, quint32 limit)
+{
+    m_dispatcher->getHistory(peer, offset, maxId, limit);
+}
+
 void CTelegramCore::requestContactAvatar(const QString &contact)
 {
     m_dispatcher->requestContactAvatar(contact);

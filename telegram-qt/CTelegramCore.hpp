@@ -68,6 +68,7 @@ public Q_SLOTS:
     void deleteContacts(const QStringList &phoneNumbers);
 
     void getDialogs(quint32 offset, quint32 maxId, quint32 limit);
+    void getHistory(const QString &peer, quint32 offset, quint32 maxId, quint32 limit);
 
     void requestContactAvatar(const QString &contact);
 

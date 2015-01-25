@@ -155,6 +155,13 @@ void CTelegramDispatcher::getDialogs(quint32 offset, quint32 maxId, quint32 limi
     activeConnection()->messagesGetDialogs(offset, maxId, limit);
 }
 
+void CTelegramDispatcher::getHistory(const QString &phoneNumber, quint32 offset, quint32 maxId, quint32 limit)
+{
+    TLInputPeer peer = phoneNumberToInputPeer(phoneNumber);
+
+    activeConnection()->messagesGetHistory(peer, offset, maxId, limit);
+}
+
 QByteArray CTelegramDispatcher::connectionSecretInfo() const
 {
     if (!activeConnection()) {
