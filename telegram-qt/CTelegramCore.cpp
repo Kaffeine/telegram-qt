@@ -43,6 +43,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(chatAdded(quint32)), SIGNAL(chatAdded(quint32)));
     connect(m_dispatcher, SIGNAL(chatChanged(quint32)), SIGNAL(chatChanged(quint32)));
     connect(m_dispatcher, SIGNAL(dialogsChanged()), SIGNAL(dialogsChanged()));
+    connect(m_dispatcher, SIGNAL(messagesHistoryReceived(QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SIGNAL(messagesHistoryReceived(QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
+    connect(m_dispatcher, SIGNAL(messagesHistorySliceReceived(quint32, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SIGNAL(messagesHistoryReceived(quint32, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
     connect(m_dispatcher, SIGNAL(authorizationErrorReceived()), SIGNAL(authorizationErrorReceived()));
 }
 

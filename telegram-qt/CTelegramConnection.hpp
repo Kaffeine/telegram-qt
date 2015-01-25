@@ -205,6 +205,9 @@ signals:
     void messagesDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
     void messagesDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
+    void messagesHistoryReceived(const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void messagesHistorySliceReceived(quint32 count, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+
     void fullUserReceived(const TLUserFull &userFull);
     void statedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
 

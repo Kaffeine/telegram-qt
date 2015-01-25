@@ -1748,6 +1748,9 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
     connect(connection, SIGNAL(phoneNumberInvalid()), SIGNAL(phoneNumberInvalid()));
     connect(connection, SIGNAL(authorizationErrorReceived()), SIGNAL(authorizationErrorReceived()));
 
+    connect(connection, SIGNAL(messagesHistoryReceived(QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SIGNAL(messagesHistoryReceived(QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
+    connect(connection, SIGNAL(messagesHistorySliceReceived(quint32, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SIGNAL(messagesHistoryReceived(quint32, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
+
     connect(connection, SIGNAL(fileReceived(TLUploadFile,quint32)), SLOT(whenFileReceived(TLUploadFile,quint32)));
 
     connection->setDcInfo(dc);

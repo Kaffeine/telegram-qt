@@ -139,7 +139,8 @@ signals:
     void dialogsChanged();
     void messagesDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
     void messagesDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLMessage> messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
-    void historyReceived();
+    void messagesHistoryReceived(const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void messagesHistorySliceReceived(quint32 count, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
     void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
 

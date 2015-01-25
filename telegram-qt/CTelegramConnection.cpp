@@ -2000,20 +2000,9 @@ TLValue CTelegramConnection::processMessagesGetHistory(CTelegramStream &stream, 
     stream >> result;
 
     if(result.tlType == MessagesMessages) {
-        qDebug() << "Received messages";
-        // TODO emit messages received
-
-        foreach(const TLMessage& m, result.messages) {
-            qDebug() << m.message;
-        }
+        emit messagesHistoryReceived(result.messages, result.chats, result.users);
     } else if(result.tlType == MessagesMessagesSlice) {
-        qDebug() << "Received messages slice";
-
-        foreach(const TLMessage& m, result.messages) {
-            qDebug() << m.message;
-        }
-
-        // TODO emit messagesSlice received
+        emit messagesHistorySliceReceived(result.count, result.messages, result.chats, result.users);
     }
 
     return result.tlType;
