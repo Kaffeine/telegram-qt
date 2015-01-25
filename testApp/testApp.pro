@@ -12,6 +12,7 @@ INCLUDEPATH += $$PWD/../telegram-qt
 
 LIBS += -lTelegramQt
 LIBS += -lssl
+LIBS += -lz
 LIBS += -L$$OUT_PWD/../telegram-qt
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
