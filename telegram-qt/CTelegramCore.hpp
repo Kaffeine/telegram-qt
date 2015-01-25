@@ -16,6 +16,7 @@
 
 #include "telegramqt_export.h"
 #include "TelegramNamespace.hpp"
+#include "TLTypes.hpp"
 
 #include <QObject>
 #include <QVector>
@@ -39,6 +40,7 @@ public:
     Q_INVOKABLE bool isAuthenticated();
     Q_INVOKABLE QString selfPhone() const;
     Q_INVOKABLE QStringList contactList() const;
+    Q_INVOKABLE TLMessagesDialogs dialogs() const;
     Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
     Q_INVOKABLE QString contactFirstName(const QString &phone) const;
     Q_INVOKABLE QString contactLastName(const QString &phone) const;
@@ -64,6 +66,8 @@ public Q_SLOTS:
 
     void deleteContact(const QString &phoneNumber);
     void deleteContacts(const QStringList &phoneNumbers);
+
+    void getDialogs(quint32 offset, quint32 maxId, quint32 limit);
 
     void requestContactAvatar(const QString &contact);
 
@@ -95,6 +99,8 @@ Q_SIGNALS:
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool typingStatus);
+
+    void dialogsChanged();
 
     void sentMessageStatusChanged(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
 

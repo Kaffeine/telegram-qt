@@ -42,6 +42,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)), SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
     connect(m_dispatcher, SIGNAL(chatAdded(quint32)), SIGNAL(chatAdded(quint32)));
     connect(m_dispatcher, SIGNAL(chatChanged(quint32)), SIGNAL(chatChanged(quint32)));
+    connect(m_dispatcher, SIGNAL(dialogsChanged()), SIGNAL(dialogsChanged()));
     connect(m_dispatcher, SIGNAL(authorizationErrorReceived()), SIGNAL(authorizationErrorReceived()));
 }
 
@@ -127,6 +128,11 @@ void CTelegramCore::deleteContacts(const QStringList &phoneNumbers)
     m_dispatcher->deleteContacts(phoneNumbers);
 }
 
+void CTelegramCore::getDialogs(quint32 offset, quint32 maxId, quint32 limit)
+{
+    m_dispatcher->getDialogs(offset, maxId, limit);
+}
+
 void CTelegramCore::requestContactAvatar(const QString &contact)
 {
     m_dispatcher->requestContactAvatar(contact);
@@ -135,6 +141,11 @@ void CTelegramCore::requestContactAvatar(const QString &contact)
 QStringList CTelegramCore::contactList() const
 {
     return m_dispatcher->contactList();
+}
+
+TLMessagesDialogs CTelegramCore::dialogs() const
+{
+    return m_dispatcher->dialogs();
 }
 
 TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &phone) const

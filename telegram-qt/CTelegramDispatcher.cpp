@@ -16,6 +16,7 @@
 #include "TelegramNamespace.hpp"
 #include "CTelegramConnection.hpp"
 #include "CTelegramStream.hpp"
+#include "TLValues.h"
 #include "Utils.hpp"
 
 #include <QTimer>
@@ -147,6 +148,11 @@ void CTelegramDispatcher::deleteContacts(const QStringList &phoneNumbers)
     if (!users.isEmpty()) {
         activeConnection()->contactsDeleteContacts(users);
     }
+}
+
+void CTelegramDispatcher::getDialogs(quint32 offset, quint32 maxId, quint32 limit)
+{
+    activeConnection()->messagesGetDialogs(offset, maxId, limit);
 }
 
 QByteArray CTelegramDispatcher::connectionSecretInfo() const
@@ -874,6 +880,60 @@ void CTelegramDispatcher::getChatsInfo()
     }
 }
 
+void CTelegramDispatcher::getDialogs()
+{
+    qDebug() << "Fetching dialogs";
+    // Clear the currently stored dialogs
+    m_dialogs = TLMessagesDialogs();
+    // Fetches the first 100 dialogs
+    getDialogs(0, 0, 100);
+}
+
+void CTelegramDispatcher::whenDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users)
+{
+    qDebug() << "Received and stored full dialog list of size " << chats.size();
+    qDebug() << "Dialogs: " << dialogs.size() << " Chats: " << chats.size() << " Users: " << users.size();
+
+    m_dialogs.dialogs = dialogs;
+    m_dialogs.messages = messages;
+    m_dialogs.chats = chats;
+    m_dialogs.users = users;
+
+    emit dialogsChanged();
+    continueInitialization(InitHaveDialogs);
+}
+
+void CTelegramDispatcher::whenDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users)
+{
+    qDebug() << "Received dialog slice";
+
+    this->m_dialogs.count = count;
+
+    foreach(const TLDialog &dialog, dialogs) {
+        m_dialogs.dialogs.append(dialog);
+    }
+
+    foreach(const TLMessage &message, messages) {
+        m_dialogs.messages.append(message);
+    }
+
+    foreach(const TLChat &chat, chats) {
+        m_dialogs.chats.append(chat);
+    }
+
+    foreach(const TLUser &user, users) {
+        m_dialogs.users.append(user);
+    }
+
+    emit dialogsChanged();
+
+    quint32 totalReceived = m_dialogs.dialogs.size();
+    if(totalReceived == m_dialogs.count) {
+        qDebug() << "All dialog slices received, continuing initialization";
+        continueInitialization(InitHaveDialogs);
+    }
+}
+
 void CTelegramDispatcher::getUpdatesState()
 {
     m_updatesStateIsLocked = true;
@@ -1350,6 +1410,8 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
             connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
             connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)), SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
             connect(connection, SIGNAL(statedMessageReceived(TLMessagesStatedMessage,quint64)), SLOT(whenStatedMessageReceived(TLMessagesStatedMessage,quint64)));
+            connect(connection, SIGNAL(messagesDialogsReceived(QVector<TLDialog>, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SLOT(whenDialogsReceived(QVector<TLDialog>, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
+            connect(connection, SIGNAL(messagesDialogsSliceReceived(quint32, QVector<TLDialog>, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SLOT(whenDialogsSliceReceived(quint32, QVector<TLDialog>, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)), SLOT(whenUpdatesStateReceived(TLUpdatesState)));
             connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)), SLOT(whenUpdatesDifferenceReceived(TLUpdatesDifference)));
             connect(connection, SIGNAL(authExportedAuthorizationReceived(quint32,quint32,QByteArray)), SLOT(whenAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
@@ -1584,6 +1646,11 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     }
 
     if ((m_initState & InitHaveContactList) && (m_initState & InitKnowSelf)) {
+       getDialogs();
+       return;
+    }
+
+    if ((m_initState & InitHaveDialogs) && (m_initState & InitKnowSelf)) {
         getUpdatesState();
         return;
     }
