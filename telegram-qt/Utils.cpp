@@ -25,8 +25,6 @@
 #include <QCryptographicHash>
 #include <QDebug>
 
-#include "CTelegramStream.hpp"
-
 static const QByteArray s_hardcodedRsaDataKey("0c150023e2f70db7985ded064759cfecf0af328e69a41daf4d6f01b53813"
                                               "5a6f91f8f8b2a0ec9ba9720ce352efcf6c5680ffc424bd634864902de0b4"
                                               "bd6d49f4e580230e3ae97d95c8b19442b3c0a10d8f5633fecedd6926a7f6"
@@ -162,18 +160,6 @@ quint64 Utils::getFingersprint(const QByteArray &data, bool lowerOrderBits)
     }
 }
 
-quint64 Utils::getRsaFingersprint(const SRsaKey &key)
-{
-    QBuffer buffer;
-    buffer.open(QIODevice::WriteOnly);
-    CTelegramStream stream(&buffer);
-
-    stream << key.key;
-    stream << key.exp;
-
-    return getFingersprint(buffer.data());
-}
-
 SRsaKey Utils::loadHardcodedKey()
 {
     SRsaKey result;
@@ -191,34 +177,6 @@ SRsaKey Utils::loadHardcodedKey()
     result.fingersprint = s_hardcodedRsaDataFingersprint;
 
     BN_free(tmpBN);
-
-    return result;
-}
-
-SRsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
-{
-    SRsaKey result;
-    RSA *pubKey = NULL;
-    FILE *file = fopen(fileName.toLocal8Bit().constData(), "r");
-
-    if (!file) {
-        qDebug() << "Can not open RSA key file.";
-        return result;
-    }
-
-    pubKey = PEM_read_RSAPublicKey(file, 0, 0, 0);
-    fclose(file);
-
-    if (pubKey == NULL) {
-        qDebug() << "Can not read RSA key.";
-        return result;
-    }
-
-    result.key = bnToBinArray(pubKey->n);
-    result.exp = bnToBinArray(pubKey->e);
-    result.fingersprint = getRsaFingersprint(result);
-
-    RSA_free(pubKey);
 
     return result;
 }
