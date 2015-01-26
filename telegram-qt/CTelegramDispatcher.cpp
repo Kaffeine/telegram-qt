@@ -947,8 +947,14 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
                 continue;
             }
 
-            quint32 contactUserId = message.flags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
-            emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, message.flags, message.date);
+            if( message.toId.tlType == PeerUser){
+                quint32 contactUserId = message.flags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
+                emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, message.flags, message.date);
+            } else {
+                emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId),
+                                         userIdToIdentifier(message.fromId), message.message);
+            }
+
         }
         if (updatesDifference.tlType == UpdatesDifference) {
             m_updatesState = updatesDifference.state;
@@ -1008,7 +1014,12 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         qDebug() << "message:" << update.message.message;
 
         if (!filterReceivedMessage(update.message.flags)) {
-            emit messageReceived(userIdToIdentifier(update.message.toId.userId), update.message.message, update.message.id, update.message.flags, update.message.date);
+            if(update.message.toId.tlType == PeerUser)            {
+                emit messageReceived(userIdToIdentifier(update.message.toId.userId), update.message.message, update.message.id, update.message.flags, update.message.date);
+            }
+            else {
+                emit chatMessageReceived(telegramChatIdToPublicId(update.message.toId.chatId), userIdToIdentifier(update.message.fromId), update.message.message);
+            }
         }
 
         ensureUpdateState(update.pts);
