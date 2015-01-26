@@ -96,7 +96,7 @@ Q_SIGNALS:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
 
     void messageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp); // Message id is incremental number
-    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
+    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool typingStatus);
