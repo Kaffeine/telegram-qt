@@ -951,7 +951,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
                 quint32 contactUserId = message.flags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
                 emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, message.flags, message.date);
             } else {
-                emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId), userIdToIdentifier(message.fromId), message.message);
+                emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId), userIdToIdentifier(message.fromId), message.message, message.id, message.flags, message.date);
             }
 
         }
@@ -1016,7 +1016,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             if (update.message.toId.tlType == PeerUser) {
                 emit messageReceived(userIdToIdentifier(update.message.toId.userId), update.message.message, update.message.id, update.message.flags, update.message.date);
             } else {
-                emit chatMessageReceived(telegramChatIdToPublicId(update.message.toId.chatId), userIdToIdentifier(update.message.fromId), update.message.message);
+                emit chatMessageReceived(telegramChatIdToPublicId(update.message.toId.chatId), userIdToIdentifier(update.message.fromId), update.message.message, update.message.id, update.message.flags, update.message.date);
             }
         }
 
@@ -1175,14 +1175,14 @@ void CTelegramDispatcher::processShortMessageReceived(quint32 messageId, quint32
     }
 }
 
-void CTelegramDispatcher::processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message)
+void CTelegramDispatcher::processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message, quint32 date)
 {
     Q_UNUSED(messageId)
 
     const QString phone = userIdToIdentifier(fromId);
     const quint32 publicChatId = telegramChatIdToPublicId(chatId);
 
-    emit chatMessageReceived(publicChatId, phone, message);
+    emit chatMessageReceived(publicChatId, phone, message, messageId, TelegramNamespace::MessageFlagUnread, date);
 
     const QPair<quint32,quint32> key(publicChatId, fromId);
 
@@ -1528,7 +1528,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         ensureUpdateState(updates.pts);
         break;
     case UpdateShortChatMessage:
-        processShortChatMessageReceived(updates.id, updates.chatId, updates.fromId, updates.message);
+        processShortChatMessageReceived(updates.id, updates.chatId, updates.fromId, updates.message, updates.date);
         ensureUpdateState(updates.pts);
         break;
     case UpdateShort:

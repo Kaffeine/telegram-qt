@@ -131,7 +131,7 @@ signals:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
     void messageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp);
-    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
+    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, bool typingStatus);
@@ -181,7 +181,7 @@ protected:
     void processUpdate(const TLUpdate &update);
 
     void processShortMessageReceived(quint32 messageId, quint32 fromId, const QString &message, quint32 date);
-    void processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message);
+    void processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message, quint32 date);
 
     void updateChat(const TLChat &newChat);
     void updateFullChat(const TLChatFull &newChat);
