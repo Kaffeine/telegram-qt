@@ -90,6 +90,7 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
 
 void CTcpTransport::whenConnected()
 {
+    qDebug() << Q_FUNC_INFO;
     m_expectedLength = 0;
     m_firstPackage = true;
     emit connected();
@@ -141,4 +142,9 @@ void CTcpTransport::whenError(QAbstractSocket::SocketError socketError)
 void CTcpTransport::whenStateChanged(QAbstractSocket::SocketState socketState)
 {
     qDebug() << Q_FUNC_INFO << socketState;
+
+    if( socketState == QAbstractSocket::UnconnectedState)
+    {
+        emit disconnected();
+    }
 }
