@@ -214,6 +214,7 @@ signals:
 private slots:
     void whenConnected();
     void whenReadyRead();
+    void whenDisconnected();
 
 protected:
     void processRpcQuery(const QByteArray &data);

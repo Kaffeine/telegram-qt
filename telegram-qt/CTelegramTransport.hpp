@@ -36,6 +36,7 @@ public:
 signals:
     void connected();
     void readyRead();
+    void disconnected();
 
 };
 

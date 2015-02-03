@@ -545,6 +545,18 @@ void CTelegramDispatcher::setMessageRead(const QString &phone, quint32 messageId
     }
 }
 
+void CTelegramDispatcher::setChatMessageRead(const quint32 &publicChatId, quint32 messageId)
+{
+    if (!activeConnection()) {
+        return;
+    }
+    const TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
+
+    if (peer.tlType != InputPeerEmpty) {
+        activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0, /* readContents */ false);
+    }
+}
+
 void CTelegramDispatcher::setOnlineStatus(bool onlineStatus)
 {
     if (!activeConnection()) {
@@ -947,8 +959,14 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
                 continue;
             }
 
-            quint32 contactUserId = message.flags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
-            emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, message.flags, message.date);
+            if( message.toId.tlType == PeerUser){
+                quint32 contactUserId = message.flags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
+                emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, message.flags, message.date);
+            } else {
+                emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId),
+                                         userIdToIdentifier(message.fromId), message.message, message.id, message.flags, message.date);
+            }
+
         }
         if (updatesDifference.tlType == UpdatesDifference) {
             m_updatesState = updatesDifference.state;
@@ -1008,7 +1026,14 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         qDebug() << "message:" << update.message.message;
 
         if (!filterReceivedMessage(update.message.flags)) {
-            emit messageReceived(userIdToIdentifier(update.message.toId.userId), update.message.message, update.message.id, update.message.flags, update.message.date);
+            if(update.message.toId.tlType == PeerUser)            {
+                emit messageReceived(userIdToIdentifier(update.message.toId.userId), update.message.message, update.message.id,
+                                     update.message.flags, update.message.date);
+            }
+            else {
+                emit chatMessageReceived(telegramChatIdToPublicId(update.message.toId.chatId), userIdToIdentifier(update.message.fromId),
+                                         update.message.message, update.message.id, update.message.flags, update.message.date);
+            }
         }
 
         ensureUpdateState(update.pts);
@@ -1166,14 +1191,14 @@ void CTelegramDispatcher::processShortMessageReceived(quint32 messageId, quint32
     }
 }
 
-void CTelegramDispatcher::processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message)
+void CTelegramDispatcher::processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message, quint32 date)
 {
     Q_UNUSED(messageId)
 
     const QString phone = userIdToIdentifier(fromId);
     const quint32 publicChatId = telegramChatIdToPublicId(chatId);
 
-    emit chatMessageReceived(publicChatId, phone, message);
+    emit chatMessageReceived(publicChatId, phone, message, messageId, TelegramNamespace::MessageFlagUnread, date);
 
     const QPair<quint32,quint32> key(publicChatId, fromId);
 
@@ -1420,6 +1445,9 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
             break;
         }
     }
+
+    emit connectionStatusChanged(newStatus);
+
 }
 
 void CTelegramDispatcher::whenDcConfigurationUpdated(quint32 dc)
@@ -1519,7 +1547,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         ensureUpdateState(updates.pts);
         break;
     case UpdateShortChatMessage:
-        processShortChatMessageReceived(updates.id, updates.chatId, updates.fromId, updates.message);
+        processShortChatMessageReceived(updates.id, updates.chatId, updates.fromId, updates.message, updates.date);
         ensureUpdateState(updates.pts);
         break;
     case UpdateShort:

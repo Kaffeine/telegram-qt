@@ -26,6 +26,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     TelegramNamespace::registerTypes();
 
     connect(m_dispatcher, SIGNAL(connected()), SIGNAL(connected()));
+    connect(m_dispatcher, SIGNAL(connectionStatusChanged(int)), this, SIGNAL(connectionStatusChanged(int)));
+    connect(m_dispatcher, SIGNAL(connectionStatusChanged(int)), this, SLOT(whenConnectionStatusChanged(int)));
     connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
     connect(m_dispatcher, SIGNAL(initializated()), SIGNAL(initializated()));
     connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
@@ -34,7 +36,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString,QString)));
     connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,quint32,quint32,quint32)), SIGNAL(messageReceived(QString,QString,quint32,quint32,quint32)));
-    connect(m_dispatcher, SIGNAL(chatMessageReceived(quint32,QString,QString)), SIGNAL(chatMessageReceived(quint32,QString,QString)));
+    connect(m_dispatcher, SIGNAL(chatMessageReceived(quint32,QString,QString,quint32,quint32,quint32)), SIGNAL(chatMessageReceived(quint32,QString,QString,quint32,quint32,quint32)));
     connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
     connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,bool)), SIGNAL(contactTypingStatusChanged(QString,bool)));
     connect(m_dispatcher, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)), SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)));
@@ -214,6 +216,11 @@ void CTelegramCore::setChatTyping(quint32 chatId, bool typingStatus)
 void CTelegramCore::setMessageRead(const QString &phone, quint32 messageId)
 {
     m_dispatcher->setMessageRead(phone, messageId);
+}
+
+void CTelegramCore::setChatMessageRead(const quint32 &chatId, quint32 messageId)
+{
+    m_dispatcher->setChatMessageRead(chatId, messageId);
 }
 
 void CTelegramCore::setOnlineStatus(bool onlineStatus)

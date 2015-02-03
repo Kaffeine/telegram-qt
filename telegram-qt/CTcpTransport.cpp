@@ -24,6 +24,11 @@ CTcpTransport::CTcpTransport(QObject *parent) :
 {
     connect(m_socket, SIGNAL(connected()), SLOT(whenConnected()));
     connect(m_socket, SIGNAL(readyRead()), SLOT(whenReadyRead()));
+    connect(m_socket, SIGNAL(disconnected()), SIGNAL(disconnected()));
+
+    connect(m_socket, SIGNAL(disconnected()), SLOT(whenDisconnected()));
+    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(whenError(QAbstractSocket::SocketError)));
+    connect(m_socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(whenStateChanged(QAbstractSocket::SocketState)));
 }
 
 CTcpTransport::~CTcpTransport()
@@ -36,6 +41,7 @@ CTcpTransport::~CTcpTransport()
 
 void CTcpTransport::connectToHost(const QString &ipAddress, quint32 port)
 {
+    qDebug() << "Connect to host: " << ipAddress;
     m_socket->connectToHost(ipAddress, port);
 }
 
@@ -84,6 +90,7 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
 
 void CTcpTransport::whenConnected()
 {
+    qDebug() << Q_FUNC_INFO;
     m_expectedLength = 0;
     m_firstPackage = true;
     emit connected();
@@ -119,5 +126,25 @@ void CTcpTransport::whenReadyRead()
         m_expectedLength = 0;
 
         emit readyRead();
+    }
+}
+
+void CTcpTransport::whenDisconnected()
+{
+    qDebug() << Q_FUNC_INFO;
+}
+
+void CTcpTransport::whenError(QAbstractSocket::SocketError socketError)
+{
+    qDebug() << Q_FUNC_INFO << socketError;
+}
+
+void CTcpTransport::whenStateChanged(QAbstractSocket::SocketState socketState)
+{
+    qDebug() << Q_FUNC_INFO << socketState;
+
+    if( socketState == QAbstractSocket::UnconnectedState)
+    {
+        emit disconnected();
     }
 }

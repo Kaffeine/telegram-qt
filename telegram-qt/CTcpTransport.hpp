@@ -17,7 +17,8 @@
 #include "CTelegramTransport.hpp"
 
 QT_BEGIN_NAMESPACE
-class QTcpSocket;
+//class QTcpSocket;
+#include <QTcpSocket>
 QT_END_NAMESPACE
 
 class CTcpTransport : public CTelegramTransport
@@ -41,6 +42,9 @@ public slots:
 private slots:
     void whenConnected();
     void whenReadyRead();
+    void whenDisconnected();
+    void whenError(QAbstractSocket::SocketError socketError);
+    void whenStateChanged ( QAbstractSocket::SocketState socketState );
 
 private:
     quint32 m_packetNumber;

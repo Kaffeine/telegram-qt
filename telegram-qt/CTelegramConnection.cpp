@@ -81,6 +81,7 @@ void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
 
     connect(m_transport, SIGNAL(connected()), SLOT(whenConnected()));
     connect(m_transport, SIGNAL(readyRead()), SLOT(whenReadyRead()));
+    connect(m_transport, SIGNAL(disconnected()), SLOT(whenDisconnected()));
 }
 
 void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
@@ -2144,6 +2145,12 @@ void CTelegramConnection::whenReadyRead()
     }
 }
 
+void CTelegramConnection::whenDisconnected()
+{
+    setStatus(ConnectionStatusNone);
+}
+
+
 SAesKey CTelegramConnection::generateTmpAesKey() const
 {
     QByteArray newNonceAndServerNonce;
@@ -2267,6 +2274,7 @@ quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
 
 void CTelegramConnection::setStatus(CTelegramConnection::ConnectionStatus status)
 {
+    qDebug() << Q_FUNC_INFO << status;
     if (m_status == status) {
         return;
     }

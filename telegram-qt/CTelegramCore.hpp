@@ -78,6 +78,7 @@ public Q_SLOTS:
     void setChatTyping(quint32 chatId, bool typingStatus);
 
     void setMessageRead(const QString &phone, quint32 messageId);
+    void setChatMessageRead(const quint32 &chatId, quint32 messageId);
 
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
@@ -86,6 +87,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void connected(); // Telegram protocol connection established.
+    void connectionStatusChanged(int newStatus);
     void authenticated(); // Signed in.
     void initializated(); // Contact list and updates received.
     void phoneCodeRequired();
@@ -95,7 +97,7 @@ Q_SIGNALS:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
 
     void messageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp); // Message id is incremental number
-    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message);
+    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp);
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool typingStatus);
