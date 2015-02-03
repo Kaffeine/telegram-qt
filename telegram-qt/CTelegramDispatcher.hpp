@@ -106,6 +106,7 @@ public:
     void setChatTyping(quint32 publicChatId, bool typingStatus);
 
     void setMessageRead(const QString &phone, quint32 messageId);
+    void setChatMessageRead(const quint32 &publicChatId, quint32 messageId);
 
     void setOnlineStatus(bool onlineStatus);
 

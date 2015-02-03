@@ -78,6 +78,7 @@ public Q_SLOTS:
     void setChatTyping(quint32 chatId, bool typingStatus);
 
     void setMessageRead(const QString &phone, quint32 messageId);
+    void setChatMessageRead(const quint32 &chatId, quint32 messageId);
 
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
