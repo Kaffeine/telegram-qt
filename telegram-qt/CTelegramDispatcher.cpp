@@ -674,6 +674,18 @@ void CTelegramDispatcher::setMessageRead(const QString &contact, quint32 message
     }
 }
 
+void CTelegramDispatcher::setChatMessageRead(const quint32 &publicChatId, quint32 messageId)
+{
+    if (!activeConnection()) {
+        return;
+    }
+    const TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
+
+    if (peer.tlType != TLValue::InputPeerEmpty) {
+        activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0, /* readContents */ false);
+    }
+}
+
 void CTelegramDispatcher::setOnlineStatus(bool onlineStatus)
 {
     if (!activeConnection()) {

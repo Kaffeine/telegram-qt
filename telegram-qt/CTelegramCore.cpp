@@ -262,6 +262,11 @@ void CTelegramCore::setMessageRead(const QString &contact, quint32 messageId)
     m_dispatcher->setMessageRead(contact, messageId);
 }
 
+void CTelegramCore::setChatMessageRead(const quint32 &chatId, quint32 messageId)
+{
+    m_dispatcher->setChatMessageRead(chatId, messageId);
+}
+
 void CTelegramCore::setOnlineStatus(bool onlineStatus)
 {
     m_dispatcher->setOnlineStatus(onlineStatus);

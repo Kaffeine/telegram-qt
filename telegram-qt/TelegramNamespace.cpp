@@ -14,11 +14,17 @@
 #include "TelegramNamespace.hpp"
 
 #include <QMetaType>
+#include <QDebug>
 
 void TelegramNamespace::registerTypes()
 {
     static bool registered = false;
     if (!registered) {
+
+#ifdef DEVELOPER_BUILD
+        qDebug() << "TelegramQt Developer build";
+#endif
+
         qRegisterMetaType<TelegramNamespace::ConnectionState>("TelegramNamespace::ConnectionStatus");
         qRegisterMetaType<TelegramNamespace::ContactStatus>("TelegramNamespace::ContactStatus");
         qRegisterMetaType<TelegramNamespace::MessageDeliveryStatus>("TelegramNamespace::MessageDeliveryStatus");
