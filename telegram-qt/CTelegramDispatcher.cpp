@@ -155,6 +155,13 @@ void CTelegramDispatcher::getDialogs(quint32 offset, quint32 maxId, quint32 limi
     activeConnection()->messagesGetDialogs(offset, maxId, limit);
 }
 
+void CTelegramDispatcher::getHistory(const QString &phoneNumber, quint32 offset, quint32 maxId, quint32 limit)
+{
+    TLInputPeer peer = phoneNumberToInputPeer(phoneNumber);
+
+    activeConnection()->messagesGetHistory(peer, offset, maxId, limit);
+}
+
 QByteArray CTelegramDispatcher::connectionSecretInfo() const
 {
     if (!activeConnection()) {
@@ -1740,6 +1747,9 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
     connect(connection, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
     connect(connection, SIGNAL(phoneNumberInvalid()), SIGNAL(phoneNumberInvalid()));
     connect(connection, SIGNAL(authorizationErrorReceived()), SIGNAL(authorizationErrorReceived()));
+
+    connect(connection, SIGNAL(messagesHistoryReceived(QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SIGNAL(messagesHistoryReceived(QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
+    connect(connection, SIGNAL(messagesHistorySliceReceived(quint32, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)), SIGNAL(messagesHistoryReceived(quint32, QVector<TLMessage>, QVector<TLChat>, QVector<TLUser>)));
 
     connect(connection, SIGNAL(fileReceived(TLUploadFile,quint32)), SLOT(whenFileReceived(TLUploadFile,quint32)));
 

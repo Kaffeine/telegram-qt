@@ -205,6 +205,9 @@ signals:
     void messagesDialogsReceived(const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
     void messagesDialogsSliceReceived(quint32 count, const QVector<TLDialog> &dialogs, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
+    void messagesHistoryReceived(const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void messagesHistorySliceReceived(quint32 count, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+
     void fullUserReceived(const TLUserFull &userFull);
     void statedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
 
@@ -254,6 +257,7 @@ protected:
     TLValue processMessagesGetChats(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetFullChat(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetDialogs(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesGetHistory(CTelegramStream &stream, quint64 id);
     TLValue processAccountUpdateStatus(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);

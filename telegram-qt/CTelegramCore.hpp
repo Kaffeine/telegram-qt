@@ -68,6 +68,7 @@ public Q_SLOTS:
     void deleteContacts(const QStringList &phoneNumbers);
 
     void getDialogs(quint32 offset, quint32 maxId, quint32 limit);
+    void getHistory(const QString &peer, quint32 offset, quint32 maxId, quint32 limit);
 
     void requestContactAvatar(const QString &contact);
 
@@ -101,6 +102,9 @@ Q_SIGNALS:
     void contactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool typingStatus);
 
     void dialogsChanged();
+
+    void messagesHistoryReceived(const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void messagesHistorySliceReceived(quint32 count, const QVector<TLMessage> &messages, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
     void sentMessageStatusChanged(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
 

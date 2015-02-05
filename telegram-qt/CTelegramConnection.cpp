@@ -1456,6 +1456,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case MessagesGetDialogs:
             processingResult = processMessagesGetDialogs(stream, id);
             break;
+        case MessagesGetHistory:
+            processingResult = processMessagesGetHistory(stream, id);
+            break;
         case AccountUpdateStatus:
             processingResult = processAccountUpdateStatus(stream, id);
             break;
@@ -1985,6 +1988,21 @@ TLValue CTelegramConnection::processMessagesGetDialogs(CTelegramStream &stream, 
         emit messagesDialogsReceived(result.dialogs, result.messages, result.chats, result.users);
     } else if (result.tlType == MessagesDialogsSlice) {
         emit messagesDialogsSliceReceived(result.count, result.dialogs, result.messages, result.chats, result.users);
+    }
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processMessagesGetHistory(CTelegramStream &stream, quint64 id)
+{
+    TLMessagesMessages result;
+
+    stream >> result;
+
+    if(result.tlType == MessagesMessages) {
+        emit messagesHistoryReceived(result.messages, result.chats, result.users);
+    } else if(result.tlType == MessagesMessagesSlice) {
+        emit messagesHistorySliceReceived(result.count, result.messages, result.chats, result.users);
     }
 
     return result.tlType;
