@@ -74,6 +74,9 @@ public:
     bool isConnected() const;
     bool isAuthenticated() const;
     QString selfPhone() const { return m_selfPhone; }
+    QString selfFirstName() const { return m_selfFirstName; }
+    QString selfLastName() const { return m_selfLastName; }
+    QString selfUsername() const { return m_selfUsername; }
 
     QStringList contactList() const { return m_contactList; }
     TLMessagesDialogs dialogs() const { return m_dialogs; }
@@ -123,6 +126,7 @@ public:
 
 signals:
     void connected();
+    void selfUserKnown();
     void phoneCodeRequired();
     void phoneCodeIsInvalid();
     void phoneNumberInvalid();
@@ -264,6 +268,9 @@ private:
 
     quint32 m_selfUserId;
     QString m_selfPhone;
+    QString m_selfFirstName;
+    QString m_selfLastName;
+    QString m_selfUsername;
 
     QStringList m_contactList;
 

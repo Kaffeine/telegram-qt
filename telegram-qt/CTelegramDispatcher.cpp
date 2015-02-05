@@ -690,7 +690,11 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
         if (user.tlType == UserSelf) {
             m_selfUserId = user.id;
             m_selfPhone = user.phone;
+            m_selfFirstName = user.firstName;
+            m_selfLastName = user.lastName;
+            m_selfUsername = user.username;
 
+            emit selfUserKnown();
             continueInitialization(InitKnowSelf);
         }
     }
