@@ -28,6 +28,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(connected()), SIGNAL(connected()));
     connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
     connect(m_dispatcher, SIGNAL(initializated()), SIGNAL(initializated()));
+    connect(m_dispatcher, SIGNAL(selfUserKnown()), SIGNAL(selfUserKnown()));
     connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(m_dispatcher, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(m_dispatcher, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
@@ -198,6 +199,21 @@ bool CTelegramCore::getChatParticipants(QStringList *participants, quint32 chatI
 QString CTelegramCore::selfPhone() const
 {
     return m_dispatcher->selfPhone();
+}
+
+QString CTelegramCore::selfFirstName() const
+{
+    return m_dispatcher->selfFirstName();
+}
+
+QString CTelegramCore::selfLastName() const
+{
+    return m_dispatcher->selfLastName();
+}
+
+QString CTelegramCore::selfUsername() const
+{
+    return m_dispatcher->selfUsername();
 }
 
 quint64 CTelegramCore::sendMessage(const QString &phone, const QString &message)

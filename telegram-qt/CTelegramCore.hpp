@@ -39,6 +39,9 @@ public:
 
     Q_INVOKABLE bool isAuthenticated();
     Q_INVOKABLE QString selfPhone() const;
+    Q_INVOKABLE QString selfFirstName() const;
+    Q_INVOKABLE QString selfLastName() const;
+    Q_INVOKABLE QString selfUsername() const;
     Q_INVOKABLE QStringList contactList() const;
     Q_INVOKABLE TLMessagesDialogs dialogs() const;
     Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
@@ -86,6 +89,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void connected(); // Telegram protocol connection established.
+    void selfUserKnown();
     void authenticated(); // Signed in.
     void initializated(); // Contact list and updates received.
     void phoneCodeRequired();
