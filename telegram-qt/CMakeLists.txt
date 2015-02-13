@@ -45,6 +45,8 @@ add_library(telegram-qt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES})
 
 set_target_properties(telegram-qt${QT_VERSION_MAJOR} PROPERTIES AUTOMOC TRUE)
 
+target_include_directories(telegram-qt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
 if(USE_QT4)
     target_link_libraries(telegram-qt${QT_VERSION_MAJOR}
         ${QT_QTCORE_LIBRARY}
