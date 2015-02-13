@@ -58,7 +58,10 @@ static QStringList maskPhoneNumberList(const QStringList &list)
 
     foreach (const QString &number, list) {
         if (number.length() >= 5 + listDigits) {
-            QString masked = QString(QLatin1String("%1xx%2%3")).arg(number.mid(0, 2)).arg(list.indexOf(number), listDigits, 10, QLatin1Char('0')).arg(QString(number.length() - 4 - listDigits, QLatin1Char('x')));
+            QString masked = QString(QLatin1String("%1xx%2%3"))
+                    .arg(number.mid(0, 2))
+                    .arg(list.indexOf(number), listDigits, 10, QLatin1Char('0'))
+                    .arg(QString(number.length() - 4 - listDigits, QLatin1Char('x')));
             result.append(masked);
         } else { // fallback
             result.append(maskPhoneNumber(number) + QLatin1String(" (fallback)"));
@@ -947,13 +950,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
                 continue;
             }
 
-            if (message.toId.tlType == PeerUser) {
-                quint32 contactUserId = message.flags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
-                emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, message.flags, message.date);
-            } else {
-                emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId), userIdToIdentifier(message.fromId), message.message, message.id, message.flags, message.date);
-            }
-
+            processMessageReceived(message);
         }
         if (updatesDifference.tlType == UpdatesDifference) {
             m_updatesState = updatesDifference.state;
@@ -1005,21 +1002,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     switch (update.tlType) {
     case UpdateNewMessage:
         qDebug() << "UpdateNewMessage";
-        qDebug() << "from:" << update.message.fromId;
-        qDebug() << "fwdFromId:" << update.message.fwdFromId;
-        qDebug() << "to type:" << update.message.toId.tlType;
-        qDebug() << "to userId:" << update.message.toId.userId;
-        qDebug() << "to chatId:" << update.message.toId.chatId;
-        qDebug() << "message:" << update.message.message;
-
-        if (!filterReceivedMessage(update.message.flags)) {
-            if (update.message.toId.tlType == PeerUser) {
-                emit messageReceived(userIdToIdentifier(update.message.toId.userId), update.message.message, update.message.id, update.message.flags, update.message.date);
-            } else {
-                emit chatMessageReceived(telegramChatIdToPublicId(update.message.toId.chatId), userIdToIdentifier(update.message.fromId), update.message.message, update.message.id, update.message.flags, update.message.date);
-            }
-        }
-
+        processMessageReceived(update.message);
         ensureUpdateState(update.pts);
         break;
 //    case UpdateMessageID:
@@ -1054,7 +1037,8 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         break;
     case UpdateChatUserTyping:
         if (m_users.contains(update.userId)) {
-            emit contactChatTypingStatusChanged(telegramChatIdToPublicId(update.chatId), userIdToIdentifier(update.userId), update.action.tlType == SendMessageTypingAction);
+            emit contactChatTypingStatusChanged(telegramChatIdToPublicId(update.chatId), userIdToIdentifier(update.userId),
+                                                update.action.tlType == SendMessageTypingAction);
             const QPair<quint32,quint32> key(telegramChatIdToPublicId(update.chatId), update.userId);
 #if QT_VERSION >= 0x050000
             m_userChatTypingMap.insert(key, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
@@ -1158,6 +1142,17 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     default:
         qDebug() << Q_FUNC_INFO << "Update type" << QString::number(update.tlType, 16) << "is not implemented yet.";
         break;
+    }
+}
+
+void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
+{
+    if (message.toId.tlType == PeerUser) {
+        quint32 contactUserId = message.flags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
+        emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, message.flags, message.date);
+    } else {
+        emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId), userIdToIdentifier(message.fromId),
+                                 message.message, message.id, message.flags, message.date);
     }
 }
 
@@ -1400,16 +1395,26 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
 
     if (connection == activeConnection()) {
         if (newStatus == CTelegramConnection::ConnectionStatusSigned) {
-            connect(connection, SIGNAL(usersReceived(QVector<TLUser>)), SLOT(whenUsersReceived(QVector<TLUser>)));
-            connect(connection, SIGNAL(contactListReceived(QStringList)), SLOT(whenContactListReceived(QStringList)));
-            connect(connection, SIGNAL(contactListChanged(QStringList,QStringList)), SLOT(whenContactListChanged(QStringList,QStringList)));
-            connect(connection, SIGNAL(updatesReceived(TLUpdates)), SLOT(whenUpdatesReceived(TLUpdates)));
-            connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)), SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
-            connect(connection, SIGNAL(statedMessageReceived(TLMessagesStatedMessage,quint64)), SLOT(whenStatedMessageReceived(TLMessagesStatedMessage,quint64)));
-            connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)), SLOT(whenUpdatesStateReceived(TLUpdatesState)));
-            connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)), SLOT(whenUpdatesDifferenceReceived(TLUpdatesDifference)));
-            connect(connection, SIGNAL(authExportedAuthorizationReceived(quint32,quint32,QByteArray)), SLOT(whenAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
-            connect(connection, SIGNAL(messagesChatsReceived(QVector<TLChat>,QVector<TLUser>)), SLOT(whenMessagesChatsReceived(QVector<TLChat>)));
+            connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
+                    SLOT(whenUsersReceived(QVector<TLUser>)));
+            connect(connection, SIGNAL(contactListReceived(QStringList)),
+                    SLOT(whenContactListReceived(QStringList)));
+            connect(connection, SIGNAL(contactListChanged(QStringList,QStringList)),
+                    SLOT(whenContactListChanged(QStringList,QStringList)));
+            connect(connection, SIGNAL(updatesReceived(TLUpdates)),
+                    SLOT(whenUpdatesReceived(TLUpdates)));
+            connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)),
+                    SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
+            connect(connection, SIGNAL(statedMessageReceived(TLMessagesStatedMessage,quint64)),
+                    SLOT(whenStatedMessageReceived(TLMessagesStatedMessage,quint64)));
+            connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),
+                    SLOT(whenUpdatesStateReceived(TLUpdatesState)));
+            connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)),
+                    SLOT(whenUpdatesDifferenceReceived(TLUpdatesDifference)));
+            connect(connection, SIGNAL(authExportedAuthorizationReceived(quint32,quint32,QByteArray)),
+                    SLOT(whenAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
+            connect(connection, SIGNAL(messagesChatsReceived(QVector<TLChat>,QVector<TLUser>)),
+                    SLOT(whenMessagesChatsReceived(QVector<TLChat>)));
 
             continueInitialization(InitIsSignIn);
         }
@@ -1684,7 +1689,9 @@ bool CTelegramDispatcher::havePublicChatId(quint32 publicChatId) const
 void CTelegramDispatcher::ensureUpdateState(quint32 pts, quint32 seq, quint32 date)
 {
     if (m_updatesStateIsLocked) {
-        return; // Prevent m_updateState from updating before UpdatesGetState answer receiving to avoid m_updateState <-> m_actualState messing (which may lead to ignore offline-messages)
+        /* Prevent m_updateState from updating before UpdatesGetState answer receiving to avoid
+         * m_updateState <-> m_actualState messing (which may lead to ignore offline-messages) */
+        return;
     }
 
     if (pts > m_updatesState.pts) {

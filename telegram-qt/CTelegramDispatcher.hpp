@@ -180,6 +180,7 @@ protected:
     void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
     void processUpdate(const TLUpdate &update);
 
+    void processMessageReceived(const TLMessage &message);
     void processShortMessageReceived(quint32 messageId, quint32 fromId, const QString &message, quint32 date);
     void processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message, quint32 date);
 
@@ -195,7 +196,6 @@ protected:
 
     bool filterReceivedMessage(quint32 messageFlags) const;
 
-private:
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
