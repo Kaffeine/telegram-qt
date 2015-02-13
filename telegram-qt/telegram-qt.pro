@@ -35,4 +35,5 @@ HEADERS = CTelegramCore.hpp \
 
 HEADERS += TLValues.h
 
-LIBS += -lssl
+LIBS += -lssl -lcrypto
+LIBS += -lz

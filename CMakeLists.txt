@@ -18,6 +18,9 @@ else()
     find_package(Qt5 REQUIRED COMPONENTS Network)
 endif()
 
+find_package(OpenSSL REQUIRED)
+find_package(ZLIB REQUIRED)
+
 include(GNUInstallDirs)
                     
 # Add an option for building tests

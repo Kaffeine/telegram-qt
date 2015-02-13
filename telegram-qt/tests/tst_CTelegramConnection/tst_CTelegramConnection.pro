@@ -17,3 +17,5 @@ HEADERS += \
     ../../CTelegramStream.hpp \
     ../../CRawStream.hpp \
     CTestConnection.hpp
+
+LIBS += -lz

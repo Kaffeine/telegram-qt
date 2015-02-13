@@ -31,24 +31,49 @@ set(telegram_qt_public_HEADERS
     CTelegramCore.hpp
 )
 
-include_directories(${CMAKE_SOURCE_DIR}
-                    ${CMAKE_BINARY_DIR}
-                    ${QT_INCLUDES} ${QT5_INCLUDES})
-                    
+include_directories(
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_BINARY_DIR}
+    ${OPENSSL_INCLUDE_DIR}
+    ${ZLIB_INCLUDE_DIR}
+)
+
 add_definitions(-DTELEGRAMQT_LIBRARY)
 
+#add_library(telegram-qt${QT_VERSION_MAJOR} SHARED ${telegram_qt_SOURCES})
 add_library(telegram-qt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES})
-if(NOT QT_USEQT4)
-    target_link_libraries(telegram-qt${QT_VERSION_MAJOR} PUBLIC Qt5::Network)
-endif()
 
 set_target_properties(telegram-qt${QT_VERSION_MAJOR} PROPERTIES AUTOMOC TRUE)
+
+if(USE_QT4)
+    target_link_libraries(telegram-qt${QT_VERSION_MAJOR}
+        ${QT_QTCORE_LIBRARY}
+        ${QT_QTNETWORK_LIBRARY}
+    )
+    target_include_directories(telegram-qt${QT_VERSION_MAJOR} PRIVATE
+        ${QT_INCLUDES}
+    )
+else()
+    target_link_libraries(telegram-qt${QT_VERSION_MAJOR}
+        Qt5::Core
+        Qt5::Network
+    )
+    target_include_directories(telegram-qt${QT_VERSION_MAJOR} PRIVATE
+        ${QT5_INCLUDES}
+    )
+endif()
+
+target_link_libraries(telegram-qt${QT_VERSION_MAJOR}
+    ${OPENSSL_LIBRARIES}
+    ${ZLIB_LIBRARIES}
+)
 
 set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/telegram-qt${QT_VERSION_MAJOR})
 set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
 
 install(
     TARGETS telegram-qt${QT_VERSION_MAJOR}
+#    LIBRARY DESTINATION ${TELEGRAM_QT_LIB_DIR}
     ARCHIVE DESTINATION ${TELEGRAM_QT_LIB_DIR}
     COMPONENT Library
 )

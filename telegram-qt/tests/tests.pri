@@ -4,4 +4,4 @@ TEMPLATE = app
 
 INCLUDEPATH += $$PWD/..
 
-LIBS += -lssl
+LIBS += -lssl -lcrypto
