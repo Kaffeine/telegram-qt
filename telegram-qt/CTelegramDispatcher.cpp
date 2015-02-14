@@ -293,7 +293,9 @@ void CTelegramDispatcher::closeConnection()
     m_users.clear();
     m_messagesMap.clear();
     m_contactList.clear();
-    m_requestedFiles.clear();
+    m_requestedFileLocations.clear();
+    m_requestedFileDescriptors.clear();
+    m_fileRequestCounter = 0;
     m_userTypingMap.clear();
     m_userChatTypingMap.clear();
     m_localTypingMap.clear();
@@ -358,20 +360,11 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
         return;
     }
 
-    TLFileLocation avatarLocation = user->photo.photoSmall;
-
-    if (avatarLocation.tlType == FileLocationUnavailable) {
+    if (requestFile(user->photo.photoSmall, FileRequestDescriptor::AvatarRequest(user->id))) {
+        qDebug() << Q_FUNC_INFO << "Requested avatar for user " << maskPhoneNumber(phoneNumber);
+    } else {
         qDebug() << Q_FUNC_INFO << "Contact" << maskPhoneNumber(phoneNumber) << "avatar is not available";
-        return;
     }
-
-    TLInputFileLocation inputFile;
-    inputFile.volumeId = avatarLocation.volumeId;
-    inputFile.localId  = avatarLocation.localId;
-    inputFile.secret   = avatarLocation.secret;
-
-    requestFile(inputFile, avatarLocation.dcId, user->id);
-    qDebug() << Q_FUNC_INFO << "Requested avatar for user " << maskPhoneNumber(phoneNumber);
 }
 
 quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QString &message)
@@ -984,17 +977,24 @@ void CTelegramDispatcher::whenMessagesChatsReceived(const QVector<TLChat> &chats
     continueInitialization(InitKnowChats);
 }
 
-// fileId is program-specific handler, not related to Telegram.
-void CTelegramDispatcher::requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId)
+bool CTelegramDispatcher::requestFile(const TLFileLocation &location, const FileRequestDescriptor &requestId)
 {
-    CTelegramConnection *connection = m_connections.value(dc);
+    if (location.tlType == FileLocationUnavailable) {
+        return false;
+    }
+
+    m_requestedFileDescriptors.insert(++m_fileRequestCounter, requestId);
+    m_requestedFileLocations.insert(m_fileRequestCounter, location);
+
+    CTelegramConnection *connection = m_connections.value(location.dcId);
 
     if (connection && (connection->authState() == CTelegramConnection::AuthStateSignedIn)) {
-        connection->getFile(location, fileId);
+        connection->getFile(location, m_fileRequestCounter);
     } else {
-        m_requestedFiles.insertMulti(dc, SRequestedFile(location, fileId));
-        ensureSignedConnection(dc);
+        ensureSignedConnection(location.dcId);
     }
+
+    return true;
 }
 
 void CTelegramDispatcher::processUpdate(const TLUpdate &update)
@@ -1424,11 +1424,12 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
             ensureSignedConnection(dc);
             break;
         case CTelegramConnection::ConnectionStatusSigned:
-            if (m_requestedFiles.contains(dc)) {
-                foreach (const SRequestedFile &requestedFile, m_requestedFiles.values(dc)) {
-                    connection->getFile(requestedFile.location, requestedFile.fileId);
+            foreach (quint32 fileId, m_requestedFileLocations.keys()) {
+                if (m_requestedFileLocations.value(fileId).dcId != dc) {
+                    continue;
                 }
-                m_requestedFiles.remove(dc);
+
+                connection->getFile(m_requestedFileLocations.value(fileId), fileId);
             }
         default:
             break;
@@ -1508,18 +1509,29 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
 
 void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fileId)
 {
-    // Proto version.
+    const QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
 
-    QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
-
-    TLUser *user = m_users.value(fileId);
-
-    if (!user) {
+    if (!m_requestedFileDescriptors.contains(fileId)) {
         qDebug() << Q_FUNC_INFO << "Unexpected fileId" << fileId;
         return;
     }
 
-    emit avatarReceived(user->phone, file.bytes, mimeType, userAvatarToken(user));
+    const FileRequestDescriptor &descriptor = m_requestedFileDescriptors.take(fileId);
+
+    switch (descriptor.type) {
+    case FileRequestAvatar:
+        if (m_users.contains(descriptor.userId)) {
+            const TLUser *user = m_users.value(descriptor.userId);
+            emit avatarReceived(user->phone, file.bytes, mimeType, userAvatarToken(user));
+        } else {
+            qDebug() << Q_FUNC_INFO << "Unknown userId" << descriptor.userId;
+        }
+        break;
+    default:
+        break;
+    }
+
+    m_requestedFileLocations.remove(fileId);
 }
 
 void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)

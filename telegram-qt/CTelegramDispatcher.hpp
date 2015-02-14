@@ -30,25 +30,6 @@ class QTimer;
 class CAppInformation;
 class CTelegramConnection;
 
-struct SRequestedFile
-{
-    SRequestedFile(const SRequestedFile &rf) :
-        location(rf.location),
-        fileId(rf.fileId)
-    {
-    }
-
-    SRequestedFile(const TLInputFileLocation &l, quint32 id) :
-        location(l),
-        fileId(id)
-    {
-    }
-
-    TLInputFileLocation location;
-    quint32 fileId;
-};
-
-Q_DECLARE_TYPEINFO(SRequestedFile, Q_MOVABLE_TYPE);
 
 class CTelegramDispatcher : public QObject
 {
@@ -142,6 +123,25 @@ signals:
     void chatChanged(quint32 publichChatId);
     void initializated();
 
+protected:
+    enum FileRequestType {
+        FileRequestAvatar
+    };
+
+    struct FileRequestDescriptor
+    {
+        static FileRequestDescriptor AvatarRequest(quint32 userId)
+        {
+            FileRequestDescriptor result;
+            result.type = FileRequestAvatar;
+            result.userId = userId;
+            return result;
+        }
+
+        FileRequestType type;
+        quint32 userId;
+    };
+
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
     void whenConnectionAuthChanged(int newState, quint32 dc);
@@ -177,7 +177,7 @@ protected slots:
     void whenMessagesChatsReceived(const QVector<TLChat> &chats);
 
 protected:
-    void requestFile(const TLInputFileLocation &location, quint32 dc, quint32 fileId);
+    bool requestFile(const TLFileLocation &location, const FileRequestDescriptor &requestId);
     void processUpdate(const TLUpdate &update);
 
     void processMessageReceived(const TLMessage &message);
@@ -260,7 +260,10 @@ protected:
 
     QStringList m_contactList;
 
-    QMultiMap<quint32, SRequestedFile> m_requestedFiles; // dc, <file location, fileId>
+    // fileId is program-specific handler, not related to Telegram.
+    QMap<quint32, TLFileLocation> m_requestedFileLocations; // fileId, file location
+    QMap<quint32, FileRequestDescriptor> m_requestedFileDescriptors; // fileId, file request descriptor
+    quint32 m_fileRequestCounter;
 
     QTimer *m_typingUpdateTimer;
     QMap<quint32, int> m_userTypingMap; // user id, typing time (ms)
