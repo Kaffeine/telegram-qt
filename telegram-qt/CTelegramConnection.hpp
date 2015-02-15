@@ -143,7 +143,7 @@ public:
     quint64 signIn(const QString &phoneNumber, const QString &authCode);
     quint64 signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
-    void getFile(const TLFileLocation &location, quint32 fileId);
+    void getFile(const TLInputFileLocation &inputLocation, quint32 fileId);
 
     void accountUpdateStatus(bool offline);
 

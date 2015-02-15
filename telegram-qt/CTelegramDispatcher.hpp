@@ -30,6 +30,35 @@ class QTimer;
 class CAppInformation;
 class CTelegramConnection;
 
+class FileRequestDescriptor
+{
+public:
+    enum Type {
+        Invalid,
+        Avatar
+    };
+
+    FileRequestDescriptor();
+
+    static FileRequestDescriptor avatarRequest(const TLUser *user);
+
+    inline Type type() const { return m_type; }
+
+    inline quint32 dcId() const { return m_dcId; }
+    inline bool isValid() const { return m_type != Invalid; }
+
+    inline TLInputFileLocation inputLocation() const { return m_inputLocation; }
+
+    inline quint32 userId() const { return m_userId; }
+
+protected:
+    Type m_type;
+    quint32 m_userId;
+
+    TLInputFileLocation m_inputLocation;
+    quint32 m_dcId;
+
+};
 
 class CTelegramDispatcher : public QObject
 {
@@ -123,25 +152,6 @@ signals:
     void chatChanged(quint32 publichChatId);
     void initializated();
 
-protected:
-    enum FileRequestType {
-        FileRequestAvatar
-    };
-
-    struct FileRequestDescriptor
-    {
-        static FileRequestDescriptor AvatarRequest(quint32 userId)
-        {
-            FileRequestDescriptor result;
-            result.type = FileRequestAvatar;
-            result.userId = userId;
-            return result;
-        }
-
-        FileRequestType type;
-        quint32 userId;
-    };
-
 protected slots:
     void whenSelfPhoneReceived(const QString &phone);
     void whenConnectionAuthChanged(int newState, quint32 dc);
@@ -177,7 +187,7 @@ protected slots:
     void whenMessagesChatsReceived(const QVector<TLChat> &chats);
 
 protected:
-    bool requestFile(const TLFileLocation &location, const FileRequestDescriptor &requestId);
+    bool requestFile(const FileRequestDescriptor &requestId);
     void processUpdate(const TLUpdate &update);
 
     void processMessageReceived(const TLMessage &message);

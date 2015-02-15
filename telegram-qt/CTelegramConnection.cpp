@@ -171,7 +171,7 @@ quint64 CTelegramConnection::signUp(const QString &phoneNumber, const QString &a
     return authSignUp(phoneNumber, m_authCodeHash, authCode, firstName, lastName);
 }
 
-void CTelegramConnection::getFile(const TLFileLocation &location, quint32 fileId)
+void CTelegramConnection::getFile(const TLInputFileLocation &inputLocation, quint32 fileId)
 {
     if (m_requestedFilesIds.contains(fileId)) {
         // Prevent from (really possible) repeated request.
@@ -180,11 +180,6 @@ void CTelegramConnection::getFile(const TLFileLocation &location, quint32 fileId
 
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
-
-    TLInputFileLocation inputLocation;
-    inputLocation.volumeId = location.volumeId;
-    inputLocation.localId  = location.localId;
-    inputLocation.secret   = location.secret;
 
     outputStream << UploadGetFile;
     outputStream << inputLocation;

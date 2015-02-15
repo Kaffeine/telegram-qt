@@ -80,6 +80,33 @@ const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPe
 const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typing time deviation in Qt4 by this value.
 #endif
 
+FileRequestDescriptor FileRequestDescriptor::avatarRequest(const TLUser *user)
+{
+    if (user->photo.photoSmall.tlType != FileLocation) {
+        return FileRequestDescriptor();
+    }
+
+    FileRequestDescriptor result;
+
+    result.m_type = Avatar;
+    result.m_userId = user->id;
+
+    result.m_dcId = user->photo.photoSmall.dcId;
+
+    result.m_inputLocation.tlType = InputFileLocation;
+    result.m_inputLocation.volumeId = user->photo.photoSmall.volumeId;
+    result.m_inputLocation.localId = user->photo.photoSmall.localId;
+    result.m_inputLocation.secret = user->photo.photoSmall.secret;
+
+    return result;
+}
+
+FileRequestDescriptor::FileRequestDescriptor() :
+    m_type(Invalid)
+{
+
+}
+
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_appInformation(0),
@@ -293,7 +320,6 @@ void CTelegramDispatcher::closeConnection()
     m_users.clear();
     m_messagesMap.clear();
     m_contactList.clear();
-    m_requestedFileLocations.clear();
     m_requestedFileDescriptors.clear();
     m_fileRequestCounter = 0;
     m_userTypingMap.clear();
@@ -360,7 +386,7 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
         return;
     }
 
-    if (requestFile(user->photo.photoSmall, FileRequestDescriptor::AvatarRequest(user->id))) {
+    if (requestFile(FileRequestDescriptor::avatarRequest(user))) {
         qDebug() << Q_FUNC_INFO << "Requested avatar for user " << maskPhoneNumber(phoneNumber);
     } else {
         qDebug() << Q_FUNC_INFO << "Contact" << maskPhoneNumber(phoneNumber) << "avatar is not available";
@@ -977,21 +1003,20 @@ void CTelegramDispatcher::whenMessagesChatsReceived(const QVector<TLChat> &chats
     continueInitialization(InitKnowChats);
 }
 
-bool CTelegramDispatcher::requestFile(const TLFileLocation &location, const FileRequestDescriptor &requestId)
+bool CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
 {
-    if (location.tlType == FileLocationUnavailable) {
+    if (!requestId.isValid()) {
         return false;
     }
 
     m_requestedFileDescriptors.insert(++m_fileRequestCounter, requestId);
-    m_requestedFileLocations.insert(m_fileRequestCounter, location);
 
-    CTelegramConnection *connection = m_connections.value(location.dcId);
+    CTelegramConnection *connection = m_connections.value(requestId.dcId());
 
     if (connection && (connection->authState() == CTelegramConnection::AuthStateSignedIn)) {
-        connection->getFile(location, m_fileRequestCounter);
+        connection->getFile(requestId.inputLocation(), m_fileRequestCounter);
     } else {
-        ensureSignedConnection(location.dcId);
+        ensureSignedConnection(requestId.dcId());
     }
 
     return true;
@@ -1424,12 +1449,12 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
             ensureSignedConnection(dc);
             break;
         case CTelegramConnection::ConnectionStatusSigned:
-            foreach (quint32 fileId, m_requestedFileLocations.keys()) {
-                if (m_requestedFileLocations.value(fileId).dcId != dc) {
+            foreach (quint32 fileId, m_requestedFileDescriptors.keys()) {
+                if (m_requestedFileDescriptors.value(fileId).dcId() != dc) {
                     continue;
                 }
 
-                connection->getFile(m_requestedFileLocations.value(fileId), fileId);
+                connection->getFile(m_requestedFileDescriptors.value(fileId).inputLocation(), fileId);
             }
         default:
             break;
@@ -1518,20 +1543,18 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
 
     const FileRequestDescriptor &descriptor = m_requestedFileDescriptors.take(fileId);
 
-    switch (descriptor.type) {
-    case FileRequestAvatar:
-        if (m_users.contains(descriptor.userId)) {
-            const TLUser *user = m_users.value(descriptor.userId);
+    switch (descriptor.type()) {
+    case FileRequestDescriptor::Avatar:
+        if (m_users.contains(descriptor.userId())) {
+            const TLUser *user = m_users.value(descriptor.userId());
             emit avatarReceived(user->phone, file.bytes, mimeType, userAvatarToken(user));
         } else {
-            qDebug() << Q_FUNC_INFO << "Unknown userId" << descriptor.userId;
+            qDebug() << Q_FUNC_INFO << "Unknown userId" << descriptor.userId();
         }
         break;
     default:
         break;
     }
-
-    m_requestedFileLocations.remove(fileId);
 }
 
 void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
