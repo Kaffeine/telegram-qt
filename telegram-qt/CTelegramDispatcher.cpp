@@ -1794,10 +1794,6 @@ quint32 CTelegramDispatcher::telegramMessageFlagsToPublicMessageFlags(quint32 tg
 {
     quint32 result = TelegramNamespace::MessageFlagNone;
 
-    if (tgFlags == TelegramMessageFlagNone) {
-        return result;
-    }
-
     if (tgFlags & TelegramMessageFlagOut) {
         result |= TelegramNamespace::MessageFlagOut;
     }
