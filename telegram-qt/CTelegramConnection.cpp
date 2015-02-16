@@ -90,6 +90,14 @@ void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
     m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
 }
 
+void CTelegramConnection::setDeltaTime(const qint32 newDt)
+{
+    m_deltaTime = newDt;
+
+    // Message id depends on time, so if we fix time, we need to reset message id.
+    m_lastMessageId = 0;
+}
+
 quint64 CTelegramConnection::formatTimeStamp(qint64 timeInMs)
 {
     static const quint64 maxMsecValue = (quint64(1) << 32) - 1;
@@ -1162,7 +1170,7 @@ bool CTelegramConnection::answerDh(const QByteArray &payload)
 
     encryptedInputStream >> serverTime;
 
-    m_deltaTime = qint64(serverTime) - (QDateTime::currentMSecsSinceEpoch() / 1000);
+    setDeltaTime(qint64(serverTime) - (QDateTime::currentMSecsSinceEpoch() / 1000));
     m_deltaTimeHeuristicState = DeltaTimeIsOk;
 
     m_b.resize(256);
@@ -1612,25 +1620,25 @@ void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &str
         }
 
         if (m_deltaTimeHeuristicState == DeltaTimeCorrectionForward) {
-            m_deltaTime += 1000;
+            setDeltaTime(deltaTime() + 1000);
         } else {
-            m_deltaTime += 100;
+            setDeltaTime(deltaTime() + 100);
         }
 
         sendEncryptedPackage(m_submittedPackages.take(id));
-        qDebug() << "DeltaTime factor increased to" << m_deltaTime;
+        qDebug() << "DeltaTime factor increased to" << deltaTime();
     } else if (errorCode == 17) {
         if (m_deltaTimeHeuristicState == DeltaTimeIsOk) {
             m_deltaTimeHeuristicState = DeltaTimeCorrectionBackward;
         }
 
         if (m_deltaTimeHeuristicState == DeltaTimeCorrectionBackward) {
-            m_deltaTime -= 1000;
+            setDeltaTime(deltaTime() - 1000);
         } else {
-            m_deltaTime -= 100;
+            setDeltaTime(deltaTime() - 100);
         }
 
-        qDebug() << "DeltaTime factor reduced to" << m_deltaTime;
+        qDebug() << "DeltaTime factor reduced to" << deltaTime();
         sendEncryptedPackage(m_submittedPackages.take(id));
     } else if (errorCode == 48) {
         m_serverSalt = m_receivedServerSalt;
@@ -2338,10 +2346,10 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
 
 quint64 CTelegramConnection::newMessageId()
 {
-    quint64 newLastMessageId = formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch() + m_deltaTime * 1000);
+    quint64 newLastMessageId = formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch() + deltaTime() * 1000);
 
-    if (newLastMessageId == m_lastMessageId) {
-        newLastMessageId += 4; // Client's outgoing message id should be divisible by 4 and be greater than previous message id.
+    if (newLastMessageId <= m_lastMessageId) {
+        newLastMessageId = m_lastMessageId + 4; // Client's outgoing message id should be divisible by 4 and be greater than previous message id.
     }
 
     if (!(newLastMessageId & quint64(0xffffff))) {

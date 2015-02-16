@@ -176,7 +176,7 @@ public:
     inline QVector<TLDcOption> dcConfiguration() const { return m_dcConfiguration; }
 
     inline qint32 deltaTime() const { return m_deltaTime; }
-    void setDeltaTime(const qint32 delta) { m_deltaTime = delta; }
+    void setDeltaTime(const qint32 newDt);
 
     void processRedirectedPackage(const QByteArray &data);
 
