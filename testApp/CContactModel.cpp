@@ -13,6 +13,8 @@
 
 #include "CContactModel.hpp"
 
+#include <QDateTime>
+
 CContactsModel::CContactsModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
@@ -75,7 +77,7 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
     case FullName:
         return m_contacts.at(contactIndex).fullName;
     case Status:
-        return statusToStr(m_contacts.at(contactIndex).status);
+        return contactStatusStr(m_contacts.at(contactIndex));
     case TypingStatus:
         return m_contacts.at(contactIndex).typing ? tr("true") : tr("false");
     case Blocked:
@@ -101,7 +103,7 @@ QVariant CContactsModel::data(const QString &phone, int column) const
     case FullName:
         return m_contacts.at(contactIndex).fullName;
     case Status:
-        return statusToStr(m_contacts.at(contactIndex).status);
+        return contactStatusStr(m_contacts.at(contactIndex));
     case TypingStatus:
         return m_contacts.at(contactIndex).typing;
     case Blocked:
@@ -149,9 +151,9 @@ void CContactsModel::setContactList(const QStringList &list)
     endResetModel();
 }
 
-void CContactsModel::setContactStatus(const QString &phone, TelegramNamespace::ContactStatus status)
+void CContactsModel::setContactStatus(const QString &contact, TelegramNamespace::ContactStatus status)
 {
-    int index = indexOfContact(phone);
+    int index = indexOfContact(contact);
 
     if (index < 0) {
         return;
@@ -163,9 +165,23 @@ void CContactsModel::setContactStatus(const QString &phone, TelegramNamespace::C
     emit dataChanged(modelIndex, modelIndex);
 }
 
-void CContactsModel::setTypingStatus(const QString &phone, bool typingStatus)
+void CContactsModel::setContactLastOnline(const QString &contact, quint32 onlineDate)
 {
-    int index = indexOfContact(phone);
+    int index = indexOfContact(contact);
+
+    if (index < 0) {
+        return;
+    }
+
+    m_contacts[index].wasOnline = onlineDate;
+
+    QModelIndex modelIndex = createIndex(index, Status);
+    emit dataChanged(modelIndex, modelIndex);
+}
+
+void CContactsModel::setTypingStatus(const QString &contact, bool typingStatus)
+{
+    int index = indexOfContact(contact);
 
     if (index < 0) {
         return;
@@ -177,9 +193,9 @@ void CContactsModel::setTypingStatus(const QString &phone, bool typingStatus)
     emit dataChanged(modelIndex, modelIndex);
 }
 
-void CContactsModel::setContactAvatar(const QString &phone, const QString &avatarFileName)
+void CContactsModel::setContactAvatar(const QString &contact, const QString &avatarFileName)
 {
-    int index = indexOfContact(phone);
+    int index = indexOfContact(contact);
 
     if (index < 0) {
         return;
@@ -192,9 +208,9 @@ void CContactsModel::setContactAvatar(const QString &phone, const QString &avata
 
 }
 
-void CContactsModel::setContactFullName(const QString &phone, const QString &fullName)
+void CContactsModel::setContactFullName(const QString &contact, const QString &fullName)
 {
-    int index = indexOfContact(phone);
+    int index = indexOfContact(contact);
 
     if (index < 0) {
         return;
@@ -228,13 +244,17 @@ QStringList CContactsModel::contacts() const
     return phones;
 }
 
-QString CContactsModel::statusToStr(TelegramNamespace::ContactStatus status) const
+QString CContactsModel::contactStatusStr(const SContact &contact) const
 {
-    switch (status) {
+    switch (contact.status) {
     case TelegramNamespace::ContactStatusOnline:
         return tr("Online");
     case TelegramNamespace::ContactStatusOffline:
-        return tr("Offline");
+        if (contact.wasOnline > 0) {
+            return tr("Offline (%1)").arg(QDateTime::fromMSecsSinceEpoch(quint64(contact.wasOnline) * 1000).toString(Qt::TextDate));
+        } else  {
+            return tr("Offline");
+        }
     case TelegramNamespace::ContactStatusUnknown:
     default:
         return tr("Unknown");

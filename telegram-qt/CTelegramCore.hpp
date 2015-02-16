@@ -40,6 +40,7 @@ public:
     Q_INVOKABLE QString selfPhone() const;
     Q_INVOKABLE QStringList contactList() const;
     Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &contact) const;
+    Q_INVOKABLE quint32 contactLastOnline(const QString &contact) const;
     Q_INVOKABLE QString contactFirstName(const QString &contact) const;
     Q_INVOKABLE QString contactLastName(const QString &contact) const;
     Q_INVOKABLE QString contactAvatarToken(const QString &contact) const;

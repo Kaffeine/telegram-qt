@@ -25,6 +25,7 @@ struct SContact {
     SContact(const QString &p = QString(), TelegramNamespace::ContactStatus s = TelegramNamespace::ContactStatusUnknown) :
         phone(p),
         status(s),
+        wasOnline(0),
         typing(false),
         blocked(false)
     { }
@@ -32,6 +33,7 @@ struct SContact {
     QString phone;
     QString fullName;
     TelegramNamespace::ContactStatus status;
+    quint32 wasOnline;
     bool typing;
     bool blocked;
     QPixmap avatar;
@@ -68,13 +70,14 @@ public slots:
     void addContact(const QString &phone);
     bool removeContact(const QString &phone);
     void setContactList(const QStringList &list);
-    void setContactStatus(const QString &phone, TelegramNamespace::ContactStatus status);
-    void setTypingStatus(const QString &phone, bool typingStatus);
-    void setContactAvatar(const QString &phone, const QString &avatarFileName);
-    void setContactFullName(const QString &phone, const QString &fullName);
+    void setContactStatus(const QString &contact, TelegramNamespace::ContactStatus status);
+    void setContactLastOnline(const QString &contact, quint32 onlineDate);
+    void setTypingStatus(const QString &contact, bool typingStatus);
+    void setContactAvatar(const QString &contact, const QString &avatarFileName);
+    void setContactFullName(const QString &contact, const QString &fullName);
 
 private:
-    QString statusToStr(TelegramNamespace::ContactStatus status) const;
+    QString contactStatusStr(const SContact &contact) const;
 
     QList<SContact> m_contacts;
 

@@ -641,9 +641,24 @@ TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QStrin
     return TelegramNamespace::ContactStatusUnknown;
 }
 
-QString CTelegramDispatcher::contactFirstName(const QString &phone) const
+quint32 CTelegramDispatcher::contactLastOnline(const QString &contact) const
 {
-    const TLUser *user = phoneNumberToUser(phone);
+    const TLUser *user = phoneNumberToUser(contact);
+
+    if (user) {
+        if (user->status.tlType == TLValue::UserStatusOnline) {
+            return user->status.expires;
+        } else {
+            return user->status.wasOnline;
+        }
+    }
+
+    return 0;
+}
+
+QString CTelegramDispatcher::contactFirstName(const QString &contact) const
+{
+    const TLUser *user = phoneNumberToUser(contact);
 
     if (user) {
         return user->firstName;
@@ -652,9 +667,9 @@ QString CTelegramDispatcher::contactFirstName(const QString &phone) const
     }
 }
 
-QString CTelegramDispatcher::contactLastName(const QString &phone) const
+QString CTelegramDispatcher::contactLastName(const QString &contact) const
 {
-    const TLUser *user = phoneNumberToUser(phone);
+    const TLUser *user = phoneNumberToUser(contact);
 
     if (user) {
         return user->lastName;
@@ -663,12 +678,12 @@ QString CTelegramDispatcher::contactLastName(const QString &phone) const
     }
 }
 
-QString CTelegramDispatcher::contactAvatarToken(const QString &identifier) const
+QString CTelegramDispatcher::contactAvatarToken(const QString &contact) const
 {
-    const TLUser *user = phoneNumberToUser(identifier);
+    const TLUser *user = phoneNumberToUser(contact);
 
     if (!user) {
-        qDebug() << Q_FUNC_INFO << "Unknown identifier" << maskPhoneNumber(identifier);
+        qDebug() << Q_FUNC_INFO << "Unknown identifier" << maskPhoneNumber(contact);
         return QString();
     }
 
@@ -778,6 +793,7 @@ void CTelegramDispatcher::whenSelfPhoneReceived(const QString &phone)
 
 void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
 {
+    qDebug() << Q_FUNC_INFO << users.count();
     foreach (const TLUser &user, users) {
         TLUser *existsUser = m_users.value(user.id);
 

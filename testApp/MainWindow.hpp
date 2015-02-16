@@ -51,6 +51,7 @@ private slots:
     void whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message, TelegramNamespace::MessageType type);
     void whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status);
     void whenContactTypingStatusChanged();
+    void whenContactStatusChanged(const QString &contact);
     void whenChatAdded(quint32 chatId);
     void whenChatChanged(quint32 chatId);
 

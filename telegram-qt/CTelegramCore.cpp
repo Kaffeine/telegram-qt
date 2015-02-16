@@ -160,9 +160,14 @@ QStringList CTelegramCore::contactList() const
     return m_dispatcher->contactList();
 }
 
-TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &phone) const
+TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &contact) const
 {
-    return m_dispatcher->contactStatus(phone);
+    return m_dispatcher->contactStatus(contact);
+}
+
+quint32 CTelegramCore::contactLastOnline(const QString &contact) const
+{
+    return m_dispatcher->contactLastOnline(contact);
 }
 
 QString CTelegramCore::contactFirstName(const QString &phone) const

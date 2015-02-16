@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)),
             SLOT(whenContactTypingStatusChanged()));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)),
-            m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
+            SLOT(whenContactStatusChanged(QString)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)),
             m_contactsModel, SLOT(setTypingStatus(QString,bool)));
     connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
@@ -179,6 +179,7 @@ void MainWindow::whenContactListChanged()
     foreach (const QString &contact, m_core->contactList()) {
         m_core->requestContactAvatar(contact);
         m_contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
+        m_contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
         m_contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
     }
 
@@ -267,6 +268,12 @@ void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QStrin
 void MainWindow::whenContactTypingStatusChanged()
 {
     ui->messagingContactTypingStatus->setText(m_contactsModel->data(ui->messagingContactPhone->text(), CContactsModel::TypingStatus).toString());
+}
+
+void MainWindow::whenContactStatusChanged(const QString &contact)
+{
+    m_contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
+    m_contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
 }
 
 void MainWindow::whenChatAdded(quint32 chatId)
