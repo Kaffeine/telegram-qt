@@ -37,9 +37,9 @@ public:
     };
 
     enum MessageFlags {
-        MessageFlagNone   = 0x0,
-        MessageFlagUnread = 0x1,
-        MessageFlagOut    = 0x2
+        MessageFlagNone = 0x0,
+        MessageFlagRead = 0x1, // Message was read
+        MessageFlagOut  = 0x2  // Message is outgoing
     };
 
     static void registerTypes();

@@ -249,8 +249,8 @@ void MainWindow::on_connectButton_clicked()
     QString serverIp = ui->mainDcRadio->isChecked() ? QLatin1String("173.240.5.1") : QLatin1String("173.240.5.253");
 
     quint32 flags = 0;
-    if (ui->settingsReceivingFilterOnlyUnreadMessages->isChecked()) {
-        flags |= TelegramNamespace::MessageFlagUnread;
+    if (ui->settingsReceivingFilterReadMessages->isChecked()) {
+        flags |= TelegramNamespace::MessageFlagRead;
     }
     if (ui->settingsReceivingFilterOutMessages->isChecked()) {
         flags |= TelegramNamespace::MessageFlagOut;

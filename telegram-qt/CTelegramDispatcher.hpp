@@ -241,6 +241,8 @@ protected:
     quint32 insertTelegramChatId(quint32 telegramChatId);
     bool havePublicChatId(quint32 publicChatId) const;
 
+    quint32 telegramMessageFlagsToPublicMessageFlags(quint32 tgFlags);
+
     const CAppInformation *m_appInformation;
 
     quint32 m_messageReceivingFilterFlags;

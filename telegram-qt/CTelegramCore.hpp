@@ -52,7 +52,7 @@ public:
     bool getChatParticipants(QStringList *participants, quint32 chatId);
 
 public Q_SLOTS:
-    void setMessageReceivingFilterFlags(quint32 flags); // TelegramNamespace::MessageFlags
+    void setMessageReceivingFilterFlags(quint32 flags); // TelegramNamespace::MessageFlags. Messages with at least one of the passed flags will be filtered out.
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();

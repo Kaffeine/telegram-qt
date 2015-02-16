@@ -80,6 +80,12 @@ const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPe
 const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typing time deviation in Qt4 by this value.
 #endif
 
+enum TelegramMessageFlags {
+    TelegramMessageFlagNone   = 0x0,
+    TelegramMessageFlagUnread = 0x1, // Message was *not* read
+    TelegramMessageFlagOut    = 0x2  // Message is outgoing
+};
+
 FileRequestDescriptor FileRequestDescriptor::avatarRequest(const TLUser *user)
 {
     if (user->photo.photoSmall.tlType != TLValue::FileLocation) {
@@ -110,7 +116,7 @@ FileRequestDescriptor::FileRequestDescriptor() :
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_appInformation(0),
-    m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagUnread),
+    m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagRead),
     m_initState(InitNothing),
     m_isAuthenticated(false),
     m_activeDc(0),
@@ -454,19 +460,7 @@ quint64 CTelegramDispatcher::sendMessages(const TLInputPeer &peer, const QString
 
 bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const
 {
-    if (!(m_messageReceivingFilterFlags & TelegramNamespace::MessageFlagOut)) {
-        if (messageFlags & TelegramNamespace::MessageFlagOut) {
-            return true;
-        }
-    }
-
-    if (m_messageReceivingFilterFlags & TelegramNamespace::MessageFlagUnread) {
-        if (!(messageFlags & TelegramNamespace::MessageFlagUnread)) {
-            return true;
-        }
-    }
-
-    return false;
+    return m_messageReceivingFilterFlags & messageFlags;
 }
 
 quint32 CTelegramDispatcher::createChat(const QStringList &phones, const QString chatName)
@@ -965,7 +959,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
                 continue;
             }
 
-            if (filterReceivedMessage(message.flags)) {
+            if (filterReceivedMessage(telegramMessageFlagsToPublicMessageFlags(message.flags))) {
                 continue;
             }
 
@@ -1172,12 +1166,13 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 
 void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 {
+    const quint32 messageFlags = telegramMessageFlagsToPublicMessageFlags(message.flags);
     if (message.toId.tlType == TLValue::PeerUser) {
-        quint32 contactUserId = message.flags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
-        emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, message.flags, message.date);
+        quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
+        emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, messageFlags, message.date);
     } else {
         emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId), userIdToIdentifier(message.fromId),
-                                 message.message, message.id, message.flags, message.date);
+                                 message.message, message.id, messageFlags, message.date);
     }
 }
 
@@ -1185,7 +1180,7 @@ void CTelegramDispatcher::processShortMessageReceived(quint32 messageId, quint32
 {
     const QString phone = userIdToIdentifier(fromId);
 
-    emit messageReceived(phone, message, messageId, TelegramNamespace::MessageFlagUnread, date); // Consider all newly received messages as unread.
+    emit messageReceived(phone, message, messageId, TelegramNamespace::MessageFlagNone, date); // Consider all newly received messages as incoming and not read (so, no flags).
 
     if (!phone.isEmpty()) {
         if (m_userTypingMap.value(fromId, 0) > 0) {
@@ -1202,7 +1197,7 @@ void CTelegramDispatcher::processShortChatMessageReceived(quint32 messageId, qui
     const QString phone = userIdToIdentifier(fromId);
     const quint32 publicChatId = telegramChatIdToPublicId(chatId);
 
-    emit chatMessageReceived(publicChatId, phone, message, messageId, TelegramNamespace::MessageFlagUnread, date);
+    emit chatMessageReceived(publicChatId, phone, message, messageId, TelegramNamespace::MessageFlagNone, date); // Consider all newly received messages as incoming and not read (so, no flags).
 
     const QPair<quint32,quint32> key(publicChatId, fromId);
 
@@ -1710,6 +1705,26 @@ quint32 CTelegramDispatcher::insertTelegramChatId(quint32 telegramChatId)
 bool CTelegramDispatcher::havePublicChatId(quint32 publicChatId) const
 {
     return m_chatIds.count() > int(publicChatId);
+}
+
+// Basically we just revert Unread and Read flag.
+quint32 CTelegramDispatcher::telegramMessageFlagsToPublicMessageFlags(quint32 tgFlags)
+{
+    quint32 result = TelegramNamespace::MessageFlagNone;
+
+    if (tgFlags == TelegramMessageFlagNone) {
+        return result;
+    }
+
+    if (tgFlags & TelegramMessageFlagOut) {
+        result |= TelegramNamespace::MessageFlagOut;
+    }
+
+    if (!(tgFlags & TelegramMessageFlagUnread)) {
+        result |= TelegramNamespace::MessageFlagRead;
+    }
+
+    return result;
 }
 
 void CTelegramDispatcher::ensureUpdateState(quint32 pts, quint32 seq, quint32 date)

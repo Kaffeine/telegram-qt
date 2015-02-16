@@ -63,7 +63,7 @@
               <string>If this box is checked, application will receive outgoing messages (in addition to other types).</string>
              </property>
              <property name="text">
-              <string>Receive outgoing messages</string>
+              <string>Filter out outgoing messages</string>
              </property>
             </widget>
            </item>
@@ -81,15 +81,15 @@
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QCheckBox" name="settingsReceivingFilterOnlyUnreadMessages">
+            <widget class="QCheckBox" name="settingsReceivingFilterReadMessages">
              <property name="toolTip">
               <string>If this box is checked, application will ignore read messages.</string>
              </property>
              <property name="text">
-              <string>Receive only unread messages</string>
+              <string>Receive messages that was read</string>
              </property>
              <property name="checked">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
             </widget>
            </item>
