@@ -117,6 +117,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_appInformation(0),
     m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagRead),
+    m_acceptableMessageTypes(TelegramNamespace::MessageTypeText),
     m_initState(InitNothing),
     m_isAuthenticated(false),
     m_activeDc(0),
@@ -218,6 +219,11 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
 void CTelegramDispatcher::setMessageReceivingFilterFlags(quint32 flags)
 {
     m_messageReceivingFilterFlags = flags;
+}
+
+void CTelegramDispatcher::setAcceptableMessageTypes(quint32 types)
+{
+    m_acceptableMessageTypes = types;
 }
 
 void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
@@ -1167,43 +1173,19 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 {
     const quint32 messageFlags = telegramMessageFlagsToPublicMessageFlags(message.flags);
+    const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
+
+    if (!(messageType & m_acceptableMessageTypes)) {
+        return;
+    }
+
     if (message.toId.tlType == TLValue::PeerUser) {
         quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
-        emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, messageFlags, message.date);
+        emit messageReceived(userIdToIdentifier(contactUserId),
+                             message.message, messageType, message.id, messageFlags, message.date);
     } else {
         emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId), userIdToIdentifier(message.fromId),
-                                 message.message, message.id, messageFlags, message.date);
-    }
-}
-
-void CTelegramDispatcher::processShortMessageReceived(quint32 messageId, quint32 fromId, const QString &message, quint32 date)
-{
-    const QString phone = userIdToIdentifier(fromId);
-
-    emit messageReceived(phone, message, messageId, TelegramNamespace::MessageFlagNone, date); // Consider all newly received messages as incoming and not read (so, no flags).
-
-    if (!phone.isEmpty()) {
-        if (m_userTypingMap.value(fromId, 0) > 0) {
-            m_userTypingMap.remove(fromId);
-            emit contactTypingStatusChanged(phone, /* typingStatus */ false);
-        }
-    }
-}
-
-void CTelegramDispatcher::processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message, quint32 date)
-{
-    Q_UNUSED(messageId)
-
-    const QString phone = userIdToIdentifier(fromId);
-    const quint32 publicChatId = telegramChatIdToPublicId(chatId);
-
-    emit chatMessageReceived(publicChatId, phone, message, messageId, TelegramNamespace::MessageFlagNone, date); // Consider all newly received messages as incoming and not read (so, no flags).
-
-    const QPair<quint32,quint32> key(publicChatId, fromId);
-
-    if (m_userChatTypingMap.contains(key)) {
-        m_userChatTypingMap.remove(key);
-        emit contactChatTypingStatusChanged(publicChatId, phone, /* typingStatus */ false);
+                                 message.message, messageType, message.id, messageFlags, message.date);
     }
 }
 
@@ -1529,14 +1511,13 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
 
 void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fileId)
 {
-    const QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
-
     if (!m_requestedFileDescriptors.contains(fileId)) {
         qDebug() << Q_FUNC_INFO << "Unexpected fileId" << fileId;
         return;
     }
 
-    const FileRequestDescriptor &descriptor = m_requestedFileDescriptors.take(fileId);
+    const QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
+    const FileRequestDescriptor descriptor = m_requestedFileDescriptors.take(fileId);
 
     switch (descriptor.type()) {
     case FileRequestDescriptor::Avatar:
@@ -1559,11 +1540,42 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         getUpdatesState();
         break;
     case TLValue::UpdateShortMessage:
-        processShortMessageReceived(updates.id, updates.fromId, updates.message, updates.date);
-        ensureUpdateState(updates.pts);
-        break;
     case TLValue::UpdateShortChatMessage:
-        processShortChatMessageReceived(updates.id, updates.chatId, updates.fromId, updates.message, updates.date);
+    {
+        TLMessage shortMessage;
+        shortMessage.id = updates.id;
+        shortMessage.flags = TelegramMessageFlagUnread;
+        shortMessage.fromId = updates.fromId;
+        shortMessage.message = updates.message;
+        shortMessage.date = updates.date;
+        shortMessage.media.tlType = TLValue::MessageMediaEmpty;
+
+        if (updates.tlType == TLValue::UpdateShortMessage) {
+            shortMessage.toId.tlType = TLValue::PeerUser;
+            processMessageReceived(shortMessage);
+
+            const QString phone = userIdToIdentifier(updates.fromId);
+            if (!phone.isEmpty()) {
+                if (m_userTypingMap.value(updates.fromId, 0) > 0) {
+                    m_userTypingMap.remove(updates.fromId);
+                    emit contactTypingStatusChanged(phone, /* typingStatus */ false);
+                }
+            }
+        } else {
+            shortMessage.toId.tlType = TLValue::PeerChat;
+            shortMessage.toId.chatId = updates.chatId;
+            processMessageReceived(shortMessage);
+
+            const QString phone = userIdToIdentifier(updates.fromId);
+            const quint32 publicChatId = telegramChatIdToPublicId(updates.chatId);
+            const QPair<quint32,quint32> key(publicChatId, updates.fromId);
+
+            if (m_userChatTypingMap.contains(key)) {
+                m_userChatTypingMap.remove(key);
+                emit contactChatTypingStatusChanged(publicChatId, phone, /* typingStatus */ false);
+            }
+        }
+    }
         ensureUpdateState(updates.pts);
         break;
     case TLValue::UpdateShort:
@@ -1865,5 +1877,27 @@ QString CTelegramDispatcher::mimeTypeByStorageFileType(TLValue type)
         return QLatin1String("image/webp");
     default:
         return QString();
+    }
+}
+
+TelegramNamespace::MessageType CTelegramDispatcher::telegramMessageTypeToPublicMessageType(TLValue type)
+{
+    switch (type) {
+    case TLValue::MessageMediaEmpty:
+        return TelegramNamespace::MessageTypeText;
+    case TLValue::MessageMediaPhoto:
+        return TelegramNamespace::MessageTypePhoto;
+    case TLValue::MessageMediaVideo:
+        return TelegramNamespace::MessageTypeVideo;
+    case TLValue::MessageMediaGeo:
+        return TelegramNamespace::MessageTypeGeo;
+    case TLValue::MessageMediaContact:
+        return TelegramNamespace::MessageTypeContact;
+    case TLValue::MessageMediaAudio:
+        return TelegramNamespace::MessageTypeAudio;
+    case TLValue::MessageMediaDocument:
+        return TelegramNamespace::MessageTypeDocument;
+    default:
+        return TelegramNamespace::MessageTypeUnsupported;
     }
 }

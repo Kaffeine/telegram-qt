@@ -53,6 +53,8 @@ public:
 
 public Q_SLOTS:
     void setMessageReceivingFilterFlags(quint32 flags); // TelegramNamespace::MessageFlags. Messages with at least one of the passed flags will be filtered out.
+    void setAcceptableMessageTypes(quint32 types); // TelegramNamespace::MessageType
+
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
@@ -92,10 +94,12 @@ Q_SIGNALS:
     void phoneCodeIsInvalid();
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
+
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
 
-    void messageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp); // Message id is incremental number
-    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp);
+    void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
+    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
+
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool typingStatus);

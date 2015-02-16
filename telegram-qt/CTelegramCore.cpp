@@ -25,23 +25,40 @@ CTelegramCore::CTelegramCore(QObject *parent) :
 {
     TelegramNamespace::registerTypes();
 
-    connect(m_dispatcher, SIGNAL(connected()), SIGNAL(connected()));
-    connect(m_dispatcher, SIGNAL(authenticated()), SIGNAL(authenticated()));
-    connect(m_dispatcher, SIGNAL(initializated()), SIGNAL(initializated()));
-    connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
-    connect(m_dispatcher, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
-    connect(m_dispatcher, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
-    connect(m_dispatcher, SIGNAL(contactListChanged()), SIGNAL(contactListChanged()));
-    connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)), SIGNAL(avatarReceived(QString,QByteArray,QString,QString)));
-    connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,quint32,quint32,quint32)), SIGNAL(messageReceived(QString,QString,quint32,quint32,quint32)));
-    connect(m_dispatcher, SIGNAL(chatMessageReceived(quint32,QString,QString,quint32,quint32,quint32)), SIGNAL(chatMessageReceived(quint32,QString,QString,quint32,quint32,quint32)));
-    connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
-    connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,bool)), SIGNAL(contactTypingStatusChanged(QString,bool)));
-    connect(m_dispatcher, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)), SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)));
-    connect(m_dispatcher, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)), SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
-    connect(m_dispatcher, SIGNAL(chatAdded(quint32)), SIGNAL(chatAdded(quint32)));
-    connect(m_dispatcher, SIGNAL(chatChanged(quint32)), SIGNAL(chatChanged(quint32)));
-    connect(m_dispatcher, SIGNAL(authorizationErrorReceived()), SIGNAL(authorizationErrorReceived()));
+    connect(m_dispatcher, SIGNAL(connected()),
+            SIGNAL(connected()));
+    connect(m_dispatcher, SIGNAL(authenticated()),
+            SIGNAL(authenticated()));
+    connect(m_dispatcher, SIGNAL(initializated()),
+            SIGNAL(initializated()));
+    connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)),
+            SIGNAL(phoneStatusReceived(QString,bool,bool)));
+    connect(m_dispatcher, SIGNAL(phoneCodeRequired()),
+            SIGNAL(phoneCodeRequired()));
+    connect(m_dispatcher, SIGNAL(phoneCodeIsInvalid()),
+            SIGNAL(phoneCodeIsInvalid()));
+    connect(m_dispatcher, SIGNAL(contactListChanged()),
+            SIGNAL(contactListChanged()));
+    connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
+            SIGNAL(avatarReceived(QString,QByteArray,QString,QString)));
+    connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
+            SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)));
+    connect(m_dispatcher, SIGNAL(chatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
+            SIGNAL(chatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)));
+    connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)),
+            SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
+    connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,bool)),
+            SIGNAL(contactTypingStatusChanged(QString,bool)));
+    connect(m_dispatcher, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)),
+            SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)));
+    connect(m_dispatcher, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
+            SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
+    connect(m_dispatcher, SIGNAL(chatAdded(quint32)),
+            SIGNAL(chatAdded(quint32)));
+    connect(m_dispatcher, SIGNAL(chatChanged(quint32)),
+            SIGNAL(chatChanged(quint32)));
+    connect(m_dispatcher, SIGNAL(authorizationErrorReceived()),
+            SIGNAL(authorizationErrorReceived()));
 }
 
 CTelegramCore::~CTelegramCore()
@@ -184,6 +201,11 @@ bool CTelegramCore::getChatParticipants(QStringList *participants, quint32 chatI
 void CTelegramCore::setMessageReceivingFilterFlags(quint32 flags)
 {
     return m_dispatcher->setMessageReceivingFilterFlags(flags);
+}
+
+void CTelegramCore::setAcceptableMessageTypes(quint32 types)
+{
+    return m_dispatcher->setAcceptableMessageTypes(types);
 }
 
 QString CTelegramCore::selfPhone() const

@@ -100,17 +100,15 @@ QVariant CMessagingModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-#include <QDebug>
-
-void CMessagingModel::addMessage(const QString &phone, const QString &message, bool outgoing, quint64 messageId, quint32 timestamp)
+void CMessagingModel::addMessage(const QString &phone, const QString &message, TelegramNamespace::MessageType type, bool outgoing, quint64 messageId, quint32 timestamp)
 {
+    Q_UNUSED(type);
+
     beginResetModel();
 
     if (!timestamp) {
         timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
     }
-
-    qDebug() << "timestamp:" << timestamp << QDateTime::currentMSecsSinceEpoch() / 1000;
 
     m_messages.append(SMessageEntry(phone, message, messageId, timestamp));
     m_messages.last().outgoing = outgoing;

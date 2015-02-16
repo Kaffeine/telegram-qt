@@ -66,19 +66,32 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_core->setAppInformation(&appInfo);
 
-    connect(m_core, SIGNAL(connected()), SLOT(whenConnected()));
-    connect(m_core, SIGNAL(phoneStatusReceived(QString,bool,bool)), SLOT(whenPhoneStatusReceived(QString,bool,bool)));
-    connect(m_core, SIGNAL(phoneCodeRequired()), SLOT(whenPhoneCodeRequested()));
-    connect(m_core, SIGNAL(phoneCodeIsInvalid()), SLOT(whenPhoneCodeIsInvalid()));
-    connect(m_core, SIGNAL(authenticated()), SLOT(whenAuthenticated()));
-    connect(m_core, SIGNAL(contactListChanged()), SLOT(whenContactListChanged()));
-    connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)), SLOT(whenAvatarReceived(QString,QByteArray,QString)));
-    connect(m_core, SIGNAL(messageReceived(QString,QString,quint32,quint32,quint32)), SLOT(whenMessageReceived(QString,QString,quint32,quint32,quint32)));
-    connect(m_core, SIGNAL(chatMessageReceived(quint32,QString,QString,quint32,quint32,quint32)), SLOT(whenChatMessageReceived(quint32,QString,QString)));
-    connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)), m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
-    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), m_contactsModel, SLOT(setTypingStatus(QString,bool)));
-    connect(m_core, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)), SLOT(whenContactChatTypingStatusChanged(quint32,QString,bool)));
-    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)), this, SLOT(whenContactTypingStatusChanged()));
+    connect(m_core, SIGNAL(connected()),
+            SLOT(whenConnected()));
+    connect(m_core, SIGNAL(phoneStatusReceived(QString,bool,bool)),
+            SLOT(whenPhoneStatusReceived(QString,bool,bool)));
+    connect(m_core, SIGNAL(phoneCodeRequired()),
+            SLOT(whenPhoneCodeRequested()));
+    connect(m_core, SIGNAL(phoneCodeIsInvalid()),
+            SLOT(whenPhoneCodeIsInvalid()));
+    connect(m_core, SIGNAL(authenticated()),
+            SLOT(whenAuthenticated()));
+    connect(m_core, SIGNAL(contactListChanged()),
+            SLOT(whenContactListChanged()));
+    connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
+            SLOT(whenAvatarReceived(QString,QByteArray,QString)));
+    connect(m_core, SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
+            SLOT(whenMessageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)));
+    connect(m_core, SIGNAL(chatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
+            SLOT(whenChatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType)));
+    connect(m_core, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)),
+            SLOT(whenContactChatTypingStatusChanged(quint32,QString,bool)));
+    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)),
+            SLOT(whenContactTypingStatusChanged()));
+    connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)),
+            m_contactsModel, SLOT(setContactStatus(QString,TelegramNamespace::ContactStatus)));
+    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)),
+            m_contactsModel, SLOT(setTypingStatus(QString,bool)));
     connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
             m_messagingModel, SLOT(setMessageDeliveryStatus(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
 
@@ -188,18 +201,18 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
     m_contactsModel->setContactAvatar(contact, avatarFile.fileName());
 }
 
-void MainWindow::whenMessageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp)
+void MainWindow::whenMessageReceived(const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp)
 {
-    m_messagingModel->addMessage(phone, message, flags & TelegramNamespace::MessageFlagOut, messageId, timestamp);
+    m_messagingModel->addMessage(phone, message, type, flags & TelegramNamespace::MessageFlagOut, messageId, timestamp);
 }
 
-void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message)
+void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message, TelegramNamespace::MessageType type)
 {
     if (m_activeChatId != chatId) {
         return;
     }
 
-    m_chatMessagingModel->addMessage(phone, message, /* outgoing */ false);
+    m_chatMessagingModel->addMessage(phone, message, type, /* outgoing */ false);
 }
 
 void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status)
@@ -326,7 +339,7 @@ void MainWindow::on_messagingSendButton_clicked()
 {
     quint64 id = m_core->sendMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text());
 
-    m_messagingModel->addMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text(), /* outgoing */ true, id);
+    m_messagingModel->addMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text(), TelegramNamespace::MessageTypeText, /* outgoing */ true, id);
 
     ui->messagingMessage->clear();
 }
@@ -403,7 +416,7 @@ void MainWindow::on_groupChatSendButton_clicked()
 {
     m_core->sendChatMessage(1, ui->groupChatMessage->text());
 
-    m_chatMessagingModel->addMessage(m_core->selfPhone(), ui->groupChatMessage->text(), /* outgoing */ true);
+    m_chatMessagingModel->addMessage(m_core->selfPhone(), ui->groupChatMessage->text(), TelegramNamespace::MessageTypeText, /* outgoing */ true);
     ui->groupChatMessage->clear();
 }
 

@@ -60,7 +60,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 public slots:
-    void addMessage(const QString &phone, const QString &message, bool outgoing, quint64 messageId = 0, quint32 timestamp = 0);
+    void addMessage(const QString &phone, const QString &message, TelegramNamespace::MessageType type, bool outgoing, quint64 messageId = 0, quint32 timestamp = 0);
     void setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status);
 
 private:

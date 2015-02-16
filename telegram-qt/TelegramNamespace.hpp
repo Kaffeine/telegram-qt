@@ -42,6 +42,17 @@ public:
         MessageFlagOut  = 0x2  // Message is outgoing
     };
 
+    enum MessageType {
+        MessageTypeUnsupported = 0x00,
+        MessageTypeText        = 0x01,
+        MessageTypePhoto       = 0x02,
+        MessageTypeAudio       = 0x04,
+        MessageTypeVideo       = 0x08,
+        MessageTypeContact     = 0x10,
+        MessageTypeDocument    = 0x20,
+        MessageTypeGeo         = 0x40
+    };
+
     static void registerTypes();
 
     struct GroupChat

@@ -95,6 +95,7 @@ public:
 
     inline quint32 messageReceivingFilterFlags() const { return m_messageReceivingFilterFlags; }
     void setMessageReceivingFilterFlags(quint32 flags);
+    void setAcceptableMessageTypes(quint32 types);
 
     void initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
@@ -139,9 +140,12 @@ signals:
     void authorizationErrorReceived();
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
+
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
-    void messageReceived(const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp);
-    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message, quint32 messageId, quint32 flags, quint32 timestamp);
+
+    void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
+    void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
+
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
     void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, bool typingStatus);
@@ -191,8 +195,6 @@ protected:
     void processUpdate(const TLUpdate &update);
 
     void processMessageReceived(const TLMessage &message);
-    void processShortMessageReceived(quint32 messageId, quint32 fromId, const QString &message, quint32 date);
-    void processShortChatMessageReceived(quint32 messageId, quint32 chatId, quint32 fromId, const QString &message, quint32 date);
 
     void updateChat(const TLChat &newChat);
     void updateFullChat(const TLChatFull &newChat);
@@ -226,6 +228,7 @@ protected:
     TLDcOption dcInfoById(quint32 dc);
 
     QString mimeTypeByStorageFileType(TLValue type);
+    TelegramNamespace::MessageType telegramMessageTypeToPublicMessageType(TLValue type);
 
     void setActiveDc(quint32 dc, bool syncWantedDc = true);
 
@@ -246,6 +249,7 @@ protected:
     const CAppInformation *m_appInformation;
 
     quint32 m_messageReceivingFilterFlags;
+    quint32 m_acceptableMessageTypes;
 
     InitializationState m_initState;
     bool m_isAuthenticated;
@@ -273,7 +277,6 @@ protected:
     QStringList m_contactList;
 
     // fileId is program-specific handler, not related to Telegram.
-    QMap<quint32, TLFileLocation> m_requestedFileLocations; // fileId, file location
     QMap<quint32, FileRequestDescriptor> m_requestedFileDescriptors; // fileId, file request descriptor
     quint32 m_fileRequestCounter;
 
