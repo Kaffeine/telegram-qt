@@ -47,7 +47,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->contactListTable->setModel(m_contactsModel);
     ui->messagingView->setModel(m_messagingModel);
     ui->groupChatContacts->setModel(m_chatContactsModel);
-    ui->groupChatContacts->hideColumn(CContactsModel::Avatar);
     ui->groupChatChatsList->setModel(m_chatInfoModel);
     ui->groupChatMessagingView->setModel(m_chatMessagingModel);
 
@@ -175,7 +174,6 @@ void MainWindow::whenAuthenticated()
 void MainWindow::whenContactListChanged()
 {
     setContactList(m_contactsModel, m_core->contactList());
-
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
         ui->contactListTable->setRowHeight(i, 64);
     }
@@ -194,6 +192,7 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
     avatarFile.close();
 
     m_contactsModel->setContactAvatar(contact, avatarFile.fileName());
+    m_chatContactsModel->setContactAvatar(contact, avatarFile.fileName());
 }
 
 void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType)
@@ -273,7 +272,7 @@ void MainWindow::whenChatAdded(quint32 chatId)
 {
     m_chatInfoModel->addChat(chatId);
     setActiveChat(chatId);
-    whenChatChanged(chatId);
+//    whenChatChanged(chatId);
 }
 
 void MainWindow::whenChatChanged(quint32 chatId)
@@ -292,12 +291,17 @@ void MainWindow::whenChatChanged(quint32 chatId)
         return;
     }
 
+    ui->groupChatName->setText(chat.title);
+
     QStringList participants;
     if (!m_core->getChatParticipants(&participants, chatId)) {
         qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
     }
 
     setContactList(m_chatContactsModel, participants);
+    for (int i = 0; i < m_chatContactsModel->rowCount(); ++i) {
+        ui->groupChatContacts->setRowHeight(i, 64);
+    }
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -428,6 +432,12 @@ void MainWindow::on_messagingView_doubleClicked(const QModelIndex &index)
     ui->messagingMessage->setFocus();
 }
 
+void MainWindow::on_groupChatChatsList_doubleClicked(const QModelIndex &index)
+{
+    const quint32 clickedChat = m_chatInfoModel->index(index.row(), CChatInfoModel::Id).data().toUInt();
+    setActiveChat(clickedChat);
+}
+
 void MainWindow::on_tabWidget_currentChanged(int index)
 {
     Q_UNUSED(index);
@@ -540,4 +550,18 @@ void MainWindow::on_secretOpenFile_clicked()
 void MainWindow::setActiveChat(quint32 id)
 {
     m_activeChatId = id;
+
+    TelegramNamespace::GroupChat chat;
+    m_core->getChatInfo(&chat, id);
+    ui->groupChatName->setText(chat.title);
+
+    QStringList participants;
+    if (!m_core->getChatParticipants(&participants, id)) {
+        qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
+    }
+
+    setContactList(m_chatContactsModel, participants);
+    for (int i = 0; i < m_chatContactsModel->rowCount(); ++i) {
+        ui->groupChatContacts->setRowHeight(i, 64);
+    }
 }

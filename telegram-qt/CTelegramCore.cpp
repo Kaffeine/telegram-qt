@@ -250,7 +250,7 @@ void CTelegramCore::setOnlineStatus(bool onlineStatus)
     m_dispatcher->setOnlineStatus(onlineStatus);
 }
 
-quint32 CTelegramCore::createChat(const QStringList &phones, const QString chatName)
+quint32 CTelegramCore::createChat(const QStringList &phones, const QString &title)
 {
-    return m_dispatcher->createChat(phones, chatName);
+    return m_dispatcher->createChat(phones, title);
 }

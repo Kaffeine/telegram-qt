@@ -68,6 +68,7 @@ private slots:
 
     void on_contactListTable_doubleClicked(const QModelIndex &index);
     void on_messagingView_doubleClicked(const QModelIndex &index);
+    void on_groupChatChatsList_doubleClicked(const QModelIndex &index);
 
     void on_setStatusOnline_clicked();
     void on_setStatusOffline_clicked();

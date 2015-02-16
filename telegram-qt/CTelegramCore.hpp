@@ -85,7 +85,7 @@ public Q_SLOTS:
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
 
-    quint32 createChat(const QStringList &phones, const QString chatName);
+    quint32 createChat(const QStringList &phones, const QString &title);
 
 Q_SIGNALS:
     void connected(); // Telegram protocol connection established.
