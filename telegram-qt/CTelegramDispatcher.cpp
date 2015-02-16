@@ -1657,17 +1657,8 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
 
     if (m_initState == (InitHaveDcConfiguration|InitIsSignIn)) {
         getInitialUsers();
-        // Sadly, we don't support creation of RPC messages containers, so we fails on attempt to send more than one package in time. (Got "Sequence number too high")
-        // That is why we have to comment out this getContacts() and add #BadCode1.
-//        getContacts();
+        getContacts();
         return;
-    }
-
-    // #BadCode1
-    if (justDone == InitKnowSelf) {
-        if (!(m_initState & InitHaveContactList)) {
-            getContacts();
-        }
     }
 
     if (m_initState == InitDone) {
