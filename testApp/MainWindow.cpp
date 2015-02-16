@@ -288,7 +288,7 @@ void MainWindow::on_connectButton_clicked()
 {
     QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
 
-    QString serverIp = ui->mainDcRadio->isChecked() ? QLatin1String("173.240.5.1") : QLatin1String("173.240.5.253");
+    QString serverIp = ui->mainDcRadio->isChecked() ? QLatin1String("149.154.175.50") : QLatin1String("149.154.175.10");
 
     quint32 flags = 0;
     if (ui->settingsReceivingFilterReadMessages->isChecked()) {
