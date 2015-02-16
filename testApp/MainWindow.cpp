@@ -228,7 +228,18 @@ void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 me
 
 void MainWindow::whenMessageReceived(const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp)
 {
-    m_messagingModel->addMessage(phone, message, type, flags & TelegramNamespace::MessageFlagOut, messageId, timestamp);
+    bool outgoing = flags & TelegramNamespace::MessageFlagOut;
+    m_messagingModel->addMessage(phone, message, type, outgoing, messageId, timestamp);
+
+    if (!outgoing && (m_contactLastMessageList.value(phone) < messageId)) {
+        m_contactLastMessageList.insert(phone, messageId);
+
+        if (ui->settingsReadMessages->isChecked()) {
+            if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
+                m_core->setMessageRead(phone, messageId);
+            }
+        }
+    }
 
     if (type == TelegramNamespace::MessageTypePhoto) {
         m_core->requestMessageMediaData(messageId);
@@ -417,7 +428,9 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     Q_UNUSED(index);
 
     if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
-        // TODO: Read messages
+        if (ui->settingsReadMessages->isChecked()) {
+            readAllMessages();
+        }
     }
 }
 
@@ -461,6 +474,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     if (ui->workLikeClient->isChecked()) {
         m_core->setOnlineStatus(false);
+    }
+}
+
+void MainWindow::readAllMessages()
+{
+    foreach (const QString &contact, m_contactLastMessageList.keys()) {
+        m_core->setMessageRead(contact, m_contactLastMessageList.value(contact));
     }
 }
 

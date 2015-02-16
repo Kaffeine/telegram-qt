@@ -15,6 +15,7 @@
 #define MAINWINDOW_HPP
 
 #include <QMainWindow>
+#include <QMap>
 
 #include "TelegramNamespace.hpp"
 
@@ -95,10 +96,14 @@ private slots:
 protected:
     void closeEvent(QCloseEvent *event);
 
+    void readAllMessages();
+
 private:
     void setRegistered(bool newRegistered);
 
     Ui::MainWindow *ui;
+
+    QMap<QString,quint64> m_contactLastMessageList;
 
     CContactsModel *m_contactsModel;
     CMessagingModel *m_messagingModel;
