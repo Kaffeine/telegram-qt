@@ -1641,6 +1641,8 @@ void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &str
 
 TLValue CTelegramConnection::processHelpGetConfig(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLConfig result;
     stream >> result;
 
@@ -1659,6 +1661,8 @@ TLValue CTelegramConnection::processHelpGetConfig(CTelegramStream &stream, quint
 
 TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLContactsContacts result;
     stream >> result;
 
@@ -1678,6 +1682,8 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
 
 TLValue CTelegramConnection::processContactsImportContacts(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLContactsImportedContacts result;
     stream >> result;
 
@@ -1697,6 +1703,8 @@ TLValue CTelegramConnection::processContactsImportContacts(CTelegramStream &stre
 
 TLValue CTelegramConnection::processContactsDeleteContacts(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLValue result;
     stream >> result;
 
@@ -1705,6 +1713,8 @@ TLValue CTelegramConnection::processContactsDeleteContacts(CTelegramStream &stre
 
 TLValue CTelegramConnection::processUpdatesGetState(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLUpdatesState result;
     stream >> result;
 
@@ -1721,6 +1731,8 @@ TLValue CTelegramConnection::processUpdatesGetState(CTelegramStream &stream, qui
 
 TLValue CTelegramConnection::processUpdatesGetDifference(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLUpdatesDifference result;
     stream >> result;
 
@@ -1821,6 +1833,8 @@ TLValue CTelegramConnection::processAuthSendCode(CTelegramStream &stream, quint6
 
 TLValue CTelegramConnection::processAuthSendSms(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLValue result;
     stream >> result;
 
@@ -1829,6 +1843,8 @@ TLValue CTelegramConnection::processAuthSendSms(CTelegramStream &stream, quint64
 
 TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLAuthAuthorization result;
     stream >> result;
 
@@ -1844,6 +1860,8 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
 
 TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLUploadFile file;
     stream >> file;
 
@@ -1856,6 +1874,8 @@ TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint
 
 TLValue CTelegramConnection::processUsersGetUsers(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLVector<TLUser> result;
 
     stream >> result;
@@ -1869,6 +1889,8 @@ TLValue CTelegramConnection::processUsersGetUsers(CTelegramStream &stream, quint
 
 TLValue CTelegramConnection::processUsersGetFullUser(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLUserFull result;
 
     stream >> result;
@@ -1886,6 +1908,8 @@ TLValue CTelegramConnection::processUsersGetFullUser(CTelegramStream &stream, qu
 
 TLValue CTelegramConnection::processMessagesCreateChat(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLMessagesStatedMessage result;
 
     stream >> result;
@@ -1928,6 +1952,8 @@ TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream,
 
 TLValue CTelegramConnection::processMessagesSetTyping(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLValue result;
     stream >> result;
 
@@ -1936,6 +1962,8 @@ TLValue CTelegramConnection::processMessagesSetTyping(CTelegramStream &stream, q
 
 TLValue CTelegramConnection::processMessagesReadHistory(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLMessagesAffectedHistory result;
     stream >> result;
 
@@ -1944,6 +1972,8 @@ TLValue CTelegramConnection::processMessagesReadHistory(CTelegramStream &stream,
 
 TLValue CTelegramConnection::processMessagesReceivedMessages(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLVector<quint32> result;
     stream >> result;
 
@@ -1952,6 +1982,8 @@ TLValue CTelegramConnection::processMessagesReceivedMessages(CTelegramStream &st
 
 TLValue CTelegramConnection::processMessagesGetChats(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLMessagesChats result;
     stream >> result;
 
@@ -1964,6 +1996,8 @@ TLValue CTelegramConnection::processMessagesGetChats(CTelegramStream &stream, qu
 
 TLValue CTelegramConnection::processMessagesGetFullChat(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLMessagesChatFull result;
     stream >> result;
 
@@ -1976,6 +2010,8 @@ TLValue CTelegramConnection::processMessagesGetFullChat(CTelegramStream &stream,
 
 TLValue CTelegramConnection::processAccountUpdateStatus(CTelegramStream &stream, quint64 id)
 {
+    Q_UNUSED(id);
+
     TLValue result;
     stream >> result;
 
