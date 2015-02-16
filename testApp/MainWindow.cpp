@@ -91,11 +91,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)),
             SLOT(whenContactChatTypingStatusChanged(quint32,QString,bool)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)),
-            SLOT(whenContactTypingStatusChanged()));
+            SLOT(whenContactTypingStatusChanged(QString,bool)));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)),
             SLOT(whenContactStatusChanged(QString)));
-    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)),
-            m_contactsModel, SLOT(setTypingStatus(QString,bool)));
     connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
             m_messagingModel, SLOT(setMessageDeliveryStatus(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
 
@@ -280,8 +278,9 @@ void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QStrin
     m_chatContactsModel->setTypingStatus(phone, status);
 }
 
-void MainWindow::whenContactTypingStatusChanged()
+void MainWindow::whenContactTypingStatusChanged(const QString &contact, bool typingStatus)
 {
+    m_contactsModel->setTypingStatus(contact, typingStatus);
     ui->messagingContactTypingStatus->setText(m_contactsModel->data(ui->messagingContactPhone->text(), CContactsModel::TypingStatus).toString());
 }
 

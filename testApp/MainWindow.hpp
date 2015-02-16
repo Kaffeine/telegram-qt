@@ -50,7 +50,7 @@ protected slots:
     void whenMessageReceived(const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message, TelegramNamespace::MessageType type);
     void whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status);
-    void whenContactTypingStatusChanged();
+    void whenContactTypingStatusChanged(const QString &contact, bool typingStatus);
     void whenContactStatusChanged(const QString &contact);
     void whenChatAdded(quint32 chatId);
     void whenChatChanged(quint32 chatId);
