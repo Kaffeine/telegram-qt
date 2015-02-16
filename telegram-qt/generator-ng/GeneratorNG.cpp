@@ -126,13 +126,13 @@ QString GeneratorNG::generateTLType(const TLType &type)
 
     code.append(QString("struct %1 {\n").arg(type.name));
 
-    QString anotherName = removePrefix(type.name);
-    anotherName[0] = anotherName.at(0).toUpper();
-    anotherName.prepend(QLatin1String("another"));
+//    QString anotherName = removePrefix(type.name);
+//    anotherName[0] = anotherName.at(0).toUpper();
+//    anotherName.prepend(QLatin1String("another"));
 
     QString constructor = spacing + QString("%1() :\n").arg(type.name);
-    QString copyConstructor = spacing + QString("%1(const %1 &%2) :\n").arg(type.name).arg(anotherName);
-    QString copyOperator = spacing + QString("%1 &operator=(const %1 &%2) {\n").arg(type.name).arg(anotherName);
+//    QString copyConstructor = spacing + QString("%1(const %1 &%2) :\n").arg(type.name).arg(anotherName);
+//    QString copyOperator = spacing + QString("%1 &operator=(const %1 &%2) {\n").arg(type.name).arg(anotherName);
     QString membersCode;
 
     QStringList addedMembers;
@@ -144,8 +144,8 @@ QString GeneratorNG::generateTLType(const TLType &type)
 
             addedMembers.append(member.name);
 
-            copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
-            copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
+//            copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
+//            copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
 
             membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(member.type).arg(member.name));
 
@@ -158,24 +158,24 @@ QString GeneratorNG::generateTLType(const TLType &type)
         }
     }
 
-    constructor += QString("%1%2(%3),\n").arg(doubleSpacing).arg(tlTypeMember).arg(type.subTypes.first().name);
-    copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
-    copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
+    constructor += QString("%1%2(%3::%4),\n").arg(doubleSpacing).arg(tlTypeMember).arg(tlValueName).arg(type.subTypes.first().name);
+//    copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
+//    copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
     membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(tlValueName).arg(tlTypeMember));
 
     constructor.chop(2);
     constructor.append(QLatin1String(" { }\n\n"));
 
-    copyConstructor.chop(2);
-    copyConstructor.append(QLatin1String(" { }\n\n"));
+//    copyConstructor.chop(2);
+//    copyConstructor.append(QLatin1String(" { }\n\n"));
 
-    copyOperator.append(QString("\n%1%1return *this;\n%1}\n").arg(spacing));
+//    copyOperator.append(QString("\n%1%1return *this;\n%1}\n").arg(spacing));
 
     code.append(constructor);
-    code.append(copyConstructor);
-    code.append(copyOperator);
+//    code.append(copyConstructor);
+//    code.append(copyOperator);
 
-    code.append(QLatin1Char('\n'));
+//    code.append(QLatin1Char('\n'));
     code.append(membersCode);
 
     code.append(QString("};\n\n"));
@@ -209,7 +209,7 @@ QString GeneratorNG::generateStreamReadOperatorImplementation(const TLType &type
     code.append(QString("%1*this >> result.tlType;\n\n%1switch (result.tlType) {\n").arg(spacing));
 
     foreach (const TLSubType &subType, type.subTypes) {
-        code.append(QString("%1case %2:\n").arg(spacing).arg(subType.name));
+        code.append(QString("%1case %2::%3:\n").arg(spacing).arg(tlValueName).arg(subType.name));
 
         foreach (const TLParam &member, subType.members) {
             code.append(QString("%1*this >> result.%2;\n").arg(doubleSpacing).arg(member.name));
@@ -235,7 +235,7 @@ QString GeneratorNG::generateStreamWriteOperatorImplementation(const TLType &typ
     code.append(QString("%1*this << %2.tlType;\n\n%1switch (%2.tlType) {\n").arg(spacing).arg(argName));
 
     foreach (const TLSubType &subType, type.subTypes) {
-        code.append(QString("%1case %2:\n").arg(spacing).arg(subType.name));
+        code.append(QString("%1case %2::%3:\n").arg(spacing).arg(tlValueName).arg(subType.name));
 
         foreach (const TLParam &member, subType.members) {
             code.append(doubleSpacing + QString("*this << %1.%2;\n").arg(argName).arg(member.name));
@@ -286,7 +286,7 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method)
     result += spacing + QLatin1String("QByteArray output;\n");
     result += spacing + QLatin1String("CTelegramStream outputStream(&output, /* write */ true);\n\n");
 
-    result += spacing + QString("outputStream << %1;\n").arg(formatName1stCapital(method.name));
+    result += spacing + QString("outputStream << %1::%2;\n").arg(tlValueName).arg(formatName1stCapital(method.name));
 
     foreach (const TLParam &param, method.params) {
         result += spacing + QString("outputStream << %1;\n").arg(param.name);
