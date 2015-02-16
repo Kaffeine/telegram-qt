@@ -39,10 +39,10 @@ public:
     Q_INVOKABLE bool isAuthenticated();
     Q_INVOKABLE QString selfPhone() const;
     Q_INVOKABLE QStringList contactList() const;
-    Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
-    Q_INVOKABLE QString contactFirstName(const QString &phone) const;
-    Q_INVOKABLE QString contactLastName(const QString &phone) const;
-    Q_INVOKABLE QString contactAvatarToken(const QString &phone) const;
+    Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &contact) const;
+    Q_INVOKABLE QString contactFirstName(const QString &contact) const;
+    Q_INVOKABLE QString contactLastName(const QString &contact) const;
+    Q_INVOKABLE QString contactAvatarToken(const QString &contact) const;
     Q_INVOKABLE QString chatTitle(quint32 chatId) const;
     Q_INVOKABLE QStringList chatParticipants(quint32 chatId) const;
 
@@ -72,14 +72,14 @@ public Q_SLOTS:
 
     void requestContactAvatar(const QString &contact);
 
-    quint64 sendMessage(const QString &phone, const QString &message); // Message id is random number
+    quint64 sendMessage(const QString &contact, const QString &message); // Message id is random number
     quint64 sendChatMessage(quint32 chatId, const QString &message); // Message id is random number
 
     /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
-    void setTyping(const QString &phone, bool typingStatus);
+    void setTyping(const QString &contact, bool typingStatus);
     void setChatTyping(quint32 chatId, bool typingStatus);
 
-    void setMessageRead(const QString &phone, quint32 messageId);
+    void setMessageRead(const QString &contact, quint32 messageId);
 
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
@@ -98,13 +98,13 @@ Q_SIGNALS:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
 
     void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
-    void chatMessageReceived(quint32 chatId, const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
+    void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
 
-    void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
-    void contactTypingStatusChanged(const QString &phone, bool typingStatus);
-    void contactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool typingStatus);
+    void contactStatusChanged(const QString &contact, TelegramNamespace::ContactStatus status);
+    void contactTypingStatusChanged(const QString &contact, bool typingStatus);
+    void contactChatTypingStatusChanged(quint32 chatId, const QString &contact, bool typingStatus);
 
-    void sentMessageStatusChanged(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
+    void sentMessageStatusChanged(const QString &contact, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
 
     void chatAdded(quint32 publichChatId);
     void chatChanged(quint32 publichChatId);

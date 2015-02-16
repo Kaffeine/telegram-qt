@@ -405,20 +405,20 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
     }
 }
 
-quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QString &message)
+quint64 CTelegramDispatcher::sendMessageToContact(const QString &contact, const QString &message)
 {
     if (!activeConnection()) {
         return 0;
     }
-    const TLInputPeer peer = phoneNumberToInputPeer(phone);
+    const TLInputPeer peer = phoneNumberToInputPeer(contact);
 
     if (peer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(phone);
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(contact);
         return 0;
     }
 
-    if (m_localTypingMap.contains(phone)) {
-        m_localTypingMap.remove(phone);
+    if (m_localTypingMap.contains(contact)) {
+        m_localTypingMap.remove(contact);
     }
 
     return sendMessages(peer, message);
@@ -489,19 +489,19 @@ quint32 CTelegramDispatcher::createChat(const QStringList &phones, const QString
     return publicChatId;
 }
 
-void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
+void CTelegramDispatcher::setTyping(const QString &contact, bool typingStatus)
 {
     if (!activeConnection()) {
         return;
     }
-    if (typingStatus == m_localTypingMap.contains(phone)) {
+    if (typingStatus == m_localTypingMap.contains(contact)) {
         return; // Avoid flood
     }
 
-    TLInputPeer peer = phoneNumberToInputPeer(phone);
+    TLInputPeer peer = phoneNumberToInputPeer(contact);
 
     if (peer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(phone);
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(contact);
         return;
     }
 
@@ -515,10 +515,10 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
     activeConnection()->messagesSetTyping(peer, action);
 
     if (typingStatus) {
-        m_localTypingMap.insert(phone, s_localTypingDuration);
+        m_localTypingMap.insert(contact, s_localTypingDuration);
         ensureTypingUpdateTimer(s_localTypingDuration);
     } else {
-        m_localTypingMap.remove(phone);
+        m_localTypingMap.remove(contact);
     }
 }
 
@@ -555,12 +555,12 @@ void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
     }
 }
 
-void CTelegramDispatcher::setMessageRead(const QString &phone, quint32 messageId)
+void CTelegramDispatcher::setMessageRead(const QString &contact, quint32 messageId)
 {
     if (!activeConnection()) {
         return;
     }
-    const TLInputPeer peer = phoneNumberToInputPeer(phone);
+    const TLInputPeer peer = phoneNumberToInputPeer(contact);
 
     if (peer.tlType != TLValue::InputPeerEmpty) {
         activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0, /* readContents */ false);

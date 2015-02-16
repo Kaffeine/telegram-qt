@@ -108,15 +108,15 @@ public:
     void requestPhoneCode(const QString &phoneNumber);
     void requestContactAvatar(const QString &contact);
 
-    quint64 sendMessageToContact(const QString &phone, const QString &message);
+    quint64 sendMessageToContact(const QString &contact, const QString &message);
     quint64 sendMessageToChat(quint32 publicChatId, const QString &message);
 
     quint32 createChat(const QStringList &phones, const QString chatName);
 
-    void setTyping(const QString &phone, bool typingStatus);
+    void setTyping(const QString &contact, bool typingStatus);
     void setChatTyping(quint32 publicChatId, bool typingStatus);
 
-    void setMessageRead(const QString &phone, quint32 messageId);
+    void setMessageRead(const QString &contact, quint32 messageId);
 
     void setOnlineStatus(bool onlineStatus);
 
