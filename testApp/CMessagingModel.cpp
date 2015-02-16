@@ -104,16 +104,14 @@ void CMessagingModel::addMessage(const QString &phone, const QString &message, T
 {
     Q_UNUSED(type);
 
-    beginResetModel();
-
     if (!timestamp) {
         timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
     }
 
+    beginInsertRows(QModelIndex(), m_messages.count(), m_messages.count());
     m_messages.append(SMessageEntry(phone, message, messageId, timestamp));
     m_messages.last().outgoing = outgoing;
-
-    endResetModel();
+    endInsertRows();
 }
 
 void CMessagingModel::setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status)
