@@ -1330,7 +1330,7 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
             qDebug() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Unknown user.";
+        qDebug() << Q_FUNC_INFO << "Unknown user: " << maskPhoneNumber(phoneNumber);
     }
 
     return inputPeer;
