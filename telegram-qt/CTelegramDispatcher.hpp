@@ -134,7 +134,6 @@ public:
     QString contactAvatarToken(const QString &contact) const;
 
     QString chatTitle(quint32 publicChatId) const;
-    QStringList chatParticipants(quint32 publicChatId) const;
 
     bool getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 publicChatId) const;
     bool getChatParticipants(QStringList *participants, quint32 publicChatId);
@@ -196,7 +195,8 @@ protected slots:
     void getDifference();
     void whenUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
-    void whenMessagesChatsReceived(const QVector<TLChat> &chats);
+    void whenMessagesChatsReceived(const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void whenMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
 protected:
     bool requestFile(const FileRequestDescriptor &requestId);

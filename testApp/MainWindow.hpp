@@ -99,6 +99,8 @@ protected:
 
     void readAllMessages();
 
+    void setContactList(CContactsModel *contactsModel, const QStringList &newContactList);
+
 private:
     void setRegistered(bool newRegistered);
 

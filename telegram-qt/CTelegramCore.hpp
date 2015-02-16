@@ -45,7 +45,6 @@ public:
     Q_INVOKABLE QString contactLastName(const QString &contact) const;
     Q_INVOKABLE QString contactAvatarToken(const QString &contact) const;
     Q_INVOKABLE QString chatTitle(quint32 chatId) const;
-    Q_INVOKABLE QStringList chatParticipants(quint32 chatId) const;
 
     static qint32 localTypingRecommendedRepeatInterval(); // Recommended application local typing state re-set interval.
 

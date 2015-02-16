@@ -705,29 +705,6 @@ QString CTelegramDispatcher::chatTitle(quint32 publicChatId) const
     return m_chatInfo.value(chatId).title;
 }
 
-QStringList CTelegramDispatcher::chatParticipants(quint32 publicChatId) const
-{
-    if (!havePublicChatId(publicChatId)) {
-        return QStringList();
-    }
-
-    const quint32 chatId = m_chatIds.at(publicChatId);
-
-    if (!m_chatFullInfo.contains(chatId)) {
-        return QStringList();
-    }
-
-    const TLChatFull &fullChat = m_chatFullInfo.value(chatId);
-
-    QStringList result;
-
-    foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
-        result.append(userIdToIdentifier(participant.userId));
-    }
-
-    return result;
-}
-
 bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 publicChatId) const
 {
     if (!havePublicChatId(publicChatId)) {
@@ -1063,15 +1040,25 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
     checkStateAndCallGetDifference();
 }
 
-void CTelegramDispatcher::whenMessagesChatsReceived(const QVector<TLChat> &chats)
+void CTelegramDispatcher::whenMessagesChatsReceived(const QVector<TLChat> &chats, const QVector<TLUser> &users)
 {
     qDebug() << Q_FUNC_INFO << chats.count();
+
+    whenUsersReceived(users);
 
     foreach (const TLChat &chat, chats) {
         updateChat(chat);
     }
 
     continueInitialization(InitKnowChats);
+}
+
+void CTelegramDispatcher::whenMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users)
+{
+    Q_UNUSED(chats);
+
+    whenUsersReceived(users);
+    updateFullChat(chat);
 }
 
 bool CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
@@ -1491,7 +1478,9 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
             connect(connection, SIGNAL(authExportedAuthorizationReceived(quint32,quint32,QByteArray)),
                     SLOT(whenAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
             connect(connection, SIGNAL(messagesChatsReceived(QVector<TLChat>,QVector<TLUser>)),
-                    SLOT(whenMessagesChatsReceived(QVector<TLChat>)));
+                    SLOT(whenMessagesChatsReceived(QVector<TLChat>,QVector<TLUser>)));
+            connect(connection, SIGNAL(messagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)),
+                    SLOT(whenMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
 
             continueInitialization(InitIsSignIn);
         }

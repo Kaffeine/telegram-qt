@@ -174,14 +174,7 @@ void MainWindow::whenAuthenticated()
 
 void MainWindow::whenContactListChanged()
 {
-    m_contactsModel->setContactList(m_core->contactList());
-
-    foreach (const QString &contact, m_core->contactList()) {
-        m_core->requestContactAvatar(contact);
-        m_contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
-        m_contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
-        m_contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
-    }
+    setContactList(m_contactsModel, m_core->contactList());
 
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
         ui->contactListTable->setRowHeight(i, 64);
@@ -299,7 +292,12 @@ void MainWindow::whenChatChanged(quint32 chatId)
         return;
     }
 
-    m_chatContactsModel->setContactList(m_core->chatParticipants(chatId));
+    QStringList participants;
+    if (!m_core->getChatParticipants(&participants, chatId)) {
+        qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
+    }
+
+    setContactList(m_chatContactsModel, participants);
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -488,6 +486,18 @@ void MainWindow::readAllMessages()
 {
     foreach (const QString &contact, m_contactLastMessageList.keys()) {
         m_core->setMessageRead(contact, m_contactLastMessageList.value(contact));
+    }
+}
+
+void MainWindow::setContactList(CContactsModel *contactsModel, const QStringList &newContactList)
+{
+    contactsModel->setContactList(newContactList);
+
+    foreach (const QString &contact, newContactList) {
+        m_core->requestContactAvatar(contact);
+        contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
+        contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
+        contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
     }
 }
 

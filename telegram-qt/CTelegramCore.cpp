@@ -190,11 +190,6 @@ QString CTelegramCore::chatTitle(quint32 chatId) const
     return m_dispatcher->chatTitle(chatId);
 }
 
-QStringList CTelegramCore::chatParticipants(quint32 chatId) const
-{
-    return m_dispatcher->chatParticipants(chatId);
-}
-
 qint32 CTelegramCore::localTypingRecommendedRepeatInterval()
 {
     return CTelegramDispatcher::localTypingRecommendedRepeatInterval();
