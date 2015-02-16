@@ -65,6 +65,9 @@
              <property name="text">
               <string>Filter out outgoing messages</string>
              </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item row="0" column="0">
@@ -86,10 +89,10 @@
               <string>If this box is checked, application will ignore read messages.</string>
              </property>
              <property name="text">
-              <string>Receive messages that was read</string>
+              <string>Filter out read messages</string>
              </property>
              <property name="checked">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
             </widget>
            </item>
