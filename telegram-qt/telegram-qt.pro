@@ -31,9 +31,8 @@ HEADERS = CTelegramCore.hpp \
     crypto-rsa.hpp \
     CTelegramConnection.hpp \
     TelegramNamespace.hpp \
-    telegramqt_export.h
-
-HEADERS += TLValues.h
+    telegramqt_export.h \
+    TLValues.hpp
 
 LIBS += -lssl -lcrypto
 LIBS += -lz

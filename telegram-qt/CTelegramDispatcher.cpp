@@ -82,7 +82,7 @@ const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typ
 
 FileRequestDescriptor FileRequestDescriptor::avatarRequest(const TLUser *user)
 {
-    if (user->photo.photoSmall.tlType != FileLocation) {
+    if (user->photo.photoSmall.tlType != TLValue::FileLocation) {
         return FileRequestDescriptor();
     }
 
@@ -93,7 +93,7 @@ FileRequestDescriptor FileRequestDescriptor::avatarRequest(const TLUser *user)
 
     result.m_dcId = user->photo.photoSmall.dcId;
 
-    result.m_inputLocation.tlType = InputFileLocation;
+    result.m_inputLocation.tlType = TLValue::InputFileLocation;
     result.m_inputLocation.volumeId = user->photo.photoSmall.volumeId;
     result.m_inputLocation.localId = user->photo.photoSmall.localId;
     result.m_inputLocation.secret = user->photo.photoSmall.secret;
@@ -175,7 +175,7 @@ void CTelegramDispatcher::deleteContacts(const QStringList &phoneNumbers)
 
     foreach (const QString &phoneNumber, phoneNumbers) {
         TLInputUser inputUser = phoneNumberToInputUser(phoneNumber);
-        if (inputUser.tlType != InputUserEmpty) {
+        if (inputUser.tlType != TLValue::InputUserEmpty) {
             users.append(inputUser);
         }
     }
@@ -381,7 +381,7 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
         return;
     }
 
-    if (user->photo.tlType == UserProfilePhotoEmpty) {
+    if (user->photo.tlType == TLValue::UserProfilePhotoEmpty) {
         qDebug() << Q_FUNC_INFO << "User" << maskPhoneNumber(phoneNumber) << "have no avatar";
         return;
     }
@@ -400,7 +400,7 @@ quint64 CTelegramDispatcher::sendMessageToContact(const QString &phone, const QS
     }
     const TLInputPeer peer = phoneNumberToInputPeer(phone);
 
-    if (peer.tlType == InputPeerEmpty) {
+    if (peer.tlType == TLValue::InputPeerEmpty) {
         qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(phone);
         return 0;
     }
@@ -419,7 +419,7 @@ quint64 CTelegramDispatcher::sendMessageToChat(quint32 publicChatId, const QStri
     }
     const TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
 
-    if (peer.tlType == InputPeerEmpty) {
+    if (peer.tlType == TLValue::InputPeerEmpty) {
         qDebug() << Q_FUNC_INFO << "Can not resolve chat" << publicChatId;
         return 0;
     }
@@ -500,16 +500,16 @@ void CTelegramDispatcher::setTyping(const QString &phone, bool typingStatus)
 
     TLInputPeer peer = phoneNumberToInputPeer(phone);
 
-    if (peer.tlType == InputPeerEmpty) {
+    if (peer.tlType == TLValue::InputPeerEmpty) {
         qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(phone);
         return;
     }
 
     TLSendMessageAction action;
     if (typingStatus) {
-        action.tlType = SendMessageTypingAction;
+        action.tlType = TLValue::SendMessageTypingAction;
     } else {
-        action.tlType = SendMessageCancelAction;
+        action.tlType = TLValue::SendMessageCancelAction;
     }
 
     activeConnection()->messagesSetTyping(peer, action);
@@ -533,16 +533,16 @@ void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
 
     TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
 
-    if (peer.tlType == InputPeerEmpty) {
+    if (peer.tlType == TLValue::InputPeerEmpty) {
         qDebug() << Q_FUNC_INFO << "Can not resolve chat" << publicChatId;
         return;
     }
 
     TLSendMessageAction action;
     if (typingStatus) {
-        action.tlType = SendMessageTypingAction;
+        action.tlType = TLValue::SendMessageTypingAction;
     } else {
-        action.tlType = SendMessageCancelAction;
+        action.tlType = TLValue::SendMessageCancelAction;
     }
 
     activeConnection()->messagesSetTyping(peer, action);
@@ -562,7 +562,7 @@ void CTelegramDispatcher::setMessageRead(const QString &phone, quint32 messageId
     }
     const TLInputPeer peer = phoneNumberToInputPeer(phone);
 
-    if (peer.tlType != InputPeerEmpty) {
+    if (peer.tlType != TLValue::InputPeerEmpty) {
         activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0, /* readContents */ false);
     }
 }
@@ -732,7 +732,7 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
             m_users.insert(user.id, new TLUser(user));
         }
 
-        if (user.tlType == UserSelf) {
+        if (user.tlType == TLValue::UserSelf) {
             m_selfUserId = user.id;
             m_selfPhone = user.phone;
 
@@ -888,7 +888,7 @@ void CTelegramDispatcher::getSelfUser()
 {
     if (!m_selfUserId) {
         TLInputUser selfUser;
-        selfUser.tlType = InputUserSelf;
+        selfUser.tlType = TLValue::InputUserSelf;
         activeConnection()->usersGetUsers(QVector<TLInputUser>() << selfUser); // Get self-info
     }
 }
@@ -896,7 +896,7 @@ void CTelegramDispatcher::getSelfUser()
 void CTelegramDispatcher::getUser(quint32 id)
 {
     TLInputUser user;
-    user.tlType = InputUserContact;
+    user.tlType = TLValue::InputUserContact;
     user.userId = id;
     activeConnection()->usersGetUsers(QVector<TLInputUser>() << user);
 }
@@ -907,10 +907,10 @@ void CTelegramDispatcher::getInitialUsers()
 
     TLInputUser user;
 
-    user.tlType = InputUserSelf;
+    user.tlType = TLValue::InputUserSelf;
     users << user;
 
-    user.tlType = InputUserContact;
+    user.tlType = TLValue::InputUserContact;
     user.userId = 777000;
     users << user;
 
@@ -952,8 +952,8 @@ void CTelegramDispatcher::getDifference()
 void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference)
 {
     switch (updatesDifference.tlType) {
-    case UpdatesDifference:
-    case UpdatesDifferenceSlice:
+    case TLValue::UpdatesDifference:
+    case TLValue::UpdatesDifferenceSlice:
         qDebug() << Q_FUNC_INFO << "UpdatesDifference" << updatesDifference.newMessages.count();
         foreach (const TLChat &chat, updatesDifference.chats) {
             updateChat(chat);
@@ -961,7 +961,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
 
         foreach (const TLMessage &message, updatesDifference.newMessages) {
 //            qDebug() << "added message" << message.message;
-            if (message.tlType != Message) {
+            if (message.tlType != TLValue::Message) {
                 continue;
             }
 
@@ -971,13 +971,13 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
 
             processMessageReceived(message);
         }
-        if (updatesDifference.tlType == UpdatesDifference) {
+        if (updatesDifference.tlType == TLValue::UpdatesDifference) {
             m_updatesState = updatesDifference.state;
         } else { // UpdatesDifferenceSlice
             m_updatesState = updatesDifference.intermediateState;
         }
         break;
-    case UpdatesDifferenceEmpty:
+    case TLValue::UpdatesDifferenceEmpty:
         qDebug() << Q_FUNC_INFO << "UpdatesDifferenceEmpty";
 
         // Try to update actual and local state in this weird case.
@@ -1025,33 +1025,33 @@ bool CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
 void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 {
     switch (update.tlType) {
-    case UpdateNewMessage:
+    case TLValue::UpdateNewMessage:
         qDebug() << "UpdateNewMessage";
         processMessageReceived(update.message);
         ensureUpdateState(update.pts);
         break;
-//    case UpdateMessageID:
+//    case TLValue::UpdateMessageID:
 //        update.id;
 //        update.randomId;
 //        break;
-    case UpdateReadMessages:
+    case TLValue::UpdateReadMessages:
         foreach (quint32 messageId, update.messages) {
             const QPair<QString, quint64> phoneAndId = m_messagesMap.value(messageId);
             emit sentMessageStatusChanged(phoneAndId.first, phoneAndId.second, TelegramNamespace::MessageDeliveryStatusRead);
         }
         ensureUpdateState(update.pts);
         break;
-//    case UpdateDeleteMessages:
+//    case TLValue::UpdateDeleteMessages:
 //        update.messages;
 //        ensureUpdateState(update.pts);
 //        break;
-//    case UpdateRestoreMessages:
+//    case TLValue::UpdateRestoreMessages:
 //        update.messages;
 //        ensureUpdateState(update.pts);
 //        break;
-    case UpdateUserTyping:
+    case TLValue::UpdateUserTyping:
         if (m_users.contains(update.userId)) {
-            emit contactTypingStatusChanged(userIdToIdentifier(update.userId), update.action.tlType == SendMessageTypingAction);
+            emit contactTypingStatusChanged(userIdToIdentifier(update.userId), update.action.tlType == TLValue::SendMessageTypingAction);
 #if QT_VERSION >= 0x050000
             m_userTypingMap.insert(update.userId, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
 #else
@@ -1060,10 +1060,10 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             ensureTypingUpdateTimer(s_userTypingActionPeriod);
         }
         break;
-    case UpdateChatUserTyping:
+    case TLValue::UpdateChatUserTyping:
         if (m_users.contains(update.userId)) {
             emit contactChatTypingStatusChanged(telegramChatIdToPublicId(update.chatId), userIdToIdentifier(update.userId),
-                                                update.action.tlType == SendMessageTypingAction);
+                                                update.action.tlType == TLValue::SendMessageTypingAction);
             const QPair<quint32,quint32> key(telegramChatIdToPublicId(update.chatId), update.userId);
 #if QT_VERSION >= 0x050000
             m_userChatTypingMap.insert(key, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
@@ -1073,7 +1073,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             ensureTypingUpdateTimer(s_userTypingActionPeriod);
         }
         break;
-    case UpdateChatParticipants: {
+    case TLValue::UpdateChatParticipants: {
         TLChatFull newChatState = m_chatFullInfo.value(update.participants.chatId);
         newChatState.id = update.participants.chatId; // newChatState can be newly created emtpy chat
         newChatState.participants = update.participants;
@@ -1082,7 +1082,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         qDebug() << "chat id resolved to" << update.participants.chatId;
         break;
     }
-    case UpdateUserStatus: {
+    case TLValue::UpdateUserStatus: {
         if (update.userId == m_selfUserId) {
             break;
         }
@@ -1094,73 +1094,73 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         }
         break;
     }
-//    case UpdateUserName:
+//    case TLValue::UpdateUserName:
 //        update.userId;
 //        update.firstName;
 //        update.lastName;
 //        break;
-//    case UpdateUserPhoto:
+//    case TLValue::UpdateUserPhoto:
 //        update.userId;
 //        update.date;
 //        update.photo;
 //        update.previous;
 //        break;
-//    case UpdateContactRegistered:
+//    case TLValue::UpdateContactRegistered:
 //        update.userId;
 //        update.date;
 //        break;
-//    case UpdateContactLink:
+//    case TLValue::UpdateContactLink:
 //        update.userId;
 //        update.myLink;
 //        update.foreignLink;
 //        break;
-//    case UpdateActivation:
+//    case TLValue::UpdateActivation:
 //        update.userId;
 //        break;
-//    case UpdateNewAuthorization:
+//    case TLValue::UpdateNewAuthorization:
 //        update.authKeyId;
 //        update.date;
 //        update.device;
 //        update.location;
 //        break;
-//    case UpdateNewGeoChatMessage:
+//    case TLValue::UpdateNewGeoChatMessage:
 //        update.message;
 //        break;
-//    case UpdateNewEncryptedMessage:
+//    case TLValue::UpdateNewEncryptedMessage:
 //        update.message;
 //        update.qts;
 //        break;
-//    case UpdateEncryptedChatTyping:
+//    case TLValue::UpdateEncryptedChatTyping:
 //        update.chatId;
 //        break;
-//    case UpdateEncryption:
+//    case TLValue::UpdateEncryption:
 //        update.chat;
 //        update.date;
 //        break;
-//    case UpdateEncryptedMessagesRead:
+//    case TLValue::UpdateEncryptedMessagesRead:
 //        update.chatId;
 //        update.maxDate;
 //        update.date;
 //        break;
-//    case UpdateChatParticipantAdd:
+//    case TLValue::UpdateChatParticipantAdd:
 //        update.chatId;
 //        update.userId;
 //        update.inviterId;
 //        update.version;
 //        break;
-//    case UpdateChatParticipantDelete:
+//    case TLValue::UpdateChatParticipantDelete:
 //        update.chatId;
 //        update.userId;
 //        update.version;
 //        break;
-//    case UpdateDcOptions:
+//    case TLValue::UpdateDcOptions:
 //        update.dcOptions;
 //        break;
-//    case UpdateUserBlocked:
+//    case TLValue::UpdateUserBlocked:
 //        update.userId;
 //        update.blocked;
 //        break;
-//    case UpdateNotifySettings:
+//    case TLValue::UpdateNotifySettings:
 //        update.peer;
 //        update.notifySettings;
 //        break;
@@ -1172,7 +1172,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 
 void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 {
-    if (message.toId.tlType == PeerUser) {
+    if (message.toId.tlType == TLValue::PeerUser) {
         quint32 contactUserId = message.flags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
         emit messageReceived(userIdToIdentifier(contactUserId), message.message, message.id, message.flags, message.date);
     } else {
@@ -1258,7 +1258,7 @@ TLInputPeer CTelegramDispatcher::publicChatIdToInputPeer(quint32 publicChatId) c
         return inputPeer;
     }
 
-    inputPeer.tlType = InputPeerChat;
+    inputPeer.tlType = TLValue::InputPeerChat;
     inputPeer.chatId = chatId;
 
     return inputPeer;
@@ -1269,22 +1269,22 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
     TLInputPeer inputPeer;
 
     if (phoneNumber == m_selfPhone) {
-        inputPeer.tlType = InputPeerSelf;
+        inputPeer.tlType = TLValue::InputPeerSelf;
         return inputPeer;
     }
 
     const TLUser *user = phoneNumberToUser(phoneNumber);
 
     if (user) {
-        if (user->tlType == UserContact) {
-            inputPeer.tlType = InputPeerContact;
+        if (user->tlType == TLValue::UserContact) {
+            inputPeer.tlType = TLValue::InputPeerContact;
             inputPeer.userId = user->id;
-        } else if (user->tlType == UserForeign) {
-            inputPeer.tlType = InputPeerForeign;
+        } else if (user->tlType == TLValue::UserForeign) {
+            inputPeer.tlType = TLValue::InputPeerForeign;
             inputPeer.userId = user->id;
             inputPeer.accessHash = user->accessHash;
-        } else if (user->tlType == UserRequest) {
-            inputPeer.tlType = InputPeerContact; // TODO: Check if there should be InputPeerForeign. Seems like working as-is; can't test at this time.
+        } else if (user->tlType == TLValue::UserRequest) {
+            inputPeer.tlType = TLValue::InputPeerContact; // TODO: Check if there should be InputPeerForeign. Seems like working as-is; can't test at this time.
             inputPeer.userId = user->id;
             inputPeer.accessHash = user->accessHash; // Seems to be useless.
         } else {
@@ -1302,22 +1302,22 @@ TLInputUser CTelegramDispatcher::phoneNumberToInputUser(const QString &phoneNumb
     TLInputUser inputUser;
 
     if (phoneNumber == m_selfPhone) {
-        inputUser.tlType = InputUserSelf;
+        inputUser.tlType = TLValue::InputUserSelf;
         return inputUser;
     }
 
     const TLUser *user = phoneNumberToUser(phoneNumber);
 
     if (user) {
-        if (user->tlType == UserContact) {
-            inputUser.tlType = InputUserContact;
+        if (user->tlType == TLValue::UserContact) {
+            inputUser.tlType = TLValue::InputUserContact;
             inputUser.userId = user->id;
-        } else if (user->tlType == UserForeign) {
-            inputUser.tlType = InputUserForeign;
+        } else if (user->tlType == TLValue::UserForeign) {
+            inputUser.tlType = TLValue::InputUserForeign;
             inputUser.userId = user->id;
             inputUser.accessHash = user->accessHash;
-        } else if (user->tlType == UserRequest) { // TODO: Check if there should be InputPeerForeign. Seems like working as-is; can't test at this time.
-            inputUser.tlType = InputUserContact;
+        } else if (user->tlType == TLValue::UserRequest) { // TODO: Check if there should be InputPeerForeign. Seems like working as-is; can't test at this time.
+            inputUser.tlType = TLValue::InputUserContact;
             inputUser.userId = user->id;
             inputUser.accessHash = user->accessHash; // Seems to be useless.
         } else {
@@ -1363,7 +1363,7 @@ QString CTelegramDispatcher::userAvatarToken(const TLUser *user) const
 {
     const TLFileLocation &avatar = user->photo.photoSmall;
 
-    if (avatar.tlType == FileLocationUnavailable) {
+    if (avatar.tlType == TLValue::FileLocationUnavailable) {
         return QString();
     } else {
         return QString(QLatin1String("%1%2%3"))
@@ -1377,11 +1377,11 @@ TelegramNamespace::ContactStatus CTelegramDispatcher::decodeContactStatus(TLValu
 {
     switch (status) {
     default:
-    case UserStatusEmpty:
+    case TLValue::UserStatusEmpty:
         return TelegramNamespace::ContactStatusUnknown;
-    case UserStatusOnline:
+    case TLValue::UserStatusOnline:
         return TelegramNamespace::ContactStatusOnline;
-    case UserStatusOffline:
+    case TLValue::UserStatusOffline:
         return TelegramNamespace::ContactStatusOffline;
     }
 }
@@ -1560,24 +1560,24 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
 void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
 {
     switch (updates.tlType) {
-    case UpdatesTooLong:
+    case TLValue::UpdatesTooLong:
         getUpdatesState();
         break;
-    case UpdateShortMessage:
+    case TLValue::UpdateShortMessage:
         processShortMessageReceived(updates.id, updates.fromId, updates.message, updates.date);
         ensureUpdateState(updates.pts);
         break;
-    case UpdateShortChatMessage:
+    case TLValue::UpdateShortChatMessage:
         processShortChatMessageReceived(updates.id, updates.chatId, updates.fromId, updates.message, updates.date);
         ensureUpdateState(updates.pts);
         break;
-    case UpdateShort:
+    case TLValue::UpdateShort:
         processUpdate(updates.update);
         break;
-    case UpdatesCombined:
+    case TLValue::UpdatesCombined:
         qDebug() << Q_FUNC_INFO << "UpdatesCombined processing is not implemented yet.";
         break;
-    case Updates:
+    case TLValue::Updates:
         // Initial implementation
         for (int i = 0; i < updates.updates.count(); ++i) {
             processUpdate(updates.updates.at(i));
@@ -1841,21 +1841,21 @@ TLDcOption CTelegramDispatcher::dcInfoById(quint32 dc)
 QString CTelegramDispatcher::mimeTypeByStorageFileType(TLValue type)
 {
     switch (type) {
-    case StorageFileJpeg:
+    case TLValue::StorageFileJpeg:
         return QLatin1String("image/jpeg");
-    case StorageFileGif:
+    case TLValue::StorageFileGif:
         return QLatin1String("image/gif");
-    case StorageFilePng:
+    case TLValue::StorageFilePng:
         return QLatin1String("image/png");
-    case StorageFilePdf:
+    case TLValue::StorageFilePdf:
         return QLatin1String("application/pdf");
-    case StorageFileMp3:
+    case TLValue::StorageFileMp3:
         return QLatin1String("audio/mpeg");
-    case StorageFileMov:
+    case TLValue::StorageFileMov:
         return QLatin1String("video/quicktime");
-    case StorageFileMp4:
+    case TLValue::StorageFileMp4:
         return QLatin1String("audio/mp4");
-    case StorageFileWebp:
+    case TLValue::StorageFileWebp:
         return QLatin1String("image/webp");
     default:
         return QString();

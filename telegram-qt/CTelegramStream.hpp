@@ -189,9 +189,9 @@ inline CTelegramStream &CTelegramStream::operator>>(bool &data)
     TLValue val;
     *this >> val;
 
-    if (val == BoolTrue) {
+    if (val == TLValue::BoolTrue) {
         data = true;
-    } else if (val == BoolFalse) {
+    } else if (val == TLValue::BoolFalse) {
         data = false;
     }
 
@@ -206,9 +206,9 @@ inline CTelegramStream &CTelegramStream::operator<<(const QString &str)
 inline CTelegramStream &CTelegramStream::operator<<(const bool &data)
 {
     if (data) {
-        *this << BoolTrue;
+        *this << TLValue::BoolTrue;
     } else {
-        *this << BoolFalse;
+        *this << TLValue::BoolFalse;
     }
 
     return *this;

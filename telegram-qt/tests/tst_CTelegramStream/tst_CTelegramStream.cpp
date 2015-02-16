@@ -305,7 +305,7 @@ void tst_CTelegramStream::vectorDeserializationError()
         CTelegramStream stream(encoded);
 
         stream >> vector;
-        QCOMPARE(vector.tlType, GzipPacked);
+        QCOMPARE(quint32(vector.tlType), quint32(TLValue::GzipPacked));
     }
 }
 

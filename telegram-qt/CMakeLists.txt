@@ -19,6 +19,7 @@ set(telegram_qt_HEADERS
     CTelegramDispatcher.hpp
     CTelegramConnection.hpp
     TLTypes.hpp
+    TLValues.hpp
     CAppInformation.hpp
     crypto-rsa.hpp
     crypto-aes.hpp

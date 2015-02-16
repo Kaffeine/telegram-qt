@@ -19,7 +19,7 @@
 #include <QByteArray>
 
 #include "TLNumbers.hpp"
-#include "TLValues.h"
+#include "TLValues.hpp"
 
 QT_BEGIN_NAMESPACE
 class QIODevice;
