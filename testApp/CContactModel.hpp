@@ -73,7 +73,7 @@ public slots:
     void setContactStatus(const QString &contact, TelegramNamespace::ContactStatus status);
     void setContactLastOnline(const QString &contact, quint32 onlineDate);
     void setTypingStatus(const QString &contact, bool typingStatus);
-    void setContactAvatar(const QString &contact, const QString &avatarFileName);
+    void setContactAvatar(const QString &contact, const QPixmap &avatar);
     void setContactFullName(const QString &contact, const QString &fullName);
 
 private:

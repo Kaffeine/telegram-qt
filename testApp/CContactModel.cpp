@@ -193,7 +193,7 @@ void CContactsModel::setTypingStatus(const QString &contact, bool typingStatus)
     emit dataChanged(modelIndex, modelIndex);
 }
 
-void CContactsModel::setContactAvatar(const QString &contact, const QString &avatarFileName)
+void CContactsModel::setContactAvatar(const QString &contact, const QPixmap &avatar)
 {
     int index = indexOfContact(contact);
 
@@ -201,7 +201,7 @@ void CContactsModel::setContactAvatar(const QString &contact, const QString &ava
         return;
     }
 
-    m_contacts[index].avatar = QPixmap(avatarFileName).scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    m_contacts[index].avatar = avatar;
 
     QModelIndex modelIndex = createIndex(index, Avatar);
     emit dataChanged(modelIndex, modelIndex);

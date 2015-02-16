@@ -26,11 +26,14 @@
 
 #include <QDebug>
 
+#ifdef CREATE_MEDIA_FILES
 #include <QDir>
-#include <QFile>
+#endif
 
 #include <QFile>
 #include <QFileDialog>
+
+#include <QPixmapCache>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -183,6 +186,7 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
 {
     qDebug() << Q_FUNC_INFO << mimeType;
 
+#ifdef CREATE_MEDIA_FILES
     QDir dir;
     dir.mkdir("avatars");
 
@@ -190,15 +194,26 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
     avatarFile.open(QIODevice::WriteOnly);
     avatarFile.write(data);
     avatarFile.close();
+#endif
 
-    m_contactsModel->setContactAvatar(contact, avatarFile.fileName());
-    m_chatContactsModel->setContactAvatar(contact, avatarFile.fileName());
+    QPixmap avatar = QPixmap::fromImage(QImage::fromData(data));
+
+    if (avatar.isNull()) {
+        return;
+    }
+
+    avatar = avatar.scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    QPixmapCache::insert(m_core->contactAvatarToken(contact), avatar);
+
+    updateAvatar(contact);
 }
 
 void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType)
 {
     qDebug() << Q_FUNC_INFO << mimeType;
 
+#ifdef CREATE_MEDIA_FILES
     QDir dir;
     dir.mkdir("messagesData");
 
@@ -209,9 +224,17 @@ void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 me
     mediaFile.open(QIODevice::WriteOnly);
     mediaFile.write(data);
     mediaFile.close();
+#else
+    Q_UNUSED(contact);
+#endif
 
-    const QPixmap photo = QPixmap(mediaFile.fileName());
-    int row = m_messagingModel->setMessageMediaData(messageId, photo); //.scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    const QPixmap photo = QPixmap::fromImage(QImage::fromData(data));
+
+    if (photo.isNull()) {
+        return;
+    }
+
+    int row = m_messagingModel->setMessageMediaData(messageId, photo);
 
     if (row >= 0) {
         ui->messagingView->setColumnWidth(CMessagingModel::Message, photo.width());
@@ -504,10 +527,23 @@ void MainWindow::setContactList(CContactsModel *contactsModel, const QStringList
     contactsModel->setContactList(newContactList);
 
     foreach (const QString &contact, newContactList) {
-        m_core->requestContactAvatar(contact);
+        updateAvatar(contact);
         contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
         contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
         contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
+    }
+}
+
+void MainWindow::updateAvatar(const QString &contact)
+{
+    const QString token = m_core->contactAvatarToken(contact);
+    QPixmap avatar;
+
+    if (QPixmapCache::find(token, &avatar)) {
+        m_contactsModel->setContactAvatar(contact, avatar);
+        m_chatContactsModel->setContactAvatar(contact, avatar);
+    } else {
+        m_core->requestContactAvatar(contact);
     }
 }
 

@@ -38,7 +38,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
+protected slots:
     void whenConnected();
     void whenPhoneStatusReceived(const QString &phone, bool registered, bool invited);
     void whenPhoneCodeRequested();
@@ -101,6 +101,9 @@ protected:
     void readAllMessages();
 
     void setContactList(CContactsModel *contactsModel, const QStringList &newContactList);
+
+    void getAvatar(const QString &contact);
+    void updateAvatar(const QString &contact);
 
 private:
     void setRegistered(bool newRegistered);
