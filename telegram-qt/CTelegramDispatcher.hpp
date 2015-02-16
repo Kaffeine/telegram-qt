@@ -35,12 +35,14 @@ class FileRequestDescriptor
 public:
     enum Type {
         Invalid,
-        Avatar
+        Avatar,
+        MessageMediaData
     };
 
     FileRequestDescriptor();
 
     static FileRequestDescriptor avatarRequest(const TLUser *user);
+    static FileRequestDescriptor messageMediaDataRequest(const TLMessage &message);
 
     inline Type type() const { return m_type; }
 
@@ -50,10 +52,13 @@ public:
     inline TLInputFileLocation inputLocation() const { return m_inputLocation; }
 
     inline quint32 userId() const { return m_userId; }
+    inline quint32 messageId() const { return m_messageId; }
 
 protected:
+    void setupLocation(const TLFileLocation &fileLocation);
     Type m_type;
     quint32 m_userId;
+    quint32 m_messageId;
 
     TLInputFileLocation m_inputLocation;
     quint32 m_dcId;
@@ -107,6 +112,7 @@ public:
 
     void requestPhoneCode(const QString &phoneNumber);
     void requestContactAvatar(const QString &contact);
+    bool requestMessageMediaData(quint32 messageId);
 
     quint64 sendMessageToContact(const QString &contact, const QString &message);
     quint64 sendMessageToChat(quint32 publicChatId, const QString &message);
@@ -142,6 +148,7 @@ signals:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
 
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
+    void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type);
 
     void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
@@ -270,6 +277,8 @@ protected:
     QMap<quint32, TLUser*> m_users;
 
     QMap<quint32, QPair<QString, quint64> >m_messagesMap; // message id to phone and big_random message id
+
+    QMap<quint32, TLMessage> m_knownMediaMessages; // message id, message
 
     quint32 m_selfUserId;
     QString m_selfPhone;

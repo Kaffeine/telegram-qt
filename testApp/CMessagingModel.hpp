@@ -34,6 +34,7 @@ struct SMessageEntry {
     quint64 messageId;
     quint32 timestamp;
     TelegramNamespace::MessageDeliveryStatus status;
+    QVariant mediaData;
     bool outgoing;
 };
 
@@ -61,6 +62,7 @@ public:
 
 public slots:
     void addMessage(const QString &phone, const QString &message, TelegramNamespace::MessageType type, bool outgoing, quint64 messageId = 0, quint32 timestamp = 0);
+    int setMessageMediaData(quint64 messageId, const QVariant &data);
     void setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status);
 
 private:

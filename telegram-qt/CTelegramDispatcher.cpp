@@ -96,15 +96,59 @@ FileRequestDescriptor FileRequestDescriptor::avatarRequest(const TLUser *user)
 
     result.m_type = Avatar;
     result.m_userId = user->id;
-
-    result.m_dcId = user->photo.photoSmall.dcId;
-
-    result.m_inputLocation.tlType = TLValue::InputFileLocation;
-    result.m_inputLocation.volumeId = user->photo.photoSmall.volumeId;
-    result.m_inputLocation.localId = user->photo.photoSmall.localId;
-    result.m_inputLocation.secret = user->photo.photoSmall.secret;
+    result.setupLocation(user->photo.photoSmall);
 
     return result;
+}
+
+FileRequestDescriptor FileRequestDescriptor::messageMediaDataRequest(const TLMessage &message)
+{
+    const TLMessageMedia &media = message.media;
+
+    FileRequestDescriptor result;
+    result.m_type = MessageMediaData;
+    result.m_messageId = message.id;
+
+    switch (media.tlType) {
+    case TLValue::MessageMediaPhoto:
+        if (media.photo.sizes.isEmpty()) {
+            return FileRequestDescriptor();
+        }
+        result.setupLocation(media.photo.sizes.last().location);
+        break;
+    case TLValue::MessageMediaAudio:
+        result.m_dcId = media.audio.dcId;
+        result.m_inputLocation.tlType = TLValue::InputAudioFileLocation;
+        result.m_inputLocation.id = media.audio.id;
+        result.m_inputLocation.accessHash = media.audio.accessHash;
+        break;
+    case TLValue::MessageMediaVideo:
+        result.m_dcId = media.video.dcId;
+        result.m_inputLocation.tlType = TLValue::InputVideoFileLocation;
+        result.m_inputLocation.id = media.video.id;
+        result.m_inputLocation.accessHash = media.video.accessHash;
+        break;
+    case TLValue::MessageMediaDocument:
+        result.m_dcId = media.document.dcId;
+        result.m_inputLocation.tlType = TLValue::InputDocumentFileLocation;
+        result.m_inputLocation.id = media.document.id;
+        result.m_inputLocation.accessHash = media.document.accessHash;
+        break;
+    default:
+        return FileRequestDescriptor();
+    }
+
+    return result;
+}
+
+void FileRequestDescriptor::setupLocation(const TLFileLocation &fileLocation)
+{
+    m_dcId = fileLocation.dcId;
+
+    m_inputLocation.tlType = TLValue::InputFileLocation;
+    m_inputLocation.volumeId = fileLocation.volumeId;
+    m_inputLocation.localId = fileLocation.localId;
+    m_inputLocation.secret = fileLocation.secret;
 }
 
 FileRequestDescriptor::FileRequestDescriptor() :
@@ -403,6 +447,17 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
     } else {
         qDebug() << Q_FUNC_INFO << "Contact" << maskPhoneNumber(phoneNumber) << "avatar is not available";
     }
+}
+
+bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
+{
+    if (!m_knownMediaMessages.contains(messageId)) {
+        return false;
+    }
+
+    // TODO: MessageMediaContact, MessageMediaGeo
+
+    return requestFile(FileRequestDescriptor::messageMediaDataRequest(m_knownMediaMessages.value(messageId)));
 }
 
 quint64 CTelegramDispatcher::sendMessageToContact(const QString &contact, const QString &message)
@@ -1179,6 +1234,10 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
         return;
     }
 
+    if (message.media.tlType != TLValue::MessageMediaEmpty) {
+        m_knownMediaMessages.insert(message.id, message);
+    }
+
     if (message.toId.tlType == TLValue::PeerUser) {
         quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
         emit messageReceived(userIdToIdentifier(contactUserId),
@@ -1528,6 +1587,17 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
             qDebug() << Q_FUNC_INFO << "Unknown userId" << descriptor.userId();
         }
         break;
+    case FileRequestDescriptor::MessageMediaData:
+        if (m_knownMediaMessages.contains(descriptor.messageId())) {
+            const TLMessage message = m_knownMediaMessages.value(descriptor.messageId());
+            const quint32 messageFlags = telegramMessageFlagsToPublicMessageFlags(message.flags);
+            const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
+
+            quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
+            emit messageMediaDataReceived(userIdToIdentifier(contactUserId), message.id, file.bytes, mimeType, messageType);
+        } else {
+            qDebug() << Q_FUNC_INFO << "Unknown media message data received" << descriptor.messageId();
+        }
     default:
         break;
     }

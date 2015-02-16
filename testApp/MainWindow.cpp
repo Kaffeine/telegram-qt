@@ -80,6 +80,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenContactListChanged()));
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
             SLOT(whenAvatarReceived(QString,QByteArray,QString)));
+    connect(m_core, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType)),
+            SLOT(whenMessageMediaDataReceived(QString,quint32,QByteArray,QString)));
     connect(m_core, SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
             SLOT(whenMessageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)));
     connect(m_core, SIGNAL(chatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
@@ -187,9 +189,8 @@ void MainWindow::whenContactListChanged()
 
 void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType)
 {
-    Q_UNUSED(mimeType);
+    qDebug() << Q_FUNC_INFO << mimeType;
 
-    qDebug() << mimeType;
     QDir dir;
     dir.mkdir("avatars");
 
@@ -201,9 +202,37 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
     m_contactsModel->setContactAvatar(contact, avatarFile.fileName());
 }
 
+void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType)
+{
+    qDebug() << Q_FUNC_INFO << mimeType;
+
+    QDir dir;
+    dir.mkdir("messagesData");
+
+    QFile mediaFile(QString("messagesData/%1-%2.%3").arg(contact)
+                    .arg(messageId, 10, 10, QLatin1Char('0'))
+                    .arg(mimeType.section(QLatin1Char('/'), 1, 1)));
+
+    mediaFile.open(QIODevice::WriteOnly);
+    mediaFile.write(data);
+    mediaFile.close();
+
+    const QPixmap photo = QPixmap(mediaFile.fileName());
+    int row = m_messagingModel->setMessageMediaData(messageId, photo); //.scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
+    if (row >= 0) {
+        ui->messagingView->setColumnWidth(CMessagingModel::Message, photo.width());
+        ui->messagingView->setRowHeight(row, photo.height());
+    }
+}
+
 void MainWindow::whenMessageReceived(const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp)
 {
     m_messagingModel->addMessage(phone, message, type, flags & TelegramNamespace::MessageFlagOut, messageId, timestamp);
+
+    if (type == TelegramNamespace::MessageTypePhoto) {
+        m_core->requestMessageMediaData(messageId);
+    }
 }
 
 void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message, TelegramNamespace::MessageType type)
@@ -269,6 +298,7 @@ void MainWindow::on_connectButton_clicked()
         flags |= TelegramNamespace::MessageFlagOut;
     }
     m_core->setMessageReceivingFilterFlags(flags);
+    m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto);
 
     if (secretInfo.isEmpty())
         m_core->initConnection(serverIp, 443);

@@ -72,11 +72,19 @@ QVariant CMessagingModel::data(const QModelIndex &index, int role) const
     int section = index.column();
     int messageIndex = index.row();
 
-    if ((role != Qt::DisplayRole) && (role != Qt::EditRole)) {
+    if (messageIndex >= rowCount()) {
         return QVariant();
     }
 
-    if (messageIndex >= rowCount()) {
+    if ((role == Qt::DecorationRole) && (section == Message)) {
+        if (m_messages.at(messageIndex).mediaData.isValid()) {
+            return m_messages.at(messageIndex).mediaData;
+        }
+
+        return QVariant();
+    }
+
+    if ((role != Qt::DisplayRole) && (role != Qt::EditRole)) {
         return QVariant();
     }
 
@@ -92,7 +100,11 @@ QVariant CMessagingModel::data(const QModelIndex &index, int role) const
     case Message:
         return m_messages.at(messageIndex).message;
     case Status:
-        return messageDeliveryStatusStr(m_messages.at(messageIndex).status);
+        if (m_messages.at(messageIndex).outgoing) {
+            return messageDeliveryStatusStr(m_messages.at(messageIndex).status);
+        } else {
+            return tr("Incoming");
+        }
     default:
         break;
     }
@@ -112,6 +124,19 @@ void CMessagingModel::addMessage(const QString &phone, const QString &message, T
     m_messages.append(SMessageEntry(phone, message, messageId, timestamp));
     m_messages.last().outgoing = outgoing;
     endInsertRows();
+}
+
+int CMessagingModel::setMessageMediaData(quint64 messageId, const QVariant &data)
+{
+    for (int i = 0; i < m_messages.count(); ++i) {
+        if (m_messages.at(i).messageId == messageId) {
+            m_messages[i].mediaData = data;
+            emit dataChanged(index(i, Message), index(i, Message), QVector<int>() << Qt::DecorationRole);
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 void CMessagingModel::setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status)

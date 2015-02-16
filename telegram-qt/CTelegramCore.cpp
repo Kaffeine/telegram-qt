@@ -41,6 +41,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(contactListChanged()));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
             SIGNAL(avatarReceived(QString,QByteArray,QString,QString)));
+    connect(m_dispatcher, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType)),
+            SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType)));
     connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
             SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)));
     connect(m_dispatcher, SIGNAL(chatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
@@ -146,6 +148,11 @@ void CTelegramCore::deleteContacts(const QStringList &phoneNumbers)
 void CTelegramCore::requestContactAvatar(const QString &contact)
 {
     m_dispatcher->requestContactAvatar(contact);
+}
+
+void CTelegramCore::requestMessageMediaData(quint32 messageId)
+{
+    m_dispatcher->requestMessageMediaData(messageId);
 }
 
 QStringList CTelegramCore::contactList() const

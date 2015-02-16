@@ -71,6 +71,7 @@ public Q_SLOTS:
     void deleteContacts(const QStringList &phoneNumbers);
 
     void requestContactAvatar(const QString &contact);
+    void requestMessageMediaData(quint32 messageId);
 
     quint64 sendMessage(const QString &contact, const QString &message); // Message id is random number
     quint64 sendChatMessage(quint32 chatId, const QString &message); // Message id is random number
@@ -96,6 +97,7 @@ Q_SIGNALS:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
 
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
+    void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type);
 
     void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
