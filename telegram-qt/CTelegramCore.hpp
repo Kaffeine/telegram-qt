@@ -43,6 +43,7 @@ public:
     Q_INVOKABLE quint32 contactLastOnline(const QString &contact) const;
     Q_INVOKABLE QString contactFirstName(const QString &contact) const;
     Q_INVOKABLE QString contactLastName(const QString &contact) const;
+    Q_INVOKABLE QString contactUserName(const QString &contact) const;
     Q_INVOKABLE QString contactAvatarToken(const QString &contact) const;
     Q_INVOKABLE QString chatTitle(quint32 chatId) const;
 

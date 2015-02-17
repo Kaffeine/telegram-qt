@@ -131,6 +131,7 @@ public:
 
     QString contactFirstName(const QString &contact) const;
     QString contactLastName(const QString &contact) const;
+    QString contactUserName(const QString &contact) const;
     QString contactAvatarToken(const QString &contact) const;
 
     QString chatTitle(quint32 publicChatId) const;

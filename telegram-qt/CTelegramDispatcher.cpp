@@ -678,6 +678,17 @@ QString CTelegramDispatcher::contactLastName(const QString &contact) const
     }
 }
 
+QString CTelegramDispatcher::contactUserName(const QString &contact) const
+{
+    const TLUser *user = phoneNumberToUser(contact);
+
+    if (user) {
+        return user->username;
+    } else {
+        return QString();
+    }
+}
+
 QString CTelegramDispatcher::contactAvatarToken(const QString &contact) const
 {
     const TLUser *user = phoneNumberToUser(contact);
