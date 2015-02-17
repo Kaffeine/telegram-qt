@@ -774,17 +774,6 @@ quint64 CTelegramConnection::messagesRequestEncryption(const TLInputUser &userId
     return sendEncryptedPackage(output);
 }
 
-quint64 CTelegramConnection::messagesRestoreMessages(const TLVector<quint32> &id)
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << TLValue::MessagesRestoreMessages;
-    outputStream << id;
-
-    return sendEncryptedPackage(output);
-}
-
 quint64 CTelegramConnection::messagesSearch(const TLInputPeer &peer, const QString &q, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offset, quint32 maxId, quint32 limit)
 {
     QByteArray output;

@@ -159,8 +159,6 @@ peerNotifyEventsAll#6d1ded88 = PeerNotifyEvents;
 peerNotifySettingsEmpty#70a68512 = PeerNotifySettings;
 peerNotifySettings#8d5e11ee mute_until:int sound:string show_previews:Bool events_mask:int = PeerNotifySettings;
 
-globalPrivacySettings#40f5c53a no_suggestions:Bool hide_contacts:Bool hide_located:Bool hide_last_visit:Bool = GlobalPrivacySettings;
-
 wallPaper#ccb03657 id:int title:string sizes:Vector<PhotoSize> color:int = WallPaper;
 
 userFull#771095da user:User link:contacts.Link profile_photo:Photo notify_settings:PeerNotifySettings blocked:Bool real_first_name:string real_last_name:string = UserFull;
@@ -187,8 +185,8 @@ contacts.myLinkContact#c240ebd9 = contacts.MyLink;
 
 contacts.link#eccea3f5 my_link:contacts.MyLink foreign_link:contacts.ForeignLink user:User = contacts.Link;
 
-contacts.contacts#6f8b8cb2 contacts:Vector<Contact> users:Vector<User> = contacts.Contacts;
 contacts.contactsNotModified#b74ba9d2 = contacts.Contacts;
+contacts.contacts#6f8b8cb2 contacts:Vector<Contact> users:Vector<User> = contacts.Contacts;
 
 contacts.importedContacts#ad524315 imported:Vector<ImportedContact> retry_contacts:Vector<long> users:Vector<User> = contacts.ImportedContacts;
 
@@ -204,15 +202,12 @@ messages.messages#8c718e87 messages:Vector<Message> chats:Vector<Chat> users:Vec
 messages.messagesSlice#b446ae3 count:int messages:Vector<Message> chats:Vector<Chat> users:Vector<User> = messages.Messages;
 
 messages.messageEmpty#3f4e0648 = messages.Message;
-messages.message#ff90c417 message:Message chats:Vector<Chat> users:Vector<User> = messages.Message;
 
 messages.statedMessages#969478bb messages:Vector<Message> chats:Vector<Chat> users:Vector<User> pts:int seq:int = messages.StatedMessages;
 
 messages.statedMessage#d07ae726 message:Message chats:Vector<Chat> users:Vector<User> pts:int seq:int = messages.StatedMessage;
 
 messages.sentMessage#d1f4d35c id:int date:int pts:int seq:int = messages.SentMessage;
-
-messages.chat#40e9002a chat:Chat users:Vector<User> = messages.Chat;
 
 messages.chats#8150cbd8 chats:Vector<Chat> users:Vector<User> = messages.Chats;
 
@@ -224,6 +219,7 @@ inputMessagesFilterEmpty#57e2f66c = MessagesFilter;
 inputMessagesFilterPhotos#9609a51c = MessagesFilter;
 inputMessagesFilterVideo#9fc00e65 = MessagesFilter;
 inputMessagesFilterPhotoVideo#56e9f0e4 = MessagesFilter;
+inputMessagesFilterPhotoVideoDocuments#d95e73bb = MessagesFilter;
 inputMessagesFilterDocument#9eddf188 = MessagesFilter;
 inputMessagesFilterAudio#cfc87522 = MessagesFilter;
 
@@ -231,7 +227,6 @@ updateNewMessage#13abdb3 message:Message pts:int = Update;
 updateMessageID#4e90bfd6 id:int random_id:long = Update;
 updateReadMessages#c6649e31 messages:Vector<int> pts:int = Update;
 updateDeleteMessages#a92bfe26 messages:Vector<int> pts:int = Update;
-updateRestoreMessages#d15de04d messages:Vector<int> pts:int = Update;
 updateUserTyping#5c486927 user_id:int action:SendMessageAction = Update;
 updateChatUserTyping#9a65ea1f chat_id:int user_id:int action:SendMessageAction = Update;
 updateChatParticipants#7761198 participants:ChatParticipants = Update;
@@ -240,7 +235,6 @@ updateUserName#a7332b73 user_id:int first_name:string last_name:string username:
 updateUserPhoto#95313b0c user_id:int date:int photo:UserProfilePhoto previous:Bool = Update;
 updateContactRegistered#2575bbb9 user_id:int date:int = Update;
 updateContactLink#51a48a9a user_id:int my_link:contacts.MyLink foreign_link:contacts.ForeignLink = Update;
-updateActivation#6f690963 user_id:int = Update;
 updateNewAuthorization#8f06529a auth_key_id:long date:int device:string location:string = Update;
 
 updates.state#a56c2a3e pts:int qts:int date:int seq:int unread_count:int = updates.State;
@@ -445,7 +439,6 @@ messages.search#7e9f2ab peer:InputPeer q:string filter:MessagesFilter min_date:i
 messages.readHistory#eed884c6 peer:InputPeer max_id:int offset:int read_contents:Bool = messages.AffectedHistory;
 messages.deleteHistory#f4f8fb61 peer:InputPeer offset:int = messages.AffectedHistory;
 messages.deleteMessages#14f2dd0a id:Vector<int> = Vector<int>;
-messages.restoreMessages#395f9d7e id:Vector<int> = Vector<int>;
 messages.receivedMessages#28abcb68 max_id:int = Vector<int>;
 messages.setTyping#a3825e50 peer:InputPeer action:SendMessageAction = Bool;
 messages.sendMessage#4cde0aab peer:InputPeer message:string random_id:long = messages.SentMessage;

@@ -61,7 +61,6 @@ public:
     CTelegramStream &operator>>(TLError &error);
     CTelegramStream &operator>>(TLFileLocation &fileLocation);
     CTelegramStream &operator>>(TLGeoPoint &geoPoint);
-    CTelegramStream &operator>>(TLGlobalPrivacySettings &globalPrivacySettings);
     CTelegramStream &operator>>(TLHelpAppUpdate &helpAppUpdate);
     CTelegramStream &operator>>(TLHelpInviteText &helpInviteText);
     CTelegramStream &operator>>(TLImportedContact &importedContact);
@@ -121,7 +120,6 @@ public:
     CTelegramStream &operator>>(TLHelpSupport &helpSupport);
     CTelegramStream &operator>>(TLMessageAction &messageAction);
     CTelegramStream &operator>>(TLMessageMedia &messageMedia);
-    CTelegramStream &operator>>(TLMessagesChat &messagesChat);
     CTelegramStream &operator>>(TLMessagesChatFull &messagesChatFull);
     CTelegramStream &operator>>(TLMessagesChats &messagesChats);
     CTelegramStream &operator>>(TLMessagesSentMessage &messagesSentMessage);
@@ -134,7 +132,6 @@ public:
     CTelegramStream &operator>>(TLGeochatsStatedMessage &geochatsStatedMessage);
     CTelegramStream &operator>>(TLMessage &message);
     CTelegramStream &operator>>(TLMessagesDialogs &messagesDialogs);
-    CTelegramStream &operator>>(TLMessagesMessage &messagesMessage);
     CTelegramStream &operator>>(TLMessagesMessages &messagesMessages);
     CTelegramStream &operator>>(TLMessagesStatedMessage &messagesStatedMessage);
     CTelegramStream &operator>>(TLMessagesStatedMessages &messagesStatedMessages);

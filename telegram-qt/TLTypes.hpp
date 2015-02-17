@@ -307,21 +307,6 @@ struct TLGeoPoint {
     TLValue tlType;
 };
 
-struct TLGlobalPrivacySettings {
-    TLGlobalPrivacySettings() :
-        noSuggestions(false),
-        hideContacts(false),
-        hideLocated(false),
-        hideLastVisit(false),
-        tlType(TLValue::GlobalPrivacySettings) { }
-
-    bool noSuggestions;
-    bool hideContacts;
-    bool hideLocated;
-    bool hideLastVisit;
-    TLValue tlType;
-};
-
 struct TLHelpAppUpdate {
     TLHelpAppUpdate() :
         id(0),
@@ -978,7 +963,7 @@ struct TLContactsBlocked {
 
 struct TLContactsContacts {
     TLContactsContacts() :
-        tlType(TLValue::ContactsContacts) { }
+        tlType(TLValue::ContactsContactsNotModified) { }
 
     TLVector<TLContact> contacts;
     TLVector<TLUser> users;
@@ -1060,15 +1045,6 @@ struct TLMessageMedia {
     QByteArray bytes;
     TLDocument document;
     TLAudio audio;
-    TLValue tlType;
-};
-
-struct TLMessagesChat {
-    TLMessagesChat() :
-        tlType(TLValue::MessagesChat) { }
-
-    TLChat chat;
-    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -1228,16 +1204,6 @@ struct TLMessagesDialogs {
     TLVector<TLChat> chats;
     TLVector<TLUser> users;
     quint32 count;
-    TLValue tlType;
-};
-
-struct TLMessagesMessage {
-    TLMessagesMessage() :
-        tlType(TLValue::MessagesMessageEmpty) { }
-
-    TLMessage message;
-    TLVector<TLChat> chats;
-    TLVector<TLUser> users;
     TLValue tlType;
 };
 

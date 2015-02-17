@@ -129,7 +129,6 @@ public:
     quint64 messagesReceivedMessages(quint32 maxId);
     quint64 messagesReceivedQueue(quint32 maxQts);
     quint64 messagesRequestEncryption(const TLInputUser &userId, quint32 randomId, const QByteArray &gA);
-    quint64 messagesRestoreMessages(const TLVector<quint32> &id);
     quint64 messagesSearch(const TLInputPeer &peer, const QString &q, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offset, quint32 maxId, quint32 limit);
     quint64 messagesSendBroadcast(const TLVector<TLInputUser> &contacts, const QString &message, const TLInputMedia &media);
     quint64 messagesSendEncrypted(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data);

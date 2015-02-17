@@ -168,14 +168,14 @@ QString generateCode(const QString &fileName, int indentation, bool closeEnum)
 int main(int argc, char *argv[])
 {
     if (argc != 4) {
-        printf("Usage: %s <source file or directory> <destination file> <marker>\nExample: %s specs ../TLValues.h TLValues\n", argv[0], argv[0]);
+        printf("Usage: %s <source file or directory> <destination file> <marker>\nExample: %s specs ../TLValues.hpp TLValues\n", argv[0], argv[0]);
         return 0;
     }
 
     QCoreApplication app(argc, argv);
 
     static const QStringList arguments = app.arguments();
-    static const int indentation = 4;
+    static const int indentation = 8;
     QString indentationStr(indentation, QChar(' '));
 
     QString code;

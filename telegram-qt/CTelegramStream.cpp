@@ -602,28 +602,6 @@ CTelegramStream &CTelegramStream::operator>>(TLGeoPoint &geoPoint)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLGlobalPrivacySettings &globalPrivacySettings)
-{
-    TLGlobalPrivacySettings result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::GlobalPrivacySettings:
-        *this >> result.noSuggestions;
-        *this >> result.hideContacts;
-        *this >> result.hideLocated;
-        *this >> result.hideLastVisit;
-        break;
-    default:
-        break;
-    }
-
-    globalPrivacySettings = result;
-
-    return *this;
-}
-
 CTelegramStream &CTelegramStream::operator>>(TLHelpAppUpdate &helpAppUpdate)
 {
     TLHelpAppUpdate result;
@@ -1160,6 +1138,8 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesFilter &messagesFilter)
     case TLValue::InputMessagesFilterVideo:
         break;
     case TLValue::InputMessagesFilterPhotoVideo:
+        break;
+    case TLValue::InputMessagesFilterPhotoVideoDocuments:
         break;
     case TLValue::InputMessagesFilterDocument:
         break;
@@ -2002,11 +1982,11 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsContacts &contactsContact
     *this >> result.tlType;
 
     switch (result.tlType) {
+    case TLValue::ContactsContactsNotModified:
+        break;
     case TLValue::ContactsContacts:
         *this >> result.contacts;
         *this >> result.users;
-        break;
-    case TLValue::ContactsContactsNotModified:
         break;
     default:
         break;
@@ -2199,26 +2179,6 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageMedia &messageMedia)
     }
 
     messageMedia = result;
-
-    return *this;
-}
-
-CTelegramStream &CTelegramStream::operator>>(TLMessagesChat &messagesChat)
-{
-    TLMessagesChat result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::MessagesChat:
-        *this >> result.chat;
-        *this >> result.users;
-        break;
-    default:
-        break;
-    }
-
-    messagesChat = result;
 
     return *this;
 }
@@ -2545,29 +2505,6 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesDialogs &messagesDialogs)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesMessage &messagesMessage)
-{
-    TLMessagesMessage result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::MessagesMessageEmpty:
-        break;
-    case TLValue::MessagesMessage:
-        *this >> result.message;
-        *this >> result.chats;
-        *this >> result.users;
-        break;
-    default:
-        break;
-    }
-
-    messagesMessage = result;
-
-    return *this;
-}
-
 CTelegramStream &CTelegramStream::operator>>(TLMessagesMessages &messagesMessages)
 {
     TLMessagesMessages result;
@@ -2680,10 +2617,6 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &update)
         *this >> result.messages;
         *this >> result.pts;
         break;
-    case TLValue::UpdateRestoreMessages:
-        *this >> result.messages;
-        *this >> result.pts;
-        break;
     case TLValue::UpdateUserTyping:
         *this >> result.userId;
         *this >> result.action;
@@ -2720,9 +2653,6 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &update)
         *this >> result.userId;
         *this >> result.myLink;
         *this >> result.foreignLink;
-        break;
-    case TLValue::UpdateActivation:
-        *this >> result.userId;
         break;
     case TLValue::UpdateNewAuthorization:
         *this >> result.authKeyId;
@@ -3217,6 +3147,8 @@ CTelegramStream &CTelegramStream::operator<<(const TLMessagesFilter &messagesFil
     case TLValue::InputMessagesFilterVideo:
         break;
     case TLValue::InputMessagesFilterPhotoVideo:
+        break;
+    case TLValue::InputMessagesFilterPhotoVideoDocuments:
         break;
     case TLValue::InputMessagesFilterDocument:
         break;
