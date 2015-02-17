@@ -15,7 +15,8 @@ SOURCES = CTelegramCore.cpp \
     Utils.cpp \
     CTcpTransport.cpp \
     TelegramNamespace.cpp \
-    CTelegramConnection.cpp
+    CTelegramConnection.cpp \
+    TLValues.cpp
 
 HEADERS = CTelegramCore.hpp \
     CAppInformation.hpp \

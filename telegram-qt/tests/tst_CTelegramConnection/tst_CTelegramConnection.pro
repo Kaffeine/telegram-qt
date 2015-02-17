@@ -7,6 +7,7 @@ SOURCES = tst_CTelegramConnection.cpp \
     ../../CTelegramConnection.cpp \
     ../../CTelegramStream.cpp \
     ../../CRawStream.cpp \
+    ../../TLValues.cpp \
     CTestConnection.cpp
 
 HEADERS += \
@@ -16,6 +17,7 @@ HEADERS += \
     ../../CTcpTransport.hpp \
     ../../CTelegramStream.hpp \
     ../../CRawStream.hpp \
+    ../../TLValues.hpp \
     CTestConnection.hpp
 
 LIBS += -lz

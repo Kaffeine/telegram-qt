@@ -11,8 +11,8 @@
 
 */
 
-#ifndef TLVALUES_H
-#define TLVALUES_H
+#ifndef TLVALUE_H
+#define TLVALUE_H
 
 #include <QObject>
 
@@ -463,6 +463,8 @@ public:
         m_value = v;
         return *this;
     }
+
+    QString toString() const;
 
 private:
     Value m_value;

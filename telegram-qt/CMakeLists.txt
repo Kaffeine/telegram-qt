@@ -5,22 +5,37 @@ set(telegram_qt_SOURCES
     CTelegramCore.cpp
     CTelegramDispatcher.cpp
     CTelegramConnection.cpp
-    CTelegramTransport.hpp
     CTelegramStream.cpp
     CTcpTransport.cpp
     CRawStream.cpp
     Utils.cpp
+    TLValues.cpp
+)
+
+set(telegram_qt_META_HEADERS
+    TelegramNamespace.hpp
+    CTelegramCore.hpp
+    CTelegramDispatcher.hpp
+    CTelegramConnection.hpp
+    CTelegramTransport.hpp
+    CTcpTransport.hpp
+    TLValues.hpp
 )
 
 set(telegram_qt_HEADERS
     telegramqt_export.h
     TelegramNamespace.hpp
+    CAppInformation.hpp
     CTelegramCore.hpp
     CTelegramDispatcher.hpp
     CTelegramConnection.hpp
-    TLTypes.hpp
+    CTelegramStream.hpp
+    CTelegramTransport.hpp
+    CTcpTransport.hpp
+    CRawStream.hpp
+    Utils.hpp
     TLValues.hpp
-    CAppInformation.hpp
+    TLTypes.hpp
     crypto-rsa.hpp
     crypto-aes.hpp
 )
@@ -41,10 +56,14 @@ include_directories(
 
 add_definitions(-DTELEGRAMQT_LIBRARY)
 
-#add_library(telegram-qt${QT_VERSION_MAJOR} SHARED ${telegram_qt_SOURCES})
-add_library(telegram-qt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES})
+if (USE_QT4)
+    QT4_WRAP_CPP(telegram_qt_MOC_SOURECES ${telegram_qt_META_HEADERS})
+else()
+    QT5_WRAP_CPP(telegram_qt_MOC_SOURECES ${telegram_qt_META_HEADERS})
+endif()
 
-set_target_properties(telegram-qt${QT_VERSION_MAJOR} PROPERTIES AUTOMOC TRUE)
+#add_library(telegram-qt${QT_VERSION_MAJOR} shared ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES}})
+add_library(telegram-qt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES})
 
 target_include_directories(telegram-qt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
