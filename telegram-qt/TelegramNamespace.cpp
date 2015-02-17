@@ -23,6 +23,7 @@ void TelegramNamespace::registerTypes()
         qRegisterMetaType<TelegramNamespace::MessageDeliveryStatus>("TelegramNamespace::MessageDeliveryStatus");
         qRegisterMetaType<TelegramNamespace::MessageFlags>("TelegramNamespace::MessageFlags");
         qRegisterMetaType<TelegramNamespace::MessageType>("TelegramNamespace::MessageType");
+        qRegisterMetaType<TelegramNamespace::AuthSignError>("TelegramNamespace::AuthSignError");
         registered = true;
     }
 }

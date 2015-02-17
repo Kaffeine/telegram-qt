@@ -1534,9 +1534,35 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
         }
         break;
     case 400: // BAD_REQUEST
-        if (request == TLValue::AuthSignIn) {
-            emit phoneCodeIsInvalid();
+        switch (request) {
+        case TLValue::AuthCheckPhone:
+        case TLValue::AuthSendCode:
+        case TLValue::AuthSendCall:
+        case TLValue::AuthSignIn:
+        case TLValue::AuthSignUp:
+            if (errorMessage == QLatin1String("API_ID_INVALID")) {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorAppIdIsInvalid, errorMessage);
+            } else if (errorMessage == QLatin1String("PHONE_NUMBER_INVALID")) {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorPhoneNumberIsInvalid, errorMessage);
+            } else if (errorMessage == QLatin1String("PHONE_NUMBER_OCCUPIED")) {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorPhoneNumberIsOccupied, errorMessage);
+            } else if (errorMessage == QLatin1String("PHONE_NUMBER_UNOCCUPIED")) {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorPhoneNumberIsUnoccupied, errorMessage);
+            } else if (errorMessage == QLatin1String("PHONE_CODE_INVALID")) {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorPhoneCodeIsInvalid, errorMessage);
+            } else if (errorMessage == QLatin1String("PHONE_CODE_EXPIRED")) {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorPhoneCodeIsExpired, errorMessage);
+            } else if (errorMessage == QLatin1String("FIRSTNAME_INVALID")) {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorFirstNameIsInvalid, errorMessage);
+            } else if (errorMessage == QLatin1String("LASTNAME_INVALID")) {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorLastNameIsInvalid, errorMessage);
+            } else {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorUnknown, errorMessage);
+            }
+
             return true;
+        default:
+            break;
         }
     case 401: // UNAUTHORIZED
         emit authorizationErrorReceived();

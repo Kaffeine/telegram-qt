@@ -20,6 +20,7 @@
 #include <QMap>
 #include <QStringList>
 
+#include "TelegramNamespace.hpp"
 #include "TLTypes.hpp"
 #include "crypto-rsa.hpp"
 #include "crypto-aes.hpp"
@@ -191,7 +192,7 @@ signals:
     void dcConfigurationReceived(quint32 dc);
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void phoneCodeRequired();
-    void phoneCodeIsInvalid();
+    void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void authorizationErrorReceived();
     void usersReceived(const QVector<TLUser> &users);
     void contactListReceived(const QStringList &contactList);

@@ -53,6 +53,18 @@ public:
         MessageTypeGeo         = 0x40
     };
 
+    enum AuthSignError {
+        AuthSignErrorUnknown,
+        AuthSignErrorAppIdIsInvalid,
+        AuthSignErrorPhoneNumberIsInvalid,
+        AuthSignErrorPhoneNumberIsOccupied,
+        AuthSignErrorPhoneNumberIsUnoccupied,
+        AuthSignErrorPhoneCodeIsInvalid,
+        AuthSignErrorPhoneCodeIsExpired,
+        AuthSignErrorFirstNameIsInvalid,
+        AuthSignErrorLastNameIsInvalid
+    };
+
     static void registerTypes();
 
     struct GroupChat

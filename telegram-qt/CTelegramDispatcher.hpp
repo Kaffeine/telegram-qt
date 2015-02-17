@@ -141,7 +141,7 @@ public:
 signals:
     void connected();
     void phoneCodeRequired();
-    void phoneCodeIsInvalid();
+    void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void authenticated();
     void authorizationErrorReceived();
     void contactListChanged();

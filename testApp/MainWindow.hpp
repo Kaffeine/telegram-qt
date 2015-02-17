@@ -38,11 +38,17 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    enum AuthState {
+        AuthNone,
+        AuthCodeRequested,
+        AuthSuccess
+    };
+
 protected slots:
     void whenConnected();
     void whenPhoneStatusReceived(const QString &phone, bool registered, bool invited);
     void whenPhoneCodeRequested();
-    void whenPhoneCodeIsInvalid();
+    void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void whenAuthenticated();
     void whenContactListChanged();
     void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
@@ -125,6 +131,8 @@ private:
     CTelegramCore *m_core;
 
     bool m_registered;
+
+    AuthState m_authState;
 
 };
 

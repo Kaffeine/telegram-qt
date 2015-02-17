@@ -44,7 +44,9 @@ MainWindow::MainWindow(QWidget *parent) :
     m_chatMessagingModel(new CMessagingModel(this)),
     m_chatInfoModel(new CChatInfoModel(this)),
     m_activeChatId(0),
-    m_core(new CTelegramCore(this))
+    m_core(new CTelegramCore(this)),
+    m_registered(false),
+    m_authState(AuthNone)
 {
     ui->setupUi(this);
     ui->contactListTable->setModel(m_contactsModel);
@@ -74,8 +76,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenPhoneStatusReceived(QString,bool,bool)));
     connect(m_core, SIGNAL(phoneCodeRequired()),
             SLOT(whenPhoneCodeRequested()));
-    connect(m_core, SIGNAL(phoneCodeIsInvalid()),
-            SLOT(whenPhoneCodeIsInvalid()));
+    connect(m_core, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
+            SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(authenticated()),
             SLOT(whenAuthenticated()));
     connect(m_core, SIGNAL(contactListChanged()),
@@ -152,15 +154,33 @@ void MainWindow::whenPhoneCodeRequested()
     ui->confirmationCode->setFocus();
 }
 
-void MainWindow::whenPhoneCodeIsInvalid()
+void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage)
 {
-    ui->confirmationCode->setFocus();
+    switch (errorCode) {
+    case TelegramNamespace::AuthSignErrorPhoneNumberIsInvalid:
+        if (m_authState == AuthCodeRequested) {
+            QToolTip::showText(ui->phoneNumber->mapToGlobal(QPoint(0, 0)), tr("Phone number is not valid"));
+            m_authState = AuthNone;
+        }
+        break;
+    case TelegramNamespace::AuthSignErrorPhoneCodeIsExpired:
+        QToolTip::showText(ui->confirmationCode->mapToGlobal(QPoint(0, 0)), tr("Phone code is expired"));
+        break;
+    case TelegramNamespace::AuthSignErrorPhoneCodeIsInvalid:
+        QToolTip::showText(ui->confirmationCode->mapToGlobal(QPoint(0, 0)), tr("Phone code is invalid"));
+        break;
+    default:
+        qDebug() << "Unknown auth sign error:" << errorMessage;
+        return;
+    }
 
-    QToolTip::showText(ui->confirmationCode->mapToGlobal(QPoint(0, 0)), tr("Phone code is invalid"));
+    ui->confirmationCode->setFocus();
 }
 
 void MainWindow::whenAuthenticated()
 {
+    m_authState = AuthSuccess;
+
     ui->connectionState->setText(tr("Signed in"));
 
     ui->authButton->setEnabled(false);
@@ -363,6 +383,8 @@ void MainWindow::on_authButton_clicked()
 
     m_core->requestPhoneStatus(ui->phoneNumber->text());
     m_core->requestPhoneCode(ui->phoneNumber->text());
+
+    m_authState = AuthCodeRequested;
 }
 
 void MainWindow::on_signButton_clicked()

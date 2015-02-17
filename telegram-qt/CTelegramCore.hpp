@@ -92,7 +92,7 @@ Q_SIGNALS:
     void authenticated(); // Signed in.
     void initializated(); // Contact list and updates received.
     void phoneCodeRequired();
-    void phoneCodeIsInvalid();
+    void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
 

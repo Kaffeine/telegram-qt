@@ -1857,7 +1857,9 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
 
     connect(connection, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(connection, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
-    connect(connection, SIGNAL(phoneCodeIsInvalid()), SIGNAL(phoneCodeIsInvalid()));
+    connect(connection,
+            SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
+            SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(connection, SIGNAL(authorizationErrorReceived()), SIGNAL(authorizationErrorReceived()));
 
     connect(connection, SIGNAL(fileReceived(TLUploadFile,quint32)), SLOT(whenFileReceived(TLUploadFile,quint32)));
