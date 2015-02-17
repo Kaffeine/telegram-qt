@@ -22,6 +22,7 @@
 
 #include "TelegramNamespace.hpp"
 #include "TLTypes.hpp"
+#include "TLNumbers.hpp"
 #include "crypto-rsa.hpp"
 #include "crypto-aes.hpp"
 
