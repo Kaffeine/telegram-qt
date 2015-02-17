@@ -14,17 +14,14 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#include <QObject>
 #include <QByteArray>
 
 #include "crypto-rsa.hpp"
 #include "crypto-aes.hpp"
 
-class Utils : public QObject
+class Utils
 {
-    Q_OBJECT
 public:
-    explicit Utils(QObject *parent = 0);
     static int randomBytes(QByteArray *array);
     static int randomBytes(quint64 *number);
     static int randomBytes(char *buffer, int count);

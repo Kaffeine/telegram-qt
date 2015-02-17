@@ -37,11 +37,6 @@ static const QByteArray s_hardcodedRsaDataKey("0c150023e2f70db7985ded064759cfecf
 static const QByteArray s_hardcodedRsaDataExp("010001");
 static const quint64 s_hardcodedRsaDataFingersprint(0xc3b42b026ce86b21);
 
-Utils::Utils(QObject *parent) :
-    QObject(parent)
-{
-}
-
 int Utils::randomBytes(char *buffer, int count)
 {
     return RAND_bytes((unsigned char *) buffer, count);
