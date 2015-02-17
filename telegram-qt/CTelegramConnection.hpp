@@ -30,6 +30,10 @@ class CAppInformation;
 class CTelegramStream;
 class CTelegramTransport;
 
+#ifdef NETWORK_LOGGING
+class QFile;
+#endif
+
 class CTelegramConnection : public QObject
 {
     Q_OBJECT
@@ -321,6 +325,10 @@ protected:
     QVector<TLDcOption> m_dcConfiguration;
 
     QString m_authCodeHash;
+
+#ifdef NETWORK_LOGGING
+    QFile *m_logFile;
+#endif
 
 };
 

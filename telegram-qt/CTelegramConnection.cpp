@@ -20,6 +20,12 @@
 
 #include <QtEndian>
 
+#ifdef NETWORK_LOGGING
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
+#endif
+
 #include "CAppInformation.hpp"
 #include "CTelegramStream.hpp"
 #include "CTcpTransport.hpp"
@@ -2115,6 +2121,14 @@ TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok)
 
 void CTelegramConnection::whenConnected()
 {
+#ifdef NETWORK_LOGGING
+    QDir dir;
+    dir.mkdir("network");
+
+    m_logFile = new QFile(QLatin1String("network/") + m_dcInfo.ipAddress + QLatin1String(".log"));
+    m_logFile->open(QIODevice::WriteOnly);
+#endif
+
     setStatus(ConnectionStatusConnected);
 
     if (m_authKey.isEmpty()) {
@@ -2278,6 +2292,22 @@ quint64 CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
 
     m_transport->sendPackage(output);
 
+#ifdef NETWORK_LOGGING
+    CTelegramStream readBack(buffer);
+    TLValue val1;
+    readBack >> val1;
+
+    QTextStream str(m_logFile);
+
+    str << QLatin1String("p|");
+    str << QDateTime::currentMSecsSinceEpoch() << QLatin1Char('|');
+    str << val1.toString() << QLatin1Char('|');
+    str << QString(QLatin1String("s%1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
+    str << buffer.toHex();
+    str << endl;
+    str.flush();
+#endif
+
     return messageId;
 }
 
@@ -2336,6 +2366,26 @@ quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
     outputStream << encryptedPackage;
 
     m_transport->sendPackage(output);
+
+#ifdef NETWORK_LOGGING
+    CTelegramStream readBack(buffer);
+    TLValue val1;
+    readBack >> val1;
+
+    QTextStream str(m_logFile);
+
+    str << QString(QLatin1String("e|t%1|mId%2|seq%3|"))
+           .arg(QDateTime::currentMSecsSinceEpoch())
+           .arg(messageId, 10, 10, QLatin1Char('0'))
+           .arg(m_sequenceNumber, 4, 10, QLatin1Char('0'));
+
+    str << QString(QLatin1String("s%1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
+
+    str << val1.toString() << QLatin1Char('|');
+    str << buffer.toHex();
+    str << endl;
+    str.flush();
+#endif
 
     return messageId;
 }
