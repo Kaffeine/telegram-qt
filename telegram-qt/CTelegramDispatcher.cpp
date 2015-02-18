@@ -630,6 +630,22 @@ void CTelegramDispatcher::setOnlineStatus(bool onlineStatus)
     activeConnection()->accountUpdateStatus(!onlineStatus); // updateStatus accepts bool "offline"
 }
 
+void CTelegramDispatcher::checkUserName(const QString &userName)
+{
+    if (!activeConnection()) {
+        return;
+    }
+    activeConnection()->accountCheckUsername(userName);
+}
+
+void CTelegramDispatcher::setUserName(const QString &newUserName)
+{
+    if (!activeConnection()) {
+        return;
+    }
+    activeConnection()->accountUpdateUsername(newUserName);
+}
+
 TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QString &phone) const
 {
     const TLUser *user = phoneNumberToUser(phone);
@@ -1492,6 +1508,8 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
                     SLOT(whenMessagesChatsReceived(QVector<TLChat>,QVector<TLUser>)));
             connect(connection, SIGNAL(messagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)),
                     SLOT(whenMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
+            connect(connection, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)),
+                    SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)));
 
             continueInitialization(InitIsSignIn);
         }

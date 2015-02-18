@@ -125,6 +125,8 @@ public:
     void setMessageRead(const QString &contact, quint32 messageId);
 
     void setOnlineStatus(bool onlineStatus);
+    void checkUserName(const QString &userName);
+    void setUserName(const QString &newUserName);
 
     TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
     quint32 contactLastOnline(const QString &contact) const;
@@ -145,6 +147,7 @@ signals:
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void authenticated();
     void authorizationErrorReceived();
+    void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
     void contactListChanged();
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
 

@@ -205,7 +205,103 @@ void CTelegramConnection::getFile(const TLInputFileLocation &inputLocation, quin
     m_requestedFilesIds.insert(messageId, fileId);
 }
 
-void CTelegramConnection::accountUpdateStatus(bool offline)
+// Generated Telegram API methods implementation
+quint64 CTelegramConnection::accountCheckUsername(const QString &username)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountCheckUsername;
+    outputStream << username;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountGetNotifySettings(const TLInputNotifyPeer &peer)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountGetNotifySettings;
+    outputStream << peer;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountGetWallPapers()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountGetWallPapers;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountRegisterDevice(quint32 tokenType, const QString &token, const QString &deviceModel, const QString &systemVersion, const QString &appVersion, bool appSandbox, const QString &langCode)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountRegisterDevice;
+    outputStream << tokenType;
+    outputStream << token;
+    outputStream << deviceModel;
+    outputStream << systemVersion;
+    outputStream << appVersion;
+    outputStream << appSandbox;
+    outputStream << langCode;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountResetNotifySettings()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountResetNotifySettings;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountUnregisterDevice(quint32 tokenType, const QString &token)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountUnregisterDevice;
+    outputStream << tokenType;
+    outputStream << token;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountUpdateNotifySettings(const TLInputNotifyPeer &peer, const TLInputPeerNotifySettings &settings)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountUpdateNotifySettings;
+    outputStream << peer;
+    outputStream << settings;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountUpdateProfile(const QString &firstName, const QString &lastName)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountUpdateProfile;
+    outputStream << firstName;
+    outputStream << lastName;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountUpdateStatus(bool offline)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
@@ -213,10 +309,20 @@ void CTelegramConnection::accountUpdateStatus(bool offline)
     outputStream << TLValue::AccountUpdateStatus;
     outputStream << offline;
 
-    sendEncryptedPackage(output);
+    return sendEncryptedPackage(output);
 }
 
-// Generated Telegram API methods implementation
+quint64 CTelegramConnection::accountUpdateUsername(const QString &username)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountUpdateUsername;
+    outputStream << username;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::authBindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage)
 {
     QByteArray output;
@@ -1461,11 +1567,17 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::MessagesGetFullChat:
             processingResult = processMessagesGetFullChat(stream, id);
             break;
+        case TLValue::AccountCheckUsername:
+            processingResult = processAccountCheckUsername(stream, id);
+            break;
         case TLValue::AccountUpdateStatus:
             processingResult = processAccountUpdateStatus(stream, id);
             break;
+        case TLValue::AccountUpdateUsername:
+            processingResult = processAccountUpdateUsername(stream, id);
+            break;
         default:
-            qDebug() << "Unknown outgoing RPC type:" << QString::number(request, 16);
+            qDebug() << "Unknown outgoing RPC type:" << request.toString();
             break;
         }
 
@@ -1556,6 +1668,20 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
             }
 
             return true;
+        case TLValue::AccountCheckUsername:
+        case TLValue::AccountUpdateUsername: {
+            const QString userName = userNameFromPackage(id);
+
+            if (errorMessage == QLatin1String("USERNAME_INVALID")) {
+                emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusIsInvalid);
+            } else if (errorMessage == QLatin1String("USERNAME_OCCUPIED")) {
+                emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusIsOccupied);
+            } else if (errorMessage == QLatin1String("USERNAME_NOT_MODIFIED")) {
+                emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusIsNotModified);
+            } else {
+                emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusUnknown);
+            }
+        }
         default:
             break;
         }
@@ -2037,6 +2163,27 @@ TLValue CTelegramConnection::processMessagesGetFullChat(CTelegramStream &stream,
     return result.tlType;
 }
 
+TLValue CTelegramConnection::processAccountCheckUsername(CTelegramStream &stream, quint64 id)
+{
+    TLValue result;
+    stream >> result;
+
+    const QString userName = userNameFromPackage(id);
+
+    switch (result) {
+    case TLValue::BoolTrue:
+        emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusCanBeUsed);
+        break;
+    case TLValue::BoolFalse:
+        emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusCanNotBeUsed);
+        break;
+    default:
+        break;
+    }
+
+    return result;
+}
+
 TLValue CTelegramConnection::processAccountUpdateStatus(CTelegramStream &stream, quint64 id)
 {
     Q_UNUSED(id);
@@ -2045,6 +2192,23 @@ TLValue CTelegramConnection::processAccountUpdateStatus(CTelegramStream &stream,
     stream >> result;
 
     return result;
+}
+
+TLValue CTelegramConnection::processAccountUpdateUsername(CTelegramStream &stream, quint64 id)
+{
+    TLUser result;
+    stream >> result;
+
+    const QString userName = userNameFromPackage(id);
+
+    if (result.tlType == TLValue::UserSelf) {
+        if (result.username == userName) {
+            emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusAccepted);
+        }
+        emit usersReceived(QVector<TLUser>() << result);
+    }
+
+    return result.tlType;
 }
 
 bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)
@@ -2425,4 +2589,32 @@ quint64 CTelegramConnection::newMessageId()
     m_lastMessageId = newLastMessageId;
 
     return m_lastMessageId;
+}
+
+QString CTelegramConnection::userNameFromPackage(quint64 id) const
+{
+    const QByteArray data = m_submittedPackages.value(id);
+
+    if (data.isEmpty()) {
+        return QString();
+    }
+
+    CTelegramStream outputStream(data);
+
+    TLValue method;
+
+    outputStream >> method;
+
+    switch (method) {
+    case TLValue::AccountCheckUsername:
+    case TLValue::AccountUpdateUsername:
+        break;
+    default:
+        return QString();
+    }
+
+    QString name;
+    outputStream >> name;
+
+    return name;
 }

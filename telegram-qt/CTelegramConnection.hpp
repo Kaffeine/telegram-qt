@@ -82,6 +82,16 @@ public:
     void getConfiguration();
 
     // Generated Telegram API methods declaration
+    quint64 accountCheckUsername(const QString &username);
+    quint64 accountGetNotifySettings(const TLInputNotifyPeer &peer);
+    quint64 accountGetWallPapers();
+    quint64 accountRegisterDevice(quint32 tokenType, const QString &token, const QString &deviceModel, const QString &systemVersion, const QString &appVersion, bool appSandbox, const QString &langCode);
+    quint64 accountResetNotifySettings();
+    quint64 accountUnregisterDevice(quint32 tokenType, const QString &token);
+    quint64 accountUpdateNotifySettings(const TLInputNotifyPeer &peer, const TLInputPeerNotifySettings &settings);
+    quint64 accountUpdateProfile(const QString &firstName, const QString &lastName);
+    quint64 accountUpdateStatus(bool offline);
+    quint64 accountUpdateUsername(const QString &username);
     quint64 authBindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage);
     quint64 authCheckPhone(const QString &phoneNumber);
     quint64 authExportAuthorization(quint32 dcId);
@@ -150,8 +160,6 @@ public:
 
     void getFile(const TLInputFileLocation &inputLocation, quint32 fileId);
 
-    void accountUpdateStatus(bool offline);
-
     AuthState authState() { return m_authState; }
 
     void requestPqAuthorization();
@@ -198,6 +206,7 @@ signals:
     void phoneCodeRequired();
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void authorizationErrorReceived();
+    void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
     void usersReceived(const QVector<TLUser> &users);
     void contactListReceived(const QStringList &contactList);
     void contactListChanged(const QStringList &added, const QStringList &removed);
@@ -254,7 +263,9 @@ protected:
     TLValue processMessagesReceivedMessages(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetChats(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetFullChat(CTelegramStream &stream, quint64 id);
+    TLValue processAccountCheckUsername(CTelegramStream &stream, quint64 id);
     TLValue processAccountUpdateStatus(CTelegramStream &stream, quint64 id);
+    TLValue processAccountUpdateUsername(CTelegramStream &stream, quint64 id);
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 
@@ -276,6 +287,8 @@ protected:
     void setAuthState(AuthState newState);
 
     quint64 newMessageId();
+
+    QString userNameFromPackage(quint64 id) const;
 
     ConnectionStatus m_status;
     const CAppInformation *m_appInfo;

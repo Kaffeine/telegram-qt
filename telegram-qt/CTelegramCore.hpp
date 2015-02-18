@@ -86,6 +86,10 @@ public Q_SLOTS:
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
 
+    // Both methods result in userNameStatusUpdated() emission
+    void checkUserName(const QString &userName);
+    void setUserName(const QString &newUserName);
+
     quint32 createChat(const QStringList &phones, const QString &title);
 
 Q_SIGNALS:
@@ -113,6 +117,8 @@ Q_SIGNALS:
     void chatChanged(quint32 publichChatId);
 
     void authorizationErrorReceived();
+
+    void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
 
 private:
     CTelegramDispatcher *m_dispatcher;

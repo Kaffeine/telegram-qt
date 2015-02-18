@@ -61,6 +61,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(chatChanged(quint32)));
     connect(m_dispatcher, SIGNAL(authorizationErrorReceived()),
             SIGNAL(authorizationErrorReceived()));
+    connect(m_dispatcher, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)),
+            SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)));
 }
 
 CTelegramCore::~CTelegramCore()
@@ -253,6 +255,16 @@ void CTelegramCore::setMessageRead(const QString &contact, quint32 messageId)
 void CTelegramCore::setOnlineStatus(bool onlineStatus)
 {
     m_dispatcher->setOnlineStatus(onlineStatus);
+}
+
+void CTelegramCore::checkUserName(const QString &userName)
+{
+    m_dispatcher->checkUserName(userName);
+}
+
+void CTelegramCore::setUserName(const QString &newUserName)
+{
+    m_dispatcher->setUserName(newUserName);
 }
 
 quint32 CTelegramCore::createChat(const QStringList &phones, const QString &title)

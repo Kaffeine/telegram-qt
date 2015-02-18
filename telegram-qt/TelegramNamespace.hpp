@@ -65,6 +65,16 @@ public:
         AuthSignErrorLastNameIsInvalid
     };
 
+    enum AccountUserNameStatus {
+        AccountUserNameStatusUnknown,
+        AccountUserNameStatusIsInvalid,
+        AccountUserNameStatusIsOccupied,
+        AccountUserNameStatusIsNotModified,
+        AccountUserNameStatusCanBeUsed,
+        AccountUserNameStatusCanNotBeUsed,
+        AccountUserNameStatusAccepted
+    };
+
     static void registerTypes();
 
     struct GroupChat
