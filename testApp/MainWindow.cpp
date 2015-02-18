@@ -80,6 +80,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(authenticated()),
             SLOT(whenAuthenticated()));
+    connect(m_core, SIGNAL(initializated()),
+            SLOT(whenInitializated()));
     connect(m_core, SIGNAL(contactListChanged()),
             SLOT(whenContactListChanged()));
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
@@ -126,10 +128,35 @@ void MainWindow::whenConnected()
 {
     ui->connectButton->setEnabled(false);
 
-    ui->connectionState->setText(tr("Connected"));
+    ui->connectionState->setText(tr("Connected..."));
     ui->authButton->setEnabled(true);
     ui->phoneNumber->setFocus();
     ui->signButton->setEnabled(true);
+}
+
+void MainWindow::whenAuthenticated()
+{
+    m_authState = AuthSuccess;
+
+    ui->connectionState->setText(tr("Signed in..."));
+
+    ui->authButton->setEnabled(false);
+    ui->signButton->setEnabled(false);
+    ui->phoneNumber->setEnabled(false);
+
+    if (ui->workLikeClient->isChecked()) {
+        m_core->setOnlineStatus(true);
+    }
+}
+
+void MainWindow::whenInitializated()
+{
+    ui->connectionState->setText(tr("Ready"));
+
+    const QString selfContact = m_core->selfPhone();
+    ui->phoneNumber->setText(selfContact);
+    ui->firstName->setText(m_core->contactFirstName(selfContact));
+    ui->lastName->setText(m_core->contactLastName(selfContact));
 }
 
 void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered, bool invited)
@@ -175,21 +202,6 @@ void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError erro
     }
 
     ui->confirmationCode->setFocus();
-}
-
-void MainWindow::whenAuthenticated()
-{
-    m_authState = AuthSuccess;
-
-    ui->connectionState->setText(tr("Signed in"));
-
-    ui->authButton->setEnabled(false);
-    ui->signButton->setEnabled(false);
-    ui->phoneNumber->setText(m_core->selfPhone());
-
-    if (ui->workLikeClient->isChecked()) {
-        m_core->setOnlineStatus(true);
-    }
 }
 
 void MainWindow::whenContactListChanged()

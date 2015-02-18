@@ -89,7 +89,8 @@ public:
 
     bool isConnected() const;
     bool isAuthenticated() const;
-    QString selfPhone() const { return m_selfPhone; }
+
+    QString selfPhone() const;
 
     QStringList contactList() const { return m_contactList; }
 
@@ -168,7 +169,6 @@ signals:
     void initializated();
 
 protected slots:
-    void whenSelfPhoneReceived(const QString &phone);
     void whenConnectionAuthChanged(int newState, quint32 dc);
     void whenConnectionStatusChanged(int newStatus, quint32 dc);
     void whenDcConfigurationUpdated(quint32 dc);
@@ -190,7 +190,6 @@ protected slots:
     void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
 
     void getDcConfiguration();
-    void getSelfUser();
     void getContacts();
     void getChatsInfo();
     void getUpdatesState();
@@ -286,7 +285,6 @@ protected:
     QMap<quint32, TLMessage> m_knownMediaMessages; // message id, message
 
     quint32 m_selfUserId;
-    QString m_selfPhone;
 
     QStringList m_contactList;
 

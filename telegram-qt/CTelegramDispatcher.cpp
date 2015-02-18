@@ -71,7 +71,7 @@ static QStringList maskPhoneNumberList(const QStringList &list)
     return result;
 }
 
-const quint32 secretFormatVersion = 2;
+const quint32 secretFormatVersion = 3;
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingDuration = 5000; // 5 sec
 const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPeriod - s_localTypingDuration) / 2. Minus 100 ms for insurance.
@@ -200,6 +200,15 @@ bool CTelegramDispatcher::isAuthenticated() const
     return isConnected() && m_isAuthenticated;
 }
 
+QString CTelegramDispatcher::selfPhone() const
+{
+    if (!m_selfUserId || !m_users.value(m_selfUserId)) {
+        return QString();
+    }
+
+    return m_users.value(m_selfUserId)->phone;
+}
+
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
 {
     qDebug() << "addContacts" << maskPhoneNumberList(phoneNumbers);
@@ -248,7 +257,6 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
     outputStream << secretFormatVersion;
     outputStream << activeConnection()->deltaTime();
     outputStream << activeConnection()->dcInfo();
-    outputStream << m_selfPhone;
     outputStream << activeConnection()->authKey();
     outputStream << activeConnection()->authId();
     outputStream << activeConnection()->serverSalt();
@@ -306,9 +314,15 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
         return false;
     }
 
+    QString legacySelfPhone;
+
     inputStream >> deltaTime;
     inputStream >> dcInfo;
-    inputStream >> m_selfPhone;
+
+    if (format < 3) {
+        inputStream >> legacySelfPhone;
+    }
+
     inputStream >> authKey;
     inputStream >> authId;
     inputStream >> serverSalt;
@@ -790,11 +804,6 @@ bool CTelegramDispatcher::getChatParticipants(QStringList *participants, quint32
     return true;
 }
 
-void CTelegramDispatcher::whenSelfPhoneReceived(const QString &phone)
-{
-    m_selfPhone = phone;
-}
-
 void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
 {
     qDebug() << Q_FUNC_INFO << users.count();
@@ -809,7 +818,6 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
 
         if (user.tlType == TLValue::UserSelf) {
             m_selfUserId = user.id;
-            m_selfPhone = user.phone;
 
             continueInitialization(InitKnowSelf);
         }
@@ -957,15 +965,6 @@ void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, q
 void CTelegramDispatcher::getDcConfiguration()
 {
     activeConnection()->getConfiguration();
-}
-
-void CTelegramDispatcher::getSelfUser()
-{
-    if (!m_selfUserId) {
-        TLInputUser selfUser;
-        selfUser.tlType = TLValue::InputUserSelf;
-        activeConnection()->usersGetUsers(QVector<TLInputUser>() << selfUser); // Get self-info
-    }
 }
 
 void CTelegramDispatcher::getUser(quint32 id)
@@ -1334,7 +1333,7 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
 {
     TLInputPeer inputPeer;
 
-    if (phoneNumber == m_selfPhone) {
+    if (phoneNumber == selfPhone()) {
         inputPeer.tlType = TLValue::InputPeerSelf;
         return inputPeer;
     }
@@ -1375,7 +1374,7 @@ TLInputUser CTelegramDispatcher::phoneNumberToInputUser(const QString &phoneNumb
 {
     TLInputUser inputUser;
 
-    if (phoneNumber == m_selfPhone) {
+    if (phoneNumber == selfPhone()) {
         inputUser.tlType = TLValue::InputUserSelf;
         return inputUser;
     }
@@ -1886,8 +1885,6 @@ void CTelegramDispatcher::checkStateAndCallGetDifference()
 CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
 {
     CTelegramConnection *connection = new CTelegramConnection(m_appInformation, this);
-
-    connect(connection, SIGNAL(selfPhoneReceived(QString)), SLOT(whenSelfPhoneReceived(QString)));
 
     connect(connection, SIGNAL(authStateChanged(int,quint32)), SLOT(whenConnectionAuthChanged(int,quint32)));
     connect(connection, SIGNAL(statusChanged(int,quint32)), SLOT(whenConnectionStatusChanged(int,quint32)));

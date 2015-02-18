@@ -2007,7 +2007,6 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
 
     if (result.tlType == TLValue::AuthAuthorization) {
         setAuthState(AuthStateSignedIn);
-        emit selfPhoneReceived(result.user.phone);
     }
 
     return result.tlType;
