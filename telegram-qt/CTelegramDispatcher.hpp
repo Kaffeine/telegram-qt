@@ -224,8 +224,8 @@ protected:
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
     QString userIdToIdentifier(const quint32 id) const;
-    quint32 phoneNumberToUserId(const QString &phoneNumber) const;
-    TLUser *phoneNumberToUser(const QString &phoneNumber) const;
+    quint32 identifierToUserId(const QString &identifier) const;
+    TLUser *identifierToUser(const QString &identifier) const;
 
     QString userAvatarToken(const TLUser *user) const;
 

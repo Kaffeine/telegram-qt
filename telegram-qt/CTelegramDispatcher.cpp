@@ -431,7 +431,7 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
 {
     qDebug() << Q_FUNC_INFO << maskPhoneNumber(phoneNumber);
 
-    const TLUser *user = phoneNumberToUser(phoneNumber);
+    const TLUser *user = identifierToUser(phoneNumber);
     if (!user) {
         qDebug() << Q_FUNC_INFO << "Unknown user" << maskPhoneNumber(phoneNumber);
         return;
@@ -648,7 +648,7 @@ void CTelegramDispatcher::setUserName(const QString &newUserName)
 
 TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QString &phone) const
 {
-    const TLUser *user = phoneNumberToUser(phone);
+    const TLUser *user = identifierToUser(phone);
 
     if (user) {
         return decodeContactStatus(user->status.tlType);
@@ -659,7 +659,7 @@ TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QStrin
 
 quint32 CTelegramDispatcher::contactLastOnline(const QString &contact) const
 {
-    const TLUser *user = phoneNumberToUser(contact);
+    const TLUser *user = identifierToUser(contact);
 
     if (user) {
         if (user->status.tlType == TLValue::UserStatusOnline) {
@@ -674,7 +674,7 @@ quint32 CTelegramDispatcher::contactLastOnline(const QString &contact) const
 
 QString CTelegramDispatcher::contactFirstName(const QString &contact) const
 {
-    const TLUser *user = phoneNumberToUser(contact);
+    const TLUser *user = identifierToUser(contact);
 
     if (user) {
         return user->firstName;
@@ -685,7 +685,7 @@ QString CTelegramDispatcher::contactFirstName(const QString &contact) const
 
 QString CTelegramDispatcher::contactLastName(const QString &contact) const
 {
-    const TLUser *user = phoneNumberToUser(contact);
+    const TLUser *user = identifierToUser(contact);
 
     if (user) {
         return user->lastName;
@@ -696,7 +696,7 @@ QString CTelegramDispatcher::contactLastName(const QString &contact) const
 
 QString CTelegramDispatcher::contactUserName(const QString &contact) const
 {
-    const TLUser *user = phoneNumberToUser(contact);
+    const TLUser *user = identifierToUser(contact);
 
     if (user) {
         return user->username;
@@ -707,7 +707,7 @@ QString CTelegramDispatcher::contactUserName(const QString &contact) const
 
 QString CTelegramDispatcher::contactAvatarToken(const QString &contact) const
 {
-    const TLUser *user = phoneNumberToUser(contact);
+    const TLUser *user = identifierToUser(contact);
 
     if (!user) {
         qDebug() << Q_FUNC_INFO << "Unknown identifier" << maskPhoneNumber(contact);
@@ -1339,7 +1339,9 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
         return inputPeer;
     }
 
-    const TLUser *user = phoneNumberToUser(phoneNumber);
+    quint32 userId = identifierToUserId(phoneNumber);
+
+    const TLUser *user = m_users.value(userId);
 
     if (user) {
         if (user->tlType == TLValue::UserContact) {
@@ -1357,7 +1359,13 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
             qDebug() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Unknown user: " << maskPhoneNumber(phoneNumber);
+        if (userId) {
+            // Guess contact
+            inputPeer.tlType = TLValue::InputPeerContact;
+            inputPeer.userId = userId;
+        } else {
+            qDebug() << Q_FUNC_INFO << "Unknown user: " << maskPhoneNumber(phoneNumber);
+        }
     }
 
     return inputPeer;
@@ -1372,7 +1380,7 @@ TLInputUser CTelegramDispatcher::phoneNumberToInputUser(const QString &phoneNumb
         return inputUser;
     }
 
-    const TLUser *user = phoneNumberToUser(phoneNumber);
+    const TLUser *user = identifierToUser(phoneNumber);
 
     if (user) {
         if (user->tlType == TLValue::UserContact) {
@@ -1406,13 +1414,17 @@ QString CTelegramDispatcher::userIdToIdentifier(const quint32 id) const
         }
     }
 
-    return QString(QLatin1String("unknown%1")).arg(id);
+    return QString(QLatin1String("user%1")).arg(id);
 }
 
-quint32 CTelegramDispatcher::phoneNumberToUserId(const QString &phoneNumber) const
+quint32 CTelegramDispatcher::identifierToUserId(const QString &identifier) const
 {
+    if (identifier.startsWith(QLatin1String("user"))) {
+        return identifier.section(QLatin1String("user"), 1).toUInt();
+    }
+
     foreach (const TLUser *user, m_users) {
-        if (user->phone == phoneNumber) {
+        if (user->phone == identifier) {
             return user->id;
         }
     }
@@ -1420,9 +1432,9 @@ quint32 CTelegramDispatcher::phoneNumberToUserId(const QString &phoneNumber) con
     return 0;
 }
 
-TLUser *CTelegramDispatcher::phoneNumberToUser(const QString &phoneNumber) const
+TLUser *CTelegramDispatcher::identifierToUser(const QString &identifier) const
 {
-    return m_users.value(phoneNumberToUserId(phoneNumber));
+    return m_users.value(identifierToUserId(identifier));
 }
 
 QString CTelegramDispatcher::userAvatarToken(const TLUser *user) const
