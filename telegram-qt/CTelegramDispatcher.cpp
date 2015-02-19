@@ -1785,6 +1785,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
     case TLValue::UpdateShortChatMessage:
     {
         TLMessage shortMessage;
+        shortMessage.tlType = TLValue::Message;
         shortMessage.id = updates.id;
         shortMessage.flags = TelegramMessageFlagUnread;
         shortMessage.fromId = updates.fromId;
