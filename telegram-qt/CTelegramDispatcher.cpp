@@ -1347,11 +1347,21 @@ void CTelegramDispatcher::updateFullChat(const TLChatFull &newChat)
     }
 }
 
+quint32 CTelegramDispatcher::publicChatIdToChatId(quint32 publicChatId) const
+{
+    if (int(publicChatId) >= m_chatIds.count()) {
+        qDebug() << Q_FUNC_INFO << "Unknown public chat id" << publicChatId;
+        return 0;
+    }
+
+    return m_chatIds.at(publicChatId);
+}
+
 TLInputPeer CTelegramDispatcher::publicChatIdToInputPeer(quint32 publicChatId) const
 {
     TLInputPeer inputPeer;
 
-    quint32 chatId = m_chatIds.at(publicChatId);
+    quint32 chatId = publicChatIdToChatId(publicChatId);
 
     if (!chatId) {
         return inputPeer;

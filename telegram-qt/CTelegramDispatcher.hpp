@@ -219,6 +219,7 @@ protected:
 
     bool filterReceivedMessage(quint32 messageFlags) const;
 
+    quint32 publicChatIdToChatId(quint32 publicChatId) const;
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
