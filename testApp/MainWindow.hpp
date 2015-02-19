@@ -38,10 +38,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    enum AuthState {
-        AuthNone,
-        AuthCodeRequested,
-        AuthSuccess
+    enum AppState {
+        AppStateNone,
+        AppStateConnected,
+        AppStateCodeRequested,
+        AppStateCodeSent,
+        AppStateSignedIn,
+        AppStateReady
     };
 
 protected slots:
@@ -64,7 +67,7 @@ protected slots:
 
     void on_connectButton_clicked();
     void on_secondConnectButton_clicked();
-    void on_authButton_clicked();
+    void on_requestCode_clicked();
 
     void on_signButton_clicked();
 
@@ -98,8 +101,6 @@ protected slots:
 
     void on_secretSaveAs_clicked();
 
-    void on_secretOpenFile_clicked();
-
     void setActiveChat(quint32 id);
 
 protected:
@@ -112,8 +113,15 @@ protected:
     void getAvatar(const QString &contact);
     void updateAvatar(const QString &contact);
 
+private slots:
+    void on_restoreSession_clicked();
+
+    void loadSecretFromBrowsedFile();
+
 private:
     void setRegistered(bool newRegistered);
+
+    void setAppState(AppState newState);
 
     Ui::MainWindow *ui;
 
@@ -133,7 +141,7 @@ private:
 
     bool m_registered;
 
-    AuthState m_authState;
+    AppState m_appState;
 
 };
 

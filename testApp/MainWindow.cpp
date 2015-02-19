@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_activeChatId(0),
     m_core(new CTelegramCore(this)),
     m_registered(false),
-    m_authState(AuthNone)
+    m_appState(AppStateNone)
 {
     ui->setupUi(this);
     ui->contactListTable->setModel(m_contactsModel);
@@ -58,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QCompleter *comp = new QCompleter(m_contactsModel, this);
     ui->messagingContactPhone->setCompleter(comp);
     ui->groupChatContactPhone->setCompleter(comp);
+
+    connect(ui->secretOpenFile, SIGNAL(clicked()), SLOT(loadSecretFromBrowsedFile()));
 
     // Telepathy Morse app info
     CAppInformation appInfo;
@@ -117,6 +119,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QFile helpFile(QLatin1String(":/USAGE"));
     helpFile.open(QIODevice::ReadOnly);
     ui->helpView->setPlainText(helpFile.readAll());
+
+    setAppState(AppStateNone);
 }
 
 MainWindow::~MainWindow()
@@ -126,23 +130,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::whenConnected()
 {
-    ui->connectButton->setEnabled(false);
-
-    ui->connectionState->setText(tr("Connected..."));
-    ui->authButton->setEnabled(true);
+    setAppState(AppStateConnected);
     ui->phoneNumber->setFocus();
-    ui->signButton->setEnabled(true);
 }
 
 void MainWindow::whenAuthenticated()
 {
-    m_authState = AuthSuccess;
-
-    ui->connectionState->setText(tr("Signed in..."));
-
-    ui->authButton->setEnabled(false);
-    ui->signButton->setEnabled(false);
-    ui->phoneNumber->setEnabled(false);
+    setAppState(AppStateSignedIn);
 
     if (ui->workLikeClient->isChecked()) {
         m_core->setOnlineStatus(true);
@@ -151,7 +145,7 @@ void MainWindow::whenAuthenticated()
 
 void MainWindow::whenInitializated()
 {
-    ui->connectionState->setText(tr("Ready"));
+    setAppState(AppStateReady);
 
     const QString selfContact = m_core->selfPhone();
     ui->phoneNumber->setText(selfContact);
@@ -167,7 +161,6 @@ void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered, 
         ui->phoneStatus->setText(QString(QLatin1String("%1, %2")).arg(registeredText).arg(invitedText));
 
         setRegistered(registered);
-        ui->signButton->setEnabled(true);
     } else {
         qDebug() << "Warning: Received status for different phone number" << phone << registered << invited;
     }
@@ -175,19 +168,16 @@ void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered, 
 
 void MainWindow::whenPhoneCodeRequested()
 {
-    ui->authButton->setEnabled(false);
-
-    ui->confirmationCode->setEnabled(true);
-    ui->confirmationCode->setFocus();
+    setAppState(AppStateCodeSent);
 }
 
 void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage)
 {
     switch (errorCode) {
     case TelegramNamespace::AuthSignErrorPhoneNumberIsInvalid:
-        if (m_authState == AuthCodeRequested) {
+        if (m_appState == AppStateCodeRequested) {
             QToolTip::showText(ui->phoneNumber->mapToGlobal(QPoint(0, 0)), tr("Phone number is not valid"));
-            m_authState = AuthNone;
+            m_appState = AppStateNone;
         }
         break;
     case TelegramNamespace::AuthSignErrorPhoneCodeIsExpired:
@@ -387,7 +377,7 @@ void MainWindow::on_secondConnectButton_clicked()
     on_connectButton_clicked();
 }
 
-void MainWindow::on_authButton_clicked()
+void MainWindow::on_requestCode_clicked()
 {
     if (ui->phoneNumber->text().isEmpty()) {
         return;
@@ -396,7 +386,7 @@ void MainWindow::on_authButton_clicked()
     m_core->requestPhoneStatus(ui->phoneNumber->text());
     m_core->requestPhoneCode(ui->phoneNumber->text());
 
-    m_authState = AuthCodeRequested;
+    m_appState = AppStateCodeRequested;
 }
 
 void MainWindow::on_signButton_clicked()
@@ -426,6 +416,57 @@ void MainWindow::setRegistered(bool newRegistered)
         ui->signButton->setText(tr("Sign in"));
     } else {
         ui->signButton->setText(tr("Sign up"));
+    }
+}
+
+void MainWindow::setAppState(MainWindow::AppState newState)
+{
+    m_appState = newState;
+
+    ui->confirmationCode->setEnabled(m_appState == AppStateCodeSent);
+
+    ui->setStatusOnline->setVisible(m_appState >= AppStateSignedIn);
+    ui->setStatusOffline->setVisible(m_appState >= AppStateSignedIn);
+
+    ui->phoneNumber->setEnabled(m_appState < AppStateCodeSent);
+
+    switch (m_appState) {
+    case AppStateNone:
+        ui->connectButton->setVisible(true);
+        ui->restoreSession->setVisible(true);
+
+        ui->phoneNumber->setEnabled(true);
+
+        ui->requestCode->setVisible(false);
+        ui->signButton->setVisible(false);
+        break;
+    case AppStateConnected:
+        ui->connectionState->setText(tr("Connected..."));
+        ui->connectButton->setVisible(false);
+        ui->restoreSession->setVisible(false);
+        ui->requestCode->setVisible(true);
+        ui->signButton->setVisible(true);
+        break;
+    case AppStateCodeSent:
+        ui->connectionState->setText(tr("Code sent..."));
+        ui->confirmationCode->setFocus();
+        break;
+    case AppStateSignedIn:
+        ui->connectionState->setText(tr("Signed in..."));
+        ui->requestCode->setVisible(false);
+        ui->signButton->setVisible(false);
+
+        ui->phoneNumber->setEnabled(false);
+        break;
+    case AppStateReady:
+        ui->connectionState->setText(tr("Ready"));
+        ui->requestCode->setVisible(false);
+        ui->signButton->setVisible(false);
+
+        ui->phoneNumber->setEnabled(false);
+        break;
+    default:
+        break;
     }
 }
 
@@ -601,21 +642,6 @@ void MainWindow::on_secretSaveAs_clicked()
     file.write(ui->secretInfo->toPlainText().toLatin1());
 }
 
-void MainWindow::on_secretOpenFile_clicked()
-{
-    const QString fileName = QFileDialog::getOpenFileName(this, tr("Load secret info..."));
-    if (fileName.isEmpty()) {
-        return;
-    }
-
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    ui->secretInfo->setPlainText(file.readAll());
-}
-
 void MainWindow::setActiveChat(quint32 id)
 {
     m_activeChatId = id;
@@ -633,4 +659,30 @@ void MainWindow::setActiveChat(quint32 id)
     for (int i = 0; i < m_chatContactsModel->rowCount(); ++i) {
         ui->groupChatContacts->setRowHeight(i, 64);
     }
+}
+
+void MainWindow::on_restoreSession_clicked()
+{
+    loadSecretFromBrowsedFile();
+
+    if (ui->secretInfo->toPlainText().isEmpty()) {
+        return;
+    }
+
+    on_connectButton_clicked();
+}
+
+void MainWindow::loadSecretFromBrowsedFile()
+{
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Load secret info..."));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly)) {
+        return;
+    }
+
+    ui->secretInfo->setPlainText(file.readAll());
 }

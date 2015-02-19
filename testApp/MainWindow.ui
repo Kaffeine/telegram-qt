@@ -143,6 +143,13 @@
             </spacer>
            </item>
            <item>
+            <widget class="QPushButton" name="restoreSession">
+             <property name="text">
+              <string>Restore session...</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="connectButton">
              <property name="text">
               <string>Connect</string>
@@ -150,9 +157,9 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="authButton">
+            <widget class="QPushButton" name="requestCode">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>Request code</string>
@@ -162,7 +169,7 @@
            <item>
             <widget class="QPushButton" name="signButton">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>Sign in/Sign up</string>
