@@ -39,6 +39,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_dispatcher, SIGNAL(contactListChanged()),
             SIGNAL(contactListChanged()));
+    connect(m_dispatcher, SIGNAL(contactProfileChanged(QString)),
+            SIGNAL(contactProfileChanged(QString)));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
             SIGNAL(avatarReceived(QString,QByteArray,QString,QString)));
     connect(m_dispatcher, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType)),

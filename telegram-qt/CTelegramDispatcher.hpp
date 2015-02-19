@@ -151,6 +151,7 @@ signals:
     void authorizationErrorReceived();
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
     void contactListChanged();
+    void contactProfileChanged(const QString &contact);
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
 
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);

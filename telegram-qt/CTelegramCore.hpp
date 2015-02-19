@@ -100,6 +100,7 @@ Q_SIGNALS:
     void phoneCodeRequired();
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void contactListChanged();
+    void contactProfileChanged(const QString &contact); // First and/or last name was changed
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
 
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);

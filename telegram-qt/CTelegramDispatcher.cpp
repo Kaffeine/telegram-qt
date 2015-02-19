@@ -1231,11 +1231,18 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         }
         break;
     }
-//    case TLValue::UpdateUserName:
-//        update.userId;
-//        update.firstName;
-//        update.lastName;
-//        break;
+    case TLValue::UpdateUserName: {
+        TLUser *user = m_users.value(update.userId);
+        if (user) {
+            bool changed = (user->firstName == update.firstName) && (user->lastName == update.lastName);
+            if (changed) {
+                user->firstName = update.firstName;
+                user->lastName = update.lastName;
+                emit contactProfileChanged(userIdToIdentifier(user->id));
+            }
+        }
+        break;
+    }
 //    case TLValue::UpdateUserPhoto:
 //        update.userId;
 //        update.date;
