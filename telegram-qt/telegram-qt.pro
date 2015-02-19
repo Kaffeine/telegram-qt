@@ -5,6 +5,8 @@ TEMPLATE = lib
 TARGET   = TelegramQt
 CONFIG  += dll
 
+include(../options.pri)
+
 DEFINES += TELEGRAMQT_LIBRARY
 
 SOURCES = CTelegramCore.cpp \
@@ -16,7 +18,7 @@ SOURCES = CTelegramCore.cpp \
     CTcpTransport.cpp \
     TelegramNamespace.cpp \
     CTelegramConnection.cpp \
-    TLValues.cpp
+    TLValues.cpp \
 
 HEADERS = CTelegramCore.hpp \
     CAppInformation.hpp \
@@ -34,6 +36,12 @@ HEADERS = CTelegramCore.hpp \
     TelegramNamespace.hpp \
     telegramqt_export.h \
     TLValues.hpp
+
+contains(options, developer-build) {
+    SOURCES += TLTypesDebug.cpp
+    HEADERS += TLTypesDebug.hpp
+    DEFINES += DEVELOPER_BUILD
+}
 
 LIBS += -lssl -lcrypto
 LIBS += -lz

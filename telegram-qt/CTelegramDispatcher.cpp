@@ -22,6 +22,10 @@
 
 #include <QDebug>
 
+#ifdef DEVELOPER_BUILD
+#include "TLTypesDebug.hpp"
+#endif
+
 // Have a copy in CTelegramConnection
 static QString maskPhoneNumber(const QString &phoneNumber)
 {
@@ -310,7 +314,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     inputStream >> format;
 
     if (format > secretFormatVersion) {
-        qDebug() << "Unknown format version";
+        qDebug() << Q_FUNC_INFO << "Unknown format version";
         return false;
     }
 
@@ -350,7 +354,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     connection->setServerSalt(serverSalt);
 
     if (connection->authId() != authId) {
-        qDebug() << "Invalid auth data.";
+        qDebug() << Q_FUNC_INFO << "Invalid auth data.";
         delete connection;
         return false;
     }
@@ -429,12 +433,12 @@ void CTelegramDispatcher::signUp(const QString &phoneNumber, const QString &auth
 void CTelegramDispatcher::requestPhoneCode(const QString &phoneNumber)
 {
     if (!activeConnection()) {
-        qDebug() << "Can't request phone code: there is no active connection.";
+        qDebug() << Q_FUNC_INFO << "Can't request phone code: there is no active connection.";
         return;
     }
 
     if (m_dcConfiguration.isEmpty()) {
-        qDebug() << "Can't request phone code: DC Configuration is unknown.";
+        qDebug() << Q_FUNC_INFO << "Can't request phone code: DC Configuration is unknown.";
         return;
     }
 
@@ -956,7 +960,11 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
 
 void CTelegramDispatcher::whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId)
 {
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << m_temporaryChatIdMap << statedMessage;
+#else
     qDebug() << Q_FUNC_INFO << m_temporaryChatIdMap;
+#endif
 
     if (m_temporaryChatIdMap.contains(messageId)) {
         if (statedMessage.chats.isEmpty()) {
@@ -1088,7 +1096,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
         return;
         break;
     default:
-        qDebug() << Q_FUNC_INFO << "unknown diff type:" << QString::number(updatesDifference.tlType, 16);
+        qDebug() << Q_FUNC_INFO << "unknown diff type:" << updatesDifference.tlType.toString();
         break;
     }
 
@@ -1137,9 +1145,13 @@ bool CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
 
 void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 {
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << update;
+#endif
+
     switch (update.tlType) {
     case TLValue::UpdateNewMessage:
-        qDebug() << "UpdateNewMessage";
+        qDebug() << Q_FUNC_INFO << "UpdateNewMessage";
         processMessageReceived(update.message);
         ensureUpdateState(update.pts);
         break;
@@ -1192,7 +1204,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         newChatState.participants = update.participants;
         updateFullChat(newChatState);
 
-        qDebug() << "chat id resolved to" << update.participants.chatId;
+        qDebug() << Q_FUNC_INFO << "chat id resolved to" << update.participants.chatId;
         break;
     }
     case TLValue::UpdateUserStatus: {
@@ -1278,13 +1290,16 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.notifySettings;
 //        break;
     default:
-        qDebug() << Q_FUNC_INFO << "Update type" << QString::number(update.tlType, 16) << "is not implemented yet.";
+        qDebug() << Q_FUNC_INFO << "Update type" << update.tlType.toString() << "is not implemented yet.";
         break;
     }
 }
 
 void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 {
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << message;
+#endif
     if (message.tlType == TLValue::MessageEmpty) {
         return;
     }
@@ -1462,7 +1477,7 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
             inputPeer.userId = user->id;
             inputPeer.accessHash = user->accessHash; // Seems to be useless.
         } else {
-            qDebug() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
+            qDebug() << Q_FUNC_INFO << "Unknown user type: " << user->tlType.toString();
         }
     } else {
         if (userId) {
@@ -1757,6 +1772,11 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
 
 void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
 {
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << updates;
+#else
+    qDebug() << Q_FUNC_INFO;
+#endif
     switch (updates.tlType) {
     case TLValue::UpdatesTooLong:
         getUpdatesState();

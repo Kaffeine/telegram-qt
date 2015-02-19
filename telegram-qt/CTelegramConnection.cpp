@@ -24,6 +24,13 @@
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
+
+const int valFieldWidth = 32;
+QString formatTLValue(const TLValue &val)
+{
+    const QString text = val.toString();
+    return QString(valFieldWidth - text.length(), QLatin1Char(' ')) + text;
+}
 #endif
 
 #include "CAppInformation.hpp"
@@ -2486,7 +2493,7 @@ quint64 CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
 
     str << QLatin1String("p|");
     str << QDateTime::currentMSecsSinceEpoch() << QLatin1Char('|');
-    str << val1.toString() << QLatin1Char('|');
+    str << formatTLValue(val1) << QLatin1Char('|');
     str << QString(QLatin1String("s%1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
     str << buffer.toHex();
     str << endl;
@@ -2566,7 +2573,7 @@ quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
 
     str << QString(QLatin1String("s%1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
 
-    str << val1.toString() << QLatin1Char('|');
+    str << formatTLValue(val1) << QLatin1Char('|');
     str << buffer.toHex();
     str << endl;
     str.flush();
