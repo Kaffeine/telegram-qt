@@ -932,8 +932,6 @@ void CTelegramDispatcher::whenStatedMessageReceived(const TLMessagesStatedMessag
 {
     qDebug() << Q_FUNC_INFO << m_temporaryChatIdMap;
 
-    ensureUpdateState(statedMessage.pts, statedMessage.seq);
-
     if (m_temporaryChatIdMap.contains(messageId)) {
         if (statedMessage.chats.isEmpty()) {
             qDebug() << "Stated message expected to have chat id, but it haven't";
@@ -948,6 +946,16 @@ void CTelegramDispatcher::whenStatedMessageReceived(const TLMessagesStatedMessag
             qDebug() << Q_FUNC_INFO << "public chat id " << publicChatId << " resolved to " << statedMessage.chats.first().id;
         }
     }
+
+    switch (statedMessage.tlType) {
+    case TLValue::MessagesStatedMessage:
+        processMessageReceived(statedMessage.message);
+        break;
+    default:
+        break;
+    }
+
+    ensureUpdateState(statedMessage.pts, statedMessage.seq);
 }
 
 void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq)
