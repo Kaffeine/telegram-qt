@@ -91,6 +91,7 @@ public Q_SLOTS:
     void setUserName(const QString &newUserName);
 
     quint32 createChat(const QStringList &phones, const QString &title);
+    bool addChatUser(quint32 chatId, const QString &contact, quint32 forwardMessages = 0);
 
 Q_SIGNALS:
     void connected(); // Telegram protocol connection established.

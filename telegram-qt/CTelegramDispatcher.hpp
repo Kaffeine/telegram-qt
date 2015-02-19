@@ -119,6 +119,7 @@ public:
     quint64 sendMessageToChat(quint32 publicChatId, const QString &message);
 
     quint32 createChat(const QStringList &phones, const QString chatName);
+    bool addChatUser(quint32 publicChatId, const QString &contact, quint32 forwardMessages);
 
     void setTyping(const QString &contact, bool typingStatus);
     void setChatTyping(quint32 publicChatId, bool typingStatus);

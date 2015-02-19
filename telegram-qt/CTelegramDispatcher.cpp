@@ -558,6 +558,32 @@ quint32 CTelegramDispatcher::createChat(const QStringList &phones, const QString
     return publicChatId;
 }
 
+bool CTelegramDispatcher::addChatUser(quint32 publicChatId, const QString &contact, quint32 forwardMessages)
+{
+    if (!activeConnection()) {
+        return false;
+    }
+
+    quint32 chatId = publicChatIdToChatId(publicChatId);
+
+    if (!chatId) {
+        return false;
+    }
+
+    const TLInputUser inputUser = phoneNumberToInputUser(contact);
+
+    switch (inputUser.tlType) {
+    case TLValue::InputUserEmpty:
+    case TLValue::InputUserSelf:
+        return false;
+    default:
+        break;
+    }
+
+    activeConnection()->messagesAddChatUser(chatId, inputUser, forwardMessages);
+    return true;
+}
+
 void CTelegramDispatcher::setTyping(const QString &contact, bool typingStatus)
 {
     if (!activeConnection()) {
@@ -1259,6 +1285,10 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 
 void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 {
+    if (message.tlType == TLValue::MessageEmpty) {
+        return;
+    }
+
     if (message.tlType == TLValue::MessageService) {
         const TLMessageAction &action = message.action;
 
@@ -1274,6 +1304,39 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
             chat.title = action.title;
             chat.participantsCount = action.users.count();
             updateChat(chat);
+            break;
+        case TLValue::MessageActionChatAddUser: {
+            TLVector<TLChatParticipant> participants = fullChat.participants.participants;
+            for (int i = 0; i < participants.count(); ++i) {
+                if (participants.at(i).userId == action.userId) {
+                    return;
+                }
+            }
+
+            TLChatParticipant newParticipant;
+            newParticipant.userId = action.userId;
+            participants.append(newParticipant);
+
+            fullChat.participants.participants = participants;
+            chat.participantsCount = participants.count();
+            updateChat(chat);
+            updateFullChat(fullChat);
+            }
+            break;
+        case TLValue::MessageActionChatDeleteUser: {
+            TLVector<TLChatParticipant> participants = fullChat.participants.participants;
+            for (int i = 0; i < participants.count(); ++i) {
+                if (participants.at(i).userId == action.userId) {
+                    participants.remove(i);
+                    break;
+                }
+            }
+
+            fullChat.participants.participants = participants;
+            chat.participantsCount = participants.count();
+            updateChat(chat);
+            updateFullChat(fullChat);
+            }
             break;
         case TLValue::MessageActionChatEditTitle:
             chat.title = action.title;

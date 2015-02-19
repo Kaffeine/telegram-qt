@@ -258,7 +258,7 @@ protected:
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetUsers(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetFullUser(CTelegramStream &stream, quint64 id);
-    TLValue processMessagesCreateChat(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesChatStateMessage(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReadHistory(CTelegramStream &stream, quint64 id);

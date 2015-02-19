@@ -271,3 +271,8 @@ quint32 CTelegramCore::createChat(const QStringList &phones, const QString &titl
 {
     return m_dispatcher->createChat(phones, title);
 }
+
+bool CTelegramCore::addChatUser(quint32 chatId, const QString &contact, quint32 forwardMessages)
+{
+    return m_dispatcher->addChatUser(chatId, contact, forwardMessages);
+}
