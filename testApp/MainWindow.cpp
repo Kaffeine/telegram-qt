@@ -44,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_chatMessagingModel(new CMessagingModel(this)),
     m_chatInfoModel(new CChatInfoModel(this)),
     m_activeChatId(0),
+    m_chatCreationMode(false),
     m_core(new CTelegramCore(this)),
     m_registered(false),
     m_appState(AppStateNone)
@@ -116,11 +117,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->blockContact->hide();
     ui->unblockContact->hide();
 
+    ui->groupChatLeaveChat->hide();
+
     QFile helpFile(QLatin1String(":/USAGE"));
     helpFile.open(QIODevice::ReadOnly);
     ui->helpView->setPlainText(helpFile.readAll());
 
     setAppState(AppStateNone);
+    updateGroupChatAddContactButtonText();
+
+    connect(ui->groupChatContactPhone, SIGNAL(textChanged(QString)), SLOT(updateGroupChatAddContactButtonText()));
 }
 
 MainWindow::~MainWindow()
@@ -343,9 +349,10 @@ void MainWindow::whenChatChanged(quint32 chatId)
     }
 
     setContactList(m_chatContactsModel, participants);
-    for (int i = 0; i < m_chatContactsModel->rowCount(); ++i) {
+    for (int i = 0; i < participants.count(); ++i) {
         ui->groupChatContacts->setRowHeight(i, 64);
     }
+    updateGroupChatAddContactButtonText();
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -417,6 +424,39 @@ void MainWindow::setRegistered(bool newRegistered)
     } else {
         ui->signButton->setText(tr("Sign up"));
     }
+}
+
+void MainWindow::setChatCreationMode()
+{
+    if (m_chatCreationMode) {
+        return;
+    }
+
+    m_chatCreationMode = true;
+
+    ui->groupChatCreateChat->setText(tr("Actually create chat"));
+    ui->groupChatLeaveChat->setText(tr("Abort"));
+    ui->groupChatLeaveChat->show();
+    ui->groupChatName->clear();
+
+    ui->groupChatAddContactForwardMessages->hide();
+
+    m_chatContactsModel->clear();
+    updateGroupChatAddContactButtonText();
+}
+
+void MainWindow::unsetChatCreationMode(quint32 newActiveChat)
+{
+    if (m_chatCreationMode) {
+        m_chatCreationMode = false;
+
+        ui->groupChatCreateChat->setText(tr("Create chat"));
+        ui->groupChatLeaveChat->setText(tr("Leave chat"));
+        ui->groupChatLeaveChat->hide(); // Hide as not implemented yet
+
+        ui->groupChatAddContactForwardMessages->show();
+    }
+    setActiveChat(newActiveChat);
 }
 
 void MainWindow::setAppState(MainWindow::AppState newState)
@@ -532,7 +572,7 @@ void MainWindow::on_messagingView_doubleClicked(const QModelIndex &index)
 void MainWindow::on_groupChatChatsList_doubleClicked(const QModelIndex &index)
 {
     const quint32 clickedChat = m_chatInfoModel->index(index.row(), CChatInfoModel::Id).data().toUInt();
-    setActiveChat(clickedChat);
+    unsetChatCreationMode(clickedChat); // Double click on chat list cancels chat creation.
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -548,23 +588,39 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 
 void MainWindow::on_groupChatCreateChat_clicked()
 {
-    m_activeChatId = m_core->createChat(m_chatContactsModel->contacts(), ui->groupChatName->text());
-    m_chatContactsModel->addContact(m_core->selfPhone());
-
-    ui->groupChatCreateChat->setText(tr("Leave chat"));
-    ui->groupChatCreateChat->setEnabled(false);
+    if (m_chatCreationMode) {
+        unsetChatCreationMode(m_core->createChat(m_chatContactsModel->contacts(), ui->groupChatName->text()));
+    } else {
+        setChatCreationMode();
+    }
 }
 
 void MainWindow::on_groupChatAddContact_clicked()
 {
-    m_chatContactsModel->addContact(ui->groupChatContactPhone->text());
-    ui->groupChatContactPhone->clear();
-}
+    const QString contact = ui->groupChatContactPhone->text();
 
-void MainWindow::on_groupChatRemoveContact_clicked()
-{
-    m_chatContactsModel->removeContact(ui->groupChatContactPhone->text());
+    if (contact.isEmpty()) {
+        return;
+    }
+
+    bool add = m_chatContactsModel->indexOfContact(contact) < 0;
+
+    if (m_chatCreationMode) {
+        if (add) {
+            m_chatContactsModel->addContact(contact);
+        } else {
+            m_chatContactsModel->removeContact(contact);
+        }
+    } else {
+        if (add) {
+            m_core->addChatUser(m_activeChatId, contact, ui->groupChatAddContactForwardMessages->value());
+        } else {
+//            m_core->removeChatUser(m_activeChatId, contact);
+        }
+    }
+
     ui->groupChatContactPhone->clear();
+    updateGroupChatAddContactButtonText();
 }
 
 void MainWindow::on_groupChatSendButton_clicked()
@@ -659,6 +715,7 @@ void MainWindow::setActiveChat(quint32 id)
     for (int i = 0; i < m_chatContactsModel->rowCount(); ++i) {
         ui->groupChatContacts->setRowHeight(i, 64);
     }
+    updateGroupChatAddContactButtonText();
 }
 
 void MainWindow::on_restoreSession_clicked()
@@ -685,4 +742,26 @@ void MainWindow::loadSecretFromBrowsedFile()
     }
 
     ui->secretInfo->setPlainText(file.readAll());
+}
+
+void MainWindow::updateGroupChatAddContactButtonText()
+{
+    const QString contact = ui->groupChatContactPhone->text();
+
+    bool add = contact.isEmpty() || m_chatContactsModel->indexOfContact(contact) < 0;
+
+    if (add) {
+        ui->groupChatAddContact->setText(tr("Add contact"));
+    } else {
+        ui->groupChatAddContact->setText(tr("Remove contact"));
+    }
+
+    ui->groupChatAddContact->setEnabled(!contact.isEmpty());
+}
+
+void MainWindow::on_groupChatLeaveChat_clicked()
+{
+    if (m_chatCreationMode) {
+        unsetChatCreationMode(m_activeChatId);
+    }
 }

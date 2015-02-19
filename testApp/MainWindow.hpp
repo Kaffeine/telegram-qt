@@ -91,7 +91,6 @@ protected slots:
 
     void on_groupChatCreateChat_clicked();
     void on_groupChatAddContact_clicked();
-    void on_groupChatRemoveContact_clicked();
 
     void on_groupChatSendButton_clicked();
 
@@ -118,8 +117,14 @@ private slots:
 
     void loadSecretFromBrowsedFile();
 
+    void updateGroupChatAddContactButtonText();
+
+    void on_groupChatLeaveChat_clicked();
+
 private:
     void setRegistered(bool newRegistered);
+    void setChatCreationMode();
+    void unsetChatCreationMode(quint32 newActiveChat);
 
     void setAppState(AppState newState);
 
@@ -136,6 +141,7 @@ private:
     CChatInfoModel *m_chatInfoModel;
 
     quint32 m_activeChatId;
+    bool m_chatCreationMode;
 
     CTelegramCore *m_core;
 

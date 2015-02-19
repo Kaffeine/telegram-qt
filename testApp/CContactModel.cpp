@@ -222,6 +222,13 @@ void CContactsModel::setContactFullName(const QString &contact, const QString &f
     emit dataChanged(modelIndex, modelIndex);
 }
 
+void CContactsModel::clear()
+{
+    beginResetModel();
+    m_contacts.clear();
+    endResetModel();
+}
+
 int CContactsModel::indexOfContact(const QString &phone) const
 {
     for (int i = 0; i < m_contacts.count(); ++i) {

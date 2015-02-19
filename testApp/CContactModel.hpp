@@ -76,6 +76,8 @@ public slots:
     void setContactAvatar(const QString &contact, const QPixmap &avatar);
     void setContactFullName(const QString &contact, const QString &fullName);
 
+    void clear();
+
 private:
     QString contactStatusStr(const SContact &contact) const;
 

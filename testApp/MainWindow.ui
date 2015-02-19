@@ -471,7 +471,27 @@
            </widget>
            <widget class="QWidget" name="layoutWidget3">
             <layout class="QGridLayout" name="groupChatContactsGrid">
-             <item row="0" column="0" colspan="4">
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="groupChatContactPhone"/>
+             </item>
+             <item row="1" column="0" colspan="5">
+              <widget class="QTableView" name="groupChatContacts"/>
+             </item>
+             <item row="2" column="2">
+              <widget class="QPushButton" name="groupChatAddContact">
+               <property name="text">
+                <string>Add/Remove</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Contact phone:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="5">
               <widget class="QLabel" name="label_10">
                <property name="text">
                 <string>Contacts:</string>
@@ -481,38 +501,31 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="0" colspan="4">
-              <widget class="QTableView" name="groupChatContacts"/>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_12">
-               <property name="text">
-                <string>Contact phone:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2">
-              <widget class="QPushButton" name="groupChatAddContact">
-               <property name="text">
-                <string>Add</string>
-               </property>
-              </widget>
-             </item>
              <item row="2" column="3">
-              <widget class="QPushButton" name="groupChatRemoveContact">
-               <property name="text">
-                <string>Remove</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLineEdit" name="groupChatContactPhone"/>
+              <widget class="QSpinBox" name="groupChatAddContactForwardMessages"/>
              </item>
             </layout>
            </widget>
            <widget class="QWidget" name="layoutWidget4">
             <layout class="QGridLayout" name="gridLayout_5">
-             <item row="0" column="0">
+             <item row="2" column="0">
+              <widget class="QPushButton" name="groupChatCreateChat">
+               <property name="text">
+                <string>Create chat</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QPushButton" name="groupChatLeaveChat">
+               <property name="text">
+                <string>Leave chat</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QTableView" name="groupChatChatsList"/>
+             </item>
+             <item row="0" column="0" colspan="2">
               <widget class="QLabel" name="label_14">
                <property name="text">
                 <string>Chats list:</string>
@@ -521,16 +534,6 @@
                 <set>Qt::AlignCenter</set>
                </property>
               </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QPushButton" name="groupChatCreateChat">
-               <property name="text">
-                <string>Create chat</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QTableView" name="groupChatChatsList"/>
              </item>
             </layout>
            </widget>
