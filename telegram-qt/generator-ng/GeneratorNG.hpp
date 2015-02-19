@@ -91,11 +91,14 @@ public:
     bool loadData(const QByteArray &data);
     void generate();
 
-    QString generateTLType(const TLType &type);
+    QString generateTLTypeDefinition(const TLType &type);
     QString generateStreamReadOperatorDeclaration(const TLType &type) const;
+    QString generateStreamReadOperatorDefinition(const TLType &type) const;
     QString generateStreamWriteOperatorDeclaration(const TLType &type) const;
-    QString generateStreamReadOperatorImplementation(const TLType &type) const;
-    QString generateStreamWriteOperatorImplementation(const TLType &type) const;
+    QString generateStreamWriteOperatorDefinition(const TLType &type) const;
+
+    QString generateDebugWriteOperatorDeclaration(const TLType &type) const;
+    QString generateDebugWriteOperatorDefinition(const TLType &type) const;
 
     QString generateConnectionMethodDeclaration(const TLMethod &method);
     QString generateConnectionMethodDefinition(const TLMethod &method);
@@ -106,11 +109,13 @@ public:
 
     QString codeOfTLTypes;
     QString codeStreamReadDeclarations;
+    QString codeStreamReadDefinitions;
     QString codeStreamWriteDeclarations;
-    QString codeStreamReadImplementation;
-    QString codeStreamWriteImplementation;
-    QString codeConnectionDeclaration;
-    QString codeConnectionImplementation;
+    QString codeStreamWriteDefinitions;
+    QString codeConnectionDeclarations;
+    QString codeConnectionDefinitions;
+    QString codeDebugWriteDeclarations;
+    QString codeDebugWriteDefinitions;
 
 private:
     static QString formatType(QString type);

@@ -120,7 +120,7 @@ QString GeneratorNG::formatType(QString type)
     }
 }
 
-QString GeneratorNG::generateTLType(const TLType &type)
+QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
 {
     QString code;
 
@@ -197,7 +197,7 @@ QString GeneratorNG::generateStreamWriteOperatorDeclaration(const TLType &type) 
     return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
-QString GeneratorNG::generateStreamReadOperatorImplementation(const TLType &type) const
+QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type) const
 {
     QString code;
 
@@ -224,7 +224,7 @@ QString GeneratorNG::generateStreamReadOperatorImplementation(const TLType &type
     return code;
 }
 
-QString GeneratorNG::generateStreamWriteOperatorImplementation(const TLType &type) const
+QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type) const
 {
     QString code;
 
@@ -248,6 +248,59 @@ QString GeneratorNG::generateStreamWriteOperatorImplementation(const TLType &typ
     code.append(spacing + QString("return *this;\n}\n\n"));
 
     return code;
+}
+
+QString GeneratorNG::generateDebugWriteOperatorDeclaration(const TLType &type) const
+{
+    QString argName = removePrefix(type.name);
+    argName[0] = argName.at(0).toLower();
+    return QString("QDebug operator<<(QDebug d, const %1 &%2);\n").arg(type.name).arg(argName);
+}
+
+QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type) const
+{
+    QString code;
+
+    code += QString("QDebug operator<<(QDebug d, const %1 &type)\n{\n").arg(type.name);
+    code += spacing + QString("d << \"%1(\" << type.tlType.toString() << \") {\";\n").arg(type.name);
+    code += spacing + QLatin1String("switch (type.tlType) {\n");
+
+    foreach (const TLSubType &subType, type.subTypes) {
+        code.append(QString("%1case %2::%3:\n").arg(spacing).arg(tlValueName).arg(subType.name));
+
+        foreach (const TLParam &member, subType.members) {
+            code += doubleSpacing + QString("d << \"%1:\" << type.%1;\n").arg(member.name);
+        }
+
+        code += doubleSpacing + QLatin1String("break;\n");
+    }
+
+    code += spacing + QLatin1String("default:\n");
+    code += doubleSpacing + QLatin1String("break;\n");
+    code += spacing + QLatin1String("}\n");
+    code += spacing + QLatin1String("d << \"}\";\n\n");
+    code += spacing + QLatin1String("return d;\n}\n\n");
+
+    return code;
+
+//    QDebug operator << (QDebug d, const TLUpdatesState &type) {
+//        d << "TLUpdatesState(" << type.tlType.toString() << ")";
+//        d << "{";
+//        switch (type.tlType) {
+//        case TLValue::UpdatesState:
+//            d << "pts:" << type.pts;
+//            d << "qts:" << type.qts;
+//            d << "date:" << type.date;
+//            d << "seq:" << type.seq;
+//            d << "unreadCount:" << type.unreadCount;
+//            break;
+//        default:
+//            break;
+//        }
+//        d << "}";
+
+//        return d;
+//    }
 }
 
 QString GeneratorNG::formatMethodParam(const TLParam &param)
@@ -449,10 +502,10 @@ void GeneratorNG::generate()
     codeOfTLTypes.clear();
     codeStreamReadDeclarations.clear();
     codeStreamWriteDeclarations.clear();
-    codeStreamReadImplementation.clear();
-    codeStreamWriteImplementation.clear();
-    codeConnectionDeclaration.clear();
-    codeConnectionImplementation.clear();
+    codeStreamReadDefinitions.clear();
+    codeStreamWriteDefinitions.clear();
+    codeConnectionDeclarations.clear();
+    codeConnectionDefinitions.clear();
 
     static const QStringList whiteList = QStringList()
             << QLatin1String("auth")
@@ -472,8 +525,8 @@ void GeneratorNG::generate()
             }
         }
         if (addImplementation) {
-            codeConnectionDeclaration.append(generateConnectionMethodDeclaration(method));
-            codeConnectionImplementation.append(generateConnectionMethodDefinition(method));
+            codeConnectionDeclarations.append(generateConnectionMethodDeclaration(method));
+            codeConnectionDefinitions.append(generateConnectionMethodDefinition(method));
         } else {
             // It's still necessary to generate definition to figure out used stream write operators
             generateConnectionMethodDefinition(method);
@@ -500,14 +553,17 @@ void GeneratorNG::generate()
             continue;
         }
 
-        codeOfTLTypes.append(generateTLType(type));
+        codeOfTLTypes.append(generateTLTypeDefinition(type));
 
         codeStreamReadDeclarations.append(generateStreamReadOperatorDeclaration(type));
-        codeStreamReadImplementation.append(generateStreamReadOperatorImplementation(type));
+        codeStreamReadDefinitions.append(generateStreamReadOperatorDefinition(type));
 
         if (m_usedWriteOperators.contains(type.name)) {
             codeStreamWriteDeclarations.append(generateStreamWriteOperatorDeclaration(type));
-            codeStreamWriteImplementation.append(generateStreamWriteOperatorImplementation(type));
+            codeStreamWriteDefinitions.append(generateStreamWriteOperatorDefinition(type));
         }
+
+        codeDebugWriteDeclarations.append(generateDebugWriteOperatorDeclaration(type));
+        codeDebugWriteDefinitions .append(generateDebugWriteOperatorDefinition(type));
     }
 }
