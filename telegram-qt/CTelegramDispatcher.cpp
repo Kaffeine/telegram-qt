@@ -1034,12 +1034,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
         }
 
         foreach (const TLMessage &message, updatesDifference.newMessages) {
-//            qDebug() << "added message" << message.message;
-            if (message.tlType != TLValue::Message) {
-                continue;
-            }
-
-            if (filterReceivedMessage(telegramMessageFlagsToPublicMessageFlags(message.flags))) {
+            if ((message.tlType != TLValue::MessageService) && (filterReceivedMessage(telegramMessageFlagsToPublicMessageFlags(message.flags)))) {
                 continue;
             }
 
@@ -1256,6 +1251,37 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 
 void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 {
+    if (message.tlType == TLValue::MessageService) {
+        const TLMessageAction &action = message.action;
+
+        const quint32 chatId = message.toId.chatId;
+        TLChat chat = m_chatInfo.value(chatId);
+        TLChatFull fullChat = m_chatFullInfo.value(chatId);
+
+        chat.id = chatId;
+        fullChat.id = chatId;
+
+        switch (action.tlType) {
+        case TLValue::MessageActionChatCreate:
+            chat.title = action.title;
+            chat.participantsCount = action.users.count();
+            updateChat(chat);
+            break;
+        case TLValue::MessageActionChatEditTitle:
+            chat.title = action.title;
+            updateChat(chat);
+            break;
+        case TLValue::MessageActionChatEditPhoto:
+        case TLValue::MessageActionChatDeletePhoto:
+            fullChat.chatPhoto = action.photo;
+            updateFullChat(fullChat);
+            break;
+        default:
+            break;
+        }
+        return;
+    }
+
     const quint32 messageFlags = telegramMessageFlagsToPublicMessageFlags(message.flags);
     const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
