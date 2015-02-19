@@ -569,7 +569,7 @@ void MainWindow::on_groupChatRemoveContact_clicked()
 
 void MainWindow::on_groupChatSendButton_clicked()
 {
-    m_core->sendChatMessage(1, ui->groupChatMessage->text());
+    m_core->sendChatMessage(m_activeChatId, ui->groupChatMessage->text());
 
     m_chatMessagingModel->addMessage(m_core->selfPhone(), ui->groupChatMessage->text(), TelegramNamespace::MessageTypeText, /* outgoing */ true);
     ui->groupChatMessage->clear();
