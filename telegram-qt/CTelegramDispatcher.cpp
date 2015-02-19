@@ -1143,6 +1143,18 @@ bool CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
     return true;
 }
 
+inline bool ensureDcOption(QVector<TLDcOption> *vector, const TLDcOption &option)
+{
+    for (int i = 0; i < vector->count(); ++i) {
+        if (vector->at(i).id == option.id) {
+            vector->replace(i, option);
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 {
 #ifdef DEVELOPER_BUILD
@@ -1278,9 +1290,20 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.userId;
 //        update.version;
 //        break;
-//    case TLValue::UpdateDcOptions:
-//        update.dcOptions;
-//        break;
+    case TLValue::UpdateDcOptions: {
+        int dcUpdatesReplaced = 0;
+        int dcUpdatesInserted = 0;
+        foreach (const TLDcOption &option, update.dcOptions) {
+            if (ensureDcOption(&m_dcConfiguration, option)) {
+                ++dcUpdatesReplaced;
+            } else {
+                ++dcUpdatesInserted;
+            }
+        }
+
+        qDebug() << Q_FUNC_INFO << "Dc configuration update replaces" << dcUpdatesReplaced << "options (" << dcUpdatesInserted << "options inserted).";
+        break;
+    }
 //    case TLValue::UpdateUserBlocked:
 //        update.userId;
 //        update.blocked;
