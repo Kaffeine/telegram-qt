@@ -192,15 +192,7 @@ void CTelegramConnection::getFile(const TLInputFileLocation &inputLocation, quin
         return;
     }
 
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << TLValue::UploadGetFile;
-    outputStream << inputLocation;
-    outputStream << quint32(0); // Offset
-    outputStream << quint32(512 * 1024); // Limit
-
-    const quint64 messageId = sendEncryptedPackage(output);
+    const quint64 messageId = uploadGetFile(inputLocation, 0, 512 * 1024);
 
     m_requestedFilesIds.insert(messageId, fileId);
 }
@@ -1020,6 +1012,46 @@ quint64 CTelegramConnection::updatesGetState()
     CTelegramStream outputStream(&output, /* write */ true);
 
     outputStream << TLValue::UpdatesGetState;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::uploadGetFile(const TLInputFileLocation &location, quint32 offset, quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::UploadGetFile;
+    outputStream << location;
+    outputStream << offset;
+    outputStream << limit;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::uploadSaveBigFilePart(quint64 fileId, quint32 filePart, quint32 fileTotalParts, const QByteArray &bytes)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::UploadSaveBigFilePart;
+    outputStream << fileId;
+    outputStream << filePart;
+    outputStream << fileTotalParts;
+    outputStream << bytes;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::uploadSaveFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::UploadSaveFilePart;
+    outputStream << fileId;
+    outputStream << filePart;
+    outputStream << bytes;
 
     return sendEncryptedPackage(output);
 }

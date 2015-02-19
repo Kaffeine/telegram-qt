@@ -460,6 +460,7 @@ void GeneratorNG::generate()
             << QLatin1String("messages")
             << QLatin1String("contacts")
             << QLatin1String("updates")
+            << QLatin1String("upload")
             << QLatin1String("users");
 
     foreach (const TLMethod &method, m_methods) {

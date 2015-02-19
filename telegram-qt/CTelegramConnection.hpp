@@ -150,6 +150,9 @@ public:
     quint64 messagesSetTyping(const TLInputPeer &peer, const TLSendMessageAction &action);
     quint64 updatesGetDifference(quint32 pts, quint32 date, quint32 qts);
     quint64 updatesGetState();
+    quint64 uploadGetFile(const TLInputFileLocation &location, quint32 offset, quint32 limit);
+    quint64 uploadSaveBigFilePart(quint64 fileId, quint32 filePart, quint32 fileTotalParts, const QByteArray &bytes);
+    quint64 uploadSaveFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
     quint64 usersGetFullUser(const TLInputUser &id);
     quint64 usersGetUsers(const TLVector<TLInputUser> &id);
     // End of generated Telegram API methods declaration
