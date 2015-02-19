@@ -20,6 +20,8 @@ public:
     void setB(const QByteArray &newB);
 
     SAesKey testGenerateClientToServerAesKey(const QByteArray &messageKey) const;
+    quint64 testNewMessageId();
+
 };
 
 #endif // CTESTCONNECTION_HPP

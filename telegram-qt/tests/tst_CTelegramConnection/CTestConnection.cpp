@@ -44,3 +44,8 @@ SAesKey CTestConnection::testGenerateClientToServerAesKey(const QByteArray &mess
 {
     return generateClientToServerAesKey(messageKey);
 }
+
+quint64 CTestConnection::testNewMessageId()
+{
+    return newMessageId();
+}

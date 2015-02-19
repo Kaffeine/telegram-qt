@@ -29,6 +29,7 @@ public:
 
 private slots:
     void testTimestampAlwaysGrow();
+    void testNewMessageId();
     void testClientTimestampNeverOdd();
     void testTimestampConversion();
     void testPQAuthRequest();
@@ -57,6 +58,24 @@ void tst_CTelegramConnection::testTimestampAlwaysGrow()
             // Make same call to erroneous CTelegramCore::formatClientTimeStamp() to simplify debugging via break point.
             const quint64 timeStamp = CTelegramConnection::formatClientTimeStamp(time + i);
             Q_UNUSED(timeStamp)
+        }
+        QVERIFY2(newTimeStamp > previousTimeStamp, "New timestamp should be more or equal than previous");
+        previousTimeStamp = newTimeStamp;
+    }
+}
+
+void tst_CTelegramConnection::testNewMessageId()
+{
+    CTestConnection connection;
+
+    quint64 previousTimeStamp = 0;
+    for (int i = 0; i < 2000; ++i) {
+        const quint64 newTimeStamp = connection.testNewMessageId();
+        if (newTimeStamp < previousTimeStamp) {
+            // Print erroneous method results and arguments.
+            qDebug() << "previous:" << previousTimeStamp;
+            qDebug() << "new:" << newTimeStamp;
+            qDebug() << "iteration:" << i;
         }
         QVERIFY2(newTimeStamp > previousTimeStamp, "New timestamp should be more or equal than previous");
         previousTimeStamp = newTimeStamp;
