@@ -31,6 +31,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(authenticated()));
     connect(m_dispatcher, SIGNAL(initializated()),
             SIGNAL(initializated()));
+    connect(m_dispatcher, SIGNAL(loggedOut(bool)),
+            SIGNAL(loggedOut(bool)));
     connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)),
             SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(m_dispatcher, SIGNAL(phoneCodeRequired()),
@@ -111,6 +113,11 @@ bool CTelegramCore::initConnection(const QString &address, quint32 port)
 void CTelegramCore::closeConnection()
 {
     return m_dispatcher->closeConnection();
+}
+
+bool CTelegramCore::logOut()
+{
+    return m_dispatcher->logOut();
 }
 
 bool CTelegramCore::restoreConnection(const QByteArray &secret)

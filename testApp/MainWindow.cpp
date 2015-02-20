@@ -161,6 +161,12 @@ void MainWindow::whenInitializated()
     ui->lastName->setText(m_core->contactLastName(selfContact));
 }
 
+void MainWindow::whenLoggedOut(bool result)
+{
+    qDebug() << Q_FUNC_INFO << result;
+    setAppState(AppStateLoggedOut);
+}
+
 void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered, bool invited)
 {
     if (phone == ui->phoneNumber->text()) {
@@ -409,10 +415,14 @@ void MainWindow::on_requestCode_clicked()
 
 void MainWindow::on_signButton_clicked()
 {
-    if (m_registered) {
-        m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
+    if (m_appState >= AppStateSignedIn) {
+        m_core->logOut();
     } else {
-        m_core->signUp(ui->phoneNumber->text(), ui->confirmationCode->text(), ui->firstName->text(), ui->lastName->text());
+        if (m_registered) {
+            m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
+        } else {
+            m_core->signUp(ui->phoneNumber->text(), ui->confirmationCode->text(), ui->firstName->text(), ui->lastName->text());
+        }
     }
 }
 
@@ -481,6 +491,13 @@ void MainWindow::setAppState(MainWindow::AppState newState)
 
     ui->phoneNumber->setEnabled(m_appState < AppStateCodeSent);
 
+    if (m_appState > AppStateSignedIn) {
+        ui->signButton->setText(tr("Log out"));
+        ui->signButton->setToolTip(tr("Destroy current auth session."));
+    } else {
+        setRegistered(m_registered);
+    }
+
     switch (m_appState) {
     case AppStateNone:
         ui->connectButton->setVisible(true);
@@ -505,16 +522,19 @@ void MainWindow::setAppState(MainWindow::AppState newState)
     case AppStateSignedIn:
         ui->connectionState->setText(tr("Signed in..."));
         ui->requestCode->setVisible(false);
-        ui->signButton->setVisible(false);
+        ui->signButton->setVisible(true); // Logout button
 
         ui->phoneNumber->setEnabled(false);
         break;
     case AppStateReady:
         ui->connectionState->setText(tr("Ready"));
         ui->requestCode->setVisible(false);
-        ui->signButton->setVisible(false);
+        ui->signButton->setVisible(true); // Logout button
 
         ui->phoneNumber->setEnabled(false);
+        break;
+    case AppStateLoggedOut:
+        ui->connectionState->setText(tr("Logged out"));
         break;
     default:
         break;

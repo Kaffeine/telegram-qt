@@ -106,6 +106,7 @@ public:
     void initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
+    bool logOut();
 
     void requestPhoneStatus(const QString &phoneNumber);
     void signIn(const QString &phoneNumber, const QString &authCode);
@@ -148,6 +149,7 @@ signals:
     void phoneCodeRequired();
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void authenticated();
+    void loggedOut(bool result);
     void authorizationErrorReceived();
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
     void contactListChanged();

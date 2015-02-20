@@ -206,6 +206,7 @@ signals:
     void dcConfigurationReceived(quint32 dc);
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void phoneCodeRequired();
+    void loggedOut(bool result);
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void authorizationErrorReceived();
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
@@ -255,6 +256,7 @@ protected:
     TLValue processAuthSendCode(CTelegramStream &stream, quint64 id);
     TLValue processAuthSendSms(CTelegramStream &stream, quint64 id);
     TLValue processAuthSign(CTelegramStream &stream, quint64 id);
+    TLValue processAuthLogOut(CTelegramStream &stream, quint64 id);
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetUsers(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetFullUser(CTelegramStream &stream, quint64 id);

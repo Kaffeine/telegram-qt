@@ -44,13 +44,15 @@ public:
         AppStateCodeRequested,
         AppStateCodeSent,
         AppStateSignedIn,
-        AppStateReady
+        AppStateReady,
+        AppStateLoggedOut
     };
 
 protected slots:
     void whenConnected();
     void whenAuthenticated();
     void whenInitializated();
+    void whenLoggedOut(bool result);
     void whenPhoneStatusReceived(const QString &phone, bool registered, bool invited);
     void whenPhoneCodeRequested();
     void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);

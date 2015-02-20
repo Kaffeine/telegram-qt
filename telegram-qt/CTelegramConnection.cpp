@@ -79,6 +79,10 @@ void CTelegramConnection::connectToDc()
         return;
     }
 
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << m_dcInfo.id << m_dcInfo.ipAddress << m_dcInfo.port;
+#endif
+
     setStatus(ConnectionStatusConnecting);
     m_transport->connectToHost(m_dcInfo.ipAddress, m_dcInfo.port);
 }
@@ -1570,6 +1574,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::AuthSignUp:
             processingResult = processAuthSign(stream, id);
             break;
+        case TLValue::AuthLogOut:
+            processingResult = processAuthLogOut(stream, id);
+            break;
         case TLValue::HelpGetConfig:
             processingResult = processHelpGetConfig(stream, id);
             break;
@@ -1672,7 +1679,7 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
     QString errorMessage;
     stream >> errorMessage;
 
-    qDebug() << "RPC Error" << errorCode << ":" << errorMessage << "for message" << id << QString::number(request, 16);
+    qDebug() << "RPC Error" << errorCode << ":" << errorMessage << "for message" << id << request.toString();
 
     switch (errorCode) {
     case 303: // ERROR_SEE_OTHER
@@ -2050,6 +2057,18 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
     }
 
     return result.tlType;
+}
+
+TLValue CTelegramConnection::processAuthLogOut(CTelegramStream &stream, quint64 id)
+{
+    Q_UNUSED(id);
+
+    TLValue result;
+    stream >> result;
+
+    emit loggedOut(result == TLValue::BoolTrue);
+
+    return result;
 }
 
 TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint64 id)

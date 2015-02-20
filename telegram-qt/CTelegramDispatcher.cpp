@@ -406,6 +406,16 @@ void CTelegramDispatcher::closeConnection()
     m_chatFullInfo.clear();
 }
 
+bool CTelegramDispatcher::logOut()
+{
+    if (!activeConnection()) {
+        return false;
+    }
+
+    activeConnection()->authLogOut();
+    return true;
+}
+
 void CTelegramDispatcher::requestPhoneStatus(const QString &phoneNumber)
 {
     if (!activeConnection()) {
@@ -1673,6 +1683,8 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
                     SLOT(whenMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
             connect(connection, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)),
                     SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)));
+            connect(connection, SIGNAL(loggedOut(bool)),
+                    SIGNAL(loggedOut(bool)));
 
             continueInitialization(InitIsSignIn);
         }

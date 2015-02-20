@@ -59,6 +59,7 @@ public Q_SLOTS:
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
+    bool logOut();
 
     void requestPhoneStatus(const QString &phoneNumber);
     void requestPhoneCode(const QString &phoneNumber);
@@ -98,6 +99,7 @@ Q_SIGNALS:
     void authenticated(); // Signed in.
     void initializated(); // Contact list and updates received.
     void phoneCodeRequired();
+    void loggedOut(bool result);
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void contactListChanged();
     void contactProfileChanged(const QString &contact); // First and/or last name was changed
