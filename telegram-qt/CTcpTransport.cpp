@@ -22,7 +22,8 @@ CTcpTransport::CTcpTransport(QObject *parent) :
     m_socket(new QTcpSocket(this)),
     m_firstPackage(true)
 {
-    connect(m_socket, SIGNAL(connected()), SLOT(whenConnected()));
+    connect(m_socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(whenStateChanged(QAbstractSocket::SocketState)));
+    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(whenError(QAbstractSocket::SocketError)));
     connect(m_socket, SIGNAL(readyRead()), SLOT(whenReadyRead()));
 }
 
@@ -76,11 +77,23 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
     m_socket->write(package);
 }
 
-void CTcpTransport::whenConnected()
+void CTcpTransport::whenStateChanged(QAbstractSocket::SocketState newState)
 {
-    m_expectedLength = 0;
-    m_firstPackage = true;
-    emit connected();
+    switch (newState) {
+    case QAbstractSocket::ConnectedState:
+        m_expectedLength = 0;
+        m_firstPackage = true;
+        break;
+    default:
+        break;
+    }
+
+    setState(newState);
+}
+
+void CTcpTransport::whenError(QAbstractSocket::SocketError error)
+{
+    setError(error);
 }
 
 void CTcpTransport::whenReadyRead()

@@ -39,7 +39,8 @@ public slots:
     void sendPackage(const QByteArray &payload);
 
 private slots:
-    void whenConnected();
+    void whenStateChanged(QAbstractSocket::SocketState newState);
+    void whenError(QAbstractSocket::SocketError error);
     void whenReadyRead();
 
 private:

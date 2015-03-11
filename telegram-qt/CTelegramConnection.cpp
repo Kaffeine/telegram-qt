@@ -64,6 +64,9 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_deltaTime(0),
     m_deltaTimeHeuristicState(DeltaTimeIsOk),
     m_serverPublicFingersprint(0)
+  #ifdef NETWORK_LOGGING
+  , m_logFile(0)
+  #endif
 {
     setTransport(new CTcpTransport(this));
 }
@@ -96,7 +99,7 @@ void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
 {
     m_transport = newTransport;
 
-    connect(m_transport, SIGNAL(connected()), SLOT(whenConnected()));
+    connect(m_transport, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(whenTransportStateChanged()));
     connect(m_transport, SIGNAL(readyRead()), SLOT(whenReadyRead()));
 }
 
@@ -2330,22 +2333,30 @@ TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok)
     return updates.tlType;
 }
 
-void CTelegramConnection::whenConnected()
+void CTelegramConnection::whenTransportStateChanged()
 {
 #ifdef NETWORK_LOGGING
-    QDir dir;
-    dir.mkdir("network");
+    if (!m_logFile) {
+        QDir dir;
+        dir.mkdir("network");
 
-    m_logFile = new QFile(QLatin1String("network/") + m_dcInfo.ipAddress + QLatin1String(".log"));
-    m_logFile->open(QIODevice::WriteOnly);
+        m_logFile = new QFile(QLatin1String("network/") + m_dcInfo.ipAddress + QLatin1String(".log"));
+        m_logFile->open(QIODevice::WriteOnly);
+    }
 #endif
 
-    setStatus(ConnectionStatusConnected);
+    switch (m_transport->state()) {
+    case QAbstractSocket::ConnectedState:
+        setStatus(ConnectionStatusConnected);
 
-    if (m_authKey.isEmpty()) {
-        initAuth();
-    } else {
-        setAuthState(AuthStateSignedIn);
+        if (m_authKey.isEmpty()) {
+            initAuth();
+        } else {
+            setAuthState(AuthStateSignedIn);
+        }
+        break;
+    default:
+        break;
     }
 }
 

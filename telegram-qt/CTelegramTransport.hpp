@@ -17,6 +17,7 @@
 #include <QObject>
 
 #include <QByteArray>
+#include <QAbstractSocket>
 
 class CTelegramTransport : public QObject
 {
@@ -30,13 +31,38 @@ public:
 
     virtual bool isConnected() const = 0;
 
+    inline QAbstractSocket::SocketError error() const { return m_error; }
+    inline QAbstractSocket::SocketState state() const { return m_state; }
+
     // Method for testing
     virtual QByteArray lastPackage() const = 0;
 
 signals:
-    void connected();
+    void error(QAbstractSocket::SocketError error);
+    void stateChanged(QAbstractSocket::SocketState state);
+
     void readyRead();
 
+protected:
+    void setError(QAbstractSocket::SocketError error);
+    void setState(QAbstractSocket::SocketState state);
+
+private:
+    QAbstractSocket::SocketError m_error;
+    QAbstractSocket::SocketState m_state;
+
 };
+
+inline void CTelegramTransport::setError(QAbstractSocket::SocketError e)
+{
+    m_error = e;
+    emit error(e);
+}
+
+inline void CTelegramTransport::setState(QAbstractSocket::SocketState s)
+{
+    m_state = s;
+    emit stateChanged(s);
+}
 
 #endif // CTELEGRAMTRANSPORT_HPP

@@ -229,7 +229,7 @@ signals:
     void authExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
 private slots:
-    void whenConnected();
+    void whenTransportStateChanged();
     void whenReadyRead();
 
 protected:
