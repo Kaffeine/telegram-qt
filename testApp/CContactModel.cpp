@@ -258,7 +258,15 @@ QString CContactsModel::contactStatusStr(const SContact &contact) const
         return tr("Online");
     case TelegramNamespace::ContactStatusOffline:
         if (contact.wasOnline > 0) {
-            return tr("Offline (%1)").arg(QDateTime::fromMSecsSinceEpoch(quint64(contact.wasOnline) * 1000).toString(Qt::TextDate));
+            const QDateTime wasOnline = QDateTime::fromMSecsSinceEpoch(quint64(contact.wasOnline) * 1000);
+            const QDate currentDate = QDateTime::currentDateTime().date();
+            if (wasOnline.date().daysTo(currentDate) > 7) {
+                return tr("Offline (since %1)").arg(wasOnline.toString(QLatin1String("yyyy.MM.dd")));
+            } else if (wasOnline.date() == currentDate) {
+                return tr("Offline (since %1)").arg(wasOnline.toString(QLatin1String("HH:mm")));
+            } else {
+                return tr("Offline (since %1)").arg(wasOnline.toString(QLatin1String("yyyy.MM.dd HH:mm")));
+            }
         } else  {
             return tr("Offline");
         }
