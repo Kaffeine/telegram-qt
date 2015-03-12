@@ -1700,6 +1700,7 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
         case CTelegramConnection::ConnectionStatusDisconnected:
             setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
 
+            qDebug() << Q_FUNC_INFO << "autorecconne teionnkdsafd";
             if (m_autoReconnectionEnabled) {
                 connection->connectToDc();
             }
@@ -1921,6 +1922,10 @@ void CTelegramDispatcher::setActiveDc(quint32 dc, bool syncWantedDc)
         m_wantedActiveDc = dc;
     }
 
+    if (m_connections.value(dc)) {
+        m_connections.value(dc)->keepConnectionAlive(true);
+    }
+
     qDebug() << Q_FUNC_INFO << dc;
 }
 
@@ -2099,7 +2104,7 @@ CTelegramConnection *CTelegramDispatcher::establishConnectionToDc(quint32 dc)
         m_connections.insert(dc, connection);
     }
 
-    if (!connection->isConnected()) {
+    if (!connection->status() < CTelegramConnection::ConnectionStatusConnected) {
         connection->connectToDc();
     }
 

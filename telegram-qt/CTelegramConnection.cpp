@@ -17,6 +17,7 @@
 
 #include <QDateTime>
 #include <QStringList>
+#include <QTimer>
 
 #include <QtEndian>
 
@@ -48,17 +49,21 @@ static QString maskPhoneNumber(const QString &phoneNumber)
     return phoneNumber.mid(0, phoneNumber.size() / 4) + QString(phoneNumber.size() - phoneNumber.size() / 4, QLatin1Char('x')); // + QLatin1String(" (hidden)");
 }
 
+static const quint32 m_pingInterval = 15; // seconds
+
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
     m_status(ConnectionStatusDisconnected),
     m_appInfo(appInfo),
     m_transport(0),
+    m_pingTimer(0),
     m_authState(AuthStateNone),
     m_authId(0),
     m_authKeyAuxHash(0),
     m_serverSalt(0),
     m_sessionId(0),
     m_lastMessageId(0),
+    m_lastSentPingId(0),
     m_sequenceNumber(0),
     m_contentRelatedMessages(0),
     m_deltaTime(0),
@@ -78,7 +83,7 @@ void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
 
 void CTelegramConnection::connectToDc()
 {
-    if (isConnected() || (m_status == ConnectionStatusConnecting)) {
+    if (m_status != ConnectionStatusDisconnected) {
         return;
     }
 
@@ -86,13 +91,10 @@ void CTelegramConnection::connectToDc()
     qDebug() << Q_FUNC_INFO << m_dcInfo.id << m_dcInfo.ipAddress << m_dcInfo.port;
 #endif
 
+    m_transport->disconnectFromHost(); // Ensure that there is no connection
     setStatus(ConnectionStatusConnecting);
+    setAuthState(AuthStateNone);
     m_transport->connectToHost(m_dcInfo.ipAddress, m_dcInfo.port);
-}
-
-bool CTelegramConnection::isConnected() const
-{
-    return m_transport->isConnected();
 }
 
 void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
@@ -177,6 +179,25 @@ void CTelegramConnection::getConfiguration()
     outputStream << TLValue::HelpGetConfig;
 
     sendEncryptedPackage(output);
+}
+
+void CTelegramConnection::keepConnectionAlive(bool keep)
+{
+    qDebug() << Q_FUNC_INFO << keep;
+
+    if (m_keepAlive == keep) {
+        return;
+    }
+
+    m_keepAlive = keep;
+
+    if (keep) {
+        startPingTimer();
+    } else {
+        if (m_pingTimer) {
+            m_pingTimer->stop();
+        }
+    }
 }
 
 quint64 CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
@@ -1094,6 +1115,31 @@ quint64 CTelegramConnection::usersGetUsers(const TLVector<TLInputUser> &id)
 
 // End of generated Telegram API methods implementation
 
+quint64 CTelegramConnection::ping()
+{
+//    qDebug() << Q_FUNC_INFO;
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::Ping;
+    outputStream << ++m_lastSentPingId;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::pingDelayDisconnect(quint32 disconnectInSec)
+{
+//    qDebug() << Q_FUNC_INFO << disconnectInSec;
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::PingDelayDisconnect;
+    outputStream << ++m_lastSentPingId;
+    outputStream << disconnectInSec;
+
+    return sendEncryptedPackage(output);
+}
+
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
     CTelegramStream inputStream(payload);
@@ -1485,6 +1531,9 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
     case TLValue::GzipPacked:
         processGzipPackedRpcQuery(stream);
         break;
+    case TLValue::Pong:
+        processPingPong(stream);
+        break;
     default:
         qDebug() << "VAL:" << QString::number(val, 16);
         break;
@@ -1629,6 +1678,8 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         default:
             qDebug() << "Unknown outgoing RPC type:" << request.toString();
             break;
+        case TLValue::Ping:
+            break;
         }
 
         switch (processingResult) {
@@ -1645,7 +1696,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         }
     } else {
         stream >> request;
-        qDebug() << "Unexpected RPC message:" << QString::number(request, 16);
+        qDebug() << "Unexpected RPC message:" << request.toString() << "id" << id;
     }
 }
 
@@ -1842,6 +1893,19 @@ void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &str
         sendEncryptedPackage(m_submittedPackages.take(id));
         qDebug() << "Local serverSalt fixed to" << m_serverSalt;
     }
+}
+
+void CTelegramConnection::processPingPong(CTelegramStream &stream)
+{
+    quint64 pid;
+    quint64 msgId;
+    stream >> msgId;
+    stream >> pid;
+
+    m_lastReceivedPingId = pid;
+    m_lastReceivedPingTime = QDateTime::currentMSecsSinceEpoch();
+
+//    qDebug() << Q_FUNC_INFO << m_lastReceivedPingId << m_lastReceivedPingTime;
 }
 
 TLValue CTelegramConnection::processHelpGetConfig(CTelegramStream &stream, quint64 id)
@@ -2460,6 +2524,26 @@ void CTelegramConnection::whenReadyRead()
     }
 }
 
+void CTelegramConnection::whenItsTimeToPing()
+{
+//    qDebug() << Q_FUNC_INFO << QDateTime::currentMSecsSinceEpoch();
+
+    if (status() < ConnectionStatusConnected) {
+        // Nothing to do.
+        return;
+    }
+
+    if (m_lastSentPingTime && (m_lastSentPingTime > m_lastReceivedPingTime + m_pingInterval * 1000)) {
+        qDebug() << Q_FUNC_INFO << "pong time is out";
+        setStatus(ConnectionStatusDisconnected);
+        return;
+    }
+
+    m_lastSentPingTime = QDateTime::currentMSecsSinceEpoch();
+
+    pingDelayDisconnect(m_pingInterval + 10); // Server will close the connection after ten seconds more, than our ping interval.
+}
+
 SAesKey CTelegramConnection::generateTmpAesKey() const
 {
     QByteArray newNonceAndServerNonce;
@@ -2538,18 +2622,21 @@ quint64 CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
     return messageId;
 }
 
-quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer)
+quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool contentRelated)
 {
     QByteArray encryptedPackage;
     QByteArray messageKey;
     quint64 messageId;
     {
-        m_sequenceNumber = m_contentRelatedMessages * 2 + 1;
-        ++m_contentRelatedMessages;
-
         messageId = newMessageId();
 
-        m_submittedPackages.insert(messageId, buffer);
+        if (contentRelated) {
+            m_sequenceNumber = m_contentRelatedMessages * 2 + 1;
+            ++m_contentRelatedMessages;
+
+            // Story only content-related messages
+            m_submittedPackages.insert(messageId, buffer);
+        }
 
         QByteArray innerData;
         CRawStream stream(&innerData, /* write */ true);
@@ -2625,6 +2712,10 @@ void CTelegramConnection::setStatus(CTelegramConnection::ConnectionStatus status
 
     m_status = status;
     emit statusChanged(status, m_dcInfo.id);
+
+    if ((status < ConnectionStatusConnected) && m_pingTimer && m_pingTimer->isActive()) {
+        m_pingTimer->stop();
+    }
 }
 
 void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
@@ -2644,6 +2735,10 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
         setStatus(ConnectionStatusSigned);
     } else if (m_authState >= AuthStateSuccess) {
         setStatus(ConnectionStatusAuthenticated);
+    }
+
+    if (m_keepAlive) {
+        startPingTimer();
     }
 }
 
@@ -2691,4 +2786,25 @@ QString CTelegramConnection::userNameFromPackage(quint64 id) const
     outputStream >> name;
 
     return name;
+}
+
+void CTelegramConnection::startPingTimer()
+{
+    if (!m_pingTimer) {
+        m_pingTimer = new QTimer(this);
+        m_pingTimer->setInterval(m_pingInterval * 1000);
+        m_pingTimer->setSingleShot(false);
+        connect(m_pingTimer, SIGNAL(timeout()), SLOT(whenItsTimeToPing()));
+    }
+
+    if (m_pingTimer->isActive()) {
+        return;
+    }
+
+    m_lastReceivedPingId = 0;
+    m_lastSentPingId = 0;
+    m_lastReceivedPingTime = 0;
+    m_lastSentPingTime = 0;
+
+    m_pingTimer->start();
 }

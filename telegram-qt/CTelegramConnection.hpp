@@ -34,6 +34,8 @@ class CTelegramTransport;
 class QFile;
 #endif
 
+class QTimer;
+
 class CTelegramConnection : public QObject
 {
     Q_OBJECT
@@ -71,8 +73,6 @@ public:
 
     inline ConnectionStatus status() const { return m_status; }
 
-    bool isConnected() const;
-
     static quint64 formatTimeStamp(qint64 timeInMs);
     static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~quint64(3); }
 
@@ -80,6 +80,8 @@ public:
 
     void initAuth();
     void getConfiguration();
+
+    void keepConnectionAlive(bool keep);
 
     // Generated Telegram API methods declaration
     quint64 accountCheckUsername(const QString &username);
@@ -157,6 +159,9 @@ public:
     quint64 usersGetUsers(const TLVector<TLInputUser> &id);
     // End of generated Telegram API methods declaration
 
+    quint64 ping();
+    quint64 pingDelayDisconnect(quint32 disconnectInSec);
+
     quint64 requestPhoneCode(const QString &phoneNumber);
     quint64 signIn(const QString &phoneNumber, const QString &authCode);
     quint64 signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
@@ -228,10 +233,6 @@ signals:
     void messageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
     void authExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
-private slots:
-    void whenTransportStateChanged();
-    void whenReadyRead();
-
 protected:
     void processRpcQuery(const QByteArray &data);
 
@@ -244,6 +245,7 @@ protected:
 
     void processMessageAck(CTelegramStream &stream);
     void processIgnoredMessageNotification(CTelegramStream &stream);
+    void processPingPong(CTelegramStream &stream);
 
     TLValue processHelpGetConfig(CTelegramStream &stream, quint64 id);
     TLValue processContactsGetContacts(CTelegramStream &stream, quint64 id);
@@ -284,7 +286,7 @@ protected:
     void insertInitConnection(QByteArray *data) const;
 
     quint64 sendPlainPackage(const QByteArray &buffer);
-    quint64 sendEncryptedPackage(const QByteArray &buffer);
+    quint64 sendEncryptedPackage(const QByteArray &buffer, bool contentRelated = true);
     void setTransport(CTelegramTransport *newTransport);
 
     void setStatus(ConnectionStatus status);
@@ -294,6 +296,14 @@ protected:
 
     QString userNameFromPackage(quint64 id) const;
 
+    void startPingTimer();
+
+protected slots:
+    void whenTransportStateChanged();
+    void whenReadyRead();
+    void whenItsTimeToPing();
+
+protected:
     ConnectionStatus m_status;
     const CAppInformation *m_appInfo;
 
@@ -301,6 +311,7 @@ protected:
     QMap<quint64, quint32> m_requestedFilesIds; // <message id, file id>
 
     CTelegramTransport *m_transport;
+    QTimer *m_pingTimer;
 
     AuthState m_authState;
 
@@ -311,6 +322,11 @@ protected:
     quint64 m_receivedServerSalt;
     quint64 m_sessionId;
     quint64 m_lastMessageId;
+    quint64 m_lastSentPingId;
+    quint64 m_lastReceivedPingId;
+    qint64 m_lastReceivedPingTime;
+    qint64 m_lastSentPingTime;
+    bool m_keepAlive;
     quint32 m_sequenceNumber;
     quint32 m_contentRelatedMessages;
 
