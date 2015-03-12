@@ -50,7 +50,7 @@ static QString maskPhoneNumber(const QString &phoneNumber)
 
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
-    m_status(ConnectionStatusNone),
+    m_status(ConnectionStatusDisconnected),
     m_appInfo(appInfo),
     m_transport(0),
     m_authState(AuthStateNone),
@@ -2343,6 +2343,8 @@ void CTelegramConnection::whenTransportStateChanged()
         m_logFile = new QFile(QLatin1String("network/") + m_dcInfo.ipAddress + QLatin1String(".log"));
         m_logFile->open(QIODevice::WriteOnly);
     }
+
+    qDebug() << Q_FUNC_INFO << m_dcInfo.id << m_dcInfo.ipAddress << m_transport->state();
 #endif
 
     switch (m_transport->state()) {
@@ -2354,6 +2356,9 @@ void CTelegramConnection::whenTransportStateChanged()
         } else {
             setAuthState(AuthStateSignedIn);
         }
+        break;
+    case QAbstractSocket::UnconnectedState:
+        setStatus(ConnectionStatusDisconnected);
         break;
     default:
         break;

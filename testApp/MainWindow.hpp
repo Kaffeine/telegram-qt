@@ -45,13 +45,12 @@ public:
         AppStateCodeSent,
         AppStateSignedIn,
         AppStateReady,
-        AppStateLoggedOut
+        AppStateLoggedOut,
+        AppStateDisconnected
     };
 
 protected slots:
-    void whenConnected();
-    void whenAuthenticated();
-    void whenInitializated();
+    void whenConnectionStateChanged(TelegramNamespace::ConnectionState state);
     void whenLoggedOut(bool result);
     void whenPhoneStatusReceived(const QString &phone, bool registered, bool invited);
     void whenPhoneCodeRequested();

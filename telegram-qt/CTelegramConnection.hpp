@@ -39,7 +39,7 @@ class CTelegramConnection : public QObject
     Q_OBJECT
 public:
     enum ConnectionStatus {
-        ConnectionStatusNone,
+        ConnectionStatusDisconnected,
         ConnectionStatusConnecting,
         ConnectionStatusConnected,
         ConnectionStatusAuthenticated,

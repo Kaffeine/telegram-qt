@@ -79,6 +79,7 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
 
 void CTcpTransport::whenStateChanged(QAbstractSocket::SocketState newState)
 {
+//    qDebug() << Q_FUNC_INFO << newState;
     switch (newState) {
     case QAbstractSocket::ConnectedState:
         m_expectedLength = 0;
@@ -93,6 +94,7 @@ void CTcpTransport::whenStateChanged(QAbstractSocket::SocketState newState)
 
 void CTcpTransport::whenError(QAbstractSocket::SocketError error)
 {
+//    qDebug() << Q_FUNC_INFO << error << m_socket->errorString();
     setError(error);
 }
 

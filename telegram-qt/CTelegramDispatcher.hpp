@@ -87,8 +87,7 @@ public:
 
     static qint32 localTypingRecommendedRepeatInterval();
 
-    bool isConnected() const;
-    bool isAuthenticated() const;
+    inline TelegramNamespace::ConnectionState connectionState() const { return m_connectionState; }
 
     QString selfPhone() const;
 
@@ -102,6 +101,7 @@ public:
     inline quint32 messageReceivingFilterFlags() const { return m_messageReceivingFilterFlags; }
     void setMessageReceivingFilterFlags(quint32 flags);
     void setAcceptableMessageTypes(quint32 types);
+    void setAutoReconnection(bool enable);
 
     void initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
@@ -145,10 +145,10 @@ public:
     bool getChatParticipants(QStringList *participants, quint32 publicChatId);
 
 signals:
-    void connected();
+    void connectionStateChanged(TelegramNamespace::ConnectionState status);
+
     void phoneCodeRequired();
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
-    void authenticated();
     void loggedOut(bool result);
     void authorizationErrorReceived();
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
@@ -170,7 +170,6 @@ signals:
 
     void chatAdded(quint32 publichChatId);
     void chatChanged(quint32 publichChatId);
-    void initializated();
 
 protected slots:
     void whenConnectionAuthChanged(int newState, quint32 dc);
@@ -206,6 +205,8 @@ protected slots:
     void whenMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
 protected:
+    void setConnectionState(TelegramNamespace::ConnectionState status);
+
     bool requestFile(const FileRequestDescriptor &requestId);
     void processUpdate(const TLUpdate &update);
 
@@ -254,7 +255,6 @@ protected:
     void checkStateAndCallGetDifference();
 
     void continueInitialization(InitializationState justDone);
-    void setAuthenticated(bool newAuth);
 
     qint32 telegramChatIdToPublicId(quint32 telegramChatId) const;
     quint32 insertTelegramChatId(quint32 telegramChatId);
@@ -262,13 +262,15 @@ protected:
 
     quint32 telegramMessageFlagsToPublicMessageFlags(quint32 tgFlags);
 
+    TelegramNamespace::ConnectionState m_connectionState;
+
     const CAppInformation *m_appInformation;
 
     quint32 m_messageReceivingFilterFlags;
     quint32 m_acceptableMessageTypes;
+    bool m_autoReconnectionEnabled;
 
     InitializationState m_initState;
-    bool m_isAuthenticated;
 
     quint32 m_activeDc;
     quint32 m_wantedActiveDc;

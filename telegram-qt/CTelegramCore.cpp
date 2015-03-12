@@ -25,12 +25,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
 {
     TelegramNamespace::registerTypes();
 
-    connect(m_dispatcher, SIGNAL(connected()),
-            SIGNAL(connected()));
-    connect(m_dispatcher, SIGNAL(authenticated()),
-            SIGNAL(authenticated()));
-    connect(m_dispatcher, SIGNAL(initializated()),
-            SIGNAL(initializated()));
+    connect(m_dispatcher, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
+            SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)));
     connect(m_dispatcher, SIGNAL(loggedOut(bool)),
             SIGNAL(loggedOut(bool)));
     connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)),
@@ -92,9 +88,9 @@ QByteArray CTelegramCore::connectionSecretInfo() const
     return m_dispatcher->connectionSecretInfo();
 }
 
-bool CTelegramCore::isAuthenticated()
+TelegramNamespace::ConnectionState CTelegramCore::connectionState() const
 {
-    return m_dispatcher->isAuthenticated();
+    return m_dispatcher->connectionState();
 }
 
 bool CTelegramCore::initConnection(const QString &address, quint32 port)
@@ -229,6 +225,11 @@ void CTelegramCore::setMessageReceivingFilterFlags(quint32 flags)
 void CTelegramCore::setAcceptableMessageTypes(quint32 types)
 {
     return m_dispatcher->setAcceptableMessageTypes(types);
+}
+
+void CTelegramCore::setAutoReconnection(bool enable)
+{
+    return m_dispatcher->setAutoReconnection(enable);
 }
 
 QString CTelegramCore::selfPhone() const

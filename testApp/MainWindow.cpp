@@ -73,18 +73,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_core->setAppInformation(&appInfo);
 
-    connect(m_core, SIGNAL(connected()),
-            SLOT(whenConnected()));
+    connect(m_core, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
+            SLOT(whenConnectionStateChanged(TelegramNamespace::ConnectionState)));
     connect(m_core, SIGNAL(phoneStatusReceived(QString,bool,bool)),
             SLOT(whenPhoneStatusReceived(QString,bool,bool)));
     connect(m_core, SIGNAL(phoneCodeRequired()),
             SLOT(whenPhoneCodeRequested()));
     connect(m_core, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
             SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
-    connect(m_core, SIGNAL(authenticated()),
-            SLOT(whenAuthenticated()));
-    connect(m_core, SIGNAL(initializated()),
-            SLOT(whenInitializated()));
     connect(m_core, SIGNAL(contactListChanged()),
             SLOT(whenContactListChanged()));
     connect(m_core, SIGNAL(contactProfileChanged(QString)),
@@ -136,29 +132,33 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::whenConnected()
+void MainWindow::whenConnectionStateChanged(TelegramNamespace::ConnectionState state)
 {
-    setAppState(AppStateConnected);
-    ui->phoneNumber->setFocus();
-}
+    switch (state) {
+    case TelegramNamespace::ConnectionStateConnected:
+        setAppState(AppStateConnected);
+        ui->phoneNumber->setFocus();
+        break;
+    case TelegramNamespace::ConnectionStateAuthenticated:
+        setAppState(AppStateSignedIn);
 
-void MainWindow::whenAuthenticated()
-{
-    setAppState(AppStateSignedIn);
+        if (ui->workLikeClient->isChecked()) {
+            m_core->setOnlineStatus(true);
+        }
+        break;
+    case TelegramNamespace::ConnectionStateReady:
+        setAppState(AppStateReady);
 
-    if (ui->workLikeClient->isChecked()) {
-        m_core->setOnlineStatus(true);
+        ui->phoneNumber->setText(m_core->selfPhone());
+        ui->firstName->setText(m_core->contactFirstName(m_core->selfPhone()));
+        ui->lastName->setText(m_core->contactLastName(m_core->selfPhone()));
+        break;
+    case TelegramNamespace::ConnectionStateDisconnected:
+        setAppState(AppStateDisconnected);
+        break;
+    default:
+        break;
     }
-}
-
-void MainWindow::whenInitializated()
-{
-    setAppState(AppStateReady);
-
-    const QString selfContact = m_core->selfPhone();
-    ui->phoneNumber->setText(selfContact);
-    ui->firstName->setText(m_core->contactFirstName(selfContact));
-    ui->lastName->setText(m_core->contactLastName(selfContact));
 }
 
 void MainWindow::whenLoggedOut(bool result)
@@ -499,6 +499,8 @@ void MainWindow::setAppState(MainWindow::AppState newState)
     }
 
     switch (m_appState) {
+    case AppStateDisconnected:
+        ui->connectionState->setText(tr("Disconnected"));
     case AppStateNone:
         ui->connectButton->setVisible(true);
         ui->restoreSession->setVisible(true);

@@ -163,11 +163,12 @@ FileRequestDescriptor::FileRequestDescriptor() :
 
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
+    m_connectionState(TelegramNamespace::ConnectionStateDisconnected),
     m_appInformation(0),
     m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagRead),
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeText),
+    m_autoReconnectionEnabled(false),
     m_initState(InitNothing),
-    m_isAuthenticated(false),
     m_activeDc(0),
     m_wantedActiveDc(0),
     m_updatesStateIsLocked(false),
@@ -192,16 +193,6 @@ void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
 qint32 CTelegramDispatcher::localTypingRecommendedRepeatInterval()
 {
     return s_localTypingRecommendedRepeatInterval;
-}
-
-bool CTelegramDispatcher::isConnected() const
-{
-    return activeConnection() && !m_dcConfiguration.isEmpty();
-}
-
-bool CTelegramDispatcher::isAuthenticated() const
-{
-    return isConnected() && m_isAuthenticated;
 }
 
 QString CTelegramDispatcher::selfPhone() const
@@ -280,6 +271,11 @@ void CTelegramDispatcher::setMessageReceivingFilterFlags(quint32 flags)
 void CTelegramDispatcher::setAcceptableMessageTypes(quint32 types)
 {
     m_acceptableMessageTypes = types;
+}
+
+void CTelegramDispatcher::setAutoReconnection(bool enable)
+{
+    m_autoReconnectionEnabled = enable;
 }
 
 void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
@@ -369,7 +365,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 void CTelegramDispatcher::initConnectionSharedFinal(quint32 activeDc)
 {
     m_initState = InitNothing;
-    m_isAuthenticated = false;
+    setConnectionState(TelegramNamespace::ConnectionStateConnecting);
     setActiveDc(activeDc);
     m_updatesStateIsLocked = false;
     m_selfUserId = 0;
@@ -386,8 +382,8 @@ void CTelegramDispatcher::closeConnection()
         o->deleteLater();
     }
 
-    m_isAuthenticated = false;
     m_connections.clear();
+
     m_dcConfiguration.clear();
     m_delayedPackages.clear();
     qDeleteAll(m_users);
@@ -404,6 +400,8 @@ void CTelegramDispatcher::closeConnection()
     m_temporaryChatIdMap.clear();
     m_chatInfo.clear();
     m_chatFullInfo.clear();
+
+    setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
 }
 
 bool CTelegramDispatcher::logOut()
@@ -1134,6 +1132,16 @@ void CTelegramDispatcher::whenMessagesFullChatReceived(const TLChatFull &chat, c
     updateFullChat(chat);
 }
 
+void CTelegramDispatcher::setConnectionState(TelegramNamespace::ConnectionState state)
+{
+    if (m_connectionState == state) {
+        return;
+    }
+
+    m_connectionState = state;
+    emit connectionStateChanged(state);
+}
+
 bool CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
 {
     if (!requestId.isValid()) {
@@ -1658,7 +1666,8 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
     CTelegramConnection *connection = m_connections.value(dc);
 
     if (connection == activeConnection()) {
-        if (newStatus == CTelegramConnection::ConnectionStatusSigned) {
+        switch (newStatus) {
+        case CTelegramConnection::ConnectionStatusSigned:
             connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
                     SLOT(whenUsersReceived(QVector<TLUser>)));
             connect(connection, SIGNAL(contactListReceived(QStringList)),
@@ -1687,6 +1696,16 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
                     SIGNAL(loggedOut(bool)));
 
             continueInitialization(InitIsSignIn);
+            break;
+        case CTelegramConnection::ConnectionStatusDisconnected:
+            setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
+
+            if (m_autoReconnectionEnabled) {
+                connection->connectToDc();
+            }
+            break;
+        default:
+            break;
         }
     } else {
         switch (newStatus) {
@@ -1940,11 +1959,11 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     m_initState = InitializationState(m_initState|justDone);
 
     if ((m_initState & InitHaveDcConfiguration) && (m_initState & InitIsSignIn)) { // Have config and sign in
-        setAuthenticated(true);
+        setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
     }
 
     if (justDone == InitHaveDcConfiguration) {
-        emit connected();
+        setConnectionState(TelegramNamespace::ConnectionStateConnected);
     }
 
     if (m_initState == (InitHaveDcConfiguration|InitIsSignIn)) {
@@ -1954,7 +1973,7 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     }
 
     if (m_initState == InitDone) {
-        emit initializated();
+        setConnectionState(TelegramNamespace::ConnectionStateReady);
         return;
     }
 
@@ -1965,19 +1984,6 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     if ((m_initState & InitHaveContactList) && (m_initState & InitKnowSelf)) {
         getUpdatesState();
         return;
-    }
-}
-
-void CTelegramDispatcher::setAuthenticated(bool newAuth)
-{
-    if (m_isAuthenticated == newAuth) {
-        return;
-    }
-
-    m_isAuthenticated = newAuth;
-
-    if (m_isAuthenticated) {
-        emit authenticated();
     }
 }
 

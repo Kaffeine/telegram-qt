@@ -36,7 +36,7 @@ public:
 
     QByteArray connectionSecretInfo() const;
 
-    Q_INVOKABLE bool isAuthenticated();
+    Q_INVOKABLE TelegramNamespace::ConnectionState connectionState() const;
     Q_INVOKABLE QString selfPhone() const;
     Q_INVOKABLE QStringList contactList() const;
     Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &contact) const;
@@ -55,6 +55,7 @@ public:
 public Q_SLOTS:
     void setMessageReceivingFilterFlags(quint32 flags); // TelegramNamespace::MessageFlags. Messages with at least one of the passed flags will be filtered out.
     void setAcceptableMessageTypes(quint32 types); // TelegramNamespace::MessageType
+    void setAutoReconnection(bool enable);
 
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
@@ -95,9 +96,8 @@ public Q_SLOTS:
     bool addChatUser(quint32 chatId, const QString &contact, quint32 forwardMessages = 0);
 
 Q_SIGNALS:
-    void connected(); // Telegram protocol connection established.
-    void authenticated(); // Signed in.
-    void initializated(); // Contact list and updates received.
+    void connectionStateChanged(TelegramNamespace::ConnectionState status);
+
     void phoneCodeRequired();
     void loggedOut(bool result);
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
