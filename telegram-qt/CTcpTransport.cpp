@@ -14,17 +14,24 @@
 #include "CTcpTransport.hpp"
 
 #include <QTcpSocket>
+#include <QTimer>
 
 #include <QDebug>
+
+static const quint32 tcpTimeout = 15 * 1000;
 
 CTcpTransport::CTcpTransport(QObject *parent) :
     CTelegramTransport(parent),
     m_socket(new QTcpSocket(this)),
+    m_timeoutTimer(new QTimer(this)),
     m_firstPackage(true)
 {
     connect(m_socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(whenStateChanged(QAbstractSocket::SocketState)));
     connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(whenError(QAbstractSocket::SocketError)));
     connect(m_socket, SIGNAL(readyRead()), SLOT(whenReadyRead()));
+
+    m_timeoutTimer->setInterval(tcpTimeout);
+    connect(m_timeoutTimer, SIGNAL(timeout()), SLOT(whenTimeout()));
 }
 
 CTcpTransport::~CTcpTransport()
@@ -37,7 +44,18 @@ CTcpTransport::~CTcpTransport()
 
 void CTcpTransport::connectToHost(const QString &ipAddress, quint32 port)
 {
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << ipAddress << port;
+#endif
     m_socket->connectToHost(ipAddress, port);
+}
+
+void CTcpTransport::disconnectFromHost()
+{
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO;
+#endif
+    m_socket->disconnectFromHost();
 }
 
 bool CTcpTransport::isConnected() const
@@ -89,6 +107,16 @@ void CTcpTransport::whenStateChanged(QAbstractSocket::SocketState newState)
         break;
     }
 
+    switch (newState) {
+    case QAbstractSocket::ConnectingState:
+    case QAbstractSocket::HostLookupState:
+        m_timeoutTimer->start();
+        break;
+    default:
+        m_timeoutTimer->stop();
+        break;
+    }
+
     setState(newState);
 }
 
@@ -129,4 +157,12 @@ void CTcpTransport::whenReadyRead()
 
         emit readyRead();
     }
+}
+
+void CTcpTransport::whenTimeout()
+{
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << "(connection to " << m_socket->peerName() << m_socket->peerPort() << ").";
+#endif
+    m_socket->disconnectFromHost();
 }

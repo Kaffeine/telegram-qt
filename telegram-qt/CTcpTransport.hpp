@@ -18,6 +18,7 @@
 
 QT_BEGIN_NAMESPACE
 class QTcpSocket;
+class QTimer;
 QT_END_NAMESPACE
 
 class CTcpTransport : public CTelegramTransport
@@ -28,11 +29,13 @@ public:
     ~CTcpTransport();
 
     void connectToHost(const QString &ipAddress, quint32 port);
-
-    QByteArray getPackage() { return m_receivedPackage; }
+    void disconnectFromHost();
 
     bool isConnected() const;
 
+    QByteArray getPackage() { return m_receivedPackage; }
+
+    // Method for testing
     QByteArray lastPackage() const { return m_lastPackage; }
 
 public slots:
@@ -42,6 +45,7 @@ private slots:
     void whenStateChanged(QAbstractSocket::SocketState newState);
     void whenError(QAbstractSocket::SocketError error);
     void whenReadyRead();
+    void whenTimeout();
 
 private:
     quint32 m_packetNumber;
@@ -51,6 +55,7 @@ private:
     QByteArray m_lastPackage;
 
     QTcpSocket *m_socket;
+    QTimer *m_timeoutTimer;
 
     bool m_firstPackage;
 

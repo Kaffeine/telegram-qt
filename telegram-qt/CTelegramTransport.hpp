@@ -24,12 +24,12 @@ class CTelegramTransport : public QObject
     Q_OBJECT
 public:
     CTelegramTransport(QObject *parent = 0) : QObject(parent) { }
-    virtual void sendPackage(const QByteArray &package) = 0;
     virtual void connectToHost(const QString &ipAddress, quint32 port) = 0;
-
-    virtual QByteArray getPackage() = 0;
+    virtual void disconnectFromHost() = 0;
 
     virtual bool isConnected() const = 0;
+
+    virtual QByteArray getPackage() = 0;
 
     inline QAbstractSocket::SocketError error() const { return m_error; }
     inline QAbstractSocket::SocketState state() const { return m_state; }
@@ -42,6 +42,9 @@ signals:
     void stateChanged(QAbstractSocket::SocketState state);
 
     void readyRead();
+
+public slots:
+    virtual void sendPackage(const QByteArray &package) = 0;
 
 protected:
     void setError(QAbstractSocket::SocketError error);
