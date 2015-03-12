@@ -162,6 +162,8 @@ public:
     quint64 ping();
     quint64 pingDelayDisconnect(quint32 disconnectInSec);
 
+    quint64 acknowledgeMessages(const TLVector<quint64> &idsVector);
+
     quint64 requestPhoneCode(const QString &phoneNumber);
     quint64 signIn(const QString &phoneNumber, const QString &authCode);
     quint64 signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
@@ -286,7 +288,7 @@ protected:
     void insertInitConnection(QByteArray *data) const;
 
     quint64 sendPlainPackage(const QByteArray &buffer);
-    quint64 sendEncryptedPackage(const QByteArray &buffer, bool contentRelated = true);
+    quint64 sendEncryptedPackage(const QByteArray &buffer, bool savePackage = true);
     void setTransport(CTelegramTransport *newTransport);
 
     void setStatus(ConnectionStatus status);
@@ -298,10 +300,13 @@ protected:
 
     void startPingTimer();
 
+    void addMessageToAck(quint64 id);
+
 protected slots:
     void whenTransportStateChanged();
     void whenReadyRead();
     void whenItsTimeToPing();
+    void whenItsTimeToAckMessages();
 
 protected:
     ConnectionStatus m_status;
@@ -312,6 +317,7 @@ protected:
 
     CTelegramTransport *m_transport;
     QTimer *m_pingTimer;
+    QTimer *m_ackTimer;
 
     AuthState m_authState;
 
@@ -329,6 +335,8 @@ protected:
     bool m_keepAlive;
     quint32 m_sequenceNumber;
     quint32 m_contentRelatedMessages;
+
+    TLVector<quint64> m_messagesToAck;
 
     qint32 m_deltaTime;
     DeltaTimeHeuristicState m_deltaTimeHeuristicState;

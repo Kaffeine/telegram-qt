@@ -57,6 +57,7 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_appInfo(appInfo),
     m_transport(0),
     m_pingTimer(0),
+    m_ackTimer(new QTimer(this)),
     m_authState(AuthStateNone),
     m_authId(0),
     m_authKeyAuxHash(0),
@@ -74,6 +75,10 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
   #endif
 {
     setTransport(new CTcpTransport(this));
+
+    m_ackTimer->setInterval(90 * 1000);
+    m_ackTimer->setSingleShot(true);
+    connect(m_ackTimer, SIGNAL(timeout()), SLOT(whenItsTimeToAckMessages()));
 }
 
 void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
@@ -1140,6 +1145,19 @@ quint64 CTelegramConnection::pingDelayDisconnect(quint32 disconnectInSec)
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::acknowledgeMessages(const TLVector<quint64> &idsVector)
+{
+//    qDebug() << Q_FUNC_INFO << idsVector;
+
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::MsgsAck;
+    outputStream << idsVector;
+
+    return sendEncryptedPackage(output, /* save package */ false);
+}
+
 bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 {
     CTelegramStream inputStream(payload);
@@ -1505,13 +1523,13 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
     CTelegramStream stream(data);
 
     bool isUpdate;
-    TLValue val = processUpdate(stream, &isUpdate); // Doubtfully that this approach will work in next time.
+    TLValue value = processUpdate(stream, &isUpdate); // Doubtfully that this approach will work in next time.
 
     if (isUpdate) {
         return;
     }
 
-    switch (val) {
+    switch (value) {
     case TLValue::NewSessionCreated:
         processSessionCreated(stream);
         break;
@@ -1535,11 +1553,11 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
         processPingPong(stream);
         break;
     default:
-        qDebug() << "VAL:" << QString::number(val, 16);
+        qDebug() << Q_FUNC_INFO << "value:" << value.toString();
         break;
     }
 
-    if ((val != TLValue::BadMsgNotification) && (m_deltaTimeHeuristicState != DeltaTimeIsOk)) {
+    if ((value != TLValue::BadMsgNotification) && (m_deltaTimeHeuristicState != DeltaTimeIsOk)) {
         // If we have no bad message notification, then time is synced.
         m_deltaTimeHeuristicState = DeltaTimeIsOk;
     }
@@ -1692,6 +1710,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         default:
             // Any other results considered as success
             m_submittedPackages.remove(id);
+            addMessageToAck(id);
             break;
         }
     } else {
@@ -2544,6 +2563,16 @@ void CTelegramConnection::whenItsTimeToPing()
     pingDelayDisconnect(m_pingInterval + 10); // Server will close the connection after ten seconds more, than our ping interval.
 }
 
+void CTelegramConnection::whenItsTimeToAckMessages()
+{
+    if (m_messagesToAck.isEmpty()) {
+        return;
+    }
+
+    acknowledgeMessages(m_messagesToAck);
+    m_messagesToAck.clear();
+}
+
 SAesKey CTelegramConnection::generateTmpAesKey() const
 {
     QByteArray newNonceAndServerNonce;
@@ -2622,7 +2651,7 @@ quint64 CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
     return messageId;
 }
 
-quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool contentRelated)
+quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool savePackage)
 {
     QByteArray encryptedPackage;
     QByteArray messageKey;
@@ -2630,10 +2659,10 @@ quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool
     {
         messageId = newMessageId();
 
-        if (contentRelated) {
-            m_sequenceNumber = m_contentRelatedMessages * 2 + 1;
-            ++m_contentRelatedMessages;
+        m_sequenceNumber = m_contentRelatedMessages * 2 + 1;
+        ++m_contentRelatedMessages;
 
+        if (savePackage) {
             // Story only content-related messages
             m_submittedPackages.insert(messageId, buffer);
         }
@@ -2807,4 +2836,19 @@ void CTelegramConnection::startPingTimer()
     m_lastSentPingTime = 0;
 
     m_pingTimer->start();
+}
+
+void CTelegramConnection::addMessageToAck(quint64 id)
+{
+//    qDebug() << Q_FUNC_INFO << id;
+    if (!m_ackTimer->isActive()) {
+        m_ackTimer->start();
+    }
+
+    m_messagesToAck.append(id);
+
+    if (m_messagesToAck.count() > 6) {
+        whenItsTimeToAckMessages();
+        m_ackTimer->stop();
+    }
 }
