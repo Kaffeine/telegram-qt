@@ -75,6 +75,14 @@ public:
         AccountUserNameStatusAccepted
     };
 
+    enum ConnectionState {
+        ConnectionStateDisconnected,
+        ConnectionStateConnecting,
+        ConnectionStateConnected,
+        ConnectionStateAuthenticated,
+        ConnectionStateReady // Initializated
+    };
+
     static void registerTypes();
 
     struct GroupChat
