@@ -54,6 +54,12 @@ include_directories(
     ${ZLIB_INCLUDE_DIR}
 )
 
+if (DEVELOPER_BUILD)
+    list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp)
+    list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp)
+    add_definitions(-DDEVELOPER_BUILD)
+endif()
+
 add_definitions(-DTELEGRAMQT_LIBRARY)
 
 if (USE_QT4)
