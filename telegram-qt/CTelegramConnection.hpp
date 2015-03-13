@@ -236,7 +236,7 @@ signals:
     void authExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
 protected:
-    void processRpcQuery(const QByteArray &data);
+    TLValue processRpcQuery(const QByteArray &data);
 
     void processSessionCreated(CTelegramStream &stream);
     void processContainer(CTelegramStream &stream);

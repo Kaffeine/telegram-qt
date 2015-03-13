@@ -72,6 +72,7 @@ MainWindow::MainWindow(QWidget *parent) :
     appInfo.setLanguageCode(QLatin1String("en"));
 
     m_core->setAppInformation(&appInfo);
+    m_core->setAutoReconnection(true);
 
     connect(m_core, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
             SLOT(whenConnectionStateChanged(TelegramNamespace::ConnectionState)));
@@ -137,6 +138,9 @@ void MainWindow::whenConnectionStateChanged(TelegramNamespace::ConnectionState s
     switch (state) {
     case TelegramNamespace::ConnectionStateConnected:
         setAppState(AppStateConnected);
+        break;
+    case TelegramNamespace::ConnectionStateAuthRequired:
+        setAppState(AppStateCodeRequired);
         ui->phoneNumber->setFocus();
         break;
     case TelegramNamespace::ConnectionStateAuthenticated:
@@ -191,7 +195,7 @@ void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError erro
     case TelegramNamespace::AuthSignErrorPhoneNumberIsInvalid:
         if (m_appState == AppStateCodeRequested) {
             QToolTip::showText(ui->phoneNumber->mapToGlobal(QPoint(0, 0)), tr("Phone number is not valid"));
-            m_appState = AppStateNone;
+            setAppState(AppStateNone);
         }
         break;
     case TelegramNamespace::AuthSignErrorPhoneCodeIsExpired:
@@ -501,6 +505,7 @@ void MainWindow::setAppState(MainWindow::AppState newState)
     switch (m_appState) {
     case AppStateDisconnected:
         ui->connectionState->setText(tr("Disconnected"));
+        // Fall throught
     case AppStateNone:
         ui->connectButton->setVisible(true);
         ui->restoreSession->setVisible(true);
@@ -512,6 +517,9 @@ void MainWindow::setAppState(MainWindow::AppState newState)
         break;
     case AppStateConnected:
         ui->connectionState->setText(tr("Connected..."));
+        break;
+    case AppStateCodeRequired:
+        ui->connectionState->setText(tr("Auth required"));
         ui->connectButton->setVisible(false);
         ui->restoreSession->setVisible(false);
         ui->requestCode->setVisible(true);

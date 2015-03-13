@@ -1134,6 +1134,8 @@ void CTelegramDispatcher::whenMessagesFullChatReceived(const TLChatFull &chat, c
 
 void CTelegramDispatcher::setConnectionState(TelegramNamespace::ConnectionState state)
 {
+    qDebug() << Q_FUNC_INFO << state;
+
     if (m_connectionState == state) {
         return;
     }
@@ -1642,32 +1644,8 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
         return;
     }
 
-    if (newState >= CTelegramConnection::AuthStateSuccess) {
-        if (m_wantedActiveDc == dc) {
-            setActiveDc(dc);
-        }
-
-        if (m_delayedPackages.contains(dc)) {
-            foreach (const QByteArray &data, m_delayedPackages.values(dc)) {
-                connection->processRedirectedPackage(data);
-            }
-            m_delayedPackages.remove(dc);
-        }
-
-        if (connection == activeConnection()) {
-            continueInitialization(InitNothing);
-        }
-    }
-}
-
-void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
-{
-    qDebug() << Q_FUNC_INFO << "status" << newStatus << "dc" << dc;
-    CTelegramConnection *connection = m_connections.value(dc);
-
     if (connection == activeConnection()) {
-        switch (newStatus) {
-        case CTelegramConnection::ConnectionStatusSigned:
+        if (newState == CTelegramConnection::AuthStateSignedIn) {
             connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
                     SLOT(whenUsersReceived(QVector<TLUser>)));
             connect(connection, SIGNAL(contactListReceived(QStringList)),
@@ -1696,24 +1674,11 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
                     SIGNAL(loggedOut(bool)));
 
             continueInitialization(InitIsSignIn);
-            break;
-        case CTelegramConnection::ConnectionStatusDisconnected:
-            setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
-
-            qDebug() << Q_FUNC_INFO << "autorecconne teionnkdsafd";
-            if (m_autoReconnectionEnabled) {
-                connection->connectToDc();
-            }
-            break;
-        default:
-            break;
+        } else if (newState == CTelegramConnection::AuthStateSuccess) {
+            setConnectionState(TelegramNamespace::ConnectionStateAuthRequired);
         }
     } else {
-        switch (newStatus) {
-        case CTelegramConnection::ConnectionStatusAuthenticated:
-            ensureSignedConnection(dc);
-            break;
-        case CTelegramConnection::ConnectionStatusSigned:
+        if (newState == CTelegramConnection::AuthStateSignedIn) {
             foreach (quint32 fileId, m_requestedFileDescriptors.keys()) {
                 if (m_requestedFileDescriptors.value(fileId).dcId() != dc) {
                     continue;
@@ -1721,8 +1686,42 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
 
                 connection->getFile(m_requestedFileDescriptors.value(fileId).inputLocation(), fileId);
             }
-        default:
-            break;
+        } else if (newState == CTelegramConnection::AuthStateSuccess) {
+            ensureSignedConnection(dc);
+        }
+    }
+
+    if (newState >= CTelegramConnection::AuthStateSuccess) {
+        if (m_wantedActiveDc == dc) {
+            setActiveDc(dc);
+        }
+
+        if (m_delayedPackages.contains(dc)) {
+            qDebug() << Q_FUNC_INFO << "process" << m_delayedPackages.count(dc) << "redirected packages" << "for dc" << dc;
+            foreach (const QByteArray &data, m_delayedPackages.values(dc)) {
+                connection->processRedirectedPackage(data);
+            }
+            m_delayedPackages.remove(dc);
+        }
+
+        if (connection == activeConnection()) {
+            continueInitialization(InitNothing);
+        }
+    }
+}
+
+void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
+{
+    qDebug() << Q_FUNC_INFO << "status" << newStatus << "dc" << dc;
+    CTelegramConnection *connection = m_connections.value(dc);
+
+    if (connection == activeConnection()) {
+        if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
+            setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
+
+            if (m_autoReconnectionEnabled) {
+                connection->connectToDc();
+            }
         }
     }
 }
@@ -1787,6 +1786,7 @@ void CTelegramDispatcher::whenPackageRedirected(const QByteArray &data, quint32 
 
 void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
 {
+    qDebug() << Q_FUNC_INFO << dc;
     CTelegramConnection *connection = m_connections.value(dc);
 
     if (connection && connection->authState() >= CTelegramConnection::AuthStateSuccess) {
@@ -1905,7 +1905,7 @@ void CTelegramDispatcher::whenAuthExportedAuthorizationReceived(quint32 dc, quin
     m_exportedAuthentications.insert(dc, QPair<quint32, QByteArray>(id,data));
 
     CTelegramConnection *connection = m_connections.value(dc);
-    if (connection && (connection->status() == CTelegramConnection::ConnectionStatusAuthenticated)) {
+    if (connection && (connection->authState() == CTelegramConnection::AuthStateSuccess)) {
         connection->authImportAuthorization(id, data);
     }
 }
@@ -1945,33 +1945,27 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
 {
     qDebug() << Q_FUNC_INFO << justDone;
 
-    if (justDone == InitNothing) {
-        if (m_initState == InitNothing) {
-            getDcConfiguration();
-        } else {
-            // We can have Dc Configuration obtained from *not* our primary dc. Silence this case.
-            if (m_initState != InitHaveDcConfiguration) {
-                qDebug() << "Invalid initialization order." << justDone;
-            }
-        }
-        return;
-    }
-
-    if ((m_initState | justDone) == m_initState) {
+    if (justDone && ((m_initState | justDone) == m_initState)) {
         return; // Nothing new
     }
 
     m_initState = InitializationState(m_initState|justDone);
 
-    if ((m_initState & InitHaveDcConfiguration) && (m_initState & InitIsSignIn)) { // Have config and sign in
-        setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
+    if (!(m_initState & InitHaveDcConfiguration)) { // Have no config
+        getDcConfiguration();
+        return;
     }
 
     if (justDone == InitHaveDcConfiguration) {
-        setConnectionState(TelegramNamespace::ConnectionStateConnected);
+        if (activeConnection()->authState() == CTelegramConnection::AuthStateSuccess) {
+            setConnectionState(TelegramNamespace::ConnectionStateAuthRequired);
+        } else {
+            setConnectionState(TelegramNamespace::ConnectionStateConnected);
+        }
     }
 
     if (m_initState == (InitHaveDcConfiguration|InitIsSignIn)) {
+        setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
         getInitialUsers();
         getContacts();
         return;
@@ -2119,22 +2113,19 @@ void CTelegramDispatcher::ensureSignedConnection(quint32 dc)
 
     CTelegramConnection *connection = m_connections.value(dc);
 
-    if (connection) {
-        switch (connection->status()) {
-        case CTelegramConnection::ConnectionStatusAuthenticated:
+    if (connection && (connection->status() != CTelegramConnection::ConnectionStatusDisconnected)) {
+        if (connection->authState() == CTelegramConnection::AuthStateSuccess) {
             if (m_exportedAuthentications.contains(dc)) {
                 connection->authImportAuthorization(m_exportedAuthentications.value(dc).first, m_exportedAuthentications.value(dc).second);
             } else {
-                activeConnection()->authExportAuthorization(dc);
+                if (activeConnection()->authState() == CTelegramConnection::AuthStateSignedIn) {
+                    activeConnection()->authExportAuthorization(dc);
+                }
             }
-            // Fall through by design.
-        case CTelegramConnection::ConnectionStatusSigned:
-            return;
-        default:
-            break;
         }
+    } else {
+        establishConnectionToDc(dc);
     }
-    establishConnectionToDc(dc);
 }
 
 TLDcOption CTelegramDispatcher::dcInfoById(quint32 dc)

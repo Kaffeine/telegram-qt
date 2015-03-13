@@ -207,7 +207,7 @@ void CTelegramConnection::keepConnectionAlive(bool keep)
 
 quint64 CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
 {
-    qDebug() << "requestPhoneCode" << maskPhoneNumber(phoneNumber) << m_dcInfo.id;
+    qDebug() << Q_FUNC_INFO << "requestPhoneCode" << maskPhoneNumber(phoneNumber) << m_dcInfo.id;
 
     return authSendCode(phoneNumber, 0, m_appInfo->appId(), m_appInfo->appHash(), m_appInfo->languageCode());
 }
@@ -1518,7 +1518,7 @@ void CTelegramConnection::processRedirectedPackage(const QByteArray &data)
     sendEncryptedPackage(data);
 }
 
-void CTelegramConnection::processRpcQuery(const QByteArray &data)
+TLValue CTelegramConnection::processRpcQuery(const QByteArray &data)
 {
     CTelegramStream stream(data);
 
@@ -1526,7 +1526,7 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
     TLValue value = processUpdate(stream, &isUpdate); // Doubtfully that this approach will work in next time.
 
     if (isUpdate) {
-        return;
+        return value;
     }
 
     switch (value) {
@@ -1561,6 +1561,8 @@ void CTelegramConnection::processRpcQuery(const QByteArray &data)
         // If we have no bad message notification, then time is synced.
         m_deltaTimeHeuristicState = DeltaTimeIsOk;
     }
+
+    return value;
 }
 
 void CTelegramConnection::processSessionCreated(CTelegramStream &stream)
@@ -1752,7 +1754,8 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
     QString errorMessage;
     stream >> errorMessage;
 
-    qDebug() << "RPC Error" << errorCode << ":" << errorMessage << "for message" << id << request.toString();
+    qDebug() << Q_FUNC_INFO << QString(QLatin1String("RPC Error %1: %2 for message %3 %4 (dc %5|%6:%7)"))
+                .arg(errorCode).arg(errorMessage).arg(id).arg(request.toString()).arg(m_dcInfo.id).arg(m_dcInfo.ipAddress).arg(m_dcInfo.port);
 
     switch (errorCode) {
     case 303: // ERROR_SEE_OTHER
@@ -1823,7 +1826,7 @@ void CTelegramConnection::processMessageAck(CTelegramStream &stream)
     stream >> idsVector;
 
     foreach (quint64 id, idsVector) {
-        qDebug() << "Package" << id << "acked";
+        qDebug() << Q_FUNC_INFO << "Package" << id << "acked";
 //        m_submittedPackages.remove(id);
     }
 }
@@ -2091,6 +2094,7 @@ TLValue CTelegramConnection::processAuthSendCode(CTelegramStream &stream, quint6
 {
     TLAuthSentCode result;
     stream >> result;
+    qDebug() << Q_FUNC_INFO << result.tlType.toString();
 
     if (result.tlType == TLValue::AuthSentCode) {
         m_authCodeHash = result.phoneCodeHash;
@@ -2136,7 +2140,7 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
     TLAuthAuthorization result;
     stream >> result;
 
-    qDebug() << "AuthAuthorization" << maskPhoneNumber(result.user.phone) << result.expires;
+    qDebug() << Q_FUNC_INFO << "AuthAuthorization" << maskPhoneNumber(result.user.phone) << result.expires;
 
     if (result.tlType == TLValue::AuthAuthorization) {
         setAuthState(AuthStateSignedIn);
@@ -2376,7 +2380,7 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
     const QByteArray data = m_submittedPackages.take(id);
 
     if (data.isEmpty()) {
-        qDebug() << "Can not restore message" << id;
+        qDebug() << Q_FUNC_INFO << "Can not restore message" << id;
         return false;
     }
 
@@ -2468,7 +2472,7 @@ void CTelegramConnection::whenReadyRead()
         inputStream >> length;
 
         if (inputStream.bytesRemaining() != int(length)) {
-            qDebug() << "Corrupted packet. Specified length does not equal to real length";
+            qDebug() << Q_FUNC_INFO << "Corrupted packet. Specified length does not equal to real length";
             return;
         }
 
@@ -2493,7 +2497,7 @@ void CTelegramConnection::whenReadyRead()
         }
     } else if (m_authState >= AuthStateSuccess) {
         if (auth != m_authId) {
-            qDebug() << "Incorrect auth id.";
+            qDebug() << Q_FUNC_INFO << "Incorrect auth id.";
             return;
         }
         // Encrypted Message
@@ -2517,17 +2521,17 @@ void CTelegramConnection::whenReadyRead()
         decryptedStream >> contentLength;
 
         if (m_serverSalt != m_receivedServerSalt) {
-            qDebug() << "Received different server salt:" << m_receivedServerSalt << "(remote) vs" << m_serverSalt << "(local)";
+            qDebug() << Q_FUNC_INFO << "Received different server salt:" << m_receivedServerSalt << "(remote) vs" << m_serverSalt << "(local)";
 //            return;
         }
 
         if (m_sessionId != sessionId) {
-            qDebug() << "Session Id is wrong.";
+            qDebug() << Q_FUNC_INFO << "Session Id is wrong.";
             return;
         }
 
         if (int(contentLength) > decryptedData.length()) {
-            qDebug() << "Expected data length is more, than actual.";
+            qDebug() << Q_FUNC_INFO << "Expected data length is more, than actual.";
             return;
         }
 
@@ -2535,12 +2539,26 @@ void CTelegramConnection::whenReadyRead()
         QByteArray expectedMessageKey = Utils::sha1(decryptedData.left(headerLength + contentLength)).mid(4);
 
         if (messageKey != expectedMessageKey) {
-            qDebug() << "Wrong message key";
+            qDebug() << Q_FUNC_INFO << "Wrong message key";
             return;
         }
 
-        processRpcQuery(decryptedStream.readRemainingBytes());
+        payload = decryptedStream.readRemainingBytes();
+
+        processRpcQuery(payload);
     }
+
+#ifdef DEVELOPER_BUILD
+    TLValue firstValue;
+
+    if (payload.length() >= 4) {
+        quint32 *v = (quint32 *) payload.constData();
+        firstValue = TLValue(*v);
+    }
+
+    static int packagesCount = 0;
+    qDebug() << Q_FUNC_INFO << "Got package" << ++packagesCount << firstValue.toString();
+#endif
 }
 
 void CTelegramConnection::whenItsTimeToPing()
@@ -2760,14 +2778,10 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
 
     emit authStateChanged(m_authState, m_dcInfo.id);
 
-    if (m_authState >= AuthStateSignedIn) {
-        setStatus(ConnectionStatusSigned);
-    } else if (m_authState >= AuthStateSuccess) {
-        setStatus(ConnectionStatusAuthenticated);
-    }
-
-    if (m_keepAlive) {
-        startPingTimer();
+    if (m_authState >= AuthStateSuccess) {
+        if (m_keepAlive) {
+            startPingTimer();
+        }
     }
 }
 

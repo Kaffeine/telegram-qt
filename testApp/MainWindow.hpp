@@ -41,6 +41,7 @@ public:
     enum AppState {
         AppStateNone,
         AppStateConnected,
+        AppStateCodeRequired,
         AppStateCodeRequested,
         AppStateCodeSent,
         AppStateSignedIn,

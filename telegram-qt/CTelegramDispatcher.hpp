@@ -77,7 +77,7 @@ public:
         InitHaveContactList     = 1 << 3,
         InitKnowChats           = 1 << 4,
         InitHaveUpdates         = 1 << 5,
-        InitDone                = InitHaveDcConfiguration|InitIsSignIn|InitKnowSelf|InitHaveContactList|InitKnowChats|InitHaveUpdates
+        InitDone                = InitHaveUpdates | (InitHaveUpdates - 1)
     };
 
     explicit CTelegramDispatcher(QObject *parent = 0);
@@ -205,7 +205,7 @@ protected slots:
     void whenMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
 protected:
-    void setConnectionState(TelegramNamespace::ConnectionState status);
+    void setConnectionState(TelegramNamespace::ConnectionState state);
 
     bool requestFile(const FileRequestDescriptor &requestId);
     void processUpdate(const TLUpdate &update);

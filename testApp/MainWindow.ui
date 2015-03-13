@@ -162,7 +162,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>Request code</string>
+              <string>Get code</string>
              </property>
             </widget>
            </item>

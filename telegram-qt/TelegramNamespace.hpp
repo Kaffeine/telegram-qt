@@ -79,6 +79,7 @@ public:
         ConnectionStateDisconnected,
         ConnectionStateConnecting,
         ConnectionStateConnected,
+        ConnectionStateAuthRequired,
         ConnectionStateAuthenticated,
         ConnectionStateReady // Initializated
     };
