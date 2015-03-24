@@ -1686,7 +1686,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     SIGNAL(loggedOut(bool)));
 
             continueInitialization(InitIsSignIn);
-        } else if (newState == CTelegramConnection::AuthStateSuccess) {
+        } else if (newState == CTelegramConnection::AuthStateSuccess && !m_dcConfiguration.isEmpty()) {
             setConnectionState(TelegramNamespace::ConnectionStateAuthRequired);
         }
     } else {
