@@ -126,6 +126,8 @@ MainWindow::MainWindow(QWidget *parent) :
     updateGroupChatAddContactButtonText();
 
     connect(ui->groupChatContactPhone, SIGNAL(textChanged(QString)), SLOT(updateGroupChatAddContactButtonText()));
+
+    ui->groupChatAddContactForwardMessages->hide();
 }
 
 MainWindow::~MainWindow()
@@ -273,10 +275,15 @@ void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 me
     }
 
     int row = m_messagingModel->setMessageMediaData(messageId, photo);
-
     if (row >= 0) {
         ui->messagingView->setColumnWidth(CMessagingModel::Message, photo.width());
         ui->messagingView->setRowHeight(row, photo.height());
+    } else {
+        row = m_chatMessagingModel->setMessageMediaData(messageId, photo);
+        if (row >= 0) {
+            ui->groupChatMessagingView->setColumnWidth(CMessagingModel::Message, photo.width());
+            ui->groupChatMessagingView->setRowHeight(row, photo.height());
+        }
     }
 }
 
@@ -308,6 +315,10 @@ void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, c
 
     bool outgoing = flags & TelegramNamespace::MessageFlagOut;
     m_chatMessagingModel->addMessage(phone, message, type, outgoing, messageId, timestamp);
+
+    if (type == TelegramNamespace::MessageTypePhoto) {
+        m_core->requestMessageMediaData(messageId);
+    }
 }
 
 void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status)

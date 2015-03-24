@@ -112,6 +112,17 @@ QVariant CMessagingModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+int CMessagingModel::messageIndex(quint64 messageId) const
+{
+    for (int i = 0; i < m_messages.count(); ++i) {
+        if (m_messages.at(i).messageId == messageId) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 void CMessagingModel::addMessage(const QString &phone, const QString &message, TelegramNamespace::MessageType type, bool outgoing, quint64 messageId, quint32 timestamp)
 {
     Q_UNUSED(type);
@@ -128,19 +139,18 @@ void CMessagingModel::addMessage(const QString &phone, const QString &message, T
 
 int CMessagingModel::setMessageMediaData(quint64 messageId, const QVariant &data)
 {
-    for (int i = 0; i < m_messages.count(); ++i) {
-        if (m_messages.at(i).messageId == messageId) {
-            m_messages[i].mediaData = data;
-#if QT_VERSION < 0x050000
-            emit dataChanged(index(i, Message), index(i, Message));
-#else
-            emit dataChanged(index(i, Message), index(i, Message), QVector<int>() << Qt::DecorationRole);
-#endif
-            return i;
-        }
+    int i = messageIndex(messageId);
+    if (i < 0) {
+        return i;
     }
 
-    return -1;
+    m_messages[i].mediaData = data;
+#if QT_VERSION < 0x050000
+    emit dataChanged(index(i, Message), index(i, Message));
+#else
+    emit dataChanged(index(i, Message), index(i, Message), QVector<int>() << Qt::DecorationRole);
+#endif
+    return i;
 }
 
 void CMessagingModel::setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status)

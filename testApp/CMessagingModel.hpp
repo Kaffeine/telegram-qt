@@ -60,6 +60,8 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
+    int messageIndex(quint64 messageId) const; // Messages id should be quint32, but it require "outgoing random to incremental message id resolving" (Not implemented yet).
+
 public slots:
     void addMessage(const QString &phone, const QString &message, TelegramNamespace::MessageType type, bool outgoing, quint64 messageId = 0, quint32 timestamp = 0);
     int setMessageMediaData(quint64 messageId, const QVariant &data);
