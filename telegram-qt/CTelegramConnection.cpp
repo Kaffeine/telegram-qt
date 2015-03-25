@@ -2437,13 +2437,13 @@ void CTelegramConnection::whenTransportStateChanged()
 
     switch (m_transport->state()) {
     case QAbstractSocket::ConnectedState:
-        setStatus(ConnectionStatusConnected);
-
         if (m_authKey.isEmpty()) {
             initAuth();
         } else {
             setAuthState(AuthStateSignedIn);
         }
+
+        setStatus(ConnectionStatusConnected);
         break;
     case QAbstractSocket::UnconnectedState:
         setStatus(ConnectionStatusDisconnected);
