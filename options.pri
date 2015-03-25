@@ -1,1 +1,1 @@
-options = developer-build
+#options = developer-build
