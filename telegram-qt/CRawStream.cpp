@@ -50,6 +50,13 @@ CRawStream::CRawStream(QIODevice *d) :
 {
 }
 
+CRawStream::~CRawStream()
+{
+    if (m_device && m_ownDevice) {
+        delete m_device;
+    }
+}
+
 void CRawStream::setDevice(QIODevice *newDevice)
 {
     if (m_device) {
