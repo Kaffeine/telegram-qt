@@ -203,8 +203,10 @@ QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &m
 
     BN_bn2bin(resultNum, (uchar *) result.data());
 
-    BN_free(resultNum);
     BN_free(dataNum);
+    BN_free(resultNum);
+    BN_free(pubExponent);
+    BN_free(pubModulus);
 
     BN_CTX_free(bn_context);
 
