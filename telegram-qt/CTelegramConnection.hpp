@@ -69,8 +69,10 @@ public:
 
     inline TLDcOption dcInfo() const { return m_dcInfo; }
 
+public slots:
     void connectToDc();
 
+public:
     inline ConnectionStatus status() const { return m_status; }
 
     static quint64 formatTimeStamp(qint64 timeInMs);

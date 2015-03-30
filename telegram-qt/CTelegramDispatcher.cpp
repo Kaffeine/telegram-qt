@@ -1729,10 +1729,16 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
 
     if (connection == activeConnection()) {
         if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
-            setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
+            if (connectionState() == TelegramNamespace::ConnectionStateConnecting) {
+                // We are connecting and there is Connecting->Disconnected changes in CTelegramConnection.
+                // Consider it as network error; try to reconnect after a second.
+                QTimer::singleShot(1000, connection, SLOT(connectToDc()));
+            } else {
+                setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
 
-            if (m_autoReconnectionEnabled) {
-                connection->connectToDc();
+                if (m_autoReconnectionEnabled) {
+                    connection->connectToDc();
+                }
             }
         }
     }
