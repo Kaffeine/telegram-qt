@@ -10,8 +10,8 @@ TEMPLATE = app
 
 INCLUDEPATH += $$PWD/../telegram-qt
 
+LIBS += -lssl -lcrypto -lz
 LIBS += -lTelegramQt
-LIBS += -lssl
 LIBS += -L$$OUT_PWD/../telegram-qt
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
