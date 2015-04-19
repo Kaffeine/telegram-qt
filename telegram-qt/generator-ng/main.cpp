@@ -11,10 +11,17 @@
 
 */
 
+#include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
 
 #include "GeneratorNG.hpp"
+
+enum Errors {
+    NoError,
+    InvalidAction,
+    InvalidArgument
+};
 
 /* Replacing helper */
 bool replaceSection(const QString &fileName, const QString &startMarker, const QString &endMarker, const QString &newContent)
@@ -102,18 +109,15 @@ void debugType(const TLType &type)
     }
 }
 
-int main(int argc, char *argv[])
+int generate()
 {
-    Q_UNUSED(argc)
-    Q_UNUSED(argv)
-
     QFile specsFile("json");
     specsFile.open(QIODevice::ReadOnly);
 
     const QByteArray data = specsFile.readAll();
 
     if (data.isEmpty()) {
-        return 1;
+        return InvalidArgument;
     }
 
     specsFile.close();
@@ -133,5 +137,31 @@ int main(int argc, char *argv[])
     replacingHelper(QLatin1String("../TLTypesDebug.hpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDeclarations);
     replacingHelper(QLatin1String("../TLTypesDebug.cpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDefinitions);
 
-    return 0;
+    return NoError;
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication app(argc, argv);
+
+    const QStringList arguments = app.arguments();
+
+    if (arguments.count() < 1) {
+        return InvalidAction;
+    }
+
+    if (arguments.count() < 2) {
+        printf("Usage: %s --generate\n", arguments.first().toLocal8Bit().constData());
+        return InvalidAction;
+    }
+
+    int code = InvalidAction;
+    if (arguments.contains(QLatin1String("--generate"))) {
+        code = generate();
+        if (code) {
+            return code;
+        }
+    }
+
+    return code;
 }
