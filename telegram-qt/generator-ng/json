@@ -1821,15 +1821,15 @@
             "type": "ContactSuggested"
         },
         {
-            "id": "-1434994573",
+            "id": "-748155807",
             "params": [
                 {
                     "name": "user_id",
                     "type": "int"
                 },
                 {
-                    "name": "expires",
-                    "type": "int"
+                    "name": "status",
+                    "type": "UserStatus"
                 }
             ],
             "predicate": "contactStatus",
@@ -2852,10 +2852,14 @@
             "type": "DcOption"
         },
         {
-            "id": "777313652",
+            "id": "2108568544",
             "params": [
                 {
                     "name": "date",
+                    "type": "int"
+                },
+                {
+                    "name": "expires",
                     "type": "int"
                 },
                 {
@@ -2871,12 +2875,20 @@
                     "type": "Vector<DcOption>"
                 },
                 {
+                    "name": "chat_big_size",
+                    "type": "int"
+                },
+                {
                     "name": "chat_size_max",
                     "type": "int"
                 },
                 {
                     "name": "broadcast_size_max",
                     "type": "int"
+                },
+                {
+                    "name": "disabled_features",
+                    "type": "Vector<DisabledFeature>"
                 }
             ],
             "predicate": "config",
@@ -3841,26 +3853,26 @@
             "type": "InputMedia"
         },
         {
-            "id": "887592125",
+            "id": "-1610888",
             "params": [
                 {
                     "name": "file",
                     "type": "InputFile"
                 },
                 {
-                    "name": "file_name",
+                    "name": "mime_type",
                     "type": "string"
                 },
                 {
-                    "name": "mime_type",
-                    "type": "string"
+                    "name": "attributes",
+                    "type": "Vector<DocumentAttribute>"
                 }
             ],
             "predicate": "inputMediaUploadedDocument",
             "type": "InputMedia"
         },
         {
-            "id": "1044831837",
+            "id": "1095242886",
             "params": [
                 {
                     "name": "file",
@@ -3871,12 +3883,12 @@
                     "type": "InputFile"
                 },
                 {
-                    "name": "file_name",
+                    "name": "mime_type",
                     "type": "string"
                 },
                 {
-                    "name": "mime_type",
-                    "type": "string"
+                    "name": "attributes",
+                    "type": "Vector<DocumentAttribute>"
                 }
             ],
             "predicate": "inputMediaUploadedThumbDocument",
@@ -4051,7 +4063,7 @@
             "type": "Document"
         },
         {
-            "id": "-1627626714",
+            "id": "-106717361",
             "params": [
                 {
                     "name": "id",
@@ -4062,16 +4074,8 @@
                     "type": "long"
                 },
                 {
-                    "name": "user_id",
-                    "type": "int"
-                },
-                {
                     "name": "date",
                     "type": "int"
-                },
-                {
-                    "name": "file_name",
-                    "type": "string"
                 },
                 {
                     "name": "mime_type",
@@ -4088,6 +4092,10 @@
                 {
                     "name": "dc_id",
                     "type": "int"
+                },
+                {
+                    "name": "attributes",
+                    "type": "Vector<DocumentAttribute>"
                 }
             ],
             "predicate": "document",
@@ -4311,6 +4319,360 @@
             ],
             "predicate": "updateServiceNotification",
             "type": "Update"
+        },
+        {
+            "id": "-496024847",
+            "params": [
+            ],
+            "predicate": "userStatusRecently",
+            "type": "UserStatus"
+        },
+        {
+            "id": "129960444",
+            "params": [
+            ],
+            "predicate": "userStatusLastWeek",
+            "type": "UserStatus"
+        },
+        {
+            "id": "2011940674",
+            "params": [
+            ],
+            "predicate": "userStatusLastMonth",
+            "type": "UserStatus"
+        },
+        {
+            "id": "-298113238",
+            "params": [
+                {
+                    "name": "key",
+                    "type": "PrivacyKey"
+                },
+                {
+                    "name": "rules",
+                    "type": "Vector<PrivacyRule>"
+                }
+            ],
+            "predicate": "updatePrivacy",
+            "type": "Update"
+        },
+        {
+            "id": "1335282456",
+            "params": [
+            ],
+            "predicate": "inputPrivacyKeyStatusTimestamp",
+            "type": "InputPrivacyKey"
+        },
+        {
+            "id": "-1137792208",
+            "params": [
+            ],
+            "predicate": "privacyKeyStatusTimestamp",
+            "type": "PrivacyKey"
+        },
+        {
+            "id": "218751099",
+            "params": [
+            ],
+            "predicate": "inputPrivacyValueAllowContacts",
+            "type": "InputPrivacyRule"
+        },
+        {
+            "id": "407582158",
+            "params": [
+            ],
+            "predicate": "inputPrivacyValueAllowAll",
+            "type": "InputPrivacyRule"
+        },
+        {
+            "id": "320652927",
+            "params": [
+                {
+                    "name": "users",
+                    "type": "Vector<InputUser>"
+                }
+            ],
+            "predicate": "inputPrivacyValueAllowUsers",
+            "type": "InputPrivacyRule"
+        },
+        {
+            "id": "195371015",
+            "params": [
+            ],
+            "predicate": "inputPrivacyValueDisallowContacts",
+            "type": "InputPrivacyRule"
+        },
+        {
+            "id": "-697604407",
+            "params": [
+            ],
+            "predicate": "inputPrivacyValueDisallowAll",
+            "type": "InputPrivacyRule"
+        },
+        {
+            "id": "-1877932953",
+            "params": [
+                {
+                    "name": "users",
+                    "type": "Vector<InputUser>"
+                }
+            ],
+            "predicate": "inputPrivacyValueDisallowUsers",
+            "type": "InputPrivacyRule"
+        },
+        {
+            "id": "-123988",
+            "params": [
+            ],
+            "predicate": "privacyValueAllowContacts",
+            "type": "PrivacyRule"
+        },
+        {
+            "id": "1698855810",
+            "params": [
+            ],
+            "predicate": "privacyValueAllowAll",
+            "type": "PrivacyRule"
+        },
+        {
+            "id": "1297858060",
+            "params": [
+                {
+                    "name": "users",
+                    "type": "Vector<int>"
+                }
+            ],
+            "predicate": "privacyValueAllowUsers",
+            "type": "PrivacyRule"
+        },
+        {
+            "id": "-125240806",
+            "params": [
+            ],
+            "predicate": "privacyValueDisallowContacts",
+            "type": "PrivacyRule"
+        },
+        {
+            "id": "-1955338397",
+            "params": [
+            ],
+            "predicate": "privacyValueDisallowAll",
+            "type": "PrivacyRule"
+        },
+        {
+            "id": "209668535",
+            "params": [
+                {
+                    "name": "users",
+                    "type": "Vector<int>"
+                }
+            ],
+            "predicate": "privacyValueDisallowUsers",
+            "type": "PrivacyRule"
+        },
+        {
+            "id": "1430961007",
+            "params": [
+                {
+                    "name": "rules",
+                    "type": "Vector<PrivacyRule>"
+                },
+                {
+                    "name": "users",
+                    "type": "Vector<User>"
+                }
+            ],
+            "predicate": "account.privacyRules",
+            "type": "account.PrivacyRules"
+        },
+        {
+            "id": "-1194283041",
+            "params": [
+                {
+                    "name": "days",
+                    "type": "int"
+                }
+            ],
+            "predicate": "accountDaysTTL",
+            "type": "AccountDaysTTL"
+        },
+        {
+            "id": "-1527411636",
+            "params": [
+                {
+                    "name": "phone_code_hash",
+                    "type": "string"
+                },
+                {
+                    "name": "send_call_timeout",
+                    "type": "int"
+                }
+            ],
+            "predicate": "account.sentChangePhoneCode",
+            "type": "account.SentChangePhoneCode"
+        },
+        {
+            "id": "314130811",
+            "params": [
+                {
+                    "name": "user_id",
+                    "type": "int"
+                },
+                {
+                    "name": "phone",
+                    "type": "string"
+                }
+            ],
+            "predicate": "updateUserPhone",
+            "type": "Update"
+        },
+        {
+            "id": "1815593308",
+            "params": [
+                {
+                    "name": "w",
+                    "type": "int"
+                },
+                {
+                    "name": "h",
+                    "type": "int"
+                }
+            ],
+            "predicate": "documentAttributeImageSize",
+            "type": "DocumentAttribute"
+        },
+        {
+            "id": "297109817",
+            "params": [
+            ],
+            "predicate": "documentAttributeAnimated",
+            "type": "DocumentAttribute"
+        },
+        {
+            "id": "-83208409",
+            "params": [
+            ],
+            "predicate": "documentAttributeSticker",
+            "type": "DocumentAttribute"
+        },
+        {
+            "id": "1494273227",
+            "params": [
+                {
+                    "name": "duration",
+                    "type": "int"
+                },
+                {
+                    "name": "w",
+                    "type": "int"
+                },
+                {
+                    "name": "h",
+                    "type": "int"
+                }
+            ],
+            "predicate": "documentAttributeVideo",
+            "type": "DocumentAttribute"
+        },
+        {
+            "id": "85215461",
+            "params": [
+                {
+                    "name": "duration",
+                    "type": "int"
+                }
+            ],
+            "predicate": "documentAttributeAudio",
+            "type": "DocumentAttribute"
+        },
+        {
+            "id": "358154344",
+            "params": [
+                {
+                    "name": "file_name",
+                    "type": "string"
+                }
+            ],
+            "predicate": "documentAttributeFilename",
+            "type": "DocumentAttribute"
+        },
+        {
+            "id": "-244016606",
+            "params": [
+            ],
+            "predicate": "messages.stickersNotModified",
+            "type": "messages.Stickers"
+        },
+        {
+            "id": "-1970352846",
+            "params": [
+                {
+                    "name": "hash",
+                    "type": "string"
+                },
+                {
+                    "name": "stickers",
+                    "type": "Vector<Document>"
+                }
+            ],
+            "predicate": "messages.stickers",
+            "type": "messages.Stickers"
+        },
+        {
+            "id": "313694676",
+            "params": [
+                {
+                    "name": "emoticon",
+                    "type": "string"
+                },
+                {
+                    "name": "documents",
+                    "type": "Vector<long>"
+                }
+            ],
+            "predicate": "stickerPack",
+            "type": "StickerPack"
+        },
+        {
+            "id": "-395967805",
+            "params": [
+            ],
+            "predicate": "messages.allStickersNotModified",
+            "type": "messages.AllStickers"
+        },
+        {
+            "id": "-588304126",
+            "params": [
+                {
+                    "name": "hash",
+                    "type": "string"
+                },
+                {
+                    "name": "packs",
+                    "type": "Vector<StickerPack>"
+                },
+                {
+                    "name": "documents",
+                    "type": "Vector<Document>"
+                }
+            ],
+            "predicate": "messages.allStickers",
+            "type": "messages.AllStickers"
+        },
+        {
+            "id": "-1369215196",
+            "params": [
+                {
+                    "name": "feature",
+                    "type": "string"
+                },
+                {
+                    "name": "description",
+                    "type": "string"
+                }
+            ],
+            "predicate": "disabledFeature",
+            "type": "DisabledFeature"
         }
     ],
     "methods": [
@@ -5853,15 +6215,152 @@
             "type": "contacts.Found"
         },
         {
-            "id": "479200567",
-            "method": "invokeWithLayer18",
+            "id": "-623130288",
+            "method": "account.getPrivacy",
             "params": [
+                {
+                    "name": "key",
+                    "type": "InputPrivacyKey"
+                }
+            ],
+            "type": "account.PrivacyRules"
+        },
+        {
+            "id": "-906486552",
+            "method": "account.setPrivacy",
+            "params": [
+                {
+                    "name": "key",
+                    "type": "InputPrivacyKey"
+                },
+                {
+                    "name": "rules",
+                    "type": "Vector<InputPrivacyRule>"
+                }
+            ],
+            "type": "account.PrivacyRules"
+        },
+        {
+            "id": "1099779595",
+            "method": "account.deleteAccount",
+            "params": [
+                {
+                    "name": "reason",
+                    "type": "string"
+                }
+            ],
+            "type": "Bool"
+        },
+        {
+            "id": "150761757",
+            "method": "account.getAccountTTL",
+            "params": [
+            ],
+            "type": "AccountDaysTTL"
+        },
+        {
+            "id": "608323678",
+            "method": "account.setAccountTTL",
+            "params": [
+                {
+                    "name": "ttl",
+                    "type": "AccountDaysTTL"
+                }
+            ],
+            "type": "Bool"
+        },
+        {
+            "id": "-627372787",
+            "method": "invokeWithLayer",
+            "params": [
+                {
+                    "name": "layer",
+                    "type": "int"
+                },
                 {
                     "name": "query",
                     "type": "!X"
                 }
             ],
             "type": "X"
+        },
+        {
+            "id": "200282908",
+            "method": "contacts.resolveUsername",
+            "params": [
+                {
+                    "name": "username",
+                    "type": "string"
+                }
+            ],
+            "type": "User"
+        },
+        {
+            "id": "-1543001868",
+            "method": "account.sendChangePhoneCode",
+            "params": [
+                {
+                    "name": "phone_number",
+                    "type": "string"
+                }
+            ],
+            "type": "account.SentChangePhoneCode"
+        },
+        {
+            "id": "1891839707",
+            "method": "account.changePhone",
+            "params": [
+                {
+                    "name": "phone_number",
+                    "type": "string"
+                },
+                {
+                    "name": "phone_code_hash",
+                    "type": "string"
+                },
+                {
+                    "name": "phone_code",
+                    "type": "string"
+                }
+            ],
+            "type": "User"
+        },
+        {
+            "id": "-1373446075",
+            "method": "messages.getStickers",
+            "params": [
+                {
+                    "name": "emoticon",
+                    "type": "string"
+                },
+                {
+                    "name": "hash",
+                    "type": "string"
+                }
+            ],
+            "type": "messages.Stickers"
+        },
+        {
+            "id": "-1438922648",
+            "method": "messages.getAllStickers",
+            "params": [
+                {
+                    "name": "hash",
+                    "type": "string"
+                }
+            ],
+            "type": "messages.AllStickers"
+        },
+        {
+            "id": "954152242",
+            "method": "account.updateDeviceLocked",
+            "params": [
+                {
+                    "name": "period",
+                    "type": "int"
+                }
+            ],
+            "type": "Bool"
         }
     ]
 }
