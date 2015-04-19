@@ -1,22 +1,9 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-06-13T01:11:10
-#
-#-------------------------------------------------
-
-QT       += core
-
-QT       -= gui
+QT = core network
+TEMPLATE = app
 
 TARGET = generator-ng
 CONFIG   += console
 CONFIG   -= app_bundle
 
-TEMPLATE = app
-
-
-SOURCES += main.cpp \
-    GeneratorNG.cpp
-
-HEADERS += \
-    GeneratorNG.hpp
+SOURCES = GeneratorNG.cpp main.cpp
+HEADERS = GeneratorNG.hpp

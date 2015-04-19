@@ -14,14 +14,21 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include "GeneratorNG.hpp"
 
 enum Errors {
     NoError,
     InvalidAction,
-    InvalidArgument
+    InvalidArgument,
+    NetworkError,
+    ServerError,
+    FileAccessError
 };
+
+static const QString specFileName = QLatin1String("json");
 
 /* Replacing helper */
 bool replaceSection(const QString &fileName, const QString &startMarker, const QString &endMarker, const QString &newContent)
@@ -109,9 +116,68 @@ void debugType(const TLType &type)
     }
 }
 
+int fetch()
+{
+    QEventLoop eventLoop;
+    QNetworkAccessManager mgr;
+    QObject::connect(&mgr, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
+
+    QNetworkRequest req(QUrl(QLatin1String("https://core.telegram.org/schema/json")));
+    QNetworkReply *reply = mgr.get(req);
+
+    eventLoop.exec();
+
+    if (reply->error() != QNetworkReply::NoError) {
+        delete reply;
+        return NetworkError;
+    }
+
+    QByteArray data = reply->readAll();
+    delete reply;
+
+    if (data.isEmpty()) {
+        return ServerError;
+    }
+
+    QFile specsOutFile(specFileName);
+    if (!specsOutFile.open(QIODevice::WriteOnly)) {
+        return FileAccessError;
+    }
+
+    QJsonDocument document = QJsonDocument::fromJson(data);
+    specsOutFile.write(document.toJson());
+    specsOutFile.close();
+
+    printf("Spec file successfully downloaded (and formatted).\n");
+    return NoError; // Not implemented
+}
+
+int format()
+{
+    QFile specsFile(specFileName);
+    if (!specsFile.open(QIODevice::ReadOnly)) {
+        return FileAccessError;
+    }
+
+    QByteArray data = specsFile.readAll();
+
+    specsFile.close();
+
+    if (!specsFile.open(QIODevice::WriteOnly)) {
+        return FileAccessError;
+    }
+
+    QJsonDocument document = QJsonDocument::fromJson(data);
+    specsFile.write(document.toJson());
+    specsFile.close();
+
+    printf("Spec file successfully formatted.\n");
+    return NoError;
+}
+
 int generate()
 {
-    QFile specsFile("json");
+    QFile specsFile(specFileName);
     specsFile.open(QIODevice::ReadOnly);
 
     const QByteArray data = specsFile.readAll();
@@ -137,6 +203,7 @@ int generate()
     replacingHelper(QLatin1String("../TLTypesDebug.hpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDeclarations);
     replacingHelper(QLatin1String("../TLTypesDebug.cpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDefinitions);
 
+    printf("Spec file successfully used for generation.\n");
     return NoError;
 }
 
@@ -156,6 +223,20 @@ int main(int argc, char *argv[])
     }
 
     int code = InvalidAction;
+    if (arguments.contains(QLatin1String("--fetch"))) {
+        code = fetch();
+        if (code) {
+            return code;
+        }
+    }
+
+    if (arguments.contains(QLatin1String("--format"))) {
+        code = format();
+        if (code) {
+            return code;
+        }
+    }
+
     if (arguments.contains(QLatin1String("--generate"))) {
         code = generate();
         if (code) {
