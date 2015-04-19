@@ -2146,7 +2146,7 @@ void CTelegramDispatcher::ensureSignedConnection(quint32 dc)
     }
 }
 
-TLDcOption CTelegramDispatcher::dcInfoById(quint32 dc)
+TLDcOption CTelegramDispatcher::dcInfoById(quint32 dc) const
 {
     foreach (const TLDcOption option, m_dcConfiguration) {
         if (option.id == dc) {

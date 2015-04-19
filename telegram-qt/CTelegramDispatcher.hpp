@@ -243,7 +243,7 @@ protected:
     CTelegramConnection *establishConnectionToDc(quint32 dc);
     void ensureSignedConnection(quint32 dc);
 
-    TLDcOption dcInfoById(quint32 dc);
+    TLDcOption dcInfoById(quint32 dc) const;
 
     QString mimeTypeByStorageFileType(TLValue type);
     TelegramNamespace::MessageType telegramMessageTypeToPublicMessageType(TLValue type);
