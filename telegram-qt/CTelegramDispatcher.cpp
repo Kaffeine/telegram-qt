@@ -204,6 +204,17 @@ QString CTelegramDispatcher::selfPhone() const
     return m_users.value(m_selfUserId)->phone;
 }
 
+QStringList CTelegramDispatcher::contactList() const
+{
+    QStringList result;
+
+    foreach (quint32 userId, m_contactList) {
+        result.append(userIdToIdentifier(userId));
+    }
+
+    return result;
+}
+
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
 {
     qDebug() << "addContacts" << maskPhoneNumberList(phoneNumbers);
@@ -874,12 +885,12 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
     }
 }
 
-void CTelegramDispatcher::whenContactListReceived(const QStringList &contactList)
+void CTelegramDispatcher::whenContactListReceived(const QList<quint32> &contactList)
 {
-    qDebug() << Q_FUNC_INFO << maskPhoneNumberList(contactList);
+    qDebug() << Q_FUNC_INFO << contactList;
 
-    QStringList newContactList = contactList;
-    newContactList.sort();
+    QList<quint32> newContactList = contactList;
+    std::sort(newContactList.begin(), newContactList.end());
 
     if (m_contactList != newContactList) {
         m_contactList = newContactList;
@@ -889,19 +900,26 @@ void CTelegramDispatcher::whenContactListReceived(const QStringList &contactList
     continueInitialization(InitHaveContactList);
 }
 
-void CTelegramDispatcher::whenContactListChanged(const QStringList &added, const QStringList &removed)
+void CTelegramDispatcher::whenContactListChanged(const QList<quint32> &added, const QList<quint32> &removed)
 {
-    QStringList newContactList = m_contactList;
+    qDebug() << Q_FUNC_INFO << added << removed;
+    QList<quint32> newContactList = m_contactList;
 
-    newContactList.append(added);
-    newContactList.removeDuplicates();
-
-    foreach (const QString &contact, removed) {
-        newContactList.removeAll(contact);
+    // There is some redundant checks, but let's be paranoid
+    foreach (const quint32 contact, added) {
+        if (!newContactList.contains(contact)) {
+            newContactList.append(contact);
+        }
     }
 
-    newContactList.sort();
+    foreach (const quint32 contact, removed) {
+        // We can use removeOne instead of remove All, because we warranty that there is no duplication
+        newContactList.removeOne(contact);
+    }
 
+    std::sort(newContactList.begin(), newContactList.end());
+
+    // There is no valid cases when lists are equal, but the check is (usually) cheap.
     if (m_contactList != newContactList) {
         m_contactList = newContactList;
         emit contactListChanged();
@@ -1660,10 +1678,10 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
         if (newState == CTelegramConnection::AuthStateSignedIn) {
             connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
                     SLOT(whenUsersReceived(QVector<TLUser>)));
-            connect(connection, SIGNAL(contactListReceived(QStringList)),
-                    SLOT(whenContactListReceived(QStringList)));
-            connect(connection, SIGNAL(contactListChanged(QStringList,QStringList)),
-                    SLOT(whenContactListChanged(QStringList,QStringList)));
+            connect(connection, SIGNAL(contactListReceived(QList<quint32>)),
+                    SLOT(whenContactListReceived(QList<quint32>)));
+            connect(connection, SIGNAL(contactListChanged(QList<quint32>,QList<quint32>)),
+                    SLOT(whenContactListChanged(QList<quint32>,QList<quint32>)));
             connect(connection, SIGNAL(updatesReceived(TLUpdates)),
                     SLOT(whenUpdatesReceived(TLUpdates)));
             connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)),
