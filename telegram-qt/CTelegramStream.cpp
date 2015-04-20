@@ -32,12 +32,16 @@ template CTelegramStream &CTelegramStream::operator<<(const TLVector<qint64> &v)
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<quint64> &v);
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<QString> &v);
 
+// Generated vector read templates instancing
+template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDcOption> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLUser> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLContact> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDcOption> &v);
+// End of generated vector read templates instancing
 
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputContact> &v);
+// Generated vector write templates instancing
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputUser> &v);
+template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputContact> &v);
+// End of generated vector write templates instancing
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLDcOption> &v);
 
 CTelegramStream::CTelegramStream(QByteArray *data, bool write) :
