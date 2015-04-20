@@ -1277,7 +1277,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         TLUser *user = m_users.value(update.userId);
         if (user) {
             user->status = update.status;
-            emit contactStatusChanged(user->phone, decodeContactStatus(user->status.tlType));
+            emit contactStatusChanged(userIdToIdentifier(update.userId), decodeContactStatus(user->status.tlType));
         }
         break;
     }
@@ -1846,8 +1846,7 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
     switch (descriptor.type()) {
     case FileRequestDescriptor::Avatar:
         if (m_users.contains(descriptor.userId())) {
-            const TLUser *user = m_users.value(descriptor.userId());
-            emit avatarReceived(user->phone, file.bytes, mimeType, userAvatarToken(user));
+            emit avatarReceived(userIdToIdentifier(descriptor.userId()), file.bytes, mimeType, userAvatarToken(m_users.value(descriptor.userId())));
         } else {
             qDebug() << Q_FUNC_INFO << "Unknown userId" << descriptor.userId();
         }
