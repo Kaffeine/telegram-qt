@@ -35,6 +35,12 @@ static const QString doubleSpacing = spacing + spacing;
 static const QString streamClassName = QLatin1String("CTelegramStream");
 static const QString methodsClassName = QLatin1String("CTelegramConnection");
 
+static const QStringList typesBlackList = QStringList()
+        << QLatin1String("TLVector t")
+        << QLatin1String("TLNull")
+        << QLatin1String("TLMessagesMessage")
+           ;
+
 inline int indexOfSeparator(const QString &str, int minIndex)
 {
     int dotIndex = str.indexOf(QChar('.'), minIndex);
@@ -244,6 +250,11 @@ QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type)
     return code;
 }
 
+QString GeneratorNG::generateStreamReadVectorTemplate(const QString &type)
+{
+    return QString(QLatin1String("template %1 &%1::operator>>(TLVector<%2> &v);\n")).arg(streamClassName).arg(type);
+}
+
 QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
 {
     QString code;
@@ -268,6 +279,11 @@ QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
     code.append(spacing + QString("return *this;\n}\n\n"));
 
     return code;
+}
+
+QString GeneratorNG::generateStreamWriteVectorTemplate(const QString &type)
+{
+    return QString(QLatin1String("template %1 &%1::operator<<(const TLVector<%2> &v);\n")).arg(streamClassName).arg(type);
 }
 
 QString GeneratorNG::generateDebugWriteOperatorDeclaration(const TLType &type)
@@ -352,28 +368,20 @@ QString GeneratorNG::generateConnectionMethodDeclaration(const TLMethod &method)
     return spacing + QString("quint64 %1(%2);\n").arg(method.name).arg(formatMethodParams(method));
 }
 
-QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method)
+QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, QStringList &usedTypes)
 {
     QString result;
     result += QString("quint64 %1::%2(%3)\n{\n").arg(methodsClassName).arg(method.name).arg(formatMethodParams(method));
     result += spacing + QLatin1String("QByteArray output;\n");
-    result += spacing + QLatin1String("CTelegramStream outputStream(&output, /* write */ true);\n\n");
+    result += spacing + streamClassName + QLatin1String(" outputStream(&output, /* write */ true);\n\n");
 
     result += spacing + QString("outputStream << %1::%2;\n").arg(tlValueName).arg(formatName1stCapital(method.name));
 
     foreach (const TLParam &param, method.params) {
         result += spacing + QString("outputStream << %1;\n").arg(param.name);
 
-        if (!nativeTypes.contains(param.type)) {
-            m_usedWriteOperators.append(param.type);
-
-            const QString subType = getTypeOrVectorType(param.type);
-            if (subType != param.type) {
-
-                if (!nativeTypes.contains(subType)) {
-                    m_usedWriteOperators.append(subType);
-                }
-            }
+        if (!nativeTypes.contains(getTypeOrVectorType(param.type))) {
+            usedTypes.append(param.type);
         }
     }
 
@@ -508,6 +516,42 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types)
     return solvedTypes;
 }
 
+void GeneratorNG::getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const
+{
+    QStringList newUsedTypes = usedTypes;
+
+    while (!newUsedTypes.isEmpty()) {
+        QStringList veryNewTypes;
+        foreach (const QString &type, newUsedTypes) {
+            const TLType t = m_types.value(type);
+
+            foreach (const TLSubType &sub, t.subTypes) {
+                foreach (const TLParam &member, sub.members) {
+                    QString memberType = getTypeOrVectorType(member.type);
+
+                    if (nativeTypes.contains(memberType)) {
+                        continue;
+                    }
+
+                    if (memberType != member.type) { // Vector
+                        if (!vectors.contains(memberType)) {
+                            vectors.append(memberType);
+                        }
+                    }
+                    if (usedTypes.contains(memberType)) {
+                        continue;
+                    }
+
+                    veryNewTypes.append(memberType);
+                }
+            }
+        }
+
+        usedTypes.append(veryNewTypes);
+        newUsedTypes = veryNewTypes;
+    }
+}
+
 bool GeneratorNG::loadData(const QByteArray &data)
 {
     const QJsonDocument document = QJsonDocument::fromJson(data);
@@ -525,11 +569,17 @@ void GeneratorNG::generate()
     codeOfTLValues.clear();
     codeOfTLTypes.clear();
     codeStreamReadDeclarations.clear();
-    codeStreamWriteDeclarations.clear();
     codeStreamReadDefinitions.clear();
+    codeStreamWriteDeclarations.clear();
     codeStreamWriteDefinitions.clear();
+    codeStreamWriteTemplateInstancing.clear();
     codeConnectionDeclarations.clear();
     codeConnectionDefinitions.clear();
+    codeDebugWriteDeclarations.clear();
+    codeDebugWriteDefinitions.clear();
+
+    QStringList typesUsedForWrite;
+    QStringList vectorUsedForWrite;
 
     static const QStringList whiteList = QStringList()
             << QLatin1String("auth")
@@ -550,25 +600,46 @@ void GeneratorNG::generate()
         }
         if (addImplementation) {
             codeConnectionDeclarations.append(generateConnectionMethodDeclaration(method));
-            codeConnectionDefinitions.append(generateConnectionMethodDefinition(method));
+            codeConnectionDefinitions.append(generateConnectionMethodDefinition(method, typesUsedForWrite));
         } else {
             // It's still necessary to generate definition to figure out used stream write operators
-            generateConnectionMethodDefinition(method);
+            generateConnectionMethodDefinition(method, typesUsedForWrite);
         }
     }
 
-    m_usedWriteOperators.removeDuplicates();
+    typesUsedForWrite.removeDuplicates();
 
-    foreach (const QString &str, m_usedWriteOperators) {
-        if (str.startsWith(tlVectorType)) {
-            qDebug() << str;
+    for (int i = 0; i < typesUsedForWrite.count(); ++i) {
+        const QString t = getTypeOrVectorType(typesUsedForWrite.at(i));
+
+        if (typesUsedForWrite.at(i) != t) {
+            vectorUsedForWrite.append(t);
+            typesUsedForWrite[i] = t;
         }
     }
 
-    foreach (const QString &str, m_usedWriteOperators) {
-        if (!str.startsWith(tlVectorType)) {
-            qDebug() << str;
+    QStringList usedTypes;
+    foreach (const TLType &type, m_solvedTypes) {
+        if (nativeTypes.contains(type.name)) {
+            continue;
         }
+
+        if (typesBlackList.contains(type.name)) {
+            continue;
+        }
+
+        usedTypes += type.name;
+    }
+
+    QStringList vectorUsedForRead;
+    getUsedAndVectorTypes(usedTypes, vectorUsedForRead);
+    foreach (const QString &str, vectorUsedForRead) {
+        codeStreamReadTemplateInstancing.append(generateStreamReadVectorTemplate(str));
+    }
+
+    getUsedAndVectorTypes(typesUsedForWrite, vectorUsedForWrite);
+    foreach (const QString &str, vectorUsedForWrite) {
+        codeStreamWriteTemplateInstancing.append(generateStreamWriteVectorTemplate(str));
     }
 
     codeOfTLValues.append(QLatin1String("        // Types\n"));
@@ -586,13 +657,16 @@ void GeneratorNG::generate()
             continue;
         }
 
+        if (typesBlackList.contains(type.name)) {
+            continue;
+        }
 
         codeOfTLTypes.append(generateTLTypeDefinition(type));
 
         codeStreamReadDeclarations.append(generateStreamReadOperatorDeclaration(type));
         codeStreamReadDefinitions.append(generateStreamReadOperatorDefinition(type));
 
-        if (m_usedWriteOperators.contains(type.name)) {
+        if (typesUsedForWrite.contains(type.name)) {
             codeStreamWriteDeclarations.append(generateStreamWriteOperatorDeclaration(type));
             codeStreamWriteDefinitions.append(generateStreamWriteOperatorDefinition(type));
         }
@@ -600,4 +674,5 @@ void GeneratorNG::generate()
         codeDebugWriteDeclarations.append(generateDebugWriteOperatorDeclaration(type));
         codeDebugWriteDefinitions .append(generateDebugWriteOperatorDefinition(type));
     }
+
 }

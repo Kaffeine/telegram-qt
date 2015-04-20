@@ -98,25 +98,31 @@ public:
     static QString generateTLTypeDefinition(const TLType &type);
     static QString generateStreamReadOperatorDeclaration(const TLType &type);
     static QString generateStreamReadOperatorDefinition(const TLType &type);
+    static QString generateStreamReadVectorTemplate(const QString &type);
     static QString generateStreamWriteOperatorDeclaration(const TLType &type);
     static QString generateStreamWriteOperatorDefinition(const TLType &type);
+    static QString generateStreamWriteVectorTemplate(const QString &type);
 
     static QString generateDebugWriteOperatorDeclaration(const TLType &type);
     static QString generateDebugWriteOperatorDefinition(const TLType &type);
 
     static QString generateConnectionMethodDeclaration(const TLMethod &method);
-    QString generateConnectionMethodDefinition(const TLMethod &method);
+    static QString generateConnectionMethodDefinition(const TLMethod &method, QStringList &usedTypes);
 
     static QMap<QString, TLType> readTypes(const QJsonDocument &document);
     static QMap<QString, TLMethod> readMethods(const QJsonDocument &document);
     static QList<TLType> solveTypes(QMap<QString, TLType> types);
 
+    void getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const;
+
     QString codeOfTLValues;
     QString codeOfTLTypes;
     QString codeStreamReadDeclarations;
     QString codeStreamReadDefinitions;
+    QString codeStreamReadTemplateInstancing;
     QString codeStreamWriteDeclarations;
     QString codeStreamWriteDefinitions;
+    QString codeStreamWriteTemplateInstancing;
     QString codeConnectionDeclarations;
     QString codeConnectionDefinitions;
     QString codeDebugWriteDeclarations;
@@ -139,8 +145,6 @@ private:
     QMap<QString, TLType> m_types;
     QList<TLType> m_solvedTypes;
     QMap<QString, TLMethod> m_methods;
-
-    QStringList m_usedWriteOperators;
 };
 
 #endif // GENERATORNG_HPP
