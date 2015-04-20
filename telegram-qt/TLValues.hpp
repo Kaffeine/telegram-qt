@@ -18,7 +18,7 @@
 
 // TODO: Namespace?
 
-class TLValue {
+struct TLValue {
     Q_GADGET
     Q_ENUMS(Value)
 public:
