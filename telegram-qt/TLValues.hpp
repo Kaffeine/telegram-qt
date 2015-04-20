@@ -23,8 +23,7 @@ class TLValue {
     Q_ENUMS(Value)
 public:
     enum Value {
-        // Generated TLValues
-        // From 10-mtproto-schema.txt:
+        // Generated TLValues (proto)
         ResPQ = 0x05162463,
         PQInnerData = 0x83c95aec,
         ServerDHParamsFail = 0x79cb045d,
@@ -67,7 +66,9 @@ public:
         DestroySession = 0xe7512126,
         HttpWait = 0x9299359f,
 
-        // From 20-tl-schema.txt:
+        // End of generated TLValues (proto)
+
+        // Generated TLValues
         BoolFalse = 0xbc799737,
         BoolTrue = 0x997275b5,
         Vector = 0x1cb5c415,
