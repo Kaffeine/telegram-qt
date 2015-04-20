@@ -86,12 +86,20 @@ public:
     void keepConnectionAlive(bool keep);
 
     // Generated Telegram API methods declaration
+    quint64 accountChangePhone(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
     quint64 accountCheckUsername(const QString &username);
+    quint64 accountDeleteAccount(const QString &reason);
+    quint64 accountGetAccountTTL();
     quint64 accountGetNotifySettings(const TLInputNotifyPeer &peer);
+    quint64 accountGetPrivacy(const TLInputPrivacyKey &key);
     quint64 accountGetWallPapers();
     quint64 accountRegisterDevice(quint32 tokenType, const QString &token, const QString &deviceModel, const QString &systemVersion, const QString &appVersion, bool appSandbox, const QString &langCode);
     quint64 accountResetNotifySettings();
+    quint64 accountSendChangePhoneCode(const QString &phoneNumber);
+    quint64 accountSetAccountTTL(const TLAccountDaysTTL &ttl);
+    quint64 accountSetPrivacy(const TLInputPrivacyKey &key, const TLVector<TLInputPrivacyRule> &rules);
     quint64 accountUnregisterDevice(quint32 tokenType, const QString &token);
+    quint64 accountUpdateDeviceLocked(quint32 period);
     quint64 accountUpdateNotifySettings(const TLInputNotifyPeer &peer, const TLInputPeerNotifySettings &settings);
     quint64 accountUpdateProfile(const QString &firstName, const QString &lastName);
     quint64 accountUpdateStatus(bool offline);
@@ -118,6 +126,7 @@ public:
     quint64 contactsGetSuggested(quint32 limit);
     quint64 contactsImportCard(const TLVector<quint32> &exportCard);
     quint64 contactsImportContacts(const TLVector<TLInputContact> &contacts, bool replace);
+    quint64 contactsResolveUsername(const QString &username);
     quint64 contactsSearch(const QString &q, quint32 limit);
     quint64 contactsUnblock(const TLInputUser &id);
     quint64 messagesAcceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint);
@@ -131,12 +140,14 @@ public:
     quint64 messagesEditChatTitle(quint32 chatId, const QString &title);
     quint64 messagesForwardMessage(const TLInputPeer &peer, quint32 id, quint64 randomId);
     quint64 messagesForwardMessages(const TLInputPeer &peer, const TLVector<quint32> &id);
+    quint64 messagesGetAllStickers(const QString &hash);
     quint64 messagesGetChats(const TLVector<quint32> &id);
     quint64 messagesGetDhConfig(quint32 version, quint32 randomLength);
     quint64 messagesGetDialogs(quint32 offset, quint32 maxId, quint32 limit);
     quint64 messagesGetFullChat(quint32 chatId);
     quint64 messagesGetHistory(const TLInputPeer &peer, quint32 offset, quint32 maxId, quint32 limit);
     quint64 messagesGetMessages(const TLVector<quint32> &id);
+    quint64 messagesGetStickers(const QString &emoticon, const QString &hash);
     quint64 messagesReadEncryptedHistory(const TLInputEncryptedChat &peer, quint32 maxDate);
     quint64 messagesReadHistory(const TLInputPeer &peer, quint32 maxId, quint32 offset, bool readContents);
     quint64 messagesReadMessageContents(const TLVector<quint32> &id);

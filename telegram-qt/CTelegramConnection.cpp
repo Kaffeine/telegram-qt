@@ -239,6 +239,19 @@ void CTelegramConnection::getFile(const TLInputFileLocation &inputLocation, quin
 }
 
 // Generated Telegram API methods implementation
+quint64 CTelegramConnection::accountChangePhone(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountChangePhone;
+    outputStream << phoneNumber;
+    outputStream << phoneCodeHash;
+    outputStream << phoneCode;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::accountCheckUsername(const QString &username)
 {
     QByteArray output;
@@ -250,6 +263,27 @@ quint64 CTelegramConnection::accountCheckUsername(const QString &username)
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::accountDeleteAccount(const QString &reason)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountDeleteAccount;
+    outputStream << reason;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountGetAccountTTL()
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountGetAccountTTL;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::accountGetNotifySettings(const TLInputNotifyPeer &peer)
 {
     QByteArray output;
@@ -257,6 +291,17 @@ quint64 CTelegramConnection::accountGetNotifySettings(const TLInputNotifyPeer &p
 
     outputStream << TLValue::AccountGetNotifySettings;
     outputStream << peer;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountGetPrivacy(const TLInputPrivacyKey &key)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountGetPrivacy;
+    outputStream << key;
 
     return sendEncryptedPackage(output);
 }
@@ -298,6 +343,40 @@ quint64 CTelegramConnection::accountResetNotifySettings()
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::accountSendChangePhoneCode(const QString &phoneNumber)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountSendChangePhoneCode;
+    outputStream << phoneNumber;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountSetAccountTTL(const TLAccountDaysTTL &ttl)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountSetAccountTTL;
+    outputStream << ttl;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountSetPrivacy(const TLInputPrivacyKey &key, const TLVector<TLInputPrivacyRule> &rules)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountSetPrivacy;
+    outputStream << key;
+    outputStream << rules;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::accountUnregisterDevice(quint32 tokenType, const QString &token)
 {
     QByteArray output;
@@ -306,6 +385,17 @@ quint64 CTelegramConnection::accountUnregisterDevice(quint32 tokenType, const QS
     outputStream << TLValue::AccountUnregisterDevice;
     outputStream << tokenType;
     outputStream << token;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::accountUpdateDeviceLocked(quint32 period)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::AccountUpdateDeviceLocked;
+    outputStream << period;
 
     return sendEncryptedPackage(output);
 }
@@ -613,6 +703,17 @@ quint64 CTelegramConnection::contactsImportContacts(const TLVector<TLInputContac
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::contactsResolveUsername(const QString &username)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::ContactsResolveUsername;
+    outputStream << username;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::contactsSearch(const QString &q, quint32 limit)
 {
     QByteArray output;
@@ -769,6 +870,17 @@ quint64 CTelegramConnection::messagesForwardMessages(const TLInputPeer &peer, co
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::messagesGetAllStickers(const QString &hash)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::MessagesGetAllStickers;
+    outputStream << hash;
+
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::messagesGetChats(const TLVector<quint32> &id)
 {
     QByteArray output;
@@ -837,6 +949,18 @@ quint64 CTelegramConnection::messagesGetMessages(const TLVector<quint32> &id)
 
     outputStream << TLValue::MessagesGetMessages;
     outputStream << id;
+
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::messagesGetStickers(const QString &emoticon, const QString &hash)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+
+    outputStream << TLValue::MessagesGetStickers;
+    outputStream << emoticon;
+    outputStream << hash;
 
     return sendEncryptedPackage(output);
 }
@@ -2627,7 +2751,8 @@ void CTelegramConnection::insertInitConnection(QByteArray *data) const
 {
     CTelegramStream outputStream(data, /* write */ true);
 
-    outputStream << TLValue::InvokeWithLayer18;
+    outputStream << TLValue::InvokeWithLayer;
+    outputStream << quint32(23);
     outputStream << TLValue::InitConnection;
 
     outputStream << m_appInfo->appId();

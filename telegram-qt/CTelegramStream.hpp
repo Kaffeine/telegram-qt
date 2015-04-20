@@ -40,6 +40,8 @@ public:
     CTelegramStream &operator>>(TLVector<T> &v);
 
     // Generated read operators
+    CTelegramStream &operator>>(TLAccountDaysTTL &accountDaysTTL);
+    CTelegramStream &operator>>(TLAccountSentChangePhoneCode &accountSentChangePhoneCode);
     CTelegramStream &operator>>(TLAudio &audio);
     CTelegramStream &operator>>(TLAuthCheckedPhone &authCheckedPhone);
     CTelegramStream &operator>>(TLAuthExportedAuthorization &authExportedAuthorization);
@@ -50,11 +52,12 @@ public:
     CTelegramStream &operator>>(TLContact &contact);
     CTelegramStream &operator>>(TLContactBlocked &contactBlocked);
     CTelegramStream &operator>>(TLContactFound &contactFound);
-    CTelegramStream &operator>>(TLContactStatus &contactStatus);
     CTelegramStream &operator>>(TLContactSuggested &contactSuggested);
     CTelegramStream &operator>>(TLContactsForeignLink &contactsForeignLink);
     CTelegramStream &operator>>(TLContactsMyLink &contactsMyLink);
     CTelegramStream &operator>>(TLDcOption &dcOption);
+    CTelegramStream &operator>>(TLDisabledFeature &disabledFeature);
+    CTelegramStream &operator>>(TLDocumentAttribute &documentAttribute);
     CTelegramStream &operator>>(TLEncryptedChat &encryptedChat);
     CTelegramStream &operator>>(TLEncryptedFile &encryptedFile);
     CTelegramStream &operator>>(TLEncryptedMessage &encryptedMessage);
@@ -79,6 +82,7 @@ public:
     CTelegramStream &operator>>(TLInputPeerNotifySettings &inputPeerNotifySettings);
     CTelegramStream &operator>>(TLInputPhoto &inputPhoto);
     CTelegramStream &operator>>(TLInputPhotoCrop &inputPhotoCrop);
+    CTelegramStream &operator>>(TLInputPrivacyKey &inputPrivacyKey);
     CTelegramStream &operator>>(TLInputUser &inputUser);
     CTelegramStream &operator>>(TLInputVideo &inputVideo);
     CTelegramStream &operator>>(TLMessagesAffectedHistory &messagesAffectedHistory);
@@ -90,7 +94,10 @@ public:
     CTelegramStream &operator>>(TLPeerNotifyEvents &peerNotifyEvents);
     CTelegramStream &operator>>(TLPeerNotifySettings &peerNotifySettings);
     CTelegramStream &operator>>(TLPhotoSize &photoSize);
+    CTelegramStream &operator>>(TLPrivacyKey &privacyKey);
+    CTelegramStream &operator>>(TLPrivacyRule &privacyRule);
     CTelegramStream &operator>>(TLSendMessageAction &sendMessageAction);
+    CTelegramStream &operator>>(TLStickerPack &stickerPack);
     CTelegramStream &operator>>(TLStorageFileType &storageFileType);
     CTelegramStream &operator>>(TLUpdatesState &updatesState);
     CTelegramStream &operator>>(TLUploadFile &uploadFile);
@@ -100,14 +107,19 @@ public:
     CTelegramStream &operator>>(TLWallPaper &wallPaper);
     CTelegramStream &operator>>(TLChatPhoto &chatPhoto);
     CTelegramStream &operator>>(TLConfig &config);
+    CTelegramStream &operator>>(TLContactStatus &contactStatus);
     CTelegramStream &operator>>(TLDialog &dialog);
     CTelegramStream &operator>>(TLDocument &document);
     CTelegramStream &operator>>(TLInputChatPhoto &inputChatPhoto);
     CTelegramStream &operator>>(TLInputMedia &inputMedia);
     CTelegramStream &operator>>(TLInputNotifyPeer &inputNotifyPeer);
+    CTelegramStream &operator>>(TLInputPrivacyRule &inputPrivacyRule);
+    CTelegramStream &operator>>(TLMessagesAllStickers &messagesAllStickers);
+    CTelegramStream &operator>>(TLMessagesStickers &messagesStickers);
     CTelegramStream &operator>>(TLNotifyPeer &notifyPeer);
     CTelegramStream &operator>>(TLPhoto &photo);
     CTelegramStream &operator>>(TLUser &user);
+    CTelegramStream &operator>>(TLAccountPrivacyRules &accountPrivacyRules);
     CTelegramStream &operator>>(TLAuthAuthorization &authAuthorization);
     CTelegramStream &operator>>(TLChat &chat);
     CTelegramStream &operator>>(TLChatFull &chatFull);
@@ -148,8 +160,12 @@ public:
     CTelegramStream &operator<<(const TLDcOption &dcOption);
 
     // Generated write operators
+    CTelegramStream &operator<<(const TLAccountDaysTTL &accountDaysTTL);
+    CTelegramStream &operator<<(const TLDocumentAttribute &documentAttribute);
     CTelegramStream &operator<<(const TLInputAppEvent &inputAppEvent);
+    CTelegramStream &operator<<(const TLInputAudio &inputAudio);
     CTelegramStream &operator<<(const TLInputContact &inputContact);
+    CTelegramStream &operator<<(const TLInputDocument &inputDocument);
     CTelegramStream &operator<<(const TLInputEncryptedChat &inputEncryptedChat);
     CTelegramStream &operator<<(const TLInputEncryptedFile &inputEncryptedFile);
     CTelegramStream &operator<<(const TLInputFile &inputFile);
@@ -160,12 +176,15 @@ public:
     CTelegramStream &operator<<(const TLInputPeerNotifySettings &inputPeerNotifySettings);
     CTelegramStream &operator<<(const TLInputPhoto &inputPhoto);
     CTelegramStream &operator<<(const TLInputPhotoCrop &inputPhotoCrop);
+    CTelegramStream &operator<<(const TLInputPrivacyKey &inputPrivacyKey);
     CTelegramStream &operator<<(const TLInputUser &inputUser);
+    CTelegramStream &operator<<(const TLInputVideo &inputVideo);
     CTelegramStream &operator<<(const TLMessagesFilter &messagesFilter);
     CTelegramStream &operator<<(const TLSendMessageAction &sendMessageAction);
     CTelegramStream &operator<<(const TLInputChatPhoto &inputChatPhoto);
     CTelegramStream &operator<<(const TLInputMedia &inputMedia);
     CTelegramStream &operator<<(const TLInputNotifyPeer &inputNotifyPeer);
+    CTelegramStream &operator<<(const TLInputPrivacyRule &inputPrivacyRule);
     // End of generated write operators
 
     template <typename T>

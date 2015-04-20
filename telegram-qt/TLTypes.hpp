@@ -39,6 +39,25 @@ public:
 };
 
 // Generated TLTypes
+struct TLAccountDaysTTL {
+    TLAccountDaysTTL() :
+        days(0),
+        tlType(TLValue::AccountDaysTTL) { }
+
+    quint32 days;
+    TLValue tlType;
+};
+
+struct TLAccountSentChangePhoneCode {
+    TLAccountSentChangePhoneCode() :
+        sendCallTimeout(0),
+        tlType(TLValue::AccountSentChangePhoneCode) { }
+
+    QString phoneCodeHash;
+    quint32 sendCallTimeout;
+    TLValue tlType;
+};
+
 struct TLAudio {
     TLAudio() :
         id(0),
@@ -165,17 +184,6 @@ struct TLContactFound {
     TLValue tlType;
 };
 
-struct TLContactStatus {
-    TLContactStatus() :
-        userId(0),
-        expires(0),
-        tlType(TLValue::ContactStatus) { }
-
-    quint32 userId;
-    quint32 expires;
-    TLValue tlType;
-};
-
 struct TLContactSuggested {
     TLContactSuggested() :
         userId(0),
@@ -215,6 +223,29 @@ struct TLDcOption {
     QString hostname;
     QString ipAddress;
     quint32 port;
+    TLValue tlType;
+};
+
+struct TLDisabledFeature {
+    TLDisabledFeature() :
+        tlType(TLValue::DisabledFeature) { }
+
+    QString feature;
+    QString description;
+    TLValue tlType;
+};
+
+struct TLDocumentAttribute {
+    TLDocumentAttribute() :
+        w(0),
+        h(0),
+        duration(0),
+        tlType(TLValue::DocumentAttributeImageSize) { }
+
+    quint32 w;
+    quint32 h;
+    quint32 duration;
+    QString fileName;
     TLValue tlType;
 };
 
@@ -523,6 +554,13 @@ struct TLInputPhotoCrop {
     TLValue tlType;
 };
 
+struct TLInputPrivacyKey {
+    TLInputPrivacyKey() :
+        tlType(TLValue::InputPrivacyKeyStatusTimestamp) { }
+
+    TLValue tlType;
+};
+
 struct TLInputUser {
     TLInputUser() :
         userId(0),
@@ -648,10 +686,34 @@ struct TLPhotoSize {
     TLValue tlType;
 };
 
+struct TLPrivacyKey {
+    TLPrivacyKey() :
+        tlType(TLValue::PrivacyKeyStatusTimestamp) { }
+
+    TLValue tlType;
+};
+
+struct TLPrivacyRule {
+    TLPrivacyRule() :
+        tlType(TLValue::PrivacyValueAllowContacts) { }
+
+    TLVector<quint32> users;
+    TLValue tlType;
+};
+
 struct TLSendMessageAction {
     TLSendMessageAction() :
         tlType(TLValue::SendMessageTypingAction) { }
 
+    TLValue tlType;
+};
+
+struct TLStickerPack {
+    TLStickerPack() :
+        tlType(TLValue::StickerPack) { }
+
+    QString emoticon;
+    TLVector<quint64> documents;
     TLValue tlType;
 };
 
@@ -767,18 +829,33 @@ struct TLChatPhoto {
 struct TLConfig {
     TLConfig() :
         date(0),
+        expires(0),
         testMode(false),
         thisDc(0),
+        chatBigSize(0),
         chatSizeMax(0),
         broadcastSizeMax(0),
         tlType(TLValue::Config) { }
 
     quint32 date;
+    quint32 expires;
     bool testMode;
     quint32 thisDc;
     TLVector<TLDcOption> dcOptions;
+    quint32 chatBigSize;
     quint32 chatSizeMax;
     quint32 broadcastSizeMax;
+    TLVector<TLDisabledFeature> disabledFeatures;
+    TLValue tlType;
+};
+
+struct TLContactStatus {
+    TLContactStatus() :
+        userId(0),
+        tlType(TLValue::ContactStatus) { }
+
+    quint32 userId;
+    TLUserStatus status;
     TLValue tlType;
 };
 
@@ -799,7 +876,6 @@ struct TLDocument {
     TLDocument() :
         id(0),
         accessHash(0),
-        userId(0),
         date(0),
         size(0),
         dcId(0),
@@ -807,13 +883,12 @@ struct TLDocument {
 
     quint64 id;
     quint64 accessHash;
-    quint32 userId;
     quint32 date;
-    QString fileName;
     QString mimeType;
     quint32 size;
     TLPhotoSize thumb;
     quint32 dcId;
+    TLVector<TLDocumentAttribute> attributes;
     TLValue tlType;
 };
 
@@ -845,7 +920,7 @@ struct TLInputMedia {
     quint32 h;
     QString mimeType;
     TLInputFile thumb;
-    QString fileName;
+    TLVector<TLDocumentAttribute> attributes;
     TLValue tlType;
 };
 
@@ -854,6 +929,33 @@ struct TLInputNotifyPeer {
         tlType(TLValue::InputNotifyPeer) { }
 
     TLInputPeer peer;
+    TLValue tlType;
+};
+
+struct TLInputPrivacyRule {
+    TLInputPrivacyRule() :
+        tlType(TLValue::InputPrivacyValueAllowContacts) { }
+
+    TLVector<TLInputUser> users;
+    TLValue tlType;
+};
+
+struct TLMessagesAllStickers {
+    TLMessagesAllStickers() :
+        tlType(TLValue::MessagesAllStickersNotModified) { }
+
+    QString hash;
+    TLVector<TLStickerPack> packs;
+    TLVector<TLDocument> documents;
+    TLValue tlType;
+};
+
+struct TLMessagesStickers {
+    TLMessagesStickers() :
+        tlType(TLValue::MessagesStickersNotModified) { }
+
+    QString hash;
+    TLVector<TLDocument> stickers;
     TLValue tlType;
 };
 
@@ -899,6 +1001,15 @@ struct TLUser {
     TLUserStatus status;
     bool inactive;
     quint64 accessHash;
+    TLValue tlType;
+};
+
+struct TLAccountPrivacyRules {
+    TLAccountPrivacyRules() :
+        tlType(TLValue::AccountPrivacyRules) { }
+
+    TLVector<TLPrivacyRule> rules;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -1300,6 +1411,9 @@ struct TLUpdate {
     QString type;
     TLMessageMedia media;
     bool popup;
+    TLPrivacyKey key;
+    TLVector<TLPrivacyRule> rules;
+    QString phone;
     TLValue tlType;
 };
 
