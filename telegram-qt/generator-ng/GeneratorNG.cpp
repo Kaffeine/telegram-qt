@@ -586,10 +586,6 @@ void GeneratorNG::generate()
             continue;
         }
 
-        if ((type.subTypes.count() == 1) && (type.subTypes.first().members.isEmpty())) {
-            qDebug() << "Empty type" << type.name;
-            continue;
-        }
 
         codeOfTLTypes.append(generateTLTypeDefinition(type));
 
