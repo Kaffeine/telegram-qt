@@ -192,6 +192,7 @@ int generate()
     generator.loadData(data);
     generator.generate();
 
+    replacingHelper(QLatin1String("../TLValues.hpp"), 8, QLatin1String("TLValues"), generator.codeOfTLValues);
     replacingHelper(QLatin1String("../TLTypes.hpp"), 0, QLatin1String("TLTypes"), generator.codeOfTLTypes);
     replacingHelper(QLatin1String("../CTelegramStream.hpp"), 4, QLatin1String("read operators"), generator.codeStreamReadDeclarations);
     replacingHelper(QLatin1String("../CTelegramStream.hpp"), 4, QLatin1String("write operators"), generator.codeStreamWriteDeclarations);

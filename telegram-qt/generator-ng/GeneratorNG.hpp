@@ -41,6 +41,7 @@ struct TLParam {
 
 struct TLSubType {
     QString name;
+    quint32 id;
     QList<TLParam> members;
 
     TLSubType &operator=(const TLSubType &anotherType) {
@@ -75,6 +76,7 @@ struct TLType {
 
 struct TLMethod {
     QString name;
+    quint32 id;
     QList< TLParam > params;
 
     TLMethod &operator=(const TLMethod &anotherMethod) {
@@ -91,22 +93,25 @@ public:
     bool loadData(const QByteArray &data);
     void generate();
 
-    QString generateTLTypeDefinition(const TLType &type);
-    QString generateStreamReadOperatorDeclaration(const TLType &type) const;
-    QString generateStreamReadOperatorDefinition(const TLType &type) const;
-    QString generateStreamWriteOperatorDeclaration(const TLType &type) const;
-    QString generateStreamWriteOperatorDefinition(const TLType &type) const;
+    static QString generateTLValuesDefinition(const TLType &type);
+    static QString generateTLValuesDefinition(const TLMethod &method);
+    static QString generateTLTypeDefinition(const TLType &type);
+    static QString generateStreamReadOperatorDeclaration(const TLType &type);
+    static QString generateStreamReadOperatorDefinition(const TLType &type);
+    static QString generateStreamWriteOperatorDeclaration(const TLType &type);
+    static QString generateStreamWriteOperatorDefinition(const TLType &type);
 
-    QString generateDebugWriteOperatorDeclaration(const TLType &type) const;
-    QString generateDebugWriteOperatorDefinition(const TLType &type) const;
+    static QString generateDebugWriteOperatorDeclaration(const TLType &type);
+    static QString generateDebugWriteOperatorDefinition(const TLType &type);
 
-    QString generateConnectionMethodDeclaration(const TLMethod &method);
+    static QString generateConnectionMethodDeclaration(const TLMethod &method);
     QString generateConnectionMethodDefinition(const TLMethod &method);
 
     static QMap<QString, TLType> readTypes(const QJsonDocument &document);
     static QMap<QString, TLMethod> readMethods(const QJsonDocument &document);
     static QList<TLType> solveTypes(QMap<QString, TLType> types);
 
+    QString codeOfTLValues;
     QString codeOfTLTypes;
     QString codeStreamReadDeclarations;
     QString codeStreamReadDefinitions;

@@ -120,6 +120,26 @@ QString GeneratorNG::formatType(QString type)
     }
 }
 
+QString GeneratorNG::generateTLValuesDefinition(const TLType &type)
+{
+    QString code;
+
+    foreach (const TLSubType &subType, type.subTypes) {
+        code.append(QString("        %1 = 0x%2,\n").arg(subType.name).arg(subType.id, 8, 0x10, QLatin1Char('0')));
+    }
+
+    return code;
+}
+
+QString GeneratorNG::generateTLValuesDefinition(const TLMethod &method)
+{
+    QString nameFirstCapital = method.name;
+    if (!nameFirstCapital.isEmpty()) {
+        nameFirstCapital[0] = nameFirstCapital.at(0).toUpper();
+    }
+    return QString("        %1 = 0x%2,\n").arg(nameFirstCapital).arg(method.id, 8, 0x10, QLatin1Char('0'));
+}
+
 QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
 {
     QString code;
@@ -183,21 +203,21 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
     return code;
 }
 
-QString GeneratorNG::generateStreamReadOperatorDeclaration(const TLType &type) const
+QString GeneratorNG::generateStreamReadOperatorDeclaration(const TLType &type)
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
     return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
-QString GeneratorNG::generateStreamWriteOperatorDeclaration(const TLType &type) const
+QString GeneratorNG::generateStreamWriteOperatorDeclaration(const TLType &type)
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
     return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
-QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type) const
+QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type)
 {
     QString code;
 
@@ -224,7 +244,7 @@ QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type) co
     return code;
 }
 
-QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type) const
+QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
 {
     QString code;
 
@@ -250,14 +270,14 @@ QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type) c
     return code;
 }
 
-QString GeneratorNG::generateDebugWriteOperatorDeclaration(const TLType &type) const
+QString GeneratorNG::generateDebugWriteOperatorDeclaration(const TLType &type)
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
     return QString("QDebug operator<<(QDebug d, const %1 &%2);\n").arg(type.name).arg(argName);
 }
 
-QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type) const
+QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
 {
     QString code;
 
@@ -373,32 +393,29 @@ QMap<QString, TLType> GeneratorNG::readTypes(const QJsonDocument &document)
         const QJsonObject obj = constructors.at(i).toObject();
 
         const QString predicateName = formatName1stCapital(obj.value("predicate").toString());
+        const quint32 predicateId = obj.value("id").toString().toInt();
         const QString typeName = formatType(obj.value("type").toString());
 
-        if (!nativeTypes.contains(typeName)) {
-            TLType tlType = types.value(typeName);
-            tlType.name = typeName;
+        TLType tlType = types.value(typeName);
+        tlType.name = typeName;
 
-            TLSubType tlSubType;
-            tlSubType.name = predicateName;
+        TLSubType tlSubType;
+        tlSubType.name = predicateName;
+        tlSubType.id = predicateId;
 
-            const QJsonArray params = obj.value("params").toArray();
+        const QJsonArray params = obj.value("params").toArray();
 
-            foreach (const QJsonValue &paramValue, params) {
-                const QJsonObject &paramObj = paramValue.toObject();
-                const QString paramName = formatMember(paramObj.value("name").toString());
+        foreach (const QJsonValue &paramValue, params) {
+            const QJsonObject &paramObj = paramValue.toObject();
+            const QString paramName = formatMember(paramObj.value("name").toString());
 
-                const QString paramType = paramObj.value("type").toString();
+            const QString paramType = paramObj.value("type").toString();
 
-                tlSubType.members.append(TLParam(paramName, formatType(paramType)));
-            }
-
-            tlType.subTypes.append(tlSubType);
-            types.insert(typeName, tlType);
+            tlSubType.members.append(TLParam(paramName, formatType(paramType)));
         }
 
-//        quint32 id = obj.value("id").toString().toInt();
-//        qDebug() << name << QString::number(id, 0x10);
+        tlType.subTypes.append(tlSubType);
+        types.insert(typeName, tlType);
     }
 
     return types;
@@ -414,9 +431,11 @@ QMap<QString, TLMethod> GeneratorNG::readMethods(const QJsonDocument &document)
         const QJsonObject obj = methods.at(i).toObject();
 
         const QString methodName = formatName(obj.value("method").toString());
+        const quint32 methodId = obj.value("id").toString().toInt();
 
         TLMethod tlMethod;
         tlMethod.name = methodName;
+        tlMethod.id = methodId;
 
         const QJsonArray params = obj.value("params").toArray();
 
@@ -454,6 +473,11 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types)
 
             bool solved = true;
 
+            if (nativeTypes.contains(type.name)) {
+                types.remove(typeName);
+                continue;
+            }
+
             foreach (const TLSubType &subType, type.subTypes) {
                 foreach (const TLParam &member, subType.members) {
                     QString memberType = getTypeOrVectorType(member.type);
@@ -468,7 +492,6 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types)
                     break;
                 }
             }
-
 
             if (solved) {
                 solvedTypes.append(type);
@@ -499,6 +522,7 @@ bool GeneratorNG::loadData(const QByteArray &data)
 
 void GeneratorNG::generate()
 {
+    codeOfTLValues.clear();
     codeOfTLTypes.clear();
     codeStreamReadDeclarations.clear();
     codeStreamWriteDeclarations.clear();
@@ -547,7 +571,21 @@ void GeneratorNG::generate()
         }
     }
 
+    codeOfTLValues.append(QLatin1String("        // Types\n"));
+    foreach (const TLType &type, m_types) {
+        codeOfTLValues.append(generateTLValuesDefinition(type));
+    }
+
+    codeOfTLValues.append(QLatin1String("        // Methods\n"));
+    foreach (const TLMethod &method, m_methods) {
+        codeOfTLValues.append(generateTLValuesDefinition(method));
+    }
+
     foreach (const TLType &type, m_solvedTypes) {
+        if (nativeTypes.contains(type.name)) {
+            continue;
+        }
+
         if ((type.subTypes.count() == 1) && (type.subTypes.first().members.isEmpty())) {
             qDebug() << "Empty type" << type.name;
             continue;
