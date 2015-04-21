@@ -76,15 +76,10 @@ public Q_SLOTS:
     void requestContactAvatar(const QString &contact);
     void requestMessageMediaData(quint32 messageId);
 
-    quint64 sendMessage(const QString &contact, const QString &message); // Message id is random number
-    quint64 sendChatMessage(quint32 chatId, const QString &message); // Message id is random number
-
+    quint64 sendMessage(const QString &identifier, const QString &message); // Message id is random number
     /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
     void setTyping(const QString &contact, bool typingStatus);
-    void setChatTyping(quint32 chatId, bool typingStatus);
-
     void setMessageRead(const QString &contact, quint32 messageId);
-    void setChatMessageRead(const quint32 &chatId, quint32 messageId);
 
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
@@ -95,6 +90,11 @@ public Q_SLOTS:
 
     quint32 createChat(const QStringList &phones, const QString &title);
     bool addChatUser(quint32 chatId, const QString &contact, quint32 forwardMessages = 0);
+
+    // Not "Chat" methods can be used instead.
+    quint64 sendChatMessage(quint32 chatId, const QString &message); // Message id is random number
+    void setChatTyping(quint32 chatId, bool typingStatus);
+    void setChatMessageRead(const quint32 &chatId, quint32 messageId);
 
 Q_SIGNALS:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);
@@ -140,6 +140,21 @@ inline void CTelegramCore::addContact(const QString &phoneNumber)
 inline void CTelegramCore::deleteContact(const QString &phoneNumber)
 {
     deleteContacts(QStringList() << phoneNumber);
+}
+
+inline quint64 CTelegramCore::sendChatMessage(quint32 chatId, const QString &message)
+{
+    return sendMessage(QString(QLatin1String("chat%1")).arg(chatId), message);
+}
+
+inline void CTelegramCore::setChatTyping(quint32 chatId, bool typingStatus)
+{
+    setTyping(QString(QLatin1String("chat%1")).arg(chatId), typingStatus);
+}
+
+inline void CTelegramCore::setChatMessageRead(const quint32 &chatId, quint32 messageId)
+{
+    setMessageRead(QString(QLatin1String("chat%1")).arg(chatId), messageId);
 }
 
 #endif // CTELECORE_HPP

@@ -237,14 +237,9 @@ QString CTelegramCore::selfPhone() const
     return m_dispatcher->selfPhone();
 }
 
-quint64 CTelegramCore::sendMessage(const QString &contact, const QString &message)
+quint64 CTelegramCore::sendMessage(const QString &identifier, const QString &message)
 {
-    return m_dispatcher->sendMessageToContact(contact, message);
-}
-
-quint64 CTelegramCore::sendChatMessage(quint32 chatId, const QString &message)
-{
-    return m_dispatcher->sendMessageToChat(chatId, message);
+    return m_dispatcher->sendMessage(identifier, message);
 }
 
 void CTelegramCore::setTyping(const QString &contact, bool typingStatus)
@@ -252,19 +247,9 @@ void CTelegramCore::setTyping(const QString &contact, bool typingStatus)
     m_dispatcher->setTyping(contact, typingStatus);
 }
 
-void CTelegramCore::setChatTyping(quint32 chatId, bool typingStatus)
-{
-    m_dispatcher->setChatTyping(chatId, typingStatus);
-}
-
 void CTelegramCore::setMessageRead(const QString &contact, quint32 messageId)
 {
     m_dispatcher->setMessageRead(contact, messageId);
-}
-
-void CTelegramCore::setChatMessageRead(const quint32 &chatId, quint32 messageId)
-{
-    m_dispatcher->setChatMessageRead(chatId, messageId);
 }
 
 void CTelegramCore::setOnlineStatus(bool onlineStatus)

@@ -116,17 +116,12 @@ public:
     void requestContactAvatar(const QString &contact);
     bool requestMessageMediaData(quint32 messageId);
 
-    quint64 sendMessageToContact(const QString &contact, const QString &message);
-    quint64 sendMessageToChat(quint32 publicChatId, const QString &message);
+    quint64 sendMessage(const QString &identifier, const QString &message);
+    void setTyping(const QString &identifier, bool typingStatus);
+    void setMessageRead(const QString &identifier, quint32 messageId);
 
     quint32 createChat(const QStringList &phones, const QString chatName);
     bool addChatUser(quint32 publicChatId, const QString &contact, quint32 forwardMessages);
-
-    void setTyping(const QString &contact, bool typingStatus);
-    void setChatTyping(quint32 publicChatId, bool typingStatus);
-
-    void setMessageRead(const QString &contact, quint32 messageId);
-    void setChatMessageRead(const quint32 &publicChatId, quint32 messageId);
 
     void setOnlineStatus(bool onlineStatus);
     void checkUserName(const QString &userName);
@@ -227,9 +222,10 @@ protected:
 
     quint32 publicChatIdToChatId(quint32 publicChatId) const;
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
-    TLInputPeer phoneNumberToInputPeer(const QString &phoneNumber) const;
+    TLInputPeer identifierToInputPeer(const QString &identifier) const;
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
     QString userIdToIdentifier(const quint32 id) const;
+    QString chatIdToIdentifier(const quint32 id) const;
     quint32 identifierToUserId(const QString &identifier) const;
     TLUser *identifierToUser(const QString &identifier) const;
 
@@ -304,7 +300,6 @@ protected:
     QMap<quint32, int> m_userTypingMap; // user id, typing time (ms)
     QMap<QPair<quint32, quint32>, int> m_userChatTypingMap; // <public chat id, user id>, typing time (ms)
     QMap<QString, int> m_localTypingMap; // phone, typing time (ms)
-    QMap<quint32, int> m_localChatTypingMap; // public chat id, typing time (ms)
 
     TLVector<quint32> m_chatIds; // Telegram chat ids vector. Index is "public chat id".
     QMap<quint64, quint32> m_temporaryChatIdMap; // RPC message (request) id to public chat id map

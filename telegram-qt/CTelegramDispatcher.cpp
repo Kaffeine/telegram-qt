@@ -406,7 +406,6 @@ void CTelegramDispatcher::closeConnection()
     m_userTypingMap.clear();
     m_userChatTypingMap.clear();
     m_localTypingMap.clear();
-    m_localChatTypingMap.clear();
     m_chatIds.clear();
     m_temporaryChatIdMap.clear();
     m_chatInfo.clear();
@@ -497,39 +496,20 @@ bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
     return requestFile(FileRequestDescriptor::messageMediaDataRequest(m_knownMediaMessages.value(messageId)));
 }
 
-quint64 CTelegramDispatcher::sendMessageToContact(const QString &contact, const QString &message)
+quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QString &message)
 {
     if (!activeConnection()) {
         return 0;
     }
-    const TLInputPeer peer = phoneNumberToInputPeer(contact);
+    const TLInputPeer peer = identifierToInputPeer(identifier);
 
     if (peer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(contact);
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
         return 0;
     }
 
-    if (m_localTypingMap.contains(contact)) {
-        m_localTypingMap.remove(contact);
-    }
-
-    return sendMessages(peer, message);
-}
-
-quint64 CTelegramDispatcher::sendMessageToChat(quint32 publicChatId, const QString &message)
-{
-    if (!activeConnection()) {
-        return 0;
-    }
-    const TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
-
-    if (peer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve chat" << publicChatId;
-        return 0;
-    }
-
-    if (m_localChatTypingMap.contains(publicChatId)) {
-        m_localChatTypingMap.remove(publicChatId);
+    if (m_localTypingMap.contains(identifier)) {
+        m_localTypingMap.remove(identifier);
     }
 
     return sendMessages(peer, message);
@@ -607,19 +587,19 @@ bool CTelegramDispatcher::addChatUser(quint32 publicChatId, const QString &conta
     return true;
 }
 
-void CTelegramDispatcher::setTyping(const QString &contact, bool typingStatus)
+void CTelegramDispatcher::setTyping(const QString &identifier, bool typingStatus)
 {
     if (!activeConnection()) {
         return;
     }
-    if (typingStatus == m_localTypingMap.contains(contact)) {
+    if (typingStatus == m_localTypingMap.contains(identifier)) {
         return; // Avoid flood
     }
 
-    TLInputPeer peer = phoneNumberToInputPeer(contact);
+    TLInputPeer peer = identifierToInputPeer(identifier);
 
     if (peer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(contact);
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
         return;
     }
 
@@ -633,64 +613,19 @@ void CTelegramDispatcher::setTyping(const QString &contact, bool typingStatus)
     activeConnection()->messagesSetTyping(peer, action);
 
     if (typingStatus) {
-        m_localTypingMap.insert(contact, s_localTypingDuration);
+        m_localTypingMap.insert(identifier, s_localTypingDuration);
         ensureTypingUpdateTimer(s_localTypingDuration);
     } else {
-        m_localTypingMap.remove(contact);
+        m_localTypingMap.remove(identifier);
     }
 }
 
-void CTelegramDispatcher::setChatTyping(quint32 publicChatId, bool typingStatus)
+void CTelegramDispatcher::setMessageRead(const QString &identifier, quint32 messageId)
 {
     if (!activeConnection()) {
         return;
     }
-    if (typingStatus == m_localChatTypingMap.contains(publicChatId)) {
-        return; // Avoid flood
-    }
-
-    TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
-
-    if (peer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve chat" << publicChatId;
-        return;
-    }
-
-    TLSendMessageAction action;
-    if (typingStatus) {
-        action.tlType = TLValue::SendMessageTypingAction;
-    } else {
-        action.tlType = TLValue::SendMessageCancelAction;
-    }
-
-    activeConnection()->messagesSetTyping(peer, action);
-
-    if (typingStatus) {
-        m_localChatTypingMap.insert(publicChatId, s_localTypingDuration);
-        ensureTypingUpdateTimer(s_localTypingDuration);
-    } else {
-        m_localChatTypingMap.remove(publicChatId);
-    }
-}
-
-void CTelegramDispatcher::setMessageRead(const QString &contact, quint32 messageId)
-{
-    if (!activeConnection()) {
-        return;
-    }
-    const TLInputPeer peer = phoneNumberToInputPeer(contact);
-
-    if (peer.tlType != TLValue::InputPeerEmpty) {
-        activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0, /* readContents */ false);
-    }
-}
-
-void CTelegramDispatcher::setChatMessageRead(const quint32 &publicChatId, quint32 messageId)
-{
-    if (!activeConnection()) {
-        return;
-    }
-    const TLInputPeer peer = publicChatIdToInputPeer(publicChatId);
+    const TLInputPeer peer = identifierToInputPeer(identifier);
 
     if (peer.tlType != TLValue::InputPeerEmpty) {
         activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0, /* readContents */ false);
@@ -964,34 +899,20 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
         }
     }
 
-    const QList<QString> phones = m_localTypingMap.keys();
-    foreach (const QString &phone, phones) {
-        int timeRemains = m_localTypingMap.value(phone) - m_typingUpdateTimer->interval();
+    const QList<QString> identifiers = m_localTypingMap.keys();
+    foreach (const QString &identifier, identifiers) {
+        int timeRemains = m_localTypingMap.value(identifier) - m_typingUpdateTimer->interval();
         if (timeRemains < 5) { // Let 5 ms be allowed correction
-            m_localTypingMap.remove(phone);
+            m_localTypingMap.remove(identifier);
         } else {
-            m_localTypingMap.insert(phone, timeRemains);
+            m_localTypingMap.insert(identifier, timeRemains);
             if (minTime > timeRemains) {
                 minTime = timeRemains;
             }
         }
     }
 
-    const QList<quint32> chats = m_localChatTypingMap.keys();
-    foreach (quint32 publicChatId, chats) {
-        int timeRemains = m_localChatTypingMap.value(publicChatId) - m_typingUpdateTimer->interval();
-
-        if (timeRemains < 5) { // Let 5 ms be allowed correction
-            m_localChatTypingMap.remove(publicChatId);
-        } else {
-            m_localChatTypingMap.insert(publicChatId, timeRemains);
-            if (minTime > timeRemains) {
-                minTime = timeRemains;
-            }
-        }
-    }
-
-    if (!m_userTypingMap.isEmpty() || !m_userChatTypingMap.isEmpty() || !m_localTypingMap.isEmpty() || !m_localChatTypingMap.isEmpty()) {
+    if (!m_userTypingMap.isEmpty() || !m_userChatTypingMap.isEmpty() || !m_localTypingMap.isEmpty()) {
         m_typingUpdateTimer->start(minTime);
     }
 }
@@ -1531,16 +1452,20 @@ TLInputPeer CTelegramDispatcher::publicChatIdToInputPeer(quint32 publicChatId) c
     return inputPeer;
 }
 
-TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumber) const
+TLInputPeer CTelegramDispatcher::identifierToInputPeer(const QString &identifier) const
 {
     TLInputPeer inputPeer;
 
-    if (phoneNumber == selfPhone()) {
+    if (identifier.startsWith(QLatin1String("chat"))) {
+        quint32 publicChatId = identifier.section(QLatin1String("chat"), 1).toUInt();
+        return publicChatIdToInputPeer(publicChatId);
+    }
+    quint32 userId = identifierToUserId(identifier);
+
+    if (userId == m_selfUserId) {
         inputPeer.tlType = TLValue::InputPeerSelf;
         return inputPeer;
     }
-
-    quint32 userId = identifierToUserId(phoneNumber);
 
     const TLUser *user = m_users.value(userId);
 
@@ -1565,7 +1490,7 @@ TLInputPeer CTelegramDispatcher::phoneNumberToInputPeer(const QString &phoneNumb
             inputPeer.tlType = TLValue::InputPeerContact;
             inputPeer.userId = userId;
         } else {
-            qDebug() << Q_FUNC_INFO << "Unknown user: " << maskPhoneNumber(phoneNumber);
+            qDebug() << Q_FUNC_INFO << "Unknown user: " << maskPhoneNumber(identifier);
         }
     }
 
@@ -1616,6 +1541,11 @@ QString CTelegramDispatcher::userIdToIdentifier(const quint32 id) const
     }
 
     return QString(QLatin1String("user%1")).arg(id);
+}
+
+QString CTelegramDispatcher::chatIdToIdentifier(const quint32 id) const
+{
+    return QString(QLatin1String("chat%1")).arg(id);
 }
 
 quint32 CTelegramDispatcher::identifierToUserId(const QString &identifier) const
