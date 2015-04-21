@@ -215,6 +215,15 @@ QStringList CTelegramDispatcher::contactList() const
     return result;
 }
 
+QList<quint32> CTelegramDispatcher::chatList() const
+{
+    QList<quint32> result;
+    for (int i = 0; i < m_chatIds.count(); ++i) {
+        result << i;
+    }
+    return result;
+}
+
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
 {
     qDebug() << "addContacts" << maskPhoneNumberList(phoneNumbers);

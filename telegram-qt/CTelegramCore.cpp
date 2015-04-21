@@ -167,6 +167,11 @@ QStringList CTelegramCore::contactList() const
     return m_dispatcher->contactList();
 }
 
+QList<quint32> CTelegramCore::chatList() const
+{
+    return m_dispatcher->chatList();
+}
+
 TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &contact) const
 {
     return m_dispatcher->contactStatus(contact);

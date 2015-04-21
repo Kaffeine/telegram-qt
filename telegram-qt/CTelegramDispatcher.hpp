@@ -92,6 +92,7 @@ public:
     QString selfPhone() const;
 
     QStringList contactList() const;
+    QList<quint32> chatList() const;
 
     void addContacts(const QStringList &phoneNumbers, bool replace = false);
     void deleteContacts(const QStringList &phoneNumbers);
