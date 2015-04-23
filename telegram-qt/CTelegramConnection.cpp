@@ -2020,7 +2020,7 @@ void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &str
             setDeltaTime(deltaTime() + 100);
         }
 
-        sendEncryptedPackage(m_submittedPackages.take(id));
+        sendEncryptedPackageAgain(id);
         qDebug() << "DeltaTime factor increased to" << deltaTime();
     } else if (errorCode == 17) {
         if (m_deltaTimeHeuristicState == DeltaTimeIsOk) {
@@ -2033,11 +2033,11 @@ void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &str
             setDeltaTime(deltaTime() - 100);
         }
 
+        sendEncryptedPackageAgain(id);
         qDebug() << "DeltaTime factor reduced to" << deltaTime();
-        sendEncryptedPackage(m_submittedPackages.take(id));
     } else if (errorCode == 48) {
         m_serverSalt = m_receivedServerSalt;
-        sendEncryptedPackage(m_submittedPackages.take(id));
+        sendEncryptedPackageAgain(id);
         qDebug() << "Local serverSalt fixed to" << m_serverSalt;
     }
 }
@@ -2875,6 +2875,17 @@ quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool
 #endif
 
     return messageId;
+}
+
+quint64 CTelegramConnection::sendEncryptedPackageAgain(quint64 id)
+{
+    --m_contentRelatedMessages;
+    const QByteArray data = m_submittedPackages.take(id);
+#ifdef DEVELOPER_BUILD
+    TLValue firstValue = TLValue::firstFromArray(data);
+    qDebug() << Q_FUNC_INFO << id << firstValue.toString();
+#endif
+    return sendEncryptedPackage(data);
 }
 
 void CTelegramConnection::setStatus(CTelegramConnection::ConnectionStatus status)
