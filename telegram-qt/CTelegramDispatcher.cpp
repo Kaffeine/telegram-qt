@@ -168,7 +168,8 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagRead),
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeText),
     m_autoReconnectionEnabled(false),
-    m_initState(InitNothing),
+    m_initializationState(0),
+    m_requestedSteps(0),
     m_activeDc(0),
     m_wantedActiveDc(0),
     m_updatesStateIsLocked(false),
@@ -384,7 +385,8 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 
 void CTelegramDispatcher::initConnectionSharedFinal(quint32 activeDc)
 {
-    m_initState = InitNothing;
+    m_initializationState = StepFirst;
+    m_requestedSteps = 0;
     setConnectionState(TelegramNamespace::ConnectionStateConnecting);
     setActiveDc(activeDc);
     m_updatesStateIsLocked = false;
@@ -824,7 +826,7 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
         if (user.tlType == TLValue::UserSelf) {
             m_selfUserId = user.id;
 
-            continueInitialization(InitKnowSelf);
+            continueInitialization(StepKnowSelf);
         }
     }
 }
@@ -841,7 +843,7 @@ void CTelegramDispatcher::whenContactListReceived(const QList<quint32> &contactL
         emit contactListChanged();
     }
 
-    continueInitialization(InitHaveContactList);
+    continueInitialization(StepContactList);
 }
 
 void CTelegramDispatcher::whenContactListChanged(const QList<quint32> &added, const QList<quint32> &removed)
@@ -1009,7 +1011,7 @@ void CTelegramDispatcher::getContacts()
 void CTelegramDispatcher::getChatsInfo()
 {
     if (m_chatIds.isEmpty()) {
-        continueInitialization(InitKnowChats);
+        continueInitialization(StepChatInfo);
     } else {
         activeConnection()->messagesGetChats(m_chatIds);
     }
@@ -1081,7 +1083,7 @@ void CTelegramDispatcher::whenMessagesChatsReceived(const QVector<TLChat> &chats
         updateChat(chat);
     }
 
-    continueInitialization(InitKnowChats);
+    continueInitialization(StepChatInfo);
 }
 
 void CTelegramDispatcher::whenMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users)
@@ -1642,9 +1644,9 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
             connect(connection, SIGNAL(loggedOut(bool)),
                     SIGNAL(loggedOut(bool)));
 
-            continueInitialization(InitIsSignIn);
+            continueInitialization(StepSignIn);
         } else if (newState == CTelegramConnection::AuthStateSuccess) {
-            continueInitialization(InitNothing); // Start initialization, if it is not started yet.
+            continueInitialization(StepFirst); // Start initialization, if it is not started yet.
         }
     } else {
         if (newState == CTelegramConnection::AuthStateSignedIn) {
@@ -1674,7 +1676,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
         }
 
         if (connection == activeConnection()) {
-            continueInitialization(InitNothing);
+            continueInitialization(StepFirst);
         }
     }
 }
@@ -1713,7 +1715,7 @@ void CTelegramDispatcher::whenDcConfigurationUpdated(quint32 dc)
 
     qDebug() << "Core: Got DC Configuration.";
 
-    continueInitialization(InitHaveDcConfiguration);
+    continueInitialization(StepDcConfiguration);
 }
 
 void CTelegramDispatcher::whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId)
@@ -1915,22 +1917,26 @@ void CTelegramDispatcher::ensureTypingUpdateTimer(int interval)
     }
 }
 
-void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::InitializationState justDone)
+void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::InitializationStep justDone)
 {
     qDebug() << Q_FUNC_INFO << justDone;
 
-    if (justDone && ((m_initState | justDone) == m_initState)) {
+    if (justDone && ((m_initializationState | justDone) == m_initializationState)) {
         return; // Nothing new
     }
 
-    m_initState = InitializationState(m_initState|justDone);
+    m_initializationState = InitializationStep(m_initializationState|justDone);
 
-    if (!(m_initState & InitHaveDcConfiguration)) { // Have no config
+    if (!(m_requestedSteps & StepDcConfiguration)) { // DC configuration is not requested yet
         getDcConfiguration();
+        m_requestedSteps |= StepDcConfiguration;
+    }
+
+    if (!(m_initializationState & StepDcConfiguration)) { // DC configuration is unknown yet
         return;
     }
 
-    if (justDone == InitHaveDcConfiguration) {
+    if (justDone == StepDcConfiguration) {
         if (activeConnection()->authState() == CTelegramConnection::AuthStateSuccess) {
             setConnectionState(TelegramNamespace::ConnectionStateAuthRequired);
         } else {
@@ -1938,25 +1944,36 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         }
     }
 
-    if (m_initState == (InitHaveDcConfiguration|InitIsSignIn)) {
+    if ((m_initializationState & StepDcConfiguration) && (m_initializationState & StepSignIn)) {
         setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
-        getInitialUsers();
-        getContacts();
-        return;
+
+        if (!(m_requestedSteps & StepKnowSelf)) {
+            getInitialUsers();
+            m_requestedSteps |= StepKnowSelf;
+        }
+
+        if (!(m_requestedSteps & StepContactList)) {
+            getContacts();
+            m_requestedSteps |= StepContactList;
+        }
+
+        if (!(m_requestedSteps & StepChatInfo)) {
+            getChatsInfo();
+            m_requestedSteps |= StepChatInfo;
+        }
     }
 
-    if (m_initState == InitDone) {
+    if (m_initializationState == StepDone) {
         setConnectionState(TelegramNamespace::ConnectionStateReady);
         return;
     }
 
-    if (m_initState == (InitDone & ~InitKnowChats)) {
-        getChatsInfo();
-    }
-
-    if ((m_initState & InitHaveContactList) && (m_initState & InitKnowSelf)) {
-        getUpdatesState();
-        return;
+    if ((m_initializationState & StepContactList) && (m_initializationState & StepKnowSelf)) {
+        // We need to know users (contact list and self) info to properly process updates.
+        if (!(m_requestedSteps & StepUpdates)) {
+            getUpdatesState();
+            m_requestedSteps |= StepUpdates;
+        }
     }
 }
 
@@ -2027,7 +2044,7 @@ void CTelegramDispatcher::checkStateAndCallGetDifference()
     if (m_updatesStateIsLocked) {
         QTimer::singleShot(10, this, SLOT(getDifference()));
     } else {
-        continueInitialization(InitHaveUpdates);
+        continueInitialization(StepUpdates);
     }
 }
 

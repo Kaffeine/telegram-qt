@@ -69,15 +69,15 @@ class CTelegramDispatcher : public QObject
 {
     Q_OBJECT
 public:
-    enum InitializationState {
-        InitNothing             = 0,
-        InitHaveDcConfiguration = 1 << 0,
-        InitIsSignIn            = 1 << 1,
-        InitKnowSelf            = 1 << 2,
-        InitHaveContactList     = 1 << 3,
-        InitKnowChats           = 1 << 4,
-        InitHaveUpdates         = 1 << 5,
-        InitDone                = InitHaveUpdates | (InitHaveUpdates - 1)
+    enum InitializationStep {
+        StepFirst           = 0,
+        StepDcConfiguration = 1 << 0,
+        StepSignIn          = 1 << 1,
+        StepKnowSelf        = 1 << 2,
+        StepContactList     = 1 << 3,
+        StepChatInfo        = 1 << 4,
+        StepUpdates         = 1 << 5,
+        StepDone            = StepUpdates | (StepUpdates - 1)
     };
 
     explicit CTelegramDispatcher(QObject *parent = 0);
@@ -252,7 +252,7 @@ protected:
 
     void checkStateAndCallGetDifference();
 
-    void continueInitialization(InitializationState justDone);
+    void continueInitialization(InitializationStep justDone);
 
     qint32 telegramChatIdToPublicId(quint32 telegramChatId) const;
     quint32 insertTelegramChatId(quint32 telegramChatId);
@@ -268,7 +268,8 @@ protected:
     quint32 m_acceptableMessageTypes;
     bool m_autoReconnectionEnabled;
 
-    InitializationState m_initState;
+    quint32 m_initializationState; // InitializationStep flags
+    quint32 m_requestedSteps; // InitializationStep flags
 
     quint32 m_activeDc;
     quint32 m_wantedActiveDc;
