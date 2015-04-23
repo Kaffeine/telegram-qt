@@ -177,6 +177,19 @@ TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &con
     return m_dispatcher->contactStatus(contact);
 }
 
+/*! \fn quint32 CTelegramCore::contactLastOnline(const QString &contact) const
+  Return seconds since epoch for last online time.
+
+  If user is online, this method return time when online expires,
+  return the time, when contact was online otherwise.
+
+  Depending on the contact privacy, the method can return some special values:
+
+  0 - User online status is not known.
+  1 - User hides exact online time, but was online recently.
+  2 - User hides exact online time, but was online last week.
+  3 - User hides exact online time, but was online last month.
+*/
 quint32 CTelegramCore::contactLastOnline(const QString &contact) const
 {
     return m_dispatcher->contactLastOnline(contact);

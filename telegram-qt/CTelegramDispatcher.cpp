@@ -689,10 +689,19 @@ quint32 CTelegramDispatcher::contactLastOnline(const QString &contact) const
     const TLUser *user = identifierToUser(contact);
 
     if (user) {
-        if (user->status.tlType == TLValue::UserStatusOnline) {
+        switch (user->status.tlType) {
+        case TLValue::UserStatusOnline:
             return user->status.expires;
-        } else {
+        case TLValue::UserStatusOffline:
             return user->status.wasOnline;
+        case TLValue::UserStatusRecently:
+            return 1;
+        case TLValue::UserStatusLastWeek:
+            return 2;
+        case TLValue::UserStatusLastMonth:
+            return 3;
+        default:
+            break;
         }
     }
 

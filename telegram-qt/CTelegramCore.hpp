@@ -41,6 +41,8 @@ public:
     Q_INVOKABLE QStringList contactList() const;
     Q_INVOKABLE QList<quint32> chatList() const;
     Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &contact) const;
+
+    // See documentation for the contactLastOnline() method in the cpp file.
     Q_INVOKABLE quint32 contactLastOnline(const QString &contact) const;
     Q_INVOKABLE QString contactFirstName(const QString &contact) const;
     Q_INVOKABLE QString contactLastName(const QString &contact) const;
