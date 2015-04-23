@@ -83,7 +83,7 @@ public:
     void initAuth();
     void getConfiguration();
 
-    void keepConnectionAlive(bool keep);
+    void setKeepAliveInterval(quint32 ms);
 
     // Generated Telegram API methods declaration
     quint64 accountChangePhone(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
@@ -347,12 +347,12 @@ protected:
     quint64 m_lastReceivedPingId;
     qint64 m_lastReceivedPingTime;
     qint64 m_lastSentPingTime;
-    bool m_keepAlive;
     quint32 m_sequenceNumber;
     quint32 m_contentRelatedMessages;
 
     TLVector<quint64> m_messagesToAck;
 
+    quint32 m_pingInterval;
     qint32 m_deltaTime;
     DeltaTimeHeuristicState m_deltaTimeHeuristicState;
 

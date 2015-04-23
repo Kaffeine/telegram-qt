@@ -49,8 +49,6 @@ static QString maskPhoneNumber(const QString &phoneNumber)
     return phoneNumber.mid(0, phoneNumber.size() / 4) + QString(phoneNumber.size() - phoneNumber.size() / 4, QLatin1Char('x')); // + QLatin1String(" (hidden)");
 }
 
-static const quint32 m_pingInterval = 15; // seconds
-
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
     m_status(ConnectionStatusDisconnected),
@@ -65,9 +63,9 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_sessionId(0),
     m_lastMessageId(0),
     m_lastSentPingId(0),
-    m_keepAlive(false),
     m_sequenceNumber(0),
     m_contentRelatedMessages(0),
+    m_pingInterval(0),
     m_deltaTime(0),
     m_deltaTimeHeuristicState(DeltaTimeIsOk),
     m_serverPublicFingersprint(0)
@@ -187,17 +185,17 @@ void CTelegramConnection::getConfiguration()
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::keepConnectionAlive(bool keep)
+void CTelegramConnection::setKeepAliveInterval(quint32 ms)
 {
-    qDebug() << Q_FUNC_INFO << keep;
+    qDebug() << Q_FUNC_INFO << ms;
 
-    if (m_keepAlive == keep) {
+    if (m_pingInterval == ms) {
         return;
     }
 
-    m_keepAlive = keep;
+    m_pingInterval = ms;
 
-    if (keep) {
+    if (ms) {
         startPingTimer();
     } else {
         if (m_pingTimer) {
@@ -2695,7 +2693,7 @@ void CTelegramConnection::whenItsTimeToPing()
         return;
     }
 
-    if (m_lastSentPingTime && (m_lastSentPingTime > m_lastReceivedPingTime + m_pingInterval * 1000)) {
+    if (m_lastSentPingTime && (m_lastSentPingTime > m_lastReceivedPingTime + m_pingInterval)) {
         qDebug() << Q_FUNC_INFO << "pong time is out";
         setStatus(ConnectionStatusDisconnected);
         return;
@@ -2703,7 +2701,7 @@ void CTelegramConnection::whenItsTimeToPing()
 
     m_lastSentPingTime = QDateTime::currentMSecsSinceEpoch();
 
-    pingDelayDisconnect(m_pingInterval + 10); // Server will close the connection after ten seconds more, than our ping interval.
+    pingDelayDisconnect(m_pingInterval + 10000); // Server will close the connection after ten seconds more, than our ping interval.
 }
 
 void CTelegramConnection::whenItsTimeToAckMessages()
@@ -2916,7 +2914,7 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
     emit authStateChanged(m_authState, m_dcInfo.id);
 
     if (m_authState >= AuthStateSuccess) {
-        if (m_keepAlive) {
+        if (m_pingInterval) {
             startPingTimer();
         }
     }
@@ -2972,7 +2970,7 @@ void CTelegramConnection::startPingTimer()
 {
     if (!m_pingTimer) {
         m_pingTimer = new QTimer(this);
-        m_pingTimer->setInterval(m_pingInterval * 1000);
+        m_pingTimer->setInterval(m_pingInterval);
         m_pingTimer->setSingleShot(false);
         connect(m_pingTimer, SIGNAL(timeout()), SLOT(whenItsTimeToPing()));
     }

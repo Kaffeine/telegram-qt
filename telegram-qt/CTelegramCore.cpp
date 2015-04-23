@@ -237,6 +237,11 @@ void CTelegramCore::setAutoReconnection(bool enable)
     return m_dispatcher->setAutoReconnection(enable);
 }
 
+void CTelegramCore::setPingInterval(quint32 ms)
+{
+    return m_dispatcher->setPingInterval(ms);
+}
+
 QString CTelegramCore::selfPhone() const
 {
     return m_dispatcher->selfPhone();

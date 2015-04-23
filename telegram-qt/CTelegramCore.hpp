@@ -58,6 +58,9 @@ public Q_SLOTS:
     void setAcceptableMessageTypes(quint32 types); // TelegramNamespace::MessageType
     void setAutoReconnection(bool enable);
 
+    // By default, the app would ping server every 15 000 ms and instruct the server to close connection after 10 000 more ms. Use 0 to disable ping.
+    void setPingInterval(quint32 ms);
+
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();

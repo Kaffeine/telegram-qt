@@ -168,6 +168,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagRead),
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeText),
     m_autoReconnectionEnabled(false),
+    m_pingInterval(15000),
     m_initializationState(0),
     m_requestedSteps(0),
     m_activeDc(0),
@@ -297,6 +298,11 @@ void CTelegramDispatcher::setAcceptableMessageTypes(quint32 types)
 void CTelegramDispatcher::setAutoReconnection(bool enable)
 {
     m_autoReconnectionEnabled = enable;
+}
+
+void CTelegramDispatcher::setPingInterval(quint32 ms)
+{
+    m_pingInterval = ms;
 }
 
 void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
@@ -1899,7 +1905,7 @@ void CTelegramDispatcher::setActiveDc(quint32 dc, bool syncWantedDc)
     }
 
     if (m_connections.value(dc)) {
-        m_connections.value(dc)->keepConnectionAlive(true);
+        m_connections.value(dc)->setKeepAliveInterval(m_pingInterval);
     }
 
     qDebug() << Q_FUNC_INFO << dc;

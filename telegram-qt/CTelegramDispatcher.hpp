@@ -103,6 +103,7 @@ public:
     void setMessageReceivingFilterFlags(quint32 flags);
     void setAcceptableMessageTypes(quint32 types);
     void setAutoReconnection(bool enable);
+    void setPingInterval(quint32 ms);
 
     void initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
@@ -267,6 +268,7 @@ protected:
     quint32 m_messageReceivingFilterFlags;
     quint32 m_acceptableMessageTypes;
     bool m_autoReconnectionEnabled;
+    quint32 m_pingInterval;
 
     quint32 m_initializationState; // InitializationStep flags
     quint32 m_requestedSteps; // InitializationStep flags
