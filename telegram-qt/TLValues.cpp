@@ -27,3 +27,14 @@ QString TLValue::toString() const
         return QString(QLatin1String("%1")).arg(m_value, 8, 16, QLatin1Char('0'));
     }
 }
+
+#ifdef DEVELOPER_BUILD
+TLValue TLValue::firstFromArray(const QByteArray &data)
+{
+    if (data.length() >= 4) {
+        quint32 *v = (quint32 *) data.constData();
+        return TLValue(*v);
+    }
+    return TLValue();
+}
+#endif
