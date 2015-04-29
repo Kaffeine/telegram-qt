@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectSchemaDefinitions xmlns="clr-namespace:Microsoft.Build.Framework.XamlTypes;assembly=Microsoft.Build.Framework">
+  <Rule Name="ReferencedPackages04577ddc-bf47-414d-877e-ff785bf4ea33" PageTemplate="tool" DisplayName="Referenced Packages" SwitchPrefix="/" Order="1">
+    <Rule.Categories>
+      <Category Name="openssl" DisplayName="openssl" />
+    </Rule.Categories>
+    <Rule.DataSource>
+      <DataSource Persistence="ProjectFile" ItemType="" />
+    </Rule.DataSource>
+    <EnumProperty Name="Linkage-openssl" DisplayName="Linkage" Description="Which version of the .lib file to link to this library" Category="openssl">
+      <EnumValue Name="" DisplayName="Dynamic Library (DLL)" />
+      <EnumValue Name="static" DisplayName="Static" />
+    </EnumProperty>
+  </Rule>
+</ProjectSchemaDefinitions>
