@@ -44,19 +44,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\$(TargetName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">testApp</TargetName>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\$(TargetName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">testApp</TargetName>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\telegram-qt;%QTDIR%\include;%QTDIR%\include\QtWidgets;%QTDIR%\include\QtGui;%QTDIR%\include\QtNetwork;%QTDIR%\include\QtCore;"release";".";..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\mkspecs\win32-msvc2013;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"..\telegram-qt";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include\QtWidgets";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include\QtGui";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include\QtNetwork";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include\QtCore";"release";".";..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\mkspecs\win32-msvc2013;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm200 -Zc:strictStrings -w34100 -w34189 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>release\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -76,7 +76,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>glu32.lib;opengl32.lib;gdi32.lib;user32.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\qtmain.lib;shell32.lib;TelegramQt.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\Qt5Widgets.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\Qt5Gui.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\Qt5Network.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\Qt5Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%QTDIR%\lib;C:\git\telegram-qt\testApp\..\telegram-qt;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib;C:\git\telegram-qt\testApp\..\telegram-qt;$(SolutionDir)$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -98,7 +98,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\telegram-qt;%QTDIR%\include;%QTDIR%\include\QtWidgets;%QTDIR%\include\QtGui;%QTDIR%\include\QtNetwork;%QTDIR%\include\QtCore;"debug";".";..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\mkspecs\win32-msvc2013;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>"..\telegram-qt";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include\QtWidgets";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include\QtGui";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include\QtNetwork";"..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\include\QtCore";"debug";".";..\..\..\Qt\Qt5.4.0\5.4\msvc2013_opengl\mkspecs\win32-msvc2013;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>-Zm200 -w34100 -w34189 %(AdditionalOptions)</AdditionalOptions>
       <AssemblerListingLocation>debug\</AssemblerListingLocation>
       <BrowseInformation>false</BrowseInformation>
@@ -116,7 +116,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>glu32.lib;opengl32.lib;gdi32.lib;user32.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\qtmaind.lib;shell32.lib;TelegramQt.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\Qt5Widgetsd.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\Qt5Guid.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\Qt5Networkd.lib;C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib\Qt5Cored.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%QTDIR%\lib;C:\git\telegram-qt\testApp\..\telegram-qt\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Qt\Qt5.4.0\5.4\msvc2013_opengl\lib;C:\git\telegram-qt\testApp\..\telegram-qt;$(SolutionDir)$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'" %(AdditionalOptions)</AdditionalOptions>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <GenerateDebugInformation>true</GenerateDebugInformation>

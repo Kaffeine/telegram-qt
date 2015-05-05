@@ -43,5 +43,7 @@ contains(options, developer-build) {
     DEFINES += DEVELOPER_BUILD
 }
 
-LIBS += -lssl -lcrypto
-LIBS += -lz
+!win32 {
+    LIBS += -lssl -lcrypto
+    LIBS += -lz    
+}

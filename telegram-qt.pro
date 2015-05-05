@@ -4,6 +4,7 @@ include(options.pri)
 TEMPLATE = subdirs
 SUBDIRS = telegram-qt
 SUBDIRS += testApp
+SUBDIRS += cmdApp
 CONFIG += ordered
 
 contains(options, developer-build) {

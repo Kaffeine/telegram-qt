@@ -10,7 +10,9 @@ TEMPLATE = app
 
 INCLUDEPATH += $$PWD/../telegram-qt
 
-LIBS += -lssl -lcrypto -lz
+!win32 {
+	LIBS += -lssl -lcrypto -lz
+}
 LIBS += -lTelegramQt
 LIBS += -L$$OUT_PWD/../telegram-qt
 
