@@ -175,6 +175,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_wantedActiveDc(0),
     m_updatesStateIsLocked(false),
     m_selfUserId(0),
+    m_fileRequestCounter(0),
     m_typingUpdateTimer(new QTimer(this))
 {
     m_typingUpdateTimer->setSingleShot(true);
