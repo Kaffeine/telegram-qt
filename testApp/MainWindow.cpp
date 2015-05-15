@@ -285,7 +285,7 @@ void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 me
 
     QByteArray finalData;
 
-    if (data.size() == size) {
+    if (data.size() == int(size)) {
         finalData = data;
     } else {
         // Part of content
