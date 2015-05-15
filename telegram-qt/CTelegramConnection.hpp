@@ -181,7 +181,7 @@ public:
     quint64 signIn(const QString &phoneNumber, const QString &authCode);
     quint64 signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
-    void getFile(const TLInputFileLocation &inputLocation, quint32 fileId);
+    void getFile(const TLInputFileLocation &inputLocation, quint32 fileId, quint32 offset, quint32 limit);
 
     AuthState authState() { return m_authState; }
 
@@ -233,7 +233,7 @@ signals:
     void usersReceived(const QVector<TLUser> &users);
     void contactListReceived(const QList<quint32> &contactList);
     void contactListChanged(const QList<quint32> &added, const QList<quint32> &removed);
-    void fileReceived(const TLUploadFile &file, quint32 fileId);
+    void fileDataReceived(const TLUploadFile &file, quint32 fileId, quint32 offset);
 
     void messagesChatsReceived(const QVector<TLChat> &chats, const QVector<TLUser> &users);
     void messagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);

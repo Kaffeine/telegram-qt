@@ -177,6 +177,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeText),
     m_autoReconnectionEnabled(false),
     m_pingInterval(15000),
+    m_mediaDataBufferSize(128 * 256), // 128 KB
     m_initializationState(0),
     m_requestedSteps(0),
     m_activeDc(0),
@@ -312,6 +313,20 @@ void CTelegramDispatcher::setAutoReconnection(bool enable)
 void CTelegramDispatcher::setPingInterval(quint32 ms)
 {
     m_pingInterval = ms;
+}
+
+void CTelegramDispatcher::setMediaDataBufferSize(quint32 size)
+{
+    if (size % 256) {
+        qDebug() << Q_FUNC_INFO << "Unable to set incorrect size" << size << ". The value must be divisible by 1 KB";
+        return;
+    }
+
+    if (!size) {
+        size = 128 * 256;
+    }
+
+    m_mediaDataBufferSize = size;
 }
 
 void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
@@ -1141,12 +1156,23 @@ bool CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
     CTelegramConnection *connection = m_connections.value(requestId.dcId());
 
     if (connection && (connection->authState() == CTelegramConnection::AuthStateSignedIn)) {
-        connection->getFile(requestId.inputLocation(), m_fileRequestCounter);
+        getFileFromConnection(connection, m_fileRequestCounter);
     } else {
         ensureSignedConnection(requestId.dcId());
     }
 
     return true;
+}
+
+void CTelegramDispatcher::getFileFromConnection(CTelegramConnection *connection, quint32 fileId)
+{
+    const FileRequestDescriptor descriptor = m_requestedFileDescriptors.value(fileId);
+
+    if (descriptor.type() == FileRequestDescriptor::Avatar) {
+        connection->getFile(descriptor.inputLocation(), fileId, /* offset */ 0, /* limit */ 512 * 256); // Limit setted to some big number to download avatar at once
+    } else {
+        connection->getFile(descriptor.inputLocation(), fileId, descriptor.offset(), m_mediaDataBufferSize);
+    }
 }
 
 inline bool ensureDcOption(QVector<TLDcOption> *vector, const TLDcOption &option)
@@ -1679,7 +1705,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     continue;
                 }
 
-                connection->getFile(m_requestedFileDescriptors.value(fileId).inputLocation(), fileId);
+                getFileFromConnection(connection, fileId);
             }
         } else if (newState == CTelegramConnection::AuthStateSuccess) {
             ensureSignedConnection(dc);
@@ -1798,7 +1824,7 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
     }
 }
 
-void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fileId)
+void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32 fileId, quint32 offset)
 {
     if (!m_requestedFileDescriptors.contains(fileId)) {
         qDebug() << Q_FUNC_INFO << "Unexpected fileId" << fileId;
@@ -1806,7 +1832,9 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
     }
 
     const QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
-    const FileRequestDescriptor descriptor = m_requestedFileDescriptors.take(fileId);
+    FileRequestDescriptor &descriptor = m_requestedFileDescriptors[fileId];
+
+    const quint32 chunkSize = file.bytes.size();
 
     switch (descriptor.type()) {
     case FileRequestDescriptor::Avatar:
@@ -1823,9 +1851,28 @@ void CTelegramDispatcher::whenFileReceived(const TLUploadFile &file, quint32 fil
             const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
             quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
-            emit messageMediaDataReceived(userIdToIdentifier(contactUserId), message.id, file.bytes, mimeType, messageType);
+#ifdef DEVELOPER_BUILD
+            qDebug() << Q_FUNC_INFO << "MessageMediaData:" << message.id << offset << "-" << offset + chunkSize << "/" << descriptor.size();
+#endif
+            emit messageMediaDataReceived(userIdToIdentifier(contactUserId), message.id, file.bytes, mimeType, messageType, offset, descriptor.size());
         } else {
             qDebug() << Q_FUNC_INFO << "Unknown media message data received" << descriptor.messageId();
+        }
+
+        if (descriptor.offset() + chunkSize == descriptor.size()) {
+#ifdef DEVELOPER_BUILD
+            qDebug() << Q_FUNC_INFO << "file" << fileId << "received.";
+#endif
+            m_requestedFileDescriptors.remove(fileId);
+        } else {
+            descriptor.setOffset(offset + chunkSize);
+
+            CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
+            if (connection) {
+                getFileFromConnection(connection, fileId);
+            } else {
+                qDebug() << Q_FUNC_INFO << "Invalid call. The method must be called only on CTelegramConnection signal.";
+            }
         }
     default:
         break;
@@ -2090,7 +2137,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
             SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(connection, SIGNAL(authorizationErrorReceived()), SIGNAL(authorizationErrorReceived()));
 
-    connect(connection, SIGNAL(fileReceived(TLUploadFile,quint32)), SLOT(whenFileReceived(TLUploadFile,quint32)));
+    connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(whenFileDataReceived(TLUploadFile,quint32,quint32)));
 
     connection->setDcInfo(dc);
 

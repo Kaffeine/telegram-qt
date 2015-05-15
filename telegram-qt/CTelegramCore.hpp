@@ -62,6 +62,7 @@ public Q_SLOTS:
 
     // By default, the app would ping server every 15 000 ms and instruct the server to close connection after 10 000 more ms. Use 0 to disable ping.
     void setPingInterval(quint32 ms);
+    void setMediaDataBufferSize(quint32 size);
 
     bool initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
@@ -113,7 +114,8 @@ Q_SIGNALS:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
 
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
-    void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type);
+    void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data,
+                                  const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 
     void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);

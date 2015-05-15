@@ -224,14 +224,14 @@ quint64 CTelegramConnection::signUp(const QString &phoneNumber, const QString &a
     return authSignUp(phoneNumber, m_authCodeHash, authCode, firstName, lastName);
 }
 
-void CTelegramConnection::getFile(const TLInputFileLocation &inputLocation, quint32 fileId)
+void CTelegramConnection::getFile(const TLInputFileLocation &inputLocation, quint32 fileId, quint32 offset, quint32 limit)
 {
     if (m_requestedFilesIds.contains(fileId)) {
         // Prevent from (really possible) repeated request.
         return;
     }
 
-    const quint64 messageId = uploadGetFile(inputLocation, 0, 512 * 1024);
+    const quint64 messageId = uploadGetFile(inputLocation, offset, limit);
 
     m_requestedFilesIds.insert(messageId, fileId);
 }
@@ -2286,13 +2286,26 @@ TLValue CTelegramConnection::processAuthLogOut(CTelegramStream &stream, quint64 
 
 TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint64 id)
 {
-    Q_UNUSED(id);
-
     TLUploadFile file;
     stream >> file;
 
     if (file.tlType == TLValue::UploadFile) {
-        emit fileReceived(file, m_requestedFilesIds.value(id));
+        const QByteArray data = m_submittedPackages.value(id);
+
+        if (data.isEmpty()) {
+            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
+        } else {
+            CTelegramStream stream(data);
+            TLValue value;
+            TLInputFileLocation location;
+            quint32 offset;
+
+            stream >> value;
+            stream >> location;
+            stream >> offset;
+
+            emit fileDataReceived(file, m_requestedFilesIds.value(id), offset);
+        }
     }
 
     return file.tlType;

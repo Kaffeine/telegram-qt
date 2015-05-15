@@ -110,6 +110,7 @@ public:
     void setAcceptableMessageTypes(quint32 types);
     void setAutoReconnection(bool enable);
     void setPingInterval(quint32 ms);
+    void setMediaDataBufferSize(quint32 size);
 
     void initConnection(const QString &address, quint32 port);
     bool restoreConnection(const QByteArray &secret);
@@ -161,7 +162,7 @@ signals:
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
 
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
-    void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type);
+    void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 
     void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
@@ -183,7 +184,7 @@ protected slots:
     void whenPackageRedirected(const QByteArray &data, quint32 dc);
     void whenWantedActiveDcChanged(quint32 dc);
 
-    void whenFileReceived(const TLUploadFile &file, quint32 fileId);
+    void whenFileDataReceived(const TLUploadFile &file, quint32 fileId, quint32 offset);
     void whenUpdatesReceived(const TLUpdates &updates);
     void whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
@@ -212,6 +213,7 @@ protected:
     void setConnectionState(TelegramNamespace::ConnectionState state);
 
     bool requestFile(const FileRequestDescriptor &requestId);
+    void getFileFromConnection(CTelegramConnection *connection, quint32 fileId);
     void processUpdate(const TLUpdate &update);
 
     void processMessageReceived(const TLMessage &message);
@@ -275,6 +277,7 @@ protected:
     quint32 m_acceptableMessageTypes;
     bool m_autoReconnectionEnabled;
     quint32 m_pingInterval;
+    quint32 m_mediaDataBufferSize;
 
     quint32 m_initializationState; // InitializationStep flags
     quint32 m_requestedSteps; // InitializationStep flags
