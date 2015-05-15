@@ -212,7 +212,7 @@ protected slots:
 protected:
     void setConnectionState(TelegramNamespace::ConnectionState state);
 
-    bool requestFile(const FileRequestDescriptor &requestId);
+    quint32 requestFile(const FileRequestDescriptor &requestId);
     void getFileFromConnection(CTelegramConnection *connection, quint32 fileId);
     void processUpdate(const TLUpdate &update);
 

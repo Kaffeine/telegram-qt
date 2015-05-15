@@ -1145,10 +1145,10 @@ void CTelegramDispatcher::setConnectionState(TelegramNamespace::ConnectionState 
     emit connectionStateChanged(state);
 }
 
-bool CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
+quint32 CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
 {
     if (!requestId.isValid()) {
-        return false;
+        return 0;
     }
 
     m_requestedFileDescriptors.insert(++m_fileRequestCounter, requestId);
@@ -1161,7 +1161,7 @@ bool CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
         ensureSignedConnection(requestId.dcId());
     }
 
-    return true;
+    return m_fileRequestCounter;
 }
 
 void CTelegramDispatcher::getFileFromConnection(CTelegramConnection *connection, quint32 fileId)
