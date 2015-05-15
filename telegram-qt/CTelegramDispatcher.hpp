@@ -53,12 +53,18 @@ public:
 
     inline quint32 userId() const { return m_userId; }
     inline quint32 messageId() const { return m_messageId; }
+    inline quint32 size() const { return m_size; }
+    inline quint32 offset() const { return m_offset; }
+
+    inline void setOffset(quint32 newOffset) { m_offset = newOffset; }
 
 protected:
     void setupLocation(const TLFileLocation &fileLocation);
     Type m_type;
     quint32 m_userId;
     quint32 m_messageId;
+    quint32 m_size;
+    quint32 m_offset;
 
     TLInputFileLocation m_inputLocation;
     quint32 m_dcId;

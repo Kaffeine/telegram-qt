@@ -117,26 +117,32 @@ FileRequestDescriptor FileRequestDescriptor::messageMediaDataRequest(const TLMes
     case TLValue::MessageMediaPhoto:
         if (media.photo.sizes.isEmpty()) {
             return FileRequestDescriptor();
+        } else {
+            const TLPhotoSize s = media.photo.sizes.last();
+            result.setupLocation(s.location);
+            result.m_size = s.size;
         }
-        result.setupLocation(media.photo.sizes.last().location);
         break;
     case TLValue::MessageMediaAudio:
         result.m_dcId = media.audio.dcId;
         result.m_inputLocation.tlType = TLValue::InputAudioFileLocation;
         result.m_inputLocation.id = media.audio.id;
         result.m_inputLocation.accessHash = media.audio.accessHash;
+        result.m_size = media.audio.size;
         break;
     case TLValue::MessageMediaVideo:
         result.m_dcId = media.video.dcId;
         result.m_inputLocation.tlType = TLValue::InputVideoFileLocation;
         result.m_inputLocation.id = media.video.id;
         result.m_inputLocation.accessHash = media.video.accessHash;
+        result.m_size = media.video.size;
         break;
     case TLValue::MessageMediaDocument:
         result.m_dcId = media.document.dcId;
         result.m_inputLocation.tlType = TLValue::InputDocumentFileLocation;
         result.m_inputLocation.id = media.document.id;
         result.m_inputLocation.accessHash = media.document.accessHash;
+        result.m_size = media.document.size;
         break;
     default:
         return FileRequestDescriptor();
@@ -156,7 +162,9 @@ void FileRequestDescriptor::setupLocation(const TLFileLocation &fileLocation)
 }
 
 FileRequestDescriptor::FileRequestDescriptor() :
-    m_type(Invalid)
+    m_type(Invalid),
+    m_size(0),
+    m_offset(0)
 {
 
 }
