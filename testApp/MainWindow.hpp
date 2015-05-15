@@ -30,6 +30,8 @@ class CChatInfoModel;
 
 class QModelIndex;
 
+//#define CREATE_MEDIA_FILES
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -58,7 +60,8 @@ protected slots:
     void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void whenContactListChanged();
     void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
-    void whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType);
+    void whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data,
+                                      const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
     void whenMessageReceived(const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status);
@@ -151,6 +154,10 @@ private:
     bool m_registered;
 
     AppState m_appState;
+
+#ifndef CREATE_MEDIA_FILES
+    QMap<quint32,QByteArray> m_messageDataParts;
+#endif
 
 };
 

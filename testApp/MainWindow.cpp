@@ -88,8 +88,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenContactProfileChanged(QString)));
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
             SLOT(whenAvatarReceived(QString,QByteArray,QString)));
-    connect(m_core, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType)),
-            SLOT(whenMessageMediaDataReceived(QString,quint32,QByteArray,QString)));
+    connect(m_core, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
+            SLOT(whenMessageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
     connect(m_core, SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
             SLOT(whenMessageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)));
     connect(m_core, SIGNAL(chatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
@@ -249,9 +249,11 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
     updateAvatar(contact);
 }
 
-void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType)
+void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)
 {
     qDebug() << Q_FUNC_INFO << mimeType;
+
+    Q_UNUSED(type)
 
 #ifdef CREATE_MEDIA_FILES
     QDir dir;
@@ -261,14 +263,48 @@ void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 me
                     .arg(messageId, 10, 10, QLatin1Char('0'))
                     .arg(mimeType.section(QLatin1Char('/'), 1, 1)));
 
-    mediaFile.open(QIODevice::WriteOnly);
+    if (offset == 0) {
+        mediaFile.open(QIODevice::WriteOnly);
+    } else {
+        mediaFile.open(QIODevice::Append);
+    }
     mediaFile.write(data);
     mediaFile.close();
+
+    if (mediaFile.size() != size) {
+        return;
+    }
+    const QPixmap photo = QPixmap(mediaFile.fileName());
 #else
     Q_UNUSED(contact);
-#endif
 
-    const QPixmap photo = QPixmap::fromImage(QImage::fromData(data));
+    if (size > 1024 * 1024 * 1024) {
+        qDebug() << "Ignore file with size more, than 1 Gb.";
+        return;
+    }
+
+    QByteArray finalData;
+
+    if (data.size() == size) {
+        finalData = data;
+    } else {
+        // Part of content
+        if (offset == 0) {
+            m_messageDataParts.insert(messageId, data);
+        } else if (offset + data.size() == size) {
+            finalData = m_messageDataParts.take(messageId);
+            finalData.append(data);
+        } else {
+            m_messageDataParts[messageId].append(data);
+        }
+    }
+
+    if (finalData.isEmpty()) {
+        return;
+    }
+
+    const QPixmap photo = QPixmap::fromImage(QImage::fromData(finalData));
+#endif
 
     if (photo.isNull()) {
         return;
@@ -302,7 +338,7 @@ void MainWindow::whenMessageReceived(const QString &phone, const QString &messag
         }
     }
 
-    if (type == TelegramNamespace::MessageTypePhoto) {
+    if ((type == TelegramNamespace::MessageTypePhoto) || (type == TelegramNamespace::MessageTypeVideo)) {
         m_core->requestMessageMediaData(messageId);
     }
 }
