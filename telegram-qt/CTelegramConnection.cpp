@@ -2304,7 +2304,7 @@ TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint
             stream >> location;
             stream >> offset;
 
-            emit fileDataReceived(file, m_requestedFilesIds.value(id), offset);
+            emit fileDataReceived(file, m_requestedFilesIds.take(id), offset);
         }
     }
 
