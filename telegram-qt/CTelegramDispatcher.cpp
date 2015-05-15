@@ -556,6 +556,60 @@ quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QStrin
     return activeConnection()->sendMessage(peer, message);
 }
 
+quint64 CTelegramDispatcher::forwardMedia(const QString &identifier, quint32 messageId)
+{
+    if (!activeConnection()) {
+        return 0;
+    }
+    const TLInputPeer peer = identifierToInputPeer(identifier);
+
+    if (peer.tlType == TLValue::InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
+        return 0;
+    }
+
+    if (!m_knownMediaMessages.contains(messageId)) {
+        return 0;
+    }
+
+    const TLMessage &message = m_knownMediaMessages.value(messageId);
+
+    TLInputMedia media;
+
+    switch (message.media.tlType) {
+    case TLValue::MessageMediaPhoto:
+        media.tlType = TLValue::InputMediaPhoto;
+        media.id.tlType = TLValue::InputPhoto;
+        media.id.id = message.media.photo.id;
+        media.id.accessHash = message.media.photo.accessHash;
+        break;
+    case TLValue::MessageMediaAudio:
+        media.tlType = TLValue::InputMediaAudio;
+        media.id.tlType = TLValue::InputAudio;
+        media.id.id = message.media.audio.id;
+        media.id.accessHash = message.media.audio.accessHash;
+        break;
+    case TLValue::MessageMediaVideo:
+        media.tlType = TLValue::InputMediaVideo;
+        media.id.tlType = TLValue::InputVideo;
+        media.id.id = message.media.video.id;
+        media.id.accessHash = message.media.video.accessHash;
+        break;
+    case TLValue::MessageMediaDocument:
+        media.tlType = TLValue::InputMediaDocument;
+        media.id.tlType = TLValue::InputDocument;
+        media.id.id = message.media.document.id;
+        media.id.accessHash = message.media.document.accessHash;
+        break;
+    default:
+        return 0;
+        break;
+    }
+
+    qDebug() << Q_FUNC_INFO << identifier << messageId;
+    return activeConnection()->sendMedia(peer, media);
+}
+
 bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const
 {
     return m_messageReceivingFilterFlags & messageFlags;
@@ -1811,7 +1865,7 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
 void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset)
 {
     if (!m_requestedFileDescriptors.contains(requestId)) {
-        qDebug() << Q_FUNC_INFO << "Unexpected fileId" << requestId;
+        qDebug() << Q_FUNC_INFO << "Unexpected requestId" << requestId;
         return;
     }
 

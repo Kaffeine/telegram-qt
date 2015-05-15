@@ -126,6 +126,7 @@ public:
     bool requestMessageMediaData(quint32 messageId);
 
     quint64 sendMessage(const QString &identifier, const QString &message);
+    quint64 forwardMedia(const QString &identifier, quint32 messageId);
     void setTyping(const QString &identifier, bool typingStatus);
     void setMessageRead(const QString &identifier, quint32 messageId);
 

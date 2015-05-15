@@ -257,6 +257,16 @@ quint64 CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString 
     return randomMessageId;
 }
 
+quint64 CTelegramConnection::sendMedia(const TLInputPeer &peer, const TLInputMedia &media)
+{
+    quint64 randomMessageId;
+    Utils::randomBytes(&randomMessageId);
+
+    messagesSendMedia(peer, media, randomMessageId);
+
+    return randomMessageId;
+}
+
 // Generated Telegram API methods implementation
 quint64 CTelegramConnection::accountChangePhone(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode)
 {
@@ -1812,6 +1822,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::MessagesAddChatUser:
             processingResult = processMessagesChatStateMessage(stream, id);
             break;
+        case TLValue::MessagesSendMedia:
+            processingResult = processMessagesSendMedia(stream, id);
+            break;
         case TLValue::MessagesSendMessage:
             processingResult = processMessagesSendMessage(stream, id);
             break;
@@ -2325,7 +2338,7 @@ TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint
             stream >> location;
             stream >> offset;
 
-            emit fileDataReceived(file, m_requestedFilesIds.take(id), offset);
+            emit fileDataReceived(file, m_requestedFilesIds.value(id), offset);
         }
     }
 
@@ -2407,6 +2420,24 @@ TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream,
         emit messageSentInfoReceived(peer, randomId, result.id, result.pts, result.date, result.seq);
     }
 
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processMessagesSendMedia(CTelegramStream &stream, quint64 id)
+{
+    Q_UNUSED(id);
+
+    TLMessagesStatedMessage result;
+
+    stream >> result;
+
+    switch (result.tlType) {
+    case TLValue::MessagesStatedMessage:
+        emit statedMessageReceived(result, id);
+        break;
+    default:
+        break;
+    }
     return result.tlType;
 }
 

@@ -184,6 +184,7 @@ public:
     void downloadFile(const TLInputFileLocation &inputLocation, quint32 offset, quint32 limit, quint32 requestId);
 
     quint64 sendMessage(const TLInputPeer &peer, const QString &message);
+    quint64 sendMedia(const TLInputPeer &peer, const TLInputMedia &media);
 
     AuthState authState() { return m_authState; }
 
@@ -281,6 +282,7 @@ protected:
     TLValue processUsersGetFullUser(CTelegramStream &stream, quint64 id);
     TLValue processMessagesChatStateMessage(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesSendMedia(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReadHistory(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReceivedMessages(CTelegramStream &stream, quint64 id);

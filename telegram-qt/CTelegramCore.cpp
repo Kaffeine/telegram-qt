@@ -270,6 +270,11 @@ quint64 CTelegramCore::sendMessage(const QString &identifier, const QString &mes
     return m_dispatcher->sendMessage(identifier, message);
 }
 
+quint64 CTelegramCore::forwardMedia(const QString &identifier, quint32 messageId)
+{
+    return m_dispatcher->forwardMedia(identifier, messageId);
+}
+
 void CTelegramCore::setTyping(const QString &contact, bool typingStatus)
 {
     m_dispatcher->setTyping(contact, typingStatus);
