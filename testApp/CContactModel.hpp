@@ -65,6 +65,7 @@ public:
     int indexOfContact(const QString &phone) const;
 
     QStringList contacts() const;
+    QString contactAt(int index, bool addName) const;
 
 public slots:
     void addContact(const QString &phone);

@@ -127,6 +127,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->groupChatContactPhone, SIGNAL(textChanged(QString)), SLOT(updateGroupChatAddContactButtonText()));
 
+#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
+    connect(ui->messagingView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(whenCustomMenuRequested(QPoint)));
+#endif
+
     ui->groupChatAddContactForwardMessages->hide();
 }
 
@@ -421,6 +425,36 @@ void MainWindow::whenChatChanged(quint32 chatId)
         ui->groupChatContacts->setRowHeight(i, 64);
     }
     updateGroupChatAddContactButtonText();
+}
+
+void MainWindow::whenCustomMenuRequested(const QPoint &pos)
+{
+    static QMenu *menu = 0;
+    static QMenu *forwardMenu = 0;
+
+    if (!menu) {
+        menu = new QMenu(this);
+        forwardMenu = menu->addMenu(tr("Forward"));
+    }
+
+    forwardMenu->clear();
+
+    QModelIndex index = ui->messagingView->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+
+    quint32 row = index.row();
+    quint32 messageId = m_messagingModel->rowData(row, CMessagingModel::MessageId).toUInt();
+
+    for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
+        QAction *a = forwardMenu->addAction(m_contactsModel->contactAt(i, /* addName */ true));
+#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
+        connect(a, &QAction::triggered, [=]() { m_core->forwardMedia(m_contactsModel->contactAt(i, false), messageId); });
+#endif
+    }
+
+    menu->popup(ui->messagingView->mapToGlobal(pos));
 }
 
 void MainWindow::on_connectButton_clicked()

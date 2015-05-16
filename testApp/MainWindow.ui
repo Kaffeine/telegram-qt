@@ -421,7 +421,11 @@
           </layout>
          </item>
          <item row="0" column="0">
-          <widget class="QTableView" name="messagingView"/>
+          <widget class="QTableView" name="messagingView">
+           <property name="contextMenuPolicy">
+            <enum>Qt::CustomContextMenu</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

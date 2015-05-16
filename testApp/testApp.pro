@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui network
+CONFIG += c++11
 
 TEMPLATE = app
 

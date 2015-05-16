@@ -251,6 +251,19 @@ QStringList CContactsModel::contacts() const
     return phones;
 }
 
+QString CContactsModel::contactAt(int index, bool addName) const
+{
+    if ((index < 0) || (index >= m_contacts.count())) {
+        return QString();
+    }
+
+    if (addName) {
+        return m_contacts.at(index).phone + QLatin1Char(' ') + m_contacts.at(index).fullName;
+    } else {
+        return m_contacts.at(index).phone;
+    }
+}
+
 QString CContactsModel::contactStatusStr(const SContact &contact) const
 {
     switch (contact.status) {

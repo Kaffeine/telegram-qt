@@ -71,6 +71,8 @@ protected slots:
     void whenChatAdded(quint32 chatId);
     void whenChatChanged(quint32 chatId);
 
+    void whenCustomMenuRequested(const QPoint &pos);
+
     void on_connectButton_clicked();
     void on_secondConnectButton_clicked();
     void on_requestCode_clicked();

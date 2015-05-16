@@ -88,7 +88,16 @@ QVariant CMessagingModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    switch (section) {
+    return rowData(messageIndex, section);
+}
+
+QVariant CMessagingModel::rowData(quint32 messageIndex, int column) const
+{
+    if (int(messageIndex) >= m_messages.count()) {
+        return QVariant();
+    }
+
+    switch (column) {
     case Phone:
         return m_messages.at(messageIndex).phone;
     case Direction:
