@@ -553,28 +553,7 @@ quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QStrin
         m_localTypingMap.remove(identifier);
     }
 
-    return sendMessages(peer, message);
-}
-
-quint64 CTelegramDispatcher::sendMessages(const TLInputPeer &peer, const QString &message)
-{
-    quint64 randomMessageId;
-    Utils::randomBytes(&randomMessageId);
-
-    // Probably we have to implement GZip packing to fix this bug.
-    if (message.length() > 400) {
-        qDebug() << Q_FUNC_INFO << "Can not send such long message due to a bug. Current maximum length is 400 characters.";
-        return 0;
-    }
-
-    if (message.length() > 4095) { // 4096 - 1
-        qDebug() << Q_FUNC_INFO << "Can not send such long message due to server limitation. Current maximum length is 4095 characters.";
-        return 0;
-    }
-
-    activeConnection()->messagesSendMessage(peer, message, randomMessageId);
-
-    return randomMessageId;
+    return activeConnection()->sendMessage(peer, message);
 }
 
 bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const

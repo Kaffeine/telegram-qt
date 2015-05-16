@@ -183,6 +183,8 @@ public:
 
     void getFile(const TLInputFileLocation &inputLocation, quint32 fileId, quint32 offset, quint32 limit);
 
+    quint64 sendMessage(const TLInputPeer &peer, const QString &message);
+
     AuthState authState() { return m_authState; }
 
     void requestPqAuthorization();

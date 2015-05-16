@@ -236,6 +236,27 @@ void CTelegramConnection::getFile(const TLInputFileLocation &inputLocation, quin
     m_requestedFilesIds.insert(messageId, fileId);
 }
 
+quint64 CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString &message)
+{
+    quint64 randomMessageId;
+    Utils::randomBytes(&randomMessageId);
+
+    // Probably we have to implement GZip packing to fix this bug.
+    if (message.length() > 400) {
+        qDebug() << Q_FUNC_INFO << "Can not send such long message due to a bug. Current maximum length is 400 characters.";
+        return 0;
+    }
+
+    if (message.length() > 4095) { // 4096 - 1
+        qDebug() << Q_FUNC_INFO << "Can not send such long message due to server limitation. Current maximum length is 4095 characters.";
+        return 0;
+    }
+
+    messagesSendMessage(peer, message, randomMessageId);
+
+    return randomMessageId;
+}
+
 // Generated Telegram API methods implementation
 quint64 CTelegramConnection::accountChangePhone(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode)
 {

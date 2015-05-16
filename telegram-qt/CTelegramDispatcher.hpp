@@ -226,8 +226,6 @@ protected:
     void getUser(quint32 id);
     void getInitialUsers();
 
-    quint64 sendMessages(const TLInputPeer &peer, const QString &message);
-
     bool filterReceivedMessage(quint32 messageFlags) const;
 
     quint32 publicChatIdToChatId(quint32 publicChatId) const;
