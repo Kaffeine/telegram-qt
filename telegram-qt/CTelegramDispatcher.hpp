@@ -184,7 +184,7 @@ protected slots:
     void whenPackageRedirected(const QByteArray &data, quint32 dc);
     void whenWantedActiveDcChanged(quint32 dc);
 
-    void whenFileDataReceived(const TLUploadFile &file, quint32 fileId, quint32 offset);
+    void whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
     void whenUpdatesReceived(const TLUpdates &updates);
     void whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
@@ -212,8 +212,8 @@ protected slots:
 protected:
     void setConnectionState(TelegramNamespace::ConnectionState state);
 
-    quint32 requestFile(const FileRequestDescriptor &requestId);
-    void getFileFromConnection(CTelegramConnection *connection, quint32 fileId);
+    quint32 requestFile(const FileRequestDescriptor &descriptor);
+    void processFileRequestForConnection(CTelegramConnection *connection, quint32 requestId);
     void processUpdate(const TLUpdate &update);
 
     void processMessageReceived(const TLMessage &message);

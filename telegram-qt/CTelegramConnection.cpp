@@ -224,16 +224,16 @@ quint64 CTelegramConnection::signUp(const QString &phoneNumber, const QString &a
     return authSignUp(phoneNumber, m_authCodeHash, authCode, firstName, lastName);
 }
 
-void CTelegramConnection::getFile(const TLInputFileLocation &inputLocation, quint32 fileId, quint32 offset, quint32 limit)
+void CTelegramConnection::downloadFile(const TLInputFileLocation &inputLocation, quint32 offset, quint32 limit, quint32 requestId)
 {
-    if (m_requestedFilesIds.contains(fileId)) {
+    if (m_requestedFilesIds.contains(requestId)) {
         // Prevent from (really possible) repeated request.
         return;
     }
 
     const quint64 messageId = uploadGetFile(inputLocation, offset, limit);
 
-    m_requestedFilesIds.insert(messageId, fileId);
+    m_requestedFilesIds.insert(messageId, requestId);
 }
 
 quint64 CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString &message)

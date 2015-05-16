@@ -1124,33 +1124,38 @@ void CTelegramDispatcher::setConnectionState(TelegramNamespace::ConnectionState 
     emit connectionStateChanged(state);
 }
 
-quint32 CTelegramDispatcher::requestFile(const FileRequestDescriptor &requestId)
+quint32 CTelegramDispatcher::requestFile(const FileRequestDescriptor &descriptor)
 {
-    if (!requestId.isValid()) {
+    if (!descriptor.isValid()) {
         return 0;
     }
 
-    m_requestedFileDescriptors.insert(++m_fileRequestCounter, requestId);
+    m_requestedFileDescriptors.insert(++m_fileRequestCounter, descriptor);
 
-    CTelegramConnection *connection = m_connections.value(requestId.dcId());
+    CTelegramConnection *connection = m_connections.value(descriptor.dcId());
 
     if (connection && (connection->authState() == CTelegramConnection::AuthStateSignedIn)) {
-        getFileFromConnection(connection, m_fileRequestCounter);
+        processFileRequestForConnection(connection, m_fileRequestCounter);
     } else {
-        ensureSignedConnection(requestId.dcId());
+        ensureSignedConnection(descriptor.dcId());
     }
 
     return m_fileRequestCounter;
 }
 
-void CTelegramDispatcher::getFileFromConnection(CTelegramConnection *connection, quint32 fileId)
+void CTelegramDispatcher::processFileRequestForConnection(CTelegramConnection *connection, quint32 requestId)
 {
-    const FileRequestDescriptor descriptor = m_requestedFileDescriptors.value(fileId);
+    const FileRequestDescriptor descriptor = m_requestedFileDescriptors.value(requestId);
 
-    if (descriptor.type() == FileRequestDescriptor::Avatar) {
-        connection->getFile(descriptor.inputLocation(), fileId, /* offset */ 0, /* limit */ 512 * 256); // Limit setted to some big number to download avatar at once
-    } else {
-        connection->getFile(descriptor.inputLocation(), fileId, descriptor.offset(), m_mediaDataBufferSize);
+    switch (descriptor.type()) {
+    case FileRequestDescriptor::Avatar:
+        connection->downloadFile(descriptor.inputLocation(), /* offset */ 0, /* limit */ 512 * 256, requestId); // Limit setted to some big number to download avatar at once
+        break;
+    case FileRequestDescriptor::MessageMediaData:
+        connection->downloadFile(descriptor.inputLocation(), descriptor.offset(), m_mediaDataBufferSize, requestId);
+        break;
+    default:
+        break;
     }
 }
 
@@ -1684,7 +1689,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     continue;
                 }
 
-                getFileFromConnection(connection, fileId);
+                processFileRequestForConnection(connection, fileId);
             }
         } else if (newState == CTelegramConnection::AuthStateSuccess) {
             ensureSignedConnection(dc);
@@ -1803,15 +1808,15 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
     }
 }
 
-void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32 fileId, quint32 offset)
+void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset)
 {
-    if (!m_requestedFileDescriptors.contains(fileId)) {
-        qDebug() << Q_FUNC_INFO << "Unexpected fileId" << fileId;
+    if (!m_requestedFileDescriptors.contains(requestId)) {
+        qDebug() << Q_FUNC_INFO << "Unexpected fileId" << requestId;
         return;
     }
 
     const QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
-    FileRequestDescriptor &descriptor = m_requestedFileDescriptors[fileId];
+    FileRequestDescriptor &descriptor = m_requestedFileDescriptors[requestId];
 
     const quint32 chunkSize = file.bytes.size();
 
@@ -1840,15 +1845,15 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
 
         if (descriptor.offset() + chunkSize == descriptor.size()) {
 #ifdef DEVELOPER_BUILD
-            qDebug() << Q_FUNC_INFO << "file" << fileId << "received.";
+            qDebug() << Q_FUNC_INFO << "file" << requestId << "received.";
 #endif
-            m_requestedFileDescriptors.remove(fileId);
+            m_requestedFileDescriptors.remove(requestId);
         } else {
             descriptor.setOffset(offset + chunkSize);
 
             CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
             if (connection) {
-                getFileFromConnection(connection, fileId);
+                processFileRequestForConnection(connection, requestId);
             } else {
                 qDebug() << Q_FUNC_INFO << "Invalid call. The method must be called only on CTelegramConnection signal.";
             }
