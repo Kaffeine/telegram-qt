@@ -186,6 +186,7 @@ public:
     quint64 signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
     void downloadFile(const TLInputFileLocation &inputLocation, quint32 offset, quint32 limit, quint32 requestId);
+    void uploadFile(quint64 fileId, quint32 filePart, const QByteArray &bytes, quint32 requestId);
 
     quint64 sendMessage(const TLInputPeer &peer, const QString &message);
     quint64 sendMedia(const TLInputPeer &peer, const TLInputMedia &media);
@@ -241,6 +242,7 @@ signals:
     void contactListReceived(const QList<quint32> &contactList);
     void contactListChanged(const QList<quint32> &added, const QList<quint32> &removed);
     void fileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
+    void fileDataSent(quint32 requestId);
 
     void messagesChatsReceived(const QVector<TLChat> &chats, const QVector<TLUser> &users);
     void messagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
@@ -282,6 +284,7 @@ protected:
     TLValue processAuthSign(CTelegramStream &stream, quint64 id);
     TLValue processAuthLogOut(CTelegramStream &stream, quint64 id);
     TLValue processUploadGetFile(CTelegramStream &stream, quint64 id);
+    TLValue processUploadSaveFilePart(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetUsers(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetFullUser(CTelegramStream &stream, quint64 id);
     TLValue processMessagesChatStateMessage(CTelegramStream &stream, quint64 id);

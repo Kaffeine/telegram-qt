@@ -240,6 +240,14 @@ void CTelegramConnection::downloadFile(const TLInputFileLocation &inputLocation,
     m_requestedFilesIds.insert(messageId, requestId);
 }
 
+void CTelegramConnection::uploadFile(quint64 fileId, quint32 filePart, const QByteArray &bytes, quint32 requestId)
+{
+    qDebug() << Q_FUNC_INFO << "id" << fileId << "part" << filePart << "size" << bytes.count() << "request" << requestId;
+    const quint64 messageId = uploadSaveFilePart(fileId, filePart, bytes);
+
+    m_requestedFilesIds.insert(messageId, requestId);
+}
+
 quint64 CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString &message)
 {
     quint64 randomMessageId;
@@ -1793,6 +1801,10 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::UploadGetFile:
             processingResult = processUploadGetFile(stream, id);
             break;
+        case TLValue::UploadSaveFilePart:
+        case TLValue::UploadSaveBigFilePart:
+            processingResult = processUploadSaveFilePart(stream, id);
+            break;
         case TLValue::UsersGetUsers:
             processingResult = processUsersGetUsers(stream, id);
             break;
@@ -2347,6 +2359,20 @@ TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint
     }
 
     return file.tlType;
+}
+
+TLValue CTelegramConnection::processUploadSaveFilePart(CTelegramStream &stream, quint64 id)
+{
+    TLValue result;
+    stream >> result;
+
+    if (result == TLValue::BoolTrue) {
+        emit fileDataSent(m_requestedFilesIds.take(id));
+    } else {
+        // retry putFile() call?
+    }
+
+    return result;
 }
 
 TLValue CTelegramConnection::processUsersGetUsers(CTelegramStream &stream, quint64 id)

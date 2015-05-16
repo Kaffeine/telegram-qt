@@ -71,6 +71,8 @@ protected slots:
     void whenChatAdded(quint32 chatId);
     void whenChatChanged(quint32 chatId);
 
+    void whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
+
     void whenCustomMenuRequested(const QPoint &pos);
 
     void on_connectButton_clicked();
@@ -92,6 +94,7 @@ protected slots:
     void on_setStatusOffline_clicked();
 
     void on_messagingSendButton_clicked();
+    void on_messagingAttachButton_clicked();
     void on_messagingMessage_textChanged(const QString &arg1);
     void on_messagingContactPhone_textChanged(const QString &arg1);
 
@@ -139,6 +142,7 @@ private:
     Ui::MainWindow *ui;
 
     QMap<QString,quint64> m_contactLastMessageList;
+    QMap<quint32, QString> m_uploadingRequests;
 
     CContactsModel *m_contactsModel;
     CMessagingModel *m_messagingModel;

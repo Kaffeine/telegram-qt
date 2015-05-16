@@ -102,6 +102,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenContactStatusChanged(QString)));
     connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
             m_messagingModel, SLOT(setMessageDeliveryStatus(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
+    connect(m_core, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
+            SLOT(whenUploadingStatusUpdated(quint32,quint32,quint32)));
 
     connect(m_core, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
     connect(m_core, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
@@ -132,6 +134,8 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
 
     ui->groupChatAddContactForwardMessages->hide();
+
+    ui->messagingAttachButton->hide();
 }
 
 MainWindow::~MainWindow()
@@ -427,6 +431,19 @@ void MainWindow::whenChatChanged(quint32 chatId)
     updateGroupChatAddContactButtonText();
 }
 
+void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size)
+{
+    if (currentOffset == size) {
+        statusBar()->showMessage(tr("Request %1 completed.").arg(requestId).arg(currentOffset).arg(size));
+
+        quint64 id = 0; //m_core->sendMedia(m_uploadingRequests.value(requestId), requestId, TelegramNamespace::MessageTypePhoto);
+
+        m_messagingModel->addMessage(ui->messagingContactPhone->text(), tr("Photo %1").arg(requestId), TelegramNamespace::MessageTypePhoto, /* outgoing */ true, id);
+    } else {
+        statusBar()->showMessage(tr("Request %1 status updated (%2/%3).").arg(requestId).arg(currentOffset).arg(size));
+    }
+}
+
 void MainWindow::whenCustomMenuRequested(const QPoint &pos)
 {
     static QMenu *menu = 0;
@@ -651,6 +668,26 @@ void MainWindow::on_messagingSendButton_clicked()
     m_messagingModel->addMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text(), TelegramNamespace::MessageTypeText, /* outgoing */ true, id);
 
     ui->messagingMessage->clear();
+}
+
+void MainWindow::on_messagingAttachButton_clicked()
+{
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Attach file..."));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+    QFileInfo info(file);
+
+    quint32 id = 0; //m_core->uploadFile(file.readAll(), info.completeBaseName());
+
+    if (!id) {
+        qDebug() << Q_FUNC_INFO << "Unable to upload file" << fileName;
+    }
+
+    m_uploadingRequests.insert(id, ui->messagingContactPhone->text());
 }
 
 void MainWindow::on_messagingMessage_textChanged(const QString &arg1)

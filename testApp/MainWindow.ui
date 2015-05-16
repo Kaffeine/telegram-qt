@@ -418,6 +418,13 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QPushButton" name="messagingAttachButton">
+             <property name="text">
+              <string>Attach</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item row="0" column="0">

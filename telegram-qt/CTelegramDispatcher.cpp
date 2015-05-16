@@ -24,6 +24,7 @@
 
 #include <QTimer>
 
+#include <QCryptographicHash>
 #include <QDebug>
 
 #ifdef DEVELOPER_BUILD
@@ -94,6 +95,27 @@ enum TelegramMessageFlags {
     TelegramMessageFlagOut    = 0x2  // Message is outgoing
 };
 
+const quint32 FileRequestDescriptor::c_chunkSize = 128 * 256;
+
+FileRequestDescriptor FileRequestDescriptor::uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc)
+{
+    FileRequestDescriptor result;
+
+    result.m_type = Upload;
+    result.m_data = data;
+    result.m_size = data.size();
+    result.m_fileName = fileName;
+    result.m_dcId = dc;
+
+    if (!result.isBigFile()) {
+        result.m_hash = new QCryptographicHash(QCryptographicHash::Md5);
+    }
+
+    Utils::randomBytes(&result.m_fileId);
+
+    return result;
+}
+
 FileRequestDescriptor FileRequestDescriptor::avatarRequest(const TLUser *user)
 {
     if (user->photo.photoSmall.tlType != TLValue::FileLocation) {
@@ -155,6 +177,73 @@ FileRequestDescriptor FileRequestDescriptor::messageMediaDataRequest(const TLMes
     return result;
 }
 
+TLInputFile FileRequestDescriptor::inputFile() const
+{
+    TLInputFile file;
+
+    if (isBigFile()) {
+        file.tlType = TLValue::InputFileBig;
+    } else {
+        file.tlType = TLValue::InputFile;
+//        file.md5Checksum = QString::fromLatin1(md5Sum().toHex());
+    }
+
+    file.id = inputLocation().id;
+    file.parts = parts();
+    file.name = m_fileName;
+
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << file;
+#endif
+
+    return file;
+}
+
+quint32 FileRequestDescriptor::parts() const
+{
+    quint32 parts = m_size / c_chunkSize;
+    if (m_size % c_chunkSize) {
+        ++parts;
+    }
+
+    return parts;
+}
+
+bool FileRequestDescriptor::isBigFile() const
+{
+    return size() > 10 * 1024 * 1024;
+}
+
+bool FileRequestDescriptor::finished() const
+{
+    return m_part * c_chunkSize >= size();
+}
+
+void FileRequestDescriptor::bumpPart()
+{
+    if (m_hash) {
+        m_hash->addData(data());
+    }
+
+    ++m_part;
+    m_offset = m_part * c_chunkSize;
+
+    if (m_offset > m_size) {
+        m_offset = m_size;
+    }
+
+    if (m_hash && finished()) {
+        m_md5Sum = m_hash->result();
+        delete m_hash;
+        m_hash = 0;
+    }
+}
+
+QByteArray FileRequestDescriptor::data() const
+{
+    return m_data.mid(m_part * c_chunkSize, c_chunkSize);
+}
+
 void FileRequestDescriptor::setupLocation(const TLFileLocation &fileLocation)
 {
     m_dcId = fileLocation.dcId;
@@ -168,7 +257,9 @@ void FileRequestDescriptor::setupLocation(const TLFileLocation &fileLocation)
 FileRequestDescriptor::FileRequestDescriptor() :
     m_type(Invalid),
     m_size(0),
-    m_offset(0)
+    m_offset(0),
+    m_part(0),
+    m_hash(0)
 {
 
 }
@@ -541,6 +632,19 @@ bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
     return requestFile(FileRequestDescriptor::messageMediaDataRequest(m_knownMediaMessages.value(messageId)));
 }
 
+quint32 CTelegramDispatcher::uploadFile(const QByteArray &fileContent, const QString &fileName)
+{
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << fileName;
+#endif
+    return requestFile(FileRequestDescriptor::uploadRequest(fileContent, fileName, m_activeDc));
+}
+
+quint32 CTelegramDispatcher::uploadFile(QIODevice *source, const QString &fileName)
+{
+    return uploadFile(source->readAll(), fileName);
+}
+
 quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QString &message)
 {
     if (!activeConnection()) {
@@ -558,6 +662,38 @@ quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QStrin
     }
 
     return activeConnection()->sendMessage(peer, message);
+}
+
+quint64 CTelegramDispatcher::sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type)
+{
+    if (!activeConnection()) {
+        return 0;
+    }
+    const TLInputPeer peer = identifierToInputPeer(identifier);
+
+    if (peer.tlType == TLValue::InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
+        return 0;
+    }
+
+    if (!m_requestedFileDescriptors.contains(uploadedFileId)) {
+        qDebug() << Q_FUNC_INFO << "Unknown file id";
+        return 0;
+    }
+
+    const FileRequestDescriptor descriptor = m_requestedFileDescriptors.value(uploadedFileId);
+    TLInputMedia media;
+
+    switch (type) {
+    case TelegramNamespace::MessageTypePhoto:
+        media.tlType = TLValue::InputMediaUploadedPhoto;
+        media.file = descriptor.inputFile();
+        break;
+    default:
+        break;
+    }
+
+    return activeConnection()->sendMedia(peer, media);
 }
 
 quint64 CTelegramDispatcher::forwardMedia(const QString &identifier, quint32 messageId)
@@ -1204,6 +1340,7 @@ quint32 CTelegramDispatcher::requestFile(const FileRequestDescriptor &descriptor
 void CTelegramDispatcher::processFileRequestForConnection(CTelegramConnection *connection, quint32 requestId)
 {
     const FileRequestDescriptor descriptor = m_requestedFileDescriptors.value(requestId);
+    qDebug() << Q_FUNC_INFO << requestId << descriptor.type();
 
     switch (descriptor.type()) {
     case FileRequestDescriptor::Avatar:
@@ -1211,6 +1348,9 @@ void CTelegramDispatcher::processFileRequestForConnection(CTelegramConnection *c
         break;
     case FileRequestDescriptor::MessageMediaData:
         connection->downloadFile(descriptor.inputLocation(), descriptor.offset(), m_mediaDataBufferSize, requestId);
+        break;
+    case FileRequestDescriptor::Upload:
+        connection->uploadFile(descriptor.fileId(), descriptor.part(), descriptor.data(), requestId);
         break;
     default:
         break;
@@ -1918,6 +2058,35 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
         }
     default:
         break;
+    }
+}
+
+void CTelegramDispatcher::whenFileDataUploaded(quint32 requestId)
+{
+    if (!m_requestedFileDescriptors.contains(requestId)) {
+        qDebug() << Q_FUNC_INFO << "Unexpected fileId" << requestId;
+        return;
+    }
+
+    FileRequestDescriptor &descriptor = m_requestedFileDescriptors[requestId];
+
+    if (descriptor.type() != FileRequestDescriptor::Upload) {
+        return;
+    }
+
+    descriptor.bumpPart();
+
+    emit uploadingStatusUpdated(requestId, descriptor.offset(), descriptor.size());
+
+    if (descriptor.finished()) {
+        return;
+    }
+
+    CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
+    if (connection) {
+        processFileRequestForConnection(connection, requestId);
+    } else {
+        qDebug() << Q_FUNC_INFO << "Invalid call. The method must be called only on CTelegramConnection signal.";
     }
 }
 

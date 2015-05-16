@@ -87,6 +87,11 @@ public Q_SLOTS:
     void requestContactAvatar(const QString &contact);
     void requestMessageMediaData(quint32 messageId);
 
+    // Does not work yet
+//    quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
+//    quint32 uploadFile(QIODevice *source, const QString &fileName);
+//    quint64 sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type);
+
     quint64 sendMessage(const QString &identifier, const QString &message); // Message id is a random number
     quint64 forwardMedia(const QString &identifier, quint32 messageId);
     /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
@@ -137,6 +142,7 @@ Q_SIGNALS:
     void authorizationErrorReceived();
 
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
+    void uploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
 
 private:
     CTelegramDispatcher *m_dispatcher;

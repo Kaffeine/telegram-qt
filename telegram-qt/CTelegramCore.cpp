@@ -67,6 +67,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(authorizationErrorReceived()));
     connect(m_dispatcher, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)),
             SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)));
+    connect(m_dispatcher, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
+            SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)));
 }
 
 CTelegramCore::~CTelegramCore()
@@ -165,6 +167,16 @@ void CTelegramCore::requestMessageMediaData(quint32 messageId)
 {
     m_dispatcher->requestMessageMediaData(messageId);
 }
+
+//quint32 CTelegramCore::uploadFile(const QByteArray &fileContent, const QString &fileName)
+//{
+//    return m_dispatcher->uploadFile(fileContent, fileName);
+//}
+
+//quint32 CTelegramCore::uploadFile(QIODevice *source, const QString &fileName)
+//{
+//    return m_dispatcher->uploadFile(source, fileName);
+//}
 
 QStringList CTelegramCore::contactList() const
 {
@@ -280,6 +292,11 @@ quint64 CTelegramCore::sendMessage(const QString &identifier, const QString &mes
 {
     return m_dispatcher->sendMessage(identifier, message);
 }
+
+//quint64 CTelegramCore::sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type)
+//{
+//    return m_dispatcher->sendMedia(identifier, uploadedFileId, type);
+//}
 
 quint64 CTelegramCore::forwardMedia(const QString &identifier, quint32 messageId)
 {

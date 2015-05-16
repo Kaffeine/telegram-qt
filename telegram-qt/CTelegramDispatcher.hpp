@@ -30,6 +30,7 @@
 #include "TelegramNamespace.hpp"
 
 class QTimer;
+class QCryptographicHash;
 
 class CAppInformation;
 class CTelegramConnection;
@@ -40,11 +41,13 @@ public:
     enum Type {
         Invalid,
         Avatar,
-        MessageMediaData
+        MessageMediaData,
+        Upload
     };
 
     FileRequestDescriptor();
 
+    static FileRequestDescriptor uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc);
     static FileRequestDescriptor avatarRequest(const TLUser *user);
     static FileRequestDescriptor messageMediaDataRequest(const TLMessage &message);
 
@@ -62,6 +65,19 @@ public:
 
     inline void setOffset(quint32 newOffset) { m_offset = newOffset; }
 
+    /* Upload stuff */
+    inline TLInputFile inputFile() const;
+    inline quint32 part() const { return m_part; }
+    inline quint32 parts() const;
+    inline QByteArray md5Sum() const { return m_md5Sum; }
+    inline quint32 fileId() const { return m_fileId; }
+
+    bool isBigFile() const;
+    bool finished() const;
+    void bumpPart();
+
+    QByteArray data() const;
+
 protected:
     void setupLocation(const TLFileLocation &fileLocation);
     Type m_type;
@@ -69,9 +85,17 @@ protected:
     quint32 m_messageId;
     quint32 m_size;
     quint32 m_offset;
+    quint32 m_part;
+    QByteArray m_data;
+    QByteArray m_md5Sum;
+    QString m_fileName;
+    quint64 m_fileId;
+    QCryptographicHash *m_hash;
 
     TLInputFileLocation m_inputLocation;
     quint32 m_dcId;
+
+    static const quint32 c_chunkSize;
 
 };
 
@@ -129,7 +153,11 @@ public:
     void requestContactAvatar(const QString &contact);
     bool requestMessageMediaData(quint32 messageId);
 
+    quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
+    quint32 uploadFile(QIODevice *source, const QString &fileName);
+
     quint64 sendMessage(const QString &identifier, const QString &message);
+    quint64 sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type);
     quint64 forwardMedia(const QString &identifier, quint32 messageId);
     void setTyping(const QString &identifier, bool typingStatus);
     void setMessageRead(const QString &identifier, quint32 messageId);
@@ -162,6 +190,8 @@ signals:
     void loggedOut(bool result);
     void authorizationErrorReceived();
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
+    void uploadingStatusUpdated(quint32 requestId, quint32 offset, quint32 size);
+
     void contactListChanged();
     void contactProfileChanged(const QString &contact);
     void phoneStatusReceived(const QString &phone, bool registered, bool invited);
@@ -190,6 +220,7 @@ protected slots:
     void whenWantedActiveDcChanged(quint32 dc);
 
     void whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
+    void whenFileDataUploaded(quint32 requestId);
     void whenUpdatesReceived(const TLUpdates &updates);
     void whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
@@ -246,7 +277,7 @@ protected:
 
     TelegramNamespace::ContactStatus decodeContactStatus(TLValue status) const;
 
-    CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
+    inline CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
 
     CTelegramConnection *createConnection(const TLDcOption &dc);
     CTelegramConnection *establishConnectionToDc(quint32 dc);
@@ -289,7 +320,7 @@ protected:
     quint32 m_wantedActiveDc;
 
     QVector<TLDcOption> m_dcConfiguration;
-    QMap<int, CTelegramConnection *> m_connections;
+    QMap<quint32, CTelegramConnection *> m_connections;
 
     TLUpdatesState m_updatesState; // Current application update state (may be older than actual server-side message box state)
     TLUpdatesState m_actualState; // State reported by server as actual
