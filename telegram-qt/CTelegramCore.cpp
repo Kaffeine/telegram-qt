@@ -185,10 +185,17 @@ TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &con
 
   Depending on the contact privacy, the method can return some special values:
 
-  0 - User online status is not known.
-  1 - User hides exact online time, but was online recently.
-  2 - User hides exact online time, but was online last week.
-  3 - User hides exact online time, but was online last month.
+  TelegramNamespace::ContactLastOnlineUnknown - User last online time is not known.
+  TelegramNamespace::ContactLastOnlineRecently - User hides exact online time, but was online recently.
+  TelegramNamespace::ContactLastOnlineLastWeek - User hides exact online time, but was online last week.
+  TelegramNamespace::ContactLastOnlineLastMonth - User hides exact online time, but was online last month.
+
+  The TelegramNamespace::ContactLastOnlineMask can be used to determine if there is special value:
+  if ((contactLastOnline(contact) & TelegramNamespace::ContactLastOnlineMask) == contactLastOnline(contact)) {
+      qDebug() << "Special value";
+  } else {
+      qDebug() << "Seconds since epoch";
+  }
 */
 quint32 CTelegramCore::contactLastOnline(const QString &contact) const
 {

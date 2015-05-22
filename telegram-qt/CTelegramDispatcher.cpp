@@ -752,17 +752,17 @@ quint32 CTelegramDispatcher::contactLastOnline(const QString &contact) const
         case TLValue::UserStatusOffline:
             return user->status.wasOnline;
         case TLValue::UserStatusRecently:
-            return 1;
+            return TelegramNamespace::ContactLastOnlineRecently;
         case TLValue::UserStatusLastWeek:
-            return 2;
+            return TelegramNamespace::ContactLastOnlineLastWeek;
         case TLValue::UserStatusLastMonth:
-            return 3;
+            return TelegramNamespace::ContactLastOnlineLastMonth;
         default:
             break;
         }
     }
 
-    return 0;
+    return TelegramNamespace::ContactLastOnlineUnknown;
 }
 
 QString CTelegramDispatcher::contactFirstName(const QString &contact) const

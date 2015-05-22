@@ -84,6 +84,14 @@ public:
         ConnectionStateReady // Initializated
     };
 
+    enum ContactLastOnline {
+        ContactLastOnlineUnknown,
+        ContactLastOnlineRecently,
+        ContactLastOnlineLastWeek,
+        ContactLastOnlineLastMonth,
+        ContactLastOnlineMask = 0xf
+    };
+
     static void registerTypes();
 
     struct GroupChat
