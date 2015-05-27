@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QTimer>
 #include <chrono>
 #include <thread>
 #include <QDebug>
@@ -22,6 +23,8 @@ QCommandLineOption verboseOption(QStringList() << "v" << "verbose", "Set verbose
 QCommandLineOption registerOption(QStringList() << "r" << "register", "Register a new <phone_number>.", "phone_number");
 QCommandLineOption displayContactListOption(QStringList() << "l" << "list", "Display contact list");
 QCommandLineOption sendMessageOption(QStringList() << "m" << "message", "Send a message to a phone number", "contact_phone_number");
+QCommandLineOption displayChatListOption(QStringList() << "c" << "chat-list", "Display chat list");
+QCommandLineOption sendGroupOption(QStringList() << "g" << "group-message", "Send a message to a group", "group_name");
 
 void MessageOutput(QtMsgType type, const QMessageLogContext &context, 
 	const QString &msg)
@@ -117,6 +120,26 @@ void DisplayContactList(CTelegramCore& core)
 	});
 }
 
+void DisplayChatList(CTelegramCore& core)
+{
+	auto timer = new QTimer(qApp);
+	timer->setInterval(3000);
+	QObject::connect(timer, &QTimer::timeout, qApp, &QCoreApplication::quit);
+	core.connect(&core, &CTelegramCore::chatAdded, [&,timer](quint32 id)
+	{
+		cout << id << ": " << core.chatTitle(id) << endl;
+		timer->start();
+	});
+	core.connect(&core, &CTelegramCore::connectionStateChanged, [&,timer](
+		TelegramNamespace::ConnectionState state)
+	{
+		if (state == TelegramNamespace::ConnectionStateConnected)
+			timer->start();
+		if (state == TelegramNamespace::ConnectionStateDisconnected)
+			qApp->exit(EXIT_FAILURE);
+	});
+}
+
 void SendMessage(CTelegramCore& core, const QString& phoneNumber,
 	const QString& message)
 {
@@ -141,7 +164,33 @@ void SendMessage(CTelegramCore& core, const QString& phoneNumber,
 			core.sendMessage(phoneNumber, message);
 		}
 	});
+}
 
+void SendMessageToGroup(CTelegramCore& core, quint32 chatId,
+	const QString& message)
+{
+	core.connect(&core, &CTelegramCore::sentMessageStatusChanged, [&,chatId](
+		const QString&, quint64,
+		TelegramNamespace::MessageDeliveryStatus status)
+	{
+		if (status == TelegramNamespace::MessageDeliveryStatusSent)
+		{
+			cout << "Message sent to " << core.chatTitle(chatId) << endl;
+			qApp->exit(EXIT_SUCCESS);
+		}
+	});
+	core.connect(&core, &CTelegramCore::connectionStateChanged,
+		[&, chatId, message](TelegramNamespace::ConnectionState state)
+	{
+		if (state == TelegramNamespace::ConnectionStateDisconnected)
+			qApp->exit(EXIT_FAILURE);
+		else if (state == TelegramNamespace::ConnectionStateReady)
+		{
+			cout << "Sending " << message << " to " << core.chatTitle(chatId) 
+				<< endl;
+			core.sendChatMessage(chatId, message);
+		}
+	});
 }
 
 int main(int argc, char** argv)
@@ -162,6 +211,8 @@ int main(int argc, char** argv)
 	parser.addOption(registerOption);
 	parser.addOption(displayContactListOption);
 	parser.addOption(sendMessageOption);
+	parser.addOption(displayChatListOption);
+	parser.addOption(sendGroupOption);
 	parser.addPositionalArgument("secret_file", "Secret file to create/use.");
 	parser.addPositionalArgument("message...", "Message text to send to a contact");
 	parser.process(app);
@@ -209,12 +260,27 @@ int main(int argc, char** argv)
 			}
 			if (parser.isSet(displayContactListOption))
 				DisplayContactList(telegram);
+			else if (parser.isSet(displayChatListOption))
+				DisplayChatList(telegram);
 			else if (parser.isSet(sendMessageOption) 
 				&& parser.positionalArguments().size() >= 2)
 			{
 				const auto phoneNumber = parser.value(sendMessageOption);
 				const auto message = parser.positionalArguments().at(1);
 				SendMessage(telegram, phoneNumber, message);
+			}
+			else if (parser.isSet(sendGroupOption)
+				&& parser.positionalArguments().size() >= 2)
+			{
+				bool ok;
+				const auto chatId = parser.value(sendGroupOption).toUInt(&ok);
+				const auto message = parser.positionalArguments().at(1);
+				if (!ok)
+				{
+					qFatal("Invalid chat id");
+					return EXIT_FAILURE;
+				}
+				SendMessageToGroup(telegram, chatId, message);
 			}
 		}
 	}
