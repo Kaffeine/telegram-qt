@@ -4,7 +4,6 @@ include(options.pri)
 TEMPLATE = subdirs
 SUBDIRS = telegram-qt
 SUBDIRS += testApp
-SUBDIRS += cmdApp
 CONFIG += ordered
 
 contains(options, developer-build) {
@@ -12,5 +11,16 @@ contains(options, developer-build) {
     SUBDIRS += telegram-qt/generator
     greaterThan(QT_MAJOR_VERSION, 4) {
         SUBDIRS += telegram-qt/generator-ng
+    }
+}
+
+# modern compiler needed by cmdApp.
+greaterThan(QT_MAJOR_VERSION, 4) {
+    win*-msvc2013|win*-msvc2015 {
+        SUBDIRS += cmdApp
+    }
+    # add gcc/clang... checks
+    else {
+        SUBDIRS += cmdApp
     }
 }
