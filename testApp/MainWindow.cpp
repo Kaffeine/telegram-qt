@@ -844,7 +844,7 @@ void MainWindow::on_contactListTable_clicked(const QModelIndex &index)
 
 void MainWindow::on_secretSaveAs_clicked()
 {
-    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save secret info..."));
+    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save secret info..."), QString(), tr("Telegram secret files (*.tgsecret)"));
     if (fileName.isEmpty()) {
         return;
     }
@@ -890,7 +890,7 @@ void MainWindow::on_restoreSession_clicked()
 
 void MainWindow::loadSecretFromBrowsedFile()
 {
-    const QString fileName = QFileDialog::getOpenFileName(this, tr("Load secret info..."));
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Load secret info..."), QString(), tr("Telegram secret files (*.tgsecret);;All files (*)"));
     if (fileName.isEmpty()) {
         return;
     }
