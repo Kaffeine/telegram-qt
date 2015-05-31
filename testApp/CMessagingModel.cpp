@@ -146,6 +146,11 @@ void CMessagingModel::addMessage(const QString &phone, const QString &message, T
     endInsertRows();
 }
 
+void CMessagingModel::addMessage(const TelegramNamespace::Message &message)
+{
+    addMessage(message.contact, message.text, message.type, message.flags & TelegramNamespace::MessageFlagOut, message.id, message.timestamp);
+}
+
 int CMessagingModel::setMessageMediaData(quint64 messageId, const QVariant &data)
 {
     int i = messageIndex(messageId);

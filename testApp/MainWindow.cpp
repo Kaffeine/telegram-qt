@@ -90,10 +90,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenAvatarReceived(QString,QByteArray,QString)));
     connect(m_core, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
             SLOT(whenMessageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
-    connect(m_core, SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
-            SLOT(whenMessageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)));
-    connect(m_core, SIGNAL(chatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
-            SLOT(whenChatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)));
+    connect(m_core, SIGNAL(messageReceived(TelegramNamespace::Message)),
+            SLOT(whenMessageReceived(TelegramNamespace::Message)));
     connect(m_core, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)),
             SLOT(whenContactChatTypingStatusChanged(quint32,QString,bool)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)),
@@ -331,37 +329,38 @@ void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 me
     }
 }
 
-void MainWindow::whenMessageReceived(const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp)
+void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
 {
-    bool outgoing = flags & TelegramNamespace::MessageFlagOut;
-    m_messagingModel->addMessage(phone, message, type, outgoing, messageId, timestamp);
+    bool groupChatMessage = message.peer.startsWith(QLatin1String("chat"));
+    if (groupChatMessage) {
+        if (message.peer != QString("chat%1").arg(m_activeChatId)) {
+            return;
+        }
+    }
 
-    if (!outgoing && (m_contactLastMessageList.value(phone) < messageId)) {
-        m_contactLastMessageList.insert(phone, messageId);
+    if (groupChatMessage) {
+        m_chatMessagingModel->addMessage(message);
+    } else {
+        m_messagingModel->addMessage(message);
 
-        if (ui->settingsReadMessages->isChecked()) {
-            if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
-                m_core->setMessageRead(phone, messageId);
+        if (!(message.flags & TelegramNamespace::MessageFlagOut) && (m_contactLastMessageList.value(message.contact) < message.id)) {
+            m_contactLastMessageList.insert(message.contact, message.id);
+
+            if (ui->settingsReadMessages->isChecked()) {
+                if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
+                    m_core->setMessageRead(message.contact, message.id);
+                }
             }
         }
     }
 
-    if ((type == TelegramNamespace::MessageTypePhoto) || (type == TelegramNamespace::MessageTypeVideo)) {
-        m_core->requestMessageMediaData(messageId);
-    }
-}
-
-void MainWindow::whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp)
-{
-    if (m_activeChatId != chatId) {
-        return;
-    }
-
-    bool outgoing = flags & TelegramNamespace::MessageFlagOut;
-    m_chatMessagingModel->addMessage(phone, message, type, outgoing, messageId, timestamp);
-
-    if (type == TelegramNamespace::MessageTypePhoto) {
-        m_core->requestMessageMediaData(messageId);
+    switch (message.type) {
+    case TelegramNamespace::MessageTypePhoto:
+    case TelegramNamespace::MessageTypeVideo:
+        m_core->requestMessageMediaData(message.id);
+        break;
+    default:
+        break;
     }
 }
 

@@ -62,8 +62,7 @@ protected slots:
     void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
     void whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data,
                                       const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
-    void whenMessageReceived(const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
-    void whenChatMessageReceived(quint32 chatId, const QString &phone, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
+    void whenMessageReceived(const TelegramNamespace::Message &message);
     void whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status);
     void whenContactTypingStatusChanged(const QString &contact, bool typingStatus);
     void whenContactStatusChanged(const QString &contact);
