@@ -199,8 +199,12 @@ signals:
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
     void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 
+    void messageReceived(const TelegramNamespace::Message &message);
+
+#ifndef TELEGRAMQT_NO_DEPRECATED
     void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
+#endif
 
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &phone, bool typingStatus);
@@ -270,6 +274,7 @@ protected:
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
     QString userIdToIdentifier(const quint32 id) const;
     QString chatIdToIdentifier(const quint32 id) const;
+    QString peerToIdentifier(const TLPeer &peer) const;
     quint32 identifierToUserId(const QString &identifier) const;
     TLUser *identifierToUser(const QString &identifier) const;
 
@@ -301,7 +306,7 @@ protected:
     quint32 insertTelegramChatId(quint32 telegramChatId);
     bool havePublicChatId(quint32 publicChatId) const;
 
-    quint32 telegramMessageFlagsToPublicMessageFlags(quint32 tgFlags);
+    TelegramNamespace::MessageFlags telegramMessageFlagsToPublicMessageFlags(quint32 tgFlags);
 
     TelegramNamespace::ConnectionState m_connectionState;
 

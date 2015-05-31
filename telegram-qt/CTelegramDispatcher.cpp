@@ -1612,7 +1612,7 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
         return;
     }
 
-    const quint32 messageFlags = telegramMessageFlagsToPublicMessageFlags(message.flags);
+    TelegramNamespace::MessageFlags messageFlags = telegramMessageFlagsToPublicMessageFlags(message.flags);
     const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
     if (!(messageType & m_acceptableMessageTypes)) {
@@ -1623,6 +1623,24 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
         m_knownMediaMessages.insert(message.id, message);
     }
 
+    TelegramNamespace::Message apiMessage;
+
+    if ((message.toId.tlType == TLValue::PeerChat) || (messageFlags & TelegramNamespace::MessageFlagOut)) {
+        apiMessage.peer = peerToIdentifier(message.toId);
+    } else {
+        apiMessage.peer = userIdToIdentifier(message.fromId);
+    }
+
+    apiMessage.contact = userIdToIdentifier(message.fromId);
+    apiMessage.type = messageType;
+    apiMessage.text = message.message;
+    apiMessage.id = message.id;
+    apiMessage.timestamp = message.date;
+    apiMessage.flags = messageFlags;
+
+    emit messageReceived(apiMessage);
+
+#ifndef TELEGRAMQT_NO_DEPRECATED
     if (message.toId.tlType == TLValue::PeerUser) {
         quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
         emit messageReceived(userIdToIdentifier(contactUserId),
@@ -1631,6 +1649,7 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
         emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId), userIdToIdentifier(message.fromId),
                                  message.message, messageType, message.id, messageFlags, message.date);
     }
+#endif
 }
 
 void CTelegramDispatcher::updateChat(const TLChat &newChat)
@@ -1789,6 +1808,21 @@ QString CTelegramDispatcher::userIdToIdentifier(const quint32 id) const
 QString CTelegramDispatcher::chatIdToIdentifier(const quint32 id) const
 {
     return QString(QLatin1String("chat%1")).arg(id);
+}
+
+QString CTelegramDispatcher::peerToIdentifier(const TLPeer &peer) const
+{
+    switch (peer.tlType) {
+    case TLValue::PeerChat:
+        return chatIdToIdentifier(telegramChatIdToPublicId(peer.chatId));
+    case TLValue::PeerUser:
+        return userIdToIdentifier(peer.userId);
+    default:
+        break;
+    }
+
+    qDebug() << Q_FUNC_INFO << "Unknown peer type";
+    return QString();
 }
 
 quint32 CTelegramDispatcher::identifierToUserId(const QString &identifier) const
@@ -2283,9 +2317,9 @@ bool CTelegramDispatcher::havePublicChatId(quint32 publicChatId) const
 }
 
 // Basically we just revert Unread and Read flag.
-quint32 CTelegramDispatcher::telegramMessageFlagsToPublicMessageFlags(quint32 tgFlags)
+TelegramNamespace::MessageFlags CTelegramDispatcher::telegramMessageFlagsToPublicMessageFlags(quint32 tgFlags)
 {
-    quint32 result = TelegramNamespace::MessageFlagNone;
+    TelegramNamespace::MessageFlags result = TelegramNamespace::MessageFlagNone;
 
     if (tgFlags & TelegramMessageFlagOut) {
         result |= TelegramNamespace::MessageFlagOut;

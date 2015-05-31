@@ -102,6 +102,17 @@ public:
 
     static void registerTypes();
 
+    struct Message
+    {
+        QString peer;
+        QString contact;
+        QString text;
+        quint32 id;
+        quint32 timestamp;
+        MessageType type;
+        MessageFlags flags;
+    };
+
     struct GroupChat
     {
         GroupChat(quint32 id = 0) :
@@ -130,7 +141,11 @@ public:
 
 };
 
+Q_DECLARE_METATYPE(TelegramNamespace::GroupChat)
+Q_DECLARE_METATYPE(TelegramNamespace::Message)
+
 Q_DECLARE_TYPEINFO(TelegramNamespace::GroupChat, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(TelegramNamespace::Message, Q_MOVABLE_TYPE);
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageTypeFlags)
