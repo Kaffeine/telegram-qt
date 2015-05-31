@@ -2617,7 +2617,7 @@ void CTelegramConnection::whenTransportStateChanged()
 #ifdef NETWORK_LOGGING
     if (!m_logFile) {
         QDir dir;
-        dir.mkdir("network");
+        dir.mkdir(QLatin1String("network"));
 
         m_logFile = new QFile(QLatin1String("network/") + m_dcInfo.ipAddress + QLatin1String(".log"));
         m_logFile->open(QIODevice::WriteOnly);
@@ -2690,6 +2690,19 @@ void CTelegramConnection::whenReadyRead()
     } else if (m_authState >= AuthStateSuccess) {
         if (auth != m_authId) {
             qDebug() << Q_FUNC_INFO << "Incorrect auth id.";
+
+#ifdef NETWORK_LOGGING
+            QTextStream str(m_logFile);
+
+            str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz")) << QLatin1Char('|');
+            str << QLatin1String("pln|");
+            str << QString(QLatin1String("size: %1|")).arg(input.length(), 4, 10, QLatin1Char('0'));
+            str << QLatin1Char('|');
+            str << input.toHex();
+            str << endl;
+            str.flush();
+#endif
+
             return;
         }
         // Encrypted Message
@@ -2850,10 +2863,10 @@ quint64 CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
 
     QTextStream str(m_logFile);
 
-    str << QLatin1String("p|");
-    str << QDateTime::currentMSecsSinceEpoch() << QLatin1Char('|');
+    str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz")) << QLatin1Char('|');
+    str << QLatin1String("pln|");
+    str << QString(QLatin1String("size: %1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
     str << formatTLValue(val1) << QLatin1Char('|');
-    str << QString(QLatin1String("s%1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
     str << buffer.toHex();
     str << endl;
     str.flush();
@@ -2928,12 +2941,12 @@ quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool
 
     QTextStream str(m_logFile);
 
-    str << QString(QLatin1String("e|t%1|mId%2|seq%3|"))
-           .arg(QDateTime::currentMSecsSinceEpoch())
+    str << QString(QLatin1String("%1|enc|mId%2|seq%3|"))
+           .arg(QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz")))
            .arg(messageId, 10, 10, QLatin1Char('0'))
            .arg(m_sequenceNumber, 4, 10, QLatin1Char('0'));
 
-    str << QString(QLatin1String("s%1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
+    str << QString(QLatin1String("size: %1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
 
     str << formatTLValue(val1) << QLatin1Char('|');
     str << buffer.toHex();
