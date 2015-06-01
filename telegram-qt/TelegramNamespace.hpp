@@ -21,6 +21,8 @@
 #include "telegramqt_export.h"
 
 #include <QObject>
+#include <QFlags>
+#include <QMetaType>
 
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
 {
@@ -40,11 +42,12 @@ public:
         MessageDeliveryStatusDeleted
     };
 
-    enum MessageFlags {
-        MessageFlagNone = 0x0,
-        MessageFlagRead = 0x1, // Message was read
-        MessageFlagOut  = 0x2  // Message is outgoing
+    enum MessageFlag {
+        MessageFlagNone      = 0x0,
+        MessageFlagRead      = 0x1, // Message was read
+        MessageFlagOut       = 0x2  // Message is outgoing
     };
+    Q_DECLARE_FLAGS(MessageFlags, MessageFlag)
 
     enum MessageType {
         MessageTypeUnsupported = 0x00,
@@ -56,6 +59,7 @@ public:
         MessageTypeDocument    = 0x20,
         MessageTypeGeo         = 0x40
     };
+    Q_DECLARE_FLAGS(MessageTypeFlags, MessageType)
 
     enum AuthSignError {
         AuthSignErrorUnknown,
@@ -127,5 +131,8 @@ public:
 };
 
 Q_DECLARE_TYPEINFO(TelegramNamespace::GroupChat, Q_MOVABLE_TYPE);
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageTypeFlags)
 
 #endif // TELEGRAMNAMESPACE_HPP
