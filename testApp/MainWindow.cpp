@@ -444,28 +444,42 @@ void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOf
 
 void MainWindow::whenCustomMenuRequested(const QPoint &pos)
 {
-    static QMenu *menu = 0;
-    static QMenu *resendMenu = 0;
-
-    if (!menu) {
-        menu = new QMenu(this);
-        resendMenu = menu->addMenu(tr("Resend media"));
-    }
-
-    resendMenu->clear();
-
     QModelIndex index = ui->messagingView->currentIndex();
     if (!index.isValid()) {
         return;
     }
 
+    static QMenu *menu = 0;
+    static QMenu *resendMenu = 0;
+    static QMenu *forwardMenu = 0;
+
+    if (!menu) {
+        menu = new QMenu(this);
+        resendMenu = menu->addMenu(tr("Resend media"));
+        forwardMenu = menu->addMenu(tr("Forward message"));
+    }
+
+    resendMenu->clear();
+    forwardMenu->clear();
+
     quint32 row = index.row();
     quint32 messageId = m_messagingModel->rowData(row, CMessagingModel::MessageId).toUInt();
+    if (m_messagingModel->messageAt(row)->type == TelegramNamespace::MessageTypeText) {
+        resendMenu->setDisabled(true);
+    } else {
+        resendMenu->setEnabled(true);
+        for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
+            QAction *a = resendMenu->addAction(m_contactsModel->contactAt(i, /* addName */ true));
+#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
+            connect(a, &QAction::triggered, [=]() { m_core->resendMedia(m_contactsModel->contactAt(i, false), messageId); });
+#endif
+        }
+    }
 
     for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
-        QAction *a = resendMenu->addAction(m_contactsModel->contactAt(i, /* addName */ true));
+        QAction *a = forwardMenu->addAction(m_contactsModel->contactAt(i, /* addName */ true));
 #if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
-        connect(a, &QAction::triggered, [=]() { m_core->resendMedia(m_contactsModel->contactAt(i, false), messageId); });
+        connect(a, &QAction::triggered, [=]() { m_core->forwardMessage(m_contactsModel->contactAt(i, false), messageId); });
 #endif
     }
 

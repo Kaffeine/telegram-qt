@@ -136,6 +136,15 @@ QVariant CMessagingModel::rowData(quint32 messageIndex, int column) const
     return QVariant();
 }
 
+const CMessagingModel::SMessage *CMessagingModel::messageAt(quint32 messageIndex) const
+{
+    if (int(messageIndex) >= m_messages.count()) {
+        return 0;
+    }
+
+    return &m_messages[messageIndex];
+}
+
 int CMessagingModel::messageIndex(quint64 messageId) const
 {
     for (int i = 0; i < m_messages.count(); ++i) {
