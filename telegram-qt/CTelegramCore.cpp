@@ -299,6 +299,11 @@ quint64 CTelegramCore::sendMessage(const QString &identifier, const QString &mes
     return m_dispatcher->sendMessage(identifier, message);
 }
 
+quint64 CTelegramCore::forwardMessage(const QString &identifier, quint32 messageId)
+{
+    return m_dispatcher->forwardMessage(identifier, messageId);
+}
+
 //quint64 CTelegramCore::sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type)
 //{
 //    return m_dispatcher->sendMedia(identifier, uploadedFileId, type);

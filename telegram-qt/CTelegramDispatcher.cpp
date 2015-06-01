@@ -624,6 +624,7 @@ void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
 bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
 {
     if (!m_knownMediaMessages.contains(messageId)) {
+        qDebug() << Q_FUNC_INFO << "Unknown media message" << messageId;
         return false;
     }
 
@@ -662,6 +663,18 @@ quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QStrin
     }
 
     return activeConnection()->sendMessage(peer, message);
+}
+
+quint64 CTelegramDispatcher::forwardMessage(const QString &identifier, quint32 messageId)
+{
+    if (!activeConnection()) {
+        return 0;
+    }
+
+    quint64 randomId;
+    Utils::randomBytes(&randomId);
+
+    return activeConnection()->messagesForwardMessage(identifierToInputPeer(identifier), messageId, randomId);
 }
 
 quint64 CTelegramDispatcher::sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type)

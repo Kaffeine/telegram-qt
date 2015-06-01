@@ -1834,12 +1834,11 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::AuthSendSms:
             processingResult = processAuthSendSms(stream, id);
             break;
+        case TLValue::MessagesForwardMessage:
         case TLValue::MessagesCreateChat:
         case TLValue::MessagesAddChatUser:
-            processingResult = processMessagesChatStateMessage(stream, id);
-            break;
         case TLValue::MessagesSendMedia:
-            processingResult = processMessagesSendMedia(stream, id);
+            processingResult = processMessagesStatedMessage(stream, id);
             break;
         case TLValue::MessagesSendMessage:
             processingResult = processMessagesSendMessage(stream, id);
@@ -2409,7 +2408,7 @@ TLValue CTelegramConnection::processUsersGetFullUser(CTelegramStream &stream, qu
     return result.tlType;
 }
 
-TLValue CTelegramConnection::processMessagesChatStateMessage(CTelegramStream &stream, quint64 id)
+TLValue CTelegramConnection::processMessagesStatedMessage(CTelegramStream &stream, quint64 id)
 {
     Q_UNUSED(id);
 
@@ -2450,24 +2449,6 @@ TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream,
         emit messageSentInfoReceived(peer, randomId, result.id, result.pts, result.date, result.seq);
     }
 
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processMessagesSendMedia(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLMessagesStatedMessage result;
-
-    stream >> result;
-
-    switch (result.tlType) {
-    case TLValue::MessagesStatedMessage:
-        emit statedMessageReceived(result, id);
-        break;
-    default:
-        break;
-    }
     return result.tlType;
 }
 
