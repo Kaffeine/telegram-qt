@@ -134,8 +134,8 @@ public:
     QByteArray connectionSecretInfo() const;
 
     inline quint32 messageReceivingFilterFlags() const { return m_messageReceivingFilterFlags; }
-    void setMessageReceivingFilterFlags(quint32 flags);
-    void setAcceptableMessageTypes(quint32 types);
+    void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags);
+    void setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types);
     void setAutoReconnection(bool enable);
     void setPingInterval(quint32 ms);
     void setMediaDataBufferSize(quint32 size);

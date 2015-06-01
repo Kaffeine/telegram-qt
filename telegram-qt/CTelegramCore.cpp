@@ -264,12 +264,12 @@ bool CTelegramCore::getChatParticipants(QStringList *participants, quint32 chatI
     return m_dispatcher->getChatParticipants(participants, chatId);
 }
 
-void CTelegramCore::setMessageReceivingFilterFlags(quint32 flags)
+void CTelegramCore::setMessageReceivingFilter(TelegramNamespace::MessageFlags flags)
 {
-    return m_dispatcher->setMessageReceivingFilterFlags(flags);
+    return m_dispatcher->setMessageReceivingFilter(flags);
 }
 
-void CTelegramCore::setAcceptableMessageTypes(quint32 types)
+void CTelegramCore::setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types)
 {
     return m_dispatcher->setAcceptableMessageTypes(types);
 }

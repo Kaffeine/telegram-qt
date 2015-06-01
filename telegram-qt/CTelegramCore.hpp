@@ -60,8 +60,8 @@ public:
     bool getChatParticipants(QStringList *participants, quint32 chatId);
 
 public Q_SLOTS:
-    void setMessageReceivingFilterFlags(quint32 flags); // TelegramNamespace::MessageFlags. Messages with at least one of the passed flags will be filtered out.
-    void setAcceptableMessageTypes(quint32 types); // TelegramNamespace::MessageType
+    void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags); // Messages with at least one of the passed flags will be filtered out.
+    void setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types);
     void setAutoReconnection(bool enable);
 
     // By default, the app would ping server every 15 000 ms and instruct the server to close connection after 10 000 more ms. Use 0 to disable ping.
@@ -112,6 +112,10 @@ public Q_SLOTS:
     quint64 sendChatMessage(quint32 chatId, const QString &message); // Message id is random number
     void setChatTyping(quint32 chatId, bool typingStatus);
     void setChatMessageRead(const quint32 &chatId, quint32 messageId);
+
+#ifndef TELEGRAMQT_NO_DEPRECATED
+    inline void setMessageReceivingFilterFlags(TelegramNamespace::MessageFlags flags) { setMessageReceivingFilter(flags); }
+#endif
 
 Q_SIGNALS:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);

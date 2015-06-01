@@ -390,12 +390,12 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
     return output;
 }
 
-void CTelegramDispatcher::setMessageReceivingFilterFlags(quint32 flags)
+void CTelegramDispatcher::setMessageReceivingFilter(TelegramNamespace::MessageFlags flags)
 {
     m_messageReceivingFilterFlags = flags;
 }
 
-void CTelegramDispatcher::setAcceptableMessageTypes(quint32 types)
+void CTelegramDispatcher::setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types)
 {
     m_acceptableMessageTypes = types;
 }
