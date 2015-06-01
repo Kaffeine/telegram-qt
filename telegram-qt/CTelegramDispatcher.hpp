@@ -306,7 +306,7 @@ protected:
     quint32 insertTelegramChatId(quint32 telegramChatId);
     bool havePublicChatId(quint32 publicChatId) const;
 
-    TelegramNamespace::MessageFlags telegramMessageFlagsToPublicMessageFlags(quint32 tgFlags);
+    TelegramNamespace::MessageFlags getPublicMessageFlags(const TLMessage &message);
 
     TelegramNamespace::ConnectionState m_connectionState;
 

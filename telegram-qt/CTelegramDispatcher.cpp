@@ -1258,7 +1258,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
         }
 
         foreach (const TLMessage &message, updatesDifference.newMessages) {
-            if ((message.tlType != TLValue::MessageService) && (filterReceivedMessage(telegramMessageFlagsToPublicMessageFlags(message.flags)))) {
+            if ((message.tlType != TLValue::MessageService) && (filterReceivedMessage(getPublicMessageFlags(message)))) {
                 continue;
             }
 
@@ -1612,7 +1612,7 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
         return;
     }
 
-    TelegramNamespace::MessageFlags messageFlags = telegramMessageFlagsToPublicMessageFlags(message.flags);
+
     const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
     if (!(messageType & m_acceptableMessageTypes)) {
@@ -1624,6 +1624,8 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
     }
 
     TelegramNamespace::Message apiMessage;
+
+    TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message);
 
     if ((message.toId.tlType == TLValue::PeerChat) || (messageFlags & TelegramNamespace::MessageFlagOut)) {
         apiMessage.peer = peerToIdentifier(message.toId);
@@ -2063,7 +2065,7 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
     case FileRequestDescriptor::MessageMediaData:
         if (m_knownMediaMessages.contains(descriptor.messageId())) {
             const TLMessage message = m_knownMediaMessages.value(descriptor.messageId());
-            const quint32 messageFlags = telegramMessageFlagsToPublicMessageFlags(message.flags);
+            const TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message);
             const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
             quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
@@ -2317,15 +2319,15 @@ bool CTelegramDispatcher::havePublicChatId(quint32 publicChatId) const
 }
 
 // Basically we just revert Unread and Read flag.
-TelegramNamespace::MessageFlags CTelegramDispatcher::telegramMessageFlagsToPublicMessageFlags(quint32 tgFlags)
+TelegramNamespace::MessageFlags CTelegramDispatcher::getPublicMessageFlags(const TLMessage &message)
 {
     TelegramNamespace::MessageFlags result = TelegramNamespace::MessageFlagNone;
 
-    if (tgFlags & TelegramMessageFlagOut) {
+    if (message.flags & TelegramMessageFlagOut) {
         result |= TelegramNamespace::MessageFlagOut;
     }
 
-    if (!(tgFlags & TelegramMessageFlagUnread)) {
+    if (!(message.flags & TelegramMessageFlagUnread)) {
         result |= TelegramNamespace::MessageFlagRead;
     }
 
