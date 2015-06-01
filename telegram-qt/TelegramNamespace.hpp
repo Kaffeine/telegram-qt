@@ -45,7 +45,8 @@ public:
     enum MessageFlag {
         MessageFlagNone      = 0x0,
         MessageFlagRead      = 0x1, // Message was read
-        MessageFlagOut       = 0x2  // Message is outgoing
+        MessageFlagOut       = 0x2, // Message is outgoing
+        MessageFlagForwarded = 0x4
     };
     Q_DECLARE_FLAGS(MessageFlags, MessageFlag)
 
@@ -104,11 +105,23 @@ public:
 
     struct Message
     {
+        Message() :
+            id(0),
+            timestamp(0),
+            fwdTimestamp(0),
+            type(MessageTypeUnsupported),
+            flags(0)
+        {
+
+        }
+
         QString peer;
         QString contact;
         QString text;
+        QString fwdContact;
         quint32 id;
         quint32 timestamp;
+        quint32 fwdTimestamp;
         MessageType type;
         MessageFlags flags;
     };

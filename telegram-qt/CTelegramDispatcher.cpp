@@ -1626,6 +1626,10 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
     TelegramNamespace::Message apiMessage;
 
     TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message);
+    if (message.tlType == TLValue::MessageForwarded) {
+        apiMessage.fwdContact = userIdToIdentifier(message.fwdFromId);
+        apiMessage.fwdTimestamp = message.fwdDate;
+    }
 
     if ((message.toId.tlType == TLValue::PeerChat) || (messageFlags & TelegramNamespace::MessageFlagOut)) {
         apiMessage.peer = peerToIdentifier(message.toId);
@@ -2329,6 +2333,10 @@ TelegramNamespace::MessageFlags CTelegramDispatcher::getPublicMessageFlags(const
 
     if (!(message.flags & TelegramMessageFlagUnread)) {
         result |= TelegramNamespace::MessageFlagRead;
+    }
+
+    if (message.tlType == TLValue::MessageForwarded) {
+        result |= TelegramNamespace::MessageFlagForwarded;
     }
 
     return result;
