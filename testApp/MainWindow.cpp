@@ -445,14 +445,14 @@ void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOf
 void MainWindow::whenCustomMenuRequested(const QPoint &pos)
 {
     static QMenu *menu = 0;
-    static QMenu *forwardMenu = 0;
+    static QMenu *resendMenu = 0;
 
     if (!menu) {
         menu = new QMenu(this);
-        forwardMenu = menu->addMenu(tr("Forward"));
+        resendMenu = menu->addMenu(tr("Resend media"));
     }
 
-    forwardMenu->clear();
+    resendMenu->clear();
 
     QModelIndex index = ui->messagingView->currentIndex();
     if (!index.isValid()) {
@@ -463,9 +463,9 @@ void MainWindow::whenCustomMenuRequested(const QPoint &pos)
     quint32 messageId = m_messagingModel->rowData(row, CMessagingModel::MessageId).toUInt();
 
     for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
-        QAction *a = forwardMenu->addAction(m_contactsModel->contactAt(i, /* addName */ true));
+        QAction *a = resendMenu->addAction(m_contactsModel->contactAt(i, /* addName */ true));
 #if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
-        connect(a, &QAction::triggered, [=]() { m_core->forwardMedia(m_contactsModel->contactAt(i, false), messageId); });
+        connect(a, &QAction::triggered, [=]() { m_core->resendMedia(m_contactsModel->contactAt(i, false), messageId); });
 #endif
     }
 

@@ -93,7 +93,7 @@ public Q_SLOTS:
 //    quint64 sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type);
 
     quint64 sendMessage(const QString &identifier, const QString &message); // Message id is a random number
-    quint64 forwardMedia(const QString &identifier, quint32 messageId);
+    quint64 resendMedia(const QString &identifier, quint32 messageId);
     /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
     void setTyping(const QString &contact, bool typingStatus);
     void setMessageRead(const QString &contact, quint32 messageId);

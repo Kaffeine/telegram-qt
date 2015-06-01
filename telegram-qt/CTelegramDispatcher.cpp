@@ -696,7 +696,7 @@ quint64 CTelegramDispatcher::sendMedia(const QString &identifier, quint32 upload
     return activeConnection()->sendMedia(peer, media);
 }
 
-quint64 CTelegramDispatcher::forwardMedia(const QString &identifier, quint32 messageId)
+quint64 CTelegramDispatcher::resendMedia(const QString &identifier, quint32 messageId)
 {
     if (!activeConnection()) {
         return 0;
