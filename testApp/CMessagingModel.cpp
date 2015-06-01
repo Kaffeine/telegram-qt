@@ -47,7 +47,9 @@ QVariant CMessagingModel::headerData(int section, Qt::Orientation orientation, i
     }
 
     switch (section) {
-    case Phone:
+    case Peer:
+        return tr("Peer");
+    case Contact:
         return tr("Phone");
     case Direction:
         return tr("Direction");
@@ -60,6 +62,10 @@ QVariant CMessagingModel::headerData(int section, Qt::Orientation orientation, i
         return tr("Message text");
     case Status:
         return tr("Status");
+    case ForwardFromContact:
+        return tr("Forward from");
+    case ForwardTimestamp:
+        return tr("Forward timestamp");
     default:
         break;
     }
@@ -98,22 +104,31 @@ QVariant CMessagingModel::rowData(quint32 messageIndex, int column) const
     }
 
     switch (column) {
-    case Phone:
-        return m_messages.at(messageIndex).phone;
+    case Peer:
+        return m_messages.at(messageIndex).peer;
+    case Contact:
+        return m_messages.at(messageIndex).contact;
     case Direction:
-        return m_messages.at(messageIndex).outgoing ? tr("out") : tr("in");
+        return (m_messages.at(messageIndex).flags & TelegramNamespace::MessageFlagOut) ? tr("out") : tr("in");
     case Timestamp:
         return QDateTime::fromMSecsSinceEpoch(quint64(m_messages.at(messageIndex).timestamp) * 1000);
     case MessageId:
-        return m_messages.at(messageIndex).messageId;
+        return m_messages.at(messageIndex).id ? m_messages.at(messageIndex).id : m_messages.at(messageIndex).id64;
     case Message:
-        return m_messages.at(messageIndex).message;
+        return m_messages.at(messageIndex).text;
     case Status:
-        if (m_messages.at(messageIndex).outgoing) {
+        if (m_messages.at(messageIndex).flags & TelegramNamespace::MessageFlagOut) {
             return messageDeliveryStatusStr(m_messages.at(messageIndex).status);
         } else {
             return tr("Incoming");
         }
+    case ForwardFromContact:
+        return m_messages.at(messageIndex).fwdContact;
+    case ForwardTimestamp:
+        if (m_messages.at(messageIndex).fwdTimestamp) {
+            return QDateTime::fromMSecsSinceEpoch(quint64(m_messages.at(messageIndex).fwdTimestamp) * 1000);
+        }
+        break;
     default:
         break;
     }
@@ -124,7 +139,10 @@ QVariant CMessagingModel::rowData(quint32 messageIndex, int column) const
 int CMessagingModel::messageIndex(quint64 messageId) const
 {
     for (int i = 0; i < m_messages.count(); ++i) {
-        if (m_messages.at(i).messageId == messageId) {
+        if (m_messages.at(i).id == messageId) {
+            return i;
+        }
+        if (m_messages.at(i).id64 == messageId) {
             return i;
         }
     }
@@ -132,23 +150,14 @@ int CMessagingModel::messageIndex(quint64 messageId) const
     return -1;
 }
 
-void CMessagingModel::addMessage(const QString &phone, const QString &message, TelegramNamespace::MessageType type, bool outgoing, quint64 messageId, quint32 timestamp)
+void CMessagingModel::addMessage(const SMessage &message)
 {
-    Q_UNUSED(type);
-
-    if (!timestamp) {
-        timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
-    }
-
     beginInsertRows(QModelIndex(), m_messages.count(), m_messages.count());
-    m_messages.append(SMessageEntry(phone, message, messageId, timestamp));
-    m_messages.last().outgoing = outgoing;
+    m_messages.append(message);
+    if (!m_messages.last().timestamp) {
+        m_messages.last().timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
+    }
     endInsertRows();
-}
-
-void CMessagingModel::addMessage(const TelegramNamespace::Message &message)
-{
-    addMessage(message.contact, message.text, message.type, message.flags & TelegramNamespace::MessageFlagOut, message.id, message.timestamp);
 }
 
 int CMessagingModel::setMessageMediaData(quint64 messageId, const QVariant &data)
@@ -171,7 +180,7 @@ void CMessagingModel::setMessageDeliveryStatus(const QString &phone, quint64 mes
 {
     Q_UNUSED(phone);
     for (int i = 0; i < m_messages.count(); ++i) {
-        if (m_messages.at(i).messageId == messageId) {
+        if (m_messages.at(i).id64 == messageId) {
             m_messages[i].status = status;
 
             QModelIndex messageIndex = index(i, Status);

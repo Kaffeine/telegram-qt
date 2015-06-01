@@ -435,9 +435,8 @@ void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOf
     if (currentOffset == size) {
         statusBar()->showMessage(tr("Request %1 completed.").arg(requestId).arg(currentOffset).arg(size));
 
-        quint64 id = 0; //m_core->sendMedia(m_uploadingRequests.value(requestId), requestId, TelegramNamespace::MessageTypePhoto);
-
-        m_messagingModel->addMessage(ui->messagingContactPhone->text(), tr("Photo %1").arg(requestId), TelegramNamespace::MessageTypePhoto, /* outgoing */ true, id);
+//        quint64 id = m_core->sendMedia(m_uploadingRequests.value(requestId), requestId, TelegramNamespace::MessageTypePhoto);
+//        m_messagingModel->addMessage(ui->messagingContactPhone->text(), tr("Photo %1").arg(requestId), TelegramNamespace::MessageTypePhoto, /* outgoing */ true, id);
     } else {
         statusBar()->showMessage(tr("Request %1 status updated (%2/%3).").arg(requestId).arg(currentOffset).arg(size));
     }
@@ -479,14 +478,17 @@ void MainWindow::on_connectButton_clicked()
 
     QString serverIp = ui->mainDcRadio->isChecked() ? QLatin1String("149.154.175.50") : QLatin1String("149.154.175.10");
 
-    quint32 flags = 0;
+    TelegramNamespace::MessageFlags flags = TelegramNamespace::MessageFlagNone;
     if (ui->settingsReceivingFilterReadMessages->isChecked()) {
         flags |= TelegramNamespace::MessageFlagRead;
     }
     if (ui->settingsReceivingFilterOutMessages->isChecked()) {
         flags |= TelegramNamespace::MessageFlagOut;
     }
-    m_core->setMessageReceivingFilterFlags(flags);
+    if (ui->settingsReceivingFilterForwardedMessages->isChecked()) {
+        flags |= TelegramNamespace::MessageFlagForwarded;
+    }
+    m_core->setMessageReceivingFilter(flags);
     m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto);
 
     if (secretInfo.isEmpty())
@@ -664,9 +666,17 @@ void MainWindow::on_messagingSendButton_clicked()
 {
     quint64 id = m_core->sendMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text());
 
-    m_messagingModel->addMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text(), TelegramNamespace::MessageTypeText, /* outgoing */ true, id);
+    CMessagingModel::SMessage m;
+    m.peer = ui->messagingContactPhone->text();
+    m.contact = ui->messagingContactPhone->text();
+    m.type = TelegramNamespace::MessageTypeText;
+    m.text = ui->messagingMessage->text();
+    m.flags = TelegramNamespace::MessageFlagOut;
+    m.id64 = id;
 
     ui->messagingMessage->clear();
+
+    m_messagingModel->addMessage(m);
 }
 
 void MainWindow::on_messagingAttachButton_clicked()
@@ -720,7 +730,7 @@ void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_messagingView_doubleClicked(const QModelIndex &index)
 {
-    const QModelIndex phoneIndex = m_messagingModel->index(index.row(), CMessagingModel::Phone);
+    const QModelIndex phoneIndex = m_messagingModel->index(index.row(), CMessagingModel::Contact);
 
     ui->messagingContactPhone->setText(m_messagingModel->data(phoneIndex).toString());
     ui->tabWidget->setCurrentWidget(ui->tabMessaging);
@@ -783,9 +793,15 @@ void MainWindow::on_groupChatAddContact_clicked()
 
 void MainWindow::on_groupChatSendButton_clicked()
 {
-    m_core->sendChatMessage(m_activeChatId, ui->groupChatMessage->text());
+    CMessagingModel::SMessage m;
+    m.peer = QString("chat%1").arg(m_activeChatId);
+    m.contact = m_core->selfPhone();
+    m.type = TelegramNamespace::MessageTypeText;
+    m.text = ui->groupChatMessage->text();
+    m.flags = TelegramNamespace::MessageFlagOut;
+    m.id64 = m_core->sendMessage(m.peer, m.text);
 
-    m_chatMessagingModel->addMessage(m_core->selfPhone(), ui->groupChatMessage->text(), TelegramNamespace::MessageTypeText, /* outgoing */ true);
+    m_chatMessagingModel->addMessage(m);
     ui->groupChatMessage->clear();
 }
 

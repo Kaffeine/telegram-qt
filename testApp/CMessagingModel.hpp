@@ -18,38 +18,42 @@
 
 #include "TelegramNamespace.hpp"
 
-struct SMessageEntry {
-    SMessageEntry(const QString &p = QString(), const QString &m = QString(), quint64 id = 0, quint32 t = 0,
-                  TelegramNamespace::MessageDeliveryStatus s = TelegramNamespace::MessageDeliveryStatusUnknown) :
-        phone(p),
-        message(m),
-        messageId(id),
-        timestamp(t),
-        status(s),
-        outgoing(true)
-    { }
-
-    QString phone;
-    QString message;
-    quint64 messageId;
-    quint32 timestamp;
-    TelegramNamespace::MessageDeliveryStatus status;
-    QVariant mediaData;
-    bool outgoing;
-};
-
 class CMessagingModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
     enum Columns {
-        Phone,
+        Peer,
+        Contact,
         Direction,
         Timestamp,
         MessageId,
         Message,
         Status,
+        ForwardFromContact,
+        ForwardTimestamp,
         ColumnsCount
+    };
+
+    struct SMessage : public TelegramNamespace::Message
+    {
+        SMessage() :
+            TelegramNamespace::Message(),
+            id64(0),
+            status(TelegramNamespace::MessageDeliveryStatusUnknown)
+        {
+        }
+
+        SMessage(const TelegramNamespace::Message &m) :
+            TelegramNamespace::Message(m),
+            id64(0),
+            status(TelegramNamespace::MessageDeliveryStatusUnknown)
+        {
+        }
+
+        quint64 id64;
+        TelegramNamespace::MessageDeliveryStatus status;
+        QVariant mediaData;
     };
 
     explicit CMessagingModel(QObject *parent = 0);
@@ -64,13 +68,12 @@ public:
     int messageIndex(quint64 messageId) const; // Messages id should be quint32, but it require "outgoing random to incremental message id resolving" (Not implemented yet).
 
 public slots:
-    void addMessage(const QString &phone, const QString &message, TelegramNamespace::MessageType type, bool outgoing, quint64 messageId = 0, quint32 timestamp = 0);
-    void addMessage(const TelegramNamespace::Message &message);
+    void addMessage(const SMessage &message);
     int setMessageMediaData(quint64 messageId, const QVariant &data);
     void setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status);
 
 private:
-    QList<SMessageEntry> m_messages;
+    QList<SMessage> m_messages;
 
 };
 
