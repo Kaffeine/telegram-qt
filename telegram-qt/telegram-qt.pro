@@ -3,6 +3,8 @@ QT = core network
 
 TEMPLATE = lib
 TARGET   = TelegramQt
+target.path = $$PREFIX/lib
+INSTALLS += target
 CONFIG  += dll
 
 include(../options.pri)

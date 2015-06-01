@@ -18,6 +18,8 @@ LIBS += -L$$OUT_PWD/../telegram-qt
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = testApp
+target.path  = $$PREFIX/bin
+INSTALLS    += target
 TEMPLATE = app
 
 SOURCES += main.cpp\
