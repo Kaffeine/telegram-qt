@@ -3,9 +3,15 @@ QT = core network
 
 TEMPLATE = lib
 TARGET   = TelegramQt
-CONFIG  += dll
+VERSION = 0.1.0
 
 include(../options.pri)
+
+contains(options, static-lib) {
+    CONFIG  += staticlib
+} else {
+    CONFIG  += dll
+}
 
 DEFINES += TELEGRAMQT_LIBRARY
 

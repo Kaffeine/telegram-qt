@@ -68,8 +68,11 @@ else()
     QT5_WRAP_CPP(telegram_qt_MOC_SOURECES ${telegram_qt_META_HEADERS})
 endif()
 
-#add_library(telegram-qt${QT_VERSION_MAJOR} shared ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES}})
-add_library(telegram-qt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES})
+if (STATIC_BUILD)
+    add_library(telegram-qt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES})
+else()
+    add_library(telegram-qt${QT_VERSION_MAJOR} SHARED ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES})
+endif()
 
 target_include_directories(telegram-qt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -99,9 +102,16 @@ target_link_libraries(telegram-qt${QT_VERSION_MAJOR}
 set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/telegram-qt${QT_VERSION_MAJOR})
 set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
 
+# Set the correct version number
+set_target_properties(
+    telegram-qt${QT_VERSION_MAJOR} PROPERTIES
+    SOVERSION ${TELEGRAM_QT_ABI}
+    VERSION ${TELEGRAM_QT_VERSION}
+)
+
 install(
     TARGETS telegram-qt${QT_VERSION_MAJOR}
-#    LIBRARY DESTINATION ${TELEGRAM_QT_LIB_DIR}
+    LIBRARY DESTINATION ${TELEGRAM_QT_LIB_DIR}
     ARCHIVE DESTINATION ${TELEGRAM_QT_LIB_DIR}
     COMPONENT Library
 )
