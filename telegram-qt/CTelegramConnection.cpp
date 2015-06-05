@@ -70,6 +70,7 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_sequenceNumber(0),
     m_contentRelatedMessages(0),
     m_pingInterval(0),
+    m_serverDisconnectionExtraTime(0),
     m_deltaTime(0),
     m_deltaTimeHeuristicState(DeltaTimeIsOk),
     m_serverPublicFingersprint(0)
@@ -189,17 +190,19 @@ void CTelegramConnection::getConfiguration()
     sendEncryptedPackage(output);
 }
 
-void CTelegramConnection::setKeepAliveInterval(quint32 ms)
+void CTelegramConnection::setKeepAliveSettings(quint32 interval, quint32 serverDisconnectionExtraTime)
 {
-    qDebug() << Q_FUNC_INFO << ms;
+    qDebug() << Q_FUNC_INFO << interval << serverDisconnectionExtraTime;
 
-    if (m_pingInterval == ms) {
+    m_serverDisconnectionExtraTime = serverDisconnectionExtraTime;
+
+    if (m_pingInterval == interval) {
         return;
     }
 
-    m_pingInterval = ms;
+    m_pingInterval = interval;
 
-    if (ms) {
+    if (interval) {
         startPingTimer();
     } else {
         if (m_pingTimer) {
@@ -2790,7 +2793,7 @@ void CTelegramConnection::whenItsTimeToPing()
 
     m_lastSentPingTime = QDateTime::currentMSecsSinceEpoch();
 
-    pingDelayDisconnect(m_pingInterval + 10000); // Server will close the connection after ten seconds more, than our ping interval.
+    pingDelayDisconnect(m_pingInterval + m_serverDisconnectionExtraTime); // Server will close the connection after m_serverDisconnectionExtraTime ms more, than our ping interval.
 }
 
 void CTelegramConnection::whenItsTimeToAckMessages()

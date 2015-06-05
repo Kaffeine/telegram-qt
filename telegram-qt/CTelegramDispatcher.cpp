@@ -405,9 +405,13 @@ void CTelegramDispatcher::setAutoReconnection(bool enable)
     m_autoReconnectionEnabled = enable;
 }
 
-void CTelegramDispatcher::setPingInterval(quint32 ms)
+void CTelegramDispatcher::setPingInterval(quint32 ms, quint32 serverDisconnectionAdditionTime)
 {
     m_pingInterval = ms;
+    if (serverDisconnectionAdditionTime < 500) {
+        serverDisconnectionAdditionTime = 500;
+    }
+    m_pingServerAdditionDisconnectionTime = serverDisconnectionAdditionTime;
 }
 
 void CTelegramDispatcher::setMediaDataBufferSize(quint32 size)
@@ -2234,7 +2238,7 @@ void CTelegramDispatcher::setActiveDc(quint32 dc, bool syncWantedDc)
     }
 
     if (m_connections.value(dc)) {
-        m_connections.value(dc)->setKeepAliveInterval(m_pingInterval);
+        m_connections.value(dc)->setKeepAliveSettings(m_pingInterval, m_pingServerAdditionDisconnectionTime);
     }
 
     qDebug() << Q_FUNC_INFO << dc;

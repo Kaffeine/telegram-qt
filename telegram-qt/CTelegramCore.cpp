@@ -279,9 +279,9 @@ void CTelegramCore::setAutoReconnection(bool enable)
     return m_dispatcher->setAutoReconnection(enable);
 }
 
-void CTelegramCore::setPingInterval(quint32 ms)
+void CTelegramCore::setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime)
 {
-    return m_dispatcher->setPingInterval(ms);
+    return m_dispatcher->setPingInterval(interval, serverDisconnectionAdditionTime);
 }
 
 void CTelegramCore::setMediaDataBufferSize(quint32 size)

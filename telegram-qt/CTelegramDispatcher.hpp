@@ -137,7 +137,7 @@ public:
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags);
     void setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types);
     void setAutoReconnection(bool enable);
-    void setPingInterval(quint32 ms);
+    void setPingInterval(quint32 ms, quint32 serverDisconnectionAdditionTime);
     void setMediaDataBufferSize(quint32 size);
 
     void initConnection(const QString &address, quint32 port);
@@ -318,6 +318,7 @@ protected:
     quint32 m_acceptableMessageTypes;
     bool m_autoReconnectionEnabled;
     quint32 m_pingInterval;
+    quint32 m_pingServerAdditionDisconnectionTime;
     quint32 m_mediaDataBufferSize;
 
     quint32 m_initializationState; // InitializationStep flags
