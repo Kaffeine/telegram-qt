@@ -191,7 +191,7 @@ QStringList CTelegramCore::contactList() const
 
 QList<quint32> CTelegramCore::chatList() const
 {
-    return m_dispatcher->chatList();
+    return m_dispatcher->chatList().toList();
 }
 
 TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &contact) const

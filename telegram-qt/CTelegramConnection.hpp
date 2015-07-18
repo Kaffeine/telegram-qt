@@ -239,8 +239,8 @@ signals:
     void authorizationErrorReceived();
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
     void usersReceived(const QVector<TLUser> &users);
-    void contactListReceived(const QList<quint32> &contactList);
-    void contactListChanged(const QList<quint32> &added, const QList<quint32> &removed);
+    void contactListReceived(const QVector<quint32> &contactList);
+    void contactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
     void fileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
     void fileDataSent(quint32 requestId);
 

@@ -322,9 +322,9 @@ QStringList CTelegramDispatcher::contactList() const
     return result;
 }
 
-QList<quint32> CTelegramDispatcher::chatList() const
+QVector<quint32> CTelegramDispatcher::chatList() const
 {
-    QList<quint32> result;
+    QVector<quint32> result;
     for (int i = 0; i < m_chatIds.count(); ++i) {
         result << i;
     }
@@ -1060,11 +1060,11 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
     }
 }
 
-void CTelegramDispatcher::whenContactListReceived(const QList<quint32> &contactList)
+void CTelegramDispatcher::whenContactListReceived(const QVector<quint32> &contactList)
 {
     qDebug() << Q_FUNC_INFO << contactList;
 
-    QList<quint32> newContactList = contactList;
+    QVector<quint32> newContactList = contactList;
     std::sort(newContactList.begin(), newContactList.end());
 
     if (m_contactList != newContactList) {
@@ -1075,10 +1075,10 @@ void CTelegramDispatcher::whenContactListReceived(const QList<quint32> &contactL
     continueInitialization(StepContactList);
 }
 
-void CTelegramDispatcher::whenContactListChanged(const QList<quint32> &added, const QList<quint32> &removed)
+void CTelegramDispatcher::whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed)
 {
     qDebug() << Q_FUNC_INFO << added << removed;
-    QList<quint32> newContactList = m_contactList;
+    QVector<quint32> newContactList = m_contactList;
 
     // There is some redundant checks, but let's be paranoid
     foreach (const quint32 contact, added) {
@@ -1110,7 +1110,7 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
     int minTime = s_timerMaxInterval;
 #endif
 
-    const QList<quint32> users = m_userTypingMap.keys();
+    const QVector<quint32> users = m_userTypingMap.keys().toVector();
     foreach (quint32 userId, users) {
         int timeRemains = m_userTypingMap.value(userId) - m_typingUpdateTimer->interval();
         if (timeRemains < 5) { // Let 5 ms be allowed correction
@@ -1124,7 +1124,7 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
         }
     }
 
-    const QList<QPair<quint32, quint32> > usersInChat = m_userChatTypingMap.keys();
+    const QVector<QPair<quint32, quint32> > usersInChat = m_userChatTypingMap.keys().toVector();
     QPair<quint32, quint32> userInChat;
     foreach (userInChat, usersInChat) {
         int timeRemains = m_userChatTypingMap.value(userInChat) - m_typingUpdateTimer->interval();
@@ -1139,7 +1139,7 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
         }
     }
 
-    const QList<QString> identifiers = m_localTypingMap.keys();
+    const QVector<QString> identifiers = m_localTypingMap.keys().toVector();
     foreach (const QString &identifier, identifiers) {
         int timeRemains = m_localTypingMap.value(identifier) - m_typingUpdateTimer->interval();
         if (timeRemains < 5) { // Let 5 ms be allowed correction
@@ -1908,10 +1908,10 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
         if (newState == CTelegramConnection::AuthStateSignedIn) {
             connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
                     SLOT(whenUsersReceived(QVector<TLUser>)));
-            connect(connection, SIGNAL(contactListReceived(QList<quint32>)),
-                    SLOT(whenContactListReceived(QList<quint32>)));
-            connect(connection, SIGNAL(contactListChanged(QList<quint32>,QList<quint32>)),
-                    SLOT(whenContactListChanged(QList<quint32>,QList<quint32>)));
+            connect(connection, SIGNAL(contactListReceived(QVector<quint32>)),
+                    SLOT(whenContactListReceived(QVector<quint32>)));
+            connect(connection, SIGNAL(contactListChanged(QVector<quint32>,QVector<quint32>)),
+                    SLOT(whenContactListChanged(QVector<quint32>,QVector<quint32>)));
             connect(connection, SIGNAL(updatesReceived(TLUpdates)),
                     SLOT(whenUpdatesReceived(TLUpdates)));
             connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)),

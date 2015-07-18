@@ -126,7 +126,7 @@ public:
     QString selfPhone() const;
 
     QStringList contactList() const;
-    QList<quint32> chatList() const;
+    QVector<quint32> chatList() const;
 
     void addContacts(const QStringList &phoneNumbers, bool replace = false);
     void deleteContacts(const QStringList &phoneNumbers);
@@ -232,8 +232,8 @@ protected slots:
 
     void whenUsersReceived(const QVector<TLUser> &users);
 
-    void whenContactListReceived(const QList<quint32> &contactList);
-    void whenContactListChanged(const QList<quint32> &added, const QList<quint32> &removed);
+    void whenContactListReceived(const QVector<quint32> &contactList);
+    void whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
     void whenUserTypingTimerTimeout();
 
     void whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
@@ -345,7 +345,7 @@ protected:
 
     quint32 m_selfUserId;
 
-    QList<quint32> m_contactList;
+    QVector<quint32> m_contactList;
 
     // fileId is program-specific handler, not related to Telegram.
     QMap<quint32, FileRequestDescriptor> m_requestedFileDescriptors; // fileId, file request descriptor

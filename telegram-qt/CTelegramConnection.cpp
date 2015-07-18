@@ -2135,7 +2135,7 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
     if (result.tlType == TLValue::ContactsContacts) {
         emit usersReceived(result.users);
 
-        QList<quint32> contactList;
+        QVector<quint32> contactList;
         foreach (const TLUser &user, result.users) {
             contactList.append(user.id);
         }
@@ -2156,12 +2156,12 @@ TLValue CTelegramConnection::processContactsImportContacts(CTelegramStream &stre
     if (result.tlType == TLValue::ContactsImportedContacts) {
         emit usersReceived(result.users);
 
-        QList<quint32> addedList;
+        QVector<quint32> addedList;
         foreach (const TLUser &user, result.users) {
             addedList.append(user.id);
         }
 
-        emit contactListChanged(addedList, QList<quint32>());
+        emit contactListChanged(addedList, QVector<quint32>());
     }
 
     return result.tlType;
