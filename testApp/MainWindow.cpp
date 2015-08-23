@@ -59,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->groupChatContacts->setModel(m_chatContactsModel);
     ui->groupChatChatsList->setModel(m_chatInfoModel);
     ui->groupChatMessagingView->setModel(m_chatMessagingModel);
+    ui->groupChatMessagingView->hideColumn(CMessagingModel::Direction);
 
     QCompleter *comp = new QCompleter(m_contactsModel, this);
     ui->messagingContactPhone->setCompleter(comp);
