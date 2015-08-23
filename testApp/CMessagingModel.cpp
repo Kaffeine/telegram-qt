@@ -165,6 +165,14 @@ int CMessagingModel::messageIndex(quint64 messageId) const
 
 void CMessagingModel::addMessage(const SMessage &message)
 {
+    for (int i = 0; i < m_messages.count(); ++i) {
+        if (m_messages.at(i).id == message.id) {
+            m_messages.replace(i, message);
+
+            emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
+            return;
+        }
+    }
     beginInsertRows(QModelIndex(), m_messages.count(), m_messages.count());
     m_messages.append(message);
     if (!m_messages.last().timestamp) {
