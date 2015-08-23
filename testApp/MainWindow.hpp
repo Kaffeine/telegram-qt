@@ -100,6 +100,8 @@ protected slots:
     void on_messagingAttachButton_clicked();
     void on_messagingMessage_textChanged(const QString &arg1);
     void on_messagingContactPhone_textChanged(const QString &arg1);
+    void on_messagingGetHistoryRequest_clicked();
+    void on_groupChatGetHistoryRequest_clicked();
 
     void on_tabWidget_currentChanged(int index);
 

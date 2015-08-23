@@ -728,6 +728,17 @@ void MainWindow::on_messagingContactPhone_textChanged(const QString &arg1)
     ui->messagingContactTypingStatus->setText(m_contactsModel->data(arg1, CContactsModel::TypingStatus).toString());
 }
 
+void MainWindow::on_messagingGetHistoryRequest_clicked()
+{
+    m_core->requestHistory(ui->messagingContactPhone->text(), ui->messagingGetHistoryOffset->value(), ui->messagingGetHistoryLimit->value());
+}
+
+void MainWindow::on_groupChatGetHistoryRequest_clicked()
+{
+    const QString peer = QString(QLatin1String("chat%1")).arg(m_activeChatId);
+    m_core->requestHistory(peer, ui->groupChatGetHistoryOffset->value(), ui->groupChatGetHistoryLimit->value());
+}
+
 void MainWindow::on_setStatusOnline_clicked()
 {
     m_core->setOnlineStatus(/* online */ true);
