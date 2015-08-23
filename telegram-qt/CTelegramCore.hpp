@@ -87,6 +87,8 @@ public Q_SLOTS:
     void requestContactAvatar(const QString &contact);
     void requestMessageMediaData(quint32 messageId);
 
+    bool requestHistory(const QString &identifier, int offset, int limit);
+
     // Does not work yet
 //    quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
 //    quint32 uploadFile(QIODevice *source, const QString &fileName);

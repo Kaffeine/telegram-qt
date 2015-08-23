@@ -174,6 +174,11 @@ void CTelegramCore::requestMessageMediaData(quint32 messageId)
     m_dispatcher->requestMessageMediaData(messageId);
 }
 
+bool CTelegramCore::requestHistory(const QString &identifier, int offset, int limit)
+{
+    return m_dispatcher->requestHistory(identifier, offset, limit);
+}
+
 //quint32 CTelegramCore::uploadFile(const QByteArray &fileContent, const QString &fileName)
 //{
 //    return m_dispatcher->uploadFile(fileContent, fileName);

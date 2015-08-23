@@ -637,6 +637,24 @@ bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
     return requestFile(FileRequestDescriptor::messageMediaDataRequest(m_knownMediaMessages.value(messageId)));
 }
 
+bool CTelegramDispatcher::requestHistory(const QString &identifier, quint32 offset, quint32 limit)
+{
+    if (!activeConnection()) {
+        return false;
+    }
+
+    const TLInputPeer peer = identifierToInputPeer(identifier);
+
+    if (peer.tlType == TLValue::InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
+        return false;
+    }
+
+    activeConnection()->messagesGetHistory(peer, offset, /* maxId */ 0, limit);
+
+    return true;
+}
+
 quint32 CTelegramDispatcher::uploadFile(const QByteArray &fileContent, const QString &fileName)
 {
 #ifdef DEVELOPER_BUILD
@@ -1201,6 +1219,13 @@ void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, q
     emit sentMessageStatusChanged(phoneAndId.first, phoneAndId.second, TelegramNamespace::MessageDeliveryStatusSent);
 
     ensureUpdateState(pts, seq, date);
+}
+
+void CTelegramDispatcher::whenMessagesHistoryReceived(const TLMessagesMessages &messages)
+{
+    foreach (const TLMessage &message, messages.messages) {
+        processMessageReceived(message);
+    }
 }
 
 void CTelegramDispatcher::getDcConfiguration()
@@ -1916,6 +1941,8 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenUpdatesReceived(TLUpdates)));
             connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)),
                     SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
+            connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
+                    SLOT(whenMessagesHistoryReceived(TLMessagesMessages)));
             connect(connection, SIGNAL(statedMessageReceived(TLMessagesStatedMessage,quint64)),
                     SLOT(whenStatedMessageReceived(TLMessagesStatedMessage,quint64)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),

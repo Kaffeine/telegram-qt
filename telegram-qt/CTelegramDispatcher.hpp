@@ -153,6 +153,8 @@ public:
     void requestContactAvatar(const QString &contact);
     bool requestMessageMediaData(quint32 messageId);
 
+    bool requestHistory(const QString &identifier, quint32 offset, quint32 limit);
+
     quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
     quint32 uploadFile(QIODevice *source, const QString &fileName);
 
@@ -238,6 +240,7 @@ protected slots:
 
     void whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
     void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
+    void whenMessagesHistoryReceived(const TLMessagesMessages &messages);
 
     void getDcConfiguration();
     void getContacts();
