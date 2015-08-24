@@ -127,7 +127,7 @@ public:
     QString selfPhone() const;
 
     QStringList contactList() const;
-    QVector<quint32> chatList() const;
+    QVector<quint32> publicChatIdList() const;
 
     void addContacts(const QStringList &phoneNumbers, bool replace = false);
     void deleteContacts(const QStringList &phoneNumbers);
@@ -308,7 +308,7 @@ protected:
 
     void continueInitialization(InitializationStep justDone);
 
-    qint32 telegramChatIdToPublicId(quint32 telegramChatId) const;
+    quint32 telegramChatIdToPublicId(quint32 telegramChatId) const;
     quint32 insertTelegramChatId(quint32 telegramChatId);
     bool havePublicChatId(quint32 publicChatId) const;
 

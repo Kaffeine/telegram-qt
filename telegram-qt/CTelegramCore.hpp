@@ -108,10 +108,11 @@ public Q_SLOTS:
     void checkUserName(const QString &userName);
     void setUserName(const QString &newUserName);
 
+    // ChatId should starts with 1. The null id means that the chat is not valid.
     quint32 createChat(const QStringList &phones, const QString &title);
     bool addChatUser(quint32 chatId, const QString &contact, quint32 forwardMessages = 0);
 
-    // Not "Chat" methods can be used instead.
+    // Methods without "chat" word can be used instead. See methods implementation for details.
     quint64 sendChatMessage(quint32 chatId, const QString &message); // Message id is random number
     void setChatTyping(quint32 chatId, bool typingStatus);
     void setChatMessageRead(const quint32 &chatId, quint32 messageId);
