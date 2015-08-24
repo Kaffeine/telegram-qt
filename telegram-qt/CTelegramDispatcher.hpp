@@ -31,6 +31,7 @@
 
 class QTimer;
 class QCryptographicHash;
+class QIODevice;
 
 class CAppInformation;
 class CTelegramConnection;
