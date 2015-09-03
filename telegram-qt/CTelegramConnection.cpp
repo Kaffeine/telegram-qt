@@ -1983,9 +1983,11 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
                 emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusUnknown);
             }
         }
+            break;
         default:
             break;
         }
+        break;
     case 401: // UNAUTHORIZED
         emit authorizationErrorReceived();
         break;
