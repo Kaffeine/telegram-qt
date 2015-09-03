@@ -1020,6 +1020,8 @@ bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, 
     outputChat->id = publicChatId;
     outputChat->title = chat.title;
     outputChat->participantsCount = chat.participantsCount;
+    outputChat->date = chat.date;
+    outputChat->left = chat.left; // Is it checkedIn for Geo chat?
 
     return true;
 }

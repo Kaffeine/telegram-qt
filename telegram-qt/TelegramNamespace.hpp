@@ -130,26 +130,17 @@ public:
     {
         GroupChat(quint32 id = 0) :
             id(id),
-            participantsCount(0) {
-        }
-
-        GroupChat(const GroupChat &anotherChat) :
-            id(anotherChat.id),
-            title(anotherChat.title),
-            participantsCount(anotherChat.participantsCount) {
-        }
-
-        GroupChat &operator =(const GroupChat &anotherChat) {
-            id = anotherChat.id;
-            title = anotherChat.title;
-            participantsCount = anotherChat.participantsCount;
-
-            return *this;
+            participantsCount(0),
+            date(0),
+            left(false)
+        {
         }
 
         quint32 id;
         QString title;
         quint32 participantsCount;
+        quint32 date;
+        bool left;
     };
 
 };
