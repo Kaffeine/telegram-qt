@@ -53,6 +53,7 @@ public:
     Q_INVOKABLE QString contactUserName(const QString &contact) const;
     Q_INVOKABLE QString contactAvatarToken(const QString &contact) const;
     Q_INVOKABLE QString chatTitle(quint32 chatId) const;
+    Q_INVOKABLE static quint32 identifierToChatId(const QString &identifier);
 
     static qint32 localTypingRecommendedRepeatInterval(); // Recommended application local typing state re-set interval.
 
@@ -162,6 +163,14 @@ private:
     const CAppInformation *m_appInfo;
 
 };
+
+inline quint32 CTelegramCore::identifierToChatId(const QString &identifier)
+{
+    if (identifier.startsWith(QLatin1String("chat"))) {
+        return identifier.section(QLatin1String("chat"), 1).toUInt();
+    }
+    return 0;
+}
 
 inline void CTelegramCore::addContact(const QString &phoneNumber)
 {
