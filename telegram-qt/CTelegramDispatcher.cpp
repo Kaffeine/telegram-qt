@@ -1100,7 +1100,7 @@ void CTelegramDispatcher::whenContactListChanged(const QVector<quint32> &added, 
     foreach (const quint32 contact, removed) {
         for (int i = 0; i < newContactList.count(); ++i) {
             // We can use remove one, because we warranty that there is no duplication
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= 0x050400
             newContactList.removeOne(contact);
 #else
             int index = newContactList.indexOf(contact);
