@@ -2461,7 +2461,7 @@ CTelegramConnection *CTelegramDispatcher::establishConnectionToDc(quint32 dc)
         m_connections.insert(dc, connection);
     }
 
-    if (!connection->status() < CTelegramConnection::ConnectionStatusConnected) {
+    if (connection->status() == CTelegramConnection::ConnectionStatusDisconnected) {
         connection->connectToDc();
     }
 
