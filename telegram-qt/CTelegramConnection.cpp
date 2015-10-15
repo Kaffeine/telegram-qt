@@ -1657,7 +1657,7 @@ bool CTelegramConnection::processServersDHAnswer(const QByteArray &payload)
         setAuthKey(newAuthKey);
         m_serverSalt = m_serverNonce.parts[0] ^ m_newNonce.parts[0];
 
-        setAuthState(AuthStateSuccess);
+        setAuthState(AuthStateHaveAKey);
         return true;
     } else if (responseTLValue == TLValue::DhGenRetry) {
         qDebug() << "Answer RETRY";
@@ -2725,7 +2725,7 @@ void CTelegramConnection::whenReadyRead()
         default:
             break;
         }
-    } else if (m_authState >= AuthStateSuccess) {
+    } else if (m_authState >= AuthStateHaveAKey) {
         if (auth != m_authId) {
             qDebug() << Q_FUNC_INFO << "Incorrect auth id.";
 
@@ -3027,13 +3027,13 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
 
     m_authState = newState;
 
-    if ((m_authState >= AuthStateSuccess) && !m_sessionId) {
+    if ((m_authState >= AuthStateHaveAKey) && !m_sessionId) {
         Utils::randomBytes(&m_sessionId);
     }
 
     emit authStateChanged(m_authState, m_dcInfo.id);
 
-    if (m_authState >= AuthStateSuccess) {
+    if (m_authState >= AuthStateHaveAKey) {
         if (m_pingInterval) {
             startPingTimer();
         }

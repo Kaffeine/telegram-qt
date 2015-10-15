@@ -1963,7 +1963,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     SIGNAL(loggedOut(bool)));
 
             continueInitialization(StepSignIn);
-        } else if (newState == CTelegramConnection::AuthStateSuccess) {
+        } else if (newState == CTelegramConnection::AuthStateHaveAKey) {
             continueInitialization(StepFirst); // Start initialization, if it is not started yet.
         }
     } else {
@@ -1975,12 +1975,12 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
 
                 processFileRequestForConnection(connection, fileId);
             }
-        } else if (newState == CTelegramConnection::AuthStateSuccess) {
+        } else if (newState == CTelegramConnection::AuthStateHaveAKey) {
             ensureSignedConnection(dc);
         }
     }
 
-    if (newState >= CTelegramConnection::AuthStateSuccess) {
+    if (newState >= CTelegramConnection::AuthStateHaveAKey) {
         if (m_wantedActiveDc == dc) {
             setActiveDc(dc);
         }
@@ -2071,7 +2071,7 @@ void CTelegramDispatcher::whenPackageRedirected(const QByteArray &data, quint32 
 {
     CTelegramConnection *connection = m_connections.value(dc);
 
-    if (connection && connection->authState() >= CTelegramConnection::AuthStateSuccess) {
+    if (connection && connection->authState() >= CTelegramConnection::AuthStateHaveAKey) {
         connection->processRedirectedPackage(data);
     } else {
         m_delayedPackages.insertMulti(dc, data);
@@ -2084,7 +2084,7 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
     qDebug() << Q_FUNC_INFO << dc;
     CTelegramConnection *connection = m_connections.value(dc);
 
-    if (connection && connection->authState() >= CTelegramConnection::AuthStateSuccess) {
+    if (connection && connection->authState() >= CTelegramConnection::AuthStateHaveAKey) {
         setActiveDc(dc);
     } else {
         m_wantedActiveDc = dc;
@@ -2249,7 +2249,7 @@ void CTelegramDispatcher::whenAuthExportedAuthorizationReceived(quint32 dc, quin
     m_exportedAuthentications.insert(dc, QPair<quint32, QByteArray>(id,data));
 
     CTelegramConnection *connection = m_connections.value(dc);
-    if (connection && (connection->authState() == CTelegramConnection::AuthStateSuccess)) {
+    if (connection && (connection->authState() == CTelegramConnection::AuthStateHaveAKey)) {
         connection->authImportAuthorization(id, data);
     }
 }
@@ -2305,7 +2305,7 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     }
 
     if (justDone == StepDcConfiguration) {
-        if (activeConnection()->authState() == CTelegramConnection::AuthStateSuccess) {
+        if (activeConnection()->authState() == CTelegramConnection::AuthStateHaveAKey) {
             setConnectionState(TelegramNamespace::ConnectionStateAuthRequired);
         } else {
             setConnectionState(TelegramNamespace::ConnectionStateConnected);
@@ -2477,7 +2477,7 @@ void CTelegramDispatcher::ensureSignedConnection(quint32 dc)
     CTelegramConnection *connection = m_connections.value(dc);
 
     if (connection && (connection->status() != CTelegramConnection::ConnectionStatusDisconnected)) {
-        if (connection->authState() == CTelegramConnection::AuthStateSuccess) {
+        if (connection->authState() == CTelegramConnection::AuthStateHaveAKey) {
             if (m_exportedAuthentications.contains(dc)) {
                 connection->authImportAuthorization(m_exportedAuthentications.value(dc).first, m_exportedAuthentications.value(dc).second);
             } else {

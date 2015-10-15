@@ -57,7 +57,7 @@ public:
         AuthStatePqRequested,
         AuthStateDhRequested,
         AuthStateDhGenerationResultRequested,
-        AuthStateSuccess,
+        AuthStateHaveAKey,
         AuthStateSignedIn
     };
 
