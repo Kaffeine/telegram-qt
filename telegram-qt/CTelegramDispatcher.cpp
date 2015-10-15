@@ -474,6 +474,12 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     }
 
     inputStream >> authKey;
+
+    if (authKey.isEmpty()) {
+        qDebug() << Q_FUNC_INFO << "Empty auth key data.";
+        return false;
+    }
+
     inputStream >> authId;
     inputStream >> serverSalt;
 
