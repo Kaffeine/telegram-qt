@@ -369,7 +369,7 @@ void CTelegramDispatcher::deleteContacts(const QStringList &phoneNumbers)
 
 QByteArray CTelegramDispatcher::connectionSecretInfo() const
 {
-    if (!activeConnection()) {
+    if (!activeConnection() || activeConnection()->authKey().isEmpty()) {
         return QByteArray();
     }
 
