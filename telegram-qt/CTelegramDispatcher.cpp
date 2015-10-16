@@ -80,6 +80,13 @@ static QStringList maskPhoneNumberList(const QStringList &list)
     return result;
 }
 
+static const QVector<TelegramNamespace::DcOption> s_builtInDcs = QVector<TelegramNamespace::DcOption>()
+        << TelegramNamespace::DcOption(QLatin1String("149.1.175.50") , 443)
+        << TelegramNamespace::DcOption(QLatin1String("149.154.167.51") , 443)
+        << TelegramNamespace::DcOption(QLatin1String("149.154.175.100"), 443)
+        << TelegramNamespace::DcOption(QLatin1String("149.154.167.91") , 443)
+        << TelegramNamespace::DcOption(QLatin1String("149.154.171.5")  , 443);
+
 const quint32 secretFormatVersion = 3;
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingDuration = 5000; // 5 sec
@@ -290,6 +297,11 @@ CTelegramDispatcher::~CTelegramDispatcher()
 {
     qDeleteAll(m_connections);
     qDeleteAll(m_users);
+}
+
+QVector<TelegramNamespace::DcOption> CTelegramDispatcher::builtInDcs()
+{
+    return s_builtInDcs;
 }
 
 void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)

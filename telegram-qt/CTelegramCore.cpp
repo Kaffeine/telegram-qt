@@ -95,6 +95,11 @@ void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
     m_appInfo = new CAppInformation(newAppInfo);
 }
 
+QVector<TelegramNamespace::DcOption> CTelegramCore::builtInDcs()
+{
+    return CTelegramDispatcher::builtInDcs();
+}
+
 QByteArray CTelegramCore::connectionSecretInfo() const
 {
     return m_dispatcher->connectionSecretInfo();

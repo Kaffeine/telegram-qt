@@ -38,6 +38,8 @@ public:
     inline const CAppInformation *appInfo() { return m_appInfo; }
     void setAppInformation(const CAppInformation *newAppInfo);
 
+    Q_INVOKABLE static QVector<TelegramNamespace::DcOption> builtInDcs();
+
     QByteArray connectionSecretInfo() const;
 
     Q_INVOKABLE TelegramNamespace::ConnectionState connectionState() const;

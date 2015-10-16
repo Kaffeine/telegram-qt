@@ -118,6 +118,8 @@ public:
     explicit CTelegramDispatcher(QObject *parent = 0);
     ~CTelegramDispatcher();
 
+    static QVector<TelegramNamespace::DcOption> builtInDcs();
+
     void setAppInformation(const CAppInformation *newAppInfo);
 
     static qint32 localTypingRecommendedRepeatInterval();
