@@ -166,7 +166,8 @@ int CMessagingModel::messageIndex(quint64 messageId) const
 void CMessagingModel::addMessage(const SMessage &message)
 {
     for (int i = 0; i < m_messages.count(); ++i) {
-        if (m_messages.at(i).id == message.id) {
+        if ((m_messages.at(i).id64 && (m_messages.at(i).id64 == message.id64))
+                || (!m_messages.at(i).id64 && (m_messages.at(i).id == message.id))) {
             m_messages.replace(i, message);
 
             emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));

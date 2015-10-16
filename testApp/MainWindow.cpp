@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->groupChatMessagingView->hideColumn(CMessagingModel::Direction);
 
     QCompleter *comp = new QCompleter(m_contactsModel, this);
-    ui->messagingContactPhone->setCompleter(comp);
+    ui->messagingContactIdentifier->setCompleter(comp);
     ui->groupChatContactPhone->setCompleter(comp);
 
     connect(ui->secretOpenFile, SIGNAL(clicked()), SLOT(loadSecretFromBrowsedFile()));
@@ -381,7 +381,7 @@ void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QStrin
 void MainWindow::whenContactTypingStatusChanged(const QString &contact, bool typingStatus)
 {
     m_contactsModel->setTypingStatus(contact, typingStatus);
-    ui->messagingContactTypingStatus->setText(m_contactsModel->data(ui->messagingContactPhone->text(), CContactsModel::TypingStatus).toString());
+    updateMessagingContactAction();
 }
 
 void MainWindow::whenContactStatusChanged(const QString &contact)
@@ -390,12 +390,20 @@ void MainWindow::whenContactStatusChanged(const QString &contact)
     m_contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
     m_chatContactsModel->setContactStatus(contact, m_core->contactStatus(contact));
     m_chatContactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
+
+    if (contact == ui->messagingContactIdentifier->text()) {
+        updateMessagingContactStatus();
+    }
 }
 
 void MainWindow::whenContactProfileChanged(const QString &contact)
 {
     m_contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
     m_chatContactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
+
+    if (contact == ui->messagingContactIdentifier->text()) {
+        updateMessagingContactName();
+    }
 }
 
 void MainWindow::whenChatAdded(quint32 chatId)
@@ -441,7 +449,7 @@ void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOf
         statusBar()->showMessage(tr("Request %1 completed.").arg(requestId).arg(currentOffset).arg(size));
 
 //        quint64 id = m_core->sendMedia(m_uploadingRequests.value(requestId), requestId, TelegramNamespace::MessageTypePhoto);
-//        m_messagingModel->addMessage(ui->messagingContactPhone->text(), tr("Photo %1").arg(requestId), TelegramNamespace::MessageTypePhoto, /* outgoing */ true, id);
+//        m_messagingModel->addMessage(ui->messagingContactIdentifier->text(), tr("Photo %1").arg(requestId), TelegramNamespace::MessageTypePhoto, /* outgoing */ true, id);
     } else {
         statusBar()->showMessage(tr("Request %1 status updated (%2/%3).").arg(requestId).arg(currentOffset).arg(size));
     }
@@ -688,11 +696,11 @@ void MainWindow::on_deleteContact_clicked()
 
 void MainWindow::on_messagingSendButton_clicked()
 {
-    quint64 id = m_core->sendMessage(ui->messagingContactPhone->text(), ui->messagingMessage->text());
+    quint64 id = m_core->sendMessage(ui->messagingContactIdentifier->text(), ui->messagingMessage->text());
 
     CMessagingModel::SMessage m;
-    m.peer = ui->messagingContactPhone->text();
-    m.contact = ui->messagingContactPhone->text();
+    m.peer = ui->messagingContactIdentifier->text();
+    m.contact = ui->messagingContactIdentifier->text();
     m.type = TelegramNamespace::MessageTypeText;
     m.text = ui->messagingMessage->text();
     m.flags = TelegramNamespace::MessageFlagOut;
@@ -720,22 +728,26 @@ void MainWindow::on_messagingAttachButton_clicked()
         qDebug() << Q_FUNC_INFO << "Unable to upload file" << fileName;
     }
 
-    m_uploadingRequests.insert(id, ui->messagingContactPhone->text());
+    m_uploadingRequests.insert(id, ui->messagingContactIdentifier->text());
 }
 
 void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
 {
-    m_core->setTyping(ui->messagingContactPhone->text(), !arg1.isEmpty());
+    m_core->setTyping(ui->messagingContactIdentifier->text(), !arg1.isEmpty());
 }
 
-void MainWindow::on_messagingContactPhone_textChanged(const QString &arg1)
+void MainWindow::on_messagingContactIdentifier_textChanged(const QString &arg1)
 {
-    ui->messagingContactTypingStatus->setText(m_contactsModel->data(arg1, CContactsModel::TypingStatus).toString());
+    Q_UNUSED(arg1);
+
+    updateMessagingContactName();
+    updateMessagingContactStatus();
+    updateMessagingContactAction();
 }
 
 void MainWindow::on_messagingGetHistoryRequest_clicked()
 {
-    m_core->requestHistory(ui->messagingContactPhone->text(), ui->messagingGetHistoryOffset->value(), ui->messagingGetHistoryLimit->value());
+    m_core->requestHistory(ui->messagingContactIdentifier->text(), ui->messagingGetHistoryOffset->value(), ui->messagingGetHistoryLimit->value());
 }
 
 void MainWindow::on_groupChatGetHistoryRequest_clicked()
@@ -758,7 +770,7 @@ void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
 {
     const QModelIndex phoneIndex = m_contactsModel->index(index.row(), CContactsModel::Phone);
 
-    ui->messagingContactPhone->setText(m_contactsModel->data(phoneIndex).toString());
+    setMessagingTabContact(m_contactsModel->data(phoneIndex).toString());
     ui->tabWidget->setCurrentWidget(ui->tabMessaging);
     ui->messagingMessage->setFocus();
 }
@@ -767,7 +779,7 @@ void MainWindow::on_messagingView_doubleClicked(const QModelIndex &index)
 {
     const QModelIndex phoneIndex = m_messagingModel->index(index.row(), CMessagingModel::Contact);
 
-    ui->messagingContactPhone->setText(m_messagingModel->data(phoneIndex).toString());
+    setMessagingTabContact(m_messagingModel->data(phoneIndex).toString());
     ui->tabWidget->setCurrentWidget(ui->tabMessaging);
     ui->messagingMessage->setFocus();
 }
@@ -883,6 +895,59 @@ void MainWindow::updateAvatar(const QString &contact)
         m_chatContactsModel->setContactAvatar(contact, avatar);
     } else {
         m_core->requestContactAvatar(contact);
+    }
+}
+
+void MainWindow::setMessagingTabContact(const QString &contact)
+{
+    ui->messagingContactIdentifier->setText(contact);
+    updateMessagingContactName();
+    updateMessagingContactStatus();
+}
+
+void MainWindow::updateMessagingContactName()
+{
+    const QString contact = ui->messagingContactIdentifier->text();
+    QString name = m_core->contactUserName(contact);
+    if (name.isEmpty()) {
+        name = m_core->contactFirstName(contact) + m_core->contactLastName(contact);
+    }
+
+    if (name.simplified().isEmpty()) {
+        name = tr("Unknown name");
+    }
+
+    ui->messagingContactName->setText(name);
+}
+
+void MainWindow::updateMessagingContactStatus()
+{
+    const QString contact = ui->messagingContactIdentifier->text();
+    QString status;
+    switch (m_core->contactStatus(contact)) {
+    default:
+    case TelegramNamespace::ContactStatusUnknown:
+        status = tr("(unknown status)");
+        break;
+    case TelegramNamespace::ContactStatusOnline:
+        status = (tr("(online)"));
+        break;
+    case TelegramNamespace::ContactStatusOffline:
+        status = tr("(offline)");
+        break;
+    }
+
+    ui->messagingContactStatus->setText(status);
+}
+
+void MainWindow::updateMessagingContactAction()
+{
+    const QString contact = ui->messagingContactIdentifier->text();
+    const bool typing = m_contactsModel->data(contact, CContactsModel::TypingStatus).toBool();
+    if (typing) {
+        ui->messagingContactAction->setText(tr("(typing...)"));
+    } else {
+        ui->messagingContactAction->setText(tr("(no action)"));
     }
 }
 

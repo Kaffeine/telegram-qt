@@ -99,7 +99,7 @@ protected slots:
     void on_messagingSendButton_clicked();
     void on_messagingAttachButton_clicked();
     void on_messagingMessage_textChanged(const QString &arg1);
-    void on_messagingContactPhone_textChanged(const QString &arg1);
+    void on_messagingContactIdentifier_textChanged(const QString &arg1);
     void on_messagingGetHistoryRequest_clicked();
     void on_groupChatGetHistoryRequest_clicked();
 
@@ -127,6 +127,11 @@ protected:
 
     void getAvatar(const QString &contact);
     void updateAvatar(const QString &contact);
+
+    void setMessagingTabContact(const QString &contact);
+    void updateMessagingContactName();
+    void updateMessagingContactStatus();
+    void updateMessagingContactAction();
 
 private slots:
     void on_restoreSession_clicked();

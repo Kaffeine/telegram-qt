@@ -398,13 +398,6 @@
               </property>
               <widget class="QWidget" name="layoutWidget">
                <layout class="QGridLayout" name="gridLayout_12">
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_8">
-                  <property name="text">
-                   <string>Message:</string>
-                  </property>
-                 </widget>
-                </item>
                 <item row="0" column="6">
                  <widget class="QSpinBox" name="messagingGetHistoryLimit">
                   <property name="maximum">
@@ -415,18 +408,8 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_7">
-                  <property name="text">
-                   <string>Contact:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="messagingContactPhone"/>
-                </item>
                 <item row="0" column="3">
-                 <widget class="QLabel" name="messagingContactTypingStatus">
+                 <widget class="QLabel" name="messagingContactAction">
                   <property name="minimumSize">
                    <size>
                     <width>40</width>
@@ -434,14 +417,7 @@
                    </size>
                   </property>
                   <property name="text">
-                   <string/>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="2">
-                 <widget class="QLabel" name="label_9">
-                  <property name="text">
-                   <string>Typing:</string>
+                   <string>(no action)</string>
                   </property>
                  </widget>
                 </item>
@@ -449,13 +425,6 @@
                  <widget class="QPushButton" name="messagingGetHistoryRequest">
                   <property name="text">
                    <string>Request</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="8">
-                 <widget class="QSpinBox" name="messagingGetHistoryOffset">
-                  <property name="maximum">
-                   <number>10000</number>
                   </property>
                  </widget>
                 </item>
@@ -473,10 +442,10 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="4">
-                 <widget class="QLabel" name="label_15">
-                  <property name="text">
-                   <string>&lt;b&gt;Get history:&lt;/b&gt;</string>
+                <item row="0" column="8">
+                 <widget class="QSpinBox" name="messagingGetHistoryOffset">
+                  <property name="maximum">
+                   <number>10000</number>
                   </property>
                  </widget>
                 </item>
@@ -487,8 +456,15 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1" colspan="8">
+                <item row="1" column="0" colspan="9">
                  <widget class="QLineEdit" name="messagingMessage"/>
+                </item>
+                <item row="0" column="4">
+                 <widget class="QLabel" name="label_15">
+                  <property name="text">
+                   <string>&lt;b&gt;Get history:&lt;/b&gt;</string>
+                  </property>
+                 </widget>
                 </item>
                 <item row="1" column="10">
                  <widget class="QPushButton" name="messagingAttachButton">
@@ -497,10 +473,28 @@
                   </property>
                  </widget>
                 </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="messagingContactName">
+                  <property name="text">
+                   <string>Unknown name</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="messagingContactStatus">
+                  <property name="text">
+                   <string>(unknown status)</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QLineEdit" name="messagingContactIdentifier">
+                  <property name="text">
+                   <string>unknown identifier</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
-              </widget>
-              <widget class="QWidget" name="layoutWidget5">
-               <layout class="QHBoxLayout" name="horizontalLayout_5"/>
               </widget>
              </widget>
             </item>
@@ -759,7 +753,7 @@
      <x>0</x>
      <y>0</y>
      <width>1360</width>
-     <height>27</height>
+     <height>19</height>
     </rect>
    </property>
   </widget>
