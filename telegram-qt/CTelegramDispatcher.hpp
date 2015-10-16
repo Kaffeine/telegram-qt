@@ -119,6 +119,7 @@ public:
     ~CTelegramDispatcher();
 
     static QVector<TelegramNamespace::DcOption> builtInDcs();
+    static quint32 defaultPingInterval();
 
     void setAppInformation(const CAppInformation *newAppInfo);
 

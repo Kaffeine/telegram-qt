@@ -39,6 +39,7 @@ public:
     void setAppInformation(const CAppInformation *newAppInfo);
 
     Q_INVOKABLE static QVector<TelegramNamespace::DcOption> builtInDcs();
+    Q_INVOKABLE static quint32 defaultPingInterval();
 
     QByteArray connectionSecretInfo() const;
 

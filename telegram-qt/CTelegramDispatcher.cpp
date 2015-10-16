@@ -87,6 +87,8 @@ static const QVector<TelegramNamespace::DcOption> s_builtInDcs = QVector<Telegra
         << TelegramNamespace::DcOption(QLatin1String("149.154.167.91") , 443)
         << TelegramNamespace::DcOption(QLatin1String("149.154.171.5")  , 443);
 
+static const quint32 s_defaultPingInterval = 15000; // 15 sec
+
 const quint32 secretFormatVersion = 3;
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingDuration = 5000; // 5 sec
@@ -280,7 +282,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagRead),
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeText),
     m_autoReconnectionEnabled(false),
-    m_pingInterval(15000),
+    m_pingInterval(s_defaultPingInterval),
     m_mediaDataBufferSize(128 * 256), // 128 KB
     m_initializationState(0),
     m_requestedSteps(0),
@@ -305,6 +307,11 @@ CTelegramDispatcher::~CTelegramDispatcher()
 QVector<TelegramNamespace::DcOption> CTelegramDispatcher::builtInDcs()
 {
     return s_builtInDcs;
+}
+
+quint32 CTelegramDispatcher::defaultPingInterval()
+{
+    return s_defaultPingInterval;
 }
 
 void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
