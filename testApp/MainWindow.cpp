@@ -495,8 +495,6 @@ void MainWindow::on_connectButton_clicked()
 {
     QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
 
-    QString serverIp = ui->mainDcRadio->isChecked() ? QLatin1String("149.154.175.50") : QLatin1String("149.154.175.10");
-
     TelegramNamespace::MessageFlags flags = TelegramNamespace::MessageFlagNone;
     if (ui->settingsReceivingFilterReadMessages->isChecked()) {
         flags |= TelegramNamespace::MessageFlagRead;
@@ -510,8 +508,15 @@ void MainWindow::on_connectButton_clicked()
     m_core->setMessageReceivingFilter(flags);
     m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto);
 
+    QVector<TelegramNamespace::DcOption> testServers;
+    testServers << TelegramNamespace::DcOption(QLatin1String("149.154.175.10"), 443);
+
     if (secretInfo.isEmpty())
-        m_core->initConnection(serverIp, 443);
+        if (ui->mainDcRadio->isChecked()) {
+            m_core->initConnection();
+        } else {
+            m_core->initConnection(testServers);
+        }
     else {
         m_core->restoreConnection(secretInfo);
     }
