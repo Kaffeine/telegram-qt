@@ -52,6 +52,11 @@ public:
         ConnectionStatusSigned
     };
 
+    enum ConnectionStatusReason {
+        ConnectionStatusReasonNone,
+        ConnectionStatusReasonTimeout
+    };
+
     enum AuthState {
         AuthStateNone,
         AuthStatePqRequested,
@@ -228,7 +233,7 @@ signals:
     void wantedActiveDcChanged(quint32 dc);
     void newRedirectedPackage(const QByteArray &data, quint32 dc);
 
-    void statusChanged(int status, quint32 dc);
+    void statusChanged(int status, int reason, quint32 dc);
     void authStateChanged(int status, quint32 dc);
     void actualDcIdReceived(quint32 dc, quint32 newDcId);
     void dcConfigurationReceived(quint32 dc);
@@ -319,7 +324,7 @@ protected:
 
     void setTransport(CTelegramTransport *newTransport);
 
-    void setStatus(ConnectionStatus status);
+    void setStatus(ConnectionStatus status, ConnectionStatusReason reason = ConnectionStatusReasonNone);
     void setAuthState(AuthState newState);
 
     quint64 newMessageId();
@@ -332,7 +337,8 @@ protected:
 
 protected slots:
     void whenTransportStateChanged();
-    void whenReadyRead();
+    void whenTransportReadyRead();
+    void whenTransportTimeout();
     void whenItsTimeToPing();
     void whenItsTimeToAckMessages();
 

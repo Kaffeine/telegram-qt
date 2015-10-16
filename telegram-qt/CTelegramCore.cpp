@@ -110,7 +110,7 @@ TelegramNamespace::ConnectionState CTelegramCore::connectionState() const
     return m_dispatcher->connectionState();
 }
 
-bool CTelegramCore::initConnection(const QString &address, quint32 port)
+bool CTelegramCore::initConnection(const QVector<TelegramNamespace::DcOption> &dcs)
 {
     if (!m_appInfo || !m_appInfo->isValid()) {
         qDebug() << "CTelegramCore: Can not init connection: App information is null or is not valid.";
@@ -118,7 +118,7 @@ bool CTelegramCore::initConnection(const QString &address, quint32 port)
     }
 
     m_dispatcher->setAppInformation(m_appInfo);
-    m_dispatcher->initConnection(address, port);
+    m_dispatcher->initConnection(dcs);
 
     return true;
 }

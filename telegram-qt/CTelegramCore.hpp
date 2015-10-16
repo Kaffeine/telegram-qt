@@ -71,7 +71,7 @@ public Q_SLOTS:
     void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime = 10000);
     void setMediaDataBufferSize(quint32 size);
 
-    bool initConnection(const QString &address, quint32 port);
+    bool initConnection(const QVector<TelegramNamespace::DcOption> &dcs = QVector<TelegramNamespace::DcOption>()); // Uses builtin dc options by default
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
     bool logOut();
@@ -122,6 +122,7 @@ public Q_SLOTS:
 
 #ifndef TELEGRAMQT_NO_DEPRECATED
     inline void setMessageReceivingFilterFlags(TelegramNamespace::MessageFlags flags) { setMessageReceivingFilter(flags); }
+    inline bool initConnection(const QString &address, quint32 port) { return initConnection(QVector<TelegramNamespace::DcOption>() << TelegramNamespace::DcOption(address, port)); }
 #endif
 
 Q_SIGNALS:

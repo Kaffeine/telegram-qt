@@ -92,6 +92,8 @@ const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingDuration = 5000; // 5 sec
 const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPeriod - s_localTypingDuration) / 2. Minus 100 ms for insurance.
 
+static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_autoConnectionIndexInvalid + 1 == 0)
+
 #if QT_VERSION < 0x050000
 const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typing time deviation in Qt4 by this value.
 #endif
@@ -284,6 +286,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_requestedSteps(0),
     m_activeDc(0),
     m_wantedActiveDc(0),
+    m_autoConnectionDcIndex(s_autoConnectionIndexInvalid),
     m_updatesStateIsLocked(false),
     m_selfUserId(0),
     m_fileRequestCounter(0),
@@ -440,20 +443,52 @@ void CTelegramDispatcher::setMediaDataBufferSize(quint32 size)
     m_mediaDataBufferSize = size;
 }
 
-void CTelegramDispatcher::initConnection(const QString &address, quint32 port)
+bool CTelegramDispatcher::initConnection(const QVector<TelegramNamespace::DcOption> &dcs)
 {
+    if (!dcs.isEmpty()) {
+        m_connectionAddresses = dcs;
+    } else {
+        m_connectionAddresses = s_builtInDcs;
+    }
+
+    initConnectionSharedClear();
+
+    tryNextDcAddress();
+
+    return true;
+}
+
+void CTelegramDispatcher::tryNextDcAddress()
+{
+    if (m_connectionAddresses.isEmpty()) {
+        return;
+    }
+
+    ++m_autoConnectionDcIndex;
+
+    qDebug() << "CTelegramDispatcher::tryNextBuiltInDcAddress(): Dc index" << m_autoConnectionDcIndex;
+
+    if (m_autoConnectionDcIndex >= m_connectionAddresses.count()) {
+        if (m_autoReconnectionEnabled) {
+            qDebug() << "CTelegramDispatcher::tryNextBuiltInDcAddress(): Could not connect to any known dc. Reconnection enabled -> wrapping up and tring again.";
+            m_autoConnectionDcIndex = 0;
+        } else {
+            qDebug() << "CTelegramDispatcher::tryNextBuiltInDcAddress(): Could not connect to any known dc. Giving up.";
+            setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
+            return;
+        }
+    }
+
     TLDcOption dcInfo;
-    dcInfo.ipAddress = address;
-    dcInfo.port = port;
+    dcInfo.ipAddress = m_connectionAddresses.at(m_autoConnectionDcIndex).address;
+    dcInfo.port = m_connectionAddresses.at(m_autoConnectionDcIndex).port;
 
-    m_updatesState.pts = 1;
-    m_updatesState.qts = 1;
-    m_updatesState.date = 1;
-    m_chatIds.clear();
+    if (!activeConnection()) {
+        CTelegramConnection *connection = createConnection();
+        m_connections.insert(0, connection);
+    }
 
-    CTelegramConnection *connection = createConnection(dcInfo);
-
-    m_connections.insert(0, connection);
+    activeConnection()->setDcInfo(dcInfo);
 
     initConnectionSharedFinal();
 }
@@ -481,6 +516,8 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     inputStream >> deltaTime;
     inputStream >> dcInfo;
 
+    qDebug() << Q_FUNC_INFO << dcInfo.ipAddress;
+
     if (format < 3) {
         inputStream >> legacySelfPhone;
     }
@@ -495,24 +532,20 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     inputStream >> authId;
     inputStream >> serverSalt;
 
+    initConnectionSharedClear();
+
     if (format >= 1) {
         inputStream >> m_updatesState.pts;
         inputStream >> m_updatesState.qts;
         inputStream >> m_updatesState.date;
-    } else {
-        m_updatesState.pts = 1;
-        m_updatesState.qts = 1;
-        m_updatesState.date = 1;
     }
-
-    m_chatIds.clear();
 
     if (format >= 2) {
         inputStream >> m_chatIds;
     }
 
-    CTelegramConnection *connection = createConnection(dcInfo);
-
+    CTelegramConnection *connection = createConnection();
+    connection->setDcInfo(dcInfo);
     connection->setDeltaTime(deltaTime);
     connection->setAuthKey(authKey);
     connection->setServerSalt(serverSalt);
@@ -528,6 +561,16 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     initConnectionSharedFinal(dcInfo.id);
 
     return true;
+}
+
+void CTelegramDispatcher::initConnectionSharedClear()
+{
+    m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
+
+    m_updatesState.pts = 1;
+    m_updatesState.qts = 1;
+    m_updatesState.date = 1;
+    m_chatIds.clear();
 }
 
 void CTelegramDispatcher::initConnectionSharedFinal(quint32 activeDc)
@@ -568,6 +611,9 @@ void CTelegramDispatcher::closeConnection()
     m_temporaryChatIdMap.clear();
     m_chatInfo.clear();
     m_chatFullInfo.clear();
+    m_activeDc = 0;
+    m_wantedActiveDc = 0;
+    m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
 
     setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
 }
@@ -2017,24 +2063,32 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
     }
 }
 
-void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, quint32 dc)
+void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, int reason, quint32 dc)
 {
-    qDebug() << Q_FUNC_INFO << "status" << newStatus << "dc" << dc;
+    qDebug() << Q_FUNC_INFO << "status" << newStatus << "reason" << reason << "dc" << dc;
     CTelegramConnection *connection = m_connections.value(dc);
 
     if (connection == activeConnection()) {
         if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
-            if (connectionState() == TelegramNamespace::ConnectionStateConnecting) {
-                // We are connecting and there is Connecting->Disconnected changes in CTelegramConnection.
-                // Consider it as network error; try to reconnect after a second.
-                QTimer::singleShot(1000, connection, SLOT(connectToDc()));
-            } else {
-                setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
+            if (reason == CTelegramConnection::ConnectionStatusReasonTimeout) {
+                if (connectionState() == TelegramNamespace::ConnectionStateConnecting) {
+                    // There is a problem with initial connection
+                    if (m_autoConnectionDcIndex >= 0) {
+                        tryNextDcAddress();
+                    } else if (m_autoReconnectionEnabled) {
+                        // Network error; try to reconnect after a second.
+                        QTimer::singleShot(1000, connection, SLOT(connectToDc()));
+                    }
+                } else {
+                    setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
 
-                if (m_autoReconnectionEnabled) {
-                    connection->connectToDc();
+                    if (m_autoReconnectionEnabled) {
+                        connection->connectToDc();
+                    }
                 }
             }
+        } else if (newStatus >= CTelegramConnection::ConnectionStatusConnected) {
+            m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
         }
     }
 }
@@ -2050,6 +2104,10 @@ void CTelegramDispatcher::whenDcConfigurationUpdated(quint32 dc)
     m_dcConfiguration = connection->dcConfiguration();
 
     qDebug() << "Core: Got DC Configuration.";
+
+    foreach (TLDcOption o, m_dcConfiguration) {
+        qDebug() << o.ipAddress << o.port;
+    }
 
     continueInitialization(StepDcConfiguration);
 }
@@ -2438,12 +2496,12 @@ void CTelegramDispatcher::checkStateAndCallGetDifference()
     }
 }
 
-CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
+CTelegramConnection *CTelegramDispatcher::createConnection()
 {
     CTelegramConnection *connection = new CTelegramConnection(m_appInformation, this);
 
     connect(connection, SIGNAL(authStateChanged(int,quint32)), SLOT(whenConnectionAuthChanged(int,quint32)));
-    connect(connection, SIGNAL(statusChanged(int,quint32)), SLOT(whenConnectionStatusChanged(int,quint32)));
+    connect(connection, SIGNAL(statusChanged(int,int,quint32)), SLOT(whenConnectionStatusChanged(int,int,quint32)));
     connect(connection, SIGNAL(dcConfigurationReceived(quint32)), SLOT(whenDcConfigurationUpdated(quint32)));
     connect(connection, SIGNAL(actualDcIdReceived(quint32,quint32)), SLOT(whenConnectionDcIdUpdated(quint32,quint32)));
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,quint32)), SLOT(whenPackageRedirected(QByteArray,quint32)));
@@ -2458,8 +2516,6 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dc)
 
     connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(whenFileDataReceived(TLUploadFile,quint32,quint32)));
 
-    connection->setDcInfo(dc);
-
     return connection;
 }
 
@@ -2468,14 +2524,15 @@ CTelegramConnection *CTelegramDispatcher::establishConnectionToDc(quint32 dc)
     CTelegramConnection *connection = m_connections.value(dc);
 
     if (!connection) {
-        const TLDcOption info = dcInfoById(dc);
+        const TLDcOption dcInfo = dcInfoById(dc);
 
-        if (info.ipAddress.isEmpty()) {
+        if (dcInfo.ipAddress.isEmpty()) {
             qDebug() << "Error: Attempt to connect to unknown DC" << dc;
             return 0;
         }
 
-        connection = createConnection(info);
+        connection = createConnection();
+        connection->setDcInfo(dcInfo);
         m_connections.insert(dc, connection);
     }
 

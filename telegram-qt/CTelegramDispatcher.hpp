@@ -143,7 +143,7 @@ public:
     void setPingInterval(quint32 ms, quint32 serverDisconnectionAdditionTime);
     void setMediaDataBufferSize(quint32 size);
 
-    void initConnection(const QString &address, quint32 port);
+    bool initConnection(const QVector<TelegramNamespace::DcOption> &dcs);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
     bool logOut();
@@ -224,7 +224,7 @@ signals:
 
 protected slots:
     void whenConnectionAuthChanged(int newState, quint32 dc);
-    void whenConnectionStatusChanged(int newStatus, quint32 dc);
+    void whenConnectionStatusChanged(int newStatus, int reason, quint32 dc);
     void whenDcConfigurationUpdated(quint32 dc);
     void whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
     void whenPackageRedirected(const QByteArray &data, quint32 dc);
@@ -269,6 +269,7 @@ protected:
     void updateChat(const TLChat &newChat);
     void updateFullChat(const TLChatFull &newChat);
 
+    void initConnectionSharedClear();
     void initConnectionSharedFinal(quint32 activeDc = 0);
 
     void getUser(quint32 id);
@@ -292,7 +293,7 @@ protected:
 
     inline CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
 
-    CTelegramConnection *createConnection(const TLDcOption &dc);
+    CTelegramConnection *createConnection();
     CTelegramConnection *establishConnectionToDc(quint32 dc);
     void ensureSignedConnection(quint32 dc);
 
@@ -307,6 +308,7 @@ protected:
     void ensureUpdateState(quint32 pts = 0, quint32 seq = 0, quint32 date = 0);
 
     void checkStateAndCallGetDifference();
+    void tryNextDcAddress();
 
     void continueInitialization(InitializationStep justDone);
 
@@ -332,7 +334,9 @@ protected:
 
     quint32 m_activeDc;
     quint32 m_wantedActiveDc;
+    int m_autoConnectionDcIndex;
 
+    QVector<TelegramNamespace::DcOption> m_connectionAddresses;
     QVector<TLDcOption> m_dcConfiguration;
     QMap<quint32, CTelegramConnection *> m_connections;
 

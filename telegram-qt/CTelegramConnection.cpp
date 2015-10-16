@@ -111,7 +111,8 @@ void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
     m_transport = newTransport;
 
     connect(m_transport, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(whenTransportStateChanged()));
-    connect(m_transport, SIGNAL(readyRead()), SLOT(whenReadyRead()));
+    connect(m_transport, SIGNAL(readyRead()), SLOT(whenTransportReadyRead()));
+    connect(m_transport, SIGNAL(timeout()), SLOT(whenTransportTimeout()));
 }
 
 void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
@@ -2682,7 +2683,7 @@ void CTelegramConnection::whenTransportStateChanged()
     }
 }
 
-void CTelegramConnection::whenReadyRead()
+void CTelegramConnection::whenTransportReadyRead()
 {
     QByteArray input = m_transport->getPackage();
     CRawStream inputStream(input);
@@ -2804,6 +2805,11 @@ void CTelegramConnection::whenReadyRead()
 #endif
 }
 
+void CTelegramConnection::whenTransportTimeout()
+{
+    setStatus(ConnectionStatusDisconnected, ConnectionStatusReasonTimeout);
+}
+
 void CTelegramConnection::whenItsTimeToPing()
 {
 //    qDebug() << Q_FUNC_INFO << QDateTime::currentMSecsSinceEpoch();
@@ -2815,7 +2821,7 @@ void CTelegramConnection::whenItsTimeToPing()
 
     if (m_lastSentPingTime && (m_lastSentPingTime > m_lastReceivedPingTime + m_pingInterval)) {
         qDebug() << Q_FUNC_INFO << "pong time is out";
-        setStatus(ConnectionStatusDisconnected);
+        setStatus(ConnectionStatusDisconnected, ConnectionStatusReasonTimeout);
         return;
     }
 
@@ -3006,14 +3012,14 @@ quint64 CTelegramConnection::sendEncryptedPackageAgain(quint64 id)
     return sendEncryptedPackage(data);
 }
 
-void CTelegramConnection::setStatus(CTelegramConnection::ConnectionStatus status)
+void CTelegramConnection::setStatus(ConnectionStatus status, ConnectionStatusReason reason)
 {
     if (m_status == status) {
         return;
     }
 
     m_status = status;
-    emit statusChanged(status, m_dcInfo.id);
+    emit statusChanged(status, reason, m_dcInfo.id);
 
     if ((status < ConnectionStatusConnected) && m_pingTimer && m_pingTimer->isActive()) {
         m_pingTimer->stop();

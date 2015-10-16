@@ -46,6 +46,7 @@ signals:
     void stateChanged(QAbstractSocket::SocketState state);
 
     void readyRead();
+    void timeout();
 
 public slots:
     virtual void sendPackage(const QByteArray &package) = 0;

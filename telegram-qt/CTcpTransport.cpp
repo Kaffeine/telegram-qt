@@ -168,5 +168,8 @@ void CTcpTransport::whenTimeout()
 #ifdef DEVELOPER_BUILD
     qDebug() << Q_FUNC_INFO << "(connection to " << m_socket->peerName() << m_socket->peerPort() << ").";
 #endif
+
+    emit timeout();
+
     m_socket->disconnectFromHost();
 }
