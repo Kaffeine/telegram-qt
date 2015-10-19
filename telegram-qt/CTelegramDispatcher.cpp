@@ -295,7 +295,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_typingUpdateTimer(new QTimer(this))
 {
     m_typingUpdateTimer->setSingleShot(true);
-    connect(m_typingUpdateTimer, SIGNAL(timeout()), SLOT(whenUserTypingTimerTimeout()));
+    connect(m_typingUpdateTimer, SIGNAL(timeout()), SLOT(messageActionTimerTimeout()));
 }
 
 CTelegramDispatcher::~CTelegramDispatcher()
@@ -611,9 +611,8 @@ void CTelegramDispatcher::closeConnection()
     m_contactList.clear();
     m_requestedFileDescriptors.clear();
     m_fileRequestCounter = 0;
-    m_userTypingMap.clear();
-    m_userChatTypingMap.clear();
-    m_localTypingMap.clear();
+    m_contactsMessageActions.clear();
+    m_localMessageActions.clear();
     m_chatIds.clear();
     m_temporaryChatIdMap.clear();
     m_chatInfo.clear();
@@ -746,13 +745,29 @@ quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QStrin
     }
     const TLInputPeer peer = identifierToInputPeer(identifier);
 
-    if (peer.tlType == TLValue::InputPeerEmpty) {
+    int actionIndex;
+
+    switch (peer.tlType) {
+    case TLValue::InputPeerEmpty:
         qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
+        return 0;
+    case TLValue::InputPeerSelf:
+        // Makes sense?
+        break;
+    case TLValue::InputPeerContact:
+    case TLValue::InputPeerForeign:
+        actionIndex = TypingStatus::indexForUser(m_localMessageActions, peer.userId);
+        break;
+    case TLValue::InputPeerChat:
+        actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, peer.chatId);
+        break;
+    default:
+        // Invalid InputPeer type
         return 0;
     }
 
-    if (m_localTypingMap.contains(identifier)) {
-        m_localTypingMap.remove(identifier);
+    if (actionIndex >= 0) {
+        m_localMessageActions.removeAt(actionIndex);
     }
 
     return activeConnection()->sendMessage(peer, message);
@@ -907,36 +922,69 @@ bool CTelegramDispatcher::addChatUser(quint32 publicChatId, const QString &conta
     return true;
 }
 
-void CTelegramDispatcher::setTyping(const QString &identifier, bool typingStatus)
+void CTelegramDispatcher::setTyping(const QString &identifier, TelegramNamespace::MessageAction publicAction)
 {
     if (!activeConnection()) {
         return;
     }
-    if (typingStatus == m_localTypingMap.contains(identifier)) {
-        return; // Avoid flood
-    }
 
     TLInputPeer peer = identifierToInputPeer(identifier);
 
-    if (peer.tlType == TLValue::InputPeerEmpty) {
+    int actionIndex = -1;
+
+    switch (peer.tlType) {
+    case TLValue::InputPeerEmpty:
         qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
+        return;
+    case TLValue::InputPeerSelf:
+        // Makes no sense
+        return;
+    case TLValue::InputPeerContact:
+    case TLValue::InputPeerForeign:
+        actionIndex = TypingStatus::indexForUser(m_localMessageActions, peer.userId);
+        break;
+    case TLValue::InputPeerChat:
+        actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, peer.chatId);
+        break;
+    default:
+        // Invalid InputPeer type
         return;
     }
 
-    TLSendMessageAction action;
-    if (typingStatus) {
-        action.tlType = TLValue::SendMessageTypingAction;
-    } else {
-        action.tlType = TLValue::SendMessageCancelAction;
+    if (actionIndex >= 0) {
+        if (m_localMessageActions.at(actionIndex).action == publicAction) {
+            return; // Avoid flood
+        }
+    } else if (publicAction == TelegramNamespace::MessageActionNone) {
+        return; // Avoid flood
     }
+
+    const TLValue::Value tlAction = publicMessageActionToTelegramAction(publicAction);
+
+    TLSendMessageAction action;
+    action.tlType = tlAction;
 
     activeConnection()->messagesSetTyping(peer, action);
 
-    if (typingStatus) {
-        m_localTypingMap.insert(identifier, s_localTypingDuration);
-        ensureTypingUpdateTimer(s_localTypingDuration);
+    if (publicAction == TelegramNamespace::MessageActionNone) {
+        m_localMessageActions.removeAt(actionIndex);
     } else {
-        m_localTypingMap.remove(identifier);
+        if (actionIndex >= 0) {
+            m_localMessageActions[actionIndex].action = publicAction;
+        } else {
+            TypingStatus status;
+            status.action = publicAction;
+            if (peer.tlType == TLValue::InputPeerChat) {
+                status.chatId = peer.chatId;
+            } else {
+                status.userId = peer.userId;
+            }
+            status.typingTime = s_localTypingDuration;
+
+            m_localMessageActions.append(status);
+        }
+
+        ensureTypingUpdateTimer(s_localTypingDuration);
     }
 }
 
@@ -1192,7 +1240,7 @@ void CTelegramDispatcher::whenContactListChanged(const QVector<quint32> &added, 
     }
 }
 
-void CTelegramDispatcher::whenUserTypingTimerTimeout()
+void CTelegramDispatcher::messageActionTimerTimeout()
 {
 
 #if QT_VERSION >= 0x050000
@@ -1201,49 +1249,39 @@ void CTelegramDispatcher::whenUserTypingTimerTimeout()
     int minTime = s_timerMaxInterval;
 #endif
 
-    const QVector<quint32> users = m_userTypingMap.keys().toVector();
-    foreach (quint32 userId, users) {
-        int timeRemains = m_userTypingMap.value(userId) - m_typingUpdateTimer->interval();
-        if (timeRemains < 5) { // Let 5 ms be allowed correction
-            m_userTypingMap.remove(userId);
-            emit contactTypingStatusChanged(userIdToIdentifier(userId), /* typingStatus */ false);
+    for (int i = m_contactsMessageActions.count() - 1; i >= 0; --i) {
+        int remainingTime = m_contactsMessageActions.at(i).typingTime - m_typingUpdateTimer->interval();
+        if (remainingTime < 15) { // Let 15 ms be allowed correction
+            if (m_contactsMessageActions.at(i).chatId) {
+                emit contactChatTypingStatusChanged(telegramChatIdToPublicId(m_contactsMessageActions.at(i).chatId),
+                                                    userIdToIdentifier(m_contactsMessageActions.at(i).userId),
+                                                    TelegramNamespace::MessageActionNone);
+            } else {
+                emit contactTypingStatusChanged(userIdToIdentifier(m_contactsMessageActions.at(i).userId),
+                                                TelegramNamespace::MessageActionNone);
+            }
+            m_contactsMessageActions.removeAt(i);
         } else {
-            m_userTypingMap.insert(userId, timeRemains);
-            if (minTime > timeRemains) {
-                minTime = timeRemains;
+            m_contactsMessageActions[i].typingTime = remainingTime;
+            if (minTime > remainingTime) {
+                minTime = remainingTime;
             }
         }
     }
 
-    const QVector<QPair<quint32, quint32> > usersInChat = m_userChatTypingMap.keys().toVector();
-    QPair<quint32, quint32> userInChat;
-    foreach (userInChat, usersInChat) {
-        int timeRemains = m_userChatTypingMap.value(userInChat) - m_typingUpdateTimer->interval();
-        if (timeRemains < 5) { // Let 5 ms be allowed correction
-            m_userChatTypingMap.remove(userInChat);
-            emit contactChatTypingStatusChanged(userInChat.first, userIdToIdentifier(userInChat.second), /* typingStatus */ false);
+    for (int i = m_localMessageActions.count() - 1; i >= 0; --i) {
+        int timeRemaining = m_localMessageActions.at(i).typingTime - m_typingUpdateTimer->interval();
+        if (timeRemaining < 15) { // Let 15 ms be allowed correction
+            m_localMessageActions.removeAt(i);
         } else {
-            m_userChatTypingMap.insert(userInChat, timeRemains);
-            if (minTime > timeRemains) {
-                minTime = timeRemains;
+            m_localMessageActions[i].typingTime = timeRemaining;
+            if (minTime > timeRemaining) {
+                minTime = timeRemaining;
             }
         }
     }
 
-    const QVector<QString> identifiers = m_localTypingMap.keys().toVector();
-    foreach (const QString &identifier, identifiers) {
-        int timeRemains = m_localTypingMap.value(identifier) - m_typingUpdateTimer->interval();
-        if (timeRemains < 5) { // Let 5 ms be allowed correction
-            m_localTypingMap.remove(identifier);
-        } else {
-            m_localTypingMap.insert(identifier, timeRemains);
-            if (minTime > timeRemains) {
-                minTime = timeRemains;
-            }
-        }
-    }
-
-    if (!m_userTypingMap.isEmpty() || !m_userChatTypingMap.isEmpty() || !m_localTypingMap.isEmpty()) {
+    if (!m_contactsMessageActions.isEmpty() || !m_localMessageActions.isEmpty()) {
         m_typingUpdateTimer->start(minTime);
     }
 }
@@ -1516,27 +1554,41 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        ensureUpdateState(update.pts);
 //        break;
     case TLValue::UpdateUserTyping:
-        if (m_users.contains(update.userId)) {
-            emit contactTypingStatusChanged(userIdToIdentifier(update.userId), update.action.tlType == TLValue::SendMessageTypingAction);
-#if QT_VERSION >= 0x050000
-            m_userTypingMap.insert(update.userId, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
-#else
-            m_userTypingMap.insert(update.userId, s_userTypingActionPeriod); // Missed timer remaining time method can leads to typing time period deviation.
-#endif
-            ensureTypingUpdateTimer(s_userTypingActionPeriod);
-        }
-        break;
     case TLValue::UpdateChatUserTyping:
         if (m_users.contains(update.userId)) {
-            emit contactChatTypingStatusChanged(telegramChatIdToPublicId(update.chatId), userIdToIdentifier(update.userId),
-                                                update.action.tlType == TLValue::SendMessageTypingAction);
-            const QPair<quint32,quint32> key(telegramChatIdToPublicId(update.chatId), update.userId);
+            TelegramNamespace::MessageAction action = telegramMessageActionToPublicAction(update.action.tlType);
+
+            int remainingTime = s_userTypingActionPeriod;
 #if QT_VERSION >= 0x050000
-            m_userChatTypingMap.insert(key, m_typingUpdateTimer->remainingTime() + s_userTypingActionPeriod);
+            remainingTime += m_typingUpdateTimer->remainingTime();
 #else
-            m_userChatTypingMap.insert(key, s_userTypingActionPeriod); // Missed timer remaining time method can leads to typing time period deviation.
+            // Missed timer remaining time method can leads to typing time period deviation.
 #endif
-            ensureTypingUpdateTimer(s_userTypingActionPeriod);
+
+            int index = -1;
+            if (update.tlType == TLValue::UpdateUserTyping) {
+                index = TypingStatus::indexForUser(m_contactsMessageActions, update.userId);
+                emit contactTypingStatusChanged(userIdToIdentifier(update.userId), action);
+            } else {
+                index = TypingStatus::indexForChatAndUser(m_contactsMessageActions, update.chatId, update.userId);
+                emit contactChatTypingStatusChanged(telegramChatIdToPublicId(update.chatId),
+                                                    userIdToIdentifier(update.userId), action);
+            }
+
+            if (index < 0) {
+                index = m_contactsMessageActions.count();
+                TypingStatus status;
+                status.userId = update.userId;
+                if (update.tlType == TLValue::UpdateChatUserTyping) {
+                    status.chatId = update.chatId;
+                }
+                m_contactsMessageActions.append(status);
+            }
+
+            m_contactsMessageActions[index].action = action;
+            m_contactsMessageActions[index].typingTime = remainingTime;
+
+            ensureTypingUpdateTimer(remainingTime);
         }
         break;
     case TLValue::UpdateChatParticipants: {
@@ -1726,7 +1778,6 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
         }
         return;
     }
-
 
     const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
@@ -2282,30 +2333,32 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         shortMessage.date = updates.date;
         shortMessage.media.tlType = TLValue::MessageMediaEmpty;
 
+        int messageActionIndex = 0;
         if (updates.tlType == TLValue::UpdateShortMessage) {
+            messageActionIndex = TypingStatus::indexForUser(m_contactsMessageActions, updates.fromId);
             shortMessage.toId.tlType = TLValue::PeerUser;
-            processMessageReceived(shortMessage);
 
-            const QString phone = userIdToIdentifier(updates.fromId);
-            if (!phone.isEmpty()) {
-                if (m_userTypingMap.value(updates.fromId, 0) > 0) {
-                    m_userTypingMap.remove(updates.fromId);
-                    emit contactTypingStatusChanged(phone, /* typingStatus */ false);
-                }
+            if (messageActionIndex >= 0) {
+                emit contactTypingStatusChanged(userIdToIdentifier(updates.fromId),
+                                                TelegramNamespace::MessageActionNone);
             }
+
         } else {
+            messageActionIndex = TypingStatus::indexForUser(m_contactsMessageActions, updates.fromId);
             shortMessage.toId.tlType = TLValue::PeerChat;
             shortMessage.toId.chatId = updates.chatId;
-            processMessageReceived(shortMessage);
 
-            const QString phone = userIdToIdentifier(updates.fromId);
-            const quint32 publicChatId = telegramChatIdToPublicId(updates.chatId);
-            const QPair<quint32,quint32> key(publicChatId, updates.fromId);
-
-            if (m_userChatTypingMap.contains(key)) {
-                m_userChatTypingMap.remove(key);
-                emit contactChatTypingStatusChanged(publicChatId, phone, /* typingStatus */ false);
+            if (messageActionIndex >= 0) {
+                emit contactChatTypingStatusChanged(telegramChatIdToPublicId(updates.chatId),
+                                                    userIdToIdentifier(updates.fromId),
+                                                    TelegramNamespace::MessageActionNone);
             }
+        }
+
+        processMessageReceived(shortMessage);
+
+        if (messageActionIndex > 0) {
+            m_contactsMessageActions.removeAt(messageActionIndex);
         }
     }
         ensureUpdateState(updates.pts);
@@ -2628,4 +2681,41 @@ TelegramNamespace::MessageType CTelegramDispatcher::telegramMessageTypeToPublicM
     default:
         return TelegramNamespace::MessageTypeUnsupported;
     }
+}
+
+TelegramNamespace::MessageAction CTelegramDispatcher::telegramMessageActionToPublicAction(TLValue action)
+{
+    switch (action) {
+    case TLValue::SendMessageCancelAction:         return TelegramNamespace::MessageActionNone;
+    case TLValue::SendMessageTypingAction:         return TelegramNamespace::MessageActionTyping;
+    case TLValue::SendMessageRecordVideoAction:    return TelegramNamespace::MessageActionRecordVideo;
+    case TLValue::SendMessageRecordAudioAction:    return TelegramNamespace::MessageActionRecordAudio;
+    case TLValue::SendMessageUploadVideoAction:    return TelegramNamespace::MessageActionUploadVideo;
+    case TLValue::SendMessageUploadAudioAction:    return TelegramNamespace::MessageActionUploadAudio;
+    case TLValue::SendMessageUploadPhotoAction:    return TelegramNamespace::MessageActionUploadPhoto;
+    case TLValue::SendMessageUploadDocumentAction: return TelegramNamespace::MessageActionUploadDocument;
+    case TLValue::SendMessageGeoLocationAction:    return TelegramNamespace::MessageActionGeoLocation;
+    case TLValue::SendMessageChooseContactAction:  return TelegramNamespace::MessageActionChooseContact;
+    default:
+        qWarning() << Q_FUNC_INFO << "TLValue is not known action value." << action.toString();
+        return TelegramNamespace::MessageActionNone;
+    }
+}
+
+TLValue::Value CTelegramDispatcher::publicMessageActionToTelegramAction(TelegramNamespace::MessageAction action)
+{
+    switch (action) {
+    case TelegramNamespace::MessageActionNone:           return TLValue::SendMessageCancelAction;
+    case TelegramNamespace::MessageActionTyping:         return TLValue::SendMessageTypingAction;
+    case TelegramNamespace::MessageActionRecordVideo:    return TLValue::SendMessageRecordVideoAction;
+    case TelegramNamespace::MessageActionRecordAudio:    return TLValue::SendMessageRecordAudioAction;
+    case TelegramNamespace::MessageActionUploadVideo:    return TLValue::SendMessageUploadVideoAction;
+    case TelegramNamespace::MessageActionUploadAudio:    return TLValue::SendMessageUploadAudioAction;
+    case TelegramNamespace::MessageActionUploadPhoto:    return TLValue::SendMessageUploadPhotoAction;
+    case TelegramNamespace::MessageActionUploadDocument: return TLValue::SendMessageUploadDocumentAction;
+    case TelegramNamespace::MessageActionGeoLocation:    return TLValue::SendMessageGeoLocationAction;
+    case TelegramNamespace::MessageActionChooseContact:  return TLValue::SendMessageChooseContactAction;
+    }
+
+    return TLValue::BoolFalse;
 }

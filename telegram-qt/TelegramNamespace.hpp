@@ -101,6 +101,19 @@ public:
         ContactLastOnlineMask = 0xf
     };
 
+    enum MessageAction {
+        MessageActionNone, // Cancel
+        MessageActionTyping,
+        MessageActionRecordVideo,
+        MessageActionRecordAudio,
+        MessageActionUploadVideo,
+        MessageActionUploadAudio,
+        MessageActionUploadPhoto,
+        MessageActionUploadDocument,
+        MessageActionGeoLocation,
+        MessageActionChooseContact
+    };
+
     static void registerTypes();
 
     struct DcOption

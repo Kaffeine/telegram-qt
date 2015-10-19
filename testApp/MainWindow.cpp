@@ -97,10 +97,10 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenMessageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
     connect(m_core, SIGNAL(messageReceived(TelegramNamespace::Message)),
             SLOT(whenMessageReceived(TelegramNamespace::Message)));
-    connect(m_core, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)),
-            SLOT(whenContactChatTypingStatusChanged(quint32,QString,bool)));
-    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,bool)),
-            SLOT(whenContactTypingStatusChanged(QString,bool)));
+    connect(m_core, SIGNAL(contactChatTypingStatusChanged(quint32,QString,TelegramNamespace::MessageAction)),
+            SLOT(whenContactChatTypingStatusChanged(quint32,QString,TelegramNamespace::MessageAction)));
+    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,TelegramNamespace::MessageAction)),
+            SLOT(whenContactTypingStatusChanged(QString,TelegramNamespace::MessageAction)));
     connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)),
             SLOT(whenContactStatusChanged(QString)));
     connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
@@ -369,18 +369,18 @@ void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
     }
 }
 
-void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, bool status)
+void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, TelegramNamespace::MessageAction action)
 {
     if (m_activeChatId != chatId) {
         return;
     }
 
-    m_chatContactsModel->setTypingStatus(phone, status);
+    m_chatContactsModel->setTypingStatus(phone, action);
 }
 
-void MainWindow::whenContactTypingStatusChanged(const QString &contact, bool typingStatus)
+void MainWindow::whenContactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action)
 {
-    m_contactsModel->setTypingStatus(contact, typingStatus);
+    m_contactsModel->setTypingStatus(contact, action);
     updateMessagingContactAction();
 }
 
@@ -733,7 +733,11 @@ void MainWindow::on_messagingAttachButton_clicked()
 
 void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
 {
-    m_core->setTyping(ui->messagingContactIdentifier->text(), !arg1.isEmpty());
+    if (!arg1.isEmpty()) {
+        m_core->setTyping(ui->messagingContactIdentifier->text(), TelegramNamespace::MessageActionTyping);
+    } else {
+        m_core->setTyping(ui->messagingContactIdentifier->text(), TelegramNamespace::MessageActionNone);
+    }
 }
 
 void MainWindow::on_messagingContactIdentifier_textChanged(const QString &arg1)
@@ -943,12 +947,8 @@ void MainWindow::updateMessagingContactStatus()
 void MainWindow::updateMessagingContactAction()
 {
     const QString contact = ui->messagingContactIdentifier->text();
-    const bool typing = m_contactsModel->data(contact, CContactsModel::TypingStatus).toBool();
-    if (typing) {
-        ui->messagingContactAction->setText(tr("(typing...)"));
-    } else {
-        ui->messagingContactAction->setText(tr("(no action)"));
-    }
+    const QModelIndex index = m_contactsModel->index(m_contactsModel->indexOfContact(contact), CContactsModel::TypingStatus);
+    ui->messagingContactAction->setText(QLatin1Char('(') + index.data().toString().toLower() + QLatin1Char(')'));
 }
 
 void MainWindow::on_contactListTable_clicked(const QModelIndex &index)

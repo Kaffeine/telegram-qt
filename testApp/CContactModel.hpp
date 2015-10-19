@@ -30,7 +30,7 @@ struct SContact {
         phone(p),
         status(s),
         wasOnline(0),
-        typing(false),
+        typing(TelegramNamespace::MessageActionNone),
         blocked(false)
     { }
 
@@ -38,7 +38,7 @@ struct SContact {
     QString fullName;
     TelegramNamespace::ContactStatus status;
     quint32 wasOnline;
-    bool typing;
+    TelegramNamespace::MessageAction typing;
     bool blocked;
     QPixmap avatar;
 };
@@ -65,6 +65,7 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QVariant data(const QString &phone, int column) const;
+    QVariant rawData(const QString &phone, int column) const;
 
     int indexOfContact(const QString &phone) const;
 
@@ -77,7 +78,7 @@ public slots:
     void setContactList(const QStringList &list);
     void setContactStatus(const QString &contact, TelegramNamespace::ContactStatus status);
     void setContactLastOnline(const QString &contact, quint32 onlineDate);
-    void setTypingStatus(const QString &contact, bool typingStatus);
+    void setTypingStatus(const QString &contact, TelegramNamespace::MessageAction action);
     void setContactAvatar(const QString &contact, const QPixmap &avatar);
     void setContactFullName(const QString &contact, const QString &fullName);
 

@@ -59,10 +59,10 @@ CTelegramCore::CTelegramCore(QObject *parent) :
 #endif
     connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)),
             SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
-    connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,bool)),
-            SIGNAL(contactTypingStatusChanged(QString,bool)));
-    connect(m_dispatcher, SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)),
-            SIGNAL(contactChatTypingStatusChanged(quint32,QString,bool)));
+    connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,TelegramNamespace::MessageAction)),
+            SIGNAL(contactTypingStatusChanged(QString,TelegramNamespace::MessageAction)));
+    connect(m_dispatcher, SIGNAL(contactChatTypingStatusChanged(quint32,QString,TelegramNamespace::MessageAction)),
+            SIGNAL(contactChatTypingStatusChanged(quint32,QString,TelegramNamespace::MessageAction)));
     connect(m_dispatcher, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
             SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
     connect(m_dispatcher, SIGNAL(chatAdded(quint32)),
@@ -329,9 +329,9 @@ quint64 CTelegramCore::resendMedia(const QString &identifier, quint32 messageId)
     return m_dispatcher->resendMedia(identifier, messageId);
 }
 
-void CTelegramCore::setTyping(const QString &contact, bool typingStatus)
+void CTelegramCore::setTyping(const QString &contact, TelegramNamespace::MessageAction action)
 {
-    m_dispatcher->setTyping(contact, typingStatus);
+    m_dispatcher->setTyping(contact, action);
 }
 
 void CTelegramCore::setMessageRead(const QString &contact, quint32 messageId)

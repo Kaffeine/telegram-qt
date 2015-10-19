@@ -102,7 +102,7 @@ public Q_SLOTS:
     quint64 forwardMessage(const QString &identifier, quint32 messageId);
     quint64 resendMedia(const QString &identifier, quint32 messageId);
     /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
-    void setTyping(const QString &contact, bool typingStatus);
+    void setTyping(const QString &contact, TelegramNamespace::MessageAction action);
     void setMessageRead(const QString &contact, quint32 messageId);
 
     // Set visible (not actual) online status.
@@ -124,6 +124,7 @@ public Q_SLOTS:
 #ifndef TELEGRAMQT_NO_DEPRECATED
     inline void setMessageReceivingFilterFlags(TelegramNamespace::MessageFlags flags) { setMessageReceivingFilter(flags); }
     inline bool initConnection(const QString &address, quint32 port) { return initConnection(QVector<TelegramNamespace::DcOption>() << TelegramNamespace::DcOption(address, port)); }
+    inline void setTyping(const QString &contact, bool typing) { return setTyping(contact, typing ? TelegramNamespace::MessageActionTyping : TelegramNamespace::MessageActionNone); }
 #endif
 
 Q_SIGNALS:
@@ -145,11 +146,12 @@ Q_SIGNALS:
 #ifndef TELEGRAMQT_NO_DEPRECATED
     void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
+    void contactTypingStatusChanged(const QString &contact, bool typingStatus);
 #endif
 
     void contactStatusChanged(const QString &contact, TelegramNamespace::ContactStatus status);
-    void contactTypingStatusChanged(const QString &contact, bool typingStatus);
-    void contactChatTypingStatusChanged(quint32 chatId, const QString &contact, bool typingStatus);
+    void contactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
+    void contactChatTypingStatusChanged(quint32 chatId, const QString &contact, TelegramNamespace::MessageAction action);
 
     void sentMessageStatusChanged(const QString &contact, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
 

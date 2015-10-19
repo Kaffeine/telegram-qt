@@ -83,7 +83,30 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
     case Status:
         return contactStatusStr(m_contacts.at(contactIndex));
     case TypingStatus:
-        return m_contacts.at(contactIndex).typing ? tr("true") : tr("false");
+        switch (m_contacts.at(contactIndex).typing) {
+        case TelegramNamespace::MessageActionNone:
+            return tr("No action");
+        case TelegramNamespace::MessageActionTyping:
+            return tr("Typing");
+        case TelegramNamespace::MessageActionRecordVideo:
+            return tr("Recording a video");
+        case TelegramNamespace::MessageActionRecordAudio:
+            return tr("Recording a audio");
+        case TelegramNamespace::MessageActionUploadVideo:
+            return tr("Uploading a video");
+        case TelegramNamespace::MessageActionUploadAudio:
+            return tr("Uploading a audio");
+        case TelegramNamespace::MessageActionUploadPhoto:
+            return tr("Uploading a photo");
+        case TelegramNamespace::MessageActionUploadDocument:
+            return tr("Uploading a file");
+        case TelegramNamespace::MessageActionGeoLocation:
+            return tr("Selecting a location");
+        case TelegramNamespace::MessageActionChooseContact:
+            return tr("Selecting a contact");
+        default:
+            return tr("Unknown action");
+        }
     case Blocked:
         return m_contacts.at(contactIndex).blocked ? tr("true") : tr("false");
     default:
@@ -183,7 +206,7 @@ void CContactsModel::setContactLastOnline(const QString &contact, quint32 online
     emit dataChanged(modelIndex, modelIndex);
 }
 
-void CContactsModel::setTypingStatus(const QString &contact, bool typingStatus)
+void CContactsModel::setTypingStatus(const QString &contact, TelegramNamespace::MessageAction action)
 {
     int index = indexOfContact(contact);
 
@@ -191,7 +214,7 @@ void CContactsModel::setTypingStatus(const QString &contact, bool typingStatus)
         return;
     }
 
-    m_contacts[index].typing = typingStatus;
+    m_contacts[index].typing = action;
 
     QModelIndex modelIndex = createIndex(index, TypingStatus);
     emit dataChanged(modelIndex, modelIndex);

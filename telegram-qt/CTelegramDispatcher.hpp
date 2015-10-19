@@ -167,7 +167,7 @@ public:
 
     quint64 sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type);
     quint64 resendMedia(const QString &identifier, quint32 messageId);
-    void setTyping(const QString &identifier, bool typingStatus);
+    void setTyping(const QString &identifier, TelegramNamespace::MessageAction publicAction);
     void setMessageRead(const QString &identifier, quint32 messageId);
 
     quint32 createChat(const QStringList &phones, const QString chatName);
@@ -215,8 +215,8 @@ signals:
 #endif
 
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
-    void contactTypingStatusChanged(const QString &phone, bool typingStatus);
-    void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, bool typingStatus);
+    void contactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
+    void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, TelegramNamespace::MessageAction action);
 
     void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
 
@@ -240,7 +240,7 @@ protected slots:
 
     void whenContactListReceived(const QVector<quint32> &contactList);
     void whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
-    void whenUserTypingTimerTimeout();
+    void messageActionTimerTimeout();
 
     void whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
     void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
@@ -302,6 +302,8 @@ protected:
 
     QString mimeTypeByStorageFileType(TLValue type);
     TelegramNamespace::MessageType telegramMessageTypeToPublicMessageType(TLValue type);
+    TelegramNamespace::MessageAction telegramMessageActionToPublicAction(TLValue action);
+    TLValue::Value publicMessageActionToTelegramAction(TelegramNamespace::MessageAction action);
 
     void setActiveDc(quint32 dc, bool syncWantedDc = true);
 
@@ -318,6 +320,40 @@ protected:
     bool havePublicChatId(quint32 publicChatId) const;
 
     TelegramNamespace::MessageFlags getPublicMessageFlags(const TLMessage &message);
+
+    struct TypingStatus {
+        TypingStatus() : chatId(0), userId(0),
+            typingTime(0), action(TelegramNamespace::MessageActionNone) { }
+
+        quint32 chatId;
+        quint32 userId;
+        int typingTime; // (ms)
+        TelegramNamespace::MessageAction action;
+
+        static int indexForUser(const QVector<TypingStatus> &statusVector, quint32 userId) {
+            for (int i = 0; i < statusVector.count(); ++i) {
+                if (statusVector.at(i).chatId) {
+                    continue;
+                }
+
+                if (statusVector.at(i).userId == userId) {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        static int indexForChatAndUser(const QVector<TypingStatus> &statusVector, quint32 chatId, quint32 userId = 0) {
+            for (int i = 0; i < statusVector.count(); ++i) {
+                if ((statusVector.at(i).chatId == chatId) && (statusVector.at(i).userId == userId)) {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+    };
 
     TelegramNamespace::ConnectionState m_connectionState;
 
@@ -363,9 +399,8 @@ protected:
     quint32 m_fileRequestCounter;
 
     QTimer *m_typingUpdateTimer;
-    QMap<quint32, int> m_userTypingMap; // user id, typing time (ms)
-    QMap<QPair<quint32, quint32>, int> m_userChatTypingMap; // <public chat id, user id>, typing time (ms)
-    QMap<QString, int> m_localTypingMap; // phone, typing time (ms)
+    QVector<TypingStatus> m_contactsMessageActions;
+    QVector<TypingStatus> m_localMessageActions;
 
     TLVector<quint32> m_chatIds; // Telegram chat ids vector. Index is "public chat id".
     QMap<quint64, quint32> m_temporaryChatIdMap; // RPC message (request) id to public chat id map
