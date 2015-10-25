@@ -2390,7 +2390,7 @@ void CTelegramDispatcher::whenAuthExportedAuthorizationReceived(quint32 dc, quin
     }
 }
 
-void CTelegramDispatcher::setActiveDc(quint32 dc, bool syncWantedDc)
+void CTelegramDispatcher::setActiveDc(quint32 dc)
 {
     if ((m_activeDc == dc) && (m_wantedActiveDc == dc)) {
         return;
@@ -2398,9 +2398,7 @@ void CTelegramDispatcher::setActiveDc(quint32 dc, bool syncWantedDc)
 
     m_activeDc = dc;
 
-    if (syncWantedDc) {
-        m_wantedActiveDc = dc;
-    }
+    m_wantedActiveDc = dc;
 
     if (m_connections.value(dc)) {
         m_connections.value(dc)->setKeepAliveSettings(m_pingInterval, m_pingServerAdditionDisconnectionTime);

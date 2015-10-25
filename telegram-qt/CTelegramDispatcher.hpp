@@ -305,7 +305,7 @@ protected:
     TelegramNamespace::MessageAction telegramMessageActionToPublicAction(TLValue action);
     TLValue::Value publicMessageActionToTelegramAction(TelegramNamespace::MessageAction action);
 
-    void setActiveDc(quint32 dc, bool syncWantedDc = true);
+    void setActiveDc(quint32 dc);
 
     void ensureTypingUpdateTimer(int interval);
     void ensureUpdateState(quint32 pts = 0, quint32 seq = 0, quint32 date = 0);
