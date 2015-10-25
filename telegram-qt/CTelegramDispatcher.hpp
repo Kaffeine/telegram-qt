@@ -293,10 +293,10 @@ protected:
     TelegramNamespace::ContactStatus decodeContactStatus(TLValue status) const;
 
     inline CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
+    CTelegramConnection *getConnection(quint32 dc);
 
     CTelegramConnection *createConnection();
-    CTelegramConnection *establishConnectionToDc(quint32 dc);
-    void ensureSignedConnection(quint32 dc);
+    void ensureSignedConnection(CTelegramConnection *connection);
 
     TLDcOption dcInfoById(quint32 dc) const;
 

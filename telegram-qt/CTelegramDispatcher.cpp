@@ -1479,12 +1479,14 @@ quint32 CTelegramDispatcher::requestFile(const FileRequestDescriptor &descriptor
 
     m_requestedFileDescriptors.insert(++m_fileRequestCounter, descriptor);
 
-    CTelegramConnection *connection = m_connections.value(descriptor.dcId());
+    CTelegramConnection *connection = 0;
 
-    if (connection && (connection->authState() == CTelegramConnection::AuthStateSignedIn)) {
+    connection = getConnection(descriptor.dcId());
+
+    if (connection->authState() == CTelegramConnection::AuthStateSignedIn) {
         processFileRequestForConnection(connection, m_fileRequestCounter);
     } else {
-        ensureSignedConnection(descriptor.dcId());
+        ensureSignedConnection(connection);
     }
 
     return m_fileRequestCounter;
@@ -2044,6 +2046,26 @@ TelegramNamespace::ContactStatus CTelegramDispatcher::decodeContactStatus(TLValu
     }
 }
 
+CTelegramConnection *CTelegramDispatcher::getConnection(quint32 dc)
+{
+    CTelegramConnection *connection = m_connections.value(dc);
+
+    if (!connection) {
+        const TLDcOption dcInfo = dcInfoById(dc);
+
+        if (dcInfo.ipAddress.isEmpty()) {
+            qDebug() << "Error: Attempt to connect to unknown DC" << dc;
+            return 0;
+        }
+
+        connection = createConnection();
+        connection->setDcInfo(dcInfo);
+        m_connections.insert(dc, connection);
+    }
+
+    return connection;
+}
+
 void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
 {
     qDebug() << Q_FUNC_INFO << "auth" << newState << "dc" << dc;
@@ -2098,7 +2120,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                 processFileRequestForConnection(connection, fileId);
             }
         } else if (newState == CTelegramConnection::AuthStateHaveAKey) {
-            ensureSignedConnection(dc);
+            ensureSignedConnection(connection);
         }
     }
 
@@ -2203,26 +2225,32 @@ void CTelegramDispatcher::whenConnectionDcIdUpdated(quint32 connectionId, quint3
 
 void CTelegramDispatcher::whenPackageRedirected(const QByteArray &data, quint32 dc)
 {
-    CTelegramConnection *connection = m_connections.value(dc);
+    CTelegramConnection *connection = getConnection(dc);
 
-    if (connection && connection->authState() >= CTelegramConnection::AuthStateHaveAKey) {
+    if (connection->authState() >= CTelegramConnection::AuthStateHaveAKey) {
         connection->processRedirectedPackage(data);
     } else {
         m_delayedPackages.insertMulti(dc, data);
-        establishConnectionToDc(dc);
+
+        if (connection->status() == CTelegramConnection::ConnectionStatusDisconnected) {
+            connection->connectToDc();
+        }
     }
 }
 
 void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
 {
     qDebug() << Q_FUNC_INFO << dc;
-    CTelegramConnection *connection = m_connections.value(dc);
+    CTelegramConnection *connection = getConnection(dc);
 
-    if (connection && connection->authState() >= CTelegramConnection::AuthStateHaveAKey) {
+    m_wantedActiveDc = dc;
+
+    if (connection->authState() >= CTelegramConnection::AuthStateHaveAKey) {
         setActiveDc(dc);
     } else {
-        m_wantedActiveDc = dc;
-        establishConnectionToDc(dc);
+        if (connection->status() == CTelegramConnection::ConnectionStatusDisconnected) {
+            connection->connectToDc();
+        }
     }
 }
 
@@ -2577,40 +2605,14 @@ CTelegramConnection *CTelegramDispatcher::createConnection()
     return connection;
 }
 
-CTelegramConnection *CTelegramDispatcher::establishConnectionToDc(quint32 dc)
+void CTelegramDispatcher::ensureSignedConnection(CTelegramConnection *connection)
 {
-    CTelegramConnection *connection = m_connections.value(dc);
-
-    if (!connection) {
-        const TLDcOption dcInfo = dcInfoById(dc);
-
-        if (dcInfo.ipAddress.isEmpty()) {
-            qDebug() << "Error: Attempt to connect to unknown DC" << dc;
-            return 0;
-        }
-
-        connection = createConnection();
-        connection->setDcInfo(dcInfo);
-        m_connections.insert(dc, connection);
-    }
-
     if (connection->status() == CTelegramConnection::ConnectionStatusDisconnected) {
         connection->connectToDc();
-    }
+    } else {
+        if (connection->authState() == CTelegramConnection::AuthStateHaveAKey) { // Need an exported auth to sign in
+            quint32 dc = connection->dcInfo().id;
 
-    return connection;
-}
-
-void CTelegramDispatcher::ensureSignedConnection(quint32 dc)
-{
-    if (dc == m_activeDc) {
-        return;
-    }
-
-    CTelegramConnection *connection = m_connections.value(dc);
-
-    if (connection && (connection->status() != CTelegramConnection::ConnectionStatusDisconnected)) {
-        if (connection->authState() == CTelegramConnection::AuthStateHaveAKey) {
             if (m_exportedAuthentications.contains(dc)) {
                 connection->authImportAuthorization(m_exportedAuthentications.value(dc).first, m_exportedAuthentications.value(dc).second);
             } else {
@@ -2619,8 +2621,6 @@ void CTelegramDispatcher::ensureSignedConnection(quint32 dc)
                 }
             }
         }
-    } else {
-        establishConnectionToDc(dc);
     }
 }
 
