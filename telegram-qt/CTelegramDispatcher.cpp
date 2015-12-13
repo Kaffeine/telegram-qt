@@ -2150,7 +2150,7 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, int reason,
 
     if (connection == activeConnection()) {
         if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
-            if (connectionState() == CTelegramConnection::ConnectionStatusDisconnected) {
+            if (connectionState() == TelegramNamespace::ConnectionStateDisconnected) {
                 return;
             }
 
