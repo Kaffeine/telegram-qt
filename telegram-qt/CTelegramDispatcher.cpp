@@ -2150,21 +2150,23 @@ void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, int reason,
 
     if (connection == activeConnection()) {
         if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
-            if (reason == CTelegramConnection::ConnectionStatusReasonTimeout) {
-                if (connectionState() == TelegramNamespace::ConnectionStateConnecting) {
-                    // There is a problem with initial connection
-                    if (m_autoConnectionDcIndex >= 0) {
-                        tryNextDcAddress();
-                    } else if (m_autoReconnectionEnabled) {
-                        // Network error; try to reconnect after a second.
-                        QTimer::singleShot(1000, connection, SLOT(connectToDc()));
-                    }
-                } else {
-                    setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
+            if (connectionState() == CTelegramConnection::ConnectionStatusDisconnected) {
+                return;
+            }
 
-                    if (m_autoReconnectionEnabled) {
-                        connection->connectToDc();
-                    }
+            if (connectionState() == TelegramNamespace::ConnectionStateConnecting) {
+                // There is a problem with initial connection
+                if (m_autoConnectionDcIndex >= 0) {
+                    tryNextDcAddress();
+                } else if (m_autoReconnectionEnabled) {
+                    // Network error; try to reconnect after a second.
+                    QTimer::singleShot(1000, connection, SLOT(connectToDc()));
+                }
+            } else {
+                setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
+
+                if (m_autoReconnectionEnabled) {
+                    connection->connectToDc();
                 }
             }
         } else if (newStatus >= CTelegramConnection::ConnectionStatusConnected) {
