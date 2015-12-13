@@ -596,6 +596,8 @@ void CTelegramDispatcher::initConnectionSharedFinal(quint32 activeDc)
 
 void CTelegramDispatcher::closeConnection()
 {
+    setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
+
     foreach (CTelegramConnection *o, m_connections) {
         o->disconnect(this);
         o->deleteLater();
@@ -620,8 +622,6 @@ void CTelegramDispatcher::closeConnection()
     m_activeDc = 0;
     m_wantedActiveDc = 0;
     m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
-
-    setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
 }
 
 bool CTelegramDispatcher::logOut()
