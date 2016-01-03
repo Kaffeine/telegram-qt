@@ -767,7 +767,7 @@ quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QStrin
     }
 
     if (actionIndex >= 0) {
-        m_localMessageActions.removeAt(actionIndex);
+        m_localMessageActions.remove(actionIndex);
     }
 
     return activeConnection()->sendMessage(peer, message);
@@ -967,7 +967,7 @@ void CTelegramDispatcher::setTyping(const QString &identifier, TelegramNamespace
     activeConnection()->messagesSetTyping(peer, action);
 
     if (publicAction == TelegramNamespace::MessageActionNone) {
-        m_localMessageActions.removeAt(actionIndex);
+        m_localMessageActions.remove(actionIndex);
     } else {
         if (actionIndex >= 0) {
             m_localMessageActions[actionIndex].action = publicAction;
@@ -1260,7 +1260,7 @@ void CTelegramDispatcher::messageActionTimerTimeout()
                 emit contactTypingStatusChanged(userIdToIdentifier(m_contactsMessageActions.at(i).userId),
                                                 TelegramNamespace::MessageActionNone);
             }
-            m_contactsMessageActions.removeAt(i);
+            m_contactsMessageActions.remove(i);
         } else {
             m_contactsMessageActions[i].typingTime = remainingTime;
             if (minTime > remainingTime) {
@@ -1272,7 +1272,7 @@ void CTelegramDispatcher::messageActionTimerTimeout()
     for (int i = m_localMessageActions.count() - 1; i >= 0; --i) {
         int timeRemaining = m_localMessageActions.at(i).typingTime - m_typingUpdateTimer->interval();
         if (timeRemaining < 15) { // Let 15 ms be allowed correction
-            m_localMessageActions.removeAt(i);
+            m_localMessageActions.remove(i);
         } else {
             m_localMessageActions[i].typingTime = timeRemaining;
             if (minTime > timeRemaining) {
@@ -2388,7 +2388,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         processMessageReceived(shortMessage);
 
         if (messageActionIndex > 0) {
-            m_contactsMessageActions.removeAt(messageActionIndex);
+            m_contactsMessageActions.remove(messageActionIndex);
         }
     }
         ensureUpdateState(updates.pts);
