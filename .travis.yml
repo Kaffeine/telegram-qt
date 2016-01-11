@@ -1,0 +1,40 @@
+os: linux
+sudo: required
+language: cpp
+compiler: gcc
+
+env:
+  - USE_QT4=true
+  - USE_QT5=true
+
+before_install:
+  - sudo apt-add-repository -y ppa:roblib/ppa
+  - sudo apt-get -qq update
+  - sudo apt-get -y install cmake
+  - if [ "${USE_QT5}" = "true" ]; then
+           lsb_release -a
+      && sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+      && sudo apt-add-repository -y ppa:beineri/opt-qt542
+      && sudo apt-get -qq update
+      && sudo apt-get -qq install qt54tools qt54svg qt54webkit qt54script
+      ;
+    else
+      sudo apt-get install -y libqt4-dev ;
+    fi
+
+before_script:
+  - if [ "${USE_QT5}" = "true" ]; then
+         QTDIR="/opt/qt54"
+      && PATH="$QTDIR/bin:$PATH"
+      && qt54-env.sh
+      && cmake -DUSE_QT5=true .
+      ;
+    else
+        cmake -DUSE_QT4=true .
+      ;
+    fi
+
+script: make
+
+notifications:
+  email: false
