@@ -34,7 +34,8 @@ before_script:
       ;
     fi
 
-script: make
+script:
+  - make -j2
 
 notifications:
   email: false
