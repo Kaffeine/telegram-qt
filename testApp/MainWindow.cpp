@@ -343,29 +343,37 @@ void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
         }
     }
 
-    if (groupChatMessage) {
-        m_chatMessagingModel->addMessage(message);
-    } else {
-        m_messagingModel->addMessage(message);
+    TelegramNamespace::Message processedMessage = message;
 
-        if (!(message.flags & TelegramNamespace::MessageFlagOut) && (m_contactLastMessageList.value(message.contact) < message.id)) {
-            m_contactLastMessageList.insert(message.contact, message.id);
-
-            if (ui->settingsReadMessages->isChecked()) {
-                if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
-                    m_core->setMessageRead(message.contact, message.id);
-                }
-            }
-        }
-    }
-
-    switch (message.type) {
+    switch (processedMessage.type) {
     case TelegramNamespace::MessageTypePhoto:
     case TelegramNamespace::MessageTypeVideo:
-        m_core->requestMessageMediaData(message.id);
+        m_core->requestMessageMediaData(processedMessage.id);
+        break;
+    case TelegramNamespace::MessageTypeGeo: {
+        TelegramNamespace::MessageMediaInfo info;
+        m_core->getMessageMediaInfo(&info, processedMessage.id);
+        processedMessage.text = QString("%1%2, %3%4").arg(info.latitude()).arg(QChar(0x00b0)).arg(info.longitude()).arg(QChar(0x00b0));
+    }
         break;
     default:
         break;
+    }
+
+    if (groupChatMessage) {
+        m_chatMessagingModel->addMessage(processedMessage);
+    } else {
+        m_messagingModel->addMessage(processedMessage);
+
+        if (!(processedMessage.flags & TelegramNamespace::MessageFlagOut) && (m_contactLastMessageList.value(processedMessage.contact) < processedMessage.id)) {
+            m_contactLastMessageList.insert(processedMessage.contact, processedMessage.id);
+
+            if (ui->settingsReadMessages->isChecked()) {
+                if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
+                    m_core->setMessageRead(processedMessage.contact, processedMessage.id);
+                }
+            }
+        }
     }
 }
 
@@ -514,7 +522,7 @@ void MainWindow::on_connectButton_clicked()
         flags |= TelegramNamespace::MessageFlagForwarded;
     }
     m_core->setMessageReceivingFilter(flags);
-    m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto);
+    m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto|TelegramNamespace::MessageTypeGeo);
 
     QVector<TelegramNamespace::DcOption> testServers;
     testServers << TelegramNamespace::DcOption(QLatin1String("149.154.175.10"), 443);
