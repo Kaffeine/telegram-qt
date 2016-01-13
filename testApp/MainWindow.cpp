@@ -492,7 +492,11 @@ void MainWindow::whenCustomMenuRequested(const QPoint &pos)
         for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
             QAction *a = resendMenu->addAction(m_contactsModel->contactAt(i, /* addName */ true));
 #if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
-            connect(a, &QAction::triggered, [=]() { m_core->resendMedia(m_contactsModel->contactAt(i, false), messageId); });
+            connect(a, &QAction::triggered, [=]() {
+                TelegramNamespace::MessageMediaInfo info;
+                m_core->getMessageMediaInfo(&info, messageId);
+                m_core->sendMedia(m_contactsModel->contactAt(i, false), info);
+            });
 #endif
         }
     }
