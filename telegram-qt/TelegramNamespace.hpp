@@ -156,6 +156,10 @@ public:
 
         MessageType type() const;
 
+        double latitude() const;
+        double longitude() const;
+        void setGeopoint(double latitude, double longitude);
+
     protected:
         friend class CTelegramDispatcher;
         class Private;

@@ -53,3 +53,21 @@ TelegramNamespace::MessageType TelegramNamespace::MessageMediaInfo::type() const
 {
     return telegramMessageTypeToPublicMessageType(d->tlType);
 }
+
+double TelegramNamespace::MessageMediaInfo::latitude() const
+{
+    return d->geo.latitude;
+}
+
+double TelegramNamespace::MessageMediaInfo::longitude() const
+{
+    return d->geo.longitude;
+}
+
+void TelegramNamespace::MessageMediaInfo::setGeopoint(double latitude, double longitude)
+{
+    d->tlType = TLValue::MessageMediaGeo;
+    d->geo.tlType = TLValue::GeoPoint;
+    d->geo.longitude = longitude;
+    d->geo.latitude = latitude;
+}
