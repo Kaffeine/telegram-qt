@@ -21,10 +21,11 @@ SOURCES = CTelegramCore.cpp \
     CRawStream.cpp \
     CTelegramStream.cpp \
     Utils.cpp \
+    TelegramUtils.cpp \
     CTcpTransport.cpp \
     TelegramNamespace.cpp \
     CTelegramConnection.cpp \
-    TLValues.cpp \
+    TLValues.cpp
 
 HEADERS = CTelegramCore.hpp \
     CAppInformation.hpp \
@@ -32,6 +33,7 @@ HEADERS = CTelegramCore.hpp \
     CTelegramStream.hpp \
     CRawStream.hpp \
     Utils.hpp \
+    TelegramUtils.hpp \
     CTelegramTransport.hpp \
     CTcpTransport.hpp \
     TLTypes.hpp \

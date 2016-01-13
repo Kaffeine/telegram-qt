@@ -42,16 +42,9 @@ QString formatTLValue(const TLValue &val)
 #include "CTelegramStream.hpp"
 #include "CTcpTransport.hpp"
 #include "Utils.hpp"
+#include "TelegramUtils.hpp"
 
-// Have a copy in CTelegramDispatcher
-static QString maskPhoneNumber(const QString &phoneNumber)
-{
-    if (phoneNumber.isEmpty()) {
-        return QString();
-    }
-
-    return phoneNumber.mid(0, phoneNumber.size() / 4) + QString(phoneNumber.size() - phoneNumber.size() / 4, QLatin1Char('x')); // + QLatin1String(" (hidden)");
-}
+using namespace TelegramUtils;
 
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
