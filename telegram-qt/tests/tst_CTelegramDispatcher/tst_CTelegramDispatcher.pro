@@ -4,6 +4,7 @@ TARGET = tst_telegramdispatcher
 SOURCES = tst_CTelegramDispatcher.cpp \
     CTestDispatcher.cpp \
     ../../Utils.cpp \
+    ../../TelegramUtils.cpp \
     ../../CTcpTransport.cpp \
     ../../CTelegramConnection.cpp \
     ../../CTelegramStream.cpp \
@@ -14,6 +15,7 @@ SOURCES = tst_CTelegramDispatcher.cpp \
 HEADERS += \
     CTestDispatcher.hpp \
     ../../Utils.hpp \
+    ../../TelegramUtils.hpp \
     ../../CTelegramConnection.hpp \
     ../../CTelegramTransport.hpp \
     ../../CTcpTransport.hpp \

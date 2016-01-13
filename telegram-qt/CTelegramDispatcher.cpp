@@ -18,6 +18,7 @@
 #include "CTelegramDispatcher.hpp"
 
 #include "TelegramNamespace.hpp"
+#include "TelegramNamespace_p.hpp"
 #include "CTelegramConnection.hpp"
 #include "CTelegramStream.hpp"
 #include "Utils.hpp"
@@ -661,6 +662,20 @@ bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
     return requestFile(FileRequestDescriptor::messageMediaDataRequest(m_knownMediaMessages.value(messageId)));
 }
 
+bool CTelegramDispatcher::getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const
+{
+    if (!m_knownMediaMessages.contains(messageId)) {
+        qDebug() << Q_FUNC_INFO << "Unknown media message" << messageId;
+        return false;
+    }
+
+    const TLMessage &message = m_knownMediaMessages.value(messageId);
+    const TLMessageMedia &media = message.media;
+    TLMessageMedia &info = *messageInfo->d;
+    info = media;
+    return true;
+}
+
 bool CTelegramDispatcher::requestHistory(const QString &identifier, quint32 offset, quint32 limit)
 {
     if (!activeConnection()) {
@@ -739,7 +754,7 @@ quint64 CTelegramDispatcher::forwardMessage(const QString &identifier, quint32 m
     return activeConnection()->messagesForwardMessage(identifierToInputPeer(identifier), messageId, randomId);
 }
 
-quint64 CTelegramDispatcher::sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type)
+quint64 CTelegramDispatcher::sendMedia(const QString &identifier, const TelegramNamespace::MessageMediaInfo &info)
 {
     if (!activeConnection()) {
         return 0;
@@ -751,78 +766,52 @@ quint64 CTelegramDispatcher::sendMedia(const QString &identifier, quint32 upload
         return 0;
     }
 
-    if (!m_requestedFileDescriptors.contains(uploadedFileId)) {
-        qDebug() << Q_FUNC_INFO << "Unknown file id";
-        return 0;
-    }
+    const TLMessageMedia *media = info.d;
+    TLInputMedia inputMedia;
 
-    const FileRequestDescriptor descriptor = m_requestedFileDescriptors.value(uploadedFileId);
-    TLInputMedia media;
-
-    switch (type) {
-    case TelegramNamespace::MessageTypePhoto:
-        media.tlType = TLValue::InputMediaUploadedPhoto;
-        media.file = descriptor.inputFile();
-        break;
-    default:
-        break;
-    }
-
-    return activeConnection()->sendMedia(peer, media);
-}
-
-quint64 CTelegramDispatcher::resendMedia(const QString &identifier, quint32 messageId)
-{
-    if (!activeConnection()) {
-        return 0;
-    }
-    const TLInputPeer peer = identifierToInputPeer(identifier);
-
-    if (peer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
-        return 0;
-    }
-
-    if (!m_knownMediaMessages.contains(messageId)) {
-        return 0;
-    }
-
-    const TLMessage &message = m_knownMediaMessages.value(messageId);
-
-    TLInputMedia media;
-
-    switch (message.media.tlType) {
+    switch (media->tlType) {
     case TLValue::MessageMediaPhoto:
-        media.tlType = TLValue::InputMediaPhoto;
-        media.id.tlType = TLValue::InputPhoto;
-        media.id.id = message.media.photo.id;
-        media.id.accessHash = message.media.photo.accessHash;
+        inputMedia.tlType = TLValue::InputMediaPhoto;
+        inputMedia.id.tlType = TLValue::InputPhoto;
+        inputMedia.id.id = media->photo.id;
+        inputMedia.id.accessHash = media->photo.accessHash;
         break;
     case TLValue::MessageMediaAudio:
-        media.tlType = TLValue::InputMediaAudio;
-        media.id.tlType = TLValue::InputAudio;
-        media.id.id = message.media.audio.id;
-        media.id.accessHash = message.media.audio.accessHash;
+        inputMedia.tlType = TLValue::InputMediaAudio;
+        inputMedia.id.tlType = TLValue::InputAudio;
+        inputMedia.id.id = media->audio.id;
+        inputMedia.id.accessHash = media->audio.accessHash;
         break;
     case TLValue::MessageMediaVideo:
-        media.tlType = TLValue::InputMediaVideo;
-        media.id.tlType = TLValue::InputVideo;
-        media.id.id = message.media.video.id;
-        media.id.accessHash = message.media.video.accessHash;
+        inputMedia.tlType = TLValue::InputMediaVideo;
+        inputMedia.id.tlType = TLValue::InputVideo;
+        inputMedia.id.id = media->video.id;
+        inputMedia.id.accessHash = media->video.accessHash;
+        break;
+    case TLValue::MessageMediaGeo:
+        inputMedia.tlType = TLValue::InputMediaGeoPoint;
+        inputMedia.geoPoint.tlType = TLValue::InputGeoPoint;
+        inputMedia.geoPoint.longitude = media->geo.longitude;
+        inputMedia.geoPoint.latitude = media->geo.latitude;
+        break;
+    case TLValue::MessageMediaContact:
+        inputMedia.tlType = TLValue::InputMediaContact;
+        inputMedia.firstName = media->firstName;
+        inputMedia.lastName = media->lastName;
+        inputMedia.phoneNumber = media->phoneNumber;
         break;
     case TLValue::MessageMediaDocument:
-        media.tlType = TLValue::InputMediaDocument;
-        media.id.tlType = TLValue::InputDocument;
-        media.id.id = message.media.document.id;
-        media.id.accessHash = message.media.document.accessHash;
+        inputMedia.tlType = TLValue::InputMediaDocument;
+        inputMedia.id.tlType = TLValue::InputDocument;
+        inputMedia.id.id = media->document.id;
+        inputMedia.id.accessHash = media->document.accessHash;
         break;
     default:
         return 0;
         break;
     }
 
-    qDebug() << Q_FUNC_INFO << identifier << messageId;
-    return activeConnection()->sendMedia(peer, media);
+    return activeConnection()->sendMedia(peer, inputMedia);
 }
 
 bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const

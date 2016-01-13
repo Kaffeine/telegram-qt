@@ -156,6 +156,7 @@ public:
     void requestPhoneCode(const QString &phoneNumber);
     void requestContactAvatar(const QString &contact);
     bool requestMessageMediaData(quint32 messageId);
+    bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
 
     bool requestHistory(const QString &identifier, quint32 offset, quint32 limit);
 
@@ -163,10 +164,9 @@ public:
     quint32 uploadFile(QIODevice *source, const QString &fileName);
 
     quint64 sendMessage(const QString &identifier, const QString &message);
+    quint64 sendMedia(const QString &identifier, const TelegramNamespace::MessageMediaInfo &messageInfo);
     quint64 forwardMessage(const QString &identifier, quint32 messageId);
 
-    quint64 sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type);
-    quint64 resendMedia(const QString &identifier, quint32 messageId);
     void setTyping(const QString &identifier, TelegramNamespace::MessageAction publicAction);
     void setMessageRead(const QString &identifier, quint32 messageId);
 

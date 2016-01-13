@@ -13,6 +13,8 @@ contains(options, static-lib) {
     CONFIG  += dll
 }
 
+CONFIG += c++11
+
 DEFINES += TELEGRAMQT_LIBRARY
 
 SOURCES = CTelegramCore.cpp \
@@ -42,6 +44,7 @@ HEADERS = CTelegramCore.hpp \
     crypto-rsa.hpp \
     CTelegramConnection.hpp \
     TelegramNamespace.hpp \
+    TelegramNamespace_p.hpp \
     telegramqt_export.h \
     TLValues.hpp
 

@@ -24,6 +24,8 @@
 #include <QFlags>
 #include <QMetaType>
 
+class CTelegramDispatcher;
+
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
 {
     Q_OBJECT
@@ -145,6 +147,20 @@ public:
         quint32 fwdTimestamp;
         MessageType type;
         MessageFlags flags;
+    };
+
+    class MessageMediaInfo
+    {
+    public:
+        MessageMediaInfo();
+
+        MessageType type() const;
+
+    protected:
+        friend class CTelegramDispatcher;
+        class Private;
+
+        Private *d;
     };
 
     struct GroupChat

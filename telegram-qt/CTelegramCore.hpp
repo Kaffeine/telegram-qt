@@ -63,6 +63,8 @@ public:
     bool getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const;
     bool getChatParticipants(QStringList *participants, quint32 chatId);
 
+    bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
+
 public Q_SLOTS:
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags); // Messages with at least one of the passed flags will be filtered out.
     void setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types);
@@ -96,11 +98,10 @@ public Q_SLOTS:
     // Does not work yet
 //    quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
 //    quint32 uploadFile(QIODevice *source, const QString &fileName);
-//    quint64 sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type);
 
     quint64 sendMessage(const QString &identifier, const QString &message); // Message id is a random number
+    quint64 sendMedia(const QString &identifier, const TelegramNamespace::MessageMediaInfo &messageInfo);
     quint64 forwardMessage(const QString &identifier, quint32 messageId);
-    quint64 resendMedia(const QString &identifier, quint32 messageId);
     /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
     void setTyping(const QString &contact, TelegramNamespace::MessageAction action);
     void setMessageRead(const QString &contact, quint32 messageId);
@@ -122,6 +123,16 @@ public Q_SLOTS:
     void setChatMessageRead(const quint32 &chatId, quint32 messageId);
 
 #ifndef TELEGRAMQT_NO_DEPRECATED
+    quint64 resendMedia(const QString &identifier, quint32 messageId)
+    {
+        TelegramNamespace::MessageMediaInfo info;
+        if (getMessageMediaInfo(&info, messageId)) {
+            return sendMedia(identifier, info);
+        } else {
+            return 0;
+        }
+    }
+
     inline void setMessageReceivingFilterFlags(TelegramNamespace::MessageFlags flags) { setMessageReceivingFilter(flags); }
     inline bool initConnection(const QString &address, quint32 port) { return initConnection(QVector<TelegramNamespace::DcOption>() << TelegramNamespace::DcOption(address, port)); }
     inline void setTyping(const QString &contact, bool typing) { return setTyping(contact, typing ? TelegramNamespace::MessageActionTyping : TelegramNamespace::MessageActionNone); }

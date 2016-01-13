@@ -3,6 +3,7 @@ include(../tests.pri)
 TARGET = tst_telegramconnection
 SOURCES = tst_CTelegramConnection.cpp \
     ../../Utils.cpp \
+    ../../TelegramUtils.cpp \
     ../../CTcpTransport.cpp \
     ../../CTelegramConnection.cpp \
     ../../CTelegramStream.cpp \
@@ -12,6 +13,7 @@ SOURCES = tst_CTelegramConnection.cpp \
 
 HEADERS += \
     ../../Utils.hpp \
+    ../../TelegramUtils.hpp \
     ../../CTelegramConnection.hpp \
     ../../CTelegramTransport.hpp \
     ../../CTcpTransport.hpp \

@@ -279,6 +279,11 @@ bool CTelegramCore::getChatParticipants(QStringList *participants, quint32 chatI
     return m_dispatcher->getChatParticipants(participants, chatId);
 }
 
+bool CTelegramCore::getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const
+{
+    return m_dispatcher->getMessageMediaInfo(messageInfo, messageId);
+}
+
 void CTelegramCore::setMessageReceivingFilter(TelegramNamespace::MessageFlags flags)
 {
     return m_dispatcher->setMessageReceivingFilter(flags);
@@ -319,14 +324,9 @@ quint64 CTelegramCore::forwardMessage(const QString &identifier, quint32 message
     return m_dispatcher->forwardMessage(identifier, messageId);
 }
 
-//quint64 CTelegramCore::sendMedia(const QString &identifier, quint32 uploadedFileId, TelegramNamespace::MessageType type)
-//{
-//    return m_dispatcher->sendMedia(identifier, uploadedFileId, type);
-//}
-
-quint64 CTelegramCore::resendMedia(const QString &identifier, quint32 messageId)
+quint64 CTelegramCore::sendMedia(const QString &identifier, const TelegramNamespace::MessageMediaInfo &messageInfo)
 {
-    return m_dispatcher->resendMedia(identifier, messageId);
+    return m_dispatcher->sendMedia(identifier, messageInfo);
 }
 
 void CTelegramCore::setTyping(const QString &contact, TelegramNamespace::MessageAction action)

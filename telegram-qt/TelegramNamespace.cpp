@@ -16,6 +16,11 @@
  */
 
 #include "TelegramNamespace.hpp"
+#include "TelegramNamespace_p.hpp"
+
+#include "TelegramUtils.hpp"
+
+using namespace TelegramUtils;
 
 #include <QMetaType>
 #include <QDebug>
@@ -37,4 +42,14 @@ void TelegramNamespace::registerTypes()
         qRegisterMetaType<TelegramNamespace::AuthSignError>("TelegramNamespace::AuthSignError");
         registered = true;
     }
+}
+
+TelegramNamespace::MessageMediaInfo::MessageMediaInfo() : d(new Private())
+{
+
+}
+
+TelegramNamespace::MessageType TelegramNamespace::MessageMediaInfo::type() const
+{
+    return telegramMessageTypeToPublicMessageType(d->tlType);
 }
