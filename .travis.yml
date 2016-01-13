@@ -35,7 +35,7 @@ before_script:
     fi
 
 script:
-  - make -j2
+  - make -j2 -k
 
 notifications:
   email: false
