@@ -407,7 +407,9 @@ void MainWindow::whenContactStatusChanged(const QString &contact)
 void MainWindow::whenContactProfileChanged(const QString &contact)
 {
     m_contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
+    m_contactsModel->setContactUserName(contact, m_core->contactUserName(contact));
     m_chatContactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
+    m_chatContactsModel->setContactUserName(contact, m_core->contactUserName(contact));
 
     if (contact == ui->messagingContactIdentifier->text()) {
         updateMessagingContactName();
@@ -897,6 +899,7 @@ void MainWindow::setContactList(CContactsModel *contactsModel, const QStringList
         updateAvatar(contact);
         contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
         contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
+        contactsModel->setContactUserName(contact, m_core->contactUserName(contact));
         contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
     }
 }

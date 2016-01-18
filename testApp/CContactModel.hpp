@@ -35,6 +35,7 @@ struct SContact {
     { }
 
     QString phone;
+    QString userName;
     QString fullName;
     TelegramNamespace::ContactStatus status;
     quint32 wasOnline;
@@ -49,6 +50,7 @@ class CContactsModel : public QAbstractTableModel
 public:
     enum Columns {
         Phone,
+        UserName,
         FullName,
         Status,
         TypingStatus,
@@ -80,6 +82,7 @@ public slots:
     void setContactLastOnline(const QString &contact, quint32 onlineDate);
     void setTypingStatus(const QString &contact, TelegramNamespace::MessageAction action);
     void setContactAvatar(const QString &contact, const QPixmap &avatar);
+    void setContactUserName(const QString &contact, const QString &userName);
     void setContactFullName(const QString &contact, const QString &fullName);
 
     void clear();

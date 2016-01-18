@@ -37,6 +37,8 @@ QVariant CContactsModel::headerData(int section, Qt::Orientation orientation, in
     switch (section) {
     case Phone:
         return tr("Phone");
+    case UserName:
+        return tr("Username");
     case FullName:
         return tr("Full name");
     case Status:
@@ -78,6 +80,8 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
     switch (section) {
     case Phone:
         return m_contacts.at(contactIndex).phone;
+    case UserName:
+        return m_contacts.at(contactIndex).userName;
     case FullName:
         return m_contacts.at(contactIndex).fullName;
     case Status:
@@ -127,6 +131,8 @@ QVariant CContactsModel::data(const QString &phone, int column) const
     switch (column) {
     case Phone:
         return m_contacts.at(contactIndex).phone;
+    case UserName:
+        return m_contacts.at(contactIndex).userName;
     case FullName:
         return m_contacts.at(contactIndex).fullName;
     case Status:
@@ -233,6 +239,20 @@ void CContactsModel::setContactAvatar(const QString &contact, const QPixmap &ava
     QModelIndex modelIndex = createIndex(index, Avatar);
     emit dataChanged(modelIndex, modelIndex);
 
+}
+
+void CContactsModel::setContactUserName(const QString &contact, const QString &userName)
+{
+    int index = indexOfContact(contact);
+
+    if (index < 0) {
+        return;
+    }
+
+    m_contacts[index].userName = userName;
+
+    QModelIndex modelIndex = createIndex(index, UserName);
+    emit dataChanged(modelIndex, modelIndex);
 }
 
 void CContactsModel::setContactFullName(const QString &contact, const QString &fullName)
