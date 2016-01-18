@@ -64,7 +64,7 @@ double TelegramNamespace::MessageMediaInfo::longitude() const
     return d->geo.longitude;
 }
 
-void TelegramNamespace::MessageMediaInfo::setGeopoint(double latitude, double longitude)
+void TelegramNamespace::MessageMediaInfo::setGeoPoint(double latitude, double longitude)
 {
     d->tlType = TLValue::MessageMediaGeo;
     d->geo.tlType = TLValue::GeoPoint;
