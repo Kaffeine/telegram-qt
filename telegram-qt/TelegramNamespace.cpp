@@ -54,6 +54,18 @@ TelegramNamespace::MessageType TelegramNamespace::MessageMediaInfo::type() const
     return telegramMessageTypeToPublicMessageType(d->tlType);
 }
 
+QString TelegramNamespace::MessageMediaInfo::caption() const
+{
+    switch (d->tlType) {
+    case TLValue::MessageMediaPhoto:
+        return d->photo.caption;
+    case TLValue::MessageMediaVideo:
+        return d->video.caption;
+    default:
+        return QString();
+    }
+}
+
 double TelegramNamespace::MessageMediaInfo::latitude() const
 {
     return d->geo.latitude;

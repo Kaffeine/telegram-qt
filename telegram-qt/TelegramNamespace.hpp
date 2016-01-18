@@ -156,6 +156,9 @@ public:
 
         MessageType type() const;
 
+        // Photo, Video
+        QString caption() const;
+
         // GeoPoint
         double latitude() const;
         double longitude() const;
