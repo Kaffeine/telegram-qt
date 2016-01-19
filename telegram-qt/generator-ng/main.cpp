@@ -37,8 +37,6 @@ enum SchemaFormat {
     JsonFormat,
 };
 
-static const QString specFileName = QLatin1String("json");
-
 /* Replacing helper */
 bool replaceSection(const QString &fileName, const QString &startMarker, const QString &endMarker, const QString &newContent)
 {
@@ -125,7 +123,7 @@ void debugType(const TLType &type)
     }
 }
 
-StatusCode fetchJson()
+StatusCode fetchJson(const QString &specFileName)
 {
     QEventLoop eventLoop;
     QNetworkAccessManager mgr;
@@ -161,7 +159,7 @@ StatusCode fetchJson()
     return NoError; // Not implemented
 }
 
-StatusCode format()
+StatusCode format(const QString &specFileName)
 {
     QFile specsFile(specFileName);
     if (!specsFile.open(QIODevice::ReadOnly)) {
@@ -184,7 +182,7 @@ StatusCode format()
     return NoError;
 }
 
-StatusCode generate(SchemaFormat format)
+StatusCode generate(SchemaFormat format, const QString &specFileName)
 {
     QFile specsFile(specFileName);
     specsFile.open(QIODevice::ReadOnly);
@@ -231,36 +229,51 @@ StatusCode generate(SchemaFormat format)
     return NoError;
 }
 
+StatusCode main2(const QStringList &arguments)
+{
+    if (arguments.count() < 3) {
+        return InvalidArgument;
+    }
+
+    QString fileName;
+
+    if (!arguments.last().startsWith(QLatin1Char('-'))) {
+        fileName = arguments.last();
+    } else {
+        return InvalidArgument;
+    }
+
+    StatusCode code = NoError;
+
+    if (arguments.contains(QLatin1String("--fetch-json"))) {
+        code = fetchJson(fileName);
+        if (code != NoError) {
+            return code;
+        }
+    }
+
+    if (arguments.contains(QLatin1String("--format-json"))) {
+        code = format(fileName);
+        if (code != NoError) {
+            return code;
+        }
+    }
+
+    if (arguments.contains(QLatin1String("--generate-from-json"))) {
+        code = generate(JsonFormat, fileName);
+        if (code != NoError) {
+            return code;
+        }
+    }
+
+    return code;
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
 
-    const QStringList arguments = app.arguments();
-
-    int code = InvalidAction;
-
-    if (arguments.count() > 1) {
-        if (arguments.contains(QLatin1String("--fetch-json"))) {
-            code = fetchJson();
-            if (code != NoError) {
-                return code;
-            }
-        }
-
-        if (arguments.contains(QLatin1String("--format-json"))) {
-            code = format();
-            if (code != NoError) {
-                return code;
-            }
-        }
-
-        if (arguments.contains(QLatin1String("--generate-from-json"))) {
-            code = generate(JsonFormat);
-            if (code != NoError) {
-                return code;
-            }
-        }
-    }
+    StatusCode code = main2(app.arguments());
 
     if (code == InvalidAction) {
         printf("Invalid arguments. Look at the sources for the list of possible arguments.\n");
