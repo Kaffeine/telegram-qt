@@ -47,6 +47,24 @@ static const QStringList typesBlackList = QStringList()
         << QLatin1String("TLMessagesMessage")
            ;
 
+QDebug operator<<(QDebug d, const TLParam &param)
+{
+    d << param.type << ":" << param.name << "; ";
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLType &type)
+{
+    d << "TLType(" << type.name << ") {";
+    foreach (const TLSubType &sub, type.subTypes) {
+        d << sub.name << ":" << sub.members;
+    }
+
+    d << "}";
+
+    return d;
+}
+
 inline int indexOfSeparator(const QString &str, int minIndex)
 {
     int dotIndex = str.indexOf(QChar('.'), minIndex);
