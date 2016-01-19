@@ -539,7 +539,7 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types)
         }
     }
 
-    qDebug() << "Unresolved:" << types.count();
+    qDebug() << "Unresolved:" << types.count() << types;
 
     return solvedTypes;
 }
