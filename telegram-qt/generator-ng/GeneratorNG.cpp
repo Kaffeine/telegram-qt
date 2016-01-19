@@ -18,6 +18,8 @@
 #include "GeneratorNG.hpp"
 
 #include <QDebug>
+
+#include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
 
@@ -59,7 +61,7 @@ inline int indexOfSeparator(const QString &str, int minIndex)
     return dotIndex < underscoreIndex ? dotIndex : underscoreIndex;
 }
 
-QString GeneratorNG::formatName(QString name)
+QString formatName(QString name)
 {
     int separatorIndex = 0;
     while ((separatorIndex = indexOfSeparator(name, separatorIndex)) > 0) {
@@ -73,7 +75,7 @@ QString GeneratorNG::formatName(QString name)
     return name;
 }
 
-QString GeneratorNG::formatName1stCapital(QString name)
+QString formatName1stCapital(QString name)
 {
     if (name.isEmpty()) {
         return QString();
@@ -83,7 +85,7 @@ QString GeneratorNG::formatName1stCapital(QString name)
     return formatName(name);
 }
 
-inline QString GeneratorNG::removePrefix(const QString &str)
+QString removePrefix(const QString &str)
 {
     if (str.startsWith(tlPrefix)) {
         return str.mid(tlPrefix.size());
@@ -92,7 +94,7 @@ inline QString GeneratorNG::removePrefix(const QString &str)
     }
 }
 
-QString GeneratorNG::formatMember(QString name)
+QString formatMember(QString name)
 {
     if (badNames.contains(name)) {
         name = badNamesReplacers.at(badNames.indexOf(name));
@@ -101,7 +103,31 @@ QString GeneratorNG::formatMember(QString name)
     return formatName(name);
 }
 
-QString GeneratorNG::getTypeOrVectorType(const QString &str)
+QString formatMethodParam(const TLParam &param)
+{
+    if (podTypes.contains(param.type)) {
+        return QString("%1 %2").arg(param.type).arg(param.name);
+    } else {
+        return  QString("const %1 &%2").arg(param.type).arg(param.name);
+    }
+}
+
+QString formatMethodParams(const TLMethod &method)
+{
+    QString result;
+
+    foreach (const TLParam &param, method.params) {
+        if (!result.isEmpty()) {
+            result += QLatin1String(", ");
+        }
+
+        result += formatMethodParam(param);
+    }
+
+    return result;
+}
+
+QString getTypeOrVectorType(const QString &str)
 {
     if (!str.startsWith(tlVectorType + QLatin1Char('<'))) {
         return str;
@@ -114,7 +140,7 @@ QString GeneratorNG::getTypeOrVectorType(const QString &str)
     return subType;
 }
 
-QString GeneratorNG::formatType(QString type)
+QString formatType(QString type)
 {
     if (plainTypes.contains(type)) {
         return nativeTypes.at(plainTypes.indexOf(type));
@@ -128,6 +154,80 @@ QString GeneratorNG::formatType(QString type)
 
         return tlPrefix + formatName(type);
     }
+}
+
+static QMap<QString, TLType> readTypesJson(const QJsonDocument &document)
+{
+    const QJsonArray constructors = document.object().value("constructors").toArray();
+
+    QMap<QString, TLType> types;
+
+    for (int i = 0; i < constructors.count(); ++i) {
+        const QJsonObject obj = constructors.at(i).toObject();
+
+        const QString predicateName = formatName1stCapital(obj.value("predicate").toString());
+        const quint32 predicateId = obj.value("id").toString().toInt();
+        const QString typeName = formatType(obj.value("type").toString());
+
+        TLType tlType = types.value(typeName);
+        tlType.name = typeName;
+
+        TLSubType tlSubType;
+        tlSubType.name = predicateName;
+        tlSubType.id = predicateId;
+
+        const QJsonArray params = obj.value("params").toArray();
+
+        foreach (const QJsonValue &paramValue, params) {
+            const QJsonObject &paramObj = paramValue.toObject();
+            const QString paramName = formatMember(paramObj.value("name").toString());
+
+            const QString paramType = paramObj.value("type").toString();
+
+            tlSubType.members.append(TLParam(paramName, formatType(paramType)));
+        }
+
+        tlType.subTypes.append(tlSubType);
+        types.insert(typeName, tlType);
+    }
+
+    return types;
+}
+
+static QMap<QString, TLMethod> readFunctionsJson(const QJsonDocument &document)
+{
+    const QJsonArray methods = document.object().value("methods").toArray();
+
+    QMap<QString, TLMethod> result;
+
+    for (int i = 0; i < methods.count(); ++i) {
+        const QJsonObject obj = methods.at(i).toObject();
+
+        const QString methodName = formatName(obj.value("method").toString());
+        const quint32 methodId = obj.value("id").toString().toInt();
+
+        TLMethod tlMethod;
+        tlMethod.name = methodName;
+        tlMethod.id = methodId;
+
+        const QJsonArray params = obj.value("params").toArray();
+
+        foreach (const QJsonValue &paramValue, params) {
+            const QJsonObject &paramObj = paramValue.toObject();
+            const QString paramName = formatMember(paramObj.value("name").toString());
+
+            const QString paramType = paramObj.value("type").toString();
+
+            tlMethod.params.append(TLParam(paramName, formatType(paramType)));
+        }
+
+        result.insert(methodName, tlMethod);
+
+//        quint32 id = obj.value("id").toString().toInt();
+//        qDebug() << name << QString::number(id, 0x10);
+    }
+
+    return result;
 }
 
 QString GeneratorNG::generateTLValuesDefinition(const TLType &type)
@@ -343,30 +443,6 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
 //    }
 }
 
-QString GeneratorNG::formatMethodParam(const TLParam &param)
-{
-    if (podTypes.contains(param.type)) {
-        return QString("%1 %2").arg(param.type).arg(param.name);
-    } else {
-        return  QString("const %1 &%2").arg(param.type).arg(param.name);
-    }
-}
-
-QString GeneratorNG::formatMethodParams(const TLMethod &method)
-{
-    QString result;
-
-    foreach (const TLParam &param, method.params) {
-        if (!result.isEmpty()) {
-            result += QLatin1String(", ");
-        }
-
-        result += formatMethodParam(param);
-    }
-
-    return result;
-}
-
 QString GeneratorNG::generateConnectionMethodDeclaration(const TLMethod &method)
 {
     return spacing + QString("quint64 %1(%2);\n").arg(method.name).arg(formatMethodParams(method));
@@ -391,80 +467,6 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
 
     result += QLatin1Char('\n');
     result += spacing + QLatin1String("return sendEncryptedPackage(output);\n}\n\n");
-
-    return result;
-}
-
-QMap<QString, TLType> GeneratorNG::readTypes(const QJsonDocument &document)
-{
-    const QJsonArray constructors = document.object().value("constructors").toArray();
-
-    QMap<QString, TLType> types;
-
-    for (int i = 0; i < constructors.count(); ++i) {
-        const QJsonObject obj = constructors.at(i).toObject();
-
-        const QString predicateName = formatName1stCapital(obj.value("predicate").toString());
-        const quint32 predicateId = obj.value("id").toString().toInt();
-        const QString typeName = formatType(obj.value("type").toString());
-
-        TLType tlType = types.value(typeName);
-        tlType.name = typeName;
-
-        TLSubType tlSubType;
-        tlSubType.name = predicateName;
-        tlSubType.id = predicateId;
-
-        const QJsonArray params = obj.value("params").toArray();
-
-        foreach (const QJsonValue &paramValue, params) {
-            const QJsonObject &paramObj = paramValue.toObject();
-            const QString paramName = formatMember(paramObj.value("name").toString());
-
-            const QString paramType = paramObj.value("type").toString();
-
-            tlSubType.members.append(TLParam(paramName, formatType(paramType)));
-        }
-
-        tlType.subTypes.append(tlSubType);
-        types.insert(typeName, tlType);
-    }
-
-    return types;
-}
-
-QMap<QString, TLMethod> GeneratorNG::readMethods(const QJsonDocument &document)
-{
-    const QJsonArray methods = document.object().value("methods").toArray();
-
-    QMap<QString, TLMethod> result;
-
-    for (int i = 0; i < methods.count(); ++i) {
-        const QJsonObject obj = methods.at(i).toObject();
-
-        const QString methodName = formatName(obj.value("method").toString());
-        const quint32 methodId = obj.value("id").toString().toInt();
-
-        TLMethod tlMethod;
-        tlMethod.name = methodName;
-        tlMethod.id = methodId;
-
-        const QJsonArray params = obj.value("params").toArray();
-
-        foreach (const QJsonValue &paramValue, params) {
-            const QJsonObject &paramObj = paramValue.toObject();
-            const QString paramName = formatMember(paramObj.value("name").toString());
-
-            const QString paramType = paramObj.value("type").toString();
-
-            tlMethod.params.append(TLParam(paramName, formatType(paramType)));
-        }
-
-        result.insert(methodName, tlMethod);
-
-//        quint32 id = obj.value("id").toString().toInt();
-//        qDebug() << name << QString::number(id, 0x10);
-    }
 
     return result;
 }
@@ -556,20 +558,19 @@ void GeneratorNG::getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vec
     }
 }
 
-bool GeneratorNG::loadData(const QByteArray &data)
+bool GeneratorNG::loadDataFromJson(const QByteArray &data)
 {
     const QJsonDocument document = QJsonDocument::fromJson(data);
+    m_types = readTypesJson(document);
+    m_functions = readFunctionsJson(document);
 
-    m_types = readTypes(document);
-    m_solvedTypes = solveTypes(m_types);
-
-    m_methods = readMethods(document);
-
-    return !(m_types.isEmpty() || m_solvedTypes.isEmpty() | m_methods.isEmpty());
+    return !m_types.isEmpty() && !m_functions.isEmpty();
 }
 
 void GeneratorNG::generate()
 {
+    m_solvedTypes = solveTypes(m_types);
+
     codeOfTLValues.clear();
     codeOfTLTypes.clear();
     codeStreamReadDeclarations.clear();
@@ -594,7 +595,7 @@ void GeneratorNG::generate()
             << QLatin1String("upload")
             << QLatin1String("users");
 
-    foreach (const TLMethod &method, m_methods) {
+    foreach (const TLMethod &method, m_functions) {
         bool addImplementation = false;
         foreach (const QString &white, whiteList) {
             if (method.name.startsWith(white)) {
@@ -652,7 +653,7 @@ void GeneratorNG::generate()
     }
 
     codeOfTLValues.append(QLatin1String("        // Methods\n"));
-    foreach (const TLMethod &method, m_methods) {
+    foreach (const TLMethod &method, m_functions) {
         codeOfTLValues.append(generateTLValuesDefinition(method));
     }
 

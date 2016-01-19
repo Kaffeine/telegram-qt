@@ -24,8 +24,6 @@
 #include <QStringList>
 #include <QMap>
 
-#include <QJsonDocument>
-
 struct TLParam {
     TLParam() { }
     TLParam(const QString &newName, const QString &newType) :
@@ -93,7 +91,7 @@ struct TLMethod {
 class GeneratorNG
 {
 public:
-    bool loadData(const QByteArray &data);
+    bool loadDataFromJson(const QByteArray &data);
     void generate();
 
     static QString generateTLValuesDefinition(const TLType &type);
@@ -112,8 +110,6 @@ public:
     static QString generateConnectionMethodDeclaration(const TLMethod &method);
     static QString generateConnectionMethodDefinition(const TLMethod &method, QStringList &usedTypes);
 
-    static QMap<QString, TLType> readTypes(const QJsonDocument &document);
-    static QMap<QString, TLMethod> readMethods(const QJsonDocument &document);
     static QList<TLType> solveTypes(QMap<QString, TLType> types);
 
     void getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const;
@@ -132,22 +128,9 @@ public:
     QString codeDebugWriteDefinitions;
 
 private:
-    static QString formatType(QString type);
-    static QString formatName(QString name);
-    static QString formatName1stCapital(QString name);
-
-    static QString removePrefix(const QString &str);
-
-    static QString formatMember(QString name);
-
-    static QString getTypeOrVectorType(const QString &str);
-
-    static QString formatMethodParam(const TLParam &param);
-    static QString formatMethodParams(const TLMethod &method);
-
     QMap<QString, TLType> m_types;
     QList<TLType> m_solvedTypes;
-    QMap<QString, TLMethod> m_methods;
+    QMap<QString, TLMethod> m_functions;
 };
 
 #endif // GENERATORNG_HPP

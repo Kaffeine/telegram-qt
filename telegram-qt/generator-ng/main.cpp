@@ -27,9 +27,14 @@ enum StatusCode {
     NoError,
     InvalidAction,
     InvalidArgument,
+    SchemaReadError,
     NetworkError,
     ServerError,
     FileAccessError
+};
+
+enum SchemaFormat {
+    JsonFormat,
 };
 
 static const QString specFileName = QLatin1String("json");
@@ -120,7 +125,7 @@ void debugType(const TLType &type)
     }
 }
 
-StatusCode fetch()
+StatusCode fetchJson()
 {
     QEventLoop eventLoop;
     QNetworkAccessManager mgr;
@@ -179,7 +184,7 @@ StatusCode format()
     return NoError;
 }
 
-StatusCode generate()
+StatusCode generate(SchemaFormat format)
 {
     QFile specsFile(specFileName);
     specsFile.open(QIODevice::ReadOnly);
@@ -193,7 +198,19 @@ StatusCode generate()
     specsFile.close();
 
     GeneratorNG generator;
-    generator.loadData(data);
+
+    bool success = true;
+
+    switch (format) {
+    case JsonFormat:
+        success = generator.loadDataFromJson(data);
+        break;
+    }
+
+    if (!success) {
+        return SchemaReadError;
+    }
+
     generator.generate();
 
     replacingHelper(QLatin1String("../TLValues.hpp"), 8, QLatin1String("TLValues"), generator.codeOfTLValues);
@@ -220,35 +237,33 @@ int main(int argc, char *argv[])
 
     const QStringList arguments = app.arguments();
 
-    if (arguments.count() < 1) {
-        return InvalidAction;
-    }
-
-    if (arguments.count() < 2) {
-        printf("Usage: %s --generate\n", arguments.first().toLocal8Bit().constData());
-        return InvalidAction;
-    }
-
     int code = InvalidAction;
-    if (arguments.contains(QLatin1String("--fetch"))) {
-        code = fetch();
-        if (code != NoError) {
-            return code;
+
+    if (arguments.count() > 1) {
+        if (arguments.contains(QLatin1String("--fetch-json"))) {
+            code = fetchJson();
+            if (code != NoError) {
+                return code;
+            }
+        }
+
+        if (arguments.contains(QLatin1String("--format-json"))) {
+            code = format();
+            if (code != NoError) {
+                return code;
+            }
+        }
+
+        if (arguments.contains(QLatin1String("--generate-from-json"))) {
+            code = generate(JsonFormat);
+            if (code != NoError) {
+                return code;
+            }
         }
     }
 
-    if (arguments.contains(QLatin1String("--format"))) {
-        code = format();
-        if (code != NoError) {
-            return code;
-        }
-    }
-
-    if (arguments.contains(QLatin1String("--generate"))) {
-        code = generate();
-        if (code != NoError) {
-            return code;
-        }
+    if (code == InvalidAction) {
+        printf("Invalid arguments. Look at the sources for the list of possible arguments.\n");
     }
 
     return code;
