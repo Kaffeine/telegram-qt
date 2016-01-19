@@ -23,7 +23,7 @@
 
 #include "GeneratorNG.hpp"
 
-enum Errors {
+enum StatusCode {
     NoError,
     InvalidAction,
     InvalidArgument,
@@ -120,7 +120,7 @@ void debugType(const TLType &type)
     }
 }
 
-int fetch()
+StatusCode fetch()
 {
     QEventLoop eventLoop;
     QNetworkAccessManager mgr;
@@ -156,7 +156,7 @@ int fetch()
     return NoError; // Not implemented
 }
 
-int format()
+StatusCode format()
 {
     QFile specsFile(specFileName);
     if (!specsFile.open(QIODevice::ReadOnly)) {
@@ -179,7 +179,7 @@ int format()
     return NoError;
 }
 
-int generate()
+StatusCode generate()
 {
     QFile specsFile(specFileName);
     specsFile.open(QIODevice::ReadOnly);
@@ -232,21 +232,21 @@ int main(int argc, char *argv[])
     int code = InvalidAction;
     if (arguments.contains(QLatin1String("--fetch"))) {
         code = fetch();
-        if (code) {
+        if (code != NoError) {
             return code;
         }
     }
 
     if (arguments.contains(QLatin1String("--format"))) {
         code = format();
-        if (code) {
+        if (code != NoError) {
             return code;
         }
     }
 
     if (arguments.contains(QLatin1String("--generate"))) {
         code = generate();
-        if (code) {
+        if (code != NoError) {
             return code;
         }
     }
