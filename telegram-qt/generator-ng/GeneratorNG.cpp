@@ -160,6 +160,10 @@ QString getTypeOrVectorType(const QString &str)
 
 QString formatType(QString type)
 {
+    if (type.contains(QLatin1Char('?'))) {
+        type = type.section(QLatin1Char('?'), 1);
+    }
+
     if (plainTypes.contains(type)) {
         return nativeTypes.at(plainTypes.indexOf(type));
     } else if (type.startsWith(QLatin1String("Vector<"))) {
