@@ -29,8 +29,8 @@ static const QString tlTypeMember = QLatin1String("tlType");
 static const QString tlVectorType = QLatin1String("TLVector");
 static const QStringList podTypes = QStringList() << "bool" << "quint32" << "quint64" << "double" << tlValueName;
 static const QStringList initTypesValues = QStringList() << "false" << "0" << "0" << "0" << "0";
-static const QStringList plainTypes = QStringList() << "Bool" << "int" << "long" << "double" << "string" << "bytes";
-static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "quint64" << "double" << "QString" << "QByteArray";
+static const QStringList plainTypes = QStringList() << "Bool" << "#" << "int" << "long" << "double" << "string" << "bytes";
+static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "quint32" << "quint64" << "double" << "QString" << "QByteArray";
 
 static const QStringList badNames = QStringList() << "lat"<< "long" ;
 static const QStringList badNamesReplacers = QStringList() << "latitude"<< "longitude";
