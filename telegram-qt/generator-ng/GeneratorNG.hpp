@@ -92,6 +92,7 @@ class GeneratorNG
 {
 public:
     bool loadDataFromJson(const QByteArray &data);
+    bool loadDataFromText(const QByteArray &data);
     void generate();
 
     static QString generateTLValuesDefinition(const TLType &type);

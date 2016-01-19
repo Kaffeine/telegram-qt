@@ -589,6 +589,100 @@ bool GeneratorNG::loadDataFromJson(const QByteArray &data)
     return !m_types.isEmpty() && !m_functions.isEmpty();
 }
 
+enum EntryType {
+    EntryTypedef,
+    EntryFunction
+};
+
+bool GeneratorNG::loadDataFromText(const QByteArray &data)
+{
+    QTextStream input(data);
+
+    m_types.clear();
+    m_functions.clear();
+
+    EntryType entryType = EntryTypedef;
+
+    int currentLine = 0;
+    while (!input.atEnd()) {
+        QString line = input.readLine();
+        ++currentLine;
+
+        if (line == QLatin1String("---functions---")) {
+            entryType = EntryFunction;
+            continue;
+        }
+
+        if (line.simplified().isEmpty() || (line.startsWith(QLatin1String("---")) && line.endsWith(QLatin1String("---")))) {
+            continue;
+        }
+
+        int sectionsSplitterIndex = line.indexOf(QLatin1Char('='));
+        const QStringRef basePart = line.leftRef(sectionsSplitterIndex).trimmed();
+        const QStringRef typePart = line.midRef(sectionsSplitterIndex + 2, line.size() - 3 - sectionsSplitterIndex);
+
+        int hashIndex = basePart.indexOf(QChar('#'));
+        if ((hashIndex < 1) || (hashIndex + 1 > basePart.length())) {
+            printf("Bad string: %s (line %d)\n", line.toLocal8Bit().constData(), currentLine);
+            return false;
+        }
+
+        QStringRef predicateValue = basePart.mid(hashIndex + 1);
+        int endOfValue = predicateValue.indexOf(QChar(' '));
+
+        if (endOfValue > 0) {
+            predicateValue = predicateValue.left(endOfValue);
+        }
+
+        bool ok;
+        const quint32 predicateId = predicateValue.toUInt(&ok, 16);
+
+        if (!ok) {
+            printf("Could't read predicate id (string: \"%s\", predicate \"%s\", line %d)\n", line.toLocal8Bit().constData(), predicateValue.toString().toLocal8Bit().constData(), currentLine);
+            return false;
+        }
+
+        QVector<QStringRef> params = basePart.split(QLatin1Char(' '), QString::SkipEmptyParts);
+        params.removeFirst(); // The first part is predicate name + id.
+
+        QList<TLParam> tlParams;
+        foreach (const QStringRef &paramValue, params) {
+            QVector<QStringRef> nameAndType = paramValue.split(QLatin1Char(':'));
+            const QString paramName = formatMember(nameAndType.first().toString());
+            const QString paramType = formatType(nameAndType.last().toString());
+
+            tlParams << TLParam(paramName, paramType);
+        }
+
+        if (entryType == EntryTypedef) {
+            const QString predicateName = formatName1stCapital(basePart.left(hashIndex).toString());
+            const QString typeName = formatType(typePart.trimmed().toString());
+
+            TLType tlType = m_types.value(typeName);
+            tlType.name = typeName;
+
+            TLSubType tlSubType;
+            tlSubType.name = predicateName;
+            tlSubType.id = predicateId;
+            tlSubType.members.append(tlParams);
+
+            tlType.subTypes.append(tlSubType);
+            m_types.insert(typeName, tlType);
+        } else if (entryType == EntryFunction) {
+            const QString functionName = formatName(basePart.left(hashIndex).toString());
+
+            TLMethod tlMethod;
+            tlMethod.name = functionName;
+            tlMethod.id = predicateId;
+            tlMethod.params.append(tlParams);
+
+            m_functions.insert(functionName, tlMethod);
+        }
+    }
+
+    return !m_types.isEmpty() && !m_functions.isEmpty();
+}
+
 void GeneratorNG::generate()
 {
     m_solvedTypes = solveTypes(m_types);

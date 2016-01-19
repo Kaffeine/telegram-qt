@@ -35,6 +35,7 @@ enum StatusCode {
 
 enum SchemaFormat {
     JsonFormat,
+    TextFormat,
 };
 
 /* Replacing helper */
@@ -203,6 +204,9 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     case JsonFormat:
         success = generator.loadDataFromJson(data);
         break;
+    case TextFormat:
+        success = generator.loadDataFromText(data);
+        break;
     }
 
     if (!success) {
@@ -261,6 +265,13 @@ StatusCode main2(const QStringList &arguments)
 
     if (arguments.contains(QLatin1String("--generate-from-json"))) {
         code = generate(JsonFormat, fileName);
+        if (code != NoError) {
+            return code;
+        }
+    }
+
+    if (arguments.contains(QLatin1String("--generate-from-text"))) {
+        code = generate(TextFormat, fileName);
         if (code != NoError) {
             return code;
         }
