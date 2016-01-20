@@ -179,7 +179,7 @@ qint8 flagBitForMember(const QStringRef &type, QString *flagMember)
     }
 
     if (flagMember) {
-        *flagMember = type.left(indexOfBitIndex - 2).toString(); // (index - 1) is the dot, (index - 2) is the last symbol of the flag-member name
+        *flagMember = type.left(indexOfBitIndex - 1).toString(); // (index - 1) is the dot, (index - 2) is the last symbol of the flag-member name
     }
 
     return result;
