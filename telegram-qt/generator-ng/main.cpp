@@ -21,6 +21,8 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
+#include <QJsonDocument>
+
 #include "GeneratorNG.hpp"
 
 enum StatusCode {
