@@ -158,6 +158,33 @@ QString getTypeOrVectorType(const QString &str)
     return subType;
 }
 
+qint8 flagBitForMember(const QStringRef &type, QString *flagMember)
+{
+    int indexOfQuestion = type.indexOf(QLatin1Char('?'));
+    if (indexOfQuestion < 0) {
+        return -1;
+    }
+
+    int indexOfBitIndex = type.lastIndexOf(QLatin1Char('.'), indexOfQuestion) + 1;
+    if (indexOfBitIndex <= 0) {
+        return -2;
+    }
+
+    bool ok;
+    QStringRef ref = type.mid(indexOfBitIndex, indexOfQuestion - indexOfBitIndex);
+    qint8 result = ref.toUInt(&ok);
+
+    if (!ok) {
+        return -3;
+    }
+
+    if (flagMember) {
+        *flagMember = type.left(indexOfBitIndex - 2).toString(); // (index - 1) is the dot, (index - 2) is the last symbol of the flag-member name
+    }
+
+    return result;
+}
+
 QString formatType(QString type)
 {
     if (type.contains(QLatin1Char('?'))) {
@@ -364,7 +391,13 @@ QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type)
         code.append(QString("%1case %2::%3:\n").arg(spacing).arg(tlValueName).arg(subType.name));
 
         foreach (const TLParam &member, subType.members) {
-            code.append(QString("%1*this >> result.%2;\n").arg(doubleSpacing).arg(member.name));
+            if (member.dependOnFlag()) {
+                code.append(doubleSpacing + QString("if (result.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit));
+                code.append(doubleSpacing + spacing + QString("*this >> result.%1;\n").arg(member.name));
+                code.append(doubleSpacing + QLatin1Literal("}\n"));
+            } else {
+                code.append(doubleSpacing + QString("*this >> result.%1;\n").arg(member.name));
+            }
         }
 
         code.append(QString("%1break;\n").arg(doubleSpacing));
@@ -395,7 +428,13 @@ QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
         code.append(QString("%1case %2::%3:\n").arg(spacing).arg(tlValueName).arg(subType.name));
 
         foreach (const TLParam &member, subType.members) {
-            code.append(doubleSpacing + QString("*this << %1.%2;\n").arg(argName).arg(member.name));
+            if (member.dependOnFlag()) {
+                code.append(doubleSpacing + QString("if (%1.%2 & 1 << %3) {\n").arg(argName).arg(member.flagMember).arg(member.flagBit));
+                code.append(doubleSpacing + spacing + QString("*this << %1.%2;\n").arg(argName).arg(member.name));
+                code.append(doubleSpacing + QLatin1Literal("}\n"));
+            } else {
+                code.append(doubleSpacing + QString("*this << %1.%2;\n").arg(argName).arg(member.name));
+            }
         }
 
         code.append(QString("%1break;\n").arg(doubleSpacing));
@@ -650,8 +689,11 @@ bool GeneratorNG::loadDataFromText(const QByteArray &data)
             QVector<QStringRef> nameAndType = paramValue.split(QLatin1Char(':'));
             const QString paramName = formatMember(nameAndType.first().toString());
             const QString paramType = formatType(nameAndType.last().toString());
+            QString flagMember;
+            qint8 flagsBit = flagBitForMember(nameAndType.last(), &flagMember);
 
-            tlParams << TLParam(paramName, paramType);
+            tlParams << TLParam(paramName, paramType, flagsBit);
+            tlParams.last().flagMember = flagMember;
         }
 
         if (entryType == EntryTypedef) {

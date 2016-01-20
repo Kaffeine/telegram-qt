@@ -26,11 +26,15 @@
 
 struct TLParam {
     TLParam() { }
-    TLParam(const QString &newName, const QString &newType) :
-        name(newName), type(newType) { }
+    TLParam(const QString &newName, const QString &newType, qint8 newFlagBit = -1) :
+        name(newName), type(newType), flagBit(newFlagBit) { }
 
     QString name;
     QString type;
+    qint8 flagBit;
+    QString flagMember;
+
+    bool dependOnFlag() const { return flagBit >= 0; }
 };
 
 struct TLSubType {
