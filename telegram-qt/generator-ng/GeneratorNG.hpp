@@ -31,26 +31,12 @@ struct TLParam {
 
     QString name;
     QString type;
-
-    TLParam &operator=(const TLParam &anotherMember) {
-        name = anotherMember.name;
-        type = anotherMember.type;
-
-        return *this;
-    }
 };
 
 struct TLSubType {
     QString name;
     quint32 id;
     QList<TLParam> members;
-
-    TLSubType &operator=(const TLSubType &anotherType) {
-        name = anotherType.name;
-        members = anotherType.members;
-
-        return *this;
-    }
 
     bool haveMember(const QString &name) {
         foreach (const TLParam &member, members) {
@@ -66,26 +52,12 @@ struct TLSubType {
 struct TLType {
     QString name;
     QList<TLSubType> subTypes;
-
-    TLType &operator=(const TLType &anotherType) {
-        name = anotherType.name;
-        subTypes = anotherType.subTypes;
-
-        return *this;
-    }
 };
 
 struct TLMethod {
     QString name;
     quint32 id;
     QList< TLParam > params;
-
-    TLMethod &operator=(const TLMethod &anotherMethod) {
-        name = anotherMethod.name;
-        params = anotherMethod.params;
-
-        return *this;
-    }
 };
 
 class GeneratorNG
