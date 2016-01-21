@@ -469,8 +469,10 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     inputStream >> format;
 
     if (format > secretFormatVersion) {
-        qDebug() << Q_FUNC_INFO << "Unknown format version";
+        qDebug() << Q_FUNC_INFO << "Unknown format version" << format;
         return false;
+    } else {
+        qDebug() << Q_FUNC_INFO << "Format version:" << format;
     }
 
     QString legacySelfPhone;
@@ -1327,6 +1329,7 @@ void CTelegramDispatcher::getChatsInfo()
 
 void CTelegramDispatcher::getUpdatesState()
 {
+    qDebug() << Q_FUNC_INFO;
     m_updatesStateIsLocked = true;
     activeConnection()->updatesGetState();
 }
