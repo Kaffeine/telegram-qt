@@ -28,7 +28,8 @@ template CRawStream &CRawStream::operator<<(const TLNumber256 &v);
 
 CRawStream::CRawStream(QByteArray *data, bool write) :
     m_device(new QBuffer(data)),
-    m_ownDevice(true)
+    m_ownDevice(true),
+    m_error(false)
 {
     if (write) {
         m_device->open(QIODevice::Append);
@@ -39,7 +40,8 @@ CRawStream::CRawStream(QByteArray *data, bool write) :
 
 CRawStream::CRawStream(const QByteArray &data) :
     m_device(0),
-    m_ownDevice(true)
+    m_ownDevice(true),
+    m_error(false)
 {
     QBuffer *buffer = new QBuffer();
     buffer->setData(data);
@@ -50,7 +52,8 @@ CRawStream::CRawStream(const QByteArray &data) :
 
 CRawStream::CRawStream(QIODevice *d) :
     m_device(d),
-    m_ownDevice(false)
+    m_ownDevice(false),
+    m_error(false)
 {
 }
 
@@ -87,56 +90,64 @@ int CRawStream::bytesRemaining() const
     return m_device->bytesAvailable();
 }
 
+bool CRawStream::read(void *data, qint64 size)
+{
+    m_error = m_error || m_device->read((char *) data, size) != size;
+    return m_error;
+}
+
+bool CRawStream::write(const void *data, qint64 size)
+{
+    m_error = m_error || m_device->write((const char *) data, size) != size;
+    return m_error;
+}
+
 QByteArray CRawStream::readBytes(int count)
 {
-    return m_device->read(count);
+    QByteArray result = m_device->read(count);
+    m_error = m_error || result.size() != count;
+    return result;
 }
 
 CRawStream &CRawStream::operator>>(qint32 &i)
 {
-    m_device->read((char *)&i, 4);
-
+    read(&i, 4);
     return *this;
 }
 
 CRawStream &CRawStream::operator>>(qint64 &i)
 {
-    m_device->read((char *)&i, 8);
-
+    read(&i, 8);
     return *this;
 }
 
 CRawStream &CRawStream::operator>>(double &d)
 {
-    m_device->read((char *)&d, 8);
-
+    read(&d, 8);
     return *this;
 }
 
 CRawStream &CRawStream::operator<<(qint32 i)
 {
-    m_device->write((const char *) &i, 4);
-
+    write(&i, 4);
     return *this;
 }
 
 CRawStream &CRawStream::operator<<(qint64 i)
 {
-    m_device->write((const char *) &i, 8);
-
+    write(&i, 8);
     return *this;
 }
 
 CRawStream &CRawStream::operator<<(const double &d)
 {
-    m_device->write((const char *) &d, 8);
-
+    write(&d, 8);
     return *this;
 }
 
 CRawStream &CRawStream::operator<<(const QByteArray &data)
 {
-    m_device->write(data);
+    m_error = m_error || m_device->write(data) != data.size();
 
     return *this;
 }

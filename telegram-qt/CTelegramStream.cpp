@@ -94,21 +94,21 @@ CTelegramStream::CTelegramStream(QIODevice *d) :
 CTelegramStream &CTelegramStream::operator>>(QByteArray &data)
 {
     quint32 length = 0;
-    m_device->getChar((char *) &length);
+    read(&length, 1);
 
     if (length < 0xfe) {
         data.resize(length);
         length += 1; // Plus one byte before data
     } else {
-        m_device->read((char *) &length, 3);
+        read(&length, 3);
         data.resize(length);
         length += 4; // Plus four bytes before data
     }
 
-    m_device->read(data.data(), data.size());
+    read(data.data(), data.size());
 
     if (length & 3) {
-        m_device->read(4 - (length & 3));
+        readBytes(4 - (length & 3));
     }
 
     return *this;
@@ -3154,18 +3154,17 @@ CTelegramStream &CTelegramStream::operator<<(const QByteArray &data)
 
     if (length < 0xfe) {
         const char lengthToWrite = length;
-        m_device->putChar(lengthToWrite);
-        m_device->write(data);
+        write(&lengthToWrite, 1);
+        write(data.constData(), data.size());
         length += 1;
-
     } else {
         *this << quint32((length << 8) + 0xfe);
-        m_device->write(data);
+        write(data.constData(), data.size());
         length += 4;
     }
 
     if (length & 3) {
-        m_device->write(s_nulls, 4 - (length & 3));
+        write(s_nulls, 4 - (length & 3));
     }
 
     return *this;

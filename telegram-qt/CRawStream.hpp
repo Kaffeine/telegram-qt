@@ -43,6 +43,9 @@ public:
     void setDevice(QIODevice *newDevice);
     void unsetDevice();
 
+    bool error() const { return m_error; }
+    void resetError();
+
     bool atEnd() const;
     int bytesRemaining() const;
 
@@ -77,12 +80,20 @@ public:
     CRawStream &operator<<(const QByteArray &data);
 
 protected:
-    QIODevice *m_device;
+    bool read(void *data, qint64 size);
+    bool write(const void *data, qint64 size);
 
 private:
+    QIODevice *m_device;
     bool m_ownDevice;
+    bool m_error;
 
 };
+
+inline void CRawStream::resetError()
+{
+    m_error = false;
+}
 
 inline QByteArray CRawStream::readRemainingBytes()
 {
