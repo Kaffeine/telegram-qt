@@ -1725,6 +1725,10 @@ TLValue CTelegramConnection::processRpcQuery(const QByteArray &data)
         m_deltaTimeHeuristicState = DeltaTimeIsOk;
     }
 
+    if (stream.error()) {
+        qWarning() << Q_FUNC_INFO << "Read of RPC result caused error. RPC type:" << value.toString() << "(read from the package -> can be misleading)";
+    }
+
     return value;
 }
 
@@ -1778,6 +1782,11 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         TLValue processingResult;
 
         storedStream >> request;
+
+        if (storedStream.error()) {
+            qWarning() << Q_FUNC_INFO << "Unable to read request type from the saved package. Package with id" << id << "ignored.";
+            return;
+        }
 
         switch (request) {
         case TLValue::ContactsGetContacts:
@@ -1886,6 +1895,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
             m_submittedPackages.remove(id);
             addMessageToAck(id);
             break;
+        }
+        if (stream.error()) {
+            qWarning() << Q_FUNC_INFO << "Read of RPC result caused an error. RPC type:" << request.toString() << "Package id:" << id;
         }
     } else {
         stream >> request;
@@ -2625,6 +2637,10 @@ TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok)
 {
     TLUpdates updates;
     stream >> updates;
+
+    if (stream.error()) {
+        qWarning() << Q_FUNC_INFO << "Read of an update caused an error.";
+    }
 
     switch (updates.tlType) {
     case TLValue::UpdatesTooLong:
