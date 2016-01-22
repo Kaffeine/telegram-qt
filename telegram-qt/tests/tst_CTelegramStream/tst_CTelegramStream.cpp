@@ -44,6 +44,7 @@ private slots:
     void vectorDeserializationError();
     void tlNumbersSerialization();
     void tlDcOptionDeserialization();
+    void readError();
 
 };
 
@@ -417,6 +418,47 @@ void tst_CTelegramStream::tlDcOptionDeserialization()
     QCOMPARE(optionsVector.at(5).hostname , QString("localhost"));
     QCOMPARE(optionsVector.at(5).ipAddress, QString("174.140.142.5"));
     QCOMPARE(optionsVector.at(5).port     , quint32(80));
+}
+
+void tst_CTelegramStream::readError()
+{
+    {
+        static const char input[8] = { char(6), 't', 'e', 's', 't', '1', 'a', 0 };
+        static const QByteArray data(input, sizeof(input));
+
+        CTelegramStream stream(data);
+
+        QVERIFY2(!stream.error(), "Unexpected error (there was been no read operation, so nothing can cause an error).");
+
+        QString result;
+        stream >> result;
+
+        QCOMPARE(result, QLatin1String("test1a"));
+        QVERIFY2(!stream.error(), "Stream is at the end of input, but without read it should be not an error yet.");
+
+        // nothing to read
+        stream >> result;
+        QVERIFY2(stream.error(), "Read after the end should be an error.");
+    }
+
+    {
+        static const char input[5] = { char(0xcc), char(0xbb), char(0xaa), char(0x00), char(0x20) };
+        static const QByteArray data(input, sizeof(input));
+
+        CTelegramStream stream(data);
+
+        QVERIFY(!stream.error());
+
+        quint32 result;
+        stream >> result;
+
+        QCOMPARE(result, quint32(0xaabbcc));
+        QVERIFY2(!stream.error(), "Stream is at the end of input, but without read it should be not a error yet.");
+
+        stream >> result;
+        QVERIFY2(stream.error(), "Partial read, error should be set.");
+    }
+
 }
 
 QTEST_MAIN(tst_CTelegramStream)
