@@ -54,5 +54,7 @@ contains(options, developer-build) {
     DEFINES += DEVELOPER_BUILD
 }
 
+OTHER_FILES += CMakeLists.txt
+
 LIBS += -lssl -lcrypto
 LIBS += -lz

@@ -13,3 +13,5 @@ contains(options, developer-build) {
         SUBDIRS += telegram-qt/generator-ng
     }
 }
+
+OTHER_FILES += CMakeLists.txt
