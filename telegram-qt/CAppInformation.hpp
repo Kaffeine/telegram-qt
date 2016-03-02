@@ -25,8 +25,7 @@
 class TELEGRAMQT_EXPORT CAppInformation
 {
 public:
-    CAppInformation();
-    CAppInformation(const CAppInformation *anotherInfo);
+    CAppInformation(const CAppInformation *anotherInfo = 0);
 
     bool isValid() const;
 
