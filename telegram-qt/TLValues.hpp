@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014-2015 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2014-2016 Alexandr Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
@@ -15,8 +15,8 @@
 
  */
 
-#ifndef TLVALUE_H
-#define TLVALUE_H
+#ifndef TLVALUE_HPP
+#define TLVALUE_HPP
 
 #include <QObject>
 
@@ -490,22 +490,19 @@ public:
         // End of generated TLValues
     };
 
-    explicit inline TLValue(quint32 i) :
+    explicit TLValue(quint32 i = 0) :
         m_value(Value(i))
     {
     }
 
-    inline TLValue() :
-        m_value(Value(0))
-    {
-    }
-
-    inline operator quint32() const
+    operator quint32() const
     {
         return m_value;
     }
 
-    inline TLValue &operator=(TLValue::Value v)
+    bool isValid() const;
+
+    TLValue &operator=(TLValue::Value v)
     {
         m_value = v;
         return *this;
@@ -521,4 +518,4 @@ private:
 
 };
 
-#endif // TLVALUES_H
+#endif // TLVALUES_HPP

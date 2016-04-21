@@ -19,11 +19,16 @@
 
 #include <QMetaEnum>
 
+static const int ValueTypeEnumeratorIndex = TLValue::staticMetaObject.indexOfEnumerator("Value");
+static const QMetaEnum enumerator = TLValue::staticMetaObject.enumerator(ValueTypeEnumeratorIndex);
+
+bool TLValue::isValid() const
+{
+    return enumerator.valueToKey(m_value);
+}
+
 QString TLValue::toString() const
 {
-    static const int index = staticMetaObject.indexOfEnumerator("Value");
-    static const QMetaEnum enumerator = staticMetaObject.enumerator(index);
-
     const char *value = enumerator.valueToKey(m_value);
     if (value) {
         return QString::fromLatin1(value);
