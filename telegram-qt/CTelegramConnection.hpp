@@ -268,7 +268,6 @@ signals:
     void messagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
     void fullUserReceived(const TLUserFull &userFull);
-    void statedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId);
     void messagesHistoryReceived(const TLMessagesMessages &history, const TLInputPeer &peer);
 
     void updatesReceived(const TLUpdates &update);
@@ -308,9 +307,7 @@ protected:
     TLValue processUploadSaveFilePart(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetUsers(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetFullUser(CTelegramStream &stream, quint64 id);
-    TLValue processMessagesStatedMessage(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
-    TLValue processMessagesSendMedia(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReadHistory(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReceivedMessages(CTelegramStream &stream, quint64 id);
