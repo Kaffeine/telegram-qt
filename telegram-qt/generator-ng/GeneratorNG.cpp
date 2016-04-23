@@ -519,7 +519,13 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
     result += spacing + QString("outputStream << %1::%2;\n").arg(tlValueName).arg(formatName1stCapital(method.name));
 
     foreach (const TLParam &param, method.params) {
-        result += spacing + QString("outputStream << %1;\n").arg(param.name);
+        if (param.dependOnFlag()) {
+            result += spacing + QString("if (%1 & 1 << %2) {\n").arg(param.name).arg(param.flagBit);
+            result += spacing + spacing + QString("outputStream << %1;\n").arg(param.name);
+            result += spacing + QLatin1String("}\n");
+        } else {
+            result += spacing + QString("outputStream << %1;\n").arg(param.name);
+        }
 
         if (!nativeTypes.contains(getTypeOrVectorType(param.type))) {
             usedTypes.append(param.type);
