@@ -1231,40 +1231,6 @@ void CTelegramDispatcher::messageActionTimerTimeout()
     }
 }
 
-void CTelegramDispatcher::whenStatedMessageReceived(const TLMessagesStatedMessage &statedMessage, quint64 messageId)
-{
-#ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << m_temporaryChatIdMap << statedMessage;
-#else
-    qDebug() << Q_FUNC_INFO << m_temporaryChatIdMap;
-#endif
-
-    if (m_temporaryChatIdMap.contains(messageId)) {
-        if (statedMessage.chats.isEmpty()) {
-            qDebug() << "Stated message expected to have chat id, but it haven't";
-            return;
-        }
-
-        const quint32 publicChatId = m_temporaryChatIdMap.take(messageId);
-        if (!havePublicChatId(publicChatId)) {
-            qDebug() << Q_FUNC_INFO << "Unexpected stated message public id " << publicChatId << " for chat " << statedMessage.chats.first().id;
-        } else {
-            m_chatIds[publicChatId - 1] = statedMessage.chats.first().id;
-            qDebug() << Q_FUNC_INFO << "public chat id " << publicChatId << " resolved to " << statedMessage.chats.first().id;
-        }
-    }
-
-    switch (statedMessage.tlType) {
-    case TLValue::MessagesStatedMessage:
-        processMessageReceived(statedMessage.message);
-        break;
-    default:
-        break;
-    }
-
-    ensureUpdateState(statedMessage.pts, statedMessage.seq);
-}
-
 void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq)
 {
     const QString phone = userIdToIdentifier(peer.userId);
@@ -2035,8 +2001,6 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
             connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
                     SLOT(whenMessagesHistoryReceived(TLMessagesMessages)));
-            connect(connection, SIGNAL(statedMessageReceived(TLMessagesStatedMessage,quint64)),
-                    SLOT(whenStatedMessageReceived(TLMessagesStatedMessage,quint64)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),
                     SLOT(whenUpdatesStateReceived(TLUpdatesState)));
             connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)),
