@@ -540,6 +540,34 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types)
 
     int previousSolvedTypesCount = -1;
 
+    for (const QString &typeName : types.keys()) {
+        TLType &type = types[typeName];
+
+        QMap<QString,QString> members;
+        for (const TLSubType &subType : type.subTypes) {
+            for (const TLParam &member : subType.members) {
+                if (members.contains(member.name)) {
+                    if (members.value(member.name) == member.type) {
+                        continue;
+                    }
+                }
+                members.insertMulti(member.name, member.type);
+            }
+        }
+
+        for (TLSubType &subType : type.subTypes) {
+            for (TLParam &member : subType.members) {
+                if (members.values(member.name).count() > 1) {
+                    QString typeWithoutTL = member.type.startsWith("TL") ? member.type.mid(2) : member.type;
+                    typeWithoutTL.remove(member.name, Qt::CaseInsensitive);
+                    if (member.name.compare(typeWithoutTL, Qt::CaseInsensitive) != 0) {
+                        member.name.append(typeWithoutTL);
+                    }
+                }
+            }
+        }
+    }
+
     // In order to successful compilation, type must rely only on defined types.
     while (solvedTypes.count() != previousSolvedTypesCount) { // Check for infinity loop
         previousSolvedTypesCount = solvedTypes.count();
