@@ -146,7 +146,7 @@ Q_SIGNALS:
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void contactListChanged();
     void contactProfileChanged(const QString &contact); // First and/or last name was changed
-    void phoneStatusReceived(const QString &phone, bool registered, bool invited);
+    void phoneStatusReceived(const QString &phone, bool registered);
 
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
     void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data,
@@ -155,6 +155,7 @@ Q_SIGNALS:
     void messageReceived(const TelegramNamespace::Message &message);
 
 #ifndef TELEGRAMQT_NO_DEPRECATED
+    void phoneStatusReceived(const QString &phone, bool registered, bool invited);
     void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
     void contactTypingStatusChanged(const QString &contact, bool typingStatus);

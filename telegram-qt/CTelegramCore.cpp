@@ -33,8 +33,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)));
     connect(m_dispatcher, SIGNAL(loggedOut(bool)),
             SIGNAL(loggedOut(bool)));
-    connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)),
-            SIGNAL(phoneStatusReceived(QString,bool,bool)));
+    connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool)),
+            SIGNAL(phoneStatusReceived(QString,bool)));
     connect(m_dispatcher, SIGNAL(phoneCodeRequired()),
             SIGNAL(phoneCodeRequired()));
     connect(m_dispatcher, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
@@ -52,6 +52,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(messageReceived(TelegramNamespace::Message)));
 
 #ifndef TELEGRAMQT_NO_DEPRECATED
+    connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)),
+            SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
             SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)));
     connect(m_dispatcher, SIGNAL(chatMessageReceived(quint32,QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),

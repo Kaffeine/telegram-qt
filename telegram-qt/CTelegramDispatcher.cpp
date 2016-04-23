@@ -2164,6 +2164,13 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
     }
 }
 
+#ifndef TELEGRAMQT_NO_DEPRECATED
+void CTelegramDispatcher::whenPhoneStatusReceived(const QString &phone, bool registered)
+{
+    emit phoneStatusReceived(phone, registered, false);
+}
+#endif
+
 void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset)
 {
     if (!m_requestedFileDescriptors.contains(requestId)) {
@@ -2503,7 +2510,12 @@ CTelegramConnection *CTelegramDispatcher::createConnection()
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,quint32)), SLOT(whenPackageRedirected(QByteArray,quint32)));
     connect(connection, SIGNAL(wantedActiveDcChanged(quint32)), SLOT(whenWantedActiveDcChanged(quint32)));
 
-    connect(connection, SIGNAL(phoneStatusReceived(QString,bool,bool)), SIGNAL(phoneStatusReceived(QString,bool,bool)));
+    connect(connection, SIGNAL(phoneStatusReceived(QString,bool)), SIGNAL(phoneStatusReceived(QString,bool)));
+
+#ifndef TELEGRAMQT_NO_DEPRECATED
+    connect(connection, SIGNAL(phoneStatusReceived(QString,bool)), SLOT(whenPhoneStatusReceived(QString,bool)));
+#endif
+
     connect(connection, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(connection,
             SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),

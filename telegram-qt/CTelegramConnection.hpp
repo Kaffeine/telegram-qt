@@ -252,7 +252,7 @@ signals:
     void authStateChanged(int status, quint32 dc);
     void actualDcIdReceived(quint32 dc, quint32 newDcId);
     void dcConfigurationReceived(quint32 dc);
-    void phoneStatusReceived(const QString &phone, bool registered, bool invited);
+    void phoneStatusReceived(const QString &phone, bool registered);
     void phoneCodeRequired();
     void loggedOut(bool result);
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);

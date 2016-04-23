@@ -2411,7 +2411,7 @@ TLValue CTelegramConnection::processAuthCheckPhone(CTelegramStream &stream, quin
         stream >> value;
         stream >> phone;
 
-        emit phoneStatusReceived(phone, result.phoneRegistered, result.phoneInvited);
+        emit phoneStatusReceived(phone, result.phoneRegistered);
     }
 
     return result.tlType;
