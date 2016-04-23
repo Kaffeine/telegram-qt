@@ -506,6 +506,12 @@
            <property name="contextMenuPolicy">
             <enum>Qt::CustomContextMenu</enum>
            </property>
+           <property name="verticalScrollMode">
+            <enum>QAbstractItemView::ScrollPerPixel</enum>
+           </property>
+           <property name="horizontalScrollMode">
+            <enum>QAbstractItemView::ScrollPerPixel</enum>
+           </property>
           </widget>
          </item>
         </layout>
@@ -526,7 +532,14 @@
            <widget class="QWidget" name="layoutWidget2">
             <layout class="QGridLayout" name="groupChatMessagingGrid">
              <item row="0" column="0">
-              <widget class="QTableView" name="groupChatMessagingView"/>
+              <widget class="QTableView" name="groupChatMessagingView">
+               <property name="verticalScrollMode">
+                <enum>QAbstractItemView::ScrollPerPixel</enum>
+               </property>
+               <property name="horizontalScrollMode">
+                <enum>QAbstractItemView::ScrollPerPixel</enum>
+               </property>
+              </widget>
              </item>
              <item row="1" column="0">
               <layout class="QGridLayout" name="gridLayout_14">
