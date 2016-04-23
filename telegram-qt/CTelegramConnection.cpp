@@ -2675,7 +2675,7 @@ TLValue CTelegramConnection::processMessagesGetChats(CTelegramStream &stream, qu
     stream >> result;
 
     if (result.tlType == TLValue::MessagesChats) {
-        emit messagesChatsReceived(result.chats, result.users);
+        emit messagesChatsReceived(result.chats);
     }
 
     return result.tlType;

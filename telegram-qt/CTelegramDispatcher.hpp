@@ -258,7 +258,7 @@ protected slots:
     void getDifference();
     void whenUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
-    void whenMessagesChatsReceived(const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void whenMessagesChatsReceived(const QVector<TLChat> &chats);
     void whenMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
 protected:

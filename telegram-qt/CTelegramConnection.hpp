@@ -264,7 +264,7 @@ signals:
     void fileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
     void fileDataSent(quint32 requestId);
 
-    void messagesChatsReceived(const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void messagesChatsReceived(const QVector<TLChat> &chats);
     void messagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
     void fullUserReceived(const TLUserFull &userFull);
