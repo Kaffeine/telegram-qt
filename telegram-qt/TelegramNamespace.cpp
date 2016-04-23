@@ -56,14 +56,7 @@ TelegramNamespace::MessageType TelegramNamespace::MessageMediaInfo::type() const
 
 QString TelegramNamespace::MessageMediaInfo::caption() const
 {
-    switch (d->tlType) {
-    case TLValue::MessageMediaPhoto:
-        return d->photo.caption;
-    case TLValue::MessageMediaVideo:
-        return d->video.caption;
-    default:
-        return QString();
-    }
+    return d->caption;
 }
 
 double TelegramNamespace::MessageMediaInfo::latitude() const
