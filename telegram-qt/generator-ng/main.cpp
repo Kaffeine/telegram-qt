@@ -193,6 +193,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     const QByteArray data = specsFile.readAll();
 
     if (data.isEmpty()) {
+        printf("Unable to read the file.\n");
         return InvalidArgument;
     }
 
@@ -212,6 +213,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     }
 
     if (!success) {
+        printf("Unable to parse the scheme.\n");
         return SchemaReadError;
     }
 
