@@ -1879,7 +1879,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMedia)
         *this >> result.file;
         break;
     case TLValue::InputMediaPhoto:
-        *this >> result.id;
+        *this >> result.idInputPhoto;
         break;
     case TLValue::InputMediaGeoPoint:
         *this >> result.geoPoint;
@@ -1905,7 +1905,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMedia)
         *this >> result.mimeType;
         break;
     case TLValue::InputMediaVideo:
-        *this >> result.id;
+        *this >> result.idInputVeo;
         break;
     case TLValue::InputMediaUploadedAudio:
         *this >> result.file;
@@ -1913,7 +1913,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMedia)
         *this >> result.mimeType;
         break;
     case TLValue::InputMediaAudio:
-        *this >> result.id;
+        *this >> result.idInputAudio;
         break;
     case TLValue::InputMediaUploadedDocument:
         *this >> result.file;
@@ -1927,7 +1927,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMedia)
         *this >> result.attributes;
         break;
     case TLValue::InputMediaDocument:
-        *this >> result.id;
+        *this >> result.idInputDocument;
         break;
     default:
         break;
@@ -1946,7 +1946,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputNotifyPeer &inputNotifyPeer)
 
     switch (result.tlType) {
     case TLValue::InputNotifyPeer:
-        *this >> result.peer;
+        *this >> result.peerInput;
         break;
     case TLValue::InputNotifyUsers:
         break;
@@ -1955,7 +1955,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputNotifyPeer &inputNotifyPeer)
     case TLValue::InputNotifyAll:
         break;
     case TLValue::InputNotifyGeoChatPeer:
-        *this >> result.peer;
+        *this >> result.peerInputGeoChat;
         break;
     default:
         break;
@@ -2977,10 +2977,10 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &update)
         *this >> result.location;
         break;
     case TLValue::UpdateNewGeoChatMessage:
-        *this >> result.message;
+        *this >> result.messageGeoChat;
         break;
     case TLValue::UpdateNewEncryptedMessage:
-        *this >> result.message;
+        *this >> result.messageEncrypted;
         *this >> result.qts;
         break;
     case TLValue::UpdateEncryptedChatTyping:
@@ -3019,7 +3019,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &update)
         break;
     case TLValue::UpdateServiceNotification:
         *this >> result.type;
-        *this >> result.message;
+        *this >> result.messageQString;
         *this >> result.media;
         *this >> result.popup;
         break;
@@ -3663,7 +3663,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMedia)
         *this << inputMedia.file;
         break;
     case TLValue::InputMediaPhoto:
-        *this << inputMedia.id;
+        *this << inputMedia.idInputPhoto;
         break;
     case TLValue::InputMediaGeoPoint:
         *this << inputMedia.geoPoint;
@@ -3689,7 +3689,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMedia)
         *this << inputMedia.mimeType;
         break;
     case TLValue::InputMediaVideo:
-        *this << inputMedia.id;
+        *this << inputMedia.idInputVeo;
         break;
     case TLValue::InputMediaUploadedAudio:
         *this << inputMedia.file;
@@ -3697,7 +3697,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMedia)
         *this << inputMedia.mimeType;
         break;
     case TLValue::InputMediaAudio:
-        *this << inputMedia.id;
+        *this << inputMedia.idInputAudio;
         break;
     case TLValue::InputMediaUploadedDocument:
         *this << inputMedia.file;
@@ -3711,7 +3711,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMedia)
         *this << inputMedia.attributes;
         break;
     case TLValue::InputMediaDocument:
-        *this << inputMedia.id;
+        *this << inputMedia.idInputDocument;
         break;
     default:
         break;
@@ -3726,7 +3726,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotif
 
     switch (inputNotifyPeer.tlType) {
     case TLValue::InputNotifyPeer:
-        *this << inputNotifyPeer.peer;
+        *this << inputNotifyPeer.peerInput;
         break;
     case TLValue::InputNotifyUsers:
         break;
@@ -3735,7 +3735,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotif
     case TLValue::InputNotifyAll:
         break;
     case TLValue::InputNotifyGeoChatPeer:
-        *this << inputNotifyPeer.peer;
+        *this << inputNotifyPeer.peerInputGeoChat;
         break;
     default:
         break;

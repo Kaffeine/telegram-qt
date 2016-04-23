@@ -1474,7 +1474,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << "file:" << type.file;
         break;
     case TLValue::InputMediaPhoto:
-        d << "id:" << type.id;
+        d << "idInputPhoto:" << type.idInputPhoto;
         break;
     case TLValue::InputMediaGeoPoint:
         d << "geoPoint:" << type.geoPoint;
@@ -1500,7 +1500,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << "mimeType:" << type.mimeType;
         break;
     case TLValue::InputMediaVideo:
-        d << "id:" << type.id;
+        d << "idInputVeo:" << type.idInputVeo;
         break;
     case TLValue::InputMediaUploadedAudio:
         d << "file:" << type.file;
@@ -1508,7 +1508,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << "mimeType:" << type.mimeType;
         break;
     case TLValue::InputMediaAudio:
-        d << "id:" << type.id;
+        d << "idInputAudio:" << type.idInputAudio;
         break;
     case TLValue::InputMediaUploadedDocument:
         d << "file:" << type.file;
@@ -1522,7 +1522,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << "attributes:" << type.attributes;
         break;
     case TLValue::InputMediaDocument:
-        d << "id:" << type.id;
+        d << "idInputDocument:" << type.idInputDocument;
         break;
     default:
         break;
@@ -1537,7 +1537,7 @@ QDebug operator<<(QDebug d, const TLInputNotifyPeer &type)
     d << "TLInputNotifyPeer(" << type.tlType.toString() << ") {";
     switch (type.tlType) {
     case TLValue::InputNotifyPeer:
-        d << "peer:" << type.peer;
+        d << "peerInput:" << type.peerInput;
         break;
     case TLValue::InputNotifyUsers:
         break;
@@ -1546,7 +1546,7 @@ QDebug operator<<(QDebug d, const TLInputNotifyPeer &type)
     case TLValue::InputNotifyAll:
         break;
     case TLValue::InputNotifyGeoChatPeer:
-        d << "peer:" << type.peer;
+        d << "peerInputGeoChat:" << type.peerInputGeoChat;
         break;
     default:
         break;
@@ -2428,10 +2428,10 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << "location:" << type.location;
         break;
     case TLValue::UpdateNewGeoChatMessage:
-        d << "message:" << type.message;
+        d << "messageGeoChat:" << type.messageGeoChat;
         break;
     case TLValue::UpdateNewEncryptedMessage:
-        d << "message:" << type.message;
+        d << "messageEncrypted:" << type.messageEncrypted;
         d << "qts:" << type.qts;
         break;
     case TLValue::UpdateEncryptedChatTyping:
@@ -2470,7 +2470,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         break;
     case TLValue::UpdateServiceNotification:
         d << "type:" << type.type;
-        d << "message:" << type.message;
+        d << "messageQString:" << type.messageQString;
         d << "media:" << type.media;
         d << "popup:" << type.popup;
         break;
