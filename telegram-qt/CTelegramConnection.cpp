@@ -3057,7 +3057,7 @@ void CTelegramConnection::insertInitConnection(QByteArray *data) const
     CTelegramStream outputStream(data, /* write */ true);
 
     outputStream << TLValue::InvokeWithLayer;
-    outputStream << quint32(23);
+    outputStream << quint32(29);
     outputStream << TLValue::InitConnection;
 
     outputStream << m_appInfo->appId();
