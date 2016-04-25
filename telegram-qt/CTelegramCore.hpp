@@ -91,6 +91,8 @@ public Q_SLOTS:
 
     bool requestHistory(const TelegramNamespace::Peer &peer, int offset, int limit);
 
+    quint32 resolveUsername(const QString &userName);
+
     // Does not work yet
 //    quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
 //    quint32 uploadFile(QIODevice *source, const QString &fileName);

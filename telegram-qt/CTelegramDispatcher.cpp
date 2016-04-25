@@ -700,6 +700,23 @@ bool CTelegramDispatcher::requestHistory(const TelegramNamespace::Peer &peer, qu
     return true;
 }
 
+quint32 CTelegramDispatcher::resolveUsername(const QString &userName)
+{
+    if (!activeConnection()) {
+        return 0;
+    }
+
+    foreach (const TLUser *user, m_users) {
+        if (user->username == userName) {
+            return user->id;
+        }
+    }
+
+    activeConnection()->contactsResolveUsername(userName);
+
+    return 0;
+}
+
 quint32 CTelegramDispatcher::uploadFile(const QByteArray &fileContent, const QString &fileName)
 {
 #ifdef DEVELOPER_BUILD

@@ -164,6 +164,7 @@ public:
     bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
 
     bool requestHistory(const TelegramNamespace::Peer &peer, quint32 offset, quint32 limit);
+    quint32 resolveUsername(const QString &userName);
 
     quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
     quint32 uploadFile(QIODevice *source, const QString &fileName);

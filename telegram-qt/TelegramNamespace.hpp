@@ -96,6 +96,7 @@ public:
         UserNameStatusIsNotModified,
         UserNameStatusCanBeUsed,
         UserNameStatusCanNotBeUsed,
+        UserNameStatusResolved,
         UserNameStatusAccepted
     };
 

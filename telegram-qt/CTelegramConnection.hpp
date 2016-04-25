@@ -295,6 +295,7 @@ protected:
     TLValue processContactsGetContacts(CTelegramStream &stream, quint64 id);
     TLValue processContactsImportContacts(CTelegramStream &stream, quint64 id);
     TLValue processContactsDeleteContacts(CTelegramStream &stream, quint64 id);
+    TLValue processContactsResolveUsername(CTelegramStream &stream, quint64 id);
     TLValue processUpdatesGetState(CTelegramStream &stream, quint64 id);
     TLValue processUpdatesGetDifference(CTelegramStream &stream, quint64 id);
     TLValue processAuthCheckPhone(CTelegramStream &stream, quint64 id);

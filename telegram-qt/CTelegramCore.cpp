@@ -183,6 +183,11 @@ bool CTelegramCore::requestHistory(const TelegramNamespace::Peer &peer, int offs
     return m_dispatcher->requestHistory(peer, offset, limit);
 }
 
+quint32 CTelegramCore::resolveUsername(const QString &userName)
+{
+    return m_dispatcher->resolveUsername(userName);
+}
+
 quint64 CTelegramCore::sendMessage(const TelegramNamespace::Peer &peer, const QString &message)
 {
     return m_dispatcher->sendMessage(peer, message);
