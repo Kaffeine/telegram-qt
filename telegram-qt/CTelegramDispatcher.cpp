@@ -1531,6 +1531,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             if (changed) {
                 user->firstName = update.firstName;
                 user->lastName = update.lastName;
+                user->username = update.username;
                 emit contactProfileChanged(userIdToIdentifier(user->id));
             }
         }
