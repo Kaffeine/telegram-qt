@@ -261,7 +261,7 @@ quint64 CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString 
         return 0;
     }
 
-    messagesSendMessage(peer, message, randomMessageId);
+    messagesSendMessage(/* flags */0, peer, /* reply to message id*/ 0, message, randomMessageId);
 
     return randomMessageId;
 }
@@ -271,7 +271,7 @@ quint64 CTelegramConnection::sendMedia(const TLInputPeer &peer, const TLInputMed
     quint64 randomMessageId;
     Utils::randomBytes(&randomMessageId);
 
-    messagesSendMedia(peer, media, randomMessageId);
+    messagesSendMedia(/* flags */0, peer, /* reply to message id*/ 0, media, randomMessageId);
 
     return randomMessageId;
 }
