@@ -56,9 +56,9 @@ const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typ
 #endif
 
 enum TelegramMessageFlags {
-    TelegramMessageFlagNone   = 0x0,
-    TelegramMessageFlagUnread = 0x1, // Message was *not* read
-    TelegramMessageFlagOut    = 0x2  // Message is outgoing
+    TelegramMessageFlagNone    = 0,
+    TelegramMessageFlagForward = 1 << 2,
+    TelegramMessageFlagReply   = 1 << 3,
 };
 
 const quint32 FileRequestDescriptor::c_chunkSize = 128 * 256;
@@ -1705,7 +1705,7 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
     TelegramNamespace::Message apiMessage;
 
     TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message);
-    if (message.tlType == TLValue::MessageForwarded) {
+    if (messageFlags & TelegramNamespace::MessageFlagForwarded) {
         apiMessage.fwdContact = userIdToIdentifier(message.fwdFromId);
         apiMessage.fwdTimestamp = message.fwdDate;
     }
@@ -2453,16 +2453,16 @@ TelegramNamespace::MessageFlags CTelegramDispatcher::getPublicMessageFlags(const
 {
     TelegramNamespace::MessageFlags result = TelegramNamespace::MessageFlagNone;
 
-    if (message.flags & TelegramMessageFlagOut) {
+    if (message.fromId == m_selfUserId) {
         result |= TelegramNamespace::MessageFlagOut;
     }
 
-    if (!(message.flags & TelegramMessageFlagUnread)) {
-        result |= TelegramNamespace::MessageFlagRead;
+    if (message.flags & TelegramMessageFlagForward) {
+        result |= TelegramNamespace::MessageFlagForwarded;
     }
 
-    if (message.tlType == TLValue::MessageForwarded) {
-        result |= TelegramNamespace::MessageFlagForwarded;
+    if (message.flags & TelegramMessageFlagReply) {
+        result |= TelegramNamespace::MessageFlagIsReply;
     }
 
     return result;

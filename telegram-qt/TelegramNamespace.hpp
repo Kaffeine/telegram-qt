@@ -48,7 +48,8 @@ public:
         MessageFlagNone      = 0x0,
         MessageFlagRead      = 0x1, // Message was read
         MessageFlagOut       = 0x2, // Message is outgoing
-        MessageFlagForwarded = 0x4
+        MessageFlagForwarded = 0x4,
+        MessageFlagIsReply   = 0x8,
     };
     Q_DECLARE_FLAGS(MessageFlags, MessageFlag)
 
