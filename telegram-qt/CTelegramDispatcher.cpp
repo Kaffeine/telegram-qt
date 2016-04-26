@@ -1231,16 +1231,16 @@ void CTelegramDispatcher::messageActionTimerTimeout()
     }
 }
 
-void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq)
+void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, TLMessagesSentMessage info)
 {
-    const QString phone = userIdToIdentifier(peer.userId);
-    QPair<QString, quint64> phoneAndId(phone, randomId);
+    const QString identifier = userIdToIdentifier(peer.userId);
+    QPair<QString, quint64> phoneAndId(identifier, randomId);
 
-    m_messagesMap.insert(messageId, phoneAndId);
+    m_messagesMap.insert(info.id, phoneAndId);
 
-    emit sentMessageStatusChanged(phoneAndId.first, phoneAndId.second, TelegramNamespace::MessageDeliveryStatusSent);
+    emit sentMessageStatusChanged(identifier, info.id, TelegramNamespace::MessageDeliveryStatusSent);
 
-    ensureUpdateState(pts, seq, date);
+    ensureUpdateState(info.pts, info.seq, info.date);
 }
 
 void CTelegramDispatcher::whenMessagesHistoryReceived(const TLMessagesMessages &messages)
@@ -2023,8 +2023,8 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenContactListChanged(QVector<quint32>,QVector<quint32>)));
             connect(connection, SIGNAL(updatesReceived(TLUpdates)),
                     SLOT(whenUpdatesReceived(TLUpdates)));
-            connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)),
-                    SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,quint32,quint32,quint32,quint32)));
+            connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,TLMessagesSentMessage)),
+                    SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,TLMessagesSentMessage)));
             connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
                     SLOT(whenMessagesHistoryReceived(TLMessagesMessages)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),

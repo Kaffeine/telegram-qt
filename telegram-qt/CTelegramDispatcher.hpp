@@ -251,7 +251,7 @@ protected slots:
     void whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
     void messageActionTimerTimeout();
 
-    void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
+    void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, TLMessagesSentMessage info);
     void whenMessagesHistoryReceived(const TLMessagesMessages &messages);
 
     void getDcConfiguration();

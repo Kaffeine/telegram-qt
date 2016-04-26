@@ -274,7 +274,7 @@ signals:
     void updatesStateReceived(const TLUpdatesState &updatesState);
     void updatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
-    void messageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, quint32 messageId, quint32 pts, quint32 date, quint32 seq);
+    void messageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, TLMessagesSentMessage info);
     void authExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
 protected:
