@@ -1307,7 +1307,7 @@ quint64 CTelegramConnection::messagesSendMedia(quint32 flags, const TLInputPeer 
     outputStream << TLValue::MessagesSendMedia;
     outputStream << flags;
     outputStream << peer;
-    if (replyToMsgId & 1 << 0) {
+    if (flags & 1 << 0) {
         outputStream << replyToMsgId;
     }
     outputStream << media;
@@ -1324,7 +1324,7 @@ quint64 CTelegramConnection::messagesSendMessage(quint32 flags, const TLInputPee
     outputStream << TLValue::MessagesSendMessage;
     outputStream << flags;
     outputStream << peer;
-    if (replyToMsgId & 1 << 0) {
+    if (flags & 1 << 0) {
         outputStream << replyToMsgId;
     }
     outputStream << message;
