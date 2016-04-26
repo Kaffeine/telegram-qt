@@ -1330,10 +1330,16 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
             processMessageReceived(message);
         }
         if (updatesDifference.tlType == TLValue::UpdatesDifference) {
-            m_updatesState = updatesDifference.state;
+            ensureUpdateState(updatesDifference.state.pts, updatesDifference.state.seq, updatesDifference.state.date);
         } else { // UpdatesDifferenceSlice
-            m_updatesState = updatesDifference.intermediateState;
+            // Looks like updatesDifference.intermediateState is always null nowadays.
+            ensureUpdateState(updatesDifference.intermediateState.pts, updatesDifference.intermediateState.seq, updatesDifference.intermediateState.date);
         }
+
+        foreach (const TLUpdate &update, updatesDifference.otherUpdates) {
+            processUpdate(update);
+        }
+
         break;
     case TLValue::UpdatesDifferenceEmpty:
         qDebug() << Q_FUNC_INFO << "UpdatesDifferenceEmpty";
@@ -1440,11 +1446,30 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     qDebug() << Q_FUNC_INFO << update;
 #endif
 
+    quint32 newPts = m_updatesState.pts;
+
+    switch (update.tlType) {
+    case TLValue::UpdateNewMessage:
+    case TLValue::UpdateReadMessagesContents:
+    case TLValue::UpdateReadHistoryInbox:
+    case TLValue::UpdateReadHistoryOutbox:
+    case TLValue::UpdateDeleteMessages:
+        // Official client also have TLValue::UpdateWebPage here. Why the hell?
+        if (m_updatesState.pts + update.ptsCount != update.pts) {
+            qDebug() << "Needed inner updates:" << m_updatesState.pts << update.ptsCount << update.pts;
+            Q_ASSERT(0);
+        } else {
+            newPts = update.pts;
+        }
+        break;
+    default:
+        break;
+    }
+
     switch (update.tlType) {
     case TLValue::UpdateNewMessage:
         qDebug() << Q_FUNC_INFO << "UpdateNewMessage";
         processMessageReceived(update.message);
-        ensureUpdateState(update.pts);
         break;
 //    case TLValue::UpdateMessageID:
 //        update.id;
@@ -1617,6 +1642,8 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         qDebug() << Q_FUNC_INFO << "Update type" << update.tlType.toString() << "is not implemented yet.";
         break;
     }
+
+    ensureUpdateState(newPts);
 }
 
 void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
