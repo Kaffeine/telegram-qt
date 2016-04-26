@@ -2540,6 +2540,8 @@ void CTelegramDispatcher::checkStateAndCallGetDifference()
     } else {
         continueInitialization(StepUpdates);
     }
+
+    m_updatesStateIsLocked = false;
 }
 
 CTelegramConnection *CTelegramDispatcher::createConnection()
