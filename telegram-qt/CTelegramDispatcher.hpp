@@ -312,6 +312,7 @@ protected:
 
     void ensureTypingUpdateTimer(int interval);
     void ensureUpdateState(quint32 pts = 0, quint32 seq = 0, quint32 date = 0);
+    void setUpdateState(quint32 pts, quint32 seq, quint32 date);
 
     void checkStateAndCallGetDifference();
     void tryNextDcAddress();

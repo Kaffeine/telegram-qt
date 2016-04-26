@@ -1330,10 +1330,10 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
             processMessageReceived(message);
         }
         if (updatesDifference.tlType == TLValue::UpdatesDifference) {
-            ensureUpdateState(updatesDifference.state.pts, updatesDifference.state.seq, updatesDifference.state.date);
+            setUpdateState(updatesDifference.state.pts, updatesDifference.state.seq, updatesDifference.state.date);
         } else { // UpdatesDifferenceSlice
             // Looks like updatesDifference.intermediateState is always null nowadays.
-            ensureUpdateState(updatesDifference.intermediateState.pts, updatesDifference.intermediateState.seq, updatesDifference.intermediateState.date);
+            setUpdateState(updatesDifference.intermediateState.pts, updatesDifference.intermediateState.seq, updatesDifference.intermediateState.date);
         }
 
         foreach (const TLUpdate &update, updatesDifference.otherUpdates) {
@@ -2518,12 +2518,19 @@ TelegramNamespace::MessageFlags CTelegramDispatcher::getPublicMessageFlags(const
 
 void CTelegramDispatcher::ensureUpdateState(quint32 pts, quint32 seq, quint32 date)
 {
-    qDebug() << Q_FUNC_INFO << pts << seq << date <<"locked:" << m_updatesStateIsLocked;
     if (m_updatesStateIsLocked) {
+        qDebug() << Q_FUNC_INFO << pts << seq << date << "locked.";
         /* Prevent m_updateState from updating before UpdatesGetState answer receiving to avoid
          * m_updateState <-> m_actualState messing (which may lead to ignore offline-messages) */
         return;
     }
+
+    setUpdateState(pts, seq, date);
+}
+
+void CTelegramDispatcher::setUpdateState(quint32 pts, quint32 seq, quint32 date)
+{
+    qDebug() << Q_FUNC_INFO << pts << seq << date;
 
     if (pts > m_updatesState.pts) {
         qDebug() << Q_FUNC_INFO << "Update pts from " << m_updatesState.pts << "to" << pts;
@@ -2549,8 +2556,6 @@ void CTelegramDispatcher::checkStateAndCallGetDifference()
     } else {
         continueInitialization(StepUpdates);
     }
-
-    m_updatesStateIsLocked = false;
 }
 
 CTelegramConnection *CTelegramDispatcher::createConnection()
