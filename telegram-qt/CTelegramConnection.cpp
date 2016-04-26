@@ -2599,12 +2599,20 @@ TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream,
         CTelegramStream outputStream(data);
 
         TLValue method;
+        quint32 flags;
         TLInputPeer peer;
+        quint32 replyToMsgId;
         QString message;
         quint64 randomId;
 
         outputStream >> method;
+        outputStream >> flags;
         outputStream >> peer;
+
+        if (flags & 1 << 0) {
+            outputStream >> replyToMsgId;
+        }
+
         outputStream >> message;
         outputStream >> randomId;
 
