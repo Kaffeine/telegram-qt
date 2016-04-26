@@ -2292,11 +2292,17 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
 #endif
     switch (updates.tlType) {
     case TLValue::UpdatesTooLong:
+        qDebug() << "Updates too long!";
         getUpdatesState();
         break;
     case TLValue::UpdateShortMessage:
     case TLValue::UpdateShortChatMessage:
     {
+        if (m_updatesState.pts + updates.ptsCount != updates.pts) {
+            qDebug() << "Need to get difference.";
+            Q_ASSERT(0);
+            break;
+        }
         TLMessage shortMessage;
         shortMessage.tlType = TLValue::Message;
         shortMessage.id = updates.id;
@@ -2512,6 +2518,7 @@ TelegramNamespace::MessageFlags CTelegramDispatcher::getPublicMessageFlags(const
 
 void CTelegramDispatcher::ensureUpdateState(quint32 pts, quint32 seq, quint32 date)
 {
+    qDebug() << Q_FUNC_INFO << pts << seq << date <<"locked:" << m_updatesStateIsLocked;
     if (m_updatesStateIsLocked) {
         /* Prevent m_updateState from updating before UpdatesGetState answer receiving to avoid
          * m_updateState <-> m_actualState messing (which may lead to ignore offline-messages) */
@@ -2519,6 +2526,7 @@ void CTelegramDispatcher::ensureUpdateState(quint32 pts, quint32 seq, quint32 da
     }
 
     if (pts > m_updatesState.pts) {
+        qDebug() << Q_FUNC_INFO << "Update pts from " << m_updatesState.pts << "to" << pts;
         m_updatesState.pts = pts;
     }
 
@@ -2527,6 +2535,7 @@ void CTelegramDispatcher::ensureUpdateState(quint32 pts, quint32 seq, quint32 da
     }
 
     if (date > m_updatesState.date) {
+        qDebug() << Q_FUNC_INFO << "Update date from " << m_updatesState.date << "to" << date;
         m_updatesState.date = date;
     }
 }
