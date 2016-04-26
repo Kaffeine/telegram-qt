@@ -520,7 +520,7 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
 
     foreach (const TLParam &param, method.params) {
         if (param.dependOnFlag()) {
-            result += spacing + QString("if (%1 & 1 << %2) {\n").arg(param.name).arg(param.flagBit);
+            result += spacing + QString("if (%1 & 1 << %2) {\n").arg(param.flagMember).arg(param.flagBit);
             result += spacing + spacing + QString("outputStream << %1;\n").arg(param.name);
             result += spacing + QLatin1String("}\n");
         } else {
