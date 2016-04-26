@@ -2314,11 +2314,26 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         break;
     case TLValue::UpdatesCombined:
         qDebug() << Q_FUNC_INFO << "UpdatesCombined processing is not implemented yet.";
+        Q_ASSERT(0);
         break;
     case TLValue::Updates:
-        // Initial implementation
-        for (int i = 0; i < updates.updates.count(); ++i) {
-            processUpdate(updates.updates.at(i));
+
+        if (!updates.updates.isEmpty()) {
+            // Official client sorts updates by pts/qts. Wat?!
+            // Ok, let's see if there would be unordered updates.
+            quint32 pts = updates.updates.first().pts;
+            for (int i = 0; i < updates.updates.count(); ++i) {
+                if (updates.updates.at(i).pts < pts) {
+                    qDebug() << "Unordered update!";
+                    Q_ASSERT(0);
+                }
+                pts = updates.updates.at(i).pts;
+            }
+
+            // Initial implementation
+            for (int i = 0; i < updates.updates.count(); ++i) {
+                processUpdate(updates.updates.at(i));
+            }
         }
         break;
     default:
