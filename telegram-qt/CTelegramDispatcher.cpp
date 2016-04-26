@@ -941,7 +941,7 @@ void CTelegramDispatcher::setMessageRead(const QString &identifier, quint32 mess
     const TLInputPeer peer = identifierToInputPeer(identifier);
 
     if (peer.tlType != TLValue::InputPeerEmpty) {
-        activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0, /* readContents */ false);
+        activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0);
     }
 }
 
@@ -1450,13 +1450,13 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.id;
 //        update.randomId;
 //        break;
-    case TLValue::UpdateReadMessages:
-        foreach (quint32 messageId, update.messages) {
-            const QPair<QString, quint64> phoneAndId = m_messagesMap.value(messageId);
-            emit sentMessageStatusChanged(phoneAndId.first, phoneAndId.second, TelegramNamespace::MessageDeliveryStatusRead);
-        }
-        ensureUpdateState(update.pts);
-        break;
+//    case TLValue::UpdateReadMessages:
+//        foreach (quint32 messageId, update.messages) {
+//            const QPair<QString, quint64> phoneAndId = m_messagesMap.value(messageId);
+//            emit sentMessageStatusChanged(phoneAndId.first, phoneAndId.second, TelegramNamespace::MessageDeliveryStatusRead);
+//        }
+//        ensureUpdateState(update.pts);
+//        break;
 //    case TLValue::UpdateDeleteMessages:
 //        update.messages;
 //        ensureUpdateState(update.pts);
@@ -2273,7 +2273,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         TLMessage shortMessage;
         shortMessage.tlType = TLValue::Message;
         shortMessage.id = updates.id;
-        shortMessage.flags = TelegramMessageFlagUnread;
+//        shortMessage.flags = TelegramMessageFlagUnread;
         shortMessage.fromId = updates.fromId;
         shortMessage.message = updates.message;
         shortMessage.date = updates.date;
