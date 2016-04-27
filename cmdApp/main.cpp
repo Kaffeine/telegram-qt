@@ -24,7 +24,8 @@ QCommandLineOption registerOption(QStringList() << "r" << "register", "Register 
 QCommandLineOption displayContactListOption(QStringList() << "l" << "list", "Display contact list");
 QCommandLineOption sendMessageOption(QStringList() << "m" << "message", "Send a message to a phone number", "contact_phone_number");
 QCommandLineOption displayChatListOption(QStringList() << "c" << "chat-list", "Display chat list");
-QCommandLineOption sendGroupOption(QStringList() << "g" << "group-message", "Send a message to a group", "group_name");
+QCommandLineOption sendGroupByIdOption(QStringList() << "g" << "group-message-by-id", "Send a message to a group", "group_id");
+QCommandLineOption sendGroupByNameOption(QStringList() << "n" << "group-message-by-name", "Send a message to a group", "group_name");
 
 void MessageOutput(QtMsgType type, const QMessageLogContext &context, 
 	const QString &msg)
@@ -50,6 +51,8 @@ void MessageOutput(QtMsgType type, const QMessageLogContext &context,
 		fprintf(stderr, "Fatal: %s (%s:%u, %s)\n", localMsg.constData(), 
 			context.file, context.line, context.function);
 		abort();
+    default:
+        break;
 	}
 }
 
@@ -90,13 +93,14 @@ void Register(CTelegramCore& core, TelegramNamespace::ConnectionState state,
 			cout << "File " << secretFile << " saved" << endl;
 		}
 		else
-			qFatal("Failed to open file %s", secretFile);
+            qFatal("Failed to open file %s", qPrintable(secretFile));
 		qApp->quit();
 		break;
 	}
 	case TelegramNamespace::ConnectionStateDisconnected:
 		qApp->quit();
 		break;
+    default:;
 	}
 }
 
@@ -138,6 +142,28 @@ void DisplayChatList(CTelegramCore& core)
 		if (state == TelegramNamespace::ConnectionStateDisconnected)
 			qApp->exit(EXIT_FAILURE);
 	});
+}
+
+QMap<quint32, QString> GetGroupChats(CTelegramCore& core)
+{
+    decltype(GetGroupChats(core)) ret;
+    auto timer = new QTimer(qApp);
+    timer->setInterval(3000);
+    QObject::connect(timer, &QTimer::timeout, qApp, &QCoreApplication::quit);
+    core.connect(&core, &CTelegramCore::chatAdded, [&,timer](quint32 id)
+    {
+        ret.insert(id, core.chatTitle(id));
+        timer->start();
+    });
+    core.connect(&core, &CTelegramCore::connectionStateChanged, [&,timer](
+        TelegramNamespace::ConnectionState state)
+    {
+        if (state == TelegramNamespace::ConnectionStateConnected)
+            timer->start();
+        if (state == TelegramNamespace::ConnectionStateDisconnected)
+            qApp->exit(EXIT_FAILURE);
+    });
+    return ret;
 }
 
 void SendMessage(CTelegramCore& core, const QString& phoneNumber,
@@ -212,7 +238,8 @@ int main(int argc, char** argv)
 	parser.addOption(displayContactListOption);
 	parser.addOption(sendMessageOption);
 	parser.addOption(displayChatListOption);
-	parser.addOption(sendGroupOption);
+    parser.addOption(sendGroupByIdOption);
+    parser.addOption(sendGroupByNameOption);
 	parser.addPositionalArgument("secret_file", "Secret file to create/use.");
 	parser.addPositionalArgument("message...", "Message text to send to a contact");
 	parser.process(app);
@@ -269,19 +296,35 @@ int main(int argc, char** argv)
 				const auto message = parser.positionalArguments().at(1);
 				SendMessage(telegram, phoneNumber, message);
 			}
-			else if (parser.isSet(sendGroupOption)
+            else if (parser.isSet(sendGroupByIdOption)
 				&& parser.positionalArguments().size() >= 2)
 			{
 				bool ok;
-				const auto chatId = parser.value(sendGroupOption).toUInt(&ok);
+                const auto chatId = parser.value(sendGroupByIdOption).toUInt(&ok);
 				const auto message = parser.positionalArguments().at(1);
 				if (!ok)
 				{
 					qFatal("Invalid chat id");
 					return EXIT_FAILURE;
 				}
-				SendMessageToGroup(telegram, chatId, message);
+                SendMessageToGroup(telegram, chatId, message);
 			}
+            else if (parser.isSet(parser.value(sendGroupByNameOption))) {
+                const auto message = parser.positionalArguments().at(1);
+                const auto chatName = parser.value(sendGroupByIdOption);
+                const auto chats = GetGroupChats(telegram);
+                bool found = false;
+                for (auto it = chats.end(), end = chats.end(); it != end; ++it) {
+                    if (it.value() == chatName) {
+                        SendMessageToGroup(telegram, it.key(), message);
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    qFatal("Group name %s not found", qPrintable(chatName));
+                    return EXIT_FAILURE;
+                }
+            }
 		}
 	}
 	int result = app.exec();

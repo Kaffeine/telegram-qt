@@ -11,6 +11,8 @@ INCLUDEPATH += $$PWD/../telegram-qt
 LIBS += -lTelegramQt
 LIBS += -L$$OUT_PWD/../telegram-qt
 
+QMAKE_CXXFLAGS = -std=c++11
+
 TARGET = cmdApp
 
 SOURCES += main.cpp
