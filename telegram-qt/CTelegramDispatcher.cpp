@@ -30,6 +30,9 @@ using namespace TelegramUtils;
 
 #include <QCryptographicHash>
 #include <QDebug>
+#if QT_VERSION < 0x048000
+#include <algorithm>
+#endif
 
 #ifdef DEVELOPER_BUILD
 #include "TLTypesDebug.hpp"
