@@ -52,6 +52,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(messageReceived(TelegramNamespace::Message)));
 
 #ifndef TELEGRAMQT_NO_DEPRECATED
+    connect(m_dispatcher, SIGNAL(authorizationErrorReceived()),
+            SIGNAL(authorizationErrorReceived()));
     connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool,bool)),
             SIGNAL(phoneStatusReceived(QString,bool,bool)));
     connect(m_dispatcher, SIGNAL(messageReceived(QString,QString,TelegramNamespace::MessageType,quint32,quint32,quint32)),
@@ -71,8 +73,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(chatAdded(quint32)));
     connect(m_dispatcher, SIGNAL(chatChanged(quint32)),
             SIGNAL(chatChanged(quint32)));
-    connect(m_dispatcher, SIGNAL(authorizationErrorReceived()),
-            SIGNAL(authorizationErrorReceived()));
+    connect(m_dispatcher, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)),
+            SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
     connect(m_dispatcher, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)),
             SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)));
     connect(m_dispatcher, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),

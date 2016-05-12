@@ -2165,8 +2165,28 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
         }
         break;
     case 401: // UNAUTHORIZED
-        emit authorizationErrorReceived();
+        if (errorMessage == QLatin1String("AUTH_KEY_UNREGISTERED")) {
+            emit authorizationErrorReceived(TelegramNamespace::UnauthorizedErrorKeyUnregistered, errorMessage);
+        } else if (errorMessage == QLatin1String("AUTH_KEY_INVALID")) {
+            emit authorizationErrorReceived(TelegramNamespace::UnauthorizedErrorKeyInvalid, errorMessage);
+        } else if (errorMessage == QLatin1String("USER_DEACTIVATED")) {
+            emit authorizationErrorReceived(TelegramNamespace::UnauthorizedErrorUserDeactivated, errorMessage);
+        } else if (errorMessage == QLatin1String("SESSION_REVOKED")) {
+            emit authorizationErrorReceived(TelegramNamespace::UnauthorizedErrorUserSessionRevoked, errorMessage);
+        } else if (errorMessage == QLatin1String("SESSION_EXPIRED")) {
+            emit authorizationErrorReceived(TelegramNamespace::UnauthorizedErrorUserSessionExpired, errorMessage);
+        } else if (errorMessage == QLatin1String("ACTIVE_USER_REQUIRED")) {
+            emit authorizationErrorReceived(TelegramNamespace::UnauthorizedErrorActiveUserRequired, errorMessage);
+        } else if (errorMessage == QLatin1String("AUTH_KEY_PERM_EMPTY")) {
+            emit authorizationErrorReceived(TelegramNamespace::UnauthorizedErrorNeedPermanentKey, errorMessage);
+        } else if (errorMessage == QLatin1String("SESSION_PASSWORD_NEEDED")) {
+            emit authorizationErrorReceived(TelegramNamespace::UnauthorizedSessionPasswordNeeded, errorMessage);
+        } else {
+            emit authorizationErrorReceived(TelegramNamespace::UnauthorizedUnknownError, errorMessage);
+        }
         break;
+
+        return true;
     default:
         qDebug() << "RPC Error can not be handled.";
         break;

@@ -77,6 +77,18 @@ public:
         AuthSignErrorLastNameIsInvalid
     };
 
+    enum UnauthorizedError {
+        UnauthorizedUnknownError,
+        UnauthorizedErrorKeyUnregistered,
+        UnauthorizedErrorKeyInvalid,
+        UnauthorizedErrorUserDeactivated,
+        UnauthorizedErrorUserSessionRevoked,
+        UnauthorizedErrorUserSessionExpired,
+        UnauthorizedErrorActiveUserRequired,
+        UnauthorizedErrorNeedPermanentKey,
+        UnauthorizedSessionPasswordNeeded,
+    };
+
     enum AccountUserNameStatus {
         AccountUserNameStatusUnknown,
         AccountUserNameStatusIsInvalid,
