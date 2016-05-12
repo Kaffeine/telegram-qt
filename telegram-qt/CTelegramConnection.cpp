@@ -93,7 +93,10 @@ void CTelegramConnection::connectToDc()
     qDebug() << Q_FUNC_INFO << m_dcInfo.id << m_dcInfo.ipAddress << m_dcInfo.port;
 #endif
 
-    m_transport->disconnectFromHost(); // Ensure that there is no connection
+    if (m_transport->state() != QAbstractSocket::UnconnectedState) {
+        m_transport->disconnectFromHost(); // Ensure that there is no connection
+    }
+
     setStatus(ConnectionStatusConnecting);
     setAuthState(AuthStateNone);
     m_transport->connectToHost(m_dcInfo.ipAddress, m_dcInfo.port);
