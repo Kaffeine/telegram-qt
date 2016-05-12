@@ -2158,6 +2158,7 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
                 emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusUnknown);
             }
         }
+            return true;
             break;
         default:
             break;
