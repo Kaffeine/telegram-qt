@@ -60,6 +60,8 @@ const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typ
 
 enum TelegramMessageFlags {
     TelegramMessageFlagNone    = 0,
+    TelegramMessageFlagUnread  = 1 << 0,
+    TelegramMessageFlagOut     = 1 << 1,
     TelegramMessageFlagForward = 1 << 2,
     TelegramMessageFlagReply   = 1 << 3,
 };
@@ -2309,7 +2311,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         TLMessage shortMessage;
         shortMessage.tlType = TLValue::Message;
         shortMessage.id = updates.id;
-//        shortMessage.flags = TelegramMessageFlagUnread;
+        shortMessage.flags = updates.flags;
         shortMessage.fromId = updates.fromId;
         shortMessage.message = updates.message;
         shortMessage.date = updates.date;
@@ -2503,6 +2505,14 @@ bool CTelegramDispatcher::havePublicChatId(quint32 publicChatId) const
 TelegramNamespace::MessageFlags CTelegramDispatcher::getPublicMessageFlags(const TLMessage &message)
 {
     TelegramNamespace::MessageFlags result = TelegramNamespace::MessageFlagNone;
+
+    if (!(message.flags & TelegramMessageFlagUnread)) {
+        result |= TelegramNamespace::MessageFlagRead;
+    }
+
+    if (message.flags & TelegramMessageFlagOut) {
+        result |= TelegramNamespace::MessageFlagOut;
+    }
 
     if (message.fromId == m_selfUserId) {
         result |= TelegramNamespace::MessageFlagOut;
