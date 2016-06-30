@@ -1328,7 +1328,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
         }
 
         foreach (const TLMessage &message, updatesDifference.newMessages) {
-            if ((message.tlType != TLValue::MessageService) && (filterReceivedMessage(getPublicMessageFlags(message)))) {
+            if ((message.tlType != TLValue::MessageService) && (filterReceivedMessage(getPublicMessageFlags(message.flags)))) {
                 continue;
             }
 
@@ -1736,7 +1736,7 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 
     TelegramNamespace::Message apiMessage;
 
-    TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message);
+    TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message.flags);
     if (messageFlags & TelegramNamespace::MessageFlagForwarded) {
         apiMessage.fwdContact = userIdToIdentifier(message.fwdFromId);
         apiMessage.fwdTimestamp = message.fwdDate;
@@ -2227,7 +2227,7 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
     case FileRequestDescriptor::MessageMediaData:
         if (m_knownMediaMessages.contains(descriptor.messageId())) {
             const TLMessage message = m_knownMediaMessages.value(descriptor.messageId());
-            const TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message);
+            const TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message.flags);
             const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
             quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
@@ -2502,27 +2502,23 @@ bool CTelegramDispatcher::havePublicChatId(quint32 publicChatId) const
 }
 
 // Basically we just revert Unread and Read flag.
-TelegramNamespace::MessageFlags CTelegramDispatcher::getPublicMessageFlags(const TLMessage &message)
+TelegramNamespace::MessageFlags CTelegramDispatcher::getPublicMessageFlags(quint32 flags)
 {
     TelegramNamespace::MessageFlags result = TelegramNamespace::MessageFlagNone;
 
-    if (!(message.flags & TelegramMessageFlagUnread)) {
+    if (!(flags & TelegramMessageFlagUnread)) {
         result |= TelegramNamespace::MessageFlagRead;
     }
 
-    if (message.flags & TelegramMessageFlagOut) {
+    if (flags & TelegramMessageFlagOut) {
         result |= TelegramNamespace::MessageFlagOut;
     }
 
-    if (message.fromId == m_selfUserId) {
-        result |= TelegramNamespace::MessageFlagOut;
-    }
-
-    if (message.flags & TelegramMessageFlagForward) {
+    if (flags & TelegramMessageFlagForward) {
         result |= TelegramNamespace::MessageFlagForwarded;
     }
 
-    if (message.flags & TelegramMessageFlagReply) {
+    if (flags & TelegramMessageFlagReply) {
         result |= TelegramNamespace::MessageFlagIsReply;
     }
 

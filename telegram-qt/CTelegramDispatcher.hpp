@@ -323,7 +323,7 @@ protected:
     quint32 insertTelegramChatId(quint32 telegramChatId);
     bool havePublicChatId(quint32 publicChatId) const;
 
-    TelegramNamespace::MessageFlags getPublicMessageFlags(const TLMessage &message);
+    TelegramNamespace::MessageFlags getPublicMessageFlags(quint32 flags);
 
     struct TypingStatus {
         TypingStatus() : chatId(0), userId(0),
