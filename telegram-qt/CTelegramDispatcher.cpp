@@ -293,6 +293,11 @@ QString CTelegramDispatcher::selfPhone() const
     return m_users.value(m_selfUserId)->phone;
 }
 
+QMap<quint32, TLUser *> CTelegramDispatcher::userList() const
+{
+    return m_users;
+}
+
 QStringList CTelegramDispatcher::contactList() const
 {
     QStringList result;
