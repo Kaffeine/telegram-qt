@@ -130,19 +130,27 @@ public:
     struct Message
     {
         Message() :
+            userId(0),
+            chatId(0),
+            forwardContactId(0),
             id(0),
             timestamp(0),
             fwdTimestamp(0),
             type(MessageTypeUnsupported),
-            flags(0)
+            flags(MessageFlagNone)
         {
 
         }
 
+#ifndef TELEGRAMQT_NO_DEPRECATED
         QString peer;
         QString contact;
-        QString text;
         QString fwdContact;
+#endif
+        quint32 userId; // Actual telegram user id
+        quint32 chatId; // Public (not protocol) chat id
+        quint32 forwardContactId;
+        QString text;
         quint32 id;
         quint32 timestamp;
         quint32 fwdTimestamp;

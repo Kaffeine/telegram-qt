@@ -1725,10 +1725,23 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 
     TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message.flags);
     if (messageFlags & TelegramNamespace::MessageFlagForwarded) {
+#ifndef TELEGRAMQT_NO_DEPRECATED
         apiMessage.fwdContact = userIdToIdentifier(message.fwdFromId);
+#endif
+        apiMessage.forwardContactId = message.fromId;
         apiMessage.fwdTimestamp = message.fwdDate;
     }
 
+    if (message.toId.tlType == TLValue::PeerChat) {
+        apiMessage.chatId = telegramChatIdToPublicId(message.toId.chatId);
+        apiMessage.userId = message.fromId;
+    } else if (messageFlags & TelegramNamespace::MessageFlagOut) {
+        apiMessage.userId = message.toId.userId;
+    } else {
+        apiMessage.userId = message.fromId;
+    }
+
+#ifndef TELEGRAMQT_NO_DEPRECATED
     if ((message.toId.tlType == TLValue::PeerChat) || (messageFlags & TelegramNamespace::MessageFlagOut)) {
         apiMessage.peer = peerToIdentifier(message.toId);
     } else {
@@ -1736,6 +1749,8 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
     }
 
     apiMessage.contact = userIdToIdentifier(message.fromId);
+#endif
+
     apiMessage.type = messageType;
     apiMessage.text = message.message;
     apiMessage.id = message.id;
@@ -1746,12 +1761,11 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 
 #ifndef TELEGRAMQT_NO_DEPRECATED
     if (message.toId.tlType == TLValue::PeerUser) {
-        quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
-        emit messageReceived(userIdToIdentifier(contactUserId),
-                             message.message, messageType, message.id, messageFlags, message.date);
+        emit messageReceived(userIdToIdentifier(apiMessage.userId),
+                             apiMessage.text, apiMessage.type, apiMessage.id, apiMessage.flags, apiMessage.timestamp);
     } else {
         emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId), userIdToIdentifier(message.fromId),
-                                 message.message, messageType, message.id, messageFlags, message.date);
+                                 apiMessage.text, apiMessage.type, apiMessage.id, apiMessage.flags, apiMessage.timestamp);
     }
 #endif
 }
