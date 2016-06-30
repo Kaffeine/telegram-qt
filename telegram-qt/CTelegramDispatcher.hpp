@@ -133,6 +133,7 @@ public:
 
     QString selfPhone() const;
 
+    QMap<quint32, TLUser*> userList() const;
     QStringList contactList() const;
     QVector<quint32> publicChatIdList() const;
 
