@@ -161,6 +161,8 @@ Q_SIGNALS:
     void contactTypingStatusChanged(const QString &contact, bool typingStatus);
 #endif
 
+    void updateReadHistoryInbox(quint32 userId, quint32 chatId, quint32 pts);
+
     void contactStatusChanged(const QString &contact, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
     void contactChatTypingStatusChanged(quint32 chatId, const QString &contact, TelegramNamespace::MessageAction action);
