@@ -302,11 +302,16 @@ QStringList CTelegramDispatcher::contactList() const
 {
     QStringList result;
 
-    foreach (quint32 userId, m_contactList) {
+    foreach (quint32 userId, m_contactIdList) {
         result.append(userIdToIdentifier(userId));
     }
 
     return result;
+}
+
+QVector<quint32> CTelegramDispatcher::contactIdList() const
+{
+    return m_contactIdList;
 }
 
 QVector<quint32> CTelegramDispatcher::publicChatIdList() const
@@ -577,7 +582,7 @@ void CTelegramDispatcher::closeConnection()
     qDeleteAll(m_users);
     m_users.clear();
     m_messagesMap.clear();
-    m_contactList.clear();
+    m_contactIdList.clear();
     m_requestedFileDescriptors.clear();
     m_fileRequestCounter = 0;
     m_contactsMessageActions.clear();
@@ -1138,8 +1143,8 @@ void CTelegramDispatcher::whenContactListReceived(const QVector<quint32> &contac
     QVector<quint32> newContactList = contactList;
     std::sort(newContactList.begin(), newContactList.end());
 
-    if (m_contactList != newContactList) {
-        m_contactList = newContactList;
+    if (m_contactIdList != newContactList) {
+        m_contactIdList = newContactList;
         emit contactListChanged();
     }
 
@@ -1149,7 +1154,7 @@ void CTelegramDispatcher::whenContactListReceived(const QVector<quint32> &contac
 void CTelegramDispatcher::whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed)
 {
     qDebug() << Q_FUNC_INFO << added << removed;
-    QVector<quint32> newContactList = m_contactList;
+    QVector<quint32> newContactList = m_contactIdList;
 
     // There is some redundant checks, but let's be paranoid
     foreach (const quint32 contact, added) {
@@ -1176,8 +1181,8 @@ void CTelegramDispatcher::whenContactListChanged(const QVector<quint32> &added, 
     std::sort(newContactList.begin(), newContactList.end());
 
     // There is no valid cases when lists are equal, but the check is (usually) cheap.
-    if (m_contactList != newContactList) {
-        m_contactList = newContactList;
+    if (m_contactIdList != newContactList) {
+        m_contactIdList = newContactList;
         emit contactListChanged();
     }
 }

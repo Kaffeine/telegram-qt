@@ -208,6 +208,11 @@ QStringList CTelegramCore::contactList() const
     return m_dispatcher->contactList();
 }
 
+QVector<quint32> CTelegramCore::contactIdList() const
+{
+    return m_dispatcher->contactIdList();
+}
+
 QList<quint32> CTelegramCore::chatList() const
 {
     return m_dispatcher->publicChatIdList().toList();
