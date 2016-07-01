@@ -151,6 +151,8 @@ private:
 
     Ui::MainWindow *ui;
 
+    CTelegramCore *m_core;
+
     QMap<QString,quint64> m_contactLastMessageList;
     QMap<quint32, QString> m_uploadingRequests;
 
@@ -164,8 +166,6 @@ private:
 
     quint32 m_activeChatId;
     bool m_chatCreationMode;
-
-    CTelegramCore *m_core;
 
     bool m_registered;
 

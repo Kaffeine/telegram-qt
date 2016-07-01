@@ -16,11 +16,13 @@
  */
 
 #include "CContactModel.hpp"
+#include "CTelegramCore.hpp"
 
 #include <QDateTime>
 
-CContactsModel::CContactsModel(QObject *parent) :
-    QAbstractTableModel(parent)
+CContactsModel::CContactsModel(CTelegramCore *backend, QObject *parent) :
+    QAbstractTableModel(parent),
+    m_backend(backend)
 {
 }
 

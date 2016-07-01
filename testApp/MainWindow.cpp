@@ -42,14 +42,14 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_contactsModel(new CContactsModel(this)),
+    m_core(new CTelegramCore(this)),
+    m_contactsModel(new CContactsModel(m_core, this)),
     m_messagingModel(new CMessagingModel(this)),
-    m_chatContactsModel(new CContactsModel(this)),
+    m_chatContactsModel(new CContactsModel(m_core, this)),
     m_chatMessagingModel(new CMessagingModel(this)),
     m_chatInfoModel(new CChatInfoModel(this)),
     m_activeChatId(0),
     m_chatCreationMode(false),
-    m_core(new CTelegramCore(this)),
     m_registered(false),
     m_appState(AppStateNone)
 {

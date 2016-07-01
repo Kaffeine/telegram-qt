@@ -25,6 +25,8 @@
 
 #include "TelegramNamespace.hpp"
 
+class CTelegramCore;
+
 struct SContact {
     SContact(const QString &p = QString(), TelegramNamespace::ContactStatus s = TelegramNamespace::ContactStatusUnknown) :
         phone(p),
@@ -59,7 +61,7 @@ public:
         ColumnsCount
     };
 
-    explicit CContactsModel(QObject *parent = 0);
+    explicit CContactsModel(CTelegramCore *backend, QObject *parent = 0);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -89,6 +91,8 @@ public slots:
 
 private:
     QString contactStatusStr(const SContact &contact) const;
+
+    CTelegramCore *m_backend;
 
     QList<SContact> m_contacts;
 
