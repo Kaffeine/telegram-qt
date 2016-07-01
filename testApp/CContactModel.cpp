@@ -58,7 +58,7 @@ QVariant CContactsModel::headerData(int section, Qt::Orientation orientation, in
 
 QVariant CContactsModel::data(const QModelIndex &index, int role) const
 {
-    int section = index.column();
+    Column section = static_cast<Column>(index.column());
     int contactIndex = index.row();
 
     if ((role == Qt::DecorationRole) && (section == Avatar)) {
@@ -78,12 +78,6 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
     }
 
     switch (section) {
-    case Phone:
-        return m_contacts.at(contactIndex).phone;
-    case UserName:
-        return m_contacts.at(contactIndex).userName;
-    case FullName:
-        return m_contacts.at(contactIndex).fullName;
     case Status:
         return contactStatusStr(m_contacts.at(contactIndex));
     case TypingStatus:
@@ -114,16 +108,19 @@ QVariant CContactsModel::data(const QModelIndex &index, int role) const
     case Blocked:
         return m_contacts.at(contactIndex).blocked ? tr("true") : tr("false");
     default:
-        break;
+        return data(contactIndex, section);
     }
 
     return QVariant();
 }
 
-QVariant CContactsModel::data(const QString &phone, int column) const
+QVariant CContactsModel::data(const QString &phone, Column column) const
 {
-    int contactIndex = indexOfContact(phone);
+    return data(indexOfContact(phone), column);
+}
 
+QVariant CContactsModel::data(int contactIndex, CContactsModel::Column column) const
+{
     if (contactIndex < 0) {
         return QVariant();
     }

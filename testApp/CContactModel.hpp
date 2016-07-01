@@ -48,7 +48,7 @@ class CContactsModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    enum Columns {
+    enum Column {
         Phone,
         UserName,
         FullName,
@@ -66,8 +66,8 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    QVariant data(const QString &phone, int column) const;
-    QVariant rawData(const QString &phone, int column) const;
+    QVariant data(const QString &phone, Column column) const;
+    QVariant data(int contactIndex, Column column) const;
 
     int indexOfContact(const QString &phone) const;
 
