@@ -193,6 +193,7 @@ public:
 
     QString chatTitle(quint32 publicChatId) const;
 
+    bool getUserInfo(TelegramNamespace::UserInfo *userInfo, quint32 userId) const;
     bool getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 publicChatId) const;
     bool getChatParticipants(QStringList *participants, quint32 publicChatId);
 

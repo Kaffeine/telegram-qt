@@ -77,6 +77,45 @@ void TelegramNamespace::MessageMediaInfo::setGeoPoint(double latitude, double lo
     d->geo.latitude = latitude;
 }
 
+TelegramNamespace::UserInfo::UserInfo() : d(new Private())
+{
+}
+
+quint32 TelegramNamespace::UserInfo::id() const
+{
+    return d->id;
+}
+
+QString TelegramNamespace::UserInfo::firstName() const
+{
+    return d->firstName;
+}
+
+QString TelegramNamespace::UserInfo::lastName() const
+{
+    return d->lastName;
+}
+
+QString TelegramNamespace::UserInfo::userName() const
+{
+    return d->username;
+}
+
+QString TelegramNamespace::UserInfo::phone() const
+{
+    return d->phone;
+}
+
+TelegramNamespace::ContactStatus TelegramNamespace::UserInfo::status() const
+{
+    return getApiContactStatus(d->status.tlType);
+}
+
+quint32 TelegramNamespace::UserInfo::wasOnline() const
+{
+    return getApiContactLastOnline(d->status);
+}
+
 TelegramNamespace::ContactStatus getApiContactStatus(TLValue status)
 {
     switch (status) {

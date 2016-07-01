@@ -1066,6 +1066,19 @@ QString CTelegramDispatcher::chatTitle(quint32 publicChatId) const
     return m_chatInfo.value(chatId).title;
 }
 
+bool CTelegramDispatcher::getUserInfo(TelegramNamespace::UserInfo *userInfo, quint32 userId) const
+{
+    if (!m_users.contains(userId)) {
+        qDebug() << Q_FUNC_INFO << "Unknown user" << userId;
+        return false;
+    }
+
+    const TLUser *user = m_users.value(userId);
+    TLUser &info = *userInfo->d;
+    info = *user;
+    return true;
+}
+
 bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 publicChatId) const
 {
     const quint32 chatId = publicChatIdToChatId(publicChatId);

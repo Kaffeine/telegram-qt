@@ -192,6 +192,28 @@ public:
         Private *d;
     };
 
+    class UserInfo
+    {
+    public:
+        UserInfo();
+
+        quint32 id() const;
+        QString firstName() const;
+        QString lastName() const;
+        QString userName() const;
+        QString phone() const;
+        ContactStatus status() const;
+        quint32 wasOnline() const;
+
+        // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
+
+    protected:
+        friend class CTelegramDispatcher;
+        class Private;
+
+        Private *d;
+    };
+
     struct GroupChat
     {
         GroupChat(quint32 id = 0) :

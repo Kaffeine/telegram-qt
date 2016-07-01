@@ -278,6 +278,11 @@ qint32 CTelegramCore::localTypingRecommendedRepeatInterval()
     return CTelegramDispatcher::localTypingRecommendedRepeatInterval();
 }
 
+bool CTelegramCore::getUserInfo(TelegramNamespace::UserInfo *info, quint32 userId) const
+{
+    return m_dispatcher->getUserInfo(info, userId);
+}
+
 bool CTelegramCore::getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const
 {
     return m_dispatcher->getChatInfo(chatInfo, chatId);

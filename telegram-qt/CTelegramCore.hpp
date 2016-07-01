@@ -62,6 +62,7 @@ public:
 
     static qint32 localTypingRecommendedRepeatInterval(); // Recommended application local typing state re-set interval.
 
+    bool getUserInfo(TelegramNamespace::UserInfo *info, quint32 userId) const;
     bool getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const;
     bool getChatParticipants(QStringList *participants, quint32 chatId);
 

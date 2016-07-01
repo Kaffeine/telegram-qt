@@ -5,6 +5,7 @@
 #include "TelegramNamespace.hpp"
 
 class TelegramNamespace::MessageMediaInfo::Private : public TLMessageMedia { };
+class TelegramNamespace::UserInfo::Private : public TLUser { };
 
 TelegramNamespace::ContactStatus getApiContactStatus(TLValue status);
 quint32 getApiContactLastOnline(const TLUserStatus &status);
