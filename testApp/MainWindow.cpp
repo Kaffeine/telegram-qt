@@ -829,23 +829,23 @@ void MainWindow::on_groupChatCreateChat_clicked()
 
 void MainWindow::on_groupChatAddContact_clicked()
 {
-    const QString contact = ui->groupChatContactPhone->text();
+    const QString contactPhone = ui->groupChatContactPhone->text();
 
-    if (contact.isEmpty()) {
+    if (contactPhone.isEmpty()) {
         return;
     }
 
-    bool add = m_chatContactsModel->indexOfContact(contact) < 0;
+    bool add = m_chatContactsModel->indexOfContact(contactPhone) < 0;
 
     if (m_chatCreationMode) {
         if (add) {
-            m_chatContactsModel->addContact(contact);
+            m_chatContactsModel->addContact(contactPhone);
         } else {
-            m_chatContactsModel->removeContact(contact);
+            m_chatContactsModel->removeContact(contactPhone);
         }
     } else {
         if (add) {
-            m_core->addChatUser(m_activeChatId, contact, ui->groupChatAddContactForwardMessages->value());
+            m_core->addChatUser(m_activeChatId, contactPhone, ui->groupChatAddContactForwardMessages->value());
         } else {
 //            m_core->removeChatUser(m_activeChatId, contact);
         }
