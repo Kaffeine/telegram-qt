@@ -89,8 +89,6 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(contactListChanged()),
             SLOT(whenContactListChanged()));
-    connect(m_core, SIGNAL(contactProfileChanged(QString)),
-            SLOT(whenContactProfileChanged(QString)));
     connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
             SLOT(whenAvatarReceived(QString,QByteArray,QString)));
     connect(m_core, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
@@ -226,7 +224,7 @@ void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError erro
 
 void MainWindow::whenContactListChanged()
 {
-    setContactList(m_contactsModel, m_core->contactList());
+    setContactList(m_contactsModel, m_core->contactIdList());
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
         ui->contactListTable->setRowHeight(i, 64);
     }
@@ -256,7 +254,8 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
 
     QPixmapCache::insert(m_core->contactAvatarToken(contact), avatar);
 
-    updateAvatar(contact);
+    quint32 id = m_contactsModel->data(m_contactsModel->indexOfContact(contact), CContactsModel::Id).toUInt();
+    updateAvatar(id);
 }
 
 void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)
@@ -382,36 +381,27 @@ void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QStrin
         return;
     }
 
-    m_chatContactsModel->setTypingStatus(phone, action);
+    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(phone), CContactsModel::Id).toUInt();
+    m_chatContactsModel->setTypingStatus(userId, action);
 }
 
 void MainWindow::whenContactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action)
 {
-    m_contactsModel->setTypingStatus(contact, action);
+    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(contact), CContactsModel::Id).toUInt();
+    m_contactsModel->setTypingStatus(userId, action);
     updateMessagingContactAction();
 }
 
 void MainWindow::whenContactStatusChanged(const QString &contact)
 {
-    m_contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
-    m_contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
-    m_chatContactsModel->setContactStatus(contact, m_core->contactStatus(contact));
-    m_chatContactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
+    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(contact), CContactsModel::Id).toUInt();
+    m_contactsModel->setContactStatus(userId, m_core->contactStatus(contact));
+    m_contactsModel->setContactLastOnline(userId, m_core->contactLastOnline(contact));
+    m_chatContactsModel->setContactStatus(userId, m_core->contactStatus(contact));
+    m_chatContactsModel->setContactLastOnline(userId, m_core->contactLastOnline(contact));
 
     if (contact == ui->messagingContactIdentifier->text()) {
         updateMessagingContactStatus();
-    }
-}
-
-void MainWindow::whenContactProfileChanged(const QString &contact)
-{
-    m_contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
-    m_contactsModel->setContactUserName(contact, m_core->contactUserName(contact));
-    m_chatContactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
-    m_chatContactsModel->setContactUserName(contact, m_core->contactUserName(contact));
-
-    if (contact == ui->messagingContactIdentifier->text()) {
-        updateMessagingContactName();
     }
 }
 
@@ -445,7 +435,7 @@ void MainWindow::whenChatChanged(quint32 chatId)
         qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
     }
 
-    setContactList(m_chatContactsModel, participants);
+//    setContactList(m_chatContactsModel, participants);
     for (int i = 0; i < participants.count(); ++i) {
         ui->groupChatContacts->setRowHeight(i, 64);
     }
@@ -835,13 +825,22 @@ void MainWindow::on_groupChatAddContact_clicked()
         return;
     }
 
-    bool add = m_chatContactsModel->indexOfContact(contactPhone) < 0;
+    int index = m_contactsModel->indexOfContact(contactPhone);
+
+    if (index < 0) {
+        qDebug() << Q_FUNC_INFO << "Unknown contact" << contactPhone;
+        return;
+    }
+
+    quint32 contactId = m_contactsModel->data(index, CContactsModel::Id).toUInt();
+
+    bool add = m_chatContactsModel->indexOfContact(contactId) < 0;
 
     if (m_chatCreationMode) {
         if (add) {
-            m_chatContactsModel->addContact(contactPhone);
+            m_chatContactsModel->addContact(contactId);
         } else {
-            m_chatContactsModel->removeContact(contactPhone);
+            m_chatContactsModel->removeContact(contactId);
         }
     } else {
         if (add) {
@@ -890,29 +889,30 @@ void MainWindow::readAllMessages()
     }
 }
 
-void MainWindow::setContactList(CContactsModel *contactsModel, const QStringList &newContactList)
+void MainWindow::setContactList(CContactsModel *contactsModel, const QVector<quint32> &newContactList)
 {
     contactsModel->setContactList(newContactList);
 
-    foreach (const QString &contact, newContactList) {
+    foreach (quint32 contact, newContactList) {
+        const QString phoneNumber = contactsModel->data(contact, CContactsModel::Phone).toString();
         updateAvatar(contact);
-        contactsModel->setContactStatus(contact, m_core->contactStatus(contact));
-        contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(contact));
-        contactsModel->setContactUserName(contact, m_core->contactUserName(contact));
-        contactsModel->setContactFullName(contact, m_core->contactFirstName(contact) + QLatin1Char(' ') + m_core->contactLastName(contact));
+        contactsModel->setContactStatus(contact, m_core->contactStatus(phoneNumber));
+        contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(phoneNumber));
     }
 }
 
-void MainWindow::updateAvatar(const QString &contact)
+void MainWindow::updateAvatar(quint32 contact)
 {
-    const QString token = m_core->contactAvatarToken(contact);
+    const QString phoneNumber = m_contactsModel->data(contact, CContactsModel::Phone).toString();
+
+    const QString token = m_core->contactAvatarToken(phoneNumber);
     QPixmap avatar;
 
     if (QPixmapCache::find(token, &avatar)) {
         m_contactsModel->setContactAvatar(contact, avatar);
         m_chatContactsModel->setContactAvatar(contact, avatar);
     } else {
-        m_core->requestContactAvatar(contact);
+        m_core->requestContactAvatar(phoneNumber);
     }
 }
 
@@ -999,7 +999,7 @@ void MainWindow::setActiveChat(quint32 id)
         qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
     }
 
-    setContactList(m_chatContactsModel, participants);
+//    setContactList(m_chatContactsModel, participants);
     for (int i = 0; i < m_chatContactsModel->rowCount(); ++i) {
         ui->groupChatContacts->setRowHeight(i, 64);
     }

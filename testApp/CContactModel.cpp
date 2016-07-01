@@ -24,6 +24,8 @@ CContactsModel::CContactsModel(CTelegramCore *backend, QObject *parent) :
     QAbstractTableModel(parent),
     m_backend(backend)
 {
+    connect(m_backend, SIGNAL(contactProfileChanged(quint32)),
+            SLOT(whenContactProfileChanged(quint32)));
 }
 
 QVariant CContactsModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -121,6 +123,11 @@ QVariant CContactsModel::data(const QString &phone, Column column) const
     return data(indexOfContact(phone), column);
 }
 
+QVariant CContactsModel::data(quint32 id, Column column) const
+{
+    return data(indexOfContact(id), column);
+}
+
 QVariant CContactsModel::data(int contactIndex, CContactsModel::Column column) const
 {
     if (contactIndex < 0) {
@@ -128,12 +135,14 @@ QVariant CContactsModel::data(int contactIndex, CContactsModel::Column column) c
     }
 
     switch (column) {
+    case Id:
+        return m_contacts.at(contactIndex).id();
     case Phone:
-        return m_contacts.at(contactIndex).phone;
+        return m_contacts.at(contactIndex).phone();
     case UserName:
-        return m_contacts.at(contactIndex).userName;
+        return m_contacts.at(contactIndex).userName();
     case FullName:
-        return m_contacts.at(contactIndex).fullName;
+        return m_contacts.at(contactIndex).firstName() + QLatin1Char(' ') + m_contacts.at(contactIndex).lastName();
     case Status:
         return contactStatusStr(m_contacts.at(contactIndex));
     case TypingStatus:
@@ -147,45 +156,45 @@ QVariant CContactsModel::data(int contactIndex, CContactsModel::Column column) c
     }
 }
 
-void CContactsModel::addContact(const QString &phone)
+void CContactsModel::addContact(quint32 id)
 {
     beginInsertRows(QModelIndex(), m_contacts.count(), m_contacts.count());
-    m_contacts.append(SContact(phone));
+    m_contacts.append(SContact());
+    m_backend->getUserInfo(&m_contacts.last(), id);
     endInsertRows();
 }
 
-bool CContactsModel::removeContact(const QString &phone)
+bool CContactsModel::removeContact(quint32 id)
 {
-    for (int i = 0; i < m_contacts.count(); ++i) {
-        if (m_contacts.at(i).phone != phone) {
-            continue;
-        }
+    int contactIndex = indexOfContact(id);
 
-        beginRemoveRows(QModelIndex(), i, i);
-        m_contacts.removeAt(i);
-        endRemoveRows();
-
-        return true;
+    if (contactIndex < 0) {
+        return false;
     }
 
-    return false;
+    beginRemoveRows(QModelIndex(), contactIndex, contactIndex);
+    m_contacts.removeAt(contactIndex);
+    endRemoveRows();
+
+    return true;
 }
 
-void CContactsModel::setContactList(const QStringList &list)
+void CContactsModel::setContactList(const QVector<quint32> &newContactList)
 {
     beginResetModel();
     m_contacts.clear();
 
-    for (int i = 0; i < list.count(); ++i) {
-        m_contacts.append(SContact(list.at(i)));
+    for (int i = 0; i < newContactList.count(); ++i) {
+        m_contacts.append(SContact());
+        m_backend->getUserInfo(&m_contacts.last(), newContactList.at(i));
     }
 
     endResetModel();
 }
 
-void CContactsModel::setContactStatus(const QString &contact, TelegramNamespace::ContactStatus status)
+void CContactsModel::setContactStatus(quint32 id, TelegramNamespace::ContactStatus status)
 {
-    int index = indexOfContact(contact);
+    int index = indexOfContact(id);
 
     if (index < 0) {
         return;
@@ -197,9 +206,9 @@ void CContactsModel::setContactStatus(const QString &contact, TelegramNamespace:
     emit dataChanged(modelIndex, modelIndex);
 }
 
-void CContactsModel::setContactLastOnline(const QString &contact, quint32 onlineDate)
+void CContactsModel::setContactLastOnline(quint32 id, quint32 onlineDate)
 {
-    int index = indexOfContact(contact);
+    int index = indexOfContact(id);
 
     if (index < 0) {
         return;
@@ -211,9 +220,9 @@ void CContactsModel::setContactLastOnline(const QString &contact, quint32 online
     emit dataChanged(modelIndex, modelIndex);
 }
 
-void CContactsModel::setTypingStatus(const QString &contact, TelegramNamespace::MessageAction action)
+void CContactsModel::setTypingStatus(quint32 id, TelegramNamespace::MessageAction action)
 {
-    int index = indexOfContact(contact);
+    int index = indexOfContact(id);
 
     if (index < 0) {
         return;
@@ -225,9 +234,9 @@ void CContactsModel::setTypingStatus(const QString &contact, TelegramNamespace::
     emit dataChanged(modelIndex, modelIndex);
 }
 
-void CContactsModel::setContactAvatar(const QString &contact, const QPixmap &avatar)
+void CContactsModel::setContactAvatar(quint32 id, const QPixmap &avatar)
 {
-    int index = indexOfContact(contact);
+    int index = indexOfContact(id);
 
     if (index < 0) {
         return;
@@ -240,34 +249,6 @@ void CContactsModel::setContactAvatar(const QString &contact, const QPixmap &ava
 
 }
 
-void CContactsModel::setContactUserName(const QString &contact, const QString &userName)
-{
-    int index = indexOfContact(contact);
-
-    if (index < 0) {
-        return;
-    }
-
-    m_contacts[index].userName = userName;
-
-    QModelIndex modelIndex = createIndex(index, UserName);
-    emit dataChanged(modelIndex, modelIndex);
-}
-
-void CContactsModel::setContactFullName(const QString &contact, const QString &fullName)
-{
-    int index = indexOfContact(contact);
-
-    if (index < 0) {
-        return;
-    }
-
-    m_contacts[index].fullName = fullName;
-
-    QModelIndex modelIndex = createIndex(index, FullName);
-    emit dataChanged(modelIndex, modelIndex);
-}
-
 void CContactsModel::clear()
 {
     beginResetModel();
@@ -275,10 +256,34 @@ void CContactsModel::clear()
     endResetModel();
 }
 
+void CContactsModel::whenContactProfileChanged(quint32 id)
+{
+    int index = indexOfContact(id);
+    if (index < 0) {
+        return;
+    }
+
+    m_backend->getUserInfo(&m_contacts[index], id);
+    QModelIndex modelIndexFirst = createIndex(index, UserName);
+    QModelIndex modelIndexLast = createIndex(index, FullName);
+    emit dataChanged(modelIndexFirst, modelIndexLast);
+}
+
+int CContactsModel::indexOfContact(quint32 id) const
+{
+    for (int i = 0; i < m_contacts.count(); ++i) {
+        if (m_contacts.at(i).id() == id) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 int CContactsModel::indexOfContact(const QString &phone) const
 {
     for (int i = 0; i < m_contacts.count(); ++i) {
-        if (m_contacts.at(i).phone == phone) {
+        if (m_contacts.at(i).phone() == phone) {
             return i;
         }
     }
@@ -291,7 +296,7 @@ QStringList CContactsModel::contacts() const
     QStringList phones;
 
     for (int i = 0; i < m_contacts.count(); ++i) {
-        phones.append(m_contacts.at(i).phone);
+        phones.append(m_contacts.at(i).phone());
     }
 
     return phones;
@@ -304,9 +309,9 @@ QString CContactsModel::contactAt(int index, bool addName) const
     }
 
     if (addName) {
-        return m_contacts.at(index).phone + QLatin1Char(' ') + m_contacts.at(index).fullName;
+        return m_contacts.at(index).phone() + QLatin1Char(' ') + data(index, FullName).toString();
     } else {
-        return m_contacts.at(index).phone;
+        return m_contacts.at(index).phone();
     }
 }
 

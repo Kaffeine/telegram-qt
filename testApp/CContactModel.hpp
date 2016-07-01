@@ -27,18 +27,14 @@
 
 class CTelegramCore;
 
-struct SContact {
-    SContact(const QString &p = QString(), TelegramNamespace::ContactStatus s = TelegramNamespace::ContactStatusUnknown) :
-        phone(p),
-        status(s),
+struct SContact : TelegramNamespace::UserInfo {
+    SContact() :
+        status(TelegramNamespace::ContactStatusUnknown),
         wasOnline(0),
         typing(TelegramNamespace::MessageActionNone),
         blocked(false)
     { }
 
-    QString phone;
-    QString userName;
-    QString fullName;
     TelegramNamespace::ContactStatus status;
     quint32 wasOnline;
     TelegramNamespace::MessageAction typing;
@@ -51,6 +47,7 @@ class CContactsModel : public QAbstractTableModel
     Q_OBJECT
 public:
     enum Column {
+        Id,
         Phone,
         UserName,
         FullName,
@@ -69,25 +66,28 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     QVariant data(const QString &phone, Column column) const;
+    QVariant data(quint32 id, Column column) const;
     QVariant data(int contactIndex, Column column) const;
 
+    int indexOfContact(quint32 id) const;
     int indexOfContact(const QString &phone) const;
 
     QStringList contacts() const;
     QString contactAt(int index, bool addName) const;
 
 public slots:
-    void addContact(const QString &phone);
-    bool removeContact(const QString &phone);
-    void setContactList(const QStringList &list);
-    void setContactStatus(const QString &contact, TelegramNamespace::ContactStatus status);
-    void setContactLastOnline(const QString &contact, quint32 onlineDate);
-    void setTypingStatus(const QString &contact, TelegramNamespace::MessageAction action);
-    void setContactAvatar(const QString &contact, const QPixmap &avatar);
-    void setContactUserName(const QString &contact, const QString &userName);
-    void setContactFullName(const QString &contact, const QString &fullName);
+    void addContact(quint32 id);
+    bool removeContact(quint32 id);
+    void setContactList(const QVector<quint32> &newContactList);
+    void setContactStatus(quint32 id, TelegramNamespace::ContactStatus status);
+    void setContactLastOnline(quint32 id, quint32 onlineDate);
+    void setTypingStatus(quint32 id, TelegramNamespace::MessageAction action);
+    void setContactAvatar(quint32 id, const QPixmap &avatar);
 
     void clear();
+
+protected slots:
+    void whenContactProfileChanged(quint32 id);
 
 private:
     QString contactStatusStr(const SContact &contact) const;

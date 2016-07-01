@@ -70,7 +70,6 @@ protected slots:
     void whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, TelegramNamespace::MessageAction action);
     void whenContactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
     void whenContactStatusChanged(const QString &contact);
-    void whenContactProfileChanged(const QString &contact);
     void whenChatAdded(quint32 chatId);
     void whenChatChanged(quint32 chatId);
 
@@ -123,10 +122,9 @@ protected:
 
     void readAllMessages();
 
-    void setContactList(CContactsModel *contactsModel, const QStringList &newContactList);
+    void setContactList(CContactsModel *contactsModel, const QVector<quint32> &newContactList);
 
-    void getAvatar(const QString &contact);
-    void updateAvatar(const QString &contact);
+    void updateAvatar(quint32 contact);
 
     void setMessagingTabContact(const QString &contact);
     void updateMessagingContactName();
