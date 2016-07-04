@@ -169,6 +169,15 @@ public:
 
         }
 
+        Peer peer() const
+        {
+            if (chatId) {
+                return Peer(chatId, Peer::Chat);
+            } else {
+                return Peer(userId, Peer::User);
+            }
+        }
+
         quint32 userId; // Actual telegram user id
         quint32 chatId; // Public (not protocol) chat id
         quint32 forwardContactId;
