@@ -28,7 +28,7 @@ class MainWindow;
 }
 
 class CTelegramCore;
-class CContactsModel;
+class CContactModel;
 class CMessagingModel;
 class CChatInfoModel;
 
@@ -121,7 +121,7 @@ protected:
 
     void readAllMessages();
 
-    void setContactList(CContactsModel *contactsModel, const QVector<quint32> &newContactList);
+    void setContactList(CContactModel *contactsModel, const QVector<quint32> &newContactList);
 
     void updateAvatar(quint32 contact);
 
@@ -154,10 +154,10 @@ private:
     QMap<quint32,quint64> m_contactLastMessageList;
     QMap<quint32, QString> m_uploadingRequests;
 
-    CContactsModel *m_contactsModel;
+    CContactModel *m_contactsModel;
     CMessagingModel *m_messagingModel;
 
-    CContactsModel *m_chatContactsModel;
+    CContactModel *m_chatContactsModel;
     CMessagingModel *m_chatMessagingModel;
 
     CChatInfoModel *m_chatInfoModel;

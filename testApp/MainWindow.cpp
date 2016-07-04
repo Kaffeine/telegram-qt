@@ -43,9 +43,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_core(new CTelegramCore(this)),
-    m_contactsModel(new CContactsModel(m_core, this)),
+    m_contactsModel(new CContactModel(m_core, this)),
     m_messagingModel(new CMessagingModel(this)),
-    m_chatContactsModel(new CContactsModel(m_core, this)),
+    m_chatContactsModel(new CContactModel(m_core, this)),
     m_chatMessagingModel(new CMessagingModel(this)),
     m_chatInfoModel(new CChatInfoModel(this)),
     m_activeChatId(0),
@@ -109,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
     connect(m_core, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
 
-    ui->groupChatContacts->hideColumn(CContactsModel::Blocked);
+    ui->groupChatContacts->hideColumn(CContactModel::Blocked);
 
     ui->mainSplitter->setSizes(QList<int>() << 0 << 100);
     ui->groupChatSplitter->setSizes(QList<int>() << 550 << 450 << 300);
@@ -258,7 +258,7 @@ void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &da
 
     QPixmapCache::insert(m_core->contactAvatarToken(contact), avatar);
 
-    quint32 id = m_contactsModel->data(m_contactsModel->indexOfContact(contact), CContactsModel::Id).toUInt();
+    quint32 id = m_contactsModel->data(m_contactsModel->indexOfContact(contact), CContactModel::Id).toUInt();
     updateAvatar(id);
 }
 
@@ -385,13 +385,13 @@ void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QStrin
         return;
     }
 
-    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(phone), CContactsModel::Id).toUInt();
+    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(phone), CContactModel::Id).toUInt();
     m_chatContactsModel->setTypingStatus(userId, action);
 }
 
 void MainWindow::whenContactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action)
 {
-    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(contact), CContactsModel::Id).toUInt();
+    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(contact), CContactModel::Id).toUInt();
     m_contactsModel->setTypingStatus(userId, action);
     updateMessagingContactAction();
 }
@@ -482,7 +482,7 @@ void MainWindow::whenCustomMenuRequested(const QPoint &pos)
         for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
             const SContact *contact = m_contactsModel->contactAt(i);
 
-            QAction *a = resendMenu->addAction(CContactsModel::getContactName(*contact));
+            QAction *a = resendMenu->addAction(CContactModel::getContactName(*contact));
 #if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
             connect(a, &QAction::triggered, [=]() {
                 TelegramNamespace::MessageMediaInfo info;
@@ -495,7 +495,7 @@ void MainWindow::whenCustomMenuRequested(const QPoint &pos)
 
     for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
         const SContact *contact = m_contactsModel->contactAt(i);
-        QAction *a = forwardMenu->addAction(CContactsModel::getContactName(*contact));
+        QAction *a = forwardMenu->addAction(CContactModel::getContactName(*contact));
 #if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
         connect(a, &QAction::triggered, [=]() { m_core->forwardMessage(contact->id(), messageId); });
 #endif
@@ -774,7 +774,7 @@ void MainWindow::on_setStatusOffline_clicked()
 
 void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
 {
-    const QModelIndex idIndex = m_contactsModel->index(index.row(), CContactsModel::Id);
+    const QModelIndex idIndex = m_contactsModel->index(index.row(), CContactModel::Id);
 
     setActiveContact(m_contactsModel->data(idIndex).toUInt());
     ui->tabWidget->setCurrentWidget(ui->tabMessaging);
@@ -832,7 +832,7 @@ void MainWindow::on_groupChatAddContact_clicked()
         return;
     }
 
-    quint32 contactId = m_contactsModel->data(index, CContactsModel::Id).toUInt();
+    quint32 contactId = m_contactsModel->data(index, CContactModel::Id).toUInt();
 
     bool add = m_chatContactsModel->indexOfContact(contactId) < 0;
 
@@ -893,7 +893,7 @@ void MainWindow::readAllMessages()
     }
 }
 
-void MainWindow::setContactList(CContactsModel *contactsModel, const QVector<quint32> &newContactList)
+void MainWindow::setContactList(CContactModel *contactsModel, const QVector<quint32> &newContactList)
 {
     contactsModel->setContactList(newContactList);
 
@@ -904,7 +904,7 @@ void MainWindow::setContactList(CContactsModel *contactsModel, const QVector<qui
 
 void MainWindow::updateAvatar(quint32 contact)
 {
-    const QString phoneNumber = m_contactsModel->data(contact, CContactsModel::Phone).toString();
+    const QString phoneNumber = m_contactsModel->data(contact, CContactModel::Phone).toString();
 
     const QString token = m_core->contactAvatarToken(phoneNumber);
     QPixmap avatar;
@@ -924,7 +924,7 @@ void MainWindow::setActiveContact(quint32 userId)
     SContact userInfo;
     m_core->getUserInfo(&userInfo, m_activeContactId);
 
-    ui->messagingContactIdentifier->setText(CContactsModel::getContactIdentifier(userInfo));
+    ui->messagingContactIdentifier->setText(CContactModel::getContactIdentifier(userInfo));
 
     updateMessagingContactName();
     updateMessagingContactStatus();
@@ -954,7 +954,7 @@ void MainWindow::updateMessagingContactName()
 {
     SContact userInfo;
     m_core->getUserInfo(&userInfo, m_activeContactId);
-    ui->messagingContactName->setText(CContactsModel::getContactName(userInfo));
+    ui->messagingContactName->setText(CContactModel::getContactName(userInfo));
 }
 
 void MainWindow::updateMessagingContactStatus()
@@ -981,13 +981,13 @@ void MainWindow::updateMessagingContactStatus()
 
 void MainWindow::updateMessagingContactAction()
 {
-    const QModelIndex index = m_contactsModel->index(m_contactsModel->indexOfContact(m_activeContactId), CContactsModel::TypingStatus);
+    const QModelIndex index = m_contactsModel->index(m_contactsModel->indexOfContact(m_activeContactId), CContactModel::TypingStatus);
     ui->messagingContactAction->setText(QLatin1Char('(') + index.data().toString().toLower() + QLatin1Char(')'));
 }
 
 void MainWindow::on_contactListTable_clicked(const QModelIndex &index)
 {
-    const QModelIndex correctIndex = m_contactsModel->index(index.row(), CContactsModel::Phone);
+    const QModelIndex correctIndex = m_contactsModel->index(index.row(), CContactModel::Phone);
     ui->currentContact->setText(correctIndex.data().toString());
 }
 

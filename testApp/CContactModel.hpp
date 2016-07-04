@@ -42,7 +42,7 @@ struct SContact : TelegramNamespace::UserInfo {
     QPixmap avatar;
 };
 
-class CContactsModel : public QAbstractTableModel
+class CContactModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
@@ -58,7 +58,7 @@ public:
         ColumnsCount
     };
 
-    explicit CContactsModel(CTelegramCore *backend, QObject *parent = 0);
+    explicit CContactModel(CTelegramCore *backend, QObject *parent = 0);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -102,13 +102,13 @@ private:
 
 };
 
-inline int CContactsModel::columnCount(const QModelIndex &parent) const
+inline int CContactModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
     return ColumnsCount;
 }
 
-inline int CContactsModel::rowCount(const QModelIndex &parent) const
+inline int CContactModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
     return m_contacts.count();
