@@ -69,7 +69,7 @@ protected slots:
     void whenMessageReceived(const TelegramNamespace::Message &message);
     void whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, TelegramNamespace::MessageAction action);
     void whenContactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
-    void whenContactStatusChanged(const QString &contact);
+    void whenContactStatusChanged(quint32 contact);
     void whenChatAdded(quint32 chatId);
     void whenChatChanged(quint32 chatId);
 
@@ -115,7 +115,6 @@ protected slots:
 
     void on_secretSaveAs_clicked();
 
-    void setActiveChat(quint32 id);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -126,7 +125,8 @@ protected:
 
     void updateAvatar(quint32 contact);
 
-    void setMessagingTabContact(const QString &contact);
+    void setActiveContact(quint32 userId);
+    void setActiveChat(quint32 chatId);
     void updateMessagingContactName();
     void updateMessagingContactStatus();
     void updateMessagingContactAction();
@@ -151,7 +151,7 @@ private:
 
     CTelegramCore *m_core;
 
-    QMap<QString,quint64> m_contactLastMessageList;
+    QMap<quint32,quint64> m_contactLastMessageList;
     QMap<quint32, QString> m_uploadingRequests;
 
     CContactsModel *m_contactsModel;
@@ -162,6 +162,7 @@ private:
 
     CChatInfoModel *m_chatInfoModel;
 
+    quint32 m_activeContactId;
     quint32 m_activeChatId;
     bool m_chatCreationMode;
 

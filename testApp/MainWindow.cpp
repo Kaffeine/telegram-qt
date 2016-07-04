@@ -99,8 +99,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenContactChatTypingStatusChanged(quint32,QString,TelegramNamespace::MessageAction)));
     connect(m_core, SIGNAL(contactTypingStatusChanged(QString,TelegramNamespace::MessageAction)),
             SLOT(whenContactTypingStatusChanged(QString,TelegramNamespace::MessageAction)));
-    connect(m_core, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)),
-            SLOT(whenContactStatusChanged(QString)));
+    connect(m_core, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
+            SLOT(whenContactStatusChanged(quint32)));
     connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
             m_messagingModel, SLOT(setMessageDeliveryStatus(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
     connect(m_core, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
@@ -165,8 +165,12 @@ void MainWindow::whenConnectionStateChanged(TelegramNamespace::ConnectionState s
         setAppState(AppStateReady);
 
         ui->phoneNumber->setText(m_core->selfPhone());
-        ui->firstName->setText(m_core->contactFirstName(m_core->selfPhone()));
-        ui->lastName->setText(m_core->contactLastName(m_core->selfPhone()));
+    {
+        TelegramNamespace::UserInfo selfInfo;
+        m_core->getUserInfo(&selfInfo, m_core->selfId());
+        ui->firstName->setText(selfInfo.firstName());
+        ui->lastName->setText(selfInfo.lastName());
+    }
         break;
     case TelegramNamespace::ConnectionStateDisconnected:
         setAppState(AppStateDisconnected);
@@ -224,7 +228,7 @@ void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError erro
 
 void MainWindow::whenContactListChanged()
 {
-    setContactList(m_contactsModel, m_core->contactIdList());
+    setContactList(m_contactsModel, m_core->contactList());
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
         ui->contactListTable->setRowHeight(i, 64);
     }
@@ -334,9 +338,9 @@ void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 me
 
 void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
 {
-    bool groupChatMessage = message.peer.startsWith(QLatin1String("chat"));
+    bool groupChatMessage = message.chatId;
     if (groupChatMessage) {
-        if (message.peer != QString("chat%1").arg(m_activeChatId)) {
+        if (message.chatId != m_activeChatId) {
             return;
         }
     }
@@ -363,12 +367,12 @@ void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
     } else {
         m_messagingModel->addMessage(processedMessage);
 
-        if (!(processedMessage.flags & TelegramNamespace::MessageFlagOut) && (m_contactLastMessageList.value(processedMessage.contact) < processedMessage.id)) {
-            m_contactLastMessageList.insert(processedMessage.contact, processedMessage.id);
+        if (!(processedMessage.flags & TelegramNamespace::MessageFlagOut) && (m_contactLastMessageList.value(processedMessage.userId) < processedMessage.id)) {
+            m_contactLastMessageList.insert(processedMessage.userId, processedMessage.id);
 
             if (ui->settingsReadMessages->isChecked()) {
                 if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
-                    m_core->setMessageRead(processedMessage.contact, processedMessage.id);
+                    m_core->setMessageRead(processedMessage.userId, processedMessage.id);
                 }
             }
         }
@@ -392,15 +396,9 @@ void MainWindow::whenContactTypingStatusChanged(const QString &contact, Telegram
     updateMessagingContactAction();
 }
 
-void MainWindow::whenContactStatusChanged(const QString &contact)
+void MainWindow::whenContactStatusChanged(quint32 contact)
 {
-    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(contact), CContactsModel::Id).toUInt();
-    m_contactsModel->setContactStatus(userId, m_core->contactStatus(contact));
-    m_contactsModel->setContactLastOnline(userId, m_core->contactLastOnline(contact));
-    m_chatContactsModel->setContactStatus(userId, m_core->contactStatus(contact));
-    m_chatContactsModel->setContactLastOnline(userId, m_core->contactLastOnline(contact));
-
-    if (contact == ui->messagingContactIdentifier->text()) {
+    if (contact == m_activeContactId) {
         updateMessagingContactStatus();
     }
 }
@@ -476,26 +474,30 @@ void MainWindow::whenCustomMenuRequested(const QPoint &pos)
 
     quint32 row = index.row();
     quint32 messageId = m_messagingModel->rowData(row, CMessagingModel::MessageId).toUInt();
+
     if (m_messagingModel->messageAt(row)->type == TelegramNamespace::MessageTypeText) {
         resendMenu->setDisabled(true);
     } else {
         resendMenu->setEnabled(true);
         for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
-            QAction *a = resendMenu->addAction(m_contactsModel->contactAt(i, /* addName */ true));
+            const SContact *contact = m_contactsModel->contactAt(i);
+
+            QAction *a = resendMenu->addAction(CContactsModel::getContactName(*contact));
 #if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
             connect(a, &QAction::triggered, [=]() {
                 TelegramNamespace::MessageMediaInfo info;
                 m_core->getMessageMediaInfo(&info, messageId);
-                m_core->sendMedia(m_contactsModel->contactAt(i, false), info);
+                m_core->sendMedia(contact->id(), info);
             });
 #endif
         }
     }
 
     for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
-        QAction *a = forwardMenu->addAction(m_contactsModel->contactAt(i, /* addName */ true));
+        const SContact *contact = m_contactsModel->contactAt(i);
+        QAction *a = forwardMenu->addAction(CContactsModel::getContactName(*contact));
 #if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
-        connect(a, &QAction::triggered, [=]() { m_core->forwardMessage(m_contactsModel->contactAt(i, false), messageId); });
+        connect(a, &QAction::triggered, [=]() { m_core->forwardMessage(contact->id(), messageId); });
 #endif
     }
 
@@ -699,15 +701,12 @@ void MainWindow::on_deleteContact_clicked()
 
 void MainWindow::on_messagingSendButton_clicked()
 {
-    quint64 id = m_core->sendMessage(ui->messagingContactIdentifier->text(), ui->messagingMessage->text());
-
     CMessagingModel::SMessage m;
-    m.peer = ui->messagingContactIdentifier->text();
-    m.contact = ui->messagingContactIdentifier->text();
+    m.userId = m_activeContactId; //ui->messagingContactIdentifier->text();
     m.type = TelegramNamespace::MessageTypeText;
     m.text = ui->messagingMessage->text();
     m.flags = TelegramNamespace::MessageFlagOut;
-    m.id64 = id;
+    m.id64 = m_core->sendMessage(m.peer(), m.text);
 
     ui->messagingMessage->clear();
 
@@ -737,9 +736,9 @@ void MainWindow::on_messagingAttachButton_clicked()
 void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
 {
     if (!arg1.isEmpty()) {
-        m_core->setTyping(ui->messagingContactIdentifier->text(), TelegramNamespace::MessageActionTyping);
+        m_core->setTyping(m_activeContactId, TelegramNamespace::MessageActionTyping);
     } else {
-        m_core->setTyping(ui->messagingContactIdentifier->text(), TelegramNamespace::MessageActionNone);
+        m_core->setTyping(m_activeContactId, TelegramNamespace::MessageActionNone);
     }
 }
 
@@ -754,13 +753,13 @@ void MainWindow::on_messagingContactIdentifier_textChanged(const QString &arg1)
 
 void MainWindow::on_messagingGetHistoryRequest_clicked()
 {
-    m_core->requestHistory(ui->messagingContactIdentifier->text(), ui->messagingGetHistoryOffset->value(), ui->messagingGetHistoryLimit->value());
+    m_core->requestHistory(m_activeContactId, ui->messagingGetHistoryOffset->value(), ui->messagingGetHistoryLimit->value());
 }
 
 void MainWindow::on_groupChatGetHistoryRequest_clicked()
 {
-    const QString peer = QString(QLatin1String("chat%1")).arg(m_activeChatId);
-    m_core->requestHistory(peer, ui->groupChatGetHistoryOffset->value(), ui->groupChatGetHistoryLimit->value());
+    m_core->requestHistory(TelegramNamespace::Peer(m_activeChatId, TelegramNamespace::Peer::Chat),
+                           ui->groupChatGetHistoryOffset->value(), ui->groupChatGetHistoryLimit->value());
 }
 
 void MainWindow::on_setStatusOnline_clicked()
@@ -775,18 +774,19 @@ void MainWindow::on_setStatusOffline_clicked()
 
 void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
 {
-    const QModelIndex phoneIndex = m_contactsModel->index(index.row(), CContactsModel::Phone);
+    const QModelIndex idIndex = m_contactsModel->index(index.row(), CContactsModel::Id);
 
-    setMessagingTabContact(m_contactsModel->data(phoneIndex).toString());
+    setActiveContact(m_contactsModel->data(idIndex).toUInt());
     ui->tabWidget->setCurrentWidget(ui->tabMessaging);
     ui->messagingMessage->setFocus();
 }
 
 void MainWindow::on_messagingView_doubleClicked(const QModelIndex &index)
 {
-    const QModelIndex phoneIndex = m_messagingModel->index(index.row(), CMessagingModel::Contact);
+    const QModelIndex phoneIndex = m_messagingModel->index(index.row(), CMessagingModel::Peer);
 
-    setMessagingTabContact(m_messagingModel->data(phoneIndex).toString());
+    TelegramNamespace::Peer peer = phoneIndex.data().value<TelegramNamespace::Peer>();
+    setActiveContact(peer.id);
     ui->tabWidget->setCurrentWidget(ui->tabMessaging);
     ui->messagingMessage->setFocus();
 }
@@ -857,12 +857,12 @@ void MainWindow::on_groupChatAddContact_clicked()
 void MainWindow::on_groupChatSendButton_clicked()
 {
     CMessagingModel::SMessage m;
-    m.peer = QString("chat%1").arg(m_activeChatId);
-    m.contact = m_core->selfPhone();
+    m.chatId = m_activeChatId;
+    m.userId = m_core->selfId();
     m.type = TelegramNamespace::MessageTypeText;
     m.text = ui->groupChatMessage->text();
     m.flags = TelegramNamespace::MessageFlagOut;
-    m.id64 = m_core->sendMessage(m.peer, m.text);
+    m.id64 = m_core->sendMessage(m.peer(), m.text);
 
     m_chatMessagingModel->addMessage(m);
     ui->groupChatMessage->clear();
@@ -870,7 +870,11 @@ void MainWindow::on_groupChatSendButton_clicked()
 
 void MainWindow::on_groupChatMessage_textChanged(const QString &arg1)
 {
-    m_core->setChatTyping(m_activeChatId, !arg1.isEmpty());
+    TelegramNamespace::MessageAction action = TelegramNamespace::MessageActionNone;
+    if (!arg1.isEmpty()) {
+        action = TelegramNamespace::MessageActionTyping;
+    }
+    m_core->setTyping(TelegramNamespace::Peer(m_activeChatId, TelegramNamespace::Peer::Chat), action);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -884,8 +888,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::readAllMessages()
 {
-    foreach (const QString &contact, m_contactLastMessageList.keys()) {
-        m_core->setMessageRead(contact, m_contactLastMessageList.value(contact));
+    foreach (quint32 contactId, m_contactLastMessageList.keys()) {
+        m_core->setMessageRead(contactId, m_contactLastMessageList.value(contactId));
     }
 }
 
@@ -894,10 +898,7 @@ void MainWindow::setContactList(CContactsModel *contactsModel, const QVector<qui
     contactsModel->setContactList(newContactList);
 
     foreach (quint32 contact, newContactList) {
-        const QString phoneNumber = contactsModel->data(contact, CContactsModel::Phone).toString();
         updateAvatar(contact);
-        contactsModel->setContactStatus(contact, m_core->contactStatus(phoneNumber));
-        contactsModel->setContactLastOnline(contact, m_core->contactLastOnline(phoneNumber));
     }
 }
 
@@ -916,33 +917,53 @@ void MainWindow::updateAvatar(quint32 contact)
     }
 }
 
-void MainWindow::setMessagingTabContact(const QString &contact)
+void MainWindow::setActiveContact(quint32 userId)
 {
-    ui->messagingContactIdentifier->setText(contact);
+    m_activeContactId = userId;
+
+    SContact userInfo;
+    m_core->getUserInfo(&userInfo, m_activeContactId);
+
+    ui->messagingContactIdentifier->setText(CContactsModel::getContactIdentifier(userInfo));
+
     updateMessagingContactName();
     updateMessagingContactStatus();
 }
 
+void MainWindow::setActiveChat(quint32 chatId)
+{
+    m_activeChatId = chatId;
+
+    TelegramNamespace::GroupChat chat;
+    m_core->getChatInfo(&chat, chatId);
+    ui->groupChatName->setText(chat.title);
+
+    QStringList participants;
+    if (!m_core->getChatParticipants(&participants, chatId)) {
+        qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
+    }
+
+//    setContactList(m_chatContactsModel, participants);
+    for (int i = 0; i < m_chatContactsModel->rowCount(); ++i) {
+        ui->groupChatContacts->setRowHeight(i, 64);
+    }
+    updateGroupChatAddContactButtonText();
+}
+
 void MainWindow::updateMessagingContactName()
 {
-    const QString contact = ui->messagingContactIdentifier->text();
-    QString name = m_core->contactUserName(contact);
-    if (name.isEmpty()) {
-        name = m_core->contactFirstName(contact) + m_core->contactLastName(contact);
-    }
-
-    if (name.simplified().isEmpty()) {
-        name = tr("Unknown name");
-    }
-
-    ui->messagingContactName->setText(name);
+    SContact userInfo;
+    m_core->getUserInfo(&userInfo, m_activeContactId);
+    ui->messagingContactName->setText(CContactsModel::getContactName(userInfo));
 }
 
 void MainWindow::updateMessagingContactStatus()
 {
-    const QString contact = ui->messagingContactIdentifier->text();
+    SContact userInfo;
+    m_core->getUserInfo(&userInfo, m_activeContactId);
+
     QString status;
-    switch (m_core->contactStatus(contact)) {
+    switch (userInfo.status) {
     default:
     case TelegramNamespace::ContactStatusUnknown:
         status = tr("(unknown status)");
@@ -960,8 +981,7 @@ void MainWindow::updateMessagingContactStatus()
 
 void MainWindow::updateMessagingContactAction()
 {
-    const QString contact = ui->messagingContactIdentifier->text();
-    const QModelIndex index = m_contactsModel->index(m_contactsModel->indexOfContact(contact), CContactsModel::TypingStatus);
+    const QModelIndex index = m_contactsModel->index(m_contactsModel->indexOfContact(m_activeContactId), CContactsModel::TypingStatus);
     ui->messagingContactAction->setText(QLatin1Char('(') + index.data().toString().toLower() + QLatin1Char(')'));
 }
 
@@ -984,26 +1004,6 @@ void MainWindow::on_secretSaveAs_clicked()
     }
 
     file.write(ui->secretInfo->toPlainText().toLatin1());
-}
-
-void MainWindow::setActiveChat(quint32 id)
-{
-    m_activeChatId = id;
-
-    TelegramNamespace::GroupChat chat;
-    m_core->getChatInfo(&chat, id);
-    ui->groupChatName->setText(chat.title);
-
-    QStringList participants;
-    if (!m_core->getChatParticipants(&participants, id)) {
-        qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
-    }
-
-//    setContactList(m_chatContactsModel, participants);
-    for (int i = 0; i < m_chatContactsModel->rowCount(); ++i) {
-        ui->groupChatContacts->setRowHeight(i, 64);
-    }
-    updateGroupChatAddContactButtonText();
 }
 
 void MainWindow::on_restoreSession_clicked()

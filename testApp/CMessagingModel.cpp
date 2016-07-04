@@ -16,6 +16,7 @@
  */
 
 #include "CMessagingModel.hpp"
+#include "CContactModel.hpp"
 
 #include <QDateTime>
 
@@ -109,9 +110,9 @@ QVariant CMessagingModel::rowData(quint32 messageIndex, int column) const
 
     switch (column) {
     case Peer:
-        return m_messages.at(messageIndex).peer;
+        return QVariant::fromValue(m_messages.at(messageIndex).peer());
     case Contact:
-        return m_messages.at(messageIndex).contact;
+        return m_messages.at(messageIndex).userId;
     case Direction:
         return (m_messages.at(messageIndex).flags & TelegramNamespace::MessageFlagOut) ? tr("out") : tr("in");
     case Timestamp:
@@ -127,7 +128,7 @@ QVariant CMessagingModel::rowData(quint32 messageIndex, int column) const
             return tr("Incoming");
         }
     case ForwardFromContact:
-        return m_messages.at(messageIndex).fwdContact;
+        return m_messages.at(messageIndex).forwardContactId;
     case ForwardTimestamp:
         if (m_messages.at(messageIndex).fwdTimestamp) {
             return QDateTime::fromMSecsSinceEpoch(quint64(m_messages.at(messageIndex).fwdTimestamp) * 1000);

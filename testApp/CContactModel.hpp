@@ -72,15 +72,18 @@ public:
     int indexOfContact(quint32 id) const;
     int indexOfContact(const QString &phone) const;
 
+    const SContact *contactAt(int index) const;
+
     QStringList contacts() const;
     QString contactAt(int index, bool addName) const;
+
+    static QString getContactName(const TelegramNamespace::UserInfo &contact);
+    static QString getContactIdentifier(const TelegramNamespace::UserInfo &contact);
 
 public slots:
     void addContact(quint32 id);
     bool removeContact(quint32 id);
     void setContactList(const QVector<quint32> &newContactList);
-    void setContactStatus(quint32 id, TelegramNamespace::ContactStatus status);
-    void setContactLastOnline(quint32 id, quint32 onlineDate);
     void setTypingStatus(quint32 id, TelegramNamespace::MessageAction action);
     void setContactAvatar(quint32 id, const QPixmap &avatar);
 
@@ -88,6 +91,7 @@ public slots:
 
 protected slots:
     void whenContactProfileChanged(quint32 id);
+    void whenContactStatusChanged(quint32 id);
 
 private:
     QString contactStatusStr(const SContact &contact) const;
