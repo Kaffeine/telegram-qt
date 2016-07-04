@@ -193,12 +193,7 @@ bool CTelegramCore::requestHistory(const QString &identifier, int offset, int li
 //    return m_dispatcher->uploadFile(source, fileName);
 //}
 
-QStringList CTelegramCore::contactList() const
-{
-    return m_dispatcher->contactList();
-}
-
-QVector<quint32> CTelegramCore::contactIdList() const
+QVector<quint32> CTelegramCore::contactList() const
 {
     return m_dispatcher->contactIdList();
 }

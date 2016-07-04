@@ -298,17 +298,6 @@ quint32 CTelegramDispatcher::selfId() const
     return m_selfUserId;
 }
 
-QStringList CTelegramDispatcher::contactList() const
-{
-    QStringList result;
-
-    foreach (quint32 userId, m_contactIdList) {
-        result.append(userIdToIdentifier(userId));
-    }
-
-    return result;
-}
-
 QVector<quint32> CTelegramDispatcher::contactIdList() const
 {
     return m_contactIdList;

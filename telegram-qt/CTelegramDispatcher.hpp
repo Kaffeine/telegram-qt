@@ -134,7 +134,6 @@ public:
     QString selfPhone() const;
     quint32 selfId() const;
 
-    QStringList contactList() const;
     QVector<quint32> contactIdList() const;
     QVector<quint32> publicChatIdList() const;
 
