@@ -59,7 +59,7 @@ public:
 protected slots:
     void whenConnectionStateChanged(TelegramNamespace::ConnectionState state);
     void whenLoggedOut(bool result);
-    void whenPhoneStatusReceived(const QString &phone, bool registered, bool invited);
+    void whenPhoneStatusReceived(const QString &phone, bool registered);
     void whenPhoneCodeRequested();
     void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void whenContactListChanged();

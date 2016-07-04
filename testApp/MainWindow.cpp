@@ -81,8 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(m_core, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
             SLOT(whenConnectionStateChanged(TelegramNamespace::ConnectionState)));
-    connect(m_core, SIGNAL(phoneStatusReceived(QString,bool,bool)),
-            SLOT(whenPhoneStatusReceived(QString,bool,bool)));
+    connect(m_core, SIGNAL(phoneStatusReceived(QString,bool)),
+            SLOT(whenPhoneStatusReceived(QString,bool)));
     connect(m_core, SIGNAL(phoneCodeRequired()),
             SLOT(whenPhoneCodeRequested()));
     connect(m_core, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
@@ -184,16 +184,15 @@ void MainWindow::whenLoggedOut(bool result)
     setAppState(AppStateLoggedOut);
 }
 
-void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered, bool invited)
+void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered)
 {
     if (phone == ui->phoneNumber->text()) {
         QString registeredText = registered ? tr("Registered") : tr("Not registered");
-        QString invitedText = invited ? tr("invited") : tr("not invited");
-        ui->phoneStatus->setText(QString(QLatin1String("%1, %2")).arg(registeredText).arg(invitedText));
+        ui->phoneStatus->setText(QString(QLatin1String("%1, %2")).arg(registeredText));
 
         setRegistered(registered);
     } else {
-        qDebug() << "Warning: Received status for different phone number" << phone << registered << invited;
+        qDebug() << "Warning: Received status for different phone number" << phone << registered;
     }
 }
 
