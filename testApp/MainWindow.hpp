@@ -74,8 +74,10 @@ protected slots:
     void whenChatChanged(quint32 chatId);
 
     void whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
+    void onUserNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
 
     void whenCustomMenuRequested(const QPoint &pos);
+    void onSearchCustomMenuRequested(const QPoint &pos);
 
     void on_connectButton_clicked();
     void on_secondConnectButton_clicked();
@@ -140,12 +142,17 @@ private slots:
 
     void on_groupChatLeaveChat_clicked();
 
+    void on_findContact_clicked();
+
 private:
+    void searchByUsername();
     void setRegistered(bool newRegistered);
     void setChatCreationMode();
     void unsetChatCreationMode(quint32 newActiveChat);
 
     void setAppState(AppState newState);
+
+    CContactModel *searchResultModel();
 
     Ui::MainWindow *ui;
 
@@ -161,6 +168,8 @@ private:
     CMessagingModel *m_chatMessagingModel;
 
     CChatInfoModel *m_chatInfoModel;
+    CContactModel *m_contactSearchResultModel;
+    QString m_searchQuery;
 
     quint32 m_activeContactId;
     quint32 m_activeChatId;

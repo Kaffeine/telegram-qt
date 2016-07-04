@@ -48,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_chatContactsModel(new CContactModel(m_core, this)),
     m_chatMessagingModel(new CMessagingModel(this)),
     m_chatInfoModel(new CChatInfoModel(this)),
+    m_contactSearchResultModel(nullptr),
     m_activeChatId(0),
     m_chatCreationMode(false),
     m_registered(false),
@@ -105,6 +106,8 @@ MainWindow::MainWindow(QWidget *parent) :
             m_messagingModel, SLOT(setMessageDeliveryStatus(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
     connect(m_core, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
             SLOT(whenUploadingStatusUpdated(quint32,quint32,quint32)));
+    connect(m_core, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
+            SLOT(onUserNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
 
     connect(m_core, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
     connect(m_core, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
@@ -113,6 +116,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->mainSplitter->setSizes(QList<int>() << 0 << 100);
     ui->groupChatSplitter->setSizes(QList<int>() << 550 << 450 << 300);
+    ui->contactsSplitter->setSizes(QList<int>() << 100 << 0);
 
     ui->groupChatChatsList->setColumnWidth(CChatInfoModel::Id, 30);
 
@@ -132,6 +136,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 #if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
     connect(ui->messagingView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(whenCustomMenuRequested(QPoint)));
+    connect(ui->contactSearchResult, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onSearchCustomMenuRequested(QPoint)));
 #endif
 
     ui->groupChatAddContactForwardMessages->hide();
@@ -450,6 +455,15 @@ void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOf
     }
 }
 
+void MainWindow::onUserNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status)
+{
+    if (userName == m_searchQuery) {
+        if (status == TelegramNamespace::UserNameStatusResolved) {
+            searchByUsername();
+        }
+    }
+}
+
 void MainWindow::whenCustomMenuRequested(const QPoint &pos)
 {
     QModelIndex index = ui->messagingView->currentIndex();
@@ -500,6 +514,38 @@ void MainWindow::whenCustomMenuRequested(const QPoint &pos)
     }
 
     menu->popup(ui->messagingView->mapToGlobal(pos));
+}
+
+void MainWindow::onSearchCustomMenuRequested(const QPoint &pos)
+{
+    QModelIndex index = ui->contactSearchResult->currentIndex();
+    if (!index.isValid()) {
+        return;
+    }
+
+    static QMenu *menu = nullptr;
+
+    if (!menu) {
+        menu = new QMenu(this);
+    }
+
+    menu->clear();
+
+    const SContact *contact = searchResultModel()->contactAt(index.row());
+
+    if (!contact) {
+        return;
+    }
+
+    QAction *a = menu->addAction(tr("Send a message"));
+#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
+    connect(a, &QAction::triggered, [=]() {
+        setActiveContact(contact->id());
+        ui->tabWidget->setCurrentWidget(ui->tabMessaging);
+    });
+#endif
+
+    menu->popup(ui->contactSearchResult->mapToGlobal(pos));
 }
 
 void MainWindow::on_connectButton_clicked()
@@ -682,6 +728,40 @@ void MainWindow::setAppState(MainWindow::AppState newState)
         break;
     default:
         break;
+    }
+}
+
+CContactModel *MainWindow::searchResultModel()
+{
+    if (!m_contactSearchResultModel) {
+        m_contactSearchResultModel = new CContactModel(m_core, this);
+        ui->contactSearchResult->setModel(m_contactSearchResultModel);
+    }
+
+    return m_contactSearchResultModel;
+}
+
+void MainWindow::on_findContact_clicked()
+{
+    m_searchQuery = ui->currentContact->text();
+    ui->contactsSplitter->setSizes(QList<int>() << 100 << 100);
+    searchByUsername();
+}
+
+void MainWindow::searchByUsername()
+{
+    quint32 userId = m_core->resolveUsername(m_searchQuery);
+
+    searchResultModel()->clear();
+
+    if (!userId) {
+        return;
+    }
+
+    searchResultModel()->setContactList(QVector<quint32>() << userId);
+
+    for (int i = 0; i < ui->contactSearchResult->model()->rowCount(); ++i) {
+        ui->contactSearchResult->setRowHeight(i, 64);
     }
 }
 
