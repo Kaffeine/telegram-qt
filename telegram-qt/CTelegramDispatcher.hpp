@@ -298,8 +298,6 @@ protected:
 
     QString userAvatarToken(const TLUser *user) const;
 
-    TelegramNamespace::ContactStatus decodeContactStatus(TLValue status) const;
-
     inline CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
     CTelegramConnection *getConnection(quint32 dc);
 

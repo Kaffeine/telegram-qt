@@ -76,3 +76,34 @@ void TelegramNamespace::MessageMediaInfo::setGeoPoint(double latitude, double lo
     d->geo.longitude = longitude;
     d->geo.latitude = latitude;
 }
+
+TelegramNamespace::ContactStatus getApiContactStatus(TLValue status)
+{
+    switch (status) {
+    default:
+    case TLValue::UserStatusEmpty:
+        return TelegramNamespace::ContactStatusUnknown;
+    case TLValue::UserStatusOnline:
+        return TelegramNamespace::ContactStatusOnline;
+    case TLValue::UserStatusOffline:
+        return TelegramNamespace::ContactStatusOffline;
+    }
+}
+
+quint32 getApiContactLastOnline(const TLUserStatus &status)
+{
+    switch (status.tlType) {
+    case TLValue::UserStatusOnline:
+        return status.expires;
+    case TLValue::UserStatusOffline:
+        return status.wasOnline;
+    case TLValue::UserStatusRecently:
+        return TelegramNamespace::ContactLastOnlineRecently;
+    case TLValue::UserStatusLastWeek:
+        return TelegramNamespace::ContactLastOnlineLastWeek;
+    case TLValue::UserStatusLastMonth:
+        return TelegramNamespace::ContactLastOnlineLastMonth;
+    default:
+        return TelegramNamespace::ContactLastOnlineUnknown;
+    }
+}

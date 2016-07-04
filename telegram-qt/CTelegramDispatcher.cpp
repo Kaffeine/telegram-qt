@@ -979,7 +979,7 @@ TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QStrin
     const TLUser *user = identifierToUser(phone);
 
     if (user) {
-        return decodeContactStatus(user->status.tlType);
+        return getApiContactStatus(user->status.tlType);
     }
 
     return TelegramNamespace::ContactStatusUnknown;
@@ -990,20 +990,7 @@ quint32 CTelegramDispatcher::contactLastOnline(const QString &contact) const
     const TLUser *user = identifierToUser(contact);
 
     if (user) {
-        switch (user->status.tlType) {
-        case TLValue::UserStatusOnline:
-            return user->status.expires;
-        case TLValue::UserStatusOffline:
-            return user->status.wasOnline;
-        case TLValue::UserStatusRecently:
-            return TelegramNamespace::ContactLastOnlineRecently;
-        case TLValue::UserStatusLastWeek:
-            return TelegramNamespace::ContactLastOnlineLastWeek;
-        case TLValue::UserStatusLastMonth:
-            return TelegramNamespace::ContactLastOnlineLastMonth;
-        default:
-            break;
-        }
+        return getApiContactLastOnline(user->status);
     }
 
     return TelegramNamespace::ContactLastOnlineUnknown;
@@ -1550,7 +1537,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         TLUser *user = m_users.value(update.userId);
         if (user) {
             user->status = update.status;
-            emit contactStatusChanged(userIdToIdentifier(update.userId), decodeContactStatus(user->status.tlType));
+            emit contactStatusChanged(userIdToIdentifier(update.userId), getApiContactStatus(user->status.tlType));
         }
         break;
     }
@@ -1973,19 +1960,6 @@ QString CTelegramDispatcher::userAvatarToken(const TLUser *user) const
                 .arg(avatar.dcId, sizeof(avatar.dcId) * 2, 16, QLatin1Char('0'))
                 .arg(avatar.volumeId, sizeof(avatar.dcId) * 2, 16, QLatin1Char('0'))
                 .arg(avatar.localId, sizeof(avatar.dcId) * 2, 16, QLatin1Char('0'));
-    }
-}
-
-TelegramNamespace::ContactStatus CTelegramDispatcher::decodeContactStatus(TLValue status) const
-{
-    switch (status) {
-    default:
-    case TLValue::UserStatusEmpty:
-        return TelegramNamespace::ContactStatusUnknown;
-    case TLValue::UserStatusOnline:
-        return TelegramNamespace::ContactStatusOnline;
-    case TLValue::UserStatusOffline:
-        return TelegramNamespace::ContactStatusOffline;
     }
 }
 
