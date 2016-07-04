@@ -316,6 +316,11 @@ QString CTelegramCore::selfPhone() const
     return m_dispatcher->selfPhone();
 }
 
+quint32 CTelegramCore::selfId() const
+{
+    return m_dispatcher->selfId();
+}
+
 quint64 CTelegramCore::sendMessage(const QString &identifier, const QString &message)
 {
     return m_dispatcher->sendMessage(identifier, message);

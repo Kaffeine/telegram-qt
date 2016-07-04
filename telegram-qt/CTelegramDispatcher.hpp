@@ -132,6 +132,7 @@ public:
     inline TelegramNamespace::ConnectionState connectionState() const { return m_connectionState; }
 
     QString selfPhone() const;
+    quint32 selfId() const;
 
     QStringList contactList() const;
     QVector<quint32> publicChatIdList() const;
