@@ -131,6 +131,21 @@ public:
 
     static void registerTypes();
 
+    struct Peer
+    {
+        enum Type {
+            User,
+            Chat
+        };
+
+        Peer(quint32 id = 0, Type t = User) : type(t), id(id)
+        {
+        }
+
+        Type type;
+        quint32 id;
+    };
+
     struct DcOption
     {
         inline DcOption() : port(0) { }
@@ -233,6 +248,7 @@ public:
 
 };
 
+Q_DECLARE_METATYPE(TelegramNamespace::Peer)
 Q_DECLARE_METATYPE(TelegramNamespace::DcOption)
 Q_DECLARE_METATYPE(TelegramNamespace::Message)
 Q_DECLARE_METATYPE(TelegramNamespace::GroupChat)
