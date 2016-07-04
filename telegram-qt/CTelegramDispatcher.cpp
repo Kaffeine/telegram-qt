@@ -995,39 +995,6 @@ quint32 CTelegramDispatcher::contactLastOnline(const QString &contact) const
     return TelegramNamespace::ContactLastOnlineUnknown;
 }
 
-QString CTelegramDispatcher::contactFirstName(const QString &contact) const
-{
-    const TLUser *user = identifierToUser(contact);
-
-    if (user) {
-        return user->firstName;
-    } else {
-        return QString();
-    }
-}
-
-QString CTelegramDispatcher::contactLastName(const QString &contact) const
-{
-    const TLUser *user = identifierToUser(contact);
-
-    if (user) {
-        return user->lastName;
-    } else {
-        return QString();
-    }
-}
-
-QString CTelegramDispatcher::contactUserName(const QString &contact) const
-{
-    const TLUser *user = identifierToUser(contact);
-
-    if (user) {
-        return user->username;
-    } else {
-        return QString();
-    }
-}
-
 QString CTelegramDispatcher::contactAvatarToken(const QString &contact) const
 {
     const TLUser *user = identifierToUser(contact);

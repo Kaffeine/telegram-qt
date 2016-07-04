@@ -233,21 +233,6 @@ quint32 CTelegramCore::contactLastOnline(const QString &contact) const
     return m_dispatcher->contactLastOnline(contact);
 }
 
-QString CTelegramCore::contactFirstName(const QString &phone) const
-{
-    return m_dispatcher->contactFirstName(phone);
-}
-
-QString CTelegramCore::contactLastName(const QString &phone) const
-{
-    return m_dispatcher->contactLastName(phone);
-}
-
-QString CTelegramCore::contactUserName(const QString &contact) const
-{
-    return m_dispatcher->contactUserName(contact);
-}
-
 QString CTelegramCore::contactAvatarToken(const QString &phone) const
 {
     return m_dispatcher->contactAvatarToken(phone);

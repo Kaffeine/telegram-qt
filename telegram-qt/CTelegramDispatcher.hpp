@@ -184,10 +184,6 @@ public:
 
     TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
     quint32 contactLastOnline(const QString &contact) const;
-
-    QString contactFirstName(const QString &contact) const;
-    QString contactLastName(const QString &contact) const;
-    QString contactUserName(const QString &contact) const;
     QString contactAvatarToken(const QString &contact) const;
 
     QString chatTitle(quint32 publicChatId) const;

@@ -52,9 +52,6 @@ public:
 
     // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
     Q_INVOKABLE quint32 contactLastOnline(const QString &contact) const;
-    Q_INVOKABLE QString contactFirstName(const QString &contact) const;
-    Q_INVOKABLE QString contactLastName(const QString &contact) const;
-    Q_INVOKABLE QString contactUserName(const QString &contact) const;
     Q_INVOKABLE QString contactAvatarToken(const QString &contact) const;
     Q_INVOKABLE QString chatTitle(quint32 chatId) const;
     Q_INVOKABLE static quint32 identifierToChatId(const QString &identifier);
