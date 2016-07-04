@@ -682,20 +682,20 @@ bool CTelegramDispatcher::getMessageMediaInfo(TelegramNamespace::MessageMediaInf
     return true;
 }
 
-bool CTelegramDispatcher::requestHistory(const QString &identifier, quint32 offset, quint32 limit)
+bool CTelegramDispatcher::requestHistory(const TelegramNamespace::Peer &peer, quint32 offset, quint32 limit)
 {
     if (!activeConnection()) {
         return false;
     }
 
-    const TLInputPeer peer = identifierToInputPeer(identifier);
+    const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
 
-    if (peer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
+    if (inputPeer.tlType == TLValue::InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << peer.id;
         return false;
     }
 
-    activeConnection()->messagesGetHistory(peer, offset, /* maxId */ 0, limit);
+    activeConnection()->messagesGetHistory(inputPeer, offset, /* maxId */ 0, limit);
 
     return true;
 }
@@ -713,28 +713,28 @@ quint32 CTelegramDispatcher::uploadFile(QIODevice *source, const QString &fileNa
     return uploadFile(source->readAll(), fileName);
 }
 
-quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QString &message)
+quint64 CTelegramDispatcher::sendMessage(const TelegramNamespace::Peer &peer, const QString &message)
 {
     if (!activeConnection()) {
         return 0;
     }
-    const TLInputPeer peer = identifierToInputPeer(identifier);
+    const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
 
     int actionIndex;
 
-    switch (peer.tlType) {
+    switch (inputPeer.tlType) {
     case TLValue::InputPeerEmpty:
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << peer.id;
         return 0;
     case TLValue::InputPeerSelf:
         // Makes sense?
         break;
     case TLValue::InputPeerContact:
     case TLValue::InputPeerForeign:
-        actionIndex = TypingStatus::indexForUser(m_localMessageActions, peer.userId);
+        actionIndex = TypingStatus::indexForUser(m_localMessageActions, inputPeer.userId);
         break;
     case TLValue::InputPeerChat:
-        actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, peer.chatId);
+        actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, inputPeer.chatId);
         break;
     default:
         // Invalid InputPeer type
@@ -745,10 +745,10 @@ quint64 CTelegramDispatcher::sendMessage(const QString &identifier, const QStrin
         m_localMessageActions.remove(actionIndex);
     }
 
-    return activeConnection()->sendMessage(peer, message);
+    return activeConnection()->sendMessage(inputPeer, message);
 }
 
-quint64 CTelegramDispatcher::forwardMessage(const QString &identifier, quint32 messageId)
+quint64 CTelegramDispatcher::forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId)
 {
     if (!activeConnection()) {
         return 0;
@@ -757,18 +757,18 @@ quint64 CTelegramDispatcher::forwardMessage(const QString &identifier, quint32 m
     quint64 randomId;
     Utils::randomBytes(&randomId);
 
-    return activeConnection()->messagesForwardMessage(identifierToInputPeer(identifier), messageId, randomId);
+    return activeConnection()->messagesForwardMessage(publicPeerToInputPeer(peer), messageId, randomId);
 }
 
-quint64 CTelegramDispatcher::sendMedia(const QString &identifier, const TelegramNamespace::MessageMediaInfo &info)
+quint64 CTelegramDispatcher::sendMedia(const TelegramNamespace::Peer &peer, const TelegramNamespace::MessageMediaInfo &info)
 {
     if (!activeConnection()) {
         return 0;
     }
-    const TLInputPeer peer = identifierToInputPeer(identifier);
+    const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
 
-    if (peer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
+    if (inputPeer.tlType == TLValue::InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << peer.id;
         return 0;
     }
 
@@ -817,7 +817,7 @@ quint64 CTelegramDispatcher::sendMedia(const QString &identifier, const Telegram
         break;
     }
 
-    return activeConnection()->sendMedia(peer, inputMedia);
+    return activeConnection()->sendMedia(inputPeer, inputMedia);
 }
 
 bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const
@@ -871,29 +871,29 @@ bool CTelegramDispatcher::addChatUser(quint32 publicChatId, const QString &conta
     return true;
 }
 
-void CTelegramDispatcher::setTyping(const QString &identifier, TelegramNamespace::MessageAction publicAction)
+void CTelegramDispatcher::setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction publicAction)
 {
     if (!activeConnection()) {
         return;
     }
 
-    TLInputPeer peer = identifierToInputPeer(identifier);
+    TLInputPeer inputPeer = publicPeerToInputPeer(peer);
 
     int actionIndex = -1;
 
-    switch (peer.tlType) {
+    switch (inputPeer.tlType) {
     case TLValue::InputPeerEmpty:
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << maskPhoneNumber(identifier);
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << peer.id;
         return;
     case TLValue::InputPeerSelf:
         // Makes no sense
         return;
     case TLValue::InputPeerContact:
     case TLValue::InputPeerForeign:
-        actionIndex = TypingStatus::indexForUser(m_localMessageActions, peer.userId);
+        actionIndex = TypingStatus::indexForUser(m_localMessageActions, inputPeer.userId);
         break;
     case TLValue::InputPeerChat:
-        actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, peer.chatId);
+        actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, inputPeer.chatId);
         break;
     default:
         // Invalid InputPeer type
@@ -913,7 +913,7 @@ void CTelegramDispatcher::setTyping(const QString &identifier, TelegramNamespace
     TLSendMessageAction action;
     action.tlType = tlAction;
 
-    activeConnection()->messagesSetTyping(peer, action);
+    activeConnection()->messagesSetTyping(inputPeer, action);
 
     if (publicAction == TelegramNamespace::MessageActionNone) {
         m_localMessageActions.remove(actionIndex);
@@ -923,10 +923,10 @@ void CTelegramDispatcher::setTyping(const QString &identifier, TelegramNamespace
         } else {
             TypingStatus status;
             status.action = publicAction;
-            if (peer.tlType == TLValue::InputPeerChat) {
-                status.chatId = peer.chatId;
+            if (inputPeer.tlType == TLValue::InputPeerChat) {
+                status.chatId = inputPeer.chatId;
             } else {
-                status.userId = peer.userId;
+                status.userId = inputPeer.userId;
             }
             status.typingTime = s_localTypingDuration;
 
@@ -937,15 +937,15 @@ void CTelegramDispatcher::setTyping(const QString &identifier, TelegramNamespace
     }
 }
 
-void CTelegramDispatcher::setMessageRead(const QString &identifier, quint32 messageId)
+void CTelegramDispatcher::setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId)
 {
     if (!activeConnection()) {
         return;
     }
-    const TLInputPeer peer = identifierToInputPeer(identifier);
+    const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
 
-    if (peer.tlType != TLValue::InputPeerEmpty) {
-        activeConnection()->messagesReadHistory(peer, messageId, /* offset */ 0);
+    if (inputPeer.tlType != TLValue::InputPeerEmpty) {
+        activeConnection()->messagesReadHistory(inputPeer, messageId, /* offset */ 0);
     }
 }
 
@@ -971,28 +971,6 @@ void CTelegramDispatcher::setUserName(const QString &newUserName)
         return;
     }
     activeConnection()->accountUpdateUsername(newUserName);
-}
-
-TelegramNamespace::ContactStatus CTelegramDispatcher::contactStatus(const QString &phone) const
-{
-    const TLUser *user = identifierToUser(phone);
-
-    if (user) {
-        return getApiContactStatus(user->status.tlType);
-    }
-
-    return TelegramNamespace::ContactStatusUnknown;
-}
-
-quint32 CTelegramDispatcher::contactLastOnline(const QString &contact) const
-{
-    const TLUser *user = identifierToUser(contact);
-
-    if (user) {
-        return getApiContactLastOnline(user->status);
-    }
-
-    return TelegramNamespace::ContactLastOnlineUnknown;
 }
 
 QString CTelegramDispatcher::contactAvatarToken(const QString &contact) const
@@ -1516,7 +1494,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         TLUser *user = m_users.value(update.userId);
         if (user) {
             user->status = update.status;
-            emit contactStatusChanged(userIdToIdentifier(update.userId), getApiContactStatus(user->status.tlType));
+            emit contactStatusChanged(update.userId, getApiContactStatus(user->status.tlType));
         }
         break;
     }
@@ -1528,7 +1506,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
                 user->firstName = update.firstName;
                 user->lastName = update.lastName;
                 user->username = update.username;
-                emit contactProfileChanged(userIdToIdentifier(user->id));
+                emit contactProfileChanged(update.userId);
             }
         }
         break;
@@ -1788,22 +1766,20 @@ TLInputPeer CTelegramDispatcher::publicChatIdToInputPeer(quint32 publicChatId) c
     return inputPeer;
 }
 
-TLInputPeer CTelegramDispatcher::identifierToInputPeer(const QString &identifier) const
+TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const
 {
     TLInputPeer inputPeer;
 
-    if (identifier.startsWith(QLatin1String("chat"))) {
-        quint32 publicChatId = identifier.section(QLatin1String("chat"), 1).toUInt();
-        return publicChatIdToInputPeer(publicChatId);
+    if (peer.type == TelegramNamespace::Peer::Chat) {
+        return publicChatIdToInputPeer(peer.id);
     }
-    quint32 userId = identifierToUserId(identifier);
 
-    if (userId == m_selfUserId) {
+    if (peer.id == m_selfUserId) {
         inputPeer.tlType = TLValue::InputPeerSelf;
         return inputPeer;
     }
 
-    const TLUser *user = m_users.value(userId);
+    const TLUser *user = m_users.value(peer.id);
 
     if (user) {
         if (user->tlType == TLValue::UserContact) {
@@ -1821,13 +1797,9 @@ TLInputPeer CTelegramDispatcher::identifierToInputPeer(const QString &identifier
             qDebug() << Q_FUNC_INFO << "Unknown user type: " << user->tlType.toString();
         }
     } else {
-        if (userId) {
-            // Guess contact
-            inputPeer.tlType = TLValue::InputPeerContact;
-            inputPeer.userId = userId;
-        } else {
-            qDebug() << Q_FUNC_INFO << "Unknown user: " << maskPhoneNumber(identifier);
-        }
+        // Guess contact
+        inputPeer.tlType = TLValue::InputPeerContact;
+        inputPeer.userId = peer.id;
     }
 
     return inputPeer;

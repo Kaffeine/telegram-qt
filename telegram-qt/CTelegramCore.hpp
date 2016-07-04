@@ -48,10 +48,7 @@ public:
     Q_INVOKABLE quint32 selfId() const;
     Q_INVOKABLE QVector<quint32> contactList() const;
     Q_INVOKABLE QVector<quint32> chatList() const;
-    Q_INVOKABLE TelegramNamespace::ContactStatus contactStatus(const QString &contact) const;
 
-    // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
-    Q_INVOKABLE quint32 contactLastOnline(const QString &contact) const;
     Q_INVOKABLE QString contactAvatarToken(const QString &contact) const;
     Q_INVOKABLE QString chatTitle(quint32 chatId) const;
     Q_INVOKABLE static quint32 identifierToChatId(const QString &identifier);
@@ -92,18 +89,18 @@ public Q_SLOTS:
     void requestContactAvatar(const QString &contact);
     void requestMessageMediaData(quint32 messageId);
 
-    bool requestHistory(const QString &identifier, int offset, int limit);
+    bool requestHistory(const TelegramNamespace::Peer &peer, int offset, int limit);
 
     // Does not work yet
 //    quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
 //    quint32 uploadFile(QIODevice *source, const QString &fileName);
 
-    quint64 sendMessage(const QString &identifier, const QString &message); // Message id is a random number
-    quint64 sendMedia(const QString &identifier, const TelegramNamespace::MessageMediaInfo &messageInfo);
-    quint64 forwardMessage(const QString &identifier, quint32 messageId);
+    quint64 sendMessage(const TelegramNamespace::Peer &peer, const QString &message); // Message id is a random number
+    quint64 sendMedia(const TelegramNamespace::Peer &peer, const TelegramNamespace::MessageMediaInfo &messageInfo);
+    quint64 forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId);
     /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
-    void setTyping(const QString &contact, TelegramNamespace::MessageAction action);
-    void setMessageRead(const QString &contact, quint32 messageId);
+    void setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction action);
+    void setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId);
 
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
@@ -128,7 +125,7 @@ Q_SIGNALS:
     void loggedOut(bool result);
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void contactListChanged();
-    void contactProfileChanged(const QString &contact); // First and/or last name was changed
+    void contactProfileChanged(quint32 userId); // First, last or user name was changed
     void phoneStatusReceived(const QString &phone, bool registered);
 
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
@@ -137,7 +134,7 @@ Q_SIGNALS:
 
     void messageReceived(const TelegramNamespace::Message &message);
 
-    void contactStatusChanged(const QString &contact, TelegramNamespace::ContactStatus status);
+    void contactStatusChanged(quint32 userId, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
     void contactChatTypingStatusChanged(quint32 chatId, const QString &contact, TelegramNamespace::MessageAction action);
 
@@ -178,17 +175,17 @@ inline void CTelegramCore::deleteContact(const QString &phoneNumber)
 
 inline quint64 CTelegramCore::sendChatMessage(quint32 chatId, const QString &message)
 {
-    return sendMessage(QString(QLatin1String("chat%1")).arg(chatId), message);
+    return sendMessage(TelegramNamespace::Peer(chatId, TelegramNamespace::Peer::Chat), message);
 }
 
 inline void CTelegramCore::setChatTyping(quint32 chatId, TelegramNamespace::MessageAction action)
 {
-    setTyping(QString(QLatin1String("chat%1")).arg(chatId), action);
+    setTyping(TelegramNamespace::Peer(chatId, TelegramNamespace::Peer::Chat), action);
 }
 
 inline void CTelegramCore::setChatMessageRead(const quint32 &chatId, quint32 messageId)
 {
-    setMessageRead(QString(QLatin1String("chat%1")).arg(chatId), messageId);
+    setMessageRead(TelegramNamespace::Peer(chatId, TelegramNamespace::Peer::Chat), messageId);
 }
 
 #endif // CTELECORE_HPP

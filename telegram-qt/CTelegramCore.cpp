@@ -41,8 +41,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_dispatcher, SIGNAL(contactListChanged()),
             SIGNAL(contactListChanged()));
-    connect(m_dispatcher, SIGNAL(contactProfileChanged(QString)),
-            SIGNAL(contactProfileChanged(QString)));
+    connect(m_dispatcher, SIGNAL(contactProfileChanged(quint32)),
+            SIGNAL(contactProfileChanged(quint32)));
     connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
             SIGNAL(avatarReceived(QString,QByteArray,QString,QString)));
     connect(m_dispatcher, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
@@ -51,8 +51,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(messageReceived(TelegramNamespace::Message)),
             SIGNAL(messageReceived(TelegramNamespace::Message)));
 
-    connect(m_dispatcher, SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)),
-            SIGNAL(contactStatusChanged(QString,TelegramNamespace::ContactStatus)));
+    connect(m_dispatcher, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
+            SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)));
     connect(m_dispatcher, SIGNAL(contactTypingStatusChanged(QString,TelegramNamespace::MessageAction)),
             SIGNAL(contactTypingStatusChanged(QString,TelegramNamespace::MessageAction)));
     connect(m_dispatcher, SIGNAL(contactChatTypingStatusChanged(quint32,QString,TelegramNamespace::MessageAction)),
@@ -178,9 +178,14 @@ void CTelegramCore::requestMessageMediaData(quint32 messageId)
     m_dispatcher->requestMessageMediaData(messageId);
 }
 
-bool CTelegramCore::requestHistory(const QString &identifier, int offset, int limit)
+bool CTelegramCore::requestHistory(const TelegramNamespace::Peer &peer, int offset, int limit)
 {
-    return m_dispatcher->requestHistory(identifier, offset, limit);
+    return m_dispatcher->requestHistory(peer, offset, limit);
+}
+
+quint64 CTelegramCore::sendMessage(const TelegramNamespace::Peer &peer, const QString &message)
+{
+    return m_dispatcher->sendMessage(peer, message);
 }
 
 //quint32 CTelegramCore::uploadFile(const QByteArray &fileContent, const QString &fileName)
@@ -198,17 +203,27 @@ QVector<quint32> CTelegramCore::contactList() const
     return m_dispatcher->contactIdList();
 }
 
-QList<quint32> CTelegramCore::chatList() const
+QVector<quint32> CTelegramCore::chatList() const
 {
-    return m_dispatcher->publicChatIdList().toList();
+    return m_dispatcher->publicChatIdList();
 }
 
-TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &contact) const
+QString CTelegramCore::contactAvatarToken(const QString &phone) const
 {
-    return m_dispatcher->contactStatus(contact);
+    return m_dispatcher->contactAvatarToken(phone);
 }
 
-/*! \fn quint32 CTelegramCore::contactLastOnline(const QString &contact) const
+QString CTelegramCore::chatTitle(quint32 chatId) const
+{
+    return m_dispatcher->chatTitle(chatId);
+}
+
+qint32 CTelegramCore::localTypingRecommendedRepeatInterval()
+{
+    return CTelegramDispatcher::localTypingRecommendedRepeatInterval();
+}
+
+/*! \fn quint32 TelegramNamespace::UserInfo::lastOnline() const
   Return seconds since epoch for last online time.
 
   If user is online, this method return time when online expires,
@@ -228,25 +243,6 @@ TelegramNamespace::ContactStatus CTelegramCore::contactStatus(const QString &con
       qDebug() << "Seconds since epoch";
   }
 */
-quint32 CTelegramCore::contactLastOnline(const QString &contact) const
-{
-    return m_dispatcher->contactLastOnline(contact);
-}
-
-QString CTelegramCore::contactAvatarToken(const QString &phone) const
-{
-    return m_dispatcher->contactAvatarToken(phone);
-}
-
-QString CTelegramCore::chatTitle(quint32 chatId) const
-{
-    return m_dispatcher->chatTitle(chatId);
-}
-
-qint32 CTelegramCore::localTypingRecommendedRepeatInterval()
-{
-    return CTelegramDispatcher::localTypingRecommendedRepeatInterval();
-}
 
 bool CTelegramCore::getUserInfo(TelegramNamespace::UserInfo *info, quint32 userId) const
 {
@@ -303,29 +299,24 @@ quint32 CTelegramCore::selfId() const
     return m_dispatcher->selfId();
 }
 
-quint64 CTelegramCore::sendMessage(const QString &identifier, const QString &message)
+quint64 CTelegramCore::forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId)
 {
-    return m_dispatcher->sendMessage(identifier, message);
+    return m_dispatcher->forwardMessage(peer, messageId);
 }
 
-quint64 CTelegramCore::forwardMessage(const QString &identifier, quint32 messageId)
+quint64 CTelegramCore::sendMedia(const TelegramNamespace::Peer &peer, const TelegramNamespace::MessageMediaInfo &messageInfo)
 {
-    return m_dispatcher->forwardMessage(identifier, messageId);
+    return m_dispatcher->sendMedia(peer, messageInfo);
 }
 
-quint64 CTelegramCore::sendMedia(const QString &identifier, const TelegramNamespace::MessageMediaInfo &messageInfo)
+void CTelegramCore::setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction action)
 {
-    return m_dispatcher->sendMedia(identifier, messageInfo);
+    m_dispatcher->setTyping(peer, action);
 }
 
-void CTelegramCore::setTyping(const QString &contact, TelegramNamespace::MessageAction action)
+void CTelegramCore::setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId)
 {
-    m_dispatcher->setTyping(contact, action);
-}
-
-void CTelegramCore::setMessageRead(const QString &contact, quint32 messageId)
-{
-    m_dispatcher->setMessageRead(contact, messageId);
+    m_dispatcher->setMessageRead(peer, messageId);
 }
 
 void CTelegramCore::setOnlineStatus(bool onlineStatus)

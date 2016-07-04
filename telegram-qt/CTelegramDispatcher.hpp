@@ -163,17 +163,17 @@ public:
     bool requestMessageMediaData(quint32 messageId);
     bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
 
-    bool requestHistory(const QString &identifier, quint32 offset, quint32 limit);
+    bool requestHistory(const TelegramNamespace::Peer &peer, quint32 offset, quint32 limit);
 
     quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
     quint32 uploadFile(QIODevice *source, const QString &fileName);
 
-    quint64 sendMessage(const QString &identifier, const QString &message);
-    quint64 sendMedia(const QString &identifier, const TelegramNamespace::MessageMediaInfo &messageInfo);
-    quint64 forwardMessage(const QString &identifier, quint32 messageId);
+    quint64 sendMessage(const TelegramNamespace::Peer &peer, const QString &message);
+    quint64 sendMedia(const TelegramNamespace::Peer &peer, const TelegramNamespace::MessageMediaInfo &messageInfo);
+    quint64 forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId);
 
-    void setTyping(const QString &identifier, TelegramNamespace::MessageAction publicAction);
-    void setMessageRead(const QString &identifier, quint32 messageId);
+    void setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction publicAction);
+    void setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId);
 
     quint32 createChat(const QStringList &phones, const QString chatName);
     bool addChatUser(quint32 publicChatId, const QString &contact, quint32 forwardMessages);
@@ -182,8 +182,6 @@ public:
     void checkUserName(const QString &userName);
     void setUserName(const QString &newUserName);
 
-    TelegramNamespace::ContactStatus contactStatus(const QString &phone) const;
-    quint32 contactLastOnline(const QString &contact) const;
     QString contactAvatarToken(const QString &contact) const;
 
     QString chatTitle(quint32 publicChatId) const;
@@ -203,7 +201,7 @@ signals:
     void uploadingStatusUpdated(quint32 requestId, quint32 offset, quint32 size);
 
     void contactListChanged();
-    void contactProfileChanged(const QString &contact);
+    void contactProfileChanged(quint32 userId);
     void phoneStatusReceived(const QString &phone, bool registered);
 
     void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
@@ -211,7 +209,7 @@ signals:
 
     void messageReceived(const TelegramNamespace::Message &message);
 
-    void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
+    void contactStatusChanged(quint32 userId, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
     void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, TelegramNamespace::MessageAction action);
 
@@ -276,7 +274,7 @@ protected:
 
     quint32 publicChatIdToChatId(quint32 publicChatId) const;
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
-    TLInputPeer identifierToInputPeer(const QString &identifier) const;
+    TLInputPeer publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const;
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
     TLInputUser userIdToInputUser(quint32 id) const;
     QString userIdToIdentifier(const quint32 id) const;
