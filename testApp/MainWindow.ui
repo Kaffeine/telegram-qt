@@ -325,7 +325,17 @@
         </attribute>
         <layout class="QGridLayout" name="gridLayout_9">
          <item row="0" column="0">
-          <widget class="QTableView" name="contactListTable"/>
+          <widget class="QSplitter" name="contactsSplitter">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <widget class="QTableView" name="contactListTable"/>
+           <widget class="QTableView" name="contactSearchResult">
+            <property name="contextMenuPolicy">
+             <enum>Qt::CustomContextMenu</enum>
+            </property>
+           </widget>
+          </widget>
          </item>
          <item row="1" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -338,6 +348,13 @@
            </item>
            <item>
             <widget class="QLineEdit" name="currentContact"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="findContact">
+             <property name="text">
+              <string>Find contact</string>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QPushButton" name="addContact">
