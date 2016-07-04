@@ -169,11 +169,6 @@ public:
 
         }
 
-#ifndef TELEGRAMQT_NO_DEPRECATED
-        QString peer;
-        QString contact;
-        QString fwdContact;
-#endif
         quint32 userId; // Actual telegram user id
         quint32 chatId; // Public (not protocol) chat id
         quint32 forwardContactId;

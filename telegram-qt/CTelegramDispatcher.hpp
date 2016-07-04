@@ -216,13 +216,6 @@ signals:
 
     void messageReceived(const TelegramNamespace::Message &message);
 
-#ifndef TELEGRAMQT_NO_DEPRECATED
-    void authorizationErrorReceived();
-    void phoneStatusReceived(const QString &phone, bool registered, bool invited);
-    void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
-    void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
-#endif
-
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
     void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, TelegramNamespace::MessageAction action);
@@ -239,10 +232,6 @@ protected slots:
     void whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
     void whenPackageRedirected(const QByteArray &data, quint32 dc);
     void whenWantedActiveDcChanged(quint32 dc);
-
-#ifndef TELEGRAMQT_NO_DEPRECATED
-    void whenPhoneStatusReceived(const QString &phone, bool registered);
-#endif
 
     void whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
     void whenFileDataUploaded(quint32 requestId);

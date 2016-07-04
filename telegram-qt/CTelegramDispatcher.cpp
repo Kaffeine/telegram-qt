@@ -1748,9 +1748,6 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 
     TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message.flags);
     if (messageFlags & TelegramNamespace::MessageFlagForwarded) {
-#ifndef TELEGRAMQT_NO_DEPRECATED
-        apiMessage.fwdContact = userIdToIdentifier(message.fwdFromId);
-#endif
         apiMessage.forwardContactId = message.fromId;
         apiMessage.fwdTimestamp = message.fwdDate;
     }
@@ -1764,16 +1761,6 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
         apiMessage.userId = message.fromId;
     }
 
-#ifndef TELEGRAMQT_NO_DEPRECATED
-    if ((message.toId.tlType == TLValue::PeerChat) || (messageFlags & TelegramNamespace::MessageFlagOut)) {
-        apiMessage.peer = peerToIdentifier(message.toId);
-    } else {
-        apiMessage.peer = userIdToIdentifier(message.fromId);
-    }
-
-    apiMessage.contact = userIdToIdentifier(message.fromId);
-#endif
-
     apiMessage.type = messageType;
     apiMessage.text = message.message;
     apiMessage.id = message.id;
@@ -1781,16 +1768,6 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
     apiMessage.flags = messageFlags;
 
     emit messageReceived(apiMessage);
-
-#ifndef TELEGRAMQT_NO_DEPRECATED
-    if (message.toId.tlType == TLValue::PeerUser) {
-        emit messageReceived(userIdToIdentifier(apiMessage.userId),
-                             apiMessage.text, apiMessage.type, apiMessage.id, apiMessage.flags, apiMessage.timestamp);
-    } else {
-        emit chatMessageReceived(telegramChatIdToPublicId(message.toId.chatId), userIdToIdentifier(message.fromId),
-                                 apiMessage.text, apiMessage.type, apiMessage.id, apiMessage.flags, apiMessage.timestamp);
-    }
-#endif
 }
 
 void CTelegramDispatcher::updateChat(const TLChat &newChat)
@@ -2213,13 +2190,6 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
     }
 }
 
-#ifndef TELEGRAMQT_NO_DEPRECATED
-void CTelegramDispatcher::whenPhoneStatusReceived(const QString &phone, bool registered)
-{
-    emit phoneStatusReceived(phone, registered, false);
-}
-#endif
-
 void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset)
 {
     if (!m_requestedFileDescriptors.contains(requestId)) {
@@ -2607,11 +2577,6 @@ CTelegramConnection *CTelegramDispatcher::createConnection()
     connect(connection, SIGNAL(wantedActiveDcChanged(quint32)), SLOT(whenWantedActiveDcChanged(quint32)));
 
     connect(connection, SIGNAL(phoneStatusReceived(QString,bool)), SIGNAL(phoneStatusReceived(QString,bool)));
-
-#ifndef TELEGRAMQT_NO_DEPRECATED
-    connect(connection, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)), SIGNAL(authorizationErrorReceived()));
-    connect(connection, SIGNAL(phoneStatusReceived(QString,bool)), SLOT(whenPhoneStatusReceived(QString,bool)));
-#endif
 
     connect(connection, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(connection,

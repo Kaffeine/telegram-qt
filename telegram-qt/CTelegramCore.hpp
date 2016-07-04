@@ -125,14 +125,6 @@ public Q_SLOTS:
     void setChatTyping(quint32 chatId, TelegramNamespace::MessageAction action);
     void setChatMessageRead(const quint32 &chatId, quint32 messageId);
 
-#ifndef TELEGRAMQT_NO_DEPRECATED
-    quint64 resendMedia(const QString &identifier, quint32 messageId);
-    void setMessageReceivingFilterFlags(TelegramNamespace::MessageFlags flags);
-    bool initConnection(const QString &address, quint32 port);
-    void setTyping(const QString &contact, bool typing);
-    void setChatTyping(quint32 chatId, bool typing);
-#endif
-
 Q_SIGNALS:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);
 
@@ -148,14 +140,6 @@ Q_SIGNALS:
                                   const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 
     void messageReceived(const TelegramNamespace::Message &message);
-
-#ifndef TELEGRAMQT_NO_DEPRECATED
-    void authorizationErrorReceived();
-    void phoneStatusReceived(const QString &phone, bool registered, bool invited);
-    void messageReceived(const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
-    void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
-    void contactTypingStatusChanged(const QString &contact, bool typingStatus);
-#endif
 
     void contactStatusChanged(const QString &contact, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
@@ -210,34 +194,5 @@ inline void CTelegramCore::setChatMessageRead(const quint32 &chatId, quint32 mes
 {
     setMessageRead(QString(QLatin1String("chat%1")).arg(chatId), messageId);
 }
-
-#ifndef TELEGRAMQT_NO_DEPRECATED
-inline quint64 CTelegramCore::resendMedia(const QString &identifier, quint32 messageId)
-{
-    TelegramNamespace::MessageMediaInfo info;
-    if (getMessageMediaInfo(&info, messageId)) {
-        return sendMedia(identifier, info);
-    } else {
-        return 0;
-    }
-}
-
-inline void CTelegramCore::setMessageReceivingFilterFlags(TelegramNamespace::MessageFlags flags)
-{
-    setMessageReceivingFilter(flags);
-}
-inline bool CTelegramCore::initConnection(const QString &address, quint32 port)
-{
-    return initConnection(QVector<TelegramNamespace::DcOption>() << TelegramNamespace::DcOption(address, port));
-}
-inline void CTelegramCore::setTyping(const QString &contact, bool typing)
-{
-    return setTyping(contact, typing ? TelegramNamespace::MessageActionTyping : TelegramNamespace::MessageActionNone);
-}
-inline void CTelegramCore::setChatTyping(quint32 chatId, bool typing)
-{
-    return setTyping(QString(QLatin1String("chat%1")).arg(chatId), typing ? TelegramNamespace::MessageActionTyping : TelegramNamespace::MessageActionNone);
-}
-#endif // TELEGRAMQT_NO_DEPRECATED
 
 #endif // CTELECORE_HPP
