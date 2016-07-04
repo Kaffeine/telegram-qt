@@ -291,6 +291,7 @@ protected:
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer identifierToInputPeer(const QString &identifier) const;
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
+    TLInputUser userIdToInputUser(quint32 id) const;
     QString userIdToIdentifier(const quint32 id) const;
     QString chatIdToIdentifier(const quint32 id) const;
     QString peerToIdentifier(const TLPeer &peer) const;

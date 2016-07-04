@@ -1884,14 +1884,19 @@ TLInputPeer CTelegramDispatcher::identifierToInputPeer(const QString &identifier
 
 TLInputUser CTelegramDispatcher::phoneNumberToInputUser(const QString &phoneNumber) const
 {
+    return userIdToInputUser(identifierToUserId(phoneNumber));
+}
+
+TLInputUser CTelegramDispatcher::userIdToInputUser(quint32 id) const
+{
     TLInputUser inputUser;
 
-    if (phoneNumber == selfPhone()) {
+    if (id == selfId()) {
         inputUser.tlType = TLValue::InputUserSelf;
         return inputUser;
     }
 
-    const TLUser *user = identifierToUser(phoneNumber);
+    const TLUser *user = m_users.value(id);
 
     if (user) {
         if (user->tlType == TLValue::UserContact) {
