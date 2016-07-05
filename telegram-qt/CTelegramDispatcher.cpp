@@ -1147,11 +1147,11 @@ void CTelegramDispatcher::messageActionTimerTimeout()
         int remainingTime = m_contactsMessageActions.at(i).typingTime - m_typingUpdateTimer->interval();
         if (remainingTime < 15) { // Let 15 ms be allowed correction
             if (m_contactsMessageActions.at(i).chatId) {
-                emit contactChatTypingStatusChanged(telegramChatIdToPublicId(m_contactsMessageActions.at(i).chatId),
+                emit contactChatMessageActionChanged(telegramChatIdToPublicId(m_contactsMessageActions.at(i).chatId),
                                                     m_contactsMessageActions.at(i).userId,
                                                     TelegramNamespace::MessageActionNone);
             } else {
-                emit contactTypingStatusChanged(m_contactsMessageActions.at(i).userId,
+                emit contactMessageActionChanged(m_contactsMessageActions.at(i).userId,
                                                 TelegramNamespace::MessageActionNone);
             }
             m_contactsMessageActions.remove(i);
@@ -1454,10 +1454,10 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             int index = -1;
             if (update.tlType == TLValue::UpdateUserTyping) {
                 index = TypingStatus::indexForUser(m_contactsMessageActions, update.userId);
-                emit contactTypingStatusChanged(update.userId, action);
+                emit contactMessageActionChanged(update.userId, action);
             } else {
                 index = TypingStatus::indexForChatAndUser(m_contactsMessageActions, update.chatId, update.userId);
-                emit contactChatTypingStatusChanged(telegramChatIdToPublicId(update.chatId),
+                emit contactChatMessageActionChanged(telegramChatIdToPublicId(update.chatId),
                                                     update.userId, action);
             }
 
@@ -2247,7 +2247,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
 
             messageActionIndex = TypingStatus::indexForUser(m_contactsMessageActions, updates.fromId);
             if (messageActionIndex >= 0) {
-                emit contactTypingStatusChanged(updates.fromId, TelegramNamespace::MessageActionNone);
+                emit contactMessageActionChanged(updates.fromId, TelegramNamespace::MessageActionNone);
             }
 
         } else {
@@ -2258,7 +2258,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
 
             messageActionIndex = TypingStatus::indexForUser(m_contactsMessageActions, updates.fromId);
             if (messageActionIndex >= 0) {
-                emit contactChatTypingStatusChanged(telegramChatIdToPublicId(updates.chatId),
+                emit contactChatMessageActionChanged(telegramChatIdToPublicId(updates.chatId),
                                                     updates.fromId,
                                                     TelegramNamespace::MessageActionNone);
             }

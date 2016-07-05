@@ -135,8 +135,8 @@ Q_SIGNALS:
     void messageReceived(const TelegramNamespace::Message &message);
 
     void contactStatusChanged(quint32 userId, TelegramNamespace::ContactStatus status);
-    void contactTypingStatusChanged(quint32 userId, TelegramNamespace::MessageAction action);
-    void contactChatTypingStatusChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
+    void contactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
+    void contactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
 
     void sentMessageStatusChanged(const QString &contact, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status); // Message id is random number
 
