@@ -990,7 +990,7 @@ void MainWindow::updateMessagingContactStatus()
     m_core->getUserInfo(&userInfo, m_activeContactId);
 
     QString status;
-    switch (userInfo.status) {
+    switch (userInfo.status()) {
     default:
     case TelegramNamespace::ContactStatusUnknown:
         status = tr("(unknown status)");

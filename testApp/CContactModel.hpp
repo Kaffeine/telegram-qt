@@ -29,14 +29,10 @@ class CTelegramCore;
 
 struct SContact : TelegramNamespace::UserInfo {
     SContact() :
-        status(TelegramNamespace::ContactStatusUnknown),
-        wasOnline(0),
         typing(TelegramNamespace::MessageActionNone),
         blocked(false)
     { }
 
-    TelegramNamespace::ContactStatus status;
-    quint32 wasOnline;
     TelegramNamespace::MessageAction typing;
     bool blocked;
     QPixmap avatar;
