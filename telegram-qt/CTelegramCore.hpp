@@ -49,7 +49,7 @@ public:
     Q_INVOKABLE QVector<quint32> contactList() const;
     Q_INVOKABLE QVector<quint32> chatList() const;
 
-    Q_INVOKABLE QString contactAvatarToken(const QString &contact) const;
+    Q_INVOKABLE QString contactAvatarToken(quint32 userId) const;
     Q_INVOKABLE QString chatTitle(quint32 chatId) const;
     Q_INVOKABLE static quint32 identifierToChatId(const QString &identifier);
 
@@ -86,7 +86,7 @@ public Q_SLOTS:
     void deleteContact(const QString &phoneNumber);
     void deleteContacts(const QStringList &phoneNumbers);
 
-    void requestContactAvatar(const QString &contact);
+    void requestContactAvatar(quint32 userId);
     void requestMessageMediaData(quint32 messageId);
 
     bool requestHistory(const TelegramNamespace::Peer &peer, int offset, int limit);
@@ -130,7 +130,7 @@ Q_SIGNALS:
     void contactProfileChanged(quint32 userId); // First, last or user name was changed
     void phoneStatusReceived(const QString &phone, bool registered);
 
-    void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
+    void avatarReceived(quint32 userId, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
     void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data,
                                   const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 

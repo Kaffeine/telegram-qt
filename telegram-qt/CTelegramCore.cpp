@@ -43,8 +43,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(contactListChanged()));
     connect(m_dispatcher, SIGNAL(contactProfileChanged(quint32)),
             SIGNAL(contactProfileChanged(quint32)));
-    connect(m_dispatcher, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
-            SIGNAL(avatarReceived(QString,QByteArray,QString,QString)));
+    connect(m_dispatcher, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
+            SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)));
     connect(m_dispatcher, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
             SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
 
@@ -168,9 +168,9 @@ void CTelegramCore::deleteContacts(const QStringList &phoneNumbers)
     m_dispatcher->deleteContacts(phoneNumbers);
 }
 
-void CTelegramCore::requestContactAvatar(const QString &contact)
+void CTelegramCore::requestContactAvatar(quint32 userId)
 {
-    m_dispatcher->requestContactAvatar(contact);
+    m_dispatcher->requestContactAvatar(userId);
 }
 
 void CTelegramCore::requestMessageMediaData(quint32 messageId)
@@ -213,9 +213,9 @@ QVector<quint32> CTelegramCore::chatList() const
     return m_dispatcher->publicChatIdList();
 }
 
-QString CTelegramCore::contactAvatarToken(const QString &phone) const
+QString CTelegramCore::contactAvatarToken(quint32 userId) const
 {
-    return m_dispatcher->contactAvatarToken(phone);
+    return m_dispatcher->contactAvatarToken(userId);
 }
 
 QString CTelegramCore::chatTitle(quint32 chatId) const

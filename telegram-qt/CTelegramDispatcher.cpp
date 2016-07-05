@@ -634,25 +634,25 @@ void CTelegramDispatcher::requestPhoneCode(const QString &phoneNumber)
     activeConnection()->requestPhoneCode(phoneNumber);
 }
 
-void CTelegramDispatcher::requestContactAvatar(const QString &phoneNumber)
+void CTelegramDispatcher::requestContactAvatar(quint32 userId)
 {
-    qDebug() << Q_FUNC_INFO << maskPhoneNumber(phoneNumber);
+    qDebug() << Q_FUNC_INFO << userId;
 
-    const TLUser *user = identifierToUser(phoneNumber);
+    const TLUser *user = m_users.value(userId);
     if (!user) {
-        qDebug() << Q_FUNC_INFO << "Unknown user" << maskPhoneNumber(phoneNumber);
+        qDebug() << Q_FUNC_INFO << "Unknown user" << userId;
         return;
     }
 
     if (user->photo.tlType == TLValue::UserProfilePhotoEmpty) {
-        qDebug() << Q_FUNC_INFO << "User" << maskPhoneNumber(phoneNumber) << "have no avatar";
+        qDebug() << Q_FUNC_INFO << "User" << userId << "have no avatar";
         return;
     }
 
     if (requestFile(FileRequestDescriptor::avatarRequest(user))) {
-        qDebug() << Q_FUNC_INFO << "Requested avatar for user " << maskPhoneNumber(phoneNumber);
+        qDebug() << Q_FUNC_INFO << "Requested avatar for user " << userId;
     } else {
-        qDebug() << Q_FUNC_INFO << "Contact" << maskPhoneNumber(phoneNumber) << "avatar is not available";
+        qDebug() << Q_FUNC_INFO << "Contact" << userId << "avatar is not available";
     }
 }
 
@@ -990,12 +990,12 @@ void CTelegramDispatcher::setUserName(const QString &newUserName)
     activeConnection()->accountUpdateUsername(newUserName);
 }
 
-QString CTelegramDispatcher::contactAvatarToken(const QString &contact) const
+QString CTelegramDispatcher::contactAvatarToken(quint32 userId) const
 {
-    const TLUser *user = identifierToUser(contact);
+    const TLUser *user = m_users.value(userId);
 
     if (!user) {
-        qDebug() << Q_FUNC_INFO << "Unknown identifier" << maskPhoneNumber(contact);
+        qDebug() << Q_FUNC_INFO << "Unknown identifier" << userId;
         return QString();
     }
 
@@ -2150,7 +2150,7 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
     switch (descriptor.type()) {
     case FileRequestDescriptor::Avatar:
         if (m_users.contains(descriptor.userId())) {
-            emit avatarReceived(userIdToIdentifier(descriptor.userId()), file.bytes, mimeType, userAvatarToken(m_users.value(descriptor.userId())));
+            emit avatarReceived(descriptor.userId(), file.bytes, mimeType, userAvatarToken(m_users.value(descriptor.userId())));
         } else {
             qDebug() << Q_FUNC_INFO << "Unknown userId" << descriptor.userId();
         }

@@ -159,7 +159,7 @@ public:
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
     void requestPhoneCode(const QString &phoneNumber);
-    void requestContactAvatar(const QString &contact);
+    void requestContactAvatar(quint32 userId);
     bool requestMessageMediaData(quint32 messageId);
     bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
 
@@ -183,7 +183,7 @@ public:
     void checkUserName(const QString &userName);
     void setUserName(const QString &newUserName);
 
-    QString contactAvatarToken(const QString &contact) const;
+    QString contactAvatarToken(quint32 userId) const;
 
     QString chatTitle(quint32 publicChatId) const;
 
@@ -205,7 +205,7 @@ signals:
     void contactProfileChanged(quint32 userId);
     void phoneStatusReceived(const QString &phone, bool registered);
 
-    void avatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
+    void avatarReceived(quint32 userId, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
     void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 
     void messageReceived(const TelegramNamespace::Message &message);
