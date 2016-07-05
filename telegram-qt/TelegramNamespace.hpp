@@ -89,14 +89,14 @@ public:
         UnauthorizedSessionPasswordNeeded,
     };
 
-    enum AccountUserNameStatus {
-        AccountUserNameStatusUnknown,
-        AccountUserNameStatusIsInvalid,
-        AccountUserNameStatusIsOccupied,
-        AccountUserNameStatusIsNotModified,
-        AccountUserNameStatusCanBeUsed,
-        AccountUserNameStatusCanNotBeUsed,
-        AccountUserNameStatusAccepted
+    enum UserNameStatus {
+        UserNameStatusUnknown,
+        UserNameStatusIsInvalid,
+        UserNameStatusIsOccupied,
+        UserNameStatusIsNotModified,
+        UserNameStatusCanBeUsed,
+        UserNameStatusCanNotBeUsed,
+        UserNameStatusAccepted
     };
 
     enum ConnectionState {

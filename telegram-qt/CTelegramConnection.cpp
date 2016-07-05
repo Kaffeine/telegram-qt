@@ -2149,13 +2149,13 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
             const QString userName = userNameFromPackage(id);
 
             if (errorMessage == QLatin1String("USERNAME_INVALID")) {
-                emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusIsInvalid);
+                emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusIsInvalid);
             } else if (errorMessage == QLatin1String("USERNAME_OCCUPIED")) {
-                emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusIsOccupied);
+                emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusIsOccupied);
             } else if (errorMessage == QLatin1String("USERNAME_NOT_MODIFIED")) {
-                emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusIsNotModified);
+                emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusIsNotModified);
             } else {
-                emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusUnknown);
+                emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusUnknown);
             }
         }
             return true;
@@ -2736,10 +2736,10 @@ TLValue CTelegramConnection::processAccountCheckUsername(CTelegramStream &stream
 
     switch (result) {
     case TLValue::BoolTrue:
-        emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusCanBeUsed);
+        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusCanBeUsed);
         break;
     case TLValue::BoolFalse:
-        emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusCanNotBeUsed);
+        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusCanNotBeUsed);
         break;
     default:
         break;
@@ -2767,7 +2767,7 @@ TLValue CTelegramConnection::processAccountUpdateUsername(CTelegramStream &strea
 
     if (result.tlType == TLValue::UserSelf) {
         if (result.username == userName) {
-            emit userNameStatusUpdated(userName, TelegramNamespace::AccountUserNameStatusAccepted);
+            emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusAccepted);
         }
         emit usersReceived(QVector<TLUser>() << result);
     }

@@ -1963,8 +1963,8 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenMessagesChatsReceived(QVector<TLChat>)));
             connect(connection, SIGNAL(messagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)),
                     SLOT(whenMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
-            connect(connection, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)),
-                    SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::AccountUserNameStatus)));
+            connect(connection, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
+                    SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
             connect(connection, SIGNAL(loggedOut(bool)),
                     SIGNAL(loggedOut(bool)));
 

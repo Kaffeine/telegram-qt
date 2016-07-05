@@ -257,7 +257,7 @@ signals:
     void loggedOut(bool result);
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
-    void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
+    void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
     void usersReceived(const QVector<TLUser> &users);
     void contactListReceived(const QVector<quint32> &contactList);
     void contactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);

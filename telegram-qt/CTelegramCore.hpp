@@ -145,7 +145,7 @@ Q_SIGNALS:
 
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
 
-    void userNameStatusUpdated(const QString &userName, TelegramNamespace::AccountUserNameStatus status);
+    void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
     void uploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
 
 private:
