@@ -210,8 +210,9 @@ signals:
     void messageReceived(const TelegramNamespace::Message &message);
 
     void contactStatusChanged(quint32 userId, TelegramNamespace::ContactStatus status);
-    void contactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
-    void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, TelegramNamespace::MessageAction action);
+
+    void contactTypingStatusChanged(quint32 userId, TelegramNamespace::MessageAction action);
+    void contactChatTypingStatusChanged(quint32 publicChatId, quint32 userId, TelegramNamespace::MessageAction action);
 
     void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
 
