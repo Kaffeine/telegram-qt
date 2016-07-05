@@ -92,6 +92,7 @@ public slots:
 protected slots:
     void whenContactProfileChanged(quint32 id);
     void whenContactStatusChanged(quint32 id);
+    void whenAvatarReceived(quint32 id, const QByteArray &data, const QString &mimeType);
 
 private:
     QString contactStatusStr(const SContact &contact) const;

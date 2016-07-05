@@ -63,7 +63,6 @@ protected slots:
     void whenPhoneCodeRequested();
     void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void whenContactListChanged();
-    void whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType);
     void whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data,
                                       const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
     void whenMessageReceived(const TelegramNamespace::Message &message);
@@ -124,8 +123,6 @@ protected:
     void readAllMessages();
 
     void setContactList(CContactModel *contactsModel, const QVector<quint32> &newContactList);
-
-    void updateAvatar(quint32 contact);
 
     void setActiveContact(quint32 userId);
     void setActiveChat(quint32 chatId);

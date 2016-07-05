@@ -19,6 +19,13 @@
 #include "CTelegramCore.hpp"
 
 #include <QDateTime>
+#include <QPixmapCache>
+
+#ifdef CREATE_MEDIA_FILES
+#include <QDir>
+#endif
+
+#include <QDebug>
 
 CContactModel::CContactModel(CTelegramCore *backend, QObject *parent) :
     QAbstractTableModel(parent),
@@ -28,6 +35,8 @@ CContactModel::CContactModel(CTelegramCore *backend, QObject *parent) :
             SLOT(whenContactProfileChanged(quint32)));
     connect(m_backend, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
             SLOT(whenContactStatusChanged(quint32)));
+    connect(m_backend, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
+            SLOT(whenAvatarReceived(quint32,QByteArray,QString)));
 }
 
 QVariant CContactModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -187,8 +196,19 @@ void CContactModel::setContactList(const QVector<quint32> &newContactList)
     m_contacts.clear();
 
     for (int i = 0; i < newContactList.count(); ++i) {
+        quint32 userId = newContactList.at(i);
         m_contacts.append(SContact());
-        m_backend->getUserInfo(&m_contacts.last(), newContactList.at(i));
+        m_backend->getUserInfo(&m_contacts.last(), userId);
+
+        const QString token = m_backend->contactAvatarToken(userId);
+        QPixmap avatar;
+
+        if (QPixmapCache::find(token, &avatar)) {
+            m_contacts.last().avatar = avatar;
+        } else {
+            m_backend->requestContactAvatar(userId);
+        }
+
     }
 
     endResetModel();
@@ -253,6 +273,32 @@ void CContactModel::whenContactStatusChanged(quint32 id)
     m_backend->getUserInfo(&m_contacts[index], id);
     QModelIndex modelIndex = createIndex(index, Status);
     emit dataChanged(modelIndex, modelIndex);
+}
+
+void CContactModel::whenAvatarReceived(quint32 id, const QByteArray &data, const QString &mimeType)
+{
+    qDebug() << Q_FUNC_INFO << mimeType;
+
+#ifdef CREATE_MEDIA_FILES
+    QDir dir;
+    dir.mkdir("avatars");
+
+    QFile avatarFile(QString("avatars/%1.jpg").arg(id));
+    avatarFile.open(QIODevice::WriteOnly);
+    avatarFile.write(data);
+    avatarFile.close();
+#endif
+
+    QPixmap avatar = QPixmap::fromImage(QImage::fromData(data));
+
+    if (avatar.isNull()) {
+        return;
+    }
+
+    avatar = avatar.scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+    QPixmapCache::insert(m_backend->contactAvatarToken(id), avatar);
+    setContactAvatar(id, avatar);
 }
 
 int CContactModel::indexOfContact(quint32 id) const

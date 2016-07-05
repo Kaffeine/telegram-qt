@@ -37,8 +37,6 @@
 #include <QFile>
 #include <QFileDialog>
 
-#include <QPixmapCache>
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -90,8 +88,6 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(contactListChanged()),
             SLOT(whenContactListChanged()));
-    connect(m_core, SIGNAL(avatarReceived(QString,QByteArray,QString,QString)),
-            SLOT(whenAvatarReceived(QString,QByteArray,QString)));
     connect(m_core, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
             SLOT(whenMessageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
     connect(m_core, SIGNAL(messageReceived(TelegramNamespace::Message)),
@@ -237,34 +233,6 @@ void MainWindow::whenContactListChanged()
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
         ui->contactListTable->setRowHeight(i, 64);
     }
-}
-
-void MainWindow::whenAvatarReceived(const QString &contact, const QByteArray &data, const QString &mimeType)
-{
-    qDebug() << Q_FUNC_INFO << mimeType;
-
-#ifdef CREATE_MEDIA_FILES
-    QDir dir;
-    dir.mkdir("avatars");
-
-    QFile avatarFile(QString("avatars/%1.jpg").arg(contact));
-    avatarFile.open(QIODevice::WriteOnly);
-    avatarFile.write(data);
-    avatarFile.close();
-#endif
-
-    QPixmap avatar = QPixmap::fromImage(QImage::fromData(data));
-
-    if (avatar.isNull()) {
-        return;
-    }
-
-    avatar = avatar.scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-    QPixmapCache::insert(m_core->contactAvatarToken(contact), avatar);
-
-    quint32 id = m_contactsModel->data(m_contactsModel->indexOfContact(contact), CContactModel::Id).toUInt();
-    updateAvatar(id);
 }
 
 void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)
@@ -974,25 +942,6 @@ void MainWindow::readAllMessages()
 void MainWindow::setContactList(CContactModel *contactsModel, const QVector<quint32> &newContactList)
 {
     contactsModel->setContactList(newContactList);
-
-    foreach (quint32 contact, newContactList) {
-        updateAvatar(contact);
-    }
-}
-
-void MainWindow::updateAvatar(quint32 contact)
-{
-    const QString phoneNumber = m_contactsModel->data(contact, CContactModel::Phone).toString();
-
-    const QString token = m_core->contactAvatarToken(phoneNumber);
-    QPixmap avatar;
-
-    if (QPixmapCache::find(token, &avatar)) {
-        m_contactsModel->setContactAvatar(contact, avatar);
-        m_chatContactsModel->setContactAvatar(contact, avatar);
-    } else {
-        m_core->requestContactAvatar(phoneNumber);
-    }
 }
 
 void MainWindow::setActiveContact(quint32 userId)
