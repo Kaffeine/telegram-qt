@@ -95,10 +95,10 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenMessageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
     connect(m_core, SIGNAL(messageReceived(TelegramNamespace::Message)),
             SLOT(whenMessageReceived(TelegramNamespace::Message)));
-    connect(m_core, SIGNAL(contactChatTypingStatusChanged(quint32,QString,TelegramNamespace::MessageAction)),
-            SLOT(whenContactChatTypingStatusChanged(quint32,QString,TelegramNamespace::MessageAction)));
-    connect(m_core, SIGNAL(contactTypingStatusChanged(QString,TelegramNamespace::MessageAction)),
-            SLOT(whenContactTypingStatusChanged(QString,TelegramNamespace::MessageAction)));
+    connect(m_core, SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)),
+            SLOT(whenContactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)));
+    connect(m_core, SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)),
+            SLOT(whenContactMessageActionChanged(quint32,TelegramNamespace::MessageAction)));
     connect(m_core, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
             SLOT(whenContactStatusChanged(quint32)));
     connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
@@ -379,19 +379,17 @@ void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
     }
 }
 
-void MainWindow::whenContactChatTypingStatusChanged(quint32 chatId, const QString &phone, TelegramNamespace::MessageAction action)
+void MainWindow::whenContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action)
 {
     if (m_activeChatId != chatId) {
         return;
     }
 
-    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(phone), CContactModel::Id).toUInt();
     m_chatContactsModel->setTypingStatus(userId, action);
 }
 
-void MainWindow::whenContactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action)
+void MainWindow::whenContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action)
 {
-    quint32 userId = m_chatContactsModel->data(m_chatContactsModel->indexOfContact(contact), CContactModel::Id).toUInt();
     m_contactsModel->setTypingStatus(userId, action);
     updateMessagingContactAction();
 }
