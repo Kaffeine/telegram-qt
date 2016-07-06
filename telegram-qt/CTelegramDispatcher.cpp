@@ -736,7 +736,7 @@ quint64 CTelegramDispatcher::sendMessage(const TelegramNamespace::Peer &peer, co
     }
     const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
 
-    int actionIndex;
+    int actionIndex = -1;
 
     switch (inputPeer.tlType) {
     case TLValue::InputPeerEmpty:
