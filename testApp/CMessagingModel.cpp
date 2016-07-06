@@ -44,6 +44,13 @@ CMessagingModel::CMessagingModel(CTelegramCore *backend, QObject *parent) :
     QAbstractTableModel(parent),
     m_backend(backend)
 {
+    connect(m_backend, SIGNAL(sentMessageIdReceived(quint64,quint32)),
+            SLOT(setResolvedMessageId(quint64,quint32)));
+
+    connect(m_backend, SIGNAL(messageReadInbox(TelegramNamespace::Peer,quint32)),
+            SLOT(setMessageInboxRead(TelegramNamespace::Peer,quint32)));
+    connect(m_backend, SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)),
+            SLOT(setMessageOutboxRead(TelegramNamespace::Peer,quint32)));
 }
 
 QVariant CMessagingModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -200,15 +207,62 @@ int CMessagingModel::setMessageMediaData(quint64 messageId, const QVariant &data
     return i;
 }
 
-void CMessagingModel::setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status)
+void CMessagingModel::setMessageRead(TelegramNamespace::Peer peer, quint32 messageId, bool out)
 {
-    Q_UNUSED(phone);
+    int from = -1;
     for (int i = 0; i < m_messages.count(); ++i) {
-        if (m_messages.at(i).id64 == messageId) {
-            m_messages[i].status = status;
+        SMessage &message = m_messages[i];
 
-            QModelIndex messageIndex = index(i, Status);
-            emit dataChanged(messageIndex, messageIndex);
+        const bool hasFlagOut = message.flags & TelegramNamespace::MessageFlagOut;
+        const bool hasRightDirection = hasFlagOut == out;
+        const bool idIsFitInRange = message.id <= messageId;
+        const bool isNotAlreadyRead = message.status != CMessagingModel::SMessage::StatusRead;
+        const bool haveTargetPeer = message.peer() == peer;
+
+        if (hasRightDirection && idIsFitInRange && isNotAlreadyRead && haveTargetPeer) {
+            if (from < 0) {
+                from = i;
+            }
+
+            message.status = CMessagingModel::SMessage::StatusRead;
+        } else {
+            if (from >= 0) {
+                QModelIndex firstIndex = index(from, Status);
+                QModelIndex lastIndex = index(i - 1, Status);
+                emit dataChanged(firstIndex, lastIndex);
+                from = -1;
+            }
+        }
+    }
+
+    if (from >= 0) {
+        QModelIndex firstIndex = index(from, Status);
+        QModelIndex lastIndex = index(m_messages.count() - 1, Status);
+        emit dataChanged(firstIndex, lastIndex);
+    }
+}
+
+void CMessagingModel::setMessageInboxRead(TelegramNamespace::Peer peer, quint32 messageId)
+{
+    setMessageRead(peer, messageId, /* out */ false);
+}
+
+void CMessagingModel::setMessageOutboxRead(TelegramNamespace::Peer peer, quint32 messageId)
+{
+    setMessageRead(peer, messageId, /* out */ true);
+}
+
+void CMessagingModel::setResolvedMessageId(quint64 randomId, quint32 resolvedId)
+{
+    for (int i = 0; i < m_messages.count(); ++i) {
+        SMessage &message = m_messages[i];
+        if (message.id64 == randomId) {
+            message.id = resolvedId;
+            message.status = CMessagingModel::SMessage::StatusSent;
+
+            QModelIndex firstIndex = index(i, MessageId);
+            QModelIndex lastIndex = index(i, Status);
+            emit dataChanged(firstIndex, lastIndex);
             break;
         }
     }

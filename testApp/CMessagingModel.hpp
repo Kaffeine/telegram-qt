@@ -92,6 +92,10 @@ public:
 public slots:
     void addMessage(const SMessage &message);
     int setMessageMediaData(quint64 messageId, const QVariant &data);
+    void setMessageRead(TelegramNamespace::Peer peer, quint32 messageId, bool out);
+    void setMessageInboxRead(TelegramNamespace::Peer peer, quint32 messageId);
+    void setMessageOutboxRead(TelegramNamespace::Peer peer, quint32 messageId);
+    void setResolvedMessageId(quint64 randomId, quint32 resolvedId);
 
 private:
     CTelegramCore *m_backend;
