@@ -138,7 +138,7 @@ public:
     QVector<quint32> publicChatIdList() const;
 
     void addContacts(const QStringList &phoneNumbers, bool replace = false);
-    void deleteContacts(const QStringList &phoneNumbers);
+    void deleteContacts(const QVector<quint32> &userIds);
 
     QByteArray connectionSecretInfo() const;
 

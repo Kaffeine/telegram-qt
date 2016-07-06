@@ -168,9 +168,9 @@ void CTelegramCore::addContacts(const QStringList &phoneNumbers)
     m_dispatcher->addContacts(phoneNumbers);
 }
 
-void CTelegramCore::deleteContacts(const QStringList &phoneNumbers)
+void CTelegramCore::deleteContacts(const QVector<quint32> &userIds)
 {
-    m_dispatcher->deleteContacts(phoneNumbers);
+    m_dispatcher->deleteContacts(userIds);
 }
 
 void CTelegramCore::requestContactAvatar(quint32 userId)

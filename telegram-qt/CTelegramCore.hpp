@@ -83,8 +83,8 @@ public Q_SLOTS:
     void addContact(const QString &phoneNumber);
     void addContacts(const QStringList &phoneNumbers);
 
-    void deleteContact(const QString &phoneNumber);
-    void deleteContacts(const QStringList &phoneNumbers);
+    void deleteContact(quint32 userId);
+    void deleteContacts(const QVector<quint32> &userIds);
 
     void requestContactAvatar(quint32 userId);
     void requestMessageMediaData(quint32 messageId);
@@ -172,9 +172,9 @@ inline void CTelegramCore::addContact(const QString &phoneNumber)
     addContacts(QStringList() << phoneNumber);
 }
 
-inline void CTelegramCore::deleteContact(const QString &phoneNumber)
+inline void CTelegramCore::deleteContact(quint32 userId)
 {
-    deleteContacts(QStringList() << phoneNumber);
+    deleteContacts(QVector<quint32>() << userId);
 }
 
 inline quint64 CTelegramCore::sendChatMessage(quint32 chatId, const QString &message)

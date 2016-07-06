@@ -329,15 +329,15 @@ void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool repl
     }
 }
 
-void CTelegramDispatcher::deleteContacts(const QStringList &phoneNumbers)
+void CTelegramDispatcher::deleteContacts(const QVector<quint32> &userIds)
 {
-    qDebug() << Q_FUNC_INFO << maskPhoneNumberList(phoneNumbers);
+    qDebug() << Q_FUNC_INFO << userIds;
 
     QVector<TLInputUser> users;
-    users.reserve(phoneNumbers.count());
+    users.reserve(userIds.count());
 
-    foreach (const QString &phoneNumber, phoneNumbers) {
-        TLInputUser inputUser = phoneNumberToInputUser(phoneNumber);
+    foreach (quint32 userId, userIds) {
+        TLInputUser inputUser = userIdToInputUser(userId);
         if (inputUser.tlType != TLValue::InputUserEmpty) {
             users.append(inputUser);
         }
