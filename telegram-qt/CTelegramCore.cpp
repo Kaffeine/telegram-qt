@@ -45,8 +45,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(contactProfileChanged(quint32)));
     connect(m_dispatcher, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
             SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)));
-    connect(m_dispatcher, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
-            SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
+    connect(m_dispatcher, SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
+            SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
 
     connect(m_dispatcher, SIGNAL(messageReceived(TelegramNamespace::Message)),
             SIGNAL(messageReceived(TelegramNamespace::Message)));

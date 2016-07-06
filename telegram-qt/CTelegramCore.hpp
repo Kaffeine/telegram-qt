@@ -131,7 +131,7 @@ Q_SIGNALS:
     void phoneStatusReceived(const QString &phone, bool registered);
 
     void avatarReceived(quint32 userId, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
-    void messageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data,
+    void messageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data,
                                   const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 
     void messageReceived(const TelegramNamespace::Message &message);

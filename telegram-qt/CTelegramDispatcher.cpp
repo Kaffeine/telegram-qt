@@ -2197,14 +2197,20 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
     case FileRequestDescriptor::MessageMediaData:
         if (m_knownMediaMessages.contains(descriptor.messageId())) {
             const TLMessage message = m_knownMediaMessages.value(descriptor.messageId());
-            const TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message.flags);
             const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
-            quint32 contactUserId = messageFlags & TelegramNamespace::MessageFlagOut ? message.toId.userId : message.fromId;
+            TelegramNamespace::Peer peer = peerToPublicPeer(message.toId);
+
+            if (!(message.flags & TelegramMessageFlagOut)) {
+                if (peer.type == TelegramNamespace::Peer::User) {
+                    peer = message.fromId;
+                }
+            }
+
 #ifdef DEVELOPER_BUILD
             qDebug() << Q_FUNC_INFO << "MessageMediaData:" << message.id << offset << "-" << offset + chunkSize << "/" << descriptor.size();
 #endif
-            emit messageMediaDataReceived(userIdToIdentifier(contactUserId), message.id, file.bytes, mimeType, messageType, offset, descriptor.size());
+            emit messageMediaDataReceived(peer, message.id, file.bytes, mimeType, messageType, offset, descriptor.size());
         } else {
             qDebug() << Q_FUNC_INFO << "Unknown media message data received" << descriptor.messageId();
         }
