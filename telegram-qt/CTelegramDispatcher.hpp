@@ -280,13 +280,7 @@ protected:
     TLInputPeer publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const;
     TelegramNamespace::Peer peerToPublicPeer(const TLInputPeer &inputPeer) const;
     TelegramNamespace::Peer peerToPublicPeer(const TLPeer &peer) const;
-    TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
     TLInputUser userIdToInputUser(quint32 id) const;
-    QString userIdToIdentifier(const quint32 id) const;
-    QString chatIdToIdentifier(const quint32 id) const;
-    QString peerToIdentifier(const TLPeer &peer) const;
-    quint32 identifierToUserId(const QString &identifier) const;
-    TLUser *identifierToUser(const QString &identifier) const;
 
     QString userAvatarToken(const TLUser *user) const;
 

@@ -1861,11 +1861,6 @@ TelegramNamespace::Peer CTelegramDispatcher::peerToPublicPeer(const TLPeer &peer
     }
 }
 
-TLInputUser CTelegramDispatcher::phoneNumberToInputUser(const QString &phoneNumber) const
-{
-    return userIdToInputUser(identifierToUserId(phoneNumber));
-}
-
 TLInputUser CTelegramDispatcher::userIdToInputUser(quint32 id) const
 {
     TLInputUser inputUser;
@@ -1897,59 +1892,6 @@ TLInputUser CTelegramDispatcher::userIdToInputUser(quint32 id) const
     }
 
     return inputUser;
-}
-
-QString CTelegramDispatcher::userIdToIdentifier(const quint32 id) const
-{
-    const TLUser *user = m_users.value(id);
-
-    if (user) {
-        if (!user->phone.isEmpty()) {
-            return user->phone;
-        }
-    }
-
-    return QString(QLatin1String("user%1")).arg(id);
-}
-
-QString CTelegramDispatcher::chatIdToIdentifier(const quint32 id) const
-{
-    return QString(QLatin1String("chat%1")).arg(id);
-}
-
-QString CTelegramDispatcher::peerToIdentifier(const TLPeer &peer) const
-{
-    switch (peer.tlType) {
-    case TLValue::PeerChat:
-        return chatIdToIdentifier(telegramChatIdToPublicId(peer.chatId));
-    case TLValue::PeerUser:
-        return userIdToIdentifier(peer.userId);
-    default:
-        break;
-    }
-
-    qDebug() << Q_FUNC_INFO << "Unknown peer type";
-    return QString();
-}
-
-quint32 CTelegramDispatcher::identifierToUserId(const QString &identifier) const
-{
-    if (identifier.startsWith(QLatin1String("user"))) {
-        return identifier.section(QLatin1String("user"), 1).toUInt();
-    }
-
-    foreach (const TLUser *user, m_users) {
-        if (user->phone == identifier) {
-            return user->id;
-        }
-    }
-
-    return 0;
-}
-
-TLUser *CTelegramDispatcher::identifierToUser(const QString &identifier) const
-{
-    return m_users.value(identifierToUserId(identifier));
 }
 
 QString CTelegramDispatcher::userAvatarToken(const TLUser *user) const
