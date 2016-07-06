@@ -2310,26 +2310,38 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         shortMessage.tlType = TLValue::Message;
         shortMessage.id = updates.id;
         shortMessage.flags = updates.flags;
-        shortMessage.fromId = updates.fromId;
         shortMessage.message = updates.message;
         shortMessage.date = updates.date;
         shortMessage.media.tlType = TLValue::MessageMediaEmpty;
+        shortMessage.fwdFromId = updates.fwdFromId;
+        shortMessage.fwdDate = updates.fwdDate;
+        shortMessage.replyToMsgId = updates.replyToMsgId;
 
         int messageActionIndex = 0;
         if (updates.tlType == TLValue::UpdateShortMessage) {
-            messageActionIndex = TypingStatus::indexForUser(m_contactsMessageActions, updates.fromId);
             shortMessage.toId.tlType = TLValue::PeerUser;
 
+            if (shortMessage.flags & TelegramMessageFlagOut) {
+                shortMessage.toId.userId = updates.userId;
+                shortMessage.fromId = selfId();
+            } else {
+                shortMessage.toId.userId = selfId();
+                shortMessage.fromId = updates.userId;
+            }
+
+            messageActionIndex = TypingStatus::indexForUser(m_contactsMessageActions, updates.fromId);
             if (messageActionIndex >= 0) {
                 emit contactTypingStatusChanged(userIdToIdentifier(updates.fromId),
                                                 TelegramNamespace::MessageActionNone);
             }
 
         } else {
-            messageActionIndex = TypingStatus::indexForUser(m_contactsMessageActions, updates.fromId);
             shortMessage.toId.tlType = TLValue::PeerChat;
             shortMessage.toId.chatId = updates.chatId;
 
+            shortMessage.fromId = updates.fromId;
+
+            messageActionIndex = TypingStatus::indexForUser(m_contactsMessageActions, updates.fromId);
             if (messageActionIndex >= 0) {
                 emit contactChatTypingStatusChanged(telegramChatIdToPublicId(updates.chatId),
                                                     userIdToIdentifier(updates.fromId),
