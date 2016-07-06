@@ -70,7 +70,7 @@ public:
 
     const SContact *contactAt(int index) const;
 
-    QStringList contacts() const;
+    QVector<quint32> contacts() const;
     QString contactAt(int index, bool addName) const;
 
     static QString getContactName(const TelegramNamespace::UserInfo &contact);

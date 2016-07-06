@@ -397,7 +397,7 @@ void MainWindow::whenChatChanged(quint32 chatId)
 
     ui->groupChatName->setText(chat.title);
 
-    QStringList participants;
+    QVector<quint32> participants;
     if (!m_core->getChatParticipants(&participants, chatId)) {
         qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
     }
@@ -895,7 +895,7 @@ void MainWindow::on_groupChatAddContact_clicked()
         }
     } else {
         if (add) {
-            m_core->addChatUser(m_activeChatId, contactPhone, ui->groupChatAddContactForwardMessages->value());
+            m_core->addChatUser(m_activeChatId, contactId, ui->groupChatAddContactForwardMessages->value());
         } else {
 //            m_core->removeChatUser(m_activeChatId, contact);
         }
@@ -970,7 +970,7 @@ void MainWindow::setActiveChat(quint32 chatId)
     m_core->getChatInfo(&chat, chatId);
     ui->groupChatName->setText(chat.title);
 
-    QStringList participants;
+    QVector<quint32> participants;
     if (!m_core->getChatParticipants(&participants, chatId)) {
         qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
     }

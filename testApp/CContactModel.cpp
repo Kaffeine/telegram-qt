@@ -332,15 +332,15 @@ const SContact *CContactModel::contactAt(int index) const
     return &m_contacts[index];
 }
 
-QStringList CContactModel::contacts() const
+QVector<quint32> CContactModel::contacts() const
 {
-    QStringList phones;
+    QVector<quint32> ids;
 
     for (int i = 0; i < m_contacts.count(); ++i) {
-        phones.append(m_contacts.at(i).phone());
+        ids.append(m_contacts.at(i).id());
     }
 
-    return phones;
+    return ids;
 }
 
 QString CContactModel::contactAt(int index, bool addName) const
