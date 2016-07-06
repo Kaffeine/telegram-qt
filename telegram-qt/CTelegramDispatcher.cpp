@@ -863,7 +863,7 @@ quint32 CTelegramDispatcher::createChat(const QVector<quint32> &userIds, const Q
     return publicChatId;
 }
 
-bool CTelegramDispatcher::addChatUser(quint32 publicChatId, const QString &contact, quint32 forwardMessages)
+bool CTelegramDispatcher::addChatUser(quint32 publicChatId, quint32 userId, quint32 forwardMessages)
 {
     if (!activeConnection()) {
         return false;
@@ -875,7 +875,7 @@ bool CTelegramDispatcher::addChatUser(quint32 publicChatId, const QString &conta
         return false;
     }
 
-    const TLInputUser inputUser = phoneNumberToInputUser(contact);
+    const TLInputUser inputUser = userIdToInputUser(userId);
 
     switch (inputUser.tlType) {
     case TLValue::InputUserEmpty:

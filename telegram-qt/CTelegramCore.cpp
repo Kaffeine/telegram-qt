@@ -349,7 +349,7 @@ quint32 CTelegramCore::createChat(const QVector<quint32> &userIds, const QString
     return m_dispatcher->createChat(userIds, title);
 }
 
-bool CTelegramCore::addChatUser(quint32 chatId, const QString &contact, quint32 forwardMessages)
+bool CTelegramCore::addChatUser(quint32 chatId, quint32 userId, quint32 forwardMessages)
 {
-    return m_dispatcher->addChatUser(chatId, contact, forwardMessages);
+    return m_dispatcher->addChatUser(chatId, userId, forwardMessages);
 }
