@@ -18,6 +18,8 @@
 #include "CMessagingModel.hpp"
 #include "CContactModel.hpp"
 
+#include "CTelegramCore.hpp"
+
 #include <QDateTime>
 
 QString messageDeliveryStatusStr(TelegramNamespace::MessageDeliveryStatus status)
@@ -36,8 +38,9 @@ QString messageDeliveryStatusStr(TelegramNamespace::MessageDeliveryStatus status
     }
 }
 
-CMessagingModel::CMessagingModel(QObject *parent) :
-    QAbstractTableModel(parent)
+CMessagingModel::CMessagingModel(CTelegramCore *backend, QObject *parent) :
+    QAbstractTableModel(parent),
+    m_backend(backend)
 {
 }
 

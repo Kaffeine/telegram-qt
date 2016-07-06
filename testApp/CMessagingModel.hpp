@@ -22,6 +22,8 @@
 
 #include "TelegramNamespace.hpp"
 
+class CTelegramCore;
+
 class CMessagingModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -60,7 +62,7 @@ public:
         QVariant mediaData;
     };
 
-    explicit CMessagingModel(QObject *parent = 0);
+    explicit CMessagingModel(CTelegramCore *backend, QObject *parent = nullptr);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -78,6 +80,7 @@ public slots:
     void setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status);
 
 private:
+    CTelegramCore *m_backend;
     QList<SMessage> m_messages;
 
 };
