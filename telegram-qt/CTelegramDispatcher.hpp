@@ -277,6 +277,8 @@ protected:
     quint32 publicChatIdToChatId(quint32 publicChatId) const;
     TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const;
+    TelegramNamespace::Peer peerToPublicPeer(const TLInputPeer &inputPeer) const;
+    TelegramNamespace::Peer peerToPublicPeer(const TLPeer &peer) const;
     TLInputUser phoneNumberToInputUser(const QString &phoneNumber) const;
     TLInputUser userIdToInputUser(quint32 id) const;
     QString userIdToIdentifier(const quint32 id) const;

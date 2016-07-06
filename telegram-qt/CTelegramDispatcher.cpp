@@ -1822,6 +1822,34 @@ TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const TelegramNamespace::
     return inputPeer;
 }
 
+TelegramNamespace::Peer CTelegramDispatcher::peerToPublicPeer(const TLInputPeer &inputPeer) const
+{
+    switch (inputPeer.tlType) {
+    case TLValue::InputPeerSelf:
+        return TelegramNamespace::Peer(selfId());
+    case TLValue::InputPeerContact:
+    case TLValue::InputPeerForeign:
+        return TelegramNamespace::Peer(inputPeer.userId);
+    case TLValue::InputPeerChat:
+        return TelegramNamespace::Peer(inputPeer.chatId, TelegramNamespace::Peer::Chat);
+    case TLValue::InputPeerEmpty:
+    default:
+        return TelegramNamespace::Peer();
+    }
+}
+
+TelegramNamespace::Peer CTelegramDispatcher::peerToPublicPeer(const TLPeer &peer) const
+{
+    switch (peer.tlType) {
+    case TLValue::PeerChat:
+        return TelegramNamespace::Peer(peer.chatId, TelegramNamespace::Peer::Chat);
+    case TLValue::PeerUser:
+        return TelegramNamespace::Peer(peer.userId);
+    default:
+        return TelegramNamespace::Peer();
+    }
+}
+
 TLInputUser CTelegramDispatcher::phoneNumberToInputUser(const QString &phoneNumber) const
 {
     return userIdToInputUser(identifierToUserId(phoneNumber));
