@@ -57,6 +57,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)));
     connect(m_dispatcher, SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)),
             SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)));
+    connect(m_dispatcher, SIGNAL(sentMessageIdReceived(quint64,quint32)),
+            SIGNAL(sentMessageIdReceived(quint64,quint32)));
     connect(m_dispatcher, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
             SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
     connect(m_dispatcher, SIGNAL(chatAdded(quint32)),

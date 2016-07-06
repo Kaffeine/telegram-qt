@@ -1197,13 +1197,14 @@ void CTelegramDispatcher::messageActionTimerTimeout()
     }
 }
 
-void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, TLMessagesSentMessage info)
+void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &inputPeer, quint64 randomId, TLMessagesSentMessage info)
 {
     const QString identifier = userIdToIdentifier(peer.userId);
     QPair<QString, quint64> phoneAndId(identifier, randomId);
 
     m_messagesMap.insert(info.id, phoneAndId);
 
+    emit sentMessageIdReceived(randomId, info.id);
     emit sentMessageStatusChanged(identifier, info.id, TelegramNamespace::MessageDeliveryStatusSent);
 
     ensureUpdateState(info.pts, info.seq, info.date);
@@ -1437,10 +1438,9 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         qDebug() << Q_FUNC_INFO << "UpdateNewMessage";
         processMessageReceived(update.message);
         break;
-//    case TLValue::UpdateMessageID:
-//        update.id;
-//        update.randomId;
-//        break;
+    case TLValue::UpdateMessageID:
+        emit sentMessageIdReceived(update.randomId, update.id);
+        break;
 //    case TLValue::UpdateReadMessages:
 //        foreach (quint32 messageId, update.messages) {
 //            const QPair<QString, quint64> phoneAndId = m_messagesMap.value(messageId);

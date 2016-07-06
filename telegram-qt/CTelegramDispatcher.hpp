@@ -215,6 +215,7 @@ signals:
     void contactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
     void contactChatMessageActionChanged(quint32 publicChatId, quint32 userId, TelegramNamespace::MessageAction action);
 
+    void sentMessageIdReceived(quint64 randomId, quint32 resolvedId);
     void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
 
     void chatAdded(quint32 publichChatId);
@@ -239,7 +240,7 @@ protected slots:
     void whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
     void messageActionTimerTimeout();
 
-    void whenMessageSentInfoReceived(const TLInputPeer &peer, quint64 randomId, TLMessagesSentMessage info);
+    void whenMessageSentInfoReceived(const TLInputPeer &inputPeer, quint64 randomId, TLMessagesSentMessage info);
     void whenMessagesHistoryReceived(const TLMessagesMessages &messages);
 
     void getDcConfiguration();
