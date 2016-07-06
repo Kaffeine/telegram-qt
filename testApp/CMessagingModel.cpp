@@ -22,16 +22,18 @@
 
 #include <QDateTime>
 
-QString messageDeliveryStatusStr(TelegramNamespace::MessageDeliveryStatus status)
+QString messageDeliveryStatusStr(CMessagingModel::SMessage::Status status)
 {
     switch (status) {
-    case TelegramNamespace::MessageDeliveryStatusUnknown:
+    case CMessagingModel::SMessage::StatusUnknown:
         return QLatin1String("Unknown");
-    case TelegramNamespace::MessageDeliveryStatusSent:
+    case CMessagingModel::SMessage::StatusSent:
         return QLatin1String("Sent");
-    case TelegramNamespace::MessageDeliveryStatusRead:
+    case CMessagingModel::SMessage::StatusReceived:
+        return QLatin1String("Received");
+    case CMessagingModel::SMessage::StatusRead:
         return QLatin1String("Read");
-    case TelegramNamespace::MessageDeliveryStatusDeleted:
+    case CMessagingModel::SMessage::StatusDeleted:
         return QLatin1String("Deleted");
     default:
         return QString();
@@ -125,11 +127,7 @@ QVariant CMessagingModel::rowData(quint32 messageIndex, int column) const
     case Message:
         return m_messages.at(messageIndex).text;
     case Status:
-        if (m_messages.at(messageIndex).flags & TelegramNamespace::MessageFlagOut) {
-            return messageDeliveryStatusStr(m_messages.at(messageIndex).status);
-        } else {
-            return tr("Incoming");
-        }
+        return messageDeliveryStatusStr(m_messages.at(messageIndex).status);
     case ForwardFromContact:
         return m_messages.at(messageIndex).forwardContactId;
     case ForwardTimestamp:

@@ -43,22 +43,37 @@ public:
 
     struct SMessage : public TelegramNamespace::Message
     {
+        enum Status {
+            StatusUnknown,
+            StatusSent,
+            StatusReceived,
+            StatusRead,
+            StatusDeleted
+        };
+
         SMessage() :
             TelegramNamespace::Message(),
             id64(0),
-            status(TelegramNamespace::MessageDeliveryStatusUnknown)
+            status(StatusUnknown)
         {
         }
 
         SMessage(const TelegramNamespace::Message &m) :
             TelegramNamespace::Message(m),
             id64(0),
-            status(TelegramNamespace::MessageDeliveryStatusUnknown)
+            status(StatusUnknown)
         {
+            if (flags & TelegramNamespace::MessageFlagRead) {
+                status = StatusRead;
+            } else if (flags & TelegramNamespace::MessageFlagOut) {
+                status = StatusSent;
+            } else {
+                status = StatusReceived;
+            }
         }
 
         quint64 id64;
-        TelegramNamespace::MessageDeliveryStatus status;
+        Status status;
         QVariant mediaData;
     };
 
@@ -77,7 +92,6 @@ public:
 public slots:
     void addMessage(const SMessage &message);
     int setMessageMediaData(quint64 messageId, const QVariant &data);
-    void setMessageDeliveryStatus(const QString &phone, quint64 messageId, TelegramNamespace::MessageDeliveryStatus status);
 
 private:
     CTelegramCore *m_backend;

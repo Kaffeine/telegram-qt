@@ -98,8 +98,6 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenContactMessageActionChanged(quint32,TelegramNamespace::MessageAction)));
     connect(m_core, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
             SLOT(whenContactStatusChanged(quint32)));
-    connect(m_core, SIGNAL(sentMessageStatusChanged(QString,quint64,TelegramNamespace::MessageDeliveryStatus)),
-            m_messagingModel, SLOT(setMessageDeliveryStatus(QString,quint64,TelegramNamespace::MessageDeliveryStatus)));
     connect(m_core, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
             SLOT(whenUploadingStatusUpdated(quint32,quint32,quint32)));
     connect(m_core, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
