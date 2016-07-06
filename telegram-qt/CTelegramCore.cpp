@@ -344,9 +344,9 @@ void CTelegramCore::setUserName(const QString &newUserName)
     m_dispatcher->setUserName(newUserName);
 }
 
-quint32 CTelegramCore::createChat(const QStringList &phones, const QString &title)
+quint32 CTelegramCore::createChat(const QVector<quint32> &userIds, const QString &title)
 {
-    return m_dispatcher->createChat(phones, title);
+    return m_dispatcher->createChat(userIds, title);
 }
 
 bool CTelegramCore::addChatUser(quint32 chatId, const QString &contact, quint32 forwardMessages)

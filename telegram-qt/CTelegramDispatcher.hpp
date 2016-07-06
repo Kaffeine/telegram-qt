@@ -176,7 +176,7 @@ public:
     void setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction publicAction);
     void setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId);
 
-    quint32 createChat(const QStringList &phones, const QString chatName);
+    quint32 createChat(const QVector<quint32> &userIds, const QString chatName);
     bool addChatUser(quint32 publicChatId, const QString &contact, quint32 forwardMessages);
 
     void setOnlineStatus(bool onlineStatus);

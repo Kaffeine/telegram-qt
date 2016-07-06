@@ -841,15 +841,17 @@ bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const
     return m_messageReceivingFilterFlags & messageFlags;
 }
 
-quint32 CTelegramDispatcher::createChat(const QStringList &phones, const QString chatName)
+quint32 CTelegramDispatcher::createChat(const QVector<quint32> &userIds, const QString chatName)
 {
     if (!activeConnection()) {
         return 0;
     }
-    TLVector<TLInputUser> users;
 
-    foreach (const QString &phone, phones) {
-        const TLInputUser user = phoneNumberToInputUser(phone);
+    TLVector<TLInputUser> users;
+    users.reserve(userIds.count());
+
+    foreach (quint32 userId, userIds) {
+        const TLInputUser user = userIdToInputUser(userId);
         users.append(user);
     }
 

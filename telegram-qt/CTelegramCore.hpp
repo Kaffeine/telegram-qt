@@ -112,7 +112,7 @@ public Q_SLOTS:
     void setUserName(const QString &newUserName);
 
     // ChatId should starts with 1. The null id means that the chat is not valid.
-    quint32 createChat(const QStringList &phones, const QString &title);
+    quint32 createChat(const QVector<quint32> &userIds, const QString &title);
     bool addChatUser(quint32 chatId, const QString &contact, quint32 forwardMessages = 0);
 
     // Methods without "chat" word can be used instead. See methods implementation for details.
