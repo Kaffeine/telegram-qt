@@ -739,8 +739,15 @@ void MainWindow::on_addContact_clicked()
 
 void MainWindow::on_deleteContact_clicked()
 {
-    m_core->deleteContact(ui->currentContact->text());
-    ui->currentContact->clear();
+    for (quint32 userId : m_core->contactList()) {
+        TelegramNamespace::UserInfo info;
+        m_core->getUserInfo(&info, userId);
+
+        if (info.phone() == ui->currentContact->text()) {
+            m_core->deleteContact(userId);
+            ui->currentContact->clear();
+        }
+    }
 }
 
 void MainWindow::on_messagingSendButton_clicked()
