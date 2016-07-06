@@ -37,13 +37,6 @@ public:
         ContactStatusOnline
     };
 
-    enum MessageDeliveryStatus {
-        MessageDeliveryStatusUnknown,
-        MessageDeliveryStatusSent,
-        MessageDeliveryStatusRead,
-        MessageDeliveryStatusDeleted
-    };
-
     enum MessageFlag {
         MessageFlagNone      = 0x0,
         MessageFlagRead      = 0x1, // Message was read

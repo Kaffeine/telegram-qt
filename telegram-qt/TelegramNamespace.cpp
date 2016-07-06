@@ -36,7 +36,6 @@ void TelegramNamespace::registerTypes()
 
         qRegisterMetaType<TelegramNamespace::ConnectionState>("TelegramNamespace::ConnectionStatus");
         qRegisterMetaType<TelegramNamespace::ContactStatus>("TelegramNamespace::ContactStatus");
-        qRegisterMetaType<TelegramNamespace::MessageDeliveryStatus>("TelegramNamespace::MessageDeliveryStatus");
         qRegisterMetaType<TelegramNamespace::MessageFlags>("TelegramNamespace::MessageFlags");
         qRegisterMetaType<TelegramNamespace::MessageType>("TelegramNamespace::MessageType");
         qRegisterMetaType<TelegramNamespace::AuthSignError>("TelegramNamespace::AuthSignError");
