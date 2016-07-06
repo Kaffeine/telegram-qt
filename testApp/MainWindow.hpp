@@ -29,7 +29,7 @@ class MainWindow;
 
 class CTelegramCore;
 class CContactModel;
-class CMessagingModel;
+class CMessageModel;
 class CChatInfoModel;
 
 class QModelIndex;
@@ -159,10 +159,10 @@ private:
     QMap<quint32, QString> m_uploadingRequests;
 
     CContactModel *m_contactsModel;
-    CMessagingModel *m_messagingModel;
+    CMessageModel *m_messagingModel;
 
     CContactModel *m_chatContactsModel;
-    CMessagingModel *m_chatMessagingModel;
+    CMessageModel *m_chatMessagingModel;
 
     CChatInfoModel *m_chatInfoModel;
     CContactModel *m_contactSearchResultModel;

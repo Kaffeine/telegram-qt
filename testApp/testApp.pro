@@ -23,13 +23,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
     MainWindow.cpp \
     CContactModel.cpp \
-    CMessagingModel.cpp \
-    CChatInfoModel.cpp
+    CChatInfoModel.cpp \
+    CMessageModel.cpp
 
 HEADERS  += MainWindow.hpp \
     CContactModel.hpp \
-    CMessagingModel.hpp \
-    CChatInfoModel.hpp
+    CChatInfoModel.hpp \
+    CMessageModel.hpp
 
 FORMS    += MainWindow.ui
 

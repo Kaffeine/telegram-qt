@@ -15,32 +15,32 @@
 
  */
 
-#include "CMessagingModel.hpp"
+#include "CMessageModel.hpp"
 #include "CContactModel.hpp"
 
 #include "CTelegramCore.hpp"
 
 #include <QDateTime>
 
-QString messageDeliveryStatusStr(CMessagingModel::SMessage::Status status)
+QString messageDeliveryStatusStr(CMessageModel::SMessage::Status status)
 {
     switch (status) {
-    case CMessagingModel::SMessage::StatusUnknown:
+    case CMessageModel::SMessage::StatusUnknown:
         return QLatin1String("Unknown");
-    case CMessagingModel::SMessage::StatusSent:
+    case CMessageModel::SMessage::StatusSent:
         return QLatin1String("Sent");
-    case CMessagingModel::SMessage::StatusReceived:
+    case CMessageModel::SMessage::StatusReceived:
         return QLatin1String("Received");
-    case CMessagingModel::SMessage::StatusRead:
+    case CMessageModel::SMessage::StatusRead:
         return QLatin1String("Read");
-    case CMessagingModel::SMessage::StatusDeleted:
+    case CMessageModel::SMessage::StatusDeleted:
         return QLatin1String("Deleted");
     default:
         return QString();
     }
 }
 
-CMessagingModel::CMessagingModel(CTelegramCore *backend, QObject *parent) :
+CMessageModel::CMessageModel(CTelegramCore *backend, QObject *parent) :
     QAbstractTableModel(parent),
     m_backend(backend)
 {
@@ -53,7 +53,7 @@ CMessagingModel::CMessagingModel(CTelegramCore *backend, QObject *parent) :
             SLOT(setMessageOutboxRead(TelegramNamespace::Peer,quint32)));
 }
 
-QVariant CMessagingModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant CMessageModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation != Qt::Horizontal) {
         return QVariant();
@@ -90,7 +90,7 @@ QVariant CMessagingModel::headerData(int section, Qt::Orientation orientation, i
     return QVariant();
 }
 
-QVariant CMessagingModel::data(const QModelIndex &index, int role) const
+QVariant CMessageModel::data(const QModelIndex &index, int role) const
 {
     int section = index.column();
     int messageIndex = index.row();
@@ -114,7 +114,7 @@ QVariant CMessagingModel::data(const QModelIndex &index, int role) const
     return rowData(messageIndex, section);
 }
 
-QVariant CMessagingModel::rowData(quint32 messageIndex, int column) const
+QVariant CMessageModel::rowData(quint32 messageIndex, int column) const
 {
     if (int(messageIndex) >= m_messages.count()) {
         return QVariant();
@@ -149,7 +149,7 @@ QVariant CMessagingModel::rowData(quint32 messageIndex, int column) const
     return QVariant();
 }
 
-const CMessagingModel::SMessage *CMessagingModel::messageAt(quint32 messageIndex) const
+const CMessageModel::SMessage *CMessageModel::messageAt(quint32 messageIndex) const
 {
     if (int(messageIndex) >= m_messages.count()) {
         return 0;
@@ -158,7 +158,7 @@ const CMessagingModel::SMessage *CMessagingModel::messageAt(quint32 messageIndex
     return &m_messages[messageIndex];
 }
 
-int CMessagingModel::messageIndex(quint64 messageId) const
+int CMessageModel::messageIndex(quint64 messageId) const
 {
     for (int i = 0; i < m_messages.count(); ++i) {
         if (m_messages.at(i).id == messageId) {
@@ -172,7 +172,7 @@ int CMessagingModel::messageIndex(quint64 messageId) const
     return -1;
 }
 
-void CMessagingModel::addMessage(const SMessage &message)
+void CMessageModel::addMessage(const SMessage &message)
 {
     for (int i = 0; i < m_messages.count(); ++i) {
         if ((m_messages.at(i).id64 && (m_messages.at(i).id64 == message.id64))
@@ -191,7 +191,7 @@ void CMessagingModel::addMessage(const SMessage &message)
     endInsertRows();
 }
 
-int CMessagingModel::setMessageMediaData(quint64 messageId, const QVariant &data)
+int CMessageModel::setMessageMediaData(quint64 messageId, const QVariant &data)
 {
     int i = messageIndex(messageId);
     if (i < 0) {
@@ -207,7 +207,7 @@ int CMessagingModel::setMessageMediaData(quint64 messageId, const QVariant &data
     return i;
 }
 
-void CMessagingModel::setMessageRead(TelegramNamespace::Peer peer, quint32 messageId, bool out)
+void CMessageModel::setMessageRead(TelegramNamespace::Peer peer, quint32 messageId, bool out)
 {
     int from = -1;
     for (int i = 0; i < m_messages.count(); ++i) {
@@ -216,7 +216,7 @@ void CMessagingModel::setMessageRead(TelegramNamespace::Peer peer, quint32 messa
         const bool hasFlagOut = message.flags & TelegramNamespace::MessageFlagOut;
         const bool hasRightDirection = hasFlagOut == out;
         const bool idIsFitInRange = message.id <= messageId;
-        const bool isNotAlreadyRead = message.status != CMessagingModel::SMessage::StatusRead;
+        const bool isNotAlreadyRead = message.status != CMessageModel::SMessage::StatusRead;
         const bool haveTargetPeer = message.peer() == peer;
 
         if (hasRightDirection && idIsFitInRange && isNotAlreadyRead && haveTargetPeer) {
@@ -224,7 +224,7 @@ void CMessagingModel::setMessageRead(TelegramNamespace::Peer peer, quint32 messa
                 from = i;
             }
 
-            message.status = CMessagingModel::SMessage::StatusRead;
+            message.status = CMessageModel::SMessage::StatusRead;
         } else {
             if (from >= 0) {
                 QModelIndex firstIndex = index(from, Status);
@@ -242,23 +242,23 @@ void CMessagingModel::setMessageRead(TelegramNamespace::Peer peer, quint32 messa
     }
 }
 
-void CMessagingModel::setMessageInboxRead(TelegramNamespace::Peer peer, quint32 messageId)
+void CMessageModel::setMessageInboxRead(TelegramNamespace::Peer peer, quint32 messageId)
 {
     setMessageRead(peer, messageId, /* out */ false);
 }
 
-void CMessagingModel::setMessageOutboxRead(TelegramNamespace::Peer peer, quint32 messageId)
+void CMessageModel::setMessageOutboxRead(TelegramNamespace::Peer peer, quint32 messageId)
 {
     setMessageRead(peer, messageId, /* out */ true);
 }
 
-void CMessagingModel::setResolvedMessageId(quint64 randomId, quint32 resolvedId)
+void CMessageModel::setResolvedMessageId(quint64 randomId, quint32 resolvedId)
 {
     for (int i = 0; i < m_messages.count(); ++i) {
         SMessage &message = m_messages[i];
         if (message.id64 == randomId) {
             message.id = resolvedId;
-            message.status = CMessagingModel::SMessage::StatusSent;
+            message.status = CMessageModel::SMessage::StatusSent;
 
             QModelIndex firstIndex = index(i, MessageId);
             QModelIndex lastIndex = index(i, Status);

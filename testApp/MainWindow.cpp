@@ -21,7 +21,7 @@
 #include "CAppInformation.hpp"
 #include "CTelegramCore.hpp"
 #include "CContactModel.hpp"
-#include "CMessagingModel.hpp"
+#include "CMessageModel.hpp"
 #include "CChatInfoModel.hpp"
 
 #include <QCompleter>
@@ -42,9 +42,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_core(new CTelegramCore(this)),
     m_contactsModel(new CContactModel(m_core, this)),
-    m_messagingModel(new CMessagingModel(m_core, this)),
+    m_messagingModel(new CMessageModel(m_core, this)),
     m_chatContactsModel(new CContactModel(m_core, this)),
-    m_chatMessagingModel(new CMessagingModel(m_core, this)),
+    m_chatMessagingModel(new CMessageModel(m_core, this)),
     m_chatInfoModel(new CChatInfoModel(this)),
     m_contactSearchResultModel(nullptr),
     m_activeChatId(0),
@@ -58,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->groupChatContacts->setModel(m_chatContactsModel);
     ui->groupChatChatsList->setModel(m_chatInfoModel);
     ui->groupChatMessagingView->setModel(m_chatMessagingModel);
-    ui->groupChatMessagingView->hideColumn(CMessagingModel::Direction);
+    ui->groupChatMessagingView->hideColumn(CMessageModel::Direction);
 
     QCompleter *comp = new QCompleter(m_contactsModel, this);
     ui->messagingContactIdentifier->setCompleter(comp);
@@ -296,12 +296,12 @@ void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 me
 
     int row = m_messagingModel->setMessageMediaData(messageId, photo);
     if (row >= 0) {
-        ui->messagingView->setColumnWidth(CMessagingModel::Message, photo.width());
+        ui->messagingView->setColumnWidth(CMessageModel::Message, photo.width());
         ui->messagingView->setRowHeight(row, photo.height());
     } else {
         row = m_chatMessagingModel->setMessageMediaData(messageId, photo);
         if (row >= 0) {
-            ui->groupChatMessagingView->setColumnWidth(CMessagingModel::Message, photo.width());
+            ui->groupChatMessagingView->setColumnWidth(CMessageModel::Message, photo.width());
             ui->groupChatMessagingView->setRowHeight(row, photo.height());
         }
     }
@@ -451,7 +451,7 @@ void MainWindow::whenCustomMenuRequested(const QPoint &pos)
     forwardMenu->clear();
 
     quint32 row = index.row();
-    quint32 messageId = m_messagingModel->rowData(row, CMessagingModel::MessageId).toUInt();
+    quint32 messageId = m_messagingModel->rowData(row, CMessageModel::MessageId).toUInt();
 
     if (m_messagingModel->messageAt(row)->type == TelegramNamespace::MessageTypeText) {
         resendMenu->setDisabled(true);
@@ -745,7 +745,7 @@ void MainWindow::on_deleteContact_clicked()
 
 void MainWindow::on_messagingSendButton_clicked()
 {
-    CMessagingModel::SMessage m;
+    CMessageModel::SMessage m;
     m.userId = m_activeContactId; //ui->messagingContactIdentifier->text();
     m.type = TelegramNamespace::MessageTypeText;
     m.text = ui->messagingMessage->text();
@@ -827,7 +827,7 @@ void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
 
 void MainWindow::on_messagingView_doubleClicked(const QModelIndex &index)
 {
-    const QModelIndex phoneIndex = m_messagingModel->index(index.row(), CMessagingModel::Peer);
+    const QModelIndex phoneIndex = m_messagingModel->index(index.row(), CMessageModel::Peer);
 
     TelegramNamespace::Peer peer = phoneIndex.data().value<TelegramNamespace::Peer>();
     setActiveContact(peer.id);
@@ -900,7 +900,7 @@ void MainWindow::on_groupChatAddContact_clicked()
 
 void MainWindow::on_groupChatSendButton_clicked()
 {
-    CMessagingModel::SMessage m;
+    CMessageModel::SMessage m;
     m.chatId = m_activeChatId;
     m.userId = m_core->selfId();
     m.type = TelegramNamespace::MessageTypeText;

@@ -15,8 +15,8 @@
 
  */
 
-#ifndef CMESSAGINGMODEL_HPP
-#define CMESSAGINGMODEL_HPP
+#ifndef CMESSAGEMODEL_HPP
+#define CMESSAGEMODEL_HPP
 
 #include <QAbstractTableModel>
 
@@ -24,7 +24,7 @@
 
 class CTelegramCore;
 
-class CMessagingModel : public QAbstractTableModel
+class CMessageModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
@@ -77,7 +77,7 @@ public:
         QVariant mediaData;
     };
 
-    explicit CMessagingModel(CTelegramCore *backend, QObject *parent = nullptr);
+    explicit CMessageModel(CTelegramCore *backend, QObject *parent = nullptr);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -103,16 +103,16 @@ private:
 
 };
 
-inline int CMessagingModel::columnCount(const QModelIndex &parent) const
+inline int CMessageModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
     return ColumnsCount;
 }
 
-inline int CMessagingModel::rowCount(const QModelIndex &parent) const
+inline int CMessageModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
     return m_messages.count();
 }
 
-#endif // CMESSAGINGMODEL_HPP
+#endif // CMESSAGEMODEL_HPP
