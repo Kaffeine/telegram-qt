@@ -2663,7 +2663,7 @@ TLValue CTelegramConnection::processMessagesSendMessage(CTelegramStream &stream,
         outputStream >> message;
         outputStream >> randomId;
 
-        emit messageSentInfoReceived(peer, randomId, result);
+        emit messageSentInfoReceived(randomId, result);
     }
 
     return result.tlType;

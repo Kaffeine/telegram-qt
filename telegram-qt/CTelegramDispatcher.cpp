@@ -570,7 +570,6 @@ void CTelegramDispatcher::closeConnection()
     m_delayedPackages.clear();
     qDeleteAll(m_users);
     m_users.clear();
-    m_messagesMap.clear();
     m_contactIdList.clear();
     m_requestedFileDescriptors.clear();
     m_fileRequestCounter = 0;
@@ -1197,16 +1196,9 @@ void CTelegramDispatcher::messageActionTimerTimeout()
     }
 }
 
-void CTelegramDispatcher::whenMessageSentInfoReceived(const TLInputPeer &inputPeer, quint64 randomId, TLMessagesSentMessage info)
+void CTelegramDispatcher::whenMessageSentInfoReceived(quint64 randomId, TLMessagesSentMessage info)
 {
-    const QString identifier = userIdToIdentifier(peer.userId);
-    QPair<QString, quint64> phoneAndId(identifier, randomId);
-
-    m_messagesMap.insert(info.id, phoneAndId);
-
     emit sentMessageIdReceived(randomId, info.id);
-    emit sentMessageStatusChanged(identifier, info.id, TelegramNamespace::MessageDeliveryStatusSent);
-
     ensureUpdateState(info.pts, info.seq, info.date);
 }
 
@@ -1604,6 +1596,23 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.peer;
 //        update.notifySettings;
 //        break;
+    case TLValue::UpdateReadHistoryInbox:
+    case TLValue::UpdateReadHistoryOutbox: {
+        TelegramNamespace::Peer peer = peerToPublicPeer(update.peer);
+        if (!peer.id) {
+#ifdef DEVELOPER_BUILD
+            qDebug() << Q_FUNC_INFO << update.tlType << "Unable to resolve peer" << update.peer;
+#else
+            qDebug() << Q_FUNC_INFO << update.tlType << "Unable to resolve peer" << update.peer.tlType << update.peer.userId << update.peer.chatId;
+#endif
+        }
+        if (update.tlType == TLValue::UpdateReadHistoryInbox) {
+            emit messageReadInbox(peer, update.maxId);
+        } else {
+            emit messageReadOutbox(peer, update.maxId);
+        }
+        break;
+    }
     default:
         qDebug() << Q_FUNC_INFO << "Update type" << update.tlType.toString() << "is not implemented yet.";
         break;
@@ -1994,8 +2003,8 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenContactListChanged(QVector<quint32>,QVector<quint32>)));
             connect(connection, SIGNAL(updatesReceived(TLUpdates)),
                     SLOT(whenUpdatesReceived(TLUpdates)));
-            connect(connection, SIGNAL(messageSentInfoReceived(TLInputPeer,quint64,TLMessagesSentMessage)),
-                    SLOT(whenMessageSentInfoReceived(TLInputPeer,quint64,TLMessagesSentMessage)));
+            connect(connection, SIGNAL(messageSentInfoReceived(quint64,TLMessagesSentMessage)),
+                    SLOT(whenMessageSentInfoReceived(quint64,TLMessagesSentMessage)));
             connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
                     SLOT(whenMessagesHistoryReceived(TLMessagesMessages)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),
@@ -2263,7 +2272,9 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
     case TLValue::UpdateShortChatMessage:
     {
         if (m_updatesState.pts + updates.ptsCount != updates.pts) {
-            qDebug() << "Need to get difference.";
+            qDebug() << "Need to get difference."
+                     << m_updatesState.pts << "+" <<updates.ptsCount
+                     << "vs" << updates.pts;
             Q_ASSERT(0);
             break;
         }

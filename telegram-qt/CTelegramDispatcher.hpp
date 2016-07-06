@@ -211,12 +211,12 @@ signals:
     void messageReceived(const TelegramNamespace::Message &message);
 
     void contactStatusChanged(quint32 userId, TelegramNamespace::ContactStatus status);
-
     void contactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
     void contactChatMessageActionChanged(quint32 publicChatId, quint32 userId, TelegramNamespace::MessageAction action);
 
     void sentMessageIdReceived(quint64 randomId, quint32 resolvedId);
-    void sentMessageStatusChanged(const QString &phone, quint64 randomMessageId, TelegramNamespace::MessageDeliveryStatus status);
+    void messageReadInbox(TelegramNamespace::Peer peer, quint32 messageId);
+    void messageReadOutbox(TelegramNamespace::Peer peer, quint32 messageId);
 
     void chatAdded(quint32 publichChatId);
     void chatChanged(quint32 publichChatId);
@@ -240,7 +240,7 @@ protected slots:
     void whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
     void messageActionTimerTimeout();
 
-    void whenMessageSentInfoReceived(const TLInputPeer &inputPeer, quint64 randomId, TLMessagesSentMessage info);
+    void whenMessageSentInfoReceived(quint64 randomId, TLMessagesSentMessage info);
     void whenMessagesHistoryReceived(const TLMessagesMessages &messages);
 
     void getDcConfiguration();
@@ -379,8 +379,6 @@ protected:
     QMap<quint32, QPair<quint32,QByteArray> > m_exportedAuthentications; // dc, <id, auth data>
     QMap<quint32, QByteArray> m_delayedPackages; // dc, package data
     QMap<quint32, TLUser*> m_users;
-
-    QMap<quint32, QPair<QString, quint64> >m_messagesMap; // message id to phone and big_random message id
 
     QMap<quint32, TLMessage> m_knownMediaMessages; // message id, message
 
