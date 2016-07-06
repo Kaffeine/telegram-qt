@@ -1057,7 +1057,7 @@ bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, 
     return true;
 }
 
-bool CTelegramDispatcher::getChatParticipants(QStringList *participants, quint32 publicChatId)
+bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, quint32 publicChatId)
 {
     const quint32 chatId = publicChatIdToChatId(publicChatId);
 
@@ -1071,7 +1071,7 @@ bool CTelegramDispatcher::getChatParticipants(QStringList *participants, quint32
         const TLChatFull &fullChat = m_chatFullInfo.value(chatId);
 
         foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
-            participants->append(userIdToIdentifier(participant.userId));
+            participants->append(participant.userId);
         }
         return true;
     } else {

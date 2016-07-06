@@ -264,7 +264,7 @@ bool CTelegramCore::getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 
     return m_dispatcher->getChatInfo(chatInfo, chatId);
 }
 
-bool CTelegramCore::getChatParticipants(QStringList *participants, quint32 chatId)
+bool CTelegramCore::getChatParticipants(QVector<quint32> *participants, quint32 chatId)
 {
     return m_dispatcher->getChatParticipants(participants, chatId);
 }

@@ -57,7 +57,7 @@ public:
 
     bool getUserInfo(TelegramNamespace::UserInfo *info, quint32 userId) const;
     bool getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const;
-    bool getChatParticipants(QStringList *participants, quint32 chatId);
+    bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
     bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
 
