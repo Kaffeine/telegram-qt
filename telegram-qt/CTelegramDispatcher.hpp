@@ -221,6 +221,8 @@ signals:
     void chatMessageReceived(quint32 chatId, const QString &contact, const QString &message, TelegramNamespace::MessageType type, quint32 messageId, quint32 flags, quint32 timestamp);
 #endif
 
+    void updateReadHistoryInbox(quint32 userId, quint32 chatId, quint32 pts);
+
     void contactStatusChanged(const QString &phone, TelegramNamespace::ContactStatus status);
     void contactTypingStatusChanged(const QString &contact, TelegramNamespace::MessageAction action);
     void contactChatTypingStatusChanged(quint32 publicChatId, const QString &phone, TelegramNamespace::MessageAction action);

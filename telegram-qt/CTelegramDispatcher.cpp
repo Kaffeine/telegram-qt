@@ -1446,9 +1446,10 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     quint32 newPts = m_updatesState.pts;
 
     switch (update.tlType) {
+    case TLValue::UpdateReadHistoryInbox:
+        emit updateReadHistoryInbox(update.peer.userId, update.peer.chatId, update.pts);
     case TLValue::UpdateNewMessage:
     case TLValue::UpdateReadMessagesContents:
-    case TLValue::UpdateReadHistoryInbox:
     case TLValue::UpdateReadHistoryOutbox:
     case TLValue::UpdateDeleteMessages:
         // Official client also have TLValue::UpdateWebPage here. Why the hell?
