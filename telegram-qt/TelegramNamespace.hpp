@@ -138,6 +138,11 @@ public:
 
         Type type;
         quint32 id;
+
+        bool operator==(const Peer &p) const
+        {
+            return (p.type == type) && (p.id == id);
+        }
     };
 
     struct DcOption
