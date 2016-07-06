@@ -88,8 +88,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(contactListChanged()),
             SLOT(whenContactListChanged()));
-    connect(m_core, SIGNAL(messageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
-            SLOT(whenMessageMediaDataReceived(QString,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
+    connect(m_core, SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
+            SLOT(whenMessageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
     connect(m_core, SIGNAL(messageReceived(TelegramNamespace::Message)),
             SLOT(whenMessageReceived(TelegramNamespace::Message)));
     connect(m_core, SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)),
@@ -233,7 +233,7 @@ void MainWindow::whenContactListChanged()
     }
 }
 
-void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)
+void MainWindow::whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)
 {
     qDebug() << Q_FUNC_INFO << mimeType;
 
@@ -260,7 +260,7 @@ void MainWindow::whenMessageMediaDataReceived(const QString &contact, quint32 me
     }
     const QPixmap photo = QPixmap(mediaFile.fileName());
 #else
-    Q_UNUSED(contact);
+    Q_UNUSED(peer);
 
     if (size > 1024 * 1024 * 1024) {
         qDebug() << "Ignore file with size more, than 1 Gb.";

@@ -63,7 +63,7 @@ protected slots:
     void whenPhoneCodeRequested();
     void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void whenContactListChanged();
-    void whenMessageMediaDataReceived(const QString &contact, quint32 messageId, const QByteArray &data,
+    void whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data,
                                       const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
     void whenMessageReceived(const TelegramNamespace::Message &message);
     void whenContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
