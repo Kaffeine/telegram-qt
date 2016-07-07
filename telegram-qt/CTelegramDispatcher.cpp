@@ -1417,8 +1417,10 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     case TLValue::UpdateDeleteMessages:
         // Official client also have TLValue::UpdateWebPage here. Why the hell?
         if (m_updatesState.pts + update.ptsCount != update.pts) {
-            qDebug() << "Needed inner updates:" << m_updatesState.pts << update.ptsCount << update.pts;
-            Q_ASSERT(0);
+            qDebug() << "Need inner updates:" << m_updatesState.pts << "+" << update.ptsCount << "!=" << update.pts;
+            qDebug() << "Updates delaying is not implemented yet. Recovery via getDifference() in 10 ms";
+            QTimer::singleShot(10, this, SLOT(getDifference()));
+            return;
         } else {
             newPts = update.pts;
         }
