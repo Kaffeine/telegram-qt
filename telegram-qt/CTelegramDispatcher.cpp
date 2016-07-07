@@ -2221,14 +2221,12 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
     case TLValue::UpdateShortMessage:
     case TLValue::UpdateShortChatMessage:
     {
-        if (m_updatesState.pts + updates.ptsCount != updates.pts) {
-            qDebug() << "Need to get difference."
-                     << m_updatesState.pts << "+" <<updates.ptsCount
-                     << "vs" << updates.pts;
-            Q_ASSERT(0);
-            break;
-        }
-        TLMessage shortMessage;
+        // Reconstruct full update from this short update.
+        TLUpdate update;
+        update.tlType = TLValue::UpdateNewMessage;
+        update.pts = updates.pts;
+        update.ptsCount = updates.ptsCount;
+        TLMessage &shortMessage = update.message;
         shortMessage.tlType = TLValue::Message;
         shortMessage.id = updates.id;
         shortMessage.flags = updates.flags;
@@ -2270,13 +2268,12 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
             }
         }
 
-        processMessageReceived(shortMessage);
+        processUpdate(update);
 
         if (messageActionIndex > 0) {
             m_contactsMessageActions.remove(messageActionIndex);
         }
     }
-        ensureUpdateState(updates.pts);
         break;
     case TLValue::UpdateShort:
         processUpdate(updates.update);
