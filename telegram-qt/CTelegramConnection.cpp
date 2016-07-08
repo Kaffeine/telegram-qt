@@ -2542,7 +2542,11 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
     qDebug() << Q_FUNC_INFO << "AuthAuthorization" << maskPhoneNumber(result.user.phone) << result.expires;
 
     if (result.tlType == TLValue::AuthAuthorization) {
-        setAuthState(AuthStateSignedIn);
+        if (result.user.tlType == TLValue::UserSelf) {
+            setAuthState(AuthStateSignedIn);
+        } else {
+            qDebug() << "Something went wrong. Authorization user is not a self user.";
+        }
     }
 
     return result.tlType;
