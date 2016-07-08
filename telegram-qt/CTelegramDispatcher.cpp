@@ -1339,7 +1339,7 @@ void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifferenc
     checkStateAndCallGetDifference();
 }
 
-void CTelegramDispatcher::whenMessagesChatsReceived(const QVector<TLChat> &chats)
+void CTelegramDispatcher::onChatsReceived(const QVector<TLChat> &chats)
 {
     qDebug() << Q_FUNC_INFO << chats.count();
 
@@ -1982,7 +1982,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
             connect(connection, SIGNAL(authExportedAuthorizationReceived(quint32,quint32,QByteArray)),
                     SLOT(whenAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
             connect(connection, SIGNAL(messagesChatsReceived(QVector<TLChat>)),
-                    SLOT(whenMessagesChatsReceived(QVector<TLChat>)));
+                    SLOT(onChatsReceived(QVector<TLChat>)));
             connect(connection, SIGNAL(messagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)),
                     SLOT(whenMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
             connect(connection, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
