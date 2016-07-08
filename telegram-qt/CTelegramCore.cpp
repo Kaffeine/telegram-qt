@@ -37,6 +37,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(phoneStatusReceived(QString,bool)));
     connect(m_dispatcher, SIGNAL(phoneCodeRequired()),
             SIGNAL(phoneCodeRequired()));
+    connect(m_dispatcher, SIGNAL(passwordInfoReceived(quint64)),
+            SIGNAL(passwordInfoReceived(quint64)));
     connect(m_dispatcher, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
             SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_dispatcher, SIGNAL(contactListChanged()),
@@ -151,6 +153,16 @@ void CTelegramCore::requestPhoneStatus(const QString &phoneNumber)
 void CTelegramCore::requestPhoneCode(const QString &phoneNumber)
 {
     m_dispatcher->requestPhoneCode(phoneNumber);
+}
+
+quint64 CTelegramCore::getPassword()
+{
+    return m_dispatcher->getPassword();
+}
+
+void CTelegramCore::tryPassword(const QByteArray &salt, const QByteArray &password)
+{
+    m_dispatcher->tryPassword(salt, password);
 }
 
 void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)
@@ -272,6 +284,11 @@ bool CTelegramCore::getChatParticipants(QVector<quint32> *participants, quint32 
 bool CTelegramCore::getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const
 {
     return m_dispatcher->getMessageMediaInfo(messageInfo, messageId);
+}
+
+bool CTelegramCore::getPasswordInfo(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId)
+{
+    return m_dispatcher->getPasswordData(passwordInfo, requestId);
 }
 
 void CTelegramCore::setMessageReceivingFilter(TelegramNamespace::MessageFlags flags)

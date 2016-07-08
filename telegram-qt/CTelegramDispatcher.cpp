@@ -602,6 +602,28 @@ void CTelegramDispatcher::requestPhoneStatus(const QString &phoneNumber)
     activeConnection()->authCheckPhone(phoneNumber);
 }
 
+quint64 CTelegramDispatcher::getPassword()
+{
+    if (!activeConnection()) {
+        return 0;
+    }
+
+    return activeConnection()->accountGetPassword();
+}
+
+void CTelegramDispatcher::tryPassword(const QByteArray &salt, const QByteArray &password)
+{
+    if (!activeConnection()) {
+        return;
+    }
+
+    QByteArray pwdData = salt + password + salt;
+
+    QByteArray pwdHash = Utils::sha256(pwdData);
+
+    activeConnection()->authCheckPassword(pwdHash);
+}
+
 void CTelegramDispatcher::signIn(const QString &phoneNumber, const QString &authCode)
 {
     if (!activeConnection()) {
@@ -2118,6 +2140,40 @@ void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
     }
 }
 
+void CTelegramDispatcher::onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode)
+{
+    switch (errorCode) {
+    case TelegramNamespace::UnauthorizedSessionPasswordNeeded:
+        activeConnection()->accountGetPassword();
+        break;
+    default:
+        break;
+    }
+}
+
+void CTelegramDispatcher::onPasswordReceived(const TLAccountPassword &password, quint64 requestId)
+{
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << password;
+#else
+    qDebug() << Q_FUNC_INFO;
+#endif
+
+    m_passwordInfo.insert(requestId, password);
+    emit passwordInfoReceived(requestId);
+}
+
+bool CTelegramDispatcher::getPasswordData(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId)
+{
+    if (!m_passwordInfo.contains(requestId)) {
+        return false;
+    }
+
+    TLAccountPassword &data = *passwordInfo->d;
+    data = m_passwordInfo.value(requestId);
+    return true;
+}
+
 void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset)
 {
     if (!m_requestedFileDescriptors.contains(requestId)) {
@@ -2396,6 +2452,7 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
 
     if (m_initializationState == StepDone) {
         setConnectionState(TelegramNamespace::ConnectionStateReady);
+        m_passwordInfo.clear();
         return;
     }
 
@@ -2509,6 +2566,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection()
     connect(connection, SIGNAL(wantedActiveDcChanged(quint32)), SLOT(whenWantedActiveDcChanged(quint32)));
 
     connect(connection, SIGNAL(phoneStatusReceived(QString,bool)), SIGNAL(phoneStatusReceived(QString,bool)));
+    connect(connection, SIGNAL(passwordReceived(TLAccountPassword,quint64)), SLOT(onPasswordReceived(TLAccountPassword,quint64)));
 
     connect(connection, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
     connect(connection,

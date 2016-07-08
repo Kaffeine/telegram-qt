@@ -60,6 +60,7 @@ public:
     bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
     bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
+    bool getPasswordInfo(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId);
 
 public Q_SLOTS:
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags); // Messages with at least one of the passed flags will be filtered out.
@@ -77,6 +78,9 @@ public Q_SLOTS:
 
     void requestPhoneStatus(const QString &phoneNumber);
     void requestPhoneCode(const QString &phoneNumber);
+    quint64 getPassword();
+    void tryPassword(const QByteArray &salt, const QString &password);
+    void tryPassword(const QByteArray &salt, const QByteArray &password);
     void signIn(const QString &phoneNumber, const QString &authCode);
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
@@ -129,6 +133,7 @@ Q_SIGNALS:
     void contactListChanged();
     void contactProfileChanged(quint32 userId); // First, last or user name was changed
     void phoneStatusReceived(const QString &phone, bool registered);
+    void passwordInfoReceived(quint64 requestId);
 
     void avatarReceived(quint32 userId, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
     void messageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data,
@@ -165,6 +170,11 @@ inline quint32 CTelegramCore::identifierToChatId(const QString &identifier)
         return identifier.section(QLatin1String("chat"), 1).toUInt();
     }
     return 0;
+}
+
+inline void CTelegramCore::tryPassword(const QByteArray &salt, const QString &password)
+{
+    return tryPassword(salt, password.toUtf8());
 }
 
 inline void CTelegramCore::addContact(const QString &phoneNumber)

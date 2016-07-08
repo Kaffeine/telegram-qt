@@ -253,6 +253,7 @@ signals:
     void actualDcIdReceived(quint32 dc, quint32 newDcId);
     void dcConfigurationReceived(quint32 dc);
     void phoneStatusReceived(const QString &phone, bool registered);
+    void passwordReceived(const TLAccountPassword &password, quint64 requestId);
     void phoneCodeRequired();
     void loggedOut(bool result);
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
@@ -316,6 +317,7 @@ protected:
     TLValue processMessagesGetChats(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetFullChat(CTelegramStream &stream, quint64 id);
     TLValue processAccountCheckUsername(CTelegramStream &stream, quint64 id);
+    TLValue processAccountGetPassword(CTelegramStream &stream, quint64 id);
     TLValue processAccountUpdateStatus(CTelegramStream &stream, quint64 id);
     TLValue processAccountUpdateUsername(CTelegramStream &stream, quint64 id);
 

@@ -1995,6 +1995,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::UsersGetFullUser:
             processingResult = processUsersGetFullUser(stream, id);
             break;
+        case TLValue::AuthCheckPassword:
         case TLValue::AuthImportAuthorization:
         case TLValue::AuthSignIn:
         case TLValue::AuthSignUp:
@@ -2041,6 +2042,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
             break;
         case TLValue::AccountCheckUsername:
             processingResult = processAccountCheckUsername(stream, id);
+            break;
+        case TLValue::AccountGetPassword:
+            processingResult = processAccountGetPassword(stream, id);
             break;
         case TLValue::AccountUpdateStatus:
             processingResult = processAccountUpdateStatus(stream, id);
@@ -2121,6 +2125,7 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
         break;
     case 400: // BAD_REQUEST
         switch (request) {
+        case TLValue::AuthCheckPassword:
         case TLValue::AuthCheckPhone:
         case TLValue::AuthSendCode:
         case TLValue::AuthSendCall:
@@ -2773,6 +2778,25 @@ TLValue CTelegramConnection::processAccountCheckUsername(CTelegramStream &stream
     }
 
     return result;
+}
+
+TLValue CTelegramConnection::processAccountGetPassword(CTelegramStream &stream, quint64 id)
+{
+    Q_UNUSED(id);
+
+    TLAccountPassword result;
+    stream >> result;
+
+    switch (result.tlType) {
+    case TLValue::AccountNoPassword:
+    case TLValue::AccountPassword:
+        emit passwordReceived(result, id);
+        break;
+    default:
+        break;
+    }
+
+    return result.tlType;
 }
 
 TLValue CTelegramConnection::processAccountUpdateStatus(CTelegramStream &stream, quint64 id)
