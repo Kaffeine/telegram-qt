@@ -2341,6 +2341,10 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         Q_ASSERT(0);
         break;
     case TLValue::Updates:
+        whenUsersReceived(updates.users);
+        onChatsReceived(updates.chats);
+
+        // TODO: ensureUpdateState(, updates.seq, updates.date);?
 
         if (!updates.updates.isEmpty()) {
             // Official client sorts updates by pts/qts. Wat?!
