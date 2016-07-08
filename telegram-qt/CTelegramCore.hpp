@@ -126,6 +126,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);
+    void selfUserAvailable(quint32 userId);
 
     void phoneCodeRequired();
     void loggedOut(bool result);

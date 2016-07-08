@@ -108,10 +108,9 @@ public:
         StepFirst           = 0,
         StepDcConfiguration = 1 << 0,
         StepSignIn          = 1 << 1,
-        StepKnowSelf        = 1 << 2,
-        StepContactList     = 1 << 3,
-        StepChatInfo        = 1 << 4,
-        StepUpdates         = 1 << 5,
+        StepContactList     = 1 << 2,
+        StepChatInfo        = 1 << 3,
+        StepUpdates         = 1 << 4,
         StepDone            = StepUpdates | (StepUpdates - 1)
     };
 
@@ -196,6 +195,7 @@ public:
 
 signals:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);
+    void selfUserAvailable(quint32 userId);
 
     void phoneCodeRequired();
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);

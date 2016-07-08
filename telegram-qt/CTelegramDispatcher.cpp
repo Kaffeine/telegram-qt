@@ -1116,9 +1116,16 @@ void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
         }
 
         if (user.tlType == TLValue::UserSelf) {
-            m_selfUserId = user.id;
-
-            continueInitialization(StepKnowSelf);
+            if (m_selfUserId) {
+                if (m_selfUserId != user.id) {
+                    qDebug() << "Got self user with different id.";
+                }
+                m_selfUserId = user.id;
+                emit selfUserAvailable(user.id);
+            } else {
+                m_selfUserId = user.id;
+                emit selfUserAvailable(user.id);
+            }
         }
     }
 }
@@ -1248,18 +1255,11 @@ void CTelegramDispatcher::getUser(quint32 id)
 
 void CTelegramDispatcher::getInitialUsers()
 {
-    QVector<TLInputUser> users;
-
     TLInputUser user;
-
-    user.tlType = TLValue::InputUserSelf;
-    users << user;
-
     user.tlType = TLValue::InputUserContact;
     user.userId = 777000;
-    users << user;
 
-    activeConnection()->usersGetUsers(users);
+    activeConnection()->usersGetUsers(QVector<TLInputUser>() << user);
 }
 
 void CTelegramDispatcher::getContacts()
@@ -2434,12 +2434,8 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     if ((m_initializationState & StepDcConfiguration) && (m_initializationState & StepSignIn)) {
         setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
 
-        if (!(m_requestedSteps & StepKnowSelf)) {
-            getInitialUsers();
-            m_requestedSteps |= StepKnowSelf;
-        }
-
         if (!(m_requestedSteps & StepContactList)) {
+            getInitialUsers();
             getContacts();
             m_requestedSteps |= StepContactList;
         }
@@ -2456,8 +2452,7 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         return;
     }
 
-    if ((m_initializationState & StepContactList) && (m_initializationState & StepKnowSelf)) {
-        // We need to know users (contact list and self) info to properly process updates.
+    if (m_initializationState & StepContactList) {
         if (!(m_requestedSteps & StepUpdates)) {
             getUpdatesState();
             m_requestedSteps |= StepUpdates;

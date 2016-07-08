@@ -2550,6 +2550,7 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
 
     if (result.tlType == TLValue::AuthAuthorization) {
         if (result.user.tlType == TLValue::UserSelf) {
+            emit usersReceived(QVector<TLUser>() << result.user);
             setAuthState(AuthStateSignedIn);
         } else {
             qDebug() << "Something went wrong. Authorization user is not a self user.";
