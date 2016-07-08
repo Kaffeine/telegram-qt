@@ -189,7 +189,7 @@ void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered)
 {
     if (phone == ui->phoneNumber->text()) {
         QString registeredText = registered ? tr("Registered") : tr("Not registered");
-        ui->phoneStatus->setText(QString(QLatin1String("%1, %2")).arg(registeredText));
+        ui->phoneStatus->setText(registeredText);
 
         setRegistered(registered);
     } else {
