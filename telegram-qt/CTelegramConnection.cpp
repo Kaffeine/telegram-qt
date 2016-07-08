@@ -2143,6 +2143,8 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
                 emit authSignErrorReceived(TelegramNamespace::AuthSignErrorPhoneCodeIsInvalid, errorMessage);
             } else if (errorMessage == QLatin1String("PHONE_CODE_EXPIRED")) {
                 emit authSignErrorReceived(TelegramNamespace::AuthSignErrorPhoneCodeIsExpired, errorMessage);
+            } else if (errorMessage == QLatin1String("PASSWORD_HASH_INVALID")) {
+                emit authSignErrorReceived(TelegramNamespace::AuthSignErrorPasswordHashInvalid, errorMessage);
             } else if (errorMessage == QLatin1String("FIRSTNAME_INVALID")) {
                 emit authSignErrorReceived(TelegramNamespace::AuthSignErrorFirstNameIsInvalid, errorMessage);
             } else if (errorMessage == QLatin1String("LASTNAME_INVALID")) {

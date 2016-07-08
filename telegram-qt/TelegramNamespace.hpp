@@ -66,6 +66,7 @@ public:
         AuthSignErrorPhoneNumberIsUnoccupied,
         AuthSignErrorPhoneCodeIsInvalid,
         AuthSignErrorPhoneCodeIsExpired,
+        AuthSignErrorPasswordHashInvalid,
         AuthSignErrorFirstNameIsInvalid,
         AuthSignErrorLastNameIsInvalid
     };
