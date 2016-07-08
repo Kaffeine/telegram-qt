@@ -41,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_core(new CTelegramCore(this)),
+    m_passwordInfo(nullptr),
     m_contactsModel(new CContactModel(m_core, this)),
     m_messagingModel(new CMessageModel(m_core, this)),
     m_chatContactsModel(new CContactModel(m_core, this)),
@@ -84,6 +85,10 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenPhoneStatusReceived(QString,bool)));
     connect(m_core, SIGNAL(phoneCodeRequired()),
             SLOT(whenPhoneCodeRequested()));
+    connect(m_core, SIGNAL(passwordInfoReceived(quint64)),
+            SLOT(onPasswordInfoReceived(quint64)));
+    connect(m_core, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)),
+            SLOT(whenUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
     connect(m_core, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
             SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(contactListChanged()),
@@ -202,6 +207,27 @@ void MainWindow::whenPhoneCodeRequested()
     setAppState(AppStateCodeSent);
 
     m_core->requestPhoneStatus(ui->phoneNumber->text());
+}
+
+void MainWindow::onPasswordInfoReceived(quint64 requestId)
+{
+    qDebug() << Q_FUNC_INFO << requestId;
+    if (!m_passwordInfo) {
+        m_passwordInfo = new TelegramNamespace::PasswordInfo();
+    }
+
+    m_core->getPasswordInfo(m_passwordInfo, requestId);
+}
+
+void MainWindow::whenUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage)
+{
+    QToolTip::showText(ui->confirmationCode->mapToGlobal(QPoint(0, 0)), errorMessage);
+    qDebug() << errorCode << errorMessage;
+
+    if (errorCode == TelegramNamespace::UnauthorizedSessionPasswordNeeded) {
+        setAppState(AppStatePasswordRequired);
+        m_core->getPassword();
+    }
 }
 
 void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage)
@@ -569,10 +595,14 @@ void MainWindow::on_signButton_clicked()
     if (m_appState >= AppStateSignedIn) {
         m_core->logOut();
     } else {
-        if (m_registered) {
-            m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
-        } else {
-            m_core->signUp(ui->phoneNumber->text(), ui->confirmationCode->text(), ui->firstName->text(), ui->lastName->text());
+        if (m_appState == AppStatePasswordRequired) {
+            m_core->tryPassword(m_passwordInfo->currentSalt(), ui->confirmationCode->text());
+        } else { // AppStateCodeSent
+            if (m_registered) {
+                m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
+            } else {
+                m_core->signUp(ui->phoneNumber->text(), ui->confirmationCode->text(), ui->firstName->text(), ui->lastName->text());
+            }
         }
     }
 }
@@ -674,6 +704,13 @@ void MainWindow::setAppState(MainWindow::AppState newState)
         break;
     case AppStateCodeSent:
         ui->connectionState->setText(tr("Code sent..."));
+        ui->confirmationCode->setFocus();
+        break;
+    case AppStatePasswordRequired:
+        ui->signButton->setText(tr("Try password"));
+        ui->connectionState->setText(tr("Password required"));
+        ui->confirmationCode->setEnabled(true);
+        ui->confirmationCode->clear();
         ui->confirmationCode->setFocus();
         break;
     case AppStateSignedIn:

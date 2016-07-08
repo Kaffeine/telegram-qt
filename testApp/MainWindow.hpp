@@ -50,6 +50,7 @@ public:
         AppStateCodeRequired,
         AppStateCodeRequested,
         AppStateCodeSent,
+        AppStatePasswordRequired,
         AppStateSignedIn,
         AppStateReady,
         AppStateLoggedOut,
@@ -61,6 +62,8 @@ protected slots:
     void whenLoggedOut(bool result);
     void whenPhoneStatusReceived(const QString &phone, bool registered);
     void whenPhoneCodeRequested();
+    void onPasswordInfoReceived(quint64 requestId);
+    void whenUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
     void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void whenContactListChanged();
     void whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data,
@@ -155,6 +158,7 @@ private:
 
     CTelegramCore *m_core;
 
+    TelegramNamespace::PasswordInfo *m_passwordInfo;
     QMap<quint32,quint64> m_contactLastMessageList;
     QMap<quint32, QString> m_uploadingRequests;
 
