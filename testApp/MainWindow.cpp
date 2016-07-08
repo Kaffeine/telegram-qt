@@ -200,6 +200,8 @@ void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered)
 void MainWindow::whenPhoneCodeRequested()
 {
     setAppState(AppStateCodeSent);
+
+    m_core->requestPhoneStatus(ui->phoneNumber->text());
 }
 
 void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage)
@@ -557,7 +559,6 @@ void MainWindow::on_requestCode_clicked()
         return;
     }
 
-    m_core->requestPhoneStatus(ui->phoneNumber->text());
     m_core->requestPhoneCode(ui->phoneNumber->text());
 
     m_appState = AppStateCodeRequested;
