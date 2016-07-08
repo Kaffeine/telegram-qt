@@ -153,6 +153,27 @@ public:
         quint32 port;
     };
 
+    class PasswordInfo
+    {
+    public:
+        PasswordInfo();
+        PasswordInfo(const PasswordInfo &otherData);
+
+        PasswordInfo &operator=(const PasswordInfo &otherData);
+
+        QByteArray newSalt();
+        QString emailUnconfirmedPattern();
+        QByteArray currentSalt();
+        QString hint();
+        bool hasRecovery();
+
+    protected:
+        friend class CTelegramDispatcher;
+        class Private;
+
+        Private *d;
+    };
+
     struct Message
     {
         Message() :

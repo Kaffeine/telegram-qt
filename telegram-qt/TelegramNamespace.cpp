@@ -145,3 +145,45 @@ quint32 getApiContactLastOnline(const TLUserStatus &status)
         return TelegramNamespace::ContactLastOnlineUnknown;
     }
 }
+
+TelegramNamespace::PasswordInfo::PasswordInfo() :
+    d(new Private())
+{
+}
+
+TelegramNamespace::PasswordInfo::PasswordInfo(const TelegramNamespace::PasswordInfo &otherData) :
+    d(new Private())
+{
+    *d = *otherData.d;
+}
+
+TelegramNamespace::PasswordInfo &TelegramNamespace::PasswordInfo::operator=(const TelegramNamespace::PasswordInfo &otherData)
+{
+    *d = *otherData.d;
+    return *this;
+}
+
+QByteArray TelegramNamespace::PasswordInfo::newSalt()
+{
+    return d->newSalt;
+}
+
+QString TelegramNamespace::PasswordInfo::emailUnconfirmedPattern()
+{
+    return d->emailUnconfirmedPattern;
+}
+
+QByteArray TelegramNamespace::PasswordInfo::currentSalt()
+{
+    return d->currentSalt;
+}
+
+QString TelegramNamespace::PasswordInfo::hint()
+{
+    return d->hint;
+}
+
+bool TelegramNamespace::PasswordInfo::hasRecovery()
+{
+    return d->hasRecovery;
+}
