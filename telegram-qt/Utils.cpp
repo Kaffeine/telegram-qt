@@ -121,6 +121,17 @@ QByteArray Utils::sha1(const QByteArray &data)
     return QCryptographicHash::hash(data, QCryptographicHash::Sha1);
 }
 
+QByteArray Utils::sha256(const QByteArray &data)
+{
+#if QT_VERSION < 0x050000
+    QByteArray pwdHash(32, Qt::Uninitialized);
+    SHA256(reinterpret_cast<const uchar*>(data.constData()), static_cast<size_t>(data.size()), reinterpret_cast<uchar*>(pwdHash.data()));
+    return pwdHash;
+#else
+    return QCryptographicHash::hash(data, QCryptographicHash::Sha256);
+#endif
+}
+
 QByteArray bnToBinArray(const BIGNUM *n)
 {
     QByteArray result;
