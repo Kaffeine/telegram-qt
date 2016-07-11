@@ -250,6 +250,7 @@ protected slots:
 
     void whenMessageSentInfoReceived(quint64 randomId, TLMessagesSentMessage info);
     void whenMessagesHistoryReceived(const TLMessagesMessages &messages);
+    void onMessagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offset, quint32 maxId, quint32 limit);
 
     void getDcConfiguration();
     void getContacts();

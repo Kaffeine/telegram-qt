@@ -1244,6 +1244,33 @@ void CTelegramDispatcher::whenMessagesHistoryReceived(const TLMessagesMessages &
     }
 }
 
+void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offset, quint32 maxId, quint32 limit)
+{
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << dialogs << offset << maxId << limit;
+#else
+    qDebug() << Q_FUNC_INFO << offset << maxId << limit;
+#endif
+
+    onUsersReceived(dialogs.users);
+    onChatsReceived(dialogs.chats);
+
+//    foreach (const TLMessage &message, dialogs.messages) {
+//        processMessageReceived(message);
+//    }
+
+//    switch (dialogs.tlType) {
+//    case TLValue::MessagesDialogs:
+//        break;
+//    case TLValue::MessagesDialogsSlice:
+//        dialogs.count;
+//        activeConnection()->messagesGetDialogs();
+//        break;
+//    default:
+//        break;
+//    }
+}
+
 void CTelegramDispatcher::getDcConfiguration()
 {
     activeConnection()->getConfiguration();
@@ -1977,6 +2004,8 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenMessageSentInfoReceived(quint64,TLMessagesSentMessage)));
             connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
                     SLOT(whenMessagesHistoryReceived(TLMessagesMessages)));
+            connect(connection, SIGNAL(messagesDialogsReceived(TLMessagesDialogs,quint32,quint32,quint32)),
+                    SLOT(onMessagesDialogsReceived(TLMessagesDialogs,quint32,quint32,quint32)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),
                     SLOT(whenUpdatesStateReceived(TLUpdatesState)));
             connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)),
