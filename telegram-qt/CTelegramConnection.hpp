@@ -270,6 +270,7 @@ signals:
 
     void fullUserReceived(const TLUserFull &userFull);
     void messagesHistoryReceived(const TLMessagesMessages &history, const TLInputPeer &peer);
+    void messagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offset, quint32 maxId, quint32 limit);
 
     void updatesReceived(const TLUpdates &update);
     void updatesStateReceived(const TLUpdatesState &updatesState);
@@ -314,6 +315,7 @@ protected:
     TLValue processMessagesReadHistory(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReceivedMessages(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetHistory(CTelegramStream &stream, quint64 id);
+    TLValue processMessagesGetDialogs(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetChats(CTelegramStream &stream, quint64 id);
     TLValue processMessagesGetFullChat(CTelegramStream &stream, quint64 id);
     TLValue processAccountCheckUsername(CTelegramStream &stream, quint64 id);

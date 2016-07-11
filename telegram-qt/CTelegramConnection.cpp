@@ -2034,6 +2034,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::MessagesGetHistory:
             processingResult = processMessagesGetHistory(stream, id);
             break;
+        case TLValue::MessagesGetDialogs:
+            processingResult = processMessagesGetDialogs(stream, id);
+            break;
         case TLValue::MessagesGetChats:
             processingResult = processMessagesGetChats(stream, id);
             break;
@@ -2729,6 +2732,40 @@ TLValue CTelegramConnection::processMessagesGetHistory(CTelegramStream &stream, 
         stream >> peer;
 
         emit messagesHistoryReceived(result, peer);
+    }
+
+    return result.tlType;
+}
+
+TLValue CTelegramConnection::processMessagesGetDialogs(CTelegramStream &stream, quint64 id)
+{
+    TLMessagesDialogs result;
+    stream >> result;
+
+    const QByteArray data = m_submittedPackages.value(id);
+
+    quint32 offset = 0;
+    quint32 maxId = 0;
+    quint32 limit = 0;
+
+    switch (result.tlType) {
+    case TLValue::MessagesDialogs:
+    case TLValue::MessagesDialogsSlice:
+        if (data.isEmpty()) {
+            qWarning() << Q_FUNC_INFO << "Can not restore rpc message" << id;
+        } else {
+            CTelegramStream stream(data);
+            TLValue method;
+            stream >> method; // TLValue::MessagesGetDialogs
+            stream >> offset;
+            stream >> maxId;
+            stream >> limit;
+        }
+
+        emit messagesDialogsReceived(result, offset, maxId, limit);
+        break;
+    default:
+        break;
     }
 
     return result.tlType;
