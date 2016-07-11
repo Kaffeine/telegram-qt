@@ -1967,8 +1967,6 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
 
     if (connection == activeConnection()) {
         if (newState == CTelegramConnection::AuthStateSignedIn) {
-            connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
-                    SLOT(onUsersReceived(QVector<TLUser>)));
             connect(connection, SIGNAL(contactListReceived(QVector<quint32>)),
                     SLOT(whenContactListReceived(QVector<quint32>)));
             connect(connection, SIGNAL(contactListChanged(QVector<quint32>,QVector<quint32>)),
@@ -2576,8 +2574,11 @@ CTelegramConnection *CTelegramDispatcher::createConnection()
             SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
             SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
 
-    connect(connection, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)), SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
+    connect(connection, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)),
+            SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
 
+    connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
+            SLOT(onUsersReceived(QVector<TLUser>)));
     connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(whenFileDataReceived(TLUploadFile,quint32,quint32)));
 
     return connection;
