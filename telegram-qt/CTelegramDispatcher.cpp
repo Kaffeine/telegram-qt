@@ -1128,6 +1128,10 @@ void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
             }
         }
 
+        if (m_askedUserIds.contains(user.id)) {
+            m_askedUserIds.removeOne(user.id);
+        }
+
         if (!existsUser) {
             emit userInfoReceived(user.id);
         }
@@ -1783,6 +1787,12 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
     apiMessage.id = message.id;
     apiMessage.timestamp = message.date;
     apiMessage.flags = messageFlags;
+
+    if (!m_users.contains(apiMessage.userId) && !m_askedUserIds.contains(apiMessage.userId)) {
+        m_askedUserIds.append(apiMessage.userId);
+
+        activeConnection()->messagesGetDialogs(0, message.id + 1, 1);
+    }
 
     emit messageReceived(apiMessage);
 }

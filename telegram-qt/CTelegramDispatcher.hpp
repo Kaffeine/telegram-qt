@@ -382,6 +382,7 @@ protected:
     QMap<quint32, QPair<quint32,QByteArray> > m_exportedAuthentications; // dc, <id, auth data>
     QMap<quint32, QByteArray> m_delayedPackages; // dc, package data
     QMap<quint32, TLUser*> m_users;
+    QVector<quint32> m_askedUserIds;
 
     QMap<quint32, TLMessage> m_knownMediaMessages; // message id, message
 
