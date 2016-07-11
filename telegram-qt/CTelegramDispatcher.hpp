@@ -196,6 +196,7 @@ public:
 signals:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);
     void selfUserAvailable(quint32 userId);
+    void userInfoReceived(quint32 userId);
 
     void phoneCodeRequired();
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);

@@ -1127,6 +1127,10 @@ void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
                 emit selfUserAvailable(user.id);
             }
         }
+
+        if (!existsUser) {
+            emit userInfoReceived(user.id);
+        }
     }
 }
 

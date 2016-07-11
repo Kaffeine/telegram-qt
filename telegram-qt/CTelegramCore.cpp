@@ -33,6 +33,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)));
     connect(m_dispatcher, SIGNAL(selfUserAvailable(quint32)),
             SIGNAL(selfUserAvailable(quint32)));
+    connect(m_dispatcher, SIGNAL(userInfoReceived(quint32)),
+            SIGNAL(userInfoReceived(quint32)));
     connect(m_dispatcher, SIGNAL(loggedOut(bool)),
             SIGNAL(loggedOut(bool)));
     connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool)),
