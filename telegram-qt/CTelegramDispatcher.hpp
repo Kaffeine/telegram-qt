@@ -241,7 +241,7 @@ protected slots:
     void whenUpdatesReceived(const TLUpdates &updates);
     void whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
-    void whenUsersReceived(const QVector<TLUser> &users);
+    void onUsersReceived(const QVector<TLUser> &users);
 
     void whenContactListReceived(const QVector<quint32> &contactIdList);
     void whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);

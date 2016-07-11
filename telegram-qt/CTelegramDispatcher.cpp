@@ -1103,7 +1103,7 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
     return true;
 }
 
-void CTelegramDispatcher::whenUsersReceived(const QVector<TLUser> &users)
+void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
 {
     qDebug() << Q_FUNC_INFO << users.count();
     foreach (const TLUser &user, users) {
@@ -1354,7 +1354,7 @@ void CTelegramDispatcher::whenMessagesFullChatReceived(const TLChatFull &chat, c
 {
     Q_UNUSED(chats);
 
-    whenUsersReceived(users);
+    onUsersReceived(users);
     updateFullChat(chat);
 }
 
@@ -1964,7 +1964,7 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
     if (connection == activeConnection()) {
         if (newState == CTelegramConnection::AuthStateSignedIn) {
             connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
-                    SLOT(whenUsersReceived(QVector<TLUser>)));
+                    SLOT(onUsersReceived(QVector<TLUser>)));
             connect(connection, SIGNAL(contactListReceived(QVector<quint32>)),
                     SLOT(whenContactListReceived(QVector<quint32>)));
             connect(connection, SIGNAL(contactListChanged(QVector<quint32>,QVector<quint32>)),
@@ -2341,7 +2341,7 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
         Q_ASSERT(0);
         break;
     case TLValue::Updates:
-        whenUsersReceived(updates.users);
+        onUsersReceived(updates.users);
         onChatsReceived(updates.chats);
 
         // TODO: ensureUpdateState(, updates.seq, updates.date);?
