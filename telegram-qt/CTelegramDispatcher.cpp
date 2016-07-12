@@ -1119,12 +1119,14 @@ void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
             if (m_selfUserId) {
                 if (m_selfUserId != user.id) {
                     qDebug() << "Got self user with different id.";
+
+                    m_selfUserId = user.id;
+                    emit selfUserAvailable(user.id);
                 }
-                m_selfUserId = user.id;
-                emit selfUserAvailable(user.id);
             } else {
                 m_selfUserId = user.id;
                 emit selfUserAvailable(user.id);
+                continueInitialization(StepKnowSelf);
             }
         }
 
@@ -1290,11 +1292,14 @@ void CTelegramDispatcher::getUser(quint32 id)
 
 void CTelegramDispatcher::getInitialUsers()
 {
-    TLInputUser user;
-    user.tlType = TLValue::InputUserContact;
-    user.userId = 777000;
+    TLInputUser selfUser;
+    selfUser.tlType = TLValue::InputUserSelf;
 
-    activeConnection()->usersGetUsers(QVector<TLInputUser>() << user);
+    TLInputUser telegramUser;
+    telegramUser.tlType = TLValue::InputUserContact;
+    telegramUser.userId = 777000;
+
+    activeConnection()->usersGetUsers(QVector<TLInputUser>() << selfUser << telegramUser);
 }
 
 void CTelegramDispatcher::getContacts()
@@ -2479,8 +2484,13 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     if ((m_initializationState & StepDcConfiguration) && (m_initializationState & StepSignIn)) {
         setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
 
-        if (!(m_requestedSteps & StepContactList)) {
+        if (!(m_requestedSteps & StepKnowSelf)) {
             getInitialUsers();
+            m_requestedSteps |= StepKnowSelf;
+            return;
+        }
+
+        if (!(m_requestedSteps & StepContactList)) {
             getContacts();
             m_requestedSteps |= StepContactList;
         }

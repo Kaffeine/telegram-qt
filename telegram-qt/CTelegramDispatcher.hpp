@@ -108,9 +108,10 @@ public:
         StepFirst           = 0,
         StepDcConfiguration = 1 << 0,
         StepSignIn          = 1 << 1,
-        StepContactList     = 1 << 2,
-        StepChatInfo        = 1 << 3,
-        StepUpdates         = 1 << 4,
+        StepKnowSelf        = 1 << 2,
+        StepContactList     = 1 << 3,
+        StepChatInfo        = 1 << 4,
+        StepUpdates         = 1 << 5,
         StepDone            = StepUpdates | (StepUpdates - 1)
     };
 
