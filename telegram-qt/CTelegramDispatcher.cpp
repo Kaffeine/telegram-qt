@@ -1130,8 +1130,9 @@ void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
             }
         }
 
-        if (m_askedUserIds.contains(user.id)) {
-            m_askedUserIds.removeOne(user.id);
+        int indexOfRequest = m_askedUserIds.indexOf(user.id);
+        if (indexOfRequest >= 0) {
+            m_askedUserIds.remove(indexOfRequest);
         }
 
         if (!existsUser) {
