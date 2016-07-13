@@ -76,16 +76,16 @@ public:
 
     void setDcInfo(const TLDcOption &newDcInfo);
 
-    inline TLDcOption dcInfo() const { return m_dcInfo; }
+    TLDcOption dcInfo() const { return m_dcInfo; }
 
 public slots:
     void connectToDc();
 
 public:
-    inline ConnectionStatus status() const { return m_status; }
+    ConnectionStatus status() const { return m_status; }
 
     static quint64 formatTimeStamp(qint64 timeInMs);
-    static inline quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~quint64(3); }
+    static quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~quint64(3); }
 
     static quint64 timeStampToMSecsSinceEpoch(quint64 ts);
 
@@ -220,26 +220,26 @@ public:
     void requestDhGenerationResult();
     bool processServersDHAnswer(const QByteArray &payload);
 
-    inline TLNumber128 clientNonce() const { return m_clientNonce; }
-    inline TLNumber128 serverNonce() const { return m_serverNonce; }
+    TLNumber128 clientNonce() const { return m_clientNonce; }
+    TLNumber128 serverNonce() const { return m_serverNonce; }
 
-    inline quint64 pq() const { return m_pq; }
-    inline quint64 p() const { return m_p; }
-    inline quint64 q() const { return m_q; }
+    quint64 pq() const { return m_pq; }
+    quint64 p() const { return m_p; }
+    quint64 q() const { return m_q; }
 
-    inline quint64 serverPublicFingersprint() const { return m_serverPublicFingersprint; }
+    quint64 serverPublicFingersprint() const { return m_serverPublicFingersprint; }
 
-    inline QByteArray authKey() const { return m_authKey; }
+    QByteArray authKey() const { return m_authKey; }
     void setAuthKey(const QByteArray &newAuthKey);
-    inline quint64 authId() const { return m_authId; }
+    quint64 authId() const { return m_authId; }
 
-    inline quint64 serverSalt() const { return m_serverSalt; }
+    quint64 serverSalt() const { return m_serverSalt; }
     void setServerSalt(const quint64 salt) { m_serverSalt = salt; }
-    inline quint64 sessionId() const { return m_sessionId; }
+    quint64 sessionId() const { return m_sessionId; }
 
-    inline QVector<TLDcOption> dcConfiguration() const { return m_dcConfiguration; }
+    QVector<TLDcOption> dcConfiguration() const { return m_dcConfiguration; }
 
-    inline qint32 deltaTime() const { return m_deltaTime; }
+    qint32 deltaTime() const { return m_deltaTime; }
     void setDeltaTime(const qint32 newDt);
 
     void processRedirectedPackage(const QByteArray &data);
