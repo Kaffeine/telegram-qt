@@ -52,26 +52,26 @@ public:
     static FileRequestDescriptor avatarRequest(const TLUser *user);
     static FileRequestDescriptor messageMediaDataRequest(const TLMessage &message);
 
-    inline Type type() const { return m_type; }
+    Type type() const { return m_type; }
 
-    inline quint32 dcId() const { return m_dcId; }
-    inline bool isValid() const { return m_type != Invalid; }
+    quint32 dcId() const { return m_dcId; }
+    bool isValid() const { return m_type != Invalid; }
 
-    inline TLInputFileLocation inputLocation() const { return m_inputLocation; }
+    TLInputFileLocation inputLocation() const { return m_inputLocation; }
 
-    inline quint32 userId() const { return m_userId; }
-    inline quint32 messageId() const { return m_messageId; }
-    inline quint32 size() const { return m_size; }
-    inline quint32 offset() const { return m_offset; }
+    quint32 userId() const { return m_userId; }
+    quint32 messageId() const { return m_messageId; }
+    quint32 size() const { return m_size; }
+    quint32 offset() const { return m_offset; }
 
-    inline void setOffset(quint32 newOffset) { m_offset = newOffset; }
+    void setOffset(quint32 newOffset) { m_offset = newOffset; }
 
     /* Upload stuff */
-    inline TLInputFile inputFile() const;
-    inline quint32 part() const { return m_part; }
-    inline quint32 parts() const;
-    inline QByteArray md5Sum() const { return m_md5Sum; }
-    inline quint32 fileId() const { return m_fileId; }
+    TLInputFile inputFile() const;
+    quint32 part() const { return m_part; }
+    quint32 parts() const;
+    QByteArray md5Sum() const { return m_md5Sum; }
+    quint32 fileId() const { return m_fileId; }
 
     bool isBigFile() const;
     bool finished() const;
@@ -129,7 +129,7 @@ public:
 
     static qint32 localTypingRecommendedRepeatInterval();
 
-    inline TelegramNamespace::ConnectionState connectionState() const { return m_connectionState; }
+    TelegramNamespace::ConnectionState connectionState() const { return m_connectionState; }
 
     QString selfPhone() const;
     quint32 selfId() const;
@@ -142,7 +142,7 @@ public:
 
     QByteArray connectionSecretInfo() const;
 
-    inline quint32 messageReceivingFilterFlags() const { return m_messageReceivingFilterFlags; }
+    quint32 messageReceivingFilterFlags() const { return m_messageReceivingFilterFlags; }
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags);
     void setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types);
     void setAutoReconnection(bool enable);
@@ -294,7 +294,7 @@ protected:
 
     QString userAvatarToken(const TLUser *user) const;
 
-    inline CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
+    CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
     CTelegramConnection *getConnection(quint32 dc);
 
     CTelegramConnection *createConnection();
