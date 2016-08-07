@@ -96,6 +96,7 @@ public slots:
     void setMessageInboxRead(TelegramNamespace::Peer peer, quint32 messageId);
     void setMessageOutboxRead(TelegramNamespace::Peer peer, quint32 messageId);
     void setResolvedMessageId(quint64 randomId, quint32 resolvedId);
+    void clear();
 
 private:
     CTelegramCore *m_backend;

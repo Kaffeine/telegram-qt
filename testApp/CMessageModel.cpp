@@ -267,3 +267,10 @@ void CMessageModel::setResolvedMessageId(quint64 randomId, quint32 resolvedId)
         }
     }
 }
+
+void CMessageModel::clear()
+{
+    beginRemoveRows(QModelIndex(), 0, rowCount() - 1);
+    m_messages.clear();
+    endRemoveRows();
+}
