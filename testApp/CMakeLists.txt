@@ -3,14 +3,14 @@ set(testApp_SOURCES
     main.cpp
     MainWindow.cpp
     CContactModel.cpp
-    CMessagingModel.cpp
+    CMessageModel.cpp
     CChatInfoModel.cpp
 )
 
 set(testApp_HEADERS
     MainWindow.hpp
     CContactModel.hpp
-    CMessagingModel.hpp
+    CMessageModel.hpp
     CChatInfoModel.hpp
 )
 
