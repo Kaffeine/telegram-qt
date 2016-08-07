@@ -997,7 +997,12 @@ void MainWindow::setActiveContact(quint32 userId)
 
 void MainWindow::setActiveChat(quint32 chatId)
 {
+    if (m_activeChatId == chatId) {
+        return;
+    }
+
     m_activeChatId = chatId;
+    m_chatMessagingModel->clear();
     updateActiveChat();
 }
 
