@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_messagingModel(new CMessageModel(m_core, this)),
     m_chatContactsModel(new CContactModel(m_core, this)),
     m_chatMessagingModel(new CMessageModel(m_core, this)),
-    m_chatInfoModel(new CChatInfoModel(this)),
+    m_chatInfoModel(new CChatInfoModel(m_core, this)),
     m_contactSearchResultModel(nullptr),
     m_activeChatId(0),
     m_chatCreationMode(false),
@@ -108,8 +108,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
             SLOT(onUserNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
 
-    connect(m_core, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
-    connect(m_core, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
+    connect(m_chatInfoModel, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
+    connect(m_chatInfoModel, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
 
     ui->groupChatContacts->hideColumn(CContactModel::Blocked);
 
@@ -404,33 +404,28 @@ void MainWindow::whenChatAdded(quint32 chatId)
 {
     m_chatInfoModel->addChat(chatId);
     setActiveChat(chatId);
-//    whenChatChanged(chatId);
 }
 
 void MainWindow::whenChatChanged(quint32 chatId)
 {
-    if (!m_chatInfoModel->haveChat(chatId)) {
-        // Workaround for temporary TelegramQt issues
-        m_chatInfoModel->addChat(chatId);
+    if (chatId == m_activeChatId) {
+        updateActiveChat();
     }
+}
 
-    TelegramNamespace::GroupChat chat;
-    if (m_core->getChatInfo(&chat, chatId)) {
-        m_chatInfoModel->setChat(chat);
-    }
+void MainWindow::updateActiveChat()
+{
+    const TelegramNamespace::GroupChat *chat = m_chatInfoModel->chatById(m_activeChatId);
 
-    if (chatId != m_activeChatId) {
-        return;
-    }
-
-    ui->groupChatName->setText(chat.title);
+    ui->groupChatName->setText(chat->title);
 
     QVector<quint32> participants;
-    if (!m_core->getChatParticipants(&participants, chatId)) {
+    if (!m_core->getChatParticipants(&participants, m_activeChatId)) {
         qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
     }
 
-//    setContactList(m_chatContactsModel, participants);
+    m_chatContactsModel->setContactList(participants);
+
     for (int i = 0; i < participants.count(); ++i) {
         ui->groupChatContacts->setRowHeight(i, 64);
     }
@@ -1003,21 +998,7 @@ void MainWindow::setActiveContact(quint32 userId)
 void MainWindow::setActiveChat(quint32 chatId)
 {
     m_activeChatId = chatId;
-
-    TelegramNamespace::GroupChat chat;
-    m_core->getChatInfo(&chat, chatId);
-    ui->groupChatName->setText(chat.title);
-
-    QVector<quint32> participants;
-    if (!m_core->getChatParticipants(&participants, chatId)) {
-        qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
-    }
-
-//    setContactList(m_chatContactsModel, participants);
-    for (int i = 0; i < m_chatContactsModel->rowCount(); ++i) {
-        ui->groupChatContacts->setRowHeight(i, 64);
-    }
-    updateGroupChatAddContactButtonText();
+    updateActiveChat();
 }
 
 void MainWindow::updateMessagingContactName()

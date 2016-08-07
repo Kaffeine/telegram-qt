@@ -22,6 +22,8 @@
 
 #include "TelegramNamespace.hpp"
 
+class CTelegramCore;
+
 class CChatInfoModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -33,7 +35,7 @@ public:
         ColumnsCount
     };
 
-    explicit CChatInfoModel(QObject *parent = 0);
+    explicit CChatInfoModel(CTelegramCore *backend, QObject *parent = 0);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -41,11 +43,23 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-    void addChat(int id);
-    bool haveChat(quint32 id);
-    void setChat(const TelegramNamespace::GroupChat &chat);
+    int indexOfChat(quint32 id) const;
+    bool haveChat(quint32 id) const;
+    const TelegramNamespace::GroupChat *chatById(quint32 id) const;
+
+public slots:
+    void addChat(quint32 id);
+
+signals:
+    void chatAdded(quint32 id);
+    void chatChanged(quint32 id);
+
+protected slots:
+    void onChatChanged(quint32 id);
 
 private:
+    CTelegramCore *m_backend;
+
     QList<TelegramNamespace::GroupChat> m_chats;
 
 };

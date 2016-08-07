@@ -16,11 +16,14 @@
  */
 
 #include "CChatInfoModel.hpp"
+#include "CTelegramCore.hpp"
 
-CChatInfoModel::CChatInfoModel(QObject *parent) :
-    QAbstractTableModel(parent)
+CChatInfoModel::CChatInfoModel(CTelegramCore *backend, QObject *parent) :
+    QAbstractTableModel(parent),
+    m_backend(backend)
 {
-
+    connect(m_backend, SIGNAL(chatAdded(quint32)), SLOT(addChat(quint32)));
+    connect(m_backend, SIGNAL(chatChanged(quint32)), SLOT(onChatChanged(quint32)));
 }
 
 QVariant CChatInfoModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -74,32 +77,56 @@ QVariant CChatInfoModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void CChatInfoModel::addChat(int id)
+void CChatInfoModel::addChat(quint32 id)
 {
+    if (haveChat(id)) {
+        return;
+    }
+
     beginInsertRows(QModelIndex(), m_chats.count(), m_chats.count());
     m_chats.append(TelegramNamespace::GroupChat(id));
+    m_backend->getChatInfo(&m_chats.last(), id);
     endInsertRows();
+
+    emit chatAdded(id);
 }
 
-bool CChatInfoModel::haveChat(quint32 id)
+int CChatInfoModel::indexOfChat(quint32 id) const
 {
     for (int i = 0; i < m_chats.count(); ++i) {
         if (m_chats.at(i).id == id) {
-            return true;
+            return i;
         }
     }
-    return false;
+
+    return -1;
 }
 
-void CChatInfoModel::setChat(const TelegramNamespace::GroupChat &chat)
+bool CChatInfoModel::haveChat(quint32 id) const
 {
-    for (int i = 0; i < m_chats.count(); ++i) {
-        if (m_chats.at(i).id != chat.id) {
-            continue;
-        }
+    return indexOfChat(id) >= 0;
+}
 
-        m_chats[i] = chat;
-        emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
+const TelegramNamespace::GroupChat *CChatInfoModel::chatById(quint32 id) const
+{
+    int index = indexOfChat(id);
+
+    if (index < 0) {
+        return 0;
+    }
+
+    return &m_chats.at(index);
+}
+
+void CChatInfoModel::onChatChanged(quint32 id)
+{
+    int i = indexOfChat(id);
+
+    if (i < 0) {
         return;
     }
+
+    m_backend->getChatInfo(&m_chats[i], id);
+    emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
+    emit chatChanged(id);
 }

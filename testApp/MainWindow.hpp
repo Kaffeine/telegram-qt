@@ -74,6 +74,7 @@ protected slots:
     void whenContactStatusChanged(quint32 contact);
     void whenChatAdded(quint32 chatId);
     void whenChatChanged(quint32 chatId);
+    void updateActiveChat();
 
     void whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
     void onUserNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
