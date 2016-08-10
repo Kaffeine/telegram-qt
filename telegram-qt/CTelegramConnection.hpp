@@ -272,7 +272,7 @@ signals:
     void messagesHistoryReceived(const TLMessagesMessages &history, const TLInputPeer &peer);
     void messagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offset, quint32 maxId, quint32 limit);
 
-    void updatesReceived(const TLUpdates &update);
+    void updatesReceived(const TLUpdates &update, quint64 id);
     void updatesStateReceived(const TLUpdatesState &updatesState);
     void updatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
@@ -325,7 +325,7 @@ protected:
 
     bool processErrorSeeOther(const QString errorMessage, quint64 id);
 
-    TLValue processUpdate(CTelegramStream &stream, bool *ok);
+    TLValue processUpdate(CTelegramStream &stream, bool *ok, quint64 id);
 
     SAesKey generateTmpAesKey() const;
     SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const;

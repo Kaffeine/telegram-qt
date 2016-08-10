@@ -2014,8 +2014,8 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenContactListReceived(QVector<quint32>)));
             connect(connection, SIGNAL(contactListChanged(QVector<quint32>,QVector<quint32>)),
                     SLOT(whenContactListChanged(QVector<quint32>,QVector<quint32>)));
-            connect(connection, SIGNAL(updatesReceived(TLUpdates)),
-                    SLOT(whenUpdatesReceived(TLUpdates)));
+            connect(connection, SIGNAL(updatesReceived(TLUpdates,quint64)),
+                    SLOT(onUpdatesReceived(TLUpdates,quint64)));
             connect(connection, SIGNAL(messageSentInfoReceived(quint64,TLMessagesSentMessage)),
                     SLOT(whenMessageSentInfoReceived(quint64,TLMessagesSentMessage)));
             connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
@@ -2311,13 +2311,15 @@ void CTelegramDispatcher::whenFileDataUploaded(quint32 requestId)
     }
 }
 
-void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
+void CTelegramDispatcher::onUpdatesReceived(const TLUpdates &updates, quint64 id)
 {
 #ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << updates;
+    qDebug() << Q_FUNC_INFO << updates << id;
 #else
     qDebug() << Q_FUNC_INFO;
 #endif
+    m_updateRequestId = id;
+
     switch (updates.tlType) {
     case TLValue::UpdatesTooLong:
         qDebug() << "Updates too long!";
@@ -2414,6 +2416,8 @@ void CTelegramDispatcher::whenUpdatesReceived(const TLUpdates &updates)
     default:
         break;
     }
+
+    m_updateRequestId = 0;
 }
 
 void CTelegramDispatcher::whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data)

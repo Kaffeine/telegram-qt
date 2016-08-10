@@ -240,7 +240,7 @@ protected slots:
 
     void whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
     void whenFileDataUploaded(quint32 requestId);
-    void whenUpdatesReceived(const TLUpdates &updates);
+    void onUpdatesReceived(const TLUpdates &updates, quint64 id);
     void whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
     void onUsersReceived(const QVector<TLUser> &users);
@@ -375,6 +375,7 @@ protected:
     QVector<TLDcOption> m_dcConfiguration;
     QMap<quint32, CTelegramConnection *> m_connections;
 
+    quint64 m_updateRequestId;
     TLUpdatesState m_updatesState; // Current application update state (may be older than actual server-side message box state)
     TLUpdatesState m_actualState; // State reported by server as actual
     bool m_updatesStateIsLocked; // True if we are (going to) getting updatesDifference.

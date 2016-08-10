@@ -1861,7 +1861,7 @@ TLValue CTelegramConnection::processRpcQuery(const QByteArray &data)
     CTelegramStream stream(data);
 
     bool isUpdate;
-    TLValue value = processUpdate(stream, &isUpdate); // Doubtfully that this approach will work in next time.
+    TLValue value = processUpdate(stream, &isUpdate, /* requestId */ 0); // Doubtfully that this approach will work in next time.
 
     if (isUpdate) {
         return value;
@@ -2904,7 +2904,7 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
     return true;
 }
 
-TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok)
+TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok, quint64 id)
 {
     TLUpdates updates;
     stream >> updates;
@@ -2920,7 +2920,7 @@ TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok)
     case TLValue::UpdateShort:
     case TLValue::UpdatesCombined:
     case TLValue::Updates:
-        emit updatesReceived(updates);
+        emit updatesReceived(updates, id);
         *ok = true;
         break;
     default:
