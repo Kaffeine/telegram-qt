@@ -249,6 +249,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_activeDc(0),
     m_wantedActiveDc(0),
     m_autoConnectionDcIndex(s_autoConnectionIndexInvalid),
+    m_updateRequestId(0),
     m_updatesStateIsLocked(false),
     m_selfUserId(0),
     m_fileRequestCounter(0),
@@ -303,13 +304,9 @@ QVector<quint32> CTelegramDispatcher::contactIdList() const
     return m_contactIdList;
 }
 
-QVector<quint32> CTelegramDispatcher::publicChatIdList() const
+QVector<quint32> CTelegramDispatcher::chatIdList() const
 {
-    QVector<quint32> result;
-    for (int i = 0; i < m_chatIds.count(); ++i) {
-        result << i + 1; // Skip 0 index as an invalid public chat id value.
-    }
-    return result;
+    return m_chatIds;
 }
 
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
@@ -535,6 +532,7 @@ void CTelegramDispatcher::initConnectionSharedClear()
 {
     m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
 
+    m_updateRequestId = 0;
     m_updatesState.pts = 1;
     m_updatesState.qts = 1;
     m_updatesState.date = 1;
@@ -576,7 +574,6 @@ void CTelegramDispatcher::closeConnection()
     m_contactsMessageActions.clear();
     m_localMessageActions.clear();
     m_chatIds.clear();
-    m_temporaryChatIdMap.clear();
     m_chatInfo.clear();
     m_chatFullInfo.clear();
     m_activeDc = 0;
@@ -863,7 +860,7 @@ bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const
     return m_messageReceivingFilterFlags & messageFlags;
 }
 
-quint32 CTelegramDispatcher::createChat(const QVector<quint32> &userIds, const QString chatName)
+quint64 CTelegramDispatcher::createChat(const QVector<quint32> &userIds, const QString chatName)
 {
     if (!activeConnection()) {
         return 0;
@@ -877,21 +874,16 @@ quint32 CTelegramDispatcher::createChat(const QVector<quint32> &userIds, const Q
         users.append(user);
     }
 
-    quint32 publicChatId = insertTelegramChatId(0); // Real telegram id is not known at this moment.
     quint64 apiCallId = activeConnection()->messagesCreateChat(users, chatName);
 
-    m_temporaryChatIdMap.insert(apiCallId, publicChatId);
-
-    return publicChatId;
+    return apiCallId;
 }
 
-bool CTelegramDispatcher::addChatUser(quint32 publicChatId, quint32 userId, quint32 forwardMessages)
+bool CTelegramDispatcher::addChatUser(quint32 chatId, quint32 userId, quint32 forwardMessages)
 {
     if (!activeConnection()) {
         return false;
     }
-
-    quint32 chatId = publicChatIdToChatId(publicChatId);
 
     if (!chatId) {
         return false;
@@ -1025,11 +1017,9 @@ QString CTelegramDispatcher::contactAvatarToken(quint32 userId) const
     return userAvatarToken(user);
 }
 
-QString CTelegramDispatcher::chatTitle(quint32 publicChatId) const
+QString CTelegramDispatcher::chatTitle(quint32 chatId) const
 {
-    const quint32 chatId = publicChatIdToChatId(publicChatId);
-
-    if (chatId == 0) {
+    if (!chatId) {
         return QString();
     }
 
@@ -1053,10 +1043,8 @@ bool CTelegramDispatcher::getUserInfo(TelegramNamespace::UserInfo *userInfo, qui
     return true;
 }
 
-bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 publicChatId) const
+bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 chatId) const
 {
-    const quint32 chatId = publicChatIdToChatId(publicChatId);
-
     if (!chatId) {
         return false;
     }
@@ -1070,34 +1058,64 @@ bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, 
     }
 
     const TLChat &chat = m_chatInfo.value(chatId);
-    outputChat->id = publicChatId;
+    outputChat->id = chatId;
     outputChat->title = chat.title;
-    outputChat->participantsCount = chat.participantsCount;
+
+    if (!chat.left && m_chatFullInfo.contains(chatId)) {
+        const TLChatFull &chatFull = m_chatFullInfo.value(chatId);
+        bool haveSelf = false;
+        foreach (const TLChatParticipant &participant, chatFull.participants.participants) {
+            if (participant.userId == m_selfUserId) {
+                haveSelf = true;
+                break;
+            }
+        }
+
+        outputChat->participantsCount = chatFull.participants.participants.count();
+        if (!haveSelf) {
+            ++outputChat->participantsCount;
+        }
+    } else {
+        outputChat->participantsCount = chat.participantsCount;
+    }
+
     outputChat->date = chat.date;
     outputChat->left = chat.left; // Is it checkedIn for Geo chat?
 
     return true;
 }
 
-bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, quint32 publicChatId)
+bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, quint32 chatId)
 {
-    const quint32 chatId = publicChatIdToChatId(publicChatId);
-
     if (!chatId) {
         return false;
     }
 
     participants->clear();
 
-    if (m_chatFullInfo.contains(chatId)) {
-        const TLChatFull &fullChat = m_chatFullInfo.value(chatId);
-
-        foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
-            participants->append(participant.userId);
-        }
-        return true;
-    } else {
+    bool needsUpdate = false;
+    if (!m_chatFullInfo.contains(chatId)) {
         activeConnection()->messagesGetFullChat(chatId);
+        needsUpdate = true;
+    }
+    if (!m_chatInfo.contains(chatId)) {
+        activeConnection()->messagesGetChats(TLVector<quint32>() << chatId);
+        needsUpdate = true;
+    }
+
+    if (needsUpdate) {
+        return true;
+    }
+
+    const TLChatFull &fullChat = m_chatFullInfo.value(chatId);
+    const TLChat &chat = m_chatInfo.value(chatId);
+
+    foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
+        participants->append(participant.userId);
+    }
+
+    if (!chat.left && !participants->contains(m_selfUserId)) {
+        participants->append(m_selfUserId);
     }
 
     return true;
@@ -1205,7 +1223,7 @@ void CTelegramDispatcher::messageActionTimerTimeout()
         int remainingTime = m_contactsMessageActions.at(i).typingTime - m_typingUpdateTimer->interval();
         if (remainingTime < 15) { // Let 15 ms be allowed correction
             if (m_contactsMessageActions.at(i).chatId) {
-                emit contactChatMessageActionChanged(telegramChatIdToPublicId(m_contactsMessageActions.at(i).chatId),
+                emit contactChatMessageActionChanged(m_contactsMessageActions.at(i).chatId,
                                                     m_contactsMessageActions.at(i).userId,
                                                     TelegramNamespace::MessageActionNone);
             } else {
@@ -1533,7 +1551,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
                 emit contactMessageActionChanged(update.userId, action);
             } else {
                 index = TypingStatus::indexForChatAndUser(m_contactsMessageActions, update.chatId, update.userId);
-                emit contactChatMessageActionChanged(telegramChatIdToPublicId(update.chatId),
+                emit contactChatMessageActionChanged(update.chatId,
                                                     update.userId, action);
             }
 
@@ -1555,7 +1573,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         break;
     case TLValue::UpdateChatParticipants: {
         TLChatFull newChatState = m_chatFullInfo.value(update.participants.chatId);
-        newChatState.id = update.participants.chatId; // newChatState can be newly created emtpy chat
+        newChatState.id = update.participants.chatId; // newChatState can be newly created empty chat
         newChatState.participants = update.participants;
         updateFullChat(newChatState);
 
@@ -1780,7 +1798,7 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
     }
 
     if (message.toId.tlType == TLValue::PeerChat) {
-        apiMessage.chatId = telegramChatIdToPublicId(message.toId.chatId);
+        apiMessage.chatId = message.toId.chatId;
         apiMessage.userId = message.fromId;
     } else if (messageFlags & TelegramNamespace::MessageFlagOut) {
         apiMessage.userId = message.toId.userId;
@@ -1803,6 +1821,22 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
     emit messageReceived(apiMessage);
 }
 
+void CTelegramDispatcher::emitChatChanged(quint32 id)
+{
+    if (!m_chatIds.contains(id)) {
+        m_chatIds.append(id);
+
+        if (m_updateRequestId) {
+            qDebug() << Q_FUNC_INFO << "Chat change is result of creation request:" << m_updateRequestId << id;
+            emit createdChatIdReceived(m_updateRequestId, id);
+        }
+
+        emit chatAdded(id);
+    } else {
+        emit chatChanged(id);
+    }
+}
+
 void CTelegramDispatcher::updateChat(const TLChat &newChat)
 {
     if (!m_chatInfo.contains(newChat.id)) {
@@ -1810,15 +1844,7 @@ void CTelegramDispatcher::updateChat(const TLChat &newChat)
     } else {
         m_chatInfo[newChat.id] = newChat;
     }
-
-    quint32 publicChatId = telegramChatIdToPublicId(newChat.id);
-
-    if (publicChatId == 0) {
-        publicChatId = insertTelegramChatId(newChat.id);
-        emit chatAdded(publicChatId);
-    } else {
-        emit chatChanged(publicChatId);
-    }
+    emitChatChanged(newChat.id);
 }
 
 void CTelegramDispatcher::updateFullChat(const TLChatFull &newChat)
@@ -1828,41 +1854,7 @@ void CTelegramDispatcher::updateFullChat(const TLChatFull &newChat)
     } else {
         m_chatFullInfo[newChat.id] = newChat;
     }
-
-    quint32 publicChatId = telegramChatIdToPublicId(newChat.id);
-
-    if (publicChatId == 0) {
-        publicChatId = insertTelegramChatId(newChat.id);
-        emit chatAdded(publicChatId);
-    } else {
-        emit chatChanged(publicChatId);
-    }
-}
-
-quint32 CTelegramDispatcher::publicChatIdToChatId(quint32 publicChatId) const
-{
-    if (!havePublicChatId(publicChatId)) {
-        qDebug() << Q_FUNC_INFO << "Unknown public chat id" << publicChatId;
-        return 0;
-    }
-
-    return m_chatIds.at(publicChatId - 1);
-}
-
-TLInputPeer CTelegramDispatcher::publicChatIdToInputPeer(quint32 publicChatId) const
-{
-    TLInputPeer inputPeer;
-
-    quint32 chatId = publicChatIdToChatId(publicChatId);
-
-    if (!chatId) {
-        return inputPeer;
-    }
-
-    inputPeer.tlType = TLValue::InputPeerChat;
-    inputPeer.chatId = chatId;
-
-    return inputPeer;
+    emitChatChanged(newChat.id);
 }
 
 TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const
@@ -1870,7 +1862,9 @@ TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const TelegramNamespace::
     TLInputPeer inputPeer;
 
     if (peer.type == TelegramNamespace::Peer::Chat) {
-        return publicChatIdToInputPeer(peer.id);
+        inputPeer.tlType = TLValue::InputPeerChat;
+        inputPeer.chatId = peer.id;
+        return inputPeer;
     }
 
     if (peer.id == m_selfUserId) {
@@ -2369,7 +2363,7 @@ void CTelegramDispatcher::onUpdatesReceived(const TLUpdates &updates, quint64 id
 
             messageActionIndex = TypingStatus::indexForUser(m_contactsMessageActions, updates.fromId);
             if (messageActionIndex >= 0) {
-                emit contactChatMessageActionChanged(telegramChatIdToPublicId(updates.chatId),
+                emit contactChatMessageActionChanged(updates.chatId,
                                                     updates.fromId,
                                                     TelegramNamespace::MessageActionNone);
             }
@@ -2520,27 +2514,11 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     }
 }
 
-quint32 CTelegramDispatcher::telegramChatIdToPublicId(quint32 telegramChatId) const
-{
-    for (int i = 0; i < m_chatIds.count(); ++i) {
-        if (m_chatIds.at(i) == telegramChatId) {
-            return i + 1; // Skip 0 index as an invalid public chat id value.
-        }
-    }
-
-    return 0;
-}
-
 /* Return public chat id */
 quint32 CTelegramDispatcher::insertTelegramChatId(quint32 telegramChatId)
 {
     m_chatIds.append(telegramChatId);
     return m_chatIds.count();
-}
-
-bool CTelegramDispatcher::havePublicChatId(quint32 publicChatId) const
-{
-    return (publicChatId != 0) && (m_chatIds.count() >= int(publicChatId));
 }
 
 // Basically we just revert Unread and Read flag.

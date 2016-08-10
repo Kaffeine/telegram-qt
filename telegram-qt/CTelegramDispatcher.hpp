@@ -135,7 +135,7 @@ public:
     quint32 selfId() const;
 
     QVector<quint32> contactIdList() const;
-    QVector<quint32> publicChatIdList() const;
+    QVector<quint32> chatIdList() const;
 
     void addContacts(const QStringList &phoneNumbers, bool replace = false);
     void deleteContacts(const QVector<quint32> &userIds);
@@ -179,8 +179,8 @@ public:
     void setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction publicAction);
     void setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId);
 
-    quint32 createChat(const QVector<quint32> &userIds, const QString chatName);
-    bool addChatUser(quint32 publicChatId, quint32 userId, quint32 forwardMessages);
+    quint64 createChat(const QVector<quint32> &userIds, const QString chatName);
+    bool addChatUser(quint32 chatId, quint32 userId, quint32 forwardMessages);
 
     void setOnlineStatus(bool onlineStatus);
     void checkUserName(const QString &userName);
@@ -188,11 +188,11 @@ public:
 
     QString contactAvatarToken(quint32 userId) const;
 
-    QString chatTitle(quint32 publicChatId) const;
+    QString chatTitle(quint32 chatId) const;
 
     bool getUserInfo(TelegramNamespace::UserInfo *userInfo, quint32 userId) const;
-    bool getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 publicChatId) const;
-    bool getChatParticipants(QVector<quint32> *participants, quint32 publicChatId);
+    bool getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 chatId) const;
+    bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
 signals:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);
@@ -218,14 +218,15 @@ signals:
 
     void contactStatusChanged(quint32 userId, TelegramNamespace::ContactStatus status);
     void contactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
-    void contactChatMessageActionChanged(quint32 publicChatId, quint32 userId, TelegramNamespace::MessageAction action);
+    void contactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
 
     void sentMessageIdReceived(quint64 randomId, quint32 resolvedId);
     void messageReadInbox(TelegramNamespace::Peer peer, quint32 messageId);
     void messageReadOutbox(TelegramNamespace::Peer peer, quint32 messageId);
 
-    void chatAdded(quint32 publichChatId);
-    void chatChanged(quint32 publichChatId);
+    void createdChatIdReceived(quint64 randomId, quint32 resolvedId);
+    void chatAdded(quint32 chatId);
+    void chatChanged(quint32 chatId);
 
 protected slots:
     void whenConnectionAuthChanged(int newState, quint32 dc);
@@ -274,6 +275,7 @@ protected:
 
     void processMessageReceived(const TLMessage &message);
 
+    void emitChatChanged(quint32 id);
     void updateChat(const TLChat &newChat);
     void updateFullChat(const TLChatFull &newChat);
 
@@ -285,8 +287,6 @@ protected:
 
     bool filterReceivedMessage(quint32 messageFlags) const;
 
-    quint32 publicChatIdToChatId(quint32 publicChatId) const;
-    TLInputPeer publicChatIdToInputPeer(quint32 publicChatId) const;
     TLInputPeer publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const;
     TelegramNamespace::Peer peerToPublicPeer(const TLInputPeer &inputPeer) const;
     TelegramNamespace::Peer peerToPublicPeer(const TLPeer &peer) const;
@@ -313,9 +313,7 @@ protected:
 
     void continueInitialization(InitializationStep justDone);
 
-    quint32 telegramChatIdToPublicId(quint32 telegramChatId) const;
     quint32 insertTelegramChatId(quint32 telegramChatId);
-    bool havePublicChatId(quint32 publicChatId) const;
 
     TelegramNamespace::MessageFlags getPublicMessageFlags(quint32 flags);
 
@@ -401,7 +399,6 @@ protected:
     QVector<TypingStatus> m_localMessageActions;
 
     TLVector<quint32> m_chatIds; // Telegram chat ids vector. Index is "public chat id".
-    QMap<quint64, quint32> m_temporaryChatIdMap; // RPC message (request) id to public chat id map
 
     QMap<quint32, TLChat> m_chatInfo; // Telegram chat id to Chat map
     QMap<quint32, TLChatFull> m_chatFullInfo; // Telegram chat id to ChatFull map

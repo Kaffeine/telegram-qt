@@ -70,6 +70,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_dispatcher, SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)),
             SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)));
 
+    connect(m_dispatcher, SIGNAL(createdChatIdReceived(quint64,quint32)),
+            SIGNAL(createdChatIdReceived(quint64,quint32)));
     connect(m_dispatcher, SIGNAL(chatAdded(quint32)),
             SIGNAL(chatAdded(quint32)));
     connect(m_dispatcher, SIGNAL(chatChanged(quint32)),
@@ -231,7 +233,7 @@ QVector<quint32> CTelegramCore::contactList() const
 
 QVector<quint32> CTelegramCore::chatList() const
 {
-    return m_dispatcher->publicChatIdList();
+    return m_dispatcher->chatIdList();
 }
 
 QString CTelegramCore::contactAvatarToken(quint32 userId) const
@@ -365,7 +367,7 @@ void CTelegramCore::setUserName(const QString &newUserName)
     m_dispatcher->setUserName(newUserName);
 }
 
-quint32 CTelegramCore::createChat(const QVector<quint32> &userIds, const QString &title)
+quint64 CTelegramCore::createChat(const QVector<quint32> &userIds, const QString &title)
 {
     return m_dispatcher->createChat(userIds, title);
 }

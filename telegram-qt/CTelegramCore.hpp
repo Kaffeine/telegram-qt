@@ -115,8 +115,8 @@ public Q_SLOTS:
     void checkUserName(const QString &userName);
     void setUserName(const QString &newUserName);
 
-    // ChatId should starts with 1. The null id means that the chat is not valid.
-    quint32 createChat(const QVector<quint32> &userIds, const QString &title);
+    // Returns unique 64-bit id for the request. Null id means that the request is not valid.
+    quint64 createChat(const QVector<quint32> &userIds, const QString &title);
     bool addChatUser(quint32 chatId, quint32 userId, quint32 forwardMessages = 0);
 
     // Methods without "chat" word can be used instead. See methods implementation for details.
@@ -151,8 +151,9 @@ Q_SIGNALS:
     void messageReadInbox(TelegramNamespace::Peer peer, quint32 messageId);
     void messageReadOutbox(TelegramNamespace::Peer peer, quint32 messageId);
 
-    void chatAdded(quint32 publichChatId);
-    void chatChanged(quint32 publichChatId);
+    void createdChatIdReceived(quint64 randomId, quint32 resolvedId); // Signal chatAdded(resolvedId) would be emitted after this signal.
+    void chatAdded(quint32 chatId);
+    void chatChanged(quint32 chatId);
 
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
 
