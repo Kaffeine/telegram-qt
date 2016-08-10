@@ -168,6 +168,10 @@ void MainWindow::whenConnectionStateChanged(TelegramNamespace::ConnectionState s
     case TelegramNamespace::ConnectionStateReady:
         setAppState(AppStateReady);
 
+        foreach (quint32 chatId, m_core->chatList()) {
+            m_chatInfoModel->addChat(chatId);
+        }
+
         ui->phoneNumber->setText(m_core->selfPhone());
     {
         TelegramNamespace::UserInfo selfInfo;
