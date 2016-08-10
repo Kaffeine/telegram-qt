@@ -72,6 +72,7 @@ protected slots:
     void whenContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
     void whenContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
     void whenContactStatusChanged(quint32 contact);
+    void onCreatedChatIdResolved(quint64 requestId, quint32 chatId);
     void whenChatAdded(quint32 chatId);
     void whenChatChanged(quint32 chatId);
     void updateActiveChat();
@@ -175,6 +176,7 @@ private:
 
     quint32 m_activeContactId;
     quint32 m_activeChatId;
+    quint64 m_pendingChatId;
     bool m_chatCreationMode;
 
     bool m_registered;

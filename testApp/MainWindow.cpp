@@ -102,6 +102,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenContactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)));
     connect(m_core, SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)),
             SLOT(whenContactMessageActionChanged(quint32,TelegramNamespace::MessageAction)));
+    connect(m_core, SIGNAL(createdChatIdReceived(quint64,quint32)),
+            SLOT(onCreatedChatIdResolved(quint64,quint32)));
     connect(m_core, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
             SLOT(whenContactStatusChanged(quint32)));
     connect(m_core, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
@@ -405,6 +407,18 @@ void MainWindow::whenContactStatusChanged(quint32 contact)
     }
 }
 
+void MainWindow::onCreatedChatIdResolved(quint64 requestId, quint32 chatId)
+{
+    if (requestId == m_pendingChatId) {
+        qDebug() << "Expected chat id received" << requestId << chatId;
+        m_pendingChatId = 0;
+    } else {
+        qDebug() << "Unexpected chat id received" << requestId << chatId;
+    }
+
+    setActiveChat(chatId);
+}
+
 void MainWindow::whenChatAdded(quint32 chatId)
 {
     m_chatInfoModel->addChat(chatId);
@@ -421,6 +435,11 @@ void MainWindow::whenChatChanged(quint32 chatId)
 void MainWindow::updateActiveChat()
 {
     const TelegramNamespace::GroupChat *chat = m_chatInfoModel->chatById(m_activeChatId);
+
+    if (!chat) {
+        ui->groupChatName->setText(tr("Processing..."));
+        return;
+    }
 
     ui->groupChatName->setText(chat->title);
 
@@ -900,7 +919,9 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 void MainWindow::on_groupChatCreateChat_clicked()
 {
     if (m_chatCreationMode) {
-        unsetChatCreationMode(m_core->createChat(m_chatContactsModel->contacts(), ui->groupChatName->text()));
+        m_pendingChatId = m_core->createChat(m_chatContactsModel->contacts(), ui->groupChatName->text());
+        qDebug() << Q_FUNC_INFO << "pending id:" << m_pendingChatId;
+        unsetChatCreationMode(0);
     } else {
         setChatCreationMode();
     }
