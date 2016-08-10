@@ -2055,6 +2055,16 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::AccountUpdateUsername:
             processingResult = processAccountUpdateUsername(stream, id);
             break;
+        case TLValue::MessagesEditChatTitle:
+        case TLValue::MessagesEditChatPhoto:
+        case TLValue::MessagesAddChatUser:
+        case TLValue::MessagesDeleteChatUser:
+        case TLValue::MessagesCreateChat:
+        {
+            bool ok;
+            processingResult = processUpdate(stream, &ok, id);
+        }
+            break;
         default:
             qDebug() << "Unknown outgoing RPC type:" << request.toString();
             break;
