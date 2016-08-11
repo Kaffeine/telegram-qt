@@ -349,6 +349,7 @@ protected:
     QString userNameFromPackage(quint64 id) const;
 
     void startPingTimer();
+    void stopPingTimer();
 
     void addMessageToAck(quint64 id);
 

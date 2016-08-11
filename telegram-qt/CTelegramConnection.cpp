@@ -199,12 +199,10 @@ void CTelegramConnection::setKeepAliveSettings(quint32 interval, quint32 serverD
 
     m_pingInterval = interval;
 
-    if (interval) {
+    if (interval && m_authState >= AuthStateHaveAKey) {
         startPingTimer();
     } else {
-        if (m_pingTimer) {
-            m_pingTimer->stop();
-        }
+        stopPingTimer();
     }
 }
 
@@ -3311,8 +3309,8 @@ void CTelegramConnection::setStatus(ConnectionStatus status, ConnectionStatusRea
     m_status = status;
     emit statusChanged(status, reason, m_dcInfo.id);
 
-    if ((status < ConnectionStatusConnected) && m_pingTimer && m_pingTimer->isActive()) {
-        m_pingTimer->stop();
+    if (status < ConnectionStatusConnected) {
+        stopPingTimer();
     }
 }
 
@@ -3385,6 +3383,7 @@ QString CTelegramConnection::userNameFromPackage(quint64 id) const
 
 void CTelegramConnection::startPingTimer()
 {
+    qDebug() << Q_FUNC_INFO;
     if (!m_pingTimer) {
         m_pingTimer = new QTimer(this);
         m_pingTimer->setInterval(m_pingInterval);
@@ -3402,6 +3401,14 @@ void CTelegramConnection::startPingTimer()
     m_lastSentPingTime = 0;
 
     m_pingTimer->start();
+}
+
+void CTelegramConnection::stopPingTimer()
+{
+    qDebug() << Q_FUNC_INFO;
+    if (m_pingTimer) {
+        m_pingTimer->stop();
+    }
 }
 
 void CTelegramConnection::addMessageToAck(quint64 id)
