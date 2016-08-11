@@ -58,6 +58,19 @@ QString TelegramNamespace::MessageMediaInfo::caption() const
     return d->caption;
 }
 
+QString TelegramNamespace::MessageMediaInfo::mimeType() const
+{
+    switch (d->tlType) {
+    case TLValue::MessageMediaDocument:
+        return d->document.mimeType;
+    case TLValue::MessageMediaAudio:
+        return d->audio.mimeType;
+    default:
+        break;
+    }
+    return QString();
+}
+
 double TelegramNamespace::MessageMediaInfo::latitude() const
 {
     return d->geo.latitude;

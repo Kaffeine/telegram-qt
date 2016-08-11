@@ -220,6 +220,9 @@ public:
         // Photo, Video
         QString caption() const;
 
+        // Valid for Document and Audio
+        QString mimeType() const;
+
         // GeoPoint
         double latitude() const;
         double longitude() const;
