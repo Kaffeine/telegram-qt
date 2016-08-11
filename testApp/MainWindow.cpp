@@ -370,6 +370,14 @@ void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
     case TelegramNamespace::MessageTypeVideo:
         m_core->requestMessageMediaData(processedMessage.id);
         break;
+    case TelegramNamespace::MessageTypeDocument: {
+        TelegramNamespace::MessageMediaInfo info;
+        m_core->getMessageMediaInfo(&info, processedMessage.id);
+        if (info.mimeType().startsWith(QLatin1String("image/"))) {
+            m_core->requestMessageMediaData(processedMessage.id);
+        }
+    }
+        break;
     case TelegramNamespace::MessageTypeGeo: {
         TelegramNamespace::MessageMediaInfo info;
         m_core->getMessageMediaInfo(&info, processedMessage.id);
@@ -588,7 +596,7 @@ void MainWindow::on_connectButton_clicked()
         flags |= TelegramNamespace::MessageFlagForwarded;
     }
     m_core->setMessageReceivingFilter(flags);
-    m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto|TelegramNamespace::MessageTypeGeo);
+    m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto|TelegramNamespace::MessageTypeDocument|TelegramNamespace::MessageTypeGeo);
 
     QVector<TelegramNamespace::DcOption> testServers;
     testServers << TelegramNamespace::DcOption(QLatin1String("149.154.175.10"), 443);
