@@ -3386,9 +3386,12 @@ void CTelegramConnection::startPingTimer()
     qDebug() << Q_FUNC_INFO;
     if (!m_pingTimer) {
         m_pingTimer = new QTimer(this);
-        m_pingTimer->setInterval(m_pingInterval);
         m_pingTimer->setSingleShot(false);
         connect(m_pingTimer, SIGNAL(timeout()), SLOT(whenItsTimeToPing()));
+    }
+
+    if (m_pingTimer->interval() != static_cast<int>(m_pingInterval)) {
+        m_pingTimer->setInterval(m_pingInterval);
     }
 
     if (m_pingTimer->isActive()) {
