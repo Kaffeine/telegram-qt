@@ -46,11 +46,14 @@ QString formatTLValue(const TLValue &val)
 
 using namespace TelegramUtils;
 
+static const quint32 s_defaultAuthInterval = 15000; // 15 sec
+
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
     m_status(ConnectionStatusDisconnected),
     m_appInfo(appInfo),
     m_transport(0),
+    m_authTimer(0),
     m_pingTimer(0),
     m_ackTimer(new QTimer(this)),
     m_authState(AuthStateNone),
@@ -2955,6 +2958,8 @@ void CTelegramConnection::whenTransportStateChanged()
 
     switch (m_transport->state()) {
     case QAbstractSocket::ConnectedState:
+        startAuthTimer();
+
         if (m_authKey.isEmpty()) {
             initAuth();
         } else {
@@ -3328,6 +3333,8 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
     emit authStateChanged(m_authState, m_dcInfo.id);
 
     if (m_authState >= AuthStateHaveAKey) {
+        stopAuthTimer();
+
         if (m_pingInterval) {
             startPingTimer();
         }
@@ -3379,6 +3386,30 @@ QString CTelegramConnection::userNameFromPackage(quint64 id) const
     outputStream >> name;
 
     return name;
+}
+
+void CTelegramConnection::startAuthTimer()
+{
+    qDebug() << Q_FUNC_INFO;
+    if (!m_authTimer) {
+        m_authTimer = new QTimer(this);
+        m_authTimer->setInterval(s_defaultAuthInterval);
+        m_authTimer->setSingleShot(true);
+        connect(m_authTimer, SIGNAL(timeout()), SLOT(whenTransportTimeout()));
+    }
+
+    m_authTimer->start();
+}
+
+void CTelegramConnection::stopAuthTimer()
+{
+    qDebug() << Q_FUNC_INFO;
+    if (!m_authTimer) {
+        return;
+    }
+
+    m_authTimer->deleteLater();
+    m_authTimer = 0;
 }
 
 void CTelegramConnection::startPingTimer()

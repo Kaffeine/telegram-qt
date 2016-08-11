@@ -348,6 +348,9 @@ protected:
 
     QString userNameFromPackage(quint64 id) const;
 
+    void startAuthTimer();
+    void stopAuthTimer();
+
     void startPingTimer();
     void stopPingTimer();
 
@@ -368,6 +371,7 @@ protected:
     QMap<quint64, quint32> m_requestedFilesIds; // <message id, file id>
 
     CTelegramTransport *m_transport;
+    QTimer *m_authTimer;
     QTimer *m_pingTimer;
     QTimer *m_ackTimer;
 
