@@ -223,6 +223,9 @@ public:
         // Valid for Document and Audio
         QString mimeType() const;
 
+        // Valid for GeoPoint and Document/Sticker
+        QString alt() const;
+
         // GeoPoint
         double latitude() const;
         double longitude() const;

@@ -71,6 +71,24 @@ QString TelegramNamespace::MessageMediaInfo::mimeType() const
     return QString();
 }
 
+QString TelegramNamespace::MessageMediaInfo::alt() const
+{
+    switch (d->tlType) {
+    case TLValue::MessageMediaGeo:
+        return QString(QLatin1String("geo:%1,%2")).arg(d->geo.latitude).arg(d->geo.longitude);
+    case TLValue::MessageMediaDocument:
+        foreach (const TLDocumentAttribute &attribute, d->document.attributes) {
+            if (attribute.tlType == TLValue::DocumentAttributeSticker) {
+                return attribute.alt;
+            }
+        }
+        break;
+    default:
+        break;
+    }
+    return QString();
+}
+
 double TelegramNamespace::MessageMediaInfo::latitude() const
 {
     return d->geo.latitude;
