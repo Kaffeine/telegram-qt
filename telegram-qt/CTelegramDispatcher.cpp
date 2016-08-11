@@ -2226,7 +2226,8 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
     qDebug() << Q_FUNC_INFO << "File:" << file.tlType << file.type << file.mtime;
 #endif
 
-    const QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
+    QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
+
     FileRequestDescriptor &descriptor = m_requestedFileDescriptors[requestId];
 
     const quint32 chunkSize = file.bytes.size();
@@ -2245,6 +2246,13 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
             const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
             TelegramNamespace::Peer peer = peerToPublicPeer(message.toId);
+
+            // MimeType can not be resolved for some StorageFileType. Try to get the type from the message info in this case.
+            if (mimeType.isEmpty()) {
+                TelegramNamespace::MessageMediaInfo info;
+                getMessageMediaInfo(&info, message.id);
+                mimeType = info.mimeType();
+            }
 
             if (!(message.flags & TelegramMessageFlagOut)) {
                 if (peer.type == TelegramNamespace::Peer::User) {
