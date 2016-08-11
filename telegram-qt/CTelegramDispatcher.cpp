@@ -2222,6 +2222,10 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
         return;
     }
 
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << "File:" << file.tlType << file.type << file.mtime;
+#endif
+
     const QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
     FileRequestDescriptor &descriptor = m_requestedFileDescriptors[requestId];
 
