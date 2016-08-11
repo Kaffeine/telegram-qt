@@ -278,7 +278,19 @@ void MainWindow::whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quin
     QDir dir;
     dir.mkdir("messagesData");
 
-    QFile mediaFile(QString("messagesData/%1-%2.%3").arg(contact)
+    QString peerStr;
+    switch (peer.type) {
+    case TelegramNamespace::Peer::User:
+        peerStr = QLatin1String("user");
+        break;
+    case TelegramNamespace::Peer::Chat:
+        peerStr = QLatin1String("chat");
+        break;
+    }
+
+    peerStr.append(QString::number(peer.id));
+
+    QFile mediaFile(QString("messagesData/%1-%2.%3").arg(peerStr)
                     .arg(messageId, 10, 10, QLatin1Char('0'))
                     .arg(mimeType.section(QLatin1Char('/'), 1, 1)));
 
