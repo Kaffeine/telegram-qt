@@ -15,6 +15,8 @@ option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
 option(ENABLE_TESTAPP "Enable compilation of testing application" FALSE)
 # Add an option for building tests
 option(STATIC_BUILD "Compile static library instead of shared" FALSE)
+# Add an option for dev build
+option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
 
 if (USE_QT4)
     set(QT_VERSION_MAJOR "4")
