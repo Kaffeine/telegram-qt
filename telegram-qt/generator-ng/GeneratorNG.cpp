@@ -383,6 +383,8 @@ QString GeneratorNG::generateStreamReadOperatorDeclaration(const TLType &type)
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
+    argName += QLatin1String("Value");
+
     return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
@@ -390,6 +392,7 @@ QString GeneratorNG::generateStreamWriteOperatorDeclaration(const TLType &type)
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
+    argName += QLatin1String("Value");
     return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
@@ -399,6 +402,7 @@ QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type)
 
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
+    argName += QLatin1String("Value");
 
     code.append(QString("%1 &%1::operator>>(%2 &%3)\n{\n").arg(streamClassName).arg(type.name).arg(argName));
     code.append(QString("%1%2 result;\n\n").arg(spacing).arg(type.name));
@@ -437,6 +441,7 @@ QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
 
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
+    argName += QLatin1String("Value");
 
     code.append(QString("%1 &%1::operator<<(const %2 &%3)\n{\n").arg(streamClassName).arg(type.name).arg(argName));
     code.append(QString("%1*this << %2.tlType;\n\n%1switch (%2.tlType) {\n").arg(spacing).arg(argName));
@@ -472,6 +477,7 @@ QString GeneratorNG::generateDebugWriteOperatorDeclaration(const TLType &type)
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
+    argName += QLatin1String("Value");
     return QString("QDebug operator<<(QDebug d, const %1 &%2);\n").arg(type.name).arg(argName);
 }
 
