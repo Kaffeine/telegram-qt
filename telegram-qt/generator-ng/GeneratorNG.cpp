@@ -32,9 +32,6 @@ static const QStringList initTypesValues = QStringList() << "false" << "0" << "0
 static const QStringList plainTypes = QStringList() << "Bool" << "#" << "int" << "long" << "double" << "string" << "bytes";
 static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "quint32" << "quint64" << "double" << "QString" << "QByteArray";
 
-static const QStringList badNames = QStringList() << "lat"<< "long" ;
-static const QStringList badNamesReplacers = QStringList() << "latitude"<< "longitude";
-
 static const QString spacing = QString(4, QLatin1Char(' '));
 static const QString doubleSpacing = spacing + spacing;
 
@@ -46,6 +43,25 @@ static const QStringList typesBlackList = QStringList()
         << QLatin1String("TLNull")
         << QLatin1String("TLMessagesMessage")
            ;
+
+QString ensureGoodName(const QString &name)
+{
+    static const QStringList badNames = QStringList()
+            << QStringLiteral("lat")
+            << QStringLiteral("long")
+               ;
+    static const QStringList badNamesReplacers = QStringList()
+            << QStringLiteral("latitude")
+            << QStringLiteral("longitude")
+               ;
+
+    int index = badNames.indexOf(name);
+    if (index < 0) {
+        return name;
+    }
+
+    return badNamesReplacers.at(index);
+}
 
 QDebug operator<<(QDebug d, const TLParam &param)
 {
@@ -114,10 +130,7 @@ QString removePrefix(const QString &str)
 
 QString formatMember(QString name)
 {
-    if (badNames.contains(name)) {
-        name = badNamesReplacers.at(badNames.indexOf(name));
-    }
-
+    name = ensureGoodName(name);
     return formatName(name);
 }
 
