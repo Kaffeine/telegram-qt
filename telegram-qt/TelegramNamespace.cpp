@@ -70,6 +70,25 @@ TelegramNamespace::MessageType TelegramNamespace::MessageMediaInfo::type() const
     return telegramMessageTypeToPublicMessageType(d->tlType);
 }
 
+quint32 TelegramNamespace::MessageMediaInfo::size() const
+{
+    switch (d->tlType) {
+    case TLValue::MessageMediaPhoto:
+        if (d->photo.sizes.isEmpty()) {
+            return 0;
+        }
+        return d->photo.sizes.last().size;
+    case TLValue::MessageMediaAudio:
+        return d->audio.size;
+    case TLValue::MessageMediaVideo:
+        return d->video.size;
+    case TLValue::MessageMediaDocument:
+        return d->document.size;
+    default:
+        return 0;
+    }
+}
+
 QString TelegramNamespace::MessageMediaInfo::caption() const
 {
     return d->caption;

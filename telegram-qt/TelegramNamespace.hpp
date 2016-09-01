@@ -222,6 +222,8 @@ public:
 
         MessageType type() const;
 
+        quint32 size() const;
+
         // Photo, Video
         QString caption() const;
 
