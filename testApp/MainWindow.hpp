@@ -78,6 +78,7 @@ protected slots:
     void updateActiveChat();
 
     void whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
+    void onUploadFinished(quint32 requestId, TelegramNamespace::UploadInfo info);
     void onUserNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
 
     void whenCustomMenuRequested(const QPoint &pos);
@@ -103,6 +104,7 @@ protected slots:
 
     void on_messagingSendButton_clicked();
     void on_messagingAttachButton_clicked();
+    void on_groupChatAttachButton_clicked();
     void on_messagingMessage_textChanged(const QString &arg1);
     void on_messagingContactIdentifier_textChanged(const QString &arg1);
     void on_messagingGetHistoryRequest_clicked();
@@ -121,7 +123,6 @@ protected slots:
 
     void on_secretSaveAs_clicked();
 
-
 protected:
     void closeEvent(QCloseEvent *event);
 
@@ -134,6 +135,8 @@ protected:
     void updateMessagingContactName();
     void updateMessagingContactStatus();
     void updateMessagingContactAction();
+
+    void sendMedia(const TelegramNamespace::Peer peer);
 
 private slots:
     void on_restoreSession_clicked();
@@ -162,7 +165,7 @@ private:
 
     TelegramNamespace::PasswordInfo *m_passwordInfo;
     QMap<quint32,quint64> m_contactLastMessageList;
-    QMap<quint32, QString> m_uploadingRequests;
+    QMap<quint32, TelegramNamespace::Peer> m_uploadingRequests;
 
     CContactModel *m_contactsModel;
     CMessageModel *m_messagingModel;

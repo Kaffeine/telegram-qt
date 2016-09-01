@@ -108,6 +108,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenContactStatusChanged(quint32)));
     connect(m_core, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
             SLOT(whenUploadingStatusUpdated(quint32,quint32,quint32)));
+    connect(m_core, SIGNAL(uploadFinished(quint32,TelegramNamespace::UploadInfo)),
+            SLOT(onUploadFinished(quint32,TelegramNamespace::UploadInfo)));
     connect(m_core, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
             SLOT(onUserNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
 
@@ -142,8 +144,6 @@ MainWindow::MainWindow(QWidget *parent) :
 #endif
 
     ui->groupChatAddContactForwardMessages->hide();
-
-    ui->messagingAttachButton->hide();
 }
 
 MainWindow::~MainWindow()
@@ -478,13 +478,33 @@ void MainWindow::updateActiveChat()
 
 void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size)
 {
-    if (currentOffset == size) {
-        statusBar()->showMessage(tr("Request %1 completed.").arg(requestId).arg(currentOffset).arg(size));
+    qDebug() << Q_FUNC_INFO << requestId << currentOffset << size;
+    statusBar()->showMessage(tr("Request %1 status updated (%2/%3).").arg(requestId).arg(currentOffset).arg(size));
+}
 
-//        quint64 id = m_core->sendMedia(m_uploadingRequests.value(requestId), requestId, TelegramNamespace::MessageTypePhoto);
-//        m_messagingModel->addMessage(ui->messagingContactIdentifier->text(), tr("Photo %1").arg(requestId), TelegramNamespace::MessageTypePhoto, /* outgoing */ true, id);
+void MainWindow::onUploadFinished(quint32 requestId, TelegramNamespace::UploadInfo info)
+{
+    qDebug() << Q_FUNC_INFO << requestId;
+
+    const TelegramNamespace::Peer peer = m_uploadingRequests.take(requestId);
+
+    TelegramNamespace::MessageMediaInfo mediaInfo;
+    mediaInfo.setUploadFile(TelegramNamespace::MessageTypePhoto, info);
+    mediaInfo.setCaption(tr("Photo %1").arg(requestId));
+
+    CMessageModel::SMessage m;
+    m.type = mediaInfo.type();
+    m.text = mediaInfo.caption();
+    m.flags = TelegramNamespace::MessageFlagOut;
+    m.id64 = m_core->sendMedia(peer, mediaInfo);
+
+    if (peer.type == TelegramNamespace::Peer::User) {
+        m.userId = peer.id;
+        m_messagingModel->addMessage(m);
     } else {
-        statusBar()->showMessage(tr("Request %1 status updated (%2/%3).").arg(requestId).arg(currentOffset).arg(size));
+        m.chatId = peer.id;
+        m.userId = m_core->selfId();
+        m_chatMessagingModel->addMessage(m);
     }
 }
 
@@ -843,22 +863,12 @@ void MainWindow::on_messagingSendButton_clicked()
 
 void MainWindow::on_messagingAttachButton_clicked()
 {
-    const QString fileName = QFileDialog::getOpenFileName(this, tr("Attach file..."));
-    if (fileName.isEmpty()) {
-        return;
-    }
+    sendMedia(TelegramNamespace::Peer(m_activeContactId));
+}
 
-    QFile file(fileName);
-    file.open(QIODevice::ReadOnly);
-    QFileInfo info(file);
-
-    quint32 id = 0; //m_core->uploadFile(file.readAll(), info.completeBaseName());
-
-    if (!id) {
-        qDebug() << Q_FUNC_INFO << "Unable to upload file" << fileName;
-    }
-
-    m_uploadingRequests.insert(id, ui->messagingContactIdentifier->text());
+void MainWindow::on_groupChatAttachButton_clicked()
+{
+    sendMedia(TelegramNamespace::Peer(m_activeChatId, TelegramNamespace::Peer::Chat));
 }
 
 void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
@@ -1085,6 +1095,26 @@ void MainWindow::updateMessagingContactAction()
 {
     const QModelIndex index = m_contactsModel->index(m_contactsModel->indexOfContact(m_activeContactId), CContactModel::TypingStatus);
     ui->messagingContactAction->setText(QLatin1Char('(') + index.data().toString().toLower() + QLatin1Char(')'));
+}
+
+void MainWindow::sendMedia(const TelegramNamespace::Peer peer)
+{
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Attach file..."));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+    QFileInfo info(file);
+
+    quint32 id = m_core->uploadFile(file.readAll(), info.fileName());
+
+    if (!id) {
+        qDebug() << Q_FUNC_INFO << "Unable to upload file" << fileName << info.fileName();
+    }
+
+    m_uploadingRequests.insert(id, peer);
 }
 
 void MainWindow::on_contactListTable_clicked(const QModelIndex &index)
