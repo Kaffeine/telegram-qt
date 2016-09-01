@@ -96,6 +96,28 @@ TelegramNamespace::MessageType telegramMessageTypeToPublicMessageType(TLValue ty
     }
 }
 
+TLValue::Value publicMessageTypeToTelegramMessageType(TelegramNamespace::MessageType type)
+{
+    switch (type) {
+    case TelegramNamespace::MessageTypeText:
+        return TLValue::MessageMediaEmpty;
+    case TelegramNamespace::MessageTypePhoto:
+        return TLValue::MessageMediaPhoto;
+    case TelegramNamespace::MessageTypeVideo:
+        return TLValue::MessageMediaVideo;
+    case TelegramNamespace::MessageTypeGeo:
+        return TLValue::MessageMediaGeo;
+    case TelegramNamespace::MessageTypeContact:
+        return TLValue::MessageMediaContact;
+    case TelegramNamespace::MessageTypeAudio:
+        return TLValue::MessageMediaAudio;
+    case TelegramNamespace::MessageTypeDocument:
+        return TLValue::MessageMediaDocument;
+    default:
+        return TLValue::MessageMediaUnsupported;
+    }
+}
+
 TelegramNamespace::MessageAction telegramMessageActionToPublicAction(TLValue action)
 {
     switch (action) {
