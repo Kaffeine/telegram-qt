@@ -126,6 +126,8 @@ public:
 
     static void registerTypes();
 
+    class UploadInfo;
+
     struct Peer
     {
         enum Type {
@@ -220,12 +222,15 @@ public:
 
         MessageMediaInfo &operator=(const MessageMediaInfo &info);
 
+        void setUploadFile(MessageType type, const UploadInfo &uploadInfo);
+
         MessageType type() const;
 
         quint32 size() const;
 
         // Photo, Video
         QString caption() const;
+        void setCaption(const QString &caption);
 
         // Valid for Document and Audio
         QString mimeType() const;
@@ -240,6 +245,27 @@ public:
 
     protected:
         friend class CTelegramDispatcher;
+        class Private;
+
+        Private *d;
+    };
+
+    class UploadInfo
+    {
+    public:
+        UploadInfo();
+        UploadInfo(const UploadInfo &info);
+        ~UploadInfo();
+
+        UploadInfo &operator=(const UploadInfo &info);
+
+        QString fileName() const;
+        quint32 size() const;
+        QString md5Sum() const;
+
+    protected:
+        friend class CTelegramDispatcher;
+        friend class MessageMediaInfo;
         class Private;
 
         Private *d;
@@ -294,11 +320,13 @@ Q_DECLARE_METATYPE(TelegramNamespace::Peer)
 Q_DECLARE_METATYPE(TelegramNamespace::DcOption)
 Q_DECLARE_METATYPE(TelegramNamespace::Message)
 Q_DECLARE_METATYPE(TelegramNamespace::GroupChat)
+Q_DECLARE_METATYPE(TelegramNamespace::UploadInfo)
 Q_DECLARE_METATYPE(TelegramNamespace::UserInfo)
 
 Q_DECLARE_TYPEINFO(TelegramNamespace::DcOption, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(TelegramNamespace::Message, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(TelegramNamespace::GroupChat, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(TelegramNamespace::UploadInfo, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(TelegramNamespace::UserInfo, Q_MOVABLE_TYPE);
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageFlags)

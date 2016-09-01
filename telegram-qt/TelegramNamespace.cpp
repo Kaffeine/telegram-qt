@@ -65,6 +65,18 @@ TelegramNamespace::MessageMediaInfo &TelegramNamespace::MessageMediaInfo::operat
     return *this;
 }
 
+void TelegramNamespace::MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType type, const UploadInfo &uploadInfo)
+{
+    d->tlType = publicMessageTypeToTelegramMessageType(type);
+
+    d->m_isUploaded = true;
+    d->m_size = uploadInfo.d->m_size;
+
+    if (!d->m_inputFile) {
+        d->m_inputFile = new TLInputFile(*uploadInfo.d);
+    }
+}
+
 TelegramNamespace::MessageType TelegramNamespace::MessageMediaInfo::type() const
 {
     return telegramMessageTypeToPublicMessageType(d->tlType);
@@ -72,6 +84,10 @@ TelegramNamespace::MessageType TelegramNamespace::MessageMediaInfo::type() const
 
 quint32 TelegramNamespace::MessageMediaInfo::size() const
 {
+    if (d->m_isUploaded) {
+        return d->m_size;
+    }
+
     switch (d->tlType) {
     case TLValue::MessageMediaPhoto:
         if (d->photo.sizes.isEmpty()) {
@@ -92,6 +108,15 @@ quint32 TelegramNamespace::MessageMediaInfo::size() const
 QString TelegramNamespace::MessageMediaInfo::caption() const
 {
     return d->caption;
+}
+
+void TelegramNamespace::MessageMediaInfo::setCaption(const QString &caption)
+{
+    if (!d->m_isUploaded) {
+        return;
+    }
+
+    d->caption = caption;
 }
 
 QString TelegramNamespace::MessageMediaInfo::mimeType() const
@@ -141,6 +166,43 @@ void TelegramNamespace::MessageMediaInfo::setGeoPoint(double latitude, double lo
     d->geo.tlType = TLValue::GeoPoint;
     d->geo.longitude = longitude;
     d->geo.latitude = latitude;
+}
+
+TelegramNamespace::UploadInfo::UploadInfo() :
+    d(new Private)
+{
+}
+
+TelegramNamespace::UploadInfo::UploadInfo(const TelegramNamespace::UploadInfo &info) :
+    d(new Private)
+{
+    *d = *info.d;
+}
+
+TelegramNamespace::UploadInfo::~UploadInfo()
+{
+    delete d;
+}
+
+TelegramNamespace::UploadInfo &TelegramNamespace::UploadInfo::operator=(const TelegramNamespace::UploadInfo &info)
+{
+    *d = *info.d;
+    return *this;
+}
+
+QString TelegramNamespace::UploadInfo::fileName() const
+{
+    return d->name;
+}
+
+quint32 TelegramNamespace::UploadInfo::size() const
+{
+    return d->m_size;
+}
+
+QString TelegramNamespace::UploadInfo::md5Sum() const
+{
+    return d->md5Checksum;
 }
 
 TelegramNamespace::UserInfo::UserInfo() :
