@@ -294,10 +294,12 @@ Q_DECLARE_METATYPE(TelegramNamespace::Peer)
 Q_DECLARE_METATYPE(TelegramNamespace::DcOption)
 Q_DECLARE_METATYPE(TelegramNamespace::Message)
 Q_DECLARE_METATYPE(TelegramNamespace::GroupChat)
+Q_DECLARE_METATYPE(TelegramNamespace::UserInfo)
 
 Q_DECLARE_TYPEINFO(TelegramNamespace::DcOption, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(TelegramNamespace::Message, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(TelegramNamespace::GroupChat, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(TelegramNamespace::UserInfo, Q_MOVABLE_TYPE);
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageTypeFlags)
