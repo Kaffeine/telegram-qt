@@ -43,9 +43,26 @@ void TelegramNamespace::registerTypes()
     }
 }
 
-TelegramNamespace::MessageMediaInfo::MessageMediaInfo() : d(new Private())
+TelegramNamespace::MessageMediaInfo::MessageMediaInfo() :
+    d(new Private())
 {
+}
 
+TelegramNamespace::MessageMediaInfo::MessageMediaInfo(const TelegramNamespace::MessageMediaInfo &info) :
+    d(new Private())
+{
+    *d = *info.d;
+}
+
+TelegramNamespace::MessageMediaInfo::~MessageMediaInfo()
+{
+    delete d;
+}
+
+TelegramNamespace::MessageMediaInfo &TelegramNamespace::MessageMediaInfo::operator=(const TelegramNamespace::MessageMediaInfo &info)
+{
+    *d = *info.d;
+    return *this;
 }
 
 TelegramNamespace::MessageType TelegramNamespace::MessageMediaInfo::type() const
@@ -107,8 +124,26 @@ void TelegramNamespace::MessageMediaInfo::setGeoPoint(double latitude, double lo
     d->geo.latitude = latitude;
 }
 
-TelegramNamespace::UserInfo::UserInfo() : d(new Private())
+TelegramNamespace::UserInfo::UserInfo() :
+    d(new Private())
 {
+}
+
+TelegramNamespace::UserInfo::UserInfo(const TelegramNamespace::UserInfo &info) :
+    d(new Private())
+{
+    *d = *info.d;
+}
+
+TelegramNamespace::UserInfo::~UserInfo()
+{
+    delete d;
+}
+
+TelegramNamespace::UserInfo &TelegramNamespace::UserInfo::operator=(const TelegramNamespace::UserInfo &info)
+{
+    *d = *info.d;
+    return *this;
 }
 
 quint32 TelegramNamespace::UserInfo::id() const
@@ -186,6 +221,11 @@ TelegramNamespace::PasswordInfo::PasswordInfo(const TelegramNamespace::PasswordI
     d(new Private())
 {
     *d = *otherData.d;
+}
+
+TelegramNamespace::PasswordInfo::~PasswordInfo()
+{
+    delete d;
 }
 
 TelegramNamespace::PasswordInfo &TelegramNamespace::PasswordInfo::operator=(const TelegramNamespace::PasswordInfo &otherData)

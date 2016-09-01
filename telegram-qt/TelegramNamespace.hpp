@@ -159,6 +159,7 @@ public:
     public:
         PasswordInfo();
         PasswordInfo(const PasswordInfo &otherData);
+        ~PasswordInfo();
 
         PasswordInfo &operator=(const PasswordInfo &otherData);
 
@@ -214,6 +215,10 @@ public:
     {
     public:
         MessageMediaInfo();
+        MessageMediaInfo(const MessageMediaInfo &info);
+        ~MessageMediaInfo();
+
+        MessageMediaInfo &operator=(const MessageMediaInfo &info);
 
         MessageType type() const;
 
@@ -242,6 +247,10 @@ public:
     {
     public:
         UserInfo();
+        UserInfo(const UserInfo &info);
+        ~UserInfo();
+
+        UserInfo &operator=(const UserInfo &info);
 
         quint32 id() const;
         QString firstName() const;
