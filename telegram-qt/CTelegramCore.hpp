@@ -28,6 +28,8 @@
 class CAppInformation;
 class CTelegramDispatcher;
 
+QT_FORWARD_DECLARE_CLASS(QIODevice)
+
 class TELEGRAMQT_EXPORT CTelegramCore : public QObject
 {
     Q_OBJECT
@@ -97,8 +99,8 @@ public Q_SLOTS:
     quint32 resolveUsername(const QString &userName);
 
     // Does not work yet
-//    quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
-//    quint32 uploadFile(QIODevice *source, const QString &fileName);
+    quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
+    quint32 uploadFile(QIODevice *source, const QString &fileName);
 
     quint64 sendMessage(const TelegramNamespace::Peer &peer, const QString &message); // Message id is a random number
     quint64 sendMedia(const TelegramNamespace::Peer &peer, const TelegramNamespace::MessageMediaInfo &messageInfo);
@@ -158,6 +160,7 @@ Q_SIGNALS:
 
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
     void uploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
+    void uploadFinished(quint32 requestId, TelegramNamespace::UploadInfo uploadInfo);
 
 private:
     CTelegramDispatcher *m_dispatcher;

@@ -82,6 +82,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
     connect(m_dispatcher, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
             SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)));
+    connect(m_dispatcher, SIGNAL(uploadFinished(quint32,TelegramNamespace::UploadInfo)),
+            SIGNAL(uploadFinished(quint32,TelegramNamespace::UploadInfo)));
 }
 
 CTelegramCore::~CTelegramCore()
@@ -216,15 +218,15 @@ quint64 CTelegramCore::sendMessage(const TelegramNamespace::Peer &peer, const QS
     return m_dispatcher->sendMessage(peer, message);
 }
 
-//quint32 CTelegramCore::uploadFile(const QByteArray &fileContent, const QString &fileName)
-//{
-//    return m_dispatcher->uploadFile(fileContent, fileName);
-//}
+quint32 CTelegramCore::uploadFile(const QByteArray &fileContent, const QString &fileName)
+{
+    return m_dispatcher->uploadFile(fileContent, fileName);
+}
 
-//quint32 CTelegramCore::uploadFile(QIODevice *source, const QString &fileName)
-//{
-//    return m_dispatcher->uploadFile(source, fileName);
-//}
+quint32 CTelegramCore::uploadFile(QIODevice *source, const QString &fileName)
+{
+    return m_dispatcher->uploadFile(source, fileName);
+}
 
 QVector<quint32> CTelegramCore::contactList() const
 {

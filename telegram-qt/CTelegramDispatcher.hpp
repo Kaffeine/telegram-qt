@@ -205,6 +205,7 @@ signals:
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
     void uploadingStatusUpdated(quint32 requestId, quint32 offset, quint32 size);
+    void uploadFinished(quint32 requestId, TelegramNamespace::UploadInfo uploadInfo);
 
     void contactListChanged();
     void contactProfileChanged(quint32 userId);
