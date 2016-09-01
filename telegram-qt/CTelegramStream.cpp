@@ -138,7 +138,7 @@ CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
 }
 
 // Generated read operators implementation
-CTelegramStream &CTelegramStream::operator>>(TLAccountDaysTTL &accountDaysTTL)
+CTelegramStream &CTelegramStream::operator>>(TLAccountDaysTTL &accountDaysTTLValue)
 {
     TLAccountDaysTTL result;
 
@@ -152,12 +152,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountDaysTTL &accountDaysTTL)
         break;
     }
 
-    accountDaysTTL = result;
+    accountDaysTTLValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountPassword &accountPassword)
+CTelegramStream &CTelegramStream::operator>>(TLAccountPassword &accountPasswordValue)
 {
     TLAccountPassword result;
 
@@ -179,12 +179,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountPassword &accountPassword)
         break;
     }
 
-    accountPassword = result;
+    accountPasswordValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordInputSettings &accountPasswordInputSettings)
+CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
 {
     TLAccountPasswordInputSettings result;
 
@@ -210,12 +210,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordInputSettings &acc
         break;
     }
 
-    accountPasswordInputSettings = result;
+    accountPasswordInputSettingsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordSettings &accountPasswordSettings)
+CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordSettings &accountPasswordSettingsValue)
 {
     TLAccountPasswordSettings result;
 
@@ -229,12 +229,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordSettings &accountP
         break;
     }
 
-    accountPasswordSettings = result;
+    accountPasswordSettingsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountSentChangePhoneCode &accountSentChangePhoneCode)
+CTelegramStream &CTelegramStream::operator>>(TLAccountSentChangePhoneCode &accountSentChangePhoneCodeValue)
 {
     TLAccountSentChangePhoneCode result;
 
@@ -249,12 +249,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountSentChangePhoneCode &accou
         break;
     }
 
-    accountSentChangePhoneCode = result;
+    accountSentChangePhoneCodeValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAudio &audio)
+CTelegramStream &CTelegramStream::operator>>(TLAudio &audioValue)
 {
     TLAudio result;
 
@@ -278,12 +278,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAudio &audio)
         break;
     }
 
-    audio = result;
+    audioValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthCheckedPhone &authCheckedPhone)
+CTelegramStream &CTelegramStream::operator>>(TLAuthCheckedPhone &authCheckedPhoneValue)
 {
     TLAuthCheckedPhone result;
 
@@ -297,12 +297,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthCheckedPhone &authCheckedPhon
         break;
     }
 
-    authCheckedPhone = result;
+    authCheckedPhoneValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthExportedAuthorization &authExportedAuthorization)
+CTelegramStream &CTelegramStream::operator>>(TLAuthExportedAuthorization &authExportedAuthorizationValue)
 {
     TLAuthExportedAuthorization result;
 
@@ -317,12 +317,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthExportedAuthorization &authEx
         break;
     }
 
-    authExportedAuthorization = result;
+    authExportedAuthorizationValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthPasswordRecovery &authPasswordRecovery)
+CTelegramStream &CTelegramStream::operator>>(TLAuthPasswordRecovery &authPasswordRecoveryValue)
 {
     TLAuthPasswordRecovery result;
 
@@ -336,12 +336,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthPasswordRecovery &authPasswor
         break;
     }
 
-    authPasswordRecovery = result;
+    authPasswordRecoveryValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthSentCode &authSentCode)
+CTelegramStream &CTelegramStream::operator>>(TLAuthSentCode &authSentCodeValue)
 {
     TLAuthSentCode result;
 
@@ -364,12 +364,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthSentCode &authSentCode)
         break;
     }
 
-    authSentCode = result;
+    authSentCodeValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthorization &authorization)
+CTelegramStream &CTelegramStream::operator>>(TLAuthorization &authorizationValue)
 {
     TLAuthorization result;
 
@@ -395,12 +395,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthorization &authorization)
         break;
     }
 
-    authorization = result;
+    authorizationValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatLocated &chatLocated)
+CTelegramStream &CTelegramStream::operator>>(TLChatLocated &chatLocatedValue)
 {
     TLChatLocated result;
 
@@ -415,12 +415,12 @@ CTelegramStream &CTelegramStream::operator>>(TLChatLocated &chatLocated)
         break;
     }
 
-    chatLocated = result;
+    chatLocatedValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatParticipant &chatParticipant)
+CTelegramStream &CTelegramStream::operator>>(TLChatParticipant &chatParticipantValue)
 {
     TLChatParticipant result;
 
@@ -436,12 +436,12 @@ CTelegramStream &CTelegramStream::operator>>(TLChatParticipant &chatParticipant)
         break;
     }
 
-    chatParticipant = result;
+    chatParticipantValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatParticipants &chatParticipants)
+CTelegramStream &CTelegramStream::operator>>(TLChatParticipants &chatParticipantsValue)
 {
     TLChatParticipants result;
 
@@ -461,12 +461,12 @@ CTelegramStream &CTelegramStream::operator>>(TLChatParticipants &chatParticipant
         break;
     }
 
-    chatParticipants = result;
+    chatParticipantsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContact &contact)
+CTelegramStream &CTelegramStream::operator>>(TLContact &contactValue)
 {
     TLContact result;
 
@@ -481,12 +481,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContact &contact)
         break;
     }
 
-    contact = result;
+    contactValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactBlocked &contactBlocked)
+CTelegramStream &CTelegramStream::operator>>(TLContactBlocked &contactBlockedValue)
 {
     TLContactBlocked result;
 
@@ -501,12 +501,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactBlocked &contactBlocked)
         break;
     }
 
-    contactBlocked = result;
+    contactBlockedValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactFound &contactFound)
+CTelegramStream &CTelegramStream::operator>>(TLContactFound &contactFoundValue)
 {
     TLContactFound result;
 
@@ -520,12 +520,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactFound &contactFound)
         break;
     }
 
-    contactFound = result;
+    contactFoundValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactLink &contactLink)
+CTelegramStream &CTelegramStream::operator>>(TLContactLink &contactLinkValue)
 {
     TLContactLink result;
 
@@ -544,12 +544,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactLink &contactLink)
         break;
     }
 
-    contactLink = result;
+    contactLinkValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactSuggested &contactSuggested)
+CTelegramStream &CTelegramStream::operator>>(TLContactSuggested &contactSuggestedValue)
 {
     TLContactSuggested result;
 
@@ -564,12 +564,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactSuggested &contactSuggeste
         break;
     }
 
-    contactSuggested = result;
+    contactSuggestedValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDcOption &dcOption)
+CTelegramStream &CTelegramStream::operator>>(TLDcOption &dcOptionValue)
 {
     TLDcOption result;
 
@@ -586,12 +586,12 @@ CTelegramStream &CTelegramStream::operator>>(TLDcOption &dcOption)
         break;
     }
 
-    dcOption = result;
+    dcOptionValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDisabledFeature &disabledFeature)
+CTelegramStream &CTelegramStream::operator>>(TLDisabledFeature &disabledFeatureValue)
 {
     TLDisabledFeature result;
 
@@ -606,12 +606,12 @@ CTelegramStream &CTelegramStream::operator>>(TLDisabledFeature &disabledFeature)
         break;
     }
 
-    disabledFeature = result;
+    disabledFeatureValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLEncryptedChat &encryptedChat)
+CTelegramStream &CTelegramStream::operator>>(TLEncryptedChat &encryptedChatValue)
 {
     TLEncryptedChat result;
 
@@ -652,12 +652,12 @@ CTelegramStream &CTelegramStream::operator>>(TLEncryptedChat &encryptedChat)
         break;
     }
 
-    encryptedChat = result;
+    encryptedChatValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLEncryptedFile &encryptedFile)
+CTelegramStream &CTelegramStream::operator>>(TLEncryptedFile &encryptedFileValue)
 {
     TLEncryptedFile result;
 
@@ -677,12 +677,12 @@ CTelegramStream &CTelegramStream::operator>>(TLEncryptedFile &encryptedFile)
         break;
     }
 
-    encryptedFile = result;
+    encryptedFileValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLEncryptedMessage &encryptedMessage)
+CTelegramStream &CTelegramStream::operator>>(TLEncryptedMessage &encryptedMessageValue)
 {
     TLEncryptedMessage result;
 
@@ -706,12 +706,12 @@ CTelegramStream &CTelegramStream::operator>>(TLEncryptedMessage &encryptedMessag
         break;
     }
 
-    encryptedMessage = result;
+    encryptedMessageValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLError &error)
+CTelegramStream &CTelegramStream::operator>>(TLError &errorValue)
 {
     TLError result;
 
@@ -726,12 +726,12 @@ CTelegramStream &CTelegramStream::operator>>(TLError &error)
         break;
     }
 
-    error = result;
+    errorValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLExportedChatInvite &exportedChatInvite)
+CTelegramStream &CTelegramStream::operator>>(TLExportedChatInvite &exportedChatInviteValue)
 {
     TLExportedChatInvite result;
 
@@ -747,12 +747,12 @@ CTelegramStream &CTelegramStream::operator>>(TLExportedChatInvite &exportedChatI
         break;
     }
 
-    exportedChatInvite = result;
+    exportedChatInviteValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLFileLocation &fileLocation)
+CTelegramStream &CTelegramStream::operator>>(TLFileLocation &fileLocationValue)
 {
     TLFileLocation result;
 
@@ -774,12 +774,12 @@ CTelegramStream &CTelegramStream::operator>>(TLFileLocation &fileLocation)
         break;
     }
 
-    fileLocation = result;
+    fileLocationValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLGeoPoint &geoPoint)
+CTelegramStream &CTelegramStream::operator>>(TLGeoPoint &geoPointValue)
 {
     TLGeoPoint result;
 
@@ -796,12 +796,12 @@ CTelegramStream &CTelegramStream::operator>>(TLGeoPoint &geoPoint)
         break;
     }
 
-    geoPoint = result;
+    geoPointValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHelpAppUpdate &helpAppUpdate)
+CTelegramStream &CTelegramStream::operator>>(TLHelpAppUpdate &helpAppUpdateValue)
 {
     TLHelpAppUpdate result;
 
@@ -820,12 +820,12 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpAppUpdate &helpAppUpdate)
         break;
     }
 
-    helpAppUpdate = result;
+    helpAppUpdateValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHelpInviteText &helpInviteText)
+CTelegramStream &CTelegramStream::operator>>(TLHelpInviteText &helpInviteTextValue)
 {
     TLHelpInviteText result;
 
@@ -839,12 +839,12 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpInviteText &helpInviteText)
         break;
     }
 
-    helpInviteText = result;
+    helpInviteTextValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLImportedContact &importedContact)
+CTelegramStream &CTelegramStream::operator>>(TLImportedContact &importedContactValue)
 {
     TLImportedContact result;
 
@@ -859,12 +859,12 @@ CTelegramStream &CTelegramStream::operator>>(TLImportedContact &importedContact)
         break;
     }
 
-    importedContact = result;
+    importedContactValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputAppEvent &inputAppEvent)
+CTelegramStream &CTelegramStream::operator>>(TLInputAppEvent &inputAppEventValue)
 {
     TLInputAppEvent result;
 
@@ -881,12 +881,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputAppEvent &inputAppEvent)
         break;
     }
 
-    inputAppEvent = result;
+    inputAppEventValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputAudio &inputAudio)
+CTelegramStream &CTelegramStream::operator>>(TLInputAudio &inputAudioValue)
 {
     TLInputAudio result;
 
@@ -903,12 +903,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputAudio &inputAudio)
         break;
     }
 
-    inputAudio = result;
+    inputAudioValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputContact &inputContact)
+CTelegramStream &CTelegramStream::operator>>(TLInputContact &inputContactValue)
 {
     TLInputContact result;
 
@@ -925,12 +925,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputContact &inputContact)
         break;
     }
 
-    inputContact = result;
+    inputContactValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputDocument &inputDocument)
+CTelegramStream &CTelegramStream::operator>>(TLInputDocument &inputDocumentValue)
 {
     TLInputDocument result;
 
@@ -947,12 +947,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputDocument &inputDocument)
         break;
     }
 
-    inputDocument = result;
+    inputDocumentValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedChat &inputEncryptedChat)
+CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedChat &inputEncryptedChatValue)
 {
     TLInputEncryptedChat result;
 
@@ -967,12 +967,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedChat &inputEncrypte
         break;
     }
 
-    inputEncryptedChat = result;
+    inputEncryptedChatValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedFile &inputEncryptedFile)
+CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedFile &inputEncryptedFileValue)
 {
     TLInputEncryptedFile result;
 
@@ -1000,12 +1000,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedFile &inputEncrypte
         break;
     }
 
-    inputEncryptedFile = result;
+    inputEncryptedFileValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputFile &inputFile)
+CTelegramStream &CTelegramStream::operator>>(TLInputFile &inputFileValue)
 {
     TLInputFile result;
 
@@ -1027,12 +1027,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputFile &inputFile)
         break;
     }
 
-    inputFile = result;
+    inputFileValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputFileLocation &inputFileLocation)
+CTelegramStream &CTelegramStream::operator>>(TLInputFileLocation &inputFileLocationValue)
 {
     TLInputFileLocation result;
 
@@ -1064,12 +1064,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputFileLocation &inputFileLocat
         break;
     }
 
-    inputFileLocation = result;
+    inputFileLocationValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputGeoChat &inputGeoChat)
+CTelegramStream &CTelegramStream::operator>>(TLInputGeoChat &inputGeoChatValue)
 {
     TLInputGeoChat result;
 
@@ -1084,12 +1084,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputGeoChat &inputGeoChat)
         break;
     }
 
-    inputGeoChat = result;
+    inputGeoChatValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputGeoPoint &inputGeoPoint)
+CTelegramStream &CTelegramStream::operator>>(TLInputGeoPoint &inputGeoPointValue)
 {
     TLInputGeoPoint result;
 
@@ -1106,12 +1106,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputGeoPoint &inputGeoPoint)
         break;
     }
 
-    inputGeoPoint = result;
+    inputGeoPointValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPeer &inputPeer)
+CTelegramStream &CTelegramStream::operator>>(TLInputPeer &inputPeerValue)
 {
     TLInputPeer result;
 
@@ -1136,12 +1136,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPeer &inputPeer)
         break;
     }
 
-    inputPeer = result;
+    inputPeerValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifyEvents &inputPeerNotifyEvents)
+CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifyEvents &inputPeerNotifyEventsValue)
 {
     TLInputPeerNotifyEvents result;
 
@@ -1156,12 +1156,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifyEvents &inputPeerN
         break;
     }
 
-    inputPeerNotifyEvents = result;
+    inputPeerNotifyEventsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifySettings &inputPeerNotifySettings)
+CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
 {
     TLInputPeerNotifySettings result;
 
@@ -1178,12 +1178,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifySettings &inputPee
         break;
     }
 
-    inputPeerNotifySettings = result;
+    inputPeerNotifySettingsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPhoto &inputPhoto)
+CTelegramStream &CTelegramStream::operator>>(TLInputPhoto &inputPhotoValue)
 {
     TLInputPhoto result;
 
@@ -1200,12 +1200,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPhoto &inputPhoto)
         break;
     }
 
-    inputPhoto = result;
+    inputPhotoValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPhotoCrop &inputPhotoCrop)
+CTelegramStream &CTelegramStream::operator>>(TLInputPhotoCrop &inputPhotoCropValue)
 {
     TLInputPhotoCrop result;
 
@@ -1223,12 +1223,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPhotoCrop &inputPhotoCrop)
         break;
     }
 
-    inputPhotoCrop = result;
+    inputPhotoCropValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyKey &inputPrivacyKey)
+CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyKey &inputPrivacyKeyValue)
 {
     TLInputPrivacyKey result;
 
@@ -1241,12 +1241,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyKey &inputPrivacyKey)
         break;
     }
 
-    inputPrivacyKey = result;
+    inputPrivacyKeyValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputStickerSet &inputStickerSet)
+CTelegramStream &CTelegramStream::operator>>(TLInputStickerSet &inputStickerSetValue)
 {
     TLInputStickerSet result;
 
@@ -1266,12 +1266,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputStickerSet &inputStickerSet)
         break;
     }
 
-    inputStickerSet = result;
+    inputStickerSetValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputUser &inputUser)
+CTelegramStream &CTelegramStream::operator>>(TLInputUser &inputUserValue)
 {
     TLInputUser result;
 
@@ -1293,12 +1293,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputUser &inputUser)
         break;
     }
 
-    inputUser = result;
+    inputUserValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputVideo &inputVideo)
+CTelegramStream &CTelegramStream::operator>>(TLInputVideo &inputVideoValue)
 {
     TLInputVideo result;
 
@@ -1315,12 +1315,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputVideo &inputVideo)
         break;
     }
 
-    inputVideo = result;
+    inputVideoValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedHistory &messagesAffectedHistory)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedHistory &messagesAffectedHistoryValue)
 {
     TLMessagesAffectedHistory result;
 
@@ -1336,12 +1336,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedHistory &messages
         break;
     }
 
-    messagesAffectedHistory = result;
+    messagesAffectedHistoryValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedMessages &messagesAffectedMessages)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedMessages &messagesAffectedMessagesValue)
 {
     TLMessagesAffectedMessages result;
 
@@ -1356,12 +1356,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedMessages &message
         break;
     }
 
-    messagesAffectedMessages = result;
+    messagesAffectedMessagesValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesDhConfig &messagesDhConfig)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesDhConfig &messagesDhConfigValue)
 {
     TLMessagesDhConfig result;
 
@@ -1381,12 +1381,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesDhConfig &messagesDhConfi
         break;
     }
 
-    messagesDhConfig = result;
+    messagesDhConfigValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesFilter &messagesFilter)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesFilter &messagesFilterValue)
 {
     TLMessagesFilter result;
 
@@ -1411,12 +1411,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesFilter &messagesFilter)
         break;
     }
 
-    messagesFilter = result;
+    messagesFilterValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesSentEncryptedMessage &messagesSentEncryptedMessage)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesSentEncryptedMessage &messagesSentEncryptedMessageValue)
 {
     TLMessagesSentEncryptedMessage result;
 
@@ -1434,12 +1434,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesSentEncryptedMessage &mes
         break;
     }
 
-    messagesSentEncryptedMessage = result;
+    messagesSentEncryptedMessageValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLNearestDc &nearestDc)
+CTelegramStream &CTelegramStream::operator>>(TLNearestDc &nearestDcValue)
 {
     TLNearestDc result;
 
@@ -1455,12 +1455,12 @@ CTelegramStream &CTelegramStream::operator>>(TLNearestDc &nearestDc)
         break;
     }
 
-    nearestDc = result;
+    nearestDcValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPeer &peer)
+CTelegramStream &CTelegramStream::operator>>(TLPeer &peerValue)
 {
     TLPeer result;
 
@@ -1477,12 +1477,12 @@ CTelegramStream &CTelegramStream::operator>>(TLPeer &peer)
         break;
     }
 
-    peer = result;
+    peerValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPeerNotifyEvents &peerNotifyEvents)
+CTelegramStream &CTelegramStream::operator>>(TLPeerNotifyEvents &peerNotifyEventsValue)
 {
     TLPeerNotifyEvents result;
 
@@ -1497,12 +1497,12 @@ CTelegramStream &CTelegramStream::operator>>(TLPeerNotifyEvents &peerNotifyEvent
         break;
     }
 
-    peerNotifyEvents = result;
+    peerNotifyEventsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPeerNotifySettings &peerNotifySettings)
+CTelegramStream &CTelegramStream::operator>>(TLPeerNotifySettings &peerNotifySettingsValue)
 {
     TLPeerNotifySettings result;
 
@@ -1521,12 +1521,12 @@ CTelegramStream &CTelegramStream::operator>>(TLPeerNotifySettings &peerNotifySet
         break;
     }
 
-    peerNotifySettings = result;
+    peerNotifySettingsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhotoSize &photoSize)
+CTelegramStream &CTelegramStream::operator>>(TLPhotoSize &photoSizeValue)
 {
     TLPhotoSize result;
 
@@ -1554,12 +1554,12 @@ CTelegramStream &CTelegramStream::operator>>(TLPhotoSize &photoSize)
         break;
     }
 
-    photoSize = result;
+    photoSizeValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPrivacyKey &privacyKey)
+CTelegramStream &CTelegramStream::operator>>(TLPrivacyKey &privacyKeyValue)
 {
     TLPrivacyKey result;
 
@@ -1572,12 +1572,12 @@ CTelegramStream &CTelegramStream::operator>>(TLPrivacyKey &privacyKey)
         break;
     }
 
-    privacyKey = result;
+    privacyKeyValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPrivacyRule &privacyRule)
+CTelegramStream &CTelegramStream::operator>>(TLPrivacyRule &privacyRuleValue)
 {
     TLPrivacyRule result;
 
@@ -1602,12 +1602,12 @@ CTelegramStream &CTelegramStream::operator>>(TLPrivacyRule &privacyRule)
         break;
     }
 
-    privacyRule = result;
+    privacyRuleValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLReceivedNotifyMessage &receivedNotifyMessage)
+CTelegramStream &CTelegramStream::operator>>(TLReceivedNotifyMessage &receivedNotifyMessageValue)
 {
     TLReceivedNotifyMessage result;
 
@@ -1622,12 +1622,12 @@ CTelegramStream &CTelegramStream::operator>>(TLReceivedNotifyMessage &receivedNo
         break;
     }
 
-    receivedNotifyMessage = result;
+    receivedNotifyMessageValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLSendMessageAction &sendMessageAction)
+CTelegramStream &CTelegramStream::operator>>(TLSendMessageAction &sendMessageActionValue)
 {
     TLSendMessageAction result;
 
@@ -1662,12 +1662,12 @@ CTelegramStream &CTelegramStream::operator>>(TLSendMessageAction &sendMessageAct
         break;
     }
 
-    sendMessageAction = result;
+    sendMessageActionValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLStickerPack &stickerPack)
+CTelegramStream &CTelegramStream::operator>>(TLStickerPack &stickerPackValue)
 {
     TLStickerPack result;
 
@@ -1682,12 +1682,12 @@ CTelegramStream &CTelegramStream::operator>>(TLStickerPack &stickerPack)
         break;
     }
 
-    stickerPack = result;
+    stickerPackValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLStickerSet &stickerSet)
+CTelegramStream &CTelegramStream::operator>>(TLStickerSet &stickerSetValue)
 {
     TLStickerSet result;
 
@@ -1704,12 +1704,12 @@ CTelegramStream &CTelegramStream::operator>>(TLStickerSet &stickerSet)
         break;
     }
 
-    stickerSet = result;
+    stickerSetValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLStorageFileType &storageFileType)
+CTelegramStream &CTelegramStream::operator>>(TLStorageFileType &storageFileTypeValue)
 {
     TLStorageFileType result;
 
@@ -1740,12 +1740,12 @@ CTelegramStream &CTelegramStream::operator>>(TLStorageFileType &storageFileType)
         break;
     }
 
-    storageFileType = result;
+    storageFileTypeValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUpdatesState &updatesState)
+CTelegramStream &CTelegramStream::operator>>(TLUpdatesState &updatesStateValue)
 {
     TLUpdatesState result;
 
@@ -1763,12 +1763,12 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdatesState &updatesState)
         break;
     }
 
-    updatesState = result;
+    updatesStateValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUploadFile &uploadFile)
+CTelegramStream &CTelegramStream::operator>>(TLUploadFile &uploadFileValue)
 {
     TLUploadFile result;
 
@@ -1784,12 +1784,12 @@ CTelegramStream &CTelegramStream::operator>>(TLUploadFile &uploadFile)
         break;
     }
 
-    uploadFile = result;
+    uploadFileValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUserProfilePhoto &userProfilePhoto)
+CTelegramStream &CTelegramStream::operator>>(TLUserProfilePhoto &userProfilePhotoValue)
 {
     TLUserProfilePhoto result;
 
@@ -1807,12 +1807,12 @@ CTelegramStream &CTelegramStream::operator>>(TLUserProfilePhoto &userProfilePhot
         break;
     }
 
-    userProfilePhoto = result;
+    userProfilePhotoValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUserStatus &userStatus)
+CTelegramStream &CTelegramStream::operator>>(TLUserStatus &userStatusValue)
 {
     TLUserStatus result;
 
@@ -1837,12 +1837,12 @@ CTelegramStream &CTelegramStream::operator>>(TLUserStatus &userStatus)
         break;
     }
 
-    userStatus = result;
+    userStatusValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLVideo &video)
+CTelegramStream &CTelegramStream::operator>>(TLVideo &videoValue)
 {
     TLVideo result;
 
@@ -1868,12 +1868,12 @@ CTelegramStream &CTelegramStream::operator>>(TLVideo &video)
         break;
     }
 
-    video = result;
+    videoValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLWallPaper &wallPaper)
+CTelegramStream &CTelegramStream::operator>>(TLWallPaper &wallPaperValue)
 {
     TLWallPaper result;
 
@@ -1896,12 +1896,12 @@ CTelegramStream &CTelegramStream::operator>>(TLWallPaper &wallPaper)
         break;
     }
 
-    wallPaper = result;
+    wallPaperValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountAuthorizations &accountAuthorizations)
+CTelegramStream &CTelegramStream::operator>>(TLAccountAuthorizations &accountAuthorizationsValue)
 {
     TLAccountAuthorizations result;
 
@@ -1915,12 +1915,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountAuthorizations &accountAut
         break;
     }
 
-    accountAuthorizations = result;
+    accountAuthorizationsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatPhoto &chatPhoto)
+CTelegramStream &CTelegramStream::operator>>(TLChatPhoto &chatPhotoValue)
 {
     TLChatPhoto result;
 
@@ -1937,12 +1937,12 @@ CTelegramStream &CTelegramStream::operator>>(TLChatPhoto &chatPhoto)
         break;
     }
 
-    chatPhoto = result;
+    chatPhotoValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLConfig &config)
+CTelegramStream &CTelegramStream::operator>>(TLConfig &configValue)
 {
     TLConfig result;
 
@@ -1973,12 +1973,12 @@ CTelegramStream &CTelegramStream::operator>>(TLConfig &config)
         break;
     }
 
-    config = result;
+    configValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactStatus &contactStatus)
+CTelegramStream &CTelegramStream::operator>>(TLContactStatus &contactStatusValue)
 {
     TLContactStatus result;
 
@@ -1993,12 +1993,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactStatus &contactStatus)
         break;
     }
 
-    contactStatus = result;
+    contactStatusValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDialog &dialog)
+CTelegramStream &CTelegramStream::operator>>(TLDialog &dialogValue)
 {
     TLDialog result;
 
@@ -2016,12 +2016,12 @@ CTelegramStream &CTelegramStream::operator>>(TLDialog &dialog)
         break;
     }
 
-    dialog = result;
+    dialogValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDocumentAttribute &documentAttribute)
+CTelegramStream &CTelegramStream::operator>>(TLDocumentAttribute &documentAttributeValue)
 {
     TLDocumentAttribute result;
 
@@ -2053,12 +2053,12 @@ CTelegramStream &CTelegramStream::operator>>(TLDocumentAttribute &documentAttrib
         break;
     }
 
-    documentAttribute = result;
+    documentAttributeValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputChatPhoto &inputChatPhoto)
+CTelegramStream &CTelegramStream::operator>>(TLInputChatPhoto &inputChatPhotoValue)
 {
     TLInputChatPhoto result;
 
@@ -2079,12 +2079,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputChatPhoto &inputChatPhoto)
         break;
     }
 
-    inputChatPhoto = result;
+    inputChatPhotoValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMedia)
+CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMediaValue)
 {
     TLInputMedia result;
 
@@ -2161,12 +2161,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMedia)
         break;
     }
 
-    inputMedia = result;
+    inputMediaValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputNotifyPeer &inputNotifyPeer)
+CTelegramStream &CTelegramStream::operator>>(TLInputNotifyPeer &inputNotifyPeerValue)
 {
     TLInputNotifyPeer result;
 
@@ -2189,12 +2189,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputNotifyPeer &inputNotifyPeer)
         break;
     }
 
-    inputNotifyPeer = result;
+    inputNotifyPeerValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyRule &inputPrivacyRule)
+CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyRule &inputPrivacyRuleValue)
 {
     TLInputPrivacyRule result;
 
@@ -2219,12 +2219,12 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyRule &inputPrivacyRul
         break;
     }
 
-    inputPrivacyRule = result;
+    inputPrivacyRuleValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLNotifyPeer &notifyPeer)
+CTelegramStream &CTelegramStream::operator>>(TLNotifyPeer &notifyPeerValue)
 {
     TLNotifyPeer result;
 
@@ -2244,12 +2244,12 @@ CTelegramStream &CTelegramStream::operator>>(TLNotifyPeer &notifyPeer)
         break;
     }
 
-    notifyPeer = result;
+    notifyPeerValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhoto &photo)
+CTelegramStream &CTelegramStream::operator>>(TLPhoto &photoValue)
 {
     TLPhoto result;
 
@@ -2271,12 +2271,12 @@ CTelegramStream &CTelegramStream::operator>>(TLPhoto &photo)
         break;
     }
 
-    photo = result;
+    photoValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUser &user)
+CTelegramStream &CTelegramStream::operator>>(TLUser &userValue)
 {
     TLUser result;
 
@@ -2334,12 +2334,12 @@ CTelegramStream &CTelegramStream::operator>>(TLUser &user)
         break;
     }
 
-    user = result;
+    userValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLWebPage &webPage)
+CTelegramStream &CTelegramStream::operator>>(TLWebPage &webPageValue)
 {
     TLWebPage result;
 
@@ -2396,12 +2396,12 @@ CTelegramStream &CTelegramStream::operator>>(TLWebPage &webPage)
         break;
     }
 
-    webPage = result;
+    webPageValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountPrivacyRules &accountPrivacyRules)
+CTelegramStream &CTelegramStream::operator>>(TLAccountPrivacyRules &accountPrivacyRulesValue)
 {
     TLAccountPrivacyRules result;
 
@@ -2416,12 +2416,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountPrivacyRules &accountPriva
         break;
     }
 
-    accountPrivacyRules = result;
+    accountPrivacyRulesValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthAuthorization &authAuthorization)
+CTelegramStream &CTelegramStream::operator>>(TLAuthAuthorization &authAuthorizationValue)
 {
     TLAuthAuthorization result;
 
@@ -2436,12 +2436,12 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthAuthorization &authAuthorizat
         break;
     }
 
-    authAuthorization = result;
+    authAuthorizationValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChat &chat)
+CTelegramStream &CTelegramStream::operator>>(TLChat &chatValue)
 {
     TLChat result;
 
@@ -2482,12 +2482,12 @@ CTelegramStream &CTelegramStream::operator>>(TLChat &chat)
         break;
     }
 
-    chat = result;
+    chatValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatFull &chatFull)
+CTelegramStream &CTelegramStream::operator>>(TLChatFull &chatFullValue)
 {
     TLChatFull result;
 
@@ -2505,12 +2505,12 @@ CTelegramStream &CTelegramStream::operator>>(TLChatFull &chatFull)
         break;
     }
 
-    chatFull = result;
+    chatFullValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatInvite &chatInvite)
+CTelegramStream &CTelegramStream::operator>>(TLChatInvite &chatInviteValue)
 {
     TLChatInvite result;
 
@@ -2527,12 +2527,12 @@ CTelegramStream &CTelegramStream::operator>>(TLChatInvite &chatInvite)
         break;
     }
 
-    chatInvite = result;
+    chatInviteValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsBlocked &contactsBlocked)
+CTelegramStream &CTelegramStream::operator>>(TLContactsBlocked &contactsBlockedValue)
 {
     TLContactsBlocked result;
 
@@ -2552,12 +2552,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsBlocked &contactsBlocked)
         break;
     }
 
-    contactsBlocked = result;
+    contactsBlockedValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsContacts &contactsContacts)
+CTelegramStream &CTelegramStream::operator>>(TLContactsContacts &contactsContactsValue)
 {
     TLContactsContacts result;
 
@@ -2574,12 +2574,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsContacts &contactsContact
         break;
     }
 
-    contactsContacts = result;
+    contactsContactsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsFound &contactsFound)
+CTelegramStream &CTelegramStream::operator>>(TLContactsFound &contactsFoundValue)
 {
     TLContactsFound result;
 
@@ -2594,12 +2594,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsFound &contactsFound)
         break;
     }
 
-    contactsFound = result;
+    contactsFoundValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsImportedContacts &contactsImportedContacts)
+CTelegramStream &CTelegramStream::operator>>(TLContactsImportedContacts &contactsImportedContactsValue)
 {
     TLContactsImportedContacts result;
 
@@ -2615,12 +2615,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsImportedContacts &contact
         break;
     }
 
-    contactsImportedContacts = result;
+    contactsImportedContactsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsLink &contactsLink)
+CTelegramStream &CTelegramStream::operator>>(TLContactsLink &contactsLinkValue)
 {
     TLContactsLink result;
 
@@ -2636,12 +2636,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsLink &contactsLink)
         break;
     }
 
-    contactsLink = result;
+    contactsLinkValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsSuggested &contactsSuggested)
+CTelegramStream &CTelegramStream::operator>>(TLContactsSuggested &contactsSuggestedValue)
 {
     TLContactsSuggested result;
 
@@ -2656,12 +2656,12 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsSuggested &contactsSugges
         break;
     }
 
-    contactsSuggested = result;
+    contactsSuggestedValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDocument &document)
+CTelegramStream &CTelegramStream::operator>>(TLDocument &documentValue)
 {
     TLDocument result;
 
@@ -2685,12 +2685,12 @@ CTelegramStream &CTelegramStream::operator>>(TLDocument &document)
         break;
     }
 
-    document = result;
+    documentValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHelpSupport &helpSupport)
+CTelegramStream &CTelegramStream::operator>>(TLHelpSupport &helpSupportValue)
 {
     TLHelpSupport result;
 
@@ -2705,12 +2705,12 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpSupport &helpSupport)
         break;
     }
 
-    helpSupport = result;
+    helpSupportValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessageAction &messageAction)
+CTelegramStream &CTelegramStream::operator>>(TLMessageAction &messageActionValue)
 {
     TLMessageAction result;
 
@@ -2750,12 +2750,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageAction &messageAction)
         break;
     }
 
-    messageAction = result;
+    messageActionValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessageMedia &messageMedia)
+CTelegramStream &CTelegramStream::operator>>(TLMessageMedia &messageMediaValue)
 {
     TLMessageMedia result;
 
@@ -2803,12 +2803,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageMedia &messageMedia)
         break;
     }
 
-    messageMedia = result;
+    messageMediaValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesAllStickers &messagesAllStickers)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesAllStickers &messagesAllStickersValue)
 {
     TLMessagesAllStickers result;
 
@@ -2827,12 +2827,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesAllStickers &messagesAllS
         break;
     }
 
-    messagesAllStickers = result;
+    messagesAllStickersValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesChatFull &messagesChatFull)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesChatFull &messagesChatFullValue)
 {
     TLMessagesChatFull result;
 
@@ -2848,12 +2848,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesChatFull &messagesChatFul
         break;
     }
 
-    messagesChatFull = result;
+    messagesChatFullValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesChats &messagesChats)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesChats &messagesChatsValue)
 {
     TLMessagesChats result;
 
@@ -2867,12 +2867,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesChats &messagesChats)
         break;
     }
 
-    messagesChats = result;
+    messagesChatsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesSentMessage &messagesSentMessage)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesSentMessage &messagesSentMessageValue)
 {
     TLMessagesSentMessage result;
 
@@ -2899,12 +2899,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesSentMessage &messagesSent
         break;
     }
 
-    messagesSentMessage = result;
+    messagesSentMessageValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesStickerSet &messagesStickerSet)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesStickerSet &messagesStickerSetValue)
 {
     TLMessagesStickerSet result;
 
@@ -2920,12 +2920,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesStickerSet &messagesStick
         break;
     }
 
-    messagesStickerSet = result;
+    messagesStickerSetValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesStickers &messagesStickers)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesStickers &messagesStickersValue)
 {
     TLMessagesStickers result;
 
@@ -2942,12 +2942,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesStickers &messagesSticker
         break;
     }
 
-    messagesStickers = result;
+    messagesStickersValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhotosPhoto &photosPhoto)
+CTelegramStream &CTelegramStream::operator>>(TLPhotosPhoto &photosPhotoValue)
 {
     TLPhotosPhoto result;
 
@@ -2962,12 +2962,12 @@ CTelegramStream &CTelegramStream::operator>>(TLPhotosPhoto &photosPhoto)
         break;
     }
 
-    photosPhoto = result;
+    photosPhotoValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhotosPhotos &photosPhotos)
+CTelegramStream &CTelegramStream::operator>>(TLPhotosPhotos &photosPhotosValue)
 {
     TLPhotosPhotos result;
 
@@ -2987,12 +2987,12 @@ CTelegramStream &CTelegramStream::operator>>(TLPhotosPhotos &photosPhotos)
         break;
     }
 
-    photosPhotos = result;
+    photosPhotosValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUserFull &userFull)
+CTelegramStream &CTelegramStream::operator>>(TLUserFull &userFullValue)
 {
     TLUserFull result;
 
@@ -3012,12 +3012,12 @@ CTelegramStream &CTelegramStream::operator>>(TLUserFull &userFull)
         break;
     }
 
-    userFull = result;
+    userFullValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLGeoChatMessage &geoChatMessage)
+CTelegramStream &CTelegramStream::operator>>(TLGeoChatMessage &geoChatMessageValue)
 {
     TLGeoChatMessage result;
 
@@ -3047,12 +3047,12 @@ CTelegramStream &CTelegramStream::operator>>(TLGeoChatMessage &geoChatMessage)
         break;
     }
 
-    geoChatMessage = result;
+    geoChatMessageValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLGeochatsLocated &geochatsLocated)
+CTelegramStream &CTelegramStream::operator>>(TLGeochatsLocated &geochatsLocatedValue)
 {
     TLGeochatsLocated result;
 
@@ -3069,12 +3069,12 @@ CTelegramStream &CTelegramStream::operator>>(TLGeochatsLocated &geochatsLocated)
         break;
     }
 
-    geochatsLocated = result;
+    geochatsLocatedValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLGeochatsMessages &geochatsMessages)
+CTelegramStream &CTelegramStream::operator>>(TLGeochatsMessages &geochatsMessagesValue)
 {
     TLGeochatsMessages result;
 
@@ -3096,12 +3096,12 @@ CTelegramStream &CTelegramStream::operator>>(TLGeochatsMessages &geochatsMessage
         break;
     }
 
-    geochatsMessages = result;
+    geochatsMessagesValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLGeochatsStatedMessage &geochatsStatedMessage)
+CTelegramStream &CTelegramStream::operator>>(TLGeochatsStatedMessage &geochatsStatedMessageValue)
 {
     TLGeochatsStatedMessage result;
 
@@ -3118,12 +3118,12 @@ CTelegramStream &CTelegramStream::operator>>(TLGeochatsStatedMessage &geochatsSt
         break;
     }
 
-    geochatsStatedMessage = result;
+    geochatsStatedMessageValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessage &message)
+CTelegramStream &CTelegramStream::operator>>(TLMessage &messageValue)
 {
     TLMessage result;
 
@@ -3163,12 +3163,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessage &message)
         break;
     }
 
-    message = result;
+    messageValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesDialogs &messagesDialogs)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesDialogs &messagesDialogsValue)
 {
     TLMessagesDialogs result;
 
@@ -3192,12 +3192,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesDialogs &messagesDialogs)
         break;
     }
 
-    messagesDialogs = result;
+    messagesDialogsValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesMessages &messagesMessages)
+CTelegramStream &CTelegramStream::operator>>(TLMessagesMessages &messagesMessagesValue)
 {
     TLMessagesMessages result;
 
@@ -3219,12 +3219,12 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesMessages &messagesMessage
         break;
     }
 
-    messagesMessages = result;
+    messagesMessagesValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUpdate &update)
+CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
 {
     TLUpdate result;
 
@@ -3367,12 +3367,12 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &update)
         break;
     }
 
-    update = result;
+    updateValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUpdates &updates)
+CTelegramStream &CTelegramStream::operator>>(TLUpdates &updatesValue)
 {
     TLUpdates result;
 
@@ -3441,12 +3441,12 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdates &updates)
         break;
     }
 
-    updates = result;
+    updatesValue = result;
 
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUpdatesDifference &updatesDifference)
+CTelegramStream &CTelegramStream::operator>>(TLUpdatesDifference &updatesDifferenceValue)
 {
     TLUpdatesDifference result;
 
@@ -3477,7 +3477,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdatesDifference &updatesDiffere
         break;
     }
 
-    updatesDifference = result;
+    updatesDifferenceValue = result;
 
     return *this;
 }
@@ -3535,13 +3535,13 @@ CTelegramStream &CTelegramStream::operator<<(const TLDcOption &dcOption)
 }
 
 // Generated write operators implementation
-CTelegramStream &CTelegramStream::operator<<(const TLAccountDaysTTL &accountDaysTTL)
+CTelegramStream &CTelegramStream::operator<<(const TLAccountDaysTTL &accountDaysTTLValue)
 {
-    *this << accountDaysTTL.tlType;
+    *this << accountDaysTTLValue.tlType;
 
-    switch (accountDaysTTL.tlType) {
+    switch (accountDaysTTLValue.tlType) {
     case TLValue::AccountDaysTTL:
-        *this << accountDaysTTL.days;
+        *this << accountDaysTTLValue.days;
         break;
     default:
         break;
@@ -3550,24 +3550,24 @@ CTelegramStream &CTelegramStream::operator<<(const TLAccountDaysTTL &accountDays
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLAccountPasswordInputSettings &accountPasswordInputSettings)
+CTelegramStream &CTelegramStream::operator<<(const TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
 {
-    *this << accountPasswordInputSettings.tlType;
+    *this << accountPasswordInputSettingsValue.tlType;
 
-    switch (accountPasswordInputSettings.tlType) {
+    switch (accountPasswordInputSettingsValue.tlType) {
     case TLValue::AccountPasswordInputSettings:
-        *this << accountPasswordInputSettings.flags;
-        if (accountPasswordInputSettings.flags & 1 << 0) {
-            *this << accountPasswordInputSettings.newSalt;
+        *this << accountPasswordInputSettingsValue.flags;
+        if (accountPasswordInputSettingsValue.flags & 1 << 0) {
+            *this << accountPasswordInputSettingsValue.newSalt;
         }
-        if (accountPasswordInputSettings.flags & 1 << 0) {
-            *this << accountPasswordInputSettings.newPasswordHash;
+        if (accountPasswordInputSettingsValue.flags & 1 << 0) {
+            *this << accountPasswordInputSettingsValue.newPasswordHash;
         }
-        if (accountPasswordInputSettings.flags & 1 << 0) {
-            *this << accountPasswordInputSettings.hint;
+        if (accountPasswordInputSettingsValue.flags & 1 << 0) {
+            *this << accountPasswordInputSettingsValue.hint;
         }
-        if (accountPasswordInputSettings.flags & 1 << 1) {
-            *this << accountPasswordInputSettings.email;
+        if (accountPasswordInputSettingsValue.flags & 1 << 1) {
+            *this << accountPasswordInputSettingsValue.email;
         }
         break;
     default:
@@ -3577,16 +3577,16 @@ CTelegramStream &CTelegramStream::operator<<(const TLAccountPasswordInputSetting
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputAppEvent &inputAppEvent)
+CTelegramStream &CTelegramStream::operator<<(const TLInputAppEvent &inputAppEventValue)
 {
-    *this << inputAppEvent.tlType;
+    *this << inputAppEventValue.tlType;
 
-    switch (inputAppEvent.tlType) {
+    switch (inputAppEventValue.tlType) {
     case TLValue::InputAppEvent:
-        *this << inputAppEvent.time;
-        *this << inputAppEvent.type;
-        *this << inputAppEvent.peer;
-        *this << inputAppEvent.data;
+        *this << inputAppEventValue.time;
+        *this << inputAppEventValue.type;
+        *this << inputAppEventValue.peer;
+        *this << inputAppEventValue.data;
         break;
     default:
         break;
@@ -3595,16 +3595,16 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputAppEvent &inputAppEven
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputAudio &inputAudio)
+CTelegramStream &CTelegramStream::operator<<(const TLInputAudio &inputAudioValue)
 {
-    *this << inputAudio.tlType;
+    *this << inputAudioValue.tlType;
 
-    switch (inputAudio.tlType) {
+    switch (inputAudioValue.tlType) {
     case TLValue::InputAudioEmpty:
         break;
     case TLValue::InputAudio:
-        *this << inputAudio.id;
-        *this << inputAudio.accessHash;
+        *this << inputAudioValue.id;
+        *this << inputAudioValue.accessHash;
         break;
     default:
         break;
@@ -3613,16 +3613,16 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputAudio &inputAudio)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputContact &inputContact)
+CTelegramStream &CTelegramStream::operator<<(const TLInputContact &inputContactValue)
 {
-    *this << inputContact.tlType;
+    *this << inputContactValue.tlType;
 
-    switch (inputContact.tlType) {
+    switch (inputContactValue.tlType) {
     case TLValue::InputPhoneContact:
-        *this << inputContact.clientId;
-        *this << inputContact.phone;
-        *this << inputContact.firstName;
-        *this << inputContact.lastName;
+        *this << inputContactValue.clientId;
+        *this << inputContactValue.phone;
+        *this << inputContactValue.firstName;
+        *this << inputContactValue.lastName;
         break;
     default:
         break;
@@ -3631,16 +3631,16 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputContact &inputContact)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputDocument &inputDocument)
+CTelegramStream &CTelegramStream::operator<<(const TLInputDocument &inputDocumentValue)
 {
-    *this << inputDocument.tlType;
+    *this << inputDocumentValue.tlType;
 
-    switch (inputDocument.tlType) {
+    switch (inputDocumentValue.tlType) {
     case TLValue::InputDocumentEmpty:
         break;
     case TLValue::InputDocument:
-        *this << inputDocument.id;
-        *this << inputDocument.accessHash;
+        *this << inputDocumentValue.id;
+        *this << inputDocumentValue.accessHash;
         break;
     default:
         break;
@@ -3649,14 +3649,14 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputDocument &inputDocumen
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedChat &inputEncryptedChat)
+CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedChat &inputEncryptedChatValue)
 {
-    *this << inputEncryptedChat.tlType;
+    *this << inputEncryptedChatValue.tlType;
 
-    switch (inputEncryptedChat.tlType) {
+    switch (inputEncryptedChatValue.tlType) {
     case TLValue::InputEncryptedChat:
-        *this << inputEncryptedChat.chatId;
-        *this << inputEncryptedChat.accessHash;
+        *this << inputEncryptedChatValue.chatId;
+        *this << inputEncryptedChatValue.accessHash;
         break;
     default:
         break;
@@ -3665,27 +3665,27 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedChat &inputEn
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedFile &inputEncryptedFile)
+CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedFile &inputEncryptedFileValue)
 {
-    *this << inputEncryptedFile.tlType;
+    *this << inputEncryptedFileValue.tlType;
 
-    switch (inputEncryptedFile.tlType) {
+    switch (inputEncryptedFileValue.tlType) {
     case TLValue::InputEncryptedFileEmpty:
         break;
     case TLValue::InputEncryptedFileUploaded:
-        *this << inputEncryptedFile.id;
-        *this << inputEncryptedFile.parts;
-        *this << inputEncryptedFile.md5Checksum;
-        *this << inputEncryptedFile.keyFingerprint;
+        *this << inputEncryptedFileValue.id;
+        *this << inputEncryptedFileValue.parts;
+        *this << inputEncryptedFileValue.md5Checksum;
+        *this << inputEncryptedFileValue.keyFingerprint;
         break;
     case TLValue::InputEncryptedFile:
-        *this << inputEncryptedFile.id;
-        *this << inputEncryptedFile.accessHash;
+        *this << inputEncryptedFileValue.id;
+        *this << inputEncryptedFileValue.accessHash;
         break;
     case TLValue::InputEncryptedFileBigUploaded:
-        *this << inputEncryptedFile.id;
-        *this << inputEncryptedFile.parts;
-        *this << inputEncryptedFile.keyFingerprint;
+        *this << inputEncryptedFileValue.id;
+        *this << inputEncryptedFileValue.parts;
+        *this << inputEncryptedFileValue.keyFingerprint;
         break;
     default:
         break;
@@ -3694,21 +3694,21 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedFile &inputEn
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputFile &inputFile)
+CTelegramStream &CTelegramStream::operator<<(const TLInputFile &inputFileValue)
 {
-    *this << inputFile.tlType;
+    *this << inputFileValue.tlType;
 
-    switch (inputFile.tlType) {
+    switch (inputFileValue.tlType) {
     case TLValue::InputFile:
-        *this << inputFile.id;
-        *this << inputFile.parts;
-        *this << inputFile.name;
-        *this << inputFile.md5Checksum;
+        *this << inputFileValue.id;
+        *this << inputFileValue.parts;
+        *this << inputFileValue.name;
+        *this << inputFileValue.md5Checksum;
         break;
     case TLValue::InputFileBig:
-        *this << inputFile.id;
-        *this << inputFile.parts;
-        *this << inputFile.name;
+        *this << inputFileValue.id;
+        *this << inputFileValue.parts;
+        *this << inputFileValue.name;
         break;
     default:
         break;
@@ -3717,31 +3717,31 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputFile &inputFile)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFileLocation)
+CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFileLocationValue)
 {
-    *this << inputFileLocation.tlType;
+    *this << inputFileLocationValue.tlType;
 
-    switch (inputFileLocation.tlType) {
+    switch (inputFileLocationValue.tlType) {
     case TLValue::InputFileLocation:
-        *this << inputFileLocation.volumeId;
-        *this << inputFileLocation.localId;
-        *this << inputFileLocation.secret;
+        *this << inputFileLocationValue.volumeId;
+        *this << inputFileLocationValue.localId;
+        *this << inputFileLocationValue.secret;
         break;
     case TLValue::InputVideoFileLocation:
-        *this << inputFileLocation.id;
-        *this << inputFileLocation.accessHash;
+        *this << inputFileLocationValue.id;
+        *this << inputFileLocationValue.accessHash;
         break;
     case TLValue::InputEncryptedFileLocation:
-        *this << inputFileLocation.id;
-        *this << inputFileLocation.accessHash;
+        *this << inputFileLocationValue.id;
+        *this << inputFileLocationValue.accessHash;
         break;
     case TLValue::InputAudioFileLocation:
-        *this << inputFileLocation.id;
-        *this << inputFileLocation.accessHash;
+        *this << inputFileLocationValue.id;
+        *this << inputFileLocationValue.accessHash;
         break;
     case TLValue::InputDocumentFileLocation:
-        *this << inputFileLocation.id;
-        *this << inputFileLocation.accessHash;
+        *this << inputFileLocationValue.id;
+        *this << inputFileLocationValue.accessHash;
         break;
     default:
         break;
@@ -3750,14 +3750,14 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFil
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputGeoChat &inputGeoChat)
+CTelegramStream &CTelegramStream::operator<<(const TLInputGeoChat &inputGeoChatValue)
 {
-    *this << inputGeoChat.tlType;
+    *this << inputGeoChatValue.tlType;
 
-    switch (inputGeoChat.tlType) {
+    switch (inputGeoChatValue.tlType) {
     case TLValue::InputGeoChat:
-        *this << inputGeoChat.chatId;
-        *this << inputGeoChat.accessHash;
+        *this << inputGeoChatValue.chatId;
+        *this << inputGeoChatValue.accessHash;
         break;
     default:
         break;
@@ -3766,16 +3766,16 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputGeoChat &inputGeoChat)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputGeoPoint &inputGeoPoint)
+CTelegramStream &CTelegramStream::operator<<(const TLInputGeoPoint &inputGeoPointValue)
 {
-    *this << inputGeoPoint.tlType;
+    *this << inputGeoPointValue.tlType;
 
-    switch (inputGeoPoint.tlType) {
+    switch (inputGeoPointValue.tlType) {
     case TLValue::InputGeoPointEmpty:
         break;
     case TLValue::InputGeoPoint:
-        *this << inputGeoPoint.latitude;
-        *this << inputGeoPoint.longitude;
+        *this << inputGeoPointValue.latitude;
+        *this << inputGeoPointValue.longitude;
         break;
     default:
         break;
@@ -3784,24 +3784,24 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputGeoPoint &inputGeoPoin
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPeer &inputPeer)
+CTelegramStream &CTelegramStream::operator<<(const TLInputPeer &inputPeerValue)
 {
-    *this << inputPeer.tlType;
+    *this << inputPeerValue.tlType;
 
-    switch (inputPeer.tlType) {
+    switch (inputPeerValue.tlType) {
     case TLValue::InputPeerEmpty:
         break;
     case TLValue::InputPeerSelf:
         break;
     case TLValue::InputPeerContact:
-        *this << inputPeer.userId;
+        *this << inputPeerValue.userId;
         break;
     case TLValue::InputPeerForeign:
-        *this << inputPeer.userId;
-        *this << inputPeer.accessHash;
+        *this << inputPeerValue.userId;
+        *this << inputPeerValue.accessHash;
         break;
     case TLValue::InputPeerChat:
-        *this << inputPeer.chatId;
+        *this << inputPeerValue.chatId;
         break;
     default:
         break;
@@ -3810,16 +3810,16 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPeer &inputPeer)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPeerNotifySettings &inputPeerNotifySettings)
+CTelegramStream &CTelegramStream::operator<<(const TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
 {
-    *this << inputPeerNotifySettings.tlType;
+    *this << inputPeerNotifySettingsValue.tlType;
 
-    switch (inputPeerNotifySettings.tlType) {
+    switch (inputPeerNotifySettingsValue.tlType) {
     case TLValue::InputPeerNotifySettings:
-        *this << inputPeerNotifySettings.muteUntil;
-        *this << inputPeerNotifySettings.sound;
-        *this << inputPeerNotifySettings.showPreviews;
-        *this << inputPeerNotifySettings.eventsMask;
+        *this << inputPeerNotifySettingsValue.muteUntil;
+        *this << inputPeerNotifySettingsValue.sound;
+        *this << inputPeerNotifySettingsValue.showPreviews;
+        *this << inputPeerNotifySettingsValue.eventsMask;
         break;
     default:
         break;
@@ -3828,16 +3828,16 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPeerNotifySettings &in
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPhoto &inputPhoto)
+CTelegramStream &CTelegramStream::operator<<(const TLInputPhoto &inputPhotoValue)
 {
-    *this << inputPhoto.tlType;
+    *this << inputPhotoValue.tlType;
 
-    switch (inputPhoto.tlType) {
+    switch (inputPhotoValue.tlType) {
     case TLValue::InputPhotoEmpty:
         break;
     case TLValue::InputPhoto:
-        *this << inputPhoto.id;
-        *this << inputPhoto.accessHash;
+        *this << inputPhotoValue.id;
+        *this << inputPhotoValue.accessHash;
         break;
     default:
         break;
@@ -3846,17 +3846,17 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPhoto &inputPhoto)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPhotoCrop &inputPhotoCrop)
+CTelegramStream &CTelegramStream::operator<<(const TLInputPhotoCrop &inputPhotoCropValue)
 {
-    *this << inputPhotoCrop.tlType;
+    *this << inputPhotoCropValue.tlType;
 
-    switch (inputPhotoCrop.tlType) {
+    switch (inputPhotoCropValue.tlType) {
     case TLValue::InputPhotoCropAuto:
         break;
     case TLValue::InputPhotoCrop:
-        *this << inputPhotoCrop.cropLeft;
-        *this << inputPhotoCrop.cropTop;
-        *this << inputPhotoCrop.cropWidth;
+        *this << inputPhotoCropValue.cropLeft;
+        *this << inputPhotoCropValue.cropTop;
+        *this << inputPhotoCropValue.cropWidth;
         break;
     default:
         break;
@@ -3865,11 +3865,11 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPhotoCrop &inputPhotoC
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyKey &inputPrivacyKey)
+CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyKey &inputPrivacyKeyValue)
 {
-    *this << inputPrivacyKey.tlType;
+    *this << inputPrivacyKeyValue.tlType;
 
-    switch (inputPrivacyKey.tlType) {
+    switch (inputPrivacyKeyValue.tlType) {
     case TLValue::InputPrivacyKeyStatusTimestamp:
         break;
     default:
@@ -3879,19 +3879,19 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyKey &inputPriva
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputStickerSet &inputStickerSet)
+CTelegramStream &CTelegramStream::operator<<(const TLInputStickerSet &inputStickerSetValue)
 {
-    *this << inputStickerSet.tlType;
+    *this << inputStickerSetValue.tlType;
 
-    switch (inputStickerSet.tlType) {
+    switch (inputStickerSetValue.tlType) {
     case TLValue::InputStickerSetEmpty:
         break;
     case TLValue::InputStickerSetID:
-        *this << inputStickerSet.id;
-        *this << inputStickerSet.accessHash;
+        *this << inputStickerSetValue.id;
+        *this << inputStickerSetValue.accessHash;
         break;
     case TLValue::InputStickerSetShortName:
-        *this << inputStickerSet.shortName;
+        *this << inputStickerSetValue.shortName;
         break;
     default:
         break;
@@ -3900,21 +3900,21 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputStickerSet &inputStick
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputUser &inputUser)
+CTelegramStream &CTelegramStream::operator<<(const TLInputUser &inputUserValue)
 {
-    *this << inputUser.tlType;
+    *this << inputUserValue.tlType;
 
-    switch (inputUser.tlType) {
+    switch (inputUserValue.tlType) {
     case TLValue::InputUserEmpty:
         break;
     case TLValue::InputUserSelf:
         break;
     case TLValue::InputUserContact:
-        *this << inputUser.userId;
+        *this << inputUserValue.userId;
         break;
     case TLValue::InputUserForeign:
-        *this << inputUser.userId;
-        *this << inputUser.accessHash;
+        *this << inputUserValue.userId;
+        *this << inputUserValue.accessHash;
         break;
     default:
         break;
@@ -3923,16 +3923,16 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputUser &inputUser)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputVideo &inputVideo)
+CTelegramStream &CTelegramStream::operator<<(const TLInputVideo &inputVideoValue)
 {
-    *this << inputVideo.tlType;
+    *this << inputVideoValue.tlType;
 
-    switch (inputVideo.tlType) {
+    switch (inputVideoValue.tlType) {
     case TLValue::InputVideoEmpty:
         break;
     case TLValue::InputVideo:
-        *this << inputVideo.id;
-        *this << inputVideo.accessHash;
+        *this << inputVideoValue.id;
+        *this << inputVideoValue.accessHash;
         break;
     default:
         break;
@@ -3941,11 +3941,11 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputVideo &inputVideo)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLMessagesFilter &messagesFilter)
+CTelegramStream &CTelegramStream::operator<<(const TLMessagesFilter &messagesFilterValue)
 {
-    *this << messagesFilter.tlType;
+    *this << messagesFilterValue.tlType;
 
-    switch (messagesFilter.tlType) {
+    switch (messagesFilterValue.tlType) {
     case TLValue::InputMessagesFilterEmpty:
         break;
     case TLValue::InputMessagesFilterPhotos:
@@ -3967,11 +3967,11 @@ CTelegramStream &CTelegramStream::operator<<(const TLMessagesFilter &messagesFil
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLSendMessageAction &sendMessageAction)
+CTelegramStream &CTelegramStream::operator<<(const TLSendMessageAction &sendMessageActionValue)
 {
-    *this << sendMessageAction.tlType;
+    *this << sendMessageActionValue.tlType;
 
-    switch (sendMessageAction.tlType) {
+    switch (sendMessageActionValue.tlType) {
     case TLValue::SendMessageTypingAction:
         break;
     case TLValue::SendMessageCancelAction:
@@ -3979,18 +3979,18 @@ CTelegramStream &CTelegramStream::operator<<(const TLSendMessageAction &sendMess
     case TLValue::SendMessageRecordVideoAction:
         break;
     case TLValue::SendMessageUploadVideoAction:
-        *this << sendMessageAction.progress;
+        *this << sendMessageActionValue.progress;
         break;
     case TLValue::SendMessageRecordAudioAction:
         break;
     case TLValue::SendMessageUploadAudioAction:
-        *this << sendMessageAction.progress;
+        *this << sendMessageActionValue.progress;
         break;
     case TLValue::SendMessageUploadPhotoAction:
-        *this << sendMessageAction.progress;
+        *this << sendMessageActionValue.progress;
         break;
     case TLValue::SendMessageUploadDocumentAction:
-        *this << sendMessageAction.progress;
+        *this << sendMessageActionValue.progress;
         break;
     case TLValue::SendMessageGeoLocationAction:
         break;
@@ -4003,31 +4003,31 @@ CTelegramStream &CTelegramStream::operator<<(const TLSendMessageAction &sendMess
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLDocumentAttribute &documentAttribute)
+CTelegramStream &CTelegramStream::operator<<(const TLDocumentAttribute &documentAttributeValue)
 {
-    *this << documentAttribute.tlType;
+    *this << documentAttributeValue.tlType;
 
-    switch (documentAttribute.tlType) {
+    switch (documentAttributeValue.tlType) {
     case TLValue::DocumentAttributeImageSize:
-        *this << documentAttribute.w;
-        *this << documentAttribute.h;
+        *this << documentAttributeValue.w;
+        *this << documentAttributeValue.h;
         break;
     case TLValue::DocumentAttributeAnimated:
         break;
     case TLValue::DocumentAttributeSticker:
-        *this << documentAttribute.alt;
-        *this << documentAttribute.stickerset;
+        *this << documentAttributeValue.alt;
+        *this << documentAttributeValue.stickerset;
         break;
     case TLValue::DocumentAttributeVideo:
-        *this << documentAttribute.duration;
-        *this << documentAttribute.w;
-        *this << documentAttribute.h;
+        *this << documentAttributeValue.duration;
+        *this << documentAttributeValue.w;
+        *this << documentAttributeValue.h;
         break;
     case TLValue::DocumentAttributeAudio:
-        *this << documentAttribute.duration;
+        *this << documentAttributeValue.duration;
         break;
     case TLValue::DocumentAttributeFilename:
-        *this << documentAttribute.fileName;
+        *this << documentAttributeValue.fileName;
         break;
     default:
         break;
@@ -4036,20 +4036,20 @@ CTelegramStream &CTelegramStream::operator<<(const TLDocumentAttribute &document
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputChatPhoto &inputChatPhoto)
+CTelegramStream &CTelegramStream::operator<<(const TLInputChatPhoto &inputChatPhotoValue)
 {
-    *this << inputChatPhoto.tlType;
+    *this << inputChatPhotoValue.tlType;
 
-    switch (inputChatPhoto.tlType) {
+    switch (inputChatPhotoValue.tlType) {
     case TLValue::InputChatPhotoEmpty:
         break;
     case TLValue::InputChatUploadedPhoto:
-        *this << inputChatPhoto.file;
-        *this << inputChatPhoto.crop;
+        *this << inputChatPhotoValue.file;
+        *this << inputChatPhotoValue.crop;
         break;
     case TLValue::InputChatPhoto:
-        *this << inputChatPhoto.id;
-        *this << inputChatPhoto.crop;
+        *this << inputChatPhotoValue.id;
+        *this << inputChatPhotoValue.crop;
         break;
     default:
         break;
@@ -4058,76 +4058,76 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputChatPhoto &inputChatPh
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMedia)
+CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMediaValue)
 {
-    *this << inputMedia.tlType;
+    *this << inputMediaValue.tlType;
 
-    switch (inputMedia.tlType) {
+    switch (inputMediaValue.tlType) {
     case TLValue::InputMediaEmpty:
         break;
     case TLValue::InputMediaUploadedPhoto:
-        *this << inputMedia.file;
-        *this << inputMedia.caption;
+        *this << inputMediaValue.file;
+        *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaPhoto:
-        *this << inputMedia.idInputPhoto;
-        *this << inputMedia.caption;
+        *this << inputMediaValue.idInputPhoto;
+        *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaGeoPoint:
-        *this << inputMedia.geoPoint;
+        *this << inputMediaValue.geoPoint;
         break;
     case TLValue::InputMediaContact:
-        *this << inputMedia.phoneNumber;
-        *this << inputMedia.firstName;
-        *this << inputMedia.lastName;
+        *this << inputMediaValue.phoneNumber;
+        *this << inputMediaValue.firstName;
+        *this << inputMediaValue.lastName;
         break;
     case TLValue::InputMediaUploadedVideo:
-        *this << inputMedia.file;
-        *this << inputMedia.duration;
-        *this << inputMedia.w;
-        *this << inputMedia.h;
-        *this << inputMedia.caption;
+        *this << inputMediaValue.file;
+        *this << inputMediaValue.duration;
+        *this << inputMediaValue.w;
+        *this << inputMediaValue.h;
+        *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaUploadedThumbVideo:
-        *this << inputMedia.file;
-        *this << inputMedia.thumb;
-        *this << inputMedia.duration;
-        *this << inputMedia.w;
-        *this << inputMedia.h;
-        *this << inputMedia.caption;
+        *this << inputMediaValue.file;
+        *this << inputMediaValue.thumb;
+        *this << inputMediaValue.duration;
+        *this << inputMediaValue.w;
+        *this << inputMediaValue.h;
+        *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaVideo:
-        *this << inputMedia.idInputVeo;
-        *this << inputMedia.caption;
+        *this << inputMediaValue.idInputVeo;
+        *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaUploadedAudio:
-        *this << inputMedia.file;
-        *this << inputMedia.duration;
-        *this << inputMedia.mimeType;
+        *this << inputMediaValue.file;
+        *this << inputMediaValue.duration;
+        *this << inputMediaValue.mimeType;
         break;
     case TLValue::InputMediaAudio:
-        *this << inputMedia.idInputAudio;
+        *this << inputMediaValue.idInputAudio;
         break;
     case TLValue::InputMediaUploadedDocument:
-        *this << inputMedia.file;
-        *this << inputMedia.mimeType;
-        *this << inputMedia.attributes;
+        *this << inputMediaValue.file;
+        *this << inputMediaValue.mimeType;
+        *this << inputMediaValue.attributes;
         break;
     case TLValue::InputMediaUploadedThumbDocument:
-        *this << inputMedia.file;
-        *this << inputMedia.thumb;
-        *this << inputMedia.mimeType;
-        *this << inputMedia.attributes;
+        *this << inputMediaValue.file;
+        *this << inputMediaValue.thumb;
+        *this << inputMediaValue.mimeType;
+        *this << inputMediaValue.attributes;
         break;
     case TLValue::InputMediaDocument:
-        *this << inputMedia.idInputDocument;
+        *this << inputMediaValue.idInputDocument;
         break;
     case TLValue::InputMediaVenue:
-        *this << inputMedia.geoPoint;
-        *this << inputMedia.title;
-        *this << inputMedia.address;
-        *this << inputMedia.provider;
-        *this << inputMedia.venueId;
+        *this << inputMediaValue.geoPoint;
+        *this << inputMediaValue.title;
+        *this << inputMediaValue.address;
+        *this << inputMediaValue.provider;
+        *this << inputMediaValue.venueId;
         break;
     default:
         break;
@@ -4136,13 +4136,13 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMedia)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotifyPeer)
+CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotifyPeerValue)
 {
-    *this << inputNotifyPeer.tlType;
+    *this << inputNotifyPeerValue.tlType;
 
-    switch (inputNotifyPeer.tlType) {
+    switch (inputNotifyPeerValue.tlType) {
     case TLValue::InputNotifyPeer:
-        *this << inputNotifyPeer.peerInput;
+        *this << inputNotifyPeerValue.peerInput;
         break;
     case TLValue::InputNotifyUsers:
         break;
@@ -4151,7 +4151,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotif
     case TLValue::InputNotifyAll:
         break;
     case TLValue::InputNotifyGeoChatPeer:
-        *this << inputNotifyPeer.peerInputGeoChat;
+        *this << inputNotifyPeerValue.peerInputGeoChat;
         break;
     default:
         break;
@@ -4160,24 +4160,24 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotif
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyRule &inputPrivacyRule)
+CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyRule &inputPrivacyRuleValue)
 {
-    *this << inputPrivacyRule.tlType;
+    *this << inputPrivacyRuleValue.tlType;
 
-    switch (inputPrivacyRule.tlType) {
+    switch (inputPrivacyRuleValue.tlType) {
     case TLValue::InputPrivacyValueAllowContacts:
         break;
     case TLValue::InputPrivacyValueAllowAll:
         break;
     case TLValue::InputPrivacyValueAllowUsers:
-        *this << inputPrivacyRule.users;
+        *this << inputPrivacyRuleValue.users;
         break;
     case TLValue::InputPrivacyValueDisallowContacts:
         break;
     case TLValue::InputPrivacyValueDisallowAll:
         break;
     case TLValue::InputPrivacyValueDisallowUsers:
-        *this << inputPrivacyRule.users;
+        *this << inputPrivacyRuleValue.users;
         break;
     default:
         break;
