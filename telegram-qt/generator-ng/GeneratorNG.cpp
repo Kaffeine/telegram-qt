@@ -561,6 +561,30 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
     return result;
 }
 
+QString GeneratorNG::generateDebugRpcParse(const TLMethod &method)
+{
+    QString result;
+
+    result += spacing + QString("case %1::%2: {\n").arg(tlValueName).arg(formatName1stCapital(method.name));
+
+    QString debugLine = QStringLiteral("qDebug() << request.toString()");
+
+    foreach (const TLParam &param, method.params) {
+        if (param.dependOnFlag()) {
+            return QString();
+        }
+        result += spacing + spacing + QString("%1 %2;\n").arg(param.type).arg(param.name);
+        result += spacing + spacing + QString("stream >> %1;\n").arg(param.name);
+        debugLine += QString(" << \"%1\" << %1").arg(param.name);
+    }
+
+    result += spacing + spacing + debugLine + QLatin1String(";\n");
+    result += spacing + QLatin1String("}\n");
+    result += spacing + spacing + QLatin1String("break;\n\n");
+
+    return result;
+}
+
 QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types)
 {
     QList<TLType> solvedTypes;
@@ -870,6 +894,8 @@ void GeneratorNG::generate()
     codeOfTLValues.append(QLatin1String("        // Methods\n"));
     foreach (const TLMethod &method, m_functions) {
         codeOfTLValues.append(generateTLValuesDefinition(method));
+
+        codeDebugRpcParse.append(generateDebugRpcParse(method));
     }
 
     foreach (const TLType &type, m_solvedTypes) {

@@ -87,6 +87,8 @@ public:
     static QString generateConnectionMethodDeclaration(const TLMethod &method);
     static QString generateConnectionMethodDefinition(const TLMethod &method, QStringList &usedTypes);
 
+    static QString generateDebugRpcParse(const TLMethod &method);
+
     static QList<TLType> solveTypes(QMap<QString, TLType> types);
 
     void getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const;
@@ -103,6 +105,7 @@ public:
     QString codeConnectionDefinitions;
     QString codeDebugWriteDeclarations;
     QString codeDebugWriteDefinitions;
+    QString codeDebugRpcParse;
 
 private:
     QMap<QString, TLType> m_types;
