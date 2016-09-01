@@ -29,6 +29,7 @@ class CTelegramCore;
 
 struct SContact : TelegramNamespace::UserInfo {
     SContact() :
+        TelegramNamespace::UserInfo(),
         typing(TelegramNamespace::MessageActionNone),
         blocked(false)
     { }
