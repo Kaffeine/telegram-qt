@@ -489,8 +489,14 @@ void MainWindow::onUploadFinished(quint32 requestId, TelegramNamespace::UploadIn
     const TelegramNamespace::Peer peer = m_uploadingRequests.take(requestId);
 
     TelegramNamespace::MessageMediaInfo mediaInfo;
-    mediaInfo.setUploadFile(TelegramNamespace::MessageTypePhoto, info);
-    mediaInfo.setCaption(tr("Photo %1").arg(requestId));
+    if (info.fileName().endsWith(QLatin1Literal(".pdf"), Qt::CaseInsensitive)) {
+        mediaInfo.setUploadFile(TelegramNamespace::MessageTypeDocument, info);
+        mediaInfo.setCaption(tr("Document %1").arg(requestId));
+        mediaInfo.setMimeType(QLatin1String("application/pdf"));
+    } else {
+        mediaInfo.setUploadFile(TelegramNamespace::MessageTypePhoto, info);
+        mediaInfo.setCaption(tr("Photo %1").arg(requestId));
+    }
 
     CMessageModel::SMessage m;
     m.type = mediaInfo.type();
