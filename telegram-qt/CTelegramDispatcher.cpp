@@ -215,6 +215,9 @@ QByteArray FileRequestDescriptor::data() const
 
 quint32 FileRequestDescriptor::chunkSize() const
 {
+    if (m_type == Upload) {
+        return 256;
+    }
     return 128 * 256;
 }
 
