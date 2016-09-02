@@ -2342,7 +2342,9 @@ TLValue CTelegramConnection::processHelpGetConfig(CTelegramStream &stream, quint
         m_dcConfiguration = result.dcOptions;
 
         if (m_dcInfo.id != result.thisDc) {
-            emit actualDcIdReceived(m_dcInfo.id, result.thisDc);
+            const quint32 oldId = m_dcInfo.id;
+            m_dcInfo.id = result.thisDc;
+            emit actualDcIdReceived(oldId, result.thisDc);
         }
 
         emit dcConfigurationReceived(m_dcInfo.id);
