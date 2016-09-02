@@ -235,7 +235,7 @@ protected slots:
     void whenDcConfigurationUpdated(quint32 dc);
     void whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
     void whenPackageRedirected(const QByteArray &data, quint32 dc);
-    void whenWantedActiveDcChanged(quint32 dc);
+    void onWantedMainDcChanged(quint32 dc);
 
     void onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode);
     void onPasswordReceived(const TLAccountPassword &password, quint64 requestId);

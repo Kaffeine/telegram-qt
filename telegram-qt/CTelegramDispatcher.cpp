@@ -2196,7 +2196,7 @@ void CTelegramDispatcher::whenPackageRedirected(const QByteArray &data, quint32 
     }
 }
 
-void CTelegramDispatcher::whenWantedActiveDcChanged(quint32 dc)
+void CTelegramDispatcher::onWantedMainDcChanged(quint32 dc)
 {
     qDebug() << Q_FUNC_INFO << dc;
     CTelegramConnection *connection = getConnection(dc);
@@ -2645,7 +2645,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection()
     connect(connection, SIGNAL(dcConfigurationReceived(quint32)), SLOT(whenDcConfigurationUpdated(quint32)));
     connect(connection, SIGNAL(actualDcIdReceived(quint32,quint32)), SLOT(whenConnectionDcIdUpdated(quint32,quint32)));
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,quint32)), SLOT(whenPackageRedirected(QByteArray,quint32)));
-    connect(connection, SIGNAL(wantedActiveDcChanged(quint32)), SLOT(whenWantedActiveDcChanged(quint32)));
+    connect(connection, SIGNAL(wantedMainDcChanged(quint32)), SLOT(onWantedMainDcChanged(quint32)));
 
     connect(connection, SIGNAL(phoneStatusReceived(QString,bool)), SIGNAL(phoneStatusReceived(QString,bool)));
     connect(connection, SIGNAL(passwordReceived(TLAccountPassword,quint64)), SLOT(onPasswordReceived(TLAccountPassword,quint64)));

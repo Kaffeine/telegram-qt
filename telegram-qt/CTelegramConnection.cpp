@@ -2907,8 +2907,13 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
     TLValue value;
     stream >> value;
 
-    if (value == TLValue::AuthSendCode) {
-        emit wantedActiveDcChanged(dc);
+    switch (value) {
+    case TLValue::AuthSendCode:
+    case TLValue::AuthSendCall:
+    case TLValue::AuthSendSms:
+        emit wantedMainDcChanged(dc);
+    default:
+        break;
     }
 
     emit newRedirectedPackage(data, dc);

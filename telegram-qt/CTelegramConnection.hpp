@@ -245,7 +245,7 @@ public:
     void processRedirectedPackage(const QByteArray &data);
 
 signals:
-    void wantedActiveDcChanged(quint32 dc);
+    void wantedMainDcChanged(quint32 dc);
     void newRedirectedPackage(const QByteArray &data, quint32 dc);
 
     void statusChanged(int status, int reason, quint32 dc);
