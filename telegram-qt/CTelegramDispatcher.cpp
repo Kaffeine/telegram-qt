@@ -157,7 +157,7 @@ TLInputFile FileRequestDescriptor::inputFile() const
 //        file.md5Checksum = QString::fromLatin1(md5Sum().toHex());
     }
 
-    file.id = inputLocation().id;
+    file.id = m_fileId;
     file.parts = parts();
     file.name = m_fileName;
 
@@ -235,7 +235,6 @@ FileRequestDescriptor::FileRequestDescriptor() :
     m_part(0),
     m_hash(0)
 {
-
 }
 
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
@@ -810,49 +809,71 @@ quint64 CTelegramDispatcher::sendMedia(const TelegramNamespace::Peer &peer, cons
         return 0;
     }
 
-    const TLMessageMedia *media = info.d;
+    const TelegramNamespace::MessageMediaInfo::Private *media = info.d;
     TLInputMedia inputMedia;
 
-    switch (media->tlType) {
-    case TLValue::MessageMediaPhoto:
-        inputMedia.tlType = TLValue::InputMediaPhoto;
-        inputMedia.idInputPhoto.tlType = TLValue::InputPhoto;
-        inputMedia.idInputPhoto.id = media->photo.id;
-        inputMedia.idInputPhoto.accessHash = media->photo.accessHash;
-        break;
-    case TLValue::MessageMediaAudio:
-        inputMedia.tlType = TLValue::InputMediaAudio;
-        inputMedia.idInputAudio.tlType = TLValue::InputAudio;
-        inputMedia.idInputAudio.id = media->audio.id;
-        inputMedia.idInputAudio.accessHash = media->audio.accessHash;
-        break;
-    case TLValue::MessageMediaVideo:
-        inputMedia.tlType = TLValue::InputMediaVideo;
-        inputMedia.idInputVeo.tlType = TLValue::InputVideo;
-        inputMedia.idInputVeo.id = media->video.id;
-        inputMedia.idInputVeo.accessHash = media->video.accessHash;
-        break;
-    case TLValue::MessageMediaGeo:
-        inputMedia.tlType = TLValue::InputMediaGeoPoint;
-        inputMedia.geoPoint.tlType = TLValue::InputGeoPoint;
-        inputMedia.geoPoint.longitude = media->geo.longitude;
-        inputMedia.geoPoint.latitude = media->geo.latitude;
-        break;
-    case TLValue::MessageMediaContact:
-        inputMedia.tlType = TLValue::InputMediaContact;
-        inputMedia.firstName = media->firstName;
-        inputMedia.lastName = media->lastName;
-        inputMedia.phoneNumber = media->phoneNumber;
-        break;
-    case TLValue::MessageMediaDocument:
-        inputMedia.tlType = TLValue::InputMediaDocument;
-        inputMedia.idInputDocument.tlType = TLValue::InputDocument;
-        inputMedia.idInputDocument.id = media->document.id;
-        inputMedia.idInputDocument.accessHash = media->document.accessHash;
-        break;
-    default:
-        return 0;
-        break;
+    if (media->m_isUploaded) {
+        switch (media->tlType) {
+        case TLValue::MessageMediaPhoto:
+            inputMedia.tlType = TLValue::InputMediaUploadedPhoto;
+            break;
+        case TLValue::MessageMediaAudio:
+            inputMedia.tlType = TLValue::InputMediaUploadedAudio;
+            break;
+        case TLValue::MessageMediaVideo:
+            inputMedia.tlType = TLValue::InputMediaUploadedVideo;
+            break;
+        case TLValue::MessageMediaDocument:
+            inputMedia.tlType = TLValue::InputMediaUploadedDocument;
+            break;
+        default:
+            return 0;
+            break;
+        }
+        inputMedia.file = *media->m_inputFile;
+        inputMedia.caption = media->caption;
+    } else {
+        switch (media->tlType) {
+        case TLValue::MessageMediaPhoto:
+            inputMedia.tlType = TLValue::InputMediaPhoto;
+            inputMedia.idInputPhoto.tlType = TLValue::InputPhoto;
+            inputMedia.idInputPhoto.id = media->photo.id;
+            inputMedia.idInputPhoto.accessHash = media->photo.accessHash;
+            break;
+        case TLValue::MessageMediaAudio:
+            inputMedia.tlType = TLValue::InputMediaAudio;
+            inputMedia.idInputAudio.tlType = TLValue::InputAudio;
+            inputMedia.idInputAudio.id = media->audio.id;
+            inputMedia.idInputAudio.accessHash = media->audio.accessHash;
+            break;
+        case TLValue::MessageMediaVideo:
+            inputMedia.tlType = TLValue::InputMediaVideo;
+            inputMedia.idInputVeo.tlType = TLValue::InputVideo;
+            inputMedia.idInputVeo.id = media->video.id;
+            inputMedia.idInputVeo.accessHash = media->video.accessHash;
+            break;
+        case TLValue::MessageMediaGeo:
+            inputMedia.tlType = TLValue::InputMediaGeoPoint;
+            inputMedia.geoPoint.tlType = TLValue::InputGeoPoint;
+            inputMedia.geoPoint.longitude = media->geo.longitude;
+            inputMedia.geoPoint.latitude = media->geo.latitude;
+            break;
+        case TLValue::MessageMediaContact:
+            inputMedia.tlType = TLValue::InputMediaContact;
+            inputMedia.firstName = media->firstName;
+            inputMedia.lastName = media->lastName;
+            inputMedia.phoneNumber = media->phoneNumber;
+            break;
+        case TLValue::MessageMediaDocument:
+            inputMedia.tlType = TLValue::InputMediaDocument;
+            inputMedia.idInputDocument.tlType = TLValue::InputDocument;
+            inputMedia.idInputDocument.id = media->document.id;
+            inputMedia.idInputDocument.accessHash = media->document.accessHash;
+            break;
+        default:
+            return 0;
+            break;
+        }
     }
 
     return activeConnection()->sendMedia(inputPeer, inputMedia);
@@ -2309,6 +2330,12 @@ void CTelegramDispatcher::whenFileDataUploaded(quint32 requestId)
     emit uploadingStatusUpdated(requestId, descriptor.offset(), descriptor.size());
 
     if (descriptor.finished()) {
+        TelegramNamespace::UploadInfo uploadInfo;
+        TLInputFile *fileInfo = uploadInfo.d;
+        *fileInfo = descriptor.inputFile();
+        uploadInfo.d->m_size = descriptor.size();
+
+        emit uploadFinished(requestId, uploadInfo);
         return;
     }
 
@@ -2627,6 +2654,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection()
     connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
             SLOT(onUsersReceived(QVector<TLUser>)));
     connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(whenFileDataReceived(TLUploadFile,quint32,quint32)));
+    connect(connection, SIGNAL(fileDataSent(quint32)), SLOT(whenFileDataUploaded(quint32)));
 
     return connection;
 }

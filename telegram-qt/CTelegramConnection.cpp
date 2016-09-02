@@ -2061,6 +2061,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::MessagesAddChatUser:
         case TLValue::MessagesDeleteChatUser:
         case TLValue::MessagesCreateChat:
+        case TLValue::MessagesSendMedia:
         {
             bool ok;
             processingResult = processUpdate(stream, &ok, id);

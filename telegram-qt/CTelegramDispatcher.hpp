@@ -71,7 +71,7 @@ public:
     quint32 part() const { return m_part; }
     quint32 parts() const;
     QByteArray md5Sum() const { return m_md5Sum; }
-    quint32 fileId() const { return m_fileId; }
+    quint64 fileId() const { return m_fileId; }
 
     bool isBigFile() const;
     bool finished() const;
