@@ -72,6 +72,13 @@ public:
         DeltaTimeCorrectionBackward,
     };
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+    Q_ENUM(ConnectionStatus)
+    Q_ENUM(ConnectionStatusReason)
+    Q_ENUM(AuthState)
+    Q_ENUM(DeltaTimeHeuristicState)
+#endif
+
     explicit CTelegramConnection(const CAppInformation *appInfo, QObject *parent = 0);
 
     void setDcInfo(const TLDcOption &newDcInfo);
