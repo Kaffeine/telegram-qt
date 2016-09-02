@@ -356,6 +356,8 @@ protected:
 
     const CAppInformation *m_appInformation;
 
+    qint32 m_deltaTime;
+
     quint32 m_messageReceivingFilterFlags;
     quint32 m_acceptableMessageTypes;
     bool m_autoReconnectionEnabled;

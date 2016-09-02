@@ -241,6 +241,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_connectionState(TelegramNamespace::ConnectionStateDisconnected),
     m_appInformation(0),
+    m_deltaTime(0),
     m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagRead),
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeText),
     m_autoReconnectionEnabled(false),
@@ -463,7 +464,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     CTelegramStream inputStream(secret);
 
     quint32 format;
-    qint32 deltaTime;
+    qint32 deltaTime = 0;
     TLDcOption dcInfo;
     QByteArray authKey;
     quint64 authId;
@@ -511,9 +512,10 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
         inputStream >> m_chatIds;
     }
 
+    m_deltaTime = deltaTime;
+
     CTelegramConnection *connection = createConnection();
     connection->setDcInfo(dcInfo);
-    connection->setDeltaTime(deltaTime);
     connection->setAuthKey(authKey);
     connection->setServerSalt(serverSalt);
 
@@ -534,6 +536,7 @@ void CTelegramDispatcher::initConnectionSharedClear()
 {
     m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
 
+    m_deltaTime = 0;
     m_updateRequestId = 0;
     m_updatesState.pts = 1;
     m_updatesState.qts = 1;
@@ -2536,6 +2539,7 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
 
     if ((m_initializationState & StepDcConfiguration) && (m_initializationState & StepSignIn)) {
         setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
+        m_deltaTime = activeConnection()->deltaTime();
 
         if (!(m_requestedSteps & StepKnowSelf)) {
             getInitialUsers();
@@ -2644,6 +2648,8 @@ void CTelegramDispatcher::checkStateAndCallGetDifference()
 CTelegramConnection *CTelegramDispatcher::createConnection()
 {
     CTelegramConnection *connection = new CTelegramConnection(m_appInformation, this);
+
+    connection->setDeltaTime(m_deltaTime);
 
     connect(connection, SIGNAL(authStateChanged(int,quint32)), SLOT(onConnectionAuthChanged(int,quint32)));
     connect(connection, SIGNAL(statusChanged(int,int,quint32)), SLOT(onConnectionStatusChanged(int,int,quint32)));
