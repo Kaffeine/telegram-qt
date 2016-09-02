@@ -105,6 +105,33 @@ quint32 TelegramNamespace::MessageMediaInfo::size() const
     }
 }
 
+quint32 TelegramNamespace::MessageMediaInfo::duration() const
+{
+    switch (d->tlType) {
+    case TLValue::MessageMediaAudio:
+        return d->audio.duration;
+    case TLValue::MessageMediaVideo:
+        return d->video.duration;
+    default:
+        return 0;
+    }
+}
+
+bool TelegramNamespace::MessageMediaInfo::setDuration(quint32 duration)
+{
+    switch (d->tlType) {
+    case TLValue::MessageMediaAudio:
+        d->audio.duration = duration;
+        return true;
+    case TLValue::MessageMediaVideo:
+        d->video.duration = duration;
+        return true;
+    default:
+        break;
+    }
+    return false;
+}
+
 QString TelegramNamespace::MessageMediaInfo::caption() const
 {
     return d->caption;
@@ -130,6 +157,21 @@ QString TelegramNamespace::MessageMediaInfo::mimeType() const
         break;
     }
     return QString();
+}
+
+bool TelegramNamespace::MessageMediaInfo::setMimeType(const QString &mimeType)
+{
+    switch (d->tlType) {
+    case TLValue::MessageMediaDocument:
+        d->document.mimeType = mimeType;
+        return true;
+    case TLValue::MessageMediaAudio:
+        d->audio.mimeType = mimeType;
+        return true;
+    default:
+        break;
+    }
+    return false;
 }
 
 QString TelegramNamespace::MessageMediaInfo::alt() const

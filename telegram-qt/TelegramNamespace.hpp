@@ -228,12 +228,16 @@ public:
 
         quint32 size() const;
 
+        quint32 duration() const;
+        bool setDuration(quint32 duration);
+
         // Photo, Video
         QString caption() const;
         void setCaption(const QString &caption);
 
         // Valid for Document and Audio
         QString mimeType() const;
+        bool setMimeType(const QString &mimeType);
 
         // Valid for GeoPoint and Document/Sticker
         QString alt() const;
