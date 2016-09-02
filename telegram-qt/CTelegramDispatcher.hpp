@@ -232,10 +232,10 @@ signals:
 protected slots:
     void onConnectionAuthChanged(int newState, quint32 dc);
     void onConnectionStatusChanged(int newStatus, int reason, quint32 dc);
-    void whenDcConfigurationUpdated(quint32 dc);
-    void whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
-    void whenPackageRedirected(const QByteArray &data, quint32 dc);
-    void onWantedMainDcChanged(quint32 dc);
+    void onDcConfigurationUpdated();
+    void onConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
+    void onPackageRedirected(const QByteArray &data, quint32 dc);
+    void onWantedMainDcChanged(quint32 dc, const QString &dcForPhoneNumber);
 
     void onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode);
     void onPasswordReceived(const TLAccountPassword &password, quint64 requestId);
@@ -281,7 +281,7 @@ protected:
     void updateFullChat(const TLChatFull &newChat);
 
     void initConnectionSharedClear();
-    void initConnectionSharedFinal(quint32 activeDc = 0);
+    void initConnectionSharedFinal();
 
     void getUser(quint32 id);
     void getInitialUsers();
@@ -295,15 +295,16 @@ protected:
 
     QString userAvatarToken(const TLUser *user) const;
 
-    CTelegramConnection *activeConnection() const { return m_connections.value(m_activeDc); }
-    CTelegramConnection *getConnection(quint32 dc);
+    CTelegramConnection *activeConnection() const { return m_mainConnection; }
+    CTelegramConnection *getExtraConnection(quint32 dc);
 
-    CTelegramConnection *createConnection();
+    CTelegramConnection *createConnection(const TLDcOption &dcInfo);
     void ensureSignedConnection(CTelegramConnection *connection);
+    void clearMainConnection();
+    void clearExtraConnections();
+    void ensureMainConnectToWantedDc();
 
     TLDcOption dcInfoById(quint32 dc) const;
-
-    void setActiveDc(quint32 dc);
 
     void ensureTypingUpdateTimer(int interval);
     void ensureUpdateState(quint32 pts = 0, quint32 seq = 0, quint32 date = 0);
@@ -368,13 +369,14 @@ protected:
     quint32 m_initializationState; // InitializationStep flags
     quint32 m_requestedSteps; // InitializationStep flags
 
-    quint32 m_activeDc;
     quint32 m_wantedActiveDc;
     int m_autoConnectionDcIndex;
 
     QVector<TelegramNamespace::DcOption> m_connectionAddresses;
     QVector<TLDcOption> m_dcConfiguration;
-    QMap<quint32, CTelegramConnection *> m_connections;
+    CTelegramConnection *m_mainConnection;
+    QVector<CTelegramConnection *> m_extraConnections;
+    QString m_requestedCodeForPhone;
 
     quint64 m_updateRequestId;
     TLUpdatesState m_updatesState; // Current application update state (may be older than actual server-side message box state)

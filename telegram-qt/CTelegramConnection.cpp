@@ -2912,13 +2912,15 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
     switch (value) {
     case TLValue::AuthSendCode:
     case TLValue::AuthSendCall:
-    case TLValue::AuthSendSms:
-        emit wantedMainDcChanged(dc);
+    case TLValue::AuthSendSms: {
+        QString phoneNumber;
+        stream >> phoneNumber;
+        emit wantedMainDcChanged(dc, phoneNumber);
+    }
     default:
+        emit newRedirectedPackage(data, dc);
         break;
     }
-
-    emit newRedirectedPackage(data, dc);
 
     return true;
 }
