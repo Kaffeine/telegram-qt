@@ -230,8 +230,8 @@ signals:
     void chatChanged(quint32 chatId);
 
 protected slots:
-    void whenConnectionAuthChanged(int newState, quint32 dc);
-    void whenConnectionStatusChanged(int newStatus, int reason, quint32 dc);
+    void onConnectionAuthChanged(int newState, quint32 dc);
+    void onConnectionStatusChanged(int newStatus, int reason, quint32 dc);
     void whenDcConfigurationUpdated(quint32 dc);
     void whenConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
     void whenPackageRedirected(const QByteArray &data, quint32 dc);

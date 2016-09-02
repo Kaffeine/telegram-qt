@@ -2017,12 +2017,14 @@ CTelegramConnection *CTelegramDispatcher::getConnection(quint32 dc)
     return connection;
 }
 
-void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
+void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
 {
     qDebug() << Q_FUNC_INFO << "auth" << newState << "dc" << dc;
-    CTelegramConnection *connection = m_connections.value(dc);
+
+    CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
 
     if (!connection) {
+        qDebug() << Q_FUNC_INFO << "Invalid slot call";
         return;
     }
 
@@ -2092,10 +2094,15 @@ void CTelegramDispatcher::whenConnectionAuthChanged(int newState, quint32 dc)
     }
 }
 
-void CTelegramDispatcher::whenConnectionStatusChanged(int newStatus, int reason, quint32 dc)
+void CTelegramDispatcher::onConnectionStatusChanged(int newStatus, int reason, quint32 dc)
 {
     qDebug() << Q_FUNC_INFO << "status" << newStatus << "reason" << reason << "dc" << dc;
-    CTelegramConnection *connection = m_connections.value(dc);
+    CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
+
+    if (!connection) {
+        qDebug() << Q_FUNC_INFO << "Invalid slot call";
+        return;
+    }
 
     if (connection == activeConnection()) {
         if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
@@ -2633,8 +2640,8 @@ CTelegramConnection *CTelegramDispatcher::createConnection()
 {
     CTelegramConnection *connection = new CTelegramConnection(m_appInformation, this);
 
-    connect(connection, SIGNAL(authStateChanged(int,quint32)), SLOT(whenConnectionAuthChanged(int,quint32)));
-    connect(connection, SIGNAL(statusChanged(int,int,quint32)), SLOT(whenConnectionStatusChanged(int,int,quint32)));
+    connect(connection, SIGNAL(authStateChanged(int,quint32)), SLOT(onConnectionAuthChanged(int,quint32)));
+    connect(connection, SIGNAL(statusChanged(int,int,quint32)), SLOT(onConnectionStatusChanged(int,int,quint32)));
     connect(connection, SIGNAL(dcConfigurationReceived(quint32)), SLOT(whenDcConfigurationUpdated(quint32)));
     connect(connection, SIGNAL(actualDcIdReceived(quint32,quint32)), SLOT(whenConnectionDcIdUpdated(quint32,quint32)));
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,quint32)), SLOT(whenPackageRedirected(QByteArray,quint32)));
