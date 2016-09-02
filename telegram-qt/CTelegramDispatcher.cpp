@@ -54,6 +54,10 @@ const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPe
 
 static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_autoConnectionIndexInvalid + 1 == 0)
 
+#ifndef Q_NULLPTR
+#define Q_NULLPTR NULL
+#endif
+
 #if QT_VERSION < 0x050000
 const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typing time deviation in Qt4 by this value.
 #endif
