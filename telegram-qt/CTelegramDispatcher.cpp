@@ -66,8 +66,6 @@ enum TelegramMessageFlags {
     TelegramMessageFlagReply   = 1 << 3,
 };
 
-const quint32 FileRequestDescriptor::c_chunkSize = 128 * 256;
-
 FileRequestDescriptor FileRequestDescriptor::uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc)
 {
     FileRequestDescriptor result;
@@ -172,8 +170,8 @@ TLInputFile FileRequestDescriptor::inputFile() const
 
 quint32 FileRequestDescriptor::parts() const
 {
-    quint32 parts = m_size / c_chunkSize;
-    if (m_size % c_chunkSize) {
+    quint32 parts = m_size / chunkSize();
+    if (m_size % chunkSize()) {
         ++parts;
     }
 
@@ -187,7 +185,7 @@ bool FileRequestDescriptor::isBigFile() const
 
 bool FileRequestDescriptor::finished() const
 {
-    return m_part * c_chunkSize >= size();
+    return m_part * chunkSize() >= size();
 }
 
 void FileRequestDescriptor::bumpPart()
@@ -197,7 +195,7 @@ void FileRequestDescriptor::bumpPart()
     }
 
     ++m_part;
-    m_offset = m_part * c_chunkSize;
+    m_offset = m_part * chunkSize();
 
     if (m_offset > m_size) {
         m_offset = m_size;
@@ -212,7 +210,12 @@ void FileRequestDescriptor::bumpPart()
 
 QByteArray FileRequestDescriptor::data() const
 {
-    return m_data.mid(m_part * c_chunkSize, c_chunkSize);
+    return m_data.mid(m_part * chunkSize(), chunkSize());
+}
+
+quint32 FileRequestDescriptor::chunkSize() const
+{
+    return 128 * 256;
 }
 
 void FileRequestDescriptor::setupLocation(const TLFileLocation &fileLocation)

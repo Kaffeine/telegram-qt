@@ -79,6 +79,8 @@ public:
 
     QByteArray data() const;
 
+    quint32 chunkSize() const;
+
 protected:
     void setupLocation(const TLFileLocation &fileLocation);
     Type m_type;
@@ -95,8 +97,6 @@ protected:
 
     TLInputFileLocation m_inputLocation;
     quint32 m_dcId;
-
-    static const quint32 c_chunkSize;
 
 };
 
