@@ -231,6 +231,9 @@ public:
         quint32 duration() const;
         bool setDuration(quint32 duration);
 
+        QString documentFileName() const;
+        bool setDocumentFileName(const QString &fileName);
+
         // Photo, Video
         QString caption() const;
         void setCaption(const QString &caption);

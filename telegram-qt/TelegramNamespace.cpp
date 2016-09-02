@@ -132,6 +132,45 @@ bool TelegramNamespace::MessageMediaInfo::setDuration(quint32 duration)
     return false;
 }
 
+QString TelegramNamespace::MessageMediaInfo::documentFileName() const
+{
+    if (d->tlType != TLValue::MessageMediaDocument) {
+        return QString();
+    }
+
+    foreach (const TLDocumentAttribute &attribute, d->document.attributes) {
+        if (attribute.tlType == TLValue::DocumentAttributeFilename) {
+            return attribute.fileName;
+        }
+    }
+
+    return QString();
+}
+
+bool TelegramNamespace::MessageMediaInfo::setDocumentFileName(const QString &fileName)
+{
+    if (d->tlType != TLValue::MessageMediaDocument) {
+        return false;
+    }
+
+    TLDocumentAttribute *nameAttribute = 0;
+    for (int i = 0; i < d->document.attributes.count(); ++i) {
+        if (d->document.attributes.at(i).tlType == TLValue::DocumentAttributeFilename) {
+            nameAttribute = &d->document.attributes[i];
+            break;
+        }
+    }
+    if (!nameAttribute) {
+        d->document.attributes.append(TLDocumentAttribute());
+        nameAttribute = &d->document.attributes.last();
+        nameAttribute->tlType = TLValue::DocumentAttributeFilename;
+    }
+
+    nameAttribute->fileName = fileName;
+
+    return true;
+}
+
 QString TelegramNamespace::MessageMediaInfo::caption() const
 {
     return d->caption;
