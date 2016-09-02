@@ -493,6 +493,7 @@ void MainWindow::onUploadFinished(quint32 requestId, TelegramNamespace::UploadIn
         mediaInfo.setUploadFile(TelegramNamespace::MessageTypeDocument, info);
         mediaInfo.setCaption(tr("Document %1").arg(requestId));
         mediaInfo.setMimeType(QLatin1String("application/pdf"));
+        mediaInfo.setDocumentFileName(info.fileName());
     } else {
         mediaInfo.setUploadFile(TelegramNamespace::MessageTypePhoto, info);
         mediaInfo.setCaption(tr("Photo %1").arg(requestId));
