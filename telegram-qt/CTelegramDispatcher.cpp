@@ -814,12 +814,19 @@ quint64 CTelegramDispatcher::sendMedia(const TelegramNamespace::Peer &peer, cons
             break;
         case TLValue::MessageMediaAudio:
             inputMedia.tlType = TLValue::InputMediaUploadedAudio;
+            inputMedia.duration = media->audio.duration;
+            inputMedia.mimeType = media->audio.mimeType;
             break;
         case TLValue::MessageMediaVideo:
             inputMedia.tlType = TLValue::InputMediaUploadedVideo;
+            inputMedia.duration = media->video.duration;
+            inputMedia.w = media->video.w;
+            inputMedia.h = media->video.h;
             break;
         case TLValue::MessageMediaDocument:
             inputMedia.tlType = TLValue::InputMediaUploadedDocument;
+            inputMedia.mimeType = media->document.mimeType;
+            inputMedia.attributes = media->document.attributes;
             break;
         default:
             return 0;
