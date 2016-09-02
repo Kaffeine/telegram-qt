@@ -2026,7 +2026,13 @@ CTelegramConnection *CTelegramDispatcher::getExtraConnection(quint32 dc)
 
 void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+    qDebug() << "TelegramDispatcher::onConnectionAuthChanged():"
+             << "auth" << CTelegramConnection::AuthState(newState)
+             << "dc" << dc;
+#else
     qDebug() << Q_FUNC_INFO << "auth" << newState << "dc" << dc;
+#endif
 
     CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
 
@@ -2099,7 +2105,14 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
 
 void CTelegramDispatcher::onConnectionStatusChanged(int newStatus, int reason, quint32 dc)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+    qDebug() << "TelegramDispatcher::onConnectionStatusChanged():"
+             << "status" << CTelegramConnection::ConnectionStatus(newStatus)
+             << "reason" << CTelegramConnection::ConnectionStatusReason(reason)
+             << "dc" << dc;
+#else
     qDebug() << Q_FUNC_INFO << "status" << newStatus << "reason" << reason << "dc" << dc;
+#endif
     CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
 
     if (!connection) {
@@ -2152,7 +2165,7 @@ void CTelegramDispatcher::onDcConfigurationUpdated()
     qDebug() << "Core: Got DC Configuration.";
 
     foreach (TLDcOption o, m_dcConfiguration) {
-        qDebug() << o.ipAddress << o.port;
+        qDebug() << o.id << o.ipAddress << o.port;
     }
 
     continueInitialization(StepDcConfiguration);
@@ -2662,6 +2675,11 @@ void CTelegramDispatcher::ensureSignedConnection(CTelegramConnection *connection
     } else {
         if (connection->authState() == CTelegramConnection::AuthStateHaveAKey) { // Need an exported auth to sign in
             quint32 dc = connection->dcInfo().id;
+
+            if (dc == 0) {
+                qWarning() << Q_FUNC_INFO << "Invalid dc id" << connection;
+                return;
+            }
 
             if (m_exportedAuthentications.contains(dc)) {
                 connection->authImportAuthorization(m_exportedAuthentications.value(dc).first, m_exportedAuthentications.value(dc).second);
