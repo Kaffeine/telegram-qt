@@ -1479,6 +1479,11 @@ void CTelegramDispatcher::processFileRequestForConnection(CTelegramConnection *c
     const FileRequestDescriptor descriptor = m_requestedFileDescriptors.value(requestId);
     qDebug() << Q_FUNC_INFO << requestId << descriptor.type();
 
+    if (connection->authState() != CTelegramConnection::AuthStateSignedIn) {
+        qDebug() << "Failed to request file operation" << connection << requestId << connection->authState();
+        return;
+    }
+
     switch (descriptor.type()) {
     case FileRequestDescriptor::Avatar:
         connection->downloadFile(descriptor.inputLocation(), /* offset */ 0, /* limit */ 512 * 256, requestId); // Limit setted to some big number to download avatar at once
