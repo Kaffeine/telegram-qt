@@ -28,6 +28,9 @@
 #include <QToolTip>
 #include <QStringListModel>
 
+#include <QMimeDatabase>
+#include <QMimeType>
+
 #include <QDebug>
 
 #ifdef CREATE_MEDIA_FILES
@@ -489,15 +492,22 @@ void MainWindow::onUploadFinished(quint32 requestId, TelegramNamespace::UploadIn
     const TelegramNamespace::Peer peer = m_uploadingRequests.take(requestId);
 
     TelegramNamespace::MessageMediaInfo mediaInfo;
-    if (info.fileName().endsWith(QLatin1Literal(".pdf"), Qt::CaseInsensitive)) {
-        mediaInfo.setUploadFile(TelegramNamespace::MessageTypeDocument, info);
-        mediaInfo.setCaption(tr("Document %1").arg(requestId));
-        mediaInfo.setMimeType(QLatin1String("application/pdf"));
-        mediaInfo.setDocumentFileName(info.fileName());
-    } else {
-        mediaInfo.setUploadFile(TelegramNamespace::MessageTypePhoto, info);
-        mediaInfo.setCaption(tr("Photo %1").arg(requestId));
+
+    const QMimeDatabase db;
+    const QMimeType mimeType = db.mimeTypeForFile(info.fileName(), QMimeDatabase::MatchExtension);
+    if (!mimeType.isValid()) {
+        qDebug() << Q_FUNC_INFO << "Unable to determine mime type. Transfer aborted.";
+        return;
     }
+
+    if (mimeType.inherits(QLatin1String("image/jpeg"))) {
+        mediaInfo.setUploadFile(TelegramNamespace::MessageTypePhoto, info);
+    } else {
+        mediaInfo.setUploadFile(TelegramNamespace::MessageTypeDocument, info);
+        mediaInfo.setMimeType(mimeType.name());
+        mediaInfo.setDocumentFileName(info.fileName());
+    }
+//    mediaInfo.setCaption(tr("Media %1").arg(requestId));
 
     CMessageModel::SMessage m;
     m.type = mediaInfo.type();
