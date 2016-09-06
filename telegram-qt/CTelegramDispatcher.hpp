@@ -41,27 +41,34 @@ class FileRequestDescriptor
 public:
     enum Type {
         Invalid,
-        Avatar,
-        MessageMediaData,
+        Download,
         Upload
     };
 
     FileRequestDescriptor();
 
     static FileRequestDescriptor uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc);
-    static FileRequestDescriptor avatarRequest(const TLUser *user);
-    static FileRequestDescriptor messageMediaDataRequest(const TLMessage &message);
 
     Type type() const { return m_type; }
+    void setType(Type type) { m_type = type; }
 
     quint32 dcId() const { return m_dcId; }
+    void setDcId(quint32 dc);
+
     bool isValid() const { return m_type != Invalid; }
 
+    void setInputLocation(const TLInputFileLocation &inputLocation);
     TLInputFileLocation inputLocation() const { return m_inputLocation; }
 
+    void setUserId(quint32 id);
     quint32 userId() const { return m_userId; }
+
     quint32 messageId() const { return m_messageId; }
+    void setMessageId(quint32 messageId);
+
     quint32 size() const { return m_size; }
+    void setSize(quint32 size);
+
     quint32 offset() const { return m_offset; }
 
     void setOffset(quint32 newOffset) { m_offset = newOffset; }
@@ -80,15 +87,18 @@ public:
     QByteArray data() const;
 
     quint32 chunkSize() const;
+    void setChunkSize(quint32 size);
+
+    QString uniqueId;
 
 protected:
-    void setupLocation(const TLFileLocation &fileLocation);
     Type m_type;
     quint32 m_userId;
     quint32 m_messageId;
     quint32 m_size;
     quint32 m_offset;
     quint32 m_part;
+    quint32 m_chunkSize;
     QByteArray m_data;
     QByteArray m_md5Sum;
     QString m_fileName;
@@ -164,6 +174,7 @@ public:
     void requestPhoneCode(const QString &phoneNumber);
     void requestContactAvatar(quint32 userId);
     bool requestMessageMediaData(quint32 messageId);
+    quint32 requestFile(const TelegramNamespace::RemoteFile *file, quint32 chunkSize = 0);
     bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
 
     bool requestHistory(const TelegramNamespace::Peer &peer, quint32 offset, quint32 limit);
@@ -206,6 +217,8 @@ signals:
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
     void uploadingStatusUpdated(quint32 requestId, quint32 offset, quint32 size);
     void uploadFinished(quint32 requestId, TelegramNamespace::UploadInfo uploadInfo);
+    void filePartReceived(quint32 requestId, const QByteArray &data, const QString &mimeType, quint32 offset, quint32 totalSize);
+    void downloadFinished(quint32 requestId, const QString &uniqueId);
 
     void contactListChanged();
     void contactProfileChanged(quint32 userId);
@@ -270,7 +283,7 @@ protected slots:
 protected:
     void setConnectionState(TelegramNamespace::ConnectionState state);
 
-    quint32 requestFile(const FileRequestDescriptor &descriptor);
+    quint32 addFileRequest(const FileRequestDescriptor &descriptor);
     void processFileRequestForConnection(CTelegramConnection *connection, quint32 requestId);
     void processUpdate(const TLUpdate &update);
 

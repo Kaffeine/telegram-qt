@@ -51,6 +51,7 @@ const quint32 secretFormatVersion = 3;
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingDuration = 5000; // 5 sec
 const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPeriod - s_localTypingDuration) / 2. Minus 100 ms for insurance.
+static const quint32 s_defaultDownloadPartSize = 128 * 256; // Set chunkSize to some big number to get the whole avatar at once
 
 static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_autoConnectionIndexInvalid + 1 == 0)
 
@@ -89,65 +90,29 @@ FileRequestDescriptor FileRequestDescriptor::uploadRequest(const QByteArray &dat
     return result;
 }
 
-FileRequestDescriptor FileRequestDescriptor::avatarRequest(const TLUser *user)
+void FileRequestDescriptor::setDcId(quint32 dc)
 {
-    if (user->photo.photoSmall.tlType != TLValue::FileLocation) {
-        return FileRequestDescriptor();
-    }
-
-    FileRequestDescriptor result;
-
-    result.m_type = Avatar;
-    result.m_userId = user->id;
-    result.setupLocation(user->photo.photoSmall);
-
-    return result;
+    m_dcId = dc;
 }
 
-FileRequestDescriptor FileRequestDescriptor::messageMediaDataRequest(const TLMessage &message)
+void FileRequestDescriptor::setInputLocation(const TLInputFileLocation &inputLocation)
 {
-    const TLMessageMedia &media = message.media;
+    m_inputLocation = inputLocation;
+}
 
-    FileRequestDescriptor result;
-    result.m_type = MessageMediaData;
-    result.m_messageId = message.id;
+void FileRequestDescriptor::setUserId(quint32 id)
+{
+    m_userId = id;
+}
 
-    switch (media.tlType) {
-    case TLValue::MessageMediaPhoto:
-        if (media.photo.sizes.isEmpty()) {
-            return FileRequestDescriptor();
-        } else {
-            const TLPhotoSize s = media.photo.sizes.last();
-            result.setupLocation(s.location);
-            result.m_size = s.size;
-        }
-        break;
-    case TLValue::MessageMediaAudio:
-        result.m_dcId = media.audio.dcId;
-        result.m_inputLocation.tlType = TLValue::InputAudioFileLocation;
-        result.m_inputLocation.id = media.audio.id;
-        result.m_inputLocation.accessHash = media.audio.accessHash;
-        result.m_size = media.audio.size;
-        break;
-    case TLValue::MessageMediaVideo:
-        result.m_dcId = media.video.dcId;
-        result.m_inputLocation.tlType = TLValue::InputVideoFileLocation;
-        result.m_inputLocation.id = media.video.id;
-        result.m_inputLocation.accessHash = media.video.accessHash;
-        result.m_size = media.video.size;
-        break;
-    case TLValue::MessageMediaDocument:
-        result.m_dcId = media.document.dcId;
-        result.m_inputLocation.tlType = TLValue::InputDocumentFileLocation;
-        result.m_inputLocation.id = media.document.id;
-        result.m_inputLocation.accessHash = media.document.accessHash;
-        result.m_size = media.document.size;
-        break;
-    default:
-        return FileRequestDescriptor();
-    }
+void FileRequestDescriptor::setMessageId(quint32 messageId)
+{
+    m_messageId = messageId;
+}
 
-    return result;
+void FileRequestDescriptor::setSize(quint32 size)
+{
+    m_size = size;
 }
 
 TLInputFile FileRequestDescriptor::inputFile() const
@@ -222,25 +187,30 @@ quint32 FileRequestDescriptor::chunkSize() const
     if (m_type == Upload) {
         return 256;
     }
-    return 128 * 256;
+
+    if (m_chunkSize) {
+        return m_chunkSize;
+    }
+
+    return s_defaultDownloadPartSize;
 }
 
-void FileRequestDescriptor::setupLocation(const TLFileLocation &fileLocation)
+void FileRequestDescriptor::setChunkSize(quint32 size)
 {
-    m_dcId = fileLocation.dcId;
-
-    m_inputLocation.tlType = TLValue::InputFileLocation;
-    m_inputLocation.volumeId = fileLocation.volumeId;
-    m_inputLocation.localId = fileLocation.localId;
-    m_inputLocation.secret = fileLocation.secret;
+    m_chunkSize = size;
 }
 
 FileRequestDescriptor::FileRequestDescriptor() :
     m_type(Invalid),
+    m_userId(0),
+    m_messageId(0),
     m_size(0),
     m_offset(0),
     m_part(0),
-    m_hash(0)
+    m_chunkSize(0),
+    m_fileId(0),
+    m_hash(0),
+    m_dcId(0)
 {
 }
 
@@ -253,7 +223,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeText),
     m_autoReconnectionEnabled(false),
     m_pingInterval(s_defaultPingInterval),
-    m_mediaDataBufferSize(128 * 256), // 128 KB
+    m_mediaDataBufferSize(s_defaultDownloadPartSize),
     m_initializationState(0),
     m_requestedSteps(0),
     m_wantedActiveDc(0),
@@ -409,7 +379,7 @@ void CTelegramDispatcher::setMediaDataBufferSize(quint32 size)
     }
 
     if (!size) {
-        size = 128 * 256;
+        size = s_defaultDownloadPartSize;
     }
 
     m_mediaDataBufferSize = size;
@@ -651,36 +621,66 @@ void CTelegramDispatcher::requestPhoneCode(const QString &phoneNumber)
 
 void CTelegramDispatcher::requestContactAvatar(quint32 userId)
 {
-    qDebug() << Q_FUNC_INFO << userId;
-
-    const TLUser *user = m_users.value(userId);
-    if (!user) {
-        qDebug() << Q_FUNC_INFO << "Unknown user" << userId;
+    TelegramNamespace::UserInfo info;
+    if (!getUserInfo(&info, userId)) {
         return;
     }
 
-    if (user->photo.tlType == TLValue::UserProfilePhotoEmpty) {
-        qDebug() << Q_FUNC_INFO << "User" << userId << "have no avatar";
+    TelegramNamespace::RemoteFile location;
+    if (!info.getProfilePhoto(&location)) {
         return;
     }
 
-    if (requestFile(FileRequestDescriptor::avatarRequest(user))) {
-        qDebug() << Q_FUNC_INFO << "Requested avatar for user " << userId;
-    } else {
-        qDebug() << Q_FUNC_INFO << "Contact" << userId << "avatar is not available";
+    quint32 requestId = requestFile(&location, /* chunkSize */ 512 * 256); // Set chunkSize to some big number to get the whole avatar at once
+
+    if (!requestId) {
+        return;
     }
+
+    m_requestedFileDescriptors[requestId].setUserId(userId);
 }
 
 bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
 {
-    if (!m_knownMediaMessages.contains(messageId)) {
-        qDebug() << Q_FUNC_INFO << "Unknown media message" << messageId;
+    TelegramNamespace::MessageMediaInfo info;
+    if (!getMessageMediaInfo(&info, messageId)) {
         return false;
     }
 
-    // TODO: MessageMediaContact, MessageMediaGeo
+    TelegramNamespace::RemoteFile location;
+    if (!info.getRemoteFileInfo(&location)) {
+        return false;
+    }
 
-    return requestFile(FileRequestDescriptor::messageMediaDataRequest(m_knownMediaMessages.value(messageId)));
+    quint32 requestId = requestFile(&location, info.size());
+
+    if (!requestId) {
+        return false;
+    }
+
+    m_requestedFileDescriptors[requestId].setMessageId(messageId);
+    return true;
+}
+
+quint32 CTelegramDispatcher::requestFile(const TelegramNamespace::RemoteFile *file, quint32 chunkSize)
+{
+    if (!file->isValid()) {
+        return 0;
+    }
+
+    FileRequestDescriptor request;
+    request.setType(FileRequestDescriptor::Download);
+    request.setDcId(file->d->m_dcId);
+    request.setInputLocation(*file->d);
+    request.setSize(file->d->m_size);
+    request.uniqueId = file->getUniqueId();
+
+    if (chunkSize) {
+        request.setChunkSize(chunkSize);
+    } else {
+        request.setChunkSize(m_mediaDataBufferSize);
+    }
+    return addFileRequest(request);
 }
 
 bool CTelegramDispatcher::getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const
@@ -741,7 +741,7 @@ quint32 CTelegramDispatcher::uploadFile(const QByteArray &fileContent, const QSt
 #ifdef DEVELOPER_BUILD
     qDebug() << Q_FUNC_INFO << fileName;
 #endif
-    return requestFile(FileRequestDescriptor::uploadRequest(fileContent, fileName, m_mainConnection->dcInfo().id));
+    return addFileRequest(FileRequestDescriptor::uploadRequest(fileContent, fileName, m_mainConnection->dcInfo().id));
 }
 
 quint32 CTelegramDispatcher::uploadFile(QIODevice *source, const QString &fileName)
@@ -1459,7 +1459,7 @@ void CTelegramDispatcher::setConnectionState(TelegramNamespace::ConnectionState 
     emit connectionStateChanged(state);
 }
 
-quint32 CTelegramDispatcher::requestFile(const FileRequestDescriptor &descriptor)
+quint32 CTelegramDispatcher::addFileRequest(const FileRequestDescriptor &descriptor)
 {
     if (!descriptor.isValid()) {
         return 0;
@@ -1489,11 +1489,8 @@ void CTelegramDispatcher::processFileRequestForConnection(CTelegramConnection *c
     }
 
     switch (descriptor.type()) {
-    case FileRequestDescriptor::Avatar:
-        connection->downloadFile(descriptor.inputLocation(), /* offset */ 0, /* limit */ 512 * 256, requestId); // Limit setted to some big number to download avatar at once
-        break;
-    case FileRequestDescriptor::MessageMediaData:
-        connection->downloadFile(descriptor.inputLocation(), descriptor.offset(), m_mediaDataBufferSize, requestId);
+    case FileRequestDescriptor::Download:
+        connection->downloadFile(descriptor.inputLocation(), descriptor.offset(), descriptor.chunkSize(), requestId);
         break;
     case FileRequestDescriptor::Upload:
         connection->uploadFile(descriptor.fileId(), descriptor.part(), descriptor.data(), requestId);
@@ -2270,69 +2267,78 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
         return;
     }
 
+    FileRequestDescriptor &descriptor = m_requestedFileDescriptors[requestId];
 #ifdef DEVELOPER_BUILD
     qDebug() << Q_FUNC_INFO << "File:" << file.tlType << file.type << file.mtime;
+    qDebug() << Q_FUNC_INFO << "Descriptor:" << descriptor.type() << descriptor.userId() << descriptor.messageId();
 #endif
 
-    QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
-
-    FileRequestDescriptor &descriptor = m_requestedFileDescriptors[requestId];
+    if (descriptor.type() != FileRequestDescriptor::Download) {
+        return;
+    }
 
     const quint32 chunkSize = file.bytes.size();
 
-    switch (descriptor.type()) {
-    case FileRequestDescriptor::Avatar:
-        if (m_users.contains(descriptor.userId())) {
+    QString mimeType = mimeTypeByStorageFileType(file.type.tlType);
+
+    // Depends on InputFileLocation tlType, we can either have descriptor.size() (for MediaMessage data (Audio, Video, Document)),
+    // or have file type StorageFilePartial otherwise.
+    const bool isFinished = !((file.type.tlType == TLValue::StorageFilePartial) || (descriptor.offset() + chunkSize < descriptor.size()));
+
+    if (isFinished) {
+        descriptor.setSize(descriptor.offset() + chunkSize);
+    }
+
+    emit filePartReceived(requestId, file.bytes, mimeType, descriptor.offset(), descriptor.size()); // Size can be unknown (== 0)
+
+    if (isFinished) {
+#ifdef DEVELOPER_BUILD
+        qDebug() << Q_FUNC_INFO << "file" << requestId << "download finished.";
+#endif
+        emit downloadFinished(requestId, descriptor.uniqueId);
+
+        m_requestedFileDescriptors.remove(requestId);
+    } else {
+        descriptor.setOffset(offset + chunkSize);
+
+        CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
+        if (connection) {
+            processFileRequestForConnection(connection, requestId);
+        } else {
+            qDebug() << Q_FUNC_INFO << "Invalid call. The method must be called only on CTelegramConnection signal.";
+        }
+    }
+
+    // Legacy stuff:
+    if (isFinished) {
+        if (descriptor.userId() && m_users.contains(descriptor.userId())) {
             emit avatarReceived(descriptor.userId(), file.bytes, mimeType, userAvatarToken(m_users.value(descriptor.userId())));
-        } else {
-            qDebug() << Q_FUNC_INFO << "Unknown userId" << descriptor.userId();
         }
-        break;
-    case FileRequestDescriptor::MessageMediaData:
-        if (m_knownMediaMessages.contains(descriptor.messageId())) {
-            const TLMessage message = m_knownMediaMessages.value(descriptor.messageId());
-            const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
+    }
 
-            TelegramNamespace::Peer peer = peerToPublicPeer(message.toId);
+    if (descriptor.messageId() && m_knownMediaMessages.contains(descriptor.messageId())) {
+        const TLMessage message = m_knownMediaMessages.value(descriptor.messageId());
+        const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
 
-            // MimeType can not be resolved for some StorageFileType. Try to get the type from the message info in this case.
-            if (mimeType.isEmpty()) {
-                TelegramNamespace::MessageMediaInfo info;
-                getMessageMediaInfo(&info, message.id);
-                mimeType = info.mimeType();
+        TelegramNamespace::Peer peer = peerToPublicPeer(message.toId);
+
+        // MimeType can not be resolved for some StorageFileType. Try to get the type from the message info in this case.
+        if (mimeType.isEmpty()) {
+            TelegramNamespace::MessageMediaInfo info;
+            getMessageMediaInfo(&info, message.id);
+            mimeType = info.mimeType();
+        }
+
+        if (!(message.flags & TelegramMessageFlagOut)) {
+            if (peer.type == TelegramNamespace::Peer::User) {
+                peer = message.fromId;
             }
-
-            if (!(message.flags & TelegramMessageFlagOut)) {
-                if (peer.type == TelegramNamespace::Peer::User) {
-                    peer = message.fromId;
-                }
-            }
+        }
 
 #ifdef DEVELOPER_BUILD
-            qDebug() << Q_FUNC_INFO << "MessageMediaData:" << message.id << offset << "-" << offset + chunkSize << "/" << descriptor.size();
+        qDebug() << Q_FUNC_INFO << "MessageMediaData:" << message.id << offset << "-" << offset + chunkSize << "/" << descriptor.size();
 #endif
-            emit messageMediaDataReceived(peer, message.id, file.bytes, mimeType, messageType, offset, descriptor.size());
-        } else {
-            qDebug() << Q_FUNC_INFO << "Unknown media message data received" << descriptor.messageId();
-        }
-
-        if (descriptor.offset() + chunkSize == descriptor.size()) {
-#ifdef DEVELOPER_BUILD
-            qDebug() << Q_FUNC_INFO << "file" << requestId << "received.";
-#endif
-            m_requestedFileDescriptors.remove(requestId);
-        } else {
-            descriptor.setOffset(offset + chunkSize);
-
-            CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
-            if (connection) {
-                processFileRequestForConnection(connection, requestId);
-            } else {
-                qDebug() << Q_FUNC_INFO << "Invalid call. The method must be called only on CTelegramConnection signal.";
-            }
-        }
-    default:
-        break;
+        emit messageMediaDataReceived(peer, message.id, file.bytes, mimeType, messageType, offset, descriptor.size());
     }
 }
 
