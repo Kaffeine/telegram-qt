@@ -32,6 +32,39 @@ public:
     quint32 m_size;
 };
 
+class TelegramNamespace::RemoteFile::Private : public TLInputFileLocation
+{
+public:
+    Private() :
+        m_size(0),
+        m_dcId(0)
+    {
+    }
+
+    void setInputFileLocation(const TLInputFileLocation &inputFileLocation)
+    {
+        TLInputFileLocation *thisLocation = this;
+        *thisLocation = inputFileLocation;
+    }
+
+    bool setFileLocation(const TLFileLocation *fileLocation)
+    {
+        if (fileLocation->tlType != TLValue::FileLocation) {
+            m_dcId = 0;
+            return false;
+        }
+        tlType = TLValue::InputFileLocation;
+        volumeId = fileLocation->volumeId;
+        localId = fileLocation->localId;
+        secret = fileLocation->secret;
+        m_dcId = fileLocation->dcId;
+        return true;
+    }
+
+    quint32 m_size;
+    quint32 m_dcId;
+};
+
 class TelegramNamespace::PasswordInfo::Private : public TLAccountPassword { };
 class TelegramNamespace::UserInfo::Private : public TLUser { };
 

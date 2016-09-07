@@ -77,6 +77,43 @@ void TelegramNamespace::MessageMediaInfo::setUploadFile(TelegramNamespace::Messa
     }
 }
 
+bool TelegramNamespace::MessageMediaInfo::getRemoteFileInfo(TelegramNamespace::RemoteFile *file) const
+{
+    switch (d->tlType) {
+    case TLValue::MessageMediaPhoto:
+        if (d->photo.sizes.isEmpty()) {
+            return false;
+        } else {
+            const TLPhotoSize s = d->photo.sizes.last();
+            file->d->m_size = s.size;
+            return file->d->setFileLocation(&s.location);
+        }
+    case TLValue::MessageMediaAudio:
+        file->d->m_dcId = d->audio.dcId;
+        file->d->tlType = TLValue::InputAudioFileLocation;
+        file->d->id = d->audio.id;
+        file->d->accessHash = d->audio.accessHash;
+        file->d->m_size = d->audio.size;
+        return true;
+    case TLValue::MessageMediaVideo:
+        file->d->m_dcId = d->video.dcId;
+        file->d->tlType = TLValue::InputVideoFileLocation;
+        file->d->id = d->video.id;
+        file->d->accessHash = d->video.accessHash;
+        file->d->m_size = d->video.size;
+        return true;
+    case TLValue::MessageMediaDocument:
+        file->d->m_dcId = d->document.dcId;
+        file->d->tlType = TLValue::InputDocumentFileLocation;
+        file->d->id = d->document.id;
+        file->d->accessHash = d->document.accessHash;
+        file->d->m_size = d->document.size;
+        return true;
+    default:
+        return false;
+    }
+}
+
 TelegramNamespace::MessageType TelegramNamespace::MessageMediaInfo::type() const
 {
     return telegramMessageTypeToPublicMessageType(d->tlType);
@@ -286,6 +323,71 @@ QString TelegramNamespace::UploadInfo::md5Sum() const
     return d->md5Checksum;
 }
 
+TelegramNamespace::RemoteFile::RemoteFile():
+    d(new Private())
+{
+}
+
+TelegramNamespace::RemoteFile::RemoteFile(const TelegramNamespace::RemoteFile &file) :
+    d(new Private)
+{
+    *d = *file.d;
+}
+
+TelegramNamespace::RemoteFile::~RemoteFile()
+{
+    delete d;
+}
+
+TelegramNamespace::RemoteFile &TelegramNamespace::RemoteFile::operator=(const TelegramNamespace::RemoteFile &file)
+{
+    *d = *file.d;
+    return *this;
+}
+
+bool TelegramNamespace::RemoteFile::isValid() const
+{
+    if (!d) {
+        return false;
+    }
+
+    switch (d->tlType) {
+    case TLValue::InputFileLocation:
+    case TLValue::InputVideoFileLocation:
+    case TLValue::InputEncryptedFileLocation:
+    case TLValue::InputAudioFileLocation:
+    case TLValue::InputDocumentFileLocation:
+        return true;
+    default:
+        return false;
+    }
+}
+
+QString TelegramNamespace::RemoteFile::getUniqueId() const
+{
+    if (!d || !d->m_dcId) {
+        return QString();
+    }
+
+    switch (d->tlType) {
+    case TLValue::InputFileLocation:
+        return QString(QLatin1String("%1%2%3"))
+                .arg(d->m_dcId, sizeof(d->m_dcId) * 2, 16, QLatin1Char('0'))
+                .arg(d->volumeId, sizeof(d->volumeId) * 2, 16, QLatin1Char('0'))
+                .arg(d->localId, sizeof(d->localId) * 2, 16, QLatin1Char('0'));
+    case TLValue::InputVideoFileLocation:
+    case TLValue::InputEncryptedFileLocation:
+    case TLValue::InputAudioFileLocation:
+    case TLValue::InputDocumentFileLocation:
+        return QString(QLatin1String("%1%2%3"))
+                .arg(d->m_dcId, sizeof(d->m_dcId) * 2, 16, QLatin1Char('0'))
+                .arg(d->id, sizeof(d->id) * 2, 16, QLatin1Char('0'))
+                .arg(d->accessHash, sizeof(d->accessHash) * 2, 16, QLatin1Char('0'));
+    default:
+        return QString();
+    }
+}
+
 TelegramNamespace::UserInfo::UserInfo() :
     d(new Private())
 {
@@ -341,6 +443,18 @@ TelegramNamespace::ContactStatus TelegramNamespace::UserInfo::status() const
 quint32 TelegramNamespace::UserInfo::wasOnline() const
 {
     return getApiContactLastOnline(d->status);
+}
+
+bool TelegramNamespace::UserInfo::getProfilePhoto(TelegramNamespace::RemoteFile *file, TelegramNamespace::UserInfo::ProfilePhotoSize size) const
+{
+    switch (size) {
+    case Big:
+        return file->d->setFileLocation(&d->photo.photoBig);
+    case Small:
+        return file->d->setFileLocation(&d->photo.photoSmall);
+    default:
+        return false;
+    }
 }
 
 TelegramNamespace::ContactStatus getApiContactStatus(TLValue status)

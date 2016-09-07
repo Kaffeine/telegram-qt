@@ -126,7 +126,10 @@ public:
 
     static void registerTypes();
 
+    class UserInfo;
     class UploadInfo;
+    class RemoteFile;
+    class MessageMediaInfo;
 
     struct Peer
     {
@@ -224,6 +227,8 @@ public:
 
         void setUploadFile(MessageType type, const UploadInfo &uploadInfo);
 
+        bool getRemoteFileInfo(RemoteFile *file) const;
+
         MessageType type() const;
 
         quint32 size() const;
@@ -278,9 +283,35 @@ public:
         Private *d;
     };
 
+    class RemoteFile
+    {
+    public:
+        RemoteFile();
+        RemoteFile(const RemoteFile &file);
+        ~RemoteFile();
+
+        RemoteFile &operator=(const RemoteFile &file);
+
+        bool isValid() const;
+        QString getUniqueId() const;
+
+    protected:
+        friend class CTelegramDispatcher;
+        friend class UserInfo;
+        friend class MessageMediaInfo;
+        class Private;
+
+        Private *d;
+    };
+
     class UserInfo
     {
     public:
+        enum ProfilePhotoSize {
+            Small,
+            Big
+        };
+
         UserInfo();
         UserInfo(const UserInfo &info);
         ~UserInfo();
@@ -294,6 +325,8 @@ public:
         QString phone() const;
         ContactStatus status() const;
         quint32 wasOnline() const;
+
+        bool getProfilePhoto(RemoteFile *file, ProfilePhotoSize size = Small) const;
 
         // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
 
