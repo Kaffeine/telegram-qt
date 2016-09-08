@@ -61,7 +61,7 @@ public:
     bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
     bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
-    bool getPasswordInfo(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId);
+    bool getPasswordInfo(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId) const;
 
 public Q_SLOTS:
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags); // Messages with at least one of the passed flags will be filtered out.

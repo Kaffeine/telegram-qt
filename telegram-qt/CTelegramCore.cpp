@@ -294,7 +294,7 @@ bool CTelegramCore::getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *mes
     return m_dispatcher->getMessageMediaInfo(messageInfo, messageId);
 }
 
-bool CTelegramCore::getPasswordInfo(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId)
+bool CTelegramCore::getPasswordInfo(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId) const
 {
     return m_dispatcher->getPasswordData(passwordInfo, requestId);
 }

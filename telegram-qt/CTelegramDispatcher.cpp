@@ -2252,7 +2252,7 @@ void CTelegramDispatcher::onPasswordReceived(const TLAccountPassword &password, 
     emit passwordInfoReceived(requestId);
 }
 
-bool CTelegramDispatcher::getPasswordData(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId)
+bool CTelegramDispatcher::getPasswordData(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId) const
 {
     if (!m_passwordInfo.contains(requestId)) {
         return false;
