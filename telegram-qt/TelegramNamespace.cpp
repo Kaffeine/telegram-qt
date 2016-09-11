@@ -79,6 +79,8 @@ void TelegramNamespace::MessageMediaInfo::setUploadFile(TelegramNamespace::Messa
 
 bool TelegramNamespace::MessageMediaInfo::getRemoteFileInfo(TelegramNamespace::RemoteFile *file) const
 {
+    TLInputFileLocation inputLocation;
+
     switch (d->tlType) {
     case TLValue::MessageMediaPhoto:
         if (d->photo.sizes.isEmpty()) {
@@ -89,25 +91,28 @@ bool TelegramNamespace::MessageMediaInfo::getRemoteFileInfo(TelegramNamespace::R
             return file->d->setFileLocation(&s.location);
         }
     case TLValue::MessageMediaAudio:
-        file->d->m_dcId = d->audio.dcId;
-        file->d->tlType = TLValue::InputAudioFileLocation;
-        file->d->id = d->audio.id;
-        file->d->accessHash = d->audio.accessHash;
+        inputLocation.tlType = TLValue::InputAudioFileLocation;
+        inputLocation.id = d->audio.id;
+        inputLocation.accessHash = d->audio.accessHash;
+        file->d->setInputFileLocation(&inputLocation);
         file->d->m_size = d->audio.size;
+        file->d->m_dcId = d->audio.dcId;
         return true;
     case TLValue::MessageMediaVideo:
-        file->d->m_dcId = d->video.dcId;
-        file->d->tlType = TLValue::InputVideoFileLocation;
-        file->d->id = d->video.id;
-        file->d->accessHash = d->video.accessHash;
+        inputLocation.tlType = TLValue::InputVideoFileLocation;
+        inputLocation.id = d->video.id;
+        inputLocation.accessHash = d->video.accessHash;
+        file->d->setInputFileLocation(&inputLocation);
         file->d->m_size = d->video.size;
+        file->d->m_dcId = d->video.dcId;
         return true;
     case TLValue::MessageMediaDocument:
-        file->d->m_dcId = d->document.dcId;
-        file->d->tlType = TLValue::InputDocumentFileLocation;
-        file->d->id = d->document.id;
-        file->d->accessHash = d->document.accessHash;
+        inputLocation.tlType = TLValue::InputDocumentFileLocation;
+        inputLocation.id = d->document.id;
+        inputLocation.accessHash = d->document.accessHash;
+        file->d->setInputFileLocation(&inputLocation);
         file->d->m_size = d->document.size;
+        file->d->m_dcId = d->document.dcId;
         return true;
     default:
         return false;
@@ -347,11 +352,11 @@ TelegramNamespace::RemoteFile &TelegramNamespace::RemoteFile::operator=(const Te
 
 bool TelegramNamespace::RemoteFile::isValid() const
 {
-    if (!d) {
+    if (!d || !d->m_inputFileLocation) {
         return false;
     }
 
-    switch (d->tlType) {
+    switch (d->m_inputFileLocation->tlType) {
     case TLValue::InputFileLocation:
     case TLValue::InputVideoFileLocation:
     case TLValue::InputEncryptedFileLocation:
@@ -369,20 +374,24 @@ QString TelegramNamespace::RemoteFile::getUniqueId() const
         return QString();
     }
 
-    switch (d->tlType) {
+    if (!d->m_inputFileLocation) {
+        return QString();
+    }
+
+    switch (d->m_inputFileLocation->tlType) {
     case TLValue::InputFileLocation:
         return QString(QLatin1String("%1%2%3"))
                 .arg(d->m_dcId, sizeof(d->m_dcId) * 2, 16, QLatin1Char('0'))
-                .arg(d->volumeId, sizeof(d->volumeId) * 2, 16, QLatin1Char('0'))
-                .arg(d->localId, sizeof(d->localId) * 2, 16, QLatin1Char('0'));
+                .arg(d->m_inputFileLocation->volumeId, sizeof(d->m_inputFileLocation->volumeId) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_inputFileLocation->localId, sizeof(d->m_inputFileLocation->localId) * 2, 16, QLatin1Char('0'));
     case TLValue::InputVideoFileLocation:
     case TLValue::InputEncryptedFileLocation:
     case TLValue::InputAudioFileLocation:
     case TLValue::InputDocumentFileLocation:
         return QString(QLatin1String("%1%2%3"))
                 .arg(d->m_dcId, sizeof(d->m_dcId) * 2, 16, QLatin1Char('0'))
-                .arg(d->id, sizeof(d->id) * 2, 16, QLatin1Char('0'))
-                .arg(d->accessHash, sizeof(d->accessHash) * 2, 16, QLatin1Char('0'));
+                .arg(d->m_inputFileLocation->id, sizeof(d->m_inputFileLocation->id) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_inputFileLocation->accessHash, sizeof(d->m_inputFileLocation->accessHash) * 2, 16, QLatin1Char('0'));
     default:
         return QString();
     }

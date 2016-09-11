@@ -682,7 +682,7 @@ quint32 CTelegramDispatcher::requestFile(const TelegramNamespace::RemoteFile *fi
     FileRequestDescriptor request;
     request.setType(FileRequestDescriptor::Download);
     request.setDcId(file->d->m_dcId);
-    request.setInputLocation(*file->d);
+    request.setInputLocation(*file->d->m_inputFileLocation);
     request.setSize(file->d->m_size);
     request.uniqueId = file->getUniqueId();
 

@@ -32,19 +32,53 @@ public:
     quint32 m_size;
 };
 
-class TelegramNamespace::RemoteFile::Private : public TLInputFileLocation
+class TelegramNamespace::RemoteFile::Private
 {
 public:
     Private() :
+        m_inputFileLocation(0),
         m_size(0),
         m_dcId(0)
     {
     }
 
-    void setInputFileLocation(const TLInputFileLocation &inputFileLocation)
+    Private(const Private &p) :
+        m_inputFileLocation(0),
+        m_size(p.m_size),
+        m_dcId(p.m_dcId)
     {
-        TLInputFileLocation *thisLocation = this;
-        *thisLocation = inputFileLocation;
+        setInputFileLocation(p.m_inputFileLocation);
+    }
+
+    ~Private()
+    {
+        if (m_inputFileLocation) {
+            delete m_inputFileLocation;
+        }
+    }
+
+    Private &operator=(const Private &p)
+    {
+        setInputFileLocation(p.m_inputFileLocation);
+        m_size = p.m_size;
+        m_dcId = p.m_dcId;
+
+        return *this;
+    }
+
+    void setInputFileLocation(const TLInputFileLocation *inputFileLocation)
+    {
+        if (inputFileLocation) {
+            if (!m_inputFileLocation) {
+                m_inputFileLocation = new TLInputFileLocation;
+            }
+            *m_inputFileLocation = *inputFileLocation;
+        } else {
+            if (m_inputFileLocation) {
+                delete m_inputFileLocation;
+                m_inputFileLocation = 0;
+            }
+        }
     }
 
     bool setFileLocation(const TLFileLocation *fileLocation)
@@ -53,14 +87,17 @@ public:
             m_dcId = 0;
             return false;
         }
-        tlType = TLValue::InputFileLocation;
-        volumeId = fileLocation->volumeId;
-        localId = fileLocation->localId;
-        secret = fileLocation->secret;
+        TLInputFileLocation inputFileLocation;
+        inputFileLocation.tlType = TLValue::InputFileLocation;
+        inputFileLocation.volumeId = fileLocation->volumeId;
+        inputFileLocation.localId = fileLocation->localId;
+        inputFileLocation.secret = fileLocation->secret;
+        setInputFileLocation(&inputFileLocation);
         m_dcId = fileLocation->dcId;
         return true;
     }
 
+    TLInputFileLocation *m_inputFileLocation;
     quint32 m_size;
     quint32 m_dcId;
 };
