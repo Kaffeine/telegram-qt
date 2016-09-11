@@ -334,6 +334,11 @@ quint32 CTelegramCore::selfId() const
     return m_dispatcher->selfId();
 }
 
+quint32 CTelegramCore::maxMessageId() const
+{
+    return m_dispatcher->maxMessageId();
+}
+
 quint64 CTelegramCore::forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId)
 {
     return m_dispatcher->forwardMessage(peer, messageId);

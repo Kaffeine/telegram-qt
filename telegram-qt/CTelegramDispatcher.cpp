@@ -232,6 +232,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_updateRequestId(0),
     m_updatesStateIsLocked(false),
     m_selfUserId(0),
+    m_maxMessageId(0),
     m_fileRequestCounter(0),
     m_typingUpdateTimer(new QTimer(this))
 {
@@ -276,6 +277,14 @@ QString CTelegramDispatcher::selfPhone() const
 quint32 CTelegramDispatcher::selfId() const
 {
     return m_selfUserId;
+}
+
+quint32 CTelegramDispatcher::maxMessageId() const
+{
+    if (m_initializationState & StepDialogs) {
+        return m_maxMessageId;
+    }
+    return 0;
 }
 
 QVector<quint32> CTelegramDispatcher::contactIdList() const
@@ -510,6 +519,7 @@ void CTelegramDispatcher::initConnectionSharedClear()
     m_updatesState.qts = 1;
     m_updatesState.date = 1;
     m_chatIds.clear();
+    m_maxMessageId = 0;
 }
 
 void CTelegramDispatcher::initConnectionSharedFinal()
@@ -543,6 +553,7 @@ void CTelegramDispatcher::closeConnection()
     m_chatIds.clear();
     m_chatInfo.clear();
     m_chatFullInfo.clear();
+    m_maxMessageId = 0;
     m_wantedActiveDc = 0;
     m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
 }
@@ -1289,6 +1300,8 @@ void CTelegramDispatcher::messageActionTimerTimeout()
 void CTelegramDispatcher::whenMessageSentInfoReceived(quint64 randomId, TLMessagesSentMessage info)
 {
     emit sentMessageIdReceived(randomId, info.id);
+
+    ensureMaxMessageId(info.id);
     ensureUpdateState(info.pts, info.seq, info.date);
 }
 
@@ -1311,6 +1324,10 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
     onChatsReceived(dialogs.chats);
 
     if (!(m_initializationState & StepDialogs)) {
+        if (!dialogs.messages.isEmpty()) {
+            m_maxMessageId = dialogs.messages.last().id;
+        }
+
         continueInitialization(StepDialogs);
     }
 
@@ -1751,6 +1768,12 @@ void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
 #ifdef DEVELOPER_BUILD
     qDebug() << Q_FUNC_INFO << message;
 #endif
+    internalProcessMessageReceived(message);
+    ensureMaxMessageId(message.id);
+}
+
+void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &message)
+{
     if (message.tlType == TLValue::MessageEmpty) {
         return;
     }
@@ -2652,6 +2675,13 @@ void CTelegramDispatcher::setUpdateState(quint32 pts, quint32 seq, quint32 date)
     if (date > m_updatesState.date) {
         qDebug() << Q_FUNC_INFO << "Update date from " << m_updatesState.date << "to" << date;
         m_updatesState.date = date;
+    }
+}
+
+void CTelegramDispatcher::ensureMaxMessageId(quint32 id)
+{
+    if (m_maxMessageId < id) {
+        m_maxMessageId = id;
     }
 }
 

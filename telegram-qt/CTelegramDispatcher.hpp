@@ -145,6 +145,7 @@ public:
     QString selfPhone() const;
     quint32 selfId() const;
 
+    quint32 maxMessageId() const;
     QVector<quint32> contactIdList() const;
     QVector<quint32> chatIdList() const;
 
@@ -289,6 +290,7 @@ protected:
     void processUpdate(const TLUpdate &update);
 
     void processMessageReceived(const TLMessage &message);
+    void internalProcessMessageReceived(const TLMessage &message);
 
     void emitChatChanged(quint32 id);
     void updateChat(const TLChat &newChat);
@@ -324,6 +326,8 @@ protected:
     void ensureTypingUpdateTimer(int interval);
     void ensureUpdateState(quint32 pts = 0, quint32 seq = 0, quint32 date = 0);
     void setUpdateState(quint32 pts, quint32 seq, quint32 date);
+
+    void ensureMaxMessageId(quint32 id);
 
     void checkStateAndCallGetDifference();
     void tryNextDcAddress();
@@ -407,6 +411,7 @@ protected:
     QMap<quint32, TLMessage> m_knownMediaMessages; // message id, message
 
     quint32 m_selfUserId;
+    quint32 m_maxMessageId;
 
     QVector<quint32> m_contactIdList;
 

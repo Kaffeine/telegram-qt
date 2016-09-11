@@ -48,6 +48,8 @@ public:
     Q_INVOKABLE TelegramNamespace::ConnectionState connectionState() const;
     Q_INVOKABLE QString selfPhone() const;
     Q_INVOKABLE quint32 selfId() const;
+    // maxMessageId is an id of the last sent or received message. Updated *after* messageReceived and sentMessageIdReceived signal emission.
+    Q_INVOKABLE quint32 maxMessageId() const;
     Q_INVOKABLE QVector<quint32> contactList() const;
     Q_INVOKABLE QVector<quint32> chatList() const;
 
