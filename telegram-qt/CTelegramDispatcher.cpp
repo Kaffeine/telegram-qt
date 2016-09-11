@@ -1310,6 +1310,11 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
     onUsersReceived(dialogs.users);
     onChatsReceived(dialogs.chats);
 
+    if (!(m_initializationState & StepDialogs)) {
+        continueInitialization(StepDialogs);
+    }
+
+
 //    foreach (const TLMessage &message, dialogs.messages) {
 //        processMessageReceived(message);
 //    }
@@ -1349,6 +1354,11 @@ void CTelegramDispatcher::getInitialUsers()
     telegramUser.userId = 777000;
 
     activeConnection()->usersGetUsers(QVector<TLInputUser>() << selfUser << telegramUser);
+}
+
+void CTelegramDispatcher::getInitialDialogs()
+{
+    activeConnection()->messagesGetDialogs(0, 0, 1);
 }
 
 void CTelegramDispatcher::getContacts()
@@ -2561,6 +2571,11 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         if (!(m_requestedSteps & StepChatInfo)) {
             getChatsInfo();
             m_requestedSteps |= StepChatInfo;
+        }
+
+        if (!(m_requestedSteps & StepDialogs)) {
+            getInitialDialogs();
+            m_requestedSteps |= StepDialogs;
         }
     }
 

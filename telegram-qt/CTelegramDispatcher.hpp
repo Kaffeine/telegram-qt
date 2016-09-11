@@ -122,7 +122,8 @@ public:
         StepContactList     = 1 << 3,
         StepChatInfo        = 1 << 4,
         StepUpdates         = 1 << 5,
-        StepDone            = StepUpdates | (StepUpdates - 1)
+        StepDialogs         = 1 << 6,
+        StepDone            = StepDialogs | (StepDialogs - 1)
     };
 
 #if defined(DEVELOPER_BUILD) && QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
@@ -298,6 +299,7 @@ protected:
 
     void getUser(quint32 id);
     void getInitialUsers();
+    void getInitialDialogs();
 
     bool filterReceivedMessage(quint32 messageFlags) const;
 
