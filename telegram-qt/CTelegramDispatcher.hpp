@@ -218,7 +218,7 @@ signals:
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
     void uploadingStatusUpdated(quint32 requestId, quint32 offset, quint32 size);
-    void uploadFinished(quint32 requestId, TelegramNamespace::UploadInfo uploadInfo);
+    void uploadFinished(quint32 requestId, TelegramNamespace::RemoteFile uploadInfo);
     void filePartReceived(quint32 requestId, const QByteArray &data, const QString &mimeType, quint32 offset, quint32 totalSize);
     void downloadFinished(quint32 requestId, const QString &uniqueId);
 

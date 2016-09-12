@@ -82,8 +82,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
     connect(m_dispatcher, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
             SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)));
-    connect(m_dispatcher, SIGNAL(uploadFinished(quint32,TelegramNamespace::UploadInfo)),
-            SIGNAL(uploadFinished(quint32,TelegramNamespace::UploadInfo)));
+    connect(m_dispatcher, SIGNAL(uploadFinished(quint32,TelegramNamespace::RemoteFile)),
+            SIGNAL(uploadFinished(quint32,TelegramNamespace::RemoteFile)));
 }
 
 CTelegramCore::~CTelegramCore()

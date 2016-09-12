@@ -26,17 +26,12 @@ public:
     TLInputFile *m_inputFile;
 };
 
-class TelegramNamespace::UploadInfo::Private : public TLInputFile
-{
-public:
-    quint32 m_size;
-};
-
 class TelegramNamespace::RemoteFile::Private
 {
 public:
     Private() :
         m_inputFileLocation(0),
+        m_inputFile(0),
         m_size(0),
         m_dcId(0)
     {
@@ -44,10 +39,12 @@ public:
 
     Private(const Private &p) :
         m_inputFileLocation(0),
+        m_inputFile(0),
         m_size(p.m_size),
         m_dcId(p.m_dcId)
     {
         setInputFileLocation(p.m_inputFileLocation);
+        setInputFile(p.m_inputFile);
     }
 
     ~Private()
@@ -55,11 +52,15 @@ public:
         if (m_inputFileLocation) {
             delete m_inputFileLocation;
         }
+        if (m_inputFile) {
+            delete m_inputFile;
+        }
     }
 
     Private &operator=(const Private &p)
     {
         setInputFileLocation(p.m_inputFileLocation);
+        setInputFile(p.m_inputFile);
         m_size = p.m_size;
         m_dcId = p.m_dcId;
 
@@ -81,6 +82,21 @@ public:
         }
     }
 
+    void setInputFile(const TLInputFile *inputFile)
+    {
+        if (inputFile) {
+            if (!m_inputFile) {
+                m_inputFile = new TLInputFile;
+            }
+            *m_inputFile = *inputFile;
+        } else {
+            if (m_inputFile) {
+                delete m_inputFile;
+                m_inputFile = 0;
+            }
+        }
+    }
+
     bool setFileLocation(const TLFileLocation *fileLocation)
     {
         if (fileLocation->tlType != TLValue::FileLocation) {
@@ -98,6 +114,7 @@ public:
     }
 
     TLInputFileLocation *m_inputFileLocation;
+    TLInputFile *m_inputFile;
     quint32 m_size;
     quint32 m_dcId;
 };

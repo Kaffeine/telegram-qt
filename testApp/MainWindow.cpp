@@ -485,7 +485,7 @@ void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOf
     statusBar()->showMessage(tr("Request %1 status updated (%2/%3).").arg(requestId).arg(currentOffset).arg(size));
 }
 
-void MainWindow::onUploadFinished(quint32 requestId, TelegramNamespace::UploadInfo info)
+void MainWindow::onUploadFinished(quint32 requestId, TelegramNamespace::RemoteFile info)
 {
     qDebug() << Q_FUNC_INFO << requestId;
 

@@ -65,15 +65,15 @@ TelegramNamespace::MessageMediaInfo &TelegramNamespace::MessageMediaInfo::operat
     return *this;
 }
 
-void TelegramNamespace::MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType type, const UploadInfo &uploadInfo)
+void TelegramNamespace::MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType type, const RemoteFile &file)
 {
     d->tlType = publicMessageTypeToTelegramMessageType(type);
 
     d->m_isUploaded = true;
-    d->m_size = uploadInfo.d->m_size;
+    d->m_size = file.d->m_size;
 
     if (!d->m_inputFile) {
-        d->m_inputFile = new TLInputFile(*uploadInfo.d);
+        d->m_inputFile = new TLInputFile(*file.d->m_inputFile);
     }
 }
 
@@ -291,43 +291,6 @@ void TelegramNamespace::MessageMediaInfo::setGeoPoint(double latitude, double lo
     d->geo.latitude = latitude;
 }
 
-TelegramNamespace::UploadInfo::UploadInfo() :
-    d(new Private)
-{
-}
-
-TelegramNamespace::UploadInfo::UploadInfo(const TelegramNamespace::UploadInfo &info) :
-    d(new Private)
-{
-    *d = *info.d;
-}
-
-TelegramNamespace::UploadInfo::~UploadInfo()
-{
-    delete d;
-}
-
-TelegramNamespace::UploadInfo &TelegramNamespace::UploadInfo::operator=(const TelegramNamespace::UploadInfo &info)
-{
-    *d = *info.d;
-    return *this;
-}
-
-QString TelegramNamespace::UploadInfo::fileName() const
-{
-    return d->name;
-}
-
-quint32 TelegramNamespace::UploadInfo::size() const
-{
-    return d->m_size;
-}
-
-QString TelegramNamespace::UploadInfo::md5Sum() const
-{
-    return d->md5Checksum;
-}
-
 TelegramNamespace::RemoteFile::RemoteFile():
     d(new Private())
 {
@@ -395,6 +358,27 @@ QString TelegramNamespace::RemoteFile::getUniqueId() const
     default:
         return QString();
     }
+}
+
+QString TelegramNamespace::RemoteFile::fileName() const
+{
+    if (!d->m_inputFile) {
+        return QString();
+    }
+    return d->m_inputFile->name;
+}
+
+quint32 TelegramNamespace::RemoteFile::size() const
+{
+    return d->m_size;
+}
+
+QString TelegramNamespace::RemoteFile::md5Sum() const
+{
+    if (!d->m_inputFile) {
+        return QString();
+    }
+    return d->m_inputFile->md5Checksum;
 }
 
 TelegramNamespace::UserInfo::UserInfo() :

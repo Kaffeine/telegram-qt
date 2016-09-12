@@ -162,7 +162,7 @@ Q_SIGNALS:
 
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
     void uploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
-    void uploadFinished(quint32 requestId, TelegramNamespace::UploadInfo uploadInfo);
+    void uploadFinished(quint32 requestId, TelegramNamespace::RemoteFile uploadInfo);
 
 private:
     CTelegramDispatcher *m_dispatcher;

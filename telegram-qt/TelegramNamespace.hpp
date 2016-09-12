@@ -127,7 +127,6 @@ public:
     static void registerTypes();
 
     class UserInfo;
-    class UploadInfo;
     class RemoteFile;
     class MessageMediaInfo;
 
@@ -225,7 +224,7 @@ public:
 
         MessageMediaInfo &operator=(const MessageMediaInfo &info);
 
-        void setUploadFile(MessageType type, const UploadInfo &uploadInfo);
+        void setUploadFile(MessageType type, const RemoteFile &file);
 
         bool getRemoteFileInfo(RemoteFile *file) const;
 
@@ -262,27 +261,6 @@ public:
         Private *d;
     };
 
-    class UploadInfo
-    {
-    public:
-        UploadInfo();
-        UploadInfo(const UploadInfo &info);
-        ~UploadInfo();
-
-        UploadInfo &operator=(const UploadInfo &info);
-
-        QString fileName() const;
-        quint32 size() const;
-        QString md5Sum() const;
-
-    protected:
-        friend class CTelegramDispatcher;
-        friend class MessageMediaInfo;
-        class Private;
-
-        Private *d;
-    };
-
     class RemoteFile
     {
     public:
@@ -294,6 +272,10 @@ public:
 
         bool isValid() const;
         QString getUniqueId() const;
+
+        QString fileName() const;
+        quint32 size() const;
+        QString md5Sum() const;
 
     protected:
         friend class CTelegramDispatcher;
@@ -360,13 +342,13 @@ Q_DECLARE_METATYPE(TelegramNamespace::Peer)
 Q_DECLARE_METATYPE(TelegramNamespace::DcOption)
 Q_DECLARE_METATYPE(TelegramNamespace::Message)
 Q_DECLARE_METATYPE(TelegramNamespace::GroupChat)
-Q_DECLARE_METATYPE(TelegramNamespace::UploadInfo)
+Q_DECLARE_METATYPE(TelegramNamespace::RemoteFile)
 Q_DECLARE_METATYPE(TelegramNamespace::UserInfo)
 
 Q_DECLARE_TYPEINFO(TelegramNamespace::DcOption, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(TelegramNamespace::Message, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(TelegramNamespace::GroupChat, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(TelegramNamespace::UploadInfo, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(TelegramNamespace::RemoteFile, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(TelegramNamespace::UserInfo, Q_MOVABLE_TYPE);
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageFlags)

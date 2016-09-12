@@ -2393,10 +2393,10 @@ void CTelegramDispatcher::whenFileDataUploaded(quint32 requestId)
     emit uploadingStatusUpdated(requestId, descriptor.offset(), descriptor.size());
 
     if (descriptor.finished()) {
-        TelegramNamespace::UploadInfo uploadInfo;
-        TLInputFile *fileInfo = uploadInfo.d;
-        *fileInfo = descriptor.inputFile();
+        TelegramNamespace::RemoteFile uploadInfo;
+        const TLInputFile fileInfo = descriptor.inputFile();
         uploadInfo.d->m_size = descriptor.size();
+        uploadInfo.d->setInputFile(&fileInfo);
 
         emit uploadFinished(requestId, uploadInfo);
         return;
