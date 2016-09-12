@@ -33,7 +33,8 @@ public:
         m_inputFileLocation(0),
         m_inputFile(0),
         m_size(0),
-        m_dcId(0)
+        m_dcId(0),
+        m_type(RemoteFile::Undefined)
     {
     }
 
@@ -41,7 +42,8 @@ public:
         m_inputFileLocation(0),
         m_inputFile(0),
         m_size(p.m_size),
-        m_dcId(p.m_dcId)
+        m_dcId(p.m_dcId),
+        m_type(RemoteFile::Undefined)
     {
         setInputFileLocation(p.m_inputFileLocation);
         setInputFile(p.m_inputFile);
@@ -63,6 +65,7 @@ public:
         setInputFile(p.m_inputFile);
         m_size = p.m_size;
         m_dcId = p.m_dcId;
+        m_type = p.m_type;
 
         return *this;
     }
@@ -101,6 +104,7 @@ public:
     {
         if (fileLocation->tlType != TLValue::FileLocation) {
             m_dcId = 0;
+            m_type = RemoteFile::Undefined;
             return false;
         }
         TLInputFileLocation inputFileLocation;
@@ -110,6 +114,7 @@ public:
         inputFileLocation.secret = fileLocation->secret;
         setInputFileLocation(&inputFileLocation);
         m_dcId = fileLocation->dcId;
+        m_type = RemoteFile::Download;
         return true;
     }
 
@@ -117,6 +122,7 @@ public:
     TLInputFile *m_inputFile;
     quint32 m_size;
     quint32 m_dcId;
+    RemoteFile::Type m_type;
 };
 
 class TelegramNamespace::PasswordInfo::Private : public TLAccountPassword { };

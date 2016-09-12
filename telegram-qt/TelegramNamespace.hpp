@@ -264,11 +264,18 @@ public:
     class RemoteFile
     {
     public:
+        enum Type {
+            Undefined,
+            Download,
+            Upload
+        };
         RemoteFile();
         RemoteFile(const RemoteFile &file);
         ~RemoteFile();
 
         RemoteFile &operator=(const RemoteFile &file);
+
+        Type type() const;
 
         bool isValid() const;
         QString getUniqueId() const;

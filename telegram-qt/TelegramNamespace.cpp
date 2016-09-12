@@ -88,6 +88,7 @@ bool TelegramNamespace::MessageMediaInfo::getRemoteFileInfo(TelegramNamespace::R
         } else {
             const TLPhotoSize s = d->photo.sizes.last();
             file->d->m_size = s.size;
+            file->d->m_type = TelegramNamespace::RemoteFile::Download;
             return file->d->setFileLocation(&s.location);
         }
     case TLValue::MessageMediaAudio:
@@ -97,6 +98,7 @@ bool TelegramNamespace::MessageMediaInfo::getRemoteFileInfo(TelegramNamespace::R
         file->d->setInputFileLocation(&inputLocation);
         file->d->m_size = d->audio.size;
         file->d->m_dcId = d->audio.dcId;
+        file->d->m_type = TelegramNamespace::RemoteFile::Download;
         return true;
     case TLValue::MessageMediaVideo:
         inputLocation.tlType = TLValue::InputVideoFileLocation;
@@ -105,6 +107,7 @@ bool TelegramNamespace::MessageMediaInfo::getRemoteFileInfo(TelegramNamespace::R
         file->d->setInputFileLocation(&inputLocation);
         file->d->m_size = d->video.size;
         file->d->m_dcId = d->video.dcId;
+        file->d->m_type = TelegramNamespace::RemoteFile::Download;
         return true;
     case TLValue::MessageMediaDocument:
         inputLocation.tlType = TLValue::InputDocumentFileLocation;
@@ -113,6 +116,7 @@ bool TelegramNamespace::MessageMediaInfo::getRemoteFileInfo(TelegramNamespace::R
         file->d->setInputFileLocation(&inputLocation);
         file->d->m_size = d->document.size;
         file->d->m_dcId = d->document.dcId;
+        file->d->m_type = TelegramNamespace::RemoteFile::Download;
         return true;
     default:
         return false;
@@ -313,9 +317,14 @@ TelegramNamespace::RemoteFile &TelegramNamespace::RemoteFile::operator=(const Te
     return *this;
 }
 
+TelegramNamespace::RemoteFile::Type TelegramNamespace::RemoteFile::type() const
+{
+    return d->m_type;
+}
+
 bool TelegramNamespace::RemoteFile::isValid() const
 {
-    if (!d || !d->m_inputFileLocation) {
+    if (!d || !d->m_inputFileLocation || d->m_type == RemoteFile::Undefined) {
         return false;
     }
 

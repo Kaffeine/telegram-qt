@@ -237,6 +237,7 @@ void CTelegramConnection::downloadFile(const TLInputFileLocation &inputLocation,
     }
 
     const quint64 messageId = uploadGetFile(inputLocation, offset, limit);
+    qDebug() << Q_FUNC_INFO << messageId << "offset:" << offset << "limit:" << limit << "request:" << requestId;
 
     m_requestedFilesIds.insert(messageId, requestId);
 }

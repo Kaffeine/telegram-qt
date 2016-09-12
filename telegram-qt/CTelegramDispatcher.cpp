@@ -2296,14 +2296,18 @@ bool CTelegramDispatcher::getPasswordData(TelegramNamespace::PasswordInfo *passw
 void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset)
 {
     if (!m_requestedFileDescriptors.contains(requestId)) {
-        qDebug() << Q_FUNC_INFO << "Unexpected requestId" << requestId;
+        qDebug() << Q_FUNC_INFO << "Unexpected request" << requestId;
         return;
     }
 
     FileRequestDescriptor &descriptor = m_requestedFileDescriptors[requestId];
 #ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << "File:" << file.tlType << file.type << file.mtime;
-    qDebug() << Q_FUNC_INFO << "Descriptor:" << descriptor.type() << descriptor.userId() << descriptor.messageId();
+    qDebug() << Q_FUNC_INFO << "File:" << file.tlType << file.type << "mtime:" << file.mtime;
+    qDebug() << Q_FUNC_INFO
+             << "Descriptor:" << "request:" << requestId
+             << "type:" << descriptor.type()
+             << "size:" << descriptor.size()
+             << "ids:" << descriptor.userId() << descriptor.messageId();
 #endif
 
     if (descriptor.type() != FileRequestDescriptor::Download) {
@@ -2333,6 +2337,7 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
         const TLInputFileLocation location = descriptor.inputLocation();
         result.d->setInputFileLocation(&location);
         result.d->m_dcId = descriptor.dcId();
+        result.d->m_type = TelegramNamespace::RemoteFile::Download;
         emit fileRequestFinished(requestId, result);
 
         m_requestedFileDescriptors.remove(requestId);
@@ -2398,12 +2403,13 @@ void CTelegramDispatcher::whenFileDataUploaded(quint32 requestId)
     emit filePartUploaded(requestId, descriptor.offset(), descriptor.size());
 
     if (descriptor.finished()) {
-        TelegramNamespace::RemoteFile uploadInfo;
+        TelegramNamespace::RemoteFile result;
         const TLInputFile fileInfo = descriptor.inputFile();
-        uploadInfo.d->m_size = descriptor.size();
-        uploadInfo.d->setInputFile(&fileInfo);
+        result.d->m_size = descriptor.size();
+        result.d->m_type = TelegramNamespace::RemoteFile::Upload;
+        result.d->setInputFile(&fileInfo);
 
-        emit fileRequestFinished(requestId, uploadInfo);
+        emit fileRequestFinished(requestId, result);
         return;
     }
 
