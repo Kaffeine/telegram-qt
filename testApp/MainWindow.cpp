@@ -109,10 +109,10 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(onCreatedChatIdResolved(quint64,quint32)));
     connect(m_core, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
             SLOT(whenContactStatusChanged(quint32)));
-    connect(m_core, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
+    connect(m_core, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
             SLOT(whenUploadingStatusUpdated(quint32,quint32,quint32)));
-    connect(m_core, SIGNAL(uploadFinished(quint32,TelegramNamespace::UploadInfo)),
-            SLOT(onUploadFinished(quint32,TelegramNamespace::UploadInfo)));
+    connect(m_core, SIGNAL(fileRequestFinished(quint32,TelegramNamespace::RemoteFile)),
+            SLOT(onFileRequestFinished(quint32,TelegramNamespace::RemoteFile)));
     connect(m_core, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
             SLOT(onUserNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
 
@@ -485,9 +485,17 @@ void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOf
     statusBar()->showMessage(tr("Request %1 status updated (%2/%3).").arg(requestId).arg(currentOffset).arg(size));
 }
 
-void MainWindow::onUploadFinished(quint32 requestId, TelegramNamespace::RemoteFile info)
+void MainWindow::onFileRequestFinished(quint32 requestId, TelegramNamespace::RemoteFile info)
 {
     qDebug() << Q_FUNC_INFO << requestId;
+
+    if (info.type() != TelegramNamespace::RemoteFile::Upload) {
+        return;
+    }
+
+    if (!m_uploadingRequests.contains(requestId)) {
+        return;
+    }
 
     const TelegramNamespace::Peer peer = m_uploadingRequests.take(requestId);
 

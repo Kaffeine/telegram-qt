@@ -78,7 +78,7 @@ protected slots:
     void updateActiveChat();
 
     void whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
-    void onUploadFinished(quint32 requestId, TelegramNamespace::RemoteFile info);
+    void onFileRequestFinished(quint32 requestId, TelegramNamespace::RemoteFile info);
     void onUserNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
 
     void whenCustomMenuRequested(const QPoint &pos);
