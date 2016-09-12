@@ -663,6 +663,7 @@ bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
         return false;
     }
 
+    location.d->m_size = info.size();
     quint32 requestId = requestFile(&location, info.size());
 
     if (!requestId) {
