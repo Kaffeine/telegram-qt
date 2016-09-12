@@ -2321,7 +2321,14 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
 
     // Depends on InputFileLocation tlType, we can either have descriptor.size() (for MediaMessage data (Audio, Video, Document)),
     // or have file type StorageFilePartial otherwise.
-    const bool isFinished = !((file.type.tlType == TLValue::StorageFilePartial) || (descriptor.offset() + chunkSize < descriptor.size()));
+
+    bool isFinished = false;
+
+    if (descriptor.size()) {
+        isFinished = descriptor.offset() + chunkSize == descriptor.size();
+    } else {
+        isFinished = file.type.tlType != TLValue::StorageFilePartial;
+    }
 
     if (isFinished) {
         descriptor.setSize(descriptor.offset() + chunkSize);
