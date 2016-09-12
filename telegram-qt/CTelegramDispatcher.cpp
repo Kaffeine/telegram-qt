@@ -2328,7 +2328,12 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
 #ifdef DEVELOPER_BUILD
         qDebug() << Q_FUNC_INFO << "file" << requestId << "download finished.";
 #endif
-        emit downloadFinished(requestId, descriptor.uniqueId);
+
+        TelegramNamespace::RemoteFile result;
+        const TLInputFileLocation location = descriptor.inputLocation();
+        result.d->setInputFileLocation(&location);
+        result.d->m_dcId = descriptor.dcId();
+        emit fileRequestFinished(requestId, result);
 
         m_requestedFileDescriptors.remove(requestId);
     } else {
@@ -2390,7 +2395,7 @@ void CTelegramDispatcher::whenFileDataUploaded(quint32 requestId)
 
     descriptor.bumpPart();
 
-    emit uploadingStatusUpdated(requestId, descriptor.offset(), descriptor.size());
+    emit filePartUploaded(requestId, descriptor.offset(), descriptor.size());
 
     if (descriptor.finished()) {
         TelegramNamespace::RemoteFile uploadInfo;
@@ -2398,7 +2403,7 @@ void CTelegramDispatcher::whenFileDataUploaded(quint32 requestId)
         uploadInfo.d->m_size = descriptor.size();
         uploadInfo.d->setInputFile(&fileInfo);
 
-        emit uploadFinished(requestId, uploadInfo);
+        emit fileRequestFinished(requestId, uploadInfo);
         return;
     }
 

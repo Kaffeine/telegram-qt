@@ -95,6 +95,7 @@ public Q_SLOTS:
 
     void requestContactAvatar(quint32 userId);
     void requestMessageMediaData(quint32 messageId);
+    quint32 requestFile(const TelegramNamespace::RemoteFile *file);
 
     bool requestHistory(const TelegramNamespace::Peer &peer, int offset, int limit);
 
@@ -161,8 +162,10 @@ Q_SIGNALS:
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
 
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
-    void uploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
-    void uploadFinished(quint32 requestId, TelegramNamespace::RemoteFile uploadInfo);
+
+    void filePartReceived(quint32 requestId, const QByteArray &data, const QString &mimeType, quint32 offset, quint32 totalSize);
+    void filePartUploaded(quint32 requestId, quint32 offset, quint32 totalSize);
+    void fileRequestFinished(quint32 requestId, TelegramNamespace::RemoteFile requestResult);
 
 private:
     CTelegramDispatcher *m_dispatcher;

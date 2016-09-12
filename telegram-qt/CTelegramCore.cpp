@@ -80,10 +80,12 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
     connect(m_dispatcher, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
             SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
-    connect(m_dispatcher, SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)),
-            SIGNAL(uploadingStatusUpdated(quint32,quint32,quint32)));
-    connect(m_dispatcher, SIGNAL(uploadFinished(quint32,TelegramNamespace::RemoteFile)),
-            SIGNAL(uploadFinished(quint32,TelegramNamespace::RemoteFile)));
+    connect(m_dispatcher, SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)),
+            SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)));
+    connect(m_dispatcher, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
+            SIGNAL(filePartUploaded(quint32,quint32,quint32)));
+    connect(m_dispatcher, SIGNAL(fileRequestFinished(quint32,TelegramNamespace::RemoteFile)),
+            SIGNAL(fileRequestFinished(quint32,TelegramNamespace::RemoteFile)));
 }
 
 CTelegramCore::~CTelegramCore()
@@ -201,6 +203,11 @@ void CTelegramCore::requestContactAvatar(quint32 userId)
 void CTelegramCore::requestMessageMediaData(quint32 messageId)
 {
     m_dispatcher->requestMessageMediaData(messageId);
+}
+
+quint32 CTelegramCore::requestFile(const TelegramNamespace::RemoteFile *file)
+{
+    return m_dispatcher->requestFile(file);
 }
 
 bool CTelegramCore::requestHistory(const TelegramNamespace::Peer &peer, int offset, int limit)
