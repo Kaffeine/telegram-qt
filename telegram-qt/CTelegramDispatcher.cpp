@@ -2758,6 +2758,13 @@ void CTelegramDispatcher::ensureSignedConnection(CTelegramConnection *connection
                 return;
             }
 
+            if (activeConnection()->dcInfo().id == dc) {
+                connection->setDeltaTime(activeConnection()->deltaTime());
+                connection->setAuthKey(activeConnection()->authKey());
+                connection->setServerSalt(activeConnection()->serverSalt());
+                return;
+            }
+
             if (m_exportedAuthentications.contains(dc)) {
                 connection->authImportAuthorization(m_exportedAuthentications.value(dc).first, m_exportedAuthentications.value(dc).second);
             } else {
