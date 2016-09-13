@@ -2138,10 +2138,6 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
             }
             m_delayedPackages.remove(dc);
         }
-
-        if (connection == activeConnection()) {
-            continueInitialization(StepFirst);
-        }
     }
 }
 
