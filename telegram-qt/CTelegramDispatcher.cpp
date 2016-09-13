@@ -39,11 +39,11 @@ using namespace TelegramUtils;
 #endif
 
 static const QVector<TelegramNamespace::DcOption> s_builtInDcs = QVector<TelegramNamespace::DcOption>()
-        << TelegramNamespace::DcOption(QLatin1String("149.1.175.50") , 443)
+        << TelegramNamespace::DcOption(QLatin1String("149.154.175.50") , 443)
         << TelegramNamespace::DcOption(QLatin1String("149.154.167.51") , 443)
         << TelegramNamespace::DcOption(QLatin1String("149.154.175.100"), 443)
         << TelegramNamespace::DcOption(QLatin1String("149.154.167.91") , 443)
-        << TelegramNamespace::DcOption(QLatin1String("149.154.171.5")  , 443);
+        << TelegramNamespace::DcOption(QLatin1String("91.108.56.165")  , 443);
 
 static const quint32 s_defaultPingInterval = 15000; // 15 sec
 
