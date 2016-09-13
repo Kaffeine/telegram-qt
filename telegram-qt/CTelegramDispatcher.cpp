@@ -2774,7 +2774,6 @@ void CTelegramDispatcher::clearMainConnection()
     if (!m_mainConnection) {
         return;
     }
-    disconnect(m_mainConnection, Q_NULLPTR, this, Q_NULLPTR);
     m_mainConnection->deleteLater();
 }
 
