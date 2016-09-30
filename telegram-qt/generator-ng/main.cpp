@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QCommandLineParser>
 
 #include <QJsonDocument>
 
@@ -159,7 +160,7 @@ StatusCode fetchJson(const QString &specFileName)
     specsOutFile.close();
 
     printf("Spec file successfully downloaded (and formatted).\n");
-    return NoError; // Not implemented
+    return NoError;
 }
 
 StatusCode format(const QString &specFileName)
@@ -239,61 +240,63 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     return NoError;
 }
 
-StatusCode main2(const QStringList &arguments)
+int main(int argc, char *argv[])
 {
-    if (arguments.count() < 3) {
-        return InvalidArgument;
+    QCoreApplication app(argc, argv);
+
+    QCommandLineParser parser;
+    parser.addHelpOption();
+
+    QCommandLineOption fetchJsonOption(QStringLiteral("fetch-json"));
+    parser.addOption(fetchJsonOption);
+
+    QCommandLineOption formatJsonOption(QStringLiteral("format-json"));
+    parser.addOption(formatJsonOption);
+
+    QCommandLineOption generateFromJsonOption(QStringLiteral("generate-from-json"));
+    parser.addOption(generateFromJsonOption);
+
+    QCommandLineOption generateFromTextOption(QStringLiteral("generate-from-text"));
+    parser.addOption(generateFromTextOption);
+
+    parser.addPositionalArgument(QStringLiteral("spec"), QStringLiteral("The specification file (text or json)"));
+
+    parser.process(app);
+
+    if (parser.positionalArguments().count() != 1) {
+        parser.showHelp(InvalidArgument);
     }
 
-    QString fileName;
+    const QString fileName = parser.positionalArguments().first();
 
-    if (!arguments.last().startsWith(QLatin1Char('-'))) {
-        fileName = arguments.last();
-    } else {
-        return InvalidArgument;
-    }
+    StatusCode code;
 
-    StatusCode code = NoError;
-
-    if (arguments.contains(QLatin1String("--fetch-json"))) {
+    if (parser.isSet(fetchJsonOption)) {
         code = fetchJson(fileName);
         if (code != NoError) {
             return code;
         }
     }
 
-    if (arguments.contains(QLatin1String("--format-json"))) {
+    if (parser.isSet(formatJsonOption)) {
         code = format(fileName);
         if (code != NoError) {
             return code;
         }
     }
 
-    if (arguments.contains(QLatin1String("--generate-from-json"))) {
+    if (parser.isSet(generateFromJsonOption)) {
         code = generate(JsonFormat, fileName);
         if (code != NoError) {
             return code;
         }
     }
 
-    if (arguments.contains(QLatin1String("--generate-from-text"))) {
+    if (parser.isSet(generateFromTextOption)) {
         code = generate(TextFormat, fileName);
         if (code != NoError) {
             return code;
         }
-    }
-
-    return code;
-}
-
-int main(int argc, char *argv[])
-{
-    QCoreApplication app(argc, argv);
-
-    StatusCode code = main2(app.arguments());
-
-    if (code == InvalidAction) {
-        printf("Invalid arguments. Look at the sources for the list of possible arguments.\n");
     }
 
     return code;
