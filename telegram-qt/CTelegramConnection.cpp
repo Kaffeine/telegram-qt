@@ -2562,12 +2562,9 @@ TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id
     qDebug() << Q_FUNC_INFO << "AuthAuthorization" << maskPhoneNumber(result.user.phone) << result.expires;
 
     if (result.tlType == TLValue::AuthAuthorization) {
-        if (result.user.tlType == TLValue::UserSelf) {
-            emit usersReceived(QVector<TLUser>() << result.user);
-            setAuthState(AuthStateSignedIn);
-        } else {
-            qDebug() << "Something went wrong. Authorization user is not a self user.";
-        }
+        emit selfUserReceived(result.user);
+        emit usersReceived(QVector<TLUser>() << result.user);
+        setAuthState(AuthStateSignedIn);
     }
 
     return result.tlType;
@@ -2635,6 +2632,29 @@ TLValue CTelegramConnection::processUsersGetUsers(CTelegramStream &stream, quint
     stream >> result;
 
     if (result.tlType == TLValue::Vector) {
+        const QByteArray data = m_submittedPackages.value(id);
+
+        if (data.isEmpty()) {
+            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
+            return result.tlType;
+        }
+
+        CTelegramStream stream(data);
+        TLValue value;
+        TLVector<TLInputUser> inputUsers;
+        stream >> value;
+        stream >> inputUsers;
+
+        if (result.count() != inputUsers.count()) {
+            qWarning() << Q_FUNC_INFO << "Input user count != received user count";
+        }
+
+        if ((inputUsers.count() == 1) && (result.count() == 1)) {
+            if (inputUsers.first().tlType == TLValue::InputUserSelf) {
+                emit selfUserReceived(result.first());
+            }
+        }
+
         emit usersReceived(result);
     }
 

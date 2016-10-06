@@ -1194,17 +1194,42 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
     }
 
     const TLChatFull &fullChat = m_chatFullInfo.value(chatId);
-    const TLChat &chat = m_chatInfo.value(chatId);
+//    const TLChat &chat = m_chatInfo.value(chatId);
 
     foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
         participants->append(participant.userId);
     }
 
-    if (!chat.left && !participants->contains(m_selfUserId)) {
+//    if (!chat.left && !participants->contains(m_selfUserId)) {
+    if (!participants->contains(m_selfUserId)) {
         participants->append(m_selfUserId);
     }
 
     return true;
+}
+
+void CTelegramDispatcher::onSelfUserReceived(const TLUser &selfUser)
+{
+    TLUser *existsUser = m_users.value(selfUser.id);
+
+    if (existsUser) {
+        *existsUser = selfUser;
+    } else {
+        m_users.insert(selfUser.id, new TLUser(selfUser));
+    }
+
+    if (m_selfUserId) {
+        if (m_selfUserId != selfUser.id) {
+            qDebug() << "Got self user with different id.";
+
+            m_selfUserId = selfUser.id;
+            emit selfUserAvailable(selfUser.id);
+        }
+    } else {
+        m_selfUserId = selfUser.id;
+        emit selfUserAvailable(selfUser.id);
+        continueInitialization(StepKnowSelf);
+    }
 }
 
 void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
@@ -1217,21 +1242,6 @@ void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
             *existsUser = user;
         } else {
             m_users.insert(user.id, new TLUser(user));
-        }
-
-        if (user.tlType == TLValue::UserSelf) {
-            if (m_selfUserId) {
-                if (m_selfUserId != user.id) {
-                    qDebug() << "Got self user with different id.";
-
-                    m_selfUserId = user.id;
-                    emit selfUserAvailable(user.id);
-                }
-            } else {
-                m_selfUserId = user.id;
-                emit selfUserAvailable(user.id);
-                continueInitialization(StepKnowSelf);
-            }
         }
 
         int indexOfRequest = m_askedUserIds.indexOf(user.id);
@@ -2781,6 +2791,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
     connect(connection, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)),
             SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
 
+    connect(connection, SIGNAL(selfUserReceived(TLUser)), SLOT(onSelfUserReceived(TLUser)));
     connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
             SLOT(onUsersReceived(QVector<TLUser>)));
     connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(whenFileDataReceived(TLUploadFile,quint32,quint32)));
