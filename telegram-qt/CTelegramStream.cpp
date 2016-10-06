@@ -22,8 +22,6 @@
 #include <QIODevice>
 #include <QDebug>
 
-static const char s_nulls[4] = { 0, 0, 0, 0 };
-
 template CTelegramStream &CTelegramStream::operator>>(TLVector<qint32> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<quint32> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<qint64> &v);
@@ -74,47 +72,6 @@ template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputPhot
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLDocumentAttribute> &v);
 // End of generated vector write templates instancing
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLDcOption> &v);
-
-CTelegramStream::CTelegramStream(QByteArray *data, bool write) :
-    CRawStream(data, write)
-{
-
-}
-
-CTelegramStream::CTelegramStream(const QByteArray &data) :
-    CRawStream(data)
-{
-
-}
-
-CTelegramStream::CTelegramStream(QIODevice *d) :
-    CRawStream(d)
-{
-
-}
-
-CTelegramStream &CTelegramStream::operator>>(QByteArray &data)
-{
-    quint32 length = 0;
-    read(&length, 1);
-
-    if (length < 0xfe) {
-        data.resize(length);
-        length += 1; // Plus one byte before data
-    } else {
-        read(&length, 3);
-        data.resize(length);
-        length += 4; // Plus four bytes before data
-    }
-
-    read(data.data(), data.size());
-
-    if (length & 3) {
-        readBytes(4 - (length & 3));
-    }
-
-    return *this;
-}
 
 template <typename T>
 CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
@@ -3495,28 +3452,6 @@ CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
         for (int i = 0; i < v.count(); ++i) {
             *this << v.at(i);
         }
-    }
-
-    return *this;
-}
-
-CTelegramStream &CTelegramStream::operator<<(const QByteArray &data)
-{
-    quint32 length = data.size();
-
-    if (length < 0xfe) {
-        const char lengthToWrite = length;
-        write(&lengthToWrite, 1);
-        write(data.constData(), data.size());
-        length += 1;
-    } else {
-        *this << quint32((length << 8) + 0xfe);
-        write(data.constData(), data.size());
-        length += 4;
-    }
-
-    if (length & 3) {
-        write(s_nulls, 4 - (length & 3));
     }
 
     return *this;

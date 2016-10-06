@@ -24,18 +24,26 @@
 #include "CRawStream.hpp"
 #include "TLTypes.hpp"
 
-class CTelegramStream : public CRawStream
+class CTelegramStream : public CRawStreamEx
 {
 public:
-    explicit CTelegramStream(QByteArray *data, bool write);
-    explicit CTelegramStream(const QByteArray &data);
+    explicit CTelegramStream(QByteArray *data, bool write) :
+        CRawStreamEx(data, write)
+    {
+    }
+    explicit CTelegramStream(const QByteArray &data) :
+        CRawStreamEx(data)
+    {
+    }
 
-    explicit CTelegramStream(QIODevice *d = 0);
+    explicit CTelegramStream(QIODevice *d = 0) :
+        CRawStreamEx(d)
+    {
+    }
 
-    using CRawStream::operator <<;
-    using CRawStream::operator >>;
+    using CRawStreamEx::operator <<;
+    using CRawStreamEx::operator >>;
 
-    CTelegramStream &operator>>(QByteArray &data);
     CTelegramStream &operator>>(QString &str);
 
     CTelegramStream &operator>>(bool &data);
@@ -167,7 +175,6 @@ public:
     CTelegramStream &operator>>(TLUpdatesDifference &updatesDifferenceValue);
     // End of generated read operators
 
-    CTelegramStream &operator<<(const QByteArray &data);
     CTelegramStream &operator<<(const QString &str);
 
     CTelegramStream &operator<<(const bool &data);
@@ -233,7 +240,8 @@ inline CTelegramStream &CTelegramStream::operator>>(bool &data)
 
 inline CTelegramStream &CTelegramStream::operator<<(const QString &str)
 {
-    return *this << str.toUtf8();
+    *this << str.toUtf8();
+    return *this;
 }
 
 inline CTelegramStream &CTelegramStream::operator<<(const bool &data)

@@ -20,6 +20,8 @@
 #include <QIODevice>
 #include <QBuffer>
 
+static const char s_nulls[4] = { 0, 0, 0, 0 };
+
 template CRawStream &CRawStream::operator>>(TLNumber128 &v);
 template CRawStream &CRawStream::operator>>(TLNumber256 &v);
 
@@ -148,6 +150,51 @@ CRawStream &CRawStream::operator<<(const double &d)
 CRawStream &CRawStream::operator<<(const QByteArray &data)
 {
     m_error = m_error || m_device->write(data) != data.size();
+
+    return *this;
+}
+
+CRawStreamEx &CRawStreamEx::operator>>(QByteArray &data)
+{
+    quint32 length = 0;
+    read(&length, 1);
+
+    if (length < 0xfe) {
+        data.resize(length);
+        length += 1; // Plus one byte before data
+    } else {
+        read(&length, 3);
+        data.resize(length);
+        length += 4; // Plus four bytes before data
+    }
+
+    read(data.data(), data.size());
+
+    if (length & 3) {
+        readBytes(4 - (length & 3));
+    }
+
+    return *this;
+}
+
+CRawStreamEx &CRawStreamEx::operator<<(const QByteArray &data)
+{
+    quint32 length = data.size();
+
+    if (length < 0xfe) {
+        const char lengthToWrite = length;
+        write(&lengthToWrite, 1);
+        write(data.constData(), data.size());
+        length += 1;
+    } else {
+        *this << quint32((length << 8) + 0xfe);
+        write(data.constData(), data.size());
+        length += 4;
+    }
+
+    if (length & 3) {
+        write(s_nulls, 4 - (length & 3));
+    }
 
     return *this;
 }

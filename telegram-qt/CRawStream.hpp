@@ -90,6 +90,31 @@ private:
 
 };
 
+class CRawStreamEx : public CRawStream
+{
+public:
+    explicit CRawStreamEx(QByteArray *data, bool write) :
+        CRawStream(data, write)
+    {
+    }
+    explicit CRawStreamEx(const QByteArray &data) :
+        CRawStream(data)
+    {
+    }
+
+    explicit CRawStreamEx(QIODevice *d = 0) :
+        CRawStream(d)
+    {
+    }
+
+    using CRawStream::operator <<;
+    using CRawStream::operator >>;
+
+    CRawStreamEx &operator>>(QByteArray &data);
+    CRawStreamEx &operator<<(const QByteArray &data);
+
+};
+
 inline void CRawStream::resetError()
 {
     m_error = false;
