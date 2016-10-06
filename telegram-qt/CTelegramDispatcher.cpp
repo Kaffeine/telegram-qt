@@ -1410,12 +1410,12 @@ void CTelegramDispatcher::getInitialUsers()
 {
     TLInputUser selfUser;
     selfUser.tlType = TLValue::InputUserSelf;
+    activeConnection()->usersGetUsers(QVector<TLInputUser>() << selfUser);
 
     TLInputUser telegramUser;
     telegramUser.tlType = TLValue::InputUserContact;
     telegramUser.userId = 777000;
-
-    activeConnection()->usersGetUsers(QVector<TLInputUser>() << selfUser << telegramUser);
+    activeConnection()->usersGetUsers(QVector<TLInputUser>() << telegramUser);
 }
 
 void CTelegramDispatcher::getInitialDialogs()
