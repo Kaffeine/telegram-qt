@@ -2415,12 +2415,7 @@ TLValue CTelegramConnection::processContactsResolveUsername(CTelegramStream &str
 
     if (result.username == userName) {
         emit usersReceived(QVector<TLUser>() << result);
-
-        if (result.tlType == TLValue::UserSelf) {
-            emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusAccepted);
-        } else {
-            emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusResolved);
-        }
+        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusResolved);
     }
 
     return result.tlType;
@@ -2871,11 +2866,9 @@ TLValue CTelegramConnection::processAccountUpdateUsername(CTelegramStream &strea
 
     const QString userName = userNameFromPackage(id);
 
-    if (result.tlType == TLValue::UserSelf) {
-        if (result.username == userName) {
-            emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusAccepted);
-        }
-        emit usersReceived(QVector<TLUser>() << result);
+    emit usersReceived(QVector<TLUser>() << result);
+    if (result.username == userName) {
+        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusAccepted);
     }
 
     return result.tlType;
