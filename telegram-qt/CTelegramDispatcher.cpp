@@ -20,7 +20,7 @@
 #include "TelegramNamespace.hpp"
 #include "TelegramNamespace_p.hpp"
 #include "CTelegramConnection.hpp"
-#include "CTelegramStream.hpp"
+#include "CRawStream.hpp"
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
 
@@ -54,6 +54,9 @@ const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPe
 static const quint32 s_defaultDownloadPartSize = 128 * 256; // Set chunkSize to some big number to get the whole avatar at once
 
 static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_autoConnectionIndexInvalid + 1 == 0)
+
+static const quint32 s_legacyDcInfoTlType = 0x2ec2a43cu; // Scheme23_DcOption
+static const quint32 s_legacyVectorTlType = 0x1cb5c415u; // Scheme23_Vector;
 
 #ifndef Q_NULLPTR
 #define Q_NULLPTR NULL
@@ -340,18 +343,34 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
     }
 
     QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
+    CRawStreamEx outputStream(&output, /* write */ true);
 
     outputStream << secretFormatVersion;
     outputStream << activeConnection()->deltaTime();
-    outputStream << activeConnection()->dcInfo();
+
+    const TLDcOption dcInfo = activeConnection()->dcInfo();
+    QByteArray legacyDcHostName;
+
+    outputStream << s_legacyDcInfoTlType;
+    outputStream << dcInfo.id;
+    outputStream << legacyDcHostName;
+    outputStream << dcInfo.ipAddress.toUtf8();
+    outputStream << dcInfo.port;
     outputStream << activeConnection()->authKey();
     outputStream << activeConnection()->authId();
     outputStream << activeConnection()->serverSalt();
     outputStream << m_updatesState.pts;
     outputStream << m_updatesState.qts;
     outputStream << m_updatesState.date;
-    outputStream << m_chatIds;
+
+    const quint32 chatIdsVectorSize = m_chatIds.count();
+
+    outputStream << s_legacyVectorTlType;
+    outputStream << chatIdsVectorSize;
+
+    for (int i = 0; i < m_chatIds.count(); ++i) {
+        outputStream << m_chatIds.at(i);
+    }
 
     return output;
 }
@@ -441,7 +460,7 @@ void CTelegramDispatcher::tryNextDcAddress()
 
 bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 {
-    CTelegramStream inputStream(secret);
+    CRawStreamEx inputStream(secret);
 
     quint32 format;
     qint32 deltaTime = 0;
@@ -459,10 +478,25 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
         qDebug() << Q_FUNC_INFO << "Format version:" << format;
     }
 
-    QString legacySelfPhone;
+    QByteArray legacySelfPhone;
+    TLValue legacyDcInfoTlType;
+    QByteArray legacyDcHostName;
 
     inputStream >> deltaTime;
-    inputStream >> dcInfo;
+    inputStream >> legacyDcInfoTlType;
+
+    if (legacyDcInfoTlType != s_legacyDcInfoTlType) {
+        qDebug() << Q_FUNC_INFO << "Unexpected dataversion" << format;
+        return false;
+    }
+
+    QByteArray dcIpAddress;
+
+    inputStream >> dcInfo.id;
+    inputStream >> legacyDcHostName; // Not needed anymore
+    inputStream >> dcIpAddress;
+    dcInfo.ipAddress = QString::fromLatin1(dcIpAddress);
+    inputStream >> dcInfo.port;
 
     qDebug() << Q_FUNC_INFO << dcInfo.ipAddress;
 
@@ -489,7 +523,17 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     }
 
     if (format >= 2) {
-        inputStream >> m_chatIds;
+        TLValue legacyVectorTlType(TLValue::Vector);
+        quint32 chatIdsVectorSize = 0;
+
+        inputStream >> legacyVectorTlType;
+        inputStream >> chatIdsVectorSize;
+
+        m_chatIds.resize(chatIdsVectorSize);
+
+        for (int i = 0; i < m_chatIds.count(); ++i) {
+            inputStream >> m_chatIds[i];
+        }
     }
 
     m_deltaTime = deltaTime;
