@@ -215,7 +215,7 @@ public:
     void downloadFile(const TLInputFileLocation &inputLocation, quint32 offset, quint32 limit, quint32 requestId);
     void uploadFile(quint64 fileId, quint32 filePart, const QByteArray &bytes, quint32 requestId);
 
-    quint64 sendMessage(const TLInputPeer &peer, const QString &message);
+    quint64 sendMessage(const TLInputPeer &peer, const QString &message, quint64 randomMessageId);
     quint64 sendMedia(const TLInputPeer &peer, const TLInputMedia &media);
 
     AuthState authState() { return m_authState; }

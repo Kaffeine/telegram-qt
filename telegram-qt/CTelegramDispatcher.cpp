@@ -837,7 +837,12 @@ quint64 CTelegramDispatcher::sendMessage(const TelegramNamespace::Peer &peer, co
         m_localMessageActions.remove(actionIndex);
     }
 
-    return activeConnection()->sendMessage(inputPeer, message);
+    quint64 randomId;
+    Utils::randomBytes(&randomId);
+
+    activeConnection()->sendMessage(inputPeer, message, randomId);
+
+    return randomId;
 }
 
 quint64 CTelegramDispatcher::forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId)

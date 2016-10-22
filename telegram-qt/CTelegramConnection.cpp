@@ -250,11 +250,8 @@ void CTelegramConnection::uploadFile(quint64 fileId, quint32 filePart, const QBy
     m_requestedFilesIds.insert(messageId, requestId);
 }
 
-quint64 CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString &message)
+quint64 CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString &message, quint64 randomMessageId)
 {
-    quint64 randomMessageId;
-    Utils::randomBytes(&randomMessageId);
-
     // Probably we have to implement GZip packing to fix this bug.
     if (message.length() > 400) {
         qDebug() << Q_FUNC_INFO << "Can not send such long message due to a bug. Current maximum length is 400 characters.";
@@ -266,9 +263,7 @@ quint64 CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString 
         return 0;
     }
 
-    messagesSendMessage(/* flags */0, peer, /* reply to message id*/ 0, message, randomMessageId);
-
-    return randomMessageId;
+    return messagesSendMessage(/* flags */0, peer, /* reply to message id*/ 0, message, randomMessageId);
 }
 
 quint64 CTelegramConnection::sendMedia(const TLInputPeer &peer, const TLInputMedia &media)
