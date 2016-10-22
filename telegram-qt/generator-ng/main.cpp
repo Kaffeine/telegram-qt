@@ -41,6 +41,7 @@ enum SchemaFormat {
     TextFormat,
 };
 
+static bool s_dryRun = false;
 static bool s_dump = true;
 
 /* Replacing helper */
@@ -95,18 +96,18 @@ bool replaceSection(const QString &fileName, const QString &startMarker, const Q
     fileContent.remove(startPos, endPos - startPos);
     fileContent.insert(startPos, startMarker + newContent + endMarker);
 
-    if (!fileToProcess.open(QIODevice::WriteOnly)) {
-        printf("Can not write file: %s.\n", fileName.toLocal8Bit().constData());
-        return false;
+    if (!s_dryRun) {
+        if (!fileToProcess.open(QIODevice::WriteOnly))
+            return false;
+
+        if (winNewLines) {
+            fileContent.replace(QLatin1String("\n"), QLatin1String("\r\n"));
+        }
+
+        fileToProcess.write(fileContent.toLatin1());
+
+        fileToProcess.close();
     }
-
-    if (winNewLines) {
-        fileContent.replace(QLatin1String("\n"), QLatin1String("\r\n"));
-    }
-
-    fileToProcess.write(fileContent.toLatin1());
-
-    fileToProcess.close();
 
     printf("Replacing is done.\n");
 
@@ -260,6 +261,9 @@ int main(int argc, char *argv[])
     QCommandLineParser parser;
     parser.addHelpOption();
 
+    QCommandLineOption dryRunOption(QStringLiteral("dry-run"));
+    parser.addOption(dryRunOption);
+
     QCommandLineOption dumpOption(QStringLiteral("dump"));
     parser.addOption(dumpOption);
 
@@ -283,6 +287,7 @@ int main(int argc, char *argv[])
         parser.showHelp(InvalidArgument);
     }
 
+    s_dryRun = parser.isSet(dryRunOption);
     s_dump = parser.isSet(dumpOption);
 
     const QString fileName = parser.positionalArguments().first();
