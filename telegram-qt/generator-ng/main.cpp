@@ -41,6 +41,8 @@ enum SchemaFormat {
     TextFormat,
 };
 
+static bool s_dump = true;
+
 /* Replacing helper */
 bool replaceSection(const QString &fileName, const QString &startMarker, const QString &endMarker, const QString &newContent)
 {
@@ -74,7 +76,18 @@ bool replaceSection(const QString &fileName, const QString &startMarker, const Q
 
     const QString previousContent = fileContent.mid(startPos, endPos - startPos);
 
-    if (previousContent == startMarker + newContent + endMarker) {
+    const bool changed = previousContent != startMarker + newContent + endMarker;
+
+    if (s_dump) {
+        const char *strChanged = "changed";
+        const char *strNotChanged = "not changed";
+
+        printf("File: \"%s\", Startmarker: \"%s\", Code (%s):\n%s\n", fileName.toLocal8Bit().constData(), startMarker.trimmed().toLocal8Bit().constData(),
+               changed ? strChanged : strNotChanged,
+               newContent.toLocal8Bit().constData());
+    }
+
+    if (!changed) {
         printf("Nothing to do: new and previous contents are exactly same.\n");
         return true;
     }
@@ -247,6 +260,9 @@ int main(int argc, char *argv[])
     QCommandLineParser parser;
     parser.addHelpOption();
 
+    QCommandLineOption dumpOption(QStringLiteral("dump"));
+    parser.addOption(dumpOption);
+
     QCommandLineOption fetchJsonOption(QStringLiteral("fetch-json"));
     parser.addOption(fetchJsonOption);
 
@@ -266,6 +282,8 @@ int main(int argc, char *argv[])
     if (parser.positionalArguments().count() != 1) {
         parser.showHelp(InvalidArgument);
     }
+
+    s_dump = parser.isSet(dumpOption);
 
     const QString fileName = parser.positionalArguments().first();
 
