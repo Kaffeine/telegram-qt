@@ -100,7 +100,6 @@ struct TLAudio {
     TLAudio() :
         id(0),
         accessHash(0),
-        userId(0),
         date(0),
         duration(0),
         size(0),
@@ -109,7 +108,6 @@ struct TLAudio {
 
     quint64 id;
     quint64 accessHash;
-    quint32 userId;
     quint32 date;
     quint32 duration;
     QString mimeType;
@@ -184,14 +182,55 @@ struct TLAuthorization {
     TLValue tlType;
 };
 
-struct TLChatLocated {
-    TLChatLocated() :
-        chatId(0),
-        distance(0),
-        tlType(TLValue::ChatLocated) { }
+struct TLBotCommand {
+    TLBotCommand() :
+        tlType(TLValue::BotCommand) { }
 
-    quint32 chatId;
-    quint32 distance;
+    QString command;
+    QString description;
+    TLValue tlType;
+};
+
+struct TLBotInfo {
+    TLBotInfo() :
+        userId(0),
+        version(0),
+        tlType(TLValue::BotInfoEmpty) { }
+
+    quint32 userId;
+    quint32 version;
+    QString shareText;
+    QString description;
+    TLVector<TLBotCommand> commands;
+    TLValue tlType;
+};
+
+struct TLChannelParticipant {
+    TLChannelParticipant() :
+        userId(0),
+        date(0),
+        inviterId(0),
+        kickedBy(0),
+        tlType(TLValue::ChannelParticipant) { }
+
+    quint32 userId;
+    quint32 date;
+    quint32 inviterId;
+    quint32 kickedBy;
+    TLValue tlType;
+};
+
+struct TLChannelParticipantRole {
+    TLChannelParticipantRole() :
+        tlType(TLValue::ChannelRoleEmpty) { }
+
+    TLValue tlType;
+};
+
+struct TLChannelParticipantsFilter {
+    TLChannelParticipantsFilter() :
+        tlType(TLValue::ChannelParticipantsRecent) { }
+
     TLValue tlType;
 };
 
@@ -210,12 +249,15 @@ struct TLChatParticipant {
 
 struct TLChatParticipants {
     TLChatParticipants() :
+        flags(0),
         chatId(0),
         adminId(0),
         version(0),
         tlType(TLValue::ChatParticipantsForbidden) { }
 
+    quint32 flags;
     quint32 chatId;
+    TLChatParticipant selfParticipant;
     quint32 adminId;
     TLVector<TLChatParticipant> participants;
     quint32 version;
@@ -244,15 +286,6 @@ struct TLContactBlocked {
     TLValue tlType;
 };
 
-struct TLContactFound {
-    TLContactFound() :
-        userId(0),
-        tlType(TLValue::ContactFound) { }
-
-    quint32 userId;
-    TLValue tlType;
-};
-
 struct TLContactLink {
     TLContactLink() :
         tlType(TLValue::ContactLinkUnknown) { }
@@ -273,12 +306,13 @@ struct TLContactSuggested {
 
 struct TLDcOption {
     TLDcOption() :
+        flags(0),
         id(0),
         port(0),
         tlType(TLValue::DcOption) { }
 
+    quint32 flags;
     quint32 id;
-    QString hostname;
     QString ipAddress;
     quint32 port;
     TLValue tlType;
@@ -390,6 +424,14 @@ struct TLGeoPoint {
     TLValue tlType;
 };
 
+struct TLHelpAppChangelog {
+    TLHelpAppChangelog() :
+        tlType(TLValue::HelpAppChangelogEmpty) { }
+
+    QString text;
+    TLValue tlType;
+};
+
 struct TLHelpAppUpdate {
     TLHelpAppUpdate() :
         id(0),
@@ -442,6 +484,17 @@ struct TLInputAudio {
         tlType(TLValue::InputAudioEmpty) { }
 
     quint64 id;
+    quint64 accessHash;
+    TLValue tlType;
+};
+
+struct TLInputChannel {
+    TLInputChannel() :
+        channelId(0),
+        accessHash(0),
+        tlType(TLValue::InputChannelEmpty) { }
+
+    quint32 channelId;
     quint64 accessHash;
     TLValue tlType;
 };
@@ -526,17 +579,6 @@ struct TLInputFileLocation {
     TLValue tlType;
 };
 
-struct TLInputGeoChat {
-    TLInputGeoChat() :
-        chatId(0),
-        accessHash(0),
-        tlType(TLValue::InputGeoChat) { }
-
-    quint32 chatId;
-    quint64 accessHash;
-    TLValue tlType;
-};
-
 struct TLInputGeoPoint {
     TLInputGeoPoint() :
         latitude(0),
@@ -550,14 +592,16 @@ struct TLInputGeoPoint {
 
 struct TLInputPeer {
     TLInputPeer() :
+        chatId(0),
         userId(0),
         accessHash(0),
-        chatId(0),
+        channelId(0),
         tlType(TLValue::InputPeerEmpty) { }
 
+    quint32 chatId;
     quint32 userId;
     quint64 accessHash;
-    quint32 chatId;
+    quint32 channelId;
     TLValue tlType;
 };
 
@@ -647,6 +691,61 @@ struct TLInputVideo {
     TLValue tlType;
 };
 
+struct TLKeyboardButton {
+    TLKeyboardButton() :
+        tlType(TLValue::KeyboardButton) { }
+
+    QString text;
+    TLValue tlType;
+};
+
+struct TLKeyboardButtonRow {
+    TLKeyboardButtonRow() :
+        tlType(TLValue::KeyboardButtonRow) { }
+
+    TLVector<TLKeyboardButton> buttons;
+    TLValue tlType;
+};
+
+struct TLMessageEntity {
+    TLMessageEntity() :
+        offset(0),
+        length(0),
+        tlType(TLValue::MessageEntityUnknown) { }
+
+    quint32 offset;
+    quint32 length;
+    QString language;
+    QString url;
+    TLValue tlType;
+};
+
+struct TLMessageGroup {
+    TLMessageGroup() :
+        minId(0),
+        maxId(0),
+        count(0),
+        date(0),
+        tlType(TLValue::MessageGroup) { }
+
+    quint32 minId;
+    quint32 maxId;
+    quint32 count;
+    quint32 date;
+    TLValue tlType;
+};
+
+struct TLMessageRange {
+    TLMessageRange() :
+        minId(0),
+        maxId(0),
+        tlType(TLValue::MessageRange) { }
+
+    quint32 minId;
+    quint32 maxId;
+    TLValue tlType;
+};
+
 struct TLMessagesAffectedHistory {
     TLMessagesAffectedHistory() :
         pts(0),
@@ -717,10 +816,12 @@ struct TLPeer {
     TLPeer() :
         userId(0),
         chatId(0),
+        channelId(0),
         tlType(TLValue::PeerUser) { }
 
     quint32 userId;
     quint32 chatId;
+    quint32 channelId;
     TLValue tlType;
 };
 
@@ -787,6 +888,16 @@ struct TLReceivedNotifyMessage {
     TLValue tlType;
 };
 
+struct TLReplyMarkup {
+    TLReplyMarkup() :
+        flags(0),
+        tlType(TLValue::ReplyKeyboardHide) { }
+
+    quint32 flags;
+    TLVector<TLKeyboardButtonRow> rows;
+    TLValue tlType;
+};
+
 struct TLSendMessageAction {
     TLSendMessageAction() :
         progress(0),
@@ -807,14 +918,20 @@ struct TLStickerPack {
 
 struct TLStickerSet {
     TLStickerSet() :
+        flags(0),
         id(0),
         accessHash(0),
+        count(0),
+        hash(0),
         tlType(TLValue::StickerSet) { }
 
+    quint32 flags;
     quint64 id;
     quint64 accessHash;
     QString title;
     QString shortName;
+    quint32 count;
+    quint32 hash;
     TLValue tlType;
 };
 
@@ -879,7 +996,6 @@ struct TLVideo {
     TLVideo() :
         id(0),
         accessHash(0),
-        userId(0),
         date(0),
         duration(0),
         size(0),
@@ -890,9 +1006,9 @@ struct TLVideo {
 
     quint64 id;
     quint64 accessHash;
-    quint32 userId;
     quint32 date;
     quint32 duration;
+    QString mimeType;
     quint32 size;
     TLPhotoSize thumb;
     quint32 dcId;
@@ -921,6 +1037,16 @@ struct TLAccountAuthorizations {
         tlType(TLValue::AccountAuthorizations) { }
 
     TLVector<TLAuthorization> authorizations;
+    TLValue tlType;
+};
+
+struct TLChannelMessagesFilter {
+    TLChannelMessagesFilter() :
+        flags(0),
+        tlType(TLValue::ChannelMessagesFilterEmpty) { }
+
+    quint32 flags;
+    TLVector<TLMessageRange> ranges;
     TLValue tlType;
 };
 
@@ -989,6 +1115,9 @@ struct TLDialog {
         topMessage(0),
         readInboxMaxId(0),
         unreadCount(0),
+        topImportantMessage(0),
+        unreadImportantCount(0),
+        pts(0),
         tlType(TLValue::Dialog) { }
 
     TLPeer peer;
@@ -996,6 +1125,9 @@ struct TLDialog {
     quint32 readInboxMaxId;
     quint32 unreadCount;
     TLPeerNotifySettings notifySettings;
+    quint32 topImportantMessage;
+    quint32 unreadImportantCount;
+    quint32 pts;
     TLValue tlType;
 };
 
@@ -1011,6 +1143,8 @@ struct TLDocumentAttribute {
     QString alt;
     TLInputStickerSet stickerset;
     quint32 duration;
+    QString title;
+    QString performer;
     QString fileName;
     TLValue tlType;
 };
@@ -1042,9 +1176,9 @@ struct TLInputMedia {
     quint32 duration;
     quint32 w;
     quint32 h;
+    QString mimeType;
     TLInputFile thumb;
     TLInputVideo idInputVeo;
-    QString mimeType;
     TLInputAudio idInputAudio;
     TLVector<TLDocumentAttribute> attributes;
     TLInputDocument idInputDocument;
@@ -1059,8 +1193,7 @@ struct TLInputNotifyPeer {
     TLInputNotifyPeer() :
         tlType(TLValue::InputNotifyPeer) { }
 
-    TLInputPeer peerInput;
-    TLInputGeoChat peerInputGeoChat;
+    TLInputPeer peer;
     TLValue tlType;
 };
 
@@ -1069,6 +1202,15 @@ struct TLInputPrivacyRule {
         tlType(TLValue::InputPrivacyValueAllowContacts) { }
 
     TLVector<TLInputUser> users;
+    TLValue tlType;
+};
+
+struct TLMessagesAllStickers {
+    TLMessagesAllStickers() :
+        tlType(TLValue::MessagesAllStickersNotModified) { }
+
+    QString hash;
+    TLVector<TLStickerSet> sets;
     TLValue tlType;
 };
 
@@ -1084,15 +1226,12 @@ struct TLPhoto {
     TLPhoto() :
         id(0),
         accessHash(0),
-        userId(0),
         date(0),
         tlType(TLValue::PhotoEmpty) { }
 
     quint64 id;
     quint64 accessHash;
-    quint32 userId;
     quint32 date;
-    TLGeoPoint geo;
     TLVector<TLPhotoSize> sizes;
     TLValue tlType;
 };
@@ -1100,46 +1239,21 @@ struct TLPhoto {
 struct TLUser {
     TLUser() :
         id(0),
+        flags(0),
         accessHash(0),
+        botInfoVersion(0),
         tlType(TLValue::UserEmpty) { }
 
     quint32 id;
+    quint32 flags;
+    quint64 accessHash;
     QString firstName;
     QString lastName;
     QString username;
     QString phone;
     TLUserProfilePhoto photo;
     TLUserStatus status;
-    quint64 accessHash;
-    TLValue tlType;
-};
-
-struct TLWebPage {
-    TLWebPage() :
-        id(0),
-        date(0),
-        flags(0),
-        embedWidth(0),
-        embedHeight(0),
-        duration(0),
-        tlType(TLValue::WebPageEmpty) { }
-
-    quint64 id;
-    quint32 date;
-    quint32 flags;
-    QString url;
-    QString displayUrl;
-    QString type;
-    QString siteName;
-    QString title;
-    QString description;
-    TLPhoto photo;
-    QString embedUrl;
-    QString embedType;
-    quint32 embedWidth;
-    quint32 embedHeight;
-    quint32 duration;
-    QString author;
+    quint32 botInfoVersion;
     TLValue tlType;
 };
 
@@ -1154,43 +1268,64 @@ struct TLAccountPrivacyRules {
 
 struct TLAuthAuthorization {
     TLAuthAuthorization() :
-        expires(0),
         tlType(TLValue::AuthAuthorization) { }
 
-    quint32 expires;
     TLUser user;
+    TLValue tlType;
+};
+
+struct TLChannelsChannelParticipant {
+    TLChannelsChannelParticipant() :
+        tlType(TLValue::ChannelsChannelParticipant) { }
+
+    TLChannelParticipant participant;
+    TLVector<TLUser> users;
+    TLValue tlType;
+};
+
+struct TLChannelsChannelParticipants {
+    TLChannelsChannelParticipants() :
+        count(0),
+        tlType(TLValue::ChannelsChannelParticipants) { }
+
+    quint32 count;
+    TLVector<TLChannelParticipant> participants;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
 struct TLChat {
     TLChat() :
         id(0),
+        flags(0),
         participantsCount(0),
         date(0),
-        left(false),
         version(0),
         accessHash(0),
-        checkedIn(false),
         tlType(TLValue::ChatEmpty) { }
 
     quint32 id;
+    quint32 flags;
     QString title;
     TLChatPhoto photo;
     quint32 participantsCount;
     quint32 date;
-    bool left;
     quint32 version;
     quint64 accessHash;
-    QString address;
-    QString venue;
-    TLGeoPoint geo;
-    bool checkedIn;
+    QString username;
     TLValue tlType;
 };
 
 struct TLChatFull {
     TLChatFull() :
         id(0),
+        flags(0),
+        participantsCount(0),
+        adminsCount(0),
+        kickedCount(0),
+        readInboxMaxId(0),
+        unreadCount(0),
+        unreadImportantCount(0),
         tlType(TLValue::ChatFull) { }
 
     quint32 id;
@@ -1198,14 +1333,25 @@ struct TLChatFull {
     TLPhoto chatPhoto;
     TLPeerNotifySettings notifySettings;
     TLExportedChatInvite exportedInvite;
+    TLVector<TLBotInfo> botInfo;
+    quint32 flags;
+    QString about;
+    quint32 participantsCount;
+    quint32 adminsCount;
+    quint32 kickedCount;
+    quint32 readInboxMaxId;
+    quint32 unreadCount;
+    quint32 unreadImportantCount;
     TLValue tlType;
 };
 
 struct TLChatInvite {
     TLChatInvite() :
+        flags(0),
         tlType(TLValue::ChatInviteAlready) { }
 
     TLChat chat;
+    quint32 flags;
     QString title;
     TLValue tlType;
 };
@@ -1234,7 +1380,8 @@ struct TLContactsFound {
     TLContactsFound() :
         tlType(TLValue::ContactsFound) { }
 
-    TLVector<TLContactFound> results;
+    TLVector<TLPeer> results;
+    TLVector<TLChat> chats;
     TLVector<TLUser> users;
     TLValue tlType;
 };
@@ -1256,6 +1403,16 @@ struct TLContactsLink {
     TLContactLink myLink;
     TLContactLink foreignLink;
     TLUser user;
+    TLValue tlType;
+};
+
+struct TLContactsResolvedPeer {
+    TLContactsResolvedPeer() :
+        tlType(TLValue::ContactsResolvedPeer) { }
+
+    TLPeer peer;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
     TLValue tlType;
 };
 
@@ -1307,42 +1464,7 @@ struct TLMessageAction {
     TLVector<quint32> users;
     TLPhoto photo;
     quint32 userId;
-    QString address;
     quint32 inviterId;
-    TLValue tlType;
-};
-
-struct TLMessageMedia {
-    TLMessageMedia() :
-        userId(0),
-        tlType(TLValue::MessageMediaEmpty) { }
-
-    TLPhoto photo;
-    QString caption;
-    TLVideo video;
-    TLGeoPoint geo;
-    QString phoneNumber;
-    QString firstName;
-    QString lastName;
-    quint32 userId;
-    TLDocument document;
-    TLAudio audio;
-    TLWebPage webpage;
-    QString title;
-    QString address;
-    QString provider;
-    QString venueId;
-    TLValue tlType;
-};
-
-struct TLMessagesAllStickers {
-    TLMessagesAllStickers() :
-        tlType(TLValue::MessagesAllStickersNotModified) { }
-
-    QString hash;
-    TLVector<TLStickerPack> packs;
-    TLVector<TLStickerSet> sets;
-    TLVector<TLDocument> documents;
     TLValue tlType;
 };
 
@@ -1361,25 +1483,6 @@ struct TLMessagesChats {
         tlType(TLValue::MessagesChats) { }
 
     TLVector<TLChat> chats;
-    TLValue tlType;
-};
-
-struct TLMessagesSentMessage {
-    TLMessagesSentMessage() :
-        id(0),
-        date(0),
-        pts(0),
-        ptsCount(0),
-        seq(0),
-        tlType(TLValue::MessagesSentMessage) { }
-
-    quint32 id;
-    quint32 date;
-    TLMessageMedia media;
-    quint32 pts;
-    quint32 ptsCount;
-    TLVector<TLContactsLink> links;
-    quint32 seq;
     TLValue tlType;
 };
 
@@ -1432,61 +1535,60 @@ struct TLUserFull {
     TLPhoto profilePhoto;
     TLPeerNotifySettings notifySettings;
     bool blocked;
-    QString realFirstName;
-    QString realLastName;
+    TLBotInfo botInfo;
     TLValue tlType;
 };
 
-struct TLGeoChatMessage {
-    TLGeoChatMessage() :
-        chatId(0),
+struct TLWebPage {
+    TLWebPage() :
         id(0),
-        fromId(0),
         date(0),
-        tlType(TLValue::GeoChatMessageEmpty) { }
+        flags(0),
+        embedWidth(0),
+        embedHeight(0),
+        duration(0),
+        tlType(TLValue::WebPageEmpty) { }
 
-    quint32 chatId;
-    quint32 id;
-    quint32 fromId;
+    quint64 id;
     quint32 date;
-    QString message;
-    TLMessageMedia media;
-    TLMessageAction action;
+    quint32 flags;
+    QString url;
+    QString displayUrl;
+    QString type;
+    QString siteName;
+    QString title;
+    QString description;
+    TLPhoto photo;
+    QString embedUrl;
+    QString embedType;
+    quint32 embedWidth;
+    quint32 embedHeight;
+    quint32 duration;
+    QString author;
+    TLDocument document;
     TLValue tlType;
 };
 
-struct TLGeochatsLocated {
-    TLGeochatsLocated() :
-        tlType(TLValue::GeochatsLocated) { }
+struct TLMessageMedia {
+    TLMessageMedia() :
+        userId(0),
+        tlType(TLValue::MessageMediaEmpty) { }
 
-    TLVector<TLChatLocated> results;
-    TLVector<TLGeoChatMessage> messages;
-    TLVector<TLChat> chats;
-    TLVector<TLUser> users;
-    TLValue tlType;
-};
-
-struct TLGeochatsMessages {
-    TLGeochatsMessages() :
-        count(0),
-        tlType(TLValue::GeochatsMessages) { }
-
-    TLVector<TLGeoChatMessage> messages;
-    TLVector<TLChat> chats;
-    TLVector<TLUser> users;
-    quint32 count;
-    TLValue tlType;
-};
-
-struct TLGeochatsStatedMessage {
-    TLGeochatsStatedMessage() :
-        seq(0),
-        tlType(TLValue::GeochatsStatedMessage) { }
-
-    TLGeoChatMessage message;
-    TLVector<TLChat> chats;
-    TLVector<TLUser> users;
-    quint32 seq;
+    TLPhoto photo;
+    QString caption;
+    TLVideo video;
+    TLGeoPoint geo;
+    QString phoneNumber;
+    QString firstName;
+    QString lastName;
+    quint32 userId;
+    TLDocument document;
+    TLAudio audio;
+    TLWebPage webpage;
+    QString title;
+    QString address;
+    QString provider;
+    QString venueId;
     TLValue tlType;
 };
 
@@ -1495,22 +1597,25 @@ struct TLMessage {
         id(0),
         flags(0),
         fromId(0),
-        fwdFromId(0),
         fwdDate(0),
         replyToMsgId(0),
         date(0),
+        views(0),
         tlType(TLValue::MessageEmpty) { }
 
     quint32 id;
     quint32 flags;
     quint32 fromId;
     TLPeer toId;
-    quint32 fwdFromId;
+    TLPeer fwdFromId;
     quint32 fwdDate;
     quint32 replyToMsgId;
     quint32 date;
     QString message;
     TLMessageMedia media;
+    TLReplyMarkup replyMarkup;
+    TLVector<TLMessageEntity> entities;
+    quint32 views;
     TLMessageAction action;
     TLValue tlType;
 };
@@ -1531,12 +1636,17 @@ struct TLMessagesDialogs {
 struct TLMessagesMessages {
     TLMessagesMessages() :
         count(0),
+        flags(0),
+        pts(0),
         tlType(TLValue::MessagesMessages) { }
 
     TLVector<TLMessage> messages;
     TLVector<TLChat> chats;
     TLVector<TLUser> users;
     quint32 count;
+    quint32 flags;
+    quint32 pts;
+    TLVector<TLMessageGroup> collapsed;
     TLValue tlType;
 };
 
@@ -1558,6 +1668,8 @@ struct TLUpdate {
         blocked(false),
         popup(false),
         maxId(0),
+        channelId(0),
+        views(0),
         tlType(TLValue::UpdateNewMessage) { }
 
     TLMessage message;
@@ -1582,7 +1694,6 @@ struct TLUpdate {
     quint64 authKeyId;
     QString device;
     QString location;
-    TLGeoChatMessage messageGeoChat;
     TLEncryptedMessage messageEncrypted;
     quint32 qts;
     TLEncryptedChat chat;
@@ -1603,6 +1714,9 @@ struct TLUpdate {
     TLPeer peer;
     quint32 maxId;
     TLWebPage webpage;
+    quint32 channelId;
+    TLMessageGroup group;
+    quint32 views;
     TLValue tlType;
 };
 
@@ -1614,7 +1728,6 @@ struct TLUpdates {
         pts(0),
         ptsCount(0),
         date(0),
-        fwdFromId(0),
         fwdDate(0),
         replyToMsgId(0),
         fromId(0),
@@ -1630,9 +1743,10 @@ struct TLUpdates {
     quint32 pts;
     quint32 ptsCount;
     quint32 date;
-    quint32 fwdFromId;
+    TLPeer fwdFromId;
     quint32 fwdDate;
     quint32 replyToMsgId;
+    TLVector<TLMessageEntity> entities;
     quint32 fromId;
     quint32 chatId;
     TLUpdate update;
@@ -1641,6 +1755,35 @@ struct TLUpdates {
     TLVector<TLChat> chats;
     quint32 seqStart;
     quint32 seq;
+    TLMessageMedia media;
+    TLValue tlType;
+};
+
+struct TLUpdatesChannelDifference {
+    TLUpdatesChannelDifference() :
+        flags(0),
+        pts(0),
+        timeout(0),
+        topMessage(0),
+        topImportantMessage(0),
+        readInboxMaxId(0),
+        unreadCount(0),
+        unreadImportantCount(0),
+        tlType(TLValue::UpdatesChannelDifferenceEmpty) { }
+
+    quint32 flags;
+    quint32 pts;
+    quint32 timeout;
+    quint32 topMessage;
+    quint32 topImportantMessage;
+    quint32 readInboxMaxId;
+    quint32 unreadCount;
+    quint32 unreadImportantCount;
+    TLVector<TLMessage> messages;
+    TLVector<TLChat> chats;
+    TLVector<TLUser> users;
+    TLVector<TLMessage> newMessages;
+    TLVector<TLUpdate> otherUpdates;
     TLValue tlType;
 };
 

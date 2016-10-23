@@ -766,7 +766,7 @@ bool CTelegramDispatcher::requestHistory(const TelegramNamespace::Peer &peer, qu
         return false;
     }
 
-    activeConnection()->messagesGetHistory(inputPeer, offset, /* maxId */ 0, limit);
+    activeConnection()->messagesGetHistory(inputPeer, /* offsetId */ m_maxMessageId, offset, limit, /* maxId */ 0, /* minId */ 0);
 
     return true;
 }
@@ -821,8 +821,7 @@ quint64 CTelegramDispatcher::sendMessage(const TelegramNamespace::Peer &peer, co
     case TLValue::InputPeerSelf:
         // Makes sense?
         break;
-    case TLValue::InputPeerContact:
-    case TLValue::InputPeerForeign:
+    case TLValue::InputPeerUser:
         actionIndex = TypingStatus::indexForUser(m_localMessageActions, inputPeer.userId);
         break;
     case TLValue::InputPeerChat:
@@ -840,7 +839,8 @@ quint64 CTelegramDispatcher::sendMessage(const TelegramNamespace::Peer &peer, co
     quint64 randomId;
     Utils::randomBytes(&randomId);
 
-    activeConnection()->sendMessage(inputPeer, message, randomId);
+    const quint64 rpcMessageId = activeConnection()->sendMessage(inputPeer, message, randomId);
+    m_rpcIdToMessageRandomIdMap.insert(rpcMessageId, randomId);
 
     return randomId;
 }
@@ -1011,8 +1011,7 @@ void CTelegramDispatcher::setTyping(const TelegramNamespace::Peer &peer, Telegra
     case TLValue::InputPeerSelf:
         // Makes no sense
         return;
-    case TLValue::InputPeerContact:
-    case TLValue::InputPeerForeign:
+    case TLValue::InputPeerUser:
         actionIndex = TypingStatus::indexForUser(m_localMessageActions, inputPeer.userId);
         break;
     case TLValue::InputPeerChat:
@@ -1152,7 +1151,8 @@ bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, 
     outputChat->id = chatId;
     outputChat->title = chat.title;
 
-    if (!chat.left && m_chatFullInfo.contains(chatId)) {
+    // There can be a mistake in legacy Chat::left flag and participants count correction
+    if (m_chatFullInfo.contains(chatId)) {
         const TLChatFull &chatFull = m_chatFullInfo.value(chatId);
         bool haveSelf = false;
         foreach (const TLChatParticipant &participant, chatFull.participants.participants) {
@@ -1171,7 +1171,7 @@ bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, 
     }
 
     outputChat->date = chat.date;
-    outputChat->left = chat.left; // Is it checkedIn for Geo chat?
+    outputChat->left = false;
 
     return true;
 }
@@ -1357,14 +1357,6 @@ void CTelegramDispatcher::messageActionTimerTimeout()
     }
 }
 
-void CTelegramDispatcher::whenMessageSentInfoReceived(quint64 randomId, TLMessagesSentMessage info)
-{
-    emit sentMessageIdReceived(randomId, info.id);
-
-    ensureMaxMessageId(info.id);
-    ensureUpdateState(info.pts, info.seq, info.date);
-}
-
 void CTelegramDispatcher::whenMessagesHistoryReceived(const TLMessagesMessages &messages)
 {
     foreach (const TLMessage &message, messages.messages) {
@@ -1416,7 +1408,7 @@ void CTelegramDispatcher::getDcConfiguration()
 void CTelegramDispatcher::getUser(quint32 id)
 {
     TLInputUser user;
-    user.tlType = TLValue::InputUserContact;
+    user.tlType = TLValue::InputUser;
     user.userId = id;
     activeConnection()->usersGetUsers(QVector<TLInputUser>() << user);
 }
@@ -1428,14 +1420,14 @@ void CTelegramDispatcher::getInitialUsers()
     activeConnection()->usersGetUsers(QVector<TLInputUser>() << selfUser);
 
     TLInputUser telegramUser;
-    telegramUser.tlType = TLValue::InputUserContact;
+    telegramUser.tlType = TLValue::InputUser;
     telegramUser.userId = 777000;
     activeConnection()->usersGetUsers(QVector<TLInputUser>() << telegramUser);
 }
 
 void CTelegramDispatcher::getInitialDialogs()
 {
-    activeConnection()->messagesGetDialogs(0, 0, 1);
+    activeConnection()->messagesGetDialogs(0, 1);
 }
 
 void CTelegramDispatcher::getContacts()
@@ -1938,7 +1930,7 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
     if (!m_users.contains(apiMessage.userId) && !m_askedUserIds.contains(apiMessage.userId)) {
         m_askedUserIds.append(apiMessage.userId);
 
-        activeConnection()->messagesGetDialogs(0, message.id + 1, 1);
+        activeConnection()->messagesGetDialogs(0, 1);
     }
 
     emit messageReceived(apiMessage);
@@ -1995,28 +1987,8 @@ TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const TelegramNamespace::
         return inputPeer;
     }
 
-    const TLUser *user = m_users.value(peer.id);
-
-    if (user) {
-        if (user->tlType == TLValue::UserContact) {
-            inputPeer.tlType = TLValue::InputPeerContact;
-            inputPeer.userId = user->id;
-        } else if (user->tlType == TLValue::UserForeign) {
-            inputPeer.tlType = TLValue::InputPeerForeign;
-            inputPeer.userId = user->id;
-            inputPeer.accessHash = user->accessHash;
-        } else if (user->tlType == TLValue::UserRequest) {
-            inputPeer.tlType = TLValue::InputPeerContact; // TODO: Check if there should be InputPeerForeign. Seems like working as-is; can't test at this time.
-            inputPeer.userId = user->id;
-            inputPeer.accessHash = user->accessHash; // Seems to be useless.
-        } else {
-            qDebug() << Q_FUNC_INFO << "Unknown user type: " << user->tlType.toString();
-        }
-    } else {
-        // Guess contact
-        inputPeer.tlType = TLValue::InputPeerContact;
-        inputPeer.userId = peer.id;
-    }
+    inputPeer.tlType = TLValue::InputPeerUser;
+    inputPeer.userId = peer.id;
 
     return inputPeer;
 }
@@ -2026,8 +1998,7 @@ TelegramNamespace::Peer CTelegramDispatcher::peerToPublicPeer(const TLInputPeer 
     switch (inputPeer.tlType) {
     case TLValue::InputPeerSelf:
         return TelegramNamespace::Peer(selfId());
-    case TLValue::InputPeerContact:
-    case TLValue::InputPeerForeign:
+    case TLValue::InputPeerUser:
         return TelegramNamespace::Peer(inputPeer.userId);
     case TLValue::InputPeerChat:
         return TelegramNamespace::Peer(inputPeer.chatId, TelegramNamespace::Peer::Chat);
@@ -2061,17 +2032,9 @@ TLInputUser CTelegramDispatcher::userIdToInputUser(quint32 id) const
     const TLUser *user = m_users.value(id);
 
     if (user) {
-        if (user->tlType == TLValue::UserContact) {
-            inputUser.tlType = TLValue::InputUserContact;
+        if (user->tlType == TLValue::User) {
+            inputUser.tlType = TLValue::InputUser;
             inputUser.userId = user->id;
-        } else if (user->tlType == TLValue::UserForeign) {
-            inputUser.tlType = TLValue::InputUserForeign;
-            inputUser.userId = user->id;
-            inputUser.accessHash = user->accessHash;
-        } else if (user->tlType == TLValue::UserRequest) { // TODO: Check if there should be InputPeerForeign. Seems like working as-is; can't test at this time.
-            inputUser.tlType = TLValue::InputUserContact;
-            inputUser.userId = user->id;
-            inputUser.accessHash = user->accessHash; // Seems to be useless.
         } else {
             qDebug() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
         }
@@ -2584,6 +2547,14 @@ void CTelegramDispatcher::onUpdatesReceived(const TLUpdates &updates, quint64 id
             for (int i = 0; i < updates.updates.count(); ++i) {
                 processUpdate(updates.updates.at(i));
             }
+        }
+        break;
+    case TLValue::UpdateShortSentMessage:
+        if (!m_rpcIdToMessageRandomIdMap.contains(id)) {
+            qDebug() << Q_FUNC_INFO << "Sent message id not found";
+        } else {
+            const quint64 randomId = m_rpcIdToMessageRandomIdMap.take(id);
+            emit sentMessageIdReceived(randomId, updates.id);
         }
         break;
     default:

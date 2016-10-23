@@ -266,7 +266,6 @@ protected slots:
     void whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
     void messageActionTimerTimeout();
 
-    void whenMessageSentInfoReceived(quint64 randomId, TLMessagesSentMessage info);
     void whenMessagesHistoryReceived(const TLMessagesMessages &messages);
     void onMessagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offset, quint32 maxId, quint32 limit);
 
@@ -417,6 +416,7 @@ protected:
 
     // fileId is program-specific handler, not related to Telegram.
     QMap<quint32, FileRequestDescriptor> m_requestedFileDescriptors; // fileId, file request descriptor
+    QMap<quint64,quint64> m_rpcIdToMessageRandomIdMap; // RPC Id, Random Id
     quint32 m_fileRequestCounter;
 
     QTimer *m_typingUpdateTimer;

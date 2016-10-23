@@ -130,6 +130,7 @@ public:
     quint64 authCheckPhone(const QString &phoneNumber);
     quint64 authExportAuthorization(quint32 dcId);
     quint64 authImportAuthorization(quint32 id, const QByteArray &bytes);
+    quint64 authImportBotAuthorization(quint32 flags, quint32 apiId, const QString &apiHash, const QString &botAuthToken);
     quint64 authLogOut();
     quint64 authRecoverPassword(const QString &code);
     quint64 authRequestPasswordRecovery();
@@ -165,35 +166,39 @@ public:
     quint64 messagesEditChatTitle(quint32 chatId, const QString &title);
     quint64 messagesExportChatInvite(quint32 chatId);
     quint64 messagesForwardMessage(const TLInputPeer &peer, quint32 id, quint64 randomId);
-    quint64 messagesForwardMessages(const TLInputPeer &peer, const TLVector<quint32> &id, const TLVector<quint64> &randomId);
+    quint64 messagesForwardMessages(quint32 flags, const TLInputPeer &fromPeer, const TLVector<quint32> &id, const TLVector<quint64> &randomId, const TLInputPeer &toPeer);
     quint64 messagesGetAllStickers(const QString &hash);
     quint64 messagesGetChats(const TLVector<quint32> &id);
     quint64 messagesGetDhConfig(quint32 version, quint32 randomLength);
-    quint64 messagesGetDialogs(quint32 offset, quint32 maxId, quint32 limit);
+    quint64 messagesGetDialogs(quint32 offset, quint32 limit);
     quint64 messagesGetFullChat(quint32 chatId);
-    quint64 messagesGetHistory(const TLInputPeer &peer, quint32 offset, quint32 maxId, quint32 limit);
+    quint64 messagesGetHistory(const TLInputPeer &peer, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId);
     quint64 messagesGetMessages(const TLVector<quint32> &id);
+    quint64 messagesGetMessagesViews(const TLInputPeer &peer, const TLVector<quint32> &id, bool increment);
     quint64 messagesGetStickerSet(const TLInputStickerSet &stickerset);
     quint64 messagesGetStickers(const QString &emoticon, const QString &hash);
     quint64 messagesGetWebPagePreview(const QString &message);
     quint64 messagesImportChatInvite(const QString &hash);
-    quint64 messagesInstallStickerSet(const TLInputStickerSet &stickerset);
+    quint64 messagesInstallStickerSet(const TLInputStickerSet &stickerset, bool disabled);
     quint64 messagesReadEncryptedHistory(const TLInputEncryptedChat &peer, quint32 maxDate);
     quint64 messagesReadHistory(const TLInputPeer &peer, quint32 maxId, quint32 offset);
     quint64 messagesReadMessageContents(const TLVector<quint32> &id);
     quint64 messagesReceivedMessages(quint32 maxId);
     quint64 messagesReceivedQueue(quint32 maxQts);
+    quint64 messagesReportSpam(const TLInputPeer &peer);
     quint64 messagesRequestEncryption(const TLInputUser &userId, quint32 randomId, const QByteArray &gA);
-    quint64 messagesSearch(const TLInputPeer &peer, const QString &q, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offset, quint32 maxId, quint32 limit);
+    quint64 messagesSearch(quint32 flags, const TLInputPeer &peer, const QString &q, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offset, quint32 maxId, quint32 limit);
     quint64 messagesSendBroadcast(const TLVector<TLInputUser> &contacts, const TLVector<quint64> &randomId, const QString &message, const TLInputMedia &media);
     quint64 messagesSendEncrypted(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data);
     quint64 messagesSendEncryptedFile(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data, const TLInputEncryptedFile &file);
     quint64 messagesSendEncryptedService(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data);
-    quint64 messagesSendMedia(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const TLInputMedia &media, quint64 randomId);
-    quint64 messagesSendMessage(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const QString &message, quint64 randomId);
+    quint64 messagesSendMedia(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const TLInputMedia &media, quint64 randomId, const TLReplyMarkup &replyMarkup);
+    quint64 messagesSendMessage(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const QString &message, quint64 randomId, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities);
     quint64 messagesSetEncryptedTyping(const TLInputEncryptedChat &peer, bool typing);
     quint64 messagesSetTyping(const TLInputPeer &peer, const TLSendMessageAction &action);
+    quint64 messagesStartBot(const TLInputUser &bot, quint32 chatId, quint64 randomId, const QString &startParam);
     quint64 messagesUninstallStickerSet(const TLInputStickerSet &stickerset);
+    quint64 updatesGetChannelDifference(const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit);
     quint64 updatesGetDifference(quint32 pts, quint32 date, quint32 qts);
     quint64 updatesGetState();
     quint64 uploadGetFile(const TLInputFileLocation &location, quint32 offset, quint32 limit);
@@ -284,7 +289,6 @@ signals:
     void updatesStateReceived(const TLUpdatesState &updatesState);
     void updatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
-    void messageSentInfoReceived(quint64 randomId, TLMessagesSentMessage info);
     void authExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
 protected:
@@ -318,7 +322,6 @@ protected:
     TLValue processUploadSaveFilePart(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetUsers(CTelegramStream &stream, quint64 id);
     TLValue processUsersGetFullUser(CTelegramStream &stream, quint64 id);
-    TLValue processMessagesSendMessage(CTelegramStream &stream, quint64 id);
     TLValue processMessagesSetTyping(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReadHistory(CTelegramStream &stream, quint64 id);
     TLValue processMessagesReceivedMessages(CTelegramStream &stream, quint64 id);
