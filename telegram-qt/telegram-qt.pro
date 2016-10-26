@@ -14,6 +14,8 @@ contains(options, static-lib) {
 }
 
 CONFIG += c++11
+CONFIG += link_pkgconfig
+PKGCONFIG += openssl zlib
 
 DEFINES += TELEGRAMQT_LIBRARY
 
@@ -55,6 +57,3 @@ contains(options, developer-build) {
 }
 
 OTHER_FILES += CMakeLists.txt
-
-LIBS += -lssl -lcrypto
-LIBS += -lz
