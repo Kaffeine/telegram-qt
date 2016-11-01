@@ -1,19 +1,13 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-03-22T18:29:28
-#
-#-------------------------------------------------
-
-QT       += core gui network
+QT += core gui network
 CONFIG += c++11
 
 TEMPLATE = app
 
-INCLUDEPATH += $$PWD/../telegram-qt
+INCLUDEPATH += $$PWD/../TelegramQt
 
 LIBS += -lssl -lcrypto -lz
 LIBS += -lTelegramQt
-LIBS += -L$$OUT_PWD/../telegram-qt
+LIBS += -L$$OUT_PWD/../TelegramQt
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

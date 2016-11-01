@@ -2,15 +2,15 @@
 include(options.pri)
 
 TEMPLATE = subdirs
-SUBDIRS = telegram-qt
+SUBDIRS = TelegramQt
 SUBDIRS += testApp
 CONFIG += ordered
 
 contains(options, developer-build) {
-    SUBDIRS += telegram-qt/tests
-    SUBDIRS += telegram-qt/generator
+    SUBDIRS += TelegramQt/tests
+    SUBDIRS += TelegramQt/generator
     greaterThan(QT_MAJOR_VERSION, 4) {
-        SUBDIRS += telegram-qt/generator-ng
+        SUBDIRS += TelegramQt/generator-ng
     }
 }
 

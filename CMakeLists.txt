@@ -44,7 +44,7 @@ include(GNUInstallDirs)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 # Add the source subdirectories
-add_subdirectory(telegram-qt)
+add_subdirectory(TelegramQt)
 
 #if(ENABLE_TESTS)
 #    add_subdirectory(tests)
