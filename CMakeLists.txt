@@ -18,22 +18,12 @@ option(STATIC_BUILD "Compile static library instead of shared" FALSE)
 # Add an option for dev build
 option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
 
-if (USE_QT4)
-    set(QT_VERSION_MAJOR "4")
+set(QT_VERSION_MAJOR "5")
 
-    if(ENABLE_TESTAPP)
-        find_package(Qt4 4.8.0 REQUIRED QtCore QtNetwork QtGui)
-    else()
-        find_package(Qt4 4.8.0 REQUIRED QtCore QtNetwork)
-    endif()
+if(ENABLE_TESTAPP)
+    find_package(Qt5 REQUIRED COMPONENTS Core Network Gui Widgets)
 else()
-    set(QT_VERSION_MAJOR "5")
-
-    if(ENABLE_TESTAPP)
-        find_package(Qt5 REQUIRED COMPONENTS Core Network Gui Widgets)
-    else()
-        find_package(Qt5 REQUIRED COMPONENTS Core Network)
-    endif()
+    find_package(Qt5 REQUIRED COMPONENTS Core Network)
 endif()
 
 find_package(OpenSSL REQUIRED)
@@ -41,7 +31,7 @@ find_package(ZLIB REQUIRED)
 
 include(GNUInstallDirs)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
 # Add the source subdirectories
 add_subdirectory(TelegramQt)

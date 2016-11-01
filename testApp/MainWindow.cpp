@@ -141,10 +141,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->groupChatContactPhone, SIGNAL(textChanged(QString)), SLOT(updateGroupChatAddContactButtonText()));
 
-#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
     connect(ui->messagingView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(whenCustomMenuRequested(QPoint)));
     connect(ui->contactSearchResult, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onSearchCustomMenuRequested(QPoint)));
-#endif
 
     ui->groupChatAddContactForwardMessages->hide();
 }
@@ -573,22 +571,18 @@ void MainWindow::whenCustomMenuRequested(const QPoint &pos)
             const SContact *contact = m_contactsModel->contactAt(i);
 
             QAction *a = resendMenu->addAction(CContactModel::getContactName(*contact));
-#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
             connect(a, &QAction::triggered, [=]() {
                 TelegramNamespace::MessageMediaInfo info;
                 m_core->getMessageMediaInfo(&info, messageId);
                 m_core->sendMedia(contact->id(), info);
             });
-#endif
         }
     }
 
     for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
         const SContact *contact = m_contactsModel->contactAt(i);
         QAction *a = forwardMenu->addAction(CContactModel::getContactName(*contact));
-#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
         connect(a, &QAction::triggered, [=]() { m_core->forwardMessage(contact->id(), messageId); });
-#endif
     }
 
     menu->popup(ui->messagingView->mapToGlobal(pos));
@@ -616,12 +610,10 @@ void MainWindow::onSearchCustomMenuRequested(const QPoint &pos)
     }
 
     QAction *a = menu->addAction(tr("Send a message"));
-#if QT_VERSION > QT_VERSION_CHECK(5, 0, 0)
     connect(a, &QAction::triggered, [=]() {
         setActiveContact(contact->id());
         ui->tabWidget->setCurrentWidget(ui->tabMessaging);
     });
-#endif
 
     menu->popup(ui->contactSearchResult->mapToGlobal(pos));
 }

@@ -30,9 +30,7 @@ using namespace TelegramUtils;
 
 #include <QCryptographicHash>
 #include <QDebug>
-#if QT_VERSION < 0x048000
 #include <algorithm>
-#endif
 
 #ifdef DEVELOPER_BUILD
 #include "TLTypesDebug.hpp"
@@ -57,14 +55,6 @@ static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_auto
 
 static const quint32 s_legacyDcInfoTlType = 0x2ec2a43cu; // Scheme23_DcOption
 static const quint32 s_legacyVectorTlType = 0x1cb5c415u; // Scheme23_Vector;
-
-#ifndef Q_NULLPTR
-#define Q_NULLPTR NULL
-#endif
-
-#if QT_VERSION < 0x050000
-const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typing time deviation in Qt4 by this value.
-#endif
 
 enum TelegramMessageFlags {
     TelegramMessageFlagNone    = 0,
@@ -1290,7 +1280,7 @@ void CTelegramDispatcher::whenContactListChanged(const QVector<quint32> &added, 
     foreach (const quint32 contact, removed) {
         for (int i = 0; i < newContactList.count(); ++i) {
             // We can use remove one, because we warranty that there is no duplication
-#if QT_VERSION >= 0x050400
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
             newContactList.removeOne(contact);
 #else
             int index = newContactList.indexOf(contact);
@@ -1313,12 +1303,7 @@ void CTelegramDispatcher::whenContactListChanged(const QVector<quint32> &added, 
 
 void CTelegramDispatcher::messageActionTimerTimeout()
 {
-
-#if QT_VERSION >= 0x050000
     int minTime = s_userTypingActionPeriod;
-#else
-    int minTime = s_timerMaxInterval;
-#endif
 
     for (int i = m_contactsMessageActions.count() - 1; i >= 0; --i) {
         int remainingTime = m_contactsMessageActions.at(i).typingTime - m_typingUpdateTimer->interval();
@@ -1648,11 +1633,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             TelegramNamespace::MessageAction action = telegramMessageActionToPublicAction(update.action.tlType);
 
             int remainingTime = s_userTypingActionPeriod;
-#if QT_VERSION >= 0x050000
             remainingTime += m_typingUpdateTimer->remainingTime();
-#else
-            // Missed timer remaining time method can leads to typing time period deviation.
-#endif
 
             int index = -1;
             if (update.tlType == TLValue::UpdateUserTyping) {
@@ -2585,12 +2566,7 @@ void CTelegramDispatcher::whenAuthExportedAuthorizationReceived(quint32 dc, quin
 void CTelegramDispatcher::ensureTypingUpdateTimer(int interval)
 {
     if (!m_typingUpdateTimer->isActive()) {
-#if QT_VERSION >= 0x050000
         m_typingUpdateTimer->start(interval);
-#else
-        Q_UNUSED(interval);
-        m_typingUpdateTimer->start(s_timerMaxInterval);
-#endif
     }
 }
 
@@ -2818,7 +2794,7 @@ void CTelegramDispatcher::clearMainConnection()
 void CTelegramDispatcher::clearExtraConnections()
 {
     foreach (CTelegramConnection *connection, m_extraConnections) {
-        disconnect(connection, Q_NULLPTR, this, Q_NULLPTR);
+        disconnect(connection, nullptr, this, nullptr);
         connection->deleteLater();
     }
 

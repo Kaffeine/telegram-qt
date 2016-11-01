@@ -1,5 +1,8 @@
-
 include(options.pri)
+
+!greaterThan(QT_MAJOR_VERSION, 4) {
+    error(This project requires Qt5)
+}
 
 TEMPLATE = subdirs
 SUBDIRS = TelegramQt
@@ -9,9 +12,7 @@ CONFIG += ordered
 contains(options, developer-build) {
     SUBDIRS += TelegramQt/tests
     SUBDIRS += TelegramQt/generator
-    greaterThan(QT_MAJOR_VERSION, 4) {
-        SUBDIRS += TelegramQt/generator-ng
-    }
+    SUBDIRS += TelegramQt/generator-ng
 }
 
 OTHER_FILES += CMakeLists.txt

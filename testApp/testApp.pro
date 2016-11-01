@@ -1,4 +1,4 @@
-QT += core gui network
+QT += core gui widgets network
 CONFIG += c++11
 
 TEMPLATE = app
@@ -8,8 +8,6 @@ INCLUDEPATH += $$PWD/../TelegramQt
 LIBS += -lssl -lcrypto -lz
 LIBS += -lTelegramQt
 LIBS += -L$$OUT_PWD/../TelegramQt
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = testApp
 TEMPLATE = app

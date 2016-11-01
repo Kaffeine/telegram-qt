@@ -199,11 +199,7 @@ int CMessageModel::setMessageMediaData(quint64 messageId, const QVariant &data)
     }
 
     m_messages[i].mediaData = data;
-#if QT_VERSION < 0x050000
-    emit dataChanged(index(i, Message), index(i, Message));
-#else
     emit dataChanged(index(i, Message), index(i, Message), QVector<int>() << Qt::DecorationRole);
-#endif
     return i;
 }
 
