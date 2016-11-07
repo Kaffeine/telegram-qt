@@ -31,6 +31,15 @@ SOURCES = CTelegramCore.cpp \
     CTelegramConnection.cpp \
     TLValues.cpp
 
+PUBLIC_HEADERS += \
+    telegramqt_export.h \
+    CAppInformation.hpp \
+    TelegramNamespace.hpp \
+    CTelegramCore.hpp \
+    TelegramQt/CAppInformation \
+    TelegramQt/CTelegramCore \
+    TelegramQt/TelegramNamespace
+
 HEADERS = CTelegramCore.hpp \
     CAppInformation.hpp \
     CTelegramDispatcher.hpp \
@@ -57,3 +66,21 @@ contains(options, developer-build) {
 }
 
 OTHER_FILES += CMakeLists.txt
+
+# Installation
+public_headers.files = $$PUBLIC_HEADERS
+public_headers.path = $$INSTALL_INCLUDE_DIR/telegram-qt$${QT_MAJOR_VERSION}/TelegramQt
+
+target.path = $$INSTALL_LIBDIR
+INSTALLS += public_headers target
+
+# pkg-config support
+CONFIG += create_pc create_prl no_install_prl
+
+QMAKE_PKGCONFIG_NAME = TelegramQt
+QMAKE_PKGCONFIG_DESCRIPTION = Qt-based library for Telegram network
+QMAKE_PKGCONFIG_PREFIX = $$INSTALL_PREFIX
+QMAKE_PKGCONFIG_LIBDIR = $$INSTALL_LIBDIR
+QMAKE_PKGCONFIG_INCDIR = $$INSTALL_INCLUDE_DIR/telegram-qt$${QT_MAJOR_VERSION}
+QMAKE_PKGCONFIG_DESTDIR = pkgconfig
+unix:QMAKE_CLEAN += -r pkgconfig lib$${TARGET}.prl
