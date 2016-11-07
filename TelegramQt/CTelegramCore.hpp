@@ -18,7 +18,7 @@
 #ifndef CTELEGRAMCORE_HPP
 #define CTELEGRAMCORE_HPP
 
-#include "telegramqt_export.h"
+#include "telegramqt_global.h"
 #include "TelegramNamespace.hpp"
 
 #include <QObject>

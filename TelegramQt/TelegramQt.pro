@@ -32,7 +32,7 @@ SOURCES = CTelegramCore.cpp \
     TLValues.cpp
 
 PUBLIC_HEADERS += \
-    telegramqt_export.h \
+    telegramqt_global.h \
     CAppInformation.hpp \
     TelegramNamespace.hpp \
     CTelegramCore.hpp \
@@ -56,7 +56,7 @@ HEADERS = CTelegramCore.hpp \
     CTelegramConnection.hpp \
     TelegramNamespace.hpp \
     TelegramNamespace_p.hpp \
-    telegramqt_export.h \
+    telegramqt_global.h \
     TLValues.hpp
 
 contains(options, developer-build) {

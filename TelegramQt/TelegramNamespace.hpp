@@ -18,7 +18,7 @@
 #ifndef TELEGRAMNAMESPACE_HPP
 #define TELEGRAMNAMESPACE_HPP
 
-#include "telegramqt_export.h"
+#include "telegramqt_global.h"
 
 #include <QObject>
 #include <QFlags>

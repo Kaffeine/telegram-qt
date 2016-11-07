@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014-2015 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2014-2016 Alexandr Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
@@ -15,8 +15,8 @@
 
  */
 
-#ifndef TELEGRAMQT_EXPORT_H
-#define TELEGRAMQT_EXPORT_H
+#ifndef TELEGRAMQT_GLOBAL_H
+#define TELEGRAMQT_GLOBAL_H
 
 #include <QtCore/QtGlobal>
 
@@ -26,4 +26,4 @@
 #define TELEGRAMQT_EXPORT Q_DECL_IMPORT
 #endif
 
-#endif // TELEGRAMQT_EXPORT_H
+#endif // TELEGRAMQT_GLOBAL_H

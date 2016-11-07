@@ -18,7 +18,7 @@
 #ifndef CAPPINFORMATION_HPP
 #define CAPPINFORMATION_HPP
 
-#include "telegramqt_export.h"
+#include "telegramqt_global.h"
 
 #include <QString>
 

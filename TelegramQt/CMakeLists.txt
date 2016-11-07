@@ -24,7 +24,7 @@ set(telegram_qt_META_HEADERS
 )
 
 set(telegram_qt_HEADERS
-    telegramqt_export.h
+    telegramqt_global.h
     TelegramNamespace.hpp
     TelegramNamespace_p.hpp
     CAppInformation.hpp
@@ -44,7 +44,7 @@ set(telegram_qt_HEADERS
 )
 
 set(telegram_qt_public_HEADERS
-    telegramqt_export.h
+    telegramqt_global.h
     CAppInformation.hpp
     TelegramNamespace.hpp
     CTelegramCore.hpp
