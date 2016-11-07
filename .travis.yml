@@ -2,40 +2,24 @@ os: linux
 sudo: required
 language: cpp
 compiler: gcc
-
-env:
-  - USE_QT4=true
-  - USE_QT5=true
-
 before_install:
   - sudo apt-add-repository -y ppa:roblib/ppa
+  - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-add-repository -y ppa:beineri/opt-qt542
   - sudo apt-get -qq update
-  - sudo apt-get -y install cmake
-  - if [ "${USE_QT5}" = "true" ]; then
-           lsb_release -a
-      && sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-      && sudo apt-add-repository -y ppa:beineri/opt-qt542
-      && sudo apt-get -qq update
-      && sudo apt-get -qq install qt54tools qt54svg qt54webkit qt54script
-      ;
-    else
-      sudo apt-get install -y libqt4-dev ;
-    fi
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+  - sudo apt-get -qq install cmake qt54base qt54tools
 
 before_script:
-  - if [ "${USE_QT5}" = "true" ]; then
-         QTDIR="/opt/qt54"
-      && PATH="$QTDIR/bin:$PATH"
-      && qt54-env.sh
-      && cmake -DUSE_QT5=true .
-      ;
-    else
-        cmake -DUSE_QT4=true .
-      ;
-    fi
+  - export QTDIR="/opt/qt54"
+  - export PATH="$QTDIR/bin:$PATH"
+  - qt54-env.sh
+  - mkdir ../build; cd ../build
+  - cmake ../telegram-qt
 
 script:
-  - make -j2 -k
+  - make -j3 -k
 
 notifications:
   email: false
