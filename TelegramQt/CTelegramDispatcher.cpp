@@ -756,7 +756,7 @@ bool CTelegramDispatcher::requestHistory(const TelegramNamespace::Peer &peer, qu
         return false;
     }
 
-    activeConnection()->messagesGetHistory(inputPeer, /* offsetId */ m_maxMessageId, offset, limit, /* maxId */ 0, /* minId */ 0);
+    activeConnection()->messagesGetHistory(inputPeer, /* offsetId */ m_maxMessageId + 1, offset, limit, /* maxId */ 0, /* minId */ 0);
 
     return true;
 }
