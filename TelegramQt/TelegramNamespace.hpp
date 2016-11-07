@@ -54,7 +54,8 @@ public:
         MessageTypeVideo       = 0x08,
         MessageTypeContact     = 0x10,
         MessageTypeDocument    = 0x20,
-        MessageTypeGeo         = 0x40
+        MessageTypeGeo         = 0x40,
+        MessageTypeAll         = 0xff
     };
     Q_DECLARE_FLAGS(MessageTypeFlags, MessageType)
 
