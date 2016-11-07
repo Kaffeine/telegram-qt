@@ -91,6 +91,8 @@ TelegramNamespace::MessageType telegramMessageTypeToPublicMessageType(TLValue ty
         return TelegramNamespace::MessageTypeAudio;
     case TLValue::MessageMediaDocument:
         return TelegramNamespace::MessageTypeDocument;
+    case TLValue::MessageMediaWebPage:
+        return TelegramNamespace::MessageTypeWebPage;
     default:
         return TelegramNamespace::MessageTypeUnsupported;
     }
@@ -113,6 +115,8 @@ TLValue::Value publicMessageTypeToTelegramMessageType(TelegramNamespace::Message
         return TLValue::MessageMediaAudio;
     case TelegramNamespace::MessageTypeDocument:
         return TLValue::MessageMediaDocument;
+    case TelegramNamespace::MessageTypeWebPage:
+        return TLValue::MessageMediaWebPage;
     default:
         return TLValue::MessageMediaUnsupported;
     }

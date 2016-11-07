@@ -55,6 +55,7 @@ public:
         MessageTypeContact     = 0x10,
         MessageTypeDocument    = 0x20,
         MessageTypeGeo         = 0x40,
+        MessageTypeWebPage     = 0x80,
         MessageTypeAll         = 0xff
     };
     Q_DECLARE_FLAGS(MessageTypeFlags, MessageType)
@@ -254,6 +255,10 @@ public:
         double latitude() const;
         double longitude() const;
         void setGeoPoint(double latitude, double longitude);
+
+        QString siteName() const;
+        QString title() const;
+        QString description() const;
 
     protected:
         friend class CTelegramDispatcher;

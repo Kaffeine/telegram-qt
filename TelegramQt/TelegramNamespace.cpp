@@ -295,6 +295,33 @@ void TelegramNamespace::MessageMediaInfo::setGeoPoint(double latitude, double lo
     d->geo.latitude = latitude;
 }
 
+QString TelegramNamespace::MessageMediaInfo::siteName() const
+{
+    if (d->tlType != TLValue::MessageMediaWebPage) {
+        return QString();
+    }
+
+    return d->webpage.siteName;
+}
+
+QString TelegramNamespace::MessageMediaInfo::title() const
+{
+    if (d->tlType != TLValue::MessageMediaWebPage) {
+        return QString();
+    }
+
+    return d->webpage.title;
+}
+
+QString TelegramNamespace::MessageMediaInfo::description() const
+{
+    if (d->tlType != TLValue::MessageMediaWebPage) {
+        return QString();
+    }
+
+    return d->webpage.description;
+}
+
 TelegramNamespace::RemoteFile::RemoteFile():
     d(new Private())
 {
