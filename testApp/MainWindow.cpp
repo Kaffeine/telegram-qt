@@ -633,7 +633,6 @@ void MainWindow::on_connectButton_clicked()
         flags |= TelegramNamespace::MessageFlagForwarded;
     }
     m_core->setMessageReceivingFilter(flags);
-    m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto|TelegramNamespace::MessageTypeDocument|TelegramNamespace::MessageTypeGeo);
 
     QVector<TelegramNamespace::DcOption> testServers;
     testServers << TelegramNamespace::DcOption(QLatin1String("149.154.175.10"), 443);
