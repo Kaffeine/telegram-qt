@@ -261,8 +261,6 @@ protected:
 
     void continueInitialization(InitializationStep justDone);
 
-    quint32 insertTelegramChatId(quint32 telegramChatId);
-
     TelegramNamespace::MessageFlags getPublicMessageFlags(quint32 flags);
 
     struct TypingStatus {

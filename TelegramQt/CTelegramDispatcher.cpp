@@ -2495,13 +2495,6 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     }
 }
 
-/* Return public chat id */
-quint32 CTelegramDispatcher::insertTelegramChatId(quint32 telegramChatId)
-{
-    m_chatIds.append(telegramChatId);
-    return m_chatIds.count();
-}
-
 // Basically we just revert Unread and Read flag.
 TelegramNamespace::MessageFlags CTelegramDispatcher::getPublicMessageFlags(quint32 flags)
 {
