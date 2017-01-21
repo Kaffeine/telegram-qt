@@ -6,13 +6,20 @@ include(options.pri)
 
 TEMPLATE = subdirs
 SUBDIRS = TelegramQt
-SUBDIRS += testApp
-CONFIG += ordered
 
-contains(options, developer-build) {
-    SUBDIRS += TelegramQt/tests
-    SUBDIRS += TelegramQt/generator
-    SUBDIRS += TelegramQt/generator-ng
+isEmpty(BUILD_ONLY_LIBRARY) {
+    BUILD_ONLY_LIBRARY = "false"
+}
+
+!equals(BUILD_ONLY_LIBRARY, "true") {
+    SUBDIRS += testApp
+    CONFIG += ordered
+
+    contains(options, developer-build) {
+        SUBDIRS += TelegramQt/tests
+        SUBDIRS += TelegramQt/generator
+        SUBDIRS += TelegramQt/generator-ng
+    }
 }
 
 OTHER_FILES += CMakeLists.txt
