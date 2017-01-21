@@ -42,7 +42,8 @@ QString messageDeliveryStatusStr(CMessageModel::SMessage::Status status)
 
 CMessageModel::CMessageModel(CTelegramCore *backend, QObject *parent) :
     QAbstractTableModel(parent),
-    m_backend(backend)
+    m_backend(backend),
+    m_contactsModel(nullptr)
 {
     connect(m_backend, SIGNAL(sentMessageIdReceived(quint64,quint32)),
             SLOT(setResolvedMessageId(quint64,quint32)));
@@ -51,6 +52,11 @@ CMessageModel::CMessageModel(CTelegramCore *backend, QObject *parent) :
             SLOT(setMessageInboxRead(TelegramNamespace::Peer,quint32)));
     connect(m_backend, SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)),
             SLOT(setMessageOutboxRead(TelegramNamespace::Peer,quint32)));
+}
+
+void CMessageModel::setContactsModel(CContactModel *model)
+{
+    m_contactsModel = model;
 }
 
 QVariant CMessageModel::headerData(int section, Qt::Orientation orientation, int role) const

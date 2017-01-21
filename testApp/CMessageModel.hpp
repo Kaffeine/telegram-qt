@@ -23,6 +23,7 @@
 #include "TelegramNamespace.hpp"
 
 class CTelegramCore;
+class CContactModel;
 
 class CMessageModel : public QAbstractTableModel
 {
@@ -78,6 +79,7 @@ public:
     };
 
     explicit CMessageModel(CTelegramCore *backend, QObject *parent = nullptr);
+    void setContactsModel(CContactModel *model);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -100,6 +102,7 @@ public slots:
 
 private:
     CTelegramCore *m_backend;
+    CContactModel *m_contactsModel;
     QList<SMessage> m_messages;
 
 };
