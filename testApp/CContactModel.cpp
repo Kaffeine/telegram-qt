@@ -331,6 +331,16 @@ const SContact *CContactModel::contactAt(int index) const
     return &m_contacts[index];
 }
 
+const SContact *CContactModel::getContact(quint32 id) const
+{
+    int index = indexOfContact(id);
+    if (index < 0) {
+        return nullptr;
+    }
+
+    return contactAt(index);
+}
+
 QVector<quint32> CContactModel::contacts() const
 {
     QVector<quint32> ids;

@@ -70,6 +70,7 @@ public:
     int indexOfContact(const QString &phone) const;
 
     const SContact *contactAt(int index) const;
+    const SContact *getContact(quint32 id) const;
 
     QVector<quint32> contacts() const;
     QString contactAt(int index, bool addName) const;
