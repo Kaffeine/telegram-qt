@@ -2277,6 +2277,23 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
         }
             return true;
             break;
+        case TLValue::MessagesGetChats:
+        {
+            const QByteArray data = m_submittedPackages.value(id);
+            CTelegramStream stream(data);
+
+            TLValue request;
+            stream >> request;
+            TLVector<quint32> ids;
+            stream >> ids;
+
+            if (ids.count() != 1) {
+                qDebug() << "Trying to restore by requesting chat one by one";
+                foreach (const quint32 id, ids) {
+                    messagesGetChats(TLVector<quint32>() << id);
+                }
+            }
+        }
         default:
             break;
         }
