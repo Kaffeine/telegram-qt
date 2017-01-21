@@ -112,6 +112,14 @@ QVariant CMessageModel::data(const QModelIndex &index, int role) const
                 return m_messages.at(messageIndex).mediaData;
             }
             break;
+        case Contact:
+            if (m_contactsModel) {
+                const SContact *contact = m_contactsModel->getContact(m_messages.at(messageIndex).fromId);
+                if (contact) {
+                    return contact->avatar;
+                }
+            }
+            break;
         default:
             break;
         }
@@ -136,6 +144,12 @@ QVariant CMessageModel::rowData(quint32 messageIndex, int column) const
     case Peer:
         return QVariant::fromValue(m_messages.at(messageIndex).peer());
     case Contact:
+        if (m_contactsModel) {
+            const SContact *contact = m_contactsModel->getContact(m_messages.at(messageIndex).fromId);
+            if (contact) {
+                return CContactModel::getContactName(*contact);
+            }
+        }
         return m_messages.at(messageIndex).fromId;
     case Direction:
         return (m_messages.at(messageIndex).flags & TelegramNamespace::MessageFlagOut) ? tr("out") : tr("in");
