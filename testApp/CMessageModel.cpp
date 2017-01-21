@@ -124,7 +124,7 @@ QVariant CMessageModel::rowData(quint32 messageIndex, int column) const
     case Peer:
         return QVariant::fromValue(m_messages.at(messageIndex).peer());
     case Contact:
-        return m_messages.at(messageIndex).userId;
+        return m_messages.at(messageIndex).fromId;
     case Direction:
         return (m_messages.at(messageIndex).flags & TelegramNamespace::MessageFlagOut) ? tr("out") : tr("in");
     case Timestamp:

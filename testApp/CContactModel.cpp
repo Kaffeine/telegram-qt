@@ -240,7 +240,6 @@ void CContactModel::setContactAvatar(quint32 id, const QPixmap &avatar)
 
     QModelIndex modelIndex = createIndex(index, Avatar);
     emit dataChanged(modelIndex, modelIndex);
-
 }
 
 void CContactModel::clear()

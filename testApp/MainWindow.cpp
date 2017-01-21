@@ -358,9 +358,9 @@ void MainWindow::whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quin
 
 void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
 {
-    bool groupChatMessage = message.chatId;
+    bool groupChatMessage = message.peer().type != TelegramNamespace::Peer::User;
     if (groupChatMessage) {
-        if (message.chatId != m_activeChatId) {
+        if (message.peer().id != m_activeChatId) {
             return;
         }
     }
@@ -395,12 +395,12 @@ void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
     } else {
         m_messagingModel->addMessage(processedMessage);
 
-        if (!(processedMessage.flags & TelegramNamespace::MessageFlagOut) && (m_contactLastMessageList.value(processedMessage.userId) < processedMessage.id)) {
-            m_contactLastMessageList.insert(processedMessage.userId, processedMessage.id);
+        if (!(processedMessage.flags & TelegramNamespace::MessageFlagOut) && (m_contactLastMessageList.value(processedMessage.peer().id) < processedMessage.id)) {
+            m_contactLastMessageList.insert(processedMessage.peer().id, processedMessage.id);
 
             if (ui->settingsReadMessages->isChecked()) {
                 if (ui->tabWidget->currentWidget() == ui->tabMessaging) {
-                    m_core->setMessageRead(processedMessage.userId, processedMessage.id);
+                    m_core->setMessageRead(processedMessage.peer().id, processedMessage.id);
                 }
             }
         }
@@ -521,13 +521,12 @@ void MainWindow::onFileRequestFinished(quint32 requestId, TelegramNamespace::Rem
     m.text = mediaInfo.caption();
     m.flags = TelegramNamespace::MessageFlagOut;
     m.id64 = m_core->sendMedia(peer, mediaInfo);
+    m.setPeer(peer);
+    m.fromId = m_core->selfId();
 
     if (peer.type == TelegramNamespace::Peer::User) {
-        m.userId = peer.id;
         m_messagingModel->addMessage(m);
     } else {
-        m.chatId = peer.id;
-        m.userId = m_core->selfId();
         m_chatMessagingModel->addMessage(m);
     }
 }
@@ -867,7 +866,7 @@ void MainWindow::on_deleteContact_clicked()
 void MainWindow::on_messagingSendButton_clicked()
 {
     CMessageModel::SMessage m;
-    m.userId = m_activeContactId; //ui->messagingContactIdentifier->text();
+    m.setPeer(TelegramNamespace::Peer::fromUserId(m_activeContactId)); //ui->messagingContactIdentifier->text();
     m.type = TelegramNamespace::MessageTypeText;
     m.text = ui->messagingMessage->text();
     m.flags = TelegramNamespace::MessageFlagOut;
@@ -880,20 +879,20 @@ void MainWindow::on_messagingSendButton_clicked()
 
 void MainWindow::on_messagingAttachButton_clicked()
 {
-    sendMedia(TelegramNamespace::Peer(m_activeContactId));
+    sendMedia(TelegramNamespace::Peer::fromUserId(m_activeContactId));
 }
 
 void MainWindow::on_groupChatAttachButton_clicked()
 {
-    sendMedia(TelegramNamespace::Peer(m_activeChatId, TelegramNamespace::Peer::Chat));
+    sendMedia(TelegramNamespace::Peer::fromChatId(m_activeChatId));
 }
 
 void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
 {
     if (!arg1.isEmpty()) {
-        m_core->setTyping(m_activeContactId, TelegramNamespace::MessageActionTyping);
+        m_core->setTyping(TelegramNamespace::Peer::fromUserId(m_activeContactId), TelegramNamespace::MessageActionTyping);
     } else {
-        m_core->setTyping(m_activeContactId, TelegramNamespace::MessageActionNone);
+        m_core->setTyping(TelegramNamespace::Peer::fromUserId(m_activeContactId), TelegramNamespace::MessageActionNone);
     }
 }
 
@@ -1014,8 +1013,8 @@ void MainWindow::on_groupChatAddContact_clicked()
 void MainWindow::on_groupChatSendButton_clicked()
 {
     CMessageModel::SMessage m;
-    m.chatId = m_activeChatId;
-    m.userId = m_core->selfId();
+    m.setPeer(TelegramNamespace::Peer::fromChatId(m_activeChatId));
+    m.fromId = m_core->selfId();
     m.type = TelegramNamespace::MessageTypeText;
     m.text = ui->groupChatMessage->text();
     m.flags = TelegramNamespace::MessageFlagOut;
