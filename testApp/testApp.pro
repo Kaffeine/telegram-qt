@@ -6,8 +6,8 @@ TEMPLATE = app
 INCLUDEPATH += $$PWD/../TelegramQt
 
 LIBS += -lssl -lcrypto -lz
-LIBS += -lTelegramQt
 LIBS += -L$$OUT_PWD/../TelegramQt
+LIBS += -lTelegramQt$${QT_MAJOR_VERSION}
 
 TARGET = testApp
 TEMPLATE = app

@@ -2,7 +2,7 @@
 QT = core network
 
 TEMPLATE = lib
-TARGET   = TelegramQt
+TARGET   = TelegramQt$${QT_MAJOR_VERSION}
 VERSION = 0.2.0
 
 include(../options.pri)
