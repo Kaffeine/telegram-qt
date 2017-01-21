@@ -347,7 +347,11 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
 //            copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
 //            copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
 
-            membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(member.type).arg(member.name));
+            if (member.dependOnFlag() && (member.type == QLatin1String("TLTrue"))) {
+                membersCode.append(QString("%1bool %2() const { return %3 & 1 << %4; }\n").arg(spacing).arg(member.name).arg(member.flagMember).arg(member.flagBit));
+            } else {
+                membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(member.type).arg(member.name));
+            }
 
             if (!podTypes.contains(member.type)) {
                 continue;
@@ -503,7 +507,11 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
         code.append(QString("%1case %2::%3:\n").arg(spacing).arg(tlValueName).arg(subType.name));
 
         foreach (const TLParam &member, subType.members) {
-            code += doubleSpacing + QString("d << \"%1:\" << type.%1;\n").arg(member.name);
+            if (member.dependOnFlag() && (member.type == QLatin1String("TLTrue"))) {
+                code += doubleSpacing + QString("d << \"%1:\" << type.%1();\n").arg(member.name);
+            } else {
+                code += doubleSpacing + QString("d << \"%1:\" << type.%1;\n").arg(member.name);
+            }
         }
 
         code += doubleSpacing + QLatin1String("break;\n");
