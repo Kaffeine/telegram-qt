@@ -1894,22 +1894,12 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
         apiMessage.fwdTimestamp = message.fwdDate;
     }
 
-    switch (message.toId.tlType) {
-    case TLValue::PeerChat:
-        apiMessage.setPeer(TelegramNamespace::Peer::fromChatId(message.toId.chatId));
-        break;
-    case TLValue::PeerUser:
-        if (messageFlags & TelegramNamespace::MessageFlagOut) {
-            apiMessage.setPeer(TelegramNamespace::Peer::fromUserId(message.toId.userId));
-        } else {
-            apiMessage.setPeer(TelegramNamespace::Peer::fromUserId(message.fromId));
-        }
-        break;
-    default:
+    const TelegramNamespace::Peer peer = peerToPublicPeer(message.toId);
+    if (!peer.isValid()) {
         qWarning() << Q_FUNC_INFO << "Unknown peer type!";
         return;
     }
-
+    apiMessage.setPeer(peer);
     apiMessage.fromId = message.fromId;
     apiMessage.type = messageType;
     apiMessage.text = message.message;
