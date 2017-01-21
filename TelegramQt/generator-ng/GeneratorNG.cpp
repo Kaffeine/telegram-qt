@@ -880,13 +880,14 @@ void GeneratorNG::generate()
 
     QStringList vectorUsedForRead;
     getUsedAndVectorTypes(usedTypes, vectorUsedForRead);
-    foreach (const QString &str, vectorUsedForRead) {
-        codeStreamReadTemplateInstancing.append(generateStreamReadVectorTemplate(str));
-    }
-
     getUsedAndVectorTypes(typesUsedForWrite, vectorUsedForWrite);
+
     foreach (const QString &str, vectorUsedForWrite) {
         codeStreamWriteTemplateInstancing.append(generateStreamWriteVectorTemplate(str));
+    }
+
+    foreach (const QString &str, vectorUsedForRead) {
+        codeStreamReadTemplateInstancing.append(generateStreamReadVectorTemplate(str));
     }
 
     codeOfTLValues.append(QLatin1String("        // Types\n"));
