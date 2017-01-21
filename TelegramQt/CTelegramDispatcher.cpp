@@ -2103,8 +2103,6 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenContactListChanged(QVector<quint32>,QVector<quint32>)));
             connect(connection, SIGNAL(updatesReceived(TLUpdates,quint64)),
                     SLOT(onUpdatesReceived(TLUpdates,quint64)));
-            connect(connection, SIGNAL(messageSentInfoReceived(quint64,TLMessagesSentMessage)),
-                    SLOT(whenMessageSentInfoReceived(quint64,TLMessagesSentMessage)));
             connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
                     SLOT(whenMessagesHistoryReceived(TLMessagesMessages)));
             connect(connection, SIGNAL(messagesDialogsReceived(TLMessagesDialogs,quint32,quint32,quint32)),
