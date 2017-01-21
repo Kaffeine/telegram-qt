@@ -69,18 +69,19 @@ OTHER_FILES += CMakeLists.txt
 
 # Installation
 public_headers.files = $$PUBLIC_HEADERS
-public_headers.path = $$INSTALL_INCLUDE_DIR/telegram-qt$${QT_MAJOR_VERSION}/TelegramQt
+public_headers.path = $$INSTALL_INCLUDE_DIR/TelegramQt$${QT_MAJOR_VERSION}/TelegramQt
 
-target.path = $$INSTALL_LIBDIR
+target.path = $$INSTALL_LIB_DIR
 INSTALLS += public_headers target
 
 # pkg-config support
 CONFIG += create_pc create_prl no_install_prl
 
 QMAKE_PKGCONFIG_NAME = TelegramQt
+QMAKE_PKGCONFIG_FILE = TelegramQt$${QT_MAJOR_VERSION}
 QMAKE_PKGCONFIG_DESCRIPTION = Qt-based library for Telegram network
 QMAKE_PKGCONFIG_PREFIX = $$INSTALL_PREFIX
-QMAKE_PKGCONFIG_LIBDIR = $$INSTALL_LIBDIR
-QMAKE_PKGCONFIG_INCDIR = $$INSTALL_INCLUDE_DIR/telegram-qt$${QT_MAJOR_VERSION}
+QMAKE_PKGCONFIG_LIBDIR = $$INSTALL_LIB_DIR
+QMAKE_PKGCONFIG_INCDIR = $$INSTALL_INCLUDE_DIR/TelegramQt$${QT_MAJOR_VERSION}
 QMAKE_PKGCONFIG_DESTDIR = pkgconfig
 unix:QMAKE_CLEAN += -r pkgconfig lib$${TARGET}.prl
