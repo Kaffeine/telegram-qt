@@ -70,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->groupChatContactPhone->setCompleter(comp);
 
     connect(ui->secretOpenFile, &QAbstractButton::clicked, this, &MainWindow::loadSecretFromBrowsedFile);
+    connect(ui->getSecretInfo, &QAbstractButton::clicked, this, &MainWindow::getConnectionSecretInfo);
 
     // Telepathy Morse app info
     CAppInformation appInfo;
@@ -682,7 +683,7 @@ void MainWindow::on_signButton_clicked()
     }
 }
 
-void MainWindow::on_getSecretInfo_clicked()
+void MainWindow::getConnectionSecretInfo()
 {
     ui->secretInfo->setPlainText(m_core->connectionSecretInfo().toHex());
 }
@@ -1141,14 +1142,23 @@ void MainWindow::on_contactListTable_clicked(const QModelIndex &index)
 
 void MainWindow::on_secretSaveAs_clicked()
 {
-    const QString fileName = QFileDialog::getSaveFileName(this, tr("Save secret info..."), QString(), tr("Telegram secret files (*.tgsecret)"));
+    static const auto secretFileNameExtension = QStringLiteral(".tgsecret");
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save secret info..."), QString(), tr("Telegram secret files (*%1)").arg(secretFileNameExtension));
     if (fileName.isEmpty()) {
         return;
+    }
+
+    if (!fileName.endsWith(secretFileNameExtension)) {
+        fileName += secretFileNameExtension;
     }
 
     QFile file(fileName);
     if (!file.open(QIODevice::WriteOnly)) {
         return;
+    }
+
+    if (ui->secretInfo->toPlainText().isEmpty()) {
+        getConnectionSecretInfo();
     }
 
     file.write(ui->secretInfo->toPlainText().toLatin1());

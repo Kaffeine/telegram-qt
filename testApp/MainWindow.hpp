@@ -90,7 +90,7 @@ protected slots:
 
     void on_signButton_clicked();
 
-    void on_getSecretInfo_clicked();
+    void getConnectionSecretInfo();
 
     void on_addContact_clicked();
     void on_deleteContact_clicked();
