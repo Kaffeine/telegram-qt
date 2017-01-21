@@ -327,6 +327,7 @@ protected:
     void setUpdateState(quint32 pts, quint32 seq, quint32 date);
 
     void ensureMaxMessageId(quint32 id);
+    void updateSentMessageId(quint64 randomId, quint32 resolvedId);
 
     void checkStateAndCallGetDifference();
     void tryNextDcAddress();

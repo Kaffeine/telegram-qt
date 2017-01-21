@@ -1610,7 +1610,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         processMessageReceived(update.message);
         break;
     case TLValue::UpdateMessageID:
-        emit sentMessageIdReceived(update.randomId, update.id);
+        updateSentMessageId(update.randomId, update.id);
         break;
 //    case TLValue::UpdateReadMessages:
 //        foreach (quint32 messageId, update.messages) {
@@ -2535,7 +2535,7 @@ void CTelegramDispatcher::onUpdatesReceived(const TLUpdates &updates, quint64 id
             qDebug() << Q_FUNC_INFO << "Sent message id not found";
         } else {
             const quint64 randomId = m_rpcIdToMessageRandomIdMap.take(id);
-            emit sentMessageIdReceived(randomId, updates.id);
+            updateSentMessageId(randomId, updates.id);
         }
         break;
     default:
@@ -2704,6 +2704,13 @@ void CTelegramDispatcher::ensureMaxMessageId(quint32 id)
     if (m_maxMessageId < id) {
         m_maxMessageId = id;
     }
+}
+
+void CTelegramDispatcher::updateSentMessageId(quint64 randomId, quint32 resolvedId)
+{
+    qDebug() << Q_FUNC_INFO << "Sent message id received:" << resolvedId << "is the id of message" << randomId;
+    ensureMaxMessageId(resolvedId);
+    emit sentMessageIdReceived(randomId, resolvedId);
 }
 
 void CTelegramDispatcher::checkStateAndCallGetDifference()
