@@ -1893,23 +1893,31 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
         apiMessage.fwdTimestamp = message.fwdDate;
     }
 
-    if (message.toId.tlType == TLValue::PeerChat) {
-        apiMessage.chatId = message.toId.chatId;
-        apiMessage.userId = message.fromId;
-    } else if (messageFlags & TelegramNamespace::MessageFlagOut) {
-        apiMessage.userId = message.toId.userId;
-    } else {
-        apiMessage.userId = message.fromId;
+    switch (message.toId.tlType) {
+    case TLValue::PeerChat:
+        apiMessage.setPeer(TelegramNamespace::Peer::fromChatId(message.toId.chatId));
+        break;
+    case TLValue::PeerUser:
+        if (messageFlags & TelegramNamespace::MessageFlagOut) {
+            apiMessage.setPeer(TelegramNamespace::Peer::fromUserId(message.toId.userId));
+        } else {
+            apiMessage.setPeer(TelegramNamespace::Peer::fromUserId(message.fromId));
+        }
+        break;
+    default:
+        qWarning() << Q_FUNC_INFO << "Unknown peer type!";
+        return;
     }
 
+    apiMessage.fromId = message.fromId;
     apiMessage.type = messageType;
     apiMessage.text = message.message;
     apiMessage.id = message.id;
     apiMessage.timestamp = message.date;
     apiMessage.flags = messageFlags;
 
-    if (!m_users.contains(apiMessage.userId) && !m_askedUserIds.contains(apiMessage.userId)) {
-        m_askedUserIds.append(apiMessage.userId);
+    if (!m_users.contains(apiMessage.fromId) && !m_askedUserIds.contains(apiMessage.fromId)) {
+        m_askedUserIds.append(apiMessage.fromId);
 
         activeConnection()->messagesGetDialogs(0, 1);
     }

@@ -150,6 +150,15 @@ public:
         {
             return (p.type == type) && (p.id == id);
         }
+
+        static Peer fromUserId(quint32 id)
+        {
+            return Peer(id, User);
+        }
+        static Peer fromChatId(quint32 id)
+        {
+            return Peer(id, Chat);
+        }
     };
 
     struct DcOption
@@ -185,8 +194,6 @@ public:
     struct Message
     {
         Message() :
-            userId(0),
-            chatId(0),
             forwardContactId(0),
             id(0),
             timestamp(0),
@@ -197,17 +204,11 @@ public:
 
         }
 
-        Peer peer() const
-        {
-            if (chatId) {
-                return Peer(chatId, Peer::Chat);
-            } else {
-                return Peer(userId, Peer::User);
-            }
-        }
+        quint32 fromId; // Telegram user id
 
-        quint32 userId; // Actual telegram user id
-        quint32 chatId; // Public (not protocol) chat id
+        const Peer peer() const { return m_peer; }
+        void setPeer(const Peer &peer) { m_peer = peer; }
+
         quint32 forwardContactId;
         QString text;
         quint32 id;
@@ -215,6 +216,9 @@ public:
         quint32 fwdTimestamp;
         MessageType type;
         MessageFlags flags;
+
+    private:
+        Peer m_peer;
     };
 
     class MessageMediaInfo
