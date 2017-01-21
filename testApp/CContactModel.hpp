@@ -69,6 +69,7 @@ public:
     int indexOfContact(quint32 id) const;
     int indexOfContact(const QString &phone) const;
 
+    bool hasContact(quint32 contactId) const;
     const SContact *contactAt(int index) const;
     const SContact *getContact(quint32 id) const;
 

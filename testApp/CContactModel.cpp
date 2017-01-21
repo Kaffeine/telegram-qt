@@ -169,9 +169,26 @@ QVariant CContactModel::data(int contactIndex, CContactModel::Column column) con
 
 void CContactModel::addContact(quint32 id)
 {
+    if (hasContact(id)) {
+        return;
+    }
+    qDebug() << Q_FUNC_INFO << id;
+
     beginInsertRows(QModelIndex(), m_contacts.count(), m_contacts.count());
     m_contacts.append(SContact());
     m_backend->getUserInfo(&m_contacts.last(), id);
+
+    const QString token = m_backend->contactAvatarToken(id);
+    if (!token.isEmpty()) {
+        QPixmap avatar;
+
+        if (QPixmapCache::find(token, &avatar)) {
+            m_contacts.last().avatar = avatar;
+        } else {
+            m_backend->requestContactAvatar(id);
+        }
+    }
+
     endInsertRows();
 }
 
@@ -201,6 +218,11 @@ void CContactModel::setContactList(const QVector<quint32> &newContactList)
         m_backend->getUserInfo(&m_contacts.last(), userId);
 
         const QString token = m_backend->contactAvatarToken(userId);
+
+        if (token.isEmpty()) {
+            continue;
+        }
+
         QPixmap avatar;
 
         if (QPixmapCache::find(token, &avatar)) {
@@ -208,7 +230,6 @@ void CContactModel::setContactList(const QVector<quint32> &newContactList)
         } else {
             m_backend->requestContactAvatar(userId);
         }
-
     }
 
     endResetModel();
@@ -320,6 +341,11 @@ int CContactModel::indexOfContact(const QString &phone) const
     }
 
     return -1;
+}
+
+bool CContactModel::hasContact(quint32 contactId) const
+{
+    return contacts().contains(contactId);
 }
 
 const SContact *CContactModel::contactAt(int index) const
