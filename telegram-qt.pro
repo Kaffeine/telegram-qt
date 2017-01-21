@@ -1,5 +1,7 @@
 include(options.pri)
 
+message("It is highly recommended to use CMake instead of QMake for packaging!")
+
 !greaterThan(QT_MAJOR_VERSION, 4) {
     error(This project requires Qt5)
 }
