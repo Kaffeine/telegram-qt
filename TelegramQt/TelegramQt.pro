@@ -60,8 +60,8 @@ HEADERS = CTelegramCore.hpp \
     TLValues.hpp
 
 contains(options, developer-build) {
-    SOURCES += TLTypesDebug.cpp
-    HEADERS += TLTypesDebug.hpp
+    SOURCES += TLTypesDebug.cpp TLRpcDebug.cpp
+    HEADERS += TLTypesDebug.hpp TLRpcDebug.hpp
     DEFINES += DEVELOPER_BUILD
 }
 

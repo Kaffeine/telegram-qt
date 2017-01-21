@@ -58,8 +58,8 @@ include_directories(
 )
 
 if (DEVELOPER_BUILD)
-    list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp)
-    list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp)
+    list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp TLRpcDebug.cpp)
+    list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp TLRpcDebug.hpp)
     add_definitions(-DDEVELOPER_BUILD)
 endif()
 

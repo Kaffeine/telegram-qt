@@ -248,7 +248,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     replacingHelper(QLatin1String("../TLTypesDebug.hpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDeclarations);
     replacingHelper(QLatin1String("../TLTypesDebug.cpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDefinitions);
 
-    replacingHelper(QLatin1String("../TLRpcDebug.cpp"), 4, QLatin1String("RPC call debug cases"), generator.codeDebugRpcParse);
+    replacingHelper(QLatin1String("../TLRpcDebug.cpp"), 4, QLatin1String("RPC debug cases"), generator.codeDebugRpcParse);
 
     printf("Spec file successfully used for generation.\n");
     return NoError;

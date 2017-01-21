@@ -66,6 +66,11 @@ template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessage> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessageGroup> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLUpdate> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLEncryptedMessage> &v);
+template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputPrivacyRule> &v);
+template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputChannel> &v);
+template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputContact> &v);
+template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputAppEvent> &v);
+template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputPhoto> &v);
 // End of generated vector read templates instancing
 
 // Generated vector write templates instancing
