@@ -152,6 +152,10 @@ QString formatMethodParams(const TLMethod &method)
     QString result;
 
     foreach (const TLParam &param, method.params) {
+        if (param.dependOnFlag() && (param.type == QLatin1String("TLTrue"))) {
+            continue;
+        }
+
         if (!result.isEmpty()) {
             result += QLatin1String(", ");
         }
@@ -413,6 +417,9 @@ QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type)
 
         foreach (const TLParam &member, subType.members) {
             if (member.dependOnFlag()) {
+                if (member.type == QLatin1String("TLTrue")) {
+                    continue;
+                }
                 code.append(doubleSpacing + QString("if (result.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit));
                 code.append(doubleSpacing + spacing + QString("*this >> result.%1;\n").arg(member.name));
                 code.append(doubleSpacing + QLatin1Literal("}\n"));
@@ -451,6 +458,9 @@ QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
 
         foreach (const TLParam &member, subType.members) {
             if (member.dependOnFlag()) {
+                if (member.type == QLatin1String("TLTrue")) {
+                    continue;
+                }
                 code.append(doubleSpacing + QString("if (%1.%2 & 1 << %3) {\n").arg(argName).arg(member.flagMember).arg(member.flagBit));
                 code.append(doubleSpacing + spacing + QString("*this << %1.%2;\n").arg(argName).arg(member.name));
                 code.append(doubleSpacing + QLatin1Literal("}\n"));
@@ -544,7 +554,11 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
     foreach (const TLParam &param, method.params) {
         if (param.dependOnFlag()) {
             result += spacing + QString("if (%1 & 1 << %2) {\n").arg(param.flagMember).arg(param.flagBit);
-            result += spacing + spacing + QString("outputStream << %1;\n").arg(param.name);
+            if (param.type == QLatin1String("TLTrue")) {
+                result += spacing + spacing + QString("outputStream << %1();\n").arg(param.type);
+            } else {
+                result += spacing + spacing + QString("outputStream << %1;\n").arg(param.name);
+            }
             result += spacing + QLatin1String("}\n");
         } else {
             result += spacing + QString("outputStream << %1;\n").arg(param.name);
