@@ -7,3 +7,5 @@ CONFIG   -= app_bundle
 
 SOURCES = GeneratorNG.cpp main.cpp
 HEADERS = GeneratorNG.hpp
+
+OTHER_FILES = *.tl
