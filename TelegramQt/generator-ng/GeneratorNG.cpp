@@ -886,6 +886,11 @@ void GeneratorNG::generate()
         codeStreamWriteTemplateInstancing.append(generateStreamWriteVectorTemplate(str));
     }
 
+    foreach (const QString &vector, vectorUsedForWrite) {
+        if (!vectorUsedForRead.contains(vector)) {
+            vectorUsedForRead.append(vector);
+        }
+    }
     foreach (const QString &str, vectorUsedForRead) {
         codeStreamReadTemplateInstancing.append(generateStreamReadVectorTemplate(str));
     }
