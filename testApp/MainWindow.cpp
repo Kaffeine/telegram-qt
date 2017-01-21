@@ -21,6 +21,7 @@
 #include "CAppInformation.hpp"
 #include "CTelegramCore.hpp"
 #include "CContactModel.hpp"
+#include "CContactsFilterModel.hpp"
 #include "CMessageModel.hpp"
 #include "CChatInfoModel.hpp"
 
@@ -46,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_core(new CTelegramCore(this)),
     m_passwordInfo(nullptr),
     m_contactsModel(new CContactModel(m_core, this)),
+    m_contactListModel(new CContactsFilterModel(this)),
     m_messagingModel(new CMessageModel(m_core, this)),
     m_chatContactsModel(new CContactModel(m_core, this)),
     m_chatMessagingModel(new CMessageModel(m_core, this)),
@@ -57,7 +59,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_appState(AppStateNone)
 {
     ui->setupUi(this);
-    ui->contactListTable->setModel(m_contactsModel);
+    m_contactListModel->setSourceModel(m_contactsModel);
+    ui->contactListTable->setModel(m_contactListModel);
     ui->messagingView->setModel(m_messagingModel);
     ui->groupChatContacts->setModel(m_chatContactsModel);
     ui->groupChatChatsList->setModel(m_chatInfoModel);
@@ -267,7 +270,7 @@ void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError erro
 
 void MainWindow::whenContactListChanged()
 {
-    setContactList(m_contactsModel, m_core->contactList());
+    m_contactListModel->setFilterList(m_core->contactList());
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
         ui->contactListTable->setRowHeight(i, 64);
     }
@@ -1050,11 +1053,6 @@ void MainWindow::readAllMessages()
     foreach (quint32 contactId, m_contactLastMessageList.keys()) {
         m_core->setMessageRead(contactId, m_contactLastMessageList.value(contactId));
     }
-}
-
-void MainWindow::setContactList(CContactModel *contactsModel, const QVector<quint32> &newContactList)
-{
-    contactsModel->setContactList(newContactList);
 }
 
 void MainWindow::setActiveContact(quint32 userId)

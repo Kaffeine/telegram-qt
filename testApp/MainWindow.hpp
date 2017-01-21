@@ -30,6 +30,7 @@ class MainWindow;
 class CTelegramCore;
 class CContactModel;
 class CMessageModel;
+class CContactsFilterModel;
 class CChatInfoModel;
 
 class QModelIndex;
@@ -128,8 +129,6 @@ protected:
 
     void readAllMessages();
 
-    void setContactList(CContactModel *contactsModel, const QVector<quint32> &newContactList);
-
     void setActiveContact(quint32 userId);
     void setActiveChat(quint32 chatId);
     void updateMessagingContactName();
@@ -168,6 +167,7 @@ private:
     QMap<quint32, TelegramNamespace::Peer> m_uploadingRequests;
 
     CContactModel *m_contactsModel;
+    CContactsFilterModel *m_contactListModel;
     CMessageModel *m_messagingModel;
 
     CContactModel *m_chatContactsModel;
