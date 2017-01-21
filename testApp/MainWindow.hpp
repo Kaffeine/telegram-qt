@@ -66,7 +66,7 @@ protected slots:
     void onPasswordInfoReceived(quint64 requestId);
     void whenUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
     void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
-    void whenContactListChanged();
+    void updateContactList();
     void whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data,
                                       const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
     void whenMessageReceived(const TelegramNamespace::Message &message);
@@ -170,7 +170,7 @@ private:
     CContactsFilterModel *m_contactListModel;
     CMessageModel *m_messagingModel;
 
-    CContactModel *m_chatContactsModel;
+    CContactsFilterModel *m_chatContactsModel;
     CMessageModel *m_chatMessagingModel;
 
     CChatInfoModel *m_chatInfoModel;

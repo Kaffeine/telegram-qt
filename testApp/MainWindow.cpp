@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_contactsModel(new CContactModel(m_core, this)),
     m_contactListModel(new CContactsFilterModel(this)),
     m_messagingModel(new CMessageModel(m_core, this)),
-    m_chatContactsModel(new CContactModel(m_core, this)),
+    m_chatContactsModel(new CContactsFilterModel(this)),
     m_chatMessagingModel(new CMessageModel(m_core, this)),
     m_chatInfoModel(new CChatInfoModel(m_core, this)),
     m_contactSearchResultModel(nullptr),
@@ -62,13 +62,14 @@ MainWindow::MainWindow(QWidget *parent) :
     m_contactListModel->setSourceModel(m_contactsModel);
     ui->contactListTable->setModel(m_contactListModel);
     ui->messagingView->setModel(m_messagingModel);
+    m_chatContactsModel->setSourceModel(m_contactsModel);
     ui->groupChatContacts->setModel(m_chatContactsModel);
     ui->groupChatChatsList->setModel(m_chatInfoModel);
     ui->groupChatMessagingView->setModel(m_chatMessagingModel);
     ui->groupChatMessagingView->hideColumn(CMessageModel::Direction);
 
     m_messagingModel->setContactsModel(m_contactsModel);
-    m_chatMessagingModel->setContactsModel(m_chatContactsModel);
+    m_chatMessagingModel->setContactsModel(m_contactsModel);
 
     QCompleter *comp = new QCompleter(m_contactsModel, this);
     comp->setCompletionColumn(CContactModel::Phone);
@@ -103,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
             SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(contactListChanged()),
-            SLOT(whenContactListChanged()));
+            SLOT(updateContactList()));
     connect(m_core, SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
             SLOT(whenMessageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
     connect(m_core, SIGNAL(messageReceived(TelegramNamespace::Message)),
@@ -122,6 +123,9 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(onFileRequestFinished(quint32,TelegramNamespace::RemoteFile)));
     connect(m_core, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
             SLOT(onUserNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
+
+    connect(m_core, &CTelegramCore::selfUserAvailable, m_contactsModel, &CContactModel::addContact);
+    connect(m_core, &CTelegramCore::userInfoReceived, m_contactsModel, &CContactModel::addContact);
 
     connect(m_chatInfoModel, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
     connect(m_chatInfoModel, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
@@ -182,6 +186,8 @@ void MainWindow::whenConnectionStateChanged(TelegramNamespace::ConnectionState s
         foreach (quint32 chatId, m_core->chatList()) {
             m_chatInfoModel->addChat(chatId);
         }
+
+        updateContactList();
 
         ui->phoneNumber->setText(m_core->selfPhone());
     {
@@ -268,7 +274,7 @@ void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError erro
     ui->confirmationCode->setFocus();
 }
 
-void MainWindow::whenContactListChanged()
+void MainWindow::updateContactList()
 {
     m_contactListModel->setFilterList(m_core->contactList());
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
@@ -419,7 +425,7 @@ void MainWindow::whenContactChatMessageActionChanged(quint32 chatId, quint32 use
         return;
     }
 
-    m_chatContactsModel->setTypingStatus(userId, action);
+    m_contactsModel->setTypingStatus(userId, action);
 }
 
 void MainWindow::whenContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action)
@@ -476,7 +482,7 @@ void MainWindow::updateActiveChat()
         qDebug() << Q_FUNC_INFO << "Unable to get chat participants. Invalid chat?";
     }
 
-    m_chatContactsModel->setContactList(participants);
+    m_chatContactsModel->setFilterList(participants);
 
     for (int i = 0; i < participants.count(); ++i) {
         ui->groupChatContacts->setRowHeight(i, 64);
@@ -724,7 +730,7 @@ void MainWindow::setChatCreationMode()
 
     ui->groupChatAddContactForwardMessages->hide();
 
-    m_chatContactsModel->clear();
+    m_chatContactsModel->setFilterList(QVector<quint32>());
     updateGroupChatAddContactButtonText();
 }
 
@@ -934,7 +940,8 @@ void MainWindow::on_setStatusOffline_clicked()
 
 void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
 {
-    const QModelIndex idIndex = m_contactsModel->index(index.row(), CContactModel::Id);
+    int row = m_contactListModel->mapToSource(index).row();
+    const QModelIndex idIndex = m_contactsModel->index(row, CContactModel::Id);
 
     setActiveContact(m_contactsModel->data(idIndex).toUInt());
     ui->tabWidget->setCurrentWidget(ui->tabMessaging);
@@ -971,7 +978,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 void MainWindow::on_groupChatCreateChat_clicked()
 {
     if (m_chatCreationMode) {
-        m_pendingChatId = m_core->createChat(m_chatContactsModel->contacts(), ui->groupChatName->text());
+        m_pendingChatId = m_core->createChat(m_chatContactsModel->filter(), ui->groupChatName->text());
         qDebug() << Q_FUNC_INFO << "pending id:" << m_pendingChatId;
         unsetChatCreationMode(0);
     } else {
@@ -996,16 +1003,14 @@ void MainWindow::on_groupChatAddContact_clicked()
 
     quint32 contactId = m_contactsModel->data(index, CContactModel::Id).toUInt();
 
-    bool add = m_chatContactsModel->indexOfContact(contactId) < 0;
-
     if (m_chatCreationMode) {
-        if (add) {
+        if (m_chatContactsModel->hasContact(contactId)) {
             m_chatContactsModel->addContact(contactId);
         } else {
             m_chatContactsModel->removeContact(contactId);
         }
     } else {
-        if (add) {
+        if (m_chatContactsModel->hasContact(contactId)) {
             m_core->addChatUser(m_activeChatId, contactId, ui->groupChatAddContactForwardMessages->value());
         } else {
 //            m_core->removeChatUser(m_activeChatId, contact);
@@ -1193,8 +1198,8 @@ void MainWindow::loadSecretFromBrowsedFile()
 void MainWindow::updateGroupChatAddContactButtonText()
 {
     const QString contact = ui->groupChatContactPhone->text();
-
-    bool add = contact.isEmpty() || m_chatContactsModel->indexOfContact(contact) < 0;
+    const int index = m_contactsModel->indexOfContact(contact);
+    const bool add = contact.isEmpty() || (index < 0);
 
     if (add) {
         ui->groupChatAddContact->setText(tr("Add contact"));
