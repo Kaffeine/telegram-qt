@@ -99,9 +99,15 @@ QVariant CMessageModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
-    if ((role == Qt::DecorationRole) && (section == Message)) {
-        if (m_messages.at(messageIndex).mediaData.isValid()) {
-            return m_messages.at(messageIndex).mediaData;
+    if (role == Qt::DecorationRole) {
+        switch (section) {
+        case Message:
+            if (m_messages.at(messageIndex).mediaData.isValid()) {
+                return m_messages.at(messageIndex).mediaData;
+            }
+            break;
+        default:
+            break;
         }
 
         return QVariant();
