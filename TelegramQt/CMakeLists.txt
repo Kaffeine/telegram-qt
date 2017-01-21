@@ -130,3 +130,11 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}ConfigVe
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/TelegramQt${QT_VERSION_MAJOR}"
     COMPONENT Devel
 )
+
+# pkg-config files
+configure_file(TelegramQt.pc.in "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}.pc" @ONLY)
+
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}.pc"
+    DESTINATION "${TELEGRAM_QT_LIB_DIR}/pkgconfig"
+    COMPONENT pkgconfig
+)
