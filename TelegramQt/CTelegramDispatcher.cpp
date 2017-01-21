@@ -529,6 +529,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     m_deltaTime = deltaTime;
 
     clearMainConnection();
+    m_wantedActiveDc = dcInfo.id;
     m_mainConnection = createConnection(dcInfo);
     m_mainConnection->setAuthKey(authKey);
     m_mainConnection->setServerSalt(serverSalt);
