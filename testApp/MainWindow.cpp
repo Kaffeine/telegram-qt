@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->messagingContactIdentifier->setCompleter(comp);
     ui->groupChatContactPhone->setCompleter(comp);
 
-    connect(ui->secretOpenFile, SIGNAL(clicked()), SLOT(loadSecretFromBrowsedFile()));
+    connect(ui->secretOpenFile, &QAbstractButton::clicked, this, &MainWindow::loadSecretFromBrowsedFile);
 
     // Telepathy Morse app info
     CAppInformation appInfo;
