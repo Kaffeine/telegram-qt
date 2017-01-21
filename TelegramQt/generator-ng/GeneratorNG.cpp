@@ -573,6 +573,9 @@ QString GeneratorNG::generateDebugRpcParse(const TLMethod &method)
         if (param.dependOnFlag()) {
             return QString();
         }
+        if (param.type.startsWith(QLatin1String("TLType"))) {
+            return QString();
+        }
         result += spacing + spacing + QString("%1 %2;\n").arg(param.type).arg(param.name);
         result += spacing + spacing + QString("stream >> %1;\n").arg(param.name);
         debugLine += QString(" << \"%1\" << %1").arg(param.name);
