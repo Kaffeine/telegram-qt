@@ -44,6 +44,10 @@ QString formatTLValue(const TLValue &val)
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
 
+#ifdef DEVELOPER_BUILD
+#include "TLRpcDebug.hpp"
+#endif
+
 using namespace TelegramUtils;
 
 static const quint32 s_defaultAuthInterval = 15000; // 15 sec
@@ -2218,6 +2222,15 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
         }
         break;
     case 400: // BAD_REQUEST
+#ifdef DEVELOPER_BUILD
+        if (m_submittedPackages.contains(id)) {
+            const QByteArray data = m_submittedPackages.value(id);
+            CTelegramStream outputStream(data);
+            dumpRpc(outputStream);
+        } else {
+            qDebug() << Q_FUNC_INFO << "Submitted package not found";
+        }
+#endif
         switch (request) {
         case TLValue::AuthCheckPassword:
         case TLValue::AuthCheckPhone:
