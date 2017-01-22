@@ -758,6 +758,7 @@ bool GeneratorNG::loadDataFromText(const QByteArray &data)
             continue;
         }
 
+        line = line.section(QLatin1String("//"), 0, 0);
         if (line.simplified().isEmpty() || (line.startsWith(QLatin1String("---")) && line.endsWith(QLatin1String("---")))) {
             continue;
         }
