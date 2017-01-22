@@ -51,12 +51,14 @@ QString ensureGoodName(const QString &name)
             << QStringLiteral("long")
             << QStringLiteral("public")
             << QStringLiteral("private")
+            << QStringLiteral("inline")
                ;
     static const QStringList badNamesReplacers = QStringList()
             << QStringLiteral("latitude")
             << QStringLiteral("longitude")
             << QStringLiteral("isPublic")
             << QStringLiteral("isPrivate")
+            << QStringLiteral("isInline")
                ;
 
     int index = badNames.indexOf(name);
