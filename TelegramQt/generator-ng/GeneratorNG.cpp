@@ -222,7 +222,7 @@ QString formatType(QString type)
 
     if (plainTypes.contains(type)) {
         return nativeTypes.at(plainTypes.indexOf(type));
-    } else if (type.startsWith(QLatin1String("Vector<"))) {
+    } else if (type.startsWith(QLatin1String("Vector<"), Qt::CaseInsensitive)) {
         int firstIndex = type.indexOf(QLatin1Char('<')) + 1;
         int lastIndex = type.indexOf(QLatin1Char('>'));
         QString subType = type.mid(firstIndex, lastIndex - firstIndex);
