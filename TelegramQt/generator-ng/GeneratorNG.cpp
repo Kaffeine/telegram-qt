@@ -809,19 +809,30 @@ bool GeneratorNG::loadDataFromText(const QByteArray &data)
             return false;
         }
 
-        QVector<QStringRef> params = basePart.split(QLatin1Char(' '), QString::SkipEmptyParts);
-        params.removeFirst(); // The first part is predicate name + id.
+        bool skipParams = false;
+        if (basePart.contains('{') && basePart.contains('}')) {
+            const int templateBegin = basePart.indexOf(QLatin1Char('{'));
+            const int templateEnd = basePart.indexOf(QLatin1Char('}'));
+            QStringRef templ = basePart.mid(templateBegin + 1, templateEnd - templateBegin - 1);
+            printf("Read template %s, type %s.\n", templ.toLatin1().constData(), predicateBaseName.toLatin1().constData());
+            skipParams = true;
+        }
 
         QList<TLParam> tlParams;
-        foreach (const QStringRef &paramValue, params) {
-            QVector<QStringRef> nameAndType = paramValue.split(QLatin1Char(':'));
-            const QString paramName = formatMember(nameAndType.first().toString());
-            const QString paramType = formatType(nameAndType.last().toString());
-            QString flagMember;
-            qint8 flagsBit = flagBitForMember(nameAndType.last(), &flagMember);
+        if (!skipParams) {
+            QVector<QStringRef> params = basePart.split(QLatin1Char(' '), QString::SkipEmptyParts);
+            params.removeFirst(); // The first part is predicate name + id.
 
-            tlParams << TLParam(paramName, paramType, flagsBit);
-            tlParams.last().flagMember = flagMember;
+            foreach (const QStringRef &paramValue, params) {
+                QVector<QStringRef> nameAndType = paramValue.split(QLatin1Char(':'));
+                const QString paramName = formatMember(nameAndType.first().toString());
+                const QString paramType = formatType(nameAndType.last().toString());
+                QString flagMember;
+                qint8 flagsBit = flagBitForMember(nameAndType.last(), &flagMember);
+
+                tlParams << TLParam(paramName, paramType, flagsBit);
+                tlParams.last().flagMember = flagMember;
+            }
         }
 
         if (entryType == EntryTypedef) {
