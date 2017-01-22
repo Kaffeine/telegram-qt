@@ -1591,7 +1591,9 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     case TLValue::UpdateReadHistoryInbox:
     case TLValue::UpdateReadHistoryOutbox:
     case TLValue::UpdateDeleteMessages:
-        // Official client also have TLValue::UpdateWebPage here. Why the hell?
+    case TLValue::UpdateWebPage:
+    case TLValue::UpdateNewChannelMessage:
+    case TLValue::UpdateDeleteChannelMessages:
         if (m_updatesState.pts + update.ptsCount != update.pts) {
             qDebug() << "Need inner updates:" << m_updatesState.pts << "+" << update.ptsCount << "!=" << update.pts;
             qDebug() << "Updates delaying is not implemented yet. Recovery via getDifference() in 10 ms";
