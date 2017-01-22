@@ -69,6 +69,7 @@ class GeneratorNG
 public:
     bool loadDataFromJson(const QByteArray &data);
     bool loadDataFromText(const QByteArray &data);
+    bool resolveTypes();
     void generate();
 
     static QString generateTLValuesDefinition(const TLType &type);
@@ -89,7 +90,7 @@ public:
 
     static QString generateDebugRpcParse(const TLMethod &method);
 
-    static QList<TLType> solveTypes(QMap<QString, TLType> types);
+    static QList<TLType> solveTypes(QMap<QString, TLType> types, QMap<QString, TLType> *unresolved = nullptr);
 
     void getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const;
 

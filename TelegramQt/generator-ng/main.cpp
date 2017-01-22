@@ -31,6 +31,7 @@ enum StatusCode {
     InvalidAction,
     InvalidArgument,
     SchemaReadError,
+    UnableToResolveTypes,
     NetworkError,
     ServerError,
     FileAccessError
@@ -230,6 +231,11 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     if (!success) {
         printf("Unable to parse the scheme.\n");
         return SchemaReadError;
+    }
+
+    if (!generator.resolveTypes()) {
+        printf("Unable to resolve types.\n");
+        return UnableToResolveTypes;
     }
 
     generator.generate();

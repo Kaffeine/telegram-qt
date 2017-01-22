@@ -610,7 +610,7 @@ QString GeneratorNG::generateDebugRpcParse(const TLMethod &method)
     return result;
 }
 
-QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types)
+QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types, QMap<QString, TLType> *unresolved)
 {
     QList<TLType> solvedTypes;
     QStringList solvedTypesNames = nativeTypes;
@@ -682,6 +682,10 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types)
                 qDebug() << "Solved:" << typeName;
             }
         }
+    }
+
+    if (unresolved) {
+        (*unresolved) = types;
     }
 
     qDebug() << "Unresolved:" << types.count() << types;
@@ -832,10 +836,19 @@ bool GeneratorNG::loadDataFromText(const QByteArray &data)
     return !m_types.isEmpty() && !m_functions.isEmpty();
 }
 
+bool GeneratorNG::resolveTypes()
+{
+    QMap<QString, TLType> unresolved;
+    m_solvedTypes = solveTypes(m_types, &unresolved);
+
+    if (!unresolved.isEmpty()) {
+        qDebug() << "Unresolved:" << unresolved.count() << unresolved;
+    }
+    return unresolved.isEmpty() && !m_solvedTypes.isEmpty();
+}
+
 void GeneratorNG::generate()
 {
-    m_solvedTypes = solveTypes(m_types);
-
     codeOfTLValues.clear();
     codeOfTLTypes.clear();
     codeStreamReadDeclarations.clear();
