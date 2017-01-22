@@ -793,6 +793,7 @@ bool GeneratorNG::loadDataFromText(const QByteArray &data)
             return false;
         }
 
+        QStringRef predicateBaseName = basePart.left(hashIndex);
         QStringRef predicateValue = basePart.mid(hashIndex + 1);
         int endOfValue = predicateValue.indexOf(QChar(' '));
 
@@ -824,7 +825,7 @@ bool GeneratorNG::loadDataFromText(const QByteArray &data)
         }
 
         if (entryType == EntryTypedef) {
-            const QString predicateName = formatName1stCapital(basePart.left(hashIndex).toString());
+            const QString predicateName = formatName1stCapital(predicateBaseName.toString());
             const QString typeName = formatType(typePart.trimmed().toString());
 
             TLType tlType = m_types.value(typeName);
@@ -838,7 +839,7 @@ bool GeneratorNG::loadDataFromText(const QByteArray &data)
             tlType.subTypes.append(tlSubType);
             m_types.insert(typeName, tlType);
         } else if (entryType == EntryFunction) {
-            const QString functionName = formatName(basePart.left(hashIndex).toString());
+            const QString functionName = formatName(predicateBaseName.toString());
 
             TLMethod tlMethod;
             tlMethod.name = functionName;
