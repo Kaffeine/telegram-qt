@@ -688,7 +688,23 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types, QMap<QString,
         (*unresolved) = types;
     }
 
+#ifdef DEBUG_UNRESOLVED
     qDebug() << "Unresolved:" << types.count() << types;
+
+    foreach(const QString &typeName, types.keys()) {
+        const TLType &type = types.value(typeName);
+
+        foreach (const TLSubType &subType, type.subTypes) {
+            foreach (const TLParam &member, subType.members) {
+                QString memberType = getTypeOrVectorType(member.type);
+
+                if (!solvedTypesNames.contains(memberType)) {
+                    qDebug() << type.name << "subtype" << subType.name << "depends on" << memberType;
+                }
+            }
+        }
+    }
+#endif
 
     return solvedTypes;
 }
