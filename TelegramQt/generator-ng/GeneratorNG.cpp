@@ -780,6 +780,11 @@ bool GeneratorNG::loadDataFromText(const QByteArray &data)
             continue;
         }
 
+        if (line == QLatin1String("---types---")) {
+            entryType = EntryTypedef;
+            continue;
+        }
+
         line = line.section(QLatin1String("//"), 0, 0);
         if (line.simplified().isEmpty() || (line.startsWith(QLatin1String("---")) && line.endsWith(QLatin1String("---")))) {
             continue;
