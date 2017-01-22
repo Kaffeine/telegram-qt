@@ -759,6 +759,10 @@ bool GeneratorNG::loadFromJson(const QByteArray &data)
     m_types = readTypesJson(document);
     m_functions = readFunctionsJson(document);
 
+    m_groups.clear();
+    m_groups.append(m_types.keys());
+    m_groups.append(m_functions.keys());
+
     return !m_types.isEmpty() && !m_functions.isEmpty();
 }
 
@@ -773,8 +777,10 @@ bool GeneratorNG::loadFromText(const QByteArray &data)
 
     m_types.clear();
     m_functions.clear();
+    m_groups.clear();
 
     EntryType entryType = EntryTypedef;
+    m_groups.append(QStringList());
 
     int currentLine = 0;
     while (!input.atEnd()) {
@@ -783,11 +789,17 @@ bool GeneratorNG::loadFromText(const QByteArray &data)
 
         if (line == QLatin1String("---functions---")) {
             entryType = EntryFunction;
+            if (!m_groups.last().isEmpty()) {
+                m_groups.append(QStringList());
+            }
             continue;
         }
 
         if (line == QLatin1String("---types---")) {
             entryType = EntryTypedef;
+            if (!m_groups.last().isEmpty()) {
+                m_groups.append(QStringList());
+            }
             continue;
         }
 
@@ -852,6 +864,9 @@ bool GeneratorNG::loadFromText(const QByteArray &data)
             const QString predicateName = formatName1stCapital(predicateBaseName.toString());
             const QString typeName = formatType(typePart.trimmed().toString());
 
+            if (!m_types.contains(typeName)) {
+                m_groups.last().append(typeName);
+            }
             TLType tlType = m_types.value(typeName);
             tlType.name = typeName;
 
@@ -865,6 +880,9 @@ bool GeneratorNG::loadFromText(const QByteArray &data)
         } else if (entryType == EntryFunction) {
             const QString functionName = formatName(predicateBaseName.toString());
 
+            if (!m_functions.contains(functionName)) {
+                m_groups.last().append(functionName);
+            }
             TLMethod tlMethod;
             tlMethod.name = functionName;
             tlMethod.id = predicateId;
@@ -973,15 +991,37 @@ void GeneratorNG::generate()
         codeStreamReadTemplateInstancing.append(generateStreamReadVectorTemplate(str));
     }
 
-    codeOfTLValues.append(QLatin1String("        // Types\n"));
-    foreach (const TLType &type, m_types) {
-        codeOfTLValues.append(generateTLValuesDefinition(type));
+    foreach (const QStringList &group, m_groups) {
+        if (group.isEmpty()) {
+            continue;
+        }
+        if (m_types.contains(group.first())) {
+            codeOfTLValues.append(QLatin1String("        // Types\n"));
+            foreach (const QString &typeName, group) {
+                if (!m_types.contains(typeName)) {
+                    qCritical() << "Name of group item not found in types map";
+                    return;
+                }
+                const TLType &type = m_types.value(typeName);
+                codeOfTLValues.append(generateTLValuesDefinition(type));
+            }
+        } else if (m_functions.contains(group.first())) {
+            codeOfTLValues.append(QLatin1String("        // Methods\n"));
+            foreach (const QString &typeName, group) {
+                if (!m_functions.contains(typeName)) {
+                    qCritical() << "Name of group item not found in types map";
+                    return;
+                }
+                const TLMethod &method = m_functions.value(typeName);
+                codeOfTLValues.append(generateTLValuesDefinition(method));
+            }
+        } else {
+            qCritical() << "Name of group item is neither a type or a method";
+            return;
+        }
     }
 
-    codeOfTLValues.append(QLatin1String("        // Methods\n"));
     foreach (const TLMethod &method, m_functions) {
-        codeOfTLValues.append(generateTLValuesDefinition(method));
-
         codeDebugRpcParse.append(generateDebugRpcParse(method));
     }
 

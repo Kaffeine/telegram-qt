@@ -23,6 +23,7 @@
 #include <QList>
 #include <QStringList>
 #include <QMap>
+#include <QVector>
 
 struct TLParam {
     TLParam() { }
@@ -112,6 +113,7 @@ private:
     QMap<QString, TLType> m_types;
     QList<TLType> m_solvedTypes;
     QMap<QString, TLMethod> m_functions;
+    QVector<QStringList> m_groups;
 };
 
 #endif // GENERATORNG_HPP
