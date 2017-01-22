@@ -2536,6 +2536,9 @@ void CTelegramDispatcher::onUpdatesReceived(const TLUpdates &updates, quint64 id
             const quint64 randomId = m_rpcIdToMessageRandomIdMap.take(id);
             updateSentMessageId(randomId, updates.id);
         }
+        // TODO: Check that the follow state update is the right thing to do.
+        // This fixes scenario: "send sendMessage" -> "receive UpdateShortSentMessage" -> "receive UpdateReadHistoryOutbox with update.pts == m_updatesState.pts + 2"
+        setUpdateState(m_updatesState.pts + 1, 0, 0);
         break;
     default:
         break;
