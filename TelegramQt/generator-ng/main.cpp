@@ -221,10 +221,10 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
 
     switch (format) {
     case JsonFormat:
-        success = generator.loadDataFromJson(data);
+        success = generator.loadFromJson(data);
         break;
     case TextFormat:
-        success = generator.loadDataFromText(data);
+        success = generator.loadFromText(data);
         break;
     }
 

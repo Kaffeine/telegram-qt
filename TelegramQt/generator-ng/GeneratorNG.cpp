@@ -747,7 +747,7 @@ void GeneratorNG::getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vec
     }
 }
 
-bool GeneratorNG::loadDataFromJson(const QByteArray &data)
+bool GeneratorNG::loadFromJson(const QByteArray &data)
 {
     const QJsonDocument document = QJsonDocument::fromJson(data);
     m_types = readTypesJson(document);
@@ -761,7 +761,7 @@ enum EntryType {
     EntryFunction
 };
 
-bool GeneratorNG::loadDataFromText(const QByteArray &data)
+bool GeneratorNG::loadFromText(const QByteArray &data)
 {
     QTextStream input(data);
 

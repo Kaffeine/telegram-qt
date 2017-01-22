@@ -67,8 +67,8 @@ struct TLMethod {
 class GeneratorNG
 {
 public:
-    bool loadDataFromJson(const QByteArray &data);
-    bool loadDataFromText(const QByteArray &data);
+    bool loadFromJson(const QByteArray &data);
+    bool loadFromText(const QByteArray &data);
     bool resolveTypes();
     void generate();
 
