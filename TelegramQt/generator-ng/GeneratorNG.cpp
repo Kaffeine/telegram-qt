@@ -29,8 +29,14 @@ static const QString tlTypeMember = QLatin1String("tlType");
 static const QString tlVectorType = QLatin1String("TLVector");
 static const QStringList podTypes = QStringList() << "bool" << "quint32" << "quint64" << "double" << tlValueName;
 static const QStringList initTypesValues = QStringList() << "false" << "0" << "0" << "0" << "0";
-static const QStringList plainTypes = QStringList() << "Bool" << "#" << "int" << "long" << "double" << "string" << "bytes";
-static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "quint32" << "quint64" << "double" << "QString" << "QByteArray";
+static const QStringList plainTypes = QStringList() << "Bool" << "#" << "int" << "long" << "double" << "string" << "bytes"
+                                                    << QStringLiteral("int128")
+                                                    << QStringLiteral("int256")
+                                                       ;
+static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "quint32" << "quint64" << "double" << "QString" << "QByteArray"
+                                                     << QStringLiteral("TLNumber128")
+                                                     << QStringLiteral("TLNumber256")
+                                                        ;
 
 static const QString spacing = QString(4, QLatin1Char(' '));
 static const QString doubleSpacing = spacing + spacing;
