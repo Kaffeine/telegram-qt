@@ -3117,7 +3117,11 @@ void CTelegramConnection::whenTransportReadyRead()
         default:
             break;
         }
-    } else if (m_authState >= AuthStateHaveAKey) {
+    } else {
+        if (m_authState < AuthStateHaveAKey) {
+            qWarning() << Q_FUNC_INFO << "Unexpected message with auth data";
+        }
+
         if (auth != m_authId) {
             qDebug() << Q_FUNC_INFO << "Incorrect auth id.";
 
