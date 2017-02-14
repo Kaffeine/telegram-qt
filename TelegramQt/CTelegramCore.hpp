@@ -26,7 +26,6 @@
 #include <QStringList>
 
 class CAppInformation;
-class CTelegramDispatcher;
 
 QT_FORWARD_DECLARE_CLASS(QIODevice)
 
@@ -37,7 +36,7 @@ public:
     explicit CTelegramCore(QObject *parent = 0);
     ~CTelegramCore();
 
-    inline const CAppInformation *appInfo() { return m_appInfo; }
+    const CAppInformation *appInfo() const;
     void setAppInformation(const CAppInformation *newAppInfo);
 
     Q_INVOKABLE static QVector<TelegramNamespace::DcOption> builtInDcs();
@@ -168,9 +167,9 @@ Q_SIGNALS:
     void fileRequestFinished(quint32 requestId, TelegramNamespace::RemoteFile requestResult);
 
 private:
-    CTelegramDispatcher *m_dispatcher;
-
-    const CAppInformation *m_appInfo;
+    class Private;
+    friend class Private;
+    Private *m_private;
 
 };
 

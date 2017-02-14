@@ -22,75 +22,98 @@
 #include "CAppInformation.hpp"
 #include "CTelegramDispatcher.hpp"
 
+class CTelegramCore::Private
+{
+public:
+    Private() :
+        m_dispatcher(nullptr),
+        m_appInfo(nullptr)
+    {
+    }
+
+    CTelegramDispatcher *m_dispatcher;
+    const CAppInformation *m_appInfo;
+};
+
 CTelegramCore::CTelegramCore(QObject *parent) :
     QObject(parent),
-    m_dispatcher(new CTelegramDispatcher(this)),
-    m_appInfo(0)
+    m_private(new Private())
 {
+    m_private->m_dispatcher = new CTelegramDispatcher(this);
+
     TelegramNamespace::registerTypes();
 
-    connect(m_dispatcher, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
+    connect(m_private->m_dispatcher, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
             SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)));
-    connect(m_dispatcher, SIGNAL(selfUserAvailable(quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(selfUserAvailable(quint32)),
             SIGNAL(selfUserAvailable(quint32)));
-    connect(m_dispatcher, SIGNAL(userInfoReceived(quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(userInfoReceived(quint32)),
             SIGNAL(userInfoReceived(quint32)));
-    connect(m_dispatcher, SIGNAL(loggedOut(bool)),
+    connect(m_private->m_dispatcher, SIGNAL(loggedOut(bool)),
             SIGNAL(loggedOut(bool)));
-    connect(m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool)),
+    connect(m_private->m_dispatcher, SIGNAL(phoneStatusReceived(QString,bool)),
             SIGNAL(phoneStatusReceived(QString,bool)));
-    connect(m_dispatcher, SIGNAL(phoneCodeRequired()),
+    connect(m_private->m_dispatcher, SIGNAL(phoneCodeRequired()),
             SIGNAL(phoneCodeRequired()));
-    connect(m_dispatcher, SIGNAL(passwordInfoReceived(quint64)),
+    connect(m_private->m_dispatcher, SIGNAL(passwordInfoReceived(quint64)),
             SIGNAL(passwordInfoReceived(quint64)));
-    connect(m_dispatcher, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
+    connect(m_private->m_dispatcher, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
             SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
-    connect(m_dispatcher, SIGNAL(contactListChanged()),
+    connect(m_private->m_dispatcher, SIGNAL(contactListChanged()),
             SIGNAL(contactListChanged()));
-    connect(m_dispatcher, SIGNAL(contactProfileChanged(quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(contactProfileChanged(quint32)),
             SIGNAL(contactProfileChanged(quint32)));
-    connect(m_dispatcher, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
+    connect(m_private->m_dispatcher, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
             SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)));
-    connect(m_dispatcher, SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
             SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
 
-    connect(m_dispatcher, SIGNAL(messageReceived(TelegramNamespace::Message)),
+    connect(m_private->m_dispatcher, SIGNAL(messageReceived(TelegramNamespace::Message)),
             SIGNAL(messageReceived(TelegramNamespace::Message)));
 
-    connect(m_dispatcher, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
+    connect(m_private->m_dispatcher, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
             SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)));
-    connect(m_dispatcher, SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)),
+    connect(m_private->m_dispatcher, SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)),
             SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)));
-    connect(m_dispatcher, SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)),
+    connect(m_private->m_dispatcher, SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)),
             SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)));
-    connect(m_dispatcher, SIGNAL(sentMessageIdReceived(quint64,quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(sentMessageIdReceived(quint64,quint32)),
             SIGNAL(sentMessageIdReceived(quint64,quint32)));
-    connect(m_dispatcher, SIGNAL(messageReadInbox(TelegramNamespace::Peer,quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(messageReadInbox(TelegramNamespace::Peer,quint32)),
             SIGNAL(messageReadInbox(TelegramNamespace::Peer,quint32)));
-    connect(m_dispatcher, SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)),
             SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)));
 
-    connect(m_dispatcher, SIGNAL(createdChatIdReceived(quint64,quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(createdChatIdReceived(quint64,quint32)),
             SIGNAL(createdChatIdReceived(quint64,quint32)));
-    connect(m_dispatcher, SIGNAL(chatAdded(quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(chatAdded(quint32)),
             SIGNAL(chatAdded(quint32)));
-    connect(m_dispatcher, SIGNAL(chatChanged(quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(chatChanged(quint32)),
             SIGNAL(chatChanged(quint32)));
-    connect(m_dispatcher, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)),
+    connect(m_private->m_dispatcher, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)),
             SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
-    connect(m_dispatcher, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
+    connect(m_private->m_dispatcher, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
             SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
-    connect(m_dispatcher, SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)),
             SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)));
-    connect(m_dispatcher, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
+    connect(m_private->m_dispatcher, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
             SIGNAL(filePartUploaded(quint32,quint32,quint32)));
-    connect(m_dispatcher, SIGNAL(fileRequestFinished(quint32,TelegramNamespace::RemoteFile)),
+    connect(m_private->m_dispatcher, SIGNAL(fileRequestFinished(quint32,TelegramNamespace::RemoteFile)),
             SIGNAL(fileRequestFinished(quint32,TelegramNamespace::RemoteFile)));
 }
 
 CTelegramCore::~CTelegramCore()
 {
-    delete m_appInfo;
+    if (m_private->m_appInfo) {
+        delete m_private->m_appInfo;
+    }
+    delete m_private->m_dispatcher;
+    delete m_private;
+}
+
+const CAppInformation *CTelegramCore::appInfo() const
+{
+    return m_private->m_appInfo;
 }
 
 void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
@@ -99,11 +122,11 @@ void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
         return;
     }
 
-    if (m_appInfo) {
-        delete m_appInfo;
+    if (m_private->m_appInfo) {
+        delete m_private->m_appInfo;
     }
 
-    m_appInfo = new CAppInformation(newAppInfo);
+    m_private->m_appInfo = new CAppInformation(newAppInfo);
 }
 
 QVector<TelegramNamespace::DcOption> CTelegramCore::builtInDcs()
@@ -118,141 +141,141 @@ quint32 CTelegramCore::defaultPingInterval()
 
 QByteArray CTelegramCore::connectionSecretInfo() const
 {
-    return m_dispatcher->connectionSecretInfo();
+    return m_private->m_dispatcher->connectionSecretInfo();
 }
 
 TelegramNamespace::ConnectionState CTelegramCore::connectionState() const
 {
-    return m_dispatcher->connectionState();
+    return m_private->m_dispatcher->connectionState();
 }
 
 bool CTelegramCore::initConnection(const QVector<TelegramNamespace::DcOption> &dcs)
 {
-    if (!m_appInfo || !m_appInfo->isValid()) {
+    if (!m_private->m_appInfo || !m_private->m_appInfo->isValid()) {
         qDebug() << "CTelegramCore: Can not init connection: App information is null or is not valid.";
         return false;
     }
 
-    m_dispatcher->setAppInformation(m_appInfo);
-    m_dispatcher->initConnection(dcs);
+    m_private->m_dispatcher->setAppInformation(m_private->m_appInfo);
+    m_private->m_dispatcher->initConnection(dcs);
 
     return true;
 }
 
 void CTelegramCore::closeConnection()
 {
-    return m_dispatcher->closeConnection();
+    return m_private->m_dispatcher->closeConnection();
 }
 
 bool CTelegramCore::logOut()
 {
-    return m_dispatcher->logOut();
+    return m_private->m_dispatcher->logOut();
 }
 
 bool CTelegramCore::restoreConnection(const QByteArray &secret)
 {
-    m_dispatcher->setAppInformation(m_appInfo);
-    return m_dispatcher->restoreConnection(secret);
+    m_private->m_dispatcher->setAppInformation(appInfo());
+    return m_private->m_dispatcher->restoreConnection(secret);
 }
 
 void CTelegramCore::requestPhoneStatus(const QString &phoneNumber)
 {
-    m_dispatcher->requestPhoneStatus(phoneNumber);
+    m_private->m_dispatcher->requestPhoneStatus(phoneNumber);
 }
 
 void CTelegramCore::requestPhoneCode(const QString &phoneNumber)
 {
-    m_dispatcher->requestPhoneCode(phoneNumber);
+    m_private->m_dispatcher->requestPhoneCode(phoneNumber);
 }
 
 quint64 CTelegramCore::getPassword()
 {
-    return m_dispatcher->getPassword();
+    return m_private->m_dispatcher->getPassword();
 }
 
 void CTelegramCore::tryPassword(const QByteArray &salt, const QByteArray &password)
 {
-    m_dispatcher->tryPassword(salt, password);
+    m_private->m_dispatcher->tryPassword(salt, password);
 }
 
 void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)
 {
-    m_dispatcher->signIn(phoneNumber, authCode);
+    m_private->m_dispatcher->signIn(phoneNumber, authCode);
 }
 
 void CTelegramCore::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
 {
-    m_dispatcher->signUp(phoneNumber, authCode, firstName, lastName);
+    m_private->m_dispatcher->signUp(phoneNumber, authCode, firstName, lastName);
 }
 
 void CTelegramCore::addContacts(const QStringList &phoneNumbers)
 {
-    m_dispatcher->addContacts(phoneNumbers);
+    m_private->m_dispatcher->addContacts(phoneNumbers);
 }
 
 void CTelegramCore::deleteContacts(const QVector<quint32> &userIds)
 {
-    m_dispatcher->deleteContacts(userIds);
+    m_private->m_dispatcher->deleteContacts(userIds);
 }
 
 void CTelegramCore::requestContactAvatar(quint32 userId)
 {
-    m_dispatcher->requestContactAvatar(userId);
+    m_private->m_dispatcher->requestContactAvatar(userId);
 }
 
 void CTelegramCore::requestMessageMediaData(quint32 messageId)
 {
-    m_dispatcher->requestMessageMediaData(messageId);
+    m_private->m_dispatcher->requestMessageMediaData(messageId);
 }
 
 quint32 CTelegramCore::requestFile(const TelegramNamespace::RemoteFile *file)
 {
-    return m_dispatcher->requestFile(file);
+    return m_private->m_dispatcher->requestFile(file);
 }
 
 bool CTelegramCore::requestHistory(const TelegramNamespace::Peer &peer, int offset, int limit)
 {
-    return m_dispatcher->requestHistory(peer, offset, limit);
+    return m_private->m_dispatcher->requestHistory(peer, offset, limit);
 }
 
 quint32 CTelegramCore::resolveUsername(const QString &userName)
 {
-    return m_dispatcher->resolveUsername(userName);
+    return m_private->m_dispatcher->resolveUsername(userName);
 }
 
 quint64 CTelegramCore::sendMessage(const TelegramNamespace::Peer &peer, const QString &message)
 {
-    return m_dispatcher->sendMessage(peer, message);
+    return m_private->m_dispatcher->sendMessage(peer, message);
 }
 
 quint32 CTelegramCore::uploadFile(const QByteArray &fileContent, const QString &fileName)
 {
-    return m_dispatcher->uploadFile(fileContent, fileName);
+    return m_private->m_dispatcher->uploadFile(fileContent, fileName);
 }
 
 quint32 CTelegramCore::uploadFile(QIODevice *source, const QString &fileName)
 {
-    return m_dispatcher->uploadFile(source, fileName);
+    return m_private->m_dispatcher->uploadFile(source, fileName);
 }
 
 QVector<quint32> CTelegramCore::contactList() const
 {
-    return m_dispatcher->contactIdList();
+    return m_private->m_dispatcher->contactIdList();
 }
 
 QVector<quint32> CTelegramCore::chatList() const
 {
-    return m_dispatcher->chatIdList();
+    return m_private->m_dispatcher->chatIdList();
 }
 
 QString CTelegramCore::contactAvatarToken(quint32 userId) const
 {
-    return m_dispatcher->contactAvatarToken(userId);
+    return m_private->m_dispatcher->contactAvatarToken(userId);
 }
 
 QString CTelegramCore::chatTitle(quint32 chatId) const
 {
-    return m_dispatcher->chatTitle(chatId);
+    return m_private->m_dispatcher->chatTitle(chatId);
 }
 
 qint32 CTelegramCore::localTypingRecommendedRepeatInterval()
@@ -283,110 +306,110 @@ qint32 CTelegramCore::localTypingRecommendedRepeatInterval()
 
 bool CTelegramCore::getUserInfo(TelegramNamespace::UserInfo *info, quint32 userId) const
 {
-    return m_dispatcher->getUserInfo(info, userId);
+    return m_private->m_dispatcher->getUserInfo(info, userId);
 }
 
 bool CTelegramCore::getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const
 {
-    return m_dispatcher->getChatInfo(chatInfo, chatId);
+    return m_private->m_dispatcher->getChatInfo(chatInfo, chatId);
 }
 
 bool CTelegramCore::getChatParticipants(QVector<quint32> *participants, quint32 chatId)
 {
-    return m_dispatcher->getChatParticipants(participants, chatId);
+    return m_private->m_dispatcher->getChatParticipants(participants, chatId);
 }
 
 bool CTelegramCore::getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const
 {
-    return m_dispatcher->getMessageMediaInfo(messageInfo, messageId);
+    return m_private->m_dispatcher->getMessageMediaInfo(messageInfo, messageId);
 }
 
 bool CTelegramCore::getPasswordInfo(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId) const
 {
-    return m_dispatcher->getPasswordData(passwordInfo, requestId);
+    return m_private->m_dispatcher->getPasswordData(passwordInfo, requestId);
 }
 
 void CTelegramCore::setMessageReceivingFilter(TelegramNamespace::MessageFlags flags)
 {
-    return m_dispatcher->setMessageReceivingFilter(flags);
+    return m_private->m_dispatcher->setMessageReceivingFilter(flags);
 }
 
 void CTelegramCore::setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types)
 {
-    return m_dispatcher->setAcceptableMessageTypes(types);
+    return m_private->m_dispatcher->setAcceptableMessageTypes(types);
 }
 
 void CTelegramCore::setAutoReconnection(bool enable)
 {
-    return m_dispatcher->setAutoReconnection(enable);
+    return m_private->m_dispatcher->setAutoReconnection(enable);
 }
 
 void CTelegramCore::setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime)
 {
-    return m_dispatcher->setPingInterval(interval, serverDisconnectionAdditionTime);
+    return m_private->m_dispatcher->setPingInterval(interval, serverDisconnectionAdditionTime);
 }
 
 void CTelegramCore::setMediaDataBufferSize(quint32 size)
 {
-    m_dispatcher->setMediaDataBufferSize(size);
+    m_private->m_dispatcher->setMediaDataBufferSize(size);
 }
 
 QString CTelegramCore::selfPhone() const
 {
-    return m_dispatcher->selfPhone();
+    return m_private->m_dispatcher->selfPhone();
 }
 
 quint32 CTelegramCore::selfId() const
 {
-    return m_dispatcher->selfId();
+    return m_private->m_dispatcher->selfId();
 }
 
 quint32 CTelegramCore::maxMessageId() const
 {
-    return m_dispatcher->maxMessageId();
+    return m_private->m_dispatcher->maxMessageId();
 }
 
 quint64 CTelegramCore::forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId)
 {
-    return m_dispatcher->forwardMessage(peer, messageId);
+    return m_private->m_dispatcher->forwardMessage(peer, messageId);
 }
 
 quint64 CTelegramCore::sendMedia(const TelegramNamespace::Peer &peer, const TelegramNamespace::MessageMediaInfo &messageInfo)
 {
-    return m_dispatcher->sendMedia(peer, messageInfo);
+    return m_private->m_dispatcher->sendMedia(peer, messageInfo);
 }
 
 void CTelegramCore::setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction action)
 {
-    m_dispatcher->setTyping(peer, action);
+    m_private->m_dispatcher->setTyping(peer, action);
 }
 
 void CTelegramCore::setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId)
 {
-    m_dispatcher->setMessageRead(peer, messageId);
+    m_private->m_dispatcher->setMessageRead(peer, messageId);
 }
 
 void CTelegramCore::setOnlineStatus(bool onlineStatus)
 {
-    m_dispatcher->setOnlineStatus(onlineStatus);
+    m_private->m_dispatcher->setOnlineStatus(onlineStatus);
 }
 
 void CTelegramCore::checkUserName(const QString &userName)
 {
-    m_dispatcher->checkUserName(userName);
+    m_private->m_dispatcher->checkUserName(userName);
 }
 
 void CTelegramCore::setUserName(const QString &newUserName)
 {
-    m_dispatcher->setUserName(newUserName);
+    m_private->m_dispatcher->setUserName(newUserName);
 }
 
 quint64 CTelegramCore::createChat(const QVector<quint32> &userIds, const QString &title)
 {
-    return m_dispatcher->createChat(userIds, title);
+    return m_private->m_dispatcher->createChat(userIds, title);
 }
 
 bool CTelegramCore::addChatUser(quint32 chatId, quint32 userId, quint32 forwardMessages)
 {
-    return m_dispatcher->addChatUser(chatId, userId, forwardMessages);
+    return m_private->m_dispatcher->addChatUser(chatId, userId, forwardMessages);
 }
