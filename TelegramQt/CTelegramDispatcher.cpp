@@ -49,7 +49,6 @@ const quint32 secretFormatVersion = 3;
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingDuration = 5000; // 5 sec
 const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPeriod - s_localTypingDuration) / 2. Minus 100 ms for insurance.
-static const quint32 s_defaultDownloadPartSize = 128 * 256; // Set chunkSize to some big number to get the whole avatar at once
 
 static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_autoConnectionIndexInvalid + 1 == 0)
 
@@ -64,149 +63,6 @@ enum TelegramMessageFlags {
     TelegramMessageFlagReply   = 1 << 3,
 };
 
-FileRequestDescriptor FileRequestDescriptor::uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc)
-{
-    FileRequestDescriptor result;
-
-    result.m_type = Upload;
-    result.m_data = data;
-    result.m_size = data.size();
-    result.m_fileName = fileName;
-    result.m_dcId = dc;
-
-    if (!result.isBigFile()) {
-        result.m_hash = new QCryptographicHash(QCryptographicHash::Md5);
-    }
-
-    Utils::randomBytes(&result.m_fileId);
-
-    return result;
-}
-
-void FileRequestDescriptor::setDcId(quint32 dc)
-{
-    m_dcId = dc;
-}
-
-void FileRequestDescriptor::setInputLocation(const TLInputFileLocation &inputLocation)
-{
-    m_inputLocation = inputLocation;
-}
-
-void FileRequestDescriptor::setUserId(quint32 id)
-{
-    m_userId = id;
-}
-
-void FileRequestDescriptor::setMessageId(quint32 messageId)
-{
-    m_messageId = messageId;
-}
-
-void FileRequestDescriptor::setSize(quint32 size)
-{
-    m_size = size;
-}
-
-TLInputFile FileRequestDescriptor::inputFile() const
-{
-    TLInputFile file;
-
-    if (isBigFile()) {
-        file.tlType = TLValue::InputFileBig;
-    } else {
-        file.tlType = TLValue::InputFile;
-//        file.md5Checksum = QString::fromLatin1(md5Sum().toHex());
-    }
-
-    file.id = m_fileId;
-    file.parts = parts();
-    file.name = m_fileName;
-
-#ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << file;
-#endif
-
-    return file;
-}
-
-quint32 FileRequestDescriptor::parts() const
-{
-    quint32 parts = m_size / chunkSize();
-    if (m_size % chunkSize()) {
-        ++parts;
-    }
-
-    return parts;
-}
-
-bool FileRequestDescriptor::isBigFile() const
-{
-    return size() > 10 * 1024 * 1024;
-}
-
-bool FileRequestDescriptor::finished() const
-{
-    return m_part * chunkSize() >= size();
-}
-
-void FileRequestDescriptor::bumpPart()
-{
-    if (m_hash) {
-        m_hash->addData(data());
-    }
-
-    ++m_part;
-    m_offset = m_part * chunkSize();
-
-    if (m_offset > m_size) {
-        m_offset = m_size;
-    }
-
-    if (m_hash && finished()) {
-        m_md5Sum = m_hash->result();
-        delete m_hash;
-        m_hash = 0;
-    }
-}
-
-QByteArray FileRequestDescriptor::data() const
-{
-    return m_data.mid(m_part * chunkSize(), chunkSize());
-}
-
-quint32 FileRequestDescriptor::chunkSize() const
-{
-    if (m_type == Upload) {
-        return 256;
-    }
-
-    if (m_chunkSize) {
-        return m_chunkSize;
-    }
-
-    return s_defaultDownloadPartSize;
-}
-
-void FileRequestDescriptor::setChunkSize(quint32 size)
-{
-    m_chunkSize = size;
-}
-
-FileRequestDescriptor::FileRequestDescriptor() :
-    m_type(Invalid),
-    m_userId(0),
-    m_messageId(0),
-    m_size(0),
-    m_offset(0),
-    m_part(0),
-    m_chunkSize(0),
-    m_fileId(0),
-    m_hash(0),
-    m_dcId(0)
-{
-}
-
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_connectionState(TelegramNamespace::ConnectionStateDisconnected),
@@ -216,7 +72,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeAll),
     m_autoReconnectionEnabled(false),
     m_pingInterval(s_defaultPingInterval),
-    m_mediaDataBufferSize(s_defaultDownloadPartSize),
+    m_mediaDataBufferSize(FileRequestDescriptor::defaultDownloadPartSize()),
     m_initializationState(0),
     m_requestedSteps(0),
     m_wantedActiveDc(0),
@@ -397,7 +253,7 @@ void CTelegramDispatcher::setMediaDataBufferSize(quint32 size)
     }
 
     if (!size) {
-        size = s_defaultDownloadPartSize;
+        size = FileRequestDescriptor::defaultDownloadPartSize();
     }
 
     m_mediaDataBufferSize = size;

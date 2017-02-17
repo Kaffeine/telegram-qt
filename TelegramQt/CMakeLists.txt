@@ -9,6 +9,7 @@ set(telegram_qt_SOURCES
     CTcpTransport.cpp
     CRawStream.cpp
     Utils.cpp
+    FileRequestDescriptor.cpp
     TelegramUtils.cpp
     TLValues.cpp
 )
@@ -36,6 +37,7 @@ set(telegram_qt_HEADERS
     CTcpTransport.hpp
     CRawStream.hpp
     Utils.hpp
+    FileRequestDescriptor.hpp
     TelegramUtils.hpp
     TLValues.hpp
     TLTypes.hpp

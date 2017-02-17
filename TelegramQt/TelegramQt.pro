@@ -25,6 +25,7 @@ SOURCES = CTelegramCore.cpp \
     CRawStream.cpp \
     CTelegramStream.cpp \
     Utils.cpp \
+    FileRequestDescriptor.cpp \
     TelegramUtils.cpp \
     CTcpTransport.cpp \
     TelegramNamespace.cpp \
@@ -46,6 +47,7 @@ HEADERS = CTelegramCore.hpp \
     CTelegramStream.hpp \
     CRawStream.hpp \
     Utils.hpp \
+    FileRequestDescriptor.hpp \
     TelegramUtils.hpp \
     CTelegramTransport.hpp \
     CTcpTransport.hpp \

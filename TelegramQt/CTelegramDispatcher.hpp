@@ -26,6 +26,7 @@
 #include <QStringList>
 #include <QVector>
 
+#include "FileRequestDescriptor.hpp"
 #include "TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
@@ -35,80 +36,6 @@ class QIODevice;
 
 class CAppInformation;
 class CTelegramConnection;
-
-class FileRequestDescriptor
-{
-public:
-    enum Type {
-        Invalid,
-        Download,
-        Upload
-    };
-
-    FileRequestDescriptor();
-
-    static FileRequestDescriptor uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc);
-
-    Type type() const { return m_type; }
-    void setType(Type type) { m_type = type; }
-
-    quint32 dcId() const { return m_dcId; }
-    void setDcId(quint32 dc);
-
-    bool isValid() const { return m_type != Invalid; }
-
-    void setInputLocation(const TLInputFileLocation &inputLocation);
-    TLInputFileLocation inputLocation() const { return m_inputLocation; }
-
-    void setUserId(quint32 id);
-    quint32 userId() const { return m_userId; }
-
-    quint32 messageId() const { return m_messageId; }
-    void setMessageId(quint32 messageId);
-
-    quint32 size() const { return m_size; }
-    void setSize(quint32 size);
-
-    quint32 offset() const { return m_offset; }
-
-    void setOffset(quint32 newOffset) { m_offset = newOffset; }
-
-    /* Upload stuff */
-    TLInputFile inputFile() const;
-    quint32 part() const { return m_part; }
-    quint32 parts() const;
-    QByteArray md5Sum() const { return m_md5Sum; }
-    quint64 fileId() const { return m_fileId; }
-
-    bool isBigFile() const;
-    bool finished() const;
-    void bumpPart();
-
-    QByteArray data() const;
-
-    quint32 chunkSize() const;
-    void setChunkSize(quint32 size);
-
-    QString uniqueId;
-
-protected:
-    Type m_type;
-    quint32 m_userId;
-    quint32 m_messageId;
-    quint32 m_size;
-    quint32 m_offset;
-    quint32 m_part;
-    quint32 m_chunkSize;
-    QByteArray m_data;
-    QByteArray m_md5Sum;
-    QString m_fileName;
-    quint64 m_fileId;
-    QCryptographicHash *m_hash;
-
-    TLInputFileLocation m_inputLocation;
-    quint32 m_dcId;
-
-};
 
 class CTelegramDispatcher : public QObject
 {
