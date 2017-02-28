@@ -19,6 +19,11 @@
 #include "Utils.hpp"
 
 #include <QCryptographicHash>
+#include <QDebug>
+
+#ifdef DEVELOPER_BUILD
+#include "TLTypesDebug.hpp"
+#endif
 
 FileRequestDescriptor FileRequestDescriptor::uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc)
 {
