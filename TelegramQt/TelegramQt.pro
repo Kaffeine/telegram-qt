@@ -23,6 +23,7 @@ SOURCES = CTelegramCore.cpp \
     CAppInformation.cpp \
     CTelegramDispatcher.cpp \
     CTelegramModule.cpp \
+    CTelegramAuthModule.cpp \
     CRawStream.cpp \
     CTelegramStream.cpp \
     Utils.cpp \
@@ -46,6 +47,7 @@ HEADERS = CTelegramCore.hpp \
     CAppInformation.hpp \
     CTelegramDispatcher.hpp \
     CTelegramModule.hpp \
+    CTelegramAuthModule.hpp \
     CTelegramStream.hpp \
     CRawStream.hpp \
     Utils.hpp \

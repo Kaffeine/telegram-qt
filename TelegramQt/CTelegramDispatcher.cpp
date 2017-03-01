@@ -448,78 +448,6 @@ void CTelegramDispatcher::closeConnection()
     m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
 }
 
-bool CTelegramDispatcher::logOut()
-{
-    if (!activeConnection()) {
-        return false;
-    }
-
-    activeConnection()->authLogOut();
-    return true;
-}
-
-void CTelegramDispatcher::requestPhoneStatus(const QString &phoneNumber)
-{
-    if (!activeConnection()) {
-        return;
-    }
-    activeConnection()->authCheckPhone(phoneNumber);
-}
-
-quint64 CTelegramDispatcher::getPassword()
-{
-    if (!activeConnection()) {
-        return 0;
-    }
-
-    return activeConnection()->accountGetPassword();
-}
-
-void CTelegramDispatcher::tryPassword(const QByteArray &salt, const QByteArray &password)
-{
-    if (!activeConnection()) {
-        return;
-    }
-
-    QByteArray pwdData = salt + password + salt;
-
-    QByteArray pwdHash = Utils::sha256(pwdData);
-
-    activeConnection()->authCheckPassword(pwdHash);
-}
-
-void CTelegramDispatcher::signIn(const QString &phoneNumber, const QString &authCode)
-{
-    if (!activeConnection()) {
-        return;
-    }
-    activeConnection()->signIn(phoneNumber, authCode);
-}
-
-void CTelegramDispatcher::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
-{
-    if (!activeConnection()) {
-        return;
-    }
-    activeConnection()->signUp(phoneNumber, authCode, firstName, lastName);
-}
-
-void CTelegramDispatcher::requestPhoneCode(const QString &phoneNumber)
-{
-    if (!activeConnection()) {
-        qDebug() << Q_FUNC_INFO << "Can't request phone code: there is no active connection.";
-        return;
-    }
-
-    if (m_dcConfiguration.isEmpty()) {
-        qDebug() << Q_FUNC_INFO << "Can't request phone code: DC Configuration is unknown.";
-        return;
-    }
-
-    m_requestedCodeForPhone = phoneNumber;
-    activeConnection()->requestPhoneCode(phoneNumber);
-}
-
 void CTelegramDispatcher::requestContactAvatar(quint32 userId)
 {
     TelegramNamespace::UserInfo info;
@@ -1965,8 +1893,6 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
             connect(connection, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
                     SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
-            connect(connection, SIGNAL(loggedOut(bool)),
-                    SIGNAL(loggedOut(bool)));
 
             continueInitialization(StepSignIn);
         } else if (newState == CTelegramConnection::AuthStateHaveAKey) {
@@ -2100,54 +2026,6 @@ void CTelegramDispatcher::onPackageRedirected(const QByteArray &data, quint32 dc
             connection->connectToDc();
         }
     }
-}
-
-void CTelegramDispatcher::onWantedMainDcChanged(quint32 dc, const QString &dcForPhoneNumber)
-{
-    qDebug() << Q_FUNC_INFO << dc;
-
-    if (m_requestedCodeForPhone != dcForPhoneNumber) {
-        qDebug() << Q_FUNC_INFO << "Migration wanted for a phone number, which is different from the recently asked one.";
-        return;
-    }
-
-    m_wantedActiveDc = dc;
-
-    ensureMainConnectToWantedDc();
-}
-
-void CTelegramDispatcher::onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode)
-{
-    switch (errorCode) {
-    case TelegramNamespace::UnauthorizedSessionPasswordNeeded:
-        activeConnection()->accountGetPassword();
-        break;
-    default:
-        break;
-    }
-}
-
-void CTelegramDispatcher::onPasswordReceived(const TLAccountPassword &password, quint64 requestId)
-{
-#ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << password;
-#else
-    qDebug() << Q_FUNC_INFO;
-#endif
-
-    m_passwordInfo.insert(requestId, password);
-    emit passwordInfoReceived(requestId);
-}
-
-bool CTelegramDispatcher::getPasswordData(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId) const
-{
-    if (!m_passwordInfo.contains(requestId)) {
-        return false;
-    }
-
-    TLAccountPassword &data = *passwordInfo->d;
-    data = m_passwordInfo.value(requestId);
-    return true;
 }
 
 void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset)
@@ -2485,7 +2363,6 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
 
     if (m_initializationState == StepDone) {
         setConnectionState(TelegramNamespace::ConnectionStateReady);
-        m_passwordInfo.clear();
         return;
     }
 
@@ -2590,18 +2467,6 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
     connect(connection, SIGNAL(dcConfigurationReceived(quint32)), SLOT(onDcConfigurationUpdated()));
     connect(connection, SIGNAL(actualDcIdReceived(quint32,quint32)), SLOT(onConnectionDcIdUpdated(quint32,quint32)));
     connect(connection, SIGNAL(newRedirectedPackage(QByteArray,quint32)), SLOT(onPackageRedirected(QByteArray,quint32)));
-    connect(connection, SIGNAL(wantedMainDcChanged(quint32,QString)), SLOT(onWantedMainDcChanged(quint32,QString)));
-
-    connect(connection, SIGNAL(phoneStatusReceived(QString,bool)), SIGNAL(phoneStatusReceived(QString,bool)));
-    connect(connection, SIGNAL(passwordReceived(TLAccountPassword,quint64)), SLOT(onPasswordReceived(TLAccountPassword,quint64)));
-
-    connect(connection, SIGNAL(phoneCodeRequired()), SIGNAL(phoneCodeRequired()));
-    connect(connection,
-            SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
-            SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
-
-    connect(connection, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)),
-            SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
 
     connect(connection, SIGNAL(selfUserReceived(TLUser)), SLOT(onSelfUserReceived(TLUser)));
     connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),

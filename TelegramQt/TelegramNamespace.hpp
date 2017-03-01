@@ -25,6 +25,7 @@
 #include <QMetaType>
 
 class CTelegramDispatcher;
+class CTelegramAuthModule;
 
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
 {
@@ -187,7 +188,7 @@ public:
         bool hasRecovery();
 
     protected:
-        friend class CTelegramDispatcher;
+        friend class CTelegramAuthModule;
         class Private;
 
         Private *d;

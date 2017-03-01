@@ -94,16 +94,7 @@ public:
     bool initConnection(const QVector<TelegramNamespace::DcOption> &dcs);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
-    bool logOut();
 
-    void requestPhoneStatus(const QString &phoneNumber);
-    quint64 getPassword();
-    void tryPassword(const QByteArray &salt, const QByteArray &password);
-    bool getPasswordData(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId) const;
-    void signIn(const QString &phoneNumber, const QString &authCode);
-    void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
-
-    void requestPhoneCode(const QString &phoneNumber);
     void requestContactAvatar(quint32 userId);
     bool requestMessageMediaData(quint32 messageId);
     quint32 requestFile(const TelegramNamespace::RemoteFile *file, quint32 chunkSize = 0);
@@ -166,10 +157,6 @@ signals:
     void selfUserAvailable(quint32 userId);
     void userInfoReceived(quint32 userId);
 
-    void phoneCodeRequired();
-    void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
-    void loggedOut(bool result);
-    void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
     void filePartUploaded(quint32 requestId, quint32 offset, quint32 size);
     void fileRequestFinished(quint32 requestId, TelegramNamespace::RemoteFile uploadInfo);
@@ -177,8 +164,6 @@ signals:
 
     void contactListChanged();
     void contactProfileChanged(quint32 userId);
-    void phoneStatusReceived(const QString &phone, bool registered);
-    void passwordInfoReceived(quint64 requestId);
 
     void avatarReceived(quint32 userId, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
     void messageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
@@ -203,10 +188,6 @@ protected slots:
     void onDcConfigurationUpdated();
     void onConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
     void onPackageRedirected(const QByteArray &data, quint32 dc);
-    void onWantedMainDcChanged(quint32 dc, const QString &dcForPhoneNumber);
-
-    void onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode);
-    void onPasswordReceived(const TLAccountPassword &password, quint64 requestId);
 
     void whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
     void whenFileDataUploaded(quint32 requestId);
@@ -363,7 +344,6 @@ protected:
 
     QMap<quint32, TLChat> m_chatInfo; // Telegram chat id to Chat map
     QMap<quint32, TLChatFull> m_chatFullInfo; // Telegram chat id to ChatFull map
-    QMap<quint64, TLAccountPassword> m_passwordInfo;
 
     QVector<CTelegramModule*> m_modules;
 
