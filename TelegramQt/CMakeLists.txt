@@ -25,21 +25,15 @@ set(telegram_qt_META_HEADERS
 )
 
 set(telegram_qt_HEADERS
+    ${telegram_qt_META_HEADERS}
     telegramqt_global.h
-    TelegramNamespace.hpp
     TelegramNamespace_p.hpp
     CAppInformation.hpp
-    CTelegramCore.hpp
-    CTelegramDispatcher.hpp
-    CTelegramConnection.hpp
     CTelegramStream.hpp
-    CTelegramTransport.hpp
-    CTcpTransport.hpp
     CRawStream.hpp
     Utils.hpp
     FileRequestDescriptor.hpp
     TelegramUtils.hpp
-    TLValues.hpp
     TLTypes.hpp
     crypto-rsa.hpp
     crypto-aes.hpp
