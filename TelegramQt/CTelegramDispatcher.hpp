@@ -36,6 +36,7 @@ class QIODevice;
 
 class CAppInformation;
 class CTelegramConnection;
+class CTelegramModule;
 
 class CTelegramDispatcher : public QObject
 {
@@ -59,6 +60,8 @@ public:
 
     explicit CTelegramDispatcher(QObject *parent = 0);
     ~CTelegramDispatcher();
+
+    void plugModule(CTelegramModule *module);
 
     static QVector<TelegramNamespace::DcOption> builtInDcs();
     static quint32 defaultPingInterval();
@@ -130,9 +133,33 @@ public:
 
     QString chatTitle(quint32 chatId) const;
 
+    // Connections API
+
+    bool setWantedDc(quint32 dc);
+    CTelegramConnection *activeConnection() const { return m_mainConnection; }
+    CTelegramConnection *getExtraConnection(quint32 dc);
+
+    CTelegramConnection *createConnection(const TLDcOption &dcInfo);
+    void ensureSignedConnection(CTelegramConnection *connection);
+    void clearMainConnection();
+    void clearExtraConnections();
+    void ensureMainConnectToWantedDc();
+
+    TLDcOption dcInfoById(quint32 dc) const;
+
+    // Getters
+    const TLUser *getUser(quint32 userId) const;
+    const TLMessage *getMessage(quint32 messageId) const;
+
     bool getUserInfo(TelegramNamespace::UserInfo *userInfo, quint32 userId) const;
     bool getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 chatId) const;
     bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
+
+    // Common
+    TLInputPeer publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const;
+    TelegramNamespace::Peer peerToPublicPeer(const TLInputPeer &inputPeer) const;
+    TelegramNamespace::Peer peerToPublicPeer(const TLPeer &peer) const;
+    TLInputUser userIdToInputUser(quint32 id) const;
 
 signals:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);
@@ -225,29 +252,12 @@ protected:
     void initConnectionSharedClear();
     void initConnectionSharedFinal();
 
-    void getUser(quint32 id);
     void getInitialUsers();
     void getInitialDialogs();
 
     bool filterReceivedMessage(quint32 messageFlags) const;
 
-    TLInputPeer publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const;
-    TelegramNamespace::Peer peerToPublicPeer(const TLInputPeer &inputPeer) const;
-    TelegramNamespace::Peer peerToPublicPeer(const TLPeer &peer) const;
-    TLInputUser userIdToInputUser(quint32 id) const;
-
     QString userAvatarToken(const TLUser *user) const;
-
-    CTelegramConnection *activeConnection() const { return m_mainConnection; }
-    CTelegramConnection *getExtraConnection(quint32 dc);
-
-    CTelegramConnection *createConnection(const TLDcOption &dcInfo);
-    void ensureSignedConnection(CTelegramConnection *connection);
-    void clearMainConnection();
-    void clearExtraConnections();
-    void ensureMainConnectToWantedDc();
-
-    TLDcOption dcInfoById(quint32 dc) const;
 
     void ensureTypingUpdateTimer(int interval);
     void ensureUpdateState(quint32 pts = 0, quint32 seq = 0, quint32 date = 0);
@@ -333,7 +343,7 @@ protected:
     QMap<quint32, TLUser*> m_users;
     QVector<quint32> m_askedUserIds;
 
-    QMap<quint32, TLMessage> m_knownMediaMessages; // message id, message
+    QMap<quint32, TLMessage*> m_knownMediaMessages; // message id, message
 
     quint32 m_selfUserId;
     quint32 m_maxMessageId;
@@ -354,6 +364,8 @@ protected:
     QMap<quint32, TLChat> m_chatInfo; // Telegram chat id to Chat map
     QMap<quint32, TLChatFull> m_chatFullInfo; // Telegram chat id to ChatFull map
     QMap<quint64, TLAccountPassword> m_passwordInfo;
+
+    QVector<CTelegramModule*> m_modules;
 
 };
 

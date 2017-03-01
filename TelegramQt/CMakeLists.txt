@@ -4,6 +4,7 @@ set(telegram_qt_SOURCES
     CAppInformation.cpp
     CTelegramCore.cpp
     CTelegramDispatcher.cpp
+    CTelegramModule.cpp
     CTelegramConnection.cpp
     CTelegramStream.cpp
     CTcpTransport.cpp
@@ -18,6 +19,7 @@ set(telegram_qt_META_HEADERS
     TelegramNamespace.hpp
     CTelegramCore.hpp
     CTelegramDispatcher.hpp
+    CTelegramModule.hpp
     CTelegramConnection.hpp
     CTelegramTransport.hpp
     CTcpTransport.hpp

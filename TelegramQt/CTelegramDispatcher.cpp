@@ -20,6 +20,7 @@
 #include "TelegramNamespace.hpp"
 #include "TelegramNamespace_p.hpp"
 #include "CTelegramConnection.hpp"
+#include "CTelegramModule.hpp"
 #include "CRawStream.hpp"
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
@@ -55,14 +56,6 @@ static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_auto
 static const quint32 s_legacyDcInfoTlType = 0x2ec2a43cu; // Scheme23_DcOption
 static const quint32 s_legacyVectorTlType = 0x1cb5c415u; // Scheme23_Vector;
 
-enum TelegramMessageFlags {
-    TelegramMessageFlagNone    = 0,
-    TelegramMessageFlagUnread  = 1 << 0,
-    TelegramMessageFlagOut     = 1 << 1,
-    TelegramMessageFlagForward = 1 << 2,
-    TelegramMessageFlagReply   = 1 << 3,
-};
-
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_connectionState(TelegramNamespace::ConnectionStateDisconnected),
@@ -92,6 +85,12 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
 CTelegramDispatcher::~CTelegramDispatcher()
 {
     closeConnection();
+}
+
+void CTelegramDispatcher::plugModule(CTelegramModule *module)
+{
+    m_modules.append(module);
+    module->setDispatcher(this);
 }
 
 QVector<TelegramNamespace::DcOption> CTelegramDispatcher::builtInDcs()
@@ -588,13 +587,13 @@ quint32 CTelegramDispatcher::requestFile(const TelegramNamespace::RemoteFile *fi
 
 bool CTelegramDispatcher::getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const
 {
-    if (!m_knownMediaMessages.contains(messageId)) {
+    const TLMessage *message = getMessage(messageId);
+    if (!message) {
         qDebug() << Q_FUNC_INFO << "Unknown media message" << messageId;
         return false;
     }
 
-    const TLMessage &message = m_knownMediaMessages.value(messageId);
-    const TLMessageMedia &media = message.media;
+    const TLMessageMedia &media = message->media;
     TLMessageMedia &info = *messageInfo->d;
     info = media;
     return true;
@@ -967,6 +966,13 @@ QString CTelegramDispatcher::chatTitle(quint32 chatId) const
     return m_chatInfo.value(chatId).title;
 }
 
+bool CTelegramDispatcher::setWantedDc(quint32 dc)
+{
+    m_wantedActiveDc = dc;
+    ensureMainConnectToWantedDc();
+    return true;
+}
+
 bool CTelegramDispatcher::getUserInfo(TelegramNamespace::UserInfo *userInfo, quint32 userId) const
 {
     if (!m_users.contains(userId)) {
@@ -1245,14 +1251,6 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
 void CTelegramDispatcher::getDcConfiguration()
 {
     activeConnection()->getConfiguration();
-}
-
-void CTelegramDispatcher::getUser(quint32 id)
-{
-    TLInputUser user;
-    user.tlType = TLValue::InputUser;
-    user.userId = id;
-    activeConnection()->usersGetUsers(QVector<TLInputUser>() << user);
 }
 
 void CTelegramDispatcher::getInitialUsers()
@@ -1741,7 +1739,7 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
     }
 
     if (message.media.tlType != TLValue::MessageMediaEmpty) {
-        m_knownMediaMessages.insert(message.id, message);
+        m_knownMediaMessages.insert(message.id, new TLMessage(message));
     }
 
     TelegramNamespace::Message apiMessage;
@@ -1997,6 +1995,10 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
             m_delayedPackages.remove(dc);
         }
     }
+
+    for (CTelegramModule *module : m_modules) {
+        module->onConnectionAuthChanged(connection, newState);
+    }
 }
 
 void CTelegramDispatcher::onConnectionStatusChanged(int newStatus, int reason, quint32 dc)
@@ -2221,29 +2223,29 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
         }
     }
 
-    if (descriptor.messageId() && m_knownMediaMessages.contains(descriptor.messageId())) {
-        const TLMessage message = m_knownMediaMessages.value(descriptor.messageId());
-        const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message.media.tlType);
+    const TLMessage *message = nullptr;
+    if (descriptor.messageId() && (message = getMessage(descriptor.messageId()))) {
+        const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message->media.tlType);
 
-        TelegramNamespace::Peer peer = peerToPublicPeer(message.toId);
+        TelegramNamespace::Peer peer = peerToPublicPeer(message->toId);
 
         // MimeType can not be resolved for some StorageFileType. Try to get the type from the message info in this case.
         if (mimeType.isEmpty()) {
             TelegramNamespace::MessageMediaInfo info;
-            getMessageMediaInfo(&info, message.id);
+            getMessageMediaInfo(&info, message->id);
             mimeType = info.mimeType();
         }
 
-        if (!(message.flags & TelegramMessageFlagOut)) {
+        if (!(message->flags & TelegramMessageFlagOut)) {
             if (peer.type == TelegramNamespace::Peer::User) {
-                peer = message.fromId;
+                peer = message->fromId;
             }
         }
 
 #ifdef DEVELOPER_BUILD
-        qDebug() << Q_FUNC_INFO << "MessageMediaData:" << message.id << offset << "-" << offset + chunkSize << "/" << descriptor.size();
+        qDebug() << Q_FUNC_INFO << "MessageMediaData:" << message->id << offset << "-" << offset + chunkSize << "/" << descriptor.size();
 #endif
-        emit messageMediaDataReceived(peer, message.id, file.bytes, mimeType, messageType, offset, descriptor.size());
+        emit messageMediaDataReceived(peer, message->id, file.bytes, mimeType, messageType, offset, descriptor.size());
     }
 }
 
@@ -2607,6 +2609,10 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
     connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(whenFileDataReceived(TLUploadFile,quint32,quint32)));
     connect(connection, SIGNAL(fileDataSent(quint32)), SLOT(whenFileDataUploaded(quint32)));
 
+    for (CTelegramModule *module : m_modules) {
+        module->onNewConnection(connection);
+    }
+
     return connection;
 }
 
@@ -2647,6 +2653,7 @@ void CTelegramDispatcher::clearMainConnection()
         return;
     }
     m_mainConnection->deleteLater();
+    m_mainConnection = nullptr;
 }
 
 void CTelegramDispatcher::clearExtraConnections()
@@ -2697,4 +2704,14 @@ TLDcOption CTelegramDispatcher::dcInfoById(quint32 dc) const
     }
 
     return TLDcOption();
+}
+
+const TLUser *CTelegramDispatcher::getUser(quint32 userId) const
+{
+    return m_users.value(userId);
+}
+
+const TLMessage *CTelegramDispatcher::getMessage(quint32 messageId) const
+{
+    return m_knownMediaMessages.value(messageId);
 }

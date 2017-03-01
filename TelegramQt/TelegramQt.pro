@@ -22,6 +22,7 @@ DEFINES += TELEGRAMQT_LIBRARY
 SOURCES = CTelegramCore.cpp \
     CAppInformation.cpp \
     CTelegramDispatcher.cpp \
+    CTelegramModule.cpp \
     CRawStream.cpp \
     CTelegramStream.cpp \
     Utils.cpp \
@@ -44,6 +45,7 @@ PUBLIC_HEADERS += \
 HEADERS = CTelegramCore.hpp \
     CAppInformation.hpp \
     CTelegramDispatcher.hpp \
+    CTelegramModule.hpp \
     CTelegramStream.hpp \
     CRawStream.hpp \
     Utils.hpp \
