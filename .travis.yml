@@ -2,6 +2,10 @@ os: linux
 sudo: required
 language: cpp
 compiler: gcc
+env:
+  - DEVELOPER_BUILD=true
+  - DEVELOPER_BUILD=false
+
 before_install:
   - sudo apt-add-repository -y ppa:roblib/ppa
   - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
@@ -16,7 +20,7 @@ before_script:
   - export PATH="$QTDIR/bin:$PATH"
   - qt54-env.sh
   - mkdir ../build; cd ../build
-  - cmake ../telegram-qt
+  - cmake -DDEVELOPER_BUILD=${DEVELOPER_BUILD} ../telegram-qt
 
 script:
   - make -j3 -k
