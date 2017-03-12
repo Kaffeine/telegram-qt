@@ -60,6 +60,14 @@ struct TLType {
 };
 
 struct TLMethod {
+    QString nameFirstCapital() const {
+        if (name.isEmpty()) {
+            return QString();
+        }
+        QString capital = name;
+        capital[0] = capital.at(0).toUpper();
+        return capital;
+    }
     QString name;
     quint32 id;
     QList< TLParam > params;

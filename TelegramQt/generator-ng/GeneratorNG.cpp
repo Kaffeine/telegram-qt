@@ -321,11 +321,7 @@ QString GeneratorNG::generateTLValuesDefinition(const TLType &type)
 
 QString GeneratorNG::generateTLValuesDefinition(const TLMethod &method)
 {
-    QString nameFirstCapital = method.name;
-    if (!nameFirstCapital.isEmpty()) {
-        nameFirstCapital[0] = nameFirstCapital.at(0).toUpper();
-    }
-    return QString("        %1 = 0x%2,\n").arg(nameFirstCapital).arg(method.id, 8, 0x10, QLatin1Char('0'));
+    return QString("        %1 = 0x%2,\n").arg(method.nameFirstCapital()).arg(method.id, 8, 0x10, QLatin1Char('0'));
 }
 
 QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
