@@ -343,8 +343,13 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
 //    QString copyOperator = spacing + QString("%1 &operator=(const %1 &%2) {\n").arg(type.name).arg(anotherName);
     QString membersCode;
 
+    QString isValidTypeCode = QStringLiteral(
+                "    bool isValid() const {\n"
+                "        switch (tlType) {\n");
+
     QStringList addedMembers;
     foreach (const TLSubType &subType, type.subTypes) {
+        isValidTypeCode.append(QStringLiteral("        case %1::%2:\n").arg(tlValueName, subType.name));
         foreach (const TLParam &member, subType.members) {
             if (addedMembers.contains(member.name)) {
                 continue;
@@ -378,6 +383,13 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
     constructor.chop(2);
     constructor.append(QLatin1String(" { }\n\n"));
 
+    isValidTypeCode.append(QStringLiteral(
+                               "            return true;\n"
+                               "        default:\n"
+                               "            return false;\n"
+                               "        };\n"
+                               "    }\n"));
+
 //    copyConstructor.chop(2);
 //    copyConstructor.append(QLatin1String(" { }\n\n"));
 
@@ -386,6 +398,7 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
     code.append(constructor);
 //    code.append(copyConstructor);
 //    code.append(copyOperator);
+    code.append(isValidTypeCode);
 
 //    code.append(QLatin1Char('\n'));
     code.append(membersCode);
