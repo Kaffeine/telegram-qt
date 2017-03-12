@@ -7,6 +7,7 @@ set(telegram_qt_SOURCES
     CTelegramModule.cpp
     CTelegramAuthModule.cpp
     CTelegramConnection.cpp
+    RpcProcessingContext.cpp
     CTelegramStream.cpp
     CTcpTransport.cpp
     CRawStream.cpp
@@ -34,6 +35,7 @@ set(telegram_qt_HEADERS
     telegramqt_global.h
     TelegramNamespace_p.hpp
     CTelegramStream.hpp
+    RpcProcessingContext.hpp
     CRawStream.hpp
     Utils.hpp
     FileRequestDescriptor.hpp

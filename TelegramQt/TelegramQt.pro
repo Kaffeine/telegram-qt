@@ -34,6 +34,7 @@ SOURCES = CTelegramCore.cpp \
     CTcpTransport.cpp \
     TelegramNamespace.cpp \
     CTelegramConnection.cpp \
+    RpcProcessingContext.cpp \
     TLValues.cpp
 
 PUBLIC_HEADERS += \
@@ -62,6 +63,7 @@ HEADERS = CTelegramCore.hpp \
     crypto-aes.hpp \
     crypto-rsa.hpp \
     CTelegramConnection.hpp \
+    RpcProcessingContext.hpp \
     TelegramNamespace.hpp \
     TelegramNamespace_p.hpp \
     telegramqt_global.h \
