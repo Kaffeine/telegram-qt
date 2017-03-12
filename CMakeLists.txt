@@ -20,7 +20,7 @@ option(STATIC_BUILD "Compile static library instead of shared" FALSE)
 # Add an option for building GeneratorNG
 option(BUILD_GENERATOR "Build protocol code generator" FALSE)
 # Add an option for dev build
-option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
+option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" TRUE)
 
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
