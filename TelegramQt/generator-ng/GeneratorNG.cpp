@@ -735,6 +735,23 @@ void GeneratorNG::getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vec
     while (!newUsedTypes.isEmpty()) {
         QStringList veryNewTypes;
         foreach (const QString &type, newUsedTypes) {
+            if (!m_types.contains(type)) {
+                QString bareType = getTypeOrVectorType(type);
+                if (nativeTypes.contains(bareType)) {
+                    continue;
+                }
+                if (bareType != type) { // Vector
+                    if (!vectors.contains(bareType)) {
+                        vectors.append(bareType);
+                    }
+                }
+                if (usedTypes.contains(bareType) || veryNewTypes.contains(bareType)) {
+                    continue;
+                }
+                veryNewTypes.append(bareType);
+                continue;
+            }
+
             const TLType t = m_types.value(type);
 
             foreach (const TLSubType &sub, t.subTypes) {
