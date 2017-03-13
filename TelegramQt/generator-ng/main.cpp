@@ -298,6 +298,9 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         return UnableToResolveTypes;
     }
 
+    generator.setExistsRpcProcessDefinitions(getPartiallyGeneratedContent(QStringLiteral("../CTelegramConnection.cpp"),
+                                                                          0,
+                                                                          QStringLiteral("Telegram API RPC process implementation")));
     generator.generate();
 
     replacingHelper(QLatin1String("../TLValues.hpp"), 8, QLatin1String("TLValues"), generator.codeOfTLValues);
@@ -310,6 +313,11 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("vector write templates instancing"), generator.codeStreamWriteTemplateInstancing);
     replacingHelper(QLatin1String("../CTelegramConnection.hpp"), 4, QLatin1String("Telegram API methods declaration"), generator.codeConnectionDeclarations);
     replacingHelper(QLatin1String("../CTelegramConnection.cpp"), 0, QLatin1String("Telegram API methods implementation"), generator.codeConnectionDefinitions);
+
+    replacingHelper(QLatin1String("../CTelegramConnection.hpp"), 4, QLatin1String("Telegram API RPC process declarations"), generator.codeRpcProcessDeclarations);
+    partialReplacingHelper(QLatin1String("../CTelegramConnection.cpp"), 0, QLatin1String("Telegram API RPC process implementation"), generator.codeRpcProcessDefinitions);
+    replacingHelper(QLatin1String("../CTelegramConnection.cpp"), 8, QLatin1String("RPC processing switch cases"), generator.codeRpcProcessSwitchCases);
+    replacingHelper(QLatin1String("../CTelegramConnection.cpp"), 8, QLatin1String("RPC processing switch updates cases"), generator.codeRpcProcessSwitchUpdatesCases);
 
     replacingHelper(QLatin1String("../TLTypesDebug.hpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDeclarations);
     replacingHelper(QLatin1String("../TLTypesDebug.cpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDefinitions);

@@ -80,6 +80,7 @@ public:
     bool loadFromJson(const QByteArray &data);
     bool loadFromText(const QByteArray &data);
     bool resolveTypes();
+    void setExistsRpcProcessDefinitions(const QString &code);
     void generate();
 
     static QString generateTLValuesDefinition(const TLType &type);
@@ -97,6 +98,9 @@ public:
 
     static QString generateConnectionMethodDeclaration(const TLMethod &method);
     static QString generateConnectionMethodDefinition(const TLMethod &method, QStringList &usedTypes);
+    static QString generateRpcProcessDeclaration(const TLMethod &method);
+    static QString generateRpcProcessSampleDefinition(const TLMethod &method);
+    static QString generateRpcProcessSwitchCase(const TLMethod &method);
 
     static QString generateDebugRpcParse(const TLMethod &method);
 
@@ -114,6 +118,11 @@ public:
     QString codeStreamWriteTemplateInstancing;
     QString codeConnectionDeclarations;
     QString codeConnectionDefinitions;
+    QString codeRpcProcessDeclarations;
+    QString codeRpcProcessDefinitions;
+    QString codeRpcProcessSwitchCases;
+    QString codeRpcProcessSwitchUpdatesCases;
+    QString existsCodeRpcProcessDefinitions;
     QString codeDebugWriteDeclarations;
     QString codeDebugWriteDefinitions;
     QString codeDebugRpcParse;

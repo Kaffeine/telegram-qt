@@ -601,6 +601,39 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
     return result;
 }
 
+QString GeneratorNG::generateRpcProcessSwitchCase(const TLMethod &method)
+{
+    static const QString codeTemplate = QStringLiteral(
+                "        case %1::%2:\n"
+                "            process%2(&context);\n"
+                "            break;\n"
+                );
+    return codeTemplate.arg(tlValueName, method.nameFirstCapital());
+}
+
+QString GeneratorNG::generateRpcProcessDeclaration(const TLMethod &method)
+{
+    return spacing + QString("void process%1(RpcProcessingContext *context);\n").arg(method.nameFirstCapital());
+}
+
+QString GeneratorNG::generateRpcProcessSampleDefinition(const TLMethod &method)
+{
+    QString result;
+    result += QString("void %1::process%2(RpcProcessingContext *context)\n{\n").arg(methodsClassName, method.nameFirstCapital());
+    result += spacing + QStringLiteral("qWarning() << Q_FUNC_INFO << \"Is not implemented yet\";\n");
+    if (podTypes.contains(method.type)) {
+        result += spacing + QStringLiteral("TLValue result; // %1\n").arg(method.type);
+        result += spacing + QStringLiteral("context->inputStream() >> result;\n");
+        result += spacing + QStringLiteral("context->setReadCode(result);\n");
+    } else {
+        result += spacing + QStringLiteral("%1 result;\n").arg(method.type);
+        result += spacing + QStringLiteral("context->readRpcResult(&result);\n");
+    }
+
+    result += QStringLiteral("}\n\n");
+    return result;
+}
+
 QString GeneratorNG::generateDebugRpcParse(const TLMethod &method)
 {
     QString result;
@@ -935,6 +968,11 @@ bool GeneratorNG::resolveTypes()
     return unresolved.isEmpty() && !m_solvedTypes.isEmpty();
 }
 
+void GeneratorNG::setExistsRpcProcessDefinitions(const QString &code)
+{
+    existsCodeRpcProcessDefinitions = code;
+}
+
 void GeneratorNG::generate()
 {
     codeOfTLValues.clear();
@@ -946,8 +984,13 @@ void GeneratorNG::generate()
     codeStreamWriteTemplateInstancing.clear();
     codeConnectionDeclarations.clear();
     codeConnectionDefinitions.clear();
+    codeRpcProcessDeclarations.clear();
+    codeRpcProcessDefinitions.clear();
+    codeRpcProcessSwitchCases.clear();
+    codeRpcProcessSwitchUpdatesCases.clear();
     codeDebugWriteDeclarations.clear();
     codeDebugWriteDefinitions.clear();
+    codeDebugRpcParse.clear();
 
     QStringList typesUsedForWrite;
     QStringList vectorUsedForWrite;
@@ -976,6 +1019,29 @@ void GeneratorNG::generate()
             codeConnectionDeclarations.append(generateConnectionMethodDeclaration(method));
             codeConnectionDefinitions.append(generateConnectionMethodDefinition(method, typesUsedForWrite));
 
+            if (method.type == QLatin1String("TLUpdates")) {
+                codeRpcProcessSwitchUpdatesCases.append(QStringLiteral("        case %1::%2:\n").arg(tlValueName, method.nameFirstCapital()));
+            } else {
+                codeRpcProcessDeclarations.append(generateRpcProcessDeclaration(method));
+
+                static const auto addDefinition = [&](const TLMethod &method) {
+                    const QString signature = QString("void %1::process%2(RpcProcessingContext *context)\n").arg(methodsClassName, method.nameFirstCapital());
+                    int index = existsCodeRpcProcessDefinitions.indexOf(signature);
+                    if (index >= 0) {
+                        int indexOfEnd = existsCodeRpcProcessDefinitions.indexOf(QLatin1String("\n}\n"), index);
+
+                        if (indexOfEnd > 0) {
+                            return existsCodeRpcProcessDefinitions.mid(index, indexOfEnd - index) + QLatin1String("\n}\n\n");
+                        } else {
+                            qWarning() << "Invalid input";
+                        }
+                    }
+                    return generateRpcProcessSampleDefinition(method);
+                };
+
+                codeRpcProcessDefinitions.append(addDefinition(method));
+                codeRpcProcessSwitchCases.append(generateRpcProcessSwitchCase(method));
+            }
             if (!usedTypes.contains(method.type)) {
                 usedTypes.append(method.type);
             }
