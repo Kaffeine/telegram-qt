@@ -33,6 +33,28 @@ public:
     inline TLVector(const TLVector<T> &v) : QVector<T>(v), tlType(v.tlType) { }
     inline TLVector(const QVector<T> &v) : QVector<T>(v), tlType(TLValue::Vector) { }
 
+    template<typename T2>
+    auto optionalIsValid(const T2 &obj) const -> decltype(obj.isValid())
+    {
+        return obj.isValid();
+    }
+    auto optionalIsValid(...) const -> bool
+    {
+        return true;
+    }
+
+    bool isValid() const {
+        if (tlType != TLValue::Vector) {
+            return false;
+        }
+        for (int i = 0; i < QVector<T>::size(); ++i) {
+            if (!optionalIsValid(QVector<T>::at(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     TLVector &operator=(const TLVector &v) {
         tlType = v.tlType;
         QVector<T>::operator =(v);
