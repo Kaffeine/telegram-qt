@@ -717,6 +717,31 @@ void dumpRpc(CTelegramStream &stream)
     }
         break;
 
+    case TLValue::InitConnection: {
+        qDebug() << request.toString();
+    }
+        break;
+
+    case TLValue::InvokeAfterMsg: {
+        qDebug() << request.toString();
+    }
+        break;
+
+    case TLValue::InvokeAfterMsgs: {
+        qDebug() << request.toString();
+    }
+        break;
+
+    case TLValue::InvokeWithLayer: {
+        qDebug() << request.toString();
+    }
+        break;
+
+    case TLValue::InvokeWithoutUpdates: {
+        qDebug() << request.toString();
+    }
+        break;
+
     case TLValue::MessagesAcceptEncryption: {
         TLInputEncryptedChat peer;
         stream >> peer;

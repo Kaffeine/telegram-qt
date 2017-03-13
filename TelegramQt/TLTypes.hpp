@@ -48,6 +48,14 @@ struct TLAccountDaysTTL {
         days(0),
         tlType(TLValue::AccountDaysTTL) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AccountDaysTTL:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 days;
     TLValue tlType;
 };
@@ -57,6 +65,15 @@ struct TLAccountPassword {
         hasRecovery(false),
         tlType(TLValue::AccountNoPassword) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AccountNoPassword:
+        case TLValue::AccountPassword:
+            return true;
+        default:
+            return false;
+        };
+    }
     QByteArray newSalt;
     QString emailUnconfirmedPattern;
     QByteArray currentSalt;
@@ -70,6 +87,14 @@ struct TLAccountPasswordInputSettings {
         flags(0),
         tlType(TLValue::AccountPasswordInputSettings) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AccountPasswordInputSettings:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 flags;
     QByteArray newSalt;
     QByteArray newPasswordHash;
@@ -82,6 +107,14 @@ struct TLAccountPasswordSettings {
     TLAccountPasswordSettings() :
         tlType(TLValue::AccountPasswordSettings) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AccountPasswordSettings:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString email;
     TLValue tlType;
 };
@@ -91,6 +124,14 @@ struct TLAccountSentChangePhoneCode {
         sendCallTimeout(0),
         tlType(TLValue::AccountSentChangePhoneCode) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AccountSentChangePhoneCode:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString phoneCodeHash;
     quint32 sendCallTimeout;
     TLValue tlType;
@@ -106,6 +147,15 @@ struct TLAudio {
         dcId(0),
         tlType(TLValue::AudioEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AudioEmpty:
+        case TLValue::Audio:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     quint32 date;
@@ -121,6 +171,14 @@ struct TLAuthCheckedPhone {
         phoneRegistered(false),
         tlType(TLValue::AuthCheckedPhone) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AuthCheckedPhone:
+            return true;
+        default:
+            return false;
+        };
+    }
     bool phoneRegistered;
     TLValue tlType;
 };
@@ -130,6 +188,14 @@ struct TLAuthExportedAuthorization {
         id(0),
         tlType(TLValue::AuthExportedAuthorization) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AuthExportedAuthorization:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 id;
     QByteArray bytes;
     TLValue tlType;
@@ -139,6 +205,14 @@ struct TLAuthPasswordRecovery {
     TLAuthPasswordRecovery() :
         tlType(TLValue::AuthPasswordRecovery) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AuthPasswordRecovery:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString emailPattern;
     TLValue tlType;
 };
@@ -150,6 +224,15 @@ struct TLAuthSentCode {
         isPassword(false),
         tlType(TLValue::AuthSentCode) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AuthSentCode:
+        case TLValue::AuthSentAppCode:
+            return true;
+        default:
+            return false;
+        };
+    }
     bool phoneRegistered;
     QString phoneCodeHash;
     quint32 sendCallTimeout;
@@ -166,6 +249,14 @@ struct TLAuthorization {
         dateActive(0),
         tlType(TLValue::Authorization) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::Authorization:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 hash;
     quint32 flags;
     QString deviceModel;
@@ -186,6 +277,14 @@ struct TLBotCommand {
     TLBotCommand() :
         tlType(TLValue::BotCommand) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::BotCommand:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString command;
     QString description;
     TLValue tlType;
@@ -197,6 +296,15 @@ struct TLBotInfo {
         version(0),
         tlType(TLValue::BotInfoEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::BotInfoEmpty:
+        case TLValue::BotInfo:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     quint32 version;
     QString shareText;
@@ -213,6 +321,19 @@ struct TLChannelParticipant {
         kickedBy(0),
         tlType(TLValue::ChannelParticipant) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChannelParticipant:
+        case TLValue::ChannelParticipantSelf:
+        case TLValue::ChannelParticipantModerator:
+        case TLValue::ChannelParticipantEditor:
+        case TLValue::ChannelParticipantKicked:
+        case TLValue::ChannelParticipantCreator:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     quint32 date;
     quint32 inviterId;
@@ -224,6 +345,16 @@ struct TLChannelParticipantRole {
     TLChannelParticipantRole() :
         tlType(TLValue::ChannelRoleEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChannelRoleEmpty:
+        case TLValue::ChannelRoleModerator:
+        case TLValue::ChannelRoleEditor:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLValue tlType;
 };
 
@@ -231,6 +362,16 @@ struct TLChannelParticipantsFilter {
     TLChannelParticipantsFilter() :
         tlType(TLValue::ChannelParticipantsRecent) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChannelParticipantsRecent:
+        case TLValue::ChannelParticipantsAdmins:
+        case TLValue::ChannelParticipantsKicked:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLValue tlType;
 };
 
@@ -241,6 +382,14 @@ struct TLChatParticipant {
         date(0),
         tlType(TLValue::ChatParticipant) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChatParticipant:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     quint32 inviterId;
     quint32 date;
@@ -255,6 +404,15 @@ struct TLChatParticipants {
         version(0),
         tlType(TLValue::ChatParticipantsForbidden) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChatParticipantsForbidden:
+        case TLValue::ChatParticipants:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 flags;
     quint32 chatId;
     TLChatParticipant selfParticipant;
@@ -270,6 +428,14 @@ struct TLContact {
         mutual(false),
         tlType(TLValue::Contact) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::Contact:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     bool mutual;
     TLValue tlType;
@@ -281,6 +447,14 @@ struct TLContactBlocked {
         date(0),
         tlType(TLValue::ContactBlocked) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactBlocked:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     quint32 date;
     TLValue tlType;
@@ -290,6 +464,17 @@ struct TLContactLink {
     TLContactLink() :
         tlType(TLValue::ContactLinkUnknown) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactLinkUnknown:
+        case TLValue::ContactLinkNone:
+        case TLValue::ContactLinkHasPhone:
+        case TLValue::ContactLinkContact:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLValue tlType;
 };
 
@@ -299,6 +484,14 @@ struct TLContactSuggested {
         mutualContacts(0),
         tlType(TLValue::ContactSuggested) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactSuggested:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     quint32 mutualContacts;
     TLValue tlType;
@@ -311,6 +504,14 @@ struct TLDcOption {
         port(0),
         tlType(TLValue::DcOption) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::DcOption:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 flags;
     quint32 id;
     QString ipAddress;
@@ -322,6 +523,14 @@ struct TLDisabledFeature {
     TLDisabledFeature() :
         tlType(TLValue::DisabledFeature) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::DisabledFeature:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString feature;
     QString description;
     TLValue tlType;
@@ -337,6 +546,18 @@ struct TLEncryptedChat {
         keyFingerprint(0),
         tlType(TLValue::EncryptedChatEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::EncryptedChatEmpty:
+        case TLValue::EncryptedChatWaiting:
+        case TLValue::EncryptedChatRequested:
+        case TLValue::EncryptedChat:
+        case TLValue::EncryptedChatDiscarded:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 id;
     quint64 accessHash;
     quint32 date;
@@ -357,6 +578,15 @@ struct TLEncryptedFile {
         keyFingerprint(0),
         tlType(TLValue::EncryptedFileEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::EncryptedFileEmpty:
+        case TLValue::EncryptedFile:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     quint32 size;
@@ -372,6 +602,15 @@ struct TLEncryptedMessage {
         date(0),
         tlType(TLValue::EncryptedMessage) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::EncryptedMessage:
+        case TLValue::EncryptedMessageService:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 randomId;
     quint32 chatId;
     quint32 date;
@@ -385,6 +624,14 @@ struct TLError {
         code(0),
         tlType(TLValue::Error) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::Error:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 code;
     QString text;
     TLValue tlType;
@@ -394,6 +641,15 @@ struct TLExportedChatInvite {
     TLExportedChatInvite() :
         tlType(TLValue::ChatInviteEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChatInviteEmpty:
+        case TLValue::ChatInviteExported:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString link;
     TLValue tlType;
 };
@@ -406,6 +662,15 @@ struct TLFileLocation {
         dcId(0),
         tlType(TLValue::FileLocationUnavailable) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::FileLocationUnavailable:
+        case TLValue::FileLocation:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 volumeId;
     quint32 localId;
     quint64 secret;
@@ -419,6 +684,15 @@ struct TLGeoPoint {
         latitude(0),
         tlType(TLValue::GeoPointEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::GeoPointEmpty:
+        case TLValue::GeoPoint:
+            return true;
+        default:
+            return false;
+        };
+    }
     double longitude;
     double latitude;
     TLValue tlType;
@@ -428,6 +702,15 @@ struct TLHelpAppChangelog {
     TLHelpAppChangelog() :
         tlType(TLValue::HelpAppChangelogEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::HelpAppChangelogEmpty:
+        case TLValue::HelpAppChangelog:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString text;
     TLValue tlType;
 };
@@ -438,6 +721,15 @@ struct TLHelpAppUpdate {
         critical(false),
         tlType(TLValue::HelpAppUpdate) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::HelpAppUpdate:
+        case TLValue::HelpNoAppUpdate:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 id;
     bool critical;
     QString url;
@@ -449,6 +741,14 @@ struct TLHelpInviteText {
     TLHelpInviteText() :
         tlType(TLValue::HelpInviteText) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::HelpInviteText:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString message;
     TLValue tlType;
 };
@@ -459,6 +759,14 @@ struct TLImportedContact {
         clientId(0),
         tlType(TLValue::ImportedContact) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ImportedContact:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     quint64 clientId;
     TLValue tlType;
@@ -470,6 +778,14 @@ struct TLInputAppEvent {
         peer(0),
         tlType(TLValue::InputAppEvent) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputAppEvent:
+            return true;
+        default:
+            return false;
+        };
+    }
     double time;
     QString type;
     quint64 peer;
@@ -483,6 +799,15 @@ struct TLInputAudio {
         accessHash(0),
         tlType(TLValue::InputAudioEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputAudioEmpty:
+        case TLValue::InputAudio:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     TLValue tlType;
@@ -494,6 +819,15 @@ struct TLInputChannel {
         accessHash(0),
         tlType(TLValue::InputChannelEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputChannelEmpty:
+        case TLValue::InputChannel:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 channelId;
     quint64 accessHash;
     TLValue tlType;
@@ -504,6 +838,14 @@ struct TLInputContact {
         clientId(0),
         tlType(TLValue::InputPhoneContact) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputPhoneContact:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 clientId;
     QString phone;
     QString firstName;
@@ -517,6 +859,15 @@ struct TLInputDocument {
         accessHash(0),
         tlType(TLValue::InputDocumentEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputDocumentEmpty:
+        case TLValue::InputDocument:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     TLValue tlType;
@@ -528,6 +879,14 @@ struct TLInputEncryptedChat {
         accessHash(0),
         tlType(TLValue::InputEncryptedChat) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputEncryptedChat:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 chatId;
     quint64 accessHash;
     TLValue tlType;
@@ -541,6 +900,17 @@ struct TLInputEncryptedFile {
         accessHash(0),
         tlType(TLValue::InputEncryptedFileEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputEncryptedFileEmpty:
+        case TLValue::InputEncryptedFileUploaded:
+        case TLValue::InputEncryptedFile:
+        case TLValue::InputEncryptedFileBigUploaded:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint32 parts;
     QString md5Checksum;
@@ -555,6 +925,15 @@ struct TLInputFile {
         parts(0),
         tlType(TLValue::InputFile) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputFile:
+        case TLValue::InputFileBig:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint32 parts;
     QString name;
@@ -571,6 +950,18 @@ struct TLInputFileLocation {
         accessHash(0),
         tlType(TLValue::InputFileLocation) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputFileLocation:
+        case TLValue::InputVideoFileLocation:
+        case TLValue::InputEncryptedFileLocation:
+        case TLValue::InputAudioFileLocation:
+        case TLValue::InputDocumentFileLocation:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 volumeId;
     quint32 localId;
     quint64 secret;
@@ -585,6 +976,15 @@ struct TLInputGeoPoint {
         longitude(0),
         tlType(TLValue::InputGeoPointEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputGeoPointEmpty:
+        case TLValue::InputGeoPoint:
+            return true;
+        default:
+            return false;
+        };
+    }
     double latitude;
     double longitude;
     TLValue tlType;
@@ -598,6 +998,18 @@ struct TLInputPeer {
         channelId(0),
         tlType(TLValue::InputPeerEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputPeerEmpty:
+        case TLValue::InputPeerSelf:
+        case TLValue::InputPeerChat:
+        case TLValue::InputPeerUser:
+        case TLValue::InputPeerChannel:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 chatId;
     quint32 userId;
     quint64 accessHash;
@@ -609,6 +1021,15 @@ struct TLInputPeerNotifyEvents {
     TLInputPeerNotifyEvents() :
         tlType(TLValue::InputPeerNotifyEventsEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputPeerNotifyEventsEmpty:
+        case TLValue::InputPeerNotifyEventsAll:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLValue tlType;
 };
 
@@ -619,6 +1040,14 @@ struct TLInputPeerNotifySettings {
         eventsMask(0),
         tlType(TLValue::InputPeerNotifySettings) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputPeerNotifySettings:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 muteUntil;
     QString sound;
     bool showPreviews;
@@ -632,6 +1061,15 @@ struct TLInputPhoto {
         accessHash(0),
         tlType(TLValue::InputPhotoEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputPhotoEmpty:
+        case TLValue::InputPhoto:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     TLValue tlType;
@@ -644,6 +1082,15 @@ struct TLInputPhotoCrop {
         cropWidth(0),
         tlType(TLValue::InputPhotoCropAuto) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputPhotoCropAuto:
+        case TLValue::InputPhotoCrop:
+            return true;
+        default:
+            return false;
+        };
+    }
     double cropLeft;
     double cropTop;
     double cropWidth;
@@ -654,6 +1101,14 @@ struct TLInputPrivacyKey {
     TLInputPrivacyKey() :
         tlType(TLValue::InputPrivacyKeyStatusTimestamp) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputPrivacyKeyStatusTimestamp:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLValue tlType;
 };
 
@@ -663,6 +1118,16 @@ struct TLInputStickerSet {
         accessHash(0),
         tlType(TLValue::InputStickerSetEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputStickerSetEmpty:
+        case TLValue::InputStickerSetID:
+        case TLValue::InputStickerSetShortName:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     QString shortName;
@@ -675,6 +1140,16 @@ struct TLInputUser {
         accessHash(0),
         tlType(TLValue::InputUserEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputUserEmpty:
+        case TLValue::InputUserSelf:
+        case TLValue::InputUser:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     quint64 accessHash;
     TLValue tlType;
@@ -686,6 +1161,15 @@ struct TLInputVideo {
         accessHash(0),
         tlType(TLValue::InputVideoEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputVideoEmpty:
+        case TLValue::InputVideo:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     TLValue tlType;
@@ -695,6 +1179,14 @@ struct TLKeyboardButton {
     TLKeyboardButton() :
         tlType(TLValue::KeyboardButton) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::KeyboardButton:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString text;
     TLValue tlType;
 };
@@ -703,6 +1195,14 @@ struct TLKeyboardButtonRow {
     TLKeyboardButtonRow() :
         tlType(TLValue::KeyboardButtonRow) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::KeyboardButtonRow:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLKeyboardButton> buttons;
     TLValue tlType;
 };
@@ -713,6 +1213,24 @@ struct TLMessageEntity {
         length(0),
         tlType(TLValue::MessageEntityUnknown) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessageEntityUnknown:
+        case TLValue::MessageEntityMention:
+        case TLValue::MessageEntityHashtag:
+        case TLValue::MessageEntityBotCommand:
+        case TLValue::MessageEntityUrl:
+        case TLValue::MessageEntityEmail:
+        case TLValue::MessageEntityBold:
+        case TLValue::MessageEntityItalic:
+        case TLValue::MessageEntityCode:
+        case TLValue::MessageEntityPre:
+        case TLValue::MessageEntityTextUrl:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 offset;
     quint32 length;
     QString language;
@@ -728,6 +1246,14 @@ struct TLMessageGroup {
         date(0),
         tlType(TLValue::MessageGroup) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessageGroup:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 minId;
     quint32 maxId;
     quint32 count;
@@ -741,6 +1267,14 @@ struct TLMessageRange {
         maxId(0),
         tlType(TLValue::MessageRange) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessageRange:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 minId;
     quint32 maxId;
     TLValue tlType;
@@ -753,6 +1287,14 @@ struct TLMessagesAffectedHistory {
         offset(0),
         tlType(TLValue::MessagesAffectedHistory) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesAffectedHistory:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 pts;
     quint32 ptsCount;
     quint32 offset;
@@ -765,6 +1307,14 @@ struct TLMessagesAffectedMessages {
         ptsCount(0),
         tlType(TLValue::MessagesAffectedMessages) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesAffectedMessages:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 pts;
     quint32 ptsCount;
     TLValue tlType;
@@ -776,6 +1326,15 @@ struct TLMessagesDhConfig {
         version(0),
         tlType(TLValue::MessagesDhConfigNotModified) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesDhConfigNotModified:
+        case TLValue::MessagesDhConfig:
+            return true;
+        default:
+            return false;
+        };
+    }
     QByteArray random;
     quint32 g;
     QByteArray p;
@@ -787,6 +1346,22 @@ struct TLMessagesFilter {
     TLMessagesFilter() :
         tlType(TLValue::InputMessagesFilterEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputMessagesFilterEmpty:
+        case TLValue::InputMessagesFilterPhotos:
+        case TLValue::InputMessagesFilterVideo:
+        case TLValue::InputMessagesFilterPhotoVideo:
+        case TLValue::InputMessagesFilterPhotoVideoDocuments:
+        case TLValue::InputMessagesFilterDocument:
+        case TLValue::InputMessagesFilterAudio:
+        case TLValue::InputMessagesFilterAudioDocuments:
+        case TLValue::InputMessagesFilterUrl:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLValue tlType;
 };
 
@@ -795,6 +1370,15 @@ struct TLMessagesSentEncryptedMessage {
         date(0),
         tlType(TLValue::MessagesSentEncryptedMessage) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesSentEncryptedMessage:
+        case TLValue::MessagesSentEncryptedFile:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 date;
     TLEncryptedFile file;
     TLValue tlType;
@@ -806,6 +1390,14 @@ struct TLNearestDc {
         nearestDc(0),
         tlType(TLValue::NearestDc) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::NearestDc:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString country;
     quint32 thisDc;
     quint32 nearestDc;
@@ -819,6 +1411,16 @@ struct TLPeer {
         channelId(0),
         tlType(TLValue::PeerUser) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::PeerUser:
+        case TLValue::PeerChat:
+        case TLValue::PeerChannel:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     quint32 chatId;
     quint32 channelId;
@@ -829,6 +1431,15 @@ struct TLPeerNotifyEvents {
     TLPeerNotifyEvents() :
         tlType(TLValue::PeerNotifyEventsEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::PeerNotifyEventsEmpty:
+        case TLValue::PeerNotifyEventsAll:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLValue tlType;
 };
 
@@ -839,6 +1450,15 @@ struct TLPeerNotifySettings {
         eventsMask(0),
         tlType(TLValue::PeerNotifySettingsEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::PeerNotifySettingsEmpty:
+        case TLValue::PeerNotifySettings:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 muteUntil;
     QString sound;
     bool showPreviews;
@@ -853,6 +1473,16 @@ struct TLPhotoSize {
         size(0),
         tlType(TLValue::PhotoSizeEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::PhotoSizeEmpty:
+        case TLValue::PhotoSize:
+        case TLValue::PhotoCachedSize:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString type;
     TLFileLocation location;
     quint32 w;
@@ -866,6 +1496,14 @@ struct TLPrivacyKey {
     TLPrivacyKey() :
         tlType(TLValue::PrivacyKeyStatusTimestamp) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::PrivacyKeyStatusTimestamp:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLValue tlType;
 };
 
@@ -873,6 +1511,19 @@ struct TLPrivacyRule {
     TLPrivacyRule() :
         tlType(TLValue::PrivacyValueAllowContacts) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::PrivacyValueAllowContacts:
+        case TLValue::PrivacyValueAllowAll:
+        case TLValue::PrivacyValueAllowUsers:
+        case TLValue::PrivacyValueDisallowContacts:
+        case TLValue::PrivacyValueDisallowAll:
+        case TLValue::PrivacyValueDisallowUsers:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<quint32> users;
     TLValue tlType;
 };
@@ -883,6 +1534,14 @@ struct TLReceivedNotifyMessage {
         flags(0),
         tlType(TLValue::ReceivedNotifyMessage) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ReceivedNotifyMessage:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 id;
     quint32 flags;
     TLValue tlType;
@@ -893,6 +1552,16 @@ struct TLReplyMarkup {
         flags(0),
         tlType(TLValue::ReplyKeyboardHide) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ReplyKeyboardHide:
+        case TLValue::ReplyKeyboardForceReply:
+        case TLValue::ReplyKeyboardMarkup:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 flags;
     TLVector<TLKeyboardButtonRow> rows;
     TLValue tlType;
@@ -903,6 +1572,23 @@ struct TLSendMessageAction {
         progress(0),
         tlType(TLValue::SendMessageTypingAction) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::SendMessageTypingAction:
+        case TLValue::SendMessageCancelAction:
+        case TLValue::SendMessageRecordVideoAction:
+        case TLValue::SendMessageUploadVideoAction:
+        case TLValue::SendMessageRecordAudioAction:
+        case TLValue::SendMessageUploadAudioAction:
+        case TLValue::SendMessageUploadPhotoAction:
+        case TLValue::SendMessageUploadDocumentAction:
+        case TLValue::SendMessageGeoLocationAction:
+        case TLValue::SendMessageChooseContactAction:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 progress;
     TLValue tlType;
 };
@@ -911,6 +1597,14 @@ struct TLStickerPack {
     TLStickerPack() :
         tlType(TLValue::StickerPack) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::StickerPack:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString emoticon;
     TLVector<quint64> documents;
     TLValue tlType;
@@ -925,6 +1619,14 @@ struct TLStickerSet {
         hash(0),
         tlType(TLValue::StickerSet) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::StickerSet:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 flags;
     quint64 id;
     quint64 accessHash;
@@ -939,6 +1641,23 @@ struct TLStorageFileType {
     TLStorageFileType() :
         tlType(TLValue::StorageFileUnknown) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::StorageFileUnknown:
+        case TLValue::StorageFileJpeg:
+        case TLValue::StorageFileGif:
+        case TLValue::StorageFilePng:
+        case TLValue::StorageFilePdf:
+        case TLValue::StorageFileMp3:
+        case TLValue::StorageFileMov:
+        case TLValue::StorageFilePartial:
+        case TLValue::StorageFileMp4:
+        case TLValue::StorageFileWebp:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLValue tlType;
 };
 
@@ -951,6 +1670,14 @@ struct TLUpdatesState {
         unreadCount(0),
         tlType(TLValue::UpdatesState) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UpdatesState:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 pts;
     quint32 qts;
     quint32 date;
@@ -964,6 +1691,14 @@ struct TLUploadFile {
         mtime(0),
         tlType(TLValue::UploadFile) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UploadFile:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLStorageFileType type;
     quint32 mtime;
     QByteArray bytes;
@@ -975,6 +1710,15 @@ struct TLUserProfilePhoto {
         photoId(0),
         tlType(TLValue::UserProfilePhotoEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UserProfilePhotoEmpty:
+        case TLValue::UserProfilePhoto:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 photoId;
     TLFileLocation photoSmall;
     TLFileLocation photoBig;
@@ -987,6 +1731,19 @@ struct TLUserStatus {
         wasOnline(0),
         tlType(TLValue::UserStatusEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UserStatusEmpty:
+        case TLValue::UserStatusOnline:
+        case TLValue::UserStatusOffline:
+        case TLValue::UserStatusRecently:
+        case TLValue::UserStatusLastWeek:
+        case TLValue::UserStatusLastMonth:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 expires;
     quint32 wasOnline;
     TLValue tlType;
@@ -1004,6 +1761,15 @@ struct TLVideo {
         h(0),
         tlType(TLValue::VideoEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::VideoEmpty:
+        case TLValue::Video:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     quint32 date;
@@ -1024,6 +1790,15 @@ struct TLWallPaper {
         bgColor(0),
         tlType(TLValue::WallPaper) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::WallPaper:
+        case TLValue::WallPaperSolid:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 id;
     QString title;
     TLVector<TLPhotoSize> sizes;
@@ -1036,6 +1811,14 @@ struct TLAccountAuthorizations {
     TLAccountAuthorizations() :
         tlType(TLValue::AccountAuthorizations) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AccountAuthorizations:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLAuthorization> authorizations;
     TLValue tlType;
 };
@@ -1045,6 +1828,16 @@ struct TLChannelMessagesFilter {
         flags(0),
         tlType(TLValue::ChannelMessagesFilterEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChannelMessagesFilterEmpty:
+        case TLValue::ChannelMessagesFilter:
+        case TLValue::ChannelMessagesFilterCollapsed:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 flags;
     TLVector<TLMessageRange> ranges;
     TLValue tlType;
@@ -1054,6 +1847,15 @@ struct TLChatPhoto {
     TLChatPhoto() :
         tlType(TLValue::ChatPhotoEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChatPhotoEmpty:
+        case TLValue::ChatPhoto:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLFileLocation photoSmall;
     TLFileLocation photoBig;
     TLValue tlType;
@@ -1079,6 +1881,14 @@ struct TLConfig {
         pushChatLimit(0),
         tlType(TLValue::Config) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::Config:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 date;
     quint32 expires;
     bool testMode;
@@ -1105,6 +1915,14 @@ struct TLContactStatus {
         userId(0),
         tlType(TLValue::ContactStatus) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactStatus:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 userId;
     TLUserStatus status;
     TLValue tlType;
@@ -1120,6 +1938,15 @@ struct TLDialog {
         pts(0),
         tlType(TLValue::Dialog) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::Dialog:
+        case TLValue::DialogChannel:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLPeer peer;
     quint32 topMessage;
     quint32 readInboxMaxId;
@@ -1138,6 +1965,19 @@ struct TLDocumentAttribute {
         duration(0),
         tlType(TLValue::DocumentAttributeImageSize) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::DocumentAttributeImageSize:
+        case TLValue::DocumentAttributeAnimated:
+        case TLValue::DocumentAttributeSticker:
+        case TLValue::DocumentAttributeVideo:
+        case TLValue::DocumentAttributeAudio:
+        case TLValue::DocumentAttributeFilename:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 w;
     quint32 h;
     QString alt;
@@ -1153,6 +1993,16 @@ struct TLInputChatPhoto {
     TLInputChatPhoto() :
         tlType(TLValue::InputChatPhotoEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputChatPhotoEmpty:
+        case TLValue::InputChatUploadedPhoto:
+        case TLValue::InputChatPhoto:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLInputFile file;
     TLInputPhotoCrop crop;
     TLInputPhoto id;
@@ -1166,6 +2016,27 @@ struct TLInputMedia {
         h(0),
         tlType(TLValue::InputMediaEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputMediaEmpty:
+        case TLValue::InputMediaUploadedPhoto:
+        case TLValue::InputMediaPhoto:
+        case TLValue::InputMediaGeoPoint:
+        case TLValue::InputMediaContact:
+        case TLValue::InputMediaUploadedVideo:
+        case TLValue::InputMediaUploadedThumbVideo:
+        case TLValue::InputMediaVideo:
+        case TLValue::InputMediaUploadedAudio:
+        case TLValue::InputMediaAudio:
+        case TLValue::InputMediaUploadedDocument:
+        case TLValue::InputMediaUploadedThumbDocument:
+        case TLValue::InputMediaDocument:
+        case TLValue::InputMediaVenue:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLInputFile file;
     QString caption;
     TLInputPhoto idInputPhoto;
@@ -1193,6 +2064,17 @@ struct TLInputNotifyPeer {
     TLInputNotifyPeer() :
         tlType(TLValue::InputNotifyPeer) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputNotifyPeer:
+        case TLValue::InputNotifyUsers:
+        case TLValue::InputNotifyChats:
+        case TLValue::InputNotifyAll:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLInputPeer peer;
     TLValue tlType;
 };
@@ -1201,6 +2083,19 @@ struct TLInputPrivacyRule {
     TLInputPrivacyRule() :
         tlType(TLValue::InputPrivacyValueAllowContacts) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputPrivacyValueAllowContacts:
+        case TLValue::InputPrivacyValueAllowAll:
+        case TLValue::InputPrivacyValueAllowUsers:
+        case TLValue::InputPrivacyValueDisallowContacts:
+        case TLValue::InputPrivacyValueDisallowAll:
+        case TLValue::InputPrivacyValueDisallowUsers:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLInputUser> users;
     TLValue tlType;
 };
@@ -1209,6 +2104,15 @@ struct TLMessagesAllStickers {
     TLMessagesAllStickers() :
         tlType(TLValue::MessagesAllStickersNotModified) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesAllStickersNotModified:
+        case TLValue::MessagesAllStickers:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString hash;
     TLVector<TLStickerSet> sets;
     TLValue tlType;
@@ -1218,6 +2122,17 @@ struct TLNotifyPeer {
     TLNotifyPeer() :
         tlType(TLValue::NotifyPeer) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::NotifyPeer:
+        case TLValue::NotifyUsers:
+        case TLValue::NotifyChats:
+        case TLValue::NotifyAll:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLPeer peer;
     TLValue tlType;
 };
@@ -1229,6 +2144,15 @@ struct TLPhoto {
         date(0),
         tlType(TLValue::PhotoEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::PhotoEmpty:
+        case TLValue::Photo:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     quint32 date;
@@ -1244,6 +2168,15 @@ struct TLUser {
         botInfoVersion(0),
         tlType(TLValue::UserEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UserEmpty:
+        case TLValue::User:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 id;
     quint32 flags;
     quint64 accessHash;
@@ -1261,6 +2194,14 @@ struct TLAccountPrivacyRules {
     TLAccountPrivacyRules() :
         tlType(TLValue::AccountPrivacyRules) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AccountPrivacyRules:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLPrivacyRule> rules;
     TLVector<TLUser> users;
     TLValue tlType;
@@ -1270,6 +2211,14 @@ struct TLAuthAuthorization {
     TLAuthAuthorization() :
         tlType(TLValue::AuthAuthorization) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::AuthAuthorization:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLUser user;
     TLValue tlType;
 };
@@ -1278,6 +2227,14 @@ struct TLChannelsChannelParticipant {
     TLChannelsChannelParticipant() :
         tlType(TLValue::ChannelsChannelParticipant) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChannelsChannelParticipant:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLChannelParticipant participant;
     TLVector<TLUser> users;
     TLValue tlType;
@@ -1288,6 +2245,14 @@ struct TLChannelsChannelParticipants {
         count(0),
         tlType(TLValue::ChannelsChannelParticipants) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChannelsChannelParticipants:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 count;
     TLVector<TLChannelParticipant> participants;
     TLVector<TLUser> users;
@@ -1304,6 +2269,18 @@ struct TLChat {
         accessHash(0),
         tlType(TLValue::ChatEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChatEmpty:
+        case TLValue::Chat:
+        case TLValue::ChatForbidden:
+        case TLValue::Channel:
+        case TLValue::ChannelForbidden:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 id;
     quint32 flags;
     QString title;
@@ -1328,6 +2305,15 @@ struct TLChatFull {
         unreadImportantCount(0),
         tlType(TLValue::ChatFull) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChatFull:
+        case TLValue::ChannelFull:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 id;
     TLChatParticipants participants;
     TLPhoto chatPhoto;
@@ -1350,6 +2336,15 @@ struct TLChatInvite {
         flags(0),
         tlType(TLValue::ChatInviteAlready) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ChatInviteAlready:
+        case TLValue::ChatInvite:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLChat chat;
     quint32 flags;
     QString title;
@@ -1361,6 +2356,15 @@ struct TLContactsBlocked {
         count(0),
         tlType(TLValue::ContactsBlocked) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactsBlocked:
+        case TLValue::ContactsBlockedSlice:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLContactBlocked> blocked;
     TLVector<TLUser> users;
     quint32 count;
@@ -1371,6 +2375,15 @@ struct TLContactsContacts {
     TLContactsContacts() :
         tlType(TLValue::ContactsContactsNotModified) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactsContactsNotModified:
+        case TLValue::ContactsContacts:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLContact> contacts;
     TLVector<TLUser> users;
     TLValue tlType;
@@ -1380,6 +2393,14 @@ struct TLContactsFound {
     TLContactsFound() :
         tlType(TLValue::ContactsFound) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactsFound:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLPeer> results;
     TLVector<TLChat> chats;
     TLVector<TLUser> users;
@@ -1390,6 +2411,14 @@ struct TLContactsImportedContacts {
     TLContactsImportedContacts() :
         tlType(TLValue::ContactsImportedContacts) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactsImportedContacts:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLImportedContact> imported;
     TLVector<quint64> retryContacts;
     TLVector<TLUser> users;
@@ -1400,6 +2429,14 @@ struct TLContactsLink {
     TLContactsLink() :
         tlType(TLValue::ContactsLink) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactsLink:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLContactLink myLink;
     TLContactLink foreignLink;
     TLUser user;
@@ -1410,6 +2447,14 @@ struct TLContactsResolvedPeer {
     TLContactsResolvedPeer() :
         tlType(TLValue::ContactsResolvedPeer) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactsResolvedPeer:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLPeer peer;
     TLVector<TLChat> chats;
     TLVector<TLUser> users;
@@ -1420,6 +2465,14 @@ struct TLContactsSuggested {
     TLContactsSuggested() :
         tlType(TLValue::ContactsSuggested) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ContactsSuggested:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLContactSuggested> results;
     TLVector<TLUser> users;
     TLValue tlType;
@@ -1434,6 +2487,15 @@ struct TLDocument {
         dcId(0),
         tlType(TLValue::DocumentEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::DocumentEmpty:
+        case TLValue::Document:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint64 accessHash;
     quint32 date;
@@ -1449,6 +2511,14 @@ struct TLHelpSupport {
     TLHelpSupport() :
         tlType(TLValue::HelpSupport) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::HelpSupport:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString phoneNumber;
     TLUser user;
     TLValue tlType;
@@ -1460,6 +2530,22 @@ struct TLMessageAction {
         inviterId(0),
         tlType(TLValue::MessageActionEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessageActionEmpty:
+        case TLValue::MessageActionChatCreate:
+        case TLValue::MessageActionChatEditTitle:
+        case TLValue::MessageActionChatEditPhoto:
+        case TLValue::MessageActionChatDeletePhoto:
+        case TLValue::MessageActionChatAddUser:
+        case TLValue::MessageActionChatDeleteUser:
+        case TLValue::MessageActionChatJoinedByLink:
+        case TLValue::MessageActionChannelCreate:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString title;
     TLVector<quint32> users;
     TLPhoto photo;
@@ -1472,6 +2558,14 @@ struct TLMessagesChatFull {
     TLMessagesChatFull() :
         tlType(TLValue::MessagesChatFull) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesChatFull:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLChatFull fullChat;
     TLVector<TLChat> chats;
     TLVector<TLUser> users;
@@ -1482,6 +2576,14 @@ struct TLMessagesChats {
     TLMessagesChats() :
         tlType(TLValue::MessagesChats) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesChats:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLChat> chats;
     TLValue tlType;
 };
@@ -1490,6 +2592,14 @@ struct TLMessagesStickerSet {
     TLMessagesStickerSet() :
         tlType(TLValue::MessagesStickerSet) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesStickerSet:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLStickerSet set;
     TLVector<TLStickerPack> packs;
     TLVector<TLDocument> documents;
@@ -1500,6 +2610,15 @@ struct TLMessagesStickers {
     TLMessagesStickers() :
         tlType(TLValue::MessagesStickersNotModified) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesStickersNotModified:
+        case TLValue::MessagesStickers:
+            return true;
+        default:
+            return false;
+        };
+    }
     QString hash;
     TLVector<TLDocument> stickers;
     TLValue tlType;
@@ -1509,6 +2628,14 @@ struct TLPhotosPhoto {
     TLPhotosPhoto() :
         tlType(TLValue::PhotosPhoto) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::PhotosPhoto:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLPhoto photo;
     TLVector<TLUser> users;
     TLValue tlType;
@@ -1519,6 +2646,15 @@ struct TLPhotosPhotos {
         count(0),
         tlType(TLValue::PhotosPhotos) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::PhotosPhotos:
+        case TLValue::PhotosPhotosSlice:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLPhoto> photos;
     TLVector<TLUser> users;
     quint32 count;
@@ -1530,6 +2666,14 @@ struct TLUserFull {
         blocked(false),
         tlType(TLValue::UserFull) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UserFull:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLUser user;
     TLContactsLink link;
     TLPhoto profilePhoto;
@@ -1549,6 +2693,16 @@ struct TLWebPage {
         duration(0),
         tlType(TLValue::WebPageEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::WebPageEmpty:
+        case TLValue::WebPagePending:
+        case TLValue::WebPage:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint64 id;
     quint32 date;
     quint32 flags;
@@ -1574,6 +2728,23 @@ struct TLMessageMedia {
         userId(0),
         tlType(TLValue::MessageMediaEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessageMediaEmpty:
+        case TLValue::MessageMediaPhoto:
+        case TLValue::MessageMediaVideo:
+        case TLValue::MessageMediaGeo:
+        case TLValue::MessageMediaContact:
+        case TLValue::MessageMediaUnsupported:
+        case TLValue::MessageMediaDocument:
+        case TLValue::MessageMediaAudio:
+        case TLValue::MessageMediaWebPage:
+        case TLValue::MessageMediaVenue:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLPhoto photo;
     QString caption;
     TLVideo video;
@@ -1603,6 +2774,16 @@ struct TLMessage {
         views(0),
         tlType(TLValue::MessageEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessageEmpty:
+        case TLValue::Message:
+        case TLValue::MessageService:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 id;
     quint32 flags;
     quint32 fromId;
@@ -1625,6 +2806,15 @@ struct TLMessagesDialogs {
         count(0),
         tlType(TLValue::MessagesDialogs) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesDialogs:
+        case TLValue::MessagesDialogsSlice:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLDialog> dialogs;
     TLVector<TLMessage> messages;
     TLVector<TLChat> chats;
@@ -1640,6 +2830,16 @@ struct TLMessagesMessages {
         pts(0),
         tlType(TLValue::MessagesMessages) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesMessages:
+        case TLValue::MessagesMessagesSlice:
+        case TLValue::MessagesChannelMessages:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLVector<TLMessage> messages;
     TLVector<TLChat> chats;
     TLVector<TLUser> users;
@@ -1672,6 +2872,48 @@ struct TLUpdate {
         views(0),
         tlType(TLValue::UpdateNewMessage) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UpdateNewMessage:
+        case TLValue::UpdateMessageID:
+        case TLValue::UpdateDeleteMessages:
+        case TLValue::UpdateUserTyping:
+        case TLValue::UpdateChatUserTyping:
+        case TLValue::UpdateChatParticipants:
+        case TLValue::UpdateUserStatus:
+        case TLValue::UpdateUserName:
+        case TLValue::UpdateUserPhoto:
+        case TLValue::UpdateContactRegistered:
+        case TLValue::UpdateContactLink:
+        case TLValue::UpdateNewAuthorization:
+        case TLValue::UpdateNewEncryptedMessage:
+        case TLValue::UpdateEncryptedChatTyping:
+        case TLValue::UpdateEncryption:
+        case TLValue::UpdateEncryptedMessagesRead:
+        case TLValue::UpdateChatParticipantAdd:
+        case TLValue::UpdateChatParticipantDelete:
+        case TLValue::UpdateDcOptions:
+        case TLValue::UpdateUserBlocked:
+        case TLValue::UpdateNotifySettings:
+        case TLValue::UpdateServiceNotification:
+        case TLValue::UpdatePrivacy:
+        case TLValue::UpdateUserPhone:
+        case TLValue::UpdateReadHistoryInbox:
+        case TLValue::UpdateReadHistoryOutbox:
+        case TLValue::UpdateWebPage:
+        case TLValue::UpdateReadMessagesContents:
+        case TLValue::UpdateChannelTooLong:
+        case TLValue::UpdateChannel:
+        case TLValue::UpdateChannelGroup:
+        case TLValue::UpdateNewChannelMessage:
+        case TLValue::UpdateReadChannelInbox:
+        case TLValue::UpdateDeleteChannelMessages:
+        case TLValue::UpdateChannelMessageViews:
+            return true;
+        default:
+            return false;
+        };
+    }
     TLMessage message;
     quint32 pts;
     quint32 ptsCount;
@@ -1736,6 +2978,20 @@ struct TLUpdates {
         seq(0),
         tlType(TLValue::UpdatesTooLong) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UpdatesTooLong:
+        case TLValue::UpdateShortMessage:
+        case TLValue::UpdateShortChatMessage:
+        case TLValue::UpdateShort:
+        case TLValue::UpdatesCombined:
+        case TLValue::Updates:
+        case TLValue::UpdateShortSentMessage:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 flags;
     quint32 id;
     quint32 userId;
@@ -1771,6 +3027,16 @@ struct TLUpdatesChannelDifference {
         unreadImportantCount(0),
         tlType(TLValue::UpdatesChannelDifferenceEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UpdatesChannelDifferenceEmpty:
+        case TLValue::UpdatesChannelDifferenceTooLong:
+        case TLValue::UpdatesChannelDifference:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 flags;
     quint32 pts;
     quint32 timeout;
@@ -1793,6 +3059,16 @@ struct TLUpdatesDifference {
         seq(0),
         tlType(TLValue::UpdatesDifferenceEmpty) { }
 
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::UpdatesDifferenceEmpty:
+        case TLValue::UpdatesDifference:
+        case TLValue::UpdatesDifferenceSlice:
+            return true;
+        default:
+            return false;
+        };
+    }
     quint32 date;
     quint32 seq;
     TLVector<TLMessage> newMessages;
