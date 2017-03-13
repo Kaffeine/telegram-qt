@@ -283,10 +283,12 @@ static QMap<QString, TLMethod> readFunctionsJson(const QJsonDocument &document)
 
         const QString methodName = formatName(obj.value("method").toString());
         const quint32 methodId = obj.value("id").toString().toInt();
+        const QString typeName = formatType(obj.value("type").toString());
 
         TLMethod tlMethod;
         tlMethod.name = methodName;
         tlMethod.id = methodId;
+        tlMethod.type = typeName;
 
         const QJsonArray params = obj.value("params").toArray();
 
@@ -888,6 +890,7 @@ bool GeneratorNG::loadFromText(const QByteArray &data)
             m_types.insert(typeName, tlType);
         } else if (entryType == EntryFunction) {
             const QString functionName = formatName(predicateBaseName.toString());
+            const QString typeName = formatType(typePart.trimmed().toString());
 
             if (!m_functions.contains(functionName)) {
                 m_groups.last().append(functionName);
@@ -895,6 +898,7 @@ bool GeneratorNG::loadFromText(const QByteArray &data)
             TLMethod tlMethod;
             tlMethod.name = functionName;
             tlMethod.id = predicateId;
+            tlMethod.type = typeName;
             tlMethod.params.append(tlParams);
 
             m_functions.insert(functionName, tlMethod);

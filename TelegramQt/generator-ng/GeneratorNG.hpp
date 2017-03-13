@@ -70,6 +70,7 @@ struct TLMethod {
     }
     QString name;
     quint32 id;
+    QString type;
     QList< TLParam > params;
 };
 
