@@ -963,6 +963,7 @@ void GeneratorNG::generate()
             << QLatin1String("upload")
             << QLatin1String("users");
 
+    QStringList usedTypes;
     foreach (const TLMethod &method, m_functions) {
         bool addImplementation = false;
         foreach (const QString &white, whiteList) {
@@ -974,6 +975,10 @@ void GeneratorNG::generate()
         if (addImplementation) {
             codeConnectionDeclarations.append(generateConnectionMethodDeclaration(method));
             codeConnectionDefinitions.append(generateConnectionMethodDefinition(method, typesUsedForWrite));
+
+            if (!usedTypes.contains(method.type)) {
+                usedTypes.append(method.type);
+            }
         } else {
             // It's still necessary to generate definition to figure out used stream write operators
             generateConnectionMethodDefinition(method, typesUsedForWrite);
@@ -991,7 +996,6 @@ void GeneratorNG::generate()
         }
     }
 
-    QStringList usedTypes;
     foreach (const TLType &type, m_solvedTypes) {
         if (nativeTypes.contains(type.name)) {
             continue;
@@ -1001,6 +1005,9 @@ void GeneratorNG::generate()
             continue;
         }
 
+        if (usedTypes.contains(type.name)) {
+            continue;
+        }
         usedTypes += type.name;
     }
 
