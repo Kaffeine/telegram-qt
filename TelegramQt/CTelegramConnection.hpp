@@ -154,6 +154,13 @@ public:
     quint64 contactsResolveUsername(const QString &username);
     quint64 contactsSearch(const QString &q, quint32 limit);
     quint64 contactsUnblock(const TLInputUser &id);
+    quint64 helpGetAppChangelog(const QString &deviceModel, const QString &systemVersion, const QString &appVersion, const QString &langCode);
+    quint64 helpGetAppUpdate(const QString &deviceModel, const QString &systemVersion, const QString &appVersion, const QString &langCode);
+    quint64 helpGetConfig();
+    quint64 helpGetInviteText(const QString &langCode);
+    quint64 helpGetNearestDc();
+    quint64 helpGetSupport();
+    quint64 helpSaveAppLog(const TLVector<TLInputAppEvent> &events);
     quint64 messagesAcceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint);
     quint64 messagesAddChatUser(quint32 chatId, const TLInputUser &userId, quint32 fwdLimit);
     quint64 messagesCheckChatInvite(const QString &hash);

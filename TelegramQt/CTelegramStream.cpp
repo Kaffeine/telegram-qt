@@ -46,6 +46,8 @@ template CTelegramStream &CTelegramStream::operator>>(TLVector<TLContactSuggeste
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLImportedContact> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLChat> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPeer> &v);
+template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDcOption> &v);
+template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDisabledFeature> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessageEntity> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLUpdate> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLStickerSet> &v);
@@ -62,8 +64,6 @@ template CTelegramStream &CTelegramStream::operator>>(TLVector<TLKeyboardButton>
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLKeyboardButtonRow> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPhotoSize> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessageRange> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDcOption> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDisabledFeature> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDocumentAttribute> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputUser> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLChannelParticipant> &v);
