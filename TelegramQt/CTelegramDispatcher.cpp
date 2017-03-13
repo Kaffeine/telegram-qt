@@ -1178,7 +1178,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
 
 void CTelegramDispatcher::getDcConfiguration()
 {
-    activeConnection()->getConfiguration();
+    activeConnection()->helpGetConfig();
 }
 
 void CTelegramDispatcher::getInitialUsers()

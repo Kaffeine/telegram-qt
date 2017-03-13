@@ -97,8 +97,6 @@ public:
     static quint64 timeStampToMSecsSinceEpoch(quint64 ts);
 
     void initAuth();
-    void getConfiguration();
-
     void setKeepAliveSettings(quint32 interval, quint32 serverDisconnectionExtraTime);
 
     // Generated Telegram API methods declaration

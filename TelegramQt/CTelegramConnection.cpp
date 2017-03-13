@@ -184,16 +184,6 @@ void CTelegramConnection::requestPqAuthorization()
     setAuthState(AuthStatePqRequested);
 }
 
-void CTelegramConnection::getConfiguration()
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << TLValue::HelpGetConfig;
-
-    sendEncryptedPackage(output);
-}
-
 void CTelegramConnection::setKeepAliveSettings(quint32 interval, quint32 serverDisconnectionExtraTime)
 {
     qDebug() << Q_FUNC_INFO << interval << serverDisconnectionExtraTime;
