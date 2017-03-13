@@ -43,6 +43,7 @@ QString formatTLValue(const TLValue &val)
 #include "CTcpTransport.hpp"
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
+#include "RpcProcessingContext.hpp"
 
 #ifdef DEVELOPER_BUILD
 #include "TLRpcDebug.hpp"
@@ -1876,132 +1877,342 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         stream >> id;
     }
 
-    TLValue request;
-
-    const QByteArray &requestData = m_submittedPackages.value(id);
-
-    if (!requestData.isEmpty()) {
-        CTelegramStream storedStream(requestData);
-        TLValue processingResult;
-
-        storedStream >> request;
-
-        if (storedStream.error()) {
-            qWarning() << Q_FUNC_INFO << "Unable to read request type from the saved package. Package with id" << id << "ignored.";
+    RpcProcessingContext context(stream, id, m_submittedPackages.value(id));
+    if (context.hasRequestData()) {
+        if (!context.requestType().isValid()) {
+            qWarning() << Q_FUNC_INFO << "Invalid request type from the saved package. Package with id" << id << "ignored.";
             return;
         }
 
-        switch (request) {
-        case TLValue::ContactsGetContacts:
-            processingResult = processContactsGetContacts(stream, id);
-            break;
-        case TLValue::ContactsImportContacts:
-            processingResult = processContactsImportContacts(stream, id);
-            break;
-        case TLValue::ContactsDeleteContacts:
-            processingResult = processContactsDeleteContacts(stream, id);
-            break;
-        case TLValue::ContactsResolveUsername:
-            processingResult = processContactsResolveUsername(stream, id);
-            break;
-        case TLValue::UpdatesGetState:
-            processingResult = processUpdatesGetState(stream, id);
-            break;
-        case TLValue::UpdatesGetDifference:
-            processingResult = processUpdatesGetDifference(stream, id);
-            break;
-        case TLValue::UploadGetFile:
-            processingResult = processUploadGetFile(stream, id);
-            break;
-        case TLValue::UploadSaveFilePart:
-        case TLValue::UploadSaveBigFilePart:
-            processingResult = processUploadSaveFilePart(stream, id);
-            break;
-        case TLValue::UsersGetUsers:
-            processingResult = processUsersGetUsers(stream, id);
-            break;
-        case TLValue::UsersGetFullUser:
-            processingResult = processUsersGetFullUser(stream, id);
-            break;
-        case TLValue::AuthCheckPassword:
-        case TLValue::AuthImportAuthorization:
-        case TLValue::AuthSignIn:
-        case TLValue::AuthSignUp:
-            processingResult = processAuthSign(stream, id);
-            break;
-        case TLValue::AuthLogOut:
-            processingResult = processAuthLogOut(stream, id);
-            break;
-        case TLValue::HelpGetConfig:
-            processingResult = processHelpGetConfig(stream, id);
-            break;
-        case TLValue::AuthCheckPhone:
-            processingResult = processAuthCheckPhone(stream, id);
-            break;
-        case TLValue::AuthExportAuthorization:
-            processingResult = processAuthExportAuthorization(stream, id);
-            break;
-        case TLValue::AuthSendCode:
-            processingResult = processAuthSendCode(stream, id);
-            break;
-        case TLValue::AuthSendSms:
-            processingResult = processAuthSendSms(stream, id);
-            break;
-        case TLValue::MessagesSetTyping:
-            processingResult = processMessagesSetTyping(stream, id);
-            break;
-        case TLValue::MessagesReadHistory:
-            processingResult = processMessagesReadHistory(stream, id);
-            break;
-        case TLValue::MessagesReceivedMessages:
-            processingResult = processMessagesReceivedMessages(stream, id);
-            break;
-        case TLValue::MessagesGetHistory:
-            processingResult = processMessagesGetHistory(stream, id);
-            break;
-        case TLValue::MessagesGetDialogs:
-            processingResult = processMessagesGetDialogs(stream, id);
-            break;
-        case TLValue::MessagesGetChats:
-            processingResult = processMessagesGetChats(stream, id);
-            break;
-        case TLValue::MessagesGetFullChat:
-            processingResult = processMessagesGetFullChat(stream, id);
+        switch (context.requestType()) {
+        // Generated RPC processing switch cases
+        case TLValue::AccountChangePhone:
+            processAccountChangePhone(&context);
             break;
         case TLValue::AccountCheckUsername:
-            processingResult = processAccountCheckUsername(stream, id);
+            processAccountCheckUsername(&context);
+            break;
+        case TLValue::AccountDeleteAccount:
+            processAccountDeleteAccount(&context);
+            break;
+        case TLValue::AccountGetAccountTTL:
+            processAccountGetAccountTTL(&context);
+            break;
+        case TLValue::AccountGetAuthorizations:
+            processAccountGetAuthorizations(&context);
+            break;
+        case TLValue::AccountGetNotifySettings:
+            processAccountGetNotifySettings(&context);
             break;
         case TLValue::AccountGetPassword:
-            processingResult = processAccountGetPassword(stream, id);
+            processAccountGetPassword(&context);
+            break;
+        case TLValue::AccountGetPasswordSettings:
+            processAccountGetPasswordSettings(&context);
+            break;
+        case TLValue::AccountGetPrivacy:
+            processAccountGetPrivacy(&context);
+            break;
+        case TLValue::AccountGetWallPapers:
+            processAccountGetWallPapers(&context);
+            break;
+        case TLValue::AccountRegisterDevice:
+            processAccountRegisterDevice(&context);
+            break;
+        case TLValue::AccountResetAuthorization:
+            processAccountResetAuthorization(&context);
+            break;
+        case TLValue::AccountResetNotifySettings:
+            processAccountResetNotifySettings(&context);
+            break;
+        case TLValue::AccountSendChangePhoneCode:
+            processAccountSendChangePhoneCode(&context);
+            break;
+        case TLValue::AccountSetAccountTTL:
+            processAccountSetAccountTTL(&context);
+            break;
+        case TLValue::AccountSetPrivacy:
+            processAccountSetPrivacy(&context);
+            break;
+        case TLValue::AccountUnregisterDevice:
+            processAccountUnregisterDevice(&context);
+            break;
+        case TLValue::AccountUpdateDeviceLocked:
+            processAccountUpdateDeviceLocked(&context);
+            break;
+        case TLValue::AccountUpdateNotifySettings:
+            processAccountUpdateNotifySettings(&context);
+            break;
+        case TLValue::AccountUpdatePasswordSettings:
+            processAccountUpdatePasswordSettings(&context);
+            break;
+        case TLValue::AccountUpdateProfile:
+            processAccountUpdateProfile(&context);
             break;
         case TLValue::AccountUpdateStatus:
-            processingResult = processAccountUpdateStatus(stream, id);
+            processAccountUpdateStatus(&context);
             break;
         case TLValue::AccountUpdateUsername:
-            processingResult = processAccountUpdateUsername(stream, id);
+            processAccountUpdateUsername(&context);
             break;
-        case TLValue::MessagesEditChatTitle:
-        case TLValue::MessagesEditChatPhoto:
+        case TLValue::AuthBindTempAuthKey:
+            processAuthBindTempAuthKey(&context);
+            break;
+        case TLValue::AuthCheckPassword:
+            processAuthCheckPassword(&context);
+            break;
+        case TLValue::AuthCheckPhone:
+            processAuthCheckPhone(&context);
+            break;
+        case TLValue::AuthExportAuthorization:
+            processAuthExportAuthorization(&context);
+            break;
+        case TLValue::AuthImportAuthorization:
+            processAuthImportAuthorization(&context);
+            break;
+        case TLValue::AuthImportBotAuthorization:
+            processAuthImportBotAuthorization(&context);
+            break;
+        case TLValue::AuthLogOut:
+            processAuthLogOut(&context);
+            break;
+        case TLValue::AuthRecoverPassword:
+            processAuthRecoverPassword(&context);
+            break;
+        case TLValue::AuthRequestPasswordRecovery:
+            processAuthRequestPasswordRecovery(&context);
+            break;
+        case TLValue::AuthResetAuthorizations:
+            processAuthResetAuthorizations(&context);
+            break;
+        case TLValue::AuthSendCall:
+            processAuthSendCall(&context);
+            break;
+        case TLValue::AuthSendCode:
+            processAuthSendCode(&context);
+            break;
+        case TLValue::AuthSendInvites:
+            processAuthSendInvites(&context);
+            break;
+        case TLValue::AuthSendSms:
+            processAuthSendSms(&context);
+            break;
+        case TLValue::AuthSignIn:
+            processAuthSignIn(&context);
+            break;
+        case TLValue::AuthSignUp:
+            processAuthSignUp(&context);
+            break;
+        case TLValue::ContactsBlock:
+            processContactsBlock(&context);
+            break;
+        case TLValue::ContactsDeleteContact:
+            processContactsDeleteContact(&context);
+            break;
+        case TLValue::ContactsDeleteContacts:
+            processContactsDeleteContacts(&context);
+            break;
+        case TLValue::ContactsExportCard:
+            processContactsExportCard(&context);
+            break;
+        case TLValue::ContactsGetBlocked:
+            processContactsGetBlocked(&context);
+            break;
+        case TLValue::ContactsGetContacts:
+            processContactsGetContacts(&context);
+            break;
+        case TLValue::ContactsGetStatuses:
+            processContactsGetStatuses(&context);
+            break;
+        case TLValue::ContactsGetSuggested:
+            processContactsGetSuggested(&context);
+            break;
+        case TLValue::ContactsImportCard:
+            processContactsImportCard(&context);
+            break;
+        case TLValue::ContactsImportContacts:
+            processContactsImportContacts(&context);
+            break;
+        case TLValue::ContactsResolveUsername:
+            processContactsResolveUsername(&context);
+            break;
+        case TLValue::ContactsSearch:
+            processContactsSearch(&context);
+            break;
+        case TLValue::ContactsUnblock:
+            processContactsUnblock(&context);
+            break;
+        case TLValue::HelpGetAppChangelog:
+            processHelpGetAppChangelog(&context);
+            break;
+        case TLValue::HelpGetAppUpdate:
+            processHelpGetAppUpdate(&context);
+            break;
+        case TLValue::HelpGetConfig:
+            processHelpGetConfig(&context);
+            break;
+        case TLValue::HelpGetInviteText:
+            processHelpGetInviteText(&context);
+            break;
+        case TLValue::HelpGetNearestDc:
+            processHelpGetNearestDc(&context);
+            break;
+        case TLValue::HelpGetSupport:
+            processHelpGetSupport(&context);
+            break;
+        case TLValue::HelpSaveAppLog:
+            processHelpSaveAppLog(&context);
+            break;
+        case TLValue::MessagesAcceptEncryption:
+            processMessagesAcceptEncryption(&context);
+            break;
+        case TLValue::MessagesCheckChatInvite:
+            processMessagesCheckChatInvite(&context);
+            break;
+        case TLValue::MessagesDeleteHistory:
+            processMessagesDeleteHistory(&context);
+            break;
+        case TLValue::MessagesDeleteMessages:
+            processMessagesDeleteMessages(&context);
+            break;
+        case TLValue::MessagesDiscardEncryption:
+            processMessagesDiscardEncryption(&context);
+            break;
+        case TLValue::MessagesExportChatInvite:
+            processMessagesExportChatInvite(&context);
+            break;
+        case TLValue::MessagesGetAllStickers:
+            processMessagesGetAllStickers(&context);
+            break;
+        case TLValue::MessagesGetChats:
+            processMessagesGetChats(&context);
+            break;
+        case TLValue::MessagesGetDhConfig:
+            processMessagesGetDhConfig(&context);
+            break;
+        case TLValue::MessagesGetDialogs:
+            processMessagesGetDialogs(&context);
+            break;
+        case TLValue::MessagesGetFullChat:
+            processMessagesGetFullChat(&context);
+            break;
+        case TLValue::MessagesGetHistory:
+            processMessagesGetHistory(&context);
+            break;
+        case TLValue::MessagesGetMessages:
+            processMessagesGetMessages(&context);
+            break;
+        case TLValue::MessagesGetMessagesViews:
+            processMessagesGetMessagesViews(&context);
+            break;
+        case TLValue::MessagesGetStickerSet:
+            processMessagesGetStickerSet(&context);
+            break;
+        case TLValue::MessagesGetStickers:
+            processMessagesGetStickers(&context);
+            break;
+        case TLValue::MessagesGetWebPagePreview:
+            processMessagesGetWebPagePreview(&context);
+            break;
+        case TLValue::MessagesInstallStickerSet:
+            processMessagesInstallStickerSet(&context);
+            break;
+        case TLValue::MessagesReadEncryptedHistory:
+            processMessagesReadEncryptedHistory(&context);
+            break;
+        case TLValue::MessagesReadHistory:
+            processMessagesReadHistory(&context);
+            break;
+        case TLValue::MessagesReadMessageContents:
+            processMessagesReadMessageContents(&context);
+            break;
+        case TLValue::MessagesReceivedMessages:
+            processMessagesReceivedMessages(&context);
+            break;
+        case TLValue::MessagesReceivedQueue:
+            processMessagesReceivedQueue(&context);
+            break;
+        case TLValue::MessagesReportSpam:
+            processMessagesReportSpam(&context);
+            break;
+        case TLValue::MessagesRequestEncryption:
+            processMessagesRequestEncryption(&context);
+            break;
+        case TLValue::MessagesSearch:
+            processMessagesSearch(&context);
+            break;
+        case TLValue::MessagesSendEncrypted:
+            processMessagesSendEncrypted(&context);
+            break;
+        case TLValue::MessagesSendEncryptedFile:
+            processMessagesSendEncryptedFile(&context);
+            break;
+        case TLValue::MessagesSendEncryptedService:
+            processMessagesSendEncryptedService(&context);
+            break;
+        case TLValue::MessagesSetEncryptedTyping:
+            processMessagesSetEncryptedTyping(&context);
+            break;
+        case TLValue::MessagesSetTyping:
+            processMessagesSetTyping(&context);
+            break;
+        case TLValue::MessagesUninstallStickerSet:
+            processMessagesUninstallStickerSet(&context);
+            break;
+        case TLValue::UpdatesGetChannelDifference:
+            processUpdatesGetChannelDifference(&context);
+            break;
+        case TLValue::UpdatesGetDifference:
+            processUpdatesGetDifference(&context);
+            break;
+        case TLValue::UpdatesGetState:
+            processUpdatesGetState(&context);
+            break;
+        case TLValue::UploadGetFile:
+            processUploadGetFile(&context);
+            break;
+        case TLValue::UploadSaveBigFilePart:
+            processUploadSaveBigFilePart(&context);
+            break;
+        case TLValue::UploadSaveFilePart:
+            processUploadSaveFilePart(&context);
+            break;
+        case TLValue::UsersGetFullUser:
+            processUsersGetFullUser(&context);
+            break;
+        case TLValue::UsersGetUsers:
+            processUsersGetUsers(&context);
+            break;
+        // End of generated RPC processing switch cases
+        // Generated RPC processing switch updates cases
         case TLValue::MessagesAddChatUser:
-        case TLValue::MessagesDeleteChatUser:
         case TLValue::MessagesCreateChat:
-        case TLValue::MessagesSendMessage:
+        case TLValue::MessagesDeleteChatUser:
+        case TLValue::MessagesEditChatPhoto:
+        case TLValue::MessagesEditChatTitle:
+        case TLValue::MessagesForwardMessage:
+        case TLValue::MessagesForwardMessages:
+        case TLValue::MessagesImportChatInvite:
+        case TLValue::MessagesSendBroadcast:
         case TLValue::MessagesSendMedia:
+        case TLValue::MessagesSendMessage:
+        case TLValue::MessagesStartBot:
+        // End of generated RPC processing switch updates cases
         {
             bool ok;
-            processingResult = processUpdate(stream, &ok, id);
+            context.setReadCode(processUpdate(context.inputStream(), &ok, context.requestId()));
         }
             break;
         default:
-            qDebug() << "Unknown outgoing RPC type:" << request.toString();
+            qDebug() << "Unknown outgoing RPC type:" << context.requestType().toString();
             break;
         case TLValue::Ping:
             break;
         }
 
-        switch (processingResult) {
+        switch (context.readCode()) {
         case TLValue::RpcError:
-            processRpcError(stream, id, request);
+            processRpcError(stream, id, context.requestType());
             break;
         case TLValue::GzipPacked:
             processGzipPackedRpcResult(stream, id);
@@ -2013,9 +2224,10 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
             break;
         }
         if (stream.error()) {
-            qWarning() << Q_FUNC_INFO << "Read of RPC result caused an error. RPC type:" << request.toString() << "Package id:" << id;
+            qWarning() << Q_FUNC_INFO << "Read of RPC result caused an error. RPC type:" << context.requestType().toString() << "Package id:" << id;
         }
     } else {
+        TLValue request;
         stream >> request;
         qDebug() << "Unexpected RPC message:" << request.toString() << "id" << id;
     }
@@ -2282,34 +2494,395 @@ void CTelegramConnection::processPingPong(CTelegramStream &stream)
 //    qDebug() << Q_FUNC_INFO << m_lastReceivedPingId << m_lastReceivedPingTime;
 }
 
-TLValue CTelegramConnection::processHelpGetConfig(CTelegramStream &stream, quint64 id)
+// Partially generated Telegram API RPC process implementation
+void CTelegramConnection::processAccountChangePhone(RpcProcessingContext *context)
 {
-    Q_UNUSED(id);
-
-    TLConfig result;
-    stream >> result;
-
-    if (result.tlType == TLValue::Config) {
-        m_dcConfiguration = result.dcOptions;
-
-        if (m_dcInfo.id != result.thisDc) {
-            const quint32 oldId = m_dcInfo.id;
-            m_dcInfo.id = result.thisDc;
-            emit actualDcIdReceived(oldId, result.thisDc);
-        }
-
-        emit dcConfigurationReceived(m_dcInfo.id);
-    }
-
-    return result.tlType;
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLUser result;
+    context->readRpcResult(&result);
 }
 
-TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream, quint64 id)
+void CTelegramConnection::processAccountCheckUsername(RpcProcessingContext *context)
 {
-    Q_UNUSED(id);
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
 
+    const QString userName = context->userNameFromRequest();
+    switch (result) {
+    case TLValue::BoolTrue:
+        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusCanBeUsed);
+        context->setSucceed(true);
+        break;
+    case TLValue::BoolFalse:
+        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusCanNotBeUsed);
+        context->setSucceed(true);
+        break;
+    default:
+        context->setSucceed(false);
+        break;
+    }
+}
+
+void CTelegramConnection::processAccountDeleteAccount(RpcProcessingContext *context)
+{
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountGetAccountTTL(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAccountDaysTTL result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAccountGetAuthorizations(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAccountAuthorizations result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAccountGetNotifySettings(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLPeerNotifySettings result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAccountGetPassword(RpcProcessingContext *context)
+{
+    TLAccountPassword result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+    emit passwordReceived(result, context->requestId());
+}
+
+void CTelegramConnection::processAccountGetPasswordSettings(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAccountPasswordSettings result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAccountGetPrivacy(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAccountPrivacyRules result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAccountGetWallPapers(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLVector<TLWallPaper> result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAccountRegisterDevice(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountResetAuthorization(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountResetNotifySettings(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountSendChangePhoneCode(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAccountSentChangePhoneCode result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAccountSetAccountTTL(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountSetPrivacy(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAccountPrivacyRules result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAccountUnregisterDevice(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountUpdateDeviceLocked(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountUpdateNotifySettings(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountUpdatePasswordSettings(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountUpdateProfile(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLUser result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAccountUpdateStatus(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountUpdateUsername(RpcProcessingContext *context)
+{
+    TLUser result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+
+    if (result.username == context->userNameFromRequest()) {
+        emit userNameStatusUpdated(result.username, TelegramNamespace::UserNameStatusAccepted);
+    }
+    emit usersReceived(QVector<TLUser>() << result);
+}
+
+void CTelegramConnection::processAuthBindTempAuthKey(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAuthCheckPassword(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAuthAuthorization result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAuthCheckPhone(RpcProcessingContext *context)
+{
+    TLAuthCheckedPhone result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+
+    CTelegramStream stream(context->requestData());
+    TLValue value;
+    QString phone;
+    stream >> value;
+    stream >> phone;
+
+    emit phoneStatusReceived(phone, result.phoneRegistered);
+}
+
+void CTelegramConnection::processAuthExportAuthorization(RpcProcessingContext *context)
+{
+    TLAuthExportedAuthorization result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+
+    CTelegramStream stream(context->requestData());
+    TLValue value;
+    quint32 dc;
+    stream >> value;
+    stream >> dc;
+
+    emit authExportedAuthorizationReceived(dc, result.id, result.bytes);
+}
+
+void CTelegramConnection::processAuthImportAuthorization(RpcProcessingContext *context)
+{
+    processAuthSign(context);
+}
+
+void CTelegramConnection::processAuthImportBotAuthorization(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAuthAuthorization result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAuthLogOut(RpcProcessingContext *context)
+{
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+
+    if (result == TLValue::BoolTrue) {
+        emit loggedOut(true);
+    } else if (result == TLValue::BoolFalse) {
+        emit loggedOut(false);
+    }
+}
+
+void CTelegramConnection::processAuthRecoverPassword(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAuthAuthorization result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAuthRequestPasswordRecovery(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLAuthPasswordRecovery result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processAuthResetAuthorizations(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAuthSendCall(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAuthSendCode(RpcProcessingContext *context)
+{
+    TLAuthSentCode result;
+    context->readRpcResult(&result);
+
+    qDebug() << Q_FUNC_INFO << result.tlType.toString();
+    if (result.tlType == TLValue::AuthSentCode) {
+        m_authCodeHash = result.phoneCodeHash;
+
+        emit phoneCodeRequired();
+    } else if (result.tlType == TLValue::AuthSentAppCode) {
+        qDebug() << Q_FUNC_INFO << "AuthSentAppCode";
+        m_authCodeHash = result.phoneCodeHash;
+        CTelegramStream stream(context->requestData());
+        TLValue value;
+        QString phoneNumber;
+        stream >> value;
+        stream >> phoneNumber;
+        authSendSms(phoneNumber, m_authCodeHash);
+    }
+}
+
+void CTelegramConnection::processAuthSendInvites(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAuthSendSms(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAuthSignIn(RpcProcessingContext *context)
+{
+    processAuthSign(context);
+}
+
+void CTelegramConnection::processAuthSignUp(RpcProcessingContext *context)
+{
+    processAuthSign(context);
+}
+
+void CTelegramConnection::processContactsBlock(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processContactsDeleteContact(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLContactsLink result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processContactsDeleteContacts(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processContactsExportCard(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLVector<quint32> result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processContactsGetBlocked(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLContactsBlocked result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processContactsGetContacts(RpcProcessingContext *context)
+{
     TLContactsContacts result;
-    stream >> result;
+    context->readRpcResult(&result);
 
     if (result.tlType == TLValue::ContactsContacts) {
         emit usersReceived(result.users);
@@ -2321,17 +2894,33 @@ TLValue CTelegramConnection::processContactsGetContacts(CTelegramStream &stream,
 
         emit contactListReceived(contactList);
     }
-
-    return result.tlType;
 }
 
-TLValue CTelegramConnection::processContactsImportContacts(CTelegramStream &stream, quint64 id)
+void CTelegramConnection::processContactsGetStatuses(RpcProcessingContext *context)
 {
-    Q_UNUSED(id);
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLVector<TLContactStatus> result;
+    context->readRpcResult(&result);
+}
 
+void CTelegramConnection::processContactsGetSuggested(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLContactsSuggested result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processContactsImportCard(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLUser result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processContactsImportContacts(RpcProcessingContext *context)
+{
     TLContactsImportedContacts result;
-    stream >> result;
-
+    context->readRpcResult(&result);
     if (result.tlType == TLValue::ContactsImportedContacts) {
         emit usersReceived(result.users);
 
@@ -2340,473 +2929,479 @@ TLValue CTelegramConnection::processContactsImportContacts(CTelegramStream &stre
             addedList.append(user.id);
         }
 
-        emit contactListChanged(addedList, QVector<quint32>());
+        emit contactListChanged(addedList, { });
+    }
+}
+
+void CTelegramConnection::processContactsResolveUsername(RpcProcessingContext *context)
+{
+    TLContactsResolvedPeer result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+    emit usersReceived(result.users);
+    if (!result.chats.isEmpty()) {
+        emit messagesChatsReceived(result.chats);
+    }
+    const QString userName = context->userNameFromRequest();
+    emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusResolved);
+}
+
+void CTelegramConnection::processContactsSearch(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLContactsFound result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processContactsUnblock(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processHelpGetAppChangelog(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLHelpAppChangelog result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processHelpGetAppUpdate(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLHelpAppUpdate result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processHelpGetConfig(RpcProcessingContext *context)
+{
+    TLConfig result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
     }
 
-    return result.tlType;
-}
+    m_dcConfiguration = result.dcOptions;
 
-TLValue CTelegramConnection::processContactsDeleteContacts(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLValue result;
-    stream >> result;
-
-    return result;
-}
-
-TLValue CTelegramConnection::processContactsResolveUsername(CTelegramStream &stream, quint64 id)
-{
-    TLUser result;
-    stream >> result;
-
-    const QString userName = userNameFromPackage(id);
-
-    if (result.username == userName) {
-        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusResolved);
-        emit usersReceived(QVector<TLUser>() << result);
+    if (m_dcInfo.id != result.thisDc) {
+        const quint32 oldId = m_dcInfo.id;
+        m_dcInfo.id = result.thisDc;
+        emit actualDcIdReceived(oldId, result.thisDc);
     }
 
-    return result.tlType;
+    emit dcConfigurationReceived(m_dcInfo.id);
 }
 
-TLValue CTelegramConnection::processUpdatesGetState(CTelegramStream &stream, quint64 id)
+void CTelegramConnection::processHelpGetInviteText(RpcProcessingContext *context)
 {
-    Q_UNUSED(id);
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLHelpInviteText result;
+    context->readRpcResult(&result);
+}
 
-    TLUpdatesState result;
-    stream >> result;
+void CTelegramConnection::processHelpGetNearestDc(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLNearestDc result;
+    context->readRpcResult(&result);
+}
 
-    switch (result.tlType) {
-    case TLValue::UpdatesState:
-        emit updatesStateReceived(result);
-        break;
-    default:
-        break;
+void CTelegramConnection::processHelpGetSupport(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLHelpSupport result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processHelpSaveAppLog(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processMessagesAcceptEncryption(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLEncryptedChat result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesCheckChatInvite(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLChatInvite result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesDeleteHistory(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesAffectedHistory result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesDeleteMessages(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesAffectedMessages result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesDiscardEncryption(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processMessagesExportChatInvite(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLExportedChatInvite result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesGetAllStickers(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesAllStickers result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesGetChats(RpcProcessingContext *context)
+{
+    TLMessagesChats result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+    emit messagesChatsReceived(result.chats);
+}
+
+void CTelegramConnection::processMessagesGetDhConfig(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesDhConfig result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesGetDialogs(RpcProcessingContext *context)
+{
+    TLMessagesDialogs result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
     }
 
-    return result.tlType;
+    CTelegramStream stream(context->requestData());
+    TLValue method;
+    quint32 offset = 0;
+    quint32 maxId = 0;
+    quint32 limit = 0;
+    stream >> method; // TLValue::MessagesGetDialogs
+    stream >> offset;
+    stream >> maxId;
+    stream >> limit;
+    if (result.tlType != TLValue::MessagesDialogs) {
+        qWarning() << Q_FUNC_INFO << result.tlType.toString() << "processed as Dialogs";
+    }
+    emit messagesDialogsReceived(result, offset, maxId, limit);
 }
 
-TLValue CTelegramConnection::processUpdatesGetDifference(CTelegramStream &stream, quint64 id)
+void CTelegramConnection::processMessagesGetFullChat(RpcProcessingContext *context)
 {
-    Q_UNUSED(id);
+    TLMessagesChatFull result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+    emit messagesFullChatReceived(result.fullChat, result.chats, result.users);
+}
 
+void CTelegramConnection::processMessagesGetHistory(RpcProcessingContext *context)
+{
+    TLMessagesMessages result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+
+    CTelegramStream stream(context->requestData());
+    TLValue value;
+    TLInputPeer peer;
+    stream >> value;
+    stream >> peer;
+
+    emit messagesHistoryReceived(result, peer);
+}
+
+void CTelegramConnection::processMessagesGetMessages(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesMessages result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesGetMessagesViews(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLVector<quint32> result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesGetStickerSet(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesStickerSet result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesGetStickers(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesStickers result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesGetWebPagePreview(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessageMedia result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesInstallStickerSet(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processMessagesReadEncryptedHistory(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processMessagesReadHistory(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesAffectedHistory result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesReadMessageContents(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesAffectedMessages result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesReceivedMessages(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLVector<TLReceivedNotifyMessage> result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesReceivedQueue(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLVector<quint64> result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesReportSpam(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processMessagesRequestEncryption(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLEncryptedChat result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesSearch(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesMessages result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesSendEncrypted(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesSentEncryptedMessage result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesSendEncryptedFile(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesSentEncryptedMessage result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesSendEncryptedService(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesSentEncryptedMessage result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesSetEncryptedTyping(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processMessagesSetTyping(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processMessagesUninstallStickerSet(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processUpdatesGetChannelDifference(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLUpdatesChannelDifference result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processUpdatesGetDifference(RpcProcessingContext *context)
+{
     TLUpdatesDifference result;
-    stream >> result;
-
-    switch (result.tlType) {
-    case TLValue::UpdatesDifference:
-    case TLValue::UpdatesDifferenceSlice:
-    case TLValue::UpdatesDifferenceEmpty:
-        emit updatesDifferenceReceived(result);
-        break;
-    default:
-        break;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
     }
-
-    return result.tlType;
+    emit updatesDifferenceReceived(result);
 }
 
-TLValue CTelegramConnection::processAuthCheckPhone(CTelegramStream &stream, quint64 id)
+void CTelegramConnection::processUpdatesGetState(RpcProcessingContext *context)
 {
-    TLAuthCheckedPhone result;
-    stream >> result;
+    TLUpdatesState result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+    emit updatesStateReceived(result);
+}
 
-    if (result.tlType == TLValue::AuthCheckedPhone) {
-        const QByteArray data = m_submittedPackages.value(id);
+void CTelegramConnection::processUploadGetFile(RpcProcessingContext *context)
+{
+    TLUploadFile result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+    CTelegramStream stream(context->requestData());
+    TLValue value;
+    TLInputFileLocation location;
+    quint32 offset;
 
-        if (data.isEmpty()) {
-            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
-            return result.tlType;
+    stream >> value;
+    stream >> location;
+    stream >> offset;
+
+    emit fileDataReceived(result, m_requestedFilesIds.value(context->requestId()), offset);
+}
+
+void CTelegramConnection::processUploadSaveBigFilePart(RpcProcessingContext *context)
+{
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processUploadSaveFilePart(RpcProcessingContext *context)
+{
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+    if (result == TLValue::BoolTrue) {
+        emit fileDataSent(m_requestedFilesIds.take(context->requestId()));
+    } else {
+        qWarning() << "Unhandled UploadSaveFilePart result"; // retry putFile() call?
+    }
+}
+
+void CTelegramConnection::processUsersGetFullUser(RpcProcessingContext *context)
+{
+    TLUserFull result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+    emit fullUserReceived(result);
+}
+
+void CTelegramConnection::processUsersGetUsers(RpcProcessingContext *context)
+{
+    TLVector<TLUser> result;
+    context->readRpcResult(&result);
+    if (!result.isValid()) {
+        return;
+    }
+    CTelegramStream stream(context->requestData());
+    TLValue value;
+    TLVector<TLInputUser> inputUsers;
+    stream >> value;
+    stream >> inputUsers;
+
+    if (result.count() != inputUsers.count()) {
+        qWarning() << Q_FUNC_INFO << "Input user count != received user count";
+    }
+
+    if ((inputUsers.count() == 1) && (result.count() == 1)) {
+        if (inputUsers.first().tlType == TLValue::InputUserSelf) {
+            emit selfUserReceived(result.first());
         }
-
-        CTelegramStream stream(data);
-        TLValue value;
-        QString phone;
-        stream >> value;
-        stream >> phone;
-
-        emit phoneStatusReceived(phone, result.phoneRegistered);
     }
 
-    return result.tlType;
+    emit usersReceived(result);
 }
 
-TLValue CTelegramConnection::processAuthExportAuthorization(CTelegramStream &stream, quint64 id)
+// End of partially generated Telegram API RPC process implementation
+
+void CTelegramConnection::processAuthSign(RpcProcessingContext *context)
 {
-    TLAuthExportedAuthorization result;
-    stream >> result;
-
-    if (result.tlType == TLValue::AuthExportedAuthorization) {
-        const QByteArray data = m_submittedPackages.value(id);
-
-        if (data.isEmpty()) {
-            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
-            return result.tlType;
-        }
-
-        CTelegramStream stream(data);
-        TLValue value;
-        quint32 dc;
-        stream >> value;
-        stream >> dc;
-
-        emit authExportedAuthorizationReceived(dc, result.id, result.bytes);
-    }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processAuthSendCode(CTelegramStream &stream, quint64 id)
-{
-    TLAuthSentCode result;
-    stream >> result;
-    qDebug() << Q_FUNC_INFO << result.tlType.toString();
-
-    if (result.tlType == TLValue::AuthSentCode) {
-        m_authCodeHash = result.phoneCodeHash;
-
-        emit phoneCodeRequired();
-    } else if (result.tlType == TLValue::AuthSentAppCode) {
-        qDebug() << Q_FUNC_INFO << "AuthSentAppCode";
-        m_authCodeHash = result.phoneCodeHash;
-
-        const QByteArray data = m_submittedPackages.value(id);
-
-        if (data.isEmpty()) {
-            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
-            return result.tlType;
-        }
-
-        CTelegramStream stream(data);
-        TLValue value;
-        QString phoneNumber;
-        stream >> value;
-        stream >> phoneNumber;
-
-        authSendSms(phoneNumber, m_authCodeHash);
-    }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processAuthSendSms(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLValue result;
-    stream >> result;
-
-    return result;
-}
-
-TLValue CTelegramConnection::processAuthSign(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
     TLAuthAuthorization result;
-    stream >> result;
+    context->readRpcResult(&result);
 
-    qDebug() << Q_FUNC_INFO << "AuthAuthorization" << maskPhoneNumber(result.user.phone);
-    if (result.tlType == TLValue::AuthAuthorization) {
+    if (result.isValid()) {
+        qDebug() << Q_FUNC_INFO << "AuthAuthorization" << maskPhoneNumber(result.user.phone);
         emit selfUserReceived(result.user);
         emit usersReceived(QVector<TLUser>() << result.user);
         setAuthState(AuthStateSignedIn);
     }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processAuthLogOut(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLValue result;
-    stream >> result;
-
-    emit loggedOut(result == TLValue::BoolTrue);
-
-    return result;
-}
-
-TLValue CTelegramConnection::processUploadGetFile(CTelegramStream &stream, quint64 id)
-{
-    TLUploadFile file;
-    stream >> file;
-
-    if (file.tlType == TLValue::UploadFile) {
-        const QByteArray data = m_submittedPackages.value(id);
-
-        if (data.isEmpty()) {
-            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
-        } else {
-            CTelegramStream stream(data);
-            TLValue value;
-            TLInputFileLocation location;
-            quint32 offset;
-
-            stream >> value;
-            stream >> location;
-            stream >> offset;
-
-            emit fileDataReceived(file, m_requestedFilesIds.value(id), offset);
-        }
-    }
-
-    return file.tlType;
-}
-
-TLValue CTelegramConnection::processUploadSaveFilePart(CTelegramStream &stream, quint64 id)
-{
-    TLValue result;
-    stream >> result;
-
-    if (result == TLValue::BoolTrue) {
-        emit fileDataSent(m_requestedFilesIds.take(id));
-    } else {
-        // retry putFile() call?
-    }
-
-    return result;
-}
-
-TLValue CTelegramConnection::processUsersGetUsers(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLVector<TLUser> result;
-
-    stream >> result;
-
-    if (result.tlType == TLValue::Vector) {
-        const QByteArray data = m_submittedPackages.value(id);
-
-        if (data.isEmpty()) {
-            qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
-            return result.tlType;
-        }
-
-        CTelegramStream stream(data);
-        TLValue value;
-        TLVector<TLInputUser> inputUsers;
-        stream >> value;
-        stream >> inputUsers;
-
-        if (result.count() != inputUsers.count()) {
-            qWarning() << Q_FUNC_INFO << "Input user count != received user count";
-        }
-
-        if ((inputUsers.count() == 1) && (result.count() == 1)) {
-            if (inputUsers.first().tlType == TLValue::InputUserSelf) {
-                emit selfUserReceived(result.first());
-            }
-        }
-
-        emit usersReceived(result);
-    }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processUsersGetFullUser(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLUserFull result;
-
-    stream >> result;
-
-    switch (result.tlType) {
-    case TLValue::UserFull:
-        emit fullUserReceived(result);
-        break;
-    default:
-        break;
-    }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processMessagesSetTyping(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLValue result;
-    stream >> result;
-
-    return result;
-}
-
-TLValue CTelegramConnection::processMessagesReadHistory(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLMessagesAffectedHistory result;
-    stream >> result;
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processMessagesReceivedMessages(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLVector<quint32> result;
-    stream >> result;
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processMessagesGetHistory(CTelegramStream &stream, quint64 id)
-{
-    TLMessagesMessages result;
-    stream >> result;
-
-    const QByteArray data = m_submittedPackages.value(id);
-
-    if (data.isEmpty()) {
-        qDebug() << Q_FUNC_INFO << "Can not restore rpc message" << id;
-    } else {
-        CTelegramStream stream(data);
-        TLValue value;
-        TLInputPeer peer;
-
-        stream >> value;
-        stream >> peer;
-
-        emit messagesHistoryReceived(result, peer);
-    }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processMessagesGetDialogs(CTelegramStream &stream, quint64 id)
-{
-    TLMessagesDialogs result;
-    stream >> result;
-
-    const QByteArray data = m_submittedPackages.value(id);
-
-    quint32 offset = 0;
-    quint32 maxId = 0;
-    quint32 limit = 0;
-
-    switch (result.tlType) {
-    case TLValue::MessagesDialogs:
-    case TLValue::MessagesDialogsSlice:
-        if (data.isEmpty()) {
-            qWarning() << Q_FUNC_INFO << "Can not restore rpc message" << id;
-        } else {
-            CTelegramStream stream(data);
-            TLValue method;
-            stream >> method; // TLValue::MessagesGetDialogs
-            stream >> offset;
-            stream >> maxId;
-            stream >> limit;
-        }
-
-        emit messagesDialogsReceived(result, offset, maxId, limit);
-        break;
-    default:
-        break;
-    }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processMessagesGetChats(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLMessagesChats result;
-    stream >> result;
-
-    if (result.tlType == TLValue::MessagesChats) {
-        emit messagesChatsReceived(result.chats);
-    }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processMessagesGetFullChat(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLMessagesChatFull result;
-    stream >> result;
-
-    if (result.tlType == TLValue::MessagesChatFull) {
-        emit messagesFullChatReceived(result.fullChat, result.chats, result.users);
-    }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processAccountCheckUsername(CTelegramStream &stream, quint64 id)
-{
-    TLValue result;
-    stream >> result;
-
-    const QString userName = userNameFromPackage(id);
-
-    switch (result) {
-    case TLValue::BoolTrue:
-        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusCanBeUsed);
-        break;
-    case TLValue::BoolFalse:
-        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusCanNotBeUsed);
-        break;
-    default:
-        break;
-    }
-
-    return result;
-}
-
-TLValue CTelegramConnection::processAccountGetPassword(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLAccountPassword result;
-    stream >> result;
-
-    switch (result.tlType) {
-    case TLValue::AccountNoPassword:
-    case TLValue::AccountPassword:
-        emit passwordReceived(result, id);
-        break;
-    default:
-        break;
-    }
-
-    return result.tlType;
-}
-
-TLValue CTelegramConnection::processAccountUpdateStatus(CTelegramStream &stream, quint64 id)
-{
-    Q_UNUSED(id);
-
-    TLValue result;
-    stream >> result;
-
-    return result;
-}
-
-TLValue CTelegramConnection::processAccountUpdateUsername(CTelegramStream &stream, quint64 id)
-{
-    TLUser result;
-    stream >> result;
-
-    const QString userName = userNameFromPackage(id);
-
-    if (result.username == userName) {
-        emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusAccepted);
-    }
-    emit usersReceived(QVector<TLUser>() << result);
-
-    return result.tlType;
 }
 
 bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)
