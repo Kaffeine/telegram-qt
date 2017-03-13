@@ -574,7 +574,7 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
     QString result;
     result += QString("quint64 %1::%2(%3)\n{\n").arg(methodsClassName).arg(method.name).arg(formatMethodParams(method));
     result += spacing + QLatin1String("QByteArray output;\n");
-    result += spacing + streamClassName + QLatin1String(" outputStream(&output, /* write */ true);\n\n");
+    result += spacing + streamClassName + QLatin1String(" outputStream(&output, /* write */ true);\n");
 
     result += spacing + QString("outputStream << %1::%2;\n").arg(tlValueName).arg(formatName1stCapital(method.name));
 
@@ -596,7 +596,6 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
         }
     }
 
-    result += QLatin1Char('\n');
     result += spacing + QLatin1String("return sendEncryptedPackage(output);\n}\n\n");
 
     return result;
