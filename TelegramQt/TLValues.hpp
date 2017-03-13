@@ -592,6 +592,11 @@ public:
     {
     }
 
+    TLValue(Value v) :
+        m_value(v)
+    {
+    }
+
     operator quint32() const
     {
         return m_value;
