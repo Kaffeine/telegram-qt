@@ -451,6 +451,6 @@ void tst_CTelegramStream::readError()
 
 }
 
-QTEST_MAIN(tst_CTelegramStream)
+QTEST_APPLESS_MAIN(tst_CTelegramStream)
 
 #include "tst_CTelegramStream.moc"
