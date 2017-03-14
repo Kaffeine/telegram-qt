@@ -36,6 +36,7 @@ public:
     explicit tst_CTelegramStream(QObject *parent = 0);
 
 private slots:
+    void init();
     void stringsLimitSerialization();
     void shortStringSerialization();
     void longStringSerialization();
@@ -51,6 +52,11 @@ private slots:
 tst_CTelegramStream::tst_CTelegramStream(QObject *parent) :
     QObject(parent)
 {
+}
+
+void tst_CTelegramStream::init()
+{
+    Q_ASSERT(TLValue::CurrentLayer == 38);
 }
 
 void tst_CTelegramStream::shortStringSerialization()
