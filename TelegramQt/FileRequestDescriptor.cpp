@@ -138,10 +138,6 @@ QByteArray FileRequestDescriptor::data() const
 
 quint32 FileRequestDescriptor::chunkSize() const
 {
-    if (m_type == Upload) { // Hack from commit aa983a0fca907e06b33f45eeb7e87d361370b56b
-        return 256;
-    }
-
     if (m_chunkSize) {
         return m_chunkSize;
     }
