@@ -82,20 +82,24 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
     // Payload
 
     QByteArray package;
-
     if (m_firstPackage) {
         package.append(char(0xef)); // Start session in Abridged format
         m_firstPackage = false;
     }
 
-    quint32 length = 0;
-    length += payload.length();
+    if (payload.length() % 4) {
+        qCritical() << Q_FUNC_INFO << "Invalid outgoing package! The payload size is not divisible by four!";
+    }
 
-    package.append(char(length / 4));
+    quint32 length = payload.length() / 4;
+    if (length < 0x7f) {
+        package.append(char(length));
+    } else {
+        package.append(char(0x7f));
+        package.append(reinterpret_cast<const char *>(&length), 3);
+    }
     package.append(payload);
-
     m_lastPackage = package;
-
     m_socket->write(package);
 }
 
