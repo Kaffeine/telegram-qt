@@ -46,6 +46,52 @@ static bool s_dryRun = false;
 static bool s_dump = true;
 
 /* Replacing helper */
+QString getSectionContent(const QString &fileName, const QString &startMarker, const QString &endMarker, bool *winEol = nullptr)
+{
+    QFile fileToProcess(fileName);
+
+    if (!fileToProcess.open(QIODevice::ReadOnly))
+        return QString();
+
+    QString fileContent = fileToProcess.readAll();
+    fileToProcess.close();
+
+    bool winNewLines = fileContent.indexOf(QLatin1String("\r\n")) > 0;
+
+    if (winNewLines) {
+        fileContent.replace(QLatin1String("\r\n"), QLatin1String("\n"));
+    }
+
+    if (winEol) {
+        *winEol = winNewLines;
+    }
+
+    int startPos = fileContent.indexOf(startMarker);
+    int endPos   = fileContent.indexOf(endMarker);
+    if (startPos >= 0) {
+        if (endPos < 0) {
+            printf("There is only start marker in the file %s. Error.\n", fileName.toLocal8Bit().constData());
+            return QString();
+        }
+
+        endPos += endMarker.length();
+    } else {
+        return QString();
+    }
+
+    const QString previousContent = fileContent.mid(startPos, endPos - startPos);
+
+    return previousContent;
+}
+
+QString getPartiallyGeneratedContent(const QString &fileName, int spacing, const QString &marker, bool *winEol = nullptr)
+{
+    const QString space(spacing, QChar(' '));
+    return getSectionContent(fileName,
+                             QString("%1// Partially generated %2\n").arg(space).arg(marker),
+                             QString("%1// End of partially generated %2\n").arg(space).arg(marker), winEol);
+}
+
 bool replaceSection(const QString &fileName, const QString &startMarker, const QString &endMarker, const QString &newContent)
 {
     QFile fileToProcess(fileName);
@@ -113,6 +159,20 @@ bool replaceSection(const QString &fileName, const QString &startMarker, const Q
     printf("Replacing is done.\n");
 
     return true;
+}
+
+bool partialReplacingHelper(const QString &fileName, int spacing, const QString &marker, const QString &newContent)
+{
+    const QString space(spacing, QChar(' '));
+
+    if (!replaceSection(fileName,
+                        QString("%1// Partially generated %2\n").arg(space).arg(marker),
+                        QString("%1// End of partially generated %2\n").arg(space).arg(marker), newContent)) {
+        printf("Can not update file %s with marker %s.\n", fileName.toLatin1().constData(), marker.toLatin1().constData());
+        return false;
+    } else {
+        return true;
+    }
 }
 
 bool replacingHelper(const QString &fileName, int spacing, const QString &marker, const QString &newContent)
