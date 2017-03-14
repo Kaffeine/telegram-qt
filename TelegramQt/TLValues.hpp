@@ -26,6 +26,7 @@ struct TLValue {
     Q_GADGET
     Q_ENUMS(Value)
 public:
+    static const quint32 CurrentLayer = 38;
     enum Value {
         // Generated TLValues (proto)
         ResPQ = 0x05162463,

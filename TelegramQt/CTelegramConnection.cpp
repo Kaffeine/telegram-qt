@@ -3116,10 +3116,14 @@ SAesKey CTelegramConnection::generateAesKey(const QByteArray &messageKey, int x)
 
 void CTelegramConnection::insertInitConnection(QByteArray *data) const
 {
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << "layer" << TLValue::CurrentLayer;
+#endif
+
     CTelegramStream outputStream(data, /* write */ true);
 
     outputStream << TLValue::InvokeWithLayer;
-    outputStream << quint32(38);
+    outputStream << TLValue::CurrentLayer;
     outputStream << TLValue::InitConnection;
 
     outputStream << m_appInfo->appId();
