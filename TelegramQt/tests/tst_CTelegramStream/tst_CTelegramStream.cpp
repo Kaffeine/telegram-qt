@@ -25,8 +25,8 @@
 
 struct STestData {
     QVariant value;
-    QByteArray serializedValue;
-    STestData(QVariant v, QByteArray e) : value(v), serializedValue(e) { }
+    QByteArray serializedData;
+    STestData(QVariant v, QByteArray e) : value(v), serializedData(e) { }
 };
 
 class tst_CTelegramStream : public QObject
@@ -81,12 +81,12 @@ void tst_CTelegramStream::shortStringSerialization()
 
         stream << data.at(i).value.toString();
 
-        QCOMPARE(device.data(), data.at(i).serializedValue);
+        QCOMPARE(device.data(), data.at(i).serializedData);
     }
 
     for (int i = 0; i < data.count(); ++i) {
         QBuffer device;
-        device.setData(data.at(i).serializedValue);
+        device.setData(data.at(i).serializedData);
         device.open(QBuffer::ReadOnly);
 
         CTelegramStream stream(&device);
@@ -146,17 +146,17 @@ void tst_CTelegramStream::stringsLimitSerialization()
 
         stream << data.at(i).value.toString();
 
-        if ((data.at(i).serializedValue.length() > 10) && (device.data() != data.at(i).serializedValue)) {
+        if ((data.at(i).serializedData.length() > 10) && (device.data() != data.at(i).serializedData)) {
             qDebug() << QString("Actual (%1 bytes):").arg(device.data().length()) << device.data().toHex();
-            qDebug() << QString("Expected (%1 bytes):").arg(data.at(i).serializedValue.length()) << data.at(i).serializedValue.toHex();
+            qDebug() << QString("Expected (%1 bytes):").arg(data.at(i).serializedData.length()) << data.at(i).serializedData.toHex();
         }
 
-        QCOMPARE(device.data(), data.at(i).serializedValue);
+        QCOMPARE(device.data(), data.at(i).serializedData);
     }
 
     for (int i = 0; i < data.count(); ++i) {
         QBuffer device;
-        device.setData(data.at(i).serializedValue);
+        device.setData(data.at(i).serializedData);
         device.open(QBuffer::ReadOnly);
 
         CTelegramStream stream(&device);
@@ -177,51 +177,62 @@ void tst_CTelegramStream::longStringSerialization()
 {
     QList<STestData> data;
 
-    QString stringToTest1 = QLatin1String("Some really pretty long string to be serialized. "
-                                         "Start to speek something wise and sage. Abadfa dfa uzxcviuwekrhalflkjhzvzxciuvyoiuwehrkblabla-asdfasdf"
-                                         "qwrq25!@!@(#*&!$@%@!()#*&@#($)&*)(!@*&#)(!*@&#()!@*&$%!*@&$&^!%$&*#@%$&*%^@#$&%@#$@#*$&^@#*(&^@#%*&^!F"
-                                         "132465798+760++-*/*/651321///???asd0f98`0978jhkjhzxcv....end"); // Lenght: 313
+    static const QString stringToTest1 = QStringLiteral("This is a long string, which is going to be serialized. "
+                                                        "Starting to speek something wise and sage... Abadfa"
+                                                        "dfa uzxcviuwekrhalflkjhzvzxciuvyoiuwehrkblabla-asdfasdf"
+                                                        "qwrq25!@!@(#*&!$@%@!()#*&@#($)&*)(!@*&#)(!*@&#()!@*&$%!"
+                                                        "*@&$&^!%$&*#@%$&*%^@#$&%@#$@#*$&^@#*(&^@#%*&^!F132465798"
+                                                        "+760++-*/*/651321///???asd0f98`0978jhkjhzxcv....end");
 
-    const int len = 313;
-    QByteArray serialized1(1, char(0xfe));
-    serialized1.append(char(len & 0xff));
-    serialized1.append(char((len & 0xff00) >> 8));
-    serialized1.append(char((len & 0xff0000) >> 16));
-    serialized1.append(stringToTest1.toUtf8());
+    static const QString stringToTest2 = QStringLiteral("It seems that we need to test some much longer string"
+                                                        "with four hundred characters at least. AS:DLMZXCoiu123787"
+                                                        "Ljlkj123l4mzxcv989871234-09-0asd;lv,;,l;xzcvllas "
+                                                        "  1234asplk;lkxzv==+_)!@#(*&234234zsdclkmasd2143164537xgcxn"
+                                                        "  1234asplk;lkxzv==+_)!@#(*&234234zsdclkmasd2143164537xgcxn"
+                                                        "  1234asplk;lkxzv==+_)!@#(*&234234zsdclkmasd2143164537xgcxn"
+                                                        "  1234asplk;lkxzv==+_)!@#(*&234234zsdclkmasd2143164537xgcxn"
+                                                        "  1234asplk;lkxzv==+_)!@#(*&234234zsdclkmasd2143164537xgcxn"
+                                                        "  1234asplk;lkxzv==+_)!@#(*&234234zsdclkmasd2143164537xgcxn"
+                                                        "  1234asplk;lkxzv==+_)!@#(*&234234zsdclkmasd2143164537xgcxn"
+                                                        "  1234asplk;lkxzv==+_)!@#(*&234234zsdclkmasd2143164537xgcxn"
+                                                        "here we are!"
+                                                        );
 
-    int extraNulls = 4 - (len & 3);
+    auto serialize = [](const QByteArray &str) {
+        const int len = str.length();
+        QByteArray serialized(1, char(0xfe));
+        serialized.append(char(len & 0xff));
+        serialized.append(char((len & 0xff00) >> 8));
+        serialized.append(char((len & 0xff0000) >> 16));
+        serialized.append(str);
 
-    for (int i = 0; i < extraNulls; ++i)
-        serialized1.append(char(0));
+        while (serialized.length() % 4) {
+            serialized.append(char(0));
+        }
+        return serialized;
+    };
 
-    data.append(STestData(stringToTest1, serialized1));
+    data.append(STestData(stringToTest1, serialize(stringToTest1.toUtf8())));
+    data.append(STestData(stringToTest2, serialize(stringToTest2.toUtf8())));
 
+    /* Serialization */
     for (int i = 0; i < data.count(); ++i) {
-        QBuffer device;
-        device.open(QBuffer::WriteOnly);
-
-        CTelegramStream stream(&device);
-
-        stream << data.at(i).value.toString();
-
-        QVERIFY2(!(device.data().length() % 4), "Results buffer is not padded (total length is not divisible by 4)");
-        QVERIFY2((device.data().length() >= len + 4), "Results buffer size for long string should be at least stringLength + 4");
-        QVERIFY2((device.data().length() <= len + 4 + 3), "Results buffer size for long string should never be more, than stringLength + 4 + 3");
-
-        QCOMPARE(device.data(), data.at(i).serializedValue);
+        QByteArray dataArray;
+        CTelegramStream stream(&dataArray, true);
+        const QString originString = data.at(i).value.toString();
+        stream << originString;
+        QVERIFY2(!(dataArray.length() % 4), "Results data is not padded (total length is not divisible by 4)");
+        QVERIFY2((dataArray.length() >= originString.length() + 4), "Results data size for long string should be at least stringLength + one byte for 0xfe + three bytes for size");
+        QVERIFY2((dataArray.length() <= originString.length() + 4 + 3), "Results data size for long string should never be more, than stringLength + 4 + 3,"
+                                                                        "because we should never pad for more, than 3 bytes");
+        QCOMPARE(dataArray, data.at(i).serializedData);
     }
 
+    /* Deserialization */
     for (int i = 0; i < data.count(); ++i) {
-        QBuffer device;
-        device.setData(data.at(i).serializedValue);
-        device.open(QBuffer::ReadOnly);
-
-        CTelegramStream stream(&device);
-
+        CTelegramStream stream(data.at(i).serializedData);
         QString result;
-
         stream >> result;
-
         QCOMPARE(result, data.at(i).value.toString());
     }
 }
@@ -257,12 +268,12 @@ void tst_CTelegramStream::intSerialization()
 
         stream << data.at(i).value.value<quint32>();
 
-        QCOMPARE(device.data(), data.at(i).serializedValue);
+        QCOMPARE(device.data(), data.at(i).serializedData);
     }
 
     for (int i = 0; i < data.count(); ++i) {
         QBuffer device;
-        device.setData(data.at(i).serializedValue);
+        device.setData(data.at(i).serializedData);
         device.open(QBuffer::ReadOnly);
 
         CTelegramStream stream(&device);
