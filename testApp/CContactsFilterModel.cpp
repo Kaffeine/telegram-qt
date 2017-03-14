@@ -11,6 +11,9 @@ CContactsFilterModel::CContactsFilterModel(QObject *parent) :
 
 void CContactsFilterModel::setFilterList(const QVector<quint32> &filter)
 {
+    if (filter == m_filter) {
+        return;
+    }
     qDebug() << Q_FUNC_INFO << filter;
     m_filter = filter;
     invalidateFilter();
