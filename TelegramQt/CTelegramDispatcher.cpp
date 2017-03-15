@@ -1678,7 +1678,15 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
         apiMessage.fwdTimestamp = message.fwdDate;
     }
 
-    const TelegramNamespace::Peer peer = peerToPublicPeer(message.toId);
+    TelegramNamespace::Peer peer;
+    if ((message.toId.tlType != TLValue::PeerUser) || (messageFlags & TelegramNamespace::MessageFlagOut)) {
+        // To a group chat or an outgoing message
+        peer = peerToPublicPeer(message.toId);
+    } else {
+        // Personal chat from someone
+        peer = TelegramNamespace::Peer(message.fromId, TelegramNamespace::Peer::User);
+    }
+
     if (!peer.isValid()) {
         qWarning() << Q_FUNC_INFO << "Unknown peer type!";
         return;
