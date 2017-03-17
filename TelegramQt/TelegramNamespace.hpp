@@ -177,6 +177,12 @@ struct DcOption
 
 class PasswordInfo
 {
+    Q_GADGET
+    Q_PROPERTY(QByteArray newSalt READ newSalt)
+    Q_PROPERTY(QString emailUnconfirmedPattern READ emailUnconfirmedPattern)
+    Q_PROPERTY(QByteArray currentSalt READ currentSalt)
+    Q_PROPERTY(QString hint READ hint)
+    Q_PROPERTY(bool hasRecovery READ hasRecovery)
 public:
     PasswordInfo();
     PasswordInfo(const PasswordInfo &otherData);
@@ -367,12 +373,14 @@ Q_DECLARE_METATYPE(Telegram::Message)
 Q_DECLARE_METATYPE(Telegram::GroupChat)
 Q_DECLARE_METATYPE(Telegram::RemoteFile)
 Q_DECLARE_METATYPE(Telegram::UserInfo)
+Q_DECLARE_METATYPE(Telegram::PasswordInfo)
 
 Q_DECLARE_TYPEINFO(Telegram::DcOption, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::Message, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::GroupChat, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::RemoteFile, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::UserInfo, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::PasswordInfo, Q_MOVABLE_TYPE);
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageTypeFlags)

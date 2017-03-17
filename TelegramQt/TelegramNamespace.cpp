@@ -40,6 +40,7 @@ void TelegramNamespace::registerTypes()
         qRegisterMetaType<TelegramNamespace::MessageType>("TelegramNamespace::MessageType");
         qRegisterMetaType<TelegramNamespace::AuthSignError>("TelegramNamespace::AuthSignError");
         qRegisterMetaType<TelegramNamespace::UnauthorizedError>("TelegramNamespace::UnauthorizedError");
+        qRegisterMetaType<Telegram::PasswordInfo>("Telegram::PasswordInfo");
         registered = true;
     }
 }
