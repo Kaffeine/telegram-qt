@@ -18,6 +18,8 @@ CONFIG += link_pkgconfig
 PKGCONFIG += openssl zlib
 
 DEFINES += TELEGRAMQT_LIBRARY
+DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_NO_CAST_FROM_ASCII
 
 SOURCES = CTelegramCore.cpp \
     CAppInformation.cpp \

@@ -64,6 +64,8 @@ if (DEVELOPER_BUILD)
 endif()
 
 add_definitions(-DTELEGRAMQT_LIBRARY)
+add_definitions(-DQT_DEPRECATED_WARNINGS)
+add_definitions(-DQT_NO_CAST_FROM_ASCII)
 
 QT5_WRAP_CPP(telegram_qt_MOC_SOURECES ${telegram_qt_META_HEADERS})
 
