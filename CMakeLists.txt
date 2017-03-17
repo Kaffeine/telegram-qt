@@ -14,6 +14,8 @@ option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
 # Add an option for building tests
 option(ENABLE_TESTAPP "Enable compilation of testing application" FALSE)
 # Add an option for building tests
+option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
+# Add an option for building tests
 option(STATIC_BUILD "Compile static library instead of shared" FALSE)
 # Add an option for dev build
 option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
@@ -35,6 +37,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
 # Add the source subdirectories
 add_subdirectory(TelegramQt)
+
+if (ENABLE_QML_IMPORT)
+    add_subdirectory(imports/TelegramQtQml)
+endif()
 
 #if(ENABLE_TESTS)
 #    add_subdirectory(tests)

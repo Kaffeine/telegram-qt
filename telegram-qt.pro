@@ -12,6 +12,13 @@ SUBDIRS = TelegramQt
 isEmpty(BUILD_ONLY_LIBRARY) {
     BUILD_ONLY_LIBRARY = "false"
 }
+isEmpty(BUILD_QML_IMPORT) {
+    BUILD_QML_IMPORT = "true"
+}
+
+equals(BUILD_QML_IMPORT, "true") {
+    SUBDIRS += imports/TelegramQtQml
+}
 
 !equals(BUILD_ONLY_LIBRARY, "true") {
     SUBDIRS += testApp
