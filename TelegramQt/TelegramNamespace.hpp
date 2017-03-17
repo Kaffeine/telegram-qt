@@ -128,248 +128,251 @@ public:
     };
 
     static void registerTypes();
-
-    class UserInfo;
-    class RemoteFile;
-    class MessageMediaInfo;
-
-    struct Peer
-    {
-        enum Type {
-            User,
-            Chat
-        };
-
-        Peer(quint32 id = 0, Type t = User) : type(t), id(id)
-        {
-        }
-
-        Type type;
-        quint32 id;
-
-        bool isValid() const { return id; }
-
-        bool operator==(const Peer &p) const
-        {
-            return (p.type == type) && (p.id == id);
-        }
-
-        static Peer fromUserId(quint32 id)
-        {
-            return Peer(id, User);
-        }
-        static Peer fromChatId(quint32 id)
-        {
-            return Peer(id, Chat);
-        }
-    };
-
-    struct DcOption
-    {
-        inline DcOption() : port(0) { }
-        inline DcOption(const QString &a, quint32 p) : address(a), port(p) { }
-        QString address;
-        quint32 port;
-    };
-
-    class PasswordInfo
-    {
-    public:
-        PasswordInfo();
-        PasswordInfo(const PasswordInfo &otherData);
-        ~PasswordInfo();
-
-        PasswordInfo &operator=(const PasswordInfo &otherData);
-
-        QByteArray newSalt();
-        QString emailUnconfirmedPattern();
-        QByteArray currentSalt();
-        QString hint();
-        bool hasRecovery();
-
-    protected:
-        friend class CTelegramAuthModule;
-        class Private;
-
-        Private *d;
-    };
-
-    struct Message
-    {
-        Message() :
-            forwardContactId(0),
-            id(0),
-            timestamp(0),
-            fwdTimestamp(0),
-            type(MessageTypeUnsupported),
-            flags(MessageFlagNone)
-        {
-
-        }
-
-        quint32 fromId; // Telegram user id
-
-        const Peer peer() const { return m_peer; }
-        void setPeer(const Peer &peer) { m_peer = peer; }
-
-        quint32 forwardContactId;
-        QString text;
-        quint32 id;
-        quint32 timestamp;
-        quint32 fwdTimestamp;
-        MessageType type;
-        MessageFlags flags;
-
-    private:
-        Peer m_peer;
-    };
-
-    class MessageMediaInfo
-    {
-    public:
-        MessageMediaInfo();
-        MessageMediaInfo(const MessageMediaInfo &info);
-        ~MessageMediaInfo();
-
-        MessageMediaInfo &operator=(const MessageMediaInfo &info);
-
-        void setUploadFile(MessageType type, const RemoteFile &file);
-
-        bool getRemoteFileInfo(RemoteFile *file) const;
-
-        MessageType type() const;
-
-        quint32 size() const;
-
-        quint32 duration() const;
-        bool setDuration(quint32 duration);
-
-        QString documentFileName() const;
-        bool setDocumentFileName(const QString &fileName);
-
-        // Photo, Video
-        QString caption() const;
-        void setCaption(const QString &caption);
-
-        // Valid for Document and Audio
-        QString mimeType() const;
-        bool setMimeType(const QString &mimeType);
-
-        // Valid for GeoPoint and Document/Sticker
-        QString alt() const;
-
-        // GeoPoint
-        double latitude() const;
-        double longitude() const;
-        void setGeoPoint(double latitude, double longitude);
-
-        QString siteName() const;
-        QString title() const;
-        QString description() const;
-
-    protected:
-        friend class CTelegramDispatcher;
-        class Private;
-
-        Private *d;
-    };
-
-    class RemoteFile
-    {
-    public:
-        enum Type {
-            Undefined,
-            Download,
-            Upload
-        };
-        RemoteFile();
-        RemoteFile(const RemoteFile &file);
-        ~RemoteFile();
-
-        RemoteFile &operator=(const RemoteFile &file);
-
-        Type type() const;
-
-        bool isValid() const;
-        QString getUniqueId() const;
-
-        QString fileName() const;
-        quint32 size() const;
-        QString md5Sum() const;
-
-    protected:
-        friend class CTelegramDispatcher;
-        friend class UserInfo;
-        friend class MessageMediaInfo;
-        class Private;
-
-        Private *d;
-    };
-
-    class UserInfo
-    {
-    public:
-        enum ProfilePhotoSize {
-            Small,
-            Big
-        };
-
-        UserInfo();
-        UserInfo(const UserInfo &info);
-        ~UserInfo();
-
-        UserInfo &operator=(const UserInfo &info);
-
-        quint32 id() const;
-        QString firstName() const;
-        QString lastName() const;
-        QString userName() const;
-        QString phone() const;
-        ContactStatus status() const;
-        quint32 wasOnline() const;
-
-        bool getProfilePhoto(RemoteFile *file, ProfilePhotoSize size = Small) const;
-
-        // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
-
-    protected:
-        friend class CTelegramDispatcher;
-        class Private;
-
-        Private *d;
-    };
-
-    struct GroupChat
-    {
-        GroupChat(quint32 id = 0) :
-            id(id),
-            participantsCount(0),
-            date(0),
-            left(false)
-        {
-        }
-
-        quint32 id;
-        QString title;
-        quint32 participantsCount;
-        quint32 date;
-        bool left;
-    };
-
 };
 
-Q_DECLARE_METATYPE(TelegramNamespace::Peer)
-Q_DECLARE_METATYPE(TelegramNamespace::DcOption)
-Q_DECLARE_METATYPE(TelegramNamespace::Message)
-Q_DECLARE_METATYPE(TelegramNamespace::GroupChat)
-Q_DECLARE_METATYPE(TelegramNamespace::RemoteFile)
-Q_DECLARE_METATYPE(TelegramNamespace::UserInfo)
+namespace Telegram {
 
-Q_DECLARE_TYPEINFO(TelegramNamespace::DcOption, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(TelegramNamespace::Message, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(TelegramNamespace::GroupChat, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(TelegramNamespace::RemoteFile, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(TelegramNamespace::UserInfo, Q_MOVABLE_TYPE);
+class UserInfo;
+class RemoteFile;
+class MessageMediaInfo;
+
+struct Peer
+{
+    enum Type {
+        User,
+        Chat
+    };
+
+    Peer(quint32 id = 0, Type t = User) : type(t), id(id)
+    {
+    }
+
+    Type type;
+    quint32 id;
+
+    bool isValid() const { return id; }
+
+    bool operator==(const Peer &p) const
+    {
+        return (p.type == type) && (p.id == id);
+    }
+
+    static Peer fromUserId(quint32 id)
+    {
+        return Peer(id, User);
+    }
+    static Peer fromChatId(quint32 id)
+    {
+        return Peer(id, Chat);
+    }
+};
+
+struct DcOption
+{
+    inline DcOption() : port(0) { }
+    inline DcOption(const QString &a, quint32 p) : address(a), port(p) { }
+    QString address;
+    quint32 port;
+};
+
+class PasswordInfo
+{
+public:
+    PasswordInfo();
+    PasswordInfo(const PasswordInfo &otherData);
+    ~PasswordInfo();
+
+    PasswordInfo &operator=(const PasswordInfo &otherData);
+
+    QByteArray newSalt();
+    QString emailUnconfirmedPattern();
+    QByteArray currentSalt();
+    QString hint();
+    bool hasRecovery();
+
+protected:
+    friend class ::CTelegramAuthModule;
+    class Private;
+
+    Private *d;
+};
+
+struct Message
+{
+    Message() :
+        forwardContactId(0),
+        id(0),
+        timestamp(0),
+        fwdTimestamp(0),
+        type(TelegramNamespace::MessageTypeUnsupported),
+        flags(TelegramNamespace::MessageFlagNone)
+    {
+
+    }
+
+    quint32 fromId; // Telegram user id
+
+    const Peer peer() const { return m_peer; }
+    void setPeer(const Peer &peer) { m_peer = peer; }
+
+    quint32 forwardContactId;
+    QString text;
+    quint32 id;
+    quint32 timestamp;
+    quint32 fwdTimestamp;
+    TelegramNamespace::MessageType type;
+    TelegramNamespace::MessageFlags flags;
+
+private:
+    Peer m_peer;
+};
+
+class MessageMediaInfo
+{
+public:
+    MessageMediaInfo();
+    MessageMediaInfo(const MessageMediaInfo &info);
+    ~MessageMediaInfo();
+
+    MessageMediaInfo &operator=(const MessageMediaInfo &info);
+
+    void setUploadFile(TelegramNamespace::MessageType type, const RemoteFile &file);
+
+    bool getRemoteFileInfo(RemoteFile *file) const;
+
+    TelegramNamespace::MessageType type() const;
+
+    quint32 size() const;
+
+    quint32 duration() const;
+    bool setDuration(quint32 duration);
+
+    QString documentFileName() const;
+    bool setDocumentFileName(const QString &fileName);
+
+    // Photo, Video
+    QString caption() const;
+    void setCaption(const QString &caption);
+
+    // Valid for Document and Audio
+    QString mimeType() const;
+    bool setMimeType(const QString &mimeType);
+
+    // Valid for GeoPoint and Document/Sticker
+    QString alt() const;
+
+    // GeoPoint
+    double latitude() const;
+    double longitude() const;
+    void setGeoPoint(double latitude, double longitude);
+
+    QString siteName() const;
+    QString title() const;
+    QString description() const;
+
+protected:
+    friend class ::CTelegramDispatcher;
+    class Private;
+
+    Private *d;
+};
+
+class RemoteFile
+{
+public:
+    enum Type {
+        Undefined,
+        Download,
+        Upload
+    };
+    RemoteFile();
+    RemoteFile(const RemoteFile &file);
+    ~RemoteFile();
+
+    RemoteFile &operator=(const RemoteFile &file);
+
+    Type type() const;
+
+    bool isValid() const;
+    QString getUniqueId() const;
+
+    QString fileName() const;
+    quint32 size() const;
+    QString md5Sum() const;
+
+protected:
+    friend class ::CTelegramDispatcher;
+    friend class UserInfo;
+    friend class MessageMediaInfo;
+    class Private;
+
+    Private *d;
+};
+
+class UserInfo
+{
+public:
+    enum ProfilePhotoSize {
+        Small,
+        Big
+    };
+
+    UserInfo();
+    UserInfo(const UserInfo &info);
+    ~UserInfo();
+
+    UserInfo &operator=(const UserInfo &info);
+
+    quint32 id() const;
+    QString firstName() const;
+    QString lastName() const;
+    QString userName() const;
+    QString phone() const;
+    TelegramNamespace::ContactStatus status() const;
+    quint32 wasOnline() const;
+
+    bool getProfilePhoto(RemoteFile *file, ProfilePhotoSize size = Small) const;
+
+    // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
+
+protected:
+    friend class ::CTelegramDispatcher;
+    class Private;
+
+    Private *d;
+};
+
+struct GroupChat
+{
+    GroupChat(quint32 id = 0) :
+        id(id),
+        participantsCount(0),
+        date(0),
+        left(false)
+    {
+    }
+
+    quint32 id;
+    QString title;
+    quint32 participantsCount;
+    quint32 date;
+    bool left;
+};
+
+}
+
+Q_DECLARE_METATYPE(Telegram::Peer)
+Q_DECLARE_METATYPE(Telegram::DcOption)
+Q_DECLARE_METATYPE(Telegram::Message)
+Q_DECLARE_METATYPE(Telegram::GroupChat)
+Q_DECLARE_METATYPE(Telegram::RemoteFile)
+Q_DECLARE_METATYPE(Telegram::UserInfo)
+
+Q_DECLARE_TYPEINFO(Telegram::DcOption, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::Message, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::GroupChat, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::RemoteFile, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::UserInfo, Q_MOVABLE_TYPE);
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageTypeFlags)

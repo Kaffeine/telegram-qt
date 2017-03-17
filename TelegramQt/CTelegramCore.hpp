@@ -41,7 +41,7 @@ public:
     const CAppInformation *appInfo() const;
     void setAppInformation(const CAppInformation *newAppInfo);
 
-    Q_INVOKABLE static QVector<TelegramNamespace::DcOption> builtInDcs();
+    Q_INVOKABLE static QVector<Telegram::DcOption> builtInDcs();
     Q_INVOKABLE static quint32 defaultPingInterval();
 
     QByteArray connectionSecretInfo() const;
@@ -59,12 +59,12 @@ public:
 
     static qint32 localTypingRecommendedRepeatInterval(); // Recommended application local typing state re-set interval.
 
-    bool getUserInfo(TelegramNamespace::UserInfo *info, quint32 userId) const;
-    bool getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const;
+    bool getUserInfo(Telegram::UserInfo *info, quint32 userId) const;
+    bool getChatInfo(Telegram::GroupChat *chatInfo, quint32 chatId) const;
     bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
-    bool getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const;
-    bool getPasswordInfo(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId) const;
+    bool getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const;
+    bool getPasswordInfo(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const;
 
 public Q_SLOTS:
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags); // Messages with at least one of the passed flags will be filtered out.
@@ -76,7 +76,7 @@ public Q_SLOTS:
     void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime = 10000);
     void setMediaDataBufferSize(quint32 size);
 
-    bool initConnection(const QVector<TelegramNamespace::DcOption> &dcs = QVector<TelegramNamespace::DcOption>()); // Uses builtin dc options by default
+    bool initConnection(const QVector<Telegram::DcOption> &dcs = QVector<Telegram::DcOption>()); // Uses builtin dc options by default
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
     bool logOut();
@@ -97,9 +97,9 @@ public Q_SLOTS:
 
     void requestContactAvatar(quint32 userId);
     void requestMessageMediaData(quint32 messageId);
-    quint32 requestFile(const TelegramNamespace::RemoteFile *file);
+    quint32 requestFile(const Telegram::RemoteFile *file);
 
-    bool requestHistory(const TelegramNamespace::Peer &peer, int offset, int limit);
+    bool requestHistory(const Telegram::Peer &peer, int offset, int limit);
 
     quint32 resolveUsername(const QString &userName);
 
@@ -107,12 +107,12 @@ public Q_SLOTS:
     quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
     quint32 uploadFile(QIODevice *source, const QString &fileName);
 
-    quint64 sendMessage(const TelegramNamespace::Peer &peer, const QString &message); // Message id is a random number
-    quint64 sendMedia(const TelegramNamespace::Peer &peer, const TelegramNamespace::MessageMediaInfo &messageInfo);
-    quint64 forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId);
+    quint64 sendMessage(const Telegram::Peer &peer, const QString &message); // Message id is a random number
+    quint64 sendMedia(const Telegram::Peer &peer, const Telegram::MessageMediaInfo &messageInfo);
+    quint64 forwardMessage(const Telegram::Peer &peer, quint32 messageId);
     /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
-    void setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction action);
-    void setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId);
+    void setTyping(const Telegram::Peer &peer, TelegramNamespace::MessageAction action);
+    void setMessageRead(const Telegram::Peer &peer, quint32 messageId);
 
     // Set visible (not actual) online status.
     void setOnlineStatus(bool onlineStatus);
@@ -144,18 +144,18 @@ Q_SIGNALS:
     void passwordInfoReceived(quint64 requestId);
 
     void avatarReceived(quint32 userId, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
-    void messageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data,
+    void messageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data,
                                   const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 
-    void messageReceived(const TelegramNamespace::Message &message);
+    void messageReceived(const Telegram::Message &message);
 
     void contactStatusChanged(quint32 userId, TelegramNamespace::ContactStatus status);
     void contactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
     void contactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
 
     void sentMessageIdReceived(quint64 randomId, quint32 resolvedId);
-    void messageReadInbox(TelegramNamespace::Peer peer, quint32 messageId);
-    void messageReadOutbox(TelegramNamespace::Peer peer, quint32 messageId);
+    void messageReadInbox(Telegram::Peer peer, quint32 messageId);
+    void messageReadOutbox(Telegram::Peer peer, quint32 messageId);
 
     void createdChatIdReceived(quint64 randomId, quint32 resolvedId); // Signal chatAdded(resolvedId) would be emitted after this signal.
     void chatAdded(quint32 chatId);
@@ -167,7 +167,7 @@ Q_SIGNALS:
 
     void filePartReceived(quint32 requestId, const QByteArray &data, const QString &mimeType, quint32 offset, quint32 totalSize);
     void filePartUploaded(quint32 requestId, quint32 offset, quint32 totalSize);
-    void fileRequestFinished(quint32 requestId, TelegramNamespace::RemoteFile requestResult);
+    void fileRequestFinished(quint32 requestId, Telegram::RemoteFile requestResult);
 
 private:
     class Private;
@@ -193,17 +193,17 @@ inline void CTelegramCore::deleteContact(quint32 userId)
 
 inline quint64 CTelegramCore::sendChatMessage(quint32 chatId, const QString &message)
 {
-    return sendMessage(TelegramNamespace::Peer(chatId, TelegramNamespace::Peer::Chat), message);
+    return sendMessage(Telegram::Peer(chatId, Telegram::Peer::Chat), message);
 }
 
 inline void CTelegramCore::setChatTyping(quint32 chatId, TelegramNamespace::MessageAction action)
 {
-    setTyping(TelegramNamespace::Peer(chatId, TelegramNamespace::Peer::Chat), action);
+    setTyping(Telegram::Peer(chatId, Telegram::Peer::Chat), action);
 }
 
 inline void CTelegramCore::setChatMessageRead(const quint32 &chatId, quint32 messageId)
 {
-    setMessageRead(TelegramNamespace::Peer(chatId, TelegramNamespace::Peer::Chat), messageId);
+    setMessageRead(Telegram::Peer(chatId, Telegram::Peer::Chat), messageId);
 }
 
 #endif // CTELECORE_HPP

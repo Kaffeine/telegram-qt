@@ -44,16 +44,16 @@ public:
     virtual void onNewConnection(CTelegramConnection *connection);
 
     // Getters
-    bool getUserInfo(TelegramNamespace::UserInfo *userInfo, quint32 userId) const;
-    bool getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 chatId) const;
+    bool getUserInfo(Telegram::UserInfo *userInfo, quint32 userId) const;
+    bool getChatInfo(Telegram::GroupChat *outputChat, quint32 chatId) const;
     bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
     const TLUser *getUser(quint32 userId) const;
     const TLMessage *getMessage(quint32 messageId) const;
 
-    TLInputPeer publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const;
-    TelegramNamespace::Peer peerToPublicPeer(const TLInputPeer &inputPeer) const;
-    TelegramNamespace::Peer peerToPublicPeer(const TLPeer &peer) const;
+    TLInputPeer publicPeerToInputPeer(const Telegram::Peer &peer) const;
+    Telegram::Peer peerToPublicPeer(const TLInputPeer &inputPeer) const;
+    Telegram::Peer peerToPublicPeer(const TLPeer &peer) const;
     TLInputUser userIdToInputUser(quint32 id) const;
 
 private:

@@ -145,7 +145,7 @@ void CTelegramAuthModule::onNewConnection(CTelegramConnection *connection)
     connect(connection, &CTelegramConnection::loggedOut, this, &CTelegramAuthModule::loggedOut);
 }
 
-bool CTelegramAuthModule::getPasswordData(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId) const
+bool CTelegramAuthModule::getPasswordData(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const
 {
     if (!m_passwordInfo.contains(requestId)) {
         return false;

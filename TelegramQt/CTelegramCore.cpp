@@ -73,10 +73,10 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(contactProfileChanged(quint32)));
     connect(m_private->m_dispatcher, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
             SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)));
-    connect(m_private->m_dispatcher, SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
-            SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
-    connect(m_private->m_dispatcher, SIGNAL(messageReceived(TelegramNamespace::Message)),
-            SIGNAL(messageReceived(TelegramNamespace::Message)));
+    connect(m_private->m_dispatcher, SIGNAL(messageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
+            SIGNAL(messageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(messageReceived(Telegram::Message)),
+            SIGNAL(messageReceived(Telegram::Message)));
     connect(m_private->m_dispatcher, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
             SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)));
     connect(m_private->m_dispatcher, SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)),
@@ -85,10 +85,10 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)));
     connect(m_private->m_dispatcher, SIGNAL(sentMessageIdReceived(quint64,quint32)),
             SIGNAL(sentMessageIdReceived(quint64,quint32)));
-    connect(m_private->m_dispatcher, SIGNAL(messageReadInbox(TelegramNamespace::Peer,quint32)),
-            SIGNAL(messageReadInbox(TelegramNamespace::Peer,quint32)));
-    connect(m_private->m_dispatcher, SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)),
-            SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(messageReadInbox(Telegram::Peer,quint32)),
+            SIGNAL(messageReadInbox(Telegram::Peer,quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(messageReadOutbox(Telegram::Peer,quint32)),
+            SIGNAL(messageReadOutbox(Telegram::Peer,quint32)));
 
     connect(m_private->m_dispatcher, SIGNAL(createdChatIdReceived(quint64,quint32)),
             SIGNAL(createdChatIdReceived(quint64,quint32)));
@@ -102,8 +102,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)));
     connect(m_private->m_dispatcher, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
             SIGNAL(filePartUploaded(quint32,quint32,quint32)));
-    connect(m_private->m_dispatcher, SIGNAL(fileRequestFinished(quint32,TelegramNamespace::RemoteFile)),
-            SIGNAL(fileRequestFinished(quint32,TelegramNamespace::RemoteFile)));
+    connect(m_private->m_dispatcher, SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)),
+            SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)));
 }
 
 CTelegramCore::~CTelegramCore()
@@ -138,7 +138,7 @@ void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
     m_private->m_appInfo = new CAppInformation(newAppInfo);
 }
 
-QVector<TelegramNamespace::DcOption> CTelegramCore::builtInDcs()
+QVector<Telegram::DcOption> CTelegramCore::builtInDcs()
 {
     return CTelegramDispatcher::builtInDcs();
 }
@@ -158,7 +158,7 @@ TelegramNamespace::ConnectionState CTelegramCore::connectionState() const
     return m_private->m_dispatcher->connectionState();
 }
 
-bool CTelegramCore::initConnection(const QVector<TelegramNamespace::DcOption> &dcs)
+bool CTelegramCore::initConnection(const QVector<Telegram::DcOption> &dcs)
 {
     if (!m_private->m_appInfo || !m_private->m_appInfo->isValid()) {
         qDebug() << "CTelegramCore: Can not init connection: App information is null or is not valid.";
@@ -237,12 +237,12 @@ void CTelegramCore::requestMessageMediaData(quint32 messageId)
     m_private->m_dispatcher->requestMessageMediaData(messageId);
 }
 
-quint32 CTelegramCore::requestFile(const TelegramNamespace::RemoteFile *file)
+quint32 CTelegramCore::requestFile(const Telegram::RemoteFile *file)
 {
     return m_private->m_dispatcher->requestFile(file);
 }
 
-bool CTelegramCore::requestHistory(const TelegramNamespace::Peer &peer, int offset, int limit)
+bool CTelegramCore::requestHistory(const Telegram::Peer &peer, int offset, int limit)
 {
     return m_private->m_dispatcher->requestHistory(peer, offset, limit);
 }
@@ -252,7 +252,7 @@ quint32 CTelegramCore::resolveUsername(const QString &userName)
     return m_private->m_dispatcher->resolveUsername(userName);
 }
 
-quint64 CTelegramCore::sendMessage(const TelegramNamespace::Peer &peer, const QString &message)
+quint64 CTelegramCore::sendMessage(const Telegram::Peer &peer, const QString &message)
 {
     return m_private->m_dispatcher->sendMessage(peer, message);
 }
@@ -292,7 +292,7 @@ qint32 CTelegramCore::localTypingRecommendedRepeatInterval()
     return CTelegramDispatcher::localTypingRecommendedRepeatInterval();
 }
 
-/*! \fn quint32 TelegramNamespace::UserInfo::lastOnline() const
+/*! \fn quint32 Telegram::UserInfo::lastOnline() const
   Return seconds since epoch for last online time.
 
   If user is online, this method return time when online expires,
@@ -313,12 +313,12 @@ qint32 CTelegramCore::localTypingRecommendedRepeatInterval()
   }
 */
 
-bool CTelegramCore::getUserInfo(TelegramNamespace::UserInfo *info, quint32 userId) const
+bool CTelegramCore::getUserInfo(Telegram::UserInfo *info, quint32 userId) const
 {
     return m_private->m_dispatcher->getUserInfo(info, userId);
 }
 
-bool CTelegramCore::getChatInfo(TelegramNamespace::GroupChat *chatInfo, quint32 chatId) const
+bool CTelegramCore::getChatInfo(Telegram::GroupChat *chatInfo, quint32 chatId) const
 {
     return m_private->m_dispatcher->getChatInfo(chatInfo, chatId);
 }
@@ -328,12 +328,12 @@ bool CTelegramCore::getChatParticipants(QVector<quint32> *participants, quint32 
     return m_private->m_dispatcher->getChatParticipants(participants, chatId);
 }
 
-bool CTelegramCore::getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const
+bool CTelegramCore::getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const
 {
     return m_private->m_dispatcher->getMessageMediaInfo(messageInfo, messageId);
 }
 
-bool CTelegramCore::getPasswordInfo(TelegramNamespace::PasswordInfo *passwordInfo, quint64 requestId) const
+bool CTelegramCore::getPasswordInfo(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const
 {
     return m_private->m_authModule->getPasswordData(passwordInfo, requestId);
 }
@@ -383,22 +383,22 @@ quint32 CTelegramCore::maxMessageId() const
     return m_private->m_dispatcher->maxMessageId();
 }
 
-quint64 CTelegramCore::forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId)
+quint64 CTelegramCore::forwardMessage(const Telegram::Peer &peer, quint32 messageId)
 {
     return m_private->m_dispatcher->forwardMessage(peer, messageId);
 }
 
-quint64 CTelegramCore::sendMedia(const TelegramNamespace::Peer &peer, const TelegramNamespace::MessageMediaInfo &messageInfo)
+quint64 CTelegramCore::sendMedia(const Telegram::Peer &peer, const Telegram::MessageMediaInfo &messageInfo)
 {
     return m_private->m_dispatcher->sendMedia(peer, messageInfo);
 }
 
-void CTelegramCore::setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction action)
+void CTelegramCore::setTyping(const Telegram::Peer &peer, TelegramNamespace::MessageAction action)
 {
     m_private->m_dispatcher->setTyping(peer, action);
 }
 
-void CTelegramCore::setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId)
+void CTelegramCore::setMessageRead(const Telegram::Peer &peer, quint32 messageId)
 {
     m_private->m_dispatcher->setMessageRead(peer, messageId);
 }

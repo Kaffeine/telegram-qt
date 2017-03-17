@@ -4,7 +4,7 @@
 #include "TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
-class TelegramNamespace::MessageMediaInfo::Private : public TLMessageMedia
+class Telegram::MessageMediaInfo::Private : public TLMessageMedia
 {
 public:
     Private() :
@@ -26,7 +26,7 @@ public:
     TLInputFile *m_inputFile;
 };
 
-class TelegramNamespace::RemoteFile::Private
+class Telegram::RemoteFile::Private
 {
 public:
     Private() :
@@ -125,8 +125,8 @@ public:
     RemoteFile::Type m_type;
 };
 
-class TelegramNamespace::PasswordInfo::Private : public TLAccountPassword { };
-class TelegramNamespace::UserInfo::Private : public TLUser { };
+class Telegram::PasswordInfo::Private : public TLAccountPassword { };
+class Telegram::UserInfo::Private : public TLUser { };
 
 TelegramNamespace::ContactStatus getApiContactStatus(TLValue status);
 quint32 getApiContactLastOnline(const TLUserStatus &status);

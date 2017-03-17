@@ -37,12 +37,12 @@ using namespace TelegramUtils;
 #include "TLTypesDebug.hpp"
 #endif
 
-static const QVector<TelegramNamespace::DcOption> s_builtInDcs = QVector<TelegramNamespace::DcOption>()
-        << TelegramNamespace::DcOption(QLatin1String("149.154.175.50") , 443)
-        << TelegramNamespace::DcOption(QLatin1String("149.154.167.51") , 443)
-        << TelegramNamespace::DcOption(QLatin1String("149.154.175.100"), 443)
-        << TelegramNamespace::DcOption(QLatin1String("149.154.167.91") , 443)
-        << TelegramNamespace::DcOption(QLatin1String("91.108.56.165")  , 443);
+static const QVector<Telegram::DcOption> s_builtInDcs = QVector<Telegram::DcOption>()
+        << Telegram::DcOption(QLatin1String("149.154.175.50") , 443)
+        << Telegram::DcOption(QLatin1String("149.154.167.51") , 443)
+        << Telegram::DcOption(QLatin1String("149.154.175.100"), 443)
+        << Telegram::DcOption(QLatin1String("149.154.167.91") , 443)
+        << Telegram::DcOption(QLatin1String("91.108.56.165")  , 443);
 
 static const quint32 s_defaultPingInterval = 15000; // 15 sec
 
@@ -94,7 +94,7 @@ void CTelegramDispatcher::plugModule(CTelegramModule *module)
     module->setDispatcher(this);
 }
 
-QVector<TelegramNamespace::DcOption> CTelegramDispatcher::builtInDcs()
+QVector<Telegram::DcOption> CTelegramDispatcher::builtInDcs()
 {
     return s_builtInDcs;
 }
@@ -269,7 +269,7 @@ void CTelegramDispatcher::setMediaDataBufferSize(quint32 size)
     m_mediaDataBufferSize = size;
 }
 
-bool CTelegramDispatcher::initConnection(const QVector<TelegramNamespace::DcOption> &dcs)
+bool CTelegramDispatcher::initConnection(const QVector<Telegram::DcOption> &dcs)
 {
     if (!dcs.isEmpty()) {
         m_connectionAddresses = dcs;
@@ -461,12 +461,12 @@ void CTelegramDispatcher::closeConnection()
 
 void CTelegramDispatcher::requestContactAvatar(quint32 userId)
 {
-    TelegramNamespace::UserInfo info;
+    Telegram::UserInfo info;
     if (!getUserInfo(&info, userId)) {
         return;
     }
 
-    TelegramNamespace::RemoteFile location;
+    Telegram::RemoteFile location;
     if (!info.getProfilePhoto(&location)) {
         return;
     }
@@ -482,12 +482,12 @@ void CTelegramDispatcher::requestContactAvatar(quint32 userId)
 
 bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
 {
-    TelegramNamespace::MessageMediaInfo info;
+    Telegram::MessageMediaInfo info;
     if (!getMessageMediaInfo(&info, messageId)) {
         return false;
     }
 
-    TelegramNamespace::RemoteFile location;
+    Telegram::RemoteFile location;
     if (!info.getRemoteFileInfo(&location)) {
         return false;
     }
@@ -503,7 +503,7 @@ bool CTelegramDispatcher::requestMessageMediaData(quint32 messageId)
     return true;
 }
 
-quint32 CTelegramDispatcher::requestFile(const TelegramNamespace::RemoteFile *file, quint32 chunkSize)
+quint32 CTelegramDispatcher::requestFile(const Telegram::RemoteFile *file, quint32 chunkSize)
 {
     if (!file->isValid()) {
         return 0;
@@ -524,7 +524,7 @@ quint32 CTelegramDispatcher::requestFile(const TelegramNamespace::RemoteFile *fi
     return addFileRequest(request);
 }
 
-bool CTelegramDispatcher::getMessageMediaInfo(TelegramNamespace::MessageMediaInfo *messageInfo, quint32 messageId) const
+bool CTelegramDispatcher::getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const
 {
     const TLMessage *message = getMessage(messageId);
     if (!message) {
@@ -538,7 +538,7 @@ bool CTelegramDispatcher::getMessageMediaInfo(TelegramNamespace::MessageMediaInf
     return true;
 }
 
-bool CTelegramDispatcher::requestHistory(const TelegramNamespace::Peer &peer, quint32 offset, quint32 limit)
+bool CTelegramDispatcher::requestHistory(const Telegram::Peer &peer, quint32 offset, quint32 limit)
 {
     if (!activeConnection()) {
         return false;
@@ -590,7 +590,7 @@ quint32 CTelegramDispatcher::uploadFile(QIODevice *source, const QString &fileNa
     return uploadFile(source->readAll(), fileName);
 }
 
-quint64 CTelegramDispatcher::sendMessage(const TelegramNamespace::Peer &peer, const QString &message)
+quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QString &message)
 {
     if (!activeConnection()) {
         return 0;
@@ -630,7 +630,7 @@ quint64 CTelegramDispatcher::sendMessage(const TelegramNamespace::Peer &peer, co
     return randomId;
 }
 
-quint64 CTelegramDispatcher::forwardMessage(const TelegramNamespace::Peer &peer, quint32 messageId)
+quint64 CTelegramDispatcher::forwardMessage(const Telegram::Peer &peer, quint32 messageId)
 {
     if (!activeConnection()) {
         return 0;
@@ -642,7 +642,7 @@ quint64 CTelegramDispatcher::forwardMessage(const TelegramNamespace::Peer &peer,
     return activeConnection()->messagesForwardMessage(publicPeerToInputPeer(peer), messageId, randomId);
 }
 
-quint64 CTelegramDispatcher::sendMedia(const TelegramNamespace::Peer &peer, const TelegramNamespace::MessageMediaInfo &info)
+quint64 CTelegramDispatcher::sendMedia(const Telegram::Peer &peer, const Telegram::MessageMediaInfo &info)
 {
     if (!activeConnection()) {
         return 0;
@@ -654,7 +654,7 @@ quint64 CTelegramDispatcher::sendMedia(const TelegramNamespace::Peer &peer, cons
         return 0;
     }
 
-    const TelegramNamespace::MessageMediaInfo::Private *media = info.d;
+    const Telegram::MessageMediaInfo::Private *media = info.d;
     TLInputMedia inputMedia;
 
     if (media->m_isUploaded) {
@@ -779,7 +779,7 @@ bool CTelegramDispatcher::addChatUser(quint32 chatId, quint32 userId, quint32 fo
     return true;
 }
 
-void CTelegramDispatcher::setTyping(const TelegramNamespace::Peer &peer, TelegramNamespace::MessageAction publicAction)
+void CTelegramDispatcher::setTyping(const Telegram::Peer &peer, TelegramNamespace::MessageAction publicAction)
 {
     if (!activeConnection()) {
         return;
@@ -844,7 +844,7 @@ void CTelegramDispatcher::setTyping(const TelegramNamespace::Peer &peer, Telegra
     }
 }
 
-void CTelegramDispatcher::setMessageRead(const TelegramNamespace::Peer &peer, quint32 messageId)
+void CTelegramDispatcher::setMessageRead(const Telegram::Peer &peer, quint32 messageId)
 {
     if (!activeConnection()) {
         return;
@@ -912,7 +912,7 @@ bool CTelegramDispatcher::setWantedDc(quint32 dc)
     return true;
 }
 
-bool CTelegramDispatcher::getUserInfo(TelegramNamespace::UserInfo *userInfo, quint32 userId) const
+bool CTelegramDispatcher::getUserInfo(Telegram::UserInfo *userInfo, quint32 userId) const
 {
     if (!m_users.contains(userId)) {
         qDebug() << Q_FUNC_INFO << "Unknown user" << userId;
@@ -925,7 +925,7 @@ bool CTelegramDispatcher::getUserInfo(TelegramNamespace::UserInfo *userInfo, qui
     return true;
 }
 
-bool CTelegramDispatcher::getChatInfo(TelegramNamespace::GroupChat *outputChat, quint32 chatId) const
+bool CTelegramDispatcher::getChatInfo(Telegram::GroupChat *outputChat, quint32 chatId) const
 {
     if (!chatId) {
         return false;
@@ -1569,7 +1569,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        break;
     case TLValue::UpdateReadHistoryInbox:
     case TLValue::UpdateReadHistoryOutbox: {
-        TelegramNamespace::Peer peer = peerToPublicPeer(update.peer);
+        Telegram::Peer peer = peerToPublicPeer(update.peer);
         if (!peer.id) {
 #ifdef DEVELOPER_BUILD
             qDebug() << Q_FUNC_INFO << update.tlType << "Unable to resolve peer" << update.peer;
@@ -1681,7 +1681,7 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
         m_knownMediaMessages.insert(message.id, new TLMessage(message));
     }
 
-    TelegramNamespace::Message apiMessage;
+    Telegram::Message apiMessage;
 
     TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message.flags);
     if (messageFlags & TelegramNamespace::MessageFlagForwarded) {
@@ -1689,13 +1689,13 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
         apiMessage.fwdTimestamp = message.fwdDate;
     }
 
-    TelegramNamespace::Peer peer;
+    Telegram::Peer peer;
     if ((message.toId.tlType != TLValue::PeerUser) || (messageFlags & TelegramNamespace::MessageFlagOut)) {
         // To a group chat or an outgoing message
         peer = peerToPublicPeer(message.toId);
     } else {
         // Personal chat from someone
-        peer = TelegramNamespace::Peer(message.fromId, TelegramNamespace::Peer::User);
+        peer = Telegram::Peer(message.fromId, Telegram::Peer::User);
     }
 
     if (!peer.isValid()) {
@@ -1755,11 +1755,11 @@ void CTelegramDispatcher::updateFullChat(const TLChatFull &newChat)
     emitChatChanged(newChat.id);
 }
 
-TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const TelegramNamespace::Peer &peer) const
+TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const Telegram::Peer &peer) const
 {
     TLInputPeer inputPeer;
 
-    if (peer.type == TelegramNamespace::Peer::Chat) {
+    if (peer.type == Telegram::Peer::Chat) {
         inputPeer.tlType = TLValue::InputPeerChat;
         inputPeer.chatId = peer.id;
         return inputPeer;
@@ -1776,30 +1776,30 @@ TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const TelegramNamespace::
     return inputPeer;
 }
 
-TelegramNamespace::Peer CTelegramDispatcher::peerToPublicPeer(const TLInputPeer &inputPeer) const
+Telegram::Peer CTelegramDispatcher::peerToPublicPeer(const TLInputPeer &inputPeer) const
 {
     switch (inputPeer.tlType) {
     case TLValue::InputPeerSelf:
-        return TelegramNamespace::Peer(selfId());
+        return Telegram::Peer(selfId());
     case TLValue::InputPeerUser:
-        return TelegramNamespace::Peer(inputPeer.userId);
+        return Telegram::Peer(inputPeer.userId);
     case TLValue::InputPeerChat:
-        return TelegramNamespace::Peer(inputPeer.chatId, TelegramNamespace::Peer::Chat);
+        return Telegram::Peer(inputPeer.chatId, Telegram::Peer::Chat);
     case TLValue::InputPeerEmpty:
     default:
-        return TelegramNamespace::Peer();
+        return Telegram::Peer();
     }
 }
 
-TelegramNamespace::Peer CTelegramDispatcher::peerToPublicPeer(const TLPeer &peer) const
+Telegram::Peer CTelegramDispatcher::peerToPublicPeer(const TLPeer &peer) const
 {
     switch (peer.tlType) {
     case TLValue::PeerChat:
-        return TelegramNamespace::Peer(peer.chatId, TelegramNamespace::Peer::Chat);
+        return Telegram::Peer(peer.chatId, Telegram::Peer::Chat);
     case TLValue::PeerUser:
-        return TelegramNamespace::Peer(peer.userId);
+        return Telegram::Peer(peer.userId);
     default:
-        return TelegramNamespace::Peer();
+        return Telegram::Peer();
     }
 }
 
@@ -2094,11 +2094,11 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
         qDebug() << Q_FUNC_INFO << "file" << requestId << "download finished.";
 #endif
 
-        TelegramNamespace::RemoteFile result;
+        Telegram::RemoteFile result;
         const TLInputFileLocation location = descriptor.inputLocation();
         result.d->setInputFileLocation(&location);
         result.d->m_dcId = descriptor.dcId();
-        result.d->m_type = TelegramNamespace::RemoteFile::Download;
+        result.d->m_type = Telegram::RemoteFile::Download;
         emit fileRequestFinished(requestId, result);
 
         m_requestedFileDescriptors.remove(requestId);
@@ -2124,17 +2124,17 @@ void CTelegramDispatcher::whenFileDataReceived(const TLUploadFile &file, quint32
     if (descriptor.messageId() && (message = getMessage(descriptor.messageId()))) {
         const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message->media.tlType);
 
-        TelegramNamespace::Peer peer = peerToPublicPeer(message->toId);
+        Telegram::Peer peer = peerToPublicPeer(message->toId);
 
         // MimeType can not be resolved for some StorageFileType. Try to get the type from the message info in this case.
         if (mimeType.isEmpty()) {
-            TelegramNamespace::MessageMediaInfo info;
+            Telegram::MessageMediaInfo info;
             getMessageMediaInfo(&info, message->id);
             mimeType = info.mimeType();
         }
 
         if (!(message->flags & TelegramMessageFlagOut)) {
-            if (peer.type == TelegramNamespace::Peer::User) {
+            if (peer.type == Telegram::Peer::User) {
                 peer = message->fromId;
             }
         }
@@ -2164,10 +2164,10 @@ void CTelegramDispatcher::whenFileDataUploaded(quint32 requestId)
     emit filePartUploaded(requestId, descriptor.offset(), descriptor.size());
 
     if (descriptor.finished()) {
-        TelegramNamespace::RemoteFile result;
+        Telegram::RemoteFile result;
         const TLInputFile fileInfo = descriptor.inputFile();
         result.d->m_size = descriptor.size();
-        result.d->m_type = TelegramNamespace::RemoteFile::Upload;
+        result.d->m_type = Telegram::RemoteFile::Upload;
         result.d->setInputFile(&fileInfo);
 
         emit fileRequestFinished(requestId, result);
