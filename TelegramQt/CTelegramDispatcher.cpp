@@ -215,6 +215,17 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
     outputStream << activeConnection()->authKey();
     outputStream << activeConnection()->authId();
     outputStream << activeConnection()->serverSalt();
+
+    if (!m_updatesEnabled) {
+        outputStream << static_cast<quint32>(1);
+        outputStream << static_cast<quint32>(1);
+        outputStream << static_cast<quint32>(1);
+
+        outputStream << s_legacyVectorTlType;
+        outputStream << static_cast<quint32>(0);
+        return output;
+    }
+
     outputStream << m_updatesState.pts;
     outputStream << m_updatesState.qts;
     outputStream << m_updatesState.date;
