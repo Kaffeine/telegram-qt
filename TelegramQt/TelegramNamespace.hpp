@@ -34,13 +34,13 @@ class CTelegramAuthModule;
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
 {
     Q_OBJECT
-    Q_ENUMS(ContactStatus)
 public:
     enum ContactStatus {
         ContactStatusUnknown,
         ContactStatusOffline,
         ContactStatusOnline
     };
+    Q_ENUM(ContactStatus)
 
     enum MessageFlag {
         MessageFlagNone      = 0x0,
@@ -77,6 +77,7 @@ public:
         AuthSignErrorFirstNameIsInvalid,
         AuthSignErrorLastNameIsInvalid
     };
+    Q_ENUM(AuthSignError)
 
     enum UnauthorizedError {
         UnauthorizedUnknownError,
@@ -89,6 +90,7 @@ public:
         UnauthorizedErrorNeedPermanentKey,
         UnauthorizedSessionPasswordNeeded,
     };
+    Q_ENUM(UnauthorizedError)
 
     enum UserNameStatus {
         UserNameStatusUnknown,
@@ -100,6 +102,7 @@ public:
         UserNameStatusResolved,
         UserNameStatusAccepted
     };
+    Q_ENUM(UserNameStatus)
 
     enum ConnectionState {
         ConnectionStateDisconnected,
@@ -109,6 +112,7 @@ public:
         ConnectionStateAuthenticated,
         ConnectionStateReady // Initializated
     };
+    Q_ENUM(ConnectionState)
 
     enum ContactLastOnline {
         ContactLastOnlineUnknown,
@@ -130,6 +134,7 @@ public:
         MessageActionGeoLocation,
         MessageActionChooseContact
     };
+    Q_ENUM(MessageAction)
 
     static void registerTypes();
 };
