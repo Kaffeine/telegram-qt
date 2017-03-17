@@ -49,6 +49,8 @@ quint64 CTelegramAuthModule::getPassword()
         return 0;
     }
 
+    m_passwordInfo.clear();
+
     return activeConnection()->accountGetPassword();
 }
 
@@ -62,6 +64,14 @@ void CTelegramAuthModule::tryPassword(const QByteArray &salt, const QByteArray &
     const QByteArray pwdHash = Utils::sha256(pwdData);
 
     activeConnection()->authCheckPassword(pwdHash);
+}
+
+void CTelegramAuthModule::tryPassword(const QString &password)
+{
+    if (m_passwordInfo.isEmpty()) {
+        qWarning() << Q_FUNC_INFO << "There is no known salts to try password. Get it by getPassword() call.";
+    }
+    tryPassword(m_passwordInfo.first().currentSalt, password.toUtf8());
 }
 
 void CTelegramAuthModule::signIn(const QString &phoneNumber, const QString &authCode)
@@ -110,9 +120,9 @@ void CTelegramAuthModule::onUnauthorizedErrorReceived(TelegramNamespace::Unautho
 void CTelegramAuthModule::onPasswordReceived(const TLAccountPassword &password, quint64 requestId)
 {
 #ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << password;
+    qDebug() << Q_FUNC_INFO << password << requestId;
 #else
-    qDebug() << Q_FUNC_INFO;
+    qDebug() << Q_FUNC_INFO << requestId;
 #endif
 
     m_passwordInfo.insert(requestId, password);
@@ -147,7 +157,17 @@ void CTelegramAuthModule::onNewConnection(CTelegramConnection *connection)
 
 bool CTelegramAuthModule::getPasswordData(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const
 {
+    qDebug() << Q_FUNC_INFO << requestId;
+    if (m_passwordInfo.isEmpty()) {
+        qWarning() << Q_FUNC_INFO << "No password data";
+        return false;
+    }
+    if (requestId == 0) {
+        requestId = m_passwordInfo.keys().first();
+        qDebug() << Q_FUNC_INFO << "Zero call mapped to " << requestId;
+    }
     if (!m_passwordInfo.contains(requestId)) {
+        qWarning() << Q_FUNC_INFO << "Password data not found for id" << requestId;
         return false;
     }
 

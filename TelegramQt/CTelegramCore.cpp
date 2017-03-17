@@ -203,6 +203,11 @@ void CTelegramCore::tryPassword(const QByteArray &salt, const QByteArray &passwo
     m_private->m_authModule->tryPassword(salt, password);
 }
 
+void CTelegramCore::tryPassword(const QString &password)
+{
+    m_private->m_authModule->tryPassword(password);
+}
+
 void CTelegramCore::signIn(const QString &phoneNumber, const QString &authCode)
 {
     m_private->m_authModule->signIn(phoneNumber, authCode);
@@ -332,6 +337,13 @@ bool CTelegramCore::getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo,
 bool CTelegramCore::getPasswordInfo(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const
 {
     return m_private->m_authModule->getPasswordData(passwordInfo, requestId);
+}
+
+Telegram::PasswordInfo CTelegramCore::getPasswordData() const
+{
+    Telegram::PasswordInfo info;
+    getPasswordInfo(&info, 0);
+    return info;
 }
 
 void CTelegramCore::setMessageReceivingFilter(TelegramNamespace::MessageFlags flags)

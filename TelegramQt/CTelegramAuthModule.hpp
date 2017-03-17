@@ -36,6 +36,7 @@ public:
     void requestPhoneStatus(const QString &phoneNumber);
     quint64 getPassword();
     void tryPassword(const QByteArray &salt, const QByteArray &password);
+    void tryPassword(const QString &password);
     bool getPasswordData(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const;
     void signIn(const QString &phoneNumber, const QString &authCode);
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);

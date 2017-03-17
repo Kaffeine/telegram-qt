@@ -68,6 +68,7 @@ public:
 
     bool getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const;
     bool getPasswordInfo(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const;
+    Q_INVOKABLE Telegram::PasswordInfo getPasswordData() const;
 
 public Q_SLOTS:
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags); // Messages with at least one of the passed flags will be filtered out.
@@ -89,6 +90,7 @@ public Q_SLOTS:
     quint64 getPassword();
     void tryPassword(const QByteArray &salt, const QString &password);
     void tryPassword(const QByteArray &salt, const QByteArray &password);
+    void tryPassword(const QString &password);
     void signIn(const QString &phoneNumber, const QString &authCode);
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
