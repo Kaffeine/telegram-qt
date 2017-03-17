@@ -33,13 +33,16 @@ class TELEGRAMQT_EXPORT CTelegramCore : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool updatesEnabled READ updatesEnabled WRITE setUpdatesEnabled)
+    Q_PROPERTY(CAppInformation *applicationInformation READ appInformation WRITE setAppInformation)
 public:
     explicit CTelegramCore(QObject *parent = 0);
     ~CTelegramCore();
 
+    CAppInformation *appInformation() const;
     bool updatesEnabled() const;
-    const CAppInformation *appInfo() const;
-    void setAppInformation(const CAppInformation *newAppInfo);
+
+    Q_INVOKABLE void setAppInformation(CAppInformation *newAppInfo);
+    Q_INVOKABLE void setAppInformation(const CAppInformation *newAppInfo);
 
     Q_INVOKABLE static QVector<Telegram::DcOption> builtInDcs();
     Q_INVOKABLE static quint32 defaultPingInterval();

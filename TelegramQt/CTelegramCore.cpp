@@ -34,7 +34,7 @@ public:
 
     CTelegramDispatcher *m_dispatcher;
     CTelegramAuthModule *m_authModule;
-    const CAppInformation *m_appInfo;
+    CAppInformation *m_appInfo;
 };
 
 CTelegramCore::CTelegramCore(QObject *parent) :
@@ -108,15 +108,12 @@ CTelegramCore::CTelegramCore(QObject *parent) :
 
 CTelegramCore::~CTelegramCore()
 {
-    if (m_private->m_appInfo) {
-        delete m_private->m_appInfo;
-    }
     delete m_private->m_dispatcher;
     delete m_private->m_authModule;
     delete m_private;
 }
 
-const CAppInformation *CTelegramCore::appInfo() const
+CAppInformation *CTelegramCore::appInformation() const
 {
     return m_private->m_appInfo;
 }
@@ -126,17 +123,15 @@ bool CTelegramCore::updatesEnabled() const
     return m_private->m_dispatcher->updatesEnabled();
 }
 
+void CTelegramCore::setAppInformation(CAppInformation *newAppInfo)
+{
+    m_private->m_appInfo = newAppInfo;
+}
+
 void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
 {
-    if (!newAppInfo) {
-        return;
-    }
-
-    if (m_private->m_appInfo) {
-        delete m_private->m_appInfo;
-    }
-
-    m_private->m_appInfo = new CAppInformation(newAppInfo);
+    CAppInformation *variableAppInfo = new CAppInformation(newAppInfo, this);
+    setAppInformation(variableAppInfo);
 }
 
 QVector<Telegram::DcOption> CTelegramCore::builtInDcs()
@@ -179,7 +174,7 @@ void CTelegramCore::closeConnection()
 
 bool CTelegramCore::restoreConnection(const QByteArray &secret)
 {
-    m_private->m_dispatcher->setAppInformation(appInfo());
+    m_private->m_dispatcher->setAppInformation(appInformation());
     return m_private->m_dispatcher->restoreConnection(secret);
 }
 
