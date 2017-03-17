@@ -48,10 +48,10 @@ CMessageModel::CMessageModel(CTelegramCore *backend, QObject *parent) :
     connect(m_backend, SIGNAL(sentMessageIdReceived(quint64,quint32)),
             SLOT(setResolvedMessageId(quint64,quint32)));
 
-    connect(m_backend, SIGNAL(messageReadInbox(TelegramNamespace::Peer,quint32)),
-            SLOT(setMessageInboxRead(TelegramNamespace::Peer,quint32)));
-    connect(m_backend, SIGNAL(messageReadOutbox(TelegramNamespace::Peer,quint32)),
-            SLOT(setMessageOutboxRead(TelegramNamespace::Peer,quint32)));
+    connect(m_backend, SIGNAL(messageReadInbox(Telegram::Peer,quint32)),
+            SLOT(setMessageInboxRead(Telegram::Peer,quint32)));
+    connect(m_backend, SIGNAL(messageReadOutbox(Telegram::Peer,quint32)),
+            SLOT(setMessageOutboxRead(Telegram::Peer,quint32)));
 }
 
 void CMessageModel::setContactsModel(CContactModel *model)
@@ -229,7 +229,7 @@ int CMessageModel::setMessageMediaData(quint64 messageId, const QVariant &data)
     return i;
 }
 
-void CMessageModel::setMessageRead(TelegramNamespace::Peer peer, quint32 messageId, bool out)
+void CMessageModel::setMessageRead(Telegram::Peer peer, quint32 messageId, bool out)
 {
     int from = -1;
     for (int i = 0; i < m_messages.count(); ++i) {
@@ -264,12 +264,12 @@ void CMessageModel::setMessageRead(TelegramNamespace::Peer peer, quint32 message
     }
 }
 
-void CMessageModel::setMessageInboxRead(TelegramNamespace::Peer peer, quint32 messageId)
+void CMessageModel::setMessageInboxRead(Telegram::Peer peer, quint32 messageId)
 {
     setMessageRead(peer, messageId, /* out */ false);
 }
 
-void CMessageModel::setMessageOutboxRead(TelegramNamespace::Peer peer, quint32 messageId)
+void CMessageModel::setMessageOutboxRead(Telegram::Peer peer, quint32 messageId)
 {
     setMessageRead(peer, messageId, /* out */ true);
 }

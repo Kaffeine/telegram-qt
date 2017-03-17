@@ -84,7 +84,7 @@ void CChatInfoModel::addChat(quint32 id)
     }
 
     beginInsertRows(QModelIndex(), m_chats.count(), m_chats.count());
-    m_chats.append(TelegramNamespace::GroupChat(id));
+    m_chats.append(Telegram::GroupChat(id));
     m_backend->getChatInfo(&m_chats.last(), id);
     endInsertRows();
 
@@ -107,7 +107,7 @@ bool CChatInfoModel::haveChat(quint32 id) const
     return indexOfChat(id) >= 0;
 }
 
-const TelegramNamespace::GroupChat *CChatInfoModel::chatById(quint32 id) const
+const Telegram::GroupChat *CChatInfoModel::chatById(quint32 id) const
 {
     int index = indexOfChat(id);
 

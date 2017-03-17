@@ -80,15 +80,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->getSecretInfo, &QAbstractButton::clicked, this, &MainWindow::getConnectionSecretInfo);
 
     // Telepathy Morse app info
-    CAppInformation appInfo;
-    appInfo.setAppId(14617);
-    appInfo.setAppHash(QLatin1String("e17ac360fd072f83d5d08db45ce9a121"));
-    appInfo.setAppVersion(QLatin1String("0.1"));
-    appInfo.setDeviceInfo(QLatin1String("pc"));
-    appInfo.setOsInfo(QLatin1String("GNU/Linux"));
-    appInfo.setLanguageCode(QLatin1String("en"));
+    CAppInformation *appInfo = new CAppInformation(this);
+    appInfo->setAppId(14617);
+    appInfo->setAppHash(QLatin1String("e17ac360fd072f83d5d08db45ce9a121"));
+    appInfo->setAppVersion(QLatin1String("0.1"));
+    appInfo->setDeviceInfo(QLatin1String("pc"));
+    appInfo->setOsInfo(QLatin1String("GNU/Linux"));
+    appInfo->setLanguageCode(QLatin1String("en"));
 
-    m_core->setAppInformation(&appInfo);
+    m_core->setAppInformation(appInfo);
     m_core->setAutoReconnection(true);
 
     connect(m_core, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
@@ -105,10 +105,10 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(contactListChanged()),
             SLOT(updateContactList()));
-    connect(m_core, SIGNAL(messageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
-            SLOT(whenMessageMediaDataReceived(TelegramNamespace::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
-    connect(m_core, SIGNAL(messageReceived(TelegramNamespace::Message)),
-            SLOT(whenMessageReceived(TelegramNamespace::Message)));
+    connect(m_core, SIGNAL(messageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
+            SLOT(whenMessageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
+    connect(m_core, SIGNAL(messageReceived(Telegram::Message)),
+            SLOT(whenMessageReceived(Telegram::Message)));
     connect(m_core, SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)),
             SLOT(whenContactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)));
     connect(m_core, SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)),
@@ -119,8 +119,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(whenContactStatusChanged(quint32)));
     connect(m_core, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
             SLOT(whenUploadingStatusUpdated(quint32,quint32,quint32)));
-    connect(m_core, SIGNAL(fileRequestFinished(quint32,TelegramNamespace::RemoteFile)),
-            SLOT(onFileRequestFinished(quint32,TelegramNamespace::RemoteFile)));
+    connect(m_core, SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)),
+            SLOT(onFileRequestFinished(quint32,Telegram::RemoteFile)));
     connect(m_core, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
             SLOT(onUserNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
 
@@ -191,7 +191,7 @@ void MainWindow::whenConnectionStateChanged(TelegramNamespace::ConnectionState s
 
         ui->phoneNumber->setText(m_core->selfPhone());
     {
-        TelegramNamespace::UserInfo selfInfo;
+        Telegram::UserInfo selfInfo;
         m_core->getUserInfo(&selfInfo, m_core->selfId());
         ui->firstName->setText(selfInfo.firstName());
         ui->lastName->setText(selfInfo.lastName());
@@ -234,7 +234,7 @@ void MainWindow::onPasswordInfoReceived(quint64 requestId)
 {
     qDebug() << Q_FUNC_INFO << requestId;
     if (!m_passwordInfo) {
-        m_passwordInfo = new TelegramNamespace::PasswordInfo();
+        m_passwordInfo = new Telegram::PasswordInfo();
     }
 
     m_core->getPasswordInfo(m_passwordInfo, requestId);
@@ -282,7 +282,7 @@ void MainWindow::updateContactList()
     }
 }
 
-void MainWindow::whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)
+void MainWindow::whenMessageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)
 {
     qDebug() << Q_FUNC_INFO << mimeType;
 
@@ -294,10 +294,10 @@ void MainWindow::whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quin
 
     QString peerStr;
     switch (peer.type) {
-    case TelegramNamespace::Peer::User:
+    case Telegram::Peer::User:
         peerStr = QLatin1String("user");
         break;
-    case TelegramNamespace::Peer::Chat:
+    case Telegram::Peer::Chat:
         peerStr = QLatin1String("chat");
         break;
     }
@@ -368,16 +368,16 @@ void MainWindow::whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quin
     }
 }
 
-void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
+void MainWindow::whenMessageReceived(const Telegram::Message &message)
 {
-    bool groupChatMessage = message.peer().type != TelegramNamespace::Peer::User;
+    bool groupChatMessage = message.peer().type != Telegram::Peer::User;
     if (groupChatMessage) {
         if (message.peer().id != m_activeChatId) {
             return;
         }
     }
 
-    TelegramNamespace::Message processedMessage = message;
+    Telegram::Message processedMessage = message;
 
     switch (processedMessage.type) {
     case TelegramNamespace::MessageTypePhoto:
@@ -385,7 +385,7 @@ void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
         m_core->requestMessageMediaData(processedMessage.id);
         break;
     case TelegramNamespace::MessageTypeDocument: {
-        TelegramNamespace::MessageMediaInfo info;
+        Telegram::MessageMediaInfo info;
         m_core->getMessageMediaInfo(&info, processedMessage.id);
         if (info.mimeType().startsWith(QLatin1String("image/"))) {
             m_core->requestMessageMediaData(processedMessage.id);
@@ -393,7 +393,7 @@ void MainWindow::whenMessageReceived(const TelegramNamespace::Message &message)
     }
         break;
     case TelegramNamespace::MessageTypeGeo: {
-        TelegramNamespace::MessageMediaInfo info;
+        Telegram::MessageMediaInfo info;
         m_core->getMessageMediaInfo(&info, processedMessage.id);
         processedMessage.text = QString("%1%2, %3%4").arg(info.latitude()).arg(QChar(0x00b0)).arg(info.longitude()).arg(QChar(0x00b0));
     }
@@ -468,7 +468,7 @@ void MainWindow::whenChatChanged(quint32 chatId)
 
 void MainWindow::updateActiveChat()
 {
-    const TelegramNamespace::GroupChat *chat = m_chatInfoModel->chatById(m_activeChatId);
+    const Telegram::GroupChat *chat = m_chatInfoModel->chatById(m_activeChatId);
 
     if (!chat) {
         ui->groupChatName->setText(tr("Processing..."));
@@ -496,11 +496,11 @@ void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOf
     statusBar()->showMessage(tr("Request %1 status updated (%2/%3).").arg(requestId).arg(currentOffset).arg(size));
 }
 
-void MainWindow::onFileRequestFinished(quint32 requestId, TelegramNamespace::RemoteFile info)
+void MainWindow::onFileRequestFinished(quint32 requestId, Telegram::RemoteFile info)
 {
     qDebug() << Q_FUNC_INFO << requestId;
 
-    if (info.type() != TelegramNamespace::RemoteFile::Upload) {
+    if (info.type() != Telegram::RemoteFile::Upload) {
         return;
     }
 
@@ -508,9 +508,9 @@ void MainWindow::onFileRequestFinished(quint32 requestId, TelegramNamespace::Rem
         return;
     }
 
-    const TelegramNamespace::Peer peer = m_uploadingRequests.take(requestId);
+    const Telegram::Peer peer = m_uploadingRequests.take(requestId);
 
-    TelegramNamespace::MessageMediaInfo mediaInfo;
+    Telegram::MessageMediaInfo mediaInfo;
 
     const QMimeDatabase db;
     const QMimeType mimeType = db.mimeTypeForFile(info.fileName(), QMimeDatabase::MatchExtension);
@@ -536,7 +536,7 @@ void MainWindow::onFileRequestFinished(quint32 requestId, TelegramNamespace::Rem
     m.setPeer(peer);
     m.fromId = m_core->selfId();
 
-    if (peer.type == TelegramNamespace::Peer::User) {
+    if (peer.type == Telegram::Peer::User) {
         m_messagingModel->addMessage(m);
     } else {
         m_chatMessagingModel->addMessage(m);
@@ -584,7 +584,7 @@ void MainWindow::whenCustomMenuRequested(const QPoint &pos)
 
             QAction *a = resendMenu->addAction(CContactModel::getContactName(*contact));
             connect(a, &QAction::triggered, [=]() {
-                TelegramNamespace::MessageMediaInfo info;
+                Telegram::MessageMediaInfo info;
                 m_core->getMessageMediaInfo(&info, messageId);
                 m_core->sendMedia(contact->id(), info);
             });
@@ -646,8 +646,8 @@ void MainWindow::on_connectButton_clicked()
     }
     m_core->setMessageReceivingFilter(flags);
 
-    QVector<TelegramNamespace::DcOption> testServers;
-    testServers << TelegramNamespace::DcOption(QLatin1String("149.154.175.10"), 443);
+    QVector<Telegram::DcOption> testServers;
+    testServers << Telegram::DcOption(QLatin1String("149.154.175.10"), 443);
 
     if (secretInfo.isEmpty())
         if (ui->mainDcRadio->isChecked()) {
@@ -865,7 +865,7 @@ void MainWindow::on_addContact_clicked()
 void MainWindow::on_deleteContact_clicked()
 {
     for (quint32 userId : m_core->contactList()) {
-        TelegramNamespace::UserInfo info;
+        Telegram::UserInfo info;
         m_core->getUserInfo(&info, userId);
 
         if (info.phone() == ui->currentContact->text()) {
@@ -878,7 +878,7 @@ void MainWindow::on_deleteContact_clicked()
 void MainWindow::on_messagingSendButton_clicked()
 {
     CMessageModel::SMessage m;
-    m.setPeer(TelegramNamespace::Peer::fromUserId(m_activeContactId)); //ui->messagingContactIdentifier->text();
+    m.setPeer(Telegram::Peer::fromUserId(m_activeContactId)); //ui->messagingContactIdentifier->text();
     m.type = TelegramNamespace::MessageTypeText;
     m.text = ui->messagingMessage->text();
     m.flags = TelegramNamespace::MessageFlagOut;
@@ -891,20 +891,20 @@ void MainWindow::on_messagingSendButton_clicked()
 
 void MainWindow::on_messagingAttachButton_clicked()
 {
-    sendMedia(TelegramNamespace::Peer::fromUserId(m_activeContactId));
+    sendMedia(Telegram::Peer::fromUserId(m_activeContactId));
 }
 
 void MainWindow::on_groupChatAttachButton_clicked()
 {
-    sendMedia(TelegramNamespace::Peer::fromChatId(m_activeChatId));
+    sendMedia(Telegram::Peer::fromChatId(m_activeChatId));
 }
 
 void MainWindow::on_messagingMessage_textChanged(const QString &arg1)
 {
     if (!arg1.isEmpty()) {
-        m_core->setTyping(TelegramNamespace::Peer::fromUserId(m_activeContactId), TelegramNamespace::MessageActionTyping);
+        m_core->setTyping(Telegram::Peer::fromUserId(m_activeContactId), TelegramNamespace::MessageActionTyping);
     } else {
-        m_core->setTyping(TelegramNamespace::Peer::fromUserId(m_activeContactId), TelegramNamespace::MessageActionNone);
+        m_core->setTyping(Telegram::Peer::fromUserId(m_activeContactId), TelegramNamespace::MessageActionNone);
     }
 }
 
@@ -924,7 +924,7 @@ void MainWindow::on_messagingGetHistoryRequest_clicked()
 
 void MainWindow::on_groupChatGetHistoryRequest_clicked()
 {
-    m_core->requestHistory(TelegramNamespace::Peer(m_activeChatId, TelegramNamespace::Peer::Chat),
+    m_core->requestHistory(Telegram::Peer(m_activeChatId, Telegram::Peer::Chat),
                            ui->groupChatGetHistoryOffset->value(), ui->groupChatGetHistoryLimit->value());
 }
 
@@ -952,7 +952,7 @@ void MainWindow::on_messagingView_doubleClicked(const QModelIndex &index)
 {
     const QModelIndex phoneIndex = m_messagingModel->index(index.row(), CMessageModel::Peer);
 
-    TelegramNamespace::Peer peer = phoneIndex.data().value<TelegramNamespace::Peer>();
+    Telegram::Peer peer = phoneIndex.data().value<Telegram::Peer>();
     setActiveContact(peer.id);
     ui->tabWidget->setCurrentWidget(ui->tabMessaging);
     ui->messagingMessage->setFocus();
@@ -1024,7 +1024,7 @@ void MainWindow::on_groupChatAddContact_clicked()
 void MainWindow::on_groupChatSendButton_clicked()
 {
     CMessageModel::SMessage m;
-    m.setPeer(TelegramNamespace::Peer::fromChatId(m_activeChatId));
+    m.setPeer(Telegram::Peer::fromChatId(m_activeChatId));
     m.fromId = m_core->selfId();
     m.type = TelegramNamespace::MessageTypeText;
     m.text = ui->groupChatMessage->text();
@@ -1041,7 +1041,7 @@ void MainWindow::on_groupChatMessage_textChanged(const QString &arg1)
     if (!arg1.isEmpty()) {
         action = TelegramNamespace::MessageActionTyping;
     }
-    m_core->setTyping(TelegramNamespace::Peer(m_activeChatId, TelegramNamespace::Peer::Chat), action);
+    m_core->setTyping(Telegram::Peer(m_activeChatId, Telegram::Peer::Chat), action);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -1119,7 +1119,7 @@ void MainWindow::updateMessagingContactAction()
     ui->messagingContactAction->setText(QLatin1Char('(') + index.data().toString().toLower() + QLatin1Char(')'));
 }
 
-void MainWindow::sendMedia(const TelegramNamespace::Peer peer)
+void MainWindow::sendMedia(const Telegram::Peer peer)
 {
     const QString fileName = QFileDialog::getOpenFileName(this, tr("Attach file..."));
     if (fileName.isEmpty()) {

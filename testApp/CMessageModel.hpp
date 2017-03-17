@@ -42,7 +42,7 @@ public:
         ColumnsCount
     };
 
-    struct SMessage : public TelegramNamespace::Message
+    struct SMessage : public Telegram::Message
     {
         enum Status {
             StatusUnknown,
@@ -53,14 +53,14 @@ public:
         };
 
         SMessage() :
-            TelegramNamespace::Message(),
+            Telegram::Message(),
             id64(0),
             status(StatusUnknown)
         {
         }
 
-        SMessage(const TelegramNamespace::Message &m) :
-            TelegramNamespace::Message(m),
+        SMessage(const Telegram::Message &m) :
+            Telegram::Message(m),
             id64(0),
             status(StatusUnknown)
         {
@@ -94,9 +94,9 @@ public:
 public slots:
     void addMessage(const SMessage &message);
     int setMessageMediaData(quint64 messageId, const QVariant &data);
-    void setMessageRead(TelegramNamespace::Peer peer, quint32 messageId, bool out);
-    void setMessageInboxRead(TelegramNamespace::Peer peer, quint32 messageId);
-    void setMessageOutboxRead(TelegramNamespace::Peer peer, quint32 messageId);
+    void setMessageRead(Telegram::Peer peer, quint32 messageId, bool out);
+    void setMessageInboxRead(Telegram::Peer peer, quint32 messageId);
+    void setMessageOutboxRead(Telegram::Peer peer, quint32 messageId);
     void setResolvedMessageId(quint64 randomId, quint32 resolvedId);
     void clear();
 

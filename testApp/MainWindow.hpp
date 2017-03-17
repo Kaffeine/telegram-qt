@@ -67,9 +67,9 @@ protected slots:
     void whenUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
     void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void updateContactList();
-    void whenMessageMediaDataReceived(TelegramNamespace::Peer peer, quint32 messageId, const QByteArray &data,
+    void whenMessageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data,
                                       const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
-    void whenMessageReceived(const TelegramNamespace::Message &message);
+    void whenMessageReceived(const Telegram::Message &message);
     void whenContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
     void whenContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
     void whenContactStatusChanged(quint32 contact);
@@ -79,7 +79,7 @@ protected slots:
     void updateActiveChat();
 
     void whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
-    void onFileRequestFinished(quint32 requestId, TelegramNamespace::RemoteFile info);
+    void onFileRequestFinished(quint32 requestId, Telegram::RemoteFile info);
     void onUserNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
 
     void whenCustomMenuRequested(const QPoint &pos);
@@ -135,7 +135,7 @@ protected:
     void updateMessagingContactStatus();
     void updateMessagingContactAction();
 
-    void sendMedia(const TelegramNamespace::Peer peer);
+    void sendMedia(const Telegram::Peer peer);
 
 private slots:
     void on_restoreSession_clicked();
@@ -162,9 +162,9 @@ private:
 
     CTelegramCore *m_core;
 
-    TelegramNamespace::PasswordInfo *m_passwordInfo;
+    Telegram::PasswordInfo *m_passwordInfo;
     QMap<quint32,quint64> m_contactLastMessageList;
-    QMap<quint32, TelegramNamespace::Peer> m_uploadingRequests;
+    QMap<quint32, Telegram::Peer> m_uploadingRequests;
 
     CContactModel *m_contactsModel;
     CContactsFilterModel *m_contactListModel;

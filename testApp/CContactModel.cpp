@@ -391,7 +391,7 @@ QString CContactModel::contactAt(int index, bool addName) const
     }
 }
 
-QString CContactModel::getContactName(const TelegramNamespace::UserInfo &contact)
+QString CContactModel::getContactName(const Telegram::UserInfo &contact)
 {
     if (!contact.userName().isEmpty()) {
         return contact.userName();
@@ -405,7 +405,7 @@ QString CContactModel::getContactName(const TelegramNamespace::UserInfo &contact
     return tr("Unknown name");
 }
 
-QString CContactModel::getContactIdentifier(const TelegramNamespace::UserInfo &contact)
+QString CContactModel::getContactIdentifier(const Telegram::UserInfo &contact)
 {
     if (!contact.phone().isEmpty()) {
         return contact.phone();

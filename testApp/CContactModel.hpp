@@ -27,9 +27,9 @@
 
 class CTelegramCore;
 
-struct SContact : TelegramNamespace::UserInfo {
+struct SContact : Telegram::UserInfo {
     SContact() :
-        TelegramNamespace::UserInfo(),
+        Telegram::UserInfo(),
         typing(TelegramNamespace::MessageActionNone),
         blocked(false)
     { }
@@ -76,8 +76,8 @@ public:
     QVector<quint32> contacts() const;
     QString contactAt(int index, bool addName) const;
 
-    static QString getContactName(const TelegramNamespace::UserInfo &contact);
-    static QString getContactIdentifier(const TelegramNamespace::UserInfo &contact);
+    static QString getContactName(const Telegram::UserInfo &contact);
+    static QString getContactIdentifier(const Telegram::UserInfo &contact);
 
 public slots:
     void addContact(quint32 id);

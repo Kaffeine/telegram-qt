@@ -45,7 +45,7 @@ public:
 
     int indexOfChat(quint32 id) const;
     bool haveChat(quint32 id) const;
-    const TelegramNamespace::GroupChat *chatById(quint32 id) const;
+    const Telegram::GroupChat *chatById(quint32 id) const;
 
 public slots:
     void addChat(quint32 id);
@@ -60,7 +60,7 @@ protected slots:
 private:
     CTelegramCore *m_backend;
 
-    QList<TelegramNamespace::GroupChat> m_chats;
+    QList<Telegram::GroupChat> m_chats;
 
 };
 
