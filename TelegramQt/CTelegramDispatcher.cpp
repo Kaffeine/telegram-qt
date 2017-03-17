@@ -60,6 +60,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
     m_connectionState(TelegramNamespace::ConnectionStateDisconnected),
     m_appInformation(0),
+    m_updatesEnabled(true),
     m_deltaTime(0),
     m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagRead),
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeAll),
@@ -101,6 +102,16 @@ QVector<TelegramNamespace::DcOption> CTelegramDispatcher::builtInDcs()
 quint32 CTelegramDispatcher::defaultPingInterval()
 {
     return s_defaultPingInterval;
+}
+
+bool CTelegramDispatcher::updatesEnabled() const
+{
+    return m_updatesEnabled;
+}
+
+void CTelegramDispatcher::setUpdatesEnabled(bool enable)
+{
+    m_updatesEnabled = enable;
 }
 
 void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
@@ -2367,6 +2378,13 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
             getInitialDialogs();
             m_requestedSteps |= StepDialogs;
         }
+    }
+
+    if (!m_updatesEnabled) {
+        if ((m_initializationState | StepUpdates) == StepDone) {
+            setConnectionState(TelegramNamespace::ConnectionStateReady);
+        }
+        return;
     }
 
     if (m_initializationState == StepDone) {

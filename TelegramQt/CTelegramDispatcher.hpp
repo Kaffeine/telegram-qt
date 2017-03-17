@@ -66,6 +66,9 @@ public:
     static QVector<TelegramNamespace::DcOption> builtInDcs();
     static quint32 defaultPingInterval();
 
+    bool updatesEnabled() const;
+    void setUpdatesEnabled(bool enable);
+
     void setAppInformation(const CAppInformation *newAppInfo);
 
     static qint32 localTypingRecommendedRepeatInterval();
@@ -291,6 +294,7 @@ protected:
     TelegramNamespace::ConnectionState m_connectionState;
 
     const CAppInformation *m_appInformation;
+    bool m_updatesEnabled;
 
     qint32 m_deltaTime;
 

@@ -120,6 +120,11 @@ const CAppInformation *CTelegramCore::appInfo() const
     return m_private->m_appInfo;
 }
 
+bool CTelegramCore::updatesEnabled() const
+{
+    return m_private->m_dispatcher->updatesEnabled();
+}
+
 void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
 {
     if (!newAppInfo) {
@@ -346,6 +351,11 @@ void CTelegramCore::setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlag
 void CTelegramCore::setAutoReconnection(bool enable)
 {
     return m_private->m_dispatcher->setAutoReconnection(enable);
+}
+
+void CTelegramCore::setUpdatesEnabled(bool enable)
+{
+    return m_private->m_dispatcher->setUpdatesEnabled(enable);
 }
 
 void CTelegramCore::setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime)

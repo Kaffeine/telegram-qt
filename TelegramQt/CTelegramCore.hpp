@@ -32,10 +32,12 @@ QT_FORWARD_DECLARE_CLASS(QIODevice)
 class TELEGRAMQT_EXPORT CTelegramCore : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(bool updatesEnabled READ updatesEnabled WRITE setUpdatesEnabled)
 public:
     explicit CTelegramCore(QObject *parent = 0);
     ~CTelegramCore();
 
+    bool updatesEnabled() const;
     const CAppInformation *appInfo() const;
     void setAppInformation(const CAppInformation *newAppInfo);
 
@@ -68,6 +70,7 @@ public Q_SLOTS:
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags); // Messages with at least one of the passed flags will be filtered out.
     void setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types);
     void setAutoReconnection(bool enable);
+    void setUpdatesEnabled(bool enable);
 
     // By default, the app would ping server every 15 000 ms and instruct the server to close connection after 10 000 more ms. Pass interval = 0 to disable ping.
     void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime = 10000);
