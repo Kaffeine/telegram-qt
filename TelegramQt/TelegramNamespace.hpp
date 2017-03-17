@@ -27,6 +27,10 @@
 class CTelegramDispatcher;
 class CTelegramAuthModule;
 
+#ifndef Q_ENUM
+#define Q_ENUM(x) Q_ENUMS(x)
+#endif
+
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
 {
     Q_OBJECT
