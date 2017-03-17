@@ -17,14 +17,24 @@
 
 #include "CAppInformation.hpp"
 
-CAppInformation::CAppInformation(const CAppInformation *anotherInfo) :
+CAppInformation::CAppInformation(QObject *parent) :
+    QObject(parent),
     m_appId(0),
     m_appHash(QLatin1String("00000000000000000000000000000000")),
     m_langCode(QLatin1String("en"))
 {
-    if (anotherInfo) {
-        *this = *anotherInfo;
-    }
+}
+
+CAppInformation::CAppInformation(const CAppInformation *anotherInfo, QObject *parent) :
+    CAppInformation(parent)
+{
+    m_appId = anotherInfo->m_appId;
+    m_appHash = anotherInfo->m_appHash;
+    m_appVersion = anotherInfo->m_appVersion;
+
+    m_deviceInfo = anotherInfo->m_deviceInfo;
+    m_osInfo = anotherInfo->m_osInfo;
+    m_langCode = anotherInfo->m_langCode;
 }
 
 bool CAppInformation::setAppId(quint32 newId)

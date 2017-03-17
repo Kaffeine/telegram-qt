@@ -21,11 +21,20 @@
 #include "telegramqt_global.h"
 
 #include <QString>
+#include <QObject>
 
-class TELEGRAMQT_EXPORT CAppInformation
+class TELEGRAMQT_EXPORT CAppInformation : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(quint32 appId READ appId WRITE setAppId)
+    Q_PROPERTY(QString appHash READ appHash WRITE setAppHash)
+    Q_PROPERTY(QString appVersion READ appVersion WRITE setAppVersion)
+    Q_PROPERTY(QString deviceInfo READ deviceInfo WRITE setDeviceInfo)
+    Q_PROPERTY(QString osInfo READ osInfo WRITE setOsInfo)
+    Q_PROPERTY(QString languageCode READ languageCode WRITE setLanguageCode)
 public:
-    CAppInformation(const CAppInformation *anotherInfo = 0);
+    CAppInformation(QObject *parent = nullptr);
+    CAppInformation(const CAppInformation *anotherInfo, QObject *parent = nullptr);
 
     bool isValid() const;
 
