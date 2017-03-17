@@ -32,6 +32,7 @@ QT_FORWARD_DECLARE_CLASS(QIODevice)
 class TELEGRAMQT_EXPORT CTelegramCore : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QByteArray connectionSecretData READ connectionSecretInfo)
     Q_PROPERTY(bool updatesEnabled READ updatesEnabled WRITE setUpdatesEnabled)
     Q_PROPERTY(CAppInformation *applicationInformation READ appInformation WRITE setAppInformation)
 public:
