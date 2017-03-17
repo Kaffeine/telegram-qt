@@ -35,6 +35,7 @@ class TELEGRAMQT_EXPORT CTelegramCore : public QObject
     Q_PROPERTY(QByteArray connectionSecretData READ connectionSecretInfo)
     Q_PROPERTY(bool updatesEnabled READ updatesEnabled WRITE setUpdatesEnabled)
     Q_PROPERTY(CAppInformation *applicationInformation READ appInformation WRITE setAppInformation)
+    Q_PROPERTY(TelegramNamespace::ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
 public:
     explicit CTelegramCore(QObject *parent = 0);
     ~CTelegramCore();
@@ -137,7 +138,7 @@ public Q_SLOTS:
     void setChatMessageRead(const quint32 &chatId, quint32 messageId);
 
 Q_SIGNALS:
-    void connectionStateChanged(TelegramNamespace::ConnectionState status);
+    void connectionStateChanged(TelegramNamespace::ConnectionState state);
     void selfUserAvailable(quint32 userId);
     void userInfoReceived(quint32 userId);
 
