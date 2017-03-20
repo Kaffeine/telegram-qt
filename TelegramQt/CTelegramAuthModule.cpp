@@ -131,14 +131,7 @@ void CTelegramAuthModule::onPasswordReceived(const TLAccountPassword &password, 
 
 void CTelegramAuthModule::onWantedMainDcChanged(quint32 dc, const QString &dcForPhoneNumber)
 {
-    qDebug() << Q_FUNC_INFO << dc;
-
-    Q_UNUSED(dcForPhoneNumber)
-    if (m_requestedCodeForPhone != dcForPhoneNumber) {
-        qDebug() << Q_FUNC_INFO << "Migration wanted for a phone number, which is different from the recently asked one.";
-        return;
-    }
-
+    qDebug() << Q_FUNC_INFO << dc << dcForPhoneNumber;
     setWantedDc(dc);
 }
 

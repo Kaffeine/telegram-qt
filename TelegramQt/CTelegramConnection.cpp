@@ -2839,6 +2839,7 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
     stream >> value;
 
     switch (value) {
+    case TLValue::AuthCheckPhone:
     case TLValue::AuthSendCode:
     case TLValue::AuthSendCall:
     case TLValue::AuthSendSms: {
