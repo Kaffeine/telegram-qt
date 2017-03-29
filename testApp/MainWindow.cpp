@@ -22,6 +22,7 @@
 #include "CTelegramCore.hpp"
 #include "CContactModel.hpp"
 #include "CContactsFilterModel.hpp"
+#include "CDialogModel.hpp"
 #include "CMessageModel.hpp"
 #include "CChatInfoModel.hpp"
 #include "CFileManager.hpp"
@@ -50,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_fileManager(new CFileManager(m_core, this)),
     m_contactsModel(new CContactModel(m_core, this)),
     m_contactListModel(new CContactsFilterModel(this)),
+    m_dialogModel(new CDialogModel(m_core, this)),
     m_messagingModel(new CMessageModel(m_core, this)),
     m_chatContactsModel(new CContactsFilterModel(this)),
     m_chatMessagingModel(new CMessageModel(m_core, this)),
@@ -63,9 +65,13 @@ MainWindow::MainWindow(QWidget *parent) :
     m_contactsModel->setFileManager(m_fileManager);
     m_chatInfoModel->setFileManager(m_fileManager);
 
+    m_dialogModel->addSourceModel(m_contactsModel);
+    m_dialogModel->addSourceModel(m_chatInfoModel);
+
     ui->setupUi(this);
     m_contactListModel->setSourceModel(m_contactsModel);
     ui->contactListTable->setModel(m_contactListModel);
+    ui->dialogList->setModel(m_dialogModel);
     ui->messagingView->setModel(m_messagingModel);
     m_chatContactsModel->setSourceModel(m_contactsModel);
     ui->groupChatContacts->setModel(m_chatContactsModel);
@@ -282,6 +288,8 @@ void MainWindow::updateContactList()
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
         ui->contactListTable->setRowHeight(i, 64);
     }
+
+    m_dialogModel->setDialogs(m_core->dialogs());
 }
 
 void MainWindow::onMessageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)

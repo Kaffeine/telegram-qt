@@ -29,6 +29,7 @@ class MainWindow;
 
 class CTelegramCore;
 class CContactModel;
+class CDialogModel;
 class CMessageModel;
 class CContactsFilterModel;
 class CChatInfoModel;
@@ -170,6 +171,7 @@ private:
     CFileManager *m_fileManager;
     CContactModel *m_contactsModel;
     CContactsFilterModel *m_contactListModel;
+    CDialogModel *m_dialogModel;
     CMessageModel *m_messagingModel;
 
     CContactsFilterModel *m_chatContactsModel;
