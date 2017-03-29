@@ -374,6 +374,16 @@ quint64 CTelegramConnection::accountRegisterDevice(quint32 tokenType, const QStr
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::accountReportPeer(const TLInputPeer &peer, const TLReportReason &reason)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::AccountReportPeer;
+    outputStream << peer;
+    outputStream << reason;
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::accountResetAuthorization(quint64 hash)
 {
     QByteArray output;
@@ -822,6 +832,15 @@ quint64 CTelegramConnection::helpGetSupport()
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::helpGetTermsOfService(const QString &langCode)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::HelpGetTermsOfService;
+    outputStream << langCode;
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::helpSaveAppLog(const TLVector<TLInputAppEvent> &events)
 {
     QByteArray output;
@@ -882,13 +901,13 @@ quint64 CTelegramConnection::messagesDeleteChatUser(quint32 chatId, const TLInpu
     return sendEncryptedPackage(output);
 }
 
-quint64 CTelegramConnection::messagesDeleteHistory(const TLInputPeer &peer, quint32 offset)
+quint64 CTelegramConnection::messagesDeleteHistory(const TLInputPeer &peer, quint32 maxId)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesDeleteHistory;
     outputStream << peer;
-    outputStream << offset;
+    outputStream << maxId;
     return sendEncryptedPackage(output);
 }
 
@@ -907,6 +926,17 @@ quint64 CTelegramConnection::messagesDiscardEncryption(quint32 chatId)
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesDiscardEncryption;
     outputStream << chatId;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::messagesEditChatAdmin(quint32 chatId, const TLInputUser &userId, bool isAdmin)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesEditChatAdmin;
+    outputStream << chatId;
+    outputStream << userId;
+    outputStream << isAdmin;
     return sendEncryptedPackage(output);
 }
 
@@ -956,6 +986,9 @@ quint64 CTelegramConnection::messagesForwardMessages(quint32 flags, const TLInpu
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesForwardMessages;
     outputStream << flags;
+    if (flags & 1 << 4) {
+        outputStream << TLTrue();
+    }
     outputStream << fromPeer;
     outputStream << id;
     outputStream << randomId;
@@ -963,7 +996,7 @@ quint64 CTelegramConnection::messagesForwardMessages(quint32 flags, const TLInpu
     return sendEncryptedPackage(output);
 }
 
-quint64 CTelegramConnection::messagesGetAllStickers(const QString &hash)
+quint64 CTelegramConnection::messagesGetAllStickers(quint32 hash)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
@@ -991,13 +1024,26 @@ quint64 CTelegramConnection::messagesGetDhConfig(quint32 version, quint32 random
     return sendEncryptedPackage(output);
 }
 
-quint64 CTelegramConnection::messagesGetDialogs(quint32 offset, quint32 limit)
+quint64 CTelegramConnection::messagesGetDialogs(quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesGetDialogs;
-    outputStream << offset;
+    outputStream << offsetDate;
+    outputStream << offsetId;
+    outputStream << offsetPeer;
     outputStream << limit;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::messagesGetDocumentByHash(const QByteArray &sha256, quint32 size, const QString &mimeType)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesGetDocumentByHash;
+    outputStream << sha256;
+    outputStream << size;
+    outputStream << mimeType;
     return sendEncryptedPackage(output);
 }
 
@@ -1024,6 +1070,17 @@ quint64 CTelegramConnection::messagesGetHistory(const TLInputPeer &peer, quint32
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::messagesGetInlineBotResults(const TLInputUser &bot, const QString &query, const QString &offset)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesGetInlineBotResults;
+    outputStream << bot;
+    outputStream << query;
+    outputStream << offset;
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::messagesGetMessages(const TLVector<quint32> &id)
 {
     QByteArray output;
@@ -1041,6 +1098,15 @@ quint64 CTelegramConnection::messagesGetMessagesViews(const TLInputPeer &peer, c
     outputStream << peer;
     outputStream << id;
     outputStream << increment;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::messagesGetSavedGifs(quint32 hash)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesGetSavedGifs;
+    outputStream << hash;
     return sendEncryptedPackage(output);
 }
 
@@ -1091,6 +1157,15 @@ quint64 CTelegramConnection::messagesInstallStickerSet(const TLInputStickerSet &
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::messagesMigrateChat(quint32 chatId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesMigrateChat;
+    outputStream << chatId;
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::messagesReadEncryptedHistory(const TLInputEncryptedChat &peer, quint32 maxDate)
 {
     QByteArray output;
@@ -1101,14 +1176,13 @@ quint64 CTelegramConnection::messagesReadEncryptedHistory(const TLInputEncrypted
     return sendEncryptedPackage(output);
 }
 
-quint64 CTelegramConnection::messagesReadHistory(const TLInputPeer &peer, quint32 maxId, quint32 offset)
+quint64 CTelegramConnection::messagesReadHistory(const TLInputPeer &peer, quint32 maxId)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesReadHistory;
     outputStream << peer;
     outputStream << maxId;
-    outputStream << offset;
     return sendEncryptedPackage(output);
 }
 
@@ -1139,6 +1213,15 @@ quint64 CTelegramConnection::messagesReceivedQueue(quint32 maxQts)
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::messagesReorderStickerSets(const TLVector<quint64> &order)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesReorderStickerSets;
+    outputStream << order;
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::messagesReportSpam(const TLInputPeer &peer)
 {
     QByteArray output;
@@ -1159,12 +1242,25 @@ quint64 CTelegramConnection::messagesRequestEncryption(const TLInputUser &userId
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::messagesSaveGif(const TLInputDocument &id, bool unsave)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesSaveGif;
+    outputStream << id;
+    outputStream << unsave;
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::messagesSearch(quint32 flags, const TLInputPeer &peer, const QString &q, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offset, quint32 maxId, quint32 limit)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSearch;
     outputStream << flags;
+    if (flags & 1 << 0) {
+        outputStream << TLTrue();
+    }
     outputStream << peer;
     outputStream << q;
     outputStream << filter;
@@ -1172,6 +1268,29 @@ quint64 CTelegramConnection::messagesSearch(quint32 flags, const TLInputPeer &pe
     outputStream << maxDate;
     outputStream << offset;
     outputStream << maxId;
+    outputStream << limit;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::messagesSearchGifs(const QString &q, quint32 offset)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesSearchGifs;
+    outputStream << q;
+    outputStream << offset;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::messagesSearchGlobal(const QString &q, quint32 offsetDate, const TLInputPeer &offsetPeer, quint32 offsetId, quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesSearchGlobal;
+    outputStream << q;
+    outputStream << offsetDate;
+    outputStream << offsetPeer;
+    outputStream << offsetId;
     outputStream << limit;
     return sendEncryptedPackage(output);
 }
@@ -1222,12 +1341,34 @@ quint64 CTelegramConnection::messagesSendEncryptedService(const TLInputEncrypted
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::messagesSendInlineBotResult(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, quint64 randomId, quint64 queryId, const QString &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesSendInlineBotResult;
+    outputStream << flags;
+    if (flags & 1 << 4) {
+        outputStream << TLTrue();
+    }
+    outputStream << peer;
+    if (flags & 1 << 0) {
+        outputStream << replyToMsgId;
+    }
+    outputStream << randomId;
+    outputStream << queryId;
+    outputStream << id;
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::messagesSendMedia(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const TLInputMedia &media, quint64 randomId, const TLReplyMarkup &replyMarkup)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSendMedia;
     outputStream << flags;
+    if (flags & 1 << 4) {
+        outputStream << TLTrue();
+    }
     outputStream << peer;
     if (flags & 1 << 0) {
         outputStream << replyToMsgId;
@@ -1246,6 +1387,12 @@ quint64 CTelegramConnection::messagesSendMessage(quint32 flags, const TLInputPee
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSendMessage;
     outputStream << flags;
+    if (flags & 1 << 1) {
+        outputStream << TLTrue();
+    }
+    if (flags & 1 << 4) {
+        outputStream << TLTrue();
+    }
     outputStream << peer;
     if (flags & 1 << 0) {
         outputStream << replyToMsgId;
@@ -1271,6 +1418,27 @@ quint64 CTelegramConnection::messagesSetEncryptedTyping(const TLInputEncryptedCh
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::messagesSetInlineBotResults(quint32 flags, quint64 queryId, const TLVector<TLInputBotInlineResult> &results, quint32 cacheTime, const QString &nextOffset)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesSetInlineBotResults;
+    outputStream << flags;
+    if (flags & 1 << 0) {
+        outputStream << TLTrue();
+    }
+    if (flags & 1 << 1) {
+        outputStream << TLTrue();
+    }
+    outputStream << queryId;
+    outputStream << results;
+    outputStream << cacheTime;
+    if (flags & 1 << 2) {
+        outputStream << nextOffset;
+    }
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::messagesSetTyping(const TLInputPeer &peer, const TLSendMessageAction &action)
 {
     QByteArray output;
@@ -1281,15 +1449,25 @@ quint64 CTelegramConnection::messagesSetTyping(const TLInputPeer &peer, const TL
     return sendEncryptedPackage(output);
 }
 
-quint64 CTelegramConnection::messagesStartBot(const TLInputUser &bot, quint32 chatId, quint64 randomId, const QString &startParam)
+quint64 CTelegramConnection::messagesStartBot(const TLInputUser &bot, const TLInputPeer &peer, quint64 randomId, const QString &startParam)
 {
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesStartBot;
     outputStream << bot;
-    outputStream << chatId;
+    outputStream << peer;
     outputStream << randomId;
     outputStream << startParam;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::messagesToggleChatAdmins(quint32 chatId, bool enabled)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::MessagesToggleChatAdmins;
+    outputStream << chatId;
+    outputStream << enabled;
     return sendEncryptedPackage(output);
 }
 
@@ -1919,6 +2097,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::AccountRegisterDevice:
             processAccountRegisterDevice(&context);
             break;
+        case TLValue::AccountReportPeer:
+            processAccountReportPeer(&context);
+            break;
         case TLValue::AccountResetAuthorization:
             processAccountResetAuthorization(&context);
             break;
@@ -2060,6 +2241,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::HelpGetSupport:
             processHelpGetSupport(&context);
             break;
+        case TLValue::HelpGetTermsOfService:
+            processHelpGetTermsOfService(&context);
+            break;
         case TLValue::HelpSaveAppLog:
             processHelpSaveAppLog(&context);
             break;
@@ -2078,6 +2262,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::MessagesDiscardEncryption:
             processMessagesDiscardEncryption(&context);
             break;
+        case TLValue::MessagesEditChatAdmin:
+            processMessagesEditChatAdmin(&context);
+            break;
         case TLValue::MessagesExportChatInvite:
             processMessagesExportChatInvite(&context);
             break;
@@ -2093,17 +2280,26 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::MessagesGetDialogs:
             processMessagesGetDialogs(&context);
             break;
+        case TLValue::MessagesGetDocumentByHash:
+            processMessagesGetDocumentByHash(&context);
+            break;
         case TLValue::MessagesGetFullChat:
             processMessagesGetFullChat(&context);
             break;
         case TLValue::MessagesGetHistory:
             processMessagesGetHistory(&context);
             break;
+        case TLValue::MessagesGetInlineBotResults:
+            processMessagesGetInlineBotResults(&context);
+            break;
         case TLValue::MessagesGetMessages:
             processMessagesGetMessages(&context);
             break;
         case TLValue::MessagesGetMessagesViews:
             processMessagesGetMessagesViews(&context);
+            break;
+        case TLValue::MessagesGetSavedGifs:
+            processMessagesGetSavedGifs(&context);
             break;
         case TLValue::MessagesGetStickerSet:
             processMessagesGetStickerSet(&context);
@@ -2132,14 +2328,26 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::MessagesReceivedQueue:
             processMessagesReceivedQueue(&context);
             break;
+        case TLValue::MessagesReorderStickerSets:
+            processMessagesReorderStickerSets(&context);
+            break;
         case TLValue::MessagesReportSpam:
             processMessagesReportSpam(&context);
             break;
         case TLValue::MessagesRequestEncryption:
             processMessagesRequestEncryption(&context);
             break;
+        case TLValue::MessagesSaveGif:
+            processMessagesSaveGif(&context);
+            break;
         case TLValue::MessagesSearch:
             processMessagesSearch(&context);
+            break;
+        case TLValue::MessagesSearchGifs:
+            processMessagesSearchGifs(&context);
+            break;
+        case TLValue::MessagesSearchGlobal:
+            processMessagesSearchGlobal(&context);
             break;
         case TLValue::MessagesSendEncrypted:
             processMessagesSendEncrypted(&context);
@@ -2152,6 +2360,9 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
             break;
         case TLValue::MessagesSetEncryptedTyping:
             processMessagesSetEncryptedTyping(&context);
+            break;
+        case TLValue::MessagesSetInlineBotResults:
+            processMessagesSetInlineBotResults(&context);
             break;
         case TLValue::MessagesSetTyping:
             processMessagesSetTyping(&context);
@@ -2193,10 +2404,13 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::MessagesForwardMessage:
         case TLValue::MessagesForwardMessages:
         case TLValue::MessagesImportChatInvite:
+        case TLValue::MessagesMigrateChat:
         case TLValue::MessagesSendBroadcast:
+        case TLValue::MessagesSendInlineBotResult:
         case TLValue::MessagesSendMedia:
         case TLValue::MessagesSendMessage:
         case TLValue::MessagesStartBot:
+        case TLValue::MessagesToggleChatAdmins:
         // End of generated RPC processing switch updates cases
         {
             bool ok;
@@ -2584,6 +2798,14 @@ void CTelegramConnection::processAccountGetWallPapers(RpcProcessingContext *cont
 }
 
 void CTelegramConnection::processAccountRegisterDevice(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processAccountReportPeer(RpcProcessingContext *context)
 {
     qWarning() << Q_FUNC_INFO << "Is not implemented yet";
     TLValue result; // bool
@@ -3017,6 +3239,13 @@ void CTelegramConnection::processHelpGetSupport(RpcProcessingContext *context)
     context->readRpcResult(&result);
 }
 
+void CTelegramConnection::processHelpGetTermsOfService(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLHelpTermsOfService result;
+    context->readRpcResult(&result);
+}
+
 void CTelegramConnection::processHelpSaveAppLog(RpcProcessingContext *context)
 {
     qWarning() << Q_FUNC_INFO << "Is not implemented yet";
@@ -3054,6 +3283,14 @@ void CTelegramConnection::processMessagesDeleteMessages(RpcProcessingContext *co
 }
 
 void CTelegramConnection::processMessagesDiscardEncryption(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processMessagesEditChatAdmin(RpcProcessingContext *context)
 {
     qWarning() << Q_FUNC_INFO << "Is not implemented yet";
     TLValue result; // bool
@@ -3115,6 +3352,13 @@ void CTelegramConnection::processMessagesGetDialogs(RpcProcessingContext *contex
     emit messagesDialogsReceived(result, offset, maxId, limit);
 }
 
+void CTelegramConnection::processMessagesGetDocumentByHash(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLDocument result;
+    context->readRpcResult(&result);
+}
+
 void CTelegramConnection::processMessagesGetFullChat(RpcProcessingContext *context)
 {
     TLMessagesChatFull result;
@@ -3142,6 +3386,13 @@ void CTelegramConnection::processMessagesGetHistory(RpcProcessingContext *contex
     emit messagesHistoryReceived(result, peer);
 }
 
+void CTelegramConnection::processMessagesGetInlineBotResults(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesBotResults result;
+    context->readRpcResult(&result);
+}
+
 void CTelegramConnection::processMessagesGetMessages(RpcProcessingContext *context)
 {
     qWarning() << Q_FUNC_INFO << "Is not implemented yet";
@@ -3153,6 +3404,13 @@ void CTelegramConnection::processMessagesGetMessagesViews(RpcProcessingContext *
 {
     qWarning() << Q_FUNC_INFO << "Is not implemented yet";
     TLVector<quint32> result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesGetSavedGifs(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesSavedGifs result;
     context->readRpcResult(&result);
 }
 
@@ -3195,9 +3453,9 @@ void CTelegramConnection::processMessagesReadEncryptedHistory(RpcProcessingConte
 
 void CTelegramConnection::processMessagesReadHistory(RpcProcessingContext *context)
 {
-    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
-    TLMessagesAffectedHistory result;
+    TLMessagesAffectedMessages result;
     context->readRpcResult(&result);
+    emit messagesAffectedMessagesReceived(result);
 }
 
 void CTelegramConnection::processMessagesReadMessageContents(RpcProcessingContext *context)
@@ -3221,6 +3479,14 @@ void CTelegramConnection::processMessagesReceivedQueue(RpcProcessingContext *con
     context->readRpcResult(&result);
 }
 
+void CTelegramConnection::processMessagesReorderStickerSets(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
 void CTelegramConnection::processMessagesReportSpam(RpcProcessingContext *context)
 {
     qWarning() << Q_FUNC_INFO << "Is not implemented yet";
@@ -3236,7 +3502,29 @@ void CTelegramConnection::processMessagesRequestEncryption(RpcProcessingContext 
     context->readRpcResult(&result);
 }
 
+void CTelegramConnection::processMessagesSaveGif(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
 void CTelegramConnection::processMessagesSearch(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesMessages result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesSearchGifs(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesFoundGifs result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processMessagesSearchGlobal(RpcProcessingContext *context)
 {
     qWarning() << Q_FUNC_INFO << "Is not implemented yet";
     TLMessagesMessages result;
@@ -3265,6 +3553,14 @@ void CTelegramConnection::processMessagesSendEncryptedService(RpcProcessingConte
 }
 
 void CTelegramConnection::processMessagesSetEncryptedTyping(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processMessagesSetInlineBotResults(RpcProcessingContext *context)
 {
     qWarning() << Q_FUNC_INFO << "Is not implemented yet";
     TLValue result; // bool

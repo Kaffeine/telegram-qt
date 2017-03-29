@@ -389,6 +389,7 @@ struct TLChannelParticipantsFilter {
         case TLValue::ChannelParticipantsRecent:
         case TLValue::ChannelParticipantsAdmins:
         case TLValue::ChannelParticipantsKicked:
+        case TLValue::ChannelParticipantsBots:
             return true;
         default:
             return false;
@@ -407,6 +408,8 @@ struct TLChatParticipant {
     bool isValid() const {
         switch (tlType) {
         case TLValue::ChatParticipant:
+        case TLValue::ChatParticipantCreator:
+        case TLValue::ChatParticipantAdmin:
             return true;
         default:
             return false;
@@ -422,7 +425,6 @@ struct TLChatParticipants {
     TLChatParticipants() :
         flags(0),
         chatId(0),
-        adminId(0),
         version(0),
         tlType(TLValue::ChatParticipantsForbidden) { }
 
@@ -438,7 +440,6 @@ struct TLChatParticipants {
     quint32 flags;
     quint32 chatId;
     TLChatParticipant selfParticipant;
-    quint32 adminId;
     TLVector<TLChatParticipant> participants;
     quint32 version;
     TLValue tlType;
@@ -516,28 +517,6 @@ struct TLContactSuggested {
     }
     quint32 userId;
     quint32 mutualContacts;
-    TLValue tlType;
-};
-
-struct TLDcOption {
-    TLDcOption() :
-        flags(0),
-        id(0),
-        port(0),
-        tlType(TLValue::DcOption) { }
-
-    bool isValid() const {
-        switch (tlType) {
-        case TLValue::DcOption:
-            return true;
-        default:
-            return false;
-        };
-    }
-    quint32 flags;
-    quint32 id;
-    QString ipAddress;
-    quint32 port;
     TLValue tlType;
 };
 
@@ -772,6 +751,22 @@ struct TLHelpInviteText {
         };
     }
     QString message;
+    TLValue tlType;
+};
+
+struct TLHelpTermsOfService {
+    TLHelpTermsOfService() :
+        tlType(TLValue::HelpTermsOfService) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::HelpTermsOfService:
+            return true;
+        default:
+            return false;
+        };
+    }
+    QString text;
     TLValue tlType;
 };
 
@@ -1379,6 +1374,7 @@ struct TLMessagesFilter {
         case TLValue::InputMessagesFilterAudio:
         case TLValue::InputMessagesFilterAudioDocuments:
         case TLValue::InputMessagesFilterUrl:
+        case TLValue::InputMessagesFilterGif:
             return true;
         default:
             return false;
@@ -1569,23 +1565,22 @@ struct TLReceivedNotifyMessage {
     TLValue tlType;
 };
 
-struct TLReplyMarkup {
-    TLReplyMarkup() :
-        flags(0),
-        tlType(TLValue::ReplyKeyboardHide) { }
+struct TLReportReason {
+    TLReportReason() :
+        tlType(TLValue::InputReportReasonSpam) { }
 
     bool isValid() const {
         switch (tlType) {
-        case TLValue::ReplyKeyboardHide:
-        case TLValue::ReplyKeyboardForceReply:
-        case TLValue::ReplyKeyboardMarkup:
+        case TLValue::InputReportReasonSpam:
+        case TLValue::InputReportReasonViolence:
+        case TLValue::InputReportReasonPornography:
+        case TLValue::InputReportReasonOther:
             return true;
         default:
             return false;
         };
     }
-    quint32 flags;
-    TLVector<TLKeyboardButtonRow> rows;
+    QString text;
     TLValue tlType;
 };
 
@@ -1632,33 +1627,6 @@ struct TLStickerPack {
     TLValue tlType;
 };
 
-struct TLStickerSet {
-    TLStickerSet() :
-        flags(0),
-        id(0),
-        accessHash(0),
-        count(0),
-        hash(0),
-        tlType(TLValue::StickerSet) { }
-
-    bool isValid() const {
-        switch (tlType) {
-        case TLValue::StickerSet:
-            return true;
-        default:
-            return false;
-        };
-    }
-    quint32 flags;
-    quint64 id;
-    quint64 accessHash;
-    QString title;
-    QString shortName;
-    quint32 count;
-    quint32 hash;
-    TLValue tlType;
-};
-
 struct TLStorageFileType {
     TLStorageFileType() :
         tlType(TLValue::StorageFileUnknown) { }
@@ -1675,6 +1643,21 @@ struct TLStorageFileType {
         case TLValue::StorageFilePartial:
         case TLValue::StorageFileMp4:
         case TLValue::StorageFileWebp:
+            return true;
+        default:
+            return false;
+        };
+    }
+    TLValue tlType;
+};
+
+struct TLTrue {
+    TLTrue() :
+        tlType(TLValue::True) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::True:
             return true;
         default:
             return false;
@@ -1845,6 +1828,28 @@ struct TLAccountAuthorizations {
     TLValue tlType;
 };
 
+struct TLBotInlineMessage {
+    TLBotInlineMessage() :
+        flags(0),
+        tlType(TLValue::BotInlineMessageMediaAuto) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::BotInlineMessageMediaAuto:
+        case TLValue::BotInlineMessageText:
+            return true;
+        default:
+            return false;
+        };
+    }
+    QString caption;
+    quint32 flags;
+    bool noWebpage() const { return flags & 1 << 0; }
+    QString message;
+    TLVector<TLMessageEntity> entities;
+    TLValue tlType;
+};
+
 struct TLChannelMessagesFilter {
     TLChannelMessagesFilter() :
         flags(0),
@@ -1861,6 +1866,8 @@ struct TLChannelMessagesFilter {
         };
     }
     quint32 flags;
+    bool importantOnly() const { return flags & 1 << 0; }
+    bool excludeNewMessages() const { return flags & 1 << 1; }
     TLVector<TLMessageRange> ranges;
     TLValue tlType;
 };
@@ -1883,55 +1890,6 @@ struct TLChatPhoto {
     TLValue tlType;
 };
 
-struct TLConfig {
-    TLConfig() :
-        date(0),
-        expires(0),
-        testMode(false),
-        thisDc(0),
-        chatSizeMax(0),
-        broadcastSizeMax(0),
-        forwardedCountMax(0),
-        onlineUpdatePeriodMs(0),
-        offlineBlurTimeoutMs(0),
-        offlineIdleTimeoutMs(0),
-        onlineCloudTimeoutMs(0),
-        notifyCloudDelayMs(0),
-        notifyDefaultDelayMs(0),
-        chatBigSize(0),
-        pushChatPeriodMs(0),
-        pushChatLimit(0),
-        tlType(TLValue::Config) { }
-
-    bool isValid() const {
-        switch (tlType) {
-        case TLValue::Config:
-            return true;
-        default:
-            return false;
-        };
-    }
-    quint32 date;
-    quint32 expires;
-    bool testMode;
-    quint32 thisDc;
-    TLVector<TLDcOption> dcOptions;
-    quint32 chatSizeMax;
-    quint32 broadcastSizeMax;
-    quint32 forwardedCountMax;
-    quint32 onlineUpdatePeriodMs;
-    quint32 offlineBlurTimeoutMs;
-    quint32 offlineIdleTimeoutMs;
-    quint32 onlineCloudTimeoutMs;
-    quint32 notifyCloudDelayMs;
-    quint32 notifyDefaultDelayMs;
-    quint32 chatBigSize;
-    quint32 pushChatPeriodMs;
-    quint32 pushChatLimit;
-    TLVector<TLDisabledFeature> disabledFeatures;
-    TLValue tlType;
-};
-
 struct TLContactStatus {
     TLContactStatus() :
         userId(0),
@@ -1947,6 +1905,30 @@ struct TLContactStatus {
     }
     quint32 userId;
     TLUserStatus status;
+    TLValue tlType;
+};
+
+struct TLDcOption {
+    TLDcOption() :
+        flags(0),
+        id(0),
+        port(0),
+        tlType(TLValue::DcOption) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::DcOption:
+            return true;
+        default:
+            return false;
+        };
+    }
+    quint32 flags;
+    bool ipv6() const { return flags & 1 << 0; }
+    bool mediaOnly() const { return flags & 1 << 1; }
+    quint32 id;
+    QString ipAddress;
+    quint32 port;
     TLValue tlType;
 };
 
@@ -2011,6 +1993,60 @@ struct TLDocumentAttribute {
     TLValue tlType;
 };
 
+struct TLInputBotInlineMessage {
+    TLInputBotInlineMessage() :
+        flags(0),
+        tlType(TLValue::InputBotInlineMessageMediaAuto) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputBotInlineMessageMediaAuto:
+        case TLValue::InputBotInlineMessageText:
+            return true;
+        default:
+            return false;
+        };
+    }
+    QString caption;
+    quint32 flags;
+    bool noWebpage() const { return flags & 1 << 0; }
+    QString message;
+    TLVector<TLMessageEntity> entities;
+    TLValue tlType;
+};
+
+struct TLInputBotInlineResult {
+    TLInputBotInlineResult() :
+        flags(0),
+        w(0),
+        h(0),
+        duration(0),
+        tlType(TLValue::InputBotInlineResult) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::InputBotInlineResult:
+            return true;
+        default:
+            return false;
+        };
+    }
+    quint32 flags;
+    QString id;
+    QString type;
+    QString title;
+    QString description;
+    QString url;
+    QString thumbUrl;
+    QString contentUrl;
+    QString contentType;
+    quint32 w;
+    quint32 h;
+    quint32 duration;
+    TLInputBotInlineMessage sendMessage;
+    TLValue tlType;
+};
+
 struct TLInputChatPhoto {
     TLInputChatPhoto() :
         tlType(TLValue::InputChatPhotoEmpty) { }
@@ -2054,6 +2090,7 @@ struct TLInputMedia {
         case TLValue::InputMediaUploadedThumbDocument:
         case TLValue::InputMediaDocument:
         case TLValue::InputMediaVenue:
+        case TLValue::InputMediaGifExternal:
             return true;
         default:
             return false;
@@ -2079,6 +2116,8 @@ struct TLInputMedia {
     QString address;
     QString provider;
     QString venueId;
+    QString url;
+    QString q;
     TLValue tlType;
 };
 
@@ -2119,24 +2158,6 @@ struct TLInputPrivacyRule {
         };
     }
     TLVector<TLInputUser> users;
-    TLValue tlType;
-};
-
-struct TLMessagesAllStickers {
-    TLMessagesAllStickers() :
-        tlType(TLValue::MessagesAllStickersNotModified) { }
-
-    bool isValid() const {
-        switch (tlType) {
-        case TLValue::MessagesAllStickersNotModified:
-        case TLValue::MessagesAllStickers:
-            return true;
-        default:
-            return false;
-        };
-    }
-    QString hash;
-    TLVector<TLStickerSet> sets;
     TLValue tlType;
 };
 
@@ -2182,6 +2203,59 @@ struct TLPhoto {
     TLValue tlType;
 };
 
+struct TLReplyMarkup {
+    TLReplyMarkup() :
+        flags(0),
+        tlType(TLValue::ReplyKeyboardHide) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::ReplyKeyboardHide:
+        case TLValue::ReplyKeyboardForceReply:
+        case TLValue::ReplyKeyboardMarkup:
+            return true;
+        default:
+            return false;
+        };
+    }
+    quint32 flags;
+    bool selective() const { return flags & 1 << 2; }
+    bool singleUse() const { return flags & 1 << 1; }
+    bool resize() const { return flags & 1 << 0; }
+    TLVector<TLKeyboardButtonRow> rows;
+    TLValue tlType;
+};
+
+struct TLStickerSet {
+    TLStickerSet() :
+        flags(0),
+        id(0),
+        accessHash(0),
+        count(0),
+        hash(0),
+        tlType(TLValue::StickerSet) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::StickerSet:
+            return true;
+        default:
+            return false;
+        };
+    }
+    quint32 flags;
+    bool installed() const { return flags & 1 << 0; }
+    bool disabled() const { return flags & 1 << 1; }
+    bool official() const { return flags & 1 << 2; }
+    quint64 id;
+    quint64 accessHash;
+    QString title;
+    QString shortName;
+    quint32 count;
+    quint32 hash;
+    TLValue tlType;
+};
+
 struct TLUser {
     TLUser() :
         id(0),
@@ -2201,6 +2275,15 @@ struct TLUser {
     }
     quint32 id;
     quint32 flags;
+    bool self() const { return flags & 1 << 10; }
+    bool contact() const { return flags & 1 << 11; }
+    bool mutualContact() const { return flags & 1 << 12; }
+    bool deleted() const { return flags & 1 << 13; }
+    bool bot() const { return flags & 1 << 14; }
+    bool botChatHistory() const { return flags & 1 << 15; }
+    bool botNochats() const { return flags & 1 << 16; }
+    bool verified() const { return flags & 1 << 17; }
+    bool restricted() const { return flags & 1 << 18; }
     quint64 accessHash;
     QString firstName;
     QString lastName;
@@ -2209,6 +2292,8 @@ struct TLUser {
     TLUserProfilePhoto photo;
     TLUserStatus status;
     quint32 botInfoVersion;
+    QString restrictionReason;
+    QString botInlinePlaceholder;
     TLValue tlType;
 };
 
@@ -2305,13 +2390,27 @@ struct TLChat {
     }
     quint32 id;
     quint32 flags;
+    bool creator() const { return flags & 1 << 0; }
+    bool kicked() const { return flags & 1 << 1; }
+    bool left() const { return flags & 1 << 2; }
+    bool adminsEnabled() const { return flags & 1 << 3; }
+    bool admin() const { return flags & 1 << 4; }
+    bool deactivated() const { return flags & 1 << 5; }
     QString title;
     TLChatPhoto photo;
     quint32 participantsCount;
     quint32 date;
     quint32 version;
+    TLInputChannel migratedTo;
+    bool editor() const { return flags & 1 << 3; }
+    bool moderator() const { return flags & 1 << 4; }
+    bool broadcast() const { return flags & 1 << 5; }
+    bool verified() const { return flags & 1 << 7; }
+    bool megagroup() const { return flags & 1 << 8; }
+    bool restricted() const { return flags & 1 << 9; }
     quint64 accessHash;
     QString username;
+    QString restrictionReason;
     TLValue tlType;
 };
 
@@ -2325,6 +2424,8 @@ struct TLChatFull {
         readInboxMaxId(0),
         unreadCount(0),
         unreadImportantCount(0),
+        migratedFromChatId(0),
+        migratedFromMaxId(0),
         tlType(TLValue::ChatFull) { }
 
     bool isValid() const {
@@ -2343,6 +2444,7 @@ struct TLChatFull {
     TLExportedChatInvite exportedInvite;
     TLVector<TLBotInfo> botInfo;
     quint32 flags;
+    bool canViewParticipants() const { return flags & 1 << 3; }
     QString about;
     quint32 participantsCount;
     quint32 adminsCount;
@@ -2350,6 +2452,8 @@ struct TLChatFull {
     quint32 readInboxMaxId;
     quint32 unreadCount;
     quint32 unreadImportantCount;
+    quint32 migratedFromChatId;
+    quint32 migratedFromMaxId;
     TLValue tlType;
 };
 
@@ -2369,7 +2473,62 @@ struct TLChatInvite {
     }
     TLChat chat;
     quint32 flags;
+    bool channel() const { return flags & 1 << 0; }
+    bool broadcast() const { return flags & 1 << 1; }
+    bool isPublic() const { return flags & 1 << 2; }
+    bool megagroup() const { return flags & 1 << 3; }
     QString title;
+    TLValue tlType;
+};
+
+struct TLConfig {
+    TLConfig() :
+        date(0),
+        expires(0),
+        testMode(false),
+        thisDc(0),
+        chatSizeMax(0),
+        megagroupSizeMax(0),
+        forwardedCountMax(0),
+        onlineUpdatePeriodMs(0),
+        offlineBlurTimeoutMs(0),
+        offlineIdleTimeoutMs(0),
+        onlineCloudTimeoutMs(0),
+        notifyCloudDelayMs(0),
+        notifyDefaultDelayMs(0),
+        chatBigSize(0),
+        pushChatPeriodMs(0),
+        pushChatLimit(0),
+        savedGifsLimit(0),
+        tlType(TLValue::Config) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::Config:
+            return true;
+        default:
+            return false;
+        };
+    }
+    quint32 date;
+    quint32 expires;
+    bool testMode;
+    quint32 thisDc;
+    TLVector<TLDcOption> dcOptions;
+    quint32 chatSizeMax;
+    quint32 megagroupSizeMax;
+    quint32 forwardedCountMax;
+    quint32 onlineUpdatePeriodMs;
+    quint32 offlineBlurTimeoutMs;
+    quint32 offlineIdleTimeoutMs;
+    quint32 onlineCloudTimeoutMs;
+    quint32 notifyCloudDelayMs;
+    quint32 notifyDefaultDelayMs;
+    quint32 chatBigSize;
+    quint32 pushChatPeriodMs;
+    quint32 pushChatLimit;
+    quint32 savedGifsLimit;
+    TLVector<TLDisabledFeature> disabledFeatures;
     TLValue tlType;
 };
 
@@ -2529,6 +2688,32 @@ struct TLDocument {
     TLValue tlType;
 };
 
+struct TLFoundGif {
+    TLFoundGif() :
+        w(0),
+        h(0),
+        tlType(TLValue::FoundGif) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::FoundGif:
+        case TLValue::FoundGifCached:
+            return true;
+        default:
+            return false;
+        };
+    }
+    QString url;
+    QString thumbUrl;
+    QString contentUrl;
+    QString contentType;
+    quint32 w;
+    quint32 h;
+    TLPhoto photo;
+    TLDocument document;
+    TLValue tlType;
+};
+
 struct TLHelpSupport {
     TLHelpSupport() :
         tlType(TLValue::HelpSupport) { }
@@ -2550,6 +2735,8 @@ struct TLMessageAction {
     TLMessageAction() :
         userId(0),
         inviterId(0),
+        channelId(0),
+        chatId(0),
         tlType(TLValue::MessageActionEmpty) { }
 
     bool isValid() const {
@@ -2563,6 +2750,8 @@ struct TLMessageAction {
         case TLValue::MessageActionChatDeleteUser:
         case TLValue::MessageActionChatJoinedByLink:
         case TLValue::MessageActionChannelCreate:
+        case TLValue::MessageActionChatMigrateTo:
+        case TLValue::MessageActionChannelMigrateFrom:
             return true;
         default:
             return false;
@@ -2573,6 +2762,27 @@ struct TLMessageAction {
     TLPhoto photo;
     quint32 userId;
     quint32 inviterId;
+    quint32 channelId;
+    quint32 chatId;
+    TLValue tlType;
+};
+
+struct TLMessagesAllStickers {
+    TLMessagesAllStickers() :
+        hash(0),
+        tlType(TLValue::MessagesAllStickersNotModified) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesAllStickersNotModified:
+        case TLValue::MessagesAllStickers:
+            return true;
+        default:
+            return false;
+        };
+    }
+    quint32 hash;
+    TLVector<TLStickerSet> sets;
     TLValue tlType;
 };
 
@@ -2607,6 +2817,43 @@ struct TLMessagesChats {
         };
     }
     TLVector<TLChat> chats;
+    TLValue tlType;
+};
+
+struct TLMessagesFoundGifs {
+    TLMessagesFoundGifs() :
+        nextOffset(0),
+        tlType(TLValue::MessagesFoundGifs) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesFoundGifs:
+            return true;
+        default:
+            return false;
+        };
+    }
+    quint32 nextOffset;
+    TLVector<TLFoundGif> results;
+    TLValue tlType;
+};
+
+struct TLMessagesSavedGifs {
+    TLMessagesSavedGifs() :
+        hash(0),
+        tlType(TLValue::MessagesSavedGifsNotModified) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesSavedGifsNotModified:
+        case TLValue::MessagesSavedGifs:
+            return true;
+        default:
+            return false;
+        };
+    }
+    quint32 hash;
+    TLVector<TLDocument> gifs;
     TLValue tlType;
 };
 
@@ -2745,6 +2992,42 @@ struct TLWebPage {
     TLValue tlType;
 };
 
+struct TLBotInlineResult {
+    TLBotInlineResult() :
+        flags(0),
+        w(0),
+        h(0),
+        duration(0),
+        tlType(TLValue::BotInlineMediaResultDocument) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::BotInlineMediaResultDocument:
+        case TLValue::BotInlineMediaResultPhoto:
+        case TLValue::BotInlineResult:
+            return true;
+        default:
+            return false;
+        };
+    }
+    QString id;
+    QString type;
+    TLDocument document;
+    TLBotInlineMessage sendMessage;
+    TLPhoto photo;
+    quint32 flags;
+    QString title;
+    QString description;
+    QString url;
+    QString thumbUrl;
+    QString contentUrl;
+    QString contentType;
+    quint32 w;
+    quint32 h;
+    quint32 duration;
+    TLValue tlType;
+};
+
 struct TLMessageMedia {
     TLMessageMedia() :
         userId(0),
@@ -2785,12 +3068,35 @@ struct TLMessageMedia {
     TLValue tlType;
 };
 
+struct TLMessagesBotResults {
+    TLMessagesBotResults() :
+        flags(0),
+        queryId(0),
+        tlType(TLValue::MessagesBotResults) { }
+
+    bool isValid() const {
+        switch (tlType) {
+        case TLValue::MessagesBotResults:
+            return true;
+        default:
+            return false;
+        };
+    }
+    quint32 flags;
+    bool gallery() const { return flags & 1 << 0; }
+    quint64 queryId;
+    QString nextOffset;
+    TLVector<TLBotInlineResult> results;
+    TLValue tlType;
+};
+
 struct TLMessage {
     TLMessage() :
         id(0),
         flags(0),
         fromId(0),
         fwdDate(0),
+        viaBotId(0),
         replyToMsgId(0),
         date(0),
         views(0),
@@ -2808,10 +3114,15 @@ struct TLMessage {
     }
     quint32 id;
     quint32 flags;
+    bool unread() const { return flags & 1 << 0; }
+    bool out() const { return flags & 1 << 1; }
+    bool mentioned() const { return flags & 1 << 4; }
+    bool mediaUnread() const { return flags & 1 << 5; }
     quint32 fromId;
     TLPeer toId;
     TLPeer fwdFromId;
     quint32 fwdDate;
+    quint32 viaBotId;
     quint32 replyToMsgId;
     quint32 date;
     QString message;
@@ -2892,6 +3203,9 @@ struct TLUpdate {
         maxId(0),
         channelId(0),
         views(0),
+        enabled(false),
+        isAdmin(false),
+        queryId(0),
         tlType(TLValue::UpdateNewMessage) { }
 
     bool isValid() const {
@@ -2931,6 +3245,13 @@ struct TLUpdate {
         case TLValue::UpdateReadChannelInbox:
         case TLValue::UpdateDeleteChannelMessages:
         case TLValue::UpdateChannelMessageViews:
+        case TLValue::UpdateChatAdmins:
+        case TLValue::UpdateChatParticipantAdmin:
+        case TLValue::UpdateNewStickerSet:
+        case TLValue::UpdateStickerSetsOrder:
+        case TLValue::UpdateStickerSets:
+        case TLValue::UpdateSavedGifs:
+        case TLValue::UpdateBotInlineQuery:
             return true;
         default:
             return false;
@@ -2981,6 +3302,13 @@ struct TLUpdate {
     quint32 channelId;
     TLMessageGroup group;
     quint32 views;
+    bool enabled;
+    bool isAdmin;
+    TLMessagesStickerSet stickerset;
+    TLVector<quint64> order;
+    quint64 queryId;
+    QString query;
+    QString offset;
     TLValue tlType;
 };
 
@@ -2993,6 +3321,7 @@ struct TLUpdates {
         ptsCount(0),
         date(0),
         fwdDate(0),
+        viaBotId(0),
         replyToMsgId(0),
         fromId(0),
         chatId(0),
@@ -3015,6 +3344,10 @@ struct TLUpdates {
         };
     }
     quint32 flags;
+    bool unread() const { return flags & 1 << 0; }
+    bool out() const { return flags & 1 << 1; }
+    bool mentioned() const { return flags & 1 << 4; }
+    bool mediaUnread() const { return flags & 1 << 5; }
     quint32 id;
     quint32 userId;
     QString message;
@@ -3023,6 +3356,7 @@ struct TLUpdates {
     quint32 date;
     TLPeer fwdFromId;
     quint32 fwdDate;
+    quint32 viaBotId;
     quint32 replyToMsgId;
     TLVector<TLMessageEntity> entities;
     quint32 fromId;
@@ -3060,6 +3394,7 @@ struct TLUpdatesChannelDifference {
         };
     }
     quint32 flags;
+    bool final() const { return flags & 1 << 0; }
     quint32 pts;
     quint32 timeout;
     quint32 topMessage;

@@ -863,7 +863,7 @@ void CTelegramDispatcher::setMessageRead(const Telegram::Peer &peer, quint32 mes
     const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
 
     if (inputPeer.tlType != TLValue::InputPeerEmpty) {
-        activeConnection()->messagesReadHistory(inputPeer, messageId, /* offset */ 0);
+        activeConnection()->messagesReadHistory(inputPeer, messageId);
     }
 }
 
@@ -1198,6 +1198,17 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
 //    }
 }
 
+void CTelegramDispatcher::onMessagesAffectedMessagesReceived(const TLMessagesAffectedMessages &affectedMessages)
+{
+    if (m_updatesState.pts + affectedMessages.ptsCount == affectedMessages.pts) {
+        ensureUpdateState(affectedMessages.pts);
+    } else {
+        qDebug() << Q_FUNC_INFO << "Need inner updates:" << m_updatesState.pts << "+" << affectedMessages.ptsCount << "!=" << affectedMessages.pts;
+        qDebug() << "Updates delaying is not implemented yet. Recovery via getDifference() in 10 ms";
+        QTimer::singleShot(10, this, SLOT(getDifference()));
+    }
+}
+
 void CTelegramDispatcher::getDcConfiguration()
 {
     activeConnection()->helpGetConfig();
@@ -1217,7 +1228,7 @@ void CTelegramDispatcher::getInitialUsers()
 
 void CTelegramDispatcher::getInitialDialogs()
 {
-    activeConnection()->messagesGetDialogs(0, 1);
+    activeConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ 1);
 }
 
 void CTelegramDispatcher::getContacts()
@@ -1724,7 +1735,7 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
     if (!m_users.contains(apiMessage.fromId) && !m_askedUserIds.contains(apiMessage.fromId)) {
         m_askedUserIds.append(apiMessage.fromId);
 
-        activeConnection()->messagesGetDialogs(0, 1);
+        activeConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ 1);
     }
 
     emit messageReceived(apiMessage);
@@ -1911,6 +1922,8 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(whenMessagesHistoryReceived(TLMessagesMessages)));
             connect(connection, SIGNAL(messagesDialogsReceived(TLMessagesDialogs,quint32,quint32,quint32)),
                     SLOT(onMessagesDialogsReceived(TLMessagesDialogs,quint32,quint32,quint32)));
+            connect(connection, SIGNAL(messagesAffectedMessagesReceived(TLMessagesAffectedMessages)),
+                    SLOT(onMessagesAffectedMessagesReceived(TLMessagesAffectedMessages)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),
                     SLOT(whenUpdatesStateReceived(TLUpdatesState)));
             connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)),

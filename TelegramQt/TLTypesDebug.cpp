@@ -331,6 +331,8 @@ QDebug operator<<(QDebug d, const TLChannelParticipantsFilter &type)
         break;
     case TLValue::ChannelParticipantsKicked:
         break;
+    case TLValue::ChannelParticipantsBots:
+        break;
     default:
         break;
     }
@@ -344,6 +346,14 @@ QDebug operator<<(QDebug d, const TLChatParticipant &type)
     d << "TLChatParticipant(" << type.tlType.toString() << ") {";
     switch (type.tlType) {
     case TLValue::ChatParticipant:
+        d << "userId:" << type.userId;
+        d << "inviterId:" << type.inviterId;
+        d << "date:" << type.date;
+        break;
+    case TLValue::ChatParticipantCreator:
+        d << "userId:" << type.userId;
+        break;
+    case TLValue::ChatParticipantAdmin:
         d << "userId:" << type.userId;
         d << "inviterId:" << type.inviterId;
         d << "date:" << type.date;
@@ -367,7 +377,6 @@ QDebug operator<<(QDebug d, const TLChatParticipants &type)
         break;
     case TLValue::ChatParticipants:
         d << "chatId:" << type.chatId;
-        d << "adminId:" << type.adminId;
         d << "participants:" << type.participants;
         d << "version:" << type.version;
         break;
@@ -438,24 +447,6 @@ QDebug operator<<(QDebug d, const TLContactSuggested &type)
     case TLValue::ContactSuggested:
         d << "userId:" << type.userId;
         d << "mutualContacts:" << type.mutualContacts;
-        break;
-    default:
-        break;
-    }
-    d << "}";
-
-    return d;
-}
-
-QDebug operator<<(QDebug d, const TLDcOption &type)
-{
-    d << "TLDcOption(" << type.tlType.toString() << ") {";
-    switch (type.tlType) {
-    case TLValue::DcOption:
-        d << "flags:" << type.flags;
-        d << "id:" << type.id;
-        d << "ipAddress:" << type.ipAddress;
-        d << "port:" << type.port;
         break;
     default:
         break;
@@ -686,6 +677,21 @@ QDebug operator<<(QDebug d, const TLHelpInviteText &type)
     switch (type.tlType) {
     case TLValue::HelpInviteText:
         d << "message:" << type.message;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLHelpTermsOfService &type)
+{
+    d << "TLHelpTermsOfService(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::HelpTermsOfService:
+        d << "text:" << type.text;
         break;
     default:
         break;
@@ -1289,6 +1295,8 @@ QDebug operator<<(QDebug d, const TLMessagesFilter &type)
         break;
     case TLValue::InputMessagesFilterUrl:
         break;
+    case TLValue::InputMessagesFilterGif:
+        break;
     default:
         break;
     }
@@ -1475,19 +1483,18 @@ QDebug operator<<(QDebug d, const TLReceivedNotifyMessage &type)
     return d;
 }
 
-QDebug operator<<(QDebug d, const TLReplyMarkup &type)
+QDebug operator<<(QDebug d, const TLReportReason &type)
 {
-    d << "TLReplyMarkup(" << type.tlType.toString() << ") {";
+    d << "TLReportReason(" << type.tlType.toString() << ") {";
     switch (type.tlType) {
-    case TLValue::ReplyKeyboardHide:
-        d << "flags:" << type.flags;
+    case TLValue::InputReportReasonSpam:
         break;
-    case TLValue::ReplyKeyboardForceReply:
-        d << "flags:" << type.flags;
+    case TLValue::InputReportReasonViolence:
         break;
-    case TLValue::ReplyKeyboardMarkup:
-        d << "flags:" << type.flags;
-        d << "rows:" << type.rows;
+    case TLValue::InputReportReasonPornography:
+        break;
+    case TLValue::InputReportReasonOther:
+        d << "text:" << type.text;
         break;
     default:
         break;
@@ -1549,27 +1556,6 @@ QDebug operator<<(QDebug d, const TLStickerPack &type)
     return d;
 }
 
-QDebug operator<<(QDebug d, const TLStickerSet &type)
-{
-    d << "TLStickerSet(" << type.tlType.toString() << ") {";
-    switch (type.tlType) {
-    case TLValue::StickerSet:
-        d << "flags:" << type.flags;
-        d << "id:" << type.id;
-        d << "accessHash:" << type.accessHash;
-        d << "title:" << type.title;
-        d << "shortName:" << type.shortName;
-        d << "count:" << type.count;
-        d << "hash:" << type.hash;
-        break;
-    default:
-        break;
-    }
-    d << "}";
-
-    return d;
-}
-
 QDebug operator<<(QDebug d, const TLStorageFileType &type)
 {
     d << "TLStorageFileType(" << type.tlType.toString() << ") {";
@@ -1593,6 +1579,20 @@ QDebug operator<<(QDebug d, const TLStorageFileType &type)
     case TLValue::StorageFileMp4:
         break;
     case TLValue::StorageFileWebp:
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLTrue &type)
+{
+    d << "TLTrue(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::True:
         break;
     default:
         break;
@@ -1749,6 +1749,27 @@ QDebug operator<<(QDebug d, const TLAccountAuthorizations &type)
     return d;
 }
 
+QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
+{
+    d << "TLBotInlineMessage(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::BotInlineMessageMediaAuto:
+        d << "caption:" << type.caption;
+        break;
+    case TLValue::BotInlineMessageText:
+        d << "flags:" << type.flags;
+        d << "noWebpage:" << type.noWebpage();
+        d << "message:" << type.message;
+        d << "entities:" << type.entities;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
 QDebug operator<<(QDebug d, const TLChannelMessagesFilter &type)
 {
     d << "TLChannelMessagesFilter(" << type.tlType.toString() << ") {";
@@ -1757,6 +1778,8 @@ QDebug operator<<(QDebug d, const TLChannelMessagesFilter &type)
         break;
     case TLValue::ChannelMessagesFilter:
         d << "flags:" << type.flags;
+        d << "importantOnly:" << type.importantOnly();
+        d << "excludeNewMessages:" << type.excludeNewMessages();
         d << "ranges:" << type.ranges;
         break;
     case TLValue::ChannelMessagesFilterCollapsed:
@@ -1787,29 +1810,13 @@ QDebug operator<<(QDebug d, const TLChatPhoto &type)
     return d;
 }
 
-QDebug operator<<(QDebug d, const TLConfig &type)
+QDebug operator<<(QDebug d, const TLContactStatus &type)
 {
-    d << "TLConfig(" << type.tlType.toString() << ") {";
+    d << "TLContactStatus(" << type.tlType.toString() << ") {";
     switch (type.tlType) {
-    case TLValue::Config:
-        d << "date:" << type.date;
-        d << "expires:" << type.expires;
-        d << "testMode:" << type.testMode;
-        d << "thisDc:" << type.thisDc;
-        d << "dcOptions:" << type.dcOptions;
-        d << "chatSizeMax:" << type.chatSizeMax;
-        d << "broadcastSizeMax:" << type.broadcastSizeMax;
-        d << "forwardedCountMax:" << type.forwardedCountMax;
-        d << "onlineUpdatePeriodMs:" << type.onlineUpdatePeriodMs;
-        d << "offlineBlurTimeoutMs:" << type.offlineBlurTimeoutMs;
-        d << "offlineIdleTimeoutMs:" << type.offlineIdleTimeoutMs;
-        d << "onlineCloudTimeoutMs:" << type.onlineCloudTimeoutMs;
-        d << "notifyCloudDelayMs:" << type.notifyCloudDelayMs;
-        d << "notifyDefaultDelayMs:" << type.notifyDefaultDelayMs;
-        d << "chatBigSize:" << type.chatBigSize;
-        d << "pushChatPeriodMs:" << type.pushChatPeriodMs;
-        d << "pushChatLimit:" << type.pushChatLimit;
-        d << "disabledFeatures:" << type.disabledFeatures;
+    case TLValue::ContactStatus:
+        d << "userId:" << type.userId;
+        d << "status:" << type.status;
         break;
     default:
         break;
@@ -1819,13 +1826,17 @@ QDebug operator<<(QDebug d, const TLConfig &type)
     return d;
 }
 
-QDebug operator<<(QDebug d, const TLContactStatus &type)
+QDebug operator<<(QDebug d, const TLDcOption &type)
 {
-    d << "TLContactStatus(" << type.tlType.toString() << ") {";
+    d << "TLDcOption(" << type.tlType.toString() << ") {";
     switch (type.tlType) {
-    case TLValue::ContactStatus:
-        d << "userId:" << type.userId;
-        d << "status:" << type.status;
+    case TLValue::DcOption:
+        d << "flags:" << type.flags;
+        d << "ipv6:" << type.ipv6();
+        d << "mediaOnly:" << type.mediaOnly();
+        d << "id:" << type.id;
+        d << "ipAddress:" << type.ipAddress;
+        d << "port:" << type.port;
         break;
     default:
         break;
@@ -1890,6 +1901,54 @@ QDebug operator<<(QDebug d, const TLDocumentAttribute &type)
         break;
     case TLValue::DocumentAttributeFilename:
         d << "fileName:" << type.fileName;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
+{
+    d << "TLInputBotInlineMessage(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::InputBotInlineMessageMediaAuto:
+        d << "caption:" << type.caption;
+        break;
+    case TLValue::InputBotInlineMessageText:
+        d << "flags:" << type.flags;
+        d << "noWebpage:" << type.noWebpage();
+        d << "message:" << type.message;
+        d << "entities:" << type.entities;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLInputBotInlineResult &type)
+{
+    d << "TLInputBotInlineResult(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::InputBotInlineResult:
+        d << "flags:" << type.flags;
+        d << "id:" << type.id;
+        d << "type:" << type.type;
+        d << "title:" << type.title;
+        d << "description:" << type.description;
+        d << "url:" << type.url;
+        d << "thumbUrl:" << type.thumbUrl;
+        d << "contentUrl:" << type.contentUrl;
+        d << "contentType:" << type.contentType;
+        d << "w:" << type.w;
+        d << "h:" << type.h;
+        d << "duration:" << type.duration;
+        d << "sendMessage:" << type.sendMessage;
         break;
     default:
         break;
@@ -1976,15 +2035,18 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << "file:" << type.file;
         d << "mimeType:" << type.mimeType;
         d << "attributes:" << type.attributes;
+        d << "caption:" << type.caption;
         break;
     case TLValue::InputMediaUploadedThumbDocument:
         d << "file:" << type.file;
         d << "thumb:" << type.thumb;
         d << "mimeType:" << type.mimeType;
         d << "attributes:" << type.attributes;
+        d << "caption:" << type.caption;
         break;
     case TLValue::InputMediaDocument:
         d << "idInputDocument:" << type.idInputDocument;
+        d << "caption:" << type.caption;
         break;
     case TLValue::InputMediaVenue:
         d << "geoPoint:" << type.geoPoint;
@@ -1992,6 +2054,10 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << "address:" << type.address;
         d << "provider:" << type.provider;
         d << "venueId:" << type.venueId;
+        break;
+    case TLValue::InputMediaGifExternal:
+        d << "url:" << type.url;
+        d << "q:" << type.q;
         break;
     default:
         break;
@@ -2048,24 +2114,6 @@ QDebug operator<<(QDebug d, const TLInputPrivacyRule &type)
     return d;
 }
 
-QDebug operator<<(QDebug d, const TLMessagesAllStickers &type)
-{
-    d << "TLMessagesAllStickers(" << type.tlType.toString() << ") {";
-    switch (type.tlType) {
-    case TLValue::MessagesAllStickersNotModified:
-        break;
-    case TLValue::MessagesAllStickers:
-        d << "hash:" << type.hash;
-        d << "sets:" << type.sets;
-        break;
-    default:
-        break;
-    }
-    d << "}";
-
-    return d;
-}
-
 QDebug operator<<(QDebug d, const TLNotifyPeer &type)
 {
     d << "TLNotifyPeer(" << type.tlType.toString() << ") {";
@@ -2108,6 +2156,58 @@ QDebug operator<<(QDebug d, const TLPhoto &type)
     return d;
 }
 
+QDebug operator<<(QDebug d, const TLReplyMarkup &type)
+{
+    d << "TLReplyMarkup(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::ReplyKeyboardHide:
+        d << "flags:" << type.flags;
+        d << "selective:" << type.selective();
+        break;
+    case TLValue::ReplyKeyboardForceReply:
+        d << "flags:" << type.flags;
+        d << "singleUse:" << type.singleUse();
+        d << "selective:" << type.selective();
+        break;
+    case TLValue::ReplyKeyboardMarkup:
+        d << "flags:" << type.flags;
+        d << "resize:" << type.resize();
+        d << "singleUse:" << type.singleUse();
+        d << "selective:" << type.selective();
+        d << "rows:" << type.rows;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLStickerSet &type)
+{
+    d << "TLStickerSet(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::StickerSet:
+        d << "flags:" << type.flags;
+        d << "installed:" << type.installed();
+        d << "disabled:" << type.disabled();
+        d << "official:" << type.official();
+        d << "id:" << type.id;
+        d << "accessHash:" << type.accessHash;
+        d << "title:" << type.title;
+        d << "shortName:" << type.shortName;
+        d << "count:" << type.count;
+        d << "hash:" << type.hash;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
 QDebug operator<<(QDebug d, const TLUser &type)
 {
     d << "TLUser(" << type.tlType.toString() << ") {";
@@ -2117,6 +2217,15 @@ QDebug operator<<(QDebug d, const TLUser &type)
         break;
     case TLValue::User:
         d << "flags:" << type.flags;
+        d << "self:" << type.self();
+        d << "contact:" << type.contact();
+        d << "mutualContact:" << type.mutualContact();
+        d << "deleted:" << type.deleted();
+        d << "bot:" << type.bot();
+        d << "botChatHistory:" << type.botChatHistory();
+        d << "botNochats:" << type.botNochats();
+        d << "verified:" << type.verified();
+        d << "restricted:" << type.restricted();
         d << "id:" << type.id;
         d << "accessHash:" << type.accessHash;
         d << "firstName:" << type.firstName;
@@ -2126,6 +2235,8 @@ QDebug operator<<(QDebug d, const TLUser &type)
         d << "photo:" << type.photo;
         d << "status:" << type.status;
         d << "botInfoVersion:" << type.botInfoVersion;
+        d << "restrictionReason:" << type.restrictionReason;
+        d << "botInlinePlaceholder:" << type.botInlinePlaceholder;
         break;
     default:
         break;
@@ -2208,12 +2319,19 @@ QDebug operator<<(QDebug d, const TLChat &type)
         break;
     case TLValue::Chat:
         d << "flags:" << type.flags;
+        d << "creator:" << type.creator();
+        d << "kicked:" << type.kicked();
+        d << "left:" << type.left();
+        d << "adminsEnabled:" << type.adminsEnabled();
+        d << "admin:" << type.admin();
+        d << "deactivated:" << type.deactivated();
         d << "id:" << type.id;
         d << "title:" << type.title;
         d << "photo:" << type.photo;
         d << "participantsCount:" << type.participantsCount;
         d << "date:" << type.date;
         d << "version:" << type.version;
+        d << "migratedTo:" << type.migratedTo;
         break;
     case TLValue::ChatForbidden:
         d << "id:" << type.id;
@@ -2221,6 +2339,15 @@ QDebug operator<<(QDebug d, const TLChat &type)
         break;
     case TLValue::Channel:
         d << "flags:" << type.flags;
+        d << "creator:" << type.creator();
+        d << "kicked:" << type.kicked();
+        d << "left:" << type.left();
+        d << "editor:" << type.editor();
+        d << "moderator:" << type.moderator();
+        d << "broadcast:" << type.broadcast();
+        d << "verified:" << type.verified();
+        d << "megagroup:" << type.megagroup();
+        d << "restricted:" << type.restricted();
         d << "id:" << type.id;
         d << "accessHash:" << type.accessHash;
         d << "title:" << type.title;
@@ -2228,6 +2355,7 @@ QDebug operator<<(QDebug d, const TLChat &type)
         d << "photo:" << type.photo;
         d << "date:" << type.date;
         d << "version:" << type.version;
+        d << "restrictionReason:" << type.restrictionReason;
         break;
     case TLValue::ChannelForbidden:
         d << "id:" << type.id;
@@ -2256,6 +2384,7 @@ QDebug operator<<(QDebug d, const TLChatFull &type)
         break;
     case TLValue::ChannelFull:
         d << "flags:" << type.flags;
+        d << "canViewParticipants:" << type.canViewParticipants();
         d << "id:" << type.id;
         d << "about:" << type.about;
         d << "participantsCount:" << type.participantsCount;
@@ -2267,6 +2396,9 @@ QDebug operator<<(QDebug d, const TLChatFull &type)
         d << "chatPhoto:" << type.chatPhoto;
         d << "notifySettings:" << type.notifySettings;
         d << "exportedInvite:" << type.exportedInvite;
+        d << "botInfo:" << type.botInfo;
+        d << "migratedFromChatId:" << type.migratedFromChatId;
+        d << "migratedFromMaxId:" << type.migratedFromMaxId;
         break;
     default:
         break;
@@ -2285,7 +2417,44 @@ QDebug operator<<(QDebug d, const TLChatInvite &type)
         break;
     case TLValue::ChatInvite:
         d << "flags:" << type.flags;
+        d << "channel:" << type.channel();
+        d << "broadcast:" << type.broadcast();
+        d << "isPublic:" << type.isPublic();
+        d << "megagroup:" << type.megagroup();
         d << "title:" << type.title;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLConfig &type)
+{
+    d << "TLConfig(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::Config:
+        d << "date:" << type.date;
+        d << "expires:" << type.expires;
+        d << "testMode:" << type.testMode;
+        d << "thisDc:" << type.thisDc;
+        d << "dcOptions:" << type.dcOptions;
+        d << "chatSizeMax:" << type.chatSizeMax;
+        d << "megagroupSizeMax:" << type.megagroupSizeMax;
+        d << "forwardedCountMax:" << type.forwardedCountMax;
+        d << "onlineUpdatePeriodMs:" << type.onlineUpdatePeriodMs;
+        d << "offlineBlurTimeoutMs:" << type.offlineBlurTimeoutMs;
+        d << "offlineIdleTimeoutMs:" << type.offlineIdleTimeoutMs;
+        d << "onlineCloudTimeoutMs:" << type.onlineCloudTimeoutMs;
+        d << "notifyCloudDelayMs:" << type.notifyCloudDelayMs;
+        d << "notifyDefaultDelayMs:" << type.notifyDefaultDelayMs;
+        d << "chatBigSize:" << type.chatBigSize;
+        d << "pushChatPeriodMs:" << type.pushChatPeriodMs;
+        d << "pushChatLimit:" << type.pushChatLimit;
+        d << "savedGifsLimit:" << type.savedGifsLimit;
+        d << "disabledFeatures:" << type.disabledFeatures;
         break;
     default:
         break;
@@ -2443,6 +2612,31 @@ QDebug operator<<(QDebug d, const TLDocument &type)
     return d;
 }
 
+QDebug operator<<(QDebug d, const TLFoundGif &type)
+{
+    d << "TLFoundGif(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::FoundGif:
+        d << "url:" << type.url;
+        d << "thumbUrl:" << type.thumbUrl;
+        d << "contentUrl:" << type.contentUrl;
+        d << "contentType:" << type.contentType;
+        d << "w:" << type.w;
+        d << "h:" << type.h;
+        break;
+    case TLValue::FoundGifCached:
+        d << "url:" << type.url;
+        d << "photo:" << type.photo;
+        d << "document:" << type.document;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
 QDebug operator<<(QDebug d, const TLHelpSupport &type)
 {
     d << "TLHelpSupport(" << type.tlType.toString() << ") {";
@@ -2478,7 +2672,7 @@ QDebug operator<<(QDebug d, const TLMessageAction &type)
     case TLValue::MessageActionChatDeletePhoto:
         break;
     case TLValue::MessageActionChatAddUser:
-        d << "userId:" << type.userId;
+        d << "users:" << type.users;
         break;
     case TLValue::MessageActionChatDeleteUser:
         d << "userId:" << type.userId;
@@ -2488,6 +2682,31 @@ QDebug operator<<(QDebug d, const TLMessageAction &type)
         break;
     case TLValue::MessageActionChannelCreate:
         d << "title:" << type.title;
+        break;
+    case TLValue::MessageActionChatMigrateTo:
+        d << "channelId:" << type.channelId;
+        break;
+    case TLValue::MessageActionChannelMigrateFrom:
+        d << "title:" << type.title;
+        d << "chatId:" << type.chatId;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLMessagesAllStickers &type)
+{
+    d << "TLMessagesAllStickers(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::MessagesAllStickersNotModified:
+        break;
+    case TLValue::MessagesAllStickers:
+        d << "hash:" << type.hash;
+        d << "sets:" << type.sets;
         break;
     default:
         break;
@@ -2520,6 +2739,40 @@ QDebug operator<<(QDebug d, const TLMessagesChats &type)
     switch (type.tlType) {
     case TLValue::MessagesChats:
         d << "chats:" << type.chats;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLMessagesFoundGifs &type)
+{
+    d << "TLMessagesFoundGifs(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::MessagesFoundGifs:
+        d << "nextOffset:" << type.nextOffset;
+        d << "results:" << type.results;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLMessagesSavedGifs &type)
+{
+    d << "TLMessagesSavedGifs(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::MessagesSavedGifsNotModified:
+        break;
+    case TLValue::MessagesSavedGifs:
+        d << "hash:" << type.hash;
+        d << "gifs:" << type.gifs;
         break;
     default:
         break;
@@ -2658,6 +2911,45 @@ QDebug operator<<(QDebug d, const TLWebPage &type)
     return d;
 }
 
+QDebug operator<<(QDebug d, const TLBotInlineResult &type)
+{
+    d << "TLBotInlineResult(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::BotInlineMediaResultDocument:
+        d << "id:" << type.id;
+        d << "type:" << type.type;
+        d << "document:" << type.document;
+        d << "sendMessage:" << type.sendMessage;
+        break;
+    case TLValue::BotInlineMediaResultPhoto:
+        d << "id:" << type.id;
+        d << "type:" << type.type;
+        d << "photo:" << type.photo;
+        d << "sendMessage:" << type.sendMessage;
+        break;
+    case TLValue::BotInlineResult:
+        d << "flags:" << type.flags;
+        d << "id:" << type.id;
+        d << "type:" << type.type;
+        d << "title:" << type.title;
+        d << "description:" << type.description;
+        d << "url:" << type.url;
+        d << "thumbUrl:" << type.thumbUrl;
+        d << "contentUrl:" << type.contentUrl;
+        d << "contentType:" << type.contentType;
+        d << "w:" << type.w;
+        d << "h:" << type.h;
+        d << "duration:" << type.duration;
+        d << "sendMessage:" << type.sendMessage;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
 QDebug operator<<(QDebug d, const TLMessageMedia &type)
 {
     d << "TLMessageMedia(" << type.tlType.toString() << ") {";
@@ -2685,6 +2977,7 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
         break;
     case TLValue::MessageMediaDocument:
         d << "document:" << type.document;
+        d << "caption:" << type.caption;
         break;
     case TLValue::MessageMediaAudio:
         d << "audio:" << type.audio;
@@ -2707,6 +3000,25 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
     return d;
 }
 
+QDebug operator<<(QDebug d, const TLMessagesBotResults &type)
+{
+    d << "TLMessagesBotResults(" << type.tlType.toString() << ") {";
+    switch (type.tlType) {
+    case TLValue::MessagesBotResults:
+        d << "flags:" << type.flags;
+        d << "gallery:" << type.gallery();
+        d << "queryId:" << type.queryId;
+        d << "nextOffset:" << type.nextOffset;
+        d << "results:" << type.results;
+        break;
+    default:
+        break;
+    }
+    d << "}";
+
+    return d;
+}
+
 QDebug operator<<(QDebug d, const TLMessage &type)
 {
     d << "TLMessage(" << type.tlType.toString() << ") {";
@@ -2716,11 +3028,16 @@ QDebug operator<<(QDebug d, const TLMessage &type)
         break;
     case TLValue::Message:
         d << "flags:" << type.flags;
+        d << "unread:" << type.unread();
+        d << "out:" << type.out();
+        d << "mentioned:" << type.mentioned();
+        d << "mediaUnread:" << type.mediaUnread();
         d << "id:" << type.id;
         d << "fromId:" << type.fromId;
         d << "toId:" << type.toId;
         d << "fwdFromId:" << type.fwdFromId;
         d << "fwdDate:" << type.fwdDate;
+        d << "viaBotId:" << type.viaBotId;
         d << "replyToMsgId:" << type.replyToMsgId;
         d << "date:" << type.date;
         d << "message:" << type.message;
@@ -2731,6 +3048,10 @@ QDebug operator<<(QDebug d, const TLMessage &type)
         break;
     case TLValue::MessageService:
         d << "flags:" << type.flags;
+        d << "unread:" << type.unread();
+        d << "out:" << type.out();
+        d << "mentioned:" << type.mentioned();
+        d << "mediaUnread:" << type.mediaUnread();
         d << "id:" << type.id;
         d << "fromId:" << type.fromId;
         d << "toId:" << type.toId;
@@ -2968,6 +3289,33 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << "id:" << type.id;
         d << "views:" << type.views;
         break;
+    case TLValue::UpdateChatAdmins:
+        d << "chatId:" << type.chatId;
+        d << "enabled:" << type.enabled;
+        d << "version:" << type.version;
+        break;
+    case TLValue::UpdateChatParticipantAdmin:
+        d << "chatId:" << type.chatId;
+        d << "userId:" << type.userId;
+        d << "isAdmin:" << type.isAdmin;
+        d << "version:" << type.version;
+        break;
+    case TLValue::UpdateNewStickerSet:
+        d << "stickerset:" << type.stickerset;
+        break;
+    case TLValue::UpdateStickerSetsOrder:
+        d << "order:" << type.order;
+        break;
+    case TLValue::UpdateStickerSets:
+        break;
+    case TLValue::UpdateSavedGifs:
+        break;
+    case TLValue::UpdateBotInlineQuery:
+        d << "queryId:" << type.queryId;
+        d << "userId:" << type.userId;
+        d << "query:" << type.query;
+        d << "offset:" << type.offset;
+        break;
     default:
         break;
     }
@@ -2984,6 +3332,10 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
         break;
     case TLValue::UpdateShortMessage:
         d << "flags:" << type.flags;
+        d << "unread:" << type.unread();
+        d << "out:" << type.out();
+        d << "mentioned:" << type.mentioned();
+        d << "mediaUnread:" << type.mediaUnread();
         d << "id:" << type.id;
         d << "userId:" << type.userId;
         d << "message:" << type.message;
@@ -2992,11 +3344,16 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
         d << "date:" << type.date;
         d << "fwdFromId:" << type.fwdFromId;
         d << "fwdDate:" << type.fwdDate;
+        d << "viaBotId:" << type.viaBotId;
         d << "replyToMsgId:" << type.replyToMsgId;
         d << "entities:" << type.entities;
         break;
     case TLValue::UpdateShortChatMessage:
         d << "flags:" << type.flags;
+        d << "unread:" << type.unread();
+        d << "out:" << type.out();
+        d << "mentioned:" << type.mentioned();
+        d << "mediaUnread:" << type.mediaUnread();
         d << "id:" << type.id;
         d << "fromId:" << type.fromId;
         d << "chatId:" << type.chatId;
@@ -3006,6 +3363,7 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
         d << "date:" << type.date;
         d << "fwdFromId:" << type.fwdFromId;
         d << "fwdDate:" << type.fwdDate;
+        d << "viaBotId:" << type.viaBotId;
         d << "replyToMsgId:" << type.replyToMsgId;
         d << "entities:" << type.entities;
         break;
@@ -3030,6 +3388,8 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
         break;
     case TLValue::UpdateShortSentMessage:
         d << "flags:" << type.flags;
+        d << "unread:" << type.unread();
+        d << "out:" << type.out();
         d << "id:" << type.id;
         d << "pts:" << type.pts;
         d << "ptsCount:" << type.ptsCount;
@@ -3051,11 +3411,13 @@ QDebug operator<<(QDebug d, const TLUpdatesChannelDifference &type)
     switch (type.tlType) {
     case TLValue::UpdatesChannelDifferenceEmpty:
         d << "flags:" << type.flags;
+        d << "final:" << type.final();
         d << "pts:" << type.pts;
         d << "timeout:" << type.timeout;
         break;
     case TLValue::UpdatesChannelDifferenceTooLong:
         d << "flags:" << type.flags;
+        d << "final:" << type.final();
         d << "pts:" << type.pts;
         d << "timeout:" << type.timeout;
         d << "topMessage:" << type.topMessage;
@@ -3069,6 +3431,7 @@ QDebug operator<<(QDebug d, const TLUpdatesChannelDifference &type)
         break;
     case TLValue::UpdatesChannelDifference:
         d << "flags:" << type.flags;
+        d << "final:" << type.final();
         d << "pts:" << type.pts;
         d << "timeout:" << type.timeout;
         d << "newMessages:" << type.newMessages;
