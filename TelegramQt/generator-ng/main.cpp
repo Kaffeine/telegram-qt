@@ -17,6 +17,7 @@
 
 #include <QCoreApplication>
 #include <QDebug>
+#include <QDir>
 #include <QFile>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -264,12 +265,15 @@ StatusCode format(const QString &specFileName)
 StatusCode generate(SchemaFormat format, const QString &specFileName)
 {
     QFile specsFile(specFileName);
-    specsFile.open(QIODevice::ReadOnly);
+    if (!specsFile.open(QIODevice::ReadOnly)) {
+        qWarning() << "Unable to open spec file" << specFileName << "in" << QDir().absolutePath();
+        return InvalidArgument;
+    }
 
     const QByteArray data = specsFile.readAll();
 
     if (data.isEmpty()) {
-        printf("Unable to read the file.\n");
+        qWarning() << "Unable to read spec file" << specFileName;
         return InvalidArgument;
     }
 
@@ -289,12 +293,12 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     }
 
     if (!success) {
-        printf("Unable to parse the scheme.\n");
+        qWarning() << "Unable to parse schema";
         return SchemaReadError;
     }
 
     if (!generator.resolveTypes()) {
-        printf("Unable to resolve types.\n");
+        qWarning() << "Unable to resolve types";
         return UnableToResolveTypes;
     }
 
