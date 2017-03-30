@@ -1885,7 +1885,7 @@ CTelegramConnection *CTelegramDispatcher::getExtraConnection(quint32 dc)
 
     if (dcInfo.ipAddress.isEmpty()) {
         qDebug() << "Error: Attempt to connect to unknown DC" << dc;
-        return 0;
+        return nullptr;
     }
 
     CTelegramConnection *connection = createConnection(dcInfo);
@@ -1896,6 +1896,10 @@ CTelegramConnection *CTelegramDispatcher::getExtraConnection(quint32 dc)
     }
 
     m_extraConnections.append(connection);
+
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << dc << connection;
+#endif
     return connection;
 }
 
@@ -1957,6 +1961,7 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
                 processFileRequestForConnection(connection, fileId);
             }
         } else if (newState == CTelegramConnection::AuthStateHaveAKey) {
+            qDebug() << Q_FUNC_INFO << "ensureSignedConnection" << connection;
             ensureSignedConnection(connection);
         }
     }
