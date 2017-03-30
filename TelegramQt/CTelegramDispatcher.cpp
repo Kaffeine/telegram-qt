@@ -468,6 +468,10 @@ void CTelegramDispatcher::closeConnection()
     m_maxMessageId = 0;
     m_wantedActiveDc = 0;
     m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
+
+    for (CTelegramModule *module : m_modules) {
+        module->clear();
+    }
 }
 
 void CTelegramDispatcher::requestContactAvatar(quint32 userId)
