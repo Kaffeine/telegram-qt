@@ -27,11 +27,11 @@ template <typename T>
 class TLVector : public QVector<T>
 {
 public:
-    inline TLVector() : QVector<T>(), tlType(TLValue::Vector) { }
+    TLVector() : QVector<T>(), tlType(TLValue::Vector) { }
     explicit TLVector(int size) : QVector<T>(size), tlType(TLValue::Vector) { }
     TLVector(int size, const T &t) : QVector<T>(size, t), tlType(TLValue::Vector) { }
-    inline TLVector(const TLVector<T> &v) : QVector<T>(v), tlType(v.tlType) { }
-    inline TLVector(const QVector<T> &v) : QVector<T>(v), tlType(TLValue::Vector) { }
+    TLVector(const TLVector<T> &v) : QVector<T>(v), tlType(v.tlType) { }
+    TLVector(const QVector<T> &v) : QVector<T>(v), tlType(TLValue::Vector) { }
 
     template<typename T2>
     auto optionalIsValid(const T2 &obj) const -> decltype(obj.isValid())
