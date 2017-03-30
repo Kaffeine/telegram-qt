@@ -26,6 +26,7 @@
 
 class CTelegramDispatcher;
 class CTelegramAuthModule;
+class CTelegramMediaModule;
 
 #ifndef Q_ENUM
 #define Q_ENUM(x) Q_ENUMS(x)
@@ -287,6 +288,7 @@ public:
 
 protected:
     friend class ::CTelegramDispatcher;
+    friend class ::CTelegramMediaModule;
     class Private;
 
     Private *d;
@@ -316,7 +318,7 @@ public:
     QString md5Sum() const;
 
 protected:
-    friend class ::CTelegramDispatcher;
+    friend class ::CTelegramMediaModule;
     friend class UserInfo;
     friend class MessageMediaInfo;
     class Private;

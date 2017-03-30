@@ -92,25 +92,15 @@ public:
     void setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types);
     void setAutoReconnection(bool enable);
     void setPingInterval(quint32 ms, quint32 serverDisconnectionAdditionTime);
-    void setMediaDataBufferSize(quint32 size);
 
     bool initConnection(const QVector<Telegram::DcOption> &dcs);
     bool restoreConnection(const QByteArray &secret);
     void closeConnection();
 
-    void requestContactAvatar(quint32 userId);
-    bool requestMessageMediaData(quint32 messageId);
-    quint32 requestFile(const Telegram::RemoteFile *file, quint32 chunkSize = 0);
-    bool getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const;
-
     bool requestHistory(const Telegram::Peer &peer, quint32 offset, quint32 limit);
     quint32 resolveUsername(const QString &userName);
 
-    quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
-    quint32 uploadFile(QIODevice *source, const QString &fileName);
-
     quint64 sendMessage(const Telegram::Peer &peer, const QString &message);
-    quint64 sendMedia(const Telegram::Peer &peer, const Telegram::MessageMediaInfo &messageInfo);
     quint64 forwardMessage(const Telegram::Peer &peer, quint32 messageId);
 
     void setTyping(const Telegram::Peer &peer, TelegramNamespace::MessageAction publicAction);
@@ -122,8 +112,6 @@ public:
     void setOnlineStatus(bool onlineStatus);
     void checkUserName(const QString &userName);
     void setUserName(const QString &newUserName);
-
-    QString contactAvatarToken(quint32 userId) const;
 
     QString chatTitle(quint32 chatId) const;
 
@@ -161,15 +149,8 @@ signals:
     void userInfoReceived(quint32 userId);
 
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
-    void filePartUploaded(quint32 requestId, quint32 offset, quint32 size);
-    void fileRequestFinished(quint32 requestId, Telegram::RemoteFile uploadInfo);
-    void filePartReceived(quint32 requestId, const QByteArray &data, const QString &mimeType, quint32 offset, quint32 totalSize);
-
     void contactListChanged();
     void contactProfileChanged(quint32 userId);
-
-    void avatarReceived(quint32 userId, const QByteArray &data, const QString &mimeType, const QString &avatarToken);
-    void messageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 
     void messageReceived(const Telegram::Message &message);
 
@@ -192,8 +173,6 @@ protected slots:
     void onConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
     void onPackageRedirected(const QByteArray &data, quint32 dc);
 
-    void whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
-    void whenFileDataUploaded(quint32 requestId);
     void onUpdatesReceived(const TLUpdates &updates, quint64 id);
     void whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
@@ -223,8 +202,6 @@ protected slots:
 protected:
     void setConnectionState(TelegramNamespace::ConnectionState state);
 
-    quint32 addFileRequest(const FileRequestDescriptor &descriptor);
-    void processFileRequestForConnection(CTelegramConnection *connection, quint32 requestId);
     void processUpdate(const TLUpdate &update);
 
     void processMessageReceived(const TLMessage &message);
@@ -241,8 +218,6 @@ protected:
     void getInitialDialogs();
 
     bool filterReceivedMessage(quint32 messageFlags) const;
-
-    QString userAvatarToken(const TLUser *user) const;
 
     void ensureTypingUpdateTimer(int interval);
     void ensureUpdateState(quint32 pts = 0, quint32 seq = 0, quint32 date = 0);
@@ -304,7 +279,6 @@ protected:
     bool m_autoReconnectionEnabled;
     quint32 m_pingInterval;
     quint32 m_pingServerAdditionDisconnectionTime;
-    quint32 m_mediaDataBufferSize;
 
     quint32 m_initializationState; // InitializationStep flags
     quint32 m_requestedSteps; // InitializationStep flags
@@ -337,9 +311,7 @@ protected:
     QVector<quint32> m_contactIdList;
 
     // fileId is program-specific handler, not related to Telegram.
-    QMap<quint32, FileRequestDescriptor> m_requestedFileDescriptors; // fileId, file request descriptor
     QMap<quint64,quint64> m_rpcIdToMessageRandomIdMap; // RPC Id, Random Id
-    quint32 m_fileRequestCounter;
 
     QTimer *m_typingUpdateTimer;
     QVector<TypingStatus> m_contactsMessageActions;

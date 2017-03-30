@@ -22,6 +22,7 @@
 #include "CAppInformation.hpp"
 #include "CTelegramDispatcher.hpp"
 #include "CTelegramAuthModule.hpp"
+#include "CTelegramMediaModule.hpp"
 
 class CTelegramCore::Private
 {
@@ -29,12 +30,14 @@ public:
     Private() :
         m_dispatcher(nullptr),
         m_authModule(nullptr),
+        m_mediaModule(nullptr),
         m_appInfo(nullptr)
     {
     }
 
     CTelegramDispatcher *m_dispatcher;
     CTelegramAuthModule *m_authModule;
+    CTelegramMediaModule *m_mediaModule;
     CAppInformation *m_appInfo;
 };
 
@@ -47,6 +50,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_private->m_dispatcher = new CTelegramDispatcher(this);
     m_private->m_authModule = new CTelegramAuthModule(this);
     m_private->m_dispatcher->plugModule(m_private->m_authModule);
+    m_private->m_mediaModule = new CTelegramMediaModule(this);
+    m_private->m_dispatcher->plugModule(m_private->m_mediaModule);
 
     connect(m_private->m_dispatcher, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
             SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)));
@@ -72,9 +77,9 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(contactListChanged()));
     connect(m_private->m_dispatcher, SIGNAL(contactProfileChanged(quint32)),
             SIGNAL(contactProfileChanged(quint32)));
-    connect(m_private->m_dispatcher, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
+    connect(m_private->m_mediaModule, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
             SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)));
-    connect(m_private->m_dispatcher, SIGNAL(messageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
+    connect(m_private->m_mediaModule, SIGNAL(messageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
             SIGNAL(messageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
     connect(m_private->m_dispatcher, SIGNAL(messageReceived(Telegram::Message)),
             SIGNAL(messageReceived(Telegram::Message)));
@@ -99,11 +104,11 @@ CTelegramCore::CTelegramCore(QObject *parent) :
             SIGNAL(chatChanged(quint32)));
     connect(m_private->m_dispatcher, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
             SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
-    connect(m_private->m_dispatcher, SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)),
+    connect(m_private->m_mediaModule, SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)),
             SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)));
-    connect(m_private->m_dispatcher, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
+    connect(m_private->m_mediaModule, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
             SIGNAL(filePartUploaded(quint32,quint32,quint32)));
-    connect(m_private->m_dispatcher, SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)),
+    connect(m_private->m_mediaModule, SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)),
             SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)));
 }
 
@@ -231,17 +236,17 @@ void CTelegramCore::deleteContacts(const QVector<quint32> &userIds)
 
 void CTelegramCore::requestContactAvatar(quint32 userId)
 {
-    m_private->m_dispatcher->requestContactAvatar(userId);
+    m_private->m_mediaModule->requestContactAvatar(userId);
 }
 
 void CTelegramCore::requestMessageMediaData(quint32 messageId)
 {
-    m_private->m_dispatcher->requestMessageMediaData(messageId);
+    m_private->m_mediaModule->requestMessageMediaData(messageId);
 }
 
 quint32 CTelegramCore::requestFile(const Telegram::RemoteFile *file)
 {
-    return m_private->m_dispatcher->requestFile(file);
+    return m_private->m_mediaModule->requestFile(file);
 }
 
 bool CTelegramCore::requestHistory(const Telegram::Peer &peer, int offset, int limit)
@@ -261,12 +266,12 @@ quint64 CTelegramCore::sendMessage(const Telegram::Peer &peer, const QString &me
 
 quint32 CTelegramCore::uploadFile(const QByteArray &fileContent, const QString &fileName)
 {
-    return m_private->m_dispatcher->uploadFile(fileContent, fileName);
+    return m_private->m_mediaModule->uploadFile(fileContent, fileName);
 }
 
 quint32 CTelegramCore::uploadFile(QIODevice *source, const QString &fileName)
 {
-    return m_private->m_dispatcher->uploadFile(source, fileName);
+    return m_private->m_mediaModule->uploadFile(source, fileName);
 }
 
 QVector<quint32> CTelegramCore::contactList() const
@@ -281,7 +286,7 @@ QVector<quint32> CTelegramCore::chatList() const
 
 QString CTelegramCore::contactAvatarToken(quint32 userId) const
 {
-    return m_private->m_dispatcher->contactAvatarToken(userId);
+    return m_private->m_mediaModule->contactAvatarToken(userId);
 }
 
 QString CTelegramCore::chatTitle(quint32 chatId) const
@@ -332,7 +337,7 @@ bool CTelegramCore::getChatParticipants(QVector<quint32> *participants, quint32 
 
 bool CTelegramCore::getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const
 {
-    return m_private->m_dispatcher->getMessageMediaInfo(messageInfo, messageId);
+    return m_private->m_mediaModule->getMessageMediaInfo(messageInfo, messageId);
 }
 
 bool CTelegramCore::getPasswordInfo(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const
@@ -374,7 +379,7 @@ void CTelegramCore::setPingInterval(quint32 interval, quint32 serverDisconnectio
 
 void CTelegramCore::setMediaDataBufferSize(quint32 size)
 {
-    m_private->m_dispatcher->setMediaDataBufferSize(size);
+    m_private->m_mediaModule->setMediaDataBufferSize(size);
 }
 
 QString CTelegramCore::selfPhone() const
@@ -399,7 +404,7 @@ quint64 CTelegramCore::forwardMessage(const Telegram::Peer &peer, quint32 messag
 
 quint64 CTelegramCore::sendMedia(const Telegram::Peer &peer, const Telegram::MessageMediaInfo &messageInfo)
 {
-    return m_private->m_dispatcher->sendMedia(peer, messageInfo);
+    return m_private->m_mediaModule->sendMedia(peer, messageInfo);
 }
 
 void CTelegramCore::setTyping(const Telegram::Peer &peer, TelegramNamespace::MessageAction action)
