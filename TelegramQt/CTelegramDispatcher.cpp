@@ -1413,6 +1413,10 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     case TLValue::UpdateWebPage:
     case TLValue::UpdateNewChannelMessage:
     case TLValue::UpdateDeleteChannelMessages:
+        if (m_updatesState.pts > update.pts) {
+            qWarning() << "Why the hell we've got this update? Our pts:" << m_updatesState.pts << ", received:" << update.pts;
+            return;
+        }
         if (m_updatesState.pts + update.ptsCount != update.pts) {
             qDebug() << "Need inner updates:" << m_updatesState.pts << "+" << update.ptsCount << "!=" << update.pts;
             qDebug() << "Updates delaying is not implemented yet. Recovery via getDifference() in 10 ms";
