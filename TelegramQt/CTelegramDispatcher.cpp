@@ -1411,8 +1411,6 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     case TLValue::UpdateReadHistoryOutbox:
     case TLValue::UpdateDeleteMessages:
     case TLValue::UpdateWebPage:
-    case TLValue::UpdateNewChannelMessage:
-    case TLValue::UpdateDeleteChannelMessages:
         if (m_updatesState.pts > update.pts) {
             qWarning() << "Why the hell we've got this update? Our pts:" << m_updatesState.pts << ", received:" << update.pts;
             return;
