@@ -50,6 +50,7 @@ const quint32 secretFormatVersion = 3;
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingDuration = 5000; // 5 sec
 const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPeriod - s_localTypingDuration) / 2. Minus 100 ms for insurance.
+static const quint32 s_dialogsLimit = 30;
 
 static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_autoConnectionIndexInvalid + 1 == 0)
 
@@ -1178,6 +1179,52 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
     onUsersReceived(dialogs.users);
     onChatsReceived(dialogs.chats);
 
+    if (dialogs.tlType == TLValue::MessagesDialogsSlice) {
+        quint32 lastDate = 0;
+        quint32 lastMessageId = 0;
+        Telegram::Peer lastPeer;
+
+        auto it = dialogs.dialogs.constEnd();
+        while (it != dialogs.dialogs.constBegin()) {
+            --it;
+            const TLDialog *dialog = it;
+            if (!dialog->isValid()) {
+                continue;
+            }
+            // Ignore DialogChannel for now
+            if (dialog->tlType != TLValue::Dialog) {
+                continue;
+            }
+
+            Telegram::Peer p = peerToPublicPeer(dialog->peer);
+            if (!lastPeer.isValid() && p.isValid()) {
+                lastPeer = p;
+            }
+
+            if (!lastMessageId) {
+                quint32 messageId = dialog->topMessage;
+                if (messageId) {
+                    lastMessageId = messageId;
+                }
+                for (const TLMessage &message : dialogs.messages) {
+                    if (message.id == lastMessageId) {
+                        lastDate = message.date;
+                        break;
+                    }
+                }
+            }
+
+            if (lastPeer.isValid() && lastMessageId && lastDate) {
+                break; // Break 'while dialog'
+            }
+        }
+
+        if (lastPeer.isValid() && lastMessageId) {
+            activeConnection()->messagesGetDialogs(lastDate, lastMessageId, publicPeerToInputPeer(lastPeer), s_dialogsLimit);
+            return;
+        }
+    }
+
     if (!(m_initializationState & StepDialogs)) {
         if (!dialogs.messages.isEmpty()) {
             m_maxMessageId = dialogs.messages.last().id;
@@ -1185,22 +1232,6 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
 
         continueInitialization(StepDialogs);
     }
-
-
-//    foreach (const TLMessage &message, dialogs.messages) {
-//        processMessageReceived(message);
-//    }
-
-//    switch (dialogs.tlType) {
-//    case TLValue::MessagesDialogs:
-//        break;
-//    case TLValue::MessagesDialogsSlice:
-//        dialogs.count;
-//        activeConnection()->messagesGetDialogs();
-//        break;
-//    default:
-//        break;
-//    }
 }
 
 void CTelegramDispatcher::onMessagesAffectedMessagesReceived(const TLMessagesAffectedMessages &affectedMessages)
@@ -1240,7 +1271,7 @@ void CTelegramDispatcher::getInitialUsers()
 
 void CTelegramDispatcher::getInitialDialogs()
 {
-    activeConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ 1);
+    activeConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ s_dialogsLimit);
 }
 
 void CTelegramDispatcher::getContacts()
