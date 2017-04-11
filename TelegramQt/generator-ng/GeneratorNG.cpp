@@ -526,8 +526,13 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
         code.append(QString("%1case %2::%3:\n").arg(spacing).arg(tlValueName).arg(subType.name));
 
         foreach (const TLParam &member, subType.members) {
-            if (member.dependOnFlag() && (member.type == QLatin1String("TLTrue"))) {
-                code += doubleSpacing + QString("d << \"%1:\" << type.%1();\n").arg(member.name);
+            if (member.dependOnFlag()) {
+                if (member.type == QLatin1String("TLTrue")) {
+                    continue;
+                }
+                code += doubleSpacing + QString("if (type.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit);
+                code += doubleSpacing + spacing + QString("d << \"%1:\" << type.%1;\n").arg(member.name);
+                code += doubleSpacing + QLatin1Literal("}\n");
             } else {
                 code += doubleSpacing + QString("d << \"%1:\" << type.%1;\n").arg(member.name);
             }
