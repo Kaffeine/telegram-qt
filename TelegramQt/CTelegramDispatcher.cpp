@@ -1204,6 +1204,13 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
 
 void CTelegramDispatcher::onMessagesAffectedMessagesReceived(const TLMessagesAffectedMessages &affectedMessages)
 {
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << affectedMessages;
+#endif
+    if (affectedMessages.ptsCount == 0) {
+        qDebug() << Q_FUNC_INFO << "affectedMessages has no pts";
+        return;
+    }
     if (m_updatesState.pts + affectedMessages.ptsCount == affectedMessages.pts) {
         ensureUpdateState(affectedMessages.pts);
     } else {
