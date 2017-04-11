@@ -303,7 +303,7 @@ signals:
 
     void fullUserReceived(const TLUserFull &userFull);
     void messagesHistoryReceived(const TLMessagesMessages &history, const TLInputPeer &peer);
-    void messagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offset, quint32 maxId, quint32 limit);
+    void messagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit);
     void messagesAffectedMessagesReceived(const TLMessagesAffectedMessages &affectedMessages);
 
     void updatesReceived(const TLUpdates &update, quint64 id);

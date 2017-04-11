@@ -3339,17 +3339,20 @@ void CTelegramConnection::processMessagesGetDialogs(RpcProcessingContext *contex
 
     CTelegramStream stream(context->requestData());
     TLValue method;
-    quint32 offset = 0;
-    quint32 maxId = 0;
+    quint32 offsetDate = 0;
+    quint32 offsetId = 0;
+    TLInputPeer offsetPeer;
     quint32 limit = 0;
+
     stream >> method; // TLValue::MessagesGetDialogs
-    stream >> offset;
-    stream >> maxId;
+    stream >> offsetDate;
+    stream >> offsetId;
+    stream >> offsetPeer;
     stream >> limit;
     if (result.tlType != TLValue::MessagesDialogs) {
         qWarning() << Q_FUNC_INFO << result.tlType.toString() << "processed as Dialogs";
     }
-    emit messagesDialogsReceived(result, offset, maxId, limit);
+    emit messagesDialogsReceived(result, offsetDate, offsetId, offsetPeer, limit);
 }
 
 void CTelegramConnection::processMessagesGetDocumentByHash(RpcProcessingContext *context)

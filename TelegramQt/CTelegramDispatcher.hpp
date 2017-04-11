@@ -205,7 +205,7 @@ protected slots:
     void messageActionTimerTimeout();
 
     void whenMessagesHistoryReceived(const TLMessagesMessages &messages);
-    void onMessagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offset, quint32 maxId, quint32 limit);
+    void onMessagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit);
     void onMessagesAffectedMessagesReceived(const TLMessagesAffectedMessages &affectedMessages);
 
     void getDcConfiguration();

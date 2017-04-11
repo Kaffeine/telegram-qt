@@ -1166,12 +1166,13 @@ void CTelegramDispatcher::whenMessagesHistoryReceived(const TLMessagesMessages &
     }
 }
 
-void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offset, quint32 maxId, quint32 limit)
+void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit)
 {
 #ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << dialogs << offset << maxId << limit;
+    qDebug() << Q_FUNC_INFO << dialogs << offsetDate << offsetId << offsetPeer << limit;
 #else
-    qDebug() << Q_FUNC_INFO << offset << maxId << limit;
+    const Telegram::Peer peer = peerToPublicPeer(offsetPeer);
+    qDebug() << Q_FUNC_INFO << dialogs.tlType << offsetDate << offsetId << peer.type << peer.id << limit;
 #endif
 
     onUsersReceived(dialogs.users);
@@ -1937,8 +1938,8 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(onUpdatesReceived(TLUpdates,quint64)));
             connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
                     SLOT(whenMessagesHistoryReceived(TLMessagesMessages)));
-            connect(connection, SIGNAL(messagesDialogsReceived(TLMessagesDialogs,quint32,quint32,quint32)),
-                    SLOT(onMessagesDialogsReceived(TLMessagesDialogs,quint32,quint32,quint32)));
+            connect(connection, SIGNAL(messagesDialogsReceived(TLMessagesDialogs,quint32,quint32,TLInputPeer,quint32)),
+                    SLOT(onMessagesDialogsReceived(TLMessagesDialogs,quint32,quint32,TLInputPeer,quint32)));
             connect(connection, SIGNAL(messagesAffectedMessagesReceived(TLMessagesAffectedMessages)),
                     SLOT(onMessagesAffectedMessagesReceived(TLMessagesAffectedMessages)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),
