@@ -1825,21 +1825,27 @@ void CTelegramDispatcher::updateFullChat(const TLChatFull &newChat)
 TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const Telegram::Peer &peer) const
 {
     TLInputPeer inputPeer;
-
-    if (peer.type == Telegram::Peer::Chat) {
+    switch (peer.type) {
+    case Telegram::Peer::Chat:
         inputPeer.tlType = TLValue::InputPeerChat;
         inputPeer.chatId = peer.id;
-        return inputPeer;
+        break;
+    case Telegram::Peer::User:
+        if (peer.id == m_selfUserId) {
+            inputPeer.tlType = TLValue::InputPeerSelf;
+        } else {
+            if (m_users.contains(peer.id)) {
+                inputPeer.tlType = TLValue::InputPeerUser;
+                inputPeer.userId = peer.id;
+            } else {
+                qWarning() << Q_FUNC_INFO << "Unknown user" << peer.id;
+            }
+        }
+        break;
+    default:
+        qWarning() << Q_FUNC_INFO << "Unknown peer type" << peer.type << "(id:" << peer.id << ")";
+        break;
     }
-
-    if (peer.id == m_selfUserId) {
-        inputPeer.tlType = TLValue::InputPeerSelf;
-        return inputPeer;
-    }
-
-    inputPeer.tlType = TLValue::InputPeerUser;
-    inputPeer.userId = peer.id;
-
     return inputPeer;
 }
 
@@ -1886,10 +1892,10 @@ TLInputUser CTelegramDispatcher::userIdToInputUser(quint32 id) const
             inputUser.tlType = TLValue::InputUser;
             inputUser.userId = user->id;
         } else {
-            qDebug() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
+            qWarning() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Unknown user.";
+        qWarning() << Q_FUNC_INFO << "Unknown user.";
     }
 
     return inputUser;
