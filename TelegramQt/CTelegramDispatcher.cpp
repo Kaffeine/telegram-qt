@@ -1779,8 +1779,8 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
 
     if (!m_users.contains(apiMessage.fromId) && !m_askedUserIds.contains(apiMessage.fromId)) {
         m_askedUserIds.append(apiMessage.fromId);
-
-        activeConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ 1);
+        qWarning() << Q_FUNC_INFO << "Unknown user"; // Should not happen as we have proper dialogs getter
+//        activeConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ 1);
     }
 
     emit messageReceived(apiMessage);
