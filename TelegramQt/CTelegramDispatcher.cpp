@@ -609,6 +609,7 @@ quint32 CTelegramDispatcher::uploadFile(QIODevice *source, const QString &fileNa
 quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QString &message)
 {
     if (!activeConnection()) {
+        qWarning() << Q_FUNC_INFO << "Unable to send: no active connection";
         return 0;
     }
     const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
@@ -616,11 +617,8 @@ quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QStri
     int actionIndex = -1;
 
     switch (inputPeer.tlType) {
-    case TLValue::InputPeerEmpty:
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << peer.id;
-        return 0;
     case TLValue::InputPeerSelf:
-        // Makes sense?
+        qDebug() << Q_FUNC_INFO << "Message to self";
         break;
     case TLValue::InputPeerUser:
         actionIndex = TypingStatus::indexForUser(m_localMessageActions, inputPeer.userId);
@@ -628,7 +626,9 @@ quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QStri
     case TLValue::InputPeerChat:
         actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, inputPeer.chatId);
         break;
+    case TLValue::InputPeerEmpty:
     default:
+        qWarning() << Q_FUNC_INFO << "Can not resolve contact" << peer.id << peer.type;
         // Invalid InputPeer type
         return 0;
     }
@@ -640,6 +640,9 @@ quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QStri
     quint64 randomId;
     Utils::randomBytes(&randomId);
 
+#ifdef DEVELOPER_BUILD
+    qDebug() << "sendMessage to" << inputPeer << message << randomId;
+#endif
     const quint64 rpcMessageId = activeConnection()->sendMessage(inputPeer, message, randomId);
     m_rpcIdToMessageRandomIdMap.insert(rpcMessageId, randomId);
 
