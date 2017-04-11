@@ -1837,6 +1837,7 @@ TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const Telegram::Peer &pee
             if (m_users.contains(peer.id)) {
                 inputPeer.tlType = TLValue::InputPeerUser;
                 inputPeer.userId = peer.id;
+                inputPeer.accessHash = m_users.value(peer.id)->accessHash;
             } else {
                 qWarning() << Q_FUNC_INFO << "Unknown user" << peer.id;
             }
@@ -1891,6 +1892,7 @@ TLInputUser CTelegramDispatcher::userIdToInputUser(quint32 id) const
         if (user->tlType == TLValue::User) {
             inputUser.tlType = TLValue::InputUser;
             inputUser.userId = user->id;
+            inputUser.accessHash = user->accessHash;
         } else {
             qWarning() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
         }
