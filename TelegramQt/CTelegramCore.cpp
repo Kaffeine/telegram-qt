@@ -28,6 +28,7 @@ class CTelegramCore::Private
 public:
     Private() :
         m_dispatcher(nullptr),
+        m_authModule(nullptr),
         m_appInfo(nullptr)
     {
     }
