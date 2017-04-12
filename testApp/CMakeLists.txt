@@ -1,8 +1,10 @@
- 
+project(testApp)
+
 set(testApp_SOURCES
     main.cpp
     MainWindow.cpp
     CContactModel.cpp
+    CContactsFilterModel.cpp
     CMessageModel.cpp
     CChatInfoModel.cpp
 )
@@ -10,6 +12,7 @@ set(testApp_SOURCES
 set(testApp_HEADERS
     MainWindow.hpp
     CContactModel.hpp
+    CContactsFilterModel.hpp
     CMessageModel.hpp
     CChatInfoModel.hpp
 )
@@ -66,5 +69,5 @@ else()
 endif()
 
 target_link_libraries(testApp-qt${QT_VERSION_MAJOR} LINK_PUBLIC
-    telegram-qt${QT_VERSION_MAJOR}
+    TelegramQt${QT_VERSION_MAJOR}
 )
