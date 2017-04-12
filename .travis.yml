@@ -20,7 +20,7 @@ before_script:
   - export PATH="$QTDIR/bin:$PATH"
   - qt54-env.sh
   - mkdir ../build; cd ../build
-  - cmake -DDEVELOPER_BUILD=${DEVELOPER_BUILD} ../telegram-qt
+  - cmake -DDEVELOPER_BUILD=${DEVELOPER_BUILD} -DENABLE_TESTAPP=true ../telegram-qt
 
 script:
   - make -j3 -k
