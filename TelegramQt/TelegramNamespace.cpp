@@ -261,11 +261,48 @@ bool Telegram::MessageMediaInfo::setMimeType(const QString &mimeType)
     return false;
 }
 
+bool Telegram::MessageMediaInfo::getContactInfo(Telegram::UserInfo *info) const
+{
+    if (d->tlType != TLValue::MessageMediaContact) {
+        return false;
+    }
+
+    *info->d = UserInfo::Private(); // Reset
+    info->d->id = d->userId;
+    info->d->firstName = d->firstName;
+    info->d->lastName = d->lastName;
+    info->d->phone = d->phoneNumber;
+    return true;
+}
+
+void Telegram::MessageMediaInfo::setContactInfo(const Telegram::UserInfo *info)
+{
+    d->tlType = TLValue::MessageMediaContact;
+    d->firstName = info->d->firstName;
+    d->lastName = info->d->lastName;
+    d->phoneNumber = info->d->phone;
+    d->userId = info->d->id;
+}
+
 QString Telegram::MessageMediaInfo::alt() const
 {
     switch (d->tlType) {
     case TLValue::MessageMediaGeo:
         return QString(QLatin1String("geo:%1,%2")).arg(d->geo.latitude).arg(d->geo.longitude);
+    case TLValue::MessageMediaContact:
+    {
+        QString name = d->firstName + QLatin1Char(' ') + d->lastName;
+        name = name.simplified();
+        if (!d->phoneNumber.isEmpty()) {
+            const QString phone = QStringLiteral("tel:") + d->phoneNumber;
+            if (name.isEmpty()) {
+                return phone;
+            } else {
+                return name + QLatin1Char('\n') + phone;
+            }
+        }
+        return QString();
+    }
     case TLValue::MessageMediaDocument:
         foreach (const TLDocumentAttribute &attribute, d->document.attributes) {
             if (attribute.tlType == TLValue::DocumentAttributeSticker) {
