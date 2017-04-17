@@ -2922,9 +2922,7 @@ void CTelegramConnection::processAuthBindTempAuthKey(RpcProcessingContext *conte
 
 void CTelegramConnection::processAuthCheckPassword(RpcProcessingContext *context)
 {
-    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
-    TLAuthAuthorization result;
-    context->readRpcResult(&result);
+    processAuthSign(context);
 }
 
 void CTelegramConnection::processAuthCheckPhone(RpcProcessingContext *context)
