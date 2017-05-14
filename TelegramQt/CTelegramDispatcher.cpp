@@ -215,27 +215,25 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
     outputStream << activeConnection()->authId();
     outputStream << activeConnection()->serverSalt();
 
-    if (!m_updatesEnabled) {
+    if (m_updatesEnabled) {
+        outputStream << m_updatesState.pts;
+        outputStream << m_updatesState.qts;
+        outputStream << m_updatesState.date;
+    } else {
         outputStream << static_cast<quint32>(1);
         outputStream << static_cast<quint32>(1);
         outputStream << static_cast<quint32>(1);
-
-        outputStream << s_legacyVectorTlType;
-        outputStream << static_cast<quint32>(0);
-        return output;
     }
 
-    outputStream << m_updatesState.pts;
-    outputStream << m_updatesState.qts;
-    outputStream << m_updatesState.date;
-
-    const quint32 chatIdsVectorSize = m_chatIds.count();
-
     outputStream << s_legacyVectorTlType;
-    outputStream << chatIdsVectorSize;
-
-    for (int i = 0; i < m_chatIds.count(); ++i) {
-        outputStream << m_chatIds.at(i);
+    if (m_updatesEnabled) {
+        const quint32 chatIdsVectorSize = m_chatIds.count();
+        outputStream << chatIdsVectorSize;
+        for (int i = 0; i < m_chatIds.count(); ++i) {
+            outputStream << m_chatIds.at(i);
+        }
+    } else {
+        outputStream << static_cast<quint32>(0);
     }
 
     return output;
