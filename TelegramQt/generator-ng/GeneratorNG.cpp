@@ -519,11 +519,13 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
     QString code;
 
     code += QString("QDebug operator<<(QDebug d, const %1 &type)\n{\n").arg(type.name);
+    code += spacing + QStringLiteral("d.noquote().nospace();\n");
     code += spacing + QString("d << \"%1(\" << type.tlType.toString() << \") {\";\n").arg(type.name);
+    code += spacing + QStringLiteral("Spacer spacer;\n");
     code += spacing + QLatin1String("switch (type.tlType) {\n");
 
     foreach (const TLSubType &subType, type.subTypes) {
-        code.append(QString("%1case %2::%3:\n").arg(spacing).arg(tlValueName).arg(subType.name));
+        code += spacing + QString("case %1::%2:\n").arg(tlValueName).arg(subType.name);
 
         foreach (const TLParam &member, subType.members) {
             if (member.dependOnFlag()) {
@@ -531,10 +533,10 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
                     continue;
                 }
                 code += doubleSpacing + QString("if (type.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit);
-                code += doubleSpacing + spacing + QString("d << \"%1:\" << type.%1;\n").arg(member.name);
+                code += doubleSpacing + spacing + QString("d << spacer.innerSpaces() << \"%1: \" << type.%1 <<\"\\n\";\n").arg(member.name);
                 code += doubleSpacing + QLatin1Literal("}\n");
             } else {
-                code += doubleSpacing + QString("d << \"%1:\" << type.%1;\n").arg(member.name);
+                code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << type.%1 <<\"\\n\";\n").arg(member.name);
             }
         }
 
@@ -544,7 +546,7 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
     code += spacing + QLatin1String("default:\n");
     code += doubleSpacing + QLatin1String("break;\n");
     code += spacing + QLatin1String("}\n");
-    code += spacing + QLatin1String("d << \"}\";\n\n");
+    code += spacing + QLatin1String("d << spacer.outerSpaces() << \"}\";\n\n");
     code += spacing + QLatin1String("return d;\n}\n\n");
 
     return code;
