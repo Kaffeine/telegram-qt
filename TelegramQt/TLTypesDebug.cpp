@@ -17,6 +17,45 @@
 
 #include "TLTypesDebug.hpp"
 
+class Spacer
+{
+public:
+    Spacer() :
+        m_hasInnerCalls(false)
+    {
+        m_spacing += m_step;
+    }
+    ~Spacer()
+    {
+        m_spacing -= m_step;
+    }
+
+    QString innerSpaces()
+    {
+        if (!m_hasInnerCalls) {
+            m_hasInnerCalls = true;
+            return QLatin1Char('\n') + QString(m_spacing, QLatin1Char(' '));
+        }
+        return QString(m_spacing, QLatin1Char(' '));
+    }
+
+    QString outerSpaces()
+    {
+        if (m_hasInnerCalls) {
+            return QString(m_spacing - m_step, QLatin1Char(' '));
+        } else {
+            return QStringLiteral(" ");
+        }
+    }
+
+private:
+    static int m_spacing;
+    static const int m_step = 4;
+    bool m_hasInnerCalls;
+};
+
+int Spacer::m_spacing = 0;
+
 // Generated TLTypes debug operators
 QDebug operator<<(QDebug d, const TLAccountDaysTTL &type)
 {
