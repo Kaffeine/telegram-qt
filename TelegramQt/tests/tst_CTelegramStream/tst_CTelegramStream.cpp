@@ -337,21 +337,34 @@ void tst_CTelegramStream::tlNumbersSerialization()
     TLNumber128 num128;
     QByteArray encoded;
 
-    num128.parts[0] = 1;
-    num128.parts[1] = 0;
-    encoded = QByteArray::fromHex("01000000000000000000000000000000");
-    vector128.append(num128);
-    encoded128.append(encoded);
-    num128.parts[0] = 0;
-    num128.parts[1] = 1;
-    encoded = QByteArray::fromHex("00000000000000000100000000000000");
-    vector128.append(num128);
-    encoded128.append(encoded);
-    num128.parts[0] = 0x00001000;
-    num128.parts[1] = 0xdeadbeef;
-    encoded = QByteArray::fromHex("0010000000000000efbeadde00000000");
-    vector128.append(num128);
-    encoded128.append(encoded);
+    {
+        num128.parts[0] = 1;
+        num128.parts[1] = 0;
+        encoded = QByteArray::fromHex("01000000000000000000000000000000");
+        vector128.append(num128);
+        encoded128.append(encoded);
+    }
+    {
+        num128.parts[0] = 0;
+        num128.parts[1] = 1;
+        encoded = QByteArray::fromHex("00000000000000000100000000000000");
+        vector128.append(num128);
+        encoded128.append(encoded);
+    }
+    {
+        num128.parts[0] = 0x00001000;
+        num128.parts[1] = 0xdeadbeef;
+        encoded = QByteArray::fromHex("0010000000000000efbeadde00000000");
+        vector128.append(num128);
+        encoded128.append(encoded);
+    }
+    {
+        num128.parts[0] = 0x123456789abcdef0ull;
+        num128.parts[1] = 0xdeadbeeff0011234ull;
+        encoded = QByteArray::fromHex("f0debc9a78563412341201f0efbeadde");
+        vector128.append(num128);
+        encoded128.append(encoded);
+    }
 
     for (int i = 0; i < vector128.count(); ++i) {
         QBuffer device;
@@ -360,7 +373,7 @@ void tst_CTelegramStream::tlNumbersSerialization()
         CTelegramStream stream(&device);
 
         stream << vector128.at(i);
-        QCOMPARE(device.data(), encoded128.at(i));
+        QCOMPARE(device.data().toHex(), encoded128.at(i).toHex());
     }
 
     for (int i = 0; i < vector128.count(); ++i) {
