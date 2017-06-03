@@ -113,31 +113,41 @@ QByteArray CRawStream::readBytes(int count)
 
 CRawStream &CRawStream::operator>>(qint32 &i)
 {
-    read(&i, 4);
-    return *this;
+    return protectedRead(i);
 }
 
 CRawStream &CRawStream::operator>>(qint64 &i)
 {
-    read(&i, 8);
+    return protectedRead(i);
+}
+
+template<typename Int>
+CRawStream &CRawStream::protectedRead(Int &i)
+{
+    read(&i, sizeof(Int));
+    return *this;
+}
+
+CRawStream &CRawStream::operator<<(qint32 i)
+{
+    return protectedWrite(i);
+}
+
+CRawStream &CRawStream::operator<<(qint64 i)
+{
+    return protectedWrite(i);
+}
+
+template<typename Int>
+CRawStream &CRawStream::protectedWrite(Int i)
+{
+    write(&i, sizeof(Int));
     return *this;
 }
 
 CRawStream &CRawStream::operator>>(double &d)
 {
     read(&d, 8);
-    return *this;
-}
-
-CRawStream &CRawStream::operator<<(qint32 i)
-{
-    write(&i, 4);
-    return *this;
-}
-
-CRawStream &CRawStream::operator<<(qint64 i)
-{
-    write(&i, 8);
     return *this;
 }
 

@@ -83,6 +83,12 @@ protected:
     bool read(void *data, qint64 size);
     bool write(const void *data, qint64 size);
 
+    template<typename Int>
+    inline CRawStream &protectedWrite(Int i);
+
+    template<typename Int>
+    inline CRawStream &protectedRead(Int &i);
+
 private:
     QIODevice *m_device;
     bool m_ownDevice;
