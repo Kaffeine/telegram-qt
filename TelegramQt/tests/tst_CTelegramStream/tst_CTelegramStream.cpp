@@ -319,13 +319,13 @@ void tst_CTelegramStream::vectorDeserializationError()
 {
     TLVector<quint32> vector;
 
-    const QByteArray encoded = QByteArray::fromHex("a1cf7230");
+    const QByteArray encoded = QByteArray::fromHex("12345678");
 
     {
         CTelegramStream stream(encoded);
 
         stream >> vector;
-        QCOMPARE(quint32(vector.tlType), quint32(TLValue::GzipPacked));
+        QVERIFY(!vector.isValid());
     }
 }
 
