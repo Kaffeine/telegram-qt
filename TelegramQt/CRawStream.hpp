@@ -53,9 +53,13 @@ public:
 
     QByteArray readRemainingBytes();
 
+    CRawStream &operator>>(qint8 &i);
+    CRawStream &operator>>(qint16 &i);
     CRawStream &operator>>(qint32 &i);
-    CRawStream &operator>>(quint32 &i);
     CRawStream &operator>>(qint64 &i);
+    CRawStream &operator>>(quint8 &i);
+    CRawStream &operator>>(quint16 &i);
+    CRawStream &operator>>(quint32 &i);
     CRawStream &operator>>(quint64 &i);
 
     CRawStream &operator>>(double &d);
@@ -65,9 +69,13 @@ public:
 
     CRawStream &operator>>(TLValue &v);
 
+    CRawStream &operator<<(qint8 i);
+    CRawStream &operator<<(qint16 i);
     CRawStream &operator<<(qint32 i);
-    CRawStream &operator<<(quint32 i);
     CRawStream &operator<<(qint64 i);
+    CRawStream &operator<<(quint8 i);
+    CRawStream &operator<<(quint16 i);
+    CRawStream &operator<<(quint32 i);
     CRawStream &operator<<(quint64 i);
 
     CRawStream &operator<<(const double &d);
@@ -131,6 +139,16 @@ inline QByteArray CRawStream::readRemainingBytes()
     return readBytes(bytesRemaining());
 }
 
+inline CRawStream &CRawStream::operator>>(quint8 &i)
+{
+    return *this >> reinterpret_cast<qint8&>(i);
+}
+
+inline CRawStream &CRawStream::operator>>(quint16 &i)
+{
+    return *this >> reinterpret_cast<qint16&>(i);
+}
+
 inline CRawStream &CRawStream::operator>>(quint32 &i)
 {
     return *this >> reinterpret_cast<qint32&>(i);
@@ -154,6 +172,16 @@ inline CRawStream &CRawStream::operator>>(TLValue &v)
     *this >> i;
     v = TLValue(i);
     return *this;
+}
+
+inline CRawStream &CRawStream::operator<<(quint8 i)
+{
+    return *this << qint8(i);
+}
+
+inline CRawStream &CRawStream::operator<<(quint16 i)
+{
+    return *this << qint16(i);
 }
 
 inline CRawStream &CRawStream::operator<<(quint32 i)
