@@ -36,7 +36,6 @@ public:
     explicit tst_CTelegramStream(QObject *parent = 0);
 
 private slots:
-    void init();
     void stringsLimitSerialization();
     void shortStringSerialization();
     void longStringSerialization();
@@ -52,11 +51,6 @@ private slots:
 tst_CTelegramStream::tst_CTelegramStream(QObject *parent) :
     QObject(parent)
 {
-}
-
-void tst_CTelegramStream::init()
-{
-    Q_ASSERT(TLValue::CurrentLayer == 38);
 }
 
 void tst_CTelegramStream::shortStringSerialization()
@@ -291,6 +285,10 @@ void tst_CTelegramStream::vectorOfIntsSerialization()
     TLVector<quint64> vector;
     vector.append(0x12345678);
     QByteArray encoded = QByteArray::fromHex("15c4b51c010000007856341200000000");
+
+    if (TLValue::Vector != 0x1cb5c415) {
+        QFAIL("The test data is not updated to the current API yet");
+    }
 
     {
         QBuffer device;
