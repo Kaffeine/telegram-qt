@@ -144,9 +144,7 @@ inline CRawStream &CRawStream::operator>>(quint64 &i)
 template <int Size>
 CRawStream &CRawStream::operator>>(TLNumbers<Size> &n)
 {
-    for (int i = 0; i < Size / /* Size of byte */ 8 / /* Size of quint64 (one of parts) */ 8; ++i) {
-        *this >> n.parts[i];
-    }
+    read(n.data, Size / 8);
     return *this;
 }
 
@@ -171,9 +169,7 @@ inline CRawStream &CRawStream::operator<<(quint64 i)
 template <int Size>
 CRawStream &CRawStream::operator<<(const TLNumbers<Size> &n)
 {
-    for (int i = 0; i < Size / 8 / 8; ++i) {
-        *this << n.parts[i];
-    }
+    write(n.data, Size / 8);
     return *this;
 }
 
