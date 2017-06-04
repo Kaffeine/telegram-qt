@@ -60,8 +60,8 @@ signals:
     void messageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
 
 protected slots:
-    void whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
-    void whenFileDataUploaded(quint32 requestId);
+    void onFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset);
+    void onFileDataUploaded(quint32 requestId);
 
 protected:
     void onConnectionAuthChanged(CTelegramConnection *connection, int newState) override;

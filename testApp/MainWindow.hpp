@@ -59,30 +59,30 @@ public:
     };
 
 protected slots:
-    void whenConnectionStateChanged(TelegramNamespace::ConnectionState state);
-    void whenLoggedOut(bool result);
-    void whenPhoneStatusReceived(const QString &phone, bool registered);
-    void whenPhoneCodeRequested();
+    void onConnectionStateChanged(TelegramNamespace::ConnectionState state);
+    void onLoggedOut(bool result);
+    void onPhoneStatusReceived(const QString &phone, bool registered);
+    void onPhoneCodeRequested();
     void onPasswordInfoReceived(quint64 requestId);
-    void whenUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
-    void whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
+    void onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
+    void onAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void updateContactList();
-    void whenMessageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data,
+    void onMessageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data,
                                       const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
-    void whenMessageReceived(const Telegram::Message &message);
-    void whenContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
-    void whenContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
-    void whenContactStatusChanged(quint32 contact);
+    void onMessageReceived(const Telegram::Message &message);
+    void onContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
+    void onContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
+    void onContactStatusChanged(quint32 contact);
     void onCreatedChatIdResolved(quint64 requestId, quint32 chatId);
-    void whenChatAdded(quint32 chatId);
-    void whenChatChanged(quint32 chatId);
+    void onChatAdded(quint32 chatId);
+    void onChatChanged(quint32 chatId);
     void updateActiveChat();
 
-    void whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
+    void onUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
     void onFileRequestFinished(quint32 requestId, Telegram::RemoteFile info);
     void onUserNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
 
-    void whenCustomMenuRequested(const QPoint &pos);
+    void onCustomMenuRequested(const QPoint &pos);
     void onSearchCustomMenuRequested(const QPoint &pos);
 
     void on_connectButton_clicked();

@@ -46,10 +46,10 @@ public slots:
     void sendPackage(const QByteArray &payload);
 
 private slots:
-    void whenStateChanged(QAbstractSocket::SocketState newState);
-    void whenError(QAbstractSocket::SocketError error);
-    void whenReadyRead();
-    void whenTimeout();
+    void onStateChanged(QAbstractSocket::SocketState newState);
+    void onError(QAbstractSocket::SocketError error);
+    void onReadyRead();
+    void onTimeout();
 
 private:
     quint32 m_packetNumber;

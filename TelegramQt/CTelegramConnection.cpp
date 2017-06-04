@@ -83,7 +83,7 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
 
     m_ackTimer->setInterval(90 * 1000);
     m_ackTimer->setSingleShot(true);
-    connect(m_ackTimer, SIGNAL(timeout()), SLOT(whenItsTimeToAckMessages()));
+    connect(m_ackTimer, SIGNAL(timeout()), SLOT(onTimeToAckMessages()));
 }
 
 void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
@@ -114,9 +114,9 @@ void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
 {
     m_transport = newTransport;
 
-    connect(m_transport, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(whenTransportStateChanged()));
-    connect(m_transport, SIGNAL(readyRead()), SLOT(whenTransportReadyRead()));
-    connect(m_transport, SIGNAL(timeout()), SLOT(whenTransportTimeout()));
+    connect(m_transport, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(onTransportStateChanged()));
+    connect(m_transport, SIGNAL(readyRead()), SLOT(onTransportReadyRead()));
+    connect(m_transport, SIGNAL(timeout()), SLOT(onTransportTimeout()));
 }
 
 void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
@@ -3769,7 +3769,7 @@ TLValue CTelegramConnection::processUpdate(CTelegramStream &stream, bool *ok, qu
     return updates.tlType;
 }
 
-void CTelegramConnection::whenTransportStateChanged()
+void CTelegramConnection::onTransportStateChanged()
 {
 #ifdef NETWORK_LOGGING
     if (!m_logFile) {
@@ -3803,7 +3803,7 @@ void CTelegramConnection::whenTransportStateChanged()
     }
 }
 
-void CTelegramConnection::whenTransportReadyRead()
+void CTelegramConnection::onTransportReadyRead()
 {
     QByteArray input = m_transport->getPackage();
     CRawStream inputStream(input);
@@ -3929,12 +3929,12 @@ void CTelegramConnection::whenTransportReadyRead()
 #endif
 }
 
-void CTelegramConnection::whenTransportTimeout()
+void CTelegramConnection::onTransportTimeout()
 {
     setStatus(ConnectionStatusDisconnected, ConnectionStatusReasonTimeout);
 }
 
-void CTelegramConnection::whenItsTimeToPing()
+void CTelegramConnection::onTimeToPing()
 {
 //    qDebug() << Q_FUNC_INFO << QDateTime::currentMSecsSinceEpoch();
 
@@ -3954,7 +3954,7 @@ void CTelegramConnection::whenItsTimeToPing()
     pingDelayDisconnect(m_pingInterval + m_serverDisconnectionExtraTime); // Server will close the connection after m_serverDisconnectionExtraTime ms more, than our ping interval.
 }
 
-void CTelegramConnection::whenItsTimeToAckMessages()
+void CTelegramConnection::onTimeToAckMessages()
 {
     if (m_messagesToAck.isEmpty()) {
         return;
@@ -4228,7 +4228,7 @@ void CTelegramConnection::startAuthTimer()
         m_authTimer = new QTimer(this);
         m_authTimer->setInterval(s_defaultAuthInterval);
         m_authTimer->setSingleShot(true);
-        connect(m_authTimer, SIGNAL(timeout()), SLOT(whenTransportTimeout()));
+        connect(m_authTimer, SIGNAL(timeout()), SLOT(onTransportTimeout()));
     }
 
     m_authTimer->start();
@@ -4251,7 +4251,7 @@ void CTelegramConnection::startPingTimer()
     if (!m_pingTimer) {
         m_pingTimer = new QTimer(this);
         m_pingTimer->setSingleShot(false);
-        connect(m_pingTimer, SIGNAL(timeout()), SLOT(whenItsTimeToPing()));
+        connect(m_pingTimer, SIGNAL(timeout()), SLOT(onTimeToPing()));
     }
 
     if (m_pingTimer->interval() != static_cast<int>(m_pingInterval)) {
@@ -4288,7 +4288,7 @@ void CTelegramConnection::addMessageToAck(quint64 id)
     m_messagesToAck.append(id);
 
     if (m_messagesToAck.count() > 6) {
-        whenItsTimeToAckMessages();
+        onTimeToAckMessages();
         m_ackTimer->stop();
     }
 }

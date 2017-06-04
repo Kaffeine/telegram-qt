@@ -250,7 +250,7 @@ void CTelegramMediaModule::clear()
     m_fileRequestCounter = 0;
 }
 
-void CTelegramMediaModule::whenFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset)
+void CTelegramMediaModule::onFileDataReceived(const TLUploadFile &file, quint32 requestId, quint32 offset)
 {
     if (!m_requestedFileDescriptors.contains(requestId)) {
         qDebug() << Q_FUNC_INFO << "Unexpected request" << requestId;
@@ -350,7 +350,7 @@ void CTelegramMediaModule::whenFileDataReceived(const TLUploadFile &file, quint3
     }
 }
 
-void CTelegramMediaModule::whenFileDataUploaded(quint32 requestId)
+void CTelegramMediaModule::onFileDataUploaded(quint32 requestId)
 {
     if (!m_requestedFileDescriptors.contains(requestId)) {
         qDebug() << Q_FUNC_INFO << "Unexpected fileId" << requestId;
@@ -420,8 +420,8 @@ void CTelegramMediaModule::onConnectionAuthChanged(CTelegramConnection *connecti
 void CTelegramMediaModule::onNewConnection(CTelegramConnection *connection)
 {
     qDebug() << Q_FUNC_INFO << connection;
-    connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(whenFileDataReceived(TLUploadFile,quint32,quint32)));
-    connect(connection, SIGNAL(fileDataSent(quint32)), SLOT(whenFileDataUploaded(quint32)));
+    connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(onFileDataReceived(TLUploadFile,quint32,quint32)));
+    connect(connection, SIGNAL(fileDataSent(quint32)), SLOT(onFileDataUploaded(quint32)));
 }
 
 QString CTelegramMediaModule::userAvatarToken(const TLUser *user) const

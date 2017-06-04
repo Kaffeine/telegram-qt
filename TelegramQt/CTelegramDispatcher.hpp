@@ -176,16 +176,16 @@ protected slots:
     void onPackageRedirected(const QByteArray &data, quint32 dc);
 
     void onUpdatesReceived(const TLUpdates &updates, quint64 id);
-    void whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
+    void onAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
     void onSelfUserReceived(const TLUser &selfUser);
     void onUsersReceived(const QVector<TLUser> &users);
 
-    void whenContactListReceived(const QVector<quint32> &contactIdList);
-    void whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
+    void onContactListReceived(const QVector<quint32> &contactIdList);
+    void onContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
     void messageActionTimerTimeout();
 
-    void whenMessagesHistoryReceived(const TLMessagesMessages &messages);
+    void onMessagesHistoryReceived(const TLMessagesMessages &messages);
     void onMessagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit);
     void onMessagesAffectedMessagesReceived(const TLMessagesAffectedMessages &affectedMessages);
 
@@ -193,13 +193,13 @@ protected slots:
     void getContacts();
     void getChatsInfo();
     void getUpdatesState();
-    void whenUpdatesStateReceived(const TLUpdatesState &updatesState);
+    void onUpdatesStateReceived(const TLUpdatesState &updatesState);
 
     void getDifference();
-    void whenUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
+    void onUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
     void onChatsReceived(const QVector<TLChat> &chats);
-    void whenMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void onMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
 
 protected:
     void setConnectionState(TelegramNamespace::ConnectionState state);

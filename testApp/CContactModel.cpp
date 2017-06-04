@@ -32,11 +32,11 @@ CContactModel::CContactModel(CTelegramCore *backend, QObject *parent) :
     m_backend(backend)
 {
     connect(m_backend, SIGNAL(contactProfileChanged(quint32)),
-            SLOT(whenContactProfileChanged(quint32)));
+            SLOT(onContactProfileChanged(quint32)));
     connect(m_backend, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
-            SLOT(whenContactStatusChanged(quint32)));
+            SLOT(onContactStatusChanged(quint32)));
     connect(m_backend, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
-            SLOT(whenAvatarReceived(quint32,QByteArray,QString)));
+            SLOT(onAvatarReceived(quint32,QByteArray,QString)));
 }
 
 QVariant CContactModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -270,7 +270,7 @@ void CContactModel::clear()
     endResetModel();
 }
 
-void CContactModel::whenContactProfileChanged(quint32 id)
+void CContactModel::onContactProfileChanged(quint32 id)
 {
     int index = indexOfContact(id);
     if (index < 0) {
@@ -283,7 +283,7 @@ void CContactModel::whenContactProfileChanged(quint32 id)
     emit dataChanged(modelIndexFirst, modelIndexLast);
 }
 
-void CContactModel::whenContactStatusChanged(quint32 id)
+void CContactModel::onContactStatusChanged(quint32 id)
 {
     int index = indexOfContact(id);
     if (index < 0) {
@@ -295,7 +295,7 @@ void CContactModel::whenContactStatusChanged(quint32 id)
     emit dataChanged(modelIndex, modelIndex);
 }
 
-void CContactModel::whenAvatarReceived(quint32 id, const QByteArray &data, const QString &mimeType)
+void CContactModel::onAvatarReceived(quint32 id, const QByteArray &data, const QString &mimeType)
 {
     qDebug() << Q_FUNC_INFO << mimeType;
 

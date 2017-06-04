@@ -92,33 +92,33 @@ MainWindow::MainWindow(QWidget *parent) :
     m_core->setAutoReconnection(true);
 
     connect(m_core, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
-            SLOT(whenConnectionStateChanged(TelegramNamespace::ConnectionState)));
+            SLOT(onConnectionStateChanged(TelegramNamespace::ConnectionState)));
     connect(m_core, SIGNAL(phoneStatusReceived(QString,bool)),
-            SLOT(whenPhoneStatusReceived(QString,bool)));
+            SLOT(onPhoneStatusReceived(QString,bool)));
     connect(m_core, SIGNAL(phoneCodeRequired()),
-            SLOT(whenPhoneCodeRequested()));
+            SLOT(onPhoneCodeRequested()));
     connect(m_core, SIGNAL(passwordInfoReceived(quint64)),
             SLOT(onPasswordInfoReceived(quint64)));
     connect(m_core, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)),
-            SLOT(whenUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
+            SLOT(onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
     connect(m_core, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
-            SLOT(whenAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
+            SLOT(onAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(contactListChanged()),
             SLOT(updateContactList()));
     connect(m_core, SIGNAL(messageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
-            SLOT(whenMessageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
+            SLOT(onMessageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
     connect(m_core, SIGNAL(messageReceived(Telegram::Message)),
-            SLOT(whenMessageReceived(Telegram::Message)));
+            SLOT(onMessageReceived(Telegram::Message)));
     connect(m_core, SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)),
-            SLOT(whenContactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)));
+            SLOT(onContactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)));
     connect(m_core, SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)),
-            SLOT(whenContactMessageActionChanged(quint32,TelegramNamespace::MessageAction)));
+            SLOT(onContactMessageActionChanged(quint32,TelegramNamespace::MessageAction)));
     connect(m_core, SIGNAL(createdChatIdReceived(quint64,quint32)),
             SLOT(onCreatedChatIdResolved(quint64,quint32)));
     connect(m_core, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
-            SLOT(whenContactStatusChanged(quint32)));
+            SLOT(onContactStatusChanged(quint32)));
     connect(m_core, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
-            SLOT(whenUploadingStatusUpdated(quint32,quint32,quint32)));
+            SLOT(onUploadingStatusUpdated(quint32,quint32,quint32)));
     connect(m_core, SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)),
             SLOT(onFileRequestFinished(quint32,Telegram::RemoteFile)));
     connect(m_core, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
@@ -127,8 +127,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, &CTelegramCore::selfUserAvailable, m_contactsModel, &CContactModel::addContact);
     connect(m_core, &CTelegramCore::userInfoReceived, m_contactsModel, &CContactModel::addContact);
 
-    connect(m_chatInfoModel, SIGNAL(chatAdded(quint32)), SLOT(whenChatAdded(quint32)));
-    connect(m_chatInfoModel, SIGNAL(chatChanged(quint32)), SLOT(whenChatChanged(quint32)));
+    connect(m_chatInfoModel, SIGNAL(chatAdded(quint32)), SLOT(onChatAdded(quint32)));
+    connect(m_chatInfoModel, SIGNAL(chatChanged(quint32)), SLOT(onChatChanged(quint32)));
 
     ui->groupChatContacts->hideColumn(CContactModel::Blocked);
 
@@ -152,7 +152,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->groupChatContactPhone, SIGNAL(textChanged(QString)), SLOT(updateGroupChatAddContactButtonText()));
 
-    connect(ui->messagingView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(whenCustomMenuRequested(QPoint)));
+    connect(ui->messagingView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomMenuRequested(QPoint)));
     connect(ui->contactSearchResult, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onSearchCustomMenuRequested(QPoint)));
 
     ui->groupChatAddContactForwardMessages->hide();
@@ -163,7 +163,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::whenConnectionStateChanged(TelegramNamespace::ConnectionState state)
+void MainWindow::onConnectionStateChanged(TelegramNamespace::ConnectionState state)
 {
     switch (state) {
     case TelegramNamespace::ConnectionStateConnected:
@@ -205,13 +205,13 @@ void MainWindow::whenConnectionStateChanged(TelegramNamespace::ConnectionState s
     }
 }
 
-void MainWindow::whenLoggedOut(bool result)
+void MainWindow::onLoggedOut(bool result)
 {
     qDebug() << Q_FUNC_INFO << result;
     setAppState(AppStateLoggedOut);
 }
 
-void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered)
+void MainWindow::onPhoneStatusReceived(const QString &phone, bool registered)
 {
     if (phone == ui->phoneNumber->text()) {
         QString registeredText = registered ? tr("Registered") : tr("Not registered");
@@ -223,7 +223,7 @@ void MainWindow::whenPhoneStatusReceived(const QString &phone, bool registered)
     }
 }
 
-void MainWindow::whenPhoneCodeRequested()
+void MainWindow::onPhoneCodeRequested()
 {
     setAppState(AppStateCodeSent);
 
@@ -240,7 +240,7 @@ void MainWindow::onPasswordInfoReceived(quint64 requestId)
     m_core->getPasswordInfo(m_passwordInfo, requestId);
 }
 
-void MainWindow::whenUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage)
+void MainWindow::onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage)
 {
     QToolTip::showText(ui->confirmationCode->mapToGlobal(QPoint(0, 0)), errorMessage);
     qDebug() << errorCode << errorMessage;
@@ -251,7 +251,7 @@ void MainWindow::whenUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedEr
     }
 }
 
-void MainWindow::whenAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage)
+void MainWindow::onAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage)
 {
     switch (errorCode) {
     case TelegramNamespace::AuthSignErrorPhoneNumberIsInvalid:
@@ -282,7 +282,7 @@ void MainWindow::updateContactList()
     }
 }
 
-void MainWindow::whenMessageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)
+void MainWindow::onMessageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data, const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size)
 {
     qDebug() << Q_FUNC_INFO << mimeType;
 
@@ -368,7 +368,7 @@ void MainWindow::whenMessageMediaDataReceived(Telegram::Peer peer, quint32 messa
     }
 }
 
-void MainWindow::whenMessageReceived(const Telegram::Message &message)
+void MainWindow::onMessageReceived(const Telegram::Message &message)
 {
     bool groupChatMessage = message.peer().type != Telegram::Peer::User;
     if (groupChatMessage) {
@@ -419,7 +419,7 @@ void MainWindow::whenMessageReceived(const Telegram::Message &message)
     }
 }
 
-void MainWindow::whenContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action)
+void MainWindow::onContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action)
 {
     if (m_activeChatId != chatId) {
         return;
@@ -428,13 +428,13 @@ void MainWindow::whenContactChatMessageActionChanged(quint32 chatId, quint32 use
     m_contactsModel->setTypingStatus(userId, action);
 }
 
-void MainWindow::whenContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action)
+void MainWindow::onContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action)
 {
     m_contactsModel->setTypingStatus(userId, action);
     updateMessagingContactAction();
 }
 
-void MainWindow::whenContactStatusChanged(quint32 contact)
+void MainWindow::onContactStatusChanged(quint32 contact)
 {
     if (contact == m_activeContactId) {
         updateMessagingContactStatus();
@@ -453,13 +453,13 @@ void MainWindow::onCreatedChatIdResolved(quint64 requestId, quint32 chatId)
     setActiveChat(chatId);
 }
 
-void MainWindow::whenChatAdded(quint32 chatId)
+void MainWindow::onChatAdded(quint32 chatId)
 {
     m_chatInfoModel->addChat(chatId);
     setActiveChat(chatId);
 }
 
-void MainWindow::whenChatChanged(quint32 chatId)
+void MainWindow::onChatChanged(quint32 chatId)
 {
     if (chatId == m_activeChatId) {
         updateActiveChat();
@@ -490,7 +490,7 @@ void MainWindow::updateActiveChat()
     updateGroupChatAddContactButtonText();
 }
 
-void MainWindow::whenUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size)
+void MainWindow::onUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size)
 {
     qDebug() << Q_FUNC_INFO << requestId << currentOffset << size;
     statusBar()->showMessage(tr("Request %1 status updated (%2/%3).").arg(requestId).arg(currentOffset).arg(size));
@@ -552,7 +552,7 @@ void MainWindow::onUserNameStatusUpdated(const QString &userName, TelegramNamesp
     }
 }
 
-void MainWindow::whenCustomMenuRequested(const QPoint &pos)
+void MainWindow::onCustomMenuRequested(const QPoint &pos)
 {
     QModelIndex index = ui->messagingView->currentIndex();
     if (!index.isValid()) {

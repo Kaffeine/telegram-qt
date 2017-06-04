@@ -30,12 +30,12 @@ CTcpTransport::CTcpTransport(QObject *parent) :
     m_timeoutTimer(new QTimer(this)),
     m_firstPackage(true)
 {
-    connect(m_socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(whenStateChanged(QAbstractSocket::SocketState)));
-    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(whenError(QAbstractSocket::SocketError)));
-    connect(m_socket, SIGNAL(readyRead()), SLOT(whenReadyRead()));
+    connect(m_socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(onStateChanged(QAbstractSocket::SocketState)));
+    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(onError(QAbstractSocket::SocketError)));
+    connect(m_socket, SIGNAL(readyRead()), SLOT(onReadyRead()));
 
     m_timeoutTimer->setInterval(tcpTimeout);
-    connect(m_timeoutTimer, SIGNAL(timeout()), SLOT(whenTimeout()));
+    connect(m_timeoutTimer, SIGNAL(timeout()), SLOT(onTimeout()));
 }
 
 CTcpTransport::~CTcpTransport()
@@ -103,7 +103,7 @@ void CTcpTransport::sendPackage(const QByteArray &payload)
     m_socket->write(package);
 }
 
-void CTcpTransport::whenStateChanged(QAbstractSocket::SocketState newState)
+void CTcpTransport::onStateChanged(QAbstractSocket::SocketState newState)
 {
 //    qDebug() << Q_FUNC_INFO << newState;
     switch (newState) {
@@ -128,13 +128,13 @@ void CTcpTransport::whenStateChanged(QAbstractSocket::SocketState newState)
     setState(newState);
 }
 
-void CTcpTransport::whenError(QAbstractSocket::SocketError error)
+void CTcpTransport::onError(QAbstractSocket::SocketError error)
 {
 //    qDebug() << Q_FUNC_INFO << error << m_socket->errorString();
     setError(error);
 }
 
-void CTcpTransport::whenReadyRead()
+void CTcpTransport::onReadyRead()
 {
     while (m_socket->bytesAvailable() > 0) {
         if (m_expectedLength == 0) {
@@ -167,7 +167,7 @@ void CTcpTransport::whenReadyRead()
     }
 }
 
-void CTcpTransport::whenTimeout()
+void CTcpTransport::onTimeout()
 {
 #ifdef DEVELOPER_BUILD
     qDebug() << Q_FUNC_INFO << "(connection to " << m_socket->peerName() << m_socket->peerPort() << ").";

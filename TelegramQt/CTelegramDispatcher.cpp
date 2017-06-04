@@ -856,7 +856,7 @@ void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
     }
 }
 
-void CTelegramDispatcher::whenContactListReceived(const QVector<quint32> &contactList)
+void CTelegramDispatcher::onContactListReceived(const QVector<quint32> &contactList)
 {
     qDebug() << Q_FUNC_INFO << contactList;
 
@@ -871,7 +871,7 @@ void CTelegramDispatcher::whenContactListReceived(const QVector<quint32> &contac
     continueInitialization(StepContactList);
 }
 
-void CTelegramDispatcher::whenContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed)
+void CTelegramDispatcher::onContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed)
 {
     qDebug() << Q_FUNC_INFO << added << removed;
     QVector<quint32> newContactList = m_contactIdList;
@@ -948,7 +948,7 @@ void CTelegramDispatcher::messageActionTimerTimeout()
     }
 }
 
-void CTelegramDispatcher::whenMessagesHistoryReceived(const TLMessagesMessages &messages)
+void CTelegramDispatcher::onMessagesHistoryReceived(const TLMessagesMessages &messages)
 {
     foreach (const TLMessage &message, messages.messages) {
         processMessageReceived(message);
@@ -1083,7 +1083,7 @@ void CTelegramDispatcher::getUpdatesState()
     activeConnection()->updatesGetState();
 }
 
-void CTelegramDispatcher::whenUpdatesStateReceived(const TLUpdatesState &updatesState)
+void CTelegramDispatcher::onUpdatesStateReceived(const TLUpdatesState &updatesState)
 {
     m_actualState = updatesState;
     checkStateAndCallGetDifference();
@@ -1095,7 +1095,7 @@ void CTelegramDispatcher::getDifference()
     activeConnection()->updatesGetDifference(m_updatesState.pts, m_updatesState.date, m_updatesState.qts);
 }
 
-void CTelegramDispatcher::whenUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference)
+void CTelegramDispatcher::onUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference)
 {
     switch (updatesDifference.tlType) {
     case TLValue::UpdatesDifference:
@@ -1150,7 +1150,7 @@ void CTelegramDispatcher::onChatsReceived(const QVector<TLChat> &chats)
     continueInitialization(StepChatInfo);
 }
 
-void CTelegramDispatcher::whenMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users)
+void CTelegramDispatcher::onMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users)
 {
     Q_UNUSED(chats);
 
@@ -1703,27 +1703,27 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
     if (connection == activeConnection()) {
         if (newState == CTelegramConnection::AuthStateSignedIn) {
             connect(connection, SIGNAL(contactListReceived(QVector<quint32>)),
-                    SLOT(whenContactListReceived(QVector<quint32>)));
+                    SLOT(onContactListReceived(QVector<quint32>)));
             connect(connection, SIGNAL(contactListChanged(QVector<quint32>,QVector<quint32>)),
-                    SLOT(whenContactListChanged(QVector<quint32>,QVector<quint32>)));
+                    SLOT(onContactListChanged(QVector<quint32>,QVector<quint32>)));
             connect(connection, SIGNAL(updatesReceived(TLUpdates,quint64)),
                     SLOT(onUpdatesReceived(TLUpdates,quint64)));
             connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
-                    SLOT(whenMessagesHistoryReceived(TLMessagesMessages)));
+                    SLOT(onMessagesHistoryReceived(TLMessagesMessages)));
             connect(connection, SIGNAL(messagesDialogsReceived(TLMessagesDialogs,quint32,quint32,TLInputPeer,quint32)),
                     SLOT(onMessagesDialogsReceived(TLMessagesDialogs,quint32,quint32,TLInputPeer,quint32)));
             connect(connection, SIGNAL(messagesAffectedMessagesReceived(TLMessagesAffectedMessages)),
                     SLOT(onMessagesAffectedMessagesReceived(TLMessagesAffectedMessages)));
             connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),
-                    SLOT(whenUpdatesStateReceived(TLUpdatesState)));
+                    SLOT(onUpdatesStateReceived(TLUpdatesState)));
             connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)),
-                    SLOT(whenUpdatesDifferenceReceived(TLUpdatesDifference)));
+                    SLOT(onUpdatesDifferenceReceived(TLUpdatesDifference)));
             connect(connection, SIGNAL(authExportedAuthorizationReceived(quint32,quint32,QByteArray)),
-                    SLOT(whenAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
+                    SLOT(onAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
             connect(connection, SIGNAL(messagesChatsReceived(QVector<TLChat>)),
                     SLOT(onChatsReceived(QVector<TLChat>)));
             connect(connection, SIGNAL(messagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)),
-                    SLOT(whenMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
+                    SLOT(onMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
             connect(connection, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
                     SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
 
@@ -1974,7 +1974,7 @@ void CTelegramDispatcher::onUpdatesReceived(const TLUpdates &updates, quint64 id
     m_updateRequestId = 0;
 }
 
-void CTelegramDispatcher::whenAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data)
+void CTelegramDispatcher::onAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data)
 {
     m_exportedAuthentications.insert(dc, QPair<quint32, QByteArray>(id,data));
 

@@ -474,11 +474,11 @@ protected:
     void addMessageToAck(quint64 id);
 
 protected slots:
-    void whenTransportStateChanged();
-    void whenTransportReadyRead();
-    void whenTransportTimeout();
-    void whenItsTimeToPing();
-    void whenItsTimeToAckMessages();
+    void onTransportStateChanged();
+    void onTransportReadyRead();
+    void onTransportTimeout();
+    void onTimeToPing();
+    void onTimeToAckMessages();
 
 protected:
     ConnectionStatus m_status;
