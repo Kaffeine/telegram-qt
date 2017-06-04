@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_registered(false),
     m_appState(AppStateNone)
 {
+    m_contactsModel->setFileManager(m_fileManager);
     m_chatInfoModel->setFileManager(m_fileManager);
 
     ui->setupUi(this);

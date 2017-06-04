@@ -136,7 +136,7 @@ QVariant CMessageModel::data(const QModelIndex &index, int role) const
             if (m_contactsModel) {
                 const SContact *contact = m_contactsModel->getContact(m_messages.at(messageIndex).fromId);
                 if (contact) {
-                    return contact->avatar;
+                    return contact->m_picture;
                 }
             }
             break;
