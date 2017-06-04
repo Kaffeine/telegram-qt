@@ -138,10 +138,10 @@ public:
     bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
     // Common
-    TLInputPeer publicPeerToInputPeer(const Telegram::Peer &peer) const;
-    Telegram::Peer peerToPublicPeer(const TLInputPeer &inputPeer) const;
-    Telegram::Peer peerToPublicPeer(const TLPeer &peer) const;
-    TLInputUser userIdToInputUser(quint32 id) const;
+    TLInputPeer toInputPeer(const Telegram::Peer &peer) const;
+    Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer) const;
+    Telegram::Peer toPublicPeer(const TLPeer &peer) const;
+    TLInputUser toInputUser(quint32 id) const;
 
 signals:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);

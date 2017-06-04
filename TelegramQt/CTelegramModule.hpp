@@ -51,10 +51,10 @@ public:
     const TLUser *getUser(quint32 userId) const;
     const TLMessage *getMessage(quint32 messageId) const;
 
-    TLInputPeer publicPeerToInputPeer(const Telegram::Peer &peer) const;
-    Telegram::Peer peerToPublicPeer(const TLInputPeer &inputPeer) const;
-    Telegram::Peer peerToPublicPeer(const TLPeer &peer) const;
-    TLInputUser userIdToInputUser(quint32 id) const;
+    TLInputPeer toInputPeer(const Telegram::Peer &peer) const;
+    Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer) const;
+    Telegram::Peer toPublicPeer(const TLPeer &peer) const;
+    TLInputUser toInputUser(quint32 id) const;
 
 private:
     CTelegramDispatcher *m_dispatcher;

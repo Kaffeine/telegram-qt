@@ -180,7 +180,7 @@ void CTelegramDispatcher::deleteContacts(const QVector<quint32> &userIds)
     users.reserve(userIds.count());
 
     foreach (quint32 userId, userIds) {
-        TLInputUser inputUser = userIdToInputUser(userId);
+        TLInputUser inputUser = toInputUser(userId);
         if (inputUser.tlType != TLValue::InputUserEmpty) {
             users.append(inputUser);
         }
@@ -461,7 +461,7 @@ bool CTelegramDispatcher::requestHistory(const Telegram::Peer &peer, quint32 off
         return false;
     }
 
-    const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
+    const TLInputPeer inputPeer = toInputPeer(peer);
 
     if (inputPeer.tlType == TLValue::InputPeerEmpty) {
         qDebug() << Q_FUNC_INFO << "Can not resolve contact" << peer.id;
@@ -496,7 +496,7 @@ quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QStri
         qWarning() << Q_FUNC_INFO << "Unable to send: no active connection";
         return 0;
     }
-    const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
+    const TLInputPeer inputPeer = toInputPeer(peer);
 
     int actionIndex = -1;
 
@@ -542,7 +542,7 @@ quint64 CTelegramDispatcher::forwardMessage(const Telegram::Peer &peer, quint32 
     quint64 randomId;
     Utils::randomBytes(&randomId);
 
-    return activeConnection()->messagesForwardMessage(publicPeerToInputPeer(peer), messageId, randomId);
+    return activeConnection()->messagesForwardMessage(toInputPeer(peer), messageId, randomId);
 }
 
 bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const
@@ -560,7 +560,7 @@ quint64 CTelegramDispatcher::createChat(const QVector<quint32> &userIds, const Q
     users.reserve(userIds.count());
 
     foreach (quint32 userId, userIds) {
-        const TLInputUser user = userIdToInputUser(userId);
+        const TLInputUser user = toInputUser(userId);
         users.append(user);
     }
 
@@ -579,7 +579,7 @@ bool CTelegramDispatcher::addChatUser(quint32 chatId, quint32 userId, quint32 fo
         return false;
     }
 
-    const TLInputUser inputUser = userIdToInputUser(userId);
+    const TLInputUser inputUser = toInputUser(userId);
 
     switch (inputUser.tlType) {
     case TLValue::InputUserEmpty:
@@ -599,7 +599,7 @@ void CTelegramDispatcher::setTyping(const Telegram::Peer &peer, TelegramNamespac
         return;
     }
 
-    TLInputPeer inputPeer = publicPeerToInputPeer(peer);
+    TLInputPeer inputPeer = toInputPeer(peer);
 
     int actionIndex = -1;
 
@@ -663,7 +663,7 @@ void CTelegramDispatcher::setMessageRead(const Telegram::Peer &peer, quint32 mes
     if (!activeConnection()) {
         return;
     }
-    const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
+    const TLInputPeer inputPeer = toInputPeer(peer);
 
     if (inputPeer.tlType != TLValue::InputPeerEmpty) {
         activeConnection()->messagesReadHistory(inputPeer, messageId);
@@ -982,7 +982,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
                 continue;
             }
 
-            Telegram::Peer p = peerToPublicPeer(dialog->peer);
+            Telegram::Peer p = toPublicPeer(dialog->peer);
             if (!lastPeer.isValid() && p.isValid()) {
                 lastPeer = p;
             }
@@ -1006,7 +1006,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
         }
 
         if (lastPeer.isValid() && lastMessageId) {
-            activeConnection()->messagesGetDialogs(lastDate, lastMessageId, publicPeerToInputPeer(lastPeer), s_dialogsLimit);
+            activeConnection()->messagesGetDialogs(lastDate, lastMessageId, toInputPeer(lastPeer), s_dialogsLimit);
             return;
         }
     }
@@ -1381,7 +1381,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        break;
     case TLValue::UpdateReadHistoryInbox:
     case TLValue::UpdateReadHistoryOutbox: {
-        Telegram::Peer peer = peerToPublicPeer(update.peer);
+        Telegram::Peer peer = toPublicPeer(update.peer);
         if (!peer.id) {
 #ifdef DEVELOPER_BUILD
             qDebug() << Q_FUNC_INFO << update.tlType << "Unable to resolve peer" << update.peer;
@@ -1504,7 +1504,7 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
     Telegram::Peer peer;
     if ((message.toId.tlType != TLValue::PeerUser) || (messageFlags & TelegramNamespace::MessageFlagOut)) {
         // To a group chat or an outgoing message
-        peer = peerToPublicPeer(message.toId);
+        peer = toPublicPeer(message.toId);
     } else {
         // Personal chat from someone
         peer = Telegram::Peer(message.fromId, Telegram::Peer::User);
@@ -1567,7 +1567,7 @@ void CTelegramDispatcher::updateFullChat(const TLChatFull &newChat)
     emitChatChanged(newChat.id);
 }
 
-TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const Telegram::Peer &peer) const
+TLInputPeer CTelegramDispatcher::toInputPeer(const Telegram::Peer &peer) const
 {
     TLInputPeer inputPeer;
     switch (peer.type) {
@@ -1595,7 +1595,7 @@ TLInputPeer CTelegramDispatcher::publicPeerToInputPeer(const Telegram::Peer &pee
     return inputPeer;
 }
 
-Telegram::Peer CTelegramDispatcher::peerToPublicPeer(const TLInputPeer &inputPeer) const
+Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLInputPeer &inputPeer) const
 {
     switch (inputPeer.tlType) {
     case TLValue::InputPeerSelf:
@@ -1610,7 +1610,7 @@ Telegram::Peer CTelegramDispatcher::peerToPublicPeer(const TLInputPeer &inputPee
     }
 }
 
-Telegram::Peer CTelegramDispatcher::peerToPublicPeer(const TLPeer &peer) const
+Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLPeer &peer) const
 {
     switch (peer.tlType) {
     case TLValue::PeerChat:
@@ -1622,7 +1622,7 @@ Telegram::Peer CTelegramDispatcher::peerToPublicPeer(const TLPeer &peer) const
     }
 }
 
-TLInputUser CTelegramDispatcher::userIdToInputUser(quint32 id) const
+TLInputUser CTelegramDispatcher::toInputUser(quint32 id) const
 {
     TLInputUser inputUser;
 

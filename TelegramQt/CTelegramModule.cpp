@@ -73,22 +73,22 @@ const TLMessage *CTelegramModule::getMessage(quint32 messageId) const
     return m_dispatcher->getMessage(messageId);
 }
 
-TLInputPeer CTelegramModule::publicPeerToInputPeer(const Telegram::Peer &peer) const
+TLInputPeer CTelegramModule::toInputPeer(const Telegram::Peer &peer) const
 {
-    return m_dispatcher->publicPeerToInputPeer(peer);
+    return m_dispatcher->toInputPeer(peer);
 }
 
-Telegram::Peer CTelegramModule::peerToPublicPeer(const TLInputPeer &inputPeer) const
+Telegram::Peer CTelegramModule::toPublicPeer(const TLInputPeer &inputPeer) const
 {
-    return m_dispatcher->peerToPublicPeer(inputPeer);
+    return m_dispatcher->toPublicPeer(inputPeer);
 }
 
-Telegram::Peer CTelegramModule::peerToPublicPeer(const TLPeer &peer) const
+Telegram::Peer CTelegramModule::toPublicPeer(const TLPeer &peer) const
 {
-    return m_dispatcher->peerToPublicPeer(peer);
+    return m_dispatcher->toPublicPeer(peer);
 }
 
-TLInputUser CTelegramModule::userIdToInputUser(quint32 id) const
+TLInputUser CTelegramModule::toInputUser(quint32 id) const
 {
-    return m_dispatcher->userIdToInputUser(id);
+    return m_dispatcher->toInputUser(id);
 }

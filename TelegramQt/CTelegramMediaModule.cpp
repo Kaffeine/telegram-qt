@@ -153,7 +153,7 @@ quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegr
     if (!activeConnection()) {
         return 0;
     }
-    const TLInputPeer inputPeer = publicPeerToInputPeer(peer);
+    const TLInputPeer inputPeer = toInputPeer(peer);
 
     if (inputPeer.tlType == TLValue::InputPeerEmpty) {
         qDebug() << Q_FUNC_INFO << "Can not resolve contact" << peer.id;
@@ -321,7 +321,7 @@ void CTelegramMediaModule::whenFileDataReceived(const TLUploadFile &file, quint3
     if (descriptor.messageId() && (message = getMessage(descriptor.messageId()))) {
         const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message->media.tlType);
 
-        Telegram::Peer peer = peerToPublicPeer(message->toId);
+        Telegram::Peer peer = toPublicPeer(message->toId);
 
         // MimeType can not be resolved for some StorageFileType. Try to get the type from the message info in this case.
         if (mimeType.isEmpty()) {
