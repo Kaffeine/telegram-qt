@@ -4051,10 +4051,8 @@ quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool
 {
     QByteArray encryptedPackage;
     QByteArray messageKey;
-    quint64 messageId;
+    quint64 messageId = newMessageId();
     {
-        messageId = newMessageId();
-
         m_sequenceNumber = m_contentRelatedMessages * 2 + 1;
         ++m_contentRelatedMessages;
 
