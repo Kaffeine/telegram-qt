@@ -48,6 +48,11 @@ void CTelegramModule::onNewConnection(CTelegramConnection *connection)
     Q_UNUSED(connection)
 }
 
+void CTelegramModule::addSentMessageId(quint64 rpcMessagesId, quint64 randomId)
+{
+    return m_dispatcher->addSentMessageId(rpcMessagesId, randomId);
+}
+
 bool CTelegramModule::getUserInfo(Telegram::UserInfo *userInfo, quint32 userId) const
 {
     return m_dispatcher->getUserInfo(userInfo, userId);

@@ -258,16 +258,10 @@ quint64 CTelegramConnection::sendMessage(const TLInputPeer &peer, const QString 
     return messagesSendMessage(/* flags */0, peer, /* reply to message id*/ 0, message, randomMessageId, replyMarkup, entities);
 }
 
-quint64 CTelegramConnection::sendMedia(const TLInputPeer &peer, const TLInputMedia &media)
+quint64 CTelegramConnection::sendMedia(const TLInputPeer &peer, const TLInputMedia &media, quint64 randomMessageId)
 {
-    quint64 randomMessageId;
-    Utils::randomBytes(&randomMessageId);
-
     const TLReplyMarkup replyMarkup;
-
-    messagesSendMedia(/* flags */0, peer, /* reply to message id*/ 0, media, randomMessageId, replyMarkup);
-
-    return randomMessageId;
+    return messagesSendMedia(/* flags */0, peer, /* reply to message id*/ 0, media, randomMessageId, replyMarkup);
 }
 
 // Generated Telegram API methods implementation

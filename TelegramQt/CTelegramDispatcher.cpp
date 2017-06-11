@@ -523,13 +523,11 @@ quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QStri
 
     quint64 randomId;
     Utils::randomBytes(&randomId);
-
 #ifdef DEVELOPER_BUILD
-    qDebug() << "sendMessage to" << inputPeer << message << randomId;
+    qDebug() << "sendMessage to" << inputPeer << message << "randomMessageId:" << randomId;
 #endif
     const quint64 rpcMessageId = activeConnection()->sendMessage(inputPeer, message, randomId);
-    m_rpcIdToMessageRandomIdMap.insert(rpcMessageId, randomId);
-
+    addSentMessageId(randomId, rpcMessageId);
     return randomId;
 }
 
@@ -541,8 +539,12 @@ quint64 CTelegramDispatcher::forwardMessage(const Telegram::Peer &peer, quint32 
 
     quint64 randomId;
     Utils::randomBytes(&randomId);
-
-    return activeConnection()->messagesForwardMessage(toInputPeer(peer), messageId, randomId);
+#ifdef DEVELOPER_BUILD
+    qDebug() << "forwardMessage to" << toInputPeer(peer) << "message" << messageId << "randomMessageId:" << randomId;
+#endif
+    const quint64 rpcMessageId = activeConnection()->messagesForwardMessage(toInputPeer(peer), messageId, randomId);
+    addSentMessageId(randomId, rpcMessageId);
+    return randomId;
 }
 
 bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const
@@ -2263,6 +2265,11 @@ TLDcOption CTelegramDispatcher::dcInfoById(quint32 dc) const
     }
 
     return TLDcOption();
+}
+
+void CTelegramDispatcher::addSentMessageId(quint64 rpcMessagesId, quint64 randomId)
+{
+    m_rpcIdToMessageRandomIdMap.insert(rpcMessagesId, randomId);
 }
 
 const TLUser *CTelegramDispatcher::getUser(quint32 userId) const

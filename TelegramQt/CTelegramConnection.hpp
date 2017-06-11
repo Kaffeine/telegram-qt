@@ -241,7 +241,7 @@ public:
     void uploadFile(quint64 fileId, quint32 filePart, const QByteArray &bytes, quint32 requestId);
 
     quint64 sendMessage(const TLInputPeer &peer, const QString &message, quint64 randomMessageId);
-    quint64 sendMedia(const TLInputPeer &peer, const TLInputMedia &media);
+    quint64 sendMedia(const TLInputPeer &peer, const TLInputMedia &media, quint64 randomMessageId);
 
     AuthState authState() { return m_authState; }
 

@@ -234,7 +234,14 @@ quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegr
         }
     }
 
-    return activeConnection()->sendMedia(inputPeer, inputMedia);
+    quint64 randomId;
+    Utils::randomBytes(&randomId);
+#ifdef DEVELOPER_BUILD
+    qDebug() << "sendMedia to" << inputPeer << inputMedia << "randomMessageId:" << randomId;
+#endif
+    const quint64 rpcMessageId = activeConnection()->sendMedia(inputPeer, inputMedia, randomId);
+    addSentMessageId(rpcMessageId, randomId);
+    return randomId;
 }
 
 void CTelegramMediaModule::clear()

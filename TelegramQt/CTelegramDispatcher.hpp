@@ -129,6 +129,8 @@ public:
 
     TLDcOption dcInfoById(quint32 dc) const;
 
+    void addSentMessageId(quint64 rpcMessagesId, quint64 randomId);
+
     // Getters
     const TLUser *getUser(quint32 userId) const;
     const TLMessage *getMessage(quint32 messageId) const;
