@@ -85,6 +85,14 @@ QString getSectionContent(const QString &fileName, const QString &startMarker, c
     return previousContent;
 }
 
+QString getGeneratedContent(const QString &fileName, int spacing, const QString &marker, bool *winEol = nullptr)
+{
+    const QString space(spacing, QChar(' '));
+    return getSectionContent(fileName,
+                             QString("%1// Generated %2\n").arg(space).arg(marker),
+                             QString("%1// End of generated %2\n").arg(space).arg(marker), winEol);
+}
+
 QString getPartiallyGeneratedContent(const QString &fileName, int spacing, const QString &marker, bool *winEol = nullptr)
 {
     const QString space(spacing, QChar(' '));
@@ -302,6 +310,8 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         return UnableToResolveTypes;
     }
 
+    generator.existsStreamReadTemplateInstancing = getGeneratedContent(QStringLiteral("../CTelegramStream.cpp"), 0, QLatin1String("vector read templates instancing"));
+    generator.existsStreamWriteTemplateInstancing = getGeneratedContent(QStringLiteral("../CTelegramStream.cpp"), 0, QLatin1String("vector write templates instancing"));
     generator.setExistsRpcProcessDefinitions(getPartiallyGeneratedContent(QStringLiteral("../CTelegramConnection.cpp"),
                                                                           0,
                                                                           QStringLiteral("Telegram API RPC process implementation")));

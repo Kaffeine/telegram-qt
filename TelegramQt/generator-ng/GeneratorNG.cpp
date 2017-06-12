@@ -462,7 +462,7 @@ QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type)
 
 QString GeneratorNG::generateStreamReadVectorTemplate(const QString &type)
 {
-    return QString(QLatin1String("template %1 &%1::operator>>(TLVector<%2> &v);\n")).arg(streamClassName).arg(type);
+    return QString(QLatin1String("template %1 &%1::operator>>(TLVector<%2> &v);")).arg(streamClassName).arg(type);
 }
 
 QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
@@ -503,7 +503,7 @@ QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
 
 QString GeneratorNG::generateStreamWriteVectorTemplate(const QString &type)
 {
-    return QString(QLatin1String("template %1 &%1::operator<<(const TLVector<%2> &v);\n")).arg(streamClassName).arg(type);
+    return QString(QLatin1String("template %1 &%1::operator<<(const TLVector<%2> &v);")).arg(streamClassName).arg(type);
 }
 
 QString GeneratorNG::generateDebugWriteOperatorDeclaration(const TLType &type)
@@ -986,6 +986,7 @@ void GeneratorNG::generate()
     codeOfTLTypes.clear();
     codeStreamReadDeclarations.clear();
     codeStreamReadDefinitions.clear();
+    codeStreamReadTemplateInstancing.clear();
     codeStreamWriteDeclarations.clear();
     codeStreamWriteDefinitions.clear();
     codeStreamWriteTemplateInstancing.clear();
@@ -1088,8 +1089,14 @@ void GeneratorNG::generate()
     getUsedAndVectorTypes(usedTypes, vectorUsedForRead);
     getUsedAndVectorTypes(typesUsedForWrite, vectorUsedForWrite);
 
+    QStringList newWriteInstances;
     foreach (const QString &str, vectorUsedForWrite) {
-        codeStreamWriteTemplateInstancing.append(generateStreamWriteVectorTemplate(str));
+        newWriteInstances.append(generateStreamWriteVectorTemplate(str));
+    }
+    QStringList existWriteInstances = existsStreamWriteTemplateInstancing.split(QLatin1Char('\n'), QString::SkipEmptyParts);
+    codeStreamWriteTemplateInstancing = reorderLinesAsExist(newWriteInstances, existWriteInstances).join(QLatin1Char('\n'));
+    if (!codeStreamWriteTemplateInstancing.isEmpty()) {
+        codeStreamWriteTemplateInstancing.append(QLatin1Char('\n'));
     }
 
     foreach (const QString &vector, vectorUsedForWrite) {
@@ -1097,8 +1104,15 @@ void GeneratorNG::generate()
             vectorUsedForRead.append(vector);
         }
     }
+
+    QStringList newReadInstances;
     foreach (const QString &str, vectorUsedForRead) {
-        codeStreamReadTemplateInstancing.append(generateStreamReadVectorTemplate(str));
+        newReadInstances.append(generateStreamReadVectorTemplate(str));
+    }
+    QStringList existReadInstances = existsStreamReadTemplateInstancing.split(QLatin1Char('\n'), QString::SkipEmptyParts);
+    codeStreamReadTemplateInstancing = reorderLinesAsExist(newReadInstances, existReadInstances).join(QLatin1Char('\n'));
+    if (!codeStreamReadTemplateInstancing.isEmpty()) {
+        codeStreamReadTemplateInstancing.append(QLatin1Char('\n'));
     }
 
     foreach (const QStringList &group, m_groups) {

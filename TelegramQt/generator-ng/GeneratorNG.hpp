@@ -122,6 +122,8 @@ public:
     QString codeRpcProcessDefinitions;
     QString codeRpcProcessSwitchCases;
     QString codeRpcProcessSwitchUpdatesCases;
+    QString existsStreamReadTemplateInstancing;
+    QString existsStreamWriteTemplateInstancing;
     QString existsCodeRpcProcessDefinitions;
     QString codeDebugWriteDeclarations;
     QString codeDebugWriteDefinitions;
