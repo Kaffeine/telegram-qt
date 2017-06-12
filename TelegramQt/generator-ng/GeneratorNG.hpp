@@ -104,6 +104,8 @@ public:
 
     static QString generateDebugRpcParse(const TLMethod &method);
 
+    static QStringList reorderLinesAsExist(QStringList newLines, QStringList existLines);
+
     static QList<TLType> solveTypes(QMap<QString, TLType> types, QMap<QString, TLType> *unresolved = nullptr);
 
     void getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const;

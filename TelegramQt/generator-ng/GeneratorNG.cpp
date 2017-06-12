@@ -668,6 +668,21 @@ QString GeneratorNG::generateDebugRpcParse(const TLMethod &method)
     return result;
 }
 
+QStringList GeneratorNG::reorderLinesAsExist(QStringList newLines, QStringList existLines)
+{
+    QMutableListIterator<QString> existLineIt(existLines);
+    while (existLineIt.hasNext()) {
+        const QString value = existLineIt.next();
+        const int index = newLines.indexOf(value);
+        if (index >= 0) {
+            newLines.removeAt(index);
+        } else {
+            existLineIt.remove();
+        }
+    }
+    return existLines + newLines;
+}
+
 QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types, QMap<QString, TLType> *unresolved)
 {
     QList<TLType> solvedTypes;
