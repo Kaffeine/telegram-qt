@@ -960,7 +960,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
 #ifdef DEVELOPER_BUILD
     qDebug() << Q_FUNC_INFO << dialogs << offsetDate << offsetId << offsetPeer << limit;
 #else
-    const Telegram::Peer peer = peerToPublicPeer(offsetPeer);
+    const Telegram::Peer peer = toPublicPeer(offsetPeer);
     qDebug() << Q_FUNC_INFO << dialogs.tlType << offsetDate << offsetId << peer.type << peer.id << limit;
 #endif
 
