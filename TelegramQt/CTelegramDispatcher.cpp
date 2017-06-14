@@ -2153,6 +2153,11 @@ void CTelegramDispatcher::ensureMaxMessageId(quint32 id)
     }
 }
 
+void CTelegramDispatcher::addSentMessageId(quint64 rpcMessagesId, quint64 randomId)
+{
+    m_rpcIdToMessageRandomIdMap.insert(rpcMessagesId, randomId);
+}
+
 void CTelegramDispatcher::updateSentMessageId(quint64 randomId, quint32 resolvedId)
 {
     qDebug() << Q_FUNC_INFO << "Sent message id received:" << resolvedId << "is the id of message" << randomId;
@@ -2284,11 +2289,6 @@ TLDcOption CTelegramDispatcher::dcInfoById(quint32 dc) const
     }
 
     return TLDcOption();
-}
-
-void CTelegramDispatcher::addSentMessageId(quint64 rpcMessagesId, quint64 randomId)
-{
-    m_rpcIdToMessageRandomIdMap.insert(rpcMessagesId, randomId);
 }
 
 const TLUser *CTelegramDispatcher::getUser(quint32 userId) const

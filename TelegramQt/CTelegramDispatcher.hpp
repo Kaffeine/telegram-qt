@@ -130,8 +130,6 @@ public:
 
     TLDcOption dcInfoById(quint32 dc) const;
 
-    void addSentMessageId(quint64 rpcMessagesId, quint64 randomId);
-
     // Getters
     const TLUser *getUser(quint32 userId) const;
     const TLMessage *getMessage(quint32 messageId) const;
@@ -227,6 +225,8 @@ protected:
     void setUpdateState(quint32 pts, quint32 seq, quint32 date);
 
     void ensureMaxMessageId(quint32 id);
+
+    void addSentMessageId(quint64 rpcMessagesId, quint64 randomId);
     void updateSentMessageId(quint64 randomId, quint32 resolvedId);
 
     void checkStateAndCallGetDifference();
