@@ -140,32 +140,32 @@ QVariant CMessageModel::rowData(quint32 messageIndex, int column) const
         return QVariant();
     }
 
+    const SMessage &message = m_messages.at(messageIndex);
     switch (column) {
     case Peer:
-        return QVariant::fromValue(m_messages.at(messageIndex).peer());
+        return QVariant::fromValue(message.peer());
     case Contact:
         if (m_contactsModel) {
-            const SContact *contact = m_contactsModel->getContact(m_messages.at(messageIndex).fromId);
+            const SContact *contact = m_contactsModel->getContact(message.fromId);
             if (contact) {
                 return CContactModel::getContactName(*contact);
             }
         }
-        return m_messages.at(messageIndex).fromId;
+        return message.fromId;
     case Direction:
-        return (m_messages.at(messageIndex).flags & TelegramNamespace::MessageFlagOut) ? tr("out") : tr("in");
+        return (message.flags & TelegramNamespace::MessageFlagOut) ? tr("out") : tr("in");
     case Timestamp:
-        return QDateTime::fromMSecsSinceEpoch(quint64(m_messages.at(messageIndex).timestamp) * 1000);
+        return QDateTime::fromMSecsSinceEpoch(quint64(message.timestamp) * 1000);
     case MessageId:
-        return m_messages.at(messageIndex).id ? m_messages.at(messageIndex).id : m_messages.at(messageIndex).id64;
+        return message.id ? message.id : message.id64;
     case Message:
-        return m_messages.at(messageIndex).text;
+        return message.text;
     case Status:
-        return messageDeliveryStatusStr(m_messages.at(messageIndex).status);
-    case ForwardFromContact:
-        return m_messages.at(messageIndex).forwardContactId;
+        return messageDeliveryStatusStr(message.status);
+        return message.forwardContactId;
     case ForwardTimestamp:
-        if (m_messages.at(messageIndex).fwdTimestamp) {
-            return QDateTime::fromMSecsSinceEpoch(quint64(m_messages.at(messageIndex).fwdTimestamp) * 1000);
+        if (message.fwdTimestamp) {
+            return QDateTime::fromMSecsSinceEpoch(quint64(message.fwdTimestamp) * 1000);
         }
         break;
     default:
