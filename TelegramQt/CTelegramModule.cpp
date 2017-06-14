@@ -48,9 +48,9 @@ void CTelegramModule::onNewConnection(CTelegramConnection *connection)
     Q_UNUSED(connection)
 }
 
-void CTelegramModule::addSentMessageId(quint64 rpcMessagesId, quint64 randomId)
+quint64 CTelegramModule::sendMedia(const Telegram::Peer &peer, const TLInputMedia &media)
 {
-    return m_dispatcher->addSentMessageId(rpcMessagesId, randomId);
+    return m_dispatcher->sendMedia(peer, media);
 }
 
 bool CTelegramModule::getUserInfo(Telegram::UserInfo *userInfo, quint32 userId) const

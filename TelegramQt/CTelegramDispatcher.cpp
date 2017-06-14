@@ -527,7 +527,26 @@ quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QStri
     qDebug() << "sendMessage to" << inputPeer << message << "randomMessageId:" << randomId;
 #endif
     const quint64 rpcMessageId = activeConnection()->sendMessage(inputPeer, message, randomId);
-    addSentMessageId(randomId, rpcMessageId);
+    addSentMessageId(rpcMessageId, randomId);
+    return randomId;
+}
+
+quint64 CTelegramDispatcher::sendMedia(const Telegram::Peer &peer, const TLInputMedia &inputMedia)
+{
+    const TLInputPeer inputPeer = toInputPeer(peer);
+
+    if (inputPeer.tlType == TLValue::InputPeerEmpty) {
+        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << peer.id;
+        return 0;
+    }
+
+    quint64 randomId;
+    Utils::randomBytes(&randomId);
+#ifdef DEVELOPER_BUILD
+    qDebug() << "sendMedia to" << inputPeer << inputMedia << "randomMessageId:" << randomId;
+#endif
+    const quint64 rpcMessageId = activeConnection()->sendMedia(inputPeer, inputMedia, randomId);
+    addSentMessageId(rpcMessageId, randomId);
     return randomId;
 }
 
@@ -543,7 +562,7 @@ quint64 CTelegramDispatcher::forwardMessage(const Telegram::Peer &peer, quint32 
     qDebug() << "forwardMessage to" << toInputPeer(peer) << "message" << messageId << "randomMessageId:" << randomId;
 #endif
     const quint64 rpcMessageId = activeConnection()->messagesForwardMessage(toInputPeer(peer), messageId, randomId);
-    addSentMessageId(randomId, rpcMessageId);
+    addSentMessageId(rpcMessageId, randomId);
     return randomId;
 }
 

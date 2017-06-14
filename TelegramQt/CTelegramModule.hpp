@@ -43,7 +43,7 @@ public:
     virtual void onConnectionAuthChanged(CTelegramConnection *connection, int newState);
     virtual void onNewConnection(CTelegramConnection *connection);
 
-    void addSentMessageId(quint64 rpcMessagesId, quint64 randomId);
+    quint64 sendMedia(const Telegram::Peer &peer, const TLInputMedia &media);
 
     // Getters
     bool getUserInfo(Telegram::UserInfo *userInfo, quint32 userId) const;

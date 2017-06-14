@@ -153,12 +153,6 @@ quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegr
     if (!activeConnection()) {
         return 0;
     }
-    const TLInputPeer inputPeer = toInputPeer(peer);
-
-    if (inputPeer.tlType == TLValue::InputPeerEmpty) {
-        qDebug() << Q_FUNC_INFO << "Can not resolve contact" << peer.id;
-        return 0;
-    }
 
     const Telegram::MessageMediaInfo::Private *media = info.d;
     TLInputMedia inputMedia;
@@ -234,14 +228,7 @@ quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegr
         }
     }
 
-    quint64 randomId;
-    Utils::randomBytes(&randomId);
-#ifdef DEVELOPER_BUILD
-    qDebug() << "sendMedia to" << inputPeer << inputMedia << "randomMessageId:" << randomId;
-#endif
-    const quint64 rpcMessageId = activeConnection()->sendMedia(inputPeer, inputMedia, randomId);
-    addSentMessageId(rpcMessageId, randomId);
-    return randomId;
+    return CTelegramModule::sendMedia(peer, inputMedia);
 }
 
 void CTelegramMediaModule::clear()

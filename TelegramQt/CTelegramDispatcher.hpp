@@ -101,6 +101,7 @@ public:
     quint32 resolveUsername(const QString &userName);
 
     quint64 sendMessage(const Telegram::Peer &peer, const QString &message);
+    quint64 sendMedia(const Telegram::Peer &peer, const TLInputMedia &inputMedia);
     quint64 forwardMessage(const Telegram::Peer &peer, quint32 messageId);
 
     void setTyping(const Telegram::Peer &peer, TelegramNamespace::MessageAction publicAction);
