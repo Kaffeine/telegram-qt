@@ -281,8 +281,8 @@ protected:
 
     qint32 m_deltaTime;
 
-    quint32 m_messageReceivingFilterFlags;
-    quint32 m_acceptableMessageTypes;
+    TelegramNamespace::MessageFlags m_messageReceivingFilterFlags;
+    TelegramNamespace::MessageTypeFlags m_acceptableMessageTypes;
     bool m_autoReconnectionEnabled;
     quint32 m_pingInterval;
     quint32 m_pingServerAdditionDisconnectionTime;
