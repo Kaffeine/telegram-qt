@@ -1544,7 +1544,8 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
 
     TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message.flags);
     if (messageFlags & TelegramNamespace::MessageFlagForwarded) {
-        apiMessage.forwardContactId = message.fromId;
+        apiMessage.forwardContactId = message.fwdFromId.userId;
+        apiMessage.setForwardFromPeer(toPublicPeer(message.fwdFromId));
         apiMessage.fwdTimestamp = message.fwdDate;
     }
 

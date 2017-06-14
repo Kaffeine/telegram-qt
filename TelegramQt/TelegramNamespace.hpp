@@ -231,6 +231,9 @@ struct Message
     const Peer peer() const { return m_peer; }
     void setPeer(const Peer &peer) { m_peer = peer; }
 
+    const Peer forwardFromPeer() const { return m_forwardPeer; }
+    void setForwardFromPeer(const Peer &peer) { m_forwardPeer = peer; }
+
     quint32 forwardContactId;
     QString text;
     quint32 id;
@@ -241,6 +244,7 @@ struct Message
 
 private:
     Peer m_peer;
+    Peer m_forwardPeer;
 };
 
 class MessageMediaInfo
