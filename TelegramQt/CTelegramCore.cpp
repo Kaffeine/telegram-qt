@@ -96,6 +96,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     connect(m_private->m_dispatcher, SIGNAL(messageReadOutbox(Telegram::Peer,quint32)),
             SIGNAL(messageReadOutbox(Telegram::Peer,quint32)));
 
+    connect(m_private->m_dispatcher, SIGNAL(peerAdded(Telegram::Peer)),
+            SIGNAL(peerAdded(Telegram::Peer)));
     connect(m_private->m_dispatcher, SIGNAL(createdChatIdReceived(quint64,quint32)),
             SIGNAL(createdChatIdReceived(quint64,quint32)));
     connect(m_private->m_dispatcher, SIGNAL(chatAdded(quint32)),

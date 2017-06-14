@@ -169,6 +169,7 @@ Q_SIGNALS:
     void messageReadInbox(Telegram::Peer peer, quint32 messageId);
     void messageReadOutbox(Telegram::Peer peer, quint32 messageId);
 
+    void peerAdded(Telegram::Peer peer);
     void createdChatIdReceived(quint64 randomId, quint32 resolvedId); // Signal chatAdded(resolvedId) would be emitted after this signal.
     void chatAdded(quint32 chatId);
     void chatChanged(quint32 chatId);

@@ -185,6 +185,7 @@ signals:
     void messageReadInbox(Telegram::Peer peer, quint32 messageId);
     void messageReadOutbox(Telegram::Peer peer, quint32 messageId);
 
+    void peerAdded(Telegram::Peer peer);
     void createdChatIdReceived(quint64 randomId, quint32 resolvedId);
     void chatAdded(quint32 chatId);
     void chatChanged(quint32 chatId);
