@@ -142,6 +142,8 @@ public:
     TLInputPeer toInputPeer(const Telegram::Peer &peer) const;
     Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer) const;
     Telegram::Peer toPublicPeer(const TLPeer &peer) const;
+    Telegram::Peer toPublicPeer(const TLUser &user) const;
+    Telegram::Peer toPublicPeer(const TLChat &chat) const;
     TLPeer toTLPeer(const Telegram::Peer &peer) const;
     TLInputUser toInputUser(quint32 id) const;
 

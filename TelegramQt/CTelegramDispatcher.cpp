@@ -1644,6 +1644,25 @@ Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLPeer &peer) const
     }
 }
 
+Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLUser &user) const
+{
+    if (!user.isValid() || !user.id) {
+        return Telegram::Peer();
+    }
+    return Telegram::Peer(user.id, Telegram::Peer::User);
+}
+
+Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLChat &chat) const
+{
+    switch(chat.tlType) {
+    case TLValue::Chat:
+    case TLValue::ChatForbidden:
+        return Telegram::Peer(chat.id, Telegram::Peer::Chat);
+    default:
+        return Telegram::Peer();
+    }
+}
+
 TLPeer CTelegramDispatcher::toTLPeer(const Telegram::Peer &peer) const
 {
     TLPeer result;
