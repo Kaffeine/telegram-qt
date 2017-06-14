@@ -37,9 +37,11 @@ public:
         MessageId,
         Message,
         Status,
-        ForwardFromContact,
+        ForwardFrom,
         ForwardTimestamp,
-        ColumnsCount
+        ColumnsCount,
+        PeerText,
+        ForwardFromText
     };
 
     struct SMessage : public Telegram::Message
@@ -83,6 +85,8 @@ public:
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
+
+    QString peerToText(const Telegram::Peer &peer) const;
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;

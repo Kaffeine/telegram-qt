@@ -21,6 +21,7 @@
 #include "CTelegramCore.hpp"
 
 #include <QDateTime>
+#include <QDebug>
 
 QString messageDeliveryStatusStr(CMessageModel::SMessage::Status status)
 {
@@ -59,6 +60,25 @@ void CMessageModel::setContactsModel(CContactModel *model)
     m_contactsModel = model;
 }
 
+QString CMessageModel::peerToText(const Telegram::Peer &peer) const
+{
+    if (peer.type == Telegram::Peer::User) {
+        Telegram::UserInfo info;
+        m_backend->getUserInfo(&info, peer.id);
+        if (!info.id()) {
+            qDebug() << Q_FUNC_INFO << "Unknown contact..";
+            return QStringLiteral("user%1").arg(peer.id);
+        }
+        return CContactModel::formatName(info);
+    }
+    Telegram::GroupChat info;
+    m_backend->getChatInfo(&info, peer.id);
+    if (!info.title.isEmpty()) {
+        return info.title;
+    }
+    return QStringLiteral("chat%1").arg(peer.id);
+}
+
 QVariant CMessageModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation != Qt::Horizontal) {
@@ -85,7 +105,7 @@ QVariant CMessageModel::headerData(int section, Qt::Orientation orientation, int
         return tr("Message text");
     case Status:
         return tr("Status");
-    case ForwardFromContact:
+    case ForwardFrom:
         return tr("Forward from");
     case ForwardTimestamp:
         return tr("Forward timestamp");
@@ -131,6 +151,17 @@ QVariant CMessageModel::data(const QModelIndex &index, int role) const
         return QVariant();
     }
 
+    switch (section) {
+    case Peer:
+        section = PeerText;
+        break;
+    case ForwardFrom:
+        section = ForwardFromText;
+        break;
+    default:
+        break;
+    }
+
     return rowData(messageIndex, section);
 }
 
@@ -144,6 +175,8 @@ QVariant CMessageModel::rowData(quint32 messageIndex, int column) const
     switch (column) {
     case Peer:
         return QVariant::fromValue(message.peer());
+    case PeerText:
+        return peerToText(message.peer());
     case Contact:
         if (m_contactsModel) {
             const SContact *contact = m_contactsModel->getContact(message.fromId);
@@ -162,7 +195,13 @@ QVariant CMessageModel::rowData(quint32 messageIndex, int column) const
         return message.text;
     case Status:
         return messageDeliveryStatusStr(message.status);
-        return message.forwardContactId;
+    case ForwardFrom:
+        return QVariant::fromValue(message.forwardFromPeer());
+    case ForwardFromText:
+        if (message.forwardFromPeer().isValid()) {
+            return peerToText(message.forwardFromPeer());
+        }
+        return QString();
     case ForwardTimestamp:
         if (message.fwdTimestamp) {
             return QDateTime::fromMSecsSinceEpoch(quint64(message.fwdTimestamp) * 1000);
