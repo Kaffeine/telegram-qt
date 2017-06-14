@@ -391,6 +391,16 @@ QString CContactModel::contactAt(int index, bool addName) const
     }
 }
 
+QString CContactModel::formatName(const Telegram::UserInfo &info)
+{
+    QString name = info.firstName() + QLatin1Char(' ') + info.lastName();
+    name = name.simplified();
+    if (!name.isEmpty()) {
+        return name;
+    }
+    return info.userName();
+}
+
 QString CContactModel::getContactName(const Telegram::UserInfo &contact)
 {
     if (!contact.userName().isEmpty()) {

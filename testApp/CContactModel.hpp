@@ -76,6 +76,7 @@ public:
     QVector<quint32> contacts() const;
     QString contactAt(int index, bool addName) const;
 
+    static QString formatName(const Telegram::UserInfo &info);
     static QString getContactName(const Telegram::UserInfo &contact);
     static QString getContactIdentifier(const Telegram::UserInfo &contact);
 
