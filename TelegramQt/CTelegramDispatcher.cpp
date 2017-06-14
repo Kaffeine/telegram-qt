@@ -1976,12 +1976,7 @@ void CTelegramDispatcher::onUpdatesReceived(const TLUpdates &updates, quint64 id
         }
         break;
     case TLValue::UpdateShortSentMessage:
-        if (!m_rpcIdToMessageRandomIdMap.contains(id)) {
-            qDebug() << Q_FUNC_INFO << "Sent message id not found";
-        } else {
-            const quint64 randomId = m_rpcIdToMessageRandomIdMap.take(id);
-            updateSentMessageId(randomId, updates.id);
-        }
+        updateShortSentMessageId(id, updates.id);
         // TODO: Check that the follow state update is the right thing to do.
         // This fixes scenario: "send sendMessage" -> "receive UpdateShortSentMessage" -> "receive UpdateReadHistoryOutbox with update.pts == m_updatesState.pts + 2"
         setUpdateState(m_updatesState.pts + 1, 0, 0);
@@ -2156,6 +2151,17 @@ void CTelegramDispatcher::ensureMaxMessageId(quint32 id)
 void CTelegramDispatcher::addSentMessageId(quint64 rpcMessagesId, quint64 randomId)
 {
     m_rpcIdToMessageRandomIdMap.insert(rpcMessagesId, randomId);
+}
+
+void CTelegramDispatcher::updateShortSentMessageId(quint64 rpcId, quint32 resolvedId)
+{
+    if (!m_rpcIdToMessageRandomIdMap.contains(rpcId)) {
+        qDebug() << Q_FUNC_INFO << "Sent message id not found";
+        return;
+    }
+
+    const quint64 randomId = m_rpcIdToMessageRandomIdMap.take(rpcId);
+    updateSentMessageId(randomId, resolvedId);
 }
 
 void CTelegramDispatcher::updateSentMessageId(quint64 randomId, quint32 resolvedId)

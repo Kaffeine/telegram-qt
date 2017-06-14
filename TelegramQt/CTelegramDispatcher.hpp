@@ -227,6 +227,7 @@ protected:
     void ensureMaxMessageId(quint32 id);
 
     void addSentMessageId(quint64 rpcMessagesId, quint64 randomId);
+    void updateShortSentMessageId(quint64 rpcId, quint32 resolvedId);
     void updateSentMessageId(quint64 randomId, quint32 resolvedId);
 
     void checkStateAndCallGetDifference();
