@@ -152,7 +152,7 @@ private:
     void searchByUsername();
     void setRegistered(bool newRegistered);
     void setChatCreationMode();
-    void unsetChatCreationMode(quint32 newActiveChat);
+    void unsetChatCreationMode();
 
     void setAppState(AppState newState);
 

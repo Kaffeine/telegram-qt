@@ -734,7 +734,7 @@ void MainWindow::setChatCreationMode()
     updateGroupChatAddContactButtonText();
 }
 
-void MainWindow::unsetChatCreationMode(quint32 newActiveChat)
+void MainWindow::unsetChatCreationMode()
 {
     if (m_chatCreationMode) {
         m_chatCreationMode = false;
@@ -745,7 +745,6 @@ void MainWindow::unsetChatCreationMode(quint32 newActiveChat)
 
         ui->groupChatAddContactForwardMessages->show();
     }
-    setActiveChat(newActiveChat);
 }
 
 void MainWindow::setAppState(MainWindow::AppState newState)
@@ -961,7 +960,8 @@ void MainWindow::on_messagingView_doubleClicked(const QModelIndex &index)
 void MainWindow::on_groupChatChatsList_doubleClicked(const QModelIndex &index)
 {
     const quint32 clickedChat = m_chatInfoModel->index(index.row(), CChatInfoModel::Id).data().toUInt();
-    unsetChatCreationMode(clickedChat); // Double click on chat list cancels chat creation.
+    unsetChatCreationMode(); // Double click on chat list cancels chat creation.
+    setActiveChat(clickedChat);
 }
 
 void MainWindow::on_tabWidget_currentChanged(int index)
@@ -980,7 +980,8 @@ void MainWindow::on_groupChatCreateChat_clicked()
     if (m_chatCreationMode) {
         m_pendingChatId = m_core->createChat(m_chatContactsModel->filter(), ui->groupChatName->text());
         qDebug() << Q_FUNC_INFO << "pending id:" << m_pendingChatId;
-        unsetChatCreationMode(0);
+        unsetChatCreationMode();
+        setActiveChat(0);
     } else {
         setChatCreationMode();
     }
@@ -1213,6 +1214,7 @@ void MainWindow::updateGroupChatAddContactButtonText()
 void MainWindow::on_groupChatLeaveChat_clicked()
 {
     if (m_chatCreationMode) {
-        unsetChatCreationMode(m_activeChatId);
+        unsetChatCreationMode();
+        setActiveChat(m_activeChatId);
     }
 }
