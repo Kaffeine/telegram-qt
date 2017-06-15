@@ -2217,7 +2217,7 @@ void CTelegramDispatcher::ensureTypingUpdateTimer(int interval)
 
 void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::InitializationStep justDone)
 {
-    qDebug() << Q_FUNC_INFO << justDone << "on top of" << m_initializationState;
+    qDebug() << "CTelegramDispatcher::continueInitialization(" << justDone << ") on top of" << m_initializationState;
 
     if (justDone && ((m_initializationState | justDone) == m_initializationState)) {
         return; // Nothing new
@@ -2246,18 +2246,17 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
         m_deltaTime = activeConnection()->deltaTime();
 
-        if (!(m_requestedSteps & StepKnowSelf)) {
+        if (!((m_requestedSteps & StepKnowSelf) || (m_initializationState & StepKnowSelf))) {
             getInitialUsers();
-            m_requestedSteps |= StepKnowSelf;
             return;
         }
 
-        if (!(m_requestedSteps & StepContactList)) {
+        if (!((m_requestedSteps & StepContactList) || (m_initializationState & StepContactList))) {
             getContacts();
             m_requestedSteps |= StepContactList;
         }
 
-        if (!(m_requestedSteps & StepDialogs)) {
+        if (!((m_requestedSteps & StepDialogs) || (m_initializationState & StepDialogs))) {
             getInitialDialogs();
             m_requestedSteps |= StepDialogs;
         }
