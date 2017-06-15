@@ -47,20 +47,21 @@ public:
     bool haveChat(quint32 id) const;
     const Telegram::GroupChat *chatById(quint32 id) const;
 
-public slots:
-    void addChat(quint32 id);
+    Telegram::Peer getPeer(quint32 chatId);
 
 signals:
     void chatAdded(quint32 id);
     void chatChanged(quint32 id);
 
 protected slots:
+    void onPeerAdded(const Telegram::Peer &peer);
     void onChatChanged(quint32 id);
 
 private:
     CTelegramCore *m_backend;
 
     QList<Telegram::GroupChat> m_chats;
+    QVector<Telegram::Peer> m_peers;
 
 };
 

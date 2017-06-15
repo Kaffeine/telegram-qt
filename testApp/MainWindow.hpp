@@ -74,7 +74,6 @@ protected slots:
     void onContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
     void onContactStatusChanged(quint32 contact);
     void onCreatedChatIdResolved(quint64 requestId, quint32 chatId);
-    void onChatAdded(quint32 chatId);
     void onChatChanged(quint32 chatId);
     void updateActiveChat();
 

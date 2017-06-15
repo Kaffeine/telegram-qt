@@ -127,7 +127,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, &CTelegramCore::selfUserAvailable, m_contactsModel, &CContactModel::addContact);
     connect(m_core, &CTelegramCore::userInfoReceived, m_contactsModel, &CContactModel::addContact);
 
-    connect(m_chatInfoModel, SIGNAL(chatAdded(quint32)), SLOT(onChatAdded(quint32)));
+//    connect(m_chatInfoModel, SIGNAL(chatAdded(quint32)), SLOT(onChatAdded(quint32)));
     connect(m_chatInfoModel, SIGNAL(chatChanged(quint32)), SLOT(onChatChanged(quint32)));
 
     ui->groupChatContacts->hideColumn(CContactModel::Blocked);
@@ -184,11 +184,6 @@ void MainWindow::onConnectionStateChanged(TelegramNamespace::ConnectionState sta
         break;
     case TelegramNamespace::ConnectionStateReady:
         setAppState(AppStateReady);
-
-        foreach (quint32 chatId, m_core->chatList()) {
-            m_chatInfoModel->addChat(chatId);
-        }
-
         updateContactList();
 
         ui->phoneNumber->setText(m_core->selfPhone());
@@ -452,12 +447,6 @@ void MainWindow::onCreatedChatIdResolved(quint64 requestId, quint32 chatId)
         qDebug() << "Unexpected chat id received" << requestId << chatId;
     }
 
-    setActiveChat(chatId);
-}
-
-void MainWindow::onChatAdded(quint32 chatId)
-{
-    m_chatInfoModel->addChat(chatId);
     setActiveChat(chatId);
 }
 
@@ -943,8 +932,8 @@ void MainWindow::on_messagingGetHistoryRequest_clicked()
 
 void MainWindow::on_groupChatGetHistoryRequest_clicked()
 {
-    m_core->requestHistory(Telegram::Peer(m_activeChatId, Telegram::Peer::Chat),
-                           ui->groupChatGetHistoryOffset->value(), ui->groupChatGetHistoryLimit->value());
+    const Telegram::Peer chatPeer = m_chatInfoModel->getPeer(m_activeChatId);
+    m_core->requestHistory(chatPeer, ui->groupChatGetHistoryOffset->value(), ui->groupChatGetHistoryLimit->value());
 }
 
 void MainWindow::on_setStatusOnline_clicked()
@@ -1045,12 +1034,13 @@ void MainWindow::on_groupChatAddContact_clicked()
 void MainWindow::on_groupChatSendButton_clicked()
 {
     CMessageModel::SMessage m;
-    m.setPeer(Telegram::Peer::fromChatId(m_activeChatId));
+    const Telegram::Peer peer = m_chatInfoModel->getPeer(m_activeChatId);
+    m.setPeer(peer);
     m.fromId = m_core->selfId();
     m.type = TelegramNamespace::MessageTypeText;
     m.text = ui->groupChatMessage->text();
     m.flags = TelegramNamespace::MessageFlagOut;
-    m.id64 = m_core->sendMessage(m.peer(), m.text);
+    m.id64 = m_core->sendMessage(peer, m.text);
 
     m_chatMessagingModel->addMessage(m);
     ui->groupChatMessage->clear();

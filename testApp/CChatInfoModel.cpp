@@ -22,7 +22,7 @@ CChatInfoModel::CChatInfoModel(CTelegramCore *backend, QObject *parent) :
     QAbstractTableModel(parent),
     m_backend(backend)
 {
-    connect(m_backend, SIGNAL(chatAdded(quint32)), SLOT(addChat(quint32)));
+    connect(m_backend, SIGNAL(peerAdded(Telegram::Peer)), this, SLOT(onPeerAdded(Telegram::Peer)));
     connect(m_backend, SIGNAL(chatChanged(quint32)), SLOT(onChatChanged(quint32)));
 }
 
@@ -77,18 +77,27 @@ QVariant CChatInfoModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void CChatInfoModel::addChat(quint32 id)
+void CChatInfoModel::onPeerAdded(const Telegram::Peer &peer)
 {
-    if (haveChat(id)) {
+    switch (peer.type) {
+    case Telegram::Peer::Channel:
+    case Telegram::Peer::Chat:
+        break;
+    default:
+        return;
+    }
+
+    if (!peer.isValid() || haveChat(peer.id)) {
         return;
     }
 
     beginInsertRows(QModelIndex(), m_chats.count(), m_chats.count());
-    m_chats.append(Telegram::GroupChat(id));
-    m_backend->getChatInfo(&m_chats.last(), id);
+    m_peers.append(peer);
+    m_chats.append(Telegram::GroupChat(peer.id));
+    m_backend->getChatInfo(&m_chats.last(), peer.id);
     endInsertRows();
 
-    emit chatAdded(id);
+    emit chatAdded(peer.id);
 }
 
 int CChatInfoModel::indexOfChat(quint32 id) const
@@ -116,6 +125,17 @@ const Telegram::GroupChat *CChatInfoModel::chatById(quint32 id) const
     }
 
     return &m_chats.at(index);
+}
+
+Telegram::Peer CChatInfoModel::getPeer(quint32 chatId)
+{
+    int index = indexOfChat(chatId);
+
+    if (index < 0) {
+        return Telegram::Peer();
+    }
+
+    return m_peers.at(index);
 }
 
 void CChatInfoModel::onChatChanged(quint32 id)
