@@ -52,6 +52,7 @@ set(telegram_qt_public_HEADERS
     CAppInformation.hpp
     TelegramNamespace.hpp
     CTelegramCore.hpp
+    Debug.hpp
 )
 
 include_directories(

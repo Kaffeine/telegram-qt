@@ -25,6 +25,22 @@ using namespace TelegramUtils;
 #include <QMetaType>
 #include <QDebug>
 
+QDebug operator<<(QDebug d, const Telegram::Peer &peer)
+{
+    switch (peer.type) {
+    case Telegram::Peer::User:
+        d << "Telegram::Peer(User, " << peer.id << ")";
+        break;
+    case Telegram::Peer::Chat:
+        d << "Telegram::Peer(Chat, " << peer.id << ")";
+        break;
+    default:
+        d << "Telegram::Peer(Invalid:" << peer.type << ", " << peer.id << ")";
+        break;
+    }
+    return d;
+}
+
 void TelegramNamespace::registerTypes()
 {
     static bool registered = false;

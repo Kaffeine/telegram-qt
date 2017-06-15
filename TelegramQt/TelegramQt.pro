@@ -41,6 +41,7 @@ SOURCES = CTelegramCore.cpp \
 PUBLIC_HEADERS += \
     telegramqt_global.h \
     CAppInformation.hpp \
+    Debug.hpp \
     TelegramNamespace.hpp \
     CTelegramCore.hpp \
     TelegramQt/CAppInformation \
@@ -49,6 +50,7 @@ PUBLIC_HEADERS += \
 
 HEADERS = CTelegramCore.hpp \
     CAppInformation.hpp \
+    Debug.hpp \
     CTelegramDispatcher.hpp \
     CTelegramModule.hpp \
     CTelegramAuthModule.hpp \
