@@ -57,6 +57,7 @@ public:
 #if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
     Q_ENUM(InitializationStep)
 #endif
+    Q_DECLARE_FLAGS(InitializationStepFlags, InitializationStep)
 
     explicit CTelegramDispatcher(QObject *parent = 0);
     ~CTelegramDispatcher();
@@ -287,8 +288,8 @@ protected:
     quint32 m_pingInterval;
     quint32 m_pingServerAdditionDisconnectionTime;
 
-    quint32 m_initializationState; // InitializationStep flags
-    quint32 m_requestedSteps; // InitializationStep flags
+    InitializationStepFlags m_initializationState;
+    InitializationStepFlags m_requestedSteps;
 
     quint32 m_wantedActiveDc;
     int m_autoConnectionDcIndex;

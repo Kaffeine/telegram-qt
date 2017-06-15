@@ -2085,7 +2085,7 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         return; // Nothing new
     }
 
-    m_initializationState = InitializationStep(m_initializationState|justDone);
+    m_initializationState |= justDone;
 
     if (!(m_requestedSteps & StepDcConfiguration)) { // DC configuration is not requested yet
         getDcConfiguration();
