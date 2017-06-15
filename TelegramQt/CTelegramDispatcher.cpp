@@ -47,7 +47,41 @@ static const QVector<Telegram::DcOption> s_builtInDcs = QVector<Telegram::DcOpti
 
 static const quint32 s_defaultPingInterval = 15000; // 15 sec
 
-const quint32 secretFormatVersion = 3;
+const quint32 secretFormatVersion = 4;
+//Format v4:
+//quint32 secretFormatVersion
+//qint32 deltaTime
+
+//DC {
+//    quint32 id
+//    QByteArray ipAddress
+//    quint32 port
+//}
+
+//QByteArray authKey
+//quint64 authId
+//quint64 serverSalt
+
+//UpdatesState {
+//    quint32 pts
+//    quint32 qts
+//    quint32 date
+//}
+
+//quint32 dialogsCount
+//Dialog (N = dialogsCount) {
+//    quint8 type (one of DialogType (DialogTypeDialog or DialogTypeChannel))
+//    Peer {
+//        quint8 type (one of Telegram::Peer::{User, Chat, Channel})
+//        quint32 id
+//    }
+//    quint32 readInboxMaxId
+//    quint32 unreadCount
+//    type == DialogTypeChannel ? {
+//        quint32 pts
+//    }
+//}
+
 const int s_userTypingActionPeriod = 6000; // 6 sec
 const int s_localTypingDuration = 5000; // 5 sec
 const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPeriod - s_localTypingDuration) / 2. Minus 100 ms for insurance.
@@ -57,6 +91,11 @@ static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_auto
 
 static const quint32 s_legacyDcInfoTlType = 0x2ec2a43cu; // Scheme23_DcOption
 static const quint32 s_legacyVectorTlType = 0x1cb5c415u; // Scheme23_Vector;
+
+enum DialogType {
+    DialogTypeDialog,
+    DialogTypeChannel
+};
 
 CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     QObject(parent),
@@ -215,11 +254,8 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
     outputStream << activeConnection()->deltaTime();
 
     const TLDcOption dcInfo = activeConnection()->dcInfo();
-    QByteArray legacyDcHostName;
 
-    outputStream << s_legacyDcInfoTlType;
     outputStream << dcInfo.id;
-    outputStream << legacyDcHostName;
     outputStream << dcInfo.ipAddress.toUtf8();
     outputStream << dcInfo.port;
     outputStream << activeConnection()->authKey();
@@ -231,20 +267,38 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
         outputStream << m_updatesState.qts;
         outputStream << m_updatesState.date;
     } else {
-        outputStream << static_cast<quint32>(1);
-        outputStream << static_cast<quint32>(1);
-        outputStream << static_cast<quint32>(1);
+        outputStream << quint32(1);
+        outputStream << quint32(1);
+        outputStream << quint32(1);
     }
 
-    outputStream << s_legacyVectorTlType;
     if (m_updatesEnabled) {
-        const quint32 chatIdsVectorSize = m_chatIds.count();
-        outputStream << chatIdsVectorSize;
-        for (int i = 0; i < m_chatIds.count(); ++i) {
-            outputStream << m_chatIds.at(i);
+        const quint32 dialogsCount = m_dialogs.count();
+        outputStream << dialogsCount;
+        for (const TLDialog &dialog : m_dialogs) {
+            switch (dialog.tlType) {
+            case TLValue::Dialog:
+                outputStream << quint8(DialogTypeDialog);
+                break;
+            case TLValue::DialogChannel:
+                outputStream << quint8(DialogTypeChannel);
+                break;
+            default:
+                qCritical() << "CTelegramDispatcher::connectionSecretInfo(): Invalid dialog type" << dialog.tlType.toString();
+                continue;
+                break;
+            }
+
+            const Telegram::Peer peer = toPublicPeer(dialog.peer);
+            outputStream << static_cast<quint8>(peer.type) << peer.id;
+            outputStream << dialog.readInboxMaxId;
+            outputStream << dialog.unreadCount;
+            if (dialog.tlType == TLValue::DialogChannel) {
+                outputStream << dialog.pts;
+            }
         }
     } else {
-        outputStream << static_cast<quint32>(0);
+        outputStream << quint32(0); // dialogs count
     }
 
     return output;
@@ -321,40 +375,40 @@ void CTelegramDispatcher::tryNextDcAddress()
 
 bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
 {
+    initConnectionSharedClear();
+
     CRawStreamEx inputStream(secret);
 
     quint32 format;
-    qint32 deltaTime = 0;
-    TLDcOption dcInfo;
-    QByteArray authKey;
-    quint64 authId;
-    quint64 serverSalt;
-
     inputStream >> format;
 
     if (format > secretFormatVersion) {
-        qDebug() << Q_FUNC_INFO << "Unknown format version" << format;
+        qWarning() << Q_FUNC_INFO << "Unknown format version" << format;
         return false;
     } else {
         qDebug() << Q_FUNC_INFO << "Format version:" << format;
     }
 
-    QByteArray legacySelfPhone;
-    TLValue legacyDcInfoTlType;
-    QByteArray legacyDcHostName;
-
+    qint32 deltaTime = 0;
     inputStream >> deltaTime;
-    inputStream >> legacyDcInfoTlType;
 
-    if (legacyDcInfoTlType != s_legacyDcInfoTlType) {
-        qDebug() << Q_FUNC_INFO << "Unexpected dataversion" << format;
-        return false;
+    if (format < 4) {
+        quint32 legacyDcInfoTlType;
+        inputStream >> legacyDcInfoTlType;
+
+        if (legacyDcInfoTlType != s_legacyDcInfoTlType) {
+            qWarning() << Q_FUNC_INFO << "Unexpected dataversion" << format;
+            return false;
+        }
     }
 
-    QByteArray dcIpAddress;
-
+    TLDcOption dcInfo;
     inputStream >> dcInfo.id;
-    inputStream >> legacyDcHostName; // Not needed anymore
+    if (format < 4) {
+        QByteArray legacyDcHostName;
+        inputStream >> legacyDcHostName;
+    }
+    QByteArray dcIpAddress;
     inputStream >> dcIpAddress;
     dcInfo.ipAddress = QString::fromLatin1(dcIpAddress);
     inputStream >> dcInfo.port;
@@ -362,9 +416,11 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     qDebug() << Q_FUNC_INFO << dcInfo.ipAddress;
 
     if (format < 3) {
+        QByteArray legacySelfPhone;
         inputStream >> legacySelfPhone;
     }
 
+    QByteArray authKey;
     inputStream >> authKey;
 
     if (authKey.isEmpty()) {
@@ -372,10 +428,15 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
         return false;
     }
 
+    quint64 authId;
     inputStream >> authId;
+    quint64 serverSalt;
     inputStream >> serverSalt;
 
-    initConnectionSharedClear();
+    if (inputStream.error()) {
+        qWarning() << Q_FUNC_INFO << "Read error occurred.";
+        return false;
+    }
 
     if (format >= 1) {
         inputStream >> m_updatesState.pts;
@@ -383,7 +444,46 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
         inputStream >> m_updatesState.date;
     }
 
-    if (format >= 2) {
+    if (format >= 4) {
+        quint32 dialogsCount = 0;
+        inputStream >> dialogsCount;
+        m_dialogs.reserve(dialogsCount + 5);
+        for (quint32 i = 0; i < dialogsCount; ++i) {
+            TLDialog dialog;
+            quint8 dialogType = 0;
+            inputStream >> dialogType;
+
+            switch (dialogType) {
+            case DialogTypeDialog:
+                dialog.tlType = TLValue::Dialog;
+                break;
+            case DialogTypeChannel:
+                dialog.tlType = TLValue::DialogChannel;
+                break;
+            default:
+                qWarning() << Q_FUNC_INFO << "Read invalid dialog type";
+                return false;
+                break;
+            }
+
+            quint8 peerType = 0;
+            quint32 peerId = 0;
+            inputStream >> peerType >> peerId;
+            Telegram::Peer peer(peerId, static_cast<Telegram::Peer::Type>(peerType));
+            if (!peer.isValid()) {
+                qWarning() << "Session data contains invalid peer";
+                return false;
+            }
+            dialog.peer = toTLPeer(peer);
+            inputStream >> dialog.readInboxMaxId;
+            inputStream >> dialog.unreadCount;
+
+            if (dialogType == DialogTypeChannel) {
+                inputStream >> dialog.pts;
+            }
+            m_dialogs.insert(peer, dialog);
+        }
+    } else if (format >= 2) {
         TLValue legacyVectorTlType(TLValue::Vector);
         quint32 chatIdsVectorSize = 0;
 
