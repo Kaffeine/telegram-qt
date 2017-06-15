@@ -1091,11 +1091,13 @@ void CTelegramDispatcher::getInitialUsers()
 
 void CTelegramDispatcher::getInitialDialogs()
 {
+    qDebug() << Q_FUNC_INFO;
     activeConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ s_dialogsLimit);
 }
 
 void CTelegramDispatcher::getContacts()
 {
+    qDebug() << Q_FUNC_INFO;
     activeConnection()->contactsGetContacts(QString()); // Empty hash argument for now.
 }
 
