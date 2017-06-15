@@ -54,7 +54,7 @@ public:
         StepDone            = StepDialogs | (StepDialogs - 1)
     };
 
-#if defined(DEVELOPER_BUILD) && QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
     Q_ENUM(InitializationStep)
 #endif
 
