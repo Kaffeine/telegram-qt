@@ -24,6 +24,7 @@
 #include "CRawStream.hpp"
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
+#include "Debug.hpp"
 
 using namespace TelegramUtils;
 
@@ -1010,6 +1011,23 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
 
     onUsersReceived(dialogs.users);
     onChatsReceived(dialogs.chats);
+    qDebug() << Q_FUNC_INFO << "received dialogs:" << dialogs.dialogs.count();
+
+    // Apply dialogs
+    for (const TLDialog &dialog : dialogs.dialogs) {
+        const Telegram::Peer p = toPublicPeer(dialog.peer);
+        if (m_dialogs.contains(p)) {
+            qDebug() << Q_FUNC_INFO << "Update dialog" << p;
+            TLDialog &existDialog = m_dialogs[p];
+            if (existDialog.readInboxMaxId < dialog.readInboxMaxId) {
+                qDebug() << "Dialog readInboxMaxId updated from" << existDialog.readInboxMaxId << "to" << dialog.readInboxMaxId;
+            }
+            existDialog = dialog;
+        } else {
+            qDebug() << Q_FUNC_INFO << "Add dialog" << p;
+            m_dialogs.insert(p, dialog);
+        }
+    }
 
     if (dialogs.tlType == TLValue::MessagesDialogsSlice) {
         quint32 lastDate = 0;
@@ -1021,10 +1039,11 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
             --it;
             const TLDialog *dialog = it;
             if (!dialog->isValid()) {
-                continue;
-            }
-            // Ignore DialogChannel for now
-            if (dialog->tlType != TLValue::Dialog) {
+#ifdef DEVELOPER_BUILD
+                qWarning() << "Received invalid dialog!" << *dialog;
+#else
+                qWarning() << "Received invalid dialog!";
+#endif
                 continue;
             }
 
@@ -1113,15 +1132,6 @@ void CTelegramDispatcher::getContacts()
     activeConnection()->contactsGetContacts(QString()); // Empty hash argument for now.
 }
 
-void CTelegramDispatcher::getChatsInfo()
-{
-    if (m_chatIds.isEmpty()) {
-        continueInitialization(StepChatInfo);
-    } else {
-        activeConnection()->messagesGetChats(m_chatIds);
-    }
-}
-
 void CTelegramDispatcher::getUpdatesState()
 {
     qDebug() << Q_FUNC_INFO;
@@ -1197,8 +1207,6 @@ void CTelegramDispatcher::onChatsReceived(const QVector<TLChat> &chats)
     foreach (const TLChat &chat, chats) {
         updateChat(chat);
     }
-
-    continueInitialization(StepChatInfo);
 }
 
 void CTelegramDispatcher::onMessagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users)
@@ -1263,8 +1271,17 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 
     switch (update.tlType) {
     case TLValue::UpdateNewMessage:
+    {
         qDebug() << Q_FUNC_INFO << "UpdateNewMessage";
+        const Telegram::Peer peer = toPublicPeer(update.message.toId);
+        if (m_dialogs.contains(peer)) {
+            const TLDialog &dialog = m_dialogs.value(peer);
+            if (update.message.id <= dialog.topMessage) {
+                break;
+            }
+        }
         processMessageReceived(update.message);
+    }
         break;
     case TLValue::UpdateMessageID:
         updateSentMessageId(update.randomId, update.id);
@@ -1429,14 +1446,18 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 //        update.notifySettings;
 //        break;
     case TLValue::UpdateReadHistoryInbox:
-    case TLValue::UpdateReadHistoryOutbox: {
-        Telegram::Peer peer = toPublicPeer(update.peer);
-        if (!peer.id) {
+    case TLValue::UpdateReadHistoryOutbox:
+    {
+        const Telegram::Peer peer = toPublicPeer(update.peer);
+        if (!peer.isValid()) {
 #ifdef DEVELOPER_BUILD
             qDebug() << Q_FUNC_INFO << update.tlType << "Unable to resolve peer" << update.peer;
 #else
             qDebug() << Q_FUNC_INFO << update.tlType << "Unable to resolve peer" << update.peer.tlType << update.peer.userId << update.peer.chatId;
 #endif
+        }
+        if (m_dialogs.contains(peer)) {
+            m_dialogs[peer].readInboxMaxId = update.maxId;
         }
         if (update.tlType == TLValue::UpdateReadHistoryInbox) {
             emit messageReadInbox(peer, update.maxId);
@@ -2134,11 +2155,6 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         if (!(m_requestedSteps & StepContactList)) {
             getContacts();
             m_requestedSteps |= StepContactList;
-        }
-
-        if (!(m_requestedSteps & StepChatInfo)) {
-            getChatsInfo();
-            m_requestedSteps |= StepChatInfo;
         }
 
         if (!(m_requestedSteps & StepDialogs)) {

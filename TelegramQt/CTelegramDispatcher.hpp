@@ -38,6 +38,17 @@ class CAppInformation;
 class CTelegramConnection;
 class CTelegramModule;
 
+namespace Telegram
+{
+
+inline uint qHash(const Peer &key, uint seed)
+{
+    quint32 s = seed;
+    return key.id ^ s;
+}
+
+}
+
 class CTelegramDispatcher : public QObject
 {
     Q_OBJECT
@@ -48,10 +59,9 @@ public:
         StepSignIn          = 1 << 1,
         StepKnowSelf        = 1 << 2,
         StepContactList     = 1 << 3,
-        StepChatInfo        = 1 << 4,
+        StepDialogs         = 1 << 4,
         StepUpdates         = 1 << 5,
-        StepDialogs         = 1 << 6,
-        StepDone            = StepDialogs | (StepDialogs - 1)
+        StepDone            = StepUpdates | (StepUpdates - 1)
     };
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
@@ -198,7 +208,6 @@ protected slots:
 
     void getDcConfiguration();
     void getContacts();
-    void getChatsInfo();
     void getUpdatesState();
     void onUpdatesStateReceived(const TLUpdatesState &updatesState);
 
@@ -332,6 +341,7 @@ protected:
 
     TLVector<quint32> m_chatIds; // Telegram chat ids vector. Index is "public chat id".
 
+    QHash<Telegram::Peer,TLDialog> m_dialogs;
     QHash<quint32, TLChat*> m_chatInfo; // Telegram chat id to Chat map
     QHash<quint32, TLChatFull> m_chatFullInfo; // Telegram chat id to ChatFull map
 
