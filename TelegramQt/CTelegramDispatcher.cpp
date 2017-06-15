@@ -1644,6 +1644,25 @@ Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLPeer &peer) const
     }
 }
 
+TLPeer CTelegramDispatcher::toTLPeer(const Telegram::Peer &peer) const
+{
+    TLPeer result;
+    switch (peer.type) {
+    case Telegram::Peer::Chat:
+        result.tlType = TLValue::PeerChat;
+        result.chatId = peer.id;
+        break;
+    case Telegram::Peer::User:
+        result.tlType = TLValue::PeerUser;
+        result.userId = peer.id;
+        break;
+    default:
+        qWarning() << "Detected attempt to convert incorrect public peer";
+        break;
+    }
+    return result;
+}
+
 TLInputUser CTelegramDispatcher::toInputUser(quint32 id) const
 {
     TLInputUser inputUser;
