@@ -468,7 +468,7 @@ bool CTelegramDispatcher::requestHistory(const Telegram::Peer &peer, quint32 off
         return false;
     }
 
-    activeConnection()->messagesGetHistory(inputPeer, /* offsetId */ m_maxMessageId + 1, offset, limit, /* maxId */ 0, /* minId */ 0);
+    activeConnection()->messagesGetHistory(inputPeer, /* offsetId */ m_maxMessageId + 1, /* addOffset */ offset, limit, /* maxId */ 0, /* minId */ 0);
 
     return true;
 }
@@ -1003,7 +1003,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
                 continue;
             }
 
-            Telegram::Peer p = toPublicPeer(dialog->peer);
+            const Telegram::Peer p = toPublicPeer(dialog->peer);
             if (!lastPeer.isValid() && p.isValid()) {
                 lastPeer = p;
             }
@@ -1022,7 +1022,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
             }
 
             if (lastPeer.isValid() && lastMessageId && lastDate) {
-                break; // Break 'while dialog'
+                break; // Break the 'while dialog'
             }
         }
 
@@ -1104,6 +1104,7 @@ void CTelegramDispatcher::getUpdatesState()
 
 void CTelegramDispatcher::onUpdatesStateReceived(const TLUpdatesState &updatesState)
 {
+    qDebug() << Q_FUNC_INFO;
     m_actualState = updatesState;
     checkStateAndCallGetDifference();
 }
@@ -1111,6 +1112,10 @@ void CTelegramDispatcher::onUpdatesStateReceived(const TLUpdatesState &updatesSt
 // Should be called via checkStateAndCallGetDifference()
 void CTelegramDispatcher::getDifference()
 {
+    if (!activeConnection() || (activeConnection()->status() != CTelegramConnection::ConnectionStatusConnected)) {
+        qWarning() << "Unexpected getDifference() call!";
+        return;
+    }
     activeConnection()->updatesGetDifference(m_updatesState.pts, m_updatesState.date, m_updatesState.qts);
 }
 
@@ -1442,14 +1447,12 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
 
     if (message.tlType == TLValue::MessageService) {
         const TLMessageAction &action = message.action;
-
         const quint32 chatId = message.toId.chatId;
         TLChat chat = m_chatInfo.value(chatId);
         TLChatFull fullChat = m_chatFullInfo.value(chatId);
 
         chat.id = chatId;
         fullChat.id = chatId;
-
         switch (action.tlType) {
         case TLValue::MessageActionChatCreate:
             chat.title = action.title;
@@ -2054,7 +2057,7 @@ void CTelegramDispatcher::ensureTypingUpdateTimer(int interval)
 
 void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::InitializationStep justDone)
 {
-    qDebug() << Q_FUNC_INFO << justDone;
+    qDebug() << Q_FUNC_INFO << justDone << "on top of" << m_initializationState;
 
     if (justDone && ((m_initializationState | justDone) == m_initializationState)) {
         return; // Nothing new
