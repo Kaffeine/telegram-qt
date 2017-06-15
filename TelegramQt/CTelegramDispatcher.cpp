@@ -1212,8 +1212,6 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     qDebug() << Q_FUNC_INFO << update;
 #endif
 
-    quint32 newPts = m_updatesState.pts;
-
     switch (update.tlType) {
     case TLValue::UpdateNewMessage:
     case TLValue::UpdateReadMessagesContents:
@@ -1230,8 +1228,6 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             qDebug() << "Updates delaying is not implemented yet. Recovery via getDifference() in 10 ms";
             QTimer::singleShot(10, this, SLOT(getDifference()));
             return;
-        } else {
-            newPts = update.pts;
         }
         break;
     default:
@@ -1427,7 +1423,18 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         break;
     }
 
-    ensureUpdateState(newPts);
+    switch (update.tlType) {
+    case TLValue::UpdateNewMessage:
+    case TLValue::UpdateReadMessagesContents:
+    case TLValue::UpdateReadHistoryInbox:
+    case TLValue::UpdateReadHistoryOutbox:
+    case TLValue::UpdateDeleteMessages:
+    case TLValue::UpdateWebPage:
+        ensureUpdateState(update.pts);
+        break;
+    default:
+        break;
+    }
 }
 
 void CTelegramDispatcher::processMessageReceived(const TLMessage &message)
