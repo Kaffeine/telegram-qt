@@ -248,7 +248,7 @@ protected:
 
     void ensureMaxMessageId(quint32 id);
 
-    void addSentMessageId(quint64 rpcMessagesId, quint64 randomId);
+    void addSentMessageId(const Telegram::Peer peer, quint64 rpcMessagesId, quint64 randomId);
     void updateShortSentMessageId(quint64 rpcId, quint32 resolvedId);
     void updateSentMessageId(quint64 randomId, quint32 resolvedId);
 
@@ -339,6 +339,7 @@ protected:
 
     // fileId is program-specific handler, not related to Telegram.
     QHash<quint64,quint64> m_rpcIdToMessageRandomIdMap; // RPC Id, Random Id
+    QHash<quint64,Telegram::Peer> m_randomMessageToPeerMap; // Random Id, Peer
 
     QTimer *m_typingUpdateTimer;
     QVector<TypingStatus> m_contactsMessageActions;

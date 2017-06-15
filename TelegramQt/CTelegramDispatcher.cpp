@@ -581,7 +581,12 @@ bool CTelegramDispatcher::requestHistory(const Telegram::Peer &peer, quint32 off
         return false;
     }
 
-    activeConnection()->messagesGetHistory(inputPeer, /* offsetId */ m_maxMessageId + 1, /* addOffset */ offset, limit, /* maxId */ 0, /* minId */ 0);
+    quint32 offsetId = m_maxMessageId + 1;
+    if (m_dialogs.contains(peer)) {
+        offsetId = m_dialogs.value(peer).topMessage + 1;
+    }
+
+    activeConnection()->messagesGetHistory(inputPeer, /* offsetId */ offsetId, /* addOffset */ offset, limit, /* maxId */ 0, /* minId */ 0);
 
     return true;
 }
@@ -643,7 +648,7 @@ quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QStri
     qDebug() << "sendMessage to" << inputPeer << message << "randomMessageId:" << randomId;
 #endif
     const quint64 rpcMessageId = activeConnection()->sendMessage(inputPeer, message, randomId);
-    addSentMessageId(rpcMessageId, randomId);
+    addSentMessageId(peer, rpcMessageId, randomId);
     return randomId;
 }
 
@@ -662,7 +667,7 @@ quint64 CTelegramDispatcher::sendMedia(const Telegram::Peer &peer, const TLInput
     qDebug() << "sendMedia to" << inputPeer << inputMedia << "randomMessageId:" << randomId;
 #endif
     const quint64 rpcMessageId = activeConnection()->sendMedia(inputPeer, inputMedia, randomId);
-    addSentMessageId(rpcMessageId, randomId);
+    addSentMessageId(peer, rpcMessageId, randomId);
     return randomId;
 }
 
@@ -678,7 +683,7 @@ quint64 CTelegramDispatcher::forwardMessage(const Telegram::Peer &peer, quint32 
     qDebug() << "forwardMessage to" << toInputPeer(peer) << "message" << messageId << "randomMessageId:" << randomId;
 #endif
     const quint64 rpcMessageId = activeConnection()->messagesForwardMessage(toInputPeer(peer), messageId, randomId);
-    addSentMessageId(rpcMessageId, randomId);
+    addSentMessageId(peer, rpcMessageId, randomId);
     return randomId;
 }
 
@@ -2529,8 +2534,9 @@ void CTelegramDispatcher::ensureMaxMessageId(quint32 id)
     }
 }
 
-void CTelegramDispatcher::addSentMessageId(quint64 rpcMessagesId, quint64 randomId)
+void CTelegramDispatcher::addSentMessageId(const Telegram::Peer peer, quint64 rpcMessagesId, quint64 randomId)
 {
+    m_randomMessageToPeerMap.insert(randomId, peer);
     m_rpcIdToMessageRandomIdMap.insert(rpcMessagesId, randomId);
 }
 
@@ -2547,6 +2553,16 @@ void CTelegramDispatcher::updateShortSentMessageId(quint64 rpcId, quint32 resolv
 
 void CTelegramDispatcher::updateSentMessageId(quint64 randomId, quint32 resolvedId)
 {
+    if (m_randomMessageToPeerMap.contains(randomId)) {
+        const Telegram::Peer peer = m_randomMessageToPeerMap.take(randomId);
+        if (m_dialogs.contains(peer)) {
+            TLDialog &dialog = m_dialogs[peer];
+            if (resolvedId > dialog.topMessage) {
+                qDebug() << "Up top dialog message from" << dialog.topMessage << "to" << resolvedId;
+                dialog.topMessage = resolvedId;
+            }
+        }
+    }
     qDebug() << Q_FUNC_INFO << "Sent message id received:" << resolvedId << "is the id of message" << randomId;
     ensureMaxMessageId(resolvedId);
     emit sentMessageIdReceived(randomId, resolvedId);
