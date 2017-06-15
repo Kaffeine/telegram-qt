@@ -685,9 +685,21 @@ void CTelegramDispatcher::setMessageRead(const Telegram::Peer &peer, quint32 mes
         return;
     }
     const TLInputPeer inputPeer = toInputPeer(peer);
+    if (!inputPeer.isValid()) {
+        qWarning() << Q_FUNC_INFO << "invalid input peer for peer" << peer.type << peer.id;
+        return;
+    }
 
-    if (inputPeer.tlType != TLValue::InputPeerEmpty) {
+    switch (inputPeer.tlType) {
+    case TLValue::InputPeerChat:
+    case TLValue::InputPeerUser:
         activeConnection()->messagesReadHistory(inputPeer, messageId);
+        break;
+    case TLValue::InputPeerEmpty:
+    case TLValue::InputPeerSelf:
+    default:
+        qDebug() << Q_FUNC_INFO << "the call makes no sense for peer" << inputPeer.tlType << "(" << peer.type << peer.id << ")";
+        break;
     }
 }
 
@@ -799,30 +811,31 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
 
     participants->clear();
 
-    bool needsUpdate = false;
-    if (!m_chatFullInfo.contains(chatId)) {
-        activeConnection()->messagesGetFullChat(chatId);
-        needsUpdate = true;
-    }
     if (!m_chatInfo.contains(chatId)) {
         activeConnection()->messagesGetChats(TLVector<quint32>() << chatId);
-        needsUpdate = true;
+        return true; // Pending
     }
 
-    if (needsUpdate) {
-        return true;
+    const TLChat &chat = m_chatInfo.value(chatId);
+
+    if (!m_chatFullInfo.contains(chatId)) {
+        switch (chat.tlType) {
+        case TLValue::Chat:
+            activeConnection()->messagesGetFullChat(chatId);
+            return true;
+        default:
+            break;
+        }
+
+        return false;
     }
 
     const TLChatFull &fullChat = m_chatFullInfo.value(chatId);
-//    const TLChat &chat = m_chatInfo.value(chatId);
 
-    foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
-        participants->append(participant.userId);
-    }
-
-//    if (!chat.left && !participants->contains(m_selfUserId)) {
-    if (!participants->contains(m_selfUserId)) {
-        participants->append(m_selfUserId);
+    if (fullChat.tlType == TLValue::ChatFull) {
+        foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
+            participants->append(participant.userId);
+        }
     }
 
     return true;
