@@ -657,6 +657,266 @@ quint64 CTelegramConnection::authSignUp(const QString &phoneNumber, const QStrin
     return sendEncryptedPackage(output);
 }
 
+quint64 CTelegramConnection::channelsCheckUsername(const TLInputChannel &channel, const QString &username)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsCheckUsername;
+    outputStream << channel;
+    outputStream << username;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsCreateChannel(quint32 flags, const QString &title, const QString &about)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsCreateChannel;
+    outputStream << flags;
+    if (flags & 1 << 0) {
+        outputStream << TLTrue();
+    }
+    if (flags & 1 << 1) {
+        outputStream << TLTrue();
+    }
+    outputStream << title;
+    outputStream << about;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsDeleteChannel(const TLInputChannel &channel)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsDeleteChannel;
+    outputStream << channel;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsDeleteMessages(const TLInputChannel &channel, const TLVector<quint32> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsDeleteMessages;
+    outputStream << channel;
+    outputStream << id;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsDeleteUserHistory(const TLInputChannel &channel, const TLInputUser &userId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsDeleteUserHistory;
+    outputStream << channel;
+    outputStream << userId;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsEditAbout(const TLInputChannel &channel, const QString &about)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsEditAbout;
+    outputStream << channel;
+    outputStream << about;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsEditAdmin(const TLInputChannel &channel, const TLInputUser &userId, const TLChannelParticipantRole &role)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsEditAdmin;
+    outputStream << channel;
+    outputStream << userId;
+    outputStream << role;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsEditPhoto(const TLInputChannel &channel, const TLInputChatPhoto &photo)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsEditPhoto;
+    outputStream << channel;
+    outputStream << photo;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsEditTitle(const TLInputChannel &channel, const QString &title)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsEditTitle;
+    outputStream << channel;
+    outputStream << title;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsExportInvite(const TLInputChannel &channel)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsExportInvite;
+    outputStream << channel;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsGetChannels(const TLVector<TLInputChannel> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsGetChannels;
+    outputStream << id;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsGetDialogs(quint32 offset, quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsGetDialogs;
+    outputStream << offset;
+    outputStream << limit;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsGetFullChannel(const TLInputChannel &channel)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsGetFullChannel;
+    outputStream << channel;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsGetImportantHistory(const TLInputChannel &channel, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsGetImportantHistory;
+    outputStream << channel;
+    outputStream << offsetId;
+    outputStream << addOffset;
+    outputStream << limit;
+    outputStream << maxId;
+    outputStream << minId;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsGetMessages(const TLInputChannel &channel, const TLVector<quint32> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsGetMessages;
+    outputStream << channel;
+    outputStream << id;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsGetParticipant(const TLInputChannel &channel, const TLInputUser &userId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsGetParticipant;
+    outputStream << channel;
+    outputStream << userId;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsGetParticipants(const TLInputChannel &channel, const TLChannelParticipantsFilter &filter, quint32 offset, quint32 limit)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsGetParticipants;
+    outputStream << channel;
+    outputStream << filter;
+    outputStream << offset;
+    outputStream << limit;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsInviteToChannel(const TLInputChannel &channel, const TLVector<TLInputUser> &users)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsInviteToChannel;
+    outputStream << channel;
+    outputStream << users;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsJoinChannel(const TLInputChannel &channel)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsJoinChannel;
+    outputStream << channel;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsKickFromChannel(const TLInputChannel &channel, const TLInputUser &userId, bool kicked)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsKickFromChannel;
+    outputStream << channel;
+    outputStream << userId;
+    outputStream << kicked;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsLeaveChannel(const TLInputChannel &channel)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsLeaveChannel;
+    outputStream << channel;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsReadHistory(const TLInputChannel &channel, quint32 maxId)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsReadHistory;
+    outputStream << channel;
+    outputStream << maxId;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsReportSpam(const TLInputChannel &channel, const TLInputUser &userId, const TLVector<quint32> &id)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsReportSpam;
+    outputStream << channel;
+    outputStream << userId;
+    outputStream << id;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsToggleComments(const TLInputChannel &channel, bool enabled)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsToggleComments;
+    outputStream << channel;
+    outputStream << enabled;
+    return sendEncryptedPackage(output);
+}
+
+quint64 CTelegramConnection::channelsUpdateUsername(const TLInputChannel &channel, const QString &username)
+{
+    QByteArray output;
+    CTelegramStream outputStream(&output, /* write */ true);
+    outputStream << TLValue::ChannelsUpdateUsername;
+    outputStream << channel;
+    outputStream << username;
+    return sendEncryptedPackage(output);
+}
+
 quint64 CTelegramConnection::contactsBlock(const TLInputUser &id)
 {
     QByteArray output;
@@ -2184,6 +2444,51 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         case TLValue::AuthSignUp:
             processAuthSignUp(&context);
             break;
+        case TLValue::ChannelsCheckUsername:
+            processChannelsCheckUsername(&context);
+            break;
+        case TLValue::ChannelsDeleteMessages:
+            processChannelsDeleteMessages(&context);
+            break;
+        case TLValue::ChannelsDeleteUserHistory:
+            processChannelsDeleteUserHistory(&context);
+            break;
+        case TLValue::ChannelsEditAbout:
+            processChannelsEditAbout(&context);
+            break;
+        case TLValue::ChannelsExportInvite:
+            processChannelsExportInvite(&context);
+            break;
+        case TLValue::ChannelsGetChannels:
+            processChannelsGetChannels(&context);
+            break;
+        case TLValue::ChannelsGetDialogs:
+            processChannelsGetDialogs(&context);
+            break;
+        case TLValue::ChannelsGetFullChannel:
+            processChannelsGetFullChannel(&context);
+            break;
+        case TLValue::ChannelsGetImportantHistory:
+            processChannelsGetImportantHistory(&context);
+            break;
+        case TLValue::ChannelsGetMessages:
+            processChannelsGetMessages(&context);
+            break;
+        case TLValue::ChannelsGetParticipant:
+            processChannelsGetParticipant(&context);
+            break;
+        case TLValue::ChannelsGetParticipants:
+            processChannelsGetParticipants(&context);
+            break;
+        case TLValue::ChannelsReadHistory:
+            processChannelsReadHistory(&context);
+            break;
+        case TLValue::ChannelsReportSpam:
+            processChannelsReportSpam(&context);
+            break;
+        case TLValue::ChannelsUpdateUsername:
+            processChannelsUpdateUsername(&context);
+            break;
         case TLValue::ContactsBlock:
             processContactsBlock(&context);
             break;
@@ -2396,6 +2701,16 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
             break;
         // End of generated RPC processing switch cases
         // Generated RPC processing switch updates cases
+        case TLValue::ChannelsCreateChannel:
+        case TLValue::ChannelsDeleteChannel:
+        case TLValue::ChannelsEditAdmin:
+        case TLValue::ChannelsEditPhoto:
+        case TLValue::ChannelsEditTitle:
+        case TLValue::ChannelsInviteToChannel:
+        case TLValue::ChannelsJoinChannel:
+        case TLValue::ChannelsKickFromChannel:
+        case TLValue::ChannelsLeaveChannel:
+        case TLValue::ChannelsToggleComments:
         case TLValue::MessagesAddChatUser:
         case TLValue::MessagesCreateChat:
         case TLValue::MessagesDeleteChatUser:
@@ -3060,6 +3375,116 @@ void CTelegramConnection::processAuthSignIn(RpcProcessingContext *context)
 void CTelegramConnection::processAuthSignUp(RpcProcessingContext *context)
 {
     processAuthSign(context);
+}
+
+void CTelegramConnection::processChannelsCheckUsername(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processChannelsDeleteMessages(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesAffectedMessages result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsDeleteUserHistory(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesAffectedHistory result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsEditAbout(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processChannelsExportInvite(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLExportedChatInvite result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsGetChannels(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesChats result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsGetDialogs(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesDialogs result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsGetFullChannel(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesChatFull result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsGetImportantHistory(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesMessages result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsGetMessages(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLMessagesMessages result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsGetParticipant(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLChannelsChannelParticipant result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsGetParticipants(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLChannelsChannelParticipants result;
+    context->readRpcResult(&result);
+}
+
+void CTelegramConnection::processChannelsReadHistory(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processChannelsReportSpam(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
+}
+
+void CTelegramConnection::processChannelsUpdateUsername(RpcProcessingContext *context)
+{
+    qWarning() << Q_FUNC_INFO << "Is not implemented yet";
+    TLValue result; // bool
+    context->inputStream() >> result;
+    context->setReadCode(result);
 }
 
 void CTelegramConnection::processContactsBlock(RpcProcessingContext *context)
