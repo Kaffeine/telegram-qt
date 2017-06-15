@@ -1155,6 +1155,17 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
         if (m_dialogs.contains(p)) {
             qDebug() << Q_FUNC_INFO << "Update dialog" << p;
             TLDialog &existDialog = m_dialogs[p];
+            if (dialog.tlType == TLValue::DialogChannel) {
+                // update channel from
+                if (existDialog.pts < dialog.pts) {
+                    qDebug() << "Dialog pts should be updated from" << existDialog.pts << "to" << dialog.pts;
+                    const TLInputChannel inputChannel = toInputChannel(existDialog);
+                    activeConnection()->updatesGetChannelDifference(inputChannel, TLChannelMessagesFilter(), existDialog.pts, 10000);
+                } else if (existDialog.pts > dialog.pts) {
+                    qWarning() << "Stored dialog pts is bigger than the received one. Something is very wrong (" << existDialog.pts << "vs" << dialog.pts << ").";
+                }
+
+            }
             if (existDialog.readInboxMaxId < dialog.readInboxMaxId) {
                 qDebug() << "Dialog readInboxMaxId updated from" << existDialog.readInboxMaxId << "to" << dialog.readInboxMaxId;
             }
@@ -1334,6 +1345,50 @@ void CTelegramDispatcher::onUpdatesDifferenceReceived(const TLUpdatesDifference 
     }
 
     checkStateAndCallGetDifference();
+}
+
+void CTelegramDispatcher::onUpdatesChannelDifferenceReceived(const TLUpdatesChannelDifference &updatesDifference)
+{
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << updatesDifference;
+#endif
+
+    switch (updatesDifference.tlType) {
+    case TLValue::UpdatesChannelDifference:
+        qDebug() << Q_FUNC_INFO << "UpdatesDifference" << updatesDifference.newMessages.count();
+        foreach (const TLChat &chat, updatesDifference.chats) {
+            updateChat(chat);
+        }
+
+        foreach (const TLMessage &message, updatesDifference.newMessages) {
+            if ((message.tlType != TLValue::MessageService) && (filterReceivedMessage(getPublicMessageFlags(message.flags)))) {
+                continue;
+            }
+
+            internalProcessMessageReceived(message);
+        }
+//        if (updatesDifference.tlType == TLValue::UpdatesChannelDifference) {
+//            setUpdateState(updatesDifference.state.pts, updatesDifference.state.seq, updatesDifference.state.date);
+//        } else { // UpdatesDifferenceSlice
+//            // Looks like updatesDifference.intermediateState is always null nowadays.
+//            setUpdateState(updatesDifference.intermediateState.pts, updatesDifference.intermediateState.seq, updatesDifference.intermediateState.date);
+//        }
+
+        foreach (const TLUpdate &update, updatesDifference.otherUpdates) {
+            processUpdate(update);
+        }
+
+        break;
+    case TLValue::UpdatesChannelDifferenceTooLong:
+        qDebug() << Q_FUNC_INFO << "UpdatesChannelDifferenceTooLong" << "not implemented yet";
+        break;
+    case TLValue::UpdatesChannelDifferenceEmpty:
+        qDebug() << Q_FUNC_INFO << "UpdatesChannelDifferenceEmpty" << "(NOP, but may be we need to do something?)";
+        break;
+    default:
+        qDebug() << Q_FUNC_INFO << "unknown diff type:" << updatesDifference.tlType.toString();
+        break;
+    }
 }
 
 void CTelegramDispatcher::onChatsReceived(const QVector<TLChat> &chats)
@@ -2062,6 +2117,8 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
                     SLOT(onUpdatesStateReceived(TLUpdatesState)));
             connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)),
                     SLOT(onUpdatesDifferenceReceived(TLUpdatesDifference)));
+            connect(connection, SIGNAL(updatesChannelDifferenceReceived(TLUpdatesChannelDifference)),
+                    SLOT(onUpdatesChannelDifferenceReceived(TLUpdatesChannelDifference)));
             connect(connection, SIGNAL(authExportedAuthorizationReceived(quint32,quint32,QByteArray)),
                     SLOT(onAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
             connect(connection, SIGNAL(messagesChatsReceived(QVector<TLChat>)),
