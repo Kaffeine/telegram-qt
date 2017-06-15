@@ -34,6 +34,9 @@ QDebug operator<<(QDebug d, const Telegram::Peer &peer)
     case Telegram::Peer::Chat:
         d << "Telegram::Peer(Chat, " << peer.id << ")";
         break;
+    case Telegram::Peer::Channel:
+        d << "Telegram::Peer(Channel, " << peer.id << ")";
+        break;
     default:
         d << "Telegram::Peer(Invalid:" << peer.type << ", " << peer.id << ")";
         break;

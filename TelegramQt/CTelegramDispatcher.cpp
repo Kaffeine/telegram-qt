@@ -623,6 +623,9 @@ quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QStri
     case TLValue::InputPeerChat:
         actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, inputPeer.chatId);
         break;
+    case TLValue::InputPeerChannel:
+        actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, inputPeer.channelId);
+        break;
     case TLValue::InputPeerEmpty:
     default:
         qWarning() << Q_FUNC_INFO << "Can not resolve contact" << peer.id << peer.type;
@@ -750,6 +753,9 @@ void CTelegramDispatcher::setTyping(const Telegram::Peer &peer, TelegramNamespac
     case TLValue::InputPeerChat:
         actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, inputPeer.chatId);
         break;
+    case TLValue::InputPeerChannel:
+        actionIndex = TypingStatus::indexForChatAndUser(m_localMessageActions, inputPeer.channelId);
+        break;
     default:
         // Invalid InputPeer type
         return;
@@ -780,6 +786,8 @@ void CTelegramDispatcher::setTyping(const Telegram::Peer &peer, TelegramNamespac
             status.action = publicAction;
             if (inputPeer.tlType == TLValue::InputPeerChat) {
                 status.chatId = inputPeer.chatId;
+            } else if (inputPeer.tlType == TLValue::InputPeerChannel) {
+                status.chatId = inputPeer.channelId;
             } else {
                 status.userId = inputPeer.userId;
             }
@@ -807,6 +815,12 @@ void CTelegramDispatcher::setMessageRead(const Telegram::Peer &peer, quint32 mes
     case TLValue::InputPeerChat:
     case TLValue::InputPeerUser:
         activeConnection()->messagesReadHistory(inputPeer, messageId);
+        break;
+    case TLValue::InputPeerChannel:
+    {
+        const TLInputChannel inputChannel = toInputChannel(peer);
+        activeConnection()->channelsReadHistory(inputChannel, messageId);
+    }
         break;
     case TLValue::InputPeerEmpty:
     case TLValue::InputPeerSelf:
@@ -906,6 +920,10 @@ bool CTelegramDispatcher::getChatInfo(Telegram::GroupChat *outputChat, quint32 c
         if (!haveSelf) {
             ++outputChat->participantsCount;
         }
+
+        if (chatFull.tlType == TLValue::ChannelFull) {
+            outputChat->participantsCount = chatFull.participantsCount;
+        }
     } else {
         outputChat->participantsCount = chat->participantsCount;
     }
@@ -925,14 +943,18 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
     participants->clear();
 
     if (!m_chatInfo.contains(chatId)) {
-        activeConnection()->messagesGetChats(TLVector<quint32>() << chatId);
+        activeConnection()->messagesGetChats(TLVector<quint32>() << chatId); // The chat can be a channel as well
         return true; // Pending
     }
 
     const TLChat *chat = m_chatInfo.value(chatId);
+    const TLInputChannel inputChannel = toInputChannel(chat);
 
     if (!m_chatFullInfo.contains(chatId)) {
         switch (chat->tlType) {
+        case TLValue::Channel:
+            activeConnection()->channelsGetFullChannel(inputChannel);
+            return true;
         case TLValue::Chat:
             activeConnection()->messagesGetFullChat(chatId);
             return true;
@@ -947,6 +969,14 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
 
     if (fullChat.tlType == TLValue::ChatFull) {
         foreach (const TLChatParticipant &participant, fullChat.participants.participants) {
+            participants->append(participant.userId);
+        }
+    } else if (fullChat.tlType == TLValue::ChannelFull) {
+        if (!m_channelParticipants.contains(chatId)) {
+            activeConnection()->channelsGetParticipants(inputChannel, TLChannelParticipantsFilter(), 0, 300);
+            return true;
+        }
+        foreach (const TLChannelParticipant &participant, m_channelParticipants.value(chatId)) {
             participants->append(participant.userId);
         }
     }
@@ -999,6 +1029,12 @@ void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
             emit userInfoReceived(user.id);
         }
     }
+}
+
+void CTelegramDispatcher::onChannelsParticipantsReceived(quint32 channelId, TLVector<TLChannelParticipant> participants)
+{
+    m_channelParticipants.insert(channelId, participants);
+    emitChatChanged(channelId);
 }
 
 void CTelegramDispatcher::onContactListReceived(const QVector<quint32> &contactList)
@@ -1371,6 +1407,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
 
     switch (update.tlType) {
     case TLValue::UpdateNewMessage:
+    case TLValue::UpdateNewChannelMessage:
     {
         qDebug() << Q_FUNC_INFO << "UpdateNewMessage";
         const Telegram::Peer peer = toPublicPeer(update.message.toId);
@@ -1566,6 +1603,15 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
         }
         break;
     }
+    case TLValue::UpdateReadChannelInbox:
+    {
+        const Telegram::Peer peer = Telegram::Peer(update.channelId, Telegram::Peer::Channel);
+        if (m_dialogs.contains(peer)) {
+            m_dialogs[peer].readInboxMaxId = update.maxId;
+        }
+        emit messageReadInbox(peer, update.maxId);
+    }
+        break;
     default:
         qDebug() << Q_FUNC_INFO << "Update type" << update.tlType.toString() << "is not implemented yet.";
         break;
@@ -1579,6 +1625,23 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     case TLValue::UpdateDeleteMessages:
     case TLValue::UpdateWebPage:
         ensureUpdateState(update.pts);
+        break;
+    case TLValue::UpdateNewChannelMessage:
+    {
+        const Telegram::Peer peer = toPublicPeer(update.message.toId);
+        if (m_dialogs.contains(peer)) {
+            m_dialogs[peer].pts = update.pts;
+        }
+    }
+        break;
+    case TLValue::UpdateDeleteChannelMessages:
+    {
+        const Telegram::Peer peer = Telegram::Peer(update.channelId, Telegram::Peer::Channel);
+        qDebug() << Q_FUNC_INFO << "DeleteChannelMessages is not implemented yet" << update.channelId << update.messages << update.pts << update.ptsCount;
+        if (m_dialogs.contains(peer)) {
+            m_dialogs[peer].pts = update.pts;
+        }
+    }
         break;
     default:
         break;
@@ -1760,6 +1823,15 @@ TLInputPeer CTelegramDispatcher::toInputPeer(const Telegram::Peer &peer) const
         inputPeer.tlType = TLValue::InputPeerChat;
         inputPeer.chatId = peer.id;
         break;
+    case Telegram::Peer::Channel:
+        if (m_chatInfo.contains(peer.id)) {
+            inputPeer.tlType = TLValue::InputPeerChannel;
+            inputPeer.channelId = peer.id;
+            inputPeer.accessHash = m_chatInfo.value(peer.id)->accessHash;
+        } else {
+            qWarning() << Q_FUNC_INFO << "Unknown public channel id" << peer.id;
+        }
+        break;
     case Telegram::Peer::User:
         if (peer.id == m_selfUserId) {
             inputPeer.tlType = TLValue::InputPeerSelf;
@@ -1789,6 +1861,8 @@ Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLInputPeer &inputPeer) c
         return Telegram::Peer(inputPeer.userId);
     case TLValue::InputPeerChat:
         return Telegram::Peer(inputPeer.chatId, Telegram::Peer::Chat);
+    case TLValue::InputPeerChannel:
+        return Telegram::Peer(inputPeer.channelId, Telegram::Peer::Channel);
     case TLValue::InputPeerEmpty:
     default:
         return Telegram::Peer();
@@ -1800,6 +1874,8 @@ Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLPeer &peer) const
     switch (peer.tlType) {
     case TLValue::PeerChat:
         return Telegram::Peer(peer.chatId, Telegram::Peer::Chat);
+    case TLValue::PeerChannel:
+        return Telegram::Peer(peer.channelId, Telegram::Peer::Channel);
     case TLValue::PeerUser:
         return Telegram::Peer(peer.userId);
     default:
@@ -1821,6 +1897,9 @@ Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLChat &chat) const
     case TLValue::Chat:
     case TLValue::ChatForbidden:
         return Telegram::Peer(chat.id, Telegram::Peer::Chat);
+    case TLValue::Channel:
+    case TLValue::ChannelForbidden:
+        return Telegram::Peer(chat.id, Telegram::Peer::Channel);
     default:
         return Telegram::Peer();
     }
@@ -1833,6 +1912,10 @@ TLPeer CTelegramDispatcher::toTLPeer(const Telegram::Peer &peer) const
     case Telegram::Peer::Chat:
         result.tlType = TLValue::PeerChat;
         result.chatId = peer.id;
+        break;
+    case Telegram::Peer::Channel:
+        result.tlType = TLValue::PeerChannel;
+        result.channelId = peer.id;
         break;
     case Telegram::Peer::User:
         result.tlType = TLValue::PeerUser;
@@ -1869,6 +1952,46 @@ TLInputUser CTelegramDispatcher::toInputUser(quint32 id) const
     }
 
     return inputUser;
+}
+
+TLInputChannel CTelegramDispatcher::toInputChannel(const Telegram::Peer &peer)
+{
+    if (peer.type != Telegram::Peer::Channel) {
+        return TLInputChannel();
+    }
+
+    if (!m_chatInfo.contains(peer.id)) {
+        qWarning() << Q_FUNC_INFO << "Unknown channel id" << peer.id;
+        return TLInputChannel();
+    }
+    const TLChat *chat = m_chatInfo.value(peer.id);
+    return toInputChannel(chat);
+}
+
+TLInputChannel CTelegramDispatcher::toInputChannel(const TLChat *chat)
+{
+    if (chat->tlType != TLValue::Channel) { //megagroup()) {
+        return TLInputChannel();
+    }
+    TLInputChannel inputChannel;
+    inputChannel.tlType = TLValue::InputChannel;
+    inputChannel.channelId = chat->id;
+    inputChannel.accessHash = chat->accessHash;
+    return inputChannel;
+}
+
+TLInputChannel CTelegramDispatcher::toInputChannel(const TLDialog &dialog)
+{
+    if ((dialog.tlType != TLValue::DialogChannel) || (dialog.peer.tlType != TLValue::PeerChannel)) {
+        return TLInputChannel();
+    }
+
+    if (!m_chatInfo.contains(dialog.peer.channelId)) {
+        qWarning() << Q_FUNC_INFO << "Unknown channel id" << dialog.peer.channelId;
+        return TLInputChannel();
+    }
+    const TLChat *chat = m_chatInfo.value(dialog.peer.channelId);
+    return toInputChannel(chat);
 }
 
 CTelegramConnection *CTelegramDispatcher::getExtraConnection(quint32 dc)
@@ -2094,7 +2217,12 @@ void CTelegramDispatcher::onUpdatesReceived(const TLUpdates &updates, quint64 id
     {
         // Reconstruct full update from this short update.
         TLUpdate update;
-        update.tlType = TLValue::UpdateNewMessage;
+
+        if (update.message.toId.channelId) {
+            update.tlType = TLValue::UpdateNewChannelMessage;
+        } else {
+            update.tlType = TLValue::UpdateNewMessage;
+        }
         update.pts = updates.pts;
         update.ptsCount = updates.ptsCount;
         TLMessage &shortMessage = update.message;
@@ -2396,7 +2524,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
     connect(connection, SIGNAL(selfUserReceived(TLUser)), SLOT(onSelfUserReceived(TLUser)));
     connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
             SLOT(onUsersReceived(QVector<TLUser>)));
-
+    connect(connection, SIGNAL(channelsParticipantsReceived(quint32,TLVector<TLChannelParticipant>)), SLOT(onChannelsParticipantsReceived(quint32,TLVector<TLChannelParticipant>)));
     for (CTelegramModule *module : m_modules) {
         module->onNewConnection(connection);
     }
@@ -2503,6 +2631,7 @@ const TLChat *CTelegramDispatcher::getChat(const Telegram::Peer &peer) const
 {
     switch (peer.type) {
     case Telegram::Peer::Chat:
+    case Telegram::Peer::Channel:
         return m_chatInfo.value(peer.id);
     default:
         return nullptr;

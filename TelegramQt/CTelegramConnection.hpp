@@ -327,14 +327,17 @@ signals:
 
     void messagesChatsReceived(const QVector<TLChat> &chats);
     void messagesFullChatReceived(const TLChatFull &chat, const QVector<TLChat> &chats, const QVector<TLUser> &users);
+    void channelsParticipantsReceived(quint32 channelId, const TLVector<TLChannelParticipant> &participants);
 
     void fullUserReceived(const TLUserFull &userFull);
     void messagesHistoryReceived(const TLMessagesMessages &history, const TLInputPeer &peer);
     void messagesDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit);
+    void channelsDialogsReceived(const TLMessagesDialogs &dialogs, quint32 offsetId, quint32 limit);
     void messagesAffectedMessagesReceived(const TLMessagesAffectedMessages &affectedMessages);
 
     void updatesReceived(const TLUpdates &update, quint64 id);
     void updatesStateReceived(const TLUpdatesState &updatesState);
+    void updatesChannelDifferenceReceived(const TLUpdatesChannelDifference &channelDifference);
     void updatesDifferenceReceived(const TLUpdatesDifference &updatesDifference);
 
     void authExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);

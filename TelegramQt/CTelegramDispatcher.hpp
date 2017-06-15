@@ -161,6 +161,9 @@ public:
     Telegram::Peer toPublicPeer(const TLChat &chat) const;
     TLPeer toTLPeer(const Telegram::Peer &peer) const;
     TLInputUser toInputUser(quint32 id) const;
+    TLInputChannel toInputChannel(const Telegram::Peer &peer);
+    TLInputChannel toInputChannel(const TLChat *chat);
+    TLInputChannel toInputChannel(const TLDialog &dialog);
 
 signals:
     void connectionStateChanged(TelegramNamespace::ConnectionState status);
@@ -197,6 +200,7 @@ protected slots:
 
     void onSelfUserReceived(const TLUser &selfUser);
     void onUsersReceived(const QVector<TLUser> &users);
+    void onChannelsParticipantsReceived(quint32 channelId, TLVector<TLChannelParticipant> participants);
 
     void onContactListReceived(const QVector<quint32> &contactIdList);
     void onContactListChanged(const QVector<quint32> &added, const QVector<quint32> &removed);
@@ -344,6 +348,7 @@ protected:
     QHash<Telegram::Peer,TLDialog> m_dialogs;
     QHash<quint32, TLChat*> m_chatInfo; // Telegram chat id to Chat map
     QHash<quint32, TLChatFull> m_chatFullInfo; // Telegram chat id to ChatFull map
+    QHash<quint32, TLVector<TLChannelParticipant> > m_channelParticipants; // Telegram chat id to ChatFull map
 
     QVector<CTelegramModule*> m_modules;
 
