@@ -95,6 +95,7 @@ public:
     quint32 maxMessageId() const;
     QVector<quint32> contactIdList() const;
     QVector<quint32> chatIdList() const;
+    QVector<Telegram::Peer> dialogs() const;
 
     void addContacts(const QStringList &phoneNumbers, bool replace = false);
     void deleteContacts(const QVector<quint32> &userIds);

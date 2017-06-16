@@ -205,6 +205,11 @@ QVector<quint32> CTelegramDispatcher::chatIdList() const
     return m_chatIds;
 }
 
+QVector<Telegram::Peer> CTelegramDispatcher::dialogs() const
+{
+    return m_dialogs.keys().toVector();
+}
+
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
 {
     qDebug() << "addContacts" << maskPhoneNumberList(phoneNumbers);

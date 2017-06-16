@@ -295,6 +295,11 @@ QVector<quint32> CTelegramCore::chatList() const
     return m_private->m_dispatcher->chatIdList();
 }
 
+QVector<Telegram::Peer> CTelegramCore::dialogs() const
+{
+    return m_private->m_dispatcher->dialogs();
+}
+
 QString CTelegramCore::contactAvatarToken(quint32 userId) const
 {
     return m_private->m_mediaModule->peerPictureToken(Telegram::Peer(userId, Telegram::Peer::User), Telegram::PeerPictureSize::Small);
