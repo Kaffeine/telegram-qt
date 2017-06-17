@@ -334,6 +334,22 @@ void Telegram::MessageMediaInfo::setGeoPoint(double latitude, double longitude)
     d->geo.latitude = latitude;
 }
 
+QString Telegram::MessageMediaInfo::url() const
+{
+    if (d->tlType != TLValue::MessageMediaWebPage) {
+        return QString();
+    }
+    return d->webpage.url;
+}
+
+QString Telegram::MessageMediaInfo::displayUrl() const
+{
+    if (d->tlType != TLValue::MessageMediaWebPage) {
+        return QString();
+    }
+    return d->webpage.displayUrl;
+}
+
 QString Telegram::MessageMediaInfo::siteName() const
 {
     if (d->tlType != TLValue::MessageMediaWebPage) {
