@@ -454,6 +454,8 @@ void CTelegramDispatcher::closeConnection()
     m_contactsMessageActions.clear();
     m_localMessageActions.clear();
     m_chatIds.clear();
+
+    qDeleteAll(m_chatInfo);
     m_chatInfo.clear();
     m_chatFullInfo.clear();
     m_maxMessageId = 0;
@@ -747,7 +749,7 @@ QString CTelegramDispatcher::chatTitle(quint32 chatId) const
         return QString();
     }
 
-    return m_chatInfo.value(chatId).title;
+    return m_chatInfo.value(chatId)->title;
 }
 
 bool CTelegramDispatcher::setWantedDc(quint32 dc)
@@ -784,9 +786,9 @@ bool CTelegramDispatcher::getChatInfo(Telegram::GroupChat *outputChat, quint32 c
         return false;
     }
 
-    const TLChat &chat = m_chatInfo.value(chatId);
+    const TLChat *chat = m_chatInfo.value(chatId);
     outputChat->id = chatId;
-    outputChat->title = chat.title;
+    outputChat->title = chat->title;
 
     // There can be a mistake in legacy Chat::left flag and participants count correction
     if (m_chatFullInfo.contains(chatId)) {
@@ -804,10 +806,10 @@ bool CTelegramDispatcher::getChatInfo(Telegram::GroupChat *outputChat, quint32 c
             ++outputChat->participantsCount;
         }
     } else {
-        outputChat->participantsCount = chat.participantsCount;
+        outputChat->participantsCount = chat->participantsCount;
     }
 
-    outputChat->date = chat.date;
+    outputChat->date = chat->date;
     outputChat->left = false;
 
     return true;
@@ -826,10 +828,10 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
         return true; // Pending
     }
 
-    const TLChat &chat = m_chatInfo.value(chatId);
+    const TLChat *chat = m_chatInfo.value(chatId);
 
     if (!m_chatFullInfo.contains(chatId)) {
-        switch (chat.tlType) {
+        switch (chat->tlType) {
         case TLValue::Chat:
             activeConnection()->messagesGetFullChat(chatId);
             return true;
@@ -1480,16 +1482,19 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
     if (message.tlType == TLValue::MessageService) {
         const TLMessageAction &action = message.action;
         const quint32 chatId = message.toId.chatId;
-        TLChat chat = m_chatInfo.value(chatId);
+        if (!m_chatInfo.contains(chatId)) {
+            m_chatInfo.insert(chatId, new TLChat());
+        }
+        TLChat *chat = m_chatInfo.value(chatId);
         TLChatFull fullChat = m_chatFullInfo.value(chatId);
 
-        chat.id = chatId;
+        chat->id = chatId;
         fullChat.id = chatId;
         switch (action.tlType) {
         case TLValue::MessageActionChatCreate:
-            chat.title = action.title;
-            chat.participantsCount = action.users.count();
-            updateChat(chat);
+            chat->title = action.title;
+            chat->participantsCount = action.users.count();
+            emitChatChanged(chatId);
             break;
         case TLValue::MessageActionChatAddUser: {
             TLVector<TLChatParticipant> participants = fullChat.participants.participants;
@@ -1504,8 +1509,8 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
             participants.append(newParticipant);
 
             fullChat.participants.participants = participants;
-            chat.participantsCount = participants.count();
-            updateChat(chat);
+            chat->participantsCount = participants.count();
+            emitChatChanged(chatId);
             updateFullChat(fullChat);
             }
             break;
@@ -1519,14 +1524,14 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
             }
 
             fullChat.participants.participants = participants;
-            chat.participantsCount = participants.count();
-            updateChat(chat);
+            chat->participantsCount = participants.count();
+            emitChatChanged(chatId);
             updateFullChat(fullChat);
             }
             break;
         case TLValue::MessageActionChatEditTitle:
-            chat.title = action.title;
-            updateChat(chat);
+            chat->title = action.title;
+            emitChatChanged(chatId);
             break;
         case TLValue::MessageActionChatEditPhoto:
         case TLValue::MessageActionChatDeletePhoto:
@@ -1608,9 +1613,10 @@ void CTelegramDispatcher::emitChatChanged(quint32 id)
 void CTelegramDispatcher::updateChat(const TLChat &newChat)
 {
     if (!m_chatInfo.contains(newChat.id)) {
-        m_chatInfo.insert(newChat.id, newChat);
+        TLChat *newChatInstance = new TLChat(newChat);
+        m_chatInfo.insert(newChat.id, newChatInstance);
     } else {
-        m_chatInfo[newChat.id] = newChat;
+        *m_chatInfo[newChat.id] = newChat;
     }
     emitChatChanged(newChat.id);
 }
