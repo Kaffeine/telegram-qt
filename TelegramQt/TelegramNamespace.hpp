@@ -146,6 +146,11 @@ class UserInfo;
 class RemoteFile;
 class MessageMediaInfo;
 
+enum class PeerPictureSize {
+    Small,
+    Big,
+};
+
 struct Peer
 {
     enum Type {
