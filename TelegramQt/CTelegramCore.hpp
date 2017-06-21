@@ -64,6 +64,7 @@ public:
     Q_INVOKABLE QVector<quint32> chatList() const;
     Q_INVOKABLE QVector<Telegram::Peer> dialogs() const;
 
+    Q_INVOKABLE QString peerPictureToken(const Telegram::Peer &peer, const Telegram::PeerPictureSize size = Telegram::PeerPictureSize::Small) const;
     Q_INVOKABLE QString contactAvatarToken(quint32 userId) const;
     Q_INVOKABLE QString chatTitle(quint32 chatId) const;
 
@@ -107,6 +108,7 @@ public Q_SLOTS:
     void deleteContact(quint32 userId);
     void deleteContacts(const QVector<quint32> &userIds);
 
+    quint32 requestPeerPicture(const Telegram::Peer &peer, const Telegram::PeerPictureSize size = Telegram::PeerPictureSize::Small) const;
     void requestContactAvatar(quint32 userId);
     void requestMessageMediaData(quint32 messageId);
     quint32 requestFile(const Telegram::RemoteFile *file);
