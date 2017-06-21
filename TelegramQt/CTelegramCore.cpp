@@ -246,7 +246,8 @@ void CTelegramCore::deleteContacts(const QVector<quint32> &userIds)
 
 void CTelegramCore::requestContactAvatar(quint32 userId)
 {
-    m_private->m_mediaModule->requestContactAvatar(userId);
+    quint32 requestId = m_private->m_mediaModule->requestPeerPicture(Telegram::Peer(userId, Telegram::Peer::User), Telegram::PeerPictureSize::Small);
+    Q_UNUSED(requestId)
 }
 
 void CTelegramCore::requestMessageMediaData(quint32 messageId)
@@ -296,7 +297,7 @@ QVector<quint32> CTelegramCore::chatList() const
 
 QString CTelegramCore::contactAvatarToken(quint32 userId) const
 {
-    return m_private->m_mediaModule->contactAvatarToken(userId);
+    return m_private->m_mediaModule->peerPictureToken(Telegram::Peer(userId, Telegram::Peer::User), Telegram::PeerPictureSize::Small);
 }
 
 QString CTelegramCore::chatTitle(quint32 chatId) const

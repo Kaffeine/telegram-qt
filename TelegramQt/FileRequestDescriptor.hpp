@@ -49,8 +49,8 @@ public:
     void setInputLocation(const TLInputFileLocation &inputLocation);
     TLInputFileLocation inputLocation() const { return m_inputLocation; }
 
-    void setUserId(quint32 id);
-    quint32 userId() const { return m_userId; }
+    void setPeer(const Telegram::Peer peer);
+    Telegram::Peer peer() const { return m_peer; }
 
     quint32 messageId() const { return m_messageId; }
     void setMessageId(quint32 messageId);
@@ -84,7 +84,7 @@ public:
 
 protected:
     Type m_type;
-    quint32 m_userId;
+    Telegram::Peer m_peer;
     quint32 m_messageId;
     quint32 m_size;
     quint32 m_offset;

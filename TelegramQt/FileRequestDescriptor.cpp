@@ -54,9 +54,9 @@ void FileRequestDescriptor::setInputLocation(const TLInputFileLocation &inputLoc
     m_inputLocation = inputLocation;
 }
 
-void FileRequestDescriptor::setUserId(quint32 id)
+void FileRequestDescriptor::setPeer(const Telegram::Peer peer)
 {
-    m_userId = id;
+    m_peer = peer;
 }
 
 void FileRequestDescriptor::setMessageId(quint32 messageId)
@@ -157,7 +157,6 @@ quint32 FileRequestDescriptor::defaultDownloadPartSize()
 
 FileRequestDescriptor::FileRequestDescriptor() :
     m_type(Invalid),
-    m_userId(0),
     m_messageId(0),
     m_size(0),
     m_offset(0),

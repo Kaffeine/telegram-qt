@@ -5,6 +5,7 @@
 #include "TelegramNamespace_p.hpp"
 #include "TelegramUtils.hpp"
 #include "Utils.hpp"
+#include "Debug.hpp"
 
 #include <QDebug>
 
@@ -25,18 +26,6 @@ CTelegramMediaModule::~CTelegramMediaModule()
 {
 }
 
-QString CTelegramMediaModule::contactAvatarToken(quint32 userId) const
-{
-    const TLUser *user = getUser(userId);
-
-    if (!user) {
-        qDebug() << Q_FUNC_INFO << "Unknown identifier" << userId;
-        return QString();
-    }
-
-    return userAvatarToken(user);
-}
-
 void CTelegramMediaModule::setMediaDataBufferSize(quint32 size)
 {
     if (size % 256) {
@@ -51,26 +40,42 @@ void CTelegramMediaModule::setMediaDataBufferSize(quint32 size)
     m_mediaDataBufferSize = size;
 }
 
-void CTelegramMediaModule::requestContactAvatar(quint32 userId)
+QString CTelegramMediaModule::peerPictureToken(const Telegram::Peer &peer, const Telegram::PeerPictureSize size) const
 {
-    qDebug() << Q_FUNC_INFO << userId;
-    Telegram::UserInfo info;
-    if (!getUserInfo(&info, userId)) {
-        return;
+    switch (peer.type) {
+    case Telegram::Peer::User:
+        return getPictureToken(getUser(peer.id), size);
+        break;
+    case Telegram::Peer::Chat:
+        return getPictureToken(getChat(peer), size);
+        break;
+    default:
+        break;
     }
+    return QString();
+}
 
-    Telegram::RemoteFile location;
-    if (!info.getPeerPicture(&location)) {
-        return;
+quint32 CTelegramMediaModule::requestPeerPicture(const Telegram::Peer &peer, const Telegram::PeerPictureSize size)
+{
+    qDebug() << Q_FUNC_INFO << peer;
+    quint32 requestId = 0;
+    switch (peer.type) {
+    case Telegram::Peer::User:
+        requestId = getPeerPicture(getUser(peer.id), size);
+        break;
+    case Telegram::Peer::Chat:
+        requestId = getPeerPicture(getChat(peer), size);
+        break;
+    default:
+        break;
     }
-
-    quint32 requestId = requestFile(&location, /* chunkSize */ 512 * 256); // Set chunkSize to some big number to get the whole avatar at once
 
     if (!requestId) {
-        return;
+        qWarning() << Q_FUNC_INFO << "Unable to get picture for peer" << peer;
+        return 0;
     }
-
-    m_requestedFileDescriptors[requestId].setUserId(userId);
+    m_requestedFileDescriptors[requestId].setPeer(peer);
+    return requestId;
 }
 
 bool CTelegramMediaModule::requestMessageMediaData(quint32 messageId)
@@ -251,7 +256,7 @@ void CTelegramMediaModule::onFileDataReceived(const TLUploadFile &file, quint32 
              << "Descriptor:" << "request:" << requestId
              << "type:" << descriptor.type()
              << "size:" << descriptor.size()
-             << "ids:" << descriptor.userId() << descriptor.messageId();
+             << "ids:" << descriptor.peer() << descriptor.messageId();
 #endif
 
     if (descriptor.type() != FileRequestDescriptor::Download) {
@@ -305,9 +310,11 @@ void CTelegramMediaModule::onFileDataReceived(const TLUploadFile &file, quint32 
 
     // Legacy stuff:
     if (isFinished) {
-        const TLUser *user = getUser(descriptor.userId());
-        if (descriptor.userId() && user) {
-            emit avatarReceived(descriptor.userId(), file.bytes, mimeType, userAvatarToken(user));
+        if (descriptor.peer().isValid()) {
+            const TLUser *user = getUser(descriptor.peer().id);
+            if (user) {
+                emit avatarReceived(descriptor.peer().id, file.bytes, mimeType, getPictureToken(user, Telegram::PeerPictureSize::Small));
+            }
         }
     }
 
@@ -411,18 +418,36 @@ void CTelegramMediaModule::onNewConnection(CTelegramConnection *connection)
     connect(connection, SIGNAL(fileDataSent(quint32)), SLOT(onFileDataUploaded(quint32)));
 }
 
-QString CTelegramMediaModule::userAvatarToken(const TLUser *user) const
+template<typename T>
+QString CTelegramMediaModule::getPictureToken(const T *peerData, const Telegram::PeerPictureSize size) const
 {
-    const TLFileLocation &avatar = user->photo.photoSmall;
-
-    if (avatar.tlType == TLValue::FileLocationUnavailable) {
+    if (!peerData) {
+        qDebug() << "CTelegramMediaModule::getPictureToken(): invalid peer data";
         return QString();
-    } else {
-        return QString(QLatin1String("%1%2%3"))
-                .arg(avatar.dcId, sizeof(avatar.dcId) * 2, 16, QLatin1Char('0'))
-                .arg(avatar.volumeId, sizeof(avatar.dcId) * 2, 16, QLatin1Char('0'))
-                .arg(avatar.localId, sizeof(avatar.dcId) * 2, 16, QLatin1Char('0'));
     }
+    const TLFileLocation &picture = size == Telegram::PeerPictureSize::Small ? peerData->photo.photoSmall : peerData->photo.photoBig;
+    if (picture.tlType == TLValue::FileLocationUnavailable) {
+        return QString();
+    }
+
+    Telegram::RemoteFile file;
+    file.d->setFileLocation(&picture);
+    return file.getUniqueId();
+}
+
+template<typename T>
+quint32 CTelegramMediaModule::getPeerPicture(const T *peerData, const Telegram::PeerPictureSize size)
+{
+    if (!peerData) {
+        qDebug() << "CTelegramMediaModule::getPeerPicture(): invalid peer data";
+        return 0;
+    }
+    const TLFileLocation &picture = size == Telegram::PeerPictureSize::Small ? peerData->photo.photoSmall : peerData->photo.photoBig;
+    Telegram::RemoteFile location;
+    if (!location.d->setFileLocation(&picture)) {
+        return 0;
+    }
+    return requestFile(&location, /* chunkSize */ 512 * 256); // Set chunkSize to some big number to get the whole avatar at once
 }
 
 quint32 CTelegramMediaModule::addFileRequest(const FileRequestDescriptor &descriptor)
