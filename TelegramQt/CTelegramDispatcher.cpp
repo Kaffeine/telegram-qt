@@ -2384,6 +2384,16 @@ const TLUser *CTelegramDispatcher::getUser(quint32 userId) const
     return m_users.value(userId);
 }
 
+const TLChat *CTelegramDispatcher::getChat(const Telegram::Peer &peer) const
+{
+    switch (peer.type) {
+    case Telegram::Peer::Chat:
+        return m_chatInfo.value(peer.id);
+    default:
+        return nullptr;
+    }
+}
+
 const TLMessage *CTelegramDispatcher::getMessage(quint32 messageId) const
 {
     return m_knownMediaMessages.value(messageId);

@@ -73,6 +73,11 @@ const TLUser *CTelegramModule::getUser(quint32 userId) const
     return m_dispatcher->getUser(userId);
 }
 
+const TLChat *CTelegramModule::getChat(const Telegram::Peer &peer) const
+{
+    return m_dispatcher->getChat(peer);
+}
+
 const TLMessage *CTelegramModule::getMessage(quint32 messageId) const
 {
     return m_dispatcher->getMessage(messageId);

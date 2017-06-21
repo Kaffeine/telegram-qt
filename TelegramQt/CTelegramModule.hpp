@@ -51,6 +51,7 @@ public:
     bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
     const TLUser *getUser(quint32 userId) const;
+    const TLChat *getChat(const Telegram::Peer &peer) const;
     const TLMessage *getMessage(quint32 messageId) const;
 
     TLInputPeer toInputPeer(const Telegram::Peer &peer) const;
