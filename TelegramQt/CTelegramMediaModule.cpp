@@ -60,7 +60,7 @@ void CTelegramMediaModule::requestContactAvatar(quint32 userId)
     }
 
     Telegram::RemoteFile location;
-    if (!info.getProfilePhoto(&location)) {
+    if (!info.getPeerPicture(&location)) {
         return;
     }
 
