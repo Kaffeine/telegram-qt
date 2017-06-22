@@ -1946,15 +1946,15 @@ Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLUser &user) const
     return Telegram::Peer(user.id, Telegram::Peer::User);
 }
 
-Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLChat &chat) const
+Telegram::Peer CTelegramDispatcher::toPublicPeer(const TLChat *chat) const
 {
-    switch(chat.tlType) {
+    switch(chat->tlType) {
     case TLValue::Chat:
     case TLValue::ChatForbidden:
-        return Telegram::Peer(chat.id, Telegram::Peer::Chat);
+        return Telegram::Peer(chat->id, Telegram::Peer::Chat);
     case TLValue::Channel:
     case TLValue::ChannelForbidden:
-        return Telegram::Peer(chat.id, Telegram::Peer::Channel);
+        return Telegram::Peer(chat->id, Telegram::Peer::Channel);
     default:
         return Telegram::Peer();
     }
