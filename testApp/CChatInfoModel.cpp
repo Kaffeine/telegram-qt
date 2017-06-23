@@ -17,13 +17,23 @@
 
 #include "CChatInfoModel.hpp"
 #include "CTelegramCore.hpp"
+#include "CFileManager.hpp"
+
+#include <QPixmapCache>
 
 CChatInfoModel::CChatInfoModel(CTelegramCore *backend, QObject *parent) :
     QAbstractTableModel(parent),
-    m_backend(backend)
+    m_backend(backend),
+    m_fileManager(nullptr)
 {
     connect(m_backend, SIGNAL(peerAdded(Telegram::Peer)), this, SLOT(onPeerAdded(Telegram::Peer)));
     connect(m_backend, SIGNAL(chatChanged(quint32)), SLOT(onChatChanged(quint32)));
+}
+
+void CChatInfoModel::setFileManager(CFileManager *manager)
+{
+    m_fileManager = manager;
+    connect(m_fileManager, &CFileManager::requestComplete, this, &CChatInfoModel::onFileRequestComplete);
 }
 
 QVariant CChatInfoModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -41,6 +51,8 @@ QVariant CChatInfoModel::headerData(int section, Qt::Orientation orientation, in
         return tr("Id");
     case Title:
         return tr("Title");
+    case Picture:
+        return tr("Picture");
     case ParticipantsCount:
         return tr("Participants");
     case Broadcast:
@@ -56,12 +68,15 @@ QVariant CChatInfoModel::data(const QModelIndex &index, int role) const
 {
     int section = index.column();
     int chatIndex = index.row();
-
-    if ((role != Qt::DisplayRole) && (role != Qt::EditRole)) {
+    if (chatIndex >= rowCount()) {
         return QVariant();
     }
 
-    if (chatIndex >= rowCount()) {
+    if (role == Qt::DecorationRole && index.column() == Picture) {
+        return m_chats.at(chatIndex).m_picture;
+    }
+
+    if ((role != Qt::DisplayRole) && (role != Qt::EditRole)) {
         return QVariant();
     }
 
@@ -70,6 +85,11 @@ QVariant CChatInfoModel::data(const QModelIndex &index, int role) const
         return m_chats.at(chatIndex).peer().id;
     case Title:
         return m_chats.at(chatIndex).title();
+    case Picture:
+        if (m_chats.at(chatIndex).m_picture.isNull()) {
+            return m_chats.at(chatIndex).m_pictureToken;
+        }
+        break;
     case ParticipantsCount:
         return m_chats.at(chatIndex).participantsCount();
     case Broadcast:
@@ -95,13 +115,39 @@ void CChatInfoModel::onPeerAdded(const Telegram::Peer &peer)
         return;
     }
 
+    const QString token = getPictureCacheToken(peer);
     beginInsertRows(QModelIndex(), m_chats.count(), m_chats.count());
     m_peers.append(peer);
     m_chats.append(SGroupChat());
     m_backend->getChatInfo(&m_chats.last(), peer.id);
+    m_chats.last().m_peer = peer;
+    m_chats.last().m_pictureToken = token;
+    if (!token.isEmpty()) {
+        QPixmap picture;
+        if (QPixmapCache::find(token, &picture)) {
+            m_chats.last().m_picture = picture;
+        } else {
+            const QString requestToken = m_fileManager->requestPeerPicture(peer);
+            m_requests.insert(requestToken);
+        }
+    }
     endInsertRows();
 
     emit chatAdded(peer.id);
+}
+
+int CChatInfoModel::indexOfChat(const Telegram::Peer peer) const
+{
+    if (!m_peers.contains(peer)) {
+        return -1;
+    }
+    for (int i = 0; i < m_chats.count(); ++i) {
+        if (m_chats.at(i).m_peer == peer) {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 int CChatInfoModel::indexOfChat(quint32 id) const
@@ -154,4 +200,42 @@ void CChatInfoModel::onChatChanged(quint32 id)
     m_chats[i].m_peer = m_chats[i].peer();
     emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
     emit chatChanged(id);
+}
+
+void CChatInfoModel::onFileRequestComplete(const QString &uniqueId)
+{
+    if (!m_requests.contains(uniqueId)) {
+        return;
+    }
+    m_requests.remove(uniqueId);
+
+    const QByteArray data = m_fileManager->getData(uniqueId);
+    QPixmap picture = QPixmap::fromImage(QImage::fromData(data));
+    if (picture.isNull()) {
+        return;
+    }
+    picture = picture.scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    const QString pictureToken = getPictureCacheToken(uniqueId);
+    QPixmapCache::insert(pictureToken, picture);
+    for (int i = 0; i < m_chats.count(); ++i) {
+        if (m_chats.at(i).m_pictureToken != pictureToken) {
+            continue;
+        }
+        m_chats[i].m_picture = picture;
+        emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
+        emit chatChanged(m_chats.at(i).peer().id);
+    }
+}
+
+QString CChatInfoModel::getPictureCacheToken(const Telegram::Peer &peer) const
+{
+    return getPictureCacheToken(m_backend->peerPictureToken(peer));
+}
+
+QString CChatInfoModel::getPictureCacheToken(const QString &key) const
+{
+    if (key.isEmpty()) {
+        return QString();
+    }
+    return QStringLiteral("64-") + key;
 }
