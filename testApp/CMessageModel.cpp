@@ -16,6 +16,7 @@
  */
 
 #include "CMessageModel.hpp"
+#include "CFileManager.hpp"
 #include "CContactModel.hpp"
 
 #include "CTelegramCore.hpp"
@@ -41,9 +42,24 @@ QString messageDeliveryStatusStr(CMessageModel::SMessage::Status status)
     }
 }
 
+CMessageModel::SMessage::SMessage(const Telegram::Message &m) :
+    Telegram::Message(m),
+    id64(0),
+    status(StatusUnknown)
+{
+    if (flags & TelegramNamespace::MessageFlagRead) {
+        status = StatusRead;
+    } else if (flags & TelegramNamespace::MessageFlagOut) {
+        status = StatusSent;
+    } else {
+        status = StatusReceived;
+    }
+}
+
 CMessageModel::CMessageModel(CTelegramCore *backend, QObject *parent) :
     QAbstractTableModel(parent),
     m_backend(backend),
+    m_fileManager(nullptr),
     m_contactsModel(nullptr)
 {
     connect(m_backend, SIGNAL(sentMessageIdReceived(quint64,quint32)),
@@ -53,6 +69,12 @@ CMessageModel::CMessageModel(CTelegramCore *backend, QObject *parent) :
             SLOT(setMessageInboxRead(Telegram::Peer,quint32)));
     connect(m_backend, SIGNAL(messageReadOutbox(Telegram::Peer,quint32)),
             SLOT(setMessageOutboxRead(Telegram::Peer,quint32)));
+}
+
+void CMessageModel::setFileManager(CFileManager *manager)
+{
+    m_fileManager = manager;
+    connect(m_fileManager, &CFileManager::requestComplete, this, &CMessageModel::onFileRequestComplete);
 }
 
 void CMessageModel::setContactsModel(CContactModel *model)
@@ -239,21 +261,71 @@ int CMessageModel::messageIndex(quint64 messageId) const
 
 void CMessageModel::addMessage(const SMessage &message)
 {
+    Telegram::MessageMediaInfo mediaInfo;
+    Telegram::RemoteFile fileInfo;
+    SMessage processedMessage = message;
+    bool needFileData = false;
+    if (message.type != TelegramNamespace::MessageTypeText) {
+        m_backend->getMessageMediaInfo(&mediaInfo, message.id, message.peer());
+        mediaInfo.getRemoteFileInfo(&fileInfo);
+        switch (message.type) {
+        case TelegramNamespace::MessageTypePhoto:
+        case TelegramNamespace::MessageTypeVideo:
+            needFileData = true;
+            break;
+        case TelegramNamespace::MessageTypeDocument: {
+            if (mediaInfo.mimeType().startsWith(QLatin1String("image/"))) {
+                needFileData = true;
+            }
+        }
+            break;
+        case TelegramNamespace::MessageTypeGeo:
+            processedMessage.text = QString("%1%2, %3%4").arg(mediaInfo.latitude()).arg(QChar(0x00b0)).arg(mediaInfo.longitude()).arg(QChar(0x00b0));
+            break;
+        default:
+            break;
+        }
+    }
+
+    if (needFileData) {
+        const QByteArray data = m_fileManager->getData(fileInfo.getUniqueId());
+        const QPixmap picture = QPixmap::fromImage(QImage::fromData(data));
+        if (!picture.isNull()) {
+            processedMessage.mediaData = picture;
+        }
+    }
+
     for (int i = 0; i < m_messages.count(); ++i) {
         if ((m_messages.at(i).id64 && (m_messages.at(i).id64 == message.id64))
                 || (!m_messages.at(i).id64 && (m_messages.at(i).id == message.id))) {
-            m_messages.replace(i, message);
-
+            m_messages.replace(i, processedMessage);
             emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
             return;
         }
     }
     beginInsertRows(QModelIndex(), m_messages.count(), m_messages.count());
-    m_messages.append(message);
+    m_messages.append(processedMessage);
     if (!m_messages.last().timestamp) {
         m_messages.last().timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
     }
     endInsertRows();
+
+    if (needFileData) {
+        const quint64 id = message.id ? message.id : message.id64;
+        m_fileRequests.insert(m_fileManager->requestFile(fileInfo), id);
+    }
+}
+
+void CMessageModel::onFileRequestComplete(const QString &uniqueId)
+{
+    if (!m_fileRequests.contains(uniqueId)) {
+        return;
+    }
+    qDebug() << Q_FUNC_INFO << uniqueId;
+    const QByteArray data = m_fileManager->getData(uniqueId);
+    const QPixmap picture = QPixmap::fromImage(QImage::fromData(data));
+    const quint64 messageId = m_fileRequests.take(uniqueId);
+    setMessageMediaData(messageId, picture);
 }
 
 int CMessageModel::setMessageMediaData(quint64 messageId, const QVariant &data)

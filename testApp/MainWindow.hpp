@@ -69,8 +69,6 @@ protected slots:
     void onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
     void onAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void updateContactList();
-    void onMessageMediaDataReceived(Telegram::Peer peer, quint32 messageId, const QByteArray &data,
-                                      const QString &mimeType, TelegramNamespace::MessageType type, quint32 offset, quint32 size);
     void onMessageReceived(const Telegram::Message &message);
     void onContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
     void onContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);

@@ -24,6 +24,7 @@
 
 class CTelegramCore;
 class CContactModel;
+class CFileManager;
 
 class CMessageModel : public QAbstractTableModel
 {
@@ -61,19 +62,7 @@ public:
         {
         }
 
-        SMessage(const Telegram::Message &m) :
-            Telegram::Message(m),
-            id64(0),
-            status(StatusUnknown)
-        {
-            if (flags & TelegramNamespace::MessageFlagRead) {
-                status = StatusRead;
-            } else if (flags & TelegramNamespace::MessageFlagOut) {
-                status = StatusSent;
-            } else {
-                status = StatusReceived;
-            }
-        }
+        SMessage(const Telegram::Message &m);
 
         quint64 id64;
         Status status;
@@ -81,6 +70,7 @@ public:
     };
 
     explicit CMessageModel(CTelegramCore *backend, QObject *parent = nullptr);
+    void setFileManager(CFileManager *manager);
     void setContactsModel(CContactModel *model);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
@@ -97,6 +87,7 @@ public:
 
 public slots:
     void addMessage(const SMessage &message);
+    void onFileRequestComplete(const QString &uniqueId);
     int setMessageMediaData(quint64 messageId, const QVariant &data);
     void setMessageRead(Telegram::Peer peer, quint32 messageId, bool out);
     void setMessageInboxRead(Telegram::Peer peer, quint32 messageId);
@@ -106,8 +97,10 @@ public slots:
 
 private:
     CTelegramCore *m_backend;
+    CFileManager *m_fileManager;
     CContactModel *m_contactsModel;
     QList<SMessage> m_messages;
+    QHash<QString,quint64> m_fileRequests; // uniqueId to messageId
 
 };
 

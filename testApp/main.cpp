@@ -18,6 +18,9 @@
 #include "MainWindow.hpp"
 #include <QApplication>
 
+#include <QLocale>
+#include <QDebug>
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
