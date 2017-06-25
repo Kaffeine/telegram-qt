@@ -14,12 +14,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     MainWindow.cpp \
+    CFileManager.cpp \
     CContactModel.cpp \
     CContactsFilterModel.cpp \
     CChatInfoModel.cpp \
     CMessageModel.cpp
 
 HEADERS  += MainWindow.hpp \
+    CFileManager.hpp \
     CContactModel.hpp \
     CContactsFilterModel.hpp \
     CChatInfoModel.hpp \

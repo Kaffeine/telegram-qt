@@ -32,6 +32,7 @@ class CContactModel;
 class CMessageModel;
 class CContactsFilterModel;
 class CChatInfoModel;
+class CFileManager;
 
 class QModelIndex;
 
@@ -166,6 +167,7 @@ private:
     QMap<quint32,quint64> m_contactLastMessageList;
     QMap<quint32, Telegram::Peer> m_uploadingRequests;
 
+    CFileManager *m_fileManager;
     CContactModel *m_contactsModel;
     CContactsFilterModel *m_contactListModel;
     CMessageModel *m_messagingModel;

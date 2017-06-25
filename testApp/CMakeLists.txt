@@ -3,6 +3,7 @@ project(testApp)
 set(testApp_SOURCES
     main.cpp
     MainWindow.cpp
+    CFileManager.cpp
     CContactModel.cpp
     CContactsFilterModel.cpp
     CMessageModel.cpp
@@ -11,6 +12,7 @@ set(testApp_SOURCES
 
 set(testApp_HEADERS
     MainWindow.hpp
+    CFileManager.hpp
     CContactModel.hpp
     CContactsFilterModel.hpp
     CMessageModel.hpp

@@ -24,6 +24,7 @@
 #include "CContactsFilterModel.hpp"
 #include "CMessageModel.hpp"
 #include "CChatInfoModel.hpp"
+#include "CFileManager.hpp"
 
 #include <QCompleter>
 #include <QToolTip>
@@ -46,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     m_core(new CTelegramCore(this)),
     m_passwordInfo(nullptr),
+    m_fileManager(new CFileManager(m_core, this)),
     m_contactsModel(new CContactModel(m_core, this)),
     m_contactListModel(new CContactsFilterModel(this)),
     m_messagingModel(new CMessageModel(m_core, this)),
@@ -58,6 +60,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_registered(false),
     m_appState(AppStateNone)
 {
+    m_chatInfoModel->setFileManager(m_fileManager);
+
     ui->setupUi(this);
     m_contactListModel->setSourceModel(m_contactsModel);
     ui->contactListTable->setModel(m_contactListModel);
