@@ -343,9 +343,10 @@ bool CTelegramCore::getUserInfo(Telegram::UserInfo *info, quint32 userId) const
     return m_private->m_dispatcher->getUserInfo(info, userId);
 }
 
-bool CTelegramCore::getChatInfo(Telegram::GroupChat *chatInfo, quint32 chatId) const
+bool CTelegramCore::getChatInfo(Telegram::ChatInfo *info, const Telegram::Peer peer) const
 {
-    return m_private->m_dispatcher->getChatInfo(chatInfo, chatId);
+    return m_private->m_dispatcher->getChatInfo(info, peer);
+
 }
 
 bool CTelegramCore::getChatParticipants(QVector<quint32> *participants, quint32 chatId)

@@ -151,7 +151,7 @@ public:
     const TLMessage *getMessage(quint32 messageId) const;
 
     bool getUserInfo(Telegram::UserInfo *userInfo, quint32 userId) const;
-    bool getChatInfo(Telegram::GroupChat *outputChat, quint32 chatId) const;
+    bool getChatInfo(Telegram::ChatInfo *outputChat, const Telegram::Peer peer) const;
     bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
     // Common

@@ -336,6 +336,7 @@ public:
 protected:
     friend class ::CTelegramMediaModule;
     friend class UserInfo;
+    friend class ChatInfo;
     friend class MessageMediaInfo;
     class Private;
 
@@ -371,21 +372,30 @@ protected:
     Private *d;
 };
 
-struct GroupChat
+class ChatInfo
 {
-    GroupChat(quint32 id = 0) :
-        id(id),
-        participantsCount(0),
-        date(0),
-        left(false)
-    {
-    }
+public:
+    ChatInfo();
+    ChatInfo(const ChatInfo &info);
+    ~ChatInfo();
 
-    quint32 id;
-    QString title;
-    quint32 participantsCount;
-    quint32 date;
-    bool left;
+    ChatInfo &operator=(const ChatInfo &info);
+
+    Peer peer() const;
+
+    QString title() const;
+    quint32 participantsCount() const;
+    quint32 date() const;
+    bool left() const;
+
+    bool getPeerPicture(RemoteFile *file, PeerPictureSize size = PeerPictureSize::Small) const;
+
+protected:
+    friend class ::CTelegramDispatcher;
+    friend class MessageMediaInfo;
+    class Private;
+
+    Private *d;
 };
 
 }
@@ -393,14 +403,14 @@ struct GroupChat
 Q_DECLARE_METATYPE(Telegram::Peer)
 Q_DECLARE_METATYPE(Telegram::DcOption)
 Q_DECLARE_METATYPE(Telegram::Message)
-Q_DECLARE_METATYPE(Telegram::GroupChat)
+Q_DECLARE_METATYPE(Telegram::ChatInfo)
 Q_DECLARE_METATYPE(Telegram::RemoteFile)
 Q_DECLARE_METATYPE(Telegram::UserInfo)
 Q_DECLARE_METATYPE(Telegram::PasswordInfo)
 
 Q_DECLARE_TYPEINFO(Telegram::DcOption, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::Message, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(Telegram::GroupChat, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::ChatInfo, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::RemoteFile, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::UserInfo, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::PasswordInfo, Q_MOVABLE_TYPE);

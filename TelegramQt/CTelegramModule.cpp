@@ -58,9 +58,9 @@ bool CTelegramModule::getUserInfo(Telegram::UserInfo *userInfo, quint32 userId) 
     return m_dispatcher->getUserInfo(userInfo, userId);
 }
 
-bool CTelegramModule::getChatInfo(Telegram::GroupChat *outputChat, quint32 chatId) const
+bool CTelegramModule::getChatInfo(Telegram::ChatInfo *outputChat, const Telegram::Peer &peer) const
 {
-    return m_dispatcher->getChatInfo(outputChat, chatId);
+    return m_dispatcher->getChatInfo(outputChat, peer);
 }
 
 bool CTelegramModule::getChatParticipants(QVector<quint32> *participants, quint32 chatId)

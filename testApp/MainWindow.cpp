@@ -459,14 +459,14 @@ void MainWindow::onChatChanged(quint32 chatId)
 
 void MainWindow::updateActiveChat()
 {
-    const Telegram::GroupChat *chat = m_chatInfoModel->chatById(m_activeChatId);
+    const Telegram::ChatInfo *chat = m_chatInfoModel->chatById(m_activeChatId);
 
     if (!chat) {
         ui->groupChatName->setText(tr("Processing..."));
         return;
     }
 
-    ui->groupChatName->setText(chat->title);
+    ui->groupChatName->setText(chat->title());
 
     QVector<quint32> participants;
     if (!m_core->getChatParticipants(&participants, m_activeChatId)) {

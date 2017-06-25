@@ -900,13 +900,13 @@ bool CTelegramDispatcher::getUserInfo(Telegram::UserInfo *userInfo, quint32 user
     return true;
 }
 
-bool CTelegramDispatcher::getChatInfo(Telegram::GroupChat *outputChat, quint32 chatId) const
+bool CTelegramDispatcher::getChatInfo(Telegram::ChatInfo *outputChat, const Telegram::Peer peer) const
 {
-    if (!chatId) {
+    if (!peer.isValid()) {
         return false;
     }
 
-    if (!m_chatInfo.contains(chatId)) {
+    if (!m_chatInfo.contains(peer.id)) {
         return false;
     }
 
@@ -914,35 +914,19 @@ bool CTelegramDispatcher::getChatInfo(Telegram::GroupChat *outputChat, quint32 c
         return false;
     }
 
-    const TLChat *chat = m_chatInfo.value(chatId);
-    outputChat->id = chatId;
-    outputChat->title = chat->title;
+    const TLChat *chat = m_chatInfo.value(peer.id);
+    TLChat &info = *outputChat->d;
+    info = *chat;
 
-    // There can be a mistake in legacy Chat::left flag and participants count correction
-    if (m_chatFullInfo.contains(chatId)) {
-        const TLChatFull &chatFull = m_chatFullInfo.value(chatId);
-        bool haveSelf = false;
-        foreach (const TLChatParticipant &participant, chatFull.participants.participants) {
-            if (participant.userId == m_selfUserId) {
-                haveSelf = true;
-                break;
-            }
+    // Apply some participants count correction
+    if (m_chatFullInfo.contains(peer.id)) {
+        const TLChatFull &chatFull = m_chatFullInfo.value(peer.id);
+        if (chatFull.tlType == TLValue::ChatFull) {
+            info.participantsCount = chatFull.participants.participants.count();
+        } else {
+            info.participantsCount = chatFull.participantsCount;
         }
-
-        outputChat->participantsCount = chatFull.participants.participants.count();
-        if (!haveSelf) {
-            ++outputChat->participantsCount;
-        }
-
-        if (chatFull.tlType == TLValue::ChannelFull) {
-            outputChat->participantsCount = chatFull.participantsCount;
-        }
-    } else {
-        outputChat->participantsCount = chat->participantsCount;
     }
-
-    outputChat->date = chat->date;
-    outputChat->left = false;
 
     return true;
 }

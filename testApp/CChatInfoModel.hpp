@@ -45,7 +45,7 @@ public:
 
     int indexOfChat(quint32 id) const;
     bool haveChat(quint32 id) const;
-    const Telegram::GroupChat *chatById(quint32 id) const;
+    const Telegram::ChatInfo *chatById(quint32 id) const;
 
     Telegram::Peer getPeer(quint32 chatId);
 

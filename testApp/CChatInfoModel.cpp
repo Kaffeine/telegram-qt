@@ -65,11 +65,11 @@ QVariant CChatInfoModel::data(const QModelIndex &index, int role) const
 
     switch (section) {
     case Id:
-        return m_chats.at(chatIndex).id;
+        return m_chats.at(chatIndex).peer().id;
     case Title:
-        return m_chats.at(chatIndex).title;
+        return m_chats.at(chatIndex).title();
     case ParticipantsCount:
-        return m_chats.at(chatIndex).participantsCount;
+        return m_chats.at(chatIndex).participantsCount();
     default:
         break;
     }
@@ -93,7 +93,7 @@ void CChatInfoModel::onPeerAdded(const Telegram::Peer &peer)
 
     beginInsertRows(QModelIndex(), m_chats.count(), m_chats.count());
     m_peers.append(peer);
-    m_chats.append(Telegram::GroupChat(peer.id));
+    m_chats.append(SGroupChat());
     m_backend->getChatInfo(&m_chats.last(), peer.id);
     endInsertRows();
 
@@ -103,7 +103,7 @@ void CChatInfoModel::onPeerAdded(const Telegram::Peer &peer)
 int CChatInfoModel::indexOfChat(quint32 id) const
 {
     for (int i = 0; i < m_chats.count(); ++i) {
-        if (m_chats.at(i).id == id) {
+        if (m_chats.at(i).peer().id == id) {
             return i;
         }
     }
@@ -116,7 +116,7 @@ bool CChatInfoModel::haveChat(quint32 id) const
     return indexOfChat(id) >= 0;
 }
 
-const Telegram::GroupChat *CChatInfoModel::chatById(quint32 id) const
+const Telegram::ChatInfo *CChatInfoModel::chatById(quint32 id) const
 {
     int index = indexOfChat(id);
 
@@ -147,6 +147,7 @@ void CChatInfoModel::onChatChanged(quint32 id)
     }
 
     m_backend->getChatInfo(&m_chats[i], id);
+    m_chats[i].m_peer = m_chats[i].peer();
     emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
     emit chatChanged(id);
 }

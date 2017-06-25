@@ -560,6 +560,76 @@ bool Telegram::UserInfo::getPeerPicture(Telegram::RemoteFile *file, PeerPictureS
     }
 }
 
+Telegram::ChatInfo::ChatInfo() :
+    d(new Private())
+{
+
+}
+
+Telegram::ChatInfo::ChatInfo(const Telegram::ChatInfo &info) :
+    d(new Private())
+{
+    *d = *info.d;
+}
+
+Telegram::ChatInfo::~ChatInfo()
+{
+    delete d;
+}
+
+Telegram::ChatInfo &Telegram::ChatInfo::operator=(const Telegram::ChatInfo &info)
+{
+    *d = *info.d;
+    return *this;
+}
+
+Telegram::Peer Telegram::ChatInfo::peer() const
+{
+    switch(d->tlType) {
+    case TLValue::Chat:
+    case TLValue::ChatForbidden:
+        return Telegram::Peer(d->id, Telegram::Peer::Chat);
+    case TLValue::Channel:
+    case TLValue::ChannelForbidden:
+        return Telegram::Peer(d->id, Telegram::Peer::Channel);
+    default:
+        break;
+    }
+    return Telegram::Peer();
+}
+
+QString Telegram::ChatInfo::title() const
+{
+    return d->title;
+}
+
+quint32 Telegram::ChatInfo::participantsCount() const
+{
+    return d->participantsCount;
+}
+
+quint32 Telegram::ChatInfo::date() const
+{
+    return d->date;
+}
+
+bool Telegram::ChatInfo::left() const
+{
+    return d->left();
+}
+
+bool Telegram::ChatInfo::getPeerPicture(Telegram::RemoteFile *file, Telegram::PeerPictureSize size) const
+{
+    switch (size) {
+    case PeerPictureSize::Big:
+        return file->d->setFileLocation(&d->photo.photoBig);
+    case PeerPictureSize::Small:
+        return file->d->setFileLocation(&d->photo.photoSmall);
+    default:
+        return false;
+    }
+}
+
 TelegramNamespace::ContactStatus getApiContactStatus(TLValue status)
 {
     switch (status) {

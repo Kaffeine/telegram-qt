@@ -71,10 +71,10 @@ QString CMessageModel::peerToText(const Telegram::Peer &peer) const
         }
         return CContactModel::formatName(info);
     }
-    Telegram::GroupChat info;
+    Telegram::ChatInfo info;
     m_backend->getChatInfo(&info, peer.id);
-    if (!info.title.isEmpty()) {
-        return info.title;
+    if (!info.title().isEmpty()) {
+        return info.title();
     }
     return QStringLiteral("chat%1").arg(peer.id);
 }
