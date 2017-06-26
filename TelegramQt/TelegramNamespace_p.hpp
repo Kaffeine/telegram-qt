@@ -129,6 +129,18 @@ class Telegram::PasswordInfo::Private : public TLAccountPassword { };
 class Telegram::UserInfo::Private : public TLUser { };
 class Telegram::ChatInfo::Private : public TLChat { };
 
+class Telegram::DialogInfo::Private
+{
+public:
+    Private() :
+        muteUntil(0)
+    {
+    }
+
+    Peer peer;
+    quint32 muteUntil;
+};
+
 TelegramNamespace::ContactStatus getApiContactStatus(TLValue status);
 quint32 getApiContactLastOnline(const TLUserStatus &status);
 

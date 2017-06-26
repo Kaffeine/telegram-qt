@@ -343,6 +343,26 @@ protected:
     Private *d;
 };
 
+class DialogInfo
+{
+public:
+    DialogInfo();
+    DialogInfo(const DialogInfo &info);
+    virtual ~DialogInfo();
+
+    DialogInfo &operator=(const DialogInfo &info);
+
+    Peer peer() const;
+    quint32 muteUntil() const;
+    bool isStillMuted() const;
+
+protected:
+    friend class ::CTelegramDispatcher;
+    class Private;
+
+    Private *d;
+};
+
 class UserInfo
 {
 public:

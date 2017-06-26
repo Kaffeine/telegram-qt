@@ -22,6 +22,7 @@
 
 using namespace TelegramUtils;
 
+#include <QDateTime>
 #include <QMetaType>
 #include <QDebug>
 
@@ -489,6 +490,46 @@ QString Telegram::RemoteFile::md5Sum() const
         return QString();
     }
     return d->m_inputFile->md5Checksum;
+}
+
+Telegram::DialogInfo::DialogInfo() :
+    d(new Private())
+{
+}
+
+Telegram::DialogInfo::DialogInfo(const Telegram::DialogInfo &info) :
+    d(new Private())
+{
+    *d = *info.d;
+}
+
+Telegram::DialogInfo::~DialogInfo()
+{
+    delete d;
+}
+
+Telegram::DialogInfo &Telegram::DialogInfo::operator=(const Telegram::DialogInfo &info)
+{
+    *d = *info.d;
+    return *this;
+}
+
+Telegram::Peer Telegram::DialogInfo::peer() const
+{
+    return d->peer;
+}
+
+quint32 Telegram::DialogInfo::muteUntil() const
+{
+    return d->muteUntil;
+}
+
+bool Telegram::DialogInfo::isStillMuted() const
+{
+    if (!d->muteUntil) {
+        return false;
+    }
+    return d->muteUntil > QDateTime::currentDateTime().toTime_t();
 }
 
 Telegram::UserInfo::UserInfo() :

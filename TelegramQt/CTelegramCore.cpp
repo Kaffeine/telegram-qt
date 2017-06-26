@@ -311,6 +311,11 @@ qint32 CTelegramCore::localTypingRecommendedRepeatInterval()
     return CTelegramDispatcher::localTypingRecommendedRepeatInterval();
 }
 
+bool CTelegramCore::getDialogInfo(Telegram::DialogInfo *info, const Telegram::Peer &peer) const
+{
+    return m_private->m_dispatcher->getDialogInfo(info, peer);
+}
+
 /*! \fn quint32 Telegram::UserInfo::lastOnline() const
   Return seconds since epoch for last online time.
 
