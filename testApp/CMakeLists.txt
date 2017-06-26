@@ -4,6 +4,7 @@ set(testApp_SOURCES
     main.cpp
     MainWindow.cpp
     CFileManager.cpp
+    CPeerModel.cpp
     CContactModel.cpp
     CContactsFilterModel.cpp
     CMessageModel.cpp
@@ -13,6 +14,7 @@ set(testApp_SOURCES
 set(testApp_HEADERS
     MainWindow.hpp
     CFileManager.hpp
+    CPeerModel.hpp
     CContactModel.hpp
     CContactsFilterModel.hpp
     CMessageModel.hpp

@@ -18,11 +18,9 @@
 #ifndef CCHATINFOMODEL_HPP
 #define CCHATINFOMODEL_HPP
 
-#include <QAbstractTableModel>
-#include <QPixmap>
 #include <QSet>
 
-#include "TelegramNamespace.hpp"
+#include "CPeerModel.hpp"
 
 class CTelegramCore;
 class CFileManager;
@@ -38,7 +36,7 @@ struct SGroupChat : Telegram::ChatInfo {
     QString m_pictureToken;
 };
 
-class CChatInfoModel : public QAbstractTableModel
+class CChatInfoModel : public CPeerModel
 {
     Q_OBJECT
 public:
@@ -52,6 +50,10 @@ public:
     };
 
     explicit CChatInfoModel(CTelegramCore *backend, QObject *parent = 0);
+
+    bool hasPeer(const Telegram::Peer peer) const override;
+    QString getName(const Telegram::Peer peer) const override;
+    QPixmap getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const override;
 
     void setFileManager(CFileManager *manager);
 

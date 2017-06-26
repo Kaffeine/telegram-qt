@@ -30,7 +30,7 @@
 #include <QDebug>
 
 CContactModel::CContactModel(CTelegramCore *backend, QObject *parent) :
-    QAbstractTableModel(parent),
+    CPeerModel(parent),
     m_backend(backend),
     m_fileManager(nullptr)
 {
@@ -38,6 +38,39 @@ CContactModel::CContactModel(CTelegramCore *backend, QObject *parent) :
             SLOT(onContactProfileChanged(quint32)));
     connect(m_backend, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
             SLOT(onContactStatusChanged(quint32)));
+}
+
+bool CContactModel::hasPeer(const Telegram::Peer peer) const
+{
+    if (peer.type != Telegram::Peer::User) {
+        return false;
+    }
+    return indexOfContact(peer.id) >= 0;
+}
+
+QString CContactModel::getName(const Telegram::Peer peer) const
+{
+    if (peer.type != Telegram::Peer::User) {
+        return QString();
+    }
+    const int i = indexOfContact(peer.id);
+    if (i < 0) {
+        return QString();
+    }
+    return data(i, FullName).toString();
+}
+
+QPixmap CContactModel::getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const
+{
+    Q_UNUSED(size)
+    if (peer.type != Telegram::Peer::User) {
+        return QString();
+    }
+    const int i = indexOfContact(peer.id);
+    if (i < 0) {
+        return QString();
+    }
+    return m_contacts.at(i).m_picture;
 }
 
 void CContactModel::setFileManager(CFileManager *manager)
@@ -261,6 +294,7 @@ void CContactModel::onContactProfileChanged(quint32 id)
     QModelIndex modelIndexFirst = createIndex(index, UserName);
     QModelIndex modelIndexLast = createIndex(index, FullName);
     emit dataChanged(modelIndexFirst, modelIndexLast);
+    emit nameChanged(Telegram::Peer(id, Telegram::Peer::User));
 }
 
 void CContactModel::onContactStatusChanged(quint32 id)
@@ -297,6 +331,7 @@ void CContactModel::onFileRequestComplete(const QString &uniqueId)
         m_contacts[i].m_picture = picture;
         const QModelIndex modelIndex = createIndex(i, Avatar);
         emit dataChanged(modelIndex, modelIndex);
+        emit pictureChanged(Telegram::Peer(m_contacts.at(i).id(), Telegram::Peer::User));
     }
 }
 

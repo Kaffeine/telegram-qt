@@ -22,12 +22,36 @@
 #include <QPixmapCache>
 
 CChatInfoModel::CChatInfoModel(CTelegramCore *backend, QObject *parent) :
-    QAbstractTableModel(parent),
+    CPeerModel(parent),
     m_backend(backend),
     m_fileManager(nullptr)
 {
     connect(m_backend, SIGNAL(peerAdded(Telegram::Peer)), this, SLOT(onPeerAdded(Telegram::Peer)));
     connect(m_backend, SIGNAL(chatChanged(quint32)), SLOT(onChatChanged(quint32)));
+}
+
+bool CChatInfoModel::hasPeer(const Telegram::Peer peer) const
+{
+    return indexOfChat(peer) >= 0;
+}
+
+QString CChatInfoModel::getName(const Telegram::Peer peer) const
+{
+    int i = indexOfChat(peer);
+    if (i < 0) {
+        return QString();
+    }
+    return m_chats.at(i).title();
+}
+
+QPixmap CChatInfoModel::getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const
+{
+    Q_UNUSED(size)
+    int i = indexOfChat(peer);
+    if (i < 0) {
+        return QString();
+    }
+    return m_chats.at(i).m_picture;
 }
 
 void CChatInfoModel::setFileManager(CFileManager *manager)
@@ -200,6 +224,7 @@ void CChatInfoModel::onChatChanged(quint32 id)
     m_chats[i].m_peer = m_chats[i].peer();
     emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
     emit chatChanged(id);
+    emit nameChanged(m_chats.at(i).peer());
 }
 
 void CChatInfoModel::onFileRequestComplete(const QString &uniqueId)
@@ -224,6 +249,7 @@ void CChatInfoModel::onFileRequestComplete(const QString &uniqueId)
         m_chats[i].m_picture = picture;
         emit dataChanged(index(i, 0), index(i, ColumnsCount - 1));
         emit chatChanged(m_chats.at(i).peer().id);
+        emit pictureChanged(m_chats.at(i).peer());
     }
 }
 

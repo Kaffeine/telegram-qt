@@ -15,6 +15,7 @@ TEMPLATE = app
 SOURCES += main.cpp\
     MainWindow.cpp \
     CFileManager.cpp \
+    CPeerModel.cpp \
     CContactModel.cpp \
     CContactsFilterModel.cpp \
     CChatInfoModel.cpp \
@@ -22,6 +23,7 @@ SOURCES += main.cpp\
 
 HEADERS  += MainWindow.hpp \
     CFileManager.hpp \
+    CPeerModel.hpp \
     CContactModel.hpp \
     CContactsFilterModel.hpp \
     CChatInfoModel.hpp \
