@@ -43,6 +43,8 @@ QVariant CChatInfoModel::headerData(int section, Qt::Orientation orientation, in
         return tr("Title");
     case ParticipantsCount:
         return tr("Participants");
+    case Broadcast:
+        return tr("Broadcast");
     default:
         break;
     }
@@ -70,6 +72,8 @@ QVariant CChatInfoModel::data(const QModelIndex &index, int role) const
         return m_chats.at(chatIndex).title();
     case ParticipantsCount:
         return m_chats.at(chatIndex).participantsCount();
+    case Broadcast:
+        return m_chats.at(chatIndex).broadcast();
     default:
         break;
     }

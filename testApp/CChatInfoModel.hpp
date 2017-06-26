@@ -32,6 +32,7 @@ public:
         Id,
         Title,
         ParticipantsCount,
+        Broadcast,
         ColumnsCount
     };
 
