@@ -618,6 +618,19 @@ bool Telegram::ChatInfo::left() const
     return d->left();
 }
 
+bool Telegram::ChatInfo::broadcast() const
+{
+    return d->broadcast();
+}
+
+Telegram::Peer Telegram::ChatInfo::migratedTo() const
+{
+    if (d->migratedTo.tlType == TLValue::InputChannelEmpty) {
+        return Peer();
+    }
+    return Peer(d->migratedTo.channelId, Peer::Channel);
+}
+
 bool Telegram::ChatInfo::getPeerPicture(Telegram::RemoteFile *file, Telegram::PeerPictureSize size) const
 {
     switch (size) {

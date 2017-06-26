@@ -387,6 +387,8 @@ public:
     quint32 participantsCount() const;
     quint32 date() const;
     bool left() const;
+    bool broadcast() const;
+    Peer migratedTo() const;
 
     bool getPeerPicture(RemoteFile *file, PeerPictureSize size = PeerPictureSize::Small) const;
 
