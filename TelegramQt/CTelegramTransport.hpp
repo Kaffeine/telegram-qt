@@ -35,8 +35,8 @@ public:
 
     virtual QByteArray getPackage() = 0;
 
-    inline QAbstractSocket::SocketError error() const { return m_error; }
-    inline QAbstractSocket::SocketState state() const { return m_state; }
+    QAbstractSocket::SocketError error() const { return m_error; }
+    QAbstractSocket::SocketState state() const { return m_state; }
 
     // Method for testing
     virtual QByteArray lastPackage() const = 0;
