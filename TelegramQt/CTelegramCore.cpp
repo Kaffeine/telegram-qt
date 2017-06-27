@@ -129,6 +129,16 @@ bool CTelegramCore::updatesEnabled() const
     return m_private->m_dispatcher->updatesEnabled();
 }
 
+QNetworkProxy CTelegramCore::proxy() const
+{
+    return m_private->m_dispatcher->proxy();
+}
+
+void CTelegramCore::setProxy(const QNetworkProxy &proxy)
+{
+    return m_private->m_dispatcher->setProxy(proxy);
+}
+
 void CTelegramCore::setAppInformation(CAppInformation *newAppInfo)
 {
     m_private->m_appInfo = newAppInfo;

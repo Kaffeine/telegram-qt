@@ -22,6 +22,7 @@
 #include "TelegramNamespace.hpp"
 
 #include <QObject>
+#include <QNetworkProxy>
 #include <QVector>
 #include <QStringList>
 
@@ -42,6 +43,9 @@ public:
 
     CAppInformation *appInformation() const;
     bool updatesEnabled() const;
+
+    QNetworkProxy proxy() const;
+    void setProxy(const QNetworkProxy &proxy);
 
     Q_INVOKABLE void setAppInformation(CAppInformation *newAppInfo);
     Q_INVOKABLE void setAppInformation(const CAppInformation *newAppInfo);

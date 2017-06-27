@@ -113,6 +113,16 @@ void CTelegramDispatcher::setUpdatesEnabled(bool enable)
     m_updatesEnabled = enable;
 }
 
+QNetworkProxy CTelegramDispatcher::proxy() const
+{
+    return m_proxy;
+}
+
+void CTelegramDispatcher::setProxy(const QNetworkProxy &proxy)
+{
+    m_proxy = proxy;
+}
+
 void CTelegramDispatcher::setAppInformation(const CAppInformation *newAppInfo)
 {
     m_appInformation = newAppInfo;
@@ -2252,6 +2262,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
     qDebug() << Q_FUNC_INFO << dcInfo.id << dcInfo.ipAddress << dcInfo.port;
 
     CTelegramConnection *connection = new CTelegramConnection(m_appInformation, this);
+    connection->setProxy(m_proxy);
     connection->setDcInfo(dcInfo);
     connection->setDeltaTime(m_deltaTime);
 

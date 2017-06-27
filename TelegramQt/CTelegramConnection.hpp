@@ -22,6 +22,7 @@
 #include <QByteArray>
 #include <QVector>
 #include <QMap>
+#include <QNetworkProxy>
 #include <QStringList>
 
 #include "TelegramNamespace.hpp"
@@ -82,6 +83,7 @@ public:
 
     explicit CTelegramConnection(const CAppInformation *appInfo, QObject *parent = 0);
 
+    void setProxy(const QNetworkProxy &proxy);
     void setDcInfo(const TLDcOption &newDcInfo);
 
     TLDcOption dcInfo() const { return m_dcInfo; }
@@ -534,6 +536,7 @@ protected:
 
     quint64 m_authRetryId;
 
+    QNetworkProxy m_proxy;
     TLDcOption m_dcInfo;
 
     QVector<TLDcOption> m_dcConfiguration;

@@ -62,6 +62,16 @@ void CTcpTransport::disconnectFromHost()
     m_socket->disconnectFromHost();
 }
 
+bool CTcpTransport::setProxy(const QNetworkProxy &proxy)
+{
+    if (m_socket->isOpen()) {
+        qWarning() << Q_FUNC_INFO << "Unable to set proxy on open socket";
+        return false;
+    }
+    m_socket->setProxy(proxy);
+    return true;
+}
+
 bool CTcpTransport::isConnected() const
 {
     return m_socket && (m_socket->state() == QAbstractSocket::ConnectedState);

@@ -30,6 +30,7 @@ public:
     CTelegramTransport(QObject *parent = 0) : QObject(parent) { }
     virtual void connectToHost(const QString &ipAddress, quint32 port) = 0;
     virtual void disconnectFromHost() = 0;
+    virtual bool setProxy(const QNetworkProxy &proxy) = 0;
 
     virtual bool isConnected() const = 0;
 

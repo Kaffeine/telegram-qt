@@ -22,6 +22,7 @@
 
 #include <QMap>
 #include <QMultiMap>
+#include <QNetworkProxy>
 #include <QPair>
 #include <QStringList>
 #include <QVector>
@@ -69,6 +70,9 @@ public:
 
     bool updatesEnabled() const;
     void setUpdatesEnabled(bool enable);
+
+    QNetworkProxy proxy() const;
+    void setProxy(const QNetworkProxy &proxy);
 
     void setAppInformation(const CAppInformation *newAppInfo);
 
@@ -277,6 +281,7 @@ protected:
 
     TelegramNamespace::ConnectionState m_connectionState;
 
+    QNetworkProxy m_proxy;
     const CAppInformation *m_appInformation;
     bool m_updatesEnabled;
 
