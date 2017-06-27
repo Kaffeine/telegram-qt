@@ -6,39 +6,20 @@ Telegram binding for Qt
 Requirements
 ============
 
-* CMake-2.8.12+ or QMake
-* Qt4 or Qt5
+* CMake-2.8.12+
+* Qt 5.6.0+
 
 Installation
 ============
 
-    git clone https://github.com/Kaffeine/telegram-qt.git
-
-or
-
-    tar -xf telegram-qt-0.1.0.tar.bz2
-
+    tar -xvf telegram-qt-x.y.z.tar.bz2
     mkdir telegram-qt-build
     cd telegram-qt-build
-    
-The library supports build with CMake and QMake build systems, so the next command would be
-
-    cmake ../telegram-qt
-
-or
-
-    qmake ../telegram-qt
-
-Information about CMake build:
-* By default CMake looks for the Qt5 build. You can pass USE_QT4 option (-DUSE_QT4=true) to process Qt4 build.
-* Default installation prefix is /usr/local. Use CMAKE_INSTALL_PREFIX parameter to set a different prefix (-DCMAKE_INSTALL_PREFIX=/usr).
-
-<!-- markdown "code after list" workaround -->
-
-Compilation:
-
+    cmake ../telegram-qt-x.y.z -DCMAKE_INSTALL_PREFIX=/usr
     make -j4
     make install
+
+Default CMake installation prefix is /usr/local. Use CMAKE_INSTALL_PREFIX parameter to set a different prefix (e.g. -DCMAKE_INSTALL_PREFIX=/usr).
 
 License
 =======
