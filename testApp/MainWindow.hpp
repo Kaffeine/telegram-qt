@@ -147,6 +147,7 @@ private slots:
     void on_groupChatLeaveChat_clicked();
 
     void on_findContact_clicked();
+    void setUiProxyEnabled(bool enabled);
 
 private:
     void searchByUsername();

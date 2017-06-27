@@ -147,6 +147,7 @@ MainWindow::MainWindow(QWidget *parent) :
     helpFile.open(QIODevice::ReadOnly);
     ui->helpView->setPlainText(helpFile.readAll());
 
+    setUiProxyEnabled(false);
     setAppState(AppStateNone);
     updateGroupChatAddContactButtonText();
 
@@ -154,6 +155,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->messagingView, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onCustomMenuRequested(QPoint)));
     connect(ui->contactSearchResult, SIGNAL(customContextMenuRequested(QPoint)), SLOT(onSearchCustomMenuRequested(QPoint)));
+    connect(ui->settingsProxyEnable, SIGNAL(toggled(bool)), this, SLOT(setUiProxyEnabled(bool)));
 
     ui->groupChatAddContactForwardMessages->hide();
 }
@@ -645,6 +647,15 @@ void MainWindow::on_connectButton_clicked()
         flags |= TelegramNamespace::MessageFlagForwarded;
     }
     m_core->setMessageReceivingFilter(flags);
+    if (ui->settingsProxyEnable->isChecked()) {
+        QNetworkProxy proxySettings;
+        proxySettings.setType(QNetworkProxy::Socks5Proxy);
+        proxySettings.setUser(ui->settingsProxyUser->text());
+        proxySettings.setPassword(ui->settingsProxyPassword->text());
+        proxySettings.setHostName(ui->settingsProxyHost->text());
+        proxySettings.setPort(ui->settingsProxyPort->value());
+        m_core->setProxy(proxySettings);
+    }
 
     QVector<Telegram::DcOption> testServers;
     testServers << Telegram::DcOption(QLatin1String("149.154.175.10"), 443);
@@ -819,6 +830,15 @@ void MainWindow::setAppState(MainWindow::AppState newState)
     default:
         break;
     }
+}
+
+void MainWindow::setUiProxyEnabled(bool enabled)
+{
+    ui->settingsProxyEnable->setChecked(enabled);
+    ui->settingsProxyUser->setEnabled(enabled);
+    ui->settingsProxyPassword->setEnabled(enabled);
+    ui->settingsProxyHost->setEnabled(enabled);
+    ui->settingsProxyPort->setEnabled(enabled);
 }
 
 CContactModel *MainWindow::searchResultModel()
