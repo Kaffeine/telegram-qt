@@ -20,8 +20,7 @@
 
 #include <QObject>
 
-#include <QMap>
-#include <QMultiMap>
+#include <QHash>
 #include <QNetworkProxy>
 #include <QPair>
 #include <QStringList>
@@ -311,12 +310,12 @@ protected:
     bool m_updatesStateIsLocked; // True if we are (going to) getting updatesDifference.
     bool m_emitOnlyIncomingUnreadMessages;
 
-    QMap<quint32, QPair<quint32,QByteArray> > m_exportedAuthentications; // dc, <id, auth data>
-    QMap<quint32, QByteArray> m_delayedPackages; // dc, package data
-    QMap<quint32, TLUser*> m_users;
+    QHash<quint32, QPair<quint32,QByteArray> > m_exportedAuthentications; // dc, <id, auth data>
+    QHash<quint32, QByteArray> m_delayedPackages; // dc, package data
+    QHash<quint32, TLUser*> m_users;
     QVector<quint32> m_askedUserIds;
 
-    QMap<quint32, TLMessage*> m_knownMediaMessages; // message id, message
+    QHash<quint32, TLMessage*> m_knownMediaMessages; // message id, message
 
     quint32 m_selfUserId;
     quint32 m_maxMessageId;
@@ -324,7 +323,7 @@ protected:
     QVector<quint32> m_contactIdList;
 
     // fileId is program-specific handler, not related to Telegram.
-    QMap<quint64,quint64> m_rpcIdToMessageRandomIdMap; // RPC Id, Random Id
+    QHash<quint64,quint64> m_rpcIdToMessageRandomIdMap; // RPC Id, Random Id
 
     QTimer *m_typingUpdateTimer;
     QVector<TypingStatus> m_contactsMessageActions;
@@ -332,8 +331,8 @@ protected:
 
     TLVector<quint32> m_chatIds; // Telegram chat ids vector. Index is "public chat id".
 
-    QMap<quint32, TLChat> m_chatInfo; // Telegram chat id to Chat map
-    QMap<quint32, TLChatFull> m_chatFullInfo; // Telegram chat id to ChatFull map
+    QHash<quint32, TLChat> m_chatInfo; // Telegram chat id to Chat map
+    QHash<quint32, TLChatFull> m_chatFullInfo; // Telegram chat id to ChatFull map
 
     QVector<CTelegramModule*> m_modules;
 
