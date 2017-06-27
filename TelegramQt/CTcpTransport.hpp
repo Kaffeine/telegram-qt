@@ -32,18 +32,18 @@ public:
     explicit CTcpTransport(QObject *parent = 0);
     ~CTcpTransport();
 
-    void connectToHost(const QString &ipAddress, quint32 port);
-    void disconnectFromHost();
+    void connectToHost(const QString &ipAddress, quint32 port) override;
+    void disconnectFromHost() override;
 
-    bool isConnected() const;
+    bool isConnected() const override;
 
-    QByteArray getPackage() { return m_receivedPackage; }
+    QByteArray getPackage() override { return m_receivedPackage; }
 
     // Method for testing
-    QByteArray lastPackage() const { return m_lastPackage; }
+    QByteArray lastPackage() const override { return m_lastPackage; }
 
 public slots:
-    void sendPackage(const QByteArray &payload);
+    void sendPackage(const QByteArray &payload) override;
 
 private slots:
     void onStateChanged(QAbstractSocket::SocketState newState);
