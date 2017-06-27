@@ -21,13 +21,14 @@ option(STATIC_BUILD "Compile static library instead of shared" FALSE)
 option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
 
 set(QT_VERSION_MAJOR "5")
+set(QT_COMPONENTS Core Network)
 
 if(ENABLE_TESTAPP)
-    find_package(Qt5 REQUIRED COMPONENTS Core Network Gui Widgets)
-else()
-    find_package(Qt5 REQUIRED COMPONENTS Core Network)
+    list(APPEND QT_COMPONENTS Gui Widgets)
 endif()
 
+find_package(Qt5 5.6.0 REQUIRED COMPONENTS ${QT_COMPONENTS})
+message("-- Found Qt version: ${Qt5_VERSION}")
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 
