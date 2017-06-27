@@ -628,7 +628,7 @@ void MainWindow::onSearchCustomMenuRequested(const QPoint &pos)
 
 void MainWindow::on_connectButton_clicked()
 {
-    QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
+    const QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
 
     TelegramNamespace::MessageFlags flags = TelegramNamespace::MessageFlagNone;
     if (ui->settingsReceivingFilterReadMessages->isChecked()) {
@@ -651,16 +651,17 @@ void MainWindow::on_connectButton_clicked()
         m_core->setProxy(proxySettings);
     }
 
-    QVector<Telegram::DcOption> testServers;
-    testServers << Telegram::DcOption(QLatin1String("149.154.175.10"), 443);
+    const QVector<Telegram::DcOption> testServers = {
+        Telegram::DcOption(QLatin1String("149.154.175.10"), 443),
+    };
 
-    if (secretInfo.isEmpty())
+    if (secretInfo.isEmpty()) {
         if (ui->mainDcRadio->isChecked()) {
             m_core->initConnection();
         } else {
             m_core->initConnection(testServers);
         }
-    else {
+    } else {
         m_core->restoreConnection(secretInfo);
     }
 }
