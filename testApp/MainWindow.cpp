@@ -20,6 +20,7 @@
 
 #include "CAppInformation.hpp"
 #include "CTelegramCore.hpp"
+#include "Debug.hpp"
 #include "CContactModel.hpp"
 #include "CContactsFilterModel.hpp"
 #include "CDialogModel.hpp"
@@ -904,6 +905,18 @@ void MainWindow::on_deleteContact_clicked()
     }
 }
 
+void MainWindow::on_dialogList_doubleClicked(const QModelIndex &index)
+{
+    qDebug() << Q_FUNC_INFO;
+    const Telegram::Peer peer = m_dialogModel->getPeer(index);
+    if (!peer.isValid()) {
+        return;
+    }
+
+    qDebug() << Q_FUNC_INFO << peer;
+    showDialog(peer);
+}
+
 void MainWindow::on_messagingSendButton_clicked()
 {
     CMessageModel::SMessage m;
@@ -1089,6 +1102,23 @@ void MainWindow::readAllMessages()
 {
     foreach (quint32 contactId, m_contactLastMessageList.keys()) {
         m_core->setMessageRead(contactId, m_contactLastMessageList.value(contactId));
+    }
+}
+
+void MainWindow::showDialog(const Telegram::Peer &peer)
+{
+    switch (peer.type) {
+    case Telegram::Peer::User:
+        setActiveContact(peer.id);
+        ui->tabWidget->setCurrentWidget(ui->tabMessaging);
+        break;
+    case Telegram::Peer::Chat:
+    case Telegram::Peer::Channel:
+        setActiveChat(peer.id);
+        ui->tabWidget->setCurrentWidget(ui->tabChats);
+        break;
+    default:
+        return;
     }
 }
 

@@ -97,6 +97,7 @@ protected slots:
     void on_addContact_clicked();
     void on_deleteContact_clicked();
 
+    void on_dialogList_doubleClicked(const QModelIndex &index);
     void on_contactListTable_doubleClicked(const QModelIndex &index);
     void on_messagingView_doubleClicked(const QModelIndex &index);
     void on_groupChatChatsList_doubleClicked(const QModelIndex &index);
@@ -130,6 +131,7 @@ protected:
 
     void readAllMessages();
 
+    void showDialog(const Telegram::Peer &peer);
     void setActiveContact(quint32 userId);
     void setActiveChat(quint32 chatId);
     void updateMessagingContactName();
