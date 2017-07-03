@@ -548,6 +548,36 @@ quint32 Telegram::UserInfo::wasOnline() const
     return getApiContactLastOnline(d->status);
 }
 
+bool Telegram::UserInfo::isBot() const
+{
+    return d->bot();
+}
+
+bool Telegram::UserInfo::isSelf() const
+{
+    return d->self();
+}
+
+bool Telegram::UserInfo::isContact() const
+{
+    return d->contact();
+}
+
+bool Telegram::UserInfo::isMutualContact() const
+{
+    return d->mutualContact();
+}
+
+bool Telegram::UserInfo::isDeleted() const
+{
+    return d->deleted();
+}
+
+quint32 Telegram::UserInfo::botVersion() const
+{
+    return d->botInfoVersion;
+}
+
 bool Telegram::UserInfo::getPeerPicture(Telegram::RemoteFile *file, PeerPictureSize size) const
 {
     switch (size) {

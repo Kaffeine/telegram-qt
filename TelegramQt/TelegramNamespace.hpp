@@ -359,7 +359,13 @@ public:
     QString phone() const;
     TelegramNamespace::ContactStatus status() const;
     quint32 wasOnline() const;
+    bool isBot() const;
+    bool isSelf() const;
+    bool isContact() const;
+    bool isMutualContact() const;
+    bool isDeleted() const;
 
+    quint32 botVersion() const;
     bool getPeerPicture(RemoteFile *file, PeerPictureSize size = PeerPictureSize::Small) const;
 
     // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
