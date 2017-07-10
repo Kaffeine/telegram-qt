@@ -246,22 +246,6 @@ void CTelegramCore::deleteContacts(const QVector<quint32> &userIds)
     m_private->m_dispatcher->deleteContacts(userIds);
 }
 
-quint32 CTelegramCore::requestPeerPicture(const Telegram::Peer &peer, const Telegram::PeerPictureSize size) const
-{
-    return m_private->m_mediaModule->requestPeerPicture(peer, size);
-}
-
-void CTelegramCore::requestContactAvatar(quint32 userId)
-{
-    quint32 requestId = m_private->m_mediaModule->requestPeerPicture(Telegram::Peer(userId, Telegram::Peer::User), Telegram::PeerPictureSize::Small);
-    Q_UNUSED(requestId)
-}
-
-void CTelegramCore::requestMessageMediaData(quint32 messageId)
-{
-    m_private->m_mediaModule->requestMessageMediaData(messageId);
-}
-
 quint32 CTelegramCore::requestFile(const Telegram::RemoteFile *file)
 {
     return m_private->m_mediaModule->requestFile(file);

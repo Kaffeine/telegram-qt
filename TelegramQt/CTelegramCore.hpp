@@ -108,9 +108,6 @@ public Q_SLOTS:
     void deleteContact(quint32 userId);
     void deleteContacts(const QVector<quint32> &userIds);
 
-    quint32 requestPeerPicture(const Telegram::Peer &peer, const Telegram::PeerPictureSize size = Telegram::PeerPictureSize::Small) const;
-    void requestContactAvatar(quint32 userId);
-    void requestMessageMediaData(quint32 messageId);
     quint32 requestFile(const Telegram::RemoteFile *file);
 
     bool requestHistory(const Telegram::Peer &peer, int offset, int limit);

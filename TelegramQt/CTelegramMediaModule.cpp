@@ -56,53 +56,6 @@ QString CTelegramMediaModule::peerPictureToken(const Telegram::Peer &peer, const
     return QString();
 }
 
-quint32 CTelegramMediaModule::requestPeerPicture(const Telegram::Peer &peer, const Telegram::PeerPictureSize size)
-{
-    qDebug() << Q_FUNC_INFO << peer;
-    quint32 requestId = 0;
-    switch (peer.type) {
-    case Telegram::Peer::User:
-        requestId = getPeerPicture(getUser(peer.id), size);
-        break;
-    case Telegram::Peer::Chat:
-    case Telegram::Peer::Channel:
-        requestId = getPeerPicture(getChat(peer), size);
-        break;
-    default:
-        break;
-    }
-
-    if (!requestId) {
-        qWarning() << Q_FUNC_INFO << "Unable to get picture for peer" << peer;
-        return 0;
-    }
-    m_requestedFileDescriptors[requestId].setPeer(peer);
-    return requestId;
-}
-
-bool CTelegramMediaModule::requestMessageMediaData(quint32 messageId)
-{
-    Telegram::MessageMediaInfo info;
-    if (!getMessageMediaInfo(&info, messageId)) {
-        return false;
-    }
-
-    Telegram::RemoteFile location;
-    if (!info.getRemoteFileInfo(&location)) {
-        return false;
-    }
-
-    location.d->m_size = info.size();
-    quint32 requestId = requestFile(&location, info.size());
-
-    if (!requestId) {
-        return false;
-    }
-
-    m_requestedFileDescriptors[requestId].setMessageId(messageId);
-    return true;
-}
-
 quint32 CTelegramMediaModule::requestFile(const Telegram::RemoteFile *file, quint32 chunkSize)
 {
     if (!file->isValid()) {
@@ -308,41 +261,6 @@ void CTelegramMediaModule::onFileDataReceived(const TLUploadFile &file, quint32 
         } else {
             qDebug() << Q_FUNC_INFO << "Invalid call. The method must be called only on CTelegramConnection signal.";
         }
-    }
-
-    // Legacy stuff:
-    if (isFinished) {
-        if (descriptor.peer().isValid()) {
-            const TLUser *user = getUser(descriptor.peer().id);
-            if (user) {
-                emit avatarReceived(descriptor.peer().id, file.bytes, mimeType, getPictureToken(user, Telegram::PeerPictureSize::Small));
-            }
-        }
-    }
-
-    const TLMessage *message = nullptr;
-    if (descriptor.messageId() && (message = getMessage(descriptor.messageId()))) {
-        const TelegramNamespace::MessageType messageType = telegramMessageTypeToPublicMessageType(message->media.tlType);
-
-        Telegram::Peer peer = toPublicPeer(message->toId);
-
-        // MimeType can not be resolved for some StorageFileType. Try to get the type from the message info in this case.
-        if (mimeType.isEmpty()) {
-            Telegram::MessageMediaInfo info;
-            getMessageMediaInfo(&info, message->id);
-            mimeType = info.mimeType();
-        }
-
-        if (!(message->flags & TelegramMessageFlagOut)) {
-            if (peer.type == Telegram::Peer::User) {
-                peer = message->fromId;
-            }
-        }
-
-#ifdef DEVELOPER_BUILD
-        qDebug() << Q_FUNC_INFO << "MessageMediaData:" << message->id << offset << "-" << offset + chunkSize << "/" << descriptor.size();
-#endif
-        emit messageMediaDataReceived(peer, message->id, file.bytes, mimeType, messageType, offset, descriptor.size());
     }
 }
 
