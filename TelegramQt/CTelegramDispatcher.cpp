@@ -1795,10 +1795,6 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
         return;
     }
 
-    if (message.media.tlType != TLValue::MessageMediaEmpty) {
-        m_knownMediaMessages.insert(message.id, new TLMessage(message));
-    }
-
     Telegram::Message apiMessage;
 
     TelegramNamespace::MessageFlags messageFlags = getPublicMessageFlags(message.flags);
@@ -1833,6 +1829,10 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
         m_askedUserIds.append(apiMessage.fromId);
         qWarning() << Q_FUNC_INFO << "Unknown user"; // Should not happen as we have proper dialogs getter
 //        activeConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ 1);
+    }
+
+    if (message.media.tlType != TLValue::MessageMediaEmpty) {
+        m_knownMediaMessages.insert(message.id, new TLMessage(message));
     }
 
     emit messageReceived(apiMessage);
