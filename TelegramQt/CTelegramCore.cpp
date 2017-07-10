@@ -348,9 +348,9 @@ bool CTelegramCore::getChatParticipants(QVector<quint32> *participants, quint32 
     return m_private->m_dispatcher->getChatParticipants(participants, chatId);
 }
 
-bool CTelegramCore::getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const
+bool CTelegramCore::getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId, const Telegram::Peer &peer) const
 {
-    return m_private->m_mediaModule->getMessageMediaInfo(messageInfo, messageId);
+    return m_private->m_mediaModule->getMessageMediaInfo(messageInfo, messageId, peer);
 }
 
 bool CTelegramCore::getPasswordInfo(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const

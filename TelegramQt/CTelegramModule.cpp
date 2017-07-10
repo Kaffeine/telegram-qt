@@ -78,9 +78,9 @@ const TLChat *CTelegramModule::getChat(const Telegram::Peer &peer) const
     return m_dispatcher->getChat(peer);
 }
 
-const TLMessage *CTelegramModule::getMessage(quint32 messageId) const
+const TLMessage *CTelegramModule::getMessage(quint32 messageId, const Telegram::Peer &peer) const
 {
-    return m_dispatcher->getMessage(messageId);
+    return m_dispatcher->getMessage(messageId, peer);
 }
 
 TLInputPeer CTelegramModule::toInputPeer(const Telegram::Peer &peer) const

@@ -559,6 +559,11 @@ void CTelegramDispatcher::closeConnection()
     m_askedUserIds.clear();
     qDeleteAll(m_knownMediaMessages);
     m_knownMediaMessages.clear();
+    for (auto peerMessages : m_channelMediaMessages) {
+        qDeleteAll(*peerMessages);
+    }
+    qDeleteAll(m_channelMediaMessages);
+    m_channelMediaMessages.clear();
     m_contactIdList.clear();
     m_contactsMessageActions.clear();
     m_localMessageActions.clear();
@@ -1828,7 +1833,20 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
     }
 
     if (message.media.tlType != TLValue::MessageMediaEmpty) {
-        m_knownMediaMessages.insert(message.id, new TLMessage(message));
+        QHash<quint32, TLMessage*> *peerHash = nullptr;
+        if (peer.type == Telegram::Peer::Channel) {
+            if (!m_channelMediaMessages.contains(peer.id)) {
+                m_channelMediaMessages.insert(peer.id, new QHash<quint32, TLMessage*>());
+            }
+            peerHash = m_channelMediaMessages.value(peer.id);
+        } else {
+            peerHash = &m_knownMediaMessages;
+        }
+        if (!peerHash) { // Should never happen, right?
+            qWarning() << Q_FUNC_INFO << "Something went wrong. Unable to process media message, memory leak is very possible";
+            return;
+        }
+        peerHash->insert(message.id, new TLMessage(message));
     }
 
     emit messageReceived(apiMessage);
@@ -2711,7 +2729,15 @@ const TLChat *CTelegramDispatcher::getChat(const Telegram::Peer &peer) const
     }
 }
 
-const TLMessage *CTelegramDispatcher::getMessage(quint32 messageId) const
+const TLMessage *CTelegramDispatcher::getMessage(quint32 messageId, const Telegram::Peer &peer) const
 {
+    if (peer.type == Telegram::Peer::Channel) {
+        QHash<quint32, TLMessage*> *peerMessages = m_channelMediaMessages.value(peer.id); // message id, message
+        if (!peerMessages) {
+            return nullptr;
+        }
+
+        return peerMessages->value(messageId);
+    }
     return m_knownMediaMessages.value(messageId);
 }

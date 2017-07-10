@@ -39,7 +39,7 @@ public:
 
     QString peerPictureToken(const Telegram::Peer &peer, const Telegram::PeerPictureSize size) const Q_REQUIRED_RESULT;
     quint32 requestFile(const Telegram::RemoteFile *file, quint32 chunkSize = 0);
-    bool getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const;
+    bool getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId, const Telegram::Peer &peer) const;
 
     quint32 uploadFile(const QByteArray &fileContent, const QString &fileName);
     quint32 uploadFile(QIODevice *source, const QString &fileName);

@@ -77,9 +77,9 @@ quint32 CTelegramMediaModule::requestFile(const Telegram::RemoteFile *file, quin
     return addFileRequest(request);
 }
 
-bool CTelegramMediaModule::getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const
+bool CTelegramMediaModule::getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId, const Telegram::Peer &peer) const
 {
-    const TLMessage *message = getMessage(messageId);
+    const TLMessage *message = getMessage(messageId, peer);
     if (!message) {
         qDebug() << Q_FUNC_INFO << "Unknown media message" << messageId;
         return false;

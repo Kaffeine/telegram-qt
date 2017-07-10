@@ -148,7 +148,7 @@ public:
     // Getters
     const TLUser *getUser(quint32 userId) const;
     const TLChat *getChat(const Telegram::Peer &peer) const;
-    const TLMessage *getMessage(quint32 messageId) const;
+    const TLMessage *getMessage(quint32 messageId, const Telegram::Peer &peer) const;
 
     bool getUserInfo(Telegram::UserInfo *userInfo, quint32 userId) const;
     bool getChatInfo(Telegram::ChatInfo *outputChat, const Telegram::Peer peer) const;
@@ -333,6 +333,7 @@ protected:
     QVector<quint32> m_askedUserIds;
 
     QHash<quint32, TLMessage*> m_knownMediaMessages; // message id, message
+    QHash<quint32, QHash<quint32, TLMessage*> *> m_channelMediaMessages; // ChannelId to <message id, message>
 
     quint32 m_selfUserId;
     quint32 m_maxMessageId;

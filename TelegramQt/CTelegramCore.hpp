@@ -74,7 +74,7 @@ public:
     bool getChatInfo(Telegram::ChatInfo *info, const Telegram::Peer peer) const;
     bool getChatParticipants(QVector<quint32> *participants, quint32 chatId);
 
-    bool getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId) const;
+    bool getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId, const Telegram::Peer &peer) const;
     bool getPasswordInfo(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const;
     Q_INVOKABLE Telegram::PasswordInfo getPasswordData() const;
 

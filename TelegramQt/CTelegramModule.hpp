@@ -52,7 +52,7 @@ public:
 
     const TLUser *getUser(quint32 userId) const;
     const TLChat *getChat(const Telegram::Peer &peer) const;
-    const TLMessage *getMessage(quint32 messageId) const;
+    const TLMessage *getMessage(quint32 messageId, const Telegram::Peer &peer) const;
 
     TLInputPeer toInputPeer(const Telegram::Peer &peer) const;
     Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer) const;
