@@ -551,6 +551,9 @@ void CTelegramDispatcher::closeConnection()
     m_delayedPackages.clear();
     qDeleteAll(m_users);
     m_users.clear();
+    m_askedUserIds.clear();
+    qDeleteAll(m_knownMediaMessages);
+    m_knownMediaMessages.clear();
     m_contactIdList.clear();
     m_contactsMessageActions.clear();
     m_localMessageActions.clear();
