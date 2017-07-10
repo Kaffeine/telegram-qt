@@ -628,6 +628,11 @@ void MainWindow::onSearchCustomMenuRequested(const QPoint &pos)
 
 void MainWindow::on_connectButton_clicked()
 {
+    if (ui->connectButton->property("_disconnect").toBool()) {
+        m_core->closeConnection();
+        return;
+    }
+
     const QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
 
     TelegramNamespace::MessageFlags flags = TelegramNamespace::MessageFlagNone;
@@ -773,10 +778,11 @@ void MainWindow::setAppState(MainWindow::AppState newState)
 
     switch (m_appState) {
     case AppStateDisconnected:
+        ui->connectButton->setText(tr("Connect"));
+        ui->connectButton->setProperty("_disconnect", false);
         ui->connectionState->setText(tr("Disconnected"));
         // Fall throught
     case AppStateNone:
-        ui->connectButton->setVisible(true);
         ui->restoreSession->setVisible(true);
 
         ui->phoneNumber->setEnabled(true);
@@ -786,10 +792,11 @@ void MainWindow::setAppState(MainWindow::AppState newState)
         break;
     case AppStateConnected:
         ui->connectionState->setText(tr("Connected..."));
+        ui->connectButton->setText(tr("Disconnect"));
+        ui->connectButton->setProperty("_disconnect", true);
         break;
     case AppStateCodeRequired:
         ui->connectionState->setText(tr("Auth required"));
-        ui->connectButton->setVisible(false);
         ui->restoreSession->setVisible(false);
         ui->requestCode->setVisible(true);
         ui->signButton->setVisible(true);
