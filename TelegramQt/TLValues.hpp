@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014-2016 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2014-2017 Alexandr Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
