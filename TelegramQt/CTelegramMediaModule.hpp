@@ -32,7 +32,7 @@ class CTelegramMediaModule : public CTelegramModule
 {
     Q_OBJECT
 public:
-    explicit CTelegramMediaModule(QObject *parent = 0);
+    explicit CTelegramMediaModule(QObject *parent = nullptr);
     ~CTelegramMediaModule();
 
     void setMediaDataBufferSize(quint32 size);

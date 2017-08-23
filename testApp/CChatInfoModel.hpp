@@ -49,7 +49,7 @@ public:
         ColumnsCount
     };
 
-    explicit CChatInfoModel(CTelegramCore *backend, QObject *parent = 0);
+    explicit CChatInfoModel(CTelegramCore *backend, QObject *parent = nullptr);
 
     bool hasPeer(const Telegram::Peer peer) const override;
     QString getName(const Telegram::Peer peer) const override;

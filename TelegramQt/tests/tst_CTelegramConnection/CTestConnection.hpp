@@ -24,7 +24,7 @@ class CTestConnection : public CTelegramConnection
 {
     Q_OBJECT
 public:
-    explicit CTestConnection(QObject *parent = 0);
+    explicit CTestConnection(QObject *parent = nullptr);
 
     inline CTelegramTransport *transport() const { return m_transport; }
 

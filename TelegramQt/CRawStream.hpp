@@ -39,7 +39,7 @@ public:
 
     virtual ~CRawStream();
 
-    inline QIODevice *device() const { return m_device; }
+    QIODevice *device() const { return m_device; }
     void setDevice(QIODevice *newDevice);
     void unsetDevice();
 

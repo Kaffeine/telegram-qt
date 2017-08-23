@@ -38,12 +38,13 @@ using namespace TelegramUtils;
 #include "TLTypesDebug.hpp"
 #endif
 
-static const QVector<Telegram::DcOption> s_builtInDcs = QVector<Telegram::DcOption>()
-        << Telegram::DcOption(QLatin1String("149.154.175.50") , 443)
-        << Telegram::DcOption(QLatin1String("149.154.167.51") , 443)
-        << Telegram::DcOption(QLatin1String("149.154.175.100"), 443)
-        << Telegram::DcOption(QLatin1String("149.154.167.91") , 443)
-        << Telegram::DcOption(QLatin1String("91.108.56.165")  , 443);
+static const QVector<Telegram::DcOption> s_builtInDcs = {
+        Telegram::DcOption(QLatin1String("149.154.175.50") , 443),
+        Telegram::DcOption(QLatin1String("149.154.167.51") , 443),
+        Telegram::DcOption(QLatin1String("149.154.175.100"), 443),
+        Telegram::DcOption(QLatin1String("149.154.167.91") , 443),
+        Telegram::DcOption(QLatin1String("91.108.56.165")  , 443),
+};
 
 static const quint32 s_defaultPingInterval = 15000; // 15 sec
 

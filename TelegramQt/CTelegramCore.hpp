@@ -38,7 +38,7 @@ class TELEGRAMQT_EXPORT CTelegramCore : public QObject
     Q_PROPERTY(CAppInformation *applicationInformation READ appInformation WRITE setAppInformation)
     Q_PROPERTY(TelegramNamespace::ConnectionState connectionState READ connectionState NOTIFY connectionStateChanged)
 public:
-    explicit CTelegramCore(QObject *parent = 0);
+    explicit CTelegramCore(QObject *parent = nullptr);
     ~CTelegramCore();
 
     CAppInformation *appInformation() const;

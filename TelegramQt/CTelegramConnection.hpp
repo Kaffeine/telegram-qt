@@ -81,7 +81,7 @@ public:
     Q_ENUM(DeltaTimeHeuristicState)
 #endif
 
-    explicit CTelegramConnection(const CAppInformation *appInfo, QObject *parent = 0);
+    explicit CTelegramConnection(const CAppInformation *appInfo, QObject *parent = nullptr);
 
     void setProxy(const QNetworkProxy &proxy);
     void setDcInfo(const TLDcOption &newDcInfo);

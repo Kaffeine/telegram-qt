@@ -24,10 +24,10 @@ struct SAesKey {
     QByteArray key;
     QByteArray iv;
 
-    inline SAesKey(const QByteArray &initialKey = QByteArray(), const QByteArray &initialIV = QByteArray()) :
+    SAesKey(const QByteArray &initialKey = QByteArray(), const QByteArray &initialIV = QByteArray()) :
         key(initialKey), iv(initialIV) { }
 
-    inline SAesKey &operator=(const SAesKey &anotherKey)
+    SAesKey &operator=(const SAesKey &anotherKey)
     {
         key = anotherKey.key;
         iv  = anotherKey.iv;

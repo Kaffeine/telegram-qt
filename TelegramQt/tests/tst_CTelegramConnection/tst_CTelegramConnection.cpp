@@ -29,7 +29,7 @@ class tst_CTelegramConnection : public QObject
 {
     Q_OBJECT
 public:
-    explicit tst_CTelegramConnection(QObject *parent = 0);
+    explicit tst_CTelegramConnection(QObject *parent = nullptr);
 
 private slots:
     void testTimestampAlwaysGrow();

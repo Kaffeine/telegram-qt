@@ -69,7 +69,7 @@ public:
 #endif
     Q_DECLARE_FLAGS(InitializationStepFlags, InitializationStep)
 
-    explicit CTelegramDispatcher(QObject *parent = 0);
+    explicit CTelegramDispatcher(QObject *parent = nullptr);
     ~CTelegramDispatcher();
 
     void plugModule(CTelegramModule *module);

@@ -185,8 +185,8 @@ struct Peer
 
 struct DcOption
 {
-    inline DcOption() : port(0) { }
-    inline DcOption(const QString &a, quint32 p) : address(a), port(p) { }
+    DcOption() : port(0) { }
+    DcOption(const QString &a, quint32 p) : address(a), port(p) { }
     QString address;
     quint32 port;
 };

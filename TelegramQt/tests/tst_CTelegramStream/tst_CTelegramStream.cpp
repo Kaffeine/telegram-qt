@@ -33,7 +33,7 @@ class tst_CTelegramStream : public QObject
 {
     Q_OBJECT
 public:
-    explicit tst_CTelegramStream(QObject *parent = 0);
+    explicit tst_CTelegramStream(QObject *parent = nullptr);
 
 private slots:
     void stringsLimitSerialization();

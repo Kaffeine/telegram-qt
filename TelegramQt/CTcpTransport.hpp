@@ -29,7 +29,7 @@ class CTcpTransport : public CTelegramTransport
 {
     Q_OBJECT
 public:
-    explicit CTcpTransport(QObject *parent = 0);
+    explicit CTcpTransport(QObject *parent = nullptr);
     ~CTcpTransport();
 
     void connectToHost(const QString &ipAddress, quint32 port) override;
