@@ -65,7 +65,7 @@ public:
     CRawStream &operator>>(double &d);
 
     template <int Size>
-    CRawStream &operator>>(TLNumbers<Size> &n);
+    CRawStream &operator>>(TLNumber<Size> &n);
 
     CRawStream &operator>>(TLValue &v);
 
@@ -81,7 +81,7 @@ public:
     CRawStream &operator<<(const double &d);
 
     template <int Size>
-    CRawStream &operator<<(const TLNumbers<Size> &n);
+    CRawStream &operator<<(const TLNumber<Size> &n);
 
     CRawStream &operator<<(TLValue v);
 
@@ -160,7 +160,7 @@ inline CRawStream &CRawStream::operator>>(quint64 &i)
 }
 
 template <int Size>
-CRawStream &CRawStream::operator>>(TLNumbers<Size> &n)
+CRawStream &CRawStream::operator>>(TLNumber<Size> &n)
 {
     read(n.data, Size / 8);
     return *this;
@@ -195,7 +195,7 @@ inline CRawStream &CRawStream::operator<<(quint64 i)
 }
 
 template <int Size>
-CRawStream &CRawStream::operator<<(const TLNumbers<Size> &n)
+CRawStream &CRawStream::operator<<(const TLNumber<Size> &n)
 {
     write(n.data, Size / 8);
     return *this;
