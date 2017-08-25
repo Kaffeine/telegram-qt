@@ -1905,7 +1905,6 @@ bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
     }
 
     inputStream >> serverNonce;
-
     m_serverNonce = serverNonce;
 
     QByteArray pq;
@@ -1944,6 +1943,15 @@ bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
         return false;
     }
 
+#ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
+    qDebug() << Q_FUNC_INFO << "Client nonce:" << clientNonce.data;
+    qDebug() << Q_FUNC_INFO << "Server nonce:" << serverNonce;
+    qDebug() << Q_FUNC_INFO << "PQ:" << m_pq;
+    qDebug() << Q_FUNC_INFO << "P:" << m_p;
+    qDebug() << Q_FUNC_INFO << "Q:" << m_q;
+    qDebug() << Q_FUNC_INFO << "FingerPrints:" << fingersprints;
+#endif
+
     m_serverPublicFingersprint = fingersprints.at(0);
 
     if (m_rsaKey.fingersprint != m_serverPublicFingersprint) {
@@ -1957,6 +1965,10 @@ bool CTelegramConnection::answerPqAuthorization(const QByteArray &payload)
 void CTelegramConnection::requestDhParameters()
 {
     Utils::randomBytes(m_newNonce.data, m_newNonce.size());
+
+#ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
+    qDebug() << Q_FUNC_INFO << "New nonce:" << m_newNonce;
+#endif
 
     QByteArray bigEndianNumber;
     bigEndianNumber.fill(char(0), 8);
@@ -2108,8 +2120,17 @@ bool CTelegramConnection::answerDh(const QByteArray &payload)
     setDeltaTime(qint64(serverTime) - (QDateTime::currentMSecsSinceEpoch() / 1000));
     m_deltaTimeHeuristicState = DeltaTimeIsOk;
 
+    // #6 Client computes random 2048-bit number b (using a sufficient amount of entropy) and sends the server a message
     m_b.resize(256);
     Utils::randomBytes(&m_b);
+
+    // IMPORTANT: Apart from the conditions on the Diffie-Hellman prime dh_prime and generator g,
+    // both sides are to check that g, g_a and g_b are greater than 1 and less than dh_prime - 1.
+    // We recommend checking that g_a and g_b are between 2^{2048-64} and dh_prime - 2^{2048-64} as well.
+
+#ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
+    qDebug() << "m_b" << m_b;
+#endif
 
     return true;
 }
