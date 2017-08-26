@@ -310,7 +310,7 @@ void tst_CTelegramConnection::testAuth()
 
     payload.append((char *) payloadData, 256);
 
-    QVERIFY(core.processServersDHAnswer(payload));
+    QVERIFY(core.processServerDhAnswer(payload));
 }
 
 void tst_CTelegramConnection::testAesKeyGeneration()

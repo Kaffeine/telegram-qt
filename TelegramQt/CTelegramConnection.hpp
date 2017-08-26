@@ -277,11 +277,12 @@ public:
     AuthState authState() { return m_authState; }
 
     void requestPqAuthorization();
-    bool answerPqAuthorization(const QByteArray &payload);
+    bool acceptPqAuthorization(const QByteArray &payload);
     void requestDhParameters();
-    bool answerDh(const QByteArray &payload);
+    bool acceptDhAnswer(const QByteArray &payload);
+    void generateDh();
     void requestDhGenerationResult();
-    bool processServersDHAnswer(const QByteArray &payload);
+    bool processServerDhAnswer(const QByteArray &payload);
 
     TLNumber128 clientNonce() const { return m_clientNonce; }
     TLNumber128 serverNonce() const { return m_serverNonce; }
