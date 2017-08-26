@@ -319,6 +319,7 @@ signals:
     void passwordReceived(const TLAccountPassword &password, quint64 requestId);
     void phoneCodeRequired();
     void loggedOut(bool result);
+    void errorReceived(int code, const QString &errorMessage, bool processed);
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);

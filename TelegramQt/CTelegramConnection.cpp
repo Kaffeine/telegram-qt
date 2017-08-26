@@ -2816,11 +2816,11 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
 
     qDebug() << Q_FUNC_INFO << QString(QLatin1String("RPC Error %1: %2 for message %3 %4 (dc %5|%6:%7)"))
                 .arg(errorCode).arg(errorMessage).arg(id).arg(request.toString()).arg(m_dcInfo.id).arg(m_dcInfo.ipAddress).arg(m_dcInfo.port);
-
+    bool processed = false;
     switch (errorCode) {
     case 303: // ERROR_SEE_OTHER
         if (processErrorSeeOther(errorMessage, id)) {
-            return true;
+            processed = true;
         }
         break;
     case 400: // BAD_REQUEST
@@ -2861,8 +2861,8 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
             } else {
                 emit authSignErrorReceived(TelegramNamespace::AuthSignErrorUnknown, errorMessage);
             }
-
-            return true;
+            processed = true;
+            break;
         case TLValue::AccountCheckUsername:
         case TLValue::AccountUpdateUsername: {
             const QString userName = userNameFromPackage(id);
@@ -2877,7 +2877,7 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
                 emit userNameStatusUpdated(userName, TelegramNamespace::UserNameStatusUnknown);
             }
         }
-            return true;
+            processed = true;
             break;
         case TLValue::MessagesGetChats:
         {
@@ -2896,6 +2896,8 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
                 }
             }
         }
+            processed = true;
+            break;
         default:
             break;
         }
@@ -2920,15 +2922,15 @@ bool CTelegramConnection::processRpcError(CTelegramStream &stream, quint64 id, T
         } else {
             emit authorizationErrorReceived(TelegramNamespace::UnauthorizedUnknownError, errorMessage);
         }
+        processed = true;
         break;
-
-        return true;
     default:
         qDebug() << "RPC Error can not be handled.";
         break;
     }
 
-    return false;
+    emit errorReceived(errorCode, errorMessage, processed);
+    return processed;
 }
 
 void CTelegramConnection::processMessageAck(CTelegramStream &stream)
