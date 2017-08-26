@@ -127,9 +127,18 @@ void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
 
 void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
 {
-    m_authKey = newAuthKey;
-    m_authId = Utils::getFingersprint(m_authKey);
-    m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
+    if (newAuthKey.isEmpty()) {
+        m_authKey.clear();
+        m_authId = 0;
+        m_authKeyAuxHash = 0;
+    } else {
+        m_authKey = newAuthKey;
+        m_authId = Utils::getFingersprint(m_authKey);
+        m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
+    }
+#ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
+    qDebug() << Q_FUNC_INFO << "key:" << newAuthKey.toHex() << "keyId:" << m_authId << "auxHash:" << m_authKeyAuxHash;
+#endif
 }
 
 void CTelegramConnection::setDeltaTime(const qint32 newDt)
