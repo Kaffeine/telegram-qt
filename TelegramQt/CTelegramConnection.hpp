@@ -93,6 +93,7 @@ public:
 
 public slots:
     void connectToDc();
+    void disconnectFromDc();
 
 public:
     ConnectionStatus status() const { return m_status; }

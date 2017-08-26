@@ -116,6 +116,16 @@ void CTelegramConnection::connectToDc()
     m_transport->connectToHost(m_dcInfo.ipAddress, m_dcInfo.port);
 }
 
+void CTelegramConnection::disconnectFromDc()
+{
+    if (m_transport->state() == QAbstractSocket::UnconnectedState) {
+        setStatus(ConnectionStatusDisconnected);
+    } else {
+        setStatus(ConnectionStatusDisconnecting);
+        m_transport->disconnectFromHost();
+    }
+}
+
 void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
 {
     m_transport = newTransport;

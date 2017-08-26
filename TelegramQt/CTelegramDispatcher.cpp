@@ -2672,6 +2672,7 @@ void CTelegramDispatcher::clearMainConnection()
     if (!m_mainConnection) {
         return;
     }
+    m_mainConnection->disconnectFromDc();
     m_mainConnection->deleteLater();
     m_mainConnection = nullptr;
 }
@@ -2680,6 +2681,7 @@ void CTelegramDispatcher::clearExtraConnections()
 {
     foreach (CTelegramConnection *connection, m_extraConnections) {
         disconnect(connection, nullptr, this, nullptr);
+        connection->disconnectFromDc();
         connection->deleteLater();
     }
 
