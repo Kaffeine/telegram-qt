@@ -4398,15 +4398,8 @@ void CTelegramConnection::onTransportReadyRead()
     }
 
 #ifdef DEVELOPER_BUILD
-    TLValue firstValue;
-
-    if (payload.length() >= 4) {
-        quint32 *v = (quint32 *) payload.constData();
-        firstValue = TLValue(*v);
-    }
-
     static int packagesCount = 0;
-    qDebug() << Q_FUNC_INFO << "Got package" << ++packagesCount << firstValue.toString();
+    qDebug() << Q_FUNC_INFO << "Got package" << ++packagesCount << TLValue::firstFromArray(payload).toString();
 #endif
 }
 
@@ -4613,8 +4606,7 @@ quint64 CTelegramConnection::sendEncryptedPackageAgain(quint64 id)
     --m_contentRelatedMessages;
     const QByteArray data = m_submittedPackages.take(id);
 #ifdef DEVELOPER_BUILD
-    TLValue firstValue = TLValue::firstFromArray(data);
-    qDebug() << Q_FUNC_INFO << id << firstValue.toString();
+    qDebug() << Q_FUNC_INFO << id << TLValue::firstFromArray(data).toString();
 #endif
     return sendEncryptedPackage(data);
 }
