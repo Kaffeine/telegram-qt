@@ -4214,6 +4214,7 @@ bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint
         stream >> phoneNumber;
         emit wantedMainDcChanged(dc, phoneNumber);
     }
+        // [[fallthrough]]; // C++17
     default:
         emit newRedirectedPackage(data, dc);
         break;
