@@ -4179,18 +4179,8 @@ void CTelegramConnection::processAuthSign(RpcProcessingContext *context)
 
 bool CTelegramConnection::processErrorSeeOther(const QString errorMessage, quint64 id)
 {
-    int lastSectionIndex = errorMessage.lastIndexOf(QChar(QLatin1Char('_')));
-    if (lastSectionIndex < 0) {
-        return false;
-    }
-
-    quint16 dc = 0;
-
     bool ok;
-
-    const QString dcStr = errorMessage.mid(lastSectionIndex + 1);
-    dc = dcStr.toUInt(&ok);
-
+    const quint16 dc = errorMessage.section(QLatin1Char('_'), -1, -1).toUInt(&ok);
     if (!ok) {
         return false;
     }
