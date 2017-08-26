@@ -2191,16 +2191,11 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
     }
 }
 
-void CTelegramDispatcher::onConnectionStatusChanged(int newStatus, int reason, quint32 dc)
+void CTelegramDispatcher::onConnectionStatusChanged(int newStatusInt, int reasonInt, quint32 dc)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
-    qDebug() << "TelegramDispatcher::onConnectionStatusChanged():"
-             << "status" << CTelegramConnection::ConnectionStatus(newStatus)
-             << "reason" << CTelegramConnection::ConnectionStatusReason(reason)
-             << "dc" << dc;
-#else
+    const CTelegramConnection::ConnectionStatus newStatus = static_cast<CTelegramConnection::ConnectionStatus>(newStatusInt);
+    const CTelegramConnection::ConnectionStatusReason reason = static_cast<CTelegramConnection::ConnectionStatusReason>(reasonInt);
     qDebug() << Q_FUNC_INFO << "status" << newStatus << "reason" << reason << "dc" << dc;
-#endif
     CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
 
     if (!connection) {
