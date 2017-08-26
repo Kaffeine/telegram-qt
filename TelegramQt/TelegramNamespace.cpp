@@ -529,7 +529,7 @@ bool Telegram::DialogInfo::isStillMuted() const
     if (!d->muteUntil) {
         return false;
     }
-    return d->muteUntil > QDateTime::currentDateTime().toTime_t();
+    return d->muteUntil > QDateTime::currentDateTimeUtc().toTime_t();
 }
 
 Telegram::UserInfo::UserInfo() :
