@@ -888,8 +888,10 @@ QString CTelegramDispatcher::chatTitle(quint32 chatId) const
 
 bool CTelegramDispatcher::setWantedDc(quint32 dc)
 {
-    m_wantedActiveDc = dc;
-    ensureMainConnectToWantedDc();
+    if (m_wantedActiveDc != dc) {
+        m_wantedActiveDc = dc;
+        ensureMainConnectToWantedDc();
+    }
     return true;
 }
 
