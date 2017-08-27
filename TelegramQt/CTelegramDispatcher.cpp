@@ -2617,16 +2617,15 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
     connection->setDcInfo(dcInfo);
     connection->setDeltaTime(m_deltaTime);
 
-    connect(connection, SIGNAL(authStateChanged(int,quint32)), SLOT(onConnectionAuthChanged(int,quint32)));
-    connect(connection, SIGNAL(statusChanged(int,int,quint32)), SLOT(onConnectionStatusChanged(int,int,quint32)));
-    connect(connection, SIGNAL(dcConfigurationReceived(quint32)), SLOT(onDcConfigurationUpdated()));
-    connect(connection, SIGNAL(actualDcIdReceived(quint32,quint32)), SLOT(onConnectionDcIdUpdated(quint32,quint32)));
-    connect(connection, SIGNAL(newRedirectedPackage(QByteArray,quint32)), SLOT(onPackageRedirected(QByteArray,quint32)));
+    connect(connection, &CTelegramConnection::authStateChanged, this, &CTelegramDispatcher::onConnectionAuthChanged);
+    connect(connection, &CTelegramConnection::statusChanged, this, &CTelegramDispatcher::onConnectionStatusChanged);
+    connect(connection, &CTelegramConnection::dcConfigurationReceived, this, &CTelegramDispatcher::onDcConfigurationUpdated);
+    connect(connection, &CTelegramConnection::actualDcIdReceived, this, &CTelegramDispatcher::onConnectionDcIdUpdated);
+    connect(connection, &CTelegramConnection::newRedirectedPackage, this, &CTelegramDispatcher::onPackageRedirected);
 
-    connect(connection, SIGNAL(selfUserReceived(TLUser)), SLOT(onSelfUserReceived(TLUser)));
-    connect(connection, SIGNAL(usersReceived(QVector<TLUser>)),
-            SLOT(onUsersReceived(QVector<TLUser>)));
-    connect(connection, SIGNAL(channelsParticipantsReceived(quint32,TLVector<TLChannelParticipant>)), SLOT(onChannelsParticipantsReceived(quint32,TLVector<TLChannelParticipant>)));
+    connect(connection, &CTelegramConnection::selfUserReceived, this, &CTelegramDispatcher::onSelfUserReceived);
+    connect(connection, &CTelegramConnection::usersReceived, this, &CTelegramDispatcher::onUsersReceived);
+    connect(connection, &CTelegramConnection::channelsParticipantsReceived, this, &CTelegramDispatcher::onChannelsParticipantsReceived);
     for (CTelegramModule *module : m_modules) {
         module->onNewConnection(connection);
     }
