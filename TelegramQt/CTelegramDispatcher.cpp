@@ -1888,9 +1888,6 @@ void CTelegramDispatcher::emitChatChanged(quint32 id)
 
 void CTelegramDispatcher::updateChat(const TLChat &newChat)
 {
-    if (newChat.id == 1029296167) {
-        qDebug() << "this!";
-    }
     if (!m_chatInfo.contains(newChat.id)) {
         TLChat *newChatInstance = new TLChat(newChat);
         m_chatInfo.insert(newChat.id, newChatInstance);
