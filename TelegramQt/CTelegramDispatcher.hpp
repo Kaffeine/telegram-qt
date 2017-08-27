@@ -197,6 +197,8 @@ protected slots:
     void onDcConfigurationUpdated();
     void onConnectionDcIdUpdated(quint32 connectionId, quint32 newDcId);
     void onPackageRedirected(const QByteArray &data, quint32 dc);
+    void onConnectionFailed(CTelegramConnection *connection);
+    void onMainConnectionRetryTimerTriggered();
 
     void onUpdatesReceived(const TLUpdates &updates, quint64 id);
     void onAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
@@ -321,6 +323,7 @@ protected:
     CTelegramConnection *m_mainConnection;
     QVector<CTelegramConnection *> m_extraConnections;
     QString m_requestedCodeForPhone;
+    QTimer *m_reconnectMainConnectionTimer;
 
     quint64 m_updateRequestId;
     TLUpdatesState m_updatesState; // Current application update state (may be older than actual server-side message box state)

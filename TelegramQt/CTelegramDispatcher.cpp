@@ -113,6 +113,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_wantedActiveDc(0),
     m_autoConnectionDcIndex(s_autoConnectionIndexInvalid),
     m_mainConnection(0),
+    m_reconnectMainConnectionTimer(nullptr),
     m_updateRequestId(0),
     m_updatesStateIsLocked(false),
     m_selfUserId(0),
@@ -2200,6 +2201,13 @@ void CTelegramDispatcher::onConnectionStatusChanged(int newStatusInt, int reason
         return;
     }
 
+    if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
+        if (reason == CTelegramConnection::ConnectionStatusReasonRemote) {
+            qDebug() << Q_FUNC_INFO << "A connection is unexpectedly terminated!" << connection;
+            onConnectionFailed(connection);
+        }
+    }
+
     if (connection == activeConnection()) {
         if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
             if (connectionState() == TelegramNamespace::ConnectionStateDisconnected) {
@@ -2289,6 +2297,35 @@ void CTelegramDispatcher::onPackageRedirected(const QByteArray &data, quint32 dc
         if (connection->status() == CTelegramConnection::ConnectionStatusDisconnected) {
             connection->connectToDc();
         }
+    }
+}
+
+void CTelegramDispatcher::onConnectionFailed(CTelegramConnection *connection)
+{
+    qWarning() << Q_FUNC_INFO << connection << connection->dcInfo().id << connection->dcInfo().ipAddress;
+    if (connection != m_mainConnection) {
+        qWarning() << "Ignored a fail of extra connection";
+        return;
+    }
+
+    if (!m_reconnectMainConnectionTimer) {
+        m_reconnectMainConnectionTimer = new QTimer(this);
+        m_reconnectMainConnectionTimer->setSingleShot(true);
+        m_reconnectMainConnectionTimer->setInterval(500);
+        connect(m_reconnectMainConnectionTimer, &QTimer::timeout, this, &CTelegramDispatcher::onMainConnectionRetryTimerTriggered);
+    }
+    m_reconnectMainConnectionTimer->start();
+
+    const TLDcOption dcInfo = m_mainConnection->dcInfo();
+    clearMainConnection();
+    m_mainConnection = createConnection(dcInfo);
+}
+
+void CTelegramDispatcher::onMainConnectionRetryTimerTriggered()
+{
+    qDebug() << "retry timer triggered";
+    if (m_mainConnection) {
+        m_mainConnection->connectToDc();
     }
 }
 
@@ -2620,6 +2657,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
     connection->setDcInfo(dcInfo);
     connection->setDeltaTime(m_deltaTime);
 
+    connect(connection, &CTelegramConnection::connectionFailed, this, &CTelegramDispatcher::onConnectionFailed);
     connect(connection, &CTelegramConnection::authStateChanged, this, &CTelegramDispatcher::onConnectionAuthChanged);
     connect(connection, &CTelegramConnection::statusChanged, this, &CTelegramDispatcher::onConnectionStatusChanged);
     connect(connection, &CTelegramConnection::dcConfigurationReceived, this, &CTelegramDispatcher::onDcConfigurationUpdated);
