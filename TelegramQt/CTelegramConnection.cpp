@@ -4350,7 +4350,10 @@ void CTelegramConnection::onTransportReadyRead()
             }
             break;
         case AuthStateDhGenerationResultRequested:
-            processServerDhAnswer(payload);
+            if (!processServerDhAnswer(payload)) {
+                emit connectionFailed(this);
+                disconnectFromDc();
+            }
             break;
         default:
             qWarning() << "Unexpected auth state!" << m_authState;

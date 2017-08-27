@@ -309,6 +309,7 @@ public:
     void processRedirectedPackage(const QByteArray &data);
 
 signals:
+    void connectionFailed(CTelegramConnection *connection);
     void wantedMainDcChanged(quint32 dc, QString dcForPhoneNumber);
     void newRedirectedPackage(const QByteArray &data, quint32 dc);
 
