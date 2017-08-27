@@ -2271,7 +2271,15 @@ void CTelegramDispatcher::onConnectionDcIdUpdated(quint32 connectionId, quint32 
 
 void CTelegramDispatcher::onPackageRedirected(const QByteArray &data, quint32 dc)
 {
-    CTelegramConnection *connection = getExtraConnection(dc);
+#ifdef DEVELOPER_BUILD
+    qDebug() << Q_FUNC_INFO << "redirected package" << TLValue::firstFromArray(data).toString() << "from dc" << dc;
+#endif
+    CTelegramConnection *connection = nullptr;
+    if (activeConnection()->dcInfo().id == dc) {
+        connection = activeConnection();
+    } else {
+        connection = getExtraConnection(dc);
+    }
 
     if (connection->authState() >= CTelegramConnection::AuthStateHaveAKey) {
         connection->processRedirectedPackage(data);
