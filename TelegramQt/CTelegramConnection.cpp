@@ -4278,7 +4278,7 @@ void CTelegramConnection::onTransportStateChanged()
         setStatus(ConnectionStatusConnected);
         break;
     case QAbstractSocket::UnconnectedState:
-        setStatus(ConnectionStatusDisconnected);
+        setStatus(ConnectionStatusDisconnected, status() == ConnectionStatusDisconnecting ? ConnectionStatusReasonLocal : ConnectionStatusReasonRemote);
         break;
     default:
         break;

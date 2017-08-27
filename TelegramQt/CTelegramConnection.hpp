@@ -48,6 +48,7 @@ class CTelegramConnection : public QObject
 public:
     enum ConnectionStatus {
         ConnectionStatusDisconnected,
+        ConnectionStatusDisconnecting,
         ConnectionStatusConnecting,
         ConnectionStatusConnected,
         ConnectionStatusAuthenticated,
@@ -56,6 +57,8 @@ public:
 
     enum ConnectionStatusReason {
         ConnectionStatusReasonNone,
+        ConnectionStatusReasonLocal,
+        ConnectionStatusReasonRemote,
         ConnectionStatusReasonTimeout
     };
 
