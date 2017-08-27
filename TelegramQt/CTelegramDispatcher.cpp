@@ -2121,22 +2121,17 @@ CTelegramConnection *CTelegramDispatcher::getExtraConnection(quint32 dc)
     return connection;
 }
 
-void CTelegramDispatcher::onConnectionAuthChanged(int newState, quint32 dc)
+void CTelegramDispatcher::onConnectionAuthChanged(int newStateInt, quint32 dc)
 {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
-    qDebug() << "TelegramDispatcher::onConnectionAuthChanged():"
-             << "auth" << CTelegramConnection::AuthState(newState)
-             << "dc" << dc;
-#else
-    qDebug() << Q_FUNC_INFO << "auth" << newState << "dc" << dc;
-#endif
-
+    const CTelegramConnection::AuthState newState = static_cast<CTelegramConnection::AuthState>(newStateInt);
     CTelegramConnection *connection = qobject_cast<CTelegramConnection*>(sender());
-
+    qDebug() << Q_FUNC_INFO << connection << "auth" << newState << "dc" << dc;
     if (!connection) {
         qDebug() << Q_FUNC_INFO << "Invalid slot call";
         return;
     }
+
+    qDebug() << Q_FUNC_INFO << "Delayed packages:" << m_delayedPackages.keys() << m_delayedPackages.count();
 
     if (connection == activeConnection()) {
         if (newState == CTelegramConnection::AuthStateSignedIn) {
@@ -2686,7 +2681,12 @@ void CTelegramDispatcher::clearExtraConnections()
 void CTelegramDispatcher::ensureMainConnectToWantedDc()
 {
     if (!m_mainConnection) {
-        qWarning() << Q_FUNC_INFO << "Unable to operate without connection.";
+        qWarning() << Q_FUNC_INFO << "Unable to operate without a connection.";
+        return;
+    }
+
+    if (m_wantedActiveDc == 0) {
+        qDebug() << Q_FUNC_INFO << "Nothing to do. There is no any special 'wanted' DC yet.";
         return;
     }
 
@@ -2699,7 +2699,7 @@ void CTelegramDispatcher::ensureMainConnectToWantedDc()
 
     if (wantedDcInfo.ipAddress.isEmpty()) {
         if (m_initializationState & StepDcConfiguration) {
-            qWarning() << Q_FUNC_INFO << "Unable to connect: wanted DC is not listed in received DC configuration.";
+            qWarning() << Q_FUNC_INFO << "Unable to connect: wanted DC is not listed in the received DC configuration.";
             return;
         }
         qDebug() << Q_FUNC_INFO << "Wanted dc is unknown. Requesting configuration...";

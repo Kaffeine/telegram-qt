@@ -303,15 +303,7 @@ void CTelegramMediaModule::onFileDataUploaded(quint32 requestId)
 void CTelegramMediaModule::onConnectionAuthChanged(CTelegramConnection *connection, int newState)
 {
     CTelegramConnection::AuthState state = static_cast<CTelegramConnection::AuthState>(newState);
-    qDebug() << Q_FUNC_INFO << connection << "auth" << state;
-
-    if (!connection) {
-        qDebug() << Q_FUNC_INFO << "Invalid slot call";
-        return;
-    }
-
     if (connection == activeConnection()) {
-        qDebug() << Q_FUNC_INFO << "Skip main connection"; // because media should work only via extra connection
         return;
     } else {
         foreach (quint32 fileId, m_requestedFileDescriptors.keys()) {
@@ -333,7 +325,6 @@ void CTelegramMediaModule::onConnectionAuthChanged(CTelegramConnection *connecti
 
 void CTelegramMediaModule::onNewConnection(CTelegramConnection *connection)
 {
-    qDebug() << Q_FUNC_INFO << connection;
     connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(onFileDataReceived(TLUploadFile,quint32,quint32)));
     connect(connection, SIGNAL(fileDataSent(quint32)), SLOT(onFileDataUploaded(quint32)));
 }

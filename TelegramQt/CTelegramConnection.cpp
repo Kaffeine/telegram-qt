@@ -4710,11 +4710,10 @@ void CTelegramConnection::startAuthTimer()
 
 void CTelegramConnection::stopAuthTimer()
 {
-    qDebug() << Q_FUNC_INFO;
     if (!m_authTimer) {
         return;
     }
-
+    qDebug() << Q_FUNC_INFO;
     m_authTimer->deleteLater();
     m_authTimer = 0;
 }
@@ -4746,8 +4745,8 @@ void CTelegramConnection::startPingTimer()
 
 void CTelegramConnection::stopPingTimer()
 {
-    qDebug() << Q_FUNC_INFO;
-    if (m_pingTimer) {
+    if (m_pingTimer && m_pingTimer->isActive()) {
+        qDebug() << Q_FUNC_INFO;
         m_pingTimer->stop();
     }
 }
