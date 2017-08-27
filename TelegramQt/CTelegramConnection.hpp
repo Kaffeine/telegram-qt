@@ -307,8 +307,8 @@ signals:
     void wantedMainDcChanged(quint32 dc, QString dcForPhoneNumber);
     void newRedirectedPackage(const QByteArray &data, quint32 dc);
 
-    void statusChanged(int status, int reason, quint32 dc);
-    void authStateChanged(int status, quint32 dc);
+    void statusChanged(ConnectionStatus status, int reason, quint32 dc);
+    void authStateChanged(AuthState status, quint32 dc);
     void actualDcIdReceived(quint32 dc, quint32 newDcId);
     void dcConfigurationReceived(quint32 dc);
     void phoneStatusReceived(const QString &phone, bool registered);
