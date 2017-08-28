@@ -49,6 +49,16 @@ QString formatTLValue(const TLValue &val)
 #include "TLRpcDebug.hpp"
 #endif
 
+template <int Size>
+QDebug operator<<(QDebug d, const TLNumber<Size> &n);
+
+template <int Size>
+inline QDebug operator<<(QDebug d, const TLNumber<Size> &n)
+{
+    d << QByteArray::fromRawData(n.data, n.size()).toHex();
+    return d;
+}
+
 using namespace TelegramUtils;
 
 static const quint32 s_defaultAuthInterval = 15000; // 15 sec
