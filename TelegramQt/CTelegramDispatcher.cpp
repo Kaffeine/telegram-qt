@@ -2489,36 +2489,35 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         m_requestedSteps |= StepDcConfiguration;
     }
 
-    if (!(m_initializationState & StepDcConfiguration)) { // DC configuration is unknown yet
-        return;
-    }
-
-    if (justDone == StepDcConfiguration) {
-        if (activeConnection()->authState() == CTelegramConnection::AuthStateHaveAKey) {
+    if (m_initializationState & StepDcConfiguration) {
+        switch (activeConnection()->authState()) {
+        case CTelegramConnection::AuthStateHaveAKey:
             setConnectionState(TelegramNamespace::ConnectionStateAuthRequired);
-        } else {
-            setConnectionState(TelegramNamespace::ConnectionStateConnected);
-        }
-    }
+            break;
+        case CTelegramConnection::AuthStateSignedIn:
+            setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
+            m_deltaTime = activeConnection()->deltaTime();
 
-    if ((m_initializationState & StepDcConfiguration) && (m_initializationState & StepSignIn)) {
-        setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
-        m_deltaTime = activeConnection()->deltaTime();
+            if (!((m_requestedSteps & StepKnowSelf) || (m_initializationState & StepKnowSelf))) {
+                getInitialUsers();
+                return;
+            }
 
-        if (!((m_requestedSteps & StepKnowSelf) || (m_initializationState & StepKnowSelf))) {
-            getInitialUsers();
-            return;
-        }
+            if (!((m_requestedSteps & StepContactList) || (m_initializationState & StepContactList))) {
+                getContacts();
+                m_requestedSteps |= StepContactList;
+            }
 
-        if (!((m_requestedSteps & StepContactList) || (m_initializationState & StepContactList))) {
-            getContacts();
-            m_requestedSteps |= StepContactList;
+            if (!((m_requestedSteps & StepDialogs) || (m_initializationState & StepDialogs))) {
+                getInitialDialogs();
+                m_requestedSteps |= StepDialogs;
+            }
+            break;
+        default:
+            break;
         }
-
-        if (!((m_requestedSteps & StepDialogs) || (m_initializationState & StepDialogs))) {
-            getInitialDialogs();
-            m_requestedSteps |= StepDialogs;
-        }
+    } else { // DC configuration is unknown yet
+        return;
     }
 
     if (!m_updatesEnabled) {
@@ -2710,9 +2709,17 @@ void CTelegramDispatcher::clearMainConnection()
     if (!m_mainConnection) {
         return;
     }
-    m_mainConnection->disconnectFromDc();
-    m_mainConnection->deleteLater();
+    clearConnection(m_mainConnection);
     m_mainConnection = nullptr;
+}
+
+void CTelegramDispatcher::clearConnection(CTelegramConnection *connection)
+{
+    if (!connection) {
+        return;
+    }
+    connection->disconnectFromDc();
+    connection->deleteLater();
 }
 
 void CTelegramDispatcher::clearExtraConnections()
@@ -2755,8 +2762,9 @@ void CTelegramDispatcher::ensureMainConnectToWantedDc()
         return;
     }
 
-    clearMainConnection();
+    CTelegramConnection *oldConnection = m_mainConnection;
     m_mainConnection = createConnection(wantedDcInfo);
+    clearConnection(oldConnection);
     m_mainConnection->connectToDc();
 }
 

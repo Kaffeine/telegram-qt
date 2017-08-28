@@ -140,6 +140,7 @@ public:
     CTelegramConnection *createConnection(const TLDcOption &dcInfo);
     void ensureSignedConnection(CTelegramConnection *connection);
     void clearMainConnection();
+    void clearConnection(CTelegramConnection *connection);
     void clearExtraConnections();
     void ensureMainConnectToWantedDc();
 
