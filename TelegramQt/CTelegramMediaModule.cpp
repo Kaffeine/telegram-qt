@@ -210,8 +210,7 @@ void CTelegramMediaModule::onFileDataReceived(const TLUploadFile &file, quint32 
     qDebug() << Q_FUNC_INFO
              << "Descriptor:" << "request:" << requestId
              << "type:" << descriptor.type()
-             << "size:" << descriptor.size()
-             << "ids:" << descriptor.peer() << descriptor.messageId();
+             << "size:" << descriptor.size();
 #endif
 
     if (descriptor.type() != FileRequestDescriptor::Download) {
