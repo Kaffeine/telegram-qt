@@ -65,7 +65,7 @@ quint32 CTelegramMediaModule::requestFile(const Telegram::RemoteFile *file, quin
     FileRequestDescriptor request;
     request.setType(FileRequestDescriptor::Download);
     request.setDcId(file->d->m_dcId);
-    request.setInputLocation(*file->d->m_inputFileLocation);
+    request.setInputLocation(file->d->getInputFileLocation());
     request.setSize(file->d->m_size);
     request.uniqueId = file->getUniqueId();
 
@@ -247,7 +247,6 @@ void CTelegramMediaModule::onFileDataReceived(const TLUploadFile &file, quint32 
         const TLInputFileLocation location = descriptor.inputLocation();
         result.d->setInputFileLocation(&location);
         result.d->m_dcId = descriptor.dcId();
-        result.d->m_type = Telegram::RemoteFile::Download;
         emit fileRequestFinished(requestId, result);
 
         m_requestedFileDescriptors.remove(requestId);
@@ -283,8 +282,10 @@ void CTelegramMediaModule::onFileDataUploaded(quint32 requestId)
     if (descriptor.finished()) {
         Telegram::RemoteFile result;
         const TLInputFile fileInfo = descriptor.inputFile();
+        if (activeConnection()) {
+            result.d->m_dcId = activeConnection()->dcInfo().id;
+        }
         result.d->m_size = descriptor.size();
-        result.d->m_type = Telegram::RemoteFile::Upload;
         result.d->setInputFile(&fileInfo);
 
         emit fileRequestFinished(requestId, result);

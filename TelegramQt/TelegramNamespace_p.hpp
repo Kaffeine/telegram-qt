@@ -29,100 +29,61 @@ public:
 class Telegram::RemoteFile::Private
 {
 public:
+    enum Type {
+        InvalidLocation,
+        FileLocation,
+        EncryptedFileLocation,
+        VideoFileLocation,
+        AudioFileLocation,
+        DocumentFileLocation,
+        UploadInputFile,
+        UploadInputFileBig,
+    };
+
     Private() :
-        m_inputFileLocation(0),
-        m_inputFile(0),
-        m_size(0),
+        m_type(InvalidLocation),
+        m_volumeId(0),
+        m_localId(0),
+        m_secret(0),
         m_dcId(0),
-        m_type(RemoteFile::Undefined)
+        m_id(0),
+        m_accessHash(0),
+        m_parts(0),
+        m_size(0)
     {
     }
 
-    Private(const Private &p) :
-        m_inputFileLocation(0),
-        m_inputFile(0),
-        m_size(p.m_size),
-        m_dcId(p.m_dcId),
-        m_type(RemoteFile::Undefined)
-    {
-        setInputFileLocation(p.m_inputFileLocation);
-        setInputFile(p.m_inputFile);
-    }
+    TLInputFileLocation getInputFileLocation() const;
+    bool setInputFileLocation(const TLInputFileLocation *inputFileLocation);
 
-    ~Private()
-    {
-        if (m_inputFileLocation) {
-            delete m_inputFileLocation;
-        }
-        if (m_inputFile) {
-            delete m_inputFile;
-        }
-    }
+    TLInputFile getInputFile() const;
+    bool setInputFile(const TLInputFile *inputFile);
 
-    Private &operator=(const Private &p)
-    {
-        setInputFileLocation(p.m_inputFileLocation);
-        setInputFile(p.m_inputFile);
-        m_size = p.m_size;
-        m_dcId = p.m_dcId;
-        m_type = p.m_type;
+    TLFileLocation getFileLocation() const;
+    bool setFileLocation(const TLFileLocation *fileLocation);
 
-        return *this;
-    }
+    Type m_type;
 
-    void setInputFileLocation(const TLInputFileLocation *inputFileLocation)
-    {
-        if (inputFileLocation) {
-            if (!m_inputFileLocation) {
-                m_inputFileLocation = new TLInputFileLocation;
-            }
-            *m_inputFileLocation = *inputFileLocation;
-        } else {
-            if (m_inputFileLocation) {
-                delete m_inputFileLocation;
-                m_inputFileLocation = 0;
-            }
-        }
-    }
-
-    void setInputFile(const TLInputFile *inputFile)
-    {
-        if (inputFile) {
-            if (!m_inputFile) {
-                m_inputFile = new TLInputFile;
-            }
-            *m_inputFile = *inputFile;
-        } else {
-            if (m_inputFile) {
-                delete m_inputFile;
-                m_inputFile = 0;
-            }
-        }
-    }
-
-    bool setFileLocation(const TLFileLocation *fileLocation)
-    {
-        if (fileLocation->tlType != TLValue::FileLocation) {
-            m_dcId = 0;
-            m_type = RemoteFile::Undefined;
-            return false;
-        }
-        TLInputFileLocation inputFileLocation;
-        inputFileLocation.tlType = TLValue::InputFileLocation;
-        inputFileLocation.volumeId = fileLocation->volumeId;
-        inputFileLocation.localId = fileLocation->localId;
-        inputFileLocation.secret = fileLocation->secret;
-        setInputFileLocation(&inputFileLocation);
-        m_dcId = fileLocation->dcId;
-        m_type = RemoteFile::Download;
-        return true;
-    }
-
-    TLInputFileLocation *m_inputFileLocation;
-    TLInputFile *m_inputFile;
-    quint32 m_size;
+    // FileLocation:
+    quint64 m_volumeId;
+    quint32 m_localId;
+    quint64 m_secret;
     quint32 m_dcId;
-    RemoteFile::Type m_type;
+
+    // InputFileLocation:
+//    quint64 m_volumeId;
+//    quint32 m_localId;
+//    quint64 m_secret;
+    quint64 m_id;
+    quint64 m_accessHash;
+
+    // InputFile:
+//    quint64 m_id;
+    quint32 m_parts;
+    QString m_name;
+    QString m_md5Checksum;
+
+    quint32 m_size;
 };
 
 class Telegram::PasswordInfo::Private : public TLAccountPassword { };

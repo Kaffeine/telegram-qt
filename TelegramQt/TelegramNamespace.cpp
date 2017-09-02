@@ -95,7 +95,7 @@ void Telegram::MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType ty
     d->m_size = file.d->m_size;
 
     if (!d->m_inputFile) {
-        d->m_inputFile = new TLInputFile(*file.d->m_inputFile);
+        d->m_inputFile = new TLInputFile(file.d->getInputFile());
     }
 }
 
@@ -110,7 +110,6 @@ bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) c
         } else {
             const TLPhotoSize s = d->photo.sizes.last();
             file->d->m_size = s.size;
-            file->d->m_type = Telegram::RemoteFile::Download;
             return file->d->setFileLocation(&s.location);
         }
     case TLValue::MessageMediaAudio:
@@ -120,7 +119,6 @@ bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) c
         file->d->setInputFileLocation(&inputLocation);
         file->d->m_size = d->audio.size;
         file->d->m_dcId = d->audio.dcId;
-        file->d->m_type = Telegram::RemoteFile::Download;
         return true;
     case TLValue::MessageMediaVideo:
         inputLocation.tlType = TLValue::InputVideoFileLocation;
@@ -129,7 +127,6 @@ bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) c
         file->d->setInputFileLocation(&inputLocation);
         file->d->m_size = d->video.size;
         file->d->m_dcId = d->video.dcId;
-        file->d->m_type = Telegram::RemoteFile::Download;
         return true;
     case TLValue::MessageMediaDocument:
         inputLocation.tlType = TLValue::InputDocumentFileLocation;
@@ -138,7 +135,6 @@ bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) c
         file->d->setInputFileLocation(&inputLocation);
         file->d->m_size = d->document.size;
         file->d->m_dcId = d->document.dcId;
-        file->d->m_type = Telegram::RemoteFile::Download;
         return true;
     default:
         return false;
@@ -397,6 +393,146 @@ QString Telegram::MessageMediaInfo::description() const
     return d->webpage.description;
 }
 
+TLInputFileLocation Telegram::RemoteFile::Private::getInputFileLocation() const
+{
+    TLInputFileLocation result;
+    switch (m_type) {
+    case FileLocation:
+        result.tlType = TLValue::InputFileLocation;
+        break;
+    case VideoFileLocation:
+        result.tlType = TLValue::InputVideoFileLocation;
+        break;
+    case EncryptedFileLocation:
+        result.tlType = TLValue::InputEncryptedFileLocation;
+        break;
+    case AudioFileLocation:
+        result.tlType = TLValue::InputAudioFileLocation;
+        break;
+    case DocumentFileLocation:
+        result.tlType = TLValue::InputDocumentFileLocation;
+        break;
+    default:
+        return TLInputFileLocation();
+    }
+
+    result.volumeId   = m_volumeId;
+    result.localId    = m_localId;
+    result.secret     = m_secret;
+    result.id         = m_id;
+    result.accessHash = m_accessHash;
+    return result;
+}
+
+bool Telegram::RemoteFile::Private::setInputFileLocation(const TLInputFileLocation *inputFileLocation)
+{
+    switch (inputFileLocation->tlType) {
+    case TLValue::InputFileLocation:
+        m_type = FileLocation;
+        break;
+    case TLValue::InputVideoFileLocation:
+        m_type = VideoFileLocation;
+        break;
+    case TLValue::InputEncryptedFileLocation:
+        m_type = EncryptedFileLocation;
+        break;
+    case TLValue::InputAudioFileLocation:
+        m_type = AudioFileLocation;
+        break;
+    case TLValue::InputDocumentFileLocation:
+        m_type = DocumentFileLocation;
+        break;
+    default:
+        m_type = InvalidLocation;
+        return false;
+    }
+
+    m_volumeId   = inputFileLocation->volumeId;
+    m_localId    = inputFileLocation->localId;
+    m_secret     = inputFileLocation->secret;
+    m_id         = inputFileLocation->id;
+    m_accessHash = inputFileLocation->accessHash;
+    return true;
+}
+
+TLInputFile Telegram::RemoteFile::Private::getInputFile() const
+{
+    TLInputFile result;
+    switch (m_type) {
+    case UploadInputFile:
+        result.tlType = TLValue::InputFile;
+        break;
+    case UploadInputFileBig:
+        result.tlType = TLValue::InputFileBig;
+        break;
+    default:
+        return result;
+    }
+    result.id = m_id;
+    result.parts = m_parts;
+    result.name = m_name;
+    result.md5Checksum = m_md5Checksum;
+    return result;
+}
+
+bool Telegram::RemoteFile::Private::setInputFile(const TLInputFile *inputFile)
+{
+    switch (inputFile->tlType) {
+    case TLValue::InputFile:
+        m_type = UploadInputFile;
+        break;
+    case TLValue::InputFileBig:
+        m_type = UploadInputFileBig;
+        break;
+    default:
+        m_type = InvalidLocation;
+        return false;
+    }
+
+    m_id          = inputFile->id;
+    m_parts       = inputFile->parts;
+    m_name        = inputFile->name;
+    m_md5Checksum = inputFile->md5Checksum;
+    return true;
+}
+
+TLFileLocation Telegram::RemoteFile::Private::getFileLocation() const
+{
+    switch (m_type) {
+    case FileLocation:
+        break;
+    default:
+        return TLFileLocation();
+    }
+
+    TLFileLocation result;
+    result.tlType = TLValue::FileLocation;
+    result.volumeId = m_volumeId;
+    result.localId  = m_localId;
+    result.secret   = m_secret;
+    result.dcId     = m_dcId;
+    return result;
+}
+
+bool Telegram::RemoteFile::Private::setFileLocation(const TLFileLocation *fileLocation)
+{
+    switch (fileLocation->tlType) {
+    case TLValue::FileLocation:
+        m_type = FileLocation;
+        break;
+    case TLValue::FileLocationUnavailable:
+    default:
+        m_type = InvalidLocation;
+        return false;
+    }
+
+    m_volumeId   = fileLocation->volumeId;
+    m_localId    = fileLocation->localId;
+    m_secret     = fileLocation->secret;
+    m_dcId       = fileLocation->dcId;
+    return true;
+}
+
 Telegram::RemoteFile::RemoteFile():
     d(new Private())
 {
@@ -421,62 +557,74 @@ Telegram::RemoteFile &Telegram::RemoteFile::operator=(const Telegram::RemoteFile
 
 Telegram::RemoteFile::Type Telegram::RemoteFile::type() const
 {
-    return d->m_type;
+    switch (d->m_type) {
+    case Private::InvalidLocation:
+        return Undefined;
+    case Private::FileLocation:
+    case Private::EncryptedFileLocation:
+    case Private::VideoFileLocation:
+    case Private::AudioFileLocation:
+    case Private::DocumentFileLocation:
+        return Download;
+    case Private::UploadInputFile:
+    case Private::UploadInputFileBig:
+        return Upload;
+    }
+    return Undefined;
 }
 
 bool Telegram::RemoteFile::isValid() const
 {
-    if (!d || !d->m_inputFileLocation || d->m_type == RemoteFile::Undefined) {
-        return false;
-    }
-
-    switch (d->m_inputFileLocation->tlType) {
-    case TLValue::InputFileLocation:
-    case TLValue::InputVideoFileLocation:
-    case TLValue::InputEncryptedFileLocation:
-    case TLValue::InputAudioFileLocation:
-    case TLValue::InputDocumentFileLocation:
-        return true;
-    default:
-        return false;
-    }
+    return d && (d->m_type != Private::InvalidLocation);
 }
 
 QString Telegram::RemoteFile::getUniqueId() const
 {
-    if (!d || !d->m_dcId) {
+    if (!isValid()) {
         return QString();
     }
-
-    if (!d->m_inputFileLocation) {
-        return QString();
-    }
-
-    switch (d->m_inputFileLocation->tlType) {
-    case TLValue::InputFileLocation:
-        return QString(QLatin1String("%1%2%3"))
+    const quint8 type = d->m_type;
+    switch (d->m_type) {
+    case Private::FileLocation:
+        return QString(QLatin1String("%1%2%3%4%5%6"))
+                .arg(type, sizeof(type) * 2, 16, QLatin1Char('0'))
                 .arg(d->m_dcId, sizeof(d->m_dcId) * 2, 16, QLatin1Char('0'))
-                .arg(d->m_inputFileLocation->volumeId, sizeof(d->m_inputFileLocation->volumeId) * 2, 16, QLatin1Char('0'))
-                .arg(d->m_inputFileLocation->localId, sizeof(d->m_inputFileLocation->localId) * 2, 16, QLatin1Char('0'));
-    case TLValue::InputVideoFileLocation:
-    case TLValue::InputEncryptedFileLocation:
-    case TLValue::InputAudioFileLocation:
-    case TLValue::InputDocumentFileLocation:
-        return QString(QLatin1String("%1%2%3"))
+                .arg(d->m_size, sizeof(d->m_size) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_volumeId, sizeof(d->m_volumeId) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_secret, sizeof(d->m_secret) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_localId, sizeof(d->m_localId) * 2, 16, QLatin1Char('0'))
+                ;
+    case Private::EncryptedFileLocation:
+    case Private::VideoFileLocation:
+    case Private::AudioFileLocation:
+    case Private::DocumentFileLocation:
+        return QString(QLatin1String("%1%2%3%4%5"))
+                .arg(type, sizeof(type) * 2, 16, QLatin1Char('0'))
                 .arg(d->m_dcId, sizeof(d->m_dcId) * 2, 16, QLatin1Char('0'))
-                .arg(d->m_inputFileLocation->id, sizeof(d->m_inputFileLocation->id) * 2, 16, QLatin1Char('0'))
-                .arg(d->m_inputFileLocation->accessHash, sizeof(d->m_inputFileLocation->accessHash) * 2, 16, QLatin1Char('0'));
-    default:
+                .arg(d->m_size, sizeof(d->m_size) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_id, sizeof(d->m_id) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_accessHash, sizeof(d->m_accessHash) * 2, 16, QLatin1Char('0'))
+                ;
+    case Private::UploadInputFile:
+    case Private::UploadInputFileBig:
+        return QString(QLatin1String("%1%2%3%4%5%6%7"))
+                .arg(type, sizeof(type) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_dcId, sizeof(d->m_dcId) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_size, sizeof(d->m_size) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_id, sizeof(d->m_id) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_parts, sizeof(d->m_parts) * 2, 16, QLatin1Char('0'))
+                .arg(d->m_md5Checksum, d->m_name)
+                ;
         return QString();
+    case Private::InvalidLocation:
+        break;
     }
+    return QString();
 }
 
 QString Telegram::RemoteFile::fileName() const
 {
-    if (!d->m_inputFile) {
-        return QString();
-    }
-    return d->m_inputFile->name;
+    return d->m_name;
 }
 
 quint32 Telegram::RemoteFile::size() const
@@ -486,10 +634,7 @@ quint32 Telegram::RemoteFile::size() const
 
 QString Telegram::RemoteFile::md5Sum() const
 {
-    if (!d->m_inputFile) {
-        return QString();
-    }
-    return d->m_inputFile->md5Checksum;
+    return d->m_md5Checksum;
 }
 
 Telegram::DialogInfo::DialogInfo() :
