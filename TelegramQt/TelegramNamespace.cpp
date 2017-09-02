@@ -622,6 +622,60 @@ QString Telegram::RemoteFile::getUniqueId() const
     return QString();
 }
 
+Telegram::RemoteFile Telegram::RemoteFile::fromUniqueId(const QString &uniqueId)
+{
+    quint8 remoteFileType = Private::InvalidLocation;
+    bool ok;
+    remoteFileType = uniqueId.midRef(0, 2).toUInt(&ok, 16);
+    if (!ok) {
+        return RemoteFile();
+    }
+    RemoteFile result;
+    result.d->m_type = static_cast<Private::Type>(remoteFileType);
+    result.d->m_dcId = uniqueId.midRef(2, 8).toULong(&ok, 16); // 32 bits
+    if (!ok) {
+        return RemoteFile();
+    }
+    result.d->m_size = uniqueId.midRef(10, 8).toULongLong(&ok, 16); // 32 bits
+    if (!ok) {
+        return RemoteFile();
+    }
+
+    switch (result.d->m_type) {
+    case Private::FileLocation:
+        result.d->m_volumeId = uniqueId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
+        if (!ok) {
+            return RemoteFile();
+        }
+        result.d->m_secret = uniqueId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
+        if (!ok) {
+            return RemoteFile();
+        }
+        result.d->m_localId = uniqueId.midRef(50, 8).toULong(&ok, 16); // 32 bits
+        if (!ok) {
+            return RemoteFile();
+        }
+        break;
+    case Private::EncryptedFileLocation:
+    case Private::VideoFileLocation:
+    case Private::AudioFileLocation:
+    case Private::DocumentFileLocation:
+        result.d->m_id = uniqueId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
+        if (!ok) {
+            return RemoteFile();
+        }
+        result.d->m_accessHash = uniqueId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
+        if (!ok) {
+            return RemoteFile();
+        }
+        break;
+    case Private::InvalidLocation:
+    default:
+        return RemoteFile();
+    }
+    return result;
+}
+
 QString Telegram::RemoteFile::fileName() const
 {
     return d->m_name;

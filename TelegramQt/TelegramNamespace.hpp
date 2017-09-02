@@ -328,6 +328,7 @@ public:
 
     bool isValid() const;
     QString getUniqueId() const;
+    static RemoteFile fromUniqueId(const QString &uniqueId);
 
     QString fileName() const;
     quint32 size() const;
