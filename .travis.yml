@@ -17,7 +17,7 @@ before_install:
   - if [ "$CXX" == "clang++" ]; then sudo add-apt-repository -y ppa:h-rayflood/llvm; fi
 
   - sudo apt-add-repository -y ppa:roblib/ppa
-  - sudo apt-add-repository -y ppa:beineri/opt-qt562
+  - sudo apt-add-repository -y ppa:beineri/opt-qt562-trusty
   - sudo apt-get -qq update
 
   # g++4.8.1
