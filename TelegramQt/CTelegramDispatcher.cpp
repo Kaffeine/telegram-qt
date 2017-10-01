@@ -1822,6 +1822,10 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
         apiMessage.fwdTimestamp = message.fwdDate;
     }
 
+    if (messageFlags & TelegramNamespace::MessageFlagIsReply) {
+        apiMessage.replyToMessageId = message.replyToMsgId;
+    }
+
     Telegram::Peer peer;
     if ((message.toId.tlType != TLValue::PeerUser) || (messageFlags & TelegramNamespace::MessageFlagOut)) {
         // To a group chat or an outgoing message

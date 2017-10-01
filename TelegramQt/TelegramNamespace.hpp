@@ -222,6 +222,7 @@ protected:
 struct Message
 {
     Message() :
+        replyToMessageId(0),
         forwardContactId(0),
         id(0),
         timestamp(0),
@@ -240,6 +241,7 @@ struct Message
     const Peer forwardFromPeer() const { return m_forwardPeer; }
     void setForwardFromPeer(const Peer &peer) { m_forwardPeer = peer; }
 
+    quint32 replyToMessageId;
     quint32 forwardContactId;
     QString text;
     quint32 id;
