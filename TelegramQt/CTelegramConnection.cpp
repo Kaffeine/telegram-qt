@@ -121,7 +121,7 @@ void CTelegramConnection::connectToDc()
         m_transport->disconnectFromHost(); // Ensure that there is no connection
     }
 
-    setStatus(ConnectionStatusConnecting);
+    setStatus(ConnectionStatusConnecting, ConnectionStatusReasonLocal);
     setAuthState(AuthStateNone);
     m_transport->connectToHost(m_dcInfo.ipAddress, m_dcInfo.port);
 }
@@ -129,9 +129,9 @@ void CTelegramConnection::connectToDc()
 void CTelegramConnection::disconnectFromDc()
 {
     if (m_transport->state() == QAbstractSocket::UnconnectedState) {
-        setStatus(ConnectionStatusDisconnected);
+        setStatus(ConnectionStatusDisconnected, ConnectionStatusReasonLocal);
     } else {
-        setStatus(ConnectionStatusDisconnecting);
+        setStatus(ConnectionStatusDisconnecting, ConnectionStatusReasonLocal);
         m_transport->disconnectFromHost();
     }
 }
@@ -4301,7 +4301,7 @@ void CTelegramConnection::onTransportStateChanged()
             setAuthState(AuthStateSignedIn);
         }
 
-        setStatus(ConnectionStatusConnected);
+        setStatus(ConnectionStatusConnected, ConnectionStatusReasonRemote);
         break;
     case QAbstractSocket::UnconnectedState:
         setStatus(ConnectionStatusDisconnected, status() == ConnectionStatusDisconnecting ? ConnectionStatusReasonLocal : ConnectionStatusReasonRemote);

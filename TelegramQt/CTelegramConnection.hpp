@@ -510,7 +510,7 @@ protected:
 
     void setTransport(CTelegramTransport *newTransport);
 
-    void setStatus(ConnectionStatus status, ConnectionStatusReason reason = ConnectionStatusReasonNone);
+    void setStatus(ConnectionStatus status, ConnectionStatusReason reason);
     void setAuthState(AuthState newState);
 
     quint64 newMessageId();
