@@ -454,7 +454,8 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     if (format >= 4) {
         quint32 dialogsCount = 0;
         inputStream >> dialogsCount;
-        m_dialogs.reserve(dialogsCount + 5);
+        QHash<Telegram::Peer,TLDialog> dialogs;
+        dialogs.reserve(dialogsCount + 5);
         for (quint32 i = 0; i < dialogsCount; ++i) {
             TLDialog dialog;
             quint8 dialogType = 0;
@@ -488,8 +489,9 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
             if (dialogType == DialogTypeChannel) {
                 inputStream >> dialog.pts;
             }
-            m_dialogs.insert(peer, dialog);
+            dialogs.insert(peer, dialog);
         }
+        // Do not apply loaded dialogs, because we can not clean them up properly on dialogs received
     } else if (format >= 2) {
         TLValue legacyVectorTlType(TLValue::Vector);
         quint32 chatIdsVectorSize = 0;
