@@ -58,6 +58,7 @@ protected slots:
 
 protected:
     static Role columnToRole(Column column, int qtRole);
+    CPeerModel *modelForPeer(const Telegram::Peer peer) const;
 
 private:
     CTelegramCore *m_backend;

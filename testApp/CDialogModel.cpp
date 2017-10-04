@@ -122,13 +122,7 @@ QVariant CDialogModel::data(int dialogIndex, CDialogModel::Role role) const
     }
 
     const Telegram::Peer peer = dialog->peer();
-    CPeerModel *sourceModel = nullptr;
-    for (CPeerModel *model : m_sourceModels) {
-        if (model->hasPeer(peer)) {
-            sourceModel = model;
-            break;
-        }
-    }
+    const CPeerModel *sourceModel = modelForPeer(peer);
     if (!sourceModel) {
         return QVariant();
     }
@@ -225,4 +219,14 @@ CDialogModel::Role CDialogModel::columnToRole(Column column, int qtRole)
     default:
         return Role::Invalid;
     }
+}
+
+CPeerModel *CDialogModel::modelForPeer(const Telegram::Peer peer) const
+{
+    for (CPeerModel *model : m_sourceModels) {
+        if (model->hasPeer(peer)) {
+            return model;
+        }
+    }
+    return nullptr;
 }
