@@ -214,7 +214,7 @@ QVector<Telegram::Peer> CTelegramDispatcher::dialogs() const
 
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
 {
-    qDebug() << "addContacts" << maskPhoneNumberList(phoneNumbers);
+    qDebug() << "addContacts" << Telegram::Utils::maskPhoneNumber(phoneNumbers);
     if (activeConnection()) {
         TLVector<TLInputContact> contactsVector;
         for (int i = 0; i < phoneNumbers.count(); ++i) {

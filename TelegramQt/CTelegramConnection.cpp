@@ -237,21 +237,21 @@ void CTelegramConnection::setKeepAliveSettings(quint32 interval, quint32 serverD
 
 quint64 CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
 {
-    qDebug() << Q_FUNC_INFO << "requestPhoneCode" << maskPhoneNumber(phoneNumber) << m_dcInfo.id;
+    qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber) << m_dcInfo.id;
 
     return authSendCode(phoneNumber, 0, m_appInfo->appId(), m_appInfo->appHash(), m_appInfo->languageCode());
 }
 
 quint64 CTelegramConnection::signIn(const QString &phoneNumber, const QString &authCode)
 {
-    qDebug() << "SignIn with number " << maskPhoneNumber(phoneNumber);
+    qDebug() << "SignIn with number " << Telegram::Utils::maskPhoneNumber(phoneNumber);
 
     return authSignIn(phoneNumber, m_authCodeHash, authCode);
 }
 
 quint64 CTelegramConnection::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
 {
-    qDebug() << "SignUp with number " << maskPhoneNumber(phoneNumber);
+    qDebug() << "SignUp with number " << Telegram::Utils::maskPhoneNumber(phoneNumber);
     return authSignUp(phoneNumber, m_authCodeHash, authCode, firstName, lastName);
 }
 
@@ -4207,7 +4207,7 @@ void CTelegramConnection::processAuthSign(RpcProcessingContext *context)
     context->readRpcResult(&result);
 
     if (result.isValid()) {
-        qDebug() << Q_FUNC_INFO << "AuthAuthorization" << maskPhoneNumber(result.user.phone);
+        qDebug() << Q_FUNC_INFO << "AuthAuthorization" << Telegram::Utils::maskPhoneNumber(result.user.phone);
         emit selfUserReceived(result.user);
         emit usersReceived(QVector<TLUser>() << result.user);
         setAuthState(AuthStateSignedIn);
