@@ -3,53 +3,6 @@
 namespace TelegramUtils
 {
 
-QString maskPhoneNumber(const QString &identifier)
-{
-    if (identifier.isEmpty()) {
-        return QString();
-    }
-
-    // We don't want to mask "numbers" like unknown777000, so lets check if phoneNumber is consist of digits only.
-    bool ok1, ok2;
-    identifier.mid(0, identifier.size() / 2).toInt(&ok1);
-
-    if (ok1) {
-        identifier.mid(identifier.size() / 2).toInt(&ok2);
-    }
-
-    if (ok1 && ok2) {
-        // Expected something like: 55xxxxxxxx (hidden).
-        return identifier.mid(0, identifier.size() / 4) + QString(identifier.size() - identifier.size() / 4, QLatin1Char('x')); // + QLatin1String(" (hidden)");
-    } else {
-        return identifier;
-    }
-}
-
-QStringList maskPhoneNumberList(const QStringList &list)
-{
-    if (list.count() == 1) {
-        return QStringList() << maskPhoneNumber(list.first());
-    }
-
-    QStringList result;
-
-    const int listDigits = QString::number(list.count()).size();
-
-    foreach (const QString &number, list) {
-        if (number.length() >= 5 + listDigits) {
-            QString masked = QString(QLatin1String("%1xx%2%3"))
-                    .arg(number.mid(0, 2))
-                    .arg(list.indexOf(number), listDigits, 10, QLatin1Char('0'))
-                    .arg(QString(number.length() - 4 - listDigits, QLatin1Char('x')));
-            result.append(masked);
-        } else { // fallback
-            result.append(maskPhoneNumber(number) + QLatin1String(" (fallback)"));
-        }
-    }
-
-    return result;
-}
-
 QString mimeTypeByStorageFileType(TLValue type)
 {
     switch (type) {
