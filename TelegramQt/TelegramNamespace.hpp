@@ -429,7 +429,24 @@ protected:
     Private *d;
 };
 
+namespace Utils
+{
+
+QString maskPhoneNumber(const QString &identifier);
+QStringList maskPhoneNumber(const QStringList &list);
+
+template <typename T>
+T maskPhoneNumber(T container, const QString &key)
+{
+    if (container.contains(key)) {
+        container.insert(key, maskPhoneNumber(container.value(key).toString()));
+    }
+    return container;
 }
+
+} // Utils namespace
+
+} // Telegram namespace
 
 Q_DECLARE_METATYPE(Telegram::Peer)
 Q_DECLARE_METATYPE(Telegram::DcOption)
