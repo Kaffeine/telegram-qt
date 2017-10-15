@@ -131,7 +131,7 @@ void CTelegramAuthModule::onPasswordReceived(const TLAccountPassword &password, 
 
 void CTelegramAuthModule::onWantedMainDcChanged(quint32 dc, const QString &dcForPhoneNumber)
 {
-    qDebug() << Q_FUNC_INFO << dc << dcForPhoneNumber;
+    qDebug() << Q_FUNC_INFO << dc << "for phone number" << Telegram::Utils::maskPhoneNumber(dcForPhoneNumber);
     setWantedDc(dc);
 }
 
