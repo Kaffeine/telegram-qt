@@ -1950,7 +1950,7 @@ bool CTelegramConnection::acceptPqAuthorization(const QByteArray &payload)
     }
 
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
-    qDebug() << Q_FUNC_INFO << "Client nonce:" << clientNonce.data;
+    qDebug() << Q_FUNC_INFO << "Client nonce:" << clientNonce;
     qDebug() << Q_FUNC_INFO << "Server nonce:" << serverNonce;
     qDebug() << Q_FUNC_INFO << "PQ:" << m_pq;
     qDebug() << Q_FUNC_INFO << "P:" << m_p;
