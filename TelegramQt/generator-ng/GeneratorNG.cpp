@@ -683,101 +683,162 @@ QStringList GeneratorNG::reorderLinesAsExist(QStringList newLines, QStringList e
     return existLines + newLines;
 }
 
+struct TypeTreeItem
+{
+    TypeTreeItem() { }
+    TypeTreeItem(const QString &type) :
+        typeName(type)
+    {
+    }
+
+    QString typeName;
+    QVector<TypeTreeItem*> dependencies;
+    void ensureDependence(TypeTreeItem *item) {
+        if (dependencies.contains(item)) {
+            return;
+        }
+        dependencies.append(item);
+    }
+};
+
 QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types, QMap<QString, TLType> *unresolved)
 {
-    QList<TLType> solvedTypes;
     QStringList solvedTypesNames = nativeTypes;
     solvedTypesNames.append(tlValueName);
 
-    int previousSolvedTypesCount = -1;
-
-    for (const QString &typeName : types.keys()) {
-        TLType &type = types[typeName];
-
-        QMap<QString,QString> members;
-        for (const TLSubType &subType : type.subTypes) {
-            for (const TLParam &member : subType.members) {
-                if (members.contains(member.name)) {
-                    if (members.value(member.name) == member.type) {
-                        continue;
+    { // Bake types
+        for (const QString &typeName : types.keys()) {
+            TLType &type = types[typeName];
+            QHash<QString,QString> members;
+            for (const TLSubType &subType : type.subTypes) {
+                for (const TLParam &member : subType.members) {
+                    if (members.contains(member.name)) {
+                        if (members.value(member.name) == member.type) {
+                            continue;
+                        }
                     }
+                    members.insertMulti(member.name, member.type);
                 }
-                members.insertMulti(member.name, member.type);
             }
-        }
 
-        for (TLSubType &subType : type.subTypes) {
-            for (TLParam &member : subType.members) {
-                if (members.values(member.name).count() > 1) {
-                    QString typeWithoutTL = member.type.startsWith("TL") ? member.type.mid(2) : member.type;
-                    typeWithoutTL.remove(member.name, Qt::CaseInsensitive);
-                    if (member.name.compare(typeWithoutTL, Qt::CaseInsensitive) != 0) {
-                        member.name.append(typeWithoutTL);
+            for (TLSubType &subType : type.subTypes) {
+                for (TLParam &member : subType.members) {
+                    if (members.values(member.name).count() > 1) {
+                        QString typeWithoutTL = member.type.startsWith("TL") ? member.type.mid(2) : member.type;
+                        typeWithoutTL.remove(member.name, Qt::CaseInsensitive);
+                        if (member.name.compare(typeWithoutTL, Qt::CaseInsensitive) != 0) {
+                            member.name.append(typeWithoutTL);
+                        }
                     }
                 }
             }
         }
     }
 
-    // In order to successful compilation, type must rely only on defined types.
-    while (solvedTypes.count() != previousSolvedTypesCount) { // Check for infinity loop
-        previousSolvedTypesCount = solvedTypes.count();
-        foreach(const QString &typeName, types.keys()) {
+    QVector<TypeTreeItem> typeTree;
+    { // Setup the tree
+        typeTree.reserve(types.count() + solvedTypesNames.count());
+        QHash<QString,TypeTreeItem*> typeItemHash;
+        typeItemHash.reserve(typeTree.count());
+        for (const QString &typeName : types.keys() + solvedTypesNames) {
+            typeTree.append(typeName);
+            typeItemHash.insert(typeName, &typeTree.last());
+        }
+
+        for (const QString &typeName : types.keys()) {
             const TLType &type = types.value(typeName);
-
-            bool solved = true;
-
-            if (nativeTypes.contains(type.name)) {
-                types.remove(typeName);
-                continue;
-            }
+            TypeTreeItem *typeItem = typeItemHash.value(typeName);
 
             foreach (const TLSubType &subType, type.subTypes) {
                 foreach (const TLParam &member, subType.members) {
                     QString memberType = getTypeOrVectorType(member.type);
+                    TypeTreeItem *dep = typeItemHash.value(memberType);
+                    if (!dep) {
+                        qWarning() << "Type with name" << memberType << "not found!";
+                    }
+                    typeItem->ensureDependence(dep);
+                }
+            }
+        }
+    }
 
-                    if (!solvedTypesNames.contains(memberType)) {
-                        solved = false;
+    QList<TLType> solvedTypes;
+    { // Solve!
+        QVector<TypeTreeItem*> notSolvedTypes;
+        notSolvedTypes.reserve(typeTree.count());
+        solvedTypes.reserve(typeTree.count());
+
+        for (TypeTreeItem &item : typeTree) {
+            if (!solvedTypesNames.contains(item.typeName)) {
+                notSolvedTypes.append(&item);
+            }
+        }
+
+        while (!notSolvedTypes.isEmpty()) {
+            bool hasSolved = false;
+            auto currentItemIt = notSolvedTypes.begin();
+            while (currentItemIt != notSolvedTypes.end()) {
+                TypeTreeItem *item = *currentItemIt;
+                bool solved = true;
+                for (TypeTreeItem *dependence : item->dependencies) {
+                    if (!notSolvedTypes.contains(dependence)) {
+                        // Already solved
+                        continue;
+                    }
+                    if (nativeTypes.contains(dependence->typeName)) {
+                        // Is native, so is solved
+                        continue;
+                    }
+                    solved = false;
+                }
+                if (solved) {
+                    const TLType &type = types.value(item->typeName);
+                    solvedTypes.append(type);
+                    hasSolved = true;
+                    currentItemIt = notSolvedTypes.erase(currentItemIt);
+                } else {
+                    ++currentItemIt;
+                }
+            }
+            if (!hasSolved) {
+                // Unable to solve any one type
+                break;
+            }
+        }
+
+        QVector<TypeTreeItem*> notSolvedEnds = notSolvedTypes;
+        {
+            auto currentItemIt = notSolvedEnds.begin();
+            while (currentItemIt != notSolvedEnds.end()) {
+                TypeTreeItem *item = *currentItemIt;
+                bool hasNotSolvedDeps = false;
+                for (TypeTreeItem *child : item->dependencies) {
+                    if (notSolvedTypes.contains(child)) {
+                        hasNotSolvedDeps = true;
                         break;
                     }
                 }
-
-                if (!solved) {
-                    break;
-                }
-            }
-
-            if (solved) {
-                solvedTypes.append(type);
-                types.remove(typeName);
-                solvedTypesNames.append(typeName);
-
-                qDebug() << "Solved:" << typeName;
-            }
-        }
-    }
-
-    if (unresolved) {
-        (*unresolved) = types;
-    }
-
-#ifdef DEBUG_UNRESOLVED
-    qDebug() << "Unresolved:" << types.count() << types;
-
-    foreach(const QString &typeName, types.keys()) {
-        const TLType &type = types.value(typeName);
-
-        foreach (const TLSubType &subType, type.subTypes) {
-            foreach (const TLParam &member, subType.members) {
-                QString memberType = getTypeOrVectorType(member.type);
-
-                if (!solvedTypesNames.contains(memberType)) {
-                    qDebug() << type.name << "subtype" << subType.name << "depends on" << memberType;
+                if (hasNotSolvedDeps) {
+                    // This item depends on an another one, so it is not a end point
+                    currentItemIt = notSolvedEnds.erase(currentItemIt);
+                } else {
+                    ++currentItemIt;
                 }
             }
         }
+
+        for (const TypeTreeItem *item : notSolvedEnds) {
+            if (unresolved) {
+                const TLType &type = types.value(item->typeName);
+                unresolved->insert(type.name, type);
+            }
+
+            qDebug() << "Not solved ends:" << item->typeName;
+            for (TypeTreeItem *child : item->dependencies) {
+                qDebug() << "    Sub member:" << child->typeName;
+            }
+        }
     }
-#endif
 
     return solvedTypes;
 }
