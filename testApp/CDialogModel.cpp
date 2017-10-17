@@ -6,15 +6,40 @@
 #include <QDateTime>
 
 CDialogModel::CDialogModel(CTelegramCore *backend, QObject *parent) :
-    QAbstractTableModel(parent),
+    CPeerModel(parent),
     m_backend(backend)
 {
+}
+
+bool CDialogModel::hasPeer(const Telegram::Peer peer) const
+{
+    return modelForPeer(peer);
+}
+
+QString CDialogModel::getName(const Telegram::Peer peer) const
+{
+    const CPeerModel *model = modelForPeer(peer);
+    if (model) {
+        return model->getName(peer);
+    }
+    return QString();
+}
+
+QPixmap CDialogModel::getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const
+{
+    const CPeerModel *model = modelForPeer(peer);
+    if (model) {
+        return model->getPicture(peer, size);
+    }
+    return QPixmap();
 }
 
 void CDialogModel::addSourceModel(CPeerModel *peerModel)
 {
     m_sourceModels.append(peerModel);
     connect(peerModel, &CPeerModel::pictureChanged, this, &CDialogModel::onPeerPictureChanged);
+    connect(peerModel, &CPeerModel::nameChanged, this, &CPeerModel::nameChanged);
+    connect(peerModel, &CPeerModel::pictureChanged, this, &CPeerModel::pictureChanged);
 }
 
 int CDialogModel::columnCount(const QModelIndex &parent) const
@@ -117,21 +142,11 @@ QVariant CDialogModel::data(int dialogIndex, CDialogModel::Role role) const
             return QDateTime::fromMSecsSinceEpoch(dialog->muteUntil() * 1000);
         }
         return QVariant();
-    default:
-        break;
-    }
-
-    const Telegram::Peer peer = dialog->peer();
-    const CPeerModel *sourceModel = modelForPeer(peer);
-    if (!sourceModel) {
-        return QVariant();
-    }
-
-    switch (role) {
+        // PeerModel roles:
     case Role::PeerName:
-        return sourceModel->getName(peer);
+        return getName(dialog->peer());
     case Role::Picture:
-        return sourceModel->getPicture(peer, Telegram::PeerPictureSize::Small);
+        return getPicture(dialog->peer(), Telegram::PeerPictureSize::Small);
     default:
         break;
     }

@@ -1,14 +1,13 @@
 #ifndef CDIALOGMODEL_HPP
 #define CDIALOGMODEL_HPP
 
-#include <QAbstractTableModel>
+#include "CPeerModel.hpp"
 
 #include "TelegramNamespace.hpp"
-#include "CPeerModel.hpp"
 
 class CTelegramCore;
 
-class CDialogModel : public QAbstractTableModel
+class CDialogModel : public CPeerModel
 {
     Q_OBJECT
 public:
@@ -33,6 +32,10 @@ public:
     };
 
     explicit CDialogModel(CTelegramCore *backend, QObject *parent = nullptr);
+
+    bool hasPeer(const Telegram::Peer peer) const override;
+    QString getName(const Telegram::Peer peer) const override;
+    QPixmap getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const override;
 
     void addSourceModel(CPeerModel *peerModel);
 
