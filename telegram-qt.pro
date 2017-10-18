@@ -1,5 +1,4 @@
 include(options.pri)
-
 message("It is highly recommended to use CMake instead of QMake for packaging!")
 
 # The macro is taken from QtCreator
@@ -43,6 +42,10 @@ isEmpty(BUILD_QML_IMPORT) {
 
 equals(BUILD_QML_IMPORT, "true") {
     SUBDIRS += imports/TelegramQtQml
+}
+
+equals(BUILD_QCH, "true") {
+    SUBDIRS += doc
 }
 
 !equals(BUILD_ONLY_LIBRARY, "true") {

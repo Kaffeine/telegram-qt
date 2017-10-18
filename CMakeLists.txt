@@ -16,6 +16,8 @@ option(ENABLE_TESTAPP "Enable compilation of testing application" FALSE)
 # Add an option for building tests
 option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
 # Add an option for building tests
+option(ENABLE_QCH_BUILD "Enable generation of Qt Help (qch) file" FALSE)
+# Add an option for building tests
 option(STATIC_BUILD "Compile static library instead of shared" FALSE)
 # Add an option for building GeneratorNG
 option(BUILD_GENERATOR "Build protocol code generator" FALSE)
@@ -56,6 +58,10 @@ if (BUILD_GENERATOR)
     else()
         add_subdirectory(generator)
     endif()
+endif()
+
+if (ENABLE_QCH_BUILD)
+    add_subdirectory(doc)
 endif()
 
 if(ENABLE_TESTAPP)
