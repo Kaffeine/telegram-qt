@@ -43,6 +43,12 @@ public:
     CAppInformation *m_appInfo;
 };
 
+/*!
+    \class CTelegramCore
+    \brief The CTelegramCore class provides the base Telegram protocol API
+    \inmodule TelegramQt
+*/
+
 CTelegramCore::CTelegramCore(QObject *parent) :
     QObject(parent),
     m_private(new Private())
@@ -395,27 +401,6 @@ bool CTelegramCore::getDialogInfo(Telegram::DialogInfo *info, const Telegram::Pe
 {
     return m_private->m_dispatcher->getDialogInfo(info, peer);
 }
-
-/*! \fn quint32 Telegram::UserInfo::lastOnline() const
-  Return seconds since epoch for last online time.
-
-  If user is online, this method return time when online expires,
-  return the time, when contact was online otherwise.
-
-  Depending on the contact privacy, the method can return some special values:
-
-  TelegramNamespace::ContactLastOnlineUnknown - User last online time is not known.
-  TelegramNamespace::ContactLastOnlineRecently - User hides exact online time, but was online recently.
-  TelegramNamespace::ContactLastOnlineLastWeek - User hides exact online time, but was online last week.
-  TelegramNamespace::ContactLastOnlineLastMonth - User hides exact online time, but was online last month.
-
-  The TelegramNamespace::ContactLastOnlineMask can be used to determine if there is special value:
-  if ((contactLastOnline(contact) & TelegramNamespace::ContactLastOnlineMask) == contactLastOnline(contact)) {
-      qDebug() << "Special value";
-  } else {
-      qDebug() << "Seconds since epoch";
-  }
-*/
 
 bool CTelegramCore::getUserInfo(Telegram::UserInfo *info, quint32 userId) const
 {
