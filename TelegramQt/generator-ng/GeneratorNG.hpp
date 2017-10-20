@@ -42,6 +42,7 @@ struct TLSubType {
     QString name;
     quint32 id;
     QList<TLParam> members;
+    QString source; // The source from the spec
 
     bool haveMember(const QString &name) {
         foreach (const TLParam &member, members) {
@@ -71,6 +72,7 @@ struct TLMethod {
     QString name;
     quint32 id;
     QString type;
+    QString source; // The source from the spec
     QList< TLParam > params;
 };
 
