@@ -163,9 +163,10 @@ bool replaceSection(const QString &fileName, const QString &startMarker, const Q
         fileToProcess.write(fileContent.toLatin1());
 
         fileToProcess.close();
+        printf("Replacing is done.\n");
+    } else {
+        printf("Replacing is done (dry run).\n");
     }
-
-    printf("Replacing is done.\n");
 
     return true;
 }
