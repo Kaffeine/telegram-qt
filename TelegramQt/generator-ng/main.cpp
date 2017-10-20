@@ -381,7 +381,7 @@ int main(int argc, char *argv[])
 
     const QString specFileName = parser.positionalArguments().first();
 
-    StatusCode code;
+    StatusCode code = InvalidArgument;
 
     if (parser.isSet(fetchJsonOption)) {
         code = fetchJson(specFileName);
