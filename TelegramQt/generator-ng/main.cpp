@@ -46,10 +46,13 @@ enum SchemaFormat {
 static bool s_dryRun = false;
 static bool s_dump = true;
 
+static QString s_inputDir;
+static QString s_outputDir;
+
 /* Replacing helper */
 QString getSectionContent(const QString &fileName, const QString &startMarker, const QString &endMarker, bool *winEol = nullptr)
 {
-    QFile fileToProcess(fileName);
+    QFile fileToProcess(s_inputDir + fileName);
 
     if (!fileToProcess.open(QIODevice::ReadOnly))
         return QString();
@@ -103,7 +106,7 @@ QString getPartiallyGeneratedContent(const QString &fileName, int spacing, const
 
 bool replaceSection(const QString &fileName, const QString &startMarker, const QString &endMarker, const QString &newContent)
 {
-    QFile fileToProcess(fileName);
+    QFile fileToProcess(s_inputDir + fileName);
 
     if (!fileToProcess.open(QIODevice::ReadOnly))
         return false;
@@ -153,6 +156,7 @@ bool replaceSection(const QString &fileName, const QString &startMarker, const Q
     fileContent.insert(startPos, startMarker + newContent + endMarker);
 
     if (!s_dryRun) {
+        fileToProcess.setFileName(s_outputDir + fileName);
         if (!fileToProcess.open(QIODevice::WriteOnly))
             return false;
 
@@ -311,33 +315,33 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         return UnableToResolveTypes;
     }
 
-    generator.existsStreamReadTemplateInstancing = getGeneratedContent(QStringLiteral("../CTelegramStream.cpp"), 0, QLatin1String("vector read templates instancing"));
-    generator.existsStreamWriteTemplateInstancing = getGeneratedContent(QStringLiteral("../CTelegramStream.cpp"), 0, QLatin1String("vector write templates instancing"));
-    generator.setExistsRpcProcessDefinitions(getPartiallyGeneratedContent(QStringLiteral("../CTelegramConnection.cpp"),
+    generator.existsStreamReadTemplateInstancing = getGeneratedContent(QStringLiteral("CTelegramStream.cpp"), 0, QLatin1String("vector read templates instancing"));
+    generator.existsStreamWriteTemplateInstancing = getGeneratedContent(QStringLiteral("CTelegramStream.cpp"), 0, QLatin1String("vector write templates instancing"));
+    generator.setExistsRpcProcessDefinitions(getPartiallyGeneratedContent(QStringLiteral("CTelegramConnection.cpp"),
                                                                           0,
                                                                           QStringLiteral("Telegram API RPC process implementation")));
     generator.generate();
 
-    replacingHelper(QLatin1String("../TLValues.hpp"), 8, QLatin1String("TLValues"), generator.codeOfTLValues);
-    replacingHelper(QLatin1String("../TLTypes.hpp"), 0, QLatin1String("TLTypes"), generator.codeOfTLTypes);
-    replacingHelper(QLatin1String("../CTelegramStream.hpp"), 4, QLatin1String("read operators"), generator.codeStreamReadDeclarations);
-    replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("read operators implementation"), generator.codeStreamReadDefinitions);
-    replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("vector read templates instancing"), generator.codeStreamReadTemplateInstancing);
-    replacingHelper(QLatin1String("../CTelegramStream.hpp"), 4, QLatin1String("write operators"), generator.codeStreamWriteDeclarations);
-    replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("write operators implementation"), generator.codeStreamWriteDefinitions);
-    replacingHelper(QLatin1String("../CTelegramStream.cpp"), 0, QLatin1String("vector write templates instancing"), generator.codeStreamWriteTemplateInstancing);
-    replacingHelper(QLatin1String("../CTelegramConnection.hpp"), 4, QLatin1String("Telegram API methods declaration"), generator.codeConnectionDeclarations);
-    replacingHelper(QLatin1String("../CTelegramConnection.cpp"), 0, QLatin1String("Telegram API methods implementation"), generator.codeConnectionDefinitions);
+    replacingHelper(QLatin1String("TLValues.hpp"), 8, QLatin1String("TLValues"), generator.codeOfTLValues);
+    replacingHelper(QLatin1String("TLTypes.hpp"), 0, QLatin1String("TLTypes"), generator.codeOfTLTypes);
+    replacingHelper(QLatin1String("CTelegramStream.hpp"), 4, QLatin1String("read operators"), generator.codeStreamReadDeclarations);
+    replacingHelper(QLatin1String("CTelegramStream.cpp"), 0, QLatin1String("read operators implementation"), generator.codeStreamReadDefinitions);
+    replacingHelper(QLatin1String("CTelegramStream.cpp"), 0, QLatin1String("vector read templates instancing"), generator.codeStreamReadTemplateInstancing);
+    replacingHelper(QLatin1String("CTelegramStream.hpp"), 4, QLatin1String("write operators"), generator.codeStreamWriteDeclarations);
+    replacingHelper(QLatin1String("CTelegramStream.cpp"), 0, QLatin1String("write operators implementation"), generator.codeStreamWriteDefinitions);
+    replacingHelper(QLatin1String("CTelegramStream.cpp"), 0, QLatin1String("vector write templates instancing"), generator.codeStreamWriteTemplateInstancing);
+    replacingHelper(QLatin1String("CTelegramConnection.hpp"), 4, QLatin1String("Telegram API methods declaration"), generator.codeConnectionDeclarations);
+    replacingHelper(QLatin1String("CTelegramConnection.cpp"), 0, QLatin1String("Telegram API methods implementation"), generator.codeConnectionDefinitions);
 
-    replacingHelper(QLatin1String("../CTelegramConnection.hpp"), 4, QLatin1String("Telegram API RPC process declarations"), generator.codeRpcProcessDeclarations);
-    partialReplacingHelper(QLatin1String("../CTelegramConnection.cpp"), 0, QLatin1String("Telegram API RPC process implementation"), generator.codeRpcProcessDefinitions);
-    replacingHelper(QLatin1String("../CTelegramConnection.cpp"), 8, QLatin1String("RPC processing switch cases"), generator.codeRpcProcessSwitchCases);
-    replacingHelper(QLatin1String("../CTelegramConnection.cpp"), 8, QLatin1String("RPC processing switch updates cases"), generator.codeRpcProcessSwitchUpdatesCases);
+    replacingHelper(QLatin1String("CTelegramConnection.hpp"), 4, QLatin1String("Telegram API RPC process declarations"), generator.codeRpcProcessDeclarations);
+    partialReplacingHelper(QLatin1String("CTelegramConnection.cpp"), 0, QLatin1String("Telegram API RPC process implementation"), generator.codeRpcProcessDefinitions);
+    replacingHelper(QLatin1String("CTelegramConnection.cpp"), 8, QLatin1String("RPC processing switch cases"), generator.codeRpcProcessSwitchCases);
+    replacingHelper(QLatin1String("CTelegramConnection.cpp"), 8, QLatin1String("RPC processing switch updates cases"), generator.codeRpcProcessSwitchUpdatesCases);
 
-    replacingHelper(QLatin1String("../TLTypesDebug.hpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDeclarations);
-    replacingHelper(QLatin1String("../TLTypesDebug.cpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDefinitions);
+    replacingHelper(QLatin1String("TLTypesDebug.hpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDeclarations);
+    replacingHelper(QLatin1String("TLTypesDebug.cpp"), 0, QLatin1String("TLTypes debug operators"), generator.codeDebugWriteDefinitions);
 
-    replacingHelper(QLatin1String("../TLRpcDebug.cpp"), 4, QLatin1String("RPC debug cases"), generator.codeDebugRpcParse);
+    replacingHelper(QLatin1String("TLRpcDebug.cpp"), 4, QLatin1String("RPC debug cases"), generator.codeDebugRpcParse);
 
     printf("Spec file successfully used for generation.\n");
     return NoError;
@@ -349,6 +353,14 @@ int main(int argc, char *argv[])
 
     QCommandLineParser parser;
     parser.addHelpOption();
+
+    QCommandLineOption inputDirOption(QStringList({QStringLiteral("I"), QStringLiteral("input-dir")}));
+    inputDirOption.setValueName(QStringLiteral("inputDir"));
+    parser.addOption(inputDirOption);
+
+    QCommandLineOption outputDirOption(QStringList({QStringLiteral("O"), QStringLiteral("output-dir")}));
+    outputDirOption.setValueName(QStringLiteral("outputDir"));
+    parser.addOption(outputDirOption);
 
     QCommandLineOption dryRunOption(QStringLiteral("dry-run"));
     parser.addOption(dryRunOption);
@@ -378,6 +390,18 @@ int main(int argc, char *argv[])
 
     s_dryRun = parser.isSet(dryRunOption);
     s_dump = parser.isSet(dumpOption);
+    s_inputDir = parser.value(inputDirOption);
+    if (s_inputDir.isEmpty()) {
+        s_inputDir = QStringLiteral("./");
+    } else if (!s_inputDir.endsWith(QLatin1Char('/'))) {
+        s_inputDir.append(QLatin1Char('/'));
+    }
+    s_outputDir = parser.value(outputDirOption);
+    if (s_outputDir.isEmpty()) {
+        s_outputDir = s_inputDir;
+    } else if (!s_outputDir.endsWith(QLatin1Char('/'))) {
+        s_outputDir.append(QLatin1Char('/'));
+    }
 
     const QString specFileName = parser.positionalArguments().first();
 
@@ -394,6 +418,13 @@ int main(int argc, char *argv[])
         code = format(specFileName);
         if (code != NoError) {
             return code;
+        }
+    }
+
+    if (!QDir(s_outputDir).exists()) {
+        if (!QDir().mkpath(s_outputDir)) {
+            qWarning() << "Unable to create output directory" << QDir(s_outputDir).absolutePath();
+            return FileAccessError;
         }
     }
 
