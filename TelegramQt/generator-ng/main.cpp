@@ -379,33 +379,33 @@ int main(int argc, char *argv[])
     s_dryRun = parser.isSet(dryRunOption);
     s_dump = parser.isSet(dumpOption);
 
-    const QString fileName = parser.positionalArguments().first();
+    const QString specFileName = parser.positionalArguments().first();
 
     StatusCode code;
 
     if (parser.isSet(fetchJsonOption)) {
-        code = fetchJson(fileName);
+        code = fetchJson(specFileName);
         if (code != NoError) {
             return code;
         }
     }
 
     if (parser.isSet(formatJsonOption)) {
-        code = format(fileName);
+        code = format(specFileName);
         if (code != NoError) {
             return code;
         }
     }
 
     if (parser.isSet(generateFromJsonOption)) {
-        code = generate(JsonFormat, fileName);
+        code = generate(JsonFormat, specFileName);
         if (code != NoError) {
             return code;
         }
     }
 
     if (parser.isSet(generateFromTextOption)) {
-        code = generate(TextFormat, fileName);
+        code = generate(TextFormat, specFileName);
         if (code != NoError) {
             return code;
         }
