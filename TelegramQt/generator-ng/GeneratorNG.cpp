@@ -326,7 +326,7 @@ QString GeneratorNG::generateTLValuesDefinition(const TLMethod &method)
     return QString("        %1 = 0x%2,\n").arg(method.nameFirstCapital()).arg(method.id, 8, 0x10, QLatin1Char('0'));
 }
 
-QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
+QString GeneratorNG::generateTLTypeDefinition(const TLType &type, bool addSpecSources)
 {
     QString code;
 
@@ -341,12 +341,33 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
 //    QString copyOperator = spacing + QString("%1 &operator=(const %1 &%2) {\n").arg(type.name).arg(anotherName);
     QString membersCode;
 
+    static const QString specCommentPrefix = spacing + QStringLiteral("// ");
+    QString specSource;
     QString isValidTypeCode = QStringLiteral(
                 "    bool isValid() const {\n"
                 "        switch (tlType) {\n");
 
     QStringList addedMembers;
     foreach (const TLSubType &subType, type.subTypes) {
+        if (!subType.source.isEmpty()) {
+            QStringList sourceLines;
+            const QString source = subType.source;
+            const int sectionsSplitterIndex = source.indexOf(QLatin1Char('='));
+            const QStringRef basePart = source.leftRef(sectionsSplitterIndex);
+            const int hashIndex = basePart.indexOf(QLatin1Char('#'));
+            const int endOfPredicate = basePart.indexOf(QChar(' '), hashIndex);
+            const QStringRef predicate = basePart.left(endOfPredicate);
+            const QStringRef typePart = source.midRef(sectionsSplitterIndex);
+
+            sourceLines.append(specCommentPrefix + predicate);
+            const int from = predicate.position() + predicate.size();
+            for (const QStringRef memberSource : source.midRef(from, typePart.position() - from).split(QLatin1Char(' '), QString::SkipEmptyParts)) {
+                sourceLines.append(specCommentPrefix + spacing + memberSource);
+            }
+            sourceLines.append(specCommentPrefix + doubleSpacing + typePart);
+
+            specSource.append(sourceLines.join(QLatin1Char('\n')) + QLatin1Char('\n'));
+        }
         isValidTypeCode.append(QStringLiteral("        case %1::%2:\n").arg(tlValueName, subType.name));
         foreach (const TLParam &member, subType.members) {
             if (addedMembers.contains(member.name)) {
@@ -394,6 +415,9 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type)
 //    copyOperator.append(QString("\n%1%1return *this;\n%1}\n").arg(spacing));
 
     code.append(constructor);
+    if (addSpecSources) {
+        code.append(specSource);
+    }
 //    code.append(copyConstructor);
 //    code.append(copyOperator);
     code.append(isValidTypeCode);
@@ -896,6 +920,11 @@ void GeneratorNG::getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vec
     }
 }
 
+GeneratorNG::GeneratorNG() :
+    m_addSpecSources(false)
+{
+}
+
 bool GeneratorNG::loadFromJson(const QByteArray &data)
 {
     const QJsonDocument document = QJsonDocument::fromJson(data);
@@ -1236,7 +1265,7 @@ void GeneratorNG::generate()
             continue;
         }
 
-        codeOfTLTypes.append(generateTLTypeDefinition(type));
+        codeOfTLTypes.append(generateTLTypeDefinition(type, m_addSpecSources));
 
         codeStreamReadDeclarations.append(generateStreamReadOperatorDeclaration(type));
         codeStreamReadDefinitions.append(generateStreamReadOperatorDefinition(type));
@@ -1250,4 +1279,9 @@ void GeneratorNG::generate()
         codeDebugWriteDefinitions .append(generateDebugWriteOperatorDefinition(type));
     }
 
+}
+
+void GeneratorNG::setAddSpecSources(bool addSources)
+{
+    m_addSpecSources = addSources;
 }

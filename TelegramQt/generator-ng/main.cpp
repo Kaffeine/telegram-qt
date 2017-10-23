@@ -45,6 +45,7 @@ enum SchemaFormat {
 
 static bool s_dryRun = false;
 static bool s_dump = true;
+static bool s_addSpecSources = false;
 
 static QString s_inputDir;
 static QString s_outputDir;
@@ -293,6 +294,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     specsFile.close();
 
     GeneratorNG generator;
+    generator.setAddSpecSources(s_addSpecSources);
 
     bool success = true;
 
@@ -368,6 +370,9 @@ int main(int argc, char *argv[])
     QCommandLineOption dumpOption(QStringLiteral("dump"));
     parser.addOption(dumpOption);
 
+    QCommandLineOption addSpecSourcesOption(QStringLiteral("add-spec-sources"));
+    parser.addOption(addSpecSourcesOption);
+
     QCommandLineOption fetchJsonOption(QStringLiteral("fetch-json"));
     parser.addOption(fetchJsonOption);
 
@@ -390,6 +395,7 @@ int main(int argc, char *argv[])
 
     s_dryRun = parser.isSet(dryRunOption);
     s_dump = parser.isSet(dumpOption);
+    s_addSpecSources = parser.isSet(addSpecSourcesOption);
     s_inputDir = parser.value(inputDirOption);
     if (s_inputDir.isEmpty()) {
         s_inputDir = QStringLiteral("./");

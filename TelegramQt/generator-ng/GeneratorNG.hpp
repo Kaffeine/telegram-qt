@@ -79,15 +79,18 @@ struct TLMethod {
 class GeneratorNG
 {
 public:
+    GeneratorNG();
     bool loadFromJson(const QByteArray &data);
     bool loadFromText(const QByteArray &data);
     bool resolveTypes();
     void setExistsRpcProcessDefinitions(const QString &code);
     void generate();
 
+    void setAddSpecSources(bool addSources);
+
     static QString generateTLValuesDefinition(const TLType &type);
     static QString generateTLValuesDefinition(const TLMethod &method);
-    static QString generateTLTypeDefinition(const TLType &type);
+    static QString generateTLTypeDefinition(const TLType &type, bool addSpecSources = false);
     static QString generateStreamReadOperatorDeclaration(const TLType &type);
     static QString generateStreamReadOperatorDefinition(const TLType &type);
     static QString generateStreamReadVectorTemplate(const QString &type);
@@ -138,6 +141,7 @@ private:
     QList<TLType> m_solvedTypes;
     QMap<QString, TLMethod> m_functions;
     QVector<QStringList> m_groups;
+    bool m_addSpecSources;
 };
 
 #endif // GENERATORNG_HPP
