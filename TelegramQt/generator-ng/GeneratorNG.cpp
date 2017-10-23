@@ -955,7 +955,7 @@ bool GeneratorNG::loadFromText(const QByteArray &data)
         const QStringRef basePart = line.leftRef(sectionsSplitterIndex).trimmed();
         const QStringRef typePart = line.midRef(sectionsSplitterIndex + 2, line.size() - 3 - sectionsSplitterIndex);
 
-        int hashIndex = basePart.indexOf(QChar('#'));
+        int hashIndex = basePart.indexOf(QLatin1Char('#'));
         if ((hashIndex < 1) || (hashIndex + 1 > basePart.length())) {
             printf("Bad string: %s (line %d)\n", line.toLocal8Bit().constData(), currentLine);
             return false;
