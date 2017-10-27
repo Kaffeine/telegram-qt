@@ -615,7 +615,6 @@ QString Telegram::RemoteFile::getUniqueId() const
                 .arg(d->m_parts, sizeof(d->m_parts) * 2, 16, QLatin1Char('0'))
                 .arg(d->m_md5Checksum, d->m_name)
                 ;
-        return QString();
     case Private::InvalidLocation:
         break;
     }
