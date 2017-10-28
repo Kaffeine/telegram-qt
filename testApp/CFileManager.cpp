@@ -164,7 +164,8 @@ QString CFileManager::unqueuePendingRequest()
     }
 
     qDebug() << Q_FUNC_INFO << "remains:" << m_pendingRequests.count() << m_pendingRequests.keys();
-    const QString key = *m_pendingRequests.keyBegin();
+    const auto it = m_pendingRequests.begin();
+    const QString key = it.key();
     const Telegram::RemoteFile info = m_pendingRequests.take(key);
     qDebug() << Q_FUNC_INFO << "took key:" << key;
 

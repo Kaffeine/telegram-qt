@@ -26,9 +26,9 @@ defineTest(minQtVersion) {
     return(false)
 }
 
-!minQtVersion(5, 6, 0) {
+!minQtVersion(5, 5, 0) {
     message("Cannot build TelegramQt with Qt version $${QT_VERSION}.")
-    error("Use at least Qt 5.6.0.")
+    error("Use at least Qt 5.5.0.")
 }
 
 TEMPLATE = subdirs
@@ -52,7 +52,11 @@ equals(BUILD_QML_IMPORT, "true") {
     contains(options, developer-build) {
         SUBDIRS += TelegramQt/tests
         SUBDIRS += TelegramQt/generator
-        SUBDIRS += TelegramQt/generator-ng
+        minQtVersion(5, 6, 0) {
+            SUBDIRS += TelegramQt/generator-ng
+        } else {
+            message("Use Qt 5.6.0 or higher to build GeneratorNG")
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 
 QT += core network testlib
 TEMPLATE = app
+CONFIG += c++11
 
 INCLUDEPATH += $$PWD/..
 

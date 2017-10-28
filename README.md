@@ -7,7 +7,7 @@ Requirements
 ============
 
 * CMake-2.8.12+
-* Qt 5.6.0+
+* Qt 5.5.0+
 
 Installation
 ============
