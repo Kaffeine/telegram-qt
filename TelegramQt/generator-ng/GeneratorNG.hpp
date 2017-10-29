@@ -86,6 +86,11 @@ public:
     void setExistsRpcProcessDefinitions(const QString &code);
     void generate();
 
+    QMap<QString, TLType> types() const { return m_types; }
+    QList<TLType> solvedTypes() const { return m_solvedTypes; }
+    QMap<QString, TLMethod> functions() const { return m_functions; }
+    QVector<QStringList> groups() const { return m_groups; }
+
     void setAddSpecSources(bool addSources);
 
     static QString generateTLValuesDefinition(const TLType &type);
