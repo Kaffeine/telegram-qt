@@ -41,7 +41,7 @@ public:
     void signIn(const QString &phoneNumber, const QString &authCode);
     void signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName);
 
-    void requestPhoneCode(const QString &phoneNumber);
+    quint64 requestAuthCode(const QString &phoneNumber);
 
 signals:
     void phoneStatusReceived(const QString &phone, bool registered);

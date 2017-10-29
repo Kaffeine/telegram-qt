@@ -95,7 +95,8 @@ public Q_SLOTS:
     bool logOut();
 
     void requestPhoneStatus(const QString &phoneNumber);
-    void requestPhoneCode(const QString &phoneNumber);
+    void requestPhoneCode(const QString &phoneNumber); // Deprecated, use requestAuthCode() instead
+    bool requestAuthCode(const QString &phoneNumber);
     quint64 getPassword();
     void tryPassword(const QByteArray &salt, const QString &password);
     void tryPassword(const QByteArray &salt, const QByteArray &password);

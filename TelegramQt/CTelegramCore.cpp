@@ -208,7 +208,13 @@ void CTelegramCore::requestPhoneStatus(const QString &phoneNumber)
 
 void CTelegramCore::requestPhoneCode(const QString &phoneNumber)
 {
-    m_private->m_authModule->requestPhoneCode(phoneNumber);
+    qWarning() << Q_FUNC_INFO << "The method is deprecated, use requestAuthCode() instead.";
+    requestAuthCode(phoneNumber);
+}
+
+bool CTelegramCore::requestAuthCode(const QString &phoneNumber)
+{
+    return m_private->m_authModule->requestAuthCode(phoneNumber);
 }
 
 quint64 CTelegramCore::getPassword()

@@ -90,20 +90,22 @@ void CTelegramAuthModule::signUp(const QString &phoneNumber, const QString &auth
     activeConnection()->signUp(phoneNumber, authCode, firstName, lastName);
 }
 
-void CTelegramAuthModule::requestPhoneCode(const QString &phoneNumber)
+quint64 CTelegramAuthModule::requestAuthCode(const QString &phoneNumber)
 {
     if (!activeConnection()) {
-        qWarning() << Q_FUNC_INFO << "Can't request phone code: there is no active connection.";
-        return;
+        qWarning() << Q_FUNC_INFO << "Unable to request a phone code without an active connection.";
+        return 0;
     }
-
 //    if (m_dcConfiguration.isEmpty()) {
 //        qWarning() << Q_FUNC_INFO << "Can't request phone code: DC Configuration is unknown.";
 //        return;
 //    }
-
+    if (phoneNumber.isEmpty()) {
+        qWarning() << Q_FUNC_INFO << "Unable to request a phone code without a phone number.";
+        return 0;
+    }
     m_requestedCodeForPhone = phoneNumber;
-    activeConnection()->requestPhoneCode(phoneNumber);
+    return activeConnection()->requestPhoneCode(phoneNumber);
 }
 
 void CTelegramAuthModule::onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode)

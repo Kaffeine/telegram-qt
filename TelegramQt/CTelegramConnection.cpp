@@ -237,8 +237,11 @@ void CTelegramConnection::setKeepAliveSettings(quint32 interval, quint32 serverD
 
 quint64 CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
 {
+    if (!m_appInfo || !m_appInfo->isValid()) {
+        qWarning() << Q_FUNC_INFO << "Unable to request phone code without a valid application data";
+        return 0;
+    }
     qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber) << m_dcInfo.id;
-
     return authSendCode(phoneNumber, 0, m_appInfo->appId(), m_appInfo->appHash(), m_appInfo->languageCode());
 }
 
