@@ -567,6 +567,7 @@ void MainWindow::initStartConnection()
         proxySettings.setPort(ui->settingsProxyPort->value());
         m_core->setProxy(proxySettings);
     }
+    m_core->setUpdatesEnabled(ui->settingsUpdatesEnabled->isChecked());
 
     const QVector<Telegram::DcOption> testServers = {
         Telegram::DcOption(QLatin1String("149.154.175.10"), 443),

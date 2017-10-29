@@ -57,6 +57,16 @@
            <string>Settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="settingsReceivingFilterOutMessages">
+             <property name="text">
+              <string>Filter out outgoing messages</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
             <widget class="QCheckBox" name="workLikeClient">
              <property name="toolTip">
@@ -80,13 +90,10 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <widget class="QCheckBox" name="settingsReceivingFilterOutMessages">
+           <item row="5" column="0">
+            <widget class="QCheckBox" name="settingsReceivingFilterForwardedMessages">
              <property name="text">
-              <string>Filter out outgoing messages</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
+              <string>Filter out forwarded messages</string>
              </property>
             </widget>
            </item>
@@ -101,9 +108,12 @@
             </widget>
            </item>
            <item row="4" column="0">
-            <widget class="QCheckBox" name="settingsReceivingFilterForwardedMessages">
+            <widget class="QCheckBox" name="settingsUpdatesEnabled">
              <property name="text">
-              <string>Filter out forwarded messages</string>
+              <string>Updates enabled</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
