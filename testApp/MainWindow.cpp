@@ -184,7 +184,7 @@ void MainWindow::onConnectionStateChanged(TelegramNamespace::ConnectionState sta
         setAppState(AppStateConnected);
         break;
     case TelegramNamespace::ConnectionStateAuthRequired:
-        setAppState(AppStateCodeRequired);
+        setAppState(AppStateAuthRequired);
         break;
     case TelegramNamespace::ConnectionStateAuthenticated:
         setAppState(AppStateSignedIn);
@@ -678,7 +678,7 @@ void MainWindow::setAppState(MainWindow::AppState newState)
         ui->connectButton->setText(tr("Disconnect"));
         ui->connectButton->setProperty("_disconnect", true);
         break;
-    case AppStateCodeRequired:
+    case AppStateAuthRequired:
         ui->connectionState->setText(tr("Auth required"));
         ui->restoreSession->setVisible(false);
         ui->requestCode->setVisible(true);

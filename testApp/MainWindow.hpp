@@ -49,15 +49,15 @@ public:
 
     enum AppState {
         AppStateNone,
+        AppStateDisconnected,
         AppStateConnected,
-        AppStateCodeRequired,
+        AppStateAuthRequired,
         AppStateCodeRequested,
         AppStateCodeSent,
         AppStatePasswordRequired,
         AppStateSignedIn,
         AppStateReady,
         AppStateLoggedOut,
-        AppStateDisconnected
     };
 
 protected slots:
