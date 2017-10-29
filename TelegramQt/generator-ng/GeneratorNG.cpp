@@ -927,15 +927,16 @@ GeneratorNG::GeneratorNG() :
 
 bool GeneratorNG::loadFromJson(const QByteArray &data)
 {
-    const QJsonDocument document = QJsonDocument::fromJson(data);
+    QJsonParseError parseError;
+    const QJsonDocument document = QJsonDocument::fromJson(data, &parseError);
+    if (parseError.error != QJsonParseError::NoError) {
+        return false;
+    }
     m_types = readTypesJson(document);
     m_functions = readFunctionsJson(document);
-
-    m_groups.clear();
     m_groups.append(m_types.keys());
     m_groups.append(m_functions.keys());
-
-    return !m_types.isEmpty() && !m_functions.isEmpty();
+    return true;
 }
 
 enum EntryType {
@@ -946,11 +947,6 @@ enum EntryType {
 bool GeneratorNG::loadFromText(const QByteArray &data)
 {
     QTextStream input(data);
-
-    m_types.clear();
-    m_functions.clear();
-    m_groups.clear();
-
     EntryType entryType = EntryTypedef;
     m_groups.append(QStringList());
 
@@ -1068,7 +1064,7 @@ bool GeneratorNG::loadFromText(const QByteArray &data)
         }
     }
 
-    return !m_types.isEmpty() && !m_functions.isEmpty();
+    return true;
 }
 
 bool GeneratorNG::resolveTypes()

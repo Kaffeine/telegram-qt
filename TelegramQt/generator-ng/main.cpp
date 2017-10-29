@@ -307,6 +307,16 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         break;
     }
 
+    if (generator.types().isEmpty()) {
+        qWarning() << "There are no types in the schema";
+        return SchemaReadError;
+    }
+
+    if (generator.functions().isEmpty()) {
+        qWarning() << "There are no functions in the schema";
+        return SchemaReadError;
+    }
+
     if (!success) {
         qWarning() << "Unable to parse schema";
         return SchemaReadError;
