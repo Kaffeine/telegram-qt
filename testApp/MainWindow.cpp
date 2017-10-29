@@ -185,26 +185,12 @@ void MainWindow::onConnectionStateChanged(TelegramNamespace::ConnectionState sta
         break;
     case TelegramNamespace::ConnectionStateAuthRequired:
         setAppState(AppStateCodeRequired);
-        ui->phoneNumber->setFocus();
         break;
     case TelegramNamespace::ConnectionStateAuthenticated:
         setAppState(AppStateSignedIn);
-
-        if (ui->workLikeClient->isChecked()) {
-            m_core->setOnlineStatus(true);
-        }
         break;
     case TelegramNamespace::ConnectionStateReady:
         setAppState(AppStateReady);
-        updateContactList();
-
-        ui->phoneNumber->setText(m_core->selfPhone());
-    {
-        Telegram::UserInfo selfInfo;
-        m_core->getUserInfo(&selfInfo, m_core->selfId());
-        ui->firstName->setText(selfInfo.firstName());
-        ui->lastName->setText(selfInfo.lastName());
-    }
         break;
     case TelegramNamespace::ConnectionStateDisconnected:
         setAppState(AppStateDisconnected);
@@ -697,6 +683,7 @@ void MainWindow::setAppState(MainWindow::AppState newState)
         ui->restoreSession->setVisible(false);
         ui->requestCode->setVisible(true);
         ui->signButton->setVisible(true);
+        ui->phoneNumber->setFocus();
         break;
     case AppStateCodeSent:
         ui->connectionState->setText(tr("Code sent..."));
@@ -713,15 +700,24 @@ void MainWindow::setAppState(MainWindow::AppState newState)
         ui->connectionState->setText(tr("Signed in..."));
         ui->requestCode->setVisible(false);
         ui->signButton->setVisible(true); // Logout button
-
         ui->phoneNumber->setEnabled(false);
+        if (ui->workLikeClient->isChecked()) {
+            m_core->setOnlineStatus(true);
+        }
         break;
     case AppStateReady:
         ui->connectionState->setText(tr("Ready"));
         ui->requestCode->setVisible(false);
         ui->signButton->setVisible(true); // Logout button
-
         ui->phoneNumber->setEnabled(false);
+        ui->phoneNumber->setText(m_core->selfPhone());
+        updateContactList();
+    {
+        Telegram::UserInfo selfInfo;
+        m_core->getUserInfo(&selfInfo, m_core->selfId());
+        ui->firstName->setText(selfInfo.firstName());
+        ui->lastName->setText(selfInfo.lastName());
+    }
         break;
     case AppStateLoggedOut:
         ui->connectionState->setText(tr("Logged out"));
