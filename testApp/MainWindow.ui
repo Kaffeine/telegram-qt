@@ -201,6 +201,61 @@
          <string>Connection</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_6" rowstretch="0,0,0,0,0,0">
+         <item row="3" column="5">
+          <widget class="QLineEdit" name="lastName">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Connection state:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="phoneNumber"/>
+         </item>
+         <item row="1" column="5">
+          <widget class="QLineEdit" name="confirmationCode">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Phone number:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="firstName">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Phone status:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="2">
+          <widget class="QLabel" name="lastNameLabel">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Last name:</string>
+           </property>
+          </widget>
+         </item>
          <item row="5" column="0" colspan="6">
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
@@ -224,29 +279,26 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="connectButton">
+            <widget class="QPushButton" name="connectionStepButton">
              <property name="text">
-              <string>Connect</string>
+              <string>Connect/Get code/Try password/Sign in/Sign up</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="requestCode">
-             <property name="enabled">
-              <bool>true</bool>
+            <widget class="QPushButton" name="logoutButton">
+             <property name="toolTip">
+              <string>Destroy the session</string>
              </property>
              <property name="text">
-              <string>Get code</string>
+              <string>Logout</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="signButton">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
+            <widget class="QPushButton" name="disconnectButton">
              <property name="text">
-              <string>Sign in/Sign up</string>
+              <string>Disconnect</string>
              </property>
             </widget>
            </item>
@@ -285,17 +337,10 @@
            </item>
           </layout>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_4">
+         <item row="1" column="2">
+          <widget class="QLabel" name="label_5">
            <property name="text">
-            <string>Phone status:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" colspan="5">
-          <widget class="QLabel" name="phoneStatus">
-           <property name="text">
-            <string>unknown</string>
+            <string>Auth code:</string>
            </property>
           </widget>
          </item>
@@ -319,41 +364,6 @@
            </property>
           </spacer>
          </item>
-         <item row="3" column="5">
-          <widget class="QLineEdit" name="lastName">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Connection state:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QLineEdit" name="firstName">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Phone number:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="5">
-          <widget class="QLineEdit" name="confirmationCode">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
          <item row="3" column="0">
           <widget class="QLabel" name="firstNameLabel">
            <property name="enabled">
@@ -364,23 +374,24 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="phoneNumber"/>
-         </item>
-         <item row="3" column="2">
-          <widget class="QLabel" name="lastNameLabel">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
+         <item row="2" column="1">
+          <widget class="QLabel" name="phoneStatus">
            <property name="text">
-            <string>Last name:</string>
+            <string>unknown</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="2">
-          <widget class="QLabel" name="label_5">
+         <item row="2" column="2">
+          <widget class="QLabel" name="passwordLabel">
            <property name="text">
-            <string>Auth code:</string>
+            <string>Password:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="5">
+          <widget class="QLineEdit" name="password">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
            </property>
           </widget>
          </item>
@@ -904,22 +915,6 @@
     <hint type="destinationlabel">
      <x>722</x>
      <y>571</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>confirmationCode</sender>
-   <signal>returnPressed()</signal>
-   <receiver>signButton</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1132</x>
-     <y>121</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>866</x>
-     <y>666</y>
     </hint>
    </hints>
   </connection>

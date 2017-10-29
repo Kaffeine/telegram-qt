@@ -54,11 +54,14 @@ public:
         AppStateAuthRequired,
         AppStateCodeRequested,
         AppStateCodeSent,
+        AppStateCodeProvided,
         AppStatePasswordRequired,
+        AppStatePasswordProvided,
         AppStateSignedIn,
         AppStateReady,
         AppStateLoggedOut,
     };
+    Q_ENUM(AppState)
 
 protected slots:
     void onConnectionStateChanged(TelegramNamespace::ConnectionState state);
@@ -84,11 +87,8 @@ protected slots:
     void onCustomMenuRequested(const QPoint &pos);
     void onSearchCustomMenuRequested(const QPoint &pos);
 
-    void on_connectButton_clicked();
+    void on_connectionStepButton_clicked();
     void on_secondConnectButton_clicked();
-    void on_requestCode_clicked();
-
-    void on_signButton_clicked();
 
     void getConnectionSecretInfo();
 
@@ -100,8 +100,13 @@ protected slots:
     void on_messagingView_doubleClicked(const QModelIndex &index);
     void on_groupChatChatsList_doubleClicked(const QModelIndex &index);
 
+    void on_phoneNumber_returnPressed();
+    void on_confirmationCode_returnPressed();
+    void on_password_returnPressed();
     void on_setStatusOnline_clicked();
     void on_setStatusOffline_clicked();
+    void on_logoutButton_clicked();
+    void on_disconnectButton_clicked();
 
     void on_messagingSendButton_clicked();
     void on_messagingAttachButton_clicked();
@@ -138,6 +143,12 @@ protected:
 
     void sendMedia(const Telegram::Peer peer);
 
+    void initStartConnection();
+    void initRequestAuthCode();
+    void initTryAuthCode();
+    void initTryPassword();
+    void initLogout();
+
 private slots:
     void on_restoreSession_clicked();
 
@@ -149,6 +160,8 @@ private slots:
 
     void on_findContact_clicked();
     void setUiProxyEnabled(bool enabled);
+    void setWorkLikeAClient(bool enabled);
+    void updateClientUi();
 
 private:
     void searchByUsername();
@@ -187,6 +200,8 @@ private:
     bool m_chatCreationMode;
 
     bool m_registered;
+    bool m_workLikeAClient;
+    bool m_phoneNumberSubmitted;
 
     AppState m_appState;
 

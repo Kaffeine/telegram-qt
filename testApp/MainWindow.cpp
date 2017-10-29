@@ -43,6 +43,7 @@
 
 #include <QFile>
 #include <QFileDialog>
+#include <QMetaEnum>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -61,6 +62,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_activeChatId(0),
     m_chatCreationMode(false),
     m_registered(false),
+    m_workLikeAClient(true),
+    m_phoneNumberSubmitted(false),
     m_appState(AppStateNone)
 {
     m_contactsModel->setFileManager(m_fileManager);
@@ -72,6 +75,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_dialogModel->addSourceModel(m_chatInfoModel);
 
     ui->setupUi(this);
+    ui->workLikeClient->setChecked(m_workLikeAClient);
+    connect(ui->workLikeClient, &QAbstractButton::toggled, this, &MainWindow::setWorkLikeAClient);
     m_contactListModel->setSourceModel(m_contactsModel);
     ui->contactListTable->setModel(m_contactListModel);
     ui->dialogList->setModel(m_dialogModel);
@@ -160,7 +165,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->helpView->setPlainText(helpFile.readAll());
 
     setUiProxyEnabled(false);
-    setAppState(AppStateNone);
+    setAppState(AppStateDisconnected);
     updateGroupChatAddContactButtonText();
 
     connect(ui->groupChatContactPhone, SIGNAL(textChanged(QString)), SLOT(updateGroupChatAddContactButtonText()));
@@ -170,6 +175,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->settingsProxyEnable, SIGNAL(toggled(bool)), this, SLOT(setUiProxyEnabled(bool)));
 
     ui->groupChatAddContactForwardMessages->hide();
+    updateClientUi();
+
 }
 
 MainWindow::~MainWindow()
@@ -252,7 +259,7 @@ void MainWindow::onAuthSignErrorReceived(TelegramNamespace::AuthSignError errorC
     case TelegramNamespace::AuthSignErrorPhoneNumberIsInvalid:
         if (m_appState == AppStateCodeRequested) {
             QToolTip::showText(ui->phoneNumber->mapToGlobal(QPoint(0, 0)), tr("Phone number is not valid"));
-            setAppState(AppStateNone);
+            setAppState(AppStateDisconnected);
         }
         break;
     case TelegramNamespace::AuthSignErrorPhoneCodeIsExpired:
@@ -509,15 +516,37 @@ void MainWindow::onSearchCustomMenuRequested(const QPoint &pos)
     menu->popup(ui->contactSearchResult->mapToGlobal(pos));
 }
 
-void MainWindow::on_connectButton_clicked()
+void MainWindow::on_connectionStepButton_clicked()
 {
-    if (ui->connectButton->property("_disconnect").toBool()) {
-        m_core->closeConnection();
-        return;
+    switch (m_appState) {
+    case AppStateNone:
+        break;
+    case AppStateDisconnected:
+        initStartConnection();
+        break;
+    case AppStateConnected: // Not used by TelegramQt ATM
+        break;
+    case AppStateAuthRequired:
+        initRequestAuthCode();
+        break;
+    case AppStateCodeRequested:
+    case AppStateCodeSent:
+        initTryAuthCode();
+    case AppStateCodeProvided:
+        break;
+    case AppStatePasswordRequired:
+        initTryPassword();
+        break;
+    case AppStatePasswordProvided:
+    case AppStateSignedIn:
+    case AppStateReady:
+    case AppStateLoggedOut:
+        break;
     }
+}
 
-    const QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
-
+void MainWindow::initStartConnection()
+{
     TelegramNamespace::MessageFlags flags = TelegramNamespace::MessageFlagNone;
     if (ui->settingsReceivingFilterReadMessages->isChecked()) {
         flags |= TelegramNamespace::MessageFlagRead;
@@ -543,6 +572,7 @@ void MainWindow::on_connectButton_clicked()
         Telegram::DcOption(QLatin1String("149.154.175.10"), 443),
     };
 
+    const QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
     if (secretInfo.isEmpty()) {
         if (ui->mainDcRadio->isChecked()) {
             m_core->initConnection();
@@ -557,34 +587,45 @@ void MainWindow::on_connectButton_clicked()
 void MainWindow::on_secondConnectButton_clicked()
 {
     ui->tabWidget->setCurrentWidget(ui->tabMain);
-    on_connectButton_clicked();
+    on_connectionStepButton_clicked();
 }
 
-void MainWindow::on_requestCode_clicked()
+void MainWindow::initRequestAuthCode()
 {
-    if (ui->phoneNumber->text().isEmpty()) {
-        return;
+    if (m_core->requestAuthCode(ui->phoneNumber->text())) {
+        m_phoneNumberSubmitted = false;
+        setAppState(AppStateCodeRequested);
+    } else {
+        qWarning() << Q_FUNC_INFO << "Unable to request an auth code";
     }
-
-    m_core->requestPhoneCode(ui->phoneNumber->text());
-
-    m_appState = AppStateCodeRequested;
 }
 
-void MainWindow::on_signButton_clicked()
+void MainWindow::initTryAuthCode()
+{
+    if (m_registered) {
+        m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
+    } else {
+        m_core->signUp(ui->phoneNumber->text(), ui->confirmationCode->text(), ui->firstName->text(), ui->lastName->text());
+    }
+    setAppState(AppStateCodeProvided);
+}
+
+void MainWindow::initTryPassword()
+{
+    if (m_appState == AppStatePasswordRequired) {
+        m_core->tryPassword(m_passwordInfo->currentSalt(), ui->password->text());
+        setAppState(AppStatePasswordProvided);
+    } else {
+        qWarning() << Q_FUNC_INFO << "Password is not required";
+    }
+}
+
+void MainWindow::initLogout()
 {
     if (m_appState >= AppStateSignedIn) {
         m_core->logOut();
     } else {
-        if (m_appState == AppStatePasswordRequired) {
-            m_core->tryPassword(m_passwordInfo->currentSalt(), ui->confirmationCode->text());
-        } else { // AppStateCodeSent
-            if (m_registered) {
-                m_core->signIn(ui->phoneNumber->text(), ui->confirmationCode->text());
-            } else {
-                m_core->signUp(ui->phoneNumber->text(), ui->confirmationCode->text(), ui->firstName->text(), ui->lastName->text());
-            }
-        }
+        qWarning() << Q_FUNC_INFO << "Not signed in to logout";
     }
 }
 
@@ -602,11 +643,11 @@ void MainWindow::setRegistered(bool newRegistered)
     ui->lastName->setDisabled(m_registered);
     ui->lastNameLabel->setDisabled(m_registered);
 
-    if (m_registered) {
-        ui->signButton->setText(tr("Sign in"));
-    } else {
-        ui->signButton->setText(tr("Sign up"));
-    }
+//    if (m_registered) {
+//        ui->signButton->setText(tr("Sign in"));
+//    } else {
+//        ui->signButton->setText(tr("Sign up"));
+//    }
 }
 
 void MainWindow::setChatCreationMode()
@@ -643,73 +684,79 @@ void MainWindow::unsetChatCreationMode()
 
 void MainWindow::setAppState(MainWindow::AppState newState)
 {
+    const auto formatName = [](const AppState state) {
+        static const QMetaEnum appStateEnum = QMetaEnum::fromType<AppState>();
+        return appStateEnum.key(state);
+    };
+    qDebug() << "Change app state from" << formatName(m_appState) << "to" << formatName(newState);
     m_appState = newState;
 
     ui->confirmationCode->setEnabled(m_appState == AppStateCodeSent);
+    ui->password->setEnabled(m_appState == AppStatePasswordRequired);
 
-    ui->setStatusOnline->setVisible(m_appState >= AppStateSignedIn);
-    ui->setStatusOffline->setVisible(m_appState >= AppStateSignedIn);
+    ui->setStatusOnline->setVisible((m_appState >= AppStateSignedIn) && !m_workLikeAClient);
+    ui->setStatusOffline->setVisible((m_appState >= AppStateSignedIn) && !m_workLikeAClient);
 
     ui->phoneNumber->setEnabled(m_appState < AppStateCodeSent);
+    ui->connectionStepButton->setVisible(m_appState < AppStateSignedIn);
+    ui->restoreSession->setVisible(m_appState == AppStateDisconnected);
 
-    if (m_appState > AppStateSignedIn) {
-        ui->signButton->setText(tr("Log out"));
-        ui->signButton->setToolTip(tr("Destroy current auth session."));
-    } else {
-        setRegistered(m_registered);
-    }
+    ui->logoutButton->setVisible((m_appState == AppStateSignedIn) || (m_appState == AppStateReady));
+    ui->disconnectButton->setVisible(m_appState >= AppStateConnected);
 
     switch (m_appState) {
-    case AppStateDisconnected:
-        ui->connectButton->setText(tr("Connect"));
-        ui->connectButton->setProperty("_disconnect", false);
-        ui->connectionState->setText(tr("Disconnected"));
-        // Fall throught
     case AppStateNone:
-        ui->restoreSession->setVisible(true);
-
+        // Fall throught
+    case AppStateDisconnected:
+        ui->connectionState->setText(tr("Disconnected"));
+        ui->connectionStepButton->setText(tr("Connect"));
+        ui->connectionStepButton->setEnabled(true);
         ui->phoneNumber->setEnabled(true);
-
-        ui->requestCode->setVisible(false);
-        ui->signButton->setVisible(false);
-        break;
-    case AppStateConnected:
-        ui->connectionState->setText(tr("Connected..."));
-        ui->connectButton->setText(tr("Disconnect"));
-        ui->connectButton->setProperty("_disconnect", true);
-        break;
-    case AppStateAuthRequired:
-        ui->connectionState->setText(tr("Auth required"));
-        ui->restoreSession->setVisible(false);
-        ui->requestCode->setVisible(true);
-        ui->signButton->setVisible(true);
         ui->phoneNumber->setFocus();
         break;
+    case AppStateConnected: // Not used by TelegramQT ATM
+    case AppStateAuthRequired:
+        ui->connectionState->setText(tr("Connected..."));
+        ui->connectionStepButton->setText(tr("Send the phone number"));
+        ui->connectionStepButton->setEnabled(true);
+        if (m_phoneNumberSubmitted) {
+            initRequestAuthCode();
+        } else {
+            ui->phoneNumber->setFocus();
+        }
+        break;
+    case AppStateCodeRequested:
+        ui->connectionState->setText(tr("An auth code is requested..."));
+        break;
     case AppStateCodeSent:
-        ui->connectionState->setText(tr("Code sent..."));
+        ui->connectionState->setText(tr("The auth code is sent..."));
+        ui->connectionStepButton->setText(tr("Try the auth code"));
+        ui->confirmationCode->setFocus();
+        break;
+    case AppStateCodeProvided:
+        ui->connectionState->setText(tr("Trying the auth code..."));
+        ui->connectionStepButton->setEnabled(false);
         ui->confirmationCode->setFocus();
         break;
     case AppStatePasswordRequired:
-        ui->signButton->setText(tr("Try password"));
         ui->connectionState->setText(tr("Password required"));
-        ui->confirmationCode->setEnabled(true);
-        ui->confirmationCode->clear();
-        ui->confirmationCode->setFocus();
+        ui->connectionStepButton->setText(tr("Try the password"));
+        ui->connectionStepButton->setEnabled(true);
+        ui->password->setFocus();
+        break;
+    case AppStatePasswordProvided:
+        ui->connectionStepButton->setEnabled(false);
+        ui->connectionState->setText(tr("Trying the password..."));
+        ui->connectionStepButton->setEnabled(false);
         break;
     case AppStateSignedIn:
         ui->connectionState->setText(tr("Signed in..."));
-        ui->requestCode->setVisible(false);
-        ui->signButton->setVisible(true); // Logout button
-        ui->phoneNumber->setEnabled(false);
-        if (ui->workLikeClient->isChecked()) {
+        if (m_workLikeAClient) {
             m_core->setOnlineStatus(true);
         }
         break;
     case AppStateReady:
         ui->connectionState->setText(tr("Ready"));
-        ui->requestCode->setVisible(false);
-        ui->signButton->setVisible(true); // Logout button
-        ui->phoneNumber->setEnabled(false);
         ui->phoneNumber->setText(m_core->selfPhone());
         updateContactList();
     {
@@ -734,6 +781,21 @@ void MainWindow::setUiProxyEnabled(bool enabled)
     ui->settingsProxyPassword->setEnabled(enabled);
     ui->settingsProxyHost->setEnabled(enabled);
     ui->settingsProxyPort->setEnabled(enabled);
+}
+
+void MainWindow::setWorkLikeAClient(bool enabled)
+{
+    if (m_workLikeAClient == enabled) {
+        return;
+    }
+    m_workLikeAClient = enabled;
+    updateClientUi();
+}
+
+void MainWindow::updateClientUi()
+{
+    ui->setStatusOffline->setVisible(!m_workLikeAClient);
+    ui->setStatusOnline->setVisible(!m_workLikeAClient);
 }
 
 CContactModel *MainWindow::searchResultModel()
@@ -854,6 +916,32 @@ void MainWindow::on_groupChatGetHistoryRequest_clicked()
     m_core->requestHistory(chatPeer, ui->groupChatGetHistoryOffset->value(), ui->groupChatGetHistoryLimit->value());
 }
 
+void MainWindow::on_phoneNumber_returnPressed()
+{
+    m_phoneNumberSubmitted = !ui->phoneNumber->text().isEmpty();
+    if (m_appState == AppStateDisconnected) {
+        initStartConnection();
+    } else if (m_appState == AppStateAuthRequired) {
+        initRequestAuthCode();
+    }
+}
+
+void MainWindow::on_confirmationCode_returnPressed()
+{
+    if (m_appState != AppStateCodeSent) {
+        return;
+    }
+    initTryAuthCode();
+}
+
+void MainWindow::on_password_returnPressed()
+{
+    if (m_appState != AppStatePasswordRequired) {
+        return;
+    }
+    initTryPassword();
+}
+
 void MainWindow::on_setStatusOnline_clicked()
 {
     m_core->setOnlineStatus(/* online */ true);
@@ -862,6 +950,16 @@ void MainWindow::on_setStatusOnline_clicked()
 void MainWindow::on_setStatusOffline_clicked()
 {
     m_core->setOnlineStatus(/* online */ false);
+}
+
+void MainWindow::on_logoutButton_clicked()
+{
+    initLogout();
+}
+
+void MainWindow::on_disconnectButton_clicked()
+{
+    m_core->disconnectFromServer();
 }
 
 void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
@@ -977,7 +1075,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     Q_UNUSED(event)
 
-    if (ui->workLikeClient->isChecked()) {
+    if (m_workLikeAClient) {
         m_core->setOnlineStatus(false);
     }
 }
@@ -1123,7 +1221,7 @@ void MainWindow::on_restoreSession_clicked()
         return;
     }
 
-    on_connectButton_clicked();
+    on_connectionStepButton_clicked();
 }
 
 void MainWindow::loadSecretFromBrowsedFile()
