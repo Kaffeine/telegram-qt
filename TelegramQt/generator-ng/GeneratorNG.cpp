@@ -359,12 +359,12 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type, bool addSpecSo
             const QStringRef predicate = basePart.left(endOfPredicate);
             const QStringRef typePart = source.midRef(sectionsSplitterIndex);
 
-            sourceLines.append(specCommentPrefix + predicate);
+            sourceLines.append(specCommentPrefix + predicate.toString());
             const int from = predicate.position() + predicate.size();
             for (const QStringRef memberSource : source.midRef(from, typePart.position() - from).split(QLatin1Char(' '), QString::SkipEmptyParts)) {
-                sourceLines.append(specCommentPrefix + spacing + memberSource);
+                sourceLines.append(specCommentPrefix + spacing + memberSource.toString());
             }
-            sourceLines.append(specCommentPrefix + doubleSpacing + typePart);
+            sourceLines.append(specCommentPrefix + doubleSpacing + typePart.toString());
 
             specSource.append(sourceLines.join(QLatin1Char('\n')) + QLatin1Char('\n'));
         }
