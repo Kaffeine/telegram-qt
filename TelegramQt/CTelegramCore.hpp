@@ -91,7 +91,8 @@ public Q_SLOTS:
 
     bool initConnection(const QVector<Telegram::DcOption> &dcs = QVector<Telegram::DcOption>()); // Uses builtin dc options by default
     bool restoreConnection(const QByteArray &secret);
-    void closeConnection();
+    void disconnectFromServer();
+    void closeConnection(); // Deprecated, use disconnectFromServer() instead
     bool logOut();
 
     void requestPhoneStatus(const QString &phoneNumber);

@@ -185,9 +185,15 @@ bool CTelegramCore::initConnection(const QVector<Telegram::DcOption> &dcs)
     return true;
 }
 
+void CTelegramCore::disconnectFromServer()
+{
+    return m_private->m_dispatcher->disconnectFromServer();
+}
+
 void CTelegramCore::closeConnection()
 {
-    return m_private->m_dispatcher->closeConnection();
+    qWarning() << Q_FUNC_INFO << "The method is deprecated, use disconnectFromServer() instead.";
+    disconnectFromServer();
 }
 
 bool CTelegramCore::restoreConnection(const QByteArray &secret)

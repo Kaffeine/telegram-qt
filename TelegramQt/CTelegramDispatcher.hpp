@@ -110,7 +110,7 @@ public:
 
     bool initConnection(const QVector<Telegram::DcOption> &dcs);
     bool restoreConnection(const QByteArray &secret);
-    void closeConnection();
+    void disconnectFromServer();
 
     bool requestHistory(const Telegram::Peer &peer, quint32 offset, quint32 limit);
     quint32 resolveUsername(const QString &userName);

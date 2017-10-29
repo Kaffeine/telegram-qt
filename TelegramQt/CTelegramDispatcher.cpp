@@ -126,7 +126,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
 
 CTelegramDispatcher::~CTelegramDispatcher()
 {
-    closeConnection();
+    disconnectFromServer();
 }
 
 void CTelegramDispatcher::plugModule(CTelegramModule *module)
@@ -549,7 +549,7 @@ void CTelegramDispatcher::initConnectionSharedFinal()
     m_mainConnection->connectToDc();
 }
 
-void CTelegramDispatcher::closeConnection()
+void CTelegramDispatcher::disconnectFromServer()
 {
     setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
 
