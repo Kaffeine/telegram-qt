@@ -39,11 +39,10 @@ tst_CTelegramDispatcher::tst_CTelegramDispatcher(QObject *parent) :
 {
 }
 
-inline TLDcOption constructDcOption(quint32 id, QString hostname, QString ipAddress, quint32 port)
+static TLDcOption constructDcOption(quint32 id, QString ipAddress, quint32 port)
 {
     TLDcOption result;
     result.id = id;
-    result.hostname = hostname;
     result.ipAddress = ipAddress;
     result.port = port;
     return result;
@@ -51,38 +50,50 @@ inline TLDcOption constructDcOption(quint32 id, QString hostname, QString ipAddr
 
 void tst_CTelegramDispatcher::testUpdateDcOptions()
 {
-    TLDcOption newOption;
-    newOption.id = 1;
-    newOption.ipAddress = QLatin1String("149.154.175.50");
-    newOption.port = 443;
+    const TLUpdate dcUpdate = []() {
+        TLUpdate dcUpdate;
+        dcUpdate.tlType = TLValue::UpdateDcOptions;
+        dcUpdate.dcOptions = QVector<TLDcOption>({constructDcOption(1, QLatin1String("149.154.175.50"), 443)});
+        return dcUpdate;
+    }();
 
-    QVector<TLDcOption> options;
-    options << constructDcOption(1, QLatin1String(""), QLatin1String("149.154.167.50"), 443);
-    options << constructDcOption(2, QLatin1String(""), QLatin1String("149.154.167.51"), 443);
-    options << constructDcOption(3, QLatin1String(""), QLatin1String("149.154.175.10"), 443);
-    options << constructDcOption(4, QLatin1String(""), QLatin1String("149.154.167.91"), 443);
-    options << constructDcOption(5, QLatin1String(""), QLatin1String("149.154.171.10"), 443);
+    const QVector<TLDcOption> options = {
+        constructDcOption(1, QLatin1String("149.154.167.50"), 443),
+        constructDcOption(2, QLatin1String("149.154.167.51"), 443),
+        constructDcOption(3, QLatin1String("149.154.175.10"), 443),
+        constructDcOption(4, QLatin1String("149.154.167.91"), 443),
+        constructDcOption(5, QLatin1String("149.154.171.10"), 443),
+    };
 
-    TLUpdate dcUpdate;
-    dcUpdate.tlType = TLValue::UpdateDcOptions;
-    dcUpdate.dcOptions = QVector<TLDcOption>() << newOption;
+    const QVector<TLDcOption> newOptions = [&options, &dcUpdate]() {
+        QVector<TLDcOption> result = options;
+        result.replace(0, dcUpdate.dcOptions.first());
+        return result;
+    }();
 
     CTestDispatcher dispatcher;
     dispatcher.testSetDcConfiguration(options);
-    dispatcher.testProcessUpdate(dcUpdate);
 
-    QVector<TLDcOption> newOptions = dispatcher.testGetDcConfiguration();
-
-    options.replace(0, newOption);
-
-    QVERIFY(options.count() == newOptions.count());
-
-    for (int i = 0; i < newOptions.count(); ++i) {
-        const TLDcOption &updated = newOptions.at(i);
+    const QVector<TLDcOption> currentOptions1 = dispatcher.testGetDcConfiguration();
+    QVERIFY(options.count() == currentOptions1.count());
+    for (int i = 0; i < currentOptions1.count(); ++i) {
+        const TLDcOption &updated = currentOptions1.at(i);
         const TLDcOption &correct = options.at(i);
 
         QCOMPARE(updated.id, correct.id);
-        QCOMPARE(updated.hostname, correct.hostname);
+        QCOMPARE(updated.ipAddress, correct.ipAddress);
+        QCOMPARE(updated.port, correct.port);
+    }
+
+    dispatcher.testProcessUpdate(dcUpdate);
+
+    const QVector<TLDcOption> currentOptions2 = dispatcher.testGetDcConfiguration();
+    QVERIFY(newOptions.count() == currentOptions2.count());
+    for (int i = 0; i < currentOptions2.count(); ++i) {
+        const TLDcOption &updated = currentOptions2.at(i);
+        const TLDcOption &correct = newOptions.at(i);
+
+        QCOMPARE(updated.id, correct.id);
         QCOMPARE(updated.ipAddress, correct.ipAddress);
         QCOMPARE(updated.port, correct.port);
     }
