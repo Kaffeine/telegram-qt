@@ -151,6 +151,28 @@ QString removePrefix(const QString &str)
     }
 }
 
+QString joinLinesWithSpacing(const QStringList &lines, int spacing)
+{
+    if (lines.isEmpty()) {
+        return QString();
+    }
+    QString result;
+    int lineSize = [&]() {
+        int size = 0;
+        for (const QString &line : lines) {
+            size += spacing + line.size() + 1;
+        }
+        return size;
+    }();
+    result.reserve(lineSize);
+
+    const QString spacingStr(spacing, QLatin1Char(' '));
+    for (const QString &line : lines) {
+        result.append(spacingStr + line + QLatin1Char('\n'));
+    }
+    return result;
+}
+
 QString formatMember(QString name)
 {
     name = ensureGoodName(name);
@@ -350,8 +372,6 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type, bool addSpecSo
     QString constructor = spacing + QString("%1() :\n").arg(type.name);
 //    QString copyConstructor = spacing + QString("%1(const %1 &%2) :\n").arg(type.name).arg(anotherName);
 //    QString copyOperator = spacing + QString("%1 &operator=(const %1 &%2) {\n").arg(type.name).arg(anotherName);
-    QString membersCode;
-
     static const QString specCommentPrefix = spacing + QStringLiteral("// ");
     QString specSource;
     QString isValidTypeCode = QStringLiteral(
@@ -389,13 +409,6 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type, bool addSpecSo
 
 //            copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
 //            copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
-
-            if (member.dependOnFlag() && (member.type == QLatin1String("TLTrue"))) {
-                membersCode.append(QString("%1bool %2() const { return %3 & 1 << %4; }\n").arg(spacing).arg(member.name).arg(member.flagMember).arg(member.flagBit));
-            } else {
-                membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(member.type).arg(member.name));
-            }
-
             if (!podTypes.contains(member.type)) {
                 continue;
             }
@@ -408,7 +421,6 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type, bool addSpecSo
     constructor += QString("%1%2(%3::%4),\n").arg(doubleSpacing).arg(tlTypeMember).arg(tlValueName).arg(type.subTypes.first().name);
 //    copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
 //    copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
-    membersCode.append(QString("%1%2 %3;\n").arg(spacing).arg(tlValueName).arg(tlTypeMember));
 
     constructor.chop(2);
     constructor.append(QLatin1String(" { }\n\n"));
@@ -432,13 +444,51 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type, bool addSpecSo
 //    code.append(copyConstructor);
 //    code.append(copyOperator);
     code.append(isValidTypeCode);
-
-//    code.append(QLatin1Char('\n'));
-    code.append(membersCode);
-
+    const QString memberGetters = joinLinesWithSpacing(generateTLTypeMemberGetters(type), spacing.size());
+    const QString members = joinLinesWithSpacing(generateTLTypeMembers(type), spacing.size());
+    code.append(memberGetters);
+    code.append(members);
     code.append(QString("};\n\n"));
 
     return code;
+}
+
+QStringList GeneratorNG::generateTLTypeMemberGetters(const TLType &type)
+{
+    QStringList memberGetters;
+    QStringList addedMembers;
+    foreach (const TLSubType &subType, type.subTypes) {
+        foreach (const TLParam &member, subType.members) {
+            if (addedMembers.contains(member.name)) {
+                continue;
+            }
+            addedMembers.append(member.name);
+            if (member.dependOnFlag() && (member.type == QLatin1String("TLTrue"))) {
+                memberGetters.append(QStringLiteral("bool %2() const { return %3 & 1 << %4; }").arg(member.name, member.flagMember).arg(member.flagBit));
+            }
+        }
+    }
+    return memberGetters;
+}
+
+QStringList GeneratorNG::generateTLTypeMembers(const TLType &type)
+{
+    QStringList membersCode;
+    QStringList addedMembers;
+    foreach (const TLSubType &subType, type.subTypes) {
+        foreach (const TLParam &member, subType.members) {
+            if (addedMembers.contains(member.name)) {
+                continue;
+            }
+            addedMembers.append(member.name);
+            if (member.dependOnFlag() && (member.type == QLatin1String("TLTrue"))) {
+                continue; // No extra data behind the flag
+            }
+            membersCode.append(QStringLiteral("%1 %2;").arg(member.type, member.name));
+        }
+    }
+    membersCode.append(QStringLiteral("%1 %2;").arg(tlValueName, tlTypeMember));
+    return membersCode;
 }
 
 QString GeneratorNG::generateStreamReadOperatorDeclaration(const TLType &type)

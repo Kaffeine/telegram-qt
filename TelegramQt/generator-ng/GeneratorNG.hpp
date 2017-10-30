@@ -96,6 +96,8 @@ public:
     static QString generateTLValuesDefinition(const TLType &type);
     static QString generateTLValuesDefinition(const TLMethod &method);
     static QString generateTLTypeDefinition(const TLType &type, bool addSpecSources = false);
+    static QStringList generateTLTypeMemberGetters(const TLType &type);
+    static QStringList generateTLTypeMembers(const TLType &type);
     static QString generateStreamReadOperatorDeclaration(const TLType &type);
     static QString generateStreamReadOperatorDefinition(const TLType &type);
     static QString generateStreamReadVectorTemplate(const QString &type);
