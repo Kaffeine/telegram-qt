@@ -43,9 +43,10 @@ if (ENABLE_QML_IMPORT)
     add_subdirectory(imports/TelegramQtQml)
 endif()
 
-#if(ENABLE_TESTS)
-#    add_subdirectory(tests)
-#endif()
+if (ENABLE_TESTS)
+    enable_testing()
+    add_subdirectory(TelegramQt/tests)
+endif()
 
 if(ENABLE_TESTAPP)
     add_subdirectory(testApp)
