@@ -75,6 +75,14 @@ QString ensureGoodName(const QString &name)
     return badNamesReplacers.at(index);
 }
 
+QString removeTypePrefix(QString name)
+{
+    if (name.startsWith(tlPrefix)) {
+        return name.mid(2);
+    }
+    return name;
+}
+
 QDebug operator<<(QDebug d, const TLParam &param)
 {
     d << param.type << ":" << param.name << "; ";
@@ -748,7 +756,7 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types, QMap<QString,
             for (TLSubType &subType : type.subTypes) {
                 for (TLParam &member : subType.members) {
                     if (members.values(member.name).count() > 1) {
-                        QString typeWithoutTL = member.type.startsWith("TL") ? member.type.mid(2) : member.type;
+                        QString typeWithoutTL = removeTypePrefix(member.type);
                         typeWithoutTL.remove(member.name, Qt::CaseInsensitive);
                         if (member.name.compare(typeWithoutTL, Qt::CaseInsensitive) != 0) {
                             member.name.append(typeWithoutTL);
