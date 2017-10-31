@@ -1174,6 +1174,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
     onChatsReceived(dialogs.chats);
     qDebug() << Q_FUNC_INFO << "received dialogs:" << dialogs.dialogs.count();
 
+    QVector<Telegram::Peer> newDialogs;
     // Apply dialogs
     for (const TLDialog &dialog : dialogs.dialogs) {
         const Telegram::Peer p = toPublicPeer(dialog.peer);
@@ -1198,7 +1199,11 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
         } else {
             qDebug() << Q_FUNC_INFO << "Add dialog" << p;
             m_dialogs.insert(p, dialog);
+            newDialogs.append(p);
         }
+    }
+    if (!newDialogs.isEmpty()) {
+        emit dialogsChanged(newDialogs, {});
     }
 
     if (dialogs.tlType == TLValue::MessagesDialogsSlice) {

@@ -153,6 +153,7 @@ Q_SIGNALS:
     void loggedOut(bool result);
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void contactListChanged();
+    void dialogsChanged(const QVector<Telegram::Peer> &added, const QVector<Telegram::Peer> &removed);
     void contactProfileChanged(quint32 userId); // First, last or user name was changed
     void phoneStatusReceived(const QString &phone, bool registered);
     void passwordInfoReceived(quint64 requestId);

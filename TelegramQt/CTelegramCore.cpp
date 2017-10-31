@@ -75,6 +75,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
 
     connect(m_private->m_dispatcher, SIGNAL(contactListChanged()),
             SIGNAL(contactListChanged()));
+    connect(m_private->m_dispatcher, SIGNAL(dialogsChanged(QVector<Telegram::Peer>,QVector<Telegram::Peer>)),
+            SIGNAL(dialogsChanged(QVector<Telegram::Peer>,QVector<Telegram::Peer>)));
     connect(m_private->m_dispatcher, SIGNAL(contactProfileChanged(quint32)),
             SIGNAL(contactProfileChanged(quint32)));
     connect(m_private->m_mediaModule, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),

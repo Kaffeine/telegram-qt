@@ -175,6 +175,7 @@ signals:
 
     void userNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
     void contactListChanged();
+    void dialogsChanged(const QVector<Telegram::Peer> &added, const QVector<Telegram::Peer> &removed);
     void contactProfileChanged(quint32 userId);
 
     void messageReceived(const Telegram::Message &message);
