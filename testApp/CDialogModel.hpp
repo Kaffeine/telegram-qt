@@ -49,7 +49,9 @@ public:
 
     int indexOfPeer(const Telegram::Peer peer) const;
 
+public slots:
     void setDialogs(const QVector<Telegram::Peer> &dialogs);
+    void syncDialogs(const QVector<Telegram::Peer> &added, const QVector<Telegram::Peer> &removed);
 
 protected slots:
     void onPeerPictureChanged(const Telegram::Peer peer);

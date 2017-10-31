@@ -124,6 +124,8 @@ MainWindow::MainWindow(QWidget *parent) :
             SLOT(onAuthSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
     connect(m_core, SIGNAL(contactListChanged()),
             SLOT(updateContactList()));
+    connect(m_core, SIGNAL(dialogsChanged(QVector<Telegram::Peer>,QVector<Telegram::Peer>)),
+            m_dialogModel, SLOT(syncDialogs(QVector<Telegram::Peer>,QVector<Telegram::Peer>)));
     connect(m_core, SIGNAL(messageReceived(Telegram::Message)),
             SLOT(onMessageReceived(Telegram::Message)));
     connect(m_core, SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)),
@@ -282,8 +284,6 @@ void MainWindow::updateContactList()
     for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
         ui->contactListTable->setRowHeight(i, 64);
     }
-
-    m_dialogModel->setDialogs(m_core->dialogs());
 }
 
 void MainWindow::onMessageReceived(const Telegram::Message &message)

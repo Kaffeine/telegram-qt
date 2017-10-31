@@ -168,6 +168,28 @@ void CDialogModel::setDialogs(const QVector<Telegram::Peer> &dialogs)
     endResetModel();
 }
 
+void CDialogModel::syncDialogs(const QVector<Telegram::Peer> &added, const QVector<Telegram::Peer> &removed)
+{
+    Q_UNUSED(removed)
+
+    QVector<Telegram::Peer> reallyAddedDialogs;
+    for (const Telegram::Peer &newPeer : added) {
+        if (indexOfPeer(newPeer) < 0) {
+            reallyAddedDialogs.append(newPeer);
+        }
+    }
+    if (reallyAddedDialogs.isEmpty()) {
+        return;
+    }
+    beginInsertRows(QModelIndex(), m_dialogs.count(), m_dialogs.count() + reallyAddedDialogs.count() - 1);
+    for (const Telegram::Peer &peer : reallyAddedDialogs) {
+        Telegram::DialogInfo *info = new Telegram::DialogInfo();
+        m_backend->getDialogInfo(info, peer);
+        m_dialogs.append(info);
+    }
+    endInsertRows();
+}
+
 void CDialogModel::onPeerPictureChanged(const Telegram::Peer peer)
 {
     const int i = indexOfPeer(peer);
