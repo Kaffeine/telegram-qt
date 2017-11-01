@@ -22,6 +22,7 @@
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QRegularExpression>
 
 static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
@@ -1345,5 +1346,28 @@ void GeneratorNG::setAddSpecSources(bool addSources)
 
 QString GeneratorNG::removeWord(QString input, QString word)
 {
-    return input.remove(word, Qt::CaseInsensitive);
+    if (input.isEmpty()) {
+        return QString();
+    }
+    if (word.isEmpty()) {
+        return input;
+    }
+    const bool firstIsLower = input.at(0).isLower();
+    input[0] = input.at(0).toUpper();
+    word[0] = word.at(0).toUpper();
+    const QRegularExpression regexp(QStringLiteral("[A-Z][^A-Z]*"));
+    QRegularExpressionMatchIterator match = regexp.globalMatch(input);
+    QStringList words;
+    while(match.hasNext()) {
+        words.append(match.next().captured());
+    }
+    words.removeAll(word);
+    if (words.isEmpty()) {
+        return QString();
+    }
+    QString out = words.join(QString());
+    if (firstIsLower) {
+        out[0] = out.at(0).toLower();
+    }
+    return out;
 }
