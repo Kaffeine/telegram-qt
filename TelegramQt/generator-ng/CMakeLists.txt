@@ -1,5 +1,10 @@
 project(GeneratorNG)
 
+if (ENABLE_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
 set(generator_SOURCES
     main.cpp
     GeneratorNG.cpp
