@@ -2275,7 +2275,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         break;
     case TLValue::InputMediaVideo:
-        d << spacer.innerSpaces() << "idInputVeo: " << type.idInputVeo <<"\n";
+        d << spacer.innerSpaces() << "idInputVideo: " << type.idInputVideo <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         break;
     case TLValue::InputMediaUploadedAudio:
@@ -3623,7 +3623,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         break;
     case TLValue::UpdateServiceNotification:
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
-        d << spacer.innerSpaces() << "messageQString: " << type.messageQString <<"\n";
+        d << spacer.innerSpaces() << "messageString: " << type.messageString <<"\n";
         d << spacer.innerSpaces() << "media: " << type.media <<"\n";
         d << spacer.innerSpaces() << "popup: " << type.popup <<"\n";
         break;

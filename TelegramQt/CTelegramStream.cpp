@@ -2524,7 +2524,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.caption;
         break;
     case TLValue::InputMediaVideo:
-        *this >> result.idInputVeo;
+        *this >> result.idInputVideo;
         *this >> result.caption;
         break;
     case TLValue::InputMediaUploadedAudio:
@@ -3960,7 +3960,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
         break;
     case TLValue::UpdateServiceNotification:
         *this >> result.type;
-        *this >> result.messageQString;
+        *this >> result.messageString;
         *this >> result.media;
         *this >> result.popup;
         break;
@@ -5110,7 +5110,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMediaValue
         *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaVideo:
-        *this << inputMediaValue.idInputVeo;
+        *this << inputMediaValue.idInputVideo;
         *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaUploadedAudio:

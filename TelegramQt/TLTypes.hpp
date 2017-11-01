@@ -1843,9 +1843,9 @@ struct TLBotInlineMessage {
             return false;
         };
     }
+    bool noWebpage() const { return flags & 1 << 0; }
     QString caption;
     quint32 flags;
-    bool noWebpage() const { return flags & 1 << 0; }
     QString message;
     TLVector<TLMessageEntity> entities;
     TLValue tlType;
@@ -1866,9 +1866,9 @@ struct TLChannelMessagesFilter {
             return false;
         };
     }
-    quint32 flags;
     bool importantOnly() const { return flags & 1 << 0; }
     bool excludeNewMessages() const { return flags & 1 << 1; }
+    quint32 flags;
     TLVector<TLMessageRange> ranges;
     TLValue tlType;
 };
@@ -1924,9 +1924,9 @@ struct TLDcOption {
             return false;
         };
     }
-    quint32 flags;
     bool ipv6() const { return flags & 1 << 0; }
     bool mediaOnly() const { return flags & 1 << 1; }
+    quint32 flags;
     quint32 id;
     QString ipAddress;
     quint32 port;
@@ -2008,9 +2008,9 @@ struct TLInputBotInlineMessage {
             return false;
         };
     }
+    bool noWebpage() const { return flags & 1 << 0; }
     QString caption;
     quint32 flags;
-    bool noWebpage() const { return flags & 1 << 0; }
     QString message;
     TLVector<TLMessageEntity> entities;
     TLValue tlType;
@@ -2109,7 +2109,7 @@ struct TLInputMedia {
     quint32 h;
     QString mimeType;
     TLInputFile thumb;
-    TLInputVideo idInputVeo;
+    TLInputVideo idInputVideo;
     TLInputAudio idInputAudio;
     TLVector<TLDocumentAttribute> attributes;
     TLInputDocument idInputDocument;
@@ -2219,10 +2219,10 @@ struct TLReplyMarkup {
             return false;
         };
     }
-    quint32 flags;
     bool selective() const { return flags & 1 << 2; }
     bool singleUse() const { return flags & 1 << 1; }
     bool resize() const { return flags & 1 << 0; }
+    quint32 flags;
     TLVector<TLKeyboardButtonRow> rows;
     TLValue tlType;
 };
@@ -2244,10 +2244,10 @@ struct TLStickerSet {
             return false;
         };
     }
-    quint32 flags;
     bool installed() const { return flags & 1 << 0; }
     bool disabled() const { return flags & 1 << 1; }
     bool official() const { return flags & 1 << 2; }
+    quint32 flags;
     quint64 id;
     quint64 accessHash;
     QString title;
@@ -2274,8 +2274,6 @@ struct TLUser {
             return false;
         };
     }
-    quint32 id;
-    quint32 flags;
     bool self() const { return flags & 1 << 10; }
     bool contact() const { return flags & 1 << 11; }
     bool mutualContact() const { return flags & 1 << 12; }
@@ -2285,6 +2283,8 @@ struct TLUser {
     bool botNochats() const { return flags & 1 << 16; }
     bool verified() const { return flags & 1 << 17; }
     bool restricted() const { return flags & 1 << 18; }
+    quint32 id;
+    quint32 flags;
     quint64 accessHash;
     QString firstName;
     QString lastName;
@@ -2389,26 +2389,26 @@ struct TLChat {
             return false;
         };
     }
-    quint32 id;
-    quint32 flags;
     bool creator() const { return flags & 1 << 0; }
     bool kicked() const { return flags & 1 << 1; }
     bool left() const { return flags & 1 << 2; }
     bool adminsEnabled() const { return flags & 1 << 3; }
     bool admin() const { return flags & 1 << 4; }
     bool deactivated() const { return flags & 1 << 5; }
-    QString title;
-    TLChatPhoto photo;
-    quint32 participantsCount;
-    quint32 date;
-    quint32 version;
-    TLInputChannel migratedTo;
     bool editor() const { return flags & 1 << 3; }
     bool moderator() const { return flags & 1 << 4; }
     bool broadcast() const { return flags & 1 << 5; }
     bool verified() const { return flags & 1 << 7; }
     bool megagroup() const { return flags & 1 << 8; }
     bool restricted() const { return flags & 1 << 9; }
+    quint32 id;
+    quint32 flags;
+    QString title;
+    TLChatPhoto photo;
+    quint32 participantsCount;
+    quint32 date;
+    quint32 version;
+    TLInputChannel migratedTo;
     quint64 accessHash;
     QString username;
     QString restrictionReason;
@@ -2438,6 +2438,7 @@ struct TLChatFull {
             return false;
         };
     }
+    bool canViewParticipants() const { return flags & 1 << 3; }
     quint32 id;
     TLChatParticipants participants;
     TLPhoto chatPhoto;
@@ -2445,7 +2446,6 @@ struct TLChatFull {
     TLExportedChatInvite exportedInvite;
     TLVector<TLBotInfo> botInfo;
     quint32 flags;
-    bool canViewParticipants() const { return flags & 1 << 3; }
     QString about;
     quint32 participantsCount;
     quint32 adminsCount;
@@ -2472,12 +2472,12 @@ struct TLChatInvite {
             return false;
         };
     }
-    TLChat chat;
-    quint32 flags;
     bool channel() const { return flags & 1 << 0; }
     bool broadcast() const { return flags & 1 << 1; }
     bool isPublic() const { return flags & 1 << 2; }
     bool megagroup() const { return flags & 1 << 3; }
+    TLChat chat;
+    quint32 flags;
     QString title;
     TLValue tlType;
 };
@@ -3083,8 +3083,8 @@ struct TLMessagesBotResults {
             return false;
         };
     }
-    quint32 flags;
     bool gallery() const { return flags & 1 << 0; }
+    quint32 flags;
     quint64 queryId;
     QString nextOffset;
     TLVector<TLBotInlineResult> results;
@@ -3113,12 +3113,12 @@ struct TLMessage {
             return false;
         };
     }
-    quint32 id;
-    quint32 flags;
     bool unread() const { return flags & 1 << 0; }
     bool out() const { return flags & 1 << 1; }
     bool mentioned() const { return flags & 1 << 4; }
     bool mediaUnread() const { return flags & 1 << 5; }
+    quint32 id;
+    quint32 flags;
     quint32 fromId;
     TLPeer toId;
     TLPeer fwdFromId;
@@ -3291,7 +3291,7 @@ struct TLUpdate {
     TLNotifyPeer peerNotify;
     TLPeerNotifySettings notifySettings;
     QString type;
-    QString messageQString;
+    QString messageString;
     TLMessageMedia media;
     bool popup;
     TLPrivacyKey key;
@@ -3344,11 +3344,11 @@ struct TLUpdates {
             return false;
         };
     }
-    quint32 flags;
     bool unread() const { return flags & 1 << 0; }
     bool out() const { return flags & 1 << 1; }
     bool mentioned() const { return flags & 1 << 4; }
     bool mediaUnread() const { return flags & 1 << 5; }
+    quint32 flags;
     quint32 id;
     quint32 userId;
     QString message;
@@ -3394,8 +3394,8 @@ struct TLUpdatesChannelDifference {
             return false;
         };
     }
-    quint32 flags;
     bool final() const { return flags & 1 << 0; }
+    quint32 flags;
     quint32 pts;
     quint32 timeout;
     quint32 topMessage;

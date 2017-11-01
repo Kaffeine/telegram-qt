@@ -160,9 +160,9 @@ quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegr
             break;
         case TLValue::MessageMediaVideo:
             inputMedia.tlType = TLValue::InputMediaVideo;
-            inputMedia.idInputVeo.tlType = TLValue::InputVideo;
-            inputMedia.idInputVeo.id = media->video.id;
-            inputMedia.idInputVeo.accessHash = media->video.accessHash;
+            inputMedia.idInputVideo.tlType = TLValue::InputVideo;
+            inputMedia.idInputVideo.id = media->video.id;
+            inputMedia.idInputVideo.accessHash = media->video.accessHash;
             break;
         case TLValue::MessageMediaGeo:
             inputMedia.tlType = TLValue::InputMediaGeoPoint;
