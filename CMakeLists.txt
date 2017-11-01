@@ -17,6 +17,8 @@ option(ENABLE_TESTAPP "Enable compilation of testing application" FALSE)
 option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
 # Add an option for building tests
 option(STATIC_BUILD "Compile static library instead of shared" FALSE)
+# Add an option for building GeneratorNG
+option(BUILD_GENERATOR "Build protocol code generator" FALSE)
 # Add an option for dev build
 option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
 
@@ -46,6 +48,10 @@ endif()
 if (ENABLE_TESTS)
     enable_testing()
     add_subdirectory(TelegramQt/tests)
+endif()
+
+if (BUILD_GENERATOR)
+    add_subdirectory(TelegramQt/generator-ng)
 endif()
 
 if(ENABLE_TESTAPP)
