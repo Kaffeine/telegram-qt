@@ -810,7 +810,7 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types, QMap<QString,
                 for (TLParam &member : subType.members) {
                     if (members.values(member.name).count() > 1) {
                         QString typeWithoutTL = removeTypePrefix(member.type);
-                        typeWithoutTL.remove(member.name, Qt::CaseInsensitive);
+                        typeWithoutTL = removeWord(typeWithoutTL, member.name);
                         if (member.name.compare(typeWithoutTL, Qt::CaseInsensitive) != 0) {
                             member.name.append(typeWithoutTL);
                         }
@@ -1341,4 +1341,9 @@ void GeneratorNG::generate()
 void GeneratorNG::setAddSpecSources(bool addSources)
 {
     m_addSpecSources = addSources;
+}
+
+QString GeneratorNG::removeWord(QString input, QString word)
+{
+    return input.remove(word, Qt::CaseInsensitive);
 }

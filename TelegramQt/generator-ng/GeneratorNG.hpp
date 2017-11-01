@@ -93,6 +93,7 @@ public:
 
     void setAddSpecSources(bool addSources);
 
+    static QString removeWord(QString input, QString word);
     static QString generateTLValuesDefinition(const TLType &type);
     static QString generateTLValuesDefinition(const TLMethod &method);
     static QString generateTLTypeDefinition(const TLType &type, bool addSpecSources = false);
