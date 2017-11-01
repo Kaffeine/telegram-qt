@@ -1186,7 +1186,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
                 if (existDialog.pts < dialog.pts) {
                     qDebug() << "Dialog pts should be updated from" << existDialog.pts << "to" << dialog.pts;
                     const TLInputChannel inputChannel = toInputChannel(existDialog);
-                    activeConnection()->updatesGetChannelDifference(inputChannel, TLChannelMessagesFilter(), existDialog.pts, 10000);
+                    activeConnection()->updatesGetChannelDifference(inputChannel, TLChannelMessagesFilter(), existDialog.pts, /* limit */ 10000);
                 } else if (existDialog.pts > dialog.pts) {
                     qWarning() << "Stored dialog pts is bigger than the received one. Something is very wrong (" << existDialog.pts << "vs" << dialog.pts << ").";
                 }
