@@ -73,8 +73,6 @@ rm -rf %{buildroot}
 %{_libdir}/qt5/qml/TelegramQt/qmldir
 %{_libdir}/qt5/qml/TelegramQt/plugins.qmltypes
 %{_libdir}/qt5/qml/TelegramQt/libTelegramQt5Qml.so
-%{_libdir}/qt5/qml/TelegramQt/libTelegramQt5Qml.so.%{version_major}.%{version_minor}
-%{_libdir}/qt5/qml/TelegramQt/libTelegramQt5Qml.so.%{version_major}.%{version_minor}.%{version_patch}
 
 %files qt5-devel
 %defattr(-,root,root,-)

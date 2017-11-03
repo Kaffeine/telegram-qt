@@ -32,13 +32,6 @@ target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
 set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
 set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
 
-# Set the correct version number
-set_target_properties(
-    TelegramQt${QT_VERSION_MAJOR}Qml PROPERTIES
-    SOVERSION ${TELEGRAM_QT_ABI}
-    VERSION ${TELEGRAM_QT_VERSION}
-)
-
 install(
     TARGETS TelegramQt${QT_VERSION_MAJOR}Qml
     LIBRARY DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
