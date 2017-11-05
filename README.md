@@ -8,6 +8,9 @@ Requirements
 
 * CMake-2.8.12+
 * Qt 5.5.0+
+* OpenSSL
+* ZLib
+* A C++11 compliant compiler
 
 Installation
 ============
