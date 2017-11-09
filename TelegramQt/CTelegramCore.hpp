@@ -53,6 +53,7 @@ public:
     Q_INVOKABLE static QVector<Telegram::DcOption> builtInDcs();
     Q_INVOKABLE static quint32 defaultPingInterval();
 
+    Q_INVOKABLE QVector<Telegram::DcOption> dcConfiguration();
     QByteArray connectionSecretInfo() const;
 
     Q_INVOKABLE TelegramNamespace::ConnectionState connectionState() const;

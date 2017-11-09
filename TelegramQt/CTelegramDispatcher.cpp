@@ -145,6 +145,11 @@ quint32 CTelegramDispatcher::defaultPingInterval()
     return s_defaultPingInterval;
 }
 
+QVector<Telegram::DcOption> CTelegramDispatcher::dcConfiguration() const
+{
+    return m_connectionAddresses;
+}
+
 bool CTelegramDispatcher::updatesEnabled() const
 {
     return m_updatesEnabled;

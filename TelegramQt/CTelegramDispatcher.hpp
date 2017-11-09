@@ -78,6 +78,7 @@ public:
     static QVector<Telegram::DcOption> builtInDcs();
     static quint32 defaultPingInterval();
 
+    QVector<Telegram::DcOption> dcConfiguration() const;
     bool updatesEnabled() const;
     void setUpdatesEnabled(bool enable);
 

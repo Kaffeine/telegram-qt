@@ -165,6 +165,11 @@ quint32 CTelegramCore::defaultPingInterval()
     return CTelegramDispatcher::defaultPingInterval();
 }
 
+QVector<Telegram::DcOption> CTelegramCore::dcConfiguration()
+{
+    return m_private->m_dispatcher->dcConfiguration();
+}
+
 QByteArray CTelegramCore::connectionSecretInfo() const
 {
     return m_private->m_dispatcher->connectionSecretInfo();
