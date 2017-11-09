@@ -345,39 +345,37 @@ bool CTelegramDispatcher::initConnection(const QVector<Telegram::DcOption> &dcs)
 
     initConnectionSharedClear();
 
-    tryNextDcAddress();
+    connectToTheNextDcAddress();
 
     return true;
 }
 
-void CTelegramDispatcher::tryNextDcAddress()
+bool CTelegramDispatcher::connectToTheNextDcAddress()
 {
+    clearMainConnection();
     if (m_connectionAddresses.isEmpty()) {
-        return;
+        return false;
     }
-
     ++m_autoConnectionDcIndex;
 
-    qDebug() << "CTelegramDispatcher::tryNextBuiltInDcAddress(): Dc index" << m_autoConnectionDcIndex;
-
+    qDebug() << "CTelegramDispatcher::tryNextBuiltInDcAddress(): Dc index (not a dc id):" << m_autoConnectionDcIndex;
     if (m_autoConnectionDcIndex >= m_connectionAddresses.count()) {
         if (m_autoReconnectionEnabled) {
-            qDebug() << "CTelegramDispatcher::tryNextBuiltInDcAddress(): Could not connect to any known dc. Reconnection enabled -> wrapping up and tring again.";
+            qDebug() << "CTelegramDispatcher::tryNextBuiltInDcAddress(): Could not connect to any known dc. Reconnection enabled -> wrap up and try again.";
             m_autoConnectionDcIndex = 0;
         } else {
             qDebug() << "CTelegramDispatcher::tryNextBuiltInDcAddress(): Could not connect to any known dc. Giving up.";
             setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
-            return;
+            return false;
         }
     }
 
     TLDcOption dcInfo;
     dcInfo.ipAddress = m_connectionAddresses.at(m_autoConnectionDcIndex).address;
     dcInfo.port = m_connectionAddresses.at(m_autoConnectionDcIndex).port;
-
-    clearMainConnection();
     m_mainConnection = createConnection(dcInfo);
     initConnectionSharedFinal();
+    return true;
 }
 
 bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
@@ -2229,7 +2227,7 @@ void CTelegramDispatcher::onConnectionStatusChanged(int newStatusInt, int reason
             if (connectionState() == TelegramNamespace::ConnectionStateConnecting) {
                 // There is a problem with initial connection
                 if (m_autoConnectionDcIndex >= 0) {
-                    tryNextDcAddress();
+                    connectToTheNextDcAddress();
                 } else if (m_autoReconnectionEnabled) {
                     // Network error; try to reconnect after a second.
                     QTimer::singleShot(1000, connection, SLOT(connectToDc()));

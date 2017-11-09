@@ -260,7 +260,7 @@ protected:
     void updateSentMessageId(quint64 randomId, quint32 resolvedId);
 
     void checkStateAndCallGetDifference();
-    void tryNextDcAddress();
+    bool connectToTheNextDcAddress();
 
     void continueInitialization(InitializationStep justDone);
 
