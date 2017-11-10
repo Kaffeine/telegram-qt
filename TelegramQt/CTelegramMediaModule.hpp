@@ -60,6 +60,7 @@ protected slots:
     void onFileDataUploaded(quint32 requestId);
 
 protected:
+    void onConnectionStateChanged(TelegramNamespace::ConnectionState newConnectionState) override;
     void onConnectionAuthChanged(CTelegramConnection *connection, int newAuthState) override;
     void onNewConnection(CTelegramConnection *connection) override;
 

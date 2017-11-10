@@ -299,6 +299,13 @@ void CTelegramMediaModule::onFileDataUploaded(quint32 requestId)
     }
 }
 
+void CTelegramMediaModule::onConnectionStateChanged(TelegramNamespace::ConnectionState newConnectionState)
+{
+    if (newConnectionState == TelegramNamespace::ConnectionStateDisconnected) {
+        clear();
+    }
+}
+
 void CTelegramMediaModule::onConnectionAuthChanged(CTelegramConnection *connection, int newAuthState)
 {
     CTelegramConnection::AuthState state = static_cast<CTelegramConnection::AuthState>(newAuthState);
