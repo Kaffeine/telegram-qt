@@ -66,11 +66,20 @@ if (DEVELOPER_BUILD)
     list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp TLRpcDebug.cpp)
     list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp TLRpcDebug.hpp)
     add_definitions(-DDEVELOPER_BUILD)
+    add_definitions(-DQT_DEPRECATED_WARNINGS)
 endif()
 
 add_definitions(-DTELEGRAMQT_LIBRARY)
-add_definitions(-DQT_DEPRECATED_WARNINGS)
-add_definitions(-DQT_NO_CAST_FROM_ASCII)
+
+add_definitions(
+    -DQT_NO_CAST_TO_ASCII
+    -DQT_NO_CAST_FROM_ASCII
+    -DQT_NO_URL_CAST_FROM_STRING
+    -DQT_NO_CAST_FROM_BYTEARRAY
+    -DQT_USE_FAST_OPERATOR_PLUS
+    -DQT_USE_QSTRINGBUILDER
+    -DQT_STRICT_ITERATORS
+)
 
 QT5_WRAP_CPP(telegram_qt_MOC_SOURECES ${telegram_qt_META_HEADERS})
 
