@@ -45,6 +45,8 @@
 #include <QFileDialog>
 #include <QMetaEnum>
 
+static const int c_peerPictureColumnWidth = 70;
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -79,11 +81,15 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->workLikeClient, &QAbstractButton::toggled, this, &MainWindow::setWorkLikeAClient);
     m_contactListModel->setSourceModel(m_contactsModel);
     ui->contactListTable->setModel(m_contactListModel);
+    ui->contactListTable->setColumnWidth(CContactModel::Avatar, c_peerPictureColumnWidth);
     ui->dialogList->setModel(m_dialogModel);
+    ui->dialogList->setColumnWidth(static_cast<int>(CDialogModel::Column::Picture), c_peerPictureColumnWidth);
     ui->messagingView->setModel(m_messagingModel);
     m_chatContactsModel->setSourceModel(m_contactsModel);
     ui->groupChatContacts->setModel(m_chatContactsModel);
+    ui->groupChatContacts->setColumnWidth(CContactModel::Avatar, c_peerPictureColumnWidth);
     ui->groupChatChatsList->setModel(m_chatInfoModel);
+    ui->groupChatChatsList->setColumnWidth(CChatInfoModel::Picture, c_peerPictureColumnWidth);
     ui->groupChatMessagingView->setModel(m_chatMessagingModel);
     ui->groupChatMessagingView->hideColumn(CMessageModel::Direction);
 
@@ -281,9 +287,6 @@ void MainWindow::onAuthSignErrorReceived(TelegramNamespace::AuthSignError errorC
 void MainWindow::updateContactList()
 {
     m_contactListModel->setFilterList(m_core->contactList());
-    for (int i = 0; i < ui->contactListTable->model()->rowCount(); ++i) {
-        ui->contactListTable->setRowHeight(i, 64);
-    }
 }
 
 void MainWindow::onMessageReceived(const Telegram::Message &message)
@@ -369,10 +372,6 @@ void MainWindow::updateActiveChat()
     }
 
     m_chatContactsModel->setFilterList(participants);
-
-    for (int i = 0; i < participants.count(); ++i) {
-        ui->groupChatContacts->setRowHeight(i, 64);
-    }
     updateGroupChatAddContactButtonText();
 }
 
@@ -827,10 +826,6 @@ void MainWindow::searchByUsername()
     }
 
     searchResultModel()->setContactList(QVector<quint32>() << userId);
-
-    for (int i = 0; i < ui->contactSearchResult->model()->rowCount(); ++i) {
-        ui->contactSearchResult->setRowHeight(i, 64);
-    }
 }
 
 void MainWindow::on_addContact_clicked()

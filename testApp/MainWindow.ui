@@ -413,7 +413,11 @@
         </attribute>
         <layout class="QGridLayout" name="gridLayout_13">
          <item row="0" column="0">
-          <widget class="QTableView" name="dialogList"/>
+          <widget class="QTableView" name="dialogList">
+           <attribute name="verticalHeaderDefaultSectionSize">
+            <number>64</number>
+           </attribute>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -427,11 +431,18 @@
            <property name="orientation">
             <enum>Qt::Vertical</enum>
            </property>
-           <widget class="QTableView" name="contactListTable"/>
+           <widget class="QTableView" name="contactListTable">
+            <attribute name="verticalHeaderDefaultSectionSize">
+             <number>64</number>
+            </attribute>
+           </widget>
            <widget class="QTableView" name="contactSearchResult">
             <property name="contextMenuPolicy">
              <enum>Qt::CustomContextMenu</enum>
             </property>
+            <attribute name="verticalHeaderDefaultSectionSize">
+             <number>64</number>
+            </attribute>
            </widget>
           </widget>
          </item>
@@ -592,7 +603,11 @@
               <widget class="QLineEdit" name="groupChatContactPhone"/>
              </item>
              <item row="1" column="0" colspan="5">
-              <widget class="QTableView" name="groupChatContacts"/>
+              <widget class="QTableView" name="groupChatContacts">
+               <attribute name="verticalHeaderDefaultSectionSize">
+                <number>64</number>
+               </attribute>
+              </widget>
              </item>
              <item row="2" column="2">
               <widget class="QPushButton" name="groupChatAddContact">
@@ -640,7 +655,11 @@
               </widget>
              </item>
              <item row="1" column="0" colspan="2">
-              <widget class="QTableView" name="groupChatChatsList"/>
+              <widget class="QTableView" name="groupChatChatsList">
+               <attribute name="verticalHeaderDefaultSectionSize">
+                <number>64</number>
+               </attribute>
+              </widget>
              </item>
              <item row="0" column="0" colspan="2">
               <widget class="QLabel" name="label_14">
