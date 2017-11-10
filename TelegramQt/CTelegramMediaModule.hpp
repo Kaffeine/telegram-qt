@@ -36,7 +36,7 @@ public:
     ~CTelegramMediaModule();
 
     void setMediaDataBufferSize(quint32 size);
-    QString peerPictureToken(const Telegram::Peer &peer, const Telegram::PeerPictureSize size) const Q_REQUIRED_RESULT;
+    Q_REQUIRED_RESULT QString peerPictureToken(const Telegram::Peer &peer, const Telegram::PeerPictureSize size) const;
     quint32 requestFile(const Telegram::RemoteFile *file, quint32 chunkSize = 0);
     bool getMessageMediaInfo(Telegram::MessageMediaInfo *messageInfo, quint32 messageId, const Telegram::Peer &peer) const;
 
@@ -65,10 +65,10 @@ protected:
     void onNewConnection(CTelegramConnection *connection) override;
 
     template <typename T>
-    QString getPictureToken(const T *peerData, const Telegram::PeerPictureSize size) const Q_REQUIRED_RESULT;
+    Q_REQUIRED_RESULT QString getPictureToken(const T *peerData, const Telegram::PeerPictureSize size) const;
 
     template <typename T>
-    quint32 getPeerPicture(const T *peerData, const Telegram::PeerPictureSize size) Q_REQUIRED_RESULT;
+    Q_REQUIRED_RESULT quint32 getPeerPicture(const T *peerData, const Telegram::PeerPictureSize size);
 
     quint32 addFileRequest(const FileRequestDescriptor &descriptor);
     void processFileRequestForConnection(CTelegramConnection *connection, quint32 requestId);
