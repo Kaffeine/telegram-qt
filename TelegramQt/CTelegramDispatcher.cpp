@@ -1460,6 +1460,9 @@ void CTelegramDispatcher::setConnectionState(TelegramNamespace::ConnectionState 
     }
 
     m_connectionState = state;
+    for (CTelegramModule *module : m_modules) {
+        module->onConnectionStateChanged(state);
+    }
     emit connectionStateChanged(state);
 }
 

@@ -40,6 +40,7 @@ public:
     CTelegramConnection *activeConnection() const;
     CTelegramConnection *getExtraConnection(quint32 dc);
 
+    virtual void onConnectionStateChanged(TelegramNamespace::ConnectionState newConnectionState);
     virtual void onConnectionAuthChanged(CTelegramConnection *connection, int newAuthState);
     virtual void onNewConnection(CTelegramConnection *connection);
 
