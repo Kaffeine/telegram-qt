@@ -28,8 +28,6 @@ class CTelegramAuthModule : public CTelegramModule
 public:
     explicit CTelegramAuthModule(QObject *parent = nullptr);
 
-    void onConnectionStatusChanged();
-
     void clear() override;
 
     bool logOut();

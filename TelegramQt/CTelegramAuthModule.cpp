@@ -15,11 +15,6 @@ CTelegramAuthModule::CTelegramAuthModule(QObject *parent) :
 {
 }
 
-void CTelegramAuthModule::onConnectionStatusChanged()
-{
-    m_passwordInfo.clear();
-}
-
 void CTelegramAuthModule::clear()
 {
     m_passwordInfo.clear();

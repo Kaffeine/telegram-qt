@@ -1,6 +1,5 @@
 #include "CTelegramMediaModule.hpp"
 
-#include "CTelegramDispatcher.hpp"
 #include "CTelegramConnection.hpp"
 #include "TelegramNamespace_p.hpp"
 #include "TelegramUtils.hpp"
