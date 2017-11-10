@@ -40,7 +40,7 @@ public:
     CTelegramConnection *activeConnection() const;
     CTelegramConnection *getExtraConnection(quint32 dc);
 
-    virtual void onConnectionAuthChanged(CTelegramConnection *connection, int newState);
+    virtual void onConnectionAuthChanged(CTelegramConnection *connection, int newAuthState);
     virtual void onNewConnection(CTelegramConnection *connection);
 
     quint64 sendMedia(const Telegram::Peer &peer, const TLInputMedia &media);

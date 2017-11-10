@@ -299,9 +299,9 @@ void CTelegramMediaModule::onFileDataUploaded(quint32 requestId)
     }
 }
 
-void CTelegramMediaModule::onConnectionAuthChanged(CTelegramConnection *connection, int newState)
+void CTelegramMediaModule::onConnectionAuthChanged(CTelegramConnection *connection, int newAuthState)
 {
-    CTelegramConnection::AuthState state = static_cast<CTelegramConnection::AuthState>(newState);
+    CTelegramConnection::AuthState state = static_cast<CTelegramConnection::AuthState>(newAuthState);
     if (connection == activeConnection()) {
         return;
     } else {

@@ -37,10 +37,10 @@ CTelegramConnection *CTelegramModule::getExtraConnection(quint32 dc)
     return m_dispatcher->getExtraConnection(dc);
 }
 
-void CTelegramModule::onConnectionAuthChanged(CTelegramConnection *connection, int newState)
+void CTelegramModule::onConnectionAuthChanged(CTelegramConnection *connection, int newAuthState)
 {
     Q_UNUSED(connection)
-    Q_UNUSED(newState)
+    Q_UNUSED(newAuthState)
 }
 
 void CTelegramModule::onNewConnection(CTelegramConnection *connection)
