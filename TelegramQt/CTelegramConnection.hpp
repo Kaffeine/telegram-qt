@@ -91,6 +91,8 @@ public:
 
     TLDcOption dcInfo() const { return m_dcInfo; }
 
+    void setTransport(CTelegramTransport *newTransport);
+
 public slots:
     void connectToDc();
     void disconnectFromDc();
@@ -506,8 +508,6 @@ protected:
     quint64 sendPlainPackage(const QByteArray &buffer);
     quint64 sendEncryptedPackage(const QByteArray &buffer, bool savePackage = true);
     quint64 sendEncryptedPackageAgain(quint64 id);
-
-    void setTransport(CTelegramTransport *newTransport);
 
     void setStatus(ConnectionStatus status, ConnectionStatusReason reason);
     void setAuthState(AuthState newState);

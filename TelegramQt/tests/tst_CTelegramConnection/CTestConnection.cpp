@@ -16,10 +16,12 @@
  */
 
 #include "CTestConnection.hpp"
+#include "CTcpTransport.hpp"
 
 CTestConnection::CTestConnection(QObject *parent) :
     CTelegramConnection(0, parent)
 {
+    setTransport(new CTcpTransport(this));
 }
 
 void CTestConnection::setClientNonce(TLNumber128 newClientNonce)

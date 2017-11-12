@@ -7,6 +7,7 @@ set(telegram_qt_SOURCES
     CTelegramModule.cpp
     CTelegramAuthModule.cpp
     CTelegramMediaModule.cpp
+    CTelegramTransportModule.cpp
     CTelegramConnection.cpp
     RpcProcessingContext.cpp
     CTelegramStream.cpp
@@ -26,6 +27,7 @@ set(telegram_qt_META_HEADERS
     CTelegramModule.hpp
     CTelegramAuthModule.hpp
     CTelegramMediaModule.hpp
+    CTelegramTransportModule.hpp
     CTelegramConnection.hpp
     CTelegramTransport.hpp
     CTcpTransport.hpp

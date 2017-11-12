@@ -23,6 +23,7 @@
 #include "CTelegramDispatcher.hpp"
 #include "CTelegramAuthModule.hpp"
 #include "CTelegramMediaModule.hpp"
+#include "CTelegramTransportModule.hpp"
 
 class CTelegramCore::Private
 {
@@ -38,6 +39,7 @@ public:
     CTelegramDispatcher *m_dispatcher;
     CTelegramAuthModule *m_authModule;
     CTelegramMediaModule *m_mediaModule;
+    CTelegramTransportModule *m_transportModule;
     CAppInformation *m_appInfo;
 };
 
@@ -52,6 +54,8 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_private->m_dispatcher->plugModule(m_private->m_authModule);
     m_private->m_mediaModule = new CTelegramMediaModule(this);
     m_private->m_dispatcher->plugModule(m_private->m_mediaModule);
+    m_private->m_transportModule = new CTelegramTransportModule(this);
+    m_private->m_dispatcher->plugModule(m_private->m_transportModule);
 
     connect(m_private->m_dispatcher, &CTelegramDispatcher::connectionStateChanged,
             this, &CTelegramCore::connectionStateChanged);
@@ -121,6 +125,7 @@ CTelegramCore::~CTelegramCore()
     delete m_private->m_dispatcher;
     delete m_private->m_authModule;
     delete m_private->m_mediaModule;
+    delete m_private->m_transportModule;
     delete m_private;
 }
 
@@ -136,12 +141,12 @@ bool CTelegramCore::updatesEnabled() const
 
 QNetworkProxy CTelegramCore::proxy() const
 {
-    return m_private->m_dispatcher->proxy();
+    return m_private->m_transportModule->proxy();
 }
 
 void CTelegramCore::setProxy(const QNetworkProxy &proxy)
 {
-    return m_private->m_dispatcher->setProxy(proxy);
+    return m_private->m_transportModule->setProxy(proxy);
 }
 
 void CTelegramCore::setAppInformation(CAppInformation *newAppInfo)

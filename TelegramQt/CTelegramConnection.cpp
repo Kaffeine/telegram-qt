@@ -40,7 +40,7 @@ QString formatTLValue(const TLValue &val)
 
 #include "CAppInformation.hpp"
 #include "CTelegramStream.hpp"
-#include "CTcpTransport.hpp"
+#include "CTelegramTransport.hpp"
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
 #include "RpcProcessingContext.hpp"
@@ -89,8 +89,6 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
   , m_logFile(0)
   #endif
 {
-    setTransport(new CTcpTransport(this));
-
     m_ackTimer->setInterval(90 * 1000);
     m_ackTimer->setSingleShot(true);
     connect(m_ackTimer, &QTimer::timeout, this, &CTelegramConnection::onTimeToAckMessages);
