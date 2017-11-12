@@ -120,6 +120,7 @@ CTelegramCore::~CTelegramCore()
 {
     delete m_private->m_dispatcher;
     delete m_private->m_authModule;
+    delete m_private->m_mediaModule;
     delete m_private;
 }
 
