@@ -121,7 +121,7 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_typingUpdateTimer(new QTimer(this))
 {
     m_typingUpdateTimer->setSingleShot(true);
-    connect(m_typingUpdateTimer, SIGNAL(timeout()), SLOT(messageActionTimerTimeout()));
+    connect(m_typingUpdateTimer, &QTimer::timeout, this, &CTelegramDispatcher::messageActionTimerTimeout);
 }
 
 CTelegramDispatcher::~CTelegramDispatcher()
@@ -2163,32 +2163,32 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newStateInt, quint32 dc)
 
     if (connection == activeConnection()) {
         if (newState == CTelegramConnection::AuthStateSignedIn) {
-            connect(connection, SIGNAL(contactListReceived(QVector<quint32>)),
-                    SLOT(onContactListReceived(QVector<quint32>)));
-            connect(connection, SIGNAL(contactListChanged(QVector<quint32>,QVector<quint32>)),
-                    SLOT(onContactListChanged(QVector<quint32>,QVector<quint32>)));
-            connect(connection, SIGNAL(updatesReceived(TLUpdates,quint64)),
-                    SLOT(onUpdatesReceived(TLUpdates,quint64)));
-            connect(connection, SIGNAL(messagesHistoryReceived(TLMessagesMessages,TLInputPeer)),
-                    SLOT(onMessagesHistoryReceived(TLMessagesMessages)));
-            connect(connection, SIGNAL(messagesDialogsReceived(TLMessagesDialogs,quint32,quint32,TLInputPeer,quint32)),
-                    SLOT(onMessagesDialogsReceived(TLMessagesDialogs,quint32,quint32,TLInputPeer,quint32)));
-            connect(connection, SIGNAL(messagesAffectedMessagesReceived(TLMessagesAffectedMessages)),
-                    SLOT(onMessagesAffectedMessagesReceived(TLMessagesAffectedMessages)));
-            connect(connection, SIGNAL(updatesStateReceived(TLUpdatesState)),
-                    SLOT(onUpdatesStateReceived(TLUpdatesState)));
-            connect(connection, SIGNAL(updatesDifferenceReceived(TLUpdatesDifference)),
-                    SLOT(onUpdatesDifferenceReceived(TLUpdatesDifference)));
-            connect(connection, SIGNAL(updatesChannelDifferenceReceived(TLUpdatesChannelDifference)),
-                    SLOT(onUpdatesChannelDifferenceReceived(TLUpdatesChannelDifference)));
-            connect(connection, SIGNAL(authExportedAuthorizationReceived(quint32,quint32,QByteArray)),
-                    SLOT(onAuthExportedAuthorizationReceived(quint32,quint32,QByteArray)));
-            connect(connection, SIGNAL(messagesChatsReceived(QVector<TLChat>)),
-                    SLOT(onChatsReceived(QVector<TLChat>)));
-            connect(connection, SIGNAL(messagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)),
-                    SLOT(onMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
-            connect(connection, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
-                    SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
+            connect(connection, &CTelegramConnection::contactListReceived,
+                    this, &CTelegramDispatcher::onContactListReceived);
+            connect(connection, &CTelegramConnection::contactListChanged,
+                    this, &CTelegramDispatcher::onContactListChanged);
+            connect(connection, &CTelegramConnection::updatesReceived,
+                    this, &CTelegramDispatcher::onUpdatesReceived);
+            connect(connection, &CTelegramConnection::messagesHistoryReceived,
+                    this, &CTelegramDispatcher::onMessagesHistoryReceived);
+            connect(connection, &CTelegramConnection::messagesDialogsReceived,
+                    this, &CTelegramDispatcher::onMessagesDialogsReceived);
+            connect(connection, &CTelegramConnection::messagesAffectedMessagesReceived,
+                    this, &CTelegramDispatcher::onMessagesAffectedMessagesReceived);
+            connect(connection, &CTelegramConnection::updatesStateReceived,
+                    this, &CTelegramDispatcher::onUpdatesStateReceived);
+            connect(connection, &CTelegramConnection::updatesDifferenceReceived,
+                    this, &CTelegramDispatcher::onUpdatesDifferenceReceived);
+            connect(connection, &CTelegramConnection::updatesChannelDifferenceReceived,
+                    this, &CTelegramDispatcher::onUpdatesChannelDifferenceReceived);
+            connect(connection, &CTelegramConnection::authExportedAuthorizationReceived,
+                    this, &CTelegramDispatcher::onAuthExportedAuthorizationReceived);
+            connect(connection, &CTelegramConnection::messagesChatsReceived,
+                    this, &CTelegramDispatcher::onChatsReceived);
+            connect(connection, &CTelegramConnection::messagesFullChatReceived,
+                    this, &CTelegramDispatcher::onMessagesFullChatReceived);
+            connect(connection, &CTelegramConnection::userNameStatusUpdated,
+                    this, &CTelegramDispatcher::userNameStatusUpdated);
         }
 
          // Start initialization, if it is not started yet.

@@ -30,12 +30,12 @@ CTcpTransport::CTcpTransport(QObject *parent) :
     m_timeoutTimer(new QTimer(this)),
     m_firstPackage(true)
 {
-    connect(m_socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(onStateChanged(QAbstractSocket::SocketState)));
+    connect(m_socket, &QAbstractSocket::stateChanged, this, &CTcpTransport::onStateChanged);
     connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(onError(QAbstractSocket::SocketError)));
-    connect(m_socket, SIGNAL(readyRead()), SLOT(onReadyRead()));
+    connect(m_socket, &QIODevice::readyRead, this, &CTcpTransport::onReadyRead);
 
     m_timeoutTimer->setInterval(tcpTimeout);
-    connect(m_timeoutTimer, SIGNAL(timeout()), SLOT(onTimeout()));
+    connect(m_timeoutTimer, &QTimer::timeout, this, &CTcpTransport::onTimeout);
 }
 
 CTcpTransport::~CTcpTransport()

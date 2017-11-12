@@ -93,7 +93,7 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
 
     m_ackTimer->setInterval(90 * 1000);
     m_ackTimer->setSingleShot(true);
-    connect(m_ackTimer, SIGNAL(timeout()), SLOT(onTimeToAckMessages()));
+    connect(m_ackTimer, &QTimer::timeout, this, &CTelegramConnection::onTimeToAckMessages);
 }
 
 void CTelegramConnection::setProxy(const QNetworkProxy &proxy)
@@ -140,9 +140,9 @@ void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
 {
     m_transport = newTransport;
 
-    connect(m_transport, SIGNAL(stateChanged(QAbstractSocket::SocketState)), SLOT(onTransportStateChanged()));
-    connect(m_transport, SIGNAL(readyRead()), SLOT(onTransportReadyRead()));
-    connect(m_transport, SIGNAL(timeout()), SLOT(onTransportTimeout()));
+    connect(m_transport, &CTelegramTransport::stateChanged, this, &CTelegramConnection::onTransportStateChanged);
+    connect(m_transport, &CTelegramTransport::readyRead, this, &CTelegramConnection::onTransportReadyRead);
+    connect(m_transport, &CTelegramTransport::timeout, this, &CTelegramConnection::onTransportTimeout);
 }
 
 void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
@@ -4723,7 +4723,7 @@ void CTelegramConnection::startAuthTimer()
         m_authTimer = new QTimer(this);
         m_authTimer->setInterval(s_defaultAuthInterval);
         m_authTimer->setSingleShot(true);
-        connect(m_authTimer, SIGNAL(timeout()), SLOT(onTransportTimeout()));
+        connect(m_authTimer, &QTimer::timeout, this, &CTelegramConnection::onTransportTimeout);
     }
 
     m_authTimer->start();
@@ -4745,7 +4745,7 @@ void CTelegramConnection::startPingTimer()
     if (!m_pingTimer) {
         m_pingTimer = new QTimer(this);
         m_pingTimer->setSingleShot(false);
-        connect(m_pingTimer, SIGNAL(timeout()), SLOT(onTimeToPing()));
+        connect(m_pingTimer, &QTimer::timeout, this, &CTelegramConnection::onTimeToPing);
     }
 
     if (m_pingTimer->interval() != static_cast<int>(m_pingInterval)) {

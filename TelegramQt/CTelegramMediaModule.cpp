@@ -349,8 +349,8 @@ void CTelegramMediaModule::onConnectionAuthChanged(CTelegramConnection *connecti
 
 void CTelegramMediaModule::onNewConnection(CTelegramConnection *connection)
 {
-    connect(connection, SIGNAL(fileDataReceived(TLUploadFile,quint32,quint32)), SLOT(onFileDataReceived(TLUploadFile,quint32,quint32)));
-    connect(connection, SIGNAL(fileDataSent(quint32)), SLOT(onFileDataUploaded(quint32)));
+    connect(connection, &CTelegramConnection::fileDataReceived, this, &CTelegramMediaModule::onFileDataReceived);
+    connect(connection, &CTelegramConnection::fileDataSent, this, &CTelegramMediaModule::onFileDataUploaded);
 }
 
 template<typename T>
