@@ -60,7 +60,8 @@ public:
         StepInitialUsers    = 1 << 2,
         StepContactList     = 1 << 3,
         StepDialogs         = 1 << 4,
-        StepUpdates         = 1 << 5,
+        StepHasKey          = 1 << 5, // Auth key is not registered yet (the user is not Signed In)
+        StepUpdates         = 1 << 6,
         StepDone            = StepUpdates | (StepUpdates - 1)
     };
 

@@ -2177,10 +2177,13 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newStateInt, quint32 dc)
                     SLOT(onMessagesFullChatReceived(TLChatFull,QVector<TLChat>,QVector<TLUser>)));
             connect(connection, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
                     SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
+        }
 
+         // Start initialization, if it is not started yet.
+        if (newState == CTelegramConnection::AuthStateHaveAKey) {
+            continueInitialization(StepHasKey);
+        } else if (newState == CTelegramConnection::AuthStateSignedIn) {
             continueInitialization(StepSignIn);
-        } else if (newState == CTelegramConnection::AuthStateHaveAKey) {
-            continueInitialization(StepFirst); // Start initialization, if it is not started yet.
         }
     } else {
         if (newState == CTelegramConnection::AuthStateHaveAKey) {
@@ -2304,11 +2307,16 @@ void CTelegramDispatcher::onPackageRedirected(const QByteArray &data, quint32 dc
         connection = getExtraConnection(dc);
     }
 
+    if (!connection) {
+        qDebug() << Q_FUNC_INFO << "Wanted dc is unknown. Requesting configuration...";
+        m_delayedPackages.insertMulti(dc, data);
+        getDcConfiguration();
+        return;
+    }
     if (connection->authState() >= CTelegramConnection::AuthStateHaveAKey) {
         connection->processRedirectedPackage(data);
     } else {
         m_delayedPackages.insertMulti(dc, data);
-
         if (connection->status() == CTelegramConnection::ConnectionStatusDisconnected) {
             connection->connectToDc();
         }
@@ -2498,60 +2506,72 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     }
 
     m_initializationState |= justDone;
-
-    if (!(m_requestedSteps & StepDcConfiguration)) { // DC configuration is not requested yet
+    if (justDone == StepSignIn) {
+        m_initializationState |= StepHasKey; // SignIn implicitly means that we have a key
+    }
+    InitializationStepFlags skippedSteps;
+    if (!m_updatesEnabled) {
+        skippedSteps |= StepUpdates;
+    }
+    const InitializationStepFlags neededSteps = ~(m_initializationState|m_requestedSteps|skippedSteps);
+    if (neededSteps & StepDcConfiguration) {
+        qDebug() << "CTelegramDispatcher::continueInitialization(): Request DC Configuration";
         getDcConfiguration();
         m_requestedSteps |= StepDcConfiguration;
-    }
-
-    if (m_initializationState & StepDcConfiguration) {
-        switch (activeConnection()->authState()) {
-        case CTelegramConnection::AuthStateHaveAKey:
-            setConnectionState(TelegramNamespace::ConnectionStateAuthRequired);
-            break;
-        case CTelegramConnection::AuthStateSignedIn:
-            setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
-            m_deltaTime = activeConnection()->deltaTime();
-
-            if (!((m_requestedSteps & StepInitialUsers) || (m_initializationState & StepInitialUsers))) {
-                getInitialUsers();
-                return;
-            }
-
-            if (!((m_requestedSteps & StepContactList) || (m_initializationState & StepContactList))) {
-                getContacts();
-                m_requestedSteps |= StepContactList;
-            }
-
-            if (!((m_requestedSteps & StepDialogs) || (m_initializationState & StepDialogs))) {
-                getInitialDialogs();
-                m_requestedSteps |= StepDialogs;
-            }
-            break;
-        default:
-            break;
-        }
-    } else { // DC configuration is unknown yet
         return;
     }
 
-    if (!m_updatesEnabled) {
-        if ((m_initializationState | StepUpdates) == StepDone) {
-            setConnectionState(TelegramNamespace::ConnectionStateReady);
-        }
+    if (!(m_initializationState & StepDcConfiguration)) {
+        qDebug() << "CTelegramDispatcher::continueInitialization(): waiting for DC Configuration";
         return;
     }
 
-    if (m_initializationState == StepDone) {
+    if (m_initializationState == (StepDcConfiguration|StepHasKey)) {
+        setConnectionState(TelegramNamespace::ConnectionStateAuthRequired);
+    } else if (m_initializationState == (StepDcConfiguration|StepHasKey|StepSignIn)) {
+        setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
+        m_deltaTime = activeConnection()->deltaTime();
+    }
+
+    if (!(m_initializationState & StepSignIn)) {
+        return;
+    }
+
+    if (neededSteps & StepInitialUsers) {
+        getInitialUsers();
+        if (m_askedInitialUsers.isEmpty()) {
+            m_initializationState |= StepInitialUsers;
+        } else {
+            m_requestedSteps |= StepInitialUsers;
+            return;
+        }
+    }
+
+    if (neededSteps & StepContactList) {
+        getContacts();
+        m_requestedSteps |= StepContactList;
+        return;
+    }
+
+    if (neededSteps & StepDialogs) {
+        getInitialDialogs();
+        m_requestedSteps |= StepDialogs;
+        return;
+    }
+
+    if (neededSteps & StepUpdates) {
+        getUpdatesState();
+        m_requestedSteps |= StepUpdates;
+        return;
+    }
+
+    const InitializationStepFlags considerAsDoneSteps = m_initializationState | skippedSteps;
+    if (considerAsDoneSteps == StepDone) {
+        qDebug() << "CTelegramDispatcher::continueInitialization(): Initialization is done";
         setConnectionState(TelegramNamespace::ConnectionStateReady);
-        return;
-    }
-
-    if (m_initializationState & StepContactList) {
-        if (!(m_requestedSteps & StepUpdates)) {
-            getUpdatesState();
-            m_requestedSteps |= StepUpdates;
-        }
+    } else {
+        const InitializationStepFlags remains = ~considerAsDoneSteps & StepDone;
+        qDebug() << "CTelegramDispatcher::continueInitialization(): waiting for steps" << remains;
     }
 }
 
