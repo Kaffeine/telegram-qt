@@ -61,7 +61,7 @@ int Spacer::m_spacing = 0;
 QDebug operator<<(QDebug d, const TLAccountDaysTTL &type)
 {
     d.noquote().nospace();
-    d << "TLAccountDaysTTL(" << type.tlType.toString() << ") {";
+    d << "TLAccountDaysTTL(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountDaysTTL:
@@ -78,16 +78,16 @@ QDebug operator<<(QDebug d, const TLAccountDaysTTL &type)
 QDebug operator<<(QDebug d, const TLAccountPassword &type)
 {
     d.noquote().nospace();
-    d << "TLAccountPassword(" << type.tlType.toString() << ") {";
+    d << "TLAccountPassword(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountNoPassword:
-        d << spacer.innerSpaces() << "newSalt: " << type.newSalt <<"\n";
+        d << spacer.innerSpaces() << "newSalt: " << type.newSalt.toHex() <<"\n";
         d << spacer.innerSpaces() << "emailUnconfirmedPattern: " << type.emailUnconfirmedPattern <<"\n";
         break;
     case TLValue::AccountPassword:
-        d << spacer.innerSpaces() << "currentSalt: " << type.currentSalt <<"\n";
-        d << spacer.innerSpaces() << "newSalt: " << type.newSalt <<"\n";
+        d << spacer.innerSpaces() << "currentSalt: " << type.currentSalt.toHex() <<"\n";
+        d << spacer.innerSpaces() << "newSalt: " << type.newSalt.toHex() <<"\n";
         d << spacer.innerSpaces() << "hint: " << type.hint <<"\n";
         d << spacer.innerSpaces() << "hasRecovery: " << type.hasRecovery <<"\n";
         d << spacer.innerSpaces() << "emailUnconfirmedPattern: " << type.emailUnconfirmedPattern <<"\n";
@@ -103,16 +103,16 @@ QDebug operator<<(QDebug d, const TLAccountPassword &type)
 QDebug operator<<(QDebug d, const TLAccountPasswordInputSettings &type)
 {
     d.noquote().nospace();
-    d << "TLAccountPasswordInputSettings(" << type.tlType.toString() << ") {";
+    d << "TLAccountPasswordInputSettings(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountPasswordInputSettings:
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 0) {
-            d << spacer.innerSpaces() << "newSalt: " << type.newSalt <<"\n";
+            d << spacer.innerSpaces() << "newSalt: " << type.newSalt.toHex() <<"\n";
         }
         if (type.flags & 1 << 0) {
-            d << spacer.innerSpaces() << "newPasswordHash: " << type.newPasswordHash <<"\n";
+            d << spacer.innerSpaces() << "newPasswordHash: " << type.newPasswordHash.toHex() <<"\n";
         }
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "hint: " << type.hint <<"\n";
@@ -132,7 +132,7 @@ QDebug operator<<(QDebug d, const TLAccountPasswordInputSettings &type)
 QDebug operator<<(QDebug d, const TLAccountPasswordSettings &type)
 {
     d.noquote().nospace();
-    d << "TLAccountPasswordSettings(" << type.tlType.toString() << ") {";
+    d << "TLAccountPasswordSettings(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountPasswordSettings:
@@ -149,7 +149,7 @@ QDebug operator<<(QDebug d, const TLAccountPasswordSettings &type)
 QDebug operator<<(QDebug d, const TLAccountSentChangePhoneCode &type)
 {
     d.noquote().nospace();
-    d << "TLAccountSentChangePhoneCode(" << type.tlType.toString() << ") {";
+    d << "TLAccountSentChangePhoneCode(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountSentChangePhoneCode:
@@ -167,7 +167,7 @@ QDebug operator<<(QDebug d, const TLAccountSentChangePhoneCode &type)
 QDebug operator<<(QDebug d, const TLAudio &type)
 {
     d.noquote().nospace();
-    d << "TLAudio(" << type.tlType.toString() << ") {";
+    d << "TLAudio(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AudioEmpty:
@@ -193,7 +193,7 @@ QDebug operator<<(QDebug d, const TLAudio &type)
 QDebug operator<<(QDebug d, const TLAuthCheckedPhone &type)
 {
     d.noquote().nospace();
-    d << "TLAuthCheckedPhone(" << type.tlType.toString() << ") {";
+    d << "TLAuthCheckedPhone(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthCheckedPhone:
@@ -210,12 +210,12 @@ QDebug operator<<(QDebug d, const TLAuthCheckedPhone &type)
 QDebug operator<<(QDebug d, const TLAuthExportedAuthorization &type)
 {
     d.noquote().nospace();
-    d << "TLAuthExportedAuthorization(" << type.tlType.toString() << ") {";
+    d << "TLAuthExportedAuthorization(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthExportedAuthorization:
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
         break;
     default:
         break;
@@ -228,7 +228,7 @@ QDebug operator<<(QDebug d, const TLAuthExportedAuthorization &type)
 QDebug operator<<(QDebug d, const TLAuthPasswordRecovery &type)
 {
     d.noquote().nospace();
-    d << "TLAuthPasswordRecovery(" << type.tlType.toString() << ") {";
+    d << "TLAuthPasswordRecovery(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthPasswordRecovery:
@@ -245,7 +245,7 @@ QDebug operator<<(QDebug d, const TLAuthPasswordRecovery &type)
 QDebug operator<<(QDebug d, const TLAuthSentCode &type)
 {
     d.noquote().nospace();
-    d << "TLAuthSentCode(" << type.tlType.toString() << ") {";
+    d << "TLAuthSentCode(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthSentCode:
@@ -271,7 +271,7 @@ QDebug operator<<(QDebug d, const TLAuthSentCode &type)
 QDebug operator<<(QDebug d, const TLAuthorization &type)
 {
     d.noquote().nospace();
-    d << "TLAuthorization(" << type.tlType.toString() << ") {";
+    d << "TLAuthorization(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Authorization:
@@ -300,7 +300,7 @@ QDebug operator<<(QDebug d, const TLAuthorization &type)
 QDebug operator<<(QDebug d, const TLBotCommand &type)
 {
     d.noquote().nospace();
-    d << "TLBotCommand(" << type.tlType.toString() << ") {";
+    d << "TLBotCommand(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::BotCommand:
@@ -318,7 +318,7 @@ QDebug operator<<(QDebug d, const TLBotCommand &type)
 QDebug operator<<(QDebug d, const TLBotInfo &type)
 {
     d.noquote().nospace();
-    d << "TLBotInfo(" << type.tlType.toString() << ") {";
+    d << "TLBotInfo(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::BotInfoEmpty:
@@ -341,7 +341,7 @@ QDebug operator<<(QDebug d, const TLBotInfo &type)
 QDebug operator<<(QDebug d, const TLChannelParticipant &type)
 {
     d.noquote().nospace();
-    d << "TLChannelParticipant(" << type.tlType.toString() << ") {";
+    d << "TLChannelParticipant(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelParticipant:
@@ -382,7 +382,7 @@ QDebug operator<<(QDebug d, const TLChannelParticipant &type)
 QDebug operator<<(QDebug d, const TLChannelParticipantRole &type)
 {
     d.noquote().nospace();
-    d << "TLChannelParticipantRole(" << type.tlType.toString() << ") {";
+    d << "TLChannelParticipantRole(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelRoleEmpty:
@@ -402,7 +402,7 @@ QDebug operator<<(QDebug d, const TLChannelParticipantRole &type)
 QDebug operator<<(QDebug d, const TLChannelParticipantsFilter &type)
 {
     d.noquote().nospace();
-    d << "TLChannelParticipantsFilter(" << type.tlType.toString() << ") {";
+    d << "TLChannelParticipantsFilter(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelParticipantsRecent:
@@ -424,7 +424,7 @@ QDebug operator<<(QDebug d, const TLChannelParticipantsFilter &type)
 QDebug operator<<(QDebug d, const TLChatParticipant &type)
 {
     d.noquote().nospace();
-    d << "TLChatParticipant(" << type.tlType.toString() << ") {";
+    d << "TLChatParticipant(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatParticipant:
@@ -451,7 +451,7 @@ QDebug operator<<(QDebug d, const TLChatParticipant &type)
 QDebug operator<<(QDebug d, const TLChatParticipants &type)
 {
     d.noquote().nospace();
-    d << "TLChatParticipants(" << type.tlType.toString() << ") {";
+    d << "TLChatParticipants(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatParticipantsForbidden:
@@ -477,7 +477,7 @@ QDebug operator<<(QDebug d, const TLChatParticipants &type)
 QDebug operator<<(QDebug d, const TLContact &type)
 {
     d.noquote().nospace();
-    d << "TLContact(" << type.tlType.toString() << ") {";
+    d << "TLContact(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Contact:
@@ -495,7 +495,7 @@ QDebug operator<<(QDebug d, const TLContact &type)
 QDebug operator<<(QDebug d, const TLContactBlocked &type)
 {
     d.noquote().nospace();
-    d << "TLContactBlocked(" << type.tlType.toString() << ") {";
+    d << "TLContactBlocked(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactBlocked:
@@ -513,7 +513,7 @@ QDebug operator<<(QDebug d, const TLContactBlocked &type)
 QDebug operator<<(QDebug d, const TLContactLink &type)
 {
     d.noquote().nospace();
-    d << "TLContactLink(" << type.tlType.toString() << ") {";
+    d << "TLContactLink(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactLinkUnknown:
@@ -535,7 +535,7 @@ QDebug operator<<(QDebug d, const TLContactLink &type)
 QDebug operator<<(QDebug d, const TLContactSuggested &type)
 {
     d.noquote().nospace();
-    d << "TLContactSuggested(" << type.tlType.toString() << ") {";
+    d << "TLContactSuggested(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactSuggested:
@@ -553,7 +553,7 @@ QDebug operator<<(QDebug d, const TLContactSuggested &type)
 QDebug operator<<(QDebug d, const TLDisabledFeature &type)
 {
     d.noquote().nospace();
-    d << "TLDisabledFeature(" << type.tlType.toString() << ") {";
+    d << "TLDisabledFeature(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DisabledFeature:
@@ -571,7 +571,7 @@ QDebug operator<<(QDebug d, const TLDisabledFeature &type)
 QDebug operator<<(QDebug d, const TLEncryptedChat &type)
 {
     d.noquote().nospace();
-    d << "TLEncryptedChat(" << type.tlType.toString() << ") {";
+    d << "TLEncryptedChat(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::EncryptedChatEmpty:
@@ -590,7 +590,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "adminId: " << type.adminId <<"\n";
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
-        d << spacer.innerSpaces() << "gA: " << type.gA <<"\n";
+        d << spacer.innerSpaces() << "gA: " << type.gA.toHex() <<"\n";
         break;
     case TLValue::EncryptedChat:
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
@@ -598,7 +598,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "adminId: " << type.adminId <<"\n";
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
-        d << spacer.innerSpaces() << "gAOrB: " << type.gAOrB <<"\n";
+        d << spacer.innerSpaces() << "gAOrB: " << type.gAOrB.toHex() <<"\n";
         d << spacer.innerSpaces() << "keyFingerprint: " << type.keyFingerprint <<"\n";
         break;
     case TLValue::EncryptedChatDiscarded:
@@ -615,7 +615,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
 QDebug operator<<(QDebug d, const TLEncryptedFile &type)
 {
     d.noquote().nospace();
-    d << "TLEncryptedFile(" << type.tlType.toString() << ") {";
+    d << "TLEncryptedFile(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::EncryptedFileEmpty:
@@ -638,21 +638,21 @@ QDebug operator<<(QDebug d, const TLEncryptedFile &type)
 QDebug operator<<(QDebug d, const TLEncryptedMessage &type)
 {
     d.noquote().nospace();
-    d << "TLEncryptedMessage(" << type.tlType.toString() << ") {";
+    d << "TLEncryptedMessage(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::EncryptedMessage:
         d << spacer.innerSpaces() << "randomId: " << type.randomId <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
         d << spacer.innerSpaces() << "file: " << type.file <<"\n";
         break;
     case TLValue::EncryptedMessageService:
         d << spacer.innerSpaces() << "randomId: " << type.randomId <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
         break;
     default:
         break;
@@ -665,7 +665,7 @@ QDebug operator<<(QDebug d, const TLEncryptedMessage &type)
 QDebug operator<<(QDebug d, const TLError &type)
 {
     d.noquote().nospace();
-    d << "TLError(" << type.tlType.toString() << ") {";
+    d << "TLError(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Error:
@@ -683,7 +683,7 @@ QDebug operator<<(QDebug d, const TLError &type)
 QDebug operator<<(QDebug d, const TLExportedChatInvite &type)
 {
     d.noquote().nospace();
-    d << "TLExportedChatInvite(" << type.tlType.toString() << ") {";
+    d << "TLExportedChatInvite(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatInviteEmpty:
@@ -702,7 +702,7 @@ QDebug operator<<(QDebug d, const TLExportedChatInvite &type)
 QDebug operator<<(QDebug d, const TLFileLocation &type)
 {
     d.noquote().nospace();
-    d << "TLFileLocation(" << type.tlType.toString() << ") {";
+    d << "TLFileLocation(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::FileLocationUnavailable:
@@ -727,7 +727,7 @@ QDebug operator<<(QDebug d, const TLFileLocation &type)
 QDebug operator<<(QDebug d, const TLGeoPoint &type)
 {
     d.noquote().nospace();
-    d << "TLGeoPoint(" << type.tlType.toString() << ") {";
+    d << "TLGeoPoint(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::GeoPointEmpty:
@@ -747,7 +747,7 @@ QDebug operator<<(QDebug d, const TLGeoPoint &type)
 QDebug operator<<(QDebug d, const TLHelpAppChangelog &type)
 {
     d.noquote().nospace();
-    d << "TLHelpAppChangelog(" << type.tlType.toString() << ") {";
+    d << "TLHelpAppChangelog(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpAppChangelogEmpty:
@@ -766,7 +766,7 @@ QDebug operator<<(QDebug d, const TLHelpAppChangelog &type)
 QDebug operator<<(QDebug d, const TLHelpAppUpdate &type)
 {
     d.noquote().nospace();
-    d << "TLHelpAppUpdate(" << type.tlType.toString() << ") {";
+    d << "TLHelpAppUpdate(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpAppUpdate:
@@ -788,7 +788,7 @@ QDebug operator<<(QDebug d, const TLHelpAppUpdate &type)
 QDebug operator<<(QDebug d, const TLHelpInviteText &type)
 {
     d.noquote().nospace();
-    d << "TLHelpInviteText(" << type.tlType.toString() << ") {";
+    d << "TLHelpInviteText(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpInviteText:
@@ -805,7 +805,7 @@ QDebug operator<<(QDebug d, const TLHelpInviteText &type)
 QDebug operator<<(QDebug d, const TLHelpTermsOfService &type)
 {
     d.noquote().nospace();
-    d << "TLHelpTermsOfService(" << type.tlType.toString() << ") {";
+    d << "TLHelpTermsOfService(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpTermsOfService:
@@ -822,7 +822,7 @@ QDebug operator<<(QDebug d, const TLHelpTermsOfService &type)
 QDebug operator<<(QDebug d, const TLImportedContact &type)
 {
     d.noquote().nospace();
-    d << "TLImportedContact(" << type.tlType.toString() << ") {";
+    d << "TLImportedContact(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ImportedContact:
@@ -840,7 +840,7 @@ QDebug operator<<(QDebug d, const TLImportedContact &type)
 QDebug operator<<(QDebug d, const TLInputAppEvent &type)
 {
     d.noquote().nospace();
-    d << "TLInputAppEvent(" << type.tlType.toString() << ") {";
+    d << "TLInputAppEvent(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputAppEvent:
@@ -860,7 +860,7 @@ QDebug operator<<(QDebug d, const TLInputAppEvent &type)
 QDebug operator<<(QDebug d, const TLInputAudio &type)
 {
     d.noquote().nospace();
-    d << "TLInputAudio(" << type.tlType.toString() << ") {";
+    d << "TLInputAudio(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputAudioEmpty:
@@ -880,7 +880,7 @@ QDebug operator<<(QDebug d, const TLInputAudio &type)
 QDebug operator<<(QDebug d, const TLInputChannel &type)
 {
     d.noquote().nospace();
-    d << "TLInputChannel(" << type.tlType.toString() << ") {";
+    d << "TLInputChannel(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputChannelEmpty:
@@ -900,7 +900,7 @@ QDebug operator<<(QDebug d, const TLInputChannel &type)
 QDebug operator<<(QDebug d, const TLInputContact &type)
 {
     d.noquote().nospace();
-    d << "TLInputContact(" << type.tlType.toString() << ") {";
+    d << "TLInputContact(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPhoneContact:
@@ -920,7 +920,7 @@ QDebug operator<<(QDebug d, const TLInputContact &type)
 QDebug operator<<(QDebug d, const TLInputDocument &type)
 {
     d.noquote().nospace();
-    d << "TLInputDocument(" << type.tlType.toString() << ") {";
+    d << "TLInputDocument(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputDocumentEmpty:
@@ -940,7 +940,7 @@ QDebug operator<<(QDebug d, const TLInputDocument &type)
 QDebug operator<<(QDebug d, const TLInputEncryptedChat &type)
 {
     d.noquote().nospace();
-    d << "TLInputEncryptedChat(" << type.tlType.toString() << ") {";
+    d << "TLInputEncryptedChat(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputEncryptedChat:
@@ -958,7 +958,7 @@ QDebug operator<<(QDebug d, const TLInputEncryptedChat &type)
 QDebug operator<<(QDebug d, const TLInputEncryptedFile &type)
 {
     d.noquote().nospace();
-    d << "TLInputEncryptedFile(" << type.tlType.toString() << ") {";
+    d << "TLInputEncryptedFile(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputEncryptedFileEmpty:
@@ -989,7 +989,7 @@ QDebug operator<<(QDebug d, const TLInputEncryptedFile &type)
 QDebug operator<<(QDebug d, const TLInputFile &type)
 {
     d.noquote().nospace();
-    d << "TLInputFile(" << type.tlType.toString() << ") {";
+    d << "TLInputFile(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputFile:
@@ -1014,7 +1014,7 @@ QDebug operator<<(QDebug d, const TLInputFile &type)
 QDebug operator<<(QDebug d, const TLInputFileLocation &type)
 {
     d.noquote().nospace();
-    d << "TLInputFileLocation(" << type.tlType.toString() << ") {";
+    d << "TLInputFileLocation(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputFileLocation:
@@ -1049,7 +1049,7 @@ QDebug operator<<(QDebug d, const TLInputFileLocation &type)
 QDebug operator<<(QDebug d, const TLInputGeoPoint &type)
 {
     d.noquote().nospace();
-    d << "TLInputGeoPoint(" << type.tlType.toString() << ") {";
+    d << "TLInputGeoPoint(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputGeoPointEmpty:
@@ -1069,7 +1069,7 @@ QDebug operator<<(QDebug d, const TLInputGeoPoint &type)
 QDebug operator<<(QDebug d, const TLInputPeer &type)
 {
     d.noquote().nospace();
-    d << "TLInputPeer(" << type.tlType.toString() << ") {";
+    d << "TLInputPeer(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPeerEmpty:
@@ -1098,7 +1098,7 @@ QDebug operator<<(QDebug d, const TLInputPeer &type)
 QDebug operator<<(QDebug d, const TLInputPeerNotifyEvents &type)
 {
     d.noquote().nospace();
-    d << "TLInputPeerNotifyEvents(" << type.tlType.toString() << ") {";
+    d << "TLInputPeerNotifyEvents(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPeerNotifyEventsEmpty:
@@ -1116,7 +1116,7 @@ QDebug operator<<(QDebug d, const TLInputPeerNotifyEvents &type)
 QDebug operator<<(QDebug d, const TLInputPeerNotifySettings &type)
 {
     d.noquote().nospace();
-    d << "TLInputPeerNotifySettings(" << type.tlType.toString() << ") {";
+    d << "TLInputPeerNotifySettings(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPeerNotifySettings:
@@ -1136,7 +1136,7 @@ QDebug operator<<(QDebug d, const TLInputPeerNotifySettings &type)
 QDebug operator<<(QDebug d, const TLInputPhoto &type)
 {
     d.noquote().nospace();
-    d << "TLInputPhoto(" << type.tlType.toString() << ") {";
+    d << "TLInputPhoto(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPhotoEmpty:
@@ -1156,7 +1156,7 @@ QDebug operator<<(QDebug d, const TLInputPhoto &type)
 QDebug operator<<(QDebug d, const TLInputPhotoCrop &type)
 {
     d.noquote().nospace();
-    d << "TLInputPhotoCrop(" << type.tlType.toString() << ") {";
+    d << "TLInputPhotoCrop(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPhotoCropAuto:
@@ -1177,7 +1177,7 @@ QDebug operator<<(QDebug d, const TLInputPhotoCrop &type)
 QDebug operator<<(QDebug d, const TLInputPrivacyKey &type)
 {
     d.noquote().nospace();
-    d << "TLInputPrivacyKey(" << type.tlType.toString() << ") {";
+    d << "TLInputPrivacyKey(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPrivacyKeyStatusTimestamp:
@@ -1193,7 +1193,7 @@ QDebug operator<<(QDebug d, const TLInputPrivacyKey &type)
 QDebug operator<<(QDebug d, const TLInputStickerSet &type)
 {
     d.noquote().nospace();
-    d << "TLInputStickerSet(" << type.tlType.toString() << ") {";
+    d << "TLInputStickerSet(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputStickerSetEmpty:
@@ -1216,7 +1216,7 @@ QDebug operator<<(QDebug d, const TLInputStickerSet &type)
 QDebug operator<<(QDebug d, const TLInputUser &type)
 {
     d.noquote().nospace();
-    d << "TLInputUser(" << type.tlType.toString() << ") {";
+    d << "TLInputUser(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputUserEmpty:
@@ -1238,7 +1238,7 @@ QDebug operator<<(QDebug d, const TLInputUser &type)
 QDebug operator<<(QDebug d, const TLInputVideo &type)
 {
     d.noquote().nospace();
-    d << "TLInputVideo(" << type.tlType.toString() << ") {";
+    d << "TLInputVideo(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputVideoEmpty:
@@ -1258,7 +1258,7 @@ QDebug operator<<(QDebug d, const TLInputVideo &type)
 QDebug operator<<(QDebug d, const TLKeyboardButton &type)
 {
     d.noquote().nospace();
-    d << "TLKeyboardButton(" << type.tlType.toString() << ") {";
+    d << "TLKeyboardButton(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::KeyboardButton:
@@ -1275,7 +1275,7 @@ QDebug operator<<(QDebug d, const TLKeyboardButton &type)
 QDebug operator<<(QDebug d, const TLKeyboardButtonRow &type)
 {
     d.noquote().nospace();
-    d << "TLKeyboardButtonRow(" << type.tlType.toString() << ") {";
+    d << "TLKeyboardButtonRow(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::KeyboardButtonRow:
@@ -1292,7 +1292,7 @@ QDebug operator<<(QDebug d, const TLKeyboardButtonRow &type)
 QDebug operator<<(QDebug d, const TLMessageEntity &type)
 {
     d.noquote().nospace();
-    d << "TLMessageEntity(" << type.tlType.toString() << ") {";
+    d << "TLMessageEntity(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageEntityUnknown:
@@ -1352,7 +1352,7 @@ QDebug operator<<(QDebug d, const TLMessageEntity &type)
 QDebug operator<<(QDebug d, const TLMessageGroup &type)
 {
     d.noquote().nospace();
-    d << "TLMessageGroup(" << type.tlType.toString() << ") {";
+    d << "TLMessageGroup(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageGroup:
@@ -1372,7 +1372,7 @@ QDebug operator<<(QDebug d, const TLMessageGroup &type)
 QDebug operator<<(QDebug d, const TLMessageRange &type)
 {
     d.noquote().nospace();
-    d << "TLMessageRange(" << type.tlType.toString() << ") {";
+    d << "TLMessageRange(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageRange:
@@ -1390,7 +1390,7 @@ QDebug operator<<(QDebug d, const TLMessageRange &type)
 QDebug operator<<(QDebug d, const TLMessagesAffectedHistory &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesAffectedHistory(" << type.tlType.toString() << ") {";
+    d << "TLMessagesAffectedHistory(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesAffectedHistory:
@@ -1409,7 +1409,7 @@ QDebug operator<<(QDebug d, const TLMessagesAffectedHistory &type)
 QDebug operator<<(QDebug d, const TLMessagesAffectedMessages &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesAffectedMessages(" << type.tlType.toString() << ") {";
+    d << "TLMessagesAffectedMessages(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesAffectedMessages:
@@ -1427,17 +1427,17 @@ QDebug operator<<(QDebug d, const TLMessagesAffectedMessages &type)
 QDebug operator<<(QDebug d, const TLMessagesDhConfig &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesDhConfig(" << type.tlType.toString() << ") {";
+    d << "TLMessagesDhConfig(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesDhConfigNotModified:
-        d << spacer.innerSpaces() << "random: " << type.random <<"\n";
+        d << spacer.innerSpaces() << "random: " << type.random.toHex() <<"\n";
         break;
     case TLValue::MessagesDhConfig:
         d << spacer.innerSpaces() << "g: " << type.g <<"\n";
-        d << spacer.innerSpaces() << "p: " << type.p <<"\n";
+        d << spacer.innerSpaces() << "p: " << type.p.toHex() <<"\n";
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
-        d << spacer.innerSpaces() << "random: " << type.random <<"\n";
+        d << spacer.innerSpaces() << "random: " << type.random.toHex() <<"\n";
         break;
     default:
         break;
@@ -1450,7 +1450,7 @@ QDebug operator<<(QDebug d, const TLMessagesDhConfig &type)
 QDebug operator<<(QDebug d, const TLMessagesFilter &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesFilter(" << type.tlType.toString() << ") {";
+    d << "TLMessagesFilter(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputMessagesFilterEmpty:
@@ -1484,7 +1484,7 @@ QDebug operator<<(QDebug d, const TLMessagesFilter &type)
 QDebug operator<<(QDebug d, const TLMessagesSentEncryptedMessage &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesSentEncryptedMessage(" << type.tlType.toString() << ") {";
+    d << "TLMessagesSentEncryptedMessage(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesSentEncryptedMessage:
@@ -1505,7 +1505,7 @@ QDebug operator<<(QDebug d, const TLMessagesSentEncryptedMessage &type)
 QDebug operator<<(QDebug d, const TLNearestDc &type)
 {
     d.noquote().nospace();
-    d << "TLNearestDc(" << type.tlType.toString() << ") {";
+    d << "TLNearestDc(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::NearestDc:
@@ -1524,7 +1524,7 @@ QDebug operator<<(QDebug d, const TLNearestDc &type)
 QDebug operator<<(QDebug d, const TLPeer &type)
 {
     d.noquote().nospace();
-    d << "TLPeer(" << type.tlType.toString() << ") {";
+    d << "TLPeer(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PeerUser:
@@ -1547,7 +1547,7 @@ QDebug operator<<(QDebug d, const TLPeer &type)
 QDebug operator<<(QDebug d, const TLPeerNotifyEvents &type)
 {
     d.noquote().nospace();
-    d << "TLPeerNotifyEvents(" << type.tlType.toString() << ") {";
+    d << "TLPeerNotifyEvents(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PeerNotifyEventsEmpty:
@@ -1565,7 +1565,7 @@ QDebug operator<<(QDebug d, const TLPeerNotifyEvents &type)
 QDebug operator<<(QDebug d, const TLPeerNotifySettings &type)
 {
     d.noquote().nospace();
-    d << "TLPeerNotifySettings(" << type.tlType.toString() << ") {";
+    d << "TLPeerNotifySettings(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PeerNotifySettingsEmpty:
@@ -1587,7 +1587,7 @@ QDebug operator<<(QDebug d, const TLPeerNotifySettings &type)
 QDebug operator<<(QDebug d, const TLPhotoSize &type)
 {
     d.noquote().nospace();
-    d << "TLPhotoSize(" << type.tlType.toString() << ") {";
+    d << "TLPhotoSize(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhotoSizeEmpty:
@@ -1605,7 +1605,7 @@ QDebug operator<<(QDebug d, const TLPhotoSize &type)
         d << spacer.innerSpaces() << "location: " << type.location <<"\n";
         d << spacer.innerSpaces() << "w: " << type.w <<"\n";
         d << spacer.innerSpaces() << "h: " << type.h <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
         break;
     default:
         break;
@@ -1618,7 +1618,7 @@ QDebug operator<<(QDebug d, const TLPhotoSize &type)
 QDebug operator<<(QDebug d, const TLPrivacyKey &type)
 {
     d.noquote().nospace();
-    d << "TLPrivacyKey(" << type.tlType.toString() << ") {";
+    d << "TLPrivacyKey(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PrivacyKeyStatusTimestamp:
@@ -1634,7 +1634,7 @@ QDebug operator<<(QDebug d, const TLPrivacyKey &type)
 QDebug operator<<(QDebug d, const TLPrivacyRule &type)
 {
     d.noquote().nospace();
-    d << "TLPrivacyRule(" << type.tlType.toString() << ") {";
+    d << "TLPrivacyRule(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PrivacyValueAllowContacts:
@@ -1662,7 +1662,7 @@ QDebug operator<<(QDebug d, const TLPrivacyRule &type)
 QDebug operator<<(QDebug d, const TLReceivedNotifyMessage &type)
 {
     d.noquote().nospace();
-    d << "TLReceivedNotifyMessage(" << type.tlType.toString() << ") {";
+    d << "TLReceivedNotifyMessage(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ReceivedNotifyMessage:
@@ -1680,7 +1680,7 @@ QDebug operator<<(QDebug d, const TLReceivedNotifyMessage &type)
 QDebug operator<<(QDebug d, const TLReportReason &type)
 {
     d.noquote().nospace();
-    d << "TLReportReason(" << type.tlType.toString() << ") {";
+    d << "TLReportReason(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputReportReasonSpam:
@@ -1703,7 +1703,7 @@ QDebug operator<<(QDebug d, const TLReportReason &type)
 QDebug operator<<(QDebug d, const TLSendMessageAction &type)
 {
     d.noquote().nospace();
-    d << "TLSendMessageAction(" << type.tlType.toString() << ") {";
+    d << "TLSendMessageAction(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::SendMessageTypingAction:
@@ -1741,7 +1741,7 @@ QDebug operator<<(QDebug d, const TLSendMessageAction &type)
 QDebug operator<<(QDebug d, const TLStickerPack &type)
 {
     d.noquote().nospace();
-    d << "TLStickerPack(" << type.tlType.toString() << ") {";
+    d << "TLStickerPack(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::StickerPack:
@@ -1759,7 +1759,7 @@ QDebug operator<<(QDebug d, const TLStickerPack &type)
 QDebug operator<<(QDebug d, const TLStorageFileType &type)
 {
     d.noquote().nospace();
-    d << "TLStorageFileType(" << type.tlType.toString() << ") {";
+    d << "TLStorageFileType(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::StorageFileUnknown:
@@ -1793,7 +1793,7 @@ QDebug operator<<(QDebug d, const TLStorageFileType &type)
 QDebug operator<<(QDebug d, const TLTrue &type)
 {
     d.noquote().nospace();
-    d << "TLTrue(" << type.tlType.toString() << ") {";
+    d << "TLTrue(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::True:
@@ -1809,7 +1809,7 @@ QDebug operator<<(QDebug d, const TLTrue &type)
 QDebug operator<<(QDebug d, const TLUpdatesState &type)
 {
     d.noquote().nospace();
-    d << "TLUpdatesState(" << type.tlType.toString() << ") {";
+    d << "TLUpdatesState(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdatesState:
@@ -1830,13 +1830,13 @@ QDebug operator<<(QDebug d, const TLUpdatesState &type)
 QDebug operator<<(QDebug d, const TLUploadFile &type)
 {
     d.noquote().nospace();
-    d << "TLUploadFile(" << type.tlType.toString() << ") {";
+    d << "TLUploadFile(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UploadFile:
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
         d << spacer.innerSpaces() << "mtime: " << type.mtime <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
         break;
     default:
         break;
@@ -1849,7 +1849,7 @@ QDebug operator<<(QDebug d, const TLUploadFile &type)
 QDebug operator<<(QDebug d, const TLUserProfilePhoto &type)
 {
     d.noquote().nospace();
-    d << "TLUserProfilePhoto(" << type.tlType.toString() << ") {";
+    d << "TLUserProfilePhoto(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UserProfilePhotoEmpty:
@@ -1870,7 +1870,7 @@ QDebug operator<<(QDebug d, const TLUserProfilePhoto &type)
 QDebug operator<<(QDebug d, const TLUserStatus &type)
 {
     d.noquote().nospace();
-    d << "TLUserStatus(" << type.tlType.toString() << ") {";
+    d << "TLUserStatus(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UserStatusEmpty:
@@ -1898,7 +1898,7 @@ QDebug operator<<(QDebug d, const TLUserStatus &type)
 QDebug operator<<(QDebug d, const TLVideo &type)
 {
     d.noquote().nospace();
-    d << "TLVideo(" << type.tlType.toString() << ") {";
+    d << "TLVideo(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::VideoEmpty:
@@ -1927,7 +1927,7 @@ QDebug operator<<(QDebug d, const TLVideo &type)
 QDebug operator<<(QDebug d, const TLWallPaper &type)
 {
     d.noquote().nospace();
-    d << "TLWallPaper(" << type.tlType.toString() << ") {";
+    d << "TLWallPaper(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::WallPaper:
@@ -1953,7 +1953,7 @@ QDebug operator<<(QDebug d, const TLWallPaper &type)
 QDebug operator<<(QDebug d, const TLAccountAuthorizations &type)
 {
     d.noquote().nospace();
-    d << "TLAccountAuthorizations(" << type.tlType.toString() << ") {";
+    d << "TLAccountAuthorizations(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountAuthorizations:
@@ -1970,7 +1970,7 @@ QDebug operator<<(QDebug d, const TLAccountAuthorizations &type)
 QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
 {
     d.noquote().nospace();
-    d << "TLBotInlineMessage(" << type.tlType.toString() << ") {";
+    d << "TLBotInlineMessage(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::BotInlineMessageMediaAuto:
@@ -1994,7 +1994,7 @@ QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
 QDebug operator<<(QDebug d, const TLChannelMessagesFilter &type)
 {
     d.noquote().nospace();
-    d << "TLChannelMessagesFilter(" << type.tlType.toString() << ") {";
+    d << "TLChannelMessagesFilter(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelMessagesFilterEmpty:
@@ -2016,7 +2016,7 @@ QDebug operator<<(QDebug d, const TLChannelMessagesFilter &type)
 QDebug operator<<(QDebug d, const TLChatPhoto &type)
 {
     d.noquote().nospace();
-    d << "TLChatPhoto(" << type.tlType.toString() << ") {";
+    d << "TLChatPhoto(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatPhotoEmpty:
@@ -2036,7 +2036,7 @@ QDebug operator<<(QDebug d, const TLChatPhoto &type)
 QDebug operator<<(QDebug d, const TLContactStatus &type)
 {
     d.noquote().nospace();
-    d << "TLContactStatus(" << type.tlType.toString() << ") {";
+    d << "TLContactStatus(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactStatus:
@@ -2054,7 +2054,7 @@ QDebug operator<<(QDebug d, const TLContactStatus &type)
 QDebug operator<<(QDebug d, const TLDcOption &type)
 {
     d.noquote().nospace();
-    d << "TLDcOption(" << type.tlType.toString() << ") {";
+    d << "TLDcOption(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DcOption:
@@ -2074,7 +2074,7 @@ QDebug operator<<(QDebug d, const TLDcOption &type)
 QDebug operator<<(QDebug d, const TLDialog &type)
 {
     d.noquote().nospace();
-    d << "TLDialog(" << type.tlType.toString() << ") {";
+    d << "TLDialog(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Dialog:
@@ -2105,7 +2105,7 @@ QDebug operator<<(QDebug d, const TLDialog &type)
 QDebug operator<<(QDebug d, const TLDocumentAttribute &type)
 {
     d.noquote().nospace();
-    d << "TLDocumentAttribute(" << type.tlType.toString() << ") {";
+    d << "TLDocumentAttribute(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DocumentAttributeImageSize:
@@ -2142,7 +2142,7 @@ QDebug operator<<(QDebug d, const TLDocumentAttribute &type)
 QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
 {
     d.noquote().nospace();
-    d << "TLInputBotInlineMessage(" << type.tlType.toString() << ") {";
+    d << "TLInputBotInlineMessage(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputBotInlineMessageMediaAuto:
@@ -2166,7 +2166,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
 QDebug operator<<(QDebug d, const TLInputBotInlineResult &type)
 {
     d.noquote().nospace();
-    d << "TLInputBotInlineResult(" << type.tlType.toString() << ") {";
+    d << "TLInputBotInlineResult(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputBotInlineResult:
@@ -2213,7 +2213,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineResult &type)
 QDebug operator<<(QDebug d, const TLInputChatPhoto &type)
 {
     d.noquote().nospace();
-    d << "TLInputChatPhoto(" << type.tlType.toString() << ") {";
+    d << "TLInputChatPhoto(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputChatPhotoEmpty:
@@ -2237,7 +2237,7 @@ QDebug operator<<(QDebug d, const TLInputChatPhoto &type)
 QDebug operator<<(QDebug d, const TLInputMedia &type)
 {
     d.noquote().nospace();
-    d << "TLInputMedia(" << type.tlType.toString() << ") {";
+    d << "TLInputMedia(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputMediaEmpty:
@@ -2326,7 +2326,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
 QDebug operator<<(QDebug d, const TLInputNotifyPeer &type)
 {
     d.noquote().nospace();
-    d << "TLInputNotifyPeer(" << type.tlType.toString() << ") {";
+    d << "TLInputNotifyPeer(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputNotifyPeer:
@@ -2349,7 +2349,7 @@ QDebug operator<<(QDebug d, const TLInputNotifyPeer &type)
 QDebug operator<<(QDebug d, const TLInputPrivacyRule &type)
 {
     d.noquote().nospace();
-    d << "TLInputPrivacyRule(" << type.tlType.toString() << ") {";
+    d << "TLInputPrivacyRule(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPrivacyValueAllowContacts:
@@ -2377,7 +2377,7 @@ QDebug operator<<(QDebug d, const TLInputPrivacyRule &type)
 QDebug operator<<(QDebug d, const TLNotifyPeer &type)
 {
     d.noquote().nospace();
-    d << "TLNotifyPeer(" << type.tlType.toString() << ") {";
+    d << "TLNotifyPeer(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::NotifyPeer:
@@ -2400,7 +2400,7 @@ QDebug operator<<(QDebug d, const TLNotifyPeer &type)
 QDebug operator<<(QDebug d, const TLPhoto &type)
 {
     d.noquote().nospace();
-    d << "TLPhoto(" << type.tlType.toString() << ") {";
+    d << "TLPhoto(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhotoEmpty:
@@ -2423,7 +2423,7 @@ QDebug operator<<(QDebug d, const TLPhoto &type)
 QDebug operator<<(QDebug d, const TLReplyMarkup &type)
 {
     d.noquote().nospace();
-    d << "TLReplyMarkup(" << type.tlType.toString() << ") {";
+    d << "TLReplyMarkup(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ReplyKeyboardHide:
@@ -2447,7 +2447,7 @@ QDebug operator<<(QDebug d, const TLReplyMarkup &type)
 QDebug operator<<(QDebug d, const TLStickerSet &type)
 {
     d.noquote().nospace();
-    d << "TLStickerSet(" << type.tlType.toString() << ") {";
+    d << "TLStickerSet(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::StickerSet:
@@ -2470,7 +2470,7 @@ QDebug operator<<(QDebug d, const TLStickerSet &type)
 QDebug operator<<(QDebug d, const TLUser &type)
 {
     d.noquote().nospace();
-    d << "TLUser(" << type.tlType.toString() << ") {";
+    d << "TLUser(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UserEmpty:
@@ -2521,7 +2521,7 @@ QDebug operator<<(QDebug d, const TLUser &type)
 QDebug operator<<(QDebug d, const TLAccountPrivacyRules &type)
 {
     d.noquote().nospace();
-    d << "TLAccountPrivacyRules(" << type.tlType.toString() << ") {";
+    d << "TLAccountPrivacyRules(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountPrivacyRules:
@@ -2539,7 +2539,7 @@ QDebug operator<<(QDebug d, const TLAccountPrivacyRules &type)
 QDebug operator<<(QDebug d, const TLAuthAuthorization &type)
 {
     d.noquote().nospace();
-    d << "TLAuthAuthorization(" << type.tlType.toString() << ") {";
+    d << "TLAuthAuthorization(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthAuthorization:
@@ -2556,7 +2556,7 @@ QDebug operator<<(QDebug d, const TLAuthAuthorization &type)
 QDebug operator<<(QDebug d, const TLChannelsChannelParticipant &type)
 {
     d.noquote().nospace();
-    d << "TLChannelsChannelParticipant(" << type.tlType.toString() << ") {";
+    d << "TLChannelsChannelParticipant(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelsChannelParticipant:
@@ -2574,7 +2574,7 @@ QDebug operator<<(QDebug d, const TLChannelsChannelParticipant &type)
 QDebug operator<<(QDebug d, const TLChannelsChannelParticipants &type)
 {
     d.noquote().nospace();
-    d << "TLChannelsChannelParticipants(" << type.tlType.toString() << ") {";
+    d << "TLChannelsChannelParticipants(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelsChannelParticipants:
@@ -2593,7 +2593,7 @@ QDebug operator<<(QDebug d, const TLChannelsChannelParticipants &type)
 QDebug operator<<(QDebug d, const TLChat &type)
 {
     d.noquote().nospace();
-    d << "TLChat(" << type.tlType.toString() << ") {";
+    d << "TLChat(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatEmpty:
@@ -2646,7 +2646,7 @@ QDebug operator<<(QDebug d, const TLChat &type)
 QDebug operator<<(QDebug d, const TLChatFull &type)
 {
     d.noquote().nospace();
-    d << "TLChatFull(" << type.tlType.toString() << ") {";
+    d << "TLChatFull(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatFull:
@@ -2695,7 +2695,7 @@ QDebug operator<<(QDebug d, const TLChatFull &type)
 QDebug operator<<(QDebug d, const TLChatInvite &type)
 {
     d.noquote().nospace();
-    d << "TLChatInvite(" << type.tlType.toString() << ") {";
+    d << "TLChatInvite(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatInviteAlready:
@@ -2716,7 +2716,7 @@ QDebug operator<<(QDebug d, const TLChatInvite &type)
 QDebug operator<<(QDebug d, const TLConfig &type)
 {
     d.noquote().nospace();
-    d << "TLConfig(" << type.tlType.toString() << ") {";
+    d << "TLConfig(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Config:
@@ -2751,7 +2751,7 @@ QDebug operator<<(QDebug d, const TLConfig &type)
 QDebug operator<<(QDebug d, const TLContactsBlocked &type)
 {
     d.noquote().nospace();
-    d << "TLContactsBlocked(" << type.tlType.toString() << ") {";
+    d << "TLContactsBlocked(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsBlocked:
@@ -2774,7 +2774,7 @@ QDebug operator<<(QDebug d, const TLContactsBlocked &type)
 QDebug operator<<(QDebug d, const TLContactsContacts &type)
 {
     d.noquote().nospace();
-    d << "TLContactsContacts(" << type.tlType.toString() << ") {";
+    d << "TLContactsContacts(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsContactsNotModified:
@@ -2794,7 +2794,7 @@ QDebug operator<<(QDebug d, const TLContactsContacts &type)
 QDebug operator<<(QDebug d, const TLContactsFound &type)
 {
     d.noquote().nospace();
-    d << "TLContactsFound(" << type.tlType.toString() << ") {";
+    d << "TLContactsFound(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsFound:
@@ -2813,7 +2813,7 @@ QDebug operator<<(QDebug d, const TLContactsFound &type)
 QDebug operator<<(QDebug d, const TLContactsImportedContacts &type)
 {
     d.noquote().nospace();
-    d << "TLContactsImportedContacts(" << type.tlType.toString() << ") {";
+    d << "TLContactsImportedContacts(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsImportedContacts:
@@ -2832,7 +2832,7 @@ QDebug operator<<(QDebug d, const TLContactsImportedContacts &type)
 QDebug operator<<(QDebug d, const TLContactsLink &type)
 {
     d.noquote().nospace();
-    d << "TLContactsLink(" << type.tlType.toString() << ") {";
+    d << "TLContactsLink(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsLink:
@@ -2851,7 +2851,7 @@ QDebug operator<<(QDebug d, const TLContactsLink &type)
 QDebug operator<<(QDebug d, const TLContactsResolvedPeer &type)
 {
     d.noquote().nospace();
-    d << "TLContactsResolvedPeer(" << type.tlType.toString() << ") {";
+    d << "TLContactsResolvedPeer(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsResolvedPeer:
@@ -2870,7 +2870,7 @@ QDebug operator<<(QDebug d, const TLContactsResolvedPeer &type)
 QDebug operator<<(QDebug d, const TLContactsSuggested &type)
 {
     d.noquote().nospace();
-    d << "TLContactsSuggested(" << type.tlType.toString() << ") {";
+    d << "TLContactsSuggested(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsSuggested:
@@ -2888,7 +2888,7 @@ QDebug operator<<(QDebug d, const TLContactsSuggested &type)
 QDebug operator<<(QDebug d, const TLDocument &type)
 {
     d.noquote().nospace();
-    d << "TLDocument(" << type.tlType.toString() << ") {";
+    d << "TLDocument(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DocumentEmpty:
@@ -2915,7 +2915,7 @@ QDebug operator<<(QDebug d, const TLDocument &type)
 QDebug operator<<(QDebug d, const TLFoundGif &type)
 {
     d.noquote().nospace();
-    d << "TLFoundGif(" << type.tlType.toString() << ") {";
+    d << "TLFoundGif(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::FoundGif:
@@ -2942,7 +2942,7 @@ QDebug operator<<(QDebug d, const TLFoundGif &type)
 QDebug operator<<(QDebug d, const TLHelpSupport &type)
 {
     d.noquote().nospace();
-    d << "TLHelpSupport(" << type.tlType.toString() << ") {";
+    d << "TLHelpSupport(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpSupport:
@@ -2960,7 +2960,7 @@ QDebug operator<<(QDebug d, const TLHelpSupport &type)
 QDebug operator<<(QDebug d, const TLMessageAction &type)
 {
     d.noquote().nospace();
-    d << "TLMessageAction(" << type.tlType.toString() << ") {";
+    d << "TLMessageAction(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageActionEmpty:
@@ -3007,7 +3007,7 @@ QDebug operator<<(QDebug d, const TLMessageAction &type)
 QDebug operator<<(QDebug d, const TLMessagesAllStickers &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesAllStickers(" << type.tlType.toString() << ") {";
+    d << "TLMessagesAllStickers(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesAllStickersNotModified:
@@ -3027,7 +3027,7 @@ QDebug operator<<(QDebug d, const TLMessagesAllStickers &type)
 QDebug operator<<(QDebug d, const TLMessagesChatFull &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesChatFull(" << type.tlType.toString() << ") {";
+    d << "TLMessagesChatFull(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesChatFull:
@@ -3046,7 +3046,7 @@ QDebug operator<<(QDebug d, const TLMessagesChatFull &type)
 QDebug operator<<(QDebug d, const TLMessagesChats &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesChats(" << type.tlType.toString() << ") {";
+    d << "TLMessagesChats(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesChats:
@@ -3063,7 +3063,7 @@ QDebug operator<<(QDebug d, const TLMessagesChats &type)
 QDebug operator<<(QDebug d, const TLMessagesFoundGifs &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesFoundGifs(" << type.tlType.toString() << ") {";
+    d << "TLMessagesFoundGifs(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesFoundGifs:
@@ -3081,7 +3081,7 @@ QDebug operator<<(QDebug d, const TLMessagesFoundGifs &type)
 QDebug operator<<(QDebug d, const TLMessagesSavedGifs &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesSavedGifs(" << type.tlType.toString() << ") {";
+    d << "TLMessagesSavedGifs(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesSavedGifsNotModified:
@@ -3101,7 +3101,7 @@ QDebug operator<<(QDebug d, const TLMessagesSavedGifs &type)
 QDebug operator<<(QDebug d, const TLMessagesStickerSet &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesStickerSet(" << type.tlType.toString() << ") {";
+    d << "TLMessagesStickerSet(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesStickerSet:
@@ -3120,7 +3120,7 @@ QDebug operator<<(QDebug d, const TLMessagesStickerSet &type)
 QDebug operator<<(QDebug d, const TLMessagesStickers &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesStickers(" << type.tlType.toString() << ") {";
+    d << "TLMessagesStickers(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesStickersNotModified:
@@ -3140,7 +3140,7 @@ QDebug operator<<(QDebug d, const TLMessagesStickers &type)
 QDebug operator<<(QDebug d, const TLPhotosPhoto &type)
 {
     d.noquote().nospace();
-    d << "TLPhotosPhoto(" << type.tlType.toString() << ") {";
+    d << "TLPhotosPhoto(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhotosPhoto:
@@ -3158,7 +3158,7 @@ QDebug operator<<(QDebug d, const TLPhotosPhoto &type)
 QDebug operator<<(QDebug d, const TLPhotosPhotos &type)
 {
     d.noquote().nospace();
-    d << "TLPhotosPhotos(" << type.tlType.toString() << ") {";
+    d << "TLPhotosPhotos(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhotosPhotos:
@@ -3181,7 +3181,7 @@ QDebug operator<<(QDebug d, const TLPhotosPhotos &type)
 QDebug operator<<(QDebug d, const TLUserFull &type)
 {
     d.noquote().nospace();
-    d << "TLUserFull(" << type.tlType.toString() << ") {";
+    d << "TLUserFull(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UserFull:
@@ -3203,7 +3203,7 @@ QDebug operator<<(QDebug d, const TLUserFull &type)
 QDebug operator<<(QDebug d, const TLWebPage &type)
 {
     d.noquote().nospace();
-    d << "TLWebPage(" << type.tlType.toString() << ") {";
+    d << "TLWebPage(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::WebPageEmpty:
@@ -3266,7 +3266,7 @@ QDebug operator<<(QDebug d, const TLWebPage &type)
 QDebug operator<<(QDebug d, const TLBotInlineResult &type)
 {
     d.noquote().nospace();
-    d << "TLBotInlineResult(" << type.tlType.toString() << ") {";
+    d << "TLBotInlineResult(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::BotInlineMediaResultDocument:
@@ -3325,7 +3325,7 @@ QDebug operator<<(QDebug d, const TLBotInlineResult &type)
 QDebug operator<<(QDebug d, const TLMessageMedia &type)
 {
     d.noquote().nospace();
-    d << "TLMessageMedia(" << type.tlType.toString() << ") {";
+    d << "TLMessageMedia(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageMediaEmpty:
@@ -3377,7 +3377,7 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
 QDebug operator<<(QDebug d, const TLMessagesBotResults &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesBotResults(" << type.tlType.toString() << ") {";
+    d << "TLMessagesBotResults(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesBotResults:
@@ -3399,7 +3399,7 @@ QDebug operator<<(QDebug d, const TLMessagesBotResults &type)
 QDebug operator<<(QDebug d, const TLMessage &type)
 {
     d.noquote().nospace();
-    d << "TLMessage(" << type.tlType.toString() << ") {";
+    d << "TLMessage(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageEmpty:
@@ -3460,7 +3460,7 @@ QDebug operator<<(QDebug d, const TLMessage &type)
 QDebug operator<<(QDebug d, const TLMessagesDialogs &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesDialogs(" << type.tlType.toString() << ") {";
+    d << "TLMessagesDialogs(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesDialogs:
@@ -3487,7 +3487,7 @@ QDebug operator<<(QDebug d, const TLMessagesDialogs &type)
 QDebug operator<<(QDebug d, const TLMessagesMessages &type)
 {
     d.noquote().nospace();
-    d << "TLMessagesMessages(" << type.tlType.toString() << ") {";
+    d << "TLMessagesMessages(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesMessages:
@@ -3523,7 +3523,7 @@ QDebug operator<<(QDebug d, const TLMessagesMessages &type)
 QDebug operator<<(QDebug d, const TLUpdate &type)
 {
     d.noquote().nospace();
-    d << "TLUpdate(" << type.tlType.toString() << ") {";
+    d << "TLUpdate(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdateNewMessage:
@@ -3726,7 +3726,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
 QDebug operator<<(QDebug d, const TLUpdates &type)
 {
     d.noquote().nospace();
-    d << "TLUpdates(" << type.tlType.toString() << ") {";
+    d << "TLUpdates(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdatesTooLong:
@@ -3823,7 +3823,7 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
 QDebug operator<<(QDebug d, const TLUpdatesChannelDifference &type)
 {
     d.noquote().nospace();
-    d << "TLUpdatesChannelDifference(" << type.tlType.toString() << ") {";
+    d << "TLUpdatesChannelDifference(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdatesChannelDifferenceEmpty:
@@ -3870,7 +3870,7 @@ QDebug operator<<(QDebug d, const TLUpdatesChannelDifference &type)
 QDebug operator<<(QDebug d, const TLUpdatesDifference &type)
 {
     d.noquote().nospace();
-    d << "TLUpdatesDifference(" << type.tlType.toString() << ") {";
+    d << "TLUpdatesDifference(" << type.tlType << ") {";
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdatesDifferenceEmpty:
