@@ -13,6 +13,7 @@ set(telegram_qt_SOURCES
     CTelegramStream.cpp
     CTcpTransport.cpp
     CRawStream.cpp
+    Debug.cpp
     Utils.cpp
     FileRequestDescriptor.cpp
     TelegramUtils.cpp
@@ -41,6 +42,8 @@ set(telegram_qt_HEADERS
     CTelegramStream.hpp
     RpcProcessingContext.hpp
     CRawStream.hpp
+    Debug.hpp
+    Debug_p.hpp
     Utils.hpp
     FileRequestDescriptor.hpp
     TelegramUtils.hpp
