@@ -614,15 +614,20 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
         code += spacing + QString("case %1::%2:\n").arg(tlValueName).arg(subType.name);
 
         foreach (const TLParam &member, subType.members) {
+            QString typeDebugStatement = QStringLiteral("type.%1");
+            if (member.type.contains(QLatin1String("QByteArray"))) {
+                typeDebugStatement = QStringLiteral("type.%1.toHex()");
+            }
+            typeDebugStatement = typeDebugStatement.arg(member.name);
             if (member.dependOnFlag()) {
                 if (member.type == QLatin1String("TLTrue")) {
                     continue;
                 }
                 code += doubleSpacing + QString("if (type.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit);
-                code += doubleSpacing + spacing + QString("d << spacer.innerSpaces() << \"%1: \" << type.%1 <<\"\\n\";\n").arg(member.name);
+                code += doubleSpacing + spacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.name, typeDebugStatement);
                 code += doubleSpacing + QLatin1Literal("}\n");
             } else {
-                code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << type.%1 <<\"\\n\";\n").arg(member.name);
+                code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.name, typeDebugStatement);
             }
         }
 
