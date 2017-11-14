@@ -17,6 +17,12 @@
 
 #include "Debug_p.hpp"
 
+QDebug operator<<(QDebug d, const TLValue &v)
+{
+    d << v.toString();
+    return d;
+}
+
 QDebug operator<<(QDebug d, const Telegram::Peer &peer)
 {
     switch (peer.type) {

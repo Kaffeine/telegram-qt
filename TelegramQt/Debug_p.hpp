@@ -20,6 +20,9 @@
 
 #include "Debug.hpp"
 #include "TLNumbers.hpp"
+#include "TLValues.hpp"
+
+QDebug operator<<(QDebug d, const TLValue &v);
 
 template <int Size>
 QDebug operator<<(QDebug d, const TLNumber<Size> &n);
