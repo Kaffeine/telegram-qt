@@ -3045,8 +3045,8 @@ void CTelegramConnection::processIgnoredMessageNotification(CTelegramStream &str
         qDebug() << "DeltaTime factor reduced to" << deltaTime();
     } else if (errorCode == 48) {
         m_serverSalt = m_receivedServerSalt;
-        sendEncryptedPackageAgain(id);
         qDebug() << "Local serverSalt fixed to" << m_serverSalt;
+        sendEncryptedPackageAgain(id);
     }
 }
 
