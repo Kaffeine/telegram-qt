@@ -4183,22 +4183,6 @@ void CTelegramConnection::processUsersGetUsers(RpcProcessingContext *context)
     if (!result.isValid()) {
         return;
     }
-    CTelegramStream stream(context->requestData());
-    TLValue value;
-    TLVector<TLInputUser> inputUsers;
-    stream >> value;
-    stream >> inputUsers;
-
-    if (result.count() != inputUsers.count()) {
-        qWarning() << Q_FUNC_INFO << "Input user count != received user count";
-    }
-
-    if ((inputUsers.count() == 1) && (result.count() == 1)) {
-        if (inputUsers.first().tlType == TLValue::InputUserSelf) {
-            emit selfUserReceived(result.first());
-        }
-    }
-
     emit usersReceived(result);
 }
 
@@ -4211,8 +4195,10 @@ void CTelegramConnection::processAuthSign(RpcProcessingContext *context)
 
     if (result.isValid()) {
         qDebug() << Q_FUNC_INFO << "AuthAuthorization" << Telegram::Utils::maskPhoneNumber(result.user.phone);
-        emit selfUserReceived(result.user);
-        emit usersReceived(QVector<TLUser>() << result.user);
+        if (!result.user.self()) {
+            qCritical() << Q_FUNC_INFO << "The received user is not a self user";
+        }
+        emit usersReceived({ result.user });
         setAuthState(AuthStateSignedIn);
     }
 }

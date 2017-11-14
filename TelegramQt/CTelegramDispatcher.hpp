@@ -57,7 +57,7 @@ public:
         StepFirst           = 0,
         StepDcConfiguration = 1 << 0,
         StepSignIn          = 1 << 1,
-        StepKnowSelf        = 1 << 2,
+        StepInitialUsers    = 1 << 2,
         StepContactList     = 1 << 3,
         StepDialogs         = 1 << 4,
         StepUpdates         = 1 << 5,
@@ -205,7 +205,6 @@ protected slots:
     void onUpdatesReceived(const TLUpdates &updates, quint64 id);
     void onAuthExportedAuthorizationReceived(quint32 dc, quint32 id, const QByteArray &data);
 
-    void onSelfUserReceived(const TLUser &selfUser);
     void onUsersReceived(const QVector<TLUser> &users);
     void onChannelsParticipantsReceived(quint32 channelId, TLVector<TLChannelParticipant> participants);
 
@@ -337,6 +336,7 @@ protected:
     QHash<quint32, QByteArray> m_delayedPackages; // dc, package data
     QHash<quint32, TLUser*> m_users;
     QVector<quint32> m_askedUserIds;
+    QVector<TLInputUser> m_askedInitialUsers;
 
     QHash<quint32, TLMessage*> m_knownMediaMessages; // message id, message
     QHash<quint32, QHash<quint32, TLMessage*> *> m_channelMediaMessages; // ChannelId to <message id, message>

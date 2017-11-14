@@ -1004,53 +1004,51 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
     return true;
 }
 
-void CTelegramDispatcher::onSelfUserReceived(const TLUser &selfUser)
-{
-    TLUser *existsUser = m_users.value(selfUser.id);
-
-    if (existsUser) {
-        *existsUser = selfUser;
-    } else {
-        m_users.insert(selfUser.id, new TLUser(selfUser));
-    }
-
-    if (m_selfUserId) {
-        if (m_selfUserId != selfUser.id) {
-            qDebug() << "Got self user with different id.";
-
-            m_selfUserId = selfUser.id;
-            emit selfUserAvailable(selfUser.id);
-        }
-    } else {
-        m_selfUserId = selfUser.id;
-        emit selfUserAvailable(selfUser.id);
-        continueInitialization(StepKnowSelf);
-    }
-    if (!existsUser) {
-        emit peerAdded(toPublicPeer(selfUser));
-    }
-}
-
 void CTelegramDispatcher::onUsersReceived(const QVector<TLUser> &users)
 {
     qDebug() << Q_FUNC_INFO << users.count();
     foreach (const TLUser &user, users) {
         TLUser *existsUser = m_users.value(user.id);
-
         if (existsUser) {
             *existsUser = user;
         } else {
             m_users.insert(user.id, new TLUser(user));
         }
-
+        if (user.self()) {
+            if (m_selfUserId && (m_selfUserId != user.id)) {
+                qWarning() << "Got self user with different id.";
+            }
+            m_selfUserId = user.id;
+            emit selfUserAvailable(user.id);
+        }
         int indexOfRequest = m_askedUserIds.indexOf(user.id);
         if (indexOfRequest >= 0) {
             m_askedUserIds.remove(indexOfRequest);
         }
-
         if (!existsUser) {
             emit peerAdded(toPublicPeer(user));
             emit userInfoReceived(user.id);
+        }
+    }
+    if (!m_askedInitialUsers.isEmpty()) {
+        for (int i = m_askedInitialUsers.count() - 1; i >= 0; --i) {
+            const TLInputUser &askedUser = m_askedInitialUsers.at(i);
+            if (askedUser.userId) {
+                if (m_users.contains(askedUser.userId)) {
+                    m_askedInitialUsers.remove(i);
+                }
+            } else if (askedUser.tlType == TLValue::InputUserSelf) {
+                if (m_selfUserId && m_users.contains(m_selfUserId)) {
+                    m_askedInitialUsers.remove(i);
+                }
+            } else {
+                qCritical() << "Ignore an invalid asked initial user.";
+                m_askedInitialUsers.remove(i);
+            }
+        }
+        if (m_askedInitialUsers.isEmpty()) {
+            qDebug() << "Initial users cleaned up";
+            continueInitialization(StepInitialUsers);
         }
     }
 }
@@ -1286,14 +1284,21 @@ void CTelegramDispatcher::getDcConfiguration()
 
 void CTelegramDispatcher::getInitialUsers()
 {
-    TLInputUser selfUser;
-    selfUser.tlType = TLValue::InputUserSelf;
-    activeConnection()->usersGetUsers(QVector<TLInputUser>() << selfUser);
-
-    TLInputUser telegramUser;
-    telegramUser.tlType = TLValue::InputUser;
-    telegramUser.userId = 777000;
-    activeConnection()->usersGetUsers(QVector<TLInputUser>() << telegramUser);
+    m_askedInitialUsers.clear();
+    if (!m_selfUserId || !m_users.contains(m_selfUserId)) {
+        TLInputUser selfUser;
+        selfUser.tlType = TLValue::InputUserSelf;
+        m_askedInitialUsers.append(selfUser);
+    }
+    if (!m_users.contains(777000)) {
+        TLInputUser telegramUser;
+        telegramUser.tlType = TLValue::InputUser;
+        telegramUser.userId = 777000;
+        m_askedInitialUsers.append(telegramUser);
+    }
+    if (!m_askedInitialUsers.isEmpty()) {
+        activeConnection()->usersGetUsers(m_askedInitialUsers);
+    }
 }
 
 void CTelegramDispatcher::getInitialDialogs()
@@ -2508,7 +2513,7 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
             setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
             m_deltaTime = activeConnection()->deltaTime();
 
-            if (!((m_requestedSteps & StepKnowSelf) || (m_initializationState & StepKnowSelf))) {
+            if (!((m_requestedSteps & StepInitialUsers) || (m_initializationState & StepInitialUsers))) {
                 getInitialUsers();
                 return;
             }
@@ -2673,7 +2678,6 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
     connect(connection, &CTelegramConnection::actualDcIdReceived, this, &CTelegramDispatcher::onConnectionDcIdUpdated);
     connect(connection, &CTelegramConnection::newRedirectedPackage, this, &CTelegramDispatcher::onPackageRedirected);
 
-    connect(connection, &CTelegramConnection::selfUserReceived, this, &CTelegramDispatcher::onSelfUserReceived);
     connect(connection, &CTelegramConnection::usersReceived, this, &CTelegramDispatcher::onUsersReceived);
     connect(connection, &CTelegramConnection::channelsParticipantsReceived, this, &CTelegramDispatcher::onChannelsParticipantsReceived);
     for (CTelegramModule *module : m_modules) {
