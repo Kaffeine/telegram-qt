@@ -606,7 +606,7 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
 
     code += QString("QDebug operator<<(QDebug d, const %1 &type)\n{\n").arg(type.name);
     code += spacing + QStringLiteral("d.noquote().nospace();\n");
-    code += spacing + QString("d << \"%1(\" << type.tlType.toString() << \") {\";\n").arg(type.name);
+    code += spacing + QString("d << \"%1(\" << type.tlType << \") {\";\n").arg(type.name);
     code += spacing + QStringLiteral("Spacer spacer;\n");
     code += spacing + QLatin1String("switch (type.tlType) {\n");
 
@@ -643,7 +643,7 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
     return code;
 
 //    QDebug operator << (QDebug d, const TLUpdatesState &type) {
-//        d << "TLUpdatesState(" << type.tlType.toString() << ")";
+//        d << "TLUpdatesState(" << type.tlType << ")";
 //        d << "{";
 //        switch (type.tlType) {
 //        case TLValue::UpdatesState:
@@ -738,7 +738,7 @@ QString GeneratorNG::generateDebugRpcParse(const TLMethod &method)
 
     result += spacing + QString("case %1::%2: {\n").arg(tlValueName).arg(formatName1stCapital(method.name));
 
-    QString debugLine = QStringLiteral("qDebug() << request.toString()");
+    QString debugLine = QStringLiteral("qDebug() << request");
 
     foreach (const TLParam &param, method.params) {
         if (param.dependOnFlag()) {
