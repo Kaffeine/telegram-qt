@@ -22,9 +22,9 @@
 #include "CTelegramConnection.hpp"
 #include "CTelegramModule.hpp"
 #include "CRawStream.hpp"
+#include "Debug_p.hpp"
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
-#include "Debug.hpp"
 
 using namespace TelegramUtils;
 
@@ -286,7 +286,7 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
                 outputStream << quint8(DialogTypeChannel);
                 break;
             default:
-                qCritical() << "CTelegramDispatcher::connectionSecretInfo(): Invalid dialog type" << dialog.tlType.toString();
+                qCritical() << "CTelegramDispatcher::connectionSecretInfo(): Invalid dialog type" << dialog.tlType;
                 continue;
                 break;
             }
@@ -1373,7 +1373,7 @@ void CTelegramDispatcher::onUpdatesDifferenceReceived(const TLUpdatesDifference 
         return;
         break;
     default:
-        qDebug() << Q_FUNC_INFO << "unknown diff type:" << updatesDifference.tlType.toString();
+        qDebug() << Q_FUNC_INFO << "unknown diff type:" << updatesDifference.tlType;
         break;
     }
 
@@ -1419,7 +1419,7 @@ void CTelegramDispatcher::onUpdatesChannelDifferenceReceived(const TLUpdatesChan
         qDebug() << Q_FUNC_INFO << "UpdatesChannelDifferenceEmpty" << "(NOP, but may be we need to do something?)";
         break;
     default:
-        qDebug() << Q_FUNC_INFO << "unknown diff type:" << updatesDifference.tlType.toString();
+        qDebug() << Q_FUNC_INFO << "unknown diff type:" << updatesDifference.tlType;
         break;
     }
 }
@@ -1704,7 +1704,7 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
     }
         break;
     default:
-        qDebug() << Q_FUNC_INFO << "Update type" << update.tlType.toString() << "is not implemented yet.";
+        qDebug() << Q_FUNC_INFO << "Update type" << update.tlType << "is not implemented yet.";
         break;
     }
 
@@ -2300,7 +2300,7 @@ void CTelegramDispatcher::onConnectionDcIdUpdated(quint32 connectionId, quint32 
 void CTelegramDispatcher::onPackageRedirected(const QByteArray &data, quint32 dc)
 {
 #ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << "redirected package" << TLValue::firstFromArray(data).toString() << "from dc" << dc;
+    qDebug() << Q_FUNC_INFO << "redirected package" << TLValue::firstFromArray(data) << "from dc" << dc;
 #endif
     CTelegramConnection *connection = nullptr;
     if (activeConnection()->dcInfo().id == dc) {

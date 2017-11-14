@@ -16,6 +16,7 @@
  */
 
 #include "TLTypesDebug.hpp"
+#include "Debug_p.hpp"
 
 class Spacer
 {

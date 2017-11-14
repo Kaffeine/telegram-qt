@@ -2187,7 +2187,7 @@ bool CTelegramConnection::processServerDhAnswer(const QByteArray &payload)
     CTelegramStream inputStream(payload);
     TLValue responseTLValue;
     inputStream >> responseTLValue;
-    qDebug() << Q_FUNC_INFO << responseTLValue.toString();
+    qDebug() << Q_FUNC_INFO << responseTLValue;
 
     TLNumber128 clientNonce;
     inputStream >> clientNonce;
@@ -2285,7 +2285,7 @@ TLValue CTelegramConnection::processRpcQuery(const QByteArray &data)
         processPingPong(stream);
         break;
     default:
-        qDebug() << Q_FUNC_INFO << "value:" << value.toString();
+        qDebug() << Q_FUNC_INFO << "value:" << value;
         break;
     }
 
@@ -2295,7 +2295,7 @@ TLValue CTelegramConnection::processRpcQuery(const QByteArray &data)
     }
 
     if (stream.error()) {
-        qWarning() << Q_FUNC_INFO << "Read of RPC result caused error. RPC type:" << value.toString() << "(read from the package -> can be misleading)";
+        qWarning() << Q_FUNC_INFO << "Read of RPC result caused error. RPC type:" << value << "(read from the package -> can be misleading)";
     }
 
     return value;
@@ -2760,7 +2760,7 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
         }
             break;
         default:
-            qDebug() << "Unknown outgoing RPC type:" << context.requestType().toString();
+            qDebug() << "Unknown outgoing RPC type:" << context.requestType();
             break;
         case TLValue::Ping:
             break;
@@ -2780,12 +2780,12 @@ void CTelegramConnection::processRpcResult(CTelegramStream &stream, quint64 idHi
             break;
         }
         if (stream.error()) {
-            qWarning() << Q_FUNC_INFO << "Read of RPC result caused an error. RPC type:" << context.requestType().toString() << "Package id:" << id;
+            qWarning() << Q_FUNC_INFO << "Read of RPC result caused an error. RPC type:" << context.requestType() << "Package id:" << id;
         }
     } else {
         TLValue request;
         stream >> request;
-        qDebug() << "Unexpected RPC message:" << request.toString() << "id" << id;
+        qDebug() << "Unexpected RPC message:" << request << "id" << id;
     }
 }
 
@@ -3363,7 +3363,7 @@ void CTelegramConnection::processAuthSendCode(RpcProcessingContext *context)
     TLAuthSentCode result;
     context->readRpcResult(&result);
 
-    qDebug() << Q_FUNC_INFO << result.tlType.toString();
+    qDebug() << Q_FUNC_INFO << result.tlType;
     if (result.tlType == TLValue::AuthSentCode) {
         m_authCodeHash = result.phoneCodeHash;
 
@@ -3467,7 +3467,7 @@ void CTelegramConnection::processChannelsGetDialogs(RpcProcessingContext *contex
     stream >> offset;
     stream >> limit;
     if (result.tlType != TLValue::MessagesDialogs) {
-        qWarning() << Q_FUNC_INFO << result.tlType.toString() << "processed as Dialogs";
+        qWarning() << Q_FUNC_INFO << result.tlType << "processed as Dialogs";
     }
     emit channelsDialogsReceived(result, offset, limit);
 }
@@ -3850,7 +3850,7 @@ void CTelegramConnection::processMessagesGetDialogs(RpcProcessingContext *contex
     stream >> offsetPeer;
     stream >> limit;
     if (result.tlType != TLValue::MessagesDialogs) {
-        qWarning() << Q_FUNC_INFO << result.tlType.toString() << "processed as Dialogs";
+        qWarning() << Q_FUNC_INFO << result.tlType << "processed as Dialogs";
     }
     emit messagesDialogsReceived(result, offsetDate, offsetId, offsetPeer, limit);
 }
@@ -4313,7 +4313,7 @@ void CTelegramConnection::onTransportReadyRead()
 
         payload = inputStream.readBytes(length);
 #ifdef DEVELOPER_BUILD
-        qDebug() << Q_FUNC_INFO << "new plain package in auth state" << m_authState << "payload:" << TLValue::firstFromArray(payload).toString();
+        qDebug() << Q_FUNC_INFO << "new plain package in auth state" << m_authState << "payload:" << TLValue::firstFromArray(payload);
 #endif
 
         switch (m_authState) {
@@ -4410,7 +4410,7 @@ void CTelegramConnection::onTransportReadyRead()
 
 #ifdef DEVELOPER_BUILD
     static int packagesCount = 0;
-    qDebug() << Q_FUNC_INFO << "Got package" << ++packagesCount << TLValue::firstFromArray(payload).toString();
+    qDebug() << Q_FUNC_INFO << "Got package" << ++packagesCount << TLValue::firstFromArray(payload);
 #endif
 }
 
@@ -4617,7 +4617,7 @@ quint64 CTelegramConnection::sendEncryptedPackageAgain(quint64 id)
     --m_contentRelatedMessages;
     const QByteArray data = m_submittedPackages.take(id);
 #ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << id << TLValue::firstFromArray(data).toString();
+    qDebug() << Q_FUNC_INFO << id << TLValue::firstFromArray(data);
 #endif
     return sendEncryptedPackage(data);
 }
