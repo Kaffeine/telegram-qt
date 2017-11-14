@@ -41,6 +41,7 @@ QString formatTLValue(const TLValue &val)
 #include "CAppInformation.hpp"
 #include "CTelegramStream.hpp"
 #include "CTelegramTransport.hpp"
+#include "Debug_p.hpp"
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
 #include "RpcProcessingContext.hpp"
@@ -48,16 +49,6 @@ QString formatTLValue(const TLValue &val)
 #ifdef DEVELOPER_BUILD
 #include "TLRpcDebug.hpp"
 #endif
-
-template <int Size>
-QDebug operator<<(QDebug d, const TLNumber<Size> &n);
-
-template <int Size>
-inline QDebug operator<<(QDebug d, const TLNumber<Size> &n)
-{
-    d << QByteArray::fromRawData(n.data, n.size()).toHex();
-    return d;
-}
 
 using namespace TelegramUtils;
 

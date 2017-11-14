@@ -35,3 +35,13 @@ QDebug operator<<(QDebug d, const Telegram::Peer &peer)
     }
     return d;
 }
+
+template <int Size>
+QDebug operator<<(QDebug d, const TLNumber<Size> &n)
+{
+    d << QByteArray::fromRawData(n.data, n.size()).toHex();
+    return d;
+}
+
+template QDebug operator<<(QDebug d, const TLNumber<128> &n);
+template QDebug operator<<(QDebug d, const TLNumber<256> &n);

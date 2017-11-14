@@ -19,5 +19,9 @@
 #define TELEGRAMDEBUG_P_HPP
 
 #include "Debug.hpp"
+#include "TLNumbers.hpp"
+
+template <int Size>
+QDebug operator<<(QDebug d, const TLNumber<Size> &n);
 
 #endif // TELEGRAMDEBUG_P_HPP
