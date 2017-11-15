@@ -40,11 +40,11 @@ public:
     void resetError();
 
     bool atEnd() const;
-    int bytesRemaining() const;
+    int bytesAvailable() const;
 
     QByteArray readBytes(int count);
 
-    QByteArray readRemainingBytes();
+    QByteArray readAll();
 
     CRawStream &operator>>(qint8 &i);
     CRawStream &operator>>(qint16 &i);
@@ -117,9 +117,9 @@ inline void CRawStream::resetError()
     m_error = false;
 }
 
-inline QByteArray CRawStream::readRemainingBytes()
+inline QByteArray CRawStream::readAll()
 {
-    return readBytes(bytesRemaining());
+    return readBytes(bytesAvailable());
 }
 
 inline CRawStream &CRawStream::operator>>(quint8 &i)

@@ -4306,7 +4306,7 @@ void CTelegramConnection::onTransportReadyRead()
         quint32 length = 0;
         inputStream >> length;
 
-        if (inputStream.bytesRemaining() != int(length)) {
+        if (inputStream.bytesAvailable() != int(length)) {
             qDebug() << Q_FUNC_INFO << "Corrupted packet. Specified length does not equal to real length";
             return;
         }
@@ -4362,7 +4362,7 @@ void CTelegramConnection::onTransportReadyRead()
         }
         // Encrypted Message
         const QByteArray messageKey = inputStream.readBytes(16);
-        const QByteArray data = inputStream.readBytes(inputStream.bytesRemaining());
+        const QByteArray data = inputStream.readBytes(inputStream.bytesAvailable());
 
         const SAesKey key = generateServerToClientAesKey(messageKey);
 
@@ -4403,7 +4403,7 @@ void CTelegramConnection::onTransportReadyRead()
             return;
         }
 
-        payload = decryptedStream.readRemainingBytes();
+        payload = decryptedStream.readAll();
 
         processRpcQuery(payload);
     }

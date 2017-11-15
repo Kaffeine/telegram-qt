@@ -81,9 +81,9 @@ bool CRawStream::atEnd() const
     return m_device ? m_device->atEnd() : true;
 }
 
-int CRawStream::bytesRemaining() const
+int CRawStream::bytesAvailable() const
 {
-    return m_device->bytesAvailable();
+    return m_device ? m_device->bytesAvailable() : 0;
 }
 
 bool CRawStream::read(void *data, qint64 size)
