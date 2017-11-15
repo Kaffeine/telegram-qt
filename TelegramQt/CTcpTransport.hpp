@@ -32,7 +32,7 @@ public:
 
     void connectToHost(const QString &ipAddress, quint32 port) override;
     void disconnectFromHost() override;
-    bool setProxy(const QNetworkProxy &proxy) override;
+    bool setProxy(const QNetworkProxy &proxy);
 
     bool isConnected() const override;
 

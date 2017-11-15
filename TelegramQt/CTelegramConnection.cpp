@@ -85,12 +85,6 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     connect(m_ackTimer, &QTimer::timeout, this, &CTelegramConnection::onTimeToAckMessages);
 }
 
-void CTelegramConnection::setProxy(const QNetworkProxy &proxy)
-{
-    m_proxy = proxy;
-    m_transport->setProxy(proxy);
-}
-
 void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
 {
     m_dcInfo = newDcInfo;

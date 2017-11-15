@@ -37,6 +37,7 @@ void CTelegramTransportModule::setProxy(const QNetworkProxy &proxy)
 
 void CTelegramTransportModule::onNewConnection(CTelegramConnection *connection)
 {
-    connection->setTransport(new CTcpTransport(connection));
-    connection->setProxy(m_proxy);
+    CTcpTransport *transport = new CTcpTransport(connection);
+    transport->setProxy(m_proxy);
+    connection->setTransport(transport);
 }
