@@ -37,10 +37,10 @@ class CTelegramTransport;
 class RpcProcessingContext;
 
 #ifdef NETWORK_LOGGING
-class QFile;
+QT_FORWARD_DECLARE_CLASS(QFile)
 #endif
 
-class QTimer;
+QT_FORWARD_DECLARE_CLASS(QTimer)
 
 class CTelegramConnection : public QObject
 {

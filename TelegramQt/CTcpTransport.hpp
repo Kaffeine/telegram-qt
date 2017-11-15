@@ -20,10 +20,8 @@
 
 #include "CTelegramTransport.hpp"
 
-QT_BEGIN_NAMESPACE
-class QTcpSocket;
-class QTimer;
-QT_END_NAMESPACE
+QT_FORWARD_DECLARE_CLASS(QTcpSocket)
+QT_FORWARD_DECLARE_CLASS(QTimer)
 
 class CTcpTransport : public CTelegramTransport
 {

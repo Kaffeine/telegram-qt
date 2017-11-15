@@ -29,9 +29,9 @@
 #include "TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
-class QTimer;
-class QCryptographicHash;
-class QIODevice;
+QT_FORWARD_DECLARE_CLASS(QCryptographicHash)
+QT_FORWARD_DECLARE_CLASS(QIODevice)
+QT_FORWARD_DECLARE_CLASS(QTimer)
 
 class CAppInformation;
 class CTelegramConnection;

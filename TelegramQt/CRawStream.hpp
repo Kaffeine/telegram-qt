@@ -25,9 +25,7 @@
 #include "TLNumbers.hpp"
 #include "TLValues.hpp"
 
-QT_BEGIN_NAMESPACE
-class QIODevice;
-QT_END_NAMESPACE
+QT_FORWARD_DECLARE_CLASS(QIODevice)
 
 class CRawStream
 {
