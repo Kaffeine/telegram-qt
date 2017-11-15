@@ -497,11 +497,15 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
         }
         // Do not apply loaded dialogs, because we can not clean them up properly on dialogs received
     } else if (format >= 2) {
-        TLValue legacyVectorTlType(TLValue::Vector);
+        quint32 legacyVectorTlType;
         quint32 chatIdsVectorSize = 0;
 
         inputStream >> legacyVectorTlType;
         inputStream >> chatIdsVectorSize;
+        if (legacyVectorTlType != s_legacyVectorTlType) {
+            qWarning() << "Unexpected type value";
+            return false;
+        }
 
         m_chatIds.resize(chatIdsVectorSize);
 
