@@ -18,11 +18,7 @@
 #ifndef CRAWSTREAM_HPP
 #define CRAWSTREAM_HPP
 
-#include <qglobal.h>
-
 #include <QByteArray>
-
-#include "TLValues.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QIODevice)
 
@@ -61,8 +57,6 @@ public:
 
     CRawStream &operator>>(double &d);
 
-    CRawStream &operator>>(TLValue &v);
-
     CRawStream &operator<<(qint8 i);
     CRawStream &operator<<(qint16 i);
     CRawStream &operator<<(qint32 i);
@@ -73,8 +67,6 @@ public:
     CRawStream &operator<<(quint64 i);
 
     CRawStream &operator<<(const double &d);
-
-    CRawStream &operator<<(TLValue v);
 
     CRawStream &operator<<(const QByteArray &data);
 
@@ -150,14 +142,6 @@ inline CRawStream &CRawStream::operator>>(quint64 &i)
     return *this >> reinterpret_cast<qint64&>(i);
 }
 
-inline CRawStream &CRawStream::operator>>(TLValue &v)
-{
-    quint32 i;
-    *this >> i;
-    v = TLValue(i);
-    return *this;
-}
-
 inline CRawStream &CRawStream::operator<<(quint8 i)
 {
     return *this << qint8(i);
@@ -176,11 +160,6 @@ inline CRawStream &CRawStream::operator<<(quint32 i)
 inline CRawStream &CRawStream::operator<<(quint64 i)
 {
     return *this << qint64(i);
-}
-
-inline CRawStream &CRawStream::operator<<(TLValue v)
-{
-    return *this << quint32(v);
 }
 
 #endif // CRAWSTREAM_HPP
