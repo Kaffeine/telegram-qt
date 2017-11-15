@@ -1925,7 +1925,7 @@ bool CTelegramConnection::acceptPqAuthorization(const QByteArray &payload)
         return false;
     }
 
-    m_pq = qFromBigEndian<quint64>((uchar *) pq.data());
+    m_pq = qFromBigEndian<quint64>(reinterpret_cast<const uchar*>(pq.constData()));
 
     quint64 div1 = Utils::findDivider(m_pq);
 
