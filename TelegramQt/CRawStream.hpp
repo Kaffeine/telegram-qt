@@ -33,7 +33,7 @@ public:
     explicit CRawStream(QByteArray *data, bool write);
     explicit CRawStream(const QByteArray &data);
 
-    explicit CRawStream(QIODevice *d = 0);
+    explicit CRawStream(QIODevice *d = nullptr);
 
     virtual ~CRawStream();
 
@@ -114,7 +114,7 @@ public:
     {
     }
 
-    explicit CRawStreamEx(QIODevice *d = 0) :
+    explicit CRawStreamEx(QIODevice *d = nullptr) :
         CRawStream(d)
     {
     }

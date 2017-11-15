@@ -36,7 +36,7 @@ public:
     {
     }
 
-    explicit CTelegramStream(QIODevice *d = 0) :
+    explicit CTelegramStream(QIODevice *d = nullptr) :
         CRawStreamEx(d)
     {
     }
@@ -45,11 +45,17 @@ public:
     using CRawStreamEx::operator >>;
 
     CTelegramStream &operator>>(QString &str);
+    CTelegramStream &operator<<(const QString &str);
 
     CTelegramStream &operator>>(bool &data);
+    CTelegramStream &operator<<(const bool &data);
+
+    CTelegramStream &operator<<(const TLDcOption &dcOption);
 
     template <typename T>
     CTelegramStream &operator>>(TLVector<T> &v);
+    template <typename T>
+    CTelegramStream &operator<<(const TLVector<T> &v);
 
     // Generated read operators
     CTelegramStream &operator>>(TLAccountDaysTTL &accountDaysTTLValue);
@@ -196,12 +202,6 @@ public:
     CTelegramStream &operator>>(TLUpdatesDifference &updatesDifferenceValue);
     // End of generated read operators
 
-    CTelegramStream &operator<<(const QString &str);
-
-    CTelegramStream &operator<<(const bool &data);
-
-    CTelegramStream &operator<<(const TLDcOption &dcOption);
-
     // Generated write operators
     CTelegramStream &operator<<(const TLAccountDaysTTL &accountDaysTTLValue);
     CTelegramStream &operator<<(const TLAccountPasswordInputSettings &accountPasswordInputSettingsValue);
@@ -243,10 +243,6 @@ public:
     CTelegramStream &operator<<(const TLInputPrivacyRule &inputPrivacyRuleValue);
     CTelegramStream &operator<<(const TLReplyMarkup &replyMarkupValue);
     // End of generated write operators
-
-    template <typename T>
-    CTelegramStream &operator<<(const TLVector<T> &v);
-
 };
 
 inline CTelegramStream &CTelegramStream::operator>>(QString &str)
@@ -254,6 +250,12 @@ inline CTelegramStream &CTelegramStream::operator>>(QString &str)
     QByteArray data;
     *this >> data;
     str = QString::fromUtf8(data);
+    return *this;
+}
+
+inline CTelegramStream &CTelegramStream::operator<<(const QString &str)
+{
+    *this << str.toUtf8();
     return *this;
 }
 
@@ -268,12 +270,6 @@ inline CTelegramStream &CTelegramStream::operator>>(bool &data)
         data = false;
     }
 
-    return *this;
-}
-
-inline CTelegramStream &CTelegramStream::operator<<(const QString &str)
-{
-    *this << str.toUtf8();
     return *this;
 }
 

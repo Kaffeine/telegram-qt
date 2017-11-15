@@ -116,6 +116,33 @@ CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
     return *this;
 }
 
+template <typename T>
+CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
+{
+    *this << v.tlType;
+
+    if (v.tlType == TLValue::Vector) {
+        *this << quint32(v.count());
+
+        for (int i = 0; i < v.count(); ++i) {
+            *this << v.at(i);
+        }
+    }
+
+    return *this;
+}
+
+CTelegramStream &CTelegramStream::operator<<(const TLDcOption &dcOption)
+{
+    *this << dcOption.tlType;
+    *this << dcOption.flags;
+    *this << dcOption.id;
+    *this << dcOption.ipAddress;
+    *this << dcOption.port;
+
+    return *this;
+}
+
 // Generated read operators implementation
 CTelegramStream &CTelegramStream::operator>>(TLAccountDaysTTL &accountDaysTTLValue)
 {
@@ -4245,33 +4272,6 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdatesDifference &updatesDiffere
 }
 
 // End of generated read operators implementation
-
-template <typename T>
-CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
-{
-    *this << v.tlType;
-
-    if (v.tlType == TLValue::Vector) {
-        *this << quint32(v.count());
-
-        for (int i = 0; i < v.count(); ++i) {
-            *this << v.at(i);
-        }
-    }
-
-    return *this;
-}
-
-CTelegramStream &CTelegramStream::operator<<(const TLDcOption &dcOption)
-{
-    *this << dcOption.tlType;
-    *this << dcOption.flags;
-    *this << dcOption.id;
-    *this << dcOption.ipAddress;
-    *this << dcOption.port;
-
-    return *this;
-}
 
 // Generated write operators implementation
 CTelegramStream &CTelegramStream::operator<<(const TLAccountDaysTTL &accountDaysTTLValue)
