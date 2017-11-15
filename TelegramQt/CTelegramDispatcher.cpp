@@ -1814,7 +1814,7 @@ void CTelegramDispatcher::internalProcessMessageReceived(const TLMessage &messag
             updateFullChat(fullChat);
             break;
         default:
-            qWarning() << Q_FUNC_INFO << "Unimplemented service message type" << action.tlType;
+            qWarning() << Q_FUNC_INFO << "Unimplemented service message type" << action.tlType.toString();
             break;
         }
         return;

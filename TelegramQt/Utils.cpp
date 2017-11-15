@@ -283,7 +283,6 @@ QByteArray Utils::unpackGZip(const QByteArray &data)
 
         switch (inflateResult) {
         case Z_NEED_DICT:
-            inflateResult = Z_DATA_ERROR;     // and fall through
         case Z_DATA_ERROR:
         case Z_MEM_ERROR:
         case Z_STREAM_ERROR:
