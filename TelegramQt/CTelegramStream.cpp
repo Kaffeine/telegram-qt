@@ -34,6 +34,12 @@ template CTelegramStream &CTelegramStream::operator<<(const TLVector<qint64> &v)
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<quint64> &v);
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<QString> &v);
 
+template CTelegramStream &CTelegramStream::operator>>(TLNumber128 &v);
+template CTelegramStream &CTelegramStream::operator>>(TLNumber256 &v);
+
+template CTelegramStream &CTelegramStream::operator<<(const TLNumber128 &v);
+template CTelegramStream &CTelegramStream::operator<<(const TLNumber256 &v);
+
 // Generated vector read templates instancing
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLAuthorization> &v);
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPrivacyRule> &v);
@@ -129,6 +135,20 @@ CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
         }
     }
 
+    return *this;
+}
+
+template <int Size>
+CTelegramStream &CTelegramStream::operator>>(TLNumber<Size> &n)
+{
+    read(n.data, Size / 8);
+    return *this;
+}
+
+template <int Size>
+CTelegramStream &CTelegramStream::operator<<(const TLNumber<Size> &n)
+{
+    write(n.data, Size / 8);
     return *this;
 }
 

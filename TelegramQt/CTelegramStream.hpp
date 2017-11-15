@@ -22,6 +22,7 @@
 #include <QString>
 
 #include "CRawStream.hpp"
+#include "TLNumbers.hpp"
 #include "TLTypes.hpp"
 
 class CTelegramStream : public CRawStreamEx
@@ -56,6 +57,11 @@ public:
     CTelegramStream &operator>>(TLVector<T> &v);
     template <typename T>
     CTelegramStream &operator<<(const TLVector<T> &v);
+
+    template <int Size>
+    CTelegramStream &operator<<(const TLNumber<Size> &n);
+    template <int Size>
+    CTelegramStream &operator>>(TLNumber<Size> &n);
 
     // Generated read operators
     CTelegramStream &operator>>(TLAccountDaysTTL &accountDaysTTLValue);

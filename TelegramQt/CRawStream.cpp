@@ -22,12 +22,6 @@
 
 static const char s_nulls[4] = { 0, 0, 0, 0 };
 
-template CRawStream &CRawStream::operator>>(TLNumber128 &v);
-template CRawStream &CRawStream::operator>>(TLNumber256 &v);
-
-template CRawStream &CRawStream::operator<<(const TLNumber128 &v);
-template CRawStream &CRawStream::operator<<(const TLNumber256 &v);
-
 CRawStream::CRawStream(QByteArray *data, bool write) :
     m_device(new QBuffer(data)),
     m_ownDevice(true),

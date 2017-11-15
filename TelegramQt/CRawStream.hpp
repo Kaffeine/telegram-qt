@@ -22,7 +22,6 @@
 
 #include <QByteArray>
 
-#include "TLNumbers.hpp"
 #include "TLValues.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QIODevice)
@@ -62,9 +61,6 @@ public:
 
     CRawStream &operator>>(double &d);
 
-    template <int Size>
-    CRawStream &operator>>(TLNumber<Size> &n);
-
     CRawStream &operator>>(TLValue &v);
 
     CRawStream &operator<<(qint8 i);
@@ -77,9 +73,6 @@ public:
     CRawStream &operator<<(quint64 i);
 
     CRawStream &operator<<(const double &d);
-
-    template <int Size>
-    CRawStream &operator<<(const TLNumber<Size> &n);
 
     CRawStream &operator<<(TLValue v);
 
@@ -157,13 +150,6 @@ inline CRawStream &CRawStream::operator>>(quint64 &i)
     return *this >> reinterpret_cast<qint64&>(i);
 }
 
-template <int Size>
-CRawStream &CRawStream::operator>>(TLNumber<Size> &n)
-{
-    read(n.data, Size / 8);
-    return *this;
-}
-
 inline CRawStream &CRawStream::operator>>(TLValue &v)
 {
     quint32 i;
@@ -190,13 +176,6 @@ inline CRawStream &CRawStream::operator<<(quint32 i)
 inline CRawStream &CRawStream::operator<<(quint64 i)
 {
     return *this << qint64(i);
-}
-
-template <int Size>
-CRawStream &CRawStream::operator<<(const TLNumber<Size> &n)
-{
-    write(n.data, Size / 8);
-    return *this;
 }
 
 inline CRawStream &CRawStream::operator<<(TLValue v)
