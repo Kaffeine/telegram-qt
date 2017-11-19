@@ -1210,23 +1210,23 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
         auto it = dialogs.dialogs.constEnd();
         while (it != dialogs.dialogs.constBegin()) {
             --it;
-            const TLDialog *dialog = it;
-            if (!dialog->isValid()) {
+            const TLDialog &dialog = *it;
+            if (!dialog.isValid()) {
 #ifdef DEVELOPER_BUILD
-                qWarning() << "Received invalid dialog!" << *dialog;
+                qWarning() << "Received invalid dialog!" << dialog;
 #else
                 qWarning() << "Received invalid dialog!";
 #endif
                 continue;
             }
 
-            const Telegram::Peer p = toPublicPeer(dialog->peer);
+            const Telegram::Peer p = toPublicPeer(dialog.peer);
             if (!lastPeer.isValid() && p.isValid()) {
                 lastPeer = p;
             }
 
             if (!lastMessageId) {
-                quint32 messageId = dialog->topMessage;
+                quint32 messageId = dialog.topMessage;
                 if (messageId) {
                     lastMessageId = messageId;
                 }
