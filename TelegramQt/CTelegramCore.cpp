@@ -57,67 +57,67 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     m_private->m_transportModule = new CTelegramTransportModule(this);
     m_private->m_dispatcher->plugModule(m_private->m_transportModule);
 
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::connectionStateChanged,
-            this, &CTelegramCore::connectionStateChanged);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::selfUserAvailable,
-            this, &CTelegramCore::selfUserAvailable);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::userInfoReceived,
-            this, &CTelegramCore::userInfoReceived);
+    connect(m_private->m_dispatcher, SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)),
+            SIGNAL(connectionStateChanged(TelegramNamespace::ConnectionState)));
+    connect(m_private->m_dispatcher, SIGNAL(selfUserAvailable(quint32)),
+            SIGNAL(selfUserAvailable(quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(userInfoReceived(quint32)),
+            SIGNAL(userInfoReceived(quint32)));
 
-    connect(m_private->m_authModule, &CTelegramAuthModule::loggedOut,
-            this, &CTelegramCore::loggedOut);
-    connect(m_private->m_authModule, &CTelegramAuthModule::phoneStatusReceived,
-            this, &CTelegramCore::phoneStatusReceived);
-    connect(m_private->m_authModule, &CTelegramAuthModule::phoneCodeRequired,
-            this, &CTelegramCore::phoneCodeRequired);
-    connect(m_private->m_authModule, &CTelegramAuthModule::passwordInfoReceived,
-            this, &CTelegramCore::passwordInfoReceived);
-    connect(m_private->m_authModule, &CTelegramAuthModule::authSignErrorReceived,
-            this, &CTelegramCore::authSignErrorReceived);
-    connect(m_private->m_authModule, &CTelegramAuthModule::authorizationErrorReceived,
-            this, &CTelegramCore::authorizationErrorReceived);
+    connect(m_private->m_authModule, SIGNAL(loggedOut(bool)),
+            SIGNAL(loggedOut(bool)));
+    connect(m_private->m_authModule, SIGNAL(phoneStatusReceived(QString,bool)),
+            SIGNAL(phoneStatusReceived(QString,bool)));
+    connect(m_private->m_authModule, SIGNAL(phoneCodeRequired()),
+            SIGNAL(phoneCodeRequired()));
+    connect(m_private->m_authModule, SIGNAL(passwordInfoReceived(quint64)),
+            SIGNAL(passwordInfoReceived(quint64)));
+    connect(m_private->m_authModule, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)),
+            SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
+    connect(m_private->m_authModule, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)),
+            SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
 
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::contactListChanged,
-            this, &CTelegramCore::contactListChanged);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::dialogsChanged,
-            this, &CTelegramCore::dialogsChanged);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::contactProfileChanged,
-            this, &CTelegramCore::contactProfileChanged);
-    connect(m_private->m_mediaModule, &CTelegramMediaModule::avatarReceived,
-            this, &CTelegramCore::avatarReceived);
-    connect(m_private->m_mediaModule, &CTelegramMediaModule::messageMediaDataReceived,
-            this, &CTelegramCore::messageMediaDataReceived);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::messageReceived,
-            this, &CTelegramCore::messageReceived);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::contactStatusChanged,
-            this, &CTelegramCore::contactStatusChanged);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::contactMessageActionChanged,
-            this, &CTelegramCore::contactMessageActionChanged);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::contactChatMessageActionChanged,
-            this, &CTelegramCore::contactChatMessageActionChanged);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::sentMessageIdReceived,
-            this, &CTelegramCore::sentMessageIdReceived);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::messageReadInbox,
-            this, &CTelegramCore::messageReadInbox);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::messageReadOutbox,
-            this, &CTelegramCore::messageReadOutbox);
+    connect(m_private->m_dispatcher, SIGNAL(contactListChanged()),
+            SIGNAL(contactListChanged()));
+    connect(m_private->m_dispatcher, SIGNAL(dialogsChanged(QVector<Telegram::Peer>,QVector<Telegram::Peer>)),
+            SIGNAL(dialogsChanged(QVector<Telegram::Peer>,QVector<Telegram::Peer>)));
+    connect(m_private->m_dispatcher, SIGNAL(contactProfileChanged(quint32)),
+            SIGNAL(contactProfileChanged(quint32)));
+    connect(m_private->m_mediaModule, SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)),
+            SIGNAL(avatarReceived(quint32,QByteArray,QString,QString)));
+    connect(m_private->m_mediaModule, SIGNAL(messageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)),
+            SIGNAL(messageMediaDataReceived(Telegram::Peer,quint32,QByteArray,QString,TelegramNamespace::MessageType,quint32,quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(messageReceived(Telegram::Message)),
+            SIGNAL(messageReceived(Telegram::Message)));
+    connect(m_private->m_dispatcher, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
+            SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)));
+    connect(m_private->m_dispatcher, SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)),
+            SIGNAL(contactMessageActionChanged(quint32,TelegramNamespace::MessageAction)));
+    connect(m_private->m_dispatcher, SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)),
+            SIGNAL(contactChatMessageActionChanged(quint32,quint32,TelegramNamespace::MessageAction)));
+    connect(m_private->m_dispatcher, SIGNAL(sentMessageIdReceived(quint64,quint32)),
+            SIGNAL(sentMessageIdReceived(quint64,quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(messageReadInbox(Telegram::Peer,quint32)),
+            SIGNAL(messageReadInbox(Telegram::Peer,quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(messageReadOutbox(Telegram::Peer,quint32)),
+            SIGNAL(messageReadOutbox(Telegram::Peer,quint32)));
 
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::peerAdded,
-            this, &CTelegramCore::peerAdded);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::createdChatIdReceived,
-            this, &CTelegramCore::createdChatIdReceived);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::chatAdded,
-            this, &CTelegramCore::chatAdded);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::chatChanged,
-            this, &CTelegramCore::chatChanged);
-    connect(m_private->m_dispatcher, &CTelegramDispatcher::userNameStatusUpdated,
-            this, &CTelegramCore::userNameStatusUpdated);
-    connect(m_private->m_mediaModule, &CTelegramMediaModule::filePartReceived,
-            this, &CTelegramCore::filePartReceived);
-    connect(m_private->m_mediaModule, &CTelegramMediaModule::filePartUploaded,
-            this, &CTelegramCore::filePartUploaded);
-    connect(m_private->m_mediaModule, &CTelegramMediaModule::fileRequestFinished,
-            this, &CTelegramCore::fileRequestFinished);
+    connect(m_private->m_dispatcher, SIGNAL(peerAdded(Telegram::Peer)),
+            SIGNAL(peerAdded(Telegram::Peer)));
+    connect(m_private->m_dispatcher, SIGNAL(createdChatIdReceived(quint64,quint32)),
+            SIGNAL(createdChatIdReceived(quint64,quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(chatAdded(quint32)),
+            SIGNAL(chatAdded(quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(chatChanged(quint32)),
+            SIGNAL(chatChanged(quint32)));
+    connect(m_private->m_dispatcher, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
+            SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
+    connect(m_private->m_mediaModule, SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)),
+            SIGNAL(filePartReceived(quint32,QByteArray,QString,quint32,quint32)));
+    connect(m_private->m_mediaModule, SIGNAL(filePartUploaded(quint32,quint32,quint32)),
+            SIGNAL(filePartUploaded(quint32,quint32,quint32)));
+    connect(m_private->m_mediaModule, SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)),
+            SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)));
 }
 
 CTelegramCore::~CTelegramCore()
