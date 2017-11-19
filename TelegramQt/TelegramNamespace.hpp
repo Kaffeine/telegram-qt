@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QFlags>
 #include <QMetaType>
+#include <QStringList>
 
 class CTelegramDispatcher;
 class CTelegramAuthModule;
@@ -30,6 +31,10 @@ class CTelegramMediaModule;
 
 #ifndef Q_ENUM
 #define Q_ENUM(x) Q_ENUMS(x)
+#endif
+
+#ifndef QStringLiteral
+#define QStringLiteral(x) QString::fromLatin1(x)
 #endif
 
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject

@@ -26,19 +26,23 @@ defineTest(minQtVersion) {
     return(false)
 }
 
-!minQtVersion(5, 5, 0) {
-    message("Cannot build TelegramQt with Qt version $${QT_VERSION}.")
-    error("Use at least Qt 5.5.0.")
-}
-
 TEMPLATE = subdirs
 SUBDIRS = TelegramQt
 
-isEmpty(BUILD_ONLY_LIBRARY) {
-    BUILD_ONLY_LIBRARY = "false"
-}
-isEmpty(BUILD_QML_IMPORT) {
-    BUILD_QML_IMPORT = "true"
+greaterThan(QT_MAJOR_VERSION, 4) {
+    isEmpty(BUILD_ONLY_LIBRARY) {
+        BUILD_ONLY_LIBRARY = "false"
+    }
+    isEmpty(BUILD_QML_IMPORT) {
+        BUILD_QML_IMPORT = "true"
+    }
+} else {
+    isEmpty(BUILD_ONLY_LIBRARY) {
+        BUILD_ONLY_LIBRARY = "true"
+    }
+    isEmpty(BUILD_QML_IMPORT) {
+        BUILD_QML_IMPORT = "false"
+    }
 }
 
 equals(BUILD_QML_IMPORT, "true") {

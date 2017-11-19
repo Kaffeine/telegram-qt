@@ -84,7 +84,11 @@ void CTelegramAuthModule::tryPassword(const QString &password)
         qWarning() << Q_FUNC_INFO << "There is no known salts to try password. Get it by getPassword() call.";
         return;
     }
+#if QT_VERSION >= 0x050000
     tryPassword(m_passwordInfo.first().currentSalt, password.toUtf8());
+#else
+    tryPassword(m_passwordInfo.value(m_passwordInfo.keys().first()).currentSalt, password.toUtf8());
+#endif
 }
 
 void CTelegramAuthModule::signIn(const QString &phoneNumber, const QString &authCode)
@@ -152,6 +156,7 @@ void CTelegramAuthModule::onWantedMainDcChanged(quint32 dc, const QString &dcFor
 
 void CTelegramAuthModule::onNewConnection(CTelegramConnection *connection)
 {
+#if QT_VERSION >= 0x050000
     connect(connection, &CTelegramConnection::passwordReceived, this, &CTelegramAuthModule::onPasswordReceived);
     connect(connection, &CTelegramConnection::phoneCodeRequired, this, &CTelegramAuthModule::phoneCodeRequired);
     connect(connection, &CTelegramConnection::authSignErrorReceived, this, &CTelegramAuthModule::authSignErrorReceived);
@@ -161,6 +166,17 @@ void CTelegramAuthModule::onNewConnection(CTelegramConnection *connection)
 
     // Should be done only for the main connection, but probably it is safe to connect to all connections for now
     connect(connection, &CTelegramConnection::loggedOut, this, &CTelegramAuthModule::loggedOut);
+#else
+    connect(connection, SIGNAL(passwordReceived(TLAccountPassword,quint64)), this, SLOT(onPasswordReceived(TLAccountPassword,quint64)));
+    connect(connection, SIGNAL(phoneCodeRequired()), this, SIGNAL(phoneCodeRequired()));
+    connect(connection, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)), this, SIGNAL(authSignErrorReceived(TelegramNamespace::AuthSignError,QString)));
+    connect(connection, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)), this, SIGNAL(authorizationErrorReceived(TelegramNamespace::UnauthorizedError,QString)));
+    connect(connection, SIGNAL(phoneStatusReceived(QString,bool)), this, SIGNAL(phoneStatusReceived(QString,bool)));
+    connect(connection, SIGNAL(wantedMainDcChanged(quint32,QString)), this, SLOT(onWantedMainDcChanged(quint32,QString)));
+
+    // Should be done only for the main connection, but probably it is safe to connect to all connections for now
+    connect(connection, SIGNAL(loggedOut(bool)), this, SIGNAL(loggedOut(bool)));
+#endif
 }
 
 bool CTelegramAuthModule::getPasswordData(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const

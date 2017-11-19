@@ -606,32 +606,56 @@ Telegram::RemoteFile Telegram::RemoteFile::fromUniqueId(const QString &uniqueId)
 {
     quint8 remoteFileType = Private::InvalidLocation;
     bool ok;
+#if QT_VERSION >= 0x050000
     remoteFileType = uniqueId.midRef(0, 2).toUInt(&ok, 16);
+#else
+    remoteFileType = uniqueId.mid(0, 2).toUInt(&ok, 16);
+#endif
     if (!ok) {
         return RemoteFile();
     }
     RemoteFile result;
     result.d->m_type = static_cast<Private::Type>(remoteFileType);
+#if QT_VERSION >= 0x050000
     result.d->m_dcId = uniqueId.midRef(2, 8).toULong(&ok, 16); // 32 bits
+#else
+    result.d->m_dcId = uniqueId.mid(2, 8).toULong(&ok, 16); // 32 bits
+#endif
     if (!ok) {
         return RemoteFile();
     }
+#if QT_VERSION >= 0x050000
     result.d->m_size = uniqueId.midRef(10, 8).toULongLong(&ok, 16); // 32 bits
+#else
+    result.d->m_size = uniqueId.mid(10, 8).toULongLong(&ok, 16); // 32 bits
+#endif
     if (!ok) {
         return RemoteFile();
     }
 
     switch (result.d->m_type) {
     case Private::FileLocation:
+#if QT_VERSION >= 0x050000
         result.d->m_volumeId = uniqueId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
+#else
+        result.d->m_volumeId = uniqueId.mid(18, 16).toULongLong(&ok, 16); // 64 bits
+#endif
         if (!ok) {
             return RemoteFile();
         }
+#if QT_VERSION >= 0x050000
         result.d->m_secret = uniqueId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
+#else
+        result.d->m_secret = uniqueId.mid(34, 16).toULongLong(&ok, 16); // 64 bits
+#endif
         if (!ok) {
             return RemoteFile();
         }
+#if QT_VERSION >= 0x050000
         result.d->m_localId = uniqueId.midRef(50, 8).toULong(&ok, 16); // 32 bits
+#else
+        result.d->m_localId = uniqueId.mid(50, 8).toULong(&ok, 16); // 32 bits
+#endif
         if (!ok) {
             return RemoteFile();
         }
@@ -640,11 +664,19 @@ Telegram::RemoteFile Telegram::RemoteFile::fromUniqueId(const QString &uniqueId)
     case Private::VideoFileLocation:
     case Private::AudioFileLocation:
     case Private::DocumentFileLocation:
+#if QT_VERSION >= 0x050000
         result.d->m_id = uniqueId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
+#else
+        result.d->m_id = uniqueId.mid(18, 16).toULongLong(&ok, 16); // 64 bits
+#endif
         if (!ok) {
             return RemoteFile();
         }
+#if QT_VERSION >= 0x050000
         result.d->m_accessHash = uniqueId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
+#else
+        result.d->m_accessHash = uniqueId.mid(34, 16).toULongLong(&ok, 16); // 64 bits
+#endif
         if (!ok) {
             return RemoteFile();
         }

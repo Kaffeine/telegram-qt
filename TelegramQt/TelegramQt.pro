@@ -17,6 +17,11 @@ CONFIG += c++11
 CONFIG += link_pkgconfig
 PKGCONFIG += openssl zlib
 
+!greaterThan(QT_MAJOR_VERSION, 4) {
+    # Qt4 has no c++11 config option and does not turn on the standard by default
+    QMAKE_CXXFLAGS += -std=c++11
+}
+
 DEFINES += TELEGRAMQT_LIBRARY
 
 DEFINES += QT_NO_CAST_TO_ASCII

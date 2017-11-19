@@ -258,7 +258,7 @@ inline CTelegramStream &CTelegramStream::operator>>(QString &str)
 {
     QByteArray data;
     *this >> data;
-    str = QString::fromUtf8(data);
+    str = QString::fromUtf8(data.constData());
     return *this;
 }
 

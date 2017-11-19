@@ -46,6 +46,10 @@ inline uint qHash(const Peer &key, uint seed)
     return key.id ^ s;
 }
 
+#if QT_VERSION < 0x050000
+inline uint qHash(const Peer &key) { return qHash(key, 0); }
+#endif
+
 }
 
 class CTelegramDispatcher : public QObject

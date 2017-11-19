@@ -93,6 +93,11 @@ static const int s_autoConnectionIndexInvalid = -1; // App logic rely on (s_auto
 static const quint32 s_legacyDcInfoTlType = 0x2ec2a43cu; // Scheme23_DcOption
 static const quint32 s_legacyVectorTlType = 0x1cb5c415u; // Scheme23_Vector;
 
+#if QT_VERSION < 0x050000
+#include <QtAlgorithms>
+const int s_timerMaxInterval = 500; // 0.5 sec. Needed to limit max possible typing time deviation in Qt4 by this value.
+#endif
+
 enum DialogType {
     DialogTypeDialog,
     DialogTypeChannel
@@ -410,7 +415,7 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     }
     QByteArray dcIpAddress;
     inputStream >> dcIpAddress;
-    dcInfo.ipAddress = QString::fromLatin1(dcIpAddress);
+    dcInfo.ipAddress = QString::fromLatin1(dcIpAddress.constData());
     inputStream >> dcInfo.port;
 
     qDebug() << Q_FUNC_INFO << dcInfo.ipAddress;
@@ -1062,8 +1067,15 @@ void CTelegramDispatcher::onContactListReceived(const QVector<quint32> &contactL
 {
     qDebug() << Q_FUNC_INFO << contactList;
 
+#if QT_VERSION < 0x050000
+    // Somewhy it crashes on QVector std::sort/qSort. Convert to std::vector and back as a workaround.
+    std::vector<quint32> newContactListStd = contactList.toStdVector();
+    qSort(newContactListStd);
+    const QVector<quint32> newContactList = QVector<quint32>::fromStdVector(newContactListStd);
+#else
     QVector<quint32> newContactList = contactList;
     std::sort(newContactList.begin(), newContactList.end());
+#endif
 
     if (m_contactIdList != newContactList) {
         m_contactIdList = newContactList;
@@ -1111,7 +1123,11 @@ void CTelegramDispatcher::onContactListChanged(const QVector<quint32> &added, co
 
 void CTelegramDispatcher::messageActionTimerTimeout()
 {
+#if QT_VERSION >= 0x050000
     int minTime = s_userTypingActionPeriod;
+#else
+    int minTime = s_timerMaxInterval;
+#endif
 
     for (int i = m_contactsMessageActions.count() - 1; i >= 0; --i) {
         int remainingTime = m_contactsMessageActions.at(i).typingTime - m_typingUpdateTimer->interval();
@@ -1535,7 +1551,11 @@ void CTelegramDispatcher::processUpdate(const TLUpdate &update)
             TelegramNamespace::MessageAction action = telegramMessageActionToPublicAction(update.action.tlType);
 
             int remainingTime = s_userTypingActionPeriod;
+#if QT_VERSION >= 0x050000
             remainingTime += m_typingUpdateTimer->remainingTime();
+#else
+            // Missed timer remaining time method can leads to typing time period deviation.
+#endif
 
             int index = -1;
             if (update.tlType == TLValue::UpdateUserTyping) {
@@ -2337,7 +2357,11 @@ void CTelegramDispatcher::onConnectionFailed(CTelegramConnection *connection)
         m_reconnectMainConnectionTimer = new QTimer(this);
         m_reconnectMainConnectionTimer->setSingleShot(true);
         m_reconnectMainConnectionTimer->setInterval(500);
+#if QT_VERSION >= 0x050000
         connect(m_reconnectMainConnectionTimer, &QTimer::timeout, this, &CTelegramDispatcher::onMainConnectionRetryTimerTriggered);
+#else
+        connect(m_reconnectMainConnectionTimer, SIGNAL(timeout()), this, SLOT(onMainConnectionRetryTimerTriggered()));
+#endif
     }
     m_reconnectMainConnectionTimer->start();
 
@@ -2495,7 +2519,12 @@ void CTelegramDispatcher::onAuthExportedAuthorizationReceived(quint32 dc, quint3
 void CTelegramDispatcher::ensureTypingUpdateTimer(int interval)
 {
     if (!m_typingUpdateTimer->isActive()) {
+#if QT_VERSION >= 0x050000
         m_typingUpdateTimer->start(interval);
+#else
+        Q_UNUSED(interval);
+        m_typingUpdateTimer->start(s_timerMaxInterval);
+#endif
     }
 }
 
@@ -2692,6 +2721,7 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
     connection->setDcInfo(dcInfo);
     connection->setDeltaTime(m_deltaTime);
 
+#if QT_VERSION >= 0x050000
     connect(connection, &CTelegramConnection::connectionFailed, this, &CTelegramDispatcher::onConnectionFailed);
     connect(connection, &CTelegramConnection::authStateChanged, this, &CTelegramDispatcher::onConnectionAuthChanged);
     connect(connection, &CTelegramConnection::statusChanged, this, &CTelegramDispatcher::onConnectionStatusChanged);
@@ -2701,6 +2731,17 @@ CTelegramConnection *CTelegramDispatcher::createConnection(const TLDcOption &dcI
 
     connect(connection, &CTelegramConnection::usersReceived, this, &CTelegramDispatcher::onUsersReceived);
     connect(connection, &CTelegramConnection::channelsParticipantsReceived, this, &CTelegramDispatcher::onChannelsParticipantsReceived);
+#else
+    connect(connection, SIGNAL(connectionFailed(CTelegramConnection*)), this, SLOT(onConnectionFailed(CTelegramConnection*)));
+    connect(connection, SIGNAL(authStateChanged(int,quint32)), this, SLOT(onConnectionAuthChanged(int,quint32)));
+    connect(connection, SIGNAL(statusChanged(int,int,quint32)), this, SLOT(onConnectionStatusChanged(int,int,quint32)));
+    connect(connection, SIGNAL(dcConfigurationReceived(quint32)), this, SLOT(onDcConfigurationUpdated()));
+    connect(connection, SIGNAL(actualDcIdReceived(quint32,quint32)), this, SLOT(onConnectionDcIdUpdated(quint32,quint32)));
+    connect(connection, SIGNAL(newRedirectedPackage(QByteArray,quint32)), this, SLOT(onPackageRedirected(QByteArray,quint32)));
+
+    connect(connection, SIGNAL(usersReceived(QVector<TLUser>)), this, SLOT(onUsersReceived(QVector<TLUser>)));
+    connect(connection, SIGNAL(channelsParticipantsReceived(quint32,TLVector<TLChannelParticipant>)), this, SLOT(onChannelsParticipantsReceived(quint32,TLVector<TLChannelParticipant>)));
+#endif
     for (CTelegramModule *module : m_modules) {
         module->onNewConnection(connection);
     }

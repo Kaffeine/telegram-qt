@@ -313,8 +313,13 @@ signals:
     void wantedMainDcChanged(quint32 dc, QString dcForPhoneNumber);
     void newRedirectedPackage(const QByteArray &data, quint32 dc);
 
+#if QT_VERSION >= 0x050000
     void statusChanged(ConnectionStatus status, int reason, quint32 dc);
     void authStateChanged(AuthState status, quint32 dc);
+#else
+    void statusChanged(int status, int reason, quint32 dc);
+    void authStateChanged(int status, quint32 dc);
+#endif
     void actualDcIdReceived(quint32 dc, quint32 newDcId);
     void dcConfigurationReceived(quint32 dc);
     void phoneStatusReceived(const QString &phone, bool registered);
