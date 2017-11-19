@@ -82,6 +82,7 @@ void CTelegramAuthModule::tryPassword(const QString &password)
 {
     if (m_passwordInfo.isEmpty()) {
         qWarning() << Q_FUNC_INFO << "There is no known salts to try password. Get it by getPassword() call.";
+        return;
     }
     tryPassword(m_passwordInfo.first().currentSalt, password.toUtf8());
 }
