@@ -74,7 +74,11 @@ CMessageModel::CMessageModel(CTelegramCore *backend, QObject *parent) :
 void CMessageModel::setFileManager(CFileManager *manager)
 {
     m_fileManager = manager;
+#if QT_VERSION >= 0x050000
     connect(m_fileManager, &CFileManager::requestComplete, this, &CMessageModel::onFileRequestComplete);
+#else
+    connect(m_fileManager, SIGNAL(requestComplete(QString)), this, SLOT(onFileRequestComplete(QString)));
+#endif
 }
 
 void CMessageModel::setContactsModel(CContactModel *model)
@@ -336,7 +340,11 @@ int CMessageModel::setMessageMediaData(quint64 messageId, const QVariant &data)
     }
 
     m_messages[i].mediaData = data;
+#if QT_VERSION >= 0x050000
     emit dataChanged(index(i, Message), index(i, Message), QVector<int>() << Qt::DecorationRole);
+#else
+    emit dataChanged(index(i, Message), index(i, Message));
+#endif
     return i;
 }
 

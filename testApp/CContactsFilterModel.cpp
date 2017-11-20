@@ -35,7 +35,14 @@ void CContactsFilterModel::addContact(quint32 id)
 
 void CContactsFilterModel::removeContact(quint32 id)
 {
+#if QT_VERSION >= 0x050000
     m_filter.removeAll(id);
+#else
+    const int index = m_filter.indexOf(id);
+    if (index >= 0) {
+        m_filter.remove(index);
+    }
+#endif
     invalidateFilter();
 }
 

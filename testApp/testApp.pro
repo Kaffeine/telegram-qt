@@ -1,5 +1,12 @@
-QT += core gui widgets network
+QT += core gui network
 CONFIG += c++11
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+} else {
+    # Qt4 has no c++11 config option and does not turn on the standard by default
+    QMAKE_CXXFLAGS += -std=c++11
+}
 
 TEMPLATE = app
 

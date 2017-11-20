@@ -2,6 +2,7 @@
 #define CCONTACTSFILTERMODEL_HPP
 
 #include <QSortFilterProxyModel>
+#include <QVector>
 
 class CContactsFilterModel : public QSortFilterProxyModel
 {

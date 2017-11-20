@@ -57,7 +57,11 @@ QPixmap CChatInfoModel::getPicture(const Telegram::Peer peer, const Telegram::Pe
 void CChatInfoModel::setFileManager(CFileManager *manager)
 {
     m_fileManager = manager;
+#if QT_VERSION >= 0x050000
     connect(m_fileManager, &CFileManager::requestComplete, this, &CChatInfoModel::onFileRequestComplete);
+#else
+    connect(m_fileManager, SIGNAL(requestComplete(QString)), this, SLOT(onFileRequestComplete(QString)));
+#endif
 }
 
 QVariant CChatInfoModel::headerData(int section, Qt::Orientation orientation, int role) const

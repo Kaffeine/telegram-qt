@@ -37,9 +37,15 @@ QPixmap CDialogModel::getPicture(const Telegram::Peer peer, const Telegram::Peer
 void CDialogModel::addSourceModel(CPeerModel *peerModel)
 {
     m_sourceModels.append(peerModel);
+#if QT_VERSION >= 0x050000
     connect(peerModel, &CPeerModel::pictureChanged, this, &CDialogModel::onPeerPictureChanged);
     connect(peerModel, &CPeerModel::nameChanged, this, &CPeerModel::nameChanged);
     connect(peerModel, &CPeerModel::pictureChanged, this, &CPeerModel::pictureChanged);
+#else
+    connect(peerModel, SIGNAL(pictureChanged(Telegram::Peer)), this, SLOT(onPeerPictureChanged(Telegram::Peer)));
+    connect(peerModel, SIGNAL(nameChanged(Telegram::Peer)), this, SIGNAL(nameChanged(Telegram::Peer)));
+    connect(peerModel, SIGNAL(pictureChanged(Telegram::Peer)), this, SIGNAL(pictureChanged(Telegram::Peer)));
+#endif
 }
 
 int CDialogModel::columnCount(const QModelIndex &parent) const

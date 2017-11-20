@@ -38,7 +38,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     }
 } else {
     isEmpty(BUILD_ONLY_LIBRARY) {
-        BUILD_ONLY_LIBRARY = "true"
+        BUILD_ONLY_LIBRARY = "false"
     }
     isEmpty(BUILD_QML_IMPORT) {
         BUILD_QML_IMPORT = "false"

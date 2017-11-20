@@ -32,8 +32,10 @@
 #include <QToolTip>
 #include <QStringListModel>
 
+#if QT_VERSION >= 0x050000
 #include <QMimeDatabase>
 #include <QMimeType>
+#endif
 
 #include <QDebug>
 
@@ -78,7 +80,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
     ui->workLikeClient->setChecked(m_workLikeAClient);
-    connect(ui->workLikeClient, &QAbstractButton::toggled, this, &MainWindow::setWorkLikeAClient);
     m_contactListModel->setSourceModel(m_contactsModel);
     ui->contactListTable->setModel(m_contactListModel);
     ui->contactListTable->setColumnWidth(CContactModel::Avatar, c_peerPictureColumnWidth);
@@ -101,8 +102,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->messagingContactIdentifier->setCompleter(comp);
     ui->groupChatContactPhone->setCompleter(comp);
 
+#if QT_VERSION >= 0x050000
+    connect(ui->workLikeClient, &QAbstractButton::toggled, this, &MainWindow::setWorkLikeAClient);
     connect(ui->secretOpenFile, &QAbstractButton::clicked, this, &MainWindow::loadSecretFromBrowsedFile);
     connect(ui->getSecretInfo, &QAbstractButton::clicked, this, &MainWindow::getConnectionSecretInfo);
+#else
+    connect(ui->workLikeClient, SIGNAL(toggled(bool)), this, SLOT(setWorkLikeAClient(bool)));
+    connect(ui->secretOpenFile, SIGNAL(clicked(bool)), this, SLOT(loadSecretFromBrowsedFile()));
+    connect(ui->getSecretInfo,  SIGNAL(clicked(bool)), this, SLOT(getConnectionSecretInfo()));
+#endif
 
     // Telepathy Morse app info
     CAppInformation *appInfo = new CAppInformation(this);
@@ -149,8 +157,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_core, SIGNAL(userNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)),
             SLOT(onUserNameStatusUpdated(QString,TelegramNamespace::UserNameStatus)));
 
+#if QT_VERSION >= 0x050000
     connect(m_core, &CTelegramCore::selfUserAvailable, m_contactsModel, &CContactModel::addContact);
     connect(m_core, &CTelegramCore::userInfoReceived, m_contactsModel, &CContactModel::addContact);
+#else
+    connect(m_core, SIGNAL(selfUserAvailable(quint32)), m_contactsModel, SLOT(addContact(quint32)));
+    connect(m_core, SIGNAL(userInfoReceived(quint32)), m_contactsModel, SLOT(addContact(quint32)));
+#endif
 
 //    connect(m_chatInfoModel, SIGNAL(chatAdded(quint32)), SLOT(onChatAdded(quint32)));
     connect(m_chatInfoModel, SIGNAL(chatChanged(quint32)), SLOT(onChatChanged(quint32)));
@@ -397,6 +410,7 @@ void MainWindow::onFileRequestFinished(quint32 requestId, Telegram::RemoteFile i
 
     Telegram::MessageMediaInfo mediaInfo;
 
+#if QT_VERSION >= 0x050000
     const QMimeDatabase db;
     const QMimeType mimeType = db.mimeTypeForFile(info.fileName(), QMimeDatabase::MatchExtension);
     if (!mimeType.isValid()) {
@@ -412,6 +426,7 @@ void MainWindow::onFileRequestFinished(quint32 requestId, Telegram::RemoteFile i
         mediaInfo.setDocumentFileName(info.fileName());
     }
 //    mediaInfo.setCaption(tr("Media %1").arg(requestId));
+#endif
 
     CMessageModel::SMessage m;
     m.type = mediaInfo.type();
@@ -468,18 +483,26 @@ void MainWindow::onCustomMenuRequested(const QPoint &pos)
             const SContact *contact = m_contactsModel->contactAt(i);
 
             QAction *a = resendMenu->addAction(CContactModel::getContactName(*contact));
+#if QT_VERSION >= 0x050000
             connect(a, &QAction::triggered, [=]() {
                 Telegram::MessageMediaInfo info;
                 m_core->getMessageMediaInfo(&info, messageId, Telegram::Peer(contact->id(), Telegram::Peer::User));
                 m_core->sendMedia(contact->id(), info);
             });
+#else
+            Q_UNUSED(a);
+#endif
         }
     }
 
     for (int i = 0; i < m_contactsModel->rowCount(); ++i) {
         const SContact *contact = m_contactsModel->contactAt(i);
         QAction *a = forwardMenu->addAction(CContactModel::getContactName(*contact));
+#if QT_VERSION >= 0x050000
         connect(a, &QAction::triggered, [=]() { m_core->forwardMessage(contact->id(), messageId); });
+#else
+        Q_UNUSED(a);
+#endif
     }
 
     menu->popup(ui->messagingView->mapToGlobal(pos));
@@ -507,10 +530,14 @@ void MainWindow::onSearchCustomMenuRequested(const QPoint &pos)
     }
 
     QAction *a = menu->addAction(tr("Send a message"));
+#if QT_VERSION >= 0x050000
     connect(a, &QAction::triggered, [=]() {
         setActiveContact(contact->id());
         ui->tabWidget->setCurrentWidget(ui->tabMessaging);
     });
+#else
+            Q_UNUSED(a);
+#endif
 
     menu->popup(ui->contactSearchResult->mapToGlobal(pos));
 }
@@ -685,8 +712,12 @@ void MainWindow::unsetChatCreationMode()
 void MainWindow::setAppState(MainWindow::AppState newState)
 {
     const auto formatName = [](const AppState state) {
+#if QT_VERSION >= 0x050000
         static const QMetaEnum appStateEnum = QMetaEnum::fromType<AppState>();
         return appStateEnum.key(state);
+#else
+        return QString::number(static_cast<int>(state));
+#endif
     };
     qDebug() << "Change app state from" << formatName(m_appState) << "to" << formatName(newState);
     m_appState = newState;

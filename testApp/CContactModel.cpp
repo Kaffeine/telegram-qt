@@ -76,7 +76,11 @@ QPixmap CContactModel::getPicture(const Telegram::Peer peer, const Telegram::Pee
 void CContactModel::setFileManager(CFileManager *manager)
 {
     m_fileManager = manager;
+#if QT_VERSION >= 0x050000
     connect(m_fileManager, &CFileManager::requestComplete, this, &CContactModel::onFileRequestComplete);
+#else
+    connect(m_fileManager, SIGNAL(requestComplete(QString)), this, SLOT(onFileRequestComplete(QString)));
+#endif
 }
 
 QVariant CContactModel::headerData(int section, Qt::Orientation orientation, int role) const
