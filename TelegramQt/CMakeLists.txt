@@ -86,7 +86,11 @@ add_definitions(
     -DQT_STRICT_ITERATORS
 )
 
-QT5_WRAP_CPP(telegram_qt_MOC_SOURECES ${telegram_qt_META_HEADERS})
+if (USE_QT4)
+    QT4_WRAP_CPP(telegram_qt_MOC_SOURECES ${telegram_qt_META_HEADERS})
+else()
+    QT5_WRAP_CPP(telegram_qt_MOC_SOURECES ${telegram_qt_META_HEADERS})
+endif()
 
 if (STATIC_BUILD)
     add_library(TelegramQt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES})
@@ -96,13 +100,23 @@ endif()
 
 target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
-    Qt5::Core
-    Qt5::Network
-)
-target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE
-    ${QT5_INCLUDES}
-)
+if(USE_QT4)
+    target_link_libraries(telegram-qt${QT_VERSION_MAJOR}
+        ${QT_QTCORE_LIBRARY}
+        ${QT_QTNETWORK_LIBRARY}
+    )
+    target_include_directories(telegram-qt${QT_VERSION_MAJOR} PRIVATE
+        ${QT_INCLUDES}
+    )
+else()
+    target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
+        Qt5::Core
+        Qt5::Network
+    )
+    target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+        ${QT5_INCLUDES}
+    )
+endif()
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
     ${OPENSSL_LIBRARIES}

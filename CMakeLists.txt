@@ -22,15 +22,26 @@ option(BUILD_GENERATOR "Build protocol code generator" FALSE)
 # Add an option for dev build
 option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" TRUE)
 
-set(QT_VERSION_MAJOR "5")
-set(QT_COMPONENTS Core Network)
+if (USE_QT4)
+    set(QT_VERSION_MAJOR "4")
+    set(QT4_COMPONENTS Core Network)
 
-if(ENABLE_TESTAPP)
-    list(APPEND QT_COMPONENTS Gui Widgets)
+    if (ENABLE_TESTAPP)
+        list(APPEND QT4_COMPONENTS QtGui)
+    endif()
+    find_package(Qt4 4.8.0 REQUIRED ${QT4_COMPONENTS})
+    message("-- Found Qt version: ${Qt4_VERSION}")
+else()
+    set(QT_VERSION_MAJOR "5")
+    set(QT_COMPONENTS Core Network)
+
+    if(ENABLE_TESTAPP)
+        list(APPEND QT_COMPONENTS Gui Widgets)
+    endif()
+    find_package(Qt5 5.5.0 REQUIRED COMPONENTS ${QT_COMPONENTS})
+    message("-- Found Qt version: ${Qt5_VERSION}")
 endif()
 
-find_package(Qt5 5.5.0 REQUIRED COMPONENTS ${QT_COMPONENTS})
-message("-- Found Qt version: ${Qt5_VERSION}")
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 
