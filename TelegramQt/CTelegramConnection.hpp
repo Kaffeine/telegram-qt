@@ -291,8 +291,6 @@ public:
     quint64 p() const { return m_p; }
     quint64 q() const { return m_q; }
 
-    quint64 serverPublicFingersprint() const { return m_serverPublicFingersprint; }
-
     QByteArray authKey() const { return m_authKey; }
     void setAuthKey(const QByteArray &newAuthKey);
     quint64 authId() const { return m_authId; }
@@ -572,7 +570,6 @@ protected:
     quint32 m_p;
     quint32 m_q;
 
-    quint64 m_serverPublicFingersprint;
     Telegram::RsaKey m_rsaKey;
     SAesKey m_tmpAesKey;
 

@@ -76,8 +76,7 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_pingInterval(0),
     m_serverDisconnectionExtraTime(0),
     m_deltaTime(0),
-    m_deltaTimeHeuristicState(DeltaTimeIsOk),
-    m_serverPublicFingersprint(0)
+    m_deltaTimeHeuristicState(DeltaTimeIsOk)
   #ifdef NETWORK_LOGGING
   , m_logFile(0)
   #endif
@@ -1928,32 +1927,27 @@ bool CTelegramConnection::acceptPqAuthorization(const QByteArray &payload)
         m_q = div1;
     }
 
-    TLVector<quint64> fingersprints;
-
-    inputStream >> fingersprints;
-
-    if (fingersprints.count() != 1) {
-        qDebug() << "Error: Unexpected Server RSA Fingersprints vector.";
+    TLVector<quint64> fingerprints;
+    inputStream >> fingerprints;
+    if (fingerprints.count() != 1) {
+        qDebug() << "Error: Unexpected Server RSA Fingersprints vector size:" << fingerprints.size();
         return false;
     }
-
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
     qDebug() << Q_FUNC_INFO << "Client nonce:" << clientNonce;
     qDebug() << Q_FUNC_INFO << "Server nonce:" << serverNonce;
     qDebug() << Q_FUNC_INFO << "PQ:" << m_pq;
     qDebug() << Q_FUNC_INFO << "P:" << m_p;
     qDebug() << Q_FUNC_INFO << "Q:" << m_q;
-    qDebug() << Q_FUNC_INFO << "FingerPrints:" << fingersprints;
+    qDebug() << Q_FUNC_INFO << "Fingerprints:" << fingerprints;
 #endif
-
-    m_serverPublicFingersprint = fingersprints.at(0);
-
-    if (m_rsaKey.fingerprint != m_serverPublicFingersprint) {
-        qDebug() << "Error: Server RSA Fingersprint does not match to loaded key";
-        return false;
+    for (quint64 serverFingerprint : fingerprints) {
+        if (serverFingerprint == m_rsaKey.fingerprint) {
+            return true;
+        }
     }
-
-    return true;
+    qDebug() << "Error: Server RSA fingersprints" << fingerprints << " do not match to the loaded key" << m_rsaKey.fingerprint;
+    return false;
 }
 
 void CTelegramConnection::requestDhParameters()
@@ -2012,7 +2006,7 @@ void CTelegramConnection::requestDhParameters()
     qToBigEndian(m_q, (uchar *) bigEndianNumber.data());
     outputStream << bigEndianNumber;
 
-    outputStream << m_serverPublicFingersprint;
+    outputStream << m_rsaKey.fingerprint;
 
     outputStream << encryptedPackage;
 
