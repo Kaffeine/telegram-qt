@@ -160,9 +160,14 @@ void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
     setAppInformation(variableAppInfo);
 }
 
+QVector<Telegram::DcOption> CTelegramCore::defaultServerConfiguration()
+{
+    return CTelegramDispatcher::defaultDcConfiguration();
+}
+
 QVector<Telegram::DcOption> CTelegramCore::builtInDcs()
 {
-    return CTelegramDispatcher::builtInDcs();
+    return defaultServerConfiguration();
 }
 
 quint32 CTelegramCore::defaultPingInterval()
@@ -170,9 +175,14 @@ quint32 CTelegramCore::defaultPingInterval()
     return CTelegramDispatcher::defaultPingInterval();
 }
 
-QVector<Telegram::DcOption> CTelegramCore::dcConfiguration()
+QVector<Telegram::DcOption> CTelegramCore::serverConfiguration()
 {
     return m_private->m_dispatcher->dcConfiguration();
+}
+
+QVector<Telegram::DcOption> CTelegramCore::dcConfiguration()
+{
+    return serverConfiguration();
 }
 
 QByteArray CTelegramCore::connectionSecretInfo() const
@@ -185,22 +195,51 @@ TelegramNamespace::ConnectionState CTelegramCore::connectionState() const
     return m_private->m_dispatcher->connectionState();
 }
 
-bool CTelegramCore::initConnection(const QVector<Telegram::DcOption> &dcs)
+bool CTelegramCore::connectToServer()
 {
     if (!m_private->m_appInfo || !m_private->m_appInfo->isValid()) {
-        qDebug() << "CTelegramCore: Can not init connection: App information is null or is not valid.";
+        qWarning() << "CTelegramCore::connectToServer(): App information is null or is not valid.";
         return false;
     }
 
     m_private->m_dispatcher->setAppInformation(m_private->m_appInfo);
-    m_private->m_dispatcher->initConnection(dcs);
-
-    return true;
+    return m_private->m_dispatcher->connectToServer();
 }
 
 void CTelegramCore::disconnectFromServer()
 {
-    return m_private->m_dispatcher->disconnectFromServer();
+    m_private->m_dispatcher->disconnectFromServer();
+}
+
+bool CTelegramCore::setSecretInfo(const QByteArray &secret)
+{
+    return m_private->m_dispatcher->setSecretInfo(secret);
+}
+
+bool CTelegramCore::setServerConfiguration(const QVector<Telegram::DcOption> &dcs)
+{
+    return m_private->m_dispatcher->setDcConfiguration(dcs);
+}
+
+bool CTelegramCore::resetServerConfiguration()
+{
+    return m_private->m_dispatcher->resetDcConfiguration();
+}
+
+void CTelegramCore::resetConnectionData()
+{
+    m_private->m_dispatcher->resetConnectionData();
+}
+
+bool CTelegramCore::initConnection(const QVector<Telegram::DcOption> &dcs)
+{
+    resetConnectionData();
+    if (dcs.isEmpty()) {
+        resetServerConfiguration();
+    } else {
+        setServerConfiguration(dcs);
+    }
+    return connectToServer();
 }
 
 void CTelegramCore::closeConnection()
@@ -211,8 +250,9 @@ void CTelegramCore::closeConnection()
 
 bool CTelegramCore::restoreConnection(const QByteArray &secret)
 {
-    m_private->m_dispatcher->setAppInformation(appInformation());
-    return m_private->m_dispatcher->restoreConnection(secret);
+    resetConnectionData();
+    setSecretInfo(secret);
+    return connectToServer();
 }
 
 bool CTelegramCore::logOut()

@@ -50,10 +50,10 @@ public:
     Q_INVOKABLE void setAppInformation(CAppInformation *newAppInfo);
     Q_INVOKABLE void setAppInformation(const CAppInformation *newAppInfo);
 
-    Q_INVOKABLE static QVector<Telegram::DcOption> builtInDcs();
+    Q_INVOKABLE static QVector<Telegram::DcOption> defaultServerConfiguration();
     Q_INVOKABLE static quint32 defaultPingInterval();
 
-    Q_INVOKABLE QVector<Telegram::DcOption> dcConfiguration();
+    Q_INVOKABLE QVector<Telegram::DcOption> serverConfiguration();
     QByteArray connectionSecretInfo() const;
 
     Q_INVOKABLE TelegramNamespace::ConnectionState connectionState() const;
@@ -90,10 +90,15 @@ public Q_SLOTS:
     void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime = 10000);
     void setMediaDataBufferSize(quint32 size);
 
-    bool initConnection(const QVector<Telegram::DcOption> &dcs = QVector<Telegram::DcOption>()); // Uses builtin dc options by default
-    bool restoreConnection(const QByteArray &secret);
+    bool connectToServer();
     void disconnectFromServer();
-    void closeConnection(); // Deprecated, use disconnectFromServer() instead
+
+    bool setServerConfiguration(const QVector<Telegram::DcOption> &dcs);
+    bool resetServerConfiguration();
+
+    void resetConnectionData();
+    bool setSecretInfo(const QByteArray &secret);
+
     bool logOut();
 
     void requestPhoneStatus(const QString &phoneNumber);
@@ -185,6 +190,22 @@ Q_SIGNALS:
     void filePartReceived(quint32 requestId, const QByteArray &data, const QString &mimeType, quint32 offset, quint32 totalSize);
     void filePartUploaded(quint32 requestId, quint32 offset, quint32 totalSize);
     void fileRequestFinished(quint32 requestId, Telegram::RemoteFile requestResult);
+
+public:
+    // Deprecated:
+    Q_INVOKABLE static QVector<Telegram::DcOption> builtInDcs(); // Use defaultServerConfiguration() instead
+    Q_INVOKABLE QVector<Telegram::DcOption> dcConfiguration(); // Use serverConfiguration() instead
+
+public Q_SLOTS:
+    // Deprecated:
+    bool initConnection(const QVector<Telegram::DcOption> &dcs = QVector<Telegram::DcOption>());
+    bool restoreConnection(const QByteArray &secret);
+    void closeConnection();
+    // Use the follow methods instead:
+    // - setConnectionData()/resetConnectionData()
+    // - setServerConfiguration()/resetServerConfiguration(),
+    // - connectToServer()
+    // - disconnectFromServer()
 
 private:
     class Private;

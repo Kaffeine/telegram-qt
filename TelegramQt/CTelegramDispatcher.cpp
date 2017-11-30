@@ -122,6 +122,9 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
 {
     m_typingUpdateTimer->setSingleShot(true);
     connect(m_typingUpdateTimer, &QTimer::timeout, this, &CTelegramDispatcher::messageActionTimerTimeout);
+
+    resetConnectionData();
+    resetDcConfiguration();
 }
 
 CTelegramDispatcher::~CTelegramDispatcher()
@@ -135,7 +138,7 @@ void CTelegramDispatcher::plugModule(CTelegramModule *module)
     module->setDispatcher(this);
 }
 
-QVector<Telegram::DcOption> CTelegramDispatcher::builtInDcs()
+QVector<Telegram::DcOption> CTelegramDispatcher::defaultDcConfiguration()
 {
     return s_builtInDcs;
 }
@@ -330,18 +333,26 @@ void CTelegramDispatcher::setPingInterval(quint32 ms, quint32 serverDisconnectio
     m_pingServerAdditionDisconnectionTime = serverDisconnectionAdditionTime;
 }
 
-bool CTelegramDispatcher::initConnection(const QVector<Telegram::DcOption> &dcs)
+bool CTelegramDispatcher::setDcConfiguration(const QVector<Telegram::DcOption> &dcs)
 {
-    if (!dcs.isEmpty()) {
-        m_connectionAddresses = dcs;
-    } else {
-        m_connectionAddresses = s_builtInDcs;
+    if (connectionState() != TelegramNamespace::ConnectionStateDisconnected) {
+        qWarning() << "CTelegramDispatcher::connectToServer(): Connection is already in progress.";
+        return false;
     }
+    m_connectionAddresses = dcs;
+    return true;
+}
 
-    initConnectionSharedClear();
-
-    connectToTheNextDcAddress();
-
+bool CTelegramDispatcher::connectToServer()
+{
+    if (connectionState() != TelegramNamespace::ConnectionStateDisconnected) {
+        qWarning() << "CTelegramDispatcher::connectToServer(): Connection is already in progress.";
+        return false;
+    }
+    if (m_authKey.isEmpty()) {
+        return connectToTheNextDcAddress();
+    }
+    connectToTheWantedDc();
     return true;
 }
 
@@ -349,6 +360,7 @@ bool CTelegramDispatcher::connectToTheNextDcAddress()
 {
     clearMainConnection();
     if (m_connectionAddresses.isEmpty()) {
+        qWarning() << "CTelegramDispatcher::connectToTheNextDcAddress(): Connection address is not set";
         return false;
     }
     ++m_autoConnectionDcIndex;
@@ -373,9 +385,21 @@ bool CTelegramDispatcher::connectToTheNextDcAddress()
     return true;
 }
 
-bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
+void CTelegramDispatcher::connectToTheWantedDc()
 {
-    initConnectionSharedClear();
+    clearMainConnection();
+    m_mainConnection = createConnection(m_mainDcInfo);
+    m_mainConnection->setAuthKey(m_authKey);
+    m_mainConnection->setServerSalt(m_serverSalt);
+    initConnectionSharedFinal();
+}
+
+bool CTelegramDispatcher::setSecretInfo(const QByteArray &secret)
+{
+    if (connectionState() != TelegramNamespace::ConnectionStateDisconnected) {
+        qWarning() << "CTelegramDispatcher::setSecretInfo(): Connection is already in progress.";
+        return false;
+    }
 
     CRawStreamEx inputStream(secret);
 
@@ -510,55 +534,30 @@ bool CTelegramDispatcher::restoreConnection(const QByteArray &secret)
     }
 
     m_deltaTime = deltaTime;
-
-    clearMainConnection();
+    m_mainDcInfo = dcInfo;
     m_wantedActiveDc = dcInfo.id;
-    m_mainConnection = createConnection(dcInfo);
-    m_mainConnection->setAuthKey(authKey);
-    m_mainConnection->setServerSalt(serverSalt);
-
-    initConnectionSharedFinal();
+    m_authKey = authKey;
+    m_serverSalt = serverSalt;
 
     return true;
 }
 
-void CTelegramDispatcher::initConnectionSharedClear()
+void CTelegramDispatcher::resetConnectionData()
 {
     m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
-
     m_deltaTime = 0;
     m_updateRequestId = 0;
     m_updatesState.pts = 1;
     m_updatesState.qts = 1;
     m_updatesState.date = 1;
+    m_actualState = TLUpdatesState();
     m_chatIds.clear();
     m_maxMessageId = 0;
-}
-
-void CTelegramDispatcher::initConnectionSharedFinal()
-{
-    m_initializationState = StepFirst;
-    m_requestedSteps = 0;
-    setConnectionState(TelegramNamespace::ConnectionStateConnecting);
-    m_updatesStateIsLocked = false;
-    m_selfUserId = 0;
-
-    m_actualState = TLUpdatesState();
-    m_mainConnection->connectToDc();
-}
-
-void CTelegramDispatcher::disconnectFromServer()
-{
-    setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
-
-    clearMainConnection();
-    clearExtraConnections();
 
     m_dcConfiguration.clear();
     m_delayedPackages.clear();
     qDeleteAll(m_users);
     m_users.clear();
-    m_askedUserIds.clear();
     qDeleteAll(m_knownMediaMessages);
     m_knownMediaMessages.clear();
     for (auto peerMessages : m_channelMediaMessages) {
@@ -569,18 +568,41 @@ void CTelegramDispatcher::disconnectFromServer()
     m_contactIdList.clear();
     m_contactsMessageActions.clear();
     m_localMessageActions.clear();
-    m_chatIds.clear();
 
     qDeleteAll(m_chatInfo);
     m_chatInfo.clear();
     m_chatFullInfo.clear();
-    m_maxMessageId = 0;
     m_wantedActiveDc = 0;
-    m_autoConnectionDcIndex = s_autoConnectionIndexInvalid;
 
     for (CTelegramModule *module : m_modules) {
         module->clear();
     }
+}
+
+bool CTelegramDispatcher::resetDcConfiguration()
+{
+    return setDcConfiguration(defaultDcConfiguration());
+}
+
+void CTelegramDispatcher::initConnectionSharedFinal()
+{
+    m_initializationState = StepFirst;
+    m_requestedSteps = 0;
+    setConnectionState(TelegramNamespace::ConnectionStateConnecting);
+    m_updatesStateIsLocked = false;
+    // TODO: Check if the reset() method is a more appropriate place for the selfUserId reset.
+    m_selfUserId = 0;
+    m_mainConnection->connectToDc();
+}
+
+void CTelegramDispatcher::disconnectFromServer()
+{
+    setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
+
+    clearMainConnection();
+    clearExtraConnections();
+
+    m_askedUserIds.clear();
 }
 
 bool CTelegramDispatcher::requestHistory(const Telegram::Peer &peer, quint32 offset, quint32 limit)
@@ -2341,17 +2363,14 @@ void CTelegramDispatcher::onConnectionFailed(CTelegramConnection *connection)
     }
     m_reconnectMainConnectionTimer->start();
 
-    const TLDcOption dcInfo = m_mainConnection->dcInfo();
+    m_mainDcInfo = m_mainConnection->dcInfo();
     clearMainConnection();
-    m_mainConnection = createConnection(dcInfo);
 }
 
 void CTelegramDispatcher::onMainConnectionRetryTimerTriggered()
 {
     qDebug() << "retry timer triggered";
-    if (m_mainConnection) {
-        m_mainConnection->connectToDc();
-    }
+    connectToServer();
 }
 
 void CTelegramDispatcher::onUpdatesReceived(const TLUpdates &updates, quint64 id)
@@ -2533,6 +2552,9 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     } else if (m_initializationState == (StepDcConfiguration|StepHasKey|StepSignIn)) {
         setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
         m_deltaTime = activeConnection()->deltaTime();
+        m_authKey = activeConnection()->authKey();
+        m_serverSalt = activeConnection()->serverSalt();
+        m_mainDcInfo = activeConnection()->dcInfo();
     }
 
     if (!(m_initializationState & StepSignIn)) {
