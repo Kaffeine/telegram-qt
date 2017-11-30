@@ -177,9 +177,15 @@ struct Peer
     {
         return Peer(id, User);
     }
+
     static Peer fromChatId(quint32 id)
     {
         return Peer(id, Chat);
+    }
+
+    static Peer fromChannelId(quint32 id)
+    {
+        return Peer(id, Channel);
     }
 };
 
