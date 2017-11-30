@@ -157,6 +157,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->groupChatContacts->hideColumn(CContactModel::Blocked);
 
+    ui->mainSplitter->setStretchFactor(1, 1);
     ui->mainSplitter->setSizes(QList<int>() << 0 << 100);
     ui->groupChatSplitter->setSizes(QList<int>() << 550 << 450 << 300);
     ui->contactsSplitter->setSizes(QList<int>() << 100 << 0);
@@ -513,6 +514,21 @@ void MainWindow::onSearchCustomMenuRequested(const QPoint &pos)
     });
 
     menu->popup(ui->contactSearchResult->mapToGlobal(pos));
+}
+
+void MainWindow::on_actionShowSettings_triggered(bool checked)
+{
+    if (checked) {
+        ui->mainSplitter->setSizes(QList<int>() << 10 << 100);
+    } else {
+        ui->mainSplitter->setSizes(QList<int>() << 0 << 100);
+    }
+}
+
+void MainWindow::on_mainSplitter_splitterMoved(int pos, int index)
+{
+    Q_UNUSED(index)
+    ui->actionShowSettings->setChecked(pos > 0);
 }
 
 void MainWindow::on_connectionStepButton_clicked()

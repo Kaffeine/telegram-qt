@@ -914,6 +914,7 @@
     <property name="title">
      <string>&amp;Menu</string>
     </property>
+    <addaction name="actionShowSettings"/>
     <addaction name="actionQuit"/>
    </widget>
    <addaction name="menu_File"/>
@@ -925,6 +926,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionShowSettings">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show settings</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+0</string>
    </property>
   </action>
  </widget>

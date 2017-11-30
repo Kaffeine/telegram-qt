@@ -87,6 +87,8 @@ protected slots:
     void onCustomMenuRequested(const QPoint &pos);
     void onSearchCustomMenuRequested(const QPoint &pos);
 
+    void on_actionShowSettings_triggered(bool checked);
+    void on_mainSplitter_splitterMoved(int pos, int index);
     void on_connectionStepButton_clicked();
     void on_secondConnectButton_clicked();
 
