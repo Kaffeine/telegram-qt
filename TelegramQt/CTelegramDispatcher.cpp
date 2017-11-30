@@ -2243,9 +2243,15 @@ void CTelegramDispatcher::onConnectionStatusChanged(int newStatusInt, int reason
     }
 
     if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
-        if (reason == CTelegramConnection::ConnectionStatusReasonRemote) {
+        switch (reason) {
+        case CTelegramConnection::ConnectionStatusReasonLocal:
+        case CTelegramConnection::ConnectionStatusReasonNone:
+            break;
+        case CTelegramConnection::ConnectionStatusReasonRemote:
+        case CTelegramConnection::ConnectionStatusReasonTimeout:
             qDebug() << Q_FUNC_INFO << "A connection is unexpectedly terminated!" << connection;
             onConnectionFailed(connection);
+            break;
         }
     }
 
