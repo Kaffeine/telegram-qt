@@ -91,6 +91,11 @@ void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
     m_dcInfo = newDcInfo;
 }
 
+void CTelegramConnection::setServerRsaKey(const Telegram::RsaKey &key)
+{
+    m_rsaKey = key;
+}
+
 void CTelegramConnection::connectToDc()
 {
     if (m_status != ConnectionStatusDisconnected) {
@@ -183,8 +188,10 @@ quint64 CTelegramConnection::timeStampToMSecsSinceEpoch(quint64 ts)
 void CTelegramConnection::initAuth()
 {
     if (m_authState == AuthStateNone) {
+        if (!m_rsaKey.isValid()) {
+            qWarning() << "CTelegramConnection::initAuth(): RSA key is not valid!";
+        }
         m_authRetryId = 0;
-        m_rsaKey = Utils::loadRsaKey();
         Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
         requestPqAuthorization();
     }

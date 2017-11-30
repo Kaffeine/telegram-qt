@@ -86,6 +86,7 @@ public:
     explicit CTelegramConnection(const CAppInformation *appInfo, QObject *parent = nullptr);
 
     void setDcInfo(const TLDcOption &newDcInfo);
+    void setServerRsaKey(const Telegram::RsaKey &key);
 
     TLDcOption dcInfo() const { return m_dcInfo; }
 

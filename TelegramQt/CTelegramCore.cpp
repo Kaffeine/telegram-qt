@@ -175,6 +175,16 @@ quint32 CTelegramCore::defaultPingInterval()
     return CTelegramTransportModule::defaultPingInterval();
 }
 
+Telegram::RsaKey CTelegramCore::defaultServerPublicRsaKey() const
+{
+    return m_private->m_authModule->defaultServerPublicRsaKey();
+}
+
+Telegram::RsaKey CTelegramCore::serverPublicRsaKey() const
+{
+    return m_private->m_authModule->serverPublicRsaKey();
+}
+
 QVector<Telegram::DcOption> CTelegramCore::serverConfiguration()
 {
     return m_private->m_dispatcher->dcConfiguration();
@@ -209,6 +219,11 @@ bool CTelegramCore::connectToServer()
 void CTelegramCore::disconnectFromServer()
 {
     m_private->m_dispatcher->disconnectFromServer();
+}
+
+bool CTelegramCore::setServerPublicRsaKey(const Telegram::RsaKey &key)
+{
+    return m_private->m_authModule->setServerPublicRsaKey(key);
 }
 
 bool CTelegramCore::setSecretInfo(const QByteArray &secret)

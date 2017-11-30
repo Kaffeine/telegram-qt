@@ -164,6 +164,13 @@ struct RsaKey {
         fingerprint = otherKey.fingerprint;
         return *this;
     }
+
+    void updateFingersprint();
+    bool isValid() const;
+
+    void loadFromFile(const QString &fileName);
+
+    static RsaKey fromFile(const QString &fileName);
 };
 
 class UserInfo;

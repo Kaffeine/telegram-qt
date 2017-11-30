@@ -29,6 +29,8 @@
 #include <QCryptographicHash>
 #include <QDebug>
 
+#include "CRawStream.hpp"
+
 struct SslBigNumberContext {
     SslBigNumberContext() :
         m_context(BN_CTX_new())
@@ -233,6 +235,19 @@ quint64 Utils::getFingersprint(const QByteArray &data, bool lowerOrderBits)
     }
 }
 
+quint64 Utils::getRsaFingersprint(const Telegram::RsaKey &key)
+{
+    if (key.modulus.isEmpty() || key.exponent.isEmpty()) {
+        return 0;
+    }
+    QBuffer buffer;
+    buffer.open(QIODevice::WriteOnly);
+    CRawStreamEx stream(&buffer);
+    stream << key.modulus;
+    stream << key.exponent;
+    return getFingersprint(buffer.data());
+}
+
 Telegram::RsaKey Utils::loadHardcodedKey()
 {
     Telegram::RsaKey result;
@@ -242,10 +257,37 @@ Telegram::RsaKey Utils::loadHardcodedKey()
     return result;
 }
 
+Telegram::RsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
+{
+    Telegram::RsaKey result;
+    FILE *file = fopen(fileName.toLocal8Bit().constData(), "r");
+    if (!file) {
+        qWarning() << "Can not open RSA key file.";
+        return result;
+    }
+
+    // Try SubjectPublicKeyInfo structure (BEGIN PUBLIC KEY)
+    RSA *key = PEM_read_RSA_PUBKEY(file, 0, 0, 0);
+    if (!key) {
+        // Try PKCS#1 RSAPublicKey structure (BEGIN RSA PUBLIC KEY)
+        key = PEM_read_RSAPublicKey(file, 0, 0, 0);
+    }
+
+    fclose(file);
+    if (!key) {
+        qWarning() << "Can not read RSA key.";
+        return result;
+    }
+    result.modulus = SslBigNumber::toByteArray(key->n);
+    result.exponent = SslBigNumber::toByteArray(key->e);
+    result.fingerprint = getRsaFingersprint(result);
+    RSA_free(key);
+    return result;
+}
+
 Telegram::RsaKey Utils::loadRsaKey()
 {
     return loadHardcodedKey();
-//    return loadRsaKeyFromFile("telegram_server_key.pub");
 }
 
 QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp)

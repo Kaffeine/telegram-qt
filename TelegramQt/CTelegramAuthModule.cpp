@@ -28,8 +28,25 @@
 #endif
 
 CTelegramAuthModule::CTelegramAuthModule(QObject *parent) :
-    CTelegramModule(parent)
+    CTelegramModule(parent),
+    m_serverKey(defaultServerPublicRsaKey())
 {
+}
+
+Telegram::RsaKey CTelegramAuthModule::defaultServerPublicRsaKey() const
+{
+    return Utils::loadHardcodedKey();
+}
+
+Telegram::RsaKey CTelegramAuthModule::serverPublicRsaKey() const
+{
+    return m_serverKey;
+}
+
+bool CTelegramAuthModule::setServerPublicRsaKey(const Telegram::RsaKey &key)
+{
+    m_serverKey = key;
+    return true;
 }
 
 void CTelegramAuthModule::clear()
@@ -161,6 +178,8 @@ void CTelegramAuthModule::onNewConnection(CTelegramConnection *connection)
 
     // Should be done only for the main connection, but probably it is safe to connect to all connections for now
     connect(connection, &CTelegramConnection::loggedOut, this, &CTelegramAuthModule::loggedOut);
+
+    connection->setServerRsaKey(m_serverKey);
 }
 
 bool CTelegramAuthModule::getPasswordData(Telegram::PasswordInfo *passwordInfo, quint64 requestId) const

@@ -53,6 +53,8 @@ public:
     Q_INVOKABLE static QVector<Telegram::DcOption> defaultServerConfiguration();
     Q_INVOKABLE static quint32 defaultPingInterval();
 
+    Q_INVOKABLE Telegram::RsaKey defaultServerPublicRsaKey() const;
+    Q_INVOKABLE Telegram::RsaKey serverPublicRsaKey() const;
     Q_INVOKABLE QVector<Telegram::DcOption> serverConfiguration();
     QByteArray connectionSecretInfo() const;
 
@@ -90,6 +92,7 @@ public Q_SLOTS:
     bool connectToServer();
     void disconnectFromServer();
 
+    bool setServerPublicRsaKey(const Telegram::RsaKey &key);
     bool setServerConfiguration(const QVector<Telegram::DcOption> &dcs);
     bool resetServerConfiguration();
 
