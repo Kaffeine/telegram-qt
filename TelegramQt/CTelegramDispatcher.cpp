@@ -213,7 +213,7 @@ QVector<Telegram::Peer> CTelegramDispatcher::dialogs() const
 void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool replace)
 {
     qDebug() << "addContacts" << Telegram::Utils::maskPhoneNumber(phoneNumbers);
-    if (activeConnection()) {
+    if (mainConnection()) {
         TLVector<TLInputContact> contactsVector;
         for (int i = 0; i < phoneNumbers.count(); ++i) {
             TLInputContact contact;
@@ -221,7 +221,7 @@ void CTelegramDispatcher::addContacts(const QStringList &phoneNumbers, bool repl
             contact.phone = phoneNumbers.at(i);
             contactsVector.append(contact);
         }
-        activeConnection()->contactsImportContacts(contactsVector, replace);
+        mainConnection()->contactsImportContacts(contactsVector, replace);
     } else {
         qDebug() << Q_FUNC_INFO << "No active connection.";
     }
@@ -242,13 +242,13 @@ void CTelegramDispatcher::deleteContacts(const QVector<quint32> &userIds)
     }
 
     if (!users.isEmpty()) {
-        activeConnection()->contactsDeleteContacts(users);
+        mainConnection()->contactsDeleteContacts(users);
     }
 }
 
 QByteArray CTelegramDispatcher::connectionSecretInfo() const
 {
-    if (!activeConnection() || activeConnection()->authKey().isEmpty()) {
+    if (!mainConnection() || mainConnection()->authKey().isEmpty()) {
         return QByteArray();
     }
 
@@ -256,16 +256,16 @@ QByteArray CTelegramDispatcher::connectionSecretInfo() const
     CRawStreamEx outputStream(&output, /* write */ true);
 
     outputStream << secretFormatVersion;
-    outputStream << activeConnection()->deltaTime();
+    outputStream << mainConnection()->deltaTime();
 
-    const TLDcOption dcInfo = activeConnection()->dcInfo();
+    const TLDcOption dcInfo = mainConnection()->dcInfo();
 
     outputStream << dcInfo.id;
     outputStream << dcInfo.ipAddress.toUtf8();
     outputStream << dcInfo.port;
-    outputStream << activeConnection()->authKey();
-    outputStream << activeConnection()->authId();
-    outputStream << activeConnection()->serverSalt();
+    outputStream << mainConnection()->authKey();
+    outputStream << mainConnection()->authId();
+    outputStream << mainConnection()->serverSalt();
 
     if (m_updatesEnabled) {
         outputStream << m_updatesState.pts;
@@ -358,7 +358,7 @@ bool CTelegramDispatcher::connectToServer()
 
 bool CTelegramDispatcher::connectToTheNextDcAddress()
 {
-    clearMainConnection();
+    setMainConnection(nullptr);
     if (m_connectionAddresses.isEmpty()) {
         qWarning() << "CTelegramDispatcher::connectToTheNextDcAddress(): Connection address is not set";
         return false;
@@ -380,15 +380,14 @@ bool CTelegramDispatcher::connectToTheNextDcAddress()
     TLDcOption dcInfo;
     dcInfo.ipAddress = m_connectionAddresses.at(m_autoConnectionDcIndex).address;
     dcInfo.port = m_connectionAddresses.at(m_autoConnectionDcIndex).port;
-    m_mainConnection = createConnection(dcInfo);
+    setMainConnection(createConnection(dcInfo));
     initConnectionSharedFinal();
     return true;
 }
 
 void CTelegramDispatcher::connectToTheWantedDc()
 {
-    clearMainConnection();
-    m_mainConnection = createConnection(m_mainDcInfo);
+    setMainConnection(createConnection(m_mainDcInfo));
     m_mainConnection->setAuthKey(m_authKey);
     m_mainConnection->setServerSalt(m_serverSalt);
     initConnectionSharedFinal();
@@ -599,7 +598,7 @@ void CTelegramDispatcher::disconnectFromServer()
 {
     setConnectionState(TelegramNamespace::ConnectionStateDisconnected);
 
-    clearMainConnection();
+    setMainConnection(nullptr);
     clearExtraConnections();
 
     m_askedUserIds.clear();
@@ -607,7 +606,7 @@ void CTelegramDispatcher::disconnectFromServer()
 
 bool CTelegramDispatcher::requestHistory(const Telegram::Peer &peer, quint32 offset, quint32 limit)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return false;
     }
 
@@ -623,14 +622,14 @@ bool CTelegramDispatcher::requestHistory(const Telegram::Peer &peer, quint32 off
         offsetId = m_dialogs.value(peer).topMessage + 1;
     }
 
-    activeConnection()->messagesGetHistory(inputPeer, /* offsetId */ offsetId, /* addOffset */ offset, limit, /* maxId */ 0, /* minId */ 0);
+    mainConnection()->messagesGetHistory(inputPeer, /* offsetId */ offsetId, /* addOffset */ offset, limit, /* maxId */ 0, /* minId */ 0);
 
     return true;
 }
 
 quint32 CTelegramDispatcher::resolveUsername(const QString &userName)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return 0;
     }
 
@@ -640,14 +639,14 @@ quint32 CTelegramDispatcher::resolveUsername(const QString &userName)
         }
     }
 
-    activeConnection()->contactsResolveUsername(userName);
+    mainConnection()->contactsResolveUsername(userName);
 
     return 0;
 }
 
 quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QString &message)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         qWarning() << Q_FUNC_INFO << "Unable to send: no active connection";
         return 0;
     }
@@ -684,7 +683,7 @@ quint64 CTelegramDispatcher::sendMessage(const Telegram::Peer &peer, const QStri
 #ifdef DEVELOPER_BUILD
     qDebug() << "sendMessage to" << inputPeer << message << "randomMessageId:" << randomId;
 #endif
-    const quint64 rpcMessageId = activeConnection()->sendMessage(inputPeer, message, randomId);
+    const quint64 rpcMessageId = mainConnection()->sendMessage(inputPeer, message, randomId);
     addSentMessageId(peer, rpcMessageId, randomId);
     return randomId;
 }
@@ -703,14 +702,14 @@ quint64 CTelegramDispatcher::sendMedia(const Telegram::Peer &peer, const TLInput
 #ifdef DEVELOPER_BUILD
     qDebug() << "sendMedia to" << inputPeer << inputMedia << "randomMessageId:" << randomId;
 #endif
-    const quint64 rpcMessageId = activeConnection()->sendMedia(inputPeer, inputMedia, randomId);
+    const quint64 rpcMessageId = mainConnection()->sendMedia(inputPeer, inputMedia, randomId);
     addSentMessageId(peer, rpcMessageId, randomId);
     return randomId;
 }
 
 quint64 CTelegramDispatcher::forwardMessage(const Telegram::Peer &peer, quint32 messageId)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return 0;
     }
 
@@ -719,7 +718,7 @@ quint64 CTelegramDispatcher::forwardMessage(const Telegram::Peer &peer, quint32 
 #ifdef DEVELOPER_BUILD
     qDebug() << "forwardMessage to" << toInputPeer(peer) << "message" << messageId << "randomMessageId:" << randomId;
 #endif
-    const quint64 rpcMessageId = activeConnection()->messagesForwardMessage(toInputPeer(peer), messageId, randomId);
+    const quint64 rpcMessageId = mainConnection()->messagesForwardMessage(toInputPeer(peer), messageId, randomId);
     addSentMessageId(peer, rpcMessageId, randomId);
     return randomId;
 }
@@ -731,7 +730,7 @@ bool CTelegramDispatcher::filterReceivedMessage(quint32 messageFlags) const
 
 quint64 CTelegramDispatcher::createChat(const QVector<quint32> &userIds, const QString chatName)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return 0;
     }
 
@@ -743,14 +742,14 @@ quint64 CTelegramDispatcher::createChat(const QVector<quint32> &userIds, const Q
         users.append(user);
     }
 
-    quint64 apiCallId = activeConnection()->messagesCreateChat(users, chatName);
+    quint64 apiCallId = mainConnection()->messagesCreateChat(users, chatName);
 
     return apiCallId;
 }
 
 bool CTelegramDispatcher::addChatUser(quint32 chatId, quint32 userId, quint32 forwardMessages)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return false;
     }
 
@@ -768,13 +767,13 @@ bool CTelegramDispatcher::addChatUser(quint32 chatId, quint32 userId, quint32 fo
         break;
     }
 
-    activeConnection()->messagesAddChatUser(chatId, inputUser, forwardMessages);
+    mainConnection()->messagesAddChatUser(chatId, inputUser, forwardMessages);
     return true;
 }
 
 void CTelegramDispatcher::setTyping(const Telegram::Peer &peer, TelegramNamespace::MessageAction publicAction)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return;
     }
 
@@ -816,7 +815,7 @@ void CTelegramDispatcher::setTyping(const Telegram::Peer &peer, TelegramNamespac
     TLSendMessageAction action;
     action.tlType = tlAction;
 
-    activeConnection()->messagesSetTyping(inputPeer, action);
+    mainConnection()->messagesSetTyping(inputPeer, action);
 
     if (publicAction == TelegramNamespace::MessageActionNone) {
         m_localMessageActions.remove(actionIndex);
@@ -844,7 +843,7 @@ void CTelegramDispatcher::setTyping(const Telegram::Peer &peer, TelegramNamespac
 
 void CTelegramDispatcher::setMessageRead(const Telegram::Peer &peer, quint32 messageId)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return;
     }
     const TLInputPeer inputPeer = toInputPeer(peer);
@@ -856,12 +855,12 @@ void CTelegramDispatcher::setMessageRead(const Telegram::Peer &peer, quint32 mes
     switch (inputPeer.tlType) {
     case TLValue::InputPeerChat:
     case TLValue::InputPeerUser:
-        activeConnection()->messagesReadHistory(inputPeer, messageId);
+        mainConnection()->messagesReadHistory(inputPeer, messageId);
         break;
     case TLValue::InputPeerChannel:
     {
         const TLInputChannel inputChannel = toInputChannel(peer);
-        activeConnection()->channelsReadHistory(inputChannel, messageId);
+        mainConnection()->channelsReadHistory(inputChannel, messageId);
     }
         break;
     case TLValue::InputPeerEmpty:
@@ -874,26 +873,26 @@ void CTelegramDispatcher::setMessageRead(const Telegram::Peer &peer, quint32 mes
 
 void CTelegramDispatcher::setOnlineStatus(bool onlineStatus)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return;
     }
-    activeConnection()->accountUpdateStatus(!onlineStatus); // updateStatus accepts bool "offline"
+    mainConnection()->accountUpdateStatus(!onlineStatus); // updateStatus accepts bool "offline"
 }
 
 void CTelegramDispatcher::checkUserName(const QString &userName)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return;
     }
-    activeConnection()->accountCheckUsername(userName);
+    mainConnection()->accountCheckUsername(userName);
 }
 
 void CTelegramDispatcher::setUserName(const QString &newUserName)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return;
     }
-    activeConnection()->accountUpdateUsername(newUserName);
+    mainConnection()->accountUpdateUsername(newUserName);
 }
 
 QString CTelegramDispatcher::chatTitle(quint32 chatId) const
@@ -984,7 +983,7 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
     participants->clear();
 
     if (!m_chatInfo.contains(chatId)) {
-        activeConnection()->messagesGetChats(TLVector<quint32>() << chatId); // The chat can be a channel as well
+        mainConnection()->messagesGetChats(TLVector<quint32>() << chatId); // The chat can be a channel as well
         return true; // Pending
     }
 
@@ -994,10 +993,10 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
     if (!m_chatFullInfo.contains(chatId)) {
         switch (chat->tlType) {
         case TLValue::Channel:
-            activeConnection()->channelsGetFullChannel(inputChannel);
+            mainConnection()->channelsGetFullChannel(inputChannel);
             return true;
         case TLValue::Chat:
-            activeConnection()->messagesGetFullChat(chatId);
+            mainConnection()->messagesGetFullChat(chatId);
             return true;
         default:
             break;
@@ -1014,7 +1013,7 @@ bool CTelegramDispatcher::getChatParticipants(QVector<quint32> *participants, qu
         }
     } else if (fullChat.tlType == TLValue::ChannelFull) {
         if (!m_channelParticipants.contains(chatId)) {
-            activeConnection()->channelsGetParticipants(inputChannel, TLChannelParticipantsFilter(), 0, 300);
+            mainConnection()->channelsGetParticipants(inputChannel, TLChannelParticipantsFilter(), 0, 300);
             return true;
         }
         foreach (const TLChannelParticipant &participant, m_channelParticipants.value(chatId)) {
@@ -1204,7 +1203,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
                 if (existDialog.pts < dialog.pts) {
                     qDebug() << "Dialog pts should be updated from" << existDialog.pts << "to" << dialog.pts;
                     const TLInputChannel inputChannel = toInputChannel(existDialog);
-                    activeConnection()->updatesGetChannelDifference(inputChannel, TLChannelMessagesFilter(), existDialog.pts, /* limit */ 10000);
+                    mainConnection()->updatesGetChannelDifference(inputChannel, TLChannelMessagesFilter(), existDialog.pts, /* limit */ 10000);
                 } else if (existDialog.pts > dialog.pts) {
                     qWarning() << "Stored dialog pts is bigger than the received one. Something is very wrong (" << existDialog.pts << "vs" << dialog.pts << ").";
                 }
@@ -1266,7 +1265,7 @@ void CTelegramDispatcher::onMessagesDialogsReceived(const TLMessagesDialogs &dia
         }
 
         if (lastPeer.isValid() && lastMessageId) {
-            activeConnection()->messagesGetDialogs(lastDate, lastMessageId, toInputPeer(lastPeer), s_dialogsLimit);
+            mainConnection()->messagesGetDialogs(lastDate, lastMessageId, toInputPeer(lastPeer), s_dialogsLimit);
             return;
         }
     }
@@ -1300,7 +1299,7 @@ void CTelegramDispatcher::onMessagesAffectedMessagesReceived(const TLMessagesAff
 
 void CTelegramDispatcher::getDcConfiguration()
 {
-    activeConnection()->helpGetConfig();
+    mainConnection()->helpGetConfig();
 }
 
 void CTelegramDispatcher::getInitialUsers()
@@ -1318,27 +1317,27 @@ void CTelegramDispatcher::getInitialUsers()
         m_askedInitialUsers.append(telegramUser);
     }
     if (!m_askedInitialUsers.isEmpty()) {
-        activeConnection()->usersGetUsers(m_askedInitialUsers);
+        mainConnection()->usersGetUsers(m_askedInitialUsers);
     }
 }
 
 void CTelegramDispatcher::getInitialDialogs()
 {
     qDebug() << Q_FUNC_INFO;
-    activeConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ s_dialogsLimit);
+    mainConnection()->messagesGetDialogs(/* offsetDate */ 0, /* offsetId */ 0, TLInputPeer(), /* limit */ s_dialogsLimit);
 }
 
 void CTelegramDispatcher::getContacts()
 {
     qDebug() << Q_FUNC_INFO;
-    activeConnection()->contactsGetContacts(QString()); // Empty hash argument for now.
+    mainConnection()->contactsGetContacts(QString()); // Empty hash argument for now.
 }
 
 void CTelegramDispatcher::getUpdatesState()
 {
     qDebug() << Q_FUNC_INFO;
     m_updatesStateIsLocked = true;
-    activeConnection()->updatesGetState();
+    mainConnection()->updatesGetState();
 }
 
 void CTelegramDispatcher::onUpdatesStateReceived(const TLUpdatesState &updatesState)
@@ -1351,11 +1350,11 @@ void CTelegramDispatcher::onUpdatesStateReceived(const TLUpdatesState &updatesSt
 // Should be called via checkStateAndCallGetDifference()
 void CTelegramDispatcher::getDifference()
 {
-    if (!activeConnection() || (activeConnection()->status() != CTelegramConnection::ConnectionStatusConnected)) {
+    if (!mainConnection() || (mainConnection()->status() != CTelegramConnection::ConnectionStatusConnected)) {
         qWarning() << "Unexpected getDifference() call!";
         return;
     }
-    activeConnection()->updatesGetDifference(m_updatesState.pts, m_updatesState.date, m_updatesState.qts);
+    mainConnection()->updatesGetDifference(m_updatesState.pts, m_updatesState.date, m_updatesState.qts);
 }
 
 void CTelegramDispatcher::onUpdatesDifferenceReceived(const TLUpdatesDifference &updatesDifference)
@@ -2147,10 +2146,10 @@ CTelegramConnection *CTelegramDispatcher::getExtraConnection(quint32 dc)
     }
 
     CTelegramConnection *connection = createConnection(dcInfo);
-    if (activeConnection()->dcInfo().id == dc) {
-        connection->setDeltaTime(activeConnection()->deltaTime());
-        connection->setAuthKey(activeConnection()->authKey());
-        connection->setServerSalt(activeConnection()->serverSalt());
+    if (mainConnection()->dcInfo().id == dc) {
+        connection->setDeltaTime(mainConnection()->deltaTime());
+        connection->setAuthKey(mainConnection()->authKey());
+        connection->setServerSalt(mainConnection()->serverSalt());
     }
 
     m_extraConnections.append(connection);
@@ -2173,7 +2172,7 @@ void CTelegramDispatcher::onConnectionAuthChanged(int newStateInt, quint32 dc)
 
     qDebug() << Q_FUNC_INFO << "Delayed packages:" << m_delayedPackages.keys() << m_delayedPackages.count();
 
-    if (connection == activeConnection()) {
+    if (connection == mainConnection()) {
         if (newState == CTelegramConnection::AuthStateSignedIn) {
             connect(connection, &CTelegramConnection::contactListReceived,
                     this, &CTelegramDispatcher::onContactListReceived);
@@ -2250,7 +2249,7 @@ void CTelegramDispatcher::onConnectionStatusChanged(int newStatusInt, int reason
         }
     }
 
-    if (connection == activeConnection()) {
+    if (connection == mainConnection()) {
         if (newStatus == CTelegramConnection::ConnectionStatusDisconnected) {
             if (connectionState() == TelegramNamespace::ConnectionStateDisconnected) {
                 return;
@@ -2285,7 +2284,7 @@ void CTelegramDispatcher::onDcConfigurationUpdated()
         return;
     }
 
-    if (connection != m_mainConnection) {
+    if (connection != mainConnection()) {
         qDebug() << "Got configuration from extra connection. Ignored.";
         return;
     }
@@ -2312,8 +2311,8 @@ void CTelegramDispatcher::onConnectionDcIdUpdated(quint32 connectionId, quint32 
     }
 
     qDebug() << "Connection" << connection << "DC Id changed from" << connectionId << "to" << newDcId;
-    if (connection == m_mainConnection) {
-        if (m_wantedActiveDc && (m_wantedActiveDc != m_mainConnection->dcInfo().id)) {
+    if (connection == mainConnection()) {
+        if (m_wantedActiveDc && (m_wantedActiveDc != mainConnection()->dcInfo().id)) {
             qDebug() << Q_FUNC_INFO << "Wanted active dc is different from the actual main connection dc. Do we need to do anything?";
         }
     }
@@ -2325,8 +2324,8 @@ void CTelegramDispatcher::onPackageRedirected(const QByteArray &data, quint32 dc
     qDebug() << Q_FUNC_INFO << "redirected package" << TLValue::firstFromArray(data) << "from dc" << dc;
 #endif
     CTelegramConnection *connection = nullptr;
-    if (activeConnection()->dcInfo().id == dc) {
-        connection = activeConnection();
+    if (mainConnection()->dcInfo().id == dc) {
+        connection = mainConnection();
     } else {
         connection = getExtraConnection(dc);
     }
@@ -2350,7 +2349,7 @@ void CTelegramDispatcher::onPackageRedirected(const QByteArray &data, quint32 dc
 void CTelegramDispatcher::onConnectionFailed(CTelegramConnection *connection)
 {
     qWarning() << Q_FUNC_INFO << connection << connection->dcInfo().id << connection->dcInfo().ipAddress;
-    if (connection != m_mainConnection) {
+    if (connection != mainConnection()) {
         qWarning() << "Ignored a fail of extra connection";
         return;
     }
@@ -2362,9 +2361,8 @@ void CTelegramDispatcher::onConnectionFailed(CTelegramConnection *connection)
         connect(m_reconnectMainConnectionTimer, &QTimer::timeout, this, &CTelegramDispatcher::onMainConnectionRetryTimerTriggered);
     }
     m_reconnectMainConnectionTimer->start();
-
-    m_mainDcInfo = m_mainConnection->dcInfo();
-    clearMainConnection();
+    m_mainDcInfo = mainConnection()->dcInfo();
+    setMainConnection(nullptr);
 }
 
 void CTelegramDispatcher::onMainConnectionRetryTimerTriggered()
@@ -2551,10 +2549,10 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         setConnectionState(TelegramNamespace::ConnectionStateAuthRequired);
     } else if (m_initializationState == (StepDcConfiguration|StepHasKey|StepSignIn)) {
         setConnectionState(TelegramNamespace::ConnectionStateAuthenticated);
-        m_deltaTime = activeConnection()->deltaTime();
-        m_authKey = activeConnection()->authKey();
-        m_serverSalt = activeConnection()->serverSalt();
-        m_mainDcInfo = activeConnection()->dcInfo();
+        m_deltaTime = mainConnection()->deltaTime();
+        m_authKey = mainConnection()->authKey();
+        m_serverSalt = mainConnection()->serverSalt();
+        m_mainDcInfo = mainConnection()->dcInfo();
     }
 
     if (!(m_initializationState & StepSignIn)) {
@@ -2597,6 +2595,18 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
         const InitializationStepFlags remains = ~considerAsDoneSteps & StepDone;
         qDebug() << "CTelegramDispatcher::continueInitialization(): waiting for steps" << remains;
     }
+}
+
+void CTelegramDispatcher::setMainConnection(CTelegramConnection *connection)
+{
+    if (m_mainConnection == connection) {
+        return;
+    }
+    if (m_mainConnection) {
+        clearConnection(m_mainConnection);
+        m_mainConnection = nullptr;
+    }
+    m_mainConnection = connection;
 }
 
 // Basically we just revert Unread and Read flag.
@@ -2743,31 +2753,22 @@ void CTelegramDispatcher::ensureSignedConnection(CTelegramConnection *connection
                 return;
             }
 
-            if (activeConnection()->dcInfo().id == dc) {
-                connection->setDeltaTime(activeConnection()->deltaTime());
-                connection->setAuthKey(activeConnection()->authKey());
-                connection->setServerSalt(activeConnection()->serverSalt());
+            if (mainConnection()->dcInfo().id == dc) {
+                connection->setDeltaTime(mainConnection()->deltaTime());
+                connection->setAuthKey(mainConnection()->authKey());
+                connection->setServerSalt(mainConnection()->serverSalt());
                 return;
             }
 
             if (m_exportedAuthentications.contains(dc)) {
                 connection->authImportAuthorization(m_exportedAuthentications.value(dc).first, m_exportedAuthentications.value(dc).second);
             } else {
-                if (activeConnection()->authState() == CTelegramConnection::AuthStateSignedIn) {
-                    activeConnection()->authExportAuthorization(dc);
+                if (mainConnection()->authState() == CTelegramConnection::AuthStateSignedIn) {
+                    mainConnection()->authExportAuthorization(dc);
                 }
             }
         }
     }
-}
-
-void CTelegramDispatcher::clearMainConnection()
-{
-    if (!m_mainConnection) {
-        return;
-    }
-    clearConnection(m_mainConnection);
-    m_mainConnection = nullptr;
 }
 
 void CTelegramDispatcher::clearConnection(CTelegramConnection *connection)
@@ -2807,9 +2808,9 @@ void CTelegramDispatcher::ensureMainConnectToWantedDc()
         return;
     }
 
-    TLDcOption wantedDcInfo = dcInfoById(m_wantedActiveDc);
+    TLDcOption dcInfo = dcInfoById(m_wantedActiveDc);
 
-    if (wantedDcInfo.ipAddress.isEmpty()) {
+    if (dcInfo.ipAddress.isEmpty()) {
         if (m_initializationState & StepDcConfiguration) {
             qWarning() << Q_FUNC_INFO << "Unable to connect: wanted DC is not listed in the received DC configuration.";
             return;
@@ -2819,9 +2820,7 @@ void CTelegramDispatcher::ensureMainConnectToWantedDc()
         return;
     }
 
-    CTelegramConnection *oldConnection = m_mainConnection;
-    m_mainConnection = createConnection(wantedDcInfo);
-    clearConnection(oldConnection);
+    setMainConnection(createConnection(dcInfo));
     m_mainConnection->connectToDc();
 }
 

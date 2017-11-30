@@ -135,12 +135,11 @@ public:
     bool resetDcConfiguration();
 
     bool setWantedDc(quint32 dc);
-    CTelegramConnection *activeConnection() const { return m_mainConnection; }
+    CTelegramConnection *mainConnection() const { return m_mainConnection; }
     CTelegramConnection *getExtraConnection(quint32 dc);
 
     CTelegramConnection *createConnection(const TLDcOption &dcInfo);
     void ensureSignedConnection(CTelegramConnection *connection);
-    void clearMainConnection();
     void clearConnection(CTelegramConnection *connection);
     void clearExtraConnections();
     void ensureMainConnectToWantedDc();
@@ -263,6 +262,7 @@ protected:
     void connectToTheWantedDc();
 
     void continueInitialization(InitializationStep justDone);
+    void setMainConnection(CTelegramConnection *connection);
 
     TelegramNamespace::MessageFlags getPublicMessageFlags(quint32 flags);
 

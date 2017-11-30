@@ -39,43 +39,43 @@ void CTelegramAuthModule::clear()
 
 bool CTelegramAuthModule::logOut()
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return false;
     }
 
-    activeConnection()->authLogOut();
+    mainConnection()->authLogOut();
     return true;
 }
 
 void CTelegramAuthModule::requestPhoneStatus(const QString &phoneNumber)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return;
     }
-    activeConnection()->authCheckPhone(phoneNumber);
+    mainConnection()->authCheckPhone(phoneNumber);
 }
 
 quint64 CTelegramAuthModule::getPassword()
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return 0;
     }
 
     m_passwordInfo.clear();
 
-    return activeConnection()->accountGetPassword();
+    return mainConnection()->accountGetPassword();
 }
 
 void CTelegramAuthModule::tryPassword(const QByteArray &salt, const QByteArray &password)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return;
     }
 
     const QByteArray pwdData = salt + password + salt;
     const QByteArray pwdHash = Utils::sha256(pwdData);
 
-    activeConnection()->authCheckPassword(pwdHash);
+    mainConnection()->authCheckPassword(pwdHash);
 }
 
 void CTelegramAuthModule::tryPassword(const QString &password)
@@ -89,23 +89,23 @@ void CTelegramAuthModule::tryPassword(const QString &password)
 
 void CTelegramAuthModule::signIn(const QString &phoneNumber, const QString &authCode)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return;
     }
-    activeConnection()->signIn(phoneNumber, authCode);
+    mainConnection()->signIn(phoneNumber, authCode);
 }
 
 void CTelegramAuthModule::signUp(const QString &phoneNumber, const QString &authCode, const QString &firstName, const QString &lastName)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return;
     }
-    activeConnection()->signUp(phoneNumber, authCode, firstName, lastName);
+    mainConnection()->signUp(phoneNumber, authCode, firstName, lastName);
 }
 
 quint64 CTelegramAuthModule::requestAuthCode(const QString &phoneNumber)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         qWarning() << Q_FUNC_INFO << "Unable to request a phone code without an active connection.";
         return 0;
     }
@@ -118,14 +118,14 @@ quint64 CTelegramAuthModule::requestAuthCode(const QString &phoneNumber)
         return 0;
     }
     m_requestedCodeForPhone = phoneNumber;
-    return activeConnection()->requestPhoneCode(phoneNumber);
+    return mainConnection()->requestPhoneCode(phoneNumber);
 }
 
 void CTelegramAuthModule::onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode)
 {
     switch (errorCode) {
     case TelegramNamespace::UnauthorizedSessionPasswordNeeded:
-        activeConnection()->accountGetPassword();
+        mainConnection()->accountGetPassword();
         break;
     default:
         break;

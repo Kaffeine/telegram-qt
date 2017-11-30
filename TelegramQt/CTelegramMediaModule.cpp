@@ -109,14 +109,14 @@ bool CTelegramMediaModule::getMessageMediaInfo(Telegram::MessageMediaInfo *messa
 
 quint32 CTelegramMediaModule::uploadFile(const QByteArray &fileContent, const QString &fileName)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         qWarning() << Q_FUNC_INFO << "Called without connection";
         return 0;
     }
 #ifdef DEVELOPER_BUILD
     qDebug() << Q_FUNC_INFO << fileName;
 #endif
-    return addFileRequest(FileRequestDescriptor::uploadRequest(fileContent, fileName, activeConnection()->dcInfo().id));
+    return addFileRequest(FileRequestDescriptor::uploadRequest(fileContent, fileName, mainConnection()->dcInfo().id));
 }
 
 quint32 CTelegramMediaModule::uploadFile(QIODevice *source, const QString &fileName)
@@ -126,7 +126,7 @@ quint32 CTelegramMediaModule::uploadFile(QIODevice *source, const QString &fileN
 
 quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegram::MessageMediaInfo &info)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return 0;
     }
 
@@ -299,8 +299,8 @@ void CTelegramMediaModule::onFileDataUploaded(quint32 requestId)
     if (descriptor.finished()) {
         Telegram::RemoteFile result;
         const TLInputFile fileInfo = descriptor.inputFile();
-        if (activeConnection()) {
-            result.d->m_dcId = activeConnection()->dcInfo().id;
+        if (mainConnection()) {
+            result.d->m_dcId = mainConnection()->dcInfo().id;
         }
         result.d->m_size = descriptor.size();
         result.d->setInputFile(&fileInfo);
@@ -327,7 +327,7 @@ void CTelegramMediaModule::onConnectionStateChanged(TelegramNamespace::Connectio
 void CTelegramMediaModule::onConnectionAuthChanged(CTelegramConnection *connection, int newAuthState)
 {
     CTelegramConnection::AuthState state = static_cast<CTelegramConnection::AuthState>(newAuthState);
-    if (connection == activeConnection()) {
+    if (connection == mainConnection()) {
         return;
     } else {
         foreach (quint32 fileId, m_requestedFileDescriptors.keys()) {
