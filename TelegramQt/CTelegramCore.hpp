@@ -62,12 +62,9 @@ public:
     // maxMessageId is an id of the last sent or received message. Updated *after* messageReceived and sentMessageIdReceived signal emission.
     Q_INVOKABLE quint32 maxMessageId() const;
     Q_INVOKABLE QVector<quint32> contactList() const;
-    Q_INVOKABLE QVector<quint32> chatList() const;
     Q_INVOKABLE QVector<Telegram::Peer> dialogs() const;
 
     Q_INVOKABLE QString peerPictureToken(const Telegram::Peer &peer, const Telegram::PeerPictureSize size = Telegram::PeerPictureSize::Small) const;
-    Q_INVOKABLE QString contactAvatarToken(quint32 userId) const;
-    Q_INVOKABLE QString chatTitle(quint32 chatId) const;
 
     static qint32 localTypingRecommendedRepeatInterval(); // Recommended application local typing state re-set interval.
 
@@ -195,6 +192,9 @@ public:
     // Deprecated:
     Q_INVOKABLE static QVector<Telegram::DcOption> builtInDcs(); // Use defaultServerConfiguration() instead
     Q_INVOKABLE QVector<Telegram::DcOption> dcConfiguration(); // Use serverConfiguration() instead
+    Q_INVOKABLE QVector<quint32> chatList() const; // Filter dialogs() for Peer::Chat and Peer:Channel instead.
+    Q_INVOKABLE QString chatTitle(quint32 chatId) const; // Use getChatInfo() and ChatInfo::title() instead
+    Q_INVOKABLE QString contactAvatarToken(quint32 userId) const; // Use peerPictureToken(Telegram::Peer::fromUserId(userId)) instead
 
 public Q_SLOTS:
     // Deprecated:

@@ -363,7 +363,7 @@ QString CTelegramCore::peerPictureToken(const Telegram::Peer &peer, const Telegr
 
 QString CTelegramCore::contactAvatarToken(quint32 userId) const
 {
-    return m_private->m_mediaModule->peerPictureToken(Telegram::Peer(userId, Telegram::Peer::User), Telegram::PeerPictureSize::Small);
+    return m_private->m_mediaModule->peerPictureToken(Telegram::Peer::fromUserId(userId), Telegram::PeerPictureSize::Small);
 }
 
 QString CTelegramCore::chatTitle(quint32 chatId) const
