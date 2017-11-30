@@ -32,7 +32,7 @@ public:
     TLVector(int size, const T &t) : QVector<T>(size, t), tlType(TLValue::Vector) { }
     TLVector(const TLVector<T> &v) : QVector<T>(v), tlType(v.tlType) { }
     TLVector(const QVector<T> &v) : QVector<T>(v), tlType(TLValue::Vector) { }
-    TLVector(std::initializer_list<T> args) : QVector<T>(args) { }
+    TLVector(std::initializer_list<T> args) : QVector<T>(args), tlType(TLValue::Vector) { }
 
     template<typename T2>
     auto optionalIsValid(const T2 &obj) const -> decltype(obj.isValid())
