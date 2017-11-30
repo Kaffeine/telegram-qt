@@ -33,6 +33,7 @@ foreach(test_name
     tst_CTelegramDispatcher
     tst_CTelegramStream
     tst_TelegramRemoteFile
+    tst_utils
 )
     FILE(GLOB TEST_SOURCES ${test_name}/*.cpp)
     add_executable(${test_name} ${TEST_SOURCES})
