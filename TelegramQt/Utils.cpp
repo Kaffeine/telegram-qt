@@ -212,23 +212,6 @@ QByteArray Utils::sha256(const QByteArray &data)
     return QCryptographicHash::hash(data, QCryptographicHash::Sha256);
 }
 
-QByteArray bnToBinArray(const BIGNUM *n)
-{
-    QByteArray result;
-    result.resize(BN_num_bytes(n));
-    BN_bn2bin(n, (uchar *) result.data());
-    return result;
-}
-
-QByteArray bnToHexArray(const BIGNUM *n)
-{
-    char *hex = BN_bn2hex(n);
-    QByteArray result(hex);
-    OPENSSL_free(hex);
-
-    return result;
-}
-
 bool hexArrayToBN(const QByteArray &hex, BIGNUM **n)
 {
     return BN_hex2bn(n, hex.constData()) != 0;
@@ -253,21 +236,9 @@ quint64 Utils::getFingersprint(const QByteArray &data, bool lowerOrderBits)
 Telegram::RsaKey Utils::loadHardcodedKey()
 {
     Telegram::RsaKey result;
-
-    BIGNUM *tmpBN = BN_new();
-
-    hexArrayToBN(s_hardcodedRsaDataKey, &tmpBN);
-
-    result.modulus = bnToBinArray(tmpBN);
-
-    hexArrayToBN(s_hardcodedRsaDataExp, &tmpBN);
-
-    result.exponent = bnToBinArray(tmpBN);
-
+    result.modulus = SslBigNumber::fromHex(s_hardcodedRsaDataKey).toByteArray();
+    result.exponent = SslBigNumber::fromHex(s_hardcodedRsaDataExp).toByteArray();
     result.fingerprint = s_hardcodedRsaDataFingersprint;
-
-    BN_free(tmpBN);
-
     return result;
 }
 
@@ -279,44 +250,19 @@ Telegram::RsaKey Utils::loadRsaKey()
 
 QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp)
 {
-    QByteArray result;
-    result.fill(char(0), 256);
-
-    BN_CTX *bn_context = BN_CTX_new();
-
-    BIGNUM *pubModulus = BN_new();
-    BIGNUM *pubExponent = BN_new();
-    BIGNUM *resultNum = BN_new();
-    BIGNUM *dataNum = BN_new();
-
-    binArrayToBN(mod, &pubModulus);
-    binArrayToBN(exp, &pubExponent);
-
-    BN_bin2bn((uchar *) data.constData(), data.length(), dataNum);
-
-    BN_mod_exp(resultNum, dataNum, pubExponent, pubModulus, bn_context);
-
-    BN_bn2bin(resultNum, (uchar *) result.data());
-
-    BN_free(dataNum);
-    BN_free(resultNum);
-    BN_free(pubExponent);
-    BN_free(pubModulus);
-
-    BN_CTX_free(bn_context);
-
-    return result;
+    const SslBigNumber dataNum = SslBigNumber::fromByteArray(data);
+    const SslBigNumber pubModulus = SslBigNumber::fromByteArray(mod);
+    const SslBigNumber pubExponent = SslBigNumber::fromByteArray(exp);
+    const SslBigNumber resultNum = dataNum.mod_exp(pubExponent, pubModulus);
+    return resultNum.toByteArray();
 }
 
 QByteArray Utils::aesDecrypt(const QByteArray &data, const SAesKey &key)
 {
     QByteArray result = data;
-
     QByteArray initVector = key.iv;
-
     AES_KEY dec_key;
     AES_set_decrypt_key((const uchar *) key.key.constData(), key.key.length() * 8, &dec_key);
-
     AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length(), &dec_key, (uchar *) initVector.data(), AES_DECRYPT);
     return result;
 }
@@ -324,12 +270,9 @@ QByteArray Utils::aesDecrypt(const QByteArray &data, const SAesKey &key)
 QByteArray Utils::aesEncrypt(const QByteArray &data, const SAesKey &key)
 {
     QByteArray result = data;
-
     QByteArray initVector = key.iv;
-
     AES_KEY enc_key;
     AES_set_encrypt_key((const uchar *) key.key.constData(), key.key.length() * 8, &enc_key);
-
     AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length(), &enc_key, (uchar *) initVector.data(), AES_ENCRYPT);
     return result;
 }
