@@ -164,28 +164,28 @@ quint64 Utils::getFingersprint(const QByteArray &data, bool lowerOrderBits)
     }
 }
 
-SRsaKey Utils::loadHardcodedKey()
+Telegram::RsaKey Utils::loadHardcodedKey()
 {
-    SRsaKey result;
+    Telegram::RsaKey result;
 
     BIGNUM *tmpBN = BN_new();
 
     hexArrayToBN(s_hardcodedRsaDataKey, &tmpBN);
 
-    result.key = bnToBinArray(tmpBN);
+    result.modulus = bnToBinArray(tmpBN);
 
     hexArrayToBN(s_hardcodedRsaDataExp, &tmpBN);
 
-    result.exp = bnToBinArray(tmpBN);
+    result.exponent = bnToBinArray(tmpBN);
 
-    result.fingersprint = s_hardcodedRsaDataFingersprint;
+    result.fingerprint = s_hardcodedRsaDataFingersprint;
 
     BN_free(tmpBN);
 
     return result;
 }
 
-SRsaKey Utils::loadRsaKey()
+Telegram::RsaKey Utils::loadRsaKey()
 {
     return loadHardcodedKey();
 //    return loadRsaKeyFromFile("telegram_server_key.pub");

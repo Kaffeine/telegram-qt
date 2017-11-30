@@ -1948,7 +1948,7 @@ bool CTelegramConnection::acceptPqAuthorization(const QByteArray &payload)
 
     m_serverPublicFingersprint = fingersprints.at(0);
 
-    if (m_rsaKey.fingersprint != m_serverPublicFingersprint) {
+    if (m_rsaKey.fingerprint != m_serverPublicFingersprint) {
         qDebug() << "Error: Server RSA Fingersprint does not match to loaded key";
         return false;
     }

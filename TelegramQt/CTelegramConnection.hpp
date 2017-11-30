@@ -573,7 +573,7 @@ protected:
     quint32 m_q;
 
     quint64 m_serverPublicFingersprint;
-    SRsaKey m_rsaKey;
+    Telegram::RsaKey m_rsaKey;
     SAesKey m_tmpAesKey;
 
     quint32 m_g;
