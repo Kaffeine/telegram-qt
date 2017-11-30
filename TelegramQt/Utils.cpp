@@ -29,6 +29,92 @@
 #include <QCryptographicHash>
 #include <QDebug>
 
+struct SslBigNumberContext {
+    SslBigNumberContext() :
+        m_context(BN_CTX_new())
+    {
+    }
+    ~SslBigNumberContext()
+    {
+        BN_CTX_free(m_context);
+    }
+    BN_CTX *context() { return m_context; }
+
+private:
+    BN_CTX *m_context;
+};
+
+struct SslBigNumber {
+    SslBigNumber() :
+        m_number(BN_new())
+    {
+    }
+
+    SslBigNumber(SslBigNumber &&number) :
+        m_number(number.m_number)
+    {
+        number.m_number = nullptr;
+    }
+
+    SslBigNumber(const SslBigNumber &number) :
+        m_number(BN_new())
+    {
+        BN_copy(m_number, number.m_number);
+    }
+
+    ~SslBigNumber()
+    {
+        if (m_number) {
+            BN_free(m_number);
+        }
+    }
+
+    static SslBigNumber fromHex(const QByteArray &hex)
+    {
+        SslBigNumber result;
+        if (BN_hex2bn(&result.m_number, hex.constData()) != 0) {
+            return result;
+        }
+        return SslBigNumber();
+    }
+
+    static SslBigNumber fromByteArray(const QByteArray &bin)
+    {
+        SslBigNumber result;
+        if (BN_bin2bn((uchar *) bin.constData(), bin.length(), result.m_number) != 0) {
+            return result;
+        }
+        return SslBigNumber();
+    }
+
+    static QByteArray toByteArray(BIGNUM *number)
+    {
+        QByteArray result;
+        result.resize(BN_num_bytes(number));
+        BN_bn2bin(number, (uchar *) result.data());
+        return result;
+    }
+
+    QByteArray toByteArray() const
+    {
+        return toByteArray(m_number);
+    }
+
+    SslBigNumber mod_exp(const SslBigNumber &exponent, const SslBigNumber &modulus) const
+    {
+        SslBigNumberContext context;
+        SslBigNumber result;
+        BN_mod_exp(result.m_number, number(), exponent.number(), modulus.number(), context.context());
+        return result;
+    }
+
+    const BIGNUM *number() const { return m_number; }
+    BIGNUM *number() { return m_number; }
+
+private:
+    BIGNUM *m_number;
+};
+
 static const QByteArray s_hardcodedRsaDataKey("0c150023e2f70db7985ded064759cfecf0af328e69a41daf4d6f01b53813"
                                               "5a6f91f8f8b2a0ec9ba9720ce352efcf6c5680ffc424bd634864902de0b4"
                                               "bd6d49f4e580230e3ae97d95c8b19442b3c0a10d8f5633fecedd6926a7f6"
