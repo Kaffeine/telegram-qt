@@ -69,6 +69,8 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_sessionId(0),
     m_lastMessageId(0),
     m_lastSentPingId(0),
+    m_lastReceivedPingTime(0),
+    m_lastSentPingTime(0),
     m_sequenceNumber(0),
     m_contentRelatedMessages(0),
     m_pingInterval(0),
