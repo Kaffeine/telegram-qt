@@ -142,6 +142,30 @@ public:
 
 namespace Telegram {
 
+struct RsaKey {
+    QByteArray modulus;
+    QByteArray exponent;
+    quint64 fingerprint;
+
+    RsaKey() :
+        fingerprint(0)
+    {
+    }
+
+    RsaKey(const QByteArray &initialModulus, const QByteArray &initialExponent, const quint64 initialFingersprint = 0) :
+        modulus(initialModulus), exponent(initialExponent), fingerprint(initialFingersprint)
+    {
+    }
+
+    RsaKey &operator=(const RsaKey &otherKey)
+    {
+        modulus = otherKey.modulus;
+        exponent = otherKey.exponent;
+        fingerprint = otherKey.fingerprint;
+        return *this;
+    }
+};
+
 class UserInfo;
 class RemoteFile;
 class MessageMediaInfo;
