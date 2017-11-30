@@ -584,19 +584,15 @@ void MainWindow::initStartConnection()
     }
     m_core->setUpdatesEnabled(ui->settingsUpdatesEnabled->isChecked());
 
-    const QVector<Telegram::DcOption> testServers = {
-        Telegram::DcOption(QLatin1String("149.154.175.10"), 443),
-    };
-
+    if (ui->testingDcRadio->isChecked()) {
+        m_core->setServerConfiguration({Telegram::DcOption(QLatin1String("149.154.175.10"), 443)});
+    }
     const QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
-    if (secretInfo.isEmpty()) {
-        if (ui->mainDcRadio->isChecked()) {
-            m_core->initConnection();
-        } else {
-            m_core->initConnection(testServers);
-        }
-    } else {
-        m_core->restoreConnection(secretInfo);
+    if (!secretInfo.isEmpty()) {
+        m_core->setSecretInfo(secretInfo);
+    }
+    if (!m_core->connectToServer()) {
+        qWarning() << Q_FUNC_INFO << "Unable to connect";
     }
 }
 
@@ -972,6 +968,7 @@ void MainWindow::on_logoutButton_clicked()
 void MainWindow::on_disconnectButton_clicked()
 {
     m_core->disconnectFromServer();
+    m_core->resetConnectionData();
 }
 
 void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)
