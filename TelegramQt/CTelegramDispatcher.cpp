@@ -46,8 +46,6 @@ static const QVector<Telegram::DcOption> s_builtInDcs = {
         Telegram::DcOption(QLatin1String("91.108.56.165")  , 443),
 };
 
-static const quint32 s_defaultPingInterval = 15000; // 15 sec
-
 const quint32 secretFormatVersion = 4;
 //Format v4:
 //quint32 secretFormatVersion
@@ -107,7 +105,6 @@ CTelegramDispatcher::CTelegramDispatcher(QObject *parent) :
     m_messageReceivingFilterFlags(TelegramNamespace::MessageFlagRead),
     m_acceptableMessageTypes(TelegramNamespace::MessageTypeAll),
     m_autoReconnectionEnabled(false),
-    m_pingInterval(s_defaultPingInterval),
     m_initializationState(0),
     m_requestedSteps(0),
     m_wantedActiveDc(0),
@@ -141,11 +138,6 @@ void CTelegramDispatcher::plugModule(CTelegramModule *module)
 QVector<Telegram::DcOption> CTelegramDispatcher::defaultDcConfiguration()
 {
     return s_builtInDcs;
-}
-
-quint32 CTelegramDispatcher::defaultPingInterval()
-{
-    return s_defaultPingInterval;
 }
 
 QVector<Telegram::DcOption> CTelegramDispatcher::dcConfiguration() const
@@ -322,15 +314,6 @@ void CTelegramDispatcher::setAcceptableMessageTypes(TelegramNamespace::MessageTy
 void CTelegramDispatcher::setAutoReconnection(bool enable)
 {
     m_autoReconnectionEnabled = enable;
-}
-
-void CTelegramDispatcher::setPingInterval(quint32 ms, quint32 serverDisconnectionAdditionTime)
-{
-    m_pingInterval = ms;
-    if (serverDisconnectionAdditionTime < 500) {
-        serverDisconnectionAdditionTime = 500;
-    }
-    m_pingServerAdditionDisconnectionTime = serverDisconnectionAdditionTime;
 }
 
 bool CTelegramDispatcher::setDcConfiguration(const QVector<Telegram::DcOption> &dcs)

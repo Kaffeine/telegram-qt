@@ -20,8 +20,13 @@
 #include "CTelegramConnection.hpp"
 #include "CTcpTransport.hpp"
 
+static const quint32 s_defaultPingInterval = 15000; // 15 sec
+static const quint32 s_minimalPingAdditionalInterval = 1000; // 1 sec
+
 CTelegramTransportModule::CTelegramTransportModule(QObject *parent) :
-    CTelegramModule(parent)
+    CTelegramModule(parent),
+    m_pingInterval(s_defaultPingInterval),
+    m_pingServerAdditionDisconnectionTime(s_minimalPingAdditionalInterval)
 {
 }
 
@@ -35,9 +40,34 @@ void CTelegramTransportModule::setProxy(const QNetworkProxy &proxy)
     m_proxy = proxy;
 }
 
+quint32 CTelegramTransportModule::defaultPingInterval()
+{
+    return s_defaultPingInterval;
+}
+
+void CTelegramTransportModule::setPingInterval(quint32 ms, quint32 serverDisconnectionAdditionalTime)
+{
+    m_pingInterval = ms;
+    if (serverDisconnectionAdditionalTime < s_minimalPingAdditionalInterval) {
+        serverDisconnectionAdditionalTime = s_minimalPingAdditionalInterval;
+    }
+    m_pingServerAdditionDisconnectionTime = serverDisconnectionAdditionalTime;
+}
+
 void CTelegramTransportModule::onNewConnection(CTelegramConnection *connection)
 {
     CTcpTransport *transport = new CTcpTransport(connection);
     transport->setProxy(m_proxy);
     connection->setTransport(transport);
+}
+
+void CTelegramTransportModule::onConnectionStateChanged(TelegramNamespace::ConnectionState newConnectionState)
+{
+    if (newConnectionState == TelegramNamespace::ConnectionStateReady) {
+        if (!mainConnection()) {
+            qCritical() << Q_FUNC_INFO << "Internal inconsistency: the Telegram connection state is \"Ready\", but the mainConnection() is not available!";
+            return;
+        }
+        mainConnection()->setKeepAliveSettings(m_pingInterval, m_pingServerAdditionDisconnectionTime);
+    }
 }

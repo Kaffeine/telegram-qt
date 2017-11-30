@@ -75,7 +75,6 @@ public:
     void plugModule(CTelegramModule *module);
 
     static QVector<Telegram::DcOption> defaultDcConfiguration();
-    static quint32 defaultPingInterval();
 
     QVector<Telegram::DcOption> dcConfiguration() const;
     bool updatesEnabled() const;
@@ -104,7 +103,6 @@ public:
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags);
     void setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types);
     void setAutoReconnection(bool enable);
-    void setPingInterval(quint32 ms, quint32 serverDisconnectionAdditionTime);
 
     bool setDcConfiguration(const QVector<Telegram::DcOption> &dcs);
     bool connectToServer();
@@ -313,8 +311,6 @@ protected:
     TelegramNamespace::MessageFlags m_messageReceivingFilterFlags;
     TelegramNamespace::MessageTypeFlags m_acceptableMessageTypes;
     bool m_autoReconnectionEnabled;
-    quint32 m_pingInterval;
-    quint32 m_pingServerAdditionDisconnectionTime;
 
     InitializationStepFlags m_initializationState;
     InitializationStepFlags m_requestedSteps;

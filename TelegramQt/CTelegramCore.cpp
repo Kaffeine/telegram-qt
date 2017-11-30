@@ -172,7 +172,7 @@ QVector<Telegram::DcOption> CTelegramCore::builtInDcs()
 
 quint32 CTelegramCore::defaultPingInterval()
 {
-    return CTelegramDispatcher::defaultPingInterval();
+    return CTelegramTransportModule::defaultPingInterval();
 }
 
 QVector<Telegram::DcOption> CTelegramCore::serverConfiguration()
@@ -455,9 +455,9 @@ void CTelegramCore::setUpdatesEnabled(bool enable)
     return m_private->m_dispatcher->setUpdatesEnabled(enable);
 }
 
-void CTelegramCore::setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime)
+void CTelegramCore::setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime)
 {
-    return m_private->m_dispatcher->setPingInterval(interval, serverDisconnectionAdditionTime);
+    m_private->m_transportModule->setPingInterval(interval, serverDisconnectionAdditionalTime);
 }
 
 void CTelegramCore::setMediaDataBufferSize(quint32 size)

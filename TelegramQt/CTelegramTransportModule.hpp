@@ -31,10 +31,18 @@ public:
     QNetworkProxy proxy() const;
     void setProxy(const QNetworkProxy &proxy);
 
+    static quint32 defaultPingInterval();
+    void setPingInterval(quint32 ms, quint32 serverDisconnectionAdditionalTime);
+
     void onNewConnection(CTelegramConnection *connection) override;
 
 protected:
+    void onConnectionStateChanged(TelegramNamespace::ConnectionState newConnectionState) override;
+
     QNetworkProxy m_proxy;
+
+    quint32 m_pingInterval;
+    quint32 m_pingServerAdditionDisconnectionTime;
 
 };
 
