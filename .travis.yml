@@ -35,10 +35,11 @@ before_script:
   - export PATH="$QTDIR/bin:$PATH"
   - qt56-env.sh
   - mkdir ../build; cd ../build
-  - cmake -DDEVELOPER_BUILD=${DEVELOPER_BUILD} -DENABLE_TESTAPP=true ../telegram-qt
+  - cmake -DDEVELOPER_BUILD=${DEVELOPER_BUILD} -DENABLE_TESTAPP=true -DENABLE_TESTS=true ../telegram-qt
 
 script:
   - make -j3 -k
+  - make test -k
 
 notifications:
   email: false
