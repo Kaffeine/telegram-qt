@@ -289,6 +289,7 @@ void CMessageModel::addMessage(const SMessage &message)
         const QPixmap picture = QPixmap::fromImage(QImage::fromData(data));
         if (!picture.isNull()) {
             processedMessage.mediaData = picture;
+            needFileData = false;
         }
     }
 
