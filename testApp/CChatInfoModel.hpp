@@ -18,12 +18,7 @@
 #ifndef CCHATINFOMODEL_HPP
 #define CCHATINFOMODEL_HPP
 
-#include <QSet>
-
 #include "CPeerModel.hpp"
-
-class CTelegramCore;
-class CFileManager;
 
 struct SGroupChat : Telegram::ChatInfo {
     SGroupChat() :
@@ -32,8 +27,7 @@ struct SGroupChat : Telegram::ChatInfo {
     }
 
     Telegram::Peer m_peer;
-    QPixmap m_picture;
-    QString m_pictureToken;
+    PeerPicture m_picture;
 };
 
 class CChatInfoModel : public CPeerModel
@@ -53,9 +47,6 @@ public:
 
     bool hasPeer(const Telegram::Peer peer) const override;
     QString getName(const Telegram::Peer peer) const override;
-    QPixmap getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const override;
-
-    void setFileManager(CFileManager *manager);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -77,15 +68,11 @@ signals:
 protected slots:
     void onPeerAdded(const Telegram::Peer &peer);
     void onChatChanged(quint32 id);
-    void onFileRequestComplete(const QString &uniqueId);
+
+protected:
+    void updatePeerPicture(const PeerPicture &picture) override;
 
 private:
-    QString getPictureCacheToken(const Telegram::Peer &peer) const;
-    QString getPictureCacheToken(const QString &key) const;
-    CTelegramCore *m_backend;
-    CFileManager *m_fileManager;
-    QSet<QString> m_requests;
-
     QList<SGroupChat> m_chats;
     QVector<Telegram::Peer> m_peers;
 

@@ -156,10 +156,7 @@ QVariant CMessageModel::data(const QModelIndex &index, int role) const
             break;
         case Contact:
             if (m_contactsModel) {
-                const SContact *contact = m_contactsModel->getContact(m_messages.at(messageIndex).fromId);
-                if (contact) {
-                    return contact->m_picture;
-                }
+                m_contactsModel->getPicture(m_messages.at(messageIndex).peer());
             }
             break;
         default:
@@ -312,7 +309,8 @@ void CMessageModel::addMessage(const SMessage &message)
 
     if (needFileData) {
         const quint64 id = message.id ? message.id : message.id64;
-        m_fileRequests.insert(m_fileManager->requestFile(fileInfo), id);
+        const QString uniqueId = m_fileManager->requestFile(fileInfo);
+        m_fileRequests.insert(uniqueId, id);
     }
 }
 

@@ -37,10 +37,6 @@
 
 #include <QDebug>
 
-#ifdef CREATE_MEDIA_FILES
-#include <QDir>
-#endif
-
 #include <QFile>
 #include <QFileDialog>
 #include <QMetaEnum>
@@ -68,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_phoneNumberSubmitted(false),
     m_appState(AppStateNone)
 {
+    m_dialogModel->setFileManager(m_fileManager);
     m_contactsModel->setFileManager(m_fileManager);
     m_chatInfoModel->setFileManager(m_fileManager);
     m_messagingModel->setFileManager(m_fileManager);

@@ -5,8 +5,6 @@
 
 #include "TelegramNamespace.hpp"
 
-class CTelegramCore;
-
 class CDialogModel : public CPeerModel
 {
     Q_OBJECT
@@ -35,7 +33,6 @@ public:
 
     bool hasPeer(const Telegram::Peer peer) const override;
     QString getName(const Telegram::Peer peer) const override;
-    QPixmap getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const override;
 
     void addSourceModel(CPeerModel *peerModel);
 
@@ -64,7 +61,6 @@ protected:
     CPeerModel *modelForPeer(const Telegram::Peer peer) const;
 
 private:
-    CTelegramCore *m_backend;
     QVector<CPeerModel*> m_sourceModels;
     QVector<Telegram::DialogInfo*> m_dialogs;
 

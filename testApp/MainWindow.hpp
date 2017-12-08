@@ -37,8 +37,6 @@ class CFileManager;
 
 class QModelIndex;
 
-//#define CREATE_MEDIA_FILES
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -206,10 +204,6 @@ private:
     bool m_phoneNumberSubmitted;
 
     AppState m_appState;
-
-#ifndef CREATE_MEDIA_FILES
-    QMap<quint32,QByteArray> m_messageDataParts;
-#endif
 
 };
 
