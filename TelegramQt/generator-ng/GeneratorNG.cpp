@@ -678,13 +678,13 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
 
     foreach (const TLParam &param, method.params) {
         if (param.dependOnFlag()) {
-            result += spacing + QString("if (%1 & 1 << %2) {\n").arg(param.flagMember).arg(param.flagBit);
             if (param.type == QLatin1String("TLTrue")) {
-                result += spacing + spacing + QString("outputStream << %1();\n").arg(param.type);
+                result += spacing + QString("// (%1 & 1 << %2) stands for %3 \"true\" value\n").arg(param.flagMember).arg(param.flagBit).arg(param.name);
             } else {
+                result += spacing + QString("if (%1 & 1 << %2) {\n").arg(param.flagMember).arg(param.flagBit);
                 result += spacing + spacing + QString("outputStream << %1;\n").arg(param.name);
+                result += spacing + QLatin1String("}\n");
             }
-            result += spacing + QLatin1String("}\n");
         } else {
             result += spacing + QString("outputStream << %1;\n").arg(param.name);
         }
