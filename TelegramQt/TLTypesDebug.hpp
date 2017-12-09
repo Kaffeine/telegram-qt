@@ -98,7 +98,6 @@ QDebug operator<<(QDebug d, const TLReportReason &reportReasonValue);
 QDebug operator<<(QDebug d, const TLSendMessageAction &sendMessageActionValue);
 QDebug operator<<(QDebug d, const TLStickerPack &stickerPackValue);
 QDebug operator<<(QDebug d, const TLStorageFileType &storageFileTypeValue);
-QDebug operator<<(QDebug d, const TLTrue &trueValue);
 QDebug operator<<(QDebug d, const TLUpdatesState &updatesStateValue);
 QDebug operator<<(QDebug d, const TLUploadFile &uploadFileValue);
 QDebug operator<<(QDebug d, const TLUserProfilePhoto &userProfilePhotoValue);

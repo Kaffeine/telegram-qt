@@ -692,12 +692,8 @@ quint64 CTelegramConnection::channelsCreateChannel(quint32 flags, const QString 
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::ChannelsCreateChannel;
     outputStream << flags;
-    if (flags & 1 << 0) {
-        outputStream << TLTrue();
-    }
-    if (flags & 1 << 1) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 0) stands for broadcast "true" value
+    // (flags & 1 << 1) stands for megagroup "true" value
     outputStream << title;
     outputStream << about;
     return sendEncryptedPackage(output);
@@ -1265,9 +1261,7 @@ quint64 CTelegramConnection::messagesForwardMessages(quint32 flags, const TLInpu
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesForwardMessages;
     outputStream << flags;
-    if (flags & 1 << 4) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 4) stands for broadcast "true" value
     outputStream << fromPeer;
     outputStream << id;
     outputStream << randomId;
@@ -1537,9 +1531,7 @@ quint64 CTelegramConnection::messagesSearch(quint32 flags, const TLInputPeer &pe
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSearch;
     outputStream << flags;
-    if (flags & 1 << 0) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 0) stands for importantOnly "true" value
     outputStream << peer;
     outputStream << q;
     outputStream << filter;
@@ -1626,9 +1618,7 @@ quint64 CTelegramConnection::messagesSendInlineBotResult(quint32 flags, const TL
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSendInlineBotResult;
     outputStream << flags;
-    if (flags & 1 << 4) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 4) stands for broadcast "true" value
     outputStream << peer;
     if (flags & 1 << 0) {
         outputStream << replyToMsgId;
@@ -1645,9 +1635,7 @@ quint64 CTelegramConnection::messagesSendMedia(quint32 flags, const TLInputPeer 
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSendMedia;
     outputStream << flags;
-    if (flags & 1 << 4) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 4) stands for broadcast "true" value
     outputStream << peer;
     if (flags & 1 << 0) {
         outputStream << replyToMsgId;
@@ -1666,12 +1654,8 @@ quint64 CTelegramConnection::messagesSendMessage(quint32 flags, const TLInputPee
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSendMessage;
     outputStream << flags;
-    if (flags & 1 << 1) {
-        outputStream << TLTrue();
-    }
-    if (flags & 1 << 4) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 1) stands for noWebpage "true" value
+    // (flags & 1 << 4) stands for broadcast "true" value
     outputStream << peer;
     if (flags & 1 << 0) {
         outputStream << replyToMsgId;
@@ -1703,12 +1687,8 @@ quint64 CTelegramConnection::messagesSetInlineBotResults(quint32 flags, quint64 
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSetInlineBotResults;
     outputStream << flags;
-    if (flags & 1 << 0) {
-        outputStream << TLTrue();
-    }
-    if (flags & 1 << 1) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 0) stands for gallery "true" value
+    // (flags & 1 << 1) stands for isPrivate "true" value
     outputStream << queryId;
     outputStream << results;
     outputStream << cacheTime;

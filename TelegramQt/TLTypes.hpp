@@ -1652,21 +1652,6 @@ struct TLStorageFileType {
     TLValue tlType;
 };
 
-struct TLTrue {
-    TLTrue() :
-        tlType(TLValue::True) { }
-
-    bool isValid() const {
-        switch (tlType) {
-        case TLValue::True:
-            return true;
-        default:
-            return false;
-        };
-    }
-    TLValue tlType;
-};
-
 struct TLUpdatesState {
     TLUpdatesState() :
         pts(0),

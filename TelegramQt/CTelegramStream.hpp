@@ -143,7 +143,6 @@ public:
     CTelegramStream &operator>>(TLSendMessageAction &sendMessageActionValue);
     CTelegramStream &operator>>(TLStickerPack &stickerPackValue);
     CTelegramStream &operator>>(TLStorageFileType &storageFileTypeValue);
-    CTelegramStream &operator>>(TLTrue &trueValue);
     CTelegramStream &operator>>(TLUpdatesState &updatesStateValue);
     CTelegramStream &operator>>(TLUploadFile &uploadFileValue);
     CTelegramStream &operator>>(TLUserProfilePhoto &userProfilePhotoValue);
@@ -241,7 +240,6 @@ public:
     CTelegramStream &operator<<(const TLMessagesFilter &messagesFilterValue);
     CTelegramStream &operator<<(const TLReportReason &reportReasonValue);
     CTelegramStream &operator<<(const TLSendMessageAction &sendMessageActionValue);
-    CTelegramStream &operator<<(const TLTrue &trueValue);
     CTelegramStream &operator<<(const TLChannelMessagesFilter &channelMessagesFilterValue);
     CTelegramStream &operator<<(const TLDocumentAttribute &documentAttributeValue);
     CTelegramStream &operator<<(const TLInputBotInlineMessage &inputBotInlineMessageValue);

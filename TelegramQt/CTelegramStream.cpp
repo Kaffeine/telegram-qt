@@ -2048,24 +2048,6 @@ CTelegramStream &CTelegramStream::operator>>(TLStorageFileType &storageFileTypeV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLTrue &trueValue)
-{
-    TLTrue result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::True:
-        break;
-    default:
-        break;
-    }
-
-    trueValue = result;
-
-    return *this;
-}
-
 CTelegramStream &CTelegramStream::operator>>(TLUpdatesState &updatesStateValue)
 {
     TLUpdatesState result;
@@ -4923,20 +4905,6 @@ CTelegramStream &CTelegramStream::operator<<(const TLSendMessageAction &sendMess
     case TLValue::SendMessageGeoLocationAction:
         break;
     case TLValue::SendMessageChooseContactAction:
-        break;
-    default:
-        break;
-    }
-
-    return *this;
-}
-
-CTelegramStream &CTelegramStream::operator<<(const TLTrue &trueValue)
-{
-    *this << trueValue.tlType;
-
-    switch (trueValue.tlType) {
-    case TLValue::True:
         break;
     default:
         break;

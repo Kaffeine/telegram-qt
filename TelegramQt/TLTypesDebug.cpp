@@ -1790,22 +1790,6 @@ QDebug operator<<(QDebug d, const TLStorageFileType &type)
     return d;
 }
 
-QDebug operator<<(QDebug d, const TLTrue &type)
-{
-    d.noquote().nospace();
-    d << "TLTrue(" << type.tlType << ") {";
-    Spacer spacer;
-    switch (type.tlType) {
-    case TLValue::True:
-        break;
-    default:
-        break;
-    }
-    d << spacer.outerSpaces() << "}";
-
-    return d;
-}
-
 QDebug operator<<(QDebug d, const TLUpdatesState &type)
 {
     d.noquote().nospace();
