@@ -50,6 +50,7 @@ static const QStringList typesBlackList = QStringList()
         << QLatin1String("TLVector t")
         << QLatin1String("TLNull")
         << QLatin1String("TLMessagesMessage")
+        << tlTrueType
            ;
 
 QString ensureGoodName(const QString &name)
