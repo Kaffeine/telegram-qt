@@ -28,6 +28,7 @@ static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
 static const QString tlTypeMember = QLatin1String("tlType");
 static const QString tlVectorType = QLatin1String("TLVector");
+static const QString tlTrueType = QLatin1String("TLTrue");
 static const QStringList podTypes = QStringList() << "bool" << "quint32" << "quint64" << "double" << tlValueName;
 static const QStringList initTypesValues = QStringList() << "false" << "0" << "0" << "0" << "0";
 static const QStringList plainTypes = QStringList() << "Bool" << "#" << "int" << "long" << "double" << "string" << "bytes"
@@ -194,7 +195,7 @@ QString formatMethodParams(const TLMethod &method)
     QString result;
 
     foreach (const TLParam &param, method.params) {
-        if (param.dependOnFlag() && (param.type == QLatin1String("TLTrue"))) {
+        if (param.dependOnFlag() && (param.type == tlTrueType)) {
             continue;
         }
 
@@ -464,7 +465,7 @@ QStringList GeneratorNG::generateTLTypeMemberGetters(const TLType &type)
                 continue;
             }
             addedMembers.append(member.name);
-            if (member.dependOnFlag() && (member.type == QLatin1String("TLTrue"))) {
+            if (member.dependOnFlag() && (member.type == tlTrueType)) {
                 memberGetters.append(QStringLiteral("bool %2() const { return %3 & 1 << %4; }").arg(member.name, member.flagMember).arg(member.flagBit));
             }
         }
@@ -482,7 +483,7 @@ QStringList GeneratorNG::generateTLTypeMembers(const TLType &type)
                 continue;
             }
             addedMembers.append(member.name);
-            if (member.dependOnFlag() && (member.type == QLatin1String("TLTrue"))) {
+            if (member.dependOnFlag() && (member.type == tlTrueType)) {
                 continue; // No extra data behind the flag
             }
             membersCode.append(QStringLiteral("%1 %2;").arg(member.type, member.name));
@@ -526,7 +527,7 @@ QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type)
 
         foreach (const TLParam &member, subType.members) {
             if (member.dependOnFlag()) {
-                if (member.type == QLatin1String("TLTrue")) {
+                if (member.type == tlTrueType) {
                     continue;
                 }
                 code.append(doubleSpacing + QString("if (result.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit));
@@ -567,7 +568,7 @@ QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
 
         foreach (const TLParam &member, subType.members) {
             if (member.dependOnFlag()) {
-                if (member.type == QLatin1String("TLTrue")) {
+                if (member.type == tlTrueType) {
                     continue;
                 }
                 code.append(doubleSpacing + QString("if (%1.%2 & 1 << %3) {\n").arg(argName).arg(member.flagMember).arg(member.flagBit));
@@ -620,7 +621,7 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
             }
             typeDebugStatement = typeDebugStatement.arg(member.name);
             if (member.dependOnFlag()) {
-                if (member.type == QLatin1String("TLTrue")) {
+                if (member.type == tlTrueType) {
                     continue;
                 }
                 code += doubleSpacing + QString("if (type.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit);
@@ -678,7 +679,7 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
 
     foreach (const TLParam &param, method.params) {
         if (param.dependOnFlag()) {
-            if (param.type == QLatin1String("TLTrue")) {
+            if (param.type == tlTrueType) {
                 result += spacing + QString("// (%1 & 1 << %2) stands for %3 \"true\" value\n").arg(param.flagMember).arg(param.flagBit).arg(param.name);
             } else {
                 result += spacing + QString("if (%1 & 1 << %2) {\n").arg(param.flagMember).arg(param.flagBit);
