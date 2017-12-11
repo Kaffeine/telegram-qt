@@ -15,7 +15,7 @@
 
  */
 
-#include "GeneratorNG.hpp"
+#include "Generator.hpp"
 
 #include <QDebug>
 
@@ -346,7 +346,7 @@ static QMap<QString, TLMethod> readFunctionsJson(const QJsonDocument &document)
     return result;
 }
 
-QString GeneratorNG::generateTLValuesDefinition(const TLType &type)
+QString Generator::generateTLValuesDefinition(const TLType &type)
 {
     QString code;
 
@@ -357,12 +357,12 @@ QString GeneratorNG::generateTLValuesDefinition(const TLType &type)
     return code;
 }
 
-QString GeneratorNG::generateTLValuesDefinition(const TLMethod &method)
+QString Generator::generateTLValuesDefinition(const TLMethod &method)
 {
     return QString("        %1 = 0x%2,\n").arg(method.nameFirstCapital()).arg(method.id, 8, 0x10, QLatin1Char('0'));
 }
 
-QString GeneratorNG::generateTLTypeDefinition(const TLType &type, bool addSpecSources)
+QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSources)
 {
     QString code;
 
@@ -456,7 +456,7 @@ QString GeneratorNG::generateTLTypeDefinition(const TLType &type, bool addSpecSo
     return code;
 }
 
-QStringList GeneratorNG::generateTLTypeMemberGetters(const TLType &type)
+QStringList Generator::generateTLTypeMemberGetters(const TLType &type)
 {
     QStringList memberGetters;
     QStringList addedMembers;
@@ -474,7 +474,7 @@ QStringList GeneratorNG::generateTLTypeMemberGetters(const TLType &type)
     return memberGetters;
 }
 
-QStringList GeneratorNG::generateTLTypeMembers(const TLType &type)
+QStringList Generator::generateTLTypeMembers(const TLType &type)
 {
     QStringList membersCode;
     QStringList addedMembers;
@@ -494,7 +494,7 @@ QStringList GeneratorNG::generateTLTypeMembers(const TLType &type)
     return membersCode;
 }
 
-QString GeneratorNG::generateStreamReadOperatorDeclaration(const TLType &type)
+QString Generator::generateStreamReadOperatorDeclaration(const TLType &type)
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
@@ -503,7 +503,7 @@ QString GeneratorNG::generateStreamReadOperatorDeclaration(const TLType &type)
     return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
-QString GeneratorNG::generateStreamWriteOperatorDeclaration(const TLType &type)
+QString Generator::generateStreamWriteOperatorDeclaration(const TLType &type)
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
@@ -511,7 +511,7 @@ QString GeneratorNG::generateStreamWriteOperatorDeclaration(const TLType &type)
     return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
-QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type)
+QString Generator::generateStreamReadOperatorDefinition(const TLType &type)
 {
     QString code;
 
@@ -548,12 +548,12 @@ QString GeneratorNG::generateStreamReadOperatorDefinition(const TLType &type)
     return code;
 }
 
-QString GeneratorNG::generateStreamReadVectorTemplate(const QString &type)
+QString Generator::generateStreamReadVectorTemplate(const QString &type)
 {
     return QString(QLatin1String("template %1 &%1::operator>>(TLVector<%2> &v);")).arg(streamClassName).arg(type);
 }
 
-QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
+QString Generator::generateStreamWriteOperatorDefinition(const TLType &type)
 {
     QString code;
 
@@ -589,12 +589,12 @@ QString GeneratorNG::generateStreamWriteOperatorDefinition(const TLType &type)
     return code;
 }
 
-QString GeneratorNG::generateStreamWriteVectorTemplate(const QString &type)
+QString Generator::generateStreamWriteVectorTemplate(const QString &type)
 {
     return QString(QLatin1String("template %1 &%1::operator<<(const TLVector<%2> &v);")).arg(streamClassName).arg(type);
 }
 
-QString GeneratorNG::generateDebugWriteOperatorDeclaration(const TLType &type)
+QString Generator::generateDebugWriteOperatorDeclaration(const TLType &type)
 {
     QString argName = removePrefix(type.name);
     argName[0] = argName.at(0).toLower();
@@ -602,7 +602,7 @@ QString GeneratorNG::generateDebugWriteOperatorDeclaration(const TLType &type)
     return QString("QDebug operator<<(QDebug d, const %1 &%2);\n").arg(type.name).arg(argName);
 }
 
-QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
+QString Generator::generateDebugWriteOperatorDefinition(const TLType &type)
 {
     QString code;
 
@@ -664,12 +664,12 @@ QString GeneratorNG::generateDebugWriteOperatorDefinition(const TLType &type)
 //    }
 }
 
-QString GeneratorNG::generateConnectionMethodDeclaration(const TLMethod &method)
+QString Generator::generateConnectionMethodDeclaration(const TLMethod &method)
 {
     return spacing + QString("quint64 %1(%2);\n").arg(method.name).arg(formatMethodParams(method));
 }
 
-QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, QStringList &usedTypes)
+QString Generator::generateConnectionMethodDefinition(const TLMethod &method, QStringList &usedTypes)
 {
     QString result;
     result += QString("quint64 %1::%2(%3)\n{\n").arg(methodsClassName).arg(method.name).arg(formatMethodParams(method));
@@ -701,7 +701,7 @@ QString GeneratorNG::generateConnectionMethodDefinition(const TLMethod &method, 
     return result;
 }
 
-QString GeneratorNG::generateRpcProcessSwitchCase(const TLMethod &method)
+QString Generator::generateRpcProcessSwitchCase(const TLMethod &method)
 {
     static const QString codeTemplate = QStringLiteral(
                 "        case %1::%2:\n"
@@ -711,12 +711,12 @@ QString GeneratorNG::generateRpcProcessSwitchCase(const TLMethod &method)
     return codeTemplate.arg(tlValueName, method.nameFirstCapital());
 }
 
-QString GeneratorNG::generateRpcProcessDeclaration(const TLMethod &method)
+QString Generator::generateRpcProcessDeclaration(const TLMethod &method)
 {
     return spacing + QString("void process%1(RpcProcessingContext *context);\n").arg(method.nameFirstCapital());
 }
 
-QString GeneratorNG::generateRpcProcessSampleDefinition(const TLMethod &method)
+QString Generator::generateRpcProcessSampleDefinition(const TLMethod &method)
 {
     QString result;
     result += QString("void %1::process%2(RpcProcessingContext *context)\n{\n").arg(methodsClassName, method.nameFirstCapital());
@@ -734,7 +734,7 @@ QString GeneratorNG::generateRpcProcessSampleDefinition(const TLMethod &method)
     return result;
 }
 
-QString GeneratorNG::generateDebugRpcParse(const TLMethod &method)
+QString Generator::generateDebugRpcParse(const TLMethod &method)
 {
     QString result;
 
@@ -761,7 +761,7 @@ QString GeneratorNG::generateDebugRpcParse(const TLMethod &method)
     return result;
 }
 
-QStringList GeneratorNG::reorderLinesAsExist(QStringList newLines, QStringList existLines)
+QStringList Generator::reorderLinesAsExist(QStringList newLines, QStringList existLines)
 {
     QMutableListIterator<QString> existLineIt(existLines);
     while (existLineIt.hasNext()) {
@@ -794,7 +794,7 @@ struct TypeTreeItem
     }
 };
 
-QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types, QMap<QString, TLType> *unresolved)
+QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, TLType> *unresolved)
 {
     QStringList solvedTypesNames = nativeTypes;
     solvedTypesNames.append(tlValueName);
@@ -936,7 +936,7 @@ QList<TLType> GeneratorNG::solveTypes(QMap<QString, TLType> types, QMap<QString,
     return solvedTypes;
 }
 
-void GeneratorNG::getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const
+void Generator::getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const
 {
     QStringList newUsedTypes = usedTypes;
 
@@ -989,12 +989,12 @@ void GeneratorNG::getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vec
     }
 }
 
-GeneratorNG::GeneratorNG() :
+Generator::Generator() :
     m_addSpecSources(false)
 {
 }
 
-bool GeneratorNG::loadFromJson(const QByteArray &data)
+bool Generator::loadFromJson(const QByteArray &data)
 {
     QJsonParseError parseError;
     const QJsonDocument document = QJsonDocument::fromJson(data, &parseError);
@@ -1013,7 +1013,7 @@ enum EntryType {
     EntryFunction
 };
 
-bool GeneratorNG::loadFromText(const QByteArray &data)
+bool Generator::loadFromText(const QByteArray &data)
 {
     QTextStream input(data);
     EntryType entryType = EntryTypedef;
@@ -1136,7 +1136,7 @@ bool GeneratorNG::loadFromText(const QByteArray &data)
     return true;
 }
 
-bool GeneratorNG::resolveTypes()
+bool Generator::resolveTypes()
 {
     QMap<QString, TLType> unresolved;
     m_solvedTypes = solveTypes(m_types, &unresolved);
@@ -1147,12 +1147,12 @@ bool GeneratorNG::resolveTypes()
     return unresolved.isEmpty() && !m_solvedTypes.isEmpty();
 }
 
-void GeneratorNG::setExistsRpcProcessDefinitions(const QString &code)
+void Generator::setExistsRpcProcessDefinitions(const QString &code)
 {
     existsCodeRpcProcessDefinitions = code;
 }
 
-void GeneratorNG::generate()
+void Generator::generate()
 {
     codeOfTLValues.clear();
     codeOfTLTypes.clear();
@@ -1346,12 +1346,12 @@ void GeneratorNG::generate()
 
 }
 
-void GeneratorNG::setAddSpecSources(bool addSources)
+void Generator::setAddSpecSources(bool addSources)
 {
     m_addSpecSources = addSources;
 }
 
-QString GeneratorNG::removeWord(QString input, QString word)
+QString Generator::removeWord(QString input, QString word)
 {
     if (input.isEmpty()) {
         return QString();

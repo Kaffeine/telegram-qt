@@ -14,8 +14,8 @@
    Lesser General Public License for more details.
 
  */
-#ifndef GENERATORNG_HPP
-#define GENERATORNG_HPP
+#ifndef GENERATOR_HPP
+#define GENERATOR_HPP
 
 #include <QtGlobal>
 
@@ -76,10 +76,10 @@ struct TLMethod {
     QList< TLParam > params;
 };
 
-class GeneratorNG
+class Generator
 {
 public:
-    GeneratorNG();
+    Generator();
     bool loadFromJson(const QByteArray &data);
     bool loadFromText(const QByteArray &data);
     bool resolveTypes();

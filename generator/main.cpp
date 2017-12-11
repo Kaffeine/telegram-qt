@@ -25,7 +25,7 @@
 
 #include <QJsonDocument>
 
-#include "GeneratorNG.hpp"
+#include "Generator.hpp"
 
 enum StatusCode {
     NoError,
@@ -293,7 +293,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
 
     specsFile.close();
 
-    GeneratorNG generator;
+    Generator generator;
     generator.setAddSpecSources(s_addSpecSources);
 
     bool success = true;

@@ -2,24 +2,24 @@
 #include <QTest>
 #include <QDebug>
 
-#include "GeneratorNG.hpp"
+#include "Generator.hpp"
 
-class tst_GeneratorNG : public QObject
+class tst_Generator : public QObject
 {
     Q_OBJECT
 public:
-    explicit tst_GeneratorNG(QObject *parent = nullptr);
+    explicit tst_Generator(QObject *parent = nullptr);
 private slots:
     void checkRemoveWord_data();
     void checkRemoveWord();
 };
 
-tst_GeneratorNG::tst_GeneratorNG(QObject *parent) :
+tst_Generator::tst_Generator(QObject *parent) :
     QObject(parent)
 {
 }
 
-void tst_GeneratorNG::checkRemoveWord_data()
+void tst_Generator::checkRemoveWord_data()
 {
     QTest::addColumn<QString>("input");
     QTest::addColumn<QString>("output");
@@ -55,14 +55,14 @@ void tst_GeneratorNG::checkRemoveWord_data()
             << "id";
 }
 
-void tst_GeneratorNG::checkRemoveWord()
+void tst_Generator::checkRemoveWord()
 {
     QFETCH(QString, input);
     QFETCH(QString, output);
     QFETCH(QString, word);
-    QCOMPARE(GeneratorNG::removeWord(input, word), output);
+    QCOMPARE(Generator::removeWord(input, word), output);
 }
 
-QTEST_APPLESS_MAIN(tst_GeneratorNG)
+QTEST_APPLESS_MAIN(tst_Generator)
 
-#include "tst_GeneratorNG.moc"
+#include "tst_Generator.moc"

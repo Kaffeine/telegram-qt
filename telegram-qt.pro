@@ -52,8 +52,8 @@ equals(BUILD_QML_IMPORT, "true") {
     contains(options, developer-build) {
         SUBDIRS += TelegramQt/tests
         minQtVersion(5, 6, 0) {
-            SUBDIRS += TelegramQt/generator-ng
-            SUBDIRS += TelegramQt/generator-ng/tests
+            SUBDIRS += generator
+            SUBDIRS += generator/tests
         } else {
             message("Use Qt 5.6.0 or higher to build GeneratorNG")
         }

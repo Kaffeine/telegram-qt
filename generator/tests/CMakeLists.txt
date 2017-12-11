@@ -28,14 +28,14 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/..
 )
 
-add_executable(tst_GeneratorNG
-    tst_GeneratorNG/tst_GeneratorNG.cpp
-    ../GeneratorNG.cpp
+add_executable(tst_Generator
+    tst_Generator/tst_Generator.cpp
+    ../Generator.cpp
 )
 
-target_link_libraries(tst_GeneratorNG LINK_PUBLIC
+target_link_libraries(tst_Generator LINK_PUBLIC
     Qt5::Core
     Qt5::Test
 )
 
-add_test(NAME tst_GeneratorNG COMMAND tst_GeneratorNG)
+add_test(NAME tst_Generator COMMAND tst_Generator)

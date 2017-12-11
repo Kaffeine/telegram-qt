@@ -54,7 +54,7 @@ if (BUILD_GENERATOR)
     if (Qt5_VERSION VERSION_LESS "5.6.0")
         message(WARNING "Use Qt 5.6.0 or higher to build GeneratorNG")
     else()
-        add_subdirectory(TelegramQt/generator-ng)
+        add_subdirectory(generator)
     endif()
 endif()
 
