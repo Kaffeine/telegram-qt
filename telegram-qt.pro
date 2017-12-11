@@ -51,7 +51,6 @@ equals(BUILD_QML_IMPORT, "true") {
 
     contains(options, developer-build) {
         SUBDIRS += TelegramQt/tests
-        SUBDIRS += TelegramQt/generator
         minQtVersion(5, 6, 0) {
             SUBDIRS += TelegramQt/generator-ng
             SUBDIRS += TelegramQt/generator-ng/tests
