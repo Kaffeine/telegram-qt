@@ -47,6 +47,8 @@ static bool s_dryRun = false;
 static bool s_dump = true;
 static bool s_addSpecSources = false;
 
+static const QByteArray c_textLayerMarker = QByteArrayLiteral("// LAYER ");
+
 static QString s_inputDir;
 static QString s_outputDir;
 
@@ -253,6 +255,58 @@ StatusCode fetchJson(const QString &specFileName)
     return NoError;
 }
 
+StatusCode fetchText(const QString &url, QString *output)
+{
+    QEventLoop eventLoop;
+    QNetworkAccessManager nam;
+    QObject::connect(&nam, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
+
+    QNetworkRequest req(QUrl::fromUserInput(url));
+    QNetworkReply *reply = nam.get(req);
+
+    eventLoop.exec();
+
+    if (reply->error() != QNetworkReply::NoError) {
+        qWarning() << "Network error:" << reply->error() << reply->errorString();
+        delete reply;
+        return NetworkError;
+    }
+    const QByteArray data = reply->readAll();
+    delete reply;
+
+    if (data.isEmpty()) {
+        qWarning() << "The result is empty";
+        return ServerError;
+    }
+
+    int layerIndex = data.indexOf(c_textLayerMarker);
+    if (layerIndex < 0) {
+        qWarning() << "No layer marker";
+        return SchemaReadError;
+    }
+    bool ok;
+    QByteArray mid = data.mid(layerIndex + c_textLayerMarker.length());
+    mid = mid.trimmed();
+    int layer = mid.toInt(&ok);
+    if (!ok) {
+        qWarning() << "No layer version in data" << mid;
+        return SchemaReadError;
+    }
+
+    if (output->isEmpty()) {
+        *output = QStringLiteral("scheme-%1.tl").arg(layer);
+    }
+    QFile specsOutFile(*output);
+    if (!specsOutFile.open(QIODevice::WriteOnly)) {
+        return FileAccessError;
+    }
+    specsOutFile.write(data);
+    specsOutFile.close();
+
+    printf("The spec file is successfully downloaded and saved as %s\n", output->toUtf8().constData());
+    return NoError;
+}
+
 StatusCode format(const QString &specFileName)
 {
     QFile specsFile(specFileName);
@@ -359,6 +413,10 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     return NoError;
 }
 
+/* Example of usage:
+     generator --generate-from-text scheme-45.tl -I %{sourceDir}/TelegramQt
+ */
+
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
@@ -383,6 +441,10 @@ int main(int argc, char *argv[])
     QCommandLineOption addSpecSourcesOption(QStringLiteral("add-spec-sources"));
     parser.addOption(addSpecSourcesOption);
 
+    QCommandLineOption fetchTextOption(QStringLiteral("fetch-text"));
+    fetchTextOption.setValueName(QStringLiteral("url"));
+    parser.addOption(fetchTextOption);
+
     QCommandLineOption fetchJsonOption(QStringLiteral("fetch-json"));
     parser.addOption(fetchJsonOption);
 
@@ -399,7 +461,7 @@ int main(int argc, char *argv[])
 
     parser.process(app);
 
-    if (parser.positionalArguments().count() != 1) {
+    if (!parser.isSet(fetchTextOption) && (parser.positionalArguments().count() != 1)) {
         parser.showHelp(InvalidArgument);
     }
 
@@ -419,9 +481,20 @@ int main(int argc, char *argv[])
         s_outputDir.append(QLatin1Char('/'));
     }
 
-    const QString specFileName = parser.positionalArguments().first();
+    QString specFileName;
+    if (!parser.positionalArguments().isEmpty()) {
+        specFileName = parser.positionalArguments().first();
+    }
 
     StatusCode code = InvalidArgument;
+
+    if (parser.isSet(fetchTextOption)) {
+        QString url = parser.value(fetchTextOption);
+        code = fetchText(url, &specFileName);
+        if (code != NoError) {
+            return code;
+        }
+    }
 
     if (parser.isSet(fetchJsonOption)) {
         code = fetchJson(specFileName);
