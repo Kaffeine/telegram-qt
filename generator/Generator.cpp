@@ -1047,62 +1047,14 @@ bool Generator::loadFromText(const QByteArray &data)
             continue;
         }
 
-        int sectionsSplitterIndex = line.indexOf(QLatin1Char('='));
-        const QStringRef basePart = line.leftRef(sectionsSplitterIndex).trimmed();
-        const QStringRef typePart = line.midRef(sectionsSplitterIndex + 2, line.size() - 3 - sectionsSplitterIndex);
-
-        int hashIndex = basePart.indexOf(QLatin1Char('#'));
-        if ((hashIndex < 1) || (hashIndex + 1 > basePart.length())) {
+        LineParseResult parseResult = parseLine(line);
+        if (!parseResult.isValid()) {
             printf("Bad string: %s (line %d)\n", line.toLocal8Bit().constData(), currentLine);
-            return false;
         }
 
-        QStringRef predicateBaseName = basePart.left(hashIndex);
-        QStringRef predicateValue = basePart.mid(hashIndex + 1);
-        int endOfValue = predicateValue.indexOf(QChar(' '));
-
-        if (endOfValue > 0) {
-            predicateValue = predicateValue.left(endOfValue);
-        }
-
-        bool ok;
-        const quint32 predicateId = predicateValue.toUInt(&ok, 16);
-
-        if (!ok) {
-            printf("Could't read predicate id (string: \"%s\", predicate \"%s\", line %d)\n", line.toLocal8Bit().constData(), predicateValue.toString().toLocal8Bit().constData(), currentLine);
-            return false;
-        }
-
-        bool skipParams = false;
-        if (basePart.contains('{') && basePart.contains('}')) {
-            const int templateBegin = basePart.indexOf(QLatin1Char('{'));
-            const int templateEnd = basePart.indexOf(QLatin1Char('}'));
-            QStringRef templ = basePart.mid(templateBegin + 1, templateEnd - templateBegin - 1);
-            printf("Read template %s, type %s.\n", templ.toLatin1().constData(), predicateBaseName.toLatin1().constData());
-            skipParams = true;
-        }
-
-        QList<TLParam> tlParams;
-        if (!skipParams) {
-            QVector<QStringRef> params = basePart.split(QLatin1Char(' '), QString::SkipEmptyParts);
-            params.removeFirst(); // The first part is predicate name + id.
-
-            foreach (const QStringRef &paramValue, params) {
-                QVector<QStringRef> nameAndType = paramValue.split(QLatin1Char(':'));
-                const QString paramName = formatMember(nameAndType.first().toString());
-                const QString paramType = formatType(nameAndType.last().toString());
-                QString flagMember;
-                qint8 flagsBit = flagBitForMember(nameAndType.last(), &flagMember);
-
-                tlParams << TLParam(paramName, paramType, flagsBit);
-                tlParams.last().flagMember = flagMember;
-            }
-        }
-
+        const QString typeName = formatType(parseResult.typeName);
         if (entryType == EntryTypedef) {
-            const QString predicateName = formatName1stCapital(predicateBaseName.toString());
-            const QString typeName = formatType(typePart.trimmed().toString());
-
+            const QString predicateName = formatName1stCapital(parseResult.predicateName);
             if (!m_types.contains(typeName)) {
                 m_groups.last().append(typeName);
             }
@@ -1111,24 +1063,22 @@ bool Generator::loadFromText(const QByteArray &data)
 
             TLSubType tlSubType;
             tlSubType.name = predicateName;
-            tlSubType.id = predicateId;
-            tlSubType.members.append(tlParams);
+            tlSubType.id = parseResult.predicateId;
+            tlSubType.members.append(parseResult.params);
             tlSubType.source = line;
 
             tlType.subTypes.append(tlSubType);
             m_types.insert(typeName, tlType);
         } else if (entryType == EntryFunction) {
-            const QString functionName = formatName(predicateBaseName.toString());
-            const QString typeName = formatType(typePart.trimmed().toString());
-
+            const QString functionName = formatName(parseResult.predicateName);
             if (!m_functions.contains(functionName)) {
                 m_groups.last().append(functionName);
             }
             TLMethod tlMethod;
             tlMethod.name = functionName;
-            tlMethod.id = predicateId;
+            tlMethod.id = parseResult.predicateId;
             tlMethod.type = typeName;
-            tlMethod.params.append(tlParams);
+            tlMethod.params.append(parseResult.params);
             tlMethod.source = line;
 
             m_functions.insert(functionName, tlMethod);
@@ -1380,6 +1330,66 @@ QByteArray Generator::getPredicateForCrc32(const QByteArray &sourceLine)
 quint32 Generator::getCrc32(const QByteArray &bytes)
 {
     return crc32(0l, reinterpret_cast<const unsigned char*>(bytes.constData()), bytes.size());
+}
+
+Generator::LineParseResult Generator::parseLine(const QString &line)
+{
+    const int sectionsSplitterIndex = line.indexOf(QLatin1Char('='));
+    const QStringRef basePart = line.leftRef(sectionsSplitterIndex).trimmed();
+    const QStringRef typePart = line.midRef(sectionsSplitterIndex + 2, line.size() - 3 - sectionsSplitterIndex);
+    const int hashIndex = basePart.indexOf(QLatin1Char('#'));
+    if ((hashIndex < 1) || (hashIndex + 1 > basePart.length())) {
+        return LineParseResult();
+    }
+
+    QStringRef predicateValue = basePart.mid(hashIndex + 1);
+    int endOfValue = predicateValue.indexOf(QChar(' '));
+
+    QStringRef predicateBaseName = basePart.left(hashIndex);
+
+    if (endOfValue > 0) {
+        predicateValue = predicateValue.left(endOfValue);
+    }
+
+    bool ok;
+    const quint32 predicateId = predicateValue.toUInt(&ok, 16);
+    if (!ok) {
+//        printf("Could't read predicate id (string: \"%s\", predicate \"%s\", line %d)\n", line.toLocal8Bit().constData(), predicateValue.toString().toLocal8Bit().constData(), currentLine);
+        return LineParseResult();
+    }
+
+    bool skipParams = false;
+    if (basePart.contains('{') && basePart.contains('}')) {
+        const int templateBegin = basePart.indexOf(QLatin1Char('{'));
+        const int templateEnd = basePart.indexOf(QLatin1Char('}'));
+        QStringRef templ = basePart.mid(templateBegin + 1, templateEnd - templateBegin - 1);
+        printf("Read template %s, type %s.\n", templ.toLatin1().constData(), predicateBaseName.toLatin1().constData());
+        skipParams = true;
+    }
+
+    QList<TLParam> tlParams;
+    if (!skipParams) {
+        QVector<QStringRef> params = basePart.split(QLatin1Char(' '), QString::SkipEmptyParts);
+        params.removeFirst(); // The first part is predicate name + id.
+
+        foreach (const QStringRef &paramValue, params) {
+            QVector<QStringRef> nameAndType = paramValue.split(QLatin1Char(':'));
+            const QString paramName = formatMember(nameAndType.first().toString());
+            const QString paramType = formatType(nameAndType.last().toString());
+            QString flagMember;
+            qint8 flagsBit = flagBitForMember(nameAndType.last(), &flagMember);
+
+            tlParams << TLParam(paramName, paramType, flagsBit);
+            tlParams.last().flagMember = flagMember;
+        }
+    }
+    LineParseResult result;
+    result.predicateName = predicateBaseName.toString();
+    result.predicateId = predicateId;
+    result.typeName = typePart.trimmed().toString();
+    result.params = tlParams;
+
+    return result;
 }
 
 void Generator::setAddSpecSources(bool addSources)

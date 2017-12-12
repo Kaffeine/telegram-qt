@@ -79,6 +79,14 @@ struct TLMethod {
 class Generator
 {
 public:
+    struct LineParseResult {
+        bool isValid() const { return predicateId && !predicateName.isEmpty() && !typeName.isEmpty(); }
+        QString predicateName;
+        QString typeName;
+        QList<TLParam> params;
+        quint32 predicateId = 0;
+    };
+
     Generator();
     bool loadFromJson(const QByteArray &data);
     bool loadFromText(const QByteArray &data);
@@ -88,6 +96,7 @@ public:
 
     static QByteArray getPredicateForCrc32(const QByteArray &sourceLine);
     static quint32 getCrc32(const QByteArray &bytes);
+    static LineParseResult parseLine(const QString &line);
 
     QMap<QString, TLType> types() const { return m_types; }
     QList<TLType> solvedTypes() const { return m_solvedTypes; }
