@@ -1,5 +1,7 @@
 project(Generator)
 
+find_package(ZLIB REQUIRED)
+
 if (ENABLE_TESTS)
     enable_testing()
     add_subdirectory(tests)
@@ -17,6 +19,7 @@ include_directories(
     ${CMAKE_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${ZLIB_INCLUDE_DIR}
 )
 
 add_executable(generator ${generator_SOURCES})
@@ -30,4 +33,5 @@ target_include_directories(generator PRIVATE
 target_link_libraries(generator LINK_PUBLIC
     Qt5::Core
     Qt5::Network
+    ${ZLIB_LIBRARIES}
 )

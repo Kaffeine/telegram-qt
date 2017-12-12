@@ -24,6 +24,8 @@
 #include <QJsonObject>
 #include <QRegularExpression>
 
+#include <zlib.h>
+
 static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
 static const QString tlTypeMember = QLatin1String("tlType");
@@ -1344,6 +1346,40 @@ void Generator::generate()
         codeDebugWriteDefinitions .append(generateDebugWriteOperatorDefinition(type));
     }
 
+}
+
+QByteArray Generator::getPredicateForCrc32(const QByteArray &sourceLine)
+{
+    static const QRegularExpression expr("([a-zA-Z\\.0-9_]+)(#[0-9a-f]+)?([^=]*)=\\s*([a-zA-Z\\.<>0-9_]+);");
+    const QRegularExpressionMatch match = expr.match(QString::fromLatin1(sourceLine));
+    if (!match.isValid()) {
+        return QByteArray();
+    }
+    static const QRegularExpression flags(QStringLiteral(" [a-zA-Z0-9_]+\\:flags\\.[0-9]+\\?true"));
+    QString str = match.captured(1) + match.captured(3) + QStringLiteral("= ") + match.captured(4);
+    str.replace(flags, QString());
+    QByteArray arr = str.toLatin1();
+    for (char &c : arr) {
+        switch (c) {
+        case '<':
+        case '>':
+        case '(':
+        case ')':
+        case '{':
+        case '}':
+            c = ' ';
+        default:
+            break;
+        }
+    }
+    arr.replace(QByteArrayLiteral(":bytes "), QByteArrayLiteral(":string "));
+    arr.replace(QByteArrayLiteral("?bytes "), QByteArrayLiteral("?string "));
+    return arr.simplified();
+}
+
+quint32 Generator::getCrc32(const QByteArray &bytes)
+{
+    return crc32(0l, reinterpret_cast<const unsigned char*>(bytes.constData()), bytes.size());
 }
 
 void Generator::setAddSpecSources(bool addSources)

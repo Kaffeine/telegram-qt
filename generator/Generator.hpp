@@ -86,6 +86,9 @@ public:
     void setExistsRpcProcessDefinitions(const QString &code);
     void generate();
 
+    static QByteArray getPredicateForCrc32(const QByteArray &sourceLine);
+    static quint32 getCrc32(const QByteArray &bytes);
+
     QMap<QString, TLType> types() const { return m_types; }
     QList<TLType> solvedTypes() const { return m_solvedTypes; }
     QMap<QString, TLMethod> functions() const { return m_functions; }
