@@ -1342,20 +1342,21 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
         return LineParseResult();
     }
 
-    QStringRef predicateValue = basePart.mid(hashIndex + 1);
-    int endOfValue = predicateValue.indexOf(QChar(' '));
-
-    QStringRef predicateBaseName = basePart.left(hashIndex);
-
-    if (endOfValue > 0) {
-        predicateValue = predicateValue.left(endOfValue);
-    }
-
-    bool ok;
-    const quint32 predicateId = predicateValue.toUInt(&ok, 16);
-    if (!ok) {
-//        printf("Could't read predicate id (string: \"%s\", predicate \"%s\", line %d)\n", line.toLocal8Bit().constData(), predicateValue.toString().toLocal8Bit().constData(), currentLine);
-        return LineParseResult();
+    quint32 predicateId = 0;
+    QStringRef predicateBaseName;
+    if (hashIndex > 0) {
+        QStringRef predicateValue = basePart.mid(hashIndex + 1);
+        const int endOfValue = predicateValue.indexOf(QChar(' '));
+        predicateBaseName = basePart.left(hashIndex);
+        if (endOfValue > 0) {
+            predicateValue = predicateValue.left(endOfValue);
+        }
+        bool ok;
+        predicateId = predicateValue.toUInt(&ok, 16);
+        if (!ok) {
+            qWarning() << "parseLine: Could't read predicate id from line" << line;
+            return LineParseResult();
+        }
     }
 
     bool skipParams = false;
