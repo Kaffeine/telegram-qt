@@ -12,7 +12,7 @@ set(TELEGRAM_QT_ABI "${TELEGRAM_QT_VERSION_MAJOR}.${TELEGRAM_QT_VERSION_MINOR}")
 # Add an option for building tests
 option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
 # Add an option for building tests
-option(ENABLE_TESTAPP "Enable compilation of testing application" FALSE)
+option(BUILD_WIDGETS_CLIENT "Build a widgets-based client" FALSE)
 # Add an option for building tests
 option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
 # Add an option for building tests
@@ -27,7 +27,7 @@ option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra out
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
 
-if(ENABLE_TESTAPP)
+if (BUILD_WIDGETS_CLIENT)
     list(APPEND QT_COMPONENTS Gui Widgets)
 endif()
 
@@ -64,6 +64,6 @@ if (ENABLE_QCH_BUILD)
     add_subdirectory(doc)
 endif()
 
-if(ENABLE_TESTAPP)
-    add_subdirectory(testApp)
+if (BUILD_WIDGETS_CLIENT)
+    add_subdirectory(clients/widgets)
 endif()

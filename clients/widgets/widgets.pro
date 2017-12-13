@@ -3,18 +3,18 @@ CONFIG += c++11
 
 TEMPLATE = app
 
-INCLUDEPATH += $$PWD/../TelegramQt
+INCLUDEPATH += $$PWD/../../TelegramQt
 
 DEFINES += STORE_MEDIA_FILES
 
 LIBS += -lssl -lcrypto -lz
-LIBS += -L$$OUT_PWD/../TelegramQt
+LIBS += -L$$OUT_PWD/../../TelegramQt
 LIBS += -lTelegramQt$${QT_MAJOR_VERSION}
 
 TARGET = testApp
 TEMPLATE = app
 
-SOURCES += main.cpp\
+SOURCES += main.cpp \
     MainWindow.cpp \
     CFileManager.cpp \
     CPeerModel.cpp \

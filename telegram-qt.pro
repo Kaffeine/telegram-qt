@@ -36,6 +36,14 @@ SUBDIRS = TelegramQt
 isEmpty(BUILD_ONLY_LIBRARY) {
     BUILD_ONLY_LIBRARY = "false"
 }
+isEmpty(BUILD_WIDGETS_CLIENT) {
+    equals(BUILD_ONLY_LIBRARY, "true") {
+        BUILD_WIDGETS_CLIENT = "false"
+    } else {
+        BUILD_WIDGETS_CLIENT = "true"
+    }
+}
+
 isEmpty(BUILD_QML_IMPORT) {
     BUILD_QML_IMPORT = "true"
 }
@@ -48,18 +56,18 @@ equals(BUILD_QCH, "true") {
     SUBDIRS += doc
 }
 
-!equals(BUILD_ONLY_LIBRARY, "true") {
-    SUBDIRS += testApp
+equals(BUILD_WIDGETS_CLIENT, "true") {
+    SUBDIRS += clients/widgets
     CONFIG += ordered
+}
 
-    contains(options, developer-build) {
-        SUBDIRS += TelegramQt/tests
-        minQtVersion(5, 6, 0) {
-            SUBDIRS += generator
-            SUBDIRS += generator/tests
-        } else {
-            message("Use Qt 5.6.0 or higher to build GeneratorNG")
-        }
+contains(options, developer-build) {
+    SUBDIRS += TelegramQt/tests
+    minQtVersion(5, 6, 0) {
+        SUBDIRS += generator
+        SUBDIRS += generator/tests
+    } else {
+        message("Use Qt 5.6.0 or higher to build GeneratorNG")
     }
 }
 
