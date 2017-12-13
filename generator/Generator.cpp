@@ -1338,12 +1338,15 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
     const QStringRef basePart = line.leftRef(sectionsSplitterIndex).trimmed();
     const QStringRef typePart = line.midRef(sectionsSplitterIndex + 2, line.size() - 3 - sectionsSplitterIndex);
     const int hashIndex = basePart.indexOf(QLatin1Char('#'));
-    if ((hashIndex < 1) || (hashIndex + 1 > basePart.length())) {
+    if ((hashIndex == 0) || (hashIndex + 1 > basePart.length())) {
         return LineParseResult();
     }
 
     quint32 predicateId = 0;
     QStringRef predicateBaseName;
+    const QByteArray barePredicate = getPredicateForCrc32(line.toLatin1());
+    const quint32 calculatedPredicateId = getCrc32(barePredicate);
+
     if (hashIndex > 0) {
         QStringRef predicateValue = basePart.mid(hashIndex + 1);
         const int endOfValue = predicateValue.indexOf(QChar(' '));
@@ -1356,6 +1359,13 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
         if (!ok) {
             qWarning() << "parseLine: Could't read predicate id from line" << line;
             return LineParseResult();
+        }
+
+        if (predicateId != calculatedPredicateId) {
+            qWarning() << "parseLine: the read predicate is different from the calculated" << QString("%1 vs %2")
+                          .arg(predicateId, /* fieldwidth */ 8, /* base */ 16, QLatin1Char('0'))
+                          .arg(calculatedPredicateId, /* fieldwidth */ 8, /* base */ 16, QLatin1Char('0'))
+                       << "for line" << line;
         }
     }
 
