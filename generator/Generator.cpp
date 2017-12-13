@@ -1367,6 +1367,10 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
                           .arg(calculatedPredicateId, /* fieldwidth */ 8, /* base */ 16, QLatin1Char('0'))
                        << "for line" << line;
         }
+    } else {
+        predicateId = calculatedPredicateId;
+        const int endOfName = basePart.indexOf(QLatin1Char(' '));
+        predicateBaseName = basePart.left(endOfName);
     }
 
     bool skipParams = false;
