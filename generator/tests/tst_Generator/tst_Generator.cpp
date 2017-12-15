@@ -4,6 +4,23 @@
 
 #include "Generator.hpp"
 
+const QString c_typesSection = QStringLiteral("---types---");
+const QString c_functionsSection = QStringLiteral("---functions---");
+
+static QByteArray generateTextSpec(const QStringList &types, const QStringList &functions = {})
+{
+    QByteArray result;
+    if (!types.isEmpty()) {
+        const QString textData = c_typesSection + QLatin1Char('\n') + types.join(QLatin1Char('\n')) + QLatin1Char('\n');
+        result += textData.toLocal8Bit();
+    }
+    if (!functions.isEmpty()) {
+        const QString textData = c_functionsSection + QLatin1Char('\n') + functions.join(QLatin1Char('\n')) + QLatin1Char('\n');
+        result += textData.toLocal8Bit();
+    }
+    return result;
+}
+
 class tst_Generator : public QObject
 {
     Q_OBJECT
