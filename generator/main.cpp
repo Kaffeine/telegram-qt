@@ -415,6 +415,9 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
 
 /* Example of usage:
      generator --generate-from-text %{sourceDir}/generator/scheme-45.tl -I %{sourceDir}/TelegramQt
+     generator --fetch-text https://raw.githubusercontent.com/telegramdesktop/tdesktop/bccd80187489a5a1e94d1adb7de7c72275a62f1a/Telegram/Resources/scheme.tl // 72, commit bccd80187489a5a1e94d1adb7de7c72275a62f1a
+     generator --generate-from-text scheme-72.tl -I %{sourceDir}/TelegramQt
+
  */
 
 int main(int argc, char *argv[])
