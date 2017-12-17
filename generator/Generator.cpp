@@ -55,9 +55,10 @@ static const QStringList typesBlackList = QStringList()
         << tlTrueType
            ;
 
-QString ensureGoodName(const QString &name)
+QString ensureGoodName(const QString &name, const QVariantHash &context)
 {
     static const QStringList badNames = QStringList()
+            << QStringLiteral("static")
             << QStringLiteral("lat")
             << QStringLiteral("long")
             << QStringLiteral("public")
@@ -65,12 +66,19 @@ QString ensureGoodName(const QString &name)
             << QStringLiteral("inline")
                ;
     static const QStringList badNamesReplacers = QStringList()
+            << QStringLiteral("isStatic")
             << QStringLiteral("latitude")
             << QStringLiteral("longitude")
             << QStringLiteral("isPublic")
             << QStringLiteral("isPrivate")
             << QStringLiteral("isInline")
                ;
+
+    if (context.value("parentType").toString() == QLatin1String("channelAdminLogEventsFilter")) {
+        if (name == QLatin1String("delete")) {
+            return "deleted";
+        }
+    }
 
     int index = badNames.indexOf(name);
     if (index < 0) {
@@ -178,9 +186,9 @@ QString joinLinesWithSpacing(const QStringList &lines, int spacing)
     return result;
 }
 
-QString formatMember(QString name)
+QString formatMember(QString name, const QVariantHash &context = {})
 {
-    name = ensureGoodName(name);
+    name = ensureGoodName(name, context);
     return formatName(name);
 }
 
@@ -296,7 +304,7 @@ static QMap<QString, TLType> readTypesJson(const QJsonDocument &document)
 
         foreach (const QJsonValue &paramValue, params) {
             const QJsonObject &paramObj = paramValue.toObject();
-            const QString paramName = formatMember(paramObj.value("name").toString());
+            const QString paramName = formatMember(paramObj.value("name").toString(), {{ "parentType", predicateName }} );
 
             const QString paramType = paramObj.value("type").toString();
 
@@ -332,7 +340,7 @@ static QMap<QString, TLMethod> readFunctionsJson(const QJsonDocument &document)
 
         foreach (const QJsonValue &paramValue, params) {
             const QJsonObject &paramObj = paramValue.toObject();
-            const QString paramName = formatMember(paramObj.value("name").toString());
+            const QString paramName = formatMember(paramObj.value("name").toString(), {{ "parentType", methodName }} );
 
             const QString paramType = paramObj.value("type").toString();
 
@@ -1389,7 +1397,7 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
 
         foreach (const QStringRef &paramValue, params) {
             QVector<QStringRef> nameAndType = paramValue.split(QLatin1Char(':'));
-            const QString paramName = formatMember(nameAndType.first().toString());
+            const QString paramName = formatMember(nameAndType.first().toString(), {{ "parentType", predicateBaseName.toString() }} );
             const QString paramType = formatType(nameAndType.last().toString());
             QString flagMember;
             qint8 flagsBit = flagBitForMember(nameAndType.last(), &flagMember);
