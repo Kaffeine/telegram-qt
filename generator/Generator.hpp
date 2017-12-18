@@ -91,6 +91,12 @@ public:
         quint32 predicateId = 0;
     };
 
+    enum class FirstLetterCase {
+        Any, // Keep same
+        Upper,
+        Lower,
+    };
+
     Generator();
     bool loadFromJson(const QByteArray &data);
     bool loadFromText(const QByteArray &data);
@@ -104,8 +110,9 @@ public:
     static QMap<QString, TLType> readTypesJson(const QJsonDocument &document);
     static QMap<QString, TLMethod> readFunctionsJson(const QJsonDocument &document);
 
-    static QString formatName(QString name);
-    static QString formatName1stCapital(QString name);
+    static QString removeSeparators(QString name);
+    static QString formatName(const QString &name, FirstLetterCase firstCase = FirstLetterCase::Any) { return formatName(QStringList({name}), firstCase); }
+    static QString formatName(const QStringList &nameParts, FirstLetterCase firstCase = FirstLetterCase::Any);
     static QString formatType(QString type);
     static QString formatMember(QString name, const QVariantHash &context = {});
     static QString formatMethodParam(const TLParam &param);

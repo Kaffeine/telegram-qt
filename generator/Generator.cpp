@@ -131,7 +131,7 @@ inline int indexOfSeparator(const QString &str, int minIndex)
     return dotIndex < underscoreIndex ? dotIndex : underscoreIndex;
 }
 
-QString Generator::formatName(QString name)
+QString Generator::removeSeparators(QString name)
 {
     int separatorIndex = 0;
     while ((separatorIndex = indexOfSeparator(name, separatorIndex)) > 0) {
@@ -145,14 +145,38 @@ QString Generator::formatName(QString name)
     return name;
 }
 
-QString Generator::formatName1stCapital(QString name)
+QString Generator::formatName(const QStringList &nameParts, FirstLetterCase firstCase)
 {
-    if (name.isEmpty()) {
+    if (nameParts.isEmpty()) {
         return QString();
     }
 
-    name[0] = name.at(0).toUpper();
-    return formatName(name);
+    bool first = true;
+    QString result;
+    for (QString part : nameParts) {
+        if (part.isEmpty()) {
+            continue;
+        }
+        if (first) {
+            first = false;
+        } else {
+            part[0] = part.at(0).toUpper();
+        }
+        result.append(part);
+    }
+    // TODO: Move removeSeparators out of the method
+    result = removeSeparators(result);
+    switch (firstCase) {
+    case FirstLetterCase::Any:
+        break;
+    case FirstLetterCase::Upper:
+        result[0] = result.at(0).toUpper();
+        break;
+    case FirstLetterCase::Lower:
+        result[0] = result.at(0).toLower();
+        break;
+    }
+    return result;
 }
 
 QString removePrefix(const QString &str)
@@ -189,7 +213,7 @@ QString joinLinesWithSpacing(const QStringList &lines, int spacing)
 QString Generator::formatMember(QString name, const QVariantHash &context)
 {
     name = ensureGoodName(name, context);
-    return formatName(name);
+    return removeSeparators(name);
 }
 
 QString Generator::formatMethodParam(const TLParam &param)
@@ -278,7 +302,7 @@ QString Generator::formatType(QString type)
     } else {
         type[0] = type.at(0).toUpper();
 
-        return tlPrefix + formatName(type);
+        return tlPrefix + removeSeparators(type);
     }
 }
 
@@ -291,7 +315,7 @@ QMap<QString, TLType> Generator::readTypesJson(const QJsonDocument &document)
     for (int i = 0; i < constructors.count(); ++i) {
         const QJsonObject obj = constructors.at(i).toObject();
 
-        const QString predicateName = formatName1stCapital(obj.value("predicate").toString());
+        const QString predicateName = formatName(obj.value("predicate").toString(), FirstLetterCase::Upper);
         const quint32 predicateId = obj.value("id").toString().toInt();
         const QString typeName = formatType(obj.value("type").toString());
 
@@ -329,7 +353,7 @@ QMap<QString, TLMethod> Generator::readFunctionsJson(const QJsonDocument &docume
     for (int i = 0; i < methods.count(); ++i) {
         const QJsonObject obj = methods.at(i).toObject();
 
-        const QString methodName = formatName(obj.value("method").toString());
+        const QString methodName = removeSeparators(obj.value("method").toString());
         const quint32 methodId = obj.value("id").toString().toInt();
         const QString typeName = formatType(obj.value("type").toString());
 
@@ -693,7 +717,7 @@ QString Generator::generateConnectionMethodDefinition(const TLMethod &method, QS
     result += spacing + QLatin1String("QByteArray output;\n");
     result += spacing + streamClassName + QLatin1String(" outputStream(&output, /* write */ true);\n");
 
-    result += spacing + QString("outputStream << %1::%2;\n").arg(tlValueName).arg(formatName1stCapital(method.name));
+    result += spacing + QString("outputStream << %1::%2;\n").arg(tlValueName, formatName(method.name, FirstLetterCase::Upper));
 
     foreach (const TLParam &param, method.params) {
         if (param.dependOnFlag()) {
@@ -755,7 +779,7 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
 {
     QString result;
 
-    result += spacing + QString("case %1::%2: {\n").arg(tlValueName).arg(formatName1stCapital(method.name));
+    result += spacing + QString("case %1::%2: {\n").arg(tlValueName, formatName(method.name, FirstLetterCase::Upper));
 
     QString debugLine = QStringLiteral("qDebug() << request");
 
@@ -1066,7 +1090,7 @@ bool Generator::loadFromText(const QByteArray &data)
 
         const QString typeName = formatType(parseResult.typeName);
         if (entryType == EntryTypedef) {
-            const QString predicateName = formatName1stCapital(parseResult.predicateName);
+            const QString predicateName = formatName(parseResult.predicateName, FirstLetterCase::Upper);
             if (!m_types.contains(typeName)) {
                 m_groups.last().append(typeName);
             }
@@ -1082,7 +1106,7 @@ bool Generator::loadFromText(const QByteArray &data)
             tlType.subTypes.append(tlSubType);
             m_types.insert(typeName, tlType);
         } else if (entryType == EntryFunction) {
-            const QString functionName = formatName(parseResult.predicateName);
+            const QString functionName = removeSeparators(parseResult.predicateName);
             if (!m_functions.contains(functionName)) {
                 m_groups.last().append(functionName);
             }
