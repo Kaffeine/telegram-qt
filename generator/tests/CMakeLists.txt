@@ -30,15 +30,15 @@ include_directories(
     ${ZLIB_INCLUDE_DIR}
 )
 
-add_executable(tst_Generator
-    tst_Generator/tst_Generator.cpp
+add_executable(tst_generator
+    tst_generator/tst_generator.cpp
     ../Generator.cpp
 )
 
-target_link_libraries(tst_Generator LINK_PUBLIC
+target_link_libraries(tst_generator LINK_PUBLIC
     Qt5::Core
     Qt5::Test
     ${ZLIB_LIBRARIES}
 )
 
-add_test(NAME tst_Generator COMMAND tst_Generator)
+add_test(NAME tst_generator COMMAND tst_generator)

@@ -150,4 +150,4 @@ void tst_Generator::checkTypeWithMemberConflicts()
 
 QTEST_APPLESS_MAIN(tst_Generator)
 
-#include "tst_Generator.moc"
+#include "tst_generator.moc"

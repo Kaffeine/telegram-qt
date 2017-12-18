@@ -1,4 +1,4 @@
-TARGET = tst_Generator
+TARGET = tst_generator
 
 QT += core network testlib
 TEMPLATE = app

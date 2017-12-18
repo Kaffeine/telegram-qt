@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS += tst_Generator
+SUBDIRS += tst_generator
