@@ -26,6 +26,9 @@ class tst_Generator : public QObject
     Q_OBJECT
 public:
     explicit tst_Generator(QObject *parent = nullptr);
+
+    TLType getSolvedType(const Generator &generator, const QString &typeName) const;
+
 private slots:
     void checkRemoveWord_data();
     void checkRemoveWord();
@@ -34,6 +37,17 @@ private slots:
 tst_Generator::tst_Generator(QObject *parent) :
     QObject(parent)
 {
+}
+
+TLType tst_Generator::getSolvedType(const Generator &generator, const QString &typeName) const
+{
+    const QString tName = Generator::formatType(typeName);
+    for (const TLType solved : generator.solvedTypes()) {
+        if (solved.name == tName) {
+            return solved;
+        }
+    }
+    return TLType();
 }
 
 void tst_Generator::checkRemoveWord_data()
