@@ -43,16 +43,6 @@ struct TLSubType {
     quint32 id;
     QList<TLParam> members;
     QString source; // The source from the spec
-
-    bool haveMember(const QString &name) {
-        foreach (const TLParam &member, members) {
-            if (member.name == name) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 };
 
 struct TLType {
