@@ -131,7 +131,7 @@ inline int indexOfSeparator(const QString &str, int minIndex)
     return dotIndex < underscoreIndex ? dotIndex : underscoreIndex;
 }
 
-QString formatName(QString name)
+QString Generator::formatName(QString name)
 {
     int separatorIndex = 0;
     while ((separatorIndex = indexOfSeparator(name, separatorIndex)) > 0) {
@@ -145,7 +145,7 @@ QString formatName(QString name)
     return name;
 }
 
-QString formatName1stCapital(QString name)
+QString Generator::formatName1stCapital(QString name)
 {
     if (name.isEmpty()) {
         return QString();
@@ -186,13 +186,13 @@ QString joinLinesWithSpacing(const QStringList &lines, int spacing)
     return result;
 }
 
-QString formatMember(QString name, const QVariantHash &context = {})
+QString Generator::formatMember(QString name, const QVariantHash &context)
 {
     name = ensureGoodName(name, context);
     return formatName(name);
 }
 
-QString formatMethodParam(const TLParam &param)
+QString Generator::formatMethodParam(const TLParam &param)
 {
     if (podTypes.contains(param.type())) {
         return QString("%1 %2").arg(param.type()).arg(param.getAlias());
@@ -201,7 +201,7 @@ QString formatMethodParam(const TLParam &param)
     }
 }
 
-QString formatMethodParams(const TLMethod &method)
+QString Generator::formatMethodParams(const TLMethod &method)
 {
     QString result;
 
@@ -220,7 +220,7 @@ QString formatMethodParams(const TLMethod &method)
     return result;
 }
 
-QString getTypeOrVectorType(const QString &str, bool *isVectorPtr = nullptr)
+QString Generator::getTypeOrVectorType(const QString &str, bool *isVectorPtr)
 {
     const bool isVector = str.startsWith(tlVectorType + QLatin1Char('<'));
     if (isVectorPtr) {
@@ -235,7 +235,7 @@ QString getTypeOrVectorType(const QString &str, bool *isVectorPtr = nullptr)
     return subType;
 }
 
-qint8 flagBitForMember(const QStringRef &type, QString *flagMember)
+qint8 Generator::flagBitForMember(const QStringRef &type, QString *flagMember)
 {
     int indexOfQuestion = type.indexOf(QLatin1Char('?'));
     if (indexOfQuestion < 0) {
@@ -262,7 +262,7 @@ qint8 flagBitForMember(const QStringRef &type, QString *flagMember)
     return result;
 }
 
-QString formatType(QString type)
+QString Generator::formatType(QString type)
 {
     if (type.contains(QLatin1Char('?'))) {
         type = type.section(QLatin1Char('?'), 1);
@@ -282,7 +282,7 @@ QString formatType(QString type)
     }
 }
 
-static QMap<QString, TLType> readTypesJson(const QJsonDocument &document)
+QMap<QString, TLType> Generator::readTypesJson(const QJsonDocument &document)
 {
     const QJsonArray constructors = document.object().value("constructors").toArray();
 
@@ -320,7 +320,7 @@ static QMap<QString, TLType> readTypesJson(const QJsonDocument &document)
     return types;
 }
 
-static QMap<QString, TLMethod> readFunctionsJson(const QJsonDocument &document)
+QMap<QString, TLMethod> Generator::readFunctionsJson(const QJsonDocument &document)
 {
     const QJsonArray methods = document.object().value("methods").toArray();
 

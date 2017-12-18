@@ -23,7 +23,10 @@
 #include <QList>
 #include <QStringList>
 #include <QMap>
+#include <QVariantHash>
 #include <QVector>
+
+QT_FORWARD_DECLARE_CLASS(QJsonDocument)
 
 struct TLParam {
     TLParam() { }
@@ -95,6 +98,18 @@ public:
     void setExistsRpcProcessDefinitions(const QString &code);
     void generate();
 
+    static QString getTypeOrVectorType(const QString &str, bool *isVectorPtr = nullptr);
+    static qint8 flagBitForMember(const QStringRef &type, QString *flagMember);
+
+    static QMap<QString, TLType> readTypesJson(const QJsonDocument &document);
+    static QMap<QString, TLMethod> readFunctionsJson(const QJsonDocument &document);
+
+    static QString formatName(QString name);
+    static QString formatName1stCapital(QString name);
+    static QString formatType(QString type);
+    static QString formatMember(QString name, const QVariantHash &context = {});
+    static QString formatMethodParam(const TLParam &param);
+    static QString formatMethodParams(const TLMethod &method);
     static QByteArray getPredicateForCrc32(const QByteArray &sourceLine);
     static quint32 getCrc32(const QByteArray &bytes);
     static LineParseResult parseLine(const QString &line);
