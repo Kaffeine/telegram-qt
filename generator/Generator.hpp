@@ -32,7 +32,7 @@ struct TLParam {
 
     QString name;
     QString type;
-    qint8 flagBit;
+    qint8 flagBit = -1;
     QString flagMember;
 
     bool dependOnFlag() const { return flagBit >= 0; }
