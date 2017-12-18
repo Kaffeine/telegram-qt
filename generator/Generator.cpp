@@ -119,8 +119,8 @@ QDebug operator<<(QDebug d, const TLType &type)
 
 inline int indexOfSeparator(const QString &str, int minIndex)
 {
-    int dotIndex = str.indexOf(QChar('.'), minIndex);
-    int underscoreIndex = str.indexOf(QChar('_'), minIndex);
+    const int dotIndex = str.indexOf(QChar('.'), minIndex);
+    const int underscoreIndex = str.indexOf(QChar('_'), minIndex);
 
     if (dotIndex < 0) {
         return underscoreIndex;
