@@ -220,16 +220,18 @@ QString formatMethodParams(const TLMethod &method)
     return result;
 }
 
-QString getTypeOrVectorType(const QString &str)
+QString getTypeOrVectorType(const QString &str, bool *isVectorPtr = nullptr)
 {
-    if (!str.startsWith(tlVectorType + QLatin1Char('<'))) {
+    const bool isVector = str.startsWith(tlVectorType + QLatin1Char('<'));
+    if (isVectorPtr) {
+        *isVectorPtr = isVector;
+    }
+    if (!isVector) {
         return str;
     }
-
-    int firstIndex = str.indexOf(QLatin1Char('<')) + 1;
-    int lastIndex = str.indexOf(QLatin1Char('>'));
+    const int firstIndex = str.indexOf(QLatin1Char('<')) + 1;
+    const int lastIndex = str.indexOf(QLatin1Char('>'));
     const QString subType = str.mid(firstIndex, lastIndex - firstIndex);
-
     return subType;
 }
 
