@@ -214,7 +214,7 @@ void debugType(const TLType &type)
     foreach (const TLSubType &subType, type.subTypes) {
         qDebug() << "    " << subType.name;
         foreach (const TLParam &member, subType.members) {
-            qDebug() << "        " << member.type << member.name;
+            qDebug() << "        " << member.type() << member.getAlias();
         }
     }
 }

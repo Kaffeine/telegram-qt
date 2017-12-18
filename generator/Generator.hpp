@@ -28,14 +28,25 @@
 struct TLParam {
     TLParam() { }
     TLParam(const QString &newName, const QString &newType, qint8 newFlagBit = -1) :
-        name(newName), type(newType), flagBit(newFlagBit) { }
+        flagBit(newFlagBit), m_type(newType), m_name(newName) { }
 
-    QString name;
-    QString type;
     qint8 flagBit = -1;
     QString flagMember;
 
+    QString type() const { return m_type; }
+    void setType(const QString &newType);
+
+    QString getAlias() const { return !m_alias.isEmpty() ? m_alias : m_name; }
+    void setAlias(const QString &newAlias) { m_alias = newAlias; }
+
+    QString getName() const { return m_name; }
+    void setName(const QString &newName) { m_name = newName; }
     bool dependOnFlag() const { return flagBit >= 0; }
+
+protected:
+    QString m_type;
+    QString m_alias;
+    QString m_name;
 };
 
 struct TLSubType {
