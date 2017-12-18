@@ -888,11 +888,8 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                         // Already solved
                         continue;
                     }
-                    if (nativeTypes.contains(dependence->typeName)) {
-                        // Is native, so is solved
-                        continue;
-                    }
                     solved = false;
+                    break;
                 }
                 if (solved) {
                     const TLType &type = types.value(item->typeName);
@@ -915,8 +912,8 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
             while (currentItemIt != notSolvedEnds.end()) {
                 TypeTreeItem *item = *currentItemIt;
                 bool hasNotSolvedDeps = false;
-                for (TypeTreeItem *child : item->dependencies) {
-                    if (notSolvedTypes.contains(child)) {
+                for (TypeTreeItem *dependence : item->dependencies) {
+                    if (notSolvedTypes.contains(dependence)) {
                         hasNotSolvedDeps = true;
                         break;
                     }
