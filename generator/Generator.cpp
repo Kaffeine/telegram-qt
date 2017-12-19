@@ -606,14 +606,25 @@ QString Generator::generateStreamOperatorDefinition(const TLType &type, std::fun
     argName[0] = argName.at(0).toLower();
     argName += QLatin1String("Value");
     QString code = head(argName, type.name);
+    QHash<QString,int> implementationHash; // type name to implementation index map
     QStringList implementations;
     implementations.reserve(type.subTypes.count());
     foreach (const TLSubType &subType, type.subTypes) {
         const QString caseImplementation = generateSubtypeCode(argName, subType);
-        implementations.append(caseImplementation);
+        const int implementationIndex = implementations.indexOf(caseImplementation);
+        if (implementationIndex >= 0) {
+            implementationHash.insert(subType.name, implementationIndex);
+        } else {
+            implementations.append(caseImplementation);
+            implementationHash.insert(subType.name, implementations.count() - 1);
+        }
     }
     for (int i = 0; i < implementations.count(); ++i) {
-        code.append(QString("%1case %2::%3:\n").arg(spacing).arg(tlValueName).arg(type.subTypes.at(i).name));
+        foreach (const TLSubType &subType, type.subTypes) {
+            if (implementationHash.value(subType.name) == i) {
+                code.append(QString("%1case %2::%3:\n").arg(spacing, tlValueName, subType.name));
+            }
+        }
         code.append(implementations.at(i));
     }
     code.append(end(argName));
