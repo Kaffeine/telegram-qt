@@ -164,21 +164,21 @@ quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegr
         switch (media->tlType) {
         case TLValue::MessageMediaPhoto:
             inputMedia.tlType = TLValue::InputMediaPhoto;
-            inputMedia.idInputPhoto.tlType = TLValue::InputPhoto;
-            inputMedia.idInputPhoto.id = media->photo.id;
-            inputMedia.idInputPhoto.accessHash = media->photo.accessHash;
+            inputMedia.inputPhotoId.tlType = TLValue::InputPhoto;
+            inputMedia.inputPhotoId.id = media->photo.id;
+            inputMedia.inputPhotoId.accessHash = media->photo.accessHash;
             break;
         case TLValue::MessageMediaAudio:
             inputMedia.tlType = TLValue::InputMediaAudio;
-            inputMedia.idInputAudio.tlType = TLValue::InputAudio;
-            inputMedia.idInputAudio.id = media->audio.id;
-            inputMedia.idInputAudio.accessHash = media->audio.accessHash;
+            inputMedia.inputAudioId.tlType = TLValue::InputAudio;
+            inputMedia.inputAudioId.id = media->audio.id;
+            inputMedia.inputAudioId.accessHash = media->audio.accessHash;
             break;
         case TLValue::MessageMediaVideo:
             inputMedia.tlType = TLValue::InputMediaVideo;
-            inputMedia.idInputVideo.tlType = TLValue::InputVideo;
-            inputMedia.idInputVideo.id = media->video.id;
-            inputMedia.idInputVideo.accessHash = media->video.accessHash;
+            inputMedia.inputVideoId.tlType = TLValue::InputVideo;
+            inputMedia.inputVideoId.id = media->video.id;
+            inputMedia.inputVideoId.accessHash = media->video.accessHash;
             break;
         case TLValue::MessageMediaGeo:
             inputMedia.tlType = TLValue::InputMediaGeoPoint;
@@ -194,9 +194,9 @@ quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegr
             break;
         case TLValue::MessageMediaDocument:
             inputMedia.tlType = TLValue::InputMediaDocument;
-            inputMedia.idInputDocument.tlType = TLValue::InputDocument;
-            inputMedia.idInputDocument.id = media->document.id;
-            inputMedia.idInputDocument.accessHash = media->document.accessHash;
+            inputMedia.inputDocumentId.tlType = TLValue::InputDocument;
+            inputMedia.inputDocumentId.id = media->document.id;
+            inputMedia.inputDocumentId.accessHash = media->document.accessHash;
             break;
         default:
             return 0;

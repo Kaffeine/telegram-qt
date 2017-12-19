@@ -374,11 +374,6 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthSentCode &authSentCodeValue)
 
     switch (result.tlType) {
     case TLValue::AuthSentCode:
-        *this >> result.phoneRegistered;
-        *this >> result.phoneCodeHash;
-        *this >> result.sendCallTimeout;
-        *this >> result.isPassword;
-        break;
     case TLValue::AuthSentAppCode:
         *this >> result.phoneRegistered;
         *this >> result.phoneCodeHash;
@@ -482,15 +477,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelParticipant &channelPartic
         *this >> result.date;
         break;
     case TLValue::ChannelParticipantSelf:
-        *this >> result.userId;
-        *this >> result.inviterId;
-        *this >> result.date;
-        break;
     case TLValue::ChannelParticipantModerator:
-        *this >> result.userId;
-        *this >> result.inviterId;
-        *this >> result.date;
-        break;
     case TLValue::ChannelParticipantEditor:
         *this >> result.userId;
         *this >> result.inviterId;
@@ -521,9 +508,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelParticipantRole &channelPa
 
     switch (result.tlType) {
     case TLValue::ChannelRoleEmpty:
-        break;
     case TLValue::ChannelRoleModerator:
-        break;
     case TLValue::ChannelRoleEditor:
         break;
     default:
@@ -543,11 +528,8 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelParticipantsFilter &channe
 
     switch (result.tlType) {
     case TLValue::ChannelParticipantsRecent:
-        break;
     case TLValue::ChannelParticipantsAdmins:
-        break;
     case TLValue::ChannelParticipantsKicked:
-        break;
     case TLValue::ChannelParticipantsBots:
         break;
     default:
@@ -567,17 +549,13 @@ CTelegramStream &CTelegramStream::operator>>(TLChatParticipant &chatParticipantV
 
     switch (result.tlType) {
     case TLValue::ChatParticipant:
+    case TLValue::ChatParticipantAdmin:
         *this >> result.userId;
         *this >> result.inviterId;
         *this >> result.date;
         break;
     case TLValue::ChatParticipantCreator:
         *this >> result.userId;
-        break;
-    case TLValue::ChatParticipantAdmin:
-        *this >> result.userId;
-        *this >> result.inviterId;
-        *this >> result.date;
         break;
     default:
         break;
@@ -664,11 +642,8 @@ CTelegramStream &CTelegramStream::operator>>(TLContactLink &contactLinkValue)
 
     switch (result.tlType) {
     case TLValue::ContactLinkUnknown:
-        break;
     case TLValue::ContactLinkNone:
-        break;
     case TLValue::ContactLinkHasPhone:
-        break;
     case TLValue::ContactLinkContact:
         break;
     default:
@@ -728,6 +703,7 @@ CTelegramStream &CTelegramStream::operator>>(TLEncryptedChat &encryptedChatValue
 
     switch (result.tlType) {
     case TLValue::EncryptedChatEmpty:
+    case TLValue::EncryptedChatDiscarded:
         *this >> result.id;
         break;
     case TLValue::EncryptedChatWaiting:
@@ -753,9 +729,6 @@ CTelegramStream &CTelegramStream::operator>>(TLEncryptedChat &encryptedChatValue
         *this >> result.participantId;
         *this >> result.gAOrB;
         *this >> result.keyFingerprint;
-        break;
-    case TLValue::EncryptedChatDiscarded:
-        *this >> result.id;
         break;
     default:
         break;
@@ -1216,17 +1189,8 @@ CTelegramStream &CTelegramStream::operator>>(TLInputFileLocation &inputFileLocat
         *this >> result.secret;
         break;
     case TLValue::InputVideoFileLocation:
-        *this >> result.id;
-        *this >> result.accessHash;
-        break;
     case TLValue::InputEncryptedFileLocation:
-        *this >> result.id;
-        *this >> result.accessHash;
-        break;
     case TLValue::InputAudioFileLocation:
-        *this >> result.id;
-        *this >> result.accessHash;
-        break;
     case TLValue::InputDocumentFileLocation:
         *this >> result.id;
         *this >> result.accessHash;
@@ -1270,7 +1234,6 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPeer &inputPeerValue)
 
     switch (result.tlType) {
     case TLValue::InputPeerEmpty:
-        break;
     case TLValue::InputPeerSelf:
         break;
     case TLValue::InputPeerChat:
@@ -1301,7 +1264,6 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifyEvents &inputPeerN
 
     switch (result.tlType) {
     case TLValue::InputPeerNotifyEventsEmpty:
-        break;
     case TLValue::InputPeerNotifyEventsAll:
         break;
     default:
@@ -1431,7 +1393,6 @@ CTelegramStream &CTelegramStream::operator>>(TLInputUser &inputUserValue)
 
     switch (result.tlType) {
     case TLValue::InputUserEmpty:
-        break;
     case TLValue::InputUserSelf:
         break;
     case TLValue::InputUser:
@@ -1515,37 +1476,13 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageEntity &messageEntityValue
 
     switch (result.tlType) {
     case TLValue::MessageEntityUnknown:
-        *this >> result.offset;
-        *this >> result.length;
-        break;
     case TLValue::MessageEntityMention:
-        *this >> result.offset;
-        *this >> result.length;
-        break;
     case TLValue::MessageEntityHashtag:
-        *this >> result.offset;
-        *this >> result.length;
-        break;
     case TLValue::MessageEntityBotCommand:
-        *this >> result.offset;
-        *this >> result.length;
-        break;
     case TLValue::MessageEntityUrl:
-        *this >> result.offset;
-        *this >> result.length;
-        break;
     case TLValue::MessageEntityEmail:
-        *this >> result.offset;
-        *this >> result.length;
-        break;
     case TLValue::MessageEntityBold:
-        *this >> result.offset;
-        *this >> result.length;
-        break;
     case TLValue::MessageEntityItalic:
-        *this >> result.offset;
-        *this >> result.length;
-        break;
     case TLValue::MessageEntityCode:
         *this >> result.offset;
         *this >> result.length;
@@ -1685,23 +1622,14 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesFilter &messagesFilterVal
 
     switch (result.tlType) {
     case TLValue::InputMessagesFilterEmpty:
-        break;
     case TLValue::InputMessagesFilterPhotos:
-        break;
     case TLValue::InputMessagesFilterVideo:
-        break;
     case TLValue::InputMessagesFilterPhotoVideo:
-        break;
     case TLValue::InputMessagesFilterPhotoVideoDocuments:
-        break;
     case TLValue::InputMessagesFilterDocument:
-        break;
     case TLValue::InputMessagesFilterAudio:
-        break;
     case TLValue::InputMessagesFilterAudioDocuments:
-        break;
     case TLValue::InputMessagesFilterUrl:
-        break;
     case TLValue::InputMessagesFilterGif:
         break;
     default:
@@ -1790,7 +1718,6 @@ CTelegramStream &CTelegramStream::operator>>(TLPeerNotifyEvents &peerNotifyEvent
 
     switch (result.tlType) {
     case TLValue::PeerNotifyEventsEmpty:
-        break;
     case TLValue::PeerNotifyEventsAll:
         break;
     default:
@@ -1885,16 +1812,11 @@ CTelegramStream &CTelegramStream::operator>>(TLPrivacyRule &privacyRuleValue)
 
     switch (result.tlType) {
     case TLValue::PrivacyValueAllowContacts:
-        break;
     case TLValue::PrivacyValueAllowAll:
-        break;
-    case TLValue::PrivacyValueAllowUsers:
-        *this >> result.users;
-        break;
     case TLValue::PrivacyValueDisallowContacts:
-        break;
     case TLValue::PrivacyValueDisallowAll:
         break;
+    case TLValue::PrivacyValueAllowUsers:
     case TLValue::PrivacyValueDisallowUsers:
         *this >> result.users;
         break;
@@ -1935,9 +1857,7 @@ CTelegramStream &CTelegramStream::operator>>(TLReportReason &reportReasonValue)
 
     switch (result.tlType) {
     case TLValue::InputReportReasonSpam:
-        break;
     case TLValue::InputReportReasonViolence:
-        break;
     case TLValue::InputReportReasonPornography:
         break;
     case TLValue::InputReportReasonOther:
@@ -1960,28 +1880,17 @@ CTelegramStream &CTelegramStream::operator>>(TLSendMessageAction &sendMessageAct
 
     switch (result.tlType) {
     case TLValue::SendMessageTypingAction:
-        break;
     case TLValue::SendMessageCancelAction:
-        break;
     case TLValue::SendMessageRecordVideoAction:
+    case TLValue::SendMessageRecordAudioAction:
+    case TLValue::SendMessageGeoLocationAction:
+    case TLValue::SendMessageChooseContactAction:
         break;
     case TLValue::SendMessageUploadVideoAction:
-        *this >> result.progress;
-        break;
-    case TLValue::SendMessageRecordAudioAction:
-        break;
     case TLValue::SendMessageUploadAudioAction:
-        *this >> result.progress;
-        break;
     case TLValue::SendMessageUploadPhotoAction:
-        *this >> result.progress;
-        break;
     case TLValue::SendMessageUploadDocumentAction:
         *this >> result.progress;
-        break;
-    case TLValue::SendMessageGeoLocationAction:
-        break;
-    case TLValue::SendMessageChooseContactAction:
         break;
     default:
         break;
@@ -2020,23 +1929,14 @@ CTelegramStream &CTelegramStream::operator>>(TLStorageFileType &storageFileTypeV
 
     switch (result.tlType) {
     case TLValue::StorageFileUnknown:
-        break;
     case TLValue::StorageFileJpeg:
-        break;
     case TLValue::StorageFileGif:
-        break;
     case TLValue::StorageFilePng:
-        break;
     case TLValue::StorageFilePdf:
-        break;
     case TLValue::StorageFileMp3:
-        break;
     case TLValue::StorageFileMov:
-        break;
     case TLValue::StorageFilePartial:
-        break;
     case TLValue::StorageFileMp4:
-        break;
     case TLValue::StorageFileWebp:
         break;
     default:
@@ -2123,18 +2023,15 @@ CTelegramStream &CTelegramStream::operator>>(TLUserStatus &userStatusValue)
 
     switch (result.tlType) {
     case TLValue::UserStatusEmpty:
+    case TLValue::UserStatusRecently:
+    case TLValue::UserStatusLastWeek:
+    case TLValue::UserStatusLastMonth:
         break;
     case TLValue::UserStatusOnline:
         *this >> result.expires;
         break;
     case TLValue::UserStatusOffline:
         *this >> result.wasOnline;
-        break;
-    case TLValue::UserStatusRecently:
-        break;
-    case TLValue::UserStatusLastWeek:
-        break;
-    case TLValue::UserStatusLastMonth:
         break;
     default:
         break;
@@ -2257,12 +2154,11 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelMessagesFilter &channelMes
 
     switch (result.tlType) {
     case TLValue::ChannelMessagesFilterEmpty:
+    case TLValue::ChannelMessagesFilterCollapsed:
         break;
     case TLValue::ChannelMessagesFilter:
         *this >> result.flags;
         *this >> result.ranges;
-        break;
-    case TLValue::ChannelMessagesFilterCollapsed:
         break;
     default:
         break;
@@ -2524,7 +2420,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.caption;
         break;
     case TLValue::InputMediaPhoto:
-        *this >> result.idInputPhoto;
+        *this >> result.inputPhotoId;
         *this >> result.caption;
         break;
     case TLValue::InputMediaGeoPoint:
@@ -2553,7 +2449,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.caption;
         break;
     case TLValue::InputMediaVideo:
-        *this >> result.idInputVideo;
+        *this >> result.inputVideoId;
         *this >> result.caption;
         break;
     case TLValue::InputMediaUploadedAudio:
@@ -2562,7 +2458,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.mimeType;
         break;
     case TLValue::InputMediaAudio:
-        *this >> result.idInputAudio;
+        *this >> result.inputAudioId;
         break;
     case TLValue::InputMediaUploadedDocument:
         *this >> result.file;
@@ -2578,7 +2474,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.caption;
         break;
     case TLValue::InputMediaDocument:
-        *this >> result.idInputDocument;
+        *this >> result.inputDocumentId;
         *this >> result.caption;
         break;
     case TLValue::InputMediaVenue:
@@ -2612,9 +2508,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputNotifyPeer &inputNotifyPeerV
         *this >> result.peer;
         break;
     case TLValue::InputNotifyUsers:
-        break;
     case TLValue::InputNotifyChats:
-        break;
     case TLValue::InputNotifyAll:
         break;
     default:
@@ -2634,16 +2528,11 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyRule &inputPrivacyRul
 
     switch (result.tlType) {
     case TLValue::InputPrivacyValueAllowContacts:
-        break;
     case TLValue::InputPrivacyValueAllowAll:
-        break;
-    case TLValue::InputPrivacyValueAllowUsers:
-        *this >> result.users;
-        break;
     case TLValue::InputPrivacyValueDisallowContacts:
-        break;
     case TLValue::InputPrivacyValueDisallowAll:
         break;
+    case TLValue::InputPrivacyValueAllowUsers:
     case TLValue::InputPrivacyValueDisallowUsers:
         *this >> result.users;
         break;
@@ -2667,9 +2556,7 @@ CTelegramStream &CTelegramStream::operator>>(TLNotifyPeer &notifyPeerValue)
         *this >> result.peer;
         break;
     case TLValue::NotifyUsers:
-        break;
     case TLValue::NotifyChats:
-        break;
     case TLValue::NotifyAll:
         break;
     default:
@@ -2714,8 +2601,6 @@ CTelegramStream &CTelegramStream::operator>>(TLReplyMarkup &replyMarkupValue)
 
     switch (result.tlType) {
     case TLValue::ReplyKeyboardHide:
-        *this >> result.flags;
-        break;
     case TLValue::ReplyKeyboardForceReply:
         *this >> result.flags;
         break;
@@ -3293,18 +3178,18 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageAction &messageActionValue
 
     switch (result.tlType) {
     case TLValue::MessageActionEmpty:
+    case TLValue::MessageActionChatDeletePhoto:
         break;
     case TLValue::MessageActionChatCreate:
         *this >> result.title;
         *this >> result.users;
         break;
     case TLValue::MessageActionChatEditTitle:
+    case TLValue::MessageActionChannelCreate:
         *this >> result.title;
         break;
     case TLValue::MessageActionChatEditPhoto:
         *this >> result.photo;
-        break;
-    case TLValue::MessageActionChatDeletePhoto:
         break;
     case TLValue::MessageActionChatAddUser:
         *this >> result.users;
@@ -3314,9 +3199,6 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageAction &messageActionValue
         break;
     case TLValue::MessageActionChatJoinedByLink:
         *this >> result.inviterId;
-        break;
-    case TLValue::MessageActionChannelCreate:
-        *this >> result.title;
         break;
     case TLValue::MessageActionChatMigrateTo:
         *this >> result.channelId;
@@ -3684,6 +3566,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageMedia &messageMediaValue)
 
     switch (result.tlType) {
     case TLValue::MessageMediaEmpty:
+    case TLValue::MessageMediaUnsupported:
         break;
     case TLValue::MessageMediaPhoto:
         *this >> result.photo;
@@ -3701,8 +3584,6 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageMedia &messageMediaValue)
         *this >> result.firstName;
         *this >> result.lastName;
         *this >> result.userId;
-        break;
-    case TLValue::MessageMediaUnsupported:
         break;
     case TLValue::MessageMediaDocument:
         *this >> result.document;
@@ -3892,6 +3773,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
 
     switch (result.tlType) {
     case TLValue::UpdateNewMessage:
+    case TLValue::UpdateNewChannelMessage:
         *this >> result.message;
         *this >> result.pts;
         *this >> result.ptsCount;
@@ -3901,6 +3783,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
         *this >> result.randomId;
         break;
     case TLValue::UpdateDeleteMessages:
+    case TLValue::UpdateReadMessagesContents:
         *this >> result.messages;
         *this >> result.pts;
         *this >> result.ptsCount;
@@ -3949,7 +3832,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
         *this >> result.location;
         break;
     case TLValue::UpdateNewEncryptedMessage:
-        *this >> result.messageEncrypted;
+        *this >> result.encryptedMessage;
         *this >> result.qts;
         break;
     case TLValue::UpdateEncryptedChatTyping:
@@ -3984,12 +3867,12 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
         *this >> result.blocked;
         break;
     case TLValue::UpdateNotifySettings:
-        *this >> result.peerNotify;
+        *this >> result.notifyPeer;
         *this >> result.notifySettings;
         break;
     case TLValue::UpdateServiceNotification:
         *this >> result.type;
-        *this >> result.messageString;
+        *this >> result.stringMessage;
         *this >> result.media;
         *this >> result.popup;
         break;
@@ -4002,11 +3885,6 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
         *this >> result.phone;
         break;
     case TLValue::UpdateReadHistoryInbox:
-        *this >> result.peer;
-        *this >> result.maxId;
-        *this >> result.pts;
-        *this >> result.ptsCount;
-        break;
     case TLValue::UpdateReadHistoryOutbox:
         *this >> result.peer;
         *this >> result.maxId;
@@ -4018,25 +3896,13 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
         *this >> result.pts;
         *this >> result.ptsCount;
         break;
-    case TLValue::UpdateReadMessagesContents:
-        *this >> result.messages;
-        *this >> result.pts;
-        *this >> result.ptsCount;
-        break;
     case TLValue::UpdateChannelTooLong:
-        *this >> result.channelId;
-        break;
     case TLValue::UpdateChannel:
         *this >> result.channelId;
         break;
     case TLValue::UpdateChannelGroup:
         *this >> result.channelId;
         *this >> result.group;
-        break;
-    case TLValue::UpdateNewChannelMessage:
-        *this >> result.message;
-        *this >> result.pts;
-        *this >> result.ptsCount;
         break;
     case TLValue::UpdateReadChannelInbox:
         *this >> result.channelId;
@@ -4071,7 +3937,6 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
         *this >> result.order;
         break;
     case TLValue::UpdateStickerSets:
-        break;
     case TLValue::UpdateSavedGifs:
         break;
     case TLValue::UpdateBotInlineQuery:
@@ -4324,9 +4189,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLChannelParticipantRole &cha
 
     switch (channelParticipantRoleValue.tlType) {
     case TLValue::ChannelRoleEmpty:
-        break;
     case TLValue::ChannelRoleModerator:
-        break;
     case TLValue::ChannelRoleEditor:
         break;
     default:
@@ -4342,11 +4205,8 @@ CTelegramStream &CTelegramStream::operator<<(const TLChannelParticipantsFilter &
 
     switch (channelParticipantsFilterValue.tlType) {
     case TLValue::ChannelParticipantsRecent:
-        break;
     case TLValue::ChannelParticipantsAdmins:
-        break;
     case TLValue::ChannelParticipantsKicked:
-        break;
     case TLValue::ChannelParticipantsBots:
         break;
     default:
@@ -4525,17 +4385,8 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFil
         *this << inputFileLocationValue.secret;
         break;
     case TLValue::InputVideoFileLocation:
-        *this << inputFileLocationValue.id;
-        *this << inputFileLocationValue.accessHash;
-        break;
     case TLValue::InputEncryptedFileLocation:
-        *this << inputFileLocationValue.id;
-        *this << inputFileLocationValue.accessHash;
-        break;
     case TLValue::InputAudioFileLocation:
-        *this << inputFileLocationValue.id;
-        *this << inputFileLocationValue.accessHash;
-        break;
     case TLValue::InputDocumentFileLocation:
         *this << inputFileLocationValue.id;
         *this << inputFileLocationValue.accessHash;
@@ -4571,7 +4422,6 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPeer &inputPeerValue)
 
     switch (inputPeerValue.tlType) {
     case TLValue::InputPeerEmpty:
-        break;
     case TLValue::InputPeerSelf:
         break;
     case TLValue::InputPeerChat:
@@ -4688,7 +4538,6 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputUser &inputUserValue)
 
     switch (inputUserValue.tlType) {
     case TLValue::InputUserEmpty:
-        break;
     case TLValue::InputUserSelf:
         break;
     case TLValue::InputUser:
@@ -4756,37 +4605,13 @@ CTelegramStream &CTelegramStream::operator<<(const TLMessageEntity &messageEntit
 
     switch (messageEntityValue.tlType) {
     case TLValue::MessageEntityUnknown:
-        *this << messageEntityValue.offset;
-        *this << messageEntityValue.length;
-        break;
     case TLValue::MessageEntityMention:
-        *this << messageEntityValue.offset;
-        *this << messageEntityValue.length;
-        break;
     case TLValue::MessageEntityHashtag:
-        *this << messageEntityValue.offset;
-        *this << messageEntityValue.length;
-        break;
     case TLValue::MessageEntityBotCommand:
-        *this << messageEntityValue.offset;
-        *this << messageEntityValue.length;
-        break;
     case TLValue::MessageEntityUrl:
-        *this << messageEntityValue.offset;
-        *this << messageEntityValue.length;
-        break;
     case TLValue::MessageEntityEmail:
-        *this << messageEntityValue.offset;
-        *this << messageEntityValue.length;
-        break;
     case TLValue::MessageEntityBold:
-        *this << messageEntityValue.offset;
-        *this << messageEntityValue.length;
-        break;
     case TLValue::MessageEntityItalic:
-        *this << messageEntityValue.offset;
-        *this << messageEntityValue.length;
-        break;
     case TLValue::MessageEntityCode:
         *this << messageEntityValue.offset;
         *this << messageEntityValue.length;
@@ -4830,23 +4655,14 @@ CTelegramStream &CTelegramStream::operator<<(const TLMessagesFilter &messagesFil
 
     switch (messagesFilterValue.tlType) {
     case TLValue::InputMessagesFilterEmpty:
-        break;
     case TLValue::InputMessagesFilterPhotos:
-        break;
     case TLValue::InputMessagesFilterVideo:
-        break;
     case TLValue::InputMessagesFilterPhotoVideo:
-        break;
     case TLValue::InputMessagesFilterPhotoVideoDocuments:
-        break;
     case TLValue::InputMessagesFilterDocument:
-        break;
     case TLValue::InputMessagesFilterAudio:
-        break;
     case TLValue::InputMessagesFilterAudioDocuments:
-        break;
     case TLValue::InputMessagesFilterUrl:
-        break;
     case TLValue::InputMessagesFilterGif:
         break;
     default:
@@ -4862,9 +4678,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLReportReason &reportReasonV
 
     switch (reportReasonValue.tlType) {
     case TLValue::InputReportReasonSpam:
-        break;
     case TLValue::InputReportReasonViolence:
-        break;
     case TLValue::InputReportReasonPornography:
         break;
     case TLValue::InputReportReasonOther:
@@ -4883,28 +4697,17 @@ CTelegramStream &CTelegramStream::operator<<(const TLSendMessageAction &sendMess
 
     switch (sendMessageActionValue.tlType) {
     case TLValue::SendMessageTypingAction:
-        break;
     case TLValue::SendMessageCancelAction:
-        break;
     case TLValue::SendMessageRecordVideoAction:
+    case TLValue::SendMessageRecordAudioAction:
+    case TLValue::SendMessageGeoLocationAction:
+    case TLValue::SendMessageChooseContactAction:
         break;
     case TLValue::SendMessageUploadVideoAction:
-        *this << sendMessageActionValue.progress;
-        break;
-    case TLValue::SendMessageRecordAudioAction:
-        break;
     case TLValue::SendMessageUploadAudioAction:
-        *this << sendMessageActionValue.progress;
-        break;
     case TLValue::SendMessageUploadPhotoAction:
-        *this << sendMessageActionValue.progress;
-        break;
     case TLValue::SendMessageUploadDocumentAction:
         *this << sendMessageActionValue.progress;
-        break;
-    case TLValue::SendMessageGeoLocationAction:
-        break;
-    case TLValue::SendMessageChooseContactAction:
         break;
     default:
         break;
@@ -4919,12 +4722,11 @@ CTelegramStream &CTelegramStream::operator<<(const TLChannelMessagesFilter &chan
 
     switch (channelMessagesFilterValue.tlType) {
     case TLValue::ChannelMessagesFilterEmpty:
+    case TLValue::ChannelMessagesFilterCollapsed:
         break;
     case TLValue::ChannelMessagesFilter:
         *this << channelMessagesFilterValue.flags;
         *this << channelMessagesFilterValue.ranges;
-        break;
-    case TLValue::ChannelMessagesFilterCollapsed:
         break;
     default:
         break;
@@ -5069,7 +4871,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMediaValue
         *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaPhoto:
-        *this << inputMediaValue.idInputPhoto;
+        *this << inputMediaValue.inputPhotoId;
         *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaGeoPoint:
@@ -5098,7 +4900,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMediaValue
         *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaVideo:
-        *this << inputMediaValue.idInputVideo;
+        *this << inputMediaValue.inputVideoId;
         *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaUploadedAudio:
@@ -5107,7 +4909,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMediaValue
         *this << inputMediaValue.mimeType;
         break;
     case TLValue::InputMediaAudio:
-        *this << inputMediaValue.idInputAudio;
+        *this << inputMediaValue.inputAudioId;
         break;
     case TLValue::InputMediaUploadedDocument:
         *this << inputMediaValue.file;
@@ -5123,7 +4925,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMediaValue
         *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaDocument:
-        *this << inputMediaValue.idInputDocument;
+        *this << inputMediaValue.inputDocumentId;
         *this << inputMediaValue.caption;
         break;
     case TLValue::InputMediaVenue:
@@ -5153,9 +4955,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotif
         *this << inputNotifyPeerValue.peer;
         break;
     case TLValue::InputNotifyUsers:
-        break;
     case TLValue::InputNotifyChats:
-        break;
     case TLValue::InputNotifyAll:
         break;
     default:
@@ -5171,16 +4971,11 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyRule &inputPriv
 
     switch (inputPrivacyRuleValue.tlType) {
     case TLValue::InputPrivacyValueAllowContacts:
-        break;
     case TLValue::InputPrivacyValueAllowAll:
-        break;
-    case TLValue::InputPrivacyValueAllowUsers:
-        *this << inputPrivacyRuleValue.users;
-        break;
     case TLValue::InputPrivacyValueDisallowContacts:
-        break;
     case TLValue::InputPrivacyValueDisallowAll:
         break;
+    case TLValue::InputPrivacyValueAllowUsers:
     case TLValue::InputPrivacyValueDisallowUsers:
         *this << inputPrivacyRuleValue.users;
         break;
@@ -5197,8 +4992,6 @@ CTelegramStream &CTelegramStream::operator<<(const TLReplyMarkup &replyMarkupVal
 
     switch (replyMarkupValue.tlType) {
     case TLValue::ReplyKeyboardHide:
-        *this << replyMarkupValue.flags;
-        break;
     case TLValue::ReplyKeyboardForceReply:
         *this << replyMarkupValue.flags;
         break;

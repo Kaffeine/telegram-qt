@@ -2084,7 +2084,7 @@ struct TLInputMedia {
     }
     TLInputFile file;
     QString caption;
-    TLInputPhoto idInputPhoto;
+    TLInputPhoto inputPhotoId;
     TLInputGeoPoint geoPoint;
     QString phoneNumber;
     QString firstName;
@@ -2094,10 +2094,10 @@ struct TLInputMedia {
     quint32 h;
     QString mimeType;
     TLInputFile thumb;
-    TLInputVideo idInputVideo;
-    TLInputAudio idInputAudio;
+    TLInputVideo inputVideoId;
+    TLInputAudio inputAudioId;
     TLVector<TLDocumentAttribute> attributes;
-    TLInputDocument idInputDocument;
+    TLInputDocument inputDocumentId;
     QString title;
     QString address;
     QString provider;
@@ -3265,7 +3265,7 @@ struct TLUpdate {
     quint64 authKeyId;
     QString device;
     QString location;
-    TLEncryptedMessage messageEncrypted;
+    TLEncryptedMessage encryptedMessage;
     quint32 qts;
     TLEncryptedChat chat;
     quint32 maxDate;
@@ -3273,10 +3273,10 @@ struct TLUpdate {
     quint32 version;
     TLVector<TLDcOption> dcOptions;
     bool blocked;
-    TLNotifyPeer peerNotify;
+    TLNotifyPeer notifyPeer;
     TLPeerNotifySettings notifySettings;
     QString type;
-    QString messageString;
+    QString stringMessage;
     TLMessageMedia media;
     bool popup;
     TLPrivacyKey key;
