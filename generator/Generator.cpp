@@ -529,7 +529,15 @@ QStringList Generator::generateTLTypeMembers(const TLType &type)
             if (member.dependOnFlag() && (member.type() == tlTrueType)) {
                 continue; // No extra data behind the flag
             }
-            membersCode.append(QStringLiteral("%1 %2;").arg(member.type(), member.getAlias()));
+            if (member.accessByPointer()) {
+                if (member.isVector()) {
+                    membersCode.append(QStringLiteral("%1<%2*> %3;").arg(tlVectorType, member.bareType(), member.getAlias()));
+                } else {
+                    membersCode.append(QStringLiteral("%1 *%2;").arg(member.type(), member.getAlias()));
+                }
+            } else {
+                membersCode.append(QStringLiteral("%1 %2;").arg(member.type(), member.getAlias()));
+            }
         }
     }
     membersCode.append(QStringLiteral("%1 %2;").arg(tlValueName, tlTypeMember));

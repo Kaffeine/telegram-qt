@@ -47,6 +47,31 @@ const QStringList c_sourcesInputMedia =
     QStringLiteral("inputMediaDocument#1a77f29c id:InputDocument caption:string = InputMedia;"),
 };
 
+const QStringList c_sourcesRichText =
+{
+    QStringLiteral("textEmpty#dc3d824f = RichText;"),
+    QStringLiteral("textPlain#744694e0 text:string = RichText;"),
+    QStringLiteral("textBold#6724abc4 text:RichText = RichText;"),
+    QStringLiteral("textItalic#d912a59c text:RichText = RichText;"),
+    QStringLiteral("textUnderline#c12622c4 text:RichText = RichText;"),
+    QStringLiteral("textStrike#9bf8bb95 text:RichText = RichText;"),
+    QStringLiteral("textFixed#6c3f19b9 text:RichText = RichText;"),
+    QStringLiteral("textUrl#3c2884c1 text:RichText url:string webpage_id:long = RichText;"),
+    QStringLiteral("textEmail#de5a0dd6 text:RichText email:string = RichText;"),
+    QStringLiteral("textConcat#7e6260d7 texts:Vector<RichText> = RichText;"),
+};
+
+const QStringList c_sourcesPageBlock =
+{
+    QStringLiteral("pageBlockUnsupported#13567e8a = PageBlock;"),
+    QStringLiteral("pageBlockTitle#70abc3fd text:RichText = PageBlock;"),
+    QStringLiteral("pageBlockSubtitle#8ffa9a1f text:RichText = PageBlock;"),
+    QStringLiteral("pageBlockList#3a58c7f4 ordered:Bool items:Vector<RichText> = PageBlock;"),
+    QStringLiteral("pageBlockEmbedPost#292c7be9 url:string webpage_id:long author_photo_id:long author:string date:int blocks:Vector<PageBlock> caption:RichText = PageBlock;"),
+    QStringLiteral("pageBlockSlideshow#130c8963 items:Vector<PageBlock> caption:RichText = PageBlock;"),
+    QStringLiteral("pageBlockPhoto#e9c69982 photo_id:long caption:RichText = PageBlock;"),
+};
+
 class tst_Generator : public QObject
 {
     Q_OBJECT
@@ -59,6 +84,8 @@ private slots:
     void checkRemoveWord_data();
     void checkRemoveWord();
     void checkTypeWithMemberConflicts();
+    void recursiveTypeMembers();
+    void doubleRecursiveTypeMembers();
 };
 
 tst_Generator::tst_Generator(QObject *parent) :
@@ -135,13 +162,73 @@ void tst_Generator::checkTypeWithMemberConflicts()
     const QStringList structMembers = Generator::generateTLTypeMembers(solvedType);
     static const QStringList checkList = {
         QStringLiteral("TLInputFile thumb;"),
-        QStringLiteral("TLInputVideo idInputVideo;"),
-        QStringLiteral("TLInputAudio idInputAudio;"),
+        QStringLiteral("TLInputVideo inputVideoId;"),
+        QStringLiteral("TLInputAudio inputAudioId;"),
         QStringLiteral("TLVector<TLDocumentAttribute> attributes;"),
     };
     for (const QString &mustHaveMember : checkList) {
         if (!structMembers.contains(mustHaveMember)) {
             // qDebug().noquote() << structMembers.join(QLatin1Char('\n'));
+            QString message = QStringLiteral("The member \"%1\" is missing in the generated struct of the type %2.").arg(mustHaveMember, generatedTypeName);
+            QFAIL(message.toUtf8().constData());
+        }
+    }
+}
+
+void tst_Generator::recursiveTypeMembers()
+{
+    const QStringList sources = c_sourcesRichText;
+    const QString generatedTypeName = Generator::parseLine(c_sourcesRichText.first()).typeName;
+    const QByteArray textData = generateTextSpec(sources);
+    Generator generator;
+    QVERIFY(generator.loadFromText(textData));
+    QMap<QString, TLType> types = generator.types();
+    QCOMPARE(types.size(), 1);
+    QVERIFY(generator.resolveTypes());
+    QVERIFY(!generator.solvedTypes().isEmpty());
+    const TLType solvedType = getSolvedType(generator, generatedTypeName);
+
+    QVERIFY(!solvedType.name.isEmpty());
+    const QStringList structMembers = Generator::generateTLTypeMembers(solvedType);
+    static const QStringList checkList = {
+        QStringLiteral("QString email;"),
+        QStringLiteral("QString stringText;"),
+        QStringLiteral("TLRichText *richText;"),
+        QStringLiteral("TLVector<TLRichText*> texts;"),
+    };
+    for (const QString &mustHaveMember : checkList) {
+        if (!structMembers.contains(mustHaveMember)) {
+            // qDebug().noquote() << structMembers.join(QLatin1Char('\n'));
+            QString message = QStringLiteral("The member \"%1\" is missing in the generated struct of the type %2.").arg(mustHaveMember, generatedTypeName);
+            QFAIL(message.toUtf8().constData());
+        }
+    }
+}
+
+void tst_Generator::doubleRecursiveTypeMembers()
+{
+    const QStringList sources = c_sourcesRichText + c_sourcesPageBlock;
+    const QString generatedTypeName = Generator::parseLine(c_sourcesPageBlock.first()).typeName;
+    const QByteArray textData = generateTextSpec(sources);
+    Generator generator;
+    QVERIFY(generator.loadFromText(textData));
+    QMap<QString, TLType> types = generator.types();
+    QVERIFY(!types.isEmpty());
+    QVERIFY(generator.resolveTypes());
+    QVERIFY(!generator.solvedTypes().isEmpty());
+    const TLType solvedType = getSolvedType(generator, generatedTypeName);
+    QVERIFY(!solvedType.name.isEmpty());
+    const QStringList structMembers = Generator::generateTLTypeMembers(solvedType);
+    static const QStringList checkList = {
+        QStringLiteral("TLRichText *text;"),
+        QStringLiteral("TLVector<TLRichText*> richTextItemsVector;"),
+        QStringLiteral("TLVector<TLPageBlock*> blocks;"),
+        QStringLiteral("TLVector<TLPageBlock*> pageBlockItemsVector;"),
+        QStringLiteral("TLRichText *caption;"),
+    };
+    for (const QString &mustHaveMember : checkList) {
+        if (!structMembers.contains(mustHaveMember)) {
+             qDebug().noquote() << structMembers.join(QLatin1Char('\n'));
             QString message = QStringLiteral("The member \"%1\" is missing in the generated struct of the type %2.").arg(mustHaveMember, generatedTypeName);
             QFAIL(message.toUtf8().constData());
         }
