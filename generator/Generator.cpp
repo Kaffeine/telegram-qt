@@ -937,6 +937,9 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                 TypeTreeItem *item = *currentItemIt;
                 bool solved = true;
                 for (TypeTreeItem *dependence : item->dependencies) {
+                    if (item == dependence) {
+                        continue;
+                    }
                     if (!notSolvedTypes.contains(dependence)) {
                         // Already solved
                         continue;
