@@ -172,6 +172,9 @@ public:
     static QString generateStreamWriteVectorTemplate(const QString &type);
 
     static QString generateDebugWriteOperatorDeclaration(const TLType &type);
+    static QString debugOperatorImplementationHead(const QString &argName, const QString &typeName);
+    static QString debugOperatorImplementationEnd(const QString &argName);
+    static QString debugOperatorPerTypeImplementation(const QString &argName, const TLSubType &subType);
     static QString generateDebugWriteOperatorDefinition(const TLType &type);
 
     static QString generateConnectionMethodDeclaration(const TLMethod &method);

@@ -696,48 +696,58 @@ QString Generator::generateDebugWriteOperatorDeclaration(const TLType &type)
     return QString("QDebug operator<<(QDebug d, const %1 &%2);\n").arg(type.name).arg(argName);
 }
 
-QString Generator::generateDebugWriteOperatorDefinition(const TLType &type)
+QString Generator::debugOperatorImplementationHead(const QString &argName, const QString &typeName)
 {
+    Q_UNUSED(argName)
     QString code;
-
-    code += QString("QDebug operator<<(QDebug d, const %1 &type)\n{\n").arg(type.name);
+    code += QString("QDebug operator<<(QDebug d, const %1 &type)\n{\n").arg(typeName);
     code += spacing + QStringLiteral("d.noquote().nospace();\n");
-    code += spacing + QString("d << \"%1(\" << type.tlType << \") {\";\n").arg(type.name);
+    code += spacing + QString("d << \"%1(\" << type.tlType << \") {\";\n").arg(typeName);
     code += spacing + QStringLiteral("Spacer spacer;\n");
     code += spacing + QLatin1String("switch (type.tlType) {\n");
+    return code;
+}
 
-    foreach (const TLSubType &subType, type.subTypes) {
-        code += spacing + QString("case %1::%2:\n").arg(tlValueName).arg(subType.name);
-
-        foreach (const TLParam &member, subType.members) {
-            QString typeDebugStatement = QStringLiteral("type.%1");
-            if (member.type().contains(QLatin1String("QByteArray"))) {
-                typeDebugStatement = QStringLiteral("type.%1.toHex()");
-            }
-            typeDebugStatement = typeDebugStatement.arg(member.getAlias());
-            if (member.dependOnFlag()) {
-                if (member.type() == tlTrueType) {
-                    continue;
-                }
-                code += doubleSpacing + QString("if (type.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit);
-                code += doubleSpacing + spacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
-                code += doubleSpacing + QLatin1Literal("}\n");
-            } else {
-                code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
-            }
-        }
-
-        code += doubleSpacing + QLatin1String("break;\n");
-    }
-
+QString Generator::debugOperatorImplementationEnd(const QString &argName)
+{
+    Q_UNUSED(argName)
+    QString code;
     code += spacing + QLatin1String("default:\n");
     code += doubleSpacing + QLatin1String("break;\n");
     code += spacing + QLatin1String("}\n");
     code += spacing + QLatin1String("d << spacer.outerSpaces() << \"}\";\n\n");
     code += spacing + QLatin1String("return d;\n}\n\n");
-
     return code;
+}
 
+QString Generator::debugOperatorPerTypeImplementation(const QString &argName, const TLSubType &subType)
+{
+    Q_UNUSED(argName)
+    QString code;
+    foreach (const TLParam &member, subType.members) {
+        QString typeDebugStatement = QStringLiteral("type.%1");
+        if (member.type().contains(QLatin1String("QByteArray"))) {
+            typeDebugStatement = QStringLiteral("type.%1.toHex()");
+        }
+        typeDebugStatement = typeDebugStatement.arg(member.getAlias());
+        if (member.dependOnFlag()) {
+            if (member.type() == tlTrueType) {
+                continue;
+            }
+            code += doubleSpacing + QString("if (type.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit);
+            code += doubleSpacing + spacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
+            code += doubleSpacing + QLatin1Literal("}\n");
+        } else {
+            code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
+        }
+    }
+    code += doubleSpacing + QLatin1String("break;\n");
+    return code;
+}
+
+QString Generator::generateDebugWriteOperatorDefinition(const TLType &type)
+{
+    return generateStreamOperatorDefinition(type, debugOperatorImplementationHead, debugOperatorPerTypeImplementation, debugOperatorImplementationEnd);
 //    QDebug operator << (QDebug d, const TLUpdatesState &type) {
 //        d << "TLUpdatesState(" << type.tlType << ")";
 //        d << "{";
