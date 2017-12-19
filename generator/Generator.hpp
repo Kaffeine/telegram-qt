@@ -150,24 +150,24 @@ public:
     static QString generateTLTypeDefinition(const TLType &type, bool addSpecSources = false);
     static QStringList generateTLTypeMemberGetters(const TLType &type);
     static QStringList generateTLTypeMembers(const TLType &type);
-    static QString generateStreamReadOperatorDeclaration(const TLType &type);
+
     static QString streamReadImplementationHead(const QString &argName, const QString &typeName);
     static QString streamReadImplementationEnd(const QString &argName);
     static QString streamReadPerTypeImplementation(const QString &argName, const TLSubType &subType);
+
+    static QString streamWriteImplementationHead(const QString &argName, const QString &typeName);
+    static QString streamWriteImplementationEnd(const QString &argName);
+    static QString streamWritePerTypeImplementation(const QString &argName, const TLSubType &subType);
 
     static QString generateStreamOperatorDefinition(const TLType &type,
                                                     std::function<QString(const QString &argName, const QString &typeName)> head,
                                                     std::function<QString(const QString &argName, const TLSubType &subType)> generateSubtypeCode,
                                                     std::function<QString(const QString &argName)> end
                                                     );
+    static QString generateStreamReadOperatorDeclaration(const TLType &type);
     static QString generateStreamReadOperatorDefinition(const TLType &type);
     static QString generateStreamReadVectorTemplate(const QString &type);
     static QString generateStreamWriteOperatorDeclaration(const TLType &type);
-
-    static QString streamWriteImplementationHead(const QString &argName, const QString &typeName);
-    static QString streamWriteImplementationEnd(const QString &argName);
-    static QString streamWritePerTypeImplementation(const QString &argName, const TLSubType &subType);
-
     static QString generateStreamWriteOperatorDefinition(const TLType &type);
     static QString generateStreamWriteVectorTemplate(const QString &type);
 

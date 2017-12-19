@@ -544,23 +544,6 @@ QStringList Generator::generateTLTypeMembers(const TLType &type)
     return membersCode;
 }
 
-QString Generator::generateStreamReadOperatorDeclaration(const TLType &type)
-{
-    QString argName = removePrefix(type.name);
-    argName[0] = argName.at(0).toLower();
-    argName += QLatin1String("Value");
-
-    return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
-}
-
-QString Generator::generateStreamWriteOperatorDeclaration(const TLType &type)
-{
-    QString argName = removePrefix(type.name);
-    argName[0] = argName.at(0).toLower();
-    argName += QLatin1String("Value");
-    return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
-}
-
 QString Generator::streamReadImplementationHead(const QString &argName, const QString &typeName)
 {
     QString code;
@@ -592,6 +575,43 @@ QString Generator::streamReadPerTypeImplementation(const QString &argName, const
             code.append(doubleSpacing + QLatin1Literal("}\n"));
         } else {
             code.append(doubleSpacing + QString("*this >> result.%1;\n").arg(member.getAlias()));
+        }
+    }
+    code.append(QString("%1break;\n").arg(doubleSpacing));
+    return code;
+}
+
+QString Generator::streamWriteImplementationHead(const QString &argName, const QString &typeName)
+{
+    QString code;
+    code.append(QString("%1 &%1::operator<<(const %2 &%3)\n{\n").arg(streamClassName, typeName, argName));
+    code.append(QString("%1*this << %2.tlType;\n\n%1switch (%2.tlType) {\n").arg(spacing, argName));
+    return code;
+}
+
+QString Generator::streamWriteImplementationEnd(const QString &argName)
+{
+    Q_UNUSED(argName)
+
+    QString code;
+    code.append(QString("%1default:\n%1%1break;\n%1}\n\n").arg(spacing));
+    code.append(spacing + QString("return *this;\n}\n\n"));
+    return code;
+}
+
+QString Generator::streamWritePerTypeImplementation(const QString &argName, const TLSubType &subType)
+{
+    QString code;
+    foreach (const TLParam &member, subType.members) {
+        if (member.dependOnFlag()) {
+            if (member.type() == tlTrueType) {
+                continue;
+            }
+            code.append(doubleSpacing + QString("if (%1.%2 & 1 << %3) {\n").arg(argName).arg(member.flagMember).arg(member.flagBit));
+            code.append(doubleSpacing + spacing + QString("*this << %1.%2;\n").arg(argName).arg(member.getAlias()));
+            code.append(doubleSpacing + QLatin1Literal("}\n"));
+        } else {
+            code.append(doubleSpacing + QString("*this << %1.%2;\n").arg(argName).arg(member.getAlias()));
         }
     }
     code.append(QString("%1break;\n").arg(doubleSpacing));
@@ -631,6 +651,15 @@ QString Generator::generateStreamOperatorDefinition(const TLType &type, std::fun
     return code;
 }
 
+QString Generator::generateStreamReadOperatorDeclaration(const TLType &type)
+{
+    QString argName = removePrefix(type.name);
+    argName[0] = argName.at(0).toLower();
+    argName += QLatin1String("Value");
+
+    return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
+}
+
 QString Generator::generateStreamReadOperatorDefinition(const TLType &type)
 {
     return generateStreamOperatorDefinition(type, streamReadImplementationHead, streamReadPerTypeImplementation, streamReadImplementationEnd);
@@ -641,41 +670,12 @@ QString Generator::generateStreamReadVectorTemplate(const QString &type)
     return QString(QLatin1String("template %1 &%1::operator>>(TLVector<%2> &v);")).arg(streamClassName, type);
 }
 
-QString Generator::streamWriteImplementationHead(const QString &argName, const QString &typeName)
+QString Generator::generateStreamWriteOperatorDeclaration(const TLType &type)
 {
-    QString code;
-    code.append(QString("%1 &%1::operator<<(const %2 &%3)\n{\n").arg(streamClassName, typeName, argName));
-    code.append(QString("%1*this << %2.tlType;\n\n%1switch (%2.tlType) {\n").arg(spacing, argName));
-    return code;
-}
-
-QString Generator::streamWriteImplementationEnd(const QString &argName)
-{
-    Q_UNUSED(argName)
-
-    QString code;
-    code.append(QString("%1default:\n%1%1break;\n%1}\n\n").arg(spacing));
-    code.append(spacing + QString("return *this;\n}\n\n"));
-    return code;
-}
-
-QString Generator::streamWritePerTypeImplementation(const QString &argName, const TLSubType &subType)
-{
-    QString code;
-    foreach (const TLParam &member, subType.members) {
-        if (member.dependOnFlag()) {
-            if (member.type() == tlTrueType) {
-                continue;
-            }
-            code.append(doubleSpacing + QString("if (%1.%2 & 1 << %3) {\n").arg(argName).arg(member.flagMember).arg(member.flagBit));
-            code.append(doubleSpacing + spacing + QString("*this << %1.%2;\n").arg(argName).arg(member.getAlias()));
-            code.append(doubleSpacing + QLatin1Literal("}\n"));
-        } else {
-            code.append(doubleSpacing + QString("*this << %1.%2;\n").arg(argName).arg(member.getAlias()));
-        }
-    }
-    code.append(QString("%1break;\n").arg(doubleSpacing));
-    return code;
+    QString argName = removePrefix(type.name);
+    argName[0] = argName.at(0).toLower();
+    argName += QLatin1String("Value");
+    return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
 QString Generator::generateStreamWriteOperatorDefinition(const TLType &type)
