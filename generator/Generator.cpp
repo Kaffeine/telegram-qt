@@ -385,6 +385,7 @@ QMap<QString, TLMethod> Generator::readFunctionsJson(const QJsonDocument &docume
 void TLParam::setType(const QString &newType)
 {
     m_type = newType;
+    m_bareType = Generator::getTypeOrVectorType(newType, &m_isVector);
 }
 
 QString Generator::generateTLValuesDefinition(const TLType &type)
@@ -732,7 +733,7 @@ QString Generator::generateConnectionMethodDefinition(const TLMethod &method, QS
             result += spacing + QString("outputStream << %1;\n").arg(param.getAlias());
         }
 
-        if (!nativeTypes.contains(getTypeOrVectorType(param.type()))) {
+        if (!nativeTypes.contains(param.bareType())) {
             usedTypes.append(param.type());
         }
     }
@@ -844,6 +845,7 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
         for (const QString &typeName : types.keys()) {
             TLType &type = types[typeName];
             QHash<QString,QString> members;
+            // Bake member types
             for (const TLSubType &subType : type.subTypes) {
                 for (const TLParam &member : subType.members) {
                     if (members.contains(member.getName())) {
@@ -852,17 +854,38 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                         }
                     }
                     members.insertMulti(member.getName(), member.type());
+                    if (member.bareType() == type.name) {
+                        type.setSelfReferenced(true);
+                    }
                 }
             }
 
+            // Bake conflicted member aliases
             for (TLSubType &subType : type.subTypes) {
                 for (TLParam &member : subType.members) {
                     if (members.values(member.getName()).count() > 1) {
-                        QString typeWithoutTL = removeTypePrefix(member.type());
+                        QString typeWithoutTL = removeTypePrefix(member.bareType());
                         typeWithoutTL = removeWord(typeWithoutTL, member.getName());
                         if (member.getName().compare(typeWithoutTL, Qt::CaseInsensitive) != 0) {
-                            member.setAlias(member.getName() + typeWithoutTL);
+                            if (member.isVector()) {
+                                member.setAlias(formatName({typeWithoutTL, member.getName(), QStringLiteral("Vector")}, FirstLetterCase::Lower));
+                            } else {
+                                member.setAlias(formatName({typeWithoutTL, member.getName()}, FirstLetterCase::Lower));
+                            }
                         }
+                    }
+                }
+            }
+        }
+
+        // Bake access by pointer
+        for (const QString &typeName : types.keys()) {
+            TLType &type = types[typeName];
+
+            for (TLSubType &subType : type.subTypes) {
+                for (TLParam &member : subType.members) {
+                    if (types.value(member.bareType()).isSelfReferenced()) {
+                        member.setAccessByPointer(true);
                     }
                 }
             }
@@ -885,10 +908,9 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
 
             foreach (const TLSubType &subType, type.subTypes) {
                 foreach (const TLParam &member, subType.members) {
-                    QString memberType = getTypeOrVectorType(member.type());
-                    TypeTreeItem *dep = typeItemHash.value(memberType);
+                    TypeTreeItem *dep = typeItemHash.value(member.bareType());
                     if (!dep) {
-                        qWarning() << "Type with name" << memberType << "not found!";
+                        qWarning() << "Type with name" << member.bareType() << "not found!";
                     }
                     typeItem->ensureDependence(dep);
                 }

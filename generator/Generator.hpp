@@ -31,13 +31,19 @@ QT_FORWARD_DECLARE_CLASS(QJsonDocument)
 struct TLParam {
     TLParam() { }
     TLParam(const QString &newName, const QString &newType, qint8 newFlagBit = -1) :
-        flagBit(newFlagBit), m_type(newType), m_name(newName) { }
+        flagBit(newFlagBit), m_name(newName) { setType(newType); }
 
     qint8 flagBit = -1;
     QString flagMember;
 
     QString type() const { return m_type; }
+    QString bareType() const { return m_bareType; }
     void setType(const QString &newType);
+
+    bool isVector() const { return m_isVector; }
+
+    bool accessByPointer() const { return m_accessByPointer; }
+    void setAccessByPointer(bool accessByPointer) { m_accessByPointer = accessByPointer; }
 
     QString getAlias() const { return !m_alias.isEmpty() ? m_alias : m_name; }
     void setAlias(const QString &newAlias) { m_alias = newAlias; }
@@ -48,8 +54,11 @@ struct TLParam {
 
 protected:
     QString m_type;
+    QString m_bareType;
     QString m_alias;
     QString m_name;
+    bool m_isVector = false;
+    bool m_accessByPointer = false;
 };
 
 struct TLSubType {
@@ -62,6 +71,12 @@ struct TLSubType {
 struct TLType {
     QString name;
     QList<TLSubType> subTypes;
+
+    bool isSelfReferenced() const { return m_selfReferenced; }
+    void setSelfReferenced(const bool referenced) { m_selfReferenced = referenced; }
+
+protected:
+    bool m_selfReferenced = false;
 };
 
 struct TLMethod {
