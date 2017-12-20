@@ -1,6 +1,7 @@
 os: linux
 sudo: required
 language: cpp
+cache: ccache
 compiler:
   - gcc
   - clang
