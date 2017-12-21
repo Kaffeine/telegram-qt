@@ -42,6 +42,28 @@ CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
 }
 
 template <typename T>
+CTelegramStream &CTelegramStream::operator>>(TLVector<T*> &v)
+{
+    TLVector<T*> result;
+
+    *this >> result.tlType;
+
+    if (result.tlType == TLValue::Vector) {
+        quint32 length = 0;
+        *this >> length;
+        for (quint32 i = 0; i < length; ++i) {
+            T *value = new T;
+            *this >> *value;
+            result.append(value);
+        }
+    }
+
+    qDeleteAll(v);
+    v = result;
+    return *this;
+}
+
+template <typename T>
 CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
 {
     *this << v.tlType;
@@ -51,6 +73,22 @@ CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
 
         for (int i = 0; i < v.count(); ++i) {
             *this << v.at(i);
+        }
+    }
+
+    return *this;
+}
+
+template <typename T>
+CTelegramStream &CTelegramStream::operator<<(const TLVector<T*> &v)
+{
+    *this << v.tlType;
+
+    if (v.tlType == TLValue::Vector) {
+        *this << quint32(v.count());
+
+        for (int i = 0; i < v.count(); ++i) {
+            *this << *v.at(i);
         }
     }
 

@@ -59,7 +59,11 @@ public:
     template <typename T>
     CTelegramStream &operator>>(TLVector<T> &v);
     template <typename T>
+    CTelegramStream &operator>>(TLVector<T*> &v);
+    template <typename T>
     CTelegramStream &operator<<(const TLVector<T> &v);
+    template <typename T>
+    CTelegramStream &operator<<(const TLVector<T*> &v);
 
     template <int Size>
     CTelegramStream &operator<<(const TLNumber<Size> &n);

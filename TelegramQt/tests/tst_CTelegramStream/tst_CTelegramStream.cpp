@@ -17,7 +17,7 @@
 
 #include <QObject>
 
-#include "CTelegramStream.hpp"
+#include "CTelegramStream_p.hpp"
 
 #include <QBuffer>
 #include <QTest>
@@ -42,6 +42,8 @@ private slots:
     void intSerialization();
     void vectorOfIntsSerialization();
     void vectorDeserializationError();
+    void pointerVectorSerialization();
+    void pointerVectorDeserialization();
     void tlNumbersSerialization();
     void tlDcOptionDeserialization();
     void readError();
@@ -326,6 +328,53 @@ void tst_CTelegramStream::vectorDeserializationError()
 
         stream >> vector;
         QVERIFY(!vector.isValid());
+    }
+}
+
+void tst_CTelegramStream::pointerVectorSerialization()
+{
+    TLVector<quint32> values = { 1, 2, 3, 4, 5 };
+    const TLVector<quint32*> writePtrs = {
+        &values[0],
+        &values[1],
+        &values[2],
+        &values[3],
+        &values[4],
+    };
+
+    QByteArray buffer;
+    {
+        CTelegramStream stream(&buffer, true);
+        stream << writePtrs;
+    }
+    QVERIFY(!buffer.isEmpty());
+
+    CTelegramStream stream(buffer);
+    TLVector<quint32> readValues;
+    stream >> readValues;
+    QCOMPARE(values.count(), readValues.count());
+    for (int i = 0; i < values.count(); ++i) {
+        QCOMPARE(values.at(i), readValues.at(i));
+    }
+}
+
+void tst_CTelegramStream::pointerVectorDeserialization()
+{
+    const TLVector<quint32> writeValues = { 1, 2, 3, 4, 5 };
+
+    QByteArray buffer;
+    {
+        CTelegramStream stream(&buffer, true);
+        stream << writeValues;
+    }
+    QVERIFY(!buffer.isEmpty());
+
+    CTelegramStream stream(buffer);
+    TLVector<quint32*> readPtrs;
+    stream >> readPtrs;
+    QCOMPARE(writeValues.count(), readPtrs.count());
+    for (int i = 0; i < writeValues.count(); ++i) {
+        QCOMPARE(writeValues.at(i), *readPtrs.at(i));
     }
 }
 
