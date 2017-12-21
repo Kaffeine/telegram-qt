@@ -14,6 +14,7 @@ matrix:
        - compiler: clang
          env:
            - DEVELOPER_BUILD=true
+           - ENABLE_QCH_BUILD=true
 
 before_install:
   - sudo apt-add-repository -y ppa:beineri/opt-qt562-trusty
@@ -26,7 +27,8 @@ before_script:
   - qt56-env.sh
   - mkdir ../build; cd ../build
   - if [ "${DEVELOPER_BUILD}" != "true" ]; then export DEVELOPER_BUILD="false"; fi
-  - cmake -DDEVELOPER_BUILD=${DEVELOPER_BUILD} -DENABLE_TESTAPP=true -DENABLE_TESTS=true ../telegram-qt
+  - if [ "${ENABLE_QCH_BUILD}" != "true" ]; then export ENABLE_QCH_BUILD="false"; fi
+  - cmake -DDEVELOPER_BUILD=${DEVELOPER_BUILD} -DENABLE_QCH_BUILD=${ENABLE_QCH_BUILD} -DENABLE_TESTAPP=true -DENABLE_TESTS=true ../telegram-qt
 
 script:
   - make -j3 -k
