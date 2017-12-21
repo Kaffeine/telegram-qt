@@ -107,9 +107,38 @@ QString getPartiallyGeneratedContent(const QString &fileName, int spacing, const
                              QString("%1// End of partially generated %2\n").arg(space).arg(marker), winEol);
 }
 
+QString preprocessFile(const QString &fileName)
+{
+    if (s_dryRun || (s_inputDir == s_outputDir)) {
+        return s_inputDir + fileName;
+    }
+    static QStringList processedFiles;
+    if (!processedFiles.contains(fileName)) {
+        processedFiles.append(fileName);
+        const QString in = s_inputDir + fileName;
+        const QString out = s_outputDir + fileName;
+        if (QFileInfo::exists(out)) {
+            if (!QFile::remove(out)) {
+                qWarning() << Q_FUNC_INFO << "Unable to overwrite file" << out;
+            }
+        }
+        if (!QFile::copy(in, out)) {
+            qWarning() << Q_FUNC_INFO << "Unable to copy file" << fileName << "from" << s_inputDir << "to" << s_outputDir;
+            return QString();
+        }
+    }
+    return s_outputDir + fileName;
+}
+
 bool replaceSection(const QString &fileName, const QString &startMarker, const QString &endMarker, const QString &newContent)
 {
-    QFile fileToProcess(s_inputDir + fileName);
+    const QString fullFileName = preprocessFile(fileName);
+    if (fullFileName.isEmpty()) {
+        qWarning() << "Unable to preprocess file" << fileName;
+        return false;
+    }
+
+    QFile fileToProcess(fullFileName);
 
     if (!fileToProcess.open(QIODevice::ReadOnly))
         return false;
@@ -159,8 +188,7 @@ bool replaceSection(const QString &fileName, const QString &startMarker, const Q
     fileContent.insert(startPos, startMarker + newContent + endMarker);
 
     if (!s_dryRun) {
-        fileToProcess.setFileName(s_outputDir + fileName);
-        if (!fileToProcess.open(QIODevice::WriteOnly))
+        if (!fileToProcess.open(QIODevice::WriteOnly|QIODevice::Truncate))
             return false;
 
         if (winNewLines) {
