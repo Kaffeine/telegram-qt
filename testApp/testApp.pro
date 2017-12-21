@@ -12,6 +12,8 @@ TEMPLATE = app
 
 INCLUDEPATH += $$PWD/../TelegramQt
 
+DEFINES += STORE_MEDIA_FILES
+
 LIBS += -lssl -lcrypto -lz
 LIBS += -L$$OUT_PWD/../TelegramQt
 LIBS += -lTelegramQt$${QT_MAJOR_VERSION}

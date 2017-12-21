@@ -78,8 +78,7 @@ public:
 
     void plugModule(CTelegramModule *module);
 
-    static QVector<Telegram::DcOption> builtInDcs();
-    static quint32 defaultPingInterval();
+    static QVector<Telegram::DcOption> defaultDcConfiguration();
 
     QVector<Telegram::DcOption> dcConfiguration() const;
     bool updatesEnabled() const;
@@ -108,10 +107,10 @@ public:
     void setMessageReceivingFilter(TelegramNamespace::MessageFlags flags);
     void setAcceptableMessageTypes(TelegramNamespace::MessageTypeFlags types);
     void setAutoReconnection(bool enable);
-    void setPingInterval(quint32 ms, quint32 serverDisconnectionAdditionTime);
 
-    bool initConnection(const QVector<Telegram::DcOption> &dcs);
-    bool restoreConnection(const QByteArray &secret);
+    bool setDcConfiguration(const QVector<Telegram::DcOption> &dcs);
+    bool connectToServer();
+    bool setSecretInfo(const QByteArray &secret);
     void disconnectFromServer();
 
     bool requestHistory(const Telegram::Peer &peer, quint32 offset, quint32 limit);
@@ -134,14 +133,15 @@ public:
     QString chatTitle(quint32 chatId) const;
 
     // Connections API
+    void resetConnectionData();
+    bool resetDcConfiguration();
 
     bool setWantedDc(quint32 dc);
-    CTelegramConnection *activeConnection() const { return m_mainConnection; }
+    CTelegramConnection *mainConnection() const { return m_mainConnection; }
     CTelegramConnection *getExtraConnection(quint32 dc);
 
     CTelegramConnection *createConnection(const TLDcOption &dcInfo);
     void ensureSignedConnection(CTelegramConnection *connection);
-    void clearMainConnection();
     void clearConnection(CTelegramConnection *connection);
     void clearExtraConnections();
     void ensureMainConnectToWantedDc();
@@ -242,7 +242,6 @@ protected:
     void updateChat(const TLChat &newChat);
     void updateFullChat(const TLChatFull &newChat);
 
-    void initConnectionSharedClear();
     void initConnectionSharedFinal();
 
     void getInitialUsers();
@@ -262,8 +261,10 @@ protected:
 
     void checkStateAndCallGetDifference();
     bool connectToTheNextDcAddress();
+    void connectToTheWantedDc();
 
     void continueInitialization(InitializationStep justDone);
+    void setMainConnection(CTelegramConnection *connection);
 
     TelegramNamespace::MessageFlags getPublicMessageFlags(quint32 flags);
 
@@ -307,12 +308,13 @@ protected:
     bool m_updatesEnabled;
 
     qint32 m_deltaTime;
+    QByteArray m_authKey;
+    quint64 m_serverSalt;
+    TLDcOption m_mainDcInfo;
 
     TelegramNamespace::MessageFlags m_messageReceivingFilterFlags;
     TelegramNamespace::MessageTypeFlags m_acceptableMessageTypes;
     bool m_autoReconnectionEnabled;
-    quint32 m_pingInterval;
-    quint32 m_pingServerAdditionDisconnectionTime;
 
     InitializationStepFlags m_initializationState;
     InitializationStepFlags m_requestedSteps;

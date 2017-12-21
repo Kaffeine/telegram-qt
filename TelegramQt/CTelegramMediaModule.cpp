@@ -109,14 +109,14 @@ bool CTelegramMediaModule::getMessageMediaInfo(Telegram::MessageMediaInfo *messa
 
 quint32 CTelegramMediaModule::uploadFile(const QByteArray &fileContent, const QString &fileName)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         qWarning() << Q_FUNC_INFO << "Called without connection";
         return 0;
     }
 #ifdef DEVELOPER_BUILD
     qDebug() << Q_FUNC_INFO << fileName;
 #endif
-    return addFileRequest(FileRequestDescriptor::uploadRequest(fileContent, fileName, activeConnection()->dcInfo().id));
+    return addFileRequest(FileRequestDescriptor::uploadRequest(fileContent, fileName, mainConnection()->dcInfo().id));
 }
 
 quint32 CTelegramMediaModule::uploadFile(QIODevice *source, const QString &fileName)
@@ -126,7 +126,7 @@ quint32 CTelegramMediaModule::uploadFile(QIODevice *source, const QString &fileN
 
 quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegram::MessageMediaInfo &info)
 {
-    if (!activeConnection()) {
+    if (!mainConnection()) {
         return 0;
     }
 
@@ -164,21 +164,21 @@ quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegr
         switch (media->tlType) {
         case TLValue::MessageMediaPhoto:
             inputMedia.tlType = TLValue::InputMediaPhoto;
-            inputMedia.idInputPhoto.tlType = TLValue::InputPhoto;
-            inputMedia.idInputPhoto.id = media->photo.id;
-            inputMedia.idInputPhoto.accessHash = media->photo.accessHash;
+            inputMedia.inputPhotoId.tlType = TLValue::InputPhoto;
+            inputMedia.inputPhotoId.id = media->photo.id;
+            inputMedia.inputPhotoId.accessHash = media->photo.accessHash;
             break;
         case TLValue::MessageMediaAudio:
             inputMedia.tlType = TLValue::InputMediaAudio;
-            inputMedia.idInputAudio.tlType = TLValue::InputAudio;
-            inputMedia.idInputAudio.id = media->audio.id;
-            inputMedia.idInputAudio.accessHash = media->audio.accessHash;
+            inputMedia.inputAudioId.tlType = TLValue::InputAudio;
+            inputMedia.inputAudioId.id = media->audio.id;
+            inputMedia.inputAudioId.accessHash = media->audio.accessHash;
             break;
         case TLValue::MessageMediaVideo:
             inputMedia.tlType = TLValue::InputMediaVideo;
-            inputMedia.idInputVideo.tlType = TLValue::InputVideo;
-            inputMedia.idInputVideo.id = media->video.id;
-            inputMedia.idInputVideo.accessHash = media->video.accessHash;
+            inputMedia.inputVideoId.tlType = TLValue::InputVideo;
+            inputMedia.inputVideoId.id = media->video.id;
+            inputMedia.inputVideoId.accessHash = media->video.accessHash;
             break;
         case TLValue::MessageMediaGeo:
             inputMedia.tlType = TLValue::InputMediaGeoPoint;
@@ -194,9 +194,9 @@ quint64 CTelegramMediaModule::sendMedia(const Telegram::Peer &peer, const Telegr
             break;
         case TLValue::MessageMediaDocument:
             inputMedia.tlType = TLValue::InputMediaDocument;
-            inputMedia.idInputDocument.tlType = TLValue::InputDocument;
-            inputMedia.idInputDocument.id = media->document.id;
-            inputMedia.idInputDocument.accessHash = media->document.accessHash;
+            inputMedia.inputDocumentId.tlType = TLValue::InputDocument;
+            inputMedia.inputDocumentId.id = media->document.id;
+            inputMedia.inputDocumentId.accessHash = media->document.accessHash;
             break;
         default:
             return 0;
@@ -299,8 +299,8 @@ void CTelegramMediaModule::onFileDataUploaded(quint32 requestId)
     if (descriptor.finished()) {
         Telegram::RemoteFile result;
         const TLInputFile fileInfo = descriptor.inputFile();
-        if (activeConnection()) {
-            result.d->m_dcId = activeConnection()->dcInfo().id;
+        if (mainConnection()) {
+            result.d->m_dcId = mainConnection()->dcInfo().id;
         }
         result.d->m_size = descriptor.size();
         result.d->setInputFile(&fileInfo);
@@ -327,7 +327,7 @@ void CTelegramMediaModule::onConnectionStateChanged(TelegramNamespace::Connectio
 void CTelegramMediaModule::onConnectionAuthChanged(CTelegramConnection *connection, int newAuthState)
 {
     CTelegramConnection::AuthState state = static_cast<CTelegramConnection::AuthState>(newAuthState);
-    if (connection == activeConnection()) {
+    if (connection == mainConnection()) {
         return;
     } else {
         foreach (quint32 fileId, m_requestedFileDescriptors.keys()) {

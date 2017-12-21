@@ -37,7 +37,7 @@ public:
 
     // Connections API
     bool setWantedDc(quint32 dcId);
-    CTelegramConnection *activeConnection() const;
+    CTelegramConnection *mainConnection() const;
     CTelegramConnection *getExtraConnection(quint32 dc);
 
     virtual void onConnectionStateChanged(TelegramNamespace::ConnectionState newConnectionState);

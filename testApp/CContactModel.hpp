@@ -24,9 +24,6 @@
 
 #include "CPeerModel.hpp"
 
-class CTelegramCore;
-class CFileManager;
-
 struct SContact : Telegram::UserInfo {
     SContact() :
         Telegram::UserInfo(),
@@ -36,8 +33,7 @@ struct SContact : Telegram::UserInfo {
 
     TelegramNamespace::MessageAction typing;
     bool blocked;
-    QPixmap m_picture;
-    QString m_pictureToken;
+    PeerPicture m_picture;
 };
 
 class CContactModel : public CPeerModel
@@ -60,9 +56,6 @@ public:
 
     bool hasPeer(const Telegram::Peer peer) const override;
     QString getName(const Telegram::Peer peer) const override;
-    QPixmap getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const override;
-
-    void setFileManager(CFileManager *manager);
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -98,20 +91,15 @@ public slots:
 protected slots:
     void onContactProfileChanged(quint32 id);
     void onContactStatusChanged(quint32 id);
-    void onFileRequestComplete(const QString &uniqueId);
+
+protected:
+    void updatePeerPicture(const PeerPicture &picture) override;
 
 private:
     void addContactId(quint32 id);
-    QString getPictureCacheToken(const Telegram::Peer &peer) const;
-    QString getPictureCacheToken(const QString &key) const;
     QString contactStatusStr(const SContact &contact) const;
 
-    CTelegramCore *m_backend;
-    CFileManager *m_fileManager;
-    QSet<QString> m_requests;
-
     QList<SContact> m_contacts;
-
 };
 
 inline int CContactModel::columnCount(const QModelIndex &parent) const

@@ -1,5 +1,6 @@
 
 find_package(Qt5 REQUIRED COMPONENTS Core Test)
+find_package(ZLIB REQUIRED)
 
 # Tell CMake to run moc when necessary:
 set(CMAKE_AUTOMOC ON)
@@ -26,16 +27,18 @@ include_directories(
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/..
     ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${ZLIB_INCLUDE_DIR}
 )
 
-add_executable(tst_GeneratorNG
-    tst_GeneratorNG/tst_GeneratorNG.cpp
-    ../GeneratorNG.cpp
+add_executable(tst_generator
+    tst_generator/tst_generator.cpp
+    ../Generator.cpp
 )
 
-target_link_libraries(tst_GeneratorNG LINK_PUBLIC
+target_link_libraries(tst_generator LINK_PUBLIC
     Qt5::Core
     Qt5::Test
+    ${ZLIB_LIBRARIES}
 )
 
-add_test(NAME tst_GeneratorNG COMMAND tst_GeneratorNG)
+add_test(NAME tst_generator COMMAND tst_generator)

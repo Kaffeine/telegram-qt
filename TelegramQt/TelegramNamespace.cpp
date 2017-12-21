@@ -19,6 +19,7 @@
 #include "TelegramNamespace_p.hpp"
 
 #include "TelegramUtils.hpp"
+#include "Utils.hpp"
 
 using namespace TelegramUtils;
 
@@ -795,6 +796,26 @@ TelegramNamespace::ContactStatus Telegram::UserInfo::status() const
     return getApiContactStatus(d->status.tlType);
 }
 
+/*! \fn quint32 Telegram::UserInfo::wasOnline() const
+  Return seconds since epoch for last online time.
+
+  If user is online, this method return time when online expires,
+  return the time, when contact was online otherwise.
+
+  Depending on the contact privacy, the method can return some special values:
+
+  TelegramNamespace::ContactLastOnlineUnknown - User last online time is not known.
+  TelegramNamespace::ContactLastOnlineRecently - User hides exact online time, but was online recently.
+  TelegramNamespace::ContactLastOnlineLastWeek - User hides exact online time, but was online last week.
+  TelegramNamespace::ContactLastOnlineLastMonth - User hides exact online time, but was online last month.
+
+  The TelegramNamespace::ContactLastOnlineMask can be used to determine if there is special value:
+  if ((contactLastOnline(contact) & TelegramNamespace::ContactLastOnlineMask) == contactLastOnline(contact)) {
+      qDebug() << "Special value";
+  } else {
+      qDebug() << "Seconds since epoch";
+  }
+*/
 quint32 Telegram::UserInfo::wasOnline() const
 {
     return getApiContactLastOnline(d->status);
@@ -1037,4 +1058,24 @@ QStringList Telegram::Utils::maskPhoneNumber(const QStringList &list)
         }
     }
     return result;
+}
+
+void Telegram::RsaKey::updateFingersprint()
+{
+    fingerprint = ::Utils::getRsaFingersprint(*this);
+}
+
+bool Telegram::RsaKey::isValid() const
+{
+    return !modulus.isEmpty() && !exponent.isEmpty() && (fingerprint == ::Utils::getRsaFingersprint(*this));
+}
+
+void Telegram::RsaKey::loadFromFile(const QString &fileName)
+{
+    *this = ::Utils::loadRsaKeyFromFile(fileName);
+}
+
+Telegram::RsaKey Telegram::RsaKey::fromFile(const QString &fileName)
+{
+    return ::Utils::loadRsaKeyFromFile(fileName);
 }

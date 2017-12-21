@@ -69,13 +69,14 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_sessionId(0),
     m_lastMessageId(0),
     m_lastSentPingId(0),
+    m_lastReceivedPingTime(0),
+    m_lastSentPingTime(0),
     m_sequenceNumber(0),
     m_contentRelatedMessages(0),
     m_pingInterval(0),
     m_serverDisconnectionExtraTime(0),
     m_deltaTime(0),
-    m_deltaTimeHeuristicState(DeltaTimeIsOk),
-    m_serverPublicFingersprint(0)
+    m_deltaTimeHeuristicState(DeltaTimeIsOk)
   #ifdef NETWORK_LOGGING
   , m_logFile(0)
   #endif
@@ -88,6 +89,11 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
 void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
 {
     m_dcInfo = newDcInfo;
+}
+
+void CTelegramConnection::setServerRsaKey(const Telegram::RsaKey &key)
+{
+    m_rsaKey = key;
 }
 
 void CTelegramConnection::connectToDc()
@@ -182,8 +188,10 @@ quint64 CTelegramConnection::timeStampToMSecsSinceEpoch(quint64 ts)
 void CTelegramConnection::initAuth()
 {
     if (m_authState == AuthStateNone) {
+        if (!m_rsaKey.isValid()) {
+            qWarning() << "CTelegramConnection::initAuth(): RSA key is not valid!";
+        }
         m_authRetryId = 0;
-        m_rsaKey = Utils::loadRsaKey();
         Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
         requestPqAuthorization();
     }
@@ -684,12 +692,8 @@ quint64 CTelegramConnection::channelsCreateChannel(quint32 flags, const QString 
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::ChannelsCreateChannel;
     outputStream << flags;
-    if (flags & 1 << 0) {
-        outputStream << TLTrue();
-    }
-    if (flags & 1 << 1) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 0) stands for broadcast "true" value
+    // (flags & 1 << 1) stands for megagroup "true" value
     outputStream << title;
     outputStream << about;
     return sendEncryptedPackage(output);
@@ -1257,9 +1261,7 @@ quint64 CTelegramConnection::messagesForwardMessages(quint32 flags, const TLInpu
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesForwardMessages;
     outputStream << flags;
-    if (flags & 1 << 4) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 4) stands for broadcast "true" value
     outputStream << fromPeer;
     outputStream << id;
     outputStream << randomId;
@@ -1529,9 +1531,7 @@ quint64 CTelegramConnection::messagesSearch(quint32 flags, const TLInputPeer &pe
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSearch;
     outputStream << flags;
-    if (flags & 1 << 0) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 0) stands for importantOnly "true" value
     outputStream << peer;
     outputStream << q;
     outputStream << filter;
@@ -1618,9 +1618,7 @@ quint64 CTelegramConnection::messagesSendInlineBotResult(quint32 flags, const TL
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSendInlineBotResult;
     outputStream << flags;
-    if (flags & 1 << 4) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 4) stands for broadcast "true" value
     outputStream << peer;
     if (flags & 1 << 0) {
         outputStream << replyToMsgId;
@@ -1637,9 +1635,7 @@ quint64 CTelegramConnection::messagesSendMedia(quint32 flags, const TLInputPeer 
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSendMedia;
     outputStream << flags;
-    if (flags & 1 << 4) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 4) stands for broadcast "true" value
     outputStream << peer;
     if (flags & 1 << 0) {
         outputStream << replyToMsgId;
@@ -1658,12 +1654,8 @@ quint64 CTelegramConnection::messagesSendMessage(quint32 flags, const TLInputPee
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSendMessage;
     outputStream << flags;
-    if (flags & 1 << 1) {
-        outputStream << TLTrue();
-    }
-    if (flags & 1 << 4) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 1) stands for noWebpage "true" value
+    // (flags & 1 << 4) stands for broadcast "true" value
     outputStream << peer;
     if (flags & 1 << 0) {
         outputStream << replyToMsgId;
@@ -1695,12 +1687,8 @@ quint64 CTelegramConnection::messagesSetInlineBotResults(quint32 flags, quint64 
     CTelegramStream outputStream(&output, /* write */ true);
     outputStream << TLValue::MessagesSetInlineBotResults;
     outputStream << flags;
-    if (flags & 1 << 0) {
-        outputStream << TLTrue();
-    }
-    if (flags & 1 << 1) {
-        outputStream << TLTrue();
-    }
+    // (flags & 1 << 0) stands for gallery "true" value
+    // (flags & 1 << 1) stands for isPrivate "true" value
     outputStream << queryId;
     outputStream << results;
     outputStream << cacheTime;
@@ -1926,32 +1914,27 @@ bool CTelegramConnection::acceptPqAuthorization(const QByteArray &payload)
         m_q = div1;
     }
 
-    TLVector<quint64> fingersprints;
-
-    inputStream >> fingersprints;
-
-    if (fingersprints.count() != 1) {
-        qDebug() << "Error: Unexpected Server RSA Fingersprints vector.";
+    TLVector<quint64> fingerprints;
+    inputStream >> fingerprints;
+    if (fingerprints.count() != 1) {
+        qDebug() << "Error: Unexpected Server RSA Fingersprints vector size:" << fingerprints.size();
         return false;
     }
-
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
     qDebug() << Q_FUNC_INFO << "Client nonce:" << clientNonce;
     qDebug() << Q_FUNC_INFO << "Server nonce:" << serverNonce;
     qDebug() << Q_FUNC_INFO << "PQ:" << m_pq;
     qDebug() << Q_FUNC_INFO << "P:" << m_p;
     qDebug() << Q_FUNC_INFO << "Q:" << m_q;
-    qDebug() << Q_FUNC_INFO << "FingerPrints:" << fingersprints;
+    qDebug() << Q_FUNC_INFO << "Fingerprints:" << fingerprints;
 #endif
-
-    m_serverPublicFingersprint = fingersprints.at(0);
-
-    if (m_rsaKey.fingersprint != m_serverPublicFingersprint) {
-        qDebug() << "Error: Server RSA Fingersprint does not match to loaded key";
-        return false;
+    for (quint64 serverFingerprint : fingerprints) {
+        if (serverFingerprint == m_rsaKey.fingerprint) {
+            return true;
+        }
     }
-
-    return true;
+    qDebug() << "Error: Server RSA fingersprints" << fingerprints << " do not match to the loaded key" << m_rsaKey.fingerprint;
+    return false;
 }
 
 void CTelegramConnection::requestDhParameters()
@@ -2010,7 +1993,7 @@ void CTelegramConnection::requestDhParameters()
     qToBigEndian(m_q, (uchar *) bigEndianNumber.data());
     outputStream << bigEndianNumber;
 
-    outputStream << m_serverPublicFingersprint;
+    outputStream << m_rsaKey.fingerprint;
 
     outputStream << encryptedPackage;
 

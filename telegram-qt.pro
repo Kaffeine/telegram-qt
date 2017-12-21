@@ -1,5 +1,4 @@
 include(options.pri)
-
 message("It is highly recommended to use CMake instead of QMake for packaging!")
 
 # The macro is taken from QtCreator
@@ -49,16 +48,19 @@ equals(BUILD_QML_IMPORT, "true") {
     SUBDIRS += imports/TelegramQtQml
 }
 
+equals(BUILD_QCH, "true") {
+    SUBDIRS += doc
+}
+
 !equals(BUILD_ONLY_LIBRARY, "true") {
     SUBDIRS += testApp
     CONFIG += ordered
 
     contains(options, developer-build) {
         SUBDIRS += TelegramQt/tests
-        SUBDIRS += TelegramQt/generator
         minQtVersion(5, 6, 0) {
-            SUBDIRS += TelegramQt/generator-ng
-            SUBDIRS += TelegramQt/generator-ng/tests
+            SUBDIRS += generator
+            SUBDIRS += generator/tests
         } else {
             message("Use Qt 5.6.0 or higher to build GeneratorNG")
         }
@@ -67,4 +69,5 @@ equals(BUILD_QML_IMPORT, "true") {
 
 OTHER_FILES += CMakeLists.txt
 OTHER_FILES += README.md
+OTHER_FILES += .travis.yml
 OTHER_FILES += rpm/telegram-qt$${QT_MAJOR_VERSION}.spec

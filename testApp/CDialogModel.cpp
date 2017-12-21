@@ -6,9 +6,9 @@
 #include <QDateTime>
 
 CDialogModel::CDialogModel(CTelegramCore *backend, QObject *parent) :
-    CPeerModel(parent),
-    m_backend(backend)
+    CPeerModel(parent)
 {
+    setBackend(backend);
 }
 
 bool CDialogModel::hasPeer(const Telegram::Peer peer) const
@@ -23,15 +23,6 @@ QString CDialogModel::getName(const Telegram::Peer peer) const
         return model->getName(peer);
     }
     return QString();
-}
-
-QPixmap CDialogModel::getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const
-{
-    const CPeerModel *model = modelForPeer(peer);
-    if (model) {
-        return model->getPicture(peer, size);
-    }
-    return QPixmap();
 }
 
 void CDialogModel::addSourceModel(CPeerModel *peerModel)
@@ -152,7 +143,7 @@ QVariant CDialogModel::data(int dialogIndex, CDialogModel::Role role) const
     case Role::PeerName:
         return getName(dialog->peer());
     case Role::Picture:
-        return getPicture(dialog->peer(), Telegram::PeerPictureSize::Small);
+        return getPicture(dialog->peer(), Telegram::PeerPictureSize::Small).pixmap;
     default:
         break;
     }

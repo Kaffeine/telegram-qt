@@ -37,8 +37,6 @@ class CFileManager;
 
 class QModelIndex;
 
-//#define CREATE_MEDIA_FILES
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -87,6 +85,8 @@ protected slots:
     void onCustomMenuRequested(const QPoint &pos);
     void onSearchCustomMenuRequested(const QPoint &pos);
 
+    void on_actionShowSettings_triggered(bool checked);
+    void on_mainSplitter_splitterMoved(int pos, int index);
     void on_connectionStepButton_clicked();
     void on_secondConnectButton_clicked();
 
@@ -204,10 +204,6 @@ private:
     bool m_phoneNumberSubmitted;
 
     AppState m_appState;
-
-#ifndef CREATE_MEDIA_FILES
-    QMap<quint32,QByteArray> m_messageDataParts;
-#endif
 
 };
 

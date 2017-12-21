@@ -3,8 +3,16 @@
 #include <TelegramQt/CTelegramCore>
 #include <TelegramQt/Debug>
 
+#ifdef STORE_MEDIA_FILES
 #include <QDir>
 #include <QFile>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
+#include <QStandardPaths>
+
+static const QString c_fileCacheDirectory = QStandardPaths::writableLocation(QStandardPaths::CacheLocation) + QStringLiteral("/telegram-qt/files/");
+#endif
 
 static const int c_maxConcurrentDownloads = 8;
 
@@ -22,7 +30,49 @@ void FileInfo::completeDownload(const Telegram::RemoteFile &result)
 {
     Q_UNUSED(result)
     m_complete = true;
+    if (!m_data.isEmpty()) {
+        setSize(m_data.size());
+    }
 }
+
+#ifdef STORE_MEDIA_FILES
+QHash<QString,FileInfo> getIndex()
+{
+    QFile indexFile(c_fileCacheDirectory + QStringLiteral("index.json"));
+    if (!indexFile.open(QIODevice::ReadOnly)) {
+        return {};
+    }
+    QJsonParseError parseError;
+    const QJsonDocument indexDoc = QJsonDocument::fromJson(indexFile.readAll(), &parseError);
+    if (parseError.error != QJsonParseError::NoError) {
+        qWarning() << "CFileManager::getIndex(): Parse error:" << parseError.errorString() << "(" << parseError.error << ")";
+        return {};
+    }
+    const QJsonObject indexObj = indexDoc.object();
+    switch (indexObj.value(QLatin1String("format")).toInt()) {
+    case 1:
+        break;
+    default:
+        qWarning() << "CFileManager::getIndex(): Unknown index format";
+        return {};
+    }
+
+    QVariantMap filesMap = indexObj.value("files").toObject().toVariantMap();
+    QHash<QString,FileInfo> fileIndex;
+    fileIndex.reserve(filesMap.size() + 10);
+    for (const QString &id : filesMap.keys()) {
+        const QVariantMap v = filesMap.value(id).toMap();
+        FileInfo info;
+        info.setSize(v.value("size").toInt());
+        info.setMimeType(v.value("mimeType").toString());
+        Telegram::RemoteFile f;
+        info.completeDownload(f);
+
+        fileIndex.insert(id, info);
+    }
+    return fileIndex;
+}
+#endif
 
 CFileManager::CFileManager(CTelegramCore *backend, QObject *parent) :
     QObject(parent),
@@ -32,6 +82,10 @@ CFileManager::CFileManager(CTelegramCore *backend, QObject *parent) :
             SLOT(onFilePartReceived(quint32,QByteArray,QString,quint32,quint32)));
     connect(m_backend, SIGNAL(fileRequestFinished(quint32,Telegram::RemoteFile)),
             this, SLOT(onFileRequestFinished(quint32,Telegram::RemoteFile)));
+
+#ifdef STORE_MEDIA_FILES
+    m_files = getIndex();
+#endif
 }
 
 QString CFileManager::requestFile(const Telegram::RemoteFile &file)
@@ -89,6 +143,14 @@ QByteArray CFileManager::getData(const QString &uniqueId) const
         return QByteArray();
     }
     const FileInfo &info = m_files.value(uniqueId);
+#ifdef STORE_MEDIA_FILES
+    if (info.data().isEmpty()) {
+        QFile dataFile(c_fileCacheDirectory + uniqueId + QStringLiteral(".dat"));
+        if (dataFile.open(QIODevice::ReadOnly)) {
+            return dataFile.readAll();
+        }
+    }
+#endif
     return info.data();
 }
 
@@ -153,7 +215,34 @@ void CFileManager::onFileRequestFinished(quint32 requestId, const Telegram::Remo
     m_files[key].completeDownload(requestResult);
     qDebug() << Q_FUNC_INFO << "Request complete:" << key << requestId;
     emit requestComplete(key);
+#ifdef STORE_MEDIA_FILES
+    QDir().mkpath(c_fileCacheDirectory);
+    QFile dataFile(c_fileCacheDirectory + key + QStringLiteral(".dat"));
+    dataFile.open(QIODevice::WriteOnly);
+    dataFile.write(m_files.value(key).data());
+    dataFile.close();
 
+    QVariantMap filesMap;
+    for (const QString &id : m_files.keys()) {
+        const FileInfo &info = m_files.value(id);
+        if (!info.isComplete()) {
+            continue;
+        }
+        QVariantMap fileData = {
+            { "mimeType", info.mimeType() },
+            { "size", info.size() },
+        };
+        filesMap.insert(id, fileData);
+    }
+    QJsonObject indexObj;
+    indexObj["format"] = 1;
+    indexObj["files"] = QJsonObject::fromVariantMap(filesMap);
+    QJsonDocument indexDoc(indexObj);
+
+    QFile indexFile(c_fileCacheDirectory + QStringLiteral("index.json"));
+    indexFile.open(QIODevice::WriteOnly);
+    indexFile.write(indexDoc.toJson(QJsonDocument::Indented));
+#endif
     unqueuePendingRequest();
 }
 

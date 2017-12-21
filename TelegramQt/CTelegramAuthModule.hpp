@@ -28,6 +28,10 @@ class CTelegramAuthModule : public CTelegramModule
 public:
     explicit CTelegramAuthModule(QObject *parent = nullptr);
 
+    Telegram::RsaKey defaultServerPublicRsaKey() const;
+    Telegram::RsaKey serverPublicRsaKey() const;
+    bool setServerPublicRsaKey(const Telegram::RsaKey &key);
+
     void clear() override;
 
     bool logOut();
@@ -61,6 +65,7 @@ protected:
 private:
     QMap<quint64, TLAccountPassword> m_passwordInfo;
     QString m_requestedCodeForPhone;
+    Telegram::RsaKey m_serverKey;
 
 };
 

@@ -39,10 +39,6 @@
 
 #include <QDebug>
 
-#ifdef CREATE_MEDIA_FILES
-#include <QDir>
-#endif
-
 #include <QFile>
 #include <QFileDialog>
 #include <QMetaEnum>
@@ -70,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_phoneNumberSubmitted(false),
     m_appState(AppStateNone)
 {
+    m_dialogModel->setFileManager(m_fileManager);
     m_contactsModel->setFileManager(m_fileManager);
     m_chatInfoModel->setFileManager(m_fileManager);
     m_messagingModel->setFileManager(m_fileManager);
@@ -170,6 +167,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->groupChatContacts->hideColumn(CContactModel::Blocked);
 
+    ui->mainSplitter->setStretchFactor(1, 1);
     ui->mainSplitter->setSizes(QList<int>() << 0 << 100);
     ui->groupChatSplitter->setSizes(QList<int>() << 550 << 450 << 300);
     ui->contactsSplitter->setSizes(QList<int>() << 100 << 0);
@@ -542,6 +540,21 @@ void MainWindow::onSearchCustomMenuRequested(const QPoint &pos)
     menu->popup(ui->contactSearchResult->mapToGlobal(pos));
 }
 
+void MainWindow::on_actionShowSettings_triggered(bool checked)
+{
+    if (checked) {
+        ui->mainSplitter->setSizes(QList<int>() << 10 << 100);
+    } else {
+        ui->mainSplitter->setSizes(QList<int>() << 0 << 100);
+    }
+}
+
+void MainWindow::on_mainSplitter_splitterMoved(int pos, int index)
+{
+    Q_UNUSED(index)
+    ui->actionShowSettings->setChecked(pos > 0);
+}
+
 void MainWindow::on_connectionStepButton_clicked()
 {
     switch (m_appState) {
@@ -595,19 +608,15 @@ void MainWindow::initStartConnection()
     }
     m_core->setUpdatesEnabled(ui->settingsUpdatesEnabled->isChecked());
 
-    const QVector<Telegram::DcOption> testServers = {
-        Telegram::DcOption(QLatin1String("149.154.175.10"), 443),
-    };
-
+    if (ui->testingDcRadio->isChecked()) {
+        m_core->setServerConfiguration({Telegram::DcOption(QLatin1String("149.154.175.10"), 443)});
+    }
     const QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
-    if (secretInfo.isEmpty()) {
-        if (ui->mainDcRadio->isChecked()) {
-            m_core->initConnection();
-        } else {
-            m_core->initConnection(testServers);
-        }
-    } else {
-        m_core->restoreConnection(secretInfo);
+    if (!secretInfo.isEmpty()) {
+        m_core->setSecretInfo(secretInfo);
+    }
+    if (!m_core->connectToServer()) {
+        qWarning() << Q_FUNC_INFO << "Unable to connect";
     }
 }
 
@@ -987,6 +996,7 @@ void MainWindow::on_logoutButton_clicked()
 void MainWindow::on_disconnectButton_clicked()
 {
     m_core->disconnectFromServer();
+    m_core->resetConnectionData();
 }
 
 void MainWindow::on_contactListTable_doubleClicked(const QModelIndex &index)

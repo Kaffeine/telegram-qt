@@ -40,6 +40,7 @@ set(telegram_qt_HEADERS
     telegramqt_global.h
     TelegramNamespace_p.hpp
     CTelegramStream.hpp
+    CTelegramStream_p.hpp
     RpcProcessingContext.hpp
     CRawStream.hpp
     Debug.hpp
@@ -123,8 +124,8 @@ target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
     ${ZLIB_LIBRARIES}
 )
 
-set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
-set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
+set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
+set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_FULL_LIBDIR})
 
 # Set the correct version number
 set_target_properties(

@@ -1,0 +1,30 @@
+include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
+
+project                 = TelegramQt
+description             = TelegramQt
+url                     = https://github.com/Kaffeine/TelegramQt
+version                 = 0.2.0
+
+outputdir = html
+
+headerdirs  += ../TelegramQt
+sourcedirs  += ../TelegramQt
+sourcedirs  += ../TelegramQt/doc
+
+sources.fileextensions += "*.cpp *.qdoc"
+headers.fileextensions += "*.hpp *.h"
+
+qhp.projects                 = TelegramQt
+qhp.TelegramQt.file          = TelegramQt.qhp
+qhp.TelegramQt.indexTitle    = TelegramQt
+qhp.TelegramQt.namespace     = org.telegramqt
+qhp.TelegramQt.virtualFolder = doc
+qhp.TelegramQt.extraFiles    = style/docstyle.css
+
+# Doxygen compatibility commands
+macro.see                       = "\\sa"
+macro.function                  = "\\fn"
+
+HTML.stylesheets = style/docstyle.css
+HTML.headerstyles = \
+    "  <link rel=\"stylesheet\" type=\"text/css\" href=\"style/docstyle.css\" />\n"

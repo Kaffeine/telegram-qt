@@ -86,6 +86,7 @@ public:
     explicit CTelegramConnection(const CAppInformation *appInfo, QObject *parent = nullptr);
 
     void setDcInfo(const TLDcOption &newDcInfo);
+    void setServerRsaKey(const Telegram::RsaKey &key);
 
     TLDcOption dcInfo() const { return m_dcInfo; }
 
@@ -290,8 +291,6 @@ public:
     quint64 pq() const { return m_pq; }
     quint64 p() const { return m_p; }
     quint64 q() const { return m_q; }
-
-    quint64 serverPublicFingersprint() const { return m_serverPublicFingersprint; }
 
     QByteArray authKey() const { return m_authKey; }
     void setAuthKey(const QByteArray &newAuthKey);
@@ -577,8 +576,7 @@ protected:
     quint32 m_p;
     quint32 m_q;
 
-    quint64 m_serverPublicFingersprint;
-    SRsaKey m_rsaKey;
+    Telegram::RsaKey m_rsaKey;
     SAesKey m_tmpAesKey;
 
     quint32 m_g;

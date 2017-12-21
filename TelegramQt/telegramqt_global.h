@@ -25,21 +25,22 @@
 #define TELEGRAMQT_MICRO_VERSION 0
 #define TELEGRAMQT_VERSION ((TP_QT_MAJOR_VERSION<<16)|(TP_QT_MINOR_VERSION<<8)|(TP_QT_MICRO_VERSION))
 
-/**
- * @def TELEGRAMQT_VERSION_CHECK
- * @ingroup macros
- *
- * The TELEGRAMQT_VERSION_CHECK macro can be used to do condition compilation
- * in TelegramQt-based applications and libraries.
- *
- * \code
- * #if (TELEGRAMQT_VERSION < TELEGRAMQT_VERSION_CHECK(0, 2, 0))
- *     m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto);
- * #else
- *     m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeAll);
- * #endif
- * \endcode
- */
+/*!
+    \macro TELEGRAMQT_VERSION_CHECK
+    The TELEGRAMQT_VERSION_CHECK macro can be used to do condition compilation
+    in TelegramQt-based applications and libraries.
+    Example:
+    \snippet code/src_corelib_global_qglobal.cpp qt-version-check
+    \code
+#if (TELEGRAMQT_VERSION < TELEGRAMQT_VERSION_CHECK(0, 2, 0))
+    m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeText|TelegramNamespace::MessageTypePhoto);
+#else
+    m_core->setAcceptableMessageTypes(TelegramNamespace::MessageTypeAll);
+#endif
+    \endcode
+    \sa QT_VERSION
+*/
+
 #define TELEGRAMQT_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 
 #if defined(TELEGRAMQT_LIBRARY)

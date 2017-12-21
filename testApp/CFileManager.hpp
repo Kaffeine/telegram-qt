@@ -12,6 +12,7 @@ class CFileManager;
 struct FileInfo
 {
     FileInfo() :
+        m_size(0),
         m_complete(false)
     {
     }
@@ -21,15 +22,21 @@ struct FileInfo
     {
         m_data = fileInfo.m_data;
         m_mimeType = fileInfo.m_mimeType;
+        m_size= fileInfo.m_size;
         m_complete = fileInfo.m_complete;
     }
 
     bool isComplete() const { return m_complete; }
     QByteArray data() const { return m_data; }
     QString mimeType() const { return m_mimeType; }
+    int size() const { return m_size; }
 
     // FileManager interface:
     void setMimeType(const QString &type);
+    void setSize(int newSize)
+    {
+        m_size = newSize;
+    }
 
     void addData(const QByteArray &newData);
     void completeDownload(const Telegram::RemoteFile &result);
@@ -37,6 +44,7 @@ struct FileInfo
 private:
     QByteArray m_data;
     QString m_mimeType;
+    int m_size;
     bool m_complete;
 
 };

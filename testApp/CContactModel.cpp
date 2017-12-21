@@ -21,19 +21,13 @@
 #include "CFileManager.hpp"
 
 #include <QDateTime>
-#include <QPixmapCache>
-
-#ifdef CREATE_MEDIA_FILES
-#include <QDir>
-#endif
 
 #include <QDebug>
 
 CContactModel::CContactModel(CTelegramCore *backend, QObject *parent) :
-    CPeerModel(parent),
-    m_backend(backend),
-    m_fileManager(nullptr)
+    CPeerModel(parent)
 {
+    setBackend(backend);
     connect(m_backend, SIGNAL(contactProfileChanged(quint32)),
             SLOT(onContactProfileChanged(quint32)));
     connect(m_backend, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
@@ -58,29 +52,6 @@ QString CContactModel::getName(const Telegram::Peer peer) const
         return QString();
     }
     return data(i, FullName).toString();
-}
-
-QPixmap CContactModel::getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const
-{
-    Q_UNUSED(size)
-    if (peer.type != Telegram::Peer::User) {
-        return QString();
-    }
-    const int i = indexOfContact(peer.id);
-    if (i < 0) {
-        return QString();
-    }
-    return m_contacts.at(i).m_picture;
-}
-
-void CContactModel::setFileManager(CFileManager *manager)
-{
-    m_fileManager = manager;
-#if QT_VERSION >= 0x050000
-    connect(m_fileManager, &CFileManager::requestComplete, this, &CContactModel::onFileRequestComplete);
-#else
-    connect(m_fileManager, SIGNAL(requestComplete(QString)), this, SLOT(onFileRequestComplete(QString)));
-#endif
 }
 
 QVariant CContactModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -121,11 +92,7 @@ QVariant CContactModel::data(const QModelIndex &index, int role) const
     int contactIndex = index.row();
 
     if ((role == Qt::DecorationRole) && (section == Avatar)) {
-        if (!m_contacts.at(contactIndex).m_picture.isNull()) {
-            return m_contacts.at(contactIndex).m_picture;
-        }
-
-        return QVariant();
+        return m_contacts.at(contactIndex).m_picture.pixmap;
     }
 
     if ((role != Qt::DisplayRole) && (role != Qt::EditRole)) {
@@ -205,7 +172,7 @@ QVariant CContactModel::data(int contactIndex, CContactModel::Column column) con
     case Blocked:
         return m_contacts.at(contactIndex).blocked;
     case Avatar:
-        return m_contacts.at(contactIndex).m_picture;
+        return m_contacts.at(contactIndex).m_picture.pixmap;
     default:
         return QVariant();
     }
@@ -214,19 +181,10 @@ QVariant CContactModel::data(int contactIndex, CContactModel::Column column) con
 void CContactModel::addContactId(quint32 id)
 {
     const Telegram::Peer peer(id, Telegram::Peer::User);
-    const QString token = getPictureCacheToken(peer);
     m_contacts.append(SContact());
     m_backend->getUserInfo(&m_contacts.last(), id);
-    m_contacts.last().m_pictureToken = token;
-    if (!token.isEmpty()) {
-        QPixmap picture;
-        if (QPixmapCache::find(token, &picture)) {
-            m_contacts.last().m_picture = picture;
-        } else {
-            const QString requestToken = m_fileManager->requestPeerPicture(peer);
-            m_requests.insert(requestToken);
-        }
-    }
+    m_contacts.last().m_picture = getPeerPictureNowOrLater(peer);
+    qDebug() << Q_FUNC_INFO << peer.id << m_contacts.last().m_picture.token;
 }
 
 void CContactModel::addContact(quint32 id)
@@ -313,23 +271,10 @@ void CContactModel::onContactStatusChanged(quint32 id)
     emit dataChanged(modelIndex, modelIndex);
 }
 
-void CContactModel::onFileRequestComplete(const QString &uniqueId)
+void CContactModel::updatePeerPicture(const PeerPicture &picture)
 {
-    if (!m_requests.contains(uniqueId)) {
-        return;
-    }
-    m_requests.remove(uniqueId);
-
-    const QByteArray data = m_fileManager->getData(uniqueId);
-    QPixmap picture = QPixmap::fromImage(QImage::fromData(data));
-    if (picture.isNull()) {
-        return;
-    }
-    picture = picture.scaled(64, 64, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-    const QString pictureToken = getPictureCacheToken(uniqueId);
-    QPixmapCache::insert(pictureToken, picture);
     for (int i = 0; i < m_contacts.count(); ++i) {
-        if (m_contacts.at(i).m_pictureToken != pictureToken) {
+        if (m_contacts.at(i).m_picture.token != picture.token) {
             continue;
         }
         m_contacts[i].m_picture = picture;
@@ -337,19 +282,6 @@ void CContactModel::onFileRequestComplete(const QString &uniqueId)
         emit dataChanged(modelIndex, modelIndex);
         emit pictureChanged(Telegram::Peer(m_contacts.at(i).id(), Telegram::Peer::User));
     }
-}
-
-QString CContactModel::getPictureCacheToken(const Telegram::Peer &peer) const
-{
-    return getPictureCacheToken(m_backend->peerPictureToken(peer));
-}
-
-QString CContactModel::getPictureCacheToken(const QString &key) const
-{
-    if (key.isEmpty()) {
-        return QString();
-    }
-    return QStringLiteral("64-") + key;
 }
 
 int CContactModel::indexOfContact(quint32 id) const

@@ -1,0 +1,5 @@
+/*!
+   \module TelegramQt
+   \title TelegramQt C++ Classes
+   \brief Provides C++ API for Telegram protocol
+*/

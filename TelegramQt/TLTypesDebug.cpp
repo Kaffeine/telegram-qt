@@ -249,11 +249,6 @@ QDebug operator<<(QDebug d, const TLAuthSentCode &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthSentCode:
-        d << spacer.innerSpaces() << "phoneRegistered: " << type.phoneRegistered <<"\n";
-        d << spacer.innerSpaces() << "phoneCodeHash: " << type.phoneCodeHash <<"\n";
-        d << spacer.innerSpaces() << "sendCallTimeout: " << type.sendCallTimeout <<"\n";
-        d << spacer.innerSpaces() << "isPassword: " << type.isPassword <<"\n";
-        break;
     case TLValue::AuthSentAppCode:
         d << spacer.innerSpaces() << "phoneRegistered: " << type.phoneRegistered <<"\n";
         d << spacer.innerSpaces() << "phoneCodeHash: " << type.phoneCodeHash <<"\n";
@@ -349,15 +344,7 @@ QDebug operator<<(QDebug d, const TLChannelParticipant &type)
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::ChannelParticipantSelf:
-        d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
-        d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
-        d << spacer.innerSpaces() << "date: " << type.date <<"\n";
-        break;
     case TLValue::ChannelParticipantModerator:
-        d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
-        d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
-        d << spacer.innerSpaces() << "date: " << type.date <<"\n";
-        break;
     case TLValue::ChannelParticipantEditor:
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
@@ -386,9 +373,7 @@ QDebug operator<<(QDebug d, const TLChannelParticipantRole &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelRoleEmpty:
-        break;
     case TLValue::ChannelRoleModerator:
-        break;
     case TLValue::ChannelRoleEditor:
         break;
     default:
@@ -406,11 +391,8 @@ QDebug operator<<(QDebug d, const TLChannelParticipantsFilter &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelParticipantsRecent:
-        break;
     case TLValue::ChannelParticipantsAdmins:
-        break;
     case TLValue::ChannelParticipantsKicked:
-        break;
     case TLValue::ChannelParticipantsBots:
         break;
     default:
@@ -428,17 +410,13 @@ QDebug operator<<(QDebug d, const TLChatParticipant &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatParticipant:
+    case TLValue::ChatParticipantAdmin:
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::ChatParticipantCreator:
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
-        break;
-    case TLValue::ChatParticipantAdmin:
-        d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
-        d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
-        d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     default:
         break;
@@ -517,11 +495,8 @@ QDebug operator<<(QDebug d, const TLContactLink &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactLinkUnknown:
-        break;
     case TLValue::ContactLinkNone:
-        break;
     case TLValue::ContactLinkHasPhone:
-        break;
     case TLValue::ContactLinkContact:
         break;
     default:
@@ -575,6 +550,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::EncryptedChatEmpty:
+    case TLValue::EncryptedChatDiscarded:
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     case TLValue::EncryptedChatWaiting:
@@ -600,9 +576,6 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
         d << spacer.innerSpaces() << "gAOrB: " << type.gAOrB.toHex() <<"\n";
         d << spacer.innerSpaces() << "keyFingerprint: " << type.keyFingerprint <<"\n";
-        break;
-    case TLValue::EncryptedChatDiscarded:
-        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     default:
         break;
@@ -1023,17 +996,8 @@ QDebug operator<<(QDebug d, const TLInputFileLocation &type)
         d << spacer.innerSpaces() << "secret: " << type.secret <<"\n";
         break;
     case TLValue::InputVideoFileLocation:
-        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
-        break;
     case TLValue::InputEncryptedFileLocation:
-        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
-        break;
     case TLValue::InputAudioFileLocation:
-        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
-        break;
     case TLValue::InputDocumentFileLocation:
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
@@ -1073,7 +1037,6 @@ QDebug operator<<(QDebug d, const TLInputPeer &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPeerEmpty:
-        break;
     case TLValue::InputPeerSelf:
         break;
     case TLValue::InputPeerChat:
@@ -1102,7 +1065,6 @@ QDebug operator<<(QDebug d, const TLInputPeerNotifyEvents &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPeerNotifyEventsEmpty:
-        break;
     case TLValue::InputPeerNotifyEventsAll:
         break;
     default:
@@ -1220,7 +1182,6 @@ QDebug operator<<(QDebug d, const TLInputUser &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputUserEmpty:
-        break;
     case TLValue::InputUserSelf:
         break;
     case TLValue::InputUser:
@@ -1296,37 +1257,13 @@ QDebug operator<<(QDebug d, const TLMessageEntity &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageEntityUnknown:
-        d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
-        d << spacer.innerSpaces() << "length: " << type.length <<"\n";
-        break;
     case TLValue::MessageEntityMention:
-        d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
-        d << spacer.innerSpaces() << "length: " << type.length <<"\n";
-        break;
     case TLValue::MessageEntityHashtag:
-        d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
-        d << spacer.innerSpaces() << "length: " << type.length <<"\n";
-        break;
     case TLValue::MessageEntityBotCommand:
-        d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
-        d << spacer.innerSpaces() << "length: " << type.length <<"\n";
-        break;
     case TLValue::MessageEntityUrl:
-        d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
-        d << spacer.innerSpaces() << "length: " << type.length <<"\n";
-        break;
     case TLValue::MessageEntityEmail:
-        d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
-        d << spacer.innerSpaces() << "length: " << type.length <<"\n";
-        break;
     case TLValue::MessageEntityBold:
-        d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
-        d << spacer.innerSpaces() << "length: " << type.length <<"\n";
-        break;
     case TLValue::MessageEntityItalic:
-        d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
-        d << spacer.innerSpaces() << "length: " << type.length <<"\n";
-        break;
     case TLValue::MessageEntityCode:
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
         d << spacer.innerSpaces() << "length: " << type.length <<"\n";
@@ -1454,23 +1391,14 @@ QDebug operator<<(QDebug d, const TLMessagesFilter &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputMessagesFilterEmpty:
-        break;
     case TLValue::InputMessagesFilterPhotos:
-        break;
     case TLValue::InputMessagesFilterVideo:
-        break;
     case TLValue::InputMessagesFilterPhotoVideo:
-        break;
     case TLValue::InputMessagesFilterPhotoVideoDocuments:
-        break;
     case TLValue::InputMessagesFilterDocument:
-        break;
     case TLValue::InputMessagesFilterAudio:
-        break;
     case TLValue::InputMessagesFilterAudioDocuments:
-        break;
     case TLValue::InputMessagesFilterUrl:
-        break;
     case TLValue::InputMessagesFilterGif:
         break;
     default:
@@ -1551,7 +1479,6 @@ QDebug operator<<(QDebug d, const TLPeerNotifyEvents &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PeerNotifyEventsEmpty:
-        break;
     case TLValue::PeerNotifyEventsAll:
         break;
     default:
@@ -1638,16 +1565,11 @@ QDebug operator<<(QDebug d, const TLPrivacyRule &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PrivacyValueAllowContacts:
-        break;
     case TLValue::PrivacyValueAllowAll:
-        break;
-    case TLValue::PrivacyValueAllowUsers:
-        d << spacer.innerSpaces() << "users: " << type.users <<"\n";
-        break;
     case TLValue::PrivacyValueDisallowContacts:
-        break;
     case TLValue::PrivacyValueDisallowAll:
         break;
+    case TLValue::PrivacyValueAllowUsers:
     case TLValue::PrivacyValueDisallowUsers:
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
@@ -1684,9 +1606,7 @@ QDebug operator<<(QDebug d, const TLReportReason &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputReportReasonSpam:
-        break;
     case TLValue::InputReportReasonViolence:
-        break;
     case TLValue::InputReportReasonPornography:
         break;
     case TLValue::InputReportReasonOther:
@@ -1707,28 +1627,17 @@ QDebug operator<<(QDebug d, const TLSendMessageAction &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::SendMessageTypingAction:
-        break;
     case TLValue::SendMessageCancelAction:
-        break;
     case TLValue::SendMessageRecordVideoAction:
+    case TLValue::SendMessageRecordAudioAction:
+    case TLValue::SendMessageGeoLocationAction:
+    case TLValue::SendMessageChooseContactAction:
         break;
     case TLValue::SendMessageUploadVideoAction:
-        d << spacer.innerSpaces() << "progress: " << type.progress <<"\n";
-        break;
-    case TLValue::SendMessageRecordAudioAction:
-        break;
     case TLValue::SendMessageUploadAudioAction:
-        d << spacer.innerSpaces() << "progress: " << type.progress <<"\n";
-        break;
     case TLValue::SendMessageUploadPhotoAction:
-        d << spacer.innerSpaces() << "progress: " << type.progress <<"\n";
-        break;
     case TLValue::SendMessageUploadDocumentAction:
         d << spacer.innerSpaces() << "progress: " << type.progress <<"\n";
-        break;
-    case TLValue::SendMessageGeoLocationAction:
-        break;
-    case TLValue::SendMessageChooseContactAction:
         break;
     default:
         break;
@@ -1763,40 +1672,15 @@ QDebug operator<<(QDebug d, const TLStorageFileType &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::StorageFileUnknown:
-        break;
     case TLValue::StorageFileJpeg:
-        break;
     case TLValue::StorageFileGif:
-        break;
     case TLValue::StorageFilePng:
-        break;
     case TLValue::StorageFilePdf:
-        break;
     case TLValue::StorageFileMp3:
-        break;
     case TLValue::StorageFileMov:
-        break;
     case TLValue::StorageFilePartial:
-        break;
     case TLValue::StorageFileMp4:
-        break;
     case TLValue::StorageFileWebp:
-        break;
-    default:
-        break;
-    }
-    d << spacer.outerSpaces() << "}";
-
-    return d;
-}
-
-QDebug operator<<(QDebug d, const TLTrue &type)
-{
-    d.noquote().nospace();
-    d << "TLTrue(" << type.tlType << ") {";
-    Spacer spacer;
-    switch (type.tlType) {
-    case TLValue::True:
         break;
     default:
         break;
@@ -1874,18 +1758,15 @@ QDebug operator<<(QDebug d, const TLUserStatus &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UserStatusEmpty:
+    case TLValue::UserStatusRecently:
+    case TLValue::UserStatusLastWeek:
+    case TLValue::UserStatusLastMonth:
         break;
     case TLValue::UserStatusOnline:
         d << spacer.innerSpaces() << "expires: " << type.expires <<"\n";
         break;
     case TLValue::UserStatusOffline:
         d << spacer.innerSpaces() << "wasOnline: " << type.wasOnline <<"\n";
-        break;
-    case TLValue::UserStatusRecently:
-        break;
-    case TLValue::UserStatusLastWeek:
-        break;
-    case TLValue::UserStatusLastMonth:
         break;
     default:
         break;
@@ -1998,12 +1879,11 @@ QDebug operator<<(QDebug d, const TLChannelMessagesFilter &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelMessagesFilterEmpty:
+    case TLValue::ChannelMessagesFilterCollapsed:
         break;
     case TLValue::ChannelMessagesFilter:
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "ranges: " << type.ranges <<"\n";
-        break;
-    case TLValue::ChannelMessagesFilterCollapsed:
         break;
     default:
         break;
@@ -2247,7 +2127,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         break;
     case TLValue::InputMediaPhoto:
-        d << spacer.innerSpaces() << "idInputPhoto: " << type.idInputPhoto <<"\n";
+        d << spacer.innerSpaces() << "inputPhotoId: " << type.inputPhotoId <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         break;
     case TLValue::InputMediaGeoPoint:
@@ -2276,7 +2156,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         break;
     case TLValue::InputMediaVideo:
-        d << spacer.innerSpaces() << "idInputVideo: " << type.idInputVideo <<"\n";
+        d << spacer.innerSpaces() << "inputVideoId: " << type.inputVideoId <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         break;
     case TLValue::InputMediaUploadedAudio:
@@ -2285,7 +2165,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << spacer.innerSpaces() << "mimeType: " << type.mimeType <<"\n";
         break;
     case TLValue::InputMediaAudio:
-        d << spacer.innerSpaces() << "idInputAudio: " << type.idInputAudio <<"\n";
+        d << spacer.innerSpaces() << "inputAudioId: " << type.inputAudioId <<"\n";
         break;
     case TLValue::InputMediaUploadedDocument:
         d << spacer.innerSpaces() << "file: " << type.file <<"\n";
@@ -2301,7 +2181,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         break;
     case TLValue::InputMediaDocument:
-        d << spacer.innerSpaces() << "idInputDocument: " << type.idInputDocument <<"\n";
+        d << spacer.innerSpaces() << "inputDocumentId: " << type.inputDocumentId <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         break;
     case TLValue::InputMediaVenue:
@@ -2333,9 +2213,7 @@ QDebug operator<<(QDebug d, const TLInputNotifyPeer &type)
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         break;
     case TLValue::InputNotifyUsers:
-        break;
     case TLValue::InputNotifyChats:
-        break;
     case TLValue::InputNotifyAll:
         break;
     default:
@@ -2353,16 +2231,11 @@ QDebug operator<<(QDebug d, const TLInputPrivacyRule &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPrivacyValueAllowContacts:
-        break;
     case TLValue::InputPrivacyValueAllowAll:
-        break;
-    case TLValue::InputPrivacyValueAllowUsers:
-        d << spacer.innerSpaces() << "users: " << type.users <<"\n";
-        break;
     case TLValue::InputPrivacyValueDisallowContacts:
-        break;
     case TLValue::InputPrivacyValueDisallowAll:
         break;
+    case TLValue::InputPrivacyValueAllowUsers:
     case TLValue::InputPrivacyValueDisallowUsers:
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
@@ -2384,9 +2257,7 @@ QDebug operator<<(QDebug d, const TLNotifyPeer &type)
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         break;
     case TLValue::NotifyUsers:
-        break;
     case TLValue::NotifyChats:
-        break;
     case TLValue::NotifyAll:
         break;
     default:
@@ -2427,8 +2298,6 @@ QDebug operator<<(QDebug d, const TLReplyMarkup &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ReplyKeyboardHide:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
-        break;
     case TLValue::ReplyKeyboardForceReply:
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         break;
@@ -2964,18 +2833,18 @@ QDebug operator<<(QDebug d, const TLMessageAction &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageActionEmpty:
+    case TLValue::MessageActionChatDeletePhoto:
         break;
     case TLValue::MessageActionChatCreate:
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::MessageActionChatEditTitle:
+    case TLValue::MessageActionChannelCreate:
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         break;
     case TLValue::MessageActionChatEditPhoto:
         d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
-        break;
-    case TLValue::MessageActionChatDeletePhoto:
         break;
     case TLValue::MessageActionChatAddUser:
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
@@ -2985,9 +2854,6 @@ QDebug operator<<(QDebug d, const TLMessageAction &type)
         break;
     case TLValue::MessageActionChatJoinedByLink:
         d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
-        break;
-    case TLValue::MessageActionChannelCreate:
-        d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         break;
     case TLValue::MessageActionChatMigrateTo:
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
@@ -3329,6 +3195,7 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageMediaEmpty:
+    case TLValue::MessageMediaUnsupported:
         break;
     case TLValue::MessageMediaPhoto:
         d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
@@ -3346,8 +3213,6 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
         d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
-        break;
-    case TLValue::MessageMediaUnsupported:
         break;
     case TLValue::MessageMediaDocument:
         d << spacer.innerSpaces() << "document: " << type.document <<"\n";
@@ -3527,6 +3392,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdateNewMessage:
+    case TLValue::UpdateNewChannelMessage:
         d << spacer.innerSpaces() << "message: " << type.message <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
@@ -3536,6 +3402,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "randomId: " << type.randomId <<"\n";
         break;
     case TLValue::UpdateDeleteMessages:
+    case TLValue::UpdateReadMessagesContents:
         d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
@@ -3584,7 +3451,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "location: " << type.location <<"\n";
         break;
     case TLValue::UpdateNewEncryptedMessage:
-        d << spacer.innerSpaces() << "messageEncrypted: " << type.messageEncrypted <<"\n";
+        d << spacer.innerSpaces() << "encryptedMessage: " << type.encryptedMessage <<"\n";
         d << spacer.innerSpaces() << "qts: " << type.qts <<"\n";
         break;
     case TLValue::UpdateEncryptedChatTyping:
@@ -3619,12 +3486,12 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "blocked: " << type.blocked <<"\n";
         break;
     case TLValue::UpdateNotifySettings:
-        d << spacer.innerSpaces() << "peerNotify: " << type.peerNotify <<"\n";
+        d << spacer.innerSpaces() << "notifyPeer: " << type.notifyPeer <<"\n";
         d << spacer.innerSpaces() << "notifySettings: " << type.notifySettings <<"\n";
         break;
     case TLValue::UpdateServiceNotification:
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
-        d << spacer.innerSpaces() << "messageString: " << type.messageString <<"\n";
+        d << spacer.innerSpaces() << "stringMessage: " << type.stringMessage <<"\n";
         d << spacer.innerSpaces() << "media: " << type.media <<"\n";
         d << spacer.innerSpaces() << "popup: " << type.popup <<"\n";
         break;
@@ -3637,11 +3504,6 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "phone: " << type.phone <<"\n";
         break;
     case TLValue::UpdateReadHistoryInbox:
-        d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
-        d << spacer.innerSpaces() << "maxId: " << type.maxId <<"\n";
-        d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
-        d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
-        break;
     case TLValue::UpdateReadHistoryOutbox:
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         d << spacer.innerSpaces() << "maxId: " << type.maxId <<"\n";
@@ -3653,25 +3515,13 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         break;
-    case TLValue::UpdateReadMessagesContents:
-        d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
-        d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
-        d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
-        break;
     case TLValue::UpdateChannelTooLong:
-        d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
-        break;
     case TLValue::UpdateChannel:
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         break;
     case TLValue::UpdateChannelGroup:
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "group: " << type.group <<"\n";
-        break;
-    case TLValue::UpdateNewChannelMessage:
-        d << spacer.innerSpaces() << "message: " << type.message <<"\n";
-        d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
-        d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         break;
     case TLValue::UpdateReadChannelInbox:
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
@@ -3706,7 +3556,6 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "order: " << type.order <<"\n";
         break;
     case TLValue::UpdateStickerSets:
-        break;
     case TLValue::UpdateSavedGifs:
         break;
     case TLValue::UpdateBotInlineQuery:

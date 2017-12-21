@@ -50,10 +50,12 @@ public:
     Q_INVOKABLE void setAppInformation(CAppInformation *newAppInfo);
     Q_INVOKABLE void setAppInformation(const CAppInformation *newAppInfo);
 
-    Q_INVOKABLE static QVector<Telegram::DcOption> builtInDcs();
+    Q_INVOKABLE static QVector<Telegram::DcOption> defaultServerConfiguration();
     Q_INVOKABLE static quint32 defaultPingInterval();
 
-    Q_INVOKABLE QVector<Telegram::DcOption> dcConfiguration();
+    Q_INVOKABLE Telegram::RsaKey defaultServerPublicRsaKey() const;
+    Q_INVOKABLE Telegram::RsaKey serverPublicRsaKey() const;
+    Q_INVOKABLE QVector<Telegram::DcOption> serverConfiguration();
     QByteArray connectionSecretInfo() const;
 
     Q_INVOKABLE TelegramNamespace::ConnectionState connectionState() const;
@@ -62,12 +64,9 @@ public:
     // maxMessageId is an id of the last sent or received message. Updated *after* messageReceived and sentMessageIdReceived signal emission.
     Q_INVOKABLE quint32 maxMessageId() const;
     Q_INVOKABLE QVector<quint32> contactList() const;
-    Q_INVOKABLE QVector<quint32> chatList() const;
     Q_INVOKABLE QVector<Telegram::Peer> dialogs() const;
 
     Q_INVOKABLE QString peerPictureToken(const Telegram::Peer &peer, const Telegram::PeerPictureSize size = Telegram::PeerPictureSize::Small) const;
-    Q_INVOKABLE QString contactAvatarToken(quint32 userId) const;
-    Q_INVOKABLE QString chatTitle(quint32 chatId) const;
 
     static qint32 localTypingRecommendedRepeatInterval(); // Recommended application local typing state re-set interval.
 
@@ -87,13 +86,19 @@ public Q_SLOTS:
     void setUpdatesEnabled(bool enable);
 
     // By default, the app would ping server every 15 000 ms and instruct the server to close connection after 10 000 more ms. Pass interval = 0 to disable ping.
-    void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime = 10000);
+    void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime = 10000);
     void setMediaDataBufferSize(quint32 size);
 
-    bool initConnection(const QVector<Telegram::DcOption> &dcs = QVector<Telegram::DcOption>()); // Uses builtin dc options by default
-    bool restoreConnection(const QByteArray &secret);
+    bool connectToServer();
     void disconnectFromServer();
-    void closeConnection(); // Deprecated, use disconnectFromServer() instead
+
+    bool setServerPublicRsaKey(const Telegram::RsaKey &key);
+    bool setServerConfiguration(const QVector<Telegram::DcOption> &dcs);
+    bool resetServerConfiguration();
+
+    void resetConnectionData();
+    bool setSecretInfo(const QByteArray &secret);
+
     bool logOut();
 
     void requestPhoneStatus(const QString &phoneNumber);
@@ -185,6 +190,25 @@ Q_SIGNALS:
     void filePartReceived(quint32 requestId, const QByteArray &data, const QString &mimeType, quint32 offset, quint32 totalSize);
     void filePartUploaded(quint32 requestId, quint32 offset, quint32 totalSize);
     void fileRequestFinished(quint32 requestId, Telegram::RemoteFile requestResult);
+
+public:
+    // Deprecated:
+    Q_INVOKABLE static QVector<Telegram::DcOption> builtInDcs(); // Use defaultServerConfiguration() instead
+    Q_INVOKABLE QVector<Telegram::DcOption> dcConfiguration(); // Use serverConfiguration() instead
+    Q_INVOKABLE QVector<quint32> chatList() const; // Filter dialogs() for Peer::Chat and Peer:Channel instead.
+    Q_INVOKABLE QString chatTitle(quint32 chatId) const; // Use getChatInfo() and ChatInfo::title() instead
+    Q_INVOKABLE QString contactAvatarToken(quint32 userId) const; // Use peerPictureToken(Telegram::Peer::fromUserId(userId)) instead
+
+public Q_SLOTS:
+    // Deprecated:
+    bool initConnection(const QVector<Telegram::DcOption> &dcs = QVector<Telegram::DcOption>());
+    bool restoreConnection(const QByteArray &secret);
+    void closeConnection();
+    // Use the follow methods instead:
+    // - setConnectionData()/resetConnectionData()
+    // - setServerConfiguration()/resetServerConfiguration(),
+    // - connectToServer()
+    // - disconnectFromServer()
 
 private:
     class Private;

@@ -16,6 +16,8 @@ option(ENABLE_TESTAPP "Enable compilation of testing application" FALSE)
 # Add an option for building tests
 option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
 # Add an option for building tests
+option(ENABLE_QCH_BUILD "Enable generation of Qt Help (qch) file" FALSE)
+# Add an option for building tests
 option(STATIC_BUILD "Compile static library instead of shared" FALSE)
 # Add an option for building GeneratorNG
 option(BUILD_GENERATOR "Build protocol code generator" FALSE)
@@ -65,8 +67,12 @@ if (BUILD_GENERATOR)
     if (Qt5_VERSION VERSION_LESS "5.6.0")
         message(WARNING "Use Qt 5.6.0 or higher to build GeneratorNG")
     else()
-        add_subdirectory(TelegramQt/generator-ng)
+        add_subdirectory(generator)
     endif()
+endif()
+
+if (ENABLE_QCH_BUILD)
+    add_subdirectory(doc)
 endif()
 
 if(ENABLE_TESTAPP)

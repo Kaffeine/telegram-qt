@@ -43,6 +43,12 @@ public:
     CAppInformation *m_appInfo;
 };
 
+/*!
+    \class CTelegramCore
+    \brief The CTelegramCore class provides the base Telegram protocol API
+    \inmodule TelegramQt
+*/
+
 CTelegramCore::CTelegramCore(QObject *parent) :
     QObject(parent),
     m_private(new Private())
@@ -160,19 +166,39 @@ void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
     setAppInformation(variableAppInfo);
 }
 
+QVector<Telegram::DcOption> CTelegramCore::defaultServerConfiguration()
+{
+    return CTelegramDispatcher::defaultDcConfiguration();
+}
+
 QVector<Telegram::DcOption> CTelegramCore::builtInDcs()
 {
-    return CTelegramDispatcher::builtInDcs();
+    return defaultServerConfiguration();
 }
 
 quint32 CTelegramCore::defaultPingInterval()
 {
-    return CTelegramDispatcher::defaultPingInterval();
+    return CTelegramTransportModule::defaultPingInterval();
+}
+
+Telegram::RsaKey CTelegramCore::defaultServerPublicRsaKey() const
+{
+    return m_private->m_authModule->defaultServerPublicRsaKey();
+}
+
+Telegram::RsaKey CTelegramCore::serverPublicRsaKey() const
+{
+    return m_private->m_authModule->serverPublicRsaKey();
+}
+
+QVector<Telegram::DcOption> CTelegramCore::serverConfiguration()
+{
+    return m_private->m_dispatcher->dcConfiguration();
 }
 
 QVector<Telegram::DcOption> CTelegramCore::dcConfiguration()
 {
-    return m_private->m_dispatcher->dcConfiguration();
+    return serverConfiguration();
 }
 
 QByteArray CTelegramCore::connectionSecretInfo() const
@@ -185,22 +211,56 @@ TelegramNamespace::ConnectionState CTelegramCore::connectionState() const
     return m_private->m_dispatcher->connectionState();
 }
 
-bool CTelegramCore::initConnection(const QVector<Telegram::DcOption> &dcs)
+bool CTelegramCore::connectToServer()
 {
     if (!m_private->m_appInfo || !m_private->m_appInfo->isValid()) {
-        qDebug() << "CTelegramCore: Can not init connection: App information is null or is not valid.";
+        qWarning() << "CTelegramCore::connectToServer(): App information is null or is not valid.";
         return false;
     }
 
     m_private->m_dispatcher->setAppInformation(m_private->m_appInfo);
-    m_private->m_dispatcher->initConnection(dcs);
-
-    return true;
+    return m_private->m_dispatcher->connectToServer();
 }
 
 void CTelegramCore::disconnectFromServer()
 {
-    return m_private->m_dispatcher->disconnectFromServer();
+    m_private->m_dispatcher->disconnectFromServer();
+}
+
+bool CTelegramCore::setServerPublicRsaKey(const Telegram::RsaKey &key)
+{
+    return m_private->m_authModule->setServerPublicRsaKey(key);
+}
+
+bool CTelegramCore::setSecretInfo(const QByteArray &secret)
+{
+    return m_private->m_dispatcher->setSecretInfo(secret);
+}
+
+bool CTelegramCore::setServerConfiguration(const QVector<Telegram::DcOption> &dcs)
+{
+    return m_private->m_dispatcher->setDcConfiguration(dcs);
+}
+
+bool CTelegramCore::resetServerConfiguration()
+{
+    return m_private->m_dispatcher->resetDcConfiguration();
+}
+
+void CTelegramCore::resetConnectionData()
+{
+    m_private->m_dispatcher->resetConnectionData();
+}
+
+bool CTelegramCore::initConnection(const QVector<Telegram::DcOption> &dcs)
+{
+    resetConnectionData();
+    if (dcs.isEmpty()) {
+        resetServerConfiguration();
+    } else {
+        setServerConfiguration(dcs);
+    }
+    return connectToServer();
 }
 
 void CTelegramCore::closeConnection()
@@ -211,8 +271,9 @@ void CTelegramCore::closeConnection()
 
 bool CTelegramCore::restoreConnection(const QByteArray &secret)
 {
-    m_private->m_dispatcher->setAppInformation(appInformation());
-    return m_private->m_dispatcher->restoreConnection(secret);
+    resetConnectionData();
+    setSecretInfo(secret);
+    return connectToServer();
 }
 
 bool CTelegramCore::logOut()
@@ -323,7 +384,7 @@ QString CTelegramCore::peerPictureToken(const Telegram::Peer &peer, const Telegr
 
 QString CTelegramCore::contactAvatarToken(quint32 userId) const
 {
-    return m_private->m_mediaModule->peerPictureToken(Telegram::Peer(userId, Telegram::Peer::User), Telegram::PeerPictureSize::Small);
+    return m_private->m_mediaModule->peerPictureToken(Telegram::Peer::fromUserId(userId), Telegram::PeerPictureSize::Small);
 }
 
 QString CTelegramCore::chatTitle(quint32 chatId) const
@@ -340,27 +401,6 @@ bool CTelegramCore::getDialogInfo(Telegram::DialogInfo *info, const Telegram::Pe
 {
     return m_private->m_dispatcher->getDialogInfo(info, peer);
 }
-
-/*! \fn quint32 Telegram::UserInfo::lastOnline() const
-  Return seconds since epoch for last online time.
-
-  If user is online, this method return time when online expires,
-  return the time, when contact was online otherwise.
-
-  Depending on the contact privacy, the method can return some special values:
-
-  TelegramNamespace::ContactLastOnlineUnknown - User last online time is not known.
-  TelegramNamespace::ContactLastOnlineRecently - User hides exact online time, but was online recently.
-  TelegramNamespace::ContactLastOnlineLastWeek - User hides exact online time, but was online last week.
-  TelegramNamespace::ContactLastOnlineLastMonth - User hides exact online time, but was online last month.
-
-  The TelegramNamespace::ContactLastOnlineMask can be used to determine if there is special value:
-  if ((contactLastOnline(contact) & TelegramNamespace::ContactLastOnlineMask) == contactLastOnline(contact)) {
-      qDebug() << "Special value";
-  } else {
-      qDebug() << "Seconds since epoch";
-  }
-*/
 
 bool CTelegramCore::getUserInfo(Telegram::UserInfo *info, quint32 userId) const
 {
@@ -415,9 +455,9 @@ void CTelegramCore::setUpdatesEnabled(bool enable)
     return m_private->m_dispatcher->setUpdatesEnabled(enable);
 }
 
-void CTelegramCore::setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionTime)
+void CTelegramCore::setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime)
 {
-    return m_private->m_dispatcher->setPingInterval(interval, serverDisconnectionAdditionTime);
+    m_private->m_transportModule->setPingInterval(interval, serverDisconnectionAdditionalTime);
 }
 
 void CTelegramCore::setMediaDataBufferSize(quint32 size)

@@ -17,6 +17,12 @@
 
 #include "CAppInformation.hpp"
 
+/*!
+    \class CAppInformation
+    \brief The CAppInformation class provides methods for setup the application-specific Telegram ids.
+    \inmodule TelegramQt
+*/
+
 CAppInformation::CAppInformation(QObject *parent) :
     QObject(parent),
     m_appId(0),
@@ -37,6 +43,11 @@ CAppInformation::CAppInformation(const CAppInformation *anotherInfo, QObject *pa
     m_langCode = anotherInfo->m_langCode;
 }
 
+/*!
+    \property CAppInformation::appId
+    \brief the application identifier as registered in the Telegram network.
+    \sa appHash
+*/
 bool CAppInformation::setAppId(quint32 newId)
 {
     if (!newId) {
