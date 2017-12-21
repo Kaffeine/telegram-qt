@@ -66,6 +66,7 @@ HEADERS = CTelegramCore.hpp \
     CTelegramMediaModule.hpp \
     CTelegramTransportModule.hpp \
     CTelegramStream.hpp \
+    CTelegramStream_p.hpp \
     CRawStream.hpp \
     Utils.hpp \
     FileRequestDescriptor.hpp \

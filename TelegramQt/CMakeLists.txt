@@ -40,6 +40,7 @@ set(telegram_qt_HEADERS
     telegramqt_global.h
     TelegramNamespace_p.hpp
     CTelegramStream.hpp
+    CTelegramStream_p.hpp
     RpcProcessingContext.hpp
     CRawStream.hpp
     Debug.hpp

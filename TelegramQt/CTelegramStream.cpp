@@ -15,7 +15,7 @@
 
  */
 
-#include "CTelegramStream.hpp"
+#include "CTelegramStream_p.hpp"
 
 #include <QtEndian>
 
@@ -100,43 +100,6 @@ template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLMessageRa
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLKeyboardButton> &v);
 // End of generated vector write templates instancing
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLDcOption> &v);
-
-template <typename T>
-CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
-{
-    TLVector<T> result;
-
-    *this >> result.tlType;
-
-    if (result.tlType == TLValue::Vector) {
-        quint32 length = 0;
-        *this >> length;
-        for (quint32 i = 0; i < length; ++i) {
-            T value;
-            *this >> value;
-            result.append(value);
-        }
-    }
-
-    v = result;
-    return *this;
-}
-
-template <typename T>
-CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
-{
-    *this << v.tlType;
-
-    if (v.tlType == TLValue::Vector) {
-        *this << quint32(v.count());
-
-        for (int i = 0; i < v.count(); ++i) {
-            *this << v.at(i);
-        }
-    }
-
-    return *this;
-}
 
 template <int Size>
 CTelegramStream &CTelegramStream::operator>>(TLNumber<Size> &n)
