@@ -4,35 +4,23 @@ language: cpp
 cache: ccache
 compiler:
   - gcc
-  - clang
 
 git:
   depth: 5
 
-matrix:
-    include:
-       - compiler: clang
-         env:
-           - DEVELOPER_BUILD=true
-           - ENABLE_QCH_BUILD=true
+env:
+ - DEVELOPER_BUILD=false
 
 before_install:
-  - sudo apt-add-repository -y ppa:beineri/opt-qt562-trusty
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install qt56base qt56tools
+  - sudo apt-get install -y libqt4-dev
 
 before_script:
-  - export QTDIR="/opt/qt56"
-  - export PATH="$QTDIR/bin:$PATH"
-  - qt56-env.sh
-  - mkdir ../build; cd ../build
   - if [ "${DEVELOPER_BUILD}" != "true" ]; then export DEVELOPER_BUILD="false"; fi
   - if [ "${ENABLE_QCH_BUILD}" != "true" ]; then export ENABLE_QCH_BUILD="false"; fi
-  - cmake -DDEVELOPER_BUILD=${DEVELOPER_BUILD} -DENABLE_QCH_BUILD=${ENABLE_QCH_BUILD} -DENABLE_TESTAPP=true -DENABLE_TESTS=true ../telegram-qt
+  - cmake -DUSE_QT4=true -DDEVELOPER_BUILD=${DEVELOPER_BUILD} -DENABLE_QCH_BUILD=${ENABLE_QCH_BUILD} -DENABLE_TESTAPP=true -DENABLE_QML_IMPORT=false -DENABLE_TESTS=false ../telegram-qt
 
 script:
   - make -j3 -k
-  - make test -k
 
 notifications:
   email: false
