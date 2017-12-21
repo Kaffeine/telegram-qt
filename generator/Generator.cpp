@@ -574,7 +574,11 @@ QString Generator::streamReadPerTypeImplementation(const QString &argName, const
             code.append(doubleSpacing + spacing + QString("*this >> result.%1;\n").arg(member.getAlias()));
             code.append(doubleSpacing + QLatin1Literal("}\n"));
         } else {
-            code.append(doubleSpacing + QString("*this >> result.%1;\n").arg(member.getAlias()));
+            if (member.accessByPointer() && !member.isVector()) {
+                code.append(doubleSpacing + QString("*this >> *result.%1;\n").arg(member.getAlias()));
+            } else {
+                code.append(doubleSpacing + QString("*this >> result.%1;\n").arg(member.getAlias()));
+            }
         }
     }
     code.append(QString("%1break;\n").arg(doubleSpacing));
@@ -611,7 +615,11 @@ QString Generator::streamWritePerTypeImplementation(const QString &argName, cons
             code.append(doubleSpacing + spacing + QString("*this << %1.%2;\n").arg(argName).arg(member.getAlias()));
             code.append(doubleSpacing + QLatin1Literal("}\n"));
         } else {
-            code.append(doubleSpacing + QString("*this << %1.%2;\n").arg(argName).arg(member.getAlias()));
+            if (member.accessByPointer() && !member.isVector()) {
+                code.append(doubleSpacing + QString("*this << *%1.%2;\n").arg(argName).arg(member.getAlias()));
+            } else {
+                code.append(doubleSpacing + QString("*this << %1.%2;\n").arg(argName).arg(member.getAlias()));
+            }
         }
     }
     code.append(QString("%1break;\n").arg(doubleSpacing));
