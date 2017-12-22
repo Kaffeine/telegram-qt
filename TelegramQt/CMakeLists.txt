@@ -102,11 +102,11 @@ endif()
 target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(USE_QT4)
-    target_link_libraries(telegram-qt${QT_VERSION_MAJOR}
+    target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
         ${QT_QTCORE_LIBRARY}
         ${QT_QTNETWORK_LIBRARY}
     )
-    target_include_directories(telegram-qt${QT_VERSION_MAJOR} PRIVATE
+    target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE
         ${QT_INCLUDES}
     )
 else()

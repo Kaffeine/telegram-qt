@@ -26,7 +26,7 @@ option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra out
 
 if (USE_QT4)
     set(QT_VERSION_MAJOR "4")
-    set(QT4_COMPONENTS Core Network)
+    set(QT4_COMPONENTS QtCore QtNetwork)
 
     if (ENABLE_TESTAPP)
         list(APPEND QT4_COMPONENTS QtGui)
