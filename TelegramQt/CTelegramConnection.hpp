@@ -523,7 +523,7 @@ protected:
 
 protected slots:
     void onTransportStateChanged();
-    void onTransportReadyRead();
+    void onTransportPackageReceived(const QByteArray &package);
     void onTransportTimeout();
     void onTimeToPing();
     void onTimeToAckMessages();

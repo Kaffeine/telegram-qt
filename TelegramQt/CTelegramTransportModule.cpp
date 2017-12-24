@@ -18,10 +18,12 @@
 #include "CTelegramTransportModule.hpp"
 
 #include "CTelegramConnection.hpp"
-#include "CTcpTransport.hpp"
+#include "CClientTcpTransport.hpp"
 
 static const quint32 s_defaultPingInterval = 15000; // 15 sec
 static const quint32 s_minimalPingAdditionalInterval = 1000; // 1 sec
+
+using namespace Telegram;
 
 CTelegramTransportModule::CTelegramTransportModule(QObject *parent) :
     CTelegramModule(parent),
@@ -56,7 +58,7 @@ void CTelegramTransportModule::setPingInterval(quint32 ms, quint32 serverDisconn
 
 void CTelegramTransportModule::onNewConnection(CTelegramConnection *connection)
 {
-    CTcpTransport *transport = new CTcpTransport(connection);
+    Client::TcpTransport *transport = new Client::TcpTransport(connection);
     transport->setProxy(m_proxy);
     connection->setTransport(transport);
 }

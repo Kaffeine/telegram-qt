@@ -12,6 +12,7 @@ set(telegram_qt_SOURCES
     RpcProcessingContext.cpp
     CTelegramStream.cpp
     CTcpTransport.cpp
+    CClientTcpTransport.cpp
     CRawStream.cpp
     Debug.cpp
     Utils.cpp
@@ -32,6 +33,7 @@ set(telegram_qt_META_HEADERS
     CTelegramConnection.hpp
     CTelegramTransport.hpp
     CTcpTransport.hpp
+    CClientTcpTransport.hpp
     TLValues.hpp
 )
 

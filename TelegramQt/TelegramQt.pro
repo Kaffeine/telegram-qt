@@ -41,6 +41,7 @@ SOURCES = CTelegramCore.cpp \
     FileRequestDescriptor.cpp \
     TelegramUtils.cpp \
     CTcpTransport.cpp \
+    CClientTcpTransport.cpp \
     TelegramNamespace.cpp \
     CTelegramConnection.cpp \
     RpcProcessingContext.cpp \
@@ -73,6 +74,7 @@ HEADERS = CTelegramCore.hpp \
     TelegramUtils.hpp \
     CTelegramTransport.hpp \
     CTcpTransport.hpp \
+    CClientTcpTransport.hpp \
     TLTypes.hpp \
     TLNumbers.hpp \
     crypto-aes.hpp \

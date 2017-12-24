@@ -20,48 +20,42 @@
 
 #include "CTelegramTransport.hpp"
 
-QT_FORWARD_DECLARE_CLASS(QTcpSocket)
 QT_FORWARD_DECLARE_CLASS(QTimer)
 
 class CTcpTransport : public CTelegramTransport
 {
     Q_OBJECT
 public:
+    enum SessionType {
+        Unknown,
+        Abridged, // char(0xef)
+        FullSize
+    };
+    Q_ENUM(SessionType)
+
     explicit CTcpTransport(QObject *parent = nullptr);
     ~CTcpTransport();
 
     void connectToHost(const QString &ipAddress, quint32 port) override;
     void disconnectFromHost() override;
-    bool setProxy(const QNetworkProxy &proxy);
 
-    bool isConnected() const override;
-
-    QByteArray getPackage() override { return m_receivedPackage; }
-
-    // Method for testing
-    QByteArray lastPackage() const override { return m_lastPackage; }
-
-public slots:
-    void sendPackage(const QByteArray &payload) override;
-
-private slots:
-    void onStateChanged(QAbstractSocket::SocketState newState);
-    void onError(QAbstractSocket::SocketError error);
+protected slots:
+    void setState(QAbstractSocket::SocketState newState) override;
     void onReadyRead();
     void onTimeout();
 
-private:
-    quint32 m_packetNumber;
-    quint32 m_expectedLength;
+protected:
+    void setSocket(QAbstractSocket *socket);
+    void sendPackageImplementation(const QByteArray &payload) override;
 
-    QByteArray m_receivedPackage;
-    QByteArray m_lastPackage;
+    void setSessionType(SessionType sessionType);
 
-    QTcpSocket *m_socket;
-    QTimer *m_timeoutTimer;
+    quint32 m_packetNumber = 0;
+    quint32 m_expectedLength = 0;
+    SessionType m_sessionType = Unknown;
 
-    bool m_firstPackage;
-
+    QAbstractSocket *m_socket = nullptr;
+    QTimer *m_timeoutTimer = nullptr;
 };
 
 #endif // CTCPTRANSPORT_HPP

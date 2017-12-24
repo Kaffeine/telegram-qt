@@ -130,7 +130,7 @@ void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
     m_transport = newTransport;
 
     connect(m_transport, &CTelegramTransport::stateChanged, this, &CTelegramConnection::onTransportStateChanged);
-    connect(m_transport, &CTelegramTransport::readyRead, this, &CTelegramConnection::onTransportReadyRead);
+    connect(m_transport, &CTelegramTransport::packageReceived, this, &CTelegramConnection::onTransportPackageReceived);
     connect(m_transport, &CTelegramTransport::timeout, this, &CTelegramConnection::onTransportTimeout);
 }
 
@@ -4267,9 +4267,10 @@ void CTelegramConnection::onTransportStateChanged()
     }
 }
 
-void CTelegramConnection::onTransportReadyRead()
+void CTelegramConnection::onTransportPackageReceived(const QByteArray &input)
 {
-    const QByteArray input = m_transport->getPackage();
+    qDebug() << "Read" << input.length() << "bytes";
+
     CRawStream inputStream(input);
 
     quint64 authId = 0;
@@ -4488,6 +4489,7 @@ quint64 CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
     outputStream << quint32(buffer.length());
     outputStream << buffer;
 
+    qDebug() << output.size();
     m_transport->sendPackage(output);
 
 #ifdef NETWORK_LOGGING

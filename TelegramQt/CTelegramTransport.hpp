@@ -31,29 +31,34 @@ public:
     virtual void connectToHost(const QString &ipAddress, quint32 port) = 0;
     virtual void disconnectFromHost() = 0;
 
-    virtual bool isConnected() const = 0;
-
-    virtual QByteArray getPackage() = 0;
-
     QAbstractSocket::SocketError error() const { return m_error; }
     QAbstractSocket::SocketState state() const { return m_state; }
-
-    // Method for testing
-    virtual QByteArray lastPackage() const = 0;
 
 signals:
     void error(QAbstractSocket::SocketError error);
     void stateChanged(QAbstractSocket::SocketState state);
 
-    void readyRead();
     void timeout();
 
+    void packageReceived(const QByteArray &package);
+    void packageSent(const QByteArray &package);
+
 public slots:
-    virtual void sendPackage(const QByteArray &package) = 0;
+    void sendPackage(const QByteArray &package)
+    {
+        writeEvent();
+        sendPackageImplementation(package);
+        emit packageSent(package);
+    }
+
+protected slots:
+    void setError(QAbstractSocket::SocketError error);
+    virtual void setState(QAbstractSocket::SocketState state);
 
 protected:
-    void setError(QAbstractSocket::SocketError error);
-    void setState(QAbstractSocket::SocketState state);
+    virtual void sendPackageImplementation(const QByteArray &package) = 0;
+    virtual void readEvent() {}
+    virtual void writeEvent() {}
 
 private:
     QAbstractSocket::SocketError m_error;
