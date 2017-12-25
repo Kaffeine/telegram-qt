@@ -303,6 +303,10 @@ QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &m
 
 QByteArray Utils::aesDecrypt(const QByteArray &data, const SAesKey &key)
 {
+    if (data.length() % AES_BLOCK_SIZE) {
+        qCritical() << Q_FUNC_INFO << "Data is not padded (the size %" << AES_BLOCK_SIZE << " is not zero)";
+        return QByteArray();
+    }
     QByteArray result = data;
     QByteArray initVector = key.iv;
     AES_KEY dec_key;
@@ -313,6 +317,10 @@ QByteArray Utils::aesDecrypt(const QByteArray &data, const SAesKey &key)
 
 QByteArray Utils::aesEncrypt(const QByteArray &data, const SAesKey &key)
 {
+    if (data.length() % AES_BLOCK_SIZE) {
+        qCritical() << Q_FUNC_INFO << "Data is not padded (the size %" << AES_BLOCK_SIZE << " is not zero)";
+        return QByteArray();
+    }
     QByteArray result = data;
     QByteArray initVector = key.iv;
     AES_KEY enc_key;
