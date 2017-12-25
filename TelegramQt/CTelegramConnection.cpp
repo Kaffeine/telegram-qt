@@ -2010,33 +2010,29 @@ bool CTelegramConnection::acceptDhAnswer(const QByteArray &payload)
     TLValue responseTLValue;
     inputStream >> responseTLValue;
 
-    if (responseTLValue != TLValue::ServerDHParamsOk) {
+    if (!checkClientServerNonse(inputStream)) {
+        return false;
+    }
+
+    switch (responseTLValue) {
+    case TLValue::ServerDHParamsOk: {
+        QByteArray encryptedAnswer;
+        inputStream >> encryptedAnswer;
+        return processServerDHParamsOK(encryptedAnswer);
+    }
+    default:
         qDebug() << "Error: Server did not accept our DH params.";
-        return false;
     }
+    return false;
+}
 
-    TLNumber128 clientNonce;
-    inputStream >> clientNonce;
-    if (clientNonce != m_clientNonce) {
-        qDebug() << "Error: Client nonce in incoming package is different from our own.";
-        return false;
-    }
-
-    TLNumber128 serverNonce;
-    inputStream >> serverNonce;
-    if (serverNonce != m_serverNonce) {
-        qDebug() << "Error: Server nonce in incoming package is different from known early.";
-        return false;
-    }
-
-    QByteArray encryptedAnswer;
-    inputStream >> encryptedAnswer;
-
+bool CTelegramConnection::processServerDHParamsOK(const QByteArray &encryptedAnswer)
+{
     m_tmpAesKey = generateTmpAesKey();
 
-    QByteArray answer = Utils::aesDecrypt(encryptedAnswer, m_tmpAesKey);
-    QByteArray sha1OfAnswer = answer.mid(0, 20);
-    answer = answer.mid(20, 564);
+    const QByteArray answerWithHash = Utils::aesDecrypt(encryptedAnswer, m_tmpAesKey);
+    const QByteArray sha1OfAnswer = answerWithHash.mid(0, 20);
+    const QByteArray answer = answerWithHash.mid(20, 564);
 
     if (Utils::sha1(answer) != sha1OfAnswer) {
         qDebug() << "Error: SHA1 of encrypted answer is different from announced.";
@@ -2045,6 +2041,7 @@ bool CTelegramConnection::acceptDhAnswer(const QByteArray &payload)
 
     CTelegramStream encryptedInputStream(answer);
 
+    TLValue responseTLValue;
     encryptedInputStream >> responseTLValue;
 
     if (responseTLValue != TLValue::ServerDHInnerData) {
@@ -2052,17 +2049,7 @@ bool CTelegramConnection::acceptDhAnswer(const QByteArray &payload)
         return false;
     }
 
-    encryptedInputStream >> clientNonce;
-
-    if (clientNonce != m_clientNonce) {
-        qDebug() << "Error: Client nonce in incoming package is different from our own.";
-        return false;
-    }
-
-    encryptedInputStream >> serverNonce;
-
-    if (serverNonce != m_serverNonce) {
-        qDebug() << "Error: Server nonce in incoming package is different from known early.";
+    if (!checkClientServerNonse(encryptedInputStream)) {
         return false;
     }
 
@@ -2086,9 +2073,7 @@ bool CTelegramConnection::acceptDhAnswer(const QByteArray &payload)
     }
 
     quint32 serverTime;
-
     encryptedInputStream >> serverTime;
-
     setDeltaTime(qint64(serverTime) - (QDateTime::currentMSecsSinceEpoch() / 1000));
     m_deltaTimeHeuristicState = DeltaTimeIsOk;
     return true;
@@ -2167,17 +2152,7 @@ bool CTelegramConnection::processServerDhAnswer(const QByteArray &payload)
     inputStream >> responseTLValue;
     qDebug() << Q_FUNC_INFO << responseTLValue;
 
-    TLNumber128 clientNonce;
-    inputStream >> clientNonce;
-    if (clientNonce != m_clientNonce) {
-        qDebug() << "Error: Client nonce in incoming package is different from our own.";
-        return false;
-    }
-
-    TLNumber128 serverNonce;
-    inputStream >> serverNonce;
-    if (serverNonce != m_serverNonce) {
-        qDebug() << "Error: Server nonce in incoming package is different from known early.";
+    if (!checkClientServerNonse(inputStream)) {
         return false;
     }
 
@@ -4426,6 +4401,23 @@ void CTelegramConnection::onTimeToAckMessages()
 
     acknowledgeMessages(m_messagesToAck);
     m_messagesToAck.clear();
+}
+
+bool CTelegramConnection::checkClientServerNonse(CTelegramStream &stream) const
+{
+    TLNumber128 nonce;
+    stream >> nonce;
+    if (nonce != m_clientNonce) {
+        qDebug() << Q_FUNC_INFO << "Error: Client nonce in incoming package is different from our own.";
+        return false;
+    }
+
+    stream >> nonce;
+    if (nonce != m_serverNonce) {
+        qDebug() << Q_FUNC_INFO << "Error: Client nonce in incoming package is different from our own.";
+        return false;
+    }
+    return true;
 }
 
 SAesKey CTelegramConnection::generateTmpAesKey() const

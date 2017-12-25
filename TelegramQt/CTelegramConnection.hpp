@@ -281,6 +281,7 @@ public:
     bool acceptPqAuthorization(const QByteArray &payload);
     void requestDhParameters();
     bool acceptDhAnswer(const QByteArray &payload);
+    bool processServerDHParamsOK(const QByteArray &encryptedAnswer);
     void generateDh();
     void requestDhGenerationResult();
     bool processServerDhAnswer(const QByteArray &payload);
@@ -529,6 +530,8 @@ protected slots:
     void onTimeToAckMessages();
 
 protected:
+    bool checkClientServerNonse(CTelegramStream &stream) const;
+
     ConnectionStatus m_status;
     const CAppInformation *m_appInfo;
 
