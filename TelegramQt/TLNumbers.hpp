@@ -24,7 +24,7 @@ template <int Size> union TLNumber {
     char data[Size / 8];
     quint64 parts[Size / 8 / 8];
 
-    constexpr int size() const { return Size / 8; }
+    static constexpr int size() { return Size / 8; }
 
     TLNumber() {
         for (int i = 0; i < Size / 8 / 8; ++i)
