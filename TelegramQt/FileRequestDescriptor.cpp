@@ -25,6 +25,8 @@
 #include "TLTypesDebug.hpp"
 #endif
 
+using namespace Telegram;
+
 FileRequestDescriptor FileRequestDescriptor::uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc)
 {
     FileRequestDescriptor result;

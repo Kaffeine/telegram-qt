@@ -27,6 +27,7 @@
 #include "TelegramUtils.hpp"
 
 using namespace TelegramUtils;
+using namespace Telegram;
 
 #include <QTimer>
 

@@ -51,6 +51,7 @@ QString formatTLValue(const TLValue &val)
 #endif
 
 using namespace TelegramUtils;
+using namespace Telegram;
 
 static const quint32 s_defaultAuthInterval = 15000; // 15 sec
 

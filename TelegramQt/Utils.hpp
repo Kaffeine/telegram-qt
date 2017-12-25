@@ -23,28 +23,38 @@
 #include "crypto-aes.hpp"
 #include "TelegramNamespace.hpp"
 
-class Utils
-{
-public:
-    static int randomBytes(QByteArray *array);
-    static int randomBytes(quint64 *number);
-    static int randomBytes(char *buffer, int count);
-    static quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
-    static quint64 findDivider(quint64 number);
-    static QByteArray sha1(const QByteArray &data);
-    static QByteArray sha256(const QByteArray &data);
-    static quint64 getFingersprint(const QByteArray &data, bool lowerOrderBits = true);
-    static quint64 getRsaFingersprint(const Telegram::RsaKey &key);
-    static Telegram::RsaKey loadHardcodedKey();
-    static Telegram::RsaKey loadRsaKeyFromFile(const QString &fileName);
-    static Telegram::RsaKey loadRsaKey();
-    static QByteArray binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp);
-    static QByteArray rsa(const QByteArray &data, const Telegram::RsaKey &key);
-    static QByteArray aesDecrypt(const QByteArray &data, const SAesKey &key);
-    static QByteArray aesEncrypt(const QByteArray &data, const SAesKey &key);
-    static QByteArray unpackGZip(const QByteArray &data);
+namespace Telegram {
 
+struct RsaPrivateKey {
+    QByteArray modulus; // n
+    QByteArray exponent; // e
+    QByteArray d; // d, secret exponent
+    QByteArray p; // p
+    QByteArray q; // q
+    quint64 fingersprint;
 };
+
+namespace Utils {
+
+int randomBytes(QByteArray *array);
+int randomBytes(quint64 *number);
+int randomBytes(char *buffer, int count);
+quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
+quint64 findDivider(quint64 number);
+QByteArray sha1(const QByteArray &data);
+QByteArray sha256(const QByteArray &data);
+quint64 getFingersprint(const QByteArray &data, bool lowerOrderBits = true);
+quint64 getRsaFingersprint(const Telegram::RsaKey &key);
+Telegram::RsaKey loadHardcodedKey();
+Telegram::RsaKey loadRsaKeyFromFile(const QString &fileName);
+Telegram::RsaKey loadRsaKey();
+QByteArray binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp);
+QByteArray rsa(const QByteArray &data, const Telegram::RsaKey &key);
+QByteArray aesDecrypt(const QByteArray &data, const SAesKey &key);
+QByteArray aesEncrypt(const QByteArray &data, const SAesKey &key);
+QByteArray unpackGZip(const QByteArray &data);
+
+}
 
 inline int Utils::randomBytes(QByteArray *array)
 {
@@ -60,5 +70,7 @@ inline QByteArray Utils::rsa(const QByteArray &data, const Telegram::RsaKey &key
 {
     return binaryNumberModExp(data, key.modulus, key.exponent);
 }
+
+} // Telegram
 
 #endif // UTILS_HPP

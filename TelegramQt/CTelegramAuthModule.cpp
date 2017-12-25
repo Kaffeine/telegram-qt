@@ -27,6 +27,8 @@
 #include "TLTypesDebug.hpp"
 #endif
 
+using namespace Telegram;
+
 CTelegramAuthModule::CTelegramAuthModule(QObject *parent) :
     CTelegramModule(parent),
     m_serverKey(defaultServerPublicRsaKey())

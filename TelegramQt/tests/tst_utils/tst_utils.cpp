@@ -23,6 +23,8 @@
 #include <QTest>
 #include <QDebug>
 
+using namespace Telegram;
+
 class tst_utils : public QObject
 {
     Q_OBJECT

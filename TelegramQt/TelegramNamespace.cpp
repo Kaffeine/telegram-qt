@@ -1030,20 +1030,20 @@ QStringList Telegram::Utils::maskPhoneNumber(const QStringList &list)
 
 void Telegram::RsaKey::updateFingersprint()
 {
-    fingerprint = ::Utils::getRsaFingersprint(*this);
+    fingerprint = Utils::getRsaFingersprint(*this);
 }
 
 bool Telegram::RsaKey::isValid() const
 {
-    return !modulus.isEmpty() && !exponent.isEmpty() && (fingerprint == ::Utils::getRsaFingersprint(*this));
+    return !modulus.isEmpty() && !exponent.isEmpty() && (fingerprint == Utils::getRsaFingersprint(*this));
 }
 
 void Telegram::RsaKey::loadFromFile(const QString &fileName)
 {
-    *this = ::Utils::loadRsaKeyFromFile(fileName);
+    *this = Utils::loadRsaKeyFromFile(fileName);
 }
 
 Telegram::RsaKey Telegram::RsaKey::fromFile(const QString &fileName)
 {
-    return ::Utils::loadRsaKeyFromFile(fileName);
+    return Utils::loadRsaKeyFromFile(fileName);
 }
