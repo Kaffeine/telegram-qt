@@ -66,4 +66,4 @@ equals(BUILD_QCH, "true") {
 OTHER_FILES += CMakeLists.txt
 OTHER_FILES += README.md
 OTHER_FILES += .travis.yml
-OTHER_FILES += rpm/telegram-qt$${QT_MAJOR_VERSION}.spec
+OTHER_FILES += rpm/telegram-qt.spec
