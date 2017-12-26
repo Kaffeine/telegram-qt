@@ -9,6 +9,7 @@ set(telegram_qt_SOURCES
     CTelegramMediaModule.cpp
     CTelegramTransportModule.cpp
     CTelegramConnection.cpp
+    CTelegramTransport.cpp
     RpcProcessingContext.cpp
     CTelegramStream.cpp
     CTcpTransport.cpp

@@ -27,13 +27,12 @@ class CTelegramTransport : public QObject
 {
     Q_OBJECT
 public:
-    CTelegramTransport(QObject *parent = nullptr) : QObject(parent) { }
+    explicit CTelegramTransport(QObject *parent = nullptr);
     virtual void connectToHost(const QString &ipAddress, quint32 port) = 0;
     virtual void disconnectFromHost() = 0;
 
     QAbstractSocket::SocketError error() const { return m_error; }
     QAbstractSocket::SocketState state() const { return m_state; }
-
 signals:
     void error(QAbstractSocket::SocketError error);
     void stateChanged(QAbstractSocket::SocketState state);
@@ -44,12 +43,7 @@ signals:
     void packageSent(const QByteArray &package);
 
 public slots:
-    void sendPackage(const QByteArray &package)
-    {
-        writeEvent();
-        sendPackageImplementation(package);
-        emit packageSent(package);
-    }
+    void sendPackage(const QByteArray &package);
 
 protected slots:
     void setError(QAbstractSocket::SocketError error);
@@ -63,19 +57,8 @@ protected:
 private:
     QAbstractSocket::SocketError m_error;
     QAbstractSocket::SocketState m_state;
+    quint64 m_lastMessageId;
 
 };
-
-inline void CTelegramTransport::setError(QAbstractSocket::SocketError e)
-{
-    m_error = e;
-    emit error(e);
-}
-
-inline void CTelegramTransport::setState(QAbstractSocket::SocketState s)
-{
-    m_state = s;
-    emit stateChanged(s);
-}
 
 #endif // CTELEGRAMTRANSPORT_HPP

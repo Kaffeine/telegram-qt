@@ -40,6 +40,7 @@ SOURCES = CTelegramCore.cpp \
     Utils.cpp \
     FileRequestDescriptor.cpp \
     TelegramUtils.cpp \
+    CTelegramTransport.cpp \
     CTcpTransport.cpp \
     CClientTcpTransport.cpp \
     TelegramNamespace.cpp \
