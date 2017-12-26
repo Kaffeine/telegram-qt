@@ -2515,6 +2515,9 @@ void CTelegramDispatcher::continueInitialization(CTelegramDispatcher::Initializa
     }
 
     m_initializationState |= justDone;
+    if (justDone == StepHasKey) {
+        setConnectionState(TelegramNamespace::ConnectionStateConnected);
+    }
     if (justDone == StepSignIn) {
         m_initializationState |= StepHasKey; // SignIn implicitly means that we have a key
     }
