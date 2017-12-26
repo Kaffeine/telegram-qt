@@ -68,7 +68,6 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_authKeyAuxHash(0),
     m_serverSalt(0),
     m_sessionId(0),
-    m_lastMessageId(0),
     m_lastSentPingId(0),
     m_lastReceivedPingTime(0),
     m_lastSentPingTime(0),
@@ -154,9 +153,6 @@ void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
 void CTelegramConnection::setDeltaTime(const qint32 newDt)
 {
     m_deltaTime = newDt;
-
-    // Message id depends on time, so if we fix time, we need to reset message id.
-    m_lastMessageId = 0;
 }
 
 quint64 CTelegramConnection::formatTimeStamp(qint64 timeInMs)
@@ -4633,19 +4629,7 @@ void CTelegramConnection::setAuthState(CTelegramConnection::AuthState newState)
 quint64 CTelegramConnection::newMessageId()
 {
     quint64 newLastMessageId = formatClientTimeStamp(QDateTime::currentMSecsSinceEpoch() + deltaTime() * 1000);
-
-    if (newLastMessageId <= m_lastMessageId) {
-        newLastMessageId = m_lastMessageId + 4; // Client's outgoing message id should be divisible by 4 and be greater than previous message id.
-    }
-
-    if (!(newLastMessageId & quint64(0xffffff))) {
-        // The lower 32 bits of messageId passed by the client must not contain that many zeroes.
-        newLastMessageId += quint64(0x1230);
-    }
-
-    m_lastMessageId = newLastMessageId;
-
-    return m_lastMessageId;
+    return m_transport->getNewMessageId(newLastMessageId);
 }
 
 QString CTelegramConnection::userNameFromPackage(quint64 id) const
