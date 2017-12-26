@@ -30,6 +30,7 @@ public:
     explicit CTelegramTransport(QObject *parent = nullptr);
     virtual void connectToHost(const QString &ipAddress, quint32 port) = 0;
     virtual void disconnectFromHost() = 0;
+    quint64 getNewMessageId(quint64 supposedId);
 
     QAbstractSocket::SocketError error() const { return m_error; }
     QAbstractSocket::SocketState state() const { return m_state; }
@@ -57,7 +58,7 @@ protected:
 private:
     QAbstractSocket::SocketError m_error;
     QAbstractSocket::SocketState m_state;
-    quint64 m_lastMessageId;
+    quint64 m_lastMessageId = 0;
 
 };
 

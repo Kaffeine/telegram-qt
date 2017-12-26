@@ -21,6 +21,25 @@ CTelegramTransport::CTelegramTransport(QObject *parent) :
 {
 }
 
+quint64 CTelegramTransport::getNewMessageId(quint64 supposedId)
+{
+    // Client message identifiers are divisible by 4, server message identifiers modulo 4 yield 1 if the message is a response to a client message, and 3 otherwise.
+    const quint8 moduleFour = supposedId % 4;
+    quint64 result = supposedId;
+    if (result <= m_lastMessageId) {
+        result = (m_lastMessageId & ~3ull) | moduleFour;
+        if (result <= m_lastMessageId) {
+            result += 4;
+        }
+    }
+    if (!(result & quint64(0xffffff))) {
+        // The lower 32 bits of messageId passed by the client must not contain that many zeroes.
+        result += quint64(0x1230);
+    }
+    m_lastMessageId = result;
+    return m_lastMessageId;
+}
+
 void CTelegramTransport::sendPackage(const QByteArray &package)
 {
     writeEvent();
