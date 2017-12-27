@@ -36,6 +36,10 @@ namespace TelegramUtils
         TelegramMessageFlagForward = 1 << 2,
         TelegramMessageFlagReply   = 1 << 3,
     };
+
+quint64 formatTimeStamp(qint64 timeInMs);
+quint64 timeStampToMSecsSinceEpoch(quint64 ts);
+
 }
 
 #endif // CTELEGRAMUTILS_HPP

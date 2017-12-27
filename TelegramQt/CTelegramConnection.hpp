@@ -99,10 +99,7 @@ public slots:
 public:
     ConnectionStatus status() const { return m_status; }
 
-    static quint64 formatTimeStamp(qint64 timeInMs);
-    static quint64 formatClientTimeStamp(qint64 timeInMs) { return formatTimeStamp(timeInMs) & ~quint64(3); }
-
-    static quint64 timeStampToMSecsSinceEpoch(quint64 ts);
+    static quint64 formatClientTimeStamp(qint64 timeInMs);
 
     void initAuth();
     void setKeepAliveSettings(quint32 interval, quint32 serverDisconnectionExtraTime);

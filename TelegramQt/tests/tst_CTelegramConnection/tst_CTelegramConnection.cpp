@@ -19,6 +19,7 @@
 
 #include "CTestConnection.hpp"
 #include "CTelegramTransport.hpp"
+#include "TelegramUtils.hpp"
 
 #include <QTest>
 #include <QDebug>
@@ -100,13 +101,13 @@ void tst_CTelegramConnection::testClientTimestampNeverOdd()
 void tst_CTelegramConnection::testTimestampConversion()
 {
     quint64 time = 1395335796550;
-    quint64 ts = CTelegramConnection::formatTimeStamp(time);
-    QCOMPARE(CTelegramConnection::timeStampToMSecsSinceEpoch(ts), time);
+    quint64 ts = TelegramUtils::formatTimeStamp(time);
+    QCOMPARE(TelegramUtils::timeStampToMSecsSinceEpoch(ts), time);
 
     ts = 0x532ea31d36cecc00;
     time = 1395565341214;
 
-    QCOMPARE(CTelegramConnection::timeStampToMSecsSinceEpoch(ts), time);
+    QCOMPARE(TelegramUtils::timeStampToMSecsSinceEpoch(ts), time);
 }
 
 void tst_CTelegramConnection::testAuth()

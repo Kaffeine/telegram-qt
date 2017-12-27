@@ -125,6 +125,11 @@ void CTelegramConnection::disconnectFromDc()
     }
 }
 
+quint64 CTelegramConnection::formatClientTimeStamp(qint64 timeInMs)
+{
+     return formatTimeStamp(timeInMs) & ~quint64(3);
+}
+
 void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
 {
     m_transport = newTransport;
@@ -153,33 +158,6 @@ void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
 void CTelegramConnection::setDeltaTime(const qint32 newDt)
 {
     m_deltaTime = newDt;
-}
-
-quint64 CTelegramConnection::formatTimeStamp(qint64 timeInMs)
-{
-    static const quint64 maxMsecValue = (quint64(1) << 32) - 1;
-
-    const quint64 secs = timeInMs / 1000;
-    const quint64 msecs = maxMsecValue / 1000 * (timeInMs % 1000);
-
-    return (secs << 32) + msecs;
-}
-
-quint64 CTelegramConnection::timeStampToMSecsSinceEpoch(quint64 ts)
-{
-    static const quint64 maxMsecValue = (quint64(1) << 32) - 1;
-
-    const quint64 secs = ts >> 32;
-    quint64 msecs = ts & maxMsecValue;
-
-    msecs = msecs * 10000 / maxMsecValue;
-
-    if (msecs % 10 >= 5) {
-        msecs += 5;
-    }
-    msecs /= 10;
-
-    return secs * 1000 + msecs;
 }
 
 void CTelegramConnection::initAuth()
