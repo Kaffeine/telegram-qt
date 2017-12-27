@@ -57,6 +57,7 @@ public:
     Q_INVOKABLE Telegram::RsaKey serverPublicRsaKey() const;
     Q_INVOKABLE QVector<Telegram::DcOption> serverConfiguration();
     QByteArray connectionSecretInfo() const;
+    quint64 authKeyId() const;
 
     Q_INVOKABLE TelegramNamespace::ConnectionState connectionState() const;
     Q_INVOKABLE QString selfPhone() const;

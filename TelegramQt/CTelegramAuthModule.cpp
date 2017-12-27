@@ -51,6 +51,14 @@ bool CTelegramAuthModule::setServerPublicRsaKey(const Telegram::RsaKey &key)
     return true;
 }
 
+quint64 CTelegramAuthModule::authKeyId() const
+{
+    if (!mainConnection()) {
+        return 0;
+    }
+    return mainConnection()->authId();
+}
+
 void CTelegramAuthModule::clear()
 {
     m_passwordInfo.clear();

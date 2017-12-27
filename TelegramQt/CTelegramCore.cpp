@@ -206,6 +206,11 @@ QByteArray CTelegramCore::connectionSecretInfo() const
     return m_private->m_dispatcher->connectionSecretInfo();
 }
 
+quint64 CTelegramCore::authKeyId() const
+{
+    return m_private->m_authModule->authKeyId();
+}
+
 TelegramNamespace::ConnectionState CTelegramCore::connectionState() const
 {
     return m_private->m_dispatcher->connectionState();

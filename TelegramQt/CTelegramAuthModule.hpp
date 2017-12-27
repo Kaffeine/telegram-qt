@@ -31,6 +31,7 @@ public:
     Telegram::RsaKey defaultServerPublicRsaKey() const;
     Telegram::RsaKey serverPublicRsaKey() const;
     bool setServerPublicRsaKey(const Telegram::RsaKey &key);
+    quint64 authKeyId() const;
 
     void clear() override;
 
