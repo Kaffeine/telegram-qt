@@ -37,7 +37,6 @@ QString TLValue::toString() const
     }
 }
 
-#ifdef DEVELOPER_BUILD
 TLValue TLValue::firstFromArray(const QByteArray &data)
 {
     if (data.length() >= 4) {
@@ -46,4 +45,3 @@ TLValue TLValue::firstFromArray(const QByteArray &data)
     }
     return TLValue();
 }
-#endif

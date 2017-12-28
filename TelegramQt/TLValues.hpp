@@ -660,9 +660,7 @@ public:
     }
 
     QString toString() const;
-#ifdef DEVELOPER_BUILD
     static TLValue firstFromArray(const QByteArray &data);
-#endif
 
 private:
     Value m_value;
