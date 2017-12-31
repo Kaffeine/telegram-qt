@@ -22,6 +22,7 @@
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
+#include <openssl/opensslv.h>
 
 #include <zlib.h>
 
@@ -89,7 +90,7 @@ struct SslBigNumber {
         return SslBigNumber();
     }
 
-    static QByteArray toByteArray(BIGNUM *number)
+    static QByteArray toByteArray(const BIGNUM *number)
     {
         QByteArray result;
         result.resize(BN_num_bytes(number));
@@ -270,6 +271,7 @@ Telegram::RsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
 
     // Try SubjectPublicKeyInfo structure (BEGIN PUBLIC KEY)
     RSA *key = PEM_read_RSA_PUBKEY(file, 0, 0, 0);
+
     if (!key) {
         // Try PKCS#1 RSAPublicKey structure (BEGIN RSA PUBLIC KEY)
         key = PEM_read_RSAPublicKey(file, 0, 0, 0);
@@ -280,8 +282,16 @@ Telegram::RsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
         qWarning() << "Can not read RSA key.";
         return result;
     }
-    result.modulus = SslBigNumber::toByteArray(key->n);
-    result.exponent = SslBigNumber::toByteArray(key->e);
+    const BIGNUM *n, *e;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    n=key->n;
+    e=key->e;
+#else
+    RSA_get0_factors(key, &n, &e);
+#endif
+
+    result.modulus = SslBigNumber::toByteArray(n);
+    result.exponent = SslBigNumber::toByteArray(e);
     result.fingerprint = getRsaFingersprint(result);
     RSA_free(key);
     return result;
