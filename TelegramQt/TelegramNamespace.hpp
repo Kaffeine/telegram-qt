@@ -50,6 +50,7 @@ public:
         MessageFlagForwarded = 0x4,
         MessageFlagIsReply   = 0x8,
     };
+    Q_ENUM(MessageFlag)
     Q_DECLARE_FLAGS(MessageFlags, MessageFlag)
 
     enum MessageType {
@@ -64,6 +65,7 @@ public:
         MessageTypeWebPage     = 0x80,
         MessageTypeAll         = 0xff
     };
+    Q_ENUM(MessageType)
     Q_DECLARE_FLAGS(MessageTypeFlags, MessageType)
 
     enum AuthSignError {
