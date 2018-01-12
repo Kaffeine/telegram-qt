@@ -1,5 +1,6 @@
 
 find_package(Qt5 REQUIRED COMPONENTS Core Test)
+find_package(ZLIB REQUIRED)
 
 # Tell CMake to run moc when necessary:
 set(CMAKE_AUTOMOC ON)
@@ -26,25 +27,18 @@ include_directories(
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/..
     ${CMAKE_CURRENT_SOURCE_DIR}/..
+    ${ZLIB_INCLUDE_DIR}
 )
 
-foreach(test_name
-    tst_CTelegramTransport
-    tst_CTelegramConnection
-    tst_CTelegramDispatcher
-    tst_CTelegramStream
-    tst_TelegramRemoteFile
-    tst_utils
+add_executable(tst_generator
+    tst_generator/tst_generator.cpp
+    ../Generator.cpp
 )
-    FILE(GLOB TEST_SOURCES ${test_name}/*.cpp)
-    add_executable(${test_name} ${TEST_SOURCES})
-    target_link_libraries(${test_name}
-        Qt5::Core
-        Qt5::Test
-        TelegramQt${QT_VERSION_MAJOR}
-    )
-    add_test(NAME ${test_name} COMMAND ${test_name})
-endforeach()
 
-#target_include_directories(tst_utils ${CMAKE_SOURCE_DIR}/tests/data)
-target_link_libraries(tst_utils test_keys_data)
+target_link_libraries(tst_generator LINK_PUBLIC
+    Qt5::Core
+    Qt5::Test
+    ${ZLIB_LIBRARIES}
+)
+
+add_test(NAME tst_generator COMMAND tst_generator)

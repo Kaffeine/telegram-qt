@@ -50,6 +50,7 @@ endif()
 if (ENABLE_TESTS)
     enable_testing()
     add_subdirectory(TelegramQt/tests)
+    add_subdirectory(tests/data)
 endif()
 
 if (BUILD_GENERATOR)

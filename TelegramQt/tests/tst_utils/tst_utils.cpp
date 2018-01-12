@@ -23,6 +23,8 @@
 #include <QTest>
 #include <QDebug>
 
+#include "keys_data.hpp"
+
 using namespace Telegram;
 
 class tst_utils : public QObject
@@ -32,16 +34,29 @@ public:
     explicit tst_utils(QObject *parent = nullptr);
 
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
     void testAesEncryption();
+    void testRsaLoad();
     void testRsaFingersprint();
+    void testRsaEncryption();
     void testRsaKey();
     void testRsaKeyIsValid();
-
 };
 
 tst_utils::tst_utils(QObject *parent) :
     QObject(parent)
 {
+}
+
+void tst_utils::initTestCase()
+{
+    QVERIFY(TestKeyData::initKeyFiles());
+}
+
+void tst_utils::cleanupTestCase()
+{
+    QVERIFY(TestKeyData::cleanupKeyFiles());
 }
 
 void tst_utils::testAesEncryption()
@@ -56,11 +71,49 @@ void tst_utils::testAesEncryption()
     QCOMPARE(sourceData, decodedData);
 }
 
+void tst_utils::testRsaLoad()
+{
+    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
+    QCOMPARE(privateKey.modulus, TestKeyData::keyModulus);
+    QCOMPARE(privateKey.exponent, TestKeyData::keyExponent);
+    QCOMPARE(privateKey.secretExponent, TestKeyData::keySecretExponent);
+    QCOMPARE(privateKey.fingerprint, TestKeyData::keyFingerprint);
+    const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
+    QCOMPARE(publicKey.modulus, TestKeyData::keyModulus);
+    QCOMPARE(publicKey.exponent, TestKeyData::keyExponent);
+    QCOMPARE(publicKey.fingerprint, TestKeyData::keyFingerprint);
+}
+
 void tst_utils::testRsaFingersprint()
 {
     const Telegram::RsaKey builtInKey = Utils::loadHardcodedKey();
     const quint64 fingerprint = Utils::getRsaFingersprint(builtInKey);
     QCOMPARE(fingerprint, builtInKey.fingerprint);
+}
+
+void tst_utils::testRsaEncryption()
+{
+    const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
+    QVERIFY(publicKey.isValid());
+    const QByteArray sourceData = QByteArrayLiteral("TestData12345678datatextasdfasdfzxcvzxcp1asdfa"
+                                                    "sdf2391238721oi3jlkjlzxmc1231236789678056346xm"
+                                                    "ncvkjafk;jh141234123zxcvzxcvasdfasdf1123789073");
+    const QByteArray encodedData = Utils::rsa(sourceData, publicKey);
+    QVERIFY(!encodedData.isEmpty());
+    const QByteArray referenceEncodedData = QByteArray::fromHex(
+                "05001ed872bfb0062f43b68b9c5eb1f48607e4ae4ad7e4724818e324c50fc10b"
+                "5d2449f8fe3389e23cb63295b5b48c1ff939c718526f7e21a7e96780c1f41011"
+                "16aba4b0db9a2108341246fc85815c2e6524832d5c632fbd83c763719bf3a5b9"
+                "1b32924a0f84a3a1dff0cc8844f7879eb801d95dbe18cfc6c1bbcc3695b6fef7"
+                "e21415976e87011e2d0d312a3719eee06cc8d9bddb327abae54fa8d6e069f556"
+                "a4af0c149c952f5668105615c9f0356682772085a963b4cc90b2f5fa32dc5976"
+                "5e041191cfc12c3cf1162c1bbf21af146837a4325d9761a7fbc28d61264a213a"
+                "5075c2fe65d3f96e3fb7f4913b128856201f8f97fb6953c07441a62826a5dbce");
+    QCOMPARE(encodedData, referenceEncodedData);
+    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
+    QVERIFY(privateKey.isValid());
+    const QByteArray decodedData = Utils::binaryNumberModExp(encodedData, privateKey.modulus, privateKey.secretExponent);
+    QCOMPARE(sourceData, decodedData);
 }
 
 void tst_utils::testRsaKey()
