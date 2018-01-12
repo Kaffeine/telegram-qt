@@ -29,6 +29,7 @@
 #include <QBuffer>
 #include <QCryptographicHash>
 #include <QDebug>
+#include <QFileInfo>
 
 #include "CRawStream.hpp"
 
@@ -292,6 +293,42 @@ Telegram::RsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
 
     result.modulus = SslBigNumber::toByteArray(n);
     result.exponent = SslBigNumber::toByteArray(e);
+    result.fingerprint = getRsaFingersprint(result);
+    RSA_free(key);
+    return result;
+}
+
+Telegram::RsaKey Utils::loadRsaPrivateKeyFromFile(const QString &fileName)
+{
+    Telegram::RsaKey result;
+    if (!QFileInfo::exists(fileName)) {
+        qWarning() << "The RSA key file" << fileName << "does not exist";
+        return result;
+    }
+    FILE *file = fopen(fileName.toLocal8Bit().constData(), "r");
+    if (!file) {
+        qWarning() << "Can not open RSA key file.";
+        return result;
+    }
+    RSA *key = PEM_read_RSAPrivateKey(file, NULL, NULL, NULL);
+
+    fclose(file);
+    if (!key) {
+        qWarning() << "Can not read RSA key.";
+        return result;
+    }
+    const BIGNUM *n, *e, *d;
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    n=key->n;
+    e=key->e;
+    d=key->d;
+#else
+    RSA_get0_key(key, &n, &e, &d);
+#endif
+
+    result.modulus = SslBigNumber::toByteArray(n);
+    result.exponent = SslBigNumber::toByteArray(e);
+    result.secretExponent = SslBigNumber::toByteArray(d);
     result.fingerprint = getRsaFingersprint(result);
     RSA_free(key);
     return result;

@@ -47,6 +47,7 @@ quint64 getFingersprint(const QByteArray &data, bool lowerOrderBits = true);
 quint64 getRsaFingersprint(const Telegram::RsaKey &key);
 Telegram::RsaKey loadHardcodedKey();
 Telegram::RsaKey loadRsaKeyFromFile(const QString &fileName);
+Telegram::RsaKey loadRsaPrivateKeyFromFile(const QString &fileName);
 Telegram::RsaKey loadRsaKey();
 QByteArray binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp);
 QByteArray rsa(const QByteArray &data, const Telegram::RsaKey &key);
