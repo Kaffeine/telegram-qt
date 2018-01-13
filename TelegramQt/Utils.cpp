@@ -287,7 +287,7 @@ Telegram::RsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
     n=key->n;
     e=key->e;
 #else
-    RSA_get0_factors(key, &n, &e);
+    RSA_get0_key(key, &n, &e, nullptr);
 #endif
 
     result.modulus = SslBigNumber::toByteArray(n);
