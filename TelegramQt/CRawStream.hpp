@@ -25,13 +25,17 @@ QT_FORWARD_DECLARE_CLASS(QIODevice)
 class CRawStream
 {
 public:
+    enum Mode {
+        WriteOnly
+    };
     explicit CRawStream(QByteArray *data, bool write);
     explicit CRawStream(const QByteArray &data);
-
+    explicit CRawStream(Mode mode, quint32 reserveBytes = 0);
     explicit CRawStream(QIODevice *d = nullptr);
 
     virtual ~CRawStream();
 
+    QByteArray getData() const;
     QIODevice *device() const { return m_device; }
     void setDevice(QIODevice *newDevice);
     void unsetDevice();
