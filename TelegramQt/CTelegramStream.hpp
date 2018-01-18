@@ -28,20 +28,7 @@
 class CTelegramStream : public CRawStreamEx
 {
 public:
-    explicit CTelegramStream(QByteArray *data, bool write) :
-        CRawStreamEx(data, write)
-    {
-    }
-    explicit CTelegramStream(const QByteArray &data) :
-        CRawStreamEx(data)
-    {
-    }
-
-    explicit CTelegramStream(QIODevice *d = nullptr) :
-        CRawStreamEx(d)
-    {
-    }
-
+    using CRawStreamEx::CRawStreamEx;
     using CRawStreamEx::operator <<;
     using CRawStreamEx::operator >>;
 

@@ -81,29 +81,16 @@ protected:
     inline CRawStream &protectedRead(Int &i);
 
 private:
-    QIODevice *m_device;
-    bool m_ownDevice;
-    bool m_error;
+    QIODevice *m_device = nullptr;
+    bool m_ownDevice = false;
+    bool m_error = false;
 
 };
 
 class CRawStreamEx : public CRawStream
 {
 public:
-    explicit CRawStreamEx(QByteArray *data, bool write) :
-        CRawStream(data, write)
-    {
-    }
-    explicit CRawStreamEx(const QByteArray &data) :
-        CRawStream(data)
-    {
-    }
-
-    explicit CRawStreamEx(QIODevice *d = nullptr) :
-        CRawStream(d)
-    {
-    }
-
+    using CRawStream::CRawStream;
     using CRawStream::operator <<;
     using CRawStream::operator >>;
 
