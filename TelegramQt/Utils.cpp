@@ -133,7 +133,7 @@ static const quint64 s_hardcodedRsaDataFingersprint(0xc3b42b026ce86b21);
 
 namespace Telegram {
 
-int Utils::randomBytes(char *buffer, int count)
+int Utils::randomBytes(void *buffer, int count)
 {
     return RAND_bytes((unsigned char *) buffer, count);
 }

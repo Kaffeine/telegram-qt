@@ -37,8 +37,14 @@ struct RsaPrivateKey {
 namespace Utils {
 
 int randomBytes(QByteArray *array);
-int randomBytes(quint64 *number);
-int randomBytes(char *buffer, int count);
+
+template <typename T>
+T randomBytes();
+
+template <typename T>
+int randomBytes(T *number);
+
+int randomBytes(void *buffer, int count);
 quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
 quint64 findDivider(quint64 number);
 QByteArray sha1(const QByteArray &data);
@@ -62,9 +68,17 @@ inline int Utils::randomBytes(QByteArray *array)
     return randomBytes(array->data(), array->size());
 }
 
-inline int Utils::randomBytes(quint64 *number)
+template<typename T>
+int Utils::randomBytes(T *number)
 {
-    return randomBytes((char *) number, 8);
+    return randomBytes(number, sizeof(T));
+}
+
+template <typename T>
+inline T Utils::randomBytes()
+{
+    T result;
+    return randomBytes(&result);
 }
 
 inline QByteArray Utils::rsa(const QByteArray &data, const Telegram::RsaKey &key)
