@@ -424,6 +424,10 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     replacingHelper(QLatin1String("CTelegramStream.hpp"), 4, QLatin1String("write operators"), generator.codeStreamWriteDeclarations);
     replacingHelper(QLatin1String("CTelegramStream.cpp"), 0, QLatin1String("write operators implementation"), generator.codeStreamWriteDefinitions);
     replacingHelper(QLatin1String("CTelegramStream.cpp"), 0, QLatin1String("vector write templates instancing"), generator.codeStreamWriteTemplateInstancing);
+
+    replacingHelper(QLatin1String("CTelegramStreamExtraOperators.hpp"), 0, QLatin1String("write operators"), generator.codeStreamExtraWriteDeclarations);
+    replacingHelper(QLatin1String("CTelegramStreamExtraOperators.cpp"), 0, QLatin1String("write operators implementation"), generator.codeStreamExtraWriteDefinitions);
+
     replacingHelper(QLatin1String("CTelegramConnection.hpp"), 4, QLatin1String("Telegram API methods declaration"), generator.codeConnectionDeclarations);
     replacingHelper(QLatin1String("CTelegramConnection.cpp"), 0, QLatin1String("Telegram API methods implementation"), generator.codeConnectionDefinitions);
 

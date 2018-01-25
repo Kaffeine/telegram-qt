@@ -31,6 +31,12 @@ QT_FORWARD_DECLARE_CLASS(QJsonDocument)
 
 struct Name {
     QString name;
+    virtual ~Name() { }
+};
+
+struct NameWithEntityType : public Name
+{
+    virtual QString entityType() const = 0;
 };
 
 struct TLParam {
@@ -73,7 +79,8 @@ struct TLSubType : public Name {
     QString source; // The source from the spec
 };
 
-struct TLType : public Name {
+struct TLType : public NameWithEntityType {
+    QString entityType() const override { return QStringLiteral("Value"); }
     QList<TLSubType> subTypes;
 
     bool isSelfReferenced() const { return m_selfReferenced; }
@@ -83,7 +90,8 @@ protected:
     bool m_selfReferenced = false;
 };
 
-struct TLMethod : public Name {
+struct TLMethod : public NameWithEntityType {
+    QString entityType() const override { return QStringLiteral("Function"); }
     QString nameFirstCapital() const {
         if (name.isEmpty()) {
             return QString();
@@ -159,8 +167,12 @@ public:
     static QString streamReadPerTypeImplementation(const QString &argName, const TLSubType &subType);
 
     static QString streamWriteImplementationHead(const QString &argName, const QString &typeName);
+    static QString streamWriteFreeImplementationHead(const QString &argName, const QString &typeName);
     static QString streamWriteImplementationEnd(const QString &argName);
+    static QString streamWriteFreeImplementationEnd(const QString &argName);
     static QString streamWritePerTypeImplementation(const QString &argName, const TLSubType &subType);
+    static QString streamWritePerTypeFreeImplementation(const QString &argName, const TLSubType &subType);
+    static QString streamWritePerTypeImplementationBase(const QString &argName, const TLSubType &subType, const QString &streamGetter);
 
     static QString generateStreamOperatorDefinition(const TLType &type,
                                                     std::function<QString(const QString &argName, const QString &typeName)> head,
@@ -168,11 +180,15 @@ public:
                                                     std::function<QString(const QString &argName)> end
                                                     );
     static QString generateStreamReadOperatorDeclaration(const TLType &type);
+    static QString generateStreamReadFreeOperatorDeclaration(const NameWithEntityType *type);
     static QString generateStreamReadOperatorDefinition(const TLType &type);
     static QString generateStreamReadVectorTemplate(const QString &type);
     static QString generateStreamWriteOperatorDeclaration(const TLType &type);
+    static QString generateStreamWriteFreeOperatorDeclaration(const NameWithEntityType *type);
     static QString generateStreamWriteOperatorDefinition(const TLType &type);
+    static QString generateStreamWriteFreeOperatorDefinition(const TLType &type);
     static QString generateStreamWriteVectorTemplate(const QString &type);
+    static QString generateStreamWriteFreeVectorTemplate(const QString &type);
 
     static QString generateDebugWriteOperatorDeclaration(const TLType &type);
     static QString debugOperatorImplementationHead(const QString &argName, const QString &typeName);
@@ -202,6 +218,9 @@ public:
     QString codeStreamWriteDeclarations;
     QString codeStreamWriteDefinitions;
     QString codeStreamWriteTemplateInstancing;
+    QString codeStreamExtraReadDeclarations;
+    QString codeStreamExtraWriteDeclarations;
+    QString codeStreamExtraWriteDefinitions;
     QString codeConnectionDeclarations;
     QString codeConnectionDefinitions;
     QString codeRpcProcessDeclarations;

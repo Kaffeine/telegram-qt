@@ -633,6 +633,14 @@ QString Generator::streamWriteImplementationHead(const QString &argName, const Q
     return code;
 }
 
+QString Generator::streamWriteFreeImplementationHead(const QString &argName, const QString &typeName)
+{
+    QString code;
+    code.append(QString("%1 &operator<<(%1 &stream, const %2 &%3)\n{\n").arg(streamClassName, typeName, argName));
+    code.append(QString("%1stream << %2.tlType;\n%1switch (%2.tlType) {\n").arg(spacing, argName));
+    return code;
+}
+
 QString Generator::streamWriteImplementationEnd(const QString &argName)
 {
     Q_UNUSED(argName)
@@ -643,7 +651,26 @@ QString Generator::streamWriteImplementationEnd(const QString &argName)
     return code;
 }
 
+QString Generator::streamWriteFreeImplementationEnd(const QString &argName)
+{
+    Q_UNUSED(argName)
+    QString code;
+    code.append(QString("%1default:\n%1%1break;\n%1}\n\n").arg(spacing));
+    code.append(spacing + QStringLiteral("return stream;\n}\n\n"));
+    return code;
+}
+
 QString Generator::streamWritePerTypeImplementation(const QString &argName, const TLSubType &subType)
+{
+    return streamWritePerTypeImplementationBase(argName, subType, QStringLiteral("*this"));
+}
+
+QString Generator::streamWritePerTypeFreeImplementation(const QString &argName, const TLSubType &subType)
+{
+    return streamWritePerTypeImplementationBase(argName, subType, QStringLiteral("stream"));
+}
+
+QString Generator::streamWritePerTypeImplementationBase(const QString &argName, const TLSubType &subType, const QString &streamGetter)
 {
     QString code;
     foreach (const TLParam &member, subType.members) {
@@ -652,13 +679,13 @@ QString Generator::streamWritePerTypeImplementation(const QString &argName, cons
                 continue;
             }
             code.append(doubleSpacing + QString("if (%1.%2 & 1 << %3) {\n").arg(argName).arg(member.flagMember).arg(member.flagBit));
-            code.append(doubleSpacing + spacing + QString("*this << %1.%2;\n").arg(argName).arg(member.getAlias()));
+            code.append(doubleSpacing + spacing + streamGetter + QString(" << %1.%2;\n").arg(argName).arg(member.getAlias()));
             code.append(doubleSpacing + QLatin1Literal("}\n"));
         } else {
             if (member.accessByPointer() && !member.isVector()) {
-                code.append(doubleSpacing + QString("*this << *%1.%2;\n").arg(argName).arg(member.getAlias()));
+                code.append(doubleSpacing + streamGetter + QString(" << *%1.%2;\n").arg(argName).arg(member.getAlias()));
             } else {
-                code.append(doubleSpacing + QString("*this << %1.%2;\n").arg(argName).arg(member.getAlias()));
+                code.append(doubleSpacing + streamGetter + QString(" << %1.%2;\n").arg(argName).arg(member.getAlias()));
             }
         }
     }
@@ -708,6 +735,15 @@ QString Generator::generateStreamReadOperatorDeclaration(const TLType &type)
     return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
+QString Generator::generateStreamReadFreeOperatorDeclaration(const NameWithEntityType *type)
+{
+    QString argName = removePrefix(type->name);
+    argName[0] = argName.at(0).toLower();
+    argName += type->entityType();
+    // CTelegramStream &operator>>(CTelegramStream &stream, TLAccountDaysTTL &accountDaysTTLValue);
+    return QString("%1 &operator>>(%1 &stream, %2 &%3);\n").arg(streamClassName).arg(type->name).arg(argName);
+}
+
 QString Generator::generateStreamReadOperatorDefinition(const TLType &type)
 {
     return generateStreamOperatorDefinition(type, streamReadImplementationHead, streamReadPerTypeImplementation, streamReadImplementationEnd);
@@ -726,9 +762,23 @@ QString Generator::generateStreamWriteOperatorDeclaration(const TLType &type)
     return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
+QString Generator::generateStreamWriteFreeOperatorDeclaration(const NameWithEntityType *type)
+{
+    QString argName = removePrefix(type->name);
+    argName[0] = argName.at(0).toLower();
+    argName += type->entityType();
+    // CTelegramStream &operator<<(CTelegramStream &stream, const TLFunctions::TLAuthSendCode &function)
+    return QString("%1 &operator<<(%1 &stream, const %2 &%3);\n").arg(streamClassName).arg(type->name).arg(argName);
+}
+
 QString Generator::generateStreamWriteOperatorDefinition(const TLType &type)
 {
     return generateStreamOperatorDefinition(type, streamWriteImplementationHead, streamWritePerTypeImplementation, streamWriteImplementationEnd);
+}
+
+QString Generator::generateStreamWriteFreeOperatorDefinition(const TLType &type)
+{
+    return generateStreamOperatorDefinition(type, streamWriteFreeImplementationHead, streamWritePerTypeFreeImplementation, streamWriteFreeImplementationEnd);
 }
 
 QString Generator::generateStreamWriteVectorTemplate(const QString &type)
@@ -1297,6 +1347,7 @@ void Generator::generate()
 
     QStringList typesUsedForWrite;
     QStringList vectorUsedForWrite;
+    QStringList vectorUsedForExtraWrite;
 
     static const QStringList whiteList = QStringList()
             << QLatin1String("auth")
@@ -1461,6 +1512,9 @@ void Generator::generate()
         if (typesUsedForWrite.contains(type.name)) {
             codeStreamWriteDeclarations.append(generateStreamWriteOperatorDeclaration(type));
             codeStreamWriteDefinitions.append(generateStreamWriteOperatorDefinition(type));
+        } else {
+            codeStreamExtraWriteDeclarations.append(generateStreamWriteFreeOperatorDeclaration(&type));
+            codeStreamExtraWriteDefinitions .append(generateStreamWriteFreeOperatorDefinition(type));
         }
 
         codeDebugWriteDeclarations.append(generateDebugWriteOperatorDeclaration(type));
