@@ -382,6 +382,17 @@ QMap<QString, TLMethod> Generator::readFunctionsJson(const QJsonDocument &docume
     return result;
 }
 
+QString TLParam::flagName() const
+{
+    QString flagName = getAlias();
+    if (flagName.isEmpty()) {
+        qCritical() << "Invalid flagName of a param";
+        return QString();
+    }
+    flagName[0] = flagName.at(0).toUpper();
+    return flagName;
+}
+
 void TLParam::setType(const QString &newType)
 {
     m_type = newType;
@@ -489,13 +500,42 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 //    code.append(copyConstructor);
 //    code.append(copyOperator);
     code.append(isValidTypeCode);
+    const QString memberFlags = joinLinesWithSpacing(generateTLTypeMemberFlags(type), doubleSpacing.size());
     const QString memberGetters = joinLinesWithSpacing(generateTLTypeMemberGetters(type), spacing.size());
     const QString members = joinLinesWithSpacing(generateTLTypeMembers(type), spacing.size());
+    if (!memberFlags.isEmpty()) {
+        code.append(spacing + "enum Flags {\n");
+        code.append(memberFlags);
+        code.append(spacing + "};\n");
+    }
     code.append(memberGetters);
     code.append(members);
     code.append(QString("};\n\n"));
 
     return code;
+}
+
+QStringList Generator::generateTLTypeMemberFlags(const TLType &type)
+{
+    QStringList addedMembers;
+    QMap<quint8,QString> memberFlags;
+
+    foreach (const TLSubType &subType, type.subTypes) {
+        foreach (const TLParam &member, subType.members) {
+            if (addedMembers.contains(member.getAlias())) {
+                continue;
+            }
+            addedMembers.append(member.getAlias());
+            if (member.dependOnFlag()) {
+                memberFlags.insertMulti(member.flagBit, member.flagName() + QStringLiteral(" = 1 << %1,").arg(member.flagBit));
+            }
+        }
+    }
+    QStringList result;
+    for (quint8 flag : memberFlags.uniqueKeys()) {
+        result.append(memberFlags.values(flag));
+    }
+    return result;
 }
 
 QStringList Generator::generateTLTypeMemberGetters(const TLType &type)
@@ -509,7 +549,7 @@ QStringList Generator::generateTLTypeMemberGetters(const TLType &type)
             }
             addedMembers.append(member.getAlias());
             if (member.dependOnFlag() && (member.type() == tlTrueType)) {
-                memberGetters.append(QStringLiteral("bool %2() const { return %3 & 1 << %4; }").arg(member.getAlias(), member.flagMember).arg(member.flagBit));
+                memberGetters.append(QStringLiteral("bool %1() const { return %2 & %3; }").arg(member.getAlias(), member.flagMember, member.flagName()));
             }
         }
     }

@@ -40,6 +40,7 @@ struct TLParam {
 
     qint8 flagBit = -1;
     QString flagMember;
+    QString flagName() const;
 
     QString type() const { return m_type; }
     QString bareType() const { return m_bareType; }
@@ -149,6 +150,7 @@ public:
     static QString generateTLValuesDefinition(const TLType &type);
     static QString generateTLValuesDefinition(const TLMethod &method);
     static QString generateTLTypeDefinition(const TLType &type, bool addSpecSources = false);
+    static QStringList generateTLTypeMemberFlags(const TLType &type);
     static QStringList generateTLTypeMemberGetters(const TLType &type);
     static QStringList generateTLTypeMembers(const TLType &type);
 
