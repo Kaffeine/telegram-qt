@@ -29,6 +29,10 @@
 
 QT_FORWARD_DECLARE_CLASS(QJsonDocument)
 
+struct Name {
+    QString name;
+};
+
 struct TLParam {
     TLParam() { }
     TLParam(const QString &newName, const QString &newType, qint8 newFlagBit = -1) :
@@ -62,15 +66,13 @@ protected:
     bool m_accessByPointer = false;
 };
 
-struct TLSubType {
-    QString name;
+struct TLSubType : public Name {
     quint32 id;
     QList<TLParam> members;
     QString source; // The source from the spec
 };
 
-struct TLType {
-    QString name;
+struct TLType : public Name {
     QList<TLSubType> subTypes;
 
     bool isSelfReferenced() const { return m_selfReferenced; }
@@ -80,7 +82,7 @@ protected:
     bool m_selfReferenced = false;
 };
 
-struct TLMethod {
+struct TLMethod : public Name {
     QString nameFirstCapital() const {
         if (name.isEmpty()) {
             return QString();
@@ -89,7 +91,6 @@ struct TLMethod {
         capital[0] = capital.at(0).toUpper();
         return capital;
     }
-    QString name;
     quint32 id;
     QString type;
     QString source; // The source from the spec
