@@ -188,7 +188,7 @@ QString removePrefix(const QString &str)
     }
 }
 
-QString joinLinesWithSpacing(const QStringList &lines, int spacing)
+QString joinLinesWithPrepend(const QStringList &lines, const QString &prep)
 {
     if (lines.isEmpty()) {
         return QString();
@@ -197,15 +197,13 @@ QString joinLinesWithSpacing(const QStringList &lines, int spacing)
     int lineSize = [&]() {
         int size = 0;
         for (const QString &line : lines) {
-            size += spacing + line.size() + 1;
+            size += prep.size() + line.size() + 1;
         }
         return size;
     }();
     result.reserve(lineSize);
-
-    const QString spacingStr(spacing, QLatin1Char(' '));
     for (const QString &line : lines) {
-        result.append(spacingStr + line + QLatin1Char('\n'));
+        result.append(prep + line + QLatin1Char('\n'));
     }
     return result;
 }
@@ -500,9 +498,9 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 //    code.append(copyConstructor);
 //    code.append(copyOperator);
     code.append(isValidTypeCode);
-    const QString memberFlags = joinLinesWithSpacing(generateTLTypeMemberFlags(type), doubleSpacing.size());
-    const QString memberGetters = joinLinesWithSpacing(generateTLTypeMemberGetters(type), spacing.size());
-    const QString members = joinLinesWithSpacing(generateTLTypeMembers(type), spacing.size());
+    const QString memberFlags = joinLinesWithPrepend(generateTLTypeMemberFlags(type), doubleSpacing);
+    const QString memberGetters = joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing);
+    const QString members = joinLinesWithPrepend(generateTLTypeMembers(type), spacing);
     if (!memberFlags.isEmpty()) {
         code.append(spacing + "enum Flags {\n");
         code.append(memberFlags);
