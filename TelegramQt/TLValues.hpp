@@ -26,8 +26,8 @@ struct TLValue {
     Q_GADGET
     Q_ENUMS(Value)
 public:
-    static const quint32 CurrentLayer = 45;
-    enum Value {
+    static constexpr quint32 CurrentLayer = 45;
+    enum Value : quint32 {
         // Generated TLValues (proto)
         ResPQ = 0x05162463,
         PQInnerData = 0x83c95aec,
@@ -636,17 +636,17 @@ public:
         // End of generated TLValues
     };
 
-    explicit TLValue(quint32 i = 0) :
+    explicit constexpr TLValue(quint32 i = 0) :
         m_value(Value(i))
     {
     }
 
-    TLValue(Value v) :
+    constexpr TLValue(Value v) :
         m_value(v)
     {
     }
 
-    operator quint32() const
+    constexpr operator quint32() const
     {
         return m_value;
     }
