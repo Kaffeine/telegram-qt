@@ -21,6 +21,10 @@
 
 #include <QDebug>
 
+#ifndef Q_FALLTHROUGH
+#define Q_FALLTHROUGH() (void)0
+#endif
+
 static const quint32 tcpTimeout = 15 * 1000;
 
 CTcpTransport::CTcpTransport(QObject *parent) :
@@ -106,7 +110,7 @@ void CTcpTransport::setState(QAbstractSocket::SocketState newState)
     case QAbstractSocket::ConnectedState:
         m_expectedLength = 0;
         setSessionType(Unknown);
-        break;
+        Q_FALLTHROUGH();
     default:
         m_timeoutTimer->stop();
         break;
