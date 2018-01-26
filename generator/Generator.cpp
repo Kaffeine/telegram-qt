@@ -422,15 +422,13 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 //    QString anotherName = removePrefix(type.name);
 //    anotherName[0] = anotherName.at(0).toUpper();
 //    anotherName.prepend(QLatin1String("another"));
-
-    QString constructor = spacing + QString("%1() :\n").arg(type.name);
+    bool constExpr = true;
+    QString constructor = QString("%1() :\n").arg(type.name);
 //    QString copyConstructor = spacing + QString("%1(const %1 &%2) :\n").arg(type.name).arg(anotherName);
 //    QString copyOperator = spacing + QString("%1 &operator=(const %1 &%2) {\n").arg(type.name).arg(anotherName);
     static const QString specCommentPrefix = spacing + QStringLiteral("// ");
     QString specSource;
-    QString isValidTypeCode = QStringLiteral(
-                "    bool isValid() const {\n"
-                "        switch (tlType) {\n");
+    QString isValidTypeCode;
 
     QStringList addedMembers;
     foreach (const TLSubType &subType, type.subTypes) {
@@ -464,6 +462,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 //            copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
 //            copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
             if (!podTypes.contains(member.type())) {
+                constExpr = false;
                 continue;
             }
 
@@ -491,22 +490,37 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 
 //    copyOperator.append(QString("\n%1%1return *this;\n%1}\n").arg(spacing));
 
-    code.append(constructor);
+    const QString constExprSpace = QStringLiteral("constexpr ");
+    if (constExpr) {
+        code.append(spacing + constExprSpace + constructor);
+    } else {
+        code.append(spacing + constructor);
+    }
     if (addSpecSources) {
         code.append(specSource);
     }
 //    code.append(copyConstructor);
 //    code.append(copyOperator);
+    const QString isValidFirstLines = QStringLiteral("bool isValid() const {\n"
+                                                     "        switch (tlType) {\n");
+    if (constExpr) {
+        code.append(spacing + QStringLiteral("Q_DECL_RELAXED_CONSTEXPR ") + isValidFirstLines);
+    } else {
+        code.append(spacing + isValidFirstLines);
+    }
     code.append(isValidTypeCode);
     const QString memberFlags = joinLinesWithPrepend(generateTLTypeMemberFlags(type), doubleSpacing);
-    const QString memberGetters = joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing);
-    const QString members = joinLinesWithPrepend(generateTLTypeMembers(type), spacing);
     if (!memberFlags.isEmpty()) {
         code.append(spacing + "enum Flags {\n");
         code.append(memberFlags);
         code.append(spacing + "};\n");
     }
-    code.append(memberGetters);
+    if (constExpr) {
+        code.append(joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing + constExprSpace));
+    } else {
+        code.append(joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing));
+    }
+    const QString members = joinLinesWithPrepend(generateTLTypeMembers(type), spacing);
     code.append(members);
     code.append(QString("};\n\n"));
 
