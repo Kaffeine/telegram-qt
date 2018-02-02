@@ -14,7 +14,8 @@ endif()
 
 add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED plugin.cpp
     DeclarativeClient.cpp
-    DeclarativeOperations.cpp
+    DeclarativeOperation.cpp
+    DeclarativeAuthOperation.cpp
     DeclarativeSettings.cpp
 )
 

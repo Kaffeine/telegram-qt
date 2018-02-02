@@ -12,8 +12,8 @@ SOURCES = plugin.cpp
 OTHER_FILES += CMakeLists.txt
 
 INCLUDEPATH += ../../TelegramQt
-SOURCES += DeclarativeClient.cpp DeclarativeOperations.cpp DeclarativeSettings.cpp
-HEADERS += DeclarativeClient.hpp DeclarativeOperations.hpp DeclarativeSettings.hpp
+SOURCES += DeclarativeClient.cpp DeclarativeOperation.cpp DeclarativeAuthOperation.cpp DeclarativeSettings.cpp
+HEADERS += DeclarativeClient.hpp DeclarativeOperation.hpp DeclarativeAuthOperation.hpp DeclarativeSettings.hpp
 
 target.path += $$INSTALL_QML_IMPORT_DIR/TelegramQt
 INSTALLS += target

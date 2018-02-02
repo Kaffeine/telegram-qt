@@ -11,7 +11,7 @@
 #include "../../TelegramQt/CAppInformation.hpp"
 
 #include "DeclarativeClient.hpp"
-#include "DeclarativeOperations.hpp"
+#include "DeclarativeAuthOperation.hpp"
 #include "DeclarativeSettings.hpp"
 
 class AccountSecretHelper : public QObject
