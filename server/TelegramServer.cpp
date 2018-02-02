@@ -145,6 +145,7 @@ User *Server::addUser(const QString &identifier)
     qDebug() << Q_FUNC_INFO << identifier;
     User *user = new User(this);
     user->setPhoneNumber(identifier);
+    user->setDcId(dcId());
     insertUser(user);
     return user;
 }
@@ -165,7 +166,7 @@ PhoneStatus Server::getPhoneStatus(const QString &identifier)
     User *user = getUser(identifier);
     if (user) {
         result.online = user->isOnline();
-        result.dcId = m_dcOption.id;
+        result.dcId = user->dcId();
     }
     return result;
 }

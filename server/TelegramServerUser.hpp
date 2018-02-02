@@ -50,7 +50,10 @@ public:
     QString lastName() const { return m_lastName; }
     void setLastName(const QString &lastName);
 
-    bool isOnline();
+    bool isOnline() const;
+
+    quint32 dcId() const { return m_dcId; }
+    void setDcId(quint32 id);
 
     Session getSession(quint64 authId) const;
     QVector<Session> sessions() const { return m_sessions; }
@@ -74,6 +77,7 @@ protected:
     QByteArray m_passwordSalt;
     QByteArray m_passwordHash;
     QVector<Session> m_sessions;
+    quint32 m_dcId = 0;
 };
 
 } // Server

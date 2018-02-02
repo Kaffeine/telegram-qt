@@ -29,9 +29,14 @@ void User::setLastName(const QString &lastName)
     m_lastName = lastName;
 }
 
-bool User::isOnline()
+bool User::isOnline() const
 {
     return true;
+}
+
+void User::setDcId(quint32 id)
+{
+    m_dcId = id;
 }
 
 Session User::getSession(quint64 authId) const
