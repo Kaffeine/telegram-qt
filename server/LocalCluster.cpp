@@ -14,6 +14,12 @@ namespace Server {
 LocalCluster::LocalCluster(QObject *parent)
     : QObject(parent)
 {
+    m_constructor = [](QObject *parent) { return new Server(parent); };
+}
+
+void LocalCluster::setServerContructor(LocalCluster::ServerConstructor constructor)
+{
+    m_constructor = constructor;
 }
 
 void LocalCluster::setServerConfiguration(const DcConfiguration &config)
@@ -33,7 +39,7 @@ bool LocalCluster::start()
     }
 
     for (const DcOption &dc : m_serverConfiguration.dcOptions) {
-        Server *server = new Server(this);
+        Server *server = m_constructor(this);
         server->setServerConfiguration(m_serverConfiguration);
         server->setDcOption(dc);
         server->setServerPrivateRsaKey(m_key);

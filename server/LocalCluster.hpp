@@ -36,6 +36,9 @@ class LocalCluster : public QObject
     Q_OBJECT
 public:
     explicit LocalCluster(QObject *parent = nullptr);
+    using ServerConstructor = Server *(*)(QObject *parent);
+    void setServerContructor(ServerConstructor constructor);
+
     DcConfiguration serverConfiguration() { return m_serverConfiguration; }
     void setServerConfiguration(const DcConfiguration &config);
 
@@ -50,6 +53,7 @@ public:
     Server *getServerInstance(quint32 dcId);
 
 protected:
+    ServerConstructor m_constructor;
     QVector<Server*> m_serverInstances;
     DcConfiguration m_serverConfiguration;
     RsaKey m_key;
