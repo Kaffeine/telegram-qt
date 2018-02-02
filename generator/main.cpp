@@ -556,6 +556,10 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         OutputFile fileValues("TLValues.hpp");
         fileValues.replace("TLValues", generator.codeOfTLValues, 8);
     }
+    {
+        OutputFile fileValues("TLTypes.hpp");
+        fileValues.replace("TLTypes", generator.codeOfTLTypes);
+    }
 
     {
         OutputFile fileTelegramStreamHeader("CTelegramStream.hpp");
