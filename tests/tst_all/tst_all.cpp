@@ -108,8 +108,8 @@ void tst_all::testClientConnection()
 
     TelegramNamespace::registerTypes();
     TestServer server;
-    TLDcOption option;
-    option.ipAddress = QStringLiteral("127.0.0.1");
+    DcOption option;
+    option.address = QStringLiteral("127.0.0.1");
     option.port = 11443;
     option.id = 1;
     const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
@@ -137,7 +137,7 @@ void tst_all::testClientConnection()
     client.setAppInformation(getAppInfo());
     CTelegramCore &clientSettings = client;
 #endif
-    QVERIFY(clientSettings.setServerConfiguration({DcOption(option.ipAddress, option.port)}));
+    QVERIFY(clientSettings.setServerConfiguration({DcOption(option.address, option.port, option.id)}));
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
 
     // --- Connect ---

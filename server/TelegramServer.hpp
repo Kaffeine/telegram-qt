@@ -35,7 +35,7 @@ class Server : public QObject, public ServerApi
 public:
     explicit Server(QObject *parent = nullptr);
 
-    void setDcOption(const TLDcOption &option);
+    void setDcOption(const DcOption &option);
 
     void setServerPrivateRsaKey(const Telegram::RsaKey &key);
 
@@ -76,7 +76,7 @@ protected:
 
 private:
     QTcpServer *m_serverSocket;
-    TLDcOption m_dcOption;
+    DcOption m_dcOption;
     Telegram::RsaKey m_key;
 
     QHash<QString, quint32> m_phoneToUserId;

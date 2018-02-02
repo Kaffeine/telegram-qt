@@ -51,7 +51,7 @@ Server::Server(QObject *parent) :
     connect(m_serverSocket, &QTcpServer::newConnection, this, &Server::onNewConnection);
 }
 
-void Server::setDcOption(const TLDcOption &option)
+void Server::setDcOption(const DcOption &option)
 {
     m_dcOption = option;
 }
@@ -67,7 +67,7 @@ bool Server::start()
         qWarning() << "Unable to listen port" << m_dcOption.port;
         return false;
     }
-    qDebug() << "Start a server" << m_dcOption.id << "on port" << m_dcOption.port << "Key:" << m_key.fingerprint;
+    qDebug() << "Start a server" << m_dcOption.id << "on" << m_dcOption.address << ":" << m_dcOption.port << "Key:" << m_key.fingerprint;
     return true;
 }
 
