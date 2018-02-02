@@ -56,6 +56,11 @@ void User::addSession(const Session &session)
 
 void User::setPlainPassword(const QString &password)
 {
+    if (password.isEmpty()) {
+        m_passwordSalt.clear();
+        m_passwordHash.clear();
+        return;
+    }
     QByteArray pwdSalt(8, Qt::Uninitialized);
     Utils::randomBytes(&pwdSalt);
     const QByteArray pwdData = pwdSalt + password.toUtf8() + pwdSalt;
