@@ -32,6 +32,56 @@ class CTelegramMediaModule;
 #define Q_ENUM(x) Q_ENUMS(x)
 #endif
 
+namespace Telegram {
+
+struct Peer
+{
+    Q_GADGET
+    Q_PROPERTY(Telegram::Peer::Type type MEMBER type)
+    Q_PROPERTY(quint32 id MEMBER id)
+public:
+    enum Type {
+        User,
+        Chat,
+        Channel,
+    };
+    Q_ENUM(Type)
+
+    Peer(quint32 id = 0, Type t = User) : type(t), id(id)
+    {
+    }
+
+    Type type;
+    quint32 id;
+
+    Q_INVOKABLE bool isValid() const { return id; }
+
+    bool operator==(const Peer &p) const
+    {
+        return (p.type == type) && (p.id == id);
+    }
+
+    static Peer fromUserId(quint32 id)
+    {
+        return Peer(id, User);
+    }
+
+    static Peer fromChatId(quint32 id)
+    {
+        return Peer(id, Chat);
+    }
+
+    static Peer fromChannelId(quint32 id)
+    {
+        return Peer(id, Channel);
+    }
+
+    QString toString() const;
+    static Peer fromString(const QString &string);
+};
+
+} // Telegram namespace
+
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
 {
     Q_OBJECT
@@ -140,6 +190,10 @@ public:
     Q_ENUM(MessageAction)
 
     static void registerTypes();
+    Q_INVOKABLE static Telegram::Peer emptyPeer();
+    Q_INVOKABLE static Telegram::Peer peerFromChatId(quint32 id);
+    Q_INVOKABLE static Telegram::Peer peerFromChannelId(quint32 id);
+    Q_INVOKABLE static Telegram::Peer peerFromUserId(quint32 id);
 };
 
 namespace Telegram {
@@ -184,44 +238,6 @@ class MessageMediaInfo;
 enum class PeerPictureSize {
     Small,
     Big,
-};
-
-struct Peer
-{
-    enum Type {
-        User,
-        Chat,
-        Channel,
-    };
-
-    Peer(quint32 id = 0, Type t = User) : type(t), id(id)
-    {
-    }
-
-    Type type;
-    quint32 id;
-
-    bool isValid() const { return id; }
-
-    bool operator==(const Peer &p) const
-    {
-        return (p.type == type) && (p.id == id);
-    }
-
-    static Peer fromUserId(quint32 id)
-    {
-        return Peer(id, User);
-    }
-
-    static Peer fromChatId(quint32 id)
-    {
-        return Peer(id, Chat);
-    }
-
-    static Peer fromChannelId(quint32 id)
-    {
-        return Peer(id, Channel);
-    }
 };
 
 struct DcOption
@@ -490,6 +506,7 @@ T maskPhoneNumber(T container, const QString &key)
 } // Telegram namespace
 
 Q_DECLARE_METATYPE(Telegram::Peer)
+Q_DECLARE_METATYPE(Telegram::Peer::Type)
 Q_DECLARE_METATYPE(Telegram::DcOption)
 Q_DECLARE_METATYPE(Telegram::Message)
 Q_DECLARE_METATYPE(Telegram::ChatInfo)

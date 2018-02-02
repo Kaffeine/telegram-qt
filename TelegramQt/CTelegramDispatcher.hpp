@@ -74,8 +74,6 @@ public:
 
     void plugModule(CTelegramModule *module);
 
-    static QVector<Telegram::DcOption> defaultDcConfiguration();
-
     QVector<Telegram::DcOption> dcConfiguration() const;
     bool updatesEnabled() const;
     void setUpdatesEnabled(bool enable);

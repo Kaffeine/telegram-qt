@@ -24,6 +24,7 @@
 #include "CTelegramAuthModule.hpp"
 #include "CTelegramMediaModule.hpp"
 #include "CTelegramTransportModule.hpp"
+#include "ClientSettings.hpp"
 
 class CTelegramCore::Private
 {
@@ -168,7 +169,7 @@ void CTelegramCore::setAppInformation(const CAppInformation *newAppInfo)
 
 QVector<Telegram::DcOption> CTelegramCore::defaultServerConfiguration()
 {
-    return CTelegramDispatcher::defaultDcConfiguration();
+    return Telegram::Client::Settings::defaultServerConfiguration();
 }
 
 QVector<Telegram::DcOption> CTelegramCore::builtInDcs()

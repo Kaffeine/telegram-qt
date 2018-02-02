@@ -29,6 +29,28 @@ DEFINES += QT_STRICT_ITERATORS
 
 SOURCES = CTelegramCore.cpp \
     CAppInformation.cpp \
+    AccountStorage.cpp \
+    DhLayer.cpp \
+    Client.cpp \
+    ClientBackend.cpp \
+    ClientConnection.cpp \
+    ClientDhLayer.cpp \
+    ClientSettings.cpp \
+    ClientRpcLayer.cpp \
+    ClientRpcLayerExtension.cpp \
+    ClientRpcAccountLayer.cpp \
+    ClientRpcAuthLayer.cpp \
+    ClientRpcChannelsLayer.cpp \
+    ClientRpcContactsLayer.cpp \
+    ClientRpcHelpLayer.cpp \
+    ClientRpcMessagesLayer.cpp \
+    ClientRpcPhotosLayer.cpp \
+    ClientRpcUpdatesLayer.cpp \
+    ClientRpcUploadLayer.cpp \
+    ClientRpcUsersLayer.cpp \
+    RpcError.cpp \
+    RpcLayer.cpp \
+    Connection.cpp \
     CTelegramDispatcher.cpp \
     CTelegramModule.cpp \
     CTelegramAuthModule.cpp \
@@ -36,6 +58,7 @@ SOURCES = CTelegramCore.cpp \
     CTelegramTransportModule.cpp \
     CRawStream.cpp \
     CTelegramStream.cpp \
+    CTelegramStreamExtraOperators.cpp \
     Debug.cpp \
     Utils.cpp \
     FileRequestDescriptor.cpp \
@@ -45,7 +68,10 @@ SOURCES = CTelegramCore.cpp \
     CClientTcpTransport.cpp \
     TelegramNamespace.cpp \
     CTelegramConnection.cpp \
+    LegacySecretReader.cpp \
+    PendingOperation.cpp \
     RpcProcessingContext.cpp \
+    SendPackageHelper.cpp \
     TLValues.cpp
 
 PUBLIC_HEADERS += \
@@ -56,18 +82,44 @@ PUBLIC_HEADERS += \
     CTelegramCore.hpp \
     TelegramQt/CAppInformation \
     TelegramQt/CTelegramCore \
+    TelegramQt/AccountStorage \
+    TelegramQt/Client \
     TelegramQt/TelegramNamespace
 
 HEADERS = CTelegramCore.hpp \
     CAppInformation.hpp \
+    AccountStorage.hpp \
     Debug.hpp \
     Debug_p.hpp \
+    DhLayer.hpp \
+    Client.hpp \
+    Client_p.hpp \
+    ClientBackend.hpp \
+    ClientConnection.hpp \
+    ClientDhLayer.hpp \
+    ClientSettings.hpp \
+    ClientRpcLayer.hpp \
+    ClientRpcLayerExtension.hpp \
+    ClientRpcAccountLayer.hpp \
+    ClientRpcAuthLayer.hpp \
+    ClientRpcChannelsLayer.hpp \
+    ClientRpcContactsLayer.hpp \
+    ClientRpcHelpLayer.hpp \
+    ClientRpcMessagesLayer.hpp \
+    ClientRpcPhotosLayer.hpp \
+    ClientRpcUpdatesLayer.hpp \
+    ClientRpcUploadLayer.hpp \
+    ClientRpcUsersLayer.hpp \
+    RpcError.hpp \
+    RpcLayer.hpp \
+    Connection.hpp \
     CTelegramDispatcher.hpp \
     CTelegramModule.hpp \
     CTelegramAuthModule.hpp \
     CTelegramMediaModule.hpp \
     CTelegramTransportModule.hpp \
     CTelegramStream.hpp \
+    CTelegramStreamExtraOperators.hpp \
     CTelegramStream_p.hpp \
     CRawStream.hpp \
     Utils.hpp \
@@ -76,12 +128,16 @@ HEADERS = CTelegramCore.hpp \
     CTelegramTransport.hpp \
     CTcpTransport.hpp \
     CClientTcpTransport.hpp \
+    TLFunctions.hpp \
     TLTypes.hpp \
     TLNumbers.hpp \
     crypto-aes.hpp \
     crypto-rsa.hpp \
     CTelegramConnection.hpp \
+    LegacySecretReader.hpp \
+    PendingOperation.hpp \
     RpcProcessingContext.hpp \
+    SendPackageHelper.hpp \
     TelegramNamespace.hpp \
     TelegramNamespace_p.hpp \
     telegramqt_global.h \

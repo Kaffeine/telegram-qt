@@ -11,6 +11,10 @@ CONFIG += c++11
 SOURCES = plugin.cpp
 OTHER_FILES += CMakeLists.txt
 
+INCLUDEPATH += ../../TelegramQt
+SOURCES += DeclarativeClient.cpp DeclarativeOperations.cpp DeclarativeSettings.cpp
+HEADERS += DeclarativeClient.hpp DeclarativeOperations.hpp DeclarativeSettings.hpp
+
 target.path += $$INSTALL_QML_IMPORT_DIR/TelegramQt
 INSTALLS += target
 

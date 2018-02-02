@@ -101,6 +101,12 @@ int CRawStream::bytesAvailable() const
     return m_device ? m_device->bytesAvailable() : 0;
 }
 
+bool CRawStream::writeBytes(const QByteArray &data)
+{
+    m_error = m_error || m_device->write(data) != data.size();
+    return m_error;
+}
+
 bool CRawStream::read(void *data, qint64 size)
 {
     m_error = m_error || m_device->read((char *) data, size) != size;
@@ -188,8 +194,7 @@ CRawStream &CRawStream::operator<<(const double &d)
 
 CRawStream &CRawStream::operator<<(const QByteArray &data)
 {
-    m_error = m_error || m_device->write(data) != data.size();
-
+    writeBytes(data);
     return *this;
 }
 

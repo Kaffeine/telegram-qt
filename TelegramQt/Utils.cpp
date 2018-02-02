@@ -266,7 +266,7 @@ Telegram::RsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
     Telegram::RsaKey result;
     FILE *file = fopen(fileName.toLocal8Bit().constData(), "r");
     if (!file) {
-        qWarning() << "Can not open RSA key file.";
+        qWarning() << "Can not open RSA key file" << fileName;
         return result;
     }
 

@@ -1343,7 +1343,6 @@ void dumpRpc(CTelegramStream &stream)
         qDebug() << request << "id" << id;
     }
         break;
-
     // End of generated RPC debug cases
     default:
         break;

@@ -1,6 +1,14 @@
 
 set(telegram_qt_SOURCES
+    AccountStorage.cpp
     TelegramNamespace.cpp
+    Client.cpp
+    ClientBackend.cpp
+    ClientConnection.cpp
+    ClientDhLayer.cpp
+    ClientRpcLayer.cpp
+    ClientSettings.cpp
+    Connection.cpp
     CAppInformation.cpp
     CTelegramCore.cpp
     CTelegramDispatcher.cpp
@@ -10,20 +18,54 @@ set(telegram_qt_SOURCES
     CTelegramTransportModule.cpp
     CTelegramConnection.cpp
     CTelegramTransport.cpp
+    LegacySecretReader.cpp
+    RpcError.cpp
+    RpcLayer.cpp
     RpcProcessingContext.cpp
+    SendPackageHelper.cpp
     CTelegramStream.cpp
+    CTelegramStreamExtraOperators.cpp
     CTcpTransport.cpp
     CClientTcpTransport.cpp
     CRawStream.cpp
     Debug.cpp
+    DhLayer.cpp
     Utils.cpp
     FileRequestDescriptor.cpp
+    PendingOperation.cpp
     TelegramUtils.cpp
     TLValues.cpp
+
+    ClientRpcLayerExtension.cpp
+    ClientRpcAccountLayer.cpp
+    ClientRpcAuthLayer.cpp
+    ClientRpcChannelsLayer.cpp
+    ClientRpcContactsLayer.cpp
+    ClientRpcHelpLayer.cpp
+    ClientRpcMessagesLayer.cpp
+    ClientRpcPhotosLayer.cpp
+    ClientRpcUpdatesLayer.cpp
+    ClientRpcUploadLayer.cpp
+    ClientRpcUsersLayer.cpp
 )
 
 set(telegram_qt_META_HEADERS
+    AccountStorage.hpp
+    Client.hpp
+    Client_p.hpp
+    ClientBackend.hpp
+    ClientConnection.hpp
+    ClientDhLayer.hpp
+    ClientRpcLayer.hpp
+    ClientSettings.hpp
+    Connection.hpp
+    DhLayer.hpp
+    LegacySecretReader.hpp
+    RpcError.hpp
+    RpcLayer.hpp
+    SendPackageHelper.hpp
     TelegramNamespace.hpp
+    PendingOperation.hpp
     CAppInformation.hpp
     CTelegramCore.hpp
     CTelegramDispatcher.hpp
@@ -36,6 +78,18 @@ set(telegram_qt_META_HEADERS
     CTcpTransport.hpp
     CClientTcpTransport.hpp
     TLValues.hpp
+
+    ClientRpcLayerExtension.hpp
+    ClientRpcAccountLayer.hpp
+    ClientRpcAuthLayer.hpp
+    ClientRpcChannelsLayer.hpp
+    ClientRpcContactsLayer.hpp
+    ClientRpcHelpLayer.hpp
+    ClientRpcMessagesLayer.hpp
+    ClientRpcPhotosLayer.hpp
+    ClientRpcUpdatesLayer.hpp
+    ClientRpcUploadLayer.hpp
+    ClientRpcUsersLayer.hpp
 )
 
 set(telegram_qt_HEADERS
@@ -44,6 +98,7 @@ set(telegram_qt_HEADERS
     TelegramNamespace_p.hpp
     CTelegramStream.hpp
     CTelegramStream_p.hpp
+    CTelegramStreamExtraOperators.hpp
     RpcProcessingContext.hpp
     CRawStream.hpp
     Debug.hpp

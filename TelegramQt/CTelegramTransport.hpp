@@ -23,6 +23,7 @@
 #include <QByteArray>
 #include <QAbstractSocket>
 
+// TODO: Move into Telegram namespace and rename to BaseTransport
 class CTelegramTransport : public QObject
 {
     Q_OBJECT

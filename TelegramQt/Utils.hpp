@@ -25,15 +25,6 @@
 
 namespace Telegram {
 
-struct RsaPrivateKey {
-    QByteArray modulus; // n
-    QByteArray exponent; // e
-    QByteArray d; // d, secret exponent
-    QByteArray p; // p
-    QByteArray q; // q
-    quint64 fingersprint;
-};
-
 namespace Utils {
 
 int randomBytes(QByteArray *array);
@@ -78,7 +69,8 @@ template <typename T>
 inline T Utils::randomBytes()
 {
     T result;
-    return randomBytes(&result);
+    randomBytes(&result);
+    return result;
 }
 
 inline QByteArray Utils::rsa(const QByteArray &data, const Telegram::RsaKey &key)

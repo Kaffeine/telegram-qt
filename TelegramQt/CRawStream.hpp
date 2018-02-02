@@ -46,6 +46,7 @@ public:
     bool atEnd() const;
     int bytesAvailable() const;
 
+    bool writeBytes(const QByteArray &bytes);
     QByteArray readBytes(int count);
 
     QByteArray readAll();

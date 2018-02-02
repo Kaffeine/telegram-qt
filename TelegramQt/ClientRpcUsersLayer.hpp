@@ -1,0 +1,46 @@
+/*
+   Copyright (C) 2018 Alexander Akulich <akulichalexander@gmail.com>
+
+   This file is a part of TelegramQt library.
+
+   This library is free software; you can redistribute it and/or
+   modify it under the terms of the GNU Lesser General Public
+   License as published by the Free Software Foundation; either
+   version 2.1 of the License, or (at your option) any later version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+ */
+
+#ifndef TELEGRAM_CLIENT_RPC_USERS_LAYER_HPP
+#define TELEGRAM_CLIENT_RPC_USERS_LAYER_HPP
+
+#include "ClientRpcLayerExtension.hpp"
+#include "TLTypes.hpp"
+
+namespace Telegram {
+
+class PendingRpcOperation;
+
+namespace Client {
+
+class UsersRpcLayer : public BaseRpcLayerExtension
+{
+    Q_OBJECT
+public:
+    explicit UsersRpcLayer(QObject *parent = nullptr);
+
+    // Generated Telegram API declarations
+    PendingRpcOperation *getFullUser(const TLInputUser &id);
+    PendingRpcOperation *getUsers(const TLVector<TLInputUser> &id);
+    // End of generated Telegram API declarations
+};
+
+} // Client namespace
+
+} // Telegram namespace
+
+#endif // TELEGRAM_CLIENT_RPC_USERS_LAYER_HPP

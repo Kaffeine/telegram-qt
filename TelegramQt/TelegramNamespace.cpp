@@ -27,6 +27,64 @@ using namespace TelegramUtils;
 #include <QMetaType>
 #include <QDebug>
 
+static const QLatin1String c_userPrefix = QLatin1String("user");
+static const QLatin1String c_chatPrefix = QLatin1String("chat");
+static const QLatin1String c_channelPrefix = QLatin1String("channel");
+
+QString Telegram::Peer::toString() const
+{
+    switch (type) {
+    case User:
+        return c_userPrefix + QString::number(id);
+    case Chat:
+        return c_chatPrefix + QString::number(id);
+    case Channel:
+        return c_channelPrefix + QString::number(id);
+    default:
+        break;
+    }
+    return QString();
+}
+
+Telegram::Peer Telegram::Peer::fromString(const QString &string)
+{
+    // Possible schemes: user1234, chat1234, channel1234
+    if (string.length() < 5) {
+        return Peer();
+    }
+    bool ok = true;
+    switch (string.at(0).toLatin1()) {
+    case 'u': // user
+        if (string.startsWith(c_userPrefix)) {
+            uint userId = string.midRef(c_userPrefix.size()).toUInt(&ok);
+            if (ok) {
+                return Peer::fromUserId(userId);
+            }
+        }
+        break;
+    case 'c': // chat or channel
+        if (string.at(3).toLatin1() == 't') {
+            if (string.startsWith(c_chatPrefix)) {
+                uint chatId = string.midRef(c_chatPrefix.size()).toUInt(&ok);
+                if (ok) {
+                    return Peer::fromChatId(chatId);
+                }
+            }
+        } else {
+            if (string.startsWith(c_channelPrefix)) {
+                uint channelId = string.midRef(c_channelPrefix.size()).toUInt(&ok);
+                if (ok) {
+                    return Peer::fromChannelId(channelId);
+                }
+            }
+        }
+        break;
+    default:
+        break;
+    }
+    return Peer();
+}
+
 void TelegramNamespace::registerTypes()
 {
     static bool registered = false;
@@ -43,8 +101,29 @@ void TelegramNamespace::registerTypes()
         qRegisterMetaType<TelegramNamespace::AuthSignError>("TelegramNamespace::AuthSignError");
         qRegisterMetaType<TelegramNamespace::UnauthorizedError>("TelegramNamespace::UnauthorizedError");
         qRegisterMetaType<Telegram::PasswordInfo>("Telegram::PasswordInfo");
+        qRegisterMetaType<Telegram::Peer>("Telegram::Peer");
         registered = true;
     }
+}
+
+Telegram::Peer TelegramNamespace::emptyPeer()
+{
+    return Telegram::Peer();
+}
+
+Telegram::Peer TelegramNamespace::peerFromChatId(quint32 id)
+{
+    return Telegram::Peer::fromChatId(id);
+}
+
+Telegram::Peer TelegramNamespace::peerFromChannelId(quint32 id)
+{
+    return Telegram::Peer::fromChannelId(id);
+}
+
+Telegram::Peer TelegramNamespace::peerFromUserId(quint32 id)
+{
+    return Telegram::Peer::fromUserId(id);
 }
 
 Telegram::MessageMediaInfo::MessageMediaInfo() :

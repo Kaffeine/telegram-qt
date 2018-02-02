@@ -99,7 +99,6 @@ template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLKeyboardB
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLMessageRange> &v);
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLKeyboardButton> &v);
 // End of generated vector write templates instancing
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLDcOption> &v);
 
 template <int Size>
 CTelegramStream &CTelegramStream::operator>>(TLNumber<Size> &n)
@@ -112,17 +111,6 @@ template <int Size>
 CTelegramStream &CTelegramStream::operator<<(const TLNumber<Size> &n)
 {
     write(n.data, Size / 8);
-    return *this;
-}
-
-CTelegramStream &CTelegramStream::operator<<(const TLDcOption &dcOption)
-{
-    *this << dcOption.tlType;
-    *this << dcOption.flags;
-    *this << dcOption.id;
-    *this << dcOption.ipAddress;
-    *this << dcOption.port;
-
     return *this;
 }
 
@@ -4100,7 +4088,6 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdatesDifference &updatesDiffere
 
     return *this;
 }
-
 // End of generated read operators implementation
 
 // Generated write operators implementation
@@ -4968,5 +4955,4 @@ CTelegramStream &CTelegramStream::operator<<(const TLReplyMarkup &replyMarkupVal
 
     return *this;
 }
-
 // End of generated write operators implementation

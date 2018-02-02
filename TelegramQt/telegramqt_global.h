@@ -49,4 +49,6 @@
 #define TELEGRAMQT_EXPORT Q_DECL_IMPORT
 #endif
 
+#define TG_D(Class) Class##Private * const d = reinterpret_cast<Class##Private *>(Class::d);
+
 #endif // TELEGRAMQT_GLOBAL_H

@@ -22,6 +22,7 @@
 
 QT_FORWARD_DECLARE_CLASS(QTimer)
 
+// TODO: Move to Telegram namespace and rename to BaseTcpTransport
 class CTcpTransport : public CTelegramTransport
 {
     Q_OBJECT

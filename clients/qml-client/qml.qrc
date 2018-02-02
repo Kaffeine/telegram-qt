@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Login.qml</file>
+        <file>MainScreen.qml</file>
+        <file>DialogView.qml</file>
+        <file>DialogDelegate.qml</file>
+        <file>MessageView.qml</file>
+        <file>MessageDelegate.qml</file>
+        <file>MessageEditor.qml</file>
+        <file>ServiceMessageDelegate.qml</file>
+        <file>login/AuthScreen.qml</file>
+        <file>login/EnterCode.qml</file>
+        <file>login/EnterName.qml</file>
+        <file>login/EnterPassword.qml</file>
+        <file>login/EnterPhone.qml</file>
+    </qresource>
+</RCC>

@@ -3749,5 +3749,4 @@ QDebug operator<<(QDebug d, const TLUpdatesDifference &type)
 
     return d;
 }
-
 // End of generated TLTypes debug operators

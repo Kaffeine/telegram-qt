@@ -25,6 +25,7 @@
 #include "Debug_p.hpp"
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
+#include "ClientSettings.hpp"
 
 using namespace TelegramUtils;
 using namespace Telegram;
@@ -38,14 +39,6 @@ using namespace Telegram;
 #ifdef DEVELOPER_BUILD
 #include "TLTypesDebug.hpp"
 #endif
-
-static const QVector<Telegram::DcOption> s_builtInDcs = {
-        Telegram::DcOption(QLatin1String("149.154.175.50") , 443),
-        Telegram::DcOption(QLatin1String("149.154.167.51") , 443),
-        Telegram::DcOption(QLatin1String("149.154.175.100"), 443),
-        Telegram::DcOption(QLatin1String("149.154.167.91") , 443),
-        Telegram::DcOption(QLatin1String("91.108.56.165")  , 443),
-};
 
 const quint32 secretFormatVersion = 4;
 //Format v4:
@@ -134,11 +127,6 @@ void CTelegramDispatcher::plugModule(CTelegramModule *module)
 {
     m_modules.append(module);
     module->setDispatcher(this);
-}
-
-QVector<Telegram::DcOption> CTelegramDispatcher::defaultDcConfiguration()
-{
-    return s_builtInDcs;
 }
 
 QVector<Telegram::DcOption> CTelegramDispatcher::dcConfiguration() const
@@ -564,7 +552,7 @@ void CTelegramDispatcher::resetConnectionData()
 
 bool CTelegramDispatcher::resetDcConfiguration()
 {
-    return setDcConfiguration(defaultDcConfiguration());
+    return setDcConfiguration(Telegram::Client::Settings::defaultServerConfiguration());
 }
 
 void CTelegramDispatcher::initConnectionSharedFinal()

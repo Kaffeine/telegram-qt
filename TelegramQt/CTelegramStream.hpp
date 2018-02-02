@@ -41,8 +41,6 @@ public:
     CTelegramStream &operator>>(bool &data);
     CTelegramStream &operator<<(const bool &data);
 
-    CTelegramStream &operator<<(const TLDcOption &dcOption);
-
     template <typename T>
     CTelegramStream &operator>>(TLVector<T> &v);
     template <typename T>

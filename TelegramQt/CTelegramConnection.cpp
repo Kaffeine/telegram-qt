@@ -41,19 +41,49 @@ QString formatTLValue(const TLValue &val)
 #include "CAppInformation.hpp"
 #include "CTelegramStream.hpp"
 #include "CTelegramTransport.hpp"
+#include "ClientDhLayer.hpp"
 #include "Debug_p.hpp"
 #include "Utils.hpp"
 #include "TelegramUtils.hpp"
 #include "RpcProcessingContext.hpp"
+#include "SendPackageHelper.hpp"
 
 #ifdef DEVELOPER_BUILD
 #include "TLRpcDebug.hpp"
 #endif
 
+#define TELEGRAMQT_DEBUG_REVEAL_SECRETS
+
 using namespace TelegramUtils;
 using namespace Telegram;
 
 static const quint32 s_defaultAuthInterval = 15000; // 15 sec
+
+class SendPackageHelper : public BaseSendPackageHelper
+{
+public:
+    explicit SendPackageHelper(CTelegramConnection *connection) :
+        BaseSendPackageHelper(),
+        m_connection(connection)
+    {
+    }
+
+    quint64 newMessageId(bool isReply) override
+    {
+        Q_UNUSED(isReply)
+        quint64 ts = TelegramUtils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
+        ts &= ~quint64(3);
+        return m_connection->transport()->getNewMessageId(ts);
+    }
+
+    void sendPackage(const QByteArray &package) override
+    {
+        return m_connection->transport()->sendPackage(package);
+    }
+
+protected:
+    CTelegramConnection *m_connection;
+};
 
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
@@ -63,6 +93,7 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_authTimer(0),
     m_pingTimer(0),
     m_ackTimer(new QTimer(this)),
+    m_senderHelper(new SendPackageHelper(this)),
     m_authState(AuthStateNone),
     m_authId(0),
     m_authKeyAuxHash(0),
@@ -84,6 +115,10 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
     m_ackTimer->setInterval(90 * 1000);
     m_ackTimer->setSingleShot(true);
     connect(m_ackTimer, &QTimer::timeout, this, &CTelegramConnection::onTimeToAckMessages);
+
+    m_dhLayer = new Client::DhLayer(this);
+    m_dhLayer->setSendPackageHelper(m_senderHelper);
+    connect(m_dhLayer, &Client::DhLayer::stateChanged, this, &CTelegramConnection::onDhStateChanged);
 }
 
 void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
@@ -93,7 +128,9 @@ void CTelegramConnection::setDcInfo(const TLDcOption &newDcInfo)
 
 void CTelegramConnection::setServerRsaKey(const Telegram::RsaKey &key)
 {
+//    qDebug() << Q_FUNC_INFO << "Set server key:" << key.modulus.toHex() << key.exponent.toHex() << key.secretExponent.toHex() << key.fingerprint;
     m_rsaKey = key;
+    m_dhLayer->setServerRsaKey(m_rsaKey);
 }
 
 void CTelegramConnection::connectToDc()
@@ -133,6 +170,7 @@ quint64 CTelegramConnection::formatClientTimeStamp(qint64 timeInMs)
 void CTelegramConnection::setTransport(CTelegramTransport *newTransport)
 {
     m_transport = newTransport;
+//    m_dhLayer->setTransport(m_transport);
 
     connect(m_transport, &CTelegramTransport::stateChanged, this, &CTelegramConnection::onTransportStateChanged);
     connect(m_transport, &CTelegramTransport::packageReceived, this, &CTelegramConnection::onTransportPackageReceived);
@@ -166,20 +204,8 @@ void CTelegramConnection::initAuth()
         if (!m_rsaKey.isValid()) {
             qWarning() << "CTelegramConnection::initAuth(): RSA key is not valid!";
         }
-        m_authRetryId = 0;
-        Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
-        requestPqAuthorization();
+        m_dhLayer->init();
     }
-}
-
-void CTelegramConnection::requestPqAuthorization()
-{
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-    outputStream << TLValue::ReqPq;
-    outputStream << m_clientNonce;
-    sendPlainPackage(output);
-    setAuthState(AuthStatePqRequested);
 }
 
 void CTelegramConnection::setKeepAliveSettings(quint32 interval, quint32 serverDisconnectionExtraTime)
@@ -1796,7 +1822,6 @@ quint64 CTelegramConnection::usersGetUsers(const TLVector<TLInputUser> &id)
     outputStream << id;
     return sendEncryptedPackage(output);
 }
-
 // End of generated Telegram API methods implementation
 
 quint64 CTelegramConnection::ping()
@@ -1835,341 +1860,6 @@ quint64 CTelegramConnection::acknowledgeMessages(const TLVector<quint64> &idsVec
     outputStream << idsVector;
 
     return sendEncryptedPackage(output, /* save package */ false);
-}
-
-bool CTelegramConnection::acceptPqAuthorization(const QByteArray &payload)
-{
-    qDebug() << Q_FUNC_INFO;
-    CTelegramStream inputStream(payload);
-
-    TLValue responsePqValue;
-    inputStream >> responsePqValue;
-
-    if (responsePqValue != TLValue::ResPQ) {
-        qDebug() << "Error: Unexpected operation code";
-        return false;
-    }
-
-    TLNumber128 clientNonce;
-    inputStream >> clientNonce;
-
-    if (clientNonce != m_clientNonce) {
-        qDebug() << "Error: Client nonce in incoming package is different from our own.";
-        return false;
-    }
-
-    TLNumber128 serverNonce;
-    inputStream >> serverNonce;
-    m_serverNonce = serverNonce;
-
-    QByteArray pq;
-
-    inputStream >> pq;
-
-    if (pq.size() != 8) {
-        qDebug() << "Error: PQ should be 8 bytes in length";
-        return false;
-    }
-
-    m_pq = qFromBigEndian<quint64>(reinterpret_cast<const uchar*>(pq.constData()));
-
-    quint64 div1 = Utils::findDivider(m_pq);
-
-    if (div1 == 1) {
-        qDebug() << "Error: Can not solve PQ.";
-        return false;
-    }
-    quint64 div2 = m_pq / div1;
-
-    if (div1 < div2) {
-        m_p = div1;
-        m_q = div2;
-    } else {
-        m_p = div2;
-        m_q = div1;
-    }
-
-    TLVector<quint64> fingerprints;
-    inputStream >> fingerprints;
-    if (fingerprints.count() != 1) {
-        qDebug() << "Error: Unexpected Server RSA Fingersprints vector size:" << fingerprints.size();
-        return false;
-    }
-#ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
-    qDebug() << Q_FUNC_INFO << "Client nonce:" << clientNonce;
-    qDebug() << Q_FUNC_INFO << "Server nonce:" << serverNonce;
-    qDebug() << Q_FUNC_INFO << "PQ:" << m_pq;
-    qDebug() << Q_FUNC_INFO << "P:" << m_p;
-    qDebug() << Q_FUNC_INFO << "Q:" << m_q;
-    qDebug() << Q_FUNC_INFO << "Fingerprints:" << fingerprints;
-#endif
-    for (quint64 serverFingerprint : fingerprints) {
-        if (serverFingerprint == m_rsaKey.fingerprint) {
-            return true;
-        }
-    }
-    qDebug() << "Error: Server RSA fingersprints" << fingerprints << " do not match to the loaded key" << m_rsaKey.fingerprint;
-    return false;
-}
-
-void CTelegramConnection::requestDhParameters()
-{
-    qDebug() << Q_FUNC_INFO;
-    Utils::randomBytes(m_newNonce.data, m_newNonce.size());
-
-#ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
-    qDebug() << Q_FUNC_INFO << "New nonce:" << m_newNonce;
-#endif
-
-    QByteArray bigEndianNumber;
-    bigEndianNumber.fill(char(0), 8);
-
-    QByteArray encryptedPackage;
-    {
-        static const int requestedEncryptedPackageLength = 255;
-        QByteArray innerData;
-        CTelegramStream encryptedStream(&innerData, /* write */ true);
-
-        encryptedStream << TLValue::PQInnerData;
-
-        qToBigEndian(m_pq, (uchar *) bigEndianNumber.data());
-        encryptedStream << bigEndianNumber;
-
-        bigEndianNumber.fill(char(0), 4);
-        qToBigEndian(m_p, (uchar *) bigEndianNumber.data());
-        encryptedStream << bigEndianNumber;
-
-        qToBigEndian(m_q, (uchar *) bigEndianNumber.data());
-        encryptedStream << bigEndianNumber;
-
-        encryptedStream << m_clientNonce;
-        encryptedStream << m_serverNonce;
-        encryptedStream << m_newNonce;
-
-        QByteArray sha = Utils::sha1(innerData);
-        QByteArray randomPadding;
-        randomPadding.resize(requestedEncryptedPackageLength - (sha.length() + innerData.length()));
-        Utils::randomBytes(&randomPadding);
-
-        encryptedPackage = Utils::rsa(sha + innerData + randomPadding, m_rsaKey);
-    }
-
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << TLValue::ReqDHParams;
-    outputStream << m_clientNonce;
-    outputStream << m_serverNonce;
-
-    bigEndianNumber.fill(char(0), 4);
-    qToBigEndian(m_p, (uchar *) bigEndianNumber.data());
-    outputStream << bigEndianNumber;
-
-    qToBigEndian(m_q, (uchar *) bigEndianNumber.data());
-    outputStream << bigEndianNumber;
-
-    outputStream << m_rsaKey.fingerprint;
-
-    outputStream << encryptedPackage;
-
-    sendPlainPackage(output);
-    setAuthState(AuthStateDhRequested);
-}
-
-bool CTelegramConnection::acceptDhAnswer(const QByteArray &payload)
-{
-    qDebug() << Q_FUNC_INFO;
-    CTelegramStream inputStream(payload);
-
-    TLValue responseTLValue;
-    inputStream >> responseTLValue;
-
-    if (!checkClientServerNonse(inputStream)) {
-        return false;
-    }
-
-    switch (responseTLValue) {
-    case TLValue::ServerDHParamsOk: {
-        QByteArray encryptedAnswer;
-        inputStream >> encryptedAnswer;
-        return processServerDHParamsOK(encryptedAnswer);
-    }
-    default:
-        qDebug() << "Error: Server did not accept our DH params.";
-    }
-    return false;
-}
-
-bool CTelegramConnection::processServerDHParamsOK(const QByteArray &encryptedAnswer)
-{
-    m_tmpAesKey = generateTmpAesKey();
-
-    const QByteArray answerWithHash = Utils::aesDecrypt(encryptedAnswer, m_tmpAesKey);
-    const QByteArray sha1OfAnswer = answerWithHash.mid(0, 20);
-    const QByteArray answer = answerWithHash.mid(20, 564);
-
-    if (Utils::sha1(answer) != sha1OfAnswer) {
-        qDebug() << "Error: SHA1 of encrypted answer is different from announced.";
-        return false;
-    }
-
-    CTelegramStream encryptedInputStream(answer);
-
-    TLValue responseTLValue;
-    encryptedInputStream >> responseTLValue;
-
-    if (responseTLValue != TLValue::ServerDHInnerData) {
-        qDebug() << "Error: Unexpected TL Value in encrypted answer.";
-        return false;
-    }
-
-    if (!checkClientServerNonse(encryptedInputStream)) {
-        return false;
-    }
-
-    encryptedInputStream >> m_g;
-    encryptedInputStream >> m_dhPrime;
-    encryptedInputStream >> m_gA;
-
-    if ((m_g < 2) || (m_g > 7)) {
-        qDebug() << "Error: Received 'g' number is out of acceptable range [2-7].";
-        return false;
-    }
-
-    if (m_dhPrime.length() != 2048 / 8) {
-        qDebug() << "Error: Received dhPrime number length is not correct." << m_dhPrime.length() << 2048 / 8;
-        return false;
-    }
-
-    if (!(m_dhPrime.at(0) & 128)) {
-        qDebug() << "Error: Received dhPrime is too small.";
-        return false;
-    }
-
-    quint32 serverTime;
-    encryptedInputStream >> serverTime;
-    setDeltaTime(qint64(serverTime) - (QDateTime::currentMSecsSinceEpoch() / 1000));
-    m_deltaTimeHeuristicState = DeltaTimeIsOk;
-    return true;
-}
-
-void CTelegramConnection::generateDh()
-{
-    qDebug() << Q_FUNC_INFO;
-    // #6 Client computes random 2048-bit number b (using a sufficient amount of entropy) and sends the server a message
-    m_b.resize(256);
-    Utils::randomBytes(&m_b);
-
-    // IMPORTANT: Apart from the conditions on the Diffie-Hellman prime dh_prime and generator g,
-    // both sides are to check that g, g_a and g_b are greater than 1 and less than dh_prime - 1.
-    // We recommend checking that g_a and g_b are between 2^{2048-64} and dh_prime - 2^{2048-64} as well.
-
-#ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
-    qDebug() << "m_b" << m_b;
-#endif
-}
-
-void CTelegramConnection::requestDhGenerationResult()
-{
-    qDebug() << Q_FUNC_INFO;
-    QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
-
-    outputStream << TLValue::SetClientDHParams;
-    outputStream << m_clientNonce;
-    outputStream << m_serverNonce;
-
-    QByteArray encryptedPackage;
-    {
-        QByteArray innerData;
-        CTelegramStream encryptedStream(&innerData, /* write */ true);
-
-        encryptedStream << TLValue::ClientDHInnerData;
-
-        encryptedStream << m_clientNonce;
-        encryptedStream << m_serverNonce;
-        encryptedStream << m_authRetryId;
-
-        QByteArray binNumber;
-        binNumber.resize(sizeof(m_g));
-        qToBigEndian(m_g, (uchar *) binNumber.data());
-
-        binNumber = Utils::binaryNumberModExp(binNumber, m_dhPrime, m_b);
-
-        encryptedStream << binNumber;
-
-        QByteArray sha = Utils::sha1(innerData);
-        QByteArray randomPadding;
-
-        int packageLength = sha.length() + innerData.length();
-        if ((packageLength) % 16) {
-            randomPadding.resize(16 - (packageLength % 16));
-            Utils::randomBytes(&randomPadding);
-
-            packageLength += randomPadding.size();
-        }
-
-        encryptedPackage = Utils::aesEncrypt(sha + innerData + randomPadding, m_tmpAesKey);
-        encryptedPackage.truncate(packageLength);
-    }
-
-    outputStream << encryptedPackage;
-
-    sendPlainPackage(output);
-    setAuthState(AuthStateDhGenerationResultRequested);
-}
-
-bool CTelegramConnection::processServerDhAnswer(const QByteArray &payload)
-{
-    CTelegramStream inputStream(payload);
-    TLValue responseTLValue;
-    inputStream >> responseTLValue;
-    qDebug() << Q_FUNC_INFO << responseTLValue;
-
-    if (!checkClientServerNonse(inputStream)) {
-        return false;
-    }
-
-    TLNumber128 newNonceHashLower128;
-    inputStream >> newNonceHashLower128;
-    const QByteArray readedHashPart(newNonceHashLower128.data, newNonceHashLower128.size());
-    const QByteArray newAuthKey = Utils::binaryNumberModExp(m_gA, m_dhPrime, m_b);
-    const QByteArray newAuthKeySha = Utils::sha1(newAuthKey);
-    QByteArray expectedHashData(m_newNonce.data, m_newNonce.size());
-    expectedHashData.append(newAuthKeySha.left(8));
-    if (responseTLValue == TLValue::DhGenOk) {
-        qDebug() << Q_FUNC_INFO << "Answer OK";
-        expectedHashData.insert(32, char(1));
-    } else if (responseTLValue == TLValue::DhGenRetry) {
-        qDebug() << Q_FUNC_INFO << "Answer RETRY";
-        expectedHashData.insert(32, char(2));
-    } else if (responseTLValue == TLValue::DhGenFail) {
-        qDebug() << Q_FUNC_INFO << "Answer FAIL";
-        expectedHashData.insert(32, char(3));
-    } else {
-        qDebug() << "Error: Unexpected server response.";
-        return false;
-    }
-    if (Utils::sha1(expectedHashData).mid(4) != readedHashPart) {
-        qDebug() << "Error: Server (newNonce + auth key) hash is not correct.";
-        return false;
-    }
-    if (responseTLValue == TLValue::DhGenOk) {
-        qDebug() << "Server DH answer is accepted. Setup the auth key...";
-        setAuthKey(newAuthKey);
-        m_serverSalt = m_serverNonce.parts[0] ^ m_newNonce.parts[0];
-        setAuthState(AuthStateHaveAKey);
-    } else {
-        qDebug() << "Server DH answer is not accepted. Retry...";
-        if (newAuthKey.isEmpty()) {
-            m_authRetryId = 0;
-        } else {
-            m_authRetryId = Utils::getFingersprint(newAuthKey, /* lower-order */ false);// 64 higher-order bits of SHA1(auth_key)
-        }
-        generateDh();
-        requestDhGenerationResult();
-    }
-    return true;
 }
 
 void CTelegramConnection::processRedirectedPackage(const QByteArray &data)
@@ -4101,7 +3791,6 @@ void CTelegramConnection::processUsersGetUsers(RpcProcessingContext *context)
     }
     emit usersReceived(result);
 }
-
 // End of partially generated Telegram API RPC process implementation
 
 void CTelegramConnection::processAuthSign(RpcProcessingContext *context)
@@ -4223,55 +3912,20 @@ void CTelegramConnection::onTransportPackageReceived(const QByteArray &input)
 
     CRawStream inputStream(input);
 
-    quint64 authId = 0;
+    quint64 authKeyId = 0;
     QByteArray payload;
-    inputStream >> authId;
+    inputStream >> authKeyId;
 
-    if (!authId) {
-        // Plain Message
-        quint64 timeStamp = 0;
-        inputStream >> timeStamp;
-        quint32 length = 0;
-        inputStream >> length;
-
-        if (inputStream.bytesAvailable() != int(length)) {
-            qDebug() << Q_FUNC_INFO << "Corrupted packet. Specified length does not equal to real length";
-            return;
-        }
-
-        payload = inputStream.readBytes(length);
-#ifdef DEVELOPER_BUILD
-        qDebug() << Q_FUNC_INFO << "new plain package in auth state" << m_authState << "payload:" << TLValue::firstFromArray(payload);
-#endif
-
-        switch (m_authState) {
-        case AuthStatePqRequested:
-            if (acceptPqAuthorization(payload)) {
-                requestDhParameters();
-            }
-            break;
-        case AuthStateDhRequested:
-            if (acceptDhAnswer(payload)) {
-                generateDh();
-                requestDhGenerationResult();
-            }
-            break;
-        case AuthStateDhGenerationResultRequested:
-            if (!processServerDhAnswer(payload)) {
-                emit connectionFailed(this);
-                disconnectFromDc();
-            }
-            break;
-        default:
-            qWarning() << "Unexpected auth state!" << m_authState;
-            break;
+    if (!authKeyId) {
+        if (!m_dhLayer->processPlainPackage(input)) {
+            qWarning() << Q_FUNC_INFO << "Unable to process a plain message";
         }
     } else {
         if (m_authState < AuthStateHaveAKey) {
             qWarning() << Q_FUNC_INFO << "Unexpected message with auth data";
         }
 
-        if (authId != m_authId) {
+        if (authKeyId != m_authId) {
             qDebug() << Q_FUNC_INFO << "Incorrect auth id.";
 
 #ifdef NETWORK_LOGGING
@@ -4377,6 +4031,15 @@ void CTelegramConnection::onTimeToAckMessages()
     m_messagesToAck.clear();
 }
 
+void CTelegramConnection::onDhStateChanged()
+{
+    if (m_dhLayer->state() == Telegram::Client::DhLayer::State::HasKey) {
+        setAuthKey(m_senderHelper->authKey());
+        m_serverSalt = m_dhLayer->serverSalt();
+        setAuthState(AuthStateHaveAKey);
+    }
+}
+
 bool CTelegramConnection::checkClientServerNonse(CTelegramStream &stream) const
 {
     TLNumber128 nonce;
@@ -4392,24 +4055,6 @@ bool CTelegramConnection::checkClientServerNonse(CTelegramStream &stream) const
         return false;
     }
     return true;
-}
-
-SAesKey CTelegramConnection::generateTmpAesKey() const
-{
-    QByteArray newNonceAndServerNonce;
-    newNonceAndServerNonce.append(m_newNonce.data, m_newNonce.size());
-    newNonceAndServerNonce.append(m_serverNonce.data, m_serverNonce.size());
-    QByteArray serverNonceAndNewNonce;
-    serverNonceAndNewNonce.append(m_serverNonce.data, m_serverNonce.size());
-    serverNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
-    QByteArray newNonceAndNewNonce;
-    newNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
-    newNonceAndNewNonce.append(m_newNonce.data, m_newNonce.size());
-
-    const QByteArray key = Utils::sha1(newNonceAndServerNonce) + Utils::sha1(serverNonceAndNewNonce).mid(0, 12);
-    const QByteArray iv  = Utils::sha1(serverNonceAndNewNonce).mid(12, 8) + Utils::sha1(newNonceAndNewNonce) + QByteArray(m_newNonce.data, 4);
-
-    return SAesKey(key, iv);
 }
 
 SAesKey CTelegramConnection::generateAesKey(const QByteArray &messageKey, int x) const
@@ -4458,6 +4103,8 @@ quint64 CTelegramConnection::sendPlainPackage(const QByteArray &buffer)
 
     qDebug() << output.size();
     m_transport->sendPackage(output);
+
+    qWarning() << Q_FUNC_INFO << "sent package:" << output.toHex();
 
 #ifdef NETWORK_LOGGING
     CTelegramStream readBack(buffer);

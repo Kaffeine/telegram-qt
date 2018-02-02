@@ -18,10 +18,173 @@
 #include <QObject>
 
 #include "CTelegramStream_p.hpp"
+#include "CTelegramStreamExtraOperators.hpp"
 
 #include <QBuffer>
 #include <QTest>
 #include <QDebug>
+
+#include <QtEndian>
+
+template <typename T>
+int getValueEncodedSize(const T &value)
+{
+    return sizeof(value);
+}
+
+template <>
+int getValueEncodedSize(const QByteArray &value)
+{
+    const int payloadSize = (value.size() < 0xfe) ? value.size() + 1 : value.size() + 4;
+    int padding = payloadSize & 3;
+    if (padding) {
+        return payloadSize + (4 - padding);
+    }
+    return payloadSize;
+}
+
+template <>
+int getValueEncodedSize(const QString &value)
+{
+    return getValueEncodedSize(value.toUtf8());
+}
+
+template <typename T>
+void writeDataHelper(void *&output, const void *&input, int &bytesCount)
+{
+    T *&outPtr = reinterpret_cast<T*&>(output);
+    const T *&inPtr = reinterpret_cast<const T*&>(input);
+    constexpr int sizeOfChunk = sizeof(T);
+    while (bytesCount >= sizeOfChunk) {
+        *outPtr = *inPtr;
+        ++outPtr;
+        ++inPtr;
+        bytesCount -= sizeOfChunk;
+    }
+}
+
+void writeData(void *output, const void *input, int count)
+{
+    writeDataHelper<quint64>(output, input, count);
+    writeDataHelper<quint32>(output, input, count);
+    writeDataHelper<quint16>(output, input, count);
+    writeDataHelper<quint8>(output, input, count);
+}
+
+static const char s_nulls[4] = { 0, 0, 0, 0 };
+
+template <typename T>
+void packData(void *output, const T &value)
+{
+    *reinterpret_cast<T*>(output) = value;
+}
+
+void packShortData(char *output, const QByteArray &value)
+{
+    *output = value.size();
+    ++output;
+    writeData(output, value.data(), value.size());
+    output += value.size();
+    int extraBytes = (value.size() + 1) & 3;
+    if (extraBytes) {
+        writeData(output, s_nulls, 4 - extraBytes);
+    }
+}
+
+void packLongData(char *output, const QByteArray &value)
+{
+    const quint32 sizeToWrite = quint32((value.size() << 8) + 0xfe);
+    packData(output, sizeToWrite);
+    output += 4;
+    writeData(output, value.data(), value.size());
+    output += value.size();
+    int extraBytes = value.size() & 3;
+    if (extraBytes) {
+        writeData(output, s_nulls, 4 - extraBytes);
+    }
+}
+
+template <>
+void packData(void *output, const QByteArray &value)
+{
+    char *outPtr = reinterpret_cast<char*>(output);
+    if (value.size() < 0xfe) {
+        packShortData(outPtr, value);
+    } else {
+        packLongData(outPtr, value);
+    }
+}
+
+template <>
+void packData(void *output, const QString &value)
+{
+    packData(output, value.toUtf8());
+}
+
+template <typename T1>
+QByteArray encodeData(const T1 &a1)
+{
+    const int size = getValueEncodedSize(a1);
+    QByteArray result(size, Qt::Uninitialized);
+    packData(result.data(), a1);
+    return result;
+}
+
+template <typename T1, typename T2>
+QByteArray encodeData(const T1 &a1, const T2 &a2)
+{
+    const int a2Offset = getValueEncodedSize(a1);
+    const int size = a2Offset + getValueEncodedSize(a2);
+    QByteArray result(size, Qt::Uninitialized);
+    packData(result.data(), a1);
+    packData(result.data() + a2Offset, a2);
+    return result;
+}
+
+template <typename T1, typename T2, typename T3>
+QByteArray encodeData(const T1 &a1, const T2 &a2, const T3 &a3)
+{
+    const int a2Offset = getValueEncodedSize(a1);
+    const int a3Offset = a2Offset + getValueEncodedSize(a2);
+    const int size = a3Offset + getValueEncodedSize(a3);
+    QByteArray result(size, Qt::Uninitialized);
+    packData(result.data(), a1);
+    packData(result.data() + a2Offset, a2);
+    packData(result.data() + a3Offset, a3);
+    return result;
+}
+
+template <typename T1, typename T2, typename T3, typename T4>
+QByteArray encodeData(const T1 &a1, const T2 &a2, const T3 &a3, const T4 &a4)
+{
+    const int a2Offset = getValueEncodedSize(a1);
+    const int a3Offset = a2Offset + getValueEncodedSize(a2);
+    const int a4Offset = a3Offset + getValueEncodedSize(a3);
+    const int size = a4Offset + getValueEncodedSize(a4);
+    QByteArray result(size, Qt::Uninitialized);
+    packData(result.data(), a1);
+    packData(result.data() + a2Offset, a2);
+    packData(result.data() + a3Offset, a3);
+    packData(result.data() + a4Offset, a4);
+    return result;
+}
+
+template <typename T1, typename T2, typename T3, typename T4, typename T5>
+QByteArray encodeData(const T1 &a1, const T2 &a2, const T3 &a3, const T4 &a4, const T5 &a5)
+{
+    const int a2Offset = getValueEncodedSize(a1);
+    const int a3Offset = a2Offset + getValueEncodedSize(a2);
+    const int a4Offset = a3Offset + getValueEncodedSize(a3);
+    const int a5Offset = a4Offset + getValueEncodedSize(a4);
+    const int size = a5Offset + getValueEncodedSize(a5);
+    QByteArray result(size, Qt::Uninitialized);
+    packData(result.data(), a1);
+    packData(result.data() + a2Offset, a2);
+    packData(result.data() + a3Offset, a3);
+    packData(result.data() + a4Offset, a4);
+    packData(result.data() + a5Offset, a5);
+    return result;
+}
 
 struct STestData {
     QVariant value;
@@ -36,6 +199,19 @@ public:
     explicit tst_CTelegramStream(QObject *parent = nullptr);
 
 private slots:
+    void testEncode();
+    void benchmarkEncodeTLValuePlacement();
+    void benchmarkEncodeTLValueStream();
+    void benchmarkEncodeStream();
+    void benchmarkEncodePlacement();
+    void benchmarkEncodeStream1();
+    void benchmarkEncodeStream2();
+    void benchmarkEncodeStream3();
+    void benchmarkEncodeStream4();
+    void benchmarkEncodePlacement1();
+    void benchmarkEncodePlacement2();
+    void benchmarkEncodePlacement3();
+    void benchmarkEncodePlacement4();
     void stringsLimitSerialization();
     void shortStringSerialization();
     void longStringSerialization();
@@ -47,12 +223,201 @@ private slots:
     void tlNumbersSerialization();
     void tlDcOptionDeserialization();
     void readError();
+    void byteArrays();
+    void reqPqData();
 
 };
 
 tst_CTelegramStream::tst_CTelegramStream(QObject *parent) :
     QObject(parent)
 {
+}
+
+void tst_CTelegramStream::testEncode()
+{
+    const QStringList dataList = {
+        QStringLiteral("1"), QStringLiteral("02"), QStringLiteral("003"), QStringLiteral("0004"),
+        QStringLiteral("00005"), QStringLiteral("000006"), QStringLiteral("0000007"), QStringLiteral("00000008")
+    };
+
+    for (const QString &s : dataList) {
+        CTelegramStream stream(CTelegramStream::WriteOnly);
+        stream << s;
+        const int writtenBytes = stream.getData().size();
+        if (writtenBytes != getValueEncodedSize(s)) {
+            qWarning() << "A problem with" << s;
+        }
+        QCOMPARE(writtenBytes, getValueEncodedSize(s));
+    }
+    for (const QString &s : dataList) {
+        CTelegramStream stream(CTelegramStream::WriteOnly);
+        stream << s;
+        const QByteArray encodedStr = encodeData(s);
+        const QByteArray streamedStr = stream.getData();
+
+        if (streamedStr != encodedStr) {
+            qWarning() << "A problem with" << s;
+        }
+        QCOMPARE(streamedStr.toHex(), encodedStr.toHex());
+    }
+    {
+        const TLValue testValue = TLValue::AccountChangePhone;
+        const QByteArray encoded = encodeData(testValue);
+        CTelegramStream stream(encoded);
+        TLValue readValue;
+        stream >> readValue;
+        QCOMPARE(testValue, readValue);
+    }
+    {
+        const TLValue testValue = TLValue::AccountChangePhone;
+        const QString phoneNumber = "myPhone"; // size = 7
+        const QString phoneCodeHash = "7531"; // size = 4
+        const QByteArray encoded = encodeData(testValue, phoneNumber, phoneCodeHash);
+
+        CTelegramStream stream(encoded);
+        TLValue readValue;
+        QString readPhoneNumber;
+        QString readPhoneCodeHash;
+//        QString readPhoneCode;
+        stream >> readValue;
+        stream >> readPhoneNumber;
+        stream >> readPhoneCodeHash;
+        QCOMPARE(testValue, readValue);
+        QCOMPARE(readPhoneNumber, phoneNumber);
+        QCOMPARE(readPhoneCodeHash, phoneCodeHash);
+    }
+}
+
+void tst_CTelegramStream::benchmarkEncodeTLValuePlacement()
+{
+    QBENCHMARK {
+        const TLValue testValue = TLValue::AccountChangePhone;
+        const QByteArray encoded = encodeData(testValue);
+        Q_UNUSED(encoded)
+    }
+}
+void tst_CTelegramStream::benchmarkEncodeTLValueStream()
+{
+    QBENCHMARK {
+        CTelegramStream stream(CTelegramStream::WriteOnly);
+        stream << TLValue::AccountChangePhone;
+        const QByteArray encoded = stream.getData();
+        Q_UNUSED(encoded)
+    }
+}
+
+void tst_CTelegramStream::benchmarkEncodeStream()
+{
+    const QStringList dataList = {
+        QStringLiteral("1"), QStringLiteral("02"), QStringLiteral("003"), QStringLiteral("0004"),
+        QStringLiteral("00005"), QStringLiteral("000006"), QStringLiteral("0000007"), QStringLiteral("00000008")
+    };
+
+    QBENCHMARK {
+        for (const QString &s : dataList) {
+            CTelegramStream stream(CTelegramStream::WriteOnly);
+            stream << s;
+            stream.getData();
+        }
+    }
+}
+
+void tst_CTelegramStream::benchmarkEncodePlacement()
+{
+    const QStringList dataList = {
+        QStringLiteral("1"), QStringLiteral("02"), QStringLiteral("003"), QStringLiteral("0004"),
+        QStringLiteral("00005"), QStringLiteral("000006"), QStringLiteral("0000007"), QStringLiteral("00000008")
+    };
+
+    QBENCHMARK {
+        for (const QString &s : dataList) {
+            encodeData(s);
+        }
+    }
+}
+
+static const QString encArg1 = QStringLiteral("myphonenumber");
+static const QString encArg2 = QStringLiteral("myphonecode");
+static const quint64 encArg3 = 12345678ull;
+static const TLValue encArg4 = TLValue::RpcResult;
+
+void tst_CTelegramStream::benchmarkEncodeStream1()
+{
+    QBENCHMARK {
+        CTelegramStream stream(CTelegramStream::WriteOnly);
+        stream << encArg1;
+        stream.getData();
+    }
+}
+
+void tst_CTelegramStream::benchmarkEncodeStream2()
+{
+    QBENCHMARK {
+        CTelegramStream stream(CTelegramStream::WriteOnly);
+        stream << encArg1;
+        stream << encArg2;
+        stream << encArg2;
+
+        stream << encArg2;
+        stream << encArg2;
+        stream.getData();
+    }
+
+}
+
+void tst_CTelegramStream::benchmarkEncodeStream3()
+{
+    QBENCHMARK {
+        CTelegramStream stream(CTelegramStream::WriteOnly);
+        stream << encArg1;
+        stream << encArg2;
+        stream << encArg3;
+        stream.getData();
+    }
+}
+
+void tst_CTelegramStream::benchmarkEncodeStream4()
+{
+    QBENCHMARK {
+        CTelegramStream stream(CTelegramStream::WriteOnly);
+        stream << encArg1;
+        stream << encArg2;
+        stream << encArg3;
+        stream << encArg4;
+        stream.getData();
+    }
+}
+
+void tst_CTelegramStream::benchmarkEncodePlacement1()
+{
+    QBENCHMARK {
+        encodeData(encArg1);
+    }
+}
+
+void tst_CTelegramStream::benchmarkEncodePlacement2()
+{
+    QBENCHMARK {
+        encodeData(encArg1, encArg2,
+                   encArg2,
+                   encArg2,
+                   encArg2
+                   );
+    }
+}
+
+void tst_CTelegramStream::benchmarkEncodePlacement3()
+{
+    QBENCHMARK {
+        encodeData(encArg1, encArg2, encArg3);
+    }
+}
+
+void tst_CTelegramStream::benchmarkEncodePlacement4()
+{
+    QBENCHMARK {
+        encodeData(encArg1, encArg2, encArg3, encArg4);
+    }
 }
 
 void tst_CTelegramStream::shortStringSerialization()
@@ -293,24 +658,15 @@ void tst_CTelegramStream::vectorOfIntsSerialization()
     }
 
     {
-        QBuffer device;
-        device.open(QBuffer::WriteOnly);
-
-        CTelegramStream stream(&device);
-
+        QByteArray output;
+        CTelegramStream stream(&output, /* write */ true);
         stream << vector;
-        QCOMPARE(device.data(), encoded);
+        QCOMPARE(output, encoded);
     }
 
     {
-        QBuffer device;
-        device.setData(encoded);
-        device.open(QBuffer::ReadOnly);
-
-        CTelegramStream stream(&device);
-
+        CTelegramStream stream(encoded);
         TLVector<quint64> value;
-
         stream >> value;
 
         QCOMPARE(value, vector);
@@ -522,6 +878,101 @@ void tst_CTelegramStream::readError()
 
 }
 
-QTEST_APPLESS_MAIN(tst_CTelegramStream)
+void tst_CTelegramStream::byteArrays()
+{
+    QByteArray output;
+    CTelegramStream stream(&output, /* write */ true);
+    QByteArray array1 = QByteArrayLiteral("array1");
+    QByteArray array2 = QByteArrayLiteral("array2");
+
+    stream << array1;
+    stream << array2;
+
+    CTelegramStream inputStream(output);
+    QByteArray a1;
+    QByteArray a2;
+    inputStream >> a1;
+    inputStream >> a2;
+    QCOMPARE(array1, a1);
+    QCOMPARE(array2, a2);
+}
+
+void tst_CTelegramStream::reqPqData()
+{
+    TLNumber128 clientNonce;
+    clientNonce.parts[0] = 0x123456789abcdef0ull;
+    clientNonce.parts[1] = 0xabcdefabc0011234ull;
+
+    TLNumber128 serverNonce;
+    serverNonce.parts[0] = 0x56781234abcdef00ull;
+    serverNonce.parts[1] = 0xbcdefabcd0011224ull;
+
+    quint64 fingerprint = 12345678ull;
+
+    quint64 pq = 3;
+    QByteArray pqAsByteArray(sizeof(pq), Qt::Uninitialized);
+    qToBigEndian<quint64>(pq, (uchar *) pqAsByteArray.data());
+
+    const TLVector<quint64> fingersprints = { fingerprint };
+
+    QVector<int> bytes;
+    QByteArray output;
+    {
+        CTelegramStream outputStream(&output, /* write */ true);
+        outputStream << TLValue::ResPQ;
+        bytes << output.size();
+        outputStream << clientNonce;
+        bytes << output.size();
+        outputStream << serverNonce;
+        bytes << output.size();
+        outputStream << pqAsByteArray;
+        bytes << output.size();
+        outputStream << fingersprints;
+        bytes << output.size();
+    }
+
+    CTelegramStream inputStream(output);
+    {
+        TLValue responsePqValue;
+        inputStream >> responsePqValue;
+        QCOMPARE(inputStream.bytesAvailable(), output.size() - bytes.at(0));
+        QVERIFY2(responsePqValue == TLValue::ResPQ, "Error: Unexpected operation code");
+    }
+
+    {
+        TLNumber128 nonce;
+        inputStream >> nonce;
+        QCOMPARE(inputStream.bytesAvailable(), output.size() - bytes.at(1));
+        QVERIFY2(nonce == clientNonce, "Error: Read client nonce is different from the written own.");
+    }
+
+    {
+        TLNumber128 nonce;
+        inputStream >> nonce;
+        QCOMPARE(inputStream.bytesAvailable(), output.size() - bytes.at(2));
+        QVERIFY2(nonce == serverNonce, "Error: Read server nonce is different from the written own.");
+    }
+
+    {
+        QByteArray pqData;
+        inputStream >> pqData;
+        QCOMPARE(inputStream.bytesAvailable(), output.size() - bytes.at(3));
+        QCOMPARE(pqAsByteArray, pqData);
+
+        quint64 convertedPq = qFromBigEndian<quint64>(reinterpret_cast<const uchar*>(pqData.constData()));
+        QCOMPARE(convertedPq, pq);
+    }
+
+    {
+        TLVector<quint64> fingersprints;
+        inputStream >> fingersprints;
+        QCOMPARE(inputStream.bytesAvailable(), output.size() - bytes.at(4));
+        QCOMPARE(fingersprints.count(), 1);
+        QCOMPARE(fingersprints.first(), fingerprint);
+    }
+}
+
+//QTEST_APPLESS_MAIN(tst_CTelegramStream)
+QTEST_GUILESS_MAIN(tst_CTelegramStream)
 
 #include "tst_CTelegramStream.moc"

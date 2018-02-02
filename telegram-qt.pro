@@ -43,6 +43,9 @@ isEmpty(BUILD_WIDGETS_CLIENT) {
         BUILD_WIDGETS_CLIENT = "true"
     }
 }
+isEmpty(BUILD_QML_CLIENT) {
+    BUILD_QML_CLIENT = "false"
+}
 
 isEmpty(BUILD_QML_IMPORT) {
     BUILD_QML_IMPORT = "true"
@@ -61,7 +64,13 @@ equals(BUILD_WIDGETS_CLIENT, "true") {
     CONFIG += ordered
 }
 
+equals(BUILD_QML_IMPORT, "true") {
+    SUBDIRS += clients/qml-client
+    CONFIG += ordered
+}
+
 contains(options, developer-build) {
+    SUBDIRS += tests
     SUBDIRS += TelegramQt/tests
     minQtVersion(5, 6, 0) {
         SUBDIRS += generator
@@ -69,6 +78,11 @@ contains(options, developer-build) {
     } else {
         message("Use Qt 5.6.0 or higher to build GeneratorNG")
     }
+}
+
+
+contains(options, server) {
+    SUBDIRS += server
 }
 
 OTHER_FILES += CMakeLists.txt

@@ -19,11 +19,13 @@
 
 #include <QTimer>
 
-#include <QDebug>
+#include <QLoggingCategory>
 
 #ifndef Q_FALLTHROUGH
 #define Q_FALLTHROUGH() (void)0
 #endif
+
+Q_LOGGING_CATEGORY(loggingTcpTransport, "telegram.transport.tcp", QtDebugMsg)
 
 static const quint32 tcpTimeout = 15 * 1000;
 
@@ -46,17 +48,13 @@ CTcpTransport::~CTcpTransport()
 
 void CTcpTransport::connectToHost(const QString &ipAddress, quint32 port)
 {
-#ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << ipAddress << port;
-#endif
+    qDebug(loggingTcpTransport) << Q_FUNC_INFO << ipAddress << port;
     m_socket->connectToHost(ipAddress, port);
 }
 
 void CTcpTransport::disconnectFromHost()
 {
-#ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO;
-#endif
+    qDebug(loggingTcpTransport) << Q_FUNC_INFO;
     if (m_socket) {
         m_socket->disconnectFromHost();
     }
@@ -101,7 +99,7 @@ void CTcpTransport::setSessionType(CTcpTransport::SessionType sessionType)
 
 void CTcpTransport::setState(QAbstractSocket::SocketState newState)
 {
-    //    qDebug() << Q_FUNC_INFO << newState;
+    qCDebug(loggingTcpTransport) << Q_FUNC_INFO << newState;
     switch (newState) {
     case QAbstractSocket::HostLookupState:
     case QAbstractSocket::ConnectingState:
@@ -127,7 +125,6 @@ void CTcpTransport::onReadyRead()
                 // Four bytes is minimum readable size for new package
                 return;
             }
-
             char length;
             m_socket->getChar(&length);
 
@@ -137,7 +134,7 @@ void CTcpTransport::onReadyRead()
                 m_socket->read((char *) &m_expectedLength, 3);
                 m_expectedLength *= 4;
             } else {
-                qDebug() << "Incorrect TCP package!";
+                qCWarning(loggingTcpTransport) << "Incorrect TCP package!";
             }
         }
 
@@ -163,7 +160,7 @@ void CTcpTransport::onTimeout()
 void CTcpTransport::setSocket(QAbstractSocket *socket)
 {
     if (m_socket) {
-        qCritical() << Q_FUNC_INFO << "An attempt to set a socket twice";
+        qCCritical(loggingTcpTransport) << Q_FUNC_INFO << "An attempt to set a socket twice";
     }
     m_socket = socket;
     connect(m_socket, &QAbstractSocket::stateChanged, this, &CTcpTransport::setState);
