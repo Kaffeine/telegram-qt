@@ -362,8 +362,10 @@ protected:
 OutputFile::OutputFile(const QString &fileName) :
     m_fileName(fileName)
 {
-    QFile fileToProcess(s_outputDir + m_fileName);
-    fileToProcess.open(QIODevice::ReadOnly);
+    QFile fileToProcess(s_inputDir + m_fileName);
+    if (!fileToProcess.open(QIODevice::ReadOnly)) {
+        return;
+    }
     QByteArray fileContent = fileToProcess.readAll();
     if (fileContent.indexOf(QByteArrayLiteral("\r\n")) >= 0) {
         m_FileEolFormat = EolFormat::Windows;
@@ -383,9 +385,11 @@ OutputFile::OutputFile(const char *fileName) :
 
 OutputFile::~OutputFile()
 {
-    QFile fileToProcess(s_outputDir + m_fileName);
-    fileToProcess.open(QIODevice::ReadOnly);
-    QByteArray previousContent = fileToProcess.readAll();
+    QFile fileToProcess(s_inputDir + m_fileName);
+    QByteArray previousContent;
+    if (fileToProcess.open(QIODevice::ReadOnly)) {
+        previousContent = fileToProcess.readAll();
+    }
     QByteArray fileContent = m_content.toUtf8();
     if (m_FileEolFormat == EolFormat::Windows) {
         fileContent.replace(QByteArrayLiteral("\n"), QByteArrayLiteral("\r\n"));
@@ -395,6 +399,7 @@ OutputFile::~OutputFile()
         return;
     }
     fileToProcess.close();
+    fileToProcess.setFileName(s_outputDir + m_fileName);
     if (s_dryRun) {
         printf("Replacing is done (dry run).\n");
         return;
