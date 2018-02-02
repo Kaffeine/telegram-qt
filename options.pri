@@ -1,5 +1,9 @@
-#options = developer-build
 #options += static-lib
+
+equals(DEVELOPER_BUILD, "true") {
+    message("Developer build")
+    options += developer-build
+}
 
 # Installation directories
 isEmpty(INSTALL_PREFIX) {
