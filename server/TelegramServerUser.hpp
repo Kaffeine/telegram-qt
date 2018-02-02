@@ -34,7 +34,18 @@ struct Session
     quint64 timestamp = 0;
 };
 
-class User : public QObject
+class RemoteUser
+{
+public:
+    virtual quint32 id() const = 0;
+    virtual QString phoneNumber() const = 0;
+    virtual QString firstName() const = 0;
+    virtual QString lastName() const = 0;
+    virtual bool isOnline() const = 0;
+    virtual quint32 dcId() const = 0;
+};
+
+class User : public QObject, public RemoteUser
 {
     Q_OBJECT
 public:
@@ -69,7 +80,7 @@ public:
     QString passwordHint() const { return QString(); }
 
 protected:
-    quint32 m_id;
+    quint32 m_id = 0;
     QString m_phoneNumber;
     QString m_firstName;
     QString m_lastName;
