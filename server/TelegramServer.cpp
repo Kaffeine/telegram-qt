@@ -63,7 +63,7 @@ void Server::setServerPrivateRsaKey(const Telegram::RsaKey &key)
 
 bool Server::start()
 {
-    if (!m_serverSocket->listen(QHostAddress::Any, m_dcOption.port)) {
+    if (!m_serverSocket->listen(QHostAddress(m_dcOption.address), m_dcOption.port)) {
         qWarning() << "Unable to listen port" << m_dcOption.port;
         return false;
     }
