@@ -27,7 +27,8 @@
 #include "TelegramServer.hpp"
 #include "TelegramServerClient.hpp"
 #include "TelegramServerUser.hpp"
-#include "CTelegramCore.hpp"
+#include "DcConfiguration.hpp"
+#include "LocalCluster.hpp"
 
 #include <QTest>
 #include <QSignalSpy>
@@ -38,6 +39,30 @@
 #define CLIENT_WORKS
 
 using namespace Telegram;
+
+struct UserData
+{
+    quint32 dcId;
+    QString phoneNumber;
+    QString firstName;
+    QString lastName;
+    QString password;
+    QByteArray passwordSalt;
+    QByteArray passwordHash;
+
+    void setName(const QString &first, const QString &last)
+    {
+        firstName = first;
+        lastName = last;
+    }
+
+    void setPasswordSalt(const QByteArray &salt)
+    {
+        QByteArray pwdData = salt + password.toUtf8() + salt;
+        passwordSalt = salt;
+        passwordHash = Utils::sha256(pwdData);
+    }
+};
 
 CAppInformation *getAppInfo()
 {
@@ -52,6 +77,23 @@ CAppInformation *getAppInfo()
         appInfo->setLanguageCode(QLatin1String("en"));
     }
     return appInfo;
+}
+
+Telegram::Server::User *tryAddUser(Telegram::Server::LocalCluster *cluster, const UserData &data)
+{
+    Telegram::Server::User *u = cluster->addUser(data.phoneNumber, data.dcId);
+    if (u) {
+        u->setFirstName(data.firstName);
+        u->setLastName(data.lastName);
+        if (!data.passwordHash.isEmpty()) {
+            u->setPassword(data.passwordSalt, data.passwordHash);
+        } else {
+            u->setPlainPassword(data.password);
+        }
+    } else {
+        qCritical() << "Unable to add a user";
+    }
+    return u;
 }
 
 class tst_all : public QObject
@@ -86,6 +128,11 @@ class TestServer : public Server::Server
 {
     Q_OBJECT
 public:
+    explicit TestServer(QObject *parent = nullptr)
+        : Server(parent)
+    {
+    }
+
     QString sendAppCode(const QString &identifier) override
     {
         const QString hash = Server::Server::sendAppCode(identifier);
@@ -100,67 +147,66 @@ signals:
 
 void tst_all::testClientConnection()
 {
-    const QString phoneNumber = QStringLiteral("123456");
-    const QByteArray password = QByteArrayLiteral("mypassword");
-    const QByteArray pwdSalt = QByteArrayLiteral("mysalt");
-    const QByteArray pwdData = pwdSalt + password + pwdSalt;
-    const QByteArray pwdHash = Utils::sha256(pwdData);
-
-    TelegramNamespace::registerTypes();
-    TestServer server;
-    DcOption option;
-    option.address = QStringLiteral("127.0.0.1");
-    option.port = 11443;
-    option.id = 1;
-    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
-    QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
-    server.setServerPrivateRsaKey(privateKey);
-    server.setDcOption(option);
-    Server::User *serverUser = server.addUser(phoneNumber);
-    serverUser->setFirstName("First");
-    serverUser->setLastName("Last");
-    serverUser->setPassword(pwdSalt, pwdHash);
-    QVERIFY(server.start());
-
     const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
-#ifdef CLIENT_WORKS
+    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
+    QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
+
+    UserData userData;
+    userData.dcId = 1;
+    userData.setName(QStringLiteral("First"), QStringLiteral("Last"));
+    userData.phoneNumber = QStringLiteral("123456");
+    userData.password = QByteArrayLiteral("mypassword");
+    userData.setPasswordSalt(QByteArrayLiteral("mysalt"));
+    TelegramNamespace::registerTypes();
+
+    Telegram::Server::DcConfiguration configuration;
+    const QVector<Telegram::DcOption> dcOptions = {
+        Telegram::DcOption(QStringLiteral("127.0.0.1"), 11441, 1),
+        Telegram::DcOption(QStringLiteral("127.0.0.2"), 11442, 2),
+        Telegram::DcOption(QStringLiteral("127.0.0.3"), 11443, 3),
+    };
+    configuration.dcOptions = dcOptions;
+
+    Telegram::Server::LocalCluster::ServerConstructor serverConstructor = [](QObject *parent) -> Telegram::Server::Server* {
+        return new TestServer(parent);
+    };
+
+    Telegram::Server::LocalCluster cluster;
+    cluster.setServerContructor(serverConstructor);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(configuration);
+    QVERIFY(cluster.start());
+
+    Server::User *user = tryAddUser(&cluster, userData);
+    QVERIFY(user);
+
     Client::Client client;
     Client::AccountStorage accountStorage;
     Client::Settings clientSettings;
     client.setAppInformation(getAppInfo());
     client.setSettings(&clientSettings);
     client.setAccountStorage(&accountStorage);
-    accountStorage.setPhoneNumber(phoneNumber);
-#else
-    CTelegramCore client;
-    client.setAppInformation(getAppInfo());
-    CTelegramCore &clientSettings = client;
-#endif
-    QVERIFY(clientSettings.setServerConfiguration({DcOption(option.address, option.port, option.id)}));
+    accountStorage.setPhoneNumber(userData.phoneNumber);
+    QVERIFY(clientSettings.setServerConfiguration({dcOptions.first()}));
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
 
     // --- Connect ---
-#ifdef CLIENT_WORKS
     PendingOperation *connectOperation = client.connectToServer();
     QTRY_VERIFY(connectOperation->isSucceeded());
     quint64 clientAuthId = accountStorage.authId();
-#else
-    quint64 clientAuthId = client.authKeyId();
-    QVERIFY(client.connectToServer());
-    QTRY_COMPARE_WITH_TIMEOUT(client.connectionState(), TelegramNamespace::ConnectionStateConnected, 500);
-#endif
     QVERIFY(clientAuthId);
 
-    QSet<Server::RemoteClientConnection*> clientConnections = server.getConnections();
+    TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(1));
+    QVERIFY(server);
+    QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
     QCOMPARE(clientConnections.count(), 1);
     Server::RemoteClientConnection *remoteClientConnection = *clientConnections.cbegin();
     QCOMPARE(remoteClientConnection->authId(), clientAuthId);
 
     // --- Sign in ---
     Client::PendingAuthOperation *signInOperation = client.signIn();
-
-    QSignalSpy serverAuthCodeSpy(&server, &TestServer::authCodeSent);
+    QSignalSpy serverAuthCodeSpy(server, &TestServer::authCodeSent);
 
     QSignalSpy authCodeSpy(signInOperation, &Client::PendingAuthOperation::authCodeRequired);
     QTRY_VERIFY(!authCodeSpy.isEmpty());
@@ -174,20 +220,22 @@ void tst_all::testClientConnection()
 
     QSignalSpy authPasswordSpy(signInOperation, &Client::PendingAuthOperation::passwordRequired);
     QSignalSpy passwordCheckFailedSpy(signInOperation, &Client::PendingAuthOperation::passwordCheckFailed);
-    QTRY_VERIFY(!authPasswordSpy.isEmpty());
+    QTRY_VERIFY2(!authPasswordSpy.isEmpty(), "The user has a password-protection, "
+                                             "but there are no passwordRequired signals on the client side");
     QCOMPARE(authPasswordSpy.count(), 1);
     QVERIFY(passwordCheckFailedSpy.isEmpty());
 
     PendingOperation *op = signInOperation->getPassword();
     QTRY_VERIFY(op->isFinished());
 
-    signInOperation->submitPassword(password + QStringLiteral("invalid"));
-    QTRY_VERIFY(!passwordCheckFailedSpy.isEmpty());
+    signInOperation->submitPassword(userData.password + QStringLiteral("invalid"));
+    QTRY_VERIFY2(!passwordCheckFailedSpy.isEmpty(), "The submitted password is not valid, "
+                                                    "but there are not signals on the client side");
     QVERIFY(!signInOperation->isFinished());
     QCOMPARE(passwordCheckFailedSpy.count(), 1);
 
-    signInOperation->submitPassword(password);
-    QTRY_VERIFY(signInOperation->isSucceeded());
+    signInOperation->submitPassword(userData.password);
+    QTRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
 }
 
 QTEST_GUILESS_MAIN(tst_all)
