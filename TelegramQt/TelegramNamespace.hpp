@@ -242,10 +242,11 @@ enum class PeerPictureSize {
 
 struct DcOption
 {
-    DcOption() : port(0) { }
-    DcOption(const QString &a, quint32 p) : address(a), port(p) { }
+    DcOption() { }
+    DcOption(const QString &a, quint32 p, quint32 dcId = 0) : address(a), port(p), id(dcId) { }
     QString address;
-    quint32 port;
+    quint32 port = 0;
+    quint32 id = 0;
 };
 
 class PasswordInfo
