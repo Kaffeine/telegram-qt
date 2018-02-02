@@ -7,6 +7,7 @@
 #include "Utils.hpp"
 #include "TelegramServerUser.hpp"
 #include "TelegramServerClient.hpp"
+#include "RemoteServerConnection.hpp"
 
 #include "CServerTcpTransport.hpp"
 
@@ -81,6 +82,16 @@ void Server::loadData()
     }
 }
 
+void Server::setServerConfiguration(const DcConfiguration &config)
+{
+    m_dcConfiguration = config;
+}
+
+void Server::addServerConnection(RemoteServerConnection *remoteServer)
+{
+    m_remoteServers.insert(remoteServer);
+}
+
 quint32 Server::getDcIdForUserIdentifier(const QString &phoneNumber)
 {
     if (m_phoneToUserId.contains(phoneNumber)) {
@@ -122,13 +133,29 @@ void Server::onClientConnectionStatusChanged()
     }
 }
 
-User *Server::getUser(const QString &identifier)
+User *Server::getLocalUser(const QString &identifier)
 {
     quint32 id = m_phoneToUserId.value(identifier);
     if (!id) {
         return nullptr;
     }
     return m_users.value(id);
+}
+
+RemoteUser *Server::getRemoteUser(const QString &identifier)
+{
+    for (RemoteServerConnection *remoteServer : m_remoteServers) {
+        RemoteUser *u = remoteServer->getUser(identifier);
+        if (u) {
+            return u;
+        }
+    }
+    return nullptr;
+}
+
+User *Server::getUser(const QString &identifier)
+{
+    return getLocalUser(identifier);
 }
 
 User *Server::getUser(quint64 authId)
@@ -163,7 +190,7 @@ void Server::insertUser(User *user)
 PhoneStatus Server::getPhoneStatus(const QString &identifier)
 {
     PhoneStatus result;
-    User *user = getUser(identifier);
+    RemoteUser *user = getLocalOrRemoteUser(identifier);
     if (user) {
         result.online = user->isOnline();
         result.dcId = user->dcId();
@@ -236,6 +263,15 @@ bool Server::identifierIsValid(const QString &identifier)
     const bool result = identifier.length() > 4;
     qCDebug(loggingCategoryServerApi) << "identifierIsValid(" << identifier << "):" << result;
     return result;
+}
+
+RemoteUser *Server::getLocalOrRemoteUser(const QString &identifier)
+{
+    RemoteUser *user = getLocalUser(identifier);
+    if (!user) {
+        user = getRemoteUser(identifier);
+    }
+    return user;
 }
 
 } // Server

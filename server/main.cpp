@@ -17,19 +17,44 @@
 
 #include "TelegramServer.hpp"
 #include "TelegramServerUser.hpp"
+#include "DcConfiguration.hpp"
+#include "LocalCluster.hpp"
+
 #include "../TelegramQt/Utils.hpp"
 #include <QCoreApplication>
 #include <QDebug>
 #include <QStandardPaths>
 
+Telegram::Server::User *tryAddUser(Telegram::Server::LocalCluster *cluster,
+                const QString &identifier, quint32 dcId,
+                const QString &firstName, const QString &lastName,
+                const QString &password = QString()
+                )
+{
+    Telegram::Server::User *u = cluster->addUser(identifier, dcId);
+    if (u) {
+        u->setFirstName(firstName);
+        u->setLastName(lastName);
+        u->setPlainPassword(password);
+    } else {
+        qCritical() << "Unable to add a user";
+    }
+    return u;
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     TelegramNamespace::registerTypes();
-    Telegram::Server::Server server;
-    TLDcOption option;
-    option.port = 11443;
-    option.id = 1;
+
+    Telegram::Server::DcConfiguration configuration;
+    const QVector<Telegram::DcOption> dcOptions = {
+        Telegram::DcOption(QStringLiteral("127.0.0.1"), 11441, 1),
+        Telegram::DcOption(QStringLiteral("127.0.0.2"), 11442, 2),
+        Telegram::DcOption(QStringLiteral("127.0.0.3"), 11443, 3),
+    };
+    configuration.dcOptions = dcOptions;
+
     const Telegram::RsaKey key = Telegram::Utils::loadRsaPrivateKeyFromFile(
                 QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
                 + QStringLiteral("/TelegramServer/private_key.pem"));
@@ -37,13 +62,24 @@ int main(int argc, char *argv[])
         qCritical() << "Unable to read RSA key";
         return -1;
     }
-    server.setServerPrivateRsaKey(key);
-    server.setDcOption(option);
-    Telegram::Server::User *u = server.addUser(QStringLiteral("123456"));
-    u->setFirstName("Telegram");
-    u->setLastName("Qt");
-    u->setPlainPassword(QStringLiteral("mypassword"));
-    server.start();
 
+    Telegram::Server::LocalCluster cluster;
+    cluster.setServerPrivateRsaKey(key);
+    cluster.setServerConfiguration(configuration);
+    cluster.start();
+
+    tryAddUser(&cluster, QStringLiteral("5432101"), /* dc */ 1,
+               QStringLiteral("Telegram"), QStringLiteral("Qt"),
+               QStringLiteral("mypassword")
+               );
+
+    tryAddUser(&cluster, QStringLiteral("5432102"), /* dc */ 2,
+               QStringLiteral("Telegram2"), QStringLiteral("Qt2")
+               );
+
+    tryAddUser(&cluster, QStringLiteral("5432103"), /* dc */ 3,
+               QStringLiteral("Telegram3"), QStringLiteral("Qt3"),
+               QStringLiteral("hispassword")
+               );
     return a.exec();
 }

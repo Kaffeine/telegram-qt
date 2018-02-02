@@ -27,6 +27,8 @@ struct AuthCode
 
 class User;
 class RemoteClientConnection;
+class RemoteServerConnection;
+class RemoteUser;
 class RpcOperationFactory;
 
 class Server : public QObject, public ServerApi
@@ -42,11 +44,15 @@ public:
     bool start();
     void loadData();
 
+    void setServerConfiguration(const DcConfiguration &config);
+    void addServerConnection(RemoteServerConnection *remoteServer);
+
     QSet<RemoteClientConnection*> getConnections() { return m_activeConnections; }
 
     quint32 getDcIdForUserIdentifier(const QString &phoneNumber);
 
     // ServerAPI:
+    DcConfiguration serverConfiguration() const override { return m_dcConfiguration; }
     quint32 dcId() const override { return m_dcOption.id; }
     PhoneStatus getPhoneStatus(const QString &identifier) override;
     PasswordInfo getPassword(const QString &identifier) override;
@@ -54,6 +60,10 @@ public:
     QString sendAppCode(const QString &identifier) override;
     AuthCodeStatus getAuthCodeStatus(const QString &identifier, const QString &hash, const QString &code) override;
     bool identifierIsValid(const QString &identifier) override;
+
+    RemoteUser *getLocalOrRemoteUser(const QString &identifier);
+    User *getLocalUser(const QString &identifier);
+    RemoteUser *getRemoteUser(const QString &identifier);
 
     User *getUser(const QString &identifier);
     User *getUser(quint64 authId);
@@ -83,7 +93,9 @@ private:
     QHash<quint64, quint32> m_authIdToUserId;
     QHash<quint32, User*> m_users; // userId to User
     QSet<RemoteClientConnection*> m_activeConnections;
+    QSet<RemoteServerConnection*> m_remoteServers;
     QVector<RpcOperationFactory*> m_rpcOperationFactories;
+    DcConfiguration m_dcConfiguration;
 };
 
 } // Server

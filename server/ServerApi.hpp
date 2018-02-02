@@ -5,6 +5,8 @@
 #include "../TelegramQt/TLTypes.hpp"
 #include "../TelegramQt/TelegramNamespace.hpp"
 
+#include "DcConfiguration.hpp"
+
 QT_FORWARD_DECLARE_CLASS(QTcpServer)
 QT_FORWARD_DECLARE_CLASS(QTcpSocket)
 QT_FORWARD_DECLARE_CLASS(QTimer)
@@ -50,6 +52,7 @@ public:
         CodeValid,
     };
 
+    virtual DcConfiguration serverConfiguration() const = 0;
     virtual quint32 dcId() const = 0;
     virtual PhoneStatus getPhoneStatus(const QString &identifier) = 0;
     virtual PasswordInfo getPassword(const QString &identifier) = 0;
