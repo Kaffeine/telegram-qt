@@ -397,6 +397,7 @@ OutputFile::~OutputFile()
     fileToProcess.close();
     if (s_dryRun) {
         printf("Replacing is done (dry run).\n");
+        return;
     }
     if (!fileToProcess.open(QIODevice::WriteOnly|QIODevice::Truncate)) {
         // emit error()
