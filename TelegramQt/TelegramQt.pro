@@ -143,9 +143,12 @@ HEADERS = CTelegramCore.hpp \
     telegramqt_global.h \
     TLValues.hpp
 
+SOURCES += TLTypesDebug.cpp
+HEADERS += TLTypesDebug.hpp
+
 contains(options, developer-build) {
-    SOURCES += TLTypesDebug.cpp TLRpcDebug.cpp
-    HEADERS += TLTypesDebug.hpp TLRpcDebug.hpp
+    SOURCES += TLRpcDebug.cpp
+    HEADERS += TLRpcDebug.hpp
     DEFINES += DEVELOPER_BUILD
     DEFINES += QT_DEPRECATED_WARNINGS
 }

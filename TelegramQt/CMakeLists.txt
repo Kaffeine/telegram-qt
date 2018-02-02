@@ -126,9 +126,12 @@ include_directories(
     ${ZLIB_INCLUDE_DIR}
 )
 
+list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp)
+list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp)
+
 if (DEVELOPER_BUILD)
-    list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp TLRpcDebug.cpp)
-    list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp TLRpcDebug.hpp)
+    list(APPEND telegram_qt_SOURCES TLRpcDebug.cpp)
+    list(APPEND telegram_qt_HEADERS TLRpcDebug.hpp)
     add_definitions(-DDEVELOPER_BUILD)
     add_definitions(-DQT_DEPRECATED_WARNINGS)
 endif()
