@@ -162,7 +162,6 @@ public:
     bool loadFromJson(const QByteArray &data);
     bool loadFromText(const QByteArray &data);
     bool resolveTypes();
-    void setExistsRpcProcessDefinitions(const QString &code);
     void generate();
     QStringList generateTLValues();
 
@@ -301,7 +300,6 @@ public:
     QString codeRpcProcessSwitchUpdatesCases;
     QString existsStreamReadTemplateInstancing;
     QString existsStreamWriteTemplateInstancing;
-    QString existsCodeRpcProcessDefinitions;
     QString codeDebugWriteDeclarations;
     QString codeDebugWriteDefinitions;
     QString codeDebugRpcParse;

@@ -1642,11 +1642,6 @@ bool Generator::resolveTypes()
     return unresolved.isEmpty() && !m_solvedTypes.isEmpty();
 }
 
-void Generator::setExistsRpcProcessDefinitions(const QString &code)
-{
-    existsCodeRpcProcessDefinitions = code;
-}
-
 void Generator::generate()
 {
     codeOfTLTypes.clear();
@@ -1656,8 +1651,6 @@ void Generator::generate()
     codeStreamWriteDeclarations.clear();
     codeStreamWriteDefinitions.clear();
     codeStreamWriteTemplateInstancing.clear();
-    codeConnectionDeclarations.clear();
-    codeConnectionDefinitions.clear();
     codeRpcProcessDeclarations.clear();
     codeRpcProcessDefinitions.clear();
     codeRpcProcessSwitchCases.clear();
@@ -1690,39 +1683,15 @@ void Generator::generate()
             }
         }
         if (addImplementation) {
-            codeConnectionDeclarations.append(generateConnectionMethodDeclaration(method));
-            codeConnectionDefinitions.append(generateConnectionMethodDefinition(method, typesUsedForWrite));
-
             if (method.type == QLatin1String("TLUpdates")) {
                 codeRpcProcessSwitchUpdatesCases.append(QStringLiteral("        case %1::%2:\n").arg(tlValueName, method.nameFirstCapital()));
-            } else {
-                codeRpcProcessDeclarations.append(generateRpcProcessDeclaration(method));
-
-                static const auto addDefinition = [&](const TLMethod &method) {
-                    const QString signature = QString("void %1::process%2(RpcProcessingContext *context)\n").arg(methodsClassName, method.nameFirstCapital());
-                    int index = existsCodeRpcProcessDefinitions.indexOf(signature);
-                    if (index >= 0) {
-                        int indexOfEnd = existsCodeRpcProcessDefinitions.indexOf(QLatin1String("\n}\n"), index);
-
-                        if (indexOfEnd > 0) {
-                            return existsCodeRpcProcessDefinitions.mid(index, indexOfEnd - index) + QLatin1String("\n}\n\n");
-                        } else {
-                            qWarning() << "Invalid input";
-                        }
-                    }
-                    return generateRpcProcessSampleDefinition(method);
-                };
-
-                codeRpcProcessDefinitions.append(addDefinition(method));
-                codeRpcProcessSwitchCases.append(generateRpcProcessSwitchCase(method));
             }
             if (!usedTypes.contains(method.type)) {
                 usedTypes.append(method.type);
             }
-        } else {
-            // It's still necessary to generate definition to figure out used stream write operators
-            generateConnectionMethodDefinition(method, typesUsedForWrite);
         }
+        // It's still necessary to generate definition to figure out used stream write operators
+        generateConnectionMethodDefinition(method, typesUsedForWrite);
     }
 
     typesUsedForWrite.removeDuplicates();

@@ -555,9 +555,6 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
 
     generator.existsStreamReadTemplateInstancing = getGeneratedContent(QStringLiteral("CTelegramStream.cpp"), 0, QLatin1String("vector read templates instancing"));
     generator.existsStreamWriteTemplateInstancing = getGeneratedContent(QStringLiteral("CTelegramStream.cpp"), 0, QLatin1String("vector write templates instancing"));
-    generator.setExistsRpcProcessDefinitions(getPartiallyGeneratedContent(QStringLiteral("CTelegramConnection.cpp"),
-                                                                          0,
-                                                                          QStringLiteral("Telegram API RPC process implementation")));
     generator.generate();
 
     {
@@ -582,17 +579,6 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         fileTelegramStreamSource.replace("vector write templates instancing", generator.codeStreamWriteTemplateInstancing);
         fileTelegramStreamExtraOperatorsHeader.replace("write operators", generator.codeStreamExtraWriteDeclarations);
         fileTelegramStreamExtraOperatorsSource.replace("write operators implementation", generator.codeStreamExtraWriteDefinitions);
-    }
-
-    {
-        OutputFile headerFile("CTelegramConnection.hpp");
-        OutputFile sourceFile("CTelegramConnection.cpp");
-        headerFile.replace("Telegram API methods declaration", generator.codeConnectionDeclarations, 4);
-        sourceFile.replace("Telegram API methods implementation", generator.codeConnectionDefinitions);
-        headerFile.replace("Telegram API RPC process declarations", generator.codeRpcProcessDeclarations, 4);
-        sourceFile.replaceParts("Telegram API RPC process implementation", generator.codeRpcProcessDefinitions);
-        sourceFile.replace("RPC processing switch cases", generator.codeRpcProcessSwitchCases, 8);
-        sourceFile.replace("RPC processing switch updates cases", generator.codeRpcProcessSwitchUpdatesCases, 8);
     }
 
     {
