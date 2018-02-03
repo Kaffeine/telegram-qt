@@ -19,11 +19,13 @@
 
 #include <QTcpSocket>
 
-#include <QDebug>
+#include <QLoggingCategory>
 
 namespace Telegram {
 
 namespace Client {
+
+Q_LOGGING_CATEGORY(c_loggingTranport, "telegram.client.transport", QtWarningMsg)
 
 TcpTransport::TcpTransport(QObject *parent) :
     CTcpTransport(parent)
@@ -34,7 +36,7 @@ TcpTransport::TcpTransport(QObject *parent) :
 bool TcpTransport::setProxy(const QNetworkProxy &proxy)
 {
     if (m_socket->isOpen()) {
-        qWarning() << Q_FUNC_INFO << "Unable to set proxy on open socket";
+        qCWarning(c_loggingTranport) << Q_FUNC_INFO << "Unable to set proxy on open socket";
         return false;
     }
     m_socket->setProxy(proxy);
@@ -46,7 +48,8 @@ void TcpTransport::writeEvent()
     if (Q_LIKELY(m_sessionType != Unknown)) {
         return;
     }
-    m_socket->putChar(char(0xef)); // Start session in Abridged format
+    qCDebug(c_loggingTranport()) << "Start session in Abridged format";
+    m_socket->putChar(char(0xef));
     setSessionType(Abridged);
 }
 
