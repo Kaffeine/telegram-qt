@@ -32,6 +32,14 @@ QVector<DcOption> Settings::defaultServerConfiguration()
     return s_builtInDcs;
 }
 
+QVector<DcOption> Settings::testServerConfiguration()
+{
+    static const QVector<DcOption> s_builtInTestDcs = {
+            DcOption(QStringLiteral("149.154.167.40") , 443, 2),
+    };
+    return s_builtInTestDcs;
+}
+
 QVector<DcOption> Settings::serverConfiguration()
 {
     return m_serverConfiguration;

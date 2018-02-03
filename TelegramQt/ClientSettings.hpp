@@ -30,6 +30,7 @@ public:
     // Q_INVOKABLE Telegram::RsaKey defaultServerPublicRsaKey() const;
 
     Q_INVOKABLE static QVector<DcOption> defaultServerConfiguration();
+    Q_INVOKABLE static QVector<DcOption> testServerConfiguration();
 
     QVector<DcOption> serverConfiguration();
 
