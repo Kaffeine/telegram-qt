@@ -25,7 +25,7 @@
 #define Q_FALLTHROUGH() (void)0
 #endif
 
-Q_LOGGING_CATEGORY(loggingTcpTransport, "telegram.transport.tcp", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_loggingTcpTransport, "telegram.transport.tcp", QtDebugMsg)
 
 static const quint32 tcpTimeout = 15 * 1000;
 
@@ -48,13 +48,13 @@ CTcpTransport::~CTcpTransport()
 
 void CTcpTransport::connectToHost(const QString &ipAddress, quint32 port)
 {
-    qDebug(loggingTcpTransport) << Q_FUNC_INFO << ipAddress << port;
+    qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << ipAddress << port;
     m_socket->connectToHost(ipAddress, port);
 }
 
 void CTcpTransport::disconnectFromHost()
 {
-    qDebug(loggingTcpTransport) << Q_FUNC_INFO;
+    qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO;
     if (m_socket) {
         m_socket->disconnectFromHost();
     }
@@ -62,7 +62,7 @@ void CTcpTransport::disconnectFromHost()
 
 void CTcpTransport::sendPackageImplementation(const QByteArray &payload)
 {
-    // quint32 length (included length itself + packet number + crc32 + payload // Length MUST be divisible by 4
+    // quint32 length (included length itself + packet number + crc32 + payload (MUST be divisible by 4)
     // quint32 packet number
     // quint32 CRC32 (length, quint32 packet number, payload)
     // Payload
@@ -75,7 +75,9 @@ void CTcpTransport::sendPackageImplementation(const QByteArray &payload)
     // Payload
 
     if (payload.length() % 4) {
-        qCritical() << Q_FUNC_INFO << "Invalid outgoing package! The payload size is not divisible by four!";
+        qCCritical(c_loggingTcpTransport()) << Q_FUNC_INFO
+                                            << "Invalid outgoing package! "
+                                               "The payload size is not divisible by four!";
     }
 
     QByteArray package;
@@ -99,7 +101,7 @@ void CTcpTransport::setSessionType(CTcpTransport::SessionType sessionType)
 
 void CTcpTransport::setState(QAbstractSocket::SocketState newState)
 {
-    qCDebug(loggingTcpTransport) << Q_FUNC_INFO << newState;
+    qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << newState;
     switch (newState) {
     case QAbstractSocket::HostLookupState:
     case QAbstractSocket::ConnectingState:
@@ -122,7 +124,8 @@ void CTcpTransport::onReadyRead()
     while (m_socket->bytesAvailable() > 0) {
         if (m_expectedLength == 0) {
             if (m_socket->bytesAvailable() < 4) {
-                // Four bytes is minimum readable size for new package
+                qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO
+                                                 << "Ready read, but less, than a four bytes available.";
                 return;
             }
             char length;
@@ -134,25 +137,28 @@ void CTcpTransport::onReadyRead()
                 m_socket->read((char *) &m_expectedLength, 3);
                 m_expectedLength *= 4;
             } else {
-                qCWarning(loggingTcpTransport) << "Incorrect TCP package!";
+                qCWarning(c_loggingTcpTransport()) << "Incorrect TCP package!";
             }
         }
 
         if (m_socket->bytesAvailable() < m_expectedLength) {
+            qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << "Ready read, but only "
+                                             << m_socket->bytesAvailable() << "bytes available ("
+                                             << m_expectedLength << "bytes expected.";
             return;
         }
 
         const QByteArray readPackage = m_socket->read(m_expectedLength);
         m_expectedLength = 0;
-        packageReceived(readPackage);
+        qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO
+                                         << "Received a package (" << readPackage.size() << " bytes)";
+        emit packageReceived(readPackage);
     }
 }
 
 void CTcpTransport::onTimeout()
 {
-#ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << "(connection to " << m_socket->peerName() << m_socket->peerPort() << ").";
-#endif
+    qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << m_socket->peerName() << m_socket->peerPort();
     emit timeout();
     m_socket->disconnectFromHost();
 }
@@ -160,7 +166,7 @@ void CTcpTransport::onTimeout()
 void CTcpTransport::setSocket(QAbstractSocket *socket)
 {
     if (m_socket) {
-        qCCritical(loggingTcpTransport) << Q_FUNC_INFO << "An attempt to set a socket twice";
+        qCCritical(c_loggingTcpTransport()) << Q_FUNC_INFO << "An attempt to set a socket twice";
     }
     m_socket = socket;
     connect(m_socket, &QAbstractSocket::stateChanged, this, &CTcpTransport::setState);
