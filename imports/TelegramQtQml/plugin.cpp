@@ -329,7 +329,6 @@ public:
         Q_ASSERT(QByteArray(uri) == QByteArray("TelegramQt"));
         TelegramNamespace::registerTypes();
         qmlRegisterSingletonType<TelegramNamespace>(uri, 1, 0, "Namespace", &telegram_namespace_provider);
-        qmlRegisterType<CTelegramCore>(uri, 1, 0, "TelegramCore");
         qmlRegisterType<CAppInformation>(uri, 1, 0, "AppInformation");
         qmlRegisterType<AccountSecretHelper>(uri, 1, 0, "AccountSecretHelper");
         qmlRegisterType<Telegram::Client::DeclarativeAuthOperation>(uri, 1, 0, "AuthOperation");

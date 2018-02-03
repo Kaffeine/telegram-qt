@@ -18,7 +18,6 @@
 #include <QObject>
 
 #include "CTelegramTransport.hpp"
-#include "CTelegramConnection.hpp"
 #include "TelegramUtils.hpp"
 
 #include <QTest>

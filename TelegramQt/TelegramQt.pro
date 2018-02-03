@@ -27,7 +27,7 @@ DEFINES += QT_USE_FAST_OPERATOR_PLUS
 DEFINES += QT_USE_QSTRINGBUILDER
 DEFINES += QT_STRICT_ITERATORS
 
-SOURCES = CTelegramCore.cpp \
+SOURCES += \
     CAppInformation.cpp \
     AccountStorage.cpp \
     DhLayer.cpp \
@@ -51,11 +51,6 @@ SOURCES = CTelegramCore.cpp \
     RpcError.cpp \
     RpcLayer.cpp \
     Connection.cpp \
-    CTelegramDispatcher.cpp \
-    CTelegramModule.cpp \
-    CTelegramAuthModule.cpp \
-    CTelegramMediaModule.cpp \
-    CTelegramTransportModule.cpp \
     CRawStream.cpp \
     CTelegramStream.cpp \
     CTelegramStreamExtraOperators.cpp \
@@ -67,7 +62,6 @@ SOURCES = CTelegramCore.cpp \
     CTcpTransport.cpp \
     CClientTcpTransport.cpp \
     TelegramNamespace.cpp \
-    CTelegramConnection.cpp \
     LegacySecretReader.cpp \
     PendingOperation.cpp \
     RpcProcessingContext.cpp \
@@ -86,7 +80,7 @@ PUBLIC_HEADERS += \
     TelegramQt/Client \
     TelegramQt/TelegramNamespace
 
-HEADERS = CTelegramCore.hpp \
+HEADERS += \
     CAppInformation.hpp \
     AccountStorage.hpp \
     Debug.hpp \
@@ -113,11 +107,6 @@ HEADERS = CTelegramCore.hpp \
     RpcError.hpp \
     RpcLayer.hpp \
     Connection.hpp \
-    CTelegramDispatcher.hpp \
-    CTelegramModule.hpp \
-    CTelegramAuthModule.hpp \
-    CTelegramMediaModule.hpp \
-    CTelegramTransportModule.hpp \
     CTelegramStream.hpp \
     CTelegramStreamExtraOperators.hpp \
     CTelegramStream_p.hpp \
@@ -133,7 +122,6 @@ HEADERS = CTelegramCore.hpp \
     TLNumbers.hpp \
     crypto-aes.hpp \
     crypto-rsa.hpp \
-    CTelegramConnection.hpp \
     LegacySecretReader.hpp \
     PendingOperation.hpp \
     RpcProcessingContext.hpp \
@@ -154,6 +142,22 @@ contains(options, developer-build) {
 }
 
 OTHER_FILES += CMakeLists.txt
+
+OTHER_FILES += \
+    CTelegramCore.cpp \
+    CTelegramCore.hpp \
+    CTelegramConnection.cpp \
+    CTelegramConnection.hpp \
+    CTelegramDispatcher.cpp \
+    CTelegramDispatcher.hpp \
+    CTelegramModule.cpp \
+    CTelegramModule.hpp \
+    CTelegramAuthModule.cpp \
+    CTelegramAuthModule.hpp \
+    CTelegramMediaModule.cpp \
+    CTelegramMediaModule.hpp \
+    CTelegramTransportModule.cpp \
+    CTelegramTransportModule.hpp
 
 # Installation
 public_headers.files = $$PUBLIC_HEADERS
