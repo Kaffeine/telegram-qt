@@ -19,6 +19,7 @@
 #define TLTYPES_HPP
 
 #include "TLValues.hpp"
+#include "TLNumbers.hpp"
 
 #include <QMetaType>
 #include <QVector>
