@@ -1161,6 +1161,7 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
         // void runCheckPhone();
         result.declarations.append(QString("void run%1();").arg(method.nameFromSecondWord()));
 
+        static const QString notImplementedMarker = "qWarning() << Q_FUNC_INFO << \"The method is not implemented!\";";
         static const auto addDefinition = [&className](const TLMethod &method, const QString &previousCode) {
             const QString signature = QString("void %1::run%2()\n").arg(className, method.nameFromSecondWord());
             int index = previousCode.indexOf(signature);
@@ -1168,7 +1169,10 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
                 int indexOfEnd = previousCode.indexOf(QLatin1String("\n}\n"), index);
 
                 if (indexOfEnd > 0) {
-                    return previousCode.mid(index, indexOfEnd - index) + QLatin1String("\n}\n\n");
+                    QString code = previousCode.mid(index, indexOfEnd - index) + QLatin1String("\n}\n\n");
+                    if (!code.contains(notImplementedMarker)) {
+                        return code;
+                    }
                 } else {
                     qWarning() << "Invalid input";
                 }
@@ -1182,11 +1186,11 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
             return QStringLiteral(
                         "void %1::run%2()\n"
                         "{\n"
-                        "    qWarning() << Q_FUNC_INFO << \"The method is not implemented!\";\n"
+                        "    %4\n"
                         "    %3 result;\n"
                         "    sendRpcReply(result);\n"
                         "}\n\n"
-                        ).arg(className, method.nameFromSecondWord(), method.type);
+                        ).arg(className, method.nameFromSecondWord(), method.type, notImplementedMarker);
         };
         result.definitions.append(addDefinition(method, previousSourceCode));
     }
