@@ -41,12 +41,12 @@ void DhLayer::init()
 {
     m_authRetryId = 0;
     Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
-    PendingRpcOperation*op = requestPqAuthorization();
+    PendingRpcOperation *op = requestPqAuthorization();
     setState(State::PqRequested);
     connect(op, &PendingRpcOperation::finished, this, &DhLayer::onPqAuthorizationAnswer);
 }
 
-PendingRpcOperation*DhLayer::requestPqAuthorization()
+PendingRpcOperation *DhLayer::requestPqAuthorization()
 {
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ReqPq;
@@ -66,7 +66,7 @@ void DhLayer::onPqAuthorizationAnswer(PendingRpcOperation *operation)
         setState(State::Failed);
         return;
     }
-    PendingRpcOperation*op = requestDhParameters();
+    PendingRpcOperation *op = requestDhParameters();
     setState(State::DhRequested);
     connect(op, &PendingRpcOperation::finished, this, &DhLayer::onDhParametersAnswer);
 }
@@ -152,7 +152,7 @@ bool DhLayer::acceptPqAuthorization(const QByteArray &payload)
     return false;
 }
 
-PendingRpcOperation*DhLayer::requestDhParameters()
+PendingRpcOperation *DhLayer::requestDhParameters()
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     Utils::randomBytes(m_newNonce.data, m_newNonce.size());
@@ -228,7 +228,7 @@ void DhLayer::onDhParametersAnswer(PendingRpcOperation *operation)
         return;
     }
     generateDh();
-    PendingRpcOperation*op = requestDhGenerationResult();
+    PendingRpcOperation *op = requestDhGenerationResult();
     setState(State::DhGenerationResultRequested);
     connect(op, &PendingRpcOperation::finished, this, &DhLayer::onDhGenerationResultAnswer);
 }
@@ -328,7 +328,7 @@ void DhLayer::generateDh()
 #endif
 }
 
-PendingRpcOperation*DhLayer::requestDhGenerationResult()
+PendingRpcOperation *DhLayer::requestDhGenerationResult()
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -371,7 +371,7 @@ PendingRpcOperation*DhLayer::requestDhGenerationResult()
     return sendPlainPackage(outputStream.getData());
 }
 
-void DhLayer::onDhGenerationResultAnswer(PendingRpcOperation*operation)
+void DhLayer::onDhGenerationResultAnswer(PendingRpcOperation *operation)
 {
     if (!operation->isSucceeded()) {
         qCCritical(c_clientDhLayerCategory) << Q_FUNC_INFO << "Bad1";
@@ -440,7 +440,7 @@ bool DhLayer::processServerDhAnswer(const QByteArray &payload)
     return true;
 }
 
-PendingRpcOperation*DhLayer::sendPlainPackage(const QByteArray &payload)
+PendingRpcOperation *DhLayer::sendPlainPackage(const QByteArray &payload)
 {
     const quint64 messageId = BaseDhLayer::sendPlainPackage(payload);
     m_plainOperation = new PendingRpcOperation(payload, this);
