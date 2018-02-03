@@ -37,11 +37,16 @@ class PendingAuthOperation;
 // Generated low-level layers forward declarations
 class AccountRpcLayer;
 class AuthRpcLayer;
+class BotsRpcLayer;
 class ChannelsRpcLayer;
 class ContactsRpcLayer;
 class HelpRpcLayer;
+class LangpackRpcLayer;
 class MessagesRpcLayer;
+class PaymentsRpcLayer;
+class PhoneRpcLayer;
 class PhotosRpcLayer;
+class StickersRpcLayer;
 class UpdatesRpcLayer;
 class UploadRpcLayer;
 class UsersRpcLayer;
@@ -63,11 +68,16 @@ public:
     // Generated low-level layers
     AccountRpcLayer *account() { return m_accountLayer; }
     AuthRpcLayer *auth() { return m_authLayer; }
+    BotsRpcLayer *bots() { return m_botsLayer; }
     ChannelsRpcLayer *channels() { return m_channelsLayer; }
     ContactsRpcLayer *contacts() { return m_contactsLayer; }
     HelpRpcLayer *help() { return m_helpLayer; }
+    LangpackRpcLayer *langpack() { return m_langpackLayer; }
     MessagesRpcLayer *messages() { return m_messagesLayer; }
+    PaymentsRpcLayer *payments() { return m_paymentsLayer; }
+    PhoneRpcLayer *phone() { return m_phoneLayer; }
     PhotosRpcLayer *photos() { return m_photosLayer; }
+    StickersRpcLayer *stickers() { return m_stickersLayer; }
     UpdatesRpcLayer *updates() { return m_updatesLayer; }
     UploadRpcLayer *upload() { return m_uploadLayer; }
     UsersRpcLayer *users() { return m_usersLayer; }
@@ -89,11 +99,16 @@ protected:
     // Generated low-level layer members
     AccountRpcLayer *m_accountLayer = nullptr;
     AuthRpcLayer *m_authLayer = nullptr;
+    BotsRpcLayer *m_botsLayer = nullptr;
     ChannelsRpcLayer *m_channelsLayer = nullptr;
     ContactsRpcLayer *m_contactsLayer = nullptr;
     HelpRpcLayer *m_helpLayer = nullptr;
+    LangpackRpcLayer *m_langpackLayer = nullptr;
     MessagesRpcLayer *m_messagesLayer = nullptr;
+    PaymentsRpcLayer *m_paymentsLayer = nullptr;
+    PhoneRpcLayer *m_phoneLayer = nullptr;
     PhotosRpcLayer *m_photosLayer = nullptr;
+    StickersRpcLayer *m_stickersLayer = nullptr;
     UpdatesRpcLayer *m_updatesLayer = nullptr;
     UploadRpcLayer *m_uploadLayer = nullptr;
     UsersRpcLayer *m_usersLayer = nullptr;

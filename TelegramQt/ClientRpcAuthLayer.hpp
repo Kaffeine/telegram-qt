@@ -35,22 +35,24 @@ public:
 
     // Generated Telegram API declarations
     PendingRpcOperation *bindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage);
+    PendingRpcOperation *cancelCode(const QString &phoneNumber, const QString &phoneCodeHash);
     PendingRpcOperation *checkPassword(const QByteArray &passwordHash);
     PendingRpcOperation *checkPhone(const QString &phoneNumber);
+    PendingRpcOperation *dropTempAuthKeys(const TLVector<quint64> &exceptAuthKeys);
     PendingRpcOperation *exportAuthorization(quint32 dcId);
     PendingRpcOperation *importAuthorization(quint32 id, const QByteArray &bytes);
     PendingRpcOperation *importBotAuthorization(quint32 flags, quint32 apiId, const QString &apiHash, const QString &botAuthToken);
     PendingRpcOperation *logOut();
     PendingRpcOperation *recoverPassword(const QString &code);
     PendingRpcOperation *requestPasswordRecovery();
+    PendingRpcOperation *resendCode(const QString &phoneNumber, const QString &phoneCodeHash);
     PendingRpcOperation *resetAuthorizations();
-    PendingRpcOperation *sendCall(const QString &phoneNumber, const QString &phoneCodeHash);
-    PendingRpcOperation *sendCode(const QString &phoneNumber, quint32 smsType, quint32 apiId, const QString &apiHash, const QString &langCode);
+    PendingRpcOperation *sendCode(quint32 flags, const QString &phoneNumber, bool currentNumber, quint32 apiId, const QString &apiHash);
     PendingRpcOperation *sendInvites(const TLVector<QString> &phoneNumbers, const QString &message);
-    PendingRpcOperation *sendSms(const QString &phoneNumber, const QString &phoneCodeHash);
     PendingRpcOperation *signIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
     PendingRpcOperation *signUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName);
     // End of generated Telegram API declarations
+    PendingRpcOperation *sendCode(const QString &phoneNumber, quint32 apiId, const QString &apiHash);
 };
 
 } // Client namespace

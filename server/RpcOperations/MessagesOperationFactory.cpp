@@ -61,6 +61,13 @@ bool MessagesRpcOperation::processCheckChatInvite(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processClearRecentStickers(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runClearRecentStickers);
+    context.inputStream() >> m_clearRecentStickers;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processCreateChat(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runCreateChat);
@@ -117,10 +124,31 @@ bool MessagesRpcOperation::processEditChatTitle(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processEditInlineBotMessage(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runEditInlineBotMessage);
+    context.inputStream() >> m_editInlineBotMessage;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processEditMessage(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runEditMessage);
+    context.inputStream() >> m_editMessage;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processExportChatInvite(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runExportChatInvite);
     context.inputStream() >> m_exportChatInvite;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processFaveSticker(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runFaveSticker);
+    context.inputStream() >> m_faveSticker;
     return !context.inputStream().error();
 }
 
@@ -138,6 +166,20 @@ bool MessagesRpcOperation::processForwardMessages(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processGetAllChats(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetAllChats);
+    context.inputStream() >> m_getAllChats;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetAllDrafts(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetAllDrafts);
+    context.inputStream() >> m_getAllDrafts;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processGetAllStickers(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runGetAllStickers);
@@ -145,10 +187,38 @@ bool MessagesRpcOperation::processGetAllStickers(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processGetArchivedStickers(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetArchivedStickers);
+    context.inputStream() >> m_getArchivedStickers;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetAttachedStickers(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetAttachedStickers);
+    context.inputStream() >> m_getAttachedStickers;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetBotCallbackAnswer(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetBotCallbackAnswer);
+    context.inputStream() >> m_getBotCallbackAnswer;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processGetChats(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runGetChats);
     context.inputStream() >> m_getChats;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetCommonChats(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetCommonChats);
+    context.inputStream() >> m_getCommonChats;
     return !context.inputStream().error();
 }
 
@@ -173,10 +243,31 @@ bool MessagesRpcOperation::processGetDocumentByHash(RpcProcessingContext &contex
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processGetFavedStickers(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetFavedStickers);
+    context.inputStream() >> m_getFavedStickers;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetFeaturedStickers(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetFeaturedStickers);
+    context.inputStream() >> m_getFeaturedStickers;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processGetFullChat(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runGetFullChat);
     context.inputStream() >> m_getFullChat;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetGameHighScores(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetGameHighScores);
+    context.inputStream() >> m_getGameHighScores;
     return !context.inputStream().error();
 }
 
@@ -194,6 +285,27 @@ bool MessagesRpcOperation::processGetInlineBotResults(RpcProcessingContext &cont
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processGetInlineGameHighScores(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetInlineGameHighScores);
+    context.inputStream() >> m_getInlineGameHighScores;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetMaskStickers(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetMaskStickers);
+    context.inputStream() >> m_getMaskStickers;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetMessageEditData(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetMessageEditData);
+    context.inputStream() >> m_getMessageEditData;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processGetMessages(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runGetMessages);
@@ -205,6 +317,41 @@ bool MessagesRpcOperation::processGetMessagesViews(RpcProcessingContext &context
 {
     setRunMethod(&MessagesRpcOperation::runGetMessagesViews);
     context.inputStream() >> m_getMessagesViews;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetPeerDialogs(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetPeerDialogs);
+    context.inputStream() >> m_getPeerDialogs;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetPeerSettings(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetPeerSettings);
+    context.inputStream() >> m_getPeerSettings;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetPinnedDialogs(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetPinnedDialogs);
+    context.inputStream() >> m_getPinnedDialogs;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetRecentLocations(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetRecentLocations);
+    context.inputStream() >> m_getRecentLocations;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetRecentStickers(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetRecentStickers);
+    context.inputStream() >> m_getRecentStickers;
     return !context.inputStream().error();
 }
 
@@ -222,10 +369,17 @@ bool MessagesRpcOperation::processGetStickerSet(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool MessagesRpcOperation::processGetStickers(RpcProcessingContext &context)
+bool MessagesRpcOperation::processGetUnreadMentions(RpcProcessingContext &context)
 {
-    setRunMethod(&MessagesRpcOperation::runGetStickers);
-    context.inputStream() >> m_getStickers;
+    setRunMethod(&MessagesRpcOperation::runGetUnreadMentions);
+    context.inputStream() >> m_getUnreadMentions;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processGetWebPage(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runGetWebPage);
+    context.inputStream() >> m_getWebPage;
     return !context.inputStream().error();
 }
 
@@ -233,6 +387,13 @@ bool MessagesRpcOperation::processGetWebPagePreview(RpcProcessingContext &contex
 {
     setRunMethod(&MessagesRpcOperation::runGetWebPagePreview);
     context.inputStream() >> m_getWebPagePreview;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processHideReportSpam(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runHideReportSpam);
+    context.inputStream() >> m_hideReportSpam;
     return !context.inputStream().error();
 }
 
@@ -264,10 +425,24 @@ bool MessagesRpcOperation::processReadEncryptedHistory(RpcProcessingContext &con
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processReadFeaturedStickers(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runReadFeaturedStickers);
+    context.inputStream() >> m_readFeaturedStickers;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processReadHistory(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runReadHistory);
     context.inputStream() >> m_readHistory;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processReadMentions(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runReadMentions);
+    context.inputStream() >> m_readMentions;
     return !context.inputStream().error();
 }
 
@@ -292,10 +467,24 @@ bool MessagesRpcOperation::processReceivedQueue(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processReorderPinnedDialogs(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runReorderPinnedDialogs);
+    context.inputStream() >> m_reorderPinnedDialogs;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processReorderStickerSets(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runReorderStickerSets);
     context.inputStream() >> m_reorderStickerSets;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processReportEncryptedSpam(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runReportEncryptedSpam);
+    context.inputStream() >> m_reportEncryptedSpam;
     return !context.inputStream().error();
 }
 
@@ -313,10 +502,24 @@ bool MessagesRpcOperation::processRequestEncryption(RpcProcessingContext &contex
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processSaveDraft(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runSaveDraft);
+    context.inputStream() >> m_saveDraft;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processSaveGif(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runSaveGif);
     context.inputStream() >> m_saveGif;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processSaveRecentSticker(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runSaveRecentSticker);
+    context.inputStream() >> m_saveRecentSticker;
     return !context.inputStream().error();
 }
 
@@ -338,13 +541,6 @@ bool MessagesRpcOperation::processSearchGlobal(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runSearchGlobal);
     context.inputStream() >> m_searchGlobal;
-    return !context.inputStream().error();
-}
-
-bool MessagesRpcOperation::processSendBroadcast(RpcProcessingContext &context)
-{
-    setRunMethod(&MessagesRpcOperation::runSendBroadcast);
-    context.inputStream() >> m_sendBroadcast;
     return !context.inputStream().error();
 }
 
@@ -390,6 +586,34 @@ bool MessagesRpcOperation::processSendMessage(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processSendScreenshotNotification(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runSendScreenshotNotification);
+    context.inputStream() >> m_sendScreenshotNotification;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processSetBotCallbackAnswer(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runSetBotCallbackAnswer);
+    context.inputStream() >> m_setBotCallbackAnswer;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processSetBotPrecheckoutResults(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runSetBotPrecheckoutResults);
+    context.inputStream() >> m_setBotPrecheckoutResults;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processSetBotShippingResults(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runSetBotShippingResults);
+    context.inputStream() >> m_setBotShippingResults;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processSetEncryptedTyping(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runSetEncryptedTyping);
@@ -397,10 +621,24 @@ bool MessagesRpcOperation::processSetEncryptedTyping(RpcProcessingContext &conte
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processSetGameScore(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runSetGameScore);
+    context.inputStream() >> m_setGameScore;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processSetInlineBotResults(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runSetInlineBotResults);
     context.inputStream() >> m_setInlineBotResults;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processSetInlineGameScore(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runSetInlineGameScore);
+    context.inputStream() >> m_setInlineGameScore;
     return !context.inputStream().error();
 }
 
@@ -425,10 +663,24 @@ bool MessagesRpcOperation::processToggleChatAdmins(RpcProcessingContext &context
     return !context.inputStream().error();
 }
 
+bool MessagesRpcOperation::processToggleDialogPin(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runToggleDialogPin);
+    context.inputStream() >> m_toggleDialogPin;
+    return !context.inputStream().error();
+}
+
 bool MessagesRpcOperation::processUninstallStickerSet(RpcProcessingContext &context)
 {
     setRunMethod(&MessagesRpcOperation::runUninstallStickerSet);
     context.inputStream() >> m_uninstallStickerSet;
+    return !context.inputStream().error();
+}
+
+bool MessagesRpcOperation::processUploadMedia(RpcProcessingContext &context)
+{
+    setRunMethod(&MessagesRpcOperation::runUploadMedia);
+    context.inputStream() >> m_uploadMedia;
     return !context.inputStream().error();
 }
 // End of generated process methods
@@ -452,6 +704,13 @@ void MessagesRpcOperation::runCheckChatInvite()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLChatInvite result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runClearRecentStickers()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
     sendRpcReply(result);
 }
 
@@ -511,10 +770,31 @@ void MessagesRpcOperation::runEditChatTitle()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runEditInlineBotMessage()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runEditMessage()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLUpdates result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runExportChatInvite()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLExportedChatInvite result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runFaveSticker()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
     sendRpcReply(result);
 }
 
@@ -532,6 +812,20 @@ void MessagesRpcOperation::runForwardMessages()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runGetAllChats()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesChats result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetAllDrafts()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLUpdates result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runGetAllStickers()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -539,7 +833,35 @@ void MessagesRpcOperation::runGetAllStickers()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runGetArchivedStickers()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesArchivedStickers result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetAttachedStickers()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLVector<TLStickerSetCovered> result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetBotCallbackAnswer()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesBotCallbackAnswer result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runGetChats()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesChats result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetCommonChats()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLMessagesChats result;
@@ -567,10 +889,31 @@ void MessagesRpcOperation::runGetDocumentByHash()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runGetFavedStickers()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesFavedStickers result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetFeaturedStickers()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesFeaturedStickers result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runGetFullChat()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLMessagesChatFull result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetGameHighScores()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesHighScores result;
     sendRpcReply(result);
 }
 
@@ -588,6 +931,27 @@ void MessagesRpcOperation::runGetInlineBotResults()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runGetInlineGameHighScores()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesHighScores result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetMaskStickers()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesAllStickers result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetMessageEditData()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesMessageEditData result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runGetMessages()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -599,6 +963,41 @@ void MessagesRpcOperation::runGetMessagesViews()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLVector<quint32> result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetPeerDialogs()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesPeerDialogs result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetPeerSettings()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLPeerSettings result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetPinnedDialogs()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesPeerDialogs result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetRecentLocations()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesMessages result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetRecentStickers()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesRecentStickers result;
     sendRpcReply(result);
 }
 
@@ -616,10 +1015,17 @@ void MessagesRpcOperation::runGetStickerSet()
     sendRpcReply(result);
 }
 
-void MessagesRpcOperation::runGetStickers()
+void MessagesRpcOperation::runGetUnreadMentions()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLMessagesStickers result;
+    TLMessagesMessages result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runGetWebPage()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLWebPage result;
     sendRpcReply(result);
 }
 
@@ -627,6 +1033,13 @@ void MessagesRpcOperation::runGetWebPagePreview()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLMessageMedia result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runHideReportSpam()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
     sendRpcReply(result);
 }
 
@@ -640,7 +1053,7 @@ void MessagesRpcOperation::runImportChatInvite()
 void MessagesRpcOperation::runInstallStickerSet()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    bool result;
+    TLMessagesStickerSetInstallResult result;
     sendRpcReply(result);
 }
 
@@ -658,10 +1071,24 @@ void MessagesRpcOperation::runReadEncryptedHistory()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runReadFeaturedStickers()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runReadHistory()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLMessagesAffectedMessages result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runReadMentions()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesAffectedHistory result;
     sendRpcReply(result);
 }
 
@@ -686,7 +1113,21 @@ void MessagesRpcOperation::runReceivedQueue()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runReorderPinnedDialogs()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runReorderStickerSets()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runReportEncryptedSpam()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     bool result;
@@ -707,7 +1148,21 @@ void MessagesRpcOperation::runRequestEncryption()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runSaveDraft()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runSaveGif()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runSaveRecentSticker()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     bool result;
@@ -732,13 +1187,6 @@ void MessagesRpcOperation::runSearchGlobal()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLMessagesMessages result;
-    sendRpcReply(result);
-}
-
-void MessagesRpcOperation::runSendBroadcast()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLUpdates result;
     sendRpcReply(result);
 }
 
@@ -784,6 +1232,34 @@ void MessagesRpcOperation::runSendMessage()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runSendScreenshotNotification()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLUpdates result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runSetBotCallbackAnswer()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runSetBotPrecheckoutResults()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runSetBotShippingResults()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runSetEncryptedTyping()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -791,7 +1267,21 @@ void MessagesRpcOperation::runSetEncryptedTyping()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runSetGameScore()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLUpdates result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runSetInlineBotResults()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runSetInlineGameScore()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     bool result;
@@ -819,10 +1309,24 @@ void MessagesRpcOperation::runToggleChatAdmins()
     sendRpcReply(result);
 }
 
+void MessagesRpcOperation::runToggleDialogPin()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
 void MessagesRpcOperation::runUninstallStickerSet()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     bool result;
+    sendRpcReply(result);
+}
+
+void MessagesRpcOperation::runUploadMedia()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessageMedia result;
     sendRpcReply(result);
 }
 // End of generated run methods
@@ -842,6 +1346,8 @@ MessagesRpcOperation::ProcessingMethod MessagesRpcOperation::getMethodForRpcFunc
         return &MessagesRpcOperation::processAddChatUser;
     case TLValue::MessagesCheckChatInvite:
         return &MessagesRpcOperation::processCheckChatInvite;
+    case TLValue::MessagesClearRecentStickers:
+        return &MessagesRpcOperation::processClearRecentStickers;
     case TLValue::MessagesCreateChat:
         return &MessagesRpcOperation::processCreateChat;
     case TLValue::MessagesDeleteChatUser:
@@ -858,40 +1364,84 @@ MessagesRpcOperation::ProcessingMethod MessagesRpcOperation::getMethodForRpcFunc
         return &MessagesRpcOperation::processEditChatPhoto;
     case TLValue::MessagesEditChatTitle:
         return &MessagesRpcOperation::processEditChatTitle;
+    case TLValue::MessagesEditInlineBotMessage:
+        return &MessagesRpcOperation::processEditInlineBotMessage;
+    case TLValue::MessagesEditMessage:
+        return &MessagesRpcOperation::processEditMessage;
     case TLValue::MessagesExportChatInvite:
         return &MessagesRpcOperation::processExportChatInvite;
+    case TLValue::MessagesFaveSticker:
+        return &MessagesRpcOperation::processFaveSticker;
     case TLValue::MessagesForwardMessage:
         return &MessagesRpcOperation::processForwardMessage;
     case TLValue::MessagesForwardMessages:
         return &MessagesRpcOperation::processForwardMessages;
+    case TLValue::MessagesGetAllChats:
+        return &MessagesRpcOperation::processGetAllChats;
+    case TLValue::MessagesGetAllDrafts:
+        return &MessagesRpcOperation::processGetAllDrafts;
     case TLValue::MessagesGetAllStickers:
         return &MessagesRpcOperation::processGetAllStickers;
+    case TLValue::MessagesGetArchivedStickers:
+        return &MessagesRpcOperation::processGetArchivedStickers;
+    case TLValue::MessagesGetAttachedStickers:
+        return &MessagesRpcOperation::processGetAttachedStickers;
+    case TLValue::MessagesGetBotCallbackAnswer:
+        return &MessagesRpcOperation::processGetBotCallbackAnswer;
     case TLValue::MessagesGetChats:
         return &MessagesRpcOperation::processGetChats;
+    case TLValue::MessagesGetCommonChats:
+        return &MessagesRpcOperation::processGetCommonChats;
     case TLValue::MessagesGetDhConfig:
         return &MessagesRpcOperation::processGetDhConfig;
     case TLValue::MessagesGetDialogs:
         return &MessagesRpcOperation::processGetDialogs;
     case TLValue::MessagesGetDocumentByHash:
         return &MessagesRpcOperation::processGetDocumentByHash;
+    case TLValue::MessagesGetFavedStickers:
+        return &MessagesRpcOperation::processGetFavedStickers;
+    case TLValue::MessagesGetFeaturedStickers:
+        return &MessagesRpcOperation::processGetFeaturedStickers;
     case TLValue::MessagesGetFullChat:
         return &MessagesRpcOperation::processGetFullChat;
+    case TLValue::MessagesGetGameHighScores:
+        return &MessagesRpcOperation::processGetGameHighScores;
     case TLValue::MessagesGetHistory:
         return &MessagesRpcOperation::processGetHistory;
     case TLValue::MessagesGetInlineBotResults:
         return &MessagesRpcOperation::processGetInlineBotResults;
+    case TLValue::MessagesGetInlineGameHighScores:
+        return &MessagesRpcOperation::processGetInlineGameHighScores;
+    case TLValue::MessagesGetMaskStickers:
+        return &MessagesRpcOperation::processGetMaskStickers;
+    case TLValue::MessagesGetMessageEditData:
+        return &MessagesRpcOperation::processGetMessageEditData;
     case TLValue::MessagesGetMessages:
         return &MessagesRpcOperation::processGetMessages;
     case TLValue::MessagesGetMessagesViews:
         return &MessagesRpcOperation::processGetMessagesViews;
+    case TLValue::MessagesGetPeerDialogs:
+        return &MessagesRpcOperation::processGetPeerDialogs;
+    case TLValue::MessagesGetPeerSettings:
+        return &MessagesRpcOperation::processGetPeerSettings;
+    case TLValue::MessagesGetPinnedDialogs:
+        return &MessagesRpcOperation::processGetPinnedDialogs;
+    case TLValue::MessagesGetRecentLocations:
+        return &MessagesRpcOperation::processGetRecentLocations;
+    case TLValue::MessagesGetRecentStickers:
+        return &MessagesRpcOperation::processGetRecentStickers;
     case TLValue::MessagesGetSavedGifs:
         return &MessagesRpcOperation::processGetSavedGifs;
     case TLValue::MessagesGetStickerSet:
         return &MessagesRpcOperation::processGetStickerSet;
-    case TLValue::MessagesGetStickers:
-        return &MessagesRpcOperation::processGetStickers;
+    case TLValue::MessagesGetUnreadMentions:
+        return &MessagesRpcOperation::processGetUnreadMentions;
+    case TLValue::MessagesGetWebPage:
+        return &MessagesRpcOperation::processGetWebPage;
     case TLValue::MessagesGetWebPagePreview:
         return &MessagesRpcOperation::processGetWebPagePreview;
+    case TLValue::MessagesHideReportSpam:
+        return &MessagesRpcOperation::processHideReportSpam;
     case TLValue::MessagesImportChatInvite:
         return &MessagesRpcOperation::processImportChatInvite;
     case TLValue::MessagesInstallStickerSet:
@@ -900,30 +1450,40 @@ MessagesRpcOperation::ProcessingMethod MessagesRpcOperation::getMethodForRpcFunc
         return &MessagesRpcOperation::processMigrateChat;
     case TLValue::MessagesReadEncryptedHistory:
         return &MessagesRpcOperation::processReadEncryptedHistory;
+    case TLValue::MessagesReadFeaturedStickers:
+        return &MessagesRpcOperation::processReadFeaturedStickers;
     case TLValue::MessagesReadHistory:
         return &MessagesRpcOperation::processReadHistory;
+    case TLValue::MessagesReadMentions:
+        return &MessagesRpcOperation::processReadMentions;
     case TLValue::MessagesReadMessageContents:
         return &MessagesRpcOperation::processReadMessageContents;
     case TLValue::MessagesReceivedMessages:
         return &MessagesRpcOperation::processReceivedMessages;
     case TLValue::MessagesReceivedQueue:
         return &MessagesRpcOperation::processReceivedQueue;
+    case TLValue::MessagesReorderPinnedDialogs:
+        return &MessagesRpcOperation::processReorderPinnedDialogs;
     case TLValue::MessagesReorderStickerSets:
         return &MessagesRpcOperation::processReorderStickerSets;
+    case TLValue::MessagesReportEncryptedSpam:
+        return &MessagesRpcOperation::processReportEncryptedSpam;
     case TLValue::MessagesReportSpam:
         return &MessagesRpcOperation::processReportSpam;
     case TLValue::MessagesRequestEncryption:
         return &MessagesRpcOperation::processRequestEncryption;
+    case TLValue::MessagesSaveDraft:
+        return &MessagesRpcOperation::processSaveDraft;
     case TLValue::MessagesSaveGif:
         return &MessagesRpcOperation::processSaveGif;
+    case TLValue::MessagesSaveRecentSticker:
+        return &MessagesRpcOperation::processSaveRecentSticker;
     case TLValue::MessagesSearch:
         return &MessagesRpcOperation::processSearch;
     case TLValue::MessagesSearchGifs:
         return &MessagesRpcOperation::processSearchGifs;
     case TLValue::MessagesSearchGlobal:
         return &MessagesRpcOperation::processSearchGlobal;
-    case TLValue::MessagesSendBroadcast:
-        return &MessagesRpcOperation::processSendBroadcast;
     case TLValue::MessagesSendEncrypted:
         return &MessagesRpcOperation::processSendEncrypted;
     case TLValue::MessagesSendEncryptedFile:
@@ -936,18 +1496,34 @@ MessagesRpcOperation::ProcessingMethod MessagesRpcOperation::getMethodForRpcFunc
         return &MessagesRpcOperation::processSendMedia;
     case TLValue::MessagesSendMessage:
         return &MessagesRpcOperation::processSendMessage;
+    case TLValue::MessagesSendScreenshotNotification:
+        return &MessagesRpcOperation::processSendScreenshotNotification;
+    case TLValue::MessagesSetBotCallbackAnswer:
+        return &MessagesRpcOperation::processSetBotCallbackAnswer;
+    case TLValue::MessagesSetBotPrecheckoutResults:
+        return &MessagesRpcOperation::processSetBotPrecheckoutResults;
+    case TLValue::MessagesSetBotShippingResults:
+        return &MessagesRpcOperation::processSetBotShippingResults;
     case TLValue::MessagesSetEncryptedTyping:
         return &MessagesRpcOperation::processSetEncryptedTyping;
+    case TLValue::MessagesSetGameScore:
+        return &MessagesRpcOperation::processSetGameScore;
     case TLValue::MessagesSetInlineBotResults:
         return &MessagesRpcOperation::processSetInlineBotResults;
+    case TLValue::MessagesSetInlineGameScore:
+        return &MessagesRpcOperation::processSetInlineGameScore;
     case TLValue::MessagesSetTyping:
         return &MessagesRpcOperation::processSetTyping;
     case TLValue::MessagesStartBot:
         return &MessagesRpcOperation::processStartBot;
     case TLValue::MessagesToggleChatAdmins:
         return &MessagesRpcOperation::processToggleChatAdmins;
+    case TLValue::MessagesToggleDialogPin:
+        return &MessagesRpcOperation::processToggleDialogPin;
     case TLValue::MessagesUninstallStickerSet:
         return &MessagesRpcOperation::processUninstallStickerSet;
+    case TLValue::MessagesUploadMedia:
+        return &MessagesRpcOperation::processUploadMedia;
     // End of generated methodForRpcFunction cases
     default:
         return nullptr;

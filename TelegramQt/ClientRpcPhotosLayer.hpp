@@ -36,8 +36,8 @@ public:
     // Generated Telegram API declarations
     PendingRpcOperation *deletePhotos(const TLVector<TLInputPhoto> &id);
     PendingRpcOperation *getUserPhotos(const TLInputUser &userId, quint32 offset, quint64 maxId, quint32 limit);
-    PendingRpcOperation *updateProfilePhoto(const TLInputPhoto &id, const TLInputPhotoCrop &crop);
-    PendingRpcOperation *uploadProfilePhoto(const TLInputFile &file, const QString &caption, const TLInputGeoPoint &geoPoint, const TLInputPhotoCrop &crop);
+    PendingRpcOperation *updateProfilePhoto(const TLInputPhoto &id);
+    PendingRpcOperation *uploadProfilePhoto(const TLInputFile &file);
     // End of generated Telegram API declarations
 };
 

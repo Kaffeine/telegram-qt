@@ -36,38 +36,40 @@ public:
 
     // Generated process methods
     bool processBindTempAuthKey(RpcProcessingContext &context);
+    bool processCancelCode(RpcProcessingContext &context);
     bool processCheckPassword(RpcProcessingContext &context);
     bool processCheckPhone(RpcProcessingContext &context);
+    bool processDropTempAuthKeys(RpcProcessingContext &context);
     bool processExportAuthorization(RpcProcessingContext &context);
     bool processImportAuthorization(RpcProcessingContext &context);
     bool processImportBotAuthorization(RpcProcessingContext &context);
     bool processLogOut(RpcProcessingContext &context);
     bool processRecoverPassword(RpcProcessingContext &context);
     bool processRequestPasswordRecovery(RpcProcessingContext &context);
+    bool processResendCode(RpcProcessingContext &context);
     bool processResetAuthorizations(RpcProcessingContext &context);
-    bool processSendCall(RpcProcessingContext &context);
     bool processSendCode(RpcProcessingContext &context);
     bool processSendInvites(RpcProcessingContext &context);
-    bool processSendSms(RpcProcessingContext &context);
     bool processSignIn(RpcProcessingContext &context);
     bool processSignUp(RpcProcessingContext &context);
     // End of generated process methods
 
     // Generated run methods
     void runBindTempAuthKey();
+    void runCancelCode();
     void runCheckPassword();
     void runCheckPhone();
+    void runDropTempAuthKeys();
     void runExportAuthorization();
     void runImportAuthorization();
     void runImportBotAuthorization();
     void runLogOut();
     void runRecoverPassword();
     void runRequestPasswordRecovery();
+    void runResendCode();
     void runResetAuthorizations();
-    void runSendCall();
     void runSendCode();
     void runSendInvites();
-    void runSendSms();
     void runSignIn();
     void runSignUp();
     // End of generated run methods
@@ -86,19 +88,20 @@ protected:
 
     // Generated RPC members
     TLFunctions::TLAuthBindTempAuthKey m_bindTempAuthKey;
+    TLFunctions::TLAuthCancelCode m_cancelCode;
     TLFunctions::TLAuthCheckPassword m_checkPassword;
     TLFunctions::TLAuthCheckPhone m_checkPhone;
+    TLFunctions::TLAuthDropTempAuthKeys m_dropTempAuthKeys;
     TLFunctions::TLAuthExportAuthorization m_exportAuthorization;
     TLFunctions::TLAuthImportAuthorization m_importAuthorization;
     TLFunctions::TLAuthImportBotAuthorization m_importBotAuthorization;
     TLFunctions::TLAuthLogOut m_logOut;
     TLFunctions::TLAuthRecoverPassword m_recoverPassword;
     TLFunctions::TLAuthRequestPasswordRecovery m_requestPasswordRecovery;
+    TLFunctions::TLAuthResendCode m_resendCode;
     TLFunctions::TLAuthResetAuthorizations m_resetAuthorizations;
-    TLFunctions::TLAuthSendCall m_sendCall;
     TLFunctions::TLAuthSendCode m_sendCode;
     TLFunctions::TLAuthSendInvites m_sendInvites;
-    TLFunctions::TLAuthSendSms m_sendSms;
     TLFunctions::TLAuthSignIn m_signIn;
     TLFunctions::TLAuthSignUp m_signUp;
     // End of generated RPC members

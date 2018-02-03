@@ -39,11 +39,13 @@ public:
     PendingRpcOperation *deleteContacts(const TLVector<TLInputUser> &id);
     PendingRpcOperation *exportCard();
     PendingRpcOperation *getBlocked(quint32 offset, quint32 limit);
-    PendingRpcOperation *getContacts(const QString &hash);
+    PendingRpcOperation *getContacts(quint32 hash);
     PendingRpcOperation *getStatuses();
-    PendingRpcOperation *getSuggested(quint32 limit);
+    PendingRpcOperation *getTopPeers(quint32 flags, quint32 offset, quint32 limit, quint32 hash);
     PendingRpcOperation *importCard(const TLVector<quint32> &exportCard);
-    PendingRpcOperation *importContacts(const TLVector<TLInputContact> &contacts, bool replace);
+    PendingRpcOperation *importContacts(const TLVector<TLInputContact> &contacts);
+    PendingRpcOperation *resetSaved();
+    PendingRpcOperation *resetTopPeerRating(const TLTopPeerCategory &category, const TLInputPeer &peer);
     PendingRpcOperation *resolveUsername(const QString &username);
     PendingRpcOperation *search(const QString &q, quint32 limit);
     PendingRpcOperation *unblock(const TLInputUser &id);

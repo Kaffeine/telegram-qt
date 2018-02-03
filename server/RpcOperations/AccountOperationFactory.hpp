@@ -37,6 +37,7 @@ public:
     // Generated process methods
     bool processChangePhone(RpcProcessingContext &context);
     bool processCheckUsername(RpcProcessingContext &context);
+    bool processConfirmPhone(RpcProcessingContext &context);
     bool processDeleteAccount(RpcProcessingContext &context);
     bool processGetAccountTTL(RpcProcessingContext &context);
     bool processGetAuthorizations(RpcProcessingContext &context);
@@ -44,12 +45,14 @@ public:
     bool processGetPassword(RpcProcessingContext &context);
     bool processGetPasswordSettings(RpcProcessingContext &context);
     bool processGetPrivacy(RpcProcessingContext &context);
+    bool processGetTmpPassword(RpcProcessingContext &context);
     bool processGetWallPapers(RpcProcessingContext &context);
     bool processRegisterDevice(RpcProcessingContext &context);
     bool processReportPeer(RpcProcessingContext &context);
     bool processResetAuthorization(RpcProcessingContext &context);
     bool processResetNotifySettings(RpcProcessingContext &context);
     bool processSendChangePhoneCode(RpcProcessingContext &context);
+    bool processSendConfirmPhoneCode(RpcProcessingContext &context);
     bool processSetAccountTTL(RpcProcessingContext &context);
     bool processSetPrivacy(RpcProcessingContext &context);
     bool processUnregisterDevice(RpcProcessingContext &context);
@@ -64,6 +67,7 @@ public:
     // Generated run methods
     void runChangePhone();
     void runCheckUsername();
+    void runConfirmPhone();
     void runDeleteAccount();
     void runGetAccountTTL();
     void runGetAuthorizations();
@@ -71,12 +75,14 @@ public:
     void runGetPassword();
     void runGetPasswordSettings();
     void runGetPrivacy();
+    void runGetTmpPassword();
     void runGetWallPapers();
     void runRegisterDevice();
     void runReportPeer();
     void runResetAuthorization();
     void runResetNotifySettings();
     void runSendChangePhoneCode();
+    void runSendConfirmPhoneCode();
     void runSetAccountTTL();
     void runSetPrivacy();
     void runUnregisterDevice();
@@ -103,6 +109,7 @@ protected:
     // Generated RPC members
     TLFunctions::TLAccountChangePhone m_changePhone;
     TLFunctions::TLAccountCheckUsername m_checkUsername;
+    TLFunctions::TLAccountConfirmPhone m_confirmPhone;
     TLFunctions::TLAccountDeleteAccount m_deleteAccount;
     TLFunctions::TLAccountGetAccountTTL m_getAccountTTL;
     TLFunctions::TLAccountGetAuthorizations m_getAuthorizations;
@@ -110,12 +117,14 @@ protected:
     TLFunctions::TLAccountGetPassword m_getPassword;
     TLFunctions::TLAccountGetPasswordSettings m_getPasswordSettings;
     TLFunctions::TLAccountGetPrivacy m_getPrivacy;
+    TLFunctions::TLAccountGetTmpPassword m_getTmpPassword;
     TLFunctions::TLAccountGetWallPapers m_getWallPapers;
     TLFunctions::TLAccountRegisterDevice m_registerDevice;
     TLFunctions::TLAccountReportPeer m_reportPeer;
     TLFunctions::TLAccountResetAuthorization m_resetAuthorization;
     TLFunctions::TLAccountResetNotifySettings m_resetNotifySettings;
     TLFunctions::TLAccountSendChangePhoneCode m_sendChangePhoneCode;
+    TLFunctions::TLAccountSendConfirmPhoneCode m_sendConfirmPhoneCode;
     TLFunctions::TLAccountSetAccountTTL m_setAccountTTL;
     TLFunctions::TLAccountSetPrivacy m_setPrivacy;
     TLFunctions::TLAccountUnregisterDevice m_unregisterDevice;

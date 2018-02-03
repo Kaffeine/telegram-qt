@@ -40,10 +40,38 @@ namespace Telegram {
 namespace Server {
 
 // Generated process methods
+bool UploadRpcOperation::processGetCdnFile(RpcProcessingContext &context)
+{
+    setRunMethod(&UploadRpcOperation::runGetCdnFile);
+    context.inputStream() >> m_getCdnFile;
+    return !context.inputStream().error();
+}
+
+bool UploadRpcOperation::processGetCdnFileHashes(RpcProcessingContext &context)
+{
+    setRunMethod(&UploadRpcOperation::runGetCdnFileHashes);
+    context.inputStream() >> m_getCdnFileHashes;
+    return !context.inputStream().error();
+}
+
 bool UploadRpcOperation::processGetFile(RpcProcessingContext &context)
 {
     setRunMethod(&UploadRpcOperation::runGetFile);
     context.inputStream() >> m_getFile;
+    return !context.inputStream().error();
+}
+
+bool UploadRpcOperation::processGetWebFile(RpcProcessingContext &context)
+{
+    setRunMethod(&UploadRpcOperation::runGetWebFile);
+    context.inputStream() >> m_getWebFile;
+    return !context.inputStream().error();
+}
+
+bool UploadRpcOperation::processReuploadCdnFile(RpcProcessingContext &context)
+{
+    setRunMethod(&UploadRpcOperation::runReuploadCdnFile);
+    context.inputStream() >> m_reuploadCdnFile;
     return !context.inputStream().error();
 }
 
@@ -63,10 +91,38 @@ bool UploadRpcOperation::processSaveFilePart(RpcProcessingContext &context)
 // End of generated process methods
 
 // Generated run methods
+void UploadRpcOperation::runGetCdnFile()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLUploadCdnFile result;
+    sendRpcReply(result);
+}
+
+void UploadRpcOperation::runGetCdnFileHashes()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLVector<TLCdnFileHash> result;
+    sendRpcReply(result);
+}
+
 void UploadRpcOperation::runGetFile()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLUploadFile result;
+    sendRpcReply(result);
+}
+
+void UploadRpcOperation::runGetWebFile()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLUploadWebFile result;
+    sendRpcReply(result);
+}
+
+void UploadRpcOperation::runReuploadCdnFile()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLVector<TLCdnFileHash> result;
     sendRpcReply(result);
 }
 
@@ -94,8 +150,16 @@ UploadRpcOperation::ProcessingMethod UploadRpcOperation::getMethodForRpcFunction
 {
     switch (function) {
     // Generated methodForRpcFunction cases
+    case TLValue::UploadGetCdnFile:
+        return &UploadRpcOperation::processGetCdnFile;
+    case TLValue::UploadGetCdnFileHashes:
+        return &UploadRpcOperation::processGetCdnFileHashes;
     case TLValue::UploadGetFile:
         return &UploadRpcOperation::processGetFile;
+    case TLValue::UploadGetWebFile:
+        return &UploadRpcOperation::processGetWebFile;
+    case TLValue::UploadReuploadCdnFile:
+        return &UploadRpcOperation::processReuploadCdnFile;
     case TLValue::UploadSaveBigFilePart:
         return &UploadRpcOperation::processSaveBigFilePart;
     case TLValue::UploadSaveFilePart:

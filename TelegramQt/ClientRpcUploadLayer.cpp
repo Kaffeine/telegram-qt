@@ -31,7 +31,9 @@ namespace Telegram {
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUploadCdnFile *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUploadFile *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUploadWebFile *output);
 // End of generated Telegram API reply template specializations
 
 UploadRpcLayer::UploadRpcLayer(QObject *parent) :
@@ -40,6 +42,27 @@ UploadRpcLayer::UploadRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
+PendingRpcOperation *UploadRpcLayer::getCdnFile(const QByteArray &fileToken, quint32 offset, quint32 limit)
+{
+    qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << offset << limit;
+    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    outputStream << TLValue::UploadGetCdnFile;
+    outputStream << fileToken;
+    outputStream << offset;
+    outputStream << limit;
+    return sendEncryptedPackage(outputStream.getData());
+}
+
+PendingRpcOperation *UploadRpcLayer::getCdnFileHashes(const QByteArray &fileToken, quint32 offset)
+{
+    qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << offset;
+    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    outputStream << TLValue::UploadGetCdnFileHashes;
+    outputStream << fileToken;
+    outputStream << offset;
+    return sendEncryptedPackage(outputStream.getData());
+}
+
 PendingRpcOperation *UploadRpcLayer::getFile(const TLInputFileLocation &location, quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << location << offset << limit;
@@ -48,6 +71,27 @@ PendingRpcOperation *UploadRpcLayer::getFile(const TLInputFileLocation &location
     outputStream << location;
     outputStream << offset;
     outputStream << limit;
+    return sendEncryptedPackage(outputStream.getData());
+}
+
+PendingRpcOperation *UploadRpcLayer::getWebFile(const TLInputWebFileLocation &location, quint32 offset, quint32 limit)
+{
+    qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << location << offset << limit;
+    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    outputStream << TLValue::UploadGetWebFile;
+    outputStream << location;
+    outputStream << offset;
+    outputStream << limit;
+    return sendEncryptedPackage(outputStream.getData());
+}
+
+PendingRpcOperation *UploadRpcLayer::reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken)
+{
+    qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << requestToken.toHex();
+    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    outputStream << TLValue::UploadReuploadCdnFile;
+    outputStream << fileToken;
+    outputStream << requestToken;
     return sendEncryptedPackage(outputStream.getData());
 }
 

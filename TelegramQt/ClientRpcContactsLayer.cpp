@@ -37,7 +37,7 @@ template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactsImportedContacts *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactsLink *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactsResolvedPeer *output);
-template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactsSuggested *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactsTopPeers *output);
 // End of generated Telegram API reply template specializations
 
 ContactsRpcLayer::ContactsRpcLayer(QObject *parent) :
@@ -91,7 +91,7 @@ PendingRpcOperation *ContactsRpcLayer::getBlocked(quint32 offset, quint32 limit)
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *ContactsRpcLayer::getContacts(const QString &hash)
+PendingRpcOperation *ContactsRpcLayer::getContacts(quint32 hash)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -108,12 +108,21 @@ PendingRpcOperation *ContactsRpcLayer::getStatuses()
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *ContactsRpcLayer::getSuggested(quint32 limit)
+PendingRpcOperation *ContactsRpcLayer::getTopPeers(quint32 flags, quint32 offset, quint32 limit, quint32 hash)
 {
-    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << limit;
+    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << flags << offset << limit << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
-    outputStream << TLValue::ContactsGetSuggested;
+    outputStream << TLValue::ContactsGetTopPeers;
+    outputStream << flags;
+    // (flags & 1 << 0) stands for correspondents "true" value
+    // (flags & 1 << 1) stands for botsPm "true" value
+    // (flags & 1 << 2) stands for botsInline "true" value
+    // (flags & 1 << 3) stands for phoneCalls "true" value
+    // (flags & 1 << 10) stands for groups "true" value
+    // (flags & 1 << 15) stands for channels "true" value
+    outputStream << offset;
     outputStream << limit;
+    outputStream << hash;
     return sendEncryptedPackage(outputStream.getData());
 }
 
@@ -126,13 +135,30 @@ PendingRpcOperation *ContactsRpcLayer::importCard(const TLVector<quint32> &expor
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *ContactsRpcLayer::importContacts(const TLVector<TLInputContact> &contacts, bool replace)
+PendingRpcOperation *ContactsRpcLayer::importContacts(const TLVector<TLInputContact> &contacts)
 {
-    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << contacts << replace;
+    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << contacts;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsImportContacts;
     outputStream << contacts;
-    outputStream << replace;
+    return sendEncryptedPackage(outputStream.getData());
+}
+
+PendingRpcOperation *ContactsRpcLayer::resetSaved()
+{
+    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO;
+    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    outputStream << TLValue::ContactsResetSaved;
+    return sendEncryptedPackage(outputStream.getData());
+}
+
+PendingRpcOperation *ContactsRpcLayer::resetTopPeerRating(const TLTopPeerCategory &category, const TLInputPeer &peer)
+{
+    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << category << peer;
+    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    outputStream << TLValue::ContactsResetTopPeerRating;
+    outputStream << category;
+    outputStream << peer;
     return sendEncryptedPackage(outputStream.getData());
 }
 

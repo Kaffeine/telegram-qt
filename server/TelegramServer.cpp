@@ -14,11 +14,16 @@
 // Generated RPC Operation Factory includes
 #include "AccountOperationFactory.hpp"
 #include "AuthOperationFactory.hpp"
+#include "BotsOperationFactory.hpp"
 #include "ChannelsOperationFactory.hpp"
 #include "ContactsOperationFactory.hpp"
 #include "HelpOperationFactory.hpp"
+#include "LangpackOperationFactory.hpp"
 #include "MessagesOperationFactory.hpp"
+#include "PaymentsOperationFactory.hpp"
+#include "PhoneOperationFactory.hpp"
 #include "PhotosOperationFactory.hpp"
+#include "StickersOperationFactory.hpp"
 #include "UpdatesOperationFactory.hpp"
 #include "UploadOperationFactory.hpp"
 #include "UsersOperationFactory.hpp"
@@ -38,11 +43,16 @@ Server::Server(QObject *parent) :
         // Generated RPC Operation Factory initialization
         new AccountOperationFactory(),
         new AuthOperationFactory(),
+        new BotsOperationFactory(),
         new ChannelsOperationFactory(),
         new ContactsOperationFactory(),
         new HelpOperationFactory(),
+        new LangpackOperationFactory(),
         new MessagesOperationFactory(),
+        new PaymentsOperationFactory(),
+        new PhoneOperationFactory(),
         new PhotosOperationFactory(),
+        new StickersOperationFactory(),
         new UpdatesOperationFactory(),
         new UploadOperationFactory(),
         new UsersOperationFactory(),

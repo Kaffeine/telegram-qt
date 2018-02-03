@@ -37,23 +37,29 @@ public:
     // Generated process methods
     bool processGetAppChangelog(RpcProcessingContext &context);
     bool processGetAppUpdate(RpcProcessingContext &context);
+    bool processGetCdnConfig(RpcProcessingContext &context);
     bool processGetConfig(RpcProcessingContext &context);
     bool processGetInviteText(RpcProcessingContext &context);
     bool processGetNearestDc(RpcProcessingContext &context);
+    bool processGetRecentMeUrls(RpcProcessingContext &context);
     bool processGetSupport(RpcProcessingContext &context);
     bool processGetTermsOfService(RpcProcessingContext &context);
     bool processSaveAppLog(RpcProcessingContext &context);
+    bool processSetBotUpdatesStatus(RpcProcessingContext &context);
     // End of generated process methods
 
     // Generated run methods
     void runGetAppChangelog();
     void runGetAppUpdate();
+    void runGetCdnConfig();
     void runGetConfig();
     void runGetInviteText();
     void runGetNearestDc();
+    void runGetRecentMeUrls();
     void runGetSupport();
     void runGetTermsOfService();
     void runSaveAppLog();
+    void runSetBotUpdatesStatus();
     // End of generated run methods
 
     void start() override { callMember<>(this, m_runMethod); }
@@ -69,12 +75,15 @@ protected:
     // Generated RPC members
     TLFunctions::TLHelpGetAppChangelog m_getAppChangelog;
     TLFunctions::TLHelpGetAppUpdate m_getAppUpdate;
+    TLFunctions::TLHelpGetCdnConfig m_getCdnConfig;
     TLFunctions::TLHelpGetConfig m_getConfig;
     TLFunctions::TLHelpGetInviteText m_getInviteText;
     TLFunctions::TLHelpGetNearestDc m_getNearestDc;
+    TLFunctions::TLHelpGetRecentMeUrls m_getRecentMeUrls;
     TLFunctions::TLHelpGetSupport m_getSupport;
     TLFunctions::TLHelpGetTermsOfService m_getTermsOfService;
     TLFunctions::TLHelpSaveAppLog m_saveAppLog;
+    TLFunctions::TLHelpSetBotUpdatesStatus m_setBotUpdatesStatus;
     // End of generated RPC members
 };
 

@@ -36,6 +36,7 @@ public:
     // Generated Telegram API declarations
     PendingRpcOperation *changePhone(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
     PendingRpcOperation *checkUsername(const QString &username);
+    PendingRpcOperation *confirmPhone(const QString &phoneCodeHash, const QString &phoneCode);
     PendingRpcOperation *deleteAccount(const QString &reason);
     PendingRpcOperation *getAccountTTL();
     PendingRpcOperation *getAuthorizations();
@@ -43,19 +44,21 @@ public:
     PendingRpcOperation *getPassword();
     PendingRpcOperation *getPasswordSettings(const QByteArray &currentPasswordHash);
     PendingRpcOperation *getPrivacy(const TLInputPrivacyKey &key);
+    PendingRpcOperation *getTmpPassword(const QByteArray &passwordHash, quint32 period);
     PendingRpcOperation *getWallPapers();
-    PendingRpcOperation *registerDevice(quint32 tokenType, const QString &token, const QString &deviceModel, const QString &systemVersion, const QString &appVersion, bool appSandbox, const QString &langCode);
+    PendingRpcOperation *registerDevice(quint32 tokenType, const QString &token);
     PendingRpcOperation *reportPeer(const TLInputPeer &peer, const TLReportReason &reason);
     PendingRpcOperation *resetAuthorization(quint64 hash);
     PendingRpcOperation *resetNotifySettings();
-    PendingRpcOperation *sendChangePhoneCode(const QString &phoneNumber);
+    PendingRpcOperation *sendChangePhoneCode(quint32 flags, const QString &phoneNumber, bool currentNumber);
+    PendingRpcOperation *sendConfirmPhoneCode(quint32 flags, const QString &hash, bool currentNumber);
     PendingRpcOperation *setAccountTTL(const TLAccountDaysTTL &ttl);
     PendingRpcOperation *setPrivacy(const TLInputPrivacyKey &key, const TLVector<TLInputPrivacyRule> &rules);
     PendingRpcOperation *unregisterDevice(quint32 tokenType, const QString &token);
     PendingRpcOperation *updateDeviceLocked(quint32 period);
     PendingRpcOperation *updateNotifySettings(const TLInputNotifyPeer &peer, const TLInputPeerNotifySettings &settings);
     PendingRpcOperation *updatePasswordSettings(const QByteArray &currentPasswordHash, const TLAccountPasswordInputSettings &newSettings);
-    PendingRpcOperation *updateProfile(const QString &firstName, const QString &lastName);
+    PendingRpcOperation *updateProfile(quint32 flags, const QString &firstName, const QString &lastName, const QString &about);
     PendingRpcOperation *updateStatus(bool offline);
     PendingRpcOperation *updateUsername(const QString &username);
     // End of generated Telegram API declarations

@@ -51,14 +51,10 @@ TelegramNamespace::MessageType telegramMessageTypeToPublicMessageType(TLValue ty
         return TelegramNamespace::MessageTypeText;
     case TLValue::MessageMediaPhoto:
         return TelegramNamespace::MessageTypePhoto;
-    case TLValue::MessageMediaVideo:
-        return TelegramNamespace::MessageTypeVideo;
     case TLValue::MessageMediaGeo:
         return TelegramNamespace::MessageTypeGeo;
     case TLValue::MessageMediaContact:
         return TelegramNamespace::MessageTypeContact;
-    case TLValue::MessageMediaAudio:
-        return TelegramNamespace::MessageTypeAudio;
     case TLValue::MessageMediaDocument:
         return TelegramNamespace::MessageTypeDocument;
     case TLValue::MessageMediaWebPage:
@@ -75,14 +71,10 @@ TLValue::Value publicMessageTypeToTelegramMessageType(TelegramNamespace::Message
         return TLValue::MessageMediaEmpty;
     case TelegramNamespace::MessageTypePhoto:
         return TLValue::MessageMediaPhoto;
-    case TelegramNamespace::MessageTypeVideo:
-        return TLValue::MessageMediaVideo;
     case TelegramNamespace::MessageTypeGeo:
         return TLValue::MessageMediaGeo;
     case TelegramNamespace::MessageTypeContact:
         return TLValue::MessageMediaContact;
-    case TelegramNamespace::MessageTypeAudio:
-        return TLValue::MessageMediaAudio;
     case TelegramNamespace::MessageTypeDocument:
         return TLValue::MessageMediaDocument;
     case TelegramNamespace::MessageTypeWebPage:

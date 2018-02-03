@@ -43,11 +43,13 @@ UpdatesRpcLayer::UpdatesRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *UpdatesRpcLayer::getChannelDifference(const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit)
+PendingRpcOperation *UpdatesRpcLayer::getChannelDifference(quint32 flags, const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit)
 {
-    qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO << channel << filter << pts << limit;
+    qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO << flags << channel << filter << pts << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::UpdatesGetChannelDifference;
+    outputStream << flags;
+    // (flags & 1 << 0) stands for force "true" value
     outputStream << channel;
     outputStream << filter;
     outputStream << pts;
@@ -55,12 +57,16 @@ PendingRpcOperation *UpdatesRpcLayer::getChannelDifference(const TLInputChannel 
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *UpdatesRpcLayer::getDifference(quint32 pts, quint32 date, quint32 qts)
+PendingRpcOperation *UpdatesRpcLayer::getDifference(quint32 flags, quint32 pts, quint32 ptsTotalLimit, quint32 date, quint32 qts)
 {
-    qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO << pts << date << qts;
+    qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO << flags << pts << ptsTotalLimit << date << qts;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::UpdatesGetDifference;
+    outputStream << flags;
     outputStream << pts;
+    if (flags & 1 << 0) {
+        outputStream << ptsTotalLimit;
+    }
     outputStream << date;
     outputStream << qts;
     return sendEncryptedPackage(outputStream.getData());

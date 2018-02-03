@@ -54,6 +54,13 @@ bool AccountRpcOperation::processCheckUsername(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool AccountRpcOperation::processConfirmPhone(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runConfirmPhone);
+    context.inputStream() >> m_confirmPhone;
+    return !context.inputStream().error();
+}
+
 bool AccountRpcOperation::processDeleteAccount(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runDeleteAccount);
@@ -103,6 +110,13 @@ bool AccountRpcOperation::processGetPrivacy(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool AccountRpcOperation::processGetTmpPassword(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runGetTmpPassword);
+    context.inputStream() >> m_getTmpPassword;
+    return !context.inputStream().error();
+}
+
 bool AccountRpcOperation::processGetWallPapers(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runGetWallPapers);
@@ -142,6 +156,13 @@ bool AccountRpcOperation::processSendChangePhoneCode(RpcProcessingContext &conte
 {
     setRunMethod(&AccountRpcOperation::runSendChangePhoneCode);
     context.inputStream() >> m_sendChangePhoneCode;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processSendConfirmPhoneCode(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runSendConfirmPhoneCode);
+    context.inputStream() >> m_sendConfirmPhoneCode;
     return !context.inputStream().error();
 }
 
@@ -224,6 +245,13 @@ void AccountRpcOperation::runCheckUsername()
     sendRpcReply(result);
 }
 
+void AccountRpcOperation::runConfirmPhone()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
 void AccountRpcOperation::runDeleteAccount()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -282,6 +310,13 @@ void AccountRpcOperation::runGetPrivacy()
     sendRpcReply(result);
 }
 
+void AccountRpcOperation::runGetTmpPassword()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLAccountTmpPassword result;
+    sendRpcReply(result);
+}
+
 void AccountRpcOperation::runGetWallPapers()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -320,7 +355,14 @@ void AccountRpcOperation::runResetNotifySettings()
 void AccountRpcOperation::runSendChangePhoneCode()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLAccountSentChangePhoneCode result;
+    TLAuthSentCode result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runSendConfirmPhoneCode()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLAuthSentCode result;
     sendRpcReply(result);
 }
 
@@ -402,6 +444,8 @@ AccountRpcOperation::ProcessingMethod AccountRpcOperation::getMethodForRpcFuncti
         return &AccountRpcOperation::processChangePhone;
     case TLValue::AccountCheckUsername:
         return &AccountRpcOperation::processCheckUsername;
+    case TLValue::AccountConfirmPhone:
+        return &AccountRpcOperation::processConfirmPhone;
     case TLValue::AccountDeleteAccount:
         return &AccountRpcOperation::processDeleteAccount;
     case TLValue::AccountGetAccountTTL:
@@ -416,6 +460,8 @@ AccountRpcOperation::ProcessingMethod AccountRpcOperation::getMethodForRpcFuncti
         return &AccountRpcOperation::processGetPasswordSettings;
     case TLValue::AccountGetPrivacy:
         return &AccountRpcOperation::processGetPrivacy;
+    case TLValue::AccountGetTmpPassword:
+        return &AccountRpcOperation::processGetTmpPassword;
     case TLValue::AccountGetWallPapers:
         return &AccountRpcOperation::processGetWallPapers;
     case TLValue::AccountRegisterDevice:
@@ -428,6 +474,8 @@ AccountRpcOperation::ProcessingMethod AccountRpcOperation::getMethodForRpcFuncti
         return &AccountRpcOperation::processResetNotifySettings;
     case TLValue::AccountSendChangePhoneCode:
         return &AccountRpcOperation::processSendChangePhoneCode;
+    case TLValue::AccountSendConfirmPhoneCode:
+        return &AccountRpcOperation::processSendConfirmPhoneCode;
     case TLValue::AccountSetAccountTTL:
         return &AccountRpcOperation::processSetAccountTTL;
     case TLValue::AccountSetPrivacy:
