@@ -525,6 +525,10 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         break;
     }
 
+    if (s_dump) {
+        generator.dumpReadData();
+    }
+
     if (generator.types().isEmpty()) {
         qWarning() << "There are no types in the schema";
         return SchemaReadError;
@@ -543,6 +547,10 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     if (!generator.resolveTypes()) {
         qWarning() << "Unable to resolve types";
         return UnableToResolveTypes;
+    }
+
+    if (s_dump) {
+        generator.dumpSolvedTypes();
     }
 
     generator.existsStreamReadTemplateInstancing = getGeneratedContent(QStringLiteral("CTelegramStream.cpp"), 0, QLatin1String("vector read templates instancing"));

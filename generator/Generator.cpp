@@ -17,7 +17,7 @@
 
 #include "Generator.hpp"
 
-#include <QDebug>
+#include <QLoggingCategory>
 
 #include <QJsonDocument>
 #include <QJsonArray>
@@ -25,6 +25,10 @@
 #include <QRegularExpression>
 
 #include <zlib.h>
+
+//Q_LOGGING_CATEGORY(c_loggingGenerator, "telegram.generator", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_loggingTextParser, "telegram.generator.textParser", QtWarningMsg)
+Q_LOGGING_CATEGORY(c_loggingTlValues, "telegram.generator.values", QtDebugMsg)
 
 static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
@@ -42,6 +46,10 @@ static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "
                                                      << QStringLiteral("TLNumber128")
                                                      << QStringLiteral("TLNumber256")
                                                         ;
+
+static const QStringList methodBlackList = {
+    QStringLiteral("contest"),
+};
 
 QString Generator::spacing = QString(4, QLatin1Char(' '));
 QString Generator::doubleSpacing = Generator::spacing + Generator::spacing;
@@ -169,6 +177,9 @@ QString Generator::formatName(const QStringList &nameParts, const FormatOptions 
             part[0] = part.at(0).toUpper();
         }
         result.append(part);
+    }
+    if (result.isEmpty()) {
+        return result;
     }
     // TODO: Move removeSeparators out of the method
     if (true || options & FormatOption::RemoveSeparators) {
@@ -330,7 +341,7 @@ QMap<QString, TLType> Generator::readTypesJson(const QJsonDocument &document)
 
         TLSubType tlSubType;
         tlSubType.name = predicateName;
-        tlSubType.id = predicateId;
+        tlSubType.predicateId = predicateId;
 
         const QJsonArray params = obj.value("params").toArray();
 
@@ -365,7 +376,7 @@ QMap<QString, TLMethod> Generator::readFunctionsJson(const QJsonDocument &docume
 
         TLMethod tlMethod;
         tlMethod.name = methodName;
-        tlMethod.id = methodId;
+        tlMethod.predicateId = methodId;
         tlMethod.type = typeName;
 
         const QJsonArray params = obj.value("params").toArray();
@@ -388,6 +399,18 @@ QMap<QString, TLMethod> Generator::readFunctionsJson(const QJsonDocument &docume
     return result;
 }
 
+QString Predicate::predicateName() const
+{
+    if (name.startsWith(tlPrefix)) {
+        return Generator::formatName(name.mid(tlPrefix.length()), Generator::FormatOption::LowerCaseFirstLetter);
+    }
+    QString formatted = Generator::formatName(name, Generator::FormatOption::LowerCaseFirstLetter|Generator::FormatOption::SkipFirstWord);
+    if (!formatted.isEmpty()) {
+        return formatted;
+    }
+    return name;
+}
+
 QString TLParam::flagName() const
 {
     QString flagName = getAlias();
@@ -405,20 +428,9 @@ void TLParam::setType(const QString &newType)
     m_bareType = Generator::getTypeOrVectorType(newType, &m_isVector);
 }
 
-QString Generator::generateTLValuesDefinition(const TLType &type)
+QString Generator::generateTLValuesDefinition(const Predicate *predicate)
 {
-    QString code;
-
-    foreach (const TLSubType &subType, type.subTypes) {
-        code.append(QString("        %1 = 0x%2,\n").arg(subType.name).arg(subType.id, 8, 0x10, QLatin1Char('0')));
-    }
-
-    return code;
-}
-
-QString Generator::generateTLValuesDefinition(const TLMethod &method)
-{
-    return QString("        %1 = 0x%2,\n").arg(method.nameFirstCapital()).arg(method.id, 8, 0x10, QLatin1Char('0'));
+    return QString("%1 = 0x%2,\n").arg(predicate->nameFirstCapital()).arg(predicate->predicateId, 8, 0x10, QLatin1Char('0'));
 }
 
 QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSources)
@@ -647,13 +659,12 @@ QString Generator::streamReadPerTypeImplementation(const QString &argName, const
 
 QString Generator::streamReadFunctionFreeImplementationHead(const TypedEntity *type)
 {
-    const QString argName = type->predicateName() + type->entityType();
     QString code;
     code.append(QString("%1 &operator>>(%1 &stream, %2::%3 &%4)\n{\n"
                         "    // stream >> function.tlType;\n").arg(streamClassName,
                                                                    functionsType,
                                                                    type->getEntityTLType(),
-                                                                   argName));
+                                                                   type->variableName()));
     // CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthCheckPassword &function)
     // {
     //     // stream >> function.tlType;
@@ -755,7 +766,7 @@ QString Generator::generateStreamOperatorDefinition(const TLType &type, std::fun
                                                     std::function<QString (const QString &, const TLSubType &)> generateSubtypeCode,
                                                     std::function<QString (const QString &)> end)
 {
-    const QString argName = type.predicateName() + type.entityType();
+    const QString argName = type.variableName();
     QString code = head(argName, type.name);
     QHash<QString,int> implementationHash; // type name to implementation index map
     QStringList implementations;
@@ -786,14 +797,13 @@ QString Generator::generateStreamOperatorDefinition(const TLMethod *type, std::f
                                                     std::function<QString (const QString &, const TLParam &)> generateSubtypeCode,
                                                     std::function<QString ()> end)
 {
-    const QString argName = type->predicateName() + type->entityType();
     QString result = head(type);
     QString paramsCode;
     foreach (const TLParam &param, type->params) {
-        paramsCode += generateSubtypeCode(argName, param);
+        paramsCode += generateSubtypeCode(type->variableName(), param);
     }
     if (paramsCode.isEmpty()) {
-        paramsCode = spacing + QStringLiteral("Q_UNUSED(%1)\n").arg(argName);
+        paramsCode = spacing + QStringLiteral("Q_UNUSED(%1)\n").arg(type->variableName());
     }
     result += paramsCode;
 
@@ -803,15 +813,13 @@ QString Generator::generateStreamOperatorDefinition(const TLMethod *type, std::f
 
 QString Generator::streamReadOperatorDeclaration(const TypedEntity *type)
 {
-    const QString argName = type->predicateName() + type->entityType();
-    return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type->getEntityTLType()).arg(argName);
+    return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type->getEntityTLType(), type->variableName());
 }
 
 QString Generator::streamReadFreeOperatorDeclaration(const TypedEntity *type)
 {
-    const QString argName = type->predicateName() + type->entityType();
     // CTelegramStream &operator>>(CTelegramStream &stream, TLAccountDaysTTL &accountDaysTTLValue);
-    return QString("%1 &operator>>(%1 &stream, %2 &%3);\n").arg(streamClassName).arg(type->getEntityTLType()).arg(argName);
+    return QString("%1 &operator>>(%1 &stream, %2 &%3);\n").arg(streamClassName).arg(type->getEntityTLType(), type->variableName());
 }
 
 QString Generator::streamReadFreeOperatorDefinition(const TLMethod *method)
@@ -843,13 +851,10 @@ QString Generator::streamWriteOperatorDeclaration(const TLType &type)
     return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
 }
 
-QString Generator::streamWriteFreeOperatorDeclaration(const NameWithEntityType *type)
+QString Generator::streamWriteFreeOperatorDeclaration(const TypedEntity *type)
 {
-    QString argName = removePrefix(type->name);
-    argName[0] = argName.at(0).toLower();
-    argName += type->entityType();
     // CTelegramStream &operator<<(CTelegramStream &stream, const TLFunctions::TLAuthSendCode &function)
-    return QString("%1 &operator<<(%1 &stream, const %2 &%3);\n").arg(streamClassName).arg(type->name).arg(argName);
+    return QString("%1 &operator<<(%1 &stream, const %2 &%3);\n").arg(streamClassName).arg(type->name).arg(type->variableName());
 }
 
 QString Generator::streamWriteOperatorDefinition(const TLType &type)
@@ -1516,11 +1521,14 @@ bool Generator::loadFromText(const QByteArray &data)
     QTextStream input(data);
     EntryType entryType = EntryTypedef;
     m_groups.append(QStringList());
-
     int currentLine = 0;
+
     while (!input.atEnd()) {
         QString line = input.readLine();
         ++currentLine;
+        bool parsedManually = false;
+
+        qCDebug(c_loggingTextParser) << "Read line" << currentLine << ":" << line;
 
         if (line == QLatin1String("---functions---")) {
             entryType = EntryFunction;
@@ -1538,52 +1546,81 @@ bool Generator::loadFromText(const QByteArray &data)
             continue;
         }
 
+        if (line.startsWith(QLatin1String("//")) && line.contains(QLatin1String("// parsed manually"))) {
+            parsedManually = true;
+            line = line.mid(2);
+        }
+
         line = line.section(QLatin1String("//"), 0, 0);
         if (line.simplified().isEmpty() || (line.startsWith(QLatin1String("---")) && line.endsWith(QLatin1String("---")))) {
             continue;
         }
 
+        if (parsedManually && !line.contains(QLatin1Char('#'))) {
+            // Skip lines without predicate
+            continue;
+        }
         LineParseResult parseResult = parseLine(line);
-        if (!parseResult.isValid()) {
-            printf("Bad string: %s (line %d)\n", line.toLocal8Bit().constData(), currentLine);
+        if (!parseResult.isValid() && !parsedManually) {
+            qCWarning(c_loggingTextParser).noquote() << QStringLiteral("Bad string: %s (line %d)").arg(line).arg(currentLine);
         }
 
         const QString typeName = formatType(parseResult.typeName);
         if (entryType == EntryTypedef) {
             const QString predicateName = formatName(parseResult.predicateName, FormatOption::UpperCaseFirstLetter);
-            if (!m_types.contains(typeName)) {
-                m_groups.last().append(typeName);
-            }
             TLType tlType = m_types.value(typeName);
             tlType.name = typeName;
 
             TLSubType tlSubType;
             tlSubType.name = predicateName;
-            tlSubType.id = parseResult.predicateId;
+            tlSubType.predicateId = parseResult.predicateId;
             tlSubType.members.append(parseResult.params);
             tlSubType.source = line;
 
             tlType.subTypes.append(tlSubType);
+
+            if (parsedManually) {
+                m_extraPredicates.append(new TLSubType(tlSubType));
+                continue;
+            }
+
+            if (!m_types.contains(typeName)) {
+                m_groups.last().append(typeName);
+            }
             m_types.insert(typeName, tlType);
         } else if (entryType == EntryFunction) {
+            TLMethod tlMethod;
+            tlMethod.predicateId = parseResult.predicateId;
+            tlMethod.source = line;
+            tlMethod.type = typeName;
+
+            if (!parseResult.predicateName.contains(QLatin1Char('.'))) {
+                parsedManually = true;
+            }
+
             const QString groupName = parseResult.predicateName.section(QLatin1Char('.'), 0, 0);
+
+            if (methodBlackList.contains(groupName)) {
+                parsedManually = true;
+            }
+            const QString functionName = removeSeparators(parseResult.predicateName);
+            tlMethod.name = functionName;
+            tlMethod.params.append(parseResult.params);
+
+            if (parsedManually) {
+                m_extraPredicates.append(new TLMethod(tlMethod));
+                continue;
+            }
+            if (!m_functions.contains(functionName)) {
+                m_groups.last().append(functionName);
+            }
+            m_functions.insert(functionName, tlMethod);
+
             if (groupName.indexOf(QRegularExpression("[A-Z]")) < 0) {
                 if (!m_functionGroups.contains(groupName)) {
                     m_functionGroups.append(groupName);
                 }
             }
-            const QString functionName = removeSeparators(parseResult.predicateName);
-            if (!m_functions.contains(functionName)) {
-                m_groups.last().append(functionName);
-            }
-            TLMethod tlMethod;
-            tlMethod.name = functionName;
-            tlMethod.id = parseResult.predicateId;
-            tlMethod.type = typeName;
-            tlMethod.params.append(parseResult.params);
-            tlMethod.source = line;
-
-            m_functions.insert(functionName, tlMethod);
         }
     }
     std::sort(m_functionGroups.begin(), m_functionGroups.end(), [](const QString &s1, const QString &s2) {
@@ -1612,7 +1649,6 @@ void Generator::setExistsRpcProcessDefinitions(const QString &code)
 
 void Generator::generate()
 {
-    codeOfTLValues.clear();
     codeOfTLTypes.clear();
     codeStreamReadDeclarations.clear();
     codeStreamReadDefinitions.clear();
@@ -1632,7 +1668,6 @@ void Generator::generate()
 
     QStringList typesUsedForWrite;
     QStringList vectorUsedForWrite;
-    QStringList vectorUsedForExtraWrite;
 
     static const QStringList whiteList = QStringList()
             << QLatin1String("auth")
@@ -1746,36 +1781,6 @@ void Generator::generate()
         codeStreamReadTemplateInstancing.append(QLatin1Char('\n'));
     }
 
-    foreach (const QStringList &group, m_groups) {
-        if (group.isEmpty()) {
-            continue;
-        }
-        if (m_types.contains(group.first())) {
-            codeOfTLValues.append(QLatin1String("        // Types\n"));
-            foreach (const QString &typeName, group) {
-                if (!m_types.contains(typeName)) {
-                    qCritical() << "Name of group item not found in types map";
-                    return;
-                }
-                const TLType &type = m_types.value(typeName);
-                codeOfTLValues.append(generateTLValuesDefinition(type));
-            }
-        } else if (m_functions.contains(group.first())) {
-            codeOfTLValues.append(QLatin1String("        // Methods\n"));
-            foreach (const QString &typeName, group) {
-                if (!m_functions.contains(typeName)) {
-                    qCritical() << "Name of group item not found in types map";
-                    return;
-                }
-                const TLMethod &method = m_functions.value(typeName);
-                codeOfTLValues.append(generateTLValuesDefinition(method));
-            }
-        } else {
-            qCritical() << "Name of group item is neither a type or a method";
-            return;
-        }
-    }
-
     foreach (const TLMethod &method, m_functions) {
         codeDebugRpcParse.append(generateDebugRpcParse(method));
     }
@@ -1805,7 +1810,89 @@ void Generator::generate()
         codeDebugWriteDeclarations.append(generateDebugWriteOperatorDeclaration(type));
         codeDebugWriteDefinitions .append(generateDebugWriteOperatorDefinition(type));
     }
+    codeOfTLValues = joinLinesWithPrepend(generateTLValues(), doubleSpacing);
+}
 
+QStringList Generator::generateTLValues()
+{
+    qCDebug(c_loggingTlValues()) << Q_FUNC_INFO;
+    QStringList result;
+    foreach (const QStringList &group, m_groups) {
+        if (group.isEmpty()) {
+            continue;
+        }
+        const QString groupMember = group.first();
+        if (m_types.contains(groupMember)) {
+            result.append(QLatin1String("// Types\n"));
+            foreach (const QString &typeName, group) {
+                if (!m_types.contains(typeName)) {
+                    qCCritical(c_loggingTlValues()) << "Name of group item" << typeName << "not found in the types map";
+                    return QStringList();
+                }
+                const TLType &type = m_types.value(typeName);
+                foreach (const TLSubType &subType, type.subTypes) {
+                    result.append(generateTLValuesDefinition(&subType));
+                }
+            }
+        } else if (m_functions.contains(groupMember)) {
+            result.append(QLatin1String("// Functions\n"));
+            foreach (const QString &typeName, group) {
+                if (!m_functions.contains(typeName)) {
+                    qCCritical(c_loggingTlValues()) << "Name of group item" << typeName << "not found in the functions map";
+                    return QStringList();
+                }
+                const TLMethod &method = m_functions.value(typeName);
+                result.append(generateTLValuesDefinition(&method));
+            }
+        } else {
+            qCCritical(c_loggingTlValues()) << "Name of group item" << groupMember << "is neither a type or a function";
+            return QStringList();
+        }
+    }
+
+    if (!m_extraPredicates.isEmpty()) {
+        result.append(QLatin1String("// Extra predicates\n"));
+    }
+    for (const Predicate *predicate : m_extraPredicates) {
+        const QString value = generateTLValuesDefinition(predicate);
+        qCDebug(c_loggingTlValues()) << "Add extra predicate:" << value;
+        result.append(value);
+    }
+    return result;
+}
+
+void Generator::dumpReadData() const
+{
+    qDebug() << "\n" << Q_FUNC_INFO;
+    qDebug() << "Groups:";
+    for (const QStringList &group : m_groups) {
+        qDebug() << "    " << group;
+    }
+    qDebug() << "Types:" << m_types.keys();
+    for (const TLType &type : m_types) {
+        qDebug() << "    name:" << type.name;
+        qDebug() << "    SubTypes:";
+        for (const TLSubType &sub : type.subTypes) {
+            qDebug() << "        name:" << sub.name << "predicate:" << sub.predicateName();
+            qDebug() << "        source:" << sub.source;
+
+        }
+    }
+}
+
+void Generator::dumpSolvedTypes() const
+{
+    qDebug() << "\n" << Q_FUNC_INFO;
+    qDebug() << "Types:";
+    for (const TLType &type : m_solvedTypes) {
+        qDebug() << "    name:" << type.name;
+        qDebug() << "    SubTypes:";
+        for (const TLSubType &sub : type.subTypes) {
+            qDebug() << "        name:" << sub.name << "predicate:" << sub.predicateName();
+            qDebug() << "        source:" << sub.source;
+
+        }
+    }
 }
 
 Generator::MethodsCode Generator::generateClientFunctions(const QString &prefix) const
@@ -2033,10 +2120,10 @@ QString TLMethod::nameFromSecondWord() const
     return words.join(QString());
 }
 
-QString Name::predicateName() const
+QString TypedEntity::variableName() const
 {
-    if (name.startsWith(tlPrefix)) {
-        return Generator::formatName(name.mid(tlPrefix.length()), Generator::FormatOption::LowerCaseFirstLetter);
-    }
-    return Generator::formatName(name, Generator::FormatOption::LowerCaseFirstLetter|Generator::FormatOption::SkipFirstWord);
+    QString varName = removePrefix(name);
+    varName[0] = varName.at(0).toLower();
+    varName += entityType();
+    return varName;
 }

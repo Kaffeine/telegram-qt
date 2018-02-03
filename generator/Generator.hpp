@@ -31,18 +31,41 @@ QT_FORWARD_DECLARE_CLASS(QJsonDocument)
 
 struct Name {
     QString name;
-    QString predicateName() const;
+
+    QString nameFirstCapital() const {
+        if (name.isEmpty()) {
+            return QString();
+        }
+        QString capital = name;
+        capital[0] = capital.at(0).toUpper();
+        return capital;
+    }
+
     virtual ~Name() { }
 };
 
-struct NameWithEntityType : public Name
-{
-    virtual QString entityType() const = 0;
-};
-
-struct TypedEntity : public NameWithEntityType
+struct TypedEntity : public Name
 {
     virtual QString getEntityTLType() const = 0;
+    virtual QString entityType() const = 0; // Returns string "Function" or "Value"
+
+    QString variableName() const;
+};
+
+struct Predicate : public TypedEntity
+{
+    enum PredicateType {
+        Invalid,
+        Function,
+        Type,
+    };
+
+    bool generateOnlyPredicateId = false; // Generate only TLValue
+
+    quint32 predicateId = 0;
+    PredicateType predicateType = Invalid;
+    QString predicateName() const;
+    QString source; // The source from the spec
 };
 
 struct TLParam {
@@ -81,10 +104,10 @@ protected:
     bool m_accessByPointer = false;
 };
 
-struct TLSubType : public Name {
-    quint32 id;
+struct TLSubType : public Predicate {
+    QString entityType() const override { return QStringLiteral("Value"); }
+    QString getEntityTLType() const override { return name; }
     QList<TLParam> members;
-    QString source; // The source from the spec
 };
 
 struct TLType : public TypedEntity {
@@ -100,22 +123,12 @@ protected:
     bool m_selfReferenced = false;
 };
 
-struct TLMethod : public TypedEntity {
+struct TLMethod : public Predicate {
     QString entityType() const override { return QStringLiteral("Function"); }
     QString getEntityTLType() const override { return functionTypeName(); }
     QString functionTypeName() const;
-    QString nameFirstCapital() const {
-        if (name.isEmpty()) {
-            return QString();
-        }
-        QString capital = name;
-        capital[0] = capital.at(0).toUpper();
-        return capital;
-    }
     QString nameFromSecondWord() const;
-    quint32 id;
     QString type;
-    QString source; // The source from the spec
     QList< TLParam > params;
 };
 
@@ -151,6 +164,10 @@ public:
     bool resolveTypes();
     void setExistsRpcProcessDefinitions(const QString &code);
     void generate();
+    QStringList generateTLValues();
+
+    void dumpReadData() const;
+    void dumpSolvedTypes() const;
 
     QStringList functionGroups() const { return m_functionGroups; }
 
@@ -187,8 +204,7 @@ public:
 
     static QStringList getWords(const QString &input);
     static QString removeWord(QString input, QString word);
-    static QString generateTLValuesDefinition(const TLType &type);
-    static QString generateTLValuesDefinition(const TLMethod &method);
+    static QString generateTLValuesDefinition(const Predicate *predicate);
     static QString generateTLTypeDefinition(const TLType &type, bool addSpecSources = false);
     static QStringList generateTLTypeMemberFlags(const TLType &type);
     static QStringList generateTLTypeMemberGetters(const TLType &type);
@@ -226,7 +242,7 @@ public:
     static QString streamReadOperatorDefinition(const TLType &type);
     static QString streamReadVectorTemplate(const QString &type);
     static QString streamWriteOperatorDeclaration(const TLType &type);
-    static QString streamWriteFreeOperatorDeclaration(const NameWithEntityType *type);
+    static QString streamWriteFreeOperatorDeclaration(const TypedEntity *type);
     static QString streamWriteOperatorDefinition(const TLType &type);
     static QString streamWriteFreeOperatorDefinition(const TLType &type);
     static QString streamWriteVectorTemplate(const QString &type);
@@ -291,6 +307,7 @@ public:
     QString codeDebugRpcParse;
 
 private:
+    QVector<Predicate*> m_extraPredicates;
     QMap<QString, TLType> m_types;
     QList<TLType> m_solvedTypes;
     QMap<QString, TLMethod> m_functions;
