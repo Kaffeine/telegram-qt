@@ -612,8 +612,8 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         QStringList lowLevelIncludes;
         for (const FunctionGroup &group : functionGroups) {
             const QString fileBaseName = QLatin1String("ClientRpc") + group.name1stCapital + ("Layer");
-            OutputFile sourceFile(fileBaseName + (".cpp"));
-            OutputFile headerFile(fileBaseName + (".hpp"));
+            OutputFile sourceFile(QStringLiteral("RpcLayers/") + fileBaseName + (".cpp"));
+            OutputFile headerFile(QStringLiteral("RpcLayers/") + fileBaseName + (".hpp"));
             if (!sourceFile.hasContent()) {
                 QString defaultContent = clientRpcLayerTemplateCpp;
                 defaultContent.prepend(licenseText);
