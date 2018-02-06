@@ -143,7 +143,20 @@ void HelpRpcOperation::runGetCdnConfig()
 void HelpRpcOperation::runGetConfig()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    const DcConfiguration &dcConfig = api()->serverConfiguration();
     TLConfig result;
+    result.flags = TLConfig::PhonecallsEnabled;
+    result.testMode = true;
+    // TODO: fill other fields of result
+    // manually copy fields from all DcOption's to TLDcOption's
+    for (const DcOption& dcOption: qAsConst(dcConfig.dcOptions)) {
+        TLDcOption tlDcOption;
+        tlDcOption.id = dcOption.id;
+        tlDcOption.ipAddress = dcOption.address;
+        tlDcOption.port = dcOption.port;
+        tlDcOption.flags = 0; // TODO: which flags set?
+        result.dcOptions.append(std::move(tlDcOption));
+    }
     sendRpcReply(result);
 }
 
