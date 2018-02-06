@@ -142,7 +142,6 @@ void HelpRpcOperation::runGetCdnConfig()
 
 void HelpRpcOperation::runGetConfig()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     const DcConfiguration &dcConfig = api()->serverConfiguration();
     TLConfig result;
     result.flags = TLConfig::PhonecallsEnabled;
