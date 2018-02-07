@@ -160,7 +160,7 @@ void tst_all::testClientConnection()
     userData.setPasswordSalt(QByteArrayLiteral("mysalt"));
     TelegramNamespace::registerTypes();
 
-    Telegram::Server::DcConfiguration configuration;
+    Telegram::DcConfiguration configuration;
     const QVector<Telegram::DcOption> dcOptions = {
         Telegram::DcOption(QStringLiteral("127.0.0.1"), 11441, 1),
         Telegram::DcOption(QStringLiteral("127.0.0.2"), 11442, 2),

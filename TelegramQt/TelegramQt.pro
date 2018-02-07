@@ -73,6 +73,7 @@ PUBLIC_HEADERS += \
 HEADERS += \
     CAppInformation.hpp \
     AccountStorage.hpp \
+    DcConfiguration.hpp \
     Debug.hpp \
     Debug_p.hpp \
     DhLayer.hpp \

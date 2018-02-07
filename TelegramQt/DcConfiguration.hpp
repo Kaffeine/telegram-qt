@@ -7,14 +7,10 @@
 
 namespace Telegram {
 
-namespace Server {
-
 struct DcConfiguration
 {
     QVector<DcOption> dcOptions;
 };
-
-} // Server
 
 } // Telegram
 
