@@ -148,12 +148,12 @@ void HelpRpcOperation::runGetConfig()
     result.testMode = true;
     // TODO: fill other fields of result
     // manually copy fields from all DcOption's to TLDcOption's
-    for (const DcOption& dcOption: qAsConst(dcConfig.dcOptions)) {
+    for (const DcOption& dcOption: dcConfig.dcOptions) {
         TLDcOption tlDcOption;
         tlDcOption.id = dcOption.id;
         tlDcOption.ipAddress = dcOption.address;
         tlDcOption.port = dcOption.port;
-        tlDcOption.flags = 0; // TODO: which flags set?
+        tlDcOption.flags = 0; // TODO: which flags to set?
         result.dcOptions.append(std::move(tlDcOption));
     }
     sendRpcReply(result);
