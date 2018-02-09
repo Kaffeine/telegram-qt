@@ -110,13 +110,17 @@ bool CRawStream::writeBytes(const QByteArray &data)
 
 bool CRawStream::read(void *data, qint64 size)
 {
-    m_error = m_error || m_device->read((char *) data, size) != size;
+    if (size) {
+        m_error = m_error || m_device->read((char *) data, size) != size;
+    }
     return m_error;
 }
 
 bool CRawStream::write(const void *data, qint64 size)
 {
-    m_error = m_error || m_device->write((const char *) data, size) != size;
+    if (size) {
+        m_error = m_error || m_device->write((const char *) data, size) != size;
+    }
     return m_error;
 }
 
@@ -206,17 +210,17 @@ CRawStreamEx &CRawStreamEx::operator>>(Telegram::AbridgedLength &data)
     if (length >= 0xfe) {
         read(&length, 3);
     }
-    data.setValue(length);
+    data = length;
     return *this;
 }
 
 CRawStreamEx &CRawStreamEx::operator<<(const Telegram::AbridgedLength &data)
 {
-    if (data.size() == 1) {
-        quint8 l = data.value();
+    if (data.packedSize() == 1) {
+        quint8 l = data;
         *this << l;
     } else {
-        *this << quint32((data.value() << 8) + 0xfe);
+        *this << quint32((data << 8) + 0xfe);
     }
     return *this;
 }
@@ -225,9 +229,9 @@ CRawStreamEx &CRawStreamEx::operator>>(QByteArray &data)
 {
     Telegram::AbridgedLength length;
     *this >> length;
-    data.resize(length.value());
+    data.resize(length);
     read(data.data(), data.size());
-    readBytes(length.paddingSize(4));
+    readBytes(length.paddingForAlignment(4));
     return *this;
 }
 
@@ -236,6 +240,6 @@ CRawStreamEx &CRawStreamEx::operator<<(const QByteArray &data)
     Telegram::AbridgedLength length(data.size());
     *this << length;
     write(data.constData(), data.size());
-    write(s_nulls, length.paddingSize(4));
+    write(s_nulls, length.paddingForAlignment(4));
     return *this;
 }
