@@ -29,6 +29,7 @@ DEFINES += QT_STRICT_ITERATORS
 
 SOURCES += \
     CAppInformation.cpp \
+    AbridgedLength.cpp \
     AccountStorage.cpp \
     DhLayer.cpp \
     Client.cpp \
@@ -72,6 +73,7 @@ PUBLIC_HEADERS += \
 
 HEADERS += \
     CAppInformation.hpp \
+    AbridgedLength.hpp \
     AccountStorage.hpp \
     DcConfiguration.hpp \
     Debug.hpp \

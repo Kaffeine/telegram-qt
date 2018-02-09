@@ -1,5 +1,6 @@
 
 set(telegram_qt_SOURCES
+    AbridgedLength.cpp
     AccountStorage.cpp
     TelegramNamespace.cpp
     Client.cpp
@@ -32,6 +33,7 @@ set(telegram_qt_SOURCES
 )
 
 set(telegram_qt_META_HEADERS
+    AbridgedLength.hpp
     AccountStorage.hpp
     Client.hpp
     Client_p.hpp

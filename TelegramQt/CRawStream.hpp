@@ -22,6 +22,12 @@
 
 QT_FORWARD_DECLARE_CLASS(QIODevice)
 
+namespace Telegram {
+
+class AbridgedLength;
+
+}
+
 class CRawStream
 {
 public:
@@ -102,6 +108,8 @@ public:
     CRawStreamEx &operator>>(QByteArray &data);
     CRawStreamEx &operator<<(const QByteArray &data);
 
+    CRawStreamEx &operator>>(Telegram::AbridgedLength &data);
+    CRawStreamEx &operator<<(const Telegram::AbridgedLength &data);
 };
 
 inline void CRawStream::resetError()
