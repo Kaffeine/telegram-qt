@@ -93,7 +93,7 @@ void tst_TelegramRemoteFile::serialization_fileLocation()
 void tst_TelegramRemoteFile::serialization_inputFileLocation()
 {
     TLInputFileLocation testLocation;
-    testLocation.tlType = TLValue::InputFileLocation;
+    testLocation.tlType = TLValue::InputDocumentFileLocation;
     testLocation.id = 0xaabbccddeeff1234ull;
     testLocation.accessHash = 0x12345678abcdef99ul;
 
