@@ -1,5 +1,6 @@
 
 set(telegram_qt_SOURCES
+    AbridgedLength.cpp
     TelegramNamespace.cpp
     CAppInformation.cpp
     CTelegramCore.cpp
@@ -41,6 +42,7 @@ set(telegram_qt_META_HEADERS
 
 set(telegram_qt_HEADERS
     ${telegram_qt_META_HEADERS}
+    AbridgedLength.hpp
     telegramqt_global.h
     TelegramNamespace_p.hpp
     CTelegramStream.hpp

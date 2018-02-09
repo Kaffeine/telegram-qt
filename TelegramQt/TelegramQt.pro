@@ -36,6 +36,7 @@ SOURCES = CTelegramCore.cpp \
     CTelegramTransportModule.cpp \
     CRawStream.cpp \
     CTelegramStream.cpp \
+    AbridgedLength.cpp \
     Debug.cpp \
     Utils.cpp \
     FileRequestDescriptor.cpp \
@@ -61,6 +62,7 @@ PUBLIC_HEADERS += \
 
 HEADERS = CTelegramCore.hpp \
     CAppInformation.hpp \
+    AbridgedLength.hpp \
     Debug.hpp \
     Debug_p.hpp \
     CTelegramDispatcher.hpp \
