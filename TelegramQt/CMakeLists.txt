@@ -7,16 +7,10 @@ set(telegram_qt_SOURCES
     ClientConnection.cpp
     ClientDhLayer.cpp
     ClientRpcLayer.cpp
+    ClientRpcLayerExtension.cpp
     ClientSettings.cpp
     Connection.cpp
     CAppInformation.cpp
-    CTelegramCore.cpp
-    CTelegramDispatcher.cpp
-    CTelegramModule.cpp
-    CTelegramAuthModule.cpp
-    CTelegramMediaModule.cpp
-    CTelegramTransportModule.cpp
-    CTelegramConnection.cpp
     CTelegramTransport.cpp
     LegacySecretReader.cpp
     RpcError.cpp
@@ -35,18 +29,6 @@ set(telegram_qt_SOURCES
     PendingOperation.cpp
     TelegramUtils.cpp
     TLValues.cpp
-
-    ClientRpcLayerExtension.cpp
-    ClientRpcAccountLayer.cpp
-    ClientRpcAuthLayer.cpp
-    ClientRpcChannelsLayer.cpp
-    ClientRpcContactsLayer.cpp
-    ClientRpcHelpLayer.cpp
-    ClientRpcMessagesLayer.cpp
-    ClientRpcPhotosLayer.cpp
-    ClientRpcUpdatesLayer.cpp
-    ClientRpcUploadLayer.cpp
-    ClientRpcUsersLayer.cpp
 )
 
 set(telegram_qt_META_HEADERS
@@ -57,6 +39,7 @@ set(telegram_qt_META_HEADERS
     ClientConnection.hpp
     ClientDhLayer.hpp
     ClientRpcLayer.hpp
+    ClientRpcLayerExtension.hpp
     ClientSettings.hpp
     Connection.hpp
     DhLayer.hpp
@@ -67,29 +50,10 @@ set(telegram_qt_META_HEADERS
     TelegramNamespace.hpp
     PendingOperation.hpp
     CAppInformation.hpp
-    CTelegramCore.hpp
-    CTelegramDispatcher.hpp
-    CTelegramModule.hpp
-    CTelegramAuthModule.hpp
-    CTelegramMediaModule.hpp
-    CTelegramTransportModule.hpp
-    CTelegramConnection.hpp
     CTelegramTransport.hpp
     CTcpTransport.hpp
     CClientTcpTransport.hpp
     TLValues.hpp
-
-    ClientRpcLayerExtension.hpp
-    ClientRpcAccountLayer.hpp
-    ClientRpcAuthLayer.hpp
-    ClientRpcChannelsLayer.hpp
-    ClientRpcContactsLayer.hpp
-    ClientRpcHelpLayer.hpp
-    ClientRpcMessagesLayer.hpp
-    ClientRpcPhotosLayer.hpp
-    ClientRpcUpdatesLayer.hpp
-    ClientRpcUploadLayer.hpp
-    ClientRpcUsersLayer.hpp
 )
 
 set(telegram_qt_HEADERS
@@ -118,6 +82,12 @@ set(telegram_qt_public_HEADERS
     CTelegramCore.hpp
     Debug.hpp
 )
+
+FILE(GLOB RPC_SOURCES RpcLayers/*.cpp)
+FILE(GLOB RPC_HEADERS RpcLayers/*.hpp)
+
+list(APPEND telegram_qt_SOURCES ${RPC_SOURCES})
+list(APPEND telegram_qt_META_HEADERS ${RPC_HEADERS})
 
 include_directories(
     ${CMAKE_SOURCE_DIR}
@@ -157,6 +127,7 @@ else()
 endif()
 
 target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/RpcLayers)
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
     Qt5::Core

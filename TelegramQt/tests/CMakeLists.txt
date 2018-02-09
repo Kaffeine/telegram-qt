@@ -30,8 +30,6 @@ include_directories(
 
 foreach(test_name
     tst_CTelegramTransport
-    tst_CTelegramConnection
-    tst_CTelegramDispatcher
     tst_CTelegramStream
     tst_TelegramRemoteFile
     tst_utils
