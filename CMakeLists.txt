@@ -19,6 +19,8 @@ option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
 option(ENABLE_QCH_BUILD "Enable generation of Qt Help (qch) file" FALSE)
 # Add an option for building tests
 option(STATIC_BUILD "Compile static library instead of shared" FALSE)
+# Add an option for building server
+option(BUILD_SERVER "Build server" FALSE)
 # Add an option for building GeneratorNG
 option(BUILD_GENERATOR "Build protocol code generator" FALSE)
 # Add an option for dev build
@@ -51,6 +53,13 @@ if (ENABLE_TESTS)
     enable_testing()
     add_subdirectory(TelegramQt/tests)
     add_subdirectory(tests/data)
+    if (BUILD_SERVER)
+        add_subdirectory(tests)
+    endif()
+endif()
+
+if (BUILD_SERVER)
+    add_subdirectory(server)
 endif()
 
 if (BUILD_GENERATOR)
