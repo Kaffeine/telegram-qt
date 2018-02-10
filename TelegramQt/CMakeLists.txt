@@ -58,6 +58,12 @@ set(telegram_qt_META_HEADERS
     TLValues.hpp
 )
 
+FILE(GLOB RPC_SOURCES RpcLayers/*.cpp)
+FILE(GLOB RPC_HEADERS RpcLayers/*.hpp)
+
+list(APPEND telegram_qt_SOURCES ${RPC_SOURCES})
+list(APPEND telegram_qt_META_HEADERS ${RPC_HEADERS})
+
 set(telegram_qt_HEADERS
     ${telegram_qt_META_HEADERS}
     telegramqt_global.h
@@ -84,12 +90,6 @@ set(telegram_qt_public_HEADERS
     CTelegramCore.hpp
     Debug.hpp
 )
-
-FILE(GLOB RPC_SOURCES RpcLayers/*.cpp)
-FILE(GLOB RPC_HEADERS RpcLayers/*.hpp)
-
-list(APPEND telegram_qt_SOURCES ${RPC_SOURCES})
-list(APPEND telegram_qt_META_HEADERS ${RPC_HEADERS})
 
 include_directories(
     ${CMAKE_SOURCE_DIR}
