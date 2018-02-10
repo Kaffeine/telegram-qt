@@ -104,6 +104,14 @@ include_directories(
 list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp)
 list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp)
 
+list(APPEND telegram_qt_SOURCES
+    Crypto/AesCtr.cpp
+)
+
+list(APPEND telegram_qt_HEADERS
+    Crypto/AesCtr.hpp
+)
+
 if (DEVELOPER_BUILD)
     list(APPEND telegram_qt_SOURCES TLRpcDebug.cpp)
     list(APPEND telegram_qt_HEADERS TLRpcDebug.hpp)

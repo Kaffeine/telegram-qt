@@ -118,6 +118,7 @@ HEADERS += \
     TLValues.hpp
 
 include(RpcLayers/layers.pri)
+include(Crypto/crypto.pri)
 
 SOURCES += TLTypesDebug.cpp
 HEADERS += TLTypesDebug.hpp
