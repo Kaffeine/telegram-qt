@@ -65,9 +65,9 @@ public:
     User *getLocalUser(const QString &identifier);
     RemoteUser *getRemoteUser(const QString &identifier);
 
-    User *getUser(const QString &identifier);
-    User *getUser(quint64 authId);
-    User *addUser(const QString &identifier);
+    User *getUser(const QString &identifier) override;
+    User *getUser(quint64 authId) override;
+    User *addUser(const QString &identifier) override;
 
     void insertUser(User *user);
 
