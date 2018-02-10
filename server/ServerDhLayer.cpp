@@ -146,13 +146,13 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
         qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "Read inner data";
 
         encryptedStream >> bigEndianNumber;
-        m_pq = qFromBigEndian<quint64>(bigEndianNumber.constData());
+        m_pq = qFromBigEndian<quint64>(reinterpret_cast<const uchar*>(bigEndianNumber.constData()));
 
         encryptedStream >> bigEndianNumber;
-        m_p = qFromBigEndian<quint32>(bigEndianNumber.constData());
+        m_p = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(bigEndianNumber.constData()));
 
         encryptedStream >> bigEndianNumber;
-        m_q = qFromBigEndian<quint32>(bigEndianNumber.constData());
+        m_q = qFromBigEndian<quint32>(reinterpret_cast<const uchar*>(bigEndianNumber.constData()));
 
         TLNumber128 clientNonce;
         TLNumber128 serverNonce;
