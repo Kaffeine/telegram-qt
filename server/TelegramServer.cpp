@@ -219,7 +219,7 @@ PasswordInfo Server::getPassword(const QString &identifier)
     return result;
 }
 
-bool Server::checkPassword(const QString &identifier, const QString &hash)
+bool Server::checkPassword(const QString &identifier, const QByteArray &hash)
 {
     User *user = getUser(identifier);
     if (user && user->hasPassword()) {
@@ -229,7 +229,7 @@ bool Server::checkPassword(const QString &identifier, const QString &hash)
 
 }
 
-QString Server::sendAppCode(const QString &identifier)
+QByteArray Server::sendAppCode(const QString &identifier)
 {
     AuthCode code;
 
@@ -239,7 +239,7 @@ QString Server::sendAppCode(const QString &identifier)
 
     QByteArray randBytes(8, Qt::Uninitialized);
     Utils::randomBytes(&randBytes);
-    code.hash = QString::fromLatin1(randBytes.toHex());
+    code.hash = randBytes.toHex();
     code.code = QString::number(Utils::randomBytes<quint32>()).right(5);
 
     qCDebug(loggingCategoryServerApi) << "sendAppCode(" << identifier << "):" << "hash:" << code.hash << "code:" << code.code;
@@ -247,7 +247,7 @@ QString Server::sendAppCode(const QString &identifier)
     return code.hash;
 }
 
-ServerApi::AuthCodeStatus Server::getAuthCodeStatus(const QString &identifier, const QString &hash, const QString &code)
+ServerApi::AuthCodeStatus Server::getAuthCodeStatus(const QString &identifier, const QByteArray &hash, const QString &code)
 {
     if (code.isEmpty()) {
         return AuthCodeStatus::CodeEmpty;

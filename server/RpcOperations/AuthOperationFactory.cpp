@@ -308,7 +308,7 @@ void AuthRpcOperation::runSendCode()
         result.type = codeType;
     }
 
-    result.phoneCodeHash = api()->sendAppCode(m_sendCode.phoneNumber);
+    result.phoneCodeHash = QString::fromLatin1(api()->sendAppCode(m_sendCode.phoneNumber));
     if (status.dcId) {
         result.flags |= TLAuthSentCode::PhoneRegistered;
     }
@@ -372,7 +372,7 @@ void AuthRpcOperation::runSignUp()
 
 bool AuthRpcOperation::verifyAuthCode(const QString &phoneNumber, const QString &hash, const QString &code)
 {
-    ServerApi::AuthCodeStatus status = api()->getAuthCodeStatus(phoneNumber, hash, code);
+    ServerApi::AuthCodeStatus status = api()->getAuthCodeStatus(phoneNumber, hash.toLatin1(), code);
     if (status == ServerApi::AuthCodeStatus::CodeValid) {
         return true;
     }

@@ -133,9 +133,9 @@ public:
     {
     }
 
-    QString sendAppCode(const QString &identifier) override
+    QByteArray sendAppCode(const QString &identifier) override
     {
-        const QString hash = Server::Server::sendAppCode(identifier);
+        const QByteArray hash = Server::Server::sendAppCode(identifier);
         const Telegram::Server::AuthCode c = m_sentCodeMap.value(identifier);
         emit authCodeSent(identifier, c.code);
         return hash;
