@@ -3,15 +3,12 @@ CONFIG += c++11
 
 TEMPLATE = app
 
-INCLUDEPATH += $$PWD/../TelegramQt
-
-LIBS += -lssl -lcrypto -lz
 LIBS += -L$$OUT_PWD/../TelegramQt
-LIBS += -lTelegramQt$${QT_MAJOR_VERSION}
+include(../TelegramQt/TelegramQt-internals.pri)
 
 TARGET = testApp
 
-SOURCES = main.cpp
+SOURCES += main.cpp
 include(server.pri)
 
 #OTHER_FILES += CMakeLists.txt
