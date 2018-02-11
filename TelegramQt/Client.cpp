@@ -68,6 +68,18 @@ void Client::setAccountStorage(AccountStorage *storage)
     d->m_accountStorage = storage;
 }
 
+DataStorage *Client::dataStorage() const
+{
+    Q_D(const Client);
+    return d->m_dataStorage;
+}
+
+void Client::setDataStorage(DataStorage *storage)
+{
+    Q_D(Client);
+    d->m_dataStorage = storage;
+}
+
 PendingOperation *Client::connectToServer()
 {
     Q_D(Client);

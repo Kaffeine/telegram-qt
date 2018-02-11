@@ -6,6 +6,7 @@
 #include "ClientConnection.hpp"
 #include "Client.hpp"
 #include "ClientRpcLayer.hpp"
+#include "DataStorage.hpp"
 
 #include <QLoggingCategory>
 #include <QTimer>

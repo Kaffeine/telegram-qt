@@ -13,6 +13,7 @@ set(telegram_qt_SOURCES
     Connection.cpp
     CAppInformation.cpp
     CTelegramTransport.cpp
+    DataStorage.cpp
     LegacySecretReader.cpp
     RpcError.cpp
     RpcLayer.cpp
@@ -44,6 +45,7 @@ set(telegram_qt_META_HEADERS
     ClientRpcLayerExtension.hpp
     ClientSettings.hpp
     Connection.hpp
+    DataStorage.hpp
     DhLayer.hpp
     LegacySecretReader.hpp
     RpcError.hpp
@@ -73,6 +75,7 @@ set(telegram_qt_HEADERS
     CTelegramStreamExtraOperators.hpp
     RpcProcessingContext.hpp
     CRawStream.hpp
+    DataStorage_p.hpp
     Debug.hpp
     Debug_p.hpp
     Utils.hpp

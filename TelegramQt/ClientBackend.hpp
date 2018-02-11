@@ -20,6 +20,7 @@ class Connection;
 class Client;
 class Settings;
 class AccountStorage;
+class DataStorage;
 class RpcLayer;
 class PendingAuthOperation;
 
@@ -43,6 +44,7 @@ public:
     Client *m_client; // Parent
     Settings *m_settings;
     AccountStorage *m_accountStorage;
+    DataStorage *m_dataStorage;
     Connection *m_mainConnection = nullptr;
 
     PendingAuthOperation *m_authOperation = nullptr;
