@@ -47,10 +47,11 @@ void CTelegramTransport::sendPackage(const QByteArray &package)
     emit packageSent(package);
 }
 
-void CTelegramTransport::setError(QAbstractSocket::SocketError e)
+void CTelegramTransport::setError(QAbstractSocket::SocketError e, const QString &text)
 {
     m_error = e;
-    emit error(e);
+    m_errorText = text;
+    emit errorOccurred(e, text);
 }
 
 void CTelegramTransport::setState(QAbstractSocket::SocketState s)

@@ -36,7 +36,7 @@ public:
     QAbstractSocket::SocketError error() const { return m_error; }
     QAbstractSocket::SocketState state() const { return m_state; }
 signals:
-    void error(QAbstractSocket::SocketError error);
+    void errorOccurred(QAbstractSocket::SocketError error, const QString &text);
     void stateChanged(QAbstractSocket::SocketState state);
 
     void timeout();
@@ -48,7 +48,7 @@ public slots:
     void sendPackage(const QByteArray &package);
 
 protected slots:
-    void setError(QAbstractSocket::SocketError error);
+    void setError(QAbstractSocket::SocketError error, const QString &text);
     virtual void setState(QAbstractSocket::SocketState state);
 
 protected:
@@ -60,6 +60,7 @@ private:
     QAbstractSocket::SocketError m_error;
     QAbstractSocket::SocketState m_state;
     quint64 m_lastMessageId = 0;
+    QString m_errorText;
 
 };
 

@@ -163,6 +163,11 @@ void CTcpTransport::onTimeout()
     m_socket->disconnectFromHost();
 }
 
+void CTcpTransport::onSocketErrorOccurred(QAbstractSocket::SocketError error)
+{
+    setError(error, m_socket->errorString());
+}
+
 void CTcpTransport::setSocket(QAbstractSocket *socket)
 {
     if (m_socket) {
@@ -170,6 +175,6 @@ void CTcpTransport::setSocket(QAbstractSocket *socket)
     }
     m_socket = socket;
     connect(m_socket, &QAbstractSocket::stateChanged, this, &CTcpTransport::setState);
-    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(setError(QAbstractSocket::SocketError)));
+    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(onSocketErrorOccurred(QAbstractSocket::SocketError)));
     connect(m_socket, &QIODevice::readyRead, this, &CTcpTransport::onReadyRead);
 }

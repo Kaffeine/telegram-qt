@@ -45,6 +45,8 @@ protected slots:
     void onReadyRead();
     void onTimeout();
 
+    void onSocketErrorOccurred(QAbstractSocket::SocketError error);
+
 protected:
     void setSocket(QAbstractSocket *socket);
     void sendPackageImplementation(const QByteArray &payload) override;
