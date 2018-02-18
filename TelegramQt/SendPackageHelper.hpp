@@ -24,11 +24,18 @@
 
 namespace Telegram {
 
+enum class SendMode : quint8 {
+    Client,
+    ServerInitiative,
+    ServerReply,
+};
+
 class TELEGRAMQT_EXPORT BaseSendPackageHelper
 {
 public:
     virtual ~BaseSendPackageHelper() = default;
-    virtual quint64 newMessageId(bool isReply = false) = 0;
+    virtual quint64 newMessageId(SendMode mode) = 0;
+
     virtual void sendPackage(const QByteArray &package) = 0;
 
     quint64 serverSalt() const { return m_serverSalt; }

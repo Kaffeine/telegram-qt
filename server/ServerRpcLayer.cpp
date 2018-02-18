@@ -136,7 +136,7 @@ bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
     output << messageId;
     output.writeBytes(reply);
     qDebug() << Q_FUNC_INFO << TLValue::firstFromArray(reply) << "for message id" << messageId;
-    return sendPackage(output.getData());
+    return sendPackage(output.getData(), SendMode::ServerReply);
 }
 
 bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)

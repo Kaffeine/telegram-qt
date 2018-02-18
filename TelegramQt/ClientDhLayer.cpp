@@ -459,7 +459,7 @@ bool DhLayer::processServerDhAnswer(const QByteArray &payload)
 
 PendingRpcOperation *DhLayer::sendPlainPackage(const QByteArray &payload)
 {
-    const quint64 messageId = BaseDhLayer::sendPlainPackage(payload);
+    const quint64 messageId = BaseDhLayer::sendPlainPackage(payload, SendMode::Client);
     m_plainOperation = new PendingRpcOperation(payload, this);
     m_plainOperation->setRequestId(messageId);
     return m_plainOperation;

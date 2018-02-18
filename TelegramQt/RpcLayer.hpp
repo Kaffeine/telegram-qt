@@ -27,6 +27,7 @@ class CTelegramTransport;
 namespace Telegram {
 
 class BaseSendPackageHelper;
+enum class SendMode : quint8;
 
 class BaseRpcLayer : public QObject
 {
@@ -48,7 +49,7 @@ protected:
     virtual SAesKey getDecryptionAesKey(const QByteArray &messageKey) const = 0;
     virtual SAesKey getEncryptionAesKey(const QByteArray &messageKey) const = 0;
 
-    quint64 sendPackage(const QByteArray &buffer);
+    quint64 sendPackage(const QByteArray &buffer, SendMode mode);
 
     BaseSendPackageHelper *m_sendHelper = nullptr;
     quint32 m_sequenceNumber = 0;

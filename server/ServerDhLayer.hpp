@@ -38,6 +38,8 @@ public:
     bool declineDhParams();
     bool processSetClientDHParams(const QByteArray &data);
 
+    quint64 sendReplyPackage(const QByteArray &payload);
+
 protected:
     void processReceivedPacket(const QByteArray &payload) override;
 

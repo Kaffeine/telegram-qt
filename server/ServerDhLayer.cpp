@@ -83,7 +83,7 @@ bool DhLayer::sendResultPQ()
     outputStream << intToBytes(m_pq);
     outputStream << fingerprints;
 //    qCDebug(c_serverDhLayerCategory) << "Wrote data:" << output.toHex();
-    return sendPlainPackage(output);
+    return sendReplyPackage(output);
 }
 
 bool DhLayer::processRequestDHParams(const QByteArray &data)
@@ -243,7 +243,7 @@ bool DhLayer::acceptDhParams()
     outputStream << m_clientNonce;
     outputStream << m_serverNonce;
     outputStream << encryptedAnswer;
-    return sendPlainPackage(output);
+    return sendReplyPackage(output);
 }
 
 bool DhLayer::declineDhParams()
@@ -317,12 +317,17 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
         TLNumber128 newNonceHashLower128;
         memcpy(newNonceHashLower128.data, newNonceHashLower128Array.constData(), TLNumber128::size());
         outputStream << newNonceHashLower128;
-        sendPlainPackage(output);
+        sendReplyPackage(output);
         qCDebug(c_serverDhLayerCategory) << "NewNonce hash lower..." << newNonceHashLower128Array.toHex();
     }
     m_sendHelper->setAuthKey(newAuthKey);
     m_sendHelper->setServerSalt(m_serverNonce.parts[0] ^ m_newNonce.parts[0]);
     return true;
+}
+
+quint64 DhLayer::sendReplyPackage(const QByteArray &payload)
+{
+    return sendPlainPackage(payload, SendMode::ServerReply);
 }
 
 void DhLayer::processReceivedPacket(const QByteArray &payload)

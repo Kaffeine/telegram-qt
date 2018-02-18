@@ -27,6 +27,7 @@
 namespace Telegram {
 
 class BaseSendPackageHelper;
+enum class SendMode : quint8;
 
 class BaseDhLayer : public QObject
 {
@@ -63,7 +64,7 @@ public:
 
     // Helpers
     bool checkClientServerNonse(CTelegramStream &stream) const;
-    quint64 sendPlainPackage(const QByteArray &payload);
+    quint64 sendPlainPackage(const QByteArray &payload, SendMode mode);
     bool processPlainPackage(const QByteArray &buffer);
 
     // Extra

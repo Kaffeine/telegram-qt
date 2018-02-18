@@ -207,9 +207,9 @@ PendingRpcOperation *RpcLayer::sendEncryptedPackage(const QByteArray &payload)
 {
     quint64 messageId = 0;
     if (m_sequenceNumber == 0) {
-        messageId = sendPackage(getInitConnection() + payload);
+        messageId = sendPackage(getInitConnection() + payload, SendMode::Client);
     } else {
-        messageId = sendPackage(payload);
+        messageId = sendPackage(payload, SendMode::Client);
     }
     PendingRpcOperation *op = new PendingRpcOperation(payload, this);
     op->setRequestId(messageId);

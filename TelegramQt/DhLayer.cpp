@@ -88,10 +88,10 @@ bool BaseDhLayer::checkClientServerNonse(CTelegramStream &stream) const
     return true;
 }
 
-quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload)
+quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
 {
     const quint64 authKeyId = 0;
-    const quint64 messageId = m_sendHelper->newMessageId();
+    const quint64 messageId = m_sendHelper->newMessageId(mode);
     const quint32 messageLength = payload.length();
     constexpr int headerSize = sizeof(authKeyId) + sizeof(messageId) + sizeof(messageLength);
 

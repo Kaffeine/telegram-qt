@@ -93,7 +93,7 @@ SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
     return SAesKey(key, iv);
 }
 
-quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer)
+quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
 {
     if (!m_sendHelper->authId()) {
         qCritical() << Q_FUNC_INFO << "Auth key is not set!";
@@ -101,7 +101,7 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer)
     }
     QByteArray encryptedPackage;
     QByteArray messageKey;
-    quint64 messageId = m_sendHelper->newMessageId();
+    quint64 messageId = m_sendHelper->newMessageId(mode);
     qDebug() << Q_FUNC_INFO << "Send message" << TLValue::firstFromArray(buffer) << "with id" << messageId;
     {
         m_sequenceNumber = m_contentRelatedMessages * 2 + 1;

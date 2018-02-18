@@ -25,14 +25,16 @@ public:
     {
     }
 
-    quint64 newMessageId(bool isReply) override
+    quint64 newMessageId(SendMode mode) override
     {
         quint64 ts = TelegramUtils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
-        if (isReply) {
+        if (mode == SendMode::ServerReply) {
             ts &= ~quint64(3);
             ts |= 1;
-        } else {
+        } else if (mode == SendMode::ServerInitiative) {
             ts |= 3;
+        } else {
+            qCWarning(loggingCategoryRemoteClientConnection) << Q_FUNC_INFO << "Invalid mode";
         }
         return m_connection->transport()->getNewMessageId(ts);
     }
