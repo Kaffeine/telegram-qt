@@ -83,6 +83,7 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
 SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
 {
     const QByteArray authKey = m_sendHelper->authKey();
+#ifdef USE_MTProto_V1
     QByteArray sha1_a = Utils::sha1(messageKey + authKey.mid(x, 32));
     QByteArray sha1_b = Utils::sha1(authKey.mid(32 + x, 16) + messageKey + authKey.mid(48 + x, 16));
     QByteArray sha1_c = Utils::sha1(authKey.mid(64 + x, 32) + messageKey);
@@ -90,6 +91,12 @@ SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
 
     const QByteArray key = sha1_a.mid(0, 8) + sha1_b.mid(8, 12) + sha1_c.mid(4, 12);
     const QByteArray iv  = sha1_a.mid(8, 12) + sha1_b.mid(0, 8) + sha1_c.mid(16, 4) + sha1_d.mid(0, 8);
+#else // MTProto_V2
+    QByteArray sha256_a = Utils::sha256(messageKey + authKey.mid(x, 36));
+    QByteArray sha256_b = Utils::sha256(authKey.mid(40 + x, 36) + messageKey);
+    const QByteArray key = sha256_a.left(8) + sha256_b.mid(8, 16) + sha256_a.mid(24, 8);
+    const QByteArray iv  = sha256_b.left(8) + sha256_a.mid(8, 16) + sha256_b.mid(24, 8);
+#endif
 
     return SAesKey(key, iv);
 }
