@@ -212,8 +212,10 @@ CRawStreamEx &CRawStreamEx::operator>>(Telegram::AbridgedLength &data)
 {
     quint32 length = 0;
     read(&length, 1);
-    if (length >= 0xfe) {
+    if (Q_UNLIKELY(length == 0xfe)) {
         read(&length, 3);
+    } else if (Q_UNLIKELY(length > 0xfe)) {
+        setError(true);
     }
     data = length;
     return *this;
