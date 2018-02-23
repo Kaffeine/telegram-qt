@@ -105,6 +105,11 @@ void tst_toOfficial::testClientDhLayer()
     dhLayer->setServerRsaKey(Utils::loadHardcodedKey());
 
     connect(transport, &Client::TcpTransport::packageReceived, [dhLayer](const QByteArray &package) {
+        if (package.size() == sizeof(quint32)) {
+            qint32 errorCode = *(reinterpret_cast<const qint32 *>(package.constData()));
+            qWarning() << "Error:" << errorCode;
+            return;
+        }
         if (package.size() < 8) {
             qWarning() << "Received package is too small to process:" << package.toHex();
             return;
