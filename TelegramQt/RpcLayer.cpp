@@ -24,6 +24,7 @@
 #include "TLValues.hpp"
 
 #ifdef DEVELOPER_BUILD
+#include "AbridgedLength.hpp"
 #include "Debug_p.hpp"
 #endif
 
@@ -52,7 +53,7 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
 #endif
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
     const quint64 authKeyId = *authKeyIdBytes;
-    if (authKeyId != m_sendHelper->authId()) {
+    if (!verifyAuthKey(authKeyId)) {
         qDebug() << Q_FUNC_INFO << "Incorrect auth id.";
 #ifdef NETWORK_LOGGING
         QTextStream str(m_logFile);
@@ -91,6 +92,11 @@ SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
     const QByteArray iv  = sha1_a.mid(8, 12) + sha1_b.mid(0, 8) + sha1_c.mid(16, 4) + sha1_d.mid(0, 8);
 
     return SAesKey(key, iv);
+}
+
+bool BaseRpcLayer::verifyAuthKey(quint64 authKeyId)
+{
+    return authKeyId == m_sendHelper->authId();
 }
 
 quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)

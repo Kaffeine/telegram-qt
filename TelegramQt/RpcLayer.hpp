@@ -49,6 +49,8 @@ protected:
     virtual SAesKey getDecryptionAesKey(const QByteArray &messageKey) const = 0;
     virtual SAesKey getEncryptionAesKey(const QByteArray &messageKey) const = 0;
 
+    virtual bool verifyAuthKey(quint64 authKeyId);
+
     quint64 sendPackage(const QByteArray &buffer, SendMode mode);
 
     BaseSendPackageHelper *m_sendHelper = nullptr;
