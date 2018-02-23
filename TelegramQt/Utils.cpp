@@ -351,7 +351,7 @@ QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &m
 QByteArray Utils::aesDecrypt(const QByteArray &data, const SAesKey &key)
 {
     if (data.length() % AES_BLOCK_SIZE) {
-        qCritical() << Q_FUNC_INFO << "Data is not padded (the size %" << AES_BLOCK_SIZE << " is not zero)";
+        qCritical() << Q_FUNC_INFO << "Data is not padded (size %" << AES_BLOCK_SIZE << "!= 0)";
         return QByteArray();
     }
     QByteArray result = data;
