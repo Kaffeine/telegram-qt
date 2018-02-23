@@ -30,6 +30,7 @@ public:
     AbridgedLength &operator=(quint32 value) { m_value = value; return *this; }
     constexpr quint32 packedSize() const { return m_value < 0xfe ? 1: 4; }
     quint32 paddingForAlignment(quint32 alignment) const;
+    static quint32 paddingForAlignment(quint32 alignment, quint32 size);
 private:
     quint32 m_value = 0;
 };
