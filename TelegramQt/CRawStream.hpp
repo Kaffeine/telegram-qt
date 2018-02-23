@@ -91,6 +91,8 @@ protected:
     template<typename Int>
     inline CRawStream &protectedRead(Int &i);
 
+    void setError(bool error);
+
 private:
     QIODevice *m_device = nullptr;
     bool m_ownDevice = false;

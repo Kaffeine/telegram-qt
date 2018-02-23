@@ -124,6 +124,11 @@ bool CRawStream::write(const void *data, qint64 size)
     return m_error;
 }
 
+void CRawStream::setError(bool error)
+{
+    m_error = error;
+}
+
 QByteArray CRawStream::readBytes(int count)
 {
     QByteArray result = m_device->read(count);
