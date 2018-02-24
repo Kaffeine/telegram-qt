@@ -27,6 +27,11 @@ namespace Telegram {
 
 namespace Utils {
 
+enum BitsOrder64 {
+    Higher64Bits,
+    Lower64Bits,
+};
+
 int randomBytes(QByteArray *array);
 
 template <typename T>
@@ -43,8 +48,8 @@ quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
 quint64 findDivider(quint64 number);
 QByteArray sha1(const QByteArray &data);
 QByteArray sha256(const QByteArray &data);
-quint64 getFingersprint(const QByteArray &data, bool lowerOrderBits = true);
-quint64 getRsaFingersprint(const Telegram::RsaKey &key);
+quint64 getFingerprints(const QByteArray &data, const BitsOrder64 order);
+quint64 getRsaFingerprints(const Telegram::RsaKey &key);
 Telegram::RsaKey loadHardcodedKey();
 Telegram::RsaKey loadRsaKeyFromFile(const QString &fileName);
 Telegram::RsaKey loadRsaPrivateKeyFromFile(const QString &fileName);

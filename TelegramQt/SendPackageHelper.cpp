@@ -32,7 +32,7 @@ void BaseSendPackageHelper::setAuthKey(const QByteArray &authKey)
         m_authId = 0;
     } else {
         m_authKey = authKey;
-        m_authId = Utils::getFingersprint(authKey);
+        m_authId = Utils::getFingerprints(authKey, Utils::Lower64Bits);
     }
 }
 

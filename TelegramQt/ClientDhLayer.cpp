@@ -432,7 +432,7 @@ bool DhLayer::processServerDhAnswer(const QByteArray &payload)
         if (newAuthKey.isEmpty()) {
             m_authRetryId = 0;
         } else {
-            m_authRetryId = Utils::getFingersprint(newAuthKey, /* lower-order */ false);// 64 higher-order bits of SHA1(auth_key)
+            m_authRetryId = Utils::getFingerprints(newAuthKey, Utils::Higher64Bits);
         }
         generateDh();
         requestDhGenerationResult();
