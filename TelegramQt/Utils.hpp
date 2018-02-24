@@ -36,6 +36,9 @@ template <typename T>
 int randomBytes(T *number);
 
 int randomBytes(void *buffer, int count);
+
+QByteArray getRandomBytes(int count);
+
 quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
 quint64 findDivider(quint64 number);
 QByteArray sha1(const QByteArray &data);

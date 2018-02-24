@@ -428,4 +428,11 @@ QByteArray Utils::unpackGZip(const QByteArray &data)
     return result;
 }
 
+QByteArray Utils::getRandomBytes(int count)
+{
+    QByteArray randBytes(count, Qt::Uninitialized);
+    Utils::randomBytes(&randBytes);
+    return randBytes;
+}
+
 } // Telegram
