@@ -220,6 +220,7 @@ quint32 Telegram::MessageMediaInfo::duration() const
 
 bool Telegram::MessageMediaInfo::setDuration(quint32 duration)
 {
+    Q_UNUSED(duration)
     switch (d->tlType) {
     default:
         break;
