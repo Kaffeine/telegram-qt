@@ -27,10 +27,24 @@ namespace Client {
 
 Q_LOGGING_CATEGORY(c_loggingTranport, "telegram.client.transport", QtWarningMsg)
 
+static const quint8 c_abridgedVersionByte = 0xef;
+
 TcpTransport::TcpTransport(QObject *parent) :
     CTcpTransport(parent)
 {
     setSocket(new QTcpSocket(this));
+}
+
+void TcpTransport::setPreferredSessionType(const CTcpTransport::SessionType sessionType)
+{
+    m_preferredSessionType = sessionType;
+}
+
+void TcpTransport::startAbridgedSession()
+{
+    qCDebug(c_loggingTranport) << "Start the session in Abridged format";
+    m_socket->putChar(c_abridgedVersionByte);
+    setSessionType(Abridged);
 }
 
 bool TcpTransport::setProxy(const QNetworkProxy &proxy)
@@ -48,9 +62,15 @@ void TcpTransport::writeEvent()
     if (Q_LIKELY(m_sessionType != Unknown)) {
         return;
     }
-    qCDebug(c_loggingTranport()) << "Start session in Abridged format";
-    m_socket->putChar(char(0xef));
-    setSessionType(Abridged);
+    switch (m_preferredSessionType) {
+    case Default:
+    case Abridged:
+        startAbridgedSession();
+        break;
+    default:
+        qCCritical(c_loggingTranport) << Q_FUNC_INFO << "The selected session type" << m_preferredSessionType << "is not supported";
+        break;
+    }
 }
 
 } // Client
