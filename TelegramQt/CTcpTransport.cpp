@@ -91,7 +91,6 @@ void CTcpTransport::sendPackageImplementation(const QByteArray &payload)
     }
     package.append(payload);
     m_socket->write(package);
-    emit packageSent(package);
 }
 
 void CTcpTransport::setSessionType(CTcpTransport::SessionType sessionType)
