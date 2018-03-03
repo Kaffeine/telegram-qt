@@ -28,7 +28,13 @@ before_script:
   - mkdir ../build; cd ../build
   - if [ "${DEVELOPER_BUILD}" != "true" ]; then export DEVELOPER_BUILD="false"; fi
   - if [ "${ENABLE_QCH_BUILD}" != "true" ]; then export ENABLE_QCH_BUILD="false"; fi
-  - cmake -DDEVELOPER_BUILD=${DEVELOPER_BUILD} -DENABLE_QCH_BUILD=${ENABLE_QCH_BUILD} -DENABLE_TESTAPP=true -DENABLE_TESTS=true -DBUILD_SERVER=true ../telegram-qt
+  - cmake >
+    -DDEVELOPER_BUILD=${DEVELOPER_BUILD}
+    -DENABLE_QCH_BUILD=${ENABLE_QCH_BUILD}
+    -DENABLE_TESTAPP=true
+    -DENABLE_TESTS=true
+    -DBUILD_SERVER=true
+    ../telegram-qt
 
 script:
   - make -j3 -k
