@@ -10,6 +10,8 @@
 #include <QDateTime>
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(loggingCategoryRemoteClientConnection, "telegram.server.remoteclient.connection", QtDebugMsg)
+
 namespace Telegram {
 
 namespace Server {
