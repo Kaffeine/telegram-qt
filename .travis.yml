@@ -14,12 +14,19 @@ matrix:
        - compiler: clang
          env:
            - DEVELOPER_BUILD=true
+       - compiler: gcc
+         env:
            - ENABLE_QCH_BUILD=true
+           - ENABLE_COVERAGE_BUILD=true
 
 before_install:
   - sudo apt-add-repository -y ppa:beineri/opt-qt562-trusty
   - sudo apt-get -qq update
   - sudo apt-get -qq install qt56base qt56tools
+  - if [ "$ENABLE_COVERAGE_BUILD" == "true" ]; then
+      sudo apt-get -qq install lcov
+      ;
+    fi
 
 before_script:
   - export QTDIR="/opt/qt56"
@@ -28,17 +35,29 @@ before_script:
   - mkdir ../build; cd ../build
   - if [ "${DEVELOPER_BUILD}" != "true" ]; then export DEVELOPER_BUILD="false"; fi
   - if [ "${ENABLE_QCH_BUILD}" != "true" ]; then export ENABLE_QCH_BUILD="false"; fi
+  - if [ "${ENABLE_COVERAGE_BUILD}" != "true" ]; then export ENABLE_COVERAGE_BUILD="false"; fi
   - cmake >
     -DDEVELOPER_BUILD=${DEVELOPER_BUILD}
     -DENABLE_QCH_BUILD=${ENABLE_QCH_BUILD}
     -DENABLE_TESTAPP=true
     -DENABLE_TESTS=true
+    -DENABLE_COVERAGE_BUILD=${ENABLE_COVERAGE_BUILD}
     -DBUILD_SERVER=true
     ../telegram-qt
 
 script:
   - make -j3 -k
   - make test -k
+
+after_success:
+  - >
+    if [ "$ENABLE_COVERAGE_BUILD" == "true" ]; then
+      lcov --directory . --capture --output-file coverage.info &&
+      lcov --remove coverage.info '/usr/*' '*/moc_*cpp' '*/tests/*' '*/server/*' --output-file coverage.info &&
+      lcov --list coverage.info &&
+      # Uploading report to CodeCov
+      bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+    fi
 
 notifications:
   email: false

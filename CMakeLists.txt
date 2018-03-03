@@ -13,6 +13,9 @@ set(TELEGRAM_QT_ABI "${TELEGRAM_QT_VERSION_MAJOR}.${TELEGRAM_QT_VERSION_MINOR}")
 option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
 # Add an option for building tests
 option(BUILD_WIDGETS_CLIENT "Build a widgets-based client" FALSE)
+
+option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)
+
 # Add an option for building tests
 option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
 # Add an option for building tests
@@ -41,6 +44,11 @@ find_package(ZLIB REQUIRED)
 include(GNUInstallDirs)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
+
+if (ENABLE_COVERAGE_BUILD)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+    set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+endif()
 
 # Add the source subdirectories
 add_subdirectory(TelegramQt)
