@@ -22,6 +22,8 @@
 
 QT_FORWARD_DECLARE_CLASS(QTimer)
 
+class CRawStream;
+
 // TODO: Move to Telegram namespace and rename to BaseTcpTransport
 class CTcpTransport : public CTelegramTransport
 {
@@ -30,7 +32,8 @@ public:
     enum SessionType {
         Unknown,
         Abridged, // char(0xef)
-        FullSize
+        FullSize,
+        Default = Unknown,
     };
     Q_ENUM(SessionType)
 
@@ -39,6 +42,8 @@ public:
 
     void connectToHost(const QString &ipAddress, quint32 port) override;
     void disconnectFromHost() override;
+
+    SessionType sessionType() const;
 
 protected slots:
     void setState(QAbstractSocket::SocketState newState) override;
@@ -59,6 +64,7 @@ protected:
 
     QAbstractSocket *m_socket = nullptr;
     QTimer *m_timeoutTimer = nullptr;
+    QByteArray m_readBuffer;
 };
 
 #endif // CTCPTRANSPORT_HPP

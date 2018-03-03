@@ -16,10 +16,13 @@
  */
 
 #include "CTcpTransport.hpp"
+#include "CRawStream.hpp"
 
 #include <QTimer>
 
 #include <QLoggingCategory>
+
+using namespace Telegram;
 
 #ifndef Q_FALLTHROUGH
 #define Q_FALLTHROUGH() (void)0
@@ -58,6 +61,11 @@ void CTcpTransport::disconnectFromHost()
     if (m_socket) {
         m_socket->disconnectFromHost();
     }
+}
+
+CTcpTransport::SessionType CTcpTransport::sessionType() const
+{
+    return m_sessionType;
 }
 
 void CTcpTransport::sendPackageImplementation(const QByteArray &payload)
@@ -100,7 +108,7 @@ void CTcpTransport::setSessionType(CTcpTransport::SessionType sessionType)
 
 void CTcpTransport::setState(QAbstractSocket::SocketState newState)
 {
-    qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << newState;
+    qCDebug(c_loggingTcpTransport) << Q_FUNC_INFO << newState;
     switch (newState) {
     case QAbstractSocket::HostLookupState:
     case QAbstractSocket::ConnectingState:
@@ -119,35 +127,43 @@ void CTcpTransport::setState(QAbstractSocket::SocketState newState)
 
 void CTcpTransport::onReadyRead()
 {
+    qCDebug(c_loggingTcpTransport) << Q_FUNC_INFO << m_socket->bytesAvailable();
     readEvent();
-    while (m_socket->bytesAvailable() > 0) {
-        if (m_expectedLength == 0) {
-            if (m_socket->bytesAvailable() < 4) {
-                qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO
-                                                 << "Ready read, but less, than a four bytes available.";
-                return;
-            }
-            char length;
-            m_socket->getChar(&length);
-
-            if (length < char(0x7f)) {
-                m_expectedLength = length * 4;
-            } else if (length == char(0x7f)) {
-                m_socket->read((char *) &m_expectedLength, 3);
-                m_expectedLength *= 4;
-            } else {
-                qCWarning(c_loggingTcpTransport()) << "Incorrect TCP package!";
-            }
+    if (m_sessionType == Unknown) {
+        qCCritical(c_loggingTcpTransport) << "Unknown session type!";
+        return;
+    }
+    while ((m_socket->bytesAvailable() > 0) || !m_readBuffer.isEmpty()) {
+        if (m_socket->bytesAvailable() > 0) {
+            QByteArray allData = m_socket->readAll();
+            m_readBuffer.append(allData);
         }
 
-        if (m_socket->bytesAvailable() < m_expectedLength) {
+        CRawStreamEx bufferStream(m_readBuffer);
+        if (m_expectedLength == 0) {
+            quint8 length_t1;
+            bufferStream >> length_t1;
+            if (length_t1 < char(0x7f)) {
+                m_expectedLength = length_t1;
+            } else if (length_t1 == char(0x7f)) {
+                QByteArray nextThree = bufferStream.readBytes(3);
+                char *lengthCharPointer = reinterpret_cast<char *>(&m_expectedLength);
+                lengthCharPointer[0] = nextThree.at(0);
+                lengthCharPointer[1] = nextThree.at(1);
+                lengthCharPointer[2] = nextThree.at(2);
+            } else {
+                qCWarning(c_loggingTcpTransport()) << "Invalid package size data!";
+            }
+            m_expectedLength *= 4;
+        }
+        if (bufferStream.bytesAvailable() < static_cast<qint64>(m_expectedLength)) {
             qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << "Ready read, but only "
-                                             << m_socket->bytesAvailable() << "bytes available ("
-                                             << m_expectedLength << "bytes expected.";
+                                             << bufferStream.bytesAvailable() << "bytes available ("
+                                             << m_expectedLength << "bytes expected)";
             return;
         }
-
-        const QByteArray readPackage = m_socket->read(m_expectedLength);
+        const QByteArray readPackage = bufferStream.readBytes(m_expectedLength);
+        m_readBuffer = bufferStream.readAll();
         m_expectedLength = 0;
         qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO
                                          << "Received a package (" << readPackage.size() << " bytes)";
