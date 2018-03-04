@@ -11,4 +11,4 @@ TARGET = testApp
 SOURCES += main.cpp
 include(server.pri)
 
-#OTHER_FILES += CMakeLists.txt
+OTHER_FILES += CMakeLists.txt
