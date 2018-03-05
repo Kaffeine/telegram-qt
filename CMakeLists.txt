@@ -15,6 +15,7 @@ option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
 option(BUILD_WIDGETS_CLIENT "Build a widgets-based client" FALSE)
 
 option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)
+option(ENABLE_COVERAGE_HTML "Generate an HTML report for the code-coverage analysis result" FALSE)
 
 # Add an option for building tests
 option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
@@ -108,4 +109,14 @@ if (ENABLE_COVERAGE_BUILD)
         COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
     )
     add_custom_target(coverage DEPENDS ${coverage_info})
+
+    if (ENABLE_COVERAGE_HTML)
+        find_program(GENHTML_PATH genhtml)
+        add_custom_target(coverage_html
+            COMMAND ${GENHTML_PATH} -o coverage_report ${coverage_info}
+            DEPENDS coverage
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Generate HTML report for the coverage analysis"
+        )
+    endif()
 endif()
