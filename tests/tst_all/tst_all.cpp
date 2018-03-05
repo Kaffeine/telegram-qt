@@ -96,6 +96,27 @@ Telegram::Server::User *tryAddUser(Telegram::Server::LocalCluster *cluster, cons
     return u;
 }
 
+class TestServer : public Server::Server
+{
+    Q_OBJECT
+public:
+    explicit TestServer(QObject *parent = nullptr)
+        : Server(parent)
+    {
+    }
+
+    QByteArray sendAppCode(const QString &identifier) override
+    {
+        const QByteArray hash = Server::Server::sendAppCode(identifier);
+        const Telegram::Server::AuthCode c = m_sentCodeMap.value(identifier);
+        emit authCodeSent(identifier, c.code);
+        return hash;
+    }
+
+signals:
+    void authCodeSent(const QString &identifier, const QString &code);
+};
+
 class tst_all : public QObject
 {
     Q_OBJECT
@@ -123,27 +144,6 @@ void tst_all::cleanupTestCase()
 {
     QVERIFY(TestKeyData::cleanupKeyFiles());
 }
-
-class TestServer : public Server::Server
-{
-    Q_OBJECT
-public:
-    explicit TestServer(QObject *parent = nullptr)
-        : Server(parent)
-    {
-    }
-
-    QByteArray sendAppCode(const QString &identifier) override
-    {
-        const QByteArray hash = Server::Server::sendAppCode(identifier);
-        const Telegram::Server::AuthCode c = m_sentCodeMap.value(identifier);
-        emit authCodeSent(identifier, c.code);
-        return hash;
-    }
-
-signals:
-    void authCodeSent(const QString &identifier, const QString &code);
-};
 
 void tst_all::testClientConnection()
 {
