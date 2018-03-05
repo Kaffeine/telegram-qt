@@ -38,12 +38,8 @@ PendingOperation *Backend::connectToServer()
     }
 
     if (!m_mainConnection) {
-        Connection *connection = new Connection(this);
-        connection->rpcLayer()->setAppInformation(m_appInformation);
+        Connection *connection = createConnection();
         setMainConnection(connection);
-
-        TcpTransport *transport = new TcpTransport(connection);
-        connection->setTransport(transport);
     }
 
     if (m_accountStorage->hasMinimalDataSet()) {
@@ -130,13 +126,22 @@ PendingAuthOperation *Backend::signIn()
     return m_authOperation;
 }
 
+Connection *Backend::createConnection()
+{
+    Connection *connection = new Connection(this);
+    connection->rpcLayer()->setAppInformation(m_appInformation);
+
+    TcpTransport *transport = new TcpTransport(connection);
+    connection->setTransport(transport);
+    return connection;
+}
+
 Connection *Backend::createConnection(const TLDcOption &dcOption)
 {
     qDebug() << Q_FUNC_INFO << dcOption.id << dcOption.ipAddress << dcOption.port;
 
-    Connection *connection = new Connection(this);
+    Connection *connection = createConnection();
     connection->setDcOption(dcOption);
-    connection->rpcLayer()->setAppInformation(m_appInformation);
 
     // if transport TCP then
 

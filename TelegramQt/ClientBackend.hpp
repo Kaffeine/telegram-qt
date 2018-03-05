@@ -35,6 +35,7 @@ public:
     PendingOperation *connectToServer();
     PendingAuthOperation *signIn();
 
+    Connection *createConnection();
     Connection *createConnection(const TLDcOption &dcInfo);
     Connection *mainConnection();
 
