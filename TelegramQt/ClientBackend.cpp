@@ -132,6 +132,13 @@ Connection *Backend::createConnection()
     connection->rpcLayer()->setAppInformation(m_appInformation);
 
     TcpTransport *transport = new TcpTransport(connection);
+    switch (m_settings->preferedSessionType()) {
+    case Settings::SessionType::Default:
+        break;
+    case Settings::SessionType::Abridged:
+        transport->setPreferedSessionType(TcpTransport::Abridged);
+        break;
+    }
     connection->setTransport(transport);
     return connection;
 }

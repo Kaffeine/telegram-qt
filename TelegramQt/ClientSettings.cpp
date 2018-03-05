@@ -15,6 +15,11 @@ void Settings::setProxy(const QNetworkProxy &proxy)
     m_proxy = proxy;
 }
 
+void Settings::setPreferedSessionType(const Settings::SessionType type)
+{
+    m_preferedSessionType = type;
+}
+
 quint32 Settings::defaultPingInterval()
 {
     return 15000u;
