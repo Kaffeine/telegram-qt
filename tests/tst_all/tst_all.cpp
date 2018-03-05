@@ -152,6 +152,7 @@ public:
 private slots:
     void initTestCase();
     void cleanupTestCase();
+    void testClientConnection_data();
     void testClientConnection();
 };
 
@@ -171,8 +172,16 @@ void tst_all::cleanupTestCase()
     QVERIFY(TestKeyData::cleanupKeyFiles());
 }
 
+void tst_all::testClientConnection_data()
+{
+    QTest::addColumn<Telegram::Client::Settings::SessionType>("sessionType");
+    QTest::newRow("Abridged")   << Client::Settings::SessionType::Abridged;
+}
+
 void tst_all::testClientConnection()
 {
+    QFETCH(Telegram::Client::Settings::SessionType, sessionType);
+
     const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
     const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
@@ -197,6 +206,7 @@ void tst_all::testClientConnection()
     accountStorage.setPhoneNumber(userData.phoneNumber);
     QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
+    clientSettings.setPreferedSessionType(sessionType);
 
     // --- Connect ---
     PendingOperation *connectOperation = client.connectToServer();
