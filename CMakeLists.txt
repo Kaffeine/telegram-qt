@@ -48,6 +48,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 if (ENABLE_COVERAGE_BUILD)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
     set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+    SET(CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+    SET(CMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
 # Add the source subdirectories
@@ -84,4 +86,26 @@ endif()
 
 if (BUILD_WIDGETS_CLIENT)
     add_subdirectory(clients/widgets)
+endif()
+
+if (ENABLE_COVERAGE_BUILD)
+    # Code coverage
+    find_program(LCOV_PATH lcov)
+
+    set(coverage_full_info "${CMAKE_BINARY_DIR}/coverage-full.info")
+    set(coverage_info "${CMAKE_BINARY_DIR}/coverage.info")
+
+    add_custom_command(OUTPUT ${coverage_info}
+        COMMAND ${LCOV_PATH} --directory . --capture --output-file ${coverage_full_info}
+        COMMAND ${LCOV_PATH} --remove ${coverage_full_info}
+            '*/tests/*'
+            '*/server/*'
+            '/usr/*'
+            '*/moc_*.cpp'
+            --output-file ${coverage_info}
+        COMMAND ${LCOV_PATH} --list ${coverage_info}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
+    )
+    add_custom_target(coverage DEPENDS ${coverage_info})
 endif()
