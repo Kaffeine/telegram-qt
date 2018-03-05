@@ -139,8 +139,13 @@ else()
     add_library(TelegramQt${QT_VERSION_MAJOR} SHARED ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES})
 endif()
 
-target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/RpcLayers)
+target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Crypto
+)
+target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/RpcLayers
+)
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
     Qt5::Core
