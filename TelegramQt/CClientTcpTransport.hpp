@@ -30,15 +30,15 @@ class TcpTransport : public CTcpTransport
 public:
     explicit TcpTransport(QObject *parent = nullptr);
 
-    SessionType preferredSessionType() const { return m_preferredSessionType; }
-    void setPreferredSessionType(const SessionType sessionType);
+    SessionType preferredSessionType() const { return m_preferedSessionType; }
+    void setPreferedSessionType(const SessionType sessionType);
 
     void startAbridgedSession();
     bool setProxy(const QNetworkProxy &proxy);
 
 protected:
     void writeEvent() final;
-    SessionType m_preferredSessionType = Default;
+    SessionType m_preferedSessionType = Default;
 };
 
 } // Client

@@ -35,9 +35,9 @@ TcpTransport::TcpTransport(QObject *parent) :
     setSocket(new QTcpSocket(this));
 }
 
-void TcpTransport::setPreferredSessionType(const CTcpTransport::SessionType sessionType)
+void TcpTransport::setPreferedSessionType(const CTcpTransport::SessionType sessionType)
 {
-    m_preferredSessionType = sessionType;
+    m_preferedSessionType = sessionType;
 }
 
 void TcpTransport::startAbridgedSession()
@@ -62,13 +62,13 @@ void TcpTransport::writeEvent()
     if (Q_LIKELY(m_sessionType != Unknown)) {
         return;
     }
-    switch (m_preferredSessionType) {
+    switch (m_preferedSessionType) {
     case Default:
     case Abridged:
         startAbridgedSession();
         break;
     default:
-        qCCritical(c_loggingTranport) << Q_FUNC_INFO << "The selected session type" << m_preferredSessionType << "is not supported";
+        qCCritical(c_loggingTranport) << Q_FUNC_INFO << "The selected session type" << m_preferedSessionType << "is not supported";
         break;
     }
 }
