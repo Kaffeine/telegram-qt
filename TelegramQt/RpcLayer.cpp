@@ -46,7 +46,8 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
         return false;
     }
 #ifdef BASE_RPC_IO_DEBUG
-    qDebug() << "Read" << package.length() << "bytes";
+    qDebug() << Q_FUNC_INFO << "Read" << package.length() << "bytes:";
+    qDebug() << package.toHex();
 #endif
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
     const quint64 authKeyId = *authKeyIdBytes;
@@ -66,12 +67,14 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     }
     // Encrypted Message
     const QByteArray messageKey = package.mid(8, 16);
-#ifdef BASE_RPC_IO_DEBUG
-    qWarning() << "key:" << messageKey.toHex();
-#endif
     const QByteArray data = package.mid(24);
     const SAesKey key = getDecryptionAesKey(messageKey);
     const QByteArray decryptedData = Utils::aesDecrypt(data, key).left(data.length());
+#ifdef BASE_RPC_IO_DEBUG
+    qDebug() << "messageKey:" << messageKey.toHex();
+    qDebug() << "data:" << data.toHex();
+    qDebug() << "decryptedData:" << decryptedData.toHex();
+#endif
     return processDecryptedPackage(decryptedData);
 }
 
