@@ -51,13 +51,13 @@ CTcpTransport::~CTcpTransport()
 
 void CTcpTransport::connectToHost(const QString &ipAddress, quint32 port)
 {
-    qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << ipAddress << port;
+    qCDebug(c_loggingTcpTransport) << Q_FUNC_INFO << ipAddress << port;
     m_socket->connectToHost(ipAddress, port);
 }
 
 void CTcpTransport::disconnectFromHost()
 {
-    qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO;
+    qCDebug(c_loggingTcpTransport) << Q_FUNC_INFO;
     if (m_socket) {
         m_socket->disconnectFromHost();
     }
@@ -83,7 +83,7 @@ void CTcpTransport::sendPackageImplementation(const QByteArray &payload)
     // Payload
 
     if (payload.length() % 4) {
-        qCCritical(c_loggingTcpTransport()) << Q_FUNC_INFO
+        qCCritical(c_loggingTcpTransport) << Q_FUNC_INFO
                                             << "Invalid outgoing package! "
                                                "The payload size is not divisible by four!";
     }
