@@ -19,6 +19,7 @@ public:
 protected:
     void onStateChanged(QAbstractSocket::SocketState newState);
 
+    bool startObfuscatedSession();
     void readEvent() final;
 
 };
