@@ -19,6 +19,7 @@ public:
     enum class SessionType {
         Default,
         Abridged,
+        Obfuscated,
     };
     Q_ENUM(SessionType)
 

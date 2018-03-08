@@ -15,7 +15,10 @@
 
  */
 
+#include "AesCtr.hpp"
 #include "CClientTcpTransport.hpp"
+#include "CRawStream.hpp"
+#include "Utils.hpp"
 
 #include <QTcpSocket>
 
@@ -28,6 +31,8 @@ namespace Client {
 Q_LOGGING_CATEGORY(c_loggingTranport, "telegram.client.transport", QtWarningMsg)
 
 static const quint8 c_abridgedVersionByte = 0xef;
+static const quint32 c_intermediateVersionBytes = 0xeeeeeeeeu;
+static const quint32 c_obfucsatedProcotolIdentifier = 0xefefefefu;
 
 TcpTransport::TcpTransport(QObject *parent) :
     CTcpTransport(parent)
@@ -38,6 +43,49 @@ TcpTransport::TcpTransport(QObject *parent) :
 void TcpTransport::setPreferedSessionType(const CTcpTransport::SessionType sessionType)
 {
     m_preferedSessionType = sessionType;
+}
+
+void TcpTransport::startObfuscatedSession()
+{
+    qCDebug(c_loggingTranport) << "Start the session in Obfuscated format";
+    // prepare random part
+    const QVector<quint32> headerFirstWordBlackList = {
+        0x44414548u, 0x54534f50u, 0x20544547u, 0x20544547u, c_intermediateVersionBytes,
+    };
+    const QVector<quint32> headerSecondWordBlackList = {
+        0x0,
+    };
+
+    quint32 first4Bytes;
+    // The first word must not concide with any of the previously known session first bytes
+    do {
+        first4Bytes = Utils::randomBytes<quint32>();
+    } while (headerFirstWordBlackList.contains(first4Bytes) || ((first4Bytes & 0xffu) == c_abridgedVersionByte));
+
+    quint32 next4Bytes;
+    // The same about the second word.
+    do {
+        next4Bytes = Utils::randomBytes<quint32>();
+    } while (headerSecondWordBlackList.contains(next4Bytes));
+
+    const QByteArray aesSourceData = Utils::getRandomBytes(48);
+    setCryptoKeysSourceData(aesSourceData, DirectIsWriteReversedIsRead);
+
+    // first, next,       AES (key + Ivec),     protocol id, random 4 bytes; 64 bytes in total
+    //      4      8                          56            60    64
+    // xxxx | xxxx | xxxx ... xxxx (48 bytes) | 0xefefefefU | xxxx |
+    const quint32 trailingRandom = Utils::randomBytes<quint32>();
+
+    CRawStream raw(CRawStream::WriteOnly);
+    raw << first4Bytes;
+    raw << next4Bytes;
+    raw << aesSourceData;
+    m_socket->write(raw.getData());
+    raw << c_obfucsatedProcotolIdentifier;
+    raw << trailingRandom;
+    QByteArray encrypted = m_writeAesContext->crypt(raw.getData());
+    m_socket->write(encrypted.mid(56, 8));
+    setSessionType(Obfuscated);
 }
 
 void TcpTransport::startAbridgedSession()
@@ -64,6 +112,9 @@ void TcpTransport::writeEvent()
     }
     switch (m_preferedSessionType) {
     case Default:
+    case Obfuscated:
+        startObfuscatedSession();
+        break;
     case Abridged:
         startAbridgedSession();
         break;

@@ -33,6 +33,7 @@ public:
     SessionType preferredSessionType() const { return m_preferedSessionType; }
     void setPreferedSessionType(const SessionType sessionType);
 
+    void startObfuscatedSession();
     void startAbridgedSession();
     bool setProxy(const QNetworkProxy &proxy);
 

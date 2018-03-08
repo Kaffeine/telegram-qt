@@ -43,6 +43,7 @@ public:
         Unknown,
         Abridged, // char(0xef)
         FullSize,
+        Obfuscated,
         Default = Unknown,
     };
     Q_ENUM(SessionType)
