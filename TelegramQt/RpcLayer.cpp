@@ -17,6 +17,7 @@
 
 #include "RpcLayer.hpp"
 
+#include "AbridgedLength.hpp"
 #include "CRawStream.hpp"
 #include "SendPackageHelper.hpp"
 #include "Utils.hpp"
@@ -115,19 +116,21 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer)
         stream << contentLength;
         stream << buffer;
         quint32 packageLength = stream.getData().length();
-        if ((packageLength) % 16) {
-            QByteArray randomPadding;
-            randomPadding.resize(16 - (packageLength % 16));
+        const quint32 padding = AbridgedLength::paddingForAlignment(16, packageLength);
+        if (padding) {
+            QByteArray randomPadding(padding, Qt::Uninitialized);
             Utils::randomBytes(&randomPadding);
-            packageLength += randomPadding.size();
             stream << randomPadding;
+            packageLength += padding;
         }
-        messageKey = Utils::sha1(stream.getData()).mid(4);
+        const QByteArray data = stream.getData();
+        messageKey = Utils::sha1(data).mid(4);
         const SAesKey key = getEncryptionAesKey(messageKey);
-        encryptedPackage = Utils::aesEncrypt(stream.getData(), key).left(packageLength);
+        encryptedPackage = Utils::aesEncrypt(data, key).left(packageLength);
     }
+
     CRawStream output(CRawStream::WriteOnly);
-    output << m_sendHelper->authId();
+    output << m_sendHelper->authId(); // keyId
     output << messageKey;
     output << encryptedPackage;
     m_sendHelper->sendPackage(output.getData());
