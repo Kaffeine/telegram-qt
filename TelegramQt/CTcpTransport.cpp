@@ -15,6 +15,7 @@
 
  */
 
+#include "AesCtr.hpp"
 #include "CTcpTransport.hpp"
 #include "CRawStream.hpp"
 
@@ -98,12 +99,49 @@ void CTcpTransport::sendPackageImplementation(const QByteArray &payload)
         package.append(reinterpret_cast<const char *>(&length), 3);
     }
     package.append(payload);
+
+    if (m_writeAesContext && m_writeAesContext->hasKey()) {
+        package = m_writeAesContext->crypt(package);
+    }
+
     m_socket->write(package);
 }
 
 void CTcpTransport::setSessionType(CTcpTransport::SessionType sessionType)
 {
     m_sessionType = sessionType;
+}
+
+void CTcpTransport::setCryptoKeysSourceData(const QByteArray &source, SourceRevertion revertion)
+{
+    if (source.size() != (Crypto::AesCtrContext::KeySize + Crypto::AesCtrContext::IvecSize)) {
+        qCWarning(c_loggingTcpTransport) << Q_FUNC_INFO << "Invalid input data (size mismatch)";
+        return;
+    }
+    QByteArray reversed = source;
+    std::reverse(reversed.begin(), reversed.end());
+    const auto setSourceData = [](const QByteArray &source, Crypto::AesCtrContext *&context) {
+        if (!context) {
+            context = new Crypto::AesCtrContext();
+        }
+        context->setKey(source.left(Crypto::AesCtrContext::KeySize));
+        context->setIVec(source.mid(Crypto::AesCtrContext::KeySize));
+    };
+    if (revertion == DirectIsReadReversedIsWrite) {
+        setSourceData(source, m_readAesContext);
+        setSourceData(reversed, m_writeAesContext);
+    } else { // Server, DirectIsWriteReversedIsRead
+        setSourceData(source, m_writeAesContext);
+        setSourceData(reversed, m_readAesContext);
+    }
+    const char *className = metaObject()->className();
+    if (strstr(className, "Server")) {
+        m_readAesContext->setDescription(QByteArrayLiteral("server read"));
+        m_writeAesContext->setDescription(QByteArrayLiteral("server write"));
+    } else if (strstr(className, "Client")) {
+        m_readAesContext->setDescription(QByteArrayLiteral("client read"));
+        m_writeAesContext->setDescription(QByteArrayLiteral("client write"));
+    }
 }
 
 void CTcpTransport::setState(QAbstractSocket::SocketState newState)
@@ -136,6 +174,9 @@ void CTcpTransport::onReadyRead()
     while ((m_socket->bytesAvailable() > 0) || !m_readBuffer.isEmpty()) {
         if (m_socket->bytesAvailable() > 0) {
             QByteArray allData = m_socket->readAll();
+            if (m_readAesContext) {
+                allData = m_readAesContext->crypt(allData);
+            }
             m_readBuffer.append(allData);
         }
 
