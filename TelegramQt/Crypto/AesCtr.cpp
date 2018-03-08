@@ -24,6 +24,8 @@ extern "C" {
 
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(c_categoryCryptoAesCtr, "telegram.crypto.aes-ctr", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Crypto {
@@ -36,6 +38,7 @@ AesCtrContext::AesCtrContext()
 bool AesCtrContext::setKey(const QByteArray &key)
 {
     if (key.size() != KeySize) {
+        qCCritical(c_categoryCryptoAesCtr) << "AesCtrContext::setKey(): Invalid key size!";
         return false;
     }
     m_key = key;
@@ -45,6 +48,7 @@ bool AesCtrContext::setKey(const QByteArray &key)
 bool AesCtrContext::setIVec(const QByteArray &iv)
 {
     if (iv.size() != IvecSize) {
+        qCCritical(c_categoryCryptoAesCtr) << "AesCtrContext::setKey(): Invalid ivec size!";
         return false;
     }
     m_ivec = iv;
@@ -75,12 +79,16 @@ bool AesCtrContext::crypt(const QByteArray &in, QByteArray *out)
     ecountData = m_ecount.data();
 
 #ifdef TELEGRAM_DEBUG_CRYPTO
-    qDebug().noquote() << QStringLiteral("Crypt 0x%1 (%2) bytes on ").arg(in.size(), 4, 16, QLatin1Char('0')).arg(in.size()) << m_description << "context" << this;
-    qDebug() << "Key:" << m_key.toHex() << "Ivec:" << m_ivec.toHex() << "Ecount:" << m_ecount.toHex();
+    qCDebug(c_categoryCryptoAesCtr).noquote() << QStringLiteral("Crypt 0x%1 (%2) bytes on ").arg(in.size(), 4, 16, QLatin1Char('0')).arg(in.size()) << m_description << "context" << this;
+    qCDebug(c_categoryCryptoAesCtr) << "Key:" << m_key.toHex() << "Ivec:" << m_ivec.toHex() << "Ecount:" << m_ecount.toHex();
 #endif // TELEGRAM_DEBUG_CRYPTO
     AES_KEY aes;
     AES_set_encrypt_key(reinterpret_cast<const unsigned char*>(m_key.constData()), 256, &aes);
     CRYPTO_ctr128_encrypt(reinterpret_cast<const uchar*>(in.constData()), reinterpret_cast<uchar*>(out->data()), in.size(), &aes, *ivecSsl, *ecountSsl, &m_num, (block128_f) AES_encrypt);
+#ifdef TELEGRAM_DEBUG_CRYPTO
+    qCDebug(c_categoryCryptoAesCtr) << "in:" << in.toHex();
+    qCDebug(c_categoryCryptoAesCtr) << "out:" << out->toHex();
+#endif
     return true;
 }
 
