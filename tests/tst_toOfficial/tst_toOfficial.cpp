@@ -103,7 +103,7 @@ void tst_toOfficial::initTestCase()
 
 void tst_toOfficial::testClientDhLayer()
 {
-    const auto serverConfig = Client::Settings::defaultServerConfiguration();
+    const auto serverConfig = Client::Settings::testServerConfiguration();
     QVERIFY(!serverConfig.isEmpty());
     const DcOption firstServer = serverConfig.first();
     Client::TcpTransport *transport = new Client::TcpTransport(this);
