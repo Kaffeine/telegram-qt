@@ -27,4 +27,27 @@ QDebug operator<<(QDebug d, const TLValue &v);
 template <int Size>
 QDebug operator<<(QDebug d, const TLNumber<Size> &n);
 
+namespace Telegram {
+
+namespace Debug {
+
+class Spacer
+{
+public:
+    Spacer();
+    ~Spacer();
+
+    QString innerSpaces();
+    QString outerSpaces();
+
+private:
+    static int m_spacing;
+    static const int m_step = 4;
+    bool m_hasInnerCalls = false;
+};
+
+} // Debug
+
+} // Telegram
+
 #endif // TELEGRAMDEBUG_P_HPP

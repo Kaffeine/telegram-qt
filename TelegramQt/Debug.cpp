@@ -17,6 +17,44 @@
 
 #include "Debug_p.hpp"
 
+namespace Telegram {
+
+namespace Debug {
+
+int Spacer::m_spacing = 0;
+
+Spacer::Spacer()
+{
+    m_spacing += m_step;
+}
+
+Spacer::~Spacer()
+{
+    m_spacing -= m_step;
+}
+
+QString Spacer::innerSpaces()
+{
+    if (!m_hasInnerCalls) {
+        m_hasInnerCalls = true;
+        return QLatin1Char('\n') + QString(m_spacing, QLatin1Char(' '));
+    }
+    return QString(m_spacing, QLatin1Char(' '));
+}
+
+QString Spacer::outerSpaces()
+{
+    if (m_hasInnerCalls) {
+        return QString(m_spacing - m_step, QLatin1Char(' '));
+    } else {
+        return QStringLiteral(" ");
+    }
+}
+
+} // Debug
+
+} // Telegram
+
 QDebug operator<<(QDebug d, const TLValue &v)
 {
     d << v.toString();
