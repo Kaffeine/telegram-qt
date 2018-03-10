@@ -1230,10 +1230,7 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
 
     foreach (const TLParam &param, method.params) {
         if (param.dependOnFlag()) {
-            return QString();
-        }
-        if (param.type().startsWith(QLatin1String("TLType"))) {
-            return QString();
+            continue;
         }
         result += spacing + spacing + QString("%1 %2;\n").arg(param.type()).arg(param.getAlias());
         result += spacing + spacing + QString("stream >> %1;\n").arg(param.getAlias());
