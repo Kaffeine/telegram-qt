@@ -1,7 +1,3 @@
-TEMPLATE=aux
-
-include(../options.pri)
-
 PROJECT=TelegramQt
 QDOCCONF=$${PROJECT}.qdocconf
 

@@ -56,7 +56,7 @@ equals(BUILD_QML_IMPORT, "true") {
 }
 
 equals(BUILD_QCH, "true") {
-    SUBDIRS += doc
+    include(doc/doc.pri)
 }
 
 #equals(BUILD_WIDGETS_CLIENT, "true") {
