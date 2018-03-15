@@ -6,6 +6,7 @@ url                     = https://github.com/Kaffeine/TelegramQt
 version                 = 0.2.0
 
 outputdir = html
+depends = qtcore qtnetwork
 
 headerdirs  += ../TelegramQt
 sourcedirs  += ../TelegramQt
