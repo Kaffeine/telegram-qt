@@ -1,5 +1,5 @@
 PROJECT=TelegramQt
-QDOCCONF=$${PROJECT}.qdocconf
+QDOCCONF=TelegramQt.qdocconf
 
 QDOC = $$[QT_INSTALL_BINS]/qdoc
 QHELPGENERATOR = $$[QT_INSTALL_BINS]/qhelpgenerator
