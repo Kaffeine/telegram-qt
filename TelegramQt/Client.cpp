@@ -4,6 +4,12 @@ namespace Telegram {
 
 namespace Client {
 
+/*!
+    \class Telegram::Client::Client
+    \brief The main class for Client implementation.
+    \inmodule TelegramQt
+    \ingroup Client
+*/
 Client::Client(QObject *parent) :
     QObject(parent),
     d_ptr(new ClientPrivate(this))

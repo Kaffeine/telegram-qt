@@ -21,6 +21,16 @@ namespace Telegram {
 
 namespace Client {
 
+/*!
+    \class Telegram::Client::DataStorage
+    \brief The DataStorage class provides a basic interface for session
+           data management
+    \inmodule TelegramQt
+    \ingroup Client
+
+    \sa AccountStorage
+*/
+
 DataStorage::DataStorage(QObject *parent)
     : QObject(parent)
 {
