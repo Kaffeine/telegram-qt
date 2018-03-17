@@ -13,7 +13,7 @@ DOC_ENV = QT_INSTALL_DOCS=$$shell_quote($$[QT_INSTALL_DOCS/get])
 
 qch_docs.target = $${QCHFILE}
 qch_docs.depends += FORCE
-qch_docs.commands = (env $$DOC_ENV $$QDOC $${PWD}/$${QDOCCONF} --outputdir=$${QDOC_OUTPUT} -indexdir $$DOC_INDEX_DIR) -no-link-errors && \
+qch_docs.commands = (env $$DOC_ENV $$QDOC $${PWD}/$${QDOCCONF} --outputdir=$${QDOC_OUTPUT} -indexdir $$DOC_INDEX_DIR -no-link-errors) && \
     ($${QHELPGENERATOR} $${QHELPFILE} -o $${QCHFILE})
 
 docs.depends = $${QCHFILE}
