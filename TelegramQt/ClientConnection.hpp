@@ -15,7 +15,7 @@ namespace Client {
 
 class RpcLayer;
 
-class Connection : public BaseConnection
+class Connection : public Telegram::BaseConnection
 {
     Q_OBJECT
 public:
