@@ -2801,6 +2801,8 @@ void CTelegramDispatcher::ensureMainConnectToWantedDc()
         return;
     }
 
+    m_initializationState &= ~StepHasKey;
+
     TLDcOption dcInfo = dcInfoById(m_wantedActiveDc);
 
     if (dcInfo.ipAddress.isEmpty()) {
