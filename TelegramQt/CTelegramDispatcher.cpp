@@ -2303,7 +2303,8 @@ void CTelegramDispatcher::onConnectionDcIdUpdated(quint32 connectionId, quint32 
     qDebug() << "Connection" << connection << "DC Id changed from" << connectionId << "to" << newDcId;
     if (connection == mainConnection()) {
         if (m_wantedActiveDc && (m_wantedActiveDc != mainConnection()->dcInfo().id)) {
-            qDebug() << Q_FUNC_INFO << "Wanted active dc is different from the actual main connection dc. Do we need to do anything?";
+            qDebug() << Q_FUNC_INFO << "Wanted active dc is different from the actual main connection dc. Sync.";
+            ensureMainConnectToWantedDc();
         }
     }
 }
