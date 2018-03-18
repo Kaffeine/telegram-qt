@@ -207,7 +207,7 @@ quint64 CTelegramConnection::requestPhoneCode(const QString &phoneNumber)
         qWarning() << Q_FUNC_INFO << "Unable to request phone code without a valid application data";
         return 0;
     }
-    qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber) << m_dcInfo.id;
+    qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber) << "dc" << m_dcInfo.id;
     return authSendCode(phoneNumber, 0, m_appInfo->appId(), m_appInfo->appHash(), m_appInfo->languageCode());
 }
 
@@ -4525,6 +4525,8 @@ quint64 CTelegramConnection::sendEncryptedPackage(const QByteArray &buffer, bool
 
         encryptedPackage = Utils::aesEncrypt(innerData, key).left(packageLength);
     }
+
+    qDebug() << this << "sendEncryptedPackage()" << TLValue::firstFromArray(buffer).toString() << "message id:" << messageId << "dc: " << m_dcInfo.id;
 
     QByteArray output;
     CRawStream outputStream(&output, /* write */ true);
