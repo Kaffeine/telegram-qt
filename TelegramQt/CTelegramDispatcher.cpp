@@ -241,7 +241,12 @@ void CTelegramDispatcher::deleteContacts(const QVector<quint32> &userIds)
 
 QByteArray CTelegramDispatcher::connectionSecretInfo() const
 {
-    if (!mainConnection() || mainConnection()->authKey().isEmpty()) {
+    if (!mainConnection()) {
+        qDebug() << Q_FUNC_INFO << "Session data is not available (there is not main connection).";
+        return QByteArray();
+    }
+    if (mainConnection()->authKey().isEmpty()) {
+        qDebug() << Q_FUNC_INFO << "Session data is not available (the main connection has no auth key).";
         return QByteArray();
     }
 
