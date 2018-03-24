@@ -2356,6 +2356,7 @@ void CTelegramDispatcher::onConnectionFailed(CTelegramConnection *connection)
         m_reconnectMainConnectionTimer->setInterval(500);
         connect(m_reconnectMainConnectionTimer, &QTimer::timeout, this, &CTelegramDispatcher::onMainConnectionRetryTimerTriggered);
     }
+    setConnectionState(TelegramNamespace::ConnectionStateConnecting);
     m_reconnectMainConnectionTimer->start();
     m_mainDcInfo = mainConnection()->dcInfo();
     setMainConnection(nullptr);
