@@ -334,7 +334,7 @@ bool CTelegramDispatcher::setDcConfiguration(const QVector<Telegram::DcOption> &
 
 bool CTelegramDispatcher::connectToServer()
 {
-    if (connectionState() != TelegramNamespace::ConnectionStateDisconnected) {
+    if (mainConnection() && (connectionState() != TelegramNamespace::ConnectionStateDisconnected)) {
         qWarning() << "CTelegramDispatcher::connectToServer(): Connection is already in progress.";
         return false;
     }
