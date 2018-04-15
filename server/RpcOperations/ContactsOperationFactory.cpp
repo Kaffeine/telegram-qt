@@ -89,10 +89,10 @@ bool ContactsRpcOperation::processGetStatuses(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool ContactsRpcOperation::processGetTopPeers(RpcProcessingContext &context)
+bool ContactsRpcOperation::processGetSuggested(RpcProcessingContext &context)
 {
-    setRunMethod(&ContactsRpcOperation::runGetTopPeers);
-    context.inputStream() >> m_getTopPeers;
+    setRunMethod(&ContactsRpcOperation::runGetSuggested);
+    context.inputStream() >> m_getSuggested;
     return !context.inputStream().error();
 }
 
@@ -107,20 +107,6 @@ bool ContactsRpcOperation::processImportContacts(RpcProcessingContext &context)
 {
     setRunMethod(&ContactsRpcOperation::runImportContacts);
     context.inputStream() >> m_importContacts;
-    return !context.inputStream().error();
-}
-
-bool ContactsRpcOperation::processResetSaved(RpcProcessingContext &context)
-{
-    setRunMethod(&ContactsRpcOperation::runResetSaved);
-    context.inputStream() >> m_resetSaved;
-    return !context.inputStream().error();
-}
-
-bool ContactsRpcOperation::processResetTopPeerRating(RpcProcessingContext &context)
-{
-    setRunMethod(&ContactsRpcOperation::runResetTopPeerRating);
-    context.inputStream() >> m_resetTopPeerRating;
     return !context.inputStream().error();
 }
 
@@ -196,10 +182,10 @@ void ContactsRpcOperation::runGetStatuses()
     sendRpcReply(result);
 }
 
-void ContactsRpcOperation::runGetTopPeers()
+void ContactsRpcOperation::runGetSuggested()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLContactsTopPeers result;
+    TLContactsSuggested result;
     sendRpcReply(result);
 }
 
@@ -214,20 +200,6 @@ void ContactsRpcOperation::runImportContacts()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLContactsImportedContacts result;
-    sendRpcReply(result);
-}
-
-void ContactsRpcOperation::runResetSaved()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    bool result;
-    sendRpcReply(result);
-}
-
-void ContactsRpcOperation::runResetTopPeerRating()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    bool result;
     sendRpcReply(result);
 }
 
@@ -276,16 +248,12 @@ ContactsRpcOperation::ProcessingMethod ContactsRpcOperation::getMethodForRpcFunc
         return &ContactsRpcOperation::processGetContacts;
     case TLValue::ContactsGetStatuses:
         return &ContactsRpcOperation::processGetStatuses;
-    case TLValue::ContactsGetTopPeers:
-        return &ContactsRpcOperation::processGetTopPeers;
+    case TLValue::ContactsGetSuggested:
+        return &ContactsRpcOperation::processGetSuggested;
     case TLValue::ContactsImportCard:
         return &ContactsRpcOperation::processImportCard;
     case TLValue::ContactsImportContacts:
         return &ContactsRpcOperation::processImportContacts;
-    case TLValue::ContactsResetSaved:
-        return &ContactsRpcOperation::processResetSaved;
-    case TLValue::ContactsResetTopPeerRating:
-        return &ContactsRpcOperation::processResetTopPeerRating;
     case TLValue::ContactsResolveUsername:
         return &ContactsRpcOperation::processResolveUsername;
     case TLValue::ContactsSearch:

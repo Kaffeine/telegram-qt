@@ -35,21 +35,13 @@ public:
     explicit UploadRpcOperation(RpcLayer *rpcLayer) : RpcOperation(rpcLayer) { }
 
     // Generated process methods
-    bool processGetCdnFile(RpcProcessingContext &context);
-    bool processGetCdnFileHashes(RpcProcessingContext &context);
     bool processGetFile(RpcProcessingContext &context);
-    bool processGetWebFile(RpcProcessingContext &context);
-    bool processReuploadCdnFile(RpcProcessingContext &context);
     bool processSaveBigFilePart(RpcProcessingContext &context);
     bool processSaveFilePart(RpcProcessingContext &context);
     // End of generated process methods
 
     // Generated run methods
-    void runGetCdnFile();
-    void runGetCdnFileHashes();
     void runGetFile();
-    void runGetWebFile();
-    void runReuploadCdnFile();
     void runSaveBigFilePart();
     void runSaveFilePart();
     // End of generated run methods
@@ -65,11 +57,7 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLUploadGetCdnFile m_getCdnFile;
-    TLFunctions::TLUploadGetCdnFileHashes m_getCdnFileHashes;
     TLFunctions::TLUploadGetFile m_getFile;
-    TLFunctions::TLUploadGetWebFile m_getWebFile;
-    TLFunctions::TLUploadReuploadCdnFile m_reuploadCdnFile;
     TLFunctions::TLUploadSaveBigFilePart m_saveBigFilePart;
     TLFunctions::TLUploadSaveFilePart m_saveFilePart;
     // End of generated RPC members

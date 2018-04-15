@@ -65,13 +65,6 @@ bool AuthRpcOperation::processBindTempAuthKey(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool AuthRpcOperation::processCancelCode(RpcProcessingContext &context)
-{
-    setRunMethod(&AuthRpcOperation::runCancelCode);
-    context.inputStream() >> m_cancelCode;
-    return !context.inputStream().error();
-}
-
 bool AuthRpcOperation::processCheckPassword(RpcProcessingContext &context)
 {
     setRunMethod(&AuthRpcOperation::runCheckPassword);
@@ -83,13 +76,6 @@ bool AuthRpcOperation::processCheckPhone(RpcProcessingContext &context)
 {
     setRunMethod(&AuthRpcOperation::runCheckPhone);
     context.inputStream() >> m_checkPhone;
-    return !context.inputStream().error();
-}
-
-bool AuthRpcOperation::processDropTempAuthKeys(RpcProcessingContext &context)
-{
-    setRunMethod(&AuthRpcOperation::runDropTempAuthKeys);
-    context.inputStream() >> m_dropTempAuthKeys;
     return !context.inputStream().error();
 }
 
@@ -135,17 +121,17 @@ bool AuthRpcOperation::processRequestPasswordRecovery(RpcProcessingContext &cont
     return !context.inputStream().error();
 }
 
-bool AuthRpcOperation::processResendCode(RpcProcessingContext &context)
-{
-    setRunMethod(&AuthRpcOperation::runResendCode);
-    context.inputStream() >> m_resendCode;
-    return !context.inputStream().error();
-}
-
 bool AuthRpcOperation::processResetAuthorizations(RpcProcessingContext &context)
 {
     setRunMethod(&AuthRpcOperation::runResetAuthorizations);
     context.inputStream() >> m_resetAuthorizations;
+    return !context.inputStream().error();
+}
+
+bool AuthRpcOperation::processSendCall(RpcProcessingContext &context)
+{
+    setRunMethod(&AuthRpcOperation::runSendCall);
+    context.inputStream() >> m_sendCall;
     return !context.inputStream().error();
 }
 
@@ -160,6 +146,13 @@ bool AuthRpcOperation::processSendInvites(RpcProcessingContext &context)
 {
     setRunMethod(&AuthRpcOperation::runSendInvites);
     context.inputStream() >> m_sendInvites;
+    return !context.inputStream().error();
+}
+
+bool AuthRpcOperation::processSendSms(RpcProcessingContext &context)
+{
+    setRunMethod(&AuthRpcOperation::runSendSms);
+    context.inputStream() >> m_sendSms;
     return !context.inputStream().error();
 }
 
@@ -180,13 +173,6 @@ bool AuthRpcOperation::processSignUp(RpcProcessingContext &context)
 
 // Generated run methods
 void AuthRpcOperation::runBindTempAuthKey()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    bool result;
-    sendRpcReply(result);
-}
-
-void AuthRpcOperation::runCancelCode()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     bool result;
@@ -220,13 +206,6 @@ void AuthRpcOperation::runCheckPhone()
     PhoneStatus status = api()->getPhoneStatus(m_checkPhone.phoneNumber);
     TLAuthCheckedPhone result;
     result.phoneRegistered = status.exists();
-    sendRpcReply(result);
-}
-
-void AuthRpcOperation::runDropTempAuthKeys()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    bool result;
     sendRpcReply(result);
 }
 
@@ -272,14 +251,14 @@ void AuthRpcOperation::runRequestPasswordRecovery()
     sendRpcReply(result);
 }
 
-void AuthRpcOperation::runResendCode()
+void AuthRpcOperation::runResetAuthorizations()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLAuthSentCode result;
+    bool result;
     sendRpcReply(result);
 }
 
-void AuthRpcOperation::runResetAuthorizations()
+void AuthRpcOperation::runSendCall()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     bool result;
@@ -296,26 +275,24 @@ void AuthRpcOperation::runSendCode()
         return;
     }
     TLAuthSentCode result;
-    {
-        TLAuthSentCodeType codeType;
-        // TLValue::AuthSentCodeTypeCall:
-        // TLValue::AuthSentCodeTypeFlashCall:
-        if (status.online) {
-            codeType.tlType = TLValue::AuthSentCodeTypeApp;
-        } else {
-            codeType.tlType = TLValue::AuthSentCodeTypeSms;
-        }
-        result.type = codeType;
+    if (status.online) {
+        result.tlType = TLValue::AuthSentAppCode;
+    } else {
+        result.tlType = TLValue::AuthSentCode;
     }
-
     result.phoneCodeHash = api()->sendAppCode(m_sendCode.phoneNumber);
-    if (status.dcId) {
-        result.flags |= TLAuthSentCode::PhoneRegistered;
-    }
+    result.phoneRegistered = status.dcId;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runSendInvites()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    bool result;
+    sendRpcReply(result);
+}
+
+void AuthRpcOperation::runSendSms()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     bool result;
@@ -413,14 +390,10 @@ AuthRpcOperation::ProcessingMethod AuthRpcOperation::getMethodForRpcFunction(TLV
     // Generated methodForRpcFunction cases
     case TLValue::AuthBindTempAuthKey:
         return &AuthRpcOperation::processBindTempAuthKey;
-    case TLValue::AuthCancelCode:
-        return &AuthRpcOperation::processCancelCode;
     case TLValue::AuthCheckPassword:
         return &AuthRpcOperation::processCheckPassword;
     case TLValue::AuthCheckPhone:
         return &AuthRpcOperation::processCheckPhone;
-    case TLValue::AuthDropTempAuthKeys:
-        return &AuthRpcOperation::processDropTempAuthKeys;
     case TLValue::AuthExportAuthorization:
         return &AuthRpcOperation::processExportAuthorization;
     case TLValue::AuthImportAuthorization:
@@ -433,14 +406,16 @@ AuthRpcOperation::ProcessingMethod AuthRpcOperation::getMethodForRpcFunction(TLV
         return &AuthRpcOperation::processRecoverPassword;
     case TLValue::AuthRequestPasswordRecovery:
         return &AuthRpcOperation::processRequestPasswordRecovery;
-    case TLValue::AuthResendCode:
-        return &AuthRpcOperation::processResendCode;
     case TLValue::AuthResetAuthorizations:
         return &AuthRpcOperation::processResetAuthorizations;
+    case TLValue::AuthSendCall:
+        return &AuthRpcOperation::processSendCall;
     case TLValue::AuthSendCode:
         return &AuthRpcOperation::processSendCode;
     case TLValue::AuthSendInvites:
         return &AuthRpcOperation::processSendInvites;
+    case TLValue::AuthSendSms:
+        return &AuthRpcOperation::processSendSms;
     case TLValue::AuthSignIn:
         return &AuthRpcOperation::processSignIn;
     case TLValue::AuthSignUp:

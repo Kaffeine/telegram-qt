@@ -34,17 +34,14 @@ public:
     explicit HelpRpcLayer(QObject *parent = nullptr);
 
     // Generated Telegram API declarations
-    PendingRpcOperation *getAppChangelog(const QString &prevAppVersion);
-    PendingRpcOperation *getAppUpdate();
-    PendingRpcOperation *getCdnConfig();
+    PendingRpcOperation *getAppChangelog(const QString &deviceModel, const QString &systemVersion, const QString &appVersion, const QString &langCode);
+    PendingRpcOperation *getAppUpdate(const QString &deviceModel, const QString &systemVersion, const QString &appVersion, const QString &langCode);
     PendingRpcOperation *getConfig();
-    PendingRpcOperation *getInviteText();
+    PendingRpcOperation *getInviteText(const QString &langCode);
     PendingRpcOperation *getNearestDc();
-    PendingRpcOperation *getRecentMeUrls(const QString &referer);
     PendingRpcOperation *getSupport();
-    PendingRpcOperation *getTermsOfService();
+    PendingRpcOperation *getTermsOfService(const QString &langCode);
     PendingRpcOperation *saveAppLog(const TLVector<TLInputAppEvent> &events);
-    PendingRpcOperation *setBotUpdatesStatus(quint32 pendingUpdatesCount, const QString &message);
     // End of generated Telegram API declarations
 };
 

@@ -40,16 +40,11 @@ SOURCES += \
     ClientRpcLayerExtension.cpp \
     ClientRpcAccountLayer.cpp \
     ClientRpcAuthLayer.cpp \
-    ClientRpcBotsLayer.cpp \
     ClientRpcChannelsLayer.cpp \
     ClientRpcContactsLayer.cpp \
     ClientRpcHelpLayer.cpp \
-    ClientRpcLangpackLayer.cpp \
     ClientRpcMessagesLayer.cpp \
-    ClientRpcPaymentsLayer.cpp \
-    ClientRpcPhoneLayer.cpp \
     ClientRpcPhotosLayer.cpp \
-    ClientRpcStickersLayer.cpp \
     ClientRpcUpdatesLayer.cpp \
     ClientRpcUploadLayer.cpp \
     ClientRpcUsersLayer.cpp \
@@ -101,16 +96,11 @@ HEADERS += \
     ClientRpcLayerExtension.hpp \
     ClientRpcAccountLayer.hpp \
     ClientRpcAuthLayer.hpp \
-    ClientRpcBotsLayer.hpp \
     ClientRpcChannelsLayer.hpp \
     ClientRpcContactsLayer.hpp \
     ClientRpcHelpLayer.hpp \
-    ClientRpcLangpackLayer.hpp \
     ClientRpcMessagesLayer.hpp \
-    ClientRpcPaymentsLayer.hpp \
-    ClientRpcPhoneLayer.hpp \
     ClientRpcPhotosLayer.hpp \
-    ClientRpcStickersLayer.hpp \
     ClientRpcUpdatesLayer.hpp \
     ClientRpcUploadLayer.hpp \
     ClientRpcUsersLayer.hpp \

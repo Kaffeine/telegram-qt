@@ -11,7 +11,6 @@
 #include <QDebug>
 #include <QTimer>
 
-#include "TLFunctions.hpp"
 #include "RpcError.hpp"
 
 #ifdef DEVELOPER_BUILD
@@ -174,7 +173,7 @@ PendingOperation *PendingAuthOperation::requestAuthCode()
     qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber())
              << "on dc" << m_backend->mainConnection()->dcOption().id;
 
-    PendingRpcOperation *requestCodeOperation = authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
+    PendingRpcOperation *requestCodeOperation = authLayer()->sendCode(phoneNumber(), 0, appInfo->appId(), appInfo->appHash(), appInfo->languageCode());
     connect(requestCodeOperation, &PendingRpcOperation::finished, this, &PendingAuthOperation::onRequestAuthCodeFinished);
     return requestCodeOperation;
 }

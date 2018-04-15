@@ -42,11 +42,9 @@ public:
     bool processGetBlocked(RpcProcessingContext &context);
     bool processGetContacts(RpcProcessingContext &context);
     bool processGetStatuses(RpcProcessingContext &context);
-    bool processGetTopPeers(RpcProcessingContext &context);
+    bool processGetSuggested(RpcProcessingContext &context);
     bool processImportCard(RpcProcessingContext &context);
     bool processImportContacts(RpcProcessingContext &context);
-    bool processResetSaved(RpcProcessingContext &context);
-    bool processResetTopPeerRating(RpcProcessingContext &context);
     bool processResolveUsername(RpcProcessingContext &context);
     bool processSearch(RpcProcessingContext &context);
     bool processUnblock(RpcProcessingContext &context);
@@ -60,11 +58,9 @@ public:
     void runGetBlocked();
     void runGetContacts();
     void runGetStatuses();
-    void runGetTopPeers();
+    void runGetSuggested();
     void runImportCard();
     void runImportContacts();
-    void runResetSaved();
-    void runResetTopPeerRating();
     void runResolveUsername();
     void runSearch();
     void runUnblock();
@@ -88,11 +84,9 @@ protected:
     TLFunctions::TLContactsGetBlocked m_getBlocked;
     TLFunctions::TLContactsGetContacts m_getContacts;
     TLFunctions::TLContactsGetStatuses m_getStatuses;
-    TLFunctions::TLContactsGetTopPeers m_getTopPeers;
+    TLFunctions::TLContactsGetSuggested m_getSuggested;
     TLFunctions::TLContactsImportCard m_importCard;
     TLFunctions::TLContactsImportContacts m_importContacts;
-    TLFunctions::TLContactsResetSaved m_resetSaved;
-    TLFunctions::TLContactsResetTopPeerRating m_resetTopPeerRating;
     TLFunctions::TLContactsResolveUsername m_resolveUsername;
     TLFunctions::TLContactsSearch m_search;
     TLFunctions::TLContactsUnblock m_unblock;

@@ -37,7 +37,7 @@ template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAccountPasswordInputSettings *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAccountPasswordSettings *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAccountPrivacyRules *output);
-template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAccountTmpPassword *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAccountSentChangePhoneCode *output);
 // End of generated Telegram API reply template specializations
 
 AccountRpcLayer::AccountRpcLayer(QObject *parent) :
@@ -63,16 +63,6 @@ PendingRpcOperation *AccountRpcLayer::checkUsername(const QString &username)
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AccountCheckUsername;
     outputStream << username;
-    return sendEncryptedPackage(outputStream.getData());
-}
-
-PendingRpcOperation *AccountRpcLayer::confirmPhone(const QString &phoneCodeHash, const QString &phoneCode)
-{
-    qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << phoneCodeHash << phoneCode;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
-    outputStream << TLValue::AccountConfirmPhone;
-    outputStream << phoneCodeHash;
-    outputStream << phoneCode;
     return sendEncryptedPackage(outputStream.getData());
 }
 
@@ -136,16 +126,6 @@ PendingRpcOperation *AccountRpcLayer::getPrivacy(const TLInputPrivacyKey &key)
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *AccountRpcLayer::getTmpPassword(const QByteArray &passwordHash, quint32 period)
-{
-    qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << passwordHash.toHex() << period;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
-    outputStream << TLValue::AccountGetTmpPassword;
-    outputStream << passwordHash;
-    outputStream << period;
-    return sendEncryptedPackage(outputStream.getData());
-}
-
 PendingRpcOperation *AccountRpcLayer::getWallPapers()
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO;
@@ -154,13 +134,18 @@ PendingRpcOperation *AccountRpcLayer::getWallPapers()
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *AccountRpcLayer::registerDevice(quint32 tokenType, const QString &token)
+PendingRpcOperation *AccountRpcLayer::registerDevice(quint32 tokenType, const QString &token, const QString &deviceModel, const QString &systemVersion, const QString &appVersion, bool appSandbox, const QString &langCode)
 {
-    qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << tokenType << token;
+    qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << tokenType << token << deviceModel << systemVersion << appVersion << appSandbox << langCode;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AccountRegisterDevice;
     outputStream << tokenType;
     outputStream << token;
+    outputStream << deviceModel;
+    outputStream << systemVersion;
+    outputStream << appVersion;
+    outputStream << appSandbox;
+    outputStream << langCode;
     return sendEncryptedPackage(outputStream.getData());
 }
 
@@ -191,31 +176,12 @@ PendingRpcOperation *AccountRpcLayer::resetNotifySettings()
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *AccountRpcLayer::sendChangePhoneCode(quint32 flags, const QString &phoneNumber, bool currentNumber)
+PendingRpcOperation *AccountRpcLayer::sendChangePhoneCode(const QString &phoneNumber)
 {
-    qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << flags << phoneNumber << currentNumber;
+    qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << phoneNumber;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AccountSendChangePhoneCode;
-    outputStream << flags;
-    // (flags & 1 << 0) stands for allowFlashcall "true" value
     outputStream << phoneNumber;
-    if (flags & 1 << 0) {
-        outputStream << currentNumber;
-    }
-    return sendEncryptedPackage(outputStream.getData());
-}
-
-PendingRpcOperation *AccountRpcLayer::sendConfirmPhoneCode(quint32 flags, const QString &hash, bool currentNumber)
-{
-    qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << flags << hash << currentNumber;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
-    outputStream << TLValue::AccountSendConfirmPhoneCode;
-    outputStream << flags;
-    // (flags & 1 << 0) stands for allowFlashcall "true" value
-    outputStream << hash;
-    if (flags & 1 << 0) {
-        outputStream << currentNumber;
-    }
     return sendEncryptedPackage(outputStream.getData());
 }
 
@@ -277,21 +243,13 @@ PendingRpcOperation *AccountRpcLayer::updatePasswordSettings(const QByteArray &c
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *AccountRpcLayer::updateProfile(quint32 flags, const QString &firstName, const QString &lastName, const QString &about)
+PendingRpcOperation *AccountRpcLayer::updateProfile(const QString &firstName, const QString &lastName)
 {
-    qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << flags << firstName << lastName << about;
+    qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << firstName << lastName;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AccountUpdateProfile;
-    outputStream << flags;
-    if (flags & 1 << 0) {
-        outputStream << firstName;
-    }
-    if (flags & 1 << 1) {
-        outputStream << lastName;
-    }
-    if (flags & 1 << 2) {
-        outputStream << about;
-    }
+    outputStream << firstName;
+    outputStream << lastName;
     return sendEncryptedPackage(outputStream.getData());
 }
 

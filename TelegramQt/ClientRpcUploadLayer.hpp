@@ -34,11 +34,7 @@ public:
     explicit UploadRpcLayer(QObject *parent = nullptr);
 
     // Generated Telegram API declarations
-    PendingRpcOperation *getCdnFile(const QByteArray &fileToken, quint32 offset, quint32 limit);
-    PendingRpcOperation *getCdnFileHashes(const QByteArray &fileToken, quint32 offset);
     PendingRpcOperation *getFile(const TLInputFileLocation &location, quint32 offset, quint32 limit);
-    PendingRpcOperation *getWebFile(const TLInputWebFileLocation &location, quint32 offset, quint32 limit);
-    PendingRpcOperation *reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken);
     PendingRpcOperation *saveBigFilePart(quint64 fileId, quint32 filePart, quint32 fileTotalParts, const QByteArray &bytes);
     PendingRpcOperation *saveFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
     // End of generated Telegram API declarations

@@ -62,21 +62,25 @@ PendingRpcOperation *PhotosRpcLayer::getUserPhotos(const TLInputUser &userId, qu
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *PhotosRpcLayer::updateProfilePhoto(const TLInputPhoto &id)
+PendingRpcOperation *PhotosRpcLayer::updateProfilePhoto(const TLInputPhoto &id, const TLInputPhotoCrop &crop)
 {
-    qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << id;
+    qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << id << crop;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PhotosUpdateProfilePhoto;
     outputStream << id;
+    outputStream << crop;
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *PhotosRpcLayer::uploadProfilePhoto(const TLInputFile &file)
+PendingRpcOperation *PhotosRpcLayer::uploadProfilePhoto(const TLInputFile &file, const QString &caption, const TLInputGeoPoint &geoPoint, const TLInputPhotoCrop &crop)
 {
-    qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << file;
+    qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << file << caption << geoPoint << crop;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PhotosUploadProfilePhoto;
     outputStream << file;
+    outputStream << caption;
+    outputStream << geoPoint;
+    outputStream << crop;
     return sendEncryptedPackage(outputStream.getData());
 }
 // End of generated Telegram API definitions

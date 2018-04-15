@@ -61,13 +61,6 @@ bool ChannelsRpcOperation::processDeleteChannel(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool ChannelsRpcOperation::processDeleteHistory(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runDeleteHistory);
-    context.inputStream() >> m_deleteHistory;
-    return !context.inputStream().error();
-}
-
 bool ChannelsRpcOperation::processDeleteMessages(RpcProcessingContext &context)
 {
     setRunMethod(&ChannelsRpcOperation::runDeleteMessages);
@@ -96,13 +89,6 @@ bool ChannelsRpcOperation::processEditAdmin(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool ChannelsRpcOperation::processEditBanned(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runEditBanned);
-    context.inputStream() >> m_editBanned;
-    return !context.inputStream().error();
-}
-
 bool ChannelsRpcOperation::processEditPhoto(RpcProcessingContext &context)
 {
     setRunMethod(&ChannelsRpcOperation::runEditPhoto);
@@ -124,27 +110,6 @@ bool ChannelsRpcOperation::processExportInvite(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool ChannelsRpcOperation::processExportMessageLink(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runExportMessageLink);
-    context.inputStream() >> m_exportMessageLink;
-    return !context.inputStream().error();
-}
-
-bool ChannelsRpcOperation::processGetAdminLog(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runGetAdminLog);
-    context.inputStream() >> m_getAdminLog;
-    return !context.inputStream().error();
-}
-
-bool ChannelsRpcOperation::processGetAdminedPublicChannels(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runGetAdminedPublicChannels);
-    context.inputStream() >> m_getAdminedPublicChannels;
-    return !context.inputStream().error();
-}
-
 bool ChannelsRpcOperation::processGetChannels(RpcProcessingContext &context)
 {
     setRunMethod(&ChannelsRpcOperation::runGetChannels);
@@ -152,10 +117,24 @@ bool ChannelsRpcOperation::processGetChannels(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool ChannelsRpcOperation::processGetDialogs(RpcProcessingContext &context)
+{
+    setRunMethod(&ChannelsRpcOperation::runGetDialogs);
+    context.inputStream() >> m_getDialogs;
+    return !context.inputStream().error();
+}
+
 bool ChannelsRpcOperation::processGetFullChannel(RpcProcessingContext &context)
 {
     setRunMethod(&ChannelsRpcOperation::runGetFullChannel);
     context.inputStream() >> m_getFullChannel;
+    return !context.inputStream().error();
+}
+
+bool ChannelsRpcOperation::processGetImportantHistory(RpcProcessingContext &context)
+{
+    setRunMethod(&ChannelsRpcOperation::runGetImportantHistory);
+    context.inputStream() >> m_getImportantHistory;
     return !context.inputStream().error();
 }
 
@@ -194,6 +173,13 @@ bool ChannelsRpcOperation::processJoinChannel(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool ChannelsRpcOperation::processKickFromChannel(RpcProcessingContext &context)
+{
+    setRunMethod(&ChannelsRpcOperation::runKickFromChannel);
+    context.inputStream() >> m_kickFromChannel;
+    return !context.inputStream().error();
+}
+
 bool ChannelsRpcOperation::processLeaveChannel(RpcProcessingContext &context)
 {
     setRunMethod(&ChannelsRpcOperation::runLeaveChannel);
@@ -208,13 +194,6 @@ bool ChannelsRpcOperation::processReadHistory(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool ChannelsRpcOperation::processReadMessageContents(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runReadMessageContents);
-    context.inputStream() >> m_readMessageContents;
-    return !context.inputStream().error();
-}
-
 bool ChannelsRpcOperation::processReportSpam(RpcProcessingContext &context)
 {
     setRunMethod(&ChannelsRpcOperation::runReportSpam);
@@ -222,38 +201,10 @@ bool ChannelsRpcOperation::processReportSpam(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool ChannelsRpcOperation::processSetStickers(RpcProcessingContext &context)
+bool ChannelsRpcOperation::processToggleComments(RpcProcessingContext &context)
 {
-    setRunMethod(&ChannelsRpcOperation::runSetStickers);
-    context.inputStream() >> m_setStickers;
-    return !context.inputStream().error();
-}
-
-bool ChannelsRpcOperation::processToggleInvites(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runToggleInvites);
-    context.inputStream() >> m_toggleInvites;
-    return !context.inputStream().error();
-}
-
-bool ChannelsRpcOperation::processTogglePreHistoryHidden(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runTogglePreHistoryHidden);
-    context.inputStream() >> m_togglePreHistoryHidden;
-    return !context.inputStream().error();
-}
-
-bool ChannelsRpcOperation::processToggleSignatures(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runToggleSignatures);
-    context.inputStream() >> m_toggleSignatures;
-    return !context.inputStream().error();
-}
-
-bool ChannelsRpcOperation::processUpdatePinnedMessage(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runUpdatePinnedMessage);
-    context.inputStream() >> m_updatePinnedMessage;
+    setRunMethod(&ChannelsRpcOperation::runToggleComments);
+    context.inputStream() >> m_toggleComments;
     return !context.inputStream().error();
 }
 
@@ -287,13 +238,6 @@ void ChannelsRpcOperation::runDeleteChannel()
     sendRpcReply(result);
 }
 
-void ChannelsRpcOperation::runDeleteHistory()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    bool result;
-    sendRpcReply(result);
-}
-
 void ChannelsRpcOperation::runDeleteMessages()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -322,13 +266,6 @@ void ChannelsRpcOperation::runEditAdmin()
     sendRpcReply(result);
 }
 
-void ChannelsRpcOperation::runEditBanned()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLUpdates result;
-    sendRpcReply(result);
-}
-
 void ChannelsRpcOperation::runEditPhoto()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -350,27 +287,6 @@ void ChannelsRpcOperation::runExportInvite()
     sendRpcReply(result);
 }
 
-void ChannelsRpcOperation::runExportMessageLink()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLExportedMessageLink result;
-    sendRpcReply(result);
-}
-
-void ChannelsRpcOperation::runGetAdminLog()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLChannelsAdminLogResults result;
-    sendRpcReply(result);
-}
-
-void ChannelsRpcOperation::runGetAdminedPublicChannels()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLMessagesChats result;
-    sendRpcReply(result);
-}
-
 void ChannelsRpcOperation::runGetChannels()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -378,10 +294,24 @@ void ChannelsRpcOperation::runGetChannels()
     sendRpcReply(result);
 }
 
+void ChannelsRpcOperation::runGetDialogs()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesDialogs result;
+    sendRpcReply(result);
+}
+
 void ChannelsRpcOperation::runGetFullChannel()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLMessagesChatFull result;
+    sendRpcReply(result);
+}
+
+void ChannelsRpcOperation::runGetImportantHistory()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLMessagesMessages result;
     sendRpcReply(result);
 }
 
@@ -420,6 +350,13 @@ void ChannelsRpcOperation::runJoinChannel()
     sendRpcReply(result);
 }
 
+void ChannelsRpcOperation::runKickFromChannel()
+{
+    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    TLUpdates result;
+    sendRpcReply(result);
+}
+
 void ChannelsRpcOperation::runLeaveChannel()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -434,13 +371,6 @@ void ChannelsRpcOperation::runReadHistory()
     sendRpcReply(result);
 }
 
-void ChannelsRpcOperation::runReadMessageContents()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    bool result;
-    sendRpcReply(result);
-}
-
 void ChannelsRpcOperation::runReportSpam()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -448,35 +378,7 @@ void ChannelsRpcOperation::runReportSpam()
     sendRpcReply(result);
 }
 
-void ChannelsRpcOperation::runSetStickers()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    bool result;
-    sendRpcReply(result);
-}
-
-void ChannelsRpcOperation::runToggleInvites()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLUpdates result;
-    sendRpcReply(result);
-}
-
-void ChannelsRpcOperation::runTogglePreHistoryHidden()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLUpdates result;
-    sendRpcReply(result);
-}
-
-void ChannelsRpcOperation::runToggleSignatures()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLUpdates result;
-    sendRpcReply(result);
-}
-
-void ChannelsRpcOperation::runUpdatePinnedMessage()
+void ChannelsRpcOperation::runToggleComments()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLUpdates result;
@@ -506,8 +408,6 @@ ChannelsRpcOperation::ProcessingMethod ChannelsRpcOperation::getMethodForRpcFunc
         return &ChannelsRpcOperation::processCreateChannel;
     case TLValue::ChannelsDeleteChannel:
         return &ChannelsRpcOperation::processDeleteChannel;
-    case TLValue::ChannelsDeleteHistory:
-        return &ChannelsRpcOperation::processDeleteHistory;
     case TLValue::ChannelsDeleteMessages:
         return &ChannelsRpcOperation::processDeleteMessages;
     case TLValue::ChannelsDeleteUserHistory:
@@ -516,24 +416,20 @@ ChannelsRpcOperation::ProcessingMethod ChannelsRpcOperation::getMethodForRpcFunc
         return &ChannelsRpcOperation::processEditAbout;
     case TLValue::ChannelsEditAdmin:
         return &ChannelsRpcOperation::processEditAdmin;
-    case TLValue::ChannelsEditBanned:
-        return &ChannelsRpcOperation::processEditBanned;
     case TLValue::ChannelsEditPhoto:
         return &ChannelsRpcOperation::processEditPhoto;
     case TLValue::ChannelsEditTitle:
         return &ChannelsRpcOperation::processEditTitle;
     case TLValue::ChannelsExportInvite:
         return &ChannelsRpcOperation::processExportInvite;
-    case TLValue::ChannelsExportMessageLink:
-        return &ChannelsRpcOperation::processExportMessageLink;
-    case TLValue::ChannelsGetAdminLog:
-        return &ChannelsRpcOperation::processGetAdminLog;
-    case TLValue::ChannelsGetAdminedPublicChannels:
-        return &ChannelsRpcOperation::processGetAdminedPublicChannels;
     case TLValue::ChannelsGetChannels:
         return &ChannelsRpcOperation::processGetChannels;
+    case TLValue::ChannelsGetDialogs:
+        return &ChannelsRpcOperation::processGetDialogs;
     case TLValue::ChannelsGetFullChannel:
         return &ChannelsRpcOperation::processGetFullChannel;
+    case TLValue::ChannelsGetImportantHistory:
+        return &ChannelsRpcOperation::processGetImportantHistory;
     case TLValue::ChannelsGetMessages:
         return &ChannelsRpcOperation::processGetMessages;
     case TLValue::ChannelsGetParticipant:
@@ -544,24 +440,16 @@ ChannelsRpcOperation::ProcessingMethod ChannelsRpcOperation::getMethodForRpcFunc
         return &ChannelsRpcOperation::processInviteToChannel;
     case TLValue::ChannelsJoinChannel:
         return &ChannelsRpcOperation::processJoinChannel;
+    case TLValue::ChannelsKickFromChannel:
+        return &ChannelsRpcOperation::processKickFromChannel;
     case TLValue::ChannelsLeaveChannel:
         return &ChannelsRpcOperation::processLeaveChannel;
     case TLValue::ChannelsReadHistory:
         return &ChannelsRpcOperation::processReadHistory;
-    case TLValue::ChannelsReadMessageContents:
-        return &ChannelsRpcOperation::processReadMessageContents;
     case TLValue::ChannelsReportSpam:
         return &ChannelsRpcOperation::processReportSpam;
-    case TLValue::ChannelsSetStickers:
-        return &ChannelsRpcOperation::processSetStickers;
-    case TLValue::ChannelsToggleInvites:
-        return &ChannelsRpcOperation::processToggleInvites;
-    case TLValue::ChannelsTogglePreHistoryHidden:
-        return &ChannelsRpcOperation::processTogglePreHistoryHidden;
-    case TLValue::ChannelsToggleSignatures:
-        return &ChannelsRpcOperation::processToggleSignatures;
-    case TLValue::ChannelsUpdatePinnedMessage:
-        return &ChannelsRpcOperation::processUpdatePinnedMessage;
+    case TLValue::ChannelsToggleComments:
+        return &ChannelsRpcOperation::processToggleComments;
     case TLValue::ChannelsUpdateUsername:
         return &ChannelsRpcOperation::processUpdateUsername;
     // End of generated methodForRpcFunction cases

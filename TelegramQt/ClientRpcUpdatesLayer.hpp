@@ -34,8 +34,8 @@ public:
     explicit UpdatesRpcLayer(QObject *parent = nullptr);
 
     // Generated Telegram API declarations
-    PendingRpcOperation *getChannelDifference(quint32 flags, const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit);
-    PendingRpcOperation *getDifference(quint32 flags, quint32 pts, quint32 ptsTotalLimit, quint32 date, quint32 qts);
+    PendingRpcOperation *getChannelDifference(const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit);
+    PendingRpcOperation *getDifference(quint32 pts, quint32 date, quint32 qts);
     PendingRpcOperation *getState();
     // End of generated Telegram API declarations
 };

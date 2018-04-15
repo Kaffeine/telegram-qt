@@ -54,13 +54,6 @@ bool HelpRpcOperation::processGetAppUpdate(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool HelpRpcOperation::processGetCdnConfig(RpcProcessingContext &context)
-{
-    setRunMethod(&HelpRpcOperation::runGetCdnConfig);
-    context.inputStream() >> m_getCdnConfig;
-    return !context.inputStream().error();
-}
-
 bool HelpRpcOperation::processGetConfig(RpcProcessingContext &context)
 {
     setRunMethod(&HelpRpcOperation::runGetConfig);
@@ -79,13 +72,6 @@ bool HelpRpcOperation::processGetNearestDc(RpcProcessingContext &context)
 {
     setRunMethod(&HelpRpcOperation::runGetNearestDc);
     context.inputStream() >> m_getNearestDc;
-    return !context.inputStream().error();
-}
-
-bool HelpRpcOperation::processGetRecentMeUrls(RpcProcessingContext &context)
-{
-    setRunMethod(&HelpRpcOperation::runGetRecentMeUrls);
-    context.inputStream() >> m_getRecentMeUrls;
     return !context.inputStream().error();
 }
 
@@ -109,20 +95,13 @@ bool HelpRpcOperation::processSaveAppLog(RpcProcessingContext &context)
     context.inputStream() >> m_saveAppLog;
     return !context.inputStream().error();
 }
-
-bool HelpRpcOperation::processSetBotUpdatesStatus(RpcProcessingContext &context)
-{
-    setRunMethod(&HelpRpcOperation::runSetBotUpdatesStatus);
-    context.inputStream() >> m_setBotUpdatesStatus;
-    return !context.inputStream().error();
-}
 // End of generated process methods
 
 // Generated run methods
 void HelpRpcOperation::runGetAppChangelog()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLUpdates result;
+    TLHelpAppChangelog result;
     sendRpcReply(result);
 }
 
@@ -130,13 +109,6 @@ void HelpRpcOperation::runGetAppUpdate()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
     TLHelpAppUpdate result;
-    sendRpcReply(result);
-}
-
-void HelpRpcOperation::runGetCdnConfig()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLCdnConfig result;
     sendRpcReply(result);
 }
 
@@ -161,13 +133,6 @@ void HelpRpcOperation::runGetNearestDc()
     sendRpcReply(result);
 }
 
-void HelpRpcOperation::runGetRecentMeUrls()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    TLHelpRecentMeUrls result;
-    sendRpcReply(result);
-}
-
 void HelpRpcOperation::runGetSupport()
 {
     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
@@ -188,13 +153,6 @@ void HelpRpcOperation::runSaveAppLog()
     bool result;
     sendRpcReply(result);
 }
-
-void HelpRpcOperation::runSetBotUpdatesStatus()
-{
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
-    bool result;
-    sendRpcReply(result);
-}
 // End of generated run methods
 
 void HelpRpcOperation::setRunMethod(HelpRpcOperation::RunMethod method)
@@ -210,24 +168,18 @@ HelpRpcOperation::ProcessingMethod HelpRpcOperation::getMethodForRpcFunction(TLV
         return &HelpRpcOperation::processGetAppChangelog;
     case TLValue::HelpGetAppUpdate:
         return &HelpRpcOperation::processGetAppUpdate;
-    case TLValue::HelpGetCdnConfig:
-        return &HelpRpcOperation::processGetCdnConfig;
     case TLValue::HelpGetConfig:
         return &HelpRpcOperation::processGetConfig;
     case TLValue::HelpGetInviteText:
         return &HelpRpcOperation::processGetInviteText;
     case TLValue::HelpGetNearestDc:
         return &HelpRpcOperation::processGetNearestDc;
-    case TLValue::HelpGetRecentMeUrls:
-        return &HelpRpcOperation::processGetRecentMeUrls;
     case TLValue::HelpGetSupport:
         return &HelpRpcOperation::processGetSupport;
     case TLValue::HelpGetTermsOfService:
         return &HelpRpcOperation::processGetTermsOfService;
     case TLValue::HelpSaveAppLog:
         return &HelpRpcOperation::processSaveAppLog;
-    case TLValue::HelpSetBotUpdatesStatus:
-        return &HelpRpcOperation::processSetBotUpdatesStatus;
     // End of generated methodForRpcFunction cases
     default:
         return nullptr;

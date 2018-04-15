@@ -173,6 +173,22 @@ bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) c
             file->d->m_size = s.size;
             return file->d->setFileLocation(&s.location);
         }
+    case TLValue::MessageMediaAudio:
+        inputLocation.tlType = TLValue::InputAudioFileLocation;
+        inputLocation.id = d->audio.id;
+        inputLocation.accessHash = d->audio.accessHash;
+        file->d->setInputFileLocation(&inputLocation);
+        file->d->m_size = d->audio.size;
+        file->d->m_dcId = d->audio.dcId;
+        return true;
+    case TLValue::MessageMediaVideo:
+        inputLocation.tlType = TLValue::InputVideoFileLocation;
+        inputLocation.id = d->video.id;
+        inputLocation.accessHash = d->video.accessHash;
+        file->d->setInputFileLocation(&inputLocation);
+        file->d->m_size = d->video.size;
+        file->d->m_dcId = d->video.dcId;
+        return true;
     case TLValue::MessageMediaDocument:
         inputLocation.tlType = TLValue::InputDocumentFileLocation;
         inputLocation.id = d->document.id;
@@ -203,6 +219,10 @@ quint32 Telegram::MessageMediaInfo::size() const
             return 0;
         }
         return d->photo.sizes.last().size;
+    case TLValue::MessageMediaAudio:
+        return d->audio.size;
+    case TLValue::MessageMediaVideo:
+        return d->video.size;
     case TLValue::MessageMediaDocument:
         return d->document.size;
     default:
@@ -213,6 +233,10 @@ quint32 Telegram::MessageMediaInfo::size() const
 quint32 Telegram::MessageMediaInfo::duration() const
 {
     switch (d->tlType) {
+    case TLValue::MessageMediaAudio:
+        return d->audio.duration;
+    case TLValue::MessageMediaVideo:
+        return d->video.duration;
     default:
         return 0;
     }
@@ -221,6 +245,12 @@ quint32 Telegram::MessageMediaInfo::duration() const
 bool Telegram::MessageMediaInfo::setDuration(quint32 duration)
 {
     switch (d->tlType) {
+    case TLValue::MessageMediaAudio:
+        d->audio.duration = duration;
+        return true;
+    case TLValue::MessageMediaVideo:
+        d->video.duration = duration;
+        return true;
     default:
         break;
     }
@@ -285,6 +315,8 @@ QString Telegram::MessageMediaInfo::mimeType() const
     switch (d->tlType) {
     case TLValue::MessageMediaDocument:
         return d->document.mimeType;
+    case TLValue::MessageMediaAudio:
+        return d->audio.mimeType;
     default:
         break;
     }
@@ -296,6 +328,9 @@ bool Telegram::MessageMediaInfo::setMimeType(const QString &mimeType)
     switch (d->tlType) {
     case TLValue::MessageMediaDocument:
         d->document.mimeType = mimeType;
+        return true;
+    case TLValue::MessageMediaAudio:
+        d->audio.mimeType = mimeType;
         return true;
     default:
         break;
@@ -426,8 +461,14 @@ TLInputFileLocation Telegram::RemoteFile::Private::getInputFileLocation() const
     case FileLocation:
         result.tlType = TLValue::InputFileLocation;
         break;
+    case VideoFileLocation:
+        result.tlType = TLValue::InputVideoFileLocation;
+        break;
     case EncryptedFileLocation:
         result.tlType = TLValue::InputEncryptedFileLocation;
+        break;
+    case AudioFileLocation:
+        result.tlType = TLValue::InputAudioFileLocation;
         break;
     case DocumentFileLocation:
         result.tlType = TLValue::InputDocumentFileLocation;
@@ -450,8 +491,14 @@ bool Telegram::RemoteFile::Private::setInputFileLocation(const TLInputFileLocati
     case TLValue::InputFileLocation:
         m_type = FileLocation;
         break;
+    case TLValue::InputVideoFileLocation:
+        m_type = VideoFileLocation;
+        break;
     case TLValue::InputEncryptedFileLocation:
         m_type = EncryptedFileLocation;
+        break;
+    case TLValue::InputAudioFileLocation:
+        m_type = AudioFileLocation;
         break;
     case TLValue::InputDocumentFileLocation:
         m_type = DocumentFileLocation;

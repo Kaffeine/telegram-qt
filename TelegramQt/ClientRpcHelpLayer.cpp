@@ -31,10 +31,9 @@ namespace Telegram {
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpAppChangelog *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpAppUpdate *output);
-template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpConfigSimple *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpInviteText *output);
-template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpRecentMeUrls *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpSupport *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpTermsOfService *output);
 // End of generated Telegram API reply template specializations
@@ -45,28 +44,27 @@ HelpRpcLayer::HelpRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *HelpRpcLayer::getAppChangelog(const QString &prevAppVersion)
+PendingRpcOperation *HelpRpcLayer::getAppChangelog(const QString &deviceModel, const QString &systemVersion, const QString &appVersion, const QString &langCode)
 {
-    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << prevAppVersion;
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << deviceModel << systemVersion << appVersion << langCode;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetAppChangelog;
-    outputStream << prevAppVersion;
+    outputStream << deviceModel;
+    outputStream << systemVersion;
+    outputStream << appVersion;
+    outputStream << langCode;
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *HelpRpcLayer::getAppUpdate()
+PendingRpcOperation *HelpRpcLayer::getAppUpdate(const QString &deviceModel, const QString &systemVersion, const QString &appVersion, const QString &langCode)
 {
-    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << deviceModel << systemVersion << appVersion << langCode;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetAppUpdate;
-    return sendEncryptedPackage(outputStream.getData());
-}
-
-PendingRpcOperation *HelpRpcLayer::getCdnConfig()
-{
-    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
-    outputStream << TLValue::HelpGetCdnConfig;
+    outputStream << deviceModel;
+    outputStream << systemVersion;
+    outputStream << appVersion;
+    outputStream << langCode;
     return sendEncryptedPackage(outputStream.getData());
 }
 
@@ -78,11 +76,12 @@ PendingRpcOperation *HelpRpcLayer::getConfig()
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *HelpRpcLayer::getInviteText()
+PendingRpcOperation *HelpRpcLayer::getInviteText(const QString &langCode)
 {
-    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << langCode;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetInviteText;
+    outputStream << langCode;
     return sendEncryptedPackage(outputStream.getData());
 }
 
@@ -94,15 +93,6 @@ PendingRpcOperation *HelpRpcLayer::getNearestDc()
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *HelpRpcLayer::getRecentMeUrls(const QString &referer)
-{
-    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << referer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
-    outputStream << TLValue::HelpGetRecentMeUrls;
-    outputStream << referer;
-    return sendEncryptedPackage(outputStream.getData());
-}
-
 PendingRpcOperation *HelpRpcLayer::getSupport()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
@@ -111,11 +101,12 @@ PendingRpcOperation *HelpRpcLayer::getSupport()
     return sendEncryptedPackage(outputStream.getData());
 }
 
-PendingRpcOperation *HelpRpcLayer::getTermsOfService()
+PendingRpcOperation *HelpRpcLayer::getTermsOfService(const QString &langCode)
 {
-    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << langCode;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetTermsOfService;
+    outputStream << langCode;
     return sendEncryptedPackage(outputStream.getData());
 }
 
@@ -125,16 +116,6 @@ PendingRpcOperation *HelpRpcLayer::saveAppLog(const TLVector<TLInputAppEvent> &e
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpSaveAppLog;
     outputStream << events;
-    return sendEncryptedPackage(outputStream.getData());
-}
-
-PendingRpcOperation *HelpRpcLayer::setBotUpdatesStatus(quint32 pendingUpdatesCount, const QString &message)
-{
-    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << pendingUpdatesCount << message;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
-    outputStream << TLValue::HelpSetBotUpdatesStatus;
-    outputStream << pendingUpdatesCount;
-    outputStream << message;
     return sendEncryptedPackage(outputStream.getData());
 }
 // End of generated Telegram API definitions
