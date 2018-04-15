@@ -48,6 +48,7 @@ DhLayer::DhLayer(QObject *parent) :
 
 void DhLayer::init()
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     m_authRetryId = 0;
     Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
     PendingRpcOperation *op = requestPqAuthorization();
@@ -57,6 +58,7 @@ void DhLayer::init()
 
 PendingRpcOperation *DhLayer::requestPqAuthorization()
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ReqPq;
     outputStream << m_clientNonce;
@@ -65,6 +67,7 @@ PendingRpcOperation *DhLayer::requestPqAuthorization()
 
 void DhLayer::onPqAuthorizationAnswer(PendingRpcOperation *operation)
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     if (!operation->isSucceeded()) {
         qCCritical(c_clientDhLayerCategory) << Q_FUNC_INFO << "Bad1";
         setState(State::Failed);
@@ -232,6 +235,7 @@ PendingRpcOperation *DhLayer::requestDhParameters()
 
 void DhLayer::onDhParametersAnswer(PendingRpcOperation *operation)
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     if (!operation->isSucceeded()) {
         qCCritical(c_clientDhLayerCategory) << Q_FUNC_INFO << "Bad1";
         setState(State::Failed);
@@ -390,6 +394,7 @@ PendingRpcOperation *DhLayer::requestDhGenerationResult()
 
 void DhLayer::onDhGenerationResultAnswer(PendingRpcOperation *operation)
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     if (!operation->isSucceeded()) {
         qCCritical(c_clientDhLayerCategory) << Q_FUNC_INFO << "Bad1";
         setState(State::Failed);
