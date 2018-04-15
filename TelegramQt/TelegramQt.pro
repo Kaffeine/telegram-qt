@@ -38,16 +38,6 @@ SOURCES += \
     ClientSettings.cpp \
     ClientRpcLayer.cpp \
     ClientRpcLayerExtension.cpp \
-    ClientRpcAccountLayer.cpp \
-    ClientRpcAuthLayer.cpp \
-    ClientRpcChannelsLayer.cpp \
-    ClientRpcContactsLayer.cpp \
-    ClientRpcHelpLayer.cpp \
-    ClientRpcMessagesLayer.cpp \
-    ClientRpcPhotosLayer.cpp \
-    ClientRpcUpdatesLayer.cpp \
-    ClientRpcUploadLayer.cpp \
-    ClientRpcUsersLayer.cpp \
     RpcError.cpp \
     RpcLayer.cpp \
     Connection.cpp \
@@ -94,16 +84,6 @@ HEADERS += \
     ClientSettings.hpp \
     ClientRpcLayer.hpp \
     ClientRpcLayerExtension.hpp \
-    ClientRpcAccountLayer.hpp \
-    ClientRpcAuthLayer.hpp \
-    ClientRpcChannelsLayer.hpp \
-    ClientRpcContactsLayer.hpp \
-    ClientRpcHelpLayer.hpp \
-    ClientRpcMessagesLayer.hpp \
-    ClientRpcPhotosLayer.hpp \
-    ClientRpcUpdatesLayer.hpp \
-    ClientRpcUploadLayer.hpp \
-    ClientRpcUsersLayer.hpp \
     RpcError.hpp \
     RpcLayer.hpp \
     Connection.hpp \
@@ -130,6 +110,8 @@ HEADERS += \
     TelegramNamespace_p.hpp \
     telegramqt_global.h \
     TLValues.hpp
+
+include(RpcLayers/layers.pri)
 
 SOURCES += TLTypesDebug.cpp
 HEADERS += TLTypesDebug.hpp
