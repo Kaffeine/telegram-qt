@@ -1162,6 +1162,8 @@ void CTelegramDispatcher::messageActionTimerTimeout()
 
 void CTelegramDispatcher::onMessagesHistoryReceived(const TLMessagesMessages &messages)
 {
+    onUsersReceived(messages.users);
+    onChatsReceived(messages.chats);
     foreach (const TLMessage &message, messages.messages) {
         processMessageReceived(message);
     }
