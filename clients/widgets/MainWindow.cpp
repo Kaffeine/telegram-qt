@@ -1195,16 +1195,13 @@ void MainWindow::on_contactListTable_clicked(const QModelIndex &index)
     ui->currentContact->setText(correctIndex.data().toString());
 }
 
+static const auto c_hexSecretFileNameExtension = QStringLiteral(".tgsecret");
+
 void MainWindow::on_secretSaveAs_clicked()
 {
-    static const auto secretFileNameExtension = QStringLiteral(".tgsecret");
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save secret info..."), QString(), tr("Telegram secret files (*%1)").arg(secretFileNameExtension));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save secret info..."), QString(), tr("Telegram secret files (*%1);;Binary secret file (*)").arg(c_hexSecretFileNameExtension));
     if (fileName.isEmpty()) {
         return;
-    }
-
-    if (!fileName.endsWith(secretFileNameExtension)) {
-        fileName += secretFileNameExtension;
     }
 
     QFile file(fileName);
@@ -1216,7 +1213,11 @@ void MainWindow::on_secretSaveAs_clicked()
         getConnectionSecretInfo();
     }
 
-    file.write(ui->secretInfo->toPlainText().toLatin1());
+    QByteArray data = ui->secretInfo->toPlainText().toLatin1();
+    if (!fileName.endsWith(c_hexSecretFileNameExtension)) {
+        data = QByteArray::fromHex(data);
+    }
+    file.write(data);
 }
 
 void MainWindow::on_restoreSession_clicked()
@@ -1232,7 +1233,7 @@ void MainWindow::on_restoreSession_clicked()
 
 void MainWindow::loadSecretFromBrowsedFile()
 {
-    const QString fileName = QFileDialog::getOpenFileName(this, tr("Load secret info..."), QString(), tr("Telegram secret files (*.tgsecret);;All files (*)"));
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Load secret info..."), QString(), tr("Telegram secret files (*%1);;All files (*)").arg(c_hexSecretFileNameExtension));
     if (fileName.isEmpty()) {
         return;
     }
@@ -1242,7 +1243,12 @@ void MainWindow::loadSecretFromBrowsedFile()
         return;
     }
 
-    ui->secretInfo->setPlainText(file.readAll());
+    QByteArray data = file.readAll();
+    if (!fileName.endsWith(c_hexSecretFileNameExtension)) {
+        data = data.toHex();
+    }
+
+    ui->secretInfo->setPlainText(data);
 }
 
 void MainWindow::updateGroupChatAddContactButtonText()
