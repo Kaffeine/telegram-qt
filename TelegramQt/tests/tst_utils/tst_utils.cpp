@@ -19,6 +19,7 @@
 
 #include "Utils.hpp"
 #include "TelegramNamespace.hpp"
+#include "RandomGenerator.hpp"
 
 #include <QTest>
 #include <QDebug>
@@ -39,6 +40,7 @@ private slots:
     void testRsaEncryption();
     void testRsaKey();
     void testRsaKeyIsValid();
+    void testDeterministicRandom();
 };
 
 void tst_utils::initTestCase()
@@ -139,6 +141,27 @@ void tst_utils::testRsaKeyIsValid()
     QVERIFY2(key.isValid(), "The key should be valid");
     key.modulus.clear();
     QVERIFY2(!key.isValid(), "A key without a modulus is not valid");
+}
+
+void tst_utils::testDeterministicRandom()
+{
+    DeterministicGenerator deterministic;
+    RandomGeneratorSetter generatorKeeper(&deterministic);
+
+    quint32 r1 = 0;
+    quint64 r2 = 0;
+    Utils::randomBytes(&r1);
+    Utils::randomBytes(&r2);
+    QCOMPARE(r1, 0xb7cd2516u);
+    QCOMPARE(r2, 0x7927fd99f6d9255dull);
+    QByteArray bigChunk(0x80, 0);
+    Utils::randomBytes(&bigChunk);
+    QCOMPARE(bigChunk.toHex(), QByteArrayLiteral(
+                 "f44095b6e320767f606f095eb7edab5581e9e3441adbb0d628832f7dc4574a77"
+                 "a382973ce22911b7e4df2a9d2c693826bbd125bcf8a4d4a2f2a2a789398dd504"
+                 "953abec4424f3cc56f35d17e47d8bc3a7a525f73b3d900dfca930e72955695b6"
+                 "60b692035c79002440e77dfa5e893a2b51e2820e7c43ac11da6331a96b636bb3")
+             );
 }
 
 QTEST_APPLESS_MAIN(tst_utils)
