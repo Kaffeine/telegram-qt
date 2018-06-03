@@ -45,6 +45,7 @@ SOURCES = CTelegramCore.cpp \
     CClientTcpTransport.cpp \
     TelegramNamespace.cpp \
     CTelegramConnection.cpp \
+    RandomGenerator.cpp \
     RpcProcessingContext.cpp \
     TLValues.cpp
 
@@ -81,6 +82,7 @@ HEADERS = CTelegramCore.hpp \
     crypto-aes.hpp \
     crypto-rsa.hpp \
     CTelegramConnection.hpp \
+    RandomGenerator.hpp \
     RpcProcessingContext.hpp \
     TelegramNamespace.hpp \
     TelegramNamespace_p.hpp \
