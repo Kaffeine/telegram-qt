@@ -1052,4 +1052,8 @@ Telegram::RsaKey Telegram::RsaKey::fromFile(const QString &fileName)
 void Telegram::initialize()
 {
     TelegramNamespace::registerTypes();
+    if (!RandomGenerator::instance()) {
+        static RandomGenerator defaultGenerator;
+        RandomGenerator::setInstance(&defaultGenerator);
+    }
 }
