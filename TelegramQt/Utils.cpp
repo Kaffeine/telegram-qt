@@ -20,7 +20,6 @@
 #include <openssl/aes.h>
 #include <openssl/bn.h>
 #include <openssl/pem.h>
-#include <openssl/rand.h>
 #include <openssl/rsa.h>
 #include <openssl/opensslv.h>
 
@@ -32,6 +31,7 @@
 #include <QFileInfo>
 
 #include "CRawStream.hpp"
+#include "RandomGenerator.hpp"
 
 struct SslBigNumberContext {
     SslBigNumberContext() :
@@ -135,7 +135,7 @@ namespace Telegram {
 
 int Utils::randomBytes(void *buffer, int count)
 {
-    return RAND_bytes((unsigned char *) buffer, count);
+    return RandomGenerator::instance()->generate(buffer, count);
 }
 
 // Slightly modified version of Euclidean algorithm. Once we are looking for prime numbers, we can drop parity of asked numbers.
