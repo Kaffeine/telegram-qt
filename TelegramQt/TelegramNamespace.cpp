@@ -1080,3 +1080,8 @@ Telegram::RsaKey Telegram::RsaKey::fromFile(const QString &fileName)
 {
     return Utils::loadRsaKeyFromFile(fileName);
 }
+
+void Telegram::initialize()
+{
+    TelegramNamespace::registerTypes();
+}
