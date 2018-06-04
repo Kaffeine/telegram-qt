@@ -144,6 +144,8 @@ public:
 
 namespace Telegram {
 
+void initialize();
+
 struct RsaKey {
     QByteArray modulus;
     QByteArray exponent;

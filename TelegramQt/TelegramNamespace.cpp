@@ -18,6 +18,7 @@
 #include "TelegramNamespace.hpp"
 #include "TelegramNamespace_p.hpp"
 
+#include "RandomGenerator.hpp"
 #include "TelegramUtils.hpp"
 #include "Utils.hpp"
 
@@ -1046,4 +1047,9 @@ void Telegram::RsaKey::loadFromFile(const QString &fileName)
 Telegram::RsaKey Telegram::RsaKey::fromFile(const QString &fileName)
 {
     return Utils::loadRsaKeyFromFile(fileName);
+}
+
+void Telegram::initialize()
+{
+    TelegramNamespace::registerTypes();
 }
