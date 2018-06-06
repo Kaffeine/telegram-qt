@@ -30,9 +30,6 @@ using namespace Telegram;
 class tst_utils : public QObject
 {
     Q_OBJECT
-public:
-    explicit tst_utils(QObject *parent = nullptr);
-
 private slots:
     void initTestCase();
     void cleanupTestCase();
@@ -44,13 +41,9 @@ private slots:
     void testRsaKeyIsValid();
 };
 
-tst_utils::tst_utils(QObject *parent) :
-    QObject(parent)
-{
-}
-
 void tst_utils::initTestCase()
 {
+    Telegram::initialize();
     QVERIFY(TestKeyData::initKeyFiles());
 }
 

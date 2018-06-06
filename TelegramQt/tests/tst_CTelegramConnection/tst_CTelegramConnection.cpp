@@ -29,10 +29,8 @@
 class tst_CTelegramConnection : public QObject
 {
     Q_OBJECT
-public:
-    explicit tst_CTelegramConnection(QObject *parent = nullptr);
-
 private slots:
+    void initTestCase();
     void testTimestampAlwaysGrow();
     void testNewMessageId();
     void testClientTimestampNeverOdd();
@@ -42,9 +40,9 @@ private slots:
 
 };
 
-tst_CTelegramConnection::tst_CTelegramConnection(QObject *parent) :
-    QObject(parent)
+void tst_CTelegramConnection::initTestCase()
 {
+    Telegram::initialize();
 }
 
 void tst_CTelegramConnection::testTimestampAlwaysGrow()
