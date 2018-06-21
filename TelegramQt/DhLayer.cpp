@@ -25,6 +25,19 @@
 #include <QDateTime>
 #include <QLoggingCategory>
 
+#ifdef NETWORK_LOGGING
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
+
+const int valFieldWidth = 32;
+QString formatTLValue(const TLValue &val)
+{
+    const QString text = val.toString();
+    return QString(valFieldWidth - text.length(), QLatin1Char(' ')) + text;
+}
+#endif
+
 Q_LOGGING_CATEGORY(c_baseDhLayerCategory, "telegram.base.dhlayer", QtWarningMsg)
 
 namespace Telegram {
@@ -106,6 +119,23 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
 
     qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << output.mid(0, 8).toHex() << output.mid(8).toHex();
 
+#ifdef NETWORK_LOGGING
+    {
+        CTelegramStream readBack(payload);
+        TLValue val1;
+        readBack >> val1;
+
+        QTextStream str(getLogFile());
+
+        str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz")) << QLatin1Char('|');
+        str << QLatin1String("pln|");
+        str << QString(QLatin1String("size: %1|")).arg(payload.length(), 4, 10, QLatin1Char('0'));
+        str << formatTLValue(val1) << QLatin1Char('|');
+        str << payload.toHex();
+        str << endl;
+    }
+#endif
+
     m_sendHelper->sendPackage(output);
     return messageId;
 }
@@ -113,6 +143,18 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
 bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
 {
     CRawStream inputStream(buffer);
+
+#ifdef NETWORK_LOGGING
+    {
+        QTextStream str(getLogFile());
+        str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz")) << QLatin1Char('|');
+        str << QLatin1String("pln|");
+        str << QString(QLatin1String("size: %1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
+        str << QLatin1Char('|');
+        str << buffer.toHex();
+        str << endl;
+    }
+#endif
 
     // Plain Message
     quint64 authKeyId = 0;
@@ -160,5 +202,20 @@ void BaseDhLayer::setState(BaseDhLayer::State state)
     m_state = state;
     emit stateChanged(state);
 }
+
+#ifdef NETWORK_LOGGING
+QFile *BaseDhLayer::getLogFile()
+{
+    if (!m_logFile) {
+        QDir dir;
+        dir.mkdir(QLatin1String("network"));
+
+        m_logFile = new QFile(QLatin1String("network/") + QString::number(long(this), 0x10) + QLatin1String(".log"));
+        m_logFile->open(QIODevice::WriteOnly);
+    }
+    //qDebug() << Q_FUNC_INFO << m_dcInfo.id << m_dcInfo.ipAddress << m_transport->state();
+    return  m_logFile;
+}
+#endif
 
 } // Telegram
