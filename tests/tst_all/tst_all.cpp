@@ -96,34 +96,6 @@ Telegram::Server::User *tryAddUser(Telegram::Server::LocalCluster *cluster, cons
     return u;
 }
 
-class tst_all : public QObject
-{
-    Q_OBJECT
-public:
-    explicit tst_all(QObject *parent = nullptr);
-
-private slots:
-    void initTestCase();
-    void cleanupTestCase();
-    void testClientConnection();
-
-};
-
-tst_all::tst_all(QObject *parent) :
-    QObject(parent)
-{
-}
-
-void tst_all::initTestCase()
-{
-    QVERIFY(TestKeyData::initKeyFiles());
-}
-
-void tst_all::cleanupTestCase()
-{
-    QVERIFY(TestKeyData::cleanupKeyFiles());
-}
-
 class TestServer : public Server::Server
 {
     Q_OBJECT
@@ -133,9 +105,9 @@ public:
     {
     }
 
-    QString sendAppCode(const QString &identifier) override
+    QByteArray sendAppCode(const QString &identifier) override
     {
-        const QString hash = Server::Server::sendAppCode(identifier);
+        const QByteArray hash = Server::Server::sendAppCode(identifier);
         const Telegram::Server::AuthCode c = m_sentCodeMap.value(identifier);
         emit authCodeSent(identifier, c.code);
         return hash;
@@ -145,37 +117,81 @@ signals:
     void authCodeSent(const QString &identifier, const QString &code);
 };
 
-void tst_all::testClientConnection()
-{
-    const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
-    QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
-    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
-    QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
-
+static const UserData c_userWithPassword = []() {
     UserData userData;
     userData.dcId = 1;
     userData.setName(QStringLiteral("First"), QStringLiteral("Last"));
     userData.phoneNumber = QStringLiteral("123456");
     userData.password = QByteArrayLiteral("mypassword");
     userData.setPasswordSalt(QByteArrayLiteral("mysalt"));
-    TelegramNamespace::registerTypes();
+    return userData;
+}();
 
-    Telegram::Server::DcConfiguration configuration;
-    const QVector<Telegram::DcOption> dcOptions = {
-        Telegram::DcOption(QStringLiteral("127.0.0.1"), 11441, 1),
-        Telegram::DcOption(QStringLiteral("127.0.0.2"), 11442, 2),
-        Telegram::DcOption(QStringLiteral("127.0.0.3"), 11443, 3),
-    };
-    configuration.dcOptions = dcOptions;
+static const QVector<Telegram::DcOption> c_localDcOptions = {
+    Telegram::DcOption(QStringLiteral("127.0.0.1"), 11441, 1),
+    Telegram::DcOption(QStringLiteral("127.0.0.2"), 11442, 2),
+    Telegram::DcOption(QStringLiteral("127.0.0.3"), 11443, 3),
+};
 
-    Telegram::Server::LocalCluster::ServerConstructor serverConstructor = [](QObject *parent) -> Telegram::Server::Server* {
-        return new TestServer(parent);
-    };
+static const Telegram::DcConfiguration c_localDcConfiguration = []() {
+    Telegram::DcConfiguration configuration;
+    configuration.dcOptions = c_localDcOptions;
+    return configuration;
+}();
+
+static const Telegram::Server::LocalCluster::ServerConstructor c_testServerConstructor = [](QObject *parent) -> Telegram::Server::Server* {
+    return new TestServer(parent);
+};
+
+class tst_all : public QObject
+{
+    Q_OBJECT
+public:
+    explicit tst_all(QObject *parent = nullptr);
+
+private slots:
+    void initTestCase();
+    void cleanupTestCase();
+    void testClientConnection_data();
+    void testClientConnection();
+};
+
+tst_all::tst_all(QObject *parent) :
+    QObject(parent)
+{
+}
+
+void tst_all::initTestCase()
+{
+    Telegram::initialize();
+    QVERIFY(TestKeyData::initKeyFiles());
+}
+
+void tst_all::cleanupTestCase()
+{
+    QVERIFY(TestKeyData::cleanupKeyFiles());
+}
+
+void tst_all::testClientConnection_data()
+{
+    QTest::addColumn<Telegram::Client::Settings::SessionType>("sessionType");
+    QTest::newRow("Abridged")   << Client::Settings::SessionType::Abridged;
+}
+
+void tst_all::testClientConnection()
+{
+    QFETCH(Telegram::Client::Settings::SessionType, sessionType);
+
+    const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
+    QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
+    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
+    QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
+    const UserData &userData = c_userWithPassword;
 
     Telegram::Server::LocalCluster cluster;
-    cluster.setServerContructor(serverConstructor);
+    cluster.setServerContructor(c_testServerConstructor);
     cluster.setServerPrivateRsaKey(privateKey);
-    cluster.setServerConfiguration(configuration);
+    cluster.setServerConfiguration(c_localDcConfiguration);
     QVERIFY(cluster.start());
 
     Server::User *user = tryAddUser(&cluster, userData);
@@ -188,8 +204,9 @@ void tst_all::testClientConnection()
     client.setSettings(&clientSettings);
     client.setAccountStorage(&accountStorage);
     accountStorage.setPhoneNumber(userData.phoneNumber);
-    QVERIFY(clientSettings.setServerConfiguration({dcOptions.first()}));
+    QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
+    clientSettings.setPreferedSessionType(sessionType);
 
     // --- Connect ---
     PendingOperation *connectOperation = client.connectToServer();

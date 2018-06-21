@@ -21,7 +21,7 @@ namespace Server {
 
 struct AuthCode
 {
-    QString hash;
+    QByteArray hash;
     QString code;
 };
 
@@ -56,18 +56,18 @@ public:
     quint32 dcId() const override { return m_dcOption.id; }
     PhoneStatus getPhoneStatus(const QString &identifier) override;
     PasswordInfo getPassword(const QString &identifier) override;
-    bool checkPassword(const QString &identifier, const QString &hash) override;
-    QString sendAppCode(const QString &identifier) override;
-    AuthCodeStatus getAuthCodeStatus(const QString &identifier, const QString &hash, const QString &code) override;
+    bool checkPassword(const QString &identifier, const QByteArray &hash) override;
+    QByteArray sendAppCode(const QString &identifier) override;
+    AuthCodeStatus getAuthCodeStatus(const QString &identifier, const QByteArray &hash, const QString &code) override;
     bool identifierIsValid(const QString &identifier) override;
 
     RemoteUser *getLocalOrRemoteUser(const QString &identifier);
     User *getLocalUser(const QString &identifier);
     RemoteUser *getRemoteUser(const QString &identifier);
 
-    User *getUser(const QString &identifier);
-    User *getUser(quint64 authId);
-    User *addUser(const QString &identifier);
+    User *getUser(const QString &identifier) override;
+    User *getUser(quint64 authId) override;
+    User *addUser(const QString &identifier) override;
 
     void insertUser(User *user);
 

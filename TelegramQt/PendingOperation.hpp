@@ -100,7 +100,7 @@ namespace Client {
 class AccountRpcLayer;
 class AuthRpcLayer;
 
-class PendingAuthOperation : public PendingOperation
+class PendingAuthOperation : public Telegram::PendingOperation
 {
     Q_OBJECT
 public:

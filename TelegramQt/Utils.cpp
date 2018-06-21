@@ -20,7 +20,6 @@
 #include <openssl/aes.h>
 #include <openssl/bn.h>
 #include <openssl/pem.h>
-#include <openssl/rand.h>
 #include <openssl/rsa.h>
 #include <openssl/opensslv.h>
 
@@ -32,6 +31,7 @@
 #include <QFileInfo>
 
 #include "CRawStream.hpp"
+#include "RandomGenerator.hpp"
 
 struct SslBigNumberContext {
     SslBigNumberContext() :
@@ -135,7 +135,7 @@ namespace Telegram {
 
 int Utils::randomBytes(void *buffer, int count)
 {
-    return RAND_bytes((unsigned char *) buffer, count);
+    return RandomGenerator::instance()->generate(buffer, count);
 }
 
 // Slightly modified version of Euclidean algorithm. Once we are looking for prime numbers, we can drop parity of asked numbers.
@@ -228,18 +228,18 @@ bool binArrayToBN(const QByteArray &bin, BIGNUM **n)
     return BN_bin2bn((uchar *) bin.constData(), bin.length(), *n) != 0;
 }
 
-quint64 Utils::getFingersprint(const QByteArray &data, bool lowerOrderBits)
+quint64 Utils::getFingerprints(const QByteArray &data, const BitsOrder64 order)
 {
     QByteArray shaSum = sha1(data);
 
-    if (lowerOrderBits) {
+    if (order == BitsOrder64::Lower64Bits) {
         return *((quint64 *) shaSum.mid(12).constData());
     } else {
         return *((quint64 *) shaSum.constData());
     }
 }
 
-quint64 Utils::getRsaFingersprint(const Telegram::RsaKey &key)
+quint64 Utils::getRsaFingerprints(const Telegram::RsaKey &key)
 {
     if (key.modulus.isEmpty() || key.exponent.isEmpty()) {
         return 0;
@@ -249,7 +249,7 @@ quint64 Utils::getRsaFingersprint(const Telegram::RsaKey &key)
     CRawStreamEx stream(&buffer);
     stream << key.modulus;
     stream << key.exponent;
-    return getFingersprint(buffer.data());
+    return getFingerprints(buffer.data(), Lower64Bits);
 }
 
 Telegram::RsaKey Utils::loadHardcodedKey()
@@ -293,7 +293,7 @@ Telegram::RsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
 
     result.modulus = SslBigNumber::toByteArray(n);
     result.exponent = SslBigNumber::toByteArray(e);
-    result.fingerprint = getRsaFingersprint(result);
+    result.fingerprint = getRsaFingerprints(result);
     RSA_free(key);
     return result;
 }
@@ -329,7 +329,7 @@ Telegram::RsaKey Utils::loadRsaPrivateKeyFromFile(const QString &fileName)
     result.modulus = SslBigNumber::toByteArray(n);
     result.exponent = SslBigNumber::toByteArray(e);
     result.secretExponent = SslBigNumber::toByteArray(d);
-    result.fingerprint = getRsaFingersprint(result);
+    result.fingerprint = getRsaFingerprints(result);
     RSA_free(key);
     return result;
 }
@@ -351,7 +351,7 @@ QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &m
 QByteArray Utils::aesDecrypt(const QByteArray &data, const SAesKey &key)
 {
     if (data.length() % AES_BLOCK_SIZE) {
-        qCritical() << Q_FUNC_INFO << "Data is not padded (the size %" << AES_BLOCK_SIZE << " is not zero)";
+        qCritical() << Q_FUNC_INFO << "Data is not padded (size %" << AES_BLOCK_SIZE << "!= 0)";
         return QByteArray();
     }
     QByteArray result = data;
@@ -426,6 +426,13 @@ QByteArray Utils::unpackGZip(const QByteArray &data)
     inflateEnd(&stream);
 
     return result;
+}
+
+QByteArray Utils::getRandomBytes(int count)
+{
+    QByteArray randBytes(count, Qt::Uninitialized);
+    Utils::randomBytes(&randBytes);
+    return randBytes;
 }
 
 } // Telegram

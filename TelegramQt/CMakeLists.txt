@@ -1,5 +1,6 @@
 
 set(telegram_qt_SOURCES
+    AbridgedLength.cpp
     AccountStorage.cpp
     TelegramNamespace.cpp
     Client.cpp
@@ -7,20 +8,16 @@ set(telegram_qt_SOURCES
     ClientConnection.cpp
     ClientDhLayer.cpp
     ClientRpcLayer.cpp
+    ClientRpcLayerExtension.cpp
     ClientSettings.cpp
     Connection.cpp
     CAppInformation.cpp
-    CTelegramCore.cpp
-    CTelegramDispatcher.cpp
-    CTelegramModule.cpp
-    CTelegramAuthModule.cpp
-    CTelegramMediaModule.cpp
-    CTelegramTransportModule.cpp
-    CTelegramConnection.cpp
     CTelegramTransport.cpp
+    DataStorage.cpp
     LegacySecretReader.cpp
     RpcError.cpp
     RpcLayer.cpp
+    RandomGenerator.cpp
     RpcProcessingContext.cpp
     SendPackageHelper.cpp
     CTelegramStream.cpp
@@ -35,21 +32,10 @@ set(telegram_qt_SOURCES
     PendingOperation.cpp
     TelegramUtils.cpp
     TLValues.cpp
-
-    ClientRpcLayerExtension.cpp
-    ClientRpcAccountLayer.cpp
-    ClientRpcAuthLayer.cpp
-    ClientRpcChannelsLayer.cpp
-    ClientRpcContactsLayer.cpp
-    ClientRpcHelpLayer.cpp
-    ClientRpcMessagesLayer.cpp
-    ClientRpcPhotosLayer.cpp
-    ClientRpcUpdatesLayer.cpp
-    ClientRpcUploadLayer.cpp
-    ClientRpcUsersLayer.cpp
 )
 
 set(telegram_qt_META_HEADERS
+    AbridgedLength.hpp
     AccountStorage.hpp
     Client.hpp
     Client_p.hpp
@@ -57,8 +43,10 @@ set(telegram_qt_META_HEADERS
     ClientConnection.hpp
     ClientDhLayer.hpp
     ClientRpcLayer.hpp
+    ClientRpcLayerExtension.hpp
     ClientSettings.hpp
     Connection.hpp
+    DataStorage.hpp
     DhLayer.hpp
     LegacySecretReader.hpp
     RpcError.hpp
@@ -67,30 +55,17 @@ set(telegram_qt_META_HEADERS
     TelegramNamespace.hpp
     PendingOperation.hpp
     CAppInformation.hpp
-    CTelegramCore.hpp
-    CTelegramDispatcher.hpp
-    CTelegramModule.hpp
-    CTelegramAuthModule.hpp
-    CTelegramMediaModule.hpp
-    CTelegramTransportModule.hpp
-    CTelegramConnection.hpp
     CTelegramTransport.hpp
     CTcpTransport.hpp
     CClientTcpTransport.hpp
     TLValues.hpp
-
-    ClientRpcLayerExtension.hpp
-    ClientRpcAccountLayer.hpp
-    ClientRpcAuthLayer.hpp
-    ClientRpcChannelsLayer.hpp
-    ClientRpcContactsLayer.hpp
-    ClientRpcHelpLayer.hpp
-    ClientRpcMessagesLayer.hpp
-    ClientRpcPhotosLayer.hpp
-    ClientRpcUpdatesLayer.hpp
-    ClientRpcUploadLayer.hpp
-    ClientRpcUsersLayer.hpp
 )
+
+FILE(GLOB RPC_SOURCES RpcLayers/*.cpp)
+FILE(GLOB RPC_HEADERS RpcLayers/*.hpp)
+
+list(APPEND telegram_qt_SOURCES ${RPC_SOURCES})
+list(APPEND telegram_qt_META_HEADERS ${RPC_HEADERS})
 
 set(telegram_qt_HEADERS
     ${telegram_qt_META_HEADERS}
@@ -99,8 +74,10 @@ set(telegram_qt_HEADERS
     CTelegramStream.hpp
     CTelegramStream_p.hpp
     CTelegramStreamExtraOperators.hpp
+    RandomGenerator.hpp
     RpcProcessingContext.hpp
     CRawStream.hpp
+    DataStorage_p.hpp
     Debug.hpp
     Debug_p.hpp
     Utils.hpp
@@ -129,6 +106,14 @@ include_directories(
 list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp)
 list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp)
 
+list(APPEND telegram_qt_SOURCES
+    Crypto/AesCtr.cpp
+)
+
+list(APPEND telegram_qt_HEADERS
+    Crypto/AesCtr.hpp
+)
+
 if (DEVELOPER_BUILD)
     list(APPEND telegram_qt_SOURCES TLRpcDebug.cpp)
     list(APPEND telegram_qt_HEADERS TLRpcDebug.hpp)
@@ -156,7 +141,13 @@ else()
     add_library(TelegramQt${QT_VERSION_MAJOR} SHARED ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES})
 endif()
 
-target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Crypto
+)
+target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/RpcLayers
+)
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
     Qt5::Core

@@ -32,6 +32,15 @@ namespace Telegram {
 
 namespace Client {
 
+/*!
+    \class Telegram::Client::DhLayer
+    \brief The client implementation of Diffie-Hellman encryption
+    \inmodule TelegramQt
+    \ingroup Client
+
+    \sa BaseDhLayer
+*/
+
 DhLayer::DhLayer(QObject *parent) :
     BaseDhLayer(parent)
 {
@@ -39,6 +48,7 @@ DhLayer::DhLayer(QObject *parent) :
 
 void DhLayer::init()
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     m_authRetryId = 0;
     Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
     PendingRpcOperation *op = requestPqAuthorization();
@@ -48,6 +58,7 @@ void DhLayer::init()
 
 PendingRpcOperation *DhLayer::requestPqAuthorization()
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ReqPq;
     outputStream << m_clientNonce;
@@ -56,6 +67,7 @@ PendingRpcOperation *DhLayer::requestPqAuthorization()
 
 void DhLayer::onPqAuthorizationAnswer(PendingRpcOperation *operation)
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     if (!operation->isSucceeded()) {
         qCCritical(c_clientDhLayerCategory) << Q_FUNC_INFO << "Bad1";
         setState(State::Failed);
@@ -88,9 +100,11 @@ bool DhLayer::acceptPqAuthorization(const QByteArray &payload)
     inputStream >> clientNonce;
 
     if (clientNonce != m_clientNonce) {
-        qCWarning(c_clientDhLayerCategory) << "Error: Client nonce in incoming package is different from our own.";
+        qCWarning(c_clientDhLayerCategory) << "Error: The client nonce in the incoming packet"
+                                              " is different from our own.";
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
-        qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "Remote client nonce:" << clientNonce << "local:" << m_clientNonce;
+        qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "Remote client nonce:" << clientNonce
+                                         << "local:" << m_clientNonce;
 #endif
         return false;
     }
@@ -132,7 +146,8 @@ bool DhLayer::acceptPqAuthorization(const QByteArray &payload)
     TLVector<quint64> fingerprints;
     inputStream >> fingerprints;
     if (fingerprints.count() != 1) {
-        qCDebug(c_clientDhLayerCategory) << "Error: Unexpected Server RSA Fingersprints vector size:" << fingerprints.size();
+        qCDebug(c_clientDhLayerCategory) << "Error: Unexpected Server RSA Fingersprints vector size:"
+                                         << fingerprints.size();
         return false;
     }
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
@@ -148,7 +163,8 @@ bool DhLayer::acceptPqAuthorization(const QByteArray &payload)
             return true;
         }
     }
-    qCWarning(c_clientDhLayerCategory) << "Error: Server RSA fingersprints" << fingerprints << " do not match to the loaded key" << m_rsaKey.fingerprint;
+    qCWarning(c_clientDhLayerCategory) << "Error: Server RSA fingersprints" << fingerprints
+                                       << " do not match to the loaded key" << m_rsaKey.fingerprint;
     return false;
 }
 
@@ -191,8 +207,10 @@ PendingRpcOperation *DhLayer::requestDhParameters()
         Utils::randomBytes(&randomPadding);
         encryptedPackage = Utils::rsa(sha + innerData + randomPadding, m_rsaKey);
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
-        qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "Inner sha:" << QByteArrayLiteral("0x") + sha.toHex();
-        qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "Inner data:" << QByteArrayLiteral("0x") + innerData.toHex();
+        qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "Inner sha:"
+                                         << QByteArrayLiteral("0x") + sha.toHex();
+        qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "Inner data:"
+                                         << QByteArrayLiteral("0x") + innerData.toHex();
     #endif
     }
 
@@ -217,6 +235,7 @@ PendingRpcOperation *DhLayer::requestDhParameters()
 
 void DhLayer::onDhParametersAnswer(PendingRpcOperation *operation)
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     if (!operation->isSucceeded()) {
         qCCritical(c_clientDhLayerCategory) << Q_FUNC_INFO << "Bad1";
         setState(State::Failed);
@@ -289,12 +308,13 @@ bool DhLayer::processServerDHParamsOK(const QByteArray &encryptedAnswer)
     encryptedInputStream >> m_gA;
 
     if ((m_g < 2) || (m_g > 7)) {
-        qCDebug(c_clientDhLayerCategory) << "Error: Received 'g' number is out of acceptable range [2-7].";
+        qCDebug(c_clientDhLayerCategory) << "Error: Received 'g' number is out of the acceptable range [2-7].";
         return false;
     }
 
     if (m_dhPrime.length() != 2048 / 8) {
-        qCDebug(c_clientDhLayerCategory) << "Error: Received dhPrime number length is not correct." << m_dhPrime.length() << 2048 / 8;
+        qCDebug(c_clientDhLayerCategory) << "Error: Received dhPrime number length is not correct."
+                                         << m_dhPrime.length() << 2048 / 8;
         return false;
     }
 
@@ -315,7 +335,8 @@ bool DhLayer::processServerDHParamsOK(const QByteArray &encryptedAnswer)
 void DhLayer::generateDh()
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
-    // #6 Client computes random 2048-bit number b (using a sufficient amount of entropy) and sends the server a message
+    // #6 Client computes random 2048-bit number b (using a sufficient amount of entropy)
+    // and sends the server a message
     m_b.resize(256);
     Utils::randomBytes(&m_b);
 
@@ -373,6 +394,7 @@ PendingRpcOperation *DhLayer::requestDhGenerationResult()
 
 void DhLayer::onDhGenerationResultAnswer(PendingRpcOperation *operation)
 {
+    qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     if (!operation->isSucceeded()) {
         qCCritical(c_clientDhLayerCategory) << Q_FUNC_INFO << "Bad1";
         setState(State::Failed);
@@ -432,7 +454,7 @@ bool DhLayer::processServerDhAnswer(const QByteArray &payload)
         if (newAuthKey.isEmpty()) {
             m_authRetryId = 0;
         } else {
-            m_authRetryId = Utils::getFingersprint(newAuthKey, /* lower-order */ false);// 64 higher-order bits of SHA1(auth_key)
+            m_authRetryId = Utils::getFingerprints(newAuthKey, Utils::Higher64Bits);
         }
         generateDh();
         requestDhGenerationResult();

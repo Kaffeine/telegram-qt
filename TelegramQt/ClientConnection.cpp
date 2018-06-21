@@ -90,6 +90,12 @@ PendingOperation *Connection::connectToDc()
 //    setAuthState(AuthStateNone);
     m_transport->connectToHost(m_dcOption.ipAddress, m_dcOption.port);
 
+    connect(m_transport, &CTelegramTransport::errorOccurred, [op] (QAbstractSocket::SocketError error, const QString &text) {
+        op->setFinishedWithError({
+                                     { QStringLiteral("qtError"), error },
+                                     { QStringLiteral("qtErrorText"), text },
+                                 });
+    });
     connect(this, &Connection::statusChanged, [op] (Status status, StatusReason reason) {
         Q_UNUSED(reason)
 

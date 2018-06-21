@@ -15,6 +15,11 @@ void Settings::setProxy(const QNetworkProxy &proxy)
     m_proxy = proxy;
 }
 
+void Settings::setPreferedSessionType(const Settings::SessionType type)
+{
+    m_preferedSessionType = type;
+}
+
 quint32 Settings::defaultPingInterval()
 {
     return 15000u;
@@ -30,6 +35,14 @@ QVector<DcOption> Settings::defaultServerConfiguration()
             DcOption(QStringLiteral("91.108.56.165")  , 443),
     };
     return s_builtInDcs;
+}
+
+QVector<DcOption> Settings::testServerConfiguration()
+{
+    static const QVector<DcOption> s_builtInTestDcs = {
+            DcOption(QStringLiteral("149.154.167.40") , 443, 2),
+    };
+    return s_builtInTestDcs;
 }
 
 QVector<DcOption> Settings::serverConfiguration()

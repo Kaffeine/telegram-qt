@@ -10,8 +10,9 @@ namespace Telegram {
 
 namespace Server {
 
-struct Session
+class Session
 {
+public:
     Session()
     {
     }

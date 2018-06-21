@@ -25,8 +25,9 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/server
+    ${CMAKE_CURRENT_SOURCE_DIR}/data
     ${CMAKE_CURRENT_BINARY_DIR}/..
-    ${CMAKE_CURRENT_SOURCE_DIR}/..
     ${ZLIB_INCLUDE_DIR}
 )
 
@@ -42,3 +43,8 @@ foreach(test_name
     )
     add_test(NAME ${test_name} COMMAND ${test_name})
 endforeach()
+
+target_link_libraries(tst_all
+    TelegramServerQt${QT_VERSION_MAJOR}
+    test_keys_data
+)

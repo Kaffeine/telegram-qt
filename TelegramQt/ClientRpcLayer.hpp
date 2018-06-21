@@ -47,7 +47,7 @@ class UploadRpcLayer;
 class UsersRpcLayer;
 // End of generated low-level layers forward declarations
 
-class RpcLayer : public BaseRpcLayer
+class RpcLayer : public Telegram::BaseRpcLayer
 {
     Q_OBJECT
 public:

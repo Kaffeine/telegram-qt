@@ -56,9 +56,9 @@ public:
     virtual quint32 dcId() const = 0;
     virtual PhoneStatus getPhoneStatus(const QString &identifier) = 0;
     virtual PasswordInfo getPassword(const QString &identifier) = 0;
-    virtual bool checkPassword(const QString &identifier, const QString &hash) = 0;
-    virtual QString sendAppCode(const QString &identifier) = 0;
-    virtual AuthCodeStatus getAuthCodeStatus(const QString &identifier, const QString &hash, const QString &code) = 0;
+    virtual bool checkPassword(const QString &identifier, const QByteArray &hash) = 0;
+    virtual QByteArray sendAppCode(const QString &identifier) = 0;
+    virtual AuthCodeStatus getAuthCodeStatus(const QString &identifier, const QByteArray &hash, const QString &code) = 0;
     virtual bool identifierIsValid(const QString &identifier) = 0; // Argument is 'phoneNumber'
 
     virtual User *getUser(const QString &identifier) = 0;

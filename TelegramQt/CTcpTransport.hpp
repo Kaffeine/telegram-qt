@@ -22,6 +22,18 @@
 
 QT_FORWARD_DECLARE_CLASS(QTimer)
 
+class CRawStream;
+
+namespace Telegram {
+
+namespace Crypto {
+
+class AesCtrContext;
+
+} // Crypto
+
+} // Telegram
+
 // TODO: Move to Telegram namespace and rename to BaseTcpTransport
 class CTcpTransport : public CTelegramTransport
 {
@@ -30,9 +42,14 @@ public:
     enum SessionType {
         Unknown,
         Abridged, // char(0xef)
-        FullSize
+        FullSize,
+        Default = Unknown,
     };
     Q_ENUM(SessionType)
+    enum SourceRevertion {
+        DirectIsWriteReversedIsRead,
+        DirectIsReadReversedIsWrite,
+    };
 
     explicit CTcpTransport(QObject *parent = nullptr);
     ~CTcpTransport();
@@ -40,16 +57,21 @@ public:
     void connectToHost(const QString &ipAddress, quint32 port) override;
     void disconnectFromHost() override;
 
+    SessionType sessionType() const;
+
 protected slots:
     void setState(QAbstractSocket::SocketState newState) override;
     void onReadyRead();
     void onTimeout();
+
+    void onSocketErrorOccurred(QAbstractSocket::SocketError error);
 
 protected:
     void setSocket(QAbstractSocket *socket);
     void sendPackageImplementation(const QByteArray &payload) override;
 
     void setSessionType(SessionType sessionType);
+    void setCryptoKeysSourceData(const QByteArray &source, SourceRevertion revertion);
 
     quint32 m_packetNumber = 0;
     quint32 m_expectedLength = 0;
@@ -57,6 +79,9 @@ protected:
 
     QAbstractSocket *m_socket = nullptr;
     QTimer *m_timeoutTimer = nullptr;
+    QByteArray m_readBuffer;
+    Telegram::Crypto::AesCtrContext *m_readAesContext = nullptr;
+    Telegram::Crypto::AesCtrContext *m_writeAesContext = nullptr;
 };
 
 #endif // CTCPTRANSPORT_HPP

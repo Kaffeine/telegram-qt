@@ -13,12 +13,18 @@ set(TELEGRAM_QT_ABI "${TELEGRAM_QT_VERSION_MAJOR}.${TELEGRAM_QT_VERSION_MINOR}")
 option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
 # Add an option for building tests
 option(BUILD_WIDGETS_CLIENT "Build a widgets-based client" FALSE)
+
+option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)
+option(ENABLE_COVERAGE_HTML "Generate an HTML report for the code-coverage analysis result" FALSE)
+
 # Add an option for building tests
 option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
 # Add an option for building tests
 option(ENABLE_QCH_BUILD "Enable generation of Qt Help (qch) file" FALSE)
 # Add an option for building tests
 option(STATIC_BUILD "Compile static library instead of shared" FALSE)
+# Add an option for building server
+option(BUILD_SERVER "Build server" FALSE)
 # Add an option for building GeneratorNG
 option(BUILD_GENERATOR "Build protocol code generator" FALSE)
 # Add an option for dev build
@@ -40,6 +46,13 @@ include(GNUInstallDirs)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
+if (ENABLE_COVERAGE_BUILD)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+    set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+    SET(CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+    SET(CMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
+endif()
+
 # Add the source subdirectories
 add_subdirectory(TelegramQt)
 
@@ -51,6 +64,13 @@ if (ENABLE_TESTS)
     enable_testing()
     add_subdirectory(TelegramQt/tests)
     add_subdirectory(tests/data)
+    if (BUILD_SERVER)
+        add_subdirectory(tests)
+    endif()
+endif()
+
+if (BUILD_SERVER)
+    add_subdirectory(server)
 endif()
 
 if (BUILD_GENERATOR)
@@ -67,4 +87,36 @@ endif()
 
 if (BUILD_WIDGETS_CLIENT)
     add_subdirectory(clients/widgets)
+endif()
+
+if (ENABLE_COVERAGE_BUILD)
+    # Code coverage
+    find_program(LCOV_PATH lcov)
+
+    set(coverage_full_info "${CMAKE_BINARY_DIR}/coverage-full.info")
+    set(coverage_info "${CMAKE_BINARY_DIR}/coverage.info")
+
+    add_custom_command(OUTPUT ${coverage_info}
+        COMMAND ${LCOV_PATH} --directory . --capture --output-file ${coverage_full_info}
+        COMMAND ${LCOV_PATH} --remove ${coverage_full_info}
+            '*/tests/*'
+            '*/server/*'
+            '/usr/*'
+            '*/moc_*.cpp'
+            --output-file ${coverage_info}
+        COMMAND ${LCOV_PATH} --list ${coverage_info}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
+    )
+    add_custom_target(coverage DEPENDS ${coverage_info})
+
+    if (ENABLE_COVERAGE_HTML)
+        find_program(GENHTML_PATH genhtml)
+        add_custom_target(coverage_html
+            COMMAND ${GENHTML_PATH} -o coverage_report ${coverage_info}
+            DEPENDS coverage
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Generate HTML report for the coverage analysis"
+        )
+    endif()
 endif()

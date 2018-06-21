@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2018 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2018 Alexander Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
@@ -15,25 +15,22 @@
 
  */
 
-#include "SendPackageHelper.hpp"
-#include "Utils.hpp"
+#include "AbridgedLength.hpp"
 
 namespace Telegram {
 
-void BaseSendPackageHelper::setServerSalt(const quint64 salt)
+quint32 AbridgedLength::paddingForAlignment(quint32 alignment) const
 {
-    m_serverSalt = salt;
+    return paddingForAlignment(alignment, m_value + packedSize());
 }
 
-void BaseSendPackageHelper::setAuthKey(const QByteArray &authKey)
+quint32 AbridgedLength::paddingForAlignment(quint32 alignment, quint32 size)
 {
-    if (authKey.isEmpty()) {
-        m_authKey.clear();
-        m_authId = 0;
-    } else {
-        m_authKey = authKey;
-        m_authId = Utils::getFingerprints(authKey, Utils::Lower64Bits);
+    const quint32 overhungBytes = size % alignment;
+    if (Q_LIKELY(overhungBytes)) {
+        return alignment - overhungBytes;
     }
+    return 0;
 }
 
-} // Telegram namespace
+} // Telegram

@@ -280,7 +280,7 @@ void AuthRpcOperation::runSendCode()
     } else {
         result.tlType = TLValue::AuthSentCode;
     }
-    result.phoneCodeHash = api()->sendAppCode(m_sendCode.phoneNumber);
+    result.phoneCodeHash = QString::fromLatin1(api()->sendAppCode(m_sendCode.phoneNumber));
     result.phoneRegistered = status.dcId;
     sendRpcReply(result);
 }
@@ -349,7 +349,7 @@ void AuthRpcOperation::runSignUp()
 
 bool AuthRpcOperation::verifyAuthCode(const QString &phoneNumber, const QString &hash, const QString &code)
 {
-    ServerApi::AuthCodeStatus status = api()->getAuthCodeStatus(phoneNumber, hash, code);
+    ServerApi::AuthCodeStatus status = api()->getAuthCodeStatus(phoneNumber, hash.toLatin1(), code);
     if (status == ServerApi::AuthCodeStatus::CodeValid) {
         return true;
     }

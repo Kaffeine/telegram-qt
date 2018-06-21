@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2017 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2018 Alexander Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
@@ -15,34 +15,31 @@
 
  */
 
-#ifndef CCLIENTTCPTRANSPORT_HPP
-#define CCLIENTTCPTRANSPORT_HPP
+#include <QObject>
 
-#include "CTcpTransport.hpp"
+#include "DcConfiguration.hpp"
 
 namespace Telegram {
 
 namespace Client {
 
-class TcpTransport : public CTcpTransport
+class DataStoragePrivate;
+
+class DataStorage : public QObject
 {
     Q_OBJECT
 public:
-    explicit TcpTransport(QObject *parent = nullptr);
+    explicit DataStorage(QObject *parent = nullptr);
 
-    SessionType preferredSessionType() const { return m_preferedSessionType; }
-    void setPreferedSessionType(const SessionType sessionType);
-
-    void startAbridgedSession();
-    bool setProxy(const QNetworkProxy &proxy);
+    DcConfiguration serverConfiguration() const;
+    void setServerConfiguration(const DcConfiguration &configuration);
 
 protected:
-    void writeEvent() final;
-    SessionType m_preferedSessionType = Default;
+    DataStoragePrivate *d_ptr;
+    Q_DECLARE_PRIVATE(DataStorage)
+
 };
 
-} // Client
+} // Client namespace
 
-} // Telegram
-
-#endif // CCLIENTTCPTRANSPORT_HPP
+} // Telegram namespace

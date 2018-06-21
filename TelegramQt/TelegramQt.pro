@@ -29,6 +29,7 @@ DEFINES += QT_STRICT_ITERATORS
 
 SOURCES += \
     CAppInformation.cpp \
+    AbridgedLength.cpp \
     AccountStorage.cpp \
     DhLayer.cpp \
     Client.cpp \
@@ -38,6 +39,7 @@ SOURCES += \
     ClientSettings.cpp \
     ClientRpcLayer.cpp \
     ClientRpcLayerExtension.cpp \
+    DataStorage.cpp \
     RpcError.cpp \
     RpcLayer.cpp \
     Connection.cpp \
@@ -54,6 +56,7 @@ SOURCES += \
     TelegramNamespace.cpp \
     LegacySecretReader.cpp \
     PendingOperation.cpp \
+    RandomGenerator.cpp \
     RpcProcessingContext.cpp \
     SendPackageHelper.cpp \
     TLValues.cpp
@@ -72,7 +75,9 @@ PUBLIC_HEADERS += \
 
 HEADERS += \
     CAppInformation.hpp \
+    AbridgedLength.hpp \
     AccountStorage.hpp \
+    DcConfiguration.hpp \
     Debug.hpp \
     Debug_p.hpp \
     DhLayer.hpp \
@@ -84,6 +89,8 @@ HEADERS += \
     ClientSettings.hpp \
     ClientRpcLayer.hpp \
     ClientRpcLayerExtension.hpp \
+    DataStorage.hpp \
+    DataStorage_p.hpp \
     RpcError.hpp \
     RpcLayer.hpp \
     Connection.hpp \
@@ -104,6 +111,7 @@ HEADERS += \
     crypto-rsa.hpp \
     LegacySecretReader.hpp \
     PendingOperation.hpp \
+    RandomGenerator.hpp \
     RpcProcessingContext.hpp \
     SendPackageHelper.hpp \
     TelegramNamespace.hpp \
@@ -112,6 +120,7 @@ HEADERS += \
     TLValues.hpp
 
 include(RpcLayers/layers.pri)
+include(Crypto/crypto.pri)
 
 SOURCES += TLTypesDebug.cpp
 HEADERS += TLTypesDebug.hpp

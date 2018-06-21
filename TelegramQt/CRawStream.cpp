@@ -16,6 +16,7 @@
  */
 
 #include "CRawStream.hpp"
+#include "AbridgedLength.hpp"
 
 #include <QIODevice>
 #include <QBuffer>
@@ -109,14 +110,23 @@ bool CRawStream::writeBytes(const QByteArray &data)
 
 bool CRawStream::read(void *data, qint64 size)
 {
-    m_error = m_error || m_device->read((char *) data, size) != size;
+    if (size) {
+        m_error = m_error || m_device->read((char *) data, size) != size;
+    }
     return m_error;
 }
 
 bool CRawStream::write(const void *data, qint64 size)
 {
-    m_error = m_error || m_device->write((const char *) data, size) != size;
+    if (size) {
+        m_error = m_error || m_device->write((const char *) data, size) != size;
+    }
     return m_error;
+}
+
+void CRawStream::setError(bool error)
+{
+    m_error = error;
 }
 
 QByteArray CRawStream::readBytes(int count)
@@ -198,47 +208,45 @@ CRawStream &CRawStream::operator<<(const QByteArray &data)
     return *this;
 }
 
-CRawStreamEx &CRawStreamEx::operator>>(QByteArray &data)
+CRawStreamEx &CRawStreamEx::operator>>(Telegram::AbridgedLength &data)
 {
     quint32 length = 0;
     read(&length, 1);
-
-    if (length < 0xfe) {
-        data.resize(length);
-        length += 1; // Plus one byte before data
-    } else {
+    if (Q_UNLIKELY(length == 0xfe)) {
         read(&length, 3);
-        data.resize(length);
-        length += 4; // Plus four bytes before data
+    } else if (Q_UNLIKELY(length > 0xfe)) {
+        setError(true);
     }
+    data = length;
+    return *this;
+}
 
+CRawStreamEx &CRawStreamEx::operator<<(const Telegram::AbridgedLength &data)
+{
+    if (data.packedSize() == 1) {
+        quint8 l = data;
+        *this << l;
+    } else {
+        *this << quint32((data << 8) + 0xfe);
+    }
+    return *this;
+}
+
+CRawStreamEx &CRawStreamEx::operator>>(QByteArray &data)
+{
+    Telegram::AbridgedLength length;
+    *this >> length;
+    data.resize(length);
     read(data.data(), data.size());
-
-    if (length & 3) {
-        readBytes(4 - (length & 3));
-    }
-
+    readBytes(length.paddingForAlignment(4));
     return *this;
 }
 
 CRawStreamEx &CRawStreamEx::operator<<(const QByteArray &data)
 {
-    quint32 length = data.size();
-
-    if (length < 0xfe) {
-        const char lengthToWrite = length;
-        write(&lengthToWrite, 1);
-        write(data.constData(), data.size());
-        length += 1;
-    } else {
-        *this << quint32((length << 8) + 0xfe);
-        write(data.constData(), data.size());
-        length += 4;
-    }
-
-    if (length & 3) {
-        write(s_nulls, 4 - (length & 3));
-    }
-
+    Telegram::AbridgedLength length(data.size());
+    *this << length;
+    write(data.constData(), data.size());
+    write(s_nulls, length.paddingForAlignment(4));
     return *this;
 }

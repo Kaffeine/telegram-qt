@@ -4,6 +4,12 @@ namespace Telegram {
 
 namespace Client {
 
+/*!
+    \class Telegram::Client::Client
+    \brief The main class for Client implementation.
+    \inmodule TelegramQt
+    \ingroup Client
+*/
 Client::Client(QObject *parent) :
     QObject(parent),
     d_ptr(new ClientPrivate(this))
@@ -66,6 +72,18 @@ void Client::setAccountStorage(AccountStorage *storage)
 {
     Q_D(Client);
     d->m_accountStorage = storage;
+}
+
+DataStorage *Client::dataStorage() const
+{
+    Q_D(const Client);
+    return d->m_dataStorage;
+}
+
+void Client::setDataStorage(DataStorage *storage)
+{
+    Q_D(Client);
+    d->m_dataStorage = storage;
 }
 
 PendingOperation *Client::connectToServer()

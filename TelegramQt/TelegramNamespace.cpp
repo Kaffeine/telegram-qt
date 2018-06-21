@@ -18,6 +18,7 @@
 #include "TelegramNamespace.hpp"
 #include "TelegramNamespace_p.hpp"
 
+#include "RandomGenerator.hpp"
 #include "TelegramUtils.hpp"
 #include "Utils.hpp"
 
@@ -244,6 +245,7 @@ quint32 Telegram::MessageMediaInfo::duration() const
 
 bool Telegram::MessageMediaInfo::setDuration(quint32 duration)
 {
+    Q_UNUSED(duration)
     switch (d->tlType) {
     case TLValue::MessageMediaAudio:
         d->audio.duration = duration;
@@ -1109,12 +1111,12 @@ QStringList Telegram::Utils::maskPhoneNumber(const QStringList &list)
 
 void Telegram::RsaKey::updateFingersprint()
 {
-    fingerprint = Utils::getRsaFingersprint(*this);
+    fingerprint = Utils::getRsaFingerprints(*this);
 }
 
 bool Telegram::RsaKey::isValid() const
 {
-    return !modulus.isEmpty() && !exponent.isEmpty() && (fingerprint == Utils::getRsaFingersprint(*this));
+    return !modulus.isEmpty() && !exponent.isEmpty() && (fingerprint == Utils::getRsaFingerprints(*this));
 }
 
 void Telegram::RsaKey::loadFromFile(const QString &fileName)
@@ -1125,4 +1127,13 @@ void Telegram::RsaKey::loadFromFile(const QString &fileName)
 Telegram::RsaKey Telegram::RsaKey::fromFile(const QString &fileName)
 {
     return Utils::loadRsaKeyFromFile(fileName);
+}
+
+void Telegram::initialize()
+{
+    TelegramNamespace::registerTypes();
+    if (!RandomGenerator::instance()) {
+        static RandomGenerator defaultGenerator;
+        RandomGenerator::setInstance(&defaultGenerator);
+    }
 }

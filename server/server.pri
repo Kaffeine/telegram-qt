@@ -11,7 +11,6 @@ SOURCES += $$PWD/CServerTcpTransport.cpp
 SOURCES += $$PWD/RemoteServerConnection.cpp
 SOURCES += $$PWD/FunctionStreamOperators.cpp
 
-HEADERS += $$PWD/DcConfiguration.hpp
 HEADERS += $$PWD/LocalCluster.hpp
 HEADERS += $$PWD/ServerDhLayer.hpp
 HEADERS += $$PWD/ServerRpcLayer.hpp

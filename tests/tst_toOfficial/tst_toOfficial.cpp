@@ -105,6 +105,11 @@ void tst_toOfficial::testClientDhLayer()
     dhLayer->setServerRsaKey(Utils::loadHardcodedKey());
 
     connect(transport, &Client::TcpTransport::packageReceived, [dhLayer](const QByteArray &package) {
+        if (package.size() == sizeof(quint32)) {
+            qint32 errorCode = *(reinterpret_cast<const qint32 *>(package.constData()));
+            qWarning() << "Error:" << errorCode;
+            return;
+        }
         if (package.size() < 8) {
             qWarning() << "Received package is too small to process:" << package.toHex();
             return;
@@ -122,8 +127,6 @@ void tst_toOfficial::testClientDhLayer()
     transport->connectToHost(firstServer.address, firstServer.port);
     QTRY_VERIFY(transport->state() == QAbstractSocket::ConnectedState);
 
-    dhLayer->init();
-
     PendingRpcOperation *operationReqPq = dhLayer->requestPqAuthorization();
     QTRY_VERIFY(operationReqPq->isFinished());
     QVERIFY(operationReqPq->isSucceeded());
@@ -133,6 +136,8 @@ void tst_toOfficial::testClientDhLayer()
     QTRY_VERIFY(operationReqDhParams->isFinished());
     QVERIFY(operationReqDhParams->isSucceeded());
     QVERIFY(dhLayer->acceptDhAnswer(operationReqDhParams->replyData()));
+
+    dhLayer->generateDh();
 
     PendingRpcOperation *operationSetClientDHParams = dhLayer->requestDhGenerationResult();
     QTRY_VERIFY(operationSetClientDHParams->isFinished());

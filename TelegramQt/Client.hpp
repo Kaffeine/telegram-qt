@@ -209,6 +209,9 @@ public:
     AccountStorage *accountStorage() const;
     void setAccountStorage(AccountStorage *storage);
 
+    DataStorage *dataStorage() const;
+    void setDataStorage(DataStorage *storage);
+
 //    Q_INVOKABLE TelegramNamespace::ConnectionState connectionState() const;
 //    Q_INVOKABLE QString selfPhone() const;
 //    Q_INVOKABLE quint32 selfId() const;

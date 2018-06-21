@@ -54,7 +54,7 @@ CTelegramCore::CTelegramCore(QObject *parent) :
     QObject(parent),
     m_private(new Private())
 {
-    TelegramNamespace::registerTypes();
+    Telegram::initialize();
 
     m_private->m_dispatcher = new CTelegramDispatcher(this);
     m_private->m_authModule = new CTelegramAuthModule(this);

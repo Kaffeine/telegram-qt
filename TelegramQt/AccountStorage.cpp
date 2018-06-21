@@ -27,10 +27,11 @@ public:
 };
 
 /*!
-    \class AccountStorage
-    \inmodule Client
-    \brief The QThread class provides a platform-independent way to
-    manage threads.
+    \class Telegram::Client::AccountStorage
+    \brief The AccountStorage class provides a basic interface for account
+           data management
+    \inmodule TelegramQt
+    \ingroup Client
 
     When subclassing AccountStorage you need to save at least authKey and
     dcInfo. It is highly recommended to also store deltaTime and authId.

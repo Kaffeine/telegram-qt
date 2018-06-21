@@ -25,7 +25,7 @@ namespace Telegram {
 
 namespace Client {
 
-class DhLayer : public BaseDhLayer
+class DhLayer : public Telegram::BaseDhLayer
 {
     Q_OBJECT
 public:

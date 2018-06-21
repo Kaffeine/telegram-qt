@@ -4,6 +4,8 @@
 #include "RpcOperationFactory.hpp"
 #include "RpcProcessingContext.hpp"
 
+#include <QLoggingCategory>
+
 namespace Telegram {
 
 namespace Server {

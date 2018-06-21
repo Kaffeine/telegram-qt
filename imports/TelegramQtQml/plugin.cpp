@@ -327,7 +327,7 @@ public:
     void registerTypes(const char *uri) override
     {
         Q_ASSERT(QByteArray(uri) == QByteArray("TelegramQt"));
-        TelegramNamespace::registerTypes();
+        Telegram::initialize();
         qmlRegisterSingletonType<TelegramNamespace>(uri, 1, 0, "Namespace", &telegram_namespace_provider);
         qmlRegisterType<CAppInformation>(uri, 1, 0, "AppInformation");
         qmlRegisterType<AccountSecretHelper>(uri, 1, 0, "AccountSecretHelper");

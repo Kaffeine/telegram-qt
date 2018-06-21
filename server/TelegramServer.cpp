@@ -4,6 +4,10 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
+#include <QRandomGenerator>
+#endif
+
 #include "Utils.hpp"
 #include "TelegramServerUser.hpp"
 #include "TelegramServerClient.hpp"
@@ -209,7 +213,7 @@ PasswordInfo Server::getPassword(const QString &identifier)
     return result;
 }
 
-bool Server::checkPassword(const QString &identifier, const QString &hash)
+bool Server::checkPassword(const QString &identifier, const QByteArray &hash)
 {
     User *user = getUser(identifier);
     if (user && user->hasPassword()) {
@@ -219,25 +223,23 @@ bool Server::checkPassword(const QString &identifier, const QString &hash)
 
 }
 
-QString Server::sendAppCode(const QString &identifier)
+QByteArray Server::sendAppCode(const QString &identifier)
 {
     AuthCode code;
-
+    code.hash = Utils::getRandomBytes(8).toHex();
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
-    QRandomGenerator;
-#endif
-
-    QByteArray randBytes(8, Qt::Uninitialized);
-    Utils::randomBytes(&randBytes);
-    code.hash = QString::fromLatin1(randBytes.toHex());
+    // The lowest value is included and the highest one is excluded
+    const quint32 numCode = QRandomGenerator::global()->bounded(10000, 100000);
+    code.code = QString::number(numCode);
+#else
     code.code = QString::number(Utils::randomBytes<quint32>()).right(5);
-
+#endif
     qCDebug(loggingCategoryServerApi) << "sendAppCode(" << identifier << "):" << "hash:" << code.hash << "code:" << code.code;
     m_sentCodeMap.insert(identifier, code);
     return code.hash;
 }
 
-ServerApi::AuthCodeStatus Server::getAuthCodeStatus(const QString &identifier, const QString &hash, const QString &code)
+ServerApi::AuthCodeStatus Server::getAuthCodeStatus(const QString &identifier, const QByteArray &hash, const QString &code)
 {
     if (code.isEmpty()) {
         return AuthCodeStatus::CodeEmpty;
