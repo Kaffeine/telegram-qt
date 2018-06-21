@@ -163,7 +163,7 @@ tst_all::tst_all(QObject *parent) :
 
 void tst_all::initTestCase()
 {
-    TelegramNamespace::registerTypes();
+    Telegram::initialize();
     QVERIFY(TestKeyData::initKeyFiles());
 }
 

@@ -45,7 +45,7 @@ Telegram::Server::User *tryAddUser(Telegram::Server::LocalCluster *cluster,
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    TelegramNamespace::registerTypes();
+    Telegram::initialize();
 
     Telegram::DcConfiguration configuration;
     const QVector<Telegram::DcOption> dcOptions = {
