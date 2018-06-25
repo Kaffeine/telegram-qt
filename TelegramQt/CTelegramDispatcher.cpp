@@ -445,7 +445,7 @@ bool CTelegramDispatcher::setSecretInfo(const QByteArray &secret)
     quint64 serverSalt;
     inputStream >> serverSalt;
 
-    const quint64 expectedAuthId = Utils::getFingersprint(authKey);
+    const quint64 expectedAuthId = Utils::getFingerprints(authKey);
     if (authId != expectedAuthId) {
         qDebug() << Q_FUNC_INFO << "The auth key data is not valid.";
         return false;

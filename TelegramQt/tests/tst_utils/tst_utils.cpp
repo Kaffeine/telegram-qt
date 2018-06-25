@@ -82,7 +82,7 @@ void tst_utils::testRsaLoad()
 void tst_utils::testRsaFingersprint()
 {
     const Telegram::RsaKey builtInKey = Utils::loadHardcodedKey();
-    const quint64 fingerprint = Utils::getRsaFingersprint(builtInKey);
+    const quint64 fingerprint = Utils::getRsaFingerprints(builtInKey);
     QCOMPARE(fingerprint, builtInKey.fingerprint);
 }
 

@@ -1031,12 +1031,12 @@ QStringList Telegram::Utils::maskPhoneNumber(const QStringList &list)
 
 void Telegram::RsaKey::updateFingersprint()
 {
-    fingerprint = Utils::getRsaFingersprint(*this);
+    fingerprint = Utils::getRsaFingerprints(*this);
 }
 
 bool Telegram::RsaKey::isValid() const
 {
-    return !modulus.isEmpty() && !exponent.isEmpty() && (fingerprint == Utils::getRsaFingersprint(*this));
+    return !modulus.isEmpty() && !exponent.isEmpty() && (fingerprint == Utils::getRsaFingerprints(*this));
 }
 
 void Telegram::RsaKey::loadFromFile(const QString &fileName)

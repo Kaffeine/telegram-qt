@@ -147,8 +147,8 @@ void CTelegramConnection::setAuthKey(const QByteArray &newAuthKey)
         m_authKeyAuxHash = 0;
     } else {
         m_authKey = newAuthKey;
-        m_authId = Utils::getFingersprint(m_authKey);
-        m_authKeyAuxHash = Utils::getFingersprint(m_authKey, /* lower-order */ false);
+        m_authId = Utils::getFingerprints(m_authKey);
+        m_authKeyAuxHash = Utils::getFingerprints(m_authKey, /* lower-order */ false);
     }
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
     qDebug() << Q_FUNC_INFO << "key:" << newAuthKey.toHex() << "keyId:" << m_authId << "auxHash:" << m_authKeyAuxHash;
@@ -2164,7 +2164,7 @@ bool CTelegramConnection::processServerDhAnswer(const QByteArray &payload)
         if (newAuthKey.isEmpty()) {
             m_authRetryId = 0;
         } else {
-            m_authRetryId = Utils::getFingersprint(newAuthKey, /* lower-order */ false);// 64 higher-order bits of SHA1(auth_key)
+            m_authRetryId = Utils::getFingerprints(newAuthKey, /* lower-order */ false);// 64 higher-order bits of SHA1(auth_key)
         }
         generateDh();
         requestDhGenerationResult();

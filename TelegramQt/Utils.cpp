@@ -228,7 +228,7 @@ bool binArrayToBN(const QByteArray &bin, BIGNUM **n)
     return BN_bin2bn((uchar *) bin.constData(), bin.length(), *n) != 0;
 }
 
-quint64 Utils::getFingersprint(const QByteArray &data, bool lowerOrderBits)
+quint64 Utils::getFingerprints(const QByteArray &data, bool lowerOrderBits)
 {
     QByteArray shaSum = sha1(data);
 
@@ -239,7 +239,7 @@ quint64 Utils::getFingersprint(const QByteArray &data, bool lowerOrderBits)
     }
 }
 
-quint64 Utils::getRsaFingersprint(const Telegram::RsaKey &key)
+quint64 Utils::getRsaFingerprints(const Telegram::RsaKey &key)
 {
     if (key.modulus.isEmpty() || key.exponent.isEmpty()) {
         return 0;
@@ -249,7 +249,7 @@ quint64 Utils::getRsaFingersprint(const Telegram::RsaKey &key)
     CRawStreamEx stream(&buffer);
     stream << key.modulus;
     stream << key.exponent;
-    return getFingersprint(buffer.data());
+    return getFingerprints(buffer.data());
 }
 
 Telegram::RsaKey Utils::loadHardcodedKey()
@@ -293,7 +293,7 @@ Telegram::RsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
 
     result.modulus = SslBigNumber::toByteArray(n);
     result.exponent = SslBigNumber::toByteArray(e);
-    result.fingerprint = getRsaFingersprint(result);
+    result.fingerprint = getRsaFingerprints(result);
     RSA_free(key);
     return result;
 }
@@ -329,7 +329,7 @@ Telegram::RsaKey Utils::loadRsaPrivateKeyFromFile(const QString &fileName)
     result.modulus = SslBigNumber::toByteArray(n);
     result.exponent = SslBigNumber::toByteArray(e);
     result.secretExponent = SslBigNumber::toByteArray(d);
-    result.fingerprint = getRsaFingersprint(result);
+    result.fingerprint = getRsaFingerprints(result);
     RSA_free(key);
     return result;
 }
