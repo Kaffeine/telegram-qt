@@ -228,11 +228,11 @@ bool binArrayToBN(const QByteArray &bin, BIGNUM **n)
     return BN_bin2bn((uchar *) bin.constData(), bin.length(), *n) != 0;
 }
 
-quint64 Utils::getFingerprints(const QByteArray &data, bool lowerOrderBits)
+quint64 Utils::getFingerprints(const QByteArray &data, const BitsOrder64 order)
 {
     QByteArray shaSum = sha1(data);
 
-    if (lowerOrderBits) {
+    if (order == BitsOrder64::Lower64Bits) {
         return *((quint64 *) shaSum.mid(12).constData());
     } else {
         return *((quint64 *) shaSum.constData());
@@ -249,7 +249,7 @@ quint64 Utils::getRsaFingerprints(const Telegram::RsaKey &key)
     CRawStreamEx stream(&buffer);
     stream << key.modulus;
     stream << key.exponent;
-    return getFingerprints(buffer.data());
+    return getFingerprints(buffer.data(), Lower64Bits);
 }
 
 Telegram::RsaKey Utils::loadHardcodedKey()
