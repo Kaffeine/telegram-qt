@@ -11,6 +11,7 @@ set(telegram_qt_SOURCES
     CTelegramTransportModule.cpp
     CTelegramConnection.cpp
     CTelegramTransport.cpp
+    PendingOperation.cpp
     RandomGenerator.cpp
     RpcProcessingContext.cpp
     CTelegramStream.cpp
@@ -37,6 +38,7 @@ set(telegram_qt_META_HEADERS
     CTelegramTransport.hpp
     CTcpTransport.hpp
     CClientTcpTransport.hpp
+    PendingOperation.hpp
     TLValues.hpp
 )
 
@@ -47,6 +49,7 @@ set(telegram_qt_HEADERS
     TelegramNamespace_p.hpp
     CTelegramStream.hpp
     CTelegramStream_p.hpp
+    PendingOperation_p.hpp
     RandomGenerator.hpp
     RpcProcessingContext.hpp
     CRawStream.hpp
