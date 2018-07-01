@@ -24,7 +24,7 @@ public:
     quint64 newMessageId(bool isReply) override
     {
         Q_UNUSED(isReply)
-        quint64 ts = TelegramUtils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
+        quint64 ts = TelegramUtils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch() + deltaTime() * 1000);
         ts &= ~quint64(3);
         return m_connection->transport()->getNewMessageId(ts);
     }

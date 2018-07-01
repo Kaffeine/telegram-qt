@@ -30,6 +30,9 @@ public:
     virtual quint64 newMessageId(bool isReply = false) = 0;
     virtual void sendPackage(const QByteArray &package) = 0;
 
+    qint32 deltaTime() const { return m_deltaTime; }
+    void setDeltaTime(const qint32 newDt);
+
     quint64 serverSalt() const { return m_serverSalt; }
     void setServerSalt(const quint64 salt);
 
@@ -43,6 +46,7 @@ protected:
     quint64 m_authId = 0;
     quint64 m_serverSalt = 0;
     QByteArray m_authKey;
+    qint32 m_deltaTime = 0;
 };
 
 } // Telegram namespace
