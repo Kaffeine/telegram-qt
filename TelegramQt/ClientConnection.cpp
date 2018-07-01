@@ -24,7 +24,7 @@ public:
 
     quint64 newMessageId(SendMode mode) override
     {
-        quint64 ts = TelegramUtils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
+        quint64 ts = TelegramUtils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch() + deltaTime() * 1000);
         if (mode == SendMode::Client) {
             ts &= ~quint64(3);
         } else {

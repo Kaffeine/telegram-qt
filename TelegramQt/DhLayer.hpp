@@ -76,8 +76,6 @@ public:
 
     State state() { return m_state; }
 
-    qint32 deltaTime() const { return m_deltaTime; }
-
     template <typename T>
     static QByteArray intToBytes(const T value) {
         QByteArray bytes(sizeof(value), Qt::Uninitialized);
@@ -92,7 +90,6 @@ protected:
     virtual void processReceivedPacket(const QByteArray &payload) = 0;
 
     void setState(State state);
-    void setDeltaTime(const qint32 newDt);
 
     BaseSendPackageHelper *m_sendHelper = nullptr;
 
@@ -117,8 +114,6 @@ protected:
 
     quint64 m_authRetryId;
     quint64 m_serverSalt;
-
-    qint32 m_deltaTime = 0;
 
 };
 

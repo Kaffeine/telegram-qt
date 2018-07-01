@@ -324,7 +324,7 @@ bool DhLayer::processServerDHParamsOK(const QByteArray &encryptedAnswer)
 
     quint32 serverTime;
     encryptedInputStream >> serverTime;
-    setDeltaTime(qint64(serverTime) - (QDateTime::currentMSecsSinceEpoch() / 1000));
+    m_sendHelper->setDeltaTime(qint64(serverTime) - (QDateTime::currentMSecsSinceEpoch() / 1000));
     return true;
 }
 

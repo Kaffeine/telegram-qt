@@ -161,9 +161,4 @@ void BaseDhLayer::setState(BaseDhLayer::State state)
     emit stateChanged(state);
 }
 
-void BaseDhLayer::setDeltaTime(const qint32 newDt)
-{
-    m_deltaTime = newDt;
-}
-
 } // Telegram
