@@ -111,6 +111,13 @@ void DeclarativeSettings::syncSettings()
         setServerRsaKey(m_serverKey->key());
     }
     setServerConfiguration(dcs);
+    QNetworkProxy proxy;
+    if (!m_proxySettings->address().isEmpty()) {
+        proxy.setType(QNetworkProxy::Socks5Proxy);
+        proxy.setHostName(m_proxySettings->address());
+        proxy.setPort(m_proxySettings->port());
+    }
+    setProxy(proxy);
 }
 
 void DeclarativeSettings::appendServerOption(QQmlListProperty<DeclarativeServerOption> *list, DeclarativeServerOption *option)
