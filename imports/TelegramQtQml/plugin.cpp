@@ -184,7 +184,7 @@ private:
 class TelegramQmlPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.telegram.Qt.QQmlExtensionInterface")
+    Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 
 public:
     TelegramQmlPlugin(QObject *parent = nullptr) :
