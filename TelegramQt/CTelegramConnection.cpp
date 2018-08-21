@@ -53,7 +53,49 @@ QString formatTLValue(const TLValue &val)
 using namespace TelegramUtils;
 using namespace Telegram;
 
+namespace Telegram {
+
+namespace Utils {
+
+quint64 formatTimeStamp(qint64 timeInMs) { return TelegramUtils::formatTimeStamp(timeInMs); }
+
+} // Utils namespace
+
+} // Telegram namespace
+
 static const quint32 s_defaultAuthInterval = 15000; // 15 sec
+
+#ifdef DH_LAYER
+#include "ClientDhLayer.hpp"
+#include "SendPackageHelper.hpp"
+
+class SendPackageHelper : public BaseSendPackageHelper
+{
+public:
+    explicit SendPackageHelper(BaseConnection *connection) :
+        BaseSendPackageHelper()
+    {
+        m_connection = connection;
+    }
+
+    quint64 newMessageId(SendMode mode) override
+    {
+        quint64 ts = Telegram::Utils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch() + deltaTime() * 1000);
+        if (mode == SendMode::Client) {
+            ts &= ~quint64(3);
+        } else {
+            qWarning() << Q_FUNC_INFO << "Invalid mode";
+        }
+        return m_connection->transport()->getNewMessageId(ts);
+    }
+
+    void sendPackage(const QByteArray &package) override
+    {
+        return m_connection->transport()->sendPackage(package);
+    }
+};
+
+#endif
 
 CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject *parent) :
     QObject(parent),
@@ -81,6 +123,13 @@ CTelegramConnection::CTelegramConnection(const CAppInformation *appInfo, QObject
   , m_logFile(0)
   #endif
 {
+#ifdef DH_LAYER
+    m_sendHelper = new SendPackageHelper(this);
+    m_dhLayer = new Telegram::Client::DhLayer();
+    m_dhLayer->setSendPackageHelper(m_sendHelper);
+    connect(m_dhLayer, &Telegram::BaseDhLayer::stateChanged, this, &Connection::onClientDhStateChanged);
+#endif
+
     m_ackTimer->setInterval(90 * 1000);
     m_ackTimer->setSingleShot(true);
     connect(m_ackTimer, &QTimer::timeout, this, &CTelegramConnection::onTimeToAckMessages);
@@ -162,6 +211,10 @@ void CTelegramConnection::setDeltaTime(const qint32 newDt)
 
 void CTelegramConnection::initAuth()
 {
+#ifdef DH_LAYER
+    m_dhLayer->setServerRsaKey(m_rsaKey);
+    m_dhLayer->init();
+#else
     if (m_authState == AuthStateNone) {
         if (!m_rsaKey.isValid()) {
             qWarning() << "CTelegramConnection::initAuth(): RSA key is not valid!";
@@ -170,6 +223,7 @@ void CTelegramConnection::initAuth()
         Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
         requestPqAuthorization();
     }
+#endif // DH_LAYER
 }
 
 void CTelegramConnection::requestPqAuthorization()
@@ -4221,6 +4275,13 @@ void CTelegramConnection::onTransportPackageReceived(const QByteArray &input)
 {
     qDebug() << "Read" << input.length() << "bytes";
 
+#ifdef DH_LAYER
+    const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(input.constData());
+    if (*authKeyIdBytes == 0) {
+        m_dhLayer->processPlainPackage(input);
+    }
+#endif
+
     CRawStream inputStream(input);
 
     quint64 authId = 0;
@@ -4375,6 +4436,18 @@ void CTelegramConnection::onTimeToAckMessages()
 
     acknowledgeMessages(m_messagesToAck);
     m_messagesToAck.clear();
+}
+
+void CTelegramConnection::onClientDhStateChanged()
+{
+#ifdef DH_LAYER
+    if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
+        m_authId = m_sendHelper->authId();
+        m_authKey = m_sendHelper->authKey();
+        m_serverSalt = m_dhLayer->serverSalt();
+        setAuthState(AuthStateHaveAKey);
+    }
+#endif
 }
 
 bool CTelegramConnection::checkClientServerNonse(CTelegramStream &stream) const

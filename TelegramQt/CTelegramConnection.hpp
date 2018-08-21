@@ -35,6 +35,19 @@ class CTelegramStream;
 class CTelegramTransport;
 class RpcProcessingContext;
 
+#define DH_LAYER
+
+#ifdef DH_LAYER
+namespace Telegram {
+
+class BaseDhLayer;
+class BaseSendPackageHelper;
+
+} // Telegram namespace
+#endif // DH_LAYER
+
+#define NETWORK_LOGGING
+
 #ifdef NETWORK_LOGGING
 QT_FORWARD_DECLARE_CLASS(QFile)
 #endif
@@ -90,6 +103,7 @@ public:
 
     TLDcOption dcInfo() const { return m_dcInfo; }
 
+    CTelegramTransport *transport() const { return m_transport; }
     void setTransport(CTelegramTransport *newTransport);
 
 public slots:
@@ -525,6 +539,7 @@ protected slots:
     void onTransportTimeout();
     void onTimeToPing();
     void onTimeToAckMessages();
+    void onClientDhStateChanged();
 
 protected:
     bool checkClientServerNonse(CTelegramStream &stream) const;
@@ -591,6 +606,10 @@ protected:
     QFile *m_logFile;
 #endif
 
+#ifdef DH_LAYER
+    Telegram::BaseDhLayer *m_dhLayer = nullptr;
+    Telegram::BaseSendPackageHelper *m_sendHelper = nullptr;
+#endif // HD_LAYER
 };
 
 inline SAesKey CTelegramConnection::generateClientToServerAesKey(const QByteArray &messageKey) const
