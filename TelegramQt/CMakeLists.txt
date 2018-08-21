@@ -10,17 +10,20 @@ set(telegram_qt_SOURCES
     CTelegramMediaModule.cpp
     CTelegramTransportModule.cpp
     CTelegramConnection.cpp
+    ClientDhLayer.cpp
     CTelegramTransport.cpp
     PendingOperation.cpp
     PendingRpcOperation.cpp
     RandomGenerator.cpp
     RpcError.cpp
     RpcProcessingContext.cpp
+    SendPackageHelper.cpp
     CTelegramStream.cpp
     CTcpTransport.cpp
     CClientTcpTransport.cpp
     CRawStream.cpp
     Debug.cpp
+    DhLayer.cpp
     Utils.cpp
     FileRequestDescriptor.cpp
     TelegramUtils.cpp
@@ -37,12 +40,15 @@ set(telegram_qt_META_HEADERS
     CTelegramMediaModule.hpp
     CTelegramTransportModule.hpp
     CTelegramConnection.hpp
+    ClientDhLayer.hpp
     CTelegramTransport.hpp
     CTcpTransport.hpp
     CClientTcpTransport.hpp
+    DhLayer.hpp
     PendingOperation.hpp
     PendingRpcOperation.hpp
     RpcError.hpp
+    SendPackageHelper.hpp
     TLValues.hpp
 )
 
