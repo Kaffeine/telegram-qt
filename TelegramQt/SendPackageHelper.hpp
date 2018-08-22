@@ -27,6 +27,7 @@ namespace Telegram {
 class TELEGRAMQT_EXPORT BaseSendPackageHelper
 {
 public:
+    virtual ~BaseSendPackageHelper() = default;
     virtual quint64 newMessageId(bool isReply = false) = 0;
     virtual void sendPackage(const QByteArray &package) = 0;
 
