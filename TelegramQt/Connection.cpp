@@ -89,8 +89,9 @@ void BaseConnection::onTransportPackageReceived(const QByteArray &package)
 {
     qDebug() << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onTransportPackageReceived(%1 bytes)").arg(package.size());
     if (package.size() == sizeof(quint32)) {
-        quint32 errorCode = *(reinterpret_cast<const quint32 *>(package.constData()));
-        qWarning() << "Error:" << errorCode;
+        const quint32 errorCode = *(reinterpret_cast<const quint32 *>(package.constData()));
+        const qint32 signedCode = static_cast<const qint32>(errorCode);
+        qWarning() << "Error:" << errorCode << package.toHex() << signedCode;
         return;
     }
     if (package.size() < 8) {
