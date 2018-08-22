@@ -57,6 +57,7 @@ public:
     explicit tst_toOfficial(QObject *parent = nullptr);
 
 private slots:
+    void initTestCase();
     void testClientDhLayer();
 };
 
@@ -93,6 +94,11 @@ tst_toOfficial::tst_toOfficial(QObject *parent) :
     QObject(parent)
 {
     QLoggingCategory::setFilterRules(QStringLiteral("telegram.*.debug=true"));
+}
+
+void tst_toOfficial::initTestCase()
+{
+    Telegram::initialize();
 }
 
 void tst_toOfficial::testClientDhLayer()
