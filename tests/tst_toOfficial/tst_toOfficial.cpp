@@ -18,11 +18,14 @@
 #include <QObject>
 
 #include "AccountStorage.hpp"
+#include "Client.hpp"
+#include "Client_p.hpp"
 #include "ClientConnection.hpp"
 #include "ClientDhLayer.hpp"
 #include "ClientRpcLayer.hpp"
 #include "ClientSettings.hpp"
 #include "CClientTcpTransport.hpp"
+#include "DataStorage.hpp"
 #include "Utils.hpp"
 #include "SendPackageHelper.hpp"
 #include "TelegramNamespace.hpp"
@@ -59,6 +62,8 @@ public:
 private slots:
     void initTestCase();
     void testClientDhLayer();
+    void testGetConfiguration_data();
+    void testGetConfiguration();
 };
 
 class TestSendPackageHelper : public BaseSendPackageHelper
@@ -152,6 +157,49 @@ void tst_toOfficial::testClientDhLayer()
     QTRY_VERIFY(operationSetClientDHParams->isFinished());
     QVERIFY(operationSetClientDHParams->isSucceeded());
     QVERIFY(dhLayer->processServerDhAnswer(operationSetClientDHParams->replyData()));
+
+}
+
+void tst_toOfficial::testGetConfiguration_data()
+{
+    QTest::addColumn<Telegram::Client::Settings::SessionType>("sessionType");
+    QTest::newRow("Abridged")   << Client::Settings::SessionType::Abridged;
+    QTest::newRow("Obfuscated") << Client::Settings::SessionType::Obfuscated;
+}
+
+void tst_toOfficial::testGetConfiguration()
+{
+    QFETCH(Telegram::Client::Settings::SessionType, sessionType);
+
+    const auto serverConfig = Client::Settings::testServerConfiguration();
+    QVERIFY(!serverConfig.isEmpty());
+
+    const RsaKey publicKey = Utils::loadHardcodedKey();
+    QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
+
+    Client::Client client;
+
+    Client::Backend *backend = Client::ClientPrivate::get(&client);
+
+    Client::AccountStorage accountStorage;
+    Client::DataStorage dataStorage;
+    Client::Settings clientSettings;
+    client.setAppInformation(getAppInfo());
+    client.setSettings(&clientSettings);
+    client.setAccountStorage(&accountStorage);
+    client.setDataStorage(&dataStorage);
+    clientSettings.setPreferedSessionType(sessionType);
+    QVERIFY(clientSettings.setServerConfiguration(serverConfig));
+    QVERIFY(clientSettings.setServerRsaKey(publicKey));
+
+    // --- Connect ---
+    PendingOperation *connectOperation = backend->connectToServer();
+    QTRY_VERIFY(connectOperation->isFinished());
+    QVERIFY(connectOperation->isSucceeded());
+
+    PendingOperation *getConfigOperation = backend->getDcConfig();
+    QTRY_VERIFY(getConfigOperation->isFinished());
+    QVERIFY(getConfigOperation->isSucceeded());
 }
 
 QTEST_GUILESS_MAIN(tst_toOfficial)
