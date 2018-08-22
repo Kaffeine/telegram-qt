@@ -41,6 +41,14 @@ protected:
 
 };
 
+class InMemoryDataStorage : public DataStorage
+{
+    Q_OBJECT
+public:
+    explicit InMemoryDataStorage(QObject *parent = nullptr);
+
+};
+
 } // Client namespace
 
 } // Telegram namespace

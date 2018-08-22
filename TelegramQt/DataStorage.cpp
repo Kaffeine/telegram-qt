@@ -54,6 +54,11 @@ DataStorage::DataStorage(DataStoragePrivate *d, QObject *parent)
 {
 }
 
+InMemoryDataStorage::InMemoryDataStorage(QObject *parent) :
+    DataStorage(parent)
+{
+}
+
 } // Client namespace
 
 } // Telegram namespace

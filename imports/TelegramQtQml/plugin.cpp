@@ -341,6 +341,7 @@ public:
         qmlRegisterUncreatableType<Telegram::Client::AccountStorage>(uri, 1, 0, "AccountStorage", QStringLiteral("AccountStorage is an abstract type"));
         qmlRegisterType<Telegram::Client::FileAccountStorage>(uri, 1, 0, "FileAccountStorage");
         qmlRegisterUncreatableType<Telegram::Client::DataStorage>(uri, 1, 0, "DataStorage", QStringLiteral("DataStorage is an abstract type"));
+        qmlRegisterType<Telegram::Client::InMemoryDataStorage>(uri, 1, 0, "InMemoryDataStorage");
         qmlRegisterType<MessageModel>(uri, 1, 0, "MessageModel");
         qmlRegisterType<MessageSender>(uri, 1, 0, "MessageSender");
     }
