@@ -35,6 +35,7 @@ public:
     void setServerConfiguration(const DcConfiguration &configuration);
 
 protected:
+    DataStorage(DataStoragePrivate *d, QObject *parent);
     DataStoragePrivate *d_ptr;
     Q_DECLARE_PRIVATE(DataStorage)
 
