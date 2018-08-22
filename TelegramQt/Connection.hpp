@@ -64,7 +64,7 @@ protected slots:
 
 protected:
     CTelegramTransport *m_transport = nullptr;
-    BaseSendPackageHelper *m_senderHelper;
+    BaseSendPackageHelper *m_sendHelper;
     BaseDhLayer *m_dhLayer = nullptr;
     BaseRpcLayer *m_rpcLayer = nullptr;
     QByteArray m_authKey;

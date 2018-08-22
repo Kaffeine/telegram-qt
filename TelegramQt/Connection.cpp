@@ -17,17 +17,17 @@ BaseConnection::BaseConnection(QObject *parent) :
 
 quint64 BaseConnection::authId() const
 {
-    return m_senderHelper->authId();
+    return m_sendHelper->authId();
 }
 
 QByteArray BaseConnection::authKey() const
 {
-    return m_senderHelper->authKey();
+    return m_sendHelper->authKey();
 }
 
 void BaseConnection::setAuthKey(const QByteArray &authKey)
 {
-    m_senderHelper->setAuthKey(authKey);
+    m_sendHelper->setAuthKey(authKey);
 }
 
 void BaseConnection::setServerRsaKey(const RsaKey &key)

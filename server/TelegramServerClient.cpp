@@ -51,11 +51,11 @@ protected:
 RemoteClientConnection::RemoteClientConnection(QObject *parent) :
     BaseConnection(parent)
 {
-    m_senderHelper = new SendPackageHelper(this);
+    m_sendHelper = new SendPackageHelper(this);
     m_dhLayer = new DhLayer(this);
-    m_dhLayer->setSendPackageHelper(m_senderHelper);
+    m_dhLayer->setSendPackageHelper(m_sendHelper);
     m_rpcLayer = new RpcLayer(this);
-    m_rpcLayer->setSendPackageHelper(m_senderHelper);
+    m_rpcLayer->setSendPackageHelper(m_sendHelper);
 }
 
 RpcLayer *RemoteClientConnection::rpcLayer()

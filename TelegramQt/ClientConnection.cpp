@@ -45,12 +45,12 @@ protected:
 Connection::Connection(QObject *parent) :
     BaseConnection(parent)
 {
-    m_senderHelper = new SendPackageHelper(this);
+    m_sendHelper = new SendPackageHelper(this);
     m_dhLayer = new DhLayer(this);
-    m_dhLayer->setSendPackageHelper(m_senderHelper);
+    m_dhLayer->setSendPackageHelper(m_sendHelper);
     connect(m_dhLayer, &BaseDhLayer::stateChanged, this, &Connection::onClientDhStateChanged);
     m_rpcLayer = new RpcLayer(this);
-    m_rpcLayer->setSendPackageHelper(m_senderHelper);
+    m_rpcLayer->setSendPackageHelper(m_sendHelper);
 }
 
 void Connection::setDcOption(const TLDcOption &dcOption)
