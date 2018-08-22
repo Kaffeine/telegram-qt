@@ -61,15 +61,15 @@ PendingAuthOperation *Backend::signIn()
 
     if (m_signedIn) {
         m_authOperation->setDelayedFinishedWithError({
-                                                       { QStringLiteral("text"), QStringLiteral("Already signed in") }
-                                                   });
+                                                         { QStringLiteral("text"), QStringLiteral("Already signed in") }
+                                                     });
         return m_authOperation;
     }
     if (!m_settings || !m_settings->isValid()) {
         qWarning() << "Invalid settings";
         m_authOperation->setDelayedFinishedWithError({
-                                                       { QStringLiteral("text"), QStringLiteral("Invalid settings") }
-                                                   });
+                                                         { QStringLiteral("text"), QStringLiteral("Invalid settings") }
+                                                     });
         return m_authOperation;
     }
 
