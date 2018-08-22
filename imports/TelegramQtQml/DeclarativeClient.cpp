@@ -29,6 +29,11 @@ AccountStorage *DeclarativeClient::accountStorage() const
     return m_client->accountStorage();
 }
 
+DataStorage *DeclarativeClient::dataStorage() const
+{
+    return m_client->dataStorage();
+}
+
 void DeclarativeClient::setAppInformation(CAppInformation *newAppInfo)
 {
     m_client->setAppInformation(newAppInfo);
@@ -49,6 +54,12 @@ void DeclarativeClient::setAccountStorage(AccountStorage *storage)
 {
     m_client->setAccountStorage(storage);
     emit accountStorageChanged();
+}
+
+void DeclarativeClient::setDataStorage(DataStorage *storage)
+{
+    m_client->setDataStorage(storage);
+    emit dataStorageChanged();
 }
 
 void DeclarativeClient::syncSettings()

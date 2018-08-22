@@ -9,6 +9,7 @@
 #include "../../TelegramQt/Client.hpp"
 #include "../../TelegramQt/CTelegramCore.hpp"
 #include "../../TelegramQt/CAppInformation.hpp"
+#include "../../TelegramQt/DataStorage.hpp"
 
 #include "DeclarativeClient.hpp"
 #include "DeclarativeAuthOperation.hpp"
@@ -339,6 +340,7 @@ public:
         qmlRegisterType<Telegram::Client::DeclarativeRsaKey>(uri, 1, 0, "RsaKey");
         qmlRegisterUncreatableType<Telegram::Client::AccountStorage>(uri, 1, 0, "AccountStorage", QStringLiteral("AccountStorage is an abstract type"));
         qmlRegisterType<Telegram::Client::FileAccountStorage>(uri, 1, 0, "FileAccountStorage");
+        qmlRegisterUncreatableType<Telegram::Client::DataStorage>(uri, 1, 0, "DataStorage", QStringLiteral("DataStorage is an abstract type"));
         qmlRegisterType<MessageModel>(uri, 1, 0, "MessageModel");
         qmlRegisterType<MessageSender>(uri, 1, 0, "MessageSender");
     }

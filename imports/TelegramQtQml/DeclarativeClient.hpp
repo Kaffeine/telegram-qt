@@ -12,6 +12,7 @@ namespace Client {
 class Client;
 class DeclarativeSettings;
 class AccountStorage;
+class DataStorage;
 
 class DeclarativeClient : public QObject
 {
@@ -20,7 +21,7 @@ class DeclarativeClient : public QObject
     Q_PROPERTY(bool signedIn READ isSignedIn NOTIFY signedInChanged)
     Q_PROPERTY(Telegram::Client::DeclarativeSettings *settings READ settings WRITE setSettings NOTIFY settingsChanged)
     Q_PROPERTY(Telegram::Client::AccountStorage *accountStorage READ accountStorage WRITE setAccountStorage NOTIFY accountStorageChanged)
-    Q_PROPERTY(QObject *dataStorage MEMBER m_dataStorage)
+    Q_PROPERTY(Telegram::Client::DataStorage *dataStorage READ dataStorage WRITE setDataStorage NOTIFY dataStorageChanged)
 public:
     explicit DeclarativeClient(QObject *parent = nullptr);
 
@@ -31,11 +32,13 @@ public:
 
     DeclarativeSettings *settings() const { return m_settings; }
     AccountStorage *accountStorage() const;
+    DataStorage *dataStorage() const;
 
 public slots:
     void setAppInformation(CAppInformation *newAppInfo);
     void setSettings(DeclarativeSettings *settings);
     void setAccountStorage(AccountStorage *storage);
+    void setDataStorage(DataStorage *storage);
 
     void syncSettings();
 
@@ -43,12 +46,12 @@ signals:
     void signedInChanged(bool signedIn);
     void settingsChanged();
     void accountStorageChanged();
+    void dataStorageChanged();
 
 protected:
     Client *m_client;
     DeclarativeSettings *m_settings;
     AccountStorage *m_accountStorage;
-    QObject *m_dataStorage;
 };
 
 } // Client
