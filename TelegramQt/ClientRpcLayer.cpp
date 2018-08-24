@@ -124,12 +124,10 @@ bool RpcLayer::processRpcQuery(const QByteArray &data)
         op->setFinishedWithReplyData(stream.readAll());
 #define DUMP_CLIENT_RPC_PACKETS
 #ifdef DUMP_CLIENT_RPC_PACKETS
-        qDebug() << "Client: Answer for message" << messageId << "op:" << op;
-        qDebug().noquote() << "Client: RPC Reply bytes:" << op->replyData().size() << op->replyData().toHex();
+        qCDebug(c_clientRpcLayerCategory) << "Client: Answer for message" << messageId << "op:" << op;
+        qCDebug(c_clientRpcLayerCategory).noquote() << "Client: RPC Reply bytes:" << op->replyData().size() << op->replyData().toHex();
 #endif
-
-        qCWarning(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Set finished op" << op << "messageId:" << messageId;
-        op->setFinished();
+        qCWarning(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Set finished op" << op << "messageId:" << messageId << "error:" << op->errorDetails();
     }
         break;
     case TLValue::MsgsAck:
