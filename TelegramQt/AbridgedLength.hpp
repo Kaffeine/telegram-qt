@@ -28,9 +28,9 @@ public:
     constexpr explicit AbridgedLength(quint32 value = 0) : m_value(value) { }
     constexpr operator quint32() const { return m_value; }
     AbridgedLength &operator=(quint32 value) { m_value = value; return *this; }
-    constexpr quint32 packedSize() const { return m_value < 0xfe ? 1: 4; }
-    quint32 paddingForAlignment(quint32 alignment) const;
-    static quint32 paddingForAlignment(quint32 alignment, quint32 size);
+    constexpr int packedSize() const { return m_value < 0xfe ? 1: 4; }
+    int paddingForAlignment(int alignment) const;
+    static int paddingForAlignment(int alignment, int size);
 private:
     quint32 m_value = 0;
 };

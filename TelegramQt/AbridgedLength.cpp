@@ -19,14 +19,14 @@
 
 namespace Telegram {
 
-quint32 AbridgedLength::paddingForAlignment(quint32 alignment) const
+int AbridgedLength::paddingForAlignment(int alignment) const
 {
-    return paddingForAlignment(alignment, m_value + packedSize());
+    return paddingForAlignment(alignment, static_cast<int>(m_value) + packedSize());
 }
 
-quint32 AbridgedLength::paddingForAlignment(quint32 alignment, quint32 size)
+int AbridgedLength::paddingForAlignment(int alignment, int size)
 {
-    const quint32 overhungBytes = size % alignment;
+    const int overhungBytes = size % alignment;
     if (Q_LIKELY(overhungBytes)) {
         return alignment - overhungBytes;
     }
