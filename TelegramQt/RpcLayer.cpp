@@ -122,7 +122,7 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
         const quint32 contentLength = buffer.length();
 
         stream << m_sendHelper->serverSalt();
-        stream << m_sessionId;
+        stream << sessionId();
         stream << messageId;
         stream << m_sequenceNumber;
         stream << contentLength;

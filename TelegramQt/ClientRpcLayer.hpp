@@ -61,6 +61,7 @@ public:
     CAppInformation *appInformation() const { return m_appInfo; }
     void setAppInformation(CAppInformation *appInfo);
 
+    quint64 sessionId() const override { return m_sessionId; }
     void setSessionId(quint64 newSessionId);
 
     bool processRpcQuery(const QByteArray &data);
@@ -95,6 +96,7 @@ protected:
     CAppInformation *m_appInfo = nullptr;
     PendingAuthOperation *m_pendingAuthOperation = nullptr;
     QHash<quint64, PendingRpcOperation*> m_operations; // request message id, operation
+    quint64 m_sessionId = 0;
 
     // Generated low-level layer members
     AccountRpcLayer *m_accountLayer = nullptr;

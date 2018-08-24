@@ -48,6 +48,11 @@ void RpcLayer::setUser(User *user)
     m_user = user;
 }
 
+quint64 RpcLayer::sessionId() const
+{
+    return 0;
+}
+
 void RpcLayer::setRpcFactories(const QVector<RpcOperationFactory *> &rpcFactories)
 {
     m_operationFactories = rpcFactories;

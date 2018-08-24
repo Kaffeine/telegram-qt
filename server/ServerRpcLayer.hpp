@@ -33,6 +33,8 @@ public:
     User *getUser() const;
     void setUser(User *user);
 
+    quint64 sessionId() const override;
+
     void setRpcFactories(const QVector<RpcOperationFactory*> &rpcFactories);
 
     bool processRpcQuery(const QByteArray &data, quint64 messageId);

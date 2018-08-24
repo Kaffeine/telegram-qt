@@ -35,7 +35,7 @@ class BaseRpcLayer : public QObject
 public:
     explicit BaseRpcLayer(QObject *parent = nullptr);
 
-    quint64 sessionId() const { return m_sessionId; }
+    virtual quint64 sessionId() const = 0;
 
     void setSendPackageHelper(BaseSendPackageHelper *helper);
 
@@ -58,7 +58,6 @@ protected:
     quint32 m_contentRelatedMessages = 0;
 
     quint64 m_receivedServerSalt = 0;
-    quint64 m_sessionId = 0;
 };
 
 } // Telegram namespace
