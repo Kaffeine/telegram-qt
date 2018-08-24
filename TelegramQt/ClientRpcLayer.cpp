@@ -222,8 +222,7 @@ QByteArray RpcLayer::getInitConnection() const
 #ifdef DEVELOPER_BUILD
     qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "layer" << TLValue::CurrentLayer;
 #endif
-    QByteArray data;
-    CTelegramStream outputStream(&data, /* write */ true);
+    CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::InvokeWithLayer;
     outputStream << TLValue::CurrentLayer;
     outputStream << TLValue::InitConnection;
@@ -231,8 +230,12 @@ QByteArray RpcLayer::getInitConnection() const
     outputStream << m_appInfo->deviceInfo();
     outputStream << m_appInfo->osInfo();
     outputStream << m_appInfo->appVersion();
-    outputStream << m_appInfo->languageCode();
-    return data;
+#if TELEGRAMQT_LAYER >= 67
+    outputStream << m_appInfo->languageCode(); // System language
+    outputStream << QString(); // Langpack
+#endif
+    outputStream << m_appInfo->languageCode(); // Lang code
+    return outputStream.getData();
 }
 
 } // Client namespace
