@@ -115,20 +115,23 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
     QByteArray messageKey;
     quint64 messageId = m_sendHelper->newMessageId(mode);
     qDebug() << Q_FUNC_INFO << "Send message" << TLValue::firstFromArray(buffer) << "with id" << messageId;
+    constexpr int c_alignment = 16;
+    constexpr int c_v2_minimumPadding = 12;
     {
         m_sequenceNumber = m_contentRelatedMessages * 2 + 1;
         ++m_contentRelatedMessages;
         CRawStream stream(CRawStream::WriteOnly);
-        const quint32 contentLength = buffer.length();
 
         stream << m_sendHelper->serverSalt();
         stream << sessionId();
         stream << messageId;
         stream << m_sequenceNumber;
-        stream << contentLength;
+        stream << static_cast<quint32>(buffer.length());
         stream << buffer;
-        quint32 packageLength = stream.getData().length();
-        const quint32 padding = AbridgedLength::paddingForAlignment(16, packageLength);
+
+        int packageLength = stream.getData().length();
+        int padding = AbridgedLength::paddingForAlignment(c_alignment, packageLength);
+#ifdef USE_MTProto_V1
         if (padding) {
             QByteArray randomPadding(padding, Qt::Uninitialized);
             Utils::randomBytes(&randomPadding);
@@ -137,6 +140,21 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
         }
         const QByteArray data = stream.getData();
         messageKey = Utils::sha1(data).mid(4);
+#else // MTProto_V2
+        if (padding < c_v2_minimumPadding) {
+            padding += c_alignment;
+        }
+        {
+            QByteArray randomPadding(padding, Qt::Uninitialized);
+            Utils::randomBytes(&randomPadding);
+            stream << randomPadding;
+            packageLength += padding;
+        }
+        const QByteArray data = stream.getData();
+        const int X = mode == SendMode::Client ? 0 : 8;
+        const QByteArray keyPart = m_sendHelper->authKey().mid(88 + X, 32);
+        messageKey = Utils::sha256(keyPart + data).mid(8, 16);
+#endif
         const SAesKey key = getEncryptionAesKey(messageKey);
         encryptedPackage = Utils::aesEncrypt(data, key).left(packageLength);
     }
