@@ -95,12 +95,21 @@ bool RpcLayer::processInitConnection(RpcProcessingContext &context)
     QString deviceInfo;
     QString osInfo;
     QString appVersion;
+#if TELEGRAMQT_LAYER >= 67
+    QString systemLanguage;
+    QString languagePack;
+#endif
     QString languageCode;
     context.inputStream() >> appId;
     context.inputStream() >> deviceInfo;
     context.inputStream() >> osInfo;
     context.inputStream() >> appVersion;
+#if TELEGRAMQT_LAYER >= 67
+    context.inputStream() >> systemLanguage;
+    context.inputStream() >> languagePack; // If the pack is not registered on server, raise CONNECTION_LANG_PACK_INVALID RPC Error
+#endif
     context.inputStream() >> languageCode;
+
     qDebug() << Q_FUNC_INFO << deviceInfo << osInfo << appId << appVersion << languageCode;
     if (context.inputStream().error()) {
         qWarning() << Q_FUNC_INFO << "Invalid read!";
