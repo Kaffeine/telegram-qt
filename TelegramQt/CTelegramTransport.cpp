@@ -17,7 +17,9 @@
 #include "CTelegramTransport.hpp"
 
 CTelegramTransport::CTelegramTransport(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_error(QAbstractSocket::UnknownSocketError),
+    m_state(QAbstractSocket::UnconnectedState)
 {
 }
 
