@@ -31,9 +31,10 @@ public:
     void setLayerVersion(quint32 layer);
 
     User *getUser() const;
-    void setUser(User *user);
 
     quint64 sessionId() const override;
+    Session *session() const;
+    void setSession(Session *session);
 
     void setRpcFactories(const QVector<RpcOperationFactory*> &rpcFactories);
 
@@ -53,7 +54,7 @@ protected:
     SAesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
 
     quint32 m_layer = 0;
-    User *m_user = nullptr;
+    Session *m_session = nullptr;
     ServerApi *m_api = nullptr;
 
     QVector<RpcOperationFactory*> m_operationFactories;

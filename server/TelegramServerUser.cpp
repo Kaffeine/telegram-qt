@@ -39,19 +39,21 @@ void User::setDcId(quint32 id)
     m_dcId = id;
 }
 
-Session User::getSession(quint64 authId) const
+Session *User::getSession(quint64 authId) const
 {
-    for (const Session &s : m_sessions) {
-        if (s.authId == authId) {
+    for (Session *s : m_sessions) {
+        if (s->authId == authId) {
             return s;
         }
     }
-    return Session();
+    return nullptr;
 }
 
-void User::addSession(const Session &session)
+void User::addSession(Session *session)
 {
     m_sessions.append(session);
+    session->setUser(this);
+    emit sessionAdded(m_sessions.last());
 }
 
 void User::setPlainPassword(const QString &password)

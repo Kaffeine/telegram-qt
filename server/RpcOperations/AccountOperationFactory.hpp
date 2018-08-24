@@ -94,8 +94,6 @@ public:
     void runUpdateUsername();
     // End of generated run methods
 
-    bool verifyAuthCode(const QString &phoneNumber, const QString &hash, const QString &code);
-
     void start() override { callMember<>(this, m_runMethod); }
 
     using RunMethod = void (AccountRpcOperation::*)();

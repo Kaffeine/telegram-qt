@@ -10,6 +10,8 @@ namespace Telegram {
 
 namespace Server {
 
+class User;
+
 class Session
 {
 public:
@@ -27,12 +29,23 @@ public:
         }
     }
 
+    User *userOrWantedUser() const { return m_user ? m_user : m_wanterUser; }
+    User *user() const { return m_user; }
+    void setUser(User *user) { m_user = user; }
+
+    User *wanterUser() const { return m_wanterUser; }
+    void setWantedUser(User *user) { m_wanterUser = user; }
+
     quint64 authId = 0;
     quint64 sessionId = 0;
     QByteArray authKey;
     CAppInformation *appInfo = nullptr;
     QString ip;
     quint64 timestamp = 0;
+
+protected:
+    User *m_wanterUser = nullptr;
+    User *m_user = nullptr;
 };
 
 class RemoteUser
@@ -67,9 +80,9 @@ public:
     quint32 dcId() const { return m_dcId; }
     void setDcId(quint32 id);
 
-    Session getSession(quint64 authId) const;
-    QVector<Session> sessions() const { return m_sessions; }
-    void addSession(const Session &session);
+    Session *getSession(quint64 authId) const;
+    QVector<Session*> sessions() const { return m_sessions; }
+    void addSession(Session *session);
 
     bool hasPassword() const { return !m_passwordSalt.isEmpty() && !m_passwordHash.isEmpty(); }
     QByteArray passwordSalt() const { return m_passwordSalt; }
@@ -80,6 +93,10 @@ public:
 
     QString passwordHint() const { return QString(); }
 
+signals:
+    void sessionAdded(Session *newSession);
+    void sessionDestroyed(Session *destroyedSession);
+
 protected:
     quint32 m_id = 0;
     QString m_phoneNumber;
@@ -88,12 +105,14 @@ protected:
     QString m_userName;
     QByteArray m_passwordSalt;
     QByteArray m_passwordHash;
-    QVector<Session> m_sessions;
+    QVector<Session*> m_sessions;
     quint32 m_dcId = 0;
 };
 
 } // Server
 
 } // Telegram
+
+Q_DECLARE_TYPEINFO(Telegram::Server::Session, Q_MOVABLE_TYPE);
 
 #endif // TELEGRAMSERVERUSER_HPP

@@ -282,7 +282,10 @@ void AccountRpcOperation::runGetNotifySettings()
 
 void AccountRpcOperation::runGetPassword()
 {
-    User *user = layer()->getUser();
+    if (!verifyHasUserOrWantedUser()) {
+        return;
+    }
+    User *user = layer()->session()->userOrWantedUser();
     PasswordInfo info = api()->getPassword(user->phoneNumber());
 
     TLAccountPassword result;

@@ -73,9 +73,9 @@ void RemoteClientConnection::setServerApi(ServerApi *api)
     rpcLayer()->setServerApi(api);
 }
 
-void RemoteClientConnection::setUser(User *user)
+void RemoteClientConnection::setSession(Session *session)
 {
-    rpcLayer()->setUser(user);
+    rpcLayer()->setSession(session);
 }
 
 } // Server

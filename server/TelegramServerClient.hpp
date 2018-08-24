@@ -13,7 +13,7 @@ namespace Server {
 class ServerApi;
 class RpcLayer;
 class RpcOperationFactory;
-class User;
+class Session;
 
 class RemoteClientConnection : public BaseConnection
 {
@@ -25,7 +25,7 @@ public:
 
     void setRpcFactories(const QVector<RpcOperationFactory*> &rpcFactories);
     void setServerApi(ServerApi *api);
-    void setUser(User *user);
+    void setSession(Session *session);
 
 signals:
     void becomeOnline();

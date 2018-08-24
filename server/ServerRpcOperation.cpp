@@ -1,6 +1,7 @@
 #include "ServerRpcOperation.hpp"
 
 #include "ServerRpcLayer.hpp"
+#include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
 
@@ -24,6 +25,17 @@ bool RpcOperation::sendRpcError(const RpcError &error)
 {
     qDebug() << Q_FUNC_INFO << error.type << error.reason << error.argument << error.message << m_requestId;
     return layer()->sendRpcError(error, m_requestId);
+}
+
+bool RpcOperation::verifyHasUserOrWantedUser()
+{
+    if (!layer()->session()) {
+        return false;
+    }
+    if (!layer()->session()->userOrWantedUser()) {
+        return false;
+    }
+    return true;
 }
 
 //void ServerRpcOperation::sendReply(const QByteArray &buffer)

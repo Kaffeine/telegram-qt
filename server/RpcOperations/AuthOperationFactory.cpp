@@ -196,16 +196,18 @@ void AuthRpcOperation::runCancelCode()
 void AuthRpcOperation::runCheckPassword()
 {
     qDebug() << Q_FUNC_INFO;
-    User *user = layer()->getUser();
-    if (!user) {
+    Session *session = layer()->session();
+    if (!session) {
         sendRpcError(RpcError::AuthKeyUnregistered);
         return;
     }
+    User *user = session->wanterUser();
     const bool passwordIsCorrect = api()->checkPassword(user->phoneNumber(), m_checkPassword.passwordHash);
     if (!passwordIsCorrect) {
         sendRpcError(RpcError::PasswordHashInvalid);
         return;
     }
+    user->addSession(session);
 
     TLAuthAuthorization result;
     qDebug() << "Result type:" << result.tlType;
@@ -333,11 +335,12 @@ void AuthRpcOperation::runSignIn()
         return;
     }
     User *user = api()->getUser(m_signIn.phoneNumber);
-    layer()->setUser(user);
     if (!user->passwordHash().isEmpty()) {
+        layer()->session()->setWantedUser(user);
         sendRpcError(RpcError::SessionPasswordNeeded);
         return;
     }
+    user->addSession(layer()->session());
 
     TLAuthAuthorization result;
     qDebug() << "Result type:" << result.tlType;
@@ -361,7 +364,7 @@ void AuthRpcOperation::runSignUp()
     User *user = api()->addUser(m_signIn.phoneNumber);
     user->setFirstName(m_signUp.firstName);
     user->setLastName(m_signUp.lastName);
-    layer()->setUser(user);
+    user->addSession(layer()->session());
 
     TLAuthAuthorization result;
     userToTlUser(user, &result.user);

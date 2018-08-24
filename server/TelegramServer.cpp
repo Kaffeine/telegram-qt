@@ -138,12 +138,15 @@ void Server::onClientConnectionStatusChanged()
 {
     RemoteClientConnection *client = qobject_cast<RemoteClientConnection*>(sender());
     if (client->status() == RemoteClientConnection::Status::Authenticated) {
-        User *u = getUser(client->authId());
-        if (u) {
-            client->setUser(u);
-        } else {
+        Session *s = getUserSession(client->authId());
+        if (!s) {
             qDebug() << Q_FUNC_INFO << "A new auth key";
+            s = new Session();
+            s->authId = client->authId();
+            s->authKey = client->authKey();
+            s->ip = client->transport()->remoteAddress();
         }
+        client->setSession(s);
     }
 }
 
@@ -191,13 +194,22 @@ User *Server::addUser(const QString &identifier)
     return user;
 }
 
+Session *Server::getUserSession(quint64 authKeyId)
+{
+    const User *user = getUser(authKeyId);
+    if (!user) {
+        return nullptr;
+    }
+    return user->getSession(authKeyId);
+}
+
 void Server::insertUser(User *user)
 {
     qDebug() << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
     m_users.insert(user->id(), user);
     m_phoneToUserId.insert(user->phoneNumber(), user->id());
-    for (const Session &session : user->sessions()) {
-        m_authIdToUserId.insert(session.authId, user->id());
+    for (const Session *session : user->sessions()) {
+        m_authIdToUserId.insert(session->authId, user->id());
     }
 }
 

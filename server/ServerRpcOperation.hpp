@@ -34,6 +34,8 @@ public:
     template <typename TLType>
     bool sendRpcReply(const TLType &reply);
 
+    bool verifyHasUserOrWantedUser();
+
 protected:
     RpcLayer *m_rpcLayer = nullptr;
     ServerApi *m_api = nullptr;

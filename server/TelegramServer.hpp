@@ -26,6 +26,7 @@ struct AuthCode
 };
 
 class User;
+class Session;
 class RemoteClientConnection;
 class RemoteServerConnection;
 class RemoteUser;
@@ -68,6 +69,8 @@ public:
     User *getUser(const QString &identifier) override;
     User *getUser(quint64 authId) override;
     User *addUser(const QString &identifier) override;
+
+    Session *getUserSession(quint64 authKeyId);
 
     void insertUser(User *user);
 
