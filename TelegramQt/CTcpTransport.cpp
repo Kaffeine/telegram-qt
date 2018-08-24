@@ -19,6 +19,7 @@
 #include "CTcpTransport.hpp"
 #include "CRawStream.hpp"
 
+#include <QHostAddress>
 #include <QTimer>
 
 #include <QLoggingCategory>
@@ -48,6 +49,11 @@ CTcpTransport::~CTcpTransport()
         m_socket->waitForBytesWritten(100);
         m_socket->disconnectFromHost();
     }
+}
+
+QString CTcpTransport::remoteAddress() const
+{
+    return m_socket ? m_socket->peerAddress().toString() : QString();
 }
 
 void CTcpTransport::connectToHost(const QString &ipAddress, quint32 port)

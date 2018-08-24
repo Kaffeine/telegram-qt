@@ -33,6 +33,8 @@ public:
     virtual void disconnectFromHost() = 0;
     quint64 getNewMessageId(quint64 supposedId);
 
+    virtual QString remoteAddress() const = 0;
+
     QAbstractSocket::SocketError error() const { return m_error; }
     QAbstractSocket::SocketState state() const { return m_state; }
 signals:

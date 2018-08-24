@@ -39,6 +39,8 @@ public:
     }
     void disconnectFromHost() override {}
 
+    QString remoteAddress() const override { return QString(); }
+
 protected:
     void sendPackageImplementation(const QByteArray &package) override
     {
