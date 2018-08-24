@@ -20,6 +20,7 @@
 #include "AccountStorage.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"
+#include "DataStorage.hpp"
 #include "Utils.hpp"
 #include "TelegramNamespace.hpp"
 #include "CAppInformation.hpp"
@@ -200,9 +201,11 @@ void tst_all::testClientConnection()
     Client::Client client;
     Client::AccountStorage accountStorage;
     Client::Settings clientSettings;
+    Client::InMemoryDataStorage dataStorage;
     client.setAppInformation(getAppInfo());
     client.setSettings(&clientSettings);
     client.setAccountStorage(&accountStorage);
+    client.setDataStorage(&dataStorage);
     accountStorage.setPhoneNumber(userData.phoneNumber);
     QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
