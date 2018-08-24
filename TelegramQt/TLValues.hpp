@@ -22,11 +22,15 @@
 
 // TODO: Namespace?
 
+#ifndef TELEGRAMQT_LAYER
+#define TELEGRAMQT_LAYER 72
+#endif
+
 struct TLValue {
     Q_GADGET
     Q_ENUMS(Value)
 public:
-    static constexpr quint32 CurrentLayer = 72;
+    static constexpr quint32 CurrentLayer = TELEGRAMQT_LAYER;
     enum Value : quint32 {
         // Generated TLValues
         // Types
