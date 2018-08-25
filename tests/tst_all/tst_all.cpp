@@ -221,6 +221,8 @@ void tst_all::testClientConnection()
     TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(1));
     QVERIFY(server);
 
+    QCOMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
+
     // --- Sign in ---
     Client::AuthOperation *signInOperation = client.signIn();
     QSignalSpy serverAuthCodeSpy(server, &TestServer::authCodeSent);
