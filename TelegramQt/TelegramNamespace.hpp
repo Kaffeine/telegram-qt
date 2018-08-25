@@ -244,11 +244,28 @@ enum class PeerPictureSize {
 
 struct DcOption
 {
-    DcOption() { }
+    enum Flags {
+        Ipv6 = 1 << 0,
+        MediaOnly = 1 << 1,
+        TcpOnly = 1 << 2,
+        Cdn = 1 << 3,
+        IsStatic = 1 << 4,
+    };
+
+    DcOption() = default;
     DcOption(const QString &a, quint32 p, quint32 dcId = 0) : address(a), port(p), id(dcId) { }
+    bool operator==(const DcOption &option) const;
+    bool isValid() const { return id && port && !address.isEmpty(); }
+
     QString address;
     quint32 port = 0;
     quint32 id = 0;
+    quint32 flags = 0;
+};
+
+inline bool DcOption::operator==(const DcOption &option) const
+{
+    return (option.id == id) && (option.port == port) && (option.address == address) && (option.flags == flags);
 };
 
 class PasswordInfo
