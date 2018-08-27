@@ -377,6 +377,41 @@ QByteArray Utils::aesEncrypt(const QByteArray &data, const SAesKey &key)
     return result;
 }
 
+QByteArray Utils::packGZip(const QByteArray &data)
+{
+    z_stream stream;
+    stream.zalloc = nullptr;
+    stream.zfree = nullptr;
+    stream.opaque = nullptr;
+    stream.avail_in = static_cast<uInt>(data.size());
+    stream.next_in = reinterpret_cast<z_const Bytef*>(data.constData());
+
+    constexpr int compressionLevel = 6; // It seems that Telegram uses this compression level
+    int deflateResult = deflateInit2(&stream,
+                                     compressionLevel,
+                                     Z_DEFLATED,
+                                     MAX_WBITS + 16, // (8 to 15) + 16 for gzip
+                                     MAX_MEM_LEVEL,
+                                     Z_DEFAULT_STRATEGY);
+    if (deflateResult != Z_OK) {
+        return QByteArray(); // deflate init failed
+    }
+
+    char buffer[c_gzipBufferSize];
+    QByteArray result;
+
+    do {
+        stream.avail_out = c_gzipBufferSize;
+        stream.next_out = reinterpret_cast<Bytef*>(buffer);
+        deflate(&stream, Z_FINISH); // Z_FINISH
+        result.append(buffer, static_cast<int>(c_gzipBufferSize - stream.avail_out));
+    } while (stream.avail_out == 0);
+
+    deflateEnd(&stream);
+
+    return result;
+}
+
 QByteArray Utils::unpackGZip(const QByteArray &data)
 {
     if (data.size() <= 4) {
