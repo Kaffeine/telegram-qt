@@ -42,6 +42,7 @@ public:
     virtual ~CRawStream();
 
     QByteArray getData() const;
+    void setData(const QByteArray &data);
     QIODevice *device() const { return m_device; }
     void setDevice(QIODevice *newDevice);
     void unsetDevice();

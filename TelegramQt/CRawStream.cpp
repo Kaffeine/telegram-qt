@@ -34,13 +34,9 @@ CRawStream::CRawStream(QByteArray *data, bool write) :
     }
 }
 
-CRawStream::CRawStream(const QByteArray &data) :
-    m_ownDevice(true)
+CRawStream::CRawStream(const QByteArray &data)
 {
-    QBuffer *buffer = new QBuffer();
-    buffer->setData(data);
-    m_device = buffer;
-    m_device->open(QIODevice::ReadOnly);
+    setData(data);
 }
 
 CRawStream::CRawStream(CRawStream::Mode m, quint32 reserveBytes) :
@@ -67,6 +63,15 @@ CRawStream::~CRawStream()
     }
 }
 
+void CRawStream::setData(const QByteArray &data)
+{
+    QBuffer *buffer = new QBuffer();
+    buffer->setData(data);
+    setDevice(buffer);
+    m_device->open(QIODevice::ReadOnly);
+    m_ownDevice = true;
+}
+
 QByteArray CRawStream::getData() const
 {
     if (m_ownDevice) {
@@ -81,6 +86,7 @@ void CRawStream::setDevice(QIODevice *newDevice)
     if (m_device) {
         if (m_ownDevice) {
             delete m_device;
+            m_ownDevice = false;
         }
     }
 
