@@ -34,13 +34,9 @@ CRawStream::CRawStream(QByteArray *data, bool write) :
     }
 }
 
-CRawStream::CRawStream(const QByteArray &data) :
-    m_ownDevice(true)
+CRawStream::CRawStream(const QByteArray &data)
 {
-    QBuffer *buffer = new QBuffer();
-    buffer->setData(data);
-    m_device = buffer;
-    m_device->open(QIODevice::ReadOnly);
+    setData(data);
 }
 
 CRawStream::CRawStream(CRawStream::Mode m, quint32 reserveBytes) :
@@ -49,7 +45,7 @@ CRawStream::CRawStream(CRawStream::Mode m, quint32 reserveBytes) :
     Q_UNUSED(m)
     QBuffer *buffer = new QBuffer();
     if (reserveBytes) {
-        buffer->buffer().reserve(reserveBytes);
+        buffer->buffer().reserve(static_cast<int>(reserveBytes));
     }
     m_device = buffer;
     m_device->open(QIODevice::WriteOnly);
@@ -67,6 +63,15 @@ CRawStream::~CRawStream()
     }
 }
 
+void CRawStream::setData(const QByteArray &data)
+{
+    QBuffer *buffer = new QBuffer();
+    buffer->setData(data);
+    setDevice(buffer);
+    m_device->open(QIODevice::ReadOnly);
+    m_ownDevice = true;
+}
+
 QByteArray CRawStream::getData() const
 {
     if (m_ownDevice) {
@@ -81,6 +86,7 @@ void CRawStream::setDevice(QIODevice *newDevice)
     if (m_device) {
         if (m_ownDevice) {
             delete m_device;
+            m_ownDevice = false;
         }
     }
 
@@ -89,7 +95,7 @@ void CRawStream::setDevice(QIODevice *newDevice)
 
 void CRawStream::unsetDevice()
 {
-    setDevice(0);
+    setDevice(nullptr);
 }
 
 bool CRawStream::atEnd() const
@@ -99,19 +105,34 @@ bool CRawStream::atEnd() const
 
 int CRawStream::bytesAvailable() const
 {
-    return m_device ? m_device->bytesAvailable() : 0;
+    return m_device ? static_cast<int>(m_device->bytesAvailable()) : 0;
+}
+
+bool CRawStream::writeBytes(const QByteArray &data)
+{
+    m_error = m_error || m_device->write(data) != data.size();
+    return m_error;
 }
 
 bool CRawStream::read(void *data, qint64 size)
 {
-    m_error = m_error || m_device->read((char *) data, size) != size;
+    if (size) {
+        m_error = m_error || m_device->read(static_cast<char *>(data), size) != size;
+    }
     return m_error;
 }
 
 bool CRawStream::write(const void *data, qint64 size)
 {
-    m_error = m_error || m_device->write((const char *) data, size) != size;
+    if (size) {
+        m_error = m_error || m_device->write(static_cast<const char *>(data), size) != size;
+    }
     return m_error;
+}
+
+void CRawStream::setError(bool error)
+{
+    m_error = error;
 }
 
 QByteArray CRawStream::readBytes(int count)
@@ -189,8 +210,7 @@ CRawStream &CRawStream::operator<<(const double &d)
 
 CRawStream &CRawStream::operator<<(const QByteArray &data)
 {
-    m_error = m_error || m_device->write(data) != data.size();
-
+    writeBytes(data);
     return *this;
 }
 
@@ -198,20 +218,22 @@ CRawStreamEx &CRawStreamEx::operator>>(Telegram::AbridgedLength &data)
 {
     quint32 length = 0;
     read(&length, 1);
-    if (length >= 0xfe) {
+    if (Q_UNLIKELY(length == 0xfe)) {
         read(&length, 3);
+    } else if (Q_UNLIKELY(length > 0xfe)) {
+        setError(true);
     }
-    data.setValue(length);
+    data = length;
     return *this;
 }
 
 CRawStreamEx &CRawStreamEx::operator<<(const Telegram::AbridgedLength &data)
 {
-    if (data.size() == 1) {
-        quint8 l = data.value();
+    if (data.packedSize() == 1) {
+        quint8 l = static_cast<quint8>(data);
         *this << l;
     } else {
-        *this << quint32((data.value() << 8) + 0xfe);
+        *this << quint32((data << 8) + 0xfe);
     }
     return *this;
 }
@@ -220,17 +242,17 @@ CRawStreamEx &CRawStreamEx::operator>>(QByteArray &data)
 {
     Telegram::AbridgedLength length;
     *this >> length;
-    data.resize(length.value());
+    data.resize(static_cast<int>(length));
     read(data.data(), data.size());
-    readBytes(length.paddingSize(4));
+    readBytes(length.paddingForAlignment(4));
     return *this;
 }
 
 CRawStreamEx &CRawStreamEx::operator<<(const QByteArray &data)
 {
-    Telegram::AbridgedLength length(data.size());
+    Telegram::AbridgedLength length(static_cast<quint32>(data.size()));
     *this << length;
     write(data.constData(), data.size());
-    write(s_nulls, length.paddingSize(4));
+    write(s_nulls, length.paddingForAlignment(4));
     return *this;
 }

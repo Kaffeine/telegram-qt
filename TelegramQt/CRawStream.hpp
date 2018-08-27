@@ -42,6 +42,7 @@ public:
     virtual ~CRawStream();
 
     QByteArray getData() const;
+    void setData(const QByteArray &data);
     QIODevice *device() const { return m_device; }
     void setDevice(QIODevice *newDevice);
     void unsetDevice();
@@ -52,6 +53,7 @@ public:
     bool atEnd() const;
     int bytesAvailable() const;
 
+    bool writeBytes(const QByteArray &bytes);
     QByteArray readBytes(int count);
 
     QByteArray readAll();
@@ -89,6 +91,8 @@ protected:
 
     template<typename Int>
     inline CRawStream &protectedRead(Int &i);
+
+    void setError(bool error);
 
 private:
     QIODevice *m_device = nullptr;
