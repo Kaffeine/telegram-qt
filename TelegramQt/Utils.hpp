@@ -67,6 +67,7 @@ QByteArray binaryNumberModExp(const QByteArray &data, const QByteArray &mod, con
 QByteArray rsa(const QByteArray &data, const Telegram::RsaKey &key);
 QByteArray aesDecrypt(const QByteArray &data, const SAesKey &key);
 QByteArray aesEncrypt(const QByteArray &data, const SAesKey &key);
+QByteArray packGZip(const QByteArray &data);
 QByteArray unpackGZip(const QByteArray &data);
 
 constexpr quint32 c_gzipBufferSize = 1024;
