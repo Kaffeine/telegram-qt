@@ -23,6 +23,7 @@
 #include <openssl/rsa.h>
 #include <openssl/opensslv.h>
 
+#define ZLIB_CONST
 #include <zlib.h>
 
 #include <QBuffer>
@@ -383,32 +384,25 @@ QByteArray Utils::unpackGZip(const QByteArray &data)
         return QByteArray();
     }
 
-    QByteArray result;
-
-    int inflateResult;
     z_stream stream;
-    static const int CHUNK_SIZE = 1024;
-    char out[CHUNK_SIZE];
+    stream.zalloc = nullptr;
+    stream.zfree = nullptr;
+    stream.opaque = nullptr;
+    stream.avail_in = static_cast<uInt>(data.size());
+    stream.next_in = reinterpret_cast<z_const Bytef*>(data.constData());
 
-    /* allocate inflate state */
-    stream.zalloc = Z_NULL;
-    stream.zfree = Z_NULL;
-    stream.opaque = Z_NULL;
-    stream.avail_in = data.size();
-    stream.next_in = (Bytef*)(data.data());
-
-    inflateResult = inflateInit2(&stream, 15 + 32); // gzip decoding
-
+    int inflateResult = inflateInit2(&stream, MAX_WBITS + 32); // gzip decoding
     if (inflateResult != Z_OK) {
-        return QByteArray();
+        return QByteArray(); // inflate init failed
     }
 
+    char buffer[c_gzipBufferSize];
+    QByteArray result;
+
     do {
-        stream.avail_out = CHUNK_SIZE;
-        stream.next_out = (Bytef*)(out);
-
+        stream.avail_out = c_gzipBufferSize;
+        stream.next_out = reinterpret_cast<Bytef*>(buffer);
         inflateResult = inflate(&stream, Z_NO_FLUSH);
-
         switch (inflateResult) {
         case Z_NEED_DICT:
         case Z_DATA_ERROR:
@@ -419,8 +413,7 @@ QByteArray Utils::unpackGZip(const QByteArray &data)
         default:
             break;
         }
-
-        result.append(out, CHUNK_SIZE - stream.avail_out);
+        result.append(buffer, static_cast<int>(c_gzipBufferSize - stream.avail_out));
     } while (stream.avail_out == 0);
 
     inflateEnd(&stream);

@@ -69,6 +69,8 @@ QByteArray aesDecrypt(const QByteArray &data, const SAesKey &key);
 QByteArray aesEncrypt(const QByteArray &data, const SAesKey &key);
 QByteArray unpackGZip(const QByteArray &data);
 
+constexpr quint32 c_gzipBufferSize = 1024;
+
 }
 
 inline int Utils::randomBytes(QByteArray *array)
