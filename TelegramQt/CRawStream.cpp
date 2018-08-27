@@ -49,7 +49,7 @@ CRawStream::CRawStream(CRawStream::Mode m, quint32 reserveBytes) :
     Q_UNUSED(m)
     QBuffer *buffer = new QBuffer();
     if (reserveBytes) {
-        buffer->buffer().reserve(reserveBytes);
+        buffer->buffer().reserve(static_cast<int>(reserveBytes));
     }
     m_device = buffer;
     m_device->open(QIODevice::WriteOnly);
@@ -89,7 +89,7 @@ void CRawStream::setDevice(QIODevice *newDevice)
 
 void CRawStream::unsetDevice()
 {
-    setDevice(0);
+    setDevice(nullptr);
 }
 
 bool CRawStream::atEnd() const
@@ -99,7 +99,7 @@ bool CRawStream::atEnd() const
 
 int CRawStream::bytesAvailable() const
 {
-    return m_device ? m_device->bytesAvailable() : 0;
+    return m_device ? static_cast<int>(m_device->bytesAvailable()) : 0;
 }
 
 bool CRawStream::writeBytes(const QByteArray &data)
@@ -111,7 +111,7 @@ bool CRawStream::writeBytes(const QByteArray &data)
 bool CRawStream::read(void *data, qint64 size)
 {
     if (size) {
-        m_error = m_error || m_device->read((char *) data, size) != size;
+        m_error = m_error || m_device->read(static_cast<char *>(data), size) != size;
     }
     return m_error;
 }
@@ -119,7 +119,7 @@ bool CRawStream::read(void *data, qint64 size)
 bool CRawStream::write(const void *data, qint64 size)
 {
     if (size) {
-        m_error = m_error || m_device->write((const char *) data, size) != size;
+        m_error = m_error || m_device->write(static_cast<const char *>(data), size) != size;
     }
     return m_error;
 }
@@ -224,7 +224,7 @@ CRawStreamEx &CRawStreamEx::operator>>(Telegram::AbridgedLength &data)
 CRawStreamEx &CRawStreamEx::operator<<(const Telegram::AbridgedLength &data)
 {
     if (data.packedSize() == 1) {
-        quint8 l = data;
+        quint8 l = static_cast<quint8>(data);
         *this << l;
     } else {
         *this << quint32((data << 8) + 0xfe);
@@ -236,7 +236,7 @@ CRawStreamEx &CRawStreamEx::operator>>(QByteArray &data)
 {
     Telegram::AbridgedLength length;
     *this >> length;
-    data.resize(length);
+    data.resize(static_cast<int>(length));
     read(data.data(), data.size());
     readBytes(length.paddingForAlignment(4));
     return *this;
@@ -244,7 +244,7 @@ CRawStreamEx &CRawStreamEx::operator>>(QByteArray &data)
 
 CRawStreamEx &CRawStreamEx::operator<<(const QByteArray &data)
 {
-    Telegram::AbridgedLength length(data.size());
+    Telegram::AbridgedLength length(static_cast<quint32>(data.size()));
     *this << length;
     write(data.constData(), data.size());
     write(s_nulls, length.paddingForAlignment(4));
