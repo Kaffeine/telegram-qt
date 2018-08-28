@@ -31,6 +31,7 @@ SOURCES += \
     CAppInformation.cpp \
     AbridgedLength.cpp \
     AccountStorage.cpp \
+    DcConfiguration.cpp \
     DhLayer.cpp \
     Client.cpp \
     ClientBackend.cpp \

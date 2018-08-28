@@ -25,6 +25,7 @@ set(telegram_qt_SOURCES
     CTcpTransport.cpp
     CClientTcpTransport.cpp
     CRawStream.cpp
+    DcConfiguration.cpp
     Debug.cpp
     DhLayer.cpp
     Utils.cpp
@@ -93,6 +94,7 @@ set(telegram_qt_public_HEADERS
     CAppInformation.hpp
     TelegramNamespace.hpp
     CTelegramCore.hpp
+    DcConfiguration.hpp
     Debug.hpp
 )
 
