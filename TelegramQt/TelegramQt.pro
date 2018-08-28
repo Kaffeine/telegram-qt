@@ -122,6 +122,7 @@ HEADERS += \
 
 include(RpcLayers/layers.pri)
 include(Crypto/crypto.pri)
+include(Operations/operations.pri)
 
 SOURCES += TLTypesDebug.cpp
 HEADERS += TLTypesDebug.hpp

@@ -4,15 +4,13 @@
 #include <QObject>
 #include <QVector>
 
-#include "CAppInformation.hpp"
 
+class CAppInformation;
 struct TLDcOption;
 
 namespace Telegram {
 
 class PendingOperation;
-
-//class AppInformation : public CAppInformation { };
 
 namespace Client {
 
@@ -22,7 +20,7 @@ class Settings;
 class AccountStorage;
 class DataStorage;
 class RpcLayer;
-class PendingAuthOperation;
+class AuthOperation;
 
 class Backend : public QObject
 {
@@ -33,7 +31,7 @@ public:
     RpcLayer *rpcLayer();
 
     PendingOperation *connectToServer();
-    PendingAuthOperation *signIn();
+    AuthOperation *signIn();
 
     Connection *createConnection();
     Connection *createConnection(const TLDcOption &dcInfo);
@@ -48,7 +46,7 @@ public:
     DataStorage *m_dataStorage;
     Connection *m_mainConnection = nullptr;
 
-    PendingAuthOperation *m_authOperation = nullptr;
+    AuthOperation *m_authOperation = nullptr;
 
     bool m_signedIn = false;
 };

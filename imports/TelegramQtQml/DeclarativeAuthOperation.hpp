@@ -12,6 +12,8 @@ namespace Client {
 class DeclarativeClient;
 class DeclarativeSettings;
 
+class AuthOperation;
+
 class DeclarativeAuthOperation : public DeclarativeOperation
 {
     Q_OBJECT
@@ -84,7 +86,7 @@ protected:
     void unsetBusy();
     void onPasswordRequired();
 
-    PendingAuthOperation *m_authOperation;
+    AuthOperation *m_authOperation;
 
     void startEvent() override;
 

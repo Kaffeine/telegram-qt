@@ -8,6 +8,8 @@
 #include "ClientRpcLayer.hpp"
 #include "DataStorage.hpp"
 
+#include "Operations/ClientAuthOperation.hpp"
+
 #include <QLoggingCategory>
 #include <QTimer>
 
@@ -53,10 +55,10 @@ PendingOperation *Backend::connectToServer()
     return m_mainConnection->connectToDc();
 }
 
-PendingAuthOperation *Backend::signIn()
+AuthOperation *Backend::signIn()
 {
     if (!m_authOperation) {
-        m_authOperation = new PendingAuthOperation(this);
+        m_authOperation = new AuthOperation(this);
     }
 
     if (m_signedIn) {
@@ -116,7 +118,7 @@ PendingAuthOperation *Backend::signIn()
         m_authOperation->runAfter(connectToServer());
         return m_authOperation;
     }
-    m_authOperation->setRunMethod(&PendingAuthOperation::requestAuthCode);
+    m_authOperation->setRunMethod(&AuthOperation::requestAuthCode);
     m_authOperation->startLater();
 
     connect(m_authOperation, &PendingOperation::succeeded, [this]() {

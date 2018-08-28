@@ -26,7 +26,7 @@ bool Client::isSignedIn() const
     return d->m_signedIn;
 }
 
-PendingAuthOperation *Client::signIn()
+Telegram::Client::AuthOperation *Client::signIn()
 {
     Q_D(Client);
     return d->signIn();

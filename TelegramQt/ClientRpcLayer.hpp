@@ -31,7 +31,7 @@ class PendingRpcOperation;
 
 namespace Client {
 
-class PendingAuthOperation;
+class AuthOperation;
 
 
 // Generated low-level layers forward declarations
@@ -94,7 +94,7 @@ protected:
     QByteArray getInitConnection() const;
 
     CAppInformation *m_appInfo = nullptr;
-    PendingAuthOperation *m_pendingAuthOperation = nullptr;
+    AuthOperation *m_pendingAuthOperation = nullptr;
     QHash<quint64, PendingRpcOperation*> m_operations; // request message id, operation
     quint64 m_sessionId = 0;
 

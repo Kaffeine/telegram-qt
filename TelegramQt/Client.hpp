@@ -40,6 +40,7 @@ namespace Client {
 class Settings;
 class DataStorage;
 class AccountStorage;
+class AuthOperation;
 
 //class LegacyCredentialsStorage : public CredentialsStorage
 //{
@@ -241,7 +242,7 @@ public Q_SLOTS:
     PendingOperation *connectToServer(); // Establish low-level TCP connection
 //    void disconnectFromServer();
 //    PendingAuthOperation *checkPhoneNumber();
-    PendingAuthOperation *signIn();
+    AuthOperation *signIn();
 
 //    void resetConnectionData();
 //    bool setSecretInfo(const QByteArray &secret);

@@ -4,7 +4,8 @@
 #include <QTimer>
 #include <QDebug>
 
-#include "../../TelegramQt/Client.hpp"
+#include "Client.hpp"
+#include "Operations/ClientAuthOperation.hpp"
 
 namespace Telegram {
 
@@ -124,13 +125,13 @@ void DeclarativeAuthOperation::startEvent()
     m_authOperation = m_target->backend()->signIn();
     m_authOperation->setPhoneNumber(phoneNumber());
     setPendingOperation(m_authOperation);
-    connect(m_authOperation, &PendingAuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
-    connect(m_authOperation, &PendingAuthOperation::authCodeRequired, this, &DeclarativeAuthOperation::authCodeRequired);
-    connect(m_authOperation, &PendingAuthOperation::passwordRequired, this, &DeclarativeAuthOperation::onPasswordRequired);
-    connect(m_authOperation, &PendingAuthOperation::passwordCheckFailed, this, &DeclarativeAuthOperation::passwordCheckFailed);
+    connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
+    connect(m_authOperation, &AuthOperation::authCodeRequired, this, &DeclarativeAuthOperation::authCodeRequired);
+    connect(m_authOperation, &AuthOperation::passwordRequired, this, &DeclarativeAuthOperation::onPasswordRequired);
+    connect(m_authOperation, &AuthOperation::passwordCheckFailed, this, &DeclarativeAuthOperation::passwordCheckFailed);
 
-    connect(m_authOperation, &PendingAuthOperation::passwordHintChanged, this, &DeclarativeAuthOperation::passwordHintChanged);
-    connect(m_authOperation, &PendingAuthOperation::hasRecoveryChanged, this, &DeclarativeAuthOperation::hasRecoveryChanged);
+    connect(m_authOperation, &AuthOperation::passwordHintChanged, this, &DeclarativeAuthOperation::passwordHintChanged);
+    connect(m_authOperation, &AuthOperation::hasRecoveryChanged, this, &DeclarativeAuthOperation::hasRecoveryChanged);
 }
 
 bool DeclarativeAuthOperation::requestCall()

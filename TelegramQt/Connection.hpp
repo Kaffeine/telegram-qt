@@ -4,6 +4,7 @@
 #include "telegramqt_global.h"
 
 #include "PendingOperation.hpp"
+#include "TelegramNamespace.hpp"
 
 #include <QObject>
 #include <QVector>

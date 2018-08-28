@@ -25,6 +25,8 @@
 #include "TelegramNamespace.hpp"
 #include "CAppInformation.hpp"
 
+#include "Operations/ClientAuthOperation.hpp"
+
 #include "TelegramServer.hpp"
 #include "TelegramServerClient.hpp"
 #include "TelegramServerUser.hpp"
@@ -226,10 +228,10 @@ void tst_all::testClientConnection()
     QCOMPARE(remoteClientConnection->authId(), clientAuthId);
 
     // --- Sign in ---
-    Client::PendingAuthOperation *signInOperation = client.signIn();
+    Client::AuthOperation *signInOperation = client.signIn();
     QSignalSpy serverAuthCodeSpy(server, &TestServer::authCodeSent);
 
-    QSignalSpy authCodeSpy(signInOperation, &Client::PendingAuthOperation::authCodeRequired);
+    QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
     QTRY_VERIFY(!authCodeSpy.isEmpty());
     QCOMPARE(authCodeSpy.count(), 1);
     QCOMPARE(serverAuthCodeSpy.count(), 1);
@@ -239,8 +241,8 @@ void tst_all::testClientConnection()
 
     signInOperation->submitAuthCode(authCode);
 
-    QSignalSpy authPasswordSpy(signInOperation, &Client::PendingAuthOperation::passwordRequired);
-    QSignalSpy passwordCheckFailedSpy(signInOperation, &Client::PendingAuthOperation::passwordCheckFailed);
+    QSignalSpy authPasswordSpy(signInOperation, &Client::AuthOperation::passwordRequired);
+    QSignalSpy passwordCheckFailedSpy(signInOperation, &Client::AuthOperation::passwordCheckFailed);
     QTRY_VERIFY2(!authPasswordSpy.isEmpty(), "The user has a password-protection, "
                                              "but there are no passwordRequired signals on the client side");
     QCOMPARE(authPasswordSpy.count(), 1);

@@ -68,6 +68,12 @@ FILE(GLOB RPC_HEADERS RpcLayers/*.hpp)
 list(APPEND telegram_qt_SOURCES ${RPC_SOURCES})
 list(APPEND telegram_qt_META_HEADERS ${RPC_HEADERS})
 
+FILE(GLOB CLIENT_OPERATIONS_SOURCES Operations/*.cpp)
+FILE(GLOB CLIENT_OPERATIONS_HEADERS Operations/*.hpp)
+
+list(APPEND telegram_qt_SOURCES ${CLIENT_OPERATIONS_SOURCES})
+list(APPEND telegram_qt_META_HEADERS ${CLIENT_OPERATIONS_HEADERS})
+
 set(telegram_qt_HEADERS
     ${telegram_qt_META_HEADERS}
     telegramqt_global.h
