@@ -1,3 +1,6 @@
+#ifndef TELEGRAM_ACCOUNT_STORAGE_HPP
+#define TELEGRAM_ACCOUNT_STORAGE_HPP
+
 #include "TelegramNamespace.hpp"
 
 namespace Telegram {
@@ -73,3 +76,5 @@ signals:
 } // Client namespace
 
 } // Telegram namespace
+
+#endif // TELEGRAM_ACCOUNT_STORAGE_HPP
