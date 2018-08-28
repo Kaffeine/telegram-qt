@@ -5,9 +5,7 @@
 #include "Connection.hpp"
 #include "PendingOperation.hpp"
 
-#include "TLTypes.hpp"
-
-struct TLDcOption;
+#include "TelegramNamespace.hpp"
 
 namespace Telegram {
 
@@ -21,8 +19,7 @@ class Connection : public Telegram::BaseConnection
 public:
     explicit Connection(QObject *parent = nullptr);
 
-    TLDcOption dcOption() const { return m_dcOption; }
-    void setDcOption(const TLDcOption &dcOption);
+    DcOption dcOption() const { return m_dcOption; }
     void setDcOption(const DcOption &dcOption);
 
     RpcLayer *rpcLayer();
@@ -35,7 +32,7 @@ protected slots:
     void onClientDhStateChanged();
 
 protected:
-    TLDcOption m_dcOption;
+    DcOption m_dcOption;
 };
 
 } // Client namespace

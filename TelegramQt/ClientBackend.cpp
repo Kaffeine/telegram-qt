@@ -148,9 +148,9 @@ Connection *Backend::createConnection()
     return connection;
 }
 
-Connection *Backend::createConnection(const TLDcOption &dcOption)
+Connection *Backend::createConnection(const DcOption &dcOption)
 {
-    qDebug() << Q_FUNC_INFO << dcOption.id << dcOption.ipAddress << dcOption.port;
+    qDebug() << Q_FUNC_INFO << dcOption.id << dcOption.address << dcOption.port;
 
     Connection *connection = createConnection();
     connection->setDcOption(dcOption);

@@ -53,17 +53,9 @@ Connection::Connection(QObject *parent) :
     m_rpcLayer->setSendPackageHelper(m_sendHelper);
 }
 
-void Connection::setDcOption(const TLDcOption &dcOption)
-{
-    m_dcOption = dcOption;
-}
-
 void Connection::setDcOption(const DcOption &dcOption)
 {
-    TLDcOption opt;
-    opt.ipAddress = dcOption.address;
-    opt.port = dcOption.port;
-    setDcOption(opt);
+    m_dcOption = dcOption;
 }
 
 RpcLayer *Connection::rpcLayer()
@@ -80,7 +72,7 @@ PendingOperation *Connection::connectToDc()
     }
 
 #ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << m_dcOption.id << m_dcOption.ipAddress << m_dcOption.port;
+    qDebug() << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << m_dcOption.port;
 #endif
 
     if (m_transport->state() != QAbstractSocket::UnconnectedState) {
@@ -92,7 +84,7 @@ PendingOperation *Connection::connectToDc()
 
     setStatus(Status::Connecting, StatusReason::Local);
 //    setAuthState(AuthStateNone);
-    m_transport->connectToHost(m_dcOption.ipAddress, m_dcOption.port);
+    m_transport->connectToHost(m_dcOption.address, m_dcOption.port);
 
     connect(m_transport, &CTelegramTransport::errorOccurred, [op] (QAbstractSocket::SocketError error, const QString &text) {
         op->setFinishedWithError({

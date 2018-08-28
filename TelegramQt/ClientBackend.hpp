@@ -6,11 +6,11 @@
 
 
 class CAppInformation;
-struct TLDcOption;
 
 namespace Telegram {
 
 class PendingOperation;
+struct DcOption;
 
 namespace Client {
 
@@ -34,7 +34,7 @@ public:
     AuthOperation *signIn();
 
     Connection *createConnection();
-    Connection *createConnection(const TLDcOption &dcInfo);
+    Connection *createConnection(const DcOption &dcInfo);
     Connection *mainConnection();
 
     void setMainConnection(Connection *connection);
