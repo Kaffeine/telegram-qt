@@ -157,6 +157,13 @@ PendingRpcOperation *RpcLayer::sendEncryptedPackage(const QByteArray &payload)
         messageId = sendPackage(payload, SendMode::Client);
     }
     PendingRpcOperation *op = new PendingRpcOperation(payload, this);
+    if (!messageId) {
+        op->setDelayedFinishedWithError({
+                                            { QStringLiteral("text"),
+                                              QStringLiteral("Unable to get message id") }
+                                        });
+        return op;
+    }
     op->setRequestId(messageId);
     op->setConnection(m_sendHelper->getConnection());
     m_operations.insert(messageId, op);
