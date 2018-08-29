@@ -1,13 +1,12 @@
-
 #ifndef TELEGRAM_CLIENT_CONNECTION_HPP
 #define TELEGRAM_CLIENT_CONNECTION_HPP
 
 #include "Connection.hpp"
-#include "PendingOperation.hpp"
-
 #include "TelegramNamespace.hpp"
 
 namespace Telegram {
+
+class PendingOperation;
 
 namespace Client {
 

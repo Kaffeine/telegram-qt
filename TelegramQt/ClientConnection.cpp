@@ -2,6 +2,7 @@
 #include "ClientDhLayer.hpp"
 #include "ClientRpcLayer.hpp"
 #include "CTelegramTransport.hpp"
+#include "PendingOperation.hpp"
 #include "SendPackageHelper.hpp"
 #include "TelegramUtils.hpp"
 #include "Utils.hpp"

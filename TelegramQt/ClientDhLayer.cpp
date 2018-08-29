@@ -19,6 +19,7 @@
 
 #include "CTelegramTransport.hpp"
 #include "Utils.hpp"
+#include "PendingOperation.hpp"
 #include "TelegramUtils.hpp"
 #include "SendPackageHelper.hpp"
 

@@ -19,9 +19,10 @@
 #define CLIENT_DH_LAYER_HPP
 
 #include "DhLayer.hpp"
-#include "PendingOperation.hpp"
 
 namespace Telegram {
+
+class PendingRpcOperation;
 
 namespace Client {
 
@@ -33,7 +34,7 @@ public:
     void init() override;
 
     PendingRpcOperation *requestPqAuthorization();
-    void onPqAuthorizationAnswer(PendingRpcOperation*operation);
+    void onPqAuthorizationAnswer(PendingRpcOperation *operation);
     bool acceptPqAuthorization(const QByteArray &payload);
     PendingRpcOperation *requestDhParameters();
     void onDhParametersAnswer(PendingRpcOperation*operation);
@@ -42,7 +43,7 @@ public:
 //    bool processServerDHParamsFail(const QByteArray &encryptedAnswer);
     void generateDh();
     PendingRpcOperation *requestDhGenerationResult();
-    void onDhGenerationResultAnswer(PendingRpcOperation*operation);
+    void onDhGenerationResultAnswer(PendingRpcOperation *operation);
     bool processServerDhAnswer(const QByteArray &payload);
 
 protected:
