@@ -217,15 +217,9 @@ void tst_all::testClientConnection()
     // --- Connect ---
     PendingOperation *connectOperation = client.connectToServer();
     QTRY_VERIFY(connectOperation->isSucceeded());
-    quint64 clientAuthId = accountStorage.authId();
-    QVERIFY(clientAuthId);
 
     TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(1));
     QVERIFY(server);
-    QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
-    QCOMPARE(clientConnections.count(), 1);
-    Server::RemoteClientConnection *remoteClientConnection = *clientConnections.cbegin();
-    QCOMPARE(remoteClientConnection->authId(), clientAuthId);
 
     // --- Sign in ---
     Client::AuthOperation *signInOperation = client.signIn();
@@ -259,6 +253,13 @@ void tst_all::testClientConnection()
 
     signInOperation->submitPassword(userData.password);
     QTRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
+
+    quint64 clientAuthId = accountStorage.authId();
+    QVERIFY(clientAuthId);
+    QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
+    QCOMPARE(clientConnections.count(), 1);
+    Server::RemoteClientConnection *remoteClientConnection = *clientConnections.cbegin();
+    QCOMPARE(remoteClientConnection->authId(), clientAuthId);
 }
 
 QTEST_GUILESS_MAIN(tst_all)
