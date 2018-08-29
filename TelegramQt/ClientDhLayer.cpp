@@ -467,6 +467,7 @@ PendingRpcOperation *DhLayer::sendPlainPackage(const QByteArray &payload)
     const quint64 messageId = BaseDhLayer::sendPlainPackage(payload, SendMode::Client);
     m_plainOperation = new PendingRpcOperation(payload, this);
     m_plainOperation->setRequestId(messageId);
+    m_plainOperation->setConnection(m_sendHelper->getConnection());
     return m_plainOperation;
 }
 

@@ -13,6 +13,7 @@ class Backend;
 } // Client
 
 class RpcError;
+class BaseConnection;
 
 class PendingOperation : public QObject
 {
@@ -83,6 +84,9 @@ public:
     quint64 requestId() const { return m_requestId; } // RPC message id
     void setRequestId(quint64 id) { m_requestId = id; }
 
+    BaseConnection *getConnection() const { return m_connection; }
+    void setConnection(BaseConnection *connection) { m_connection = connection; }
+
 signals:
     void finished(PendingRpcOperation *operation);
 
@@ -91,6 +95,7 @@ protected:
     QByteArray m_replyData;
     QByteArray m_requestData;
     RpcError *m_error = nullptr;
+    BaseConnection *m_connection;
 };
 
 }

@@ -211,6 +211,7 @@ PendingRpcOperation *RpcLayer::sendEncryptedPackage(const QByteArray &payload)
     }
     PendingRpcOperation *op = new PendingRpcOperation(payload, this);
     op->setRequestId(messageId);
+    op->setConnection(m_sendHelper->getConnection());
     m_operations.insert(messageId, op);
     return op;
 }
