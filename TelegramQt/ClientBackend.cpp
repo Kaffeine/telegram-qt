@@ -204,7 +204,7 @@ Connection *Backend::mainConnection()
 void Backend::setMainConnection(Connection *connection)
 {
     m_mainConnection = connection;
-    connect(m_mainConnection, &BaseConnection::statusChanged, [this](Connection::Status status) {
+    auto updateStatusLambda = [this](Connection::Status status) {
         switch (status) {
         case Connection::Status::Authenticated:
         case Connection::Status::Signed:
@@ -214,7 +214,9 @@ void Backend::setMainConnection(Connection *connection)
         default:
             break;
         }
-    });
+    };
+    connect(m_mainConnection, &BaseConnection::statusChanged, updateStatusLambda);
+    updateStatusLambda(m_mainConnection->status());
 }
 
 PendingRpcOperation *Backend::sendRpcRequest(Backend *backend, const QByteArray &payload)
