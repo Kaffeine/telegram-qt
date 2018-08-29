@@ -24,6 +24,8 @@
 
 namespace Telegram {
 
+class BaseConnection;
+
 enum class SendMode : quint8 {
     Client,
     ServerInitiative,
@@ -35,6 +37,7 @@ class TELEGRAMQT_EXPORT BaseSendPackageHelper
 public:
     virtual ~BaseSendPackageHelper() = default;
     virtual quint64 newMessageId(SendMode mode) = 0;
+    BaseConnection *getConnection() const { return m_connection; }
 
     virtual void sendPackage(const QByteArray &package) = 0;
 
@@ -49,6 +52,7 @@ public:
     void setAuthKey(const QByteArray &authKey);
 
 protected:
+    BaseConnection *m_connection = nullptr;
     quint64 m_lastMessageId = 0;
 
     quint64 m_authId = 0;

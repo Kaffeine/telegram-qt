@@ -20,9 +20,9 @@ class SendPackageHelper : public BaseSendPackageHelper
 {
 public:
     explicit SendPackageHelper(BaseConnection *connection) :
-        BaseSendPackageHelper(),
-        m_connection(connection)
+        BaseSendPackageHelper()
     {
+        m_connection = connection;
     }
 
     quint64 newMessageId(SendMode mode) override
@@ -43,9 +43,6 @@ public:
     {
         return m_connection->transport()->sendPackage(package);
     }
-
-protected:
-    BaseConnection *m_connection;
 };
 
 RemoteClientConnection::RemoteClientConnection(QObject *parent) :
