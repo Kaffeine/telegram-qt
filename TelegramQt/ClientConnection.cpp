@@ -2,10 +2,11 @@
 #include "ClientDhLayer.hpp"
 #include "ClientRpcLayer.hpp"
 #include "CTelegramTransport.hpp"
-#include "PendingOperation.hpp"
 #include "SendPackageHelper.hpp"
 #include "TelegramUtils.hpp"
 #include "Utils.hpp"
+
+#include "Operations/ConnectionOperation.hpp"
 
 #include <QDateTime>
 #include <QLoggingCategory>
@@ -66,12 +67,14 @@ RpcLayer *Connection::rpcLayer()
     return reinterpret_cast<RpcLayer*>(m_rpcLayer);
 }
 
-PendingOperation *Connection::connectToDc()
+ConnectOperation *Connection::connectToDc()
 {
     if (m_status != Status::Disconnected) {
-        return PendingOperation::failOperation<PendingOperation>({
-                                                                     { QStringLiteral("text"), QStringLiteral("Connection is already in progress") }
-                                                                 });
+        const QString text = QStringLiteral("Connection is already in progress");
+        return PendingOperation::failOperation<ConnectOperation>({
+                                                                     { QStringLiteral("text"), text }
+                                                                 },
+                                                                 this);
     }
 
 #ifdef DEVELOPER_BUILD
@@ -82,7 +85,7 @@ PendingOperation *Connection::connectToDc()
         m_transport->disconnectFromHost(); // Ensure that there is no connection
     }
 
-    PendingOperation *op = new PendingOperation(this);
+    ConnectOperation *op = new ConnectOperation(this);
     // TODO: Connect error to op->setFinishedWithError()
 
     setStatus(Status::Connecting, StatusReason::Local);

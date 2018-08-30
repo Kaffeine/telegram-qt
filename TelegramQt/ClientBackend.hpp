@@ -22,6 +22,7 @@ class AccountStorage;
 class DataStorage;
 class RpcLayer;
 class AuthOperation;
+class ConnectOperation;
 
 // Generated low-level layers forward declarations
 class AccountRpcLayer;
@@ -105,6 +106,9 @@ public:
     UploadRpcLayer *m_uploadLayer = nullptr;
     UsersRpcLayer *m_usersLayer = nullptr;
     // End of generated low-level layer members
+
+protected:
+    ConnectOperation *m_connectToServerOperation = nullptr;
 
 };
 

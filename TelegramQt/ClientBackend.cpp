@@ -9,6 +9,7 @@
 #include "DataStorage.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
+#include "Operations/ConnectionOperation.hpp"
 
 #include <QLoggingCategory>
 #include <QTimer>
@@ -82,10 +83,15 @@ Backend::Backend(Client *parent) :
 
 PendingOperation *Backend::connectToServer()
 {
+    if (m_connectToServerOperation) {
+        return m_connectToServerOperation;
+    }
+
     if (m_mainConnection && m_mainConnection->status() != Connection::Status::Disconnected) {
-        return PendingOperation::failOperation<PendingOperation>({
-                                                                     { QStringLiteral("text"), QStringLiteral("Connection is already in progress") }
-                                                                 });
+        return PendingOperation::failOperation<PendingOperation>
+                ({
+                     { QStringLiteral("text"), QStringLiteral("Connection is already in progress") }
+                 });
     }
 
     if (m_mainConnection) {
@@ -101,7 +107,8 @@ PendingOperation *Backend::connectToServer()
     }
     connection->setServerRsaKey(m_settings->serverRsaKey());
     setMainConnection(connection);
-    return connection->connectToDc();
+    m_connectToServerOperation = connection->connectToDc();
+    return m_connectToServerOperation;
 }
 
 AuthOperation *Backend::signIn()
@@ -163,8 +170,9 @@ AuthOperation *Backend::signIn()
         m_authOperation->setPhoneNumber(m_accountStorage->phoneNumber());
     }
 
-    if (!mainConnection()) {
-        m_authOperation->runAfter(connectToServer());
+    PendingOperation *connectionOperation = connectToServer();
+    if (!connectionOperation->isFinished()) {
+        m_authOperation->runAfter(connectionOperation);
         return m_authOperation;
     }
     m_authOperation->setRunMethod(&AuthOperation::requestAuthCode);
