@@ -100,9 +100,13 @@ void BaseConnection::onTransportPackageReceived(const QByteArray &package)
     }
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
     if (*authKeyIdBytes) {
-        m_rpcLayer->processPackage(package);
+        if (!m_rpcLayer->processPackage(package)) {
+            qWarning() << "Unable to process RPC packet:" << package.toHex();
+        }
     } else {
-        m_dhLayer->processPlainPackage(package);
+        if (!m_dhLayer->processPlainPackage(package)) {
+            qWarning() << "Unable to process plain packet:" << package.toHex();
+        }
     }
 }
 
