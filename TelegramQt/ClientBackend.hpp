@@ -78,10 +78,10 @@ public:
     // End of generated low-level layers
 
     CAppInformation *m_appInformation = nullptr;
-    Client *m_client; // Parent
-    Settings *m_settings;
-    AccountStorage *m_accountStorage;
-    DataStorage *m_dataStorage;
+    Client *m_client = nullptr; // Parent
+    Settings *m_settings = nullptr;
+    AccountStorage *m_accountStorage = nullptr;
+    DataStorage *m_dataStorage = nullptr;
     Connection *m_mainConnection = nullptr;
 
     AuthOperation *m_authOperation = nullptr;
