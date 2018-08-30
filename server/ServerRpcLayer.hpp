@@ -48,6 +48,8 @@ public:
     bool sendRpcError(const Telegram::RpcError &error, quint64 messageId);
     bool sendRpcReply(const QByteArray &reply, quint64 messageId);
 
+    static const char *gzipPackMessage();
+
 protected:
     bool processDecryptedPackage(const QByteArray &decryptedData) override;
     SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }

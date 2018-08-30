@@ -168,9 +168,28 @@ bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
     CRawStream output(CRawStream::WriteOnly);
     output << TLValue::RpcResult;
     output << messageId;
-    output.writeBytes(reply);
+    if (reply.size() > 128) { // Telegram spec says it should be 255, but we need to lower the limit to pack DcConfig
+        const QByteArray innerData = Utils::packGZip(reply);
+        if (innerData.size() + 8 < reply.size()) {
+            CTelegramStream innerStream(CRawStream::WriteOnly);
+            innerStream << TLValue::GzipPacked;
+            innerStream << innerData;
+            output.writeBytes(innerStream.getData());
+            qDebug() << gzipPackMessage() << messageId << TLValue::firstFromArray(reply).toString();
+        } else {
+            qDebug() << "Server: It makes no sense to gzip the answer for message" << messageId;
+            output.writeBytes(reply);
+        }
+    } else {
+        output.writeBytes(reply);
+    }
     qDebug() << Q_FUNC_INFO << TLValue::firstFromArray(reply) << "for message id" << messageId;
     return sendPackage(output.getData(), SendMode::ServerReply);
+}
+
+const char *RpcLayer::gzipPackMessage()
+{
+    return "Server: gzip the answer for message";
 }
 
 bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)
