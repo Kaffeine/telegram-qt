@@ -38,6 +38,12 @@ bool RpcOperation::verifyHasUserOrWantedUser()
     return true;
 }
 
+bool RpcOperation::processNotImplementedMethod(TLValue functionCode)
+{
+    qWarning() << "RPC Operation is not implemented:" << functionCode;
+    return false;
+}
+
 //void ServerRpcOperation::sendReply(const QByteArray &buffer)
 //{
 //    CRawStreamEx output(CRawStream::WriteOnly);

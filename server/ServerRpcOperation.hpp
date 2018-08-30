@@ -37,6 +37,8 @@ public:
     bool verifyHasUserOrWantedUser();
 
 protected:
+    virtual bool processNotImplementedMethod(TLValue functionCode);
+
     RpcLayer *m_rpcLayer = nullptr;
     ServerApi *m_api = nullptr;
     quint64 m_requestId = 0;
