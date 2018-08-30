@@ -18,6 +18,7 @@
 #include "ClientRpcLayerExtension.hpp"
 #include "CTelegramStream.hpp"
 #include "PendingOperation.hpp"
+#include "Utils.hpp"
 
 namespace Telegram {
 
@@ -35,7 +36,17 @@ void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream, PendingRp
     // Probably it would be better to hide this method from subclasses by adding a processReply()
     // reimpl with type-specific code (check for TLType::isValid() and call this method)
 
-    const QByteArray data = operation->replyData();
+    QByteArray data = operation->replyData();
+
+    if (data.size() > 4) {
+        if (TLValue::firstFromArray(data) == TLValue::GzipPacked) {
+            TelegramStream packedStream(data);
+            TLValue gzipValue;
+            packedStream >> gzipValue;
+            packedStream >> data;
+            data = Utils::unpackGZip(data);
+        }
+    }
 #ifdef DUMP_CLIENT_RPC_PACKETS
     qDebug() << "BaseRpcLayerExtension: Process answer for message" << operation->requestId();
     qDebug().noquote() << "BaseRpcLayerExtension: RPC Reply bytes:" << data.size() << data.toHex();
