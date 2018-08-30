@@ -43,7 +43,7 @@ Backend::Backend(Client *parent) :
     Backend *b = this;
     BaseRpcLayerExtension::SendMethod sendMethod = [b](const QByteArray &payload) mutable {
         PendingRpcOperation *operation = new PendingRpcOperation(payload, b);
-        b->mainConnection()->rpcLayer()->sendRpc(operation);
+        b->getDefaultConnection()->rpcLayer()->sendRpc(operation);
         return operation;
     };
 
@@ -209,6 +209,16 @@ Connection *Backend::createConnection(const DcOption &dcOption)
 Connection *Backend::mainConnection()
 {
     return m_mainConnection;
+}
+
+Connection *Backend::getDefaultConnection()
+{
+    if (mainConnection()) {
+        return mainConnection();
+    } else if (m_connectToServerOperation) {
+        return m_connectToServerOperation->connection();
+    }
+    return nullptr;
 }
 
 void Backend::setMainConnection(Connection *connection)

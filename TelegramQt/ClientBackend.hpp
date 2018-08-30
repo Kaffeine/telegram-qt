@@ -53,7 +53,7 @@ public:
 
     Connection *createConnection(const DcOption &dcInfo);
     Connection *mainConnection();
-    //Connection *getRpcConnection();
+    Connection *getDefaultConnection();
 
     void setMainConnection(Connection *connection);
 
