@@ -41,7 +41,9 @@ Backend::Backend(Client *parent) :
 {
     Backend *b = this;
     BaseRpcLayerExtension::SendMethod sendMethod = [b](const QByteArray &payload) mutable {
-        return sendRpcRequest(b, payload);
+        PendingRpcOperation *operation = new PendingRpcOperation(payload, b);
+        b->mainConnection()->rpcLayer()->sendRpc(operation);
+        return operation;
     };
 
     // Generated low-level layer initialization
@@ -217,11 +219,6 @@ void Backend::setMainConnection(Connection *connection)
     };
     connect(m_mainConnection, &BaseConnection::statusChanged, updateStatusLambda);
     updateStatusLambda(m_mainConnection->status());
-}
-
-PendingRpcOperation *Backend::sendRpcRequest(Backend *backend, const QByteArray &payload)
-{
-    return backend->mainConnection()->rpcLayer()->sendEncryptedPackage(payload);
 }
 
 } // Client namespace

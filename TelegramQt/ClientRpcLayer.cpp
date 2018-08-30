@@ -167,18 +167,6 @@ bool RpcLayer::sendRpc(PendingRpcOperation *operation)
     return true;
 }
 
-PendingRpcOperation *RpcLayer::sendEncryptedPackage(const QByteArray &payload)
-{
-    PendingRpcOperation *operation = new PendingRpcOperation(payload, this);
-    if (!sendRpc(operation)) {
-        operation->setDelayedFinishedWithError({
-                                                   { QStringLiteral("text"),
-                                                     QStringLiteral("Unable to get message id") }
-                                               });
-    }
-    return operation;
-}
-
 QByteArray RpcLayer::getInitConnection() const
 {
 #ifdef DEVELOPER_BUILD

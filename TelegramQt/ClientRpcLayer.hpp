@@ -47,9 +47,6 @@ public:
 
     bool processRpcQuery(const QByteArray &data);
 
-    PendingRpcOperation *sendEncryptedPackage(const QByteArray &payload);
-    static PendingRpcOperation *sendEncryptedPackage(RpcLayer *layer, const QByteArray &payload) { return layer->sendEncryptedPackage(payload); }
-
     bool sendRpc(PendingRpcOperation *operation);
 
 protected:

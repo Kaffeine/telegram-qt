@@ -106,8 +106,6 @@ public:
     UsersRpcLayer *m_usersLayer = nullptr;
     // End of generated low-level layer members
 
-    static PendingRpcOperation *sendRpcRequest(Backend *backend, const QByteArray &payload);
-
 };
 
 } // Client namespace
