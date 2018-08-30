@@ -30,12 +30,14 @@
 #include "TelegramServer.hpp"
 #include "TelegramServerClient.hpp"
 #include "TelegramServerUser.hpp"
+#include "ServerRpcLayer.hpp"
 #include "DcConfiguration.hpp"
 #include "LocalCluster.hpp"
 
 #include <QTest>
 #include <QSignalSpy>
 #include <QDebug>
+#include <QRegularExpression>
 
 #include "keys_data.hpp"
 
@@ -216,6 +218,9 @@ void tst_all::testClientConnection()
 
     // --- Connect ---
     PendingOperation *connectOperation = client.connectToServer();
+    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(QString::fromLatin1(
+                                                            Server::RpcLayer::gzipPackMessage())
+                                                        + QStringLiteral(" .* \"Config\"")));
     QTRY_VERIFY(connectOperation->isSucceeded());
 
     TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(1));
