@@ -50,7 +50,6 @@ public:
     PendingOperation *connectToServer();
     AuthOperation *signIn();
 
-    Connection *createConnection();
     Connection *createConnection(const DcOption &dcInfo);
     Connection *mainConnection();
     //Connection *getRpcConnection();

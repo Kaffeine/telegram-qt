@@ -86,20 +86,20 @@ PendingOperation *Backend::connectToServer()
                                                                  });
     }
 
-    if (!m_mainConnection) {
-        Connection *connection = createConnection();
-        setMainConnection(connection);
+    if (m_mainConnection) {
+        // TODO!
     }
 
+    Connection *connection = nullptr;
     if (m_accountStorage->hasMinimalDataSet()) {
-        m_mainConnection->setDcOption(m_accountStorage->dcInfo());
-        m_mainConnection->setAuthKey(m_accountStorage->authKey());
+        connection = createConnection(m_accountStorage->dcInfo());
+        connection->setAuthKey(m_accountStorage->authKey());
     } else {
-        m_mainConnection->setDcOption(m_settings->serverConfiguration().first());
-        m_mainConnection->setAuthKey(QByteArray());
+        connection = createConnection(m_settings->serverConfiguration().first());
     }
-    m_mainConnection->setServerRsaKey(m_settings->serverRsaKey());
-    return m_mainConnection->connectToDc();
+    connection->setServerRsaKey(m_settings->serverRsaKey());
+    setMainConnection(connection);
+    return connection->connectToDc();
 }
 
 AuthOperation *Backend::signIn()
@@ -175,9 +175,10 @@ AuthOperation *Backend::signIn()
     return m_authOperation;
 }
 
-Connection *Backend::createConnection()
+Connection *Backend::createConnection(const DcOption &dcOption)
 {
     Connection *connection = new Connection(this);
+    connection->setDcOption(dcOption);
     connection->rpcLayer()->setAppInformation(m_appInformation);
 
     TcpTransport *transport = new TcpTransport(connection);
@@ -192,35 +193,6 @@ Connection *Backend::createConnection()
         break;
     }
     connection->setTransport(transport);
-    return connection;
-}
-
-Connection *Backend::createConnection(const DcOption &dcOption)
-{
-    qDebug() << Q_FUNC_INFO << dcOption.id << dcOption.address << dcOption.port;
-
-    Connection *connection = createConnection();
-    connection->setDcOption(dcOption);
-
-    // if transport TCP then
-
-
-//    connection->setDcInfo(dcInfo);
-//    connection->setDeltaTime(m_deltaTime);
-
-//    connect(connection, &CTelegramConnection::connectionFailed, this, &CTelegramDispatcher::onConnectionFailed);
-//    connect(connection, &CTelegramConnection::authStateChanged, this, &CTelegramDispatcher::onConnectionAuthChanged);
-//    connect(connection, &CTelegramConnection::statusChanged, this, &CTelegramDispatcher::onConnectionStatusChanged);
-//    connect(connection, &CTelegramConnection::dcConfigurationReceived, this, &CTelegramDispatcher::onDcConfigurationUpdated);
-//    connect(connection, &CTelegramConnection::actualDcIdReceived, this, &CTelegramDispatcher::onConnectionDcIdUpdated);
-//    connect(connection, &CTelegramConnection::newRedirectedPackage, this, &CTelegramDispatcher::onPackageRedirected);
-
-//    connect(connection, &CTelegramConnection::usersReceived, this, &CTelegramDispatcher::onUsersReceived);
-//    connect(connection, &CTelegramConnection::channelsParticipantsReceived, this, &CTelegramDispatcher::onChannelsParticipantsReceived);
-//    for (CTelegramModule *module : m_modules) {
-//        module->onNewConnection(connection);
-//    }
-
     return connection;
 }
 
