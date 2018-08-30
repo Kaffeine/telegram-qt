@@ -181,8 +181,7 @@ void AuthOperation::onSignInFinished(PendingRpcOperation *operation)
 
     TLAuthAuthorization result;
     authLayer()->processReply(operation, &result);
-    qDebug() << result.user.phone << result.user.firstName << result.user.lastName;
-    setFinished();
+    onGotAuthorization(operation, result);
 }
 
 void AuthOperation::onPasswordRequestFinished(PendingRpcOperation *operation)
@@ -216,7 +215,13 @@ void AuthOperation::onCheckPasswordFinished(PendingRpcOperation *operation)
 
     TLAuthAuthorization result;
     authLayer()->processReply(operation, &result);
-    qDebug() << result.user.phone << result.user.firstName << result.user.lastName;
+    onGotAuthorization(operation, result);
+}
+
+void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization)
+{
+    qDebug() << authorization.user.phone << authorization.user.firstName << authorization.user.lastName;
+    m_backend->setMainConnection(Connection::fromOperation(operation));
     setFinished();
 }
 

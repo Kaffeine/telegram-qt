@@ -4,6 +4,8 @@
 #include "PendingOperation.hpp"
 #include "TelegramNamespace.hpp"
 
+struct TLAuthAuthorization;
+
 namespace Telegram {
 
 namespace Client {
@@ -74,6 +76,7 @@ protected:
     void onSignInFinished(PendingRpcOperation *operation);
     void onPasswordRequestFinished(PendingRpcOperation *operation);
     void onCheckPasswordFinished(PendingRpcOperation *operation);
+    void onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization);
 
     QString m_authCodeHash;
 };

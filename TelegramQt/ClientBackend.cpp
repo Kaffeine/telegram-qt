@@ -106,7 +106,6 @@ PendingOperation *Backend::connectToServer()
         connection = createConnection(m_settings->serverConfiguration().first());
     }
     connection->setServerRsaKey(m_settings->serverRsaKey());
-    setMainConnection(connection);
     m_connectToServerOperation = connection->connectToDc();
     return m_connectToServerOperation;
 }
