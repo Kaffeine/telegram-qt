@@ -23,24 +23,6 @@
 #include "CAppInformation.hpp"
 #include "PendingOperation.hpp"
 
-// Generated low-level layer includes
-#include "ClientRpcAccountLayer.hpp"
-#include "ClientRpcAuthLayer.hpp"
-#include "ClientRpcBotsLayer.hpp"
-#include "ClientRpcChannelsLayer.hpp"
-#include "ClientRpcContactsLayer.hpp"
-#include "ClientRpcHelpLayer.hpp"
-#include "ClientRpcLangpackLayer.hpp"
-#include "ClientRpcMessagesLayer.hpp"
-#include "ClientRpcPaymentsLayer.hpp"
-#include "ClientRpcPhoneLayer.hpp"
-#include "ClientRpcPhotosLayer.hpp"
-#include "ClientRpcStickersLayer.hpp"
-#include "ClientRpcUpdatesLayer.hpp"
-#include "ClientRpcUploadLayer.hpp"
-#include "ClientRpcUsersLayer.hpp"
-// End of generated low-level layer includes
-
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(c_clientRpcLayerCategory, "telegram.client.rpclayer", QtWarningMsg)
@@ -52,41 +34,6 @@ namespace Client {
 RpcLayer::RpcLayer(QObject *parent) :
     BaseRpcLayer(parent)
 {
-    RpcLayer *l = this;
-    BaseRpcLayerExtension::SendMethod sendMethod = [l](const QByteArray &payload) mutable { return RpcLayer::sendEncryptedPackage(l, payload); };
-
-    // Generated low-level layer initialization
-    m_accountLayer = new AccountRpcLayer(this);
-    m_accountLayer->setSendMethod(sendMethod);
-    m_authLayer = new AuthRpcLayer(this);
-    m_authLayer->setSendMethod(sendMethod);
-    m_botsLayer = new BotsRpcLayer(this);
-    m_botsLayer->setSendMethod(sendMethod);
-    m_channelsLayer = new ChannelsRpcLayer(this);
-    m_channelsLayer->setSendMethod(sendMethod);
-    m_contactsLayer = new ContactsRpcLayer(this);
-    m_contactsLayer->setSendMethod(sendMethod);
-    m_helpLayer = new HelpRpcLayer(this);
-    m_helpLayer->setSendMethod(sendMethod);
-    m_langpackLayer = new LangpackRpcLayer(this);
-    m_langpackLayer->setSendMethod(sendMethod);
-    m_messagesLayer = new MessagesRpcLayer(this);
-    m_messagesLayer->setSendMethod(sendMethod);
-    m_paymentsLayer = new PaymentsRpcLayer(this);
-    m_paymentsLayer->setSendMethod(sendMethod);
-    m_phoneLayer = new PhoneRpcLayer(this);
-    m_phoneLayer->setSendMethod(sendMethod);
-    m_photosLayer = new PhotosRpcLayer(this);
-    m_photosLayer->setSendMethod(sendMethod);
-    m_stickersLayer = new StickersRpcLayer(this);
-    m_stickersLayer->setSendMethod(sendMethod);
-    m_updatesLayer = new UpdatesRpcLayer(this);
-    m_updatesLayer->setSendMethod(sendMethod);
-    m_uploadLayer = new UploadRpcLayer(this);
-    m_uploadLayer->setSendMethod(sendMethod);
-    m_usersLayer = new UsersRpcLayer(this);
-    m_usersLayer->setSendMethod(sendMethod);
-    // End of generated low-level layer initialization
 }
 
 void RpcLayer::setAppInformation(CAppInformation *appInfo)

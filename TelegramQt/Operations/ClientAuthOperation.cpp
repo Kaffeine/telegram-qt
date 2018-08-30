@@ -62,16 +62,15 @@ void AuthOperation::abort()
 
 PendingOperation *AuthOperation::requestAuthCode()
 {
-    RpcLayer *layer = m_backend->mainConnection()->rpcLayer();
-    const CAppInformation *appInfo = layer->appInformation();
+    const CAppInformation *appInfo = m_backend->m_appInformation;
     if (!appInfo) {
         const QString text = QStringLiteral("Unable to request auth code, because the application information is not set");
         return PendingOperation::failOperation({{QStringLiteral("text"), text}});
     }
-    qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber())
-             << "on dc" << m_backend->mainConnection()->dcOption().id;
 
-    PendingRpcOperation *requestCodeOperation = authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
+    PendingRpcOperation *requestCodeOperation = m_backend->authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
+    qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber())
+             << "on dc" << Connection::fromOperation(requestCodeOperation)->dcOption().id;
     connect(requestCodeOperation, &PendingRpcOperation::finished, this, &AuthOperation::onRequestAuthCodeFinished);
     return requestCodeOperation;
 }
@@ -143,12 +142,12 @@ void AuthOperation::setPasswordHint(const QString &hint)
 
 AccountRpcLayer *AuthOperation::accountLayer() const
 {
-    return m_backend->rpcLayer()->account();
+    return m_backend->accountLayer();
 }
 
 AuthRpcLayer *AuthOperation::authLayer() const
 {
-    return m_backend->rpcLayer()->auth();
+    return m_backend->authLayer();
 }
 
 void AuthOperation::onRequestAuthCodeFinished(PendingRpcOperation *operation)

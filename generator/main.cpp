@@ -636,7 +636,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
 
             lowLevelForwardDeclarations.append(QStringLiteral("class %1RpcLayer;").arg(group.name1stCapital));
             lowLevelIncludes.append(QStringLiteral("#include \"%1\"").arg(fileBaseName + (".hpp")));
-            lowLevelRpcGetters.append(QStringLiteral("%1RpcLayer *%2() { return m_%2Layer; }").arg(group.name1stCapital, group.nameSmall));
+            lowLevelRpcGetters.append(QStringLiteral("%1RpcLayer *%2Layer() { return m_%2Layer; }").arg(group.name1stCapital, group.nameSmall));
             lowLevelRpcMembers.append(QStringLiteral("%1RpcLayer *m_%2Layer = nullptr;").arg(group.name1stCapital, group.nameSmall));
             lowLevelInitCode.append(QStringLiteral("m_%1Layer = new %2RpcLayer(this);").arg(group.nameSmall, group.name1stCapital));
             lowLevelInitCode.append(QStringLiteral("m_%1Layer->setSendMethod(sendMethod);").arg(group.nameSmall));
@@ -649,8 +649,8 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
             const QString lowLevelInitCodeCode = Generator::joinLinesWithPrepend(lowLevelInitCode, Generator::spacing, QStringLiteral("\n"));
             const QString lowLevelIncludesCode = Generator::joinLinesWithPrepend(lowLevelIncludes, QString(), QStringLiteral("\n"));
 
-            OutputFile headerFile("ClientRpcLayer.hpp");
-            OutputFile sourceFile("ClientRpcLayer.cpp");
+            OutputFile headerFile("ClientBackend.hpp");
+            OutputFile sourceFile("ClientBackend.cpp");
             headerFile.replace("low-level layers forward declarations", lowLevelForwardDeclarationsCode);
             headerFile.replace("low-level layers", lowLevelRpcGettersCode, 4);
             headerFile.replace("low-level layer members", lowLevelRpcMembersCode, 4);
