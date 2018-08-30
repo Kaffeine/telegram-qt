@@ -118,7 +118,6 @@ PendingOperation *Backend::connectToServer()
     } else {
         connection = createConnection(m_settings->serverConfiguration().first());
     }
-    connection->setServerRsaKey(m_settings->serverRsaKey());
     m_connectToServerOperation = connection->connectToDc();
     return m_connectToServerOperation;
 }
@@ -201,6 +200,7 @@ Connection *Backend::createConnection(const DcOption &dcOption)
 {
     Connection *connection = new Connection(this);
     connection->setDcOption(dcOption);
+    connection->setServerRsaKey(m_settings->serverRsaKey());
     connection->rpcLayer()->setAppInformation(m_appInformation);
 
     TcpTransport *transport = new TcpTransport(connection);
