@@ -148,26 +148,35 @@ bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)
     return true;
 }
 
-PendingRpcOperation *RpcLayer::sendEncryptedPackage(const QByteArray &payload)
+bool RpcLayer::sendRpc(PendingRpcOperation *operation)
 {
     quint64 messageId = 0;
+    // We have to add InitConnection here because sendPackage() implementation is shared with server
     if (m_sequenceNumber == 0) {
-        messageId = sendPackage(getInitConnection() + payload, SendMode::Client);
+        // sendPackage() adjusts sequence number
+        messageId = sendPackage(getInitConnection() + operation->requestData(), SendMode::Client);
     } else {
-        messageId = sendPackage(payload, SendMode::Client);
+        messageId = sendPackage(operation->requestData(), SendMode::Client);
     }
-    PendingRpcOperation *op = new PendingRpcOperation(payload, this);
     if (!messageId) {
-        op->setDelayedFinishedWithError({
-                                            { QStringLiteral("text"),
-                                              QStringLiteral("Unable to get message id") }
-                                        });
-        return op;
+        return false;
     }
-    op->setRequestId(messageId);
-    op->setConnection(m_sendHelper->getConnection());
-    m_operations.insert(messageId, op);
-    return op;
+    operation->setRequestId(messageId);
+    operation->setConnection(m_sendHelper->getConnection());
+    m_operations.insert(messageId, operation);
+    return true;
+}
+
+PendingRpcOperation *RpcLayer::sendEncryptedPackage(const QByteArray &payload)
+{
+    PendingRpcOperation *operation = new PendingRpcOperation(payload, this);
+    if (!sendRpc(operation)) {
+        operation->setDelayedFinishedWithError({
+                                                   { QStringLiteral("text"),
+                                                     QStringLiteral("Unable to get message id") }
+                                               });
+    }
+    return operation;
 }
 
 QByteArray RpcLayer::getInitConnection() const

@@ -50,6 +50,8 @@ public:
     PendingRpcOperation *sendEncryptedPackage(const QByteArray &payload);
     static PendingRpcOperation *sendEncryptedPackage(RpcLayer *layer, const QByteArray &payload) { return layer->sendEncryptedPackage(payload); }
 
+    bool sendRpc(PendingRpcOperation *operation);
+
 protected:
     bool processDecryptedPackage(const QByteArray &package) override;
     SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
