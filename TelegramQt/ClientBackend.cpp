@@ -98,6 +98,19 @@ PendingOperation *Backend::connectToServer()
         // TODO!
     }
 
+    if (!m_accountStorage) {
+        return PendingOperation::failOperation<PendingOperation>
+                ({
+                     { QStringLiteral("text"), QStringLiteral("Account storage is missing") }
+                 });
+    }
+    if (!m_dataStorage) {
+        return PendingOperation::failOperation<PendingOperation>
+                ({
+                     { QStringLiteral("text"), QStringLiteral("Data storage is missing") }
+                 });
+    }
+
     Connection *connection = nullptr;
     if (m_accountStorage->hasMinimalDataSet()) {
         connection = createConnection(m_accountStorage->dcInfo());
