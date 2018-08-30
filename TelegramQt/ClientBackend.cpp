@@ -6,9 +6,11 @@
 #include "ClientConnection.hpp"
 #include "Client.hpp"
 #include "ClientRpcLayer.hpp"
+#include "ClientRpcHelpLayer.hpp"
 #include "DataStorage.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
+#include "Operations/ClientHelpOperation.hpp"
 #include "Operations/ConnectionOperation.hpp"
 
 #include <QLoggingCategory>
@@ -119,6 +121,7 @@ PendingOperation *Backend::connectToServer()
         connection = createConnection(m_settings->serverConfiguration().first());
     }
     m_connectToServerOperation = connection->connectToDc();
+    connect(m_connectToServerOperation, &PendingOperation::finished, this, &Backend::onConnectOperationFinished);
     return m_connectToServerOperation;
 }
 
@@ -196,6 +199,19 @@ AuthOperation *Backend::signIn()
     return m_authOperation;
 }
 
+PendingOperation *Backend::getDcConfig()
+{
+    if (!m_getConfigOperation) {
+        HelpOperation *op = new HelpOperation(this);
+        op->setBackend(this);
+        op->setRunMethod(&HelpOperation::requestDcConfig);
+        op->startLater();
+        m_getConfigOperation = op;
+        connect(op, &PendingOperation::finished, this, &Backend::onGetDcConfigurationFinished);
+    }
+    return m_getConfigOperation;
+}
+
 Connection *Backend::createConnection(const DcOption &dcOption)
 {
     Connection *connection = new Connection(this);
@@ -251,6 +267,22 @@ void Backend::setMainConnection(Connection *connection)
     };
     connect(m_mainConnection, &BaseConnection::statusChanged, updateStatusLambda);
     updateStatusLambda(m_mainConnection->status());
+}
+
+void Backend::onConnectOperationFinished(PendingOperation *operation)
+{
+    if (!operation->isSucceeded()) {
+        return;
+    }
+    getDcConfig();
+}
+
+void Backend::onGetDcConfigurationFinished(PendingOperation *operation)
+{
+    if (!operation->isSucceeded()) {
+        qWarning() << Q_FUNC_INFO << "Unable to get dc configuration";
+        return;
+    }
 }
 
 } // Client namespace

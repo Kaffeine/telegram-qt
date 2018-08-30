@@ -50,6 +50,7 @@ public:
 
     PendingOperation *connectToServer();
     AuthOperation *signIn();
+    PendingOperation *getDcConfig();
 
     Connection *createConnection(const DcOption &dcInfo);
     Connection *mainConnection();
@@ -108,7 +109,11 @@ public:
     // End of generated low-level layer members
 
 protected:
+    void onConnectOperationFinished(PendingOperation *operation);
+    void onGetDcConfigurationFinished(PendingOperation *operation);
+
     ConnectOperation *m_connectToServerOperation = nullptr;
+    PendingOperation *m_getConfigOperation = nullptr;
 
 };
 
