@@ -37,18 +37,8 @@ namespace Client {
 template <typename TLType>
 bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLType *output)
 {
-    // TODO: Implement static isValid(TLValue::Value) method for TLTypes and
-    // add a generated check that TLType is valid type for the RPC request.
-    // Probably it would be better to hide this method from subclasses by adding a processReply()
-    // reimpl with type-specific code (check for TLType::isValid() and call this method)
-
-    const QByteArray data = operation->replyData();
-#ifdef DUMP_CLIENT_RPC_PACKETS
-    qDebug() << "PendingAuthOperation: Answer for message" << operation->requestId();
-    qDebug().noquote() << "PendingAuthOperation: RPC Reply bytes:" << data.size() << data.toHex();
-#endif
-
-    CTelegramStream stream(data);
+    TelegramStream stream;
+    prepareReplyStream(&stream, operation);
     stream >> *output;
 #ifdef DEVELOPER_BUILD
     qDebug() << *output;

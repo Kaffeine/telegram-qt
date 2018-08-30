@@ -23,9 +23,12 @@
 
 #include <functional>
 
+class CTelegramStream;
+
 namespace Telegram {
 
 class PendingRpcOperation;
+using TelegramStream = ::CTelegramStream;
 
 namespace Client {
 
@@ -41,6 +44,8 @@ public:
 
     template <typename TLType>
     bool processReply(PendingRpcOperation *operation, TLType *output);
+
+    void prepareReplyStream(TelegramStream *stream, PendingRpcOperation *operation);
 
 protected:
     PendingRpcOperation *sendEncryptedPackage(const QByteArray &payload);

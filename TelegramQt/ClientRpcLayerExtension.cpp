@@ -16,6 +16,8 @@
  */
 
 #include "ClientRpcLayerExtension.hpp"
+#include "CTelegramStream.hpp"
+#include "PendingOperation.hpp"
 
 namespace Telegram {
 
@@ -24,6 +26,21 @@ namespace Client {
 BaseRpcLayerExtension::BaseRpcLayerExtension(QObject *parent) :
     QObject(parent)
 {
+}
+
+void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream, PendingRpcOperation *operation)
+{
+    // TODO: Implement static isValid(TLValue::Value) method for TLTypes and
+    // add a generated check that TLType is valid type for the RPC request.
+    // Probably it would be better to hide this method from subclasses by adding a processReply()
+    // reimpl with type-specific code (check for TLType::isValid() and call this method)
+
+    const QByteArray data = operation->replyData();
+#ifdef DUMP_CLIENT_RPC_PACKETS
+    qDebug() << "BaseRpcLayerExtension: Process answer for message" << operation->requestId();
+    qDebug().noquote() << "BaseRpcLayerExtension: RPC Reply bytes:" << data.size() << data.toHex();
+#endif
+    stream->setData(data);
 }
 
 PendingRpcOperation *BaseRpcLayerExtension::sendEncryptedPackage(const QByteArray &payload)
