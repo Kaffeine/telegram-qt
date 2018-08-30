@@ -55,6 +55,11 @@ void Connection::setDcOption(const DcOption &dcOption)
     m_dcOption = dcOption;
 }
 
+Connection *Connection::fromOperation(PendingRpcOperation *operation)
+{
+    return reinterpret_cast<Telegram::Client::Connection*>(operation->getConnection());
+}
+
 RpcLayer *Connection::rpcLayer()
 {
     return reinterpret_cast<RpcLayer*>(m_rpcLayer);

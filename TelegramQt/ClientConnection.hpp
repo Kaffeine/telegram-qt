@@ -22,6 +22,8 @@ public:
     DcOption dcOption() const { return m_dcOption; }
     void setDcOption(const DcOption &dcOption);
 
+    static Connection *fromOperation(PendingRpcOperation *operation);
+
     RpcLayer *rpcLayer();
 
 public slots:
