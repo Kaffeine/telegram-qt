@@ -269,6 +269,17 @@ Connection *Backend::ensureConnection(const ConnectionSpec &dcSpec)
     return m_connections.value(dcSpec);
 }
 
+void Backend::setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension *layer)
+{
+    Backend *b = this;
+    BaseRpcLayerExtension::SendMethod sendMethod = [b, dcSpec](const QByteArray &payload) mutable {
+        PendingRpcOperation *operation = new PendingRpcOperation(payload, b);
+        b->ensureConnection(dcSpec)->rpcLayer()->sendRpc(operation);
+        return operation;
+    };
+    layer->setSendMethod(sendMethod);
+}
+
 void Backend::setMainConnection(Connection *connection)
 {
     m_mainConnection = connection;

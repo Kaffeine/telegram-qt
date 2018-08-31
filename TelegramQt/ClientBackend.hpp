@@ -45,6 +45,8 @@ class UploadRpcLayer;
 class UsersRpcLayer;
 // End of generated low-level layers forward declarations
 
+class BaseRpcLayerExtension;
+
 class Backend : public QObject
 {
     Q_OBJECT
@@ -60,6 +62,7 @@ public:
     Connection *getDefaultConnection();
     Connection *ensureConnection(const ConnectionSpec &dcSpec);
 
+    void setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension *layer);
     void setMainConnection(Connection *connection);
 
     DataStorage *dataStorage() { return m_dataStorage; }
