@@ -69,6 +69,8 @@ struct UserData
     }
 };
 
+Q_DECLARE_METATYPE(UserData);
+
 CAppInformation *getAppInfo()
 {
     static CAppInformation *appInfo = nullptr;
@@ -168,6 +170,7 @@ tst_all::tst_all(QObject *parent) :
 
 void tst_all::initTestCase()
 {
+    qRegisterMetaType<UserData>();
     Telegram::initialize();
     QVERIFY(TestKeyData::initKeyFiles());
 }
@@ -180,19 +183,27 @@ void tst_all::cleanupTestCase()
 void tst_all::testClientConnection_data()
 {
     QTest::addColumn<Telegram::Client::Settings::SessionType>("sessionType");
-    QTest::newRow("Abridged")   << Client::Settings::SessionType::Abridged;
-    QTest::newRow("Obfuscated") << Client::Settings::SessionType::Obfuscated;
+    QTest::addColumn<UserData>("userData");
+    UserData userOnDc1 = c_userWithPassword;
+    userOnDc1.dcId = 1;
+    UserData userOnDc2 = c_userWithPassword;
+    userOnDc2.dcId = 2;
+
+    QTest::newRow("Abridged")   << Client::Settings::SessionType::Abridged << userOnDc1;
+    QTest::newRow("Obfuscated") << Client::Settings::SessionType::Obfuscated << userOnDc1;
+    QTest::newRow("Abridged with migration")   << Client::Settings::SessionType::Abridged << userOnDc2;
+    QTest::newRow("Obfuscated with migration") << Client::Settings::SessionType::Obfuscated << userOnDc2;
 }
 
 void tst_all::testClientConnection()
 {
     QFETCH(Telegram::Client::Settings::SessionType, sessionType);
+    QFETCH(UserData, userData);
 
     const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
     const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
     QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
-    const UserData &userData = c_userWithPassword;
 
     Telegram::Server::LocalCluster cluster;
     cluster.setServerContructor(c_testServerConstructor);
@@ -223,7 +234,7 @@ void tst_all::testClientConnection()
                                                         .arg(TLValue(TLValue::Config).toString())));
     QTRY_VERIFY(connectOperation->isSucceeded());
 
-    TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(1));
+    TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(userData.dcId));
     QVERIFY(server);
 
     QCOMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
