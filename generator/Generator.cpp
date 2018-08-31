@@ -1105,7 +1105,6 @@ Generator::MethodsCode Generator::generateServerRpcProcessMethods(const QString 
         // {
         //     setRunMethod(&AuthRpcOperation::runCheckPhone);
         //     context.inputStream() >> m_checkPhone;
-        //     qWarning() << Q_FUNC_INFO << m_checkPhone.phoneNumber;
         //     return true;
         // }
 
@@ -1165,7 +1164,6 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
         // void runCheckPhone();
         result.declarations.append(QString("void run%1();").arg(method.nameFromSecondWord()));
 
-        static const QString notImplementedMarker = "qWarning() << Q_FUNC_INFO << \"The method is not implemented!\";";
         static const auto addDefinition = [&className](const TLMethod &method, const QString &previousCode) {
             const QString signature = QString("void %1::run%2()\n").arg(className, method.nameFromSecondWord());
             int index = previousCode.indexOf(signature);
@@ -1174,7 +1172,7 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
 
                 if (indexOfEnd > 0) {
                     QString code = previousCode.mid(index, indexOfEnd - index) + QLatin1String("\n}\n\n");
-                    if (!code.contains(notImplementedMarker)) {
+                    if (!code.contains("NotImplemented") && !code.contains("not implemented")) {
                         return code;
                     }
                 } else {
@@ -1183,18 +1181,22 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
             }
             // void AuthRpcOperation::runCheckPhone()
             // {
-            //     qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+            //     if (processNotImplementedMethod(TLValue::AuthCheckPhone)) {
+            //         return;
+            //     }
             //     TLAuthAuthorization result;
             //     sendRpcReply(result);
             // }
             return QStringLiteral(
                         "void %1::run%2()\n"
                         "{\n"
-                        "    %4\n"
+                        "    if (processNotImplementedMethod(TLValue::%4)) {\n"
+                        "        return;\n"
+                        "    }\n"
                         "    %3 result;\n"
                         "    sendRpcReply(result);\n"
                         "}\n\n"
-                        ).arg(className, method.nameFromSecondWord(), method.type, notImplementedMarker);
+                        ).arg(className, method.nameFromSecondWord(), method.type, method.nameFirstCapital());
         };
         result.definitions.append(addDefinition(method, previousSourceCode));
     }
