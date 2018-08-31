@@ -58,6 +58,7 @@ Q_SIGNALS:
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
 
 protected:
+    void setWantedDc(quint32 dcId);
     void setPasswordCurrentSalt(const QByteArray &salt);
     void setPasswordHint(const QString &hint);
     AccountRpcLayer *accountLayer() const;

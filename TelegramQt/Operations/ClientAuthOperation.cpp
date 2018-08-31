@@ -126,6 +126,12 @@ void AuthOperation::recovery()
     qWarning() << Q_FUNC_INFO << "STUB";
 }
 
+void AuthOperation::setWantedDc(quint32 dcId)
+{
+    m_backend->setDcForLayer(ConnectionSpec(dcId), authLayer());
+    m_backend->setDcForLayer(ConnectionSpec(dcId), accountLayer());
+}
+
 void AuthOperation::setPasswordCurrentSalt(const QByteArray &salt)
 {
     m_passwordCurrentSalt = salt;
@@ -152,6 +158,12 @@ AuthRpcLayer *AuthOperation::authLayer() const
 
 void AuthOperation::onRequestAuthCodeFinished(PendingRpcOperation *operation)
 {
+    if (operation->rpcError() && operation->rpcError()->type == RpcError::SeeOther) {
+        setWantedDc(operation->rpcError()->argument);
+        m_backend->processSeeOthers(operation);
+        return;
+    }
+
     if (!operation->isSucceeded()) {
         setDelayedFinishedWithError(operation->errorDetails());
         return;
