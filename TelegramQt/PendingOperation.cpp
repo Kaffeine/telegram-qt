@@ -73,6 +73,13 @@ void PendingOperation::setDelayedFinishedWithError(const QVariantHash &details)
     QMetaObject::invokeMethod(this, "setFinishedWithError", Qt::QueuedConnection, Q_ARG(QVariantHash, details)); // Invoke after return
 }
 
+void PendingOperation::clearResult()
+{
+    m_finished = false;
+    m_succeeded = true;
+    m_errorDetails.clear();
+}
+
 void PendingOperation::onPreviousFailed(PendingOperation *operation, const QVariantHash &details)
 {
     Q_UNUSED(operation)
@@ -110,6 +117,16 @@ void PendingRpcOperation::setFinishedWithReplyData(const QByteArray &data)
     } else {
         setFinished();
     }
+}
+
+void PendingRpcOperation::clearResult()
+{
+    m_replyData.clear();
+    if (m_error) {
+        delete m_error;
+        m_error = nullptr;
+    }
+    PendingOperation::clearResult();
 }
 
 } // Telegram namespace

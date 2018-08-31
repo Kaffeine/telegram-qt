@@ -27,12 +27,14 @@ public:
 public slots:
     ConnectOperation *connectToDc();
 //    void disconnectFromDc();
+    void processSeeOthers(PendingRpcOperation *operation);
 
 protected slots:
     void onClientDhStateChanged();
 
 protected:
     DcOption m_dcOption;
+    QVector<PendingRpcOperation *> m_queuedOperations;
 };
 
 } // Client namespace

@@ -5,6 +5,7 @@
 #include "SendPackageHelper.hpp"
 #include "TelegramUtils.hpp"
 #include "Utils.hpp"
+#include "Debug_p.hpp"
 
 #include "Operations/ConnectionOperation.hpp"
 
@@ -114,11 +115,33 @@ ConnectOperation *Connection::connectToDc()
     return op;
 }
 
+void Connection::processSeeOthers(PendingRpcOperation *operation)
+{
+    if (m_status == Status::Disconnected) {
+        connectToDc();
+    }
+    if (m_dhLayer->state() != DhLayer::State::HasKey) {
+        qWarning() << Q_FUNC_INFO << "queue operation:" << TLValue::firstFromArray(operation->requestData());
+        m_queuedOperations.append(operation);
+        return;
+    }
+    qWarning() << Q_FUNC_INFO << "processSeeOthers:" << TLValue::firstFromArray(operation->requestData());
+    rpcLayer()->sendRpc(operation);
+}
+
 void Connection::onClientDhStateChanged()
 {
+    qWarning() << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
         if (!m_rpcLayer->sessionId()) {
             rpcLayer()->setSessionId(Utils::randomBytes<quint64>());
+        }
+        if (!m_queuedOperations.isEmpty()) {
+            for (PendingRpcOperation *operation : m_queuedOperations) {
+                qWarning() << Q_FUNC_INFO << "Dequeue operation" << TLValue::firstFromArray(operation->requestData());
+                rpcLayer()->sendRpc(operation);
+            }
+            m_queuedOperations.clear();
         }
     }
 }

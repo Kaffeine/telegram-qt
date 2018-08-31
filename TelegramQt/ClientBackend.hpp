@@ -2,8 +2,11 @@
 #define TELEGRAM_CLIENT_BACKEND_HPP
 
 #include <QObject>
+#include <QHash>
 #include <QVector>
 
+#include "TelegramNamespace.hpp"
+#include "DcConfiguration.hpp"
 
 class CAppInformation;
 
@@ -55,11 +58,14 @@ public:
     Connection *createConnection(const DcOption &dcInfo);
     Connection *mainConnection();
     Connection *getDefaultConnection();
+    Connection *ensureConnection(const ConnectionSpec &dcSpec);
 
     void setMainConnection(Connection *connection);
 
     DataStorage *dataStorage() { return m_dataStorage; }
     const DataStorage *dataStorage() const { return m_dataStorage; }
+
+    void processSeeOthers(PendingRpcOperation *operation);
 
     // Generated low-level layers
     AccountRpcLayer *accountLayer() { return m_accountLayer; }
@@ -112,8 +118,12 @@ protected:
     void onConnectOperationFinished(PendingOperation *operation);
     void onGetDcConfigurationFinished(PendingOperation *operation);
 
+    void routeOperation(PendingRpcOperation *operation);
+
     ConnectOperation *m_connectToServerOperation = nullptr;
     PendingOperation *m_getConfigOperation = nullptr;
+    QHash<ConnectionSpec, Connection *> m_connections;
+    QVector<PendingRpcOperation *> m_queuedRedirectedOperations;
 
 };
 

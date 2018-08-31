@@ -58,6 +58,7 @@ public Q_SLOTS:
     void setFinished();
     void setFinishedWithError(const QVariantHash &details);
     void setDelayedFinishedWithError(const QVariantHash &details);
+    virtual void clearResult();
 
 protected:
     void onPreviousFailed(PendingOperation *operation, const QVariantHash &details);
@@ -78,6 +79,7 @@ public:
     QByteArray requestData() const { return m_requestData; }
     QByteArray replyData() const { return m_replyData; }
     void setFinishedWithReplyData(const QByteArray &data);
+    void clearResult() override;
 
     RpcError *rpcError() const { return m_error; }
 
