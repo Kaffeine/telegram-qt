@@ -29,6 +29,8 @@
 
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(c_baseRpcLayerCategory, "telegram.base.rpclayer", QtWarningMsg)
+
 namespace Telegram {
 
 BaseRpcLayer::BaseRpcLayer(QObject *parent) :
@@ -46,14 +48,14 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     if (package.size() < 24) {
         return false;
     }
+    qCDebug(c_baseRpcLayerCategory) << metaObject()->className()<< "processPackage(): Read" << package.length() << "bytes:";
 #ifdef BASE_RPC_IO_DEBUG
-    qDebug() << Q_FUNC_INFO << "Read" << package.length() << "bytes:";
-    qDebug() << package.toHex();
+    qCDebug(c_baseRpcLayerCategory) << package.toHex();
 #endif
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
     const quint64 authKeyId = *authKeyIdBytes;
     if (!verifyAuthKey(authKeyId)) {
-        qDebug() << Q_FUNC_INFO << "Incorrect auth id.";
+        qCDebug(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Incorrect auth id.";
 #ifdef NETWORK_LOGGING
         QTextStream str(m_logFile);
         str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz")) << QLatin1Char('|');
@@ -72,9 +74,9 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     const SAesKey key = getDecryptionAesKey(messageKey);
     const QByteArray decryptedData = Utils::aesDecrypt(data, key).left(data.length());
 #ifdef BASE_RPC_IO_DEBUG
-    qDebug() << "messageKey:" << messageKey.toHex();
-    qDebug() << "data:" << data.toHex();
-    qDebug() << "decryptedData:" << decryptedData.toHex();
+    qCDebug(c_baseRpcLayerCategory) << "messageKey:" << messageKey.toHex();
+    qCDebug(c_baseRpcLayerCategory) << "data:" << data.toHex();
+    qCDebug(c_baseRpcLayerCategory) << "decryptedData:" << decryptedData.toHex();
 #endif
     return processDecryptedPackage(decryptedData);
 }
@@ -108,13 +110,14 @@ bool BaseRpcLayer::verifyAuthKey(quint64 authKeyId)
 quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
 {
     if (!m_sendHelper->authId()) {
-        qCritical() << Q_FUNC_INFO << "Auth key is not set!";
+        qCCritical(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Auth key is not set!";
         return 0;
     }
     QByteArray encryptedPackage;
     QByteArray messageKey;
     quint64 messageId = m_sendHelper->newMessageId(mode);
-    qDebug() << Q_FUNC_INFO << "Send message" << TLValue::firstFromArray(buffer) << "with id" << messageId;
+    qCDebug(c_baseRpcLayerCategory) << "sendPackage(" << static_cast<int>(mode) << "):"
+                                    << "Send message" << TLValue::firstFromArray(buffer) << "with id" << messageId;
     constexpr int c_alignment = 16;
     constexpr int c_v2_minimumPadding = 12;
     {

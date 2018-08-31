@@ -25,7 +25,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_clientRpcLayerCategory, "telegram.client.rpclayer", QtWarningMsg)
+Q_LOGGING_CATEGORY(c_clientRpcLayerCategory, "telegram.client.rpclayer", QtDebugMsg)
 
 namespace Telegram {
 
@@ -65,7 +65,7 @@ bool RpcLayer::processRpcQuery(const QByteArray &data)
         stream >> messageId;
         PendingRpcOperation *op = m_operations.value(messageId);
         if (!op) {
-            qCWarning(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Unhandled operation" << messageId;
+            qCWarning(c_clientRpcLayerCategory) << "processRpcQuery():" << "Unhandled operation" << messageId;
             return false;
         }
         op->setFinishedWithReplyData(stream.readAll());
@@ -74,7 +74,7 @@ bool RpcLayer::processRpcQuery(const QByteArray &data)
         qCDebug(c_clientRpcLayerCategory) << "Client: Answer for message" << messageId << "op:" << op;
         qCDebug(c_clientRpcLayerCategory).noquote() << "Client: RPC Reply bytes:" << op->replyData().size() << op->replyData().toHex();
 #endif
-        qCWarning(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Set finished op" << op << "messageId:" << messageId << "error:" << op->errorDetails();
+        qCDebug(c_clientRpcLayerCategory) << "processRpcQuery():" << "Set finished op" << op << "messageId:" << messageId << "error:" << op->errorDetails();
     }
         break;
     case TLValue::MsgsAck:
@@ -119,12 +119,12 @@ bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)
     }
 
     if (m_sessionId != sessionId) {
-        qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Session Id is wrong.";
+        qCWarning(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Session Id is wrong.";
         return false;
     }
 
-    if (int(contentLength) > decryptedData.length()) {
-        qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Expected data length is more, than actual.";
+    if (static_cast<int>(contentLength) > decryptedData.length()) {
+        qCWarning(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Expected data length is more, than actual.";
         return false;
     }
 

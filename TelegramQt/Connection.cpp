@@ -8,6 +8,8 @@
 
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(c_baseConnectionCategory, "telegram.base.connection", QtWarningMsg)
+
 namespace Telegram {
 
 BaseConnection::BaseConnection(QObject *parent) :
@@ -44,7 +46,7 @@ void BaseConnection::setTransport(CTelegramTransport *newTransport)
     onTransportStateChanged();
 
     if (!m_dhLayer) {
-        qCritical() << Q_FUNC_INFO << "DH Layer must be set before transport";
+        qCCritical(c_baseConnectionCategory) << Q_FUNC_INFO << "DH Layer must be set before transport";
         return;
     }
     connect(m_dhLayer, &BaseDhLayer::stateChanged, this, &BaseConnection::onDhStateChanged);
@@ -87,25 +89,25 @@ void BaseConnection::onTransportStateChanged()
 
 void BaseConnection::onTransportPackageReceived(const QByteArray &package)
 {
-    qDebug() << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onTransportPackageReceived(%1 bytes)").arg(package.size());
+    qCDebug(c_baseConnectionCategory) << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onTransportPackageReceived(%1 bytes)").arg(package.size());
     if (package.size() == sizeof(quint32)) {
         const quint32 errorCode = *(reinterpret_cast<const quint32 *>(package.constData()));
         const qint32 signedCode = static_cast<const qint32>(errorCode);
-        qWarning() << "Error:" << errorCode << package.toHex() << signedCode;
+        qCWarning(c_baseConnectionCategory) << "Error:" << errorCode << package.toHex() << signedCode;
         return;
     }
     if (package.size() < 8) {
-        qWarning() << "Received package is too small to process:" << package.toHex();
+        qCWarning(c_baseConnectionCategory) << "Received package is too small to process:" << package.toHex();
         return;
     }
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
     if (*authKeyIdBytes) {
         if (!m_rpcLayer->processPackage(package)) {
-            qWarning() << "Unable to process RPC packet:" << package.toHex();
+            qCWarning(c_baseConnectionCategory) << "Unable to process RPC packet:" << package.toHex();
         }
     } else {
         if (!m_dhLayer->processPlainPackage(package)) {
-            qWarning() << "Unable to process plain packet:" << package.toHex();
+            qCWarning(c_baseConnectionCategory) << "Unable to process plain packet:" << package.toHex();
         }
     }
 }
@@ -113,7 +115,7 @@ void BaseConnection::onTransportPackageReceived(const QByteArray &package)
 void BaseConnection::onDhStateChanged()
 {
 #ifdef DEVELOPER_BUILD
-    qDebug() << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onDhStateChanged(") << m_dhLayer->state() << ")";
+    qCDebug(c_baseConnectionCategory) << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onDhStateChanged(") << m_dhLayer->state() << ")";
 #endif
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
         setStatus(Status::Authenticated, StatusReason::Remote);

@@ -12,6 +12,8 @@
 #include <QDateTime>
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(c_clientConnectionCategory, "telegram.client.connection", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Client {
@@ -31,7 +33,7 @@ public:
         if (mode == SendMode::Client) {
             ts &= ~quint64(3);
         } else {
-            qWarning() << Q_FUNC_INFO << "Invalid mode";
+            qCWarning(c_clientConnectionCategory) << Q_FUNC_INFO << "Invalid mode";
         }
         return m_connection->transport()->getNewMessageId(ts);
     }
@@ -79,7 +81,7 @@ ConnectOperation *Connection::connectToDc()
     }
 
 #ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << m_dcOption.port;
+    qCDebug(c_clientConnectionCategory) << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << m_dcOption.port;
 #endif
 
     if (m_transport->state() != QAbstractSocket::UnconnectedState) {
@@ -121,25 +123,25 @@ void Connection::processSeeOthers(PendingRpcOperation *operation)
         connectToDc();
     }
     if (m_dhLayer->state() != DhLayer::State::HasKey) {
-        qWarning() << Q_FUNC_INFO << "queue operation:" << TLValue::firstFromArray(operation->requestData());
+        qCWarning(c_clientConnectionCategory) << "processSeeOthers():" << "queue operation:" << TLValue::firstFromArray(operation->requestData());
         m_queuedOperations.append(operation);
         return;
     }
-    qWarning() << Q_FUNC_INFO << "processSeeOthers:" << TLValue::firstFromArray(operation->requestData());
     rpcLayer()->sendRpc(operation);
+    qCWarning(c_clientConnectionCategory) << "processSeeOthers():" << TLValue::firstFromArray(operation->requestData()) << "sent with new id" << operation->requestId();
 }
 
 void Connection::onClientDhStateChanged()
 {
-    qWarning() << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
+    qCWarning(c_clientConnectionCategory) << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
         if (!m_rpcLayer->sessionId()) {
             rpcLayer()->setSessionId(Utils::randomBytes<quint64>());
         }
         if (!m_queuedOperations.isEmpty()) {
             for (PendingRpcOperation *operation : m_queuedOperations) {
-                qWarning() << Q_FUNC_INFO << "Dequeue operation" << TLValue::firstFromArray(operation->requestData());
                 rpcLayer()->sendRpc(operation);
+                qCWarning(c_clientConnectionCategory) << "Dequeue operation" << TLValue::firstFromArray(operation->requestData()) << "with new id" << operation->requestId();
             }
             m_queuedOperations.clear();
         }
