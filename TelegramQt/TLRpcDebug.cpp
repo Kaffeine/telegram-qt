@@ -18,6 +18,7 @@
 #include "TLRpcDebug.hpp"
 
 #include "TLTypesDebug.hpp"
+#include "Debug_p.hpp"
 
 #include "CTelegramStream.hpp"
 
@@ -27,6 +28,49 @@ void dumpRpc(CTelegramStream &stream)
     stream >> request;
 
     switch (request) {
+    case TLValue::MsgContainer: {
+        quint32 itemsCount;
+        stream >> itemsCount;
+
+        qDebug() << request << "items" << itemsCount;
+        for (quint32 i = 0; i < itemsCount; ++i) {
+            quint64 id;
+            stream >> id;
+            //todo: ack
+            quint32 seqNo;
+            stream >> seqNo;
+            quint32 size;
+            stream >> size;
+
+            const QByteArray data = stream.readBytes(size);
+            CTelegramStream innerStream(data);
+            dumpRpc(innerStream);
+        }
+        break;
+    }
+    case TLValue::InvokeWithLayer: {
+        quint32 layer = 0;
+        stream >> layer;
+        qDebug() << request << "layer" << layer;
+        dumpRpc(stream);
+        break;
+    }
+    case TLValue::InitConnection: {
+        quint32 appId;
+        QString deviceInfo;
+        QString osInfo;
+        QString appVersion;
+        QString languageCode;
+        stream >> appId;
+        stream >> deviceInfo;
+        stream >> osInfo;
+        stream >> appVersion;
+        stream >> languageCode;
+
+        qDebug() << request << "appId" << appId << "deviceInfo" << deviceInfo;
+        dumpRpc(stream);
+        break;
+    }
     // Generated RPC debug cases
     case TLValue::AccountChangePhone: {
         QString phoneNumber;
@@ -2125,6 +2169,7 @@ void dumpRpc(CTelegramStream &stream)
         break;
     // End of generated RPC debug cases
     default:
+        qDebug() << "Unknown data" << request;
         break;
     }
 }
