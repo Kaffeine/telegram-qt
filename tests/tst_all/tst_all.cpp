@@ -218,9 +218,9 @@ void tst_all::testClientConnection()
 
     // --- Connect ---
     PendingOperation *connectOperation = client.connectToServer();
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(QString::fromLatin1(
-                                                            Server::RpcLayer::gzipPackMessage())
-                                                        + QStringLiteral(" .* \"Config\"")));
+    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(QStringLiteral("%1 \\d* \"%2\"")
+                                                        .arg(QString::fromLatin1(Server::RpcLayer::gzipPackMessage()))
+                                                        .arg(TLValue(TLValue::Config).toString())));
     QTRY_VERIFY(connectOperation->isSucceeded());
 
     TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(1));
