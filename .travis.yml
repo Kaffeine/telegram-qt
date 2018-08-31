@@ -17,7 +17,7 @@ matrix:
        - compiler: gcc
          env:
            - ENABLE_QCH_BUILD=true
-           - ENABLE_COVERAGE_BUILD=true
+#          - ENABLE_COVERAGE_BUILD=true
 
 before_install:
   - sudo apt-add-repository -y ppa:beineri/opt-qt562-trusty
