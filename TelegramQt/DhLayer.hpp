@@ -21,12 +21,13 @@
 #include "TLNumbers.hpp"
 #include "TelegramNamespace.hpp"
 #include "crypto-aes.hpp"
-#include "CTelegramStream.hpp"
 #include <QtEndian>
 
 #ifdef NETWORK_LOGGING
 QT_FORWARD_DECLARE_CLASS(QFile)
 #endif
+
+class CTelegramStream;
 
 namespace Telegram {
 

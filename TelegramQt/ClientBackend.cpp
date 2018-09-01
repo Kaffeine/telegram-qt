@@ -1,5 +1,4 @@
 #include "ClientBackend.hpp"
-#include "ClientConnection.hpp"
 #include "CClientTcpTransport.hpp"
 #include "ClientSettings.hpp"
 #include "AccountStorage.hpp"

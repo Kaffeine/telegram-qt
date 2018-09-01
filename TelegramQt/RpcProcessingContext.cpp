@@ -17,21 +17,17 @@
 
 #include "RpcProcessingContext.hpp"
 
+#include "CTelegramStream.hpp"
+
 RpcProcessingContext::RpcProcessingContext(CTelegramStream &stream, quint64 requestId, const QByteArray &requestData) :
     m_inputStream(stream),
-    m_storedStream(requestData),
     m_id(requestId),
     m_requestData(requestData),
     m_succeed(false)
 {
     if (hasRequestData()) {
-        m_storedStream >> m_requestMethodId;
+        m_requestMethodId = TLValue::firstFromArray(requestData);
     }
-}
-
-bool RpcProcessingContext::isValid() const
-{
-    return !m_storedStream.error();
 }
 
 bool RpcProcessingContext::hasRequestData() const

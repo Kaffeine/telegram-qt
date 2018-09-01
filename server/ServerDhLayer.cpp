@@ -17,6 +17,7 @@
 
 #include "ServerDhLayer.hpp"
 
+#include "CTelegramStream.hpp"
 #include "CTelegramTransport.hpp"
 #include "Utils.hpp"
 #include "SendPackageHelper.hpp"

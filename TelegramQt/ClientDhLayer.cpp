@@ -17,6 +17,7 @@
 
 #include "ClientDhLayer.hpp"
 
+#include "CTelegramStream.hpp"
 #include "CTelegramTransport.hpp"
 #include "Utils.hpp"
 #include "PendingRpcOperation.hpp"
