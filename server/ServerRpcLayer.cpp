@@ -3,7 +3,6 @@
 #include "Utils.hpp"
 #include "Debug_p.hpp"
 #include "TelegramServerUser.hpp"
-#include "PendingOperation.hpp"
 #include "RpcProcessingContext.hpp"
 #include "RpcError.hpp"
 #include "ServerRpcOperation.hpp"

@@ -14,6 +14,7 @@
 #include "Operations/ClientAuthOperation.hpp"
 #include "Operations/ClientHelpOperation.hpp"
 #include "Operations/ConnectionOperation.hpp"
+#include "PendingRpcOperation.hpp"
 
 #include <QLoggingCategory>
 #include <QTimer>

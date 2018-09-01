@@ -8,10 +8,13 @@ struct TLAuthAuthorization;
 
 namespace Telegram {
 
+class PendingRpcOperation;
+
 namespace Client {
 
 class AccountRpcLayer;
 class AuthRpcLayer;
+class Backend;
 
 class AuthOperation : public PendingOperation
 {

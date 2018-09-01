@@ -6,8 +6,11 @@
 
 namespace Telegram {
 
+class PendingRpcOperation;
+
 namespace Client {
 
+class Backend;
 class HelpRpcLayer;
 
 class HelpOperation : public PendingOperation

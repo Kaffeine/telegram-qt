@@ -17,7 +17,7 @@
 
 #include "ClientRpcLayerExtension.hpp"
 #include "CTelegramStream.hpp"
-#include "PendingOperation.hpp"
+#include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
 
 namespace Telegram {

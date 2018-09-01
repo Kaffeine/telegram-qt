@@ -6,15 +6,6 @@
 
 namespace Telegram {
 
-namespace Client {
-
-class Backend;
-
-} // Client
-
-class RpcError;
-class BaseConnection;
-
 class PendingOperation : public QObject
 {
     Q_OBJECT
@@ -67,37 +58,6 @@ private:
     QVariantHash m_errorDetails;
     bool m_finished;
     bool m_succeeded;
-};
-
-class PendingRpcOperation : public PendingOperation
-{
-    Q_OBJECT
-public:
-    explicit PendingRpcOperation(const QByteArray &requestData = QByteArray(), QObject *parent = nullptr);
-    ~PendingRpcOperation();
-
-    QByteArray requestData() const { return m_requestData; }
-    QByteArray replyData() const { return m_replyData; }
-    void setFinishedWithReplyData(const QByteArray &data);
-    void clearResult() override;
-
-    RpcError *rpcError() const { return m_error; }
-
-    quint64 requestId() const { return m_requestId; } // RPC message id
-    void setRequestId(quint64 id) { m_requestId = id; }
-
-    BaseConnection *getConnection() const { return m_connection; }
-    void setConnection(BaseConnection *connection) { m_connection = connection; }
-
-signals:
-    void finished(PendingRpcOperation *operation);
-
-protected:
-    quint64 m_requestId;
-    QByteArray m_replyData;
-    QByteArray m_requestData;
-    RpcError *m_error = nullptr;
-    BaseConnection *m_connection;
 };
 
 }

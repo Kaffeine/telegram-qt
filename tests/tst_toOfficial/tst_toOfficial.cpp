@@ -26,6 +26,7 @@
 #include "ClientSettings.hpp"
 #include "CClientTcpTransport.hpp"
 #include "DataStorage.hpp"
+#include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
 #include "SendPackageHelper.hpp"
 #include "TelegramNamespace.hpp"

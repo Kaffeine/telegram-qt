@@ -7,6 +7,7 @@
 #include "Utils.hpp"
 #include "Debug_p.hpp"
 
+#include "PendingRpcOperation.hpp"
 #include "Operations/ConnectionOperation.hpp"
 
 #include <QDateTime>

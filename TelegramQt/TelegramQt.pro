@@ -57,6 +57,7 @@ SOURCES += \
     TelegramNamespace.cpp \
     LegacySecretReader.cpp \
     PendingOperation.cpp \
+    PendingRpcOperation.cpp \
     RandomGenerator.cpp \
     RpcProcessingContext.cpp \
     SendPackageHelper.cpp \
@@ -112,6 +113,7 @@ HEADERS += \
     crypto-rsa.hpp \
     LegacySecretReader.hpp \
     PendingOperation.hpp \
+    PendingRpcOperation.hpp \
     RandomGenerator.hpp \
     RpcProcessingContext.hpp \
     SendPackageHelper.hpp \

@@ -21,7 +21,7 @@
 #include "Utils.hpp"
 #include "Debug_p.hpp"
 #include "CAppInformation.hpp"
-#include "PendingOperation.hpp"
+#include "PendingRpcOperation.hpp"
 
 #include <QLoggingCategory>
 

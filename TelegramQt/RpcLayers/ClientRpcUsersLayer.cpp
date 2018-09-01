@@ -20,7 +20,6 @@
 #include "CTelegramStream.hpp"
 #include "TLTypesDebug.hpp"
 #include "Debug_p.hpp"
-#include "PendingOperation.hpp"
 
 #include <QLoggingCategory>
 

@@ -21,8 +21,6 @@
 #include "telegramqt_global.h"
 #include "TelegramNamespace.hpp"
 
-#include "PendingOperation.hpp"
-
 #include <QObject>
 #include <QVector>
 #include <QStringList>
@@ -34,6 +32,7 @@ class CAppInformation;
 namespace Telegram {
 
 class AppInformation;
+class PendingOperation;
 
 namespace Client {
 

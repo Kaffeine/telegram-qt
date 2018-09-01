@@ -5,6 +5,7 @@
 #include "ClientConnection.hpp"
 #include "ClientRpcLayer.hpp"
 #include "ClientRpcHelpLayer.hpp"
+#include "PendingRpcOperation.hpp"
 
 #include "RpcError.hpp"
 
