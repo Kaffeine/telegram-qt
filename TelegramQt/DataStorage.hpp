@@ -15,6 +15,9 @@
 
  */
 
+#ifndef TELEGRAMQT_DATA_STORAGE_HPP
+#define TELEGRAMQT_DATA_STORAGE_HPP
+
 #include <QObject>
 
 #include "DcConfiguration.hpp"
@@ -52,3 +55,5 @@ public:
 } // Client namespace
 
 } // Telegram namespace
+
+#endif // TELEGRAMQT_DATA_STORAGE_HPP
