@@ -1,9 +1,15 @@
 #include "AccountStorage.hpp"
 #include "LegacySecretReader.hpp"
+#include "ClientBackend.hpp"
+#include "CRawStream.hpp"
 
+#include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QLoggingCategory>
 #include <QUrl>
+
+Q_LOGGING_CATEGORY(c_clientAccountStorage, "telegram.client.account", QtWarningMsg)
 
 namespace Telegram {
 
@@ -24,7 +30,12 @@ public:
     quint64 m_authId = 0;
     qint32 m_deltaTime = 0;
     DcOption m_dcInfo;
+
+    static constexpr quint32 c_formatVersion = 1;
+    static const QByteArray c_signature;
 };
+
+const QByteArray AccountStoragePrivate::c_signature = QByteArrayLiteral("TelegramQt_account");
 
 /*!
     \class Telegram::Client::AccountStorage
@@ -111,6 +122,12 @@ void AccountStorage::setDcInfo(const DcOption &newDcInfo)
     d->m_dcInfo = newDcInfo;
 }
 
+bool AccountStorage::sync()
+{
+    emit synced();
+    return true;
+}
+
 AccountStorage::AccountStorage(AccountStoragePrivate *dd, QObject *parent) :
     QObject(parent),
     d(dd)
@@ -139,12 +156,59 @@ QString FileAccountStorage::fileName() const
     return d->m_fileName;
 }
 
+QString FileAccountStorage::getLocalFileName() const
+{
+    const TG_D(FileAccountStorage);
+    if (d->m_fileName.isEmpty()) {
+        return QString();
+    }
+    QUrl fileUrl(d->m_fileName);
+    if (!fileUrl.isLocalFile()) {
+        return QString();
+    }
+    return fileUrl.toLocalFile();
+}
+
+bool FileAccountStorage::fileExists() const
+{
+    QFileInfo file(getLocalFileName());
+    return file.isReadable();
+}
+
 bool FileAccountStorage::saveData() const
 {
     TG_D(FileAccountStorage);
     if (d->m_fileName.isEmpty()) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "File name is not set";
         return false;
     }
+    const QUrl fileUrl(d->m_fileName);
+    if (!fileUrl.isLocalFile()) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a local file";
+        return false;
+    }
+
+    const QFileInfo fileInfo(fileUrl.toLocalFile());
+    if (!QDir().mkpath(fileInfo.absolutePath())) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to create output directory" << fileInfo.absolutePath();
+        return false;
+    }
+
+    QFile file(fileUrl.toLocalFile());
+    if (!file.open(QIODevice::WriteOnly)) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to open file" << fileName();
+        return false;
+    }
+    CRawStreamEx stream(&file);
+    stream.writeBytes(AccountStoragePrivate::c_signature);
+    stream << AccountStoragePrivate::c_formatVersion;
+    stream << d->m_deltaTime;
+    stream << d->m_dcInfo.id;
+    stream << d->m_dcInfo.address.toLatin1();
+    stream << d->m_dcInfo.port;
+    stream << d->m_authKey;
+    stream << d->m_authId;
+    qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "Saved key" << QString::number(authId(), 0x10);
     return true;
 }
 
@@ -152,35 +216,84 @@ bool FileAccountStorage::loadData()
 {
     TG_D(FileAccountStorage);
     if (d->m_fileName.isEmpty()) {
-        qWarning() << Q_FUNC_INFO << "File name is not set";
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to load: file name is not set";
         return false;
     }
-    QUrl u(d->m_fileName);
-    QFile file(u.toLocalFile());
+    const QUrl fileUrl(d->m_fileName);
+    if (!fileUrl.isLocalFile()) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a local file";
+        return false;
+    }
+    QFile file(fileUrl.toLocalFile());
     if (!file.open(QIODevice::ReadOnly)) {
-        qWarning() << Q_FUNC_INFO << "Unable to open file" << fileName();
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to open file" << fileName() << "(not a local file)";
         return false;
     }
-    LegacySecretReader reader;
-    if (!reader.loadFromData(file.readAll())) {
-        qWarning() << Q_FUNC_INFO << "Unable to read the secret data";
+    CRawStreamEx stream(&file);
+    QByteArray signature = stream.readBytes(AccountStoragePrivate::c_signature.size());
+    if (signature != AccountStoragePrivate::c_signature) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a Telegram secret file (unknown signature)";
         return false;
     }
-    d->m_accountIdentifier = QStringLiteral("my_account");
-    d->m_authKey = reader.authKey;
-    d->m_phoneNumber = reader.phoneNumber;
-    d->m_authId = reader.authId;
-    d->m_deltaTime = reader.deltaTime;
-    d->m_dcInfo = reader.dcInfo;
+    quint32 format = 0;
+    stream >> format;
+    if (format > AccountStoragePrivate::c_formatVersion) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file format version is unknown" << format;
+        return false;
+    }
+    stream >> d->m_deltaTime;
+    stream >> d->m_dcInfo.id;
+    QByteArray address;
+    stream >> address;
+    d->m_dcInfo.address = QString::fromLatin1(address);
+    stream >> d->m_dcInfo.port;
+    stream >> d->m_authKey;
+    stream >> d->m_authId;
 
-    qDebug() << Q_FUNC_INFO << "Loaded key" << QString::number(authId(), 0x10);
+    qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "Loaded key" << QString::number(authId(), 0x10);
+    return !stream.error();
+}
+
+bool FileAccountStorage::clearData()
+{
+    const TG_D(FileAccountStorage);
+    if (d->m_fileName.isEmpty()) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "File name is not set";
+        return false;
+    }
+    const QUrl fileUrl(d->m_fileName);
+    if (!fileUrl.isLocalFile()) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a local file";
+        return false;
+    }
+    const QFileInfo fileInfo(fileUrl.toLocalFile());
+    if (!fileInfo.exists()) {
+        qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "The file does not exist";
+        // Not an error
+        return true;
+    }
+
+    if (!QFile::remove(fileInfo.absoluteFilePath())) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to delete file" << fileInfo.absoluteFilePath();
+        return false;
+    }
     return true;
+}
+
+bool FileAccountStorage::sync()
+{
+    saveData();
+    return AccountStorage::sync();
 }
 
 void FileAccountStorage::setFileName(const QString &fileName)
 {
     TG_D(FileAccountStorage);
+    if (d->m_fileName == fileName) {
+        return;
+    }
     d->m_fileName = fileName;
+    emit fileNameChanged(fileName);
 }
 
 } // Client

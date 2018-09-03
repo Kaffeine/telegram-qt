@@ -279,19 +279,8 @@ void Backend::setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension 
 void Backend::setMainConnection(Connection *connection)
 {
     m_mainConnection = connection;
-    auto updateStatusLambda = [this](Connection::Status status) {
-        switch (status) {
-        case Connection::Status::Authenticated:
-        case Connection::Status::Signed:
-            m_accountStorage->setAuthKey(m_mainConnection->authKey());
-            m_accountStorage->setAuthId(m_mainConnection->authId());
-            break;
-        default:
-            break;
-        }
-    };
-    connect(m_mainConnection, &BaseConnection::statusChanged, updateStatusLambda);
-    updateStatusLambda(m_mainConnection->status());
+    connect(m_mainConnection, &BaseConnection::statusChanged, this, &Backend::onMainConnectionStatusChanged);
+    onMainConnectionStatusChanged();
 }
 
 void Backend::onConnectOperationFinished(PendingOperation *operation)
@@ -350,6 +339,45 @@ void Backend::routeOperation(PendingRpcOperation *operation)
         return;
     }
     connection->processSeeOthers(operation);
+}
+
+void Backend::onMainConnectionStatusChanged()
+{
+    if (!m_mainConnection) {
+        return;
+    }
+    switch (m_mainConnection->status()) {
+    case Connection::Status::Authenticated:
+    case Connection::Status::Signed:
+        syncAccountToStorage();
+        break;
+    default:
+        return;
+    }
+}
+
+bool Backend::syncAccountToStorage()
+{
+    if (!m_mainConnection) {
+        return false;
+    }
+    switch (m_mainConnection->status()) {
+    case Connection::Status::Authenticated:
+    case Connection::Status::Signed:
+        break;
+    default:
+        return false;
+    }
+    if (!m_mainConnection->dcOption().isValid()) {
+        connect(getDcConfig(), &PendingOperation::finished, this, &Backend::syncAccountToStorage);
+        return false;
+    }
+    m_accountStorage->setAuthKey(m_mainConnection->authKey());
+    m_accountStorage->setAuthId(m_mainConnection->authId());
+    m_accountStorage->setDcInfo(m_mainConnection->dcOption());
+    m_accountStorage->setDeltaTime(m_mainConnection->deltaTime());
+    m_accountStorage->sync();
+    return true;
 }
 
 } // Client namespace

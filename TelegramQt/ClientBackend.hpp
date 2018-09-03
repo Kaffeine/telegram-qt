@@ -68,6 +68,8 @@ public:
     DataStorage *dataStorage() { return m_dataStorage; }
     const DataStorage *dataStorage() const { return m_dataStorage; }
 
+    AccountStorage *accountStorage() { return m_accountStorage; }
+
     void processSeeOthers(PendingRpcOperation *operation);
 
     // Generated low-level layers
@@ -122,6 +124,9 @@ protected:
     void onGetDcConfigurationFinished(PendingOperation *operation);
 
     void routeOperation(PendingRpcOperation *operation);
+
+    void onMainConnectionStatusChanged();
+    bool syncAccountToStorage();
 
     ConnectOperation *m_connectToServerOperation = nullptr;
     PendingOperation *m_getConfigOperation = nullptr;

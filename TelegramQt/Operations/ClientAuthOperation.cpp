@@ -1,5 +1,6 @@
 #include "ClientAuthOperation.hpp"
 
+#include "AccountStorage.hpp"
 #include "CAppInformation.hpp"
 #include "ClientBackend.hpp"
 #include "ClientConnection.hpp"
@@ -236,6 +237,11 @@ void AuthOperation::onCheckPasswordFinished(PendingRpcOperation *operation)
 void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization)
 {
     qDebug() << authorization.user.phone << authorization.user.firstName << authorization.user.lastName;
+    AccountStorage *storage = m_backend->accountStorage();
+    storage->setPhoneNumber(authorization.user.phone);
+    if (storage->accountIdentifier().isEmpty()) {
+        storage->setAccountIdentifier(authorization.user.phone);
+    }
     m_backend->setMainConnection(Connection::fromOperation(operation));
     setFinished();
 }

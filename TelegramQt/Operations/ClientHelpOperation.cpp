@@ -69,6 +69,10 @@ void HelpOperation::onGetDcCondigurationFinished(PendingRpcOperation *operation)
         o.port = opt.port;
         config.dcOptions.append(o);
     }
+    Connection *c = Connection::fromOperation(operation);
+    DcOption thisOpt = c->dcOption();
+    thisOpt.id = result.thisDc;
+    c->setDcOption(thisOpt);
     m_backend->dataStorage()->setServerConfiguration(config);
     setFinished();
 }
