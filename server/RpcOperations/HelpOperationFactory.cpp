@@ -146,6 +146,7 @@ void HelpRpcOperation::runGetConfig()
     TLConfig result;
     result.flags = TLConfig::PhonecallsEnabled;
     result.testMode = true;
+    result.thisDc = api()->dcId();
     // TODO: fill other fields of result
     // manually copy fields from all DcOption's to TLDcOption's
     for (const DcOption &dcOption : dcConfig.dcOptions) {
