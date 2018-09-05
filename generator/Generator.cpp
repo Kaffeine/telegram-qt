@@ -874,11 +874,15 @@ QString Generator::streamWriteVectorTemplate(const QString &type)
 
 QStringList Generator::generateRpcReplyTemplates(const QString &groupName) const
 {
+    QString targetPrefix = groupName;
+    if (targetPrefix.endsWith(QLatin1Char('s'))) {
+        targetPrefix.chop(1);
+    }
     QStringList result;
     for (const QString &type : m_types.keys()) {
         QString name = removePrefix(type);
         name[0] = name.at(0).toLower();
-        if (!name.startsWith(groupName)) {
+        if (!name.startsWith(targetPrefix)) {
             continue;
         }
         result.append(QStringLiteral("template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, %1 *output);").arg(type));
