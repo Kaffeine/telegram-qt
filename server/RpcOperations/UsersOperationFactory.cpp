@@ -58,14 +58,18 @@ bool UsersRpcOperation::processGetUsers(RpcProcessingContext &context)
 // Generated run methods
 void UsersRpcOperation::runGetFullUser()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UsersGetFullUser)) {
+        return;
+    }
     TLUserFull result;
     sendRpcReply(result);
 }
 
 void UsersRpcOperation::runGetUsers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UsersGetUsers)) {
+        return;
+    }
     TLVector<TLUser> result;
     sendRpcReply(result);
 }

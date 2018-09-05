@@ -100,56 +100,72 @@ bool PhoneRpcOperation::processSetCallRating(RpcProcessingContext &context)
 // Generated run methods
 void PhoneRpcOperation::runAcceptCall()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhoneAcceptCall)) {
+        return;
+    }
     TLPhonePhoneCall result;
     sendRpcReply(result);
 }
 
 void PhoneRpcOperation::runConfirmCall()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhoneConfirmCall)) {
+        return;
+    }
     TLPhonePhoneCall result;
     sendRpcReply(result);
 }
 
 void PhoneRpcOperation::runDiscardCall()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhoneDiscardCall)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void PhoneRpcOperation::runGetCallConfig()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhoneGetCallConfig)) {
+        return;
+    }
     TLDataJSON result;
     sendRpcReply(result);
 }
 
 void PhoneRpcOperation::runReceivedCall()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhoneReceivedCall)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void PhoneRpcOperation::runRequestCall()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhoneRequestCall)) {
+        return;
+    }
     TLPhonePhoneCall result;
     sendRpcReply(result);
 }
 
 void PhoneRpcOperation::runSaveCallDebug()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhoneSaveCallDebug)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void PhoneRpcOperation::runSetCallRating()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhoneSetCallRating)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }

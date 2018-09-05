@@ -149,7 +149,9 @@ bool ContactsRpcOperation::processUnblock(RpcProcessingContext &context)
 // Generated run methods
 void ContactsRpcOperation::runBlock()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsBlock)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
@@ -163,91 +165,117 @@ void ContactsRpcOperation::runDeleteContact()
 
 void ContactsRpcOperation::runDeleteContacts()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsDeleteContacts)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runExportCard()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsExportCard)) {
+        return;
+    }
     TLVector<quint32> result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runGetBlocked()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsGetBlocked)) {
+        return;
+    }
     TLContactsBlocked result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runGetContacts()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsGetContacts)) {
+        return;
+    }
     TLContactsContacts result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runGetStatuses()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsGetStatuses)) {
+        return;
+    }
     TLVector<TLContactStatus> result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runGetTopPeers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsGetTopPeers)) {
+        return;
+    }
     TLContactsTopPeers result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runImportCard()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsImportCard)) {
+        return;
+    }
     TLUser result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runImportContacts()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsImportContacts)) {
+        return;
+    }
     TLContactsImportedContacts result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runResetSaved()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsResetSaved)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runResetTopPeerRating()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsResetTopPeerRating)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runResolveUsername()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsResolveUsername)) {
+        return;
+    }
     TLContactsResolvedPeer result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runSearch()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsSearch)) {
+        return;
+    }
     TLContactsFound result;
     sendRpcReply(result);
 }
 
 void ContactsRpcOperation::runUnblock()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ContactsUnblock)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }

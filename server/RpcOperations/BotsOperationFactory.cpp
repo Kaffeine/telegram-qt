@@ -58,14 +58,18 @@ bool BotsRpcOperation::processSendCustomRequest(RpcProcessingContext &context)
 // Generated run methods
 void BotsRpcOperation::runAnswerWebhookJSONQuery()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::BotsAnswerWebhookJSONQuery)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void BotsRpcOperation::runSendCustomRequest()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::BotsSendCustomRequest)) {
+        return;
+    }
     TLDataJSON result;
     sendRpcReply(result);
 }

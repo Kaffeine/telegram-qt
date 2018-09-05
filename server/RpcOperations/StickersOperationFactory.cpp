@@ -72,28 +72,36 @@ bool StickersRpcOperation::processRemoveStickerFromSet(RpcProcessingContext &con
 // Generated run methods
 void StickersRpcOperation::runAddStickerToSet()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::StickersAddStickerToSet)) {
+        return;
+    }
     TLMessagesStickerSet result;
     sendRpcReply(result);
 }
 
 void StickersRpcOperation::runChangeStickerPosition()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::StickersChangeStickerPosition)) {
+        return;
+    }
     TLMessagesStickerSet result;
     sendRpcReply(result);
 }
 
 void StickersRpcOperation::runCreateStickerSet()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::StickersCreateStickerSet)) {
+        return;
+    }
     TLMessagesStickerSet result;
     sendRpcReply(result);
 }
 
 void StickersRpcOperation::runRemoveStickerFromSet()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::StickersRemoveStickerFromSet)) {
+        return;
+    }
     TLMessagesStickerSet result;
     sendRpcReply(result);
 }

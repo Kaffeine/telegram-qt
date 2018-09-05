@@ -268,224 +268,288 @@ bool ChannelsRpcOperation::processUpdateUsername(RpcProcessingContext &context)
 // Generated run methods
 void ChannelsRpcOperation::runCheckUsername()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsCheckUsername)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runCreateChannel()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsCreateChannel)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runDeleteChannel()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsDeleteChannel)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runDeleteHistory()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsDeleteHistory)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runDeleteMessages()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsDeleteMessages)) {
+        return;
+    }
     TLMessagesAffectedMessages result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runDeleteUserHistory()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsDeleteUserHistory)) {
+        return;
+    }
     TLMessagesAffectedHistory result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runEditAbout()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsEditAbout)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runEditAdmin()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsEditAdmin)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runEditBanned()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsEditBanned)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runEditPhoto()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsEditPhoto)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runEditTitle()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsEditTitle)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runExportInvite()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsExportInvite)) {
+        return;
+    }
     TLExportedChatInvite result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runExportMessageLink()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsExportMessageLink)) {
+        return;
+    }
     TLExportedMessageLink result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runGetAdminLog()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsGetAdminLog)) {
+        return;
+    }
     TLChannelsAdminLogResults result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runGetAdminedPublicChannels()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsGetAdminedPublicChannels)) {
+        return;
+    }
     TLMessagesChats result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runGetChannels()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsGetChannels)) {
+        return;
+    }
     TLMessagesChats result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runGetFullChannel()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsGetFullChannel)) {
+        return;
+    }
     TLMessagesChatFull result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runGetMessages()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsGetMessages)) {
+        return;
+    }
     TLMessagesMessages result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runGetParticipant()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsGetParticipant)) {
+        return;
+    }
     TLChannelsChannelParticipant result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runGetParticipants()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsGetParticipants)) {
+        return;
+    }
     TLChannelsChannelParticipants result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runInviteToChannel()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsInviteToChannel)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runJoinChannel()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsJoinChannel)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runLeaveChannel()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsLeaveChannel)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runReadHistory()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsReadHistory)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runReadMessageContents()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsReadMessageContents)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runReportSpam()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsReportSpam)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runSetStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsSetStickers)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runToggleInvites()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsToggleInvites)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runTogglePreHistoryHidden()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsTogglePreHistoryHidden)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runToggleSignatures()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsToggleSignatures)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runUpdatePinnedMessage()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsUpdatePinnedMessage)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void ChannelsRpcOperation::runUpdateUsername()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::ChannelsUpdateUsername)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }

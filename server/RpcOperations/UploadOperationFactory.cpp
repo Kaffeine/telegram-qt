@@ -93,49 +93,63 @@ bool UploadRpcOperation::processSaveFilePart(RpcProcessingContext &context)
 // Generated run methods
 void UploadRpcOperation::runGetCdnFile()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UploadGetCdnFile)) {
+        return;
+    }
     TLUploadCdnFile result;
     sendRpcReply(result);
 }
 
 void UploadRpcOperation::runGetCdnFileHashes()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UploadGetCdnFileHashes)) {
+        return;
+    }
     TLVector<TLCdnFileHash> result;
     sendRpcReply(result);
 }
 
 void UploadRpcOperation::runGetFile()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UploadGetFile)) {
+        return;
+    }
     TLUploadFile result;
     sendRpcReply(result);
 }
 
 void UploadRpcOperation::runGetWebFile()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UploadGetWebFile)) {
+        return;
+    }
     TLUploadWebFile result;
     sendRpcReply(result);
 }
 
 void UploadRpcOperation::runReuploadCdnFile()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UploadReuploadCdnFile)) {
+        return;
+    }
     TLVector<TLCdnFileHash> result;
     sendRpcReply(result);
 }
 
 void UploadRpcOperation::runSaveBigFilePart()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UploadSaveBigFilePart)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void UploadRpcOperation::runSaveFilePart()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UploadSaveFilePart)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }

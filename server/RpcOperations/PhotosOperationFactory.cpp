@@ -72,28 +72,36 @@ bool PhotosRpcOperation::processUploadProfilePhoto(RpcProcessingContext &context
 // Generated run methods
 void PhotosRpcOperation::runDeletePhotos()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhotosDeletePhotos)) {
+        return;
+    }
     TLVector<quint64> result;
     sendRpcReply(result);
 }
 
 void PhotosRpcOperation::runGetUserPhotos()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhotosGetUserPhotos)) {
+        return;
+    }
     TLPhotosPhotos result;
     sendRpcReply(result);
 }
 
 void PhotosRpcOperation::runUpdateProfilePhoto()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhotosUpdateProfilePhoto)) {
+        return;
+    }
     TLUserProfilePhoto result;
     sendRpcReply(result);
 }
 
 void PhotosRpcOperation::runUploadProfilePhoto()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PhotosUploadProfilePhoto)) {
+        return;
+    }
     TLPhotosPhoto result;
     sendRpcReply(result);
 }

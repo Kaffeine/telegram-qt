@@ -86,42 +86,54 @@ bool PaymentsRpcOperation::processValidateRequestedInfo(RpcProcessingContext &co
 // Generated run methods
 void PaymentsRpcOperation::runClearSavedInfo()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PaymentsClearSavedInfo)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void PaymentsRpcOperation::runGetPaymentForm()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PaymentsGetPaymentForm)) {
+        return;
+    }
     TLPaymentsPaymentForm result;
     sendRpcReply(result);
 }
 
 void PaymentsRpcOperation::runGetPaymentReceipt()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PaymentsGetPaymentReceipt)) {
+        return;
+    }
     TLPaymentsPaymentReceipt result;
     sendRpcReply(result);
 }
 
 void PaymentsRpcOperation::runGetSavedInfo()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PaymentsGetSavedInfo)) {
+        return;
+    }
     TLPaymentsSavedInfo result;
     sendRpcReply(result);
 }
 
 void PaymentsRpcOperation::runSendPaymentForm()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PaymentsSendPaymentForm)) {
+        return;
+    }
     TLPaymentsPaymentResult result;
     sendRpcReply(result);
 }
 
 void PaymentsRpcOperation::runValidateRequestedInfo()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::PaymentsValidateRequestedInfo)) {
+        return;
+    }
     TLPaymentsValidatedRequestedInfo result;
     sendRpcReply(result);
 }

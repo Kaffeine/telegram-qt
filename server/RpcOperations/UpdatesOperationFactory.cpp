@@ -65,21 +65,27 @@ bool UpdatesRpcOperation::processGetState(RpcProcessingContext &context)
 // Generated run methods
 void UpdatesRpcOperation::runGetChannelDifference()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UpdatesGetChannelDifference)) {
+        return;
+    }
     TLUpdatesChannelDifference result;
     sendRpcReply(result);
 }
 
 void UpdatesRpcOperation::runGetDifference()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UpdatesGetDifference)) {
+        return;
+    }
     TLUpdatesDifference result;
     sendRpcReply(result);
 }
 
 void UpdatesRpcOperation::runGetState()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::UpdatesGetState)) {
+        return;
+    }
     TLUpdatesState result;
     sendRpcReply(result);
 }

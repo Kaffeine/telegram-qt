@@ -688,644 +688,828 @@ bool MessagesRpcOperation::processUploadMedia(RpcProcessingContext &context)
 // Generated run methods
 void MessagesRpcOperation::runAcceptEncryption()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesAcceptEncryption)) {
+        return;
+    }
     TLEncryptedChat result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runAddChatUser()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesAddChatUser)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runCheckChatInvite()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesCheckChatInvite)) {
+        return;
+    }
     TLChatInvite result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runClearRecentStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesClearRecentStickers)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runCreateChat()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesCreateChat)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runDeleteChatUser()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesDeleteChatUser)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runDeleteHistory()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesDeleteHistory)) {
+        return;
+    }
     TLMessagesAffectedHistory result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runDeleteMessages()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesDeleteMessages)) {
+        return;
+    }
     TLMessagesAffectedMessages result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runDiscardEncryption()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesDiscardEncryption)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runEditChatAdmin()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesEditChatAdmin)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runEditChatPhoto()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesEditChatPhoto)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runEditChatTitle()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesEditChatTitle)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runEditInlineBotMessage()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesEditInlineBotMessage)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runEditMessage()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesEditMessage)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runExportChatInvite()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesExportChatInvite)) {
+        return;
+    }
     TLExportedChatInvite result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runFaveSticker()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesFaveSticker)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runForwardMessage()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesForwardMessage)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runForwardMessages()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesForwardMessages)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetAllChats()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetAllChats)) {
+        return;
+    }
     TLMessagesChats result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetAllDrafts()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetAllDrafts)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetAllStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetAllStickers)) {
+        return;
+    }
     TLMessagesAllStickers result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetArchivedStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetArchivedStickers)) {
+        return;
+    }
     TLMessagesArchivedStickers result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetAttachedStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetAttachedStickers)) {
+        return;
+    }
     TLVector<TLStickerSetCovered> result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetBotCallbackAnswer()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetBotCallbackAnswer)) {
+        return;
+    }
     TLMessagesBotCallbackAnswer result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetChats()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetChats)) {
+        return;
+    }
     TLMessagesChats result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetCommonChats()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetCommonChats)) {
+        return;
+    }
     TLMessagesChats result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetDhConfig()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetDhConfig)) {
+        return;
+    }
     TLMessagesDhConfig result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetDialogs()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetDialogs)) {
+        return;
+    }
     TLMessagesDialogs result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetDocumentByHash()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetDocumentByHash)) {
+        return;
+    }
     TLDocument result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetFavedStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetFavedStickers)) {
+        return;
+    }
     TLMessagesFavedStickers result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetFeaturedStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetFeaturedStickers)) {
+        return;
+    }
     TLMessagesFeaturedStickers result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetFullChat()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetFullChat)) {
+        return;
+    }
     TLMessagesChatFull result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetGameHighScores()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetGameHighScores)) {
+        return;
+    }
     TLMessagesHighScores result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetHistory()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetHistory)) {
+        return;
+    }
     TLMessagesMessages result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetInlineBotResults()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetInlineBotResults)) {
+        return;
+    }
     TLMessagesBotResults result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetInlineGameHighScores()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetInlineGameHighScores)) {
+        return;
+    }
     TLMessagesHighScores result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetMaskStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetMaskStickers)) {
+        return;
+    }
     TLMessagesAllStickers result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetMessageEditData()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetMessageEditData)) {
+        return;
+    }
     TLMessagesMessageEditData result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetMessages()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetMessages)) {
+        return;
+    }
     TLMessagesMessages result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetMessagesViews()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetMessagesViews)) {
+        return;
+    }
     TLVector<quint32> result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetPeerDialogs()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetPeerDialogs)) {
+        return;
+    }
     TLMessagesPeerDialogs result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetPeerSettings()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetPeerSettings)) {
+        return;
+    }
     TLPeerSettings result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetPinnedDialogs()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetPinnedDialogs)) {
+        return;
+    }
     TLMessagesPeerDialogs result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetRecentLocations()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetRecentLocations)) {
+        return;
+    }
     TLMessagesMessages result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetRecentStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetRecentStickers)) {
+        return;
+    }
     TLMessagesRecentStickers result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetSavedGifs()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetSavedGifs)) {
+        return;
+    }
     TLMessagesSavedGifs result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetStickerSet()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetStickerSet)) {
+        return;
+    }
     TLMessagesStickerSet result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetUnreadMentions()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetUnreadMentions)) {
+        return;
+    }
     TLMessagesMessages result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetWebPage()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetWebPage)) {
+        return;
+    }
     TLWebPage result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runGetWebPagePreview()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesGetWebPagePreview)) {
+        return;
+    }
     TLMessageMedia result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runHideReportSpam()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesHideReportSpam)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runImportChatInvite()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesImportChatInvite)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runInstallStickerSet()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesInstallStickerSet)) {
+        return;
+    }
     TLMessagesStickerSetInstallResult result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runMigrateChat()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesMigrateChat)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReadEncryptedHistory()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReadEncryptedHistory)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReadFeaturedStickers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReadFeaturedStickers)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReadHistory()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReadHistory)) {
+        return;
+    }
     TLMessagesAffectedMessages result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReadMentions()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReadMentions)) {
+        return;
+    }
     TLMessagesAffectedHistory result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReadMessageContents()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReadMessageContents)) {
+        return;
+    }
     TLMessagesAffectedMessages result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReceivedMessages()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReceivedMessages)) {
+        return;
+    }
     TLVector<TLReceivedNotifyMessage> result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReceivedQueue()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReceivedQueue)) {
+        return;
+    }
     TLVector<quint64> result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReorderPinnedDialogs()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReorderPinnedDialogs)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReorderStickerSets()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReorderStickerSets)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReportEncryptedSpam()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReportEncryptedSpam)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runReportSpam()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesReportSpam)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runRequestEncryption()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesRequestEncryption)) {
+        return;
+    }
     TLEncryptedChat result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSaveDraft()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSaveDraft)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSaveGif()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSaveGif)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSaveRecentSticker()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSaveRecentSticker)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSearch()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSearch)) {
+        return;
+    }
     TLMessagesMessages result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSearchGifs()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSearchGifs)) {
+        return;
+    }
     TLMessagesFoundGifs result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSearchGlobal()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSearchGlobal)) {
+        return;
+    }
     TLMessagesMessages result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSendEncrypted()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSendEncrypted)) {
+        return;
+    }
     TLMessagesSentEncryptedMessage result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSendEncryptedFile()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSendEncryptedFile)) {
+        return;
+    }
     TLMessagesSentEncryptedMessage result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSendEncryptedService()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSendEncryptedService)) {
+        return;
+    }
     TLMessagesSentEncryptedMessage result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSendInlineBotResult()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSendInlineBotResult)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSendMedia()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSendMedia)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSendMessage()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSendMessage)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSendScreenshotNotification()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSendScreenshotNotification)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSetBotCallbackAnswer()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSetBotCallbackAnswer)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSetBotPrecheckoutResults()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSetBotPrecheckoutResults)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSetBotShippingResults()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSetBotShippingResults)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSetEncryptedTyping()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSetEncryptedTyping)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSetGameScore()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSetGameScore)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSetInlineBotResults()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSetInlineBotResults)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSetInlineGameScore()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSetInlineGameScore)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runSetTyping()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesSetTyping)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runStartBot()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesStartBot)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runToggleChatAdmins()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesToggleChatAdmins)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runToggleDialogPin()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesToggleDialogPin)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runUninstallStickerSet()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesUninstallStickerSet)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void MessagesRpcOperation::runUploadMedia()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::MessagesUploadMedia)) {
+        return;
+    }
     TLMessageMedia result;
     sendRpcReply(result);
 }

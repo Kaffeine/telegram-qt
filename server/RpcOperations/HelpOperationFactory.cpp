@@ -121,21 +121,27 @@ bool HelpRpcOperation::processSetBotUpdatesStatus(RpcProcessingContext &context)
 // Generated run methods
 void HelpRpcOperation::runGetAppChangelog()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpGetAppChangelog)) {
+        return;
+    }
     TLUpdates result;
     sendRpcReply(result);
 }
 
 void HelpRpcOperation::runGetAppUpdate()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpGetAppUpdate)) {
+        return;
+    }
     TLHelpAppUpdate result;
     sendRpcReply(result);
 }
 
 void HelpRpcOperation::runGetCdnConfig()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpGetCdnConfig)) {
+        return;
+    }
     TLCdnConfig result;
     sendRpcReply(result);
 }
@@ -162,49 +168,63 @@ void HelpRpcOperation::runGetConfig()
 
 void HelpRpcOperation::runGetInviteText()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpGetInviteText)) {
+        return;
+    }
     TLHelpInviteText result;
     sendRpcReply(result);
 }
 
 void HelpRpcOperation::runGetNearestDc()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpGetNearestDc)) {
+        return;
+    }
     TLNearestDc result;
     sendRpcReply(result);
 }
 
 void HelpRpcOperation::runGetRecentMeUrls()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpGetRecentMeUrls)) {
+        return;
+    }
     TLHelpRecentMeUrls result;
     sendRpcReply(result);
 }
 
 void HelpRpcOperation::runGetSupport()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpGetSupport)) {
+        return;
+    }
     TLHelpSupport result;
     sendRpcReply(result);
 }
 
 void HelpRpcOperation::runGetTermsOfService()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpGetTermsOfService)) {
+        return;
+    }
     TLHelpTermsOfService result;
     sendRpcReply(result);
 }
 
 void HelpRpcOperation::runSaveAppLog()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpSaveAppLog)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void HelpRpcOperation::runSetBotUpdatesStatus()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::HelpSetBotUpdatesStatus)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }

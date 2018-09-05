@@ -72,28 +72,36 @@ bool LangpackRpcOperation::processGetStrings(RpcProcessingContext &context)
 // Generated run methods
 void LangpackRpcOperation::runGetDifference()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::LangpackGetDifference)) {
+        return;
+    }
     TLLangPackDifference result;
     sendRpcReply(result);
 }
 
 void LangpackRpcOperation::runGetLangPack()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::LangpackGetLangPack)) {
+        return;
+    }
     TLLangPackDifference result;
     sendRpcReply(result);
 }
 
 void LangpackRpcOperation::runGetLanguages()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::LangpackGetLanguages)) {
+        return;
+    }
     TLVector<TLLangPackLanguage> result;
     sendRpcReply(result);
 }
 
 void LangpackRpcOperation::runGetStrings()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::LangpackGetStrings)) {
+        return;
+    }
     TLVector<TLLangPackString> result;
     sendRpcReply(result);
 }

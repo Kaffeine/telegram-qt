@@ -181,14 +181,18 @@ bool AuthRpcOperation::processSignUp(RpcProcessingContext &context)
 // Generated run methods
 void AuthRpcOperation::runBindTempAuthKey()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthBindTempAuthKey)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runCancelCode()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthCancelCode)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
@@ -227,63 +231,81 @@ void AuthRpcOperation::runCheckPhone()
 
 void AuthRpcOperation::runDropTempAuthKeys()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthDropTempAuthKeys)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runExportAuthorization()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthExportAuthorization)) {
+        return;
+    }
     TLAuthExportedAuthorization result;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runImportAuthorization()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthImportAuthorization)) {
+        return;
+    }
     TLAuthAuthorization result;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runImportBotAuthorization()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthImportBotAuthorization)) {
+        return;
+    }
     TLAuthAuthorization result;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runLogOut()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthLogOut)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runRecoverPassword()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthRecoverPassword)) {
+        return;
+    }
     TLAuthAuthorization result;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runRequestPasswordRecovery()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthRequestPasswordRecovery)) {
+        return;
+    }
     TLAuthPasswordRecovery result;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runResendCode()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthResendCode)) {
+        return;
+    }
     TLAuthSentCode result;
     sendRpcReply(result);
 }
 
 void AuthRpcOperation::runResetAuthorizations()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthResetAuthorizations)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
@@ -319,7 +341,9 @@ void AuthRpcOperation::runSendCode()
 
 void AuthRpcOperation::runSendInvites()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AuthSendInvites)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }

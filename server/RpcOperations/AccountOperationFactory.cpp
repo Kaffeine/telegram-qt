@@ -233,49 +233,63 @@ bool AccountRpcOperation::processUpdateUsername(RpcProcessingContext &context)
 // Generated run methods
 void AccountRpcOperation::runChangePhone()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountChangePhone)) {
+        return;
+    }
     TLUser result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runCheckUsername()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountCheckUsername)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runConfirmPhone()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountConfirmPhone)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runDeleteAccount()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountDeleteAccount)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runGetAccountTTL()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountGetAccountTTL)) {
+        return;
+    }
     TLAccountDaysTTL result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runGetAuthorizations()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountGetAuthorizations)) {
+        return;
+    }
     TLAccountAuthorizations result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runGetNotifySettings()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountGetNotifySettings)) {
+        return;
+    }
     TLPeerNotifySettings result;
     sendRpcReply(result);
 }
@@ -301,133 +315,171 @@ void AccountRpcOperation::runGetPassword()
 
 void AccountRpcOperation::runGetPasswordSettings()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountGetPasswordSettings)) {
+        return;
+    }
     TLAccountPasswordSettings result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runGetPrivacy()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountGetPrivacy)) {
+        return;
+    }
     TLAccountPrivacyRules result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runGetTmpPassword()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountGetTmpPassword)) {
+        return;
+    }
     TLAccountTmpPassword result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runGetWallPapers()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountGetWallPapers)) {
+        return;
+    }
     TLVector<TLWallPaper> result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runRegisterDevice()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountRegisterDevice)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runReportPeer()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountReportPeer)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runResetAuthorization()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountResetAuthorization)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runResetNotifySettings()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountResetNotifySettings)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runSendChangePhoneCode()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountSendChangePhoneCode)) {
+        return;
+    }
     TLAuthSentCode result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runSendConfirmPhoneCode()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountSendConfirmPhoneCode)) {
+        return;
+    }
     TLAuthSentCode result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runSetAccountTTL()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountSetAccountTTL)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runSetPrivacy()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountSetPrivacy)) {
+        return;
+    }
     TLAccountPrivacyRules result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runUnregisterDevice()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountUnregisterDevice)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runUpdateDeviceLocked()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountUpdateDeviceLocked)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runUpdateNotifySettings()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountUpdateNotifySettings)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runUpdatePasswordSettings()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountUpdatePasswordSettings)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runUpdateProfile()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountUpdateProfile)) {
+        return;
+    }
     TLUser result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runUpdateStatus()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountUpdateStatus)) {
+        return;
+    }
     bool result;
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runUpdateUsername()
 {
-    qWarning() << Q_FUNC_INFO << "The method is not implemented!";
+    if (processNotImplementedMethod(TLValue::AccountUpdateUsername)) {
+        return;
+    }
     TLUser result;
     sendRpcReply(result);
 }
