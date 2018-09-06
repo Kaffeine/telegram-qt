@@ -58,6 +58,7 @@ SOURCES += \
     LegacySecretReader.cpp \
     PendingOperation.cpp \
     PendingRpcOperation.cpp \
+    PendingRpcResult.cpp \
     RandomGenerator.cpp \
     RpcProcessingContext.cpp \
     SendPackageHelper.cpp \
@@ -114,6 +115,7 @@ HEADERS += \
     LegacySecretReader.hpp \
     PendingOperation.hpp \
     PendingRpcOperation.hpp \
+    PendingRpcResult.hpp \
     RandomGenerator.hpp \
     RpcProcessingContext.hpp \
     SendPackageHelper.hpp \

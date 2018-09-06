@@ -32,6 +32,7 @@ set(telegram_qt_SOURCES
     FileRequestDescriptor.cpp
     PendingOperation.cpp
     PendingRpcOperation.cpp
+    PendingRpcResult.cpp
     TelegramUtils.cpp
     TLValues.cpp
 )
@@ -57,6 +58,7 @@ set(telegram_qt_META_HEADERS
     TelegramNamespace.hpp
     PendingOperation.hpp
     PendingRpcOperation.hpp
+    PendingRpcResult.hpp
     CAppInformation.hpp
     CTelegramTransport.hpp
     CTcpTransport.hpp
