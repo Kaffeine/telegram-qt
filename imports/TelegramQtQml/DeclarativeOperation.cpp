@@ -18,9 +18,9 @@ DeclarativeClient *DeclarativeOperation::target() const
     return m_target;
 }
 
-bool DeclarativeOperation::succeed() const
+bool DeclarativeOperation::isSucceeded() const
 {
-    return m_succeed;
+    return m_operation && m_operation->isSucceeded();
 }
 
 void DeclarativeOperation::start()
@@ -41,33 +41,23 @@ void DeclarativeOperation::startEvent()
 
 void DeclarativeOperation::setPendingOperation(PendingOperation *op)
 {
-    connect(op, &PendingOperation::succeeded, this, &DeclarativeOperation::onOperationSucceed);
-    connect(op, &PendingOperation::failed, this, &DeclarativeOperation::onOperationFailed);
-}
-
-void DeclarativeOperation::onOperationSucceed(PendingOperation *op)
-{
-    Q_UNUSED(op)
-    emit succeeded();
-    setSucceed(true);
-    emit finished();
-}
-
-void DeclarativeOperation::onOperationFailed(PendingOperation *op, const QVariantHash &details)
-{
-    Q_UNUSED(op)
-    emit failed(details);
-    setSucceed(false);
-    emit finished();
-}
-
-void DeclarativeOperation::setSucceed(bool succeed)
-{
-    if (m_succeed == succeed) {
+    if (m_operation == op) {
         return;
     }
-    m_succeed = succeed;
-    emit succeedChanged(succeed);
+    m_operation = op;
+    connect(op, &PendingOperation::finished, this, &DeclarativeOperation::onOperationFinished);
+}
+
+void DeclarativeOperation::onOperationFinished(PendingOperation *operation)
+{
+    if (operation->isSucceeded()) {
+        // Operation is not succeeded until finished, so if it is finished
+        // and succeeded then the state is changed
+        emit succeededChanged();
+    } else {
+        emit failed(operation->errorDetails());
+    }
+    emit finished(operation->isSucceeded());
 }
 
 } // Telegram

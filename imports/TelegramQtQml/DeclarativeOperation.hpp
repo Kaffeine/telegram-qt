@@ -17,12 +17,12 @@ class DeclarativeOperation : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(Telegram::Client::DeclarativeClient *target READ target WRITE setTarget NOTIFY targetChanged)
-    Q_PROPERTY(bool succeed READ succeed NOTIFY succeedChanged)
+    Q_PROPERTY(bool succeeded READ isSucceeded NOTIFY succeededChanged)
 public:
     explicit DeclarativeOperation(QObject *parent = nullptr);
 
     DeclarativeClient *target() const;
-    bool succeed() const;
+    bool isSucceeded() const;
 
 public slots:
     void start();
@@ -30,22 +30,19 @@ public slots:
 
 Q_SIGNALS:
     void targetChanged();
-    void succeedChanged(bool succeed);
 
     void started();
-    void finished();
-    void succeeded();
+    void finished(bool succeeded);
+    void succeededChanged();
     void failed(const QVariantHash &details);
 
 protected:
     virtual void startEvent();
     void setPendingOperation(PendingOperation *op);
-    void onOperationSucceed(PendingOperation *op);
-    void onOperationFailed(PendingOperation *op, const QVariantHash &details);
-    void setSucceed(bool succeed);
+    void onOperationFinished(PendingOperation *operation);
 
-    DeclarativeClient *m_target;
-    bool m_succeed = false;
+    DeclarativeClient *m_target = nullptr;
+    PendingOperation *m_operation = nullptr;
 };
 
 } // Client
