@@ -21,6 +21,11 @@ bool PendingOperation::isSucceeded() const
     return m_finished && m_succeeded;
 }
 
+QString PendingOperation::c_text()
+{
+    return QStringLiteral("text");
+}
+
 QVariantHash PendingOperation::errorDetails() const
 {
     return m_errorDetails;

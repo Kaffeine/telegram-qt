@@ -15,6 +15,8 @@ public:
     bool isFinished() const;
     bool isSucceeded() const;
 
+    static QString c_text();
+
     QVariantHash errorDetails() const;
 
     template <typename OperationType>
@@ -26,14 +28,26 @@ public:
         return op;
     }
 
+    template <typename OperationType>
+    static OperationType *failOperation(const QString &failDescription, QObject *parent = nullptr)
+    {
+        return failOperation<OperationType>({{ c_text(), failDescription}}, parent);
+    }
+
     template<typename T, typename M>
     static void callMember(T *obj, M method)
     {
         (obj->*method)();
     }
+
     static PendingOperation *failOperation(const QVariantHash &failDetails, QObject *parent = nullptr)
     {
         return failOperation<PendingOperation>(failDetails, parent);
+    }
+
+    static PendingOperation *failOperation(const QString &failDescription, QObject *parent = nullptr)
+    {
+        return failOperation<PendingOperation>({{ c_text(), failDescription}}, parent);
     }
 
 Q_SIGNALS:
