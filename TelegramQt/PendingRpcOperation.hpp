@@ -36,7 +36,7 @@ protected:
     QByteArray m_replyData;
     QByteArray m_requestData;
     RpcError *m_error = nullptr;
-    BaseConnection *m_connection;
+    BaseConnection *m_connection = nullptr;
 };
 
 }
