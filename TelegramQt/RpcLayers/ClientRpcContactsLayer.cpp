@@ -30,6 +30,10 @@ namespace Telegram {
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContact *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactBlocked *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactLink *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactStatus *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactsBlocked *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactsContacts *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLContactsFound *output);
@@ -45,69 +49,83 @@ ContactsRpcLayer::ContactsRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *ContactsRpcLayer::block(const TLInputUser &id)
+ContactsRpcLayer::PendingBool *ContactsRpcLayer::block(const TLInputUser &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsBlock;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::deleteContact(const TLInputUser &id)
+ContactsRpcLayer::PendingContactsLink *ContactsRpcLayer::deleteContact(const TLInputUser &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsDeleteContact;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingContactsLink *op = new PendingContactsLink(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::deleteContacts(const TLVector<TLInputUser> &id)
+ContactsRpcLayer::PendingBool *ContactsRpcLayer::deleteContacts(const TLVector<TLInputUser> &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsDeleteContacts;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::exportCard()
+ContactsRpcLayer::PendingQuint32Vector *ContactsRpcLayer::exportCard()
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsExportCard;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingQuint32Vector *op = new PendingQuint32Vector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::getBlocked(quint32 offset, quint32 limit)
+ContactsRpcLayer::PendingContactsBlocked *ContactsRpcLayer::getBlocked(quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << offset << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsGetBlocked;
     outputStream << offset;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingContactsBlocked *op = new PendingContactsBlocked(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::getContacts(quint32 hash)
+ContactsRpcLayer::PendingContactsContacts *ContactsRpcLayer::getContacts(quint32 hash)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsGetContacts;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingContactsContacts *op = new PendingContactsContacts(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::getStatuses()
+ContactsRpcLayer::PendingContactStatusVector *ContactsRpcLayer::getStatuses()
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsGetStatuses;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingContactStatusVector *op = new PendingContactStatusVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::getTopPeers(quint32 flags, quint32 offset, quint32 limit, quint32 hash)
+ContactsRpcLayer::PendingContactsTopPeers *ContactsRpcLayer::getTopPeers(quint32 flags, quint32 offset, quint32 limit, quint32 hash)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << flags << offset << limit << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -122,71 +140,87 @@ PendingRpcOperation *ContactsRpcLayer::getTopPeers(quint32 flags, quint32 offset
     outputStream << offset;
     outputStream << limit;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingContactsTopPeers *op = new PendingContactsTopPeers(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::importCard(const TLVector<quint32> &exportCard)
+ContactsRpcLayer::PendingUser *ContactsRpcLayer::importCard(const TLVector<quint32> &exportCard)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << exportCard;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsImportCard;
     outputStream << exportCard;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUser *op = new PendingUser(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::importContacts(const TLVector<TLInputContact> &contacts)
+ContactsRpcLayer::PendingContactsImportedContacts *ContactsRpcLayer::importContacts(const TLVector<TLInputContact> &contacts)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << contacts;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsImportContacts;
     outputStream << contacts;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingContactsImportedContacts *op = new PendingContactsImportedContacts(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::resetSaved()
+ContactsRpcLayer::PendingBool *ContactsRpcLayer::resetSaved()
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsResetSaved;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::resetTopPeerRating(const TLTopPeerCategory &category, const TLInputPeer &peer)
+ContactsRpcLayer::PendingBool *ContactsRpcLayer::resetTopPeerRating(const TLTopPeerCategory &category, const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << category << peer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsResetTopPeerRating;
     outputStream << category;
     outputStream << peer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::resolveUsername(const QString &username)
+ContactsRpcLayer::PendingContactsResolvedPeer *ContactsRpcLayer::resolveUsername(const QString &username)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << username;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsResolveUsername;
     outputStream << username;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingContactsResolvedPeer *op = new PendingContactsResolvedPeer(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::search(const QString &q, quint32 limit)
+ContactsRpcLayer::PendingContactsFound *ContactsRpcLayer::search(const QString &q, quint32 limit)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << q << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsSearch;
     outputStream << q;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingContactsFound *op = new PendingContactsFound(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *ContactsRpcLayer::unblock(const TLInputUser &id)
+ContactsRpcLayer::PendingBool *ContactsRpcLayer::unblock(const TLInputUser &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::ContactsUnblock;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

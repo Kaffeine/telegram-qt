@@ -30,6 +30,12 @@ namespace Telegram {
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessage *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessageAction *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessageEntity *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessageFwdHeader *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessageMedia *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessageRange *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesAffectedHistory *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesAffectedMessages *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesAllStickers *output);
@@ -62,7 +68,7 @@ MessagesRpcLayer::MessagesRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *MessagesRpcLayer::acceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint)
+MessagesRpcLayer::PendingEncryptedChat *MessagesRpcLayer::acceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << gB.toHex() << keyFingerprint;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -70,10 +76,12 @@ PendingRpcOperation *MessagesRpcLayer::acceptEncryption(const TLInputEncryptedCh
     outputStream << peer;
     outputStream << gB;
     outputStream << keyFingerprint;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingEncryptedChat *op = new PendingEncryptedChat(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::addChatUser(quint32 chatId, const TLInputUser &userId, quint32 fwdLimit)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::addChatUser(quint32 chatId, const TLInputUser &userId, quint32 fwdLimit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << userId << fwdLimit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -81,49 +89,59 @@ PendingRpcOperation *MessagesRpcLayer::addChatUser(quint32 chatId, const TLInput
     outputStream << chatId;
     outputStream << userId;
     outputStream << fwdLimit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::checkChatInvite(const QString &hash)
+MessagesRpcLayer::PendingChatInvite *MessagesRpcLayer::checkChatInvite(const QString &hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesCheckChatInvite;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingChatInvite *op = new PendingChatInvite(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::clearRecentStickers(quint32 flags)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::clearRecentStickers(quint32 flags)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesClearRecentStickers;
     outputStream << flags;
     // (flags & 1 << 0) stands for attached "true" value
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::createChat(const TLVector<TLInputUser> &users, const QString &title)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::createChat(const TLVector<TLInputUser> &users, const QString &title)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << users << title;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesCreateChat;
     outputStream << users;
     outputStream << title;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::deleteChatUser(quint32 chatId, const TLInputUser &userId)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::deleteChatUser(quint32 chatId, const TLInputUser &userId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << userId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesDeleteChatUser;
     outputStream << chatId;
     outputStream << userId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::deleteHistory(quint32 flags, const TLInputPeer &peer, quint32 maxId)
+MessagesRpcLayer::PendingMessagesAffectedHistory *MessagesRpcLayer::deleteHistory(quint32 flags, const TLInputPeer &peer, quint32 maxId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << maxId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -132,10 +150,12 @@ PendingRpcOperation *MessagesRpcLayer::deleteHistory(quint32 flags, const TLInpu
     // (flags & 1 << 0) stands for justClear "true" value
     outputStream << peer;
     outputStream << maxId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesAffectedHistory *op = new PendingMessagesAffectedHistory(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::deleteMessages(quint32 flags, const TLVector<quint32> &id)
+MessagesRpcLayer::PendingMessagesAffectedMessages *MessagesRpcLayer::deleteMessages(quint32 flags, const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -143,19 +163,23 @@ PendingRpcOperation *MessagesRpcLayer::deleteMessages(quint32 flags, const TLVec
     outputStream << flags;
     // (flags & 1 << 0) stands for revoke "true" value
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesAffectedMessages *op = new PendingMessagesAffectedMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::discardEncryption(quint32 chatId)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::discardEncryption(quint32 chatId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesDiscardEncryption;
     outputStream << chatId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::editChatAdmin(quint32 chatId, const TLInputUser &userId, bool isAdmin)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::editChatAdmin(quint32 chatId, const TLInputUser &userId, bool isAdmin)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << userId << isAdmin;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -163,30 +187,36 @@ PendingRpcOperation *MessagesRpcLayer::editChatAdmin(quint32 chatId, const TLInp
     outputStream << chatId;
     outputStream << userId;
     outputStream << isAdmin;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::editChatPhoto(quint32 chatId, const TLInputChatPhoto &photo)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editChatPhoto(quint32 chatId, const TLInputChatPhoto &photo)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << photo;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesEditChatPhoto;
     outputStream << chatId;
     outputStream << photo;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::editChatTitle(quint32 chatId, const QString &title)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editChatTitle(quint32 chatId, const QString &title)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << title;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesEditChatTitle;
     outputStream << chatId;
     outputStream << title;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::editInlineBotMessage(quint32 flags, const TLInputBotInlineMessageID &id, const QString &message, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities, const TLInputGeoPoint &geoPoint)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::editInlineBotMessage(quint32 flags, const TLInputBotInlineMessageID &id, const QString &message, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities, const TLInputGeoPoint &geoPoint)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id << message << replyMarkup << entities << geoPoint;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -207,10 +237,12 @@ PendingRpcOperation *MessagesRpcLayer::editInlineBotMessage(quint32 flags, const
     if (flags & 1 << 13) {
         outputStream << geoPoint;
     }
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::editMessage(quint32 flags, const TLInputPeer &peer, quint32 id, const QString &message, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities, const TLInputGeoPoint &geoPoint)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editMessage(quint32 flags, const TLInputPeer &peer, quint32 id, const QString &message, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities, const TLInputGeoPoint &geoPoint)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << id << message << replyMarkup << entities << geoPoint;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -232,29 +264,35 @@ PendingRpcOperation *MessagesRpcLayer::editMessage(quint32 flags, const TLInputP
     if (flags & 1 << 13) {
         outputStream << geoPoint;
     }
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::exportChatInvite(quint32 chatId)
+MessagesRpcLayer::PendingExportedChatInvite *MessagesRpcLayer::exportChatInvite(quint32 chatId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesExportChatInvite;
     outputStream << chatId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingExportedChatInvite *op = new PendingExportedChatInvite(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::faveSticker(const TLInputDocument &id, bool unfave)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::faveSticker(const TLInputDocument &id, bool unfave)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id << unfave;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesFaveSticker;
     outputStream << id;
     outputStream << unfave;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::forwardMessage(const TLInputPeer &peer, quint32 id, quint64 randomId)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::forwardMessage(const TLInputPeer &peer, quint32 id, quint64 randomId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id << randomId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -262,10 +300,12 @@ PendingRpcOperation *MessagesRpcLayer::forwardMessage(const TLInputPeer &peer, q
     outputStream << peer;
     outputStream << id;
     outputStream << randomId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::forwardMessages(quint32 flags, const TLInputPeer &fromPeer, const TLVector<quint32> &id, const TLVector<quint64> &randomId, const TLInputPeer &toPeer)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::forwardMessages(quint32 flags, const TLInputPeer &fromPeer, const TLVector<quint32> &id, const TLVector<quint64> &randomId, const TLInputPeer &toPeer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << fromPeer << id << randomId << toPeer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -278,36 +318,44 @@ PendingRpcOperation *MessagesRpcLayer::forwardMessages(quint32 flags, const TLIn
     outputStream << id;
     outputStream << randomId;
     outputStream << toPeer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getAllChats(const TLVector<quint32> &exceptIds)
+MessagesRpcLayer::PendingMessagesChats *MessagesRpcLayer::getAllChats(const TLVector<quint32> &exceptIds)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << exceptIds;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetAllChats;
     outputStream << exceptIds;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesChats *op = new PendingMessagesChats(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getAllDrafts()
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::getAllDrafts()
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetAllDrafts;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getAllStickers(quint32 hash)
+MessagesRpcLayer::PendingMessagesAllStickers *MessagesRpcLayer::getAllStickers(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetAllStickers;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesAllStickers *op = new PendingMessagesAllStickers(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getArchivedStickers(quint32 flags, quint64 offsetId, quint32 limit)
+MessagesRpcLayer::PendingMessagesArchivedStickers *MessagesRpcLayer::getArchivedStickers(quint32 flags, quint64 offsetId, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << offsetId << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -316,19 +364,23 @@ PendingRpcOperation *MessagesRpcLayer::getArchivedStickers(quint32 flags, quint6
     // (flags & 1 << 0) stands for masks "true" value
     outputStream << offsetId;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesArchivedStickers *op = new PendingMessagesArchivedStickers(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getAttachedStickers(const TLInputStickeredMedia &media)
+MessagesRpcLayer::PendingStickerSetCoveredVector *MessagesRpcLayer::getAttachedStickers(const TLInputStickeredMedia &media)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << media;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetAttachedStickers;
     outputStream << media;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingStickerSetCoveredVector *op = new PendingStickerSetCoveredVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getBotCallbackAnswer(quint32 flags, const TLInputPeer &peer, quint32 msgId, const QByteArray &data)
+MessagesRpcLayer::PendingMessagesBotCallbackAnswer *MessagesRpcLayer::getBotCallbackAnswer(quint32 flags, const TLInputPeer &peer, quint32 msgId, const QByteArray &data)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << msgId << data.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -340,19 +392,23 @@ PendingRpcOperation *MessagesRpcLayer::getBotCallbackAnswer(quint32 flags, const
     if (flags & 1 << 0) {
         outputStream << data;
     }
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesBotCallbackAnswer *op = new PendingMessagesBotCallbackAnswer(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getChats(const TLVector<quint32> &id)
+MessagesRpcLayer::PendingMessagesChats *MessagesRpcLayer::getChats(const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetChats;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesChats *op = new PendingMessagesChats(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getCommonChats(const TLInputUser &userId, quint32 maxId, quint32 limit)
+MessagesRpcLayer::PendingMessagesChats *MessagesRpcLayer::getCommonChats(const TLInputUser &userId, quint32 maxId, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << userId << maxId << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -360,20 +416,24 @@ PendingRpcOperation *MessagesRpcLayer::getCommonChats(const TLInputUser &userId,
     outputStream << userId;
     outputStream << maxId;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesChats *op = new PendingMessagesChats(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getDhConfig(quint32 version, quint32 randomLength)
+MessagesRpcLayer::PendingMessagesDhConfig *MessagesRpcLayer::getDhConfig(quint32 version, quint32 randomLength)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << version << randomLength;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetDhConfig;
     outputStream << version;
     outputStream << randomLength;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesDhConfig *op = new PendingMessagesDhConfig(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getDialogs(quint32 flags, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit)
+MessagesRpcLayer::PendingMessagesDialogs *MessagesRpcLayer::getDialogs(quint32 flags, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << offsetDate << offsetId << offsetPeer << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -384,10 +444,12 @@ PendingRpcOperation *MessagesRpcLayer::getDialogs(quint32 flags, quint32 offsetD
     outputStream << offsetId;
     outputStream << offsetPeer;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesDialogs *op = new PendingMessagesDialogs(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getDocumentByHash(const QByteArray &sha256, quint32 size, const QString &mimeType)
+MessagesRpcLayer::PendingDocument *MessagesRpcLayer::getDocumentByHash(const QByteArray &sha256, quint32 size, const QString &mimeType)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << sha256.toHex() << size << mimeType;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -395,37 +457,45 @@ PendingRpcOperation *MessagesRpcLayer::getDocumentByHash(const QByteArray &sha25
     outputStream << sha256;
     outputStream << size;
     outputStream << mimeType;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingDocument *op = new PendingDocument(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getFavedStickers(quint32 hash)
+MessagesRpcLayer::PendingMessagesFavedStickers *MessagesRpcLayer::getFavedStickers(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetFavedStickers;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesFavedStickers *op = new PendingMessagesFavedStickers(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getFeaturedStickers(quint32 hash)
+MessagesRpcLayer::PendingMessagesFeaturedStickers *MessagesRpcLayer::getFeaturedStickers(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetFeaturedStickers;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesFeaturedStickers *op = new PendingMessagesFeaturedStickers(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getFullChat(quint32 chatId)
+MessagesRpcLayer::PendingMessagesChatFull *MessagesRpcLayer::getFullChat(quint32 chatId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetFullChat;
     outputStream << chatId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesChatFull *op = new PendingMessagesChatFull(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getGameHighScores(const TLInputPeer &peer, quint32 id, const TLInputUser &userId)
+MessagesRpcLayer::PendingMessagesHighScores *MessagesRpcLayer::getGameHighScores(const TLInputPeer &peer, quint32 id, const TLInputUser &userId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id << userId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -433,10 +503,12 @@ PendingRpcOperation *MessagesRpcLayer::getGameHighScores(const TLInputPeer &peer
     outputStream << peer;
     outputStream << id;
     outputStream << userId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesHighScores *op = new PendingMessagesHighScores(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getHistory(const TLInputPeer &peer, quint32 offsetId, quint32 offsetDate, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId, quint32 hash)
+MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getHistory(const TLInputPeer &peer, quint32 offsetId, quint32 offsetDate, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId, quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << offsetId << offsetDate << addOffset << limit << maxId << minId << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -449,10 +521,12 @@ PendingRpcOperation *MessagesRpcLayer::getHistory(const TLInputPeer &peer, quint
     outputStream << maxId;
     outputStream << minId;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getInlineBotResults(quint32 flags, const TLInputUser &bot, const TLInputPeer &peer, const TLInputGeoPoint &geoPoint, const QString &query, const QString &offset)
+MessagesRpcLayer::PendingMessagesBotResults *MessagesRpcLayer::getInlineBotResults(quint32 flags, const TLInputUser &bot, const TLInputPeer &peer, const TLInputGeoPoint &geoPoint, const QString &query, const QString &offset)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << bot << peer << geoPoint << query << offset;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -465,48 +539,58 @@ PendingRpcOperation *MessagesRpcLayer::getInlineBotResults(quint32 flags, const 
     }
     outputStream << query;
     outputStream << offset;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesBotResults *op = new PendingMessagesBotResults(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getInlineGameHighScores(const TLInputBotInlineMessageID &id, const TLInputUser &userId)
+MessagesRpcLayer::PendingMessagesHighScores *MessagesRpcLayer::getInlineGameHighScores(const TLInputBotInlineMessageID &id, const TLInputUser &userId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id << userId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetInlineGameHighScores;
     outputStream << id;
     outputStream << userId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesHighScores *op = new PendingMessagesHighScores(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getMaskStickers(quint32 hash)
+MessagesRpcLayer::PendingMessagesAllStickers *MessagesRpcLayer::getMaskStickers(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetMaskStickers;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesAllStickers *op = new PendingMessagesAllStickers(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getMessageEditData(const TLInputPeer &peer, quint32 id)
+MessagesRpcLayer::PendingMessagesMessageEditData *MessagesRpcLayer::getMessageEditData(const TLInputPeer &peer, quint32 id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetMessageEditData;
     outputStream << peer;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesMessageEditData *op = new PendingMessagesMessageEditData(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getMessages(const TLVector<quint32> &id)
+MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getMessages(const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetMessages;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getMessagesViews(const TLInputPeer &peer, const TLVector<quint32> &id, bool increment)
+MessagesRpcLayer::PendingQuint32Vector *MessagesRpcLayer::getMessagesViews(const TLInputPeer &peer, const TLVector<quint32> &id, bool increment)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id << increment;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -514,46 +598,56 @@ PendingRpcOperation *MessagesRpcLayer::getMessagesViews(const TLInputPeer &peer,
     outputStream << peer;
     outputStream << id;
     outputStream << increment;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingQuint32Vector *op = new PendingQuint32Vector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getPeerDialogs(const TLVector<TLInputPeer> &peers)
+MessagesRpcLayer::PendingMessagesPeerDialogs *MessagesRpcLayer::getPeerDialogs(const TLVector<TLInputPeer> &peers)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peers;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetPeerDialogs;
     outputStream << peers;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesPeerDialogs *op = new PendingMessagesPeerDialogs(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getPeerSettings(const TLInputPeer &peer)
+MessagesRpcLayer::PendingPeerSettings *MessagesRpcLayer::getPeerSettings(const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetPeerSettings;
     outputStream << peer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPeerSettings *op = new PendingPeerSettings(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getPinnedDialogs()
+MessagesRpcLayer::PendingMessagesPeerDialogs *MessagesRpcLayer::getPinnedDialogs()
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetPinnedDialogs;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesPeerDialogs *op = new PendingMessagesPeerDialogs(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getRecentLocations(const TLInputPeer &peer, quint32 limit)
+MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getRecentLocations(const TLInputPeer &peer, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetRecentLocations;
     outputStream << peer;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getRecentStickers(quint32 flags, quint32 hash)
+MessagesRpcLayer::PendingMessagesRecentStickers *MessagesRpcLayer::getRecentStickers(quint32 flags, quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -561,28 +655,34 @@ PendingRpcOperation *MessagesRpcLayer::getRecentStickers(quint32 flags, quint32 
     outputStream << flags;
     // (flags & 1 << 0) stands for attached "true" value
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesRecentStickers *op = new PendingMessagesRecentStickers(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getSavedGifs(quint32 hash)
+MessagesRpcLayer::PendingMessagesSavedGifs *MessagesRpcLayer::getSavedGifs(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetSavedGifs;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesSavedGifs *op = new PendingMessagesSavedGifs(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getStickerSet(const TLInputStickerSet &stickerset)
+MessagesRpcLayer::PendingMessagesStickerSet *MessagesRpcLayer::getStickerSet(const TLInputStickerSet &stickerset)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << stickerset;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetStickerSet;
     outputStream << stickerset;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesStickerSet *op = new PendingMessagesStickerSet(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getUnreadMentions(const TLInputPeer &peer, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId)
+MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getUnreadMentions(const TLInputPeer &peer, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << offsetId << addOffset << limit << maxId << minId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -593,131 +693,159 @@ PendingRpcOperation *MessagesRpcLayer::getUnreadMentions(const TLInputPeer &peer
     outputStream << limit;
     outputStream << maxId;
     outputStream << minId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getWebPage(const QString &url, quint32 hash)
+MessagesRpcLayer::PendingWebPage *MessagesRpcLayer::getWebPage(const QString &url, quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << url << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetWebPage;
     outputStream << url;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingWebPage *op = new PendingWebPage(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::getWebPagePreview(const QString &message)
+MessagesRpcLayer::PendingMessageMedia *MessagesRpcLayer::getWebPagePreview(const QString &message)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << message;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesGetWebPagePreview;
     outputStream << message;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessageMedia *op = new PendingMessageMedia(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::hideReportSpam(const TLInputPeer &peer)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::hideReportSpam(const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesHideReportSpam;
     outputStream << peer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::importChatInvite(const QString &hash)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::importChatInvite(const QString &hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesImportChatInvite;
     outputStream << hash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::installStickerSet(const TLInputStickerSet &stickerset, bool archived)
+MessagesRpcLayer::PendingMessagesStickerSetInstallResult *MessagesRpcLayer::installStickerSet(const TLInputStickerSet &stickerset, bool archived)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << stickerset << archived;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesInstallStickerSet;
     outputStream << stickerset;
     outputStream << archived;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesStickerSetInstallResult *op = new PendingMessagesStickerSetInstallResult(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::migrateChat(quint32 chatId)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::migrateChat(quint32 chatId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesMigrateChat;
     outputStream << chatId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::readEncryptedHistory(const TLInputEncryptedChat &peer, quint32 maxDate)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::readEncryptedHistory(const TLInputEncryptedChat &peer, quint32 maxDate)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << maxDate;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesReadEncryptedHistory;
     outputStream << peer;
     outputStream << maxDate;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::readFeaturedStickers(const TLVector<quint64> &id)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::readFeaturedStickers(const TLVector<quint64> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesReadFeaturedStickers;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::readHistory(const TLInputPeer &peer, quint32 maxId)
+MessagesRpcLayer::PendingMessagesAffectedMessages *MessagesRpcLayer::readHistory(const TLInputPeer &peer, quint32 maxId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << maxId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesReadHistory;
     outputStream << peer;
     outputStream << maxId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesAffectedMessages *op = new PendingMessagesAffectedMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::readMentions(const TLInputPeer &peer)
+MessagesRpcLayer::PendingMessagesAffectedHistory *MessagesRpcLayer::readMentions(const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesReadMentions;
     outputStream << peer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesAffectedHistory *op = new PendingMessagesAffectedHistory(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::readMessageContents(const TLVector<quint32> &id)
+MessagesRpcLayer::PendingMessagesAffectedMessages *MessagesRpcLayer::readMessageContents(const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesReadMessageContents;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesAffectedMessages *op = new PendingMessagesAffectedMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::receivedMessages(quint32 maxId)
+MessagesRpcLayer::PendingReceivedNotifyMessageVector *MessagesRpcLayer::receivedMessages(quint32 maxId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << maxId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesReceivedMessages;
     outputStream << maxId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingReceivedNotifyMessageVector *op = new PendingReceivedNotifyMessageVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::receivedQueue(quint32 maxQts)
+MessagesRpcLayer::PendingQuint64Vector *MessagesRpcLayer::receivedQueue(quint32 maxQts)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << maxQts;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesReceivedQueue;
     outputStream << maxQts;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingQuint64Vector *op = new PendingQuint64Vector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::reorderPinnedDialogs(quint32 flags, const TLVector<TLInputPeer> &order)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::reorderPinnedDialogs(quint32 flags, const TLVector<TLInputPeer> &order)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << order;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -725,10 +853,12 @@ PendingRpcOperation *MessagesRpcLayer::reorderPinnedDialogs(quint32 flags, const
     outputStream << flags;
     // (flags & 1 << 0) stands for force "true" value
     outputStream << order;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::reorderStickerSets(quint32 flags, const TLVector<quint64> &order)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::reorderStickerSets(quint32 flags, const TLVector<quint64> &order)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << order;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -736,28 +866,34 @@ PendingRpcOperation *MessagesRpcLayer::reorderStickerSets(quint32 flags, const T
     outputStream << flags;
     // (flags & 1 << 0) stands for masks "true" value
     outputStream << order;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::reportEncryptedSpam(const TLInputEncryptedChat &peer)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::reportEncryptedSpam(const TLInputEncryptedChat &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesReportEncryptedSpam;
     outputStream << peer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::reportSpam(const TLInputPeer &peer)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::reportSpam(const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesReportSpam;
     outputStream << peer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::requestEncryption(const TLInputUser &userId, quint32 randomId, const QByteArray &gA)
+MessagesRpcLayer::PendingEncryptedChat *MessagesRpcLayer::requestEncryption(const TLInputUser &userId, quint32 randomId, const QByteArray &gA)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << userId << randomId << gA.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -765,10 +901,12 @@ PendingRpcOperation *MessagesRpcLayer::requestEncryption(const TLInputUser &user
     outputStream << userId;
     outputStream << randomId;
     outputStream << gA;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingEncryptedChat *op = new PendingEncryptedChat(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::saveDraft(quint32 flags, quint32 replyToMsgId, const TLInputPeer &peer, const QString &message, const TLVector<TLMessageEntity> &entities)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveDraft(quint32 flags, quint32 replyToMsgId, const TLInputPeer &peer, const QString &message, const TLVector<TLMessageEntity> &entities)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << replyToMsgId << peer << message << entities;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -783,20 +921,24 @@ PendingRpcOperation *MessagesRpcLayer::saveDraft(quint32 flags, quint32 replyToM
     if (flags & 1 << 3) {
         outputStream << entities;
     }
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::saveGif(const TLInputDocument &id, bool unsave)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveGif(const TLInputDocument &id, bool unsave)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id << unsave;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesSaveGif;
     outputStream << id;
     outputStream << unsave;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::saveRecentSticker(quint32 flags, const TLInputDocument &id, bool unsave)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveRecentSticker(quint32 flags, const TLInputDocument &id, bool unsave)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id << unsave;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -805,10 +947,12 @@ PendingRpcOperation *MessagesRpcLayer::saveRecentSticker(quint32 flags, const TL
     // (flags & 1 << 0) stands for attached "true" value
     outputStream << id;
     outputStream << unsave;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::search(quint32 flags, const TLInputPeer &peer, const QString &q, const TLInputUser &fromId, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId)
+MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::search(quint32 flags, const TLInputPeer &peer, const QString &q, const TLInputUser &fromId, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << q << fromId << filter << minDate << maxDate << offsetId << addOffset << limit << maxId << minId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -827,20 +971,24 @@ PendingRpcOperation *MessagesRpcLayer::search(quint32 flags, const TLInputPeer &
     outputStream << limit;
     outputStream << maxId;
     outputStream << minId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::searchGifs(const QString &q, quint32 offset)
+MessagesRpcLayer::PendingMessagesFoundGifs *MessagesRpcLayer::searchGifs(const QString &q, quint32 offset)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << q << offset;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesSearchGifs;
     outputStream << q;
     outputStream << offset;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesFoundGifs *op = new PendingMessagesFoundGifs(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::searchGlobal(const QString &q, quint32 offsetDate, const TLInputPeer &offsetPeer, quint32 offsetId, quint32 limit)
+MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::searchGlobal(const QString &q, quint32 offsetDate, const TLInputPeer &offsetPeer, quint32 offsetId, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << q << offsetDate << offsetPeer << offsetId << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -850,10 +998,12 @@ PendingRpcOperation *MessagesRpcLayer::searchGlobal(const QString &q, quint32 of
     outputStream << offsetPeer;
     outputStream << offsetId;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::sendEncrypted(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data)
+MessagesRpcLayer::PendingMessagesSentEncryptedMessage *MessagesRpcLayer::sendEncrypted(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << randomId << data.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -861,10 +1011,12 @@ PendingRpcOperation *MessagesRpcLayer::sendEncrypted(const TLInputEncryptedChat 
     outputStream << peer;
     outputStream << randomId;
     outputStream << data;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesSentEncryptedMessage *op = new PendingMessagesSentEncryptedMessage(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::sendEncryptedFile(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data, const TLInputEncryptedFile &file)
+MessagesRpcLayer::PendingMessagesSentEncryptedMessage *MessagesRpcLayer::sendEncryptedFile(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data, const TLInputEncryptedFile &file)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << randomId << data.toHex() << file;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -873,10 +1025,12 @@ PendingRpcOperation *MessagesRpcLayer::sendEncryptedFile(const TLInputEncryptedC
     outputStream << randomId;
     outputStream << data;
     outputStream << file;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesSentEncryptedMessage *op = new PendingMessagesSentEncryptedMessage(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::sendEncryptedService(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data)
+MessagesRpcLayer::PendingMessagesSentEncryptedMessage *MessagesRpcLayer::sendEncryptedService(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << randomId << data.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -884,10 +1038,12 @@ PendingRpcOperation *MessagesRpcLayer::sendEncryptedService(const TLInputEncrypt
     outputStream << peer;
     outputStream << randomId;
     outputStream << data;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesSentEncryptedMessage *op = new PendingMessagesSentEncryptedMessage(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::sendInlineBotResult(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, quint64 randomId, quint64 queryId, const QString &id)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendInlineBotResult(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, quint64 randomId, quint64 queryId, const QString &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << replyToMsgId << randomId << queryId << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -903,10 +1059,12 @@ PendingRpcOperation *MessagesRpcLayer::sendInlineBotResult(quint32 flags, const 
     outputStream << randomId;
     outputStream << queryId;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::sendMedia(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const TLInputMedia &media, quint64 randomId, const TLReplyMarkup &replyMarkup)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMedia(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const TLInputMedia &media, quint64 randomId, const TLReplyMarkup &replyMarkup)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << replyToMsgId << media << randomId << replyMarkup;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -924,10 +1082,12 @@ PendingRpcOperation *MessagesRpcLayer::sendMedia(quint32 flags, const TLInputPee
     if (flags & 1 << 2) {
         outputStream << replyMarkup;
     }
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::sendMessage(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const QString &message, quint64 randomId, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMessage(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const QString &message, quint64 randomId, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << replyToMsgId << message << randomId << replyMarkup << entities;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -949,10 +1109,12 @@ PendingRpcOperation *MessagesRpcLayer::sendMessage(quint32 flags, const TLInputP
     if (flags & 1 << 3) {
         outputStream << entities;
     }
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::sendScreenshotNotification(const TLInputPeer &peer, quint32 replyToMsgId, quint64 randomId)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendScreenshotNotification(const TLInputPeer &peer, quint32 replyToMsgId, quint64 randomId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << replyToMsgId << randomId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -960,10 +1122,12 @@ PendingRpcOperation *MessagesRpcLayer::sendScreenshotNotification(const TLInputP
     outputStream << peer;
     outputStream << replyToMsgId;
     outputStream << randomId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::setBotCallbackAnswer(quint32 flags, quint64 queryId, const QString &message, const QString &url, quint32 cacheTime)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::setBotCallbackAnswer(quint32 flags, quint64 queryId, const QString &message, const QString &url, quint32 cacheTime)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << queryId << message << url << cacheTime;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -978,10 +1142,12 @@ PendingRpcOperation *MessagesRpcLayer::setBotCallbackAnswer(quint32 flags, quint
         outputStream << url;
     }
     outputStream << cacheTime;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::setBotPrecheckoutResults(quint32 flags, quint64 queryId, const QString &error)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::setBotPrecheckoutResults(quint32 flags, quint64 queryId, const QString &error)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << queryId << error;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -992,10 +1158,12 @@ PendingRpcOperation *MessagesRpcLayer::setBotPrecheckoutResults(quint32 flags, q
     if (flags & 1 << 0) {
         outputStream << error;
     }
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::setBotShippingResults(quint32 flags, quint64 queryId, const QString &error, const TLVector<TLShippingOption> &shippingOptions)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::setBotShippingResults(quint32 flags, quint64 queryId, const QString &error, const TLVector<TLShippingOption> &shippingOptions)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << queryId << error << shippingOptions;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -1008,20 +1176,24 @@ PendingRpcOperation *MessagesRpcLayer::setBotShippingResults(quint32 flags, quin
     if (flags & 1 << 1) {
         outputStream << shippingOptions;
     }
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::setEncryptedTyping(const TLInputEncryptedChat &peer, bool typing)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::setEncryptedTyping(const TLInputEncryptedChat &peer, bool typing)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << typing;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesSetEncryptedTyping;
     outputStream << peer;
     outputStream << typing;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::setGameScore(quint32 flags, const TLInputPeer &peer, quint32 id, const TLInputUser &userId, quint32 score)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::setGameScore(quint32 flags, const TLInputPeer &peer, quint32 id, const TLInputUser &userId, quint32 score)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << id << userId << score;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -1033,10 +1205,12 @@ PendingRpcOperation *MessagesRpcLayer::setGameScore(quint32 flags, const TLInput
     outputStream << id;
     outputStream << userId;
     outputStream << score;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::setInlineBotResults(quint32 flags, quint64 queryId, const TLVector<TLInputBotInlineResult> &results, quint32 cacheTime, const QString &nextOffset, const TLInlineBotSwitchPM &switchPm)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::setInlineBotResults(quint32 flags, quint64 queryId, const TLVector<TLInputBotInlineResult> &results, quint32 cacheTime, const QString &nextOffset, const TLInlineBotSwitchPM &switchPm)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << queryId << results << cacheTime << nextOffset << switchPm;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -1053,10 +1227,12 @@ PendingRpcOperation *MessagesRpcLayer::setInlineBotResults(quint32 flags, quint6
     if (flags & 1 << 3) {
         outputStream << switchPm;
     }
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::setInlineGameScore(quint32 flags, const TLInputBotInlineMessageID &id, const TLInputUser &userId, quint32 score)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::setInlineGameScore(quint32 flags, const TLInputBotInlineMessageID &id, const TLInputUser &userId, quint32 score)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id << userId << score;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -1067,20 +1243,24 @@ PendingRpcOperation *MessagesRpcLayer::setInlineGameScore(quint32 flags, const T
     outputStream << id;
     outputStream << userId;
     outputStream << score;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::setTyping(const TLInputPeer &peer, const TLSendMessageAction &action)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::setTyping(const TLInputPeer &peer, const TLSendMessageAction &action)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << action;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesSetTyping;
     outputStream << peer;
     outputStream << action;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::startBot(const TLInputUser &bot, const TLInputPeer &peer, quint64 randomId, const QString &startParam)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::startBot(const TLInputUser &bot, const TLInputPeer &peer, quint64 randomId, const QString &startParam)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << bot << peer << randomId << startParam;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -1089,20 +1269,24 @@ PendingRpcOperation *MessagesRpcLayer::startBot(const TLInputUser &bot, const TL
     outputStream << peer;
     outputStream << randomId;
     outputStream << startParam;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::toggleChatAdmins(quint32 chatId, bool enabled)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::toggleChatAdmins(quint32 chatId, bool enabled)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << enabled;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesToggleChatAdmins;
     outputStream << chatId;
     outputStream << enabled;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::toggleDialogPin(quint32 flags, const TLInputPeer &peer)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::toggleDialogPin(quint32 flags, const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -1110,26 +1294,32 @@ PendingRpcOperation *MessagesRpcLayer::toggleDialogPin(quint32 flags, const TLIn
     outputStream << flags;
     // (flags & 1 << 0) stands for pinned "true" value
     outputStream << peer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::uninstallStickerSet(const TLInputStickerSet &stickerset)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::uninstallStickerSet(const TLInputStickerSet &stickerset)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << stickerset;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesUninstallStickerSet;
     outputStream << stickerset;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *MessagesRpcLayer::uploadMedia(const TLInputPeer &peer, const TLInputMedia &media)
+MessagesRpcLayer::PendingMessageMedia *MessagesRpcLayer::uploadMedia(const TLInputPeer &peer, const TLInputMedia &media)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << media;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::MessagesUploadMedia;
     outputStream << peer;
     outputStream << media;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessageMedia *op = new PendingMessageMedia(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

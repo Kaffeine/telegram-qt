@@ -30,6 +30,10 @@ namespace Telegram {
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLBotCommand *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLBotInfo *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLBotInlineMessage *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLBotInlineResult *output);
 // End of generated Telegram API reply template specializations
 
 BotsRpcLayer::BotsRpcLayer(QObject *parent) :
@@ -38,24 +42,28 @@ BotsRpcLayer::BotsRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *BotsRpcLayer::answerWebhookJSONQuery(quint64 queryId, const TLDataJSON &data)
+BotsRpcLayer::PendingBool *BotsRpcLayer::answerWebhookJSONQuery(quint64 queryId, const TLDataJSON &data)
 {
     qCDebug(c_clientRpcBotsCategory) << Q_FUNC_INFO << queryId << data;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::BotsAnswerWebhookJSONQuery;
     outputStream << queryId;
     outputStream << data;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *BotsRpcLayer::sendCustomRequest(const QString &customMethod, const TLDataJSON &params)
+BotsRpcLayer::PendingDataJSON *BotsRpcLayer::sendCustomRequest(const QString &customMethod, const TLDataJSON &params)
 {
     qCDebug(c_clientRpcBotsCategory) << Q_FUNC_INFO << customMethod << params;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::BotsSendCustomRequest;
     outputStream << customMethod;
     outputStream << params;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingDataJSON *op = new PendingDataJSON(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

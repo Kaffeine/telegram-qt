@@ -54,9 +54,11 @@ void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream, PendingRp
     stream->setData(data);
 }
 
-PendingRpcOperation *BaseRpcLayerExtension::sendEncryptedPackage(const QByteArray &payload)
+void BaseRpcLayerExtension::processRpcCall(PendingRpcOperation *operation)
 {
-    return m_sendMethod(payload);
+    if (m_processingMethod) {
+        m_processingMethod(operation);
+    }
 }
 
 } // Client namespace

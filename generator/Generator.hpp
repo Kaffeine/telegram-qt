@@ -150,6 +150,7 @@ public:
         LowerCaseFirstLetter = 1 << 2,
         SkipFirstWord = 1 << 3,
         RemoveSeparators = 1 << 4,
+        SkipTl = 1 << 5,
     };
     Q_ENUM(FormatOption)
     Q_DECLARE_FLAGS(FormatOptions, FormatOption)
@@ -171,6 +172,7 @@ public:
     QStringList functionGroups() const { return m_functionGroups; }
 
     struct MethodsCode {
+        QStringList usings;
         QStringList declarations;
         QStringList definitions;
     };

@@ -627,6 +627,8 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
                 headerFile.setContent(defaultContent);
             }
             const Generator::MethodsCode functions = generator.generateClientFunctions(group.nameSmall);
+            const QString usingCode = Generator::joinLinesWithPrepend(functions.usings, Generator::spacing, QStringLiteral("\n"));
+            headerFile.replace("Telegram operations using", usingCode, 4);
             const QString declCode = Generator::joinLinesWithPrepend(functions.declarations, Generator::spacing, QStringLiteral("\n"));
             headerFile.replace("Telegram API declarations", declCode, 4);
             const QString defCode = Generator::joinLinesWithPrepend(functions.definitions, QString(), QStringLiteral("\n"));
@@ -639,7 +641,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
             lowLevelRpcGetters.append(QStringLiteral("%1RpcLayer *%2Layer() { return m_%2Layer; }").arg(group.name1stCapital, group.nameSmall));
             lowLevelRpcMembers.append(QStringLiteral("%1RpcLayer *m_%2Layer = nullptr;").arg(group.name1stCapital, group.nameSmall));
             lowLevelInitCode.append(QStringLiteral("m_%1Layer = new %2RpcLayer(this);").arg(group.nameSmall, group.name1stCapital));
-            lowLevelInitCode.append(QStringLiteral("m_%1Layer->setSendMethod(sendMethod);").arg(group.nameSmall));
+            lowLevelInitCode.append(QStringLiteral("m_%1Layer->setRpcProcessingMethod(rpcProcessMethod);").arg(group.nameSmall));
         }
 
         {

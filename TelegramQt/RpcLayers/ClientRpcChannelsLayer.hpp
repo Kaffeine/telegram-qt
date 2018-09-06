@@ -19,6 +19,8 @@
 #define TELEGRAM_CLIENT_RPC_CHANNELS_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
@@ -33,39 +35,54 @@ class ChannelsRpcLayer : public BaseRpcLayerExtension
 public:
     explicit ChannelsRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingBool = PendingRpcResult<bool *>;
+    using PendingUpdates = PendingRpcResult<TLUpdates *>;
+    using PendingMessagesAffectedMessages = PendingRpcResult<TLMessagesAffectedMessages *>;
+    using PendingMessagesAffectedHistory = PendingRpcResult<TLMessagesAffectedHistory *>;
+    using PendingExportedChatInvite = PendingRpcResult<TLExportedChatInvite *>;
+    using PendingExportedMessageLink = PendingRpcResult<TLExportedMessageLink *>;
+    using PendingChannelsAdminLogResults = PendingRpcResult<TLChannelsAdminLogResults *>;
+    using PendingMessagesChats = PendingRpcResult<TLMessagesChats *>;
+    using PendingMessagesChatFull = PendingRpcResult<TLMessagesChatFull *>;
+    using PendingMessagesMessages = PendingRpcResult<TLMessagesMessages *>;
+    using PendingChannelsChannelParticipant = PendingRpcResult<TLChannelsChannelParticipant *>;
+    using PendingChannelsChannelParticipants = PendingRpcResult<TLChannelsChannelParticipants *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *checkUsername(const TLInputChannel &channel, const QString &username);
-    PendingRpcOperation *createChannel(quint32 flags, const QString &title, const QString &about);
-    PendingRpcOperation *deleteChannel(const TLInputChannel &channel);
-    PendingRpcOperation *deleteHistory(const TLInputChannel &channel, quint32 maxId);
-    PendingRpcOperation *deleteMessages(const TLInputChannel &channel, const TLVector<quint32> &id);
-    PendingRpcOperation *deleteUserHistory(const TLInputChannel &channel, const TLInputUser &userId);
-    PendingRpcOperation *editAbout(const TLInputChannel &channel, const QString &about);
-    PendingRpcOperation *editAdmin(const TLInputChannel &channel, const TLInputUser &userId, const TLChannelAdminRights &adminRights);
-    PendingRpcOperation *editBanned(const TLInputChannel &channel, const TLInputUser &userId, const TLChannelBannedRights &bannedRights);
-    PendingRpcOperation *editPhoto(const TLInputChannel &channel, const TLInputChatPhoto &photo);
-    PendingRpcOperation *editTitle(const TLInputChannel &channel, const QString &title);
-    PendingRpcOperation *exportInvite(const TLInputChannel &channel);
-    PendingRpcOperation *exportMessageLink(const TLInputChannel &channel, quint32 id);
-    PendingRpcOperation *getAdminLog(quint32 flags, const TLInputChannel &channel, const QString &q, const TLChannelAdminLogEventsFilter &eventsFilter, const TLVector<TLInputUser> &admins, quint64 maxId, quint64 minId, quint32 limit);
-    PendingRpcOperation *getAdminedPublicChannels();
-    PendingRpcOperation *getChannels(const TLVector<TLInputChannel> &id);
-    PendingRpcOperation *getFullChannel(const TLInputChannel &channel);
-    PendingRpcOperation *getMessages(const TLInputChannel &channel, const TLVector<quint32> &id);
-    PendingRpcOperation *getParticipant(const TLInputChannel &channel, const TLInputUser &userId);
-    PendingRpcOperation *getParticipants(const TLInputChannel &channel, const TLChannelParticipantsFilter &filter, quint32 offset, quint32 limit, quint32 hash);
-    PendingRpcOperation *inviteToChannel(const TLInputChannel &channel, const TLVector<TLInputUser> &users);
-    PendingRpcOperation *joinChannel(const TLInputChannel &channel);
-    PendingRpcOperation *leaveChannel(const TLInputChannel &channel);
-    PendingRpcOperation *readHistory(const TLInputChannel &channel, quint32 maxId);
-    PendingRpcOperation *readMessageContents(const TLInputChannel &channel, const TLVector<quint32> &id);
-    PendingRpcOperation *reportSpam(const TLInputChannel &channel, const TLInputUser &userId, const TLVector<quint32> &id);
-    PendingRpcOperation *setStickers(const TLInputChannel &channel, const TLInputStickerSet &stickerset);
-    PendingRpcOperation *toggleInvites(const TLInputChannel &channel, bool enabled);
-    PendingRpcOperation *togglePreHistoryHidden(const TLInputChannel &channel, bool enabled);
-    PendingRpcOperation *toggleSignatures(const TLInputChannel &channel, bool enabled);
-    PendingRpcOperation *updatePinnedMessage(quint32 flags, const TLInputChannel &channel, quint32 id);
-    PendingRpcOperation *updateUsername(const TLInputChannel &channel, const QString &username);
+    PendingBool *checkUsername(const TLInputChannel &channel, const QString &username);
+    PendingUpdates *createChannel(quint32 flags, const QString &title, const QString &about);
+    PendingUpdates *deleteChannel(const TLInputChannel &channel);
+    PendingBool *deleteHistory(const TLInputChannel &channel, quint32 maxId);
+    PendingMessagesAffectedMessages *deleteMessages(const TLInputChannel &channel, const TLVector<quint32> &id);
+    PendingMessagesAffectedHistory *deleteUserHistory(const TLInputChannel &channel, const TLInputUser &userId);
+    PendingBool *editAbout(const TLInputChannel &channel, const QString &about);
+    PendingUpdates *editAdmin(const TLInputChannel &channel, const TLInputUser &userId, const TLChannelAdminRights &adminRights);
+    PendingUpdates *editBanned(const TLInputChannel &channel, const TLInputUser &userId, const TLChannelBannedRights &bannedRights);
+    PendingUpdates *editPhoto(const TLInputChannel &channel, const TLInputChatPhoto &photo);
+    PendingUpdates *editTitle(const TLInputChannel &channel, const QString &title);
+    PendingExportedChatInvite *exportInvite(const TLInputChannel &channel);
+    PendingExportedMessageLink *exportMessageLink(const TLInputChannel &channel, quint32 id);
+    PendingChannelsAdminLogResults *getAdminLog(quint32 flags, const TLInputChannel &channel, const QString &q, const TLChannelAdminLogEventsFilter &eventsFilter, const TLVector<TLInputUser> &admins, quint64 maxId, quint64 minId, quint32 limit);
+    PendingMessagesChats *getAdminedPublicChannels();
+    PendingMessagesChats *getChannels(const TLVector<TLInputChannel> &id);
+    PendingMessagesChatFull *getFullChannel(const TLInputChannel &channel);
+    PendingMessagesMessages *getMessages(const TLInputChannel &channel, const TLVector<quint32> &id);
+    PendingChannelsChannelParticipant *getParticipant(const TLInputChannel &channel, const TLInputUser &userId);
+    PendingChannelsChannelParticipants *getParticipants(const TLInputChannel &channel, const TLChannelParticipantsFilter &filter, quint32 offset, quint32 limit, quint32 hash);
+    PendingUpdates *inviteToChannel(const TLInputChannel &channel, const TLVector<TLInputUser> &users);
+    PendingUpdates *joinChannel(const TLInputChannel &channel);
+    PendingUpdates *leaveChannel(const TLInputChannel &channel);
+    PendingBool *readHistory(const TLInputChannel &channel, quint32 maxId);
+    PendingBool *readMessageContents(const TLInputChannel &channel, const TLVector<quint32> &id);
+    PendingBool *reportSpam(const TLInputChannel &channel, const TLInputUser &userId, const TLVector<quint32> &id);
+    PendingBool *setStickers(const TLInputChannel &channel, const TLInputStickerSet &stickerset);
+    PendingUpdates *toggleInvites(const TLInputChannel &channel, bool enabled);
+    PendingUpdates *togglePreHistoryHidden(const TLInputChannel &channel, bool enabled);
+    PendingUpdates *toggleSignatures(const TLInputChannel &channel, bool enabled);
+    PendingUpdates *updatePinnedMessage(quint32 flags, const TLInputChannel &channel, quint32 id);
+    PendingBool *updateUsername(const TLInputChannel &channel, const QString &username);
     // End of generated Telegram API declarations
 };
 

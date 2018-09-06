@@ -38,9 +38,9 @@ class BaseRpcLayerExtension : public QObject
 public:
     explicit BaseRpcLayerExtension(QObject *parent = nullptr);
 
-    using SendMethod = std::function<PendingRpcOperation *(const QByteArray &)>;
+    using RpcProcessingMethod = std::function<void (PendingRpcOperation *)>;
 
-    void setSendMethod(SendMethod sendMethod) { m_sendMethod = sendMethod; }
+    void setRpcProcessingMethod(RpcProcessingMethod sendMethod) { m_processingMethod = sendMethod; }
 
     template <typename TLType>
     bool processReply(PendingRpcOperation *operation, TLType *output);
@@ -48,8 +48,8 @@ public:
     void prepareReplyStream(TelegramStream *stream, PendingRpcOperation *operation);
 
 protected:
-    PendingRpcOperation *sendEncryptedPackage(const QByteArray &payload);
-    SendMethod m_sendMethod;
+    void processRpcCall(PendingRpcOperation *operation);
+    RpcProcessingMethod m_processingMethod = nullptr;
 
 };
 

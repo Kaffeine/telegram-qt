@@ -41,7 +41,7 @@ UploadRpcLayer::UploadRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *UploadRpcLayer::getCdnFile(const QByteArray &fileToken, quint32 offset, quint32 limit)
+UploadRpcLayer::PendingUploadCdnFile *UploadRpcLayer::getCdnFile(const QByteArray &fileToken, quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << offset << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -49,20 +49,24 @@ PendingRpcOperation *UploadRpcLayer::getCdnFile(const QByteArray &fileToken, qui
     outputStream << fileToken;
     outputStream << offset;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUploadCdnFile *op = new PendingUploadCdnFile(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *UploadRpcLayer::getCdnFileHashes(const QByteArray &fileToken, quint32 offset)
+UploadRpcLayer::PendingCdnFileHashVector *UploadRpcLayer::getCdnFileHashes(const QByteArray &fileToken, quint32 offset)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << offset;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::UploadGetCdnFileHashes;
     outputStream << fileToken;
     outputStream << offset;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingCdnFileHashVector *op = new PendingCdnFileHashVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *UploadRpcLayer::getFile(const TLInputFileLocation &location, quint32 offset, quint32 limit)
+UploadRpcLayer::PendingUploadFile *UploadRpcLayer::getFile(const TLInputFileLocation &location, quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << location << offset << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -70,10 +74,12 @@ PendingRpcOperation *UploadRpcLayer::getFile(const TLInputFileLocation &location
     outputStream << location;
     outputStream << offset;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUploadFile *op = new PendingUploadFile(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *UploadRpcLayer::getWebFile(const TLInputWebFileLocation &location, quint32 offset, quint32 limit)
+UploadRpcLayer::PendingUploadWebFile *UploadRpcLayer::getWebFile(const TLInputWebFileLocation &location, quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << location << offset << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -81,20 +87,24 @@ PendingRpcOperation *UploadRpcLayer::getWebFile(const TLInputWebFileLocation &lo
     outputStream << location;
     outputStream << offset;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUploadWebFile *op = new PendingUploadWebFile(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *UploadRpcLayer::reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken)
+UploadRpcLayer::PendingCdnFileHashVector *UploadRpcLayer::reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << requestToken.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::UploadReuploadCdnFile;
     outputStream << fileToken;
     outputStream << requestToken;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingCdnFileHashVector *op = new PendingCdnFileHashVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *UploadRpcLayer::saveBigFilePart(quint64 fileId, quint32 filePart, quint32 fileTotalParts, const QByteArray &bytes)
+UploadRpcLayer::PendingBool *UploadRpcLayer::saveBigFilePart(quint64 fileId, quint32 filePart, quint32 fileTotalParts, const QByteArray &bytes)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileId << filePart << fileTotalParts << bytes.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -103,10 +113,12 @@ PendingRpcOperation *UploadRpcLayer::saveBigFilePart(quint64 fileId, quint32 fil
     outputStream << filePart;
     outputStream << fileTotalParts;
     outputStream << bytes;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *UploadRpcLayer::saveFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)
+UploadRpcLayer::PendingBool *UploadRpcLayer::saveFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileId << filePart << bytes.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -114,7 +126,9 @@ PendingRpcOperation *UploadRpcLayer::saveFilePart(quint64 fileId, quint32 filePa
     outputStream << fileId;
     outputStream << filePart;
     outputStream << bytes;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

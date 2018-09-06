@@ -38,40 +38,48 @@ LangpackRpcLayer::LangpackRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *LangpackRpcLayer::getDifference(quint32 fromVersion)
+LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getDifference(quint32 fromVersion)
 {
     qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << fromVersion;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::LangpackGetDifference;
     outputStream << fromVersion;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingLangPackDifference *op = new PendingLangPackDifference(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *LangpackRpcLayer::getLangPack(const QString &langCode)
+LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getLangPack(const QString &langCode)
 {
     qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langCode;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::LangpackGetLangPack;
     outputStream << langCode;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingLangPackDifference *op = new PendingLangPackDifference(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *LangpackRpcLayer::getLanguages()
+LangpackRpcLayer::PendingLangPackLanguageVector *LangpackRpcLayer::getLanguages()
 {
     qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::LangpackGetLanguages;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingLangPackLanguageVector *op = new PendingLangPackLanguageVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *LangpackRpcLayer::getStrings(const QString &langCode, const TLVector<QString> &keys)
+LangpackRpcLayer::PendingLangPackStringVector *LangpackRpcLayer::getStrings(const QString &langCode, const TLVector<QString> &keys)
 {
     qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langCode << keys;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::LangpackGetStrings;
     outputStream << langCode;
     outputStream << keys;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingLangPackStringVector *op = new PendingLangPackStringVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

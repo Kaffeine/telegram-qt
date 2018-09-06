@@ -19,11 +19,11 @@
 #define TELEGRAM_CLIENT_RPC_USERS_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+#include "PendingRpcResult.hpp"
+
 #include "TLTypes.hpp"
 
 namespace Telegram {
-
-class PendingRpcOperation;
 
 namespace Client {
 
@@ -33,9 +33,14 @@ class UsersRpcLayer : public BaseRpcLayerExtension
 public:
     explicit UsersRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingUserFull = PendingRpcResult<TLUserFull *>;
+    using PendingUserVector = PendingRpcResult<TLVector<TLUser> *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *getFullUser(const TLInputUser &id);
-    PendingRpcOperation *getUsers(const TLVector<TLInputUser> &id);
+    PendingUserFull *getFullUser(const TLInputUser &id);
+    PendingUserVector *getUsers(const TLVector<TLInputUser> &id);
     // End of generated Telegram API declarations
 };
 

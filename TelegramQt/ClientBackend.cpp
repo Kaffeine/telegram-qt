@@ -45,43 +45,41 @@ Backend::Backend(Client *parent) :
     m_client(parent)
 {
     Backend *b = this;
-    BaseRpcLayerExtension::SendMethod sendMethod = [b](const QByteArray &payload) mutable {
-        PendingRpcOperation *operation = new PendingRpcOperation(payload, b);
+    BaseRpcLayerExtension::RpcProcessingMethod rpcProcessMethod = [b](PendingRpcOperation *operation) mutable {
         b->getDefaultConnection()->rpcLayer()->sendRpc(operation);
-        return operation;
     };
 
     // Generated low-level layer initialization
     m_accountLayer = new AccountRpcLayer(this);
-    m_accountLayer->setSendMethod(sendMethod);
+    m_accountLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_authLayer = new AuthRpcLayer(this);
-    m_authLayer->setSendMethod(sendMethod);
+    m_authLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_botsLayer = new BotsRpcLayer(this);
-    m_botsLayer->setSendMethod(sendMethod);
+    m_botsLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_channelsLayer = new ChannelsRpcLayer(this);
-    m_channelsLayer->setSendMethod(sendMethod);
+    m_channelsLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_contactsLayer = new ContactsRpcLayer(this);
-    m_contactsLayer->setSendMethod(sendMethod);
+    m_contactsLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_helpLayer = new HelpRpcLayer(this);
-    m_helpLayer->setSendMethod(sendMethod);
+    m_helpLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_langpackLayer = new LangpackRpcLayer(this);
-    m_langpackLayer->setSendMethod(sendMethod);
+    m_langpackLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_messagesLayer = new MessagesRpcLayer(this);
-    m_messagesLayer->setSendMethod(sendMethod);
+    m_messagesLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_paymentsLayer = new PaymentsRpcLayer(this);
-    m_paymentsLayer->setSendMethod(sendMethod);
+    m_paymentsLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_phoneLayer = new PhoneRpcLayer(this);
-    m_phoneLayer->setSendMethod(sendMethod);
+    m_phoneLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_photosLayer = new PhotosRpcLayer(this);
-    m_photosLayer->setSendMethod(sendMethod);
+    m_photosLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_stickersLayer = new StickersRpcLayer(this);
-    m_stickersLayer->setSendMethod(sendMethod);
+    m_stickersLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_updatesLayer = new UpdatesRpcLayer(this);
-    m_updatesLayer->setSendMethod(sendMethod);
+    m_updatesLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_uploadLayer = new UploadRpcLayer(this);
-    m_uploadLayer->setSendMethod(sendMethod);
+    m_uploadLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_usersLayer = new UsersRpcLayer(this);
-    m_usersLayer->setSendMethod(sendMethod);
+    m_usersLayer->setRpcProcessingMethod(rpcProcessMethod);
     // End of generated low-level layer initialization
 }
 
@@ -272,12 +270,10 @@ Connection *Backend::ensureConnection(const ConnectionSpec &dcSpec)
 void Backend::setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension *layer)
 {
     Backend *b = this;
-    BaseRpcLayerExtension::SendMethod sendMethod = [b, dcSpec](const QByteArray &payload) mutable {
-        PendingRpcOperation *operation = new PendingRpcOperation(payload, b);
+    BaseRpcLayerExtension::RpcProcessingMethod sendMethod = [b, dcSpec](PendingRpcOperation *operation) mutable {
         b->ensureConnection(dcSpec)->rpcLayer()->sendRpc(operation);
-        return operation;
     };
-    layer->setSendMethod(sendMethod);
+    layer->setRpcProcessingMethod(sendMethod);
 }
 
 void Backend::setMainConnection(Connection *connection)

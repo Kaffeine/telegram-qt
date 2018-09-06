@@ -30,6 +30,9 @@ namespace Telegram {
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLStickerPack *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLStickerSet *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLStickerSetCovered *output);
 // End of generated Telegram API reply template specializations
 
 StickersRpcLayer::StickersRpcLayer(QObject *parent) :
@@ -38,27 +41,31 @@ StickersRpcLayer::StickersRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *StickersRpcLayer::addStickerToSet(const TLInputStickerSet &stickerset, const TLInputStickerSetItem &sticker)
+StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::addStickerToSet(const TLInputStickerSet &stickerset, const TLInputStickerSetItem &sticker)
 {
     qCDebug(c_clientRpcStickersCategory) << Q_FUNC_INFO << stickerset << sticker;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::StickersAddStickerToSet;
     outputStream << stickerset;
     outputStream << sticker;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesStickerSet *op = new PendingMessagesStickerSet(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *StickersRpcLayer::changeStickerPosition(const TLInputDocument &sticker, quint32 position)
+StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::changeStickerPosition(const TLInputDocument &sticker, quint32 position)
 {
     qCDebug(c_clientRpcStickersCategory) << Q_FUNC_INFO << sticker << position;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::StickersChangeStickerPosition;
     outputStream << sticker;
     outputStream << position;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesStickerSet *op = new PendingMessagesStickerSet(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *StickersRpcLayer::createStickerSet(quint32 flags, const TLInputUser &userId, const QString &title, const QString &shortName, const TLVector<TLInputStickerSetItem> &stickers)
+StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::createStickerSet(quint32 flags, const TLInputUser &userId, const QString &title, const QString &shortName, const TLVector<TLInputStickerSetItem> &stickers)
 {
     qCDebug(c_clientRpcStickersCategory) << Q_FUNC_INFO << flags << userId << title << shortName << stickers;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -69,16 +76,20 @@ PendingRpcOperation *StickersRpcLayer::createStickerSet(quint32 flags, const TLI
     outputStream << title;
     outputStream << shortName;
     outputStream << stickers;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesStickerSet *op = new PendingMessagesStickerSet(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *StickersRpcLayer::removeStickerFromSet(const TLInputDocument &sticker)
+StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::removeStickerFromSet(const TLInputDocument &sticker)
 {
     qCDebug(c_clientRpcStickersCategory) << Q_FUNC_INFO << sticker;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::StickersRemoveStickerFromSet;
     outputStream << sticker;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingMessagesStickerSet *op = new PendingMessagesStickerSet(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

@@ -30,6 +30,8 @@ namespace Telegram {
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPhoto *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPhotoSize *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPhotosPhoto *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPhotosPhotos *output);
 // End of generated Telegram API reply template specializations
@@ -40,16 +42,18 @@ PhotosRpcLayer::PhotosRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *PhotosRpcLayer::deletePhotos(const TLVector<TLInputPhoto> &id)
+PhotosRpcLayer::PendingQuint64Vector *PhotosRpcLayer::deletePhotos(const TLVector<TLInputPhoto> &id)
 {
     qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PhotosDeletePhotos;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingQuint64Vector *op = new PendingQuint64Vector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhotosRpcLayer::getUserPhotos(const TLInputUser &userId, quint32 offset, quint64 maxId, quint32 limit)
+PhotosRpcLayer::PendingPhotosPhotos *PhotosRpcLayer::getUserPhotos(const TLInputUser &userId, quint32 offset, quint64 maxId, quint32 limit)
 {
     qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << userId << offset << maxId << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -58,25 +62,31 @@ PendingRpcOperation *PhotosRpcLayer::getUserPhotos(const TLInputUser &userId, qu
     outputStream << offset;
     outputStream << maxId;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPhotosPhotos *op = new PendingPhotosPhotos(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhotosRpcLayer::updateProfilePhoto(const TLInputPhoto &id)
+PhotosRpcLayer::PendingUserProfilePhoto *PhotosRpcLayer::updateProfilePhoto(const TLInputPhoto &id)
 {
     qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PhotosUpdateProfilePhoto;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUserProfilePhoto *op = new PendingUserProfilePhoto(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhotosRpcLayer::uploadProfilePhoto(const TLInputFile &file)
+PhotosRpcLayer::PendingPhotosPhoto *PhotosRpcLayer::uploadProfilePhoto(const TLInputFile &file)
 {
     qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << file;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PhotosUploadProfilePhoto;
     outputStream << file;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPhotosPhoto *op = new PendingPhotosPhoto(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

@@ -19,6 +19,8 @@
 #define TELEGRAM_CLIENT_RPC_UPDATES_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
@@ -33,10 +35,16 @@ class UpdatesRpcLayer : public BaseRpcLayerExtension
 public:
     explicit UpdatesRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingUpdatesChannelDifference = PendingRpcResult<TLUpdatesChannelDifference *>;
+    using PendingUpdatesDifference = PendingRpcResult<TLUpdatesDifference *>;
+    using PendingUpdatesState = PendingRpcResult<TLUpdatesState *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *getChannelDifference(quint32 flags, const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit);
-    PendingRpcOperation *getDifference(quint32 flags, quint32 pts, quint32 ptsTotalLimit, quint32 date, quint32 qts);
-    PendingRpcOperation *getState();
+    PendingUpdatesChannelDifference *getChannelDifference(quint32 flags, const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit);
+    PendingUpdatesDifference *getDifference(quint32 flags, quint32 pts, quint32 ptsTotalLimit, quint32 date, quint32 qts);
+    PendingUpdatesState *getState();
     // End of generated Telegram API declarations
 };
 

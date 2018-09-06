@@ -47,7 +47,7 @@ AuthRpcLayer::AuthRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *AuthRpcLayer::bindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage)
+AuthRpcLayer::PendingBool *AuthRpcLayer::bindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << permAuthKeyId << nonce << expiresAt << encryptedMessage.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -56,66 +56,80 @@ PendingRpcOperation *AuthRpcLayer::bindTempAuthKey(quint64 permAuthKeyId, quint6
     outputStream << nonce;
     outputStream << expiresAt;
     outputStream << encryptedMessage;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::cancelCode(const QString &phoneNumber, const QString &phoneCodeHash)
+AuthRpcLayer::PendingBool *AuthRpcLayer::cancelCode(const QString &phoneNumber, const QString &phoneCodeHash)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumber << phoneCodeHash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthCancelCode;
     outputStream << phoneNumber;
     outputStream << phoneCodeHash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::checkPassword(const QByteArray &passwordHash)
+AuthRpcLayer::PendingAuthAuthorization *AuthRpcLayer::checkPassword(const QByteArray &passwordHash)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << passwordHash.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthCheckPassword;
     outputStream << passwordHash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthAuthorization *op = new PendingAuthAuthorization(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::checkPhone(const QString &phoneNumber)
+AuthRpcLayer::PendingAuthCheckedPhone *AuthRpcLayer::checkPhone(const QString &phoneNumber)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumber;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthCheckPhone;
     outputStream << phoneNumber;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthCheckedPhone *op = new PendingAuthCheckedPhone(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::dropTempAuthKeys(const TLVector<quint64> &exceptAuthKeys)
+AuthRpcLayer::PendingBool *AuthRpcLayer::dropTempAuthKeys(const TLVector<quint64> &exceptAuthKeys)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << exceptAuthKeys;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthDropTempAuthKeys;
     outputStream << exceptAuthKeys;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::exportAuthorization(quint32 dcId)
+AuthRpcLayer::PendingAuthExportedAuthorization *AuthRpcLayer::exportAuthorization(quint32 dcId)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << dcId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthExportAuthorization;
     outputStream << dcId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthExportedAuthorization *op = new PendingAuthExportedAuthorization(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::importAuthorization(quint32 id, const QByteArray &bytes)
+AuthRpcLayer::PendingAuthAuthorization *AuthRpcLayer::importAuthorization(quint32 id, const QByteArray &bytes)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << id << bytes.toHex();
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthImportAuthorization;
     outputStream << id;
     outputStream << bytes;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthAuthorization *op = new PendingAuthAuthorization(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::importBotAuthorization(quint32 flags, quint32 apiId, const QString &apiHash, const QString &botAuthToken)
+AuthRpcLayer::PendingAuthAuthorization *AuthRpcLayer::importBotAuthorization(quint32 flags, quint32 apiId, const QString &apiHash, const QString &botAuthToken)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << flags << apiId << apiHash << botAuthToken;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -124,53 +138,65 @@ PendingRpcOperation *AuthRpcLayer::importBotAuthorization(quint32 flags, quint32
     outputStream << apiId;
     outputStream << apiHash;
     outputStream << botAuthToken;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthAuthorization *op = new PendingAuthAuthorization(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::logOut()
+AuthRpcLayer::PendingBool *AuthRpcLayer::logOut()
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthLogOut;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::recoverPassword(const QString &code)
+AuthRpcLayer::PendingAuthAuthorization *AuthRpcLayer::recoverPassword(const QString &code)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << code;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthRecoverPassword;
     outputStream << code;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthAuthorization *op = new PendingAuthAuthorization(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::requestPasswordRecovery()
+AuthRpcLayer::PendingAuthPasswordRecovery *AuthRpcLayer::requestPasswordRecovery()
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthRequestPasswordRecovery;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthPasswordRecovery *op = new PendingAuthPasswordRecovery(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::resendCode(const QString &phoneNumber, const QString &phoneCodeHash)
+AuthRpcLayer::PendingAuthSentCode *AuthRpcLayer::resendCode(const QString &phoneNumber, const QString &phoneCodeHash)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumber << phoneCodeHash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthResendCode;
     outputStream << phoneNumber;
     outputStream << phoneCodeHash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthSentCode *op = new PendingAuthSentCode(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::resetAuthorizations()
+AuthRpcLayer::PendingBool *AuthRpcLayer::resetAuthorizations()
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthResetAuthorizations;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::sendCode(quint32 flags, const QString &phoneNumber, bool currentNumber, quint32 apiId, const QString &apiHash)
+AuthRpcLayer::PendingAuthSentCode *AuthRpcLayer::sendCode(quint32 flags, const QString &phoneNumber, bool currentNumber, quint32 apiId, const QString &apiHash)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << flags << phoneNumber << currentNumber << apiId << apiHash;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -183,20 +209,24 @@ PendingRpcOperation *AuthRpcLayer::sendCode(quint32 flags, const QString &phoneN
     }
     outputStream << apiId;
     outputStream << apiHash;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthSentCode *op = new PendingAuthSentCode(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::sendInvites(const TLVector<QString> &phoneNumbers, const QString &message)
+AuthRpcLayer::PendingBool *AuthRpcLayer::sendInvites(const TLVector<QString> &phoneNumbers, const QString &message)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumbers << message;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::AuthSendInvites;
     outputStream << phoneNumbers;
     outputStream << message;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::signIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode)
+AuthRpcLayer::PendingAuthAuthorization *AuthRpcLayer::signIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumber << phoneCodeHash << phoneCode;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -204,10 +234,12 @@ PendingRpcOperation *AuthRpcLayer::signIn(const QString &phoneNumber, const QStr
     outputStream << phoneNumber;
     outputStream << phoneCodeHash;
     outputStream << phoneCode;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthAuthorization *op = new PendingAuthAuthorization(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *AuthRpcLayer::signUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName)
+AuthRpcLayer::PendingAuthAuthorization *AuthRpcLayer::signUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName)
 {
     qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumber << phoneCodeHash << phoneCode << firstName << lastName;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -217,11 +249,13 @@ PendingRpcOperation *AuthRpcLayer::signUp(const QString &phoneNumber, const QStr
     outputStream << phoneCode;
     outputStream << firstName;
     outputStream << lastName;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingAuthAuthorization *op = new PendingAuthAuthorization(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 
-PendingRpcOperation *AuthRpcLayer::sendCode(const QString &phoneNumber, quint32 apiId, const QString &apiHash)
+AuthRpcLayer::PendingAuthSentCode *AuthRpcLayer::sendCode(const QString &phoneNumber, quint32 apiId, const QString &apiHash)
 {
     return sendCode(0, phoneNumber, false, apiId, apiHash);
 }

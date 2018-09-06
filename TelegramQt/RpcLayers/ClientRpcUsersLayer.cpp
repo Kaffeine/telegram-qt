@@ -25,11 +25,18 @@
 
 Q_LOGGING_CATEGORY(c_clientRpcUsersCategory, "telegram.client.rpclayer.users", QtDebugMsg)
 
+#include "PendingRpcOperation.hpp"
+
+
 namespace Telegram {
 
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUser *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUserFull *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUserProfilePhoto *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUserStatus *output);
 // End of generated Telegram API reply template specializations
 
 UsersRpcLayer::UsersRpcLayer(QObject *parent) :
@@ -38,24 +45,44 @@ UsersRpcLayer::UsersRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *UsersRpcLayer::getFullUser(const TLInputUser &id)
+UsersRpcLayer::PendingUserFull *UsersRpcLayer::getFullUser(const TLInputUser &id)
 {
     qCDebug(c_clientRpcUsersCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::UsersGetFullUser;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUserFull *op = new PendingUserFull(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *UsersRpcLayer::getUsers(const TLVector<TLInputUser> &id)
+UsersRpcLayer::PendingUserVector *UsersRpcLayer::getUsers(const TLVector<TLInputUser> &id)
 {
     qCDebug(c_clientRpcUsersCategory) << Q_FUNC_INFO << id;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::UsersGetUsers;
     outputStream << id;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUserVector *op = new PendingUserVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
+
+
+//processGetFullUser()
+//{
+//    if (!operation->isSucceeded()) {
+//        setDelayedFinishedWithError(operation->errorDetails());
+//        return;
+//    }
+//    TLUserFull result;
+//    authLayer()->processReply(operation, &result);
+//    qDebug() << Q_FUNC_INFO << result.tlType << result.phoneCodeHash;
+//    if (result.isValid()) {
+//        m_authCodeHash = result.phoneCodeHash;
+//        emit authCodeRequired();
+//    }
+//}
 
 } // Client namespace
 

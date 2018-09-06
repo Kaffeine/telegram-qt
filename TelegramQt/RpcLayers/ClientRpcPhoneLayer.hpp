@@ -19,6 +19,8 @@
 #define TELEGRAM_CLIENT_RPC_PHONE_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
@@ -33,15 +35,22 @@ class PhoneRpcLayer : public BaseRpcLayerExtension
 public:
     explicit PhoneRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingPhonePhoneCall = PendingRpcResult<TLPhonePhoneCall *>;
+    using PendingUpdates = PendingRpcResult<TLUpdates *>;
+    using PendingDataJSON = PendingRpcResult<TLDataJSON *>;
+    using PendingBool = PendingRpcResult<bool *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *acceptCall(const TLInputPhoneCall &peer, const QByteArray &gB, const TLPhoneCallProtocol &protocol);
-    PendingRpcOperation *confirmCall(const TLInputPhoneCall &peer, const QByteArray &gA, quint64 keyFingerprint, const TLPhoneCallProtocol &protocol);
-    PendingRpcOperation *discardCall(const TLInputPhoneCall &peer, quint32 duration, const TLPhoneCallDiscardReason &reason, quint64 connectionId);
-    PendingRpcOperation *getCallConfig();
-    PendingRpcOperation *receivedCall(const TLInputPhoneCall &peer);
-    PendingRpcOperation *requestCall(const TLInputUser &userId, quint32 randomId, const QByteArray &gAHash, const TLPhoneCallProtocol &protocol);
-    PendingRpcOperation *saveCallDebug(const TLInputPhoneCall &peer, const TLDataJSON &debug);
-    PendingRpcOperation *setCallRating(const TLInputPhoneCall &peer, quint32 rating, const QString &comment);
+    PendingPhonePhoneCall *acceptCall(const TLInputPhoneCall &peer, const QByteArray &gB, const TLPhoneCallProtocol &protocol);
+    PendingPhonePhoneCall *confirmCall(const TLInputPhoneCall &peer, const QByteArray &gA, quint64 keyFingerprint, const TLPhoneCallProtocol &protocol);
+    PendingUpdates *discardCall(const TLInputPhoneCall &peer, quint32 duration, const TLPhoneCallDiscardReason &reason, quint64 connectionId);
+    PendingDataJSON *getCallConfig();
+    PendingBool *receivedCall(const TLInputPhoneCall &peer);
+    PendingPhonePhoneCall *requestCall(const TLInputUser &userId, quint32 randomId, const QByteArray &gAHash, const TLPhoneCallProtocol &protocol);
+    PendingBool *saveCallDebug(const TLInputPhoneCall &peer, const TLDataJSON &debug);
+    PendingUpdates *setCallRating(const TLInputPhoneCall &peer, quint32 rating, const QString &comment);
     // End of generated Telegram API declarations
 };
 

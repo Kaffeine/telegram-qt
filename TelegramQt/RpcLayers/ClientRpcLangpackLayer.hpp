@@ -19,6 +19,8 @@
 #define TELEGRAM_CLIENT_RPC_LANGPACK_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
@@ -33,11 +35,17 @@ class LangpackRpcLayer : public BaseRpcLayerExtension
 public:
     explicit LangpackRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingLangPackDifference = PendingRpcResult<TLLangPackDifference *>;
+    using PendingLangPackLanguageVector = PendingRpcResult<TLVector<TLLangPackLanguage> *>;
+    using PendingLangPackStringVector = PendingRpcResult<TLVector<TLLangPackString> *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *getDifference(quint32 fromVersion);
-    PendingRpcOperation *getLangPack(const QString &langCode);
-    PendingRpcOperation *getLanguages();
-    PendingRpcOperation *getStrings(const QString &langCode, const TLVector<QString> &keys);
+    PendingLangPackDifference *getDifference(quint32 fromVersion);
+    PendingLangPackDifference *getLangPack(const QString &langCode);
+    PendingLangPackLanguageVector *getLanguages();
+    PendingLangPackStringVector *getStrings(const QString &langCode, const TLVector<QString> &keys);
     // End of generated Telegram API declarations
 };
 

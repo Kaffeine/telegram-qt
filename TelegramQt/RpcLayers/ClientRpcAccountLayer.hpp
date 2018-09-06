@@ -19,6 +19,8 @@
 #define TELEGRAM_CLIENT_RPC_ACCOUNT_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
@@ -33,34 +35,48 @@ class AccountRpcLayer : public BaseRpcLayerExtension
 public:
     explicit AccountRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingUser = PendingRpcResult<TLUser *>;
+    using PendingBool = PendingRpcResult<bool *>;
+    using PendingAccountDaysTTL = PendingRpcResult<TLAccountDaysTTL *>;
+    using PendingAccountAuthorizations = PendingRpcResult<TLAccountAuthorizations *>;
+    using PendingPeerNotifySettings = PendingRpcResult<TLPeerNotifySettings *>;
+    using PendingAccountPassword = PendingRpcResult<TLAccountPassword *>;
+    using PendingAccountPasswordSettings = PendingRpcResult<TLAccountPasswordSettings *>;
+    using PendingAccountPrivacyRules = PendingRpcResult<TLAccountPrivacyRules *>;
+    using PendingAccountTmpPassword = PendingRpcResult<TLAccountTmpPassword *>;
+    using PendingWallPaperVector = PendingRpcResult<TLVector<TLWallPaper> *>;
+    using PendingAuthSentCode = PendingRpcResult<TLAuthSentCode *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *changePhone(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
-    PendingRpcOperation *checkUsername(const QString &username);
-    PendingRpcOperation *confirmPhone(const QString &phoneCodeHash, const QString &phoneCode);
-    PendingRpcOperation *deleteAccount(const QString &reason);
-    PendingRpcOperation *getAccountTTL();
-    PendingRpcOperation *getAuthorizations();
-    PendingRpcOperation *getNotifySettings(const TLInputNotifyPeer &peer);
-    PendingRpcOperation *getPassword();
-    PendingRpcOperation *getPasswordSettings(const QByteArray &currentPasswordHash);
-    PendingRpcOperation *getPrivacy(const TLInputPrivacyKey &key);
-    PendingRpcOperation *getTmpPassword(const QByteArray &passwordHash, quint32 period);
-    PendingRpcOperation *getWallPapers();
-    PendingRpcOperation *registerDevice(quint32 tokenType, const QString &token);
-    PendingRpcOperation *reportPeer(const TLInputPeer &peer, const TLReportReason &reason);
-    PendingRpcOperation *resetAuthorization(quint64 hash);
-    PendingRpcOperation *resetNotifySettings();
-    PendingRpcOperation *sendChangePhoneCode(quint32 flags, const QString &phoneNumber, bool currentNumber);
-    PendingRpcOperation *sendConfirmPhoneCode(quint32 flags, const QString &hash, bool currentNumber);
-    PendingRpcOperation *setAccountTTL(const TLAccountDaysTTL &ttl);
-    PendingRpcOperation *setPrivacy(const TLInputPrivacyKey &key, const TLVector<TLInputPrivacyRule> &rules);
-    PendingRpcOperation *unregisterDevice(quint32 tokenType, const QString &token);
-    PendingRpcOperation *updateDeviceLocked(quint32 period);
-    PendingRpcOperation *updateNotifySettings(const TLInputNotifyPeer &peer, const TLInputPeerNotifySettings &settings);
-    PendingRpcOperation *updatePasswordSettings(const QByteArray &currentPasswordHash, const TLAccountPasswordInputSettings &newSettings);
-    PendingRpcOperation *updateProfile(quint32 flags, const QString &firstName, const QString &lastName, const QString &about);
-    PendingRpcOperation *updateStatus(bool offline);
-    PendingRpcOperation *updateUsername(const QString &username);
+    PendingUser *changePhone(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
+    PendingBool *checkUsername(const QString &username);
+    PendingBool *confirmPhone(const QString &phoneCodeHash, const QString &phoneCode);
+    PendingBool *deleteAccount(const QString &reason);
+    PendingAccountDaysTTL *getAccountTTL();
+    PendingAccountAuthorizations *getAuthorizations();
+    PendingPeerNotifySettings *getNotifySettings(const TLInputNotifyPeer &peer);
+    PendingAccountPassword *getPassword();
+    PendingAccountPasswordSettings *getPasswordSettings(const QByteArray &currentPasswordHash);
+    PendingAccountPrivacyRules *getPrivacy(const TLInputPrivacyKey &key);
+    PendingAccountTmpPassword *getTmpPassword(const QByteArray &passwordHash, quint32 period);
+    PendingWallPaperVector *getWallPapers();
+    PendingBool *registerDevice(quint32 tokenType, const QString &token);
+    PendingBool *reportPeer(const TLInputPeer &peer, const TLReportReason &reason);
+    PendingBool *resetAuthorization(quint64 hash);
+    PendingBool *resetNotifySettings();
+    PendingAuthSentCode *sendChangePhoneCode(quint32 flags, const QString &phoneNumber, bool currentNumber);
+    PendingAuthSentCode *sendConfirmPhoneCode(quint32 flags, const QString &hash, bool currentNumber);
+    PendingBool *setAccountTTL(const TLAccountDaysTTL &ttl);
+    PendingAccountPrivacyRules *setPrivacy(const TLInputPrivacyKey &key, const TLVector<TLInputPrivacyRule> &rules);
+    PendingBool *unregisterDevice(quint32 tokenType, const QString &token);
+    PendingBool *updateDeviceLocked(quint32 period);
+    PendingBool *updateNotifySettings(const TLInputNotifyPeer &peer, const TLInputPeerNotifySettings &settings);
+    PendingBool *updatePasswordSettings(const QByteArray &currentPasswordHash, const TLAccountPasswordInputSettings &newSettings);
+    PendingUser *updateProfile(quint32 flags, const QString &firstName, const QString &lastName, const QString &about);
+    PendingBool *updateStatus(bool offline);
+    PendingUser *updateUsername(const QString &username);
     // End of generated Telegram API declarations
 };
 

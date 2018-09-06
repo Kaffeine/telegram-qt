@@ -30,6 +30,9 @@ namespace Telegram {
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPaymentCharge *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPaymentRequestedInfo *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPaymentSavedCredentials *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPaymentsPaymentForm *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPaymentsPaymentReceipt *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLPaymentsPaymentResult *output);
@@ -43,7 +46,7 @@ PaymentsRpcLayer::PaymentsRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *PaymentsRpcLayer::clearSavedInfo(quint32 flags)
+PaymentsRpcLayer::PendingBool *PaymentsRpcLayer::clearSavedInfo(quint32 flags)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << flags;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -51,36 +54,44 @@ PendingRpcOperation *PaymentsRpcLayer::clearSavedInfo(quint32 flags)
     outputStream << flags;
     // (flags & 1 << 0) stands for credentials "true" value
     // (flags & 1 << 1) stands for info "true" value
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PaymentsRpcLayer::getPaymentForm(quint32 msgId)
+PaymentsRpcLayer::PendingPaymentsPaymentForm *PaymentsRpcLayer::getPaymentForm(quint32 msgId)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << msgId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PaymentsGetPaymentForm;
     outputStream << msgId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPaymentsPaymentForm *op = new PendingPaymentsPaymentForm(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PaymentsRpcLayer::getPaymentReceipt(quint32 msgId)
+PaymentsRpcLayer::PendingPaymentsPaymentReceipt *PaymentsRpcLayer::getPaymentReceipt(quint32 msgId)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << msgId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PaymentsGetPaymentReceipt;
     outputStream << msgId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPaymentsPaymentReceipt *op = new PendingPaymentsPaymentReceipt(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PaymentsRpcLayer::getSavedInfo()
+PaymentsRpcLayer::PendingPaymentsSavedInfo *PaymentsRpcLayer::getSavedInfo()
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PaymentsGetSavedInfo;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPaymentsSavedInfo *op = new PendingPaymentsSavedInfo(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PaymentsRpcLayer::sendPaymentForm(quint32 flags, quint32 msgId, const QString &requestedInfoId, const QString &shippingOptionId, const TLInputPaymentCredentials &credentials)
+PaymentsRpcLayer::PendingPaymentsPaymentResult *PaymentsRpcLayer::sendPaymentForm(quint32 flags, quint32 msgId, const QString &requestedInfoId, const QString &shippingOptionId, const TLInputPaymentCredentials &credentials)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << flags << msgId << requestedInfoId << shippingOptionId << credentials;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -94,10 +105,12 @@ PendingRpcOperation *PaymentsRpcLayer::sendPaymentForm(quint32 flags, quint32 ms
         outputStream << shippingOptionId;
     }
     outputStream << credentials;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPaymentsPaymentResult *op = new PendingPaymentsPaymentResult(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PaymentsRpcLayer::validateRequestedInfo(quint32 flags, quint32 msgId, const TLPaymentRequestedInfo &info)
+PaymentsRpcLayer::PendingPaymentsValidatedRequestedInfo *PaymentsRpcLayer::validateRequestedInfo(quint32 flags, quint32 msgId, const TLPaymentRequestedInfo &info)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << flags << msgId << info;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -106,7 +119,9 @@ PendingRpcOperation *PaymentsRpcLayer::validateRequestedInfo(quint32 flags, quin
     // (flags & 1 << 0) stands for save "true" value
     outputStream << msgId;
     outputStream << info;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPaymentsValidatedRequestedInfo *op = new PendingPaymentsValidatedRequestedInfo(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

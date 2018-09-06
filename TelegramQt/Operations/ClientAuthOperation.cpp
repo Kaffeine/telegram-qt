@@ -69,10 +69,12 @@ PendingOperation *AuthOperation::requestAuthCode()
         return PendingOperation::failOperation({{QStringLiteral("text"), text}});
     }
 
-    PendingRpcOperation *requestCodeOperation = m_backend->authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
+    AuthRpcLayer::PendingAuthSentCode *requestCodeOperation = m_backend->authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
     qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber())
              << "on dc" << Connection::fromOperation(requestCodeOperation)->dcOption().id;
-    connect(requestCodeOperation, &PendingRpcOperation::finished, this, &AuthOperation::onRequestAuthCodeFinished);
+    connect(requestCodeOperation, &PendingOperation::finished, this, [this, requestCodeOperation] {
+       this->onRequestAuthCodeFinished(requestCodeOperation);
+    });
     return requestCodeOperation;
 }
 
@@ -157,7 +159,7 @@ AuthRpcLayer *AuthOperation::authLayer() const
     return m_backend->authLayer();
 }
 
-void AuthOperation::onRequestAuthCodeFinished(PendingRpcOperation *operation)
+void AuthOperation::onRequestAuthCodeFinished(AuthRpcLayer::PendingAuthSentCode *operation)
 {
     if (operation->rpcError() && operation->rpcError()->type == RpcError::SeeOther) {
         setWantedDc(operation->rpcError()->argument);
@@ -170,7 +172,7 @@ void AuthOperation::onRequestAuthCodeFinished(PendingRpcOperation *operation)
         return;
     }
     TLAuthSentCode result;
-    authLayer()->processReply(operation, &result);
+    operation->getResult(&result);
     qDebug() << Q_FUNC_INFO << result.tlType << result.phoneCodeHash;
     if (result.isValid()) {
         m_authCodeHash = result.phoneCodeHash;

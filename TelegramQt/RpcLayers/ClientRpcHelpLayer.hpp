@@ -19,6 +19,8 @@
 #define TELEGRAM_CLIENT_RPC_HELP_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
@@ -33,18 +35,31 @@ class HelpRpcLayer : public BaseRpcLayerExtension
 public:
     explicit HelpRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingUpdates = PendingRpcResult<TLUpdates *>;
+    using PendingHelpAppUpdate = PendingRpcResult<TLHelpAppUpdate *>;
+    using PendingCdnConfig = PendingRpcResult<TLCdnConfig *>;
+    using PendingConfig = PendingRpcResult<TLConfig *>;
+    using PendingHelpInviteText = PendingRpcResult<TLHelpInviteText *>;
+    using PendingNearestDc = PendingRpcResult<TLNearestDc *>;
+    using PendingHelpRecentMeUrls = PendingRpcResult<TLHelpRecentMeUrls *>;
+    using PendingHelpSupport = PendingRpcResult<TLHelpSupport *>;
+    using PendingHelpTermsOfService = PendingRpcResult<TLHelpTermsOfService *>;
+    using PendingBool = PendingRpcResult<bool *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *getAppChangelog(const QString &prevAppVersion);
-    PendingRpcOperation *getAppUpdate();
-    PendingRpcOperation *getCdnConfig();
-    PendingRpcOperation *getConfig();
-    PendingRpcOperation *getInviteText();
-    PendingRpcOperation *getNearestDc();
-    PendingRpcOperation *getRecentMeUrls(const QString &referer);
-    PendingRpcOperation *getSupport();
-    PendingRpcOperation *getTermsOfService();
-    PendingRpcOperation *saveAppLog(const TLVector<TLInputAppEvent> &events);
-    PendingRpcOperation *setBotUpdatesStatus(quint32 pendingUpdatesCount, const QString &message);
+    PendingUpdates *getAppChangelog(const QString &prevAppVersion);
+    PendingHelpAppUpdate *getAppUpdate();
+    PendingCdnConfig *getCdnConfig();
+    PendingConfig *getConfig();
+    PendingHelpInviteText *getInviteText();
+    PendingNearestDc *getNearestDc();
+    PendingHelpRecentMeUrls *getRecentMeUrls(const QString &referer);
+    PendingHelpSupport *getSupport();
+    PendingHelpTermsOfService *getTermsOfService();
+    PendingBool *saveAppLog(const TLVector<TLInputAppEvent> &events);
+    PendingBool *setBotUpdatesStatus(quint32 pendingUpdatesCount, const QString &message);
     // End of generated Telegram API declarations
 };
 

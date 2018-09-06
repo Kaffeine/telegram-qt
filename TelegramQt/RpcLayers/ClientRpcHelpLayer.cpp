@@ -45,97 +45,119 @@ HelpRpcLayer::HelpRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *HelpRpcLayer::getAppChangelog(const QString &prevAppVersion)
+HelpRpcLayer::PendingUpdates *HelpRpcLayer::getAppChangelog(const QString &prevAppVersion)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << prevAppVersion;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetAppChangelog;
     outputStream << prevAppVersion;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::getAppUpdate()
+HelpRpcLayer::PendingHelpAppUpdate *HelpRpcLayer::getAppUpdate()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetAppUpdate;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingHelpAppUpdate *op = new PendingHelpAppUpdate(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::getCdnConfig()
+HelpRpcLayer::PendingCdnConfig *HelpRpcLayer::getCdnConfig()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetCdnConfig;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingCdnConfig *op = new PendingCdnConfig(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::getConfig()
+HelpRpcLayer::PendingConfig *HelpRpcLayer::getConfig()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetConfig;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingConfig *op = new PendingConfig(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::getInviteText()
+HelpRpcLayer::PendingHelpInviteText *HelpRpcLayer::getInviteText()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetInviteText;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingHelpInviteText *op = new PendingHelpInviteText(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::getNearestDc()
+HelpRpcLayer::PendingNearestDc *HelpRpcLayer::getNearestDc()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetNearestDc;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingNearestDc *op = new PendingNearestDc(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::getRecentMeUrls(const QString &referer)
+HelpRpcLayer::PendingHelpRecentMeUrls *HelpRpcLayer::getRecentMeUrls(const QString &referer)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << referer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetRecentMeUrls;
     outputStream << referer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingHelpRecentMeUrls *op = new PendingHelpRecentMeUrls(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::getSupport()
+HelpRpcLayer::PendingHelpSupport *HelpRpcLayer::getSupport()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetSupport;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingHelpSupport *op = new PendingHelpSupport(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::getTermsOfService()
+HelpRpcLayer::PendingHelpTermsOfService *HelpRpcLayer::getTermsOfService()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpGetTermsOfService;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingHelpTermsOfService *op = new PendingHelpTermsOfService(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::saveAppLog(const TLVector<TLInputAppEvent> &events)
+HelpRpcLayer::PendingBool *HelpRpcLayer::saveAppLog(const TLVector<TLInputAppEvent> &events)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << events;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpSaveAppLog;
     outputStream << events;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *HelpRpcLayer::setBotUpdatesStatus(quint32 pendingUpdatesCount, const QString &message)
+HelpRpcLayer::PendingBool *HelpRpcLayer::setBotUpdatesStatus(quint32 pendingUpdatesCount, const QString &message)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << pendingUpdatesCount << message;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::HelpSetBotUpdatesStatus;
     outputStream << pendingUpdatesCount;
     outputStream << message;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

@@ -224,6 +224,9 @@ QString Generator::formatName(const QString &name, const FormatOptions options)
     if (name.isEmpty()) {
         return QString();
     }
+    if (name.startsWith(tlPrefix) && (options & FormatOption::SkipTl)) {
+        return formatName(getWords(name.mid(tlPrefix.length())), options);
+    }
     return formatName(getWords(name), options);
 }
 
@@ -1874,6 +1877,7 @@ void Generator::dumpSolvedTypes() const
 Generator::MethodsCode Generator::generateClientFunctions(const QString &prefix) const
 {
     MethodsCode result;
+    const QString operationBaseName = QStringLiteral("PendingRpcResult");
     for (const TLMethod &method : m_functions) {
         if (!method.name.startsWith(prefix)) {
             continue;
@@ -1882,10 +1886,22 @@ Generator::MethodsCode Generator::generateClientFunctions(const QString &prefix)
         const QString className = prefixFirstUpper + QStringLiteral("RpcLayer");
         const QString predicateName = formatName(method.name, FormatOption::LowerCaseFirstLetter|FormatOption::SkipFirstWord);
         // PendingRpcOperation *checkPassword(const QByteArray &passwordHash);
-        result.declarations.append(QString("PendingRpcOperation *%1(%2);").arg(predicateName, formatMethodParams(method)));
-        QString definitionCode = QString("PendingRpcOperation *%1::%2(%3)\n{\n").arg(className, predicateName, formatMethodParams(method));
 
-//        qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumber << smsType << apiId << apiHash << langCode;
+        bool resultIsVector;
+        QString resultName = Generator::formatName(getTypeOrVectorType(method.type, &resultIsVector),
+                                                   FormatOption::UpperCaseFirstLetter|FormatOption::SkipTl);
+
+        const QString operationName = resultIsVector ?
+                    QLatin1String("Pending") + resultName + QLatin1String("Vector")
+                  : QLatin1String("Pending") + resultName;
+        result.usings.append(QStringLiteral("using %1 = %2<%3 *>;")
+                             .arg(operationName, operationBaseName, method.type));
+        // using PendingAuthSentCode = PendingRpcResult<TLAuthSentCode *>;
+        result.declarations.append(QStringLiteral("%1 *%2(%3);")
+                                   .arg(operationName, predicateName, formatMethodParams(method)));
+        // PendingAuthSentCode *sendCode(quint32 flags, const QString &phoneNumber, ...);
+        QString definitionCode = QStringLiteral("%2::%1 *%2::%3(%4)\n{\n")
+                .arg(operationName, className, predicateName, formatMethodParams(method));
 
         QStringList debugArguments = { QStringLiteral("Q_FUNC_INFO") };
         for (const TLParam &param : method.params) {
@@ -1899,6 +1915,7 @@ Generator::MethodsCode Generator::generateClientFunctions(const QString &prefix)
             }
         }
 
+        // qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumber << smsType << apiId << apiHash << langCode;
         definitionCode += spacing + QStringLiteral("qCDebug(c_clientRpc%1Category)%2;\n").arg(prefixFirstUpper, joinLinesWithPrepend(debugArguments, QStringLiteral(" << ")));
         definitionCode += spacing + streamClassName + QLatin1String(" outputStream(CTelegramStream::WriteOnly);\n");
         definitionCode += spacing + QString("outputStream << %1::%2;\n").arg(tlValueName, formatName(method.name, FormatOption::UpperCaseFirstLetter));
@@ -1916,10 +1933,17 @@ Generator::MethodsCode Generator::generateClientFunctions(const QString &prefix)
                 definitionCode += spacing + QString("outputStream << %1;\n").arg(param.getAlias());
             }
         }
-        definitionCode += spacing + QLatin1String("return sendEncryptedPackage(outputStream.getData());\n}\n");
+        definitionCode += spacing + QStringLiteral("%1 *op = new %1(this, outputStream.getData());\n")
+                .arg(operationName);
+        definitionCode += spacing + QLatin1String("processRpcCall(op);\n");
+        definitionCode += spacing + QLatin1String("return op;\n}\n");
         result.definitions.append(definitionCode);
 
+        // PendingAuthSentCode *op = new PendingAuthSentCode(this, outputStream.getData());
+        // processRpcCall(op);
+        // return op;
     }
+    result.usings.removeDuplicates();
     return result;
 }
 

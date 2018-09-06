@@ -19,6 +19,8 @@
 #define TELEGRAM_CLIENT_RPC_STICKERS_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
@@ -33,11 +35,15 @@ class StickersRpcLayer : public BaseRpcLayerExtension
 public:
     explicit StickersRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingMessagesStickerSet = PendingRpcResult<TLMessagesStickerSet *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *addStickerToSet(const TLInputStickerSet &stickerset, const TLInputStickerSetItem &sticker);
-    PendingRpcOperation *changeStickerPosition(const TLInputDocument &sticker, quint32 position);
-    PendingRpcOperation *createStickerSet(quint32 flags, const TLInputUser &userId, const QString &title, const QString &shortName, const TLVector<TLInputStickerSetItem> &stickers);
-    PendingRpcOperation *removeStickerFromSet(const TLInputDocument &sticker);
+    PendingMessagesStickerSet *addStickerToSet(const TLInputStickerSet &stickerset, const TLInputStickerSetItem &sticker);
+    PendingMessagesStickerSet *changeStickerPosition(const TLInputDocument &sticker, quint32 position);
+    PendingMessagesStickerSet *createStickerSet(quint32 flags, const TLInputUser &userId, const QString &title, const QString &shortName, const TLVector<TLInputStickerSetItem> &stickers);
+    PendingMessagesStickerSet *removeStickerFromSet(const TLInputDocument &sticker);
     // End of generated Telegram API declarations
 };
 

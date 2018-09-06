@@ -30,6 +30,7 @@ namespace Telegram {
 namespace Client {
 
 // Generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUpdate *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUpdates *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUpdatesChannelDifference *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUpdatesDifference *output);
@@ -42,7 +43,7 @@ UpdatesRpcLayer::UpdatesRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *UpdatesRpcLayer::getChannelDifference(quint32 flags, const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit)
+UpdatesRpcLayer::PendingUpdatesChannelDifference *UpdatesRpcLayer::getChannelDifference(quint32 flags, const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit)
 {
     qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO << flags << channel << filter << pts << limit;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -53,10 +54,12 @@ PendingRpcOperation *UpdatesRpcLayer::getChannelDifference(quint32 flags, const 
     outputStream << filter;
     outputStream << pts;
     outputStream << limit;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdatesChannelDifference *op = new PendingUpdatesChannelDifference(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *UpdatesRpcLayer::getDifference(quint32 flags, quint32 pts, quint32 ptsTotalLimit, quint32 date, quint32 qts)
+UpdatesRpcLayer::PendingUpdatesDifference *UpdatesRpcLayer::getDifference(quint32 flags, quint32 pts, quint32 ptsTotalLimit, quint32 date, quint32 qts)
 {
     qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO << flags << pts << ptsTotalLimit << date << qts;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -68,15 +71,19 @@ PendingRpcOperation *UpdatesRpcLayer::getDifference(quint32 flags, quint32 pts, 
     }
     outputStream << date;
     outputStream << qts;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdatesDifference *op = new PendingUpdatesDifference(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *UpdatesRpcLayer::getState()
+UpdatesRpcLayer::PendingUpdatesState *UpdatesRpcLayer::getState()
 {
     qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::UpdatesGetState;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdatesState *op = new PendingUpdatesState(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 

@@ -19,11 +19,11 @@
 #define TELEGRAM_CLIENT_RPC_UPLOAD_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
-
-class PendingRpcOperation;
 
 namespace Client {
 
@@ -33,14 +33,22 @@ class UploadRpcLayer : public BaseRpcLayerExtension
 public:
     explicit UploadRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingUploadCdnFile = PendingRpcResult<TLUploadCdnFile *>;
+    using PendingCdnFileHashVector = PendingRpcResult<TLVector<TLCdnFileHash> *>;
+    using PendingUploadFile = PendingRpcResult<TLUploadFile *>;
+    using PendingUploadWebFile = PendingRpcResult<TLUploadWebFile *>;
+    using PendingBool = PendingRpcResult<bool *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *getCdnFile(const QByteArray &fileToken, quint32 offset, quint32 limit);
-    PendingRpcOperation *getCdnFileHashes(const QByteArray &fileToken, quint32 offset);
-    PendingRpcOperation *getFile(const TLInputFileLocation &location, quint32 offset, quint32 limit);
-    PendingRpcOperation *getWebFile(const TLInputWebFileLocation &location, quint32 offset, quint32 limit);
-    PendingRpcOperation *reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken);
-    PendingRpcOperation *saveBigFilePart(quint64 fileId, quint32 filePart, quint32 fileTotalParts, const QByteArray &bytes);
-    PendingRpcOperation *saveFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
+    PendingUploadCdnFile *getCdnFile(const QByteArray &fileToken, quint32 offset, quint32 limit);
+    PendingCdnFileHashVector *getCdnFileHashes(const QByteArray &fileToken, quint32 offset);
+    PendingUploadFile *getFile(const TLInputFileLocation &location, quint32 offset, quint32 limit);
+    PendingUploadWebFile *getWebFile(const TLInputWebFileLocation &location, quint32 offset, quint32 limit);
+    PendingCdnFileHashVector *reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken);
+    PendingBool *saveBigFilePart(quint64 fileId, quint32 filePart, quint32 fileTotalParts, const QByteArray &bytes);
+    PendingBool *saveFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
     // End of generated Telegram API declarations
 };
 

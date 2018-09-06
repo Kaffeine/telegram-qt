@@ -19,6 +19,8 @@
 #define TELEGRAM_CLIENT_RPC_BOTS_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
@@ -33,9 +35,14 @@ class BotsRpcLayer : public BaseRpcLayerExtension
 public:
     explicit BotsRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingBool = PendingRpcResult<bool *>;
+    using PendingDataJSON = PendingRpcResult<TLDataJSON *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *answerWebhookJSONQuery(quint64 queryId, const TLDataJSON &data);
-    PendingRpcOperation *sendCustomRequest(const QString &customMethod, const TLDataJSON &params);
+    PendingBool *answerWebhookJSONQuery(quint64 queryId, const TLDataJSON &data);
+    PendingDataJSON *sendCustomRequest(const QString &customMethod, const TLDataJSON &params);
     // End of generated Telegram API declarations
 };
 

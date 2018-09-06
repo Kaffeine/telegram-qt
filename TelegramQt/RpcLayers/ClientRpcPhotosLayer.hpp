@@ -19,6 +19,8 @@
 #define TELEGRAM_CLIENT_RPC_PHOTOS_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
@@ -33,11 +35,18 @@ class PhotosRpcLayer : public BaseRpcLayerExtension
 public:
     explicit PhotosRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingQuint64Vector = PendingRpcResult<TLVector<quint64> *>;
+    using PendingPhotosPhotos = PendingRpcResult<TLPhotosPhotos *>;
+    using PendingUserProfilePhoto = PendingRpcResult<TLUserProfilePhoto *>;
+    using PendingPhotosPhoto = PendingRpcResult<TLPhotosPhoto *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *deletePhotos(const TLVector<TLInputPhoto> &id);
-    PendingRpcOperation *getUserPhotos(const TLInputUser &userId, quint32 offset, quint64 maxId, quint32 limit);
-    PendingRpcOperation *updateProfilePhoto(const TLInputPhoto &id);
-    PendingRpcOperation *uploadProfilePhoto(const TLInputFile &file);
+    PendingQuint64Vector *deletePhotos(const TLVector<TLInputPhoto> &id);
+    PendingPhotosPhotos *getUserPhotos(const TLInputUser &userId, quint32 offset, quint64 maxId, quint32 limit);
+    PendingUserProfilePhoto *updateProfilePhoto(const TLInputPhoto &id);
+    PendingPhotosPhoto *uploadProfilePhoto(const TLInputFile &file);
     // End of generated Telegram API declarations
 };
 

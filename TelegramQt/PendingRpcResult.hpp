@@ -10,6 +10,7 @@ namespace Client {
 
 class BasePendingRpcResult : public PendingRpcOperation
 {
+    Q_OBJECT
 public:
     explicit BasePendingRpcResult(BaseRpcLayerExtension *layer, const QByteArray &requestData = QByteArray(), QObject *parent = nullptr);
 

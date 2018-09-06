@@ -19,11 +19,11 @@
 #define TELEGRAM_CLIENT_RPC_AUTH_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
+
+#include "PendingRpcResult.hpp"
 #include "TLTypes.hpp"
 
 namespace Telegram {
-
-class PendingRpcOperation;
 
 namespace Client {
 
@@ -33,26 +33,35 @@ class AuthRpcLayer : public BaseRpcLayerExtension
 public:
     explicit AuthRpcLayer(QObject *parent = nullptr);
 
+    // Generated Telegram operations using
+    using PendingBool = PendingRpcResult<bool *>;
+    using PendingAuthAuthorization = PendingRpcResult<TLAuthAuthorization *>;
+    using PendingAuthCheckedPhone = PendingRpcResult<TLAuthCheckedPhone *>;
+    using PendingAuthExportedAuthorization = PendingRpcResult<TLAuthExportedAuthorization *>;
+    using PendingAuthPasswordRecovery = PendingRpcResult<TLAuthPasswordRecovery *>;
+    using PendingAuthSentCode = PendingRpcResult<TLAuthSentCode *>;
+    // End of generated Telegram operations using
+
     // Generated Telegram API declarations
-    PendingRpcOperation *bindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage);
-    PendingRpcOperation *cancelCode(const QString &phoneNumber, const QString &phoneCodeHash);
-    PendingRpcOperation *checkPassword(const QByteArray &passwordHash);
-    PendingRpcOperation *checkPhone(const QString &phoneNumber);
-    PendingRpcOperation *dropTempAuthKeys(const TLVector<quint64> &exceptAuthKeys);
-    PendingRpcOperation *exportAuthorization(quint32 dcId);
-    PendingRpcOperation *importAuthorization(quint32 id, const QByteArray &bytes);
-    PendingRpcOperation *importBotAuthorization(quint32 flags, quint32 apiId, const QString &apiHash, const QString &botAuthToken);
-    PendingRpcOperation *logOut();
-    PendingRpcOperation *recoverPassword(const QString &code);
-    PendingRpcOperation *requestPasswordRecovery();
-    PendingRpcOperation *resendCode(const QString &phoneNumber, const QString &phoneCodeHash);
-    PendingRpcOperation *resetAuthorizations();
-    PendingRpcOperation *sendCode(quint32 flags, const QString &phoneNumber, bool currentNumber, quint32 apiId, const QString &apiHash);
-    PendingRpcOperation *sendInvites(const TLVector<QString> &phoneNumbers, const QString &message);
-    PendingRpcOperation *signIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
-    PendingRpcOperation *signUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName);
+    PendingBool *bindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage);
+    PendingBool *cancelCode(const QString &phoneNumber, const QString &phoneCodeHash);
+    PendingAuthAuthorization *checkPassword(const QByteArray &passwordHash);
+    PendingAuthCheckedPhone *checkPhone(const QString &phoneNumber);
+    PendingBool *dropTempAuthKeys(const TLVector<quint64> &exceptAuthKeys);
+    PendingAuthExportedAuthorization *exportAuthorization(quint32 dcId);
+    PendingAuthAuthorization *importAuthorization(quint32 id, const QByteArray &bytes);
+    PendingAuthAuthorization *importBotAuthorization(quint32 flags, quint32 apiId, const QString &apiHash, const QString &botAuthToken);
+    PendingBool *logOut();
+    PendingAuthAuthorization *recoverPassword(const QString &code);
+    PendingAuthPasswordRecovery *requestPasswordRecovery();
+    PendingAuthSentCode *resendCode(const QString &phoneNumber, const QString &phoneCodeHash);
+    PendingBool *resetAuthorizations();
+    PendingAuthSentCode *sendCode(quint32 flags, const QString &phoneNumber, bool currentNumber, quint32 apiId, const QString &apiHash);
+    PendingBool *sendInvites(const TLVector<QString> &phoneNumbers, const QString &message);
+    PendingAuthAuthorization *signIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
+    PendingAuthAuthorization *signUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName);
     // End of generated Telegram API declarations
-    PendingRpcOperation *sendCode(const QString &phoneNumber, quint32 apiId, const QString &apiHash);
+    PendingAuthSentCode *sendCode(const QString &phoneNumber, quint32 apiId, const QString &apiHash);
 };
 
 } // Client namespace

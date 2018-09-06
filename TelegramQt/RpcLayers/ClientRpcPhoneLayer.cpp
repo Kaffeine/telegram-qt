@@ -43,7 +43,7 @@ PhoneRpcLayer::PhoneRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-PendingRpcOperation *PhoneRpcLayer::acceptCall(const TLInputPhoneCall &peer, const QByteArray &gB, const TLPhoneCallProtocol &protocol)
+PhoneRpcLayer::PendingPhonePhoneCall *PhoneRpcLayer::acceptCall(const TLInputPhoneCall &peer, const QByteArray &gB, const TLPhoneCallProtocol &protocol)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << gB.toHex() << protocol;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -51,10 +51,12 @@ PendingRpcOperation *PhoneRpcLayer::acceptCall(const TLInputPhoneCall &peer, con
     outputStream << peer;
     outputStream << gB;
     outputStream << protocol;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPhonePhoneCall *op = new PendingPhonePhoneCall(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhoneRpcLayer::confirmCall(const TLInputPhoneCall &peer, const QByteArray &gA, quint64 keyFingerprint, const TLPhoneCallProtocol &protocol)
+PhoneRpcLayer::PendingPhonePhoneCall *PhoneRpcLayer::confirmCall(const TLInputPhoneCall &peer, const QByteArray &gA, quint64 keyFingerprint, const TLPhoneCallProtocol &protocol)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << gA.toHex() << keyFingerprint << protocol;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -63,10 +65,12 @@ PendingRpcOperation *PhoneRpcLayer::confirmCall(const TLInputPhoneCall &peer, co
     outputStream << gA;
     outputStream << keyFingerprint;
     outputStream << protocol;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPhonePhoneCall *op = new PendingPhonePhoneCall(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhoneRpcLayer::discardCall(const TLInputPhoneCall &peer, quint32 duration, const TLPhoneCallDiscardReason &reason, quint64 connectionId)
+PhoneRpcLayer::PendingUpdates *PhoneRpcLayer::discardCall(const TLInputPhoneCall &peer, quint32 duration, const TLPhoneCallDiscardReason &reason, quint64 connectionId)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << duration << reason << connectionId;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -75,27 +79,33 @@ PendingRpcOperation *PhoneRpcLayer::discardCall(const TLInputPhoneCall &peer, qu
     outputStream << duration;
     outputStream << reason;
     outputStream << connectionId;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhoneRpcLayer::getCallConfig()
+PhoneRpcLayer::PendingDataJSON *PhoneRpcLayer::getCallConfig()
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PhoneGetCallConfig;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingDataJSON *op = new PendingDataJSON(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhoneRpcLayer::receivedCall(const TLInputPhoneCall &peer)
+PhoneRpcLayer::PendingBool *PhoneRpcLayer::receivedCall(const TLInputPhoneCall &peer)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PhoneReceivedCall;
     outputStream << peer;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhoneRpcLayer::requestCall(const TLInputUser &userId, quint32 randomId, const QByteArray &gAHash, const TLPhoneCallProtocol &protocol)
+PhoneRpcLayer::PendingPhonePhoneCall *PhoneRpcLayer::requestCall(const TLInputUser &userId, quint32 randomId, const QByteArray &gAHash, const TLPhoneCallProtocol &protocol)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << userId << randomId << gAHash.toHex() << protocol;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -104,20 +114,24 @@ PendingRpcOperation *PhoneRpcLayer::requestCall(const TLInputUser &userId, quint
     outputStream << randomId;
     outputStream << gAHash;
     outputStream << protocol;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingPhonePhoneCall *op = new PendingPhonePhoneCall(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhoneRpcLayer::saveCallDebug(const TLInputPhoneCall &peer, const TLDataJSON &debug)
+PhoneRpcLayer::PendingBool *PhoneRpcLayer::saveCallDebug(const TLInputPhoneCall &peer, const TLDataJSON &debug)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << debug;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::PhoneSaveCallDebug;
     outputStream << peer;
     outputStream << debug;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 
-PendingRpcOperation *PhoneRpcLayer::setCallRating(const TLInputPhoneCall &peer, quint32 rating, const QString &comment)
+PhoneRpcLayer::PendingUpdates *PhoneRpcLayer::setCallRating(const TLInputPhoneCall &peer, quint32 rating, const QString &comment)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << rating << comment;
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
@@ -125,7 +139,9 @@ PendingRpcOperation *PhoneRpcLayer::setCallRating(const TLInputPhoneCall &peer, 
     outputStream << peer;
     outputStream << rating;
     outputStream << comment;
-    return sendEncryptedPackage(outputStream.getData());
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
 }
 // End of generated Telegram API definitions
 
