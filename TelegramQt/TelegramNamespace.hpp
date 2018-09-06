@@ -470,10 +470,11 @@ public:
 
     // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
 
+    struct Private;
+
 protected:
     friend class ::CTelegramDispatcher;
     friend class MessageMediaInfo;
-    class Private;
 
     Private *d;
 };

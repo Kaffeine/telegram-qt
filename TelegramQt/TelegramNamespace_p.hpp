@@ -108,7 +108,11 @@ public:
 };
 
 class Telegram::PasswordInfo::Private : public TLAccountPassword { };
-class Telegram::UserInfo::Private : public TLUser { };
+struct Telegram::UserInfo::Private : public TLUser
+{
+    static Private *get(Telegram::UserInfo *info) { return info->d; }
+};
+
 class Telegram::ChatInfo::Private : public TLChat { };
 
 class Telegram::DialogInfo::Private
