@@ -35,6 +35,7 @@ list(APPEND server_lib_META_HEADERS ${RPC_HEADERS})
 set(server_lib_HEADERS
     ${server_lib_META_HEADERS}
     FunctionStreamOperators.hpp
+    ServerApi.hpp
 )
 
 include_directories(

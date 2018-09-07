@@ -12,6 +12,7 @@ SOURCES += $$PWD/RemoteServerConnection.cpp
 SOURCES += $$PWD/FunctionStreamOperators.cpp
 
 HEADERS += $$PWD/LocalCluster.hpp
+HEADERS += $$PWD/ServerApi.hpp
 HEADERS += $$PWD/ServerDhLayer.hpp
 HEADERS += $$PWD/ServerRpcLayer.hpp
 HEADERS += $$PWD/ServerRpcOperation.hpp
