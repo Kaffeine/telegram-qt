@@ -53,7 +53,7 @@ bool RpcLayer::processRpcQuery(const QByteArray &data)
     stream >> value;
     switch (value) {
     case TLValue::NewSessionCreated:
-        qCDebug(c_clientRpcLayerCategory) << "processSessionCreated(stream)";
+        processSessionCreated(stream);
         break;
     case TLValue::MsgContainer:
         qCDebug(c_clientRpcLayerCategory) << "processContainer(stream);";
@@ -95,6 +95,22 @@ bool RpcLayer::processRpcQuery(const QByteArray &data)
         break;
     }
     return false;
+}
+
+void RpcLayer::processSessionCreated(CTelegramStream &stream)
+{
+    // https://core.telegram.org/mtproto/service_messages#new-session-creation-notification
+    quint64 firstMsgId;
+    quint64 uniqueId;
+    quint64 serverSalt;
+
+    stream >> firstMsgId;
+    stream >> uniqueId;
+    stream >> serverSalt;
+    qCDebug(c_clientRpcLayerCategory) << "processSessionCreated(stream)"
+                                      << firstMsgId
+                                      << uniqueId
+                                      << serverSalt;
 }
 
 bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)

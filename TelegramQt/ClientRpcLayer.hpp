@@ -23,6 +23,7 @@
 #include <QHash>
 
 class CAppInformation;
+class CTelegramStream;
 
 namespace Telegram {
 
@@ -46,6 +47,8 @@ public:
     void setSessionId(quint64 newSessionId);
 
     bool processRpcQuery(const QByteArray &data);
+
+    void processSessionCreated(CTelegramStream &stream);
 
     bool sendRpc(PendingRpcOperation *operation);
     bool resendRpcMessage(quint64 messageId);
