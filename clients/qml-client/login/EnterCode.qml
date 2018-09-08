@@ -20,6 +20,7 @@ AuthScreen {
         inputMethodHints: Qt.ImhDigitsOnly
         placeholderText: qsTr("Enter the code")
         font.pixelSize: Theme.fontSizeMedium
+        selectByMouse: true
         onAccepted: baseColumn.accept()
     }
     Item {
