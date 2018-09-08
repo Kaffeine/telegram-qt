@@ -4,49 +4,12 @@
 #include <QObject>
 #include <QVector>
 
-#include "../TelegramQt/CAppInformation.hpp"
-
 namespace Telegram {
 
 namespace Server {
 
+class Session;
 class User;
-
-class Session
-{
-public:
-    Session()
-    {
-    }
-
-    Session(const Session &otherSession) :
-        authId(otherSession.authId),
-        appInfo(nullptr),
-        timestamp(otherSession.timestamp)
-    {
-        if (otherSession.appInfo) {
-            appInfo = new CAppInformation(otherSession.appInfo);
-        }
-    }
-
-    User *userOrWantedUser() const { return m_user ? m_user : m_wanterUser; }
-    User *user() const { return m_user; }
-    void setUser(User *user) { m_user = user; }
-
-    User *wanterUser() const { return m_wanterUser; }
-    void setWantedUser(User *user) { m_wanterUser = user; }
-
-    quint64 authId = 0;
-    quint64 sessionId = 0;
-    QByteArray authKey;
-    CAppInformation *appInfo = nullptr;
-    QString ip;
-    quint64 timestamp = 0;
-
-protected:
-    User *m_wanterUser = nullptr;
-    User *m_user = nullptr;
-};
 
 class RemoteUser
 {
@@ -112,7 +75,5 @@ protected:
 } // Server
 
 } // Telegram
-
-Q_DECLARE_TYPEINFO(Telegram::Server::Session, Q_MOVABLE_TYPE);
 
 #endif // TELEGRAMSERVERUSER_HPP

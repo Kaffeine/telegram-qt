@@ -7,6 +7,7 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "Session.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"

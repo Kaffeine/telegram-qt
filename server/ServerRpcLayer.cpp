@@ -8,6 +8,7 @@
 #include "ServerRpcOperation.hpp"
 #include "RpcOperationFactory.hpp"
 
+#include "Session.hpp"
 #include "ServerApi.hpp"
 
 #include "CTelegramStream.hpp"
@@ -128,16 +129,11 @@ bool RpcLayer::processInitConnection(RpcProcessingContext &context)
         qWarning() << Q_FUNC_INFO << "Invalid read!";
         return false;
     }
-    if (session()->appInfo) {
-        qWarning() << Q_FUNC_INFO << "The session is already initialized!" << session()->sessionId;
-    } else {
-        session()->appInfo = new CAppInformation(this);
-    }
-    session()->appInfo->setAppId(appId);
-    session()->appInfo->setAppVersion(appVersion);
-    session()->appInfo->setLanguageCode(languageCode);
-    session()->appInfo->setDeviceInfo(deviceInfo);
-    session()->appInfo->setOsInfo(osInfo);
+    session()->appId = appId;
+    session()->appVersion = appVersion;
+    session()->languageCode = languageCode;
+    session()->deviceInfo = deviceInfo;
+    session()->osInfo = osInfo;
     return processRpcQuery(context);
 }
 

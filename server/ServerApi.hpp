@@ -2,8 +2,8 @@
 #define TELEGRAM_SERVER_API_HPP
 
 #include <QObject>
-#include "../TelegramQt/TLTypes.hpp"
-#include "../TelegramQt/TelegramNamespace.hpp"
+#include "TLTypes.hpp"
+#include "TelegramNamespace.hpp"
 
 #include "DcConfiguration.hpp"
 
@@ -19,6 +19,7 @@ namespace Telegram {
 
 namespace Server {
 
+class Session;
 class User;
 class RemoteClientConnection;
 
@@ -54,6 +55,7 @@ public:
 
     virtual DcConfiguration serverConfiguration() const = 0;
     virtual quint32 dcId() const = 0;
+    virtual quint64 serverSalt() const = 0;
     virtual PhoneStatus getPhoneStatus(const QString &identifier) = 0;
     virtual PasswordInfo getPassword(const QString &identifier) = 0;
     virtual bool checkPassword(const QString &identifier, const QByteArray &hash) = 0;
@@ -62,7 +64,8 @@ public:
     virtual bool identifierIsValid(const QString &identifier) = 0; // Argument is 'phoneNumber'
 
     virtual User *getUser(const QString &identifier) = 0;
-    virtual User *getUser(quint64 authId) = 0;
+    virtual Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) = 0;
+    virtual Session *getSessionByAuthId(quint64 authId) const = 0;
     virtual User *addUser(const QString &identifier) = 0;
 };
 

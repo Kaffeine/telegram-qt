@@ -1,5 +1,6 @@
 #include "TelegramServerUser.hpp"
 
+#include "Session.hpp"
 #include "Utils.hpp"
 
 #include <QLoggingCategory>

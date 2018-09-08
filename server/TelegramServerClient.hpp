@@ -21,14 +21,18 @@ class RemoteClientConnection : public BaseConnection
 public:
     explicit RemoteClientConnection(QObject *parent = nullptr);
 
-    RpcLayer *rpcLayer();
+    RpcLayer *rpcLayer() const;
 
     void setRpcFactories(const QVector<RpcOperationFactory*> &rpcFactories);
+
+    ServerApi *api() const;
     void setServerApi(ServerApi *api);
+
+    Session *session() const;
     void setSession(Session *session);
 
-signals:
-    void becomeOnline();
+protected slots:
+    void onClientDhStateChanged();
 
 };
 

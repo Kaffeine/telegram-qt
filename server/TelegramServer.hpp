@@ -55,6 +55,7 @@ public:
     // ServerAPI:
     DcConfiguration serverConfiguration() const override { return m_dcConfiguration; }
     quint32 dcId() const override { return m_dcOption.id; }
+    quint64 serverSalt() const override { return m_serverSalt; }
     PhoneStatus getPhoneStatus(const QString &identifier) override;
     PasswordInfo getPassword(const QString &identifier) override;
     bool checkPassword(const QString &identifier, const QByteArray &hash) override;
@@ -67,10 +68,10 @@ public:
     RemoteUser *getRemoteUser(const QString &identifier);
 
     User *getUser(const QString &identifier) override;
-    User *getUser(quint64 authId) override;
     User *addUser(const QString &identifier) override;
 
-    Session *getUserSession(quint64 authKeyId);
+    Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) override;
+    Session *getSessionByAuthId(quint64 authKeyId) const override;
 
     void insertUser(User *user);
 
@@ -90,10 +91,11 @@ protected:
 private:
     QTcpServer *m_serverSocket;
     DcOption m_dcOption;
+    quint64 m_serverSalt = 0;
     Telegram::RsaKey m_key;
 
     QHash<QString, quint32> m_phoneToUserId;
-    QHash<quint64, quint32> m_authIdToUserId;
+    QHash<quint64, Session*> m_authIdToSession;
     QHash<quint32, User*> m_users; // userId to User
     QSet<RemoteClientConnection*> m_activeConnections;
     QSet<RemoteServerConnection*> m_remoteServers;

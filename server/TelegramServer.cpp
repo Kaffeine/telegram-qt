@@ -12,6 +12,7 @@
 #include "TelegramServerUser.hpp"
 #include "TelegramServerClient.hpp"
 #include "RemoteServerConnection.hpp"
+#include "Session.hpp"
 
 #include "CServerTcpTransport.hpp"
 
@@ -138,15 +139,12 @@ void Server::onClientConnectionStatusChanged()
 {
     RemoteClientConnection *client = qobject_cast<RemoteClientConnection*>(sender());
     if (client->status() == RemoteClientConnection::Status::Authenticated) {
-        Session *s = getUserSession(client->authId());
-        if (!s) {
+        if (!client->session()) {
+
             qDebug() << Q_FUNC_INFO << "A new auth key";
-            s = new Session();
-            s->authId = client->authId();
-            s->authKey = client->authKey();
-            s->ip = client->transport()->remoteAddress();
         }
-        client->setSession(s);
+    } else if (client->status() == RemoteClientConnection::Status::Disconnected) {
+        // TODO: Initiate session cleanup after session expiration time out
     }
 }
 
@@ -175,15 +173,6 @@ User *Server::getUser(const QString &identifier)
     return getLocalUser(identifier);
 }
 
-User *Server::getUser(quint64 authId)
-{
-    quint32 id = m_authIdToUserId.value(authId);
-    if (!id) {
-        return nullptr;
-    }
-    return m_users.value(id);
-}
-
 User *Server::addUser(const QString &identifier)
 {
     qDebug() << Q_FUNC_INFO << identifier;
@@ -194,13 +183,19 @@ User *Server::addUser(const QString &identifier)
     return user;
 }
 
-Session *Server::getUserSession(quint64 authKeyId)
+Session *Server::createSession(quint64 authId, const QByteArray &authKey, const QString &address)
 {
-    const User *user = getUser(authKeyId);
-    if (!user) {
-        return nullptr;
-    }
-    return user->getSession(authKeyId);
+    Session *session = new Session();
+    session->authId = authId;
+    session->authKey = authKey;
+    session->ip = address;
+    m_authIdToSession.insert(authId, session);
+    return session;
+}
+
+Session *Server::getSessionByAuthId(quint64 authKeyId) const
+{
+    return m_authIdToSession.value(authKeyId);
 }
 
 void Server::insertUser(User *user)
@@ -208,8 +203,8 @@ void Server::insertUser(User *user)
     qDebug() << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
     m_users.insert(user->id(), user);
     m_phoneToUserId.insert(user->phoneNumber(), user->id());
-    for (const Session *session : user->sessions()) {
-        m_authIdToUserId.insert(session->authId, user->id());
+    for (Session *session : user->sessions()) {
+        m_authIdToSession.insert(session->authId, session);
     }
 }
 
