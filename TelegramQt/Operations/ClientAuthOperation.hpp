@@ -47,6 +47,8 @@ public slots:
     PendingOperation *getPassword();
     PendingOperation *submitPassword(const QString &password);
 
+    void submitPhoneNumber(const QString &phoneNumber);
+
     void requestCall();
     void requestSms();
     void recovery();

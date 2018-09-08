@@ -76,6 +76,11 @@ PendingOperation *AuthOperation::requestAuthCode()
         return PendingOperation::failOperation({{QStringLiteral("text"), text}});
     }
 
+    if (phoneNumber().isEmpty()) {
+        emit phoneNumberRequired();
+        return nullptr;
+    }
+
     AuthRpcLayer::PendingAuthSentCode *requestCodeOperation = m_backend->authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
     qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber())
              << "on dc" << Connection::fromOperation(requestCodeOperation)->dcOption().id;
@@ -119,6 +124,12 @@ PendingOperation *AuthOperation::submitPassword(const QString &password)
     PendingRpcOperation *sendPasswordOperation = authLayer()->checkPassword(pwdHash);
     connect(sendPasswordOperation, &PendingRpcOperation::finished, this, &AuthOperation::onCheckPasswordFinished);
     return sendPasswordOperation;
+}
+
+void AuthOperation::submitPhoneNumber(const QString &phoneNumber)
+{
+    setPhoneNumber(phoneNumber);
+    start();
 }
 
 void AuthOperation::requestCall()
