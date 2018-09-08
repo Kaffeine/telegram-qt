@@ -259,7 +259,9 @@ void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLA
     if (storage->accountIdentifier().isEmpty()) {
         storage->setAccountIdentifier(authorization.user.phone);
     }
-    m_backend->setMainConnection(Connection::fromOperation(operation));
+    Connection *conn = Connection::fromOperation(operation);
+    m_backend->setMainConnection(conn);
+    conn->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Remote);
     setFinished();
 }
 
