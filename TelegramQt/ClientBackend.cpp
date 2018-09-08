@@ -257,7 +257,7 @@ Connection *Backend::ensureConnection(const ConnectionSpec &dcSpec)
     ConnectionSpec spec = dcSpec;
     spec.flags |= ConnectionSpec::RequestFlag::Ipv4Only; // Enable only ipv4 for now
     if (!m_connections.contains(dcSpec)) {
-        const DcOption opt = dataStorage()->serverConfiguration().getOption(dcSpec);
+        const DcOption opt = dataStorage()->serverConfiguration().getOption(spec);
         if (!opt.isValid()) {
             qWarning() << Q_FUNC_INFO << "Unable to find suitable DC";
             return nullptr;
