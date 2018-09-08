@@ -56,7 +56,7 @@ bool RpcLayer::processRpcQuery(const QByteArray &data)
         processSessionCreated(stream);
         break;
     case TLValue::MsgContainer:
-        qCDebug(c_clientRpcLayerCategory) << "processContainer(stream);";
+        processContainer(stream);
         break;
     case TLValue::RpcResult:
         qCDebug(c_clientRpcLayerCategory) << "processRpcQuery(stream);";
@@ -111,6 +111,31 @@ void RpcLayer::processSessionCreated(CTelegramStream &stream)
                                       << firstMsgId
                                       << uniqueId
                                       << serverSalt;
+}
+
+bool RpcLayer::processContainer(CTelegramStream &stream)
+{
+    // https://core.telegram.org/mtproto/service_messages#simple-container
+    quint32 itemsCount;
+    stream >> itemsCount;
+    qCDebug(c_clientRpcLayerCategory) << "processContainer(stream)" << itemsCount;
+
+    bool processed = true;
+
+    for (quint32 i = 0; i < itemsCount; ++i) {
+        quint64 id;
+        stream >> id;
+        //TODO: ack
+
+        quint32 seqNo;
+        stream >> seqNo;
+
+        quint32 size;
+        stream >> size;
+
+        processed = processRpcQuery(stream.readBytes(size)) && processed;
+    }
+    return processed;
 }
 
 bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)

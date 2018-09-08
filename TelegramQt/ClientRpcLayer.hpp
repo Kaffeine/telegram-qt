@@ -49,6 +49,7 @@ public:
     bool processRpcQuery(const QByteArray &data);
 
     void processSessionCreated(CTelegramStream &stream);
+    bool processContainer(CTelegramStream &stream);
 
     bool sendRpc(PendingRpcOperation *operation);
     bool resendRpcMessage(quint64 messageId);
