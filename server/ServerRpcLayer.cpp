@@ -33,11 +33,6 @@ void RpcLayer::setServerApi(ServerApi *api)
     m_api = api;
 }
 
-void RpcLayer::setLayerVersion(quint32 layer)
-{
-    m_layer = layer;
-}
-
 User *RpcLayer::getUser() const
 {
     return m_session ? m_session->user() : nullptr;
@@ -119,8 +114,11 @@ bool RpcLayer::processInitConnection(RpcProcessingContext &context)
     context.inputStream() >> osInfo;
     context.inputStream() >> appVersion;
 #if TELEGRAMQT_LAYER >= 67
-    context.inputStream() >> systemLanguage;
-    context.inputStream() >> languagePack; // If the pack is not registered on server, raise CONNECTION_LANG_PACK_INVALID RPC Error
+    if (context.layer() >= 67) {
+        context.inputStream() >> systemLanguage;
+        // If the pack is not registered on server, raise CONNECTION_LANG_PACK_INVALID RPC Error
+        context.inputStream() >> languagePack;
+    }
 #endif
     context.inputStream() >> languageCode;
 
@@ -129,6 +127,7 @@ bool RpcLayer::processInitConnection(RpcProcessingContext &context)
         qWarning() << Q_FUNC_INFO << "Invalid read!";
         return false;
     }
+    session()->setLayer(context.layer());
     session()->appId = appId;
     session()->appVersion = appVersion;
     session()->languageCode = languageCode;
@@ -142,7 +141,7 @@ bool RpcLayer::processInvokeWithLayer(RpcProcessingContext &context)
     quint32 layer = 0; // TLValue::CurrentLayer;
     context.inputStream() >> layer;
     qDebug() << Q_FUNC_INFO << "InvokeWithLayer" << layer;
-//    context.setLayer(layer);
+    context.setLayer(layer);
     return processRpcQuery(context);
 }
 

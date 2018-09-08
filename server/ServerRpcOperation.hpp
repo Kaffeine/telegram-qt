@@ -23,6 +23,7 @@ public:
     explicit RpcOperation(RpcLayer *rpcLayer);
 
     void setRequestId(quint64 messageId);
+    void setLayer(quint32 layer) { m_layer = layer; }
 
 //    void sendReply(const QByteArray &reply);
 
@@ -42,6 +43,7 @@ protected:
     RpcLayer *m_rpcLayer = nullptr;
     ServerApi *m_api = nullptr;
     quint64 m_requestId = 0;
+    quint32 m_layer = 0;
 //    QByteArray m_request;
 };
 

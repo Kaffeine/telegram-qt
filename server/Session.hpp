@@ -24,6 +24,9 @@ public:
     User *wanterUser() const { return m_wanterUser; }
     void setWantedUser(User *user) { m_wanterUser = user; }
 
+    quint32 layer() const { return m_layer; }
+    void setLayer(quint32 layer) { m_layer = layer; }
+
     quint32 appId = 0;
     quint64 authId = 0;
     quint64 sessionId = 0;
@@ -41,6 +44,7 @@ protected:
     RemoteClientConnection *m_connection = nullptr;
     User *m_wanterUser = nullptr;
     User *m_user = nullptr;
+    quint32 m_layer = 0;
 };
 
 } // Server

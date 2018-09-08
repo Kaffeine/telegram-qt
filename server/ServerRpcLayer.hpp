@@ -28,7 +28,6 @@ public:
 
     ServerApi *api();
     void setServerApi(ServerApi *api);
-    void setLayerVersion(quint32 layer);
 
     User *getUser() const;
 
@@ -55,7 +54,6 @@ protected:
     SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
     SAesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
 
-    quint32 m_layer = 0;
     Session *m_session = nullptr;
     ServerApi *m_api = nullptr;
 
