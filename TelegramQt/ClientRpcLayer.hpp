@@ -48,6 +48,7 @@ public:
     bool processRpcQuery(const QByteArray &data);
 
     bool sendRpc(PendingRpcOperation *operation);
+    bool resendRpcMessage(quint64 messageId);
 
 protected:
     bool processDecryptedPackage(const QByteArray &package) override;

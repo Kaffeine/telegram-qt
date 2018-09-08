@@ -167,6 +167,19 @@ bool RpcLayer::sendRpc(PendingRpcOperation *operation)
     return true;
 }
 
+bool RpcLayer::resendRpcMessage(quint64 messageId)
+{
+    PendingRpcOperation *operation = m_operations.value(messageId);
+    if (!operation) {
+        qCWarning(c_clientRpcLayerCategory) << "Unable to find the message to resend" << messageId;
+        return false;
+    }
+    qCDebug(c_clientRpcLayerCategory) << "Resend message"
+                                      << messageId
+                                      << TLValue::firstFromArray(operation->requestData());
+    return sendRpc(operation);
+}
+
 QByteArray RpcLayer::getInitConnection() const
 {
 #ifdef DEVELOPER_BUILD
