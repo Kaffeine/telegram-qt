@@ -222,7 +222,6 @@ void tst_all::testClientConnection()
     client.setSettings(&clientSettings);
     client.setAccountStorage(&accountStorage);
     client.setDataStorage(&dataStorage);
-    accountStorage.setPhoneNumber(userData.phoneNumber);
     QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
     clientSettings.setPreferedSessionType(sessionType);
@@ -241,6 +240,7 @@ void tst_all::testClientConnection()
 
     // --- Sign in ---
     Client::AuthOperation *signInOperation = client.signIn();
+    signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(server, &TestServer::authCodeSent);
 
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
