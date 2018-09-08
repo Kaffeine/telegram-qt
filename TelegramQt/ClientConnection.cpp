@@ -67,6 +67,26 @@ void Connection::setDcOption(const DcOption &dcOption)
     m_dcOption = dcOption;
 }
 
+qint32 Connection::deltaTime() const
+{
+    return m_sendHelper->deltaTime();
+}
+
+void Connection::setDeltaTime(const qint32 newDt)
+{
+    m_sendHelper->setDeltaTime(newDt);
+}
+
+quint64 Connection::serverSalt() const
+{
+    return m_sendHelper->serverSalt();
+}
+
+void Connection::setServerSalt(const quint64 salt)
+{
+    m_sendHelper->setServerSalt(salt);
+}
+
 Connection *Connection::fromOperation(PendingRpcOperation *operation)
 {
     return reinterpret_cast<Telegram::Client::Connection*>(operation->getConnection());

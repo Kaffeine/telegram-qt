@@ -42,7 +42,6 @@ public:
     explicit BaseConnection(QObject *parent = nullptr);
 
     quint64 authId() const;
-    qint32 deltaTime() const;
 
     QByteArray authKey() const;
     void setAuthKey(const QByteArray &authKey);

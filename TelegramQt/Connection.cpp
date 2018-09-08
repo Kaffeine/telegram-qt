@@ -22,11 +22,6 @@ quint64 BaseConnection::authId() const
     return m_sendHelper->authId();
 }
 
-qint32 BaseConnection::deltaTime() const
-{
-    return m_sendHelper->deltaTime();
-}
-
 QByteArray BaseConnection::authKey() const
 {
     return m_sendHelper->authKey();
