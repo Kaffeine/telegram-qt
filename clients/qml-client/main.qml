@@ -44,28 +44,11 @@ ApplicationWindow {
 
     Telegram.FileAccountStorage {
         id: accountStorage
-////        property string authKey
-////        property string accountIdentifier
-////        property int authId
-////        property int deltaTime
-//        property string directory: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/telepathy-morse/secrets"
-//        // accountIdentifier: phoneNumberField.text
-//        // format: AccountSecretHelper.FormatBinary
+        accountIdentifier: options.localServer ? "default-local" : "default-official"
+        fileName: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/telegram-qt/secrets/" + accountIdentifier
+        onSynced: console.log("Account synced")
     }
 
-    Telegram.AccountSecretHelper {
-        id: accountHelper
-//        directory: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/telepathy-morse/secrets"
-        directory: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/morse/secrets"
-        onAccountsChanged: {
-            console.log("Accounts:" + accounts)
-            if (accounts.length > 0) {
-                account = accounts[0]
-            }
-            accountStorage.fileName = directory + "/" + account
-            accountStorage.loadData()
-        }
-    }
     Telegram.InMemoryDataStorage {
         id: dataStorage
     }
@@ -120,41 +103,50 @@ ApplicationWindow {
         id: telegramClient
         applicationInformation: appInfo
         settings: options.localServer ? localSettings : settings
-        readonly property bool hasAccount: accountHelper.accounts
         dataStorage: dataStorage
         accountStorage: accountStorage
-
-        onSignedInChanged: {
-            if (signedIn) {
-                window.currentView = mainScreen
-            }
-        }
     }
 
     Timer {
         id: startupOperation
-        interval: 50
+        interval: 30
         running: true
         onTriggered: {
-//            window.currentView = mainScreen; return
-            if (accountHelper.account) {
-                restoreSessionOperation.phoneNumber = accountHelper.account
-                restoreSessionOperation.start()
+            window.currentView = busyScreen
+            window.currentView = loginScreen
+            if (accountStorage.fileExists() && accountStorage.loadData()) {
+                signInOperation.checkIn()
             } else {
-                window.currentView = loginScreen
+                signInOperation.signIn()
             }
-            signInOperation.start()
         }
     }
 
     Telegram.AuthOperation {
         id: signInOperation
         target: telegramClient
+        onCheckInFinished: {
+            console.log("check in finished:" + signedIn)
+            if (signedIn) {
+                window.currentView = mainScreen
+            } else {
+                // TODO: Process network errors
+                signIn()
+            }
+        }
+
+        onStatusChanged: {
+            console.log("New status:" + status)
+            if (status == Telegram.AuthOperation.SignedIn) {
+                window.currentView = mainScreen
+            }
+        }
+
         onPhoneNumberRequired: {
             window.currentView = loginScreen
         }
         onFinished: {
-            console.log("Sign in finished:" + succeed)
+            console.log("Auth operation finished. Succeeded: " + succeeded)
         }
     }
 
@@ -187,6 +179,18 @@ ApplicationWindow {
         visible: window.currentView === mainScreen
         anchors.fill: parent
         sourceComponent: MainScreen {
+        }
+    }
+
+    Loader {
+        id: busyScreen
+        active: visible
+        visible: window.currentView === busyScreen
+        anchors.fill: parent
+        sourceComponent: Frame {
+            BusyIndicator {
+                anchors.centerIn: parent
+            }
         }
     }
 

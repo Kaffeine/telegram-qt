@@ -40,7 +40,6 @@ Frame {
         target: signInOperation
         onAuthCodeRequired: loginStack.replace("login/EnterCode.qml")
         onPasswordRequired: loginStack.replace("login/EnterPassword.qml")
-        onFinished: console.log("Sign in finished:" + succeeded)
     }
 
     StackView {
@@ -61,10 +60,7 @@ Frame {
             ignoreUnknownSignals: true
             onSubmitAuthCode: signInOperation.submitAuthCode(code)
             onSubmitPassword: signInOperation.submitPassword(password)
-            onSubmitPhoneNumber: {
-                signInOperation.phoneNumber = phoneNumber
-                signInOperation.start()
-            }
+            onSubmitPhoneNumber: signInOperation.submitPhoneNumber(phoneNumber)
         }
         opacity: signInOperation.busy ? 0 : 1
         Behavior on opacity { NumberAnimation { } }
