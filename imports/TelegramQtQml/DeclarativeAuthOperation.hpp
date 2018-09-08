@@ -31,7 +31,7 @@ public:
         Idle,
         Connecting,
         Handshake,
-        Phone,
+        PhoneNumberRequired,
         AuthCodeRequired,
         PasswordRequired,
         SignedIn
@@ -46,7 +46,12 @@ public:
     bool hasRecovery() const;
 
 public slots:
+    void signIn();
+    void checkIn();
+    void checkRegistration();
+
     void abort();
+    void submitPhoneNumber(const QString &phoneNumber);
 
     bool submitAuthCode(const QString &code);
     bool submitPassword(const QString &password);
@@ -60,6 +65,8 @@ public slots:
 
 Q_SIGNALS:
     void busyChanged(bool busy);
+    void checkInFinished(bool signedIn);
+    void signInFinished(bool signedIn);
 
     void passwordHintChanged(const QString &hint);
     void hasRecoveryChanged();
@@ -69,12 +76,10 @@ Q_SIGNALS:
     void passwordRequired();
     void passwordCheckFailed();
 
-    void invalid();
-
     void phoneNumberChanged();
 //    void callAvailable();
 
-    void statusChanged(AuthStatus newStatus);
+    void statusChanged(AuthStatus status);
 
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
@@ -86,7 +91,7 @@ protected:
     void unsetBusy();
     void onPasswordRequired();
 
-    AuthOperation *m_authOperation;
+    AuthOperation *m_authOperation = nullptr;
 
     void startEvent() override;
 

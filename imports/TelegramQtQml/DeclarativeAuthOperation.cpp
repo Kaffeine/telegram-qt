@@ -41,9 +41,88 @@ bool DeclarativeAuthOperation::hasRecovery() const
     return m_authOperation ? m_authOperation->hasRecovery() : false;
 }
 
+void DeclarativeAuthOperation::signIn()
+{
+    if (m_authOperation) {
+        if (m_authOperation->isFinished()) {
+            m_authOperation->deleteLater();
+            m_authOperation = nullptr;
+        } else {
+            qWarning() << Q_FUNC_INFO << "Another operation is in progress";
+            return;
+        }
+    }
+    m_target->syncSettings();
+    m_authOperation = m_target->backend()->signIn();
+    m_authOperation->setPhoneNumber(phoneNumber());
+    setPendingOperation(m_authOperation);
+    connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
+    connect(m_authOperation, &AuthOperation::authCodeRequired, this, &DeclarativeAuthOperation::authCodeRequired);
+    connect(m_authOperation, &AuthOperation::passwordRequired, this, &DeclarativeAuthOperation::onPasswordRequired);
+    connect(m_authOperation, &AuthOperation::passwordCheckFailed, this, &DeclarativeAuthOperation::passwordCheckFailed);
+
+    connect(m_authOperation, &AuthOperation::passwordHintChanged, this, &DeclarativeAuthOperation::passwordHintChanged);
+    connect(m_authOperation, &AuthOperation::hasRecoveryChanged, this, &DeclarativeAuthOperation::hasRecoveryChanged);
+
+    connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, [this]() {
+        this->setStatus(DeclarativeAuthOperation::PhoneNumberRequired);
+    });
+    connect(m_authOperation, &AuthOperation::authCodeRequired, this, [this]() {
+        this->setStatus(DeclarativeAuthOperation::AuthCodeRequired);
+    });
+    connect(m_authOperation, &AuthOperation::passwordRequired, this, [this]() {
+        this->setStatus(DeclarativeAuthOperation::PasswordRequired);
+    });
+    connect(m_authOperation, &PendingOperation::finished, this, [this](PendingOperation *op) {
+        if (op->isSucceeded()) {
+            this->setStatus(DeclarativeAuthOperation::SignedIn);
+        } else {
+            this->setStatus(DeclarativeAuthOperation::Idle);
+        }
+        emit this->signInFinished(op->isSucceeded());
+    });
+    start();
+}
+
+void DeclarativeAuthOperation::checkIn()
+{
+    if (m_authOperation) {
+        if (m_authOperation->isFinished()) {
+            m_authOperation->deleteLater();
+            m_authOperation = nullptr;
+        } else {
+            qWarning() << Q_FUNC_INFO << "Another operation is in progress";
+            return;
+        }
+    }
+    m_target->syncSettings();
+    m_authOperation = m_target->backend()->checkIn();
+    setPendingOperation(m_authOperation);
+    connect(m_authOperation, &PendingOperation::finished, this, [this](PendingOperation *op) {
+        if (op->isSucceeded()) {
+            this->setStatus(DeclarativeAuthOperation::SignedIn);
+        } else {
+            this->setStatus(DeclarativeAuthOperation::Idle);
+        }
+        emit this->checkInFinished(op->isSucceeded());
+    });
+    start();
+}
+
+void DeclarativeAuthOperation::checkRegistration()
+{
+    return signIn();
+}
+
 void DeclarativeAuthOperation::abort()
 {
     m_authOperation->abort();
+}
+
+void DeclarativeAuthOperation::submitPhoneNumber(const QString &phoneNumber)
+{
+    m_authOperation->submitPhoneNumber(phoneNumber);
+    setPhoneNumber(phoneNumber);
 }
 
 bool DeclarativeAuthOperation::submitAuthCode(const QString &code)
@@ -122,16 +201,6 @@ void DeclarativeAuthOperation::onPasswordRequired()
 void DeclarativeAuthOperation::startEvent()
 {
     m_target->syncSettings();
-    m_authOperation = m_target->backend()->signIn();
-    m_authOperation->setPhoneNumber(phoneNumber());
-    setPendingOperation(m_authOperation);
-    connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
-    connect(m_authOperation, &AuthOperation::authCodeRequired, this, &DeclarativeAuthOperation::authCodeRequired);
-    connect(m_authOperation, &AuthOperation::passwordRequired, this, &DeclarativeAuthOperation::onPasswordRequired);
-    connect(m_authOperation, &AuthOperation::passwordCheckFailed, this, &DeclarativeAuthOperation::passwordCheckFailed);
-
-    connect(m_authOperation, &AuthOperation::passwordHintChanged, this, &DeclarativeAuthOperation::passwordHintChanged);
-    connect(m_authOperation, &AuthOperation::hasRecoveryChanged, this, &DeclarativeAuthOperation::hasRecoveryChanged);
 }
 
 bool DeclarativeAuthOperation::requestCall()
