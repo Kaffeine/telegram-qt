@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014-2017 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2014-2018 Alexandr Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
@@ -31,7 +31,6 @@ class CAppInformation;
 
 namespace Telegram {
 
-class AppInformation;
 class PendingOperation;
 
 namespace Client {
@@ -39,168 +38,22 @@ namespace Client {
 class Settings;
 class DataStorage;
 class AccountStorage;
+using AppInformation = ::CAppInformation;
 class AuthOperation;
-
-//class LegacyCredentialsStorage : public CredentialsStorage
-//{
-//public:
-//    QByteArray connectionSecretInfo() const;
-//    bool setSecretInfo(const QByteArray &secret)
-//    {
-//        CRawStreamEx inputStream(secret);
-
-//        quint32 format;
-//        inputStream >> format;
-
-//        if (format > secretFormatVersion) {
-//            qWarning() << Q_FUNC_INFO << "Unknown format version" << format;
-//            return false;
-//        } else {
-//            qDebug() << Q_FUNC_INFO << "Format version:" << format;
-//        }
-
-//        qint32 deltaTime = 0;
-//        inputStream >> deltaTime;
-
-//        if (format < 4) {
-//            quint32 legacyDcInfoTlType;
-//            inputStream >> legacyDcInfoTlType;
-
-//            if (legacyDcInfoTlType != s_legacyDcInfoTlType) {
-//                qWarning() << Q_FUNC_INFO << "Unexpected dataversion" << format;
-//                return false;
-//            }
-//        }
-
-//        TLDcOption dcInfo;
-//        inputStream >> dcInfo.id;
-//        if (format < 4) {
-//            QByteArray legacyDcHostName;
-//            inputStream >> legacyDcHostName;
-//        }
-//        QByteArray dcIpAddress;
-//        inputStream >> dcIpAddress;
-//        dcInfo.ipAddress = QString::fromLatin1(dcIpAddress);
-//        inputStream >> dcInfo.port;
-
-//        qDebug() << Q_FUNC_INFO << dcInfo.ipAddress;
-
-//        if (format < 3) {
-//            QByteArray legacySelfPhone;
-//            inputStream >> legacySelfPhone;
-//        }
-
-//        QByteArray authKey;
-//        inputStream >> authKey;
-
-//        if (authKey.isEmpty()) {
-//            qDebug() << Q_FUNC_INFO << "Empty auth key data.";
-//            return false;
-//        }
-
-//        quint64 authId;
-//        inputStream >> authId;
-//        quint64 serverSalt;
-//        inputStream >> serverSalt;
-
-//        const quint64 expectedAuthId = Utils::getFingersprint(authKey);
-//        if (authId != expectedAuthId) {
-//            qDebug() << Q_FUNC_INFO << "The auth key data is not valid.";
-//            return false;
-//        }
-
-//        if (inputStream.error()) {
-//            qWarning() << Q_FUNC_INFO << "Read error occurred.";
-//            return false;
-//        }
-
-//        if (format >= 1) {
-//            inputStream >> m_updatesState.pts;
-//            inputStream >> m_updatesState.qts;
-//            inputStream >> m_updatesState.date;
-//        }
-
-//        if (format >= 4) {
-//            quint32 dialogsCount = 0;
-//            inputStream >> dialogsCount;
-//            QHash<Telegram::Peer,TLDialog> dialogs;
-//            dialogs.reserve(dialogsCount + 5);
-//            for (quint32 i = 0; i < dialogsCount; ++i) {
-//                TLDialog dialog;
-//                quint8 dialogType = 0;
-//                inputStream >> dialogType;
-
-//                switch (dialogType) {
-//                case DialogTypeDialog:
-//                    dialog.tlType = TLValue::Dialog;
-//                    break;
-//                case DialogTypeChannel:
-//                    dialog.tlType = TLValue::DialogChannel;
-//                    break;
-//                default:
-//                    qWarning() << Q_FUNC_INFO << "Read invalid dialog type";
-//                    return false;
-//                    break;
-//                }
-
-//                quint8 peerType = 0;
-//                quint32 peerId = 0;
-//                inputStream >> peerType >> peerId;
-//                Telegram::Peer peer(peerId, static_cast<Telegram::Peer::Type>(peerType));
-//                if (!peer.isValid()) {
-//                    qWarning() << "Session data contains invalid peer";
-//                    return false;
-//                }
-//                dialog.peer = toTLPeer(peer);
-//                inputStream >> dialog.readInboxMaxId;
-//                inputStream >> dialog.unreadCount;
-
-//                if (dialogType == DialogTypeChannel) {
-//                    inputStream >> dialog.pts;
-//                }
-//                dialogs.insert(peer, dialog);
-//            }
-//            // Do not apply loaded dialogs, because we can not clean them up properly on dialogs received
-//        } else if (format >= 2) {
-//            quint32 legacyVectorTlType;
-//            quint32 chatIdsVectorSize = 0;
-
-//            inputStream >> legacyVectorTlType;
-//            inputStream >> chatIdsVectorSize;
-//            if (legacyVectorTlType != s_legacyVectorTlType) {
-//                qWarning() << "Unexpected type value";
-//                return false;
-//            }
-
-//            m_chatIds.resize(chatIdsVectorSize);
-
-//            for (int i = 0; i < m_chatIds.count(); ++i) {
-//                inputStream >> m_chatIds[i];
-//            }
-//        }
-
-//        setDeltaTime(deltaTime);
-//        setDcInfo(dcInfo);
-//        setAuthKey(authKey);
-//        return true;
-//    }
-//};
 
 class ClientPrivate;
 
 class TELEGRAMQT_EXPORT Client : public QObject
 {
     Q_OBJECT
-//    Q_PROPERTY(AppInformation *applicationInformation READ appInformation WRITE setAppInformation)
-    Q_PROPERTY(CAppInformation *applicationInformation READ appInformation WRITE setAppInformation)
 public:
     explicit Client(QObject *parent = nullptr);
     ~Client();
 
     bool isSignedIn() const;
 
-    CAppInformation *appInformation() const;
-    Q_INVOKABLE void setAppInformation(CAppInformation *newAppInfo);
+    AppInformation *appInformation() const;
+    void setAppInformation(AppInformation *newAppInfo);
 
     Settings *settings();
     const Settings *settings() const;

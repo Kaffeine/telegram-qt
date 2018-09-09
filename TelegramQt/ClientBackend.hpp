@@ -22,6 +22,7 @@ class Connection;
 class Client;
 class Settings;
 class AccountStorage;
+using AppInformation = ::CAppInformation;
 class DataStorage;
 class RpcLayer;
 class AuthOperation;
@@ -90,7 +91,7 @@ public:
     UsersRpcLayer *usersLayer() { return m_usersLayer; }
     // End of generated low-level layers
 
-    CAppInformation *m_appInformation = nullptr;
+    AppInformation *m_appInformation = nullptr;
     Client *m_client = nullptr; // Parent
     Settings *m_settings = nullptr;
     AccountStorage *m_accountStorage = nullptr;

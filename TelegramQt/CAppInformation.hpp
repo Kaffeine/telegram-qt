@@ -64,6 +64,16 @@ private:
     QString m_langCode;
 };
 
+namespace Telegram {
+
+namespace Client {
+
+using AppInformation = ::CAppInformation;
+
+} // Client
+
+} // Telegram
+
 inline bool CAppInformation::isValid() const
 {
     return m_appId && !m_appHash.isEmpty()
