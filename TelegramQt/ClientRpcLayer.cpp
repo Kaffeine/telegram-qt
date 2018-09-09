@@ -16,6 +16,7 @@
  */
 
 #include "ClientRpcLayer.hpp"
+#include "IgnoredMessageNotification.hpp"
 #include "SendPackageHelper.hpp"
 #include "CTelegramStream.hpp"
 #include "Utils.hpp"
@@ -82,7 +83,7 @@ bool RpcLayer::processRpcQuery(const QByteArray &data)
         break;
     case TLValue::BadMsgNotification:
     case TLValue::BadServerSalt:
-        qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(stream);";
+        processIgnoredMessageNotification(stream);
         break;
     case TLValue::GzipPacked:
         qCDebug(c_clientRpcLayerCategory) << "processGzipPackedRpcQuery(stream);";
@@ -136,6 +137,25 @@ bool RpcLayer::processContainer(CTelegramStream &stream)
         processed = processRpcQuery(stream.readBytes(size)) && processed;
     }
     return processed;
+}
+
+void RpcLayer::processIgnoredMessageNotification(CTelegramStream &stream)
+{
+    qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(stream);";
+    // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
+    MTProto::IgnoredMessageNotification notification;
+    stream >> notification;
+
+    switch (notification.errorCode) {
+    case MTProto::IgnoredMessageNotification::IncorrectServerSalt:
+        m_sendHelper->setServerSalt(m_receivedServerSalt);
+        qCDebug(c_clientRpcLayerCategory) << "Local serverSalt fixed to" << m_receivedServerSalt;
+        resendRpcMessage(notification.messageId);
+        break;
+    default:
+        qCWarning(c_clientRpcLayerCategory) << "Unhandled error:" << notification.toString();
+        break;
+    }
 }
 
 bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)

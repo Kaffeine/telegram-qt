@@ -50,6 +50,7 @@ public:
 
     void processSessionCreated(CTelegramStream &stream);
     bool processContainer(CTelegramStream &stream);
+    void processIgnoredMessageNotification(CTelegramStream &stream);
 
     bool sendRpc(PendingRpcOperation *operation);
     bool resendRpcMessage(quint64 messageId);
