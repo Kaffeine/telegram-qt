@@ -40,6 +40,13 @@ void PendingOperation::runAfter(PendingOperation *operation)
 {
     connect(operation, &PendingOperation::succeeded, this, &PendingOperation::start);
     connect(operation, &PendingOperation::failed, this, &PendingOperation::onPreviousFailed);
+    if (operation->isFinished()) {
+        if (operation->isSucceeded()) {
+            startLater();
+        } else {
+            setDelayedFinishedWithError(operation->errorDetails());
+        }
+    }
 }
 
 void PendingOperation::setFinished()
