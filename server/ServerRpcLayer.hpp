@@ -43,6 +43,7 @@ public:
     // Low level
     bool processInitConnection(RpcProcessingContext &context);
     bool processInvokeWithLayer(RpcProcessingContext &context);
+    bool processMsgContainer(RpcProcessingContext &context);
 
     bool sendRpcError(const Telegram::RpcError &error, quint64 messageId);
     bool sendRpcReply(const QByteArray &reply, quint64 messageId);
