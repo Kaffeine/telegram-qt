@@ -54,7 +54,9 @@ class Backend : public QObject
 public:
     explicit Backend(Client *parent);
 
-    PendingOperation *connectToServer();
+    bool isSignedIn() const { return m_signedIn; }
+
+    PendingOperation *connectToServer(const QVector<DcOption> &dcOptions);
     AuthOperation *signIn();
     PendingOperation *getDcConfig();
 
@@ -100,7 +102,6 @@ public:
 
     AuthOperation *m_authOperation = nullptr;
 
-    bool m_signedIn = false;
 
     // Generated low-level layer members
     AccountRpcLayer *m_accountLayer = nullptr;
@@ -129,10 +130,13 @@ protected:
     void onMainConnectionStatusChanged();
     bool syncAccountToStorage();
 
+    void setSignedIn(bool signedIn);
+
     ConnectOperation *m_connectToServerOperation = nullptr;
     PendingOperation *m_getConfigOperation = nullptr;
     QHash<ConnectionSpec, Connection *> m_connections;
     QVector<PendingRpcOperation *> m_queuedRedirectedOperations;
+    bool m_signedIn = false;
 
 };
 

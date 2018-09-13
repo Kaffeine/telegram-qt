@@ -131,7 +131,7 @@ ConnectOperation *Connection::connectToDc()
 //    setAuthState(AuthStateNone);
     m_transport->connectToHost(m_dcOption.address, m_dcOption.port);
 
-    connect(m_transport, &CTelegramTransport::errorOccurred, [op] (QAbstractSocket::SocketError error, const QString &text) {
+    connect(m_transport, &CTelegramTransport::errorOccurred, op, [op] (QAbstractSocket::SocketError error, const QString &text) {
         op->setFinishedWithError({
                                      { QStringLiteral("qtError"), error },
                                      { QStringLiteral("qtErrorText"), text },

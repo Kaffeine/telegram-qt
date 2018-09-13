@@ -83,10 +83,23 @@ Backend::Backend(Client *parent) :
     // End of generated low-level layer initialization
 }
 
-PendingOperation *Backend::connectToServer()
+PendingOperation *Backend::connectToServer(const QVector<DcOption> &dcOptions)
 {
     if (m_connectToServerOperation) {
-        return m_connectToServerOperation;
+        if (dcOptions.contains(m_connectToServerOperation->connection()->dcOption())) {
+            switch (m_connectToServerOperation->connection()->status()) {
+            case BaseConnection::Status::Connecting:
+            case BaseConnection::Status::Connected:
+            case BaseConnection::Status::Authenticated:
+            case BaseConnection::Status::Signed:
+                return m_connectToServerOperation;
+            default:
+                m_connectToServerOperation->connection()->transport()->disconnectFromHost();
+                break;
+            }
+        }
+        m_connectToServerOperation->deleteLater();
+        m_connectToServerOperation = nullptr;
     }
 
     if (m_mainConnection && m_mainConnection->status() != Connection::Status::Disconnected) {
@@ -114,12 +127,7 @@ PendingOperation *Backend::connectToServer()
     }
 
     Connection *connection = nullptr;
-    if (m_accountStorage->hasMinimalDataSet()) {
-        connection = createConnection(m_accountStorage->dcInfo());
-        connection->setAuthKey(m_accountStorage->authKey());
-    } else {
-        connection = createConnection(m_settings->serverConfiguration().first());
-    }
+    connection = createConnection(dcOptions.first());
     m_connectToServerOperation = connection->connectToDc();
     connect(m_connectToServerOperation, &PendingOperation::finished, this, &Backend::onConnectOperationFinished);
     return m_connectToServerOperation;
@@ -127,75 +135,24 @@ PendingOperation *Backend::connectToServer()
 
 AuthOperation *Backend::signIn()
 {
-    if (!m_authOperation) {
-        m_authOperation = new AuthOperation(this);
-    }
-
     if (m_signedIn) {
-        m_authOperation->setDelayedFinishedWithError({
-                                                         { QStringLiteral("text"), QStringLiteral("Already signed in") }
-                                                     });
-        return m_authOperation;
+        return PendingOperation::failOperation<AuthOperation>
+                (QStringLiteral("Already signed in"), this);
     }
     if (!m_settings || !m_settings->isValid()) {
         qWarning() << "Invalid settings";
-        m_authOperation->setDelayedFinishedWithError({
-                                                         { QStringLiteral("text"), QStringLiteral("Invalid settings") }
-                                                     });
-        return m_authOperation;
+        return PendingOperation::failOperation<AuthOperation>
+                (QStringLiteral("Invalid settings"), this);
+    }
+    if (m_authOperation && !m_authOperation->isFinished()) {
+        return PendingOperation::failOperation<AuthOperation>
+                (QStringLiteral("Auth operation is already in progress"), this);
     }
 
-    // Transport?
-
-/*  1 ) Establish TCP connection
-    2a) if there is no key in AccountStorage, use DH layer to get it
-    2b) use the key from AccountStorage
-    -3) try to get self phone     (postponed)
-    -4) if error, report an error (postponed)
-    5a) if there is no phone number in AccountStorage, emit phoneRequired()
-    6b) use phone from AccountStorage
-     7) API Call authSendCode()
-     8) If error 401 SESSION_PASSWORD_NEEDED:
-     9)     API Call accountGetPassword() -> TLAccountPassword(salt)
-    10)     API Call authCheckPassword( Utils::sha256(salt + password + salt) )
-    11) API Call authSignIn()
-
-     Request phone number
-
-     Request auth code
-     Request password
-
-     Done!
-  */
-
-//    if (!m_private->m_appInfo || !m_private->m_appInfo->isValid()) {
-//        qWarning() << "CTelegramCore::connectToServer(): App information is null or is not valid.";
-//        return false;
-//    }
-
-//    m_private->m_dispatcher->setAppInformation(m_private->m_appInfo);
-//    return m_private->m_dispatcher->connectToServer();
-    // connectToServer(),
-    // checkPhoneNumber()
-
-    m_authOperation->setBackend(this);
-
-    if (!m_accountStorage->phoneNumber().isEmpty()) {
-        m_authOperation->setPhoneNumber(m_accountStorage->phoneNumber());
-    }
-
-    PendingOperation *connectionOperation = connectToServer();
-    if (!connectionOperation->isFinished()) {
-        m_authOperation->runAfter(connectionOperation);
-        return m_authOperation;
-    }
+    m_authOperation = new AuthOperation(this);
+    PendingOperation *connectionOperation = connectToServer(m_settings->serverConfiguration());
+    m_authOperation->runAfter(connectionOperation);
     m_authOperation->setRunMethod(&AuthOperation::requestAuthCode);
-    m_authOperation->startLater();
-
-    connect(m_authOperation, &PendingOperation::succeeded, [this]() {
-        m_signedIn = true;
-        emit m_client->signedInChanged(m_signedIn);
-    });
     return m_authOperation;
 }
 
@@ -346,13 +303,9 @@ void Backend::onMainConnectionStatusChanged()
     if (!m_mainConnection) {
         return;
     }
-    switch (m_mainConnection->status()) {
-    case Connection::Status::Authenticated:
-    case Connection::Status::Signed:
+    setSignedIn(m_mainConnection->status() == Connection::Status::Signed);
+    if (isSignedIn()) {
         syncAccountToStorage();
-        break;
-    default:
-        return;
     }
 }
 
@@ -378,6 +331,15 @@ bool Backend::syncAccountToStorage()
     m_accountStorage->setDeltaTime(m_mainConnection->deltaTime());
     m_accountStorage->sync();
     return true;
+}
+
+void Backend::setSignedIn(bool signedIn)
+{
+    if (m_signedIn == signedIn) {
+        return;
+    }
+    m_signedIn = signedIn;
+    emit m_client->signedInChanged(signedIn);
 }
 
 } // Client namespace

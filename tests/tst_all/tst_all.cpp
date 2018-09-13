@@ -231,6 +231,9 @@ void tst_all::testClientConnection()
     cluster.setServerConfiguration(c_localDcConfiguration);
     QVERIFY(cluster.start());
 
+    TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(userData.dcId));
+    QVERIFY(server);
+
     Server::User *user = tryAddUser(&cluster, userData);
     QVERIFY(user);
 
@@ -246,24 +249,12 @@ void tst_all::testClientConnection()
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
     clientSettings.setPreferedSessionType(sessionType);
 
-    // --- Connect ---
-    PendingOperation *connectOperation = client.connectToServer();
-    QTest::ignoreMessage(QtDebugMsg, QRegularExpression(QStringLiteral("%1 \\d* \"%2\"")
-                                                        .arg(QString::fromLatin1(Server::RpcLayer::gzipPackMessage()))
-                                                        .arg(TLValue(TLValue::Config).toString())));
-    QTRY_VERIFY(connectOperation->isSucceeded());
-
-    TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(userData.dcId));
-    QVERIFY(server);
-
-    QCOMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
-
     // --- Sign in ---
     Client::AuthOperation *signInOperation = client.signIn();
     signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(server, &TestServer::authCodeSent);
-
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
+    QTRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     QTRY_VERIFY(!authCodeSpy.isEmpty());
     QCOMPARE(authCodeSpy.count(), 1);
     QCOMPARE(serverAuthCodeSpy.count(), 1);

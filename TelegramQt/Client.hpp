@@ -91,7 +91,6 @@ public Q_SLOTS:
 //    void setUpdatesEnabled(bool enable);
 
     // Low-level methods (needed mostly for debug and testing)
-    PendingOperation *connectToServer(); // Establish low-level TCP connection
 //    void disconnectFromServer();
 //    PendingAuthOperation *checkPhoneNumber();
     AuthOperation *signIn();

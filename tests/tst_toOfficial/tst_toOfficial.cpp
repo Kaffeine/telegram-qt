@@ -195,7 +195,7 @@ void tst_toOfficial::testGetConfiguration()
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
 
     // --- Connect ---
-    PendingOperation *connectOperation = backend->connectToServer();
+    PendingOperation *connectOperation = backend->connectToServer(clientSettings.serverConfiguration());
     QTRY_VERIFY(connectOperation->isFinished());
     QVERIFY(connectOperation->isSucceeded());
 

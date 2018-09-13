@@ -129,7 +129,9 @@ PendingOperation *AuthOperation::submitPassword(const QString &password)
 void AuthOperation::submitPhoneNumber(const QString &phoneNumber)
 {
     setPhoneNumber(phoneNumber);
-    start();
+    if (!isFinished()) {
+        start();
+    }
 }
 
 void AuthOperation::requestCall()

@@ -23,7 +23,7 @@ Client::~Client()
 bool Client::isSignedIn() const
 {
     Q_D(const Client);
-    return d->m_signedIn;
+    return d->isSignedIn();
 }
 
 Telegram::Client::AuthOperation *Client::signIn()
@@ -84,12 +84,6 @@ void Client::setDataStorage(DataStorage *storage)
 {
     Q_D(Client);
     d->m_dataStorage = storage;
-}
-
-PendingOperation *Client::connectToServer()
-{
-    Q_D(Client);
-    return d->connectToServer();
 }
 
 //void Client::setAppInformation(AppInformation *newAppInfo)
