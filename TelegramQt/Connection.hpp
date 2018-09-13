@@ -67,7 +67,6 @@ protected:
     BaseSendPackageHelper *m_sendHelper;
     BaseDhLayer *m_dhLayer = nullptr;
     BaseRpcLayer *m_rpcLayer = nullptr;
-    QByteArray m_authKey;
     quint64 m_authId = 0;
     RsaKey m_rsaKey;
     Status m_status = Status::Disconnected;

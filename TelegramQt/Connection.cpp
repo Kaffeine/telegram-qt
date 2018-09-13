@@ -70,7 +70,7 @@ void BaseConnection::onTransportStateChanged()
 {
     switch (m_transport->state()) {
     case QAbstractSocket::ConnectedState:
-        if (m_authKey.isEmpty()) {
+        if (m_sendHelper->authKey().isEmpty()) {
             m_dhLayer->setServerRsaKey(m_rsaKey);
             m_dhLayer->init();
             setStatus(Status::Connected, StatusReason::Remote);
