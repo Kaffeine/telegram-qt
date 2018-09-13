@@ -4,6 +4,7 @@ TEMPLATE = app
 CONFIG += c++11
 
 INCLUDEPATH += $$PWD/../server
+INCLUDEPATH += $$PWD/utils
 
 LIBS += -L$$OUT_PWD/../../TelegramQt
 
