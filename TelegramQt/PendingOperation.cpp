@@ -59,6 +59,8 @@ void PendingOperation::setFinished()
     m_finished = true;
     if (m_succeeded) {
         emit succeeded(this);
+    } else {
+        emit failed(this, m_errorDetails);
     }
     emit finished(this);
 }
@@ -68,7 +70,6 @@ void PendingOperation::setFinishedWithError(const QVariantHash &details)
     qDebug() << "finished with error" << this << details;
     m_succeeded = false;
     m_errorDetails = details;
-    emit failed(this, details);
     setFinished();
 }
 
