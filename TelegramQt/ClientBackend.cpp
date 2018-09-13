@@ -158,14 +158,21 @@ AuthOperation *Backend::signIn()
 
 PendingOperation *Backend::getDcConfig()
 {
-    if (!m_getConfigOperation) {
-        HelpOperation *op = new HelpOperation(this);
-        op->setBackend(this);
-        op->setRunMethod(&HelpOperation::requestDcConfig);
-        op->startLater();
-        m_getConfigOperation = op;
-        connect(op, &PendingOperation::finished, this, &Backend::onGetDcConfigurationFinished);
+    if (m_getConfigOperation) {
+        if (!m_getConfigOperation->isFailed()) {
+            return m_getConfigOperation;
+        }
+        // Delete the failed operation
+        m_getConfigOperation->deleteLater();
+        m_getConfigOperation = nullptr;
     }
+
+    HelpOperation *op = new HelpOperation(this);
+    op->setBackend(this);
+    op->setRunMethod(&HelpOperation::requestDcConfig);
+    op->startLater();
+    m_getConfigOperation = op;
+    connect(op, &PendingOperation::finished, this, &Backend::onGetDcConfigurationFinished);
     return m_getConfigOperation;
 }
 
@@ -243,6 +250,8 @@ void Backend::setMainConnection(Connection *connection)
 void Backend::onConnectOperationFinished(PendingOperation *operation)
 {
     if (!operation->isSucceeded()) {
+        m_connectToServerOperation = nullptr;
+        operation->deleteLater();
         return;
     }
     getDcConfig();

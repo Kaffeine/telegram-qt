@@ -137,7 +137,7 @@ ConnectOperation *Connection::connectToDc()
                                      { QStringLiteral("qtErrorText"), text },
                                  });
     });
-    connect(this, &Connection::statusChanged, [op] (Status status, StatusReason reason) {
+    connect(this, &Connection::statusChanged, op, [op] (Status status, StatusReason reason) {
         Q_UNUSED(reason)
 
         if (status == Status::Authenticated) {
