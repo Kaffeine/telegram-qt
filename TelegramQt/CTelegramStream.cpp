@@ -17,8 +17,6 @@
 
 #include "CTelegramStream_p.hpp"
 
-#include <QtEndian>
-
 #include <QIODevice>
 #include <QDebug>
 

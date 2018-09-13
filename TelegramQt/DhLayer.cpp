@@ -22,7 +22,6 @@
 #include "Utils.hpp"
 #include "Debug_p.hpp"
 
-#include <QtEndian>
 #include <QDateTime>
 #include <QLoggingCategory>
 
