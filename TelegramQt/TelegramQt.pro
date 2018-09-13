@@ -44,6 +44,7 @@ SOURCES += \
     RpcError.cpp \
     RpcLayer.cpp \
     Connection.cpp \
+    ConnectionError.cpp \
     CRawStream.cpp \
     CTelegramStream.cpp \
     CTelegramStreamExtraOperators.cpp \
@@ -97,6 +98,7 @@ HEADERS += \
     RpcError.hpp \
     RpcLayer.hpp \
     Connection.hpp \
+    ConnectionError.hpp \
     CTelegramStream.hpp \
     CTelegramStreamExtraOperators.hpp \
     CTelegramStream_p.hpp \

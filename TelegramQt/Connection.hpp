@@ -27,7 +27,8 @@ public:
         Connecting,
         Connected,
         Authenticated, // Connected and has auth key
-        Signed
+        Signed,
+        Failed // Reconnection is needed
     };
     Q_ENUM(Status)
 
@@ -56,6 +57,7 @@ public:
 
 signals:
     void statusChanged(Status status, StatusReason reason);
+    void errorOccured(const QString &description);
 
 protected slots:
     void onTransportStateChanged();

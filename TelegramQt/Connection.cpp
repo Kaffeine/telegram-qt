@@ -1,5 +1,6 @@
 #include "Connection.hpp"
 
+#include "ConnectionError.hpp"
 #include "DhLayer.hpp"
 #include "RpcLayer.hpp"
 #include "SendPackageHelper.hpp"
@@ -90,10 +91,11 @@ void BaseConnection::onTransportStateChanged()
 void BaseConnection::onTransportPackageReceived(const QByteArray &package)
 {
     qCDebug(c_baseConnectionCategory) << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onTransportPackageReceived(%1 bytes)").arg(package.size());
-    if (package.size() == sizeof(quint32)) {
-        const quint32 errorCode = *(reinterpret_cast<const quint32 *>(package.constData()));
-        const qint32 signedCode = static_cast<const qint32>(errorCode);
-        qCWarning(c_baseConnectionCategory) << "Error:" << errorCode << package.toHex() << signedCode;
+    if (package.size() == ConnectionError::packageSize()) {
+        ConnectionError e(package.constData());
+        qCWarning(c_baseConnectionCategory) << "Error:" << e.description();
+        emit errorOccured(e.description());
+        setStatus(Status::Failed, StatusReason::Remote);
         return;
     }
     if (package.size() < 8) {
