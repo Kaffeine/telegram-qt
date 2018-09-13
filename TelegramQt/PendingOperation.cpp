@@ -11,24 +11,9 @@ PendingOperation::PendingOperation(QObject *parent) :
 {
 }
 
-bool PendingOperation::isFinished() const
-{
-    return m_finished;
-}
-
-bool PendingOperation::isSucceeded() const
-{
-    return m_finished && m_succeeded;
-}
-
 QString PendingOperation::c_text()
 {
     return QStringLiteral("text");
-}
-
-QVariantHash PendingOperation::errorDetails() const
-{
-    return m_errorDetails;
 }
 
 void PendingOperation::startLater()
