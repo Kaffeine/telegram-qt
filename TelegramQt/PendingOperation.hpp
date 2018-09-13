@@ -14,6 +14,7 @@ public:
     explicit PendingOperation(QObject *parent = nullptr);
     bool isFinished() const;
     bool isSucceeded() const;
+    bool isFailed() const;
 
     static QString c_text();
 
@@ -82,6 +83,11 @@ inline bool PendingOperation::isFinished() const
 inline bool PendingOperation::isSucceeded() const
 {
     return m_finished && m_succeeded;
+}
+
+inline bool PendingOperation::isFailed() const
+{
+    return m_finished && !m_succeeded;
 }
 
 inline QVariantHash PendingOperation::errorDetails() const
