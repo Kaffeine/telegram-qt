@@ -2,6 +2,7 @@
 #include "SendPackageHelper.hpp"
 #include "Utils.hpp"
 #include "Debug_p.hpp"
+#include "IgnoredMessageNotification.hpp"
 #include "TelegramServerUser.hpp"
 #include "RpcProcessingContext.hpp"
 #include "RpcError.hpp"
@@ -222,13 +223,8 @@ bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)
     decryptedStream >> sequence;
     decryptedStream >> contentLength;
 
-    if (m_sendHelper->serverSalt() != serverSalt) {
-        qDebug() << Q_FUNC_INFO << "Received different server salt:" << serverSalt << "(remote) vs" << m_sendHelper->serverSalt() << "(local)";
-        //            return;
-    }
-
-    if (!m_session) {
-        qWarning() << Q_FUNC_INFO << "Unexpected RPC packet";
+    if (!sessionId) {
+        qWarning() << Q_FUNC_INFO << "Unexpected RPC packet without sessionId";
         return false;
     }
 
@@ -238,6 +234,20 @@ bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)
     } else if (m_session->sessionId != sessionId) {
         qWarning() << Q_FUNC_INFO << "Unexpected Session Id";
         return false;
+    }
+
+    if (m_sendHelper->serverSalt() != serverSalt) {
+        qDebug() << Q_FUNC_INFO << "Received different server salt:" << serverSalt << "(remote) vs" << m_sendHelper->serverSalt() << "(local)";
+        MTProto::IgnoredMessageNotification messageNotification;
+        messageNotification.errorCode = MTProto::IgnoredMessageNotification::IncorrectServerSalt;
+        messageNotification.seqNo = sequence;
+        messageNotification.messageId = messageId;
+
+        CRawStream output(CRawStream::WriteOnly);
+        output << TLValue::BadServerSalt;
+        output << messageNotification;
+        sendPackage(output.getData(), SendMode::ServerReply);
+        return true;
     }
 
     if (int(contentLength) > decryptedData.length()) {
