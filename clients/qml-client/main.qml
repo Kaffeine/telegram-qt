@@ -93,7 +93,7 @@ ApplicationWindow {
         serverOptions: [
             Telegram.ServerOption {
                 address: "127.0.0.1"
-                port: 11443
+                port: 11441
             }
         ]
         serverKey: localServerKey
