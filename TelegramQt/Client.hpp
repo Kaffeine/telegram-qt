@@ -94,6 +94,7 @@ public Q_SLOTS:
 //    void disconnectFromServer();
 //    PendingAuthOperation *checkPhoneNumber();
     AuthOperation *signIn();
+    AuthOperation *checkIn();
 
 //    void resetConnectionData();
 //    bool setSecretInfo(const QByteArray &secret);

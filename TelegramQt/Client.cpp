@@ -32,6 +32,12 @@ Telegram::Client::AuthOperation *Client::signIn()
     return d->signIn();
 }
 
+AuthOperation *Client::checkIn()
+{
+    Q_D(Client);
+    return d->checkIn();
+}
+
 CAppInformation *Client::appInformation() const
 {
     Q_D(const Client);

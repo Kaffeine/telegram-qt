@@ -42,6 +42,7 @@ public slots:
 
     void abort();
 
+    PendingOperation *checkAuthorization();
     PendingOperation *requestAuthCode();
     PendingOperation *submitAuthCode(const QString &code);
     PendingOperation *getPassword();
@@ -87,6 +88,10 @@ protected:
     void onPasswordRequestFinished(PendingRpcOperation *operation);
     void onCheckPasswordFinished(PendingRpcOperation *operation);
     void onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization);
+
+    void onAccountStatusUpdateFinished(PendingRpcOperation *operation);
+
+    void onConnectionError(const QString &description);
 
     QString m_authCodeHash;
 };

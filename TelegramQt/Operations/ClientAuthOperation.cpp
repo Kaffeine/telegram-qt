@@ -70,6 +70,24 @@ void AuthOperation::abort()
     qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
 }
 
+PendingOperation *AuthOperation::checkAuthorization()
+{
+    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO;
+    AccountStorage *storage = m_backend->accountStorage();
+    if (!storage->hasMinimalDataSet()) {
+        setFinishedWithError({{c_text(), QStringLiteral("No minimal account data set")}});
+        return nullptr;
+    }
+    connect(m_backend->getDefaultConnection(), &BaseConnection::errorOccured,
+            this, &AuthOperation::onConnectionError);
+    // Backend::connectToServer() automatically takes the data from the account storage,
+    // So just make some RPC call to check if connection works.
+    PendingRpcOperation *updateStatusOperation = accountLayer()->updateStatus(false);
+    connect(updateStatusOperation, &PendingRpcOperation::finished,
+            this, &AuthOperation::onAccountStatusUpdateFinished);
+    return nullptr;
+}
+
 PendingOperation *AuthOperation::requestAuthCode()
 {
     qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO;
@@ -276,6 +294,27 @@ void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLA
     m_backend->setMainConnection(conn);
     conn->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Remote);
     setFinished();
+}
+
+void AuthOperation::onAccountStatusUpdateFinished(PendingRpcOperation *operation)
+{
+    if (!operation->isSucceeded()) {
+        setFinishedWithError(operation->errorDetails());
+        return;
+    }
+    Connection *conn = Connection::fromOperation(operation);
+    m_backend->setMainConnection(conn);
+    conn->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Local);
+    setFinished();
+}
+
+void AuthOperation::onConnectionError(const QString &description)
+{
+    if (isFinished()) {
+        qCDebug(c_loggingClientAuthOperation) << "Connection error on finished auth operation:" << description;
+        return;
+    }
+    setFinishedWithError({{c_text(), description}});
 }
 
 } // Client

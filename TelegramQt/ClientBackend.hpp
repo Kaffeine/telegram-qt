@@ -58,6 +58,7 @@ public:
 
     PendingOperation *connectToServer(const QVector<DcOption> &dcOptions);
     AuthOperation *signIn();
+    AuthOperation *checkIn();
     PendingOperation *getDcConfig();
 
     Connection *createConnection(const DcOption &dcInfo);

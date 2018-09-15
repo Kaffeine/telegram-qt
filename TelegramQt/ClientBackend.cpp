@@ -156,6 +156,24 @@ AuthOperation *Backend::signIn()
     return m_authOperation;
 }
 
+AuthOperation *Backend::checkIn()
+{
+    if (m_authOperation && !m_authOperation->isFinished()) {
+        return PendingOperation::failOperation<AuthOperation>
+                (QStringLiteral("Auth operation is already in progress"), this);
+    }
+    if (!m_accountStorage->hasMinimalDataSet()) {
+        return PendingOperation::failOperation<AuthOperation>
+                (QStringLiteral("No minimal account data set"), this);
+    }
+    m_authOperation = new AuthOperation(this);
+    PendingOperation *connectionOperation = connectToServer({m_accountStorage->dcInfo()});
+    m_authOperation->runAfter(connectionOperation);
+    m_authOperation->setRunMethod(&AuthOperation::checkAuthorization);
+    m_connectToServerOperation->connection()->setAuthKey(m_accountStorage->authKey());
+    return m_authOperation;
+}
+
 PendingOperation *Backend::getDcConfig()
 {
     if (m_getConfigOperation) {
@@ -182,6 +200,7 @@ Connection *Backend::createConnection(const DcOption &dcOption)
     connection->setDcOption(dcOption);
     connection->setServerRsaKey(m_settings->serverRsaKey());
     connection->rpcLayer()->setAppInformation(m_appInformation);
+    connection->setDeltaTime(m_accountStorage->deltaTime());
 
     TcpTransport *transport = new TcpTransport(connection);
     transport->setProxy(m_settings->proxy());
