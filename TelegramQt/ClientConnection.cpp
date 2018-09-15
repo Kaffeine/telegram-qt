@@ -45,6 +45,12 @@ public:
     }
 };
 
+/*!
+    \class Telegram::Client::Connection
+    \brief Client-specific connection with DH and RPC layers
+    \inmodule TelegramQt
+    \ingroup Client
+*/
 Connection::Connection(QObject *parent) :
     BaseConnection(parent)
 {
@@ -71,6 +77,15 @@ RpcLayer *Connection::rpcLayer()
     return reinterpret_cast<RpcLayer*>(m_rpcLayer);
 }
 
+/*!
+  Initiates connection to DC and returns an Operation object.
+
+  This method establish Transport (TCP/UDP/HTTP) level connection.
+  Operation is finished on transport (network) error or on DH layer
+  connection established.
+
+  \sa BaseTransport::connectToHost()
+*/
 ConnectOperation *Connection::connectToDc()
 {
     if (m_status != Status::Disconnected) {
