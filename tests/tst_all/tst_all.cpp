@@ -61,8 +61,24 @@ struct UserData
         lastName = last;
     }
 
+    void unsetPassword()
+    {
+        setPassword(QString(), QByteArray());
+    }
+
+    void setPassword(const QString &pass, const QByteArray &salt)
+    {
+        password = pass;
+        setPasswordSalt(salt);
+    }
+
     void setPasswordSalt(const QByteArray &salt)
     {
+        if (salt.isEmpty()) {
+            passwordSalt.clear();
+            passwordHash.clear();
+            return;
+        }
         QByteArray pwdData = salt + password.toUtf8() + salt;
         passwordSalt = salt;
         passwordHash = Utils::sha256(pwdData);
@@ -188,11 +204,15 @@ void tst_all::testClientConnection_data()
     userOnDc1.dcId = 1;
     UserData userOnDc2 = c_userWithPassword;
     userOnDc2.dcId = 2;
+    UserData user2OnDc2 = c_userWithPassword;
+    user2OnDc2.unsetPassword();
+    user2OnDc2.dcId = 2;
 
     QTest::newRow("Abridged")   << Client::Settings::SessionType::Abridged << userOnDc1;
     QTest::newRow("Obfuscated") << Client::Settings::SessionType::Obfuscated << userOnDc1;
     QTest::newRow("Abridged with migration")   << Client::Settings::SessionType::Abridged << userOnDc2;
     QTest::newRow("Obfuscated with migration") << Client::Settings::SessionType::Obfuscated << userOnDc2;
+    QTest::newRow("Obfuscated with migration (no password)") << Client::Settings::SessionType::Obfuscated << user2OnDc2;
 }
 
 void tst_all::testClientConnection()
@@ -253,23 +273,25 @@ void tst_all::testClientConnection()
 
     signInOperation->submitAuthCode(authCode);
 
-    QSignalSpy authPasswordSpy(signInOperation, &Client::AuthOperation::passwordRequired);
-    QSignalSpy passwordCheckFailedSpy(signInOperation, &Client::AuthOperation::passwordCheckFailed);
-    QTRY_VERIFY2(!authPasswordSpy.isEmpty(), "The user has a password-protection, "
-                                             "but there are no passwordRequired signals on the client side");
-    QCOMPARE(authPasswordSpy.count(), 1);
-    QVERIFY(passwordCheckFailedSpy.isEmpty());
+    if (!userData.password.isEmpty()) {
+        QSignalSpy authPasswordSpy(signInOperation, &Client::AuthOperation::passwordRequired);
+        QSignalSpy passwordCheckFailedSpy(signInOperation, &Client::AuthOperation::passwordCheckFailed);
+        QTRY_VERIFY2(!authPasswordSpy.isEmpty(), "The user has a password-protection, "
+                                                 "but there are no passwordRequired signals on the client side");
+        QCOMPARE(authPasswordSpy.count(), 1);
+        QVERIFY(passwordCheckFailedSpy.isEmpty());
 
-    PendingOperation *op = signInOperation->getPassword();
-    QTRY_VERIFY(op->isFinished());
+        PendingOperation *op = signInOperation->getPassword();
+        QTRY_VERIFY(op->isFinished());
 
-    signInOperation->submitPassword(userData.password + QStringLiteral("invalid"));
-    QTRY_VERIFY2(!passwordCheckFailedSpy.isEmpty(), "The submitted password is not valid, "
-                                                    "but there are not signals on the client side");
-    QVERIFY(!signInOperation->isFinished());
-    QCOMPARE(passwordCheckFailedSpy.count(), 1);
+        signInOperation->submitPassword(userData.password + QStringLiteral("invalid"));
+        QTRY_VERIFY2(!passwordCheckFailedSpy.isEmpty(), "The submitted password is not valid, "
+                                                        "but there are not signals on the client side");
+        QVERIFY(!signInOperation->isFinished());
+        QCOMPARE(passwordCheckFailedSpy.count(), 1);
 
-    signInOperation->submitPassword(userData.password);
+        signInOperation->submitPassword(userData.password);
+    }
     QTRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
 
     quint64 clientAuthId = accountStorage.authId();
