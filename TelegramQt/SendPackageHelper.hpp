@@ -48,6 +48,8 @@ public:
     void setServerSalt(const quint64 salt);
 
     quint64 authId() const { return m_authId; }
+    QByteArray getServerKeyPart() const { return m_authKey.mid(96, 32); }
+    QByteArray getClientKeyPart() const { return m_authKey.mid(88, 32); }
     QByteArray authKey() const { return m_authKey; }
     void setAuthKey(const QByteArray &authKey);
 

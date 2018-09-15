@@ -133,9 +133,7 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
             packageLength += padding;
         }
         const QByteArray data = stream.getData();
-        const int X = mode == SendMode::Client ? 0 : 8;
-        const QByteArray keyPart = m_sendHelper->authKey().mid(88 + X, 32);
-        messageKey = Utils::sha256(keyPart + data).mid(8, 16);
+        messageKey = Utils::sha256(getEncryptionKeyPart() + data).mid(8, 16);
 #endif
         const SAesKey key = getEncryptionAesKey(messageKey);
         encryptedPackage = Utils::aesEncrypt(data, key).left(packageLength);

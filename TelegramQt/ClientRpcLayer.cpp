@@ -209,6 +209,16 @@ bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)
     return true;
 }
 
+QByteArray RpcLayer::getEncryptionKeyPart() const
+{
+    return m_sendHelper->getClientKeyPart();
+}
+
+QByteArray RpcLayer::getVerificationKeyPart() const
+{
+    return m_sendHelper->getServerKeyPart();
+}
+
 bool RpcLayer::sendRpc(PendingRpcOperation *operation)
 {
     quint64 messageId = 0;

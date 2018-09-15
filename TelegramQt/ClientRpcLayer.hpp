@@ -62,6 +62,9 @@ protected:
     SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
     SAesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
 
+    QByteArray getEncryptionKeyPart() const final;
+    QByteArray getVerificationKeyPart() const final;
+
     QByteArray getInitConnection() const;
 
     CAppInformation *m_appInfo = nullptr;

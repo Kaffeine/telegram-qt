@@ -55,6 +55,9 @@ protected:
     SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
     SAesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
 
+    QByteArray getEncryptionKeyPart() const final;
+    QByteArray getVerificationKeyPart() const final;
+
     Session *m_session = nullptr;
     ServerApi *m_api = nullptr;
 

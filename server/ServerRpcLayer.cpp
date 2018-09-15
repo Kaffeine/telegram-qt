@@ -274,6 +274,16 @@ bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)
     return result;
 }
 
+QByteArray RpcLayer::getEncryptionKeyPart() const
+{
+    return m_sendHelper->getServerKeyPart();
+}
+
+QByteArray RpcLayer::getVerificationKeyPart() const
+{
+    return m_sendHelper->getClientKeyPart();
+}
+
 } // Server
 
 } // Telegram
