@@ -23,6 +23,8 @@
 #include "Utils.hpp"
 #include "TLValues.hpp"
 
+#include "MTProto/MessageHeader.hpp"
+
 #ifdef DEVELOPER_BUILD
 #include "Debug_p.hpp"
 #endif
@@ -62,7 +64,38 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     qCDebug(c_baseRpcLayerCategory) << "data:" << data.toHex();
     qCDebug(c_baseRpcLayerCategory) << "decryptedData:" << decryptedData.toHex();
 #endif
-    return processDecryptedPackage(decryptedData);
+    CRawStream decryptedStream(decryptedData);
+    MTProto::FullMessageHeader messageHeader;
+    decryptedStream >> messageHeader;
+
+    if (!processDecryptedMessageHeader(messageHeader)) {
+        return false;
+    }
+
+    if (int(messageHeader.contentLength) > decryptedStream.bytesAvailable()) {
+        qCDebug(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Expected more data than actually available.";
+        return false;
+    }
+#ifdef USE_MTProto_V1
+    QByteArray expectedMessageKey = Utils::sha1(
+                decryptedData.left(MTProto::FullMessageHeader::headerLength + messageHeader.contentLength)).mid(4);
+#else // MTProto_V2
+    QByteArray expectedMessageKey = Utils::sha256(getVerificationKeyPart() + decryptedData).mid(8, 16);
+#endif
+
+    if (messageKey != expectedMessageKey) {
+        qCWarning(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Invalid message key";
+        return false;
+    }
+
+    QByteArray payload = decryptedStream.readAll();
+    const bool result = processRpcQuery(payload, messageHeader.messageId);
+
+#ifdef DEVELOPER_BUILD
+    static int packagesCount = 0;
+    qCDebug(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Got package" << ++packagesCount << TLValue::firstFromArray(payload);
+#endif
+    return result;
 }
 
 SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const

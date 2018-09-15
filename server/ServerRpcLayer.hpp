@@ -37,7 +37,7 @@ public:
 
     void setRpcFactories(const QVector<RpcOperationFactory*> &rpcFactories);
 
-    bool processRpcQuery(const QByteArray &data, quint64 messageId);
+    bool processRpcQuery(const QByteArray &data, quint64 messageId) override;
     bool processRpcQuery(RpcProcessingContext &context);
 
     // Low level
@@ -51,7 +51,7 @@ public:
     static const char *gzipPackMessage();
 
 protected:
-    bool processDecryptedPackage(const QByteArray &decryptedData) override;
+    bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) override;
     SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
     SAesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
 

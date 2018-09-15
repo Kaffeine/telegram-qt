@@ -12,6 +12,8 @@
 #include "Session.hpp"
 #include "ServerApi.hpp"
 
+#include "MTProto/MessageHeader.hpp"
+
 #include "CTelegramStream.hpp"
 #include <QLoggingCategory>
 
@@ -209,69 +211,36 @@ const char *RpcLayer::gzipPackMessage()
     return "Server: gzip the answer for message";
 }
 
-bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)
+bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
 {
-    CRawStream decryptedStream(decryptedData);
-    quint64 serverSalt = 0;
-    quint64 sessionId = 0;
-    quint64 messageId  = 0;
-    quint32 sequence = 0;
-    quint32 contentLength = 0;
-    decryptedStream >> serverSalt;
-    decryptedStream >> sessionId;
-    decryptedStream >> messageId;
-    decryptedStream >> sequence;
-    decryptedStream >> contentLength;
-
-    if (!sessionId) {
+    if (!header.sessionId) {
         qWarning() << Q_FUNC_INFO << "Unexpected RPC packet without sessionId";
         return false;
     }
 
     if (!m_session->sessionId) {
         qDebug() << Q_FUNC_INFO << "Assign the client auth key to a session id";
-        m_session->sessionId = sessionId;
-    } else if (m_session->sessionId != sessionId) {
+        m_session->sessionId = header.sessionId;
+    } else if (m_session->sessionId != header.sessionId) {
         qWarning() << Q_FUNC_INFO << "Unexpected Session Id";
         return false;
     }
 
-    if (m_sendHelper->serverSalt() != serverSalt) {
-        qDebug() << Q_FUNC_INFO << "Received different server salt:" << serverSalt << "(remote) vs" << m_sendHelper->serverSalt() << "(local)";
+    if (m_sendHelper->serverSalt() != header.serverSalt) {
+        qDebug() << Q_FUNC_INFO << "Received different server salt:"
+                 << header.serverSalt << "(remote) vs" << m_sendHelper->serverSalt() << "(local)";
         MTProto::IgnoredMessageNotification messageNotification;
         messageNotification.errorCode = MTProto::IgnoredMessageNotification::IncorrectServerSalt;
-        messageNotification.seqNo = sequence;
-        messageNotification.messageId = messageId;
+        messageNotification.seqNo = header.sequenceNumber;
+        messageNotification.messageId = header.messageId;
 
         CRawStream output(CRawStream::WriteOnly);
         output << TLValue::BadServerSalt;
         output << messageNotification;
         sendPackage(output.getData(), SendMode::ServerReply);
-        return true;
-    }
-
-    if (int(contentLength) > decryptedData.length()) {
-        qDebug() << Q_FUNC_INFO << "Expected data length is more, than actual.";
         return false;
     }
-
-    const int headerLength = sizeof(serverSalt) + sizeof(sessionId) + sizeof(messageId) + sizeof(sequence) + sizeof(contentLength);
-    QByteArray expectedMessageKey = Utils::sha1(decryptedData.left(headerLength + contentLength)).mid(4);
-
-    const QByteArray messageKey = expectedMessageKey;
-    if (messageKey != expectedMessageKey) {
-        qDebug() << Q_FUNC_INFO << "Wrong message key";
-        return false;
-    }
-
-    QByteArray payload = decryptedStream.readAll();
-    const bool result = processRpcQuery(payload, messageId);
-
-#ifdef DEVELOPER_BUILD
-    static int packagesCount = 0;
-    qDebug() << Q_FUNC_INFO << "Got package" << ++packagesCount << TLValue::firstFromArray(payload);
-#endif
-    return result;
+    return true;
 }
 
 QByteArray RpcLayer::getEncryptionKeyPart() const

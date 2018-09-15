@@ -26,6 +26,12 @@ class CTelegramTransport;
 
 namespace Telegram {
 
+namespace MTProto {
+
+struct FullMessageHeader;
+
+} // MTProto
+
 class BaseSendPackageHelper;
 enum class SendMode : quint8;
 
@@ -40,7 +46,8 @@ public:
     void setSendPackageHelper(BaseSendPackageHelper *helper);
 
     bool processPackage(const QByteArray &package);
-    virtual bool processDecryptedPackage(const QByteArray &package) = 0;
+    virtual bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) = 0;
+    virtual bool processRpcQuery(const QByteArray &data, quint64 messageId) = 0;
 
     virtual void onConnectionFailed() {}
 

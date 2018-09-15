@@ -24,6 +24,8 @@
 #include "CAppInformation.hpp"
 #include "PendingRpcOperation.hpp"
 
+#include "MTProto/MessageHeader.hpp"
+
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(c_clientRpcLayerCategory, "telegram.client.rpclayer", QtDebugMsg)
@@ -47,8 +49,9 @@ void RpcLayer::setSessionId(quint64 newSessionId)
     m_sessionId = newSessionId;
 }
 
-bool RpcLayer::processRpcQuery(const QByteArray &data)
+bool RpcLayer::processRpcQuery(const QByteArray &data, quint64 serverMessageId)
 {
+    Q_UNUSED(serverMessageId)
     CTelegramStream stream(data);
     TLValue value;
     stream >> value;
@@ -134,7 +137,7 @@ bool RpcLayer::processContainer(CTelegramStream &stream)
         quint32 size;
         stream >> size;
 
-        processed = processRpcQuery(stream.readBytes(size)) && processed;
+        processed = processRpcQuery(stream.readBytes(size), id) && processed;
     }
     return processed;
 }
@@ -158,54 +161,17 @@ void RpcLayer::processIgnoredMessageNotification(CTelegramStream &stream)
     }
 }
 
-bool RpcLayer::processDecryptedPackage(const QByteArray &decryptedData)
+bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
 {
-//    qWarning() << Q_FUNC_INFO << "Innerdata:" << decryptedData.toHex();
-//    qWarning() << Q_FUNC_INFO << "key:" << messageKey.toHex();
-
-    CRawStream decryptedStream(decryptedData);
-    quint64 sessionId = 0;
-    quint64 messageId  = 0;
-    quint32 sequence = 0;
-    quint32 contentLength = 0;
-    decryptedStream >> m_receivedServerSalt;
-    decryptedStream >> sessionId;
-    decryptedStream >> messageId;
-    decryptedStream >> sequence;
-    decryptedStream >> contentLength;
-
-    if (m_sendHelper->serverSalt() != m_receivedServerSalt) {
+    if (m_sendHelper->serverSalt() != header.serverSalt) {
         qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Received different server salt:" << m_receivedServerSalt << "(remote) vs" << m_sendHelper->serverSalt() << "(local)";
-        //            return;
+        m_receivedServerSalt = header.serverSalt;
     }
 
-    if (m_sessionId != sessionId) {
+    if (m_sessionId != header.sessionId) {
         qCWarning(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Session Id is wrong.";
         return false;
     }
-
-    if (static_cast<int>(contentLength) > decryptedData.length()) {
-        qCWarning(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Expected data length is more, than actual.";
-        return false;
-    }
-
-    const int headerLength = sizeof(m_receivedServerSalt) + sizeof(sessionId) + sizeof(messageId) + sizeof(sequence) + sizeof(contentLength);
-    QByteArray expectedMessageKey = Utils::sha1(decryptedData.left(headerLength + contentLength)).mid(4);
-
-    const QByteArray messageKey = expectedMessageKey;
-    if (messageKey != expectedMessageKey) {
-        qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Wrong message key";
-        return false;
-    }
-
-    QByteArray payload = decryptedStream.readAll();
-
-    processRpcQuery(payload);
-
-#ifdef DEVELOPER_BUILD
-    static int packagesCount = 0;
-    qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Got package" << ++packagesCount << TLValue::firstFromArray(payload);
-#endif
     return true;
 }
 

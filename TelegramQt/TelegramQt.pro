@@ -132,6 +132,12 @@ include(RpcLayers/layers.pri)
 include(Crypto/crypto.pri)
 include(Operations/operations.pri)
 
+SOURCES += \
+    MTProto/MessageHeader.cpp
+
+HEADERS += \
+    MTProto/MessageHeader.hpp
+
 SOURCES += TLTypesDebug.cpp
 HEADERS += TLTypesDebug.hpp
 

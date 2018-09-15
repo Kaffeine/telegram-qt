@@ -46,7 +46,7 @@ public:
     quint64 sessionId() const override { return m_sessionId; }
     void setSessionId(quint64 newSessionId);
 
-    bool processRpcQuery(const QByteArray &data);
+    bool processRpcQuery(const QByteArray &data, quint64 messageId) override;
 
     void processSessionCreated(CTelegramStream &stream);
     bool processContainer(CTelegramStream &stream);
@@ -58,7 +58,7 @@ public:
     void onConnectionFailed() override;
 
 protected:
-    bool processDecryptedPackage(const QByteArray &package) override;
+    bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) override;
     SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
     SAesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
 
