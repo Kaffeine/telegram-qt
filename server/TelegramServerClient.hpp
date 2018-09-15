@@ -34,6 +34,8 @@ public:
 protected slots:
     void onClientDhStateChanged();
 
+    void sendKeyError();
+
 protected:
     bool processAuthKey(quint64 authKeyId) override;
 };

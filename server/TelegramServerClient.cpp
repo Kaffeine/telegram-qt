@@ -98,11 +98,22 @@ void RemoteClientConnection::onClientDhStateChanged()
     }
 }
 
+void RemoteClientConnection::sendKeyError()
+{
+    static const QByteArray errorPackage = QByteArray::fromHex(QByteArrayLiteral("6cfeffff"));
+    m_transport->sendPackage(errorPackage);
+}
+
 bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
 {
     if (authKeyId == m_sendHelper->authId()) {
         return true;
     }
+
+    disconnect(m_transport, &CTelegramTransport::packageReceived, this, &RemoteClientConnection::onTransportPackageReceived);
+    connect(m_transport, &CTelegramTransport::packageReceived, this, &RemoteClientConnection::sendKeyError);
+    setStatus(Status::Failed, StatusReason::Local);
+    sendKeyError();
     return false;
 }
 
