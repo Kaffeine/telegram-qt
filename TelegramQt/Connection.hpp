@@ -65,6 +65,8 @@ protected slots:
     void onDhStateChanged();
 
 protected:
+    virtual bool processAuthKey(quint64 authKeyId) = 0;
+
     CTelegramTransport *m_transport = nullptr;
     BaseSendPackageHelper *m_sendHelper;
     BaseDhLayer *m_dhLayer = nullptr;

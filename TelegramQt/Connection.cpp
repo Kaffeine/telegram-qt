@@ -108,6 +108,10 @@ void BaseConnection::onTransportPackageReceived(const QByteArray &package)
     }
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
     if (*authKeyIdBytes) {
+        if (!processAuthKey(*authKeyIdBytes)) {
+            qCDebug(c_baseConnectionCategory) << "Received incorrect auth id.";
+            return;
+        }
         if (!m_rpcLayer->processPackage(package)) {
             qCWarning(c_baseConnectionCategory) << "Unable to process RPC packet:" << package.toHex();
         }

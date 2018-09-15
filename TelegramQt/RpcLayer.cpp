@@ -52,22 +52,6 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
 #ifdef BASE_RPC_IO_DEBUG
     qCDebug(c_baseRpcLayerCategory) << package.toHex();
 #endif
-    const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
-    const quint64 authKeyId = *authKeyIdBytes;
-    if (!verifyAuthKey(authKeyId)) {
-        qCDebug(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Incorrect auth id.";
-#ifdef NETWORK_LOGGING
-        QTextStream str(m_logFile);
-        str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz")) << QLatin1Char('|');
-        str << QLatin1String("pln|");
-        str << QString(QLatin1String("size: %1|")).arg(input.length(), 4, 10, QLatin1Char('0'));
-        str << QLatin1Char('|');
-        str << package.toHex();
-        str << endl;
-        str.flush();
-#endif
-        return false;
-    }
     // Encrypted Message
     const QByteArray messageKey = package.mid(8, 16);
     const QByteArray data = package.mid(24);
@@ -100,11 +84,6 @@ SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
 #endif
 
     return SAesKey(key, iv);
-}
-
-bool BaseRpcLayer::verifyAuthKey(quint64 authKeyId)
-{
-    return authKeyId == m_sendHelper->authId();
 }
 
 quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)

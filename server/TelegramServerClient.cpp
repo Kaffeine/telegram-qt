@@ -98,6 +98,14 @@ void RemoteClientConnection::onClientDhStateChanged()
     }
 }
 
+bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
+{
+    if (authKeyId == m_sendHelper->authId()) {
+        return true;
+    }
+    return false;
+}
+
 } // Server
 
 } // Telegram

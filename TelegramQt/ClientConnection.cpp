@@ -184,6 +184,11 @@ void Connection::onClientDhStateChanged()
     }
 }
 
+bool Connection::processAuthKey(quint64 authKeyId)
+{
+    return authKeyId == m_sendHelper->authId();
+}
+
 } // Client namespace
 
 } // Telegram namespace
