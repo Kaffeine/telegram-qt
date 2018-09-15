@@ -50,6 +50,8 @@ public:
     bool sendRpc(PendingRpcOperation *operation);
     bool resendRpcMessage(quint64 messageId);
 
+    void onConnectionFailed() override;
+
 protected:
     bool processDecryptedPackage(const QByteArray &package) override;
     SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
