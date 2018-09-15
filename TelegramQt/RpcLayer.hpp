@@ -42,6 +42,8 @@ public:
     bool processPackage(const QByteArray &package);
     virtual bool processDecryptedPackage(const QByteArray &package) = 0;
 
+    virtual void onConnectionFailed() {}
+
 protected:
     SAesKey generateAesKey(const QByteArray &messageKey, int x) const;
     SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const { return generateAesKey(messageKey, 0); }

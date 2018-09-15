@@ -65,6 +65,10 @@ void BaseConnection::setStatus(BaseConnection::Status status, BaseConnection::St
 //    if (status < ConnectionStatusConnected) {
 //        stopPingTimer();
 //    }
+
+    if (status == Status::Failed) {
+        m_rpcLayer->onConnectionFailed();
+    }
 }
 
 void BaseConnection::onTransportStateChanged()
