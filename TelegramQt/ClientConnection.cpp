@@ -164,12 +164,12 @@ void Connection::processSeeOthers(PendingRpcOperation *operation)
         return;
     }
     rpcLayer()->sendRpc(operation);
-    qCWarning(c_clientConnectionCategory) << "processSeeOthers():" << TLValue::firstFromArray(operation->requestData()) << "sent with new id" << operation->requestId();
+    qCDebug(c_clientConnectionCategory) << "processSeeOthers():" << TLValue::firstFromArray(operation->requestData()) << "sent with new id" << operation->requestId();
 }
 
 void Connection::onClientDhStateChanged()
 {
-    qCWarning(c_clientConnectionCategory) << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
+    qCDebug(c_clientConnectionCategory) << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
         if (!m_rpcLayer->sessionId()) {
             rpcLayer()->setSessionId(Utils::randomBytes<quint64>());
@@ -177,7 +177,7 @@ void Connection::onClientDhStateChanged()
         if (!m_queuedOperations.isEmpty()) {
             for (PendingRpcOperation *operation : m_queuedOperations) {
                 rpcLayer()->sendRpc(operation);
-                qCWarning(c_clientConnectionCategory) << "Dequeue operation" << TLValue::firstFromArray(operation->requestData()) << "with new id" << operation->requestId();
+                qCDebug(c_clientConnectionCategory) << "Dequeue operation" << TLValue::firstFromArray(operation->requestData()) << "with new id" << operation->requestId();
             }
             m_queuedOperations.clear();
         }
