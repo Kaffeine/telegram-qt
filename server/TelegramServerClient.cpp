@@ -109,6 +109,15 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
     if (authKeyId == m_sendHelper->authId()) {
         return true;
     }
+    if (!m_sendHelper->authId()) {
+        Session *session = api()->getSessionByAuthId(authKeyId);
+        if (session) {
+            setSession(session);
+            m_sendHelper->setAuthKey(session->authKey);
+            m_sendHelper->setServerSalt(api()->serverSalt());
+            return true;
+        }
+    }
 
     disconnect(m_transport, &CTelegramTransport::packageReceived, this, &RemoteClientConnection::onTransportPackageReceived);
     connect(m_transport, &CTelegramTransport::packageReceived, this, &RemoteClientConnection::sendKeyError);

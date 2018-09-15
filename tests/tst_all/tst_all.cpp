@@ -31,6 +31,7 @@
 #include "TelegramServerClient.hpp"
 #include "TelegramServerUser.hpp"
 #include "ServerRpcLayer.hpp"
+#include "Session.hpp"
 #include "DcConfiguration.hpp"
 #include "LocalCluster.hpp"
 
@@ -310,6 +311,9 @@ void tst_all::testClientConnection()
     QCOMPARE(clientConnections.count(), 1);
     Server::RemoteClientConnection *remoteClientConnection = *clientConnections.cbegin();
     QCOMPARE(remoteClientConnection->authId(), clientAuthId);
+    Server::Session *serverSession = server->getSessionByAuthId(clientAuthId);
+    QVERIFY(serverSession);
+    QVERIFY(serverSession->user());
 }
 
 QTEST_GUILESS_MAIN(tst_all)
