@@ -18,6 +18,8 @@
 
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(c_loggingClientAuthOperation, "telegram.client.auth.operation", QtDebugMsg)
+
 namespace Telegram {
 
 namespace Client {
@@ -65,15 +67,17 @@ void AuthOperation::start()
 
 void AuthOperation::abort()
 {
-    qWarning() << Q_FUNC_INFO << "STUB";
+    qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
 }
 
 PendingOperation *AuthOperation::requestAuthCode()
 {
+    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO;
     const CAppInformation *appInfo = m_backend->m_appInformation;
     if (!appInfo) {
-        const QString text = QStringLiteral("Unable to request auth code, because the application information is not set");
-        return PendingOperation::failOperation({{QStringLiteral("text"), text}});
+        const QString text = QStringLiteral("Unable to request auth code, "
+                                            "because the application information is not set");
+        return PendingOperation::failOperation(text, this);
     }
 
     if (phoneNumber().isEmpty()) {
@@ -81,9 +85,12 @@ PendingOperation *AuthOperation::requestAuthCode()
         return nullptr;
     }
 
-    AuthRpcLayer::PendingAuthSentCode *requestCodeOperation = m_backend->authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
-    qDebug() << Q_FUNC_INFO << "requestPhoneCode" << Telegram::Utils::maskPhoneNumber(phoneNumber())
-             << "on dc" << Connection::fromOperation(requestCodeOperation)->dcOption().id;
+    AuthRpcLayer::PendingAuthSentCode *requestCodeOperation
+            = m_backend->authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
+    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO
+                                          << "requestPhoneCode"
+                                          << Telegram::Utils::maskPhoneNumber(phoneNumber())
+                                          << "on dc" << Connection::fromOperation(requestCodeOperation)->dcOption().id;
     connect(requestCodeOperation, &PendingOperation::finished, this, [this, requestCodeOperation] {
        this->onRequestAuthCodeFinished(requestCodeOperation);
     });
@@ -94,7 +101,7 @@ PendingOperation *AuthOperation::submitAuthCode(const QString &code)
 {
     if (m_authCodeHash.isEmpty()) {
         const QString text = QStringLiteral("Unable to submit auth code without a code hash");
-        qWarning() << Q_FUNC_INFO << text;
+        qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << text;
         return PendingOperation::failOperation({{QStringLiteral("text"), text}});
     }
 
@@ -118,8 +125,8 @@ PendingOperation *AuthOperation::submitPassword(const QString &password)
     }
     const QByteArray pwdData = m_passwordCurrentSalt + password.toUtf8() + m_passwordCurrentSalt;
     const QByteArray pwdHash = Utils::sha256(pwdData);
-    qDebug() << Q_FUNC_INFO << "slt:" << m_passwordCurrentSalt.toHex();
-    qDebug() << Q_FUNC_INFO << "pwd:" << pwdHash.toHex();
+    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << "slt:" << m_passwordCurrentSalt.toHex();
+    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << "pwd:" << pwdHash.toHex();
 
     PendingRpcOperation *sendPasswordOperation = authLayer()->checkPassword(pwdHash);
     connect(sendPasswordOperation, &PendingRpcOperation::finished, this, &AuthOperation::onCheckPasswordFinished);
@@ -136,17 +143,17 @@ void AuthOperation::submitPhoneNumber(const QString &phoneNumber)
 
 void AuthOperation::requestCall()
 {
-    qWarning() << Q_FUNC_INFO << "STUB";
+    qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
 }
 
 void AuthOperation::requestSms()
 {
-    qWarning() << Q_FUNC_INFO << "STUB";
+    qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
 }
 
 void AuthOperation::recovery()
 {
-    qWarning() << Q_FUNC_INFO << "STUB";
+    qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
 }
 
 void AuthOperation::setWantedDc(quint32 dcId)
@@ -193,7 +200,7 @@ void AuthOperation::onRequestAuthCodeFinished(AuthRpcLayer::PendingAuthSentCode 
     }
     TLAuthSentCode result;
     operation->getResult(&result);
-    qDebug() << Q_FUNC_INFO << result.tlType << result.phoneCodeHash;
+    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << result.tlType << result.phoneCodeHash;
     if (result.isValid()) {
         m_authCodeHash = result.phoneCodeHash;
         emit authCodeRequired();
@@ -228,7 +235,9 @@ void AuthOperation::onPasswordRequestFinished(PendingRpcOperation *operation)
 
     TLAccountPassword result;
     authLayer()->processReply(operation, &result);
-    qDebug() << Q_FUNC_INFO << "Password data:" << result.currentSalt << result.newSalt << result.hasRecovery << result.hint;
+#ifdef DEVELOPER_BUILD
+    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << result;
+#endif
     setPasswordCurrentSalt(result.currentSalt);
     setPasswordHint(result.hint);
 }
@@ -255,7 +264,9 @@ void AuthOperation::onCheckPasswordFinished(PendingRpcOperation *operation)
 
 void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization)
 {
-    qDebug() << authorization.user.phone << authorization.user.firstName << authorization.user.lastName;
+    qCDebug(c_loggingClientAuthOperation) << authorization.user.phone
+                                          << authorization.user.firstName
+                                          << authorization.user.lastName;
     AccountStorage *storage = m_backend->accountStorage();
     storage->setPhoneNumber(authorization.user.phone);
     if (storage->accountIdentifier().isEmpty()) {
