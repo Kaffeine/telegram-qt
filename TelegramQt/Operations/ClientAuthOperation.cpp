@@ -35,6 +35,12 @@ AuthOperation::AuthOperation(QObject *parent) :
 {
 }
 
+AuthOperation::AuthOperation(Backend *backend)  :
+    PendingOperation(backend),
+    m_backend(backend)
+{
+}
+
 void AuthOperation::setBackend(Backend *backend)
 {
     m_backend = backend;
