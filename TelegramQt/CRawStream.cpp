@@ -24,9 +24,9 @@
 static const char s_nulls[4] = { 0, 0, 0, 0 };
 
 CRawStream::CRawStream(QByteArray *data, bool write) :
-    m_device(new QBuffer(data)),
     m_ownDevice(true)
 {
+    setDevice(new QBuffer(data));
     if (write) {
         m_device->open(QIODevice::Append);
     } else {
@@ -47,13 +47,13 @@ CRawStream::CRawStream(CRawStream::Mode m, quint32 reserveBytes) :
     if (reserveBytes) {
         buffer->buffer().reserve(static_cast<int>(reserveBytes));
     }
-    m_device = buffer;
+    setDevice(buffer);
     m_device->open(QIODevice::WriteOnly);
 }
 
-CRawStream::CRawStream(QIODevice *d) :
-    m_device(d)
+CRawStream::CRawStream(QIODevice *d)
 {
+    setDevice(d);
 }
 
 CRawStream::~CRawStream()
