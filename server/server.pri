@@ -18,6 +18,7 @@ HEADERS += $$PWD/ServerRpcLayer.hpp
 HEADERS += $$PWD/ServerRpcOperation.hpp
 HEADERS += $$PWD/Session.hpp
 HEADERS += $$PWD/RpcOperationFactory.hpp
+HEADERS += $$PWD/RpcOperationFactory_p.hpp
 HEADERS += $$PWD/TelegramServer.hpp
 HEADERS += $$PWD/TelegramServerClient.hpp
 HEADERS += $$PWD/TelegramServerUser.hpp
