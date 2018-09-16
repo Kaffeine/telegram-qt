@@ -21,11 +21,13 @@
 #include "telegramqt_global.h"
 #include <QByteArray>
 
-class CRawStream;
+#include "Stream.hpp"
 
 namespace Telegram {
 
 namespace MTProto {
+
+using Stream = ::CTelegramStream;
 
 struct TELEGRAMQT_EXPORT MessageHeader {
     quint64 messageId;
@@ -42,6 +44,16 @@ struct TELEGRAMQT_EXPORT FullMessageHeader : public MessageHeader
 
     static constexpr int headerLength = sizeof(serverSalt) + sizeof(sessionId)
             + sizeof(messageId) + sizeof(sequenceNumber) + sizeof(contentLength);
+};
+
+struct TELEGRAMQT_EXPORT Message : public MessageHeader {
+    Message(const MessageHeader &header, Stream &stream) :
+        MessageHeader(header),
+        stream(stream)
+    {
+    }
+    QByteArray data;
+    Stream &stream;
 };
 
 CRawStream &operator>>(CRawStream &stream, MessageHeader &message);
