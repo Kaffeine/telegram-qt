@@ -136,7 +136,8 @@ SOURCES += \
     MTProto/MessageHeader.cpp
 
 HEADERS += \
-    MTProto/MessageHeader.hpp
+    MTProto/MessageHeader.hpp \
+    MTProto/Stream.hpp
 
 SOURCES += TLTypesDebug.cpp
 HEADERS += TLTypesDebug.hpp
