@@ -10,6 +10,8 @@
 
 namespace Telegram {
 
+namespace Client {
+
 PendingRpcOperation::PendingRpcOperation(const QByteArray &requestData, QObject *parent) :
     PendingOperation(parent),
     m_requestData(requestData)
@@ -53,5 +55,6 @@ void PendingRpcOperation::clearResult()
     PendingOperation::clearResult();
 }
 
-} // Telegram namespace
+} // Client namespace
 
+} // Telegram namespace

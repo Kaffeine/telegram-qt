@@ -28,11 +28,11 @@ class CTelegramStream;
 namespace Telegram {
 
 class AppInformation;
-class PendingRpcOperation;
 
 namespace Client {
 
 class AuthOperation;
+class PendingRpcOperation;
 
 class RpcLayer : public Telegram::BaseRpcLayer
 {

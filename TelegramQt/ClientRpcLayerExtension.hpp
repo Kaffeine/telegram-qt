@@ -27,10 +27,11 @@ class CTelegramStream;
 
 namespace Telegram {
 
-class PendingRpcOperation;
 using TelegramStream = ::CTelegramStream;
 
 namespace Client {
+
+class PendingRpcOperation;
 
 class BaseRpcLayerExtension : public QObject
 {

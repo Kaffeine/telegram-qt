@@ -13,7 +13,6 @@ class CAppInformation;
 namespace Telegram {
 
 class PendingOperation;
-class PendingRpcOperation;
 struct DcOption;
 
 namespace Client {
@@ -27,6 +26,7 @@ class DataStorage;
 class RpcLayer;
 class AuthOperation;
 class ConnectOperation;
+class PendingRpcOperation;
 
 // Generated low-level layers forward declarations
 class AccountRpcLayer;

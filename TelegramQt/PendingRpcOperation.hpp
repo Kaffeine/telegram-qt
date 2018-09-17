@@ -8,6 +8,8 @@ namespace Telegram {
 class RpcError;
 class BaseConnection;
 
+namespace Client {
+
 class PendingRpcOperation : public PendingOperation
 {
     Q_OBJECT
@@ -35,6 +37,8 @@ protected:
     BaseConnection *m_connection = nullptr;
 };
 
-}
+} // Client namespace
+
+} // Telegram namespace
 
 #endif // TELEGRAMQT_PENDING_RPC_OPERATION

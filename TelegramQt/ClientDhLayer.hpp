@@ -22,9 +22,9 @@
 
 namespace Telegram {
 
-class PendingRpcOperation;
-
 namespace Client {
+
+class PendingRpcOperation;
 
 class DhLayer : public Telegram::BaseDhLayer
 {

@@ -143,19 +143,19 @@ void tst_toOfficial::testClientDhLayer()
     transport->connectToHost(firstServer.address, firstServer.port);
     QTRY_VERIFY(transport->state() == QAbstractSocket::ConnectedState);
 
-    PendingRpcOperation *operationReqPq = dhLayer->requestPqAuthorization();
+    Client::PendingRpcOperation *operationReqPq = dhLayer->requestPqAuthorization();
     QTRY_VERIFY(operationReqPq->isFinished());
     QVERIFY(operationReqPq->isSucceeded());
     QVERIFY(dhLayer->acceptPqAuthorization(operationReqPq->replyData()));
 
-    PendingRpcOperation *operationReqDhParams = dhLayer->requestDhParameters();
+    Client::PendingRpcOperation *operationReqDhParams = dhLayer->requestDhParameters();
     QTRY_VERIFY(operationReqDhParams->isFinished());
     QVERIFY(operationReqDhParams->isSucceeded());
     QVERIFY(dhLayer->acceptDhAnswer(operationReqDhParams->replyData()));
 
     dhLayer->generateDh();
 
-    PendingRpcOperation *operationSetClientDHParams = dhLayer->requestDhGenerationResult();
+    Client::PendingRpcOperation *operationSetClientDHParams = dhLayer->requestDhGenerationResult();
     QTRY_VERIFY(operationSetClientDHParams->isFinished());
     QVERIFY(operationSetClientDHParams->isSucceeded());
     QVERIFY(dhLayer->processServerDhAnswer(operationSetClientDHParams->replyData()));

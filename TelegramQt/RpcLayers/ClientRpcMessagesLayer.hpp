@@ -25,9 +25,9 @@
 
 namespace Telegram {
 
-class PendingRpcOperation;
-
 namespace Client {
+
+class PendingRpcOperation;
 
 class MessagesRpcLayer : public BaseRpcLayerExtension
 {
