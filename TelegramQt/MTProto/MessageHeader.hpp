@@ -19,15 +19,15 @@
 #define TELEGRAM_QT_MTPROTO_MESSAGE_HEADER_HPP
 
 #include "telegramqt_global.h"
-#include <QByteArray>
+#include "TLValues.hpp"
 
-#include "Stream.hpp"
+#include "CRawStream.hpp"
+
+#include <QByteArray>
 
 namespace Telegram {
 
 namespace MTProto {
-
-using Stream = ::CTelegramStream;
 
 struct TELEGRAMQT_EXPORT MessageHeader {
     quint64 messageId;
@@ -47,13 +47,19 @@ struct TELEGRAMQT_EXPORT FullMessageHeader : public MessageHeader
 };
 
 struct TELEGRAMQT_EXPORT Message : public MessageHeader {
-    Message(const MessageHeader &header, Stream &stream) :
+    Message(const MessageHeader &header, const QByteArray &data) :
         MessageHeader(header),
-        stream(stream)
+        data(data)
     {
     }
+
+    Message(const Message &message) = default;
+
+    Q_REQUIRED_RESULT TLValue firstValue() const { return TLValue::firstFromArray(data); }
+    Q_REQUIRED_RESULT Message skipTLValue() const { return skipBytes(4); }
+    Q_REQUIRED_RESULT Message skipBytes(int bytes) const;
+
     QByteArray data;
-    Stream &stream;
 };
 
 CRawStream &operator>>(CRawStream &stream, MessageHeader &message);

@@ -46,11 +46,9 @@ public:
     quint64 sessionId() const override { return m_sessionId; }
     void setSessionId(quint64 newSessionId);
 
-    bool processRpcQuery(const QByteArray &data, quint64 messageId) override;
-
-    void processSessionCreated(CTelegramStream &stream);
-    bool processContainer(CTelegramStream &stream);
-    void processIgnoredMessageNotification(CTelegramStream &stream);
+    bool processMTProtoMessage(const MTProto::Message &message) override;
+    void processSessionCreated(const MTProto::Message &message);
+    void processIgnoredMessageNotification(const MTProto::Message &message);
 
     bool sendRpc(PendingRpcOperation *operation);
     bool resendRpcMessage(quint64 messageId);

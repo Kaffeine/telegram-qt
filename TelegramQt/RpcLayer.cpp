@@ -24,6 +24,7 @@
 #include "TLValues.hpp"
 
 #include "MTProto/MessageHeader.hpp"
+#include "MTProto/Stream.hpp"
 
 #ifdef DEVELOPER_BUILD
 #include "Debug_p.hpp"
@@ -88,14 +89,9 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
         return false;
     }
 
-    QByteArray payload = decryptedStream.readAll();
-    const bool result = processRpcQuery(payload, messageHeader.messageId);
-
-#ifdef DEVELOPER_BUILD
-    static int packagesCount = 0;
-    qCDebug(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Got package" << ++packagesCount << TLValue::firstFromArray(payload);
-#endif
-    return result;
+    QByteArray innerData = decryptedStream.readBytes(messageHeader.contentLength);
+    MTProto::Message message(messageHeader, innerData);
+    return processMTProtoMessage(message);
 }
 
 SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
@@ -178,6 +174,27 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
     output << encryptedPackage;
     m_sendHelper->sendPackage(output.getData());
     return messageId;
+}
+
+bool BaseRpcLayer::processMsgContainer(const MTProto::Message &message)
+{
+    // https://core.telegram.org/mtproto/service_messages#simple-container
+    quint32 itemsCount;
+    MTProto::Stream stream(message.data);
+    stream >> itemsCount;
+    qCDebug(c_baseRpcLayerCategory) << "processContainer(stream)" << itemsCount;
+
+    bool processed = true;
+    for (quint32 i = 0; i < itemsCount; ++i) {
+        MTProto::MessageHeader header;
+        stream >> header;
+        QByteArray innerData = stream.readBytes(header.contentLength);
+        MTProto::Message innerMessage(header, innerData);
+
+        // There is no break and 'processed' variable goes last, so we process next messages even if something fails.
+        processed = processMTProtoMessage(innerMessage) && processed;
+    }
+    return processed;
 }
 
 } // Telegram namespace

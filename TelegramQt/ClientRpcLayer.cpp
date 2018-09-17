@@ -49,23 +49,23 @@ void RpcLayer::setSessionId(quint64 newSessionId)
     m_sessionId = newSessionId;
 }
 
-bool RpcLayer::processRpcQuery(const QByteArray &data, quint64 serverMessageId)
+bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 {
-    Q_UNUSED(serverMessageId)
-    CTelegramStream stream(data);
-    TLValue value;
-    stream >> value;
-    switch (value) {
+    TLValue value = message.firstValue();
+
+    switch (message.firstValue()) {
     case TLValue::NewSessionCreated:
-        processSessionCreated(stream);
+        processSessionCreated(message.skipTLValue());
         break;
     case TLValue::MsgContainer:
-        processContainer(stream);
+        processMsgContainer(message.skipTLValue());
         break;
     case TLValue::RpcResult:
         qCDebug(c_clientRpcLayerCategory) << "processRpcQuery(stream);";
     {
+        MTProto::Stream stream(message.data);
         quint64 messageId = 0;
+        stream >> value;
         stream >> messageId;
         PendingRpcOperation *op = m_operations.value(messageId);
         if (!op) {
@@ -86,7 +86,7 @@ bool RpcLayer::processRpcQuery(const QByteArray &data, quint64 serverMessageId)
         break;
     case TLValue::BadMsgNotification:
     case TLValue::BadServerSalt:
-        processIgnoredMessageNotification(stream);
+        processIgnoredMessageNotification(message.skipTLValue());
         break;
     case TLValue::GzipPacked:
         qCDebug(c_clientRpcLayerCategory) << "processGzipPackedRpcQuery(stream);";
@@ -95,14 +95,15 @@ bool RpcLayer::processRpcQuery(const QByteArray &data, quint64 serverMessageId)
         qCDebug(c_clientRpcLayerCategory) << "processPingPong(stream);";
         break;
     default:
-        qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "value:" << value;
+        qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "value:" << message.firstValue();
         break;
     }
     return false;
 }
 
-void RpcLayer::processSessionCreated(CTelegramStream &stream)
+void RpcLayer::processSessionCreated(const MTProto::Message &message)
 {
+    MTProto::Stream stream(message.data);
     // https://core.telegram.org/mtproto/service_messages#new-session-creation-notification
     quint64 firstMsgId;
     quint64 uniqueId;
@@ -117,33 +118,9 @@ void RpcLayer::processSessionCreated(CTelegramStream &stream)
                                       << serverSalt;
 }
 
-bool RpcLayer::processContainer(CTelegramStream &stream)
+void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message)
 {
-    // https://core.telegram.org/mtproto/service_messages#simple-container
-    quint32 itemsCount;
-    stream >> itemsCount;
-    qCDebug(c_clientRpcLayerCategory) << "processContainer(stream)" << itemsCount;
-
-    bool processed = true;
-
-    for (quint32 i = 0; i < itemsCount; ++i) {
-        quint64 id;
-        stream >> id;
-        //TODO: ack
-
-        quint32 seqNo;
-        stream >> seqNo;
-
-        quint32 size;
-        stream >> size;
-
-        processed = processRpcQuery(stream.readBytes(size), id) && processed;
-    }
-    return processed;
-}
-
-void RpcLayer::processIgnoredMessageNotification(CTelegramStream &stream)
-{
+    MTProto::Stream stream(message.data);
     qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(stream);";
     // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
     MTProto::IgnoredMessageNotification notification;

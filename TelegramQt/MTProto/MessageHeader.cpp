@@ -59,6 +59,13 @@ CRawStream &operator<<(CRawStream &stream, const FullMessageHeader &header)
     return stream;
 }
 
+Message Message::skipBytes(int bytes) const
+{
+    Message m = *this;
+    m.data = data.mid(bytes);
+    return m;
+}
+
 } // MTProto
 
 } // Telegram

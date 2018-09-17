@@ -78,33 +78,27 @@ void RpcLayer::setRpcFactories(const QVector<RpcOperationFactory *> &rpcFactorie
     m_operationFactories = rpcFactories;
 }
 
-bool RpcLayer::processRpcQuery(const QByteArray &data, quint64 messageId)
+bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 {
-    CTelegramStream stream(data);
-
-    RpcProcessingContext context(stream, messageId);
-    return processRpcQuery(context);
-}
-
-bool RpcLayer::processRpcQuery(RpcProcessingContext &context)
-{
-    TLValue requestValue;
-    context.inputStream() >> requestValue;
-    context.setReadCode(requestValue);
-
-    qWarning() << Q_FUNC_INFO << requestValue.toString();
+    TLValue requestValue = message.firstValue();
+    qDebug() << Q_FUNC_INFO << requestValue.toString();
 
     switch (requestValue) {
     case TLValue::InitConnection:
-        return processInitConnection(context);
+        return processInitConnection(message.skipTLValue());
     case TLValue::InvokeWithLayer:
-        return processInvokeWithLayer(context);
+        return processInvokeWithLayer(message.skipTLValue());
     case TLValue::MsgContainer:
-        return processMsgContainer(context);
+        return processMsgContainer(message.skipTLValue());
     default:
         break;
     }
 
+    MTProto::Stream stream(message.data);
+    RpcProcessingContext context(stream, message.messageId);
+
+    context.inputStream() >> requestValue;
+    context.setReadCode(requestValue);
     RpcOperation *op = nullptr;
     for (RpcOperationFactory *f : m_operationFactories) {
         op = f->processRpcCall(this, context);
@@ -120,8 +114,9 @@ bool RpcLayer::processRpcQuery(RpcProcessingContext &context)
     return true;
 }
 
-bool RpcLayer::processInitConnection(RpcProcessingContext &context)
+bool RpcLayer::processInitConnection(const MTProto::Message &message)
 {
+    MTProto::Stream stream(message.data);
     quint32 appId;
     QString deviceInfo;
     QString osInfo;
@@ -131,21 +126,21 @@ bool RpcLayer::processInitConnection(RpcProcessingContext &context)
     QString languagePack;
 #endif
     QString languageCode;
-    context.inputStream() >> appId;
-    context.inputStream() >> deviceInfo;
-    context.inputStream() >> osInfo;
-    context.inputStream() >> appVersion;
+    stream >> appId;
+    stream >> deviceInfo;
+    stream >> osInfo;
+    stream >> appVersion;
 #if TELEGRAMQT_LAYER >= 67
     if (activeLayer() >= 67) {
-        context.inputStream() >> systemLanguage;
+        stream >> systemLanguage;
         // If the pack is not registered on server, raise CONNECTION_LANG_PACK_INVALID RPC Error
-        context.inputStream() >> languagePack;
+        stream >> languagePack;
     }
 #endif
-    context.inputStream() >> languageCode;
+    stream >> languageCode;
 
     qDebug() << Q_FUNC_INFO << deviceInfo << osInfo << appId << appVersion << languageCode;
-    if (context.inputStream().error()) {
+    if (stream.error()) {
         qWarning() << Q_FUNC_INFO << "Invalid read!";
         return false;
     }
@@ -155,36 +150,21 @@ bool RpcLayer::processInitConnection(RpcProcessingContext &context)
     session()->languageCode = languageCode;
     session()->deviceInfo = deviceInfo;
     session()->osInfo = osInfo;
-    return processRpcQuery(context);
+    MTProto::Message innerMessage = message;
+    innerMessage.data = stream.readAll();
+    return processMTProtoMessage(innerMessage);
 }
 
-bool RpcLayer::processInvokeWithLayer(RpcProcessingContext &context)
+bool RpcLayer::processInvokeWithLayer(const MTProto::Message &message)
 {
-    quint32 layer = 0; // TLValue::CurrentLayer;
-    context.inputStream() >> layer;
+    MTProto::Stream stream(message.data);
+    quint32 layer = 0;
+    stream >> layer;
     qDebug() << Q_FUNC_INFO << "InvokeWithLayer" << layer;
     StackValue<quint32> layerValue(&m_invokeWithLayer, layer);
-    return processRpcQuery(context);
-}
-
-bool RpcLayer::processMsgContainer(RpcProcessingContext &context)
-{
-    // https://core.telegram.org/mtproto/service_messages#simple-container
-    quint32 itemsCount;
-    context.inputStream() >> itemsCount;
-
-    for (quint32 i = 0; i < itemsCount; ++i) {
-        quint64 id;
-        context.inputStream() >> id;
-        //todo: ack
-        quint32 seqNo;
-        context.inputStream() >> seqNo;
-        quint32 size;
-        context.inputStream() >> size;
-
-        processRpcQuery(context.inputStream().readBytes(size), id);
-    }
-    return true;
+    MTProto::Message innerMessage = message;
+    innerMessage.data = stream.readAll();
+    return processMTProtoMessage(innerMessage);
 }
 
 bool RpcLayer::sendRpcError(const RpcError &error, quint64 messageId)

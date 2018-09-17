@@ -23,12 +23,16 @@
 #include "crypto-aes.hpp"
 
 class CTelegramTransport;
+class CTelegramStream;
 
 namespace Telegram {
 
 namespace MTProto {
 
 struct FullMessageHeader;
+struct Message;
+
+using Stream = ::CTelegramStream;
 
 } // MTProto
 
@@ -47,7 +51,9 @@ public:
 
     bool processPackage(const QByteArray &package);
     virtual bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) = 0;
-    virtual bool processRpcQuery(const QByteArray &data, quint64 messageId) = 0;
+    virtual bool processMTProtoMessage(const MTProto::Message &message) = 0;
+
+    bool processMsgContainer(const MTProto::Message &message);
 
     virtual void onConnectionFailed() {}
 

@@ -38,13 +38,11 @@ public:
 
     void setRpcFactories(const QVector<RpcOperationFactory*> &rpcFactories);
 
-    bool processRpcQuery(const QByteArray &data, quint64 messageId) override;
-    bool processRpcQuery(RpcProcessingContext &context);
+    bool processMTProtoMessage(const MTProto::Message &message) override;
 
     // Low level
-    bool processInitConnection(RpcProcessingContext &context);
-    bool processInvokeWithLayer(RpcProcessingContext &context);
-    bool processMsgContainer(RpcProcessingContext &context);
+    bool processInitConnection(const MTProto::Message &message);
+    bool processInvokeWithLayer(const MTProto::Message &message);
 
     bool sendRpcError(const Telegram::RpcError &error, quint64 messageId);
     bool sendRpcReply(const QByteArray &reply, quint64 messageId);
