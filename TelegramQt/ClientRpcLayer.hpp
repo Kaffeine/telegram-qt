@@ -27,6 +27,12 @@ class CTelegramStream;
 
 namespace Telegram {
 
+namespace MTProto {
+
+class Message;
+
+}
+
 class AppInformation;
 
 namespace Client {
@@ -51,7 +57,7 @@ public:
     void processIgnoredMessageNotification(const MTProto::Message &message);
 
     quint64 sendRpc(PendingRpcOperation *operation);
-    bool resendRpcMessage(quint64 messageId);
+    bool resendIgnoredMessage(quint64 messageId);
 
     void onConnectionFailed() override;
 
@@ -68,6 +74,7 @@ protected:
     CAppInformation *m_appInfo = nullptr;
     AuthOperation *m_pendingAuthOperation = nullptr;
     QHash<quint64, PendingRpcOperation*> m_operations; // request message id, operation
+    QHash<quint64, MTProto::Message*> m_messages; // request message id to MTProto::Message
     quint64 m_sessionId = 0;
 };
 

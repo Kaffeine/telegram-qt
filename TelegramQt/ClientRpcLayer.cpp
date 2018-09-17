@@ -67,7 +67,8 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         quint64 messageId = 0;
         stream >> value;
         stream >> messageId;
-        PendingRpcOperation *op = m_operations.value(messageId);
+        PendingRpcOperation *op = m_operations.take(messageId);
+        delete m_messages.take(messageId);
         if (!op) {
             qCWarning(c_clientRpcLayerCategory) << "processRpcQuery():"
                                                 << "Unhandled RPC result for messageId"
@@ -134,7 +135,7 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
     case MTProto::IgnoredMessageNotification::IncorrectServerSalt:
         m_sendHelper->setServerSalt(m_receivedServerSalt);
         qCDebug(c_clientRpcLayerCategory) << "Local serverSalt fixed to" << m_receivedServerSalt;
-        resendRpcMessage(notification.messageId);
+        resendIgnoredMessage(notification.messageId);
         break;
     default:
         qCWarning(c_clientRpcLayerCategory) << "Unhandled error:" << notification.toString();
@@ -168,33 +169,42 @@ QByteArray RpcLayer::getVerificationKeyPart() const
 
 quint64 RpcLayer::sendRpc(PendingRpcOperation *operation)
 {
-    quint64 messageId = 0;
-    // We have to add InitConnection here because sendPackage() implementation is shared with server
-    if (m_sequenceNumber == 0) {
-        // sendPackage() adjusts sequence number
-        messageId = sendPackage(getInitConnection() + operation->requestData(), SendMode::Client);
-    } else {
-        messageId = sendPackage(operation->requestData(), SendMode::Client);
-    }
-    if (!messageId) {
-        return false;
-    }
     operation->setConnection(m_sendHelper->getConnection());
-    m_operations.insert(messageId, operation);
-    return messageId;
+
+    MTProto::Message *message = new MTProto::Message();
+    message->messageId = m_sendHelper->newMessageId(SendMode::Client);
+    message->sequenceNumber = m_contentRelatedMessages * 2 + 1;
+    ++m_contentRelatedMessages;
+
+    // We have to add InitConnection here because sendPackage() implementation is shared with server
+    if (message->sequenceNumber == 1) {
+        message->setData(getInitConnection() + operation->requestData());
+    } else {
+        message->setData(operation->requestData());
+    }
+    m_operations.insert(message->messageId, operation);
+    m_messages.insert(message->messageId, message);
+    sendPackage(*message);
+    return message->messageId;
 }
 
-bool RpcLayer::resendRpcMessage(quint64 messageId)
+bool RpcLayer::resendIgnoredMessage(quint64 messageId)
 {
-    PendingRpcOperation *operation = m_operations.value(messageId);
+    MTProto::Message *message = m_messages.take(messageId);
+    PendingRpcOperation *operation = m_operations.take(messageId);
     if (!operation) {
-        qCWarning(c_clientRpcLayerCategory) << "Unable to find the message to resend" << messageId;
+        qCCritical(c_clientRpcLayerCategory) << "Unable to find the message to resend" << messageId;
+        delete message;
         return false;
     }
     qCDebug(c_clientRpcLayerCategory) << "Resend message"
                                       << messageId
-                                      << TLValue::firstFromArray(operation->requestData());
-    return sendRpc(operation);
+                                      << message->firstValue();
+    message->messageId = m_sendHelper->newMessageId(SendMode::Client);
+    m_operations.insert(message->messageId, operation);
+    m_messages.insert(message->messageId, message);
+    sendPackage(*message);
+    return message->messageId;
 }
 
 void RpcLayer::onConnectionFailed()
@@ -205,6 +215,8 @@ void RpcLayer::onConnectionFailed()
         }
     }
     m_operations.clear();
+    qDeleteAll(m_messages);
+    m_messages.clear();
 }
 
 QByteArray RpcLayer::getInitConnection() const
