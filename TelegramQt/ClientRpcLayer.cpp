@@ -131,10 +131,32 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
     MTProto::IgnoredMessageNotification notification;
     stream >> notification;
 
+    MTProto::Message *m = m_messages.value(notification.messageId);
+    if (!m) {
+        qCWarning(c_clientRpcLayerCategory) << "Received 'ignored' message notification for unknown message id";
+        return;
+    }
+
     switch (notification.errorCode) {
     case MTProto::IgnoredMessageNotification::IncorrectServerSalt:
         m_sendHelper->setServerSalt(m_receivedServerSalt);
         qCDebug(c_clientRpcLayerCategory) << "Local serverSalt fixed to" << m_receivedServerSalt;
+        resendIgnoredMessage(notification.messageId);
+        break;
+    case MTProto::IgnoredMessageNotification::MessageIdTooOld:
+        resendIgnoredMessage(notification.messageId);
+        break;
+    case MTProto::IgnoredMessageNotification::SequenceNumberTooHigh:
+        m->sequenceNumber -= 2;
+        resendIgnoredMessage(notification.messageId);
+        break;
+    case MTProto::IgnoredMessageNotification::SequenceNumberTooLow:
+        m->sequenceNumber += 2;
+        resendIgnoredMessage(notification.messageId);
+        break;
+    case MTProto::IgnoredMessageNotification::IncorrectTwoLowerOrderMessageIdBits:
+        qCCritical(c_clientRpcLayerCategory) << "How we ever managed to mess with lower messageId bytes?!";
+        // Just resend the message. We regenerate message id, so it can help.
         resendIgnoredMessage(notification.messageId);
         break;
     default:
