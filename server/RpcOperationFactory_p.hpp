@@ -20,7 +20,6 @@ RpcOperation *processRpcCallImpl(RpcLayer *layer, RpcProcessingContext &context)
     qDebug() << Q_FUNC_INFO << "Process" << context.readCode().toString() << "with messageId" << context.requestId();
     T *operation = new T(layer);
     operation->setRequestId(context.requestId());
-    operation->setLayer(context.layer());
     (operation->*method)(context);
     return operation;
 }

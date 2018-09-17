@@ -3,6 +3,7 @@
 
 #include "RpcLayer.hpp"
 
+#include <QStack>
 #include <QVector>
 
 class CTelegramStream;
@@ -50,6 +51,8 @@ public:
 
     static const char *gzipPackMessage();
 
+    quint32 activeLayer() const;
+
 protected:
     bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) override;
     SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
@@ -60,6 +63,7 @@ protected:
 
     Session *m_session = nullptr;
     ServerApi *m_api = nullptr;
+    QStack<quint32> m_invokeWithLayer;
 
     QVector<RpcOperationFactory*> m_operationFactories;
 };

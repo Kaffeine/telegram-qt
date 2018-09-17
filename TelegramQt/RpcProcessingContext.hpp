@@ -49,9 +49,6 @@ public:
     // Extra API
     QString userNameFromRequest() const;
 
-    quint32 layer() const { return m_layer; }
-    void setLayer(quint32 layer) { m_layer = layer; }
-
 protected:
     CTelegramStream &m_inputStream;
     quint64 m_id;
@@ -59,7 +56,6 @@ protected:
     bool m_succeed;
     TLValue m_code;
     TLValue m_requestMethodId;
-    quint32 m_layer = 0;
 };
 
 //template<typename T>

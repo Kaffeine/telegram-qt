@@ -23,7 +23,6 @@ public:
     explicit RpcOperation(RpcLayer *rpcLayer);
 
     void setRequestId(quint64 messageId);
-    void setLayer(quint32 layer) { m_layer = layer; }
 
 //    void sendReply(const QByteArray &reply);
 

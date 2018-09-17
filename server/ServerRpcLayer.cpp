@@ -17,6 +17,23 @@
 #include "CTelegramStream.hpp"
 #include <QLoggingCategory>
 
+template <typename T>
+class StackValue
+{
+public:
+    StackValue(QStack<T> *stack, const T value) :
+        m_stack(stack)
+    {
+        m_stack->push(value);
+    }
+    ~StackValue()
+    {
+        m_stack->pop();
+    }
+private:
+    QStack<T> *m_stack;
+};
+
 namespace Telegram {
 
 namespace Server {
@@ -119,7 +136,7 @@ bool RpcLayer::processInitConnection(RpcProcessingContext &context)
     context.inputStream() >> osInfo;
     context.inputStream() >> appVersion;
 #if TELEGRAMQT_LAYER >= 67
-    if (context.layer() >= 67) {
+    if (activeLayer() >= 67) {
         context.inputStream() >> systemLanguage;
         // If the pack is not registered on server, raise CONNECTION_LANG_PACK_INVALID RPC Error
         context.inputStream() >> languagePack;
@@ -132,7 +149,7 @@ bool RpcLayer::processInitConnection(RpcProcessingContext &context)
         qWarning() << Q_FUNC_INFO << "Invalid read!";
         return false;
     }
-    session()->setLayer(context.layer());
+    session()->setLayer(activeLayer());
     session()->appId = appId;
     session()->appVersion = appVersion;
     session()->languageCode = languageCode;
@@ -146,7 +163,7 @@ bool RpcLayer::processInvokeWithLayer(RpcProcessingContext &context)
     quint32 layer = 0; // TLValue::CurrentLayer;
     context.inputStream() >> layer;
     qDebug() << Q_FUNC_INFO << "InvokeWithLayer" << layer;
-    context.setLayer(layer);
+    StackValue<quint32> layerValue(&m_invokeWithLayer, layer);
     return processRpcQuery(context);
 }
 
@@ -209,6 +226,18 @@ bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
 const char *RpcLayer::gzipPackMessage()
 {
     return "Server: gzip the answer for message";
+}
+
+quint32 RpcLayer::activeLayer() const
+{
+    if (m_invokeWithLayer.isEmpty()) {
+        if (m_session) {
+            return m_session->layer();
+        }
+        qCritical() << Q_FUNC_INFO << "Unable to get active layer (version)";
+        return 0;
+    }
+    return m_invokeWithLayer.top();
 }
 
 bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
