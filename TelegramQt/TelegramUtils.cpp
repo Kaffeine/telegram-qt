@@ -123,7 +123,7 @@ TLValue::Value publicMessageActionToTelegramAction(TelegramNamespace::MessageAct
 quint64 formatTimeStamp(qint64 timeInMs)
 {
     static const quint64 maxMsecValue = (quint64(1) << 32) - 1;
-    const quint64 secs = timeInMs / 1000;
+    const quint64 secs = static_cast<quint64>(timeInMs) / 1000ul;
     const quint64 msecs = maxMsecValue / 1000 * (timeInMs % 1000);
     return (secs << 32) + msecs;
 }

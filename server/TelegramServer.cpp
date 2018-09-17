@@ -29,8 +29,8 @@
 #include "UsersOperationFactory.hpp"
 // End of generated RPC Operation Factory includes
 
-Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtDebugMsg)
-Q_LOGGING_CATEGORY(loggingCategoryServerApi, "telegram.server.api", QtDebugMsg)
+Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtWarningMsg)
+Q_LOGGING_CATEGORY(loggingCategoryServerApi, "telegram.server.api", QtWarningMsg)
 
 namespace Telegram {
 

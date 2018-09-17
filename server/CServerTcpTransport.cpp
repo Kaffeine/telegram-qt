@@ -11,7 +11,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_loggingServerTcpTransport, "telegram.server.transport.tcp", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_loggingServerTcpTransport, "telegram.server.transport.tcp", QtWarningMsg)
 
 namespace Telegram {
 

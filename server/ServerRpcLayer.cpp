@@ -237,7 +237,7 @@ bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &h
 
     if (m_sendHelper->serverSalt() != header.serverSalt) {
         qDebug() << Q_FUNC_INFO << "Received different server salt:"
-                 << header.serverSalt << "(remote) vs" << m_sendHelper->serverSalt() << "(local)";
+                 << header.serverSalt << "(received) vs" << m_sendHelper->serverSalt() << "(local)";
         MTProto::IgnoredMessageNotification messageNotification;
         messageNotification.errorCode = MTProto::IgnoredMessageNotification::IncorrectServerSalt;
         messageNotification.seqNo = header.sequenceNumber;

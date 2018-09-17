@@ -30,7 +30,7 @@ using namespace Telegram;
 #define Q_FALLTHROUGH() (void)0
 #endif
 
-Q_LOGGING_CATEGORY(c_loggingTcpTransport, "telegram.transport.tcp", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_loggingTcpTransport, "telegram.transport.tcp", QtWarningMsg)
 
 static const quint32 tcpTimeout = 15 * 1000;
 
@@ -199,7 +199,8 @@ void CTcpTransport::onReadyRead()
                 lengthCharPointer[1] = nextThree.at(1);
                 lengthCharPointer[2] = nextThree.at(2);
             } else {
-                qCWarning(c_loggingTcpTransport()) << "Invalid package size data!";
+                qCWarning(c_loggingTcpTransport) << "Invalid package size byte" << hex << showbase << length_t1;
+                qCWarning(c_loggingTcpTransport) << "Buffer:" << m_readBuffer.toHex();
             }
             m_expectedLength *= 4;
         }

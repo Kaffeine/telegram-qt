@@ -69,7 +69,9 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         stream >> messageId;
         PendingRpcOperation *op = m_operations.value(messageId);
         if (!op) {
-            qCWarning(c_clientRpcLayerCategory) << "processRpcQuery():" << "Unhandled operation" << messageId;
+            qCWarning(c_clientRpcLayerCategory) << "processRpcQuery():"
+                                                << "Unhandled RPC result for messageId"
+                                                << hex << showbase << messageId;
             return false;
         }
         op->setFinishedWithReplyData(stream.readAll());
@@ -78,7 +80,9 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         qCDebug(c_clientRpcLayerCategory) << "Client: Answer for message" << messageId << "op:" << op;
         qCDebug(c_clientRpcLayerCategory).noquote() << "Client: RPC Reply bytes:" << op->replyData().size() << op->replyData().toHex();
 #endif
-        qCDebug(c_clientRpcLayerCategory) << "processRpcQuery():" << "Set finished op" << op << "messageId:" << messageId << "error:" << op->errorDetails();
+        qCDebug(c_clientRpcLayerCategory) << "processRpcQuery():" << "Set finished op" << op
+                                          << "messageId:" << hex << showbase << messageId
+                                          << "error:" << op->errorDetails();
     }
         break;
     case TLValue::MsgsAck:

@@ -110,10 +110,7 @@ ConnectOperation *Connection::connectToDc()
 {
     if (m_status != Status::Disconnected) {
         const QString text = QStringLiteral("Connection is already in progress");
-        return PendingOperation::failOperation<ConnectOperation>({
-                                                                     { QStringLiteral("text"), text }
-                                                                 },
-                                                                 this);
+        return PendingOperation::failOperation<ConnectOperation>(text, this);
     }
 
 #ifdef DEVELOPER_BUILD
