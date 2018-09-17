@@ -33,6 +33,8 @@
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(c_baseRpcLayerCategory, "telegram.base.rpclayer", QtWarningMsg)
+Q_LOGGING_CATEGORY(c_baseRpcLayerCategoryIn, "telegram.base.rpclayer.in", QtWarningMsg)
+Q_LOGGING_CATEGORY(c_baseRpcLayerCategoryOut, "telegram.base.rpclayer.out", QtWarningMsg)
 
 namespace Telegram {
 
@@ -51,30 +53,42 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     if (package.size() < 24) {
         return false;
     }
-    qCDebug(c_baseRpcLayerCategory) << metaObject()->className()<< "processPackage(): Read" << package.length() << "bytes:";
-#ifdef BASE_RPC_IO_DEBUG
-    qCDebug(c_baseRpcLayerCategory) << package.toHex();
-#endif
+    qCDebug(c_baseRpcLayerCategoryIn) << metaObject()->className()
+                                      << "processPackage(): Read" << package.length() << "bytes:";
     // Encrypted Message
+    const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
     const QByteArray messageKey = package.mid(8, 16);
-    const QByteArray data = package.mid(24);
+    const QByteArray encryptedData = package.mid(24);
     const SAesKey key = getDecryptionAesKey(messageKey);
-    const QByteArray decryptedData = Utils::aesDecrypt(data, key).left(data.length());
+    const QByteArray decryptedData = Utils::aesDecrypt(encryptedData, key).left(encryptedData.length());
 #ifdef BASE_RPC_IO_DEBUG
-    qCDebug(c_baseRpcLayerCategory) << "messageKey:" << messageKey.toHex();
-    qCDebug(c_baseRpcLayerCategory) << "data:" << data.toHex();
-    qCDebug(c_baseRpcLayerCategory) << "decryptedData:" << decryptedData.toHex();
+    qCDebug(c_baseRpcLayerCategoryIn) << "authKeyId:" << hex << showbase << *authKeyIdBytes;
+    qCDebug(c_baseRpcLayerCategoryIn) << "messageKey:" << messageKey.toHex();
+    qCDebug(c_baseRpcLayerCategoryIn) << "encryptedData:" << encryptedData.toHex();
+    qCDebug(c_baseRpcLayerCategoryIn) << "decryptedData:" << decryptedData.toHex();
 #endif
     CRawStream decryptedStream(decryptedData);
+
     MTProto::FullMessageHeader messageHeader;
     decryptedStream >> messageHeader;
+
+#ifdef DEVELOPER_BUILD
+    qCDebug(c_baseRpcLayerCategoryIn) << "RpcLayer::processPackage():";
+    qCDebug(c_baseRpcLayerCategoryIn) << "salt:" << messageHeader.serverSalt;
+    qCDebug(c_baseRpcLayerCategoryIn) << "sessionId:" << messageHeader.sessionId;
+    qCDebug(c_baseRpcLayerCategoryIn) << "messageId:" << messageHeader.messageId;
+    qCDebug(c_baseRpcLayerCategoryIn) << "sequenceNumber:" << messageHeader.sequenceNumber;
+    qCDebug(c_baseRpcLayerCategoryIn) << "contentLength:" << messageHeader.contentLength;
+#endif
 
     if (!processDecryptedMessageHeader(messageHeader)) {
         return false;
     }
 
     if (int(messageHeader.contentLength) > decryptedStream.bytesAvailable()) {
-        qCDebug(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Expected more data than actually available.";
+        qCWarning(c_baseRpcLayerCategoryIn) << Q_FUNC_INFO << "Expected more data than actually available."
+                                            << messageHeader.contentLength << "(expected)"
+                                            << decryptedStream.bytesAvailable() << "(actual)";
         return false;
     }
 #ifdef USE_MTProto_V1
@@ -85,11 +99,14 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
 #endif
 
     if (messageKey != expectedMessageKey) {
-        qCWarning(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Invalid message key";
+        qCWarning(c_baseRpcLayerCategoryIn) << Q_FUNC_INFO << "Invalid message key";
         return false;
     }
 
     QByteArray innerData = decryptedStream.readBytes(messageHeader.contentLength);
+    if (decryptedStream.error()) {
+        return false;
+    }
     MTProto::Message message(messageHeader, innerData);
     return processMTProtoMessage(message);
 }
@@ -115,30 +132,34 @@ SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
     return SAesKey(key, iv);
 }
 
-quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
+bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
 {
     if (!m_sendHelper->authId()) {
-        qCCritical(c_baseRpcLayerCategory) << Q_FUNC_INFO << "Auth key is not set!";
+        qCCritical(c_baseRpcLayerCategoryOut) << Q_FUNC_INFO << "Auth key is not set!";
         return 0;
     }
     QByteArray encryptedPackage;
     QByteArray messageKey;
-    quint64 messageId = m_sendHelper->newMessageId(mode);
-    qCDebug(c_baseRpcLayerCategory) << "sendPackage(" << static_cast<int>(mode) << "):"
-                                    << "Send message" << TLValue::firstFromArray(buffer) << "with id" << messageId;
     constexpr int c_alignment = 16;
     constexpr int c_v2_minimumPadding = 12;
     {
-        m_sequenceNumber = m_contentRelatedMessages * 2 + 1;
-        ++m_contentRelatedMessages;
         CRawStream stream(CRawStream::WriteOnly);
 
-        stream << m_sendHelper->serverSalt();
-        stream << sessionId();
-        stream << messageId;
-        stream << m_sequenceNumber;
-        stream << static_cast<quint32>(buffer.length());
-        stream << buffer;
+        const MTProto::FullMessageHeader messageHeader(message,
+                                                       m_sendHelper->serverSalt(),
+                                                       sessionId());
+        stream << messageHeader;
+
+#ifdef DEVELOPER_BUILD
+        qCDebug(c_baseRpcLayerCategoryOut) << "RpcLayer::sendPackage():";
+        qCDebug(c_baseRpcLayerCategoryOut) << "salt:" << messageHeader.serverSalt;
+        qCDebug(c_baseRpcLayerCategoryOut) << "sessionId:" << messageHeader.sessionId;
+        qCDebug(c_baseRpcLayerCategoryOut) << "messageId:" << messageHeader.messageId;
+        qCDebug(c_baseRpcLayerCategoryOut) << "sequenceNumber:" << messageHeader.sequenceNumber;
+        qCDebug(c_baseRpcLayerCategoryOut) << "contentLength:" << messageHeader.contentLength;
+#endif
+
+        stream.writeBytes(message.data);
 
         int packageLength = stream.getData().length();
         int padding = AbridgedLength::paddingForAlignment(c_alignment, packageLength);
@@ -161,11 +182,18 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
             stream << randomPadding;
             packageLength += padding;
         }
-        const QByteArray data = stream.getData();
-        messageKey = Utils::sha256(getEncryptionKeyPart() + data).mid(8, 16);
+        const QByteArray decryptedData = stream.getData();
+        messageKey = Utils::sha256(getEncryptionKeyPart() + decryptedData).mid(8, 16);
 #endif
         const SAesKey key = getEncryptionAesKey(messageKey);
-        encryptedPackage = Utils::aesEncrypt(data, key).left(packageLength);
+        encryptedPackage = Utils::aesEncrypt(decryptedData, key).left(packageLength);
+
+#ifdef BASE_RPC_IO_DEBUG
+        qCDebug(c_baseRpcLayerCategoryOut) << "authKeyId:" << hex << showbase << m_sendHelper->authId();
+        qCDebug(c_baseRpcLayerCategoryOut) << "messageKey:" << messageKey.toHex();
+        qCDebug(c_baseRpcLayerCategoryOut) << "encryptedData:" << encryptedPackage.toHex();
+        qCDebug(c_baseRpcLayerCategoryOut) << "decryptedData:" << decryptedData.toHex();
+#endif
     }
 
     CRawStream output(CRawStream::WriteOnly);
@@ -173,7 +201,45 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
     output << messageKey;
     output << encryptedPackage;
     m_sendHelper->sendPackage(output.getData());
-    return messageId;
+    return true;
+}
+
+static QLatin1String getModeText(SendMode mode)
+{
+    switch (mode) {
+    case SendMode::Client:
+        return QLatin1String("Client");
+    case SendMode::ServerInitiative:
+        return QLatin1String("ServerInitiative");
+    case SendMode::ServerReply:
+        return QLatin1String("ServerReply");
+    }
+    Q_UNREACHABLE();
+    return QLatin1String();
+}
+
+quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
+{
+    MTProto::Message message;
+    message.setData(buffer);
+
+    if (!m_sendHelper->authId()) {
+        qCCritical(c_baseRpcLayerCategoryOut) << Q_FUNC_INFO << "Auth key is not set!";
+        return 0;
+    }
+    message.messageId = m_sendHelper->newMessageId(mode);
+    message.sequenceNumber = m_contentRelatedMessages * 2 + 1;
+    ++m_contentRelatedMessages;
+
+    qCDebug(c_baseRpcLayerCategoryOut)
+            << "sendPackage(" << getModeText(mode) << "):"
+            << "message" << message.firstValue()
+            << "with id" << message.messageId;
+
+    if (!sendPackage(message)) {
+        return 0;
+    }
+    return message.messageId;
 }
 
 bool BaseRpcLayer::processMsgContainer(const MTProto::Message &message)
@@ -182,7 +248,7 @@ bool BaseRpcLayer::processMsgContainer(const MTProto::Message &message)
     quint32 itemsCount;
     MTProto::Stream stream(message.data);
     stream >> itemsCount;
-    qCDebug(c_baseRpcLayerCategory) << "processContainer(stream)" << itemsCount;
+    qCDebug(c_baseRpcLayerCategoryIn) << "processContainer(stream)" << itemsCount;
 
     bool processed = true;
     for (quint32 i = 0; i < itemsCount; ++i) {

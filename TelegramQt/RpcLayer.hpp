@@ -67,6 +67,7 @@ protected:
     virtual QByteArray getEncryptionKeyPart() const = 0;
     virtual QByteArray getVerificationKeyPart() const = 0;
 
+    bool sendPackage(const MTProto::Message &message);
     quint64 sendPackage(const QByteArray &buffer, SendMode mode);
 
     BaseSendPackageHelper *m_sendHelper = nullptr;
