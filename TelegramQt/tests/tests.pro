@@ -7,3 +7,4 @@ SUBDIRS += tst_TelegramRemoteFile
 #SUBDIRS += tst_CTelegramDispatcher
 SUBDIRS += tst_utils
 SUBDIRS += tst_RpcError
+SUBDIRS += tst_RpcLayer
