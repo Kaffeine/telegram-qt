@@ -50,7 +50,7 @@ public:
     void processSessionCreated(const MTProto::Message &message);
     void processIgnoredMessageNotification(const MTProto::Message &message);
 
-    bool sendRpc(PendingRpcOperation *operation);
+    quint64 sendRpc(PendingRpcOperation *operation);
     bool resendRpcMessage(quint64 messageId);
 
     void onConnectionFailed() override;

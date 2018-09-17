@@ -166,7 +166,7 @@ QByteArray RpcLayer::getVerificationKeyPart() const
     return m_sendHelper->getServerKeyPart();
 }
 
-bool RpcLayer::sendRpc(PendingRpcOperation *operation)
+quint64 RpcLayer::sendRpc(PendingRpcOperation *operation)
 {
     quint64 messageId = 0;
     // We have to add InitConnection here because sendPackage() implementation is shared with server
@@ -179,10 +179,9 @@ bool RpcLayer::sendRpc(PendingRpcOperation *operation)
     if (!messageId) {
         return false;
     }
-    operation->setRequestId(messageId);
     operation->setConnection(m_sendHelper->getConnection());
     m_operations.insert(messageId, operation);
-    return true;
+    return messageId;
 }
 
 bool RpcLayer::resendRpcMessage(quint64 messageId)

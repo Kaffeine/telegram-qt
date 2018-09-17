@@ -160,8 +160,8 @@ void Connection::processSeeOthers(PendingRpcOperation *operation)
         m_queuedOperations.append(operation);
         return;
     }
-    rpcLayer()->sendRpc(operation);
-    qCDebug(c_clientConnectionCategory) << "processSeeOthers():" << TLValue::firstFromArray(operation->requestData()) << "sent with new id" << operation->requestId();
+    quint64 messageId = rpcLayer()->sendRpc(operation);
+    qCDebug(c_clientConnectionCategory) << "processSeeOthers():" << TLValue::firstFromArray(operation->requestData()) << "sent with new id" << messageId;
 }
 
 void Connection::onClientDhStateChanged()
@@ -173,8 +173,8 @@ void Connection::onClientDhStateChanged()
         }
         if (!m_queuedOperations.isEmpty()) {
             for (PendingRpcOperation *operation : m_queuedOperations) {
-                rpcLayer()->sendRpc(operation);
-                qCDebug(c_clientConnectionCategory) << "Dequeue operation" << TLValue::firstFromArray(operation->requestData()) << "with new id" << operation->requestId();
+                quint64 messageId = rpcLayer()->sendRpc(operation);
+                qCDebug(c_clientConnectionCategory) << "Dequeue operation" << TLValue::firstFromArray(operation->requestData()) << "with new id" << messageId;
             }
             m_queuedOperations.clear();
         }

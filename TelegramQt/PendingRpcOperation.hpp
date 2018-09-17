@@ -22,9 +22,6 @@ public:
 
     RpcError *rpcError() const { return m_error; }
 
-    quint64 requestId() const { return m_requestId; } // RPC message id
-    void setRequestId(quint64 id) { m_requestId = id; }
-
     BaseConnection *getConnection() const { return m_connection; }
     void setConnection(BaseConnection *connection) { m_connection = connection; }
 
@@ -32,7 +29,6 @@ Q_SIGNALS:
     void finished(PendingRpcOperation *operation);
 
 protected:
-    quint64 m_requestId;
     QByteArray m_replyData;
     QByteArray m_requestData;
     RpcError *m_error = nullptr;

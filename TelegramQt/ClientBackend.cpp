@@ -291,7 +291,7 @@ void Backend::onGetDcConfigurationFinished(PendingOperation *operation)
 void Backend::processSeeOthers(PendingRpcOperation *operation)
 {
     qWarning() << Q_FUNC_INFO << "operation"
-               << TLValue::firstFromArray(operation->requestData()) << operation->requestId();
+               << TLValue::firstFromArray(operation->requestData());
     if (!getDcConfig()->isFinished()) {
         qWarning() << Q_FUNC_INFO << "Queued";
         m_queuedRedirectedOperations.append(operation);
@@ -303,7 +303,7 @@ void Backend::processSeeOthers(PendingRpcOperation *operation)
 void Backend::routeOperation(PendingRpcOperation *operation)
 {
     qWarning() << Q_FUNC_INFO << "operation"
-               << TLValue::firstFromArray(operation->requestData()) << operation->requestId();
+               << TLValue::firstFromArray(operation->requestData());
     const quint32 dcId = operation->rpcError()->argument;
     operation->clearResult();
     ConnectionSpec spec(dcId);
@@ -319,7 +319,7 @@ void Backend::routeOperation(PendingRpcOperation *operation)
     Connection *connection = ensureConnection(spec);
     if (!connection) {
         qWarning() << Q_FUNC_INFO << "Unable to get connection for operation"
-                   << operation->requestId() << "dc spec" << spec.dcId << spec.flags;
+                   << TLValue::firstFromArray(operation->requestData()) << "dc spec" << spec.dcId << spec.flags;
         operation->deleteLater();
         return;
     }
