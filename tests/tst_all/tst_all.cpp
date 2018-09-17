@@ -276,6 +276,10 @@ void tst_all::testClientConnection()
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
     clientSettings.setPreferedSessionType(sessionType);
 
+    QTest::ignoreMessage(QtDebugMsg,
+                         QRegularExpression(QString::fromLatin1(Server::RpcLayer::gzipPackMessage())
+                                            + QStringLiteral(" .* \"Config\"")));
+
     // --- Sign in ---
     Client::AuthOperation *signInOperation = client.signIn();
     signInOperation->setPhoneNumber(userData.phoneNumber);
