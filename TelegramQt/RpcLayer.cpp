@@ -137,6 +137,17 @@ quint32 BaseRpcLayer::contentRelatedMessagesNumber() const
     return m_contentRelatedMessages;
 }
 
+quint32 BaseRpcLayer::getNextMessageSequenceNumber(MessageType messageType)
+{
+    // https://core.telegram.org/mtproto/description#message-sequence-number-msg-seqno
+    quint32 newNumber = m_contentRelatedMessages * 2;
+    if (messageType == ContentRelatedMessage) {
+        newNumber++;
+        ++m_contentRelatedMessages;
+    }
+    return newNumber;
+}
+
 bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
 {
     if (!m_sendHelper->authId()) {
@@ -233,8 +244,7 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
         return 0;
     }
     message.messageId = m_sendHelper->newMessageId(mode);
-    message.sequenceNumber = m_contentRelatedMessages * 2 + 1;
-    ++m_contentRelatedMessages;
+    message.sequenceNumber = getNextMessageSequenceNumber(ContentRelatedMessage);
 
     qCDebug(c_baseRpcLayerCategoryOut)
             << "sendPackage(" << getModeText(mode) << "):"

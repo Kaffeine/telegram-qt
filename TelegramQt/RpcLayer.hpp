@@ -43,6 +43,10 @@ class BaseRpcLayer : public QObject
 {
     Q_OBJECT
 public:
+    enum MessageType {
+        ContentRelatedMessage,
+        NotContentRelatedMessage
+    };
     explicit BaseRpcLayer(QObject *parent = nullptr);
 
     virtual quint64 sessionId() const = 0;
@@ -66,6 +70,7 @@ protected:
 
     virtual QByteArray getEncryptionKeyPart() const = 0;
     virtual QByteArray getVerificationKeyPart() const = 0;
+    quint32 getNextMessageSequenceNumber(MessageType messageType);
 
     bool sendPackage(const MTProto::Message &message);
     quint64 sendPackage(const QByteArray &buffer, SendMode mode);
