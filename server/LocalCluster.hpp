@@ -28,8 +28,17 @@ namespace Telegram {
 
 namespace Server {
 
+namespace Authorization {
+
+class Provider;
+
+} // Authorization namespace
+
 class Server;
+class Session;
+class ServerApi;
 class User;
+class RemoteUser;
 
 class LocalCluster : public QObject
 {
@@ -38,6 +47,8 @@ public:
     explicit LocalCluster(QObject *parent = nullptr);
     using ServerConstructor = Server *(*)(QObject *parent);
     void setServerContructor(ServerConstructor constructor);
+
+    void setAuthorizationProvider(Authorization::Provider *provider);
 
     DcConfiguration serverConfiguration() { return m_serverConfiguration; }
     void setServerConfiguration(const DcConfiguration &config);
@@ -57,6 +68,7 @@ protected:
     QVector<Server*> m_serverInstances;
     DcConfiguration m_serverConfiguration;
     RsaKey m_key;
+    Authorization::Provider *m_authProvider = nullptr;
 };
 
 } // Server

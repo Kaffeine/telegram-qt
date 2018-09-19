@@ -27,6 +27,7 @@
 
 #include "Operations/ClientAuthOperation.hpp"
 
+#include "DefaultAuthorizationProvider.hpp"
 #include "TelegramServer.hpp"
 #include "TelegramServerClient.hpp"
 #include "TelegramServerUser.hpp"
@@ -44,6 +45,34 @@
 #include "TestUtils.hpp"
 
 #define CLIENT_WORKS
+
+namespace Telegram {
+
+namespace Test {
+
+class AuthProvider : public Server::Authorization::DefaultProvider
+{
+    Q_OBJECT
+public:
+    using BaseClass = Server::Authorization::DefaultProvider;
+    AuthProvider() = default;
+
+signals:
+    void codeSent(const QString &identifier, const QString &code);
+protected:
+    Server::Authorization::Code generateCode(Server::Session *session, const QString &identifier) override;
+};
+
+Server::Authorization::Code AuthProvider::generateCode(Server::Session *session, const QString &identifier)
+{
+    Server::Authorization::Code code = BaseClass::generateCode(session, identifier);
+    emit codeSent(identifier, code.code);
+    return code;
+}
+
+} // Test namespace
+
+} // Telegram namespace
 
 using namespace Telegram;
 
@@ -121,27 +150,6 @@ Telegram::Server::User *tryAddUser(Telegram::Server::LocalCluster *cluster, cons
     return u;
 }
 
-class TestServer : public Server::Server
-{
-    Q_OBJECT
-public:
-    explicit TestServer(QObject *parent = nullptr)
-        : Server(parent)
-    {
-    }
-
-    QByteArray sendAppCode(const QString &identifier) override
-    {
-        const QByteArray hash = Server::Server::sendAppCode(identifier);
-        const Telegram::Server::AuthCode c = m_sentCodeMap.value(identifier);
-        emit authCodeSent(identifier, c.code);
-        return hash;
-    }
-
-signals:
-    void authCodeSent(const QString &identifier, const QString &code);
-};
-
 static const UserData c_userWithPassword = []() {
     UserData userData;
     userData.dcId = 1;
@@ -163,10 +171,6 @@ static const Telegram::DcConfiguration c_localDcConfiguration = []() {
     configuration.dcOptions = c_localDcOptions;
     return configuration;
 }();
-
-static const Telegram::Server::LocalCluster::ServerConstructor c_testServerConstructor = [](QObject *parent) -> Telegram::Server::Server* {
-    return new TestServer(parent);
-};
 
 class tst_all : public QObject
 {
@@ -247,13 +251,14 @@ void tst_all::testClientConnection()
     const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
     QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
 
+    Test::AuthProvider authProvider;
     Telegram::Server::LocalCluster cluster;
-    cluster.setServerContructor(c_testServerConstructor);
+    cluster.setAuthorizationProvider(&authProvider);
     cluster.setServerPrivateRsaKey(privateKey);
     cluster.setServerConfiguration(c_localDcConfiguration);
     QVERIFY(cluster.start());
 
-    TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(userData.dcId));
+    Server::Server *server = qobject_cast<Server::Server*>(cluster.getServerInstance(userData.dcId));
     QVERIFY(server);
 
     Server::User *user = tryAddUser(&cluster, userData);
@@ -274,7 +279,7 @@ void tst_all::testClientConnection()
     // --- Sign in ---
     Client::AuthOperation *signInOperation = client.signIn();
     signInOperation->setPhoneNumber(userData.phoneNumber);
-    QSignalSpy serverAuthCodeSpy(server, &TestServer::authCodeSent);
+    QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
     TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
@@ -329,13 +334,14 @@ void tst_all::testCheckInSignIn()
     const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
     QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
 
+    Test::AuthProvider authProvider;
     Telegram::Server::LocalCluster cluster;
-    cluster.setServerContructor(c_testServerConstructor);
+    cluster.setAuthorizationProvider(&authProvider);
     cluster.setServerPrivateRsaKey(privateKey);
     cluster.setServerConfiguration(c_localDcConfiguration);
     QVERIFY(cluster.start());
 
-    TestServer *server = qobject_cast<TestServer*>(cluster.getServerInstance(userData.dcId));
+    Server::Server *server = qobject_cast<Server::Server*>(cluster.getServerInstance(userData.dcId));
     QVERIFY(server);
 
     Server::User *user = tryAddUser(&cluster, userData);
@@ -373,7 +379,7 @@ void tst_all::testCheckInSignIn()
     Client::AuthOperation *signInOperation = client.signIn();
 
     signInOperation->setPhoneNumber(userData.phoneNumber);
-    QSignalSpy serverAuthCodeSpy(server, &TestServer::authCodeSent);
+    QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
     // Check whether the server configuration is synced to the client data storage
     TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);

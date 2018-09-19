@@ -5,6 +5,8 @@
 // TODO: Instead of this include, add a generated cpp with all needed template instances
 #include "ServerRpcOperation_p.hpp"
 
+#include "AuthorizationProvider.hpp"
+
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
 #include "Session.hpp"
@@ -314,27 +316,54 @@ void AuthRpcOperation::runResetAuthorizations()
 void AuthRpcOperation::runSendCode()
 {
     qDebug() << Q_FUNC_INFO;
+    if (m_sendCode.phoneNumber.isEmpty()) {
+        RpcError error(RpcError::PhoneNumberInvalid);
+        sendRpcError(error);
+        return;
+    }
     PhoneStatus status = api()->getPhoneStatus(m_sendCode.phoneNumber);
     if (status.exists() && (status.dcId != api()->dcId())) {
         RpcError error(RpcError::PhoneMigrateX, status.dcId);
         sendRpcError(error);
         return;
     }
+
+    Authorization::Provider *provider = api()->getAuthorizationProvider();
+    const Authorization::SentCodeInfo code = provider->sendCode(layer()->session(), m_sendCode.phoneNumber);
+
     TLAuthSentCode result;
     {
         TLAuthSentCodeType codeType;
-        // TLValue::AuthSentCodeTypeCall:
-        // TLValue::AuthSentCodeTypeFlashCall:
-        if (status.online) {
+        switch (code.type) {
+        case Authorization::Code::Type::App:
             codeType.tlType = TLValue::AuthSentCodeTypeApp;
-        } else {
+            codeType.length = code.length;
+            break;
+        case Authorization::Code::Type::Default:
+        case Authorization::Code::Type::Sms:
             codeType.tlType = TLValue::AuthSentCodeTypeSms;
+            codeType.length = code.length;
+            break;
+        case Authorization::Code::Type::Call:
+            codeType.tlType = TLValue::AuthSentCodeTypeCall;
+            codeType.length = code.length;
+            break;
+        case Authorization::Code::Type::FlashCall:
+            codeType.tlType = TLValue::AuthSentCodeTypeFlashCall;
+            codeType.pattern = code.pattern;
+            break;
+#ifdef MTPROTO_FORK
+        case Authorization::Code::Type::NotNeeded:
+        case Authorization::Code::Type::Denied:
+            qCritical() << Q_FUNC_INFO << "Not implemented";
+            break;
+#endif
         }
         result.type = codeType;
     }
 
-    result.phoneCodeHash = QString::fromLatin1(api()->sendAppCode(m_sendCode.phoneNumber));
-    if (status.dcId) {
+    result.phoneCodeHash = QString::fromLatin1(code.hash);
+    if (status.exists()) {
         result.flags |= TLAuthSentCode::PhoneRegistered;
     }
     sendRpcReply(result);
@@ -368,7 +397,6 @@ void AuthRpcOperation::runSignIn()
     user->addSession(layer()->session());
 
     TLAuthAuthorization result;
-    qDebug() << "Result type:" << result.tlType;
     userToTlUser(user, &result.user);
     result.user.flags = TLUser::Self;
     bakeFlags(&result.user);
@@ -400,30 +428,31 @@ void AuthRpcOperation::runSignUp()
 
 bool AuthRpcOperation::verifyAuthCode(const QString &phoneNumber, const QString &hash, const QString &code)
 {
-    ServerApi::AuthCodeStatus status = api()->getAuthCodeStatus(phoneNumber, hash.toLatin1(), code);
-    if (status == ServerApi::AuthCodeStatus::CodeValid) {
+    Authorization::Provider *provider = api()->getAuthorizationProvider();
+    Authorization::CodeStatus status = provider->getCodeStatus(phoneNumber, hash.toLatin1(), code);
+    if (status == Authorization::CodeStatus::CodeValid) {
         return true;
     }
     switch (status) {
-    case ServerApi::AuthCodeStatus::PhoneInvalid:
+    case Authorization::CodeStatus::PhoneInvalid:
         sendRpcError(RpcError::PhoneNumberInvalid);
         break;
-    case ServerApi::AuthCodeStatus::CodeEmpty:
+    case Authorization::CodeStatus::CodeEmpty:
         sendRpcError(RpcError::PhoneCodeEmpty);
         break;
-    case ServerApi::AuthCodeStatus::HashEmpty:
+    case Authorization::CodeStatus::HashEmpty:
         sendRpcError(RpcError::PhoneCodeHashEmpty);
         break;
-    case ServerApi::AuthCodeStatus::HashInvalid:
+    case Authorization::CodeStatus::HashInvalid:
         sendRpcError(RpcError::PhoneCodeInvalid); // TODO: Check the behavior of the official server on invalid hash submission
         break;
-    case ServerApi::AuthCodeStatus::CodeExpired:
+    case Authorization::CodeStatus::CodeExpired:
         sendRpcError(RpcError::PhoneCodeExpired);
         break;
-    case ServerApi::AuthCodeStatus::CodeInvalid:
+    case Authorization::CodeStatus::CodeInvalid:
         sendRpcError(RpcError::PhoneCodeInvalid);
         break;
-    case ServerApi::AuthCodeStatus::CodeValid:
+    case Authorization::CodeStatus::CodeValid:
         Q_UNREACHABLE();
         break;
     }

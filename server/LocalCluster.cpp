@@ -2,6 +2,8 @@
 
 #include "TelegramServer.hpp"
 #include "RemoteServerConnection.hpp"
+#include "TelegramServerUser.hpp"
+#include "DefaultAuthorizationProvider.hpp"
 
 #include <QLoggingCategory>
 
@@ -20,6 +22,11 @@ LocalCluster::LocalCluster(QObject *parent)
 void LocalCluster::setServerContructor(LocalCluster::ServerConstructor constructor)
 {
     m_constructor = constructor;
+}
+
+void LocalCluster::setAuthorizationProvider(Authorization::Provider *provider)
+{
+    m_authProvider = provider;
 }
 
 void LocalCluster::setServerConfiguration(const DcConfiguration &config)
@@ -43,6 +50,11 @@ bool LocalCluster::start()
         server->setServerConfiguration(m_serverConfiguration);
         server->setDcOption(dc);
         server->setServerPrivateRsaKey(m_key);
+        if (!m_authProvider) {
+            qCDebug(c_loggingClusterCategory) << Q_FUNC_INFO << "Fallback to default auth provider";
+            m_authProvider = new Authorization::DefaultProvider();
+        }
+        server->setAuthorizationProvider(m_authProvider);
         m_serverInstances.append(server);
     }
 

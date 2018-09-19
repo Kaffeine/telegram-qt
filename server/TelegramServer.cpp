@@ -4,11 +4,6 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
-#include <QRandomGenerator>
-#endif
-
-#include "Utils.hpp"
 #include "TelegramServerUser.hpp"
 #include "TelegramServerClient.hpp"
 #include "RemoteServerConnection.hpp"
@@ -115,6 +110,11 @@ quint32 Server::getDcIdForUserIdentifier(const QString &phoneNumber)
     return 0;
 }
 
+void Server::setAuthorizationProvider(Authorization::Provider *provider)
+{
+    m_authProvider = provider;
+}
+
 void Server::onNewConnection()
 {
     QTcpSocket *newConnection = m_serverSocket->nextPendingConnection();
@@ -148,7 +148,7 @@ void Server::onClientConnectionStatusChanged()
     }
 }
 
-User *Server::getLocalUser(const QString &identifier)
+User *Server::getLocalUser(const QString &identifier) const
 {
     quint32 id = m_phoneToUserId.value(identifier);
     if (!id) {
@@ -157,7 +157,7 @@ User *Server::getLocalUser(const QString &identifier)
     return m_users.value(id);
 }
 
-RemoteUser *Server::getRemoteUser(const QString &identifier)
+RemoteUser *Server::getRemoteUser(const QString &identifier) const
 {
     for (RemoteServerConnection *remoteServer : m_remoteServers) {
         RemoteUser *u = remoteServer->getUser(identifier);
@@ -208,7 +208,7 @@ void Server::insertUser(User *user)
     }
 }
 
-PhoneStatus Server::getPhoneStatus(const QString &identifier)
+PhoneStatus Server::getPhoneStatus(const QString &identifier) const
 {
     PhoneStatus result;
     RemoteUser *user = getLocalOrRemoteUser(identifier);
@@ -240,43 +240,6 @@ bool Server::checkPassword(const QString &identifier, const QByteArray &hash)
 
 }
 
-QByteArray Server::sendAppCode(const QString &identifier)
-{
-    AuthCode code;
-    code.hash = Utils::getRandomBytes(8).toHex();
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 10, 0))
-    // The lowest value is included and the highest one is excluded
-    const quint32 numCode = QRandomGenerator::global()->bounded(10000, 100000);
-    code.code = QString::number(numCode);
-#else
-    code.code = QString::number(Utils::randomBytes<quint32>()).right(5);
-#endif
-    qCDebug(loggingCategoryServerApi) << "sendAppCode(" << identifier << "):" << "hash:" << code.hash << "code:" << code.code;
-    m_sentCodeMap.insert(identifier, code);
-    return code.hash;
-}
-
-ServerApi::AuthCodeStatus Server::getAuthCodeStatus(const QString &identifier, const QByteArray &hash, const QString &code)
-{
-    if (code.isEmpty()) {
-        return AuthCodeStatus::CodeEmpty;
-    }
-    if (hash.isEmpty()) {
-        return AuthCodeStatus::HashEmpty;
-    }
-    if (!m_sentCodeMap.contains(identifier)) {
-        return AuthCodeStatus::PhoneInvalid;
-    }
-    const AuthCode c = m_sentCodeMap.value(identifier);
-    if (c.hash != hash) {
-        return AuthCodeStatus::HashInvalid;
-    }
-    if (c.code != code) {
-        return AuthCodeStatus::CodeInvalid;
-    }
-    return AuthCodeStatus::CodeValid;
-}
-
 bool Server::identifierIsValid(const QString &identifier)
 {
     const bool result = identifier.length() > 4;
@@ -284,7 +247,7 @@ bool Server::identifierIsValid(const QString &identifier)
     return result;
 }
 
-RemoteUser *Server::getLocalOrRemoteUser(const QString &identifier)
+RemoteUser *Server::getLocalOrRemoteUser(const QString &identifier) const
 {
     RemoteUser *user = getLocalUser(identifier);
     if (!user) {

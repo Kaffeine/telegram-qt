@@ -19,8 +19,9 @@
 #include "TelegramServerUser.hpp"
 #include "DcConfiguration.hpp"
 #include "LocalCluster.hpp"
+#include "Session.hpp"
 
-#include "../TelegramQt/Utils.hpp"
+#include "Utils.hpp"
 #include <QCoreApplication>
 #include <QDebug>
 #include <QStandardPaths>

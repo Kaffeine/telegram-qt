@@ -1,5 +1,6 @@
 
 set(server_lib_SOURCES
+    DefaultAuthorizationProvider.cpp
     LocalCluster.cpp
     ServerDhLayer.cpp
     ServerRpcLayer.cpp
@@ -14,6 +15,7 @@ set(server_lib_SOURCES
 )
 
 set(server_lib_META_HEADERS
+    DefaultAuthorizationProvider.hpp
     LocalCluster.hpp
     ServerDhLayer.hpp
     ServerRpcLayer.hpp
@@ -34,6 +36,7 @@ list(APPEND server_lib_META_HEADERS ${RPC_HEADERS})
 
 set(server_lib_HEADERS
     ${server_lib_META_HEADERS}
+    AuthorizationProvider.hpp
     FunctionStreamOperators.hpp
     ServerApi.hpp
     Session.hpp

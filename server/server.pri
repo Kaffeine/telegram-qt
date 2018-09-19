@@ -1,4 +1,5 @@
 
+SOURCES += $$PWD/DefaultAuthorizationProvider.cpp
 SOURCES += $$PWD/LocalCluster.cpp
 SOURCES += $$PWD/ServerDhLayer.cpp
 SOURCES += $$PWD/ServerRpcLayer.cpp
@@ -11,6 +12,8 @@ SOURCES += $$PWD/CServerTcpTransport.cpp
 SOURCES += $$PWD/RemoteServerConnection.cpp
 SOURCES += $$PWD/FunctionStreamOperators.cpp
 
+HEADERS += $$PWD/AuthorizationProvider.hpp
+HEADERS += $$PWD/DefaultAuthorizationProvider.hpp
 HEADERS += $$PWD/LocalCluster.hpp
 HEADERS += $$PWD/ServerApi.hpp
 HEADERS += $$PWD/ServerDhLayer.hpp

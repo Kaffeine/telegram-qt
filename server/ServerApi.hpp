@@ -19,6 +19,12 @@ namespace Telegram {
 
 namespace Server {
 
+namespace Authorization {
+
+class Provider;
+
+} // Authorization namespace
+
 class Session;
 class User;
 class RemoteClientConnection;
@@ -43,24 +49,13 @@ struct PasswordInfo
 class ServerApi
 {
 public:
-    enum class AuthCodeStatus {
-        PhoneInvalid,
-        HashEmpty,
-        HashInvalid,
-        CodeEmpty,
-        CodeExpired,
-        CodeInvalid,
-        CodeValid,
-    };
-
     virtual DcConfiguration serverConfiguration() const = 0;
     virtual quint32 dcId() const = 0;
     virtual quint64 serverSalt() const = 0;
-    virtual PhoneStatus getPhoneStatus(const QString &identifier) = 0;
+    virtual PhoneStatus getPhoneStatus(const QString &identifier) const = 0;
     virtual PasswordInfo getPassword(const QString &identifier) = 0;
     virtual bool checkPassword(const QString &identifier, const QByteArray &hash) = 0;
-    virtual QByteArray sendAppCode(const QString &identifier) = 0;
-    virtual AuthCodeStatus getAuthCodeStatus(const QString &identifier, const QByteArray &hash, const QString &code) = 0;
+    virtual Authorization::Provider *getAuthorizationProvider() = 0;
     virtual bool identifierIsValid(const QString &identifier) = 0; // Argument is 'phoneNumber'
 
     virtual User *getUser(const QString &identifier) = 0;

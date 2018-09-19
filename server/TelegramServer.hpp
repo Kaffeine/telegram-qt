@@ -19,12 +19,6 @@ namespace Telegram {
 
 namespace Server {
 
-struct AuthCode
-{
-    QByteArray hash;
-    QString code;
-};
-
 class User;
 class Session;
 class RemoteClientConnection;
@@ -52,20 +46,23 @@ public:
 
     quint32 getDcIdForUserIdentifier(const QString &phoneNumber);
 
+    void setAuthorizationProvider(Authorization::Provider *provider);
+
     // ServerAPI:
+    Authorization::Provider *getAuthorizationProvider() override { return m_authProvider; }
+
     DcConfiguration serverConfiguration() const override { return m_dcConfiguration; }
     quint32 dcId() const override { return m_dcOption.id; }
     quint64 serverSalt() const override { return m_serverSalt; }
-    PhoneStatus getPhoneStatus(const QString &identifier) override;
+
+    PhoneStatus getPhoneStatus(const QString &identifier) const override;
     PasswordInfo getPassword(const QString &identifier) override;
     bool checkPassword(const QString &identifier, const QByteArray &hash) override;
-    QByteArray sendAppCode(const QString &identifier) override;
-    AuthCodeStatus getAuthCodeStatus(const QString &identifier, const QByteArray &hash, const QString &code) override;
     bool identifierIsValid(const QString &identifier) override;
 
-    RemoteUser *getLocalOrRemoteUser(const QString &identifier);
-    User *getLocalUser(const QString &identifier);
-    RemoteUser *getRemoteUser(const QString &identifier);
+    RemoteUser *getLocalOrRemoteUser(const QString &identifier) const;
+    User *getLocalUser(const QString &identifier) const;
+    RemoteUser *getRemoteUser(const QString &identifier) const;
 
     User *getUser(const QString &identifier) override;
     User *addUser(const QString &identifier) override;
@@ -86,7 +83,7 @@ protected:
     void onClientConnectionStatusChanged();
 
 protected:
-    QHash<QString, AuthCode> m_sentCodeMap;
+    Authorization::Provider *m_authProvider = nullptr;
 
 private:
     QTcpServer *m_serverSocket;
