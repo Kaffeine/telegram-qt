@@ -29,6 +29,13 @@ QDebug operator<<(QDebug d, const TLNumber<Size> &n);
 
 namespace Telegram {
 
+namespace MTProto {
+
+struct FullMessageHeader;
+struct IgnoredMessageNotification;
+
+} // MTProto namespace
+
 namespace Debug {
 
 class Spacer
@@ -55,5 +62,8 @@ QString toHex(T number)
 }
 
 } // Telegram
+
+TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::FullMessageHeader &header);
+TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::IgnoredMessageNotification &notification);
 
 #endif // TELEGRAMDEBUG_P_HPP

@@ -73,12 +73,7 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     decryptedStream >> messageHeader;
 
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_baseRpcLayerCategoryIn) << "RpcLayer::processPackage():";
-    qCDebug(c_baseRpcLayerCategoryIn) << "salt:" << messageHeader.serverSalt;
-    qCDebug(c_baseRpcLayerCategoryIn) << "sessionId:" << messageHeader.sessionId;
-    qCDebug(c_baseRpcLayerCategoryIn) << "messageId:" << messageHeader.messageId;
-    qCDebug(c_baseRpcLayerCategoryIn) << "sequenceNumber:" << messageHeader.sequenceNumber;
-    qCDebug(c_baseRpcLayerCategoryIn) << "contentLength:" << messageHeader.contentLength;
+    qCDebug(c_baseRpcLayerCategoryIn) << "RpcLayer::processPackage():" << messageHeader;
 #endif
 
     if (!processDecryptedMessageHeader(messageHeader)) {
@@ -167,12 +162,7 @@ bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
         stream << messageHeader;
 
 #ifdef DEVELOPER_BUILD
-        qCDebug(c_baseRpcLayerCategoryOut) << "RpcLayer::sendPackage():";
-        qCDebug(c_baseRpcLayerCategoryOut) << "salt:" << messageHeader.serverSalt;
-        qCDebug(c_baseRpcLayerCategoryOut) << "sessionId:" << messageHeader.sessionId;
-        qCDebug(c_baseRpcLayerCategoryOut) << "messageId:" << messageHeader.messageId;
-        qCDebug(c_baseRpcLayerCategoryOut) << "sequenceNumber:" << messageHeader.sequenceNumber;
-        qCDebug(c_baseRpcLayerCategoryOut) << "contentLength:" << messageHeader.contentLength;
+        qCDebug(c_baseRpcLayerCategoryOut) << "RpcLayer::sendPackage():" << messageHeader;
 #endif
 
         stream.writeBytes(message.data);
