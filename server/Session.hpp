@@ -28,6 +28,8 @@ public:
     void setLayer(quint32 layer) { m_layer = layer; }
 
     quint32 appId = 0;
+    quint32 lastSequenceNumber = 0;
+    quint64 lastMessageNumber = 0;
     quint64 authId = 0;
     quint64 sessionId = 0;
     QByteArray authKey;

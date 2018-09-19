@@ -169,6 +169,24 @@ bool RpcLayer::processInvokeWithLayer(const MTProto::Message &message)
     return processMTProtoMessage(innerMessage);
 }
 
+void RpcLayer::sendIgnoredMessageNotification(quint32 errorCode, const MTProto::FullMessageHeader &header)
+{
+    MTProto::IgnoredMessageNotification messageNotification;
+    messageNotification.errorCode = errorCode; // MTProto::IgnoredMessageNotification::IncorrectServerSalt;
+    messageNotification.seqNo = header.sequenceNumber;
+    messageNotification.messageId = header.messageId;
+    qCDebug(c_serverRpcLayerCategory) << messageNotification.toString();
+
+    CRawStream output(CRawStream::WriteOnly);
+    if (errorCode == MTProto::IgnoredMessageNotification::IncorrectServerSalt) {
+        output << TLValue::BadServerSalt;
+    } else {
+        output << TLValue::BadMsgNotification;
+    }
+    output << messageNotification;
+    sendPackage(output.getData(), SendMode::ServerReply);
+}
+
 bool RpcLayer::sendRpcError(const RpcError &error, quint64 messageId)
 {
     CTelegramStream output(CTelegramStream::WriteOnly);
@@ -238,19 +256,20 @@ bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &h
     }
 
     if (m_sendHelper->serverSalt() != header.serverSalt) {
-        qDebug() << Q_FUNC_INFO << "Received different server salt:"
-                 << header.serverSalt << "(received) vs" << m_sendHelper->serverSalt() << "(local)";
-        MTProto::IgnoredMessageNotification messageNotification;
-        messageNotification.errorCode = MTProto::IgnoredMessageNotification::IncorrectServerSalt;
-        messageNotification.seqNo = header.sequenceNumber;
-        messageNotification.messageId = header.messageId;
-
-        CRawStream output(CRawStream::WriteOnly);
-        output << TLValue::BadServerSalt;
-        output << messageNotification;
-        sendPackage(output.getData(), SendMode::ServerReply);
+        sendIgnoredMessageNotification(MTProto::IgnoredMessageNotification::IncorrectServerSalt, header);
         return false;
     }
+
+    if (header.sequenceNumber < m_session->lastSequenceNumber) {
+        sendIgnoredMessageNotification(MTProto::IgnoredMessageNotification::SequenceNumberTooHigh, header);
+        return false;
+    }
+    if (header.messageId & 3ull) {
+        sendIgnoredMessageNotification(MTProto::IgnoredMessageNotification::IncorrectTwoLowerOrderMessageIdBits, header);
+        return false;
+    }
+    m_session->lastSequenceNumber = header.sequenceNumber;
+    m_session->lastMessageNumber = header.messageId;
     return true;
 }
 
