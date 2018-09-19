@@ -17,6 +17,8 @@
 #include "CTelegramStream.hpp"
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(c_serverRpcLayerCategory, "telegram.server.rpclayer", QtDebugMsg)
+
 template <typename T>
 class StackValue
 {
@@ -81,7 +83,7 @@ void RpcLayer::setRpcFactories(const QVector<RpcOperationFactory *> &rpcFactorie
 bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 {
     TLValue requestValue = message.firstValue();
-    qDebug() << Q_FUNC_INFO << requestValue.toString();
+    qCDebug(c_serverRpcLayerCategory) << Q_FUNC_INFO << requestValue.toString();
 
     switch (requestValue) {
     case TLValue::InitConnection:
@@ -107,7 +109,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         }
     }
     if (!op) {
-        qWarning() << Q_FUNC_INFO << requestValue.toString() << "is not processed!";
+        qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << requestValue.toString() << "is not processed!";
         return false;
     }
     op->startLater();
@@ -141,7 +143,7 @@ bool RpcLayer::processInitConnection(const MTProto::Message &message)
 
     qDebug() << Q_FUNC_INFO << deviceInfo << osInfo << appId << appVersion << languageCode;
     if (stream.error()) {
-        qWarning() << Q_FUNC_INFO << "Invalid read!";
+        qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Invalid read!";
         return false;
     }
     session()->setLayer(activeLayer());
@@ -160,7 +162,7 @@ bool RpcLayer::processInvokeWithLayer(const MTProto::Message &message)
     MTProto::Stream stream(message.data);
     quint32 layer = 0;
     stream >> layer;
-    qDebug() << Q_FUNC_INFO << "InvokeWithLayer" << layer;
+    qCDebug(c_serverRpcLayerCategory) << Q_FUNC_INFO << "InvokeWithLayer" << layer;
     StackValue<quint32> layerValue(&m_invokeWithLayer, layer);
     MTProto::Message innerMessage = message;
     innerMessage.data = stream.readAll();
@@ -223,15 +225,15 @@ quint32 RpcLayer::activeLayer() const
 bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
 {
     if (!header.sessionId) {
-        qWarning() << Q_FUNC_INFO << "Unexpected RPC packet without sessionId";
+        qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Unexpected RPC packet without sessionId";
         return false;
     }
 
     if (!m_session->sessionId) {
-        qDebug() << Q_FUNC_INFO << "Assign the client auth key to a session id";
+        qCDebug(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Assign the client auth key to a session id";
         m_session->sessionId = header.sessionId;
     } else if (m_session->sessionId != header.sessionId) {
-        qWarning() << Q_FUNC_INFO << "Unexpected Session Id";
+        qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Unexpected Session Id";
         return false;
     }
 

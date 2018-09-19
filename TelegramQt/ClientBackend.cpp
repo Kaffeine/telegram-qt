@@ -36,6 +36,8 @@
 #include "ClientRpcUsersLayer.hpp"
 // End of generated low-level layer includes
 
+Q_LOGGING_CATEGORY(c_clientBackendCategory, "telegram.client.backend", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Client {
@@ -46,6 +48,8 @@ Backend::Backend(Client *parent) :
 {
     Backend *b = this;
     BaseRpcLayerExtension::RpcProcessingMethod rpcProcessMethod = [b](PendingRpcOperation *operation) mutable {
+        qCDebug(c_clientBackendCategory) << "Default processing for" << operation
+                                         << TLValue::firstFromArray(operation->requestData());
         b->getDefaultConnection()->rpcLayer()->sendRpc(operation);
     };
 
@@ -104,9 +108,7 @@ PendingOperation *Backend::connectToServer(const QVector<DcOption> &dcOptions)
 
     if (m_mainConnection && m_mainConnection->status() != Connection::Status::Disconnected) {
         return PendingOperation::failOperation<PendingOperation>
-                ({
-                     { QStringLiteral("text"), QStringLiteral("Connection is already in progress") }
-                 });
+                (QStringLiteral("Connection is already in progress"), this);
     }
 
     if (m_mainConnection) {
@@ -115,15 +117,11 @@ PendingOperation *Backend::connectToServer(const QVector<DcOption> &dcOptions)
 
     if (!m_accountStorage) {
         return PendingOperation::failOperation<PendingOperation>
-                ({
-                     { QStringLiteral("text"), QStringLiteral("Account storage is missing") }
-                 });
+                (QStringLiteral("Account storage is missing"), this);
     }
     if (!m_dataStorage) {
         return PendingOperation::failOperation<PendingOperation>
-                ({
-                     { QStringLiteral("text"), QStringLiteral("Data storage is missing") }
-                 });
+                (QStringLiteral("Data storage is missing"), this);
     }
 
     Connection *connection = nullptr;
@@ -140,7 +138,7 @@ AuthOperation *Backend::signIn()
                 (QStringLiteral("Already signed in"), this);
     }
     if (!m_settings || !m_settings->isValid()) {
-        qWarning() << "Invalid settings";
+        qCWarning(c_clientBackendCategory) << "Invalid settings";
         return PendingOperation::failOperation<AuthOperation>
                 (QStringLiteral("Invalid settings"), this);
     }
@@ -239,13 +237,13 @@ Connection *Backend::getDefaultConnection()
 
 Connection *Backend::ensureConnection(const ConnectionSpec &dcSpec)
 {
-    qWarning() << Q_FUNC_INFO << dcSpec.dcId << dcSpec.flags;
+    qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << dcSpec.dcId << dcSpec.flags;
     ConnectionSpec spec = dcSpec;
     spec.flags |= ConnectionSpec::RequestFlag::Ipv4Only; // Enable only ipv4 for now
     if (!m_connections.contains(dcSpec)) {
         const DcOption opt = dataStorage()->serverConfiguration().getOption(spec);
         if (!opt.isValid()) {
-            qWarning() << Q_FUNC_INFO << "Unable to find suitable DC";
+            qCWarning(c_clientBackendCategory) << Q_FUNC_INFO << "Unable to find suitable DC";
             return nullptr;
         }
         m_connections.insert(dcSpec, createConnection(opt));
@@ -257,6 +255,8 @@ void Backend::setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension 
 {
     Backend *b = this;
     BaseRpcLayerExtension::RpcProcessingMethod sendMethod = [b, dcSpec](PendingRpcOperation *operation) mutable {
+        qCDebug(c_clientBackendCategory) << "Custom processing for" << operation
+                                         << TLValue::firstFromArray(operation->requestData());
         b->ensureConnection(dcSpec)->rpcLayer()->sendRpc(operation);
     };
     layer->setRpcProcessingMethod(sendMethod);
@@ -282,7 +282,7 @@ void Backend::onConnectOperationFinished(PendingOperation *operation)
 void Backend::onGetDcConfigurationFinished(PendingOperation *operation)
 {
     if (!operation->isSucceeded()) {
-        qWarning() << Q_FUNC_INFO << "Unable to get dc configuration" << operation->errorDetails();
+        qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << "Unable to get dc configuration" << operation->errorDetails();
         return;
     }
     for (PendingRpcOperation *operation : m_queuedRedirectedOperations) {
@@ -293,10 +293,10 @@ void Backend::onGetDcConfigurationFinished(PendingOperation *operation)
 
 void Backend::processSeeOthers(PendingRpcOperation *operation)
 {
-    qWarning() << Q_FUNC_INFO << "operation"
-               << TLValue::firstFromArray(operation->requestData());
+    qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << "operation"
+                                     << TLValue::firstFromArray(operation->requestData());
     if (!getDcConfig()->isFinished()) {
-        qWarning() << Q_FUNC_INFO << "Queued";
+        qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << "Queued";
         m_queuedRedirectedOperations.append(operation);
         return;
     }
@@ -305,8 +305,8 @@ void Backend::processSeeOthers(PendingRpcOperation *operation)
 
 void Backend::routeOperation(PendingRpcOperation *operation)
 {
-    qWarning() << Q_FUNC_INFO << "operation"
-               << TLValue::firstFromArray(operation->requestData());
+    qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << "operation"
+                                     << TLValue::firstFromArray(operation->requestData());
     const quint32 dcId = operation->rpcError()->argument;
     operation->clearResult();
     ConnectionSpec spec(dcId);
@@ -321,8 +321,9 @@ void Backend::routeOperation(PendingRpcOperation *operation)
     }
     Connection *connection = ensureConnection(spec);
     if (!connection) {
-        qWarning() << Q_FUNC_INFO << "Unable to get connection for operation"
-                   << TLValue::firstFromArray(operation->requestData()) << "dc spec" << spec.dcId << spec.flags;
+        qCWarning(c_clientBackendCategory) << Q_FUNC_INFO << "Unable to get connection for operation"
+                                           << TLValue::firstFromArray(operation->requestData())
+                                           << "dc spec" << spec.dcId << spec.flags;
         operation->deleteLater();
         return;
     }
@@ -373,6 +374,7 @@ void Backend::setSignedIn(bool signedIn)
     }
     m_signedIn = signedIn;
     emit m_client->signedInChanged(signedIn);
+    qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << signedIn;
 }
 
 } // Client namespace

@@ -48,6 +48,12 @@ private:
 
 } // Debug
 
+template <typename T>
+QString toHex(T number)
+{
+    return QStringLiteral("%1").arg(number, sizeof(number) * 2, 0x10, QLatin1Char('0'));
+}
+
 } // Telegram
 
 #endif // TELEGRAMDEBUG_P_HPP

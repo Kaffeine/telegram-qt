@@ -156,7 +156,7 @@ void Connection::processSeeOthers(PendingRpcOperation *operation)
         connectToDc();
     }
     if (m_dhLayer->state() != DhLayer::State::HasKey) {
-        qCWarning(c_clientConnectionCategory) << "processSeeOthers():" << "queue operation:" << TLValue::firstFromArray(operation->requestData());
+        qCDebug(c_clientConnectionCategory) << "processSeeOthers():" << "queue operation:" << TLValue::firstFromArray(operation->requestData());
         m_queuedOperations.append(operation);
         return;
     }

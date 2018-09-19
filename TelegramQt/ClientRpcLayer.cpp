@@ -124,19 +124,20 @@ void RpcLayer::processSessionCreated(const MTProto::Message &message)
     stream >> firstMsgId;
     stream >> uniqueId;
     stream >> serverSalt;
-    qCDebug(c_clientRpcLayerCategory) << "processSessionCreated(stream)"
-                                      << firstMsgId
-                                      << uniqueId
-                                      << serverSalt;
+    qCDebug(c_clientRpcLayerCategory) << "processSessionCreated(stream) {"
+                                      << hex << showbase
+                                      << "    firstMsgId:" << firstMsgId
+                                      << "    uniqueId:" << uniqueId
+                                      << "    serverSalt:" << serverSalt;
 }
 
 void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message)
 {
     MTProto::Stream stream(message.data);
-    qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(stream);";
     // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
     MTProto::IgnoredMessageNotification notification;
     stream >> notification;
+    qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification():" << notification.toString();
 
     MTProto::Message *m = m_messages.value(notification.messageId);
     if (!m) {
@@ -175,7 +176,10 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
 bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
 {
     if (m_sendHelper->serverSalt() != header.serverSalt) {
-        qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Received different server salt:" << m_receivedServerSalt << "(remote) vs" << m_sendHelper->serverSalt() << "(local)";
+        qCDebug(c_clientRpcLayerCategory).noquote()
+                << QStringLiteral("Received different server salt: %1 (remote) vs %2 (local)")
+                   .arg(toHex(header.serverSalt))
+                   .arg(toHex(m_sendHelper->serverSalt()));
         m_receivedServerSalt = header.serverSalt;
     }
 

@@ -113,11 +113,11 @@ void BaseConnection::onTransportPackageReceived(const QByteArray &package)
             return;
         }
         if (!m_rpcLayer->processPackage(package)) {
-            qCWarning(c_baseConnectionCategory) << "Unable to process RPC packet:" << package.toHex();
+            qCDebug(c_baseConnectionCategory) << "Unable to process RPC packet:" << package.toHex();
         }
     } else {
         if (!m_dhLayer->processPlainPackage(package)) {
-            qCWarning(c_baseConnectionCategory) << "Unable to process plain packet:" << package.toHex();
+            qCDebug(c_baseConnectionCategory) << "Unable to process plain packet:" << package.toHex();
         }
     }
 }
