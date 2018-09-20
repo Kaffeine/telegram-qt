@@ -55,10 +55,15 @@ HelpRpcLayer *HelpOperation::helpLayer() const
 
 void HelpOperation::onGetDcCondigurationFinished(PendingRpcOperation *operation)
 {
+    if (operation->isFailed()) {
+        setFinishedWithError(operation->errorDetails());
+        return;
+    }
     TLConfig result;
     helpLayer()->processReply(operation, &result);
     if (!result.isValid()) {
         setFinishedWithError(operation->errorDetails());
+        return;
     }
     DcConfiguration config;
     for (const TLDcOption &opt : result.dcOptions) {
