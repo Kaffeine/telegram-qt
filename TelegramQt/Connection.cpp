@@ -97,6 +97,12 @@ void BaseConnection::onTransportPackageReceived(const QByteArray &package)
     qCDebug(c_baseConnectionCategory) << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onTransportPackageReceived(%1 bytes)").arg(package.size());
     if (package.size() == ConnectionError::packageSize()) {
         ConnectionError e(package.constData());
+        if (status() == Status::Failed) {
+            // We still can get replies to already sent message even if the connection
+            // is already failed, but it makes no sense to shout them out.
+            qCDebug(c_baseConnectionCategory) << "Error:" << e.description();
+            return;
+        }
         qCWarning(c_baseConnectionCategory) << "Error:" << e.description();
         emit errorOccured(e.description());
         setStatus(Status::Failed, StatusReason::Remote);
