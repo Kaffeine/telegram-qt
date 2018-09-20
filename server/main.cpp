@@ -26,13 +26,15 @@
 #include <QDebug>
 #include <QStandardPaths>
 
-Telegram::Server::User *tryAddUser(Telegram::Server::LocalCluster *cluster,
-                const QString &identifier, quint32 dcId,
-                const QString &firstName, const QString &lastName,
-                const QString &password = QString()
-                )
+using namespace Telegram::Server;
+
+User *tryAddUser(LocalCluster *cluster,
+                 const QString &identifier, quint32 dcId,
+                 const QString &firstName, const QString &lastName,
+                 const QString &password = QString()
+        )
 {
-    Telegram::Server::User *u = cluster->addUser(identifier, dcId);
+    User *u = cluster->addUser(identifier, dcId);
     if (u) {
         u->setFirstName(firstName);
         u->setLastName(lastName);
@@ -64,7 +66,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    Telegram::Server::LocalCluster cluster;
+    LocalCluster cluster;
     cluster.setServerPrivateRsaKey(key);
     cluster.setServerConfiguration(configuration);
     cluster.start();
