@@ -78,8 +78,6 @@ PendingOperation *AuthOperation::checkAuthorization()
         setFinishedWithError({{c_text(), QStringLiteral("No minimal account data set")}});
         return nullptr;
     }
-    connect(m_backend->getDefaultConnection(), &BaseConnection::errorOccured,
-            this, &AuthOperation::onConnectionError);
     // Backend::connectToServer() automatically takes the data from the account storage,
     // So just make some RPC call to check if connection works.
     PendingRpcOperation *updateStatusOperation = accountLayer()->updateStatus(false);
