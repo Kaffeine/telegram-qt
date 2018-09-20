@@ -50,7 +50,9 @@ public:
     void setAppInformation(CAppInformation *appInfo);
 
     quint64 sessionId() const override { return m_sessionId; }
-    void setSessionId(quint64 newSessionId);
+    void setSessionData(quint64 sessionId, quint32 contentRelatedMessagesNumber);
+
+    void startNewSession();
 
     bool processMTProtoMessage(const MTProto::Message &message) override;
     void processSessionCreated(const MTProto::Message &message);

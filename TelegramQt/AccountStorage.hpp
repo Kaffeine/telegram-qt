@@ -30,6 +30,12 @@ public:
     QByteArray authKey() const;
     void setAuthKey(const QByteArray &newAuthKey);
 
+    quint64 sessionId() const;
+    void setSessionId(quint64 id);
+
+    quint32 contentRelatedMessagesNumber() const;
+    void setSessionData(quint64 id, quint32 contentRelatedMessagesNumber);
+
     qint32 deltaTime() const;
     void setDeltaTime(const qint32 newDt);
 

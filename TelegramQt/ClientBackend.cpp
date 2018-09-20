@@ -171,6 +171,9 @@ AuthOperation *Backend::checkIn()
     m_authOperation->runAfter(connectionOperation);
     m_authOperation->setRunMethod(&AuthOperation::checkAuthorization);
     m_connectToServerOperation->connection()->setAuthKey(m_accountStorage->authKey());
+    m_connectToServerOperation->connection()->rpcLayer()->setSessionData(
+                m_accountStorage->sessionId(),
+                m_accountStorage->contentRelatedMessagesNumber());
     return m_authOperation;
 }
 
@@ -357,6 +360,8 @@ bool Backend::syncAccountToStorage()
     m_accountStorage->setAuthId(m_mainConnection->authId());
     m_accountStorage->setDcInfo(m_mainConnection->dcOption());
     m_accountStorage->setDeltaTime(m_mainConnection->deltaTime());
+    m_accountStorage->setSessionData(m_mainConnection->rpcLayer()->sessionId(),
+                                     m_mainConnection->rpcLayer()->contentRelatedMessagesNumber());
     m_accountStorage->sync();
     return true;
 }

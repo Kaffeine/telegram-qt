@@ -46,7 +46,7 @@ public:
     explicit BaseRpcLayer(QObject *parent = nullptr);
 
     virtual quint64 sessionId() const = 0;
-
+    quint32 contentRelatedMessagesNumber() const;
     void setSendPackageHelper(BaseSendPackageHelper *helper);
 
     bool processPackage(const QByteArray &package);

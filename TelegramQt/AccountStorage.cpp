@@ -28,6 +28,8 @@ public:
     QString m_phoneNumber;
     QByteArray m_authKey;
     quint64 m_authId = 0;
+    quint64 m_sessionId = 0;
+    quint32 m_contentRelatedMessagesNumber = 0;
     qint32 m_deltaTime = 0;
     DcOption m_dcInfo;
 
@@ -59,7 +61,7 @@ AccountStorage::AccountStorage(QObject *parent) :
 
 bool AccountStorage::hasMinimalDataSet() const
 {
-    return !d->m_dcInfo.address.isEmpty() && !d->m_authKey.isEmpty();
+    return !d->m_dcInfo.address.isEmpty() && !d->m_authKey.isEmpty() && sessionId();
 }
 
 QString AccountStorage::accountIdentifier() const
@@ -100,6 +102,27 @@ QByteArray AccountStorage::authKey() const
 void AccountStorage::setAuthKey(const QByteArray &newAuthKey)
 {
     d->m_authKey = newAuthKey;
+}
+
+quint64 AccountStorage::sessionId() const
+{
+    return d->m_sessionId;
+}
+
+void AccountStorage::setSessionId(quint64 id)
+{
+    d->m_sessionId = id;
+}
+
+quint32 AccountStorage::contentRelatedMessagesNumber() const
+{
+    return d->m_contentRelatedMessagesNumber;
+}
+
+void AccountStorage::setSessionData(quint64 id, quint32 contentRelatedMessagesNumber)
+{
+    d->m_sessionId = id;
+    d->m_contentRelatedMessagesNumber = contentRelatedMessagesNumber;
 }
 
 qint32 AccountStorage::deltaTime() const
@@ -208,6 +231,8 @@ bool FileAccountStorage::saveData() const
     stream << d->m_dcInfo.port;
     stream << d->m_authKey;
     stream << d->m_authId;
+    stream << d->m_sessionId;
+    stream << d->m_contentRelatedMessagesNumber;
     qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "Saved key" << QString::number(authId(), 0x10);
     return true;
 }
@@ -249,6 +274,8 @@ bool FileAccountStorage::loadData()
     stream >> d->m_dcInfo.port;
     stream >> d->m_authKey;
     stream >> d->m_authId;
+    stream >> d->m_sessionId;
+    stream >> d->m_contentRelatedMessagesNumber;
 
     qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "Loaded key" << QString::number(authId(), 0x10);
     return !stream.error();

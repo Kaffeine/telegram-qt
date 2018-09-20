@@ -44,9 +44,16 @@ void RpcLayer::setAppInformation(CAppInformation *appInfo)
     m_appInfo = appInfo;
 }
 
-void RpcLayer::setSessionId(quint64 newSessionId)
+void RpcLayer::setSessionData(quint64 sessionId, quint32 contentRelatedMessagesNumber)
 {
-    m_sessionId = newSessionId;
+    m_sessionId = sessionId;
+    m_contentRelatedMessages = contentRelatedMessagesNumber;
+}
+
+void RpcLayer::startNewSession()
+{
+    m_sessionId = Utils::randomBytes<quint64>();
+    m_contentRelatedMessages = 0;
 }
 
 bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)

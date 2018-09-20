@@ -169,7 +169,7 @@ void Connection::onClientDhStateChanged()
     qCDebug(c_clientConnectionCategory) << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
         if (!m_rpcLayer->sessionId()) {
-            rpcLayer()->setSessionId(Utils::randomBytes<quint64>());
+            rpcLayer()->startNewSession();
         }
         if (!m_queuedOperations.isEmpty()) {
             for (PendingRpcOperation *operation : m_queuedOperations) {

@@ -132,6 +132,11 @@ SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
     return SAesKey(key, iv);
 }
 
+quint32 BaseRpcLayer::contentRelatedMessagesNumber() const
+{
+    return m_contentRelatedMessages;
+}
+
 bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
 {
     if (!m_sendHelper->authId()) {

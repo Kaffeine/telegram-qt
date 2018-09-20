@@ -359,6 +359,7 @@ void tst_all::testCheckInSignIn()
 
     accountStorage.setAuthKey(c_authKey);
     accountStorage.setAuthId(c_authId);
+    accountStorage.setSessionId(c_authId);
     accountStorage.setPhoneNumber(userData.phoneNumber);
     accountStorage.setDcInfo(clientDcOption);
     QVERIFY(accountStorage.hasMinimalDataSet());
