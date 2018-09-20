@@ -45,7 +45,8 @@ CTcpTransport::CTcpTransport(QObject *parent) :
 
 CTcpTransport::~CTcpTransport()
 {
-    if (m_socket && m_socket->isWritable()) {
+    if (m_socket && m_socket->isWritable() && m_socket->isOpen()
+            && m_socket->state() != QAbstractSocket::UnconnectedState) {
         m_socket->waitForBytesWritten(100);
         m_socket->disconnectFromHost();
     }
