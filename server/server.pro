@@ -13,4 +13,9 @@ include(../TelegramQt/TelegramQt-internals.pri)
 SOURCES += main.cpp
 include(server.pri)
 
+contains(options, developer-build) {
+    QT += dbus
+    DEFINES += USE_DBUS_NOTIFIER
+}
+
 OTHER_FILES += CMakeLists.txt

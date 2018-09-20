@@ -28,6 +28,44 @@
 
 using namespace Telegram::Server;
 
+#ifdef USE_DBUS_NOTIFIER
+#include <QDBusConnection>
+#include <QDBusMessage>
+
+#include "ServerApi.hpp"
+#include "DefaultAuthorizationProvider.hpp"
+
+class DBusCodeAuthProvider : public Authorization::DefaultProvider
+{
+protected:
+    Authorization::Code generateCode(Session *session, const QString &identifier) override;
+};
+
+Authorization::Code DBusCodeAuthProvider::generateCode(Session *session, const QString &identifier)
+{
+    Authorization::Code code = DefaultProvider::generateCode(session, identifier);
+    QDBusMessage message = QDBusMessage::createMethodCall(QStringLiteral("org.freedesktop.Notifications"),
+                                                          QStringLiteral("/org/freedesktop/Notifications"),
+                                                          QStringLiteral("org.freedesktop.Notifications"),
+                                                          QStringLiteral("Notify"));
+    message.setArguments({
+                             QCoreApplication::applicationName(),
+                             QVariant::fromValue(0u),
+                             QString(),
+                             QStringLiteral("New auth code request"),
+                             QStringLiteral("Auth code for account %1 is %2. Peer IP: %3").arg(identifier, code.code, session->ip),
+                             QStringList(),
+                             QVariantMap(),
+                             3000
+                         });
+
+    // QString app_name, uint replaces_id, QString app_icon, QString summary,
+    // QString body, QStringList actions, QVariantMap hints, int timeout
+    QDBusConnection::sessionBus().send(message);
+    return code;
+}
+#endif // USE_DBUS_NOTIFIER
+
 User *tryAddUser(LocalCluster *cluster,
                  const QString &identifier, quint32 dcId,
                  const QString &firstName, const QString &lastName,
@@ -69,6 +107,11 @@ int main(int argc, char *argv[])
     LocalCluster cluster;
     cluster.setServerPrivateRsaKey(key);
     cluster.setServerConfiguration(configuration);
+#ifdef USE_DBUS_NOTIFIER
+    DBusCodeAuthProvider authProvider;
+    cluster.setAuthorizationProvider(&authProvider);
+    qInfo() << "DBus auth code provider enabled";
+#endif
     cluster.start();
 
     tryAddUser(&cluster, QStringLiteral("5432101"), /* dc */ 1,

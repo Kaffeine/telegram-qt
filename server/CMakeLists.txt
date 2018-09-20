@@ -52,6 +52,7 @@ include_directories(
 if (DEVELOPER_BUILD)
     add_definitions(-DDEVELOPER_BUILD)
     add_definitions(-DQT_DEPRECATED_WARNINGS)
+    add_definitions(-DUSE_DBUS_NOTIFIER)
 endif()
 
 add_definitions(
@@ -75,6 +76,12 @@ target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} LINK_PUBLIC
     Qt5::Core
     Qt5::Network
 )
+
+if (DEVELOPER_BUILD)
+    target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} LINK_PUBLIC
+        Qt5::DBus
+    )
+endif()
 
 target_include_directories(TelegramServerQt${QT_VERSION_MAJOR} PRIVATE
     ${QT5_INCLUDES}

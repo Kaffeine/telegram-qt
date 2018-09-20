@@ -37,6 +37,12 @@ if (BUILD_WIDGETS_CLIENT)
     list(APPEND QT_COMPONENTS Gui Widgets)
 endif()
 
+if (BUILD_SERVER)
+    if (DEVELOPER_BUILD)
+        list(APPEND QT_COMPONENTS DBus)
+    endif()
+endif()
+
 find_package(Qt5 5.5.0 REQUIRED COMPONENTS ${QT_COMPONENTS})
 message("-- Found Qt version: ${Qt5_VERSION}")
 find_package(OpenSSL REQUIRED)
