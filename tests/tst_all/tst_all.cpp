@@ -20,6 +20,7 @@
 #include "AccountStorage.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"
+#include "ConnectionError.hpp"
 #include "DataStorage.hpp"
 #include "Utils.hpp"
 #include "TelegramNamespace.hpp"
@@ -374,6 +375,10 @@ void tst_all::testCheckInSignIn()
 
     // --- Check in ---
     QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
+
+    static const QString errorText = ConnectionError(ConnectionError::InvalidAuthKey).description();
+    QTest::ignoreMessage(QtWarningMsg, QRegularExpression(errorText));
+
     Client::AuthOperation *checkInOperation = client.checkIn();
     QSignalSpy checkInFinishedSpy(checkInOperation, &Client::AuthOperation::finished);
     QSignalSpy checkInFailedSpy(checkInOperation, &Client::AuthOperation::failed);

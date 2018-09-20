@@ -11,6 +11,11 @@ ConnectionError::ConnectionError(const QByteArray &data)
     }
 }
 
+ConnectionError::ConnectionError(const qint32 code) :
+    m_code(code)
+{
+}
+
 ConnectionError::Code ConnectionError::code() const
 {
     return static_cast<ConnectionError::Code>(m_code);

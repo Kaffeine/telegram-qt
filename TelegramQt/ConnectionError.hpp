@@ -36,6 +36,7 @@ public:
 
     ConnectionError() = default;
     explicit ConnectionError(const QByteArray &data);
+    explicit ConnectionError(const qint32 code);
 
     static constexpr int packageSize() { return 4; }
 
