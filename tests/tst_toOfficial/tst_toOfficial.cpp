@@ -37,6 +37,9 @@
 #include <QSignalSpy>
 #include <QLoggingCategory>
 
+#define TEST_TIMEOUT 1000
+#include "TestUtils.hpp"
+
 using namespace Telegram;
 
 CAppInformation *getAppInfo()
@@ -109,7 +112,7 @@ void tst_toOfficial::initTestCase()
 
 void tst_toOfficial::testClientDhLayer()
 {
-    return;
+    QSKIP("The test is superseded by GetConfiguration");
     const auto serverConfig = Client::Settings::testServerConfiguration();
     QVERIFY(!serverConfig.isEmpty());
     const DcOption firstServer = serverConfig.first();
@@ -141,22 +144,22 @@ void tst_toOfficial::testClientDhLayer()
     });
 
     transport->connectToHost(firstServer.address, firstServer.port);
-    QTRY_VERIFY(transport->state() == QAbstractSocket::ConnectedState);
+    TRY_VERIFY(transport->state() == QAbstractSocket::ConnectedState);
 
     Client::PendingRpcOperation *operationReqPq = dhLayer->requestPqAuthorization();
-    QTRY_VERIFY(operationReqPq->isFinished());
+    TRY_VERIFY(operationReqPq->isFinished());
     QVERIFY(operationReqPq->isSucceeded());
     QVERIFY(dhLayer->acceptPqAuthorization(operationReqPq->replyData()));
 
     Client::PendingRpcOperation *operationReqDhParams = dhLayer->requestDhParameters();
-    QTRY_VERIFY(operationReqDhParams->isFinished());
+    TRY_VERIFY(operationReqDhParams->isFinished());
     QVERIFY(operationReqDhParams->isSucceeded());
     QVERIFY(dhLayer->acceptDhAnswer(operationReqDhParams->replyData()));
 
     dhLayer->generateDh();
 
     Client::PendingRpcOperation *operationSetClientDHParams = dhLayer->requestDhGenerationResult();
-    QTRY_VERIFY(operationSetClientDHParams->isFinished());
+    TRY_VERIFY(operationSetClientDHParams->isFinished());
     QVERIFY(operationSetClientDHParams->isSucceeded());
     QVERIFY(dhLayer->processServerDhAnswer(operationSetClientDHParams->replyData()));
 
@@ -196,11 +199,11 @@ void tst_toOfficial::testGetConfiguration()
 
     // --- Connect ---
     PendingOperation *connectOperation = backend->connectToServer(clientSettings.serverConfiguration());
-    QTRY_VERIFY(connectOperation->isFinished());
+    TRY_VERIFY(connectOperation->isFinished());
     QVERIFY(connectOperation->isSucceeded());
 
     PendingOperation *getConfigOperation = backend->getDcConfig();
-    QTRY_VERIFY(getConfigOperation->isFinished());
+    TRY_VERIFY(getConfigOperation->isFinished());
     QVERIFY(getConfigOperation->isSucceeded());
 }
 
