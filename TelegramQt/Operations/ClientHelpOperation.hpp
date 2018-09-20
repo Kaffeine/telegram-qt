@@ -38,7 +38,7 @@ protected:
 
 protected:
     // Implementation:
-    void onGetDcCondigurationFinished(PendingRpcOperation *operation);
+    void onGetDcConfigurationFinished(PendingRpcOperation *operation);
 };
 
 } // Client

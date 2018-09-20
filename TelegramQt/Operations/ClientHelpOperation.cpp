@@ -44,7 +44,7 @@ void HelpOperation::start()
 PendingOperation *HelpOperation::requestDcConfig()
 {
     PendingRpcOperation *requestCodeOperation = helpLayer()->getConfig();
-    connect(requestCodeOperation, &PendingRpcOperation::finished, this, &HelpOperation::onGetDcCondigurationFinished);
+    connect(requestCodeOperation, &PendingRpcOperation::finished, this, &HelpOperation::onGetDcConfigurationFinished);
     return requestCodeOperation;
 }
 
@@ -53,7 +53,7 @@ HelpRpcLayer *HelpOperation::helpLayer() const
     return m_backend->helpLayer();
 }
 
-void HelpOperation::onGetDcCondigurationFinished(PendingRpcOperation *operation)
+void HelpOperation::onGetDcConfigurationFinished(PendingRpcOperation *operation)
 {
     if (operation->isFailed()) {
         setFinishedWithError(operation->errorDetails());
