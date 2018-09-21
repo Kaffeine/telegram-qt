@@ -449,7 +449,7 @@ bool DhLayer::processServerDhAnswer(const QByteArray &payload)
     }
     if (responseTLValue == TLValue::DhGenOk) {
         qCDebug(c_clientDhLayerCategory) << "Server DH answer is accepted. Setup the auth key...";
-        m_sendHelper->setServerSalt(m_serverNonce.parts[0] ^ m_newNonce.parts[0]);
+        setServerSalt(m_serverNonce.parts[0] ^ m_newNonce.parts[0]);
         m_sendHelper->setAuthKey(newAuthKey);
     } else {
         qCDebug(c_clientDhLayerCategory) << "Server DH answer is not accepted. Retry...";

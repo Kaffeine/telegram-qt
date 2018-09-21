@@ -99,7 +99,6 @@ public:
         m_transport = new Transport(this);
         m_sendHelper = new SendPackageHelper(m_transport);
         m_sendHelper->setBaseTimestamp(1537207803787ull);
-        m_sendHelper->setServerSalt(3720780378715ull);
         setSessionId(123456789ull);
 
         setSendPackageHelper(m_sendHelper);
@@ -112,6 +111,7 @@ public:
     Transport *transport() { return m_transport; }
     SendPackageHelper *sendHelper() { return m_sendHelper; }
 
+    quint64 serverSalt() const override { return 3720780378715ull; }
     quint64 sessionId() const override { return m_sessionId; }
     void setSessionId(quint64 id) { m_sessionId = id; }
 

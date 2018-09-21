@@ -154,17 +154,12 @@ bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
     constexpr int c_alignment = 16;
     constexpr int c_v2_minimumPadding = 12;
     {
-        CRawStream stream(CRawStream::WriteOnly);
-
-        const MTProto::FullMessageHeader messageHeader(message,
-                                                       m_sendHelper->serverSalt(),
-                                                       sessionId());
-        stream << messageHeader;
-
+        const MTProto::FullMessageHeader messageHeader(message, serverSalt(), sessionId());
 #ifdef DEVELOPER_BUILD
         qCDebug(c_baseRpcLayerCategoryOut) << "RpcLayer::sendPackage():" << messageHeader;
 #endif
-
+        CRawStream stream(CRawStream::WriteOnly);
+        stream << messageHeader;
         stream.writeBytes(message.data);
 
         int packageLength = stream.getData().length();

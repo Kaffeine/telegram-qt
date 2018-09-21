@@ -53,7 +53,6 @@ public:
 
     DcConfiguration serverConfiguration() const override { return m_dcConfiguration; }
     quint32 dcId() const override { return m_dcOption.id; }
-    quint64 serverSalt() const override { return m_serverSalt; }
 
     PhoneStatus getPhoneStatus(const QString &identifier) const override;
     PasswordInfo getPassword(const QString &identifier) override;
@@ -88,7 +87,6 @@ protected:
 private:
     QTcpServer *m_serverSocket;
     DcOption m_dcOption;
-    quint64 m_serverSalt = 0;
     Telegram::RsaKey m_key;
 
     QHash<QString, quint32> m_phoneToUserId;

@@ -3,6 +3,8 @@
 
 #include <QVector>
 
+#include "ServerNamespace.hpp"
+
 namespace Telegram {
 
 namespace Server {
@@ -27,6 +29,14 @@ public:
     quint32 layer() const { return m_layer; }
     void setLayer(quint32 layer) { m_layer = layer; }
 
+    quint64 getOldSalt();
+    quint64 getServerSalt();
+    bool checkSalt(quint64 salt);
+    void setInitialServerSalt(quint64 salt);
+    QVector<ServerSalt> getSalts(quint32 numberLimit);
+
+    static ServerSalt generateSalt(quint32 validSince);
+
     quint32 appId = 0;
     quint32 lastSequenceNumber = 0;
     quint64 lastMessageNumber = 0;
@@ -43,9 +53,13 @@ public:
     quint64 timestamp = 0;
 
 protected:
+    void addSalt();
+
     RemoteClientConnection *m_connection = nullptr;
     User *m_wanterUser = nullptr;
     User *m_user = nullptr;
+    QVector<ServerSalt> m_salts;
+    ServerSalt m_oldSalt;
     quint32 m_layer = 0;
 };
 

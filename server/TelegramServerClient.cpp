@@ -94,6 +94,7 @@ void RemoteClientConnection::onClientDhStateChanged()
 {
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
         Session *session = api()->createSession(m_sendHelper->authId(), m_sendHelper->authKey(), m_transport->remoteAddress());
+        session->setInitialServerSalt(m_dhLayer->serverSalt());
         setSession(session);
     }
 }
@@ -114,7 +115,6 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
         if (session) {
             setSession(session);
             m_sendHelper->setAuthKey(session->authKey);
-            m_sendHelper->setServerSalt(api()->serverSalt());
             return true;
         }
     }

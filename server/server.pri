@@ -4,6 +4,7 @@ SOURCES += $$PWD/LocalCluster.cpp
 SOURCES += $$PWD/ServerDhLayer.cpp
 SOURCES += $$PWD/ServerRpcLayer.cpp
 SOURCES += $$PWD/ServerRpcOperation.cpp
+SOURCES += $$PWD/Session.cpp
 SOURCES += $$PWD/RpcOperationFactory.cpp
 SOURCES += $$PWD/TelegramServer.cpp
 SOURCES += $$PWD/TelegramServerClient.cpp

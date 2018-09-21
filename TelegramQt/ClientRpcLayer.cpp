@@ -50,6 +50,11 @@ void RpcLayer::setSessionData(quint64 sessionId, quint32 contentRelatedMessagesN
     m_contentRelatedMessages = contentRelatedMessagesNumber;
 }
 
+void RpcLayer::setServerSalt(quint64 serverSalt)
+{
+    m_serverSalt = serverSalt;
+}
+
 void RpcLayer::startNewSession()
 {
     m_sessionId = Utils::randomBytes<quint64>();
@@ -147,8 +152,8 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
 
     switch (notification.errorCode) {
     case MTProto::IgnoredMessageNotification::IncorrectServerSalt:
-        m_sendHelper->setServerSalt(m_receivedServerSalt);
-        qCDebug(c_clientRpcLayerCategory) << "Local serverSalt fixed to" << m_receivedServerSalt;
+        // We sync local serverSalt value in processDecryptedMessageHeader().
+        // Resend message will automatically apply the new salt
         resendIgnoredMessage(notification.messageId);
         break;
     case MTProto::IgnoredMessageNotification::MessageIdTooOld:
@@ -175,12 +180,12 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
 
 bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
 {
-    if (m_sendHelper->serverSalt() != header.serverSalt) {
+    if (serverSalt() != header.serverSalt) {
         qCDebug(c_clientRpcLayerCategory).noquote()
-                << QStringLiteral("Received different server salt: %1 (remote) vs %2 (local)")
+                << QStringLiteral("Received different server salt: %1 (remote) vs %2 (local). Fix local to remote.")
                    .arg(toHex(header.serverSalt))
-                   .arg(toHex(m_sendHelper->serverSalt()));
-        m_receivedServerSalt = header.serverSalt;
+                   .arg(toHex(serverSalt()));
+        setServerSalt(header.serverSalt);
     }
 
     if (m_sessionId != header.sessionId) {

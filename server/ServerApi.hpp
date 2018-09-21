@@ -51,7 +51,6 @@ class ServerApi
 public:
     virtual DcConfiguration serverConfiguration() const = 0;
     virtual quint32 dcId() const = 0;
-    virtual quint64 serverSalt() const = 0;
     virtual PhoneStatus getPhoneStatus(const QString &identifier) const = 0;
     virtual PasswordInfo getPassword(const QString &identifier) = 0;
     virtual bool checkPassword(const QString &identifier, const QByteArray &hash) = 0;

@@ -50,6 +50,7 @@ public:
     explicit BaseRpcLayer(QObject *parent = nullptr);
 
     virtual quint64 sessionId() const = 0;
+    virtual quint64 serverSalt() const = 0;
     quint32 contentRelatedMessagesNumber() const;
     void setSendPackageHelper(BaseSendPackageHelper *helper);
 
@@ -78,8 +79,6 @@ protected:
     BaseSendPackageHelper *m_sendHelper = nullptr;
     quint32 m_sequenceNumber = 0;
     quint32 m_contentRelatedMessages = 0;
-
-    quint64 m_receivedServerSalt = 0;
 };
 
 } // Telegram namespace

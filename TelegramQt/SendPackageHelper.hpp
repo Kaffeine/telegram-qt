@@ -44,9 +44,6 @@ public:
     qint32 deltaTime() const { return m_deltaTime; }
     void setDeltaTime(const qint32 newDt);
 
-    quint64 serverSalt() const { return m_serverSalt; }
-    void setServerSalt(const quint64 salt);
-
     quint64 authId() const { return m_authId; }
     QByteArray getServerKeyPart() const { return m_authKey.mid(96, 32); }
     QByteArray getClientKeyPart() const { return m_authKey.mid(88, 32); }
@@ -58,7 +55,6 @@ protected:
     quint64 m_lastMessageId = 0;
 
     quint64 m_authId = 0;
-    quint64 m_serverSalt = 0;
     QByteArray m_authKey;
     qint32 m_deltaTime = 0;
 };

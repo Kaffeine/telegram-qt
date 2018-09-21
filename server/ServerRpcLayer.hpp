@@ -32,6 +32,7 @@ public:
 
     User *getUser() const;
 
+    quint64 serverSalt() const override;
     quint64 sessionId() const override;
     Session *session() const;
     void setSession(Session *session);

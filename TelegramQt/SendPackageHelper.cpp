@@ -25,11 +25,6 @@ void BaseSendPackageHelper::setDeltaTime(const qint32 newDt)
     m_deltaTime = newDt;
 }
 
-void BaseSendPackageHelper::setServerSalt(const quint64 salt)
-{
-    m_serverSalt = salt;
-}
-
 void BaseSendPackageHelper::setAuthKey(const QByteArray &authKey)
 {
     if (authKey.isEmpty()) {

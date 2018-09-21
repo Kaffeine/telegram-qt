@@ -24,9 +24,6 @@ public:
     qint32 deltaTime() const;
     void setDeltaTime(const qint32 newDt);
 
-    quint64 serverSalt() const;
-    void setServerSalt(const quint64 salt);
-
     static Connection *fromOperation(PendingRpcOperation *operation);
 
     RpcLayer *rpcLayer();

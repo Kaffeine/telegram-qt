@@ -60,6 +60,11 @@ User *RpcLayer::getUser() const
     return m_session ? m_session->user() : nullptr;
 }
 
+quint64 RpcLayer::serverSalt() const
+{
+    return m_session ? m_session->getServerSalt() : 0;
+}
+
 quint64 RpcLayer::sessionId() const
 {
     return m_session ? m_session->sessionId : 0;
@@ -255,7 +260,7 @@ bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &h
         return false;
     }
 
-    if (m_sendHelper->serverSalt() != header.serverSalt) {
+    if (!m_session->checkSalt(header.serverSalt)) {
         sendIgnoredMessageNotification(MTProto::IgnoredMessageNotification::IncorrectServerSalt, header);
         return false;
     }

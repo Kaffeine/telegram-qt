@@ -52,6 +52,9 @@ public:
     quint64 sessionId() const override { return m_sessionId; }
     void setSessionData(quint64 sessionId, quint32 contentRelatedMessagesNumber);
 
+    quint64 serverSalt() const override { return m_serverSalt; }
+    void setServerSalt(quint64 serverSalt);
+
     void startNewSession();
 
     bool processMTProtoMessage(const MTProto::Message &message) override;
@@ -78,6 +81,7 @@ protected:
     QHash<quint64, PendingRpcOperation*> m_operations; // request message id, operation
     QHash<quint64, MTProto::Message*> m_messages; // request message id to MTProto::Message
     quint64 m_sessionId = 0;
+    quint64 m_serverSalt = 0;
 };
 
 } // Client namespace

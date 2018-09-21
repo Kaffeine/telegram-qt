@@ -17,6 +17,13 @@ struct InputPeer : public Telegram::Peer
     qint64 accessHash = 0;
 };
 
+struct ServerSalt
+{
+    quint64 salt = 0;
+    quint32 validSince = 0;
+    quint32 validUntil = 0;
+};
+
 } // Server
 
 } // Telegram

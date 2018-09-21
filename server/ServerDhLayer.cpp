@@ -339,7 +339,7 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
         qCDebug(c_serverDhLayerCategory) << "NewNonce hash lower..." << newNonceHashLower128Array.toHex();
     }
     m_sendHelper->setAuthKey(newAuthKey);
-    m_sendHelper->setServerSalt(m_serverNonce.parts[0] ^ m_newNonce.parts[0]);
+    setServerSalt(m_serverNonce.parts[0] ^ m_newNonce.parts[0]);
     return true;
 }
 
