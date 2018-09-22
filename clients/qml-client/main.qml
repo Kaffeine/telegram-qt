@@ -113,7 +113,6 @@ ApplicationWindow {
         running: true
         onTriggered: {
             window.currentView = busyScreen
-            window.currentView = loginScreen
             if (accountStorage.fileExists() && accountStorage.loadData()) {
                 signInOperation.checkIn()
             } else {
