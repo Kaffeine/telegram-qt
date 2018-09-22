@@ -66,23 +66,6 @@ Authorization::Code DBusCodeAuthProvider::generateCode(Session *session, const Q
 }
 #endif // USE_DBUS_NOTIFIER
 
-User *tryAddUser(LocalCluster *cluster,
-                 const QString &identifier, quint32 dcId,
-                 const QString &firstName, const QString &lastName,
-                 const QString &password = QString()
-        )
-{
-    User *u = cluster->addUser(identifier, dcId);
-    if (u) {
-        u->setFirstName(firstName);
-        u->setLastName(lastName);
-        u->setPlainPassword(password);
-    } else {
-        qCritical() << "Unable to add a user";
-    }
-    return u;
-}
-
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -115,18 +98,22 @@ int main(int argc, char *argv[])
 #endif
     cluster.start();
 
-    tryAddUser(&cluster, QStringLiteral("5432101"), /* dc */ 1,
-               QStringLiteral("Telegram"), QStringLiteral("Qt"),
-               QStringLiteral("mypassword")
-               );
+    if (User *u = cluster.addUser(QStringLiteral("5432101"), /* dc */ 1)) {
+        u->setFirstName(QStringLiteral("Telegram"));
+        u->setLastName(QStringLiteral("Qt"));
+        u->setPlainPassword(QStringLiteral("mypassword"));
+    }
 
-    tryAddUser(&cluster, QStringLiteral("5432102"), /* dc */ 2,
-               QStringLiteral("Telegram2"), QStringLiteral("Qt2")
-               );
+    if (User *u = cluster.addUser(QStringLiteral("5432102"), /* dc */ 2)) {
+        u->setFirstName(QStringLiteral("Telegram2"));
+        u->setLastName(QStringLiteral("Qt2"));
+    }
 
-    tryAddUser(&cluster, QStringLiteral("5432103"), /* dc */ 3,
-               QStringLiteral("Telegram3"), QStringLiteral("Qt3"),
-               QStringLiteral("hispassword")
-               );
+    if (User *u = cluster.addUser(QStringLiteral("5432103"), /* dc */ 3)) {
+        u->setFirstName(QStringLiteral("Telegram3"));
+        u->setLastName(QStringLiteral("Qt3"));
+        u->setPlainPassword(QStringLiteral("hispassword"));
+    }
+
     return a.exec();
 }
