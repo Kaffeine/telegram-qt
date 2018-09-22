@@ -284,6 +284,7 @@ void tst_all::testClientConnection()
                                             + QStringLiteral(" .* \"Config\"")));
 
     // --- Sign in ---
+    QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
     Client::AuthOperation *signInOperation = client.signIn();
     signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
@@ -318,6 +319,7 @@ void tst_all::testClientConnection()
         signInOperation->submitPassword(userData.password);
     }
     TRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
+    TRY_VERIFY(!accountStorageSynced.isEmpty());
 
     quint64 clientAuthId = accountStorage.authId();
     QVERIFY(clientAuthId);
@@ -328,6 +330,9 @@ void tst_all::testClientConnection()
     Server::Session *serverSession = server->getSessionByAuthId(clientAuthId);
     QVERIFY(serverSession);
     QVERIFY(serverSession->user());
+    QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
+    QCOMPARE(accountStorage.dcInfo().id, server->dcId());
+    TRY_VERIFY(client.isSignedIn());
 }
 
 void tst_all::testCheckInSignIn()
