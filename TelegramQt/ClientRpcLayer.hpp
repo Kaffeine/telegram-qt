@@ -65,9 +65,11 @@ public:
 
     quint64 sendRpc(PendingRpcOperation *operation);
     bool resendIgnoredMessage(quint64 messageId);
-    void acknowledgeMessages();
 
     void onConnectionFailed() override;
+
+protected Q_SLOTS:
+    void acknowledgeMessages();
 
 protected:
     bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) override;
