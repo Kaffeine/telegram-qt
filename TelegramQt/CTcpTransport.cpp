@@ -200,16 +200,16 @@ void CTcpTransport::onReadyRead()
                 qCWarning(c_loggingTcpTransport) << "Invalid packet size byte" << hex << showbase << length_t1;
             }
         }
-        if (bufferStream.bytesAvailable() < static_cast<qint64>(m_expectedLength)) {
-            qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << "Ready read, but only "
-                                             << bufferStream.bytesAvailable() << "bytes available ("
-                                             << m_expectedLength << "bytes expected)";
+        if (m_readBuffer.size() < static_cast<qint64>(m_expectedLength)) {
+            qCDebug(c_loggingTcpTransport) << Q_FUNC_INFO << "Ready read, but only "
+                                           << m_readBuffer.size() << "bytes available ("
+                                           << m_expectedLength << "bytes expected)";
             return;
         }
         const QByteArray readPackage = m_readBuffer.left(m_expectedLength);
         m_readBuffer = m_readBuffer.mid(m_expectedLength);
         m_expectedLength = 0;
-        qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO
+        qCDebug(c_loggingTcpTransport) << Q_FUNC_INFO
                                          << "Received a package (" << readPackage.size() << " bytes)";
         emit packageReceived(readPackage);
     }
@@ -217,7 +217,7 @@ void CTcpTransport::onReadyRead()
 
 void CTcpTransport::onTimeout()
 {
-    qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << m_socket->peerName() << m_socket->peerPort();
+    qCDebug(c_loggingTcpTransport) << Q_FUNC_INFO << m_socket->peerName() << m_socket->peerPort();
     emit timeout();
     m_socket->disconnectFromHost();
 }
