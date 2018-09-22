@@ -86,6 +86,7 @@ User *tryAddUser(LocalCluster *cluster,
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+    a.setApplicationName(QStringLiteral("TelegramQt Server"));
     Telegram::initialize();
 
     Telegram::DcConfiguration configuration;
