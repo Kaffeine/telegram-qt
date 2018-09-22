@@ -178,32 +178,27 @@ void CTcpTransport::onReadyRead()
         qCCritical(c_loggingTcpTransport) << "Unknown session type!";
         return;
     }
-    while ((m_socket->bytesAvailable() > 0) || !m_readBuffer.isEmpty()) {
-        if (m_socket->bytesAvailable() > 0) {
-            QByteArray allData = m_socket->readAll();
-            if (m_readAesContext) {
-                allData = m_readAesContext->crypt(allData);
-            }
-            m_readBuffer.append(allData);
+    if (m_socket->bytesAvailable() > 0) {
+        QByteArray allData = m_socket->readAll();
+        if (m_readAesContext) {
+            allData = m_readAesContext->crypt(allData);
         }
-
-        CRawStreamEx bufferStream(m_readBuffer);
+        m_readBuffer.append(allData);
+    }
+    while (m_readBuffer.size() >= 4) {
         if (m_expectedLength == 0) {
-            quint8 length_t1;
-            bufferStream >> length_t1;
-            if (length_t1 < char(0x7f)) {
-                m_expectedLength = length_t1;
-            } else if (length_t1 == char(0x7f)) {
-                QByteArray nextThree = bufferStream.readBytes(3);
-                char *lengthCharPointer = reinterpret_cast<char *>(&m_expectedLength);
-                lengthCharPointer[0] = nextThree.at(0);
-                lengthCharPointer[1] = nextThree.at(1);
-                lengthCharPointer[2] = nextThree.at(2);
+            const quint8 *data = reinterpret_cast<const quint8*>(m_readBuffer.constData());
+            quint8 length_t1 = data[0];
+            if (length_t1 < 0x7fu) {
+                m_expectedLength = length_t1 * 4;
+                m_readBuffer = m_readBuffer.mid(1);
+            } else if (length_t1 == 0x7fu) {
+                m_expectedLength = data[1] + data[2] * 256 + data[3] * 256 * 256;
+                m_expectedLength *= 4;
+                m_readBuffer = m_readBuffer.mid(4);
             } else {
-                qCWarning(c_loggingTcpTransport) << "Invalid package size byte" << hex << showbase << length_t1;
-                qCWarning(c_loggingTcpTransport) << "Buffer:" << m_readBuffer.toHex();
+                qCWarning(c_loggingTcpTransport) << "Invalid packet size byte" << hex << showbase << length_t1;
             }
-            m_expectedLength *= 4;
         }
         if (bufferStream.bytesAvailable() < static_cast<qint64>(m_expectedLength)) {
             qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO << "Ready read, but only "
@@ -211,8 +206,8 @@ void CTcpTransport::onReadyRead()
                                              << m_expectedLength << "bytes expected)";
             return;
         }
-        const QByteArray readPackage = bufferStream.readBytes(m_expectedLength);
-        m_readBuffer = bufferStream.readAll();
+        const QByteArray readPackage = m_readBuffer.left(m_expectedLength);
+        m_readBuffer = m_readBuffer.mid(m_expectedLength);
         m_expectedLength = 0;
         qCDebug(c_loggingTcpTransport()) << Q_FUNC_INFO
                                          << "Received a package (" << readPackage.size() << " bytes)";
