@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "telegramqt_qml_global.h"
+
 class CAppInformation;
 
 namespace Telegram {
@@ -14,7 +16,7 @@ class DeclarativeSettings;
 class AccountStorage;
 class DataStorage;
 
-class DeclarativeClient : public QObject
+class TELEGRAMQT_QML_EXPORT DeclarativeClient : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(CAppInformation *applicationInformation READ appInformation WRITE setAppInformation)

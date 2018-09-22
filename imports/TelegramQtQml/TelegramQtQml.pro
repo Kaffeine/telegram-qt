@@ -8,6 +8,8 @@ include(../../options.pri)
 
 CONFIG += c++11
 
+DEFINES += TELEGRAMQT_QML_LIBRARY
+
 SOURCES = plugin.cpp
 OTHER_FILES += CMakeLists.txt
 
