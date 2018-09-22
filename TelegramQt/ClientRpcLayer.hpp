@@ -60,6 +60,7 @@ public:
     bool processMTProtoMessage(const MTProto::Message &message) override;
     void processSessionCreated(const MTProto::Message &message);
     void processIgnoredMessageNotification(const MTProto::Message &message);
+    bool processRpcResult(const MTProto::Message &message);
 
     quint64 sendRpc(PendingRpcOperation *operation);
     bool resendIgnoredMessage(quint64 messageId);

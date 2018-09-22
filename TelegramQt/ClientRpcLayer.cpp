@@ -63,8 +63,6 @@ void RpcLayer::startNewSession()
 
 bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 {
-    TLValue value = message.firstValue();
-
     switch (message.firstValue()) {
     case TLValue::NewSessionCreated:
         processSessionCreated(message.skipTLValue());
@@ -73,30 +71,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         processMsgContainer(message.skipTLValue());
         break;
     case TLValue::RpcResult:
-        qCDebug(c_clientRpcLayerCategory) << "processRpcQuery(stream);";
-    {
-        MTProto::Stream stream(message.data);
-        quint64 messageId = 0;
-        stream >> value;
-        stream >> messageId;
-        PendingRpcOperation *op = m_operations.take(messageId);
-        delete m_messages.take(messageId);
-        if (!op) {
-            qCWarning(c_clientRpcLayerCategory) << "processRpcQuery():"
-                                                << "Unhandled RPC result for messageId"
-                                                << hex << showbase << messageId;
-            return false;
-        }
-        op->setFinishedWithReplyData(stream.readAll());
-#define DUMP_CLIENT_RPC_PACKETS
-#ifdef DUMP_CLIENT_RPC_PACKETS
-        qCDebug(c_clientRpcLayerCategory) << "Client: Answer for message" << messageId << "op:" << op;
-        qCDebug(c_clientRpcLayerCategory).noquote() << "Client: RPC Reply bytes:" << op->replyData().size() << op->replyData().toHex();
-#endif
-        qCDebug(c_clientRpcLayerCategory) << "processRpcQuery():" << "Set finished op" << op
-                                          << "messageId:" << hex << showbase << messageId
-                                          << "error:" << op->errorDetails();
-    }
+        processRpcResult(message.skipTLValue());
         break;
     case TLValue::MsgsAck:
         qCDebug(c_clientRpcLayerCategory) << "processMessageAck(stream);";
@@ -116,6 +91,31 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         break;
     }
     return false;
+}
+bool RpcLayer::processRpcResult(const MTProto::Message &message)
+{
+    qCDebug(c_clientRpcLayerCategory) << "processRpcQuery(stream);";
+    MTProto::Stream stream(message.data);
+    quint64 messageId = 0;
+    stream >> messageId;
+    PendingRpcOperation *op = m_operations.take(messageId);
+    delete m_messages.take(messageId);
+    if (!op) {
+        qCWarning(c_clientRpcLayerCategory) << "processRpcQuery():"
+                                            << "Unhandled RPC result for messageId"
+                                            << hex << showbase << messageId;
+        return false;
+    }
+    op->setFinishedWithReplyData(stream.readAll());
+#define DUMP_CLIENT_RPC_PACKETS
+#ifdef DUMP_CLIENT_RPC_PACKETS
+    qCDebug(c_clientRpcLayerCategory) << "Client: Answer for message" << messageId << "op:" << op;
+    qCDebug(c_clientRpcLayerCategory).noquote() << "Client: RPC Reply bytes:" << op->replyData().size() << op->replyData().toHex();
+#endif
+    qCDebug(c_clientRpcLayerCategory) << "processRpcQuery():" << "Set finished op" << op
+                                      << "messageId:" << hex << showbase << messageId
+                                      << "error:" << op->errorDetails();
+    return true;
 }
 
 void RpcLayer::processSessionCreated(const MTProto::Message &message)
