@@ -63,6 +63,9 @@ void RpcLayer::startNewSession()
 
 bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 {
+    if (message.sequenceNumber & 1) {
+        addMessageToAck(message.messageId);
+    }
     switch (message.firstValue()) {
     case TLValue::NewSessionCreated:
         processSessionCreated(message.skipTLValue());
@@ -245,6 +248,23 @@ bool RpcLayer::resendIgnoredMessage(quint64 messageId)
     return message->messageId;
 }
 
+void RpcLayer::acknowledgeMessages()
+{
+    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    TLVector<quint64> idsVector = m_messagesToAck;
+    m_messagesToAck.clear();
+    outputStream << TLValue::MsgsAck;
+    outputStream << idsVector;
+
+    MTProto::Message *message = new MTProto::Message();
+    message->messageId = m_sendHelper->newMessageId(SendMode::Client);
+    message->sequenceNumber = m_contentRelatedMessages * 2;
+    message->setData(outputStream.getData());
+
+    m_messages.insert(message->messageId, message);
+    sendPackage(*message);
+}
+
 void RpcLayer::onConnectionFailed()
 {
     for (PendingRpcOperation *op : m_operations) {
@@ -276,6 +296,14 @@ QByteArray RpcLayer::getInitConnection() const
 #endif
     outputStream << m_appInfo->languageCode(); // Lang code
     return outputStream.getData();
+}
+
+void RpcLayer::addMessageToAck(quint64 messageId)
+{
+    if (m_messagesToAck.isEmpty()) {
+        QMetaObject::invokeMethod(this, "acknowledgeMessages", Qt::QueuedConnection);
+    }
+    m_messagesToAck.append(messageId);
 }
 
 } // Client namespace

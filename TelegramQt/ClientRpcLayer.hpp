@@ -21,6 +21,7 @@
 #include "RpcLayer.hpp"
 
 #include <QHash>
+#include <QVector>
 
 class CAppInformation;
 class CTelegramStream;
@@ -64,6 +65,7 @@ public:
 
     quint64 sendRpc(PendingRpcOperation *operation);
     bool resendIgnoredMessage(quint64 messageId);
+    void acknowledgeMessages();
 
     void onConnectionFailed() override;
 
@@ -77,12 +79,15 @@ protected:
 
     QByteArray getInitConnection() const;
 
+    void addMessageToAck(quint64 messageId);
+
     CAppInformation *m_appInfo = nullptr;
     AuthOperation *m_pendingAuthOperation = nullptr;
     QHash<quint64, PendingRpcOperation*> m_operations; // request message id, operation
     QHash<quint64, MTProto::Message*> m_messages; // request message id to MTProto::Message
     quint64 m_sessionId = 0;
     quint64 m_serverSalt = 0;
+    QVector<quint64> m_messagesToAck;
 };
 
 } // Client namespace
