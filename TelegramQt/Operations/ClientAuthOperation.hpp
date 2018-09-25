@@ -35,6 +35,7 @@ public:
 
     QString passwordHint() const { return m_passwordHint; }
     bool hasRecovery() const { return m_hasRecovery; }
+    bool isRegistered() const { return m_registered; }
 
 public slots:
     void start() override;
@@ -48,6 +49,7 @@ public slots:
     PendingOperation *submitPassword(const QString &password);
 
     void submitPhoneNumber(const QString &phoneNumber);
+    bool submitName(const QString &firstName, const QString &lastName);
 
     void requestCall();
     void requestSms();
@@ -62,6 +64,7 @@ Q_SIGNALS:
 
     void passwordHintChanged(const QString &hint);
     void hasRecoveryChanged(bool hasRecovery);
+    void registeredChanged(bool registered); // Always emitted before authCodeRequired()
 
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
@@ -70,20 +73,26 @@ protected:
     void setWantedDc(quint32 dcId);
     void setPasswordCurrentSalt(const QByteArray &salt);
     void setPasswordHint(const QString &hint);
+    void setRegistered(bool registered);
+
     AccountRpcLayer *accountLayer() const;
     AuthRpcLayer *authLayer() const;
 
     Backend *m_backend = nullptr;
     RunMethod m_runMethod = nullptr;
     QString m_phoneNumber;
+    QString m_firstName;
+    QString m_lastName;
     QString m_passwordHint;
     QByteArray m_passwordCurrentSalt;
     bool m_hasRecovery;
+    bool m_registered = false;
 
 protected:
     // Implementation:
     void onRequestAuthCodeFinished(AuthRpcLayer::PendingAuthSentCode *operation);
     void onSignInFinished(PendingRpcOperation *operation);
+    void onSignUpFinished(PendingRpcOperation *operation);
     void onPasswordRequestFinished(PendingRpcOperation *operation);
     void onCheckPasswordFinished(PendingRpcOperation *operation);
     void onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization);

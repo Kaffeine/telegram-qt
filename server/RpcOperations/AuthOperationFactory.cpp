@@ -406,15 +406,24 @@ void AuthRpcOperation::runSignIn()
 void AuthRpcOperation::runSignUp()
 {
     qDebug() << Q_FUNC_INFO;
-    if (!api()->identifierIsValid(m_signIn.phoneNumber)) {
+    if (!api()->identifierIsValid(m_signUp.phoneNumber)) {
         sendRpcError(RpcError::PhoneNumberInvalid);
+        return;
+    }
+
+    if (m_signUp.firstName.isEmpty()) {
+        sendRpcError(RpcError::FirstnameInvalid);
+        return;
+    }
+    if (m_signUp.lastName.isEmpty()) {
+        sendRpcError(RpcError::LastnameInvalid);
         return;
     }
 
     if (!verifyAuthCode(m_signUp.phoneNumber, m_signUp.phoneCodeHash, m_signUp.phoneCode)) {
         return;
     }
-    User *user = api()->addUser(m_signIn.phoneNumber);
+    User *user = api()->addUser(m_signUp.phoneNumber);
     user->setFirstName(m_signUp.firstName);
     user->setLastName(m_signUp.lastName);
     user->addSession(layer()->session());
@@ -422,6 +431,7 @@ void AuthRpcOperation::runSignUp()
     TLAuthAuthorization result;
     userToTlUser(user, &result.user);
     result.user.flags = TLUser::Self;
+    bakeFlags(&result.user);
     sendRpcReply(result);
 }
 // End of generated run methods

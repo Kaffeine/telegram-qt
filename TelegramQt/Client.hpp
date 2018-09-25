@@ -93,6 +93,7 @@ public Q_SLOTS:
     // Low-level methods (needed mostly for debug and testing)
 //    void disconnectFromServer();
 //    PendingAuthOperation *checkPhoneNumber();
+    AuthOperation *signUp() { return signIn(); }
     AuthOperation *signIn();
     AuthOperation *checkIn();
 

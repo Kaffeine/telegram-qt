@@ -185,6 +185,8 @@ private slots:
     void testClientConnection_data();
     void testClientConnection();
     void testCheckInSignIn();
+    void testSignUp_data();
+    void testSignUp();
 };
 
 tst_all::tst_all(QObject *parent) :
@@ -429,6 +431,94 @@ void tst_all::testCheckInSignIn()
     Server::Session *serverSession = server->getSessionByAuthId(clientAuthId);
     QVERIFY(serverSession);
     QVERIFY(serverSession->user());
+    QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
+    QCOMPARE(accountStorage.dcInfo().id, server->dcId());
+    TRY_VERIFY(client.isSignedIn());
+}
+
+void tst_all::testSignUp_data()
+{
+    QTest::addColumn<UserData>("userData");
+
+    UserData user2OnDc2 = c_userWithPassword;
+    user2OnDc2.unsetPassword();
+    user2OnDc2.dcId = 2;
+
+    QTest::newRow("Valid user") << user2OnDc2;
+}
+
+void tst_all::testSignUp()
+{
+    QFETCH(UserData, userData);
+
+    const Telegram::Client::Settings::SessionType sessionType = Telegram::Client::Settings::SessionType::Obfuscated;
+    const DcOption clientDcOption = c_localDcOptions.first();
+
+    const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
+    QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
+    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
+    QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
+
+    Test::AuthProvider authProvider;
+    Telegram::Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_localDcConfiguration);
+    QVERIFY(cluster.start());
+
+    Server::Server *server = qobject_cast<Server::Server*>(cluster.getServerInstance(1));
+    QVERIFY(server);
+
+    Client::Client client;
+    Client::AccountStorage accountStorage;
+    Client::Settings clientSettings;
+    Client::InMemoryDataStorage dataStorage;
+    client.setAppInformation(getAppInfo());
+    client.setSettings(&clientSettings);
+    client.setAccountStorage(&accountStorage);
+    client.setDataStorage(&dataStorage);
+    QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
+    QVERIFY(clientSettings.setServerRsaKey(publicKey));
+    clientSettings.setPreferedSessionType(sessionType);
+
+    QTest::ignoreMessage(QtDebugMsg,
+                         QRegularExpression(QString::fromLatin1(Server::RpcLayer::gzipPackMessage())
+                                            + QStringLiteral(" .* \"Config\"")));
+
+    // --- Sign in ---
+    QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
+    Client::AuthOperation *signUpOperation = client.signUp();
+    signUpOperation->setPhoneNumber(userData.phoneNumber);
+    QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
+    QSignalSpy authCodeSpy(signUpOperation, &Client::AuthOperation::authCodeRequired);
+    QSignalSpy registrationStatusSpy(signUpOperation, &Client::AuthOperation::registeredChanged);
+    TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
+    TRY_VERIFY(!authCodeSpy.isEmpty());
+    QCOMPARE(signUpOperation->isRegistered(), false);
+    QCOMPARE(authCodeSpy.count(), 1);
+    QCOMPARE(serverAuthCodeSpy.count(), 1);
+    QList<QVariant> authCodeSentArguments = serverAuthCodeSpy.takeFirst();
+    QCOMPARE(authCodeSentArguments.count(), 2);
+    const QString authCode = authCodeSentArguments.at(1).toString();
+
+    signUpOperation->submitName(userData.firstName, userData.lastName);
+    signUpOperation->submitAuthCode(authCode);
+    TRY_VERIFY2(signUpOperation->isSucceeded(), "Unexpected sign in fail");
+    TRY_VERIFY(!accountStorageSynced.isEmpty());
+
+    quint64 clientAuthId = accountStorage.authId();
+    QVERIFY(clientAuthId);
+    QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
+    QCOMPARE(clientConnections.count(), 1);
+    Server::RemoteClientConnection *remoteClientConnection = *clientConnections.cbegin();
+    QCOMPARE(remoteClientConnection->authId(), clientAuthId);
+    Server::Session *serverSession = server->getSessionByAuthId(clientAuthId);
+    QVERIFY(serverSession);
+    Telegram::Server::User *serverSideUser = serverSession->user();
+    QVERIFY(serverSideUser);
+    QCOMPARE(serverSideUser->firstName(), userData.firstName);
+    QCOMPARE(serverSideUser->lastName(), userData.lastName);
+    QCOMPARE(serverSideUser->phoneNumber(), userData.phoneNumber);
     QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
     QCOMPARE(accountStorage.dcInfo().id, server->dcId());
     TRY_VERIFY(client.isSignedIn());

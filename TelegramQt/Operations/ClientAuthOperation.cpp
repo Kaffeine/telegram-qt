@@ -121,8 +121,15 @@ PendingOperation *AuthOperation::submitAuthCode(const QString &code)
         return PendingOperation::failOperation({{QStringLiteral("text"), text}});
     }
 
-    PendingRpcOperation *sendCodeOperation = authLayer()->signIn(phoneNumber(), m_authCodeHash, code);
-    connect(sendCodeOperation, &PendingRpcOperation::finished, this, &AuthOperation::onSignInFinished);
+    PendingRpcOperation *sendCodeOperation = nullptr;
+    if (m_registered) {
+        sendCodeOperation = authLayer()->signIn(phoneNumber(), m_authCodeHash, code);
+        connect(sendCodeOperation, &PendingRpcOperation::finished, this, &AuthOperation::onSignInFinished);
+    } else {
+        sendCodeOperation = authLayer()->signUp(phoneNumber(), m_authCodeHash, code, m_firstName, m_lastName);
+        connect(sendCodeOperation, &PendingRpcOperation::finished, this, &AuthOperation::onSignUpFinished);
+    }
+
     return sendCodeOperation;
 }
 
@@ -155,6 +162,13 @@ void AuthOperation::submitPhoneNumber(const QString &phoneNumber)
     if (!isFinished()) {
         start();
     }
+}
+
+bool AuthOperation::submitName(const QString &firstName, const QString &lastName)
+{
+    m_firstName = firstName;
+    m_lastName = lastName;
+    return !firstName.isEmpty() && !lastName.isEmpty();
 }
 
 void AuthOperation::requestCall()
@@ -192,6 +206,12 @@ void AuthOperation::setPasswordHint(const QString &hint)
     emit passwordHintChanged(hint);
 }
 
+void AuthOperation::setRegistered(bool registered)
+{
+    m_registered = registered;
+    emit registeredChanged(registered);
+}
+
 AccountRpcLayer *AuthOperation::accountLayer() const
 {
     return m_backend->accountLayer();
@@ -219,6 +239,7 @@ void AuthOperation::onRequestAuthCodeFinished(AuthRpcLayer::PendingAuthSentCode 
     qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << result.tlType << result.phoneCodeHash;
     if (result.isValid()) {
         m_authCodeHash = result.phoneCodeHash;
+        setRegistered(result.phoneRegistered());
         emit authCodeRequired();
     }
 }
@@ -232,6 +253,18 @@ void AuthOperation::onSignInFinished(PendingRpcOperation *operation)
             return;
         }
     }
+    if (!operation->isSucceeded()) {
+        setDelayedFinishedWithError(operation->errorDetails());
+        return;
+    }
+
+    TLAuthAuthorization result;
+    authLayer()->processReply(operation, &result);
+    onGotAuthorization(operation, result);
+}
+
+void AuthOperation::onSignUpFinished(PendingRpcOperation *operation)
+{
     if (!operation->isSucceeded()) {
         setDelayedFinishedWithError(operation->errorDetails());
         return;
