@@ -9,7 +9,7 @@ AuthScreen {
     objectName: "AuthEnterNameComponent"
     width: loginStack.width
     title: qsTr("Your name")
-    description: qsTr("Enter your name and add a profile picture")
+    description: qsTr("The phone number is not registered. Enter your name to continue.")
     signal submitName(string firstName, string lastName)
 
     onActivate: firstNameInput.forceActiveFocus()

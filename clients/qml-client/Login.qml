@@ -38,7 +38,13 @@ Frame {
 
     Connections {
         target: signInOperation
-        onAuthCodeRequired: loginStack.replace("login/EnterCode.qml")
+        onAuthCodeRequired: {
+            if (signInOperation.registered) {
+                loginStack.replace("login/EnterCode.qml")
+            } else {
+                loginStack.replace("login/EnterName.qml")
+            }
+        }
         onPasswordRequired: loginStack.replace("login/EnterPassword.qml")
     }
 
@@ -61,6 +67,11 @@ Frame {
             onSubmitAuthCode: signInOperation.submitAuthCode(code)
             onSubmitPassword: signInOperation.submitPassword(password)
             onSubmitPhoneNumber: signInOperation.submitPhoneNumber(phoneNumber)
+            onSubmitName: {
+                if (signInOperation.submitName(firstName, lastName)) {
+                    loginStack.replace("login/EnterCode.qml")
+                }
+            }
         }
         opacity: signInOperation.busy ? 0 : 1
         Behavior on opacity { NumberAnimation { } }
