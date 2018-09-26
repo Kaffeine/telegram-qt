@@ -31,6 +31,11 @@ QString DeclarativeAuthOperation::phoneNumber() const
     return m_phoneNumber;
 }
 
+bool DeclarativeAuthOperation::isRegistered() const
+{
+    return m_authOperation ? m_authOperation->isRegistered() : false;
+}
+
 QString DeclarativeAuthOperation::passwordHint() const
 {
     return m_authOperation ? m_authOperation->passwordHint() : QString();
@@ -57,6 +62,7 @@ void DeclarativeAuthOperation::signIn()
     m_authOperation->setPhoneNumber(phoneNumber());
     setPendingOperation(m_authOperation);
     connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
+    connect(m_authOperation, &AuthOperation::registeredChanged, this, &DeclarativeAuthOperation::registeredChanged);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &DeclarativeAuthOperation::authCodeRequired);
     connect(m_authOperation, &AuthOperation::passwordRequired, this, &DeclarativeAuthOperation::onPasswordRequired);
     connect(m_authOperation, &AuthOperation::passwordCheckFailed, this, &DeclarativeAuthOperation::passwordCheckFailed);
@@ -145,6 +151,14 @@ bool DeclarativeAuthOperation::submitPassword(const QString &password)
     setBusy(true);
     connect(op, &PendingOperation::finished, this, &DeclarativeAuthOperation::unsetBusy);
     return true;
+}
+
+bool DeclarativeAuthOperation::submitName(const QString &firstName, const QString &lastName)
+{
+    if (!m_authOperation) {
+        return false;
+    }
+    return m_authOperation->submitName(firstName, lastName);
 }
 
 void DeclarativeAuthOperation::setPhoneNumber(const QString &phoneNumber)

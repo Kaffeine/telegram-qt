@@ -18,6 +18,7 @@ class DeclarativeAuthOperation : public DeclarativeOperation
 {
     Q_OBJECT
     Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber NOTIFY phoneNumberChanged)
+    Q_PROPERTY(bool registered READ isRegistered NOTIFY registeredChanged)
     Q_PROPERTY(QString passwordHint READ passwordHint NOTIFY passwordHintChanged)
     Q_PROPERTY(bool hasRecovery READ hasRecovery NOTIFY hasRecoveryChanged)
 //    Q_PROPERTY(bool callAvailable READ isCallAvailable NOTIFY callAvailableChanged)
@@ -42,6 +43,7 @@ public:
     AuthStatus status() const;
 
     QString phoneNumber() const;
+    bool isRegistered() const;
     QString passwordHint() const;
     bool hasRecovery() const;
 
@@ -55,6 +57,7 @@ public slots:
 
     bool submitAuthCode(const QString &code);
     bool submitPassword(const QString &password);
+    bool submitName(const QString &firstName, const QString &lastName);
 
     void setPhoneNumber(const QString &phoneNumber);
 
@@ -77,6 +80,7 @@ Q_SIGNALS:
     void passwordCheckFailed();
 
     void phoneNumberChanged();
+    void registeredChanged(bool registered); // Always emitted before authCodeRequired()
 //    void callAvailable();
 
     void statusChanged(AuthStatus status);
