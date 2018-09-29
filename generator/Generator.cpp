@@ -439,15 +439,13 @@ QString Generator::generateTLValuesDefinition(const Predicate *predicate)
 QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSources)
 {
     QString code;
-
+    if (type.isSelfReferenced()) {
+        code.append(QStringLiteral("struct %1;\n").arg(type.name));
+        code.append(QStringLiteral("using %1Ptr = TLPtr<%1>;\n\n").arg(type.name));
+    }
     code.append(QString("struct %1 {\n").arg(type.name));
 
-//    QString anotherName = removePrefix(type.name);
-//    anotherName[0] = anotherName.at(0).toUpper();
-//    anotherName.prepend(QLatin1String("another"));
     bool constExpr = true;
-//    QString copyConstructor = spacing + QString("%1(const %1 &%2) :\n").arg(type.name).arg(anotherName);
-//    QString copyOperator = spacing + QString("%1 &operator=(const %1 &%2) {\n").arg(type.name).arg(anotherName);
     static const QString specCommentPrefix = spacing + QStringLiteral("// ");
     QString specSource;
     QString isValidTypeCode;
@@ -480,9 +478,6 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
             }
 
             addedMembers.append(member.getAlias());
-
-//            copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
-//            copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(member.name).arg(anotherName);
             if (!podTypes.contains(member.type())) {
                 constExpr = false;
                 continue;
@@ -492,21 +487,12 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
         }
     }
 
-//    copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
-//    copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
-
-
     isValidTypeCode.append(QStringLiteral(
                                "            return true;\n"
                                "        default:\n"
                                "            return false;\n"
                                "        };\n"
                                "    }\n"));
-
-//    copyConstructor.chop(2);
-//    copyConstructor.append(QLatin1String(" { }\n\n"));
-
-//    copyOperator.append(QString("\n%1%1return *this;\n%1}\n").arg(spacing));
 
     const QString constructor = QStringLiteral("%1() = default;\n\n").arg(type.name);
     const QString constExprSpace = QStringLiteral("constexpr ");
@@ -518,8 +504,6 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
     if (addSpecSources) {
         code.append(specSource);
     }
-//    code.append(copyConstructor);
-//    code.append(copyOperator);
     const QString isValidFirstLines = QStringLiteral("bool isValid() const {\n"
                                                      "        switch (tlType) {\n");
     if (constExpr) {
@@ -945,6 +929,8 @@ QString Generator::debugOperatorPerTypeImplementation(const QString &argName, co
             code += doubleSpacing + QString("if (type.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit);
             code += doubleSpacing + spacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
             code += doubleSpacing + QLatin1Literal("}\n");
+        } else if (member.accessByPointer() && !member.isVector()) {
+            code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << *%2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
         } else {
             code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
         }

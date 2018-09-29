@@ -193,7 +193,7 @@ void tst_Generator::recursiveTypeMembers()
     static const QStringList checkList = {
         QStringLiteral("QString email;"),
         QStringLiteral("QString stringText;"),
-        QStringLiteral("TLRichText *richText;"),
+        QStringLiteral("TLRichTextPtr richText;"),
         QStringLiteral("TLVector<TLRichText*> texts;"),
     };
     for (const QString &mustHaveMember : checkList) {
@@ -220,11 +220,11 @@ void tst_Generator::doubleRecursiveTypeMembers()
     QVERIFY(!solvedType.name.isEmpty());
     const QStringList structMembers = Generator::generateTLTypeMembers(solvedType);
     static const QStringList checkList = {
-        QStringLiteral("TLRichText *text;"),
+        QStringLiteral("TLRichTextPtr text;"),
         QStringLiteral("TLVector<TLRichText*> richTextItemsVector;"),
         QStringLiteral("TLVector<TLPageBlock*> blocks;"),
         QStringLiteral("TLVector<TLPageBlock*> pageBlockItemsVector;"),
-        QStringLiteral("TLRichText *caption;"),
+        QStringLiteral("TLRichTextPtr caption;"),
     };
     for (const QString &mustHaveMember : checkList) {
         if (!structMembers.contains(mustHaveMember)) {
