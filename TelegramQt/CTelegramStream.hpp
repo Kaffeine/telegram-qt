@@ -33,7 +33,7 @@ public:
     using CRawStreamEx::operator >>;
 
     CTelegramStream &operator>>(TLValue &v);
-    CTelegramStream &operator<<(TLValue v);
+    CTelegramStream &operator<<(const TLValue v);
 
     CTelegramStream &operator>>(QString &str);
     CTelegramStream &operator<<(const QString &str);
@@ -391,7 +391,7 @@ inline CTelegramStream &CTelegramStream::operator>>(TLValue &v)
     return *this;
 }
 
-inline CTelegramStream &CTelegramStream::operator<<(TLValue v)
+inline CTelegramStream &CTelegramStream::operator<<(const TLValue v)
 {
     *this << quint32(v);
     return *this;
