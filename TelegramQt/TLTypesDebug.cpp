@@ -2112,15 +2112,15 @@ QDebug operator<<(QDebug d, const TLRichText &type)
     case TLValue::TextUnderline:
     case TLValue::TextStrike:
     case TLValue::TextFixed:
-        d << spacer.innerSpaces() << "richText: " << type.richText <<"\n";
+        d << spacer.innerSpaces() << "richText: " << *type.richText <<"\n";
         break;
     case TLValue::TextUrl:
-        d << spacer.innerSpaces() << "richText: " << type.richText <<"\n";
+        d << spacer.innerSpaces() << "richText: " << *type.richText <<"\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "webpageId: " << type.webpageId <<"\n";
         break;
     case TLValue::TextEmail:
-        d << spacer.innerSpaces() << "richText: " << type.richText <<"\n";
+        d << spacer.innerSpaces() << "richText: " << *type.richText <<"\n";
         d << spacer.innerSpaces() << "email: " << type.email <<"\n";
         break;
     case TLValue::TextConcat:
@@ -4677,14 +4677,14 @@ QDebug operator<<(QDebug d, const TLPageBlock &type)
     case TLValue::PageBlockSubheader:
     case TLValue::PageBlockParagraph:
     case TLValue::PageBlockFooter:
-        d << spacer.innerSpaces() << "text: " << type.text <<"\n";
+        d << spacer.innerSpaces() << "text: " << *type.text <<"\n";
         break;
     case TLValue::PageBlockAuthorDate:
-        d << spacer.innerSpaces() << "richTextAuthor: " << type.richTextAuthor <<"\n";
+        d << spacer.innerSpaces() << "richTextAuthor: " << *type.richTextAuthor <<"\n";
         d << spacer.innerSpaces() << "publishedDate: " << type.publishedDate <<"\n";
         break;
     case TLValue::PageBlockPreformatted:
-        d << spacer.innerSpaces() << "text: " << type.text <<"\n";
+        d << spacer.innerSpaces() << "text: " << *type.text <<"\n";
         d << spacer.innerSpaces() << "language: " << type.language <<"\n";
         break;
     case TLValue::PageBlockAnchor:
@@ -4696,20 +4696,20 @@ QDebug operator<<(QDebug d, const TLPageBlock &type)
         break;
     case TLValue::PageBlockBlockquote:
     case TLValue::PageBlockPullquote:
-        d << spacer.innerSpaces() << "text: " << type.text <<"\n";
-        d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
+        d << spacer.innerSpaces() << "text: " << *type.text <<"\n";
+        d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockPhoto:
         d << spacer.innerSpaces() << "photoId: " << type.photoId <<"\n";
-        d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
+        d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockVideo:
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "videoId: " << type.videoId <<"\n";
-        d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
+        d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockCover:
-        d << spacer.innerSpaces() << "cover: " << type.cover <<"\n";
+        d << spacer.innerSpaces() << "cover: " << *type.cover <<"\n";
         break;
     case TLValue::PageBlockEmbed:
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
@@ -4724,7 +4724,7 @@ QDebug operator<<(QDebug d, const TLPageBlock &type)
         }
         d << spacer.innerSpaces() << "w: " << type.w <<"\n";
         d << spacer.innerSpaces() << "h: " << type.h <<"\n";
-        d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
+        d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockEmbedPost:
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
@@ -4733,19 +4733,19 @@ QDebug operator<<(QDebug d, const TLPageBlock &type)
         d << spacer.innerSpaces() << "stringAuthor: " << type.stringAuthor <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "blocks: " << type.blocks <<"\n";
-        d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
+        d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockCollage:
     case TLValue::PageBlockSlideshow:
         d << spacer.innerSpaces() << "pageBlockItemsVector: " << type.pageBlockItemsVector <<"\n";
-        d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
+        d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockChannel:
         d << spacer.innerSpaces() << "channel: " << type.channel <<"\n";
         break;
     case TLValue::PageBlockAudio:
         d << spacer.innerSpaces() << "audioId: " << type.audioId <<"\n";
-        d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
+        d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     default:
         break;
