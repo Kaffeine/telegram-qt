@@ -446,7 +446,6 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 //    anotherName[0] = anotherName.at(0).toUpper();
 //    anotherName.prepend(QLatin1String("another"));
     bool constExpr = true;
-    QString constructor = QString("%1() :\n").arg(type.name);
 //    QString copyConstructor = spacing + QString("%1(const %1 &%2) :\n").arg(type.name).arg(anotherName);
 //    QString copyOperator = spacing + QString("%1 &operator=(const %1 &%2) {\n").arg(type.name).arg(anotherName);
     static const QString specCommentPrefix = spacing + QStringLiteral("// ");
@@ -490,16 +489,12 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
             }
 
             const QString initialValue = initTypesValues.at(podTypes.indexOf(member.type()));
-            constructor += QString("%1%2(%3),\n").arg(doubleSpacing).arg(member.getAlias()).arg(initialValue);
         }
     }
 
-    constructor += QString("%1%2(%3::%4),\n").arg(doubleSpacing).arg(tlTypeMember).arg(tlValueName).arg(type.subTypes.first().name);
 //    copyConstructor += QString("%1%2(%3.%2),\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
 //    copyOperator += QString("%1%2 = %3.%2;\n").arg(doubleSpacing).arg(tlTypeMember).arg(anotherName);
 
-    constructor.chop(2);
-    constructor.append(QLatin1String(" { }\n\n"));
 
     isValidTypeCode.append(QStringLiteral(
                                "            return true;\n"
@@ -513,6 +508,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 
 //    copyOperator.append(QString("\n%1%1return *this;\n%1}\n").arg(spacing));
 
+    const QString constructor = QStringLiteral("%1() = default;\n\n").arg(type.name);
     const QString constExprSpace = QStringLiteral("constexpr ");
     if (constExpr) {
         code.append(spacing + constExprSpace + constructor);
@@ -608,14 +604,19 @@ QStringList Generator::generateTLTypeMembers(const TLType &type)
                 if (member.isVector()) {
                     membersCode.append(QStringLiteral("%1<%2*> %3;").arg(tlVectorType, member.bareType(), member.getAlias()));
                 } else {
-                    membersCode.append(QStringLiteral("%1 *%2;").arg(member.type(), member.getAlias()));
+                    membersCode.append(QStringLiteral("%1Ptr %2;").arg(member.type(), member.getAlias()));
                 }
             } else {
-                membersCode.append(QStringLiteral("%1 %2;").arg(member.type(), member.getAlias()));
+                if (podTypes.contains(member.type())) {
+                    const QString initialValue = initTypesValues.at(podTypes.indexOf(member.type()));
+                    membersCode.append(QStringLiteral("%1 %2 = %3;").arg(member.type(), member.getAlias(), initialValue));
+                } else {
+                    membersCode.append(QStringLiteral("%1 %2;").arg(member.type(), member.getAlias()));
+                }
             }
         }
     }
-    membersCode.append(QStringLiteral("%1 %2;").arg(tlValueName, tlTypeMember));
+    membersCode.append(QStringLiteral("%1 %2 = %1::%3;").arg(tlValueName, tlTypeMember, type.subTypes.first().name));
     return membersCode;
 }
 
