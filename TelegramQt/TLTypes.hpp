@@ -20,9 +20,13 @@
 
 #include "TLValues.hpp"
 #include "TLNumbers.hpp"
+#include "UniqueLazyPointer.hpp"
 
 #include <QMetaType>
 #include <QVector>
+
+template <typename TL>
+using TLPtr = Telegram::UniqueLazyPointer<TL>;
 
 template <typename T>
 class TLVector : public QVector<T>
