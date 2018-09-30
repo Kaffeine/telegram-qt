@@ -102,6 +102,7 @@ set(telegram_qt_HEADERS
     Utils.hpp
     FileRequestDescriptor.hpp
     TelegramUtils.hpp
+    TLNumbers.hpp
     TLTypes.hpp
     crypto-rsa.hpp
     crypto-aes.hpp
