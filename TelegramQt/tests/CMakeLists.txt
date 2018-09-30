@@ -33,6 +33,7 @@ foreach(test_name
     tst_CTelegramTransport
     tst_CTelegramStream
     tst_TelegramRemoteFile
+    tst_UniqueLazyPointer
     tst_utils
     tst_RpcError
     tst_RpcLayer

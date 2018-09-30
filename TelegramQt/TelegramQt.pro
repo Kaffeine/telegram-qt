@@ -105,6 +105,7 @@ HEADERS += \
     CTelegramStreamExtraOperators.hpp \
     CTelegramStream_p.hpp \
     CRawStream.hpp \
+    UniqueLazyPointer.hpp \
     Utils.hpp \
     FileRequestDescriptor.hpp \
     TelegramUtils.hpp \
