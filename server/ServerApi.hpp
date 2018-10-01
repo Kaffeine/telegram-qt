@@ -49,6 +49,8 @@ struct PasswordInfo
 class ServerApi
 {
 public:
+    virtual ~ServerApi() = default;
+
     virtual DcConfiguration serverConfiguration() const = 0;
     virtual quint32 dcId() const = 0;
     virtual PhoneStatus getPhoneStatus(const QString &identifier) const = 0;
