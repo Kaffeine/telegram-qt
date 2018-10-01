@@ -163,10 +163,18 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
         resendIgnoredMessage(notification.messageId);
         break;
     case MTProto::IgnoredMessageNotification::SequenceNumberTooHigh:
+        qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooHigh): reduce seq num"
+                                          << hex << showbase
+                                          << " from" << m->sequenceNumber
+                                          << " to" << (m->sequenceNumber - 2);
         m->sequenceNumber -= 2;
         resendIgnoredMessage(notification.messageId);
         break;
     case MTProto::IgnoredMessageNotification::SequenceNumberTooLow:
+        qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooHigh): increase seq num"
+                                          << hex << showbase
+                                          << " from" << m->sequenceNumber
+                                          << " to" << (m->sequenceNumber + 2);
         m->sequenceNumber += 2;
         resendIgnoredMessage(notification.messageId);
         break;
@@ -234,12 +242,12 @@ bool RpcLayer::resendIgnoredMessage(quint64 messageId)
     MTProto::Message *message = m_messages.take(messageId);
     PendingRpcOperation *operation = m_operations.take(messageId);
     if (!operation) {
-        qCCritical(c_clientRpcLayerCategory) << "Unable to find the message to resend" << messageId;
+        qCCritical(c_clientRpcLayerCategory) << "Unable to find the message to resend" << hex << messageId;
         delete message;
         return false;
     }
     qCDebug(c_clientRpcLayerCategory) << "Resend message"
-                                      << messageId
+                                      << hex << messageId
                                       << message->firstValue();
     message->messageId = m_sendHelper->newMessageId(SendMode::Client);
     m_operations.insert(message->messageId, operation);

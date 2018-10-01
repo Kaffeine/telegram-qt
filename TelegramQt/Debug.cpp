@@ -104,7 +104,6 @@ QDebug operator<<(QDebug d, const Telegram::MTProto::FullMessageHeader &messageH
     d << spacer.innerSpaces() << "salt: " << messageHeader.serverSalt << endl;
     d << spacer.innerSpaces() << "sessionId: " << messageHeader.sessionId << endl;
     d << spacer.innerSpaces() << "messageId: " << messageHeader.messageId << endl;
-    d << dec;
     d << spacer.innerSpaces() << "sequenceNumber: " << messageHeader.sequenceNumber << endl;
     d << spacer.innerSpaces() << "contentLength: " << messageHeader.contentLength << endl;
     d << "}";

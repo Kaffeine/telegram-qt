@@ -58,7 +58,7 @@ QString IgnoredMessageNotification::codeToString(quint32 code)
 
 QString IgnoredMessageNotification::toString() const
 {
-    return QStringLiteral("Bad message %1/%2 (%3)").arg(messageId, sizeof(messageId) * 2, 0x10, QLatin1Char('0'))
+    return QStringLiteral("Bad message 0x%1/0x%2 (%3)").arg(messageId, sizeof(messageId) * 2, 0x10, QLatin1Char('0'))
             .arg(seqNo, sizeof(seqNo) * 2, 0x10, QLatin1Char('0'))
             .arg(codeToString(errorCode));
 }
