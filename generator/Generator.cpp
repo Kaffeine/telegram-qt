@@ -1037,7 +1037,7 @@ QString Generator::generateFunctionStruct(const TLMethod &method)
             const QString initialValue = initTypesValues.at(podTypes.indexOf(param.type()));
             arguments.append(QStringLiteral("%1 %2 = %3;").arg(param.type(), param.getAlias(), initialValue));
         } else if (param.isVector()) {
-            arguments.append(QStringLiteral("%1<%2*> %3;").arg(tlVectorType, param.bareType(), param.getAlias()));
+            arguments.append(QStringLiteral("%1<%2> %3;").arg(tlVectorType, param.bareType(), param.getAlias()));
         } else {
             arguments.append(QStringLiteral("%1 %2;").arg(param.type(), param.getAlias()));
         }

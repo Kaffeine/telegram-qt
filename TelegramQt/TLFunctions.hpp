@@ -148,7 +148,7 @@ struct TLAccountSetPrivacy
 {
     static constexpr TLValue predicate = TLValue::AccountSetPrivacy;
     TLInputPrivacyKey key;
-    TLVector<TLInputPrivacyRule*> rules;
+    TLVector<TLInputPrivacyRule> rules;
 };
 
 struct TLAccountUnregisterDevice
@@ -230,7 +230,7 @@ struct TLAuthCheckPhone
 struct TLAuthDropTempAuthKeys
 {
     static constexpr TLValue predicate = TLValue::AuthDropTempAuthKeys;
-    TLVector<quint64*> exceptAuthKeys;
+    TLVector<quint64> exceptAuthKeys;
 };
 
 struct TLAuthExportAuthorization
@@ -296,7 +296,7 @@ struct TLAuthSendCode
 struct TLAuthSendInvites
 {
     static constexpr TLValue predicate = TLValue::AuthSendInvites;
-    TLVector<QString*> phoneNumbers;
+    TLVector<QString> phoneNumbers;
     QString message;
 };
 
@@ -364,7 +364,7 @@ struct TLChannelsDeleteMessages
 {
     static constexpr TLValue predicate = TLValue::ChannelsDeleteMessages;
     TLInputChannel channel;
-    TLVector<quint32*> id;
+    TLVector<quint32> id;
 };
 
 struct TLChannelsDeleteUserHistory
@@ -431,7 +431,7 @@ struct TLChannelsGetAdminLog
     TLInputChannel channel;
     QString q;
     TLChannelAdminLogEventsFilter eventsFilter;
-    TLVector<TLInputUser*> admins;
+    TLVector<TLInputUser> admins;
     quint64 maxId = 0;
     quint64 minId = 0;
     quint32 limit = 0;
@@ -445,7 +445,7 @@ struct TLChannelsGetAdminedPublicChannels
 struct TLChannelsGetChannels
 {
     static constexpr TLValue predicate = TLValue::ChannelsGetChannels;
-    TLVector<TLInputChannel*> id;
+    TLVector<TLInputChannel> id;
 };
 
 struct TLChannelsGetFullChannel
@@ -458,7 +458,7 @@ struct TLChannelsGetMessages
 {
     static constexpr TLValue predicate = TLValue::ChannelsGetMessages;
     TLInputChannel channel;
-    TLVector<quint32*> id;
+    TLVector<quint32> id;
 };
 
 struct TLChannelsGetParticipant
@@ -482,7 +482,7 @@ struct TLChannelsInviteToChannel
 {
     static constexpr TLValue predicate = TLValue::ChannelsInviteToChannel;
     TLInputChannel channel;
-    TLVector<TLInputUser*> users;
+    TLVector<TLInputUser> users;
 };
 
 struct TLChannelsJoinChannel
@@ -508,7 +508,7 @@ struct TLChannelsReadMessageContents
 {
     static constexpr TLValue predicate = TLValue::ChannelsReadMessageContents;
     TLInputChannel channel;
-    TLVector<quint32*> id;
+    TLVector<quint32> id;
 };
 
 struct TLChannelsReportSpam
@@ -516,7 +516,7 @@ struct TLChannelsReportSpam
     static constexpr TLValue predicate = TLValue::ChannelsReportSpam;
     TLInputChannel channel;
     TLInputUser userId;
-    TLVector<quint32*> id;
+    TLVector<quint32> id;
 };
 
 struct TLChannelsSetStickers
@@ -577,7 +577,7 @@ struct TLContactsDeleteContact
 struct TLContactsDeleteContacts
 {
     static constexpr TLValue predicate = TLValue::ContactsDeleteContacts;
-    TLVector<TLInputUser*> id;
+    TLVector<TLInputUser> id;
 };
 
 struct TLContactsExportCard
@@ -615,13 +615,13 @@ struct TLContactsGetTopPeers
 struct TLContactsImportCard
 {
     static constexpr TLValue predicate = TLValue::ContactsImportCard;
-    TLVector<quint32*> exportCard;
+    TLVector<quint32> exportCard;
 };
 
 struct TLContactsImportContacts
 {
     static constexpr TLValue predicate = TLValue::ContactsImportContacts;
-    TLVector<TLInputContact*> contacts;
+    TLVector<TLInputContact> contacts;
 };
 
 struct TLContactsResetSaved
@@ -705,7 +705,7 @@ struct TLHelpGetTermsOfService
 struct TLHelpSaveAppLog
 {
     static constexpr TLValue predicate = TLValue::HelpSaveAppLog;
-    TLVector<TLInputAppEvent*> events;
+    TLVector<TLInputAppEvent> events;
 };
 
 struct TLHelpSetBotUpdatesStatus
@@ -736,7 +736,7 @@ struct TLLangpackGetStrings
 {
     static constexpr TLValue predicate = TLValue::LangpackGetStrings;
     QString langCode;
-    TLVector<QString*> keys;
+    TLVector<QString> keys;
 };
 
 struct TLMessagesAcceptEncryption
@@ -770,7 +770,7 @@ struct TLMessagesClearRecentStickers
 struct TLMessagesCreateChat
 {
     static constexpr TLValue predicate = TLValue::MessagesCreateChat;
-    TLVector<TLInputUser*> users;
+    TLVector<TLInputUser> users;
     QString title;
 };
 
@@ -793,7 +793,7 @@ struct TLMessagesDeleteMessages
 {
     static constexpr TLValue predicate = TLValue::MessagesDeleteMessages;
     quint32 flags = 0;
-    TLVector<quint32*> id;
+    TLVector<quint32> id;
 };
 
 struct TLMessagesDiscardEncryption
@@ -831,7 +831,7 @@ struct TLMessagesEditInlineBotMessage
     TLInputBotInlineMessageID id;
     QString message;
     TLReplyMarkup replyMarkup;
-    TLVector<TLMessageEntity*> entities;
+    TLVector<TLMessageEntity> entities;
     TLInputGeoPoint geoPoint;
 };
 
@@ -843,7 +843,7 @@ struct TLMessagesEditMessage
     quint32 id = 0;
     QString message;
     TLReplyMarkup replyMarkup;
-    TLVector<TLMessageEntity*> entities;
+    TLVector<TLMessageEntity> entities;
     TLInputGeoPoint geoPoint;
 };
 
@@ -873,15 +873,15 @@ struct TLMessagesForwardMessages
     static constexpr TLValue predicate = TLValue::MessagesForwardMessages;
     quint32 flags = 0;
     TLInputPeer fromPeer;
-    TLVector<quint32*> id;
-    TLVector<quint64*> randomId;
+    TLVector<quint32> id;
+    TLVector<quint64> randomId;
     TLInputPeer toPeer;
 };
 
 struct TLMessagesGetAllChats
 {
     static constexpr TLValue predicate = TLValue::MessagesGetAllChats;
-    TLVector<quint32*> exceptIds;
+    TLVector<quint32> exceptIds;
 };
 
 struct TLMessagesGetAllDrafts
@@ -921,7 +921,7 @@ struct TLMessagesGetBotCallbackAnswer
 struct TLMessagesGetChats
 {
     static constexpr TLValue predicate = TLValue::MessagesGetChats;
-    TLVector<quint32*> id;
+    TLVector<quint32> id;
 };
 
 struct TLMessagesGetCommonChats
@@ -1030,21 +1030,21 @@ struct TLMessagesGetMessageEditData
 struct TLMessagesGetMessages
 {
     static constexpr TLValue predicate = TLValue::MessagesGetMessages;
-    TLVector<quint32*> id;
+    TLVector<quint32> id;
 };
 
 struct TLMessagesGetMessagesViews
 {
     static constexpr TLValue predicate = TLValue::MessagesGetMessagesViews;
     TLInputPeer peer;
-    TLVector<quint32*> id;
+    TLVector<quint32> id;
     bool increment = false;
 };
 
 struct TLMessagesGetPeerDialogs
 {
     static constexpr TLValue predicate = TLValue::MessagesGetPeerDialogs;
-    TLVector<TLInputPeer*> peers;
+    TLVector<TLInputPeer> peers;
 };
 
 struct TLMessagesGetPeerSettings
@@ -1143,7 +1143,7 @@ struct TLMessagesReadEncryptedHistory
 struct TLMessagesReadFeaturedStickers
 {
     static constexpr TLValue predicate = TLValue::MessagesReadFeaturedStickers;
-    TLVector<quint64*> id;
+    TLVector<quint64> id;
 };
 
 struct TLMessagesReadHistory
@@ -1162,7 +1162,7 @@ struct TLMessagesReadMentions
 struct TLMessagesReadMessageContents
 {
     static constexpr TLValue predicate = TLValue::MessagesReadMessageContents;
-    TLVector<quint32*> id;
+    TLVector<quint32> id;
 };
 
 struct TLMessagesReceivedMessages
@@ -1181,14 +1181,14 @@ struct TLMessagesReorderPinnedDialogs
 {
     static constexpr TLValue predicate = TLValue::MessagesReorderPinnedDialogs;
     quint32 flags = 0;
-    TLVector<TLInputPeer*> order;
+    TLVector<TLInputPeer> order;
 };
 
 struct TLMessagesReorderStickerSets
 {
     static constexpr TLValue predicate = TLValue::MessagesReorderStickerSets;
     quint32 flags = 0;
-    TLVector<quint64*> order;
+    TLVector<quint64> order;
 };
 
 struct TLMessagesReportEncryptedSpam
@@ -1218,7 +1218,7 @@ struct TLMessagesSaveDraft
     quint32 replyToMsgId = 0;
     TLInputPeer peer;
     QString message;
-    TLVector<TLMessageEntity*> entities;
+    TLVector<TLMessageEntity> entities;
 };
 
 struct TLMessagesSaveGif
@@ -1326,7 +1326,7 @@ struct TLMessagesSendMessage
     QString message;
     quint64 randomId = 0;
     TLReplyMarkup replyMarkup;
-    TLVector<TLMessageEntity*> entities;
+    TLVector<TLMessageEntity> entities;
 };
 
 struct TLMessagesSendScreenshotNotification
@@ -1361,7 +1361,7 @@ struct TLMessagesSetBotShippingResults
     quint32 flags = 0;
     quint64 queryId = 0;
     QString error;
-    TLVector<TLShippingOption*> shippingOptions;
+    TLVector<TLShippingOption> shippingOptions;
 };
 
 struct TLMessagesSetEncryptedTyping
@@ -1386,7 +1386,7 @@ struct TLMessagesSetInlineBotResults
     static constexpr TLValue predicate = TLValue::MessagesSetInlineBotResults;
     quint32 flags = 0;
     quint64 queryId = 0;
-    TLVector<TLInputBotInlineResult*> results;
+    TLVector<TLInputBotInlineResult> results;
     quint32 cacheTime = 0;
     QString nextOffset;
     TLInlineBotSwitchPM switchPm;
@@ -1549,7 +1549,7 @@ struct TLPhoneSetCallRating
 struct TLPhotosDeletePhotos
 {
     static constexpr TLValue predicate = TLValue::PhotosDeletePhotos;
-    TLVector<TLInputPhoto*> id;
+    TLVector<TLInputPhoto> id;
 };
 
 struct TLPhotosGetUserPhotos
@@ -1594,7 +1594,7 @@ struct TLStickersCreateStickerSet
     TLInputUser userId;
     QString title;
     QString shortName;
-    TLVector<TLInputStickerSetItem*> stickers;
+    TLVector<TLInputStickerSetItem> stickers;
 };
 
 struct TLStickersRemoveStickerFromSet
@@ -1692,7 +1692,7 @@ struct TLUsersGetFullUser
 struct TLUsersGetUsers
 {
     static constexpr TLValue predicate = TLValue::UsersGetUsers;
-    TLVector<TLInputUser*> id;
+    TLVector<TLInputUser> id;
 };
 // End of generated TLFunctions
 
