@@ -2,6 +2,7 @@
 set(telegram_qt_SOURCES
     AbridgedLength.cpp
     AccountStorage.cpp
+    ApiUtils.cpp
     TelegramNamespace.cpp
     Client.cpp
     ClientBackend.cpp
@@ -85,6 +86,7 @@ list(APPEND telegram_qt_META_HEADERS ${CLIENT_OPERATIONS_HEADERS})
 
 set(telegram_qt_HEADERS
     ${telegram_qt_META_HEADERS}
+    ApiUtils.hpp
     telegramqt_global.h
     TelegramNamespace_p.hpp
     ConnectionError.hpp

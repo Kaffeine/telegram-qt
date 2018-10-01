@@ -31,6 +31,7 @@ SOURCES += \
     CAppInformation.cpp \
     AbridgedLength.cpp \
     AccountStorage.cpp \
+    ApiUtils.cpp \
     DcConfiguration.cpp \
     DhLayer.cpp \
     Client.cpp \
@@ -82,6 +83,7 @@ HEADERS += \
     CAppInformation.hpp \
     AbridgedLength.hpp \
     AccountStorage.hpp \
+    ApiUtils.hpp \
     DcConfiguration.hpp \
     Debug.hpp \
     Debug_p.hpp \
