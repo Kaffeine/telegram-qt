@@ -1,4 +1,5 @@
 #include "Session.hpp"
+#include "TelegramServerClient.hpp"
 #include "Utils.hpp"
 
 #include <QDateTime>
@@ -21,6 +22,11 @@ static quint32 getCurrentTime()
 constexpr quint32 c_sessionRotation = 1 * 60 * 60;
 constexpr quint32 c_sessionOverlapping = 300;
 constexpr quint32 c_maxServerSalts = 64;
+
+RpcLayer *Session::rpcLayer() const
+{
+    return m_connection ? m_connection->rpcLayer() : nullptr;
+}
 
 quint64 Session::getOldSalt()
 {

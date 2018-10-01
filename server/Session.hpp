@@ -10,6 +10,7 @@ namespace Telegram {
 namespace Server {
 
 class RemoteClientConnection;
+class RpcLayer;
 class User;
 
 class Session
@@ -18,6 +19,8 @@ public:
     bool isActive() const { return m_connection; }
     RemoteClientConnection *getConnection() const { return m_connection; }
     void setConnection(RemoteClientConnection *connection) { m_connection = connection; }
+
+    RpcLayer *rpcLayer() const;
 
     User *userOrWantedUser() const { return m_user ? m_user : m_wanterUser; }
     User *user() const { return m_user; }
