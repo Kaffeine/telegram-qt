@@ -40,6 +40,16 @@ namespace Telegram {
 
 namespace Server {
 
+static const QVector<TLValue> c_unregisteredUserAllowedRpcList =
+{
+    TLValue::HelpGetConfig,
+    TLValue::AuthSendCode,
+    TLValue::AuthCheckPassword,
+    TLValue::AuthSignIn,
+    TLValue::AuthSignUp,
+    TLValue::AccountGetPassword,
+};
+
 RpcLayer::RpcLayer(QObject *parent) :
     BaseRpcLayer(parent)
 {
@@ -106,6 +116,11 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 
     context.inputStream() >> requestValue;
     context.setReadCode(requestValue);
+    if (!session() && !c_unregisteredUserAllowedRpcList.contains(requestValue)) {
+        RpcError error(RpcError::Reason::AuthKeyUnregistered);
+        return sendRpcError(error, context.requestId());
+    }
+
     RpcOperation *op = nullptr;
     for (RpcOperationFactory *f : m_operationFactories) {
         op = f->processRpcCall(this, context);
