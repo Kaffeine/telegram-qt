@@ -168,6 +168,41 @@ RemoteUser *Server::getRemoteUser(const QString &identifier) const
     return nullptr;
 }
 
+bool Server::setupTLUser(TLUser *output, quint32 requestedUserId, const User *forUser) const
+{
+    User *requestedUser = getUser(requestedUserId);
+    if (!requestedUser) {
+        return false;
+    }
+
+    output->id = requestedUserId;
+    output->tlType = TLValue::User;
+    output->firstName = requestedUser->firstName();
+    output->lastName = requestedUser->lastName();
+    // TODO: Check if the user has access to the requested user phone
+    output->phone = requestedUser->phoneNumber();
+
+    quint32 flags = 0;
+    if (!output->firstName.isEmpty()) {
+        flags |= TLUser::FirstName;
+    }
+    if (!output->lastName.isEmpty()) {
+        flags |= TLUser::LastName;
+    }
+    if (!output->username.isEmpty()) {
+        flags |= TLUser::Username;
+    }
+    if (!output->phone.isEmpty()) {
+        flags |= TLUser::Phone;
+    }
+    if (requestedUserId == forUser->id()) {
+        flags |= TLUser::Self;
+    }
+    output->flags = flags;
+
+    return true;
+}
+
 User *Server::getUser(const QString &identifier) const
 {
     return getLocalUser(identifier);

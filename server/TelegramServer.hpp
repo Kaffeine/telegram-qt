@@ -63,6 +63,8 @@ public:
     User *getLocalUser(const QString &identifier) const;
     RemoteUser *getRemoteUser(const QString &identifier) const;
 
+    bool setupTLUser(TLUser *output, quint32 requestedUserId, const User *forUser) const override;
+
     User *getUser(const QString &identifier) const override;
     User *getUser(quint32 userId) const override;
     User *addUser(const QString &identifier) override;
