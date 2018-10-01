@@ -63,7 +63,8 @@ public:
     User *getLocalUser(const QString &identifier) const;
     RemoteUser *getRemoteUser(const QString &identifier) const;
 
-    User *getUser(const QString &identifier) override;
+    User *getUser(const QString &identifier) const override;
+    User *getUser(quint32 userId) const override;
     User *addUser(const QString &identifier) override;
 
     Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) override;

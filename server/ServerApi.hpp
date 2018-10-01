@@ -59,7 +59,8 @@ public:
     virtual Authorization::Provider *getAuthorizationProvider() = 0;
     virtual bool identifierIsValid(const QString &identifier) = 0; // Argument is 'phoneNumber'
 
-    virtual User *getUser(const QString &identifier) = 0;
+    virtual User *getUser(const QString &identifier) const = 0;
+    virtual User *getUser(quint32 userId) const = 0;
     virtual Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) = 0;
     virtual Session *getSessionByAuthId(quint64 authId) const = 0;
     virtual User *addUser(const QString &identifier) = 0;

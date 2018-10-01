@@ -168,9 +168,14 @@ RemoteUser *Server::getRemoteUser(const QString &identifier) const
     return nullptr;
 }
 
-User *Server::getUser(const QString &identifier)
+User *Server::getUser(const QString &identifier) const
 {
     return getLocalUser(identifier);
+}
+
+User *Server::getUser(quint32 userId) const
+{
+    return m_users.value(userId);
 }
 
 User *Server::addUser(const QString &identifier)
