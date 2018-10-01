@@ -26,40 +26,6 @@ namespace Telegram {
 
 namespace Server {
 
-bool userToTlUser(const User *user, TLUser *output)
-{
-    if (!user) {
-        output->tlType = TLValue::UserEmpty;
-        return false;
-    }
-    output->tlType = TLValue::User;
-    output->phone = user->phoneNumber();
-    output->id= user->id();
-    output->firstName = user->firstName();
-    output->lastName = user->lastName();
-    return true;
-}
-
-// TODO: Generated flags bakers
-void bakeFlags(TLUser *user)
-{
-    quint32 flags = 0;
-    if (!user->firstName.isEmpty()) {
-        flags |= TLUser::FirstName;
-    }
-    if (!user->lastName.isEmpty()) {
-        flags |= TLUser::LastName;
-    }
-    if (!user->username.isEmpty()) {
-        flags |= TLUser::Username;
-    }
-    if (!user->phone.isEmpty()) {
-        flags |= TLUser::Phone;
-    }
-    user->flags &= ~flags;
-    user->flags |= flags;
-}
-
 // Generated process methods
 bool AuthRpcOperation::processBindTempAuthKey(RpcProcessingContext &context)
 {
@@ -218,9 +184,7 @@ void AuthRpcOperation::runCheckPassword()
 
     TLAuthAuthorization result;
     qDebug() << "Result type:" << result.tlType;
-    userToTlUser(user, &result.user);
-    result.user.flags = TLUser::Self;
-    bakeFlags(&result.user);
+    api()->setupTLUser(&result.user, user->id(), user);
     sendRpcReply(result);
 }
 
@@ -397,9 +361,7 @@ void AuthRpcOperation::runSignIn()
     user->addSession(layer()->session());
 
     TLAuthAuthorization result;
-    userToTlUser(user, &result.user);
-    result.user.flags = TLUser::Self;
-    bakeFlags(&result.user);
+    api()->setupTLUser(&result.user, user->id(), user);
     sendRpcReply(result);
 }
 
@@ -429,9 +391,7 @@ void AuthRpcOperation::runSignUp()
     user->addSession(layer()->session());
 
     TLAuthAuthorization result;
-    userToTlUser(user, &result.user);
-    result.user.flags = TLUser::Self;
-    bakeFlags(&result.user);
+    api()->setupTLUser(&result.user, user->id(), user);
     sendRpcReply(result);
 }
 // End of generated run methods
