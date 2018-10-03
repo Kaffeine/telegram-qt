@@ -123,7 +123,7 @@ ApplicationWindow {
 
     Telegram.AuthOperation {
         id: signInOperation
-        target: telegramClient
+        client: telegramClient
         onCheckInFinished: {
             console.log("check in finished:" + signedIn)
             if (signedIn) {

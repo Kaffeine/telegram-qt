@@ -17,12 +17,14 @@ INCLUDEPATH += ../../TelegramQt
 SOURCES += \
     DeclarativeAuthOperation.cpp \
     DeclarativeClient.cpp \
+    DeclarativeClientOperator.cpp \
     DeclarativeOperation.cpp \
     DeclarativeSettings.cpp
 
 HEADERS += \
     DeclarativeAuthOperation.hpp \
     DeclarativeClient.hpp \
+    DeclarativeClientOperator.hpp \
     DeclarativeOperation.hpp \
     DeclarativeSettings.hpp
 

@@ -1,5 +1,4 @@
 #include "DeclarativeAuthOperation.hpp"
-#include "DeclarativeClient.hpp"
 
 #include <QTimer>
 #include <QDebug>
@@ -57,8 +56,8 @@ void DeclarativeAuthOperation::signIn()
             return;
         }
     }
-    m_target->syncSettings();
-    m_authOperation = m_target->backend()->signIn();
+    syncSettings();
+    m_authOperation = client()->signIn();
     m_authOperation->setPhoneNumber(phoneNumber());
     setPendingOperation(m_authOperation);
     connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
@@ -101,8 +100,8 @@ void DeclarativeAuthOperation::checkIn()
             return;
         }
     }
-    m_target->syncSettings();
-    m_authOperation = m_target->backend()->checkIn();
+    syncSettings();
+    m_authOperation = client()->checkIn();
     setPendingOperation(m_authOperation);
     connect(m_authOperation, &PendingOperation::finished, this, [this](PendingOperation *op) {
         if (op->isSucceeded()) {
@@ -214,7 +213,7 @@ void DeclarativeAuthOperation::onPasswordRequired()
 
 void DeclarativeAuthOperation::startEvent()
 {
-    m_target->syncSettings();
+    syncSettings();
 }
 
 bool DeclarativeAuthOperation::requestCall()

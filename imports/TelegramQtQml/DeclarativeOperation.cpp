@@ -9,13 +9,8 @@ namespace Telegram {
 using namespace Client;
 
 DeclarativeOperation::DeclarativeOperation(QObject *parent) :
-    QObject(parent)
+    DeclarativeClientOperator(parent)
 {
-}
-
-DeclarativeClient *DeclarativeOperation::target() const
-{
-    return m_target;
 }
 
 bool DeclarativeOperation::isSucceeded() const
@@ -28,11 +23,6 @@ void DeclarativeOperation::start()
 //    m_running = true;
     emit started();
     startEvent();
-}
-
-void DeclarativeOperation::setTarget(DeclarativeClient *target)
-{
-    m_target = target;
 }
 
 void DeclarativeOperation::startEvent()

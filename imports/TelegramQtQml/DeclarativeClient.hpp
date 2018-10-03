@@ -30,7 +30,7 @@ public:
     CAppInformation *appInformation() const;
 
     bool isSignedIn() const;
-    Client *backend() { return m_client; }
+    Client *client() { return m_client; }
 
     DeclarativeSettings *settings() const { return m_settings; }
     AccountStorage *accountStorage() const;
