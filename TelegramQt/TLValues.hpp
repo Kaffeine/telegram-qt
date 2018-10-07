@@ -952,6 +952,12 @@ public:
         return *this;
     }
 
+    template <typename TLType>
+    bool isTypeOf() const
+    {
+        return TLType::hasType(m_value);
+    }
+
     QString toString() const;
     static TLValue firstFromArray(const QByteArray &data);
 
