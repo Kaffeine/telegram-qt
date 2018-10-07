@@ -448,7 +448,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
     bool constExpr = true;
     static const QString specCommentPrefix = spacing + QStringLiteral("// ");
     QString specSource;
-    QString isValidTypeCode;
+    QStringList thisTypeCases;
 
     QStringList addedMembers;
     foreach (const TLSubType &subType, type.subTypes) {
@@ -471,7 +471,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 
             specSource.append(sourceLines.join(QLatin1Char('\n')) + QLatin1Char('\n'));
         }
-        isValidTypeCode.append(QStringLiteral("        case %1::%2:\n").arg(tlValueName, subType.name));
+        thisTypeCases.append(QStringLiteral("case %1::%2:").arg(tlValueName, subType.name));
         foreach (const TLParam &member, subType.members) {
             if (addedMembers.contains(member.getAlias())) {
                 continue;
@@ -487,12 +487,6 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
         }
     }
 
-    isValidTypeCode.append(QStringLiteral(
-                               "            return true;\n"
-                               "        default:\n"
-                               "            return false;\n"
-                               "        };\n"
-                               "    }\n"));
 
     const QString constructor = QStringLiteral("%1() = default;\n\n").arg(type.name);
     const QString constExprSpace = QStringLiteral("constexpr ");
@@ -504,14 +498,20 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
     if (addSpecSources) {
         code.append(specSource);
     }
-    const QString isValidFirstLines = QStringLiteral("bool isValid() const {\n"
-                                                     "        switch (tlType) {\n");
-    if (constExpr) {
-        code.append(spacing + QStringLiteral("Q_DECL_RELAXED_CONSTEXPR ") + isValidFirstLines);
-    } else {
-        code.append(spacing + isValidFirstLines);
-    }
-    code.append(isValidTypeCode);
+
+    const QString maybeCpp14ConstExpr = constExpr ? QStringLiteral("Q_DECL_RELAXED_CONSTEXPR ") : QString();
+    const QString isValid = QStringLiteral("bool isValid() const { return hasType(tlType); }\n");
+    code.append(spacing + maybeCpp14ConstExpr + isValid);
+    code.append(spacing + QStringLiteral("Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {\n"));
+    code.append(doubleSpacing + QStringLiteral("switch (value) {\n"));
+    code.append(joinLinesWithPrepend(thisTypeCases, doubleSpacing, QStringLiteral("\n")));
+    code.append(QStringLiteral(
+                               "            return true;\n"
+                               "        default:\n"
+                               "            return false;\n"
+                               "        };\n"
+                               "    }\n"));
+
     const QString memberFlags = joinLinesWithPrepend(generateTLTypeMemberFlags(type), doubleSpacing, QStringLiteral("\n"));
     if (!memberFlags.isEmpty()) {
         code.append(spacing + "enum Flags {\n");
