@@ -74,8 +74,9 @@ public:
 struct TLAccountDaysTTL {
     constexpr TLAccountDaysTTL() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AccountDaysTTL:
             return true;
         default:
@@ -89,8 +90,9 @@ struct TLAccountDaysTTL {
 struct TLAccountPassword {
     TLAccountPassword() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AccountNoPassword:
         case TLValue::AccountPassword:
             return true;
@@ -109,8 +111,9 @@ struct TLAccountPassword {
 struct TLAccountPasswordInputSettings {
     TLAccountPasswordInputSettings() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AccountPasswordInputSettings:
             return true;
         default:
@@ -134,8 +137,9 @@ struct TLAccountPasswordInputSettings {
 struct TLAccountPasswordSettings {
     TLAccountPasswordSettings() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AccountPasswordSettings:
             return true;
         default:
@@ -149,8 +153,9 @@ struct TLAccountPasswordSettings {
 struct TLAccountTmpPassword {
     TLAccountTmpPassword() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AccountTmpPassword:
             return true;
         default:
@@ -165,8 +170,9 @@ struct TLAccountTmpPassword {
 struct TLAuthCheckedPhone {
     constexpr TLAuthCheckedPhone() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AuthCheckedPhone:
             return true;
         default:
@@ -180,8 +186,9 @@ struct TLAuthCheckedPhone {
 struct TLAuthCodeType {
     constexpr TLAuthCodeType() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AuthCodeTypeSms:
         case TLValue::AuthCodeTypeCall:
         case TLValue::AuthCodeTypeFlashCall:
@@ -196,8 +203,9 @@ struct TLAuthCodeType {
 struct TLAuthExportedAuthorization {
     TLAuthExportedAuthorization() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AuthExportedAuthorization:
             return true;
         default:
@@ -212,8 +220,9 @@ struct TLAuthExportedAuthorization {
 struct TLAuthPasswordRecovery {
     TLAuthPasswordRecovery() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AuthPasswordRecovery:
             return true;
         default:
@@ -227,8 +236,9 @@ struct TLAuthPasswordRecovery {
 struct TLAuthSentCodeType {
     TLAuthSentCodeType() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AuthSentCodeTypeApp:
         case TLValue::AuthSentCodeTypeSms:
         case TLValue::AuthSentCodeTypeCall:
@@ -246,8 +256,9 @@ struct TLAuthSentCodeType {
 struct TLAuthorization {
     TLAuthorization() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::Authorization:
             return true;
         default:
@@ -273,8 +284,9 @@ struct TLAuthorization {
 struct TLBadMsgNotification {
     constexpr TLBadMsgNotification() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::BadMsgNotification:
         case TLValue::BadServerSalt:
             return true;
@@ -292,8 +304,9 @@ struct TLBadMsgNotification {
 struct TLBotCommand {
     TLBotCommand() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::BotCommand:
             return true;
         default:
@@ -308,8 +321,9 @@ struct TLBotCommand {
 struct TLBotInfo {
     TLBotInfo() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::BotInfo:
             return true;
         default:
@@ -325,8 +339,9 @@ struct TLBotInfo {
 struct TLCdnFileHash {
     TLCdnFileHash() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::CdnFileHash:
             return true;
         default:
@@ -342,8 +357,9 @@ struct TLCdnFileHash {
 struct TLCdnPublicKey {
     TLCdnPublicKey() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::CdnPublicKey:
             return true;
         default:
@@ -358,8 +374,9 @@ struct TLCdnPublicKey {
 struct TLChannelParticipantsFilter {
     TLChannelParticipantsFilter() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelParticipantsRecent:
         case TLValue::ChannelParticipantsAdmins:
         case TLValue::ChannelParticipantsKicked:
@@ -378,8 +395,9 @@ struct TLChannelParticipantsFilter {
 struct TLChatParticipant {
     constexpr TLChatParticipant() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChatParticipant:
         case TLValue::ChatParticipantCreator:
         case TLValue::ChatParticipantAdmin:
@@ -397,8 +415,9 @@ struct TLChatParticipant {
 struct TLChatParticipants {
     TLChatParticipants() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChatParticipantsForbidden:
         case TLValue::ChatParticipants:
             return true;
@@ -420,8 +439,9 @@ struct TLChatParticipants {
 struct TLClientDHInnerData {
     TLClientDHInnerData() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ClientDHInnerData:
             return true;
         default:
@@ -438,8 +458,9 @@ struct TLClientDHInnerData {
 struct TLContact {
     constexpr TLContact() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::Contact:
             return true;
         default:
@@ -454,8 +475,9 @@ struct TLContact {
 struct TLContactBlocked {
     constexpr TLContactBlocked() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactBlocked:
             return true;
         default:
@@ -470,8 +492,9 @@ struct TLContactBlocked {
 struct TLContactLink {
     constexpr TLContactLink() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactLinkUnknown:
         case TLValue::ContactLinkNone:
         case TLValue::ContactLinkHasPhone:
@@ -487,8 +510,9 @@ struct TLContactLink {
 struct TLDataJSON {
     TLDataJSON() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::DataJSON:
             return true;
         default:
@@ -502,8 +526,9 @@ struct TLDataJSON {
 struct TLDestroyAuthKeyRes {
     constexpr TLDestroyAuthKeyRes() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::DestroyAuthKeyOk:
         case TLValue::DestroyAuthKeyNone:
         case TLValue::DestroyAuthKeyFail:
@@ -518,8 +543,9 @@ struct TLDestroyAuthKeyRes {
 struct TLDestroySessionRes {
     constexpr TLDestroySessionRes() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::DestroySessionOk:
         case TLValue::DestroySessionNone:
             return true;
@@ -534,8 +560,9 @@ struct TLDestroySessionRes {
 struct TLDisabledFeature {
     TLDisabledFeature() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::DisabledFeature:
             return true;
         default:
@@ -550,8 +577,9 @@ struct TLDisabledFeature {
 struct TLEncryptedChat {
     TLEncryptedChat() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::EncryptedChatEmpty:
         case TLValue::EncryptedChatWaiting:
         case TLValue::EncryptedChatRequested:
@@ -576,8 +604,9 @@ struct TLEncryptedChat {
 struct TLEncryptedFile {
     constexpr TLEncryptedFile() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::EncryptedFileEmpty:
         case TLValue::EncryptedFile:
             return true;
@@ -596,8 +625,9 @@ struct TLEncryptedFile {
 struct TLEncryptedMessage {
     TLEncryptedMessage() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::EncryptedMessage:
         case TLValue::EncryptedMessageService:
             return true;
@@ -616,8 +646,9 @@ struct TLEncryptedMessage {
 struct TLError {
     TLError() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::Error:
             return true;
         default:
@@ -632,8 +663,9 @@ struct TLError {
 struct TLExportedChatInvite {
     TLExportedChatInvite() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChatInviteEmpty:
         case TLValue::ChatInviteExported:
             return true;
@@ -648,8 +680,9 @@ struct TLExportedChatInvite {
 struct TLExportedMessageLink {
     TLExportedMessageLink() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ExportedMessageLink:
             return true;
         default:
@@ -663,8 +696,9 @@ struct TLExportedMessageLink {
 struct TLFileLocation {
     constexpr TLFileLocation() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::FileLocationUnavailable:
         case TLValue::FileLocation:
             return true;
@@ -682,8 +716,9 @@ struct TLFileLocation {
 struct TLFutureSalt {
     constexpr TLFutureSalt() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::FutureSalt:
             return true;
         default:
@@ -699,8 +734,9 @@ struct TLFutureSalt {
 struct TLFutureSalts {
     TLFutureSalts() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::FutureSalts:
             return true;
         default:
@@ -716,8 +752,9 @@ struct TLFutureSalts {
 struct TLGeoPoint {
     constexpr TLGeoPoint() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::GeoPointEmpty:
         case TLValue::GeoPoint:
             return true;
@@ -733,8 +770,9 @@ struct TLGeoPoint {
 struct TLHelpAppUpdate {
     TLHelpAppUpdate() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::HelpAppUpdate:
         case TLValue::HelpNoAppUpdate:
             return true;
@@ -752,8 +790,9 @@ struct TLHelpAppUpdate {
 struct TLHelpInviteText {
     TLHelpInviteText() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::HelpInviteText:
             return true;
         default:
@@ -767,8 +806,9 @@ struct TLHelpInviteText {
 struct TLHelpTermsOfService {
     TLHelpTermsOfService() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::HelpTermsOfService:
             return true;
         default:
@@ -782,8 +822,9 @@ struct TLHelpTermsOfService {
 struct TLHighScore {
     constexpr TLHighScore() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::HighScore:
             return true;
         default:
@@ -799,8 +840,9 @@ struct TLHighScore {
 struct TLHttpWait {
     constexpr TLHttpWait() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::HttpWait:
             return true;
         default:
@@ -816,8 +858,9 @@ struct TLHttpWait {
 struct TLImportedContact {
     constexpr TLImportedContact() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ImportedContact:
             return true;
         default:
@@ -832,8 +875,9 @@ struct TLImportedContact {
 struct TLInlineBotSwitchPM {
     TLInlineBotSwitchPM() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InlineBotSwitchPM:
             return true;
         default:
@@ -848,8 +892,9 @@ struct TLInlineBotSwitchPM {
 struct TLInputAppEvent {
     TLInputAppEvent() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputAppEvent:
             return true;
         default:
@@ -866,8 +911,9 @@ struct TLInputAppEvent {
 struct TLInputBotInlineMessageID {
     constexpr TLInputBotInlineMessageID() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputBotInlineMessageID:
             return true;
         default:
@@ -883,8 +929,9 @@ struct TLInputBotInlineMessageID {
 struct TLInputChannel {
     constexpr TLInputChannel() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputChannelEmpty:
         case TLValue::InputChannel:
             return true;
@@ -900,8 +947,9 @@ struct TLInputChannel {
 struct TLInputContact {
     TLInputContact() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputPhoneContact:
             return true;
         default:
@@ -918,8 +966,9 @@ struct TLInputContact {
 struct TLInputDocument {
     constexpr TLInputDocument() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputDocumentEmpty:
         case TLValue::InputDocument:
             return true;
@@ -935,8 +984,9 @@ struct TLInputDocument {
 struct TLInputEncryptedChat {
     constexpr TLInputEncryptedChat() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputEncryptedChat:
             return true;
         default:
@@ -951,8 +1001,9 @@ struct TLInputEncryptedChat {
 struct TLInputEncryptedFile {
     TLInputEncryptedFile() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputEncryptedFileEmpty:
         case TLValue::InputEncryptedFileUploaded:
         case TLValue::InputEncryptedFile:
@@ -973,8 +1024,9 @@ struct TLInputEncryptedFile {
 struct TLInputFile {
     TLInputFile() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputFile:
         case TLValue::InputFileBig:
             return true;
@@ -992,8 +1044,9 @@ struct TLInputFile {
 struct TLInputFileLocation {
     constexpr TLInputFileLocation() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputFileLocation:
         case TLValue::InputEncryptedFileLocation:
         case TLValue::InputDocumentFileLocation:
@@ -1014,8 +1067,9 @@ struct TLInputFileLocation {
 struct TLInputGeoPoint {
     constexpr TLInputGeoPoint() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputGeoPointEmpty:
         case TLValue::InputGeoPoint:
             return true;
@@ -1031,8 +1085,9 @@ struct TLInputGeoPoint {
 struct TLInputPeer {
     constexpr TLInputPeer() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputPeerEmpty:
         case TLValue::InputPeerSelf:
         case TLValue::InputPeerChat:
@@ -1053,8 +1108,9 @@ struct TLInputPeer {
 struct TLInputPeerNotifyEvents {
     constexpr TLInputPeerNotifyEvents() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputPeerNotifyEventsEmpty:
         case TLValue::InputPeerNotifyEventsAll:
             return true;
@@ -1068,8 +1124,9 @@ struct TLInputPeerNotifyEvents {
 struct TLInputPhoneCall {
     constexpr TLInputPhoneCall() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputPhoneCall:
             return true;
         default:
@@ -1084,8 +1141,9 @@ struct TLInputPhoneCall {
 struct TLInputPhoto {
     constexpr TLInputPhoto() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputPhotoEmpty:
         case TLValue::InputPhoto:
             return true;
@@ -1101,8 +1159,9 @@ struct TLInputPhoto {
 struct TLInputPrivacyKey {
     constexpr TLInputPrivacyKey() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputPrivacyKeyStatusTimestamp:
         case TLValue::InputPrivacyKeyChatInvite:
         case TLValue::InputPrivacyKeyPhoneCall:
@@ -1117,8 +1176,9 @@ struct TLInputPrivacyKey {
 struct TLInputStickerSet {
     TLInputStickerSet() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputStickerSetEmpty:
         case TLValue::InputStickerSetID:
         case TLValue::InputStickerSetShortName:
@@ -1136,8 +1196,9 @@ struct TLInputStickerSet {
 struct TLInputStickeredMedia {
     TLInputStickeredMedia() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputStickeredMediaPhoto:
         case TLValue::InputStickeredMediaDocument:
             return true;
@@ -1153,8 +1214,9 @@ struct TLInputStickeredMedia {
 struct TLInputUser {
     constexpr TLInputUser() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputUserEmpty:
         case TLValue::InputUserSelf:
         case TLValue::InputUser:
@@ -1171,8 +1233,9 @@ struct TLInputUser {
 struct TLInputWebFileLocation {
     TLInputWebFileLocation() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputWebFileLocation:
             return true;
         default:
@@ -1187,8 +1250,9 @@ struct TLInputWebFileLocation {
 struct TLIpPort {
     constexpr TLIpPort() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::IpPort:
             return true;
         default:
@@ -1203,8 +1267,9 @@ struct TLIpPort {
 struct TLLabeledPrice {
     TLLabeledPrice() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::LabeledPrice:
             return true;
         default:
@@ -1219,8 +1284,9 @@ struct TLLabeledPrice {
 struct TLLangPackLanguage {
     TLLangPackLanguage() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::LangPackLanguage:
             return true;
         default:
@@ -1236,8 +1302,9 @@ struct TLLangPackLanguage {
 struct TLLangPackString {
     TLLangPackString() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::LangPackString:
         case TLValue::LangPackStringPluralized:
         case TLValue::LangPackStringDeleted:
@@ -1268,8 +1335,9 @@ struct TLLangPackString {
 struct TLMaskCoords {
     constexpr TLMaskCoords() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MaskCoords:
             return true;
         default:
@@ -1286,8 +1354,9 @@ struct TLMaskCoords {
 struct TLMessageEntity {
     TLMessageEntity() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessageEntityUnknown:
         case TLValue::MessageEntityMention:
         case TLValue::MessageEntityHashtag:
@@ -1318,8 +1387,9 @@ struct TLMessageEntity {
 struct TLMessageFwdHeader {
     TLMessageFwdHeader() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessageFwdHeader:
             return true;
         default:
@@ -1344,8 +1414,9 @@ struct TLMessageFwdHeader {
 struct TLMessageRange {
     constexpr TLMessageRange() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessageRange:
             return true;
         default:
@@ -1360,8 +1431,9 @@ struct TLMessageRange {
 struct TLMessagesAffectedHistory {
     constexpr TLMessagesAffectedHistory() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesAffectedHistory:
             return true;
         default:
@@ -1377,8 +1449,9 @@ struct TLMessagesAffectedHistory {
 struct TLMessagesAffectedMessages {
     constexpr TLMessagesAffectedMessages() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesAffectedMessages:
             return true;
         default:
@@ -1393,8 +1466,9 @@ struct TLMessagesAffectedMessages {
 struct TLMessagesDhConfig {
     TLMessagesDhConfig() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesDhConfigNotModified:
         case TLValue::MessagesDhConfig:
             return true;
@@ -1412,8 +1486,9 @@ struct TLMessagesDhConfig {
 struct TLMessagesSentEncryptedMessage {
     TLMessagesSentEncryptedMessage() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesSentEncryptedMessage:
         case TLValue::MessagesSentEncryptedFile:
             return true;
@@ -1429,8 +1504,9 @@ struct TLMessagesSentEncryptedMessage {
 struct TLMsgDetailedInfo {
     constexpr TLMsgDetailedInfo() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MsgDetailedInfo:
         case TLValue::MsgNewDetailedInfo:
             return true;
@@ -1448,8 +1524,9 @@ struct TLMsgDetailedInfo {
 struct TLMsgResendReq {
     TLMsgResendReq() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MsgResendReq:
             return true;
         default:
@@ -1463,8 +1540,9 @@ struct TLMsgResendReq {
 struct TLMsgsAck {
     TLMsgsAck() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MsgsAck:
             return true;
         default:
@@ -1478,8 +1556,9 @@ struct TLMsgsAck {
 struct TLMsgsAllInfo {
     TLMsgsAllInfo() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MsgsAllInfo:
             return true;
         default:
@@ -1494,8 +1573,9 @@ struct TLMsgsAllInfo {
 struct TLMsgsStateInfo {
     TLMsgsStateInfo() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MsgsStateInfo:
             return true;
         default:
@@ -1510,8 +1590,9 @@ struct TLMsgsStateInfo {
 struct TLMsgsStateReq {
     TLMsgsStateReq() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MsgsStateReq:
             return true;
         default:
@@ -1525,8 +1606,9 @@ struct TLMsgsStateReq {
 struct TLNearestDc {
     TLNearestDc() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::NearestDc:
             return true;
         default:
@@ -1542,8 +1624,9 @@ struct TLNearestDc {
 struct TLNewSession {
     constexpr TLNewSession() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::NewSessionCreated:
             return true;
         default:
@@ -1559,8 +1642,9 @@ struct TLNewSession {
 struct TLPQInnerData {
     TLPQInnerData() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PQInnerData:
             return true;
         default:
@@ -1579,8 +1663,9 @@ struct TLPQInnerData {
 struct TLPaymentCharge {
     TLPaymentCharge() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PaymentCharge:
             return true;
         default:
@@ -1595,8 +1680,9 @@ struct TLPaymentCharge {
 struct TLPaymentSavedCredentials {
     TLPaymentSavedCredentials() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PaymentSavedCredentialsCard:
             return true;
         default:
@@ -1611,8 +1697,9 @@ struct TLPaymentSavedCredentials {
 struct TLPeer {
     constexpr TLPeer() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PeerUser:
         case TLValue::PeerChat:
         case TLValue::PeerChannel:
@@ -1630,8 +1717,9 @@ struct TLPeer {
 struct TLPeerNotifyEvents {
     constexpr TLPeerNotifyEvents() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PeerNotifyEventsEmpty:
         case TLValue::PeerNotifyEventsAll:
             return true;
@@ -1645,8 +1733,9 @@ struct TLPeerNotifyEvents {
 struct TLPhoneCallDiscardReason {
     constexpr TLPhoneCallDiscardReason() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PhoneCallDiscardReasonMissed:
         case TLValue::PhoneCallDiscardReasonDisconnect:
         case TLValue::PhoneCallDiscardReasonHangup:
@@ -1662,8 +1751,9 @@ struct TLPhoneCallDiscardReason {
 struct TLPhoneConnection {
     TLPhoneConnection() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PhoneConnection:
             return true;
         default:
@@ -1681,8 +1771,9 @@ struct TLPhoneConnection {
 struct TLPhotoSize {
     TLPhotoSize() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PhotoSizeEmpty:
         case TLValue::PhotoSize:
         case TLValue::PhotoCachedSize:
@@ -1703,8 +1794,9 @@ struct TLPhotoSize {
 struct TLPong {
     constexpr TLPong() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::Pong:
             return true;
         default:
@@ -1719,8 +1811,9 @@ struct TLPong {
 struct TLPopularContact {
     constexpr TLPopularContact() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PopularContact:
             return true;
         default:
@@ -1735,8 +1828,9 @@ struct TLPopularContact {
 struct TLPostAddress {
     TLPostAddress() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PostAddress:
             return true;
         default:
@@ -1755,8 +1849,9 @@ struct TLPostAddress {
 struct TLPrivacyKey {
     constexpr TLPrivacyKey() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PrivacyKeyStatusTimestamp:
         case TLValue::PrivacyKeyChatInvite:
         case TLValue::PrivacyKeyPhoneCall:
@@ -1771,8 +1866,9 @@ struct TLPrivacyKey {
 struct TLPrivacyRule {
     TLPrivacyRule() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PrivacyValueAllowContacts:
         case TLValue::PrivacyValueAllowAll:
         case TLValue::PrivacyValueAllowUsers:
@@ -1791,8 +1887,9 @@ struct TLPrivacyRule {
 struct TLReceivedNotifyMessage {
     constexpr TLReceivedNotifyMessage() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ReceivedNotifyMessage:
             return true;
         default:
@@ -1807,8 +1904,9 @@ struct TLReceivedNotifyMessage {
 struct TLReportReason {
     TLReportReason() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputReportReasonSpam:
         case TLValue::InputReportReasonViolence:
         case TLValue::InputReportReasonPornography:
@@ -1825,8 +1923,9 @@ struct TLReportReason {
 struct TLResPQ {
     TLResPQ() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ResPQ:
             return true;
         default:
@@ -1846,8 +1945,9 @@ using TLRichTextPtr = TLPtr<TLRichText>;
 struct TLRichText {
     TLRichText() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::TextEmpty:
         case TLValue::TextPlain:
         case TLValue::TextBold:
@@ -1875,8 +1975,9 @@ struct TLRichText {
 struct TLRpcDropAnswer {
     constexpr TLRpcDropAnswer() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::RpcAnswerUnknown:
         case TLValue::RpcAnswerDroppedRunning:
         case TLValue::RpcAnswerDropped:
@@ -1894,8 +1995,9 @@ struct TLRpcDropAnswer {
 struct TLRpcError {
     TLRpcError() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::RpcError:
             return true;
         default:
@@ -1910,8 +2012,9 @@ struct TLRpcError {
 struct TLSendMessageAction {
     constexpr TLSendMessageAction() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::SendMessageTypingAction:
         case TLValue::SendMessageCancelAction:
         case TLValue::SendMessageRecordVideoAction:
@@ -1937,8 +2040,9 @@ struct TLSendMessageAction {
 struct TLServerDHInnerData {
     TLServerDHInnerData() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ServerDHInnerData:
             return true;
         default:
@@ -1957,8 +2061,9 @@ struct TLServerDHInnerData {
 struct TLServerDHParams {
     TLServerDHParams() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ServerDHParamsFail:
         case TLValue::ServerDHParamsOk:
             return true;
@@ -1976,8 +2081,9 @@ struct TLServerDHParams {
 struct TLSetClientDHParamsAnswer {
     TLSetClientDHParamsAnswer() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::DhGenOk:
         case TLValue::DhGenRetry:
         case TLValue::DhGenFail:
@@ -1997,8 +2103,9 @@ struct TLSetClientDHParamsAnswer {
 struct TLShippingOption {
     TLShippingOption() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ShippingOption:
             return true;
         default:
@@ -2014,8 +2121,9 @@ struct TLShippingOption {
 struct TLStickerPack {
     TLStickerPack() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::StickerPack:
             return true;
         default:
@@ -2030,8 +2138,9 @@ struct TLStickerPack {
 struct TLStorageFileType {
     constexpr TLStorageFileType() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::StorageFileUnknown:
         case TLValue::StorageFilePartial:
         case TLValue::StorageFileJpeg:
@@ -2053,8 +2162,9 @@ struct TLStorageFileType {
 struct TLTopPeer {
     TLTopPeer() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::TopPeer:
             return true;
         default:
@@ -2069,8 +2179,9 @@ struct TLTopPeer {
 struct TLTopPeerCategory {
     constexpr TLTopPeerCategory() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::TopPeerCategoryBotsPM:
         case TLValue::TopPeerCategoryBotsInline:
         case TLValue::TopPeerCategoryCorrespondents:
@@ -2088,8 +2199,9 @@ struct TLTopPeerCategory {
 struct TLTopPeerCategoryPeers {
     TLTopPeerCategoryPeers() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::TopPeerCategoryPeers:
             return true;
         default:
@@ -2105,8 +2217,9 @@ struct TLTopPeerCategoryPeers {
 struct TLUpdatesState {
     constexpr TLUpdatesState() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UpdatesState:
             return true;
         default:
@@ -2124,8 +2237,9 @@ struct TLUpdatesState {
 struct TLUploadCdnFile {
     TLUploadCdnFile() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UploadCdnFileReuploadNeeded:
         case TLValue::UploadCdnFile:
             return true;
@@ -2141,8 +2255,9 @@ struct TLUploadCdnFile {
 struct TLUploadFile {
     TLUploadFile() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UploadFile:
         case TLValue::UploadFileCdnRedirect:
             return true;
@@ -2164,8 +2279,9 @@ struct TLUploadFile {
 struct TLUploadWebFile {
     TLUploadWebFile() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UploadWebFile:
             return true;
         default:
@@ -2183,8 +2299,9 @@ struct TLUploadWebFile {
 struct TLUserProfilePhoto {
     TLUserProfilePhoto() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UserProfilePhotoEmpty:
         case TLValue::UserProfilePhoto:
             return true;
@@ -2201,8 +2318,9 @@ struct TLUserProfilePhoto {
 struct TLUserStatus {
     constexpr TLUserStatus() = default;
 
-    Q_DECL_RELAXED_CONSTEXPR bool isValid() const {
-        switch (tlType) {
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UserStatusEmpty:
         case TLValue::UserStatusOnline:
         case TLValue::UserStatusOffline:
@@ -2222,8 +2340,9 @@ struct TLUserStatus {
 struct TLWallPaper {
     TLWallPaper() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::WallPaper:
         case TLValue::WallPaperSolid:
             return true;
@@ -2242,8 +2361,9 @@ struct TLWallPaper {
 struct TLAccountAuthorizations {
     TLAccountAuthorizations() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AccountAuthorizations:
             return true;
         default:
@@ -2257,8 +2377,9 @@ struct TLAccountAuthorizations {
 struct TLAuthSentCode {
     TLAuthSentCode() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AuthSentCode:
             return true;
         default:
@@ -2282,8 +2403,9 @@ struct TLAuthSentCode {
 struct TLCdnConfig {
     TLCdnConfig() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::CdnConfig:
             return true;
         default:
@@ -2297,8 +2419,9 @@ struct TLCdnConfig {
 struct TLChannelAdminLogEventsFilter {
     TLChannelAdminLogEventsFilter() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelAdminLogEventsFilter:
             return true;
         default:
@@ -2342,8 +2465,9 @@ struct TLChannelAdminLogEventsFilter {
 struct TLChannelAdminRights {
     TLChannelAdminRights() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelAdminRights:
             return true;
         default:
@@ -2377,8 +2501,9 @@ struct TLChannelAdminRights {
 struct TLChannelBannedRights {
     TLChannelBannedRights() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelBannedRights:
             return true;
         default:
@@ -2411,8 +2536,9 @@ struct TLChannelBannedRights {
 struct TLChannelMessagesFilter {
     TLChannelMessagesFilter() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelMessagesFilterEmpty:
         case TLValue::ChannelMessagesFilter:
             return true;
@@ -2432,8 +2558,9 @@ struct TLChannelMessagesFilter {
 struct TLChannelParticipant {
     TLChannelParticipant() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelParticipant:
         case TLValue::ChannelParticipantSelf:
         case TLValue::ChannelParticipantCreator:
@@ -2464,8 +2591,9 @@ struct TLChannelParticipant {
 struct TLChatPhoto {
     TLChatPhoto() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChatPhotoEmpty:
         case TLValue::ChatPhoto:
             return true;
@@ -2481,8 +2609,9 @@ struct TLChatPhoto {
 struct TLContactStatus {
     TLContactStatus() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactStatus:
             return true;
         default:
@@ -2497,8 +2626,9 @@ struct TLContactStatus {
 struct TLDcOption {
     TLDcOption() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::DcOption:
             return true;
         default:
@@ -2527,8 +2657,9 @@ struct TLDcOption {
 struct TLDocumentAttribute {
     TLDocumentAttribute() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::DocumentAttributeImageSize:
         case TLValue::DocumentAttributeAnimated:
         case TLValue::DocumentAttributeSticker:
@@ -2570,8 +2701,9 @@ struct TLDocumentAttribute {
 struct TLDraftMessage {
     TLDraftMessage() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::DraftMessageEmpty:
         case TLValue::DraftMessage:
             return true;
@@ -2596,8 +2728,9 @@ struct TLDraftMessage {
 struct TLHelpConfigSimple {
     TLHelpConfigSimple() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::HelpConfigSimple:
             return true;
         default:
@@ -2614,8 +2747,9 @@ struct TLHelpConfigSimple {
 struct TLInputChatPhoto {
     TLInputChatPhoto() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputChatPhotoEmpty:
         case TLValue::InputChatUploadedPhoto:
         case TLValue::InputChatPhoto:
@@ -2632,8 +2766,9 @@ struct TLInputChatPhoto {
 struct TLInputGame {
     TLInputGame() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputGameID:
         case TLValue::InputGameShortName:
             return true;
@@ -2651,8 +2786,9 @@ struct TLInputGame {
 struct TLInputNotifyPeer {
     TLInputNotifyPeer() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputNotifyPeer:
         case TLValue::InputNotifyUsers:
         case TLValue::InputNotifyChats:
@@ -2669,8 +2805,9 @@ struct TLInputNotifyPeer {
 struct TLInputPaymentCredentials {
     TLInputPaymentCredentials() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputPaymentCredentialsSaved:
         case TLValue::InputPaymentCredentials:
         case TLValue::InputPaymentCredentialsApplePay:
@@ -2696,8 +2833,9 @@ struct TLInputPaymentCredentials {
 struct TLInputPeerNotifySettings {
     TLInputPeerNotifySettings() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputPeerNotifySettings:
             return true;
         default:
@@ -2719,8 +2857,9 @@ struct TLInputPeerNotifySettings {
 struct TLInputPrivacyRule {
     TLInputPrivacyRule() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputPrivacyValueAllowContacts:
         case TLValue::InputPrivacyValueAllowAll:
         case TLValue::InputPrivacyValueAllowUsers:
@@ -2739,8 +2878,9 @@ struct TLInputPrivacyRule {
 struct TLInputStickerSetItem {
     TLInputStickerSetItem() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputStickerSetItem:
             return true;
         default:
@@ -2760,8 +2900,9 @@ struct TLInputStickerSetItem {
 struct TLInputWebDocument {
     TLInputWebDocument() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputWebDocument:
             return true;
         default:
@@ -2778,8 +2919,9 @@ struct TLInputWebDocument {
 struct TLInvoice {
     TLInvoice() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::Invoice:
             return true;
         default:
@@ -2809,8 +2951,9 @@ struct TLInvoice {
 struct TLKeyboardButton {
     TLKeyboardButton() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::KeyboardButton:
         case TLValue::KeyboardButtonUrl:
         case TLValue::KeyboardButtonCallback:
@@ -2839,8 +2982,9 @@ struct TLKeyboardButton {
 struct TLKeyboardButtonRow {
     TLKeyboardButtonRow() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::KeyboardButtonRow:
             return true;
         default:
@@ -2854,8 +2998,9 @@ struct TLKeyboardButtonRow {
 struct TLLangPackDifference {
     TLLangPackDifference() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::LangPackDifference:
             return true;
         default:
@@ -2872,8 +3017,9 @@ struct TLLangPackDifference {
 struct TLMessagesBotCallbackAnswer {
     TLMessagesBotCallbackAnswer() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesBotCallbackAnswer:
             return true;
         default:
@@ -2900,8 +3046,9 @@ struct TLMessagesBotCallbackAnswer {
 struct TLMessagesFilter {
     TLMessagesFilter() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputMessagesFilterEmpty:
         case TLValue::InputMessagesFilterPhotos:
         case TLValue::InputMessagesFilterVideo:
@@ -2934,8 +3081,9 @@ struct TLMessagesFilter {
 struct TLMessagesMessageEditData {
     TLMessagesMessageEditData() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesMessageEditData:
             return true;
         default:
@@ -2953,8 +3101,9 @@ struct TLMessagesMessageEditData {
 struct TLNotifyPeer {
     TLNotifyPeer() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::NotifyPeer:
         case TLValue::NotifyUsers:
         case TLValue::NotifyChats:
@@ -2971,8 +3120,9 @@ struct TLNotifyPeer {
 struct TLPaymentRequestedInfo {
     TLPaymentRequestedInfo() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PaymentRequestedInfo:
             return true;
         default:
@@ -2996,8 +3146,9 @@ struct TLPaymentRequestedInfo {
 struct TLPaymentsSavedInfo {
     TLPaymentsSavedInfo() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PaymentsSavedInfo:
             return true;
         default:
@@ -3017,8 +3168,9 @@ struct TLPaymentsSavedInfo {
 struct TLPaymentsValidatedRequestedInfo {
     TLPaymentsValidatedRequestedInfo() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PaymentsValidatedRequestedInfo:
             return true;
         default:
@@ -3038,8 +3190,9 @@ struct TLPaymentsValidatedRequestedInfo {
 struct TLPeerNotifySettings {
     TLPeerNotifySettings() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PeerNotifySettingsEmpty:
         case TLValue::PeerNotifySettings:
             return true;
@@ -3062,8 +3215,9 @@ struct TLPeerNotifySettings {
 struct TLPeerSettings {
     TLPeerSettings() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PeerSettings:
             return true;
         default:
@@ -3081,8 +3235,9 @@ struct TLPeerSettings {
 struct TLPhoneCallProtocol {
     TLPhoneCallProtocol() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PhoneCallProtocol:
             return true;
         default:
@@ -3104,8 +3259,9 @@ struct TLPhoneCallProtocol {
 struct TLPhoto {
     TLPhoto() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PhotoEmpty:
         case TLValue::Photo:
             return true;
@@ -3128,8 +3284,9 @@ struct TLPhoto {
 struct TLReplyMarkup {
     TLReplyMarkup() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ReplyKeyboardHide:
         case TLValue::ReplyKeyboardForceReply:
         case TLValue::ReplyKeyboardMarkup:
@@ -3155,8 +3312,9 @@ struct TLReplyMarkup {
 struct TLStickerSet {
     TLStickerSet() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::StickerSet:
             return true;
         default:
@@ -3186,8 +3344,9 @@ struct TLStickerSet {
 struct TLUser {
     TLUser() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UserEmpty:
         case TLValue::User:
             return true;
@@ -3249,8 +3408,9 @@ struct TLUser {
 struct TLWebDocument {
     TLWebDocument() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::WebDocument:
             return true;
         default:
@@ -3269,8 +3429,9 @@ struct TLWebDocument {
 struct TLAccountPrivacyRules {
     TLAccountPrivacyRules() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AccountPrivacyRules:
             return true;
         default:
@@ -3285,8 +3446,9 @@ struct TLAccountPrivacyRules {
 struct TLAuthAuthorization {
     TLAuthAuthorization() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::AuthAuthorization:
             return true;
         default:
@@ -3305,8 +3467,9 @@ struct TLAuthAuthorization {
 struct TLBotInlineMessage {
     TLBotInlineMessage() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::BotInlineMessageMediaAuto:
         case TLValue::BotInlineMessageText:
         case TLValue::BotInlineMessageMediaGeo:
@@ -3343,8 +3506,9 @@ struct TLBotInlineMessage {
 struct TLChannelsChannelParticipant {
     TLChannelsChannelParticipant() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelsChannelParticipant:
             return true;
         default:
@@ -3359,8 +3523,9 @@ struct TLChannelsChannelParticipant {
 struct TLChannelsChannelParticipants {
     TLChannelsChannelParticipants() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelsChannelParticipants:
         case TLValue::ChannelsChannelParticipantsNotModified:
             return true;
@@ -3377,8 +3542,9 @@ struct TLChannelsChannelParticipants {
 struct TLChat {
     TLChat() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChatEmpty:
         case TLValue::Chat:
         case TLValue::ChatForbidden:
@@ -3446,8 +3612,9 @@ struct TLChat {
 struct TLChatFull {
     TLChatFull() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChatFull:
         case TLValue::ChannelFull:
             return true;
@@ -3500,8 +3667,9 @@ struct TLChatFull {
 struct TLChatInvite {
     TLChatInvite() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChatInviteAlready:
         case TLValue::ChatInvite:
             return true;
@@ -3532,8 +3700,9 @@ struct TLChatInvite {
 struct TLConfig {
     TLConfig() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::Config:
             return true;
         default:
@@ -3587,8 +3756,9 @@ struct TLConfig {
 struct TLContactsBlocked {
     TLContactsBlocked() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactsBlocked:
         case TLValue::ContactsBlockedSlice:
             return true;
@@ -3605,8 +3775,9 @@ struct TLContactsBlocked {
 struct TLContactsContacts {
     TLContactsContacts() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactsContactsNotModified:
         case TLValue::ContactsContacts:
             return true;
@@ -3623,8 +3794,9 @@ struct TLContactsContacts {
 struct TLContactsFound {
     TLContactsFound() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactsFound:
             return true;
         default:
@@ -3640,8 +3812,9 @@ struct TLContactsFound {
 struct TLContactsImportedContacts {
     TLContactsImportedContacts() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactsImportedContacts:
             return true;
         default:
@@ -3658,8 +3831,9 @@ struct TLContactsImportedContacts {
 struct TLContactsLink {
     TLContactsLink() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactsLink:
             return true;
         default:
@@ -3675,8 +3849,9 @@ struct TLContactsLink {
 struct TLContactsResolvedPeer {
     TLContactsResolvedPeer() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactsResolvedPeer:
             return true;
         default:
@@ -3692,8 +3867,9 @@ struct TLContactsResolvedPeer {
 struct TLContactsTopPeers {
     TLContactsTopPeers() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ContactsTopPeersNotModified:
         case TLValue::ContactsTopPeers:
             return true;
@@ -3710,8 +3886,9 @@ struct TLContactsTopPeers {
 struct TLDialog {
     TLDialog() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::Dialog:
             return true;
         default:
@@ -3740,8 +3917,9 @@ struct TLDialog {
 struct TLDocument {
     TLDocument() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::DocumentEmpty:
         case TLValue::Document:
             return true;
@@ -3764,8 +3942,9 @@ struct TLDocument {
 struct TLFoundGif {
     TLFoundGif() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::FoundGif:
         case TLValue::FoundGifCached:
             return true;
@@ -3787,8 +3966,9 @@ struct TLFoundGif {
 struct TLGame {
     TLGame() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::Game:
             return true;
         default:
@@ -3812,8 +3992,9 @@ struct TLGame {
 struct TLHelpSupport {
     TLHelpSupport() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::HelpSupport:
             return true;
         default:
@@ -3828,8 +4009,9 @@ struct TLHelpSupport {
 struct TLInputBotInlineMessage {
     TLInputBotInlineMessage() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputBotInlineMessageMediaAuto:
         case TLValue::InputBotInlineMessageText:
         case TLValue::InputBotInlineMessageMediaGeo:
@@ -3867,8 +4049,9 @@ struct TLInputBotInlineMessage {
 struct TLInputBotInlineResult {
     TLInputBotInlineResult() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputBotInlineResult:
         case TLValue::InputBotInlineResultPhoto:
         case TLValue::InputBotInlineResultDocument:
@@ -3911,8 +4094,9 @@ struct TLInputBotInlineResult {
 struct TLInputMedia {
     TLInputMedia() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::InputMediaEmpty:
         case TLValue::InputMediaUploadedPhoto:
         case TLValue::InputMediaPhoto:
@@ -3974,8 +4158,9 @@ struct TLInputMedia {
 struct TLMessageAction {
     TLMessageAction() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessageActionEmpty:
         case TLValue::MessageActionChatCreate:
         case TLValue::MessageActionChatEditTitle:
@@ -4032,8 +4217,9 @@ struct TLMessageAction {
 struct TLMessagesAllStickers {
     TLMessagesAllStickers() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesAllStickersNotModified:
         case TLValue::MessagesAllStickers:
             return true;
@@ -4049,8 +4235,9 @@ struct TLMessagesAllStickers {
 struct TLMessagesChatFull {
     TLMessagesChatFull() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesChatFull:
             return true;
         default:
@@ -4066,8 +4253,9 @@ struct TLMessagesChatFull {
 struct TLMessagesChats {
     TLMessagesChats() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesChats:
         case TLValue::MessagesChatsSlice:
             return true;
@@ -4083,8 +4271,9 @@ struct TLMessagesChats {
 struct TLMessagesFavedStickers {
     TLMessagesFavedStickers() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesFavedStickersNotModified:
         case TLValue::MessagesFavedStickers:
             return true;
@@ -4101,8 +4290,9 @@ struct TLMessagesFavedStickers {
 struct TLMessagesFoundGifs {
     TLMessagesFoundGifs() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesFoundGifs:
             return true;
         default:
@@ -4117,8 +4307,9 @@ struct TLMessagesFoundGifs {
 struct TLMessagesHighScores {
     TLMessagesHighScores() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesHighScores:
             return true;
         default:
@@ -4133,8 +4324,9 @@ struct TLMessagesHighScores {
 struct TLMessagesRecentStickers {
     TLMessagesRecentStickers() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesRecentStickersNotModified:
         case TLValue::MessagesRecentStickers:
             return true;
@@ -4150,8 +4342,9 @@ struct TLMessagesRecentStickers {
 struct TLMessagesSavedGifs {
     TLMessagesSavedGifs() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesSavedGifsNotModified:
         case TLValue::MessagesSavedGifs:
             return true;
@@ -4167,8 +4360,9 @@ struct TLMessagesSavedGifs {
 struct TLMessagesStickerSet {
     TLMessagesStickerSet() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesStickerSet:
             return true;
         default:
@@ -4184,8 +4378,9 @@ struct TLMessagesStickerSet {
 struct TLMessagesStickers {
     TLMessagesStickers() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesStickersNotModified:
         case TLValue::MessagesStickers:
             return true;
@@ -4204,8 +4399,9 @@ using TLPageBlockPtr = TLPtr<TLPageBlock>;
 struct TLPageBlock {
     TLPageBlock() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PageBlockUnsupported:
         case TLValue::PageBlockTitle:
         case TLValue::PageBlockSubtitle:
@@ -4278,8 +4474,9 @@ struct TLPageBlock {
 struct TLPaymentsPaymentForm {
     TLPaymentsPaymentForm() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PaymentsPaymentForm:
             return true;
         default:
@@ -4312,8 +4509,9 @@ struct TLPaymentsPaymentForm {
 struct TLPaymentsPaymentReceipt {
     TLPaymentsPaymentReceipt() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PaymentsPaymentReceipt:
             return true;
         default:
@@ -4341,8 +4539,9 @@ struct TLPaymentsPaymentReceipt {
 struct TLPhoneCall {
     TLPhoneCall() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PhoneCallEmpty:
         case TLValue::PhoneCallWaiting:
         case TLValue::PhoneCallRequested:
@@ -4386,8 +4585,9 @@ struct TLPhoneCall {
 struct TLPhonePhoneCall {
     TLPhonePhoneCall() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PhonePhoneCall:
             return true;
         default:
@@ -4402,8 +4602,9 @@ struct TLPhonePhoneCall {
 struct TLPhotosPhoto {
     TLPhotosPhoto() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PhotosPhoto:
             return true;
         default:
@@ -4418,8 +4619,9 @@ struct TLPhotosPhoto {
 struct TLPhotosPhotos {
     TLPhotosPhotos() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PhotosPhotos:
         case TLValue::PhotosPhotosSlice:
             return true;
@@ -4436,8 +4638,9 @@ struct TLPhotosPhotos {
 struct TLStickerSetCovered {
     TLStickerSetCovered() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::StickerSetCovered:
         case TLValue::StickerSetMultiCovered:
             return true;
@@ -4454,8 +4657,9 @@ struct TLStickerSetCovered {
 struct TLUserFull {
     TLUserFull() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UserFull:
             return true;
         default:
@@ -4487,8 +4691,9 @@ struct TLUserFull {
 struct TLBotInlineResult {
     TLBotInlineResult() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::BotInlineResult:
         case TLValue::BotInlineMediaResult:
             return true;
@@ -4530,8 +4735,9 @@ struct TLBotInlineResult {
 struct TLMessagesArchivedStickers {
     TLMessagesArchivedStickers() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesArchivedStickers:
             return true;
         default:
@@ -4546,8 +4752,9 @@ struct TLMessagesArchivedStickers {
 struct TLMessagesBotResults {
     TLMessagesBotResults() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesBotResults:
             return true;
         default:
@@ -4573,8 +4780,9 @@ struct TLMessagesBotResults {
 struct TLMessagesFeaturedStickers {
     TLMessagesFeaturedStickers() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesFeaturedStickersNotModified:
         case TLValue::MessagesFeaturedStickers:
             return true;
@@ -4591,8 +4799,9 @@ struct TLMessagesFeaturedStickers {
 struct TLMessagesStickerSetInstallResult {
     TLMessagesStickerSetInstallResult() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesStickerSetInstallResultSuccess:
         case TLValue::MessagesStickerSetInstallResultArchive:
             return true;
@@ -4607,8 +4816,9 @@ struct TLMessagesStickerSetInstallResult {
 struct TLPage {
     TLPage() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PagePart:
         case TLValue::PageFull:
             return true;
@@ -4625,8 +4835,9 @@ struct TLPage {
 struct TLRecentMeUrl {
     TLRecentMeUrl() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::RecentMeUrlUnknown:
         case TLValue::RecentMeUrlUser:
         case TLValue::RecentMeUrlChat:
@@ -4648,8 +4859,9 @@ struct TLRecentMeUrl {
 struct TLWebPage {
     TLWebPage() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::WebPageEmpty:
         case TLValue::WebPagePending:
         case TLValue::WebPage:
@@ -4699,8 +4911,9 @@ struct TLWebPage {
 struct TLHelpRecentMeUrls {
     TLHelpRecentMeUrls() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::HelpRecentMeUrls:
             return true;
         default:
@@ -4716,8 +4929,9 @@ struct TLHelpRecentMeUrls {
 struct TLMessageMedia {
     TLMessageMedia() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessageMediaEmpty:
         case TLValue::MessageMediaPhoto:
         case TLValue::MessageMediaGeo:
@@ -4776,8 +4990,9 @@ struct TLMessageMedia {
 struct TLMessage {
     TLMessage() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessageEmpty:
         case TLValue::Message:
         case TLValue::MessageService:
@@ -4830,8 +5045,9 @@ struct TLMessage {
 struct TLMessagesDialogs {
     TLMessagesDialogs() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesDialogs:
         case TLValue::MessagesDialogsSlice:
             return true;
@@ -4850,8 +5066,9 @@ struct TLMessagesDialogs {
 struct TLMessagesMessages {
     TLMessagesMessages() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesMessages:
         case TLValue::MessagesMessagesSlice:
         case TLValue::MessagesChannelMessages:
@@ -4873,8 +5090,9 @@ struct TLMessagesMessages {
 struct TLMessagesPeerDialogs {
     TLMessagesPeerDialogs() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::MessagesPeerDialogs:
             return true;
         default:
@@ -4892,8 +5110,9 @@ struct TLMessagesPeerDialogs {
 struct TLUpdate {
     TLUpdate() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UpdateNewMessage:
         case TLValue::UpdateMessageID:
         case TLValue::UpdateDeleteMessages:
@@ -5057,8 +5276,9 @@ struct TLUpdate {
 struct TLUpdates {
     TLUpdates() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UpdatesTooLong:
         case TLValue::UpdateShortMessage:
         case TLValue::UpdateShortChatMessage:
@@ -5112,8 +5332,9 @@ struct TLUpdates {
 struct TLUpdatesChannelDifference {
     TLUpdatesChannelDifference() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UpdatesChannelDifferenceEmpty:
         case TLValue::UpdatesChannelDifferenceTooLong:
         case TLValue::UpdatesChannelDifference:
@@ -5146,8 +5367,9 @@ struct TLUpdatesChannelDifference {
 struct TLUpdatesDifference {
     TLUpdatesDifference() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::UpdatesDifferenceEmpty:
         case TLValue::UpdatesDifference:
         case TLValue::UpdatesDifferenceSlice:
@@ -5173,8 +5395,9 @@ struct TLUpdatesDifference {
 struct TLChannelAdminLogEventAction {
     TLChannelAdminLogEventAction() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelAdminLogEventActionChangeTitle:
         case TLValue::ChannelAdminLogEventActionChangeAbout:
         case TLValue::ChannelAdminLogEventActionChangeUsername:
@@ -5215,8 +5438,9 @@ struct TLChannelAdminLogEventAction {
 struct TLPaymentsPaymentResult {
     TLPaymentsPaymentResult() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::PaymentsPaymentResult:
         case TLValue::PaymentsPaymentVerficationNeeded:
             return true;
@@ -5232,8 +5456,9 @@ struct TLPaymentsPaymentResult {
 struct TLChannelAdminLogEvent {
     TLChannelAdminLogEvent() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelAdminLogEvent:
             return true;
         default:
@@ -5250,8 +5475,9 @@ struct TLChannelAdminLogEvent {
 struct TLChannelsAdminLogResults {
     TLChannelsAdminLogResults() = default;
 
-    bool isValid() const {
-        switch (tlType) {
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
         case TLValue::ChannelsAdminLogResults:
             return true;
         default:
