@@ -35,6 +35,7 @@ SOURCES += \
     DcConfiguration.cpp \
     DhLayer.cpp \
     Client.cpp \
+    ClientApi.cpp \
     ClientBackend.cpp \
     ClientConnection.cpp \
     ClientDhLayer.cpp \
@@ -70,6 +71,7 @@ SOURCES += \
 PUBLIC_HEADERS += \
     telegramqt_global.h \
     CAppInformation.hpp \
+    ClientApi.hpp \
     Debug.hpp \
     TelegramNamespace.hpp \
     CTelegramCore.hpp \
@@ -90,6 +92,8 @@ HEADERS += \
     DhLayer.hpp \
     Client.hpp \
     Client_p.hpp \
+    ClientApi.hpp \
+    ClientApi_p.hpp \
     ClientBackend.hpp \
     ClientConnection.hpp \
     ClientDhLayer.hpp \

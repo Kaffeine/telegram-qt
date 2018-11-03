@@ -5,6 +5,7 @@ set(telegram_qt_SOURCES
     ApiUtils.cpp
     TelegramNamespace.cpp
     Client.cpp
+    ClientApi.cpp
     ClientBackend.cpp
     ClientConnection.cpp
     ClientDhLayer.cpp
@@ -45,6 +46,8 @@ set(telegram_qt_META_HEADERS
     AccountStorage.hpp
     Client.hpp
     Client_p.hpp
+    ClientApi.hpp
+    ClientApi_p.hpp
     ClientBackend.hpp
     ClientConnection.hpp
     ClientDhLayer.hpp
@@ -115,6 +118,8 @@ set(telegram_qt_public_HEADERS
     CAppInformation.hpp
     TelegramNamespace.hpp
     CTelegramCore.hpp
+    Client.hpp
+    ClientApi.hpp
     DcConfiguration.hpp
     Debug.hpp
 )
