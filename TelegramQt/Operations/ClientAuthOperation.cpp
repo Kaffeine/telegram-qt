@@ -9,6 +9,7 @@
 #include "ClientRpcAccountLayer.hpp"
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
+#include "ConnectionApi_p.hpp"
 
 #include "RpcError.hpp"
 
@@ -34,12 +35,6 @@ bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAuthS
 
 AuthOperation::AuthOperation(QObject *parent) :
     PendingOperation(parent)
-{
-}
-
-AuthOperation::AuthOperation(Backend *backend)  :
-    PendingOperation(backend),
-    m_backend(backend)
 {
 }
 
@@ -102,7 +97,7 @@ PendingOperation *AuthOperation::requestAuthCode()
     }
 
     AuthRpcLayer::PendingAuthSentCode *requestCodeOperation
-            = m_backend->authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
+            = authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
     qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO
                                           << "requestPhoneCode"
                                           << Telegram::Utils::maskPhoneNumber(phoneNumber())
@@ -322,7 +317,8 @@ void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLA
         storage->setAccountIdentifier(authorization.user.phone);
     }
     Connection *conn = Connection::fromOperation(operation);
-    m_backend->setMainConnection(conn);
+    ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_backend->m_connectionApi);
+    privateApi->setMainConnection(conn);
     conn->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Remote);
     setFinished();
 }
@@ -334,7 +330,8 @@ void AuthOperation::onAccountStatusUpdateFinished(PendingRpcOperation *operation
         return;
     }
     Connection *conn = Connection::fromOperation(operation);
-    m_backend->setMainConnection(conn);
+    ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_backend->m_connectionApi);
+    privateApi->setMainConnection(conn);
     conn->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Local);
     setFinished();
 }

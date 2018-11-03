@@ -25,6 +25,7 @@
 #include "ClientRpcLayer.hpp"
 #include "ClientSettings.hpp"
 #include "CClientTcpTransport.hpp"
+#include "ConnectionApi_p.hpp"
 #include "DataStorage.hpp"
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
@@ -198,7 +199,8 @@ void tst_toOfficial::testGetConfiguration()
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
 
     // --- Connect ---
-    PendingOperation *connectOperation = backend->connectToServer(clientSettings.serverConfiguration());
+    Client::ConnectionApiPrivate *connectionApi = Client::ConnectionApiPrivate::get(backend->m_connectionApi);
+    PendingOperation *connectOperation = connectionApi->connectToServer(clientSettings.serverConfiguration());
     TRY_VERIFY(connectOperation->isFinished());
     QVERIFY(connectOperation->isSucceeded());
 

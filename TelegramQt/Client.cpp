@@ -26,18 +26,6 @@ bool Client::isSignedIn() const
     return d->isSignedIn();
 }
 
-Telegram::Client::AuthOperation *Client::signIn()
-{
-    Q_D(Client);
-    return d->signIn();
-}
-
-AuthOperation *Client::checkIn()
-{
-    Q_D(Client);
-    return d->checkIn();
-}
-
 CAppInformation *Client::appInformation() const
 {
     Q_D(const Client);
@@ -90,6 +78,12 @@ void Client::setDataStorage(DataStorage *storage)
 {
     Q_D(Client);
     d->m_dataStorage = storage;
+}
+
+ConnectionApi *Client::connectionApi() const
+{
+    Q_D(const Client);
+    return d->m_connectionApi;
 }
 
 } // Client

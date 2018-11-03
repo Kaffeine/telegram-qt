@@ -39,7 +39,8 @@ class Settings;
 class DataStorage;
 class AccountStorage;
 using AppInformation = ::CAppInformation;
-class AuthOperation;
+
+class ConnectionApi;
 
 class ClientPrivate;
 
@@ -65,10 +66,7 @@ public:
     DataStorage *dataStorage() const;
     void setDataStorage(DataStorage *storage);
 
-public Q_SLOTS:
-    AuthOperation *signUp() { return signIn(); }
-    AuthOperation *signIn();
-    AuthOperation *checkIn();
+    ConnectionApi *connectionApi() const;
 
 Q_SIGNALS:
     void signedInChanged(bool signedIn);

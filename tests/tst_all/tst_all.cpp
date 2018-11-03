@@ -20,6 +20,7 @@
 #include "AccountStorage.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"
+#include "ConnectionApi.hpp"
 #include "ConnectionError.hpp"
 #include "DataStorage.hpp"
 #include "Utils.hpp"
@@ -285,7 +286,7 @@ void tst_all::testClientConnection()
 
     // --- Sign in ---
     QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
-    Client::AuthOperation *signInOperation = client.signIn();
+    Client::AuthOperation *signInOperation = client.connectionApi()->signIn();
     signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
@@ -387,13 +388,13 @@ void tst_all::testCheckInSignIn()
     static const QString errorText = ConnectionError(ConnectionError::InvalidAuthKey).description();
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression(errorText));
 
-    Client::AuthOperation *checkInOperation = client.checkIn();
+    Client::AuthOperation *checkInOperation = client.connectionApi()->checkIn();
     QSignalSpy checkInFinishedSpy(checkInOperation, &Client::AuthOperation::finished);
     QSignalSpy checkInFailedSpy(checkInOperation, &Client::AuthOperation::failed);
     TRY_COMPARE(checkInFinishedSpy.count(), 1);
     TRY_COMPARE(checkInFailedSpy.count(), 1);
 
-    Client::AuthOperation *signInOperation = client.signIn();
+    Client::AuthOperation *signInOperation = client.connectionApi()->signIn();
 
     signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
@@ -490,9 +491,9 @@ void tst_all::testSignUp()
                          QRegularExpression(QString::fromLatin1(Server::RpcLayer::gzipPackMessage())
                                             + QStringLiteral(" .* \"Config\"")));
 
-    // --- Sign in ---
+    // --- Sign up ---
     QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
-    Client::AuthOperation *signUpOperation = client.signUp();
+    Client::AuthOperation *signUpOperation = client.connectionApi()->signUp();
     signUpOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signUpOperation, &Client::AuthOperation::authCodeRequired);

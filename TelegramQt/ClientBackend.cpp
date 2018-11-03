@@ -1,22 +1,17 @@
 #include "ClientBackend.hpp"
-#include "CClientTcpTransport.hpp"
 #include "ClientSettings.hpp"
 #include "AccountStorage.hpp"
+#include "ConnectionApi.hpp"
+#include "ConnectionApi_p.hpp"
 #include "ClientConnection.hpp"
 #include "Client.hpp"
 #include "ClientRpcLayer.hpp"
-#include "ClientRpcHelpLayer.hpp"
 #include "DataStorage.hpp"
 #include "RpcError.hpp"
 #include "Debug_p.hpp"
 
-#include "Operations/ClientAuthOperation.hpp"
 #include "Operations/ClientHelpOperation.hpp"
-#include "Operations/ConnectionOperation.hpp"
 #include "PendingRpcOperation.hpp"
-
-#include <QLoggingCategory>
-#include <QTimer>
 
 // Generated low-level layer includes
 #include "ClientRpcAccountLayer.hpp"
@@ -35,6 +30,9 @@
 #include "ClientRpcUploadLayer.hpp"
 #include "ClientRpcUsersLayer.hpp"
 // End of generated low-level layer includes
+
+#include <QLoggingCategory>
+#include <QTimer>
 
 Q_LOGGING_CATEGORY(c_clientBackendCategory, "telegram.client.backend", QtWarningMsg)
 
@@ -87,94 +85,10 @@ Backend::Backend(Client *parent) :
     m_usersLayer = new UsersRpcLayer(this);
     m_usersLayer->setRpcProcessingMethod(rpcProcessMethod);
     // End of generated low-level layer initialization
-}
 
-PendingOperation *Backend::connectToServer(const QVector<DcOption> &dcOptions)
-{
-    if (m_connectToServerOperation) {
-        if (dcOptions.contains(m_connectToServerOperation->connection()->dcOption())) {
-            switch (m_connectToServerOperation->connection()->status()) {
-            case BaseConnection::Status::Connecting:
-            case BaseConnection::Status::Connected:
-            case BaseConnection::Status::Authenticated:
-            case BaseConnection::Status::Signed:
-                return m_connectToServerOperation;
-            default:
-                m_connectToServerOperation->connection()->transport()->disconnectFromHost();
-                break;
-            }
-        }
-        m_connectToServerOperation->deleteLater();
-        m_connectToServerOperation = nullptr;
-    }
+    m_connectionApi = new ConnectionApi(this);
+    ClientApiPrivate::get(m_connectionApi)->setBackend(this);
 
-    if (m_mainConnection && m_mainConnection->status() != Connection::Status::Disconnected) {
-        return PendingOperation::failOperation<PendingOperation>
-                (QStringLiteral("Connection is already in progress"), this);
-    }
-
-    if (m_mainConnection) {
-        // TODO!
-    }
-
-    if (!m_accountStorage) {
-        return PendingOperation::failOperation<PendingOperation>
-                (QStringLiteral("Account storage is missing"), this);
-    }
-    if (!m_dataStorage) {
-        return PendingOperation::failOperation<PendingOperation>
-                (QStringLiteral("Data storage is missing"), this);
-    }
-
-    Connection *connection = nullptr;
-    connection = createConnection(dcOptions.first());
-    m_connectToServerOperation = connection->connectToDc();
-    connect(m_connectToServerOperation, &PendingOperation::finished, this, &Backend::onConnectOperationFinished);
-    return m_connectToServerOperation;
-}
-
-AuthOperation *Backend::signIn()
-{
-    if (m_signedIn) {
-        return PendingOperation::failOperation<AuthOperation>
-                (QStringLiteral("Already signed in"), this);
-    }
-    if (!m_settings || !m_settings->isValid()) {
-        qCWarning(c_clientBackendCategory) << "Invalid settings";
-        return PendingOperation::failOperation<AuthOperation>
-                (QStringLiteral("Invalid settings"), this);
-    }
-    if (m_authOperation && !m_authOperation->isFinished()) {
-        return PendingOperation::failOperation<AuthOperation>
-                (QStringLiteral("Auth operation is already in progress"), this);
-    }
-
-    m_authOperation = new AuthOperation(this);
-    PendingOperation *connectionOperation = connectToServer(m_settings->serverConfiguration());
-    m_authOperation->runAfter(connectionOperation);
-    m_authOperation->setRunMethod(&AuthOperation::requestAuthCode);
-    return m_authOperation;
-}
-
-AuthOperation *Backend::checkIn()
-{
-    if (m_authOperation && !m_authOperation->isFinished()) {
-        return PendingOperation::failOperation<AuthOperation>
-                (QStringLiteral("Auth operation is already in progress"), this);
-    }
-    if (!m_accountStorage->hasMinimalDataSet()) {
-        return PendingOperation::failOperation<AuthOperation>
-                (QStringLiteral("No minimal account data set"), this);
-    }
-    m_authOperation = new AuthOperation(this);
-    PendingOperation *connectionOperation = connectToServer({m_accountStorage->dcInfo()});
-    m_authOperation->runAfter(connectionOperation);
-    m_authOperation->setRunMethod(&AuthOperation::checkAuthorization);
-    m_connectToServerOperation->connection()->setAuthKey(m_accountStorage->authKey());
-    m_connectToServerOperation->connection()->rpcLayer()->setSessionData(
-                m_accountStorage->sessionId(),
-                m_accountStorage->contentRelatedMessagesNumber());
-    return m_authOperation;
 }
 
 PendingOperation *Backend::getDcConfig()
@@ -197,60 +111,16 @@ PendingOperation *Backend::getDcConfig()
     return m_getConfigOperation;
 }
 
-Connection *Backend::createConnection(const DcOption &dcOption)
-{
-    Connection *connection = new Connection(this);
-    connection->setDcOption(dcOption);
-    connection->setServerRsaKey(m_settings->serverRsaKey());
-    connection->rpcLayer()->setAppInformation(m_appInformation);
-    connection->setDeltaTime(m_accountStorage->deltaTime());
-
-    TcpTransport *transport = new TcpTransport(connection);
-    transport->setProxy(m_settings->proxy());
-
-    switch (m_settings->preferedSessionType()) {
-    case Settings::SessionType::Default:
-        break;
-    case Settings::SessionType::Abridged:
-        transport->setPreferedSessionType(TcpTransport::Abridged);
-        break;
-    case Settings::SessionType::Obfuscated:
-        transport->setPreferedSessionType(TcpTransport::Obfuscated);
-        break;
-    }
-    connection->setTransport(transport);
-    return connection;
-}
-
-Connection *Backend::mainConnection()
-{
-    return m_mainConnection;
-}
-
 Connection *Backend::getDefaultConnection()
 {
-    if (mainConnection()) {
-        return mainConnection();
-    } else if (m_connectToServerOperation) {
-        return m_connectToServerOperation->connection();
-    }
-    return nullptr;
+    ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_connectionApi);
+    return privateApi->getDefaultConnection();
 }
 
 Connection *Backend::ensureConnection(const ConnectionSpec &dcSpec)
 {
-    qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << dcSpec.dcId << dcSpec.flags;
-    ConnectionSpec spec = dcSpec;
-    spec.flags |= ConnectionSpec::RequestFlag::Ipv4Only; // Enable only ipv4 for now
-    if (!m_connections.contains(dcSpec)) {
-        const DcOption opt = dataStorage()->serverConfiguration().getOption(spec);
-        if (!opt.isValid()) {
-            qCWarning(c_clientBackendCategory) << Q_FUNC_INFO << "Unable to find suitable DC";
-            return nullptr;
-        }
-        m_connections.insert(dcSpec, createConnection(opt));
-    }
-    return m_connections.value(dcSpec);
+    ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_connectionApi);
+    return privateApi->ensureConnection(dcSpec);
 }
 
 void Backend::setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension *layer)
@@ -262,23 +132,6 @@ void Backend::setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension 
         b->ensureConnection(dcSpec)->rpcLayer()->sendRpc(operation);
     };
     layer->setRpcProcessingMethod(sendMethod);
-}
-
-void Backend::setMainConnection(Connection *connection)
-{
-    m_mainConnection = connection;
-    connect(m_mainConnection, &BaseConnection::statusChanged, this, &Backend::onMainConnectionStatusChanged);
-    onMainConnectionStatusChanged();
-}
-
-void Backend::onConnectOperationFinished(PendingOperation *operation)
-{
-    if (!operation->isSucceeded()) {
-        m_connectToServerOperation = nullptr;
-        operation->deleteLater();
-        return;
-    }
-    getDcConfig();
 }
 
 void Backend::onGetDcConfigurationFinished(PendingOperation *operation)
@@ -332,39 +185,30 @@ void Backend::routeOperation(PendingRpcOperation *operation)
     connection->processSeeOthers(operation);
 }
 
-void Backend::onMainConnectionStatusChanged()
-{
-    if (!m_mainConnection) {
-        return;
-    }
-    setSignedIn(m_mainConnection->status() == Connection::Status::Signed);
-    if (isSignedIn()) {
-        syncAccountToStorage();
-    }
-}
-
 bool Backend::syncAccountToStorage()
 {
-    if (!m_mainConnection) {
+    ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_connectionApi);
+    Connection *connection = privateApi->mainConnection();
+    if (!connection) {
         return false;
     }
-    switch (m_mainConnection->status()) {
+    switch (connection->status()) {
     case Connection::Status::Authenticated:
     case Connection::Status::Signed:
         break;
     default:
         return false;
     }
-    if (!m_mainConnection->dcOption().isValid()) {
+    if (!connection->dcOption().isValid()) {
         connect(getDcConfig(), &PendingOperation::finished, this, &Backend::syncAccountToStorage);
         return false;
     }
-    m_accountStorage->setAuthKey(m_mainConnection->authKey());
-    m_accountStorage->setAuthId(m_mainConnection->authId());
-    m_accountStorage->setDcInfo(m_mainConnection->dcOption());
-    m_accountStorage->setDeltaTime(m_mainConnection->deltaTime());
-    m_accountStorage->setSessionData(m_mainConnection->rpcLayer()->sessionId(),
-                                     m_mainConnection->rpcLayer()->contentRelatedMessagesNumber());
+    m_accountStorage->setAuthKey(connection->authKey());
+    m_accountStorage->setAuthId(connection->authId());
+    m_accountStorage->setDcInfo(connection->dcOption());
+    m_accountStorage->setDeltaTime(connection->deltaTime());
+    m_accountStorage->setSessionData(connection->rpcLayer()->sessionId(),
+                                     connection->rpcLayer()->contentRelatedMessagesNumber());
     m_accountStorage->sync();
     return true;
 }

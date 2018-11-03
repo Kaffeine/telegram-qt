@@ -2,7 +2,6 @@
 #define TELEGRAM_CLIENT_BACKEND_HPP
 
 #include <QObject>
-#include <QHash>
 #include <QVector>
 
 #include "TelegramNamespace.hpp"
@@ -23,9 +22,7 @@ class Settings;
 class AccountStorage;
 using AppInformation = ::CAppInformation;
 class DataStorage;
-class RpcLayer;
-class AuthOperation;
-class ConnectOperation;
+class ConnectionApi;
 class PendingRpcOperation;
 
 // Generated low-level layers forward declarations
@@ -56,18 +53,12 @@ public:
 
     bool isSignedIn() const { return m_signedIn; }
 
-    PendingOperation *connectToServer(const QVector<DcOption> &dcOptions);
-    AuthOperation *signIn();
-    AuthOperation *checkIn();
     PendingOperation *getDcConfig();
 
-    Connection *createConnection(const DcOption &dcInfo);
-    Connection *mainConnection();
     Connection *getDefaultConnection();
     Connection *ensureConnection(const ConnectionSpec &dcSpec);
 
     void setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension *layer);
-    void setMainConnection(Connection *connection);
 
     DataStorage *dataStorage() { return m_dataStorage; }
     const DataStorage *dataStorage() const { return m_dataStorage; }
@@ -99,10 +90,7 @@ public:
     Settings *m_settings = nullptr;
     AccountStorage *m_accountStorage = nullptr;
     DataStorage *m_dataStorage = nullptr;
-    Connection *m_mainConnection = nullptr;
-
-    AuthOperation *m_authOperation = nullptr;
-
+    ConnectionApi *m_connectionApi = nullptr;
 
     // Generated low-level layer members
     AccountRpcLayer *m_accountLayer = nullptr;
@@ -122,20 +110,15 @@ public:
     UsersRpcLayer *m_usersLayer = nullptr;
     // End of generated low-level layer members
 
+    bool syncAccountToStorage();
+    void setSignedIn(bool signedIn);
+
 protected:
-    void onConnectOperationFinished(PendingOperation *operation);
     void onGetDcConfigurationFinished(PendingOperation *operation);
 
     void routeOperation(PendingRpcOperation *operation);
 
-    void onMainConnectionStatusChanged();
-    bool syncAccountToStorage();
-
-    void setSignedIn(bool signedIn);
-
-    ConnectOperation *m_connectToServerOperation = nullptr;
     PendingOperation *m_getConfigOperation = nullptr;
-    QHash<ConnectionSpec, Connection *> m_connections;
     QVector<PendingRpcOperation *> m_queuedRedirectedOperations;
     bool m_signedIn = false;
 

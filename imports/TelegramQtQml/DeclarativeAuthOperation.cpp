@@ -4,6 +4,7 @@
 #include <QDebug>
 
 #include "Client.hpp"
+#include "ConnectionApi.hpp"
 #include "Operations/ClientAuthOperation.hpp"
 
 namespace Telegram {
@@ -57,7 +58,7 @@ void DeclarativeAuthOperation::signIn()
         }
     }
     syncSettings();
-    m_authOperation = client()->signIn();
+    m_authOperation = client()->connectionApi()->signIn();
     m_authOperation->setPhoneNumber(phoneNumber());
     setPendingOperation(m_authOperation);
     connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
@@ -101,7 +102,7 @@ void DeclarativeAuthOperation::checkIn()
         }
     }
     syncSettings();
-    m_authOperation = client()->checkIn();
+    m_authOperation = client()->connectionApi()->checkIn();
     setPendingOperation(m_authOperation);
     connect(m_authOperation, &PendingOperation::finished, this, [this](PendingOperation *op) {
         if (op->isSucceeded()) {

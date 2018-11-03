@@ -22,7 +22,6 @@ class AuthOperation : public PendingOperation
     Q_OBJECT
 public:
     explicit AuthOperation(QObject *parent = nullptr);
-    explicit AuthOperation(Backend *backend);
 
     void setBackend(Backend *backend);
 
