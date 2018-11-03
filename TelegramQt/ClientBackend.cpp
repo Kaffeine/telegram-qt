@@ -46,6 +46,8 @@ Backend::Backend(Client *parent) :
     QObject(parent),
     m_client(parent)
 {
+    Telegram::initialize();
+
     Backend *b = this;
     BaseRpcLayerExtension::RpcProcessingMethod rpcProcessMethod = [b](PendingRpcOperation *operation) mutable {
         qCDebug(c_clientBackendCategory) << "Default processing for" << operation
