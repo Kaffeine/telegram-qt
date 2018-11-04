@@ -4,9 +4,11 @@
 #include <QObject>
 #include <QVariantHash>
 
+#include "telegramqt_global.h"
+
 namespace Telegram {
 
-class PendingOperation : public QObject
+class TELEGRAMQT_EXPORT PendingOperation : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(PendingOperation)
