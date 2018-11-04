@@ -150,6 +150,7 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
     Connection *connection = new Connection(this);
     connection->setDcOption(dcOption);
     connection->rpcLayer()->setAppInformation(backend()->m_appInformation);
+    connection->rpcLayer()->installUpdatesHandler(backend()->updatesApi());
     connection->setDeltaTime(backend()->accountStorage()->deltaTime());
 
     Settings *settings = backend()->m_settings;

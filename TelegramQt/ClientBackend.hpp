@@ -24,6 +24,7 @@ using AppInformation = ::CAppInformation;
 class DataStorage;
 class ConnectionApi;
 class PendingRpcOperation;
+class UpdatesInternalApi;
 
 // Generated low-level layers forward declarations
 class AccountRpcLayer;
@@ -110,6 +111,8 @@ public:
     UsersRpcLayer *m_usersLayer = nullptr;
     // End of generated low-level layer members
 
+    UpdatesInternalApi *updatesApi() const { return m_updatesApi; }
+
     bool syncAccountToStorage();
     void setSignedIn(bool signedIn);
 
@@ -119,6 +122,7 @@ protected:
     void routeOperation(PendingRpcOperation *operation);
 
     PendingOperation *m_getConfigOperation = nullptr;
+    UpdatesInternalApi *m_updatesApi = nullptr;
     QVector<PendingRpcOperation *> m_queuedRedirectedOperations;
     bool m_signedIn = false;
 

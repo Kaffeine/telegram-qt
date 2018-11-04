@@ -9,6 +9,7 @@
 #include "DataStorage.hpp"
 #include "RpcError.hpp"
 #include "Debug_p.hpp"
+#include "UpdatesLayer.hpp"
 
 #include "Operations/ClientHelpOperation.hpp"
 #include "PendingRpcOperation.hpp"
@@ -89,6 +90,8 @@ Backend::Backend(Client *parent) :
     m_connectionApi = new ConnectionApi(this);
     ClientApiPrivate::get(m_connectionApi)->setBackend(this);
 
+    m_updatesApi = new UpdatesInternalApi(this);
+    m_updatesApi->setBackend(this);
 }
 
 PendingOperation *Backend::getDcConfig()

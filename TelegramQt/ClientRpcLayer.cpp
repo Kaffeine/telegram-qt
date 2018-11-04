@@ -16,6 +16,7 @@
  */
 
 #include "ClientRpcLayer.hpp"
+#include "ClientRpcUpdatesLayer.hpp"
 #include "IgnoredMessageNotification.hpp"
 #include "SendPackageHelper.hpp"
 #include "CTelegramStream.hpp"
@@ -23,6 +24,7 @@
 #include "Debug_p.hpp"
 #include "CAppInformation.hpp"
 #include "PendingRpcOperation.hpp"
+#include "UpdatesLayer.hpp"
 
 #include "MTProto/MessageHeader.hpp"
 
@@ -42,6 +44,11 @@ RpcLayer::RpcLayer(QObject *parent) :
 void RpcLayer::setAppInformation(CAppInformation *appInfo)
 {
     m_appInfo = appInfo;
+}
+
+void RpcLayer::installUpdatesHandler(UpdatesInternalApi *updatesHandler)
+{
+    m_UpdatesInternalApi = updatesHandler;
 }
 
 void RpcLayer::setSessionData(quint64 sessionId, quint32 contentRelatedMessagesNumber)
@@ -66,7 +73,13 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
     if (message.sequenceNumber & 1) {
         addMessageToAck(message.messageId);
     }
-    switch (message.firstValue()) {
+
+    const TLValue firstValue = message.firstValue();
+    if (firstValue.isTypeOf<TLUpdates>()) {
+        return processUpdates(message);
+    }
+
+    switch (firstValue) {
     case TLValue::NewSessionCreated:
         processSessionCreated(message.skipTLValue());
         break;
@@ -119,6 +132,16 @@ bool RpcLayer::processRpcResult(const MTProto::Message &message)
                                       << "messageId:" << hex << showbase << messageId
                                       << "error:" << op->errorDetails();
     return true;
+}
+
+bool RpcLayer::processUpdates(const MTProto::Message &message)
+{
+    qCDebug(c_clientRpcLayerCategory) << "processUpdates()" << message.firstValue();
+    MTProto::Stream stream(message.data);
+
+    TLUpdates updates;
+    stream >> updates;
+    return m_UpdatesInternalApi->processUpdates(updates);
 }
 
 void RpcLayer::processSessionCreated(const MTProto::Message &message)

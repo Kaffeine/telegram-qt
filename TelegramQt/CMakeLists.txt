@@ -40,6 +40,7 @@ set(telegram_qt_SOURCES
     PendingRpcResult.cpp
     TelegramUtils.cpp
     TLValues.cpp
+    UpdatesLayer.cpp
 )
 
 set(telegram_qt_META_HEADERS
@@ -73,6 +74,7 @@ set(telegram_qt_META_HEADERS
     CTcpTransport.hpp
     CClientTcpTransport.hpp
     TLValues.hpp
+    UpdatesLayer.hpp
 )
 
 FILE(GLOB RPC_SOURCES RpcLayers/*.cpp)
