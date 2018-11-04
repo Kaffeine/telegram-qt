@@ -17,13 +17,14 @@ namespace Client {
 
 class AccountStoragePrivate
 {
+    Q_DECLARE_PUBLIC(AccountStorage)
 public:
     explicit AccountStoragePrivate(AccountStorage *q) :
-        m_parent(q)
+        q_ptr(q)
     {
     }
 
-    AccountStorage *m_parent = nullptr;
+    AccountStorage *q_ptr = nullptr;
     QString m_accountIdentifier;
     QString m_phoneNumber;
     QByteArray m_authKey;
@@ -159,6 +160,7 @@ AccountStorage::AccountStorage(AccountStoragePrivate *dd, QObject *parent) :
 
 class FileAccountStoragePrivate : public AccountStoragePrivate
 {
+    Q_DECLARE_PUBLIC(FileAccountStorage)
 public:
     explicit FileAccountStoragePrivate(FileAccountStorage *q) :
         AccountStoragePrivate(q)
@@ -175,13 +177,13 @@ FileAccountStorage::FileAccountStorage(QObject *parent) :
 
 QString FileAccountStorage::fileName() const
 {
-    TG_D(FileAccountStorage);
+    Q_D(const FileAccountStorage);
     return d->m_fileName;
 }
 
 QString FileAccountStorage::getLocalFileName() const
 {
-    const TG_D(FileAccountStorage);
+    Q_D(const FileAccountStorage);
     if (d->m_fileName.isEmpty()) {
         return QString();
     }
@@ -200,7 +202,7 @@ bool FileAccountStorage::fileExists() const
 
 bool FileAccountStorage::saveData() const
 {
-    TG_D(FileAccountStorage);
+    Q_D(const FileAccountStorage);
     if (d->m_fileName.isEmpty()) {
         qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "File name is not set";
         return false;
@@ -239,7 +241,7 @@ bool FileAccountStorage::saveData() const
 
 bool FileAccountStorage::loadData()
 {
-    TG_D(FileAccountStorage);
+    Q_D(FileAccountStorage);
     if (d->m_fileName.isEmpty()) {
         qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to load: file name is not set";
         return false;
@@ -283,7 +285,7 @@ bool FileAccountStorage::loadData()
 
 bool FileAccountStorage::clearData()
 {
-    const TG_D(FileAccountStorage);
+    Q_D(const FileAccountStorage);
     if (d->m_fileName.isEmpty()) {
         qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "File name is not set";
         return false;
@@ -315,7 +317,7 @@ bool FileAccountStorage::sync()
 
 void FileAccountStorage::setFileName(const QString &fileName)
 {
-    TG_D(FileAccountStorage);
+    Q_D(FileAccountStorage);
     if (d->m_fileName == fileName) {
         return;
     }

@@ -57,9 +57,11 @@ protected:
     AccountStoragePrivate *d;
 };
 
+class FileAccountStoragePrivate;
 class FileAccountStorage : public AccountStorage
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE_D(d, FileAccountStorage)
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
 //    Q_PROPERTY(bool fileExists READ fileExists NOTIFY fileExistsChanged)
 public:
