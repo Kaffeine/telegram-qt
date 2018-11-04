@@ -270,8 +270,8 @@ void tst_CTelegramStream::testEncode()
     }
     {
         const TLValue testValue = TLValue::AccountChangePhone;
-        const QString phoneNumber = "myPhone"; // size = 7
-        const QString phoneCodeHash = "7531"; // size = 4
+        const QString phoneNumber = QStringLiteral("myPhone"); // size = 7
+        const QString phoneCodeHash = QStringLiteral("7531"); // size = 4
         const QByteArray encoded = encodeData(testValue, phoneNumber, phoneCodeHash);
 
         CTelegramStream stream(encoded);
@@ -468,7 +468,7 @@ void tst_CTelegramStream::stringsLimitSerialization()
     QByteArray serializedString;
 
     for (int i = 0; i < 5; ++i) {
-        stringToTest = QString(i, QChar('a'));
+        stringToTest = QString(i, QLatin1Char('a'));
         serializedString = QByteArray(i, char('a'));
         serializedString.prepend(char(i));
         if (serializedString.length() % 4)
@@ -508,8 +508,8 @@ void tst_CTelegramStream::stringsLimitSerialization()
         stream << data.at(i).value.toString();
 
         if ((data.at(i).serializedData.length() > 10) && (device.data() != data.at(i).serializedData)) {
-            qDebug() << QString("Actual (%1 bytes):").arg(device.data().length()) << device.data().toHex();
-            qDebug() << QString("Expected (%1 bytes):").arg(data.at(i).serializedData.length()) << data.at(i).serializedData.toHex();
+            qDebug() << QStringLiteral("Actual (%1 bytes):").arg(device.data().length()) << device.data().toHex();
+            qDebug() << QStringLiteral("Expected (%1 bytes):").arg(data.at(i).serializedData.length()) << data.at(i).serializedData.toHex();
         }
 
         QCOMPARE(device.data(), data.at(i).serializedData);
@@ -527,7 +527,7 @@ void tst_CTelegramStream::stringsLimitSerialization()
         stream >> result;
 
         if (result != data.at(i).value.toString()) {
-            qDebug() << QString("Error at %1").arg(i);
+            qDebug() << QStringLiteral("Error at %1").arg(i);
         }
 
         QCOMPARE(result, data.at(i).value.toString());
