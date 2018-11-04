@@ -37,7 +37,7 @@ public:
 
     // void setMediaDataBufferSize(quint32 size);
 
-    // Q_INVOKABLE Telegram::RsaKey defaultServerPublicRsaKey() const;
+    Q_INVOKABLE static RsaKey defaultServerPublicRsaKey();
 
     Q_INVOKABLE static QVector<DcOption> defaultServerConfiguration();
     Q_INVOKABLE static QVector<DcOption> testServerConfiguration();

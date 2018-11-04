@@ -1,5 +1,7 @@
 #include "ClientSettings.hpp"
 
+#include "Utils.hpp"
+
 namespace Telegram {
 
 namespace Client {
@@ -8,6 +10,7 @@ Settings::Settings(QObject *parent) :
     QObject(parent)
 {
     m_serverConfiguration = defaultServerConfiguration();
+    m_key = defaultServerPublicRsaKey();
 }
 
 void Settings::setProxy(const QNetworkProxy &proxy)
@@ -23,6 +26,11 @@ void Settings::setPreferedSessionType(const Settings::SessionType type)
 quint32 Settings::defaultPingInterval()
 {
     return 15000u;
+}
+
+RsaKey Settings::defaultServerPublicRsaKey()
+{
+    return Utils::loadHardcodedKey();
 }
 
 QVector<DcOption> Settings::defaultServerConfiguration()
