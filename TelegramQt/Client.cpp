@@ -92,11 +92,6 @@ void Client::setDataStorage(DataStorage *storage)
     d->m_dataStorage = storage;
 }
 
-//void Client::setAppInformation(AppInformation *newAppInfo)
-//{
-//    d->m_appInformation = newAppInfo;
-//}
-
 } // Client
 
 } // Telegram
