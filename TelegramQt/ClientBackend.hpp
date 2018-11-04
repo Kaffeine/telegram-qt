@@ -23,6 +23,7 @@ class AccountStorage;
 using AppInformation = ::CAppInformation;
 class DataStorage;
 class ConnectionApi;
+class ContactsApi;
 class PendingRpcOperation;
 class UpdatesInternalApi;
 
@@ -92,6 +93,7 @@ public:
     AccountStorage *m_accountStorage = nullptr;
     DataStorage *m_dataStorage = nullptr;
     ConnectionApi *m_connectionApi = nullptr;
+    ContactsApi *m_contactsApi = nullptr;
 
     // Generated low-level layer members
     AccountRpcLayer *m_accountLayer = nullptr;

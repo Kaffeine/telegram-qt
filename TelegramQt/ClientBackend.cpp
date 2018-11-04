@@ -3,6 +3,7 @@
 #include "AccountStorage.hpp"
 #include "ConnectionApi.hpp"
 #include "ConnectionApi_p.hpp"
+#include "ContactsApi.hpp"
 #include "ClientConnection.hpp"
 #include "Client.hpp"
 #include "ClientRpcLayer.hpp"
@@ -89,6 +90,9 @@ Backend::Backend(Client *parent) :
 
     m_connectionApi = new ConnectionApi(this);
     ClientApiPrivate::get(m_connectionApi)->setBackend(this);
+
+    m_contactsApi = new ContactsApi(this);
+    ClientApiPrivate::get(m_contactsApi)->setBackend(this);
 
     m_updatesApi = new UpdatesInternalApi(this);
     m_updatesApi->setBackend(this);

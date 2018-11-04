@@ -41,6 +41,7 @@ class AccountStorage;
 using AppInformation = ::CAppInformation;
 
 class ConnectionApi;
+class ContactsApi;
 
 class ClientPrivate;
 
@@ -67,6 +68,7 @@ public:
     void setDataStorage(DataStorage *storage);
 
     ConnectionApi *connectionApi() const;
+    ContactsApi *contactsApi() const;
 
 Q_SIGNALS:
     void signedInChanged(bool signedIn);

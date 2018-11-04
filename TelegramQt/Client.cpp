@@ -86,6 +86,12 @@ ConnectionApi *Client::connectionApi() const
     return d->m_connectionApi;
 }
 
+ContactsApi *Client::contactsApi() const
+{
+    Q_D(const Client);
+    return d->m_contactsApi;
+}
+
 } // Client
 
 } // Telegram

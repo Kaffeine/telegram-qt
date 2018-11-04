@@ -43,6 +43,7 @@ SOURCES += \
     ClientRpcLayer.cpp \
     ClientRpcLayerExtension.cpp \
     ConnectionApi.cpp \
+    ContactsApi.cpp \
     DataStorage.cpp \
     IgnoredMessageNotification.cpp \
     RpcError.cpp \
@@ -75,6 +76,7 @@ PUBLIC_HEADERS += \
     CAppInformation.hpp \
     ClientApi.hpp \
     ConnectionApi.hpp \
+    ContactsApi.hpp \
     Debug.hpp \
     TelegramNamespace.hpp \
     CTelegramCore.hpp \
@@ -105,6 +107,8 @@ HEADERS += \
     ClientRpcLayerExtension.hpp \
     ConnectionApi.hpp \
     ConnectionApi_p.hpp \
+    ContactsApi.hpp \
+    ContactsApi_p.hpp \
     DataStorage.hpp \
     DataStorage_p.hpp \
     IgnoredMessageNotification.hpp \
