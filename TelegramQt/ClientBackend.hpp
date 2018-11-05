@@ -57,6 +57,8 @@ public:
 
     PendingOperation *getDcConfig();
 
+    PendingOperation *sync();
+
     Connection *getDefaultConnection();
     Connection *ensureConnection(const ConnectionSpec &dcSpec);
 

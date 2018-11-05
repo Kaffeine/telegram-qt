@@ -118,6 +118,12 @@ PendingOperation *Backend::getDcConfig()
     return m_getConfigOperation;
 }
 
+PendingOperation *Backend::sync()
+{
+    PendingOperation *op = new SucceededPendingOperation(this);
+    return op;
+}
+
 Connection *Backend::getDefaultConnection()
 {
     ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_connectionApi);
