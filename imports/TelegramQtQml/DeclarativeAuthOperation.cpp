@@ -64,8 +64,9 @@ void DeclarativeAuthOperation::signIn()
     connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
     connect(m_authOperation, &AuthOperation::registeredChanged, this, &DeclarativeAuthOperation::registeredChanged);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &DeclarativeAuthOperation::authCodeRequired);
+    connect(m_authOperation, &AuthOperation::authCodeCheckFailed, this, &DeclarativeAuthOperation::onAuthCodeCheckFailed);
     connect(m_authOperation, &AuthOperation::passwordRequired, this, &DeclarativeAuthOperation::onPasswordRequired);
-    connect(m_authOperation, &AuthOperation::passwordCheckFailed, this, &DeclarativeAuthOperation::passwordCheckFailed);
+    connect(m_authOperation, &AuthOperation::passwordCheckFailed, this, &DeclarativeAuthOperation::onPasswordCheckFailed);
 
     connect(m_authOperation, &AuthOperation::passwordHintChanged, this, &DeclarativeAuthOperation::passwordHintChanged);
     connect(m_authOperation, &AuthOperation::hasRecoveryChanged, this, &DeclarativeAuthOperation::hasRecoveryChanged);
@@ -136,9 +137,9 @@ bool DeclarativeAuthOperation::submitAuthCode(const QString &code)
     if (!m_authOperation) {
         return false;
     }
-    PendingOperation *op = m_authOperation->submitAuthCode(code);
+    m_authOperation->submitAuthCode(code);
     setBusy(true);
-    connect(op, &PendingOperation::finished, this, &DeclarativeAuthOperation::unsetBusy);
+    // Unset busy on one of authCodeCheckFailed or passwordRequired or signedIn.
     return true;
 }
 
@@ -147,9 +148,9 @@ bool DeclarativeAuthOperation::submitPassword(const QString &password)
     if (!m_authOperation) {
         return false;
     }
-    PendingOperation *op = m_authOperation->submitPassword(password);
+    m_authOperation->submitPassword(password);
     setBusy(true);
-    connect(op, &PendingOperation::finished, this, &DeclarativeAuthOperation::unsetBusy);
+    // Unset busy on one of passwordCheckFailed or signedIn.
     return true;
 }
 
@@ -204,12 +205,22 @@ void DeclarativeAuthOperation::unsetBusy()
     setBusy(false);
 }
 
+void DeclarativeAuthOperation::onAuthCodeCheckFailed(int status)
+{
+    unsetBusy();
+    emit authCodeCheckFailed();
+}
+
 void DeclarativeAuthOperation::onPasswordRequired()
 {
-    setBusy(true);
-    PendingOperation *op = m_authOperation->getPassword();
-    connect(op, &PendingOperation::finished, this, &DeclarativeAuthOperation::unsetBusy);
+    unsetBusy();
     emit passwordRequired();
+}
+
+void DeclarativeAuthOperation::onPasswordCheckFailed()
+{
+    unsetBusy();
+    emit passwordCheckFailed();
 }
 
 void DeclarativeAuthOperation::startEvent()

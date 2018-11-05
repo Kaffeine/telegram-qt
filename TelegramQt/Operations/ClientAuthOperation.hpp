@@ -23,6 +23,12 @@ class AuthOperation : public PendingOperation
 public:
     explicit AuthOperation(QObject *parent = nullptr);
 
+    enum AuthCodeStatus {
+        AuthCodeStatusUnknown,
+        AuthCodeStatusInvalid,
+        AuthCodeStatusExpired,
+    };
+
     void setBackend(Backend *backend);
 
     using RunMethod = PendingOperation *(AuthOperation::*)();
@@ -44,7 +50,6 @@ public slots:
     PendingOperation *checkAuthorization();
     PendingOperation *requestAuthCode();
     PendingOperation *submitAuthCode(const QString &code);
-    PendingOperation *getPassword();
     PendingOperation *submitPassword(const QString &password);
 
     void submitPhoneNumber(const QString &phoneNumber);
@@ -57,6 +62,7 @@ public slots:
 Q_SIGNALS:
     void phoneNumberRequired();
     void authCodeRequired();
+    void authCodeCheckFailed(AuthCodeStatus status);
     void passwordRequired();
     void passwordCheckFailed();
 //    void callAvailable();
@@ -83,15 +89,18 @@ protected:
     QString m_firstName;
     QString m_lastName;
     QString m_passwordHint;
+    QString m_authCodeHash;
     QByteArray m_passwordCurrentSalt;
     bool m_hasRecovery;
     bool m_registered = false;
 
 protected:
     // Implementation:
+    PendingOperation *getPassword();
+
     void onRequestAuthCodeFinished(AuthRpcLayer::PendingAuthSentCode *operation);
-    void onSignInFinished(PendingRpcOperation *operation);
-    void onSignUpFinished(PendingRpcOperation *operation);
+    void onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation);
+    void onSignUpRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation);
     void onPasswordRequestFinished(PendingRpcOperation *operation);
     void onCheckPasswordFinished(PendingRpcOperation *operation);
     void onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization);
@@ -100,7 +109,6 @@ protected:
 
     void onConnectionError(const QString &description);
 
-    QString m_authCodeHash;
 };
 
 } // Client

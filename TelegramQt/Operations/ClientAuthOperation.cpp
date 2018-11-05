@@ -116,13 +116,20 @@ PendingOperation *AuthOperation::submitAuthCode(const QString &code)
         return PendingOperation::failOperation({{QStringLiteral("text"), text}});
     }
 
+    PendingOperation *submitOperation = new PendingOperation(this);
     PendingRpcOperation *sendCodeOperation = nullptr;
     if (m_registered) {
         sendCodeOperation = authLayer()->signIn(phoneNumber(), m_authCodeHash, code);
-        connect(sendCodeOperation, &PendingRpcOperation::finished, this, &AuthOperation::onSignInFinished);
+        connect(sendCodeOperation, &PendingRpcOperation::finished, this,
+                [this, sendCodeOperation, submitOperation]() {
+            this->onSignInRpcFinished(sendCodeOperation, submitOperation);
+        });
     } else {
         sendCodeOperation = authLayer()->signUp(phoneNumber(), m_authCodeHash, code, m_firstName, m_lastName);
-        connect(sendCodeOperation, &PendingRpcOperation::finished, this, &AuthOperation::onSignUpFinished);
+        connect(sendCodeOperation, &PendingRpcOperation::finished, this,
+                [this, sendCodeOperation, submitOperation]() {
+            this->onSignUpRpcFinished(sendCodeOperation, submitOperation);
+        });
     }
 
     return sendCodeOperation;
@@ -239,35 +246,55 @@ void AuthOperation::onRequestAuthCodeFinished(AuthRpcLayer::PendingAuthSentCode 
     }
 }
 
-void AuthOperation::onSignInFinished(PendingRpcOperation *operation)
+void AuthOperation::onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
 {
-    if (operation->rpcError()) {
-        const RpcError *error = operation->rpcError();
-        if (error->reason == RpcError::SessionPasswordNeeded) {
-            emit passwordRequired();
+    if (rpcOperation->rpcError()) {
+        const RpcError *error = rpcOperation->rpcError();
+        switch (error->reason) {
+        case RpcError::SessionPasswordNeeded:
+            submitAuthCodeOperation->setFinished();
+            getPassword();
+            return;
+        case RpcError::PhoneCodeHashEmpty:
+            qCCritical(c_loggingClientAuthOperation) << Q_FUNC_INFO << "internal error?" << error->message;
+            break;
+        case RpcError::PhoneCodeEmpty:
+            qCCritical(c_loggingClientAuthOperation) << Q_FUNC_INFO << "internal error?" << error->message;
+            break;
+        case RpcError::PhoneCodeInvalid:
+            emit authCodeCheckFailed(AuthCodeStatusInvalid);
+            submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
+            return;
+        case RpcError::PhoneCodeExpired:
+            emit authCodeCheckFailed(AuthCodeStatusExpired);
+            submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
             return;
         }
     }
-    if (!operation->isSucceeded()) {
-        setDelayedFinishedWithError(operation->errorDetails());
+    if (!rpcOperation->isSucceeded()) {
+        submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
+        setDelayedFinishedWithError(rpcOperation->errorDetails());
         return;
     }
+    submitAuthCodeOperation->setFinished();
 
     TLAuthAuthorization result;
-    authLayer()->processReply(operation, &result);
-    onGotAuthorization(operation, result);
+    authLayer()->processReply(rpcOperation, &result);
+    onGotAuthorization(rpcOperation, result);
 }
 
-void AuthOperation::onSignUpFinished(PendingRpcOperation *operation)
+void AuthOperation::onSignUpRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
 {
-    if (!operation->isSucceeded()) {
-        setDelayedFinishedWithError(operation->errorDetails());
+    if (!rpcOperation->isSucceeded()) {
+        submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
+        setDelayedFinishedWithError(rpcOperation->errorDetails());
         return;
     }
+    submitAuthCodeOperation->setFinished();
 
     TLAuthAuthorization result;
-    authLayer()->processReply(operation, &result);
-    onGotAuthorization(operation, result);
+    authLayer()->processReply(rpcOperation, &result);
+    onGotAuthorization(rpcOperation, result);
 }
 
 void AuthOperation::onPasswordRequestFinished(PendingRpcOperation *operation)
@@ -284,6 +311,7 @@ void AuthOperation::onPasswordRequestFinished(PendingRpcOperation *operation)
 #endif
     setPasswordCurrentSalt(result.currentSalt);
     setPasswordHint(result.hint);
+    emit passwordRequired();
 }
 
 void AuthOperation::onCheckPasswordFinished(PendingRpcOperation *operation)

@@ -76,6 +76,7 @@ Q_SIGNALS:
 
     void phoneNumberRequired();
     void authCodeRequired();
+    void authCodeCheckFailed();
     void passwordRequired();
     void passwordCheckFailed();
 
@@ -93,7 +94,9 @@ protected:
     void setBusy(bool busy);
 
     void unsetBusy();
+    void onAuthCodeCheckFailed(int status);
     void onPasswordRequired();
+    void onPasswordCheckFailed();
 
     AuthOperation *m_authOperation = nullptr;
 

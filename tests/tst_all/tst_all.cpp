@@ -308,9 +308,6 @@ void tst_all::testClientConnection()
         QCOMPARE(authPasswordSpy.count(), 1);
         QVERIFY(passwordCheckFailedSpy.isEmpty());
 
-        PendingOperation *op = signInOperation->getPassword();
-        TRY_VERIFY(op->isFinished());
-
         signInOperation->submitPassword(userData.password + QStringLiteral("invalid"));
         TRY_VERIFY2(!passwordCheckFailedSpy.isEmpty(), "The submitted password is not valid, "
                                                         "but there are not signals on the client side");
@@ -417,9 +414,6 @@ void tst_all::testCheckInSignIn()
                                                  "but there are no passwordRequired signals on the client side");
         QCOMPARE(authPasswordSpy.count(), 1);
         QVERIFY(passwordCheckFailedSpy.isEmpty());
-
-        PendingOperation *op = signInOperation->getPassword();
-        TRY_VERIFY(op->isFinished());
 
         signInOperation->submitPassword(userData.password + QStringLiteral("invalid"));
         TRY_VERIFY2(!passwordCheckFailedSpy.isEmpty(), "The submitted password is not valid, "
