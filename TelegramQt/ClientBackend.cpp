@@ -200,7 +200,7 @@ bool Backend::syncAccountToStorage()
         return false;
     }
     switch (connection->status()) {
-    case Connection::Status::Authenticated:
+    case Connection::Status::HasDhKey:
     case Connection::Status::Signed:
         break;
     default:

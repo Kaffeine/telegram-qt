@@ -138,7 +138,7 @@ void Server::onNewConnection()
 void Server::onClientConnectionStatusChanged()
 {
     RemoteClientConnection *client = qobject_cast<RemoteClientConnection*>(sender());
-    if (client->status() == RemoteClientConnection::Status::Authenticated) {
+    if (client->status() == RemoteClientConnection::Status::HasDhKey) {
         if (!client->session()) {
 
             qDebug() << Q_FUNC_INFO << "A new auth key";

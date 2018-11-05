@@ -26,7 +26,7 @@ public:
         Disconnecting,
         Connecting,
         Connected,
-        Authenticated, // Connected and has auth key
+        HasDhKey, // Connected and has auth key
         Signed,
         Failed // Reconnection is needed
     };

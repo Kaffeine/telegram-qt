@@ -61,7 +61,7 @@ PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> 
             switch (m_connectToServerOperation->connection()->status()) {
             case BaseConnection::Status::Connecting:
             case BaseConnection::Status::Connected:
-            case BaseConnection::Status::Authenticated:
+            case BaseConnection::Status::HasDhKey:
             case BaseConnection::Status::Signed:
                 return m_connectToServerOperation;
             default:

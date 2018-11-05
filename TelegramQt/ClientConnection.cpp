@@ -127,7 +127,7 @@ ConnectOperation *Connection::connectToDc()
     connect(this, &Connection::statusChanged, op, [op] (Status status, StatusReason reason) {
         Q_UNUSED(reason)
 
-        if (status == Status::Authenticated) {
+        if (status == Status::HasDhKey) {
             op->setFinished();
         }
     });

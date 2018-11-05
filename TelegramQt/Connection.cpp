@@ -81,7 +81,7 @@ void BaseConnection::onTransportStateChanged()
             setStatus(Status::Connected, StatusReason::Remote);
         } else {
             setStatus(Status::Connected, StatusReason::Remote);
-            setStatus(Status::Authenticated, StatusReason::Local);
+            setStatus(Status::HasDhKey, StatusReason::Local);
         }
         break;
     case QAbstractSocket::UnconnectedState:
@@ -134,7 +134,7 @@ void BaseConnection::onDhStateChanged()
     qCDebug(c_baseConnectionCategory) << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onDhStateChanged(") << m_dhLayer->state() << ")";
 #endif
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
-        setStatus(Status::Authenticated, StatusReason::Remote);
+        setStatus(Status::HasDhKey, StatusReason::Remote);
     }
 }
 
