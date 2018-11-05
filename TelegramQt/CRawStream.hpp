@@ -115,6 +115,13 @@ public:
     CRawStreamEx &operator<<(const Telegram::AbridgedLength &data);
 };
 
+namespace Telegram {
+
+using RawStream = ::CRawStream;
+using RawStreamEx = ::CRawStreamEx;
+
+} // Telegram namespace
+
 inline void CRawStream::resetError()
 {
     m_error = false;
