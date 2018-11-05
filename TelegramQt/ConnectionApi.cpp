@@ -180,7 +180,7 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
     transport->setProxy(settings->proxy());
 
     switch (settings->preferedSessionType()) {
-    case Settings::SessionType::Default:
+    case Settings::SessionType::None:
         qCWarning(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Session type is not set. Use fallback.";
         transport->setPreferedSessionType(TcpTransport::Obfuscated);
         break;

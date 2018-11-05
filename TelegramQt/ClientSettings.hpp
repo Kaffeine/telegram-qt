@@ -17,7 +17,7 @@ class Settings : public QObject
     Q_PROPERTY(int pingInterval MEMBER m_pingInterval)
 public:
     enum class SessionType {
-        Default,
+        None,
         Abridged,
         Obfuscated,
     };
@@ -57,7 +57,7 @@ protected:
     QVector<DcOption> m_serverConfiguration;
     RsaKey m_key;
     int m_pingInterval;
-    SessionType m_preferedSessionType = SessionType::Default;
+    SessionType m_preferedSessionType = SessionType::None;
 };
 
 } // Client

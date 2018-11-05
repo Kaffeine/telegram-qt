@@ -11,6 +11,7 @@ Settings::Settings(QObject *parent) :
 {
     m_serverConfiguration = defaultServerConfiguration();
     m_key = defaultServerPublicRsaKey();
+    m_preferedSessionType = SessionType::Obfuscated;
 }
 
 void Settings::setProxy(const QNetworkProxy &proxy)
