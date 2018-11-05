@@ -22,6 +22,8 @@
 #include "TelegramUtils.hpp"
 #include "Utils.hpp"
 
+#include "ConnectionApi.hpp"
+
 using namespace TelegramUtils;
 
 #include <QDateTime>
@@ -103,6 +105,8 @@ void TelegramNamespace::registerTypes()
         qRegisterMetaType<TelegramNamespace::UnauthorizedError>("TelegramNamespace::UnauthorizedError");
         qRegisterMetaType<Telegram::PasswordInfo>("Telegram::PasswordInfo");
         qRegisterMetaType<Telegram::Peer>("Telegram::Peer");
+        qRegisterMetaType<Telegram::Client::ConnectionApi::Status>("Telegram::Client::ConnectionApi::Status");
+        qRegisterMetaType<Telegram::Client::ConnectionApi::StatusReason>("Telegram::Client::ConnectionApi::StatusReason");
         registered = true;
     }
 }

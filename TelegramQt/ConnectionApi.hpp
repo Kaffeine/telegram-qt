@@ -36,9 +36,33 @@ class TELEGRAMQT_EXPORT ConnectionApi : public ClientApi
 public:
     explicit ConnectionApi(QObject *parent = nullptr);
 
+    enum Status {
+        StatusDisconnected,
+        StatusConnecting,
+        StatusConnected, // Transport connection
+        StatusAuthRequired,
+        StatusAuthenticated,
+        StatusReady // Initializated
+    };
+    Q_ENUM(Status)
+
+    enum StatusReason {
+        StatusReasonNone,
+        StatusReasonLocal,
+        StatusReasonRemote,
+        StatusReasonTimeout
+    };
+    Q_ENUM(StatusReason)
+
+    bool isSignedIn() const;
+    Status status() const;
+
     AuthOperation *signUp();
     AuthOperation *signIn();
     AuthOperation *checkIn();
+
+Q_SIGNALS:
+    void statusChanged(Telegram::Client::ConnectionApi::Status status, Telegram::Client::ConnectionApi::StatusReason reason);
 
 protected:
     Q_DECLARE_PRIVATE_D(d, ConnectionApi)

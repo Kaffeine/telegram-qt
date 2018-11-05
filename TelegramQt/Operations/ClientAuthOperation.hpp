@@ -15,6 +15,8 @@ namespace Client {
 class AccountRpcLayer;
 class AuthRpcLayer;
 class Backend;
+class Connection;
+class ConnectionApiPrivate;
 class PendingRpcOperation;
 
 class AuthOperation : public PendingOperation
@@ -71,8 +73,8 @@ Q_SIGNALS:
     void hasRecoveryChanged(bool hasRecovery);
     void registeredChanged(bool registered); // Always emitted before authCodeRequired()
 
-    void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
-    void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
+    void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QByteArray &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
+    void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QByteArray &errorMessage);
 
 protected:
     void setWantedDc(quint32 dcId);
@@ -93,6 +95,8 @@ protected:
     QByteArray m_passwordCurrentSalt;
     bool m_hasRecovery;
     bool m_registered = false;
+    Connection *m_authenticatedConnection = nullptr;
+    friend class ConnectionApiPrivate;
 
 protected:
     // Implementation:

@@ -53,7 +53,7 @@ class Backend : public QObject
 public:
     explicit Backend(Client *parent);
 
-    bool isSignedIn() const { return m_signedIn; }
+    bool isSignedIn() const;
 
     PendingOperation *getDcConfig();
 
@@ -118,7 +118,6 @@ public:
     UpdatesInternalApi *updatesApi() const { return m_updatesApi; }
 
     bool syncAccountToStorage();
-    void setSignedIn(bool signedIn);
 
 protected:
     void onGetDcConfigurationFinished(PendingOperation *operation);
@@ -128,7 +127,6 @@ protected:
     PendingOperation *m_getConfigOperation = nullptr;
     UpdatesInternalApi *m_updatesApi = nullptr;
     QVector<PendingRpcOperation *> m_queuedRedirectedOperations;
-    bool m_signedIn = false;
 
 };
 

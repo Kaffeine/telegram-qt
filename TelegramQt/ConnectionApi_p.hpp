@@ -38,13 +38,18 @@ class ConnectionApiPrivate : public ClientApiPrivate
     Q_OBJECT
     Q_DECLARE_PUBLIC(ConnectionApi)
 public:
+    using Status = ConnectionApi::Status;
+
     explicit ConnectionApiPrivate(ConnectionApi *parent = nullptr);
     static ConnectionApiPrivate *get(ConnectionApi *parent);
+
+    bool isSignedIn() const;
 
     // Public API implementation
     PendingOperation *connectToServer(const QVector<DcOption> &dcOptions);
     AuthOperation *signIn();
     AuthOperation *checkIn();
+    Status status() const { return m_status; }
 
 public:
     // Internal TelegramQt API
@@ -57,14 +62,21 @@ public:
 
 protected slots:
     void onConnectOperationFinished(PendingOperation *operation);
-
+    void onUpcomingConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
+    void onAuthFinished(PendingOperation *operation);
+    void onAuthCodeRequired();
     void onMainConnectionStatusChanged();
+    void onSyncFinished(PendingOperation *operation);
 
 protected:
+    void setStatus(Status newStatus);
+
     QHash<ConnectionSpec, Connection *> m_connections;
     Connection *m_mainConnection = nullptr;
     ConnectOperation *m_connectToServerOperation = nullptr;
     AuthOperation *m_authOperation = nullptr;
+
+    Status m_status = Status::StatusDisconnected;
 };
 
 } // Client namespace

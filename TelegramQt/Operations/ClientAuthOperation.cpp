@@ -9,7 +9,6 @@
 #include "ClientRpcAccountLayer.hpp"
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
-#include "ConnectionApi_p.hpp"
 
 #include "RpcError.hpp"
 
@@ -316,12 +315,14 @@ void AuthOperation::onPasswordRequestFinished(PendingRpcOperation *operation)
 
 void AuthOperation::onCheckPasswordFinished(PendingRpcOperation *operation)
 {
+    // authSignErrorReceived()
     if (operation->rpcError()) {
         const RpcError *error = operation->rpcError();
         if (error->reason == RpcError::PasswordHashInvalid) {
             emit passwordCheckFailed();
             return;
         }
+        qCDebug(c_loggingClientAuthOperation) << error->message;
     }
 
     if (!operation->isSucceeded()) {
@@ -344,10 +345,8 @@ void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLA
     if (storage->accountIdentifier().isEmpty()) {
         storage->setAccountIdentifier(authorization.user.phone);
     }
-    Connection *conn = Connection::fromOperation(operation);
-    ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_backend->m_connectionApi);
-    privateApi->setMainConnection(conn);
-    conn->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Remote);
+    m_authenticatedConnection = Connection::fromOperation(operation);
+    m_authenticatedConnection->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Remote);
     setFinished();
 }
 
@@ -357,10 +356,8 @@ void AuthOperation::onAccountStatusUpdateFinished(PendingRpcOperation *operation
         setFinishedWithError(operation->errorDetails());
         return;
     }
-    Connection *conn = Connection::fromOperation(operation);
-    ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_backend->m_connectionApi);
-    privateApi->setMainConnection(conn);
-    conn->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Local);
+    m_authenticatedConnection = Connection::fromOperation(operation);
+    m_authenticatedConnection->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Local);
     setFinished();
 }
 

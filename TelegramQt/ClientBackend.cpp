@@ -98,6 +98,11 @@ Backend::Backend(Client *parent) :
     m_updatesApi->setBackend(this);
 }
 
+bool Backend::isSignedIn() const
+{
+    return m_connectionApi->isSignedIn();
+}
+
 PendingOperation *Backend::getDcConfig()
 {
     if (m_getConfigOperation) {
@@ -224,16 +229,6 @@ bool Backend::syncAccountToStorage()
                                      connection->rpcLayer()->contentRelatedMessagesNumber());
     m_accountStorage->sync();
     return true;
-}
-
-void Backend::setSignedIn(bool signedIn)
-{
-    if (m_signedIn == signedIn) {
-        return;
-    }
-    m_signedIn = signedIn;
-    emit m_client->signedInChanged(signedIn);
-    qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << signedIn;
 }
 
 } // Client namespace
