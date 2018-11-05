@@ -32,20 +32,26 @@ include_directories(
     ${ZLIB_INCLUDE_DIR}
 )
 
+set(test_extra_META_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils/TestAuthProvider.hpp
+)
+
+QT5_WRAP_CPP(test_extra_MOC_SOURCES ${test_extra_META_HEADERS})
+
 foreach(test_name
     tst_all
 )
     FILE(GLOB TEST_SOURCES ${test_name}/*.cpp)
-    add_executable(${test_name} ${TEST_SOURCES})
+    add_executable(${test_name} ${TEST_SOURCES} ${test_extra_MOC_SOURCES})
     target_link_libraries(${test_name}
         Qt5::Core
         Qt5::Test
         TelegramQt${QT_VERSION_MAJOR}
     )
     add_test(NAME ${test_name} COMMAND ${test_name})
-endforeach()
 
-target_link_libraries(tst_all
-    TelegramServerQt${QT_VERSION_MAJOR}
-    test_keys_data
-)
+    target_link_libraries(${test_name}
+        TelegramServerQt${QT_VERSION_MAJOR}
+        test_keys_data
+    )
+endforeach()

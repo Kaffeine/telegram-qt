@@ -44,113 +44,13 @@
 #include <QRegularExpression>
 
 #include "keys_data.hpp"
+#include "TestAuthProvider.hpp"
+#include "TestClientUtils.hpp"
+#include "TestServerUtils.hpp"
+#include "TestUserData.hpp"
 #include "TestUtils.hpp"
 
-#define CLIENT_WORKS
-
-namespace Telegram {
-
-namespace Test {
-
-class AuthProvider : public Server::Authorization::DefaultProvider
-{
-    Q_OBJECT
-public:
-    using BaseClass = Server::Authorization::DefaultProvider;
-    AuthProvider() = default;
-
-signals:
-    void codeSent(const QString &identifier, const QString &code);
-protected:
-    Server::Authorization::Code generateCode(Server::Session *session, const QString &identifier) override;
-};
-
-Server::Authorization::Code AuthProvider::generateCode(Server::Session *session, const QString &identifier)
-{
-    Server::Authorization::Code code = BaseClass::generateCode(session, identifier);
-    emit codeSent(identifier, code.code);
-    return code;
-}
-
-} // Test namespace
-
-} // Telegram namespace
-
 using namespace Telegram;
-
-struct UserData
-{
-    quint32 dcId;
-    QString phoneNumber;
-    QString firstName;
-    QString lastName;
-    QString password;
-    QByteArray passwordSalt;
-    QByteArray passwordHash;
-
-    void setName(const QString &first, const QString &last)
-    {
-        firstName = first;
-        lastName = last;
-    }
-
-    void unsetPassword()
-    {
-        setPassword(QString(), QByteArray());
-    }
-
-    void setPassword(const QString &pass, const QByteArray &salt)
-    {
-        password = pass;
-        setPasswordSalt(salt);
-    }
-
-    void setPasswordSalt(const QByteArray &salt)
-    {
-        if (salt.isEmpty()) {
-            passwordSalt.clear();
-            passwordHash.clear();
-            return;
-        }
-        QByteArray pwdData = salt + password.toUtf8() + salt;
-        passwordSalt = salt;
-        passwordHash = Utils::sha256(pwdData);
-    }
-};
-
-Q_DECLARE_METATYPE(UserData);
-
-CAppInformation *getAppInfo()
-{
-    static CAppInformation *appInfo = nullptr;
-    if (!appInfo) {
-        appInfo = new CAppInformation();
-        appInfo->setAppId(14617);
-        appInfo->setAppHash(QLatin1String("e17ac360fd072f83d5d08db45ce9a121"));
-        appInfo->setAppVersion(QLatin1String("0.1"));
-        appInfo->setDeviceInfo(QLatin1String("pc"));
-        appInfo->setOsInfo(QLatin1String("GNU/Linux"));
-        appInfo->setLanguageCode(QLatin1String("en"));
-    }
-    return appInfo;
-}
-
-Telegram::Server::User *tryAddUser(Telegram::Server::LocalCluster *cluster, const UserData &data)
-{
-    Telegram::Server::User *u = cluster->addUser(data.phoneNumber, data.dcId);
-    if (u) {
-        u->setFirstName(data.firstName);
-        u->setLastName(data.lastName);
-        if (!data.passwordHash.isEmpty()) {
-            u->setPassword(data.passwordSalt, data.passwordHash);
-        } else {
-            u->setPlainPassword(data.password);
-        }
-    } else {
-        qCritical() << "Unable to add a user";
-    }
-    return u;
-}
 
 static const UserData c_userWithPassword = []() {
     UserData userData;
@@ -160,18 +60,6 @@ static const UserData c_userWithPassword = []() {
     userData.password = QByteArrayLiteral("mypassword");
     userData.setPasswordSalt(QByteArrayLiteral("mysalt"));
     return userData;
-}();
-
-static const QVector<Telegram::DcOption> c_localDcOptions = {
-    Telegram::DcOption(QStringLiteral("127.0.0.1"), 11441, 1),
-    Telegram::DcOption(QStringLiteral("127.0.0.2"), 11442, 2),
-    Telegram::DcOption(QStringLiteral("127.0.0.3"), 11443, 3),
-};
-
-static const Telegram::DcConfiguration c_localDcConfiguration = []() {
-    Telegram::DcConfiguration configuration;
-    configuration.dcOptions = c_localDcOptions;
-    return configuration;
 }();
 
 class tst_all : public QObject
