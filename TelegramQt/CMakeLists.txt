@@ -171,12 +171,12 @@ add_definitions(
     -DQT_STRICT_ITERATORS
 )
 
-QT5_WRAP_CPP(telegram_qt_MOC_SOURECES ${telegram_qt_META_HEADERS})
+QT5_WRAP_CPP(telegram_qt_MOC_SOURCES ${telegram_qt_META_HEADERS})
 
 if (STATIC_BUILD)
-    add_library(TelegramQt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES})
+    add_library(TelegramQt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURCES})
 else()
-    add_library(TelegramQt${QT_VERSION_MAJOR} SHARED ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURECES})
+    add_library(TelegramQt${QT_VERSION_MAJOR} SHARED ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURCES})
 endif()
 
 target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC
