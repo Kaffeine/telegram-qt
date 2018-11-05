@@ -77,6 +77,15 @@ private:
     bool m_succeeded;
 };
 
+class SucceededPendingOperation : public PendingOperation
+{
+    Q_OBJECT
+public:
+    explicit SucceededPendingOperation(QObject *parent = nullptr);
+
+    void start() override;
+};
+
 inline bool PendingOperation::isFinished() const
 {
     return m_finished;

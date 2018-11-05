@@ -76,4 +76,14 @@ void PendingOperation::onPreviousFailed(PendingOperation *operation, const QVari
     setFinishedWithError(details);
 }
 
+SucceededPendingOperation::SucceededPendingOperation(QObject *parent) :
+    PendingOperation(parent)
+{
+}
+
+void SucceededPendingOperation::start()
+{
+    QMetaObject::invokeMethod(this, "setFinished", Qt::QueuedConnection);
+}
+
 } // Telegram namespace
