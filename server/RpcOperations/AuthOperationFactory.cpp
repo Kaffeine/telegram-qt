@@ -184,7 +184,7 @@ void AuthRpcOperation::runCheckPassword()
 
     TLAuthAuthorization result;
     qDebug() << "Result type:" << result.tlType;
-    api()->setupTLUser(&result.user, user->id(), user);
+    api()->setupTLUser(&result.user, user, user);
     sendRpcReply(result);
 }
 
@@ -361,7 +361,7 @@ void AuthRpcOperation::runSignIn()
     user->addSession(layer()->session());
 
     TLAuthAuthorization result;
-    api()->setupTLUser(&result.user, user->id(), user);
+    api()->setupTLUser(&result.user, user, user);
     sendRpcReply(result);
 }
 
@@ -391,7 +391,7 @@ void AuthRpcOperation::runSignUp()
     user->addSession(layer()->session());
 
     TLAuthAuthorization result;
-    api()->setupTLUser(&result.user, user->id(), user);
+    api()->setupTLUser(&result.user, user, user);
     sendRpcReply(result);
 }
 // End of generated run methods

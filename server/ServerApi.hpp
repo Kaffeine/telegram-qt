@@ -28,6 +28,7 @@ class Provider;
 class Session;
 class User;
 class RemoteClientConnection;
+class RemoteUser;
 
 struct PhoneStatus
 {
@@ -59,7 +60,7 @@ public:
     virtual Authorization::Provider *getAuthorizationProvider() = 0;
     virtual bool identifierIsValid(const QString &identifier) = 0; // Argument is 'phoneNumber'
 
-    virtual bool setupTLUser(TLUser *output, quint32 requestedUserId, const User *forUser) const = 0;
+    virtual bool setupTLUser(TLUser *output, const RemoteUser *input, const User *forUser) const = 0;
 
     virtual User *getUser(const QString &identifier) const = 0;
     virtual User *getUser(quint32 userId) const = 0;
