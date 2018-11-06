@@ -182,6 +182,47 @@ quint32 User::addMessage(const TLMessage &message, Session *excludeSession)
     return m_messages.last().id;
 }
 
+TLVector<TLMessage> User::getHistory(const Peer &peer,
+                                     quint32 offsetId,
+                                     quint32 offsetDate,
+                                     quint32 addOffset,
+                                     quint32 limit,
+                                     quint32 maxId,
+                                     quint32 minId,
+                                     quint32 hash) const
+{
+    if (offsetId || offsetDate || addOffset || minId || maxId || hash) {
+        qWarning() << Q_FUNC_INFO << "Unsupported request";
+        return {};
+    }
+
+    const int actualLimit = qMin<quint32>(limit, 30);
+    QVector<int> wantedIndices;
+    wantedIndices.reserve(actualLimit);
+
+    for (int i = m_messages.count() - 1; i >= 0; --i) {
+        const TLMessage &message = m_messages.at(i);
+        if (peer.isValid()) {
+            Telegram::Peer messagePeer = Telegram::Utils::getMessagePeer(message, id());
+            if (peer != messagePeer) {
+                break;
+            }
+        }
+
+        wantedIndices.append(i);
+        if (wantedIndices.count() == actualLimit) {
+            break;
+        }
+    }
+
+    TLVector<TLMessage> result;
+    result.reserve(wantedIndices.count());
+    for (int i : wantedIndices) {
+        result.append(m_messages.at(i));
+    }
+    return result;
+}
+
 const TLMessage *User::getMessage(quint32 messageId) const
 {
     if (!messageId || m_messages.isEmpty()) {

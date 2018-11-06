@@ -77,6 +77,8 @@ public:
     quint32 addMessage(const TLMessage &message, Session *excludeSession = nullptr) override;
     const TLMessage *getMessage(quint32 messageId) const;
 
+    TLVector<TLMessage> getHistory(const Telegram::Peer &peer, quint32 offsetId, quint32 offsetDate, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId, quint32 hash) const;
+
     quint32 pts() const { return m_pts; }
     quint32 addPts();
 

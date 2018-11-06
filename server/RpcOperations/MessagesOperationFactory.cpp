@@ -1029,10 +1029,33 @@ void MessagesRpcOperation::runGetGameHighScores()
 
 void MessagesRpcOperation::runGetHistory()
 {
-    if (processNotImplementedMethod(TLValue::MessagesGetHistory)) {
+    switch (m_getHistory.peer.tlType) {
+    case TLValue::InputPeerEmpty:
+    case TLValue::InputPeerSelf:
+    case TLValue::InputPeerUser:
+        break;
+    case TLValue::InputPeerChat:
+    case TLValue::InputPeerChannel:
+    default:
+        qCritical() << Q_FUNC_INFO << "Not implemented for requested arguments" << m_getHistory.peer.tlType;
+        processNotImplementedMethod(TLValue::MessagesGetHistory);
+        sendRpcError(RpcError());
         return;
     }
+
+    const User *self = layer()->getUser();
+    const Peer p = api()->getPeer(m_getHistory.peer, self);
+    TLVector<TLMessage> history = self->getHistory(
+                p,
+                m_getHistory.offsetId,
+                m_getHistory.offsetDate,
+                m_getHistory.addOffset,
+                m_getHistory.limit,
+                m_getHistory.maxId,
+                m_getHistory.minId,
+                m_getHistory.hash);
     TLMessagesMessages result;
+    result.messages.swap(history);
     sendRpcReply(result);
 }
 
