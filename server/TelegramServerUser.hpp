@@ -75,12 +75,14 @@ public:
     QString passwordHint() const { return QString(); }
 
     quint32 addMessage(const TLMessage &message, Session *excludeSession = nullptr) override;
+    const TLMessage *getMessage(quint32 messageId) const;
 
     quint32 pts() const { return m_pts; }
     quint32 addPts();
 
     void importContact(const UserContact &contact);
     QVector<quint32> contactList() const override { return m_contactList; }
+    const QVector<UserDialog *> dialogs() const { return m_dialogs; }
 
     QVector<UserContact> importedContacts() const { return m_importedContacts; }
 
@@ -89,6 +91,8 @@ signals:
     void sessionDestroyed(Session *destroyedSession);
 
 protected:
+    UserDialog *ensureDialog(const Telegram::Peer &peer);
+
     quint32 m_id = 0;
     QString m_phoneNumber;
     QString m_firstName;
@@ -101,6 +105,7 @@ protected:
 
     quint32 m_pts = 0;
     QVector<TLMessage> m_messages;
+    QVector<UserDialog *> m_dialogs;
     QVector<quint32> m_contactList; // Contains only registered users from the added contacts
     QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)
 };

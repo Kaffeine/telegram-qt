@@ -943,10 +943,42 @@ void MessagesRpcOperation::runGetDhConfig()
 
 void MessagesRpcOperation::runGetDialogs()
 {
-    if (processNotImplementedMethod(TLValue::MessagesGetDialogs)) {
-        return;
-    }
     TLMessagesDialogs result;
+    User *self = layer()->getUser();
+    const QVector<UserDialog *> dialogs = self->dialogs();
+
+    for (const UserDialog *d : dialogs) {
+        TLDialog dialog;
+        dialog.peer = Telegram::Utils::toTLPeer(d->peer);
+        dialog.topMessage = 1;
+        dialog.draft.message = d->draftText;
+        dialog.draft.tlType = d->draftText.isEmpty() ? TLValue::DraftMessageEmpty : TLValue::DraftMessage;
+        dialog.unreadCount = 1;
+
+        switch (d->peer.type) {
+        case Peer::User:
+        {
+            const RemoteUser *user = api()->getUser(d->peer.id);
+            result.users.resize(result.users.size() + 1);
+            api()->setupTLUser(&result.users.last(), user, self);
+        }
+            break;
+        case Peer::Chat:
+            //result.chats.append()
+            break;
+        case Peer::Channel:
+            //result.chats.append()
+            break;
+        }
+        result.dialogs.append(dialog);
+
+        const TLMessage *m = self->getMessage(d->lastMessageId);
+        if (m) {
+            result.messages.resize(result.messages.size() + 1);
+            result.messages.last() = *m;
+        }
+    }
+
     sendRpcReply(result);
 }
 

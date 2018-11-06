@@ -24,6 +24,13 @@ struct ServerSalt
     quint32 validUntil = 0;
 };
 
+struct UserDialog
+{
+    Telegram::Peer peer;
+    quint32 lastMessageId = 0;
+    QString draftText;
+};
+
 struct UserContact
 {
     quint32 id = 0;

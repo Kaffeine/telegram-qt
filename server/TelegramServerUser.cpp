@@ -133,7 +133,21 @@ quint32 User::addMessage(const TLMessage &message, Session *excludeSession)
 {
     m_messages.append(message);
     m_messages.last().id = addPts();
+    const Telegram::Peer messagePeer = Telegram::Utils::getMessagePeer(message, id());
+    UserDialog *dialog = ensureDialog(messagePeer);
+    dialog->lastMessageId = message.id;
     return m_messages.last().id;
+}
+
+const TLMessage *User::getMessage(quint32 messageId) const
+{
+    if (!messageId || m_messages.isEmpty()) {
+        return nullptr;
+    }
+    if (m_messages.count() < messageId) {
+        return nullptr;
+    }
+    return &m_messages.at(messageId - 1);
 }
 
 quint32 User::addPts()
@@ -149,6 +163,18 @@ void User::importContact(const UserContact &contact)
     if (contact.id) {
         m_contactList.append(contact.id);
     }
+}
+
+UserDialog *User::ensureDialog(const Telegram::Peer &peer)
+{
+    for (int i = 0; i < m_dialogs.count(); ++i) {
+        if (m_dialogs.at(i)->peer == peer) {
+            return m_dialogs[i];
+        }
+    }
+    m_dialogs.append(new UserDialog());
+    m_dialogs.last()->peer = peer;
+    return m_dialogs.last();
 }
 
 } // Server
