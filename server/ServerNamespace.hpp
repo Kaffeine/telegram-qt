@@ -24,6 +24,14 @@ struct ServerSalt
     quint32 validUntil = 0;
 };
 
+struct UserContact
+{
+    quint32 id = 0;
+    QString phone;
+    QString firstName;
+    QString lastName;
+};
+
 } // Server
 
 } // Telegram

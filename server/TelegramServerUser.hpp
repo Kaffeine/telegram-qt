@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QVector>
 
+#include "ServerNamespace.hpp"
+
 namespace Telegram {
 
 namespace Server {
@@ -20,6 +22,7 @@ public:
     virtual QString lastName() const = 0;
     virtual bool isOnline() const = 0;
     virtual quint32 dcId() const = 0;
+    virtual QVector<quint32> contactList() const = 0;
 };
 
 class User : public QObject, public RemoteUser
@@ -58,6 +61,11 @@ public:
 
     QString passwordHint() const { return QString(); }
 
+    void importContact(const UserContact &contact);
+    QVector<quint32> contactList() const override { return m_contactList; }
+
+    QVector<UserContact> importedContacts() const { return m_importedContacts; }
+
 signals:
     void sessionAdded(Session *newSession);
     void sessionDestroyed(Session *destroyedSession);
@@ -72,6 +80,9 @@ protected:
     QByteArray m_passwordHash;
     QVector<Session*> m_sessions;
     quint32 m_dcId = 0;
+
+    QVector<quint32> m_contactList; // Contains only registered users from the added contacts
+    QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)
 };
 
 } // Server

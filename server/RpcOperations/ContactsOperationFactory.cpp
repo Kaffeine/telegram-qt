@@ -192,10 +192,31 @@ void ContactsRpcOperation::runGetBlocked()
 
 void ContactsRpcOperation::runGetContacts()
 {
-    if (processNotImplementedMethod(TLValue::ContactsGetContacts)) {
-        return;
-    }
     TLContactsContacts result;
+    result.tlType = TLValue::ContactsContacts;
+
+    User *self = layer()->getUser();
+
+    const QVector<UserContact> importedContacts = self->importedContacts();
+    result.contacts.reserve(importedContacts.size());
+    result.users.reserve(importedContacts.size());
+
+    TLUser userInfo;
+    TLContact outputContact;
+    for (const UserContact &contact : importedContacts) {
+        if (contact.id) {
+            const RemoteUser *contactUser = api()->getRemoteUser(contact.id);
+            api()->setupTLUser(&userInfo, contactUser, self);
+            result.users.append(userInfo);
+
+            outputContact.userId = contact.id;
+            outputContact.mutual = userInfo.flags & TLUser::MutualContact;
+            result.contacts.append(outputContact);
+        } else {
+            ++result.savedCount;
+        }
+    }
+
     sendRpcReply(result);
 }
 
@@ -228,10 +249,34 @@ void ContactsRpcOperation::runImportCard()
 
 void ContactsRpcOperation::runImportContacts()
 {
-    if (processNotImplementedMethod(TLValue::ContactsImportContacts)) {
-        return;
-    }
+    qDebug() << Q_FUNC_INFO;
     TLContactsImportedContacts result;
+
+    User *self = layer()->getUser();
+
+    for (const TLInputContact &c : m_importContacts.contacts) {
+        UserContact contact;
+        contact.phone = c.phone;
+        contact.firstName = c.firstName;
+        contact.lastName = c.lastName;
+
+        RemoteUser *registeredUser = layer()->api()->getUser(c.phone);
+        if (registeredUser) {
+            contact.id = registeredUser->id();
+            result.users.append(TLUser());
+            api()->setupTLUser(&result.users.last(), registeredUser, self);
+
+            TLImportedContact imported;
+            imported.clientId = c.clientId;
+            imported.userId = contact.id;
+            result.imported.append(imported);
+        } else {
+            result.retryContacts.append(c.clientId);
+        }
+
+        self->importContact(contact);
+    }
+
     sendRpcReply(result);
 }
 

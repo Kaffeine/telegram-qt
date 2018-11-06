@@ -173,6 +173,12 @@ bool Server::setupTLUser(TLUser *output, const RemoteUser *input, const User *ap
     if (output->id == applicant->id()) {
         flags |= TLUser::Self;
     }
+    if (applicant->contactList().contains(output->id)) {
+        flags |= TLUser::Contact;
+        if (input->contactList().contains(applicant->id())) {
+            flags |= TLUser::MutualContact;
+        }
+    }
     output->flags = flags;
 
     return true;

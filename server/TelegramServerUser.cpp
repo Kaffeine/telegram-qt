@@ -101,6 +101,16 @@ void User::setPassword(const QByteArray &salt, const QByteArray &hash)
     m_passwordHash = hash;
 }
 
+void User::importContact(const UserContact &contact)
+{
+    // Check for contact registration status and the contact id setup performed out of this function
+    m_importedContacts.append(contact);
+
+    if (contact.id) {
+        m_contactList.append(contact.id);
+    }
+}
+
 } // Server
 
 } // Telegram
