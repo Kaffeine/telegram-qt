@@ -79,6 +79,24 @@ TLPeer toTLPeer(const Telegram::Peer &peer)
     return result;
 }
 
+Telegram::Peer getMessagePeer(const TLMessage &message, quint32 selfId)
+{
+    switch (message.toId.tlType) {
+    case TLValue::PeerUser:
+        if (message.fromId == selfId) {
+            return Telegram::Peer::fromUserId(message.toId.userId);
+        } else {
+            return Telegram::Peer::fromUserId(message.fromId);
+        }
+    case TLValue::PeerChat:
+        return Telegram::Peer::fromChatId(message.toId.chatId);
+    case TLValue::PeerChannel:
+        return Telegram::Peer::fromChannelId(message.toId.channelId);
+    default:
+        return Telegram::Peer();
+    }
+}
+
 } // Utils namespace
 
 } // Telegram namespace

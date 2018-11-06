@@ -34,6 +34,8 @@ TELEGRAMQT_EXPORT Telegram::Peer toPublicPeer(const TLChat *chat);
 
 TELEGRAMQT_EXPORT TLPeer toTLPeer(const Telegram::Peer &peer);
 
+TELEGRAMQT_EXPORT Telegram::Peer getMessagePeer(const TLMessage &message, quint32 selfId);
+
 } // Utils namespace
 
 } // Telegram namespace
