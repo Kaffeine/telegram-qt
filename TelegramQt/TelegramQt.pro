@@ -78,6 +78,7 @@ PUBLIC_HEADERS += \
     ConnectionApi.hpp \
     ContactsApi.hpp \
     Debug.hpp \
+    ReadyObject.hpp \
     TelegramNamespace.hpp \
     CTelegramCore.hpp \
     TelegramQt/CAppInformation \
@@ -112,6 +113,7 @@ HEADERS += \
     DataStorage.hpp \
     DataStorage_p.hpp \
     IgnoredMessageNotification.hpp \
+    ReadyObject.hpp \
     RpcError.hpp \
     RpcLayer.hpp \
     Connection.hpp \
