@@ -21,6 +21,7 @@ set(telegram_qt_SOURCES
     DataStorage.cpp
     IgnoredMessageNotification.cpp
     LegacySecretReader.cpp
+    MessagingApi.cpp
     RpcError.cpp
     RpcLayer.cpp
     RandomGenerator.cpp
@@ -65,6 +66,8 @@ set(telegram_qt_META_HEADERS
     DataStorage.hpp
     DhLayer.hpp
     LegacySecretReader.hpp
+    MessagingApi.hpp
+    MessagingApi_p.hpp
     RpcError.hpp
     RpcLayer.hpp
     SendPackageHelper.hpp
@@ -134,6 +137,7 @@ set(telegram_qt_public_HEADERS
     ContactsApi.hpp
     DcConfiguration.hpp
     Debug.hpp
+    MessagingApi.hpp
     ReadyObject.hpp
 )
 

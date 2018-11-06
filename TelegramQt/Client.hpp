@@ -42,6 +42,7 @@ using AppInformation = ::CAppInformation;
 
 class ConnectionApi;
 class ContactsApi;
+class MessagingApi;
 
 class ClientPrivate;
 
@@ -69,6 +70,7 @@ public:
 
     ConnectionApi *connectionApi() const;
     ContactsApi *contactsApi() const;
+    MessagingApi *messagingApi() const;
 
 Q_SIGNALS:
     void signedInChanged(bool signedIn);

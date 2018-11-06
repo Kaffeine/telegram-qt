@@ -92,6 +92,12 @@ ContactsApi *Client::contactsApi() const
     return d->m_contactsApi;
 }
 
+MessagingApi *Client::messagingApi() const
+{
+    Q_D(const Client);
+    return d->m_messagingApi;
+}
+
 } // Client
 
 } // Telegram

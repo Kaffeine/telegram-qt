@@ -8,6 +8,7 @@
 #include "Client.hpp"
 #include "ClientRpcLayer.hpp"
 #include "DataStorage.hpp"
+#include "MessagingApi.hpp"
 #include "RpcError.hpp"
 #include "Debug_p.hpp"
 #include "UpdatesLayer.hpp"
@@ -93,6 +94,9 @@ Backend::Backend(Client *parent) :
 
     m_contactsApi = new ContactsApi(this);
     ClientApiPrivate::get(m_contactsApi)->setBackend(this);
+
+    m_messagingApi = new MessagingApi(this);
+    ClientApiPrivate::get(m_messagingApi)->setBackend(this);
 
     m_updatesApi = new UpdatesInternalApi(this);
     m_updatesApi->setBackend(this);

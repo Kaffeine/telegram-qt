@@ -24,6 +24,7 @@ using AppInformation = ::CAppInformation;
 class DataStorage;
 class ConnectionApi;
 class ContactsApi;
+class MessagingApi;
 class PendingRpcOperation;
 class UpdatesInternalApi;
 
@@ -67,6 +68,8 @@ public:
     DataStorage *dataStorage() { return m_dataStorage; }
     const DataStorage *dataStorage() const { return m_dataStorage; }
 
+    MessagingApi *messagingApi() const { return m_messagingApi; }
+
     AccountStorage *accountStorage() { return m_accountStorage; }
 
     void processSeeOthers(PendingRpcOperation *operation);
@@ -96,6 +99,7 @@ public:
     DataStorage *m_dataStorage = nullptr;
     ConnectionApi *m_connectionApi = nullptr;
     ContactsApi *m_contactsApi = nullptr;
+    MessagingApi *m_messagingApi = nullptr;
 
     // Generated low-level layer members
     AccountRpcLayer *m_accountLayer = nullptr;
