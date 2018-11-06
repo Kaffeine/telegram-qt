@@ -67,10 +67,16 @@ void UsersRpcOperation::runGetFullUser()
 
 void UsersRpcOperation::runGetUsers()
 {
-    if (processNotImplementedMethod(TLValue::UsersGetUsers)) {
-        return;
-    }
+    User *self = layer()->getUser();
+    TLUser user;
     TLVector<TLUser> result;
+    result.reserve(m_getUsers.id.count());
+    for (const TLInputUser &input : m_getUsers.id) {
+        RemoteUser *remoteUser = api()->getUser(input, self);
+        if (api()->setupTLUser(&user, remoteUser, self)) {
+            result.append(user);
+        }
+    }
     sendRpcReply(result);
 }
 // End of generated run methods
