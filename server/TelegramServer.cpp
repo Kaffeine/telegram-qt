@@ -148,26 +148,6 @@ void Server::onClientConnectionStatusChanged()
     }
 }
 
-User *Server::getLocalUser(const QString &identifier) const
-{
-    quint32 id = m_phoneToUserId.value(identifier);
-    if (!id) {
-        return nullptr;
-    }
-    return m_users.value(id);
-}
-
-RemoteUser *Server::getRemoteUser(const QString &identifier) const
-{
-    for (RemoteServerConnection *remoteServer : m_remoteServers) {
-        RemoteUser *u = remoteServer->getUser(identifier);
-        if (u) {
-            return u;
-        }
-    }
-    return nullptr;
-}
-
 bool Server::setupTLUser(TLUser *output, const RemoteUser *input, const User *applicant) const
 {
     output->id = input->id();
@@ -198,14 +178,58 @@ bool Server::setupTLUser(TLUser *output, const RemoteUser *input, const User *ap
     return true;
 }
 
+Peer Server::getPeer(const TLInputPeer &peer, const User *applicant) const
+{
+    switch (peer.tlType) {
+    case TLValue::InputPeerEmpty:
+        return Peer();
+    case TLValue::InputPeerSelf:
+        return Peer::fromUserId(applicant->id());
+    case TLValue::InputPeerChat:
+        return Peer::fromChatId(peer.chatId);
+    case TLValue::InputPeerUser:
+        return Peer::fromUserId(peer.userId);
+    case TLValue::InputPeerChannel:
+        return Peer::fromChannelId(peer.channelId);
+    default:
+        qWarning() << Q_FUNC_INFO << "Invalid input peer type" << peer.tlType;
+        return Peer();
+    };
+}
+
 User *Server::getUser(const QString &identifier) const
 {
-    return getLocalUser(identifier);
+    quint32 id = m_phoneToUserId.value(identifier);
+    if (!id) {
+        return nullptr;
+    }
+    return m_users.value(id);
 }
 
 User *Server::getUser(quint32 userId) const
 {
     return m_users.value(userId);
+}
+
+User *Server::getUser(const TLInputUser &inputUser, User *self) const
+{
+    switch (inputUser.tlType) {
+    case TLValue::InputUserSelf:
+        return self;
+    case TLValue::InputUser:
+        return tryAccessUser(inputUser.userId, inputUser.accessHash, self);
+    case TLValue::InputUserEmpty:
+        return nullptr;
+    default:
+        return nullptr;
+    }
+}
+
+User *Server::tryAccessUser(quint32 userId, quint64 accessHash, User *applicant) const
+{
+    User *u = getUser(userId);
+    // TODO: Check access hash
+    return u;
 }
 
 User *Server::addUser(const QString &identifier)
@@ -246,7 +270,7 @@ void Server::insertUser(User *user)
 PhoneStatus Server::getPhoneStatus(const QString &identifier) const
 {
     PhoneStatus result;
-    RemoteUser *user = getLocalOrRemoteUser(identifier);
+    RemoteUser *user = getRemoteUser(identifier);
     if (user) {
         result.online = user->isOnline();
         result.dcId = user->dcId();
@@ -282,13 +306,44 @@ bool Server::identifierIsValid(const QString &identifier)
     return result;
 }
 
-RemoteUser *Server::getLocalOrRemoteUser(const QString &identifier) const
+RemoteUser *Server::getRemoteUser(quint32 userId) const
 {
-    RemoteUser *user = getLocalUser(identifier);
+    RemoteUser *user = getUser(userId);
     if (!user) {
-        user = getRemoteUser(identifier);
+        user = getReallyRemoteUser(userId);
     }
     return user;
+}
+
+RemoteUser *Server::getRemoteUser(const QString &identifier) const
+{
+    RemoteUser *user = getUser(identifier);
+    if (!user) {
+        user = getReallyRemoteUser(identifier);
+    }
+    return user;
+}
+
+RemoteUser *Server::getReallyRemoteUser(quint32 userId) const
+{
+    for (RemoteServerConnection *remoteServer : m_remoteServers) {
+        RemoteUser *u = remoteServer->api()->getUser(userId);
+        if (u) {
+            return u;
+        }
+    }
+    return nullptr;
+}
+
+RemoteUser *Server::getReallyRemoteUser(const QString &identifier) const
+{
+    for (RemoteServerConnection *remoteServer : m_remoteServers) {
+        RemoteUser *u = remoteServer->api()->getUser(identifier);
+        if (u) {
+            return u;
+        }
+    }
+    return nullptr;
 }
 
 } // Server

@@ -25,9 +25,9 @@ public:
     void setRemoteServer(Server *remoteServer);
 
     RemoteUser *getUser(const QString &identifier);
+    ServerApi *api();
 
 protected:
-    ServerApi *api();
     Server *m_server = nullptr;
 };
 

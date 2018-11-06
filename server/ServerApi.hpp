@@ -62,8 +62,14 @@ public:
 
     virtual bool setupTLUser(TLUser *output, const RemoteUser *input, const User *forUser) const = 0;
 
+    virtual Telegram::Peer getPeer(const TLInputPeer &peer, const User *applicant) const = 0;
+
+    virtual RemoteUser *getRemoteUser(quint32 userId) const = 0;
+    virtual RemoteUser *getRemoteUser(const QString &identifier) const = 0;
     virtual User *getUser(const QString &identifier) const = 0;
     virtual User *getUser(quint32 userId) const = 0;
+    virtual User *getUser(const TLInputUser &inputUser, User *self) const = 0;
+    virtual User *tryAccessUser(quint32 userId, quint64 accessHash, User *applicant) const = 0;
     virtual Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) = 0;
     virtual Session *getSessionByAuthId(quint64 authId) const = 0;
     virtual User *addUser(const QString &identifier) = 0;

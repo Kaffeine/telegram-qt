@@ -59,14 +59,19 @@ public:
     bool checkPassword(const QString &identifier, const QByteArray &hash) override;
     bool identifierIsValid(const QString &identifier) override;
 
-    RemoteUser *getLocalOrRemoteUser(const QString &identifier) const;
-    User *getLocalUser(const QString &identifier) const;
-    RemoteUser *getRemoteUser(const QString &identifier) const;
+    RemoteUser *getRemoteUser(quint32 userId) const override;
+    RemoteUser *getRemoteUser(const QString &identifier) const override;
+    RemoteUser *getReallyRemoteUser(quint32 userId) const;
+    RemoteUser *getReallyRemoteUser(const QString &identifier) const;
 
     bool setupTLUser(TLUser *output, const RemoteUser *input, const User *applicant) const override;
 
+    Telegram::Peer getPeer(const TLInputPeer &peer, const User *applicant) const override;
+
     User *getUser(const QString &identifier) const override;
     User *getUser(quint32 userId) const override;
+    User *getUser(const TLInputUser &inputUser, User *self) const override;
+    User *tryAccessUser(quint32 userId, quint64 accessHash, User *applicant) const override;
     User *addUser(const QString &identifier) override;
 
     Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) override;
