@@ -18,6 +18,7 @@ HEADERS += $$PWD/DefaultAuthorizationProvider.hpp
 HEADERS += $$PWD/LocalCluster.hpp
 HEADERS += $$PWD/ServerApi.hpp
 HEADERS += $$PWD/ServerDhLayer.hpp
+HEADERS += $$PWD/ServerNamespace.hpp
 HEADERS += $$PWD/ServerRpcLayer.hpp
 HEADERS += $$PWD/ServerRpcOperation.hpp
 HEADERS += $$PWD/Session.hpp
