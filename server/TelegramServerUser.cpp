@@ -1,5 +1,8 @@
 #include "TelegramServerUser.hpp"
 
+#include "ApiUtils.hpp"
+#include "ServerApi.hpp"
+#include "ServerRpcLayer.hpp"
 #include "Session.hpp"
 #include "Utils.hpp"
 
@@ -8,6 +11,31 @@
 namespace Telegram {
 
 namespace Server {
+
+TLPeer MessageRecipient::toTLPeer() const
+{
+    const Peer p = toPeer();
+    if (Q_UNLIKELY(!p.isValid())) {
+        qCritical() << Q_FUNC_INFO << "Invalid peer" << this;
+        return TLPeer();
+    }
+    TLPeer result;
+    switch (p.type) {
+    case Peer::User:
+        result.tlType = TLValue::PeerUser;
+        result.userId = p.id;
+        break;
+    case Peer::Chat:
+        result.tlType = TLValue::PeerChat;
+        result.chatId = p.id;
+        break;
+    case Peer::Channel:
+        result.tlType = TLValue::PeerChannel;
+        result.channelId = p.id;
+        break;
+    }
+    return result;
+}
 
 User::User(QObject *parent) :
     QObject(parent)
@@ -99,6 +127,18 @@ void User::setPassword(const QByteArray &salt, const QByteArray &hash)
 
     m_passwordSalt = salt;
     m_passwordHash = hash;
+}
+
+quint32 User::addMessage(const TLMessage &message, Session *excludeSession)
+{
+    m_messages.append(message);
+    m_messages.last().id = addPts();
+    return m_messages.last().id;
+}
+
+quint32 User::addPts()
+{
+    return ++m_pts;
 }
 
 void User::importContact(const UserContact &contact)

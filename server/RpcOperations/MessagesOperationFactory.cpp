@@ -17,6 +17,7 @@
 
 #include "MessagesOperationFactory.hpp"
 
+#include "ApiUtils.hpp"
 #include "RpcOperationFactory_p.hpp"
 // TODO: Instead of this include, add a generated cpp with all needed template instances
 #include "ServerRpcOperation_p.hpp"
@@ -33,7 +34,18 @@
 #include "CTelegramStreamExtraOperators.hpp"
 #include "FunctionStreamOperators.hpp"
 
+#include <QDateTime>
 #include <QLoggingCategory>
+
+static quint32 getCurrentTime()
+{
+#if QT_VERSION > QT_VERSION_CHECK(5, 8, 0)
+    qint64 timestamp = QDateTime::currentSecsSinceEpoch();
+#else
+    qint64 timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
+#endif
+    return static_cast<quint32>(timestamp);
+}
 
 namespace Telegram {
 
@@ -1381,11 +1393,60 @@ void MessagesRpcOperation::runSendMedia()
 
 void MessagesRpcOperation::runSendMessage()
 {
-    if (processNotImplementedMethod(TLValue::MessagesSendMessage)) {
+    User *self = layer()->getUser();
+
+    Telegram::Peer peer = Utils::toPublicPeer(m_sendMessage.peer, self->id());
+    MessageRecipient *recipient = nullptr;
+
+    switch (peer.type) {
+    case Telegram::Peer::User:
+        recipient = api()->tryAccessUser(peer.id, m_sendMessage.peer.accessHash, self);
+        break;
+    case Telegram::Peer::Chat:
+        break;
+    case Telegram::Peer::Channel:
+        //recipient = api()->getChannel(m_sendMessage.peer.channelId, m_sendMessage.peer.accessHash);
+        break;
+    }
+    if (!recipient) {
+        sendRpcError(RpcError());
         return;
     }
+
+    TLUpdate newMessageUpdate;
+    newMessageUpdate.tlType = TLValue::UpdateNewMessage;
+    newMessageUpdate.pts = self->pts();
+    newMessageUpdate.ptsCount = 1;
+
+    TLMessage &message = newMessageUpdate.message;
+    message.tlType = TLValue::Message;
+    message.fromId = self->id();
+    message.flags |= TLMessage::FromId;
+    message.message = m_sendMessage.message;
+    message.date = getCurrentTime();
+    message.toId = recipient->toTLPeer();
+    const quint32 newMessageId = self->addMessage(message, layer()->session());
+    message.id = newMessageId;
+
+    TLUpdate updateMessageId;
+    updateMessageId.tlType = TLValue::UpdateMessageID;
+    updateMessageId.quint32Id = newMessageId;
+    updateMessageId.randomId = m_sendMessage.randomId;
+
     TLUpdates result;
+    result.tlType = TLValue::Updates;
+    result.updates = { updateMessageId, newMessageUpdate };
+    result.users = { TLUser() }; // Sender
+    api()->setupTLUser(&result.users[0], self, self);
+
+    result.chats = {};
+    result.date = message.date;
+    result.seq = 0; // ?
     sendRpcReply(result);
+
+    if (recipient != self) {
+        recipient->addMessage(message, layer()->session());
+    }
 }
 
 void MessagesRpcOperation::runSendScreenshotNotification()

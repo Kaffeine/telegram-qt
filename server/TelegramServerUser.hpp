@@ -5,6 +5,7 @@
 #include <QVector>
 
 #include "ServerNamespace.hpp"
+#include "TLTypes.hpp"
 
 namespace Telegram {
 
@@ -13,7 +14,17 @@ namespace Server {
 class Session;
 class User;
 
-class RemoteUser
+class MessageRecipient
+{
+public:
+    virtual ~MessageRecipient() = default;
+    virtual quint32 addMessage(const TLMessage &message, Session *excludeSession = nullptr) = 0;
+
+    virtual Peer toPeer() const = 0;
+    TLPeer toTLPeer() const;
+};
+
+class RemoteUser : public MessageRecipient
 {
 public:
     virtual quint32 id() const = 0;
@@ -23,6 +34,8 @@ public:
     virtual bool isOnline() const = 0;
     virtual quint32 dcId() const = 0;
     virtual QVector<quint32> contactList() const = 0;
+
+    Peer toPeer() const override { return Peer::fromUserId(id()); }
 };
 
 class User : public QObject, public RemoteUser
@@ -61,6 +74,11 @@ public:
 
     QString passwordHint() const { return QString(); }
 
+    quint32 addMessage(const TLMessage &message, Session *excludeSession = nullptr) override;
+
+    quint32 pts() const { return m_pts; }
+    quint32 addPts();
+
     void importContact(const UserContact &contact);
     QVector<quint32> contactList() const override { return m_contactList; }
 
@@ -81,6 +99,8 @@ protected:
     QVector<Session*> m_sessions;
     quint32 m_dcId = 0;
 
+    quint32 m_pts = 0;
+    QVector<TLMessage> m_messages;
     QVector<quint32> m_contactList; // Contains only registered users from the added contacts
     QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)
 };
