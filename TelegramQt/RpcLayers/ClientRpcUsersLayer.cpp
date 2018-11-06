@@ -23,7 +23,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_clientRpcUsersCategory, "telegram.client.rpclayer.users", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_clientRpcUsersCategory, "telegram.client.rpclayer.users", QtWarningMsg)
 
 #include "PendingRpcOperation.hpp"
 

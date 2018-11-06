@@ -18,7 +18,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_loggingClientAuthOperation, "telegram.client.auth.operation", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_loggingClientAuthOperation, "telegram.client.auth.operation", QtWarningMsg)
 
 namespace Telegram {
 

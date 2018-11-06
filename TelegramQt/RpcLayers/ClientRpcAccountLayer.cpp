@@ -23,7 +23,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_clientRpcAccountCategory, "telegram.client.rpclayer.account", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_clientRpcAccountCategory, "telegram.client.rpclayer.account", QtWarningMsg)
 
 namespace Telegram {
 

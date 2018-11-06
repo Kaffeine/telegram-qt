@@ -24,7 +24,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_clientRpcAuthCategory, "telegram.client.rpclayer.auth", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_clientRpcAuthCategory, "telegram.client.rpclayer.auth", QtWarningMsg)
 
 namespace Telegram {
 
