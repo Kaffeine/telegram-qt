@@ -18,6 +18,7 @@
 #include "TelegramNamespace.hpp"
 #include "TelegramNamespace_p.hpp"
 
+#include "ApiUtils.hpp"
 #include "RandomGenerator.hpp"
 #include "TelegramUtils.hpp"
 #include "Utils.hpp"
@@ -736,22 +737,34 @@ Telegram::DialogInfo &Telegram::DialogInfo::operator=(const Telegram::DialogInfo
     return *this;
 }
 
+quint32 Telegram::DialogInfo::unreadCount() const
+{
+    return d->unreadCount;
+}
+
+QString Telegram::DialogInfo::draft() const
+{
+    return d->draft.message;
+}
+
+quint32 Telegram::DialogInfo::lastMessageId() const
+{
+    return d->topMessage;
+}
+
 Telegram::Peer Telegram::DialogInfo::peer() const
 {
-    return d->peer;
+    return Telegram::Utils::toPublicPeer(d->peer);
 }
 
 quint32 Telegram::DialogInfo::muteUntil() const
 {
-    return d->muteUntil;
+    return d->notifySettings.muteUntil;
 }
 
 bool Telegram::DialogInfo::isStillMuted() const
 {
-    if (!d->muteUntil) {
-        return false;
-    }
-    return d->muteUntil > QDateTime::currentDateTimeUtc().toTime_t();
+    return false;
 }
 
 Telegram::UserInfo::UserInfo() :

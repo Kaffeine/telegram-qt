@@ -20,6 +20,7 @@ set(telegram_qt_SOURCES
     CAppInformation.cpp
     CTelegramTransport.cpp
     DataStorage.cpp
+    DialogList.cpp
     IgnoredMessageNotification.cpp
     LegacySecretReader.cpp
     MessagingApi.cpp
@@ -66,6 +67,7 @@ set(telegram_qt_META_HEADERS
     ContactsApi.hpp
     ContactsApi_p.hpp
     DataStorage.hpp
+    DialogList.hpp
     DhLayer.hpp
     LegacySecretReader.hpp
     MessagingApi.hpp
@@ -139,6 +141,7 @@ set(telegram_qt_public_HEADERS
     ContactsApi.hpp
     DcConfiguration.hpp
     Debug.hpp
+    DialogList.hpp
     MessagingApi.hpp
     ReadyObject.hpp
 )

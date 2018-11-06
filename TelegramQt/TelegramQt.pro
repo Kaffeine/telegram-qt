@@ -33,6 +33,7 @@ SOURCES += \
     AccountStorage.cpp \
     ApiUtils.cpp \
     DcConfiguration.cpp \
+    DialogList.cpp \
     DhLayer.cpp \
     Client.cpp \
     ClientApi.cpp \
@@ -81,6 +82,7 @@ PUBLIC_HEADERS += \
     ContactList.hpp \
     ContactsApi.hpp \
     Debug.hpp \
+    DialogList.hpp \
     MessagingApi.hpp \
     ReadyObject.hpp \
     TelegramNamespace.hpp \
@@ -98,6 +100,7 @@ HEADERS += \
     DcConfiguration.hpp \
     Debug.hpp \
     Debug_p.hpp \
+    DialogList.hpp \
     DhLayer.hpp \
     Client.hpp \
     Client_p.hpp \

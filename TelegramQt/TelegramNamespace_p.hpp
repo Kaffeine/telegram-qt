@@ -113,18 +113,14 @@ struct Telegram::UserInfo::Private : public TLUser
     static const Private *get(const Telegram::UserInfo *info) { return info->d; }
 };
 
-struct Telegram::ChatInfo::Private : public TLChat { };
-
-struct Telegram::DialogInfo::Private
+struct Telegram::ChatInfo::Private : public TLChat
 {
-public:
-    Private() :
-        muteUntil(0)
-    {
-    }
+    static Private *get(Telegram::ChatInfo *info) { return info->d; }
+};
 
-    Peer peer;
-    quint32 muteUntil;
+struct Telegram::DialogInfo::Private : public TLDialog
+{
+    static Private *get(Telegram::DialogInfo *info) { return info->d; }
 };
 
 TelegramNamespace::ContactStatus getApiContactStatus(TLValue status);

@@ -21,10 +21,17 @@
 #include "ClientApi_p.hpp"
 #include "MessagingApi.hpp"
 
+#include "ClientRpcMessagesLayer.hpp"
+
 namespace Telegram {
+
+class PendingOperation;
 
 namespace Client {
 
+class DataStorage;
+class DialogList;
+class MessagesOperation;
 class MessagesRpcLayer;
 
 class MessagingApiPrivate : public ClientApiPrivate
@@ -35,7 +42,22 @@ public:
     explicit MessagingApiPrivate(MessagingApi *parent = nullptr);
     static MessagingApiPrivate *get(MessagingApi *parent);
 
+    quint64 sendMessage(const Telegram::Peer peer, const QString &message, const MessagingApi::SendOptions &options);
+
+    void onMessageSendResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation);
+
+    void onMessageReceived(const TLMessage &message);
+
+    PendingOperation *getDialogs();
+
+    DataStorage *dataStorage();
     MessagesRpcLayer *messagesLayer();
+
+    DialogList *m_dialogList = nullptr;
+    MessagesRpcLayer *m_messagesLayer = nullptr;
+
+protected slots:
+    void onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation);
 };
 
 } // Client namespace

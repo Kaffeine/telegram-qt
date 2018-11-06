@@ -23,7 +23,11 @@
 
 namespace Telegram {
 
+class PendingOperation;
+
 namespace Client {
+
+class DialogList;
 
 class MessagingApiPrivate;
 
@@ -32,6 +36,48 @@ class TELEGRAMQT_EXPORT MessagingApi : public ClientApi
     Q_OBJECT
 public:
     explicit MessagingApi(QObject *parent = nullptr);
+
+    static quint32 localTypingRecommendedRepeatInterval();
+
+    struct SendOptions {
+        SendOptions();
+
+        bool clearDraft() const { return m_clearDraft; }
+        void setClearDraft(bool clear) { m_clearDraft = clear; }
+
+        quint32 replyToMessageId() const { return m_replyMessageId; }
+        void setReplyToMessageId(quint32 id) { m_replyMessageId = id; }
+
+    protected:
+        quint32 m_replyMessageId;
+        bool m_clearDraft;
+        // Message entities
+
+        // (flags & 1 << 0) enables replyToMsgId
+        // (flags & 1 << 1) stands for noWebpage "true" value
+        // (flags & 1 << 2) enables replyMarkup
+        // (flags & 1 << 3) enables entities
+        // (flags & 1 << 5) stands for silent "true" value
+        // (flags & 1 << 6) stands for background "true" value
+        // (flags & 1 << 7) stands for clearDraft "true" value
+    };
+
+    DialogList *getDialogList();
+
+public slots:
+    void setDraftMessage(const Telegram::Peer peer, const QString &text);
+
+    quint64 sendMessage(const Telegram::Peer peer, const QString &message, const SendOptions &options = SendOptions()); // Message id is a random number
+    //    quint64 forwardMessage(const Telegram::Peer &peer, quint32 messageId);
+    //    /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
+    void setMessageAction(const Telegram::Peer peer, TelegramNamespace::MessageAction action);
+    void setMessageRead(const Telegram::Peer peer, quint32 messageId);
+
+Q_SIGNALS:
+    void messageReceived(const Telegram::Peer peer, quint32 messageId);
+    void messageSent(quint64 messageRandomId, quint32 messageId);
+
+    void messageActionChanged(const Telegram::Peer &peer, quint32 contactId, TelegramNamespace::MessageAction action);
 
 protected:
     Q_DECLARE_PRIVATE_D(d, MessagingApi)

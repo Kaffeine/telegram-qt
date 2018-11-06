@@ -44,18 +44,31 @@ public:
 
     const TLUser *getSelfUser() const;
 
+    void processData(const TLMessage &message);
+    void processData(const TLVector<TLChat> &chats);
+    void processData(const TLChat &chat);
     void processData(const TLVector<TLUser> &users);
     void processData(const TLUser &user);
     void processData(const TLAuthAuthorization &authorization);
+    void processData(const TLMessagesDialogs &dialogs);
+    void processData(const TLMessagesMessages &messages);
 
     void setContactList(const TLVector<TLContact> &contacts);
 
     quint32 selfUserId() const { return m_selfUserId; }
 
+    TLInputPeer toInputPeer(const Telegram::Peer &peer) const;
+
+    static quint64 channelMessageToKey(quint32 channelId, quint32 messageId);
+
     TLVector<TLContact> contactList() const { return m_contactList; }
 
     quint32 m_selfUserId = 0;
     QHash<quint32, TLUser *> m_users;
+    QHash<quint32, TLChat *> m_chats;
+    QHash<quint32, TLMessage *> m_clientMessages;
+    QHash<quint64, TLMessage *> m_channelMessages;
+    TLMessagesDialogs m_dialogs;
     TLVector<TLContact> m_contactList;
 };
 
@@ -70,10 +83,15 @@ public:
     DcConfiguration serverConfiguration() const;
     void setServerConfiguration(const DcConfiguration &configuration);
 
+    QVector<Telegram::Peer> dialogs() const;
     QVector<Telegram::Peer> contactList() const;
 
     quint32 selfUserId() const;
+    bool getDialogInfo(DialogInfo *info, const Telegram::Peer &peer) const;
     bool getUserInfo(UserInfo *info, quint32 userId) const;
+    bool getChatInfo(ChatInfo *info, quint32 chatId) const;
+
+    bool getMessage(Message *message, const Telegram::Peer &peer, quint32 messageId);
 
 protected:
     DataStorage(DataStoragePrivate *d, QObject *parent);
