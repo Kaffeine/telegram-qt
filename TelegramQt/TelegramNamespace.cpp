@@ -105,6 +105,7 @@ void TelegramNamespace::registerTypes()
         qRegisterMetaType<TelegramNamespace::UnauthorizedError>("TelegramNamespace::UnauthorizedError");
         qRegisterMetaType<Telegram::PasswordInfo>("Telegram::PasswordInfo");
         qRegisterMetaType<Telegram::Peer>("Telegram::Peer");
+        qRegisterMetaType<Telegram::PeerList>("Telegram::PeerList");
         qRegisterMetaType<Telegram::Client::ConnectionApi::Status>("Telegram::Client::ConnectionApi::Status");
         qRegisterMetaType<Telegram::Client::ConnectionApi::StatusReason>("Telegram::Client::ConnectionApi::StatusReason");
         registered = true;

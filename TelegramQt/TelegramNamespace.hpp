@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QFlags>
 #include <QMetaType>
+#include <QVector>
 
 class CTelegramDispatcher;
 class CTelegramAuthModule;
@@ -84,6 +85,8 @@ public:
     QString toString() const;
     static Peer fromString(const QString &string);
 };
+
+using PeerList = QVector<Peer>;
 
 } // Telegram namespace
 
@@ -533,6 +536,7 @@ T maskPhoneNumber(T container, const QString &key)
 
 Q_DECLARE_METATYPE(Telegram::Peer)
 Q_DECLARE_METATYPE(Telegram::Peer::Type)
+Q_DECLARE_METATYPE(Telegram::PeerList)
 Q_DECLARE_METATYPE(Telegram::DcOption)
 Q_DECLARE_METATYPE(Telegram::Message)
 Q_DECLARE_METATYPE(Telegram::ChatInfo)
