@@ -50,11 +50,32 @@ Session *User::getSession(quint64 authId) const
     return nullptr;
 }
 
+QVector<Session *> User::activeSessions() const
+{
+    QVector<Session *> result;
+    for (Session *s : m_sessions) {
+        if (s->isActive()) {
+            result.append(s);
+        }
+    }
+    return result;
+}
+
+bool User::hasActiveSession() const
+{
+    for (Session *s : m_sessions) {
+        if (s->isActive()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void User::addSession(Session *session)
 {
     m_sessions.append(session);
     session->setUser(this);
-    emit sessionAdded(m_sessions.last());
+    emit sessionAdded(session);
 }
 
 void User::setPlainPassword(const QString &password)

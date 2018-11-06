@@ -45,6 +45,8 @@ public:
 
     Session *getSession(quint64 authId) const;
     QVector<Session*> sessions() const { return m_sessions; }
+    QVector<Session*> activeSessions() const;
+    bool hasActiveSession() const;
     void addSession(Session *session);
 
     bool hasPassword() const { return !m_passwordSalt.isEmpty() && !m_passwordHash.isEmpty(); }
