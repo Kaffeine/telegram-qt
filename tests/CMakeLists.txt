@@ -41,6 +41,7 @@ QT5_WRAP_CPP(test_extra_MOC_SOURCES ${test_extra_META_HEADERS})
 foreach(test_name
     tst_all
     tst_ConnectionApi
+    tst_MessagesApi
 )
     FILE(GLOB TEST_SOURCES ${test_name}/*.cpp)
     add_executable(${test_name} ${TEST_SOURCES} ${test_extra_MOC_SOURCES})
