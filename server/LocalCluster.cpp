@@ -97,6 +97,11 @@ Server *LocalCluster::getServerInstance(quint32 dcId)
     return nullptr;
 }
 
+ServerApi *LocalCluster::getServerApiInstance(quint32 dcId)
+{
+    return getServerInstance(dcId);
+}
+
 } // Server
 
 } // Telegram

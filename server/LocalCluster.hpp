@@ -62,6 +62,7 @@ public:
 
     QVector<Server*> getServerInstances() { return m_serverInstances; }
     Server *getServerInstance(quint32 dcId);
+    ServerApi *getServerApiInstance(quint32 dcId);
 
 protected:
     ServerConstructor m_constructor;
