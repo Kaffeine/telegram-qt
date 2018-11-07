@@ -28,6 +28,7 @@ class PendingOperation;
 namespace Client {
 
 class DialogList;
+class MessagesOperation;
 
 class MessagingApiPrivate;
 
@@ -63,6 +64,7 @@ public:
     };
 
     DialogList *getDialogList();
+    MessagesOperation *getHistory(const Telegram::Peer peer, quint32 limit);
 
 public slots:
     void setDraftMessage(const Telegram::Peer peer, const QString &text);

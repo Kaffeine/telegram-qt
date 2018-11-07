@@ -49,6 +49,7 @@ public:
     void onMessageReceived(const TLMessage &message);
 
     PendingOperation *getDialogs();
+    MessagesOperation *getHistory(const Telegram::Peer peer, quint32 limit);
 
     DataStorage *dataStorage();
     MessagesRpcLayer *messagesLayer();
@@ -58,6 +59,7 @@ public:
 
 protected slots:
     void onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation);
+    void onGetHistoryFinished(MessagesOperation *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation);
 };
 
 } // Client namespace

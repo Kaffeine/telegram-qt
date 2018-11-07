@@ -9,6 +9,7 @@
 #include "Utils.hpp"
 
 #include "Operations/ClientMessagesOperation.hpp"
+#include "Operations/ClientMessagesOperation_p.hpp"
 
 #include <QLoggingCategory>
 
@@ -93,6 +94,17 @@ PendingOperation *MessagingApiPrivate::getDialogs()
     return operation;
 }
 
+MessagesOperation *MessagingApiPrivate::getHistory(const Peer peer, quint32 limit)
+{
+    TLInputPeer p = dataStorage()->internalApi()->toInputPeer(peer);
+    MessagesOperation *operation = new MessagesOperation(this);
+    MessagesRpcLayer::PendingMessagesMessages *rpcOperation = messagesLayer()->getHistory(p, 0, 0, 0, limit, 0, 0, 0);
+    connect(rpcOperation, &PendingOperation::finished, this,
+            [this, operation, rpcOperation]() { this->onGetHistoryFinished(operation, rpcOperation); }
+    );
+    return operation;
+}
+
 MessagingApi::MessagingApi(QObject *parent) :
     ClientApi(parent)
 {
@@ -112,6 +124,12 @@ DialogList *MessagingApi::getDialogList()
         d->m_dialogList = new DialogList(this);
     }
     return d->m_dialogList;
+}
+
+MessagesOperation *MessagingApi::getHistory(const Telegram::Peer peer, quint32 limit)
+{
+    Q_D(MessagingApi);
+    return d->getHistory(peer, limit);
 }
 
 void MessagingApi::setDraftMessage(const Peer peer, const QString &text)
@@ -150,6 +168,22 @@ void MessagingApiPrivate::onGetDialogsFinished(PendingOperation *operation, Mess
     TLMessagesDialogs dialogs;
     rpcOperation->getResult(&dialogs);
     dataStorage()->internalApi()->processData(dialogs);
+    operation->setFinished();
+}
+
+void MessagingApiPrivate::onGetHistoryFinished(MessagesOperation *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation)
+{
+    TLMessagesMessages messages;
+    rpcOperation->getResult(&messages);
+
+    MessagesOperationPrivate *priv = MessagesOperationPrivate::get(operation);
+
+    dataStorage()->internalApi()->processData(messages);
+
+    priv->m_messages.resize(messages.messages.count());
+    for (const TLMessage &m : messages.messages) {
+        priv->m_messages.append(m.id);
+    }
     operation->setFinished();
 }
 
