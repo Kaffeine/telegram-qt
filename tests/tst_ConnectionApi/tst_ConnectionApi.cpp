@@ -29,8 +29,8 @@
 #include "Operations/ClientAuthOperation.hpp"
 
 #include "ContactsApi.hpp"
-#include "TelegramServer.hpp"
 #include "TelegramServerUser.hpp"
+#include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
 #include "DcConfiguration.hpp"
 #include "LocalCluster.hpp"
@@ -186,7 +186,7 @@ void tst_ConnectionApi::testClientConnection()
     cluster.setServerConfiguration(c_localDcConfiguration);
     QVERIFY(cluster.start());
 
-    Server::Server *server = cluster.getServerInstance(userData.dcId);
+    Server::ServerApi *server = cluster.getServerApiInstance(userData.dcId);
     QVERIFY(server);
 
     Server::User *user = tryAddUser(&cluster, userData);
