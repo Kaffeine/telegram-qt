@@ -36,6 +36,7 @@ public:
     virtual QVector<quint32> contactList() const = 0;
 
     Peer toPeer() const override { return Peer::fromUserId(id()); }
+    UserContact toContact() const;
 };
 
 class User : public QObject, public RemoteUser

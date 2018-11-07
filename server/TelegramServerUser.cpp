@@ -37,6 +37,16 @@ TLPeer MessageRecipient::toTLPeer() const
     return result;
 }
 
+UserContact RemoteUser::toContact() const
+{
+    UserContact contact;
+    contact.id = id();
+    contact.phone = phoneNumber();
+    contact.firstName = firstName();
+    contact.lastName = lastName();
+    return contact;
+}
+
 User::User(QObject *parent) :
     QObject(parent)
 {
