@@ -59,6 +59,7 @@ public:
     bool start();
 
     User *addUser(const QString &identifier, quint32 dcId);
+    User *getUser(const QString &identifier);
 
     QVector<Server*> getServerInstances() { return m_serverInstances; }
     Server *getServerInstance(quint32 dcId);
