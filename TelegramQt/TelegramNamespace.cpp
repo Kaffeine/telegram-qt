@@ -103,7 +103,6 @@ void TelegramNamespace::registerTypes()
         qRegisterMetaType<TelegramNamespace::MessageType>("TelegramNamespace::MessageType");
         qRegisterMetaType<TelegramNamespace::AuthSignError>("TelegramNamespace::AuthSignError");
         qRegisterMetaType<TelegramNamespace::UnauthorizedError>("TelegramNamespace::UnauthorizedError");
-        qRegisterMetaType<Telegram::PasswordInfo>("Telegram::PasswordInfo");
         qRegisterMetaType<Telegram::Peer>("Telegram::Peer");
         qRegisterMetaType<Telegram::PeerList>("Telegram::PeerList");
         qRegisterMetaType<Telegram::Client::ConnectionApi::Status>("Telegram::Client::ConnectionApi::Status");
@@ -159,10 +158,11 @@ void Telegram::MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType ty
     d->tlType = publicMessageTypeToTelegramMessageType(type);
 
     d->m_isUploaded = true;
-    d->m_size = file.d->m_size;
+    const RemoteFile::Private *filePrivate = RemoteFile::Private::get(&file);
+    d->m_size = filePrivate->m_size;
 
     if (!d->m_inputFile) {
-        d->m_inputFile = new TLInputFile(file.d->getInputFile());
+        d->m_inputFile = new TLInputFile(filePrivate->getInputFile());
     }
 }
 
@@ -170,22 +170,23 @@ bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) c
 {
     TLInputFileLocation inputLocation;
 
+    RemoteFile::Private *filePrivate = RemoteFile::Private::get(file);
     switch (d->tlType) {
     case TLValue::MessageMediaPhoto:
         if (d->photo.sizes.isEmpty()) {
             return false;
         } else {
             const TLPhotoSize s = d->photo.sizes.last();
-            file->d->m_size = s.size;
-            return file->d->setFileLocation(&s.location);
+            filePrivate->m_size = s.size;
+            return filePrivate->setFileLocation(&s.location);
         }
     case TLValue::MessageMediaDocument:
         inputLocation.tlType = TLValue::InputDocumentFileLocation;
         inputLocation.id = d->document.id;
         inputLocation.accessHash = d->document.accessHash;
-        file->d->setInputFileLocation(&inputLocation);
-        file->d->m_size = d->document.size;
-        file->d->m_dcId = d->document.dcId;
+        filePrivate->setInputFileLocation(&inputLocation);
+        filePrivate->m_size = d->document.size;
+        filePrivate->m_dcId = d->document.dcId;
         return true;
     default:
         return false;
@@ -316,21 +317,23 @@ bool Telegram::MessageMediaInfo::getContactInfo(Telegram::UserInfo *info) const
         return false;
     }
 
-    *info->d = UserInfo::Private(); // Reset
-    info->d->id = d->userId;
-    info->d->firstName = d->firstName;
-    info->d->lastName = d->lastName;
-    info->d->phone = d->phoneNumber;
+    UserInfo::Private *infoPrivate = UserInfo::Private::get(info);
+    *infoPrivate = UserInfo::Private(); // Reset
+    infoPrivate->id = d->userId;
+    infoPrivate->firstName = d->firstName;
+    infoPrivate->lastName = d->lastName;
+    infoPrivate->phone = d->phoneNumber;
     return true;
 }
 
 void Telegram::MessageMediaInfo::setContactInfo(const Telegram::UserInfo *info)
 {
+    const UserInfo::Private *infoPrivate = UserInfo::Private::get(info);
     d->tlType = TLValue::MessageMediaContact;
-    d->firstName = info->d->firstName;
-    d->lastName = info->d->lastName;
-    d->phoneNumber = info->d->phone;
-    d->userId = info->d->id;
+    d->firstName = infoPrivate->firstName;
+    d->lastName = infoPrivate->lastName;
+    d->phoneNumber = infoPrivate->phone;
+    d->userId = infoPrivate->id;
 }
 
 QString Telegram::MessageMediaInfo::alt() const
@@ -860,11 +863,12 @@ quint32 Telegram::UserInfo::botVersion() const
 
 bool Telegram::UserInfo::getPeerPicture(Telegram::RemoteFile *file, PeerPictureSize size) const
 {
+    RemoteFile::Private *filePrivate = RemoteFile::Private::get(file);
     switch (size) {
     case PeerPictureSize::Big:
-        return file->d->setFileLocation(&d->photo.photoBig);
+        return filePrivate->setFileLocation(&d->photo.photoBig);
     case PeerPictureSize::Small:
-        return file->d->setFileLocation(&d->photo.photoSmall);
+        return filePrivate->setFileLocation(&d->photo.photoSmall);
     default:
         return false;
     }
@@ -943,11 +947,12 @@ Telegram::Peer Telegram::ChatInfo::migratedTo() const
 
 bool Telegram::ChatInfo::getPeerPicture(Telegram::RemoteFile *file, Telegram::PeerPictureSize size) const
 {
+    RemoteFile::Private *filePrivate = RemoteFile::Private::get(file);
     switch (size) {
     case PeerPictureSize::Big:
-        return file->d->setFileLocation(&d->photo.photoBig);
+        return filePrivate->setFileLocation(&d->photo.photoBig);
     case PeerPictureSize::Small:
-        return file->d->setFileLocation(&d->photo.photoSmall);
+        return filePrivate->setFileLocation(&d->photo.photoSmall);
     default:
         return false;
     }
@@ -982,53 +987,6 @@ quint32 getApiContactLastOnline(const TLUserStatus &status)
     default:
         return TelegramNamespace::ContactLastOnlineUnknown;
     }
-}
-
-Telegram::PasswordInfo::PasswordInfo() :
-    d(new Private())
-{
-}
-
-Telegram::PasswordInfo::PasswordInfo(const Telegram::PasswordInfo &otherData) :
-    d(new Private())
-{
-    *d = *otherData.d;
-}
-
-Telegram::PasswordInfo::~PasswordInfo()
-{
-    delete d;
-}
-
-Telegram::PasswordInfo &Telegram::PasswordInfo::operator=(const Telegram::PasswordInfo &otherData)
-{
-    *d = *otherData.d;
-    return *this;
-}
-
-QByteArray Telegram::PasswordInfo::newSalt()
-{
-    return d->newSalt;
-}
-
-QString Telegram::PasswordInfo::emailUnconfirmedPattern()
-{
-    return d->emailUnconfirmedPattern;
-}
-
-QByteArray Telegram::PasswordInfo::currentSalt()
-{
-    return d->currentSalt;
-}
-
-QString Telegram::PasswordInfo::hint()
-{
-    return d->hint;
-}
-
-bool Telegram::PasswordInfo::hasRecovery()
-{
-    return d->hasRecovery;
 }
 
 QString Telegram::Utils::maskPhoneNumber(const QString &identifier)

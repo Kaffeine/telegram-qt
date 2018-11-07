@@ -21,7 +21,7 @@
 #include "TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
-class Telegram::MessageMediaInfo::Private : public TLMessageMedia
+struct Telegram::MessageMediaInfo::Private : public TLMessageMedia
 {
 public:
     Private() :
@@ -107,15 +107,15 @@ public:
     quint32 m_size;
 };
 
-class Telegram::PasswordInfo::Private : public TLAccountPassword { };
 struct Telegram::UserInfo::Private : public TLUser
 {
     static Private *get(Telegram::UserInfo *info) { return info->d; }
+    static const Private *get(const Telegram::UserInfo *info) { return info->d; }
 };
 
-class Telegram::ChatInfo::Private : public TLChat { };
+struct Telegram::ChatInfo::Private : public TLChat { };
 
-class Telegram::DialogInfo::Private
+struct Telegram::DialogInfo::Private
 {
 public:
     Private() :

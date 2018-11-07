@@ -25,10 +25,6 @@
 #include <QMetaType>
 #include <QVector>
 
-class CTelegramDispatcher;
-class CTelegramAuthModule;
-class CTelegramMediaModule;
-
 #ifndef Q_ENUM
 #define Q_ENUM(x) Q_ENUMS(x)
 #endif
@@ -274,35 +270,7 @@ struct DcOption
 inline bool DcOption::operator==(const DcOption &option) const
 {
     return (option.id == id) && (option.port == port) && (option.address == address) && (option.flags == flags);
-};
-
-class PasswordInfo
-{
-    Q_GADGET
-    Q_PROPERTY(QByteArray newSalt READ newSalt)
-    Q_PROPERTY(QString emailUnconfirmedPattern READ emailUnconfirmedPattern)
-    Q_PROPERTY(QByteArray currentSalt READ currentSalt)
-    Q_PROPERTY(QString hint READ hint)
-    Q_PROPERTY(bool hasRecovery READ hasRecovery)
-public:
-    PasswordInfo();
-    PasswordInfo(const PasswordInfo &otherData);
-    ~PasswordInfo();
-
-    PasswordInfo &operator=(const PasswordInfo &otherData);
-
-    QByteArray newSalt();
-    QString emailUnconfirmedPattern();
-    QByteArray currentSalt();
-    QString hint();
-    bool hasRecovery();
-
-protected:
-    friend class ::CTelegramAuthModule;
-    class Private;
-
-    Private *d;
-};
+}
 
 struct Message
 {
@@ -390,9 +358,7 @@ public:
     QString description() const;
 
 protected:
-    friend class ::CTelegramDispatcher;
-    friend class ::CTelegramMediaModule;
-    class Private;
+    struct Private;
 
     Private *d;
 };
@@ -421,13 +387,8 @@ public:
     quint32 size() const;
     QString md5Sum() const;
 
+    struct Private;
 protected:
-    friend class ::CTelegramMediaModule;
-    friend class UserInfo;
-    friend class ChatInfo;
-    friend class MessageMediaInfo;
-    class Private;
-
     Private *d;
 };
 
@@ -444,10 +405,8 @@ public:
     quint32 muteUntil() const;
     bool isStillMuted() const;
 
+    struct Private;
 protected:
-    friend class ::CTelegramDispatcher;
-    class Private;
-
     Private *d;
 };
 
@@ -479,11 +438,7 @@ public:
     // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
 
     struct Private;
-
 protected:
-    friend class ::CTelegramDispatcher;
-    friend class MessageMediaInfo;
-
     Private *d;
 };
 
@@ -507,11 +462,8 @@ public:
 
     bool getPeerPicture(RemoteFile *file, PeerPictureSize size = PeerPictureSize::Small) const;
 
+    struct Private;
 protected:
-    friend class ::CTelegramDispatcher;
-    friend class MessageMediaInfo;
-    class Private;
-
     Private *d;
 };
 
@@ -542,14 +494,12 @@ Q_DECLARE_METATYPE(Telegram::Message)
 Q_DECLARE_METATYPE(Telegram::ChatInfo)
 Q_DECLARE_METATYPE(Telegram::RemoteFile)
 Q_DECLARE_METATYPE(Telegram::UserInfo)
-Q_DECLARE_METATYPE(Telegram::PasswordInfo)
 
 Q_DECLARE_TYPEINFO(Telegram::DcOption, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::Message, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::ChatInfo, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::RemoteFile, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::UserInfo, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(Telegram::PasswordInfo, Q_MOVABLE_TYPE);
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageFlags)
 Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageTypeFlags)
