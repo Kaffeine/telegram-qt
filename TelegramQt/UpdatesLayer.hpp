@@ -42,6 +42,9 @@ public:
     bool processUpdate(const TLUpdate &update);
 
 protected:
+    MessagingApi *messagingApi();
+    DataStorage *dataStorage();
+
     Backend *m_backend = nullptr;
 
 };
