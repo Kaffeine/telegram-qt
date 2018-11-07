@@ -158,7 +158,7 @@ quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
     }
 
     ServerApi *api = activeSessions().first()->rpcLayer()->api();
-    AbstractUser *sender = api->getRemoteUser(message.fromId);
+    AbstractUser *sender = api->getAbstractUser(message.fromId);
 
     TLUpdate newMessageUpdate;
     newMessageUpdate.tlType = TLValue::UpdateNewMessage;

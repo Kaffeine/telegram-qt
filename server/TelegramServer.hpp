@@ -60,10 +60,10 @@ public:
     bool checkPassword(const QString &identifier, const QByteArray &hash) override;
     bool identifierIsValid(const QString &identifier) override;
 
-    AbstractUser *getRemoteUser(quint32 userId) const override;
-    AbstractUser *getRemoteUser(const QString &identifier) const override;
-    AbstractUser *getReallyRemoteUser(quint32 userId) const;
-    AbstractUser *getReallyRemoteUser(const QString &identifier) const;
+    AbstractUser *getAbstractUser(quint32 userId) const override;
+    AbstractUser *getAbstractUser(const QString &identifier) const override;
+    AbstractUser *getRemoteUser(quint32 userId) const;
+    AbstractUser *getRemoteUser(const QString &identifier) const;
 
     bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *applicant) const override;
     bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser) const override;

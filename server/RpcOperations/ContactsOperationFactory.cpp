@@ -205,7 +205,7 @@ void ContactsRpcOperation::runGetContacts()
     TLContact outputContact;
     for (const UserContact &contact : importedContacts) {
         if (contact.id) {
-            const AbstractUser *contactUser = api()->getRemoteUser(contact.id);
+            const AbstractUser *contactUser = api()->getAbstractUser(contact.id);
             api()->setupTLUser(&userInfo, contactUser, self);
             result.users.append(userInfo);
 
@@ -260,7 +260,7 @@ void ContactsRpcOperation::runImportContacts()
         contact.firstName = c.firstName;
         contact.lastName = c.lastName;
 
-        AbstractUser *registeredUser = layer()->api()->getRemoteUser(c.phone);
+        AbstractUser *registeredUser = layer()->api()->getAbstractUser(c.phone);
         if (registeredUser) {
             contact.id = registeredUser->id();
             result.users.append(TLUser());

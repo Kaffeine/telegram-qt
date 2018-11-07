@@ -65,8 +65,8 @@ public:
 
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
 
-    virtual AbstractUser *getRemoteUser(quint32 userId) const = 0;
-    virtual AbstractUser *getRemoteUser(const QString &identifier) const = 0;
+    virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
+    virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(quint32 userId) const = 0;
     virtual LocalUser *getUser(const TLInputUser &inputUser, LocalUser *self) const = 0;

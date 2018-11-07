@@ -89,7 +89,7 @@ LocalUser *LocalCluster::addUser(const QString &identifier, quint32 dcId)
 
 LocalUser *LocalCluster::getUser(const QString &identifier)
 {
-    AbstractUser *u = m_serverInstances.first()->getRemoteUser(identifier);
+    AbstractUser *u = m_serverInstances.first()->getAbstractUser(identifier);
     Server *s = getServerInstance(u->dcId());
     return s->getUser(identifier);
 }

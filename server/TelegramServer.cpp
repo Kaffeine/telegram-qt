@@ -317,7 +317,7 @@ void Server::insertUser(LocalUser *user)
 PhoneStatus Server::getPhoneStatus(const QString &identifier) const
 {
     PhoneStatus result;
-    AbstractUser *user = getRemoteUser(identifier);
+    AbstractUser *user = getAbstractUser(identifier);
     if (user) {
         result.online = user->isOnline();
         result.dcId = user->dcId();
@@ -353,25 +353,25 @@ bool Server::identifierIsValid(const QString &identifier)
     return result;
 }
 
-AbstractUser *Server::getRemoteUser(quint32 userId) const
+AbstractUser *Server::getAbstractUser(quint32 userId) const
 {
     AbstractUser *user = getUser(userId);
     if (!user) {
-        user = getReallyRemoteUser(userId);
+        user = getRemoteUser(userId);
     }
     return user;
 }
 
-AbstractUser *Server::getRemoteUser(const QString &identifier) const
+AbstractUser *Server::getAbstractUser(const QString &identifier) const
 {
     AbstractUser *user = getUser(identifier);
     if (!user) {
-        user = getReallyRemoteUser(identifier);
+        user = getRemoteUser(identifier);
     }
     return user;
 }
 
-AbstractUser *Server::getReallyRemoteUser(quint32 userId) const
+AbstractUser *Server::getRemoteUser(quint32 userId) const
 {
     for (RemoteServerConnection *remoteServer : m_remoteServers) {
         AbstractUser *u = remoteServer->api()->getUser(userId);
@@ -382,7 +382,7 @@ AbstractUser *Server::getReallyRemoteUser(quint32 userId) const
     return nullptr;
 }
 
-AbstractUser *Server::getReallyRemoteUser(const QString &identifier) const
+AbstractUser *Server::getRemoteUser(const QString &identifier) const
 {
     for (RemoteServerConnection *remoteServer : m_remoteServers) {
         AbstractUser *u = remoteServer->api()->getUser(identifier);
