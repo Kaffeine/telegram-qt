@@ -2,6 +2,7 @@ import QtQuick 2.7
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.0
 import Qt.labs.platform 1.0
+
 import TelegramQt 1.0 as Telegram
 import TelegramQtTheme 1.0
 
@@ -25,11 +26,11 @@ ApplicationWindow {
 //        horizontalAlignment: Text.AlignHCenter
 //    }
 
+    property string appname: Qt.application.name
 
     QtObject {
         id: options
-//        property bool localServer: true
-        property bool localServer: false
+        property bool localServer: true && false
     }
 
     ListModel {
@@ -57,7 +58,7 @@ ApplicationWindow {
         id: appInfo
         appId: 14617
         appHash: "e17ac360fd072f83d5d08db45ce9a121" // Telepathy-Morse app hash
-        appVersion: "0.1"
+        appVersion: "0.2"
         deviceInfo: "pc"
         osInfo: "GNU/Linux"
         languageCode: "en"
@@ -69,8 +70,8 @@ ApplicationWindow {
     Telegram.Settings {
         id: settings
         pingInterval: 15000
-        // proxy.address: "192.168.0.103"
-        // proxy.port: 9050
+        proxy.address: "127.0.0.1"
+        proxy.port: 12343
         serverOptions: [
             Telegram.ServerOption {
                 address: "149.154.175.50"
@@ -112,11 +113,12 @@ ApplicationWindow {
         interval: 30
         running: true
         onTriggered: {
-            window.currentView = busyScreen
             if (accountStorage.fileExists() && accountStorage.loadData()) {
+                console.log("CheckIn")
                 signInOperation.checkIn()
             } else {
-                signInOperation.startAuthentication()
+                console.log("SignIn")
+                signInOperation.signIn()
             }
         }
     }
@@ -130,7 +132,7 @@ ApplicationWindow {
                 window.currentView = mainScreen
             } else {
                 // TODO: Process network errors
-                startAuthentication()
+                signIn()
             }
         }
 
@@ -149,7 +151,7 @@ ApplicationWindow {
         }
     }
 
-    property Item currentView
+    property Item currentView: busyScreen
 
     Loader {
         id: loginScreen
@@ -197,4 +199,17 @@ ApplicationWindow {
         sequence: StandardKey.Quit
         onActivated: window.close()
     }
+
+//    Pane {
+//        anchors.fill: parent
+//        ListView {
+//            anchors.fill: parent
+//            model: accountHelper.accounts
+//            delegate: ItemDelegate {
+//                width: parent.width
+//                height: 64
+//                text: modelData
+//            }
+//        }
+//    }
 }

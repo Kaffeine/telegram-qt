@@ -36,17 +36,18 @@ AuthScreen {
         readonly property string currentCode: phoneCodeModel.get(countryBox.currentIndex).code
         readonly property var length: phoneCodeModel.get(countryBox.currentIndex).length
     }
-    RowLayout {
+    Item {
         id: row
-        Layout.maximumWidth: countryBox.width
-        spacing: 0
+        Layout.preferredWidth: countryBox.width
+        height: phoneNumberField.implicitHeight
         Text {
+            id: phoneCode
             text: "+" + countryBox.currentCode
             font: phoneNumberField.font
             anchors.top: phoneNumberField.top
             anchors.topMargin: phoneNumberField.topPadding
+            anchors.left: parent.left
         }
-
         TextField {
             id: phoneNumberField
             inputMethodHints: Qt.ImhDigitsOnly
@@ -55,9 +56,10 @@ AuthScreen {
             maximumLength: countryBox.length
             focus: true
             font.pixelSize: Theme.fontSizeSmall
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: phoneCode.right
+            anchors.right: parent.right
             onAccepted: baseColumn.accept()
-            Layout.fillWidth: true
+            text: "5432101"
         }
     }
     Item {

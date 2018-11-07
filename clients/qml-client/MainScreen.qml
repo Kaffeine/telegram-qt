@@ -6,21 +6,29 @@ import TelegramQt 1.0 as Telegram
 import TelegramQtTheme 1.0
 
 import "login"
+import "dialogs"
 
 Frame {
     id: mainScreen
     width: 800
     height: 600
+
+    Telegram.MessageSender {
+        id: sender
+        client: telegramClient
+    }
+
     Row {
         id: contentRoot
         anchors.fill: mainScreen.contentItem
         DialogView {
             id: dialogView
-            width: 400
+            width: 320
             height: parent.height
             onActivateDialog: {
                 console.log("Activate dialog peer(" + peer.type + ", " + peer.id + ")")
-                messageView.peer = dialogView.peer
+                messageView.peer = peer
+                sender.peer = peer
             }
         }
 
@@ -31,7 +39,6 @@ Frame {
             height: parent.height
             MessageView {
                 id: messageView
-                peer: Telegram.Namespace.peerFromChatId(1)
                 width: rightColumn.width
                 anchors.top: rightColumn.top
                 anchors.bottom: messageEditor.top

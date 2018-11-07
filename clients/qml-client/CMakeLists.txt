@@ -10,6 +10,10 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(app_SOURCES
     main.cpp
+    models/DialogsModel.cpp
+    models/DialogsModel.hpp
+    models/MessagesModel.cpp
+    models/MessagesModel.hpp
     qml.qrc
 )
 

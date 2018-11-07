@@ -9,6 +9,9 @@ TARGET = qml-client
 
 SOURCES += main.cpp
 
+SOURCES += models/DialogsModel.cpp models/MessagesModel.cpp
+HEADERS += models/DialogsModel.hpp models/MessagesModel.hpp
+
 RESOURCES += qml.qrc
 
 LIBS += -lssl -lcrypto -lz
@@ -16,6 +19,8 @@ LIBS += -L$$OUT_PWD/../../TelegramQt
 LIBS += -lTelegramQt$${QT_MAJOR_VERSION}
 LIBS += -L$$OUT_PWD/../../imports/TelegramQtQml
 LIBS += -lTelegramQt$${QT_MAJOR_VERSION}Qml
+
+INCLUDEPATH += $$PWD/../../TelegramQt
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =

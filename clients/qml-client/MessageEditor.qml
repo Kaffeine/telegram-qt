@@ -11,15 +11,13 @@ Item {
 
     Frame { anchors.fill: parent } // Decoration
 
-    property alias peer: sender.peer
-
-    MessageSender {
-        id: sender
-//        target: telegramClient
-        onMessageSent: {
-            messageSendStubProxy.messageSent(message, peer)
+    onActiveFocusChanged: {
+        if (activeFocus) {
+            textEditor.forceActiveFocus()
         }
     }
+
+    property var peer
 
     RowLayout {
         id: rowLayout
