@@ -1,7 +1,5 @@
 #include "DeclarativeSettings.hpp"
 
-#include "Utils.hpp"
-
 #include <QLoggingCategory>
 
 namespace Telegram {
@@ -44,7 +42,7 @@ void DeclarativeRsaKey::setLoadDefault(bool loadDefault)
     }
     m_loadDefaultKey = loadDefault;
     if (loadDefault) {
-        setKey(Utils::loadHardcodedKey());
+        setKey(Settings::defaultServerPublicRsaKey());
     }
     emit loadDefaultChanged(loadDefault);
 }
