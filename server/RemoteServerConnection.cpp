@@ -1,5 +1,6 @@
 #include "RemoteServerConnection.hpp"
-#include "TelegramServer.hpp"
+
+#include "ServerApi.hpp"
 #include "TelegramServerUser.hpp"
 
 namespace Telegram {
@@ -11,7 +12,7 @@ RemoteServerConnection::RemoteServerConnection(QObject *parent)
 {
 }
 
-void RemoteServerConnection::setRemoteServer(Server *remoteServer)
+void RemoteServerConnection::setRemoteServer(ServerApi *remoteServer)
 {
     m_server = remoteServer;
 }

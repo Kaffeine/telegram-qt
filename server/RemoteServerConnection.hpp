@@ -2,15 +2,11 @@
 #define TELEGRAM_REMOTE_SERVER_CONNECTION_HPP
 
 #include <QObject>
-#include <QVector>
-
-#include "TelegramNamespace.hpp"
 
 namespace Telegram {
 
 namespace Server {
 
-class Server;
 class ServerApi;
 class RemoteUser;
 
@@ -22,13 +18,13 @@ public:
 
     quint32 dcId() const;
 
-    void setRemoteServer(Server *remoteServer);
+    void setRemoteServer(ServerApi *remoteServer);
 
     RemoteUser *getUser(const QString &identifier);
     ServerApi *api();
 
 protected:
-    Server *m_server = nullptr;
+    ServerApi *m_server = nullptr;
 };
 
 } // Server
