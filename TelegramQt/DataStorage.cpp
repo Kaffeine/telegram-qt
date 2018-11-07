@@ -64,6 +64,18 @@ void DataStorage::setServerConfiguration(const DcConfiguration &configuration)
     d->m_serverConfig = configuration;
 }
 
+QVector<Peer> DataStorage::contactList() const
+{
+    Q_D(const DataStorage);
+    const TLVector<TLContact> contacts = d->m_api->m_contactList;
+    QVector<Peer> result;
+    result.reserve(contacts.count());
+    for (const TLContact &contact : contacts) {
+        result.append(Peer::fromUserId(contact.userId));
+    }
+    return result;
+}
+
 quint32 DataStorage::selfUserId() const
 {
     Q_D(const DataStorage);
@@ -113,6 +125,13 @@ const TLUser *DataInternalApi::getSelfUser() const
     return m_users.value(m_selfUserId);
 }
 
+void DataInternalApi::processData(const TLVector<TLUser> &users)
+{
+    for (const TLUser &user : users) {
+        processData(user);
+    }
+}
+
 void DataInternalApi::processData(const TLUser &user)
 {
     TLUser *existsUser = m_users.value(user.id);
@@ -132,6 +151,11 @@ void DataInternalApi::processData(const TLUser &user)
 void DataInternalApi::processData(const TLAuthAuthorization &authorization)
 {
     processData(authorization.user);
+}
+
+void DataInternalApi::setContactList(const TLVector<TLContact> &contacts)
+{
+    m_contactList = contacts;
 }
 
 } // Client namespace

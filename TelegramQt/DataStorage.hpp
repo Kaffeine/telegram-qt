@@ -44,13 +44,19 @@ public:
 
     const TLUser *getSelfUser() const;
 
+    void processData(const TLVector<TLUser> &users);
     void processData(const TLUser &user);
     void processData(const TLAuthAuthorization &authorization);
 
+    void setContactList(const TLVector<TLContact> &contacts);
+
     quint32 selfUserId() const { return m_selfUserId; }
+
+    TLVector<TLContact> contactList() const { return m_contactList; }
 
     quint32 m_selfUserId = 0;
     QHash<quint32, TLUser *> m_users;
+    TLVector<TLContact> m_contactList;
 };
 
 class DataStorage : public QObject
@@ -63,6 +69,8 @@ public:
 
     DcConfiguration serverConfiguration() const;
     void setServerConfiguration(const DcConfiguration &configuration);
+
+    QVector<Telegram::Peer> contactList() const;
 
     quint32 selfUserId() const;
     bool getUserInfo(UserInfo *info, quint32 userId) const;
