@@ -5,11 +5,10 @@
 #include <QDir>
 #include <QTimer>
 
-#include "../../TelegramQt/AccountStorage.hpp"
-#include "../../TelegramQt/Client.hpp"
-#include "../../TelegramQt/CTelegramCore.hpp"
-#include "../../TelegramQt/CAppInformation.hpp"
-#include "../../TelegramQt/DataStorage.hpp"
+#include "AccountStorage.hpp"
+#include "Client.hpp"
+#include "CAppInformation.hpp"
+#include "DataStorage.hpp"
 
 #include "DeclarativeClient.hpp"
 #include "DeclarativeAuthOperation.hpp"

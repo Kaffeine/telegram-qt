@@ -130,7 +130,6 @@ set(telegram_qt_public_HEADERS
     telegramqt_global.h
     CAppInformation.hpp
     TelegramNamespace.hpp
-    CTelegramCore.hpp
     Client.hpp
     ClientApi.hpp
     ConnectionApi.hpp

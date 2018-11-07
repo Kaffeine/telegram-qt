@@ -15,7 +15,6 @@
 
  */
 
-#include "TelegramServer.hpp"
 #include "TelegramServerUser.hpp"
 #include "DcConfiguration.hpp"
 #include "LocalCluster.hpp"

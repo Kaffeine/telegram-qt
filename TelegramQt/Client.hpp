@@ -25,13 +25,9 @@
 #include <QVector>
 #include <QStringList>
 
-QT_FORWARD_DECLARE_CLASS(QIODevice)
-
 class CAppInformation;
 
 namespace Telegram {
-
-class PendingOperation;
 
 namespace Client {
 

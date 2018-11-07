@@ -82,7 +82,6 @@ PUBLIC_HEADERS += \
     MessagingApi.hpp \
     ReadyObject.hpp \
     TelegramNamespace.hpp \
-    CTelegramCore.hpp \
     TelegramQt/CAppInformation \
     TelegramQt/CTelegramCore \
     TelegramQt/AccountStorage \
