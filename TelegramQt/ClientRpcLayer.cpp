@@ -199,6 +199,12 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
                                           << " from" << m->sequenceNumber
                                           << " to" << (m->sequenceNumber + 2);
         m->sequenceNumber += 2;
+    {
+        quint32 messageContentNumber = m->sequenceNumber / 2 - 1;
+        if (m_contentRelatedMessages < messageContentNumber) {
+            m_contentRelatedMessages = messageContentNumber;
+        }
+    }
         resendIgnoredMessage(notification.messageId);
         break;
     case MTProto::IgnoredMessageNotification::IncorrectTwoLowerOrderMessageIdBits:
