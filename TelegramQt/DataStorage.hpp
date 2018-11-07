@@ -19,14 +19,39 @@
 #define TELEGRAMQT_DATA_STORAGE_HPP
 
 #include <QObject>
+#include <QHash>
 
 #include "DcConfiguration.hpp"
+#include "TelegramNamespace.hpp"
+
+#include "TLTypes.hpp"
+
 
 namespace Telegram {
+
+class PendingOperation;
 
 namespace Client {
 
 class DataStoragePrivate;
+
+class DataInternalApi : public QObject
+{
+    Q_OBJECT
+public:
+    explicit DataInternalApi(QObject *parent = nullptr);
+    ~DataInternalApi() override;
+
+    const TLUser *getSelfUser() const;
+
+    void processData(const TLUser &user);
+    void processData(const TLAuthAuthorization &authorization);
+
+    quint32 selfUserId() const { return m_selfUserId; }
+
+    quint32 m_selfUserId = 0;
+    QHash<quint32, TLUser *> m_users;
+};
 
 class DataStorage : public QObject
 {
@@ -34,8 +59,13 @@ class DataStorage : public QObject
 public:
     explicit DataStorage(QObject *parent = nullptr);
 
+    DataInternalApi *internalApi();
+
     DcConfiguration serverConfiguration() const;
     void setServerConfiguration(const DcConfiguration &configuration);
+
+    quint32 selfUserId() const;
+    bool getUserInfo(UserInfo *info, quint32 userId) const;
 
 protected:
     DataStorage(DataStoragePrivate *d, QObject *parent);
@@ -49,7 +79,6 @@ class InMemoryDataStorage : public DataStorage
     Q_OBJECT
 public:
     explicit InMemoryDataStorage(QObject *parent = nullptr);
-
 };
 
 } // Client namespace

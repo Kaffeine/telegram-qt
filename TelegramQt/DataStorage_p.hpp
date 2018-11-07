@@ -24,10 +24,13 @@ namespace Telegram {
 
 namespace Client {
 
+class DataInternalApi;
+
 class DataStoragePrivate
 {
 public:
     DcConfiguration m_serverConfig;
+    DataInternalApi *m_api;
 };
 
 } // Client namespace
