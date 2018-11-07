@@ -7,6 +7,7 @@
 #include "ClientRpcLayer.hpp"
 #include "ClientRpcAuthLayer.hpp"
 #include "ClientRpcAccountLayer.hpp"
+#include "DataStorage_p.hpp"
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
 
@@ -345,6 +346,7 @@ void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLA
     if (storage->accountIdentifier().isEmpty()) {
         storage->setAccountIdentifier(authorization.user.phone);
     }
+    m_backend->dataStorage()->internalApi()->processData(authorization.user);
     m_authenticatedConnection = Connection::fromOperation(operation);
     m_authenticatedConnection->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Remote);
     setFinished();
