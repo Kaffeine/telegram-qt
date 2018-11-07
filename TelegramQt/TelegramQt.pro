@@ -43,6 +43,7 @@ SOURCES += \
     ClientRpcLayer.cpp \
     ClientRpcLayerExtension.cpp \
     ConnectionApi.cpp \
+    ContactList.cpp \
     ContactsApi.cpp \
     DataStorage.cpp \
     IgnoredMessageNotification.cpp \
@@ -77,6 +78,7 @@ PUBLIC_HEADERS += \
     CAppInformation.hpp \
     ClientApi.hpp \
     ConnectionApi.hpp \
+    ContactList.hpp \
     ContactsApi.hpp \
     Debug.hpp \
     MessagingApi.hpp \
@@ -109,6 +111,7 @@ HEADERS += \
     ClientRpcLayerExtension.hpp \
     ConnectionApi.hpp \
     ConnectionApi_p.hpp \
+    ContactList.hpp \
     ContactsApi.hpp \
     ContactsApi_p.hpp \
     DataStorage.hpp \

@@ -15,6 +15,7 @@ set(telegram_qt_SOURCES
     ConnectionApi.cpp
     Connection.cpp
     ConnectionError.cpp
+    ContactList.cpp
     ContactsApi.cpp
     CAppInformation.cpp
     CTelegramTransport.cpp
@@ -61,6 +62,7 @@ set(telegram_qt_META_HEADERS
     Connection.hpp
     ConnectionApi.hpp
     ConnectionApi_p.hpp
+    ContactList.hpp
     ContactsApi.hpp
     ContactsApi_p.hpp
     DataStorage.hpp
@@ -133,6 +135,7 @@ set(telegram_qt_public_HEADERS
     Client.hpp
     ClientApi.hpp
     ConnectionApi.hpp
+    ContactList.hpp
     ContactsApi.hpp
     DcConfiguration.hpp
     Debug.hpp

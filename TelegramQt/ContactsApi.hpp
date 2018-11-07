@@ -29,6 +29,7 @@ namespace Client {
 
 class PendingContactsOperation;
 class ContactsApiPrivate;
+class ContactList;
 
 class TELEGRAMQT_EXPORT ContactsApi : public ClientApi
 {
@@ -44,6 +45,8 @@ public:
     };
 
     using ContactInfoList = QVector<ContactInfo>;
+
+    ContactList *getContactList();
 
     QString selfPhone() const;
     quint32 selfContactId() const;
