@@ -1,35 +1,18 @@
-#ifndef TELEGRAMQT_PENDING_OPERATION_PRIVATE
-#define TELEGRAMQT_PENDING_OPERATION_PRIVATE
+#ifndef TELEGRAMQT_PENDING_OPERATION_PRIVATE_HPP
+#define TELEGRAMQT_PENDING_OPERATION_PRIVATE_HPP
 
 #include "PendingOperation.hpp"
-#include "TLValues.hpp"
 
 namespace Telegram {
 
-class PendingOperation::Private
+class PendingOperationPrivate
 {
 public:
-    static const Private *get(const PendingOperation *op) { return op->d; }
+    virtual ~PendingOperationPrivate() = default;
 
-    TLValue requestType() const { return m_requestType; }
-    QByteArray requestData;
-    TLValue m_requestType;
-
-    template <typename T>
-    bool readRpcResult(T *result);
+    static const PendingOperationPrivate *get(const PendingOperation *op) { return op->d; }
 };
 
-//template<typename T>
-//inline bool PendingOperation::Private::readRpcResult(T *result)
-//{
-//    inputStream() >> *result;
-//    m_code = result->tlType;
-//    m_succeed = result->isValid() && !inputStream().error();
-//    return m_succeed;
-//}
+} // Telegram namespace
 
-//class PendingOperation::Private : public
-
-}
-
-#endif //TELEGRAMQT_PENDING_OPERATION_PRIVATE
+#endif // TELEGRAMQT_PENDING_OPERATION_PRIVATE_HPP

@@ -1,6 +1,8 @@
 #ifndef TELEGRAMQT_PENDING_OPERATION
 #define TELEGRAMQT_PENDING_OPERATION
 
+#include "telegramqt_global.h"
+
 #include <QObject>
 #include <QVariantHash>
 
@@ -8,12 +10,14 @@
 
 namespace Telegram {
 
+class PendingOperationPrivate;
 class TELEGRAMQT_EXPORT PendingOperation : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(PendingOperation)
 public:
     explicit PendingOperation(QObject *parent = nullptr);
+    ~PendingOperation() override;
     bool isFinished() const;
     bool isSucceeded() const;
     bool isFailed() const;
@@ -71,7 +75,9 @@ public Q_SLOTS:
 protected:
     void onPreviousFailed(PendingOperation *operation, const QVariantHash &details);
 
-private:
+protected:
+    Q_DECLARE_PRIVATE_D(d, PendingOperation)
+    PendingOperationPrivate *d = nullptr;
     QVariantHash m_errorDetails;
     bool m_finished;
     bool m_succeeded;

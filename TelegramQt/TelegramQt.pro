@@ -134,6 +134,7 @@ HEADERS += \
     crypto-rsa.hpp \
     LegacySecretReader.hpp \
     PendingOperation.hpp \
+    PendingOperation_p.hpp \
     PendingRpcOperation.hpp \
     PendingRpcResult.hpp \
     RandomGenerator.hpp \

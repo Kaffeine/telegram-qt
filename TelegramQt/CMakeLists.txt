@@ -111,6 +111,7 @@ set(telegram_qt_HEADERS
     Debug.hpp
     Debug_p.hpp
     IgnoredMessageNotification.hpp
+    PendingOperation_p.hpp
     UniqueLazyPointer.hpp
     Utils.hpp
     FileRequestDescriptor.hpp

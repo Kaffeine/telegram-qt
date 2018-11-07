@@ -1,4 +1,5 @@
 #include "PendingOperation.hpp"
+#include "PendingOperation_p.hpp"
 
 #include <QLoggingCategory>
 
@@ -9,6 +10,11 @@ PendingOperation::PendingOperation(QObject *parent) :
     m_finished(false),
     m_succeeded(true)
 {
+}
+
+PendingOperation::~PendingOperation()
+{
+    delete d;
 }
 
 QString PendingOperation::c_text()
