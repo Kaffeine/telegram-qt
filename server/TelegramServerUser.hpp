@@ -49,6 +49,8 @@ public:
     QString phoneNumber() const { return m_phoneNumber; }
     void setPhoneNumber(const QString &phoneNumber);
 
+    QString userName() const { return m_userName; }
+
     QString firstName() const { return m_firstName; }
     void setFirstName(const QString &firstName);
 
