@@ -144,6 +144,9 @@ set(telegram_qt_public_HEADERS
     DialogList.hpp
     MessagingApi.hpp
     ReadyObject.hpp
+    Operations/ClientAuthOperation.hpp
+    Operations/ClientMessagesOperation.hpp
+    Operations/PendingContactsOperation.hpp
 )
 
 include_directories(
