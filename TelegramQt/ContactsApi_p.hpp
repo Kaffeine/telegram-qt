@@ -20,7 +20,9 @@
 
 #include "ClientApi_p.hpp"
 #include "ContactsApi.hpp"
+
 #include "RpcLayers/ClientRpcContactsLayer.hpp"
+#include "RpcLayers/ClientRpcUsersLayer.hpp"
 
 namespace Telegram {
 
@@ -38,6 +40,10 @@ public:
     explicit ContactsApiPrivate(ContactsApi *parent = nullptr);
     static ContactsApiPrivate *get(ContactsApi *parent);
 
+    PendingOperation *sync();
+
+    quint32 selfContactId() const;
+
     PendingContactsOperation *importContacts(const ContactsApi::ContactInfoList &contacts);
     PendingContactsOperation *getContacts();
     ContactList *getContactList();
@@ -50,6 +56,7 @@ public:
 protected slots:
     void onContactsImported(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsImportedContacts *rpcOperation);
     void onGetContactsResult(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsContacts *rpcOperation);
+    void onSelfUserResult(PendingOperation *operation, UsersRpcLayer::PendingUserVector *rpcOperation);
 };
 
 } // Client namespace

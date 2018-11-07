@@ -4,6 +4,7 @@
 #include "ConnectionApi.hpp"
 #include "ConnectionApi_p.hpp"
 #include "ContactsApi.hpp"
+#include "ContactsApi_p.hpp"
 #include "ClientConnection.hpp"
 #include "Client.hpp"
 #include "ClientRpcLayer.hpp"
@@ -129,6 +130,10 @@ PendingOperation *Backend::getDcConfig()
 
 PendingOperation *Backend::sync()
 {
+    if (!m_contactsApi->selfContactId()) {
+        ContactsApiPrivate *privateApi = ContactsApiPrivate::get(m_contactsApi);
+        return privateApi->sync();
+    }
     PendingOperation *op = new SucceededPendingOperation(this);
     return op;
 }

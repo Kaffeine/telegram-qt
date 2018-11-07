@@ -29,6 +29,26 @@ ContactsApiPrivate *ContactsApiPrivate::get(ContactsApi *parent)
     return static_cast<ContactsApiPrivate*>(parent->d);
 }
 
+PendingOperation *ContactsApiPrivate::sync()
+{
+    PendingOperation *operation = new PendingOperation(this);
+
+    TLInputUser selfInputUser;
+    selfInputUser.tlType = TLValue::InputUserSelf;
+
+    UsersRpcLayer::PendingUserVector *rpcOperation = m_backend->usersLayer()->getUsers({selfInputUser});
+    connect(rpcOperation, &PendingOperation::finished, this,
+            [this, operation, rpcOperation]() { this->onSelfUserResult(operation, rpcOperation); }
+    );
+
+    return operation;
+}
+
+quint32 ContactsApiPrivate::selfContactId() const
+{
+    return m_backend->dataStorage()->selfUserId();
+}
+
 PendingContactsOperation *ContactsApiPrivate::importContacts(const ContactsApi::ContactInfoList &contacts)
 {
     PendingContactsOperation *operation = new PendingContactsOperation(this);
@@ -114,6 +134,19 @@ void ContactsApiPrivate::onGetContactsResult(PendingContactsOperation *operation
     operation->setFinished();
 }
 
+void ContactsApiPrivate::onSelfUserResult(PendingOperation *operation, UsersRpcLayer::PendingUserVector *rpcOperation)
+{
+    TLVector<TLUser> result;
+    rpcOperation->getResult(&result);
+    if (rpcOperation->isFailed()) {
+        qCCritical(c_contactsApiLoggingCategory) << Q_FUNC_INFO << "failed";
+        operation->setFinishedWithError(rpcOperation->errorDetails());
+        return;
+    }
+    m_backend->dataStorage()->internalApi()->processData(result);
+    operation->setFinished();
+}
+
 ContactsApi::ContactsApi(QObject *parent) :
     ClientApi(parent)
 {
@@ -133,7 +166,8 @@ QString ContactsApi::selfPhone() const
 
 quint32 ContactsApi::selfContactId() const
 {
-    return 0;
+    Q_D(const ContactsApi);
+    return d->selfContactId();
 }
 
 PendingContactsOperation *ContactsApi::addContacts(const ContactsApi::ContactInfoList &contacts)

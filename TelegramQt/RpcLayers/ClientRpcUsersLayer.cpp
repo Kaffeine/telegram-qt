@@ -38,6 +38,7 @@ template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUserProfilePhoto *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLUserStatus *output);
 // End of generated Telegram API reply template specializations
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLVector<TLUser> *output);
 
 UsersRpcLayer::UsersRpcLayer(QObject *parent) :
     BaseRpcLayerExtension(parent)

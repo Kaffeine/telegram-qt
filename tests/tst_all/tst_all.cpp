@@ -22,6 +22,7 @@
 #include "ClientSettings.hpp"
 #include "ConnectionApi.hpp"
 #include "ConnectionError.hpp"
+#include "ContactsApi.hpp"
 #include "DataStorage.hpp"
 #include "Utils.hpp"
 #include "TelegramNamespace.hpp"
@@ -379,6 +380,8 @@ void tst_all::testSignInCheckIn()
 //        QCOMPARE(discOp->isSucceeded(), true);
 
         TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusReady);
+        QVERIFY(client.contactsApi()->selfContactId());
+        QCOMPARE(client.contactsApi()->selfContactId(), serversideUser->id());
     }
 
     TRY_COMPARE(firstClientConnection->status(), Telegram::Server::RemoteClientConnection::Status::Disconnected);
@@ -398,6 +401,8 @@ void tst_all::testSignInCheckIn()
         //QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
 
         TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusReady);
+        QVERIFY(client.contactsApi()->selfContactId());
+        QCOMPARE(client.contactsApi()->selfContactId(), serversideUser->id());
     }
 }
 
