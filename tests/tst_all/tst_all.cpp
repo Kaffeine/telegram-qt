@@ -74,6 +74,7 @@ private slots:
     void testClientConnection_data();
     void testClientConnection();
     void testCheckInSignIn();
+    void testSignInCheckIn();
     void testSignUp_data();
     void testSignUp();
 };
@@ -322,6 +323,82 @@ void tst_all::testCheckInSignIn()
     QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
     QCOMPARE(accountStorage.dcInfo().id, server->dcId());
     TRY_VERIFY(client.isSignedIn());
+}
+
+void tst_all::testSignInCheckIn()
+{
+    const Telegram::Client::Settings::SessionType sessionType = Telegram::Client::Settings::SessionType::Obfuscated;
+    const UserData userData = c_userWithPassword;
+    const DcOption clientDcOption = c_localDcOptions.first();
+
+    const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
+    QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
+    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
+    QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
+
+    Test::AuthProvider authProvider;
+    Telegram::Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_localDcConfiguration);
+    QVERIFY(cluster.start());
+
+    Server::Server *server = cluster.getServerInstance(userData.dcId);
+    QVERIFY(server);
+
+    Server::User *serversideUser = tryAddUser(&cluster, userData);
+    QVERIFY(serversideUser);
+
+    Client::AccountStorage accountStorage;
+    accountStorage.setPhoneNumber(userData.phoneNumber);
+    accountStorage.setDcInfo(clientDcOption);
+
+    Client::Settings clientSettings;
+    QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
+    QVERIFY(clientSettings.setServerRsaKey(publicKey));
+    clientSettings.setPreferedSessionType(sessionType);
+
+    Server::RemoteClientConnection *firstClientConnection = nullptr;
+    {
+        Client::Client client;
+        Client::InMemoryDataStorage *dataStorage = new Client::InMemoryDataStorage(&client);
+        client.setAppInformation(getAppInfo());
+        client.setSettings(&clientSettings);
+        client.setAccountStorage(&accountStorage);
+        client.setDataStorage(dataStorage);
+
+        Client::AuthOperation *signInOperation = nullptr;
+        signInHelper(&client, userData, &authProvider, &signInOperation);
+        TRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
+
+        QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
+        QCOMPARE(clientConnections.count(), 1);
+        firstClientConnection = *clientConnections.cbegin();
+//        PendingOperation *discOp = client.connectionApi()->disconnectFromHost();
+//        TRY_VERIFY(discOp->isFinished());
+//        QCOMPARE(discOp->isSucceeded(), true);
+
+        TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusReady);
+    }
+
+    TRY_COMPARE(firstClientConnection->status(), Telegram::Server::RemoteClientConnection::Status::Disconnected);
+
+    // Reconnect
+    {
+        Client::Client client;
+        Client::InMemoryDataStorage *dataStorage = new Client::InMemoryDataStorage(&client);
+        client.setAppInformation(getAppInfo());
+        client.setSettings(&clientSettings);
+        client.setAccountStorage(&accountStorage);
+        client.setDataStorage(dataStorage);
+
+        Client::AuthOperation *checkInOperation = client.connectionApi()->checkIn();
+        TRY_VERIFY2(checkInOperation->isSucceeded(), "Unexpected check in fail");
+
+        //QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
+
+        TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusReady);
+    }
 }
 
 void tst_all::testSignUp_data()
