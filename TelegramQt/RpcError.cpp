@@ -88,6 +88,9 @@ QString RpcError::reasonToString(RpcError::Reason reason, quint32 argument)
 
 bool RpcError::reasonFromString(const QByteArray &str, RpcError::Reason *reason, quint32 *argument)
 {
+    if (str.isEmpty()) {
+        return false;
+    }
     static const QMetaEnum reasonEnum = QMetaEnum::fromType<Reason>();
     auto reasonWords = str.split('_');
     for (QByteArray &word : reasonWords) {
@@ -130,10 +133,10 @@ RpcError::RpcError(RpcError::Reason r, quint32 arg) :
     reason(r),
     argument(arg)
 {
-    if (r == UnknownReason) {
-        return;
-    }
     switch (r) {
+    case UnknownReason:
+        type = UnknownType;
+        break;
     case PhoneNumberInvalid:
     case PhoneCodeHashEmpty:
     case PhoneCodeInvalid:
