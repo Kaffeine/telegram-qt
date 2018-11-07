@@ -222,6 +222,7 @@ private slots:
     void pointerVectorDeserialization();
     void tlNumbersSerialization();
     void tlDcOptionDeserialization();
+    void recursiveTypeWriteRead();
     void readError();
     void byteArrays();
     void reqPqData();
@@ -835,6 +836,21 @@ void tst_CTelegramStream::tlDcOptionDeserialization()
     QCOMPARE(readOptionsVector.at(2).id, opt3.id);
 
     QVERIFY(readOptionsVector.isValid());
+}
+
+void tst_CTelegramStream::recursiveTypeWriteRead()
+{
+    TLRichText text;
+    text.tlType = TLValue::TextPlain;
+    text.stringText = QStringLiteral("123");
+    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    outputStream << text;
+    const QByteArray data = outputStream.getData();
+
+    CTelegramStream inputStream(data);
+    TLRichText text2;
+    inputStream >> text2;
+    QCOMPARE(text2.stringText, text.stringText);
 }
 
 void tst_CTelegramStream::readError()
