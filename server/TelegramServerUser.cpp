@@ -136,6 +136,49 @@ quint32 User::addMessage(const TLMessage &message, Session *excludeSession)
     const Telegram::Peer messagePeer = Telegram::Utils::getMessagePeer(message, id());
     UserDialog *dialog = ensureDialog(messagePeer);
     dialog->lastMessageId = message.id;
+
+    // Post update to other sessions
+    bool needUpdates = false;
+    for (Session *s : activeSessions()) {
+        if (s == excludeSession) {
+            continue;
+        }
+        needUpdates = true;
+        break;
+    }
+    if (!needUpdates) {
+        return m_messages.last().id;
+    }
+
+    ServerApi *api = activeSessions().first()->rpcLayer()->api();
+    RemoteUser *sender = api->getRemoteUser(message.fromId);
+
+    TLUpdate newMessageUpdate;
+    newMessageUpdate.tlType = TLValue::UpdateNewMessage;
+    newMessageUpdate.message = m_messages.last();
+    newMessageUpdate.pts = pts();
+    newMessageUpdate.ptsCount = 1;
+
+    TLUpdates updates;
+    updates.tlType = TLValue::Updates;
+    updates.updates = { newMessageUpdate };
+    updates.chats = {};
+
+    if (sender) {
+        updates.users = { TLUser() }; // Sender
+        api->setupTLUser(&updates.users[0], sender, this);
+    }
+
+    updates.date = message.date;
+    //updates.seq = 0;
+
+    for (Session *s : activeSessions()) {
+        if (s == excludeSession) {
+            continue;
+        }
+        s->rpcLayer()->sendUpdates(updates);
+    }
+
     return m_messages.last().id;
 }
 

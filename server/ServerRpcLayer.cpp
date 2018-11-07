@@ -15,9 +15,10 @@
 #include "MTProto/MessageHeader.hpp"
 
 #include "CTelegramStream.hpp"
+#include "CTelegramStreamExtraOperators.hpp"
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_serverRpcLayerCategory, "telegram.server.rpclayer", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_serverRpcLayerCategory, "telegram.server.rpclayer", QtWarningMsg)
 
 template <typename T>
 class StackValue
@@ -136,6 +137,13 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
     return true;
 }
 
+void RpcLayer::sendUpdates(const TLUpdates &updates)
+{
+    CTelegramStream stream(CTelegramStream::WriteOnly);
+    stream << updates;
+    sendRpcMessage(stream.getData());
+}
+
 bool RpcLayer::processInitConnection(const MTProto::Message &message)
 {
     MTProto::Stream stream(message.data);
@@ -241,6 +249,11 @@ bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
     }
     qDebug() << Q_FUNC_INFO << TLValue::firstFromArray(reply) << "for message id" << messageId;
     return sendPackage(output.getData(), SendMode::ServerReply);
+}
+
+bool RpcLayer::sendRpcMessage(const QByteArray &message)
+{
+    return sendPackage(message, SendMode::ServerInitiative);
 }
 
 const char *RpcLayer::gzipPackMessage()
