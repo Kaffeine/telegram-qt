@@ -216,7 +216,7 @@ static QLatin1String getModeText(SendMode mode)
         return QLatin1String("ServerReply");
     }
     Q_UNREACHABLE();
-    return QLatin1String();
+    return QLatin1String("Invalid");
 }
 
 quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
