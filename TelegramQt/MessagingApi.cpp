@@ -92,6 +92,9 @@ PendingOperation *MessagingApiPrivate::getDialogs()
 
 MessagesOperation *MessagingApiPrivate::getHistory(const Peer peer, quint32 limit)
 {
+    if (!peer.isValid()) {
+        return PendingOperation::failOperation<MessagesOperation>(QStringLiteral("Invalid peer for getHistory()"), this);
+    }
     TLInputPeer p = dataStorage()->internalApi()->toInputPeer(peer);
     MessagesOperation *operation = new MessagesOperation(this);
     MessagesRpcLayer::PendingMessagesMessages *rpcOperation = messagesLayer()->getHistory(p, 0, 0, 0, limit, 0, 0, 0);
