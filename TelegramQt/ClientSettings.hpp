@@ -32,8 +32,8 @@ public:
     void setPreferedSessionType(const SessionType type);
 
     Q_INVOKABLE static quint32 defaultPingInterval();
-    // // By default, the app would ping server every 15 000 ms and instruct the server to close connection after 10 000 more ms. Pass interval = 0 to disable ping.
-    // void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime = 10000);
+    // By default, the app would ping server every 15 000 ms and instruct the server to close connection after 10 000 more ms. Pass interval = 0 to disable ping.
+    void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime = 10000);
 
     // void setMediaDataBufferSize(quint32 size);
 

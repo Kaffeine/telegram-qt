@@ -2,6 +2,8 @@
 
 #include "Utils.hpp"
 
+#include <QLoggingCategory>
+
 namespace Telegram {
 
 namespace Client {
@@ -27,6 +29,11 @@ void Settings::setPreferedSessionType(const Settings::SessionType type)
 quint32 Settings::defaultPingInterval()
 {
     return 15000u;
+}
+
+void Settings::setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime)
+{
+    qWarning() << Q_FUNC_INFO << "NOT IMPLEMENTED";
 }
 
 RsaKey Settings::defaultServerPublicRsaKey()
