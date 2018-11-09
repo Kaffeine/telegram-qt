@@ -143,6 +143,7 @@ RpcError::RpcError(RpcError::Reason r, quint32 arg) :
     case PhoneCodeEmpty:
     case PhoneCodeExpired:
     case PhoneNumberUnoccupied:
+    case PeerIdInvalid:
         type = BadRequest;
         break;
 //    case FileMigrateX:

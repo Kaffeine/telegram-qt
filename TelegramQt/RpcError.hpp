@@ -70,6 +70,7 @@ public:
         AuthKeyPermEmpty,
         SessionPasswordNeeded,
         FloodWaitX,
+        PeerIdInvalid,
     };
     Q_ENUM(Reason)
 
