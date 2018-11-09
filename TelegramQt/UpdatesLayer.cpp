@@ -86,6 +86,8 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
         processUpdate(updates.update);
         break;
     case TLValue::UpdatesCombined:
+        dataStorage()->internalApi()->processData(updates.users);
+        dataStorage()->internalApi()->processData(updates.chats);
         qCDebug(c_updatesLoggingCategory) << Q_FUNC_INFO << "UpdatesCombined processing is not implemented yet.";
         for (int i = 0; i < updates.updates.count(); ++i) {
             processUpdate(updates.updates.at(i));
