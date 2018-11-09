@@ -92,6 +92,7 @@ public:
     bool getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const;
 
     bool getMessage(Message *message, const Telegram::Peer &peer, quint32 messageId);
+    bool getMessageMediaInfo(MessageMediaInfo *info, const Telegram::Peer &peer, quint32 messageId);
 
 protected:
     DataStorage(DataStoragePrivate *d, QObject *parent);

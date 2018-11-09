@@ -175,6 +175,27 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
     return true;
 }
 
+bool DataStorage::getMessageMediaInfo(MessageMediaInfo *info, const Peer &peer, quint32 messageId)
+{
+    Q_D(const DataStorage);
+    const TLMessage *m = nullptr;
+    if (peer.type == Peer::Channel) {
+        quint64 key = DataInternalApi::channelMessageToKey(peer.id, messageId);
+        m = d->m_api->m_channelMessages.value(key);
+    } else {
+        m = d->m_api->m_clientMessages.value(messageId);
+    }
+    if (!m) {
+        qDebug() << Q_FUNC_INFO << "Unknown message" << peer << messageId;
+        return false;
+    }
+    const TLMessageMedia &media = m->media;
+
+    MessageMediaInfo::Private *privateInfo = MessageMediaInfo::Private::get(info);
+    *privateInfo = media;
+    return true;
+}
+
 DataStorage::DataStorage(DataStoragePrivate *d, QObject *parent)
     : QObject(parent),
       d_ptr(d)

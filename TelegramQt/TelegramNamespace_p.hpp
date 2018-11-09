@@ -24,26 +24,32 @@
 struct Telegram::MessageMediaInfo::Private : public TLMessageMedia
 {
 public:
-    Private() :
-        m_isUploaded(false),
-        m_size(0),
-        m_inputFile(0)
-    {
-    }
+    static const Private *get(const Telegram::MessageMediaInfo *info) { return info->d; }
+    static Private *get(Telegram::MessageMediaInfo *info) { return info->d; }
+
+    Private() = default;
 
     ~Private()
     {
-        if (m_inputFile) {
-            delete m_inputFile;
-        }
+        delete m_inputFile;
     }
 
-    bool m_isUploaded;
-    quint32 m_size;
-    TLInputFile *m_inputFile;
+    void operator=(const TLMessageMedia &mediaInfo)
+    {
+        m_isUploaded = false;
+        m_size = 0;
+        m_inputFile = nullptr;
+
+        TLMessageMedia *thisInfo = this;
+        *thisInfo = mediaInfo;
+    }
+
+    bool m_isUploaded = false;
+    quint32 m_size = 0;
+    TLInputFile *m_inputFile = nullptr;
 };
 
-class Telegram::RemoteFile::Private
+struct Telegram::RemoteFile::Private
 {
 public:
     enum Type {

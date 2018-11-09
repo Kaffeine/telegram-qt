@@ -357,8 +357,8 @@ public:
     QString title() const;
     QString description() const;
 
-protected:
     struct Private;
+protected:
 
     Private *d;
 };
