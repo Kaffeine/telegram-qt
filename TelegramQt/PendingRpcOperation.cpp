@@ -33,6 +33,7 @@ void PendingRpcOperation::setFinishedWithReplyData(const QByteArray &data)
         CRawStreamEx stream(data);
         stream >> *m_error;
         setFinishedWithError({
+                                 {QStringLiteral("RpcRequestType"), TLValue::firstFromArray(m_requestData).toString() },
                                  {QStringLiteral("RpcErrorCode"), m_error->type },
                                  {QStringLiteral("RpcError"), m_error->message }
                              });
