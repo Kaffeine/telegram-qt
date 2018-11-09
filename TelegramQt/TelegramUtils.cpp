@@ -59,6 +59,12 @@ TelegramNamespace::MessageType telegramMessageTypeToPublicMessageType(TLValue ty
         return TelegramNamespace::MessageTypeDocument;
     case TLValue::MessageMediaWebPage:
         return TelegramNamespace::MessageTypeWebPage;
+        // TODO:
+    case TLValue::MessageMediaVenue:
+    case TLValue::MessageMediaGame:
+    case TLValue::MessageMediaInvoice:
+    case TLValue::MessageMediaGeoLive:
+    case TLValue::MessageMediaUnsupported:
     default:
         return TelegramNamespace::MessageTypeUnsupported;
     }
