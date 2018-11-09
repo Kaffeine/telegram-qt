@@ -132,18 +132,23 @@ set(telegram_qt_HEADERS
 
 set(telegram_qt_public_HEADERS
     telegramqt_global.h
+    AccountStorage.hpp
     CAppInformation.hpp
-    TelegramNamespace.hpp
     Client.hpp
     ClientApi.hpp
+    ClientSettings.hpp
     ConnectionApi.hpp
+    ConnectionError.hpp
     ContactList.hpp
     ContactsApi.hpp
+    DataStorage.hpp
     DcConfiguration.hpp
     Debug.hpp
     DialogList.hpp
     MessagingApi.hpp
+    PendingOperation.hpp
     ReadyObject.hpp
+    TelegramNamespace.hpp
     Operations/ClientAuthOperation.hpp
     Operations/ClientMessagesOperation.hpp
     Operations/PendingContactsOperation.hpp
@@ -238,11 +243,15 @@ install(
     COMPONENT Devel
 )
 
-install(
-    FILES ${telegram_qt_public_HEADERS}
-    DESTINATION ${TELEGRAM_QT_INCLUDE_DIR}/TelegramQt
-    COMPONENT Devel
-)
+foreach (public_header ${telegram_qt_public_HEADERS})
+    get_filename_component( public_header_dir ${public_header} DIRECTORY )
+    install(
+        FILES ${public_header}
+        DESTINATION ${TELEGRAM_QT_INCLUDE_DIR}/TelegramQt/${public_header_dir}
+        COMPONENT Devel
+    )
+endforeach()
+
 
 # CMake find package stuff
 include(CMakePackageConfigHelpers)
