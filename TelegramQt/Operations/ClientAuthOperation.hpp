@@ -4,8 +4,6 @@
 #include "PendingOperation.hpp"
 #include "TelegramNamespace.hpp"
 
-#include "../RpcLayers/ClientRpcAuthLayer.hpp"
-
 struct TLAuthAuthorization;
 
 namespace Telegram {
@@ -102,7 +100,7 @@ protected:
     // Implementation:
     PendingOperation *getPassword();
 
-    void onRequestAuthCodeFinished(AuthRpcLayer::PendingAuthSentCode *operation);
+    void onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation);
     void onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation);
     void onSignUpRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation);
     void onPasswordRequestFinished(PendingRpcOperation *operation);

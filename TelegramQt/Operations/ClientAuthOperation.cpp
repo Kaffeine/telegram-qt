@@ -224,20 +224,21 @@ AuthRpcLayer *AuthOperation::authLayer() const
     return m_backend->authLayer();
 }
 
-void AuthOperation::onRequestAuthCodeFinished(AuthRpcLayer::PendingAuthSentCode *operation)
+void AuthOperation::onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation)
 {
-    if (operation->rpcError() && operation->rpcError()->type == RpcError::SeeOther) {
-        setWantedDc(operation->rpcError()->argument);
-        m_backend->processSeeOthers(operation);
+    if (rpcOperation->rpcError() && rpcOperation->rpcError()->type == RpcError::SeeOther) {
+        setWantedDc(rpcOperation->rpcError()->argument);
+        m_backend->processSeeOthers(rpcOperation);
         return;
     }
 
-    if (!operation->isSucceeded()) {
-        setDelayedFinishedWithError(operation->errorDetails());
+    if (!rpcOperation->isSucceeded()) {
+        setDelayedFinishedWithError(rpcOperation->errorDetails());
         return;
     }
     TLAuthSentCode result;
-    operation->getResult(&result);
+    authLayer()->processReply(rpcOperation, &result);
+
     qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << result.tlType << result.phoneCodeHash;
     if (result.isValid()) {
         m_authCodeHash = result.phoneCodeHash;
