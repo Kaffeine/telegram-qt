@@ -67,6 +67,7 @@ set(telegram_qt_META_HEADERS
     ContactsApi.hpp
     ContactsApi_p.hpp
     DataStorage.hpp
+    DataStorage_p.hpp
     DialogList.hpp
     DhLayer.hpp
     LegacySecretReader.hpp

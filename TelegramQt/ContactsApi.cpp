@@ -95,6 +95,11 @@ DataStorage *ContactsApiPrivate::dataStorage()
     return m_backend->dataStorage();
 }
 
+DataInternalApi *ContactsApiPrivate::dataInternalApi()
+{
+    return DataInternalApi::get(m_backend->dataStorage());
+}
+
 ContactsRpcLayer *ContactsApiPrivate::contactsLayer()
 {
     return m_backend->contactsLayer();
@@ -112,7 +117,7 @@ void ContactsApiPrivate::onContactsImported(PendingContactsOperation *operation,
         priv->m_peers.append(Peer::fromUserId(user.id));
     }
 
-    m_backend->dataStorage()->internalApi()->processData(result.users);
+    DataInternalApi::get(m_backend->dataStorage())->processData(result.users);
 
     operation->setFinished();
 }
@@ -128,8 +133,8 @@ void ContactsApiPrivate::onGetContactsResult(PendingContactsOperation *operation
         priv->m_peers.append(Peer::fromUserId(contact.userId));
     }
 
-    m_backend->dataStorage()->internalApi()->processData(result.users);
-    m_backend->dataStorage()->internalApi()->setContactList(result.contacts);
+    dataInternalApi()->processData(result.users);
+    dataInternalApi()->setContactList(result.contacts);
 
     operation->setFinished();
 }
@@ -143,7 +148,7 @@ void ContactsApiPrivate::onSelfUserResult(PendingOperation *operation, UsersRpcL
         operation->setFinishedWithError(rpcOperation->errorDetails());
         return;
     }
-    m_backend->dataStorage()->internalApi()->processData(result);
+    dataInternalApi()->processData(result);
     operation->setFinished();
 }
 

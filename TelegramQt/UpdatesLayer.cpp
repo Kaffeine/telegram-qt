@@ -2,6 +2,7 @@
 
 #include "ClientBackend.hpp"
 #include "DataStorage.hpp"
+#include "DataStorage_p.hpp"
 #include "MessagingApi.hpp"
 #include "MessagingApi_p.hpp"
 
@@ -35,6 +36,8 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
     qCDebug(c_updatesLoggingCategory) << "updates:" << updates.tlType << updates.updates.count();
 #endif
 
+    DataInternalApi *internal = dataInternalApi();
+
     switch (updates.tlType) {
     case TLValue::UpdatesTooLong:
         qCDebug(c_updatesLoggingCategory) << "Updates too long!";
@@ -67,9 +70,9 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
 
             if (shortMessage.out()) {
                 shortMessage.toId.userId = updates.userId;
-                shortMessage.fromId = dataStorage()->internalApi()->selfUserId();
+                shortMessage.fromId = internal->selfUserId();
             } else {
-                shortMessage.toId.userId = dataStorage()->internalApi()->selfUserId();
+                shortMessage.toId.userId = internal->selfUserId();
                 shortMessage.fromId = updates.userId;
             }
         } else {
@@ -86,16 +89,16 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
         processUpdate(updates.update);
         break;
     case TLValue::UpdatesCombined:
-        dataStorage()->internalApi()->processData(updates.users);
-        dataStorage()->internalApi()->processData(updates.chats);
+        internal->processData(updates.users);
+        internal->processData(updates.chats);
         qCDebug(c_updatesLoggingCategory) << Q_FUNC_INFO << "UpdatesCombined processing is not implemented yet.";
         for (int i = 0; i < updates.updates.count(); ++i) {
             processUpdate(updates.updates.at(i));
         }
         break;
     case TLValue::Updates:
-        dataStorage()->internalApi()->processData(updates.users);
-        dataStorage()->internalApi()->processData(updates.chats);
+        internal->processData(updates.users);
+        internal->processData(updates.chats);
 
         if (!updates.updates.isEmpty()) {
             // Official client sorts updates by pts/qts. Wat?!
@@ -134,7 +137,7 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
     case TLValue::UpdateNewMessage:
     case TLValue::UpdateNewChannelMessage:
     {
-        dataStorage()->internalApi()->processData(update.message);
+        dataInternalApi()->processData(update.message);
 
         MessagingApiPrivate *messaging = MessagingApiPrivate::get(messagingApi());
         messaging->onMessageReceived(update.message);
@@ -155,6 +158,11 @@ MessagingApi *UpdatesInternalApi::messagingApi()
 DataStorage *UpdatesInternalApi::dataStorage()
 {
     return m_backend->dataStorage();
+}
+
+DataInternalApi *UpdatesInternalApi::dataInternalApi()
+{
+    return DataInternalApi::get(dataStorage());
 }
 
 } // Client namespace

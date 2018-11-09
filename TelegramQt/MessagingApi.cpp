@@ -31,7 +31,7 @@ MessagingApiPrivate *MessagingApiPrivate::get(MessagingApi *parent)
 
 quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message, const MessagingApi::SendOptions &options)
 {
-    const DataInternalApi *dataApi = dataStorage()->internalApi();
+    const DataInternalApi *dataApi = DataInternalApi::get(dataStorage());
 
     int flags = 0;
     if (options.clearDraft()) {
@@ -95,7 +95,7 @@ MessagesOperation *MessagingApiPrivate::getHistory(const Peer peer, quint32 limi
     if (!peer.isValid()) {
         return PendingOperation::failOperation<MessagesOperation>(QStringLiteral("Invalid peer for getHistory()"), this);
     }
-    TLInputPeer p = dataStorage()->internalApi()->toInputPeer(peer);
+    TLInputPeer p = DataInternalApi::get(dataStorage())->toInputPeer(peer);
     MessagesOperation *operation = new MessagesOperation(this);
     MessagesRpcLayer::PendingMessagesMessages *rpcOperation = messagesLayer()->getHistory(p, 0, 0, 0, limit, 0, 0, 0);
     connect(rpcOperation, &PendingOperation::finished, this,
@@ -185,7 +185,7 @@ void MessagingApiPrivate::onGetDialogsFinished(PendingOperation *operation, Mess
 {
     TLMessagesDialogs dialogs;
     rpcOperation->getResult(&dialogs);
-    dataStorage()->internalApi()->processData(dialogs);
+    DataInternalApi::get(dataStorage())->processData(dialogs);
     operation->setFinished();
 }
 
@@ -196,7 +196,7 @@ void MessagingApiPrivate::onGetHistoryFinished(MessagesOperation *operation, Mes
 
     MessagesOperationPrivate *priv = MessagesOperationPrivate::get(operation);
 
-    dataStorage()->internalApi()->processData(messages);
+    DataInternalApi::get(dataStorage())->processData(messages);
 
     priv->m_messages.resize(messages.messages.count());
     for (const TLMessage &m : messages.messages) {

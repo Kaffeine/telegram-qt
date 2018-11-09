@@ -29,6 +29,7 @@ namespace Telegram {
 namespace Client {
 
 class PendingContactsOperation;
+class DataInternalApi;
 class DataStorage;
 
 class ContactsApi;
@@ -49,6 +50,7 @@ public:
     ContactList *getContactList();
 
     DataStorage *dataStorage();
+    DataInternalApi *dataInternalApi();
     ContactsRpcLayer *contactsLayer();
 
     ContactList *m_contactList = nullptr;

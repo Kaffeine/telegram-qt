@@ -28,6 +28,7 @@ namespace Client {
 
 class Backend;
 class DataStorage;
+class DataInternalApi;
 class MessagingApi;
 
 class UpdatesInternalApi : public QObject
@@ -44,6 +45,7 @@ public:
 protected:
     MessagingApi *messagingApi();
     DataStorage *dataStorage();
+    DataInternalApi *dataInternalApi();
 
     Backend *m_backend = nullptr;
 

@@ -43,14 +43,6 @@ namespace Client {
 DataStorage::DataStorage(QObject *parent) :
     DataStorage(new DataStoragePrivate(), parent)
 {
-    Q_D(DataStorage);
-    d->m_api = new DataInternalApi(this);
-}
-
-DataInternalApi *DataStorage::internalApi()
-{
-    Q_D(DataStorage);
-    return d->m_api;
 }
 
 DcConfiguration DataStorage::serverConfiguration() const
@@ -196,10 +188,11 @@ bool DataStorage::getMessageMediaInfo(MessageMediaInfo *info, const Peer &peer, 
     return true;
 }
 
-DataStorage::DataStorage(DataStoragePrivate *d, QObject *parent)
+DataStorage::DataStorage(DataStoragePrivate *priv, QObject *parent)
     : QObject(parent),
-      d_ptr(d)
+      d(priv)
 {
+    d->m_api = new DataInternalApi(this);
 }
 
 InMemoryDataStorage::InMemoryDataStorage(QObject *parent) :
@@ -354,6 +347,11 @@ quint64 DataInternalApi::channelMessageToKey(quint32 channelId, quint32 messageI
 {
     quint64 key = channelId;
     return (key << 32) + messageId;
+}
+
+DataStoragePrivate *DataStoragePrivate::get(DataStorage *parent)
+{
+    return parent->d;
 }
 
 } // Client namespace

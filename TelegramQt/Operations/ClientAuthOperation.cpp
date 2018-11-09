@@ -347,7 +347,7 @@ void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLA
     if (storage->accountIdentifier().isEmpty()) {
         storage->setAccountIdentifier(authorization.user.phone);
     }
-    m_backend->dataStorage()->internalApi()->processData(authorization.user);
+    DataInternalApi::get(m_backend->dataStorage())->processData(authorization.user);
     m_authenticatedConnection = Connection::fromOperation(operation);
     m_authenticatedConnection->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Remote);
     setFinished();
