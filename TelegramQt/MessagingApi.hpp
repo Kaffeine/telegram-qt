@@ -38,7 +38,8 @@ class TELEGRAMQT_EXPORT MessagingApi : public ClientApi
 public:
     explicit MessagingApi(QObject *parent = nullptr);
 
-    static quint32 localTypingRecommendedRepeatInterval();
+    static quint32 messageActionValidPeriod();
+    static quint32 messageActionRepeatInterval();
 
     struct SendOptions {
         SendOptions();

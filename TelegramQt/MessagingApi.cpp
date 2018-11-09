@@ -13,10 +13,6 @@
 
 #include <QLoggingCategory>
 
-const int s_userTypingActionPeriod = 6000; // 6 sec
-const int s_localTypingDuration = 5000; // 5 sec
-const int s_localTypingRecommendedRepeatInterval = 400; // (s_userTypingActionPeriod - s_localTypingDuration) / 2. Minus 100 ms for insurance.
-
 namespace Telegram {
 
 class PendingOperation;
@@ -111,9 +107,28 @@ MessagingApi::MessagingApi(QObject *parent) :
     d = new MessagingApiPrivate(this);
 }
 
-quint32 MessagingApi::localTypingRecommendedRepeatInterval()
+/*!
+    Returns the lifetime of message action status.
+
+    The documentation says that the status is valid for 6 seconds.
+
+    \sa https://core.telegram.org/constructor/updateUserTyping
+*/
+quint32 MessagingApi::messageActionValidPeriod()
 {
-    return s_localTypingRecommendedRepeatInterval;
+    return 6000; // 6 seconds
+}
+
+/*!
+    Returns the recommended interval of message action repeat calls.
+
+    The documentation recommendeds to repeat the status every 5 seconds.
+
+    \sa https://core.telegram.org/method/messages.setTyping
+*/
+quint32 MessagingApi::messageActionRepeatInterval()
+{
+    return 5000; // 5 seconds
 }
 
 DialogList *MessagingApi::getDialogList()
