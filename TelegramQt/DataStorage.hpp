@@ -89,7 +89,7 @@ public:
     quint32 selfUserId() const;
     bool getDialogInfo(DialogInfo *info, const Telegram::Peer &peer) const;
     bool getUserInfo(UserInfo *info, quint32 userId) const;
-    bool getChatInfo(ChatInfo *info, quint32 chatId) const;
+    bool getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const;
 
     bool getMessage(Message *message, const Telegram::Peer &peer, quint32 messageId);
 
