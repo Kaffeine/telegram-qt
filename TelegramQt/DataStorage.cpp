@@ -20,6 +20,7 @@
 #include "ApiUtils.hpp"
 #include "TLTypesDebug.hpp"
 #include "Debug.hpp"
+#include "TelegramUtils.hpp"
 
 #include "TelegramNamespace_p.hpp"
 
@@ -151,10 +152,12 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
         m = d->m_api->m_clientMessages.value(messageId);
     }
     if (!m) {
-        qDebug() << Q_FUNC_INFO << "Unknown message" << peer << message;
+        qDebug() << Q_FUNC_INFO << "Unknown message" << peer << messageId;
         return false;
     }
-    message->type = TelegramNamespace::MessageTypeText;
+    const TLMessageMedia &media = m->media;
+
+    message->type = TelegramUtils::telegramMessageTypeToPublicMessageType(media.tlType);
     message->fromId = m->fromId;
     message->timestamp = m->date;
     message->text = m->message;
