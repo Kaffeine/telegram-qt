@@ -1,7 +1,7 @@
 #ifndef TELEGRAMQT_CLIENT_CONNECTION_OPERATION
 #define TELEGRAMQT_CLIENT_CONNECTION_OPERATION
 
-#include "PendingOperation.hpp"
+#include "../PendingOperation.hpp"
 
 namespace Telegram {
 

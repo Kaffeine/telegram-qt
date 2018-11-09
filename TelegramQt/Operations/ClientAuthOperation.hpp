@@ -1,8 +1,8 @@
 #ifndef TELEGRAMQT_CLIENT_AUTH_OPERATION
 #define TELEGRAMQT_CLIENT_AUTH_OPERATION
 
-#include "PendingOperation.hpp"
-#include "TelegramNamespace.hpp"
+#include "../PendingOperation.hpp"
+#include "../TelegramNamespace.hpp"
 
 struct TLAuthAuthorization;
 

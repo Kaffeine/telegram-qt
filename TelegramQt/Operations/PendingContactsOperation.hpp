@@ -18,8 +18,8 @@
 #ifndef TELEGRAMQT_CLIENT_PENDING_CONTACTS_OPERATION_HPP
 #define TELEGRAMQT_CLIENT_PENDING_CONTACTS_OPERATION_HPP
 
-#include "PendingOperation.hpp"
-#include "TelegramNamespace.hpp"
+#include "../PendingOperation.hpp"
+#include "../TelegramNamespace.hpp"
 
 namespace Telegram {
 
