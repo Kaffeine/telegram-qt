@@ -41,10 +41,10 @@ public:
         return failOperation<OperationType>({{ c_text(), failDescription}}, parent);
     }
 
-    template<typename T, typename M>
-    static void callMember(T *obj, M method)
+    template<typename T, typename M, typename... Arg>
+    static void callMember(T *obj, M method, Arg... arg)
     {
-        (obj->*method)();
+        (obj->*method)(arg...);
     }
 
     static PendingOperation *failOperation(const QVariantHash &failDetails, QObject *parent = nullptr)
@@ -56,6 +56,40 @@ public:
     {
         return failOperation<PendingOperation>({{ c_text(), failDescription}}, parent);
     }
+
+#if Q_CC_GNU && (Q_CC_GNU < 409)
+    // Workaround https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55914
+    // Remove this once we require GCC 4.9+
+    template<typename Receiver, typename ReceiverMethod>
+    void connectToFinished(Receiver *obj, ReceiverMethod method)
+    {
+        connect(this, &PendingOperation::finished, obj, [obj, method] () {
+            callMember(obj, method);
+        });
+    }
+    template<typename Receiver, typename ReceiverMethod, typename Arg1>
+    void connectToFinished(Receiver *obj, ReceiverMethod method, Arg1 arg1)
+    {
+        connect(this, &PendingOperation::finished, obj, [obj, method, arg1] () {
+            callMember(obj, method, arg1);
+        });
+    }
+    template<typename Receiver, typename ReceiverMethod, typename Arg1, typename Arg2>
+    void connectToFinished(Receiver *obj, ReceiverMethod method, Arg1 arg1, Arg2 arg2)
+    {
+        connect(this, &PendingOperation::finished, obj, [obj, method, arg1, arg2] () {
+            callMember(obj, method, arg1, arg2);
+        });
+    }
+#else
+    template<typename Receiver, typename ReceiverMethod, typename ...Args>
+    void connectToFinished(Receiver *obj, ReceiverMethod method, Args ...args)
+    {
+        connect(this, &PendingOperation::finished, obj, [obj, method, args...] () {
+            callMember(obj, method, args...);
+        });
+    }
+#endif
 
 Q_SIGNALS:
     void finished(PendingOperation *operation);
