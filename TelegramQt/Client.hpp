@@ -19,7 +19,6 @@
 #define TELEGRAM_CLIENT_HPP
 
 #include "telegramqt_global.h"
-#include "TelegramNamespace.hpp"
 
 #include <QObject>
 #include <QVector>

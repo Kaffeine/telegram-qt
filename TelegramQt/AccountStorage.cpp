@@ -1,6 +1,5 @@
 #include "AccountStorage.hpp"
 #include "LegacySecretReader.hpp"
-#include "ClientBackend.hpp"
 #include "CRawStream.hpp"
 
 #include <QDir>
