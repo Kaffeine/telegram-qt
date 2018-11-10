@@ -287,21 +287,23 @@ public:
     {
         Q_ASSERT(QByteArray(uri) == QByteArray("TelegramQt"));
         Telegram::initialize();
-        qmlRegisterSingletonType<TelegramNamespace>(uri, 1, 0, "Namespace", &telegram_namespace_provider);
-        qmlRegisterType<CAppInformation>(uri, 1, 0, "AppInformation");
-        qmlRegisterType<AccountSecretHelper>(uri, 1, 0, "AccountSecretHelper");
-        qmlRegisterType<Telegram::Client::DeclarativeAuthOperation>(uri, 1, 0, "AuthOperation");
-        qmlRegisterType<Telegram::Client::DeclarativeClient>(uri, 1, 0, "Client");
-        qmlRegisterType<Telegram::Client::DeclarativeUserInfo>(uri, 1, 0, "UserInfo");
-        qmlRegisterType<Telegram::Client::DeclarativeServerOption>(uri, 1, 0, "ServerOption");
-        qmlRegisterType<Telegram::Client::DeclarativeProxySettings>(uri, 1, 0, "ProxySettings");
-        qmlRegisterType<Telegram::Client::DeclarativeSettings>(uri, 1, 0, "Settings");
-        qmlRegisterType<Telegram::Client::DeclarativeRsaKey>(uri, 1, 0, "RsaKey");
-        qmlRegisterUncreatableType<Telegram::Client::AccountStorage>(uri, 1, 0, "AccountStorage", QStringLiteral("AccountStorage is an abstract type"));
-        qmlRegisterType<Telegram::Client::FileAccountStorage>(uri, 1, 0, "FileAccountStorage");
-        qmlRegisterUncreatableType<Telegram::Client::DataStorage>(uri, 1, 0, "DataStorage", QStringLiteral("DataStorage is an abstract type"));
-        qmlRegisterType<Telegram::Client::InMemoryDataStorage>(uri, 1, 0, "InMemoryDataStorage");
-        qmlRegisterType<MessageSender>(uri, 1, 0, "MessageSender");
+        int versionMajor = 0;
+        int versionMinor = 2;
+        qmlRegisterSingletonType<TelegramNamespace>(uri, versionMajor, versionMinor, "Namespace", &telegram_namespace_provider);
+        qmlRegisterType<CAppInformation>(uri, versionMajor, versionMinor, "AppInformation");
+        qmlRegisterType<AccountSecretHelper>(uri, versionMajor, versionMinor, "AccountSecretHelper");
+        qmlRegisterType<Telegram::Client::DeclarativeAuthOperation>(uri, versionMajor, versionMinor, "AuthOperation");
+        qmlRegisterType<Telegram::Client::DeclarativeClient>(uri, versionMajor, versionMinor, "Client");
+        qmlRegisterType<Telegram::Client::DeclarativeUserInfo>(uri, versionMajor, versionMinor, "UserInfo");
+        qmlRegisterType<Telegram::Client::DeclarativeServerOption>(uri, versionMajor, versionMinor, "ServerOption");
+        qmlRegisterType<Telegram::Client::DeclarativeProxySettings>(uri, versionMajor, versionMinor, "ProxySettings");
+        qmlRegisterType<Telegram::Client::DeclarativeSettings>(uri, versionMajor, versionMinor, "Settings");
+        qmlRegisterType<Telegram::Client::DeclarativeRsaKey>(uri, versionMajor, versionMinor, "RsaKey");
+        qmlRegisterUncreatableType<Telegram::Client::AccountStorage>(uri, versionMajor, versionMinor, "AccountStorage", QStringLiteral("AccountStorage is an abstract type"));
+        qmlRegisterType<Telegram::Client::FileAccountStorage>(uri, versionMajor, versionMinor, "FileAccountStorage");
+        qmlRegisterUncreatableType<Telegram::Client::DataStorage>(uri, versionMajor, versionMinor, "DataStorage", QStringLiteral("DataStorage is an abstract type"));
+        qmlRegisterType<Telegram::Client::InMemoryDataStorage>(uri, versionMajor, versionMinor, "InMemoryDataStorage");
+        qmlRegisterType<MessageSender>(uri, versionMajor, versionMinor, "MessageSender");
     }
 };
 
