@@ -12,7 +12,7 @@ namespace Client {
 */
 Client::Client(QObject *parent) :
     QObject(parent),
-    d_ptr(new ClientPrivate(this))
+    d(new ClientPrivate(this))
 {
 }
 

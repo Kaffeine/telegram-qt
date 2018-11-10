@@ -72,8 +72,8 @@ Q_SIGNALS:
     void signedInChanged(bool signedIn);
 
 private:
-    ClientPrivate *d_ptr;
-    Q_DECLARE_PRIVATE(Client)
+    ClientPrivate *d = nullptr;
+    Q_DECLARE_PRIVATE_D(d, Client)
 };
 
 } // Client namespace
