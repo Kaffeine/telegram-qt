@@ -45,10 +45,7 @@ quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message
     const quint64 randomId = Utils::randomBytes<quint64>();
     MessagesRpcLayer::PendingUpdates *rpcOperation = messagesLayer()->sendMessage(flags, inputPeer, options.replyToMessageId(),
                                                                                   message, randomId, TLReplyMarkup(), {});
-    connect(rpcOperation, &PendingOperation::finished, this,
-            [this, randomId, rpcOperation]() { this->onMessageSendResult(randomId, rpcOperation); }
-    );
-
+    rpcOperation->connectToFinished(this, &MessagingApiPrivate::onMessageSendResult, randomId, rpcOperation);
     return randomId;
 }
 
@@ -84,9 +81,7 @@ PendingOperation *MessagingApiPrivate::getDialogs()
 {
     PendingOperation *operation = new PendingOperation(this);
     MessagesRpcLayer::PendingMessagesDialogs *rpcOperation = messagesLayer()->getDialogs(0, 0, 0, TLInputPeer(), 5);
-    connect(rpcOperation, &PendingOperation::finished, this,
-            [this, operation, rpcOperation]() { this->onGetDialogsFinished(operation, rpcOperation); }
-    );
+    rpcOperation->connectToFinished(this, &MessagingApiPrivate::onGetDialogsFinished, operation, rpcOperation);
     return operation;
 }
 
@@ -98,9 +93,7 @@ MessagesOperation *MessagingApiPrivate::getHistory(const Peer peer, quint32 limi
     TLInputPeer p = DataInternalApi::get(dataStorage())->toInputPeer(peer);
     MessagesOperation *operation = new MessagesOperation(this);
     MessagesRpcLayer::PendingMessagesMessages *rpcOperation = messagesLayer()->getHistory(p, 0, 0, 0, limit, 0, 0, 0);
-    connect(rpcOperation, &PendingOperation::finished, this,
-            [this, operation, rpcOperation]() { this->onGetHistoryFinished(operation, rpcOperation); }
-    );
+    rpcOperation->connectToFinished(this, &MessagingApiPrivate::onGetHistoryFinished, operation, rpcOperation);
     return operation;
 }
 

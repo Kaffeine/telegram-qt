@@ -37,10 +37,7 @@ PendingOperation *ContactsApiPrivate::sync()
     selfInputUser.tlType = TLValue::InputUserSelf;
 
     UsersRpcLayer::PendingUserVector *rpcOperation = m_backend->usersLayer()->getUsers({selfInputUser});
-    connect(rpcOperation, &PendingOperation::finished, this,
-            [this, operation, rpcOperation]() { this->onSelfUserResult(operation, rpcOperation); }
-    );
-
+    rpcOperation->connectToFinished(this, &ContactsApiPrivate::onSelfUserResult, operation, rpcOperation);
     return operation;
 }
 
@@ -65,9 +62,7 @@ PendingContactsOperation *ContactsApiPrivate::importContacts(const ContactsApi::
     }
 
     ContactsRpcLayer::PendingContactsImportedContacts *rpcOperation = contactsLayer()->importContacts(tlContacts);
-    connect(rpcOperation, &PendingOperation::finished, this,
-            [this, operation, rpcOperation]() { this->onContactsImported(operation, rpcOperation); }
-    );
+    rpcOperation->connectToFinished(this, &ContactsApiPrivate::onContactsImported, operation, rpcOperation);
     return operation;
 }
 
@@ -75,9 +70,7 @@ PendingContactsOperation *ContactsApiPrivate::getContacts()
 {
     PendingContactsOperation *operation = new PendingContactsOperation(this);
     ContactsRpcLayer::PendingContactsContacts *rpcOperation = contactsLayer()->getContacts(0);
-    connect(rpcOperation, &PendingOperation::finished, this,
-            [this, operation, rpcOperation]() { this->onGetContactsResult(operation, rpcOperation); }
-    );
+    rpcOperation->connectToFinished(this, &ContactsApiPrivate::onGetContactsResult, operation, rpcOperation);
     return operation;
 }
 
