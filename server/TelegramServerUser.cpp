@@ -215,7 +215,7 @@ TLVector<TLMessage> User::getHistory(const Peer &peer,
         if (peer.isValid()) {
             Telegram::Peer messagePeer = Telegram::Utils::getMessagePeer(message, id());
             if (peer != messagePeer) {
-                break;
+                continue;
             }
         }
 
