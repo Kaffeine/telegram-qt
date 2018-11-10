@@ -180,22 +180,6 @@ contains(options, developer-build) {
 
 OTHER_FILES += CMakeLists.txt
 
-OTHER_FILES += \
-    CTelegramCore.cpp \
-    CTelegramCore.hpp \
-    CTelegramConnection.cpp \
-    CTelegramConnection.hpp \
-    CTelegramDispatcher.cpp \
-    CTelegramDispatcher.hpp \
-    CTelegramModule.cpp \
-    CTelegramModule.hpp \
-    CTelegramAuthModule.cpp \
-    CTelegramAuthModule.hpp \
-    CTelegramMediaModule.cpp \
-    CTelegramMediaModule.hpp \
-    CTelegramTransportModule.cpp \
-    CTelegramTransportModule.hpp
-
 # Installation
 public_headers.files = $$PUBLIC_HEADERS
 public_headers.path = $$INSTALL_INCLUDE_DIR/TelegramQt$${QT_MAJOR_VERSION}/TelegramQt
