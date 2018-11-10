@@ -191,7 +191,7 @@ void MessagingApiPrivate::onGetHistoryFinished(MessagesOperation *operation, Mes
 
     DataInternalApi::get(dataStorage())->processData(messages);
 
-    priv->m_messages.resize(messages.messages.count());
+    priv->m_messages.reserve(messages.messages.count());
     for (const TLMessage &m : messages.messages) {
         priv->m_messages.append(m.id);
     }
