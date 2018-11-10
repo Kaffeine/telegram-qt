@@ -1,9 +1,10 @@
 #include "ClientConnection.hpp"
+
+#include "ApiUtils.hpp"
 #include "ClientDhLayer.hpp"
 #include "ClientRpcLayer.hpp"
 #include "CTelegramTransport.hpp"
 #include "SendPackageHelper.hpp"
-#include "TelegramUtils.hpp"
 #include "Utils.hpp"
 #include "Debug_p.hpp"
 
@@ -30,7 +31,7 @@ public:
 
     quint64 newMessageId(SendMode mode) override
     {
-        quint64 ts = TelegramUtils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch() + deltaTime() * 1000);
+        quint64 ts = Telegram::Utils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch() + deltaTime() * 1000);
         if (mode == SendMode::Client) {
             ts &= ~quint64(3);
         } else {

@@ -42,7 +42,6 @@ set(telegram_qt_SOURCES
     PendingOperation.cpp
     PendingRpcOperation.cpp
     PendingRpcResult.cpp
-    TelegramUtils.cpp
     TLValues.cpp
     UpdatesLayer.cpp
 )
@@ -124,7 +123,6 @@ set(telegram_qt_HEADERS
     UniqueLazyPointer.hpp
     Utils.hpp
     FileRequestDescriptor.hpp
-    TelegramUtils.hpp
     TLNumbers.hpp
     TLTypes.hpp
     crypto-rsa.hpp

@@ -17,8 +17,8 @@
 
 #include <QObject>
 
+#include "ApiUtils.hpp"
 #include "CTelegramTransport.hpp"
-#include "TelegramUtils.hpp"
 
 #include <QTest>
 #include <QDebug>
@@ -70,7 +70,7 @@ void tst_CTelegramTransport::testNewMessageId()
     NullTransport transport;
     const quint64 time = 1395335796550;
     for (quint64 t = 0; t < 12; ++t) {
-        const quint64 telegramTimeStamp = TelegramUtils::formatTimeStamp(time) + t;
+        const quint64 telegramTimeStamp = Telegram::Utils::formatTimeStamp(time) + t;
         const quint64 ending = telegramTimeStamp & 3;
         quint64 previousTS = telegramTimeStamp - 1;
         for (quint64 i = 0; i < 2000; ++i) {

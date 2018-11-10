@@ -20,8 +20,8 @@
 #include "RandomGenerator.hpp"
 #include "RpcLayer.hpp"
 #include "SendPackageHelper.hpp"
+#include "TelegramNamespace.hpp"
 #include "CTelegramTransport.hpp"
-#include "TelegramUtils.hpp"
 
 #include "MTProto/MessageHeader.hpp"
 

@@ -58,7 +58,6 @@ SOURCES += \
     Debug.cpp \
     Utils.cpp \
     FileRequestDescriptor.cpp \
-    TelegramUtils.cpp \
     CTelegramTransport.cpp \
     CTcpTransport.cpp \
     CClientTcpTransport.cpp \
@@ -134,7 +133,6 @@ HEADERS += \
     UniqueLazyPointer.hpp \
     Utils.hpp \
     FileRequestDescriptor.hpp \
-    TelegramUtils.hpp \
     CTelegramTransport.hpp \
     CTcpTransport.hpp \
     CClientTcpTransport.hpp \

@@ -20,7 +20,6 @@
 #include "ApiUtils.hpp"
 #include "TLTypesDebug.hpp"
 #include "Debug.hpp"
-#include "TelegramUtils.hpp"
 
 #include "TelegramNamespace_p.hpp"
 
@@ -150,7 +149,7 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
     }
     const TLMessageMedia &media = m->media;
 
-    message->type = TelegramUtils::telegramMessageTypeToPublicMessageType(media.tlType);
+    message->type = Telegram::Utils::toPublicMessageType(media.tlType);
     message->fromId = m->fromId;
     message->timestamp = m->date;
     message->text = m->message;

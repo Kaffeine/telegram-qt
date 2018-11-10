@@ -17,11 +17,11 @@
 
 #include "ClientDhLayer.hpp"
 
+#include "ApiUtils.hpp"
 #include "CTelegramStream.hpp"
 #include "CTelegramTransport.hpp"
 #include "Utils.hpp"
 #include "PendingRpcOperation.hpp"
-#include "TelegramUtils.hpp"
 #include "SendPackageHelper.hpp"
 
 #include <QDateTime>

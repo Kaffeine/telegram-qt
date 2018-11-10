@@ -20,12 +20,9 @@
 
 #include "ApiUtils.hpp"
 #include "RandomGenerator.hpp"
-#include "TelegramUtils.hpp"
 #include "Utils.hpp"
 
 #include "ConnectionApi.hpp"
-
-using namespace TelegramUtils;
 
 #include <QDateTime>
 #include <QMetaType>
@@ -156,7 +153,7 @@ Telegram::MessageMediaInfo &Telegram::MessageMediaInfo::operator=(const Telegram
 
 void Telegram::MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType type, const RemoteFile &file)
 {
-    d->tlType = publicMessageTypeToTelegramMessageType(type);
+    d->tlType = Telegram::Utils::toTLValue(type);
 
     d->m_isUploaded = true;
     const RemoteFile::Private *filePrivate = RemoteFile::Private::get(&file);
@@ -196,7 +193,7 @@ bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) c
 
 TelegramNamespace::MessageType Telegram::MessageMediaInfo::type() const
 {
-    return telegramMessageTypeToPublicMessageType(d->tlType);
+    return Telegram::Utils::toPublicMessageType(d->tlType);
 }
 
 quint32 Telegram::MessageMediaInfo::size() const

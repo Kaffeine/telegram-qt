@@ -21,7 +21,6 @@
 #include "CTelegramTransport.hpp"
 #include "Utils.hpp"
 #include "SendPackageHelper.hpp"
-#include "TelegramUtils.hpp"
 #include "Debug_p.hpp"
 
 #include <QDateTime>
