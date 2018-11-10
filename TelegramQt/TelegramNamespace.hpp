@@ -60,7 +60,7 @@ public:
 
     bool operator!=(const Peer &p) const
     {
-        return (p.id != id) || (p.type == type);
+        return (p.id != id) || (p.type != type);
     }
 
     static Peer fromUserId(quint32 id)
