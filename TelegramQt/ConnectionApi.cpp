@@ -9,7 +9,7 @@
 #include "CClientTcpTransport.hpp"
 #include "DataStorage.hpp"
 
-#include "Operations/ClientAuthOperation.hpp"
+#include "Operations/ClientAuthOperation_p.hpp"
 #include "Operations/ConnectionOperation.hpp"
 
 #include <QLoggingCategory>
@@ -133,12 +133,13 @@ AuthOperation *ConnectionApiPrivate::signIn()
     }
 
     m_authOperation = new AuthOperation(this);
-    m_authOperation->setBackend(backend());
+    AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
+    priv->setBackend(backend());
+    priv->setRunMethod(&AuthOperation::requestAuthCode);
     connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onAuthFinished);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &ConnectionApiPrivate::onAuthCodeRequired);
     PendingOperation *connectionOperation = connectToServer(settings->serverConfiguration());
     m_authOperation->runAfter(connectionOperation);
-    m_authOperation->setRunMethod(&AuthOperation::requestAuthCode);
     return m_authOperation;
 }
 
@@ -154,11 +155,12 @@ AuthOperation *ConnectionApiPrivate::checkIn()
                 (QStringLiteral("No minimal account data set"), this);
     }
     m_authOperation = new AuthOperation(this);
-    m_authOperation->setBackend(backend());
+    AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
+    priv->setBackend(backend());
+    priv->setRunMethod(&AuthOperation::checkAuthorization);
     connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onAuthFinished);
     PendingOperation *connectionOperation = connectToServer({accountStorage->dcInfo()});
     m_authOperation->runAfter(connectionOperation);
-    m_authOperation->setRunMethod(&AuthOperation::checkAuthorization);
     m_connectToServerOperation->connection()->setAuthKey(accountStorage->authKey());
     m_connectToServerOperation->connection()->rpcLayer()->setSessionData(
                 accountStorage->sessionId(),
@@ -254,7 +256,8 @@ void ConnectionApiPrivate::onAuthFinished(PendingOperation *operation)
         qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "TODO?";
         return;
     }
-    Connection *conn = m_authOperation->m_authenticatedConnection;
+    AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
+    Connection *conn = priv->m_authenticatedConnection;
     if (conn->status() != Connection::Status::Signed) {
         qCCritical(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected connection status" << conn->status();
         return;

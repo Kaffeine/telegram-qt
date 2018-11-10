@@ -1,4 +1,4 @@
-#include "ClientAuthOperation.hpp"
+#include "ClientAuthOperation_p.hpp"
 
 #include "AccountStorage.hpp"
 #include "CAppInformation.hpp"
@@ -33,30 +33,69 @@ bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAuthA
 template <>
 bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAuthSentCode *output);
 
-AuthOperation::AuthOperation(QObject *parent) :
-    PendingOperation(parent)
+AuthOperationPrivate::AuthOperationPrivate(AuthOperation *parent) :
+    QObject(parent),
+    PendingOperationPrivate(),
+    q_ptr(parent)
 {
 }
 
-void AuthOperation::setBackend(Backend *backend)
+AuthOperationPrivate *AuthOperationPrivate::get(AuthOperation *parent)
+{
+    return static_cast<AuthOperationPrivate*>(parent->d->toQObject());
+}
+
+const AuthOperationPrivate *AuthOperationPrivate::get(const AuthOperation *parent)
+{
+    return static_cast<const AuthOperationPrivate*>(parent->d->toQObject());
+}
+
+void AuthOperationPrivate::setBackend(Backend *backend)
 {
     m_backend = backend;
 }
 
-void AuthOperation::setRunMethod(AuthOperation::RunMethod method)
+AuthOperation::AuthOperation(QObject *parent) :
+    PendingOperation(parent)
 {
-    m_runMethod = method;
+    d = new AuthOperationPrivate(this);
+}
+
+QString AuthOperation::phoneNumber() const
+{
+    Q_D(const AuthOperation);
+    return d->m_phoneNumber;
+}
+
+QString AuthOperation::passwordHint() const
+{
+    Q_D(const AuthOperation);
+    return d->m_passwordHint;
+}
+
+bool AuthOperation::hasRecovery() const
+{
+    Q_D(const AuthOperation);
+    return d->m_hasRecovery;
+}
+
+bool AuthOperation::isRegistered() const
+{
+    Q_D(const AuthOperation);
+    return d->m_registered;
 }
 
 void AuthOperation::setPhoneNumber(const QString &phoneNumber)
 {
-    m_phoneNumber = phoneNumber;
+    Q_D(AuthOperation);
+    d->m_phoneNumber = phoneNumber;
 }
 
 void AuthOperation::start()
 {
-    if (m_runMethod) {
-        callMember<>(this, m_runMethod);
+    Q_D(AuthOperation);
+    if (d->m_runMethod) {
+        callMember<>(this, d->m_runMethod);
     }
 }
 
@@ -67,22 +106,36 @@ void AuthOperation::abort()
 
 PendingOperation *AuthOperation::checkAuthorization()
 {
+    Q_D(AuthOperation);
+    return d->checkAuthorization();
+}
+
+PendingOperation *AuthOperationPrivate::checkAuthorization()
+{
+    Q_Q(AuthOperation);
     qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO;
     AccountStorage *storage = m_backend->accountStorage();
     if (!storage->hasMinimalDataSet()) {
-        setFinishedWithError({{c_text(), QStringLiteral("No minimal account data set")}});
+        q->setFinishedWithError({{PendingOperation::c_text(), QStringLiteral("No minimal account data set")}});
         return nullptr;
     }
     // Backend::connectToServer() automatically takes the data from the account storage,
     // So just make some RPC call to check if connection works.
     PendingRpcOperation *updateStatusOperation = accountLayer()->updateStatus(false);
     connect(updateStatusOperation, &PendingRpcOperation::finished,
-            this, &AuthOperation::onAccountStatusUpdateFinished);
+            this, &AuthOperationPrivate::onAccountStatusUpdateFinished);
     return nullptr;
 }
 
 PendingOperation *AuthOperation::requestAuthCode()
 {
+    Q_D(AuthOperation);
+    return d->requestAuthCode();
+}
+
+PendingOperation *AuthOperationPrivate::requestAuthCode()
+{
+    Q_Q(AuthOperation);
     qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO;
     const CAppInformation *appInfo = m_backend->m_appInformation;
     if (!appInfo) {
@@ -91,16 +144,16 @@ PendingOperation *AuthOperation::requestAuthCode()
         return PendingOperation::failOperation(text, this);
     }
 
-    if (phoneNumber().isEmpty()) {
-        emit phoneNumberRequired();
+    if (m_phoneNumber.isEmpty()) {
+        emit q->phoneNumberRequired();
         return nullptr;
     }
 
     AuthRpcLayer::PendingAuthSentCode *requestCodeOperation
-            = authLayer()->sendCode(phoneNumber(), appInfo->appId(), appInfo->appHash());
+            = authLayer()->sendCode(m_phoneNumber, appInfo->appId(), appInfo->appHash());
     qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO
                                           << "requestPhoneCode"
-                                          << Telegram::Utils::maskPhoneNumber(phoneNumber())
+                                          << Telegram::Utils::maskPhoneNumber(m_phoneNumber)
                                           << "on dc" << Connection::fromOperation(requestCodeOperation)->dcOption().id;
     connect(requestCodeOperation, &PendingOperation::finished, this, [this, requestCodeOperation] {
        this->onRequestAuthCodeFinished(requestCodeOperation);
@@ -110,22 +163,28 @@ PendingOperation *AuthOperation::requestAuthCode()
 
 PendingOperation *AuthOperation::submitAuthCode(const QString &code)
 {
+    Q_D(AuthOperation);
+    return d->submitAuthCode(code);
+}
+
+PendingOperation *AuthOperationPrivate::submitAuthCode(const QString &code)
+{
     if (m_authCodeHash.isEmpty()) {
         const QString text = QStringLiteral("Unable to submit auth code without a code hash");
         qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << text;
-        return PendingOperation::failOperation({{QStringLiteral("text"), text}});
+        return PendingOperation::failOperation(text);
     }
 
     PendingOperation *submitOperation = new PendingOperation(this);
     PendingRpcOperation *sendCodeOperation = nullptr;
     if (m_registered) {
-        sendCodeOperation = authLayer()->signIn(phoneNumber(), m_authCodeHash, code);
+        sendCodeOperation = authLayer()->signIn(m_phoneNumber, m_authCodeHash, code);
         connect(sendCodeOperation, &PendingRpcOperation::finished, this,
                 [this, sendCodeOperation, submitOperation]() {
             this->onSignInRpcFinished(sendCodeOperation, submitOperation);
         });
     } else {
-        sendCodeOperation = authLayer()->signUp(phoneNumber(), m_authCodeHash, code, m_firstName, m_lastName);
+        sendCodeOperation = authLayer()->signUp(m_phoneNumber, m_authCodeHash, code, m_firstName, m_lastName);
         connect(sendCodeOperation, &PendingRpcOperation::finished, this,
                 [this, sendCodeOperation, submitOperation]() {
             this->onSignUpRpcFinished(sendCodeOperation, submitOperation);
@@ -135,14 +194,20 @@ PendingOperation *AuthOperation::submitAuthCode(const QString &code)
     return sendCodeOperation;
 }
 
-PendingOperation *AuthOperation::getPassword()
+PendingOperation *AuthOperationPrivate::getPassword()
 {
     PendingRpcOperation *passwordRequest = accountLayer()->getPassword();
-    connect(passwordRequest, &PendingRpcOperation::finished, this, &AuthOperation::onPasswordRequestFinished);
+    connect(passwordRequest, &PendingRpcOperation::finished, this, &AuthOperationPrivate::onPasswordRequestFinished);
     return passwordRequest;
 }
 
 PendingOperation *AuthOperation::submitPassword(const QString &password)
+{
+    Q_D(AuthOperation);
+    return d->submitPassword(password);
+}
+
+PendingOperation *AuthOperationPrivate::submitPassword(const QString &password)
 {
     if (m_passwordCurrentSalt.isEmpty()) {
         const QString text = QStringLiteral("Unable to submit auth password (password salt is missing)");
@@ -154,7 +219,7 @@ PendingOperation *AuthOperation::submitPassword(const QString &password)
     qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << "pwd:" << pwdHash.toHex();
 
     PendingRpcOperation *sendPasswordOperation = authLayer()->checkPassword(pwdHash);
-    connect(sendPasswordOperation, &PendingRpcOperation::finished, this, &AuthOperation::onCheckPasswordFinished);
+    connect(sendPasswordOperation, &PendingRpcOperation::finished, this, &AuthOperationPrivate::onCheckPasswordFinished);
     return sendPasswordOperation;
 }
 
@@ -168,8 +233,9 @@ void AuthOperation::submitPhoneNumber(const QString &phoneNumber)
 
 bool AuthOperation::submitName(const QString &firstName, const QString &lastName)
 {
-    m_firstName = firstName;
-    m_lastName = lastName;
+    Q_D(AuthOperation);
+    d->m_firstName = firstName;
+    d->m_lastName = lastName;
     return !firstName.isEmpty() && !lastName.isEmpty();
 }
 
@@ -188,44 +254,57 @@ void AuthOperation::recovery()
     qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
 }
 
-void AuthOperation::setWantedDc(quint32 dcId)
+void AuthOperationPrivate::setWantedDc(quint32 dcId)
 {
     m_backend->setDcForLayer(ConnectionSpec(dcId), authLayer());
     m_backend->setDcForLayer(ConnectionSpec(dcId), accountLayer());
 }
 
-void AuthOperation::setPasswordCurrentSalt(const QByteArray &salt)
+void AuthOperationPrivate::setPasswordCurrentSalt(const QByteArray &salt)
 {
     m_passwordCurrentSalt = salt;
 }
 
-void AuthOperation::setPasswordHint(const QString &hint)
+void AuthOperationPrivate::setPasswordHint(const QString &hint)
 {
+    Q_Q(AuthOperation);
     if (m_passwordHint == hint) {
         return;
     }
     m_passwordHint = hint;
-    emit passwordHintChanged(hint);
+    emit q->passwordHintChanged(hint);
 }
 
-void AuthOperation::setRegistered(bool registered)
+void AuthOperationPrivate::setRegistered(bool registered)
 {
+    Q_Q(AuthOperation);
     m_registered = registered;
-    emit registeredChanged(registered);
+    emit q->registeredChanged(registered);
 }
 
-AccountRpcLayer *AuthOperation::accountLayer() const
+AccountRpcLayer *AuthOperationPrivate::accountLayer() const
 {
     return m_backend->accountLayer();
 }
 
-AuthRpcLayer *AuthOperation::authLayer() const
+AuthRpcLayer *AuthOperationPrivate::authLayer() const
 {
     return m_backend->authLayer();
 }
 
-void AuthOperation::onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation)
+AuthOperationPrivate *AuthOperation::d_func()
 {
+    return AuthOperationPrivate::get(this);
+}
+
+const AuthOperationPrivate *AuthOperation::d_func() const
+{
+    return AuthOperationPrivate::get(this);
+}
+
+void AuthOperationPrivate::onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation)
+{
+    Q_Q(AuthOperation);
     if (rpcOperation->rpcError() && rpcOperation->rpcError()->type == RpcError::SeeOther) {
         setWantedDc(rpcOperation->rpcError()->argument);
         m_backend->processSeeOthers(rpcOperation);
@@ -233,7 +312,7 @@ void AuthOperation::onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation)
     }
 
     if (!rpcOperation->isSucceeded()) {
-        setDelayedFinishedWithError(rpcOperation->errorDetails());
+        q->setDelayedFinishedWithError(rpcOperation->errorDetails());
         return;
     }
     TLAuthSentCode result;
@@ -243,12 +322,13 @@ void AuthOperation::onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation)
     if (result.isValid()) {
         m_authCodeHash = result.phoneCodeHash;
         setRegistered(result.phoneRegistered());
-        emit authCodeRequired();
+        emit q->authCodeRequired();
     }
 }
 
-void AuthOperation::onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
+void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
 {
+    Q_Q(AuthOperation);
     if (rpcOperation->rpcError()) {
         const RpcError *error = rpcOperation->rpcError();
         switch (error->reason) {
@@ -263,18 +343,18 @@ void AuthOperation::onSignInRpcFinished(PendingRpcOperation *rpcOperation, Pendi
             qCCritical(c_loggingClientAuthOperation) << Q_FUNC_INFO << "internal error?" << error->message;
             break;
         case RpcError::PhoneCodeInvalid:
-            emit authCodeCheckFailed(AuthCodeStatusInvalid);
+            emit q->authCodeCheckFailed(AuthOperation::AuthCodeStatusInvalid);
             submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
             return;
         case RpcError::PhoneCodeExpired:
-            emit authCodeCheckFailed(AuthCodeStatusExpired);
+            emit q->authCodeCheckFailed(AuthOperation::AuthCodeStatusExpired);
             submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
             return;
         }
     }
     if (!rpcOperation->isSucceeded()) {
         submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
-        setDelayedFinishedWithError(rpcOperation->errorDetails());
+        q->setDelayedFinishedWithError(rpcOperation->errorDetails());
         return;
     }
     submitAuthCodeOperation->setFinished();
@@ -284,11 +364,12 @@ void AuthOperation::onSignInRpcFinished(PendingRpcOperation *rpcOperation, Pendi
     onGotAuthorization(rpcOperation, result);
 }
 
-void AuthOperation::onSignUpRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
+void AuthOperationPrivate::onSignUpRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
 {
+    Q_Q(AuthOperation);
     if (!rpcOperation->isSucceeded()) {
         submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
-        setDelayedFinishedWithError(rpcOperation->errorDetails());
+        q->setDelayedFinishedWithError(rpcOperation->errorDetails());
         return;
     }
     submitAuthCodeOperation->setFinished();
@@ -298,10 +379,11 @@ void AuthOperation::onSignUpRpcFinished(PendingRpcOperation *rpcOperation, Pendi
     onGotAuthorization(rpcOperation, result);
 }
 
-void AuthOperation::onPasswordRequestFinished(PendingRpcOperation *operation)
+void AuthOperationPrivate::onPasswordRequestFinished(PendingRpcOperation *operation)
 {
+    Q_Q(AuthOperation);
     if (!operation->isSucceeded()) {
-        setDelayedFinishedWithError(operation->errorDetails());
+        q->setDelayedFinishedWithError(operation->errorDetails());
         return;
     }
 
@@ -312,23 +394,24 @@ void AuthOperation::onPasswordRequestFinished(PendingRpcOperation *operation)
 #endif
     setPasswordCurrentSalt(result.currentSalt);
     setPasswordHint(result.hint);
-    emit passwordRequired();
+    emit q->passwordRequired();
 }
 
-void AuthOperation::onCheckPasswordFinished(PendingRpcOperation *operation)
+void AuthOperationPrivate::onCheckPasswordFinished(PendingRpcOperation *operation)
 {
+    Q_Q(AuthOperation);
     // authSignErrorReceived()
     if (operation->rpcError()) {
         const RpcError *error = operation->rpcError();
         if (error->reason == RpcError::PasswordHashInvalid) {
-            emit passwordCheckFailed();
+            emit q->passwordCheckFailed();
             return;
         }
         qCDebug(c_loggingClientAuthOperation) << error->message;
     }
 
     if (!operation->isSucceeded()) {
-        setDelayedFinishedWithError(operation->errorDetails());
+        q->setDelayedFinishedWithError(operation->errorDetails());
         return;
     }
 
@@ -337,8 +420,9 @@ void AuthOperation::onCheckPasswordFinished(PendingRpcOperation *operation)
     onGotAuthorization(operation, result);
 }
 
-void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization)
+void AuthOperationPrivate::onGotAuthorization(PendingRpcOperation *operation, const TLAuthAuthorization &authorization)
 {
+    Q_Q(AuthOperation);
     qCDebug(c_loggingClientAuthOperation) << authorization.user.phone
                                           << authorization.user.firstName
                                           << authorization.user.lastName;
@@ -350,27 +434,29 @@ void AuthOperation::onGotAuthorization(PendingRpcOperation *operation, const TLA
     DataInternalApi::get(m_backend->dataStorage())->processData(authorization.user);
     m_authenticatedConnection = Connection::fromOperation(operation);
     m_authenticatedConnection->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Remote);
-    setFinished();
+    q->setFinished();
 }
 
-void AuthOperation::onAccountStatusUpdateFinished(PendingRpcOperation *operation)
+void AuthOperationPrivate::onAccountStatusUpdateFinished(PendingRpcOperation *operation)
 {
+    Q_Q(AuthOperation);
     if (!operation->isSucceeded()) {
-        setFinishedWithError(operation->errorDetails());
+        q->setFinishedWithError(operation->errorDetails());
         return;
     }
     m_authenticatedConnection = Connection::fromOperation(operation);
     m_authenticatedConnection->setStatus(BaseConnection::Status::Signed, BaseConnection::StatusReason::Local);
-    setFinished();
+    q->setFinished();
 }
 
-void AuthOperation::onConnectionError(const QString &description)
+void AuthOperationPrivate::onConnectionError(const QString &description)
 {
-    if (isFinished()) {
+    Q_Q(AuthOperation);
+    if (q->isFinished()) {
         qCDebug(c_loggingClientAuthOperation) << "Connection error on finished auth operation:" << description;
         return;
     }
-    setFinishedWithError({{c_text(), description}});
+    q->setFinishedWithError({{PendingOperation::c_text(), description}});
 }
 
 } // Client
