@@ -115,7 +115,6 @@ bool RpcLayer::processRpcResult(const MTProto::Message &message)
     quint64 messageId = 0;
     stream >> messageId;
     PendingRpcOperation *op = m_operations.take(messageId);
-    delete m_messages.take(messageId);
     if (!op) {
         qCWarning(c_clientRpcLayerCategory) << "processRpcQuery():"
                                             << "Unhandled RPC result for messageId"
