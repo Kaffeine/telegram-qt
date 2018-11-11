@@ -18,6 +18,8 @@ public:
     explicit PendingRpcOperation(const QByteArray &requestData, QObject *parent = nullptr);
     ~PendingRpcOperation() override;
 
+    bool isContentRelated() const { return m_contentRelated; }
+    void setContentRelated(bool related) { m_contentRelated = related; }
     QByteArray requestData() const { return m_requestData; }
     QByteArray replyData() const { return m_replyData; }
     void setFinishedWithReplyData(const QByteArray &data);
@@ -37,6 +39,7 @@ protected:
     QByteArray m_requestData;
     RpcError *m_error = nullptr;
     BaseConnection *m_connection = nullptr;
+    bool m_contentRelated = true;
 };
 
 } // Client namespace

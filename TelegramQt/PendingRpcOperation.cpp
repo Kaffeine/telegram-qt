@@ -50,6 +50,7 @@ void PendingRpcOperation::setFinishedWithReplyData(const QByteArray &data)
 void PendingRpcOperation::clearResult()
 {
     m_replyData.clear();
+    m_contentRelated = true;
     if (m_error) {
         delete m_error;
         m_error = nullptr;
