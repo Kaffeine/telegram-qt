@@ -24,6 +24,15 @@ namespace Telegram {
 
 namespace TLFunctions {
 
+struct TLPing
+{
+    static constexpr TLValue predicate = TLValue::Ping;
+    static constexpr TLValue predicateDisconnect = TLValue::PingDelayDisconnect;
+    TLValue tlType = TLValue::Ping; // clang-5 complains on "tlType = predicate;"
+    quint64 pingId = 0;
+    quint32 disconnectDelay = 0;
+};
+
 // Generated TLFunctions
 struct TLAccountChangePhone
 {

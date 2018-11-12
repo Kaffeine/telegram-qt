@@ -26,6 +26,7 @@ namespace Telegram {
 
 using namespace TLFunctions;
 
+CTelegramStream &operator>>(CTelegramStream &stream, TLPing &ping);
 // Generated write operators
 CTelegramStream &operator>>(CTelegramStream &stream, TLAccountChangePhone &accountChangePhoneFunction);
 CTelegramStream &operator>>(CTelegramStream &stream, TLAccountCheckUsername &accountCheckUsernameFunction);

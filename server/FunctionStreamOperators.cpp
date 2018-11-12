@@ -68,6 +68,24 @@ template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLWallPaper
 
 namespace Telegram {
 
+CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPing &ping)
+{
+    // stream >> function.tlType;
+    stream >> ping.tlType;
+    switch (ping.tlType) {
+    case TLFunctions::TLPing::predicate:
+        stream >> ping.pingId;
+        break;
+    case TLFunctions::TLPing::predicateDisconnect:
+        stream >> ping.pingId;
+        stream >> ping.disconnectDelay;
+        break;
+    default:
+        break;
+    }
+    return stream;
+}
+
 // Generated write operators
 CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountChangePhone &accountChangePhoneFunction)
 {

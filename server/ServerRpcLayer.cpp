@@ -12,6 +12,8 @@
 #include "Session.hpp"
 #include "ServerApi.hpp"
 
+#include "FunctionStreamOperators.hpp"
+
 #include "MTProto/MessageHeader.hpp"
 
 #include "CTelegramStream.hpp"
@@ -108,6 +110,19 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         return processInvokeWithLayer(message.skipTLValue());
     case TLValue::MsgContainer:
         return processMsgContainer(message.skipTLValue());
+    case TLValue::Ping:
+    case TLValue::PingDelayDisconnect:
+    {
+        MTProto::Stream stream(message.data);
+        TLFunctions::TLPing ping;
+        stream >> ping;
+
+        MTProto::Stream output(MTProto::Stream::WriteOnly);
+        output << TLValue::Pong;
+        output << message.messageId;
+        output << ping.pingId;
+        sendPackage(output.getData(), SendMode::ServerPongReply);
+    }
     default:
         break;
     }
