@@ -33,6 +33,7 @@ public:
 
 Q_SIGNALS:
     void finished(PendingRpcOperation *operation);
+    void resent(quint64 oldMessageId, quint64 newMessageId);
 
 protected:
     QByteArray m_replyData;

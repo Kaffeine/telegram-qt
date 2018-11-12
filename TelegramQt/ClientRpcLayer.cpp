@@ -290,6 +290,7 @@ bool RpcLayer::resendIgnoredMessage(quint64 messageId)
     m_operations.insert(message->messageId, operation);
     m_messages.insert(message->messageId, message);
     sendPackage(*message);
+    emit operation->resent(messageId, message->messageId);
     return message->messageId;
 }
 
