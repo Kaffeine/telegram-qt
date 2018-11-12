@@ -29,6 +29,7 @@ class BaseConnection;
 enum class SendMode : quint8 {
     Client,
     ServerInitiative,
+    ServerPongReply,
     ServerReply,
 };
 

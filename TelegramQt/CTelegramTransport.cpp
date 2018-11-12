@@ -25,7 +25,9 @@ CTelegramTransport::CTelegramTransport(QObject *parent) :
 
 quint64 CTelegramTransport::getNewMessageId(quint64 supposedId)
 {
-    // Client message identifiers are divisible by 4, server message identifiers modulo 4 yield 1 if the message is a response to a client message, and 3 otherwise.
+    // The doc says that client message identifiers are divisible by 4, server message identifiers
+    // modulo 4 yield 1 if the message is a response to a client message, and 3 otherwise.
+    // In fact, 'pong' messages from server yield 2.
     const quint8 moduleFour = supposedId % 4;
     quint64 result = supposedId;
     if (result <= m_lastMessageId) {

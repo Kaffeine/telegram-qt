@@ -36,6 +36,8 @@ public:
             ts |= 1;
         } else if (mode == SendMode::ServerInitiative) {
             ts |= 3;
+        } else if (mode == SendMode::ServerPongReply) {
+            ts |= 2;
         } else {
             qCWarning(loggingCategoryRemoteClientConnection) << Q_FUNC_INFO << "Invalid mode";
         }

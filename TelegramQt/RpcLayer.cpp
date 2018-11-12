@@ -214,6 +214,8 @@ static QLatin1String getModeText(SendMode mode)
         return QLatin1String("ServerInitiative");
     case SendMode::ServerReply:
         return QLatin1String("ServerReply");
+    case SendMode::ServerPongReply:
+        return QLatin1String("ServerPongReply");
     }
     Q_UNREACHABLE();
     return QLatin1String("Invalid");
