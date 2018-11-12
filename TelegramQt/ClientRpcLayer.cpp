@@ -171,7 +171,9 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
 
     MTProto::Message *m = m_messages.value(notification.messageId);
     if (!m) {
-        qCWarning(c_clientRpcLayerCategory) << "Received 'ignored' message notification for unknown message id";
+        qCWarning(c_clientRpcLayerCategory) << "Received 'ignored' message notification "
+                                            << notification.toString() << "for unknown message id"
+                                            << hex << showbase << notification.messageId;
         return;
     }
 
