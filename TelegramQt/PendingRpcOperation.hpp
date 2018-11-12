@@ -22,6 +22,7 @@ public:
     QByteArray replyData() const { return m_replyData; }
     void setFinishedWithReplyData(const QByteArray &data);
     void clearResult() override;
+    void reuse(const QByteArray &requestData);
 
     RpcError *rpcError() const { return m_error; }
 

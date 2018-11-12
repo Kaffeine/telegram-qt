@@ -57,6 +57,12 @@ void PendingRpcOperation::clearResult()
     PendingOperation::clearResult();
 }
 
+void PendingRpcOperation::reuse(const QByteArray &requestData)
+{
+    clearResult();
+    m_requestData = requestData;
+}
+
 } // Client namespace
 
 } // Telegram namespace
