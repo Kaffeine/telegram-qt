@@ -137,6 +137,9 @@ DialogList *MessagingApi::getDialogList()
     return d->m_dialogList;
 }
 
+/*!
+    Returns pending MessagesOperation with messages sorted from newer (higher message id) to older (lower message id)
+*/
 MessagesOperation *MessagingApi::getHistory(const Telegram::Peer peer, quint32 limit)
 {
     Q_D(MessagingApi);
