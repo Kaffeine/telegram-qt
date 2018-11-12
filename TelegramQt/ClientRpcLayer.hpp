@@ -30,7 +30,7 @@ namespace Telegram {
 
 namespace MTProto {
 
-class Message;
+struct Message;
 
 }
 

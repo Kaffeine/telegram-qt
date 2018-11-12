@@ -27,7 +27,7 @@ namespace Telegram {
 
 namespace MTProto {
 
-class TELEGRAMQT_EXPORT IgnoredMessageNotification
+struct TELEGRAMQT_EXPORT IgnoredMessageNotification
 {
     Q_GADGET
 public:
