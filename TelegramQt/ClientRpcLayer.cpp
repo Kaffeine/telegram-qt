@@ -201,9 +201,9 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
                                           << " to" << (m->sequenceNumber + 2);
         m->sequenceNumber += 2;
     {
-        quint32 messageContentNumber = m->sequenceNumber / 2 - 1;
-        if (m_contentRelatedMessages < messageContentNumber) {
-            m_contentRelatedMessages = messageContentNumber;
+        quint32 messageContentNumber = m->sequenceNumber / 2;
+        if (m_contentRelatedMessages <= messageContentNumber) {
+            m_contentRelatedMessages = messageContentNumber + 1;
         }
     }
         resendIgnoredMessage(notification.messageId);
