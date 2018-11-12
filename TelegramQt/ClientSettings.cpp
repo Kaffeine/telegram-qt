@@ -14,6 +14,8 @@ Settings::Settings(QObject *parent) :
     m_serverConfiguration = defaultServerConfiguration();
     m_key = defaultServerPublicRsaKey();
     m_preferedSessionType = SessionType::Obfuscated;
+
+    setPingInterval(defaultPingInterval());
 }
 
 void Settings::setProxy(const QNetworkProxy &proxy)
@@ -28,12 +30,17 @@ void Settings::setPreferedSessionType(const Settings::SessionType type)
 
 quint32 Settings::defaultPingInterval()
 {
-    return 15000u;
+    return 45000u;
 }
 
 void Settings::setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime)
 {
-    qWarning() << Q_FUNC_INFO << "NOT IMPLEMENTED";
+    if ((m_pingInterval == interval) && (m_serverDisconnectionAdditionalTime == serverDisconnectionAdditionalTime)) {
+        return;
+    }
+    m_pingInterval = interval;
+    m_serverDisconnectionAdditionalTime = serverDisconnectionAdditionalTime;
+    emit pingIntervalChanged(interval, serverDisconnectionAdditionalTime);
 }
 
 RsaKey Settings::defaultServerPublicRsaKey()

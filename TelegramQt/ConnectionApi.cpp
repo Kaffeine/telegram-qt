@@ -10,6 +10,7 @@
 #include "DataStorage.hpp"
 
 #include "Operations/ClientAuthOperation_p.hpp"
+#include "Operations/ClientPingOperation.hpp"
 #include "Operations/ConnectionOperation.hpp"
 
 #include <QLoggingCategory>
@@ -275,6 +276,24 @@ void ConnectionApiPrivate::onMainConnectionStatusChanged()
     if (!m_mainConnection) {
         return;
     }
+
+    if (m_mainConnection) {
+        const bool keepAlive = (m_mainConnection->status() == Connection::Status::Signed) || (m_mainConnection->status() == Connection::Status::HasDhKey);
+        if (keepAlive) {
+            if (!m_pingOperation) {
+                m_pingOperation = new PingOperation(this);
+                m_pingOperation->setSettings(backend()->m_settings);
+                m_pingOperation->setRpcLayer(m_mainConnection->rpcLayer());
+                connect(m_pingOperation, &PingOperation::pingFailed, this, &ConnectionApiPrivate::onPingFailed);
+            }
+            m_pingOperation->ensureActive();
+        } else {
+            if (m_pingOperation) {
+                m_pingOperation->ensureInactive();
+            }
+        }
+    }
+
     const bool signedIn = m_mainConnection->status() == Connection::Status::Signed;
     if (signedIn) {
         backend()->syncAccountToStorage();
@@ -292,6 +311,11 @@ void ConnectionApiPrivate::onSyncFinished(PendingOperation *operation)
     } else {
         qCCritical(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected sync operation status" << operation->errorDetails();
     }
+}
+
+void ConnectionApiPrivate::onPingFailed()
+{
+    qCWarning(c_connectionApiLoggingCategory) << Q_FUNC_INFO;
 }
 
 void ConnectionApiPrivate::setStatus(ConnectionApiPrivate::Status newStatus)

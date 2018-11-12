@@ -100,7 +100,18 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         qCDebug(c_clientRpcLayerCategory) << "processGzipPackedRpcQuery(stream);";
         break;
     case TLValue::Pong:
-        qCDebug(c_clientRpcLayerCategory) << "processPingPong(stream);";
+    {
+        MTProto::Stream stream(message.data);
+        TLPong pong;
+        stream >> pong;
+        PendingRpcOperation *op = m_operations.take(pong.msgId);
+        if (!op) {
+            qCWarning(c_clientRpcLayerCategory) << "Unexpected pong?!" << pong.msgId << pong.pingId;
+            return false;
+        }
+        op->setFinishedWithReplyData(message.data);
+        return true;
+    }
         break;
     default:
         qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "value:" << message.firstValue();

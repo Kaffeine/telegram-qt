@@ -14,7 +14,7 @@ namespace Client {
 class Settings : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int pingInterval MEMBER m_pingInterval)
+    Q_PROPERTY(int pingInterval READ pingInterval WRITE setPingInterval NOTIFY pingIntervalChanged)
 public:
     enum class SessionType {
         None,
@@ -32,8 +32,11 @@ public:
     void setPreferedSessionType(const SessionType type);
 
     Q_INVOKABLE static quint32 defaultPingInterval();
-    // By default, the app would ping server every 15 000 ms and instruct the server to close connection after 10 000 more ms. Pass interval = 0 to disable ping.
-    void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime = 10000);
+    // By default, the app will ping server every 45 seconds
+    // Pass interval = 0 to disable ping; the additionalTime argument can be used to enable server-side disconnection
+    quint32 pingInterval() const { return m_pingInterval; }
+    quint32 serverDisconnectionAdditionalTime() const { return m_serverDisconnectionAdditionalTime; }
+    void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime = 0);
 
     // void setMediaDataBufferSize(quint32 size);
 
@@ -51,12 +54,16 @@ public:
 
     bool isValid() const;
 
+Q_SIGNALS:
+    void pingIntervalChanged(quint32 interval, quint32 serverDisconnectionAdditionalTime);
+
 protected:
     // TODO: PIMPL
     QNetworkProxy m_proxy;
     QVector<DcOption> m_serverConfiguration;
     RsaKey m_key;
-    int m_pingInterval;
+    quint32 m_pingInterval = 0;
+    quint32 m_serverDisconnectionAdditionalTime = 0;
     SessionType m_preferedSessionType = SessionType::None;
 };
 

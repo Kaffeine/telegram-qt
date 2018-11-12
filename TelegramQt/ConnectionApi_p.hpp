@@ -32,6 +32,8 @@ namespace Client {
 
 class Connection;
 class ConnectOperation;
+class PingOperation;
+
 class ConnectionApi;
 class ConnectionApiPrivate : public ClientApiPrivate
 {
@@ -67,6 +69,7 @@ protected slots:
     void onAuthCodeRequired();
     void onMainConnectionStatusChanged();
     void onSyncFinished(PendingOperation *operation);
+    void onPingFailed();
 
 protected:
     void setStatus(Status newStatus);
@@ -75,6 +78,7 @@ protected:
     Connection *m_mainConnection = nullptr;
     ConnectOperation *m_connectToServerOperation = nullptr;
     AuthOperation *m_authOperation = nullptr;
+    PingOperation *m_pingOperation = nullptr;
 
     Status m_status = Status::StatusDisconnected;
 };
