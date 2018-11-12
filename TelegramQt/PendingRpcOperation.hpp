@@ -14,7 +14,8 @@ class PendingRpcOperation : public PendingOperation
 {
     Q_OBJECT
 public:
-    explicit PendingRpcOperation(const QByteArray &requestData = QByteArray(), QObject *parent = nullptr);
+    explicit PendingRpcOperation(QObject *parent = nullptr);
+    explicit PendingRpcOperation(const QByteArray &requestData, QObject *parent = nullptr);
     ~PendingRpcOperation() override;
 
     QByteArray requestData() const { return m_requestData; }

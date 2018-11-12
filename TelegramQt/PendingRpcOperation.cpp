@@ -8,11 +8,16 @@ namespace Telegram {
 
 namespace Client {
 
-PendingRpcOperation::PendingRpcOperation(const QByteArray &requestData, QObject *parent) :
-    PendingOperation(parent),
-    m_requestData(requestData)
+PendingRpcOperation::PendingRpcOperation(QObject *parent) :
+    PendingOperation(parent)
 {
     connect(this, &PendingOperation::finished, [this]() { emit PendingRpcOperation::finished(this); });
+}
+
+PendingRpcOperation::PendingRpcOperation(const QByteArray &requestData, QObject *parent) :
+    PendingRpcOperation(parent)
+{
+    m_requestData = requestData;
 }
 
 PendingRpcOperation::~PendingRpcOperation()
