@@ -7,7 +7,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_clientRpc__VAR_GROUP_NAME__Category, "telegram.client.rpclayer.__VAR_GROUP_NAME_SMALL__", QtWarningMsg)
+Q_LOGGING_CATEGORY(c_clientRpc__VAR_GROUP_NAME__Category, "telegram.client.rpclayer.__VAR_GROUP_NAME_SMALL__", QtDebugMsg)
 
 namespace Telegram {
 
