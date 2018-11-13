@@ -104,7 +104,6 @@ void tst_MessagesApi::cleanupTestCase()
 
 void tst_MessagesApi::getDialogs()
 {
-    const Telegram::Client::Settings::SessionType sessionType = Telegram::Client::Settings::SessionType::Obfuscated;
     const UserData user1Data = c_userWithPassword;
     const UserData user2Data = c_user2;
     const DcOption clientDcOption = c_localDcOptions.first();
@@ -129,7 +128,7 @@ void tst_MessagesApi::getDialogs()
     // Prepare clients
     Client::Client client1;
     {
-        setupClientHelper(&client1, user1Data, publicKey, sessionType, clientDcOption);
+        setupClientHelper(&client1, user1Data, publicKey, clientDcOption);
         Client::AuthOperation *signInOperation1 = nullptr;
         signInHelper(&client1, user1Data, &authProvider, &signInOperation1);
         TRY_VERIFY2(signInOperation1->isSucceeded(), "Unexpected sign in fail");
@@ -144,7 +143,7 @@ void tst_MessagesApi::getDialogs()
 
     Client::Client client2;
     {
-        setupClientHelper(&client2, user2Data, publicKey, sessionType, clientDcOption);
+        setupClientHelper(&client2, user2Data, publicKey, clientDcOption);
         Client::AuthOperation *signInOperation2 = nullptr;
         signInHelper(&client2, user2Data, &authProvider, &signInOperation2);
         TRY_VERIFY2(signInOperation2->isSucceeded(), "Unexpected sign in fail");

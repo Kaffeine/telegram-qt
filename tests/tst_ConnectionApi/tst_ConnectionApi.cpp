@@ -150,7 +150,7 @@ void tst_ConnectionApi::testClientConnection()
     QVERIFY(user);
 
     Client::Client client;
-    setupClientHelper(&client, userData, publicKey, sessionType, clientDcOption);
+    setupClientHelper(&client, userData, publicKey, clientDcOption, sessionType);
     Client::ConnectionApi *connectionApi = client.connectionApi();
 
     QSignalSpy clientConnectionStatusSpy(connectionApi, &Client::ConnectionApi::statusChanged);

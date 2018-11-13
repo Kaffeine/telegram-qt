@@ -33,7 +33,7 @@ Telegram::Client::AppInformation *getAppInfo()
 }
 
 void setupClientHelper(Telegram::Client::Client *client, const UserData &userData, const Telegram::RsaKey &serverPublicKey,
-                       const Telegram::Client::Settings::SessionType sessionType, const Telegram::DcOption clientDcOption)
+                       const Telegram::DcOption clientDcOption)
 {
     Telegram::Client::AccountStorage *accountStorage = new Telegram::Client::AccountStorage(client);
     accountStorage->setPhoneNumber(userData.phoneNumber);
@@ -44,9 +44,15 @@ void setupClientHelper(Telegram::Client::Client *client, const UserData &userDat
     client->setSettings(clientSettings);
     client->setAccountStorage(accountStorage);
     client->setDataStorage(dataStorage);
-    QVERIFY(clientSettings->setServerConfiguration({c_localDcOptions.first()}));
+    QVERIFY(clientSettings->setServerConfiguration({clientDcOption}));
     QVERIFY(clientSettings->setServerRsaKey(serverPublicKey));
-    clientSettings->setPreferedSessionType(sessionType);
+}
+
+void setupClientHelper(Telegram::Client::Client *client, const UserData &userData, const Telegram::RsaKey &serverPublicKey,
+                       const Telegram::DcOption clientDcOption, const Telegram::Client::Settings::SessionType sessionType)
+{
+    setupClientHelper(client, userData, serverPublicKey, clientDcOption);
+    client->settings()->setPreferedSessionType(sessionType);
 }
 
 void signInHelper(Telegram::Client::Client *client, const UserData &userData, Telegram::Test::AuthProvider *authProvider,
