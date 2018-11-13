@@ -42,6 +42,7 @@
 
 #include "keys_data.hpp"
 #include "TestAuthProvider.hpp"
+#include "TestClientUtils.hpp"
 #include "TestServerUtils.hpp"
 #include "TestUserData.hpp"
 #include "TestUtils.hpp"
@@ -57,50 +58,6 @@ static const UserData c_userWithPassword = []() {
     userData.setPasswordSalt(QByteArrayLiteral("mysalt"));
     return userData;
 }();
-
-static const QVector<Telegram::DcOption> c_localDcOptions = {
-    Telegram::DcOption(QStringLiteral("127.0.0.11"), 11441, 1),
-    Telegram::DcOption(QStringLiteral("127.0.0.12"), 11442, 2),
-    Telegram::DcOption(QStringLiteral("127.0.0.13"), 11443, 3),
-};
-
-static const Telegram::DcConfiguration c_localDcConfiguration = []() {
-    Telegram::DcConfiguration configuration;
-    configuration.dcOptions = c_localDcOptions;
-    return configuration;
-}();
-
-CAppInformation *getAppInfo()
-{
-    static CAppInformation *appInfo = nullptr;
-    if (!appInfo) {
-        appInfo = new CAppInformation();
-        appInfo->setAppId(14617);
-        appInfo->setAppHash(QLatin1String("e17ac360fd072f83d5d08db45ce9a121"));
-        appInfo->setAppVersion(QLatin1String("0.2"));
-        appInfo->setDeviceInfo(QLatin1String("pc"));
-        appInfo->setOsInfo(QLatin1String("GNU/Linux"));
-        appInfo->setLanguageCode(QLatin1String("en"));
-    }
-    return appInfo;
-}
-
-void setupClientHelper(Client::Client *client, const UserData &userData, const RsaKey &serverPublicKey,
-                                const Client::Settings::SessionType sessionType, const DcOption clientDcOption)
-{
-    Client::AccountStorage *accountStorage = new Client::AccountStorage(client);
-    accountStorage->setPhoneNumber(userData.phoneNumber);
-    accountStorage->setDcInfo(clientDcOption);
-    Client::Settings *clientSettings = new Client::Settings(client);
-    Client::InMemoryDataStorage *dataStorage = new Client::InMemoryDataStorage(client);
-    client->setAppInformation(getAppInfo());
-    client->setSettings(clientSettings);
-    client->setAccountStorage(accountStorage);
-    client->setDataStorage(dataStorage);
-    QVERIFY(clientSettings->setServerConfiguration({c_localDcOptions.first()}));
-    QVERIFY(clientSettings->setServerRsaKey(serverPublicKey));
-    clientSettings->setPreferedSessionType(sessionType);
-}
 
 class tst_ConnectionApi : public QObject
 {
