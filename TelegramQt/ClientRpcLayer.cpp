@@ -195,7 +195,7 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
         resendIgnoredMessage(notification.messageId);
         break;
     case MTProto::IgnoredMessageNotification::SequenceNumberTooLow:
-        qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooHigh): increase seq num"
+        qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooLow): increase seq num"
                                           << hex << showbase
                                           << " from" << m->sequenceNumber
                                           << " to" << (m->sequenceNumber + 2);
