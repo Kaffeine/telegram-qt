@@ -22,6 +22,10 @@
 #include "CTelegramStream.hpp"
 #include "PendingOperation.hpp"
 
+#ifdef DEVELOPER_BUILD
+#include "TLTypesDebug.hpp"
+#endif
+
 #ifndef DUMP_CLIENT_RPC_PACKETS
 #define DUMP_CLIENT_RPC_PACKETS
 #endif
