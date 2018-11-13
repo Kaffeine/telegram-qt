@@ -95,7 +95,6 @@ void TelegramNamespace::registerTypes()
         qDebug() << "TelegramQt Developer build";
 #endif
 
-        qRegisterMetaType<TelegramNamespace::ConnectionState>("TelegramNamespace::ConnectionStatus");
         qRegisterMetaType<TelegramNamespace::ContactStatus>("TelegramNamespace::ContactStatus");
         qRegisterMetaType<TelegramNamespace::MessageFlags>("TelegramNamespace::MessageFlags");
         qRegisterMetaType<TelegramNamespace::MessageType>("TelegramNamespace::MessageType");

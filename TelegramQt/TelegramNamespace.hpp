@@ -161,16 +161,6 @@ public:
     };
     Q_ENUM(UserNameStatus)
 
-    enum ConnectionState {
-        ConnectionStateDisconnected,
-        ConnectionStateConnecting,
-        ConnectionStateConnected,
-        ConnectionStateAuthRequired,
-        ConnectionStateAuthenticated,
-        ConnectionStateReady // Initializated
-    };
-    Q_ENUM(ConnectionState)
-
     enum ContactLastOnline {
         ContactLastOnlineUnknown,
         ContactLastOnlineRecently,
