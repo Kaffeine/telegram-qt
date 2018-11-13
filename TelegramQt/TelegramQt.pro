@@ -111,6 +111,7 @@ HEADERS += \
     ClientSettings.hpp \
     ClientRpcLayer.hpp \
     ClientRpcLayerExtension.hpp \
+    ClientRpcLayerExtension_p.hpp \
     ConnectionApi.hpp \
     ConnectionApi_p.hpp \
     ContactList.hpp \
