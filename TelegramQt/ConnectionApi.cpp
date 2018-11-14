@@ -34,13 +34,12 @@ ConnectionApiPrivate *ConnectionApiPrivate::get(ConnectionApi *parent)
 bool ConnectionApiPrivate::isSignedIn() const
 {
     switch (m_status) {
-    case Status::StatusAuthenticated:
-    case Status::StatusReady:
+    case ConnectionApi::StatusConnected:
+    case ConnectionApi::StatusReady:
         return true;
-    case Status::StatusDisconnected:
-    case Status::StatusConnecting:
-    case Status::StatusConnected:
-    case Status::StatusAuthRequired:
+    case ConnectionApi::StatusDisconnected:
+    case ConnectionApi::StatusConnecting:
+    case ConnectionApi::StatusWaitForAuthentication:
         return false;
     }
     Q_UNREACHABLE();
@@ -52,8 +51,8 @@ Connection *ConnectionApiPrivate::getDefaultConnection()
         return mainConnection();
     }
 
-    if (m_connectToServerOperation) {
-        return m_connectToServerOperation->connection();
+    if (m_initialConnectOperation) {
+        return m_initialConnectOperation->connection();
     }
     return nullptr;
 }
@@ -67,26 +66,26 @@ void ConnectionApiPrivate::setMainConnection(Connection *connection)
 {
     m_mainConnection = connection;
     connect(m_mainConnection, &BaseConnection::statusChanged, this, &ConnectionApiPrivate::onMainConnectionStatusChanged);
-    onMainConnectionStatusChanged();
+    onMainConnectionStatusChanged(connection->status(), Connection::StatusReason::Local);
 }
 
 PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> &dcOptions)
 {
-    if (m_connectToServerOperation) {
-        if (dcOptions.contains(m_connectToServerOperation->connection()->dcOption())) {
-            switch (m_connectToServerOperation->connection()->status()) {
+    if (m_initialConnectOperation) {
+        if (dcOptions.contains(m_initialConnectOperation->connection()->dcOption())) {
+            switch (m_initialConnectOperation->connection()->status()) {
             case BaseConnection::Status::Connecting:
             case BaseConnection::Status::Connected:
             case BaseConnection::Status::HasDhKey:
             case BaseConnection::Status::Signed:
-                return m_connectToServerOperation;
+                return m_initialConnectOperation;
             default:
-                m_connectToServerOperation->connection()->transport()->disconnectFromHost();
+                m_initialConnectOperation->connection()->transport()->disconnectFromHost();
                 break;
             }
         }
-        m_connectToServerOperation->deleteLater();
-        m_connectToServerOperation = nullptr;
+        m_initialConnectOperation->deleteLater();
+        m_initialConnectOperation = nullptr;
     }
 
     if (mainConnection()) {
@@ -109,14 +108,14 @@ PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> 
 
     Connection *connection = createConnection(dcOptions.first());
     connect(connection, &BaseConnection::statusChanged,
-            this, &ConnectionApiPrivate::onUpcomingConnectionStatusChanged);
+            this, &ConnectionApiPrivate::onInitialConnectionStatusChanged);
 
-    m_connectToServerOperation = connection->connectToDc();
-    connect(m_connectToServerOperation, &PendingOperation::finished, this, &ConnectionApiPrivate::onConnectOperationFinished);
-    return m_connectToServerOperation;
+    m_initialConnectOperation = connection->connectToDc();
+    connect(m_initialConnectOperation, &PendingOperation::finished, this, &ConnectionApiPrivate::onInitialConnectOperationFinished);
+    return m_initialConnectOperation;
 }
 
-AuthOperation *ConnectionApiPrivate::signIn()
+AuthOperation *ConnectionApiPrivate::startAuthentication()
 {
     if (isSignedIn()) {
         return PendingOperation::failOperation<AuthOperation>
@@ -162,8 +161,8 @@ AuthOperation *ConnectionApiPrivate::checkIn()
     connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onAuthFinished);
     PendingOperation *connectionOperation = connectToServer({accountStorage->dcInfo()});
     m_authOperation->runAfter(connectionOperation);
-    m_connectToServerOperation->connection()->setAuthKey(accountStorage->authKey());
-    m_connectToServerOperation->connection()->rpcLayer()->setSessionData(
+    m_initialConnectOperation->connection()->setAuthKey(accountStorage->authKey());
+    m_initialConnectOperation->connection()->rpcLayer()->setSessionData(
                 accountStorage->sessionId(),
                 accountStorage->contentRelatedMessagesNumber());
     return m_authOperation;
@@ -198,37 +197,37 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
     return connection;
 }
 
-Connection *ConnectionApiPrivate::ensureConnection(const ConnectionSpec &dcSpec)
+Connection *ConnectionApiPrivate::ensureConnection(const ConnectionSpec &connectionSpec)
 {
-    qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << dcSpec.dcId << dcSpec.flags;
-    ConnectionSpec spec = dcSpec;
+    qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << connectionSpec.dcId << connectionSpec.flags;
+    ConnectionSpec spec = connectionSpec;
     spec.flags |= ConnectionSpec::RequestFlag::Ipv4Only; // Enable only ipv4 for now
-    if (!m_connections.contains(dcSpec)) {
+    if (!m_connections.contains(connectionSpec)) {
         const DcOption opt = backend()->dataStorage()->serverConfiguration().getOption(spec);
         if (!opt.isValid()) {
             qCWarning(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unable to find suitable DC";
             return nullptr;
         }
-        m_connections.insert(dcSpec, createConnection(opt));
+        m_connections.insert(connectionSpec, createConnection(opt));
     }
-    return m_connections.value(dcSpec);
+    return m_connections.value(connectionSpec);
 }
 
-void ConnectionApiPrivate::onConnectOperationFinished(PendingOperation *operation)
+void ConnectionApiPrivate::onInitialConnectOperationFinished(PendingOperation *operation)
 {
-    disconnect(m_connectToServerOperation->connection(), &BaseConnection::statusChanged,
-               this, &ConnectionApiPrivate::onUpcomingConnectionStatusChanged);
+    disconnect(m_initialConnectOperation->connection(), &BaseConnection::statusChanged,
+               this, &ConnectionApiPrivate::onInitialConnectionStatusChanged);
 
     if (operation->isSucceeded()) {
         backend()->getDcConfig();
         return;
     }
-    m_connectToServerOperation = nullptr;
+    m_initialConnectOperation = nullptr;
     operation->deleteLater();
     setStatus(ConnectionApi::StatusDisconnected);
 }
 
-void ConnectionApiPrivate::onUpcomingConnectionStatusChanged(BaseConnection::Status status,
+void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Status status,
                                                              BaseConnection::StatusReason reason)
 {
     qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << status << reason;
@@ -241,7 +240,12 @@ void ConnectionApiPrivate::onUpcomingConnectionStatusChanged(BaseConnection::Sta
         setStatus(ConnectionApi::StatusConnecting);
         break;
     case BaseConnection::Status::Connected:
-        setStatus(ConnectionApi::StatusConnected);
+        // Nothing to do; wait for DH
+        break;
+    case BaseConnection::Status::HasDhKey:
+        break;
+    case BaseConnection::Status::Signed:
+    case BaseConnection::Status::Failed:
         break;
     }
 }
@@ -253,7 +257,7 @@ void ConnectionApiPrivate::onAuthFinished(PendingOperation *operation)
         return;
     }
     if (!operation->isSucceeded()) {
-        setStatus(ConnectionApi::StatusAuthRequired);
+        setStatus(ConnectionApi::StatusWaitForAuthentication);
         qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "TODO?";
         return;
     }
@@ -268,46 +272,49 @@ void ConnectionApiPrivate::onAuthFinished(PendingOperation *operation)
 
 void ConnectionApiPrivate::onAuthCodeRequired()
 {
-    setStatus(ConnectionApi::StatusAuthRequired);
+    setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonRemote);
 }
 
-void ConnectionApiPrivate::onMainConnectionStatusChanged()
+void ConnectionApiPrivate::onMainConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason)
 {
     if (!m_mainConnection) {
         return;
     }
 
-    if (m_mainConnection) {
-        const bool keepAlive = (m_mainConnection->status() == Connection::Status::Signed) || (m_mainConnection->status() == Connection::Status::HasDhKey);
-        if (keepAlive) {
-            if (!m_pingOperation) {
-                m_pingOperation = new PingOperation(this);
-                m_pingOperation->setSettings(backend()->m_settings);
-                m_pingOperation->setRpcLayer(m_mainConnection->rpcLayer());
-                connect(m_pingOperation, &PingOperation::pingFailed, this, &ConnectionApiPrivate::onPingFailed);
-            }
-            m_pingOperation->ensureActive();
-        } else {
-            if (m_pingOperation) {
-                m_pingOperation->ensureInactive();
-            }
+    const bool keepAliveIsWanted = (status == Connection::Status::Signed) || (status == Connection::Status::HasDhKey);
+    if (keepAliveIsWanted) {
+        if (!m_pingOperation) {
+            m_pingOperation = new PingOperation(this);
+            m_pingOperation->setSettings(backend()->m_settings);
+            m_pingOperation->setRpcLayer(m_mainConnection->rpcLayer());
+            connect(m_pingOperation, &PingOperation::pingFailed, this, &ConnectionApiPrivate::onPingFailed);
+        }
+        m_pingOperation->ensureActive();
+    } else {
+        if (m_pingOperation) {
+            m_pingOperation->ensureInactive();
         }
     }
 
-    const bool signedIn = m_mainConnection->status() == Connection::Status::Signed;
-    if (signedIn) {
+    switch (status) {
+    case Connection::Status::Signed:
+    {
         backend()->syncAccountToStorage();
-        setStatus(ConnectionApi::StatusAuthenticated);
+        setStatus(ConnectionApi::StatusConnected);
         PendingOperation *syncOperation = backend()->sync();
         connect(syncOperation, &PendingOperation::finished, this, &ConnectionApiPrivate::onSyncFinished);
         syncOperation->startLater();
+    }
+        break;
+    default:
+        break;
     }
 }
 
 void ConnectionApiPrivate::onSyncFinished(PendingOperation *operation)
 {
     if (operation->isSucceeded()) {
-        setStatus(ConnectionApi::StatusReady);
+        setStatus(ConnectionApi::StatusReady, ConnectionApi::StatusReasonLocal);
     } else {
         qCCritical(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected sync operation status" << operation->errorDetails();
     }
@@ -318,14 +325,14 @@ void ConnectionApiPrivate::onPingFailed()
     qCWarning(c_connectionApiLoggingCategory) << Q_FUNC_INFO;
 }
 
-void ConnectionApiPrivate::setStatus(ConnectionApiPrivate::Status newStatus)
+void ConnectionApiPrivate::setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason)
 {
     Q_Q(ConnectionApi);
-    if (m_status == newStatus) {
+    if (m_status == status) {
         return;
     }
-    m_status = newStatus;
-    emit q->statusChanged(newStatus, ConnectionApi::StatusReasonNone);
+    m_status = status;
+    emit q->statusChanged(status, reason);
 }
 
 ConnectionApi::ConnectionApi(QObject *parent) :
@@ -354,7 +361,7 @@ Telegram::Client::AuthOperation *ConnectionApi::signUp()
 Telegram::Client::AuthOperation *ConnectionApi::signIn()
 {
     Q_D(ConnectionApi);
-    return d->signIn();
+    return d->startAuthentication();
 }
 
 AuthOperation *ConnectionApi::checkIn()

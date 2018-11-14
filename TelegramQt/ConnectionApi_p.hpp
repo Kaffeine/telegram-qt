@@ -34,14 +34,11 @@ class Connection;
 class ConnectOperation;
 class PingOperation;
 
-class ConnectionApi;
 class ConnectionApiPrivate : public ClientApiPrivate
 {
     Q_OBJECT
     Q_DECLARE_PUBLIC(ConnectionApi)
 public:
-    using Status = ConnectionApi::Status;
-
     explicit ConnectionApiPrivate(ConnectionApi *parent = nullptr);
     static ConnectionApiPrivate *get(ConnectionApi *parent);
 
@@ -49,38 +46,38 @@ public:
 
     // Public API implementation
     PendingOperation *connectToServer(const QVector<DcOption> &dcOptions);
-    AuthOperation *signIn();
+    AuthOperation *startAuthentication();
     AuthOperation *checkIn();
-    Status status() const { return m_status; }
+    ConnectionApi::Status status() const { return m_status; }
 
 public:
     // Internal TelegramQt API
     Connection *createConnection(const DcOption &dcOption);
-    Connection *ensureConnection(const ConnectionSpec &dcSpec);
+    Connection *ensureConnection(const ConnectionSpec &connectionSpec);
 
     Connection *getDefaultConnection();
     Connection *mainConnection();
     void setMainConnection(Connection *connection);
 
 protected slots:
-    void onConnectOperationFinished(PendingOperation *operation);
-    void onUpcomingConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
+    void onInitialConnectOperationFinished(PendingOperation *operation);
+    void onInitialConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
     void onAuthFinished(PendingOperation *operation);
     void onAuthCodeRequired();
-    void onMainConnectionStatusChanged();
+    void onMainConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
     void onSyncFinished(PendingOperation *operation);
     void onPingFailed();
 
 protected:
-    void setStatus(Status newStatus);
+    void setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason = ConnectionApi::StatusReasonNone);
 
     QHash<ConnectionSpec, Connection *> m_connections;
     Connection *m_mainConnection = nullptr;
-    ConnectOperation *m_connectToServerOperation = nullptr;
+    ConnectOperation *m_initialConnectOperation = nullptr;
     AuthOperation *m_authOperation = nullptr;
     PingOperation *m_pingOperation = nullptr;
 
-    Status m_status = Status::StatusDisconnected;
+    ConnectionApi::Status m_status = ConnectionApi::StatusDisconnected;
 };
 
 } // Client namespace

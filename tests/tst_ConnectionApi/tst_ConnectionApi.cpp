@@ -167,10 +167,6 @@ void tst_ConnectionApi::testClientConnection()
     QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
     QVERIFY2(authCodeSpy.isEmpty(), "Internal error: auth code sent in Connecting state");
 
-    TRY_COMPARE(clientConnectionStatusSpy.count(), 1);
-    QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusConnected);
-    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnected));
-
     TRY_COMPARE(client.dataStorage()->serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
     QCOMPARE(authCodeSpy.count(), 1);
@@ -180,8 +176,8 @@ void tst_ConnectionApi::testClientConnection()
     const QString authCode = authCodeSentArguments.at(1).toString();
 
     TRY_COMPARE(clientConnectionStatusSpy.count(), 1);
-    QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusAuthRequired);
-    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusAuthRequired));
+    QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
+    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForAuthentication));
 
     signInOperation->submitAuthCode(authCode);
 
@@ -205,7 +201,7 @@ void tst_ConnectionApi::testClientConnection()
 
     TRY_VERIFY(!clientConnectionStatusSpy.isEmpty());
     //QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusAuthenticated);
-    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusAuthenticated));
+    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnected));
 
     TRY_VERIFY(!clientConnectionStatusSpy.isEmpty());
     QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusReady);
