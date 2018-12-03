@@ -50,6 +50,8 @@ public:
     AuthOperation *checkIn();
     ConnectionApi::Status status() const { return m_status; }
 
+    QVariantHash getBackendSetupErrorDetails() const;
+
 public:
     // Internal TelegramQt API
     Connection *createConnection(const DcOption &dcOption);

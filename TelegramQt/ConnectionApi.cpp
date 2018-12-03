@@ -117,15 +117,14 @@ PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> 
 
 AuthOperation *ConnectionApiPrivate::startAuthentication()
 {
+    QVariantHash errorDetails = getBackendSetupErrorDetails();
+    if (!errorDetails.isEmpty()) {
+        return PendingOperation::failOperation<AuthOperation>(errorDetails, this);
+    }
+
     if (isSignedIn()) {
         return PendingOperation::failOperation<AuthOperation>
                 (QStringLiteral("Already signed in"), this);
-    }
-    Settings *settings = backend()->m_settings;
-    if (!settings || !settings->isValid()) {
-        qCWarning(c_connectionApiLoggingCategory) << "Invalid settings";
-        return PendingOperation::failOperation<AuthOperation>
-                (QStringLiteral("Invalid settings"), this);
     }
     if (m_authOperation && !m_authOperation->isFinished()) {
         return PendingOperation::failOperation<AuthOperation>
@@ -138,13 +137,19 @@ AuthOperation *ConnectionApiPrivate::startAuthentication()
     priv->setRunMethod(&AuthOperation::requestAuthCode);
     connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onAuthFinished);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &ConnectionApiPrivate::onAuthCodeRequired);
-    PendingOperation *connectionOperation = connectToServer(settings->serverConfiguration());
+    PendingOperation *connectionOperation = connectToServer(backend()->settings()->serverConfiguration());
     m_authOperation->runAfter(connectionOperation);
     return m_authOperation;
 }
 
 AuthOperation *ConnectionApiPrivate::checkIn()
 {
+    QVariantHash errorDetails = getBackendSetupErrorDetails();
+    if (!errorDetails.isEmpty()) {
+        qCWarning(c_connectionApiLoggingCategory) << "Unable to initiate connection:" << errorDetails;
+        return nullptr;
+    }
+
     if (m_authOperation && !m_authOperation->isFinished()) {
         return PendingOperation::failOperation<AuthOperation>
                 (QStringLiteral("Auth operation is already in progress"), this);
@@ -166,6 +171,24 @@ AuthOperation *ConnectionApiPrivate::checkIn()
                 accountStorage->sessionId(),
                 accountStorage->contentRelatedMessagesNumber());
     return m_authOperation;
+}
+
+QVariantHash ConnectionApiPrivate::getBackendSetupErrorDetails() const
+{
+    if (!backend()->accountStorage()) {
+        return {{PendingOperation::c_text(), QStringLiteral("Account storage is missing")}};
+    }
+    if (!backend()->dataStorage()) {
+        return {{PendingOperation::c_text(), QStringLiteral("Data storage is missing")}};
+    }
+    Settings *settings = backend()->settings();
+    if (!settings) {
+        return {{PendingOperation::c_text(), QStringLiteral("Settings object is missing")}};
+    }
+    if (!settings->isValid()) {
+        return {{PendingOperation::c_text(), QStringLiteral("Invalid settings")}};
+    }
+    return {};
 }
 
 Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
