@@ -56,6 +56,8 @@ public:
 
     bool isSignedIn() const;
 
+    Settings *settings() const { return m_settings; }
+
     PendingOperation *getDcConfig();
 
     PendingOperation *sync();
