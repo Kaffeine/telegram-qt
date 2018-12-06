@@ -56,12 +56,15 @@ public:
     bool isSignedIn() const;
     Status status() const;
 
-    AuthOperation *signUp();
-    AuthOperation *signIn();
+    AuthOperation *startAuthentication();
     AuthOperation *checkIn();
 
 Q_SIGNALS:
     void statusChanged(Telegram::Client::ConnectionApi::Status status, Telegram::Client::ConnectionApi::StatusReason reason);
+
+public:
+    Q_DECL_DEPRECATED AuthOperation *signIn() { return startAuthentication(); }
+    Q_DECL_DEPRECATED AuthOperation *signUp() { return startAuthentication(); }
 
 protected:
     Q_DECLARE_PRIVATE_D(d, ConnectionApi)

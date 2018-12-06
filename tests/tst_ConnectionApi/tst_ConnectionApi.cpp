@@ -157,7 +157,7 @@ void tst_ConnectionApi::testClientConnection()
     QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusDisconnected);
 
     // --- Sign in ---
-    Client::AuthOperation *signInOperation = connectionApi->signIn();
+    Client::AuthOperation *signInOperation = connectionApi->startAuthentication();
     signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);

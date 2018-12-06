@@ -376,12 +376,7 @@ ConnectionApi::Status ConnectionApi::status() const
     return d->status();
 }
 
-Telegram::Client::AuthOperation *ConnectionApi::signUp()
-{
-     return signIn();
-}
-
-Telegram::Client::AuthOperation *ConnectionApi::signIn()
+Telegram::Client::AuthOperation *ConnectionApi::startAuthentication()
 {
     Q_D(ConnectionApi);
     return d->startAuthentication();

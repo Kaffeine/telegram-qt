@@ -48,9 +48,8 @@ public:
     bool hasRecovery() const;
 
 public slots:
-    void signIn();
+    void startAuthentication();
     void checkIn();
-    void checkRegistration();
 
     void abort();
     void submitPhoneNumber(const QString &phoneNumber);
@@ -88,6 +87,10 @@ Q_SIGNALS:
 
     void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
+
+public slots:
+    Q_DECL_DEPRECATED void checkRegistration() { return startAuthentication(); }
+    Q_DECL_DEPRECATED void signIn() { startAuthentication(); }
 
 protected:
     void setStatus(const DeclarativeAuthOperation::AuthStatus status);

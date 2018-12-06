@@ -176,7 +176,7 @@ void tst_all::testClientConnection()
 
     // --- Sign in ---
     QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
-    Client::AuthOperation *signInOperation = client.connectionApi()->signIn();
+    Client::AuthOperation *signInOperation = client.connectionApi()->startAuthentication();
     signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
@@ -281,7 +281,7 @@ void tst_all::testCheckInSignIn()
     TRY_COMPARE(checkInFinishedSpy.count(), 1);
     TRY_COMPARE(checkInFailedSpy.count(), 1);
 
-    Client::AuthOperation *signInOperation = client.connectionApi()->signIn();
+    Client::AuthOperation *signInOperation = client.connectionApi()->startAuthentication();
 
     signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
@@ -457,7 +457,7 @@ void tst_all::testSignUp()
 
     // --- Sign up ---
     QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
-    Client::AuthOperation *signUpOperation = client.connectionApi()->signUp();
+    Client::AuthOperation *signUpOperation = client.connectionApi()->startAuthentication();
     signUpOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signUpOperation, &Client::AuthOperation::authCodeRequired);

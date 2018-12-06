@@ -116,7 +116,7 @@ ApplicationWindow {
             if (accountStorage.fileExists() && accountStorage.loadData()) {
                 signInOperation.checkIn()
             } else {
-                signInOperation.signIn()
+                signInOperation.startAuthentication()
             }
         }
     }
@@ -130,7 +130,7 @@ ApplicationWindow {
                 window.currentView = mainScreen
             } else {
                 // TODO: Process network errors
-                signIn()
+                startAuthentication()
             }
         }
 

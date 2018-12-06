@@ -46,7 +46,7 @@ bool DeclarativeAuthOperation::hasRecovery() const
     return m_authOperation ? m_authOperation->hasRecovery() : false;
 }
 
-void DeclarativeAuthOperation::signIn()
+void DeclarativeAuthOperation::startAuthentication()
 {
     if (m_authOperation) {
         if (m_authOperation->isFinished()) {
@@ -58,7 +58,7 @@ void DeclarativeAuthOperation::signIn()
         }
     }
     syncSettings();
-    m_authOperation = client()->connectionApi()->signIn();
+    m_authOperation = client()->connectionApi()->startAuthentication();
     m_authOperation->setPhoneNumber(phoneNumber());
     setPendingOperation(m_authOperation);
     connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
@@ -114,11 +114,6 @@ void DeclarativeAuthOperation::checkIn()
         emit this->checkInFinished(op->isSucceeded());
     });
     start();
-}
-
-void DeclarativeAuthOperation::checkRegistration()
-{
-    return signIn();
 }
 
 void DeclarativeAuthOperation::abort()

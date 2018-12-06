@@ -11,6 +11,7 @@
 #include "CAppInformation.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"
+#include "ConnectionApi.hpp"
 #include "DataStorage.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
@@ -58,7 +59,7 @@ void setupClientHelper(Telegram::Client::Client *client, const UserData &userDat
 void signInHelper(Telegram::Client::Client *client, const UserData &userData, Telegram::Test::AuthProvider *authProvider,
                            Telegram::Client::AuthOperation **output)
 {
-    Telegram::Client::AuthOperation *signInOperation = client->connectionApi()->signIn();
+    Telegram::Client::AuthOperation *signInOperation = client->connectionApi()->startAuthentication();
     *output = signInOperation;
     QSignalSpy serverAuthCodeSpy(authProvider, &Telegram::Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Telegram::Client::AuthOperation::authCodeRequired);
