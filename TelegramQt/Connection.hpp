@@ -24,10 +24,10 @@ public:
     enum class Status {
         Disconnected,
         Disconnecting,
-        Connecting,
-        Connected,
-        HasDhKey, // Connected and has auth key
-        Signed,
+        Connecting, // Never bypassed, setted on connectToDc() call
+        Connected, // Never bypassed, setted on transport connected.
+        HasDhKey, // Never bypassed, setted on connected and has auth key or on DH established.
+        Signed, // Never bypassed, setted by auth operation. CheckIn leads to reason Local, SignUp/SignIn leads to reason remote.
         Failed // Reconnection is needed
     };
     Q_ENUM(Status)
