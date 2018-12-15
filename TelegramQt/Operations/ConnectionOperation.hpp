@@ -11,6 +11,7 @@ class Connection;
 
 class ConnectOperation : public PendingOperation
 {
+    Q_OBJECT
 public:
     explicit ConnectOperation(Connection *connection = nullptr);
     Connection *connection() const { return m_connection; }
