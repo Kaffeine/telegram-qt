@@ -79,7 +79,7 @@ void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
 
 PendingOperation *MessagingApiPrivate::getDialogs()
 {
-    PendingOperation *operation = new PendingOperation(this);
+    PendingOperation *operation = new PendingOperation("MessagingApi::getDialogs", this);
     MessagesRpcLayer::PendingMessagesDialogs *rpcOperation = messagesLayer()->getDialogs(0, 0, 0, TLInputPeer(), 5);
     rpcOperation->connectToFinished(this, &MessagingApiPrivate::onGetDialogsFinished, operation, rpcOperation);
     return operation;

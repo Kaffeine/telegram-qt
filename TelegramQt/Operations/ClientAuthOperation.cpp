@@ -175,7 +175,7 @@ PendingOperation *AuthOperationPrivate::submitAuthCode(const QString &code)
         return PendingOperation::failOperation(text);
     }
 
-    PendingOperation *submitOperation = new PendingOperation(this);
+    PendingOperation *submitOperation = new PendingOperation("AuthOperationPrivate::submitAuthCode", this);
     PendingRpcOperation *sendCodeOperation = nullptr;
     if (m_registered) {
         sendCodeOperation = authLayer()->signIn(m_phoneNumber, m_authCodeHash, code);

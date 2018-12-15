@@ -16,7 +16,7 @@ class TELEGRAMQT_EXPORT PendingOperation : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(PendingOperation)
 public:
-    explicit PendingOperation(QObject *parent = nullptr);
+    PendingOperation(const char *objectName, QObject *parent);
     ~PendingOperation() override;
     bool isFinished() const;
     bool isSucceeded() const;
@@ -107,6 +107,8 @@ public Q_SLOTS:
     virtual void clearResult();
 
 protected:
+    explicit PendingOperation(QObject *parent = nullptr);
+
     void onPreviousFailed(PendingOperation *operation, const QVariantHash &details);
 
 protected:

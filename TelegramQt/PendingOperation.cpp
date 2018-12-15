@@ -12,6 +12,12 @@ PendingOperation::PendingOperation(QObject *parent) :
 {
 }
 
+PendingOperation::PendingOperation(const char *objectName, QObject *parent) :
+    PendingOperation(parent)
+{
+    setObjectName(QString::fromLatin1(objectName));
+}
+
 PendingOperation::~PendingOperation()
 {
     delete d;
