@@ -99,6 +99,8 @@ Q_SIGNALS:
 public Q_SLOTS:
     virtual void start() { }
     void startLater();
+    void deleteLater();
+
     void runAfter(PendingOperation *operation);
 
     void setFinished();

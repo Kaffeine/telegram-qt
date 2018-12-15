@@ -41,6 +41,12 @@ void PendingOperation::startLater()
 #endif
 }
 
+void PendingOperation::deleteLater()
+{
+    qCDebug(c_pendingOperations) << "deleteLater()" << this;
+    QObject::deleteLater();
+}
+
 void PendingOperation::runAfter(PendingOperation *operation)
 {
     if (!operation) {
