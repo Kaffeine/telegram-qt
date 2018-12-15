@@ -3,6 +3,8 @@
 
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(c_pendingOperations, "telegram.operations", QtWarningMsg)
+
 namespace Telegram {
 
 PendingOperation::PendingOperation(QObject *parent) :
@@ -20,6 +22,7 @@ PendingOperation::PendingOperation(const char *objectName, QObject *parent) :
 
 PendingOperation::~PendingOperation()
 {
+    qCDebug(c_pendingOperations) << "deleted()" << this;
     delete d;
 }
 
@@ -30,6 +33,7 @@ QString PendingOperation::c_text()
 
 void PendingOperation::startLater()
 {
+    qCDebug(c_pendingOperations) << "startLater()" << this;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
     QMetaObject::invokeMethod(this, [this] (){ start(); }, Qt::QueuedConnection);
 #else
@@ -39,28 +43,37 @@ void PendingOperation::startLater()
 
 void PendingOperation::runAfter(PendingOperation *operation)
 {
-    connect(operation, &PendingOperation::succeeded, this, &PendingOperation::start);
-    connect(operation, &PendingOperation::failed, this, &PendingOperation::onPreviousFailed);
+    if (!operation) {
+        qCCritical(c_pendingOperations) << "run" << this << "after null operation";
+        return;
+    }
     if (operation->isFinished()) {
         if (operation->isSucceeded()) {
+            qCDebug(c_pendingOperations) << "run" << this << "after succeeded" << operation;
             startLater();
         } else {
+            qCDebug(c_pendingOperations) << "run" << this << "after failed" << operation;
             setDelayedFinishedWithError(operation->errorDetails());
         }
+    } else {
+        qCDebug(c_pendingOperations) << "run" << this << "after pending" << operation;
+        connect(operation, &PendingOperation::succeeded, this, &PendingOperation::start);
+        connect(operation, &PendingOperation::failed, this, &PendingOperation::onPreviousFailed);
     }
 }
 
 void PendingOperation::setFinished()
 {
-    qDebug() << "finished" << this;
     if (m_finished) {
-        qWarning() << "Operation is already finished" << this;
+        qCWarning(c_pendingOperations) << "setFinished() called for an already finished operation" << this;
         return;
     }
     m_finished = true;
     if (m_succeeded) {
+        qCDebug(c_pendingOperations) << "finished (succeeded)" << this;
         emit succeeded(this);
     } else {
+        qCDebug(c_pendingOperations) << "finished (failed)" << this;
         emit failed(this, m_errorDetails);
     }
     emit finished(this);
@@ -68,7 +81,7 @@ void PendingOperation::setFinished()
 
 void PendingOperation::setFinishedWithError(const QVariantHash &details)
 {
-    qDebug() << "finished with error" << this << details;
+    qCDebug(c_pendingOperations) << "finished with error" << this << details;
     m_succeeded = false;
     m_errorDetails = details;
     setFinished();
@@ -81,6 +94,7 @@ void PendingOperation::setDelayedFinishedWithError(const QVariantHash &details)
 
 void PendingOperation::clearResult()
 {
+    qCDebug(c_pendingOperations) << "clearResult()" << this;
     m_finished = false;
     m_succeeded = true;
     m_errorDetails.clear();
