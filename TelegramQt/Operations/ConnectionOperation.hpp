@@ -15,6 +15,8 @@ class ConnectOperation : public PendingOperation
 public:
     explicit ConnectOperation(Connection *connection = nullptr);
     Connection *connection() const { return m_connection; }
+
+    void start() override;
 protected:
     Connection *m_connection = nullptr;
 };

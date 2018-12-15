@@ -112,32 +112,9 @@ ConnectOperation *Connection::connectToDc()
         m_transport->disconnectFromHost(); // Ensure that there is no connection
     }
 
-    ConnectOperation *op = new ConnectOperation(this);
-    // TODO: Connect error to op->setFinishedWithError()
-
     setStatus(Status::Connecting, StatusReason::Local);
-//    setAuthState(AuthStateNone);
-    m_transport->connectToHost(m_dcOption.address, m_dcOption.port);
-
-    connect(m_transport, &CTelegramTransport::errorOccurred, op, [op] (QAbstractSocket::SocketError error, const QString &text) {
-        op->setFinishedWithError({
-                                     { QStringLiteral("qtError"), error },
-                                     { QStringLiteral("qtErrorText"), text },
-                                 });
-    });
-    connect(this, &Connection::statusChanged, op, [op] (Status status, StatusReason reason) {
-        Q_UNUSED(reason)
-
-        if (status == Status::HasDhKey) {
-            op->setFinished();
-        }
-    });
-//    connect(m_transport, &CTelegramTransport::stateChanged, [op] (QAbstractSocket::SocketState transportState) {
-//        if (transportState == QAbstractSocket::ConnectedState) {
-//            op->setFinished();
-//        }
-//    });
-
+    ConnectOperation *op = new ConnectOperation(this);
+    op->start();
     return op;
 }
 
