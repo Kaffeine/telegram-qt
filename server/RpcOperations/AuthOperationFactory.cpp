@@ -22,6 +22,8 @@
 
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(c_serverAuthRpcCategory, "telegram.server.rpc.auth", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Server {
@@ -168,7 +170,7 @@ void AuthRpcOperation::runCancelCode()
 
 void AuthRpcOperation::runCheckPassword()
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     Session *session = layer()->session();
     if (!session) {
         sendRpcError(RpcError::AuthKeyUnregistered);
@@ -183,7 +185,7 @@ void AuthRpcOperation::runCheckPassword()
     user->addSession(session);
 
     TLAuthAuthorization result;
-    qDebug() << "Result type:" << result.tlType;
+    qCDebug(c_serverAuthRpcCategory) << "Result type:" << result.tlType;
     api()->setupTLUser(&result.user, user, user);
     sendRpcReply(result);
 }
@@ -279,7 +281,7 @@ void AuthRpcOperation::runResetAuthorizations()
 
 void AuthRpcOperation::runSendCode()
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     if (m_sendCode.phoneNumber.isEmpty()) {
         RpcError error(RpcError::PhoneNumberInvalid);
         sendRpcError(error);
@@ -344,7 +346,7 @@ void AuthRpcOperation::runSendInvites()
 
 void AuthRpcOperation::runSignIn()
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     if (!api()->identifierIsValid(m_signIn.phoneNumber)) {
         sendRpcError(RpcError::PhoneNumberInvalid);
         return;
@@ -379,7 +381,7 @@ void AuthRpcOperation::runSignIn()
 
 void AuthRpcOperation::runSignUp()
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     if (!api()->identifierIsValid(m_signUp.phoneNumber)) {
         sendRpcError(RpcError::PhoneNumberInvalid);
         return;
