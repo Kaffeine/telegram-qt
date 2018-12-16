@@ -352,7 +352,19 @@ void AuthRpcOperation::runSignIn()
     if (!verifyAuthCode(m_signIn.phoneNumber, m_signIn.phoneCodeHash, m_signIn.phoneCode)) {
         return;
     }
+
+    PhoneStatus status = api()->getPhoneStatus(m_signIn.phoneNumber);
+    if (status.exists() && (status.dcId != api()->dcId())) {
+        RpcError error(RpcError::PhoneMigrateX, status.dcId);
+        sendRpcError(error);
+        return;
+    }
+
     User *user = api()->getUser(m_signIn.phoneNumber);
+    if (!user) {
+        sendRpcError(RpcError::PhoneNumberInvalid);
+        return;
+    }
     if (!user->passwordHash().isEmpty()) {
         layer()->session()->setWantedUser(user);
         sendRpcError(RpcError::SessionPasswordNeeded);
