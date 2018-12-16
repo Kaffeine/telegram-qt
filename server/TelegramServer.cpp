@@ -146,7 +146,15 @@ void Server::onClientConnectionStatusChanged()
                                               << "from" << client->transport()->remoteAddress();
         }
     } else if (client->status() == RemoteClientConnection::Status::Disconnected) {
+        qCDebug(loggingCategoryServer) << Q_FUNC_INFO << "Disconnected a client with session id"
+                                          << hex << showbase << client->session()->id()
+                                          << "from" << client->transport()->remoteAddress();
         // TODO: Initiate session cleanup after session expiration time out
+        m_activeConnections.remove(client);
+        if (client->session()) {
+            client->session()->setConnection(nullptr);
+        }
+        client->deleteLater();
     }
 }
 
