@@ -20,6 +20,8 @@ public:
     RemoteClientConnection *getConnection() const { return m_connection; }
     void setConnection(RemoteClientConnection *connection) { m_connection = connection; }
 
+    quint64 id() const { return sessionId; }
+
     RpcLayer *rpcLayer() const;
 
     User *userOrWantedUser() const { return m_user ? m_user : m_wanterUser; }
