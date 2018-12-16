@@ -8,9 +8,9 @@ set(server_lib_SOURCES
     Session.cpp
     RpcOperationFactory.cpp
     TelegramServer.cpp
-    TelegramServerClient.cpp
     TelegramServerUser.cpp
     CServerTcpTransport.cpp
+    RemoteClientConnection.cpp
     RemoteServerConnection.cpp
     FunctionStreamOperators.cpp
 )
@@ -23,9 +23,9 @@ set(server_lib_META_HEADERS
     ServerRpcOperation.hpp
     RpcOperationFactory.hpp
     TelegramServer.hpp
-    TelegramServerClient.hpp
     TelegramServerUser.hpp
     CServerTcpTransport.hpp
+    RemoteClientConnection.hpp
     RemoteServerConnection.hpp
 )
 

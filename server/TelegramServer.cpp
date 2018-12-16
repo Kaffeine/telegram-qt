@@ -5,7 +5,7 @@
 #include <QTcpSocket>
 
 #include "TelegramServerUser.hpp"
-#include "TelegramServerClient.hpp"
+#include "RemoteClientConnection.hpp"
 #include "RemoteServerConnection.hpp"
 #include "Session.hpp"
 

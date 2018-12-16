@@ -32,7 +32,7 @@
 
 #include "DefaultAuthorizationProvider.hpp"
 #include "TelegramServer.hpp"
-#include "TelegramServerClient.hpp"
+#include "RemoteClientConnection.hpp"
 #include "TelegramServerUser.hpp"
 #include "ServerRpcLayer.hpp"
 #include "Session.hpp"

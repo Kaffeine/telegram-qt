@@ -1,5 +1,5 @@
 #include "Session.hpp"
-#include "TelegramServerClient.hpp"
+#include "RemoteClientConnection.hpp"
 #include "Utils.hpp"
 
 #include <QDateTime>

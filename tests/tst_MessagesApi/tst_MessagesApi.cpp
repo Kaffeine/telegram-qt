@@ -32,7 +32,7 @@
 #include "ContactList.hpp"
 #include "ContactsApi.hpp"
 #include "DialogList.hpp"
-#include "TelegramServerClient.hpp"
+#include "RemoteClientConnection.hpp"
 #include "TelegramServerUser.hpp"
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"

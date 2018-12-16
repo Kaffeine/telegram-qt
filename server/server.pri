@@ -7,9 +7,9 @@ SOURCES += $$PWD/ServerRpcOperation.cpp
 SOURCES += $$PWD/Session.cpp
 SOURCES += $$PWD/RpcOperationFactory.cpp
 SOURCES += $$PWD/TelegramServer.cpp
-SOURCES += $$PWD/TelegramServerClient.cpp
 SOURCES += $$PWD/TelegramServerUser.cpp
 SOURCES += $$PWD/CServerTcpTransport.cpp
+SOURCES += $$PWD/RemoteClientConnection.cpp
 SOURCES += $$PWD/RemoteServerConnection.cpp
 SOURCES += $$PWD/FunctionStreamOperators.cpp
 
@@ -25,9 +25,9 @@ HEADERS += $$PWD/Session.hpp
 HEADERS += $$PWD/RpcOperationFactory.hpp
 HEADERS += $$PWD/RpcOperationFactory_p.hpp
 HEADERS += $$PWD/TelegramServer.hpp
-HEADERS += $$PWD/TelegramServerClient.hpp
 HEADERS += $$PWD/TelegramServerUser.hpp
 HEADERS += $$PWD/CServerTcpTransport.hpp
+HEADERS += $$PWD/RemoteClientConnection.hpp
 HEADERS += $$PWD/RemoteServerConnection.hpp
 HEADERS += $$PWD/FunctionStreamOperators.hpp
 

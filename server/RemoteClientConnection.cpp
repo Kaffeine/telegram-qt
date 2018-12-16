@@ -1,4 +1,4 @@
-#include "TelegramServerClient.hpp"
+#include "RemoteClientConnection.hpp"
 
 #include "ApiUtils.hpp"
 #include "TLTypes.hpp"
