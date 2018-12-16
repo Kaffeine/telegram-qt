@@ -19,3 +19,4 @@ contains(options, developer-build) {
 }
 
 OTHER_FILES += CMakeLists.txt
+OTHER_FILES += README.md
