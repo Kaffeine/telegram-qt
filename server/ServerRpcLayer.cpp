@@ -308,8 +308,12 @@ bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &h
         return false;
     }
 
-    if (header.sequenceNumber < m_session->lastSequenceNumber) {
+    if (header.sequenceNumber > (m_session->lastSequenceNumber + 2)) {
         sendIgnoredMessageNotification(MTProto::IgnoredMessageNotification::SequenceNumberTooHigh, header);
+        return false;
+    }
+    if (header.sequenceNumber < m_session->lastSequenceNumber) {
+        sendIgnoredMessageNotification(MTProto::IgnoredMessageNotification::SequenceNumberTooLow, header);
         return false;
     }
     if (header.messageId & 3ull) {
