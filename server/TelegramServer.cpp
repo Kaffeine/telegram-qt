@@ -84,6 +84,23 @@ bool Server::start()
     return true;
 }
 
+void Server::stop()
+{
+    qCDebug(loggingCategoryServer) << "Stop server" << m_dcOption.id << "on"
+                                   << m_dcOption.address << ":" << m_dcOption.port;
+    if (m_serverSocket) {
+        m_serverSocket->close();
+    }
+
+    // Connections removed from the set on disconnected.
+    // Copy connections to a variable to iterate over a constant container instead of
+    // (virtually) simultanously mutated member variable.
+    QSet<RemoteClientConnection*> activeConnections = m_activeConnections;
+    for (RemoteClientConnection *client : activeConnections) {
+        client->transport()->disconnectFromHost();
+    }
+}
+
 void Server::loadData()
 {
     const int number = 10;
