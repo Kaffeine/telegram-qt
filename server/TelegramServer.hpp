@@ -2,8 +2,8 @@
 #define TELEGRAMSERVER_HPP
 
 #include <QObject>
-#include "../TelegramQt/TLTypes.hpp"
-#include "../TelegramQt/TelegramNamespace.hpp"
+#include "TLTypes.hpp"
+#include "TelegramNamespace.hpp"
 
 #include "ServerApi.hpp"
 
