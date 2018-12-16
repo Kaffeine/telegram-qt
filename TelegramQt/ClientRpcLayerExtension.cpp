@@ -20,6 +20,10 @@
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
 
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(c_clientRpcLayerExtensionCategory, "telegram.client.rpclayer.ext", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Client {
@@ -48,16 +52,25 @@ void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream, PendingRp
         }
     }
 #ifdef DUMP_CLIENT_RPC_PACKETS
-    qDebug() << "BaseRpcLayerExtension: Process answer for message" << operation->requestId();
-    qDebug().noquote() << "BaseRpcLayerExtension: RPC Reply bytes:" << data.size() << data.toHex();
+    qCDebug(c_clientRpcLayerExtensionCategory) << "BaseRpcLayerExtension: Process answer for message" << operation->requestId();
+    qCDebug(c_clientRpcLayerExtensionCategory).noquote() << "BaseRpcLayerExtension: RPC Reply bytes:" << data.size() << data.toHex();
 #endif
     stream->setData(data);
 }
 
+void BaseRpcLayerExtension::setRpcProcessingMethod(RpcProcessingMethod sendMethod)
+{
+    qCDebug(c_clientRpcLayerExtensionCategory) << this << "update processing method";
+    m_processingMethod = sendMethod;
+}
+
 void BaseRpcLayerExtension::processRpcCall(PendingRpcOperation *operation)
 {
+    qCDebug(c_clientRpcLayerExtensionCategory) << this << "process" << operation << TLValue::firstFromArray(operation->requestData());
     if (m_processingMethod) {
         m_processingMethod(operation);
+    } else {
+        qCWarning(c_clientRpcLayerExtensionCategory) << Q_FUNC_INFO << this << operation << TLValue::firstFromArray(operation->requestData()) << "is not processed";
     }
 }
 
