@@ -75,10 +75,12 @@ void Server::setServerPrivateRsaKey(const Telegram::RsaKey &key)
 bool Server::start()
 {
     if (!m_serverSocket->listen(QHostAddress(m_dcOption.address), m_dcOption.port)) {
-        qWarning() << "Unable to listen port" << m_dcOption.port;
+        qCWarning(loggingCategoryServer) << "Unable to listen port" << m_dcOption.port;
         return false;
     }
-    qDebug() << "Start a server" << m_dcOption.id << "on" << m_dcOption.address << ":" << m_dcOption.port << "Key:" << m_key.fingerprint;
+    qCDebug(loggingCategoryServer) << "Start a server" << m_dcOption.id << "on"
+                                   << m_dcOption.address << ":" << m_dcOption.port
+                                   << "Key:" << m_key.fingerprint;
     return true;
 }
 
@@ -140,8 +142,8 @@ void Server::onClientConnectionStatusChanged()
     RemoteClientConnection *client = qobject_cast<RemoteClientConnection*>(sender());
     if (client->status() == RemoteClientConnection::Status::HasDhKey) {
         if (!client->session()) {
-
-            qDebug() << Q_FUNC_INFO << "A new auth key";
+            qCDebug(loggingCategoryServer) << Q_FUNC_INFO << "Connected a client with a new auth key"
+                                              << "from" << client->transport()->remoteAddress();
         }
     } else if (client->status() == RemoteClientConnection::Status::Disconnected) {
         // TODO: Initiate session cleanup after session expiration time out
@@ -198,7 +200,7 @@ Peer Server::getPeer(const TLInputPeer &peer, const User *applicant) const
     case TLValue::InputPeerChannel:
         return Peer::fromChannelId(peer.channelId);
     default:
-        qWarning() << Q_FUNC_INFO << "Invalid input peer type" << peer.tlType;
+        qCWarning(loggingCategoryServerApi) << Q_FUNC_INFO << "Invalid input peer type" << peer.tlType;
         return Peer();
     };
 }
@@ -240,7 +242,7 @@ User *Server::tryAccessUser(quint32 userId, quint64 accessHash, User *applicant)
 
 User *Server::addUser(const QString &identifier)
 {
-    qDebug() << Q_FUNC_INFO << identifier;
+    qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << identifier;
     User *user = new User(this);
     user->setPhoneNumber(identifier);
     user->setDcId(dcId());
@@ -265,7 +267,7 @@ Session *Server::getSessionByAuthId(quint64 authKeyId) const
 
 void Server::insertUser(User *user)
 {
-    qDebug() << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
+    qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
     m_users.insert(user->id(), user);
     m_phoneToUserId.insert(user->phoneNumber(), user->id());
     for (Session *session : user->sessions()) {
