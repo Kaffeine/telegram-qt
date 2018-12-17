@@ -16,14 +16,16 @@
 
 #include "CTelegramTransport.hpp"
 
-CTelegramTransport::CTelegramTransport(QObject *parent) :
+namespace Telegram {
+
+BaseTransport::BaseTransport(QObject *parent) :
     QObject(parent),
     m_error(QAbstractSocket::UnknownSocketError),
     m_state(QAbstractSocket::UnconnectedState)
 {
 }
 
-quint64 CTelegramTransport::getNewMessageId(quint64 supposedId)
+quint64 BaseTransport::getNewMessageId(quint64 supposedId)
 {
     // The doc says that client message identifiers are divisible by 4, server message identifiers
     // modulo 4 yield 1 if the message is a response to a client message, and 3 otherwise.
@@ -44,22 +46,24 @@ quint64 CTelegramTransport::getNewMessageId(quint64 supposedId)
     return m_lastMessageId;
 }
 
-void CTelegramTransport::sendPackage(const QByteArray &package)
+void BaseTransport::sendPackage(const QByteArray &package)
 {
     writeEvent();
     sendPackageImplementation(package);
     emit packageSent(package);
 }
 
-void CTelegramTransport::setError(QAbstractSocket::SocketError e, const QString &text)
+void BaseTransport::setError(QAbstractSocket::SocketError e, const QString &text)
 {
     m_error = e;
     m_errorText = text;
     emit errorOccurred(e, text);
 }
 
-void CTelegramTransport::setState(QAbstractSocket::SocketState s)
+void BaseTransport::setState(QAbstractSocket::SocketState s)
 {
     m_state = s;
     emit stateChanged(s);
 }
+
+} // Telegram namespace

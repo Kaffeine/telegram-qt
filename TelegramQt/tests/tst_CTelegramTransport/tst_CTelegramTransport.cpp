@@ -25,11 +25,11 @@
 
 #include <QDateTime>
 
-class NullTransport : public CTelegramTransport
+class NullTransport : public Telegram::BaseTransport
 {
     Q_OBJECT
 public:
-    explicit NullTransport(QObject *parent = nullptr) : CTelegramTransport(parent) { }
+    explicit NullTransport(QObject *parent = nullptr) : BaseTransport(parent) { }
 
 public:
     void connectToHost(const QString &ipAddress, quint16 port) override

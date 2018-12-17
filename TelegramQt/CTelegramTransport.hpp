@@ -15,20 +15,21 @@
 
  */
 
-#ifndef CTELEGRAMTRANSPORT_HPP
-#define CTELEGRAMTRANSPORT_HPP
+#ifndef TELEGRAM_BASE_TRANSPORT_HPP
+#define TELEGRAM_BASE_TRANSPORT_HPP
 
 #include <QObject>
 
 #include <QByteArray>
 #include <QAbstractSocket>
 
-// TODO: Move into Telegram namespace and rename to BaseTransport
-class CTelegramTransport : public QObject
+namespace Telegram {
+
+class BaseTransport : public QObject
 {
     Q_OBJECT
 public:
-    explicit CTelegramTransport(QObject *parent = nullptr);
+    explicit BaseTransport(QObject *parent = nullptr);
     virtual void connectToHost(const QString &ipAddress, quint16 port) = 0;
     virtual void disconnectFromHost() = 0;
     quint64 getNewMessageId(quint64 supposedId);
@@ -37,6 +38,7 @@ public:
 
     QAbstractSocket::SocketError error() const { return m_error; }
     QAbstractSocket::SocketState state() const { return m_state; }
+
 signals:
     void errorOccurred(QAbstractSocket::SocketError error, const QString &text);
     void stateChanged(QAbstractSocket::SocketState state);
@@ -66,4 +68,6 @@ private:
 
 };
 
-#endif // CTELEGRAMTRANSPORT_HPP
+} // Telegram namespace
+
+#endif // TELEGRAM_BASE_TRANSPORT_HPP

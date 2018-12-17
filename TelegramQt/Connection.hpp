@@ -9,13 +9,12 @@
 #include <QVector>
 #include <QStringList>
 
-class CTelegramTransport;
-
 namespace Telegram {
 
 class BaseSendPackageHelper;
 class BaseDhLayer;
 class BaseRpcLayer;
+class BaseTransport;
 
 class TELEGRAMQT_EXPORT BaseConnection : public QObject
 {
@@ -49,8 +48,8 @@ public:
 
     void setServerRsaKey(const RsaKey &key);
 
-    CTelegramTransport *transport() const { return m_transport; }
-    void setTransport(CTelegramTransport *newTransport);
+    BaseTransport *transport() const { return m_transport; }
+    void setTransport(BaseTransport *newTransport);
 
     Status status() const { return m_status; }
     void setStatus(Status status, StatusReason reason);
@@ -67,7 +66,7 @@ protected slots:
 protected:
     virtual bool processAuthKey(quint64 authKeyId) = 0;
 
-    CTelegramTransport *m_transport = nullptr;
+    BaseTransport *m_transport = nullptr;
     BaseSendPackageHelper *m_sendHelper;
     BaseDhLayer *m_dhLayer = nullptr;
     BaseRpcLayer *m_rpcLayer = nullptr;

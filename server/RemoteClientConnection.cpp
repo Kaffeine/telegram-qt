@@ -121,8 +121,8 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
         }
     }
 
-    disconnect(m_transport, &CTelegramTransport::packageReceived, this, &RemoteClientConnection::onTransportPackageReceived);
-    connect(m_transport, &CTelegramTransport::packageReceived, this, &RemoteClientConnection::sendKeyError);
+    disconnect(m_transport, &BaseTransport::packageReceived, this, &RemoteClientConnection::onTransportPackageReceived);
+    connect(m_transport, &BaseTransport::packageReceived, this, &RemoteClientConnection::sendKeyError);
     setStatus(Status::Failed, StatusReason::Local);
     sendKeyError();
     return false;

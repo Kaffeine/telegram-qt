@@ -18,7 +18,7 @@ namespace Telegram {
 namespace Server {
 
 TcpTransport::TcpTransport(QTcpSocket *socket, QObject *parent) :
-    CTcpTransport(parent)
+    BaseTcpTransport(parent)
 {
     setSocket(socket);
     setState(m_socket->state());

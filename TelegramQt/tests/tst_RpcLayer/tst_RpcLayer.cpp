@@ -33,11 +33,11 @@ namespace Telegram {
 
 namespace Test {
 
-class Transport : public CTelegramTransport
+class Transport : public BaseTransport
 {
     Q_OBJECT
 public:
-    explicit Transport(QObject *parent = nullptr) : CTelegramTransport(parent) { }
+    explicit Transport(QObject *parent = nullptr) : BaseTransport(parent) { }
 
 public:
     void connectToHost(const QString &, quint16 ) override { }
@@ -51,7 +51,7 @@ protected:
 class SendPackageHelper : public BaseSendPackageHelper
 {
 public:
-    explicit SendPackageHelper(CTelegramTransport *transport) :
+    explicit SendPackageHelper(BaseTransport *transport) :
         BaseSendPackageHelper(),
         m_transport(transport)
     {
@@ -79,7 +79,7 @@ public:
     void setBaseTimestamp(quint64 ts) { m_ts = ts; qDebug() << ts; }
 
 protected:
-    CTelegramTransport *m_transport;
+    BaseTransport *m_transport;
     quint64 m_ts = 0;
 };
 

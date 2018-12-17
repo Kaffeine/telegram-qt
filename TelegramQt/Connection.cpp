@@ -38,11 +38,11 @@ void BaseConnection::setServerRsaKey(const RsaKey &key)
     m_rsaKey = key;
 }
 
-void BaseConnection::setTransport(CTelegramTransport *newTransport)
+void BaseConnection::setTransport(BaseTransport *newTransport)
 {
     m_transport = newTransport;
-    connect(m_transport, &CTelegramTransport::stateChanged, this, &BaseConnection::onTransportStateChanged);
-    connect(m_transport, &CTelegramTransport::packageReceived, this, &BaseConnection::onTransportPackageReceived);
+    connect(m_transport, &BaseTransport::stateChanged, this, &BaseConnection::onTransportStateChanged);
+    connect(m_transport, &BaseTransport::packageReceived, this, &BaseConnection::onTransportPackageReceived);
 //    connect(m_transport, &CTelegramTransport::timeout, this, &CTelegramConnection::onTransportTimeout);
     onTransportStateChanged();
 

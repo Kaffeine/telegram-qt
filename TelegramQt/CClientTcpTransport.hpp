@@ -24,7 +24,7 @@ namespace Telegram {
 
 namespace Client {
 
-class TcpTransport : public CTcpTransport
+class TcpTransport : public BaseTcpTransport
 {
     Q_OBJECT
 public:

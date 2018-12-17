@@ -14,7 +14,7 @@ ConnectOperation::ConnectOperation(Connection *connection) :
     const DcOption opt = m_connection->dcOption();
     setObjectName(QStringLiteral("ConnectTo(%1:%2)").arg(opt.address).arg(opt.port));
 
-    connect(connection->transport(), &CTelegramTransport::errorOccurred, this,
+    connect(connection->transport(), &BaseTransport::errorOccurred, this,
             [this] (QAbstractSocket::SocketError error, const QString &text) {
         setFinishedWithError({
                                  { QStringLiteral("qtError"), error },

@@ -35,12 +35,12 @@ static const quint32 c_intermediateVersionBytes = 0xeeeeeeeeu;
 static const quint32 c_obfucsatedProcotolIdentifier = 0xefefefefu;
 
 TcpTransport::TcpTransport(QObject *parent) :
-    CTcpTransport(parent)
+    BaseTcpTransport(parent)
 {
     setSocket(new QTcpSocket(this));
 }
 
-void TcpTransport::setPreferedSessionType(const CTcpTransport::SessionType sessionType)
+void TcpTransport::setPreferedSessionType(const BaseTcpTransport::SessionType sessionType)
 {
     m_preferedSessionType = sessionType;
 }

@@ -32,10 +32,7 @@ class AesCtrContext;
 
 } // Crypto
 
-} // Telegram
-
-// TODO: Move to Telegram namespace and rename to BaseTcpTransport
-class CTcpTransport : public CTelegramTransport
+class BaseTcpTransport : public BaseTransport
 {
     Q_OBJECT
 public:
@@ -52,8 +49,8 @@ public:
         DirectIsReadReversedIsWrite,
     };
 
-    explicit CTcpTransport(QObject *parent = nullptr);
-    ~CTcpTransport() override;
+    explicit BaseTcpTransport(QObject *parent = nullptr);
+    ~BaseTcpTransport() override;
 
     static int connectionTimeout();
 
@@ -89,5 +86,7 @@ protected:
     Telegram::Crypto::AesCtrContext *m_readAesContext = nullptr;
     Telegram::Crypto::AesCtrContext *m_writeAesContext = nullptr;
 };
+
+} // Telegram namespace
 
 #endif // CTCPTRANSPORT_HPP
