@@ -78,6 +78,10 @@ void CTcpTransport::disconnectFromHost()
     if (m_socket) {
         m_socket->disconnectFromHost();
     }
+    m_readBuffer.clear();
+    m_packetNumber = 0;
+    m_expectedLength = 0;
+    m_sessionType = Unknown;
 }
 
 CTcpTransport::SessionType CTcpTransport::sessionType() const
@@ -128,6 +132,14 @@ void CTcpTransport::sendPackageImplementation(const QByteArray &payload)
 void CTcpTransport::setSessionType(CTcpTransport::SessionType sessionType)
 {
     m_sessionType = sessionType;
+}
+
+void CTcpTransport::resetCryptoKeys()
+{
+    delete m_readAesContext;
+    m_readAesContext = nullptr;
+    delete m_writeAesContext;
+    m_writeAesContext = nullptr;
 }
 
 void CTcpTransport::setCryptoKeysSourceData(const QByteArray &source, SourceRevertion revertion)

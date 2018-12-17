@@ -76,6 +76,7 @@ protected:
     void sendPackageImplementation(const QByteArray &payload) override;
 
     void setSessionType(SessionType sessionType);
+    void resetCryptoKeys();
     void setCryptoKeysSourceData(const QByteArray &source, SourceRevertion revertion);
 
     quint32 m_packetNumber = 0;
