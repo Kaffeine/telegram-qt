@@ -29,7 +29,7 @@ class CTelegramTransport : public QObject
     Q_OBJECT
 public:
     explicit CTelegramTransport(QObject *parent = nullptr);
-    virtual void connectToHost(const QString &ipAddress, quint32 port) = 0;
+    virtual void connectToHost(const QString &ipAddress, quint16 port) = 0;
     virtual void disconnectFromHost() = 0;
     quint64 getNewMessageId(quint64 supposedId);
 

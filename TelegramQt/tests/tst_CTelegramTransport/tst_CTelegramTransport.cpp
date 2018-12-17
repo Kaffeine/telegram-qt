@@ -32,7 +32,7 @@ public:
     explicit NullTransport(QObject *parent = nullptr) : CTelegramTransport(parent) { }
 
 public:
-    void connectToHost(const QString &ipAddress, quint32 port) override
+    void connectToHost(const QString &ipAddress, quint16 port) override
     {
         Q_UNUSED(ipAddress)
         Q_UNUSED(port)

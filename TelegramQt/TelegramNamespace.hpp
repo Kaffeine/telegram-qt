@@ -247,14 +247,14 @@ struct DcOption
     };
 
     DcOption() = default;
-    DcOption(const QString &a, quint32 p, quint32 dcId = 0) : address(a), port(p), id(dcId) { }
+    DcOption(const QString &a, quint16 p, quint32 dcId = 0) : address(a), id(dcId), port(p) { }
     bool operator==(const DcOption &option) const;
     bool isValid() const { return id && port && !address.isEmpty(); }
 
     QString address;
-    quint32 port = 0;
     quint32 id = 0;
-    quint32 flags = 0;
+    quint16 port = 0;
+    quint16 flags = 0;
 };
 
 inline bool DcOption::operator==(const DcOption &option) const

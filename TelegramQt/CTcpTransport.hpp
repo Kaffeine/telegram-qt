@@ -53,13 +53,13 @@ public:
     };
 
     explicit CTcpTransport(QObject *parent = nullptr);
-    ~CTcpTransport();
+    ~CTcpTransport() override;
 
     static int connectionTimeout();
 
     QString remoteAddress() const override;
 
-    void connectToHost(const QString &ipAddress, quint32 port) override;
+    void connectToHost(const QString &ipAddress, quint16 port) override;
     void disconnectFromHost() override;
 
     SessionType sessionType() const;

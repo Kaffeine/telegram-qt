@@ -40,7 +40,7 @@ public:
     explicit Transport(QObject *parent = nullptr) : CTelegramTransport(parent) { }
 
 public:
-    void connectToHost(const QString &, quint32 ) override { }
+    void connectToHost(const QString &, quint16 ) override { }
     void disconnectFromHost() override { }
     QString remoteAddress() const override { return QString(); }
 

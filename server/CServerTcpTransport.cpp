@@ -24,7 +24,7 @@ TcpTransport::TcpTransport(QTcpSocket *socket, QObject *parent) :
     setState(m_socket->state());
 }
 
-void TcpTransport::connectToHost(const QString &, quint32)
+void TcpTransport::connectToHost(const QString &, quint16)
 {
     qCritical() << Q_FUNC_INFO << "The function must not be called in a server application";
 }
