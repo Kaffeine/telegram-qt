@@ -211,6 +211,9 @@ void CTcpTransport::onReadyRead()
                 m_readBuffer = m_readBuffer.mid(4);
             } else {
                 qCWarning(c_loggingTcpTransport) << this << "Invalid packet size byte" << hex << showbase << length_t1;
+                setError(QAbstractSocket::UnknownSocketError, QStringLiteral("Invalid read operation"));
+                disconnectFromHost();
+                return;
             }
         }
         if (m_readBuffer.size() < static_cast<qint64>(m_expectedLength)) {
