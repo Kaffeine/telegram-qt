@@ -32,14 +32,14 @@ using namespace Telegram;
 
 Q_LOGGING_CATEGORY(c_loggingTcpTransport, "telegram.transport.tcp", QtWarningMsg)
 
-static const quint32 tcpTimeout = 15 * 1000;
+static const quint32 c_defaultConnectionTimeout = 15 * 1000;
 
 CTcpTransport::CTcpTransport(QObject *parent) :
     CTelegramTransport(parent),
     m_socket(nullptr),
     m_timeoutTimer(new QTimer(this))
 {
-    m_timeoutTimer->setInterval(tcpTimeout);
+    m_timeoutTimer->setInterval(connectionTimeout());
     connect(m_timeoutTimer, &QTimer::timeout, this, &CTcpTransport::onTimeout);
 }
 
@@ -50,6 +50,15 @@ CTcpTransport::~CTcpTransport()
         m_socket->waitForBytesWritten(100);
         m_socket->disconnectFromHost();
     }
+}
+
+int CTcpTransport::connectionTimeout()
+{
+    static const int connectionTimeout = qEnvironmentVariableIntValue("TELEGRAM_CONNECTION_TIMEOUT");
+    if (connectionTimeout > 0) {
+        return connectionTimeout;
+    }
+    return c_defaultConnectionTimeout;
 }
 
 QString CTcpTransport::remoteAddress() const

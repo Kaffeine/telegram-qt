@@ -55,6 +55,8 @@ public:
     explicit CTcpTransport(QObject *parent = nullptr);
     ~CTcpTransport();
 
+    static int connectionTimeout();
+
     QString remoteAddress() const override;
 
     void connectToHost(const QString &ipAddress, quint32 port) override;
