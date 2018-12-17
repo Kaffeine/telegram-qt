@@ -16,8 +16,9 @@ public:
     explicit ConnectOperation(Connection *connection = nullptr);
     Connection *connection() const { return m_connection; }
 
-    void start() override;
 protected:
+    void startImplementation() override;
+
     Connection *m_connection = nullptr;
 };
 

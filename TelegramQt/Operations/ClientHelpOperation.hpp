@@ -24,12 +24,10 @@ public:
     void setRunMethod(RunMethod method);
 
 public slots:
-    void start() override;
-
     PendingOperation *requestDcConfig();
 
-Q_SIGNALS:
 protected:
+    void startImplementation() override;
     HelpRpcLayer *helpLayer() const;
 
     Backend *m_backend = nullptr;

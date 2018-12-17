@@ -34,7 +34,7 @@ void HelpOperation::setRunMethod(HelpOperation::RunMethod method)
     m_runMethod = method;
 }
 
-void HelpOperation::start()
+void HelpOperation::startImplementation()
 {
     if (m_runMethod) {
         callMember<>(this, m_runMethod);

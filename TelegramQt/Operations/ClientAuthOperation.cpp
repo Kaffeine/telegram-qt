@@ -91,7 +91,7 @@ void AuthOperation::setPhoneNumber(const QString &phoneNumber)
     d->m_phoneNumber = phoneNumber;
 }
 
-void AuthOperation::start()
+void AuthOperation::startImplementation()
 {
     Q_D(AuthOperation);
     if (d->m_runMethod) {

@@ -32,7 +32,7 @@ ConnectOperation::ConnectOperation(Connection *connection) :
     });
 }
 
-void ConnectOperation::start()
+void ConnectOperation::startImplementation()
 {
     const DcOption opt = m_connection->dcOption();
     m_connection->transport()->connectToHost(opt.address, opt.port);

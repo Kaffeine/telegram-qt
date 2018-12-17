@@ -46,12 +46,13 @@ public:
     void runGetState();
     // End of generated run methods
 
-    void start() override { callMember<>(this, m_runMethod); }
-
     using RunMethod = void (UpdatesRpcOperation::*)();
     using ProcessingMethod = bool (UpdatesRpcOperation::*)(RpcProcessingContext &);
     static ProcessingMethod getMethodForRpcFunction(TLValue function);
+
 protected:
+    void startImplementation() override { callMember<>(this, m_runMethod); }
+
     void setRunMethod(RunMethod method);
 
     RunMethod m_runMethod = nullptr;

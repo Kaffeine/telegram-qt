@@ -224,12 +224,13 @@ public:
     void runUploadMedia();
     // End of generated run methods
 
-    void start() override { callMember<>(this, m_runMethod); }
-
     using RunMethod = void (MessagesRpcOperation::*)();
     using ProcessingMethod = bool (MessagesRpcOperation::*)(RpcProcessingContext &);
     static ProcessingMethod getMethodForRpcFunction(TLValue function);
+
 protected:
+    void startImplementation() override { callMember<>(this, m_runMethod); }
+
     void setRunMethod(RunMethod method);
 
     RunMethod m_runMethod = nullptr;

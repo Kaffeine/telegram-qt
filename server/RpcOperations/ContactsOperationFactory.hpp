@@ -70,12 +70,13 @@ public:
     void runUnblock();
     // End of generated run methods
 
-    void start() override { callMember<>(this, m_runMethod); }
-
     using RunMethod = void (ContactsRpcOperation::*)();
     using ProcessingMethod = bool (ContactsRpcOperation::*)(RpcProcessingContext &);
     static ProcessingMethod getMethodForRpcFunction(TLValue function);
+
 protected:
+    void startImplementation() override { callMember<>(this, m_runMethod); }
+
     void setRunMethod(RunMethod method);
 
     RunMethod m_runMethod = nullptr;

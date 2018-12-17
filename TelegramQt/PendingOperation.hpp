@@ -97,7 +97,7 @@ Q_SIGNALS:
     void failed(PendingOperation *operation, const QVariantHash &details);
 
 public Q_SLOTS:
-    virtual void start() { }
+    void start();
     void startLater();
     void deleteLater();
 
@@ -110,6 +110,8 @@ public Q_SLOTS:
 
 protected:
     explicit PendingOperation(QObject *parent = nullptr);
+
+    virtual void startImplementation() { }
 
     void onPreviousFailed(PendingOperation *operation, const QVariantHash &details);
 
@@ -127,7 +129,7 @@ class SucceededPendingOperation : public PendingOperation
 public:
     explicit SucceededPendingOperation(QObject *parent = nullptr);
 
-    void start() override;
+    void startImplementation() override;
 };
 
 inline bool PendingOperation::isFinished() const

@@ -48,14 +48,14 @@ public:
     void runGetStrings();
     // End of generated run methods
 
-    void start() override { callMember<>(this, m_runMethod); }
-
     using RunMethod = void (LangpackRpcOperation::*)();
     using ProcessingMethod = bool (LangpackRpcOperation::*)(RpcProcessingContext &);
     static ProcessingMethod getMethodForRpcFunction(TLValue function);
-protected:
-    void setRunMethod(RunMethod method);
 
+protected:
+    void startImplementation() override { callMember<>(this, m_runMethod); }
+
+    void setRunMethod(RunMethod method);
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members

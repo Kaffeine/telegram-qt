@@ -29,8 +29,6 @@ public:
     bool isRegistered() const;
 
 public slots:
-    void start() override;
-
     void abort();
 
     PendingOperation *checkAuthorization();
@@ -62,6 +60,8 @@ Q_SIGNALS:
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QByteArray &errorMessage);
 
 protected:
+    void startImplementation() override;
+
     AuthOperationPrivate *d_func();
     const AuthOperationPrivate *d_func() const;
     friend class AuthOperationPrivate;
