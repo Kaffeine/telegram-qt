@@ -74,7 +74,7 @@ private slots:
 class TestSendPackageHelper : public BaseSendPackageHelper
 {
 public:
-    explicit TestSendPackageHelper(CTelegramTransport *transport) :
+    explicit TestSendPackageHelper(Telegram::BaseTransport *transport) :
         BaseSendPackageHelper(),
         m_transport(transport)
     {
@@ -97,7 +97,7 @@ public:
     }
 
 protected:
-    CTelegramTransport *m_transport;
+    Telegram::BaseTransport *m_transport;
 };
 
 tst_toOfficial::tst_toOfficial(QObject *parent) :

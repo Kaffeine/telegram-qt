@@ -22,7 +22,6 @@
 
 #include "crypto-aes.hpp"
 
-class BaseTransport;
 class CTelegramStream;
 
 namespace Telegram {
