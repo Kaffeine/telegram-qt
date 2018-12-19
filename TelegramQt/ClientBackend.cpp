@@ -155,66 +155,12 @@ Connection *Backend::ensureConnection(const ConnectionSpec &dcSpec)
     return privateApi->ensureConnection(dcSpec);
 }
 
-void Backend::setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension *layer)
-{
-    Backend *b = this;
-    BaseRpcLayerExtension::RpcProcessingMethod sendMethod = [b, dcSpec](PendingRpcOperation *operation) mutable {
-        qCDebug(c_clientBackendCategory) << "Custom processing for" << operation
-                                         << TLValue::firstFromArray(operation->requestData());
-        b->ensureConnection(dcSpec)->rpcLayer()->sendRpc(operation);
-    };
-    layer->setRpcProcessingMethod(sendMethod);
-}
-
 void Backend::onGetDcConfigurationFinished(PendingOperation *operation)
 {
     if (!operation->isSucceeded()) {
         qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << "Unable to get dc configuration" << operation->errorDetails();
         return;
     }
-    for (PendingRpcOperation *operation : m_queuedRedirectedOperations) {
-        routeOperation(operation);
-    }
-    m_queuedRedirectedOperations.clear();
-}
-
-void Backend::processSeeOthers(PendingRpcOperation *operation)
-{
-    qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << "operation"
-                                     << TLValue::firstFromArray(operation->requestData());
-    if (!getDcConfig()->isFinished()) {
-        qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << "Queued";
-        m_queuedRedirectedOperations.append(operation);
-        return;
-    }
-    routeOperation(operation);
-}
-
-void Backend::routeOperation(PendingRpcOperation *operation)
-{
-    qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << "operation"
-                                     << TLValue::firstFromArray(operation->requestData());
-    const quint32 dcId = operation->rpcError()->argument;
-    operation->clearResult();
-    ConnectionSpec spec(dcId);
-
-    TLValue requestType = TLValue::firstFromArray(operation->requestData());
-    switch (requestType) {
-    case TLValue::UploadGetFile:
-        spec.flags |= ConnectionSpec::RequestFlag::MediaOnly;
-        break;
-    default:
-        break;
-    }
-    Connection *connection = ensureConnection(spec);
-    if (!connection) {
-        qCWarning(c_clientBackendCategory) << Q_FUNC_INFO << "Unable to get connection for operation"
-                                           << TLValue::firstFromArray(operation->requestData())
-                                           << "dc spec" << spec.dcId << spec.flags;
-        operation->deleteLater();
-        return;
-    }
-    connection->processSeeOthers(operation);
 }
 
 bool Backend::syncAccountToStorage()
@@ -229,10 +175,6 @@ bool Backend::syncAccountToStorage()
     case Connection::Status::Signed:
         break;
     default:
-        return false;
-    }
-    if (!connection->dcOption().isValid()) {
-        connect(getDcConfig(), &PendingOperation::finished, this, &Backend::syncAccountToStorage);
         return false;
     }
     m_accountStorage->setAuthKey(connection->authKey());

@@ -65,16 +65,13 @@ public:
     Connection *getDefaultConnection();
     Connection *ensureConnection(const ConnectionSpec &dcSpec);
 
-    void setDcForLayer(const ConnectionSpec &dcSpec, BaseRpcLayerExtension *layer);
-
     DataStorage *dataStorage() { return m_dataStorage; }
     const DataStorage *dataStorage() const { return m_dataStorage; }
 
+    ConnectionApi *connectionApi() const { return m_connectionApi; }
     MessagingApi *messagingApi() const { return m_messagingApi; }
 
     AccountStorage *accountStorage() { return m_accountStorage; }
-
-    void processSeeOthers(PendingRpcOperation *operation);
 
     // Generated low-level layers
     AccountRpcLayer *accountLayer() { return m_accountLayer; }
@@ -128,11 +125,8 @@ public:
 protected:
     void onGetDcConfigurationFinished(PendingOperation *operation);
 
-    void routeOperation(PendingRpcOperation *operation);
-
     PendingOperation *m_getConfigOperation = nullptr;
     UpdatesInternalApi *m_updatesApi = nullptr;
-    QVector<PendingRpcOperation *> m_queuedRedirectedOperations;
 
 };
 

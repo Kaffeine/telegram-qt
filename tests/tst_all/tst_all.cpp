@@ -27,9 +27,12 @@
 #include "Utils.hpp"
 #include "TelegramNamespace.hpp"
 #include "CAppInformation.hpp"
+#include "CRawStream.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
 
+#include "ContactList.hpp"
+#include "ContactsApi.hpp"
 #include "DefaultAuthorizationProvider.hpp"
 #include "TelegramServer.hpp"
 #include "RemoteClientConnection.hpp"
@@ -43,6 +46,7 @@
 #include <QSignalSpy>
 #include <QDebug>
 #include <QRegularExpression>
+#include <QTemporaryFile>
 
 #include "keys_data.hpp"
 #include "TestAuthProvider.hpp"
@@ -152,7 +156,7 @@ void tst_all::testSignIn()
     cluster.setServerConfiguration(c_localDcConfiguration);
     QVERIFY(cluster.start());
 
-    Server::Server *server = qobject_cast<Server::Server*>(cluster.getServerInstance(userData.dcId));
+    Server::Server *server = cluster.getServerInstance(userData.dcId);
     QVERIFY(server);
 
     Server::User *user = tryAddUser(&cluster, userData);
@@ -180,6 +184,7 @@ void tst_all::testSignIn()
     signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
+    TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusWaitForAuthentication);
     TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
     QCOMPARE(authCodeSpy.count(), 1);
@@ -287,6 +292,7 @@ void tst_all::testCheckInSignIn()
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
     // Check whether the server configuration is synced to the client data storage
+    TRY_VERIFY(!dataStorage.serverConfiguration().dcOptions.isEmpty());
     TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
     QCOMPARE(authCodeSpy.count(), 1);
@@ -401,9 +407,8 @@ void tst_all::testSignInCheckIn()
         client.setDataStorage(dataStorage);
 
         Client::AuthOperation *checkInOperation = client.connectionApi()->checkIn();
-        TRY_VERIFY2(checkInOperation->isSucceeded(), "Unexpected check in fail");
-
-        //QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
+        TRY_VERIFY2(checkInOperation->isFinished(), "checkIn() not finished");
+        QVERIFY2(checkInOperation->isSucceeded(), "checkIn() failed");
 
         TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusReady);
         QVERIFY(client.contactsApi()->selfContactId());
@@ -427,8 +432,6 @@ void tst_all::testSignUp()
     QFETCH(UserData, userData);
 
     const Telegram::Client::Settings::SessionType sessionType = Telegram::Client::Settings::SessionType::Obfuscated;
-    const DcOption clientDcOption = c_localDcOptions.first();
-
     const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
     const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());

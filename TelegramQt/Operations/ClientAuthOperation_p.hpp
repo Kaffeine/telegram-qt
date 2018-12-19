@@ -51,8 +51,6 @@ public:
 
     void setBackend(Backend *backend);
 
-    void setWantedDc(quint32 dcId);
-
     AccountRpcLayer *accountLayer() const;
     AuthRpcLayer *authLayer() const;
 
@@ -90,7 +88,8 @@ protected slots:
 
     void onAccountStatusUpdateFinished(PendingRpcOperation *operation);
 
-    void onConnectionError(const QString &description);
+    void onConnectionError(const QByteArray &errorBytes);
+    void onRedirected(PendingOperation *operation);
 
 protected:
     void setPasswordCurrentSalt(const QByteArray &salt);

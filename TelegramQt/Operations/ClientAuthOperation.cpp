@@ -2,11 +2,13 @@
 
 #include "AccountStorage.hpp"
 #include "CAppInformation.hpp"
+#include "ConnectionApi_p.hpp"
 #include "ClientBackend.hpp"
 #include "ClientConnection.hpp"
 #include "ClientRpcLayer.hpp"
 #include "ClientRpcAuthLayer.hpp"
 #include "ClientRpcAccountLayer.hpp"
+#include "ConnectionError.hpp"
 #include "DataStorage_p.hpp"
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
@@ -124,7 +126,7 @@ PendingOperation *AuthOperationPrivate::checkAuthorization()
     PendingRpcOperation *updateStatusOperation = accountLayer()->updateStatus(false);
     connect(updateStatusOperation, &PendingRpcOperation::finished,
             this, &AuthOperationPrivate::onAccountStatusUpdateFinished);
-    return nullptr;
+    return updateStatusOperation;
 }
 
 PendingOperation *AuthOperation::requestAuthCode()
@@ -151,10 +153,12 @@ PendingOperation *AuthOperationPrivate::requestAuthCode()
 
     AuthRpcLayer::PendingAuthSentCode *requestCodeOperation
             = authLayer()->sendCode(m_phoneNumber, appInfo->appId(), appInfo->appHash());
+    Connection *connection = Connection::fromOperation(requestCodeOperation);
+    connect(connection, &BaseConnection::errorOccured, this, &AuthOperationPrivate::onConnectionError);
     qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO
                                           << "requestPhoneCode"
                                           << Telegram::Utils::maskPhoneNumber(m_phoneNumber)
-                                          << "on dc" << Connection::fromOperation(requestCodeOperation)->dcOption().id;
+                                          << "on dc" << connection->dcOption().id;
     connect(requestCodeOperation, &PendingOperation::finished, this, [this, requestCodeOperation] {
        this->onRequestAuthCodeFinished(requestCodeOperation);
     });
@@ -254,12 +258,6 @@ void AuthOperation::recovery()
     qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
 }
 
-void AuthOperationPrivate::setWantedDc(quint32 dcId)
-{
-    m_backend->setDcForLayer(ConnectionSpec(dcId), authLayer());
-    m_backend->setDcForLayer(ConnectionSpec(dcId), accountLayer());
-}
-
 void AuthOperationPrivate::setPasswordCurrentSalt(const QByteArray &salt)
 {
     m_passwordCurrentSalt = salt;
@@ -306,8 +304,13 @@ void AuthOperationPrivate::onRequestAuthCodeFinished(PendingRpcOperation *rpcOpe
 {
     Q_Q(AuthOperation);
     if (rpcOperation->rpcError() && rpcOperation->rpcError()->type == RpcError::SeeOther) {
-        setWantedDc(rpcOperation->rpcError()->argument);
-        m_backend->processSeeOthers(rpcOperation);
+        if (m_backend->connectionApi()->status() != ConnectionApi::StatusWaitForAuthentication) {
+            qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "Unexpected SeeOther";
+        }
+        const quint32 dcId = rpcOperation->rpcError()->argument;
+        ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_backend->connectionApi());
+        connect(privateApi->connectToServer(dcId), &PendingOperation::finished,
+                this, &AuthOperationPrivate::onRedirected);
         return;
     }
 
@@ -400,7 +403,6 @@ void AuthOperationPrivate::onPasswordRequestFinished(PendingRpcOperation *operat
 void AuthOperationPrivate::onCheckPasswordFinished(PendingRpcOperation *operation)
 {
     Q_Q(AuthOperation);
-    // authSignErrorReceived()
     if (operation->rpcError()) {
         const RpcError *error = operation->rpcError();
         if (error->reason == RpcError::PasswordHashInvalid) {
@@ -449,14 +451,23 @@ void AuthOperationPrivate::onAccountStatusUpdateFinished(PendingRpcOperation *op
     q->setFinished();
 }
 
-void AuthOperationPrivate::onConnectionError(const QString &description)
+void AuthOperationPrivate::onConnectionError(const QByteArray &errorBytes)
 {
+    const ConnectionError error(errorBytes);
     Q_Q(AuthOperation);
     if (q->isFinished()) {
-        qCDebug(c_loggingClientAuthOperation) << "Connection error on finished auth operation:" << description;
+        qCDebug(c_loggingClientAuthOperation) << "Connection error on finished auth operation:" << error.description();
         return;
     }
-    q->setFinishedWithError({{PendingOperation::c_text(), description}});
+    q->setFinishedWithError({{PendingOperation::c_text(), error.description()}});
+}
+
+void AuthOperationPrivate::onRedirected(PendingOperation *operation)
+{
+    if (operation->isFailed()) {
+        return;
+    }
+    requestAuthCode();
 }
 
 } // Client

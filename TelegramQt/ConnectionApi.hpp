@@ -38,8 +38,10 @@ public:
 
     enum Status {
         StatusDisconnected,
+        StatusDisconnecting,
+        StatusWaitForReconnection, // Connection failed; wait for the next try
         StatusConnecting,
-        StatusWaitForAuthentication, // DH connection
+        StatusWaitForAuthentication, // Has active DH connection and has DC config
         StatusConnected,
         StatusReady // Authenticated and got initial data
     };
@@ -57,14 +59,11 @@ public:
     Status status() const;
 
     AuthOperation *startAuthentication();
-    AuthOperation *checkIn();
+    Telegram::Client::AuthOperation *checkIn();
+    void disconnectFromServer();
 
 Q_SIGNALS:
     void statusChanged(Telegram::Client::ConnectionApi::Status status, Telegram::Client::ConnectionApi::StatusReason reason);
-
-public:
-    Q_DECL_DEPRECATED AuthOperation *signIn() { return startAuthentication(); }
-    Q_DECL_DEPRECATED AuthOperation *signUp() { return startAuthentication(); }
 
 protected:
     Q_DECLARE_PRIVATE_D(d, ConnectionApi)

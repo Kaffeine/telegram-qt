@@ -115,6 +115,7 @@ ConnectOperation *Connection::connectToDc()
     setStatus(Status::Connecting, StatusReason::Local);
     ConnectOperation *op = new ConnectOperation(this);
     op->start();
+    op->deleteOnFinished();
     return op;
 }
 

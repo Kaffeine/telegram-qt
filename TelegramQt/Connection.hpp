@@ -27,7 +27,7 @@ public:
         Connected, // Never bypassed, setted on transport connected.
         HasDhKey, // Never bypassed, setted on connected and has auth key or on DH established.
         Signed, // Never bypassed, setted by auth operation. CheckIn leads to reason Local, SignUp/SignIn leads to reason remote.
-        Failed // Reconnection is needed
+        Failed // Transport maybe still connected, but reconnection is needed
     };
     Q_ENUM(Status)
 
@@ -56,7 +56,7 @@ public:
 
 signals:
     void statusChanged(Status status, StatusReason reason);
-    void errorOccured(const QString &description);
+    void errorOccured(const QByteArray &errorBytes);
 
 protected slots:
     void onTransportStateChanged();

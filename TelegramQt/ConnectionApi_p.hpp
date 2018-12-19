@@ -49,8 +49,15 @@ public:
 
     bool isSignedIn() const;
 
-    // Public API implementation
+    void disconnectFromServer();
+
+    // Internal API
+    PendingOperation *connectToServer(quint32 dcId);
     PendingOperation *connectToServer(const QVector<DcOption> &dcOptions);
+    PendingOperation *connectToServer();
+    void connectToNextServer();
+    void queueConnectToNextServer();
+
     AuthOperation *startAuthentication();
     AuthOperation *checkIn();
     ConnectionApi::Status status() const { return m_status; }
@@ -65,26 +72,36 @@ public:
     Connection *getDefaultConnection();
     Connection *mainConnection();
     void setMainConnection(Connection *connection, SetConnectionOption option = KeepOldConnection);
+    void setInitialConnection(Connection *connection, SetConnectionOption option = KeepOldConnection);
 
 protected slots:
-    void onInitialConnectOperationFinished(PendingOperation *operation);
+    void onReconnectOperationFinished(PendingOperation *operation);
     void onInitialConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
+    void onGotDcConfig(PendingOperation *operation);
+    void onCheckInFinished(PendingOperation *operation);
     void onNewAuthenticationFinished(PendingOperation *operation);
     void onAuthCodeRequired();
+    void onConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
     void onMainConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
+    void onMainConnectionLost();
+    void onMainConnectionRestored();
     void onSyncFinished(PendingOperation *operation);
     void onPingFailed();
+    void onConnectionError(const QByteArray &errorBytes);
 
 protected:
-    void setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason = ConnectionApi::StatusReasonNone);
+    void setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason);
 
     QHash<ConnectionSpec, Connection *> m_connections;
     Connection *m_mainConnection = nullptr;
-    ConnectOperation *m_initialConnectOperation = nullptr;
+    Connection *m_initialConnection = nullptr;
+    PendingOperation *m_initialConnectOperation = nullptr;
     AuthOperation *m_authOperation = nullptr;
     PingOperation *m_pingOperation = nullptr;
 
     ConnectionApi::Status m_status = ConnectionApi::StatusDisconnected;
+    QVector<DcOption> m_serverConfiguration;
+    int m_nextServerAddressIndex = 0;
 };
 
 } // Client namespace
