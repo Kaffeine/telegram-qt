@@ -189,6 +189,7 @@ AuthOperation *ConnectionApiPrivate::startAuthentication()
     }
 
     m_authOperation = new AuthOperation(this);
+    m_authOperation->setObjectName(QStringLiteral("Auth/StartAuthentication"));
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
     priv->setBackend(backend());
     priv->setRunMethod(&AuthOperation::requestAuthCode);
@@ -217,6 +218,7 @@ AuthOperation *ConnectionApiPrivate::checkIn()
     }
     m_authOperation = new AuthOperation(this);
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
+    m_authOperation->setObjectName(QStringLiteral("Auth/CheckIn"));
     priv->setBackend(backend());
     priv->setRunMethod(&AuthOperation::checkAuthorization);
     connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onCheckInFinished);

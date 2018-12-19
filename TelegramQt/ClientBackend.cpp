@@ -125,6 +125,7 @@ PendingOperation *Backend::getDcConfig()
     }
 
     HelpOperation *op = new HelpOperation(this);
+    op->setObjectName(QLatin1String("Backend/GetDcConfig"));
     op->setBackend(this);
     op->setRunMethod(&HelpOperation::requestDcConfig);
     op->startLater();
@@ -140,6 +141,7 @@ PendingOperation *Backend::sync()
         return privateApi->sync();
     }
     PendingOperation *op = new SucceededPendingOperation(this);
+    op->setObjectName(QLatin1String("Backend/Sync"));
     return op;
 }
 
