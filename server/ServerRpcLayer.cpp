@@ -232,7 +232,7 @@ void RpcLayer::sendIgnoredMessageNotification(quint32 errorCode, const MTProto::
 
 bool RpcLayer::sendRpcError(const RpcError &error, quint64 messageId)
 {
-    CTelegramStream output(CTelegramStream::WriteOnly);
+    CRawStreamEx output(CRawStreamEx::WriteOnly);
     output << error;
     return sendRpcReply(output.getData(), messageId);
 }

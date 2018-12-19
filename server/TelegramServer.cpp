@@ -78,16 +78,16 @@ bool Server::start()
         qCWarning(loggingCategoryServer) << "Unable to listen port" << m_dcOption.port;
         return false;
     }
-    qCDebug(loggingCategoryServer) << "Start a server" << m_dcOption.id << "on"
-                                   << m_dcOption.address << ":" << m_dcOption.port
+    qCDebug(loggingCategoryServer) << this << "start server (dc" << m_dcOption.id << ")"
+                                   << "on" << m_dcOption.address << ":" << m_dcOption.port
                                    << "Key:" << m_key.fingerprint;
     return true;
 }
 
 void Server::stop()
 {
-    qCDebug(loggingCategoryServer) << "Stop server" << m_dcOption.id << "on"
-                                   << m_dcOption.address << ":" << m_dcOption.port;
+    qCDebug(loggingCategoryServer) << this << "stop server (dc" << m_dcOption.id << ")"
+                                   << "on" << m_dcOption.address << ":" << m_dcOption.port;
     if (m_serverSocket) {
         m_serverSocket->close();
     }
@@ -136,14 +136,14 @@ void Server::setAuthorizationProvider(Authorization::Provider *provider)
 
 void Server::onNewConnection()
 {
-    QTcpSocket *newConnection = m_serverSocket->nextPendingConnection();
-    if (newConnection == nullptr) {
+    QTcpSocket *socket = m_serverSocket->nextPendingConnection();
+    if (!socket) {
         qCDebug(loggingCategoryServer) << "expected pending connection does not exist";
         return;
     }
-    qCDebug(loggingCategoryServer) << "A new incoming connection from" << newConnection->peerAddress().toString();
-    TcpTransport *transport = new TcpTransport(newConnection, this);
-    newConnection->setParent(transport);
+    qCDebug(loggingCategoryServer) << "A new incoming connection from" << socket->peerAddress().toString();
+    TcpTransport *transport = new TcpTransport(socket, this);
+    socket->setParent(transport);
     RemoteClientConnection *client = new RemoteClientConnection(this);
     connect(client, &BaseConnection::statusChanged, this, &Server::onClientConnectionStatusChanged);
     client->setServerRsaKey(m_key);

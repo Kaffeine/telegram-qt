@@ -24,6 +24,11 @@ TcpTransport::TcpTransport(QTcpSocket *socket, QObject *parent) :
     setState(m_socket->state());
 }
 
+TcpTransport::~TcpTransport()
+{
+    qCDebug(c_loggingServerTcpTransport) << this << __func__;
+}
+
 void TcpTransport::connectToHost(const QString &, quint16)
 {
     qCritical() << Q_FUNC_INFO << "The function must not be called in a server application";
@@ -75,7 +80,7 @@ void TcpTransport::readEvent()
             qCCritical(c_loggingServerTcpTransport()) << Q_FUNC_INFO << "Invalid data";
         }
     }
-    qCDebug(c_loggingServerTcpTransport()) << Q_FUNC_INFO << m_socket->peerAddress().toString() << "Session type:" << m_sessionType;
+    qCDebug(c_loggingServerTcpTransport()) << Q_FUNC_INFO << remoteAddress() << "Session type:" << m_sessionType;
 }
 
 } // Server

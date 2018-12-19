@@ -14,6 +14,8 @@ class TcpTransport : public BaseTcpTransport
     Q_OBJECT
 public:
     explicit TcpTransport(QTcpSocket *socket, QObject *parent = nullptr);
+    ~TcpTransport() override;
+
     void connectToHost(const QString &ipAddress, quint16 port) override;
 
 protected:
