@@ -386,6 +386,28 @@ TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
     return inputPeer;
 }
 
+TLInputUser DataInternalApi::toInputUser(quint32 userId) const
+{
+    TLInputUser inputUser;
+    if (userId == selfUserId()) {
+        inputUser.tlType = TLValue::InputUserSelf;
+        return inputUser;
+    }
+    const TLUser *user = m_users.value(userId);
+    if (user) {
+        if (user->tlType == TLValue::User) {
+            inputUser.tlType = TLValue::InputUser;
+            inputUser.userId = user->id;
+            inputUser.accessHash = user->accessHash;
+        } else {
+            qWarning() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
+        }
+    } else {
+        qWarning() << Q_FUNC_INFO << "Unknown user.";
+    }
+    return inputUser;
+}
+
 quint64 DataInternalApi::channelMessageToKey(quint32 channelId, quint32 messageId)
 {
     quint64 key = channelId;
