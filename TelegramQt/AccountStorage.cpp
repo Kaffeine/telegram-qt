@@ -71,7 +71,11 @@ QString AccountStorage::accountIdentifier() const
 
 void AccountStorage::setAccountIdentifier(const QString &account)
 {
+    if (d->m_accountIdentifier == account) {
+        return;
+    }
     d->m_accountIdentifier = account;
+    emit accountIdentifierChanged(account);
 }
 
 QString AccountStorage::phoneNumber() const
