@@ -36,6 +36,8 @@ Q_SIGNALS:
     void resent(quint64 oldMessageId, quint64 newMessageId);
 
 protected:
+    void setRequestData(const QByteArray &requestData);
+
     QByteArray m_replyData;
     QByteArray m_requestData;
     RpcError *m_error = nullptr;

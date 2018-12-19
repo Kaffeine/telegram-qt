@@ -17,7 +17,7 @@ PendingRpcOperation::PendingRpcOperation(QObject *parent) :
 PendingRpcOperation::PendingRpcOperation(const QByteArray &requestData, QObject *parent) :
     PendingRpcOperation(parent)
 {
-    m_requestData = requestData;
+    setRequestData(requestData);
 }
 
 PendingRpcOperation::~PendingRpcOperation()
@@ -61,7 +61,15 @@ void PendingRpcOperation::clearResult()
 void PendingRpcOperation::reuse(const QByteArray &requestData)
 {
     clearResult();
+    setRequestData(requestData);
+}
+
+void PendingRpcOperation::setRequestData(const QByteArray &requestData)
+{
     m_requestData = requestData;
+    if (!m_requestData.isEmpty()) {
+        setObjectName(QLatin1String("RPC/") + TLValue::firstFromArray(m_requestData).toString());
+    }
 }
 
 } // Client namespace
