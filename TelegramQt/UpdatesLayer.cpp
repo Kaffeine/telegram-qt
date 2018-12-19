@@ -106,7 +106,7 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
             quint32 pts = updates.updates.first().pts;
             for (int i = 0; i < updates.updates.count(); ++i) {
                 if (updates.updates.at(i).pts < pts) {
-                    qCCritical(c_updatesLoggingCategory) << "Unordered update!";
+                    qCDebug(c_updatesLoggingCategory) << "Unordered update!";
                     //Q_ASSERT(0);
                 }
                 pts = updates.updates.at(i).pts;

@@ -97,7 +97,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         processIgnoredMessageNotification(message.skipTLValue());
         break;
     case TLValue::GzipPacked:
-        qCDebug(c_clientRpcLayerCategory) << "processGzipPackedRpcQuery(stream);";
+        qCWarning(c_clientRpcLayerCategory) << "processGzipPackedRpcQuery() // should be processed in the base class";
         break;
     case TLValue::Pong:
     {

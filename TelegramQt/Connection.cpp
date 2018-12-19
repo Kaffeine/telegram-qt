@@ -47,7 +47,7 @@ void BaseConnection::setTransport(BaseTransport *newTransport)
     onTransportStateChanged();
 
     if (!m_dhLayer) {
-        qCCritical(c_baseConnectionCategory) << Q_FUNC_INFO << "DH Layer must be set before transport";
+        qCCritical(c_baseConnectionCategory) << this << __func__ << "DH Layer must be set before transport";
         return;
     }
     connect(m_dhLayer, &BaseDhLayer::stateChanged, this, &BaseConnection::onDhStateChanged);
@@ -73,6 +73,7 @@ void BaseConnection::setStatus(BaseConnection::Status status, BaseConnection::St
 
 void BaseConnection::onTransportStateChanged()
 {
+    qCDebug(c_baseConnectionCategory) << this << __func__ << m_transport->state();
     switch (m_transport->state()) {
     case QAbstractSocket::ConnectedState:
         setStatus(Status::Connected, StatusReason::Remote);
@@ -93,7 +94,7 @@ void BaseConnection::onTransportStateChanged()
 
 void BaseConnection::onTransportPackageReceived(const QByteArray &package)
 {
-    qCDebug(c_baseConnectionCategory) << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onTransportPackageReceived(%1 bytes)").arg(package.size());
+    qCDebug(c_baseConnectionCategory) << this << __func__ << package.size();
     if (package.size() == ConnectionError::packageSize()) {
         const ConnectionError e(package.constData());
         qCDebug(c_baseConnectionCategory) << "Error:" << e.description();
@@ -113,15 +114,17 @@ void BaseConnection::onTransportPackageReceived(const QByteArray &package)
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
     if (*authKeyIdBytes) {
         if (!processAuthKey(*authKeyIdBytes)) {
-            qCDebug(c_baseConnectionCategory) << "Received incorrect auth id.";
+            qCDebug(c_baseConnectionCategory) << this << "Received incorrect auth id.";
             return;
         }
         if (!m_rpcLayer->processPackage(package)) {
-            qCDebug(c_baseConnectionCategory) << "Unable to process RPC packet:" << package.toHex();
+            qCDebug(c_baseConnectionCategory) << this << __func__
+                                              << "Unable to process RPC packet:" << package.toHex();
         }
     } else {
         if (!m_dhLayer->processPlainPackage(package)) {
-            qCDebug(c_baseConnectionCategory) << "Unable to process plain packet:" << package.toHex();
+            qCDebug(c_baseConnectionCategory) << this << __func__
+                                              << "Unable to process plain packet:" << package.toHex();
         }
     }
 }

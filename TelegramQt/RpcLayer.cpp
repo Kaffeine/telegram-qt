@@ -53,8 +53,8 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     if (package.size() < 24) {
         return false;
     }
-    qCDebug(c_baseRpcLayerCategoryIn) << metaObject()->className()
-                                      << "processPackage(): Read" << package.length() << "bytes:";
+    qCDebug(c_baseRpcLayerCategoryIn) << this << __func__
+                                      << "Read" << package.length() << "bytes:";
     // Encrypted Message
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
     const QByteArray messageKey = package.mid(8, 16);
@@ -73,7 +73,7 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     decryptedStream >> messageHeader;
 
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_baseRpcLayerCategoryIn) << "RpcLayer::processPackage():" << messageHeader;
+    qCDebug(c_baseRpcLayerCategoryIn) << this << __func__ << messageHeader;
 #endif
 
     if (!processDecryptedMessageHeader(messageHeader)) {
@@ -81,9 +81,9 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     }
 
     if (int(messageHeader.contentLength) > decryptedStream.bytesAvailable()) {
-        qCWarning(c_baseRpcLayerCategoryIn) << Q_FUNC_INFO << "Expected more data than actually available."
-                                            << messageHeader.contentLength << "(expected)"
-                                            << decryptedStream.bytesAvailable() << "(actual)";
+        qCWarning(c_baseRpcLayerCategoryIn) << this << __func__ << "Expected more data than actually available."
+                                            << "Actual:" << decryptedStream.bytesAvailable()
+                                            << "Expected:" << messageHeader.contentLength;
         return false;
     }
 #ifdef USE_MTProto_V1
@@ -94,12 +94,13 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
 #endif
 
     if (messageKey != expectedMessageKey) {
-        qCWarning(c_baseRpcLayerCategoryIn) << Q_FUNC_INFO << "Invalid message key";
+        qCWarning(c_baseRpcLayerCategoryIn) << this << __func__ << "Invalid message key";
         return false;
     }
 
     QByteArray innerData = decryptedStream.readBytes(messageHeader.contentLength);
     if (decryptedStream.error()) {
+        qCWarning(c_baseRpcLayerCategoryIn) << this << __func__ << "Decrypted content read error";
         return false;
     }
     MTProto::Message message(messageHeader, innerData);
@@ -250,7 +251,7 @@ bool BaseRpcLayer::processMsgContainer(const MTProto::Message &message)
     quint32 itemsCount;
     MTProto::Stream stream(message.data);
     stream >> itemsCount;
-    qCDebug(c_baseRpcLayerCategoryIn) << "processContainer(stream)" << itemsCount;
+    qCDebug(c_baseRpcLayerCategoryIn) << this << __func__ << itemsCount << "items";
 
     bool processed = true;
     for (quint32 i = 0; i < itemsCount; ++i) {

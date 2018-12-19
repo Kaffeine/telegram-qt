@@ -104,9 +104,7 @@ ConnectOperation *Connection::connectToDc()
         return PendingOperation::failOperation<ConnectOperation>(text, this);
     }
 
-#ifdef DEVELOPER_BUILD
-    qCDebug(c_clientConnectionCategory) << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << m_dcOption.port;
-#endif
+    qCDebug(c_clientConnectionCategory) << this << __func__ << m_dcOption.id << m_dcOption.address << m_dcOption.port;
 
     if (m_transport->state() != QAbstractSocket::UnconnectedState) {
         m_transport->disconnectFromHost(); // Ensure that there is no connection
@@ -125,17 +123,21 @@ void Connection::processSeeOthers(PendingRpcOperation *operation)
         connectToDc();
     }
     if (m_dhLayer->state() != DhLayer::State::HasKey) {
-        qCDebug(c_clientConnectionCategory) << "processSeeOthers():" << "queue operation:" << TLValue::firstFromArray(operation->requestData());
+        qCDebug(c_clientConnectionCategory) << this << __func__
+                                            << "queue operation:" << TLValue::firstFromArray(operation->requestData());
         m_queuedOperations.append(operation);
         return;
     }
     quint64 messageId = rpcLayer()->sendRpc(operation);
-    qCDebug(c_clientConnectionCategory) << "processSeeOthers():" << TLValue::firstFromArray(operation->requestData()) << "sent with new id" << messageId;
+    qCDebug(c_clientConnectionCategory) << this << __func__
+                                        << TLValue::firstFromArray(operation->requestData())
+                                        << "sent with new id" << messageId;
 }
 
 void Connection::onClientDhStateChanged()
 {
-    qCDebug(c_clientConnectionCategory) << Q_FUNC_INFO << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
+    qCDebug(c_clientConnectionCategory) << this << __func__
+                                        << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
         if (!m_rpcLayer->sessionId()) {
             rpcLayer()->startNewSession();
@@ -144,7 +146,9 @@ void Connection::onClientDhStateChanged()
         if (!m_queuedOperations.isEmpty()) {
             for (PendingRpcOperation *operation : m_queuedOperations) {
                 quint64 messageId = rpcLayer()->sendRpc(operation);
-                qCDebug(c_clientConnectionCategory) << "Dequeue operation" << TLValue::firstFromArray(operation->requestData()) << "with new id" << messageId;
+                qCDebug(c_clientConnectionCategory) << "Dequeue operation"
+                                                    << TLValue::firstFromArray(operation->requestData())
+                                                    << "with new id" << messageId;
             }
             m_queuedOperations.clear();
         }

@@ -264,7 +264,7 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
 
     switch (settings->preferedSessionType()) {
     case Settings::SessionType::None:
-        qCWarning(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Session type is not set. Use fallback.";
+        qCWarning(c_connectionApiLoggingCategory) << __func__ << "Session type is not set. Use fallback.";
         transport->setPreferedSessionType(TcpTransport::Obfuscated);
         break;
     case Settings::SessionType::Abridged:
@@ -275,18 +275,31 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
         break;
     }
     connection->setTransport(transport);
+
+    connect(connection, &BaseConnection::statusChanged,
+            this, &ConnectionApiPrivate::onConnectionStatusChanged);
+    connect(connection, &BaseConnection::errorOccured,
+            this, &ConnectionApiPrivate::onConnectionError);
+
     return connection;
 }
 
+/*!
+  \fn Connection *ConnectionApiPrivate::ensureConnection(const DcOption &dcOption)
+
+  The method returns new or existing Connection to the passed server address.
+
+  The returned Connection is prepaired to work with /a connectionSpec and can have any status.
+*/
 Connection *ConnectionApiPrivate::ensureConnection(const ConnectionSpec &connectionSpec)
 {
-    qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << connectionSpec.dcId << connectionSpec.flags;
+    qCDebug(c_connectionApiLoggingCategory) << __func__ << connectionSpec.dcId << connectionSpec.flags;
     ConnectionSpec spec = connectionSpec;
     spec.flags |= ConnectionSpec::RequestFlag::Ipv4Only; // Enable only ipv4 for now
     if (!m_connections.contains(connectionSpec)) {
         const DcOption opt = backend()->dataStorage()->serverConfiguration().getOption(spec);
         if (!opt.isValid()) {
-            qCWarning(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unable to find suitable DC";
+            qCWarning(c_connectionApiLoggingCategory) << __func__ << "Unable to find suitable DC";
             return nullptr;
         }
         m_connections.insert(connectionSpec, createConnection(opt));
@@ -305,7 +318,7 @@ void ConnectionApiPrivate::onReconnectOperationFinished(PendingOperation *operat
 void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Status status,
                                                              BaseConnection::StatusReason reason)
 {
-    qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << status << reason;
+    qCDebug(c_connectionApiLoggingCategory) << __func__ << m_initialConnection << status << reason;
     switch (status) {
     case BaseConnection::Status::Disconnected:
         queueConnectToNextServer();
@@ -328,6 +341,7 @@ void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Stat
     case BaseConnection::Status::Signed:
         break;
     case BaseConnection::Status::Failed:
+        qCWarning(c_connectionApiLoggingCategory) << __func__ << "failed" << m_initialConnection;
         break;
     }
 }
@@ -409,6 +423,8 @@ void ConnectionApiPrivate::onConnectionStatusChanged(BaseConnection::Status stat
 
 void ConnectionApiPrivate::onMainConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason)
 {
+    qCDebug(c_connectionApiLoggingCategory) << __func__ << m_mainConnection << status << reason;
+
     const bool keepAliveIsWanted = (status == Connection::Status::Signed) || (status == Connection::Status::HasDhKey);
     if (keepAliveIsWanted) {
         if (!m_pingOperation) {
@@ -523,6 +539,7 @@ void ConnectionApiPrivate::onConnectionError(const QByteArray &errorBytes)
 
 void ConnectionApiPrivate::setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason)
 {
+    qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << status << reason;
     Q_Q(ConnectionApi);
     if (m_status == status) {
         return;
