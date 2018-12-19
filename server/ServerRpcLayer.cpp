@@ -123,6 +123,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         output << ping.pingId;
         sendPackage(output.getData(), SendMode::ServerPongReply);
     }
+        return true;
     default:
         break;
     }
