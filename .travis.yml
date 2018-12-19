@@ -46,8 +46,8 @@ before_script:
     ../telegram-qt
 
 script:
-  - make -j3 -k
-  - make test -k
+  - cmake --build . -- -j3 -k
+  - QT_LOGGING_RULES="telegram.*.debug=true" CTEST_OUTPUT_ON_FAILURE=1 ctest --force-new-ctest-process
 
 after_success:
   - >
