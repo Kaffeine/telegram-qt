@@ -21,6 +21,7 @@
 #include "Utils.hpp"
 
 #include <QTcpSocket>
+#include <QTimer>
 
 #include <QLoggingCategory>
 
@@ -35,9 +36,17 @@ static const quint32 c_intermediateVersionBytes = 0xeeeeeeeeu;
 static const quint32 c_obfucsatedProcotolIdentifier = 0xefefefefu;
 
 TcpTransport::TcpTransport(QObject *parent) :
-    BaseTcpTransport(parent)
+    BaseTcpTransport(parent),
+    m_timeoutTimer(new QTimer(this))
 {
     setSocket(new QTcpSocket(this));
+    m_timeoutTimer->setInterval(connectionTimeout());
+    connect(m_timeoutTimer, &QTimer::timeout, this, &TcpTransport::onTimeout);
+}
+
+TcpTransport::~TcpTransport()
+{
+    qCDebug(c_loggingTranport) << this << __func__;
 }
 
 void TcpTransport::setPreferedSessionType(const BaseTcpTransport::SessionType sessionType)
@@ -103,6 +112,33 @@ bool TcpTransport::setProxy(const QNetworkProxy &proxy)
     }
     m_socket->setProxy(proxy);
     return true;
+}
+
+void TcpTransport::setState(QAbstractSocket::SocketState newState)
+{
+    switch (newState) {
+    case QAbstractSocket::HostLookupState:
+    case QAbstractSocket::ConnectingState:
+        qCDebug(c_loggingTranport) << this << "start connection timer";
+        m_timeoutTimer->start();
+        break;
+    default:
+        qCDebug(c_loggingTranport) << this << "stop connection timer";
+        m_timeoutTimer->stop();
+        break;
+    }
+    BaseTcpTransport::setState(newState);
+}
+
+void TcpTransport::onTimeout()
+{
+    qCDebug(c_loggingTranport) << this << __func__
+                                   << "socket state:" << m_socket->state()
+                                   << "peer:" << m_socket->peerName() << m_socket->peerPort()
+                                   << "local port:" << m_socket->localPort();
+    emit timeout();
+    qCDebug(c_loggingTranport) << this << __func__ << "close socket" << m_socket;
+    m_socket->disconnectFromHost();
 }
 
 void TcpTransport::writeEvent()

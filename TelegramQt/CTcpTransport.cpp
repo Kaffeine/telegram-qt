@@ -20,7 +20,6 @@
 #include "CRawStream.hpp"
 
 #include <QHostAddress>
-#include <QTimer>
 
 #include <QLoggingCategory>
 
@@ -36,11 +35,8 @@ namespace Telegram {
 
 BaseTcpTransport::BaseTcpTransport(QObject *parent) :
     BaseTransport(parent),
-    m_socket(nullptr),
-    m_timeoutTimer(new QTimer(this))
+    m_socket(nullptr)
 {
-    m_timeoutTimer->setInterval(connectionTimeout());
-    connect(m_timeoutTimer, &QTimer::timeout, this, &BaseTcpTransport::onTimeout);
 }
 
 BaseTcpTransport::~BaseTcpTransport()
@@ -48,13 +44,14 @@ BaseTcpTransport::~BaseTcpTransport()
     if (m_socket && m_socket->isWritable() && m_socket->isOpen()
             && m_socket->state() != QAbstractSocket::UnconnectedState) {
         m_socket->waitForBytesWritten(100);
+        qCDebug(c_loggingTcpTransport) << this << __func__ << "close socket" << m_socket;
         m_socket->disconnectFromHost();
     }
 }
 
 int BaseTcpTransport::connectionTimeout()
 {
-    static const int connectionTimeout = qEnvironmentVariableIntValue("TELEGRAM_CONNECTION_TIMEOUT");
+    static const int connectionTimeout = qEnvironmentVariableIntValue(timeoutEnvironmentVariableName());
     if (connectionTimeout > 0) {
         return connectionTimeout;
     }
@@ -76,6 +73,7 @@ void BaseTcpTransport::disconnectFromHost()
 {
     qCDebug(c_loggingTcpTransport) << this << __func__;
     if (m_socket) {
+        qCDebug(c_loggingTcpTransport) << this << __func__ << "close socket" << m_socket;
         m_socket->disconnectFromHost();
     }
     m_readBuffer.clear();
@@ -174,23 +172,17 @@ void BaseTcpTransport::setCryptoKeysSourceData(const QByteArray &source, SourceR
     }
 }
 
+const char *BaseTcpTransport::timeoutEnvironmentVariableName()
+{
+    return "TELEGRAM_CONNECTION_TIMEOUT";
+}
+
 void BaseTcpTransport::setState(QAbstractSocket::SocketState newState)
 {
     qCDebug(c_loggingTcpTransport) << this << __func__ << newState;
-    switch (newState) {
-    case QAbstractSocket::HostLookupState:
-    case QAbstractSocket::ConnectingState:
-        qCDebug(c_loggingTcpTransport) << "start connection timer";
-        m_timeoutTimer->start();
-        break;
-    case QAbstractSocket::ConnectedState:
+    if (newState == QAbstractSocket::ConnectedState) {
         m_expectedLength = 0;
         setSessionType(Unknown);
-        Q_FALLTHROUGH();
-    default:
-        qCDebug(c_loggingTcpTransport) << "stop connection timer";
-        m_timeoutTimer->stop();
-        break;
     }
     BaseTransport::setState(newState);
 }
@@ -200,7 +192,7 @@ void BaseTcpTransport::onReadyRead()
     qCDebug(c_loggingTcpTransport) << this << __func__ << m_socket->bytesAvailable();
     readEvent();
     if (m_sessionType == Unknown) {
-        qCCritical(c_loggingTcpTransport) << "Unknown session type!";
+        qCCritical(c_loggingTcpTransport) << this << "Unknown session type!";
         return;
     }
     if (m_socket->bytesAvailable() > 0) {
@@ -222,8 +214,10 @@ void BaseTcpTransport::onReadyRead()
                 m_expectedLength *= 4;
                 m_readBuffer = m_readBuffer.mid(4);
             } else {
-                qCWarning(c_loggingTcpTransport) << this << "Invalid packet size byte" << hex << showbase << length_t1;
+                qCWarning(c_loggingTcpTransport) << this << __func__ << "Invalid packet size byte"
+                                                 << hex << showbase << length_t1;
                 setError(QAbstractSocket::UnknownSocketError, QStringLiteral("Invalid read operation"));
+                qCDebug(c_loggingTcpTransport) << this << __func__ << "close socket" << m_socket;
                 disconnectFromHost();
                 return;
             }
@@ -241,13 +235,6 @@ void BaseTcpTransport::onReadyRead()
                                          << "Received a package (" << readPackage.size() << " bytes)";
         emit packageReceived(readPackage);
     }
-}
-
-void BaseTcpTransport::onTimeout()
-{
-    qCDebug(c_loggingTcpTransport) << this << __func__ << m_socket->peerName() << m_socket->peerPort();
-    emit timeout();
-    m_socket->disconnectFromHost();
 }
 
 void BaseTcpTransport::onSocketErrorOccurred(QAbstractSocket::SocketError error)

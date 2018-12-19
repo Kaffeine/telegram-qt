@@ -20,6 +20,8 @@
 
 #include "CTcpTransport.hpp"
 
+QT_FORWARD_DECLARE_CLASS(QTimer)
+
 namespace Telegram {
 
 namespace Client {
@@ -29,6 +31,7 @@ class TcpTransport : public BaseTcpTransport
     Q_OBJECT
 public:
     explicit TcpTransport(QObject *parent = nullptr);
+    ~TcpTransport() override;
 
     SessionType preferredSessionType() const { return m_preferedSessionType; }
     void setPreferedSessionType(const SessionType sessionType);
@@ -38,7 +41,12 @@ public:
     bool setProxy(const QNetworkProxy &proxy);
 
 protected:
+    void setState(QAbstractSocket::SocketState newState) override;
+
+    void onTimeout();
     void writeEvent() final;
+
+    QTimer *m_timeoutTimer = nullptr;
     SessionType m_preferedSessionType = Default;
 };
 

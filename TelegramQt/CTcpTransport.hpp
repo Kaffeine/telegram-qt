@@ -20,8 +20,6 @@
 
 #include "CTelegramTransport.hpp"
 
-QT_FORWARD_DECLARE_CLASS(QTimer)
-
 class CRawStream;
 
 namespace Telegram {
@@ -64,7 +62,6 @@ public:
 protected slots:
     void setState(QAbstractSocket::SocketState newState) override;
     void onReadyRead();
-    void onTimeout();
 
     void onSocketErrorOccurred(QAbstractSocket::SocketError error);
 
@@ -81,10 +78,12 @@ protected:
     SessionType m_sessionType = Unknown;
 
     QAbstractSocket *m_socket = nullptr;
-    QTimer *m_timeoutTimer = nullptr;
     QByteArray m_readBuffer;
     Telegram::Crypto::AesCtrContext *m_readAesContext = nullptr;
     Telegram::Crypto::AesCtrContext *m_writeAesContext = nullptr;
+
+public:
+    static const char *timeoutEnvironmentVariableName();
 };
 
 } // Telegram namespace
