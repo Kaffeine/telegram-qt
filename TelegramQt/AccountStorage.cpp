@@ -88,6 +88,22 @@ void AccountStorage::setPhoneNumber(const QString &phoneNumber) const
     d->m_phoneNumber = phoneNumber;
 }
 
+bool AccountStorage::invalidateAuthKey(quint64 authId)
+{
+    const bool hasKey = d->m_authId == authId;
+    qCWarning(c_clientAccountStorage) << __func__ << "Invalidate auth key"
+                                      << hex << showbase << authId << "(" << hasKey << ")";
+    if (!hasKey) {
+        return false;
+    }
+    d->m_authId = 0;
+    d->m_authKey.clear();
+    d->m_sessionId = 0;
+    d->m_contentRelatedMessagesNumber = 0;
+    emit accountInvalidated(d->m_accountIdentifier);
+    return true;
+}
+
 quint64 AccountStorage::authId() const
 {
     return d->m_authId;

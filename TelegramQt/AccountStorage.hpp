@@ -24,6 +24,8 @@ public:
     QString phoneNumber() const;
     void setPhoneNumber(const QString &phoneNumber) const;
 
+    bool invalidateAuthKey(quint64 authId);
+
     quint64 authId() const;
     void setAuthId(quint64 id);
 
@@ -51,6 +53,7 @@ public slots:
 Q_SIGNALS:
     void synced();
     void accountIdentifierChanged(const QString &accountIdentifier);
+    void accountInvalidated(const QString &accountIdentifier);
 
 protected:
     AccountStorage(AccountStoragePrivate *dd, QObject *parent = nullptr);
