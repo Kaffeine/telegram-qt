@@ -50,7 +50,7 @@ foreach(test_name
         Qt5::Test
         TelegramQt${QT_VERSION_MAJOR}
     )
-    add_test(NAME ${test_name} COMMAND ${test_name})
+    add_test(NAME ${test_name} COMMAND ${test_name} -maxwarnings 0)
 
     target_link_libraries(${test_name}
         TelegramServerQt${QT_VERSION_MAJOR}
