@@ -100,6 +100,7 @@ public Q_SLOTS:
     void start();
     void startLater();
     void deleteLater();
+    void deleteOnFinished();
 
     void runAfter(PendingOperation *operation);
 

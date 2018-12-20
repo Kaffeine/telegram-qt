@@ -53,6 +53,11 @@ void PendingOperation::deleteLater()
     QObject::deleteLater();
 }
 
+void PendingOperation::deleteOnFinished()
+{
+    connect(this, &PendingOperation::finished, this, &PendingOperation::deleteLater);
+}
+
 void PendingOperation::runAfter(PendingOperation *operation)
 {
     if (!operation) {
