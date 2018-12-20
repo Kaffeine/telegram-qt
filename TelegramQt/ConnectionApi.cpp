@@ -126,6 +126,12 @@ PendingOperation *ConnectionApiPrivate::connectToServer()
     return  m_initialConnectOperation;
 }
 
+/*! \fn PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> &dcOptions)
+  Establish a connection to any of the given \a dcOptions
+
+  Operation fails only in case of incorrect setup.
+  Operation finished once DH connection established (ConnectionApi::StatusWaitForAuthentication).
+*/
 PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> &dcOptions)
 {
     if (dcOptions.isEmpty()) {
@@ -249,6 +255,11 @@ QVariantHash ConnectionApiPrivate::getBackendSetupErrorDetails() const
     return {};
 }
 
+/*!
+  \fn Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
+
+  The method constructs new Connection ready to connect to the passed server address.
+*/
 Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
 {
     Connection *connection = new Connection(this);
@@ -548,6 +559,12 @@ void ConnectionApiPrivate::setStatus(ConnectionApi::Status status, ConnectionApi
     emit q->statusChanged(status, reason);
 }
 
+/*!
+    \class Telegram::Client::ConnectionApi
+    \inmodule TelegramQt
+    \ingroup Client
+*/
+
 ConnectionApi::ConnectionApi(QObject *parent) :
     ClientApi(parent)
 {
@@ -578,6 +595,23 @@ Telegram::Client::AuthOperation *ConnectionApi::startAuthentication()
     return d->startAuthentication();
 }
 
+/*! \fn AuthOperation *ConnectionApi::checkIn()
+  High level API for establishing the main connection needed for the most of RPC calls
+
+  The operation succeed on connection established and server confirmed the session data.
+  The typical reasons to fail are:
+  \list 1
+      \li There is an already active connection
+      \li The account storage has no session information
+      \li Incorrect setup (e.g. AccountStorage is not set)
+      \li Server declined the session data
+      \li The session is explicitly revoked from another session
+  \endlist
+
+  \note The operation doesn't fail in case of network errors (it keeps trying to connect).
+
+  \sa PendingOperation::errorDetails()
+*/
 Telegram::Client::AuthOperation *ConnectionApi::checkIn()
 {
     Q_D(ConnectionApi);

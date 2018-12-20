@@ -89,6 +89,8 @@ RpcLayer *Connection::rpcLayer()
 }
 
 /*!
+  \fn ConnectOperation *Connection::connectToDc()
+
   Initiates connection to DC and returns an Operation object.
 
   This method establish Transport (TCP/UDP/HTTP) level connection.
