@@ -72,8 +72,8 @@ public:
 private slots:
     void initTestCase();
     void cleanupTestCase();
-    void testClientConnection_data();
-    void testClientConnection();
+    void testSignIn_data();
+    void testSignIn();
     void testCheckInSignIn();
     void testSignInCheckIn();
     void testSignUp_data();
@@ -97,7 +97,7 @@ void tst_all::cleanupTestCase()
     QVERIFY(TestKeyData::cleanupKeyFiles());
 }
 
-void tst_all::testClientConnection_data()
+void tst_all::testSignIn_data()
 {
     QTest::addColumn<Telegram::Client::Settings::SessionType>("sessionType");
     QTest::addColumn<UserData>("userData");
@@ -134,7 +134,7 @@ void tst_all::testClientConnection_data()
                                                << opt;
 }
 
-void tst_all::testClientConnection()
+void tst_all::testSignIn()
 {
     QFETCH(Telegram::Client::Settings::SessionType, sessionType);
     QFETCH(UserData, userData);
