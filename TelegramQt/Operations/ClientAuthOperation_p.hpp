@@ -55,7 +55,7 @@ public:
     AuthRpcLayer *authLayer() const;
 
     using RunMethod = PendingOperation *(AuthOperation::*)();
-    void setRunMethod(RunMethod method) { m_runMethod = method; }
+    void setRunMethod(RunMethod method);
 
     PendingOperation *checkAuthorization();
     PendingOperation *requestAuthCode();

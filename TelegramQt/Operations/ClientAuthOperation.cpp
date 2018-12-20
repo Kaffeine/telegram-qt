@@ -57,6 +57,11 @@ void AuthOperationPrivate::setBackend(Backend *backend)
     m_backend = backend;
 }
 
+void AuthOperationPrivate::setRunMethod(RunMethod method)
+{
+    m_runMethod = method;
+}
+
 AuthOperation::AuthOperation(QObject *parent) :
     PendingOperation(parent)
 {
