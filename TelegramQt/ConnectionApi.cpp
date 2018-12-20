@@ -146,8 +146,7 @@ AuthOperation *ConnectionApiPrivate::checkIn()
 {
     QVariantHash errorDetails = getBackendSetupErrorDetails();
     if (!errorDetails.isEmpty()) {
-        qCWarning(c_connectionApiLoggingCategory) << "Unable to initiate connection:" << errorDetails;
-        return nullptr;
+        return PendingOperation::failOperation<AuthOperation>(errorDetails, this);
     }
 
     if (m_authOperation && !m_authOperation->isFinished()) {
