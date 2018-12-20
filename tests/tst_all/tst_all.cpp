@@ -295,6 +295,11 @@ void tst_all::testCheckInSignIn()
     QCOMPARE(authCodeSentArguments.count(), 2);
     const QString authCode = authCodeSentArguments.at(1).toString();
 
+    QSignalSpy invalidAuthCodeSpy(signInOperation, &Client::AuthOperation::authCodeCheckFailed);
+    signInOperation->submitAuthCode(QString(authCode.size(), QLatin1Char('0')));
+    TRY_VERIFY(!invalidAuthCodeSpy.isEmpty());
+    QCOMPARE(invalidAuthCodeSpy.count(), 1);
+
     signInOperation->submitAuthCode(authCode);
 
     if (!userData.password.isEmpty()) {
