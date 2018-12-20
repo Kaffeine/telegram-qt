@@ -15,12 +15,38 @@
 #include "Operations/ConnectionOperation.hpp"
 
 #include <QLoggingCategory>
+#include <QTimer>
 
 Q_LOGGING_CATEGORY(c_connectionApiLoggingCategory, "telegram.client.api.connection", QtWarningMsg)
 
 namespace Telegram {
 
 namespace Client {
+
+static const QVector<uint> getIntervals()
+{
+    static QVector<uint> intervals;
+
+    if (intervals.isEmpty()) {
+        if (qEnvironmentVariableIsSet(ConnectionApi::reconnectionIntervalsEnvironmentVariableName())) {
+            QByteArray values = qgetenv(ConnectionApi::reconnectionIntervalsEnvironmentVariableName());
+            for (const QByteArray &val : values.split(',')) {
+                bool ok;
+                uint interval = val.toUInt(&ok);
+                if (ok) {
+                    intervals.append(interval);
+                } else {
+                    intervals.clear();
+                    break;
+                }
+            }
+        }
+        if (intervals.isEmpty()) {
+            intervals = { 0, 5000, 5000, 30000, 30000, 60000 };
+        }
+    }
+    return intervals;
+}
 
 ConnectionApiPrivate::ConnectionApiPrivate(ConnectionApi *parent) :
     ClientApiPrivate(parent)
@@ -143,12 +169,18 @@ PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> 
     m_initialConnectOperation = new PendingOperation("ConnectionApi::connectToServer(options)", this);
     m_serverConfiguration = dcOptions;
     m_nextServerAddressIndex = 0;
-    connectToNextServer();
+    m_connectionAttemptNumber = 0;
+    queueConnectToNextServer();
     return m_initialConnectOperation;
 }
 
 void ConnectionApiPrivate::connectToNextServer()
 {
+    qCDebug(c_connectionApiLoggingCategory) << this << __func__ << "queued:" << m_connectionQueued;
+    if (!m_connectionQueued) {
+        return;
+    }
+
     Connection *newConnection = createConnection(m_serverConfiguration.at(m_nextServerAddressIndex));
     setInitialConnection(newConnection, DestroyOldConnection);
 
@@ -169,13 +201,45 @@ void ConnectionApiPrivate::connectToNextServer()
     if (m_serverConfiguration.count() <= m_nextServerAddressIndex) {
         m_nextServerAddressIndex = 0;
     }
+
+    m_connectionQueued = false;
 }
 
 void ConnectionApiPrivate::queueConnectToNextServer()
 {
+    if (m_connectionQueued) {
+        return;
+    }
     setStatus(ConnectionApi::StatusWaitForReconnection, ConnectionApi::StatusReasonLocal);
 
-    connectToNextServer();
+    m_connectionQueued = true;
+
+    uint interval = 0;
+    const QVector<uint> intervals = getIntervals();
+    if (intervals.count() > m_connectionAttemptNumber) {
+        interval = intervals.at(m_connectionAttemptNumber);
+    } else {
+        interval = intervals.last();
+    }
+    qCDebug(c_connectionApiLoggingCategory) << __func__ << "interval:" << interval;
+
+    ++m_connectionAttemptNumber;
+
+    if (interval == 0) {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+        QMetaObject::invokeMethod(this, [this]() { this->connectToNextServer(); }, Qt::QueuedConnection);
+#else
+        QMetaObject::invokeMethod(this, "connectToNextServer", Qt::QueuedConnection);
+#endif
+        return;
+    }
+
+    if (!m_queuedConnectionTimer) {
+        m_queuedConnectionTimer = new QTimer(this);
+        connect(m_queuedConnectionTimer, &QTimer::timeout, this, &ConnectionApiPrivate::connectToNextServer);
+    }
+
+    m_queuedConnectionTimer->start(static_cast<int>(interval));
 }
 
 AuthOperation *ConnectionApiPrivate::startAuthentication()
@@ -344,6 +408,7 @@ void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Stat
         // Nothing to do; wait for DH
         break;
     case BaseConnection::Status::HasDhKey:
+        m_connectionAttemptNumber = 0;
     {
         PendingOperation *op = backend()->getDcConfig();
         op->invokeOnFinished(this, &ConnectionApiPrivate::onGotDcConfig, op);
@@ -557,6 +622,12 @@ void ConnectionApiPrivate::setStatus(ConnectionApi::Status status, ConnectionApi
     }
     m_status = status;
     emit q->statusChanged(status, reason);
+}
+
+// Valid value is a comma-separated list of intervals in msecs. E.g.: "0,5000,30000,60000"
+const char *ConnectionApi::reconnectionIntervalsEnvironmentVariableName()
+{
+    return "TELEGRAM_RECONNECTION_INTERVALS";
 }
 
 /*!

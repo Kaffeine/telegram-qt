@@ -92,6 +92,9 @@ void tst_ConnectionApi::initTestCase()
     if (!qEnvironmentVariableIsSet(BaseTcpTransport::timeoutEnvironmentVariableName())) {
         qputenv(BaseTcpTransport::timeoutEnvironmentVariableName(), QByteArrayLiteral("50"));
     }
+    if (!qEnvironmentVariableIsSet(Client::ConnectionApi::reconnectionIntervalsEnvironmentVariableName())) {
+        qputenv(Client::ConnectionApi::reconnectionIntervalsEnvironmentVariableName(), QByteArrayLiteral("0,5,5,30,30,60"));
+    }
 }
 
 void tst_ConnectionApi::cleanupTestCase()
@@ -173,6 +176,7 @@ void tst_ConnectionApi::testClientConnection()
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
 
     TRY_COMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
+    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForReconnection));
     QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
     QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForAuthentication));
 
@@ -258,6 +262,7 @@ void tst_ConnectionApi::reconnect()
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
 
     TRY_COMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
+    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForReconnection));
     QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
     QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForAuthentication));
 

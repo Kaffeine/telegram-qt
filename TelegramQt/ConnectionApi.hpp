@@ -67,6 +67,9 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE_D(d, ConnectionApi)
+
+public:
+    static const char *reconnectionIntervalsEnvironmentVariableName();
 };
 
 } // Client namespace

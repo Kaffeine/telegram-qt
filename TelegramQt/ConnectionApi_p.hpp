@@ -26,6 +26,8 @@
 
 #include <QHash>
 
+QT_FORWARD_DECLARE_CLASS(QTimer)
+
 namespace Telegram {
 
 namespace Client {
@@ -55,8 +57,6 @@ public:
     PendingOperation *connectToServer(quint32 dcId);
     PendingOperation *connectToServer(const QVector<DcOption> &dcOptions);
     PendingOperation *connectToServer();
-    void connectToNextServer();
-    void queueConnectToNextServer();
 
     AuthOperation *startAuthentication();
     AuthOperation *checkIn();
@@ -75,6 +75,9 @@ public:
     void setInitialConnection(Connection *connection, SetConnectionOption option = KeepOldConnection);
 
 protected slots:
+    void connectToNextServer();
+    void queueConnectToNextServer();
+
     void onReconnectOperationFinished(PendingOperation *operation);
     void onInitialConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
     void onGotDcConfig(PendingOperation *operation);
@@ -102,6 +105,10 @@ protected:
     ConnectionApi::Status m_status = ConnectionApi::StatusDisconnected;
     QVector<DcOption> m_serverConfiguration;
     int m_nextServerAddressIndex = 0;
+    int m_connectionAttemptNumber = 0;
+    bool m_connectionQueued = false;
+    QTimer *m_queuedConnectionTimer = nullptr;
+
 };
 
 } // Client namespace
