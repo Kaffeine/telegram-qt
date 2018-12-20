@@ -90,6 +90,15 @@ public:
         });
     }
 #endif
+    template<typename Receiver, typename ReceiverMethod, typename ...Args>
+    void invokeOnFinished(Receiver *obj, ReceiverMethod method, Args ...args)
+    {
+        if (isFinished()) {
+            callMember(obj, method, args...);
+        } else {
+            connectToFinished(obj, method, args...);
+        }
+    }
 
 Q_SIGNALS:
     void finished(PendingOperation *operation);
