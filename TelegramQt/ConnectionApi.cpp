@@ -79,6 +79,9 @@ void ConnectionApiPrivate::setMainConnection(Connection *connection, SetConnecti
 
 PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> &dcOptions)
 {
+    if (dcOptions.isEmpty()) {
+        return PendingOperation::failOperation(QStringLiteral("Unable to connect to server: no address given"));
+    }
     if (m_initialConnectOperation) {
         if (dcOptions.contains(m_initialConnectOperation->connection()->dcOption())) {
             switch (m_initialConnectOperation->connection()->status()) {
