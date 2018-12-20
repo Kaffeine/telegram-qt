@@ -140,7 +140,7 @@ void tst_utils::testRsaKey()
 void tst_utils::testRsaKeyIsValid()
 {
     Telegram::RsaKey key;
-    QVERIFY2(!key.isValid(), "An emtpy should not be valid");
+    QVERIFY2(!key.isValid(), "An empty key should not be considered as valid");
     key.modulus = QByteArrayLiteral("mod");
     QVERIFY2(!key.isValid(), "A key without an exponent and a fingerprint is not valid");
     key.exponent = QByteArrayLiteral("exp");
