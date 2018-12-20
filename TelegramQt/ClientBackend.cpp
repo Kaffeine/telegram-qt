@@ -54,7 +54,12 @@ Backend::Backend(Client *parent) :
     BaseRpcLayerExtension::RpcProcessingMethod rpcProcessMethod = [b](PendingRpcOperation *operation) mutable {
         qCDebug(c_clientBackendCategory) << "Default processing for" << operation
                                          << TLValue::firstFromArray(operation->requestData());
-        b->getDefaultConnection()->rpcLayer()->sendRpc(operation);
+        Connection *connection = b->getDefaultConnection();
+        if (!connection) {
+            qCWarning(c_clientBackendCategory) << "No connection for processMethod";
+            return;
+        }
+        connection->rpcLayer()->sendRpc(operation);
     };
 
     // Generated low-level layer initialization
