@@ -62,11 +62,19 @@ Connection *ConnectionApiPrivate::mainConnection()
     return m_mainConnection;
 }
 
-void ConnectionApiPrivate::setMainConnection(Connection *connection)
+void ConnectionApiPrivate::setMainConnection(Connection *connection, SetConnectionOption option)
 {
+    if (m_mainConnection) {
+        if (option == DestroyOldConnection) {
+            disconnect(m_mainConnection, nullptr, this, nullptr);
+            m_mainConnection->deleteLater();
+        }
+    }
     m_mainConnection = connection;
-    connect(m_mainConnection, &BaseConnection::statusChanged, this, &ConnectionApiPrivate::onMainConnectionStatusChanged);
-    onMainConnectionStatusChanged(connection->status(), Connection::StatusReason::Local);
+    if (m_mainConnection) {
+        connect(m_mainConnection, &BaseConnection::statusChanged, this, &ConnectionApiPrivate::onMainConnectionStatusChanged);
+        onMainConnectionStatusChanged(m_mainConnection->status(), Connection::StatusReason::Local);
+    }
 }
 
 PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> &dcOptions)
@@ -135,7 +143,7 @@ AuthOperation *ConnectionApiPrivate::startAuthentication()
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
     priv->setBackend(backend());
     priv->setRunMethod(&AuthOperation::requestAuthCode);
-    connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onAuthFinished);
+    connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onNewAuthenticationFinished);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &ConnectionApiPrivate::onAuthCodeRequired);
     PendingOperation *connectionOperation = connectToServer(backend()->settings()->serverConfiguration());
     m_authOperation->runAfter(connectionOperation);
@@ -162,7 +170,7 @@ AuthOperation *ConnectionApiPrivate::checkIn()
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
     priv->setBackend(backend());
     priv->setRunMethod(&AuthOperation::checkAuthorization);
-    connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onAuthFinished);
+    connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onNewAuthenticationFinished);
     PendingOperation *connectionOperation = connectToServer({accountStorage->dcInfo()});
     m_authOperation->runAfter(connectionOperation);
     m_initialConnectOperation->connection()->setAuthKey(accountStorage->authKey());
@@ -272,7 +280,7 @@ void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Stat
     }
 }
 
-void ConnectionApiPrivate::onAuthFinished(PendingOperation *operation)
+void ConnectionApiPrivate::onNewAuthenticationFinished(PendingOperation *operation)
 {
     if (operation != m_authOperation) {
         qCCritical(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected auth operation";

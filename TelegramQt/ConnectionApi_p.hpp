@@ -39,6 +39,11 @@ class ConnectionApiPrivate : public ClientApiPrivate
     Q_OBJECT
     Q_DECLARE_PUBLIC(ConnectionApi)
 public:
+    enum SetConnectionOption {
+        DestroyOldConnection,
+        KeepOldConnection,
+    };
+
     explicit ConnectionApiPrivate(ConnectionApi *parent = nullptr);
     static ConnectionApiPrivate *get(ConnectionApi *parent);
 
@@ -59,12 +64,12 @@ public:
 
     Connection *getDefaultConnection();
     Connection *mainConnection();
-    void setMainConnection(Connection *connection);
+    void setMainConnection(Connection *connection, SetConnectionOption option = KeepOldConnection);
 
 protected slots:
     void onInitialConnectOperationFinished(PendingOperation *operation);
     void onInitialConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
-    void onAuthFinished(PendingOperation *operation);
+    void onNewAuthenticationFinished(PendingOperation *operation);
     void onAuthCodeRequired();
     void onMainConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
     void onSyncFinished(PendingOperation *operation);
