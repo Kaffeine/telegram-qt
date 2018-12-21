@@ -121,7 +121,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         output << TLValue::Pong;
         output << message.messageId;
         output << ping.pingId;
-        sendPackage(output.getData(), SendMode::ServerPongReply);
+        sendPackage(output.getData(), SendMode::ServerReply);
     }
         return true;
     default:
