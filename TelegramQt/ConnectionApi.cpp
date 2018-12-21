@@ -63,7 +63,7 @@ bool ConnectionApiPrivate::isSignedIn() const
     switch (m_status) {
     case ConnectionApi::StatusDisconnected:
     case ConnectionApi::StatusDisconnecting:
-    case ConnectionApi::StatusWaitForReconnection:
+    case ConnectionApi::StatusWaitForConnection:
     case ConnectionApi::StatusConnecting:
     case ConnectionApi::StatusWaitForAuthentication:
         return false;
@@ -210,7 +210,7 @@ void ConnectionApiPrivate::queueConnectToNextServer()
     if (m_connectionQueued) {
         return;
     }
-    setStatus(ConnectionApi::StatusWaitForReconnection, ConnectionApi::StatusReasonLocal);
+    setStatus(ConnectionApi::StatusWaitForConnection, ConnectionApi::StatusReasonLocal);
 
     m_connectionQueued = true;
 

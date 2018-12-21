@@ -39,7 +39,7 @@ public:
     enum Status {
         StatusDisconnected,
         StatusDisconnecting,
-        StatusWaitForReconnection, // Connection failed; wait for the next try
+        StatusWaitForConnection, // Wait for some time before the try to connect
         StatusConnecting,
         StatusWaitForAuthentication, // Has active DH connection and has DC config
         StatusConnected,
