@@ -136,7 +136,7 @@ PendingOperation *ConnectionApiPrivate::connectToServer(quint32 dcId)
         m_initialConnectOperation = nullptr;
     }
 
-    DcOption opt = m_backend->dataStorage()->serverConfiguration().getOption(ConnectionSpec(dcId));
+    DcOption opt = m_backend->dataStorage()->serverConfiguration().getOption(ConnectionSpec(dcId, ConnectionSpec::RequestFlag::Ipv4Only));
     if (!opt.isValid()) {
         return PendingOperation::failOperation(QStringLiteral("Unable to connect to server (the requested dc not found in configuration)"));
     }
