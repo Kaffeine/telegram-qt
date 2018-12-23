@@ -112,12 +112,22 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
     if (authKeyId == m_sendHelper->authId()) {
         return true;
     }
-    if (!m_sendHelper->authId()) {
+    if (m_sendHelper->authId()) {
+        qCInfo(loggingCategoryRemoteClientConnection) << this << transport()->remoteAddress()
+                                                      << "new session authKeyId"
+                                                      << showbase << hex << authKeyId
+                                                      << "is different from the expected"
+                                                      << m_sendHelper->authId();
+    } else {
         Session *session = api()->getSessionByAuthId(authKeyId);
         if (session) {
             setSession(session);
             m_sendHelper->setAuthKey(session->authKey);
             return true;
+        } else {
+            qCInfo(loggingCategoryRemoteClientConnection) << this << transport()->remoteAddress()
+                                                          << "Unable to find a session with authKeyId"
+                                                          << showbase << hex << authKeyId;
         }
     }
 

@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
                 QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
                 + QStringLiteral("/TelegramServer/private_key.pem"));
     if (!key.isValid()) {
-        qCritical() << "Unable to read RSA key";
+        qCritical() << "Unable to read RSA key. Please read README.md for more information.";
         return -1;
     }
 

@@ -27,7 +27,7 @@
 #include <QLoggingCategory>
 #include <QtEndian>
 
-Q_LOGGING_CATEGORY(c_serverDhLayerCategory, "telegram.server.dhlayer", QtWarningMsg)
+Q_LOGGING_CATEGORY(c_serverDhLayerCategory, "telegram.server.dhlayer", QtInfoMsg)
 
 static const QByteArray c_hardcodedDhPrime =
         QByteArray::fromHex(QByteArrayLiteral(
@@ -349,7 +349,8 @@ quint64 DhLayer::sendReplyPackage(const QByteArray &payload)
 
 void DhLayer::processReceivedPacket(const QByteArray &payload)
 {
-    TLValue v = TLValue::firstFromArray(payload);
+    const TLValue v = TLValue::firstFromArray(payload);
+    qCInfo(c_serverDhLayerCategory) << this << __func__ << v.toString();
     switch (v) {
     case TLValue::ReqPq:
         if (!processRequestPQ(payload)) {

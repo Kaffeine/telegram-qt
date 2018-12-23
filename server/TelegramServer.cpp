@@ -29,7 +29,7 @@
 #include "UsersOperationFactory.hpp"
 // End of generated RPC Operation Factory includes
 
-Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtWarningMsg)
+Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtInfoMsg)
 Q_LOGGING_CATEGORY(loggingCategoryServerApi, "telegram.server.api", QtWarningMsg)
 
 namespace Telegram {
@@ -78,16 +78,16 @@ bool Server::start()
         qCWarning(loggingCategoryServer) << "Unable to listen port" << m_dcOption.port;
         return false;
     }
-    qCDebug(loggingCategoryServer) << this << "start server (dc" << m_dcOption.id << ")"
-                                   << "on" << m_dcOption.address << ":" << m_dcOption.port
-                                   << "Key:" << m_key.fingerprint;
+    qCInfo(loggingCategoryServer).nospace().noquote() << this << " start server (DC " << m_dcOption.id << ") "
+                                                      << "on " << m_dcOption.address << ":" << m_dcOption.port
+                                                      << "; Key:" << hex << showbase << m_key.fingerprint;
     return true;
 }
 
 void Server::stop()
 {
-    qCDebug(loggingCategoryServer) << this << "stop server (dc" << m_dcOption.id << ")"
-                                   << "on" << m_dcOption.address << ":" << m_dcOption.port;
+    qCInfo(loggingCategoryServer).nospace().noquote() << this << " stop server (DC " << m_dcOption.id << ") "
+                                                      << "on " << m_dcOption.address << ":" << m_dcOption.port;
     if (m_serverSocket) {
         m_serverSocket->close();
     }
@@ -141,7 +141,7 @@ void Server::onNewConnection()
         qCDebug(loggingCategoryServer) << "expected pending connection does not exist";
         return;
     }
-    qCDebug(loggingCategoryServer) << "A new incoming connection from" << socket->peerAddress().toString();
+    qCInfo(loggingCategoryServer) << this << "An incoming connection from" << socket->peerAddress().toString();
     TcpTransport *transport = new TcpTransport(socket, this);
     socket->setParent(transport);
     RemoteClientConnection *client = new RemoteClientConnection(this);
@@ -163,14 +163,17 @@ void Server::onClientConnectionStatusChanged()
                                               << "from" << client->transport()->remoteAddress();
         }
     } else if (client->status() == RemoteClientConnection::Status::Disconnected) {
-        qCDebug(loggingCategoryServer) << Q_FUNC_INFO << "Disconnected a client with session id"
+        if (client->session()) {
+            qCInfo(loggingCategoryServer) << this << __func__ << "Disconnected a client with session id"
                                           << hex << showbase << client->session()->id()
                                           << "from" << client->transport()->remoteAddress();
+            client->session()->setConnection(nullptr);
+        } else {
+            qCInfo(loggingCategoryServer) << this << __func__ << "Disconnected a client without a session"
+                                          << "from" << client->transport()->remoteAddress();
+        }
         // TODO: Initiate session cleanup after session expiration time out
         m_activeConnections.remove(client);
-        if (client->session()) {
-            client->session()->setConnection(nullptr);
-        }
         client->deleteLater();
     }
 }
@@ -225,7 +228,7 @@ Peer Server::getPeer(const TLInputPeer &peer, const User *applicant) const
     case TLValue::InputPeerChannel:
         return Peer::fromChannelId(peer.channelId);
     default:
-        qCWarning(loggingCategoryServerApi) << Q_FUNC_INFO << "Invalid input peer type" << peer.tlType;
+        qCWarning(loggingCategoryServerApi) << this << __func__ << "Invalid input peer type" << peer.tlType;
         return Peer();
     };
 }

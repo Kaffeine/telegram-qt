@@ -101,7 +101,7 @@ void RpcLayer::setRpcFactories(const QVector<RpcOperationFactory *> &rpcFactorie
 bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 {
     TLValue requestValue = message.firstValue();
-    qCDebug(c_serverRpcLayerCategory) << Q_FUNC_INFO << requestValue.toString();
+    qCInfo(c_serverRpcLayerCategory) << this << __func__ << requestValue.toString();
 
     switch (requestValue) {
     case TLValue::InitConnection:
@@ -300,7 +300,10 @@ bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &h
         qCDebug(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Assign the client auth key to a session id";
         m_session->sessionId = header.sessionId;
     } else if (m_session->sessionId != header.sessionId) {
-        qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Unexpected Session Id";
+        qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Unexpected Session Id"
+                                            << showbase << hex
+                                            << m_session->sessionId << "(in session)"
+                                            << header.sessionId << "(in package header)";
         return false;
     }
 

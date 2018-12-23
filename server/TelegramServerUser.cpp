@@ -132,9 +132,6 @@ void User::setPlainPassword(const QString &password)
 
 void User::setPassword(const QByteArray &salt, const QByteArray &hash)
 {
-    qDebug() << Q_FUNC_INFO << "salt:" << salt.toHex();
-    qDebug() << Q_FUNC_INFO << "hash:" << hash.toHex();
-
     m_passwordSalt = salt;
     m_passwordHash = hash;
 }
