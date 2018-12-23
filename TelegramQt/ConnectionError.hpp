@@ -31,6 +31,7 @@ class TELEGRAMQT_EXPORT ConnectionError
 public:
     enum Code : qint32 {
         InvalidAuthKey = -404, // 6cfeffff in network byte order, Auth key id is not found in the server DB
+        Flood = -429,
     };
     Q_ENUM(Code)
 
