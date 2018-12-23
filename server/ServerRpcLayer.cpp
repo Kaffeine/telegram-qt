@@ -312,10 +312,13 @@ bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &h
         return false;
     }
 
+    // We can not check message header for too high sequence number because of Container packages
+#if 0
     if (header.sequenceNumber > (m_session->lastSequenceNumber + 2)) {
         sendIgnoredMessageNotification(MTProto::IgnoredMessageNotification::SequenceNumberTooHigh, header);
         return false;
     }
+#endif
     if (header.sequenceNumber < m_session->lastSequenceNumber) {
         sendIgnoredMessageNotification(MTProto::IgnoredMessageNotification::SequenceNumberTooLow, header);
         return false;
