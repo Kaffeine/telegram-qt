@@ -314,7 +314,7 @@ void AuthOperationPrivate::onRequestAuthCodeFinished(PendingRpcOperation *rpcOpe
         }
         const quint32 dcId = rpcOperation->rpcError()->argument;
         ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_backend->connectionApi());
-        connect(privateApi->connectToServer(dcId), &PendingOperation::finished,
+        connect(privateApi->connectToDc(dcId), &PendingOperation::finished,
                 this, &AuthOperationPrivate::onRedirected);
         return;
     }

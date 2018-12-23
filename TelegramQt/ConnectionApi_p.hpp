@@ -54,9 +54,8 @@ public:
     void disconnectFromServer();
 
     // Internal API
-    PendingOperation *connectToServer(quint32 dcId);
+    PendingOperation *connectToDc(quint32 dcId);
     PendingOperation *connectToServer(const QVector<DcOption> &dcOptions);
-    PendingOperation *connectToServer();
 
     AuthOperation *startAuthentication();
     AuthOperation *checkIn();

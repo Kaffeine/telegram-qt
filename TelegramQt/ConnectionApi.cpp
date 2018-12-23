@@ -129,7 +129,7 @@ void ConnectionApiPrivate::disconnectFromServer()
     m_initialConnectOperation = nullptr;
 }
 
-PendingOperation *ConnectionApiPrivate::connectToServer(quint32 dcId)
+PendingOperation *ConnectionApiPrivate::connectToDc(quint32 dcId)
 {
     if (m_initialConnectOperation) {
         delete m_initialConnectOperation;
@@ -143,13 +143,6 @@ PendingOperation *ConnectionApiPrivate::connectToServer(quint32 dcId)
     connectToServer({ opt });
     m_initialConnectOperation->setObjectName(QStringLiteral("ConnectionApi::connectToServer(id)"));
     return m_initialConnectOperation;
-}
-
-PendingOperation *ConnectionApiPrivate::connectToServer()
-{
-    connectToServer(backend()->settings()->serverConfiguration());
-    m_initialConnectOperation->setObjectName(QStringLiteral("ConnectionApi::connectToServer()"));
-    return  m_initialConnectOperation;
 }
 
 /*! \fn PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> &dcOptions)
@@ -182,6 +175,10 @@ void ConnectionApiPrivate::connectToNextServer()
     }
 
     Connection *newConnection = createConnection(m_serverConfiguration.at(m_nextServerAddressIndex));
+    ++m_nextServerAddressIndex;
+    if (m_serverConfiguration.count() <= m_nextServerAddressIndex) {
+        m_nextServerAddressIndex = 0;
+    }
     setInitialConnection(newConnection, DestroyOldConnection);
 
     AccountStorage *accountStorage = backend()->accountStorage();
@@ -197,11 +194,6 @@ void ConnectionApiPrivate::connectToNextServer()
     }
 
     m_initialConnection->connectToDc();
-    ++m_nextServerAddressIndex;
-    if (m_serverConfiguration.count() <= m_nextServerAddressIndex) {
-        m_nextServerAddressIndex = 0;
-    }
-
     m_connectionQueued = false;
 }
 
@@ -265,7 +257,8 @@ AuthOperation *ConnectionApiPrivate::startAuthentication()
     priv->setRunMethod(&AuthOperation::requestAuthCode);
     connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onNewAuthenticationFinished);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &ConnectionApiPrivate::onAuthCodeRequired);
-    PendingOperation *connectionOperation = connectToServer();
+    PendingOperation *connectionOperation = connectToServer(backend()->settings()->serverConfiguration());
+    connectionOperation->setObjectName(QStringLiteral("ConnectionApi::connectToServer(dcs from settings)"));
     m_authOperation->runAfter(connectionOperation);
     return m_authOperation;
 }
