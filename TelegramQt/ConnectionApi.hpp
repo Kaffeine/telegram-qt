@@ -33,6 +33,7 @@ class ConnectionApiPrivate;
 class TELEGRAMQT_EXPORT ConnectionApi : public ClientApi
 {
     Q_OBJECT
+    Q_PROPERTY(Status status READ status NOTIFY statusChanged)
 public:
     explicit ConnectionApi(QObject *parent = nullptr);
 
@@ -57,11 +58,14 @@ public:
     bool isSignedIn() const;
     Status status() const;
 
+    Q_INVOKABLE int remainingTimeToConnect() const;
+
     AuthOperation *startAuthentication();
     AuthOperation *checkIn();
 
 public Q_SLOTS:
     void disconnectFromServer();
+    bool connectRightNow();
 
 Q_SIGNALS:
     void statusChanged(Telegram::Client::ConnectionApi::Status status,

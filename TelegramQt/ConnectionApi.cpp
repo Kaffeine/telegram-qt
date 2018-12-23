@@ -226,7 +226,6 @@ void ConnectionApiPrivate::queueConnectToNextServer()
     if (m_connectionQueued) {
         return;
     }
-    setStatus(ConnectionApi::StatusWaitForConnection, ConnectionApi::StatusReasonLocal);
 
     m_connectionQueued = true;
 
@@ -242,6 +241,7 @@ void ConnectionApiPrivate::queueConnectToNextServer()
     ++m_connectionAttemptNumber;
 
     if (interval == 0) {
+        setStatus(ConnectionApi::StatusWaitForConnection, ConnectionApi::StatusReasonLocal);
 #if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
         QMetaObject::invokeMethod(this, [this]() { this->connectToNextServer(); }, Qt::QueuedConnection);
 #else
@@ -258,6 +258,7 @@ void ConnectionApiPrivate::queueConnectToNextServer()
     }
 
     m_queuedConnectionTimer->start(static_cast<int>(interval));
+    setStatus(ConnectionApi::StatusWaitForConnection, ConnectionApi::StatusReasonLocal);
 }
 
 AuthOperation *ConnectionApiPrivate::startAuthentication()
@@ -723,10 +724,34 @@ ConnectionApi::Status ConnectionApi::status() const
     return d->status();
 }
 
+int ConnectionApi::remainingTimeToConnect() const
+{
+    Q_D(const ConnectionApi);
+    if ((d->status() != StatusWaitForConnection) || !d->m_connectionQueued) {
+        return -1;
+    }
+    if (!d->m_queuedConnectionTimer) {
+        return 0;
+    }
+    return d->m_queuedConnectionTimer->remainingTime();
+}
+
 void ConnectionApi::disconnectFromServer()
 {
     Q_D(ConnectionApi);
     return d->disconnectFromServer();
+}
+
+bool ConnectionApi::connectRightNow()
+{
+    Q_D(ConnectionApi);
+
+    if (remainingTimeToConnect() <= 0) {
+        return false;
+    }
+
+    d->m_queuedConnectionTimer->start(0);
+    return true;
 }
 
 Telegram::Client::AuthOperation *ConnectionApi::startAuthentication()
