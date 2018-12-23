@@ -364,7 +364,7 @@ void AuthRpcOperation::runSignIn()
 
     User *user = api()->getUser(m_signIn.phoneNumber);
     if (!user) {
-        sendRpcError(RpcError::PhoneNumberInvalid);
+        sendRpcError(RpcError::PhoneNumberUnoccupied);
         return;
     }
     if (!user->passwordHash().isEmpty()) {
