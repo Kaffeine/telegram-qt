@@ -71,6 +71,7 @@ public:
         SessionPasswordNeeded,
         FloodWaitX,
         PeerIdInvalid,
+        UserIdInvalid,
     };
     Q_ENUM(Reason)
 
