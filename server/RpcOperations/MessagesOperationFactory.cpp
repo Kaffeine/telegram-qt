@@ -1125,7 +1125,10 @@ void MessagesRpcOperation::runGetPinnedDialogs()
     if (processNotImplementedMethod(TLValue::MessagesGetPinnedDialogs)) {
         return;
     }
+
+    User *self = layer()->getUser();
     TLMessagesPeerDialogs result;
+    api()->setupTLUpdatesState(&result.state, self);
     sendRpcReply(result);
 }
 
