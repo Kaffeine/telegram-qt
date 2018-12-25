@@ -61,6 +61,7 @@ public:
     virtual bool identifierIsValid(const QString &identifier) = 0; // Argument is 'phoneNumber'
 
     virtual bool setupTLUser(TLUser *output, const RemoteUser *input, const User *forUser) const = 0;
+    virtual bool setupTLUpdatesState(TLUpdatesState *output, const User *forUser) const = 0;
 
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const User *applicant) const = 0;
 

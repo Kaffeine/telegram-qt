@@ -66,6 +66,7 @@ public:
     RemoteUser *getReallyRemoteUser(const QString &identifier) const;
 
     bool setupTLUser(TLUser *output, const RemoteUser *input, const User *applicant) const override;
+    bool setupTLUpdatesState(TLUpdatesState *output, const User *forUser) const override;
 
     Telegram::Peer getPeer(const TLInputPeer &peer, const User *applicant) const override;
 

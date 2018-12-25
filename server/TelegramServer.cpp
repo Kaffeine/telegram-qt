@@ -4,6 +4,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 
+#include "ApiUtils.hpp"
 #include "TelegramServerUser.hpp"
 #include "RemoteClientConnection.hpp"
 #include "RemoteServerConnection.hpp"
@@ -211,6 +212,16 @@ bool Server::setupTLUser(TLUser *output, const RemoteUser *input, const User *ap
     }
     output->flags = flags;
 
+    return true;
+}
+
+bool Server::setupTLUpdatesState(TLUpdatesState *output, const User *forUser) const
+{
+    output->pts = forUser->pts();
+    output->date = Utils::getCurrentTime();
+    output->seq = 1; // FIXME
+    output->qts = 0;
+    output->unreadCount = 0;
     return true;
 }
 
