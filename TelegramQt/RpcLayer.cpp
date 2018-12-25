@@ -104,6 +104,16 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
         return false;
     }
     MTProto::Message message(messageHeader, innerData);
+    if (message.firstValue() == TLValue::GzipPacked) {
+        qCDebug(c_baseRpcLayerCategoryIn) << this << __func__ << "message is GzipPacked";
+        QByteArray data;
+        CTelegramStream packedStream(innerData);
+        TLValue gzipValue;
+        packedStream >> gzipValue;
+        packedStream >> data;
+        data = Utils::unpackGZip(data);
+        message.setData(data);
+    }
     return processMTProtoMessage(message);
 }
 
