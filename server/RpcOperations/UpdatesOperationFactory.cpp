@@ -83,10 +83,9 @@ void UpdatesRpcOperation::runGetDifference()
 
 void UpdatesRpcOperation::runGetState()
 {
-    if (processNotImplementedMethod(TLValue::UpdatesGetState)) {
-        return;
-    }
     TLUpdatesState result;
+    User *self = layer()->getUser();
+    api()->setupTLUpdatesState(&result, self);
     sendRpcReply(result);
 }
 // End of generated run methods
