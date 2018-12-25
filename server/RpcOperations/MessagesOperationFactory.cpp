@@ -34,18 +34,7 @@
 #include "CTelegramStreamExtraOperators.hpp"
 #include "FunctionStreamOperators.hpp"
 
-#include <QDateTime>
 #include <QLoggingCategory>
-
-static quint32 getCurrentTime()
-{
-#if QT_VERSION > QT_VERSION_CHECK(5, 8, 0)
-    qint64 timestamp = QDateTime::currentSecsSinceEpoch();
-#else
-    qint64 timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
-#endif
-    return static_cast<quint32>(timestamp);
-}
 
 namespace Telegram {
 
@@ -1478,7 +1467,7 @@ void MessagesRpcOperation::runSendMessage()
     message.fromId = self->id();
     message.flags |= TLMessage::FromId;
     message.message = m_sendMessage.message;
-    message.date = getCurrentTime();
+    message.date = Utils::getCurrentTime();
     message.toId = recipient->toTLPeer();
     const quint32 newMessageId = self->addMessage(message, layer()->session());
     message.id = newMessageId;

@@ -23,6 +23,8 @@
 #include "TelegramNamespace.hpp"
 #include "TLTypes.hpp"
 
+#include <QDateTime>
+
 namespace Telegram {
 
 namespace Utils {
@@ -45,8 +47,20 @@ TELEGRAMQT_EXPORT TLValue::Value toTLValue(TelegramNamespace::MessageAction acti
 TELEGRAMQT_EXPORT quint64 formatTimeStamp(qint64 timeInMs);
 TELEGRAMQT_EXPORT quint64 timeStampToMSecsSinceEpoch(quint64 ts);
 
+TELEGRAMQT_EXPORT quint32 getCurrentTime();
+
 } // Utils namespace
 
 } // Telegram namespace
+
+inline quint32 Telegram::Utils::getCurrentTime()
+{
+#if QT_VERSION > QT_VERSION_CHECK(5, 8, 0)
+    qint64 timestamp = QDateTime::currentSecsSinceEpoch();
+#else
+    qint64 timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
+#endif
+    return static_cast<quint32>(timestamp);
+}
 
 #endif // TELEGRAM_QT_API_UTILS_HPP
