@@ -58,10 +58,15 @@ bool UsersRpcOperation::processGetUsers(RpcProcessingContext &context)
 // Generated run methods
 void UsersRpcOperation::runGetFullUser()
 {
-    if (processNotImplementedMethod(TLValue::UsersGetFullUser)) {
+    User *self = layer()->getUser();
+    User *user = api()->getUser(m_getFullUser.id, self);
+    if (!user) {
+        sendRpcError(RpcError::UserIdInvalid);
         return;
     }
+
     TLUserFull result;
+    api()->setupTLUser(&result.user, user, self);
     sendRpcReply(result);
 }
 
