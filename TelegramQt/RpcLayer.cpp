@@ -259,7 +259,7 @@ bool BaseRpcLayer::processMsgContainer(const MTProto::Message &message)
 {
     // https://core.telegram.org/mtproto/service_messages#simple-container
     quint32 itemsCount;
-    MTProto::Stream stream(message.data);
+    RawStream stream(message.data);
     stream >> itemsCount;
     qCDebug(c_baseRpcLayerCategoryIn) << this << __func__ << itemsCount << "items";
 

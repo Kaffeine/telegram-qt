@@ -19,7 +19,6 @@
 #include "ClientRpcUpdatesLayer.hpp"
 #include "IgnoredMessageNotification.hpp"
 #include "SendPackageHelper.hpp"
-#include "CTelegramStream.hpp"
 #include "Utils.hpp"
 #include "Debug_p.hpp"
 #include "CAppInformation.hpp"
@@ -27,6 +26,7 @@
 #include "UpdatesLayer.hpp"
 
 #include "MTProto/MessageHeader.hpp"
+#include "MTProto/Stream.hpp"
 
 #include <QLoggingCategory>
 
@@ -174,7 +174,7 @@ void RpcLayer::processSessionCreated(const MTProto::Message &message)
 
 void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message)
 {
-    MTProto::Stream stream(message.data);
+    RawStream stream(message.data);
     // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
     MTProto::IgnoredMessageNotification notification;
     stream >> notification;
