@@ -177,10 +177,11 @@ void HelpRpcOperation::runGetInviteText()
 
 void HelpRpcOperation::runGetNearestDc()
 {
-    if (processNotImplementedMethod(TLValue::HelpGetNearestDc)) {
-        return;
-    }
     TLNearestDc result;
+    result.thisDc = api()->dcId();
+    result.nearestDc = 1;
+    // ISO 3166-1 alpha-2
+    result.country = QStringLiteral("AQ");
     sendRpcReply(result);
 }
 
