@@ -26,13 +26,14 @@
 #include "ClientRpcLayer.hpp"
 #include "ClientSettings.hpp"
 #include "CClientTcpTransport.hpp"
-#include "ConnectionApi_p.hpp"
+#include "ConnectionApi.hpp"
 #include "DataStorage.hpp"
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
 #include "SendPackageHelper.hpp"
 #include "TelegramNamespace.hpp"
 #include "CAppInformation.hpp"
+#include "Operations/ClientAuthOperation.hpp"
 
 #include <QTest>
 #include <QSignalSpy>
@@ -184,9 +185,6 @@ void tst_toOfficial::testGetConfiguration()
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
 
     Client::Client client;
-
-    Client::Backend *backend = Client::ClientPrivate::get(&client);
-
     Client::AccountStorage accountStorage;
     Client::DataStorage dataStorage;
     Client::Settings clientSettings;
@@ -199,11 +197,11 @@ void tst_toOfficial::testGetConfiguration()
     QVERIFY(clientSettings.setServerRsaKey(publicKey));
 
     // --- Connect ---
-    Client::ConnectionApiPrivate *connectionApi = Client::ConnectionApiPrivate::get(backend->m_connectionApi);
-    PendingOperation *connectOperation = connectionApi->connectToServer(clientSettings.serverConfiguration());
+    PendingOperation *connectOperation = client.connectionApi()->startAuthentication();
     TRY_VERIFY(connectOperation->isFinished());
     QVERIFY(connectOperation->isSucceeded());
 
+    Client::Backend *backend = Client::ClientPrivate::get(&client);
     PendingOperation *getConfigOperation = backend->getDcConfig();
     TRY_VERIFY(getConfigOperation->isFinished());
     QVERIFY(getConfigOperation->isSucceeded());
