@@ -174,11 +174,18 @@ void ConnectionApiPrivate::connectToNextServer()
         return;
     }
 
-    Connection *newConnection = createConnection(m_serverConfiguration.at(m_nextServerAddressIndex));
+    const DcOption dcOption = m_serverConfiguration.at(m_nextServerAddressIndex);
     ++m_nextServerAddressIndex;
     if (m_serverConfiguration.count() <= m_nextServerAddressIndex) {
         m_nextServerAddressIndex = 0;
     }
+    if (dcOption.flags & (DcOption::Ipv6|DcOption::MediaOnly)) {
+        qCDebug(c_connectionApiLoggingCategory) << this << __func__
+                                                << "dequeued unsupported dc option, go for the next one...";
+        return connectToNextServer();
+    }
+
+    Connection *newConnection = createConnection(dcOption);
     setInitialConnection(newConnection, DestroyOldConnection);
 
     AccountStorage *accountStorage = backend()->accountStorage();
