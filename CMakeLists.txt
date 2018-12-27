@@ -45,12 +45,13 @@ if (BUILD_SERVER)
     endif()
 endif()
 
+include(GNUInstallDirs)
+include(FeatureSummary)
+
 find_package(Qt5 5.5.0 REQUIRED COMPONENTS ${QT_COMPONENTS})
 message("-- Found Qt version: ${Qt5_VERSION}")
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
-
-include(GNUInstallDirs)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
 
@@ -129,3 +130,5 @@ if (ENABLE_COVERAGE_BUILD)
         )
     endif()
 endif()
+
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
