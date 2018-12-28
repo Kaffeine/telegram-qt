@@ -312,13 +312,13 @@ static QObject *telegram_namespace_provider(QQmlEngine *engine, QJSEngine *scrip
     return ns;
 }
 
-class TelegramQmlPlugin : public QQmlExtensionPlugin
+class TelegramQtQmlPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 
 public:
-    TelegramQmlPlugin(QObject *parent = nullptr) :
+    TelegramQtQmlPlugin(QObject *parent = nullptr) :
         QQmlExtensionPlugin(parent)
     {
         qRegisterMetaType<AccountSecretHelper::Format>("AccountSecretHelper::Format");

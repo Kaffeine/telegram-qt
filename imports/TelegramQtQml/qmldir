@@ -1,4 +1,4 @@
 module TelegramQt
-plugin TelegramQt5Qml
-classname TelegramQmlPlugin
+plugin TelegramQt5QmlPlugin
+classname TelegramQtQmlPlugin
 typeinfo plugins.qmltypes
