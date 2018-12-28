@@ -20,7 +20,6 @@ add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED
     DeclarativeOperation.cpp
     DeclarativeAuthOperation.cpp
     DeclarativeSettings.cpp
-    DeclarativeUserInfo.cpp
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
@@ -38,29 +37,32 @@ target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
     TelegramQt${QT_VERSION_MAJOR}
 )
 
-# Set the correct version number
+set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
+set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
+
 set_target_properties(
     TelegramQt${QT_VERSION_MAJOR}Qml PROPERTIES
     SOVERSION ${TELEGRAM_QT_ABI}
     VERSION ${TELEGRAM_QT_VERSION}
 )
+
 install(
     TARGETS TelegramQt${QT_VERSION_MAJOR}Qml
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${TELEGRAM_QT_LIB_DIR}
     COMPONENT Library
 )
 
-add_library(TelegramQt${QT_VERSION_MAJOR}QmlPlugin SHARED plugin.cpp)
+add_library(TelegramQmlPlugin SHARED plugin.cpp)
 
-target_link_libraries(TelegramQt${QT_VERSION_MAJOR}QmlPlugin LINK_PUBLIC
-    TelegramQt${QT_VERSION_MAJOR}
+target_link_libraries(TelegramQmlPlugin
+    Qt5::Core
+    Qt5::Qml
     TelegramQt${QT_VERSION_MAJOR}Qml
 )
 
 install(
-    TARGETS TelegramQt${QT_VERSION_MAJOR}QmlPlugin
+    TARGETS TelegramQmlPlugin
     LIBRARY DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
-    COMPONENT Library
 )
 
 install(
