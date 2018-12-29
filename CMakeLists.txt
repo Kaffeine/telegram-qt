@@ -14,8 +14,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Add an option for building tests
 option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
-# Add an option for building tests
-option(BUILD_WIDGETS_CLIENT "Build a widgets-based client" FALSE)
+
+option(BUILD_CLIENT "Build a client app" FALSE)
 
 option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)
 option(ENABLE_COVERAGE_HTML "Generate an HTML report for the code-coverage analysis result" FALSE)
@@ -35,10 +35,6 @@ option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra out
 
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
-
-if (BUILD_WIDGETS_CLIENT)
-    list(APPEND QT_COMPONENTS Gui Widgets)
-endif()
 
 if (BUILD_SERVER)
     if (DEVELOPER_BUILD)
@@ -70,6 +66,10 @@ if (ENABLE_QML_IMPORT)
     add_subdirectory(imports/TelegramQtQml)
 endif()
 
+if (BUILD_CLIENT)
+    add_subdirectory(clients)
+endif()
+
 if (ENABLE_TESTS)
     enable_testing()
     add_subdirectory(TelegramQt/tests)
@@ -93,10 +93,6 @@ endif()
 
 if (ENABLE_QCH_BUILD)
     add_subdirectory(doc)
-endif()
-
-if (BUILD_WIDGETS_CLIENT)
-    add_subdirectory(clients/widgets)
 endif()
 
 if (ENABLE_COVERAGE_BUILD)
