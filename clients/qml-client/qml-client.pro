@@ -18,7 +18,7 @@ LIBS += -lssl -lcrypto -lz
 LIBS += -L$$OUT_PWD/../../TelegramQt
 LIBS += -lTelegramQt$${QT_MAJOR_VERSION}
 LIBS += -L$$OUT_PWD/../../imports/TelegramQtQml
-LIBS += -lTelegramQt$${QT_MAJOR_VERSION}Qml
+LIBS += -lTelegramQt$${QT_MAJOR_VERSION}QmlPlugin
 
 INCLUDEPATH += $$PWD/../../TelegramQt
 

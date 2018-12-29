@@ -1,7 +1,7 @@
 QT = core network qml
 
 TEMPLATE = lib
-TARGET   = TelegramQt$${QT_MAJOR_VERSION}Qml
+TARGET   = TelegramQt$${QT_MAJOR_VERSION}QmlPlugin
 VERSION = 0.2.0
 
 include(../../options.pri)
