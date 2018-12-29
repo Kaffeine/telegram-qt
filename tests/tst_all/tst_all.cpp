@@ -187,6 +187,7 @@ void tst_all::testSignIn()
     TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusWaitForAuthentication);
     TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
+    QCOMPARE(signInOperation->isRegistered(), true);
     QCOMPARE(authCodeSpy.count(), 1);
     QCOMPARE(serverAuthCodeSpy.count(), 1);
     QList<QVariant> authCodeSentArguments = serverAuthCodeSpy.takeFirst();
@@ -472,9 +473,11 @@ void tst_all::testSignUp()
     QSignalSpy registrationStatusSpy(signUpOperation, &Client::AuthOperation::registeredChanged);
     TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
-    QCOMPARE(signUpOperation->isRegistered(), false);
     QCOMPARE(authCodeSpy.count(), 1);
     QCOMPARE(serverAuthCodeSpy.count(), 1);
+    QCOMPARE(registrationStatusSpy.count(), 1);
+    QCOMPARE(signUpOperation->isRegistered(), false);
+    QCOMPARE(registrationStatusSpy.takeFirst().first().toBool(), false);
     QList<QVariant> authCodeSentArguments = serverAuthCodeSpy.takeFirst();
     QCOMPARE(authCodeSentArguments.count(), 2);
     const QString authCode = authCodeSentArguments.at(1).toString();
