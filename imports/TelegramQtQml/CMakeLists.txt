@@ -20,6 +20,7 @@ add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED
     DeclarativeOperation.cpp
     DeclarativeAuthOperation.cpp
     DeclarativeSettings.cpp
+    DeclarativeUserInfo.cpp
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml

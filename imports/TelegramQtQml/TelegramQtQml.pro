@@ -19,6 +19,7 @@ SOURCES += \
     DeclarativeClient.cpp \
     DeclarativeClientOperator.cpp \
     DeclarativeOperation.cpp \
+    DeclarativeUserInfo.cpp \
     DeclarativeSettings.cpp
 
 HEADERS += \
@@ -26,6 +27,7 @@ HEADERS += \
     DeclarativeClient.hpp \
     DeclarativeClientOperator.hpp \
     DeclarativeOperation.hpp \
+    DeclarativeUserInfo.hpp \
     DeclarativeSettings.hpp
 
 target.path += $$INSTALL_QML_IMPORT_DIR/TelegramQt

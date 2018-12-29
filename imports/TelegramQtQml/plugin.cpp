@@ -13,6 +13,7 @@
 #include "DeclarativeClient.hpp"
 #include "DeclarativeAuthOperation.hpp"
 #include "DeclarativeSettings.hpp"
+#include "DeclarativeUserInfo.hpp"
 
 class AccountSecretHelper : public QObject
 {
@@ -333,6 +334,7 @@ public:
         qmlRegisterType<AccountSecretHelper>(uri, 1, 0, "AccountSecretHelper");
         qmlRegisterType<Telegram::Client::DeclarativeAuthOperation>(uri, 1, 0, "AuthOperation");
         qmlRegisterType<Telegram::Client::DeclarativeClient>(uri, 1, 0, "Client");
+        qmlRegisterType<Telegram::Client::DeclarativeUserInfo>(uri, 1, 0, "UserInfo");
         qmlRegisterType<Telegram::Client::DeclarativeServerOption>(uri, 1, 0, "ServerOption");
         qmlRegisterType<Telegram::Client::DeclarativeProxySettings>(uri, 1, 0, "ProxySettings");
         qmlRegisterType<Telegram::Client::DeclarativeSettings>(uri, 1, 0, "Settings");
