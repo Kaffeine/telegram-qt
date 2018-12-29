@@ -199,49 +199,6 @@ private:
     Format m_format;
 };
 
-class MessageModel : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(Telegram::Peer peer READ peer WRITE setPeer NOTIFY peerChanged)
-public:
-    explicit MessageModel(QObject *parent = nullptr) :
-        QObject(parent)
-    {
-    }
-
-    enum MessageType {
-        MessageTypeText,
-        MessageTypePhoto,
-        MessageTypeAudio,
-        MessageTypeVideo,
-        MessageTypeContact,
-        MessageTypeDocument,
-        MessageTypeGeo,
-        MessageTypeWebPage,
-        MessageTypeNewDay,
-        MessageTypeServiceAction,
-    };
-    Q_ENUM(MessageType)
-
-    Telegram::Peer peer() const { return m_peer; }
-
-public slots:
-    void setPeer(const Telegram::Peer peer)
-    {
-        if (m_peer == peer) {
-            return;
-        }
-        m_peer = peer;
-        emit peerChanged(peer);
-    }
-
-signals:
-    void peerChanged(Telegram::Peer peer);
-
-protected:
-    Telegram::Peer m_peer;
-};
-
 class MessageSender : public Telegram::Client::DeclarativeClientOperator
 {
     Q_OBJECT
@@ -344,7 +301,6 @@ public:
         qmlRegisterType<Telegram::Client::FileAccountStorage>(uri, 1, 0, "FileAccountStorage");
         qmlRegisterUncreatableType<Telegram::Client::DataStorage>(uri, 1, 0, "DataStorage", QStringLiteral("DataStorage is an abstract type"));
         qmlRegisterType<Telegram::Client::InMemoryDataStorage>(uri, 1, 0, "InMemoryDataStorage");
-        qmlRegisterType<MessageModel>(uri, 1, 0, "MessageModel");
         qmlRegisterType<MessageSender>(uri, 1, 0, "MessageSender");
     }
 };
