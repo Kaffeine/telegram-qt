@@ -15,6 +15,7 @@ class Client;
 class DeclarativeSettings;
 class AccountStorage;
 class DataStorage;
+class MessagingApi;
 
 class TELEGRAMQT_QML_EXPORT DeclarativeClient : public QObject
 {
@@ -35,6 +36,7 @@ public:
     DeclarativeSettings *settings() const { return m_settings; }
     AccountStorage *accountStorage() const;
     DataStorage *dataStorage() const;
+    MessagingApi *messagingApi() const;
 
 public slots:
     void setAppInformation(CAppInformation *newAppInfo);

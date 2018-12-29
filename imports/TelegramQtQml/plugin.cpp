@@ -9,6 +9,7 @@
 #include "Client.hpp"
 #include "CAppInformation.hpp"
 #include "DataStorage.hpp"
+#include "MessagingApi.hpp"
 
 #include "DeclarativeClient.hpp"
 #include "DeclarativeAuthOperation.hpp"
@@ -241,15 +242,14 @@ protected:
     Telegram::Peer m_peer;
 };
 
-class MessageSender : public QObject
+class MessageSender : public Telegram::Client::DeclarativeClientOperator
 {
     Q_OBJECT
     Q_PROPERTY(Telegram::Peer peer READ peer WRITE setPeer NOTIFY peerChanged)
-//    Q_PROPERTY(Telegram::Client::DeclarativeClient *target READ target WRITE setTarget NOTIFY targetChanged)
 //    Q_PROPERTY(Telegram::MessageReference messageRef)
 public:
     explicit MessageSender(QObject *parent = nullptr) :
-        QObject(parent)
+        DeclarativeClientOperator(parent)
     {
     }
 
@@ -292,12 +292,13 @@ public slots:
 
     void sendMessage()
     {
-        emit messageSent(m_text, m_peer);
+        emit messageSent(m_peer, m_text);
+        client()->messagingApi()->sendMessage(m_peer, m_text);
     }
 
-signals:
+Q_SIGNALS:
     void peerChanged(Telegram::Peer peer);
-    void messageSent(const QString &message, const Telegram::Peer peer);
+    void messageSent(const Telegram::Peer peer, const QString &message);
 //    void draftChanged(const QString &message, const Telegram::Peer peer);
 
 protected:
