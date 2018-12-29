@@ -2,7 +2,7 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.platform 1.0
-import TelegramQt 1.0 as Telegram
+import TelegramQt 0.2 as Telegram
 import Client 1.0 as Telegram
 import TelegramQtTheme 1.0
 

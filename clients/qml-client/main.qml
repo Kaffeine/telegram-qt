@@ -3,7 +3,7 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 2.0
 import Qt.labs.platform 1.0
 
-import TelegramQt 1.0 as Telegram
+import TelegramQt 0.2 as Telegram
 import TelegramQtTheme 1.0
 
 ApplicationWindow {
