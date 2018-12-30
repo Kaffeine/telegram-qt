@@ -1,5 +1,5 @@
 include(options.pri)
-message("It is highly recommended to use CMake instead of QMake for packaging!")
+message("QMake build is deprecated. Use CMake instead.")
 
 # The macro is taken from QtCreator
 defineTest(minQtVersion) {
