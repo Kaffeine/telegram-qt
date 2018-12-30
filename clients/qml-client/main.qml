@@ -58,7 +58,7 @@ ApplicationWindow {
         id: appInfo
         appId: 14617
         appHash: "e17ac360fd072f83d5d08db45ce9a121" // Telepathy-Morse app hash
-        appVersion: "0.2"
+        appVersion: Qt.application.version
         deviceInfo: "pc"
         osInfo: "GNU/Linux"
         languageCode: "en"
