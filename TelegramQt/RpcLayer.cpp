@@ -56,7 +56,9 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     qCDebug(c_baseRpcLayerCategoryIn) << this << __func__
                                       << "Read" << package.length() << "bytes:";
     // Encrypted Message
+#ifdef BASE_RPC_IO_DEBUG
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
+#endif
     const QByteArray messageKey = package.mid(8, 16);
     const QByteArray encryptedData = package.mid(24);
     const SAesKey key = getDecryptionAesKey(messageKey);
