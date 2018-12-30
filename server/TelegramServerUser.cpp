@@ -235,7 +235,7 @@ const TLMessage *LocalUser::getMessage(quint32 messageId) const
     if (!messageId || m_messages.isEmpty()) {
         return nullptr;
     }
-    if (m_messages.count() < messageId) {
+    if (static_cast<quint32>(m_messages.count()) < messageId) {
         return nullptr;
     }
     return &m_messages.at(messageId - 1);
