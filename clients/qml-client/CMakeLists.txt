@@ -17,7 +17,7 @@ set(app_SOURCES
     qml.qrc
 )
 
-find_package(Qt5 COMPONENTS Core Gui Quick QuickControls2 REQUIRED)
+find_package(Qt5 5.9 COMPONENTS Core Gui Quick QuickControls2 REQUIRED)
 
 add_executable(qml-client-qt${QT_VERSION_MAJOR} ${app_SOURCES})
 
