@@ -21,26 +21,11 @@ ApplicationWindow {
     readonly property int recommendedDialogWidth: width < Screen.width * 2/4 ? width : Screen.width * 2/4
     readonly property int recommendedDialogHeight: height < Screen.height * 2/4 ? height : Screen.height * 2/4
 
-//    header: Label {
-//        text: view.currentItem.title
-//        horizontalAlignment: Text.AlignHCenter
-//    }
-
     property string appname: Qt.application.name
 
     QtObject {
         id: options
         property bool localServer: true && false
-    }
-
-    ListModel {
-        id: accountModel
-        ListElement {
-            account: "123456"
-            encrypted: true
-            lastOnline: "Yesterday"
-            avatar: "red"
-        }
     }
 
     Telegram.FileAccountStorage {
@@ -114,10 +99,8 @@ ApplicationWindow {
         running: true
         onTriggered: {
             if (accountStorage.fileExists() && accountStorage.loadData()) {
-                console.log("CheckIn")
                 signInOperation.checkIn()
             } else {
-                console.log("SignIn")
                 signInOperation.signIn()
             }
         }
@@ -199,17 +182,4 @@ ApplicationWindow {
         sequence: StandardKey.Quit
         onActivated: window.close()
     }
-
-//    Pane {
-//        anchors.fill: parent
-//        ListView {
-//            anchors.fill: parent
-//            model: accountHelper.accounts
-//            delegate: ItemDelegate {
-//                width: parent.width
-//                height: 64
-//                text: modelData
-//            }
-//        }
-//    }
 }

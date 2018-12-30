@@ -59,7 +59,6 @@ AuthScreen {
             anchors.left: phoneCode.right
             anchors.right: parent.right
             onAccepted: baseColumn.accept()
-            text: "5432101"
         }
     }
     Item {
