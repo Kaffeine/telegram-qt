@@ -87,6 +87,11 @@ public:
 
 using PeerList = QVector<Peer>;
 
+inline uint qHash(const Peer &key, uint seed)
+{
+    return ::qHash(static_cast<ulong>(key.id | (static_cast<quint64>(key.type) << (sizeof(key.id) * 8))), seed);
+}
+
 } // Telegram namespace
 
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
