@@ -46,7 +46,6 @@ include(GNUInstallDirs)
 include(FeatureSummary)
 
 find_package(Qt5 5.5.0 REQUIRED COMPONENTS ${QT_COMPONENTS})
-message("-- Found Qt version: ${Qt5_VERSION}")
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 
@@ -127,5 +126,9 @@ if (ENABLE_COVERAGE_BUILD)
         )
     endif()
 endif()
+
+message(STATUS "${PROJECT_NAME} configuration:")
+message(STATUS "  Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
+message(STATUS "  Qt: ${Qt5_VERSION} at ${_qt5Core_install_prefix}")
 
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
