@@ -15,6 +15,7 @@ class MessagesOperation : public PendingOperation
 public:
     explicit MessagesOperation(QObject *parent = nullptr);
 
+    Peer peer() const;
     QVector<quint32> messages() const;
 
 protected:

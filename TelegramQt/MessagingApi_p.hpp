@@ -49,7 +49,7 @@ public:
     void onMessageReceived(const TLMessage &message);
 
     PendingOperation *getDialogs();
-    MessagesOperation *getHistory(const Telegram::Peer peer, quint32 limit);
+    MessagesOperation *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
 
     DataStorage *dataStorage();
     MessagesRpcLayer *messagesLayer();

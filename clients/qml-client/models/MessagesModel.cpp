@@ -513,7 +513,7 @@ void MessagesModel::fetchPrevious()
         return;
     }
     qWarning() << Q_FUNC_INFO << "for peer" << m_peer.toString();
-    MessagesOperation *op = m_qmlClient->messagingApi()->getHistory(m_peer, 10);
+    MessagesOperation *op = m_qmlClient->messagingApi()->getHistory(m_peer, MessageFetchOptions::useLimit(10));
     connect(op, &MessagesOperation::finished, this, [this, op] () {
         processMessages(op->messages());
     });

@@ -16,6 +16,12 @@ MessagesOperation::MessagesOperation(QObject *parent) :
     d = new MessagesOperationPrivate;
 }
 
+Peer MessagesOperation::peer() const
+{
+    Q_D(const MessagesOperation);
+    return d->m_peer;
+}
+
 QVector<quint32> MessagesOperation::messages() const
 {
     Q_D(const MessagesOperation);

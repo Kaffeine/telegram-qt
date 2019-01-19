@@ -19,6 +19,7 @@
 #define TELEGRAMQT_CLIENT_MESSAGES_OPERATION_PRIVATE_HPP
 
 #include "PendingOperation_p.hpp"
+#include "MessagingApi.hpp"
 
 #include <QVector>
 
@@ -33,6 +34,8 @@ class MessagesOperationPrivate : public PendingOperationPrivate
 public:
     static MessagesOperationPrivate *get(MessagesOperation *parent);
 
+    Peer m_peer;
+    MessageFetchOptions m_fetchOptions;
     QVector<quint32> m_messages;
 };
 
