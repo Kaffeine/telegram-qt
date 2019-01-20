@@ -58,13 +58,19 @@ Requires:   %{name}-qt5-declarative%{?_isa} = %{version}-%{release}
 %setup -q
 
 %build
+mkdir build
+cd build
+
 %cmake \
     -DENABLE_TESTAPP=FALSE \
-    -DBUILD_VERSION="%{version}"
+    -DBUILD_VERSION="%{version}" \
+    ..
 
 make %{?_smp_mflags}
 
 %install
+cd build
+
 rm -rf %{buildroot}
 %make_install
 
