@@ -58,7 +58,9 @@ Requires:   %{name}-qt5-declarative%{?_isa} = %{version}-%{release}
 %setup -q
 
 %build
-%cmake -DENABLE_TESTAPP=FALSE
+%cmake \
+    -DENABLE_TESTAPP=FALSE \
+    -DBUILD_VERSION="%{version}"
 
 make %{?_smp_mflags}
 

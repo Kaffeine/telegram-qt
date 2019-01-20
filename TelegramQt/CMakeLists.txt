@@ -178,6 +178,13 @@ if (DEVELOPER_BUILD)
     add_definitions(-DQT_DEPRECATED_WARNINGS)
 endif()
 
+if (NOT BUILD_VERSION)
+    set(BUILD_VERSION "unknown")
+endif()
+
+configure_file(Version.cpp.in "${CMAKE_CURRENT_BINARY_DIR}/Version.cpp" @ONLY)
+list(APPEND telegram_qt_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/Version.cpp")
+
 add_definitions(-DTELEGRAMQT_LIBRARY)
 
 add_definitions(

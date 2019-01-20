@@ -31,6 +31,9 @@
 
 namespace Telegram {
 
+TELEGRAMQT_EXPORT QString version();
+TELEGRAMQT_EXPORT QString buildVersion();
+
 struct Peer
 {
     Q_GADGET

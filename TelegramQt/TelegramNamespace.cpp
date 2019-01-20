@@ -92,8 +92,9 @@ void TelegramNamespace::registerTypes()
     if (!registered) {
 
 #ifdef DEVELOPER_BUILD
-        qDebug() << "TelegramQt Developer build";
+        qInfo() << "TelegramQt Developer build";
 #endif
+        qInfo().noquote().nospace() << "Initialize TelegramQt v" << Telegram::version() << " (hash " << Telegram::buildVersion() << ")";
 
         qRegisterMetaType<TelegramNamespace::ContactStatus>("TelegramNamespace::ContactStatus");
         qRegisterMetaType<TelegramNamespace::MessageFlags>("TelegramNamespace::MessageFlags");
