@@ -313,6 +313,9 @@ QVariantHash ConnectionApiPrivate::getBackendSetupErrorDetails() const
     if (!settings) {
         return {{PendingOperation::c_text(), QStringLiteral("Settings object is missing")}};
     }
+    if (!settings->serverRsaKey().isValid()) {
+        return {{PendingOperation::c_text(), QStringLiteral("Invalid server RSA key")}};
+    }
     if (!settings->isValid()) {
         return {{PendingOperation::c_text(), QStringLiteral("Invalid settings")}};
     }
