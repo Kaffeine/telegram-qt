@@ -90,6 +90,13 @@ void DeclarativeSettings::appendServerOption(DeclarativeServerOption *option)
 {
     m_options.append(option);
     syncSettings();
+    emit serverOptionsChanged();
+}
+
+void DeclarativeSettings::clearServerOptions()
+{
+    m_options.clear();
+    emit serverOptionsChanged();
 }
 
 void DeclarativeSettings::setServerKey(DeclarativeRsaKey *serverKey)

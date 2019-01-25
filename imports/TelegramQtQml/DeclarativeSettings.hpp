@@ -82,7 +82,8 @@ protected:
 class DeclarativeSettings : public Settings // TODO: QQmlParserStatus
 {
     Q_OBJECT
-    Q_PROPERTY(QQmlListProperty<Telegram::Client::DeclarativeServerOption> serverOptions READ serverOptions)
+    Q_PROPERTY(QQmlListProperty<Telegram::Client::DeclarativeServerOption> serverOptions
+               READ serverOptions NOTIFY serverOptionsChanged)
     Q_PROPERTY(Telegram::Client::DeclarativeRsaKey *serverKey READ serverKey WRITE setServerKey NOTIFY serverKeyChanged)
     Q_PROPERTY(Telegram::Client::DeclarativeProxySettings *proxy READ proxy CONSTANT)
 public:
@@ -95,7 +96,7 @@ public:
     void appendServerOption(DeclarativeServerOption *option);
     int serverOptionCount() const { return m_options.count(); }
     DeclarativeServerOption *getServerOption(int index) const { return m_options.at(index); }
-    void clearServerOptions() { m_options.clear(); }
+    void clearServerOptions();
 
     // TODO: Protect
     void syncSettings();
@@ -104,6 +105,7 @@ public slots:
 
 signals:
     void serverKeyChanged();
+    void serverOptionsChanged();
 
 protected:
     static void appendServerOption(QQmlListProperty<DeclarativeServerOption> *list, DeclarativeServerOption *option);
