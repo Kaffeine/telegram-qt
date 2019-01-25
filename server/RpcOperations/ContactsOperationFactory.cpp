@@ -260,7 +260,7 @@ void ContactsRpcOperation::runImportContacts()
         contact.firstName = c.firstName;
         contact.lastName = c.lastName;
 
-        RemoteUser *registeredUser = layer()->api()->getUser(c.phone);
+        RemoteUser *registeredUser = layer()->api()->getRemoteUser(c.phone);
         if (registeredUser) {
             contact.id = registeredUser->id();
             result.users.append(TLUser());
