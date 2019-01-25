@@ -108,7 +108,11 @@ void DeclarativeSettings::syncSettings()
     if (m_serverKey) {
         setServerRsaKey(m_serverKey->key());
     }
-    setServerConfiguration(dcs);
+    if (dcs.isEmpty()) {
+        setServerConfiguration(defaultServerConfiguration());
+    } else {
+        setServerConfiguration(dcs);
+    }
     QNetworkProxy proxy;
     if (!m_proxySettings->address().isEmpty()) {
         proxy.setType(QNetworkProxy::Socks5Proxy);
