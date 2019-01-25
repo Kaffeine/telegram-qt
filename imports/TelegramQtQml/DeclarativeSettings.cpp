@@ -29,8 +29,7 @@ void DeclarativeRsaKey::setFileName(const QString &fileName)
     }
     m_fileName = fileName;
     if (!fileName.isEmpty()) {
-        const QUrl url(fileName);
-        setKey(RsaKey::fromFile(url.toLocalFile()));
+        setKey(RsaKey::fromFile(QUrl::fromUserInput(fileName).toLocalFile()));
     }
     emit fileNameChanged(fileName);
 }
