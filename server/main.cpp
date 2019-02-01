@@ -90,43 +90,14 @@ int main(int argc, char *argv[])
     LocalCluster cluster;
     cluster.setServerPrivateRsaKey(key);
     cluster.setServerConfiguration(configuration);
+
 #ifdef USE_DBUS_NOTIFIER
     DBusCodeAuthProvider authProvider;
     cluster.setAuthorizationProvider(&authProvider);
     qInfo() << "DBus auth code provider enabled";
 #endif
+
     cluster.start();
-
-    if (LocalUser *u = cluster.addUser(QStringLiteral("5432101"), /* dc */ 1)) {
-        u->setFirstName(QStringLiteral("Dc1User1"));
-        u->setLastName(QStringLiteral("Dc1"));
-        u->setPlainPassword(QStringLiteral("mypassword"));
-    }
-
-    if (LocalUser *u = cluster.addUser(QStringLiteral("6432101"), /* dc */ 1)) {
-        u->setFirstName(QStringLiteral("Dc1User2"));
-        u->setLastName(QStringLiteral("Dc1"));
-        u->setPlainPassword(QStringLiteral("mypassword"));
-    }
-
-    if (LocalUser *u = cluster.addUser(QStringLiteral("5432102"), /* dc */ 2)) {
-        u->setFirstName(QStringLiteral("Dc2User1"));
-        u->setLastName(QStringLiteral("Dc2"));
-    }
-
-    if (LocalUser *u = cluster.addUser(QStringLiteral("5432103"), /* dc */ 3)) {
-        u->setFirstName(QStringLiteral("Dc3User1"));
-        u->setLastName(QStringLiteral("Dc3"));
-        u->setPlainPassword(QStringLiteral("hispassword"));
-    }
-
-    LocalUser *user1dc1 = cluster.getUser(QStringLiteral("5432101"));
-    LocalUser *user2dc1 = cluster.getUser(QStringLiteral("6432101"));
-    LocalUser *user3dc2 = cluster.getUser(QStringLiteral("5432102"));
-    user1dc1->importContact(user2dc1->toContact());
-    user1dc1->importContact(user3dc2->toContact());
-    user2dc1->importContact(user1dc1->toContact());
-    user3dc2->importContact(user1dc1->toContact());
 
     return a.exec();
 }
