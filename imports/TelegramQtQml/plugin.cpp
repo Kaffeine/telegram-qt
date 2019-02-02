@@ -13,6 +13,7 @@
 
 #include "DeclarativeClient.hpp"
 #include "DeclarativeAuthOperation.hpp"
+#include "DeclarativeMessageSender.hpp"
 #include "DeclarativeSettings.hpp"
 #include "DeclarativeUserInfo.hpp"
 
@@ -199,70 +200,6 @@ private:
     Format m_format;
 };
 
-class MessageSender : public Telegram::Client::DeclarativeClientOperator
-{
-    Q_OBJECT
-    Q_PROPERTY(Telegram::Peer peer READ peer WRITE setPeer NOTIFY peerChanged)
-//    Q_PROPERTY(Telegram::MessageReference messageRef)
-public:
-    explicit MessageSender(QObject *parent = nullptr) :
-        DeclarativeClientOperator(parent)
-    {
-    }
-
-    Telegram::Peer peer() const { return m_peer; }
-    void setPeer(const Telegram::Peer peer)
-    {
-        if (m_peer == peer) {
-            return;
-        }
-        m_peer = peer;
-        // TODO: Monitor the peer dialog draft changed signal
-        emit peerChanged(peer);
-    }
-
-public slots:
-    void setText(const QString &text)
-    {
-        m_text = text;
-    }
-    void setGeoPoint(double latitude, double longitude)
-    {
-        qWarning() << Q_FUNC_INFO << latitude << longitude;
-    }
-    void setContact()
-    {
-
-    }
-    void setMedia()
-    {
-
-    }
-    void setWebUrl()
-    {
-
-    }
-    void setSticker()
-    {
-
-    }
-
-    void sendMessage()
-    {
-        emit messageSent(m_peer, m_text);
-        client()->messagingApi()->sendMessage(m_peer, m_text);
-    }
-
-Q_SIGNALS:
-    void peerChanged(Telegram::Peer peer);
-    void messageSent(const Telegram::Peer peer, const QString &message);
-//    void draftChanged(const QString &message, const Telegram::Peer peer);
-
-protected:
-    Telegram::Peer m_peer;
-    QString m_text;
-};
-
 static QObject *telegram_namespace_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
@@ -303,7 +240,7 @@ public:
         qmlRegisterType<Telegram::Client::FileAccountStorage>(uri, versionMajor, versionMinor, "FileAccountStorage");
         qmlRegisterUncreatableType<Telegram::Client::DataStorage>(uri, versionMajor, versionMinor, "DataStorage", QStringLiteral("DataStorage is an abstract type"));
         qmlRegisterType<Telegram::Client::InMemoryDataStorage>(uri, versionMajor, versionMinor, "InMemoryDataStorage");
-        qmlRegisterType<MessageSender>(uri, versionMajor, versionMinor, "MessageSender");
+        qmlRegisterType<Telegram::Client::DeclarativeMessageSender>(uri, versionMajor, versionMinor, "MessageSender");
     }
 };
 
