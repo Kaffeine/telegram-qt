@@ -206,8 +206,9 @@ void tst_MessagesApi::getDialogs()
         quint64 sentMessageId = client1.messagingApi()->sendMessage(client2AsClient1Peer, c_message1Text);
         TRY_COMPARE(client1MessageSentSpy.count(), 1);
         QList<QVariant> sentArgs = client1MessageSentSpy.takeFirst();
-        QCOMPARE(sentArgs.count(), 2); // messageSent has 'random message id' and 'messageId' args
+        QCOMPARE(sentArgs.count(), 3); // messageSent has 'peer', 'random message id' and 'messageId' args
         QVERIFY(sentMessageId);
+        QCOMPARE(sentArgs.takeFirst().value<Telegram::Peer>(), client2AsClient1Peer);
         QCOMPARE(sentArgs.takeFirst().value<quint64>(), sentMessageId);
         client1Message1Id = sentArgs.takeFirst().value<quint32>();
         QVERIFY(client1Message1Id);
@@ -242,8 +243,9 @@ void tst_MessagesApi::getDialogs()
         quint64 sentMessageId = client2.messagingApi()->sendMessage(client1AsClient2Peer, c_message2Text);
         TRY_COMPARE(client2MessageSentSpy.count(), 1);
         QList<QVariant> sentArgs = client2MessageSentSpy.takeFirst();
-        QCOMPARE(sentArgs.count(), 2); // messageSent has 'random message id' and 'messageId' args
+        QCOMPARE(sentArgs.count(), 3); // messageSent has 'peer', 'random message id' and 'messageId' args
         QVERIFY(sentMessageId);
+        QCOMPARE(sentArgs.takeFirst().value<Telegram::Peer>(), client1AsClient2Peer);
         QCOMPARE(sentArgs.takeFirst().value<quint64>(), sentMessageId);
         client2Message2Id = sentArgs.takeFirst().value<quint32>();
         QVERIFY(client2Message2Id);

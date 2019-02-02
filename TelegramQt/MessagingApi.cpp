@@ -64,7 +64,7 @@ void MessagingApiPrivate::onMessageSendResult(quint64 randomMessageId, MessagesR
             if (u.randomId == randomMessageId) {
                 const DataInternalApi::SentMessage sentMessage = dataApi->dequeueMessage(randomMessageId, u.quint32Id);
                 if (sentMessage.randomId == randomMessageId) {
-                    emit q->messageSent(randomMessageId, u.quint32Id);
+                    emit q->messageSent(sentMessage.peer, randomMessageId, u.quint32Id);
                 } else {
                     qDebug() << "Sent message ID not found in the local queue" << randomMessageId;
                 }

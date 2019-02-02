@@ -96,7 +96,7 @@ public slots:
 
 Q_SIGNALS:
     void messageReceived(const Telegram::Peer peer, quint32 messageId);
-    void messageSent(quint64 messageRandomId, quint32 messageId);
+    void messageSent(const Telegram::Peer peer, quint64 messageRandomId, quint32 messageId);
 
     void messageActionChanged(const Telegram::Peer &peer, quint32 contactId, TelegramNamespace::MessageAction action);
 
