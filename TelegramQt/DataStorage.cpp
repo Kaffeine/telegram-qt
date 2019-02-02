@@ -19,6 +19,7 @@
 
 #include "ApiUtils.hpp"
 #include "TLTypesDebug.hpp"
+#include "Utils.hpp"
 #include "Debug.hpp"
 
 #include "TelegramNamespace_p.hpp"
@@ -306,6 +307,45 @@ void DataInternalApi::processData(const TLMessagesMessages &messages)
 void DataInternalApi::setContactList(const TLVector<TLContact> &contacts)
 {
     m_contactList = contacts;
+}
+
+quint64 DataInternalApi::enqueueMessage(const Telegram::Peer peer, const QString &message, quint32 replyToMsgId)
+{
+    SentMessage sentMessage;
+    sentMessage.peer = peer;
+    sentMessage.text = message;
+    sentMessage.replyToMsgId = replyToMsgId;
+    sentMessage.randomId = Utils::randomBytes<quint64>();
+    m_queuedMessages.append(sentMessage);
+    return sentMessage.randomId;
+}
+
+DataInternalApi::SentMessage DataInternalApi::getQueuedMessage(quint64 randomMessageId) const
+{
+    for (const SentMessage &message : m_queuedMessages) {
+        if (message.randomId == randomMessageId) {
+            return message;
+        }
+    }
+    return SentMessage();
+}
+
+DataInternalApi::SentMessage DataInternalApi::dequeueMessage(quint64 messageRandomId, quint32 messageId)
+{
+    if (m_queuedMessages.isEmpty()) {
+        qWarning() << Q_FUNC_INFO << "Invalid dequeue request (message queue is empty):" << messageRandomId << messageId;
+        return SentMessage();
+    }
+    if (m_queuedMessages.head().randomId == messageRandomId) {
+        return m_queuedMessages.dequeue();
+    }
+    for (int i = 0; i < m_queuedMessages.count(); ++i) {
+        if (m_queuedMessages.at(i).randomId == messageRandomId) {
+            return m_queuedMessages.takeAt(i);
+        }
+    }
+    qWarning() << Q_FUNC_INFO << "Invalid dequeue request (message not found):" << messageRandomId << messageId;
+    return SentMessage();
 }
 
 TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const

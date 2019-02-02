@@ -31,7 +31,7 @@ MessagingApiPrivate *MessagingApiPrivate::get(MessagingApi *parent)
 
 quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message, const MessagingApi::SendOptions &options)
 {
-    const DataInternalApi *dataApi = DataInternalApi::get(dataStorage());
+    DataInternalApi *dataApi = DataInternalApi::get(dataStorage());
 
     quint32 flags = 0;
     if (options.clearDraft()) {
@@ -42,7 +42,7 @@ quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message
     }
 
     const TLInputPeer inputPeer = dataApi->toInputPeer(peer);
-    const quint64 randomId = Utils::randomBytes<quint64>();
+    const quint64 randomId = dataApi->enqueueMessage(peer, message, options.replyToMessageId());
     MessagesRpcLayer::PendingUpdates *rpcOperation = messagesLayer()->sendMessage(flags, inputPeer, options.replyToMessageId(),
                                                                                   message, randomId, TLReplyMarkup(), {});
     rpcOperation->connectToFinished(this, &MessagingApiPrivate::onMessageSendResult, randomId, rpcOperation);
@@ -51,20 +51,33 @@ quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message
 
 void MessagingApiPrivate::onMessageSendResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation)
 {
+    DataInternalApi *dataApi = DataInternalApi::get(dataStorage());
+
     Q_Q(MessagingApi);
     TLUpdates result;
     rpcOperation->getResult(&result);
 
+    bool hasMessageId = false;
     for (const TLUpdate &u : result.updates) {
         if (u.tlType == TLValue::UpdateMessageID) {
+            hasMessageId = true;
             if (u.randomId == randomMessageId) {
-                emit q->messageSent(randomMessageId, u.quint32Id);
-                return;
+                const DataInternalApi::SentMessage sentMessage = dataApi->dequeueMessage(randomMessageId, u.quint32Id);
+                if (sentMessage.randomId == randomMessageId) {
+                    emit q->messageSent(randomMessageId, u.quint32Id);
+                } else {
+                    qDebug() << "Sent message ID not found in the local queue" << randomMessageId;
+                }
+            } else {
+                qWarning() << Q_FUNC_INFO
+                           << "Unexpected random message id."
+                           << "Actual:" << u.randomId << "Expected:" << randomMessageId;
             }
         }
     }
-
-    qWarning() << Q_FUNC_INFO << "Expected message id update is missing";
+    if (!hasMessageId) {
+        qWarning() << Q_FUNC_INFO << "Expected message id update is missing";
+    }
 }
 
 void MessagingApiPrivate::onMessageReceived(const TLMessage &message)

@@ -23,6 +23,7 @@
 #include "TLTypes.hpp"
 
 #include <QHash>
+#include <QQueue>
 
 namespace Telegram {
 
@@ -48,6 +49,13 @@ public:
     explicit DataInternalApi(QObject *parent = nullptr);
     ~DataInternalApi() override;
 
+    struct SentMessage {
+        QString text;
+        Peer peer;
+        quint64 randomId;
+        quint32 replyToMsgId;
+    };
+
     static DataInternalApi *get(DataStorage *parent) { return DataStoragePrivate::get(parent)->internalApi(); }
 
     const TLUser *getSelfUser() const;
@@ -64,6 +72,11 @@ public:
 
     void setContactList(const TLVector<TLContact> &contacts);
 
+    quint64 enqueueMessage(const Peer peer, const QString &message, quint32 replyToMsgId);
+    SentMessage getQueuedMessage(quint64 randomMessageId) const;
+    SentMessage dequeueMessage(quint64 messageRandomId, quint32 messageId);
+    QVector<quint64> getPostedMessages() const;
+
     quint32 selfUserId() const { return m_selfUserId; }
 
     TLInputPeer toInputPeer(const Telegram::Peer &peer) const;
@@ -79,6 +92,9 @@ public:
     QHash<quint64, TLMessage *> m_channelMessages;
     TLMessagesDialogs m_dialogs;
     TLVector<TLContact> m_contactList;
+
+protected:
+    QQueue<SentMessage> m_queuedMessages;
 };
 
 } // Client namespace
