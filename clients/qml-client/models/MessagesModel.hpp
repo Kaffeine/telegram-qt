@@ -123,6 +123,7 @@ public:
     const Peer forwardFromPeer() const { return m_forwardPeer; }
     void setForwardFromPeer(const Peer &peer) { m_forwardPeer = peer; }
 
+    quint64 sentMessageId = 0;
     quint32 replyToMessageId = 0;
     quint32 forwardContactId = 0; // If forward peer is a group chat, then the contact is the actual sender.
     QString text;
@@ -269,6 +270,9 @@ protected:
 
     void processHistoryMessages(const QVector<quint32> &messageIds);
     void onMessageReceived(const Telegram::Peer peer, quint32 messageId);
+    void onMessageQueued(const Telegram::Peer peer, quint64 messageRandomId,
+                          const QString &message /* const MessageApi::SendOptions &options */);
+    void onMessageSent(const Telegram::Peer peer, quint64 sentRandomId, quint32 acceptedMessageId);
 
     static Role intToRole(int value);
     static Column intToColumn(int value);
