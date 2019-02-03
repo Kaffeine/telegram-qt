@@ -109,6 +109,8 @@ Q_SIGNALS:
     void syncMessages(const Telegram::Peer &peer, const QVector<quint32> &messages);
 
     void messageReceived(const Telegram::Peer peer, quint32 messageId);
+    void messageEnqueued(const Telegram::Peer peer, quint64 messageRandomId,
+                     const QString &message, const SendOptions &options);
     void messageSent(const Telegram::Peer peer, quint64 messageRandomId, quint32 messageId);
     // We read an incoming message(s)
     void messageReadInbox(const Telegram::Peer peer, quint32 messageId);

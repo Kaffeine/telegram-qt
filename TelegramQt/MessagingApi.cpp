@@ -38,6 +38,7 @@ MessagingApiPrivate *MessagingApiPrivate::get(MessagingApi *parent)
 
 quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message, const MessagingApi::SendOptions &options)
 {
+    Q_Q(MessagingApi);
     DataInternalApi *dataApi = dataInternalApi();
 
     quint32 flags = 0;
@@ -50,6 +51,8 @@ quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message
 
     const TLInputPeer inputPeer = dataApi->toInputPeer(peer);
     const quint64 randomId = dataApi->enqueueMessage(peer, message, options.replyToMessageId());
+    emit q->messageEnqueued(peer, randomId, message, options);
+
     MessagesRpcLayer::PendingUpdates *rpcOperation = messagesLayer()->sendMessage(flags, inputPeer, options.replyToMessageId(),
                                                                                   message, randomId, TLReplyMarkup(), {});
     rpcOperation->connectToFinished(this, &MessagingApiPrivate::onMessageSendResult, randomId, rpcOperation);
