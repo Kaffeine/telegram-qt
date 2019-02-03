@@ -51,6 +51,7 @@ public:
     static DataInternalApi *get(DataStorage *parent) { return DataStoragePrivate::get(parent)->internalApi(); }
 
     const TLUser *getSelfUser() const;
+    const TLMessage *getMessage(const Telegram::Peer &peer, quint32 messageId) const;
 
     void processData(const TLMessage &message);
     void processData(const TLVector<TLChat> &chats);

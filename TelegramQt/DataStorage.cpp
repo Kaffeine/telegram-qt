@@ -136,13 +136,7 @@ bool DataStorage::getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const
 bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 messageId)
 {
     Q_D(const DataStorage);
-    const TLMessage *m = nullptr;
-    if (peer.type == Peer::Channel) {
-        quint64 key = DataInternalApi::channelMessageToKey(peer.id, messageId);
-        m = d->m_api->m_channelMessages.value(key);
-    } else {
-        m = d->m_api->m_clientMessages.value(messageId);
-    }
+    const TLMessage *m = d->m_api->getMessage(peer, messageId);
     if (!m) {
         qDebug() << Q_FUNC_INFO << "Unknown message" << peer << messageId;
         return false;
@@ -214,6 +208,15 @@ const TLUser *DataInternalApi::getSelfUser() const
         return nullptr;
     }
     return m_users.value(m_selfUserId);
+}
+
+const TLMessage *DataInternalApi::getMessage(const Peer &peer, quint32 messageId) const
+{
+    if (peer.type == Peer::Channel) {
+        quint64 key = DataInternalApi::channelMessageToKey(peer.id, messageId);
+        return m_channelMessages.value(key);
+    }
+    return m_clientMessages.value(messageId);
 }
 
 void DataInternalApi::processData(const TLMessage &message)
