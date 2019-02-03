@@ -27,6 +27,7 @@
 #include "CAppInformation.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
+#include "Operations/ClientMessagesOperation.hpp"
 #include "Operations/PendingContactsOperation.hpp"
 
 #include "ContactList.hpp"
@@ -195,32 +196,38 @@ void tst_MessagesApi::getDialogs()
     QSignalSpy client2MessageReceivedSpy(client2.messagingApi(), &Client::MessagingApi::messageReceived);
     QSignalSpy client2DialogListChangedSpy(client2DialogList, &Client::DialogList::listChanged);
 
-    // Check sent
+    quint32 client1Message1Id = 0;
+    quint32 client1Message2Id = 0;
+    quint32 client2Message1Id = 0;
+    quint32 client2Message2Id = 0;
+
+    // Check sent by client 1
     {
         quint64 sentMessageId = client1.messagingApi()->sendMessage(client2AsClient1Peer, c_message1Text);
         TRY_COMPARE(client1MessageSentSpy.count(), 1);
         QList<QVariant> sentArgs = client1MessageSentSpy.takeFirst();
         QCOMPARE(sentArgs.count(), 2); // messageSent has 'random message id' and 'messageId' args
         QVERIFY(sentMessageId);
-        QCOMPARE(sentArgs.first().value<quint64>(), sentMessageId);
-        QVERIFY(sentArgs.last().value<quint32>());
+        QCOMPARE(sentArgs.takeFirst().value<quint64>(), sentMessageId);
+        client1Message1Id = sentArgs.takeFirst().value<quint32>();
+        QVERIFY(client1Message1Id);
     }
 
-    // Check received
+    // Check received by client 2
     {
         TRY_COMPARE(client2MessageReceivedSpy.count(), 1);
         QList<QVariant> receivedArgs = client2MessageReceivedSpy.takeFirst();
         QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
         client1AsClient2Peer = receivedArgs.first().value<Telegram::Peer>();
 
-        quint32 receivedMessageId = receivedArgs.last().toUInt();
-        QVERIFY(receivedMessageId);
+        client2Message1Id = receivedArgs.last().toUInt();
+        QVERIFY(client2Message1Id);
         Telegram::Message messageData;
-        client2.dataStorage()->getMessage(&messageData, client1AsClient2Peer, receivedMessageId);
+        client2.dataStorage()->getMessage(&messageData, client1AsClient2Peer, client2Message1Id);
         QCOMPARE(messageData.text, c_message1Text);
     }
 
-    // Check dialog added
+    // Check the dialog is added to the client 2 dialog list
     {
         TRY_COMPARE(client2DialogListChangedSpy.count(), 1);
         QList<QVariant> receivedArgs = client2DialogListChangedSpy.takeFirst();
@@ -230,29 +237,52 @@ void tst_MessagesApi::getDialogs()
         QCOMPARE(added.first(), client1AsClient2Peer);
     }
 
-    // Check sent
+    // Check sent by client 2
     {
         quint64 sentMessageId = client2.messagingApi()->sendMessage(client1AsClient2Peer, c_message2Text);
         TRY_COMPARE(client2MessageSentSpy.count(), 1);
         QList<QVariant> sentArgs = client2MessageSentSpy.takeFirst();
         QCOMPARE(sentArgs.count(), 2); // messageSent has 'random message id' and 'messageId' args
         QVERIFY(sentMessageId);
-        QCOMPARE(sentArgs.first().value<quint64>(), sentMessageId);
-        QVERIFY(sentArgs.last().value<quint32>());
+        QCOMPARE(sentArgs.takeFirst().value<quint64>(), sentMessageId);
+        client2Message2Id = sentArgs.takeFirst().value<quint32>();
+        QVERIFY(client2Message2Id);
     }
 
-    // Check received
+    // Check received by client 1
     {
         TRY_COMPARE(client1MessageReceivedSpy.count(), 1);
         QList<QVariant> receivedArgs = client1MessageReceivedSpy.takeFirst();
         QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
         const Telegram::Peer fromPeer = receivedArgs.first().value<Telegram::Peer>();
 
-        quint32 receivedMessageId = receivedArgs.last().toUInt();
-        QVERIFY(receivedMessageId);
+        client1Message2Id = receivedArgs.last().toUInt();
+        QVERIFY(client1Message2Id);
         Telegram::Message messageData;
-        client1.dataStorage()->getMessage(&messageData, fromPeer, receivedMessageId);
+        client1.dataStorage()->getMessage(&messageData, fromPeer, client1Message2Id);
         QCOMPARE(messageData.text, c_message2Text);
+    }
+
+    // Check client 1 history
+    {
+        Telegram::Client::MessagesOperation *historyOperation = client1.messagingApi()->getHistory(client2AsClient1Peer, Telegram::Client::MessageFetchOptions::useLimit(5));
+        TRY_VERIFY(historyOperation->isFinished());
+        QVERIFY(historyOperation->isSucceeded());
+        QCOMPARE(historyOperation->messages().count(), 2);
+        QCOMPARE(historyOperation->messages().first(), client1Message2Id);
+        QCOMPARE(historyOperation->messages().last(), client1Message1Id);
+        QVERIFY(historyOperation->messages().first() > historyOperation->messages().last());
+    }
+
+    // Check client 2 history
+    {
+        Telegram::Client::MessagesOperation *historyOperation = client2.messagingApi()->getHistory(client1AsClient2Peer, Telegram::Client::MessageFetchOptions::useLimit(5));
+        TRY_VERIFY(historyOperation->isFinished());
+        QVERIFY(historyOperation->isSucceeded());
+        QCOMPARE(historyOperation->messages().count(), 2);
+        QCOMPARE(historyOperation->messages().first(), client2Message2Id);
+        QCOMPARE(historyOperation->messages().last(), client2Message1Id);
+        QVERIFY(historyOperation->messages().first() > historyOperation->messages().last());
     }
 }
 
