@@ -212,6 +212,13 @@ void tst_MessagesApi::getDialogs()
         QCOMPARE(sentArgs.takeFirst().value<quint64>(), sentMessageId);
         client1Message1Id = sentArgs.takeFirst().value<quint32>();
         QVERIFY(client1Message1Id);
+
+        // The sent message should be received as proper TLMessage right after the messageSent() signal
+        TRY_COMPARE(client1MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client1MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        QCOMPARE(receivedArgs.takeFirst().value<Telegram::Peer>(), client2AsClient1Peer);
+        QCOMPARE(receivedArgs.takeFirst().value<quint32>(), client1Message1Id);
     }
 
     // Check received by client 2
@@ -249,6 +256,13 @@ void tst_MessagesApi::getDialogs()
         QCOMPARE(sentArgs.takeFirst().value<quint64>(), sentMessageId);
         client2Message2Id = sentArgs.takeFirst().value<quint32>();
         QVERIFY(client2Message2Id);
+
+        // The sent message should be received as proper TLMessage right after the messageSent() signal
+        TRY_COMPARE(client2MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client2MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        QCOMPARE(receivedArgs.takeFirst().value<Telegram::Peer>(), client1AsClient2Peer);
+        QCOMPARE(receivedArgs.takeFirst().value<quint32>(), client2Message2Id);
     }
 
     // Check received by client 1

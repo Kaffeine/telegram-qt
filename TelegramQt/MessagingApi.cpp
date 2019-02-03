@@ -6,6 +6,7 @@
 #include "DataStorage.hpp"
 #include "DataStorage_p.hpp"
 #include "DialogList.hpp"
+#include "UpdatesLayer.hpp"
 #include "Utils.hpp"
 
 #include "Operations/ClientMessagesOperation.hpp"
@@ -73,6 +74,8 @@ void MessagingApiPrivate::onMessageSendResult(quint64 randomMessageId, MessagesR
                            << "Unexpected random message id."
                            << "Actual:" << u.randomId << "Expected:" << randomMessageId;
             }
+        } else {
+            backend()->updatesApi()->processUpdate(u);
         }
     }
     if (!hasMessageId) {
