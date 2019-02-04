@@ -116,16 +116,16 @@ public:
     Q_DECLARE_FLAGS(MessageFlags, MessageFlag)
 
     enum MessageType {
-        MessageTypeUnsupported = 0x00,
-        MessageTypeText        = 0x01,
-        MessageTypePhoto       = 0x02,
-        MessageTypeAudio       = 0x04,
-        MessageTypeVideo       = 0x08,
-        MessageTypeContact     = 0x10,
-        MessageTypeDocument    = 0x20,
-        MessageTypeGeo         = 0x40,
-        MessageTypeWebPage     = 0x80,
-        MessageTypeAll         = 0xff
+        MessageTypeUnsupported = 0x0000,
+        MessageTypeText        = 0x0001,
+        MessageTypePhoto       = 0x0002,
+        MessageTypeAudio       = 0x0004,
+        MessageTypeVideo       = 0x0008,
+        MessageTypeContact     = 0x0010,
+        MessageTypeDocument    = 0x0020,
+        MessageTypeGeo         = 0x0040,
+        MessageTypeWebPage     = 0x0080,
+        MessageTypeAll         = 0xffff,
     };
     Q_ENUM(MessageType)
     Q_DECLARE_FLAGS(MessageTypeFlags, MessageType)
