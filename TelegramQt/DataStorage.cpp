@@ -69,7 +69,7 @@ QVector<Peer> DataStorage::dialogs() const
 QVector<Peer> DataStorage::contactList() const
 {
     Q_D(const DataStorage);
-    const TLVector<TLContact> contacts = d->m_api->m_contactList;
+    const TLVector<TLContact> contacts = d->m_api->contactList();
     QVector<Peer> result;
     result.reserve(contacts.count());
     for (const TLContact &contact : contacts) {
@@ -102,7 +102,7 @@ bool DataStorage::getDialogInfo(DialogInfo *info, const Peer &peer) const
 bool DataStorage::getUserInfo(UserInfo *info, quint32 userId) const
 {
     Q_D(const DataStorage);
-    const auto &users = d->m_api->m_users;
+    const QHash<quint32, TLUser *> &users = d->m_api->users();
     if (!users.contains(userId)) {
         qDebug() << Q_FUNC_INFO << "Unknown user" << userId;
         return false;
@@ -118,7 +118,7 @@ bool DataStorage::getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const
 {
     Q_D(const DataStorage);
     const quint32 chatId = peer.id;
-    const auto &chats = d->m_api->m_chats;
+    const QHash<quint32, TLChat *> &chats = d->m_api->chats();
     if (!chats.contains(chatId)) {
         qDebug() << Q_FUNC_INFO << "Unknown user" << chatId;
         return false;
