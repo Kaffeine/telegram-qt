@@ -41,9 +41,8 @@ QString Telegram::Peer::toString() const
         return c_chatPrefix + QString::number(id);
     case Channel:
         return c_channelPrefix + QString::number(id);
-    default:
-        break;
     }
+    Q_UNREACHABLE();
     return QString();
 }
 
@@ -239,7 +238,7 @@ QString Telegram::MessageMediaInfo::documentFileName() const
         return QString();
     }
 
-    foreach (const TLDocumentAttribute &attribute, d->document.attributes) {
+    for (const TLDocumentAttribute &attribute : d->document.attributes) {
         if (attribute.tlType == TLValue::DocumentAttributeFilename) {
             return attribute.fileName;
         }
@@ -254,7 +253,7 @@ bool Telegram::MessageMediaInfo::setDocumentFileName(const QString &fileName)
         return false;
     }
 
-    TLDocumentAttribute *nameAttribute = 0;
+    TLDocumentAttribute *nameAttribute = nullptr;
     for (int i = 0; i < d->document.attributes.count(); ++i) {
         if (d->document.attributes.at(i).tlType == TLValue::DocumentAttributeFilename) {
             nameAttribute = &d->document.attributes[i];
@@ -354,7 +353,7 @@ QString Telegram::MessageMediaInfo::alt() const
         return QString();
     }
     case TLValue::MessageMediaDocument:
-        foreach (const TLDocumentAttribute &attribute, d->document.attributes) {
+        for (const TLDocumentAttribute &attribute : d->document.attributes) {
             if (attribute.tlType == TLValue::DocumentAttributeSticker) {
                 return attribute.alt;
             }
@@ -645,7 +644,7 @@ QString Telegram::RemoteFile::getUniqueId() const
 
 Telegram::RemoteFile Telegram::RemoteFile::fromUniqueId(const QString &uniqueId)
 {
-    quint8 remoteFileType = Private::InvalidLocation;
+    uint remoteFileType = Private::InvalidLocation;
     bool ok;
     remoteFileType = uniqueId.midRef(0, 2).toUInt(&ok, 16);
     if (!ok) {
@@ -879,9 +878,9 @@ bool Telegram::UserInfo::getPeerPicture(Telegram::RemoteFile *file, PeerPictureS
         return filePrivate->setFileLocation(&d->photo.photoBig);
     case PeerPictureSize::Small:
         return filePrivate->setFileLocation(&d->photo.photoSmall);
-    default:
-        return false;
     }
+    Q_UNREACHABLE();
+    return false;
 }
 
 Telegram::ChatInfo::ChatInfo() :
@@ -963,9 +962,9 @@ bool Telegram::ChatInfo::getPeerPicture(Telegram::RemoteFile *file, Telegram::Pe
         return filePrivate->setFileLocation(&d->photo.photoBig);
     case PeerPictureSize::Small:
         return filePrivate->setFileLocation(&d->photo.photoSmall);
-    default:
-        return false;
     }
+    Q_UNREACHABLE();
+    return false;
 }
 
 TelegramNamespace::ContactStatus getApiContactStatus(TLValue status)
