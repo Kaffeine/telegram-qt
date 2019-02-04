@@ -32,8 +32,7 @@ namespace Client {
 
 /*!
     \class Telegram::Client::DataStorage
-    \brief The DataStorage class provides a basic interface for session
-           data management
+    \brief Provides public API to get data
     \inmodule TelegramQt
     \ingroup Client
 
@@ -60,10 +59,8 @@ void DataStorage::setServerConfiguration(const DcConfiguration &configuration)
 QVector<Peer> DataStorage::dialogs() const
 {
     Q_D(const DataStorage);
-    const TLMessagesDialogs dialogs = d->m_api->m_dialogs;
     QVector<Peer> result;
-    result.reserve(dialogs.count);
-    for (const TLDialog &dialog : dialogs.dialogs) {
+    for (const TLDialog &dialog : d->m_api->dialogs()) {
         result.append(Utils::toPublicPeer(dialog.peer));
     }
     return result;
@@ -90,8 +87,7 @@ quint32 DataStorage::selfUserId() const
 bool DataStorage::getDialogInfo(DialogInfo *info, const Peer &peer) const
 {
     Q_D(const DataStorage);
-    const auto &dialogs = d->m_api->m_dialogs;
-    for (const TLDialog &dialog : dialogs.dialogs) {
+    for (const TLDialog &dialog : d->m_api->dialogs()) {
         Telegram::Peer thisDialogPeer = Utils::toPublicPeer(dialog.peer);
         if (thisDialogPeer == peer) {
             TLDialog *infoData = Telegram::DialogInfo::Private::get(info);
@@ -281,8 +277,7 @@ void DataInternalApi::processData(const TLAuthAuthorization &authorization)
 
 void DataInternalApi::processData(const TLMessagesDialogs &dialogs)
 {
-    //qDebug() << Q_FUNC_INFO << dialogs;
-    m_dialogs = dialogs;
+    m_dialogs = dialogs.dialogs;
     processData(dialogs.users);
     processData(dialogs.chats);
     for (const TLMessage &message : dialogs.messages) {

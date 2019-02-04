@@ -85,13 +85,14 @@ public:
     static quint64 channelMessageToKey(quint32 channelId, quint32 messageId);
 
     TLVector<TLContact> contactList() const { return m_contactList; }
+    const TLVector<TLDialog> &dialogs() const { return m_dialogs; }
 
     quint32 m_selfUserId = 0;
     QHash<quint32, TLUser *> m_users;
     QHash<quint32, TLChat *> m_chats;
     QHash<quint32, TLMessage *> m_clientMessages;
     QHash<quint64, TLMessage *> m_channelMessages;
-    TLMessagesDialogs m_dialogs;
+    TLVector<TLDialog> m_dialogs;
     TLVector<TLContact> m_contactList;
 
 protected:
