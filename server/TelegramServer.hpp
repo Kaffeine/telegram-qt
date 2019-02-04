@@ -108,8 +108,8 @@ private:
     DcConfiguration m_dcConfiguration;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAMSERVER_HPP

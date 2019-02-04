@@ -27,8 +27,8 @@ private:
 
 };
 
-} // Client
+} // Client namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_LEGACY_SECRET_READER

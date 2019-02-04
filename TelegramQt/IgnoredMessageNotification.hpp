@@ -57,8 +57,8 @@ public:
 CRawStream &operator>>(CRawStream &stream, IgnoredMessageNotification &error);
 CRawStream &operator<<(CRawStream &stream, const IgnoredMessageNotification &error);
 
-} // MTProto
+} // MTProto namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif //  TELEGRAM_QT_IGNORED_MESSAGE_NOTIFICATION_HPP

@@ -40,8 +40,8 @@ protected:
     bool processAuthKey(quint64 authKeyId) override;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_SERVER_CLIENT_CONNECTION_HPP

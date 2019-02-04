@@ -27,8 +27,8 @@ protected:
     ServerApi *m_server = nullptr;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_REMOTE_SERVER_CONNECTION_HPP

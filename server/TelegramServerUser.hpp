@@ -115,8 +115,8 @@ protected:
     QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAMSERVERUSER_HPP

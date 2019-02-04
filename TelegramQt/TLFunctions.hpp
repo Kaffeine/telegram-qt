@@ -1705,8 +1705,8 @@ struct TLUsersGetUsers
 };
 // End of generated TLFunctions
 
-} // TLFunctions
+} // TLFunctions namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_TL_FUNCTIONS_HPP

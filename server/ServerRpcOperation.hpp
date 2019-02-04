@@ -46,8 +46,8 @@ protected:
 //    QByteArray m_request;
 };
 
-} // Server
+} // Server namespace
 
-} //Telegram
+} //Telegram namespace
 
 #endif // TELEGRAM_SERVER_RPC_OPERATION_HPP

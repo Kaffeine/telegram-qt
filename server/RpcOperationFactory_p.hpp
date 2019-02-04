@@ -24,8 +24,8 @@ RpcOperation *processRpcCallImpl(RpcLayer *layer, RpcProcessingContext &context)
     return operation;
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // RPC_OPERATION_FACTORY_PRIVATE_HPP

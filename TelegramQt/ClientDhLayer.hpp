@@ -55,8 +55,8 @@ protected:
     QByteArray m_b; // Client side
 };
 
-} // Client
+} // Client namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // CLIENT_DH_LAYER_HPP

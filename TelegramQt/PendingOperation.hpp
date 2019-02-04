@@ -162,6 +162,6 @@ inline QVariantHash PendingOperation::errorDetails() const
     return m_errorDetails;
 }
 
-}
+} // Telegram namespace
 
 #endif // TELEGRAMQT_PENDING_OPERATION

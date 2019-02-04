@@ -67,8 +67,8 @@ protected:
     SessionType m_preferedSessionType = SessionType::None;
 };
 
-} // Client
+} // Client namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_CLIENT_SETTINGS_HPP

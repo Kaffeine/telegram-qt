@@ -126,6 +126,6 @@ protected:
 #endif
 };
 
-} // Telegram
+} // Telegram namespace
 
 #endif // DH_LAYER_HPP

@@ -53,7 +53,7 @@ private:
     bool m_hasInnerCalls = false;
 };
 
-} // Debug
+} // Debug namespace
 
 template <typename T>
 QString toHex(T number)
@@ -61,7 +61,7 @@ QString toHex(T number)
     return QStringLiteral("%1").arg(number, sizeof(number) * 2, 0x10, QLatin1Char('0'));
 }
 
-} // Telegram
+} // Telegram namespace
 
 TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::FullMessageHeader &header);
 TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::IgnoredMessageNotification &notification);

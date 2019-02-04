@@ -89,6 +89,6 @@ inline QByteArray Utils::rsa(const QByteArray &data, const Telegram::RsaKey &key
     return binaryNumberModExp(data, key.modulus, key.exponent);
 }
 
-} // Telegram
+} // Telegram namespace
 
 #endif // UTILS_HPP

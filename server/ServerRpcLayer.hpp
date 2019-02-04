@@ -73,8 +73,8 @@ protected:
     QVector<RpcOperationFactory*> m_operationFactories;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // RPCLAYER_HPP

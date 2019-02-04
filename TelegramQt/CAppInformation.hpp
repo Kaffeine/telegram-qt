@@ -70,9 +70,9 @@ namespace Client {
 
 using AppInformation = ::CAppInformation;
 
-} // Client
+} // Client namespace
 
-} // Telegram
+} // Telegram namespace
 
 inline bool CAppInformation::isValid() const
 {

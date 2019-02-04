@@ -39,8 +39,8 @@ struct UserContact
     QString lastName;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_SERVER_NAMESPACE_HPP

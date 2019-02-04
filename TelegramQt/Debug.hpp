@@ -26,7 +26,7 @@ namespace Telegram {
 
 struct Peer;
 
-} // Telegram
+} // Telegram namespace
 
 TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::Peer &peer);
 

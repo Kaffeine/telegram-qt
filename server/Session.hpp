@@ -68,9 +68,9 @@ protected:
     quint32 m_layer = 0;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 Q_DECLARE_TYPEINFO(Telegram::Server::Session, Q_MOVABLE_TYPE);
 

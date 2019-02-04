@@ -50,8 +50,8 @@ protected:
     SessionType m_preferedSessionType = Default;
 };
 
-} // Client
+} // Client namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // CCLIENTTCPTRANSPORT_HPP

@@ -90,6 +90,6 @@ private:
     RandomGenerator *m_previousGenerator;
 };
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_RANDOM_GENERATOR_HPP

@@ -28,7 +28,7 @@ namespace Crypto {
 
 class AesCtrContext;
 
-} // Crypto
+} // Crypto namespace
 
 class BaseTcpTransport : public BaseTransport
 {

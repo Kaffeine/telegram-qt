@@ -26,8 +26,8 @@ protected:
 
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // CSERVERTCPTRANSPORT_HPP

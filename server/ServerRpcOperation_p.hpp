@@ -15,6 +15,6 @@ bool RpcOperation::sendRpcReply(const TLType &reply)
     return layer()->sendRpcReply(output.getData(), m_requestId);
 }
 
-} // Server
+} // Server namespace
 
-} //Telegram
+} //Telegram namespace

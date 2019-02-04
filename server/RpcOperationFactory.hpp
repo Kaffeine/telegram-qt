@@ -18,8 +18,8 @@ public:
     virtual RpcOperation *processRpcCall(RpcLayer *layer, RpcProcessingContext &context) = 0;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // RPC_OPERATION_FACTORY_HPP

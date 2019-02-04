@@ -49,6 +49,6 @@ inline uint qHash(const ConnectionSpec &key, uint seed)
     return ::qHash(static_cast<uint>(key.dcId | (static_cast<quint32>(key.flags) << 20)), seed);
 }
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_SERVER_DC_CONFIGURATION_HPP

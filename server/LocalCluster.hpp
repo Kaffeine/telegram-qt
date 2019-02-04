@@ -73,8 +73,8 @@ protected:
     Authorization::Provider *m_authProvider = nullptr;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_SERVER_CLUSTER_HPP

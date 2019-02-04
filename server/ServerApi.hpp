@@ -76,8 +76,8 @@ public:
     virtual LocalUser *addUser(const QString &identifier) = 0;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_SERVER_API_HPP

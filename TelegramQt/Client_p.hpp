@@ -21,8 +21,8 @@ public:
     static ClientPrivate *get(Client *c) { return c->d; }
 };
 
-} // Client
+} // Client namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_CLIENT_P_HPP

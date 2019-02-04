@@ -32,7 +32,7 @@ namespace MTProto {
 
 struct Message;
 
-}
+} // MTProto namespace
 
 class AppInformation;
 

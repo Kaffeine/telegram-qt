@@ -46,8 +46,8 @@ protected:
     QByteArray m_a;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // SERVER_DH_LAYER_HPP

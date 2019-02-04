@@ -264,6 +264,6 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLUsersGetFullUser &usersGe
 CTelegramStream &operator>>(CTelegramStream &stream, TLUsersGetUsers &usersGetUsersFunction);
 // End of generated write operators
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_SERVER_FUNCTION_STREAM_OPERATORS_HPP
