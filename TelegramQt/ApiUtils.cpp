@@ -134,6 +134,14 @@ TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media)
     case TLValue::MessageMediaContact:
         return TelegramNamespace::MessageTypeContact;
     case TLValue::MessageMediaDocument:
+        for (const TLDocumentAttribute &attribute : media.document.attributes) {
+            switch (attribute.tlType) {
+            case TLValue::DocumentAttributeSticker:
+                return TelegramNamespace::MessageTypeSticker;
+            default:
+                break;
+            }
+        }
         return TelegramNamespace::MessageTypeDocument;
     case TLValue::MessageMediaWebPage:
         return TelegramNamespace::MessageTypeWebPage;
