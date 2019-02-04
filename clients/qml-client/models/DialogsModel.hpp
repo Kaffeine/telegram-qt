@@ -17,7 +17,7 @@ class DialogsModel : public QAbstractTableModel
     Q_OBJECT
     Q_PROPERTY(Telegram::Client::DeclarativeClient *client READ client WRITE setClient NOTIFY clientChanged)
 public:
-    struct DialogInfo {
+    struct DialogEntry {
         Telegram::Peer peer;
         QString typeIcon;
         QString name;
@@ -66,7 +66,6 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant getData(int index, Role role) const;
-    QVariantMap getDialogLastMessageData(const DialogInfo &dialog) const;
 
 public slots:
     void setClient(DeclarativeClient *client);
@@ -91,10 +90,11 @@ private slots:
     void addPeer(const Telegram::Peer &peer);
 
 private:
+    QVariantMap getDialogLastMessageData(const DialogEntry &dialog) const;
     static Role intToRole(int value);
     static Column intToColumn(int value);
     static Role indexToRole(const QModelIndex &index, int role = Qt::DisplayRole);
-    QVector<DialogInfo> m_dialogs;
+    QVector<DialogEntry> m_dialogs;
     DeclarativeClient *m_client = nullptr;
     DialogList *m_list = nullptr;
 

@@ -76,7 +76,7 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
     if (index < 0 || index >= m_dialogs.count()) {
         return QVariant();
     }
-    const DialogInfo dialog = m_dialogs.at(index);
+    const DialogEntry dialog = m_dialogs.at(index);
 
     switch (role) {
     case Role::Peer:
@@ -103,7 +103,7 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
     return QVariant();
 }
 
-QVariantMap DialogsModel::getDialogLastMessageData(const DialogInfo &dialog) const
+QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) const
 {
     QString text;
     if (dialog.lastChatMessage.type == TelegramNamespace::MessageTypeText) {
@@ -213,7 +213,7 @@ void DialogsModel::onListChanged(const PeerList &added, const PeerList &removed)
 
 void DialogsModel::addPeer(const Peer &peer)
 {
-    DialogInfo d;
+    DialogEntry d;
     d.name = getPeerAlias(peer, m_client->client());
     d.peer = peer;
 
