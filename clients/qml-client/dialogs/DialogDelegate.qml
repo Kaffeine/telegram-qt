@@ -2,6 +2,8 @@ import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 
+import TelegramQt 0.2 as Telegram
+
 import ".."
 
 ItemDelegate {
@@ -170,18 +172,30 @@ ItemDelegate {
                         if (typeof(lastMessage) === "undefined") {
                             return ""
                         }
-                        if (lastMessage.type === "text") {
-                            return lastMessage.text
+                        var text = lastMessage.text
+                        if (lastMessage.type === Telegram.Namespace.MessageTypeText) {
+                            return text
                         }
-                        if (lastMessage.type === "photo") {
+                        if (lastMessage.type === Telegram.Namespace.MessageTypeWebPage) {
+                            return text
+                        }
+                        if (lastMessage.type === Telegram.Namespace.MessageTypePhoto) {
                             emphasedText = "Photo"
-                        } else if (lastMessage.type === "video") {
+                        } else if (lastMessage.type === Telegram.Namespace.MessageTypeVideo) {
                             emphasedText = "Video"
+                        } else if (lastMessage.type === Telegram.Namespace.MessageTypeSticker) {
+                            emphasedText = "Sticker"
+                        } else if (lastMessage.type === Telegram.Namespace.MessageTypeAnimation) {
+                            emphasedText = "GIF"
                         } else {
                             // Do *not* ignore unknown messages
-                            emphasedText = "Unsupported content"
+                            emphasedText = "Unsupported content" + lastMessage.type
                         }
-                        return "<font color=\"" + emphasedContentColor + "\">" + emphasedText + "</font>"
+                        if (text.length !== 0) {
+                            emphasedText += ", "
+                        }
+
+                        return "<font color=\"" + emphasedContentColor + "\">" + emphasedText + "</font>" + text
                     }
                     readonly property color emphasedContentColor: palette.link
                 }

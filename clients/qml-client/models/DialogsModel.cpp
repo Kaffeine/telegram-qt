@@ -90,11 +90,7 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
     case Role::FormattedLastMessage:
         return dialog.formattedLastMessage;
     case Role::LastMessage:
-        return QVariantMap({{"type", "text"},
-                            {"text", dialog.lastChatMessage.text},
-                            {"flags", static_cast<int>(dialog.lastChatMessage.flags / 2)},
-                           });
-        return dialog.formattedLastMessage;
+        return getDialogLastMessageData(dialog);
     case Role::Picture:
     case Role::MuteUntil:
     case Role::MuteUntilDate:
@@ -105,6 +101,38 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
     }
     Q_UNREACHABLE();
     return QVariant();
+}
+
+QVariantMap DialogsModel::getDialogLastMessageData(const DialogInfo &dialog) const
+{
+    QString text;
+    if (dialog.lastChatMessage.type == TelegramNamespace::MessageTypeText) {
+        text = dialog.lastChatMessage.text;
+    } else {
+        Telegram::MessageMediaInfo info;
+        m_client->dataStorage()->getMessageMediaInfo(&info, dialog.peer, dialog.lastChatMessage.id);
+        switch (dialog.lastChatMessage.type) {
+        case TelegramNamespace::MessageTypeWebPage:
+            text = dialog.lastChatMessage.text;
+            //text = info.url();
+            break;
+        case TelegramNamespace::MessageTypeSticker:
+            text = info.alt();
+            break;
+        case TelegramNamespace::MessageTypeDocument:
+            text = info.documentFileName();
+            break;
+        default:
+            text = info.caption();
+            break;
+        }
+    }
+
+    return {
+        { "type", static_cast<int>(dialog.lastChatMessage.type) },
+        { "text", text },
+        { "flags", static_cast<int>(dialog.lastChatMessage.flags / 2) },
+    };
 }
 
 void DialogsModel::setClient(DeclarativeClient *target)

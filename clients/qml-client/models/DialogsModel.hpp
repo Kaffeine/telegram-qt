@@ -66,6 +66,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QVariant getData(int index, Role role) const;
+    QVariantMap getDialogLastMessageData(const DialogInfo &dialog) const;
 
 public slots:
     void setClient(DeclarativeClient *client);
