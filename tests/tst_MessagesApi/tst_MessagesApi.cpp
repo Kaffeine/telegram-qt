@@ -122,8 +122,8 @@ void tst_MessagesApi::getDialogs()
     Server::ServerApi *server = cluster.getServerApiInstance(user1Data.dcId);
     QVERIFY(server);
 
-    Server::User *user1 = tryAddUser(&cluster, user1Data);
-    Server::User *user2 = tryAddUser(&cluster, user2Data);
+    Server::LocalUser *user1 = tryAddUser(&cluster, user1Data);
+    Server::LocalUser *user2 = tryAddUser(&cluster, user2Data);
     QVERIFY(user1 && user2);
 
     // Prepare clients

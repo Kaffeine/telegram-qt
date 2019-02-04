@@ -19,11 +19,11 @@ namespace Telegram {
 
 namespace Server {
 
-class User;
+class LocalUser;
 class Session;
 class RemoteClientConnection;
 class RemoteServerConnection;
-class RemoteUser;
+class AbstractUser;
 class RpcOperationFactory;
 
 class Server : public QObject, public ServerApi
@@ -60,26 +60,26 @@ public:
     bool checkPassword(const QString &identifier, const QByteArray &hash) override;
     bool identifierIsValid(const QString &identifier) override;
 
-    RemoteUser *getRemoteUser(quint32 userId) const override;
-    RemoteUser *getRemoteUser(const QString &identifier) const override;
-    RemoteUser *getReallyRemoteUser(quint32 userId) const;
-    RemoteUser *getReallyRemoteUser(const QString &identifier) const;
+    AbstractUser *getRemoteUser(quint32 userId) const override;
+    AbstractUser *getRemoteUser(const QString &identifier) const override;
+    AbstractUser *getReallyRemoteUser(quint32 userId) const;
+    AbstractUser *getReallyRemoteUser(const QString &identifier) const;
 
-    bool setupTLUser(TLUser *output, const RemoteUser *input, const User *applicant) const override;
-    bool setupTLUpdatesState(TLUpdatesState *output, const User *forUser) const override;
+    bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *applicant) const override;
+    bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser) const override;
 
-    Telegram::Peer getPeer(const TLInputPeer &peer, const User *applicant) const override;
+    Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const override;
 
-    User *getUser(const QString &identifier) const override;
-    User *getUser(quint32 userId) const override;
-    User *getUser(const TLInputUser &inputUser, User *self) const override;
-    User *tryAccessUser(quint32 userId, quint64 accessHash, User *applicant) const override;
-    User *addUser(const QString &identifier) override;
+    LocalUser *getUser(const QString &identifier) const override;
+    LocalUser *getUser(quint32 userId) const override;
+    LocalUser *getUser(const TLInputUser &inputUser, LocalUser *self) const override;
+    LocalUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const override;
+    LocalUser *addUser(const QString &identifier) override;
 
     Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) override;
     Session *getSessionByAuthId(quint64 authKeyId) const override;
 
-    void insertUser(User *user);
+    void insertUser(LocalUser *user);
 
 signals:
 
@@ -101,7 +101,7 @@ private:
 
     QHash<QString, quint32> m_phoneToUserId;
     QHash<quint64, Session*> m_authIdToSession;
-    QHash<quint32, User*> m_users; // userId to User
+    QHash<quint32, LocalUser*> m_users; // userId to User
     QSet<RemoteClientConnection*> m_activeConnections;
     QSet<RemoteServerConnection*> m_remoteServers;
     QVector<RpcOperationFactory*> m_rpcOperationFactories;

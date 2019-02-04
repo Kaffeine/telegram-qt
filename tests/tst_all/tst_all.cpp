@@ -159,7 +159,7 @@ void tst_all::testSignIn()
     Server::Server *server = cluster.getServerInstance(userData.dcId);
     QVERIFY(server);
 
-    Server::User *user = tryAddUser(&cluster, userData);
+    Server::LocalUser *user = tryAddUser(&cluster, userData);
     QVERIFY(user);
 
     Client::Client client;
@@ -250,7 +250,7 @@ void tst_all::testCheckInSignIn()
     Server::Server *server = qobject_cast<Server::Server*>(cluster.getServerInstance(userData.dcId));
     QVERIFY(server);
 
-    Server::User *user = tryAddUser(&cluster, userData);
+    Server::LocalUser *user = tryAddUser(&cluster, userData);
     QVERIFY(user);
 
     Client::Client client;
@@ -359,7 +359,7 @@ void tst_all::testSignInCheckIn()
     Server::Server *server = cluster.getServerInstance(userData.dcId);
     QVERIFY(server);
 
-    Server::User *serversideUser = tryAddUser(&cluster, userData);
+    Server::LocalUser *serversideUser = tryAddUser(&cluster, userData);
     QVERIFY(serversideUser);
 
     Client::AccountStorage accountStorage;
@@ -495,7 +495,7 @@ void tst_all::testSignUp()
     QCOMPARE(remoteClientConnection->authId(), clientAuthId);
     Server::Session *serverSession = server->getSessionByAuthId(clientAuthId);
     QVERIFY(serverSession);
-    Telegram::Server::User *serverSideUser = serverSession->user();
+    Telegram::Server::LocalUser *serverSideUser = serverSession->user();
     QVERIFY(serverSideUser);
     QCOMPARE(serverSideUser->firstName(), userData.firstName);
     QCOMPARE(serverSideUser->lastName(), userData.lastName);

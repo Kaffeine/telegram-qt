@@ -176,7 +176,7 @@ void AuthRpcOperation::runCheckPassword()
         sendRpcError(RpcError::AuthKeyUnregistered);
         return;
     }
-    User *user = session->wanterUser();
+    LocalUser *user = session->wanterUser();
     const bool passwordIsCorrect = api()->checkPassword(user->phoneNumber(), m_checkPassword.passwordHash);
     if (!passwordIsCorrect) {
         sendRpcError(RpcError::PasswordHashInvalid);
@@ -362,7 +362,7 @@ void AuthRpcOperation::runSignIn()
         return;
     }
 
-    User *user = api()->getUser(m_signIn.phoneNumber);
+    LocalUser *user = api()->getUser(m_signIn.phoneNumber);
     if (!user) {
         sendRpcError(RpcError::PhoneNumberUnoccupied);
         return;
@@ -399,7 +399,7 @@ void AuthRpcOperation::runSignUp()
     if (!verifyAuthCode(m_signUp.phoneNumber, m_signUp.phoneCodeHash, m_signUp.phoneCode)) {
         return;
     }
-    User *user = api()->addUser(m_signUp.phoneNumber);
+    LocalUser *user = api()->addUser(m_signUp.phoneNumber);
     user->setFirstName(m_signUp.firstName);
     user->setLastName(m_signUp.lastName);
     user->addSession(layer()->session());

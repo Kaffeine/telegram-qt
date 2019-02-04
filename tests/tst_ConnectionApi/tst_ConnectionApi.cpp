@@ -160,7 +160,7 @@ void tst_ConnectionApi::testClientConnection()
     Server::ServerApi *server = cluster.getServerApiInstance(userData.dcId);
     QVERIFY(server);
 
-    Server::User *user = tryAddUser(&cluster, userData);
+    Server::LocalUser *user = tryAddUser(&cluster, userData);
     QVERIFY(user);
 
     Client::Client client;
@@ -245,7 +245,7 @@ void tst_ConnectionApi::reconnect()
     Server::Server *server = cluster.getServerInstance(userData.dcId);
     QVERIFY(server);
 
-    Server::User *user = tryAddUser(&cluster, userData);
+    Server::LocalUser *user = tryAddUser(&cluster, userData);
     QVERIFY(user);
 
     Client::Client client;

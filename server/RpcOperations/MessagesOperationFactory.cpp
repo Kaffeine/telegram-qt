@@ -933,7 +933,7 @@ void MessagesRpcOperation::runGetDhConfig()
 void MessagesRpcOperation::runGetDialogs()
 {
     TLMessagesDialogs result;
-    User *self = layer()->getUser();
+    LocalUser *self = layer()->getUser();
     const QVector<UserDialog *> dialogs = self->dialogs();
 
     for (const UserDialog *d : dialogs) {
@@ -947,7 +947,7 @@ void MessagesRpcOperation::runGetDialogs()
         switch (d->peer.type) {
         case Peer::User:
         {
-            const RemoteUser *user = api()->getUser(d->peer.id);
+            const AbstractUser *user = api()->getUser(d->peer.id);
             result.users.resize(result.users.size() + 1);
             api()->setupTLUser(&result.users.last(), user, self);
         }
@@ -1032,7 +1032,7 @@ void MessagesRpcOperation::runGetHistory()
         return;
     }
 
-    const User *self = layer()->getUser();
+    const LocalUser *self = layer()->getUser();
     const Peer p = api()->getPeer(m_getHistory.peer, self);
     TLVector<TLMessage> history = self->getHistory(
                 p,
@@ -1126,7 +1126,7 @@ void MessagesRpcOperation::runGetPinnedDialogs()
         return;
     }
 
-    User *self = layer()->getUser();
+    LocalUser *self = layer()->getUser();
     TLMessagesPeerDialogs result;
     api()->setupTLUpdatesState(&result.state, self);
     sendRpcReply(result);
@@ -1440,7 +1440,7 @@ void MessagesRpcOperation::runSendMedia()
 
 void MessagesRpcOperation::runSendMessage()
 {
-    User *self = layer()->getUser();
+    LocalUser *self = layer()->getUser();
 
     Telegram::Peer peer = Utils::toPublicPeer(m_sendMessage.peer, self->id());
     MessageRecipient *recipient = nullptr;

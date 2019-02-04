@@ -195,7 +195,7 @@ void ContactsRpcOperation::runGetContacts()
     TLContactsContacts result;
     result.tlType = TLValue::ContactsContacts;
 
-    User *self = layer()->getUser();
+    LocalUser *self = layer()->getUser();
 
     const QVector<UserContact> importedContacts = self->importedContacts();
     result.contacts.reserve(importedContacts.size());
@@ -205,7 +205,7 @@ void ContactsRpcOperation::runGetContacts()
     TLContact outputContact;
     for (const UserContact &contact : importedContacts) {
         if (contact.id) {
-            const RemoteUser *contactUser = api()->getRemoteUser(contact.id);
+            const AbstractUser *contactUser = api()->getRemoteUser(contact.id);
             api()->setupTLUser(&userInfo, contactUser, self);
             result.users.append(userInfo);
 
@@ -252,7 +252,7 @@ void ContactsRpcOperation::runImportContacts()
     qDebug() << Q_FUNC_INFO;
     TLContactsImportedContacts result;
 
-    User *self = layer()->getUser();
+    LocalUser *self = layer()->getUser();
 
     for (const TLInputContact &c : m_importContacts.contacts) {
         UserContact contact;
@@ -260,7 +260,7 @@ void ContactsRpcOperation::runImportContacts()
         contact.firstName = c.firstName;
         contact.lastName = c.lastName;
 
-        RemoteUser *registeredUser = layer()->api()->getRemoteUser(c.phone);
+        AbstractUser *registeredUser = layer()->api()->getRemoteUser(c.phone);
         if (registeredUser) {
             contact.id = registeredUser->id();
             result.users.append(TLUser());

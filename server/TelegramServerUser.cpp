@@ -37,7 +37,7 @@ TLPeer MessageRecipient::toTLPeer() const
     return result;
 }
 
-UserContact RemoteUser::toContact() const
+UserContact AbstractUser::toContact() const
 {
     UserContact contact;
     contact.id = id();
@@ -47,38 +47,38 @@ UserContact RemoteUser::toContact() const
     return contact;
 }
 
-User::User(QObject *parent) :
+LocalUser::LocalUser(QObject *parent) :
     QObject(parent)
 {
 }
 
-void User::setPhoneNumber(const QString &phoneNumber)
+void LocalUser::setPhoneNumber(const QString &phoneNumber)
 {
     m_phoneNumber = phoneNumber;
     m_id = qHash(m_phoneNumber);
 }
 
-void User::setFirstName(const QString &firstName)
+void LocalUser::setFirstName(const QString &firstName)
 {
     m_firstName = firstName;
 }
 
-void User::setLastName(const QString &lastName)
+void LocalUser::setLastName(const QString &lastName)
 {
     m_lastName = lastName;
 }
 
-bool User::isOnline() const
+bool LocalUser::isOnline() const
 {
     return true;
 }
 
-void User::setDcId(quint32 id)
+void LocalUser::setDcId(quint32 id)
 {
     m_dcId = id;
 }
 
-Session *User::getSession(quint64 authId) const
+Session *LocalUser::getSession(quint64 authId) const
 {
     for (Session *s : m_sessions) {
         if (s->authId == authId) {
@@ -88,7 +88,7 @@ Session *User::getSession(quint64 authId) const
     return nullptr;
 }
 
-QVector<Session *> User::activeSessions() const
+QVector<Session *> LocalUser::activeSessions() const
 {
     QVector<Session *> result;
     for (Session *s : m_sessions) {
@@ -99,7 +99,7 @@ QVector<Session *> User::activeSessions() const
     return result;
 }
 
-bool User::hasActiveSession() const
+bool LocalUser::hasActiveSession() const
 {
     for (Session *s : m_sessions) {
         if (s->isActive()) {
@@ -109,14 +109,14 @@ bool User::hasActiveSession() const
     return false;
 }
 
-void User::addSession(Session *session)
+void LocalUser::addSession(Session *session)
 {
     m_sessions.append(session);
     session->setUser(this);
     emit sessionAdded(session);
 }
 
-void User::setPlainPassword(const QString &password)
+void LocalUser::setPlainPassword(const QString &password)
 {
     if (password.isEmpty()) {
         m_passwordSalt.clear();
@@ -130,13 +130,13 @@ void User::setPlainPassword(const QString &password)
     setPassword(pwdSalt, pwdHash);
 }
 
-void User::setPassword(const QByteArray &salt, const QByteArray &hash)
+void LocalUser::setPassword(const QByteArray &salt, const QByteArray &hash)
 {
     m_passwordSalt = salt;
     m_passwordHash = hash;
 }
 
-quint32 User::addMessage(const TLMessage &message, Session *excludeSession)
+quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
 {
     m_messages.append(message);
     m_messages.last().id = addPts();
@@ -158,7 +158,7 @@ quint32 User::addMessage(const TLMessage &message, Session *excludeSession)
     }
 
     ServerApi *api = activeSessions().first()->rpcLayer()->api();
-    RemoteUser *sender = api->getRemoteUser(message.fromId);
+    AbstractUser *sender = api->getRemoteUser(message.fromId);
 
     TLUpdate newMessageUpdate;
     newMessageUpdate.tlType = TLValue::UpdateNewMessage;
@@ -189,7 +189,7 @@ quint32 User::addMessage(const TLMessage &message, Session *excludeSession)
     return m_messages.last().id;
 }
 
-TLVector<TLMessage> User::getHistory(const Peer &peer,
+TLVector<TLMessage> LocalUser::getHistory(const Peer &peer,
                                      quint32 offsetId,
                                      quint32 offsetDate,
                                      quint32 addOffset,
@@ -230,7 +230,7 @@ TLVector<TLMessage> User::getHistory(const Peer &peer,
     return result;
 }
 
-const TLMessage *User::getMessage(quint32 messageId) const
+const TLMessage *LocalUser::getMessage(quint32 messageId) const
 {
     if (!messageId || m_messages.isEmpty()) {
         return nullptr;
@@ -241,12 +241,12 @@ const TLMessage *User::getMessage(quint32 messageId) const
     return &m_messages.at(messageId - 1);
 }
 
-quint32 User::addPts()
+quint32 LocalUser::addPts()
 {
     return ++m_pts;
 }
 
-void User::importContact(const UserContact &contact)
+void LocalUser::importContact(const UserContact &contact)
 {
     // Check for contact registration status and the contact id setup performed out of this function
     m_importedContacts.append(contact);
@@ -256,7 +256,7 @@ void User::importContact(const UserContact &contact)
     }
 }
 
-UserDialog *User::ensureDialog(const Telegram::Peer &peer)
+UserDialog *LocalUser::ensureDialog(const Telegram::Peer &peer)
 {
     for (int i = 0; i < m_dialogs.count(); ++i) {
         if (m_dialogs.at(i)->peer == peer) {

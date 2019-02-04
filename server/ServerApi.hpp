@@ -26,9 +26,9 @@ class Provider;
 } // Authorization namespace
 
 class Session;
-class User;
+class LocalUser;
 class RemoteClientConnection;
-class RemoteUser;
+class AbstractUser;
 
 struct PhoneStatus
 {
@@ -60,20 +60,20 @@ public:
     virtual Authorization::Provider *getAuthorizationProvider() = 0;
     virtual bool identifierIsValid(const QString &identifier) = 0; // Argument is 'phoneNumber'
 
-    virtual bool setupTLUser(TLUser *output, const RemoteUser *input, const User *forUser) const = 0;
-    virtual bool setupTLUpdatesState(TLUpdatesState *output, const User *forUser) const = 0;
+    virtual bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *forUser) const = 0;
+    virtual bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser) const = 0;
 
-    virtual Telegram::Peer getPeer(const TLInputPeer &peer, const User *applicant) const = 0;
+    virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
 
-    virtual RemoteUser *getRemoteUser(quint32 userId) const = 0;
-    virtual RemoteUser *getRemoteUser(const QString &identifier) const = 0;
-    virtual User *getUser(const QString &identifier) const = 0;
-    virtual User *getUser(quint32 userId) const = 0;
-    virtual User *getUser(const TLInputUser &inputUser, User *self) const = 0;
-    virtual User *tryAccessUser(quint32 userId, quint64 accessHash, User *applicant) const = 0;
+    virtual AbstractUser *getRemoteUser(quint32 userId) const = 0;
+    virtual AbstractUser *getRemoteUser(const QString &identifier) const = 0;
+    virtual LocalUser *getUser(const QString &identifier) const = 0;
+    virtual LocalUser *getUser(quint32 userId) const = 0;
+    virtual LocalUser *getUser(const TLInputUser &inputUser, LocalUser *self) const = 0;
+    virtual LocalUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const = 0;
     virtual Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) = 0;
     virtual Session *getSessionByAuthId(quint64 authId) const = 0;
-    virtual User *addUser(const QString &identifier) = 0;
+    virtual LocalUser *addUser(const QString &identifier) = 0;
 };
 
 } // Server

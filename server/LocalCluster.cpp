@@ -77,7 +77,7 @@ bool LocalCluster::start()
     return !hasFails;
 }
 
-User *LocalCluster::addUser(const QString &identifier, quint32 dcId)
+LocalUser *LocalCluster::addUser(const QString &identifier, quint32 dcId)
 {
     Server *server = getServerInstance(dcId);
     if (!server) {
@@ -87,9 +87,9 @@ User *LocalCluster::addUser(const QString &identifier, quint32 dcId)
     return server->addUser(identifier);
 }
 
-User *LocalCluster::getUser(const QString &identifier)
+LocalUser *LocalCluster::getUser(const QString &identifier)
 {
-    RemoteUser *u = m_serverInstances.first()->getRemoteUser(identifier);
+    AbstractUser *u = m_serverInstances.first()->getRemoteUser(identifier);
     Server *s = getServerInstance(u->dcId());
     return s->getUser(identifier);
 }

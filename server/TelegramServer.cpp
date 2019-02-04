@@ -106,7 +106,7 @@ void Server::loadData()
 {
     const int number = 10;
     for (int i = 0; i < number; ++i) {
-        User *newUser = new User(this);
+        LocalUser *newUser = new LocalUser(this);
         newUser->setPhoneNumber(QStringLiteral("%1").arg(i, 6, 10, QLatin1Char('0')));
         insertUser(newUser);
     }
@@ -179,7 +179,7 @@ void Server::onClientConnectionStatusChanged()
     }
 }
 
-bool Server::setupTLUser(TLUser *output, const RemoteUser *input, const User *applicant) const
+bool Server::setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *applicant) const
 {
     output->id = input->id();
     output->tlType = TLValue::User;
@@ -215,7 +215,7 @@ bool Server::setupTLUser(TLUser *output, const RemoteUser *input, const User *ap
     return true;
 }
 
-bool Server::setupTLUpdatesState(TLUpdatesState *output, const User *forUser) const
+bool Server::setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser) const
 {
     output->pts = forUser->pts();
     output->date = Utils::getCurrentTime();
@@ -225,7 +225,7 @@ bool Server::setupTLUpdatesState(TLUpdatesState *output, const User *forUser) co
     return true;
 }
 
-Peer Server::getPeer(const TLInputPeer &peer, const User *applicant) const
+Peer Server::getPeer(const TLInputPeer &peer, const LocalUser *applicant) const
 {
     switch (peer.tlType) {
     case TLValue::InputPeerEmpty:
@@ -244,7 +244,7 @@ Peer Server::getPeer(const TLInputPeer &peer, const User *applicant) const
     };
 }
 
-User *Server::getUser(const QString &identifier) const
+LocalUser *Server::getUser(const QString &identifier) const
 {
     quint32 id = m_phoneToUserId.value(identifier);
     if (!id) {
@@ -253,12 +253,12 @@ User *Server::getUser(const QString &identifier) const
     return m_users.value(id);
 }
 
-User *Server::getUser(quint32 userId) const
+LocalUser *Server::getUser(quint32 userId) const
 {
     return m_users.value(userId);
 }
 
-User *Server::getUser(const TLInputUser &inputUser, User *self) const
+LocalUser *Server::getUser(const TLInputUser &inputUser, LocalUser *self) const
 {
     switch (inputUser.tlType) {
     case TLValue::InputUserSelf:
@@ -272,17 +272,17 @@ User *Server::getUser(const TLInputUser &inputUser, User *self) const
     }
 }
 
-User *Server::tryAccessUser(quint32 userId, quint64 accessHash, User *applicant) const
+LocalUser *Server::tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const
 {
-    User *u = getUser(userId);
+    LocalUser *u = getUser(userId);
     // TODO: Check access hash
     return u;
 }
 
-User *Server::addUser(const QString &identifier)
+LocalUser *Server::addUser(const QString &identifier)
 {
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << identifier;
-    User *user = new User(this);
+    LocalUser *user = new LocalUser(this);
     user->setPhoneNumber(identifier);
     user->setDcId(dcId());
     insertUser(user);
@@ -304,7 +304,7 @@ Session *Server::getSessionByAuthId(quint64 authKeyId) const
     return m_authIdToSession.value(authKeyId);
 }
 
-void Server::insertUser(User *user)
+void Server::insertUser(LocalUser *user)
 {
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
     m_users.insert(user->id(), user);
@@ -317,7 +317,7 @@ void Server::insertUser(User *user)
 PhoneStatus Server::getPhoneStatus(const QString &identifier) const
 {
     PhoneStatus result;
-    RemoteUser *user = getRemoteUser(identifier);
+    AbstractUser *user = getRemoteUser(identifier);
     if (user) {
         result.online = user->isOnline();
         result.dcId = user->dcId();
@@ -328,7 +328,7 @@ PhoneStatus Server::getPhoneStatus(const QString &identifier) const
 PasswordInfo Server::getPassword(const QString &identifier)
 {
     PasswordInfo result;
-    User *user = getUser(identifier);
+    LocalUser *user = getUser(identifier);
     if (user && user->hasPassword()) {
         result.currentSalt = user->passwordSalt();
         result.hint = user->passwordHint();
@@ -338,7 +338,7 @@ PasswordInfo Server::getPassword(const QString &identifier)
 
 bool Server::checkPassword(const QString &identifier, const QByteArray &hash)
 {
-    User *user = getUser(identifier);
+    LocalUser *user = getUser(identifier);
     if (user && user->hasPassword()) {
         return user->passwordHash() == hash;
     }
@@ -353,28 +353,28 @@ bool Server::identifierIsValid(const QString &identifier)
     return result;
 }
 
-RemoteUser *Server::getRemoteUser(quint32 userId) const
+AbstractUser *Server::getRemoteUser(quint32 userId) const
 {
-    RemoteUser *user = getUser(userId);
+    AbstractUser *user = getUser(userId);
     if (!user) {
         user = getReallyRemoteUser(userId);
     }
     return user;
 }
 
-RemoteUser *Server::getRemoteUser(const QString &identifier) const
+AbstractUser *Server::getRemoteUser(const QString &identifier) const
 {
-    RemoteUser *user = getUser(identifier);
+    AbstractUser *user = getUser(identifier);
     if (!user) {
         user = getReallyRemoteUser(identifier);
     }
     return user;
 }
 
-RemoteUser *Server::getReallyRemoteUser(quint32 userId) const
+AbstractUser *Server::getReallyRemoteUser(quint32 userId) const
 {
     for (RemoteServerConnection *remoteServer : m_remoteServers) {
-        RemoteUser *u = remoteServer->api()->getUser(userId);
+        AbstractUser *u = remoteServer->api()->getUser(userId);
         if (u) {
             return u;
         }
@@ -382,10 +382,10 @@ RemoteUser *Server::getReallyRemoteUser(quint32 userId) const
     return nullptr;
 }
 
-RemoteUser *Server::getReallyRemoteUser(const QString &identifier) const
+AbstractUser *Server::getReallyRemoteUser(const QString &identifier) const
 {
     for (RemoteServerConnection *remoteServer : m_remoteServers) {
-        RemoteUser *u = remoteServer->api()->getUser(identifier);
+        AbstractUser *u = remoteServer->api()->getUser(identifier);
         if (u) {
             return u;
         }

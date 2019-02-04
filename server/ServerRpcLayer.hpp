@@ -20,7 +20,7 @@ namespace Server {
 class RpcOperation;
 class RpcOperationFactory;
 
-class User;
+class LocalUser;
 class ServerApi;
 class Session;
 
@@ -32,7 +32,7 @@ public:
     ServerApi *api();
     void setServerApi(ServerApi *api);
 
-    User *getUser() const;
+    LocalUser *getUser() const;
 
     quint64 serverSalt() const override;
     quint64 sessionId() const override;

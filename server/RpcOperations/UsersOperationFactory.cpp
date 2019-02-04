@@ -58,8 +58,8 @@ bool UsersRpcOperation::processGetUsers(RpcProcessingContext &context)
 // Generated run methods
 void UsersRpcOperation::runGetFullUser()
 {
-    User *self = layer()->getUser();
-    User *user = api()->getUser(m_getFullUser.id, self);
+    LocalUser *self = layer()->getUser();
+    LocalUser *user = api()->getUser(m_getFullUser.id, self);
     if (!user) {
         sendRpcError(RpcError::UserIdInvalid);
         return;
@@ -72,12 +72,12 @@ void UsersRpcOperation::runGetFullUser()
 
 void UsersRpcOperation::runGetUsers()
 {
-    User *self = layer()->getUser();
+    LocalUser *self = layer()->getUser();
     TLUser user;
     TLVector<TLUser> result;
     result.reserve(m_getUsers.id.count());
     for (const TLInputUser &input : m_getUsers.id) {
-        RemoteUser *remoteUser = api()->getUser(input, self);
+        AbstractUser *remoteUser = api()->getUser(input, self);
         if (api()->setupTLUser(&user, remoteUser, self)) {
             result.append(user);
         }

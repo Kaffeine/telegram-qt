@@ -11,7 +11,7 @@ namespace Server {
 
 class RemoteClientConnection;
 class RpcLayer;
-class User;
+class LocalUser;
 
 class Session
 {
@@ -24,12 +24,12 @@ public:
 
     RpcLayer *rpcLayer() const;
 
-    User *userOrWantedUser() const { return m_user ? m_user : m_wanterUser; }
-    User *user() const { return m_user; }
-    void setUser(User *user) { m_user = user; }
+    LocalUser *userOrWantedUser() const { return m_user ? m_user : m_wanterUser; }
+    LocalUser *user() const { return m_user; }
+    void setUser(LocalUser *user) { m_user = user; }
 
-    User *wanterUser() const { return m_wanterUser; }
-    void setWantedUser(User *user) { m_wanterUser = user; }
+    LocalUser *wanterUser() const { return m_wanterUser; }
+    void setWantedUser(LocalUser *user) { m_wanterUser = user; }
 
     quint32 layer() const { return m_layer; }
     void setLayer(quint32 layer) { m_layer = layer; }
@@ -61,8 +61,8 @@ protected:
     void addSalt();
 
     RemoteClientConnection *m_connection = nullptr;
-    User *m_wanterUser = nullptr;
-    User *m_user = nullptr;
+    LocalUser *m_wanterUser = nullptr;
+    LocalUser *m_user = nullptr;
     QVector<ServerSalt> m_salts;
     ServerSalt m_oldSalt;
     quint32 m_layer = 0;

@@ -8,7 +8,7 @@ namespace Telegram {
 namespace Server {
 
 class ServerApi;
-class RemoteUser;
+class AbstractUser;
 
 class RemoteServerConnection : public QObject
 {
@@ -20,7 +20,7 @@ public:
 
     void setRemoteServer(ServerApi *remoteServer);
 
-    RemoteUser *getUser(const QString &identifier);
+    AbstractUser *getUser(const QString &identifier);
     ServerApi *api();
 
 protected:

@@ -37,8 +37,8 @@ class Provider;
 class Server;
 class Session;
 class ServerApi;
-class User;
-class RemoteUser;
+class LocalUser;
+class AbstractUser;
 
 class LocalCluster : public QObject
 {
@@ -58,8 +58,8 @@ public:
 
     bool start();
 
-    User *addUser(const QString &identifier, quint32 dcId);
-    User *getUser(const QString &identifier);
+    LocalUser *addUser(const QString &identifier, quint32 dcId);
+    LocalUser *getUser(const QString &identifier);
 
     QVector<Server*> getServerInstances() { return m_serverInstances; }
     Server *getServerInstance(quint32 dcId);

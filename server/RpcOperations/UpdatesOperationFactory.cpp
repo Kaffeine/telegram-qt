@@ -84,7 +84,7 @@ void UpdatesRpcOperation::runGetDifference()
 void UpdatesRpcOperation::runGetState()
 {
     TLUpdatesState result;
-    User *self = layer()->getUser();
+    LocalUser *self = layer()->getUser();
     api()->setupTLUpdatesState(&result, self);
     sendRpcReply(result);
 }

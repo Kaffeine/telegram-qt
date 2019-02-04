@@ -12,7 +12,7 @@ namespace Telegram {
 namespace Server {
 
 class Session;
-class User;
+class LocalUser;
 
 class MessageRecipient
 {
@@ -24,7 +24,7 @@ public:
     TLPeer toTLPeer() const;
 };
 
-class RemoteUser : public MessageRecipient
+class AbstractUser : public MessageRecipient
 {
 public:
     virtual quint32 id() const = 0;
@@ -39,11 +39,11 @@ public:
     UserContact toContact() const;
 };
 
-class User : public QObject, public RemoteUser
+class LocalUser : public QObject, public AbstractUser
 {
     Q_OBJECT
 public:
-    explicit User(QObject *parent = nullptr);
+    explicit LocalUser(QObject *parent = nullptr);
 
     quint32 id() const { return m_id; }
     QString phoneNumber() const { return m_phoneNumber; }

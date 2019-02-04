@@ -68,7 +68,7 @@ void RpcLayer::setServerApi(ServerApi *api)
     m_api = api;
 }
 
-User *RpcLayer::getUser() const
+LocalUser *RpcLayer::getUser() const
 {
     return m_session ? m_session->user() : nullptr;
 }
