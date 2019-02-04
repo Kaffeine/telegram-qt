@@ -193,7 +193,7 @@ bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) c
 
 TelegramNamespace::MessageType Telegram::MessageMediaInfo::type() const
 {
-    return Telegram::Utils::toPublicMessageType(d->tlType);
+    return Telegram::Utils::getPublicMessageType(*d);
 }
 
 quint32 Telegram::MessageMediaInfo::size() const

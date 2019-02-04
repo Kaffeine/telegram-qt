@@ -121,8 +121,9 @@ QString mimeTypeByStorageFileType(TLValue type)
     }
 }
 
-TelegramNamespace::MessageType toPublicMessageType(TLValue type)
+TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media)
 {
+    const TLValue type = media.tlType;
     switch (type) {
     case TLValue::MessageMediaEmpty:
         return TelegramNamespace::MessageTypeText;

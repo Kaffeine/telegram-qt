@@ -39,7 +39,7 @@ TELEGRAMQT_EXPORT TLPeer toTLPeer(const Telegram::Peer &peer);
 TELEGRAMQT_EXPORT Telegram::Peer getMessagePeer(const TLMessage &message, quint32 selfId);
 
 TELEGRAMQT_EXPORT QString mimeTypeByStorageFileType(TLValue type);
-TELEGRAMQT_EXPORT TelegramNamespace::MessageType toPublicMessageType(TLValue type);
+TELEGRAMQT_EXPORT TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media);
 TELEGRAMQT_EXPORT TLValue::Value toTLValue(TelegramNamespace::MessageType type);
 TELEGRAMQT_EXPORT TelegramNamespace::MessageAction toPublicMessageAction(TLValue action);
 TELEGRAMQT_EXPORT TLValue::Value toTLValue(TelegramNamespace::MessageAction action);
