@@ -138,6 +138,8 @@ TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media)
             switch (attribute.tlType) {
             case TLValue::DocumentAttributeSticker:
                 return TelegramNamespace::MessageTypeSticker;
+            case TLValue::DocumentAttributeAnimated:
+                return TelegramNamespace::MessageTypeAnimation;
             default:
                 break;
             }

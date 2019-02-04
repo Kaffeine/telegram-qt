@@ -126,6 +126,7 @@ public:
         MessageTypeGeo         = 0x0040,
         MessageTypeWebPage     = 0x0080,
         MessageTypeSticker     = 0x0100,
+        MessageTypeAnimation   = 0x0200,
         MessageTypeAll         = 0xffff,
     };
     Q_ENUM(MessageType)
