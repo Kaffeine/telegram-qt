@@ -68,6 +68,7 @@ Authorization::Code DBusCodeAuthProvider::generateCode(Session *session, const Q
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+    a.setOrganizationName(QStringLiteral("TelegramQt"));
     a.setApplicationName(QStringLiteral("TelegramQt Server"));
     Telegram::initialize();
 
