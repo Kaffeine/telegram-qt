@@ -15,6 +15,7 @@
 
  */
 
+#include "TelegramServerConfig.hpp"
 #include "TelegramServerUser.hpp"
 #include "DcConfiguration.hpp"
 #include "LocalCluster.hpp"
@@ -30,8 +31,6 @@ using namespace Telegram::Server;
 #ifdef USE_DBUS_NOTIFIER
 #include <QDBusConnection>
 #include <QDBusMessage>
-
-#include "ServerApi.hpp"
 #include "DefaultAuthorizationProvider.hpp"
 
 class DBusCodeAuthProvider : public Authorization::DefaultProvider
@@ -72,17 +71,13 @@ int main(int argc, char *argv[])
     a.setApplicationName(QStringLiteral("TelegramQt Server"));
     Telegram::initialize();
 
-    Telegram::DcConfiguration configuration;
-    const QVector<Telegram::DcOption> dcOptions = {
-        Telegram::DcOption(QStringLiteral("127.0.0.1"), 11441, 1),
-        Telegram::DcOption(QStringLiteral("127.0.0.2"), 11442, 2),
-        Telegram::DcOption(QStringLiteral("127.0.0.3"), 11443, 3),
-    };
-    configuration.dcOptions = dcOptions;
+    Config config;
+    if (!config.load()) {
+        // create "default" config file to ease editing
+        config.save();
+    }
 
-    const Telegram::RsaKey key = Telegram::Utils::loadRsaPrivateKeyFromFile(
-                QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first()
-                + QStringLiteral("/TelegramServer/private_key.pem"));
+    const Telegram::RsaKey key = Telegram::Utils::loadRsaPrivateKeyFromFile(config.privateKeyFile());
     if (!key.isValid()) {
         qCritical() << "Unable to read RSA key. Please read README.md for more information.";
         return -1;
@@ -90,7 +85,7 @@ int main(int argc, char *argv[])
 
     LocalCluster cluster;
     cluster.setServerPrivateRsaKey(key);
-    cluster.setServerConfiguration(configuration);
+    cluster.setServerConfiguration(config.serverConfiguration());
 
 #ifdef USE_DBUS_NOTIFIER
     DBusCodeAuthProvider authProvider;
