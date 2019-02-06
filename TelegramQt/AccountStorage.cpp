@@ -206,8 +206,9 @@ QString FileAccountStorage::getLocalFileName() const
     if (d->m_fileName.isEmpty()) {
         return QString();
     }
-    QUrl fileUrl(d->m_fileName);
+    const QUrl fileUrl = QUrl::fromUserInput(d->m_fileName);
     if (!fileUrl.isLocalFile()) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a local file" << d->m_fileName;
         return QString();
     }
     return fileUrl.toLocalFile();
@@ -222,23 +223,18 @@ bool FileAccountStorage::fileExists() const
 bool FileAccountStorage::saveData() const
 {
     Q_D(const FileAccountStorage);
-    if (d->m_fileName.isEmpty()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "File name is not set";
+    const QString localFileName = getLocalFileName();
+    if (localFileName.isEmpty()) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Invalid fileName" << d->m_fileName;
         return false;
     }
-    const QUrl fileUrl(d->m_fileName);
-    if (!fileUrl.isLocalFile()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a local file";
-        return false;
-    }
-
-    const QFileInfo fileInfo(fileUrl.toLocalFile());
+    const QFileInfo fileInfo(localFileName);
     if (!QDir().mkpath(fileInfo.absolutePath())) {
         qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to create output directory" << fileInfo.absolutePath();
         return false;
     }
 
-    QFile file(fileUrl.toLocalFile());
+    QFile file(localFileName);
     if (!file.open(QIODevice::WriteOnly)) {
         qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to open file" << fileName();
         return false;
@@ -261,18 +257,14 @@ bool FileAccountStorage::saveData() const
 bool FileAccountStorage::loadData()
 {
     Q_D(FileAccountStorage);
-    if (d->m_fileName.isEmpty()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to load: file name is not set";
+    const QString localFileName = getLocalFileName();
+    if (localFileName.isEmpty()) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Invalid fileName" << d->m_fileName;
         return false;
     }
-    const QUrl fileUrl(d->m_fileName);
-    if (!fileUrl.isLocalFile()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a local file";
-        return false;
-    }
-    QFile file(fileUrl.toLocalFile());
+    QFile file(localFileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to open file" << fileName() << "(not a local file)";
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to open file" << d->m_fileName;
         return false;
     }
     CRawStreamEx stream(&file);
@@ -306,15 +298,15 @@ bool FileAccountStorage::clearData()
 {
     Q_D(const FileAccountStorage);
     if (d->m_fileName.isEmpty()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "File name is not set";
+        qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "File name is not set";
         return false;
     }
-    const QUrl fileUrl(d->m_fileName);
-    if (!fileUrl.isLocalFile()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a local file";
+    const QString localFileName = getLocalFileName();
+    if (localFileName.isEmpty()) {
+        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Invalid fileName" << d->m_fileName;
         return false;
     }
-    const QFileInfo fileInfo(fileUrl.toLocalFile());
+    const QFileInfo fileInfo(localFileName);
     if (!fileInfo.exists()) {
         qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "The file does not exist";
         // Not an error
