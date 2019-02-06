@@ -25,6 +25,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QStandardPaths>
+#include <QCommandLineParser>
 
 using namespace Telegram::Server;
 
@@ -69,9 +70,27 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     a.setOrganizationName(QStringLiteral("TelegramQt"));
     a.setApplicationName(QStringLiteral("TelegramQt Server"));
+
     Telegram::initialize();
 
-    Config config;
+    QCommandLineParser parser;
+    parser.addHelpOption();
+
+    QCommandLineOption configFileOption(QStringList{ QStringLiteral("c"), QStringLiteral("config") });
+    configFileOption.setDescription(QStringLiteral("Path to config file"));
+    configFileOption.setValueName(QStringLiteral("configFilePath"));
+    parser.addOption(configFileOption);
+
+    parser.process(a);
+
+    // where to load config file from?
+    QString configFilePath;
+    if (parser.isSet(configFileOption)) {
+        configFilePath = parser.value(configFileOption);
+    }
+
+    // Load config
+    Config config(configFilePath);
     if (!config.load()) {
         // create "default" config file to ease editing
         config.save();
