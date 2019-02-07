@@ -29,8 +29,13 @@ public:
     explicit Config(const QString &fileName = QString());
 
     QString fileName() const { return m_fileName; }
+    void setFileName(const QString &fileName);
+
     DcConfiguration serverConfiguration() const { return m_serverConfiguration; }
+    void setServerConfiguration(const DcConfiguration &configuration);
+
     QString privateKeyFile() const { return m_privateKeyFile; }
+    void setPrivateKeyFile(const QString &fileName);
 
     bool load();
     bool save() const;

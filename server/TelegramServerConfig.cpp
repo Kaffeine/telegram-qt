@@ -57,6 +57,21 @@ Config::Config(const QString &fileName)
     m_privateKeyFile = QStringLiteral("private_key.pem");
 }
 
+void Config::setFileName(const QString &fileName)
+{
+    m_fileName = fileName;
+}
+
+void Config::setServerConfiguration(const DcConfiguration &configuration)
+{
+    m_serverConfiguration = configuration;
+}
+
+void Config::setPrivateKeyFile(const QString &fileName)
+{
+    m_privateKeyFile = fileName;
+}
+
 bool Config::load()
 {
     QByteArray bytes;
