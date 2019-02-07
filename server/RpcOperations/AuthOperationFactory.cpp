@@ -282,9 +282,9 @@ void AuthRpcOperation::runResetAuthorizations()
 void AuthRpcOperation::runSendCode()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
-    if (m_sendCode.phoneNumber.isEmpty()) {
-        RpcError error(RpcError::PhoneNumberInvalid);
-        sendRpcError(error);
+
+    if (!api()->identifierIsValid(m_sendCode.phoneNumber)) {
+        sendRpcError(RpcError::PhoneNumberInvalid);
         return;
     }
     PhoneStatus status = api()->getPhoneStatus(m_sendCode.phoneNumber);
