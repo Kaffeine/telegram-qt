@@ -114,8 +114,8 @@ public:
     RpcOperation *processRpcCall(RpcLayer *layer, RpcProcessingContext &context) override;
 };
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
 
 #endif // RPC_OPERATION_FACTORY_HPP

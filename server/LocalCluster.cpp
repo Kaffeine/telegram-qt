@@ -109,6 +109,6 @@ ServerApi *LocalCluster::getServerApiInstance(quint32 dcId)
     return getServerInstance(dcId);
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

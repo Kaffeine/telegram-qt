@@ -83,6 +83,6 @@ void TcpTransport::readEvent()
     qCDebug(c_loggingServerTcpTransport()) << Q_FUNC_INFO << remoteAddress() << "Session type:" << m_sessionType;
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

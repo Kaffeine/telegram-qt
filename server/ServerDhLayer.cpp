@@ -380,6 +380,6 @@ void DhLayer::processReceivedPacket(const QByteArray &payload)
     }
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

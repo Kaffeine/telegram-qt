@@ -135,6 +135,6 @@ RpcOperation *LangpackOperationFactory::processRpcCall(RpcLayer *layer, RpcProce
     return processRpcCallImpl<LangpackRpcOperation>(layer, context);
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

@@ -60,6 +60,6 @@ bool RpcOperation::processNotImplementedMethod(TLValue functionCode)
 
 //}
 
-} // Server
+} // Server namespace
 
-} //Telegram
+} //Telegram namespace

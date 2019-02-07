@@ -2145,4 +2145,4 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUsersGetUser
 }
 // End of generated write operators
 
-} // Telegram
+} // Telegram namespace

@@ -136,6 +136,6 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
     return false;
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

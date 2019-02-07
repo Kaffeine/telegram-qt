@@ -268,6 +268,6 @@ UserDialog *LocalUser::ensureDialog(const Telegram::Peer &peer)
     return m_dialogs.last();
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

@@ -393,6 +393,6 @@ AbstractUser *Server::getReallyRemoteUser(const QString &identifier) const
     return nullptr;
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

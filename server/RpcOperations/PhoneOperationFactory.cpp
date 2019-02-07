@@ -207,6 +207,6 @@ RpcOperation *PhoneOperationFactory::processRpcCall(RpcLayer *layer, RpcProcessi
     return processRpcCallImpl<PhoneRpcOperation>(layer, context);
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

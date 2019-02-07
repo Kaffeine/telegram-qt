@@ -171,6 +171,6 @@ RpcOperation *PaymentsOperationFactory::processRpcCall(RpcLayer *layer, RpcProce
     return processRpcCallImpl<PaymentsRpcOperation>(layer, context);
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

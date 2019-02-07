@@ -135,6 +135,6 @@ RpcOperation *StickersOperationFactory::processRpcCall(RpcLayer *layer, RpcProce
     return processRpcCallImpl<StickersRpcOperation>(layer, context);
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

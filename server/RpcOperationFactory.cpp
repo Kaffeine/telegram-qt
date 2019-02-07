@@ -6,6 +6,6 @@ namespace Server {
 
 class RpcOperation;
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

@@ -135,6 +135,6 @@ RpcOperation *PhotosOperationFactory::processRpcCall(RpcLayer *layer, RpcProcess
     return processRpcCallImpl<PhotosRpcOperation>(layer, context);
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

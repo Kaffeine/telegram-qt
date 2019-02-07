@@ -497,6 +497,6 @@ RpcOperation *AuthOperationFactory::processRpcCall(RpcLayer *layer, RpcProcessin
     return processRpcCallImpl<AuthRpcOperation>(layer, context);
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

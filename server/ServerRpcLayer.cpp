@@ -342,6 +342,6 @@ QByteArray RpcLayer::getVerificationKeyPart() const
     return m_sendHelper->getClientKeyPart();
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

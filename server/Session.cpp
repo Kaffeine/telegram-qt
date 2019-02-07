@@ -100,6 +100,6 @@ void Session::addSalt()
     m_salts.append(generateSalt(m_salts.constLast().validUntil - c_sessionOverlapping));
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

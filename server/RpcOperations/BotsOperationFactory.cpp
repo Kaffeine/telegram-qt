@@ -99,6 +99,6 @@ RpcOperation *BotsOperationFactory::processRpcCall(RpcLayer *layer, RpcProcessin
     return processRpcCallImpl<BotsRpcOperation>(layer, context);
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace

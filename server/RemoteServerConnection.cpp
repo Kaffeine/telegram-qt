@@ -35,6 +35,6 @@ quint32 RemoteServerConnection::dcId() const
     return m_server->dcId();
 }
 
-} // Server
+} // Server namespace
 
-} // Telegram
+} // Telegram namespace
