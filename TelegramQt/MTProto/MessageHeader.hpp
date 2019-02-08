@@ -34,7 +34,7 @@ struct TELEGRAMQT_EXPORT MessageHeader {
     quint32 sequenceNumber;
     quint32 contentLength;
 
-    static constexpr int headerLength = sizeof(messageId) + sizeof(sequenceNumber) + sizeof(contentLength);
+    static constexpr int headerLength = sizeof(quint64) + sizeof(quint32) + sizeof(quint32);
 };
 
 struct TELEGRAMQT_EXPORT FullMessageHeader : public MessageHeader
@@ -50,8 +50,8 @@ struct TELEGRAMQT_EXPORT FullMessageHeader : public MessageHeader
     quint64 serverSalt = 0;
     quint64 sessionId = 0;
 
-    static constexpr int headerLength = sizeof(serverSalt) + sizeof(sessionId)
-            + sizeof(messageId) + sizeof(sequenceNumber) + sizeof(contentLength);
+    static constexpr int headerLength = sizeof(quint64) + sizeof(quint64)
+            + sizeof(quint64) + sizeof(quint32) + sizeof(quint32);
 };
 
 struct TELEGRAMQT_EXPORT Message : public MessageHeader {
