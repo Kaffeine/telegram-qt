@@ -17,7 +17,6 @@
 
 #include "ClientDhLayer.hpp"
 
-#include "ApiUtils.hpp"
 #include "CTelegramStream.hpp"
 #include "CTelegramTransport.hpp"
 #include "Utils.hpp"
