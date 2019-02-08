@@ -48,6 +48,7 @@ SOURCES = CTelegramCore.cpp \
     TelegramNamespace.cpp \
     CTelegramConnection.cpp \
     PendingOperation.cpp \
+    PendingRpcOperation.cpp \
     RandomGenerator.cpp \
     RpcProcessingContext.cpp \
     TLValues.cpp
@@ -89,6 +90,7 @@ HEADERS = CTelegramCore.hpp \
     CTelegramConnection.hpp \
     PendingOperation.hpp \
     PendingOperation_p.hpp \
+    PendingRpcOperation.hpp \
     RandomGenerator.hpp \
     RpcProcessingContext.hpp \
     TelegramNamespace.hpp \

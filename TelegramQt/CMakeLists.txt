@@ -12,6 +12,7 @@ set(telegram_qt_SOURCES
     CTelegramConnection.cpp
     CTelegramTransport.cpp
     PendingOperation.cpp
+    PendingRpcOperation.cpp
     RandomGenerator.cpp
     RpcError.cpp
     RpcProcessingContext.cpp
@@ -40,6 +41,7 @@ set(telegram_qt_META_HEADERS
     CTcpTransport.hpp
     CClientTcpTransport.hpp
     PendingOperation.hpp
+    PendingRpcOperation.hpp
     RpcError.hpp
     TLValues.hpp
 )
