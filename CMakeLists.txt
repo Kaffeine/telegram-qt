@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 
+# Required by cmake >= 3.12 to allow usage of <Package>_ROOT variables
+#   for find_package() calls. Useful for Windows
+cmake_policy(SET CMP0074 NEW)
+
 project(TelegramQt
     VERSION 0.2.0
     LANGUAGES CXX
@@ -11,6 +15,8 @@ set(TELEGRAM_QT_ABI "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Add an option for building tests
 option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
@@ -42,14 +48,21 @@ if (BUILD_SERVER)
     endif()
 endif()
 
-include(GNUInstallDirs)
+if(WIN32)
+    include(WindowsInstallDirs)
+else()
+    include(GNUInstallDirs)
+endif()
 include(FeatureSummary)
 
 find_package(Qt5 5.5.0 REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+if (NOT WIN32)
+    # MSVC Produces >130k warnings with this
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+endif()
 
 if (ENABLE_COVERAGE_BUILD)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
