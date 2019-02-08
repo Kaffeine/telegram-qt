@@ -9,6 +9,9 @@ include(../../options.pri)
 CONFIG += c++11
 
 SOURCES = plugin.cpp
+SOURCES += DeclarativeSettings.cpp
+HEADERS += DeclarativeSettings.hpp
+
 OTHER_FILES += CMakeLists.txt
 
 target.path += $$INSTALL_QML_IMPORT_DIR/TelegramQt

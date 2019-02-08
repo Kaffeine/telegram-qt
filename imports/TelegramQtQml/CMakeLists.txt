@@ -12,7 +12,10 @@ if (NOT INSTALL_QML_IMPORT_DIR)
     set(INSTALL_QML_IMPORT_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/qml)
 endif()
 
-add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED plugin.cpp)
+add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED
+    plugin.cpp
+    DeclarativeSettings.cpp
+)
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
     Qt5::Core
