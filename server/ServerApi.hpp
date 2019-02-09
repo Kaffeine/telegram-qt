@@ -69,8 +69,8 @@ public:
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(quint32 userId) const = 0;
-    virtual LocalUser *getUser(const TLInputUser &inputUser, LocalUser *self) const = 0;
-    virtual LocalUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const = 0;
+    virtual AbstractUser *getUser(const TLInputUser &inputUser, LocalUser *self) const = 0;
+    virtual AbstractUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const = 0;
     virtual Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) = 0;
     virtual Session *getSessionByAuthId(quint64 authId) const = 0;
     virtual LocalUser *addUser(const QString &identifier) = 0;

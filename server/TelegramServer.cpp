@@ -258,7 +258,7 @@ LocalUser *Server::getUser(quint32 userId) const
     return m_users.value(userId);
 }
 
-LocalUser *Server::getUser(const TLInputUser &inputUser, LocalUser *self) const
+AbstractUser *Server::getUser(const TLInputUser &inputUser, LocalUser *self) const
 {
     switch (inputUser.tlType) {
     case TLValue::InputUserSelf:
@@ -272,9 +272,9 @@ LocalUser *Server::getUser(const TLInputUser &inputUser, LocalUser *self) const
     }
 }
 
-LocalUser *Server::tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const
+AbstractUser *Server::tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const
 {
-    LocalUser *u = getUser(userId);
+    AbstractUser *u = getAbstractUser(userId);
     // TODO: Check access hash
     return u;
 }

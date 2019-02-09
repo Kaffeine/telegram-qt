@@ -72,8 +72,8 @@ public:
 
     LocalUser *getUser(const QString &identifier) const override;
     LocalUser *getUser(quint32 userId) const override;
-    LocalUser *getUser(const TLInputUser &inputUser, LocalUser *self) const override;
-    LocalUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const override;
+    AbstractUser *getUser(const TLInputUser &inputUser, LocalUser *self) const override;
+    AbstractUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const override;
     LocalUser *addUser(const QString &identifier) override;
 
     Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) override;

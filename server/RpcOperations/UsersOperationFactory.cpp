@@ -59,7 +59,7 @@ bool UsersRpcOperation::processGetUsers(RpcProcessingContext &context)
 void UsersRpcOperation::runGetFullUser()
 {
     LocalUser *self = layer()->getUser();
-    LocalUser *user = api()->getUser(m_getFullUser.id, self);
+    AbstractUser *user = api()->getUser(m_getFullUser.id, self);
     if (!user) {
         sendRpcError(RpcError::UserIdInvalid);
         return;
