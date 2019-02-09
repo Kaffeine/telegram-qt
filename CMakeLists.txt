@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.1)
 
 # Required by cmake >= 3.12 to allow usage of <Package>_ROOT variables
 #   for find_package() calls. Useful for Windows
-cmake_policy(SET CMP0074 NEW)
+if (POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW)
+endif()
 
 project(TelegramQt
     VERSION 0.2.0
