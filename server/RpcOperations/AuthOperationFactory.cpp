@@ -193,6 +193,7 @@ void AuthRpcOperation::runCheckPassword()
 void AuthRpcOperation::runCheckPhone()
 {
     TLFunctions::TLAuthCheckPhone &arguments = m_checkPhone;
+    arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
 
     PhoneStatus status = api()->getPhoneStatus(arguments.phoneNumber);
     TLAuthCheckedPhone result;
@@ -285,6 +286,7 @@ void AuthRpcOperation::runSendCode()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     TLFunctions::TLAuthSendCode &arguments = m_sendCode;
+    arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
 
     if (!api()->identifierIsValid(arguments.phoneNumber)) {
         sendRpcError(RpcError::PhoneNumberInvalid);
@@ -351,6 +353,7 @@ void AuthRpcOperation::runSignIn()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     TLFunctions::TLAuthSignIn &arguments = m_signIn;
+    arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
 
     if (!api()->identifierIsValid(arguments.phoneNumber)) {
         sendRpcError(RpcError::PhoneNumberInvalid);
@@ -388,6 +391,7 @@ void AuthRpcOperation::runSignUp()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     TLFunctions::TLAuthSignUp &arguments = m_signUp;
+    arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
 
     if (!api()->identifierIsValid(arguments.phoneNumber)) {
         sendRpcError(RpcError::PhoneNumberInvalid);
