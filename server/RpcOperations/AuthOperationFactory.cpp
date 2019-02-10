@@ -172,7 +172,7 @@ void AuthRpcOperation::runCheckPassword()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     Session *session = layer()->session();
-    if (!session) {
+    if (!session || !session->wanterUser()) {
         sendRpcError(RpcError::AuthKeyUnregistered);
         return;
     }
