@@ -59,6 +59,7 @@ public:
     PasswordInfo getPassword(const QString &identifier) override;
     bool checkPassword(const QString &identifier, const QByteArray &hash) override;
     bool identifierIsValid(const QString &identifier) const override;
+    QString normalizeIdentifier(const QString &identifier) const override;
 
     AbstractUser *getAbstractUser(quint32 userId) const override;
     AbstractUser *getAbstractUser(const QString &identifier) const override;

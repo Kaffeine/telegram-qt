@@ -353,6 +353,14 @@ bool Server::identifierIsValid(const QString &identifier) const
     return result;
 }
 
+QString Server::normalizeIdentifier(const QString &identifier) const
+{
+    if (identifier.startsWith(QLatin1Char('+'))) {
+        return identifier.mid(1);
+    }
+    return identifier;
+}
+
 AbstractUser *Server::getAbstractUser(quint32 userId) const
 {
     AbstractUser *user = getUser(userId);
