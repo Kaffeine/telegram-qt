@@ -256,11 +256,11 @@ void ContactsRpcOperation::runImportContacts()
 
     for (const TLInputContact &c : m_importContacts.contacts) {
         UserContact contact;
-        contact.phone = c.phone;
+        contact.phone = api()->normalizeIdentifier(c.phone);
         contact.firstName = c.firstName;
         contact.lastName = c.lastName;
 
-        AbstractUser *registeredUser = layer()->api()->getAbstractUser(c.phone);
+        AbstractUser *registeredUser = api()->getAbstractUser(contact.phone);
         if (registeredUser) {
             contact.id = registeredUser->id();
             result.users.append(TLUser());
