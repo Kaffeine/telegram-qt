@@ -58,7 +58,7 @@ public:
     virtual PasswordInfo getPassword(const QString &identifier) = 0;
     virtual bool checkPassword(const QString &identifier, const QByteArray &hash) = 0;
     virtual Authorization::Provider *getAuthorizationProvider() = 0;
-    virtual bool identifierIsValid(const QString &identifier) = 0; // Argument is 'phoneNumber'
+    virtual bool identifierIsValid(const QString &identifier) const = 0; // Argument is 'phoneNumber'
 
     virtual bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *forUser) const = 0;
     virtual bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser) const = 0;

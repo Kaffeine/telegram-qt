@@ -346,7 +346,7 @@ bool Server::checkPassword(const QString &identifier, const QByteArray &hash)
 
 }
 
-bool Server::identifierIsValid(const QString &identifier)
+bool Server::identifierIsValid(const QString &identifier) const
 {
     const bool result = identifier.length() > 4;
     qCDebug(loggingCategoryServerApi) << "identifierIsValid(" << identifier << "):" << result;
