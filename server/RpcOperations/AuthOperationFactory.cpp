@@ -192,7 +192,9 @@ void AuthRpcOperation::runCheckPassword()
 
 void AuthRpcOperation::runCheckPhone()
 {
-    PhoneStatus status = api()->getPhoneStatus(m_checkPhone.phoneNumber);
+    TLFunctions::TLAuthCheckPhone &arguments = m_checkPhone;
+
+    PhoneStatus status = api()->getPhoneStatus(arguments.phoneNumber);
     TLAuthCheckedPhone result;
     result.phoneRegistered = status.exists();
     sendRpcReply(result);
@@ -282,12 +284,13 @@ void AuthRpcOperation::runResetAuthorizations()
 void AuthRpcOperation::runSendCode()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
+    TLFunctions::TLAuthSendCode &arguments = m_sendCode;
 
-    if (!api()->identifierIsValid(m_sendCode.phoneNumber)) {
+    if (!api()->identifierIsValid(arguments.phoneNumber)) {
         sendRpcError(RpcError::PhoneNumberInvalid);
         return;
     }
-    PhoneStatus status = api()->getPhoneStatus(m_sendCode.phoneNumber);
+    PhoneStatus status = api()->getPhoneStatus(arguments.phoneNumber);
     if (status.exists() && (status.dcId != api()->dcId())) {
         RpcError error(RpcError::PhoneMigrateX, status.dcId);
         sendRpcError(error);
@@ -295,7 +298,7 @@ void AuthRpcOperation::runSendCode()
     }
 
     Authorization::Provider *provider = api()->getAuthorizationProvider();
-    const Authorization::SentCodeInfo code = provider->sendCode(layer()->session(), m_sendCode.phoneNumber);
+    const Authorization::SentCodeInfo code = provider->sendCode(layer()->session(), arguments.phoneNumber);
 
     TLAuthSentCode result;
     {
@@ -347,22 +350,24 @@ void AuthRpcOperation::runSendInvites()
 void AuthRpcOperation::runSignIn()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
-    if (!api()->identifierIsValid(m_signIn.phoneNumber)) {
+    TLFunctions::TLAuthSignIn &arguments = m_signIn;
+
+    if (!api()->identifierIsValid(arguments.phoneNumber)) {
         sendRpcError(RpcError::PhoneNumberInvalid);
         return;
     }
-    if (!verifyAuthCode(m_signIn.phoneNumber, m_signIn.phoneCodeHash, m_signIn.phoneCode)) {
+    if (!verifyAuthCode(arguments.phoneNumber, arguments.phoneCodeHash, arguments.phoneCode)) {
         return;
     }
 
-    PhoneStatus status = api()->getPhoneStatus(m_signIn.phoneNumber);
+    PhoneStatus status = api()->getPhoneStatus(arguments.phoneNumber);
     if (status.exists() && (status.dcId != api()->dcId())) {
         RpcError error(RpcError::PhoneMigrateX, status.dcId);
         sendRpcError(error);
         return;
     }
 
-    LocalUser *user = api()->getUser(m_signIn.phoneNumber);
+    LocalUser *user = api()->getUser(arguments.phoneNumber);
     if (!user) {
         sendRpcError(RpcError::PhoneNumberUnoccupied);
         return;
@@ -382,26 +387,28 @@ void AuthRpcOperation::runSignIn()
 void AuthRpcOperation::runSignUp()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
-    if (!api()->identifierIsValid(m_signUp.phoneNumber)) {
+    TLFunctions::TLAuthSignUp &arguments = m_signUp;
+
+    if (!api()->identifierIsValid(arguments.phoneNumber)) {
         sendRpcError(RpcError::PhoneNumberInvalid);
         return;
     }
 
-    if (m_signUp.firstName.isEmpty()) {
+    if (arguments.firstName.isEmpty()) {
         sendRpcError(RpcError::FirstnameInvalid);
         return;
     }
-    if (m_signUp.lastName.isEmpty()) {
+    if (arguments.lastName.isEmpty()) {
         sendRpcError(RpcError::LastnameInvalid);
         return;
     }
 
-    if (!verifyAuthCode(m_signUp.phoneNumber, m_signUp.phoneCodeHash, m_signUp.phoneCode)) {
+    if (!verifyAuthCode(arguments.phoneNumber, arguments.phoneCodeHash, arguments.phoneCode)) {
         return;
     }
-    LocalUser *user = api()->addUser(m_signUp.phoneNumber);
-    user->setFirstName(m_signUp.firstName);
-    user->setLastName(m_signUp.lastName);
+    LocalUser *user = api()->addUser(arguments.phoneNumber);
+    user->setFirstName(arguments.firstName);
+    user->setLastName(arguments.lastName);
     user->addSession(layer()->session());
 
     TLAuthAuthorization result;
