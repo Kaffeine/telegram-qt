@@ -195,6 +195,10 @@ void AuthRpcOperation::runCheckPhone()
     TLFunctions::TLAuthCheckPhone &arguments = m_checkPhone;
     arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
 
+    if (!api()->identifierIsValid(arguments.phoneNumber)) {
+        sendRpcError(RpcError::PhoneNumberInvalid);
+        return;
+    }
     PhoneStatus status = api()->getPhoneStatus(arguments.phoneNumber);
     TLAuthCheckedPhone result;
     result.phoneRegistered = status.exists();
