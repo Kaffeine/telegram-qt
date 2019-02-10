@@ -78,6 +78,10 @@ void UsersRpcOperation::runGetUsers()
     result.reserve(m_getUsers.id.count());
     for (const TLInputUser &input : m_getUsers.id) {
         AbstractUser *remoteUser = api()->getUser(input, self);
+        if (!remoteUser) {
+            sendRpcError(RpcError::UserIdInvalid);
+            return;
+        }
         if (api()->setupTLUser(&user, remoteUser, self)) {
             result.append(user);
         }
