@@ -143,7 +143,7 @@ quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
     m_messages.last().id = addPts();
     const Telegram::Peer messagePeer = Telegram::Utils::getMessagePeer(message, id());
     UserDialog *dialog = ensureDialog(messagePeer);
-    dialog->lastMessageId = message.id;
+    dialog->topMessage = message.id;
 
     // Post update to other sessions
     bool needUpdates = false;

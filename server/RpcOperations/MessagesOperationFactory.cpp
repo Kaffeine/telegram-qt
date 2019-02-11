@@ -946,7 +946,7 @@ void MessagesRpcOperation::runGetDialogs()
         dialog.unreadCount = 1;
         result.dialogs.append(dialog);
 
-        const TLMessage *m = self->getMessage(d->lastMessageId);
+        const TLMessage *m = self->getMessage(d->topMessage);
         if (m) {
             result.messages.resize(result.messages.size() + 1);
             result.messages.last() = *m;
