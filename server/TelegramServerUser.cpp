@@ -124,9 +124,9 @@ void LocalUser::setPlainPassword(const QString &password)
         return;
     }
     QByteArray pwdSalt(8, Qt::Uninitialized);
-    Utils::randomBytes(&pwdSalt);
+    Telegram::Utils::randomBytes(&pwdSalt);
     const QByteArray pwdData = pwdSalt + password.toUtf8() + pwdSalt;
-    const QByteArray pwdHash = Utils::sha256(pwdData);
+    const QByteArray pwdHash = Telegram::Utils::sha256(pwdData);
     setPassword(pwdSalt, pwdHash);
 }
 

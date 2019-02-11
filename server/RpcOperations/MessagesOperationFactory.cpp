@@ -1442,7 +1442,7 @@ void MessagesRpcOperation::runSendMessage()
 {
     LocalUser *self = layer()->getUser();
 
-    Telegram::Peer peer = Utils::toPublicPeer(m_sendMessage.peer, self->id());
+    Telegram::Peer peer = Telegram::Utils::toPublicPeer(m_sendMessage.peer, self->id());
     MessageRecipient *recipient = nullptr;
 
     switch (peer.type) {
@@ -1470,7 +1470,7 @@ void MessagesRpcOperation::runSendMessage()
     message.fromId = self->id();
     message.flags |= TLMessage::FromId;
     message.message = m_sendMessage.message;
-    message.date = Utils::getCurrentTime();
+    message.date = Telegram::Utils::getCurrentTime();
     message.toId = recipient->toTLPeer();
     const quint32 newMessageId = self->addMessage(message, layer()->session());
     message.id = newMessageId;
