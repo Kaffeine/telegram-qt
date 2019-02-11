@@ -51,8 +51,8 @@ public:
     {
     }
 
-    Type type;
-    quint32 id;
+    Type type = User;
+    quint32 id = 0;
 
     Q_INVOKABLE bool isValid() const { return id; }
 
@@ -208,13 +208,9 @@ struct RsaKey {
     QByteArray modulus;
     QByteArray exponent;
     QByteArray secretExponent;
-    quint64 fingerprint;
+    quint64 fingerprint = 0;
 
-    RsaKey() :
-        fingerprint(0)
-    {
-    }
-
+    RsaKey() = default;
     RsaKey(const QByteArray &initialModulus, const QByteArray &initialExponent, const quint64 initialFingersprint = 0) :
         modulus(initialModulus), exponent(initialExponent), fingerprint(initialFingersprint)
     {
@@ -274,34 +270,22 @@ inline bool DcOption::operator==(const DcOption &option) const
 
 struct Message
 {
-    Message() :
-        replyToMessageId(0),
-        forwardContactId(0),
-        id(0),
-        timestamp(0),
-        fwdTimestamp(0),
-        type(TelegramNamespace::MessageTypeUnsupported),
-        flags(TelegramNamespace::MessageFlagNone)
-    {
-
-    }
-
-    quint32 fromId; // Telegram user id
-
+    Message() = default;
     const Peer peer() const { return m_peer; }
     void setPeer(const Peer &peer) { m_peer = peer; }
 
     const Peer forwardFromPeer() const { return m_forwardPeer; }
     void setForwardFromPeer(const Peer &peer) { m_forwardPeer = peer; }
 
-    quint32 replyToMessageId;
-    quint32 forwardContactId;
     QString text;
-    quint32 id;
-    quint32 timestamp;
-    quint32 fwdTimestamp;
-    TelegramNamespace::MessageType type;
-    TelegramNamespace::MessageFlags flags;
+    quint32 id = 0;
+    quint32 fromId = 0; // Telegram user id
+    quint32 timestamp = 0;
+    quint32 fwdTimestamp = 0;
+    quint32 forwardContactId = 0;
+    quint32 replyToMessageId = 0;
+    TelegramNamespace::MessageType type = TelegramNamespace::MessageTypeUnsupported;
+    TelegramNamespace::MessageFlags flags = TelegramNamespace::MessageFlagNone;
 
 private:
     Peer m_peer;
@@ -358,8 +342,8 @@ public:
     QString description() const;
 
     struct Private;
-protected:
 
+protected:
     Private *d;
 };
 

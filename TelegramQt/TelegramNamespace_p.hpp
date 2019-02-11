@@ -63,18 +63,7 @@ public:
         UploadInputFileBig,
     };
 
-    Private() :
-        m_type(InvalidLocation),
-        m_volumeId(0),
-        m_localId(0),
-        m_secret(0),
-        m_dcId(0),
-        m_id(0),
-        m_accessHash(0),
-        m_parts(0),
-        m_size(0)
-    {
-    }
+    Private() = default;
 
     static const Private *get(const RemoteFile *f) { return f->d; }
     static Private *get(RemoteFile *f) { return f->d; }
@@ -89,28 +78,28 @@ public:
     TLFileLocation getFileLocation() const;
     bool setFileLocation(const TLFileLocation *fileLocation);
 
-    Type m_type;
+    Type m_type = InvalidLocation;
 
     // FileLocation:
-    quint64 m_volumeId;
-    quint32 m_localId;
-    quint64 m_secret;
-    quint32 m_dcId;
+    quint64 m_volumeId = 0;
+    quint32 m_localId = 0;
+    quint64 m_secret = 0;
+    quint32 m_dcId = 0;
 
     // InputFileLocation:
 //    quint64 m_volumeId;
 //    quint32 m_localId;
 //    quint64 m_secret;
-    quint64 m_id;
-    quint64 m_accessHash;
+    quint64 m_id = 0;
+    quint64 m_accessHash = 0;
 
     // InputFile:
 //    quint64 m_id;
-    quint32 m_parts;
+    quint32 m_parts = 0;
+    quint32 m_size = 0;
     QString m_name;
     QString m_md5Checksum;
 
-    quint32 m_size;
 };
 
 struct Telegram::UserInfo::Private : public TLUser
