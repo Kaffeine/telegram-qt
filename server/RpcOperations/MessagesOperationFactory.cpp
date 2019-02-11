@@ -944,22 +944,6 @@ void MessagesRpcOperation::runGetDialogs()
         dialog.draft.message = d->draftText;
         dialog.draft.tlType = d->draftText.isEmpty() ? TLValue::DraftMessageEmpty : TLValue::DraftMessage;
         dialog.unreadCount = 1;
-
-        switch (d->peer.type) {
-        case Peer::User:
-        {
-            const AbstractUser *user = api()->getUser(d->peer.id);
-            result.users.resize(result.users.size() + 1);
-            api()->setupTLUser(&result.users.last(), user, self);
-        }
-            break;
-        case Peer::Chat:
-            //result.chats.append()
-            break;
-        case Peer::Channel:
-            //result.chats.append()
-            break;
-        }
         result.dialogs.append(dialog);
 
         const TLMessage *m = self->getMessage(d->lastMessageId);
@@ -969,6 +953,12 @@ void MessagesRpcOperation::runGetDialogs()
         }
     }
 
+    QSet<Peer> interestingPeers;
+    for (const UserDialog *d : dialogs) {
+        interestingPeers.insert(d->peer);
+    }
+    Utils::getInterestingPeers(&interestingPeers, result.messages);
+    Utils::setupTLPeers(interestingPeers, &result.users, &result.chats, api(), self);
     sendRpcReply(result);
 }
 
@@ -1046,6 +1036,11 @@ void MessagesRpcOperation::runGetHistory()
                 m_getHistory.hash);
     TLMessagesMessages result;
     result.messages.swap(history);
+
+    QSet<Peer> interestingPeers;
+    interestingPeers.insert(p);
+    Utils::getInterestingPeers(&interestingPeers, result.messages);
+    Utils::setupTLPeers(interestingPeers, &result.users, &result.chats, api(), self);
     sendRpcReply(result);
 }
 
