@@ -940,7 +940,7 @@ void MessagesRpcOperation::runGetDialogs()
     for (const UserDialog *d : dialogs) {
         TLDialog dialog;
         dialog.peer = Telegram::Utils::toTLPeer(d->peer);
-        dialog.topMessage = 1;
+        dialog.topMessage = d->topMessage;
         dialog.draft.message = d->draftText;
         dialog.draft.tlType = d->draftText.isEmpty() ? TLValue::DraftMessageEmpty : TLValue::DraftMessage;
         dialog.unreadCount = 1;
