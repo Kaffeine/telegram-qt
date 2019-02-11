@@ -140,10 +140,11 @@ void LocalUser::setPassword(const QByteArray &salt, const QByteArray &hash)
 quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
 {
     m_messages.append(message);
-    m_messages.last().id = addPts();
+    TLMessage *addedMessage = &m_messages.last();
+    addedMessage->id = addPts();
     const Telegram::Peer messagePeer = Telegram::Utils::getMessagePeer(message, id());
     UserDialog *dialog = ensureDialog(messagePeer);
-    dialog->topMessage = message.id;
+    dialog->topMessage = addedMessage->id;
 
     // Post update to other sessions
     bool needUpdates = false;
@@ -155,7 +156,7 @@ quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
         break;
     }
     if (!needUpdates) {
-        return m_messages.last().id;
+        return addedMessage->id;
     }
 
     ServerApi *api = activeSessions().first()->rpcLayer()->api();
@@ -163,7 +164,7 @@ quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
 
     TLUpdate newMessageUpdate;
     newMessageUpdate.tlType = TLValue::UpdateNewMessage;
-    newMessageUpdate.message = m_messages.last();
+    newMessageUpdate.message = *addedMessage;
     newMessageUpdate.pts = pts();
     newMessageUpdate.ptsCount = 1;
 
@@ -187,7 +188,7 @@ quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
         s->rpcLayer()->sendUpdates(updates);
     }
 
-    return m_messages.last().id;
+    return addedMessage->id;
 }
 
 TLVector<TLMessage> LocalUser::getHistory(const Peer &peer,
