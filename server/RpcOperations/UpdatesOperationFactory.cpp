@@ -23,6 +23,7 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "ServerUtils.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
@@ -85,7 +86,7 @@ void UpdatesRpcOperation::runGetState()
 {
     TLUpdatesState result;
     LocalUser *self = layer()->getUser();
-    api()->setupTLUpdatesState(&result, self);
+    Utils::setupTLUpdatesState(&result, self);
     sendRpcReply(result);
 }
 // End of generated run methods

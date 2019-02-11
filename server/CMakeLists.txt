@@ -5,6 +5,7 @@ set(server_lib_SOURCES
     ServerDhLayer.cpp
     ServerRpcLayer.cpp
     ServerRpcOperation.cpp
+    ServerUtils.cpp
     Session.cpp
     RpcOperationFactory.cpp
     TelegramServer.cpp

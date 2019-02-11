@@ -23,6 +23,7 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "ServerUtils.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
@@ -206,7 +207,7 @@ void ContactsRpcOperation::runGetContacts()
     for (const UserContact &contact : importedContacts) {
         if (contact.id) {
             const AbstractUser *contactUser = api()->getAbstractUser(contact.id);
-            api()->setupTLUser(&userInfo, contactUser, self);
+            Utils::setupTLUser(&userInfo, contactUser, self);
             result.users.append(userInfo);
 
             outputContact.userId = contact.id;
@@ -264,7 +265,7 @@ void ContactsRpcOperation::runImportContacts()
         if (registeredUser) {
             contact.id = registeredUser->id();
             result.users.append(TLUser());
-            api()->setupTLUser(&result.users.last(), registeredUser, self);
+            Utils::setupTLUser(&result.users.last(), registeredUser, self);
 
             TLImportedContact imported;
             imported.clientId = c.clientId;

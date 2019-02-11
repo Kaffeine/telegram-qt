@@ -24,6 +24,7 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "ServerUtils.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
@@ -1128,7 +1129,7 @@ void MessagesRpcOperation::runGetPinnedDialogs()
 
     LocalUser *self = layer()->getUser();
     TLMessagesPeerDialogs result;
-    api()->setupTLUpdatesState(&result.state, self);
+    Utils::setupTLUpdatesState(&result.state, self);
     sendRpcReply(result);
 }
 
@@ -1484,7 +1485,7 @@ void MessagesRpcOperation::runSendMessage()
     result.tlType = TLValue::Updates;
     result.updates = { updateMessageId, newMessageUpdate };
     result.users = { TLUser() }; // Sender
-    api()->setupTLUser(&result.users[0], self, self);
+    Utils::setupTLUser(&result.users[0], self, self);
 
     result.chats = {};
     result.date = message.date;

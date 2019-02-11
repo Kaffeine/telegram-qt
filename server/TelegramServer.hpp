@@ -66,9 +66,6 @@ public:
     AbstractUser *getRemoteUser(quint32 userId) const;
     AbstractUser *getRemoteUser(const QString &identifier) const;
 
-    bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *applicant) const override;
-    bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser) const override;
-
     Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const override;
 
     LocalUser *getUser(const QString &identifier) const override;

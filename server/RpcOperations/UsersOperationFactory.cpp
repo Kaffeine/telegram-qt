@@ -23,6 +23,7 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "ServerUtils.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
@@ -66,7 +67,7 @@ void UsersRpcOperation::runGetFullUser()
     }
 
     TLUserFull result;
-    api()->setupTLUser(&result.user, user, self);
+    Utils::setupTLUser(&result.user, user, self);
     sendRpcReply(result);
 }
 
@@ -82,7 +83,7 @@ void UsersRpcOperation::runGetUsers()
             sendRpcError(RpcError::UserIdInvalid);
             return;
         }
-        if (api()->setupTLUser(&user, remoteUser, self)) {
+        if (Utils::setupTLUser(&user, remoteUser, self)) {
             result.append(user);
         }
     }

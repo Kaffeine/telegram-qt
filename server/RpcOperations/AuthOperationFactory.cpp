@@ -9,6 +9,7 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "ServerUtils.hpp"
 #include "Session.hpp"
 #include "TelegramServerUser.hpp"
 
@@ -186,7 +187,7 @@ void AuthRpcOperation::runCheckPassword()
 
     TLAuthAuthorization result;
     qCDebug(c_serverAuthRpcCategory) << "Result type:" << result.tlType;
-    api()->setupTLUser(&result.user, user, user);
+    Utils::setupTLUser(&result.user, user, user);
     sendRpcReply(result);
 }
 
@@ -387,7 +388,7 @@ void AuthRpcOperation::runSignIn()
     user->addSession(layer()->session());
 
     TLAuthAuthorization result;
-    api()->setupTLUser(&result.user, user, user);
+    Utils::setupTLUser(&result.user, user, user);
     sendRpcReply(result);
 }
 
@@ -420,7 +421,7 @@ void AuthRpcOperation::runSignUp()
     user->addSession(layer()->session());
 
     TLAuthAuthorization result;
-    api()->setupTLUser(&result.user, user, user);
+    Utils::setupTLUser(&result.user, user, user);
     sendRpcReply(result);
 }
 // End of generated run methods

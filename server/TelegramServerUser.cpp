@@ -3,6 +3,7 @@
 #include "ApiUtils.hpp"
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "ServerUtils.hpp"
 #include "Session.hpp"
 #include "Utils.hpp"
 
@@ -173,7 +174,7 @@ quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
 
     if (sender) {
         updates.users = { TLUser() }; // Sender
-        api->setupTLUser(&updates.users[0], sender, this);
+        Utils::setupTLUser(&updates.users[0], sender, this);
     }
 
     updates.date = message.date;
