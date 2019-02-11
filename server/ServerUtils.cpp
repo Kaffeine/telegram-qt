@@ -10,6 +10,16 @@ namespace Server {
 
 namespace Utils {
 
+void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages)
+{
+    for (const TLMessage &message : messages) {
+        if (message.fromId) {
+            Telegram::Peer messagePeer = Peer::fromUserId(message.fromId);
+            peers->insert(messagePeer);
+        }
+    }
+}
+
 bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *applicant)
 {
     output->id = input->id();
@@ -53,6 +63,27 @@ bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser)
     output->seq = 1; // FIXME
     output->qts = 0;
     output->unreadCount = 0;
+    return true;
+}
+
+bool setupTLPeers(const QSet<Peer> &peers, TLVector<TLUser> *users, TLVector<TLChat> *chats, const ServerApi *api,
+                  const LocalUser *forUser)
+{
+    users->clear();
+    chats->clear();
+    for (const Peer &peer : peers) {
+        if (!peer.isValid()) {
+            continue;
+        }
+        if (peer.type == Peer::User) {
+            users->append(TLUser());
+            AbstractUser *user = api->getUser(peer.id);
+            setupTLUser(&users->last(), user, forUser);
+        } else {
+            // TODO
+            return false;
+        }
+    }
     return true;
 }
 
