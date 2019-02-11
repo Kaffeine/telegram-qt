@@ -175,6 +175,12 @@ void tst_MessagesApi::getDialogs()
         QCOMPARE(addContactOperation->peers().count(), 1);
         client2AsClient1Peer = addContactOperation->peers().first();
         QVERIFY(client2AsClient1Peer.isValid());
+        QCOMPARE(client2AsClient1Peer.type, Telegram::Peer::User);
+        UserInfo userInfo;
+        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id));
+        QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
+        QVERIFY(userInfo.isContact());
+
         PendingOperation *contactListReadyOperation = client1ContactList->becomeReady();
         TRY_VERIFY(contactListReadyOperation->isFinished());
         QVERIFY(contactListReadyOperation->isSucceeded());
