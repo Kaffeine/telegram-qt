@@ -916,6 +916,13 @@ QString Generator::debugOperatorPerTypeImplementation(const QString &argName, co
 {
     Q_UNUSED(argName)
     QString code;
+    if (subType.members.isEmpty()) {
+        code += doubleSpacing + "d << \" }\";\n";
+        code += doubleSpacing + "return d;\n";
+        return code;
+    } else {
+        code += doubleSpacing + "d << \"\\n\";\n";
+    }
     foreach (const TLParam &member, subType.members) {
         QString typeDebugStatement = QStringLiteral("type.%1");
         if (member.type().contains(QLatin1String("QByteArray"))) {
