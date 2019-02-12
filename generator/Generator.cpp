@@ -24,6 +24,8 @@
 #include <QJsonObject>
 #include <QRegularExpression>
 
+#include <QTextStream>
+
 #include <zlib.h>
 
 //Q_LOGGING_CATEGORY(c_loggingGenerator, "telegram.generator", QtDebugMsg)
@@ -923,7 +925,9 @@ QString Generator::debugOperatorPerTypeImplementation(const QString &argName, co
     } else {
         code += doubleSpacing + "d << \"\\n\";\n";
     }
-    foreach (const TLParam &member, subType.members) {
+    bool hasFlags = !subType.getBoolFlags().isEmpty();
+
+    for (const TLParam &member : subType.members) {
         QString typeDebugStatement = QStringLiteral("type.%1");
         if (member.type().contains(QLatin1String("QByteArray"))) {
             typeDebugStatement = QStringLiteral("type.%1.toHex()");
@@ -938,6 +942,10 @@ QString Generator::debugOperatorPerTypeImplementation(const QString &argName, co
             code += doubleSpacing + QLatin1Literal("}\n");
         } else if (member.accessByPointer() && !member.isVector()) {
             code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << *%2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
+        } else if (hasFlags && (member.getAlias() == QLatin1String("flags"))) {
+            code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2"
+                                            " << \" (\" << flagsToString(type)"
+                                            " <<\")\\n\";\n").arg(member.getAlias(), typeDebugStatement);
         } else {
             code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
         }
@@ -1060,6 +1068,77 @@ Generator::MethodsCode Generator::generateFunctionStreamOperators() const
     for (const TLMethod &method : m_functions) {
         result.declarations.append(streamReadFreeOperatorDeclaration(&method));
         result.definitions.append(streamReadFreeOperatorDefinition(&method));
+    }
+    return result;
+}
+
+QStringList Generator::generateTypeFlagsToString() const
+{
+    // declaration:
+    // template <typename Type>
+    // QString flagsToString(const Type &instance);
+
+    // definition:
+    // template<>
+    // QString flagsToString(const TLConfig &instance)
+    // {
+    //     const quint32 flags = instance.flags;
+    //     QStringList result;
+
+    //     if (flags & TLConfig::TmpSessions) {
+    //         result << QLatin1String("TmpSessions");
+    //     }
+    //     if (flags & TLConfig::PhonecallsEnabled) {
+    //         result << QLatin1String("PhonecallsEnabled");
+    //     }
+    //     if (flags & TLConfig::LangPackVersion) {
+    //         result << QLatin1String("LangPackVersion");
+    //     }
+    //     if (flags & TLConfig::SuggestedLangCode) {
+    //         result << QLatin1String("SuggestedLangCode");
+    //     }
+    //     return result.join(QLatin1Char('|'));
+    // }
+
+    QStringList result;
+
+    for (const TLType &type : m_solvedTypes) {
+        if (nativeTypes.contains(type.name)) {
+            continue;
+        }
+
+        if (typesBlackList.contains(type.name)) {
+            continue;
+        }
+
+        const QMap<quint8,QString> memberFlags = type.getBoolFlags();
+        if (memberFlags.isEmpty()) {
+            continue;
+        }
+
+        QString code;
+        QTextStream stream(&code, QIODevice::WriteOnly);
+        stream << "template<>" << endl;
+        stream << "QString flagsToString(const " << type.name << " &instance)" << endl;
+        stream << "{" << endl;
+        stream << "    const quint32 flags = instance.flags;" << endl;
+        stream << "    QStringList result;" << endl;
+
+        for (quint8 flag : memberFlags.uniqueKeys()) {
+            // if (flags & TLConfig::TmpSessions) {
+            //     result << QLatin1String("TmpSessions");
+            // }
+            stream << "    if (flags & " << type.name << "::" << memberFlags.value(flag) << ") {" << endl;
+            stream << "        result << QLatin1String(\"" << memberFlags.value(flag) << "\");" << endl;
+            stream << "    }" << endl;
+        }
+
+        stream << "    if (result.isEmpty()) {" << endl;
+        stream << "        return QLatin1String(\"<no bool flags>\");" << endl;
+        stream << "    }" << endl;
+        stream << "    return result.join(QLatin1Char('|'));" << endl;
+        stream << "}" << endl;
+        result.append(code);
     }
     return result;
 }
@@ -2146,4 +2225,35 @@ QString TypedEntity::variableName() const
     varName[0] = varName.at(0).toLower();
     varName += entityType();
     return varName;
+}
+
+QMap<quint8, QString> TLType::getBoolFlags() const
+{
+    QMap<quint8, QString> result;
+    for (const TLSubType &subType : subTypes) {
+        QMap<quint8, QString> subTypeFlags = subType.getBoolFlags();
+        for (quint8 flagBit : subTypeFlags.keys()) {
+            if (result.contains(flagBit) && (result.value(flagBit) != subTypeFlags.value(flagBit))) {
+                qWarning() << Q_FUNC_INFO << "TODO: Process multiflags";
+                continue;
+            }
+            result.insert(flagBit, subTypeFlags.value(flagBit));
+        }
+    }
+    return result;
+}
+
+QMap<quint8, QString> TLSubType::getBoolFlags() const
+{
+    QMap<quint8, QString> flags;
+    for (const TLParam &member : members) {
+        if (member.type() != tlTrueType) {
+            continue;
+        }
+        if (!member.dependOnFlag()) {
+            continue;
+        }
+        flags.insertMulti(member.flagBit, member.flagName());
+    }
+    return flags;
 }

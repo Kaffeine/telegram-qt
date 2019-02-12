@@ -18,6 +18,16 @@
 #include "TLTypesDebug.hpp"
 #include "Debug_p.hpp"
 
+namespace Telegram {
+
+namespace Debug {
+// Generated TLTypes flagsToString
+// End of generated TLTypes flagsToString
+
+} // Debug namespace
+
+} // Telegram namespace
+
 using namespace Telegram::Debug;
 
 // Generated TLTypes debug operators

@@ -107,12 +107,15 @@ protected:
 struct TLSubType : public Predicate {
     QString entityType() const override { return QStringLiteral("Value"); }
     QString getEntityTLType() const override { return name; }
+    QMap<quint8, QString> getBoolFlags() const;
     QList<TLParam> members;
 };
 
 struct TLType : public TypedEntity {
     QString entityType() const override { return QStringLiteral("Value"); }
     QString getEntityTLType() const override { return name; }
+
+    QMap<quint8, QString> getBoolFlags() const;
 
     QList<TLSubType> subTypes;
 
@@ -266,6 +269,7 @@ public:
     QString generateFunctionStructs() const;
     static QString generateFunctionStruct(const TLMethod &method);
     MethodsCode generateFunctionStreamOperators() const;
+    QStringList generateTypeFlagsToString() const;
 
     QStringList serverRpcFactoryIncludes() const;
     QStringList serverRpcFactoryInitialization() const;

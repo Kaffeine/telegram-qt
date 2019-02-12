@@ -21,6 +21,17 @@
 #include <QDebug>
 #include "TLTypes.hpp"
 
+namespace Telegram {
+
+namespace Debug {
+
+template <typename Type>
+QString flagsToString(const Type &instance);
+
+} // Debug namespace
+
+} // Telegram namespace
+
 // Generated TLTypes debug operators
 QDebug operator<<(QDebug d, const TLAccountDaysTTL &accountDaysTTLValue);
 QDebug operator<<(QDebug d, const TLAccountPassword &accountPasswordValue);

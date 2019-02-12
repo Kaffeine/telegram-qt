@@ -582,12 +582,16 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     }
 
     {
-
         OutputFile fileTypesDebugHeader("TLTypesDebug.hpp");
         OutputFile fileTypesDebugSource("TLTypesDebug.cpp");
-        OutputFile fileRpcDebugSource("TLRpcDebug.cpp");
         fileTypesDebugHeader.replace("TLTypes debug operators", generator.codeDebugWriteDeclarations);
         fileTypesDebugSource.replace("TLTypes debug operators", generator.codeDebugWriteDefinitions);
+
+        const QStringList flagsToStringCodeBlocks = generator.generateTypeFlagsToString();
+        const QString flagsToStringCode = flagsToStringCodeBlocks.join(QLatin1Char('\n'));
+        fileTypesDebugSource.replace("TLTypes flagsToString", flagsToStringCode);
+
+        OutputFile fileRpcDebugSource("TLRpcDebug.cpp");
         fileRpcDebugSource.replace("RPC debug cases", generator.codeDebugRpcParse, 4);
     }
 
