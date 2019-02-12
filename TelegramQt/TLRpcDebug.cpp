@@ -27,6 +27,9 @@ void dumpRpc(CTelegramStream &stream)
     TLValue request;
     stream >> request;
 
+    QDebug d = qDebug();
+    d.nospace();
+
     switch (request) {
     case TLValue::MsgContainer: {
         quint32 itemsCount;
