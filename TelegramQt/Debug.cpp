@@ -41,7 +41,6 @@ QString Spacer::innerSpaces()
 {
     if (!m_hasInnerCalls) {
         m_hasInnerCalls = true;
-        return QLatin1Char('\n') + QString(m_spacing, QLatin1Char(' '));
     }
     return QString(m_spacing, QLatin1Char(' '));
 }
