@@ -21,6 +21,17 @@
 #include "MTProto/MessageHeader.hpp"
 #include "IgnoredMessageNotification.hpp"
 
+static const QByteArray c_spaces = QByteArray(24, ' ');
+
+const char *getSpaces(int count)
+{
+    int position = c_spaces.count() - count;
+    if (position < 0) {
+        position = 0;
+    }
+    return c_spaces.constData() + position;
+}
+
 namespace Telegram {
 
 namespace Debug {
@@ -37,20 +48,20 @@ Spacer::~Spacer()
     m_spacing -= m_step;
 }
 
-QString Spacer::innerSpaces()
+const char *Spacer::innerSpaces()
 {
     if (!m_hasInnerCalls) {
         m_hasInnerCalls = true;
     }
-    return QString(m_spacing, QLatin1Char(' '));
+    return getSpaces(m_spacing);
 }
 
-QString Spacer::outerSpaces()
+const char *Spacer::outerSpaces()
 {
     if (m_hasInnerCalls) {
-        return QString(m_spacing - m_step, QLatin1Char(' '));
+        return getSpaces(m_spacing - m_step);
     } else {
-        return QStringLiteral(" ");
+        return " ";
     }
 }
 

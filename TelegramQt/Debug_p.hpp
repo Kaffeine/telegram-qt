@@ -44,8 +44,8 @@ public:
     Spacer();
     ~Spacer();
 
-    QString innerSpaces();
-    QString outerSpaces();
+    const char *innerSpaces();
+    const char *outerSpaces();
 
 private:
     static int m_spacing;
