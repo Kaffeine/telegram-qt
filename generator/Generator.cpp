@@ -1265,16 +1265,19 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
             //     TLAuthAuthorization result;
             //     sendRpcReply(result);
             // }
-            return QStringLiteral(
-                        "void %1::run%2()\n"
-                        "{\n"
-                        "    if (processNotImplementedMethod(TLValue::%4)) {\n"
-                        "        return;\n"
-                        "    }\n"
-                        "    %3 result;\n"
-                        "    sendRpcReply(result);\n"
-                        "}\n\n"
-                        ).arg(className, method.nameFromSecondWord(), method.type, method.nameFirstCapital());
+            QString definition;
+            QTextStream stream(&definition);
+            stream << "void " << className << "::run" << method.nameFromSecondWord() << "()" << endl;
+            stream << "{" << endl;
+            stream << "    if (processNotImplementedMethod(TLValue::" << method.nameFirstCapital() << ")) {" << endl;
+            stream << "        return;" << endl;
+            stream << "    }" << endl;
+            stream << "    " << method.type << " result;" << endl;
+            stream << "    sendRpcReply(result);" << endl;
+            stream << "}" << endl;
+            stream << endl;
+
+            return definition;
         };
         result.definitions.append(addDefinition(method, previousSourceCode));
     }
