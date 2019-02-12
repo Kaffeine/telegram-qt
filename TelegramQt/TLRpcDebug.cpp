@@ -72,2100 +72,3166 @@ void dumpRpc(CTelegramStream &stream)
         break;
     }
     // Generated RPC debug cases
-    case TLValue::AccountChangePhone: {
+    case TLValue::AccountChangePhone:
+        d << "AccountChangePhone(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
         QString phoneCodeHash;
         stream >> phoneCodeHash;
+        d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
         QString phoneCode;
         stream >> phoneCode;
-        qDebug() << request << "phoneNumber" << phoneNumber << "phoneCodeHash" << phoneCodeHash << "phoneCode" << phoneCode;
+        d << spacer.innerSpaces() << "phoneCode: " << phoneCode << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountCheckUsername: {
+    case TLValue::AccountCheckUsername:
+        d << "AccountCheckUsername(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString username;
         stream >> username;
-        qDebug() << request << "username" << username;
+        d << spacer.innerSpaces() << "username: " << username << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountConfirmPhone: {
+    case TLValue::AccountConfirmPhone:
+        d << "AccountConfirmPhone(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString phoneCodeHash;
         stream >> phoneCodeHash;
+        d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
         QString phoneCode;
         stream >> phoneCode;
-        qDebug() << request << "phoneCodeHash" << phoneCodeHash << "phoneCode" << phoneCode;
+        d << spacer.innerSpaces() << "phoneCode: " << phoneCode << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountDeleteAccount: {
+    case TLValue::AccountDeleteAccount:
+        d << "AccountDeleteAccount(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString reason;
         stream >> reason;
-        qDebug() << request << "reason" << reason;
+        d << spacer.innerSpaces() << "reason: " << reason << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountGetAccountTTL: {
-        qDebug() << request;
-    }
+    case TLValue::AccountGetAccountTTL:
+        d << "AccountGetAccountTTL(";
+        d << ")";
         break;
-
-    case TLValue::AccountGetAuthorizations: {
-        qDebug() << request;
-    }
+    case TLValue::AccountGetAuthorizations:
+        d << "AccountGetAuthorizations(";
+        d << ")";
         break;
-
-    case TLValue::AccountGetNotifySettings: {
+    case TLValue::AccountGetNotifySettings:
+        d << "AccountGetNotifySettings(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputNotifyPeer peer;
         stream >> peer;
-        qDebug() << request << "peer" << peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountGetPassword: {
-        qDebug() << request;
-    }
+    case TLValue::AccountGetPassword:
+        d << "AccountGetPassword(";
+        d << ")";
         break;
-
-    case TLValue::AccountGetPasswordSettings: {
+    case TLValue::AccountGetPasswordSettings:
+        d << "AccountGetPasswordSettings(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QByteArray currentPasswordHash;
         stream >> currentPasswordHash;
-        qDebug() << request << "currentPasswordHash" << currentPasswordHash;
+        d << spacer.innerSpaces() << "currentPasswordHash: " << currentPasswordHash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountGetPrivacy: {
+    case TLValue::AccountGetPrivacy:
+        d << "AccountGetPrivacy(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPrivacyKey key;
         stream >> key;
-        qDebug() << request << "key" << key;
+        d << spacer.innerSpaces() << "key: " << key << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountGetTmpPassword: {
+    case TLValue::AccountGetTmpPassword:
+        d << "AccountGetTmpPassword(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QByteArray passwordHash;
         stream >> passwordHash;
+        d << spacer.innerSpaces() << "passwordHash: " << passwordHash << endl;
         quint32 period;
         stream >> period;
-        qDebug() << request << "passwordHash" << passwordHash << "period" << period;
+        d << spacer.innerSpaces() << "period: " << period << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountGetWallPapers: {
-        qDebug() << request;
-    }
+    case TLValue::AccountGetWallPapers:
+        d << "AccountGetWallPapers(";
+        d << ")";
         break;
-
-    case TLValue::AccountRegisterDevice: {
+    case TLValue::AccountRegisterDevice:
+        d << "AccountRegisterDevice(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 tokenType;
         stream >> tokenType;
+        d << spacer.innerSpaces() << "tokenType: " << tokenType << endl;
         QString token;
         stream >> token;
-        qDebug() << request << "tokenType" << tokenType << "token" << token;
+        d << spacer.innerSpaces() << "token: " << token << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountReportPeer: {
+    case TLValue::AccountReportPeer:
+        d << "AccountReportPeer(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         TLReportReason reason;
         stream >> reason;
-        qDebug() << request << "peer" << peer << "reason" << reason;
+        d << spacer.innerSpaces() << "reason: " << reason << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountResetAuthorization: {
+    case TLValue::AccountResetAuthorization:
+        d << "AccountResetAuthorization(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint64 hash;
         stream >> hash;
-        qDebug() << request << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountResetNotifySettings: {
-        qDebug() << request;
-    }
+    case TLValue::AccountResetNotifySettings:
+        d << "AccountResetNotifySettings(";
+        d << ")";
         break;
-
-    case TLValue::AccountSendChangePhoneCode: {
+    case TLValue::AccountSendChangePhoneCode:
+        d << "AccountSendChangePhoneCode(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         QString phoneNumber;
         stream >> phoneNumber;
-        qDebug() << request << "flags" << flags << "phoneNumber" << phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountSendConfirmPhoneCode: {
+    case TLValue::AccountSendConfirmPhoneCode:
+        d << "AccountSendConfirmPhoneCode(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         QString hash;
         stream >> hash;
-        qDebug() << request << "flags" << flags << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountSetAccountTTL: {
+    case TLValue::AccountSetAccountTTL:
+        d << "AccountSetAccountTTL(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLAccountDaysTTL ttl;
         stream >> ttl;
-        qDebug() << request << "ttl" << ttl;
+        d << spacer.innerSpaces() << "ttl: " << ttl << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountSetPrivacy: {
+    case TLValue::AccountSetPrivacy:
+        d << "AccountSetPrivacy(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPrivacyKey key;
         stream >> key;
+        d << spacer.innerSpaces() << "key: " << key << endl;
         TLVector<TLInputPrivacyRule> rules;
         stream >> rules;
-        qDebug() << request << "key" << key << "rules" << rules;
+        d << spacer.innerSpaces() << "rules: " << rules << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountUnregisterDevice: {
+    case TLValue::AccountUnregisterDevice:
+        d << "AccountUnregisterDevice(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 tokenType;
         stream >> tokenType;
+        d << spacer.innerSpaces() << "tokenType: " << tokenType << endl;
         QString token;
         stream >> token;
-        qDebug() << request << "tokenType" << tokenType << "token" << token;
+        d << spacer.innerSpaces() << "token: " << token << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountUpdateDeviceLocked: {
+    case TLValue::AccountUpdateDeviceLocked:
+        d << "AccountUpdateDeviceLocked(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 period;
         stream >> period;
-        qDebug() << request << "period" << period;
+        d << spacer.innerSpaces() << "period: " << period << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountUpdateNotifySettings: {
+    case TLValue::AccountUpdateNotifySettings:
+        d << "AccountUpdateNotifySettings(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputNotifyPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         TLInputPeerNotifySettings settings;
         stream >> settings;
-        qDebug() << request << "peer" << peer << "settings" << settings;
+        d << spacer.innerSpaces() << "settings: " << settings << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountUpdatePasswordSettings: {
+    case TLValue::AccountUpdatePasswordSettings:
+        d << "AccountUpdatePasswordSettings(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QByteArray currentPasswordHash;
         stream >> currentPasswordHash;
+        d << spacer.innerSpaces() << "currentPasswordHash: " << currentPasswordHash << endl;
         TLAccountPasswordInputSettings newSettings;
         stream >> newSettings;
-        qDebug() << request << "currentPasswordHash" << currentPasswordHash << "newSettings" << newSettings;
+        d << spacer.innerSpaces() << "newSettings: " << newSettings << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountUpdateProfile: {
+    case TLValue::AccountUpdateProfile:
+        d << "AccountUpdateProfile(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
-        qDebug() << request << "flags" << flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountUpdateStatus: {
+    case TLValue::AccountUpdateStatus:
+        d << "AccountUpdateStatus(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         bool offline;
         stream >> offline;
-        qDebug() << request << "offline" << offline;
+        d << spacer.innerSpaces() << "offline: " << offline << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AccountUpdateUsername: {
+    case TLValue::AccountUpdateUsername:
+        d << "AccountUpdateUsername(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString username;
         stream >> username;
-        qDebug() << request << "username" << username;
+        d << spacer.innerSpaces() << "username: " << username << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthBindTempAuthKey: {
+    case TLValue::AuthBindTempAuthKey:
+        d << "AuthBindTempAuthKey(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint64 permAuthKeyId;
         stream >> permAuthKeyId;
+        d << spacer.innerSpaces() << "permAuthKeyId: " << permAuthKeyId << endl;
         quint64 nonce;
         stream >> nonce;
+        d << spacer.innerSpaces() << "nonce: " << nonce << endl;
         quint32 expiresAt;
         stream >> expiresAt;
+        d << spacer.innerSpaces() << "expiresAt: " << expiresAt << endl;
         QByteArray encryptedMessage;
         stream >> encryptedMessage;
-        qDebug() << request << "permAuthKeyId" << permAuthKeyId << "nonce" << nonce << "expiresAt" << expiresAt << "encryptedMessage" << encryptedMessage;
+        d << spacer.innerSpaces() << "encryptedMessage: " << encryptedMessage << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthCancelCode: {
+    case TLValue::AuthCancelCode:
+        d << "AuthCancelCode(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
         QString phoneCodeHash;
         stream >> phoneCodeHash;
-        qDebug() << request << "phoneNumber" << phoneNumber << "phoneCodeHash" << phoneCodeHash;
+        d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthCheckPassword: {
+    case TLValue::AuthCheckPassword:
+        d << "AuthCheckPassword(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QByteArray passwordHash;
         stream >> passwordHash;
-        qDebug() << request << "passwordHash" << passwordHash;
+        d << spacer.innerSpaces() << "passwordHash: " << passwordHash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthCheckPhone: {
+    case TLValue::AuthCheckPhone:
+        d << "AuthCheckPhone(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
-        qDebug() << request << "phoneNumber" << phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthDropTempAuthKeys: {
+    case TLValue::AuthDropTempAuthKeys:
+        d << "AuthDropTempAuthKeys(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<quint64> exceptAuthKeys;
         stream >> exceptAuthKeys;
-        qDebug() << request << "exceptAuthKeys" << exceptAuthKeys;
+        d << spacer.innerSpaces() << "exceptAuthKeys: " << exceptAuthKeys << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthExportAuthorization: {
+    case TLValue::AuthExportAuthorization:
+        d << "AuthExportAuthorization(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 dcId;
         stream >> dcId;
-        qDebug() << request << "dcId" << dcId;
+        d << spacer.innerSpaces() << "dcId: " << dcId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthImportAuthorization: {
+    case TLValue::AuthImportAuthorization:
+        d << "AuthImportAuthorization(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         QByteArray bytes;
         stream >> bytes;
-        qDebug() << request << "id" << id << "bytes" << bytes;
+        d << spacer.innerSpaces() << "bytes: " << bytes << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthImportBotAuthorization: {
+    case TLValue::AuthImportBotAuthorization:
+        d << "AuthImportBotAuthorization(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint32 apiId;
         stream >> apiId;
+        d << spacer.innerSpaces() << "apiId: " << apiId << endl;
         QString apiHash;
         stream >> apiHash;
+        d << spacer.innerSpaces() << "apiHash: " << apiHash << endl;
         QString botAuthToken;
         stream >> botAuthToken;
-        qDebug() << request << "flags" << flags << "apiId" << apiId << "apiHash" << apiHash << "botAuthToken" << botAuthToken;
+        d << spacer.innerSpaces() << "botAuthToken: " << botAuthToken << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthLogOut: {
-        qDebug() << request;
-    }
+    case TLValue::AuthLogOut:
+        d << "AuthLogOut(";
+        d << ")";
         break;
-
-    case TLValue::AuthRecoverPassword: {
+    case TLValue::AuthRecoverPassword:
+        d << "AuthRecoverPassword(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString code;
         stream >> code;
-        qDebug() << request << "code" << code;
+        d << spacer.innerSpaces() << "code: " << code << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthRequestPasswordRecovery: {
-        qDebug() << request;
-    }
+    case TLValue::AuthRequestPasswordRecovery:
+        d << "AuthRequestPasswordRecovery(";
+        d << ")";
         break;
-
-    case TLValue::AuthResendCode: {
+    case TLValue::AuthResendCode:
+        d << "AuthResendCode(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
         QString phoneCodeHash;
         stream >> phoneCodeHash;
-        qDebug() << request << "phoneNumber" << phoneNumber << "phoneCodeHash" << phoneCodeHash;
+        d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthResetAuthorizations: {
-        qDebug() << request;
-    }
+    case TLValue::AuthResetAuthorizations:
+        d << "AuthResetAuthorizations(";
+        d << ")";
         break;
-
-    case TLValue::AuthSendCode: {
+    case TLValue::AuthSendCode:
+        d << "AuthSendCode(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         QString phoneNumber;
         stream >> phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
         quint32 apiId;
         stream >> apiId;
+        d << spacer.innerSpaces() << "apiId: " << apiId << endl;
         QString apiHash;
         stream >> apiHash;
-        qDebug() << request << "flags" << flags << "phoneNumber" << phoneNumber << "apiId" << apiId << "apiHash" << apiHash;
+        d << spacer.innerSpaces() << "apiHash: " << apiHash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthSendInvites: {
+    case TLValue::AuthSendInvites:
+        d << "AuthSendInvites(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<QString> phoneNumbers;
         stream >> phoneNumbers;
+        d << spacer.innerSpaces() << "phoneNumbers: " << phoneNumbers << endl;
         QString message;
         stream >> message;
-        qDebug() << request << "phoneNumbers" << phoneNumbers << "message" << message;
+        d << spacer.innerSpaces() << "message: " << message << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthSignIn: {
+    case TLValue::AuthSignIn:
+        d << "AuthSignIn(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
         QString phoneCodeHash;
         stream >> phoneCodeHash;
+        d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
         QString phoneCode;
         stream >> phoneCode;
-        qDebug() << request << "phoneNumber" << phoneNumber << "phoneCodeHash" << phoneCodeHash << "phoneCode" << phoneCode;
+        d << spacer.innerSpaces() << "phoneCode: " << phoneCode << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::AuthSignUp: {
+    case TLValue::AuthSignUp:
+        d << "AuthSignUp(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
         QString phoneCodeHash;
         stream >> phoneCodeHash;
+        d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
         QString phoneCode;
         stream >> phoneCode;
+        d << spacer.innerSpaces() << "phoneCode: " << phoneCode << endl;
         QString firstName;
         stream >> firstName;
+        d << spacer.innerSpaces() << "firstName: " << firstName << endl;
         QString lastName;
         stream >> lastName;
-        qDebug() << request << "phoneNumber" << phoneNumber << "phoneCodeHash" << phoneCodeHash << "phoneCode" << phoneCode << "firstName" << firstName << "lastName" << lastName;
+        d << spacer.innerSpaces() << "lastName: " << lastName << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::BotsAnswerWebhookJSONQuery: {
+    case TLValue::BotsAnswerWebhookJSONQuery:
+        d << "BotsAnswerWebhookJSONQuery(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint64 queryId;
         stream >> queryId;
+        d << spacer.innerSpaces() << "queryId: " << queryId << endl;
         TLDataJSON data;
         stream >> data;
-        qDebug() << request << "queryId" << queryId << "data" << data;
+        d << spacer.innerSpaces() << "data: " << data << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::BotsSendCustomRequest: {
+    case TLValue::BotsSendCustomRequest:
+        d << "BotsSendCustomRequest(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString customMethod;
         stream >> customMethod;
+        d << spacer.innerSpaces() << "customMethod: " << customMethod << endl;
         TLDataJSON params;
         stream >> params;
-        qDebug() << request << "customMethod" << customMethod << "params" << params;
+        d << spacer.innerSpaces() << "params: " << params << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsCheckUsername: {
+    case TLValue::ChannelsCheckUsername:
+        d << "ChannelsCheckUsername(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         QString username;
         stream >> username;
-        qDebug() << request << "channel" << channel << "username" << username;
+        d << spacer.innerSpaces() << "username: " << username << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsCreateChannel: {
+    case TLValue::ChannelsCreateChannel:
+        d << "ChannelsCreateChannel(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         QString title;
         stream >> title;
+        d << spacer.innerSpaces() << "title: " << title << endl;
         QString about;
         stream >> about;
-        qDebug() << request << "flags" << flags << "title" << title << "about" << about;
+        d << spacer.innerSpaces() << "about: " << about << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsDeleteChannel: {
+    case TLValue::ChannelsDeleteChannel:
+        d << "ChannelsDeleteChannel(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
-        qDebug() << request << "channel" << channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsDeleteHistory: {
+    case TLValue::ChannelsDeleteHistory:
+        d << "ChannelsDeleteHistory(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         quint32 maxId;
         stream >> maxId;
-        qDebug() << request << "channel" << channel << "maxId" << maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsDeleteMessages: {
+    case TLValue::ChannelsDeleteMessages:
+        d << "ChannelsDeleteMessages(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLVector<quint32> id;
         stream >> id;
-        qDebug() << request << "channel" << channel << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsDeleteUserHistory: {
+    case TLValue::ChannelsDeleteUserHistory:
+        d << "ChannelsDeleteUserHistory(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLInputUser userId;
         stream >> userId;
-        qDebug() << request << "channel" << channel << "userId" << userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsEditAbout: {
+    case TLValue::ChannelsEditAbout:
+        d << "ChannelsEditAbout(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         QString about;
         stream >> about;
-        qDebug() << request << "channel" << channel << "about" << about;
+        d << spacer.innerSpaces() << "about: " << about << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsEditAdmin: {
+    case TLValue::ChannelsEditAdmin:
+        d << "ChannelsEditAdmin(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         TLChannelAdminRights adminRights;
         stream >> adminRights;
-        qDebug() << request << "channel" << channel << "userId" << userId << "adminRights" << adminRights;
+        d << spacer.innerSpaces() << "adminRights: " << adminRights << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsEditBanned: {
+    case TLValue::ChannelsEditBanned:
+        d << "ChannelsEditBanned(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         TLChannelBannedRights bannedRights;
         stream >> bannedRights;
-        qDebug() << request << "channel" << channel << "userId" << userId << "bannedRights" << bannedRights;
+        d << spacer.innerSpaces() << "bannedRights: " << bannedRights << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsEditPhoto: {
+    case TLValue::ChannelsEditPhoto:
+        d << "ChannelsEditPhoto(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLInputChatPhoto photo;
         stream >> photo;
-        qDebug() << request << "channel" << channel << "photo" << photo;
+        d << spacer.innerSpaces() << "photo: " << photo << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsEditTitle: {
+    case TLValue::ChannelsEditTitle:
+        d << "ChannelsEditTitle(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         QString title;
         stream >> title;
-        qDebug() << request << "channel" << channel << "title" << title;
+        d << spacer.innerSpaces() << "title: " << title << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsExportInvite: {
+    case TLValue::ChannelsExportInvite:
+        d << "ChannelsExportInvite(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
-        qDebug() << request << "channel" << channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsExportMessageLink: {
+    case TLValue::ChannelsExportMessageLink:
+        d << "ChannelsExportMessageLink(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         quint32 id;
         stream >> id;
-        qDebug() << request << "channel" << channel << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsGetAdminLog: {
+    case TLValue::ChannelsGetAdminLog:
+        d << "ChannelsGetAdminLog(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         QString q;
         stream >> q;
+        d << spacer.innerSpaces() << "q: " << q << endl;
         quint64 maxId;
         stream >> maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
         quint64 minId;
         stream >> minId;
+        d << spacer.innerSpaces() << "minId: " << minId << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "flags" << flags << "channel" << channel << "q" << q << "maxId" << maxId << "minId" << minId << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsGetAdminedPublicChannels: {
-        qDebug() << request;
-    }
+    case TLValue::ChannelsGetAdminedPublicChannels:
+        d << "ChannelsGetAdminedPublicChannels(";
+        d << ")";
         break;
-
-    case TLValue::ChannelsGetChannels: {
+    case TLValue::ChannelsGetChannels:
+        d << "ChannelsGetChannels(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<TLInputChannel> id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsGetFullChannel: {
+    case TLValue::ChannelsGetFullChannel:
+        d << "ChannelsGetFullChannel(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
-        qDebug() << request << "channel" << channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsGetMessages: {
+    case TLValue::ChannelsGetMessages:
+        d << "ChannelsGetMessages(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLVector<quint32> id;
         stream >> id;
-        qDebug() << request << "channel" << channel << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsGetParticipant: {
+    case TLValue::ChannelsGetParticipant:
+        d << "ChannelsGetParticipant(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLInputUser userId;
         stream >> userId;
-        qDebug() << request << "channel" << channel << "userId" << userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsGetParticipants: {
+    case TLValue::ChannelsGetParticipants:
+        d << "ChannelsGetParticipants(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLChannelParticipantsFilter filter;
         stream >> filter;
+        d << spacer.innerSpaces() << "filter: " << filter << endl;
         quint32 offset;
         stream >> offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
         quint32 limit;
         stream >> limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "channel" << channel << "filter" << filter << "offset" << offset << "limit" << limit << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsInviteToChannel: {
+    case TLValue::ChannelsInviteToChannel:
+        d << "ChannelsInviteToChannel(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLVector<TLInputUser> users;
         stream >> users;
-        qDebug() << request << "channel" << channel << "users" << users;
+        d << spacer.innerSpaces() << "users: " << users << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsJoinChannel: {
+    case TLValue::ChannelsJoinChannel:
+        d << "ChannelsJoinChannel(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
-        qDebug() << request << "channel" << channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsLeaveChannel: {
+    case TLValue::ChannelsLeaveChannel:
+        d << "ChannelsLeaveChannel(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
-        qDebug() << request << "channel" << channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsReadHistory: {
+    case TLValue::ChannelsReadHistory:
+        d << "ChannelsReadHistory(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         quint32 maxId;
         stream >> maxId;
-        qDebug() << request << "channel" << channel << "maxId" << maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsReadMessageContents: {
+    case TLValue::ChannelsReadMessageContents:
+        d << "ChannelsReadMessageContents(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLVector<quint32> id;
         stream >> id;
-        qDebug() << request << "channel" << channel << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsReportSpam: {
+    case TLValue::ChannelsReportSpam:
+        d << "ChannelsReportSpam(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         TLVector<quint32> id;
         stream >> id;
-        qDebug() << request << "channel" << channel << "userId" << userId << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsSetStickers: {
+    case TLValue::ChannelsSetStickers:
+        d << "ChannelsSetStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLInputStickerSet stickerset;
         stream >> stickerset;
-        qDebug() << request << "channel" << channel << "stickerset" << stickerset;
+        d << spacer.innerSpaces() << "stickerset: " << stickerset << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsToggleInvites: {
+    case TLValue::ChannelsToggleInvites:
+        d << "ChannelsToggleInvites(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         bool enabled;
         stream >> enabled;
-        qDebug() << request << "channel" << channel << "enabled" << enabled;
+        d << spacer.innerSpaces() << "enabled: " << enabled << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsTogglePreHistoryHidden: {
+    case TLValue::ChannelsTogglePreHistoryHidden:
+        d << "ChannelsTogglePreHistoryHidden(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         bool enabled;
         stream >> enabled;
-        qDebug() << request << "channel" << channel << "enabled" << enabled;
+        d << spacer.innerSpaces() << "enabled: " << enabled << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsToggleSignatures: {
+    case TLValue::ChannelsToggleSignatures:
+        d << "ChannelsToggleSignatures(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         bool enabled;
         stream >> enabled;
-        qDebug() << request << "channel" << channel << "enabled" << enabled;
+        d << spacer.innerSpaces() << "enabled: " << enabled << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsUpdatePinnedMessage: {
+    case TLValue::ChannelsUpdatePinnedMessage:
+        d << "ChannelsUpdatePinnedMessage(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         quint32 id;
         stream >> id;
-        qDebug() << request << "flags" << flags << "channel" << channel << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ChannelsUpdateUsername: {
+    case TLValue::ChannelsUpdateUsername:
+        d << "ChannelsUpdateUsername(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         QString username;
         stream >> username;
-        qDebug() << request << "channel" << channel << "username" << username;
+        d << spacer.innerSpaces() << "username: " << username << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsBlock: {
+    case TLValue::ContactsBlock:
+        d << "ContactsBlock(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputUser id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsDeleteContact: {
+    case TLValue::ContactsDeleteContact:
+        d << "ContactsDeleteContact(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputUser id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsDeleteContacts: {
+    case TLValue::ContactsDeleteContacts:
+        d << "ContactsDeleteContacts(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<TLInputUser> id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsExportCard: {
-        qDebug() << request;
-    }
+    case TLValue::ContactsExportCard:
+        d << "ContactsExportCard(";
+        d << ")";
         break;
-
-    case TLValue::ContactsGetBlocked: {
+    case TLValue::ContactsGetBlocked:
+        d << "ContactsGetBlocked(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 offset;
         stream >> offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "offset" << offset << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsGetContacts: {
+    case TLValue::ContactsGetContacts:
+        d << "ContactsGetContacts(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsGetStatuses: {
-        qDebug() << request;
-    }
+    case TLValue::ContactsGetStatuses:
+        d << "ContactsGetStatuses(";
+        d << ")";
         break;
-
-    case TLValue::ContactsGetTopPeers: {
+    case TLValue::ContactsGetTopPeers:
+        d << "ContactsGetTopPeers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint32 offset;
         stream >> offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
         quint32 limit;
         stream >> limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "flags" << flags << "offset" << offset << "limit" << limit << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsImportCard: {
+    case TLValue::ContactsImportCard:
+        d << "ContactsImportCard(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<quint32> exportCard;
         stream >> exportCard;
-        qDebug() << request << "exportCard" << exportCard;
+        d << spacer.innerSpaces() << "exportCard: " << exportCard << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsImportContacts: {
+    case TLValue::ContactsImportContacts:
+        d << "ContactsImportContacts(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<TLInputContact> contacts;
         stream >> contacts;
-        qDebug() << request << "contacts" << contacts;
+        d << spacer.innerSpaces() << "contacts: " << contacts << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsResetSaved: {
-        qDebug() << request;
-    }
+    case TLValue::ContactsResetSaved:
+        d << "ContactsResetSaved(";
+        d << ")";
         break;
-
-    case TLValue::ContactsResetTopPeerRating: {
+    case TLValue::ContactsResetTopPeerRating:
+        d << "ContactsResetTopPeerRating(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLTopPeerCategory category;
         stream >> category;
+        d << spacer.innerSpaces() << "category: " << category << endl;
         TLInputPeer peer;
         stream >> peer;
-        qDebug() << request << "category" << category << "peer" << peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsResolveUsername: {
+    case TLValue::ContactsResolveUsername:
+        d << "ContactsResolveUsername(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString username;
         stream >> username;
-        qDebug() << request << "username" << username;
+        d << spacer.innerSpaces() << "username: " << username << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsSearch: {
+    case TLValue::ContactsSearch:
+        d << "ContactsSearch(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString q;
         stream >> q;
+        d << spacer.innerSpaces() << "q: " << q << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "q" << q << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::ContactsUnblock: {
+    case TLValue::ContactsUnblock:
+        d << "ContactsUnblock(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputUser id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::HelpGetAppChangelog: {
+    case TLValue::HelpGetAppChangelog:
+        d << "HelpGetAppChangelog(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString prevAppVersion;
         stream >> prevAppVersion;
-        qDebug() << request << "prevAppVersion" << prevAppVersion;
+        d << spacer.innerSpaces() << "prevAppVersion: " << prevAppVersion << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::HelpGetAppUpdate: {
-        qDebug() << request;
-    }
+    case TLValue::HelpGetAppUpdate:
+        d << "HelpGetAppUpdate(";
+        d << ")";
         break;
-
-    case TLValue::HelpGetCdnConfig: {
-        qDebug() << request;
-    }
+    case TLValue::HelpGetCdnConfig:
+        d << "HelpGetCdnConfig(";
+        d << ")";
         break;
-
-    case TLValue::HelpGetConfig: {
-        qDebug() << request;
-    }
+    case TLValue::HelpGetConfig:
+        d << "HelpGetConfig(";
+        d << ")";
         break;
-
-    case TLValue::HelpGetInviteText: {
-        qDebug() << request;
-    }
+    case TLValue::HelpGetInviteText:
+        d << "HelpGetInviteText(";
+        d << ")";
         break;
-
-    case TLValue::HelpGetNearestDc: {
-        qDebug() << request;
-    }
+    case TLValue::HelpGetNearestDc:
+        d << "HelpGetNearestDc(";
+        d << ")";
         break;
-
-    case TLValue::HelpGetRecentMeUrls: {
+    case TLValue::HelpGetRecentMeUrls:
+        d << "HelpGetRecentMeUrls(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString referer;
         stream >> referer;
-        qDebug() << request << "referer" << referer;
+        d << spacer.innerSpaces() << "referer: " << referer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::HelpGetSupport: {
-        qDebug() << request;
-    }
+    case TLValue::HelpGetSupport:
+        d << "HelpGetSupport(";
+        d << ")";
         break;
-
-    case TLValue::HelpGetTermsOfService: {
-        qDebug() << request;
-    }
+    case TLValue::HelpGetTermsOfService:
+        d << "HelpGetTermsOfService(";
+        d << ")";
         break;
-
-    case TLValue::HelpSaveAppLog: {
+    case TLValue::HelpSaveAppLog:
+        d << "HelpSaveAppLog(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<TLInputAppEvent> events;
         stream >> events;
-        qDebug() << request << "events" << events;
+        d << spacer.innerSpaces() << "events: " << events << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::HelpSetBotUpdatesStatus: {
+    case TLValue::HelpSetBotUpdatesStatus:
+        d << "HelpSetBotUpdatesStatus(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 pendingUpdatesCount;
         stream >> pendingUpdatesCount;
+        d << spacer.innerSpaces() << "pendingUpdatesCount: " << pendingUpdatesCount << endl;
         QString message;
         stream >> message;
-        qDebug() << request << "pendingUpdatesCount" << pendingUpdatesCount << "message" << message;
+        d << spacer.innerSpaces() << "message: " << message << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::LangpackGetDifference: {
+    case TLValue::LangpackGetDifference:
+        d << "LangpackGetDifference(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 fromVersion;
         stream >> fromVersion;
-        qDebug() << request << "fromVersion" << fromVersion;
+        d << spacer.innerSpaces() << "fromVersion: " << fromVersion << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::LangpackGetLangPack: {
+    case TLValue::LangpackGetLangPack:
+        d << "LangpackGetLangPack(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString langCode;
         stream >> langCode;
-        qDebug() << request << "langCode" << langCode;
+        d << spacer.innerSpaces() << "langCode: " << langCode << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::LangpackGetLanguages: {
-        qDebug() << request;
-    }
+    case TLValue::LangpackGetLanguages:
+        d << "LangpackGetLanguages(";
+        d << ")";
         break;
-
-    case TLValue::LangpackGetStrings: {
+    case TLValue::LangpackGetStrings:
+        d << "LangpackGetStrings(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString langCode;
         stream >> langCode;
+        d << spacer.innerSpaces() << "langCode: " << langCode << endl;
         TLVector<QString> keys;
         stream >> keys;
-        qDebug() << request << "langCode" << langCode << "keys" << keys;
+        d << spacer.innerSpaces() << "keys: " << keys << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesAcceptEncryption: {
+    case TLValue::MessagesAcceptEncryption:
+        d << "MessagesAcceptEncryption(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         QByteArray gB;
         stream >> gB;
+        d << spacer.innerSpaces() << "gB: " << gB << endl;
         quint64 keyFingerprint;
         stream >> keyFingerprint;
-        qDebug() << request << "peer" << peer << "gB" << gB << "keyFingerprint" << keyFingerprint;
+        d << spacer.innerSpaces() << "keyFingerprint: " << keyFingerprint << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesAddChatUser: {
+    case TLValue::MessagesAddChatUser:
+        d << "MessagesAddChatUser(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         quint32 fwdLimit;
         stream >> fwdLimit;
-        qDebug() << request << "chatId" << chatId << "userId" << userId << "fwdLimit" << fwdLimit;
+        d << spacer.innerSpaces() << "fwdLimit: " << fwdLimit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesCheckChatInvite: {
+    case TLValue::MessagesCheckChatInvite:
+        d << "MessagesCheckChatInvite(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString hash;
         stream >> hash;
-        qDebug() << request << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesClearRecentStickers: {
+    case TLValue::MessagesClearRecentStickers:
+        d << "MessagesClearRecentStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
-        qDebug() << request << "flags" << flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesCreateChat: {
+    case TLValue::MessagesCreateChat:
+        d << "MessagesCreateChat(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<TLInputUser> users;
         stream >> users;
+        d << spacer.innerSpaces() << "users: " << users << endl;
         QString title;
         stream >> title;
-        qDebug() << request << "users" << users << "title" << title;
+        d << spacer.innerSpaces() << "title: " << title << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesDeleteChatUser: {
+    case TLValue::MessagesDeleteChatUser:
+        d << "MessagesDeleteChatUser(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
         TLInputUser userId;
         stream >> userId;
-        qDebug() << request << "chatId" << chatId << "userId" << userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesDeleteHistory: {
+    case TLValue::MessagesDeleteHistory:
+        d << "MessagesDeleteHistory(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 maxId;
         stream >> maxId;
-        qDebug() << request << "flags" << flags << "peer" << peer << "maxId" << maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesDeleteMessages: {
+    case TLValue::MessagesDeleteMessages:
+        d << "MessagesDeleteMessages(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLVector<quint32> id;
         stream >> id;
-        qDebug() << request << "flags" << flags << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesDiscardEncryption: {
+    case TLValue::MessagesDiscardEncryption:
+        d << "MessagesDiscardEncryption(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
-        qDebug() << request << "chatId" << chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesEditChatAdmin: {
+    case TLValue::MessagesEditChatAdmin:
+        d << "MessagesEditChatAdmin(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         bool isAdmin;
         stream >> isAdmin;
-        qDebug() << request << "chatId" << chatId << "userId" << userId << "isAdmin" << isAdmin;
+        d << spacer.innerSpaces() << "isAdmin: " << isAdmin << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesEditChatPhoto: {
+    case TLValue::MessagesEditChatPhoto:
+        d << "MessagesEditChatPhoto(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
         TLInputChatPhoto photo;
         stream >> photo;
-        qDebug() << request << "chatId" << chatId << "photo" << photo;
+        d << spacer.innerSpaces() << "photo: " << photo << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesEditChatTitle: {
+    case TLValue::MessagesEditChatTitle:
+        d << "MessagesEditChatTitle(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
         QString title;
         stream >> title;
-        qDebug() << request << "chatId" << chatId << "title" << title;
+        d << spacer.innerSpaces() << "title: " << title << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesEditInlineBotMessage: {
+    case TLValue::MessagesEditInlineBotMessage:
+        d << "MessagesEditInlineBotMessage(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputBotInlineMessageID id;
         stream >> id;
-        qDebug() << request << "flags" << flags << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesEditMessage: {
+    case TLValue::MessagesEditMessage:
+        d << "MessagesEditMessage(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 id;
         stream >> id;
-        qDebug() << request << "flags" << flags << "peer" << peer << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesExportChatInvite: {
+    case TLValue::MessagesExportChatInvite:
+        d << "MessagesExportChatInvite(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
-        qDebug() << request << "chatId" << chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesFaveSticker: {
+    case TLValue::MessagesFaveSticker:
+        d << "MessagesFaveSticker(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputDocument id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         bool unfave;
         stream >> unfave;
-        qDebug() << request << "id" << id << "unfave" << unfave;
+        d << spacer.innerSpaces() << "unfave: " << unfave << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesForwardMessage: {
+    case TLValue::MessagesForwardMessage:
+        d << "MessagesForwardMessage(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         quint64 randomId;
         stream >> randomId;
-        qDebug() << request << "peer" << peer << "id" << id << "randomId" << randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesForwardMessages: {
+    case TLValue::MessagesForwardMessages:
+        d << "MessagesForwardMessages(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer fromPeer;
         stream >> fromPeer;
+        d << spacer.innerSpaces() << "fromPeer: " << fromPeer << endl;
         TLVector<quint32> id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         TLVector<quint64> randomId;
         stream >> randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         TLInputPeer toPeer;
         stream >> toPeer;
-        qDebug() << request << "flags" << flags << "fromPeer" << fromPeer << "id" << id << "randomId" << randomId << "toPeer" << toPeer;
+        d << spacer.innerSpaces() << "toPeer: " << toPeer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetAllChats: {
+    case TLValue::MessagesGetAllChats:
+        d << "MessagesGetAllChats(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<quint32> exceptIds;
         stream >> exceptIds;
-        qDebug() << request << "exceptIds" << exceptIds;
+        d << spacer.innerSpaces() << "exceptIds: " << exceptIds << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetAllDrafts: {
-        qDebug() << request;
-    }
+    case TLValue::MessagesGetAllDrafts:
+        d << "MessagesGetAllDrafts(";
+        d << ")";
         break;
-
-    case TLValue::MessagesGetAllStickers: {
+    case TLValue::MessagesGetAllStickers:
+        d << "MessagesGetAllStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetArchivedStickers: {
+    case TLValue::MessagesGetArchivedStickers:
+        d << "MessagesGetArchivedStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint64 offsetId;
         stream >> offsetId;
+        d << spacer.innerSpaces() << "offsetId: " << offsetId << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "flags" << flags << "offsetId" << offsetId << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetAttachedStickers: {
+    case TLValue::MessagesGetAttachedStickers:
+        d << "MessagesGetAttachedStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputStickeredMedia media;
         stream >> media;
-        qDebug() << request << "media" << media;
+        d << spacer.innerSpaces() << "media: " << media << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetBotCallbackAnswer: {
+    case TLValue::MessagesGetBotCallbackAnswer:
+        d << "MessagesGetBotCallbackAnswer(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 msgId;
         stream >> msgId;
-        qDebug() << request << "flags" << flags << "peer" << peer << "msgId" << msgId;
+        d << spacer.innerSpaces() << "msgId: " << msgId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetChats: {
+    case TLValue::MessagesGetChats:
+        d << "MessagesGetChats(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<quint32> id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetCommonChats: {
+    case TLValue::MessagesGetCommonChats:
+        d << "MessagesGetCommonChats(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         quint32 maxId;
         stream >> maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "userId" << userId << "maxId" << maxId << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetDhConfig: {
+    case TLValue::MessagesGetDhConfig:
+        d << "MessagesGetDhConfig(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 version;
         stream >> version;
+        d << spacer.innerSpaces() << "version: " << version << endl;
         quint32 randomLength;
         stream >> randomLength;
-        qDebug() << request << "version" << version << "randomLength" << randomLength;
+        d << spacer.innerSpaces() << "randomLength: " << randomLength << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetDialogs: {
+    case TLValue::MessagesGetDialogs:
+        d << "MessagesGetDialogs(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint32 offsetDate;
         stream >> offsetDate;
+        d << spacer.innerSpaces() << "offsetDate: " << offsetDate << endl;
         quint32 offsetId;
         stream >> offsetId;
+        d << spacer.innerSpaces() << "offsetId: " << offsetId << endl;
         TLInputPeer offsetPeer;
         stream >> offsetPeer;
+        d << spacer.innerSpaces() << "offsetPeer: " << offsetPeer << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "flags" << flags << "offsetDate" << offsetDate << "offsetId" << offsetId << "offsetPeer" << offsetPeer << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetDocumentByHash: {
+    case TLValue::MessagesGetDocumentByHash:
+        d << "MessagesGetDocumentByHash(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QByteArray sha256;
         stream >> sha256;
+        d << spacer.innerSpaces() << "sha256: " << sha256 << endl;
         quint32 size;
         stream >> size;
+        d << spacer.innerSpaces() << "size: " << size << endl;
         QString mimeType;
         stream >> mimeType;
-        qDebug() << request << "sha256" << sha256 << "size" << size << "mimeType" << mimeType;
+        d << spacer.innerSpaces() << "mimeType: " << mimeType << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetFavedStickers: {
+    case TLValue::MessagesGetFavedStickers:
+        d << "MessagesGetFavedStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetFeaturedStickers: {
+    case TLValue::MessagesGetFeaturedStickers:
+        d << "MessagesGetFeaturedStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetFullChat: {
+    case TLValue::MessagesGetFullChat:
+        d << "MessagesGetFullChat(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
-        qDebug() << request << "chatId" << chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetGameHighScores: {
+    case TLValue::MessagesGetGameHighScores:
+        d << "MessagesGetGameHighScores(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         TLInputUser userId;
         stream >> userId;
-        qDebug() << request << "peer" << peer << "id" << id << "userId" << userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetHistory: {
+    case TLValue::MessagesGetHistory:
+        d << "MessagesGetHistory(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 offsetId;
         stream >> offsetId;
+        d << spacer.innerSpaces() << "offsetId: " << offsetId << endl;
         quint32 offsetDate;
         stream >> offsetDate;
+        d << spacer.innerSpaces() << "offsetDate: " << offsetDate << endl;
         quint32 addOffset;
         stream >> addOffset;
+        d << spacer.innerSpaces() << "addOffset: " << addOffset << endl;
         quint32 limit;
         stream >> limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
         quint32 maxId;
         stream >> maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
         quint32 minId;
         stream >> minId;
+        d << spacer.innerSpaces() << "minId: " << minId << endl;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "peer" << peer << "offsetId" << offsetId << "offsetDate" << offsetDate << "addOffset" << addOffset << "limit" << limit << "maxId" << maxId << "minId" << minId << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetInlineBotResults: {
+    case TLValue::MessagesGetInlineBotResults:
+        d << "MessagesGetInlineBotResults(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputUser bot;
         stream >> bot;
+        d << spacer.innerSpaces() << "bot: " << bot << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         QString query;
         stream >> query;
+        d << spacer.innerSpaces() << "query: " << query << endl;
         QString offset;
         stream >> offset;
-        qDebug() << request << "flags" << flags << "bot" << bot << "peer" << peer << "query" << query << "offset" << offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetInlineGameHighScores: {
+    case TLValue::MessagesGetInlineGameHighScores:
+        d << "MessagesGetInlineGameHighScores(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputBotInlineMessageID id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         TLInputUser userId;
         stream >> userId;
-        qDebug() << request << "id" << id << "userId" << userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetMaskStickers: {
+    case TLValue::MessagesGetMaskStickers:
+        d << "MessagesGetMaskStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetMessageEditData: {
+    case TLValue::MessagesGetMessageEditData:
+        d << "MessagesGetMessageEditData(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 id;
         stream >> id;
-        qDebug() << request << "peer" << peer << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetMessages: {
+    case TLValue::MessagesGetMessages:
+        d << "MessagesGetMessages(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<quint32> id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetMessagesViews: {
+    case TLValue::MessagesGetMessagesViews:
+        d << "MessagesGetMessagesViews(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         TLVector<quint32> id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         bool increment;
         stream >> increment;
-        qDebug() << request << "peer" << peer << "id" << id << "increment" << increment;
+        d << spacer.innerSpaces() << "increment: " << increment << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetPeerDialogs: {
+    case TLValue::MessagesGetPeerDialogs:
+        d << "MessagesGetPeerDialogs(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<TLInputPeer> peers;
         stream >> peers;
-        qDebug() << request << "peers" << peers;
+        d << spacer.innerSpaces() << "peers: " << peers << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetPeerSettings: {
+    case TLValue::MessagesGetPeerSettings:
+        d << "MessagesGetPeerSettings(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
-        qDebug() << request << "peer" << peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetPinnedDialogs: {
-        qDebug() << request;
-    }
+    case TLValue::MessagesGetPinnedDialogs:
+        d << "MessagesGetPinnedDialogs(";
+        d << ")";
         break;
-
-    case TLValue::MessagesGetRecentLocations: {
+    case TLValue::MessagesGetRecentLocations:
+        d << "MessagesGetRecentLocations(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "peer" << peer << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetRecentStickers: {
+    case TLValue::MessagesGetRecentStickers:
+        d << "MessagesGetRecentStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "flags" << flags << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetSavedGifs: {
+    case TLValue::MessagesGetSavedGifs:
+        d << "MessagesGetSavedGifs(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetStickerSet: {
+    case TLValue::MessagesGetStickerSet:
+        d << "MessagesGetStickerSet(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputStickerSet stickerset;
         stream >> stickerset;
-        qDebug() << request << "stickerset" << stickerset;
+        d << spacer.innerSpaces() << "stickerset: " << stickerset << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetUnreadMentions: {
+    case TLValue::MessagesGetUnreadMentions:
+        d << "MessagesGetUnreadMentions(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 offsetId;
         stream >> offsetId;
+        d << spacer.innerSpaces() << "offsetId: " << offsetId << endl;
         quint32 addOffset;
         stream >> addOffset;
+        d << spacer.innerSpaces() << "addOffset: " << addOffset << endl;
         quint32 limit;
         stream >> limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
         quint32 maxId;
         stream >> maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
         quint32 minId;
         stream >> minId;
-        qDebug() << request << "peer" << peer << "offsetId" << offsetId << "addOffset" << addOffset << "limit" << limit << "maxId" << maxId << "minId" << minId;
+        d << spacer.innerSpaces() << "minId: " << minId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetWebPage: {
+    case TLValue::MessagesGetWebPage:
+        d << "MessagesGetWebPage(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString url;
         stream >> url;
+        d << spacer.innerSpaces() << "url: " << url << endl;
         quint32 hash;
         stream >> hash;
-        qDebug() << request << "url" << url << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesGetWebPagePreview: {
+    case TLValue::MessagesGetWebPagePreview:
+        d << "MessagesGetWebPagePreview(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString message;
         stream >> message;
-        qDebug() << request << "message" << message;
+        d << spacer.innerSpaces() << "message: " << message << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesHideReportSpam: {
+    case TLValue::MessagesHideReportSpam:
+        d << "MessagesHideReportSpam(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
-        qDebug() << request << "peer" << peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesImportChatInvite: {
+    case TLValue::MessagesImportChatInvite:
+        d << "MessagesImportChatInvite(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString hash;
         stream >> hash;
-        qDebug() << request << "hash" << hash;
+        d << spacer.innerSpaces() << "hash: " << hash << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesInstallStickerSet: {
+    case TLValue::MessagesInstallStickerSet:
+        d << "MessagesInstallStickerSet(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputStickerSet stickerset;
         stream >> stickerset;
+        d << spacer.innerSpaces() << "stickerset: " << stickerset << endl;
         bool archived;
         stream >> archived;
-        qDebug() << request << "stickerset" << stickerset << "archived" << archived;
+        d << spacer.innerSpaces() << "archived: " << archived << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesMigrateChat: {
+    case TLValue::MessagesMigrateChat:
+        d << "MessagesMigrateChat(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
-        qDebug() << request << "chatId" << chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReadEncryptedHistory: {
+    case TLValue::MessagesReadEncryptedHistory:
+        d << "MessagesReadEncryptedHistory(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 maxDate;
         stream >> maxDate;
-        qDebug() << request << "peer" << peer << "maxDate" << maxDate;
+        d << spacer.innerSpaces() << "maxDate: " << maxDate << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReadFeaturedStickers: {
+    case TLValue::MessagesReadFeaturedStickers:
+        d << "MessagesReadFeaturedStickers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<quint64> id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReadHistory: {
+    case TLValue::MessagesReadHistory:
+        d << "MessagesReadHistory(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 maxId;
         stream >> maxId;
-        qDebug() << request << "peer" << peer << "maxId" << maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReadMentions: {
+    case TLValue::MessagesReadMentions:
+        d << "MessagesReadMentions(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
-        qDebug() << request << "peer" << peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReadMessageContents: {
+    case TLValue::MessagesReadMessageContents:
+        d << "MessagesReadMessageContents(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<quint32> id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReceivedMessages: {
+    case TLValue::MessagesReceivedMessages:
+        d << "MessagesReceivedMessages(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 maxId;
         stream >> maxId;
-        qDebug() << request << "maxId" << maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReceivedQueue: {
+    case TLValue::MessagesReceivedQueue:
+        d << "MessagesReceivedQueue(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 maxQts;
         stream >> maxQts;
-        qDebug() << request << "maxQts" << maxQts;
+        d << spacer.innerSpaces() << "maxQts: " << maxQts << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReorderPinnedDialogs: {
+    case TLValue::MessagesReorderPinnedDialogs:
+        d << "MessagesReorderPinnedDialogs(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLVector<TLInputPeer> order;
         stream >> order;
-        qDebug() << request << "flags" << flags << "order" << order;
+        d << spacer.innerSpaces() << "order: " << order << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReorderStickerSets: {
+    case TLValue::MessagesReorderStickerSets:
+        d << "MessagesReorderStickerSets(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLVector<quint64> order;
         stream >> order;
-        qDebug() << request << "flags" << flags << "order" << order;
+        d << spacer.innerSpaces() << "order: " << order << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReportEncryptedSpam: {
+    case TLValue::MessagesReportEncryptedSpam:
+        d << "MessagesReportEncryptedSpam(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
-        qDebug() << request << "peer" << peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesReportSpam: {
+    case TLValue::MessagesReportSpam:
+        d << "MessagesReportSpam(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
-        qDebug() << request << "peer" << peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesRequestEncryption: {
+    case TLValue::MessagesRequestEncryption:
+        d << "MessagesRequestEncryption(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         quint32 randomId;
         stream >> randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray gA;
         stream >> gA;
-        qDebug() << request << "userId" << userId << "randomId" << randomId << "gA" << gA;
+        d << spacer.innerSpaces() << "gA: " << gA << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSaveDraft: {
+    case TLValue::MessagesSaveDraft:
+        d << "MessagesSaveDraft(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         QString message;
         stream >> message;
-        qDebug() << request << "flags" << flags << "peer" << peer << "message" << message;
+        d << spacer.innerSpaces() << "message: " << message << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSaveGif: {
+    case TLValue::MessagesSaveGif:
+        d << "MessagesSaveGif(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputDocument id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         bool unsave;
         stream >> unsave;
-        qDebug() << request << "id" << id << "unsave" << unsave;
+        d << spacer.innerSpaces() << "unsave: " << unsave << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSaveRecentSticker: {
+    case TLValue::MessagesSaveRecentSticker:
+        d << "MessagesSaveRecentSticker(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputDocument id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         bool unsave;
         stream >> unsave;
-        qDebug() << request << "flags" << flags << "id" << id << "unsave" << unsave;
+        d << spacer.innerSpaces() << "unsave: " << unsave << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSearch: {
+    case TLValue::MessagesSearch:
+        d << "MessagesSearch(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         QString q;
         stream >> q;
+        d << spacer.innerSpaces() << "q: " << q << endl;
         TLMessagesFilter filter;
         stream >> filter;
+        d << spacer.innerSpaces() << "filter: " << filter << endl;
         quint32 minDate;
         stream >> minDate;
+        d << spacer.innerSpaces() << "minDate: " << minDate << endl;
         quint32 maxDate;
         stream >> maxDate;
+        d << spacer.innerSpaces() << "maxDate: " << maxDate << endl;
         quint32 offsetId;
         stream >> offsetId;
+        d << spacer.innerSpaces() << "offsetId: " << offsetId << endl;
         quint32 addOffset;
         stream >> addOffset;
+        d << spacer.innerSpaces() << "addOffset: " << addOffset << endl;
         quint32 limit;
         stream >> limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
         quint32 maxId;
         stream >> maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
         quint32 minId;
         stream >> minId;
-        qDebug() << request << "flags" << flags << "peer" << peer << "q" << q << "filter" << filter << "minDate" << minDate << "maxDate" << maxDate << "offsetId" << offsetId << "addOffset" << addOffset << "limit" << limit << "maxId" << maxId << "minId" << minId;
+        d << spacer.innerSpaces() << "minId: " << minId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSearchGifs: {
+    case TLValue::MessagesSearchGifs:
+        d << "MessagesSearchGifs(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString q;
         stream >> q;
+        d << spacer.innerSpaces() << "q: " << q << endl;
         quint32 offset;
         stream >> offset;
-        qDebug() << request << "q" << q << "offset" << offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSearchGlobal: {
+    case TLValue::MessagesSearchGlobal:
+        d << "MessagesSearchGlobal(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QString q;
         stream >> q;
+        d << spacer.innerSpaces() << "q: " << q << endl;
         quint32 offsetDate;
         stream >> offsetDate;
+        d << spacer.innerSpaces() << "offsetDate: " << offsetDate << endl;
         TLInputPeer offsetPeer;
         stream >> offsetPeer;
+        d << spacer.innerSpaces() << "offsetPeer: " << offsetPeer << endl;
         quint32 offsetId;
         stream >> offsetId;
+        d << spacer.innerSpaces() << "offsetId: " << offsetId << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "q" << q << "offsetDate" << offsetDate << "offsetPeer" << offsetPeer << "offsetId" << offsetId << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSendEncrypted: {
+    case TLValue::MessagesSendEncrypted:
+        d << "MessagesSendEncrypted(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint64 randomId;
         stream >> randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray data;
         stream >> data;
-        qDebug() << request << "peer" << peer << "randomId" << randomId << "data" << data;
+        d << spacer.innerSpaces() << "data: " << data << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSendEncryptedFile: {
+    case TLValue::MessagesSendEncryptedFile:
+        d << "MessagesSendEncryptedFile(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint64 randomId;
         stream >> randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray data;
         stream >> data;
+        d << spacer.innerSpaces() << "data: " << data << endl;
         TLInputEncryptedFile file;
         stream >> file;
-        qDebug() << request << "peer" << peer << "randomId" << randomId << "data" << data << "file" << file;
+        d << spacer.innerSpaces() << "file: " << file << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSendEncryptedService: {
+    case TLValue::MessagesSendEncryptedService:
+        d << "MessagesSendEncryptedService(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint64 randomId;
         stream >> randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray data;
         stream >> data;
-        qDebug() << request << "peer" << peer << "randomId" << randomId << "data" << data;
+        d << spacer.innerSpaces() << "data: " << data << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSendInlineBotResult: {
+    case TLValue::MessagesSendInlineBotResult:
+        d << "MessagesSendInlineBotResult(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint64 randomId;
         stream >> randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         quint64 queryId;
         stream >> queryId;
+        d << spacer.innerSpaces() << "queryId: " << queryId << endl;
         QString id;
         stream >> id;
-        qDebug() << request << "flags" << flags << "peer" << peer << "randomId" << randomId << "queryId" << queryId << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSendMedia: {
+    case TLValue::MessagesSendMedia:
+        d << "MessagesSendMedia(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         TLInputMedia media;
         stream >> media;
+        d << spacer.innerSpaces() << "media: " << media << endl;
         quint64 randomId;
         stream >> randomId;
-        qDebug() << request << "flags" << flags << "peer" << peer << "media" << media << "randomId" << randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSendMessage: {
+    case TLValue::MessagesSendMessage:
+        d << "MessagesSendMessage(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         QString message;
         stream >> message;
+        d << spacer.innerSpaces() << "message: " << message << endl;
         quint64 randomId;
         stream >> randomId;
-        qDebug() << request << "flags" << flags << "peer" << peer << "message" << message << "randomId" << randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSendScreenshotNotification: {
+    case TLValue::MessagesSendScreenshotNotification:
+        d << "MessagesSendScreenshotNotification(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 replyToMsgId;
         stream >> replyToMsgId;
+        d << spacer.innerSpaces() << "replyToMsgId: " << replyToMsgId << endl;
         quint64 randomId;
         stream >> randomId;
-        qDebug() << request << "peer" << peer << "replyToMsgId" << replyToMsgId << "randomId" << randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSetBotCallbackAnswer: {
+    case TLValue::MessagesSetBotCallbackAnswer:
+        d << "MessagesSetBotCallbackAnswer(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint64 queryId;
         stream >> queryId;
+        d << spacer.innerSpaces() << "queryId: " << queryId << endl;
         quint32 cacheTime;
         stream >> cacheTime;
-        qDebug() << request << "flags" << flags << "queryId" << queryId << "cacheTime" << cacheTime;
+        d << spacer.innerSpaces() << "cacheTime: " << cacheTime << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSetBotPrecheckoutResults: {
+    case TLValue::MessagesSetBotPrecheckoutResults:
+        d << "MessagesSetBotPrecheckoutResults(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint64 queryId;
         stream >> queryId;
-        qDebug() << request << "flags" << flags << "queryId" << queryId;
+        d << spacer.innerSpaces() << "queryId: " << queryId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSetBotShippingResults: {
+    case TLValue::MessagesSetBotShippingResults:
+        d << "MessagesSetBotShippingResults(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint64 queryId;
         stream >> queryId;
-        qDebug() << request << "flags" << flags << "queryId" << queryId;
+        d << spacer.innerSpaces() << "queryId: " << queryId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSetEncryptedTyping: {
+    case TLValue::MessagesSetEncryptedTyping:
+        d << "MessagesSetEncryptedTyping(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         bool typing;
         stream >> typing;
-        qDebug() << request << "peer" << peer << "typing" << typing;
+        d << spacer.innerSpaces() << "typing: " << typing << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSetGameScore: {
+    case TLValue::MessagesSetGameScore:
+        d << "MessagesSetGameScore(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         quint32 score;
         stream >> score;
-        qDebug() << request << "flags" << flags << "peer" << peer << "id" << id << "userId" << userId << "score" << score;
+        d << spacer.innerSpaces() << "score: " << score << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSetInlineBotResults: {
+    case TLValue::MessagesSetInlineBotResults:
+        d << "MessagesSetInlineBotResults(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint64 queryId;
         stream >> queryId;
+        d << spacer.innerSpaces() << "queryId: " << queryId << endl;
         TLVector<TLInputBotInlineResult> results;
         stream >> results;
+        d << spacer.innerSpaces() << "results: " << results << endl;
         quint32 cacheTime;
         stream >> cacheTime;
-        qDebug() << request << "flags" << flags << "queryId" << queryId << "results" << results << "cacheTime" << cacheTime;
+        d << spacer.innerSpaces() << "cacheTime: " << cacheTime << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSetInlineGameScore: {
+    case TLValue::MessagesSetInlineGameScore:
+        d << "MessagesSetInlineGameScore(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputBotInlineMessageID id;
         stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         quint32 score;
         stream >> score;
-        qDebug() << request << "flags" << flags << "id" << id << "userId" << userId << "score" << score;
+        d << spacer.innerSpaces() << "score: " << score << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesSetTyping: {
+    case TLValue::MessagesSetTyping:
+        d << "MessagesSetTyping(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         TLSendMessageAction action;
         stream >> action;
-        qDebug() << request << "peer" << peer << "action" << action;
+        d << spacer.innerSpaces() << "action: " << action << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesStartBot: {
+    case TLValue::MessagesStartBot:
+        d << "MessagesStartBot(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputUser bot;
         stream >> bot;
+        d << spacer.innerSpaces() << "bot: " << bot << endl;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint64 randomId;
         stream >> randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QString startParam;
         stream >> startParam;
-        qDebug() << request << "bot" << bot << "peer" << peer << "randomId" << randomId << "startParam" << startParam;
+        d << spacer.innerSpaces() << "startParam: " << startParam << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesToggleChatAdmins: {
+    case TLValue::MessagesToggleChatAdmins:
+        d << "MessagesToggleChatAdmins(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 chatId;
         stream >> chatId;
+        d << spacer.innerSpaces() << "chatId: " << chatId << endl;
         bool enabled;
         stream >> enabled;
-        qDebug() << request << "chatId" << chatId << "enabled" << enabled;
+        d << spacer.innerSpaces() << "enabled: " << enabled << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesToggleDialogPin: {
+    case TLValue::MessagesToggleDialogPin:
+        d << "MessagesToggleDialogPin(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputPeer peer;
         stream >> peer;
-        qDebug() << request << "flags" << flags << "peer" << peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesUninstallStickerSet: {
+    case TLValue::MessagesUninstallStickerSet:
+        d << "MessagesUninstallStickerSet(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputStickerSet stickerset;
         stream >> stickerset;
-        qDebug() << request << "stickerset" << stickerset;
+        d << spacer.innerSpaces() << "stickerset: " << stickerset << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::MessagesUploadMedia: {
+    case TLValue::MessagesUploadMedia:
+        d << "MessagesUploadMedia(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         TLInputMedia media;
         stream >> media;
-        qDebug() << request << "peer" << peer << "media" << media;
+        d << spacer.innerSpaces() << "media: " << media << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PaymentsClearSavedInfo: {
+    case TLValue::PaymentsClearSavedInfo:
+        d << "PaymentsClearSavedInfo(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
-        qDebug() << request << "flags" << flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PaymentsGetPaymentForm: {
+    case TLValue::PaymentsGetPaymentForm:
+        d << "PaymentsGetPaymentForm(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 msgId;
         stream >> msgId;
-        qDebug() << request << "msgId" << msgId;
+        d << spacer.innerSpaces() << "msgId: " << msgId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PaymentsGetPaymentReceipt: {
+    case TLValue::PaymentsGetPaymentReceipt:
+        d << "PaymentsGetPaymentReceipt(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 msgId;
         stream >> msgId;
-        qDebug() << request << "msgId" << msgId;
+        d << spacer.innerSpaces() << "msgId: " << msgId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PaymentsGetSavedInfo: {
-        qDebug() << request;
-    }
+    case TLValue::PaymentsGetSavedInfo:
+        d << "PaymentsGetSavedInfo(";
+        d << ")";
         break;
-
-    case TLValue::PaymentsSendPaymentForm: {
+    case TLValue::PaymentsSendPaymentForm:
+        d << "PaymentsSendPaymentForm(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint32 msgId;
         stream >> msgId;
+        d << spacer.innerSpaces() << "msgId: " << msgId << endl;
         TLInputPaymentCredentials credentials;
         stream >> credentials;
-        qDebug() << request << "flags" << flags << "msgId" << msgId << "credentials" << credentials;
+        d << spacer.innerSpaces() << "credentials: " << credentials << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PaymentsValidateRequestedInfo: {
+    case TLValue::PaymentsValidateRequestedInfo:
+        d << "PaymentsValidateRequestedInfo(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint32 msgId;
         stream >> msgId;
+        d << spacer.innerSpaces() << "msgId: " << msgId << endl;
         TLPaymentRequestedInfo info;
         stream >> info;
-        qDebug() << request << "flags" << flags << "msgId" << msgId << "info" << info;
+        d << spacer.innerSpaces() << "info: " << info << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhoneAcceptCall: {
+    case TLValue::PhoneAcceptCall:
+        d << "PhoneAcceptCall(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         QByteArray gB;
         stream >> gB;
+        d << spacer.innerSpaces() << "gB: " << gB << endl;
         TLPhoneCallProtocol protocol;
         stream >> protocol;
-        qDebug() << request << "peer" << peer << "gB" << gB << "protocol" << protocol;
+        d << spacer.innerSpaces() << "protocol: " << protocol << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhoneConfirmCall: {
+    case TLValue::PhoneConfirmCall:
+        d << "PhoneConfirmCall(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         QByteArray gA;
         stream >> gA;
+        d << spacer.innerSpaces() << "gA: " << gA << endl;
         quint64 keyFingerprint;
         stream >> keyFingerprint;
+        d << spacer.innerSpaces() << "keyFingerprint: " << keyFingerprint << endl;
         TLPhoneCallProtocol protocol;
         stream >> protocol;
-        qDebug() << request << "peer" << peer << "gA" << gA << "keyFingerprint" << keyFingerprint << "protocol" << protocol;
+        d << spacer.innerSpaces() << "protocol: " << protocol << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhoneDiscardCall: {
+    case TLValue::PhoneDiscardCall:
+        d << "PhoneDiscardCall(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 duration;
         stream >> duration;
+        d << spacer.innerSpaces() << "duration: " << duration << endl;
         TLPhoneCallDiscardReason reason;
         stream >> reason;
+        d << spacer.innerSpaces() << "reason: " << reason << endl;
         quint64 connectionId;
         stream >> connectionId;
-        qDebug() << request << "peer" << peer << "duration" << duration << "reason" << reason << "connectionId" << connectionId;
+        d << spacer.innerSpaces() << "connectionId: " << connectionId << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhoneGetCallConfig: {
-        qDebug() << request;
-    }
+    case TLValue::PhoneGetCallConfig:
+        d << "PhoneGetCallConfig(";
+        d << ")";
         break;
-
-    case TLValue::PhoneReceivedCall: {
+    case TLValue::PhoneReceivedCall:
+        d << "PhoneReceivedCall(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
-        qDebug() << request << "peer" << peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhoneRequestCall: {
+    case TLValue::PhoneRequestCall:
+        d << "PhoneRequestCall(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         quint32 randomId;
         stream >> randomId;
+        d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray gAHash;
         stream >> gAHash;
+        d << spacer.innerSpaces() << "gAHash: " << gAHash << endl;
         TLPhoneCallProtocol protocol;
         stream >> protocol;
-        qDebug() << request << "userId" << userId << "randomId" << randomId << "gAHash" << gAHash << "protocol" << protocol;
+        d << spacer.innerSpaces() << "protocol: " << protocol << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhoneSaveCallDebug: {
+    case TLValue::PhoneSaveCallDebug:
+        d << "PhoneSaveCallDebug(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         TLDataJSON debug;
         stream >> debug;
-        qDebug() << request << "peer" << peer << "debug" << debug;
+        d << spacer.innerSpaces() << "debug: " << debug << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhoneSetCallRating: {
+    case TLValue::PhoneSetCallRating:
+        d << "PhoneSetCallRating(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << endl;
         quint32 rating;
         stream >> rating;
+        d << spacer.innerSpaces() << "rating: " << rating << endl;
         QString comment;
         stream >> comment;
-        qDebug() << request << "peer" << peer << "rating" << rating << "comment" << comment;
+        d << spacer.innerSpaces() << "comment: " << comment << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhotosDeletePhotos: {
+    case TLValue::PhotosDeletePhotos:
+        d << "PhotosDeletePhotos(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<TLInputPhoto> id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhotosGetUserPhotos: {
+    case TLValue::PhotosGetUserPhotos:
+        d << "PhotosGetUserPhotos(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         quint32 offset;
         stream >> offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
         quint64 maxId;
         stream >> maxId;
+        d << spacer.innerSpaces() << "maxId: " << maxId << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "userId" << userId << "offset" << offset << "maxId" << maxId << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhotosUpdateProfilePhoto: {
+    case TLValue::PhotosUpdateProfilePhoto:
+        d << "PhotosUpdateProfilePhoto(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputPhoto id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::PhotosUploadProfilePhoto: {
+    case TLValue::PhotosUploadProfilePhoto:
+        d << "PhotosUploadProfilePhoto(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputFile file;
         stream >> file;
-        qDebug() << request << "file" << file;
+        d << spacer.innerSpaces() << "file: " << file << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::StickersAddStickerToSet: {
+    case TLValue::StickersAddStickerToSet:
+        d << "StickersAddStickerToSet(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputStickerSet stickerset;
         stream >> stickerset;
+        d << spacer.innerSpaces() << "stickerset: " << stickerset << endl;
         TLInputStickerSetItem sticker;
         stream >> sticker;
-        qDebug() << request << "stickerset" << stickerset << "sticker" << sticker;
+        d << spacer.innerSpaces() << "sticker: " << sticker << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::StickersChangeStickerPosition: {
+    case TLValue::StickersChangeStickerPosition:
+        d << "StickersChangeStickerPosition(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputDocument sticker;
         stream >> sticker;
+        d << spacer.innerSpaces() << "sticker: " << sticker << endl;
         quint32 position;
         stream >> position;
-        qDebug() << request << "sticker" << sticker << "position" << position;
+        d << spacer.innerSpaces() << "position: " << position << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::StickersCreateStickerSet: {
+    case TLValue::StickersCreateStickerSet:
+        d << "StickersCreateStickerSet(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputUser userId;
         stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << endl;
         QString title;
         stream >> title;
+        d << spacer.innerSpaces() << "title: " << title << endl;
         QString shortName;
         stream >> shortName;
+        d << spacer.innerSpaces() << "shortName: " << shortName << endl;
         TLVector<TLInputStickerSetItem> stickers;
         stream >> stickers;
-        qDebug() << request << "flags" << flags << "userId" << userId << "title" << title << "shortName" << shortName << "stickers" << stickers;
+        d << spacer.innerSpaces() << "stickers: " << stickers << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::StickersRemoveStickerFromSet: {
+    case TLValue::StickersRemoveStickerFromSet:
+        d << "StickersRemoveStickerFromSet(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputDocument sticker;
         stream >> sticker;
-        qDebug() << request << "sticker" << sticker;
+        d << spacer.innerSpaces() << "sticker: " << sticker << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UpdatesGetChannelDifference: {
+    case TLValue::UpdatesGetChannelDifference:
+        d << "UpdatesGetChannelDifference(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         TLInputChannel channel;
         stream >> channel;
+        d << spacer.innerSpaces() << "channel: " << channel << endl;
         TLChannelMessagesFilter filter;
         stream >> filter;
+        d << spacer.innerSpaces() << "filter: " << filter << endl;
         quint32 pts;
         stream >> pts;
+        d << spacer.innerSpaces() << "pts: " << pts << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "flags" << flags << "channel" << channel << "filter" << filter << "pts" << pts << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UpdatesGetDifference: {
+    case TLValue::UpdatesGetDifference:
+        d << "UpdatesGetDifference(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint32 flags;
         stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << endl;
         quint32 pts;
         stream >> pts;
+        d << spacer.innerSpaces() << "pts: " << pts << endl;
         quint32 date;
         stream >> date;
+        d << spacer.innerSpaces() << "date: " << date << endl;
         quint32 qts;
         stream >> qts;
-        qDebug() << request << "flags" << flags << "pts" << pts << "date" << date << "qts" << qts;
+        d << spacer.innerSpaces() << "qts: " << qts << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UpdatesGetState: {
-        qDebug() << request;
-    }
+    case TLValue::UpdatesGetState:
+        d << "UpdatesGetState(";
+        d << ")";
         break;
-
-    case TLValue::UploadGetCdnFile: {
+    case TLValue::UploadGetCdnFile:
+        d << "UploadGetCdnFile(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QByteArray fileToken;
         stream >> fileToken;
+        d << spacer.innerSpaces() << "fileToken: " << fileToken << endl;
         quint32 offset;
         stream >> offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "fileToken" << fileToken << "offset" << offset << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UploadGetCdnFileHashes: {
+    case TLValue::UploadGetCdnFileHashes:
+        d << "UploadGetCdnFileHashes(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QByteArray fileToken;
         stream >> fileToken;
+        d << spacer.innerSpaces() << "fileToken: " << fileToken << endl;
         quint32 offset;
         stream >> offset;
-        qDebug() << request << "fileToken" << fileToken << "offset" << offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UploadGetFile: {
+    case TLValue::UploadGetFile:
+        d << "UploadGetFile(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputFileLocation location;
         stream >> location;
+        d << spacer.innerSpaces() << "location: " << location << endl;
         quint32 offset;
         stream >> offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "location" << location << "offset" << offset << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UploadGetWebFile: {
+    case TLValue::UploadGetWebFile:
+        d << "UploadGetWebFile(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputWebFileLocation location;
         stream >> location;
+        d << spacer.innerSpaces() << "location: " << location << endl;
         quint32 offset;
         stream >> offset;
+        d << spacer.innerSpaces() << "offset: " << offset << endl;
         quint32 limit;
         stream >> limit;
-        qDebug() << request << "location" << location << "offset" << offset << "limit" << limit;
+        d << spacer.innerSpaces() << "limit: " << limit << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UploadReuploadCdnFile: {
+    case TLValue::UploadReuploadCdnFile:
+        d << "UploadReuploadCdnFile(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         QByteArray fileToken;
         stream >> fileToken;
+        d << spacer.innerSpaces() << "fileToken: " << fileToken << endl;
         QByteArray requestToken;
         stream >> requestToken;
-        qDebug() << request << "fileToken" << fileToken << "requestToken" << requestToken;
+        d << spacer.innerSpaces() << "requestToken: " << requestToken << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UploadSaveBigFilePart: {
+    case TLValue::UploadSaveBigFilePart:
+        d << "UploadSaveBigFilePart(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint64 fileId;
         stream >> fileId;
+        d << spacer.innerSpaces() << "fileId: " << fileId << endl;
         quint32 filePart;
         stream >> filePart;
+        d << spacer.innerSpaces() << "filePart: " << filePart << endl;
         quint32 fileTotalParts;
         stream >> fileTotalParts;
+        d << spacer.innerSpaces() << "fileTotalParts: " << fileTotalParts << endl;
         QByteArray bytes;
         stream >> bytes;
-        qDebug() << request << "fileId" << fileId << "filePart" << filePart << "fileTotalParts" << fileTotalParts << "bytes" << bytes;
+        d << spacer.innerSpaces() << "bytes: " << bytes << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UploadSaveFilePart: {
+    case TLValue::UploadSaveFilePart:
+        d << "UploadSaveFilePart(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         quint64 fileId;
         stream >> fileId;
+        d << spacer.innerSpaces() << "fileId: " << fileId << endl;
         quint32 filePart;
         stream >> filePart;
+        d << spacer.innerSpaces() << "filePart: " << filePart << endl;
         QByteArray bytes;
         stream >> bytes;
-        qDebug() << request << "fileId" << fileId << "filePart" << filePart << "bytes" << bytes;
+        d << spacer.innerSpaces() << "bytes: " << bytes << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UsersGetFullUser: {
+    case TLValue::UsersGetFullUser:
+        d << "UsersGetFullUser(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLInputUser id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
-
-    case TLValue::UsersGetUsers: {
+    case TLValue::UsersGetUsers:
+        d << "UsersGetUsers(";
+    {
+        d << endl;
+        Telegram::Debug::Spacer spacer;
         TLVector<TLInputUser> id;
         stream >> id;
-        qDebug() << request << "id" << id;
+        d << spacer.innerSpaces() << "id: " << id << endl;
     }
+        d << ")";
         break;
     // End of generated RPC debug cases
     default:

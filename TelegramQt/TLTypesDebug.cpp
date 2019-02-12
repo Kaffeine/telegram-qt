@@ -22,6 +22,863 @@ namespace Telegram {
 
 namespace Debug {
 // Generated TLTypes flagsToString
+template<>
+QString flagsToString(const TLAuthSentCode &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLAuthSentCode::PhoneRegistered) {
+        result << QLatin1String("PhoneRegistered");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLChannelAdminLogEventsFilter &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLChannelAdminLogEventsFilter::Join) {
+        result << QLatin1String("Join");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Leave) {
+        result << QLatin1String("Leave");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Invite) {
+        result << QLatin1String("Invite");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Ban) {
+        result << QLatin1String("Ban");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Unban) {
+        result << QLatin1String("Unban");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Kick) {
+        result << QLatin1String("Kick");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Unkick) {
+        result << QLatin1String("Unkick");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Promote) {
+        result << QLatin1String("Promote");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Demote) {
+        result << QLatin1String("Demote");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Info) {
+        result << QLatin1String("Info");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Settings) {
+        result << QLatin1String("Settings");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Pinned) {
+        result << QLatin1String("Pinned");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Edit) {
+        result << QLatin1String("Edit");
+    }
+    if (flags & TLChannelAdminLogEventsFilter::Deleted) {
+        result << QLatin1String("Deleted");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLChannelAdminRights &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLChannelAdminRights::ChangeInfo) {
+        result << QLatin1String("ChangeInfo");
+    }
+    if (flags & TLChannelAdminRights::PostMessages) {
+        result << QLatin1String("PostMessages");
+    }
+    if (flags & TLChannelAdminRights::EditMessages) {
+        result << QLatin1String("EditMessages");
+    }
+    if (flags & TLChannelAdminRights::DeleteMessages) {
+        result << QLatin1String("DeleteMessages");
+    }
+    if (flags & TLChannelAdminRights::BanUsers) {
+        result << QLatin1String("BanUsers");
+    }
+    if (flags & TLChannelAdminRights::InviteUsers) {
+        result << QLatin1String("InviteUsers");
+    }
+    if (flags & TLChannelAdminRights::InviteLink) {
+        result << QLatin1String("InviteLink");
+    }
+    if (flags & TLChannelAdminRights::PinMessages) {
+        result << QLatin1String("PinMessages");
+    }
+    if (flags & TLChannelAdminRights::AddAdmins) {
+        result << QLatin1String("AddAdmins");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLChannelBannedRights &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLChannelBannedRights::ViewMessages) {
+        result << QLatin1String("ViewMessages");
+    }
+    if (flags & TLChannelBannedRights::SendMessages) {
+        result << QLatin1String("SendMessages");
+    }
+    if (flags & TLChannelBannedRights::SendMedia) {
+        result << QLatin1String("SendMedia");
+    }
+    if (flags & TLChannelBannedRights::SendStickers) {
+        result << QLatin1String("SendStickers");
+    }
+    if (flags & TLChannelBannedRights::SendGifs) {
+        result << QLatin1String("SendGifs");
+    }
+    if (flags & TLChannelBannedRights::SendGames) {
+        result << QLatin1String("SendGames");
+    }
+    if (flags & TLChannelBannedRights::SendInline) {
+        result << QLatin1String("SendInline");
+    }
+    if (flags & TLChannelBannedRights::EmbedLinks) {
+        result << QLatin1String("EmbedLinks");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLChannelMessagesFilter &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLChannelMessagesFilter::ExcludeNewMessages) {
+        result << QLatin1String("ExcludeNewMessages");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLChannelParticipant &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLChannelParticipant::CanEdit) {
+        result << QLatin1String("CanEdit");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLDcOption &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLDcOption::Ipv6) {
+        result << QLatin1String("Ipv6");
+    }
+    if (flags & TLDcOption::MediaOnly) {
+        result << QLatin1String("MediaOnly");
+    }
+    if (flags & TLDcOption::TcpoOnly) {
+        result << QLatin1String("TcpoOnly");
+    }
+    if (flags & TLDcOption::Cdn) {
+        result << QLatin1String("Cdn");
+    }
+    if (flags & TLDcOption::IsStatic) {
+        result << QLatin1String("IsStatic");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLDocumentAttribute &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLDocumentAttribute::RoundMessage) {
+        result << QLatin1String("RoundMessage");
+    }
+    if (flags & TLDocumentAttribute::Mask) {
+        result << QLatin1String("Mask");
+    }
+    if (flags & TLDocumentAttribute::Voice) {
+        result << QLatin1String("Voice");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLDraftMessage &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLDraftMessage::NoWebpage) {
+        result << QLatin1String("NoWebpage");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLInputPaymentCredentials &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLInputPaymentCredentials::Save) {
+        result << QLatin1String("Save");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLInputPeerNotifySettings &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLInputPeerNotifySettings::ShowPreviews) {
+        result << QLatin1String("ShowPreviews");
+    }
+    if (flags & TLInputPeerNotifySettings::Silent) {
+        result << QLatin1String("Silent");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLInvoice &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLInvoice::Test) {
+        result << QLatin1String("Test");
+    }
+    if (flags & TLInvoice::NameRequested) {
+        result << QLatin1String("NameRequested");
+    }
+    if (flags & TLInvoice::PhoneRequested) {
+        result << QLatin1String("PhoneRequested");
+    }
+    if (flags & TLInvoice::EmailRequested) {
+        result << QLatin1String("EmailRequested");
+    }
+    if (flags & TLInvoice::ShippingAddressRequested) {
+        result << QLatin1String("ShippingAddressRequested");
+    }
+    if (flags & TLInvoice::Flexible) {
+        result << QLatin1String("Flexible");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLKeyboardButton &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLKeyboardButton::SamePeer) {
+        result << QLatin1String("SamePeer");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLMessagesBotCallbackAnswer &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLMessagesBotCallbackAnswer::Alert) {
+        result << QLatin1String("Alert");
+    }
+    if (flags & TLMessagesBotCallbackAnswer::HasUrl) {
+        result << QLatin1String("HasUrl");
+    }
+    if (flags & TLMessagesBotCallbackAnswer::NativeUi) {
+        result << QLatin1String("NativeUi");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLMessagesFilter &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLMessagesFilter::Missed) {
+        result << QLatin1String("Missed");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLMessagesMessageEditData &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLMessagesMessageEditData::Caption) {
+        result << QLatin1String("Caption");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLPaymentsSavedInfo &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLPaymentsSavedInfo::HasSavedCredentials) {
+        result << QLatin1String("HasSavedCredentials");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLPeerNotifySettings &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLPeerNotifySettings::ShowPreviews) {
+        result << QLatin1String("ShowPreviews");
+    }
+    if (flags & TLPeerNotifySettings::Silent) {
+        result << QLatin1String("Silent");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLPeerSettings &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLPeerSettings::ReportSpam) {
+        result << QLatin1String("ReportSpam");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLPhoneCallProtocol &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLPhoneCallProtocol::UdpP2p) {
+        result << QLatin1String("UdpP2p");
+    }
+    if (flags & TLPhoneCallProtocol::UdpReflector) {
+        result << QLatin1String("UdpReflector");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLPhoto &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLPhoto::HasStickers) {
+        result << QLatin1String("HasStickers");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLReplyMarkup &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLReplyMarkup::Resize) {
+        result << QLatin1String("Resize");
+    }
+    if (flags & TLReplyMarkup::SingleUse) {
+        result << QLatin1String("SingleUse");
+    }
+    if (flags & TLReplyMarkup::Selective) {
+        result << QLatin1String("Selective");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLStickerSet &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLStickerSet::Installed) {
+        result << QLatin1String("Installed");
+    }
+    if (flags & TLStickerSet::Archived) {
+        result << QLatin1String("Archived");
+    }
+    if (flags & TLStickerSet::Official) {
+        result << QLatin1String("Official");
+    }
+    if (flags & TLStickerSet::Masks) {
+        result << QLatin1String("Masks");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLUser &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLUser::Self) {
+        result << QLatin1String("Self");
+    }
+    if (flags & TLUser::Contact) {
+        result << QLatin1String("Contact");
+    }
+    if (flags & TLUser::MutualContact) {
+        result << QLatin1String("MutualContact");
+    }
+    if (flags & TLUser::Deleted) {
+        result << QLatin1String("Deleted");
+    }
+    if (flags & TLUser::Bot) {
+        result << QLatin1String("Bot");
+    }
+    if (flags & TLUser::BotChatHistory) {
+        result << QLatin1String("BotChatHistory");
+    }
+    if (flags & TLUser::BotNochats) {
+        result << QLatin1String("BotNochats");
+    }
+    if (flags & TLUser::Verified) {
+        result << QLatin1String("Verified");
+    }
+    if (flags & TLUser::Restricted) {
+        result << QLatin1String("Restricted");
+    }
+    if (flags & TLUser::Min) {
+        result << QLatin1String("Min");
+    }
+    if (flags & TLUser::BotInlineGeo) {
+        result << QLatin1String("BotInlineGeo");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLBotInlineMessage &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLBotInlineMessage::NoWebpage) {
+        result << QLatin1String("NoWebpage");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLChat &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLChat::Creator) {
+        result << QLatin1String("Creator");
+    }
+    if (flags & TLChat::Kicked) {
+        result << QLatin1String("Kicked");
+    }
+    if (flags & TLChat::Left) {
+        result << QLatin1String("Left");
+    }
+    if (flags & TLChat::AdminsEnabled) {
+        result << QLatin1String("AdminsEnabled");
+    }
+    if (flags & TLChat::Admin) {
+        result << QLatin1String("Admin");
+    }
+    if (flags & TLChat::Deactivated) {
+        result << QLatin1String("Deactivated");
+    }
+    if (flags & TLChat::Verified) {
+        result << QLatin1String("Verified");
+    }
+    if (flags & TLChat::Megagroup) {
+        result << QLatin1String("Megagroup");
+    }
+    if (flags & TLChat::Restricted) {
+        result << QLatin1String("Restricted");
+    }
+    if (flags & TLChat::Democracy) {
+        result << QLatin1String("Democracy");
+    }
+    if (flags & TLChat::Signatures) {
+        result << QLatin1String("Signatures");
+    }
+    if (flags & TLChat::Min) {
+        result << QLatin1String("Min");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLChatFull &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLChatFull::CanViewParticipants) {
+        result << QLatin1String("CanViewParticipants");
+    }
+    if (flags & TLChatFull::CanSetUsername) {
+        result << QLatin1String("CanSetUsername");
+    }
+    if (flags & TLChatFull::CanSetStickers) {
+        result << QLatin1String("CanSetStickers");
+    }
+    if (flags & TLChatFull::HiddenPrehistory) {
+        result << QLatin1String("HiddenPrehistory");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLChatInvite &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLChatInvite::Channel) {
+        result << QLatin1String("Channel");
+    }
+    if (flags & TLChatInvite::Broadcast) {
+        result << QLatin1String("Broadcast");
+    }
+    if (flags & TLChatInvite::IsPublic) {
+        result << QLatin1String("IsPublic");
+    }
+    if (flags & TLChatInvite::Megagroup) {
+        result << QLatin1String("Megagroup");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLConfig &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLConfig::PhonecallsEnabled) {
+        result << QLatin1String("PhonecallsEnabled");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLDialog &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLDialog::Pinned) {
+        result << QLatin1String("Pinned");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLInputBotInlineMessage &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLInputBotInlineMessage::NoWebpage) {
+        result << QLatin1String("NoWebpage");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLInputMedia &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLInputMedia::NosoundVideo) {
+        result << QLatin1String("NosoundVideo");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLPageBlock &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLPageBlock::Autoplay) {
+        result << QLatin1String("Autoplay");
+    }
+    if (flags & TLPageBlock::Loop) {
+        result << QLatin1String("Loop");
+    }
+    if (flags & TLPageBlock::AllowScrolling) {
+        result << QLatin1String("AllowScrolling");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLPaymentsPaymentForm &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLPaymentsPaymentForm::CanSaveCredentials) {
+        result << QLatin1String("CanSaveCredentials");
+    }
+    if (flags & TLPaymentsPaymentForm::PasswordMissing) {
+        result << QLatin1String("PasswordMissing");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLPhoneCall &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLPhoneCall::NeedRating) {
+        result << QLatin1String("NeedRating");
+    }
+    if (flags & TLPhoneCall::NeedDebug) {
+        result << QLatin1String("NeedDebug");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLUserFull &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLUserFull::Blocked) {
+        result << QLatin1String("Blocked");
+    }
+    if (flags & TLUserFull::PhoneCallsAvailable) {
+        result << QLatin1String("PhoneCallsAvailable");
+    }
+    if (flags & TLUserFull::PhoneCallsPrivate) {
+        result << QLatin1String("PhoneCallsPrivate");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLMessagesBotResults &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLMessagesBotResults::Gallery) {
+        result << QLatin1String("Gallery");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLMessageMedia &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLMessageMedia::ShippingAddressRequested) {
+        result << QLatin1String("ShippingAddressRequested");
+    }
+    if (flags & TLMessageMedia::Test) {
+        result << QLatin1String("Test");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLMessage &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLMessage::Out) {
+        result << QLatin1String("Out");
+    }
+    if (flags & TLMessage::Mentioned) {
+        result << QLatin1String("Mentioned");
+    }
+    if (flags & TLMessage::MediaUnread) {
+        result << QLatin1String("MediaUnread");
+    }
+    if (flags & TLMessage::Silent) {
+        result << QLatin1String("Silent");
+    }
+    if (flags & TLMessage::Post) {
+        result << QLatin1String("Post");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLUpdate &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLUpdate::Popup) {
+        result << QLatin1String("Popup");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLUpdates &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLUpdates::Out) {
+        result << QLatin1String("Out");
+    }
+    if (flags & TLUpdates::Mentioned) {
+        result << QLatin1String("Mentioned");
+    }
+    if (flags & TLUpdates::MediaUnread) {
+        result << QLatin1String("MediaUnread");
+    }
+    if (flags & TLUpdates::Silent) {
+        result << QLatin1String("Silent");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLUpdatesChannelDifference &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLUpdatesChannelDifference::Final) {
+        result << QLatin1String("Final");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
 // End of generated TLTypes flagsToString
 
 } // Debug namespace
@@ -38,6 +895,7 @@ QDebug operator<<(QDebug d, const TLAccountDaysTTL &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountDaysTTL:
+        d << "\n";
         d << spacer.innerSpaces() << "days: " << type.days <<"\n";
         break;
     default:
@@ -55,10 +913,12 @@ QDebug operator<<(QDebug d, const TLAccountPassword &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountNoPassword:
+        d << "\n";
         d << spacer.innerSpaces() << "newSalt: " << type.newSalt.toHex() <<"\n";
         d << spacer.innerSpaces() << "emailUnconfirmedPattern: " << type.emailUnconfirmedPattern <<"\n";
         break;
     case TLValue::AccountPassword:
+        d << "\n";
         d << spacer.innerSpaces() << "currentSalt: " << type.currentSalt.toHex() <<"\n";
         d << spacer.innerSpaces() << "newSalt: " << type.newSalt.toHex() <<"\n";
         d << spacer.innerSpaces() << "hint: " << type.hint <<"\n";
@@ -80,6 +940,7 @@ QDebug operator<<(QDebug d, const TLAccountPasswordInputSettings &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountPasswordInputSettings:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "newSalt: " << type.newSalt.toHex() <<"\n";
@@ -109,6 +970,7 @@ QDebug operator<<(QDebug d, const TLAccountPasswordSettings &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountPasswordSettings:
+        d << "\n";
         d << spacer.innerSpaces() << "email: " << type.email <<"\n";
         break;
     default:
@@ -126,6 +988,7 @@ QDebug operator<<(QDebug d, const TLAccountTmpPassword &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountTmpPassword:
+        d << "\n";
         d << spacer.innerSpaces() << "tmpPassword: " << type.tmpPassword.toHex() <<"\n";
         d << spacer.innerSpaces() << "validUntil: " << type.validUntil <<"\n";
         break;
@@ -144,6 +1007,7 @@ QDebug operator<<(QDebug d, const TLAuthCheckedPhone &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthCheckedPhone:
+        d << "\n";
         d << spacer.innerSpaces() << "phoneRegistered: " << type.phoneRegistered <<"\n";
         break;
     default:
@@ -163,7 +1027,8 @@ QDebug operator<<(QDebug d, const TLAuthCodeType &type)
     case TLValue::AuthCodeTypeSms:
     case TLValue::AuthCodeTypeCall:
     case TLValue::AuthCodeTypeFlashCall:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -179,6 +1044,7 @@ QDebug operator<<(QDebug d, const TLAuthExportedAuthorization &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthExportedAuthorization:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
         break;
@@ -197,6 +1063,7 @@ QDebug operator<<(QDebug d, const TLAuthPasswordRecovery &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthPasswordRecovery:
+        d << "\n";
         d << spacer.innerSpaces() << "emailPattern: " << type.emailPattern <<"\n";
         break;
     default:
@@ -216,9 +1083,11 @@ QDebug operator<<(QDebug d, const TLAuthSentCodeType &type)
     case TLValue::AuthSentCodeTypeApp:
     case TLValue::AuthSentCodeTypeSms:
     case TLValue::AuthSentCodeTypeCall:
+        d << "\n";
         d << spacer.innerSpaces() << "length: " << type.length <<"\n";
         break;
     case TLValue::AuthSentCodeTypeFlashCall:
+        d << "\n";
         d << spacer.innerSpaces() << "pattern: " << type.pattern <<"\n";
         break;
     default:
@@ -236,6 +1105,7 @@ QDebug operator<<(QDebug d, const TLAuthorization &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Authorization:
+        d << "\n";
         d << spacer.innerSpaces() << "hash: " << type.hash <<"\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "deviceModel: " << type.deviceModel <<"\n";
@@ -265,11 +1135,13 @@ QDebug operator<<(QDebug d, const TLBadMsgNotification &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::BadMsgNotification:
+        d << "\n";
         d << spacer.innerSpaces() << "badMsgId: " << type.badMsgId <<"\n";
         d << spacer.innerSpaces() << "badMsgSeqno: " << type.badMsgSeqno <<"\n";
         d << spacer.innerSpaces() << "errorCode: " << type.errorCode <<"\n";
         break;
     case TLValue::BadServerSalt:
+        d << "\n";
         d << spacer.innerSpaces() << "badMsgId: " << type.badMsgId <<"\n";
         d << spacer.innerSpaces() << "badMsgSeqno: " << type.badMsgSeqno <<"\n";
         d << spacer.innerSpaces() << "errorCode: " << type.errorCode <<"\n";
@@ -290,6 +1162,7 @@ QDebug operator<<(QDebug d, const TLBotCommand &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::BotCommand:
+        d << "\n";
         d << spacer.innerSpaces() << "command: " << type.command <<"\n";
         d << spacer.innerSpaces() << "description: " << type.description <<"\n";
         break;
@@ -308,6 +1181,7 @@ QDebug operator<<(QDebug d, const TLBotInfo &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::BotInfo:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "description: " << type.description <<"\n";
         d << spacer.innerSpaces() << "commands: " << type.commands <<"\n";
@@ -327,6 +1201,7 @@ QDebug operator<<(QDebug d, const TLCdnFileHash &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::CdnFileHash:
+        d << "\n";
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
         d << spacer.innerSpaces() << "limit: " << type.limit <<"\n";
         d << spacer.innerSpaces() << "hash: " << type.hash.toHex() <<"\n";
@@ -346,6 +1221,7 @@ QDebug operator<<(QDebug d, const TLCdnPublicKey &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::CdnPublicKey:
+        d << "\n";
         d << spacer.innerSpaces() << "dcId: " << type.dcId <<"\n";
         d << spacer.innerSpaces() << "publicKey: " << type.publicKey <<"\n";
         break;
@@ -366,10 +1242,12 @@ QDebug operator<<(QDebug d, const TLChannelParticipantsFilter &type)
     case TLValue::ChannelParticipantsRecent:
     case TLValue::ChannelParticipantsAdmins:
     case TLValue::ChannelParticipantsBots:
-        break;
+        d << " }";
+        return d;
     case TLValue::ChannelParticipantsKicked:
     case TLValue::ChannelParticipantsBanned:
     case TLValue::ChannelParticipantsSearch:
+        d << "\n";
         d << spacer.innerSpaces() << "q: " << type.q <<"\n";
         break;
     default:
@@ -388,11 +1266,13 @@ QDebug operator<<(QDebug d, const TLChatParticipant &type)
     switch (type.tlType) {
     case TLValue::ChatParticipant:
     case TLValue::ChatParticipantAdmin:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::ChatParticipantCreator:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         break;
     default:
@@ -410,6 +1290,7 @@ QDebug operator<<(QDebug d, const TLChatParticipants &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatParticipantsForbidden:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         if (type.flags & 1 << 0) {
@@ -417,6 +1298,7 @@ QDebug operator<<(QDebug d, const TLChatParticipants &type)
         }
         break;
     case TLValue::ChatParticipants:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "participants: " << type.participants <<"\n";
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
@@ -436,6 +1318,7 @@ QDebug operator<<(QDebug d, const TLClientDHInnerData &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ClientDHInnerData:
+        d << "\n";
         d << spacer.innerSpaces() << "nonce: " << type.nonce <<"\n";
         d << spacer.innerSpaces() << "serverNonce: " << type.serverNonce <<"\n";
         d << spacer.innerSpaces() << "retryId: " << type.retryId <<"\n";
@@ -456,6 +1339,7 @@ QDebug operator<<(QDebug d, const TLContact &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Contact:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "mutual: " << type.mutual <<"\n";
         break;
@@ -474,6 +1358,7 @@ QDebug operator<<(QDebug d, const TLContactBlocked &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactBlocked:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
@@ -495,7 +1380,8 @@ QDebug operator<<(QDebug d, const TLContactLink &type)
     case TLValue::ContactLinkNone:
     case TLValue::ContactLinkHasPhone:
     case TLValue::ContactLinkContact:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -511,6 +1397,7 @@ QDebug operator<<(QDebug d, const TLDataJSON &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DataJSON:
+        d << "\n";
         d << spacer.innerSpaces() << "data: " << type.data <<"\n";
         break;
     default:
@@ -530,7 +1417,8 @@ QDebug operator<<(QDebug d, const TLDestroyAuthKeyRes &type)
     case TLValue::DestroyAuthKeyOk:
     case TLValue::DestroyAuthKeyNone:
     case TLValue::DestroyAuthKeyFail:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -547,6 +1435,7 @@ QDebug operator<<(QDebug d, const TLDestroySessionRes &type)
     switch (type.tlType) {
     case TLValue::DestroySessionOk:
     case TLValue::DestroySessionNone:
+        d << "\n";
         d << spacer.innerSpaces() << "sessionId: " << type.sessionId <<"\n";
         break;
     default:
@@ -564,6 +1453,7 @@ QDebug operator<<(QDebug d, const TLDisabledFeature &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DisabledFeature:
+        d << "\n";
         d << spacer.innerSpaces() << "feature: " << type.feature <<"\n";
         d << spacer.innerSpaces() << "description: " << type.description <<"\n";
         break;
@@ -583,9 +1473,11 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
     switch (type.tlType) {
     case TLValue::EncryptedChatEmpty:
     case TLValue::EncryptedChatDiscarded:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     case TLValue::EncryptedChatWaiting:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -593,6 +1485,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
         break;
     case TLValue::EncryptedChatRequested:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -601,6 +1494,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
         d << spacer.innerSpaces() << "gA: " << type.gA.toHex() <<"\n";
         break;
     case TLValue::EncryptedChat:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -624,8 +1518,10 @@ QDebug operator<<(QDebug d, const TLEncryptedFile &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::EncryptedFileEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::EncryptedFile:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "size: " << type.size <<"\n";
@@ -647,6 +1543,7 @@ QDebug operator<<(QDebug d, const TLEncryptedMessage &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::EncryptedMessage:
+        d << "\n";
         d << spacer.innerSpaces() << "randomId: " << type.randomId <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -654,6 +1551,7 @@ QDebug operator<<(QDebug d, const TLEncryptedMessage &type)
         d << spacer.innerSpaces() << "file: " << type.file <<"\n";
         break;
     case TLValue::EncryptedMessageService:
+        d << "\n";
         d << spacer.innerSpaces() << "randomId: " << type.randomId <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -674,6 +1572,7 @@ QDebug operator<<(QDebug d, const TLError &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Error:
+        d << "\n";
         d << spacer.innerSpaces() << "code: " << type.code <<"\n";
         d << spacer.innerSpaces() << "text: " << type.text <<"\n";
         break;
@@ -692,8 +1591,10 @@ QDebug operator<<(QDebug d, const TLExportedChatInvite &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatInviteEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::ChatInviteExported:
+        d << "\n";
         d << spacer.innerSpaces() << "link: " << type.link <<"\n";
         break;
     default:
@@ -711,6 +1612,7 @@ QDebug operator<<(QDebug d, const TLExportedMessageLink &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ExportedMessageLink:
+        d << "\n";
         d << spacer.innerSpaces() << "link: " << type.link <<"\n";
         break;
     default:
@@ -728,11 +1630,13 @@ QDebug operator<<(QDebug d, const TLFileLocation &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::FileLocationUnavailable:
+        d << "\n";
         d << spacer.innerSpaces() << "volumeId: " << type.volumeId <<"\n";
         d << spacer.innerSpaces() << "localId: " << type.localId <<"\n";
         d << spacer.innerSpaces() << "secret: " << type.secret <<"\n";
         break;
     case TLValue::FileLocation:
+        d << "\n";
         d << spacer.innerSpaces() << "dcId: " << type.dcId <<"\n";
         d << spacer.innerSpaces() << "volumeId: " << type.volumeId <<"\n";
         d << spacer.innerSpaces() << "localId: " << type.localId <<"\n";
@@ -753,6 +1657,7 @@ QDebug operator<<(QDebug d, const TLFutureSalt &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::FutureSalt:
+        d << "\n";
         d << spacer.innerSpaces() << "validSince: " << type.validSince <<"\n";
         d << spacer.innerSpaces() << "validUntil: " << type.validUntil <<"\n";
         d << spacer.innerSpaces() << "salt: " << type.salt <<"\n";
@@ -772,6 +1677,7 @@ QDebug operator<<(QDebug d, const TLFutureSalts &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::FutureSalts:
+        d << "\n";
         d << spacer.innerSpaces() << "reqMsgId: " << type.reqMsgId <<"\n";
         d << spacer.innerSpaces() << "now: " << type.now <<"\n";
         d << spacer.innerSpaces() << "salts: " << type.salts <<"\n";
@@ -791,8 +1697,10 @@ QDebug operator<<(QDebug d, const TLGeoPoint &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::GeoPointEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::GeoPoint:
+        d << "\n";
         d << spacer.innerSpaces() << "longitude: " << type.longitude <<"\n";
         d << spacer.innerSpaces() << "latitude: " << type.latitude <<"\n";
         break;
@@ -811,13 +1719,15 @@ QDebug operator<<(QDebug d, const TLHelpAppUpdate &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpAppUpdate:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "critical: " << type.critical <<"\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "text: " << type.text <<"\n";
         break;
     case TLValue::HelpNoAppUpdate:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -833,6 +1743,7 @@ QDebug operator<<(QDebug d, const TLHelpInviteText &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpInviteText:
+        d << "\n";
         d << spacer.innerSpaces() << "message: " << type.message <<"\n";
         break;
     default:
@@ -850,6 +1761,7 @@ QDebug operator<<(QDebug d, const TLHelpTermsOfService &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpTermsOfService:
+        d << "\n";
         d << spacer.innerSpaces() << "text: " << type.text <<"\n";
         break;
     default:
@@ -867,6 +1779,7 @@ QDebug operator<<(QDebug d, const TLHighScore &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HighScore:
+        d << "\n";
         d << spacer.innerSpaces() << "pos: " << type.pos <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "score: " << type.score <<"\n";
@@ -886,6 +1799,7 @@ QDebug operator<<(QDebug d, const TLHttpWait &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HttpWait:
+        d << "\n";
         d << spacer.innerSpaces() << "maxDelay: " << type.maxDelay <<"\n";
         d << spacer.innerSpaces() << "waitAfter: " << type.waitAfter <<"\n";
         d << spacer.innerSpaces() << "maxWait: " << type.maxWait <<"\n";
@@ -905,6 +1819,7 @@ QDebug operator<<(QDebug d, const TLImportedContact &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ImportedContact:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "clientId: " << type.clientId <<"\n";
         break;
@@ -923,6 +1838,7 @@ QDebug operator<<(QDebug d, const TLInlineBotSwitchPM &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InlineBotSwitchPM:
+        d << "\n";
         d << spacer.innerSpaces() << "text: " << type.text <<"\n";
         d << spacer.innerSpaces() << "startParam: " << type.startParam <<"\n";
         break;
@@ -941,6 +1857,7 @@ QDebug operator<<(QDebug d, const TLInputAppEvent &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputAppEvent:
+        d << "\n";
         d << spacer.innerSpaces() << "time: " << type.time <<"\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
@@ -961,6 +1878,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessageID &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputBotInlineMessageID:
+        d << "\n";
         d << spacer.innerSpaces() << "dcId: " << type.dcId <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
@@ -980,8 +1898,10 @@ QDebug operator<<(QDebug d, const TLInputChannel &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputChannelEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputChannel:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
@@ -1000,6 +1920,7 @@ QDebug operator<<(QDebug d, const TLInputContact &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPhoneContact:
+        d << "\n";
         d << spacer.innerSpaces() << "clientId: " << type.clientId <<"\n";
         d << spacer.innerSpaces() << "phone: " << type.phone <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
@@ -1020,8 +1941,10 @@ QDebug operator<<(QDebug d, const TLInputDocument &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputDocumentEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputDocument:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
@@ -1040,6 +1963,7 @@ QDebug operator<<(QDebug d, const TLInputEncryptedChat &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputEncryptedChat:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
@@ -1058,18 +1982,22 @@ QDebug operator<<(QDebug d, const TLInputEncryptedFile &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputEncryptedFileEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputEncryptedFileUploaded:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "parts: " << type.parts <<"\n";
         d << spacer.innerSpaces() << "md5Checksum: " << type.md5Checksum <<"\n";
         d << spacer.innerSpaces() << "keyFingerprint: " << type.keyFingerprint <<"\n";
         break;
     case TLValue::InputEncryptedFile:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
     case TLValue::InputEncryptedFileBigUploaded:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "parts: " << type.parts <<"\n";
         d << spacer.innerSpaces() << "keyFingerprint: " << type.keyFingerprint <<"\n";
@@ -1089,12 +2017,14 @@ QDebug operator<<(QDebug d, const TLInputFile &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputFile:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "parts: " << type.parts <<"\n";
         d << spacer.innerSpaces() << "name: " << type.name <<"\n";
         d << spacer.innerSpaces() << "md5Checksum: " << type.md5Checksum <<"\n";
         break;
     case TLValue::InputFileBig:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "parts: " << type.parts <<"\n";
         d << spacer.innerSpaces() << "name: " << type.name <<"\n";
@@ -1114,15 +2044,18 @@ QDebug operator<<(QDebug d, const TLInputFileLocation &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputFileLocation:
+        d << "\n";
         d << spacer.innerSpaces() << "volumeId: " << type.volumeId <<"\n";
         d << spacer.innerSpaces() << "localId: " << type.localId <<"\n";
         d << spacer.innerSpaces() << "secret: " << type.secret <<"\n";
         break;
     case TLValue::InputEncryptedFileLocation:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
     case TLValue::InputDocumentFileLocation:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
@@ -1142,8 +2075,10 @@ QDebug operator<<(QDebug d, const TLInputGeoPoint &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputGeoPointEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputGeoPoint:
+        d << "\n";
         d << spacer.innerSpaces() << "latitude: " << type.latitude <<"\n";
         d << spacer.innerSpaces() << "longitude: " << type.longitude <<"\n";
         break;
@@ -1163,15 +2098,19 @@ QDebug operator<<(QDebug d, const TLInputPeer &type)
     switch (type.tlType) {
     case TLValue::InputPeerEmpty:
     case TLValue::InputPeerSelf:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputPeerChat:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         break;
     case TLValue::InputPeerUser:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
     case TLValue::InputPeerChannel:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
@@ -1191,7 +2130,8 @@ QDebug operator<<(QDebug d, const TLInputPeerNotifyEvents &type)
     switch (type.tlType) {
     case TLValue::InputPeerNotifyEventsEmpty:
     case TLValue::InputPeerNotifyEventsAll:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -1207,6 +2147,7 @@ QDebug operator<<(QDebug d, const TLInputPhoneCall &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPhoneCall:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
@@ -1225,8 +2166,10 @@ QDebug operator<<(QDebug d, const TLInputPhoto &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPhotoEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
@@ -1247,7 +2190,8 @@ QDebug operator<<(QDebug d, const TLInputPrivacyKey &type)
     case TLValue::InputPrivacyKeyStatusTimestamp:
     case TLValue::InputPrivacyKeyChatInvite:
     case TLValue::InputPrivacyKeyPhoneCall:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -1263,12 +2207,15 @@ QDebug operator<<(QDebug d, const TLInputStickerSet &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputStickerSetEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputStickerSetID:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
     case TLValue::InputStickerSetShortName:
+        d << "\n";
         d << spacer.innerSpaces() << "shortName: " << type.shortName <<"\n";
         break;
     default:
@@ -1286,9 +2233,11 @@ QDebug operator<<(QDebug d, const TLInputStickeredMedia &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputStickeredMediaPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "inputPhotoId: " << type.inputPhotoId <<"\n";
         break;
     case TLValue::InputStickeredMediaDocument:
+        d << "\n";
         d << spacer.innerSpaces() << "inputDocumentId: " << type.inputDocumentId <<"\n";
         break;
     default:
@@ -1307,8 +2256,10 @@ QDebug operator<<(QDebug d, const TLInputUser &type)
     switch (type.tlType) {
     case TLValue::InputUserEmpty:
     case TLValue::InputUserSelf:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputUser:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
@@ -1327,6 +2278,7 @@ QDebug operator<<(QDebug d, const TLInputWebFileLocation &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputWebFileLocation:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
@@ -1345,6 +2297,7 @@ QDebug operator<<(QDebug d, const TLIpPort &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::IpPort:
+        d << "\n";
         d << spacer.innerSpaces() << "ipv4: " << type.ipv4 <<"\n";
         d << spacer.innerSpaces() << "port: " << type.port <<"\n";
         break;
@@ -1363,6 +2316,7 @@ QDebug operator<<(QDebug d, const TLLabeledPrice &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::LabeledPrice:
+        d << "\n";
         d << spacer.innerSpaces() << "label: " << type.label <<"\n";
         d << spacer.innerSpaces() << "amount: " << type.amount <<"\n";
         break;
@@ -1381,6 +2335,7 @@ QDebug operator<<(QDebug d, const TLLangPackLanguage &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::LangPackLanguage:
+        d << "\n";
         d << spacer.innerSpaces() << "name: " << type.name <<"\n";
         d << spacer.innerSpaces() << "nativeName: " << type.nativeName <<"\n";
         d << spacer.innerSpaces() << "langCode: " << type.langCode <<"\n";
@@ -1400,10 +2355,12 @@ QDebug operator<<(QDebug d, const TLLangPackString &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::LangPackString:
+        d << "\n";
         d << spacer.innerSpaces() << "key: " << type.key <<"\n";
         d << spacer.innerSpaces() << "value: " << type.value <<"\n";
         break;
     case TLValue::LangPackStringPluralized:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "key: " << type.key <<"\n";
         if (type.flags & 1 << 0) {
@@ -1424,6 +2381,7 @@ QDebug operator<<(QDebug d, const TLLangPackString &type)
         d << spacer.innerSpaces() << "otherValue: " << type.otherValue <<"\n";
         break;
     case TLValue::LangPackStringDeleted:
+        d << "\n";
         d << spacer.innerSpaces() << "key: " << type.key <<"\n";
         break;
     default:
@@ -1441,6 +2399,7 @@ QDebug operator<<(QDebug d, const TLMaskCoords &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MaskCoords:
+        d << "\n";
         d << spacer.innerSpaces() << "n: " << type.n <<"\n";
         d << spacer.innerSpaces() << "x: " << type.x <<"\n";
         d << spacer.innerSpaces() << "y: " << type.y <<"\n";
@@ -1469,25 +2428,30 @@ QDebug operator<<(QDebug d, const TLMessageEntity &type)
     case TLValue::MessageEntityBold:
     case TLValue::MessageEntityItalic:
     case TLValue::MessageEntityCode:
+        d << "\n";
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
         d << spacer.innerSpaces() << "length: " << type.length <<"\n";
         break;
     case TLValue::MessageEntityPre:
+        d << "\n";
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
         d << spacer.innerSpaces() << "length: " << type.length <<"\n";
         d << spacer.innerSpaces() << "language: " << type.language <<"\n";
         break;
     case TLValue::MessageEntityTextUrl:
+        d << "\n";
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
         d << spacer.innerSpaces() << "length: " << type.length <<"\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         break;
     case TLValue::MessageEntityMentionName:
+        d << "\n";
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
         d << spacer.innerSpaces() << "length: " << type.length <<"\n";
         d << spacer.innerSpaces() << "quint32UserId: " << type.quint32UserId <<"\n";
         break;
     case TLValue::InputMessageEntityMentionName:
+        d << "\n";
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
         d << spacer.innerSpaces() << "length: " << type.length <<"\n";
         d << spacer.innerSpaces() << "inputUserUserId: " << type.inputUserUserId <<"\n";
@@ -1507,6 +2471,7 @@ QDebug operator<<(QDebug d, const TLMessageFwdHeader &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageFwdHeader:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "fromId: " << type.fromId <<"\n";
@@ -1537,6 +2502,7 @@ QDebug operator<<(QDebug d, const TLMessageRange &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageRange:
+        d << "\n";
         d << spacer.innerSpaces() << "minId: " << type.minId <<"\n";
         d << spacer.innerSpaces() << "maxId: " << type.maxId <<"\n";
         break;
@@ -1555,6 +2521,7 @@ QDebug operator<<(QDebug d, const TLMessagesAffectedHistory &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesAffectedHistory:
+        d << "\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
@@ -1574,6 +2541,7 @@ QDebug operator<<(QDebug d, const TLMessagesAffectedMessages &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesAffectedMessages:
+        d << "\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         break;
@@ -1592,9 +2560,11 @@ QDebug operator<<(QDebug d, const TLMessagesDhConfig &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesDhConfigNotModified:
+        d << "\n";
         d << spacer.innerSpaces() << "random: " << type.random.toHex() <<"\n";
         break;
     case TLValue::MessagesDhConfig:
+        d << "\n";
         d << spacer.innerSpaces() << "g: " << type.g <<"\n";
         d << spacer.innerSpaces() << "p: " << type.p.toHex() <<"\n";
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
@@ -1615,9 +2585,11 @@ QDebug operator<<(QDebug d, const TLMessagesSentEncryptedMessage &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesSentEncryptedMessage:
+        d << "\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::MessagesSentEncryptedFile:
+        d << "\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "file: " << type.file <<"\n";
         break;
@@ -1636,12 +2608,14 @@ QDebug operator<<(QDebug d, const TLMsgDetailedInfo &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MsgDetailedInfo:
+        d << "\n";
         d << spacer.innerSpaces() << "msgId: " << type.msgId <<"\n";
         d << spacer.innerSpaces() << "answerMsgId: " << type.answerMsgId <<"\n";
         d << spacer.innerSpaces() << "bytes: " << type.bytes <<"\n";
         d << spacer.innerSpaces() << "status: " << type.status <<"\n";
         break;
     case TLValue::MsgNewDetailedInfo:
+        d << "\n";
         d << spacer.innerSpaces() << "answerMsgId: " << type.answerMsgId <<"\n";
         d << spacer.innerSpaces() << "bytes: " << type.bytes <<"\n";
         d << spacer.innerSpaces() << "status: " << type.status <<"\n";
@@ -1661,6 +2635,7 @@ QDebug operator<<(QDebug d, const TLMsgResendReq &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MsgResendReq:
+        d << "\n";
         d << spacer.innerSpaces() << "msgIds: " << type.msgIds <<"\n";
         break;
     default:
@@ -1678,6 +2653,7 @@ QDebug operator<<(QDebug d, const TLMsgsAck &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MsgsAck:
+        d << "\n";
         d << spacer.innerSpaces() << "msgIds: " << type.msgIds <<"\n";
         break;
     default:
@@ -1695,6 +2671,7 @@ QDebug operator<<(QDebug d, const TLMsgsAllInfo &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MsgsAllInfo:
+        d << "\n";
         d << spacer.innerSpaces() << "msgIds: " << type.msgIds <<"\n";
         d << spacer.innerSpaces() << "info: " << type.info <<"\n";
         break;
@@ -1713,6 +2690,7 @@ QDebug operator<<(QDebug d, const TLMsgsStateInfo &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MsgsStateInfo:
+        d << "\n";
         d << spacer.innerSpaces() << "reqMsgId: " << type.reqMsgId <<"\n";
         d << spacer.innerSpaces() << "info: " << type.info <<"\n";
         break;
@@ -1731,6 +2709,7 @@ QDebug operator<<(QDebug d, const TLMsgsStateReq &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MsgsStateReq:
+        d << "\n";
         d << spacer.innerSpaces() << "msgIds: " << type.msgIds <<"\n";
         break;
     default:
@@ -1748,6 +2727,7 @@ QDebug operator<<(QDebug d, const TLNearestDc &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::NearestDc:
+        d << "\n";
         d << spacer.innerSpaces() << "country: " << type.country <<"\n";
         d << spacer.innerSpaces() << "thisDc: " << type.thisDc <<"\n";
         d << spacer.innerSpaces() << "nearestDc: " << type.nearestDc <<"\n";
@@ -1767,6 +2747,7 @@ QDebug operator<<(QDebug d, const TLNewSession &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::NewSessionCreated:
+        d << "\n";
         d << spacer.innerSpaces() << "firstMsgId: " << type.firstMsgId <<"\n";
         d << spacer.innerSpaces() << "uniqueId: " << type.uniqueId <<"\n";
         d << spacer.innerSpaces() << "serverSalt: " << type.serverSalt <<"\n";
@@ -1786,6 +2767,7 @@ QDebug operator<<(QDebug d, const TLPQInnerData &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PQInnerData:
+        d << "\n";
         d << spacer.innerSpaces() << "pq: " << type.pq <<"\n";
         d << spacer.innerSpaces() << "p: " << type.p <<"\n";
         d << spacer.innerSpaces() << "q: " << type.q <<"\n";
@@ -1808,6 +2790,7 @@ QDebug operator<<(QDebug d, const TLPaymentCharge &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PaymentCharge:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "providerChargeId: " << type.providerChargeId <<"\n";
         break;
@@ -1826,6 +2809,7 @@ QDebug operator<<(QDebug d, const TLPaymentSavedCredentials &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PaymentSavedCredentialsCard:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         break;
@@ -1844,12 +2828,15 @@ QDebug operator<<(QDebug d, const TLPeer &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PeerUser:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         break;
     case TLValue::PeerChat:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         break;
     case TLValue::PeerChannel:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         break;
     default:
@@ -1868,7 +2855,8 @@ QDebug operator<<(QDebug d, const TLPeerNotifyEvents &type)
     switch (type.tlType) {
     case TLValue::PeerNotifyEventsEmpty:
     case TLValue::PeerNotifyEventsAll:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -1887,7 +2875,8 @@ QDebug operator<<(QDebug d, const TLPhoneCallDiscardReason &type)
     case TLValue::PhoneCallDiscardReasonDisconnect:
     case TLValue::PhoneCallDiscardReasonHangup:
     case TLValue::PhoneCallDiscardReasonBusy:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -1903,6 +2892,7 @@ QDebug operator<<(QDebug d, const TLPhoneConnection &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhoneConnection:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "ip: " << type.ip <<"\n";
         d << spacer.innerSpaces() << "ipv6: " << type.ipv6 <<"\n";
@@ -1924,9 +2914,11 @@ QDebug operator<<(QDebug d, const TLPhotoSize &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhotoSizeEmpty:
+        d << "\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
         break;
     case TLValue::PhotoSize:
+        d << "\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
         d << spacer.innerSpaces() << "location: " << type.location <<"\n";
         d << spacer.innerSpaces() << "w: " << type.w <<"\n";
@@ -1934,6 +2926,7 @@ QDebug operator<<(QDebug d, const TLPhotoSize &type)
         d << spacer.innerSpaces() << "size: " << type.size <<"\n";
         break;
     case TLValue::PhotoCachedSize:
+        d << "\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
         d << spacer.innerSpaces() << "location: " << type.location <<"\n";
         d << spacer.innerSpaces() << "w: " << type.w <<"\n";
@@ -1955,6 +2948,7 @@ QDebug operator<<(QDebug d, const TLPong &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Pong:
+        d << "\n";
         d << spacer.innerSpaces() << "msgId: " << type.msgId <<"\n";
         d << spacer.innerSpaces() << "pingId: " << type.pingId <<"\n";
         break;
@@ -1973,6 +2967,7 @@ QDebug operator<<(QDebug d, const TLPopularContact &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PopularContact:
+        d << "\n";
         d << spacer.innerSpaces() << "clientId: " << type.clientId <<"\n";
         d << spacer.innerSpaces() << "importers: " << type.importers <<"\n";
         break;
@@ -1991,6 +2986,7 @@ QDebug operator<<(QDebug d, const TLPostAddress &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PostAddress:
+        d << "\n";
         d << spacer.innerSpaces() << "streetLine1: " << type.streetLine1 <<"\n";
         d << spacer.innerSpaces() << "streetLine2: " << type.streetLine2 <<"\n";
         d << spacer.innerSpaces() << "city: " << type.city <<"\n";
@@ -2015,7 +3011,8 @@ QDebug operator<<(QDebug d, const TLPrivacyKey &type)
     case TLValue::PrivacyKeyStatusTimestamp:
     case TLValue::PrivacyKeyChatInvite:
     case TLValue::PrivacyKeyPhoneCall:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -2034,9 +3031,11 @@ QDebug operator<<(QDebug d, const TLPrivacyRule &type)
     case TLValue::PrivacyValueAllowAll:
     case TLValue::PrivacyValueDisallowContacts:
     case TLValue::PrivacyValueDisallowAll:
-        break;
+        d << " }";
+        return d;
     case TLValue::PrivacyValueAllowUsers:
     case TLValue::PrivacyValueDisallowUsers:
+        d << "\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     default:
@@ -2054,6 +3053,7 @@ QDebug operator<<(QDebug d, const TLReceivedNotifyMessage &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ReceivedNotifyMessage:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         break;
@@ -2074,8 +3074,10 @@ QDebug operator<<(QDebug d, const TLReportReason &type)
     case TLValue::InputReportReasonSpam:
     case TLValue::InputReportReasonViolence:
     case TLValue::InputReportReasonPornography:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputReportReasonOther:
+        d << "\n";
         d << spacer.innerSpaces() << "text: " << type.text <<"\n";
         break;
     default:
@@ -2093,6 +3095,7 @@ QDebug operator<<(QDebug d, const TLResPQ &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ResPQ:
+        d << "\n";
         d << spacer.innerSpaces() << "nonce: " << type.nonce <<"\n";
         d << spacer.innerSpaces() << "serverNonce: " << type.serverNonce <<"\n";
         d << spacer.innerSpaces() << "pq: " << type.pq <<"\n";
@@ -2113,8 +3116,10 @@ QDebug operator<<(QDebug d, const TLRichText &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::TextEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::TextPlain:
+        d << "\n";
         d << spacer.innerSpaces() << "stringText: " << type.stringText <<"\n";
         break;
     case TLValue::TextBold:
@@ -2122,18 +3127,22 @@ QDebug operator<<(QDebug d, const TLRichText &type)
     case TLValue::TextUnderline:
     case TLValue::TextStrike:
     case TLValue::TextFixed:
+        d << "\n";
         d << spacer.innerSpaces() << "richText: " << *type.richText <<"\n";
         break;
     case TLValue::TextUrl:
+        d << "\n";
         d << spacer.innerSpaces() << "richText: " << *type.richText <<"\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "webpageId: " << type.webpageId <<"\n";
         break;
     case TLValue::TextEmail:
+        d << "\n";
         d << spacer.innerSpaces() << "richText: " << *type.richText <<"\n";
         d << spacer.innerSpaces() << "email: " << type.email <<"\n";
         break;
     case TLValue::TextConcat:
+        d << "\n";
         d << spacer.innerSpaces() << "texts: " << type.texts <<"\n";
         break;
     default:
@@ -2152,8 +3161,10 @@ QDebug operator<<(QDebug d, const TLRpcDropAnswer &type)
     switch (type.tlType) {
     case TLValue::RpcAnswerUnknown:
     case TLValue::RpcAnswerDroppedRunning:
-        break;
+        d << " }";
+        return d;
     case TLValue::RpcAnswerDropped:
+        d << "\n";
         d << spacer.innerSpaces() << "msgId: " << type.msgId <<"\n";
         d << spacer.innerSpaces() << "seqNo: " << type.seqNo <<"\n";
         d << spacer.innerSpaces() << "bytes: " << type.bytes <<"\n";
@@ -2173,6 +3184,7 @@ QDebug operator<<(QDebug d, const TLRpcError &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::RpcError:
+        d << "\n";
         d << spacer.innerSpaces() << "errorCode: " << type.errorCode <<"\n";
         d << spacer.innerSpaces() << "errorMessage: " << type.errorMessage <<"\n";
         break;
@@ -2198,12 +3210,14 @@ QDebug operator<<(QDebug d, const TLSendMessageAction &type)
     case TLValue::SendMessageChooseContactAction:
     case TLValue::SendMessageGamePlayAction:
     case TLValue::SendMessageRecordRoundAction:
-        break;
+        d << " }";
+        return d;
     case TLValue::SendMessageUploadVideoAction:
     case TLValue::SendMessageUploadAudioAction:
     case TLValue::SendMessageUploadPhotoAction:
     case TLValue::SendMessageUploadDocumentAction:
     case TLValue::SendMessageUploadRoundAction:
+        d << "\n";
         d << spacer.innerSpaces() << "progress: " << type.progress <<"\n";
         break;
     default:
@@ -2221,6 +3235,7 @@ QDebug operator<<(QDebug d, const TLServerDHInnerData &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ServerDHInnerData:
+        d << "\n";
         d << spacer.innerSpaces() << "nonce: " << type.nonce <<"\n";
         d << spacer.innerSpaces() << "serverNonce: " << type.serverNonce <<"\n";
         d << spacer.innerSpaces() << "g: " << type.g <<"\n";
@@ -2243,11 +3258,13 @@ QDebug operator<<(QDebug d, const TLServerDHParams &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ServerDHParamsFail:
+        d << "\n";
         d << spacer.innerSpaces() << "nonce: " << type.nonce <<"\n";
         d << spacer.innerSpaces() << "serverNonce: " << type.serverNonce <<"\n";
         d << spacer.innerSpaces() << "newNonceHash: " << type.newNonceHash <<"\n";
         break;
     case TLValue::ServerDHParamsOk:
+        d << "\n";
         d << spacer.innerSpaces() << "nonce: " << type.nonce <<"\n";
         d << spacer.innerSpaces() << "serverNonce: " << type.serverNonce <<"\n";
         d << spacer.innerSpaces() << "encryptedAnswer: " << type.encryptedAnswer <<"\n";
@@ -2267,16 +3284,19 @@ QDebug operator<<(QDebug d, const TLSetClientDHParamsAnswer &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DhGenOk:
+        d << "\n";
         d << spacer.innerSpaces() << "nonce: " << type.nonce <<"\n";
         d << spacer.innerSpaces() << "serverNonce: " << type.serverNonce <<"\n";
         d << spacer.innerSpaces() << "newNonceHash1: " << type.newNonceHash1 <<"\n";
         break;
     case TLValue::DhGenRetry:
+        d << "\n";
         d << spacer.innerSpaces() << "nonce: " << type.nonce <<"\n";
         d << spacer.innerSpaces() << "serverNonce: " << type.serverNonce <<"\n";
         d << spacer.innerSpaces() << "newNonceHash2: " << type.newNonceHash2 <<"\n";
         break;
     case TLValue::DhGenFail:
+        d << "\n";
         d << spacer.innerSpaces() << "nonce: " << type.nonce <<"\n";
         d << spacer.innerSpaces() << "serverNonce: " << type.serverNonce <<"\n";
         d << spacer.innerSpaces() << "newNonceHash3: " << type.newNonceHash3 <<"\n";
@@ -2296,6 +3316,7 @@ QDebug operator<<(QDebug d, const TLShippingOption &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ShippingOption:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "prices: " << type.prices <<"\n";
@@ -2315,6 +3336,7 @@ QDebug operator<<(QDebug d, const TLStickerPack &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::StickerPack:
+        d << "\n";
         d << spacer.innerSpaces() << "emoticon: " << type.emoticon <<"\n";
         d << spacer.innerSpaces() << "documents: " << type.documents <<"\n";
         break;
@@ -2342,7 +3364,8 @@ QDebug operator<<(QDebug d, const TLStorageFileType &type)
     case TLValue::StorageFileMov:
     case TLValue::StorageFileMp4:
     case TLValue::StorageFileWebp:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -2358,6 +3381,7 @@ QDebug operator<<(QDebug d, const TLTopPeer &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::TopPeer:
+        d << "\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         d << spacer.innerSpaces() << "rating: " << type.rating <<"\n";
         break;
@@ -2381,7 +3405,8 @@ QDebug operator<<(QDebug d, const TLTopPeerCategory &type)
     case TLValue::TopPeerCategoryGroups:
     case TLValue::TopPeerCategoryChannels:
     case TLValue::TopPeerCategoryPhoneCalls:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -2397,6 +3422,7 @@ QDebug operator<<(QDebug d, const TLTopPeerCategoryPeers &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::TopPeerCategoryPeers:
+        d << "\n";
         d << spacer.innerSpaces() << "category: " << type.category <<"\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
         d << spacer.innerSpaces() << "peers: " << type.peers <<"\n";
@@ -2416,6 +3442,7 @@ QDebug operator<<(QDebug d, const TLUpdatesState &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdatesState:
+        d << "\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "qts: " << type.qts <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -2437,9 +3464,11 @@ QDebug operator<<(QDebug d, const TLUploadCdnFile &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UploadCdnFileReuploadNeeded:
+        d << "\n";
         d << spacer.innerSpaces() << "requestToken: " << type.requestToken.toHex() <<"\n";
         break;
     case TLValue::UploadCdnFile:
+        d << "\n";
         d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
         break;
     default:
@@ -2457,11 +3486,13 @@ QDebug operator<<(QDebug d, const TLUploadFile &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UploadFile:
+        d << "\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
         d << spacer.innerSpaces() << "mtime: " << type.mtime <<"\n";
         d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
         break;
     case TLValue::UploadFileCdnRedirect:
+        d << "\n";
         d << spacer.innerSpaces() << "dcId: " << type.dcId <<"\n";
         d << spacer.innerSpaces() << "fileToken: " << type.fileToken.toHex() <<"\n";
         d << spacer.innerSpaces() << "encryptionKey: " << type.encryptionKey.toHex() <<"\n";
@@ -2483,6 +3514,7 @@ QDebug operator<<(QDebug d, const TLUploadWebFile &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UploadWebFile:
+        d << "\n";
         d << spacer.innerSpaces() << "size: " << type.size <<"\n";
         d << spacer.innerSpaces() << "mimeType: " << type.mimeType <<"\n";
         d << spacer.innerSpaces() << "fileType: " << type.fileType <<"\n";
@@ -2504,8 +3536,10 @@ QDebug operator<<(QDebug d, const TLUserProfilePhoto &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UserProfilePhotoEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::UserProfilePhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "photoId: " << type.photoId <<"\n";
         d << spacer.innerSpaces() << "photoSmall: " << type.photoSmall <<"\n";
         d << spacer.innerSpaces() << "photoBig: " << type.photoBig <<"\n";
@@ -2528,11 +3562,14 @@ QDebug operator<<(QDebug d, const TLUserStatus &type)
     case TLValue::UserStatusRecently:
     case TLValue::UserStatusLastWeek:
     case TLValue::UserStatusLastMonth:
-        break;
+        d << " }";
+        return d;
     case TLValue::UserStatusOnline:
+        d << "\n";
         d << spacer.innerSpaces() << "expires: " << type.expires <<"\n";
         break;
     case TLValue::UserStatusOffline:
+        d << "\n";
         d << spacer.innerSpaces() << "wasOnline: " << type.wasOnline <<"\n";
         break;
     default:
@@ -2550,12 +3587,14 @@ QDebug operator<<(QDebug d, const TLWallPaper &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::WallPaper:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "sizes: " << type.sizes <<"\n";
         d << spacer.innerSpaces() << "color: " << type.color <<"\n";
         break;
     case TLValue::WallPaperSolid:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "bgColor: " << type.bgColor <<"\n";
@@ -2576,6 +3615,7 @@ QDebug operator<<(QDebug d, const TLAccountAuthorizations &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountAuthorizations:
+        d << "\n";
         d << spacer.innerSpaces() << "authorizations: " << type.authorizations <<"\n";
         break;
     default:
@@ -2593,7 +3633,8 @@ QDebug operator<<(QDebug d, const TLAuthSentCode &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthSentCode:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
         d << spacer.innerSpaces() << "phoneCodeHash: " << type.phoneCodeHash <<"\n";
         if (type.flags & 1 << 1) {
@@ -2618,6 +3659,7 @@ QDebug operator<<(QDebug d, const TLCdnConfig &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::CdnConfig:
+        d << "\n";
         d << spacer.innerSpaces() << "publicKeys: " << type.publicKeys <<"\n";
         break;
     default:
@@ -2635,7 +3677,8 @@ QDebug operator<<(QDebug d, const TLChannelAdminLogEventsFilter &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelAdminLogEventsFilter:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         break;
     default:
         break;
@@ -2652,7 +3695,8 @@ QDebug operator<<(QDebug d, const TLChannelAdminRights &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelAdminRights:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         break;
     default:
         break;
@@ -2669,7 +3713,8 @@ QDebug operator<<(QDebug d, const TLChannelBannedRights &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelBannedRights:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "untilDate: " << type.untilDate <<"\n";
         break;
     default:
@@ -2687,9 +3732,11 @@ QDebug operator<<(QDebug d, const TLChannelMessagesFilter &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelMessagesFilterEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::ChannelMessagesFilter:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "ranges: " << type.ranges <<"\n";
         break;
     default:
@@ -2707,19 +3754,23 @@ QDebug operator<<(QDebug d, const TLChannelParticipant &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelParticipant:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::ChannelParticipantSelf:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::ChannelParticipantCreator:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         break;
     case TLValue::ChannelParticipantAdmin:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
         d << spacer.innerSpaces() << "promotedBy: " << type.promotedBy <<"\n";
@@ -2727,7 +3778,8 @@ QDebug operator<<(QDebug d, const TLChannelParticipant &type)
         d << spacer.innerSpaces() << "adminRights: " << type.adminRights <<"\n";
         break;
     case TLValue::ChannelParticipantBanned:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "kickedBy: " << type.kickedBy <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -2748,8 +3800,10 @@ QDebug operator<<(QDebug d, const TLChatPhoto &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatPhotoEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::ChatPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "photoSmall: " << type.photoSmall <<"\n";
         d << spacer.innerSpaces() << "photoBig: " << type.photoBig <<"\n";
         break;
@@ -2768,6 +3822,7 @@ QDebug operator<<(QDebug d, const TLContactStatus &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactStatus:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "status: " << type.status <<"\n";
         break;
@@ -2786,7 +3841,8 @@ QDebug operator<<(QDebug d, const TLDcOption &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DcOption:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "ipAddress: " << type.ipAddress <<"\n";
         d << spacer.innerSpaces() << "port: " << type.port <<"\n";
@@ -2806,14 +3862,17 @@ QDebug operator<<(QDebug d, const TLDocumentAttribute &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DocumentAttributeImageSize:
+        d << "\n";
         d << spacer.innerSpaces() << "w: " << type.w <<"\n";
         d << spacer.innerSpaces() << "h: " << type.h <<"\n";
         break;
     case TLValue::DocumentAttributeAnimated:
     case TLValue::DocumentAttributeHasStickers:
-        break;
+        d << " }";
+        return d;
     case TLValue::DocumentAttributeSticker:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "alt: " << type.alt <<"\n";
         d << spacer.innerSpaces() << "stickerset: " << type.stickerset <<"\n";
         if (type.flags & 1 << 0) {
@@ -2821,13 +3880,15 @@ QDebug operator<<(QDebug d, const TLDocumentAttribute &type)
         }
         break;
     case TLValue::DocumentAttributeVideo:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "duration: " << type.duration <<"\n";
         d << spacer.innerSpaces() << "w: " << type.w <<"\n";
         d << spacer.innerSpaces() << "h: " << type.h <<"\n";
         break;
     case TLValue::DocumentAttributeAudio:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "duration: " << type.duration <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "title: " << type.title <<"\n";
@@ -2840,6 +3901,7 @@ QDebug operator<<(QDebug d, const TLDocumentAttribute &type)
         }
         break;
     case TLValue::DocumentAttributeFilename:
+        d << "\n";
         d << spacer.innerSpaces() << "fileName: " << type.fileName <<"\n";
         break;
     default:
@@ -2857,9 +3919,11 @@ QDebug operator<<(QDebug d, const TLDraftMessage &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DraftMessageEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::DraftMessage:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "replyToMsgId: " << type.replyToMsgId <<"\n";
         }
@@ -2884,6 +3948,7 @@ QDebug operator<<(QDebug d, const TLHelpConfigSimple &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpConfigSimple:
+        d << "\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "expires: " << type.expires <<"\n";
         d << spacer.innerSpaces() << "dcId: " << type.dcId <<"\n";
@@ -2904,11 +3969,14 @@ QDebug operator<<(QDebug d, const TLInputChatPhoto &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputChatPhotoEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputChatUploadedPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "file: " << type.file <<"\n";
         break;
     case TLValue::InputChatPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     default:
@@ -2926,10 +3994,12 @@ QDebug operator<<(QDebug d, const TLInputGame &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputGameID:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         break;
     case TLValue::InputGameShortName:
+        d << "\n";
         d << spacer.innerSpaces() << "botId: " << type.botId <<"\n";
         d << spacer.innerSpaces() << "shortName: " << type.shortName <<"\n";
         break;
@@ -2948,12 +4018,14 @@ QDebug operator<<(QDebug d, const TLInputNotifyPeer &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputNotifyPeer:
+        d << "\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         break;
     case TLValue::InputNotifyUsers:
     case TLValue::InputNotifyChats:
     case TLValue::InputNotifyAll:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -2969,17 +4041,21 @@ QDebug operator<<(QDebug d, const TLInputPaymentCredentials &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPaymentCredentialsSaved:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "tmpPassword: " << type.tmpPassword.toHex() <<"\n";
         break;
     case TLValue::InputPaymentCredentials:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "data: " << type.data <<"\n";
         break;
     case TLValue::InputPaymentCredentialsApplePay:
+        d << "\n";
         d << spacer.innerSpaces() << "paymentData: " << type.paymentData <<"\n";
         break;
     case TLValue::InputPaymentCredentialsAndroidPay:
+        d << "\n";
         d << spacer.innerSpaces() << "paymentToken: " << type.paymentToken <<"\n";
         break;
     default:
@@ -2997,7 +4073,8 @@ QDebug operator<<(QDebug d, const TLInputPeerNotifySettings &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputPeerNotifySettings:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "muteUntil: " << type.muteUntil <<"\n";
         d << spacer.innerSpaces() << "sound: " << type.sound <<"\n";
         break;
@@ -3019,9 +4096,11 @@ QDebug operator<<(QDebug d, const TLInputPrivacyRule &type)
     case TLValue::InputPrivacyValueAllowAll:
     case TLValue::InputPrivacyValueDisallowContacts:
     case TLValue::InputPrivacyValueDisallowAll:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputPrivacyValueAllowUsers:
     case TLValue::InputPrivacyValueDisallowUsers:
+        d << "\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     default:
@@ -3039,6 +4118,7 @@ QDebug operator<<(QDebug d, const TLInputStickerSetItem &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputStickerSetItem:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "document: " << type.document <<"\n";
         d << spacer.innerSpaces() << "emoji: " << type.emoji <<"\n";
@@ -3061,6 +4141,7 @@ QDebug operator<<(QDebug d, const TLInputWebDocument &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputWebDocument:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "size: " << type.size <<"\n";
         d << spacer.innerSpaces() << "mimeType: " << type.mimeType <<"\n";
@@ -3081,7 +4162,8 @@ QDebug operator<<(QDebug d, const TLInvoice &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Invoice:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "currency: " << type.currency <<"\n";
         d << spacer.innerSpaces() << "prices: " << type.prices <<"\n";
         break;
@@ -3104,18 +4186,22 @@ QDebug operator<<(QDebug d, const TLKeyboardButton &type)
     case TLValue::KeyboardButtonRequestGeoLocation:
     case TLValue::KeyboardButtonGame:
     case TLValue::KeyboardButtonBuy:
+        d << "\n";
         d << spacer.innerSpaces() << "text: " << type.text <<"\n";
         break;
     case TLValue::KeyboardButtonUrl:
+        d << "\n";
         d << spacer.innerSpaces() << "text: " << type.text <<"\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         break;
     case TLValue::KeyboardButtonCallback:
+        d << "\n";
         d << spacer.innerSpaces() << "text: " << type.text <<"\n";
         d << spacer.innerSpaces() << "data: " << type.data.toHex() <<"\n";
         break;
     case TLValue::KeyboardButtonSwitchInline:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "text: " << type.text <<"\n";
         d << spacer.innerSpaces() << "query: " << type.query <<"\n";
         break;
@@ -3134,6 +4220,7 @@ QDebug operator<<(QDebug d, const TLKeyboardButtonRow &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::KeyboardButtonRow:
+        d << "\n";
         d << spacer.innerSpaces() << "buttons: " << type.buttons <<"\n";
         break;
     default:
@@ -3151,6 +4238,7 @@ QDebug operator<<(QDebug d, const TLLangPackDifference &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::LangPackDifference:
+        d << "\n";
         d << spacer.innerSpaces() << "langCode: " << type.langCode <<"\n";
         d << spacer.innerSpaces() << "fromVersion: " << type.fromVersion <<"\n";
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
@@ -3171,7 +4259,8 @@ QDebug operator<<(QDebug d, const TLMessagesBotCallbackAnswer &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesBotCallbackAnswer:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "message: " << type.message <<"\n";
         }
@@ -3209,9 +4298,11 @@ QDebug operator<<(QDebug d, const TLMessagesFilter &type)
     case TLValue::InputMessagesFilterMyMentions:
     case TLValue::InputMessagesFilterGeo:
     case TLValue::InputMessagesFilterContacts:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputMessagesFilterPhoneCalls:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         break;
     default:
         break;
@@ -3228,7 +4319,8 @@ QDebug operator<<(QDebug d, const TLMessagesMessageEditData &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesMessageEditData:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         break;
     default:
         break;
@@ -3245,12 +4337,14 @@ QDebug operator<<(QDebug d, const TLNotifyPeer &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::NotifyPeer:
+        d << "\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         break;
     case TLValue::NotifyUsers:
     case TLValue::NotifyChats:
     case TLValue::NotifyAll:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -3266,6 +4360,7 @@ QDebug operator<<(QDebug d, const TLPaymentRequestedInfo &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PaymentRequestedInfo:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "name: " << type.name <<"\n";
@@ -3295,7 +4390,8 @@ QDebug operator<<(QDebug d, const TLPaymentsSavedInfo &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PaymentsSavedInfo:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "savedInfo: " << type.savedInfo <<"\n";
         }
@@ -3315,6 +4411,7 @@ QDebug operator<<(QDebug d, const TLPaymentsValidatedRequestedInfo &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PaymentsValidatedRequestedInfo:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "id: " << type.id <<"\n";
@@ -3338,9 +4435,11 @@ QDebug operator<<(QDebug d, const TLPeerNotifySettings &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PeerNotifySettingsEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::PeerNotifySettings:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "muteUntil: " << type.muteUntil <<"\n";
         d << spacer.innerSpaces() << "sound: " << type.sound <<"\n";
         break;
@@ -3359,7 +4458,8 @@ QDebug operator<<(QDebug d, const TLPeerSettings &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PeerSettings:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         break;
     default:
         break;
@@ -3376,7 +4476,8 @@ QDebug operator<<(QDebug d, const TLPhoneCallProtocol &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhoneCallProtocol:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "minLayer: " << type.minLayer <<"\n";
         d << spacer.innerSpaces() << "maxLayer: " << type.maxLayer <<"\n";
         break;
@@ -3395,10 +4496,12 @@ QDebug operator<<(QDebug d, const TLPhoto &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhotoEmpty:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     case TLValue::Photo:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -3420,13 +4523,16 @@ QDebug operator<<(QDebug d, const TLReplyMarkup &type)
     switch (type.tlType) {
     case TLValue::ReplyKeyboardHide:
     case TLValue::ReplyKeyboardForceReply:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         break;
     case TLValue::ReplyKeyboardMarkup:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "rows: " << type.rows <<"\n";
         break;
     case TLValue::ReplyInlineMarkup:
+        d << "\n";
         d << spacer.innerSpaces() << "rows: " << type.rows <<"\n";
         break;
     default:
@@ -3444,7 +4550,8 @@ QDebug operator<<(QDebug d, const TLStickerSet &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::StickerSet:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
@@ -3467,10 +4574,12 @@ QDebug operator<<(QDebug d, const TLUser &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UserEmpty:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     case TLValue::User:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
@@ -3521,6 +4630,7 @@ QDebug operator<<(QDebug d, const TLWebDocument &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::WebDocument:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "size: " << type.size <<"\n";
@@ -3543,6 +4653,7 @@ QDebug operator<<(QDebug d, const TLAccountPrivacyRules &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AccountPrivacyRules:
+        d << "\n";
         d << spacer.innerSpaces() << "rules: " << type.rules <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
@@ -3561,6 +4672,7 @@ QDebug operator<<(QDebug d, const TLAuthAuthorization &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::AuthAuthorization:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "tmpSessions: " << type.tmpSessions <<"\n";
@@ -3582,6 +4694,7 @@ QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::BotInlineMessageMediaAuto:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         if (type.flags & 1 << 2) {
@@ -3589,7 +4702,8 @@ QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
         }
         break;
     case TLValue::BotInlineMessageText:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "message: " << type.message <<"\n";
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "entities: " << type.entities <<"\n";
@@ -3599,6 +4713,7 @@ QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
         }
         break;
     case TLValue::BotInlineMessageMediaGeo:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
         d << spacer.innerSpaces() << "period: " << type.period <<"\n";
@@ -3607,6 +4722,7 @@ QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
         }
         break;
     case TLValue::BotInlineMessageMediaVenue:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
@@ -3618,6 +4734,7 @@ QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
         }
         break;
     case TLValue::BotInlineMessageMediaContact:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
@@ -3641,6 +4758,7 @@ QDebug operator<<(QDebug d, const TLChannelsChannelParticipant &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelsChannelParticipant:
+        d << "\n";
         d << spacer.innerSpaces() << "participant: " << type.participant <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
@@ -3659,12 +4777,14 @@ QDebug operator<<(QDebug d, const TLChannelsChannelParticipants &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelsChannelParticipants:
+        d << "\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
         d << spacer.innerSpaces() << "participants: " << type.participants <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::ChannelsChannelParticipantsNotModified:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -3680,10 +4800,12 @@ QDebug operator<<(QDebug d, const TLChat &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatEmpty:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     case TLValue::Chat:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
@@ -3695,11 +4817,13 @@ QDebug operator<<(QDebug d, const TLChat &type)
         }
         break;
     case TLValue::ChatForbidden:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         break;
     case TLValue::Channel:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         if (type.flags & 1 << 13) {
             d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
@@ -3722,7 +4846,8 @@ QDebug operator<<(QDebug d, const TLChat &type)
         }
         break;
     case TLValue::ChannelForbidden:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
@@ -3745,6 +4870,7 @@ QDebug operator<<(QDebug d, const TLChatFull &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatFull:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "participants: " << type.participants <<"\n";
         d << spacer.innerSpaces() << "chatPhoto: " << type.chatPhoto <<"\n";
@@ -3753,7 +4879,8 @@ QDebug operator<<(QDebug d, const TLChatFull &type)
         d << spacer.innerSpaces() << "botInfo: " << type.botInfo <<"\n";
         break;
     case TLValue::ChannelFull:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "about: " << type.about <<"\n";
         if (type.flags & 1 << 0) {
@@ -3806,10 +4933,12 @@ QDebug operator<<(QDebug d, const TLChatInvite &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChatInviteAlready:
+        d << "\n";
         d << spacer.innerSpaces() << "chat: " << type.chat <<"\n";
         break;
     case TLValue::ChatInvite:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
         d << spacer.innerSpaces() << "participantsCount: " << type.participantsCount <<"\n";
@@ -3832,7 +4961,8 @@ QDebug operator<<(QDebug d, const TLConfig &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Config:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "expires: " << type.expires <<"\n";
         d << spacer.innerSpaces() << "testMode: " << type.testMode <<"\n";
@@ -3888,10 +5018,12 @@ QDebug operator<<(QDebug d, const TLContactsBlocked &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsBlocked:
+        d << "\n";
         d << spacer.innerSpaces() << "blocked: " << type.blocked <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::ContactsBlockedSlice:
+        d << "\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
         d << spacer.innerSpaces() << "blocked: " << type.blocked <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
@@ -3911,8 +5043,10 @@ QDebug operator<<(QDebug d, const TLContactsContacts &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsContactsNotModified:
-        break;
+        d << " }";
+        return d;
     case TLValue::ContactsContacts:
+        d << "\n";
         d << spacer.innerSpaces() << "contacts: " << type.contacts <<"\n";
         d << spacer.innerSpaces() << "savedCount: " << type.savedCount <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
@@ -3932,6 +5066,7 @@ QDebug operator<<(QDebug d, const TLContactsFound &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsFound:
+        d << "\n";
         d << spacer.innerSpaces() << "results: " << type.results <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
@@ -3951,6 +5086,7 @@ QDebug operator<<(QDebug d, const TLContactsImportedContacts &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsImportedContacts:
+        d << "\n";
         d << spacer.innerSpaces() << "imported: " << type.imported <<"\n";
         d << spacer.innerSpaces() << "popularInvites: " << type.popularInvites <<"\n";
         d << spacer.innerSpaces() << "retryContacts: " << type.retryContacts <<"\n";
@@ -3971,6 +5107,7 @@ QDebug operator<<(QDebug d, const TLContactsLink &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsLink:
+        d << "\n";
         d << spacer.innerSpaces() << "myLink: " << type.myLink <<"\n";
         d << spacer.innerSpaces() << "foreignLink: " << type.foreignLink <<"\n";
         d << spacer.innerSpaces() << "user: " << type.user <<"\n";
@@ -3990,6 +5127,7 @@ QDebug operator<<(QDebug d, const TLContactsResolvedPeer &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsResolvedPeer:
+        d << "\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
@@ -4009,8 +5147,10 @@ QDebug operator<<(QDebug d, const TLContactsTopPeers &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ContactsTopPeersNotModified:
-        break;
+        d << " }";
+        return d;
     case TLValue::ContactsTopPeers:
+        d << "\n";
         d << spacer.innerSpaces() << "categories: " << type.categories <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
@@ -4030,7 +5170,8 @@ QDebug operator<<(QDebug d, const TLDialog &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Dialog:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         d << spacer.innerSpaces() << "topMessage: " << type.topMessage <<"\n";
         d << spacer.innerSpaces() << "readInboxMaxId: " << type.readInboxMaxId <<"\n";
@@ -4060,9 +5201,11 @@ QDebug operator<<(QDebug d, const TLDocument &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::DocumentEmpty:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     case TLValue::Document:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -4088,6 +5231,7 @@ QDebug operator<<(QDebug d, const TLFoundGif &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::FoundGif:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "thumbUrl: " << type.thumbUrl <<"\n";
         d << spacer.innerSpaces() << "contentUrl: " << type.contentUrl <<"\n";
@@ -4096,6 +5240,7 @@ QDebug operator<<(QDebug d, const TLFoundGif &type)
         d << spacer.innerSpaces() << "h: " << type.h <<"\n";
         break;
     case TLValue::FoundGifCached:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
         d << spacer.innerSpaces() << "document: " << type.document <<"\n";
@@ -4115,6 +5260,7 @@ QDebug operator<<(QDebug d, const TLGame &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::Game:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
@@ -4141,6 +5287,7 @@ QDebug operator<<(QDebug d, const TLHelpSupport &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpSupport:
+        d << "\n";
         d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
         d << spacer.innerSpaces() << "user: " << type.user <<"\n";
         break;
@@ -4159,6 +5306,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputBotInlineMessageMediaAuto:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
         if (type.flags & 1 << 2) {
@@ -4166,7 +5314,8 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
         }
         break;
     case TLValue::InputBotInlineMessageText:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "message: " << type.message <<"\n";
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "entities: " << type.entities <<"\n";
@@ -4176,6 +5325,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
         }
         break;
     case TLValue::InputBotInlineMessageMediaGeo:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "geoPoint: " << type.geoPoint <<"\n";
         d << spacer.innerSpaces() << "period: " << type.period <<"\n";
@@ -4184,6 +5334,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
         }
         break;
     case TLValue::InputBotInlineMessageMediaVenue:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "geoPoint: " << type.geoPoint <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
@@ -4195,6 +5346,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
         }
         break;
     case TLValue::InputBotInlineMessageMediaContact:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
@@ -4204,6 +5356,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
         }
         break;
     case TLValue::InputBotInlineMessageGame:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 2) {
             d << spacer.innerSpaces() << "replyMarkup: " << type.replyMarkup <<"\n";
@@ -4224,6 +5377,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineResult &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputBotInlineResult:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
@@ -4257,12 +5411,14 @@ QDebug operator<<(QDebug d, const TLInputBotInlineResult &type)
         d << spacer.innerSpaces() << "sendMessage: " << type.sendMessage <<"\n";
         break;
     case TLValue::InputBotInlineResultPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
         d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
         d << spacer.innerSpaces() << "sendMessage: " << type.sendMessage <<"\n";
         break;
     case TLValue::InputBotInlineResultDocument:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
@@ -4276,6 +5432,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineResult &type)
         d << spacer.innerSpaces() << "sendMessage: " << type.sendMessage <<"\n";
         break;
     case TLValue::InputBotInlineResultGame:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "shortName: " << type.shortName <<"\n";
         d << spacer.innerSpaces() << "sendMessage: " << type.sendMessage <<"\n";
@@ -4295,8 +5452,10 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::InputMediaEmpty:
-        break;
+        d << " }";
+        return d;
     case TLValue::InputMediaUploadedPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "file: " << type.file <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
@@ -4308,6 +5467,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         }
         break;
     case TLValue::InputMediaPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "inputPhotoId: " << type.inputPhotoId <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
@@ -4316,15 +5476,18 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         }
         break;
     case TLValue::InputMediaGeoPoint:
+        d << "\n";
         d << spacer.innerSpaces() << "geoPoint: " << type.geoPoint <<"\n";
         break;
     case TLValue::InputMediaContact:
+        d << "\n";
         d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
         d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
         break;
     case TLValue::InputMediaUploadedDocument:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "file: " << type.file <<"\n";
         if (type.flags & 1 << 2) {
             d << spacer.innerSpaces() << "thumb: " << type.thumb <<"\n";
@@ -4340,6 +5503,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         }
         break;
     case TLValue::InputMediaDocument:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "inputDocumentId: " << type.inputDocumentId <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
@@ -4348,6 +5512,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         }
         break;
     case TLValue::InputMediaVenue:
+        d << "\n";
         d << spacer.innerSpaces() << "geoPoint: " << type.geoPoint <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "address: " << type.address <<"\n";
@@ -4356,11 +5521,13 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << spacer.innerSpaces() << "venueType: " << type.venueType <<"\n";
         break;
     case TLValue::InputMediaGifExternal:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "q: " << type.q <<"\n";
         break;
     case TLValue::InputMediaPhotoExternal:
     case TLValue::InputMediaDocumentExternal:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
@@ -4369,9 +5536,11 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         }
         break;
     case TLValue::InputMediaGame:
+        d << "\n";
         d << spacer.innerSpaces() << "inputGameId: " << type.inputGameId <<"\n";
         break;
     case TLValue::InputMediaInvoice:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "description: " << type.description <<"\n";
@@ -4384,6 +5553,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         d << spacer.innerSpaces() << "startParam: " << type.startParam <<"\n";
         break;
     case TLValue::InputMediaGeoLive:
+        d << "\n";
         d << spacer.innerSpaces() << "geoPoint: " << type.geoPoint <<"\n";
         d << spacer.innerSpaces() << "period: " << type.period <<"\n";
         break;
@@ -4406,39 +5576,50 @@ QDebug operator<<(QDebug d, const TLMessageAction &type)
     case TLValue::MessageActionPinMessage:
     case TLValue::MessageActionHistoryClear:
     case TLValue::MessageActionScreenshotTaken:
-        break;
+        d << " }";
+        return d;
     case TLValue::MessageActionChatCreate:
+        d << "\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::MessageActionChatEditTitle:
     case TLValue::MessageActionChannelCreate:
+        d << "\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         break;
     case TLValue::MessageActionChatEditPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
         break;
     case TLValue::MessageActionChatAddUser:
+        d << "\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::MessageActionChatDeleteUser:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         break;
     case TLValue::MessageActionChatJoinedByLink:
+        d << "\n";
         d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
         break;
     case TLValue::MessageActionChatMigrateTo:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         break;
     case TLValue::MessageActionChannelMigrateFrom:
+        d << "\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         break;
     case TLValue::MessageActionGameScore:
+        d << "\n";
         d << spacer.innerSpaces() << "gameId: " << type.gameId <<"\n";
         d << spacer.innerSpaces() << "score: " << type.score <<"\n";
         break;
     case TLValue::MessageActionPaymentSentMe:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "currency: " << type.currency <<"\n";
         d << spacer.innerSpaces() << "totalAmount: " << type.totalAmount <<"\n";
@@ -4452,10 +5633,12 @@ QDebug operator<<(QDebug d, const TLMessageAction &type)
         d << spacer.innerSpaces() << "charge: " << type.charge <<"\n";
         break;
     case TLValue::MessageActionPaymentSent:
+        d << "\n";
         d << spacer.innerSpaces() << "currency: " << type.currency <<"\n";
         d << spacer.innerSpaces() << "totalAmount: " << type.totalAmount <<"\n";
         break;
     case TLValue::MessageActionPhoneCall:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "callId: " << type.callId <<"\n";
         if (type.flags & 1 << 0) {
@@ -4466,6 +5649,7 @@ QDebug operator<<(QDebug d, const TLMessageAction &type)
         }
         break;
     case TLValue::MessageActionCustomAction:
+        d << "\n";
         d << spacer.innerSpaces() << "message: " << type.message <<"\n";
         break;
     default:
@@ -4483,8 +5667,10 @@ QDebug operator<<(QDebug d, const TLMessagesAllStickers &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesAllStickersNotModified:
-        break;
+        d << " }";
+        return d;
     case TLValue::MessagesAllStickers:
+        d << "\n";
         d << spacer.innerSpaces() << "hash: " << type.hash <<"\n";
         d << spacer.innerSpaces() << "sets: " << type.sets <<"\n";
         break;
@@ -4503,6 +5689,7 @@ QDebug operator<<(QDebug d, const TLMessagesChatFull &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesChatFull:
+        d << "\n";
         d << spacer.innerSpaces() << "fullChat: " << type.fullChat <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
@@ -4522,9 +5709,11 @@ QDebug operator<<(QDebug d, const TLMessagesChats &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesChats:
+        d << "\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         break;
     case TLValue::MessagesChatsSlice:
+        d << "\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         break;
@@ -4543,8 +5732,10 @@ QDebug operator<<(QDebug d, const TLMessagesFavedStickers &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesFavedStickersNotModified:
-        break;
+        d << " }";
+        return d;
     case TLValue::MessagesFavedStickers:
+        d << "\n";
         d << spacer.innerSpaces() << "hash: " << type.hash <<"\n";
         d << spacer.innerSpaces() << "packs: " << type.packs <<"\n";
         d << spacer.innerSpaces() << "stickers: " << type.stickers <<"\n";
@@ -4564,6 +5755,7 @@ QDebug operator<<(QDebug d, const TLMessagesFoundGifs &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesFoundGifs:
+        d << "\n";
         d << spacer.innerSpaces() << "nextOffset: " << type.nextOffset <<"\n";
         d << spacer.innerSpaces() << "results: " << type.results <<"\n";
         break;
@@ -4582,6 +5774,7 @@ QDebug operator<<(QDebug d, const TLMessagesHighScores &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesHighScores:
+        d << "\n";
         d << spacer.innerSpaces() << "scores: " << type.scores <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
@@ -4600,8 +5793,10 @@ QDebug operator<<(QDebug d, const TLMessagesRecentStickers &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesRecentStickersNotModified:
-        break;
+        d << " }";
+        return d;
     case TLValue::MessagesRecentStickers:
+        d << "\n";
         d << spacer.innerSpaces() << "hash: " << type.hash <<"\n";
         d << spacer.innerSpaces() << "stickers: " << type.stickers <<"\n";
         break;
@@ -4620,8 +5815,10 @@ QDebug operator<<(QDebug d, const TLMessagesSavedGifs &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesSavedGifsNotModified:
-        break;
+        d << " }";
+        return d;
     case TLValue::MessagesSavedGifs:
+        d << "\n";
         d << spacer.innerSpaces() << "hash: " << type.hash <<"\n";
         d << spacer.innerSpaces() << "gifs: " << type.gifs <<"\n";
         break;
@@ -4640,6 +5837,7 @@ QDebug operator<<(QDebug d, const TLMessagesStickerSet &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesStickerSet:
+        d << "\n";
         d << spacer.innerSpaces() << "set: " << type.set <<"\n";
         d << spacer.innerSpaces() << "packs: " << type.packs <<"\n";
         d << spacer.innerSpaces() << "documents: " << type.documents <<"\n";
@@ -4659,8 +5857,10 @@ QDebug operator<<(QDebug d, const TLMessagesStickers &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesStickersNotModified:
-        break;
+        d << " }";
+        return d;
     case TLValue::MessagesStickers:
+        d << "\n";
         d << spacer.innerSpaces() << "hash: " << type.hash <<"\n";
         d << spacer.innerSpaces() << "stickers: " << type.stickers <<"\n";
         break;
@@ -4680,49 +5880,60 @@ QDebug operator<<(QDebug d, const TLPageBlock &type)
     switch (type.tlType) {
     case TLValue::PageBlockUnsupported:
     case TLValue::PageBlockDivider:
-        break;
+        d << " }";
+        return d;
     case TLValue::PageBlockTitle:
     case TLValue::PageBlockSubtitle:
     case TLValue::PageBlockHeader:
     case TLValue::PageBlockSubheader:
     case TLValue::PageBlockParagraph:
     case TLValue::PageBlockFooter:
+        d << "\n";
         d << spacer.innerSpaces() << "text: " << *type.text <<"\n";
         break;
     case TLValue::PageBlockAuthorDate:
+        d << "\n";
         d << spacer.innerSpaces() << "richTextAuthor: " << *type.richTextAuthor <<"\n";
         d << spacer.innerSpaces() << "publishedDate: " << type.publishedDate <<"\n";
         break;
     case TLValue::PageBlockPreformatted:
+        d << "\n";
         d << spacer.innerSpaces() << "text: " << *type.text <<"\n";
         d << spacer.innerSpaces() << "language: " << type.language <<"\n";
         break;
     case TLValue::PageBlockAnchor:
+        d << "\n";
         d << spacer.innerSpaces() << "name: " << type.name <<"\n";
         break;
     case TLValue::PageBlockList:
+        d << "\n";
         d << spacer.innerSpaces() << "ordered: " << type.ordered <<"\n";
         d << spacer.innerSpaces() << "richTextItemsVector: " << type.richTextItemsVector <<"\n";
         break;
     case TLValue::PageBlockBlockquote:
     case TLValue::PageBlockPullquote:
+        d << "\n";
         d << spacer.innerSpaces() << "text: " << *type.text <<"\n";
         d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "photoId: " << type.photoId <<"\n";
         d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockVideo:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "videoId: " << type.videoId <<"\n";
         d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockCover:
+        d << "\n";
         d << spacer.innerSpaces() << "cover: " << *type.cover <<"\n";
         break;
     case TLValue::PageBlockEmbed:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         }
@@ -4737,6 +5948,7 @@ QDebug operator<<(QDebug d, const TLPageBlock &type)
         d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockEmbedPost:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "webpageId: " << type.webpageId <<"\n";
         d << spacer.innerSpaces() << "authorPhotoId: " << type.authorPhotoId <<"\n";
@@ -4747,13 +5959,16 @@ QDebug operator<<(QDebug d, const TLPageBlock &type)
         break;
     case TLValue::PageBlockCollage:
     case TLValue::PageBlockSlideshow:
+        d << "\n";
         d << spacer.innerSpaces() << "pageBlockItemsVector: " << type.pageBlockItemsVector <<"\n";
         d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
     case TLValue::PageBlockChannel:
+        d << "\n";
         d << spacer.innerSpaces() << "channel: " << type.channel <<"\n";
         break;
     case TLValue::PageBlockAudio:
+        d << "\n";
         d << spacer.innerSpaces() << "audioId: " << type.audioId <<"\n";
         d << spacer.innerSpaces() << "caption: " << *type.caption <<"\n";
         break;
@@ -4772,7 +5987,8 @@ QDebug operator<<(QDebug d, const TLPaymentsPaymentForm &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PaymentsPaymentForm:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "botId: " << type.botId <<"\n";
         d << spacer.innerSpaces() << "invoice: " << type.invoice <<"\n";
         d << spacer.innerSpaces() << "providerId: " << type.providerId <<"\n";
@@ -4806,6 +6022,7 @@ QDebug operator<<(QDebug d, const TLPaymentsPaymentReceipt &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PaymentsPaymentReceipt:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "botId: " << type.botId <<"\n";
@@ -4837,9 +6054,11 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhoneCallEmpty:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     case TLValue::PhoneCallWaiting:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
@@ -4852,6 +6071,7 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
         }
         break;
     case TLValue::PhoneCallRequested:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -4861,6 +6081,7 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
         d << spacer.innerSpaces() << "protocol: " << type.protocol <<"\n";
         break;
     case TLValue::PhoneCallAccepted:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -4870,6 +6091,7 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
         d << spacer.innerSpaces() << "protocol: " << type.protocol <<"\n";
         break;
     case TLValue::PhoneCall:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
@@ -4883,7 +6105,8 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
         d << spacer.innerSpaces() << "startDate: " << type.startDate <<"\n";
         break;
     case TLValue::PhoneCallDiscarded:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "reason: " << type.reason <<"\n";
@@ -4907,6 +6130,7 @@ QDebug operator<<(QDebug d, const TLPhonePhoneCall &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhonePhoneCall:
+        d << "\n";
         d << spacer.innerSpaces() << "phoneCall: " << type.phoneCall <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
@@ -4925,6 +6149,7 @@ QDebug operator<<(QDebug d, const TLPhotosPhoto &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhotosPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
@@ -4943,10 +6168,12 @@ QDebug operator<<(QDebug d, const TLPhotosPhotos &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PhotosPhotos:
+        d << "\n";
         d << spacer.innerSpaces() << "photos: " << type.photos <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::PhotosPhotosSlice:
+        d << "\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
         d << spacer.innerSpaces() << "photos: " << type.photos <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
@@ -4966,10 +6193,12 @@ QDebug operator<<(QDebug d, const TLStickerSetCovered &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::StickerSetCovered:
+        d << "\n";
         d << spacer.innerSpaces() << "set: " << type.set <<"\n";
         d << spacer.innerSpaces() << "cover: " << type.cover <<"\n";
         break;
     case TLValue::StickerSetMultiCovered:
+        d << "\n";
         d << spacer.innerSpaces() << "set: " << type.set <<"\n";
         d << spacer.innerSpaces() << "covers: " << type.covers <<"\n";
         break;
@@ -4988,7 +6217,8 @@ QDebug operator<<(QDebug d, const TLUserFull &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UserFull:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "user: " << type.user <<"\n";
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "about: " << type.about <<"\n";
@@ -5018,6 +6248,7 @@ QDebug operator<<(QDebug d, const TLBotInlineResult &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::BotInlineResult:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
@@ -5051,6 +6282,7 @@ QDebug operator<<(QDebug d, const TLBotInlineResult &type)
         d << spacer.innerSpaces() << "sendMessage: " << type.sendMessage <<"\n";
         break;
     case TLValue::BotInlineMediaResult:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
@@ -5083,6 +6315,7 @@ QDebug operator<<(QDebug d, const TLMessagesArchivedStickers &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesArchivedStickers:
+        d << "\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
         d << spacer.innerSpaces() << "sets: " << type.sets <<"\n";
         break;
@@ -5101,7 +6334,8 @@ QDebug operator<<(QDebug d, const TLMessagesBotResults &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesBotResults:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "queryId: " << type.queryId <<"\n";
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "nextOffset: " << type.nextOffset <<"\n";
@@ -5128,8 +6362,10 @@ QDebug operator<<(QDebug d, const TLMessagesFeaturedStickers &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesFeaturedStickersNotModified:
-        break;
+        d << " }";
+        return d;
     case TLValue::MessagesFeaturedStickers:
+        d << "\n";
         d << spacer.innerSpaces() << "hash: " << type.hash <<"\n";
         d << spacer.innerSpaces() << "sets: " << type.sets <<"\n";
         d << spacer.innerSpaces() << "unread: " << type.unread <<"\n";
@@ -5149,8 +6385,10 @@ QDebug operator<<(QDebug d, const TLMessagesStickerSetInstallResult &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesStickerSetInstallResultSuccess:
-        break;
+        d << " }";
+        return d;
     case TLValue::MessagesStickerSetInstallResultArchive:
+        d << "\n";
         d << spacer.innerSpaces() << "sets: " << type.sets <<"\n";
         break;
     default:
@@ -5169,6 +6407,7 @@ QDebug operator<<(QDebug d, const TLPage &type)
     switch (type.tlType) {
     case TLValue::PagePart:
     case TLValue::PageFull:
+        d << "\n";
         d << spacer.innerSpaces() << "blocks: " << type.blocks <<"\n";
         d << spacer.innerSpaces() << "photos: " << type.photos <<"\n";
         d << spacer.innerSpaces() << "documents: " << type.documents <<"\n";
@@ -5188,21 +6427,26 @@ QDebug operator<<(QDebug d, const TLRecentMeUrl &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::RecentMeUrlUnknown:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         break;
     case TLValue::RecentMeUrlUser:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         break;
     case TLValue::RecentMeUrlChat:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         break;
     case TLValue::RecentMeUrlChatInvite:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "chatInvite: " << type.chatInvite <<"\n";
         break;
     case TLValue::RecentMeUrlStickerSet:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         d << spacer.innerSpaces() << "set: " << type.set <<"\n";
         break;
@@ -5221,13 +6465,16 @@ QDebug operator<<(QDebug d, const TLWebPage &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::WebPageEmpty:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     case TLValue::WebPagePending:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::WebPage:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
@@ -5274,7 +6521,8 @@ QDebug operator<<(QDebug d, const TLWebPage &type)
         }
         break;
     case TLValue::WebPageNotModified:
-        break;
+        d << " }";
+        return d;
     default:
         break;
     }
@@ -5290,6 +6538,7 @@ QDebug operator<<(QDebug d, const TLHelpRecentMeUrls &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::HelpRecentMeUrls:
+        d << "\n";
         d << spacer.innerSpaces() << "urls: " << type.urls <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
@@ -5310,8 +6559,10 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
     switch (type.tlType) {
     case TLValue::MessageMediaEmpty:
     case TLValue::MessageMediaUnsupported:
-        break;
+        d << " }";
+        return d;
     case TLValue::MessageMediaPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
@@ -5324,15 +6575,18 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
         }
         break;
     case TLValue::MessageMediaGeo:
+        d << "\n";
         d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
         break;
     case TLValue::MessageMediaContact:
+        d << "\n";
         d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
         d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         break;
     case TLValue::MessageMediaDocument:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "document: " << type.document <<"\n";
@@ -5345,9 +6599,11 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
         }
         break;
     case TLValue::MessageMediaWebPage:
+        d << "\n";
         d << spacer.innerSpaces() << "webpage: " << type.webpage <<"\n";
         break;
     case TLValue::MessageMediaVenue:
+        d << "\n";
         d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "address: " << type.address <<"\n";
@@ -5356,10 +6612,12 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
         d << spacer.innerSpaces() << "venueType: " << type.venueType <<"\n";
         break;
     case TLValue::MessageMediaGame:
+        d << "\n";
         d << spacer.innerSpaces() << "game: " << type.game <<"\n";
         break;
     case TLValue::MessageMediaInvoice:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "description: " << type.description <<"\n";
         if (type.flags & 1 << 0) {
@@ -5373,6 +6631,7 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
         d << spacer.innerSpaces() << "startParam: " << type.startParam <<"\n";
         break;
     case TLValue::MessageMediaGeoLive:
+        d << "\n";
         d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
         d << spacer.innerSpaces() << "period: " << type.period <<"\n";
         break;
@@ -5391,10 +6650,12 @@ QDebug operator<<(QDebug d, const TLMessage &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessageEmpty:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         break;
     case TLValue::Message:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         if (type.flags & 1 << 8) {
             d << spacer.innerSpaces() << "fromId: " << type.fromId <<"\n";
@@ -5431,7 +6692,8 @@ QDebug operator<<(QDebug d, const TLMessage &type)
         }
         break;
     case TLValue::MessageService:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         if (type.flags & 1 << 8) {
             d << spacer.innerSpaces() << "fromId: " << type.fromId <<"\n";
@@ -5458,12 +6720,14 @@ QDebug operator<<(QDebug d, const TLMessagesDialogs &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesDialogs:
+        d << "\n";
         d << spacer.innerSpaces() << "dialogs: " << type.dialogs <<"\n";
         d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::MessagesDialogsSlice:
+        d << "\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
         d << spacer.innerSpaces() << "dialogs: " << type.dialogs <<"\n";
         d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
@@ -5485,17 +6749,20 @@ QDebug operator<<(QDebug d, const TLMessagesMessages &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesMessages:
+        d << "\n";
         d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::MessagesMessagesSlice:
+        d << "\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
         d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::MessagesChannelMessages:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
@@ -5504,6 +6771,7 @@ QDebug operator<<(QDebug d, const TLMessagesMessages &type)
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::MessagesMessagesNotModified:
+        d << "\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
         break;
     default:
@@ -5521,6 +6789,7 @@ QDebug operator<<(QDebug d, const TLMessagesPeerDialogs &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::MessagesPeerDialogs:
+        d << "\n";
         d << spacer.innerSpaces() << "dialogs: " << type.dialogs <<"\n";
         d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
@@ -5545,74 +6814,90 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
     case TLValue::UpdateNewChannelMessage:
     case TLValue::UpdateEditChannelMessage:
     case TLValue::UpdateEditMessage:
+        d << "\n";
         d << spacer.innerSpaces() << "message: " << type.message <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         break;
     case TLValue::UpdateMessageID:
+        d << "\n";
         d << spacer.innerSpaces() << "quint32Id: " << type.quint32Id <<"\n";
         d << spacer.innerSpaces() << "randomId: " << type.randomId <<"\n";
         break;
     case TLValue::UpdateDeleteMessages:
     case TLValue::UpdateReadMessagesContents:
+        d << "\n";
         d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         break;
     case TLValue::UpdateUserTyping:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "action: " << type.action <<"\n";
         break;
     case TLValue::UpdateChatUserTyping:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "action: " << type.action <<"\n";
         break;
     case TLValue::UpdateChatParticipants:
+        d << "\n";
         d << spacer.innerSpaces() << "participants: " << type.participants <<"\n";
         break;
     case TLValue::UpdateUserStatus:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "status: " << type.status <<"\n";
         break;
     case TLValue::UpdateUserName:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
         d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
         d << spacer.innerSpaces() << "username: " << type.username <<"\n";
         break;
     case TLValue::UpdateUserPhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
         d << spacer.innerSpaces() << "previous: " << type.previous <<"\n";
         break;
     case TLValue::UpdateContactRegistered:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::UpdateContactLink:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "myLink: " << type.myLink <<"\n";
         d << spacer.innerSpaces() << "foreignLink: " << type.foreignLink <<"\n";
         break;
     case TLValue::UpdateNewEncryptedMessage:
+        d << "\n";
         d << spacer.innerSpaces() << "encryptedMessage: " << type.encryptedMessage <<"\n";
         d << spacer.innerSpaces() << "qts: " << type.qts <<"\n";
         break;
     case TLValue::UpdateEncryptedChatTyping:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         break;
     case TLValue::UpdateEncryption:
+        d << "\n";
         d << spacer.innerSpaces() << "chat: " << type.chat <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::UpdateEncryptedMessagesRead:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "maxDate: " << type.maxDate <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::UpdateChatParticipantAdd:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "inviterId: " << type.inviterId <<"\n";
@@ -5620,23 +6905,28 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
         break;
     case TLValue::UpdateChatParticipantDelete:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
         break;
     case TLValue::UpdateDcOptions:
+        d << "\n";
         d << spacer.innerSpaces() << "dcOptions: " << type.dcOptions <<"\n";
         break;
     case TLValue::UpdateUserBlocked:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "blocked: " << type.blocked <<"\n";
         break;
     case TLValue::UpdateNotifySettings:
+        d << "\n";
         d << spacer.innerSpaces() << "notifyPeer: " << type.notifyPeer <<"\n";
         d << spacer.innerSpaces() << "notifySettings: " << type.notifySettings <<"\n";
         break;
     case TLValue::UpdateServiceNotification:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "inboxDate: " << type.inboxDate <<"\n";
         }
@@ -5646,26 +6936,31 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "entities: " << type.entities <<"\n";
         break;
     case TLValue::UpdatePrivacy:
+        d << "\n";
         d << spacer.innerSpaces() << "key: " << type.key <<"\n";
         d << spacer.innerSpaces() << "rules: " << type.rules <<"\n";
         break;
     case TLValue::UpdateUserPhone:
+        d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "phone: " << type.phone <<"\n";
         break;
     case TLValue::UpdateReadHistoryInbox:
     case TLValue::UpdateReadHistoryOutbox:
+        d << "\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         d << spacer.innerSpaces() << "maxId: " << type.maxId <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         break;
     case TLValue::UpdateWebPage:
+        d << "\n";
         d << spacer.innerSpaces() << "webpage: " << type.webpage <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         break;
     case TLValue::UpdateChannelTooLong:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         if (type.flags & 1 << 0) {
@@ -5673,40 +6968,48 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         }
         break;
     case TLValue::UpdateChannel:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         break;
     case TLValue::UpdateReadChannelInbox:
     case TLValue::UpdateReadChannelOutbox:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "maxId: " << type.maxId <<"\n";
         break;
     case TLValue::UpdateDeleteChannelMessages:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         break;
     case TLValue::UpdateChannelMessageViews:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "quint32Id: " << type.quint32Id <<"\n";
         d << spacer.innerSpaces() << "views: " << type.views <<"\n";
         break;
     case TLValue::UpdateChatAdmins:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "enabled: " << type.enabled <<"\n";
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
         break;
     case TLValue::UpdateChatParticipantAdmin:
+        d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "isAdmin: " << type.isAdmin <<"\n";
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
         break;
     case TLValue::UpdateNewStickerSet:
+        d << "\n";
         d << spacer.innerSpaces() << "stickerset: " << type.stickerset <<"\n";
         break;
     case TLValue::UpdateStickerSetsOrder:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "quint64OrderVector: " << type.quint64OrderVector <<"\n";
         break;
     case TLValue::UpdateStickerSets:
@@ -5718,8 +7021,10 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
     case TLValue::UpdateLangPackTooLong:
     case TLValue::UpdateFavedStickers:
     case TLValue::UpdateContactsReset:
-        break;
+        d << " }";
+        return d;
     case TLValue::UpdateBotInlineQuery:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "queryId: " << type.queryId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
@@ -5730,6 +7035,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
         break;
     case TLValue::UpdateBotInlineSend:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "query: " << type.query <<"\n";
@@ -5742,10 +7048,12 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         }
         break;
     case TLValue::UpdateChannelPinnedMessage:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "quint32Id: " << type.quint32Id <<"\n";
         break;
     case TLValue::UpdateBotCallbackQuery:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "queryId: " << type.queryId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
@@ -5760,6 +7068,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         }
         break;
     case TLValue::UpdateInlineBotCallbackQuery:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "queryId: " << type.queryId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
@@ -5773,40 +7082,48 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         }
         break;
     case TLValue::UpdateDraftMessage:
+        d << "\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         d << spacer.innerSpaces() << "draft: " << type.draft <<"\n";
         break;
     case TLValue::UpdateChannelWebPage:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "webpage: " << type.webpage <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
         break;
     case TLValue::UpdateDialogPinned:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
         break;
     case TLValue::UpdatePinnedDialogs:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "peerOrderVector: " << type.peerOrderVector <<"\n";
         }
         break;
     case TLValue::UpdateBotWebhookJSON:
+        d << "\n";
         d << spacer.innerSpaces() << "jSONData: " << type.jSONData <<"\n";
         break;
     case TLValue::UpdateBotWebhookJSONQuery:
+        d << "\n";
         d << spacer.innerSpaces() << "queryId: " << type.queryId <<"\n";
         d << spacer.innerSpaces() << "jSONData: " << type.jSONData <<"\n";
         d << spacer.innerSpaces() << "timeout: " << type.timeout <<"\n";
         break;
     case TLValue::UpdateBotShippingQuery:
+        d << "\n";
         d << spacer.innerSpaces() << "queryId: " << type.queryId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "payload: " << type.payload.toHex() <<"\n";
         d << spacer.innerSpaces() << "shippingAddress: " << type.shippingAddress <<"\n";
         break;
     case TLValue::UpdateBotPrecheckoutQuery:
+        d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "queryId: " << type.queryId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
@@ -5821,16 +7138,20 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "totalAmount: " << type.totalAmount <<"\n";
         break;
     case TLValue::UpdatePhoneCall:
+        d << "\n";
         d << spacer.innerSpaces() << "phoneCall: " << type.phoneCall <<"\n";
         break;
     case TLValue::UpdateLangPack:
+        d << "\n";
         d << spacer.innerSpaces() << "difference: " << type.difference <<"\n";
         break;
     case TLValue::UpdateChannelReadMessagesContents:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "messages: " << type.messages <<"\n";
         break;
     case TLValue::UpdateChannelAvailableMessages:
+        d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
         d << spacer.innerSpaces() << "availableMinId: " << type.availableMinId <<"\n";
         break;
@@ -5849,9 +7170,11 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdatesTooLong:
-        break;
+        d << " }";
+        return d;
     case TLValue::UpdateShortMessage:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "message: " << type.message <<"\n";
@@ -5872,7 +7195,8 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
         }
         break;
     case TLValue::UpdateShortChatMessage:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "fromId: " << type.fromId <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
@@ -5894,10 +7218,12 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
         }
         break;
     case TLValue::UpdateShort:
+        d << "\n";
         d << spacer.innerSpaces() << "update: " << type.update <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         break;
     case TLValue::UpdatesCombined:
+        d << "\n";
         d << spacer.innerSpaces() << "updates: " << type.updates <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
@@ -5906,6 +7232,7 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
         d << spacer.innerSpaces() << "seq: " << type.seq <<"\n";
         break;
     case TLValue::Updates:
+        d << "\n";
         d << spacer.innerSpaces() << "updates: " << type.updates <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
@@ -5913,7 +7240,8 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
         d << spacer.innerSpaces() << "seq: " << type.seq <<"\n";
         break;
     case TLValue::UpdateShortSentMessage:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         d << spacer.innerSpaces() << "ptsCount: " << type.ptsCount <<"\n";
@@ -5940,14 +7268,16 @@ QDebug operator<<(QDebug d, const TLUpdatesChannelDifference &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdatesChannelDifferenceEmpty:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "timeout: " << type.timeout <<"\n";
         }
         break;
     case TLValue::UpdatesChannelDifferenceTooLong:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "timeout: " << type.timeout <<"\n";
@@ -5962,7 +7292,8 @@ QDebug operator<<(QDebug d, const TLUpdatesChannelDifference &type)
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
         break;
     case TLValue::UpdatesChannelDifference:
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "timeout: " << type.timeout <<"\n";
@@ -5987,10 +7318,12 @@ QDebug operator<<(QDebug d, const TLUpdatesDifference &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::UpdatesDifferenceEmpty:
+        d << "\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "seq: " << type.seq <<"\n";
         break;
     case TLValue::UpdatesDifference:
+        d << "\n";
         d << spacer.innerSpaces() << "newMessages: " << type.newMessages <<"\n";
         d << spacer.innerSpaces() << "newEncryptedMessages: " << type.newEncryptedMessages <<"\n";
         d << spacer.innerSpaces() << "otherUpdates: " << type.otherUpdates <<"\n";
@@ -5999,6 +7332,7 @@ QDebug operator<<(QDebug d, const TLUpdatesDifference &type)
         d << spacer.innerSpaces() << "state: " << type.state <<"\n";
         break;
     case TLValue::UpdatesDifferenceSlice:
+        d << "\n";
         d << spacer.innerSpaces() << "newMessages: " << type.newMessages <<"\n";
         d << spacer.innerSpaces() << "newEncryptedMessages: " << type.newEncryptedMessages <<"\n";
         d << spacer.innerSpaces() << "otherUpdates: " << type.otherUpdates <<"\n";
@@ -6007,6 +7341,7 @@ QDebug operator<<(QDebug d, const TLUpdatesDifference &type)
         d << spacer.innerSpaces() << "intermediateState: " << type.intermediateState <<"\n";
         break;
     case TLValue::UpdatesDifferenceTooLong:
+        d << "\n";
         d << spacer.innerSpaces() << "pts: " << type.pts <<"\n";
         break;
     default:
@@ -6026,38 +7361,47 @@ QDebug operator<<(QDebug d, const TLChannelAdminLogEventAction &type)
     case TLValue::ChannelAdminLogEventActionChangeTitle:
     case TLValue::ChannelAdminLogEventActionChangeAbout:
     case TLValue::ChannelAdminLogEventActionChangeUsername:
+        d << "\n";
         d << spacer.innerSpaces() << "prevValue: " << type.prevValue <<"\n";
         d << spacer.innerSpaces() << "stringNewValue: " << type.stringNewValue <<"\n";
         break;
     case TLValue::ChannelAdminLogEventActionChangePhoto:
+        d << "\n";
         d << spacer.innerSpaces() << "prevPhoto: " << type.prevPhoto <<"\n";
         d << spacer.innerSpaces() << "newPhoto: " << type.newPhoto <<"\n";
         break;
     case TLValue::ChannelAdminLogEventActionToggleInvites:
     case TLValue::ChannelAdminLogEventActionToggleSignatures:
     case TLValue::ChannelAdminLogEventActionTogglePreHistoryHidden:
+        d << "\n";
         d << spacer.innerSpaces() << "boolNewValue: " << type.boolNewValue <<"\n";
         break;
     case TLValue::ChannelAdminLogEventActionUpdatePinned:
     case TLValue::ChannelAdminLogEventActionDeleteMessage:
+        d << "\n";
         d << spacer.innerSpaces() << "message: " << type.message <<"\n";
         break;
     case TLValue::ChannelAdminLogEventActionEditMessage:
+        d << "\n";
         d << spacer.innerSpaces() << "prevMessage: " << type.prevMessage <<"\n";
         d << spacer.innerSpaces() << "newMessage: " << type.newMessage <<"\n";
         break;
     case TLValue::ChannelAdminLogEventActionParticipantJoin:
     case TLValue::ChannelAdminLogEventActionParticipantLeave:
-        break;
+        d << " }";
+        return d;
     case TLValue::ChannelAdminLogEventActionParticipantInvite:
+        d << "\n";
         d << spacer.innerSpaces() << "participant: " << type.participant <<"\n";
         break;
     case TLValue::ChannelAdminLogEventActionParticipantToggleBan:
     case TLValue::ChannelAdminLogEventActionParticipantToggleAdmin:
+        d << "\n";
         d << spacer.innerSpaces() << "prevParticipant: " << type.prevParticipant <<"\n";
         d << spacer.innerSpaces() << "newParticipant: " << type.newParticipant <<"\n";
         break;
     case TLValue::ChannelAdminLogEventActionChangeStickerSet:
+        d << "\n";
         d << spacer.innerSpaces() << "prevStickerset: " << type.prevStickerset <<"\n";
         d << spacer.innerSpaces() << "newStickerset: " << type.newStickerset <<"\n";
         break;
@@ -6076,9 +7420,11 @@ QDebug operator<<(QDebug d, const TLPaymentsPaymentResult &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::PaymentsPaymentResult:
+        d << "\n";
         d << spacer.innerSpaces() << "updates: " << type.updates <<"\n";
         break;
     case TLValue::PaymentsPaymentVerficationNeeded:
+        d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
         break;
     default:
@@ -6096,6 +7442,7 @@ QDebug operator<<(QDebug d, const TLChannelAdminLogEvent &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelAdminLogEvent:
+        d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
@@ -6116,6 +7463,7 @@ QDebug operator<<(QDebug d, const TLChannelsAdminLogResults &type)
     Spacer spacer;
     switch (type.tlType) {
     case TLValue::ChannelsAdminLogResults:
+        d << "\n";
         d << spacer.innerSpaces() << "events: " << type.events <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
