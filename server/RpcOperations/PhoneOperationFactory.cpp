@@ -100,6 +100,7 @@ bool PhoneRpcOperation::processSetCallRating(RpcProcessingContext &context)
 // Generated run methods
 void PhoneRpcOperation::runAcceptCall()
 {
+    // TLFunctions::TLPhoneAcceptCall &arguments = m_acceptCall;
     if (processNotImplementedMethod(TLValue::PhoneAcceptCall)) {
         return;
     }
@@ -109,6 +110,7 @@ void PhoneRpcOperation::runAcceptCall()
 
 void PhoneRpcOperation::runConfirmCall()
 {
+    // TLFunctions::TLPhoneConfirmCall &arguments = m_confirmCall;
     if (processNotImplementedMethod(TLValue::PhoneConfirmCall)) {
         return;
     }
@@ -118,6 +120,7 @@ void PhoneRpcOperation::runConfirmCall()
 
 void PhoneRpcOperation::runDiscardCall()
 {
+    // TLFunctions::TLPhoneDiscardCall &arguments = m_discardCall;
     if (processNotImplementedMethod(TLValue::PhoneDiscardCall)) {
         return;
     }
@@ -136,6 +139,7 @@ void PhoneRpcOperation::runGetCallConfig()
 
 void PhoneRpcOperation::runReceivedCall()
 {
+    // TLFunctions::TLPhoneReceivedCall &arguments = m_receivedCall;
     if (processNotImplementedMethod(TLValue::PhoneReceivedCall)) {
         return;
     }
@@ -145,6 +149,7 @@ void PhoneRpcOperation::runReceivedCall()
 
 void PhoneRpcOperation::runRequestCall()
 {
+    // TLFunctions::TLPhoneRequestCall &arguments = m_requestCall;
     if (processNotImplementedMethod(TLValue::PhoneRequestCall)) {
         return;
     }
@@ -154,6 +159,7 @@ void PhoneRpcOperation::runRequestCall()
 
 void PhoneRpcOperation::runSaveCallDebug()
 {
+    // TLFunctions::TLPhoneSaveCallDebug &arguments = m_saveCallDebug;
     if (processNotImplementedMethod(TLValue::PhoneSaveCallDebug)) {
         return;
     }
@@ -163,6 +169,7 @@ void PhoneRpcOperation::runSaveCallDebug()
 
 void PhoneRpcOperation::runSetCallRating()
 {
+    // TLFunctions::TLPhoneSetCallRating &arguments = m_setCallRating;
     if (processNotImplementedMethod(TLValue::PhoneSetCallRating)) {
         return;
     }

@@ -93,6 +93,7 @@ bool UploadRpcOperation::processSaveFilePart(RpcProcessingContext &context)
 // Generated run methods
 void UploadRpcOperation::runGetCdnFile()
 {
+    // TLFunctions::TLUploadGetCdnFile &arguments = m_getCdnFile;
     if (processNotImplementedMethod(TLValue::UploadGetCdnFile)) {
         return;
     }
@@ -102,6 +103,7 @@ void UploadRpcOperation::runGetCdnFile()
 
 void UploadRpcOperation::runGetCdnFileHashes()
 {
+    // TLFunctions::TLUploadGetCdnFileHashes &arguments = m_getCdnFileHashes;
     if (processNotImplementedMethod(TLValue::UploadGetCdnFileHashes)) {
         return;
     }
@@ -111,6 +113,7 @@ void UploadRpcOperation::runGetCdnFileHashes()
 
 void UploadRpcOperation::runGetFile()
 {
+    // TLFunctions::TLUploadGetFile &arguments = m_getFile;
     if (processNotImplementedMethod(TLValue::UploadGetFile)) {
         return;
     }
@@ -120,6 +123,7 @@ void UploadRpcOperation::runGetFile()
 
 void UploadRpcOperation::runGetWebFile()
 {
+    // TLFunctions::TLUploadGetWebFile &arguments = m_getWebFile;
     if (processNotImplementedMethod(TLValue::UploadGetWebFile)) {
         return;
     }
@@ -129,6 +133,7 @@ void UploadRpcOperation::runGetWebFile()
 
 void UploadRpcOperation::runReuploadCdnFile()
 {
+    // TLFunctions::TLUploadReuploadCdnFile &arguments = m_reuploadCdnFile;
     if (processNotImplementedMethod(TLValue::UploadReuploadCdnFile)) {
         return;
     }
@@ -138,6 +143,7 @@ void UploadRpcOperation::runReuploadCdnFile()
 
 void UploadRpcOperation::runSaveBigFilePart()
 {
+    // TLFunctions::TLUploadSaveBigFilePart &arguments = m_saveBigFilePart;
     if (processNotImplementedMethod(TLValue::UploadSaveBigFilePart)) {
         return;
     }
@@ -147,6 +153,7 @@ void UploadRpcOperation::runSaveBigFilePart()
 
 void UploadRpcOperation::runSaveFilePart()
 {
+    // TLFunctions::TLUploadSaveFilePart &arguments = m_saveFilePart;
     if (processNotImplementedMethod(TLValue::UploadSaveFilePart)) {
         return;
     }

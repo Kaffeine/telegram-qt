@@ -72,6 +72,7 @@ bool PhotosRpcOperation::processUploadProfilePhoto(RpcProcessingContext &context
 // Generated run methods
 void PhotosRpcOperation::runDeletePhotos()
 {
+    // TLFunctions::TLPhotosDeletePhotos &arguments = m_deletePhotos;
     if (processNotImplementedMethod(TLValue::PhotosDeletePhotos)) {
         return;
     }
@@ -81,6 +82,7 @@ void PhotosRpcOperation::runDeletePhotos()
 
 void PhotosRpcOperation::runGetUserPhotos()
 {
+    // TLFunctions::TLPhotosGetUserPhotos &arguments = m_getUserPhotos;
     if (processNotImplementedMethod(TLValue::PhotosGetUserPhotos)) {
         return;
     }
@@ -90,6 +92,7 @@ void PhotosRpcOperation::runGetUserPhotos()
 
 void PhotosRpcOperation::runUpdateProfilePhoto()
 {
+    // TLFunctions::TLPhotosUpdateProfilePhoto &arguments = m_updateProfilePhoto;
     if (processNotImplementedMethod(TLValue::PhotosUpdateProfilePhoto)) {
         return;
     }
@@ -99,6 +102,7 @@ void PhotosRpcOperation::runUpdateProfilePhoto()
 
 void PhotosRpcOperation::runUploadProfilePhoto()
 {
+    // TLFunctions::TLPhotosUploadProfilePhoto &arguments = m_uploadProfilePhoto;
     if (processNotImplementedMethod(TLValue::PhotosUploadProfilePhoto)) {
         return;
     }

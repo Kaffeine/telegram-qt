@@ -234,6 +234,7 @@ bool AccountRpcOperation::processUpdateUsername(RpcProcessingContext &context)
 // Generated run methods
 void AccountRpcOperation::runChangePhone()
 {
+    // TLFunctions::TLAccountChangePhone &arguments = m_changePhone;
     if (processNotImplementedMethod(TLValue::AccountChangePhone)) {
         return;
     }
@@ -243,6 +244,7 @@ void AccountRpcOperation::runChangePhone()
 
 void AccountRpcOperation::runCheckUsername()
 {
+    // TLFunctions::TLAccountCheckUsername &arguments = m_checkUsername;
     if (processNotImplementedMethod(TLValue::AccountCheckUsername)) {
         return;
     }
@@ -252,6 +254,7 @@ void AccountRpcOperation::runCheckUsername()
 
 void AccountRpcOperation::runConfirmPhone()
 {
+    // TLFunctions::TLAccountConfirmPhone &arguments = m_confirmPhone;
     if (processNotImplementedMethod(TLValue::AccountConfirmPhone)) {
         return;
     }
@@ -261,6 +264,7 @@ void AccountRpcOperation::runConfirmPhone()
 
 void AccountRpcOperation::runDeleteAccount()
 {
+    // TLFunctions::TLAccountDeleteAccount &arguments = m_deleteAccount;
     if (processNotImplementedMethod(TLValue::AccountDeleteAccount)) {
         return;
     }
@@ -288,6 +292,7 @@ void AccountRpcOperation::runGetAuthorizations()
 
 void AccountRpcOperation::runGetNotifySettings()
 {
+    // TLFunctions::TLAccountGetNotifySettings &arguments = m_getNotifySettings;
     if (processNotImplementedMethod(TLValue::AccountGetNotifySettings)) {
         return;
     }
@@ -316,6 +321,7 @@ void AccountRpcOperation::runGetPassword()
 
 void AccountRpcOperation::runGetPasswordSettings()
 {
+    // TLFunctions::TLAccountGetPasswordSettings &arguments = m_getPasswordSettings;
     if (processNotImplementedMethod(TLValue::AccountGetPasswordSettings)) {
         return;
     }
@@ -325,6 +331,7 @@ void AccountRpcOperation::runGetPasswordSettings()
 
 void AccountRpcOperation::runGetPrivacy()
 {
+    // TLFunctions::TLAccountGetPrivacy &arguments = m_getPrivacy;
     if (processNotImplementedMethod(TLValue::AccountGetPrivacy)) {
         return;
     }
@@ -334,6 +341,7 @@ void AccountRpcOperation::runGetPrivacy()
 
 void AccountRpcOperation::runGetTmpPassword()
 {
+    // TLFunctions::TLAccountGetTmpPassword &arguments = m_getTmpPassword;
     if (processNotImplementedMethod(TLValue::AccountGetTmpPassword)) {
         return;
     }
@@ -352,6 +360,7 @@ void AccountRpcOperation::runGetWallPapers()
 
 void AccountRpcOperation::runRegisterDevice()
 {
+    // TLFunctions::TLAccountRegisterDevice &arguments = m_registerDevice;
     if (processNotImplementedMethod(TLValue::AccountRegisterDevice)) {
         return;
     }
@@ -361,6 +370,7 @@ void AccountRpcOperation::runRegisterDevice()
 
 void AccountRpcOperation::runReportPeer()
 {
+    // TLFunctions::TLAccountReportPeer &arguments = m_reportPeer;
     if (processNotImplementedMethod(TLValue::AccountReportPeer)) {
         return;
     }
@@ -370,6 +380,7 @@ void AccountRpcOperation::runReportPeer()
 
 void AccountRpcOperation::runResetAuthorization()
 {
+    // TLFunctions::TLAccountResetAuthorization &arguments = m_resetAuthorization;
     if (processNotImplementedMethod(TLValue::AccountResetAuthorization)) {
         return;
     }
@@ -388,6 +399,7 @@ void AccountRpcOperation::runResetNotifySettings()
 
 void AccountRpcOperation::runSendChangePhoneCode()
 {
+    // TLFunctions::TLAccountSendChangePhoneCode &arguments = m_sendChangePhoneCode;
     if (processNotImplementedMethod(TLValue::AccountSendChangePhoneCode)) {
         return;
     }
@@ -397,6 +409,7 @@ void AccountRpcOperation::runSendChangePhoneCode()
 
 void AccountRpcOperation::runSendConfirmPhoneCode()
 {
+    // TLFunctions::TLAccountSendConfirmPhoneCode &arguments = m_sendConfirmPhoneCode;
     if (processNotImplementedMethod(TLValue::AccountSendConfirmPhoneCode)) {
         return;
     }
@@ -406,6 +419,7 @@ void AccountRpcOperation::runSendConfirmPhoneCode()
 
 void AccountRpcOperation::runSetAccountTTL()
 {
+    // TLFunctions::TLAccountSetAccountTTL &arguments = m_setAccountTTL;
     if (processNotImplementedMethod(TLValue::AccountSetAccountTTL)) {
         return;
     }
@@ -415,6 +429,7 @@ void AccountRpcOperation::runSetAccountTTL()
 
 void AccountRpcOperation::runSetPrivacy()
 {
+    // TLFunctions::TLAccountSetPrivacy &arguments = m_setPrivacy;
     if (processNotImplementedMethod(TLValue::AccountSetPrivacy)) {
         return;
     }
@@ -424,6 +439,7 @@ void AccountRpcOperation::runSetPrivacy()
 
 void AccountRpcOperation::runUnregisterDevice()
 {
+    // TLFunctions::TLAccountUnregisterDevice &arguments = m_unregisterDevice;
     if (processNotImplementedMethod(TLValue::AccountUnregisterDevice)) {
         return;
     }
@@ -433,6 +449,7 @@ void AccountRpcOperation::runUnregisterDevice()
 
 void AccountRpcOperation::runUpdateDeviceLocked()
 {
+    // TLFunctions::TLAccountUpdateDeviceLocked &arguments = m_updateDeviceLocked;
     if (processNotImplementedMethod(TLValue::AccountUpdateDeviceLocked)) {
         return;
     }
@@ -442,6 +459,7 @@ void AccountRpcOperation::runUpdateDeviceLocked()
 
 void AccountRpcOperation::runUpdateNotifySettings()
 {
+    // TLFunctions::TLAccountUpdateNotifySettings &arguments = m_updateNotifySettings;
     if (processNotImplementedMethod(TLValue::AccountUpdateNotifySettings)) {
         return;
     }
@@ -451,6 +469,7 @@ void AccountRpcOperation::runUpdateNotifySettings()
 
 void AccountRpcOperation::runUpdatePasswordSettings()
 {
+    // TLFunctions::TLAccountUpdatePasswordSettings &arguments = m_updatePasswordSettings;
     if (processNotImplementedMethod(TLValue::AccountUpdatePasswordSettings)) {
         return;
     }
@@ -460,6 +479,7 @@ void AccountRpcOperation::runUpdatePasswordSettings()
 
 void AccountRpcOperation::runUpdateProfile()
 {
+    // TLFunctions::TLAccountUpdateProfile &arguments = m_updateProfile;
     if (processNotImplementedMethod(TLValue::AccountUpdateProfile)) {
         return;
     }
@@ -469,6 +489,7 @@ void AccountRpcOperation::runUpdateProfile()
 
 void AccountRpcOperation::runUpdateStatus()
 {
+    // TLFunctions::TLAccountUpdateStatus &arguments = m_updateStatus;
     if (processNotImplementedMethod(TLValue::AccountUpdateStatus)) {
         return;
     }
@@ -478,6 +499,7 @@ void AccountRpcOperation::runUpdateStatus()
 
 void AccountRpcOperation::runUpdateUsername()
 {
+    // TLFunctions::TLAccountUpdateUsername &arguments = m_updateUsername;
     if (processNotImplementedMethod(TLValue::AccountUpdateUsername)) {
         return;
     }
