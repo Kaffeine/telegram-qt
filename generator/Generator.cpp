@@ -1248,7 +1248,9 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
 
                 if (indexOfEnd > 0) {
                     QString code = previousCode.mid(index, indexOfEnd - index) + QLatin1String("\n}\n\n");
-                    if (!code.contains("NotImplemented") && !code.contains("not implemented")) {
+                    bool keepCustomNotImplemented = true;
+                    bool notImplemented = code.contains("NotImplemented") || code.contains("not implemented");
+                    if (!notImplemented || keepCustomNotImplemented) {
                         return code;
                     }
                 } else {
