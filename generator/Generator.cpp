@@ -1218,24 +1218,50 @@ QString Generator::generateRpcProcessSampleDefinition(const TLMethod &method)
 
 QString Generator::generateDebugRpcParse(const TLMethod &method)
 {
+    // case TLValue::AuthSignIn:
+    //     d << request << "(";
+    // {
+    //     Telegram::Debug::Spacer spacer;
+    //     QString phoneNumber;
+    //     stream >> phoneNumber;
+    //     QString phoneCodeHash;
+    //     stream >> phoneCodeHash;
+    //     QString phoneCode;
+    //     stream >> phoneCode;
+    //     d << endl;
+    //     d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
+    //     d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
+    //     d << spacer.innerSpaces() << "phoneCode: " << phoneCode << endl;
+    // }
+    //     d << ")";
+    //     break;
+
     QString result;
+    QTextStream stream(&result, QIODevice::WriteOnly);
+    stream << spacing << QStringLiteral("case %1::%2:").arg(tlValueName, method.nameFirstCapital()) << endl;
+    // stream << spacing << QStringLiteral("case %1::%2:").arg(tlValueName, formatName(method.name, FormatOption::UpperCaseFirstLetter)) << endl;
+    stream << spacing << "    d << \"" << method.nameFirstCapital() << "(\";" << endl;
 
-    result += spacing + QString("case %1::%2: {\n").arg(tlValueName, formatName(method.name, FormatOption::UpperCaseFirstLetter));
+    if (!method.params.isEmpty()) {
+        stream << spacing << "{" << endl;
+        stream << spacing << "    d << endl;" << endl;
+        stream << spacing << QStringLiteral("    Telegram::Debug::Spacer spacer;") << endl;
 
-    QString debugLine = QStringLiteral("qDebug() << request");
-
-    foreach (const TLParam &param, method.params) {
-        if (param.dependOnFlag()) {
-            continue;
+        for (const TLParam &param : method.params) {
+            if (param.dependOnFlag()) {
+                continue;
+            }
+            stream << spacing << QStringLiteral("    %1 %2;").arg(param.type(), param.getAlias()) << endl;
+            stream << spacing << QStringLiteral("    stream >> %1;").arg(param.getAlias()) << endl;
+            stream << spacing << "    d << spacer.innerSpaces()"
+                   << " << \"" << param.getAlias() << ": \" << " << param.getAlias()
+                   << " << endl;" << endl;
         }
-        result += spacing + spacing + QString("%1 %2;\n").arg(param.type()).arg(param.getAlias());
-        result += spacing + spacing + QString("stream >> %1;\n").arg(param.getAlias());
-        debugLine += QString(" << \"%1\" << %1").arg(param.getAlias());
+        stream << spacing << "}" << endl;
     }
 
-    result += spacing + spacing + debugLine + QLatin1String(";\n");
-    result += spacing + QLatin1String("}\n");
-    result += spacing + spacing + QLatin1String("break;\n\n");
+    stream << spacing << QStringLiteral("    d << \")\";") << endl;
+    stream << spacing << QStringLiteral("    break;") << endl;
 
     return result;
 }
