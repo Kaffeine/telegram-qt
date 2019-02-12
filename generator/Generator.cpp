@@ -1259,6 +1259,7 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
             }
             // void AuthRpcOperation::runCheckPhone()
             // {
+            //     // TLFunctions::TLAuthCheckPhone &arguments = m_checkPhone;
             //     if (processNotImplementedMethod(TLValue::AuthCheckPhone)) {
             //         return;
             //     }
@@ -1269,6 +1270,9 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
             QTextStream stream(&definition);
             stream << "void " << className << "::run" << method.nameFromSecondWord() << "()" << endl;
             stream << "{" << endl;
+            if (!method.params.isEmpty()) {
+                stream << "    // TLFunctions::TL" << method.nameFirstCapital() << " &arguments = m_" << method.predicateName() << ";" << endl;
+            }
             stream << "    if (processNotImplementedMethod(TLValue::" << method.nameFirstCapital() << ")) {" << endl;
             stream << "        return;" << endl;
             stream << "    }" << endl;
