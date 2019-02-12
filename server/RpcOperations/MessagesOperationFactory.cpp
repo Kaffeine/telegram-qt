@@ -1040,7 +1040,8 @@ void MessagesRpcOperation::runGetGameHighScores()
 
 void MessagesRpcOperation::runGetHistory()
 {
-    switch (m_getHistory.peer.tlType) {
+    TLFunctions::TLMessagesGetHistory &arguments = m_getHistory;
+    switch (arguments.peer.tlType) {
     case TLValue::InputPeerEmpty:
     case TLValue::InputPeerSelf:
     case TLValue::InputPeerUser:
@@ -1048,23 +1049,23 @@ void MessagesRpcOperation::runGetHistory()
     case TLValue::InputPeerChat:
     case TLValue::InputPeerChannel:
     default:
-        qCritical() << Q_FUNC_INFO << "Not implemented for requested arguments" << m_getHistory.peer.tlType;
+        qCritical() << Q_FUNC_INFO << "Not implemented for requested arguments" << arguments.peer.tlType;
         processNotImplementedMethod(TLValue::MessagesGetHistory);
         sendRpcError(RpcError());
         return;
     }
 
     const LocalUser *self = layer()->getUser();
-    const Peer p = api()->getPeer(m_getHistory.peer, self);
+    const Peer p = api()->getPeer(arguments.peer, self);
     TLVector<TLMessage> history = self->getHistory(
                 p,
-                m_getHistory.offsetId,
-                m_getHistory.offsetDate,
-                m_getHistory.addOffset,
-                m_getHistory.limit,
-                m_getHistory.maxId,
-                m_getHistory.minId,
-                m_getHistory.hash);
+                arguments.offsetId,
+                arguments.offsetDate,
+                arguments.addOffset,
+                arguments.limit,
+                arguments.maxId,
+                arguments.minId,
+                arguments.hash);
     TLMessagesMessages result;
     result.messages.swap(history);
 
@@ -1509,19 +1510,21 @@ void MessagesRpcOperation::runSendMedia()
 
 void MessagesRpcOperation::runSendMessage()
 {
+    TLFunctions::TLMessagesSendMessage &arguments = m_sendMessage;
+
     LocalUser *self = layer()->getUser();
 
-    Telegram::Peer peer = Telegram::Utils::toPublicPeer(m_sendMessage.peer, self->id());
+    Telegram::Peer peer = Telegram::Utils::toPublicPeer(arguments.peer, self->id());
     MessageRecipient *recipient = nullptr;
 
     switch (peer.type) {
     case Telegram::Peer::User:
-        recipient = api()->tryAccessUser(peer.id, m_sendMessage.peer.accessHash, self);
+        recipient = api()->tryAccessUser(peer.id, arguments.peer.accessHash, self);
         break;
     case Telegram::Peer::Chat:
         break;
     case Telegram::Peer::Channel:
-        //recipient = api()->getChannel(m_sendMessage.peer.channelId, m_sendMessage.peer.accessHash);
+        //recipient = api()->getChannel(arguments.peer.channelId, arguments.peer.accessHash);
         break;
     }
     if (!recipient) {
@@ -1538,7 +1541,7 @@ void MessagesRpcOperation::runSendMessage()
     message.tlType = TLValue::Message;
     message.fromId = self->id();
     message.flags |= TLMessage::FromId;
-    message.message = m_sendMessage.message;
+    message.message = arguments.message;
     message.date = Telegram::Utils::getCurrentTime();
     message.toId = recipient->toTLPeer();
     const quint32 newMessageId = self->addMessage(message, layer()->session());
@@ -1547,7 +1550,7 @@ void MessagesRpcOperation::runSendMessage()
     TLUpdate updateMessageId;
     updateMessageId.tlType = TLValue::UpdateMessageID;
     updateMessageId.quint32Id = newMessageId;
-    updateMessageId.randomId = m_sendMessage.randomId;
+    updateMessageId.randomId = arguments.randomId;
 
     TLUpdates result;
     result.tlType = TLValue::Updates;
