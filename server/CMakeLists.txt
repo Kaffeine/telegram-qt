@@ -8,6 +8,7 @@ set(server_lib_SOURCES
     ServerUtils.cpp
     Session.cpp
     RpcOperationFactory.cpp
+    RpcProcessingContext.cpp
     TelegramServer.cpp
     TelegramServerConfig.cpp
     TelegramServerUser.cpp
@@ -42,6 +43,7 @@ set(server_lib_HEADERS
     ${server_lib_META_HEADERS}
     AuthorizationProvider.hpp
     FunctionStreamOperators.hpp
+    RpcProcessingContext.hpp
     ServerApi.hpp
     Session.hpp
 )

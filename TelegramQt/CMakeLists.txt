@@ -27,7 +27,6 @@ set(telegram_qt_SOURCES
     RpcError.cpp
     RpcLayer.cpp
     RandomGenerator.cpp
-    RpcProcessingContext.cpp
     SendPackageHelper.cpp
     CTelegramStream.cpp
     CTelegramStreamExtraOperators.cpp
@@ -113,7 +112,6 @@ set(telegram_qt_HEADERS
     CTelegramStreamExtraOperators.hpp
     ReadyObject.hpp
     RandomGenerator.hpp
-    RpcProcessingContext.hpp
     CRawStream.hpp
     DataStorage_p.hpp
     Debug.hpp

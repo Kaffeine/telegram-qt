@@ -68,7 +68,6 @@ SOURCES += \
     PendingRpcOperation.cpp \
     PendingRpcResult.cpp \
     RandomGenerator.cpp \
-    RpcProcessingContext.cpp \
     SendPackageHelper.cpp \
     TLValues.cpp \
     UpdatesLayer.cpp
@@ -148,7 +147,6 @@ HEADERS += \
     PendingRpcOperation.hpp \
     PendingRpcResult.hpp \
     RandomGenerator.hpp \
-    RpcProcessingContext.hpp \
     SendPackageHelper.hpp \
     TelegramNamespace.hpp \
     TelegramNamespace_p.hpp \
