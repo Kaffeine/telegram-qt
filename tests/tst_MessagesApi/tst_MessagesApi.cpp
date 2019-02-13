@@ -108,8 +108,8 @@ void tst_MessagesApi::getDialogs()
     const UserData user1Data = c_userWithPassword;
     const UserData user2Data = c_user2;
     const DcOption clientDcOption = c_localDcOptions.first();
-    const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
-    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
 
     // Prepare server
     Test::AuthProvider authProvider;

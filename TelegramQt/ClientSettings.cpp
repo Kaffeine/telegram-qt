@@ -12,7 +12,7 @@ Settings::Settings(QObject *parent) :
     QObject(parent)
 {
     m_serverConfiguration = defaultServerConfiguration();
-    m_key = defaultServerPublicRsaKey();
+    m_key = RsaKey::defaultKey();
     m_preferedSessionType = SessionType::Obfuscated;
 
     setPingInterval(defaultPingInterval());
@@ -41,11 +41,6 @@ void Settings::setPingInterval(quint32 interval, quint32 serverDisconnectionAddi
     m_pingInterval = interval;
     m_serverDisconnectionAdditionalTime = serverDisconnectionAdditionalTime;
     emit pingIntervalChanged(interval, serverDisconnectionAdditionalTime);
-}
-
-RsaKey Settings::defaultServerPublicRsaKey()
-{
-    return Utils::loadHardcodedKey();
 }
 
 QVector<DcOption> Settings::defaultServerConfiguration()

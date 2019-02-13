@@ -3,7 +3,7 @@
 
 #include "telegramqt_global.h"
 
-#include "TelegramNamespace.hpp"
+#include "RsaKey.hpp"
 
 #include <QObject>
 #include <QVector>

@@ -22,7 +22,7 @@
 #include <QVector>
 
 #include "DcConfiguration.hpp"
-#include "TelegramNamespace.hpp"
+#include "RsaKey.hpp"
 
 namespace Telegram {
 

@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QNetworkProxy>
 
+#include "RsaKey.hpp"
 #include "TelegramNamespace.hpp"
 
 namespace Telegram {
@@ -39,8 +40,6 @@ public:
     void setPingInterval(quint32 interval, quint32 serverDisconnectionAdditionalTime = 0);
 
     // void setMediaDataBufferSize(quint32 size);
-
-    Q_INVOKABLE static RsaKey defaultServerPublicRsaKey();
 
     Q_INVOKABLE static QVector<DcOption> defaultServerConfiguration();
     Q_INVOKABLE static QVector<DcOption> testServerConfiguration();

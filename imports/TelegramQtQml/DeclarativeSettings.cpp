@@ -41,7 +41,7 @@ void DeclarativeRsaKey::setLoadDefault(bool loadDefault)
     }
     m_loadDefaultKey = loadDefault;
     if (loadDefault) {
-        setKey(Settings::defaultServerPublicRsaKey());
+        setKey(RsaKey::defaultKey());
     }
     emit loadDefaultChanged(loadDefault);
 }

@@ -26,8 +26,12 @@ set(telegram_qt_SOURCES
     MessagingApi.cpp
     RpcError.cpp
     RpcLayer.cpp
+    RsaKey.cpp
+    RsaKey.hpp
     RandomGenerator.cpp
     SendPackageHelper.cpp
+    SslBigNumber.cpp
+    SslBigNumber.hpp
     CTelegramStream.cpp
     CTelegramStreamExtraOperators.cpp
     CTcpTransport.cpp

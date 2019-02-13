@@ -145,10 +145,10 @@ void tst_ConnectionApi::testClientConnection()
     QFETCH(UserData, userData);
     QFETCH(DcOption, clientDcOption);
 
-    const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
-    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
-    QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+    QVERIFY2(privateKey.isPrivate(), "Unable to read private RSA key");
 
     Test::AuthProvider authProvider;
     Telegram::Server::LocalCluster cluster;
@@ -230,9 +230,9 @@ void tst_ConnectionApi::reconnect()
     const UserData userData = c_userWithPassword;
     const DcOption clientDcOption = c_localDcOptions.first();
 
-    const RsaKey publicKey = Utils::loadRsaKeyFromFile(TestKeyData::publicKeyFileName());
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
-    const RsaKey privateKey = Utils::loadRsaPrivateKeyFromFile(TestKeyData::privateKeyFileName());
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
     QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
 
     Test::AuthProvider authProvider;

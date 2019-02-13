@@ -26,12 +26,10 @@
 #define ZLIB_CONST
 #include <zlib.h>
 
-#include <QBuffer>
 #include <QCryptographicHash>
 #include <QDebug>
 #include <QFileInfo>
 
-#include "CRawStream.hpp"
 #include "RandomGenerator.hpp"
 
 struct SslBigNumberContext {
@@ -119,18 +117,6 @@ struct SslBigNumber {
 private:
     BIGNUM *m_number;
 };
-
-static const QByteArray s_hardcodedRsaDataKey("0c150023e2f70db7985ded064759cfecf0af328e69a41daf4d6f01b53813"
-                                              "5a6f91f8f8b2a0ec9ba9720ce352efcf6c5680ffc424bd634864902de0b4"
-                                              "bd6d49f4e580230e3ae97d95c8b19442b3c0a10d8f5633fecedd6926a7f6"
-                                              "dab0ddb7d457f9ea81b8465fcd6fffeed114011df91c059caedaf97625f6"
-                                              "c96ecc74725556934ef781d866b34f011fce4d835a090196e9a5f0e4449a"
-                                              "f7eb697ddb9076494ca5f81104a305b6dd27665722c46b60e5df680fb16b"
-                                              "210607ef217652e60236c255f6a28315f4083a96791d7214bf64c1df4fd0"
-                                              "db1944fb26a2a57031b32eee64ad15a8ba68885cde74a5bfc920f6abf59b"
-                                              "a5c75506373e7130f9042da922179251f");
-static const QByteArray s_hardcodedRsaDataExp("010001");
-static const quint64 s_hardcodedRsaDataFingersprint(0xc3b42b026ce86b21);
 
 namespace Telegram {
 
@@ -238,106 +224,6 @@ quint64 Utils::getFingerprints(const QByteArray &data, const BitsOrder64 order)
     } else {
         return *((quint64 *) shaSum.constData());
     }
-}
-
-quint64 Utils::getRsaFingerprints(const Telegram::RsaKey &key)
-{
-    if (key.modulus.isEmpty() || key.exponent.isEmpty()) {
-        return 0;
-    }
-    QBuffer buffer;
-    buffer.open(QIODevice::WriteOnly);
-    CRawStreamEx stream(&buffer);
-    stream << key.modulus;
-    stream << key.exponent;
-    return getFingerprints(buffer.data(), Lower64Bits);
-}
-
-Telegram::RsaKey Utils::loadHardcodedKey()
-{
-    Telegram::RsaKey result;
-    result.modulus = SslBigNumber::fromHex(s_hardcodedRsaDataKey).toByteArray();
-    result.exponent = SslBigNumber::fromHex(s_hardcodedRsaDataExp).toByteArray();
-    result.fingerprint = s_hardcodedRsaDataFingersprint;
-    return result;
-}
-
-Telegram::RsaKey Utils::loadRsaKeyFromFile(const QString &fileName)
-{
-    Telegram::RsaKey result;
-    FILE *file = fopen(fileName.toLocal8Bit().constData(), "r");
-    if (!file) {
-        qWarning() << "Can not open RSA key file" << fileName;
-        return result;
-    }
-
-    // Try SubjectPublicKeyInfo structure (BEGIN PUBLIC KEY)
-    RSA *key = PEM_read_RSA_PUBKEY(file, 0, 0, 0);
-
-    if (!key) {
-        // Try PKCS#1 RSAPublicKey structure (BEGIN RSA PUBLIC KEY)
-        key = PEM_read_RSAPublicKey(file, 0, 0, 0);
-    }
-
-    fclose(file);
-    if (!key) {
-        qWarning() << "Can not read RSA key.";
-        return result;
-    }
-    const BIGNUM *n, *e;
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-    n=key->n;
-    e=key->e;
-#else
-    RSA_get0_key(key, &n, &e, nullptr);
-#endif
-
-    result.modulus = SslBigNumber::toByteArray(n);
-    result.exponent = SslBigNumber::toByteArray(e);
-    result.fingerprint = getRsaFingerprints(result);
-    RSA_free(key);
-    return result;
-}
-
-Telegram::RsaKey Utils::loadRsaPrivateKeyFromFile(const QString &fileName)
-{
-    Telegram::RsaKey result;
-    if (!QFileInfo::exists(fileName)) {
-        qWarning() << "The RSA key file" << fileName << "does not exist";
-        return result;
-    }
-    FILE *file = fopen(fileName.toLocal8Bit().constData(), "r");
-    if (!file) {
-        qWarning() << "Can not open RSA key file.";
-        return result;
-    }
-    RSA *key = PEM_read_RSAPrivateKey(file, NULL, NULL, NULL);
-
-    fclose(file);
-    if (!key) {
-        qWarning() << "Can not read RSA key.";
-        return result;
-    }
-    const BIGNUM *n, *e, *d;
-#if OPENSSL_VERSION_NUMBER < 0x10100000L
-    n=key->n;
-    e=key->e;
-    d=key->d;
-#else
-    RSA_get0_key(key, &n, &e, &d);
-#endif
-
-    result.modulus = SslBigNumber::toByteArray(n);
-    result.exponent = SslBigNumber::toByteArray(e);
-    result.secretExponent = SslBigNumber::toByteArray(d);
-    result.fingerprint = getRsaFingerprints(result);
-    RSA_free(key);
-    return result;
-}
-
-Telegram::RsaKey Utils::loadRsaKey()
-{
-    return loadHardcodedKey();
 }
 
 QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp)

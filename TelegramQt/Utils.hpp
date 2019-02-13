@@ -21,6 +21,7 @@
 #include <QByteArray>
 
 #include "crypto-aes.hpp"
+#include "RsaKey.hpp"
 #include "TelegramNamespace.hpp"
 
 namespace Telegram {
@@ -49,11 +50,6 @@ quint64 findDivider(quint64 number);
 QByteArray sha1(const QByteArray &data);
 QByteArray sha256(const QByteArray &data);
 quint64 getFingerprints(const QByteArray &data, const BitsOrder64 order);
-quint64 getRsaFingerprints(const Telegram::RsaKey &key);
-Telegram::RsaKey loadHardcodedKey();
-Telegram::RsaKey loadRsaKeyFromFile(const QString &fileName);
-Telegram::RsaKey loadRsaPrivateKeyFromFile(const QString &fileName);
-Telegram::RsaKey loadRsaKey();
 QByteArray binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp);
 QByteArray rsa(const QByteArray &data, const Telegram::RsaKey &key);
 QByteArray aesDecrypt(const QByteArray &data, const SAesKey &key);

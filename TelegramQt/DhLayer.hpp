@@ -18,8 +18,10 @@
 #ifndef DH_LAYER_HPP
 #define DH_LAYER_HPP
 
+#include <QObject>
+
+#include "RsaKey.hpp"
 #include "TLNumbers.hpp"
-#include "TelegramNamespace.hpp"
 #include "crypto-aes.hpp"
 #include <QtEndian>
 

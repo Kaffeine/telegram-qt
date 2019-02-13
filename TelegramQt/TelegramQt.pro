@@ -50,6 +50,7 @@ SOURCES += \
     IgnoredMessageNotification.cpp \
     RpcError.cpp \
     RpcLayer.cpp \
+    RsaKey.cpp \
     Connection.cpp \
     ConnectionError.cpp \
     CRawStream.cpp \
@@ -69,6 +70,7 @@ SOURCES += \
     PendingRpcResult.cpp \
     RandomGenerator.cpp \
     SendPackageHelper.cpp \
+    SslBigNumber.cpp \
     TLValues.cpp \
     UpdatesLayer.cpp
 
@@ -83,6 +85,7 @@ PUBLIC_HEADERS += \
     DialogList.hpp \
     MessagingApi.hpp \
     ReadyObject.hpp \
+    RsaKey.hpp \
     TelegramNamespace.hpp \
     TelegramQt/CAppInformation \
     TelegramQt/CTelegramCore \
@@ -148,6 +151,7 @@ HEADERS += \
     PendingRpcResult.hpp \
     RandomGenerator.hpp \
     SendPackageHelper.hpp \
+    SslBigNumber.hpp \
     TelegramNamespace.hpp \
     TelegramNamespace_p.hpp \
     telegramqt_global.h \

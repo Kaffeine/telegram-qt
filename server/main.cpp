@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
         config.save();
     }
 
-    const Telegram::RsaKey key = Telegram::Utils::loadRsaPrivateKeyFromFile(config.privateKeyFile());
+    const Telegram::RsaKey key = Telegram::RsaKey::fromFile(config.privateKeyFile());
     if (!key.isValid()) {
         qCritical() << "Unable to read RSA key. Please read README.md for more information.";
         return -1;
