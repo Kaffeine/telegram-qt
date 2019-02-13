@@ -1,59 +1,56 @@
+cmake_minimum_required(VERSION 3.1)
 
-set(server_lib_SOURCES
-    DefaultAuthorizationProvider.cpp
-    LocalCluster.cpp
-    ServerDhLayer.cpp
-    ServerRpcLayer.cpp
-    ServerRpcOperation.cpp
-    ServerUtils.cpp
-    Session.cpp
-    RpcOperationFactory.cpp
-    RpcProcessingContext.cpp
-    TelegramServer.cpp
-    TelegramServerConfig.cpp
-    TelegramServerUser.cpp
-    CServerTcpTransport.cpp
-    RemoteClientConnection.cpp
-    RemoteServerConnection.cpp
-    FunctionStreamOperators.cpp
+project(TelegramQtServer
+    LANGUAGES CXX
 )
 
-set(server_lib_META_HEADERS
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(server_lib_SOURCES
+    AuthorizationProvider.hpp
+    DefaultAuthorizationProvider.cpp
     DefaultAuthorizationProvider.hpp
+    LocalCluster.cpp
     LocalCluster.hpp
+    ServerApi.hpp
+    ServerDhLayer.cpp
     ServerDhLayer.hpp
+    ServerRpcLayer.cpp
     ServerRpcLayer.hpp
+    ServerRpcOperation.cpp
     ServerRpcOperation.hpp
+    ServerRpcOperation_p.hpp
+    ServerUtils.cpp
+    Session.cpp
+    Session.hpp
+    RpcOperationFactory.cpp
     RpcOperationFactory.hpp
+    RpcOperationFactory_p.hpp
+    RpcProcessingContext.cpp
+    RpcProcessingContext.hpp
+    TelegramServer.cpp
     TelegramServer.hpp
+    TelegramServerConfig.cpp
     TelegramServerConfig.hpp
+    TelegramServerUser.cpp
     TelegramServerUser.hpp
+    CServerTcpTransport.cpp
     CServerTcpTransport.hpp
+    RemoteClientConnection.cpp
     RemoteClientConnection.hpp
+    RemoteServerConnection.cpp
     RemoteServerConnection.hpp
+    FunctionStreamOperators.cpp
+    FunctionStreamOperators.hpp
 )
 
 FILE(GLOB RPC_SOURCES RpcOperations/*.cpp)
 FILE(GLOB RPC_HEADERS RpcOperations/*.hpp)
 
-list(APPEND server_lib_SOURCES ${RPC_SOURCES})
-list(APPEND server_lib_META_HEADERS ${RPC_HEADERS})
-
-set(server_lib_HEADERS
-    ${server_lib_META_HEADERS}
-    AuthorizationProvider.hpp
-    FunctionStreamOperators.hpp
-    RpcProcessingContext.hpp
-    ServerApi.hpp
-    Session.hpp
-)
-
-include_directories(
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_BINARY_DIR}
-    ${OPENSSL_INCLUDE_DIR}
-    ${ZLIB_INCLUDE_DIR}
-)
+list(APPEND server_lib_SOURCES ${RPC_SOURCES} ${RPC_HEADERS})
 
 if (DEVELOPER_BUILD)
     add_definitions(-DDEVELOPER_BUILD)
@@ -71,32 +68,25 @@ add_definitions(
     -DQT_STRICT_ITERATORS
 )
 
-QT5_WRAP_CPP(server_lib_MOC_SOURECES ${server_lib_META_HEADERS})
-
-add_library(TelegramServerQt${QT_VERSION_MAJOR} STATIC ${server_lib_SOURCES} ${server_lib_MOC_SOURECES})
+add_library(TelegramServerQt${QT_VERSION_MAJOR} STATIC
+    ${server_lib_SOURCES}
+)
 
 target_include_directories(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(TelegramServerQt${QT_VERSION_MAJOR} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/RpcOperations)
 
-target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} LINK_PUBLIC
+target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC
     Qt5::Core
     Qt5::Network
 )
 
 if (DEVELOPER_BUILD)
-    target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} LINK_PUBLIC
+    target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC
         Qt5::DBus
     )
 endif()
 
-target_include_directories(TelegramServerQt${QT_VERSION_MAJOR} PRIVATE
-    ${QT5_INCLUDES}
-)
-
-set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
-set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_FULL_LIBDIR})
-
-target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} LINK_PUBLIC
+target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC
     TelegramQt${QT_VERSION_MAJOR}
 )
 
@@ -105,6 +95,6 @@ set(server_SOURCES
 )
 
 add_executable(TelegramServer ${server_SOURCES})
-target_link_libraries(TelegramServer LINK_PUBLIC
+target_link_libraries(TelegramServer PUBLIC
     TelegramServerQt${QT_VERSION_MAJOR}
 )
