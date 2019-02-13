@@ -79,19 +79,21 @@ set(server_json_SOURCES
 )
 
 if (DEVELOPER_BUILD)
-    add_definitions(-DDEVELOPER_BUILD)
-    add_definitions(-DQT_DEPRECATED_WARNINGS)
-    add_definitions(-DUSE_DBUS_NOTIFIER)
+    add_compile_definitions(
+        DEVELOPER_BUILD
+        QT_DEPRECATED_WARNINGS
+        USE_DBUS_NOTIFIER
+    )
 endif()
 
-add_definitions(
-    -DQT_NO_CAST_TO_ASCII
-    -DQT_NO_CAST_FROM_ASCII
-    -DQT_NO_URL_CAST_FROM_STRING
-    -DQT_NO_CAST_FROM_BYTEARRAY
-    -DQT_USE_FAST_OPERATOR_PLUS
-    -DQT_USE_QSTRINGBUILDER
-    -DQT_STRICT_ITERATORS
+add_compile_definitions(
+    QT_NO_CAST_TO_ASCII
+    QT_NO_CAST_FROM_ASCII
+    QT_NO_URL_CAST_FROM_STRING
+    QT_NO_CAST_FROM_BYTEARRAY
+    QT_USE_FAST_OPERATOR_PLUS
+    QT_USE_QSTRINGBUILDER
+    QT_STRICT_ITERATORS
 )
 
 find_package(Qt5 5.5 COMPONENTS Core Gui Network REQUIRED)
