@@ -19,13 +19,14 @@
 #define TELEGRAM_RPC_ERROR_HPP
 
 #include "telegramqt_global.h"
+
 #include <QObject>
 
 class CRawStreamEx;
 
 namespace Telegram {
 
-class RpcError
+class TELEGRAMQT_EXPORT RpcError
 {
     Q_GADGET
 public:

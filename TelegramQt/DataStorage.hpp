@@ -29,7 +29,7 @@ namespace Client {
 
 class DataStoragePrivate;
 
-class DataStorage : public QObject
+class TELEGRAMQT_EXPORT DataStorage : public QObject
 {
     Q_OBJECT
 public:

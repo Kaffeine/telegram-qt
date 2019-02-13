@@ -12,7 +12,7 @@ namespace Telegram {
 
 namespace Client {
 
-class Settings : public QObject
+class TELEGRAMQT_EXPORT Settings : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int pingInterval READ pingInterval WRITE setPingInterval NOTIFY pingIntervalChanged)

@@ -9,7 +9,7 @@ namespace Client {
 
 class AccountStoragePrivate;
 
-class AccountStorage : public QObject
+class TELEGRAMQT_EXPORT AccountStorage : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString accountIdentifier READ accountIdentifier WRITE setAccountIdentifier NOTIFY accountIdentifierChanged)

@@ -34,7 +34,7 @@ namespace Telegram {
 TELEGRAMQT_EXPORT QString version();
 TELEGRAMQT_EXPORT QString buildVersion();
 
-struct Peer
+struct TELEGRAMQT_EXPORT Peer
 {
     Q_GADGET
     Q_PROPERTY(Telegram::Peer::Type type MEMBER type)
@@ -202,7 +202,7 @@ public:
 
 namespace Telegram {
 
-void initialize();
+TELEGRAMQT_EXPORT void initialize();
 
 class UserInfo;
 class RemoteFile;
@@ -213,7 +213,7 @@ enum class PeerPictureSize {
     Big,
 };
 
-struct DcOption
+struct TELEGRAMQT_EXPORT DcOption
 {
     enum Flags {
         Ipv6 = 1 << 0,
@@ -239,7 +239,7 @@ inline bool DcOption::operator==(const DcOption &option) const
     return (option.id == id) && (option.port == port) && (option.address == address) && (option.flags == flags);
 }
 
-struct Message
+struct TELEGRAMQT_EXPORT Message
 {
     Message() = default;
     const Peer peer() const { return m_peer; }
@@ -263,7 +263,7 @@ private:
     Peer m_forwardPeer;
 };
 
-class MessageMediaInfo
+class TELEGRAMQT_EXPORT MessageMediaInfo
 {
 public:
     MessageMediaInfo();
@@ -318,7 +318,7 @@ protected:
     Private *d;
 };
 
-class RemoteFile
+class TELEGRAMQT_EXPORT RemoteFile
 {
 public:
     enum Type {
@@ -347,7 +347,7 @@ protected:
     Private *d;
 };
 
-class DialogInfo
+class TELEGRAMQT_EXPORT DialogInfo
 {
 public:
     DialogInfo();
@@ -369,7 +369,7 @@ protected:
     Private *d;
 };
 
-class UserInfo
+class TELEGRAMQT_EXPORT UserInfo
 {
 public:
     UserInfo();
@@ -401,7 +401,7 @@ protected:
     Private *d;
 };
 
-class ChatInfo
+class TELEGRAMQT_EXPORT ChatInfo
 {
 public:
     ChatInfo();
