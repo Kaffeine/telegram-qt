@@ -25,7 +25,7 @@
 #include "TLNumbers.hpp"
 #include "TLTypes.hpp"
 
-class CTelegramStream : public CRawStreamEx
+class TELEGRAMQT_INTERNAL_EXPORT CTelegramStream : public CRawStreamEx
 {
 public:
     using CRawStreamEx::CRawStreamEx;

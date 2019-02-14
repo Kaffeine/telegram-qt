@@ -25,7 +25,7 @@
 
 namespace Telegram {
 
-namespace Utils {
+namespace Utils TELEGRAMQT_INTERNAL_EXPORT {
 
 enum BitsOrder64 {
     Higher64Bits,

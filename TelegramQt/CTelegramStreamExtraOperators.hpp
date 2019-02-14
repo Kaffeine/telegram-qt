@@ -18,6 +18,8 @@
 #ifndef CTELEGRAM_STREAM_EXTRAS_HPP
 #define CTELEGRAM_STREAM_EXTRAS_HPP
 
+#include "telegramqt_global.h"
+
 #include "TLTypes.hpp"
 
 class CTelegramStream;

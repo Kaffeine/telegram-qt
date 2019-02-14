@@ -61,7 +61,7 @@ protected:
 };
 
 class FileAccountStoragePrivate;
-class FileAccountStorage : public AccountStorage
+class TELEGRAMQT_EXPORT FileAccountStorage : public AccountStorage
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE_D(d, FileAccountStorage)

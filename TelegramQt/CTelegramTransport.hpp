@@ -18,6 +18,8 @@
 #ifndef TELEGRAM_BASE_TRANSPORT_HPP
 #define TELEGRAM_BASE_TRANSPORT_HPP
 
+#include "telegramqt_global.h"
+
 #include <QObject>
 
 #include <QByteArray>
@@ -25,7 +27,7 @@
 
 namespace Telegram {
 
-class BaseTransport : public QObject
+class TELEGRAMQT_INTERNAL_EXPORT BaseTransport : public QObject
 {
     Q_OBJECT
 public:

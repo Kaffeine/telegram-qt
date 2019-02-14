@@ -88,8 +88,8 @@ public:
     static bool reasonFromString(const QByteArray &str, Reason *reason, quint32 *argument);
 };
 
-CRawStreamEx &operator>>(CRawStreamEx &stream, RpcError &error);
-CRawStreamEx &operator<<(CRawStreamEx &stream, const RpcError &error);
+TELEGRAMQT_INTERNAL_EXPORT CRawStreamEx &operator>>(CRawStreamEx &stream, RpcError &error);
+TELEGRAMQT_INTERNAL_EXPORT CRawStreamEx &operator<<(CRawStreamEx &stream, const RpcError &error);
 
 } // Telegram namespace
 

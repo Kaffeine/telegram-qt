@@ -18,6 +18,8 @@
 #ifndef CRAWSTREAM_HPP
 #define CRAWSTREAM_HPP
 
+#include "telegramqt_global.h"
+
 #include <QByteArray>
 
 QT_FORWARD_DECLARE_CLASS(QIODevice)
@@ -28,7 +30,7 @@ class AbridgedLength;
 
 }
 
-class CRawStream
+class TELEGRAMQT_INTERNAL_EXPORT CRawStream
 {
 public:
     enum Mode {
@@ -101,7 +103,7 @@ private:
 
 };
 
-class CRawStreamEx : public CRawStream
+class TELEGRAMQT_INTERNAL_EXPORT CRawStreamEx : public CRawStream
 {
 public:
     using CRawStream::CRawStream;

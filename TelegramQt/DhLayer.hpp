@@ -36,7 +36,7 @@ namespace Telegram {
 class BaseSendPackageHelper;
 enum class SendMode : quint8;
 
-class BaseDhLayer : public QObject
+class TELEGRAMQT_INTERNAL_EXPORT BaseDhLayer : public QObject
 {
     Q_OBJECT
 public:

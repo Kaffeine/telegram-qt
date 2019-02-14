@@ -22,10 +22,10 @@
 #include "TLNumbers.hpp"
 #include "TLValues.hpp"
 
-QDebug operator<<(QDebug d, const TLValue &v);
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLValue &v);
 
 template <int Size>
-QDebug operator<<(QDebug d, const TLNumber<Size> &n);
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLNumber<Size> &n);
 
 namespace Telegram {
 
@@ -38,7 +38,7 @@ struct IgnoredMessageNotification;
 
 namespace Debug {
 
-class Spacer
+class TELEGRAMQT_INTERNAL_EXPORT Spacer
 {
 public:
     Spacer();
@@ -63,7 +63,7 @@ QString toHex(T number)
 
 } // Telegram namespace
 
-TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::FullMessageHeader &header);
-TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::IgnoredMessageNotification &notification);
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::FullMessageHeader &header);
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::IgnoredMessageNotification &notification);
 
 #endif // TELEGRAMDEBUG_P_HPP

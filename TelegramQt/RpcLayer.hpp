@@ -18,6 +18,8 @@
 #ifndef TELEGRAM_RPC_LAYER_HPP
 #define TELEGRAM_RPC_LAYER_HPP
 
+#include "telegramqt_global.h"
+
 #include <QObject>
 
 #include "crypto-aes.hpp"
@@ -38,7 +40,7 @@ using Stream = ::CTelegramStream;
 class BaseSendPackageHelper;
 enum class SendMode : quint8;
 
-class BaseRpcLayer : public QObject
+class TELEGRAMQT_INTERNAL_EXPORT BaseRpcLayer : public QObject
 {
     Q_OBJECT
 public:

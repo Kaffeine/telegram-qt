@@ -32,7 +32,7 @@ enum class SendMode : quint8 {
     ServerReply,
 };
 
-class TELEGRAMQT_EXPORT BaseSendPackageHelper
+class TELEGRAMQT_INTERNAL_EXPORT BaseSendPackageHelper
 {
 public:
     virtual ~BaseSendPackageHelper() = default;

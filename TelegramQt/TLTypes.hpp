@@ -18,6 +18,8 @@
 #ifndef TLTYPES_HPP
 #define TLTYPES_HPP
 
+#include "telegramqt_global.h"
+
 #include "TLValues.hpp"
 #include "TLNumbers.hpp"
 #include "UniqueLazyPointer.hpp"
@@ -29,7 +31,7 @@ template <typename TL>
 using TLPtr = Telegram::UniqueLazyPointer<TL>;
 
 template <typename T>
-class TLVector : public QVector<T>
+class TELEGRAMQT_INTERNAL_EXPORT TLVector : public QVector<T>
 {
 public:
     TLVector() : QVector<T>(), tlType(TLValue::Vector) { }
@@ -71,7 +73,7 @@ public:
 };
 
 // Generated TLTypes
-struct TLAccountDaysTTL {
+struct TELEGRAMQT_INTERNAL_EXPORT TLAccountDaysTTL {
     constexpr TLAccountDaysTTL() = default;
 
     Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
@@ -87,7 +89,7 @@ struct TLAccountDaysTTL {
     TLValue tlType = TLValue::AccountDaysTTL;
 };
 
-struct TLAccountPassword {
+struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPassword {
     TLAccountPassword() = default;
 
     bool isValid() const { return hasType(tlType); }

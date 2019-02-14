@@ -19,6 +19,7 @@
 #define TELEGRAM_QT_IGNORED_MESSAGE_NOTIFICATION_HPP
 
 #include "telegramqt_global.h"
+
 #include <QObject>
 
 class CRawStream;
@@ -27,7 +28,7 @@ namespace Telegram {
 
 namespace MTProto {
 
-struct TELEGRAMQT_EXPORT IgnoredMessageNotification
+struct TELEGRAMQT_INTERNAL_EXPORT IgnoredMessageNotification
 {
     Q_GADGET
 public:
@@ -54,8 +55,8 @@ public:
     QString toString() const;
 };
 
-CRawStream &operator>>(CRawStream &stream, IgnoredMessageNotification &error);
-CRawStream &operator<<(CRawStream &stream, const IgnoredMessageNotification &error);
+TELEGRAMQT_INTERNAL_EXPORT CRawStream &operator>>(CRawStream &stream, IgnoredMessageNotification &error);
+TELEGRAMQT_INTERNAL_EXPORT CRawStream &operator<<(CRawStream &stream, const IgnoredMessageNotification &error);
 
 } // MTProto namespace
 

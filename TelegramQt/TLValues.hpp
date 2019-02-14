@@ -18,6 +18,8 @@
 #ifndef TLVALUE_HPP
 #define TLVALUE_HPP
 
+#include "telegramqt_global.h"
+
 #include <QObject>
 
 // TODO: Namespace?
@@ -26,7 +28,7 @@
 #define TELEGRAMQT_LAYER 72
 #endif
 
-struct TLValue {
+struct TELEGRAMQT_INTERNAL_EXPORT TLValue {
     Q_GADGET
     Q_ENUMS(Value)
 public:

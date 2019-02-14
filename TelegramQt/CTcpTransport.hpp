@@ -30,7 +30,7 @@ class AesCtrContext;
 
 } // Crypto namespace
 
-class BaseTcpTransport : public BaseTransport
+class TELEGRAMQT_INTERNAL_EXPORT BaseTcpTransport : public BaseTransport
 {
     Q_OBJECT
 public:
