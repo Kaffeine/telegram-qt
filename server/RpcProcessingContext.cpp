@@ -19,6 +19,10 @@
 
 #include "MTProto/Stream.hpp"
 
+#ifdef DEVELOPER_BUILD
+#include "TLRpcDebug.hpp"
+#endif
+
 namespace Telegram {
 
 namespace Server {
@@ -27,6 +31,10 @@ RpcProcessingContext::RpcProcessingContext(MTProto::Stream &stream, quint64 requ
     m_inputStream(stream),
     m_id(requestId)
 {
+#ifdef DEVELOPER_BUILD
+    MTProto::Stream debugStream(stream.getData());
+    dumpRpc(debugStream);
+#endif
 }
 
 void RpcProcessingContext::setReadCode(const TLValue code)
