@@ -140,6 +140,7 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
     }
     const TLMessageMedia &media = m->media;
 
+    message->setPeer(peer);
     message->id = messageId;
     message->type = Telegram::Utils::getPublicMessageType(media);
     message->fromId = m->fromId;
