@@ -803,13 +803,21 @@ QString Generator::generateStreamOperatorDefinition(const TLMethod *type, std::f
 
 QString Generator::streamReadOperatorDeclaration(const TypedEntity *type)
 {
-    return spacing + QString("%1 &operator>>(%2 &%3);\n").arg(streamClassName).arg(type->getEntityTLType(), type->variableName());
+    QString result;
+    QTextStream stream(&result);
+    stream << spacing << streamClassName << " &operator>>("
+           << type->getEntityTLType() << " &" << type->variableName() << ");" << endl;
+    return result;
 }
 
 QString Generator::streamReadFreeOperatorDeclaration(const TypedEntity *type)
 {
     // CTelegramStream &operator>>(CTelegramStream &stream, TLAccountDaysTTL &accountDaysTTLValue);
-    return QString("%1 &operator>>(%1 &stream, %2 &%3);\n").arg(streamClassName).arg(type->getEntityTLType(), type->variableName());
+    QString result;
+    QTextStream stream(&result);
+    stream << streamClassName << " &operator>>(" << streamClassName << " &stream, "
+           << type->getEntityTLType() << " &" << type->variableName() << ");" << endl;
+    return result;
 }
 
 QString Generator::streamReadFreeOperatorDefinition(const TLMethod *method)
@@ -835,16 +843,20 @@ QString Generator::streamReadVectorTemplate(const QString &type)
 
 QString Generator::streamWriteOperatorDeclaration(const TLType &type)
 {
-    QString argName = removePrefix(type.name);
-    argName[0] = argName.at(0).toLower();
-    argName += QLatin1String("Value");
-    return spacing + QString("%1 &operator<<(const %2 &%3);\n").arg(streamClassName).arg(type.name).arg(argName);
+    QString result;
+    QTextStream stream(&result);
+    stream << spacing << streamClassName << " &operator<<(const " << type.name << " &" << type.variableName() << ");" << endl;
+    return result;
 }
 
 QString Generator::streamWriteFreeOperatorDeclaration(const TypedEntity *type)
 {
     // CTelegramStream &operator<<(CTelegramStream &stream, const TLFunctions::TLAuthSendCode &function)
-    return QString("%1 &operator<<(%1 &stream, const %2 &%3);\n").arg(streamClassName).arg(type->name).arg(type->variableName());
+    QString result;
+    QTextStream stream(&result);
+    stream << streamClassName << " &operator<<(" << streamClassName << " &stream, const "
+           << type->getEntityTLType() << " &" << type->variableName() << ");" << endl;
+    return result;
 }
 
 QString Generator::streamWriteOperatorDefinition(const TLType &type)
@@ -884,10 +896,7 @@ QStringList Generator::generateRpcReplyTemplates(const QString &groupName) const
 
 QString Generator::generateDebugWriteOperatorDeclaration(const TLType &type)
 {
-    QString argName = removePrefix(type.name);
-    argName[0] = argName.at(0).toLower();
-    argName += QLatin1String("Value");
-    return QString("QDebug operator<<(QDebug d, const %1 &%2);\n").arg(type.name).arg(argName);
+    return QString("QDebug operator<<(QDebug d, const %1 &%2);\n").arg(type.name, type.variableName());
 }
 
 QString Generator::debugOperatorImplementationHead(const QString &argName, const QString &typeName)
