@@ -48,6 +48,7 @@ static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "
                                                      << QStringLiteral("TLNumber128")
                                                      << QStringLiteral("TLNumber256")
                                                         ;
+static const QLatin1String c_internalExportMacro = QLatin1String("TELEGRAMQT_INTERNAL_EXPORT");
 
 static const QStringList methodBlackList = {
     QStringLiteral("contest"),
@@ -445,7 +446,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
         code.append(QStringLiteral("struct %1;\n").arg(type.name));
         code.append(QStringLiteral("using %1Ptr = TLPtr<%1>;\n\n").arg(type.name));
     }
-    code.append(QString("struct %1 {\n").arg(type.name));
+    code.append(QString("struct %1 %2 {\n").arg(c_internalExportMacro, type.name));
 
     bool constExpr = true;
     static const QString specCommentPrefix = spacing + QStringLiteral("// ");
@@ -854,7 +855,8 @@ QString Generator::streamWriteFreeOperatorDeclaration(const TypedEntity *type)
     // CTelegramStream &operator<<(CTelegramStream &stream, const TLFunctions::TLAuthSendCode &function)
     QString result;
     QTextStream stream(&result);
-    stream << streamClassName << " &operator<<(" << streamClassName << " &stream, const "
+    stream << c_internalExportMacro << " "
+           << streamClassName << " &operator<<(" << streamClassName << " &stream, const "
            << type->getEntityTLType() << " &" << type->variableName() << ");" << endl;
     return result;
 }
@@ -896,7 +898,8 @@ QStringList Generator::generateRpcReplyTemplates(const QString &groupName) const
 
 QString Generator::generateDebugWriteOperatorDeclaration(const TLType &type)
 {
-    return QString("QDebug operator<<(QDebug d, const %1 &%2);\n").arg(type.name, type.variableName());
+    return c_internalExportMacro + QStringLiteral(" QDebug operator<<(QDebug d, const %1 &%2);\n")
+            .arg(type.name, type.variableName());
 }
 
 QString Generator::debugOperatorImplementationHead(const QString &argName, const QString &typeName)
