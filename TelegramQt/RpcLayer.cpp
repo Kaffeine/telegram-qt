@@ -19,6 +19,7 @@
 
 #include "AbridgedLength.hpp"
 #include "CRawStream.hpp"
+#include "RandomGenerator.hpp"
 #include "SendPackageHelper.hpp"
 #include "Utils.hpp"
 #include "TLValues.hpp"
@@ -180,7 +181,7 @@ bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
 #ifdef USE_MTProto_V1
         if (padding) {
             QByteArray randomPadding(padding, Qt::Uninitialized);
-            Utils::randomBytes(&randomPadding);
+             RandomGenerator::instance()->generate(&randomPadding);
             stream << randomPadding;
             packageLength += padding;
         }
@@ -192,7 +193,7 @@ bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
         }
         {
             QByteArray randomPadding(padding, Qt::Uninitialized);
-            Utils::randomBytes(&randomPadding);
+            RandomGenerator::instance()->generate(&randomPadding);
             stream << randomPadding;
             packageLength += padding;
         }

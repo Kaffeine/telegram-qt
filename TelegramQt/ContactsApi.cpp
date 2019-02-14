@@ -2,11 +2,11 @@
 
 #include "ClientBackend.hpp"
 #include "ContactList.hpp"
+#include "RandomGenerator.hpp"
 #include "RpcLayers/ClientRpcContactsLayer.hpp"
 
 #include "Operations/PendingContactsOperation.hpp"
 #include "Operations/PendingContactsOperation_p.hpp"
-#include "Utils.hpp"
 
 #include "DataStorage.hpp"
 #include "DataStorage_p.hpp"
@@ -54,7 +54,7 @@ PendingContactsOperation *ContactsApiPrivate::importContacts(const ContactsApi::
     tlContacts.reserve(contacts.count());
     for (const ContactsApi::ContactInfo &info : contacts) {
         TLInputContact contact;
-        contact.clientId = Utils::randomBytes<quint64>();
+        contact.clientId = RandomGenerator::instance()->generate<quint64>();
         contact.phone = info.phoneNumber;
         contact.firstName = info.firstName;
         contact.lastName = info.lastName;

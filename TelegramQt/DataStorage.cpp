@@ -18,8 +18,8 @@
 #include "DataStorage_p.hpp"
 
 #include "ApiUtils.hpp"
+#include "RandomGenerator.hpp"
 #include "TLTypesDebug.hpp"
-#include "Utils.hpp"
 #include "Debug.hpp"
 
 #include "TelegramNamespace_p.hpp"
@@ -305,7 +305,7 @@ quint64 DataInternalApi::enqueueMessage(const Telegram::Peer peer, const QString
     sentMessage.peer = peer;
     sentMessage.text = message;
     sentMessage.replyToMsgId = replyToMsgId;
-    sentMessage.randomId = Utils::randomBytes<quint64>();
+    sentMessage.randomId = RandomGenerator::instance()->generate<quint64>();
     m_queuedMessages.append(sentMessage);
     return sentMessage.randomId;
 }

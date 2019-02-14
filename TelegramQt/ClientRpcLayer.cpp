@@ -19,10 +19,10 @@
 #include "ClientRpcUpdatesLayer.hpp"
 #include "IgnoredMessageNotification.hpp"
 #include "SendPackageHelper.hpp"
-#include "Utils.hpp"
 #include "Debug_p.hpp"
 #include "CAppInformation.hpp"
 #include "PendingRpcOperation.hpp"
+#include "RandomGenerator.hpp"
 #include "UpdatesLayer.hpp"
 
 #include "MTProto/MessageHeader.hpp"
@@ -64,7 +64,7 @@ void RpcLayer::setServerSalt(quint64 serverSalt)
 
 void RpcLayer::startNewSession()
 {
-    m_sessionId = Utils::randomBytes<quint64>();
+    m_sessionId = RandomGenerator::instance()->generate<quint64>();
     m_contentRelatedMessages = 0;
 }
 

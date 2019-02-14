@@ -20,6 +20,7 @@
 #include "CTelegramStream.hpp"
 #include "CTelegramTransport.hpp"
 #include "Utils.hpp"
+#include "RandomGenerator.hpp"
 #include "SendPackageHelper.hpp"
 #include "Debug_p.hpp"
 
@@ -72,7 +73,7 @@ bool DhLayer::processRequestPQ(const QByteArray &data)
 
 bool DhLayer::sendResultPQ()
 {
-    Utils::randomBytes(m_serverNonce.data, m_serverNonce.size());
+    RandomGenerator::instance()->generate(m_serverNonce.data, m_serverNonce.size());
     const TLVector<quint64> fingerprints = { m_rsaKey.fingerprint };
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
@@ -196,7 +197,7 @@ bool DhLayer::acceptDhParams()
     qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO;
     m_g = 7;
     m_dhPrime.resize(256);
-    Utils::randomBytes(&m_dhPrime);
+    RandomGenerator::instance()->generate(&m_dhPrime);
     m_dhPrime = c_hardcodedDhPrime;
 
     //    if ((m_g < 2) || (m_g > 7)) {
@@ -216,7 +217,7 @@ bool DhLayer::acceptDhParams()
 
     // #5 Server computes random 2048-bit number a (using a sufficient amount of entropy)
     m_a.resize(256);
-    Utils::randomBytes(&m_a);
+    RandomGenerator::instance()->generate(&m_a);
 
     // IMPORTANT: Apart from the conditions on the Diffie-Hellman prime dh_prime and generator g,
     // both sides are to check that g, g_a and g_b are greater than 1 and less than dh_prime - 1.
@@ -247,7 +248,7 @@ bool DhLayer::acceptDhParams()
     int packageLength = sha.length() + innerData.length();
     if ((packageLength) % 16) {
         randomPadding.resize(16 - (packageLength % 16));
-        Utils::randomBytes(&randomPadding);
+        RandomGenerator::instance()->generate(&randomPadding);
 
         packageLength += randomPadding.size();
     }

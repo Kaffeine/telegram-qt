@@ -1,10 +1,11 @@
 #include "DefaultAuthorizationProvider.hpp"
+
+#include "RandomGenerator.hpp"
 #include "Session.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerApi.hpp"
 
 #include "TelegramServerUser.hpp"
-#include "Utils.hpp"
 
 #include <QLoggingCategory>
 
@@ -58,7 +59,7 @@ CodeStatus DefaultProvider::getCodeStatus(const QString &identifier, const QByte
 
 QString DefaultProvider::generateAuthCode()
 {
-    const quint32 numCode = Utils::randomBytes<quint32>() % 100000u;
+    const quint32 numCode = RandomGenerator::instance()->generate<quint32>() % 100000u;
     return QStringLiteral("%1").arg(numCode, 5, 10, QLatin1Char('0'));
 }
 
@@ -67,7 +68,7 @@ Code DefaultProvider::generateCode(Session *session, const QString &identifier)
     Q_UNUSED(session)
     Q_UNUSED(identifier)
     Code code;
-    code.hash = Utils::getRandomBytes(8).toHex();
+    code.hash = RandomGenerator::instance()->generate(8).toHex();
     code.code = generateAuthCode();
     code.type = Code::Type::Default;
     qInfo() << "sendAppCode(" << identifier << "):" << "hash:" << code.hash << "code:" << code.code;

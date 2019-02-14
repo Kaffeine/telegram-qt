@@ -30,6 +30,13 @@ public:
     virtual ~RandomGenerator() = default;
     virtual int generate(void *buffer, int count);
 
+    QByteArray generate(int count)
+    {
+        QByteArray randBytes(count, Qt::Uninitialized);
+        generate(&randBytes);
+        return randBytes;
+    }
+
     int generate(QByteArray *array)
     {
         return generate(array->data(), array->size());

@@ -9,7 +9,7 @@ namespace Telegram {
 namespace Client {
 
 class MessagesOperationPrivate;
-class MessagesOperation : public PendingOperation
+class TELEGRAMQT_EXPORT MessagesOperation : public PendingOperation
 {
     Q_OBJECT
 public:

@@ -18,7 +18,7 @@
 #include "AesCtr.hpp"
 #include "CClientTcpTransport.hpp"
 #include "CRawStream.hpp"
-#include "Utils.hpp"
+#include "RandomGenerator.hpp"
 
 #include <QTcpSocket>
 #include <QTimer>
@@ -68,22 +68,22 @@ void TcpTransport::startObfuscatedSession()
     quint32 first4Bytes;
     // The first word must not concide with any of the previously known session first bytes
     do {
-        first4Bytes = Utils::randomBytes<quint32>();
+        first4Bytes = RandomGenerator::instance()->generate<quint32>();
     } while (headerFirstWordBlackList.contains(first4Bytes) || ((first4Bytes & 0xffu) == c_abridgedVersionByte));
 
     quint32 next4Bytes;
     // The same about the second word.
     do {
-        next4Bytes = Utils::randomBytes<quint32>();
+        next4Bytes = RandomGenerator::instance()->generate<quint32>();
     } while (headerSecondWordBlackList.contains(next4Bytes));
 
-    const QByteArray aesSourceData = Utils::getRandomBytes(48);
+    const QByteArray aesSourceData = RandomGenerator::instance()->generate(48);
     setCryptoKeysSourceData(aesSourceData, DirectIsWriteReversedIsRead);
 
     // first, next,       AES (key + Ivec),     protocol id, random 4 bytes; 64 bytes in total
     //      4      8                          56            60    64
     // xxxx | xxxx | xxxx ... xxxx (48 bytes) | 0xefefefefU | xxxx |
-    const quint32 trailingRandom = Utils::randomBytes<quint32>();
+    const quint32 trailingRandom = RandomGenerator::instance()->generate<quint32>();
 
     CRawStream raw(CRawStream::WriteOnly);
     raw << first4Bytes;

@@ -56,7 +56,7 @@ protected:
 
 };
 
-class InMemoryDataStorage : public DataStorage
+class TELEGRAMQT_EXPORT InMemoryDataStorage : public DataStorage
 {
     Q_OBJECT
 public:

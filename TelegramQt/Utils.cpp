@@ -120,11 +120,6 @@ private:
 
 namespace Telegram {
 
-int Utils::randomBytes(void *buffer, int count)
-{
-    return RandomGenerator::instance()->generate(buffer, count);
-}
-
 // Slightly modified version of Euclidean algorithm. Once we are looking for prime numbers, we can drop parity of asked numbers.
 quint64 Utils::greatestCommonOddDivisor(quint64 a, quint64 b)
 {
@@ -340,13 +335,6 @@ QByteArray Utils::unpackGZip(const QByteArray &data)
     inflateEnd(&stream);
 
     return result;
-}
-
-QByteArray Utils::getRandomBytes(int count)
-{
-    QByteArray randBytes(count, Qt::Uninitialized);
-    Utils::randomBytes(&randBytes);
-    return randBytes;
 }
 
 } // Telegram

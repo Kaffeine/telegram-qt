@@ -5,6 +5,7 @@
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
 #include "Session.hpp"
+#include "RandomGenerator.hpp"
 #include "Utils.hpp"
 
 #include <QLoggingCategory>
@@ -125,7 +126,7 @@ void LocalUser::setPlainPassword(const QString &password)
         return;
     }
     QByteArray pwdSalt(8, Qt::Uninitialized);
-    Telegram::Utils::randomBytes(&pwdSalt);
+    RandomGenerator::instance()->generate(&pwdSalt);
     const QByteArray pwdData = pwdSalt + password.toUtf8() + pwdSalt;
     const QByteArray pwdHash = Telegram::Utils::sha256(pwdData);
     setPassword(pwdSalt, pwdHash);

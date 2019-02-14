@@ -1,6 +1,6 @@
 #include "Session.hpp"
 #include "RemoteClientConnection.hpp"
-#include "Utils.hpp"
+#include "RandomGenerator.hpp"
 
 #include <QDateTime>
 #include <QLoggingCategory>
@@ -91,7 +91,7 @@ ServerSalt Session::generateSalt(quint32 validSince)
     ServerSalt s;
     s.validSince = validSince;
     s.validUntil = s.validSince + c_sessionRotation;
-    s.salt = Utils::randomBytes<quint64>();
+    RandomGenerator::instance()->generate(&s.salt);
     return s;
 }
 

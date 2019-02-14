@@ -21,6 +21,7 @@
 #include "CTelegramTransport.hpp"
 #include "Utils.hpp"
 #include "PendingRpcOperation.hpp"
+#include "RandomGenerator.hpp"
 #include "SendPackageHelper.hpp"
 
 #include <QDateTime>
@@ -51,7 +52,7 @@ void DhLayer::init()
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
     m_authRetryId = 0;
-    Utils::randomBytes(m_clientNonce.data, m_clientNonce.size());
+    RandomGenerator::instance()->generate(m_clientNonce.data, m_clientNonce.size());
     PendingRpcOperation *op = requestPqAuthorization();
     setState(State::PqRequested);
     connect(op, &PendingRpcOperation::finished, this, &DhLayer::onPqAuthorizationAnswer);
@@ -172,7 +173,7 @@ bool DhLayer::acceptPqAuthorization(const QByteArray &payload)
 PendingRpcOperation *DhLayer::requestDhParameters()
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
-    Utils::randomBytes(m_newNonce.data, m_newNonce.size());
+    RandomGenerator::instance()->generate(m_newNonce.data, m_newNonce.size());
 
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "New nonce:" << m_newNonce;
@@ -205,7 +206,7 @@ PendingRpcOperation *DhLayer::requestDhParameters()
         const QByteArray sha = Utils::sha1(innerData);
         QByteArray randomPadding;
         randomPadding.resize(requestedEncryptedPackageLength - (sha.length() + innerData.length()));
-        Utils::randomBytes(&randomPadding);
+        RandomGenerator::instance()->generate(&randomPadding);
         encryptedPackage = Utils::rsa(sha + innerData + randomPadding, m_rsaKey);
 #ifdef TELEGRAMQT_DEBUG_REVEAL_SECRETS
         qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "Inner sha:"
@@ -339,7 +340,7 @@ void DhLayer::generateDh()
     // #6 Client computes random 2048-bit number b (using a sufficient amount of entropy)
     // and sends the server a message
     m_b.resize(256);
-    Utils::randomBytes(&m_b);
+    RandomGenerator::instance()->generate(&m_b);
 
     // IMPORTANT: Apart from the conditions on the Diffie-Hellman prime dh_prime and generator g,
     // both sides are to check that g, g_a and g_b are greater than 1 and less than dh_prime - 1.
@@ -379,7 +380,7 @@ PendingRpcOperation *DhLayer::requestDhGenerationResult()
         int packageLength = sha.length() + innerData.length();
         if ((packageLength) % 16) {
             randomPadding.resize(16 - (packageLength % 16));
-            Utils::randomBytes(&randomPadding);
+            RandomGenerator::instance()->generate(&randomPadding);
 
             packageLength += randomPadding.size();
         }

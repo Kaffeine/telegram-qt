@@ -22,7 +22,6 @@
 
 #include "crypto-aes.hpp"
 #include "RsaKey.hpp"
-#include "TelegramNamespace.hpp"
 
 namespace Telegram {
 
@@ -32,18 +31,6 @@ enum BitsOrder64 {
     Higher64Bits,
     Lower64Bits,
 };
-
-int randomBytes(QByteArray *array);
-
-template <typename T>
-T randomBytes();
-
-template <typename T>
-int randomBytes(T *number);
-
-int randomBytes(void *buffer, int count);
-
-QByteArray getRandomBytes(int count);
 
 quint64 greatestCommonOddDivisor(quint64 a, quint64 b);
 quint64 findDivider(quint64 number);
@@ -59,25 +46,6 @@ QByteArray unpackGZip(const QByteArray &data);
 
 constexpr quint32 c_gzipBufferSize = 1024;
 
-}
-
-inline int Utils::randomBytes(QByteArray *array)
-{
-    return randomBytes(array->data(), array->size());
-}
-
-template<typename T>
-int Utils::randomBytes(T *number)
-{
-    return randomBytes(number, sizeof(T));
-}
-
-template <typename T>
-inline T Utils::randomBytes()
-{
-    T result;
-    randomBytes(&result);
-    return result;
 }
 
 inline QByteArray Utils::rsa(const QByteArray &data, const Telegram::RsaKey &key)

@@ -168,12 +168,12 @@ void tst_utils::testDeterministicRandom()
 
     quint32 r1 = 0;
     quint64 r2 = 0;
-    Utils::randomBytes(&r1);
-    Utils::randomBytes(&r2);
+    RandomGenerator::instance()->generate(&r1);
+    RandomGenerator::instance()->generate(&r2);
     QCOMPARE(r1, 0xb7cd2516u);
     QCOMPARE(r2, 0x7927fd99f6d9255dull);
     QByteArray bigChunk(0x80, 0);
-    Utils::randomBytes(&bigChunk);
+    RandomGenerator::instance()->generate(&bigChunk);
     QCOMPARE(bigChunk.toHex(), QByteArrayLiteral(
                  "f44095b6e320767f606f095eb7edab5581e9e3441adbb0d628832f7dc4574a77"
                  "a382973ce22911b7e4df2a9d2c693826bbd125bcf8a4d4a2f2a2a789398dd504"
@@ -295,7 +295,7 @@ void tst_utils::testGzipOnDifferentDataSizes()
 
     DeterministicGenerator deterministic;
     RandomGeneratorSetter generatorKeeper(&deterministic);
-    QByteArray data = Utils::getRandomBytes(dataSizeInt);
+    QByteArray data = RandomGenerator::instance()->generate(dataSizeInt);
 
     QByteArray packed = Utils::packGZip(data);
     QVERIFY(!packed.isEmpty());
