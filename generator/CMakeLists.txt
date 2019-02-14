@@ -12,6 +12,7 @@ endif()
 set(generator_SOURCES
     main.cpp
     Generator.cpp
+    Generator.hpp
 )
 
 set(CMAKE_CXX_STANDARD 11)
