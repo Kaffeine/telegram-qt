@@ -17,9 +17,13 @@
 
 #include "RpcProcessingContext.hpp"
 
-#include "CTelegramStream.hpp"
+#include "MTProto/Stream.hpp"
 
-RpcProcessingContext::RpcProcessingContext(CTelegramStream &stream, quint64 requestId) :
+namespace Telegram {
+
+namespace Server {
+
+RpcProcessingContext::RpcProcessingContext(MTProto::Stream &stream, quint64 requestId) :
     m_inputStream(stream),
     m_id(requestId)
 {
@@ -29,3 +33,7 @@ void RpcProcessingContext::setReadCode(const TLValue code)
 {
     m_code = code;
 }
+
+} // Server namespace
+
+} // Telegram namespace

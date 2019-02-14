@@ -3,14 +3,13 @@
 
 #include <QObject>
 
-class RpcProcessingContext;
-
 namespace Telegram {
 
 namespace Server {
 
 class RpcLayer;
 class RpcOperation;
+class RpcProcessingContext;
 
 class RpcOperationFactory
 {

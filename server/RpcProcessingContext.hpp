@@ -24,12 +24,22 @@
 
 class CTelegramStream;
 
+namespace Telegram {
+
+namespace MTProto {
+
+using Stream = ::CTelegramStream;
+
+} // MTProto namespace
+
+namespace Server {
+
 class RpcProcessingContext
 {
 public:
-    RpcProcessingContext(CTelegramStream &inputStream, quint64 requestId);
+    RpcProcessingContext(MTProto::Stream &inputStream, quint64 requestId);
 
-    CTelegramStream &inputStream() { return m_inputStream; }
+    MTProto::Stream &inputStream() { return m_inputStream; }
 
     quint64 requestId() const { return m_id; }
 
@@ -37,9 +47,13 @@ public:
     void setReadCode(const TLValue code);
 
 protected:
-    CTelegramStream &m_inputStream;
+    MTProto::Stream &m_inputStream;
     quint64 m_id;
     TLValue m_code;
 };
+
+} // Server namespace
+
+} // Telegram namespace
 
 #endif // TELEGRAM_SERVER_RPC_PROCESSING_CONTEXT_HPP
