@@ -8,6 +8,7 @@
 #include "RandomGenerator.hpp"
 #include "Utils.hpp"
 
+#include <QCryptographicHash>
 #include <QLoggingCategory>
 
 namespace Telegram {
@@ -128,7 +129,7 @@ void LocalUser::setPlainPassword(const QString &password)
     QByteArray pwdSalt(8, Qt::Uninitialized);
     RandomGenerator::instance()->generate(&pwdSalt);
     const QByteArray pwdData = pwdSalt + password.toUtf8() + pwdSalt;
-    const QByteArray pwdHash = Telegram::Utils::sha256(pwdData);
+    const QByteArray pwdHash = QCryptographicHash::hash(pwdData, QCryptographicHash::Sha256);
     setPassword(pwdSalt, pwdHash);
 }
 
