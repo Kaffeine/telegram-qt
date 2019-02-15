@@ -20,9 +20,16 @@ void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages)
 
 bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *forUser);
 bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser);
-bool setupTLPeers(const QSet<Peer> &peers, TLVector<TLUser> *users, TLVector<TLChat> *chats,
-                  const ServerApi *api,
-                  const LocalUser *forUser);
+bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
+                  const QSet<Peer> &peers, const ServerApi *api, const LocalUser *forUser);
+
+template <typename T>
+bool setupTLPeers(T *output,
+                  const QSet<Peer> &peers, const ServerApi *api, const LocalUser *forUser)
+{
+    return setupTLPeers(&output->users, &output->chats,
+                        peers, api, forUser);
+}
 
 } // Utils namespace
 

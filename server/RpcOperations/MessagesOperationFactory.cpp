@@ -984,7 +984,7 @@ void MessagesRpcOperation::runGetDialogs()
         interestingPeers.insert(d->peer);
     }
     Utils::getInterestingPeers(&interestingPeers, result.messages);
-    Utils::setupTLPeers(interestingPeers, &result.users, &result.chats, api(), self);
+    Utils::setupTLPeers(&result, interestingPeers, api(), self);
     sendRpcReply(result);
 }
 
@@ -1072,7 +1072,7 @@ void MessagesRpcOperation::runGetHistory()
     QSet<Peer> interestingPeers;
     interestingPeers.insert(p);
     Utils::getInterestingPeers(&interestingPeers, result.messages);
-    Utils::setupTLPeers(interestingPeers, &result.users, &result.chats, api(), self);
+    Utils::setupTLPeers(&result, interestingPeers, api(), self);
     sendRpcReply(result);
 }
 
