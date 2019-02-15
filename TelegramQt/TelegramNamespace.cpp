@@ -1016,7 +1016,7 @@ QString Telegram::Utils::maskPhoneNumber(const QString &identifier)
         return QString();
     }
     // We don't want to mask "numbers" like unknown777000, so lets check if phoneNumber is consist of digits only.
-    for (const QChar c : identifier) {
+    for (const QChar c : identifier.mid(1)) {
         if (!c.isDigit()) {
             return identifier;
         }
