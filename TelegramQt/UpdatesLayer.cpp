@@ -105,7 +105,11 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
             // Ok, let's see if there would be unordered updates.
             quint32 pts = updates.updates.first().pts;
             for (int i = 0; i < updates.updates.count(); ++i) {
-                if (updates.updates.at(i).pts < pts) {
+                const quint32 updatePts = updates.updates.at(i).pts;
+                if (updatePts == 0) {
+                    continue;
+                }
+                if (updatePts < pts) {
                     qCDebug(c_updatesLoggingCategory) << "Unordered update!";
                     //Q_ASSERT(0);
                 }
