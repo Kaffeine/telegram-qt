@@ -429,6 +429,7 @@ protected:
 namespace Utils
 {
 
+quint64 maskNumber(quint64 number);
 QString maskPhoneNumber(const QString &identifier);
 QStringList maskPhoneNumber(const QStringList &list);
 

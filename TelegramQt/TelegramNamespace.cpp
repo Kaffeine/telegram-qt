@@ -998,6 +998,18 @@ quint32 getApiContactLastOnline(const TLUserStatus &status)
     }
 }
 
+quint64 Telegram::Utils::maskNumber(quint64 number)
+{
+    quint64 leftPart = number >> 32;
+    quint64 rightPart = number & 0xffffffff;
+    quint64 result = leftPart ^ rightPart;
+    leftPart = (result & 0xffff0000) << 32;
+    rightPart = result & 0x0000ffff;
+    result = (leftPart | rightPart);
+    qDebug() << bin << result;
+    return result;
+}
+
 QString Telegram::Utils::maskPhoneNumber(const QString &identifier)
 {
     if (identifier.isEmpty()) {
