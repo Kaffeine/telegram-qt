@@ -17,6 +17,7 @@
 
 #include "TLTypesDebug.hpp"
 #include "Debug_p.hpp"
+#include "TelegramNamespace.hpp"
 
 namespace Telegram {
 
@@ -1479,7 +1480,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
     case TLValue::EncryptedChatWaiting:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "adminId: " << type.adminId <<"\n";
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
@@ -1487,7 +1488,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
     case TLValue::EncryptedChatRequested:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "adminId: " << type.adminId <<"\n";
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
@@ -1496,7 +1497,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
     case TLValue::EncryptedChat:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "adminId: " << type.adminId <<"\n";
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
@@ -1523,7 +1524,7 @@ QDebug operator<<(QDebug d, const TLEncryptedFile &type)
     case TLValue::EncryptedFile:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "size: " << type.size <<"\n";
         d << spacer.innerSpaces() << "dcId: " << type.dcId <<"\n";
         d << spacer.innerSpaces() << "keyFingerprint: " << type.keyFingerprint <<"\n";
@@ -1881,7 +1882,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessageID &type)
         d << "\n";
         d << spacer.innerSpaces() << "dcId: " << type.dcId <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     default:
         break;
@@ -1903,7 +1904,7 @@ QDebug operator<<(QDebug d, const TLInputChannel &type)
     case TLValue::InputChannel:
         d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     default:
         break;
@@ -1922,7 +1923,7 @@ QDebug operator<<(QDebug d, const TLInputContact &type)
     case TLValue::InputPhoneContact:
         d << "\n";
         d << spacer.innerSpaces() << "clientId: " << type.clientId <<"\n";
-        d << spacer.innerSpaces() << "phone: " << type.phone <<"\n";
+        d << spacer.innerSpaces() << "phone: " << Telegram::Utils::maskPhoneNumber(type.phone) <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
         d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
         break;
@@ -1946,7 +1947,7 @@ QDebug operator<<(QDebug d, const TLInputDocument &type)
     case TLValue::InputDocument:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     default:
         break;
@@ -1965,7 +1966,7 @@ QDebug operator<<(QDebug d, const TLInputEncryptedChat &type)
     case TLValue::InputEncryptedChat:
         d << "\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     default:
         break;
@@ -1994,7 +1995,7 @@ QDebug operator<<(QDebug d, const TLInputEncryptedFile &type)
     case TLValue::InputEncryptedFile:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     case TLValue::InputEncryptedFileBigUploaded:
         d << "\n";
@@ -2052,12 +2053,12 @@ QDebug operator<<(QDebug d, const TLInputFileLocation &type)
     case TLValue::InputEncryptedFileLocation:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     case TLValue::InputDocumentFileLocation:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "version: " << type.version <<"\n";
         break;
     default:
@@ -2107,12 +2108,12 @@ QDebug operator<<(QDebug d, const TLInputPeer &type)
     case TLValue::InputPeerUser:
         d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     case TLValue::InputPeerChannel:
         d << "\n";
         d << spacer.innerSpaces() << "channelId: " << type.channelId <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     default:
         break;
@@ -2149,7 +2150,7 @@ QDebug operator<<(QDebug d, const TLInputPhoneCall &type)
     case TLValue::InputPhoneCall:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     default:
         break;
@@ -2171,7 +2172,7 @@ QDebug operator<<(QDebug d, const TLInputPhoto &type)
     case TLValue::InputPhoto:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     default:
         break;
@@ -2212,7 +2213,7 @@ QDebug operator<<(QDebug d, const TLInputStickerSet &type)
     case TLValue::InputStickerSetID:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     case TLValue::InputStickerSetShortName:
         d << "\n";
@@ -2261,7 +2262,7 @@ QDebug operator<<(QDebug d, const TLInputUser &type)
     case TLValue::InputUser:
         d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     default:
         break;
@@ -2280,7 +2281,7 @@ QDebug operator<<(QDebug d, const TLInputWebFileLocation &type)
     case TLValue::InputWebFileLocation:
         d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     default:
         break;
@@ -3996,7 +3997,7 @@ QDebug operator<<(QDebug d, const TLInputGame &type)
     case TLValue::InputGameID:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         break;
     case TLValue::InputGameShortName:
         d << "\n";
@@ -4366,7 +4367,7 @@ QDebug operator<<(QDebug d, const TLPaymentRequestedInfo &type)
             d << spacer.innerSpaces() << "name: " << type.name <<"\n";
         }
         if (type.flags & 1 << 1) {
-            d << spacer.innerSpaces() << "phone: " << type.phone <<"\n";
+            d << spacer.innerSpaces() << "phone: " << Telegram::Utils::maskPhoneNumber(type.phone) <<"\n";
         }
         if (type.flags & 1 << 2) {
             d << spacer.innerSpaces() << "email: " << type.email <<"\n";
@@ -4503,7 +4504,7 @@ QDebug operator<<(QDebug d, const TLPhoto &type)
         d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "sizes: " << type.sizes <<"\n";
         break;
@@ -4553,7 +4554,7 @@ QDebug operator<<(QDebug d, const TLStickerSet &type)
         d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "shortName: " << type.shortName <<"\n";
         d << spacer.innerSpaces() << "count: " << type.count <<"\n";
@@ -4582,7 +4583,7 @@ QDebug operator<<(QDebug d, const TLUser &type)
         d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         if (type.flags & 1 << 0) {
-            d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+            d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         }
         if (type.flags & 1 << 1) {
             d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
@@ -4594,7 +4595,7 @@ QDebug operator<<(QDebug d, const TLUser &type)
             d << spacer.innerSpaces() << "username: " << type.username <<"\n";
         }
         if (type.flags & 1 << 4) {
-            d << spacer.innerSpaces() << "phone: " << type.phone <<"\n";
+            d << spacer.innerSpaces() << "phone: " << Telegram::Utils::maskPhoneNumber(type.phone) <<"\n";
         }
         if (type.flags & 1 << 5) {
             d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
@@ -4632,7 +4633,7 @@ QDebug operator<<(QDebug d, const TLWebDocument &type)
     case TLValue::WebDocument:
         d << "\n";
         d << spacer.innerSpaces() << "url: " << type.url <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "size: " << type.size <<"\n";
         d << spacer.innerSpaces() << "mimeType: " << type.mimeType <<"\n";
         d << spacer.innerSpaces() << "attributes: " << type.attributes <<"\n";
@@ -4736,7 +4737,7 @@ QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
     case TLValue::BotInlineMessageMediaContact:
         d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
-        d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
+        d << spacer.innerSpaces() << "phoneNumber: " << Telegram::Utils::maskPhoneNumber(type.phoneNumber) <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
         d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
         if (type.flags & 1 << 2) {
@@ -4826,7 +4827,7 @@ QDebug operator<<(QDebug d, const TLChat &type)
         d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
         if (type.flags & 1 << 13) {
-            d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+            d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         }
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         if (type.flags & 1 << 6) {
@@ -4849,7 +4850,7 @@ QDebug operator<<(QDebug d, const TLChat &type)
         d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         if (type.flags & 1 << 16) {
             d << spacer.innerSpaces() << "untilDate: " << type.untilDate <<"\n";
@@ -5207,7 +5208,7 @@ QDebug operator<<(QDebug d, const TLDocument &type)
     case TLValue::Document:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "mimeType: " << type.mimeType <<"\n";
         d << spacer.innerSpaces() << "size: " << type.size <<"\n";
@@ -5263,7 +5264,7 @@ QDebug operator<<(QDebug d, const TLGame &type)
         d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "shortName: " << type.shortName <<"\n";
         d << spacer.innerSpaces() << "title: " << type.title <<"\n";
         d << spacer.innerSpaces() << "description: " << type.description <<"\n";
@@ -5288,7 +5289,7 @@ QDebug operator<<(QDebug d, const TLHelpSupport &type)
     switch (type.tlType) {
     case TLValue::HelpSupport:
         d << "\n";
-        d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
+        d << spacer.innerSpaces() << "phoneNumber: " << Telegram::Utils::maskPhoneNumber(type.phoneNumber) <<"\n";
         d << spacer.innerSpaces() << "user: " << type.user <<"\n";
         break;
     default:
@@ -5348,7 +5349,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
     case TLValue::InputBotInlineMessageMediaContact:
         d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
-        d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
+        d << spacer.innerSpaces() << "phoneNumber: " << Telegram::Utils::maskPhoneNumber(type.phoneNumber) <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
         d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
         if (type.flags & 1 << 2) {
@@ -5481,7 +5482,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
         break;
     case TLValue::InputMediaContact:
         d << "\n";
-        d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
+        d << spacer.innerSpaces() << "phoneNumber: " << Telegram::Utils::maskPhoneNumber(type.phoneNumber) <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
         d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
         break;
@@ -6061,7 +6062,7 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
         d << "\n";
         d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "adminId: " << type.adminId <<"\n";
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
@@ -6073,7 +6074,7 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
     case TLValue::PhoneCallRequested:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "adminId: " << type.adminId <<"\n";
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
@@ -6083,7 +6084,7 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
     case TLValue::PhoneCallAccepted:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "adminId: " << type.adminId <<"\n";
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
@@ -6093,7 +6094,7 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
     case TLValue::PhoneCall:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "accessHash: " << type.accessHash <<"\n";
+        d << spacer.innerSpaces() << "accessHash: " << Telegram::Utils::maskNumber(type.accessHash) <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
         d << spacer.innerSpaces() << "adminId: " << type.adminId <<"\n";
         d << spacer.innerSpaces() << "participantId: " << type.participantId <<"\n";
@@ -6580,7 +6581,7 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
         break;
     case TLValue::MessageMediaContact:
         d << "\n";
-        d << spacer.innerSpaces() << "phoneNumber: " << type.phoneNumber <<"\n";
+        d << spacer.innerSpaces() << "phoneNumber: " << Telegram::Utils::maskPhoneNumber(type.phoneNumber) <<"\n";
         d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
         d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
@@ -6943,7 +6944,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
     case TLValue::UpdateUserPhone:
         d << "\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
-        d << spacer.innerSpaces() << "phone: " << type.phone <<"\n";
+        d << spacer.innerSpaces() << "phone: " << Telegram::Utils::maskPhoneNumber(type.phone) <<"\n";
         break;
     case TLValue::UpdateReadHistoryInbox:
     case TLValue::UpdateReadHistoryOutbox:

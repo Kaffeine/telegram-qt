@@ -54,6 +54,14 @@ static const QStringList methodBlackList = {
     QStringLiteral("contest"),
 };
 
+static const QString c_phonePrivacyFilter = QStringLiteral("Telegram::Utils::maskPhoneNumber(%1)");
+static const QString c_numberPrivacyFilter = QStringLiteral("Telegram::Utils::maskNumber(%1)");
+static const QHash<QString,QString> c_privacyFilter = {
+    { QLatin1String("phone"), c_phonePrivacyFilter },
+    { QLatin1String("phoneNumber"), c_phonePrivacyFilter },
+    { QLatin1String("accessHash"), c_numberPrivacyFilter },
+};
+
 QString Generator::spacing = QString(4, QLatin1Char(' '));
 QString Generator::doubleSpacing = Generator::spacing + Generator::spacing;
 
@@ -945,6 +953,8 @@ QString Generator::debugOperatorPerTypeImplementation(const QString &argName, co
             typeDebugStatement = QStringLiteral("type.%1.toHex()");
         }
         typeDebugStatement = typeDebugStatement.arg(member.getAlias());
+        typeDebugStatement = c_privacyFilter.value(member.getAlias(), QStringLiteral("%1")).arg(typeDebugStatement);
+
         if (member.dependOnFlag()) {
             if (member.type() == tlTrueType) {
                 continue;
