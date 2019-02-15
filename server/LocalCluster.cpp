@@ -48,6 +48,12 @@ void LocalCluster::setServerPrivateRsaKey(const Telegram::RsaKey &key)
 bool LocalCluster::start()
 {
     if (m_serverConfiguration.dcOptions.isEmpty()) {
+        qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to start cluster: DC options is empty.";
+        return false;
+    }
+
+    if (!m_key.isPrivate()) {
+        qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to start cluster: Invalid private key.";
         return false;
     }
 
