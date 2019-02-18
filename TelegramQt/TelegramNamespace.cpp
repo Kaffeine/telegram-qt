@@ -748,6 +748,16 @@ quint32 Telegram::DialogInfo::lastMessageId() const
     return d->topMessage;
 }
 
+quint32 Telegram::DialogInfo::readInboxMaxId() const
+{
+    return d->readInboxMaxId;
+}
+
+quint32 Telegram::DialogInfo::readOutboxMaxId() const
+{
+    return d->readOutboxMaxId;
+}
+
 Telegram::Peer Telegram::DialogInfo::peer() const
 {
     return Telegram::Utils::toPublicPeer(d->peer);
