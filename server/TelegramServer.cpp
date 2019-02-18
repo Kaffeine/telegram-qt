@@ -135,6 +135,11 @@ void Server::setAuthorizationProvider(Authorization::Provider *provider)
     m_authProvider = provider;
 }
 
+void Server::setStorage(Storage *storage)
+{
+    m_storage = storage;
+}
+
 void Server::onNewConnection()
 {
     QTcpSocket *socket = m_serverSocket->nextPendingConnection();

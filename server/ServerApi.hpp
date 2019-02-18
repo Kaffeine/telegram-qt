@@ -29,6 +29,7 @@ class Session;
 class LocalUser;
 class RemoteClientConnection;
 class AbstractUser;
+class Storage;
 
 struct PhoneStatus
 {
@@ -60,6 +61,8 @@ public:
     virtual Authorization::Provider *getAuthorizationProvider() = 0;
     virtual bool identifierIsValid(const QString &identifier) const = 0; // Argument is 'phoneNumber'
     virtual QString normalizeIdentifier(const QString &identifier) const = 0;
+
+    virtual Storage *storage() const = 0;
 
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
 

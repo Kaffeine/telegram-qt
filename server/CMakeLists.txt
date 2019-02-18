@@ -26,6 +26,8 @@ set(server_lib_SOURCES
     ServerUtils.cpp
     Session.cpp
     Session.hpp
+    Storage.cpp
+    Storage.hpp
     RpcOperationFactory.cpp
     RpcOperationFactory.hpp
     RpcOperationFactory_p.hpp

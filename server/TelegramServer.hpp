@@ -50,6 +50,7 @@ public:
     quint32 getDcIdForUserIdentifier(const QString &phoneNumber);
 
     void setAuthorizationProvider(Authorization::Provider *provider);
+    void setStorage(Storage *storage);
 
     // ServerAPI:
     Authorization::Provider *getAuthorizationProvider() override { return m_authProvider; }
@@ -62,6 +63,8 @@ public:
     bool checkPassword(const QString &identifier, const QByteArray &hash) override;
     bool identifierIsValid(const QString &identifier) const override;
     QString normalizeIdentifier(const QString &identifier) const override;
+
+    Storage *storage() const override { return m_storage; }
 
     AbstractUser *getAbstractUser(quint32 userId) const override;
     AbstractUser *getAbstractUser(const QString &identifier) const override;
@@ -94,6 +97,7 @@ protected:
 
 protected:
     Authorization::Provider *m_authProvider = nullptr;
+    Storage *m_storage = nullptr;
 
 private:
     QTcpServer *m_serverSocket;

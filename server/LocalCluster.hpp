@@ -37,6 +37,7 @@ class Provider;
 class Server;
 class Session;
 class ServerApi;
+class Storage;
 class LocalUser;
 class AbstractUser;
 
@@ -48,6 +49,7 @@ public:
     using ServerConstructor = Server *(*)(QObject *parent);
     void setServerContructor(ServerConstructor constructor);
 
+    void setStorage(Storage *storage);
     void setAuthorizationProvider(Authorization::Provider *provider);
 
     DcConfiguration serverConfiguration() { return m_serverConfiguration; }
@@ -71,6 +73,7 @@ protected:
     QVector<Server*> m_serverInstances;
     DcConfiguration m_serverConfiguration;
     RsaKey m_key;
+    Storage *m_storage = nullptr;
     Authorization::Provider *m_authProvider = nullptr;
 };
 
