@@ -34,11 +34,6 @@ DataStorage *DeclarativeClient::dataStorage() const
     return m_client->dataStorage();
 }
 
-MessagingApi *DeclarativeClient::messagingApi() const
-{
-    return m_client->messagingApi();
-}
-
 void DeclarativeClient::setAppInformation(CAppInformation *newAppInfo)
 {
     m_client->setAppInformation(newAppInfo);
