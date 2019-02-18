@@ -79,22 +79,16 @@ TLPeer toTLPeer(const Telegram::Peer &peer)
     return result;
 }
 
-Telegram::Peer getMessagePeer(const TLMessage &message, quint32 selfId)
+Peer getMessageDialogPeer(const TLMessage &message, quint32 applicantUserId)
 {
-    switch (message.toId.tlType) {
-    case TLValue::PeerUser:
-        if (message.fromId == selfId) {
-            return Telegram::Peer::fromUserId(message.toId.userId);
-        } else {
-            return Telegram::Peer::fromUserId(message.fromId);
+    if (message.toId.tlType == TLValue::PeerUser) {
+        if (message.toId.userId == applicantUserId) {
+            if (message.fromId) {
+                return Peer::fromUserId(message.fromId);
+            }
         }
-    case TLValue::PeerChat:
-        return Telegram::Peer::fromChatId(message.toId.chatId);
-    case TLValue::PeerChannel:
-        return Telegram::Peer::fromChannelId(message.toId.channelId);
-    default:
-        return Telegram::Peer();
     }
+    return toPublicPeer(message.toId);
 }
 
 QString mimeTypeByStorageFileType(TLValue type)

@@ -144,7 +144,7 @@ quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
     m_messages.append(message);
     TLMessage *addedMessage = &m_messages.last();
     addedMessage->id = addPts();
-    const Telegram::Peer messagePeer = Telegram::Utils::getMessagePeer(message, id());
+    const Telegram::Peer messagePeer = Telegram::Utils::getMessageDialogPeer(message, id());
     UserDialog *dialog = ensureDialog(messagePeer);
     dialog->topMessage = addedMessage->id;
 
@@ -214,7 +214,7 @@ TLVector<TLMessage> LocalUser::getHistory(const Peer &peer,
     for (int i = m_messages.count() - 1; i >= 0; --i) {
         const TLMessage &message = m_messages.at(i);
         if (peer.isValid()) {
-            Telegram::Peer messagePeer = Telegram::Utils::getMessagePeer(message, id());
+            Telegram::Peer messagePeer = Telegram::Utils::getMessageDialogPeer(message, id());
             if (peer != messagePeer) {
                 continue;
             }

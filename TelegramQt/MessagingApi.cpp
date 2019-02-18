@@ -90,7 +90,7 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
 void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
 {
     Q_Q(MessagingApi);
-    const Telegram::Peer peer = Telegram::Utils::getMessagePeer(message, dataStorage()->selfUserId());
+    const Telegram::Peer peer = Telegram::Utils::getMessageDialogPeer(message, dataStorage()->selfUserId());
     if (m_dialogList) {
         m_dialogList->ensurePeer(peer);
     }
