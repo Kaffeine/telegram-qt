@@ -398,6 +398,21 @@ TLInputUser DataInternalApi::toInputUser(quint32 userId) const
     return inputUser;
 }
 
+TLInputChannel DataInternalApi::toInputChannel(quint32 channelId) const
+{
+    TLInputChannel inputChannel;
+    const TLChat *channel = m_chats.value(channelId);
+    if (channel) {
+        inputChannel.tlType = TLValue::InputChannel;
+        inputChannel.channelId = channelId;
+        inputChannel.accessHash = channel->accessHash;
+    } else {
+        qWarning() << Q_FUNC_INFO << "Unknown channel" << channelId;
+        inputChannel.tlType = TLValue::InputChannelEmpty;
+    }
+    return inputChannel;
+}
+
 quint64 DataInternalApi::channelMessageToKey(quint32 channelId, quint32 messageId)
 {
     quint64 key = channelId;
