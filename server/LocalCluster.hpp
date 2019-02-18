@@ -57,6 +57,7 @@ public:
     void setServerPrivateRsaKey(const Telegram::RsaKey &key);
 
     bool start();
+    void stop();
 
     LocalUser *addUser(const QString &identifier, quint32 dcId);
     LocalUser *getUser(const QString &identifier);
