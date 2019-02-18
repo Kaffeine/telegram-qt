@@ -37,7 +37,7 @@ public:
 
     // Generated Telegram operations using
     using PendingUser = PendingRpcResult<TLUser *>;
-    using PendingBool = PendingRpcResult<bool *>;
+    using PendingBool = PendingRpcResult<TLBool *>;
     using PendingAccountDaysTTL = PendingRpcResult<TLAccountDaysTTL *>;
     using PendingAccountAuthorizations = PendingRpcResult<TLAccountAuthorizations *>;
     using PendingPeerNotifySettings = PendingRpcResult<TLPeerNotifySettings *>;

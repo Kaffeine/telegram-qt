@@ -36,7 +36,7 @@ public:
     explicit ChannelsRpcLayer(QObject *parent = nullptr);
 
     // Generated Telegram operations using
-    using PendingBool = PendingRpcResult<bool *>;
+    using PendingBool = PendingRpcResult<TLBool *>;
     using PendingUpdates = PendingRpcResult<TLUpdates *>;
     using PendingMessagesAffectedMessages = PendingRpcResult<TLMessagesAffectedMessages *>;
     using PendingMessagesAffectedHistory = PendingRpcResult<TLMessagesAffectedHistory *>;

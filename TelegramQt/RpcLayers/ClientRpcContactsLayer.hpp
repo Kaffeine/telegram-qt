@@ -36,7 +36,7 @@ public:
     explicit ContactsRpcLayer(QObject *parent = nullptr);
 
     // Generated Telegram operations using
-    using PendingBool = PendingRpcResult<bool *>;
+    using PendingBool = PendingRpcResult<TLBool *>;
     using PendingContactsLink = PendingRpcResult<TLContactsLink *>;
     using PendingQuint32Vector = PendingRpcResult<TLVector<quint32> *>;
     using PendingContactsBlocked = PendingRpcResult<TLContactsBlocked *>;

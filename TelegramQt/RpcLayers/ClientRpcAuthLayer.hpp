@@ -34,7 +34,7 @@ public:
     explicit AuthRpcLayer(QObject *parent = nullptr);
 
     // Generated Telegram operations using
-    using PendingBool = PendingRpcResult<bool *>;
+    using PendingBool = PendingRpcResult<TLBool *>;
     using PendingAuthAuthorization = PendingRpcResult<TLAuthAuthorization *>;
     using PendingAuthCheckedPhone = PendingRpcResult<TLAuthCheckedPhone *>;
     using PendingAuthExportedAuthorization = PendingRpcResult<TLAuthExportedAuthorization *>;

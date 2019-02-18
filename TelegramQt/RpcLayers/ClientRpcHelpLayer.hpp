@@ -45,7 +45,7 @@ public:
     using PendingHelpRecentMeUrls = PendingRpcResult<TLHelpRecentMeUrls *>;
     using PendingHelpSupport = PendingRpcResult<TLHelpSupport *>;
     using PendingHelpTermsOfService = PendingRpcResult<TLHelpTermsOfService *>;
-    using PendingBool = PendingRpcResult<bool *>;
+    using PendingBool = PendingRpcResult<TLBool *>;
     // End of generated Telegram operations using
 
     // Generated Telegram API declarations

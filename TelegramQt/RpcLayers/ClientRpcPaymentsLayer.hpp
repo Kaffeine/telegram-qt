@@ -36,7 +36,7 @@ public:
     explicit PaymentsRpcLayer(QObject *parent = nullptr);
 
     // Generated Telegram operations using
-    using PendingBool = PendingRpcResult<bool *>;
+    using PendingBool = PendingRpcResult<TLBool *>;
     using PendingPaymentsPaymentForm = PendingRpcResult<TLPaymentsPaymentForm *>;
     using PendingPaymentsPaymentReceipt = PendingRpcResult<TLPaymentsPaymentReceipt *>;
     using PendingPaymentsSavedInfo = PendingRpcResult<TLPaymentsSavedInfo *>;

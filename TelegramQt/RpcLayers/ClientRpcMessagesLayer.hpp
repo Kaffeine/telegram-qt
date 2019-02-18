@@ -39,7 +39,7 @@ public:
     using PendingEncryptedChat = PendingRpcResult<TLEncryptedChat *>;
     using PendingUpdates = PendingRpcResult<TLUpdates *>;
     using PendingChatInvite = PendingRpcResult<TLChatInvite *>;
-    using PendingBool = PendingRpcResult<bool *>;
+    using PendingBool = PendingRpcResult<TLBool *>;
     using PendingMessagesAffectedHistory = PendingRpcResult<TLMessagesAffectedHistory *>;
     using PendingMessagesAffectedMessages = PendingRpcResult<TLMessagesAffectedMessages *>;
     using PendingExportedChatInvite = PendingRpcResult<TLExportedChatInvite *>;

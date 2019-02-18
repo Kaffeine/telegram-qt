@@ -39,7 +39,7 @@ public:
     using PendingPhonePhoneCall = PendingRpcResult<TLPhonePhoneCall *>;
     using PendingUpdates = PendingRpcResult<TLUpdates *>;
     using PendingDataJSON = PendingRpcResult<TLDataJSON *>;
-    using PendingBool = PendingRpcResult<bool *>;
+    using PendingBool = PendingRpcResult<TLBool *>;
     // End of generated Telegram operations using
 
     // Generated Telegram API declarations

@@ -36,7 +36,7 @@ public:
     explicit BotsRpcLayer(QObject *parent = nullptr);
 
     // Generated Telegram operations using
-    using PendingBool = PendingRpcResult<bool *>;
+    using PendingBool = PendingRpcResult<TLBool *>;
     using PendingDataJSON = PendingRpcResult<TLDataJSON *>;
     // End of generated Telegram operations using
 
