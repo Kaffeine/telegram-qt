@@ -41,6 +41,9 @@ public:
     CTelegramStream &operator>>(bool &data);
     CTelegramStream &operator<<(const bool &data);
 
+    CTelegramStream &operator>>(TLBool &b);
+    CTelegramStream &operator<<(const TLBool &b);
+
     template <typename T>
     CTelegramStream &operator>>(TLVector<T> &v);
     template <typename T>
@@ -360,26 +363,28 @@ inline CTelegramStream &CTelegramStream::operator<<(const QString &str)
 
 inline CTelegramStream &CTelegramStream::operator>>(bool &data)
 {
-    TLValue val;
+    TLBool val;
     *this >> val;
-
-    if (val == TLValue::BoolTrue) {
-        data = true;
-    } else if (val == TLValue::BoolFalse) {
-        data = false;
-    }
-
+    data = val;
     return *this;
 }
 
 inline CTelegramStream &CTelegramStream::operator<<(const bool &data)
 {
-    if (data) {
-        *this << TLValue::BoolTrue;
-    } else {
-        *this << TLValue::BoolFalse;
-    }
+    TLBool val = data;
+    *this << val;
+    return *this;
+}
 
+inline CTelegramStream &CTelegramStream::operator>>(TLBool &data)
+{
+    *this >> data.tlType;
+    return *this;
+}
+
+inline CTelegramStream &CTelegramStream::operator<<(const TLBool &data)
+{
+    *this << data.tlType;
     return *this;
 }
 

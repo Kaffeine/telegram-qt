@@ -30,6 +30,43 @@
 template <typename TL>
 using TLPtr = Telegram::UniqueLazyPointer<TL>;
 
+struct TLBool
+{
+    constexpr TLBool() = default;
+    constexpr TLBool(bool b) :
+        tlType(b ? TLValue::BoolTrue : TLValue::BoolFalse)
+    {
+    }
+
+    Q_DECL_RELAXED_CONSTEXPR bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
+        case TLValue::BoolFalse:
+        case TLValue::BoolTrue:
+            return true;
+        default:
+            return false;
+        };
+    }
+
+    TLBool &operator=(const bool b)
+    {
+        if (b) {
+            tlType = TLValue::BoolTrue;
+        } else {
+            tlType = TLValue::BoolFalse;
+        }
+        return *this;
+    }
+
+    operator bool() const
+    {
+        return tlType == TLValue::BoolTrue;
+    }
+
+    TLValue tlType = TLValue::BoolFalse;
+};
+
 template <typename T>
 class TELEGRAMQT_INTERNAL_EXPORT TLVector : public QVector<T>
 {
