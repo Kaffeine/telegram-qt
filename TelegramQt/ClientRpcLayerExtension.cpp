@@ -52,7 +52,6 @@ void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream, PendingRp
         }
     }
 #ifdef DUMP_CLIENT_RPC_PACKETS
-    qCDebug(c_clientRpcLayerExtensionCategory) << "BaseRpcLayerExtension: Process answer for message" << operation->requestId();
     qCDebug(c_clientRpcLayerExtensionCategory).noquote() << "BaseRpcLayerExtension: RPC Reply bytes:" << data.size() << data.toHex();
 #endif
     stream->setData(data);
