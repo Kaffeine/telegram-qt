@@ -45,11 +45,14 @@ public:
     static MessagingApiPrivate *get(MessagingApi *parent);
 
     quint64 sendMessage(const Telegram::Peer peer, const QString &message, const MessagingApi::SendOptions &options);
+    void setMessageRead(const Telegram::Peer peer, quint32 messageId);
 
     void onMessageSendResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation);
     void onSentMessageIdResolved(quint64 randomMessageId, quint32 messageId);
 
     void onMessageReceived(const TLMessage &message);
+    void onMessageInboxRead(const Telegram::Peer peer, quint32 messageId);
+    void onMessageOutboxRead(const Telegram::Peer peer, quint32 messageId);
 
     PendingOperation *getDialogs();
     MessagesOperation *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
@@ -66,6 +69,9 @@ public:
 protected slots:
     void onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation);
     void onGetHistoryFinished(MessagesOperation *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation);
+    void onReadHistoryFinished(const Peer peer, quint32 messageId, MessagesRpcLayer::PendingMessagesAffectedMessages *rpcOperation);
+    void onReadChannelHistoryFinished(const Peer peer, quint32 messageId, ChannelsRpcLayer::PendingBool *rpcOperation);
+    void onHistoryReadSucceeded(const Peer peer, quint32 messageId);
 };
 
 } // Client namespace

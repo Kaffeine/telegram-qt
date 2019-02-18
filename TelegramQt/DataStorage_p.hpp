@@ -77,6 +77,10 @@ public:
     SentMessage getQueuedMessage(quint64 randomMessageId) const;
     SentMessage dequeueMessage(quint64 messageRandomId, quint32 messageId);
     QVector<quint64> getPostedMessages() const;
+    void enqueueMessageRead(const Peer peer, quint32 messageId);
+    void dequeueMessageRead(const Peer peer, quint32 messageId);
+    bool updateInboxRead(const Peer peer, quint32 messageId);
+    bool updateOutboxRead(const Peer peer, quint32 messageId);
 
     quint32 selfUserId() const { return m_selfUserId; }
 

@@ -1,5 +1,6 @@
 #include "UpdatesLayer.hpp"
 
+#include "ApiUtils.hpp"
 #include "ClientBackend.hpp"
 #include "DataStorage.hpp"
 #include "DataStorage_p.hpp"
@@ -154,6 +155,22 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
         if (dataInternalApi()->processNewMessage(update.message, update.pts)) {
             messaging->onMessageReceived(update.message);
         }
+        return true;
+    case TLValue::UpdateReadHistoryInbox:
+    {
+        const Peer peer = Utils::toPublicPeer(update.peer);
+        if (dataInternalApi()->updateInboxRead(peer, update.maxId)) {
+            messaging->onMessageInboxRead(peer, update.maxId);
+        }
+    }
+        return true;
+    case TLValue::UpdateReadHistoryOutbox:
+    {
+        const Peer peer = Utils::toPublicPeer(update.peer);
+        if (dataInternalApi()->updateOutboxRead(peer, update.maxId)) {
+            messaging->onMessageOutboxRead(peer, update.maxId);
+        }
+    }
         return true;
     default:
         break;

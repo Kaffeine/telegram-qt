@@ -92,11 +92,15 @@ public slots:
     //    quint64 forwardMessage(const Telegram::Peer &peer, quint32 messageId);
     //    /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
     void setMessageAction(const Telegram::Peer peer, TelegramNamespace::MessageAction action);
-    void setMessageRead(const Telegram::Peer peer, quint32 messageId);
+    void readHistory(const Telegram::Peer peer, quint32 messageId);
 
 Q_SIGNALS:
     void messageReceived(const Telegram::Peer peer, quint32 messageId);
     void messageSent(const Telegram::Peer peer, quint64 messageRandomId, quint32 messageId);
+    // We read an incoming message(s)
+    void messageReadInbox(const Telegram::Peer peer, quint32 messageId);
+    // Our outgoing message(s) was read
+    void messageReadOutbox(const Telegram::Peer peer, quint32 messageId);
 
     void messageActionChanged(const Telegram::Peer &peer, quint32 contactId, TelegramNamespace::MessageAction action);
 

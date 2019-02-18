@@ -366,6 +366,39 @@ DataInternalApi::SentMessage DataInternalApi::dequeueMessage(quint64 messageRand
     return SentMessage();
 }
 
+/*!
+  \fn void DataInternalApi::enqueueMessageRead(const Peer peer, quint32 messageId)
+
+  Save in local storage that the dialog with \a peer is read up to \a messageId
+*/
+void DataInternalApi::enqueueMessageRead(const Peer peer, quint32 messageId)
+{
+
+}
+
+void DataInternalApi::dequeueMessageRead(const Peer peer, quint32 messageId)
+{
+    updateInboxRead(peer, messageId);
+}
+
+/*!
+
+    Returns \c true if the dialog read status is actually changed.
+*/
+bool DataInternalApi::updateInboxRead(const Telegram::Peer peer, quint32 messageId)
+{
+    return true;
+}
+
+/*!
+
+    Returns \c true if the dialog read status is actually changed.
+*/
+bool DataInternalApi::updateOutboxRead(const Telegram::Peer peer, quint32 messageId)
+{
+    return true;
+}
+
 TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
 {
     TLInputPeer inputPeer;

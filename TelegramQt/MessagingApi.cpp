@@ -5,6 +5,7 @@
 #include "ClientBackend.hpp"
 #include "DataStorage.hpp"
 #include "DataStorage_p.hpp"
+#include "Debug.hpp"
 #include "DialogList.hpp"
 #include "UpdatesLayer.hpp"
 #include "Utils.hpp"
@@ -48,6 +49,24 @@ quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message
                                                                                   message, randomId, TLReplyMarkup(), {});
     rpcOperation->connectToFinished(this, &MessagingApiPrivate::onMessageSendResult, randomId, rpcOperation);
     return randomId;
+}
+
+void MessagingApiPrivate::setMessageRead(const Peer peer, quint32 messageId)
+{
+    DataInternalApi *dataApi = dataInternalApi();
+    dataApi->enqueueMessageRead(peer, messageId);
+
+    if (peer.type == Peer::Channel) {
+        const TLInputChannel inputChannel = dataApi->toInputChannel(peer.id);
+        ChannelsRpcLayer::PendingBool *rpcOperation = channelsLayer()->readHistory(inputChannel, messageId);
+        rpcOperation->connectToFinished(this, &MessagingApiPrivate::onReadChannelHistoryFinished,
+                                        peer, messageId, rpcOperation);
+    } else {
+        const TLInputPeer inputPeer = dataApi->toInputPeer(peer);
+        MessagesRpcLayer::PendingMessagesAffectedMessages *rpcOperation = messagesLayer()->readHistory(inputPeer, messageId);
+        rpcOperation->connectToFinished(this, &MessagingApiPrivate::onReadHistoryFinished,
+                                        peer, messageId, rpcOperation);
+    }
 }
 
 void MessagingApiPrivate::onMessageSendResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation)
@@ -94,6 +113,18 @@ void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
         m_dialogList->ensurePeer(peer);
     }
     emit q->messageReceived(peer, message.id);
+}
+
+void MessagingApiPrivate::onMessageInboxRead(const Telegram::Peer peer, quint32 messageId)
+{
+    Q_Q(MessagingApi);
+    emit q->messageReadInbox(peer, messageId);
+}
+
+void MessagingApiPrivate::onMessageOutboxRead(const Telegram::Peer peer, quint32 messageId)
+{
+    Q_Q(MessagingApi);
+    emit q->messageReadOutbox(peer, messageId);
 }
 
 PendingOperation *MessagingApiPrivate::getDialogs()
@@ -191,9 +222,10 @@ void MessagingApi::setMessageAction(const Peer peer, TelegramNamespace::MessageA
 
 }
 
-void MessagingApi::setMessageRead(const Peer peer, quint32 messageId)
+void MessagingApi::readHistory(const Peer peer, quint32 messageId)
 {
-
+    Q_D(MessagingApi);
+    return d->setMessageRead(peer, messageId);
 }
 
 DataStorage *MessagingApiPrivate::dataStorage()
@@ -238,6 +270,38 @@ void MessagingApiPrivate::onGetHistoryFinished(MessagesOperation *operation, Mes
         priv->m_messages.append(m.id);
     }
     operation->setFinished();
+}
+
+void MessagingApiPrivate::onReadHistoryFinished(const Peer peer, quint32 messageId, MessagesRpcLayer::PendingMessagesAffectedMessages *rpcOperation)
+{
+    if (!rpcOperation->isSucceeded()) {
+        qWarning() << Q_FUNC_INFO << this << peer << messageId << "failed" << rpcOperation->errorDetails();
+        return;
+    }
+
+    TLMessagesAffectedMessages result;
+    rpcOperation->getResult(&result);
+    onHistoryReadSucceeded(peer, messageId);
+}
+
+void MessagingApiPrivate::onReadChannelHistoryFinished(const Peer peer, quint32 messageId, ChannelsRpcLayer::PendingBool *rpcOperation)
+{
+    if (!rpcOperation->isSucceeded()) {
+        qWarning() << Q_FUNC_INFO << this << peer << messageId << "failed" << rpcOperation->errorDetails();
+        return;
+    }
+
+    TLBool result;
+    rpcOperation->getResult(&result);
+    onHistoryReadSucceeded(peer, messageId);
+}
+
+void MessagingApiPrivate::onHistoryReadSucceeded(const Peer peer, quint32 messageId)
+{
+    Q_Q(MessagingApi);
+    dataInternalApi()->dequeueMessageRead(peer, messageId);
+
+    emit q->messageReadInbox(peer, messageId);
 }
 
 MessagingApi::SendOptions::SendOptions() :
