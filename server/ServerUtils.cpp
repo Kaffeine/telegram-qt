@@ -4,6 +4,8 @@
 #include "ServerApi.hpp"
 #include "TelegramServerUser.hpp"
 
+#include <QLoggingCategory>
+
 namespace Telegram {
 
 namespace Server {
@@ -77,7 +79,11 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
         }
         if (peer.type == Peer::User) {
             users->append(TLUser());
-            AbstractUser *user = api->getUser(peer.id);
+            AbstractUser *user = api->getAbstractUser(peer.id);
+            if (!user) {
+                qWarning() << Q_FUNC_INFO << "User not found:" << peer.id;
+                continue;
+            }
             setupTLUser(&users->last(), user, forUser);
         } else {
             // TODO
