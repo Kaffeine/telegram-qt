@@ -37,6 +37,7 @@ static const QLatin1String c_serverConfiguration = QLatin1String("serverConfigur
 static const QLatin1String c_dcOptions = QLatin1String("dcOptions");
 static const QLatin1String c_address = QLatin1String("address");
 static const QLatin1String c_port = QLatin1String("port");
+static const QLatin1String c_id = QLatin1String("id");
 
 } // ConfigKey namespace
 
@@ -111,6 +112,7 @@ bool Config::load()
         DcOption dcOpt;
         dcOpt.address = jobj[ConfigKey::c_address].toString();
         dcOpt.port = static_cast<quint16>(jobj[ConfigKey::c_port].toInt());
+        dcOpt.id = static_cast<quint32>(jobj[ConfigKey::c_id].toInt());
         m_serverConfiguration.dcOptions.append(dcOpt);
     }
 
@@ -129,6 +131,7 @@ bool Config::save() const
         QJsonObject jdcOpt;
         jdcOpt[ConfigKey::c_address] = opt.address;
         jdcOpt[ConfigKey::c_port] = opt.port;
+        jdcOpt[ConfigKey::c_id] = static_cast<int>(opt.id);
         jdcArr.append(QJsonValue(jdcOpt));
     }
     jserverConfiguration[ConfigKey::c_dcOptions] = jdcArr;
