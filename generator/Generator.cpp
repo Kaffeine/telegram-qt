@@ -108,6 +108,14 @@ QString ensureGoodName(const QString &name, const QVariantHash &context)
     return badNamesReplacers.at(index);
 }
 
+QString processOperationType(const QString &typeName)
+{
+    if (typeName == QLatin1String("bool")) {
+        return tlPrefix + QLatin1String("Bool");
+    }
+    return typeName;
+}
+
 QString removeTypePrefix(QString name)
 {
     if (name.startsWith(tlPrefix)) {
@@ -2024,8 +2032,9 @@ Generator::MethodsCode Generator::generateClientFunctions(const QString &prefix)
         const QString operationName = resultIsVector ?
                     QLatin1String("Pending") + resultName + QLatin1String("Vector")
                   : QLatin1String("Pending") + resultName;
+        QString operationType = processOperationType(method.type);
         result.usings.append(QStringLiteral("using %1 = %2<%3 *>;")
-                             .arg(operationName, operationBaseName, method.type));
+                             .arg(operationName, operationBaseName, operationType));
         // using PendingAuthSentCode = PendingRpcResult<TLAuthSentCode *>;
         result.declarations.append(QStringLiteral("%1 *%2(%3);")
                                    .arg(operationName, predicateName, formatMethodParams(method)));
