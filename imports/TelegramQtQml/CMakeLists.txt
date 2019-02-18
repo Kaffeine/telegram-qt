@@ -29,8 +29,11 @@ target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
     Qt5::Qml
 )
 
-target_include_directories(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
-    ${QT5_INCLUDES}
+target_include_directories(TelegramQt${QT_VERSION_MAJOR}Qml
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+    PRIVATE
+        ${QT5_INCLUDES}
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
