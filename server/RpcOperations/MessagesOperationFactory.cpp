@@ -1345,12 +1345,77 @@ void MessagesRpcOperation::runReadFeaturedStickers()
 
 void MessagesRpcOperation::runReadHistory()
 {
-    // TLFunctions::TLMessagesReadHistory &arguments = m_readHistory;
-    if (processNotImplementedMethod(TLValue::MessagesReadHistory)) {
+    TLFunctions::TLMessagesReadHistory &arguments = m_readHistory;
+
+    LocalUser *self = layer()->getUser();
+    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, self->id());
+    if (targetPeer.type == Peer::Channel) {
+        // There is channels.readHistory for that
+        sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
     }
+
+    UserDialog *dialog = self->getDialog(targetPeer);
+    if (!dialog) {
+        sendRpcError(RpcError(RpcError::PeerIdInvalid));
+        return;
+    }
+
+    MessageRecipient *receiverInbox = api()->getRecipient(targetPeer, self);
+    if (!receiverInbox) {
+        sendRpcError(RpcError(RpcError::PeerIdInvalid));
+        return;
+    }
+
+    const quint32 requestDate = Telegram::Utils::getCurrentTime();
+    QVector<quint32> affectedMessages;
+    quint32 maxId = qMax(dialog->topMessage, arguments.maxId);
+    for (quint32 messageId = maxId; messageId > dialog->readInboxMaxId; --messageId) {
+        affectedMessages.append(messageId);
+    }
+
+    dialog->readInboxMaxId = maxId;
+
+    const quint64 globalMessageId = self->getPostBox()->getMessageGlobalId(maxId);
+    const MessageData *messageData = api()->storage()->getMessage(globalMessageId);
+
+    LocalUser *messageSender = api()->getUser(messageData->fromId());
+    UserDialog *senderDialog = messageSender->getDialog(messageData->toPeer());
+    quint32 senderMessageId = messageData->getReference(messageSender->toPeer());
+
+    if (senderDialog->readOutboxMaxId < senderMessageId) {
+        // Message sender update needed
+        senderDialog->readOutboxMaxId = senderMessageId;
+        messageSender->getPostBox()->bumpPts();
+    }
+
     TLMessagesAffectedMessages result;
+    result.pts = self->getPostBox()->bumpPts();
+    result.ptsCount = 1;
     sendRpcReply(result);
+
+    if (self->activeSessions().count() > 1) {
+        UpdateNotification readNotification;
+        readNotification.userId = self->userId();
+        readNotification.type = UpdateNotification::Type::ReadInbox;
+        readNotification.date = requestDate;
+        readNotification.pts = result.pts;
+        readNotification.messageId = maxId;
+        readNotification.dialogPeer = targetPeer;
+        readNotification.excludeSession = layer()->session();
+        api()->queueUpdates({readNotification});
+    }
+
+    if (messageSender->hasActiveSession()) {
+        UpdateNotification readNotification;
+        readNotification.userId = messageSender->userId();
+        readNotification.type = UpdateNotification::Type::ReadOutbox;
+        readNotification.date = requestDate;
+        readNotification.pts = messageSender->getPostBox()->pts();
+        readNotification.messageId = senderMessageId;
+        readNotification.dialogPeer = messageData->toPeer();
+        api()->queueUpdates({readNotification});
+    }
 }
 
 void MessagesRpcOperation::runReadMentions()
