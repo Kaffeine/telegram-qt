@@ -32,6 +32,9 @@ public:
     using CRawStreamEx::operator <<;
     using CRawStreamEx::operator >>;
 
+    CTelegramStream &operator>>(TLValue::Value &v);
+    CTelegramStream &operator<<(const TLValue::Value v);
+
     CTelegramStream &operator>>(TLValue &v);
     CTelegramStream &operator<<(const TLValue v);
 
@@ -385,6 +388,20 @@ inline CTelegramStream &CTelegramStream::operator>>(TLBool &data)
 inline CTelegramStream &CTelegramStream::operator<<(const TLBool &data)
 {
     *this << data.tlType;
+    return *this;
+}
+
+inline CTelegramStream &CTelegramStream::operator>>(TLValue::Value &v)
+{
+    quint32 i;
+    *this >> i;
+    v = TLValue::Value(i);
+    return *this;
+}
+
+inline CTelegramStream &CTelegramStream::operator<<(const TLValue::Value v)
+{
+    *this << quint32(v);
     return *this;
 }
 
