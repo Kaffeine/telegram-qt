@@ -21,6 +21,7 @@
 #include "ClientApi_p.hpp"
 #include "MessagingApi.hpp"
 
+#include "ClientRpcChannelsLayer.hpp"
 #include "ClientRpcMessagesLayer.hpp"
 
 namespace Telegram {
@@ -53,6 +54,7 @@ public:
 
     DataStorage *dataStorage();
     MessagesRpcLayer *messagesLayer();
+    ChannelsRpcLayer *channelsLayer();
 
     DialogList *m_dialogList = nullptr;
     MessagesRpcLayer *m_messagesLayer = nullptr;

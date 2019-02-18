@@ -203,6 +203,11 @@ MessagesRpcLayer *MessagingApiPrivate::messagesLayer()
     return m_backend->messagesLayer();
 }
 
+ChannelsRpcLayer *MessagingApiPrivate::channelsLayer()
+{
+    return m_backend->channelsLayer();
+}
+
 void MessagingApiPrivate::onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation)
 {
     TLMessagesDialogs dialogs;
