@@ -256,6 +256,8 @@ public slots:
     void fetchPrevious();
     void fetchNext();
 
+    void readAllMessages();
+
 Q_SIGNALS:
     void clientChanged();
 
