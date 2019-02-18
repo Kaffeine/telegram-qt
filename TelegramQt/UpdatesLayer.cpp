@@ -136,8 +136,12 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
 #ifdef DEVELOPER_BUILD
     qCDebug(c_updatesLoggingCategory) << Q_FUNC_INFO << update;
 #endif
+    MessagingApiPrivate *messaging = MessagingApiPrivate::get(messagingApi());
 
     switch (update.tlType) {
+    case TLValue::UpdateMessageID:
+        messaging->onSentMessageIdResolved(update.randomId, update.quint32Id);
+        return true;
     case TLValue::UpdateNewMessage:
     case TLValue::UpdateNewChannelMessage:
     {

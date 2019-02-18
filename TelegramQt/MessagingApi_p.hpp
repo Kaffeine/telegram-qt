@@ -46,6 +46,7 @@ public:
     quint64 sendMessage(const Telegram::Peer peer, const QString &message, const MessagingApi::SendOptions &options);
 
     void onMessageSendResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation);
+    void onSentMessageIdResolved(quint64 randomMessageId, quint32 messageId);
 
     void onMessageReceived(const TLMessage &message);
 
@@ -58,6 +59,7 @@ public:
 
     DialogList *m_dialogList = nullptr;
     MessagesRpcLayer *m_messagesLayer = nullptr;
+    quint64 m_expectedRandomMessageId = 0;
 
 protected slots:
     void onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation);
