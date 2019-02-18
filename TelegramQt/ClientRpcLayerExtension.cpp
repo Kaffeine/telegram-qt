@@ -15,7 +15,7 @@
 
  */
 
-#include "ClientRpcLayerExtension.hpp"
+#include "ClientRpcLayerExtension_p.hpp"
 #include "CTelegramStream.hpp"
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
@@ -27,6 +27,8 @@ Q_LOGGING_CATEGORY(c_clientRpcLayerExtensionCategory, "telegram.client.rpclayer.
 namespace Telegram {
 
 namespace Client {
+
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLBool *output);
 
 BaseRpcLayerExtension::BaseRpcLayerExtension(QObject *parent) :
     QObject(parent)
