@@ -30,14 +30,23 @@ class Client;
 class DeclarativeClient;
 class DeclarativeSettings;
 
-class TELEGRAMQT_QML_EXPORT DeclarativeClientOperator : public QObject
+class TELEGRAMQT_QML_EXPORT DeclarativeClientMixin
+{
+public:
+    DeclarativeClient *qmlClient() const { return m_qmlClient; }
+
+protected:
+    Client *client() const;
+
+    DeclarativeClient *m_qmlClient = nullptr;
+};
+
+class TELEGRAMQT_QML_EXPORT DeclarativeClientOperator : public QObject, public DeclarativeClientMixin
 {
     Q_OBJECT
     Q_PROPERTY(Telegram::Client::DeclarativeClient *client READ qmlClient WRITE setQmlClient NOTIFY clientChanged)
 public:
     explicit DeclarativeClientOperator(QObject *parent = nullptr);
-
-    DeclarativeClient *qmlClient() const { return m_qmlClient; }
 
 public slots:
     void setQmlClient(DeclarativeClient *client);
@@ -47,9 +56,6 @@ Q_SIGNALS:
 
 protected:
     void syncSettings();
-    Client *client() const;
-
-    DeclarativeClient *m_qmlClient = nullptr;
 };
 
 } // Client

@@ -50,7 +50,7 @@ void DeclarativeClientOperator::syncSettings()
     }
 }
 
-Client *DeclarativeClientOperator::client() const
+Client *DeclarativeClientMixin::client() const
 {
     if (m_qmlClient) {
         return m_qmlClient->client();
