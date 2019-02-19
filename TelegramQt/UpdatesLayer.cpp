@@ -7,6 +7,8 @@
 #include "DataStorage_p.hpp"
 #include "MessagingApi_p.hpp"
 
+#include "ClientRpcUpdatesLayer.hpp"
+
 #ifdef DEVELOPER_BUILD
 #include "MTProto/TLTypesDebug.hpp"
 #endif
@@ -22,6 +24,19 @@ namespace Client {
 UpdatesInternalApi::UpdatesInternalApi(QObject *parent) :
     QObject(parent)
 {
+}
+
+void UpdatesInternalApi::sync()
+{
+    qCDebug(c_updatesLoggingCategory) << Q_FUNC_INFO;
+    UpdatesRpcLayer::PendingUpdatesState *op = m_backend->updatesLayer()->getState();
+    connect(op, &PendingOperation::finished, this, [op] () {
+        TLUpdatesState res;
+        op->getResult(&res);
+#ifdef DEVELOPER_BUILD
+        qCDebug(c_updatesLoggingCategory) << "res:" << res;
+#endif
+    });
 }
 
 void UpdatesInternalApi::setBackend(Backend *backend)
