@@ -358,6 +358,9 @@ void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation
             emit q->authCodeCheckFailed(AuthOperation::AuthCodeStatusExpired);
             submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
             return;
+        default:
+            qCCritical(c_loggingClientAuthOperation) << Q_FUNC_INFO << "Unexpected error" << error->message;
+            break;
         }
     }
     if (!rpcOperation->isSucceeded()) {
