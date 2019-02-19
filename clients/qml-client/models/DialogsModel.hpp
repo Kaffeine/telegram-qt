@@ -23,7 +23,7 @@ public:
         QString name;
         QString formattedLastMessage;
         Telegram::Message lastChatMessage;
-        int unreadCount = 0;
+        quint32 unreadCount = 0;
     };
 
     enum class Column {
