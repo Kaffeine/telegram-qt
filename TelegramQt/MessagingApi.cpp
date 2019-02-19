@@ -77,8 +77,7 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
         return;
     }
 
-    DataInternalApi *dataApi = DataInternalApi::get(dataStorage());
-    const DataInternalApi::SentMessage sentMessage = dataApi->dequeueMessage(randomMessageId, messageId);
+    const DataInternalApi::SentMessage sentMessage = dataInternalApi()->dequeueMessage(randomMessageId, messageId);
     if (sentMessage.randomId != randomMessageId) {
         qDebug() << "Sent message ID not found in the local queue" << randomMessageId;
         return;
@@ -90,7 +89,7 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
 void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
 {
     Q_Q(MessagingApi);
-    const Telegram::Peer peer = Telegram::Utils::getMessageDialogPeer(message, dataStorage()->selfUserId());
+    const Telegram::Peer peer = Telegram::Utils::getMessageDialogPeer(message, m_backend->dataStorage()->selfUserId());
     if (m_dialogList) {
         m_dialogList->ensurePeer(peer);
     }

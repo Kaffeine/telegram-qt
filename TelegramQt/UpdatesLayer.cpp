@@ -151,13 +151,10 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
         return true;
     case TLValue::UpdateNewMessage:
     case TLValue::UpdateNewChannelMessage:
-    {
-        dataInternalApi()->processData(update.message);
-
-        MessagingApiPrivate *messaging = MessagingApiPrivate::get(messagingApi());
-        messaging->onMessageReceived(update.message);
-    }
-        break;
+        if (dataInternalApi()->processNewMessage(update.message, update.pts)) {
+            messaging->onMessageReceived(update.message);
+        }
+        return true;
     default:
         break;
     }
