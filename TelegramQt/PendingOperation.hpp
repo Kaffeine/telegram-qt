@@ -81,6 +81,24 @@ public:
             callMember(obj, method, arg1, arg2);
         });
     }
+    template<typename Receiver, typename ReceiverMethod, typename Arg1, typename Arg2,
+             typename Arg3>
+    void connectToFinished(Receiver *obj, ReceiverMethod method, Arg1 arg1, Arg2 arg2,
+                           Arg3 arg3)
+    {
+        connect(this, &PendingOperation::finished, obj, [obj, method, arg1, arg2, arg3] () {
+            callMember(obj, method, arg1, arg2, arg3);
+        });
+    }
+    template<typename Receiver, typename ReceiverMethod, typename Arg1, typename Arg2,
+             typename Arg3, typename Arg4>
+    void connectToFinished(Receiver *obj, ReceiverMethod method, Arg1 arg1, Arg2 arg2,
+                           Arg3 arg3, Arg4 arg4)
+    {
+        connect(this, &PendingOperation::finished, obj, [obj, method, arg1, arg2, arg3, arg4] () {
+            callMember(obj, method, arg1, arg2, arg3, arg4);
+        });
+    }
 #else
     template<typename Receiver, typename ReceiverMethod, typename ...Args>
     void connectToFinished(Receiver *obj, ReceiverMethod method, Args ...args)
