@@ -18,6 +18,8 @@ set(server_lib_SOURCES
     ServerApi.hpp
     ServerDhLayer.cpp
     ServerDhLayer.hpp
+    ServerMessageData.cpp
+    ServerMessageData.hpp
     ServerRpcLayer.cpp
     ServerRpcLayer.hpp
     ServerRpcOperation.cpp
