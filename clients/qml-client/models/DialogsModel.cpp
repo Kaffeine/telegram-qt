@@ -1,10 +1,12 @@
 #include "DialogsModel.hpp"
-#include "../../imports/TelegramQtQml/DeclarativeClient.hpp"
-#include "../../TelegramQt/Client.hpp"
-#include "../../TelegramQt/DataStorage.hpp"
-#include "../../TelegramQt/MessagingApi.hpp"
-#include "../../TelegramQt/DialogList.hpp"
-#include "../../TelegramQt/PendingOperation.hpp"
+
+#include "Client.hpp"
+#include "DataStorage.hpp"
+#include "MessagingApi.hpp"
+#include "DialogList.hpp"
+#include "PendingOperation.hpp"
+
+#include "DeclarativeClient.hpp"
 
 #include <QDateTime>
 
