@@ -19,6 +19,10 @@
 #define TELEGRAM_QT_SERVER_STORAGE_HPP
 
 #include <QObject>
+#include <QHash>
+
+#include "ServerNamespace.hpp"
+#include "ServerMessageData.hpp"
 
 namespace Telegram {
 
@@ -29,6 +33,12 @@ class Storage : public QObject
     Q_OBJECT
 public:
     explicit Storage(QObject *parent = nullptr);
+    MessageData *addMessage(quint32 fromId, Peer toPeer, const QString &text);
+    const MessageData *getMessage(quint64 globalId);
+
+protected:
+    QHash<quint64, MessageData> m_messages;
+    quint64 m_lastGlobalId = 0;
 };
 
 } // Server namespace

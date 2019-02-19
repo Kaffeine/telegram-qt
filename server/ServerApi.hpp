@@ -29,6 +29,7 @@ class Session;
 class LocalUser;
 class RemoteClientConnection;
 class AbstractUser;
+class MessageRecipient;
 class Storage;
 
 struct PhoneStatus
@@ -52,9 +53,15 @@ struct UpdateNotification
 {
     enum class Type {
         Invalid,
+        NewMessage,
+        ReadInbox,
+        ReadOutbox,
     };
 
+    Peer dialogPeer;
     quint32 userId = 0;
+    quint32 messageId = 0;
+    quint32 pts = 0;
     quint32 date = 0;
     Session *excludeSession = nullptr;
     Type type = Type::Invalid;
@@ -77,6 +84,7 @@ public:
     virtual Storage *storage() const = 0;
 
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
+    virtual MessageRecipient *getRecipient(const Peer &peer, const LocalUser *applicant) const = 0;
 
     virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;

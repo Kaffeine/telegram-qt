@@ -12,6 +12,7 @@ namespace Server {
 
 class AbstractUser;
 class LocalUser;
+class MessageData;
 class ServerApi;
 
 namespace Utils {
@@ -22,6 +23,8 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *for
 bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser);
 bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
                   const QSet<Peer> &peers, const ServerApi *api, const LocalUser *forUser);
+bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 messageId,
+                    const LocalUser *forUser);
 
 template <typename T>
 bool setupTLPeers(T *output,

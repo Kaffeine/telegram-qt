@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVector>
+#include <QHash>
 
 #include "ServerNamespace.hpp"
 #include "TLTypes.hpp"
@@ -13,12 +14,55 @@ namespace Server {
 
 class Session;
 class LocalUser;
+class MessageData;
+
+class AbstractUser;
+
+class PostBox
+{
+public:
+    virtual ~PostBox() = default;
+
+    Peer peer() const { return m_peer; }
+
+    quint32 bumpPts() { return ++m_pts; }
+    quint32 pts() const { return m_pts; }
+    quint32 lastMessageId() const { return m_lastMessageId; }
+    virtual QVector<quint32> users() const = 0;
+
+    quint32 addMessage(MessageData *message);
+    quint64 getMessageGlobalId(quint32 messageId) const;
+
+    QHash<quint32,quint64> getAllMessageKeys() const;
+
+protected:
+    Peer m_peer;
+    quint32 m_pts = 0;
+    quint32 m_lastMessageId = 0;
+    QHash<quint32,quint64> m_messages;
+};
+
+class UserPostBox : public PostBox
+{
+public:
+    UserPostBox() = default;
+
+    QVector<quint32> users() const override
+    {
+        return { m_peer.id };
+    }
+
+    void setUserId(quint32 userId)
+    {
+        m_peer = Peer::fromUserId(userId);
+    }
+};
 
 class MessageRecipient
 {
 public:
     virtual ~MessageRecipient() = default;
-    virtual quint32 addMessage(const TLMessage &message, Session *excludeSession = nullptr) = 0;
+    virtual QVector<PostBox *> postBoxes() = 0;
 
     virtual Peer toPeer() const = 0;
     TLPeer toTLPeer() const;
@@ -42,6 +86,7 @@ public:
 class LocalUser : public AbstractUser
 {
 public:
+    quint32 userId() const { return m_id; }
     quint32 id() const { return m_id; }
     QString phoneNumber() const { return m_phoneNumber; }
     void setPhoneNumber(const QString &phoneNumber);
@@ -74,13 +119,10 @@ public:
 
     QString passwordHint() const { return QString(); }
 
-    quint32 addMessage(const TLMessage &message, Session *excludeSession = nullptr) override;
-    const TLMessage *getMessage(quint32 messageId) const;
+    PostBox *getPostBox() { return &m_box; }
+    const PostBox *getPostBox() const { return &m_box; }
 
-    TLVector<TLMessage> getHistory(const Telegram::Peer &peer, quint32 offsetId, quint32 offsetDate, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId, quint32 hash) const;
-
-    quint32 pts() const { return m_pts; }
-    quint32 addPts();
+    QVector<PostBox *> postBoxes() override { return { &m_box }; }
 
     void importContact(const UserContact &contact);
     QVector<quint32> contactList() const override { return m_contactList; }
@@ -88,8 +130,14 @@ public:
 
     QVector<UserContact> importedContacts() const { return m_importedContacts; }
 
+    void syncDialogTopMessage(const Telegram::Peer &peer, quint32 messageId);
+    UserDialog *getDialog(const Telegram::Peer &peer);
+
 protected:
     UserDialog *ensureDialog(const Telegram::Peer &peer);
+    void setUserId(quint32 userId);
+
+    UserPostBox m_box;
 
     quint32 m_id = 0;
     QString m_phoneNumber;
@@ -101,8 +149,6 @@ protected:
     QVector<Session*> m_sessions;
     quint32 m_dcId = 0;
 
-    quint32 m_pts = 0;
-    QVector<TLMessage> m_messages;
     QVector<UserDialog *> m_dialogs;
     QVector<quint32> m_contactList; // Contains only registered users from the added contacts
     QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)

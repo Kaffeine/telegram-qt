@@ -1,8 +1,7 @@
 #include "TelegramServerUser.hpp"
 
 #include "ApiUtils.hpp"
-#include "ServerApi.hpp"
-#include "ServerRpcLayer.hpp"
+#include "ServerMessageData.hpp"
 #include "ServerUtils.hpp"
 #include "Session.hpp"
 #include "RandomGenerator.hpp"
@@ -14,6 +13,26 @@
 namespace Telegram {
 
 namespace Server {
+
+quint32 PostBox::addMessage(MessageData *message)
+{
+    ++m_lastMessageId;
+    ++m_pts;
+
+    message->addReference(peer(), m_lastMessageId);
+    m_messages.insert(m_lastMessageId, message->globalId());
+    return m_lastMessageId;
+}
+
+quint64 PostBox::getMessageGlobalId(quint32 messageId) const
+{
+    return m_messages.value(messageId);
+}
+
+QHash<quint32, quint64> PostBox::getAllMessageKeys() const
+{
+    return m_messages;
+}
 
 TLPeer MessageRecipient::toTLPeer() const
 {
@@ -53,7 +72,9 @@ UserContact AbstractUser::toContact() const
 void LocalUser::setPhoneNumber(const QString &phoneNumber)
 {
     m_phoneNumber = phoneNumber;
-    m_id = qHash(m_phoneNumber);
+    if (!m_id) {
+        setUserId(qHash(m_phoneNumber));
+    }
 }
 
 void LocalUser::setFirstName(const QString &firstName)
@@ -133,117 +154,6 @@ void LocalUser::setPassword(const QByteArray &salt, const QByteArray &hash)
     m_passwordHash = hash;
 }
 
-quint32 LocalUser::addMessage(const TLMessage &message, Session *excludeSession)
-{
-    m_messages.append(message);
-    TLMessage *addedMessage = &m_messages.last();
-    addedMessage->id = addPts();
-    const Telegram::Peer messagePeer = Telegram::Utils::getMessageDialogPeer(message, id());
-    UserDialog *dialog = ensureDialog(messagePeer);
-    dialog->topMessage = addedMessage->id;
-
-    // Post update to other sessions
-    bool needUpdates = false;
-    for (Session *s : activeSessions()) {
-        if (s == excludeSession) {
-            continue;
-        }
-        needUpdates = true;
-        break;
-    }
-    if (!needUpdates) {
-        return addedMessage->id;
-    }
-
-    ServerApi *api = activeSessions().first()->rpcLayer()->api();
-    AbstractUser *sender = api->getAbstractUser(message.fromId);
-
-    TLUpdate newMessageUpdate;
-    newMessageUpdate.tlType = TLValue::UpdateNewMessage;
-    newMessageUpdate.message = *addedMessage;
-    newMessageUpdate.pts = pts();
-    newMessageUpdate.ptsCount = 1;
-
-    TLUpdates updates;
-    updates.tlType = TLValue::Updates;
-    updates.updates = { newMessageUpdate };
-    updates.chats = {};
-
-    if (sender) {
-        updates.users = { TLUser() }; // Sender
-        Utils::setupTLUser(&updates.users[0], sender, this);
-    }
-
-    updates.date = message.date;
-    //updates.seq = 0;
-
-    for (Session *s : activeSessions()) {
-        if (s == excludeSession) {
-            continue;
-        }
-        s->rpcLayer()->sendUpdates(updates);
-    }
-
-    return addedMessage->id;
-}
-
-TLVector<TLMessage> LocalUser::getHistory(const Peer &peer,
-                                     quint32 offsetId,
-                                     quint32 offsetDate,
-                                     quint32 addOffset,
-                                     quint32 limit,
-                                     quint32 maxId,
-                                     quint32 minId,
-                                     quint32 hash) const
-{
-    if (offsetId || offsetDate || addOffset || minId || maxId || hash) {
-        qWarning() << Q_FUNC_INFO << "Unsupported request";
-        return {};
-    }
-
-    const int actualLimit = qMin<quint32>(limit, 30);
-    QVector<int> wantedIndices;
-    wantedIndices.reserve(actualLimit);
-
-    for (int i = m_messages.count() - 1; i >= 0; --i) {
-        const TLMessage &message = m_messages.at(i);
-        if (peer.isValid()) {
-            Telegram::Peer messagePeer = Telegram::Utils::getMessageDialogPeer(message, id());
-            if (peer != messagePeer) {
-                continue;
-            }
-        }
-
-        wantedIndices.append(i);
-        if (wantedIndices.count() == actualLimit) {
-            break;
-        }
-    }
-
-    TLVector<TLMessage> result;
-    result.reserve(wantedIndices.count());
-    for (int i : wantedIndices) {
-        result.append(m_messages.at(i));
-    }
-    return result;
-}
-
-const TLMessage *LocalUser::getMessage(quint32 messageId) const
-{
-    if (!messageId || m_messages.isEmpty()) {
-        return nullptr;
-    }
-    if (static_cast<quint32>(m_messages.count()) < messageId) {
-        return nullptr;
-    }
-    return &m_messages.at(messageId - 1);
-}
-
-quint32 LocalUser::addPts()
-{
-    return ++m_pts;
-}
-
 void LocalUser::importContact(const UserContact &contact)
 {
     // Check for contact registration status and the contact id setup performed out of this function
@@ -256,14 +166,35 @@ void LocalUser::importContact(const UserContact &contact)
 
 UserDialog *LocalUser::ensureDialog(const Telegram::Peer &peer)
 {
+    UserDialog *dialog = getDialog(peer);
+    if (!dialog) {
+        dialog = new UserDialog();
+        dialog->peer = peer;
+        m_dialogs.append(dialog);
+    }
+    return dialog;
+}
+
+void LocalUser::syncDialogTopMessage(const Peer &peer, quint32 messageId)
+{
+    UserDialog *dialog = ensureDialog(peer);
+    dialog->topMessage = messageId;
+}
+
+UserDialog *LocalUser::getDialog(const Peer &peer)
+{
     for (int i = 0; i < m_dialogs.count(); ++i) {
         if (m_dialogs.at(i)->peer == peer) {
-            return m_dialogs[i];
+            return m_dialogs.at(i);
         }
     }
-    m_dialogs.append(new UserDialog());
-    m_dialogs.last()->peer = peer;
-    return m_dialogs.last();
+    return nullptr;
+}
+
+void LocalUser::setUserId(quint32 userId)
+{
+    m_id = userId;
+    m_box.setUserId(m_id);
 }
 
 } // Server namespace

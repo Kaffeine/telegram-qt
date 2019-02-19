@@ -2,6 +2,7 @@
 
 #include "ApiUtils.hpp"
 #include "ServerApi.hpp"
+#include "ServerMessageData.hpp"
 #include "TelegramServerUser.hpp"
 
 #include <QLoggingCategory>
@@ -60,7 +61,7 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *app
 
 bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser)
 {
-    output->pts = forUser->pts();
+    output->pts = forUser->getPostBox()->pts();
     output->date = Telegram::Utils::getCurrentTime();
     output->seq = 1; // FIXME
     output->qts = 0;
@@ -90,6 +91,32 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
             return false;
         }
     }
+    return true;
+}
+
+bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 messageId,
+                    const LocalUser *forUser)
+{
+    output->tlType = TLValue::Message;
+    output->id = messageId;
+
+    quint32 flags = 0;
+    //if (!receiverInbox->isBroadcast()) {
+        output->fromId = messageData->fromId();
+        flags |= TLMessage::FromId;
+    //}
+    output->message = messageData->text();
+    output->date = messageData->date();
+    output->toId = Telegram::Utils::toTLPeer(messageData->toPeer());
+
+    const bool messageToSelf = messageData->toPeer() == forUser->toPeer();
+    if (messageData->fromId() == forUser->userId()) {
+        if (!messageToSelf) {
+            flags |= TLMessage::Out;
+        }
+    }
+    output->flags = flags;
+
     return true;
 }
 
