@@ -45,15 +45,16 @@ bool LocalCluster::start()
         return false;
     }
 
+    if (!m_authProvider) {
+        qCDebug(c_loggingClusterCategory) << Q_FUNC_INFO << "Fallback to default auth provider";
+        m_authProvider = new Authorization::DefaultProvider();
+    }
+
     for (const DcOption &dc : m_serverConfiguration.dcOptions) {
         Server *server = m_constructor(this);
         server->setServerConfiguration(m_serverConfiguration);
         server->setDcOption(dc);
         server->setServerPrivateRsaKey(m_key);
-        if (!m_authProvider) {
-            qCDebug(c_loggingClusterCategory) << Q_FUNC_INFO << "Fallback to default auth provider";
-            m_authProvider = new Authorization::DefaultProvider();
-        }
         server->setAuthorizationProvider(m_authProvider);
         m_serverInstances.append(server);
     }
