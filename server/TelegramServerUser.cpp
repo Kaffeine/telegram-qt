@@ -50,11 +50,6 @@ UserContact AbstractUser::toContact() const
     return contact;
 }
 
-LocalUser::LocalUser(QObject *parent) :
-    QObject(parent)
-{
-}
-
 void LocalUser::setPhoneNumber(const QString &phoneNumber)
 {
     m_phoneNumber = phoneNumber;
@@ -116,7 +111,6 @@ void LocalUser::addSession(Session *session)
 {
     m_sessions.append(session);
     session->setUser(this);
-    emit sessionAdded(session);
 }
 
 void LocalUser::setPlainPassword(const QString &password)

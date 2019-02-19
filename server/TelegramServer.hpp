@@ -78,6 +78,7 @@ public:
 
     Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) override;
     Session *getSessionByAuthId(quint64 authKeyId) const override;
+    void bindUserSession(LocalUser *user, Session *session) override;
 
     void insertUser(LocalUser *user);
 

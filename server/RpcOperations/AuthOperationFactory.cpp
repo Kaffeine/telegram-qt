@@ -185,7 +185,7 @@ void AuthRpcOperation::runCheckPassword()
         sendRpcError(RpcError::PasswordHashInvalid);
         return;
     }
-    user->addSession(session);
+    api()->bindUserSession(user, session);
 
     TLAuthAuthorization result;
     qCDebug(c_serverAuthRpcCategory) << "Result type:" << result.tlType;
@@ -394,7 +394,7 @@ void AuthRpcOperation::runSignIn()
         sendRpcError(RpcError::SessionPasswordNeeded);
         return;
     }
-    user->addSession(layer()->session());
+    api()->bindUserSession(user, layer()->session());
 
     TLAuthAuthorization result;
     Utils::setupTLUser(&result.user, user, user);
@@ -427,7 +427,7 @@ void AuthRpcOperation::runSignUp()
     LocalUser *user = api()->addUser(arguments.phoneNumber);
     user->setFirstName(arguments.firstName);
     user->setLastName(arguments.lastName);
-    user->addSession(layer()->session());
+    api()->bindUserSession(user, layer()->session());
 
     TLAuthAuthorization result;
     Utils::setupTLUser(&result.user, user, user);

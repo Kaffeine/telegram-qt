@@ -106,7 +106,7 @@ void Server::loadData()
 {
     const int number = 10;
     for (int i = 0; i < number; ++i) {
-        LocalUser *newUser = new LocalUser(this);
+        LocalUser *newUser = new LocalUser();
         newUser->setPhoneNumber(QStringLiteral("%1").arg(i, 6, 10, QLatin1Char('0')));
         insertUser(newUser);
     }
@@ -236,7 +236,7 @@ AbstractUser *Server::tryAccessUser(quint32 userId, quint64 accessHash, LocalUse
 LocalUser *Server::addUser(const QString &identifier)
 {
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << identifier;
-    LocalUser *user = new LocalUser(this);
+    LocalUser *user = new LocalUser();
     user->setPhoneNumber(identifier);
     user->setDcId(dcId());
     insertUser(user);
@@ -256,6 +256,11 @@ Session *Server::createSession(quint64 authId, const QByteArray &authKey, const 
 Session *Server::getSessionByAuthId(quint64 authKeyId) const
 {
     return m_authIdToSession.value(authKeyId);
+}
+
+void Server::bindUserSession(LocalUser *user, Session *session)
+{
+    user->addSession(session);
 }
 
 void Server::insertUser(LocalUser *user)

@@ -39,12 +39,9 @@ public:
     UserContact toContact() const;
 };
 
-class LocalUser : public QObject, public AbstractUser
+class LocalUser : public AbstractUser
 {
-    Q_OBJECT
 public:
-    explicit LocalUser(QObject *parent = nullptr);
-
     quint32 id() const { return m_id; }
     QString phoneNumber() const { return m_phoneNumber; }
     void setPhoneNumber(const QString &phoneNumber);
@@ -90,10 +87,6 @@ public:
     const QVector<UserDialog *> dialogs() const { return m_dialogs; }
 
     QVector<UserContact> importedContacts() const { return m_importedContacts; }
-
-signals:
-    void sessionAdded(Session *newSession);
-    void sessionDestroyed(Session *destroyedSession);
 
 protected:
     UserDialog *ensureDialog(const Telegram::Peer &peer);
