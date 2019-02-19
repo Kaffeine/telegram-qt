@@ -83,6 +83,8 @@ public:
     Session *getSessionByAuthId(quint64 authKeyId) const override;
     void bindUserSession(LocalUser *user, Session *session) override;
 
+    void queueUpdates(const QVector<UpdateNotification> &notifications) override;
+
     void insertUser(LocalUser *user);
 
 signals:

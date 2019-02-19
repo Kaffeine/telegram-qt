@@ -48,6 +48,18 @@ struct PasswordInfo
     bool hasRecovery = false;
 };
 
+struct UpdateNotification
+{
+    enum class Type {
+        Invalid,
+    };
+
+    quint32 userId = 0;
+    quint32 date = 0;
+    Session *excludeSession = nullptr;
+    Type type = Type::Invalid;
+};
+
 class ServerApi
 {
 public:
@@ -76,6 +88,8 @@ public:
     virtual Session *getSessionByAuthId(quint64 authId) const = 0;
     virtual void bindUserSession(LocalUser *user, Session *session) = 0;
     virtual LocalUser *addUser(const QString &identifier) = 0;
+
+    virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;
 };
 
 } // Server namespace

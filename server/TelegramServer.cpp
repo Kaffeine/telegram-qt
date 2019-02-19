@@ -30,6 +30,8 @@
 #include "UsersOperationFactory.hpp"
 // End of generated RPC Operation Factory includes
 
+#include "ServerRpcLayer.hpp"
+
 Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtInfoMsg)
 Q_LOGGING_CATEGORY(loggingCategoryServerApi, "telegram.server.api", QtWarningMsg)
 
@@ -266,6 +268,34 @@ Session *Server::getSessionByAuthId(quint64 authKeyId) const
 void Server::bindUserSession(LocalUser *user, Session *session)
 {
     user->addSession(session);
+}
+
+void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
+{
+    for (const UpdateNotification &notification : notifications) {
+        LocalUser *recipient = getUser(notification.userId);
+        if (!recipient) {
+            qWarning() << Q_FUNC_INFO << "Invalid user!" << notification.userId;
+        }
+
+        TLUpdates updates;
+        updates.tlType = TLValue::Updates;
+        updates.date = notification.date;
+
+        QSet<Peer> interestingPeers;
+        switch (notification.type) {
+        case UpdateNotification::Type::Invalid:
+            break;
+        }
+
+        Utils::setupTLPeers(&updates, interestingPeers, this, recipient);
+        for (Session *session : recipient->activeSessions()) {
+            if (session == notification.excludeSession) {
+                continue;
+            }
+            session->rpcLayer()->sendUpdates(updates);
+        }
+    }
 }
 
 void Server::insertUser(LocalUser *user)
