@@ -37,6 +37,8 @@ class UpdatesInternalApi : public QObject
 public:
     explicit UpdatesInternalApi(QObject *parent = nullptr);
 
+    void sync();
+
     void setBackend(Backend *backend);
 
     bool processUpdates(const TLUpdates &updates);
