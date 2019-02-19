@@ -329,6 +329,22 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             updates.updates = { update };
         }
             break;
+        case UpdateNotification::Type::ReadInbox:
+        case UpdateNotification::Type::ReadOutbox:
+        {
+            TLUpdate update;
+            update.tlType = notification.type == UpdateNotification::Type::ReadInbox
+                      ? TLValue::UpdateReadHistoryInbox
+                      : TLValue::UpdateReadHistoryOutbox;
+            update.pts = notification.pts;
+            update.ptsCount = 1;
+            update.peer = Telegram::Utils::toTLPeer(notification.dialogPeer);
+            update.maxId = notification.messageId;
+
+            updates.seq = 0; // ??
+            updates.updates = { update };
+        }
+            break;
         case UpdateNotification::Type::Invalid:
             break;
         }
