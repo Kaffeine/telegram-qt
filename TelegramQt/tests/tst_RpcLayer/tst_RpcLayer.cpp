@@ -45,14 +45,14 @@ public:
     QString remoteAddress() const override { return QString(); }
 
 protected:
-    void sendPackageImplementation(const QByteArray &) override { }
+    void sendPacketImplementation(const QByteArray &) override { }
 };
 
-class SendPackageHelper : public BaseSendPackageHelper
+class MTProtoSendHelper : public BaseMTProtoSendHelper
 {
 public:
-    explicit SendPackageHelper(BaseTransport *transport) :
-        BaseSendPackageHelper(),
+    explicit MTProtoSendHelper(BaseTransport *transport) :
+        BaseMTProtoSendHelper(),
         m_transport(transport)
     {
     }
@@ -73,13 +73,13 @@ public:
 
     void sendPackage(const QByteArray &package) override
     {
-        return m_transport->sendPackage(package);
+        return m_transport->sendPacket(package);
     }
 
     void setBaseTimestamp(quint64 ts) { m_ts = ts; qDebug() << ts; }
 
 protected:
-    BaseTransport *m_transport;
+    BaseTransport *m_transport = nullptr;
     quint64 m_ts = 0;
 };
 
@@ -97,7 +97,7 @@ public:
         m_mode(mode)
     {
         m_transport = new Transport(this);
-        m_sendHelper = new SendPackageHelper(m_transport);
+        m_sendHelper = new MTProtoSendHelper(m_transport);
         m_sendHelper->setBaseTimestamp(1537207803787ull);
         setSessionId(123456789ull);
 
@@ -109,7 +109,7 @@ public:
     }
 
     Transport *transport() { return m_transport; }
-    SendPackageHelper *sendHelper() { return m_sendHelper; }
+    MTProtoSendHelper *sendHelper() { return m_sendHelper; }
 
     quint64 serverSalt() const override { return 3720780378715ull; }
     quint64 sessionId() const override { return m_sessionId; }
@@ -137,7 +137,7 @@ protected:
     Mode m_mode;
     quint64 m_sessionId = 0;
     Transport *m_transport = nullptr;
-    SendPackageHelper *m_sendHelper = nullptr;
+    MTProtoSendHelper *m_sendHelper = nullptr;
     MTProto::Message m_lastProcessedMessage;
 };
 
@@ -239,7 +239,7 @@ void tst_RpcLayer::sendClientRequest()
 {
     QByteArray data = QByteArrayLiteral("abcd");
     Telegram::Test::ClientRpcLayer rpcLayer;
-    QSignalSpy sentPackagesSpy(rpcLayer.transport(), &Telegram::Test::Transport::packageSent);
+    QSignalSpy sentPackagesSpy(rpcLayer.transport(), &Telegram::Test::Transport::packetSent);
     rpcLayer.sendHelper()->setAuthKey(c_authKey);
     rpcLayer.sendPackageAsClient(data);
     QCOMPARE(sentPackagesSpy.count(), 1);
@@ -253,7 +253,7 @@ void tst_RpcLayer::sendServerReply()
     QByteArray data = QByteArrayLiteral("abcd");
 
     Telegram::Test::ServerRpcLayer rpcLayer;
-    QSignalSpy sentPackagesSpy(rpcLayer.transport(), &Telegram::Test::Transport::packageSent);
+    QSignalSpy sentPackagesSpy(rpcLayer.transport(), &Telegram::Test::Transport::packetSent);
     rpcLayer.sendHelper()->setAuthKey(c_authKey);
     rpcLayer.sendPackageAsServerReply(data);
     QCOMPARE(sentPackagesSpy.count(), 1);

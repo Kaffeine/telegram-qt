@@ -6,7 +6,7 @@ namespace Telegram {
 
 ConnectionError::ConnectionError(const QByteArray &data)
 {
-    if (data.size() == packageSize()) {
+    if (data.size() == packetSize()) {
         m_code = qFromLittleEndian<qint32>(reinterpret_cast<const uchar *>(data.constData()));
     }
 }

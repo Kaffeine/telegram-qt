@@ -37,7 +37,7 @@ using Stream = ::CTelegramStream;
 
 } // MTProto
 
-class BaseSendPackageHelper;
+class BaseMTProtoSendHelper;
 enum class SendMode : quint8;
 
 class TELEGRAMQT_INTERNAL_EXPORT BaseRpcLayer : public QObject
@@ -53,7 +53,7 @@ public:
     virtual quint64 sessionId() const = 0;
     virtual quint64 serverSalt() const = 0;
     quint32 contentRelatedMessagesNumber() const;
-    void setSendPackageHelper(BaseSendPackageHelper *helper);
+    void setSendPackageHelper(BaseMTProtoSendHelper *helper);
 
     bool processPackage(const QByteArray &package);
     virtual bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) = 0;
@@ -77,7 +77,7 @@ protected:
     bool sendPackage(const MTProto::Message &message);
     quint64 sendPackage(const QByteArray &buffer, SendMode mode);
 
-    BaseSendPackageHelper *m_sendHelper = nullptr;
+    BaseMTProtoSendHelper *m_sendHelper = nullptr;
     quint32 m_sequenceNumber = 0;
     quint32 m_contentRelatedMessages = 0;
 };

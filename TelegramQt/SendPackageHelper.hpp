@@ -32,10 +32,10 @@ enum class SendMode : quint8 {
     ServerReply,
 };
 
-class TELEGRAMQT_INTERNAL_EXPORT BaseSendPackageHelper
+class TELEGRAMQT_INTERNAL_EXPORT BaseMTProtoSendHelper
 {
 public:
-    virtual ~BaseSendPackageHelper() = default;
+    virtual ~BaseMTProtoSendHelper() = default;
     virtual quint64 newMessageId(SendMode mode) = 0;
     BaseConnection *getConnection() const { return m_connection; }
 

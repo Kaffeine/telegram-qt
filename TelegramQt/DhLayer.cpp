@@ -47,7 +47,7 @@ BaseDhLayer::BaseDhLayer(QObject *parent) :
 {
 }
 
-void BaseDhLayer::setSendPackageHelper(BaseSendPackageHelper *helper)
+void BaseDhLayer::setSendPackageHelper(BaseMTProtoSendHelper *helper)
 {
     m_sendHelper = helper;
 }

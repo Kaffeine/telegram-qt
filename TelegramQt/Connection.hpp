@@ -11,7 +11,7 @@
 
 namespace Telegram {
 
-class BaseSendPackageHelper;
+class BaseMTProtoSendHelper;
 class BaseDhLayer;
 class BaseRpcLayer;
 class BaseTransport;
@@ -60,14 +60,14 @@ signals:
 
 protected slots:
     void onTransportStateChanged();
-    void onTransportPackageReceived(const QByteArray &package);
+    void onTransportPacketReceived(const QByteArray &payload);
     void onDhStateChanged();
 
 protected:
     virtual bool processAuthKey(quint64 authKeyId) = 0;
 
     BaseTransport *m_transport = nullptr;
-    BaseSendPackageHelper *m_sendHelper;
+    BaseMTProtoSendHelper *m_sendHelper;
     BaseDhLayer *m_dhLayer = nullptr;
     BaseRpcLayer *m_rpcLayer = nullptr;
     quint64 m_authId = 0;

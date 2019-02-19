@@ -67,7 +67,7 @@ protected slots:
 
 protected:
     void setSocket(QAbstractSocket *socket);
-    void sendPackageImplementation(const QByteArray &payload) override;
+    void sendPacketImplementation(const QByteArray &payload) override;
 
     void setSessionType(SessionType sessionType);
     void resetCryptoKeys();

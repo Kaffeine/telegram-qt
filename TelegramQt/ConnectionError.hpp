@@ -39,7 +39,7 @@ public:
     explicit ConnectionError(const QByteArray &data);
     explicit ConnectionError(const qint32 code);
 
-    static constexpr int packageSize() { return 4; }
+    static constexpr int packetSize() { return 4; }
 
     Q_REQUIRED_RESULT Code code() const;
     Q_REQUIRED_RESULT QByteArray toByteArray() const;

@@ -33,7 +33,7 @@ class CTelegramStream;
 
 namespace Telegram {
 
-class BaseSendPackageHelper;
+class BaseMTProtoSendHelper;
 enum class SendMode : quint8;
 
 class TELEGRAMQT_INTERNAL_EXPORT BaseDhLayer : public QObject
@@ -63,7 +63,7 @@ public:
     explicit BaseDhLayer(QObject *parent = nullptr);
     virtual void init() = 0;
 
-    void setSendPackageHelper(BaseSendPackageHelper *helper);
+    void setSendPackageHelper(BaseMTProtoSendHelper *helper);
     void setServerRsaKey(const RsaKey &key);
 
     // AES
@@ -98,7 +98,7 @@ protected:
 
     void setState(State state);
 
-    BaseSendPackageHelper *m_sendHelper = nullptr;
+    BaseMTProtoSendHelper *m_sendHelper = nullptr;
 
     TLNumber128 m_clientNonce;
     TLNumber128 m_serverNonce;

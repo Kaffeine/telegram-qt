@@ -44,11 +44,11 @@ quint64 BaseTransport::getNewMessageId(quint64 supposedId)
     return m_lastMessageId;
 }
 
-void BaseTransport::sendPackage(const QByteArray &package)
+void BaseTransport::sendPacket(const QByteArray &payload)
 {
     writeEvent();
-    sendPackageImplementation(package);
-    emit packageSent(package);
+    sendPacketImplementation(payload);
+    emit packetSent(payload);
 }
 
 void BaseTransport::setError(QAbstractSocket::SocketError e, const QString &text)

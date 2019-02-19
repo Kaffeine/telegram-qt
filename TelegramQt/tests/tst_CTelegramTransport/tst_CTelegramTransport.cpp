@@ -42,7 +42,7 @@ public:
     QString remoteAddress() const override { return QString(); }
 
 protected:
-    void sendPackageImplementation(const QByteArray &package) override
+    void sendPacketImplementation(const QByteArray &package) override
     {
         Q_UNUSED(package)
     }

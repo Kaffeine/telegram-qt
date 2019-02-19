@@ -44,7 +44,7 @@ BaseRpcLayer::BaseRpcLayer(QObject *parent) :
 {
 }
 
-void BaseRpcLayer::setSendPackageHelper(BaseSendPackageHelper *helper)
+void BaseRpcLayer::setSendPackageHelper(BaseMTProtoSendHelper *helper)
 {
     m_sendHelper = helper;
 }

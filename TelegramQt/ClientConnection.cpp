@@ -20,11 +20,11 @@ namespace Telegram {
 
 namespace Client {
 
-class SendPackageHelper : public BaseSendPackageHelper
+class SendPackageHelper : public BaseMTProtoSendHelper
 {
 public:
     explicit SendPackageHelper(BaseConnection *connection) :
-        BaseSendPackageHelper()
+        BaseMTProtoSendHelper()
     {
         m_connection = connection;
     }
@@ -42,7 +42,7 @@ public:
 
     void sendPackage(const QByteArray &package) override
     {
-        return m_connection->transport()->sendPackage(package);
+        return m_connection->transport()->sendPacket(package);
     }
 };
 

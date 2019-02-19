@@ -47,18 +47,18 @@ signals:
 
     void timeout();
 
-    void packageReceived(const QByteArray &package);
-    void packageSent(const QByteArray &package);
+    void packetReceived(const QByteArray &payload);
+    void packetSent(const QByteArray &payload);
 
 public slots:
-    void sendPackage(const QByteArray &package);
+    void sendPacket(const QByteArray &payload);
 
 protected slots:
     void setError(QAbstractSocket::SocketError error, const QString &text);
     virtual void setState(QAbstractSocket::SocketState state);
 
 protected:
-    virtual void sendPackageImplementation(const QByteArray &package) = 0;
+    virtual void sendPacketImplementation(const QByteArray &payload) = 0;
     virtual void readEvent() {}
     virtual void writeEvent() {}
 

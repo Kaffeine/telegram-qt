@@ -87,7 +87,7 @@ BaseTcpTransport::SessionType BaseTcpTransport::sessionType() const
     return m_sessionType;
 }
 
-void BaseTcpTransport::sendPackageImplementation(const QByteArray &payload)
+void BaseTcpTransport::sendPacketImplementation(const QByteArray &payload)
 {
     qCDebug(c_loggingTcpTransport) << this << __func__ << payload.size();
 
@@ -105,26 +105,26 @@ void BaseTcpTransport::sendPackageImplementation(const QByteArray &payload)
 
     if (payload.length() % 4) {
         qCCritical(c_loggingTcpTransport) << this << __func__
-                                          << "Invalid outgoing package! "
+                                          << "Invalid outgoing packet! "
                                              "The payload size is not divisible by four!";
     }
 
-    QByteArray package;
-    package.reserve(payload.size() + 4);
+    QByteArray packet;
+    packet.reserve(payload.size() + 4);
     const quint32 length = payload.length() / 4;
     if (length < 0x7f) {
-        package.append(char(length));
+        packet.append(char(length));
     } else {
-        package.append(char(0x7f));
-        package.append(reinterpret_cast<const char *>(&length), 3);
+        packet.append(char(0x7f));
+        packet.append(reinterpret_cast<const char *>(&length), 3);
     }
-    package.append(payload);
+    packet.append(payload);
 
     if (m_writeAesContext && m_writeAesContext->hasKey()) {
-        package = m_writeAesContext->crypt(package);
+        packet = m_writeAesContext->crypt(packet);
     }
 
-    m_socket->write(package);
+    m_socket->write(packet);
 }
 
 void BaseTcpTransport::setSessionType(BaseTcpTransport::SessionType sessionType)
@@ -222,18 +222,18 @@ void BaseTcpTransport::onReadyRead()
                 return;
             }
         }
-        if (m_readBuffer.size() < static_cast<qint64>(m_expectedLength)) {
+        if (m_readBuffer.size() < static_cast<int>(m_expectedLength)) {
             qCDebug(c_loggingTcpTransport) << this << Q_FUNC_INFO << "Ready read, but only "
                                            << m_readBuffer.size() << "bytes available ("
                                            << m_expectedLength << "bytes expected)";
             return;
         }
-        const QByteArray readPackage = m_readBuffer.left(m_expectedLength);
-        m_readBuffer = m_readBuffer.mid(m_expectedLength);
+        const QByteArray payload = m_readBuffer.left(static_cast<int>(m_expectedLength));
+        m_readBuffer = m_readBuffer.mid(static_cast<int>(m_expectedLength));
         m_expectedLength = 0;
         qCDebug(c_loggingTcpTransport) << this << Q_FUNC_INFO
-                                         << "Received a package (" << readPackage.size() << " bytes)";
-        emit packageReceived(readPackage);
+                                         << "Received a packet (" << payload.size() << " bytes)";
+        emit packetReceived(payload);
     }
 }
 

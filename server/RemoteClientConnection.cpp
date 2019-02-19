@@ -19,11 +19,11 @@ namespace Telegram {
 
 namespace Server {
 
-class SendPackageHelper : public BaseSendPackageHelper
+class MTProtoSendHelper : public BaseMTProtoSendHelper
 {
 public:
-    explicit SendPackageHelper(BaseConnection *connection) :
-        BaseSendPackageHelper()
+    explicit MTProtoSendHelper(BaseConnection *connection) :
+        BaseMTProtoSendHelper()
     {
         m_connection = connection;
     }
@@ -44,14 +44,14 @@ public:
 
     void sendPackage(const QByteArray &package) override
     {
-        return m_connection->transport()->sendPackage(package);
+        return m_connection->transport()->sendPacket(package);
     }
 };
 
 RemoteClientConnection::RemoteClientConnection(QObject *parent) :
     BaseConnection(parent)
 {
-    m_sendHelper = new SendPackageHelper(this);
+    m_sendHelper = new MTProtoSendHelper(this);
     m_dhLayer = new DhLayer(this);
     m_dhLayer->setSendPackageHelper(m_sendHelper);
     connect(m_dhLayer, &BaseDhLayer::stateChanged, this, &RemoteClientConnection::onClientDhStateChanged);
@@ -102,7 +102,7 @@ void RemoteClientConnection::onClientDhStateChanged()
 void RemoteClientConnection::sendKeyError()
 {
     static const QByteArray errorPackage = QByteArray::fromHex(QByteArrayLiteral("6cfeffff"));
-    m_transport->sendPackage(errorPackage);
+    m_transport->sendPacket(errorPackage);
 }
 
 bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
@@ -129,8 +129,8 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
         }
     }
 
-    disconnect(m_transport, &BaseTransport::packageReceived, this, &RemoteClientConnection::onTransportPackageReceived);
-    connect(m_transport, &BaseTransport::packageReceived, this, &RemoteClientConnection::sendKeyError);
+    disconnect(m_transport, &BaseTransport::packetReceived, this, &RemoteClientConnection::onTransportPacketReceived);
+    connect(m_transport, &BaseTransport::packetReceived, this, &RemoteClientConnection::sendKeyError);
     setStatus(Status::Failed, StatusReason::Local);
     sendKeyError();
     return false;

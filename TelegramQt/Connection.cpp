@@ -42,7 +42,7 @@ void BaseConnection::setTransport(BaseTransport *newTransport)
 {
     m_transport = newTransport;
     connect(m_transport, &BaseTransport::stateChanged, this, &BaseConnection::onTransportStateChanged);
-    connect(m_transport, &BaseTransport::packageReceived, this, &BaseConnection::onTransportPackageReceived);
+    connect(m_transport, &BaseTransport::packetReceived, this, &BaseConnection::onTransportPacketReceived);
 //    connect(m_transport, &CTelegramTransport::timeout, this, &CTelegramConnection::onTransportTimeout);
     onTransportStateChanged();
 
@@ -92,39 +92,39 @@ void BaseConnection::onTransportStateChanged()
     }
 }
 
-void BaseConnection::onTransportPackageReceived(const QByteArray &package)
+void BaseConnection::onTransportPacketReceived(const QByteArray &payload)
 {
-    qCDebug(c_baseConnectionCategory) << this << __func__ << package.size();
-    if (package.size() == ConnectionError::packageSize()) {
-        const ConnectionError e(package.constData());
+    qCDebug(c_baseConnectionCategory) << this << __func__ << payload.size();
+    if (payload.size() == ConnectionError::packetSize()) {
+        const ConnectionError e(payload.constData());
         qCDebug(c_baseConnectionCategory) << "Error:" << e.description();
         if (status() == Status::Failed) {
             // We still can get replies to already sent message even if the connection
             // is already failed, but it makes no sense to shout them out.
             return;
         }
-        emit errorOccured(package);
+        emit errorOccured(payload);
         setStatus(Status::Failed, StatusReason::Remote);
         return;
     }
-    if (package.size() < 8) {
-        qCWarning(c_baseConnectionCategory) << "Received package is too small to process:" << package.toHex();
+    if (payload.size() < 8) {
+        qCWarning(c_baseConnectionCategory) << "Received package is too small to process:" << payload.toHex();
         return;
     }
-    const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(package.constData());
+    const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(payload.constData());
     if (*authKeyIdBytes) {
         if (!processAuthKey(*authKeyIdBytes)) {
             qCDebug(c_baseConnectionCategory) << this << "Received incorrect auth id.";
             return;
         }
-        if (!m_rpcLayer->processPackage(package)) {
+        if (!m_rpcLayer->processPackage(payload)) {
             qCDebug(c_baseConnectionCategory) << this << __func__
-                                              << "Unable to process RPC packet:" << package.toHex();
+                                              << "Unable to process RPC packet:" << payload.toHex();
         }
     } else {
-        if (!m_dhLayer->processPlainPackage(package)) {
+        if (!m_dhLayer->processPlainPackage(payload)) {
             qCDebug(c_baseConnectionCategory) << this << __func__
-                                              << "Unable to process plain packet:" << package.toHex();
+                                              << "Unable to process plain packet:" << payload.toHex();
         }
     }
 }

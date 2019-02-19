@@ -20,12 +20,12 @@
 
 namespace Telegram {
 
-void BaseSendPackageHelper::setDeltaTime(const qint32 newDt)
+void BaseMTProtoSendHelper::setDeltaTime(const qint32 newDt)
 {
     m_deltaTime = newDt;
 }
 
-void BaseSendPackageHelper::setAuthKey(const QByteArray &authKey)
+void BaseMTProtoSendHelper::setAuthKey(const QByteArray &authKey)
 {
     if (authKey.isEmpty()) {
         m_authKey.clear();
