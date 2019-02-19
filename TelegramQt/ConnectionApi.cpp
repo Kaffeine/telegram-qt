@@ -367,7 +367,7 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
 
   The method returns new or existing Connection to the passed server address.
 
-  The returned Connection is prepaired to work with /a connectionSpec and can have any status.
+  The returned Connection is prepaired to work with \a connectionSpec and can have any status.
 */
 Connection *ConnectionApiPrivate::ensureConnection(const ConnectionSpec &connectionSpec)
 {

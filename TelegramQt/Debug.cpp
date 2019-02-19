@@ -65,9 +65,9 @@ const char *Spacer::outerSpaces()
     }
 }
 
-} // Debug
+} // Debug namespace
 
-} // Telegram
+} // Telegram namespace
 
 QDebug operator<<(QDebug d, const TLValue &v)
 {

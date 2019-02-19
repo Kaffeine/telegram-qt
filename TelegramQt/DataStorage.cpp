@@ -429,9 +429,6 @@ TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
             }
         }
         break;
-    default:
-        qWarning() << Q_FUNC_INFO << "Unknown peer type" << peer.type << "(id:" << peer.id << ")";
-        break;
     }
     return inputPeer;
 }
@@ -453,7 +450,7 @@ TLInputUser DataInternalApi::toInputUser(quint32 userId) const
             qWarning() << Q_FUNC_INFO << "Unknown user type: " << QString::number(user->tlType, 16);
         }
     } else {
-        qWarning() << Q_FUNC_INFO << "Unknown user.";
+        qWarning() << Q_FUNC_INFO << "Unknown user" << userId;
     }
     return inputUser;
 }
