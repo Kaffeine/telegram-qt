@@ -442,6 +442,15 @@ void tst_MessagesApi::getMessage()
         QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
         QCOMPARE(message.flags, TelegramNamespace::MessageFlagNone);
     }
+
+    QSignalSpy client1MessageReadSpy(client1.messagingApi(), &Client::MessagingApi::messageReadOutbox);
+
+    client2.messagingApi()->readHistory(client1AsClient2Peer, client2Message1Id);
+
+    // Check message marked read for client 1
+    {
+        TRY_COMPARE(client1MessageReadSpy.count(), 1);
+    }
 }
 
 QTEST_GUILESS_MAIN(tst_MessagesApi)
