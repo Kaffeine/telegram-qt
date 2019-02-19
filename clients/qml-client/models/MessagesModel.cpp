@@ -298,12 +298,12 @@ QVariant MessagesModel::getSiblingEntryData(int index) const
                        });
 }
 
-void MessagesModel::setQmlClient(DeclarativeClient *client)
+void MessagesModel::setQmlClient(DeclarativeClient *qmlClient)
 {
-    m_qmlClient = client;
+    m_qmlClient = qmlClient;
     emit clientChanged();
 
-    connect(m_qmlClient->messagingApi(), &MessagingApi::messageReceived,
+    connect(client()->messagingApi(), &MessagingApi::messageReceived,
             this, &MessagesModel::onMessageReceived);
 }
 
@@ -513,7 +513,7 @@ void MessagesModel::fetchPrevious()
         return;
     }
     qWarning() << Q_FUNC_INFO << "for peer" << m_peer.toString();
-    MessagesOperation *op = m_qmlClient->messagingApi()->getHistory(m_peer, MessageFetchOptions::useLimit(10));
+    MessagesOperation *op = client()->messagingApi()->getHistory(m_peer, MessageFetchOptions::useLimit(10));
     connect(op, &MessagesOperation::finished, this, [this, op] () {
         processMessages(op->messages());
     });

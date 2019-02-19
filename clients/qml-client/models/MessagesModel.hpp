@@ -23,6 +23,8 @@
 
 #include "TelegramNamespace.hpp"
 
+#include "DeclarativeClientOperator.hpp"
+
 //#include "Event.hpp"
 //#include "Types.hpp"
 
@@ -171,7 +173,7 @@ public:
     QDate date;
 };
 
-class MessagesModel : public QAbstractTableModel
+class MessagesModel : public QAbstractTableModel, public DeclarativeClientMixin
 {
     Q_OBJECT
     //Q_PROPERTY(Classes enabledClass NOTIFY classChanged)
@@ -221,7 +223,6 @@ public:
 
     explicit MessagesModel(QObject *parent = nullptr);
 
-    DeclarativeClient *qmlClient() const { return m_qmlClient; }
     QHash<int, QByteArray> roleNames() const override;
 
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -237,7 +238,7 @@ public:
     Telegram::Peer peer() const { return m_peer; }
 
 public slots:
-    void setQmlClient(DeclarativeClient *client);
+    void setQmlClient(DeclarativeClient *qmlClient);
 
     void addMessages(const QVector<MessageEvent> &messages);
     //void onFileRequestComplete(const QString &uniqueId);
@@ -271,7 +272,6 @@ protected:
     static Role indexToRole(const QModelIndex &index, int role = Qt::DisplayRole);
     QString roleToName(Role role) const;
 
-    DeclarativeClient *m_qmlClient = nullptr;
     QVector<Event*> m_events;
     Telegram::Peer m_peer;
 };

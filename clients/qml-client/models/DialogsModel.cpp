@@ -19,11 +19,6 @@ namespace Client {
 
 static const int UserRoleOffset = Qt::UserRole + 1;
 
-DeclarativeClient *DialogsModel::client() const
-{
-    return m_client;
-}
-
 DialogsModel::DialogsModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
@@ -113,7 +108,7 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
         text = dialog.lastChatMessage.text;
     } else {
         Telegram::MessageMediaInfo info;
-        m_client->dataStorage()->getMessageMediaInfo(&info, dialog.peer, dialog.lastChatMessage.id);
+        client()->dataStorage()->getMessageMediaInfo(&info, dialog.peer, dialog.lastChatMessage.id);
         switch (dialog.lastChatMessage.type) {
         case TelegramNamespace::MessageTypeWebPage:
             text = dialog.lastChatMessage.text;
@@ -138,15 +133,15 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
     };
 }
 
-void DialogsModel::setClient(DeclarativeClient *target)
+void DialogsModel::setQmlClient(DeclarativeClient *target)
 {
-    m_client = target;
+    m_qmlClient = target;
     emit clientChanged();
 }
 
 void DialogsModel::populate()
 {
-    m_list = m_client->messagingApi()->getDialogList();
+    m_list = client()->messagingApi()->getDialogList();
     connect(m_list->becomeReady(), &Telegram::PendingOperation::finished, this, &DialogsModel::onListReady);
     if (m_list->isReady()) {
         onListReady();
@@ -216,17 +211,18 @@ void DialogsModel::onListChanged(const PeerList &added, const PeerList &removed)
 
 void DialogsModel::addPeer(const Peer &peer)
 {
+    Client *c = client();
     DialogEntry d;
-    d.name = getPeerAlias(peer, m_client->client());
+    d.name = getPeerAlias(peer, c);
     d.peer = peer;
 
     Telegram::DialogInfo apiInfo;
-    if (m_client->client()->dataStorage()->getDialogInfo(&apiInfo, peer)) {
+    if (c->dataStorage()->getDialogInfo(&apiInfo, peer)) {
         d.unreadCount = apiInfo.unreadCount();
 
         quint32 messageId = apiInfo.lastMessageId();
         Message message;
-        m_client->client()->dataStorage()->getMessage(&message, peer, messageId);
+        c->dataStorage()->getMessage(&message, peer, messageId);
         d.lastChatMessage = message;
     } else {
         qDebug() << Q_FUNC_INFO << "Peer" << peer << "has no dialog info in storage";

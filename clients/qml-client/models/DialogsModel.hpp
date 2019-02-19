@@ -5,6 +5,8 @@
 
 #include "TelegramNamespace.hpp"
 
+#include "DeclarativeClientOperator.hpp"
+
 namespace Telegram {
 
 namespace Client {
@@ -12,10 +14,10 @@ namespace Client {
 class DeclarativeClient;
 class DialogList;
 
-class DialogsModel : public QAbstractTableModel
+class DialogsModel : public QAbstractTableModel, public DeclarativeClientMixin
 {
     Q_OBJECT
-    Q_PROPERTY(Telegram::Client::DeclarativeClient *client READ client WRITE setClient NOTIFY clientChanged)
+    Q_PROPERTY(Telegram::Client::DeclarativeClient *client READ qmlClient WRITE setQmlClient NOTIFY clientChanged)
 public:
     struct DialogEntry {
         Telegram::Peer peer;
@@ -52,8 +54,6 @@ public:
         Invalid
     };
 
-    DeclarativeClient *client() const;
-
     explicit DialogsModel(QObject *parent = nullptr);
 
     QHash<int, QByteArray> roleNames() const override;
@@ -68,7 +68,7 @@ public:
     QVariant getData(int index, Role role) const;
 
 public slots:
-    void setClient(DeclarativeClient *client);
+    void setQmlClient(DeclarativeClient *client);
 
     void populate();
 //    void setDialogs(const QVector<Telegram::Peer> &dialogs);
@@ -95,7 +95,6 @@ private:
     static Column intToColumn(int value);
     static Role indexToRole(const QModelIndex &index, int role = Qt::DisplayRole);
     QVector<DialogEntry> m_dialogs;
-    DeclarativeClient *m_client = nullptr;
     DialogList *m_list = nullptr;
 
 };
