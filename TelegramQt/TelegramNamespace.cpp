@@ -1042,7 +1042,7 @@ QStringList Telegram::Utils::maskPhoneNumber(const QStringList &list)
     }
     QStringList result;
     const int listDigits = QString::number(list.count()).size();
-    foreach (const QString &number, list) {
+    for (const QString &number : list) {
         if (number.length() >= 5 + listDigits) {
             QString masked = QString(QLatin1String("%1xx%2%3"))
                     .arg(number.mid(0, 2))
