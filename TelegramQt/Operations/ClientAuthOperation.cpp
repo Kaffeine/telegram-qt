@@ -184,6 +184,12 @@ PendingOperation *AuthOperationPrivate::submitAuthCode(const QString &code)
         return PendingOperation::failOperation(text);
     }
 
+    if (code.isEmpty()) {
+        const QString text = QStringLiteral("Deny to submit empty auth code");
+        qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << text;
+        return PendingOperation::failOperation(text);
+    }
+
     PendingOperation *submitOperation = new PendingOperation("AuthOperationPrivate::submitAuthCode", this);
     PendingRpcOperation *sendCodeOperation = nullptr;
     if (m_registered) {
