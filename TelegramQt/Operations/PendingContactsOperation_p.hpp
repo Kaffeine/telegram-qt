@@ -32,7 +32,7 @@ class PendingContactsOperationPrivate : public PendingOperationPrivate
 public:
     static PendingContactsOperationPrivate *get(PendingContactsOperation *parent);
 
-    Telegram::PeerList m_peers;
+    QVector<quint32> m_userIds;
 };
 
 } // Client namespace

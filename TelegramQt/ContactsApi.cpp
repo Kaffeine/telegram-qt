@@ -106,8 +106,9 @@ void ContactsApiPrivate::onContactsImported(PendingContactsOperation *operation,
 
     PendingContactsOperationPrivate *priv = PendingContactsOperationPrivate::get(operation);
 
+    priv->m_userIds.reserve(result.users.count());
     for (const TLUser &user : result.users) {
-        priv->m_peers.append(Peer::fromUserId(user.id));
+        priv->m_userIds.append(user.id);
     }
 
     DataInternalApi::get(m_backend->dataStorage())->processData(result.users);
@@ -122,8 +123,9 @@ void ContactsApiPrivate::onGetContactsResult(PendingContactsOperation *operation
 
     PendingContactsOperationPrivate *priv = PendingContactsOperationPrivate::get(operation);
 
+    priv->m_userIds.reserve(result.contacts.count());
     for (const TLContact &contact : result.contacts) {
-        priv->m_peers.append(Peer::fromUserId(contact.userId));
+        priv->m_userIds.append(contact.userId);
     }
 
     dataInternalApi()->processData(result.users);
