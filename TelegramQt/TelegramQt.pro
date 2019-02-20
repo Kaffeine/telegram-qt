@@ -13,6 +13,18 @@ contains(options, static-lib) {
     CONFIG  += dll
 }
 
+isEmpty(BUILD_VERSION) {
+    BUILD_VERSION = "unknown"
+}
+VERSION_FILE_CONTENT = $$cat("Version.cpp.in", blob)
+VERSION_FILE = "$$OUT_PWD/Version.cpp"
+VERSION_FILE_CONTENT = $$replace(VERSION_FILE_CONTENT, "@TELEGRAM_QT_VERSION@", "$$VERSION")
+VERSION_FILE_CONTENT = $$replace(VERSION_FILE_CONTENT, "@BUILD_VERSION@", "$$BUILD_VERSION")
+write_file("$$VERSION_FILE", VERSION_FILE_CONTENT)
+
+SOURCES += $$VERSION_FILE
+
+
 CONFIG += c++11
 CONFIG += link_pkgconfig
 PKGCONFIG += openssl zlib
