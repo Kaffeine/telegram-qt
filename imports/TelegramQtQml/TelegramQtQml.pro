@@ -19,6 +19,7 @@ SOURCES += \
     DeclarativeClient.cpp \
     DeclarativeClientOperator.cpp \
     DeclarativeOperation.cpp \
+    DeclarativeMessageSender.cpp \
     DeclarativeUserInfo.cpp \
     DeclarativeSettings.cpp
 
@@ -27,6 +28,7 @@ HEADERS += \
     DeclarativeClient.hpp \
     DeclarativeClientOperator.hpp \
     DeclarativeOperation.hpp \
+    DeclarativeMessageSender.hpp \
     DeclarativeUserInfo.hpp \
     DeclarativeSettings.hpp
 
