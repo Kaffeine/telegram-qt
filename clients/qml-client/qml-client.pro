@@ -21,6 +21,7 @@ LIBS += -L$$OUT_PWD/../../imports/TelegramQtQml
 LIBS += -lTelegramQt$${QT_MAJOR_VERSION}QmlPlugin
 
 INCLUDEPATH += $$PWD/../../TelegramQt
+INCLUDEPATH += $$PWD/../../imports/TelegramQtQml
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
