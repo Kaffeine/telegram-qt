@@ -59,7 +59,7 @@ public:
     Status status() const;
 
     AuthOperation *startAuthentication();
-    Telegram::Client::AuthOperation *checkIn();
+    AuthOperation *checkIn();
     void disconnectFromServer();
 
 Q_SIGNALS:
