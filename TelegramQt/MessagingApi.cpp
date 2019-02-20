@@ -217,6 +217,11 @@ quint64 MessagingApi::sendMessage(const Peer peer, const QString &message, const
     return d->sendMessage(peer, message, options);
 }
 
+quint64 Telegram::Client::MessagingApi::forwardMessage(const Telegram::Peer peer, const Telegram::Peer fromPeer, quint32 messageId)
+{
+    return 0;
+}
+
 void MessagingApi::setMessageAction(const Peer peer, TelegramNamespace::MessageAction action)
 {
 

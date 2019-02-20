@@ -89,7 +89,7 @@ public slots:
     void setDraftMessage(const Telegram::Peer peer, const QString &text);
 
     quint64 sendMessage(const Telegram::Peer peer, const QString &message, const SendOptions &options = SendOptions()); // Message id is a random number
-    //    quint64 forwardMessage(const Telegram::Peer &peer, quint32 messageId);
+    quint64 forwardMessage(const Telegram::Peer peer, const Telegram::Peer fromPeer, quint32 messageId);
     //    /* Typing status is valid for 6 seconds. It is recommended to repeat typing status with localTypingRecommendedRepeatInterval() interval. */
     void setMessageAction(const Telegram::Peer peer, TelegramNamespace::MessageAction action);
     void readHistory(const Telegram::Peer peer, quint32 messageId);
