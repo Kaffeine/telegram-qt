@@ -63,6 +63,9 @@ public:
     PendingContactsOperation *exportCard();
     PendingContactsOperation *importCard(const QByteArray &cardInfo);
 
+Q_SIGNALS:
+    void contactStatusChanged(quint32 userId, TelegramNamespace::ContactStatus status);
+
 protected:
     Q_DECLARE_PRIVATE_D(d, ContactsApi)
 };
