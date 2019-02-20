@@ -65,18 +65,18 @@ class tst_toOfficial : public QObject
 public:
     explicit tst_toOfficial(QObject *parent = nullptr);
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void testClientDhLayer();
     void testGetConfiguration_data();
     void testGetConfiguration();
 };
 
-class TestSendPackageHelper : public BaseSendPackageHelper
+class TestSendPackageHelper : public BaseMTProtoSendHelper
 {
 public:
     explicit TestSendPackageHelper(Telegram::BaseTransport *transport) :
-        BaseSendPackageHelper(),
+        BaseMTProtoSendHelper(),
         m_transport(transport)
     {
     }
@@ -94,7 +94,7 @@ public:
 
     void sendPackage(const QByteArray &package) override
     {
-        return m_transport->sendPackage(package);
+        return m_transport->sendPacket(package);
     }
 
 protected:
@@ -123,9 +123,9 @@ void tst_toOfficial::testClientDhLayer()
     TestSendPackageHelper *sendHelper = new TestSendPackageHelper(transport);
     Client::DhLayer *dhLayer = new Client::DhLayer(this);
     dhLayer->setSendPackageHelper(sendHelper);
-    dhLayer->setServerRsaKey(Utils::loadHardcodedKey());
+    dhLayer->setServerRsaKey(RsaKey::defaultKey());
 
-    connect(transport, &Client::TcpTransport::packageReceived, [dhLayer](const QByteArray &package) {
+    connect(transport, &Client::TcpTransport::packetReceived, [dhLayer](const QByteArray &package) {
         if (package.size() == sizeof(quint32)) {
             qint32 errorCode = *(reinterpret_cast<const qint32 *>(package.constData()));
             qWarning() << "Error:" << errorCode;
@@ -181,7 +181,7 @@ void tst_toOfficial::testGetConfiguration()
     const auto serverConfig = Client::Settings::testServerConfiguration();
     QVERIFY(!serverConfig.isEmpty());
 
-    const RsaKey publicKey = Utils::loadHardcodedKey();
+    const RsaKey publicKey = RsaKey::defaultKey();
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
 
     Client::Client client;
