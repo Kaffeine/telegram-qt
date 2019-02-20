@@ -444,6 +444,8 @@ T maskPhoneNumber(T container, const QString &key)
     return container;
 }
 
+TELEGRAMQT_EXPORT QVector<quint32> toIdList(const Telegram::PeerList &peerList);
+
 } // Utils namespace
 
 } // Telegram namespace

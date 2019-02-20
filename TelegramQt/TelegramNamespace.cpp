@@ -1064,3 +1064,13 @@ void Telegram::initialize()
         RandomGenerator::setInstance(&defaultGenerator);
     }
 }
+
+QVector<quint32> Telegram::Utils::toIdList(const Telegram::PeerList &peerList)
+{
+    QVector<quint32> idList;
+    idList.reserve(peerList.size());
+    for (const Telegram::Peer &peer : peerList) {
+        idList.append(peer.id);
+    }
+    return idList;
+}
