@@ -149,6 +149,7 @@ set(telegram_qt_public_HEADERS
     MessagingApi.hpp
     PendingOperation.hpp
     ReadyObject.hpp
+    RsaKey.hpp
     TelegramNamespace.hpp
     Operations/ClientAuthOperation.hpp
     Operations/ClientMessagesOperation.hpp
