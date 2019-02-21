@@ -120,7 +120,7 @@ bool DataStorage::getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const
     const quint32 chatId = peer.id;
     const QHash<quint32, TLChat *> &chats = d->m_api->chats();
     if (!chats.contains(chatId)) {
-        qDebug() << Q_FUNC_INFO << "Unknown user" << chatId;
+        qDebug() << Q_FUNC_INFO << "Unknown chat" << chatId;
         return false;
     }
 
