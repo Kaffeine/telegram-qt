@@ -54,7 +54,6 @@ public:
 
     QString remoteAddress() const override;
 
-    void connectToHost(const QString &ipAddress, quint16 port) override;
     void disconnectFromHost() override;
 
     SessionType sessionType() const;

@@ -33,6 +33,8 @@ public:
     explicit TcpTransport(QObject *parent = nullptr);
     ~TcpTransport() override;
 
+    void connectToHost(const QString &ipAddress, quint16 port) override;
+
     SessionType preferredSessionType() const { return m_preferedSessionType; }
     void setPreferedSessionType(const SessionType sessionType);
 

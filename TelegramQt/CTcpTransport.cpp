@@ -63,12 +63,6 @@ QString BaseTcpTransport::remoteAddress() const
     return m_socket ? m_socket->peerAddress().toString() : QString();
 }
 
-void BaseTcpTransport::connectToHost(const QString &ipAddress, quint16 port)
-{
-    qCDebug(c_loggingTcpTransport) << this << __func__ << ipAddress << port;
-    m_socket->connectToHost(ipAddress, port);
-}
-
 void BaseTcpTransport::disconnectFromHost()
 {
     qCDebug(c_loggingTcpTransport) << this << __func__;

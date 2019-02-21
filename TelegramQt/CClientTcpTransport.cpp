@@ -49,6 +49,12 @@ TcpTransport::~TcpTransport()
     qCDebug(c_loggingTranport) << this << __func__;
 }
 
+void TcpTransport::connectToHost(const QString &ipAddress, quint16 port)
+{
+    qCDebug(c_loggingTranport) << this << __func__ << ipAddress << port;
+    m_socket->connectToHost(ipAddress, port);
+}
+
 void TcpTransport::setPreferedSessionType(const BaseTcpTransport::SessionType sessionType)
 {
     m_preferedSessionType = sessionType;
