@@ -62,12 +62,20 @@ DeclarativeProxySettings::DeclarativeProxySettings(QObject *parent) :
 
 void DeclarativeProxySettings::setPort(quint16 port)
 {
+    if (m_port == port) {
+        return;
+    }
     m_port = port;
+    emit portChanged(port);
 }
 
 void DeclarativeProxySettings::setAddress(const QString &address)
 {
+    if (m_address == address) {
+        return;
+    }
     m_address = address;
+    emit addressChanged(address);
 }
 
 DeclarativeSettings::DeclarativeSettings(QObject *parent) :
