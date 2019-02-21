@@ -432,6 +432,7 @@ namespace Utils
 {
 
 quint64 maskNumber(quint64 number);
+TELEGRAMQT_EXPORT QString maskString(const QString &string);
 QString maskPhoneNumber(const QString &identifier);
 QStringList maskPhoneNumber(const QStringList &list);
 

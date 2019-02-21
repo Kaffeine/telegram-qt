@@ -24,6 +24,7 @@
 
 #include "ConnectionApi.hpp"
 
+#include <QCryptographicHash>
 #include <QDateTime>
 #include <QMetaType>
 #include <QDebug>
@@ -1018,6 +1019,20 @@ quint64 Telegram::Utils::maskNumber(quint64 number)
     result = (leftPart | rightPart);
     qDebug() << bin << result;
     return result;
+}
+
+// Encode in shell: echo -n <string>telegram-qt | sha256sum | cut -c1-8
+QString Telegram::Utils::maskString(const QString &string)
+{
+    if (string.isEmpty()) {
+        return QString();
+    }
+    QByteArray data;
+    if (string.length() < 10) {
+        data = string.toUtf8() + QByteArrayLiteral("telegram-qt");
+    }
+    data = QCryptographicHash::hash(data, QCryptographicHash::Sha256);
+    return QString::fromLatin1(QByteArrayLiteral("<str_") + data.left(4).toHex() + QByteArrayLiteral(">"));
 }
 
 QString Telegram::Utils::maskPhoneNumber(const QString &identifier)
