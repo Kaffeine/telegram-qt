@@ -19,7 +19,9 @@
 #include "CClientTcpTransport.hpp"
 #include "CRawStream.hpp"
 #include "RandomGenerator.hpp"
+#include "TelegramNamespace.hpp"
 
+#include <QNetworkProxy>
 #include <QTcpSocket>
 #include <QTimer>
 
@@ -51,7 +53,22 @@ TcpTransport::~TcpTransport()
 
 void TcpTransport::connectToHost(const QString &ipAddress, quint16 port)
 {
-    qCDebug(c_loggingTranport) << this << __func__ << ipAddress << port;
+    const QNetworkProxy proxy = m_socket->proxy();
+    QString proxyStr;
+    if (proxy.hostName().isEmpty()) {
+        proxyStr = QLatin1String("(none)");
+    } else {
+        proxyStr = proxy.hostName() + QLatin1String(":") + QString::number(proxy.port());
+        if (!proxy.user().isEmpty()) {
+            proxyStr = Telegram::Utils::maskString(proxy.user())
+                    + QLatin1Char(':') + Telegram::Utils::maskString(proxy.password())
+                    + QLatin1Char('@') + proxyStr;
+        }
+    }
+    qCDebug(c_loggingTranport).noquote().nospace() << this << ' ' << __func__
+                                                   << '(' << ipAddress << ':' << port << ") "
+                                                   << "proxy: " << proxyStr;
+
     m_socket->connectToHost(ipAddress, port);
 }
 
