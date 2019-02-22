@@ -16,12 +16,19 @@ endif()
 
 add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED
     DeclarativeClient.cpp
+    DeclarativeClient.hpp
     DeclarativeClientOperator.cpp
+    DeclarativeClientOperator.hpp
     DeclarativeMessageSender.cpp
+    DeclarativeMessageSender.hpp
     DeclarativeOperation.cpp
+    DeclarativeOperation.hpp
     DeclarativeAuthOperation.cpp
+    DeclarativeAuthOperation.hpp
     DeclarativeSettings.cpp
+    DeclarativeSettings.hpp
     DeclarativeUserInfo.cpp
+    DeclarativeUserInfo.hpp
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
