@@ -60,23 +60,33 @@ class DeclarativeProxySettings : public QObject
     Q_OBJECT
     Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
     Q_PROPERTY(QString address READ address WRITE setAddress NOTIFY addressChanged)
+    Q_PROPERTY(QString user READ user WRITE setUser NOTIFY userChanged)
+    Q_PROPERTY(QString password READ password WRITE setPassword NOTIFY passwordChanged)
 public:
     explicit DeclarativeProxySettings(QObject *parent = nullptr);
 
     quint16 port() const { return m_port; }
     QString address() const { return m_address; }
+    QString user() const { return m_user; }
+    QString password() const { return m_password; }
 
 public slots:
     void setPort(quint16 port);
     void setAddress(const QString &address);
+    void setUser(const QString &user);
+    void setPassword(const QString &password);
 
 signals:
     void portChanged(quint16 newPort);
     void addressChanged(const QString &addressChanged);
+    void userChanged(const QString &userChanged);
+    void passwordChanged(const QString &passwordChanged);
 
 protected:
     quint16 m_port = 0;
     QString m_address;
+    QString m_user;
+    QString m_password;
 };
 
 class DeclarativeSettings : public Settings // TODO: QQmlParserStatus

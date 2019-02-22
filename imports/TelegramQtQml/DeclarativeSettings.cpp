@@ -78,6 +78,24 @@ void DeclarativeProxySettings::setAddress(const QString &address)
     emit addressChanged(address);
 }
 
+void DeclarativeProxySettings::setUser(const QString &username)
+{
+    if (m_user == username) {
+        return;
+    }
+    m_user = username;
+    emit userChanged(username);
+}
+
+void DeclarativeProxySettings::setPassword(const QString &password)
+{
+    if (m_password == password) {
+        return;
+    }
+    m_password = password;
+    emit passwordChanged(password);
+}
+
 DeclarativeSettings::DeclarativeSettings(QObject *parent) :
     Settings(parent)
 {
@@ -132,6 +150,9 @@ void DeclarativeSettings::syncSettings()
         proxy.setType(QNetworkProxy::Socks5Proxy);
         proxy.setHostName(m_proxySettings->address());
         proxy.setPort(m_proxySettings->port());
+        proxy.setUser(m_proxySettings->user());
+        proxy.setPassword(m_proxySettings->password());
+
     }
     setProxy(proxy);
 }
