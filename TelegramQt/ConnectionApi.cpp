@@ -17,7 +17,7 @@
 #include <QLoggingCategory>
 #include <QTimer>
 
-Q_LOGGING_CATEGORY(c_connectionApiLoggingCategory, "telegram.client.api.connection", QtWarningMsg)
+Q_LOGGING_CATEGORY(c_connectionApiLoggingCategory, "telegram.client.api.connection", QtInfoMsg)
 
 namespace Telegram {
 
@@ -200,7 +200,14 @@ void ConnectionApiPrivate::connectToNextServer()
                     accountStorage->contentRelatedMessagesNumber());
     }
 
-    m_initialConnection->connectToDc();
+    ConnectOperation *connectionOperation = m_initialConnection->connectToDc();
+    connect(connectionOperation, &PendingOperation::finished, this, [](PendingOperation *op) {
+        if (op->isFailed()) {
+            qCInfo(c_connectionApiLoggingCategory) << op << op->errorDetails();
+        } else {
+            qCDebug(c_connectionApiLoggingCategory) << op << "succeeded";
+        }
+    });
     m_connectionQueued = false;
 }
 
