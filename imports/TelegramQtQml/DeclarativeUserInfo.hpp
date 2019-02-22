@@ -9,7 +9,7 @@ namespace Telegram {
 
 namespace Client {
 
-class DeclarativeUserInfo : public DeclarativeClientOperator
+class TELEGRAMQT_QML_EXPORT DeclarativeUserInfo : public DeclarativeClientOperator
 {
     Q_OBJECT
     Q_PROPERTY(quint32 contactId READ contactId WRITE setContactId NOTIFY contactIdChanged)

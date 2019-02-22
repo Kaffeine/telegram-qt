@@ -14,7 +14,7 @@ class DeclarativeSettings;
 
 class AuthOperation;
 
-class DeclarativeAuthOperation : public DeclarativeOperation
+class TELEGRAMQT_QML_EXPORT DeclarativeAuthOperation : public DeclarativeOperation
 {
     Q_OBJECT
     Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber NOTIFY phoneNumberChanged)

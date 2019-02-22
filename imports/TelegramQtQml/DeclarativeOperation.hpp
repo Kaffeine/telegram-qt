@@ -13,7 +13,7 @@ namespace Client {
 class DeclarativeClient;
 class DeclarativeSettings;
 
-class DeclarativeOperation : public DeclarativeClientOperator
+class TELEGRAMQT_QML_EXPORT DeclarativeOperation : public DeclarativeClientOperator
 {
     Q_OBJECT
     Q_PROPERTY(bool succeeded READ isSucceeded NOTIFY succeededChanged)

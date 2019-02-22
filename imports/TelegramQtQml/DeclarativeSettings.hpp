@@ -1,7 +1,9 @@
 #ifndef TELEGRAM_DECLARATIVE_SETTINGS_HPP
 #define TELEGRAM_DECLARATIVE_SETTINGS_HPP
 
-#include "../../TelegramQt/ClientSettings.hpp"
+#include "telegramqt_qml_global.h"
+
+#include "ClientSettings.hpp"
 
 #include <QQmlListProperty>
 #include <qqml.h>
@@ -11,7 +13,7 @@ namespace Telegram {
 
 namespace Client {
 
-class DeclarativeRsaKey : public QObject
+class TELEGRAMQT_QML_EXPORT DeclarativeRsaKey : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
@@ -41,7 +43,7 @@ protected:
     RsaKey m_key;
 };
 
-class DeclarativeServerOption : public QObject, public DcOption
+class TELEGRAMQT_QML_EXPORT DeclarativeServerOption : public QObject, public DcOption
 {
     Q_OBJECT
     Q_PROPERTY(QString address MEMBER address)
@@ -55,7 +57,7 @@ private:
     Q_DISABLE_COPY(DeclarativeServerOption)
 };
 
-class DeclarativeProxySettings : public QObject
+class TELEGRAMQT_QML_EXPORT DeclarativeProxySettings : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(int port READ port WRITE setPort NOTIFY portChanged)
@@ -89,7 +91,7 @@ protected:
     QString m_password;
 };
 
-class DeclarativeSettings : public Settings // TODO: QQmlParserStatus
+class TELEGRAMQT_QML_EXPORT DeclarativeSettings : public Settings // TODO: QQmlParserStatus
 {
     Q_OBJECT
     Q_PROPERTY(QQmlListProperty<Telegram::Client::DeclarativeServerOption> serverOptions
