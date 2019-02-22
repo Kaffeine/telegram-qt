@@ -15,7 +15,7 @@ BuildRequires: pkgconfig(Qt5Core)
 BuildRequires: pkgconfig(Qt5Network)
 BuildRequires: pkgconfig(Qt5Qml)
 BuildRequires: pkgconfig(openssl)
-BuildRequires: cmake >= 2.8
+BuildRequires: cmake >= 3.1
 
 %description
 %{summary}.
@@ -87,6 +87,10 @@ rm -rf %{buildroot}
 
 %files qt5-devel
 %defattr(-,root,root,-)
+%dir %{_includedir}/TelegramQt5
+%dir %{_includedir}/TelegramQt5/TelegramQt
+%dir %{_libdir}/cmake/TelegramQt5
+%dir %{_libdir}/pkgconfig
 %{_includedir}/TelegramQt5/TelegramQt/*
 %{_libdir}/libTelegramQt5.so
 %{_libdir}/cmake/TelegramQt5/TelegramQt5Config.cmake
