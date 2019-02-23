@@ -973,9 +973,10 @@ QString Generator::debugOperatorPerTypeImplementation(const QString &argName, co
         } else if (member.accessByPointer() && !member.isVector()) {
             code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << *%2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
         } else if (hasFlags && (member.getAlias() == QLatin1String("flags"))) {
-            code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2"
+            code += doubleSpacing + QString("d.noquote() << spacer.innerSpaces() << \"%1: \" << %2"
                                             " << \" (\" << flagsToString(type)"
                                             " <<\")\\n\";\n").arg(member.getAlias(), typeDebugStatement);
+            code += doubleSpacing + QLatin1String("d.quote();\n");
         } else {
             code += doubleSpacing + QString("d << spacer.innerSpaces() << \"%1: \" << %2 <<\"\\n\";\n").arg(member.getAlias(), typeDebugStatement);
         }
