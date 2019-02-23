@@ -47,9 +47,11 @@ public:
         InvalidContainer = 64,
     };
     Q_ENUM(ErrorCode)
-    quint64 messageId;
-    quint32 seqNo;
-    quint32 errorCode;
+    constexpr IgnoredMessageNotification() = default;
+
+    quint64 messageId = 0;
+    quint32 seqNo = 0;
+    quint32 errorCode = 0;
 
     static QString codeToString(quint32 code);
     QString toString() const;
