@@ -1017,7 +1017,6 @@ quint64 Telegram::Utils::maskNumber(quint64 number)
     leftPart = (result & 0xffff0000) << 32;
     rightPart = result & 0x0000ffff;
     result = (leftPart | rightPart);
-    qDebug() << bin << result;
     return result;
 }
 
