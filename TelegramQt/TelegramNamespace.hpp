@@ -47,36 +47,36 @@ public:
     };
     Q_ENUM(Type)
 
-    Peer(quint32 id = 0, Type t = User) : type(t), id(id)
+    constexpr Peer(quint32 id = 0, Type t = User) : type(t), id(id)
     {
     }
 
     Type type = User;
     quint32 id = 0;
 
-    Q_INVOKABLE bool isValid() const { return id; }
+    Q_INVOKABLE constexpr bool isValid() const { return id; }
 
-    bool operator==(const Peer &p) const
+    constexpr bool operator==(const Peer &p) const
     {
         return (p.id == id) && (p.type == type);
     }
 
-    bool operator!=(const Peer &p) const
+    constexpr bool operator!=(const Peer &p) const
     {
         return (p.id != id) || (p.type != type);
     }
 
-    static Peer fromUserId(quint32 id)
+    constexpr static Peer fromUserId(quint32 id)
     {
         return Peer(id, User);
     }
 
-    static Peer fromChatId(quint32 id)
+    constexpr static Peer fromChatId(quint32 id)
     {
         return Peer(id, Chat);
     }
 
-    static Peer fromChannelId(quint32 id)
+    constexpr static Peer fromChannelId(quint32 id)
     {
         return Peer(id, Channel);
     }
