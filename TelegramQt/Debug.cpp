@@ -21,7 +21,7 @@
 #include "MTProto/MessageHeader.hpp"
 #include "IgnoredMessageNotification.hpp"
 
-static const QByteArray c_spaces = QByteArray(24, ' ');
+static const QByteArray c_spaces = QByteArray(40, ' ');
 
 const char *getSpaces(int count)
 {
