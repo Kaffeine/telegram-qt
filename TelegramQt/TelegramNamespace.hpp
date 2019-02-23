@@ -290,6 +290,8 @@ public:
     QString caption() const;
     void setCaption(const QString &caption);
 
+    QByteArray getCachedPhoto() const;
+
     // Valid for Document and Audio
     QString mimeType() const;
     bool setMimeType(const QString &mimeType);
