@@ -234,6 +234,7 @@ void tst_MessagesApi::getDialogs()
         QList<QVariant> receivedArgs = client2MessageReceivedSpy.takeFirst();
         QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
         client1AsClient2Peer = receivedArgs.first().value<Telegram::Peer>();
+        QVERIFY(client2DialogList->peers().contains(client1AsClient2Peer));
 
         client2Message1Id = receivedArgs.last().toUInt();
         QVERIFY(client2Message1Id);
@@ -244,12 +245,13 @@ void tst_MessagesApi::getDialogs()
 
     // Check the dialog is added to the client 2 dialog list
     {
-        TRY_COMPARE(client2DialogListChangedSpy.count(), 1);
+        QCOMPARE(client2DialogListChangedSpy.count(), 1);
         QList<QVariant> receivedArgs = client2DialogListChangedSpy.takeFirst();
         QCOMPARE(receivedArgs.count(), 2); // listChanged has 'added' and 'removed' args
         Telegram::PeerList added = receivedArgs.first().value<Telegram::PeerList>();
         QCOMPARE(added.count(), 1);
         QCOMPARE(added.first(), client1AsClient2Peer);
+        QVERIFY(client2DialogList->peers().contains(client1AsClient2Peer));
     }
 
     // Check sent by client 2
