@@ -44,6 +44,7 @@ private slots:
     void testRsaFingersprint();
     void testRsaEncryption();
     void testRsaKey();
+    void testBuiltInKey();
     void testRsaKeyIsValid();
     void testDeterministicRandom();
     void testGzipPack();
@@ -142,6 +143,13 @@ void tst_utils::testRsaKey()
     QCOMPARE(key.modulus, key2.modulus);
     QCOMPARE(key.exponent, key2.exponent);
     QCOMPARE(key.fingerprint, key2.fingerprint);
+}
+
+void tst_utils::testBuiltInKey()
+{
+    const Telegram::RsaKey key = Telegram::RsaKey::defaultKey();
+    QVERIFY(key.isValid());
+    QCOMPARE(key.fingerprint, Telegram::RsaKey::getFingerprint(key));
 }
 
 void tst_utils::testRsaKeyIsValid()
