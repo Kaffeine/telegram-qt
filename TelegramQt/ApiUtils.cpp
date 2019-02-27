@@ -134,6 +134,10 @@ TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media)
                 return TelegramNamespace::MessageTypeSticker;
             case TLValue::DocumentAttributeAnimated:
                 return TelegramNamespace::MessageTypeAnimation;
+            case TLValue::DocumentAttributeAudio:
+                return TelegramNamespace::MessageTypeAudio;
+            case TLValue::DocumentAttributeVideo:
+                return TelegramNamespace::MessageTypeVideo;
             default:
                 break;
             }
