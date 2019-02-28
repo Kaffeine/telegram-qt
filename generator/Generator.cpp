@@ -2154,7 +2154,7 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
             qWarning() << "parseLine: the read predicate is different from the calculated" << QString("%1 vs %2")
                           .arg(predicateId, /* fieldwidth */ 8, /* base */ 16, QLatin1Char('0'))
                           .arg(calculatedPredicateId, /* fieldwidth */ 8, /* base */ 16, QLatin1Char('0'))
-                       << "for line" << line;
+                       << "for bare predicate" << line;
         }
     } else {
         predicateId = calculatedPredicateId;
