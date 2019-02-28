@@ -2091,12 +2091,18 @@ QByteArray Generator::getBarePredicate(const QByteArray &sourceLine)
 {
     static const QRegularExpression expr("([a-zA-Z\\.0-9_]+)(#[0-9a-f]+)?([^=]*)=\\s*([a-zA-Z\\.<>0-9_]+[a-zA-Z\\s]*);");
     const QRegularExpressionMatch match = expr.match(QString::fromLatin1(sourceLine));
+    // For predicate req_pq#60469778 nonce:int128 = ResPQ;
+    // captured(1) is the base name (e.g. req_pq)
+    // captured(2) is the crc32 (e.g. #60469778)
+    // captured(3) contains the members (e.g. nonce:int128)
+    // captured(4) is the name (e.g. ResPQ or "Vector t" for Vector)
     if (!match.isValid()) {
         return QByteArray();
     }
-    static const QRegularExpression flags(QStringLiteral(" [a-zA-Z0-9_]+\\:flags\\.[0-9]+\\?true"));
+    // Bool flags should be omitted for CRC calculation
+    static const QRegularExpression boolFlags(QStringLiteral(" [a-zA-Z0-9_]+\\:flags\\.[0-9]+\\?true"));
     QString str = match.captured(1) + match.captured(3) + QStringLiteral("= ") + match.captured(4);
-    str.replace(flags, QString());
+    str.replace(boolFlags, QString());
     QByteArray arr = str.toLatin1();
     for (char &c : arr) {
         switch (c) {
