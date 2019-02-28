@@ -125,7 +125,7 @@ public:
     quint32 replyToMessageId = 0;
     quint32 forwardContactId = 0; // If forward peer is a group chat, then the contact is the actual sender.
     QString text;
-    quint32 id = 0;
+    quint32 messageId = 0;
     quint32 sentTimestamp = 0;
     quint32 receivedTimestamp = 0;
     quint32 fwdTimestamp = 0;

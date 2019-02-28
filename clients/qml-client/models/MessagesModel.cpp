@@ -239,7 +239,7 @@ QVariant MessagesModel::getData(int index, Role role) const
         case Role::ReceivedTimestamp:
             return QVariant::fromValue(QDateTime::fromSecsSinceEpoch(message->receivedTimestamp));
         case Role::Identifier:
-            return QVariant::fromValue(message->id);
+            return QVariant::fromValue(message->messageId);
         case Role::Contact:
             return QVariant::fromValue(message->fromId);
         case Role::Message:
@@ -535,6 +535,7 @@ void MessagesModel::insertMessages(const QVector<quint32> &messageIds)
         }
 
         MessageEvent *event = new MessageEvent();
+        event->messageId = messageId;
         event->fromId = m.fromId;
         event->text = m.text;
         event->receivedTimestamp = m.timestamp;
