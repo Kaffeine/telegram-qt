@@ -2107,6 +2107,7 @@ QByteArray Generator::getPredicateForCrc32(const QByteArray &sourceLine)
         case '{':
         case '}':
             c = ' ';
+            break;
         default:
             break;
         }
@@ -2118,7 +2119,9 @@ QByteArray Generator::getPredicateForCrc32(const QByteArray &sourceLine)
 
 quint32 Generator::getCrc32(const QByteArray &bytes)
 {
-    return crc32(0l, reinterpret_cast<const unsigned char*>(bytes.constData()), bytes.size());
+    return static_cast<quint32>(
+                crc32(0l, reinterpret_cast<const Bytef*>(bytes.constData()), static_cast<uint>(bytes.size()))
+                );
 }
 
 Generator::LineParseResult Generator::parseLine(const QString &line)
