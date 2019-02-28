@@ -2089,7 +2089,7 @@ Generator::MethodsCode Generator::generateClientFunctions(const QString &prefix)
 
 QByteArray Generator::getPredicateForCrc32(const QByteArray &sourceLine)
 {
-    static const QRegularExpression expr("([a-zA-Z\\.0-9_]+)(#[0-9a-f]+)?([^=]*)=\\s*([a-zA-Z\\.<>0-9_]+);");
+    static const QRegularExpression expr("([a-zA-Z\\.0-9_]+)(#[0-9a-f]+)?([^=]*)=\\s*([a-zA-Z\\.<>0-9_]+[a-zA-Z\\s]*);");
     const QRegularExpressionMatch match = expr.match(QString::fromLatin1(sourceLine));
     if (!match.isValid()) {
         return QByteArray();
