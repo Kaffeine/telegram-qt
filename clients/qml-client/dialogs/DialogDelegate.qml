@@ -187,6 +187,8 @@ ItemDelegate {
                             emphasedText = "Sticker"
                         } else if (lastMessage.type === Telegram.Namespace.MessageTypeAnimation) {
                             emphasedText = "GIF"
+                        } else if (lastMessage.type === Telegram.Namespace.MessageTypeDocument) {
+                            emphasedText = "File"
                         } else {
                             // Do *not* ignore unknown messages
                             emphasedText = "Unsupported content" + lastMessage.type
