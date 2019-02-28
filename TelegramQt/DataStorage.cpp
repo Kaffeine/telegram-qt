@@ -357,7 +357,9 @@ void DataInternalApi::processData(const TLChat &chat)
         TLChat *newChatInstance = new TLChat(chat);
         m_chats.insert(chat.id, newChatInstance);
     } else {
-        *m_chats[chat.id] = chat;
+        return;
+        TLChat *existsChat = m_chats[chat.id];
+        *existsChat = chat;
     }
 }
 
