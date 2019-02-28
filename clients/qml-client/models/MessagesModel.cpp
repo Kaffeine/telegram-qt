@@ -513,9 +513,14 @@ void MessagesModel::fetchPrevious()
         return;
     }
     qWarning() << Q_FUNC_INFO << "for peer" << m_peer.toString();
-    PendingMessages *op = client()->messagingApi()->getHistory(m_peer, MessageFetchOptions::useLimit(10));
-    connect(op, &PendingMessages::finished, this, [this, op] () {
-        processMessages(op->messages());
+    if (m_fetchOperation) {
+        return;
+    }
+    m_fetchOperation = client()->messagingApi()->getHistory(m_peer, MessageFetchOptions::useLimit(10));
+    connect(m_fetchOperation, &PendingMessages::finished, this, [this] () {
+        processMessages(m_fetchOperation->messages());
+        m_fetchOperation->deleteLater();
+        m_fetchOperation = nullptr;
     });
 }
 
