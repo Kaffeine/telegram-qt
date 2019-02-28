@@ -71,7 +71,6 @@ static const QString methodsClassName = QLatin1String("CTelegramConnection");
 static const QStringList typesBlackList = QStringList()
         << QLatin1String("TLVector t")
         << QLatin1String("TLNull")
-        << QLatin1String("TLMessagesMessage")
         << tlTrueType
            ;
 
