@@ -274,7 +274,7 @@ void tst_Generator::predicateForCrc()
 {
     QFETCH(QByteArray, input);
     QFETCH(QByteArray, output);
-    QCOMPARE(Generator::getPredicateForCrc32(input), output);
+    QCOMPARE(Generator::getBarePredicate(input), output);
 }
 
 QTEST_APPLESS_MAIN(tst_Generator)

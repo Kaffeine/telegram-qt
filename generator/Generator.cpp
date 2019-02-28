@@ -2087,7 +2087,7 @@ Generator::MethodsCode Generator::generateClientFunctions(const QString &prefix)
     return result;
 }
 
-QByteArray Generator::getPredicateForCrc32(const QByteArray &sourceLine)
+QByteArray Generator::getBarePredicate(const QByteArray &sourceLine)
 {
     static const QRegularExpression expr("([a-zA-Z\\.0-9_]+)(#[0-9a-f]+)?([^=]*)=\\s*([a-zA-Z\\.<>0-9_]+[a-zA-Z\\s]*);");
     const QRegularExpressionMatch match = expr.match(QString::fromLatin1(sourceLine));
@@ -2136,7 +2136,7 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
 
     quint32 predicateId = 0;
     QStringRef predicateBaseName;
-    const QByteArray barePredicate = getPredicateForCrc32(line.toLatin1());
+    const QByteArray barePredicate = getBarePredicate(line.toLatin1());
     const quint32 calculatedPredicateId = getCrc32(barePredicate);
 
     if (hashIndex > 0) {

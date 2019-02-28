@@ -195,7 +195,7 @@ public:
     static QString formatMember(QString name, const QVariantHash &context = {});
     static QString formatMethodParam(const TLParam &param);
     static QString formatMethodParams(const TLMethod &method);
-    static QByteArray getPredicateForCrc32(const QByteArray &sourceLine);
+    static QByteArray getBarePredicate(const QByteArray &sourceLine);
     static quint32 getCrc32(const QByteArray &bytes);
     static LineParseResult parseLine(const QString &line);
 
