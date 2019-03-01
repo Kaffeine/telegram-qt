@@ -30,6 +30,8 @@ public:
 
     quint64 newMessageId(SendMode mode) override;
     void sendPackage(const QByteArray &package) override;
+
+    RemoteClientConnection *getRemoteClientConnection() const;
 };
 
 } // Server namespace

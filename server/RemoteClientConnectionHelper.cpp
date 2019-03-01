@@ -54,6 +54,11 @@ void MTProtoSendHelper::sendPackage(const QByteArray &package)
     return m_connection->transport()->sendPacket(package);
 }
 
+RemoteClientConnection *MTProtoSendHelper::getRemoteClientConnection() const
+{
+    return reinterpret_cast<RemoteClientConnection *>(m_connection);
+}
+
 } // Server namespace
 
 } // Telegram namespace
