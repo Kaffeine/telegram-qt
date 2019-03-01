@@ -104,14 +104,14 @@ protected:
     TLNumber128 m_serverNonce;
     TLNumber256 m_newNonce;
 
-    quint64 m_pq;
-    quint32 m_p;
-    quint32 m_q;
+    quint64 m_pq = 0;
+    quint32 m_p = 0;
+    quint32 m_q = 0;
 
     RsaKey m_rsaKey;
     SAesKey m_tmpAesKey;
 
-    quint32 m_g;
+    quint32 m_g = 0;
     QByteArray m_dhPrime;
     QByteArray m_gA;
     QByteArray m_a; // Server side
@@ -119,8 +119,8 @@ protected:
 
     State m_state = State::Idle;
 
-    quint64 m_authRetryId;
-    quint64 m_serverSalt;
+    quint64 m_authRetryId = 0;
+    quint64 m_serverSalt = 0;
 
 #ifdef NETWORK_LOGGING
     QFile *getLogFile();
