@@ -22,6 +22,7 @@ public:
     explicit RemoteClientConnection(QObject *parent = nullptr);
 
     RpcLayer *rpcLayer() const;
+    BaseDhLayer *dhLayer() const;
 
     void setRpcFactories(const QVector<RpcOperationFactory*> &rpcFactories);
 

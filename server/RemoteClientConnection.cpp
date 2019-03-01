@@ -35,6 +35,11 @@ RpcLayer *RemoteClientConnection::rpcLayer() const
     return reinterpret_cast<RpcLayer*>(m_rpcLayer);
 }
 
+BaseDhLayer *RemoteClientConnection::dhLayer() const
+{
+    return m_dhLayer;
+}
+
 void RemoteClientConnection::setRpcFactories(const QVector<RpcOperationFactory *> &rpcFactories)
 {
     rpcLayer()->setRpcFactories(rpcFactories);
