@@ -15,6 +15,7 @@ SOURCES += $$PWD/TelegramServerConfig.cpp
 SOURCES += $$PWD/TelegramServerUser.cpp
 SOURCES += $$PWD/CServerTcpTransport.cpp
 SOURCES += $$PWD/RemoteClientConnection.cpp
+SOURCES += $$PWD/RemoteClientConnectionHelper.cpp
 SOURCES += $$PWD/RemoteServerConnection.cpp
 SOURCES += $$PWD/FunctionStreamOperators.cpp
 
@@ -38,6 +39,7 @@ HEADERS += $$PWD/TelegramServerConfig.hpp
 HEADERS += $$PWD/TelegramServerUser.hpp
 HEADERS += $$PWD/CServerTcpTransport.hpp
 HEADERS += $$PWD/RemoteClientConnection.hpp
+HEADERS += $$PWD/RemoteClientConnectionHelper.hpp
 HEADERS += $$PWD/RemoteServerConnection.hpp
 HEADERS += $$PWD/FunctionStreamOperators.hpp
 

@@ -1,9 +1,9 @@
 #include "RemoteClientConnection.hpp"
+#include "RemoteClientConnectionHelper.hpp"
 
 #include "ApiUtils.hpp"
 #include "TLTypes.hpp"
 #include "CTelegramTransport.hpp"
-#include "SendPackageHelper.hpp"
 #include "ServerApi.hpp"
 #include "ServerDhLayer.hpp"
 #include "ServerRpcLayer.hpp"
@@ -18,35 +18,6 @@ Q_LOGGING_CATEGORY(loggingCategoryRemoteClientConnection, "telegram.server.remot
 namespace Telegram {
 
 namespace Server {
-
-class MTProtoSendHelper : public BaseMTProtoSendHelper
-{
-public:
-    explicit MTProtoSendHelper(BaseConnection *connection) :
-        BaseMTProtoSendHelper()
-    {
-        m_connection = connection;
-    }
-
-    quint64 newMessageId(SendMode mode) override
-    {
-        quint64 ts = Telegram::Utils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
-        if (mode == SendMode::ServerReply) {
-            ts &= ~quint64(3);
-            ts |= 1;
-        } else if (mode == SendMode::ServerInitiative) {
-            ts |= 3;
-        } else {
-            qCWarning(loggingCategoryRemoteClientConnection) << Q_FUNC_INFO << "Invalid mode";
-        }
-        return m_connection->transport()->getNewMessageId(ts);
-    }
-
-    void sendPackage(const QByteArray &package) override
-    {
-        return m_connection->transport()->sendPacket(package);
-    }
-};
 
 RemoteClientConnection::RemoteClientConnection(QObject *parent) :
     BaseConnection(parent)

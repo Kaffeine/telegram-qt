@@ -45,6 +45,8 @@ set(server_lib_SOURCES
     CServerTcpTransport.hpp
     RemoteClientConnection.cpp
     RemoteClientConnection.hpp
+    RemoteClientConnectionHelper.cpp
+    RemoteClientConnectionHelper.hpp
     RemoteServerConnection.cpp
     RemoteServerConnection.hpp
     FunctionStreamOperators.cpp
