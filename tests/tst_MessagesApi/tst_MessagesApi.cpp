@@ -136,8 +136,6 @@ void tst_MessagesApi::getDialogs()
         TRY_VERIFY2(signInOperation1->isSucceeded(), "Unexpected sign in fail");
         quint64 client1AuthId = client1.accountStorage()->authId();
         QVERIFY(client1AuthId);
-        Server::Session *serverSession1 = server->getSessionByAuthId(client1AuthId);
-        QVERIFY(serverSession1);
         QCOMPARE(client1.accountStorage()->phoneNumber(), user1Data.phoneNumber);
         QCOMPARE(client1.accountStorage()->dcInfo().id, server->dcId());
     }
@@ -151,8 +149,6 @@ void tst_MessagesApi::getDialogs()
         TRY_VERIFY2(signInOperation2->isSucceeded(), "Unexpected sign in fail");
         quint64 client2AuthId = client2.accountStorage()->authId();
         QVERIFY(client2AuthId);
-        Server::Session *serverSession2 = server->getSessionByAuthId(client2AuthId);
-        QVERIFY(serverSession2);
         QCOMPARE(client2.accountStorage()->phoneNumber(), user2Data.phoneNumber);
         QCOMPARE(client2.accountStorage()->dcInfo().id, server->dcId());
     }
