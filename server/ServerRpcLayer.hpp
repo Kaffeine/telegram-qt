@@ -17,6 +17,7 @@ class RpcError;
 
 namespace Server {
 
+class MTProtoSendHelper;
 class RpcOperation;
 class RpcOperationFactory;
 
@@ -65,6 +66,8 @@ protected:
 
     QByteArray getEncryptionKeyPart() const final;
     QByteArray getVerificationKeyPart() const final;
+
+    MTProtoSendHelper *getHelper() const;
 
     Session *m_session = nullptr;
     ServerApi *m_api = nullptr;

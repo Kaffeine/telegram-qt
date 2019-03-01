@@ -52,6 +52,8 @@ public:
     void setAuthorizationProvider(Authorization::Provider *provider);
     void setStorage(Storage *storage);
 
+    void registerAuthKey(quint64 authId, const QByteArray &authKey);
+
     // ServerAPI:
     Authorization::Provider *getAuthorizationProvider() override { return m_authProvider; }
 
@@ -80,9 +82,11 @@ public:
     AbstractUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const override;
     LocalUser *addUser(const QString &identifier) override;
 
-    Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) override;
-    Session *getSessionByAuthId(quint64 authKeyId) const override;
+    bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) override;
+    Session *getSessionById(quint64 sessionId) const override;
     void bindUserSession(LocalUser *user, Session *session) override;
+    QByteArray getAuthKeyById(quint64 authId) const override;
+    quint32 getUserIdByAuthId(quint64 authId) const override;
 
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
 
@@ -108,7 +112,9 @@ private:
     Telegram::RsaKey m_key;
 
     QHash<QString, quint32> m_phoneToUserId;
-    QHash<quint64, Session*> m_authIdToSession;
+    QHash<quint64, Session*> m_sessions; // Session id to session
+    QHash<quint64, QByteArray> m_authorizations; // Auth id to auth key
+    QHash<quint64, quint32> m_authToUser; // Auth key to userId
     QHash<quint32, LocalUser*> m_users; // userId to User
     QSet<RemoteClientConnection*> m_activeConnections;
     QSet<RemoteServerConnection*> m_remoteServers;

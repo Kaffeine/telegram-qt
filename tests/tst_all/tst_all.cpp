@@ -221,7 +221,9 @@ void tst_all::testSignIn()
     QCOMPARE(clientConnections.count(), 1);
     Server::RemoteClientConnection *remoteClientConnection = *clientConnections.cbegin();
     QCOMPARE(remoteClientConnection->authId(), clientAuthId);
-    Server::Session *serverSession = server->getSessionByAuthId(clientAuthId);
+    QVERIFY(remoteClientConnection->session());
+    Server::Session *serverSession = server->getSessionById(remoteClientConnection->session()->id());
+    QCOMPARE(remoteClientConnection->session(), serverSession);
     QVERIFY(serverSession);
     QVERIFY(serverSession->user());
     QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
@@ -330,9 +332,12 @@ void tst_all::testCheckInSignIn()
 
     quint64 clientAuthId = accountStorage.authId();
     QVERIFY(clientAuthId);
-    Server::Session *serverSession = server->getSessionByAuthId(clientAuthId);
-    QVERIFY(serverSession);
-    QVERIFY(serverSession->user());
+    const quint32 clientUserId = server->getUserIdByAuthId(clientAuthId);
+    QVERIFY(clientUserId);
+
+    Telegram::Server::LocalUser *serverSideUser = server->getUser(clientUserId);
+    QVERIFY(serverSideUser);
+    QCOMPARE(serverSideUser->phoneNumber(), userData.phoneNumber);
     QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
     QCOMPARE(accountStorage.dcInfo().id, server->dcId());
     TRY_VERIFY(client.isSignedIn());
@@ -493,9 +498,9 @@ void tst_all::testSignUp()
     QCOMPARE(clientConnections.count(), 1);
     Server::RemoteClientConnection *remoteClientConnection = *clientConnections.cbegin();
     QCOMPARE(remoteClientConnection->authId(), clientAuthId);
-    Server::Session *serverSession = server->getSessionByAuthId(clientAuthId);
-    QVERIFY(serverSession);
-    Telegram::Server::LocalUser *serverSideUser = serverSession->user();
+    quint32 clientUserId = server->getUserIdByAuthId(clientAuthId);
+    QVERIFY(clientUserId);
+    Telegram::Server::LocalUser *serverSideUser = server->getUser(clientUserId);
     QVERIFY(serverSideUser);
     QCOMPARE(serverSideUser->firstName(), userData.firstName);
     QCOMPARE(serverSideUser->lastName(), userData.lastName);

@@ -97,10 +97,10 @@ void LocalUser::setDcId(quint32 id)
     m_dcId = id;
 }
 
-Session *LocalUser::getSession(quint64 authId) const
+Session *LocalUser::getSession(quint64 sessionId) const
 {
     for (Session *s : m_sessions) {
-        if (s->authId == authId) {
+        if (s->id() == sessionId) {
             return s;
         }
     }

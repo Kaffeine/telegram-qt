@@ -25,7 +25,6 @@ RemoteClientConnection::RemoteClientConnection(QObject *parent) :
     m_sendHelper = new MTProtoSendHelper(this);
     m_dhLayer = new DhLayer(this);
     m_dhLayer->setSendPackageHelper(m_sendHelper);
-    connect(m_dhLayer, &BaseDhLayer::stateChanged, this, &RemoteClientConnection::onClientDhStateChanged);
     m_rpcLayer = new RpcLayer(this);
     m_rpcLayer->setSendPackageHelper(m_sendHelper);
 }
@@ -66,15 +65,6 @@ void RemoteClientConnection::setSession(Session *session)
     rpcLayer()->setSession(session);
 }
 
-void RemoteClientConnection::onClientDhStateChanged()
-{
-    if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
-        Session *session = api()->createSession(m_sendHelper->authId(), m_sendHelper->authKey(), m_transport->remoteAddress());
-        session->setInitialServerSalt(m_dhLayer->serverSalt());
-        setSession(session);
-    }
-}
-
 void RemoteClientConnection::sendKeyError()
 {
     static const QByteArray errorPackage = QByteArray::fromHex(QByteArrayLiteral("6cfeffff"));
@@ -93,15 +83,17 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
                                                       << "is different from the expected"
                                                       << m_sendHelper->authId();
     } else {
-        Session *session = api()->getSessionByAuthId(authKeyId);
-        if (session) {
-            setSession(session);
-            m_sendHelper->setAuthKey(session->authKey);
-            return true;
+        const QByteArray authKey = api()->getAuthKeyById(authKeyId);
+        if (authKey.isEmpty()) {
+            qCInfo(loggingCategoryRemoteClientConnection) << this << transport()->remoteAddress()
+                                                          << "Unable to find an authorization with id"
+                                                          << showbase << hex << authKeyId;
         } else {
             qCInfo(loggingCategoryRemoteClientConnection) << this << transport()->remoteAddress()
-                                                          << "Unable to find a session with authKeyId"
+                                                          << "assign exists session (by auth key id)"
                                                           << showbase << hex << authKeyId;
+            m_sendHelper->setAuthKey(authKey);
+            return true;
         }
     }
 

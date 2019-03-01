@@ -33,8 +33,6 @@ public:
     void setSession(Session *session);
 
 protected slots:
-    void onClientDhStateChanged();
-
     void sendKeyError();
 
 protected:

@@ -62,6 +62,18 @@ bool Session::checkSalt(quint64 salt)
     return salt && ((getServerSalt() == salt) || (getOldSalt() == salt));
 }
 
+bool Session::generateInitialServerSalt()
+{
+    if (!m_salts.isEmpty()) {
+        qCritical() << Q_FUNC_INFO << "a salt is already set";
+        return false;
+    }
+    ServerSalt s = generateSalt(getCurrentTime());
+    m_salts.append(s);
+    addSalt();
+    return true;
+}
+
 void Session::setInitialServerSalt(quint64 salt)
 {
     if (!m_salts.isEmpty()) {

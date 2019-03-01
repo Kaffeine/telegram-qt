@@ -92,9 +92,13 @@ public:
     virtual LocalUser *getUser(quint32 userId) const = 0;
     virtual AbstractUser *getUser(const TLInputUser &inputUser, LocalUser *self) const = 0;
     virtual AbstractUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const = 0;
-    virtual Session *createSession(quint64 authId, const QByteArray &authKey, const QString &address) = 0;
-    virtual Session *getSessionByAuthId(quint64 authId) const = 0;
+
+    virtual bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) = 0;
+    virtual Session *getSessionById(quint64 authId) const = 0;
     virtual void bindUserSession(LocalUser *user, Session *session) = 0;
+    virtual QByteArray getAuthKeyById(quint64 authId) const = 0;
+    virtual quint32 getUserIdByAuthId(quint64 authId) const = 0;
+
     virtual LocalUser *addUser(const QString &identifier) = 0;
 
     virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;

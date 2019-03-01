@@ -37,6 +37,7 @@ public:
     quint64 getOldSalt();
     quint64 getServerSalt();
     bool checkSalt(quint64 salt);
+    bool generateInitialServerSalt();
     void setInitialServerSalt(quint64 salt);
     QVector<ServerSalt> getSalts(quint32 numberLimit);
 
@@ -45,9 +46,7 @@ public:
     quint32 appId = 0;
     quint32 lastSequenceNumber = 0;
     quint64 lastMessageNumber = 0;
-    quint64 authId = 0;
     quint64 sessionId = 0;
-    QByteArray authKey;
     QString deviceInfo;
     QString osInfo;
     QString appVersion;

@@ -31,6 +31,7 @@
 // End of generated RPC Operation Factory includes
 
 #include "ServerMessageData.hpp"
+#include "ServerDhLayer.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
 #include "Storage.hpp"
@@ -172,6 +173,7 @@ void Server::onClientConnectionStatusChanged()
     RemoteClientConnection *client = qobject_cast<RemoteClientConnection*>(sender());
     if (client->status() == RemoteClientConnection::Status::HasDhKey) {
         if (!client->session()) {
+            registerAuthKey(client->authId(), client->authKey());
             qCDebug(loggingCategoryServer) << Q_FUNC_INFO << "Connected a client with a new auth key"
                                               << "from" << client->transport()->remoteAddress();
         }
@@ -271,24 +273,57 @@ LocalUser *Server::addUser(const QString &identifier)
     return user;
 }
 
-Session *Server::createSession(quint64 authId, const QByteArray &authKey, const QString &address)
+void Server::registerAuthKey(quint64 authId, const QByteArray &authKey)
 {
-    Session *session = new Session();
-    session->authId = authId;
-    session->authKey = authKey;
-    session->ip = address;
-    m_authIdToSession.insert(authId, session);
-    return session;
+    m_authorizations.insert(authId, authKey);
 }
 
-Session *Server::getSessionByAuthId(quint64 authKeyId) const
+bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId)
 {
-    return m_authIdToSession.value(authKeyId);
+    Session *session = getSessionById(sessionId);
+
+    if (!session) {
+        session = new Session();
+        session->ip = client->transport()->remoteAddress();
+        session->sessionId = sessionId;
+        session->generateInitialServerSalt();
+        m_sessions.insert(sessionId, session);
+
+        if (client->dhLayer()->state() == DhLayer::State::HasKey) {
+            session->setInitialServerSalt(client->dhLayer()->serverSalt());
+        } else {
+            session->generateInitialServerSalt();
+        }
+
+        const quint32 userId = getUserIdByAuthId(client->authId());
+        if (userId) {
+            session->setUser(getUser(userId));
+        }
+    }
+
+    client->setSession(session);
+    return true;
+}
+
+Session *Server::getSessionById(quint64 sessionId) const
+{
+    return m_sessions.value(sessionId);
 }
 
 void Server::bindUserSession(LocalUser *user, Session *session)
 {
     user->addSession(session);
+    m_authToUser.insert(session->getConnection()->authId(), user->userId());
+}
+
+QByteArray Server::getAuthKeyById(quint64 authId) const
+{
+    return m_authorizations.value(authId);
+}
+
+quint32 Server::getUserIdByAuthId(quint64 authId) const
+{
+    return m_authToUser.value(authId);
 }
 
 void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
@@ -364,9 +399,6 @@ void Server::insertUser(LocalUser *user)
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
     m_users.insert(user->id(), user);
     m_phoneToUserId.insert(user->phoneNumber(), user->id());
-    for (Session *session : user->sessions()) {
-        m_authIdToSession.insert(session->authId, session);
-    }
 }
 
 PhoneStatus Server::getPhoneStatus(const QString &identifier) const

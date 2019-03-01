@@ -104,7 +104,7 @@ public:
     quint32 dcId() const { return m_dcId; }
     void setDcId(quint32 id);
 
-    Session *getSession(quint64 authId) const;
+    Session *getSession(quint64 sessionId) const;
     QVector<Session*> sessions() const { return m_sessions; }
     QVector<Session*> activeSessions() const;
     bool hasActiveSession() const;

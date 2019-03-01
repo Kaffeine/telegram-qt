@@ -4,6 +4,7 @@
 #include "Debug_p.hpp"
 #include "IgnoredMessageNotification.hpp"
 #include "TelegramServerUser.hpp"
+#include "RemoteClientConnectionHelper.hpp"
 #include "RpcProcessingContext.hpp"
 #include "RpcError.hpp"
 #include "ServerRpcOperation.hpp"
@@ -292,17 +293,18 @@ quint32 RpcLayer::activeLayer() const
 bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
 {
     if (!header.sessionId) {
-        qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Unexpected RPC packet without sessionId";
+        qCWarning(c_serverRpcLayerCategory) << this << __func__ << "Unexpected RPC packet without sessionId";
         return false;
     }
 
-    if (!m_session->sessionId) {
-        qCDebug(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Assign the client auth key to a session id";
-        m_session->sessionId = header.sessionId;
-    } else if (m_session->sessionId != header.sessionId) {
-        qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Unexpected Session Id"
+    if (!m_session) {
+        api()->bindClientSession(getHelper()->getRemoteClientConnection(), header.sessionId);
+    }
+
+    if (m_session->sessionId != header.sessionId) {
+        qCWarning(c_serverRpcLayerCategory) << this << __func__ << "Unexpected Session Id"
                                             << showbase << hex
-                                            << m_session->sessionId << "(in session)"
+                                            << m_session->sessionId << "(in session),"
                                             << header.sessionId << "(in package header)";
         return false;
     }
@@ -340,6 +342,11 @@ QByteArray RpcLayer::getEncryptionKeyPart() const
 QByteArray RpcLayer::getVerificationKeyPart() const
 {
     return m_sendHelper->getClientKeyPart();
+}
+
+MTProtoSendHelper *RpcLayer::getHelper() const
+{
+    return static_cast<MTProtoSendHelper *>(m_sendHelper);
 }
 
 } // Server namespace
