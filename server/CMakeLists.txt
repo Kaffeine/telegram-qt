@@ -4,10 +4,13 @@ project(TelegramQtServer
     LANGUAGES CXX
 )
 
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_CXX_STANDARD 11)
+set(OVERRIDE_CXX_STANDARD 11 CACHE STRING "Compile with custom C++ standard version")
+
+set(CMAKE_CXX_STANDARD ${OVERRIDE_CXX_STANDARD})
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_AUTOMOC ON)
 
 set(server_lib_SOURCES
     AuthorizationProvider.hpp
