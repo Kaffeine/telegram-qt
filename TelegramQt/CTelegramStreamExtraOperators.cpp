@@ -3,6 +3,9 @@
 #include "CTelegramStream_p.hpp"
 
 template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLDcOption> &v);
+template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLCdnFileHash> &v);
+template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLLangPackString> &v);
+template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLStickerSetCovered> &v);
 
 // Generated vector write templates instancing
 // End of generated vector write templates instancing
