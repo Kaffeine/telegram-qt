@@ -70,6 +70,13 @@ Server::Server(QObject *parent) :
     connect(m_serverSocket, &QTcpServer::newConnection, this, &Server::onNewConnection);
 }
 
+Server::~Server()
+{
+    qDeleteAll(m_sessions);
+    qDeleteAll(m_users);
+    qDeleteAll(m_rpcOperationFactories);
+}
+
 void Server::setDcOption(const DcOption &option)
 {
     m_dcOption = option;

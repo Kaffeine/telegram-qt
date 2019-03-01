@@ -33,6 +33,7 @@ class Server : public QObject, public ServerApi
     Q_OBJECT
 public:
     explicit Server(QObject *parent = nullptr);
+    ~Server() override;
 
     void setDcOption(const DcOption &option);
 
