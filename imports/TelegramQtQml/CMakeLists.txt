@@ -15,6 +15,8 @@ if (NOT INSTALL_QML_IMPORT_DIR)
 endif()
 
 add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED
+    DeclarativeChatInfo.cpp
+    DeclarativeChatInfo.hpp
     DeclarativeClient.cpp
     DeclarativeClient.hpp
     DeclarativeClientOperator.cpp

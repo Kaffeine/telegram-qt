@@ -16,6 +16,7 @@ OTHER_FILES += CMakeLists.txt
 INCLUDEPATH += ../../TelegramQt
 SOURCES += \
     DeclarativeAuthOperation.cpp \
+    DeclarativeChatInfo.cpp \
     DeclarativeClient.cpp \
     DeclarativeClientOperator.cpp \
     DeclarativeOperation.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     DeclarativeAuthOperation.hpp \
+    DeclarativeChatInfo.hpp \
     DeclarativeClient.hpp \
     DeclarativeClientOperator.hpp \
     DeclarativeOperation.hpp \
