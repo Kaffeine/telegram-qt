@@ -44,7 +44,7 @@ void DeclarativeUserInfo::updateDisplayName()
         return;
     }
     client()->dataStorage()->getUserInfo(&info, m_contactId);
-    setDisplayName(info.firstName());
+    setDisplayName(info.getBestDisplayName());
 }
 
 } // Client
