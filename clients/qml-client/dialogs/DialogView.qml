@@ -13,8 +13,8 @@ Frame {
     height: 600
     padding: 1
 
-    signal activateDialog(var peer)
     property alias model: listView.model
+    property var currentPeer: Telegram.Namespace.emptyPeer()
 
     DialogsModel {
         id: dialogsModel
@@ -30,9 +30,7 @@ Frame {
         spacing: 4
         delegate: DialogDelegate {
             width: listView.width// - listView.leftMargin - listView.rightMargin
-            onClicked: {
-                dialogView.activateDialog(peer)
-            }
+            onClicked: dialogView.currentPeer = peer
             displayName: model.displayName
             //displayName: model.displayName ? model.displayName : model.firstName + " " + model.lastName
             unreadMessageCount: model.unreadMessageCount

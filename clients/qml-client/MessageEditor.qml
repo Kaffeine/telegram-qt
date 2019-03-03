@@ -17,8 +17,6 @@ Item {
         }
     }
 
-    property var peer
-
     RowLayout {
         id: rowLayout
 

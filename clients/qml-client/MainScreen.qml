@@ -13,8 +13,14 @@ Frame {
     width: 800
     height: 600
 
+    property alias currentPeer: dialogView.currentPeer
+    onCurrentPeerChanged: {
+        console.log("Activated dialog (" + currentPeer.type + ", " + currentPeer.id + ")")
+    }
+
     Telegram.MessageSender {
         id: sender
+        peer: currentPeer
         client: telegramClient
     }
 
@@ -25,11 +31,6 @@ Frame {
             id: dialogView
             width: 320
             height: parent.height
-            onActivateDialog: {
-                console.log("Activate dialog peer(" + peer.type + ", " + peer.id + ")")
-                messageView.peer = peer
-                sender.peer = peer
-            }
         }
 
         Item {
@@ -42,6 +43,7 @@ Frame {
                 width: rightColumn.width
                 anchors.top: rightColumn.top
                 anchors.bottom: messageEditor.top
+                peer: currentPeer
             }
             MessageEditor {
                 id: messageEditor
