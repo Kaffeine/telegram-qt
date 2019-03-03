@@ -382,6 +382,8 @@ public:
 
     UserInfo &operator=(const UserInfo &info);
 
+    QString getBestDisplayName() const;
+
     quint32 id() const;
     QString firstName() const;
     QString lastName() const;

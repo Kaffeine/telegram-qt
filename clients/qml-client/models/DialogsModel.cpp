@@ -153,25 +153,7 @@ QString getPeerAlias(const Telegram::Peer &peer, const Telegram::Client::Client 
     if (peer.type == Telegram::Peer::Type::User) {
         Telegram::UserInfo info;
         if (client->dataStorage()->getUserInfo(&info, peer.id)) {
-            QString name;
-            if (!info.firstName().isEmpty()) {
-                name = info.firstName();
-            }
-            if (!info.lastName().isEmpty()) {
-                if (!name.isEmpty()) {
-                    name += QLatin1Char(' ') + info.lastName();
-                } else {
-                    name = info.lastName();
-                }
-            }
-
-            if (!name.simplified().isEmpty()) {
-                return name;
-            }
-
-            if (!info.userName().isEmpty()) {
-                return info.userName();
-            }
+            return info.getBestDisplayName();
         }
     } else {
         Telegram::ChatInfo info;

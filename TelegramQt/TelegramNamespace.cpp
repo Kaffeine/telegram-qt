@@ -814,6 +814,31 @@ Telegram::UserInfo &Telegram::UserInfo::operator=(const Telegram::UserInfo &info
     return *this;
 }
 
+QString Telegram::UserInfo::getBestDisplayName() const
+{
+    QString name;
+    if (!firstName().isEmpty()) {
+        name = firstName();
+    }
+    if (!lastName().isEmpty()) {
+        if (!name.isEmpty()) {
+            name += QLatin1Char(' ') + lastName();
+        } else {
+            name = lastName();
+        }
+    }
+    if (!name.simplified().isEmpty()) {
+        return name;
+    }
+    if (!userName().isEmpty()) {
+        return userName();
+    }
+    if (!phone().isEmpty()) {
+        return phone();
+    }
+    return name;
+}
+
 quint32 Telegram::UserInfo::id() const
 {
     return d->id;
