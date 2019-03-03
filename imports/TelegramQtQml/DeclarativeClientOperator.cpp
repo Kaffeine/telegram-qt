@@ -17,6 +17,7 @@
 
 #include "DeclarativeClientOperator.hpp"
 
+#include "Client.hpp"
 #include "DeclarativeClient.hpp"
 
 #include <QLoggingCategory>
@@ -57,6 +58,14 @@ Client *DeclarativeClientMixin::client() const
     }
     qCCritical(c_loggingClientOperator).nospace() << this << ": Client instance is not set";
     return nullptr;
+}
+
+DataStorage *DeclarativeClientMixin::dataStorage() const
+{
+    if (!client()) {
+        return nullptr;
+    }
+    return client()->dataStorage();
 }
 
 } // Client

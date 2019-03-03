@@ -27,6 +27,7 @@ namespace Telegram {
 namespace Client {
 
 class Client;
+class DataStorage;
 class DeclarativeClient;
 class DeclarativeSettings;
 
@@ -37,6 +38,7 @@ public:
 
 protected:
     Client *client() const;
+    DataStorage *dataStorage() const;
 
     DeclarativeClient *m_qmlClient = nullptr;
 };
