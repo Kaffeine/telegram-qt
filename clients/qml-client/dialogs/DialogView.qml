@@ -37,6 +37,7 @@ Frame {
             timestamp: typeof(model.lastMessage) != "undefined" ? model.lastMessage.timestamp : undefined
             lastMessage: model.lastMessage
             peer: model.peer
+            highlighted: currentPeer === peer
         }
         ScrollBar.vertical: ScrollBar {}
 
