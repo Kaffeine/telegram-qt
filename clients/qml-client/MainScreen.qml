@@ -18,6 +18,18 @@ Frame {
         console.log("Activated dialog (" + currentPeer.type + ", " + currentPeer.id + ")")
     }
 
+    Telegram.UserInfo {
+        id: currentUserInfo
+        client: telegramClient
+        userId: currentPeer.type === Telegram.Peer.User ? currentPeer.id : 0
+    }
+
+    Telegram.ChatInfo {
+        id: currentChatInfo
+        client: telegramClient
+        peer: currentPeer
+    }
+
     Telegram.MessageSender {
         id: sender
         peer: currentPeer
@@ -38,17 +50,27 @@ Frame {
             visible: width > 200
             width: parent.width - dialogView.width
             height: parent.height
+
+            PeerHeader {
+                id: messagePageHeader
+                width: parent.width
+                height: 64
+                peer: currentPeer
+                spacing: rightPadding
+                peerInfo: peer.type === Telegram.Peer.User ? currentUserInfo : currentChatInfo
+            }
+
             MessageView {
                 id: messageView
-                width: rightColumn.width
-                anchors.top: rightColumn.top
+                width: parent.width
+                anchors.top: messagePageHeader.bottom
                 anchors.bottom: messageEditor.top
                 peer: currentPeer
             }
+
             MessageEditor {
                 id: messageEditor
-                peer: messageView.peer
-                width: rightColumn.width
+                width: parent.width
                 height: 64
                 anchors.bottom: rightColumn.bottom
             }

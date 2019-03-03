@@ -5,6 +5,7 @@
         <file>dialogs/DialogDelegate.qml</file>
         <file>dialogs/DialogView.qml</file>
         <file>dialogs/UnreadMessageIndicator.qml</file>
+        <file>PeerHeader.qml</file>
         <file>PeerPicture.qml</file>
         <file>MainScreen.qml</file>
         <file>MessageView.qml</file>
