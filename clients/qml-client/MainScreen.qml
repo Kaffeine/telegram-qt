@@ -13,7 +13,10 @@ Frame {
     width: 800
     height: 600
 
+    readonly property bool compactMode: contentRoot.width < 520
+
     property alias currentPeer: dialogView.currentPeer
+    property bool hasCurrentPeer: currentPeer && currentPeer.isValid()
     onCurrentPeerChanged: {
         console.log("Activated dialog (" + currentPeer.type + ", " + currentPeer.id + ")")
     }
@@ -36,20 +39,22 @@ Frame {
         client: telegramClient
     }
 
-    Row {
+    RowLayout {
         id: contentRoot
         anchors.fill: mainScreen.contentItem
         DialogView {
             id: dialogView
-            width: 320
-            height: parent.height
+            Layout.preferredWidth: 320
+            visible: compactMode ? !hasCurrentPeer : true
+            Layout.fillHeight: true
+            Layout.fillWidth: compactMode
         }
 
         Item {
             id: rightColumn
-            visible: width > 200
-            width: parent.width - dialogView.width
-            height: parent.height
+            visible: hasCurrentPeer || !compactMode
+            Layout.fillHeight: true
+            Layout.fillWidth: true
 
             PeerHeader {
                 id: messagePageHeader
