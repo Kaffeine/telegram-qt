@@ -21,6 +21,7 @@ ItemDelegate {
             id: pictureFrame
             width: 48
             height: 48
+            peer: Telegram.Namespace.peerFromUserId(userInfo.userId)
             displayName: senderInfo.displayName
         }
         Item {
