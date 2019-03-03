@@ -32,7 +32,15 @@ Item {
             return colors[Qt.md5(username).charCodeAt(0) % colors.length]
         }
 
-        color: Material.color(getColor(root.displayName))
+        color: {
+            if (!peer) {
+                return "white"
+            }
+            if (!peer.isValid()) {
+                return "lightgray"
+            }
+            Material.color(getColor(root.peer.toString()))
+        }
         anchors.fill: parent
         border.color: "black"
         border.width: 1
