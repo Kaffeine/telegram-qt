@@ -48,7 +48,7 @@ Item {
         Text {
             anchors.centerIn: parent
             font.pixelSize: parent.width * 0.8
-            text: root.displayName[0]
+            text: root.displayName ? root.displayName[0] : ""
             font.capitalization: Font.AllUppercase
         }
     }
