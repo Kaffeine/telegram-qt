@@ -11,6 +11,7 @@ Item {
 
     Rectangle {
         id: picture
+        visible: root.displayName
         readonly property var colors: [
             Material.Purple,
             Material.DeepPurple,
