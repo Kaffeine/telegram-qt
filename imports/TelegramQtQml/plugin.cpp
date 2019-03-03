@@ -227,6 +227,7 @@ public:
         int versionMajor = 0;
         int versionMinor = 2;
         qmlRegisterSingletonType<TelegramNamespace>(uri, versionMajor, versionMinor, "Namespace", &telegram_namespace_provider);
+        qmlRegisterUncreatableType<Telegram::Peer>(uri, versionMajor, versionMinor, "Peer", QStringLiteral("Peer is not a creatable object. Use 'var' instead."));
         qmlRegisterType<CAppInformation>(uri, versionMajor, versionMinor, "AppInformation");
         qmlRegisterType<AccountSecretHelper>(uri, versionMajor, versionMinor, "AccountSecretHelper");
         qmlRegisterType<Telegram::Client::DeclarativeAuthOperation>(uri, versionMajor, versionMinor, "AuthOperation");
