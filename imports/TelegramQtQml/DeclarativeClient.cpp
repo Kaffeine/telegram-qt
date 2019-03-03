@@ -3,6 +3,10 @@
 #include "../../TelegramQt/Client.hpp"
 #include "DeclarativeSettings.hpp"
 
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(c_qmlLoggingCategory, "telegram.client.qml", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Client {
