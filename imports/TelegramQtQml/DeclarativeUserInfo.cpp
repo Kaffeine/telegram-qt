@@ -16,13 +16,13 @@ DeclarativeUserInfo::DeclarativeUserInfo(QObject *parent) :
 {
 }
 
-void DeclarativeUserInfo::setContactId(quint32 contactId)
+void DeclarativeUserInfo::setUserId(quint32 userId)
 {
-    if (m_contactId == contactId) {
+    if (m_userId == userId) {
         return;
     }
-    m_contactId = contactId;
-    emit contactIdChanged(contactId);
+    m_userId = userId;
+    emit userIdChanged(userId);
 
     updateDisplayName();
 }
@@ -43,7 +43,7 @@ void DeclarativeUserInfo::updateDisplayName()
         qCWarning(c_qmlLoggingCategory) << this << "Client not set!";
         return;
     }
-    client()->dataStorage()->getUserInfo(&info, m_contactId);
+    client()->dataStorage()->getUserInfo(&info, m_userId);
     setDisplayName(info.getBestDisplayName());
 }
 
