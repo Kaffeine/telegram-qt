@@ -8,7 +8,7 @@ import TelegramQtTheme 1.0
 import "login"
 import "dialogs"
 
-Frame {
+Item {
     id: mainScreen
     width: 800
     height: 600
@@ -41,7 +41,7 @@ Frame {
 
     RowLayout {
         id: contentRoot
-        anchors.fill: mainScreen.contentItem
+        anchors.fill: mainScreen
         DialogView {
             id: dialogView
             Layout.preferredWidth: 320
