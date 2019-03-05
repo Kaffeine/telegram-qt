@@ -51,9 +51,9 @@ signals:
     void dataStorageChanged();
 
 protected:
-    Client *m_client;
-    DeclarativeSettings *m_settings;
-    AccountStorage *m_accountStorage;
+    Client *m_client = nullptr;
+    DeclarativeSettings *m_settings = nullptr;
+    AccountStorage *m_accountStorage = nullptr;
 };
 
 } // Client
