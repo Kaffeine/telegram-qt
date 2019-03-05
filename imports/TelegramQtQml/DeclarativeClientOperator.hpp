@@ -57,7 +57,7 @@ Q_SIGNALS:
     void clientChanged();
 
 protected:
-    void syncSettings();
+    bool syncSettings();
 };
 
 } // Client

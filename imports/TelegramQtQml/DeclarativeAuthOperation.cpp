@@ -57,7 +57,11 @@ void DeclarativeAuthOperation::startAuthentication()
             return;
         }
     }
-    syncSettings();
+    if (!syncSettings()) {
+        // SyncSettings will put own debug on this
+        return;
+    }
+
     m_authOperation = client()->connectionApi()->startAuthentication();
     m_authOperation->setPhoneNumber(phoneNumber());
     setPendingOperation(m_authOperation);

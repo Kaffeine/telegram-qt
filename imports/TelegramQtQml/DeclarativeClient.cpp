@@ -66,9 +66,14 @@ void DeclarativeClient::setDataStorage(DataStorage *storage)
     emit dataStorageChanged();
 }
 
-void DeclarativeClient::syncSettings()
+bool DeclarativeClient::syncSettings()
 {
+    if (!m_settings) {
+        qCCritical(c_qmlLoggingCategory).nospace() << this << ": Unable to sync settings (Settings instance is not set).";
+        return false;
+    }
     m_settings->syncSettings();
+    return true;
 }
 
 } // Client

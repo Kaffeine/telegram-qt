@@ -42,7 +42,7 @@ public slots:
     void setAccountStorage(AccountStorage *storage);
     void setDataStorage(DataStorage *storage);
 
-    void syncSettings();
+    bool syncSettings();
 
 signals:
     void signedInChanged(bool signedIn);

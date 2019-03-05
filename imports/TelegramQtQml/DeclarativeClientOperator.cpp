@@ -42,13 +42,13 @@ void DeclarativeClientOperator::setQmlClient(DeclarativeClient *client)
     emit clientChanged();
 }
 
-void DeclarativeClientOperator::syncSettings()
+bool DeclarativeClientOperator::syncSettings()
 {
-    if (m_qmlClient) {
-        m_qmlClient->syncSettings();
-    } else {
+    if (!m_qmlClient) {
         qCCritical(c_loggingClientOperator).nospace() << this << ": Unable to sync settings (client instance is not set).";
+        return false;
     }
+    return m_qmlClient->syncSettings();
 }
 
 Client *DeclarativeClientMixin::client() const
