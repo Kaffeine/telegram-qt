@@ -381,6 +381,12 @@ void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation
         case RpcError::SessionPasswordNeeded:
             submitAuthCodeOperation->setFinished();
             return;
+        case RpcError::PhoneCodeHashEmpty:
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
+            break;
+        case RpcError::PhoneCodeEmpty:
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
+            break;
         case RpcError::PhoneCodeInvalid:
         case RpcError::PhoneCodeExpired:
             submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
