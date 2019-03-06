@@ -107,6 +107,7 @@ void tst_ConnectionApi::testClientConnection_data()
     QTest::addColumn<Telegram::Client::Settings::SessionType>("sessionType");
     QTest::addColumn<UserData>("userData");
     QTest::addColumn<DcOption>("clientDcOption");
+    QTest::addColumn<bool>("waitForPhoneRequest");
     UserData userOnDc1 = c_userWithPassword;
     userOnDc1.dcId = 1;
     UserData userOnDc2 = c_userWithPassword;
@@ -114,37 +115,53 @@ void tst_ConnectionApi::testClientConnection_data()
     UserData user2OnDc2 = c_userWithPassword;
     user2OnDc2.unsetPassword();
     user2OnDc2.dcId = 2;
+    constexpr bool c_waitForPhoneRequest = true;
+    constexpr bool c_dontWaitForPhoneRequest = false;
 
     DcOption opt = c_localDcOptions.first();
 
     QTest::newRow("Abridged")
             << Client::Settings::SessionType::Abridged
             << userOnDc1
-            << opt;
+            << opt
+            << c_dontWaitForPhoneRequest;
+
     QTest::newRow("Obfuscated")
             << Client::Settings::SessionType::Obfuscated
             << userOnDc1
-            << opt;
+            << opt
+            << c_dontWaitForPhoneRequest;
 
     QTest::newRow("Abridged with migration")
             << Client::Settings::SessionType::Abridged
             << userOnDc2
-            << opt;
+            << opt
+            << c_dontWaitForPhoneRequest;
+
+    QTest::newRow("Abridged with migration (wait for phone requested)")
+            << Client::Settings::SessionType::Abridged
+            << userOnDc2
+            << opt
+            << c_waitForPhoneRequest;
 
     QTest::newRow("Obfuscated with migration")
             << Client::Settings::SessionType::Obfuscated
             << userOnDc2
-            << opt;
+            << opt
+            << c_dontWaitForPhoneRequest;
 
     opt.id = 0;
     QTest::newRow("Migration from unknown dc (with password)")
             << Client::Settings::SessionType::Obfuscated
             << userOnDc2
-            << opt;
+            << opt
+            << c_dontWaitForPhoneRequest;
+
     QTest::newRow("Migration from unknown dc, no password")
             << Client::Settings::SessionType::Obfuscated
             << user2OnDc2
-            << opt;
+            << opt
+            << c_dontWaitForPhoneRequest;
 }
 
 void tst_ConnectionApi::testClientConnection()
@@ -152,6 +169,7 @@ void tst_ConnectionApi::testClientConnection()
     QFETCH(Telegram::Client::Settings::SessionType, sessionType);
     QFETCH(UserData, userData);
     QFETCH(DcOption, clientDcOption);
+    QFETCH(bool, waitForPhoneRequest);
 
     const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
@@ -182,14 +200,23 @@ void tst_ConnectionApi::testClientConnection()
     Client::AuthOperation *signInOperation = connectionApi->startAuthentication();
     {
         QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
+        QSignalSpy authPhoneSpy(signInOperation, &Client::AuthOperation::phoneNumberRequired);
         QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
 
-        TRY_COMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
+        if (waitForPhoneRequest) {
+            TRY_VERIFY(!authPhoneSpy.isEmpty());
+            QCOMPARE(authPhoneSpy.count(), 1);
+            signInOperation->submitPhoneNumber(userData.phoneNumber);
+            QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
+        } else {
+            signInOperation->setPhoneNumber(userData.phoneNumber);
+            TRY_COMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
+        }
+
         QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForConnection));
         QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
         QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForAuthentication));
 
-        signInOperation->submitPhoneNumber(userData.phoneNumber);
         TRY_COMPARE(client.dataStorage()->serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
         TRY_VERIFY(!authCodeSpy.isEmpty());
         QCOMPARE(authCodeSpy.count(), 1);
@@ -197,6 +224,10 @@ void tst_ConnectionApi::testClientConnection()
         QList<QVariant> authCodeSentArguments = serverAuthCodeSpy.takeFirst();
         QCOMPARE(authCodeSentArguments.count(), 2);
         const QString authCode = authCodeSentArguments.at(1).toString();
+
+        if (!waitForPhoneRequest) {
+            QVERIFY(authPhoneSpy.isEmpty());
+        }
 
         clientConnectionStatusSpy.clear();
         signInOperation->submitAuthCode(authCode);
