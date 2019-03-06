@@ -9,6 +9,7 @@
 #include "CClientTcpTransport.hpp"
 #include "ConnectionError.hpp"
 #include "DataStorage.hpp"
+#include "Debug_p.hpp"
 
 #include "Operations/ClientAuthOperation_p.hpp"
 #include "Operations/ClientPingOperation.hpp"
@@ -110,7 +111,7 @@ void ConnectionApiPrivate::setMainConnection(Connection *connection, SetConnecti
 
 void ConnectionApiPrivate::setInitialConnection(Connection *connection, SetConnectionOption option)
 {
-    qCDebug(c_connectionApiLoggingCategory) << __func__ << connection;
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << connection;
     if (m_initialConnection) {
         if (option == DestroyOldConnection) {
             disconnect(m_initialConnection, nullptr, this, nullptr);
@@ -122,6 +123,7 @@ void ConnectionApiPrivate::setInitialConnection(Connection *connection, SetConne
 
 void ConnectionApiPrivate::disconnectFromServer()
 {
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO;
     setStatus(ConnectionApi::StatusDisconnected, ConnectionApi::StatusReasonLocal);
     setInitialConnection(nullptr);
     setMainConnection(nullptr);
@@ -131,6 +133,7 @@ void ConnectionApiPrivate::disconnectFromServer()
 
 PendingOperation *ConnectionApiPrivate::connectToDc(quint32 dcId)
 {
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << dcId;
     if (m_initialConnectOperation) {
         delete m_initialConnectOperation;
         m_initialConnectOperation = nullptr;
@@ -153,10 +156,14 @@ PendingOperation *ConnectionApiPrivate::connectToDc(quint32 dcId)
 */
 PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> &dcOptions)
 {
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << "(dcOptions)";
+
     if (dcOptions.isEmpty()) {
         return PendingOperation::failOperation(QStringLiteral("Unable to connect to server: no address given"));
     }
     if (m_initialConnectOperation) {
+        qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << "return existing connect operation"
+                                                << m_initialConnectOperation;
         return m_initialConnectOperation;
     }
     m_initialConnectOperation = new PendingOperation("ConnectionApi::connectToServer(options)", this);
@@ -169,7 +176,7 @@ PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> 
 
 void ConnectionApiPrivate::connectToNextServer()
 {
-    qCDebug(c_connectionApiLoggingCategory) << this << __func__ << "queued:" << m_connectionQueued;
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << "queued:" << m_connectionQueued;
     if (!m_connectionQueued) {
         return;
     }
@@ -180,7 +187,7 @@ void ConnectionApiPrivate::connectToNextServer()
         m_nextServerAddressIndex = 0;
     }
     if (dcOption.flags & (DcOption::Ipv6|DcOption::MediaOnly)) {
-        qCDebug(c_connectionApiLoggingCategory) << this << __func__
+        qCDebug(c_connectionApiLoggingCategory) << CALL_INFO
                                                 << "dequeued unsupported dc option, go for the next one...";
         return connectToNextServer();
     }
@@ -190,7 +197,7 @@ void ConnectionApiPrivate::connectToNextServer()
 
     AccountStorage *accountStorage = backend()->accountStorage();
     if (accountStorage && accountStorage->hasMinimalDataSet()) {
-        qCDebug(c_connectionApiLoggingCategory) << this << __func__
+        qCDebug(c_connectionApiLoggingCategory) << CALL_INFO
                                                 << "Use session from account storage for the new initial connection"
                                                 << newConnection;
 
@@ -227,7 +234,7 @@ void ConnectionApiPrivate::queueConnectToNextServer()
     } else {
         interval = intervals.last();
     }
-    qCDebug(c_connectionApiLoggingCategory) << __func__ << "interval:" << interval;
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << "interval:" << interval;
 
     ++m_connectionAttemptNumber;
 
@@ -350,7 +357,7 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
 
     switch (settings->preferedSessionType()) {
     case Settings::SessionType::None:
-        qCWarning(c_connectionApiLoggingCategory) << __func__ << "Session type is not set. Use fallback.";
+        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << "Session type is not set. Use fallback.";
         transport->setPreferedSessionType(TcpTransport::Obfuscated);
         break;
     case Settings::SessionType::Abridged:
@@ -379,13 +386,13 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
 */
 Connection *ConnectionApiPrivate::ensureConnection(const ConnectionSpec &connectionSpec)
 {
-    qCDebug(c_connectionApiLoggingCategory) << __func__ << connectionSpec.dcId << connectionSpec.flags;
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << connectionSpec.dcId << connectionSpec.flags;
     ConnectionSpec spec = connectionSpec;
     spec.flags |= ConnectionSpec::RequestFlag::Ipv4Only; // Enable only ipv4 for now
     if (!m_connections.contains(connectionSpec)) {
         const DcOption opt = backend()->dataStorage()->serverConfiguration().getOption(spec);
         if (!opt.isValid()) {
-            qCWarning(c_connectionApiLoggingCategory) << __func__ << "Unable to find suitable DC";
+            qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << "Unable to find suitable DC";
             return nullptr;
         }
         m_connections.insert(connectionSpec, createConnection(opt));
@@ -395,7 +402,7 @@ Connection *ConnectionApiPrivate::ensureConnection(const ConnectionSpec &connect
 
 void ConnectionApiPrivate::onReconnectOperationFinished(PendingOperation *operation)
 {
-    qCWarning(c_connectionApiLoggingCategory) << __func__ << "result errors:" << operation->errorDetails();
+    qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << "result errors:" << operation->errorDetails();
     if (operation->isSucceeded()) {
         checkIn();
     }
@@ -404,7 +411,7 @@ void ConnectionApiPrivate::onReconnectOperationFinished(PendingOperation *operat
 void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Status status,
                                                              BaseConnection::StatusReason reason)
 {
-    qCDebug(c_connectionApiLoggingCategory) << __func__ << m_initialConnection << status << reason;
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << m_initialConnection << status << reason;
     switch (status) {
     case BaseConnection::Status::Disconnected:
         queueConnectToNextServer();
@@ -428,7 +435,7 @@ void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Stat
     case BaseConnection::Status::Signed:
         break;
     case BaseConnection::Status::Failed:
-        qCWarning(c_connectionApiLoggingCategory) << __func__ << "failed" << m_initialConnection;
+        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << "failed" << m_initialConnection;
         break;
     }
 }
@@ -436,7 +443,7 @@ void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Stat
 void ConnectionApiPrivate::onGotDcConfig(PendingOperation *operation)
 {
     if (!operation->isSucceeded()) {
-        qCWarning(c_connectionApiLoggingCategory) << __func__;
+        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO;
     }
     if (m_initialConnection && m_initialConnection->status() == Connection::Status::HasDhKey) {
         setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonNone);
@@ -447,7 +454,7 @@ void ConnectionApiPrivate::onGotDcConfig(PendingOperation *operation)
 void ConnectionApiPrivate::onCheckInFinished(PendingOperation *operation)
 {
     if (operation != m_authOperation) {
-        qCCritical(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected auth operation";
+        qCCritical(c_connectionApiLoggingCategory) << CALL_INFO << "Unexpected auth operation";
         return;
     }
 
@@ -455,7 +462,7 @@ void ConnectionApiPrivate::onCheckInFinished(PendingOperation *operation)
         AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
         Connection *conn = priv->m_authenticatedConnection;
         if (conn->status() != Connection::Status::Signed) {
-            qCCritical(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected connection status" << conn->status();
+            qCCritical(c_connectionApiLoggingCategory) << CALL_INFO << "Unexpected connection status" << conn->status();
             return;
         }
         if (m_initialConnectOperation) {
@@ -471,18 +478,18 @@ void ConnectionApiPrivate::onCheckInFinished(PendingOperation *operation)
 void ConnectionApiPrivate::onNewAuthenticationFinished(PendingOperation *operation)
 {
     if (operation != m_authOperation) {
-        qCCritical(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected auth operation";
+        qCCritical(c_connectionApiLoggingCategory) << CALL_INFO << "Unexpected auth operation";
         return;
     }
     if (!operation->isSucceeded()) {
         setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonNone);
-        qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "TODO?";
+        qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << "TODO?";
         return;
     }
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
     Connection *conn = priv->m_authenticatedConnection;
     if (conn->status() != Connection::Status::Signed) {
-        qCCritical(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected connection status" << conn->status();
+        qCCritical(c_connectionApiLoggingCategory) << CALL_INFO << "Unexpected connection status" << conn->status();
         return;
     }
     if (m_initialConnectOperation) {
@@ -504,13 +511,13 @@ void ConnectionApiPrivate::onConnectionStatusChanged(BaseConnection::Status stat
     } else if (sender() == m_mainConnection) {
         onMainConnectionStatusChanged(status, reason);
     } else {
-        qCWarning(c_connectionApiLoggingCategory) << __func__ << sender() << status << reason << "is not processed";
+        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << sender() << status << reason << "is not processed";
     }
 }
 
 void ConnectionApiPrivate::onMainConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason)
 {
-    qCDebug(c_connectionApiLoggingCategory) << __func__ << m_mainConnection << status << reason;
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << m_mainConnection << status << reason;
 
     const bool keepAliveIsWanted = (status == Connection::Status::Signed) || (status == Connection::Status::HasDhKey);
     if (keepAliveIsWanted) {
@@ -553,7 +560,7 @@ void ConnectionApiPrivate::onMainConnectionStatusChanged(BaseConnection::Status 
     }
         break;
     default:
-        qCWarning(c_connectionApiLoggingCategory) << __func__ << status << reason << "not processed";
+        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << status << reason << "not processed";
         break;
     }
 }
@@ -580,7 +587,7 @@ void ConnectionApiPrivate::onMainConnectionRestored()
     case Connection::Status::HasDhKey:
         break;
     default:
-        qCWarning(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected connection status"
+        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << "Unexpected connection status"
                                                   << m_mainConnection->status();
         return;
     }
@@ -599,19 +606,19 @@ void ConnectionApiPrivate::onSyncFinished(PendingOperation *operation)
     if (operation->isSucceeded()) {
         setStatus(ConnectionApi::StatusReady, ConnectionApi::StatusReasonLocal);
     } else {
-        qCCritical(c_connectionApiLoggingCategory) << Q_FUNC_INFO << "Unexpected sync operation status" << operation->errorDetails();
+        qCCritical(c_connectionApiLoggingCategory) << CALL_INFO << "Unexpected sync operation status" << operation->errorDetails();
     }
 }
 
 void ConnectionApiPrivate::onPingFailed()
 {
-    qCWarning(c_connectionApiLoggingCategory) << Q_FUNC_INFO;
+    qCWarning(c_connectionApiLoggingCategory) << CALL_INFO;
 }
 
 void ConnectionApiPrivate::onConnectionError(const QByteArray &errorBytes)
 {
     const ConnectionError error(errorBytes);
-    qCWarning(c_connectionApiLoggingCategory) << Q_FUNC_INFO << error.description() << sender();
+    qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << error.description() << sender();
 
     if (error.code() == ConnectionError::InvalidAuthKey) {
         if (sender() == m_initialConnection) {
@@ -626,7 +633,7 @@ void ConnectionApiPrivate::onConnectionError(const QByteArray &errorBytes)
 
 void ConnectionApiPrivate::setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason)
 {
-    qCDebug(c_connectionApiLoggingCategory) << Q_FUNC_INFO << status << reason;
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << status << reason;
     Q_Q(ConnectionApi);
     if (m_status == status) {
         return;
