@@ -140,14 +140,24 @@ PendingOperation *AuthOperationPrivate::requestAuthCode()
         return PendingOperation::failOperation(text, this);
     }
 
+    if (m_backend->connectionApi()->status() != ConnectionApi::StatusWaitForAuthentication) {
+        qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "Connection doesn't wait for authentication";
+        return nullptr;
+    }
+
     if (m_phoneNumber.isEmpty()) {
         emit q->phoneNumberRequired();
         return nullptr;
     }
 
+    Connection *connection = ConnectionApiPrivate::get(m_backend->connectionApi())->getDefaultConnection();
+    if (!connection) {
+        qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unable to get default connection!";
+        return nullptr;
+    }
+
     AuthRpcLayer::PendingAuthSentCode *requestCodeOperation
             = authLayer()->sendCode(m_phoneNumber, appInfo->appId(), appInfo->appHash());
-    Connection *connection = Connection::fromOperation(requestCodeOperation);
     connect(connection, &BaseConnection::errorOccured, this, &AuthOperationPrivate::onConnectionError);
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO
                                           << "requestPhoneCode"
