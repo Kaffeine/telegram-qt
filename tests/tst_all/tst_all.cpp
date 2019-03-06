@@ -42,9 +42,9 @@
 #include "DcConfiguration.hpp"
 #include "LocalCluster.hpp"
 
+#include <QLoggingCategory>
 #include <QTest>
 #include <QSignalSpy>
-#include <QDebug>
 #include <QRegularExpression>
 #include <QTemporaryFile>
 
@@ -94,6 +94,7 @@ void tst_all::initTestCase()
     qRegisterMetaType<UserData>();
     Telegram::initialize();
     QVERIFY(TestKeyData::initKeyFiles());
+    QLoggingCategory::setFilterRules("telegram.server.rpclayer.dump.debug=true");
 }
 
 void tst_all::cleanupTestCase()

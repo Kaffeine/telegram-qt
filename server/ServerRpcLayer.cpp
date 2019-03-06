@@ -22,6 +22,7 @@
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(c_serverRpcLayerCategory, "telegram.server.rpclayer", QtWarningMsg)
+Q_LOGGING_CATEGORY(c_serverRpcDumpPackageCategory, "telegram.server.rpclayer.dump", QtWarningMsg)
 
 template <typename T>
 class StackValue
@@ -186,7 +187,7 @@ bool RpcLayer::processInitConnection(const MTProto::Message &message)
 #endif
     stream >> languageCode;
 
-    qDebug() << Q_FUNC_INFO << deviceInfo << osInfo << appId << appVersion << languageCode;
+    qCDebug(c_serverRpcLayerCategory) << Q_FUNC_INFO << deviceInfo << osInfo << appId << appVersion << languageCode;
     if (stream.error()) {
         qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Invalid read!";
         return false;
@@ -243,8 +244,8 @@ bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
 {
 #define DUMP_SERVER_RPC_PACKETS
 #ifdef DUMP_SERVER_RPC_PACKETS
-    qDebug() << "Server: Answer for message" << messageId;
-    qDebug().noquote() << "Server: RPC Reply bytes:" << reply.size() << reply.toHex();
+    qCDebug(c_serverRpcDumpPackageCategory) << "Server: Answer for message" << messageId;
+    qCDebug(c_serverRpcDumpPackageCategory).noquote() << "Server: RPC Reply bytes:" << reply.size() << reply.toHex();
 #endif
     CRawStream output(CRawStream::WriteOnly);
     output << TLValue::RpcResult;
@@ -256,15 +257,15 @@ bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
             innerStream << TLValue::GzipPacked;
             innerStream << innerData;
             output.writeBytes(innerStream.getData());
-            qDebug() << gzipPackMessage() << messageId << TLValue::firstFromArray(reply).toString();
+            qCDebug(c_serverRpcDumpPackageCategory) << gzipPackMessage() << messageId << TLValue::firstFromArray(reply).toString();
         } else {
-            qDebug() << "Server: It makes no sense to gzip the answer for message" << messageId;
+            qCDebug(c_serverRpcDumpPackageCategory) << "Server: It makes no sense to gzip the answer for message" << messageId;
             output.writeBytes(reply);
         }
     } else {
         output.writeBytes(reply);
     }
-    qDebug() << Q_FUNC_INFO << TLValue::firstFromArray(reply) << "for message id" << messageId;
+    qCDebug(c_serverRpcDumpPackageCategory) << Q_FUNC_INFO << TLValue::firstFromArray(reply) << "for message id" << messageId;
     return sendPackage(output.getData(), SendMode::ServerReply);
 }
 
