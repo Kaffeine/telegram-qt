@@ -103,19 +103,13 @@ void AuthOperation::startImplementation()
 {
     Q_D(AuthOperation);
     if (d->m_runMethod) {
-        callMember<>(this, d->m_runMethod);
+        callMember<>(d, d->m_runMethod);
     }
 }
 
 void AuthOperation::abort()
 {
     qCWarning(c_loggingClientAuthOperation) << CALL_INFO << "STUB";
-}
-
-PendingOperation *AuthOperation::checkAuthorization()
-{
-    Q_D(AuthOperation);
-    return d->checkAuthorization();
 }
 
 PendingOperation *AuthOperationPrivate::checkAuthorization()
@@ -133,12 +127,6 @@ PendingOperation *AuthOperationPrivate::checkAuthorization()
     connect(updateStatusOperation, &PendingRpcOperation::finished,
             this, &AuthOperationPrivate::onAccountStatusUpdateFinished);
     return updateStatusOperation;
-}
-
-PendingOperation *AuthOperation::requestAuthCode()
-{
-    Q_D(AuthOperation);
-    return d->requestAuthCode();
 }
 
 PendingOperation *AuthOperationPrivate::requestAuthCode()

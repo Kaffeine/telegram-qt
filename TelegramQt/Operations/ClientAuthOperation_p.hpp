@@ -54,7 +54,7 @@ public:
     AccountRpcLayer *accountLayer() const;
     AuthRpcLayer *authLayer() const;
 
-    using RunMethod = PendingOperation *(AuthOperation::*)();
+    using RunMethod = PendingOperation *(AuthOperationPrivate::*)();
     void setRunMethod(RunMethod method);
 
     PendingOperation *checkAuthorization();

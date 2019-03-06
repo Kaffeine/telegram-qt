@@ -31,8 +31,6 @@ public:
 public slots:
     void abort();
 
-    PendingOperation *checkAuthorization();
-    PendingOperation *requestAuthCode();
     PendingOperation *submitAuthCode(const QString &code);
     PendingOperation *submitPassword(const QString &password);
 

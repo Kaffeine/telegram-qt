@@ -276,7 +276,7 @@ AuthOperation *ConnectionApiPrivate::startAuthentication()
     m_authOperation->setObjectName(QStringLiteral("Auth/StartAuthentication"));
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
     priv->setBackend(backend());
-    priv->setRunMethod(&AuthOperation::requestAuthCode);
+    priv->setRunMethod(&AuthOperationPrivate::requestAuthCode);
     connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onNewAuthenticationFinished);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &ConnectionApiPrivate::onAuthCodeRequired);
     PendingOperation *connectionOperation = connectToServer(backend()->settings()->serverConfiguration());
@@ -305,7 +305,7 @@ AuthOperation *ConnectionApiPrivate::checkIn()
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
     m_authOperation->setObjectName(QStringLiteral("Auth/CheckIn"));
     priv->setBackend(backend());
-    priv->setRunMethod(&AuthOperation::checkAuthorization);
+    priv->setRunMethod(&AuthOperationPrivate::checkAuthorization);
     connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onCheckInFinished);
     if (m_mainConnection) {
         m_authOperation->startLater();
@@ -596,7 +596,7 @@ void ConnectionApiPrivate::onMainConnectionRestored()
     m_authOperation->setObjectName(QStringLiteral("Auth/CheckIn(Restore)"));
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
     priv->setBackend(backend());
-    priv->setRunMethod(&AuthOperation::checkAuthorization);
+    priv->setRunMethod(&AuthOperationPrivate::checkAuthorization);
     connect(m_authOperation, &AuthOperation::finished, this, &ConnectionApiPrivate::onCheckInFinished);
     m_authOperation->startLater();
 }
