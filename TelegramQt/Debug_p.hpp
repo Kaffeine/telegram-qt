@@ -22,6 +22,9 @@
 #include "TLNumbers.hpp"
 #include "TLValues.hpp"
 
+// Macro for stream debug output
+#define CALL_INFO this << __func__
+
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLValue &v);
 
 template <int Size>
