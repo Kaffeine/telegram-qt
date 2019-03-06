@@ -242,6 +242,7 @@ void ConnectionApiPrivate::queueConnectToNextServer()
 
     if (!m_queuedConnectionTimer) {
         m_queuedConnectionTimer = new QTimer(this);
+        m_queuedConnectionTimer->setSingleShot(true);
         connect(m_queuedConnectionTimer, &QTimer::timeout, this, &ConnectionApiPrivate::connectToNextServer);
     }
 
