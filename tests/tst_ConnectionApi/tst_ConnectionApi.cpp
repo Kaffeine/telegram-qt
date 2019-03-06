@@ -117,26 +117,34 @@ void tst_ConnectionApi::testClientConnection_data()
 
     DcOption opt = c_localDcOptions.first();
 
-    QTest::newRow("Abridged")   << Client::Settings::SessionType::Abridged
-                                << userOnDc1
-                                << opt;
-    QTest::newRow("Obfuscated") << Client::Settings::SessionType::Obfuscated
-                                << userOnDc1
-                                << opt;
-    QTest::newRow("Abridged with migration")   << Client::Settings::SessionType::Abridged
-                                               << userOnDc2
-                                               << opt;
-    QTest::newRow("Obfuscated with migration") << Client::Settings::SessionType::Obfuscated
-                                               << userOnDc2
-                                               << opt;
+    QTest::newRow("Abridged")
+            << Client::Settings::SessionType::Abridged
+            << userOnDc1
+            << opt;
+    QTest::newRow("Obfuscated")
+            << Client::Settings::SessionType::Obfuscated
+            << userOnDc1
+            << opt;
+
+    QTest::newRow("Abridged with migration")
+            << Client::Settings::SessionType::Abridged
+            << userOnDc2
+            << opt;
+
+    QTest::newRow("Obfuscated with migration")
+            << Client::Settings::SessionType::Obfuscated
+            << userOnDc2
+            << opt;
 
     opt.id = 0;
-    QTest::newRow("Migration from unknown dc (with password)") << Client::Settings::SessionType::Obfuscated
-                                               << userOnDc2
-                                               << opt;
-    QTest::newRow("Migration from unknown dc, no password") << Client::Settings::SessionType::Obfuscated
-                                               << user2OnDc2
-                                               << opt;
+    QTest::newRow("Migration from unknown dc (with password)")
+            << Client::Settings::SessionType::Obfuscated
+            << userOnDc2
+            << opt;
+    QTest::newRow("Migration from unknown dc, no password")
+            << Client::Settings::SessionType::Obfuscated
+            << user2OnDc2
+            << opt;
 }
 
 void tst_ConnectionApi::testClientConnection()
@@ -172,26 +180,27 @@ void tst_ConnectionApi::testClientConnection()
 
     // --- Sign in ---
     Client::AuthOperation *signInOperation = connectionApi->startAuthentication();
-    QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
-    QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
+    {
+        QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
+        QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
 
-    TRY_COMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
-    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForConnection));
-    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
-    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForAuthentication));
+        TRY_COMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
+        QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForConnection));
+        QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
+        QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForAuthentication));
 
-    signInOperation->submitPhoneNumber(userData.phoneNumber);
-    TRY_COMPARE(client.dataStorage()->serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
-    TRY_VERIFY(!authCodeSpy.isEmpty());
-    QCOMPARE(authCodeSpy.count(), 1);
-    QCOMPARE(serverAuthCodeSpy.count(), 1);
-    QList<QVariant> authCodeSentArguments = serverAuthCodeSpy.takeFirst();
-    QCOMPARE(authCodeSentArguments.count(), 2);
-    const QString authCode = authCodeSentArguments.at(1).toString();
+        signInOperation->submitPhoneNumber(userData.phoneNumber);
+        TRY_COMPARE(client.dataStorage()->serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
+        TRY_VERIFY(!authCodeSpy.isEmpty());
+        QCOMPARE(authCodeSpy.count(), 1);
+        QCOMPARE(serverAuthCodeSpy.count(), 1);
+        QList<QVariant> authCodeSentArguments = serverAuthCodeSpy.takeFirst();
+        QCOMPARE(authCodeSentArguments.count(), 2);
+        const QString authCode = authCodeSentArguments.at(1).toString();
 
-    //QVERIFY(clientConnectionStatusSpy.isEmpty());
-    clientConnectionStatusSpy.clear();
-    signInOperation->submitAuthCode(authCode);
+        clientConnectionStatusSpy.clear();
+        signInOperation->submitAuthCode(authCode);
+    }
 
     if (!userData.password.isEmpty()) {
         QSignalSpy authPasswordSpy(signInOperation, &Client::AuthOperation::passwordRequired);
