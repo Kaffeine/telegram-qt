@@ -31,6 +31,7 @@
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(c_clientRpcLayerCategory, "telegram.client.rpclayer", QtWarningMsg)
+Q_LOGGING_CATEGORY(c_clientRpcDumpPackageCategory, "telegram.client.rpclayer.dump", QtWarningMsg)
 
 namespace Telegram {
 

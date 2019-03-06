@@ -32,6 +32,8 @@
 
 #ifdef DUMP_CLIENT_RPC_PACKETS
 #include <QLoggingCategory>
+
+Q_DECLARE_LOGGING_CATEGORY(c_clientRpcDumpPackageCategory)
 #endif
 
 namespace Telegram {
@@ -45,7 +47,7 @@ bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLType 
     prepareReplyStream(&stream, operation);
     stream >> *output;
 #ifdef DEVELOPER_BUILD
-    qDebug() << *output;
+    qCDebug(c_clientRpcDumpPackageCategory) << *output;
 #endif
     qDebug() << Q_FUNC_INFO << output->tlType;
     return output->isValid() && !stream.error();
