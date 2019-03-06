@@ -17,6 +17,10 @@
 
 #include <QObject>
 
+#ifndef FAST_PASS
+#define TEST_TIMEOUT 10000
+#endif
+
 #include "AccountStorage.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"
@@ -89,12 +93,14 @@ void tst_ConnectionApi::initTestCase()
     qRegisterMetaType<UserData>();
     QVERIFY(TestKeyData::initKeyFiles());
 
+#ifdef FAST_PASS
     if (!qEnvironmentVariableIsSet(BaseTcpTransport::timeoutEnvironmentVariableName())) {
         qputenv(BaseTcpTransport::timeoutEnvironmentVariableName(), QByteArrayLiteral("50"));
     }
     if (!qEnvironmentVariableIsSet(Client::ConnectionApi::reconnectionIntervalsEnvironmentVariableName())) {
         qputenv(Client::ConnectionApi::reconnectionIntervalsEnvironmentVariableName(), QByteArrayLiteral("0,5,5,30,30,60"));
     }
+#endif
 }
 
 void tst_ConnectionApi::cleanupTestCase()
