@@ -89,7 +89,7 @@ protected slots:
     void onAccountStatusUpdateFinished(PendingRpcOperation *operation);
 
     void onConnectionError(const QByteArray &errorBytes);
-    void onRedirected(PendingOperation *operation);
+    void onRedirectedConnectFinished(PendingOperation *operation);
 
 protected:
     void setPasswordCurrentSalt(const QByteArray &salt);

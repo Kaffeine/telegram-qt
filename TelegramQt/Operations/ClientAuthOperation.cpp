@@ -10,6 +10,7 @@
 #include "ClientRpcAccountLayer.hpp"
 #include "ConnectionError.hpp"
 #include "DataStorage_p.hpp"
+#include "Debug_p.hpp"
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
 
@@ -108,7 +109,7 @@ void AuthOperation::startImplementation()
 
 void AuthOperation::abort()
 {
-    qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
+    qCWarning(c_loggingClientAuthOperation) << CALL_INFO << "STUB";
 }
 
 PendingOperation *AuthOperation::checkAuthorization()
@@ -120,7 +121,7 @@ PendingOperation *AuthOperation::checkAuthorization()
 PendingOperation *AuthOperationPrivate::checkAuthorization()
 {
     Q_Q(AuthOperation);
-    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO;
+    qCDebug(c_loggingClientAuthOperation) << CALL_INFO;
     AccountStorage *storage = m_backend->accountStorage();
     if (!storage->hasMinimalDataSet()) {
         q->setFinishedWithError({{PendingOperation::c_text(), QStringLiteral("No minimal account data set")}});
@@ -143,7 +144,7 @@ PendingOperation *AuthOperation::requestAuthCode()
 PendingOperation *AuthOperationPrivate::requestAuthCode()
 {
     Q_Q(AuthOperation);
-    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO;
+    qCDebug(c_loggingClientAuthOperation) << CALL_INFO;
     const CAppInformation *appInfo = m_backend->m_appInformation;
     if (!appInfo) {
         const QString text = QStringLiteral("Unable to request auth code, "
@@ -160,7 +161,7 @@ PendingOperation *AuthOperationPrivate::requestAuthCode()
             = authLayer()->sendCode(m_phoneNumber, appInfo->appId(), appInfo->appHash());
     Connection *connection = Connection::fromOperation(requestCodeOperation);
     connect(connection, &BaseConnection::errorOccured, this, &AuthOperationPrivate::onConnectionError);
-    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO
+    qCDebug(c_loggingClientAuthOperation) << CALL_INFO
                                           << "requestPhoneCode"
                                           << Telegram::Utils::maskPhoneNumber(m_phoneNumber)
                                           << "on dc" << connection->dcOption().id;
@@ -180,13 +181,13 @@ PendingOperation *AuthOperationPrivate::submitAuthCode(const QString &code)
 {
     if (m_authCodeHash.isEmpty()) {
         const QString text = QStringLiteral("Unable to submit auth code without a code hash");
-        qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << text;
+        qCWarning(c_loggingClientAuthOperation) << CALL_INFO << text;
         return PendingOperation::failOperation(text);
     }
 
     if (code.isEmpty()) {
         const QString text = QStringLiteral("Deny to submit empty auth code");
-        qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << text;
+        qCWarning(c_loggingClientAuthOperation) << CALL_INFO << text;
         return PendingOperation::failOperation(text);
     }
 
@@ -230,8 +231,8 @@ PendingOperation *AuthOperationPrivate::submitPassword(const QString &password)
     }
     const QByteArray pwdData = m_passwordCurrentSalt + password.toUtf8() + m_passwordCurrentSalt;
     const QByteArray pwdHash = Utils::sha256(pwdData);
-    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << "slt:" << m_passwordCurrentSalt.toHex();
-    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << "pwd:" << pwdHash.toHex();
+    qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "slt:" << Utils::maskByteArray(m_passwordCurrentSalt);
+    qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "pwd:" << Utils::maskByteArray(pwdHash);
 
     PendingRpcOperation *sendPasswordOperation = authLayer()->checkPassword(pwdHash);
     connect(sendPasswordOperation, &PendingRpcOperation::finished, this, &AuthOperationPrivate::onCheckPasswordFinished);
@@ -256,17 +257,17 @@ bool AuthOperation::submitName(const QString &firstName, const QString &lastName
 
 void AuthOperation::requestCall()
 {
-    qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
+    qCWarning(c_loggingClientAuthOperation) << CALL_INFO << "STUB";
 }
 
 void AuthOperation::requestSms()
 {
-    qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
+    qCWarning(c_loggingClientAuthOperation) << CALL_INFO << "STUB";
 }
 
 void AuthOperation::recovery()
 {
-    qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "STUB";
+    qCWarning(c_loggingClientAuthOperation) << CALL_INFO << "STUB";
 }
 
 void AuthOperationPrivate::setPasswordCurrentSalt(const QByteArray &salt)
@@ -316,12 +317,12 @@ void AuthOperationPrivate::onRequestAuthCodeFinished(PendingRpcOperation *rpcOpe
     Q_Q(AuthOperation);
     if (rpcOperation->rpcError() && rpcOperation->rpcError()->type == RpcError::SeeOther) {
         if (m_backend->connectionApi()->status() != ConnectionApi::StatusWaitForAuthentication) {
-            qCWarning(c_loggingClientAuthOperation) << Q_FUNC_INFO << "Unexpected SeeOther";
+            qCWarning(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected SeeOther";
         }
         const quint32 dcId = rpcOperation->rpcError()->argument;
         ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_backend->connectionApi());
         connect(privateApi->connectToDc(dcId), &PendingOperation::finished,
-                this, &AuthOperationPrivate::onRedirected);
+                this, &AuthOperationPrivate::onRedirectedConnectFinished);
         return;
     }
 
@@ -332,7 +333,7 @@ void AuthOperationPrivate::onRequestAuthCodeFinished(PendingRpcOperation *rpcOpe
     TLAuthSentCode result;
     authLayer()->processReply(rpcOperation, &result);
 
-    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << result.tlType << result.phoneCodeHash;
+    qCDebug(c_loggingClientAuthOperation) << CALL_INFO << result.tlType << result.phoneCodeHash;
     if (result.isValid()) {
         m_authCodeHash = result.phoneCodeHash;
         setRegistered(result.phoneRegistered());
@@ -351,10 +352,10 @@ void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation
             getPassword();
             return;
         case RpcError::PhoneCodeHashEmpty:
-            qCCritical(c_loggingClientAuthOperation) << Q_FUNC_INFO << "internal error?" << error->message;
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
             break;
         case RpcError::PhoneCodeEmpty:
-            qCCritical(c_loggingClientAuthOperation) << Q_FUNC_INFO << "internal error?" << error->message;
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
             break;
         case RpcError::PhoneCodeInvalid:
             emit q->authCodeCheckFailed(AuthOperation::AuthCodeStatusInvalid);
@@ -365,7 +366,7 @@ void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation
             submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
             return;
         default:
-            qCCritical(c_loggingClientAuthOperation) << Q_FUNC_INFO << "Unexpected error" << error->message;
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message;
             break;
         }
     }
@@ -407,7 +408,7 @@ void AuthOperationPrivate::onPasswordRequestFinished(PendingRpcOperation *operat
     TLAccountPassword result;
     authLayer()->processReply(operation, &result);
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_loggingClientAuthOperation) << Q_FUNC_INFO << result;
+    qCDebug(c_loggingClientAuthOperation) << CALL_INFO << result;
 #endif
     setPasswordCurrentSalt(result.currentSalt);
     setPasswordHint(result.hint);
@@ -423,7 +424,7 @@ void AuthOperationPrivate::onCheckPasswordFinished(PendingRpcOperation *operatio
             emit q->passwordCheckFailed();
             return;
         }
-        qCDebug(c_loggingClientAuthOperation) << error->message;
+        qCDebug(c_loggingClientAuthOperation) << CALL_INFO << error->message;
     }
 
     if (!operation->isSucceeded()) {
@@ -470,14 +471,15 @@ void AuthOperationPrivate::onConnectionError(const QByteArray &errorBytes)
     const ConnectionError error(errorBytes);
     Q_Q(AuthOperation);
     if (q->isFinished()) {
-        qCDebug(c_loggingClientAuthOperation) << "Connection error on finished auth operation:" << error.description();
+        qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "Connection error on finished auth operation:" << error.description();
         return;
     }
     q->setFinishedWithError({{PendingOperation::c_text(), error.description()}});
 }
 
-void AuthOperationPrivate::onRedirected(PendingOperation *operation)
+void AuthOperationPrivate::onRedirectedConnectFinished(PendingOperation *operation)
 {
+    qCDebug(c_loggingClientAuthOperation) << CALL_INFO << operation->errorDetails();
     if (operation->isFailed()) {
         return;
     }
