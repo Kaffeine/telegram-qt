@@ -85,7 +85,8 @@ Q_SIGNALS:
 
     void statusChanged(AuthStatus status);
 
-    void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage); // Error message description: https://core.telegram.org/api/errors#400-bad-request
+    // Error message description: https://core.telegram.org/api/errors#400-bad-request
+    void errorOccurred(TelegramNamespace::AuthenticationError errorCode, const QByteArray &errorMessage);
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
 
 public slots:
@@ -97,7 +98,6 @@ protected:
     void setBusy(bool busy);
 
     void unsetBusy();
-    void onAuthCodeCheckFailed(int status);
     void onPasswordRequired();
     void onPasswordCheckFailed();
 

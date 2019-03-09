@@ -15,12 +15,6 @@ class TELEGRAMQT_EXPORT AuthOperation : public PendingOperation
 public:
     explicit AuthOperation(QObject *parent = nullptr);
 
-    enum AuthCodeStatus {
-        AuthCodeStatusUnknown,
-        AuthCodeStatusInvalid,
-        AuthCodeStatusExpired,
-    };
-
     QString phoneNumber() const;
     void setPhoneNumber(const QString &phoneNumber);
 
@@ -44,7 +38,6 @@ public slots:
 Q_SIGNALS:
     void phoneNumberRequired();
     void authCodeRequired();
-    void authCodeCheckFailed(AuthCodeStatus status);
     void passwordRequired();
     void passwordCheckFailed();
 //    void callAvailable();
@@ -54,7 +47,7 @@ Q_SIGNALS:
     void registeredChanged(bool registered); // Always emitted before authCodeRequired()
 
     // Error message description: https://core.telegram.org/api/errors
-    void authSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QByteArray &errorMessage);
+    void errorOccurred(TelegramNamespace::AuthenticationError errorCode, const QByteArray &errorMessage);
     void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QByteArray &errorMessage);
 
 protected:

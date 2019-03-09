@@ -339,28 +339,50 @@ void AuthOperationPrivate::onRequestAuthCodeFinished(PendingRpcOperation *rpcOpe
     }
 }
 
+void AuthOperationPrivate::onAuthenticationRpcError(const RpcError *error)
+{
+    Q_Q(AuthOperation);
+    switch (error->reason) {
+    case RpcError::SessionPasswordNeeded:
+        getPassword();
+        return;
+    case RpcError::FirstnameInvalid:
+        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorFirstNameInvalid, error->message);
+        break;
+    case RpcError::LastnameInvalid:
+        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorLastNameInvalid, error->message);
+        break;
+    case RpcError::PhoneCodeHashEmpty:
+    case RpcError::PhoneCodeEmpty:
+        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorUnknown, error->message);
+        break;
+    case RpcError::PhoneCodeInvalid:
+        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorPhoneCodeInvalid, error->message);
+        return;
+    case RpcError::PhoneCodeExpired:
+        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorPhoneCodeExpired, error->message);
+        return;
+    default:
+        qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message;
+        return;
+    }
+    // The errors with 'break' usually means bad request from the client
+    // side and can be prevented by local requests validation.
+    qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
+}
+
 void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
 {
     Q_Q(AuthOperation);
     if (rpcOperation->rpcError()) {
+        onAuthenticationRpcError(rpcOperation->rpcError());
         const RpcError *error = rpcOperation->rpcError();
         switch (error->reason) {
         case RpcError::SessionPasswordNeeded:
             submitAuthCodeOperation->setFinished();
-            getPassword();
             return;
-        case RpcError::PhoneCodeHashEmpty:
-            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
-            break;
-        case RpcError::PhoneCodeEmpty:
-            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
-            break;
         case RpcError::PhoneCodeInvalid:
-            emit q->authCodeCheckFailed(AuthOperation::AuthCodeStatusInvalid);
-            submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
-            return;
         case RpcError::PhoneCodeExpired:
-            emit q->authCodeCheckFailed(AuthOperation::AuthCodeStatusExpired);
             submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
             return;
         default:
@@ -383,6 +405,22 @@ void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation
 void AuthOperationPrivate::onSignUpRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
 {
     Q_Q(AuthOperation);
+    if (rpcOperation->rpcError()) {
+        onAuthenticationRpcError(rpcOperation->rpcError());
+        const RpcError *error = rpcOperation->rpcError();
+        switch (error->reason) {
+        case RpcError::FirstnameInvalid:
+        case RpcError::LastnameInvalid:
+        case RpcError::PhoneCodeInvalid:
+        case RpcError::PhoneCodeExpired:
+            submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
+            return;
+        case RpcError::SessionPasswordNeeded:
+        default:
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message;
+            break;
+        }
+    }
     if (!rpcOperation->isSucceeded()) {
         submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
         q->setDelayedFinishedWithError(rpcOperation->errorDetails());

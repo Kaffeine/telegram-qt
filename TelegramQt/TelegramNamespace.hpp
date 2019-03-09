@@ -132,19 +132,19 @@ public:
     Q_ENUM(MessageType)
     Q_DECLARE_FLAGS(MessageTypeFlags, MessageType)
 
-    enum AuthSignError {
-        AuthSignErrorUnknown,
-        AuthSignErrorAppIdIsInvalid,
-        AuthSignErrorPhoneNumberIsInvalid,
-        AuthSignErrorPhoneNumberIsOccupied,
-        AuthSignErrorPhoneNumberIsUnoccupied,
-        AuthSignErrorPhoneCodeIsInvalid,
-        AuthSignErrorPhoneCodeIsExpired,
-        AuthSignErrorPasswordHashInvalid,
-        AuthSignErrorFirstNameIsInvalid,
-        AuthSignErrorLastNameIsInvalid
+    enum AuthenticationError {
+        AuthenticationErrorUnknown,
+        AuthenticationErrorAppIdInvalid,
+        AuthenticationErrorPhoneNumberInvalid,
+        AuthenticationErrorPhoneNumberOccupied,
+        AuthenticationErrorPhoneNumberUnoccupied,
+        AuthenticationErrorPhoneCodeInvalid,
+        AuthenticationErrorPhoneCodeExpired,
+        AuthenticationErrorPasswordHashInvalid,
+        AuthenticationErrorFirstNameInvalid,
+        AuthenticationErrorLastNameInvalid,
     };
-    Q_ENUM(AuthSignError)
+    Q_ENUM(AuthenticationError)
 
     enum UnauthorizedError {
         UnauthorizedUnknownError,

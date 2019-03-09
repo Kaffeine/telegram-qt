@@ -99,7 +99,7 @@ void TelegramNamespace::registerTypes()
         qRegisterMetaType<TelegramNamespace::ContactStatus>("TelegramNamespace::ContactStatus");
         qRegisterMetaType<TelegramNamespace::MessageFlags>("TelegramNamespace::MessageFlags");
         qRegisterMetaType<TelegramNamespace::MessageType>("TelegramNamespace::MessageType");
-        qRegisterMetaType<TelegramNamespace::AuthSignError>("TelegramNamespace::AuthSignError");
+        qRegisterMetaType<TelegramNamespace::AuthenticationError>("TelegramNamespace::AuthenticationError");
         qRegisterMetaType<TelegramNamespace::UnauthorizedError>("TelegramNamespace::UnauthorizedError");
         qRegisterMetaType<Telegram::Peer>("Telegram::Peer");
         qRegisterMetaType<Telegram::PeerList>("Telegram::PeerList");

@@ -65,15 +65,20 @@ void DeclarativeAuthOperation::startAuthentication()
     m_authOperation = client()->connectionApi()->startAuthentication();
     m_authOperation->setPhoneNumber(phoneNumber());
     setPendingOperation(m_authOperation);
+
+    // Signals propagation
+    connect(m_authOperation, &AuthOperation::errorOccurred, this, &DeclarativeAuthOperation::errorOccurred);
     connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, &DeclarativeAuthOperation::phoneNumberRequired);
     connect(m_authOperation, &AuthOperation::registeredChanged, this, &DeclarativeAuthOperation::registeredChanged);
     connect(m_authOperation, &AuthOperation::authCodeRequired, this, &DeclarativeAuthOperation::authCodeRequired);
-    connect(m_authOperation, &AuthOperation::authCodeCheckFailed, this, &DeclarativeAuthOperation::onAuthCodeCheckFailed);
     connect(m_authOperation, &AuthOperation::passwordRequired, this, &DeclarativeAuthOperation::onPasswordRequired);
     connect(m_authOperation, &AuthOperation::passwordCheckFailed, this, &DeclarativeAuthOperation::onPasswordCheckFailed);
 
     connect(m_authOperation, &AuthOperation::passwordHintChanged, this, &DeclarativeAuthOperation::passwordHintChanged);
     connect(m_authOperation, &AuthOperation::hasRecoveryChanged, this, &DeclarativeAuthOperation::hasRecoveryChanged);
+
+    // Some method calls
+    connect(m_authOperation, &AuthOperation::errorOccurred, this, &DeclarativeAuthOperation::unsetBusy);
 
     connect(m_authOperation, &AuthOperation::phoneNumberRequired, this, [this]() {
         this->setStatus(DeclarativeAuthOperation::PhoneNumberRequired);
@@ -202,12 +207,6 @@ void DeclarativeAuthOperation::setBusy(bool busy)
 void DeclarativeAuthOperation::unsetBusy()
 {
     setBusy(false);
-}
-
-void DeclarativeAuthOperation::onAuthCodeCheckFailed(int status)
-{
-    unsetBusy();
-    emit authCodeCheckFailed();
 }
 
 void DeclarativeAuthOperation::onPasswordRequired()

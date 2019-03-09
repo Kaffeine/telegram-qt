@@ -291,10 +291,11 @@ void tst_all::testCheckInSignIn()
     TRY_COMPARE(checkInFailedSpy.count(), 1);
 
     Client::AuthOperation *signInOperation = client.connectionApi()->startAuthentication();
-
-    signInOperation->setPhoneNumber(userData.phoneNumber);
+    QSignalSpy authErrorSpy(signInOperation, &Client::AuthOperation::errorOccurred);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
+
+    signInOperation->setPhoneNumber(userData.phoneNumber);
     // Check whether the server configuration is synced to the client data storage
     TRY_VERIFY(!dataStorage.serverConfiguration().dcOptions.isEmpty());
     TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
@@ -305,10 +306,12 @@ void tst_all::testCheckInSignIn()
     QCOMPARE(authCodeSentArguments.count(), 2);
     const QString authCode = authCodeSentArguments.at(1).toString();
 
-    QSignalSpy invalidAuthCodeSpy(signInOperation, &Client::AuthOperation::authCodeCheckFailed);
+    QCOMPARE(authErrorSpy.count(), 0);
     signInOperation->submitAuthCode(QString(authCode.size(), QLatin1Char('0')));
-    TRY_VERIFY(!invalidAuthCodeSpy.isEmpty());
-    QCOMPARE(invalidAuthCodeSpy.count(), 1);
+    TRY_VERIFY(!authErrorSpy.isEmpty());
+    QCOMPARE(authErrorSpy.count(), 1);
+    QCOMPARE(authErrorSpy.takeFirst().constFirst().value<TelegramNamespace::AuthenticationError>(),
+             TelegramNamespace::AuthenticationErrorPhoneCodeInvalid);
 
     signInOperation->submitAuthCode(authCode);
 

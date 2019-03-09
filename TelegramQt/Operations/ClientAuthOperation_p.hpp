@@ -27,6 +27,8 @@ struct TLAuthAuthorization;
 
 namespace Telegram {
 
+class RpcError;
+
 namespace Client {
 
 class AccountRpcLayer;
@@ -80,6 +82,7 @@ protected slots:
     PendingOperation *getPassword();
 
     void onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation);
+    void onAuthenticationRpcError(const RpcError *error);
     void onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation);
     void onSignUpRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation);
     void onPasswordRequestFinished(PendingRpcOperation *operation);

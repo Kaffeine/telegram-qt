@@ -5,7 +5,6 @@
 #include "ClientConnection.hpp"
 #include "ClientRpcLayer.hpp"
 #include "ClientSettings.hpp"
-#include "CTelegramTransport.hpp"
 #include "CClientTcpTransport.hpp"
 #include "ConnectionError.hpp"
 #include "DataStorage.hpp"
