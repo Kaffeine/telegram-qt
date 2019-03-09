@@ -80,6 +80,7 @@ private slots:
     void cleanupTestCase();
     void testClientConnection_data();
     void testClientConnection();
+    void registrationAuthError();
     void reconnect();
 };
 
@@ -269,6 +270,76 @@ void tst_ConnectionApi::testClientConnection()
     QCOMPARE(client.accountStorage()->dcInfo().id, server->dcId());
     QCOMPARE(client.accountStorage()->dcInfo().id, userData.dcId);
     QVERIFY(client.contactsApi()->selfContactId());
+}
+
+void tst_ConnectionApi::registrationAuthError()
+{
+    const DcOption clientDcOption = c_localDcOptions.first();
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+    QVERIFY(publicKey.isValid() && privateKey.isPrivate()); // Sanity check
+
+    // Prepare server
+    Test::AuthProvider authProvider;
+    Telegram::Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_localDcConfiguration);
+    QVERIFY(cluster.start());
+    QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
+
+    Client::Client client;
+    setupClientHelper(&client, UserData(), publicKey, clientDcOption);
+    Client::ConnectionApi *connectionApi = client.connectionApi();
+
+    QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusDisconnected);
+
+    // --- Sign Up ---
+    Client::AuthOperation *signUpOperation = connectionApi->startAuthentication();
+    QSignalSpy authPhoneSpy(signUpOperation, &Client::AuthOperation::phoneNumberRequired);
+    QSignalSpy authCodeSpy(signUpOperation, &Client::AuthOperation::authCodeRequired);
+    QSignalSpy authErrorSpy(signUpOperation, &Client::AuthOperation::errorOccurred);
+    signUpOperation->submitPhoneNumber(QLatin1String("12345678"));
+
+    TRY_VERIFY(!authCodeSpy.isEmpty());
+    QCOMPARE(authCodeSpy.count(), 1);
+    QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
+
+    QCOMPARE(serverAuthCodeSpy.count(), 1);
+    QList<QVariant> authCodeSentArguments = serverAuthCodeSpy.takeFirst();
+    QCOMPARE(authCodeSentArguments.count(), 2);
+    const QString authCode = authCodeSentArguments.at(1).toString();
+
+    // Submit invalid code with unset username
+    signUpOperation->submitAuthCode(authCode + QLatin1String("321"));
+
+    {
+        TRY_VERIFY(!authErrorSpy.isEmpty());
+        QCOMPARE(authErrorSpy.count(), 1);
+        TelegramNamespace::AuthenticationError error =
+                authErrorSpy.takeFirst().constFirst().value<TelegramNamespace::AuthenticationError>();
+        QVERIFY2(QVector<TelegramNamespace::AuthenticationError>({
+                            TelegramNamespace::AuthenticationErrorFirstNameInvalid,
+                            TelegramNamespace::AuthenticationErrorLastNameInvalid,
+                        }).contains(error), "The error must be one of the two (first or last name invalid)");
+    }
+
+    signUpOperation->submitName(QLatin1String("first"), QLatin1String("last"));
+    signUpOperation->submitAuthCode(authCode + QLatin1String("321"));
+
+    {
+        TRY_VERIFY(!authErrorSpy.isEmpty());
+        QCOMPARE(authErrorSpy.count(), 1);
+        TelegramNamespace::AuthenticationError error =
+                authErrorSpy.takeFirst().constFirst().value<TelegramNamespace::AuthenticationError>();
+        QCOMPARE(error, TelegramNamespace::AuthenticationErrorPhoneCodeInvalid);
+    }
+
+    signUpOperation->submitAuthCode(authCode);
+    TRY_VERIFY(signUpOperation->isFinished());
+    QVERIFY(signUpOperation->isSucceeded());
+
+    QVERIFY(authPhoneSpy.isEmpty());
 }
 
 void tst_ConnectionApi::reconnect()
