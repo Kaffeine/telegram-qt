@@ -22,6 +22,7 @@ AuthScreen {
         font.pixelSize: Theme.fontSizeMedium
         selectByMouse: true
         onAccepted: baseColumn.accept()
+        Layout.fillWidth: true
     }
     Item {
         id: spacer

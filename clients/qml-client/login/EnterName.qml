@@ -20,12 +20,14 @@ AuthScreen {
         placeholderText: qsTr("First name")
         font.pixelSize: Theme.fontSizeMedium
         onAccepted: lastNameInput.focus = true
+        Layout.fillWidth: true
     }
     TextField {
         id: lastNameInput
         placeholderText: qsTr("Last name")
         font.pixelSize: Theme.fontSizeMedium
         onAccepted: baseColumn.accept()
+        Layout.fillWidth: true
     }
     Item {
         id: spacer
