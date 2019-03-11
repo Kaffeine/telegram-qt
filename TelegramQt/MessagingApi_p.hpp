@@ -33,7 +33,7 @@ namespace Client {
 class DataInternalApi;
 class DataStorage;
 class DialogList;
-class MessagesOperation;
+class PendingMessages;
 class MessagesRpcLayer;
 
 class MessagingApiPrivate : public ClientApiPrivate
@@ -55,7 +55,7 @@ public:
     void onMessageOutboxRead(const Telegram::Peer peer, quint32 messageId);
 
     PendingOperation *getDialogs();
-    MessagesOperation *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
+    PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
 
     DataStorage *dataStorage();
     DataInternalApi *dataInternalApi();
@@ -68,7 +68,7 @@ public:
 
 protected slots:
     void onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation);
-    void onGetHistoryFinished(MessagesOperation *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation);
+    void onGetHistoryFinished(PendingMessages *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation);
     void onReadHistoryFinished(const Peer peer, quint32 messageId, MessagesRpcLayer::PendingMessagesAffectedMessages *rpcOperation);
     void onReadChannelHistoryFinished(const Peer peer, quint32 messageId, ChannelsRpcLayer::PendingBool *rpcOperation);
     void onHistoryReadSucceeded(const Peer peer, quint32 messageId);

@@ -3,8 +3,6 @@
 #include "MessagingApi_p.hpp"
 #include "DataStorage.hpp"
 
-#include "Operations/ClientMessagesOperation.hpp"
-
 namespace Telegram {
 
 namespace Client {

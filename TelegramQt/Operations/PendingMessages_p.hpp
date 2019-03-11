@@ -27,12 +27,12 @@ namespace Telegram {
 
 namespace Client {
 
-class MessagesOperation;
+class PendingMessages;
 
-class MessagesOperationPrivate : public PendingOperationPrivate
+class PendingMessagesPrivate : public PendingOperationPrivate
 {
 public:
-    static MessagesOperationPrivate *get(MessagesOperation *parent);
+    static PendingMessagesPrivate *get(PendingMessages *parent);
 
     Peer m_peer;
     MessageFetchOptions m_fetchOptions;

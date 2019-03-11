@@ -27,8 +27,8 @@
 #include "CAppInformation.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
-#include "Operations/ClientMessagesOperation.hpp"
 #include "Operations/PendingContactsOperation.hpp"
+#include "Operations/PendingMessages.hpp"
 
 #include "ContactList.hpp"
 #include "ContactsApi.hpp"
@@ -286,7 +286,7 @@ void tst_MessagesApi::getDialogs()
 
     // Check client 1 history
     {
-        Telegram::Client::MessagesOperation *historyOperation = client1.messagingApi()->getHistory(client2AsClient1Peer, Telegram::Client::MessageFetchOptions::useLimit(5));
+        Telegram::Client::PendingMessages *historyOperation = client1.messagingApi()->getHistory(client2AsClient1Peer, Telegram::Client::MessageFetchOptions::useLimit(5));
         TRY_VERIFY(historyOperation->isFinished());
         QVERIFY(historyOperation->isSucceeded());
         QCOMPARE(historyOperation->messages().count(), 2);
@@ -297,7 +297,7 @@ void tst_MessagesApi::getDialogs()
 
     // Check client 2 history
     {
-        Telegram::Client::MessagesOperation *historyOperation = client2.messagingApi()->getHistory(client1AsClient2Peer, Telegram::Client::MessageFetchOptions::useLimit(5));
+        Telegram::Client::PendingMessages *historyOperation = client2.messagingApi()->getHistory(client1AsClient2Peer, Telegram::Client::MessageFetchOptions::useLimit(5));
         TRY_VERIFY(historyOperation->isFinished());
         QVERIFY(historyOperation->isSucceeded());
         QCOMPARE(historyOperation->messages().count(), 2);

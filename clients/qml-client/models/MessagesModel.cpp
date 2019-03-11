@@ -30,7 +30,7 @@
 #include "MessagingApi.hpp"
 #include "Debug.hpp"
 
-#include "Operations/ClientMessagesOperation.hpp"
+#include "Operations/PendingMessages.hpp"
 
 namespace Telegram {
 
@@ -513,8 +513,8 @@ void MessagesModel::fetchPrevious()
         return;
     }
     qWarning() << Q_FUNC_INFO << "for peer" << m_peer.toString();
-    MessagesOperation *op = client()->messagingApi()->getHistory(m_peer, MessageFetchOptions::useLimit(10));
-    connect(op, &MessagesOperation::finished, this, [this, op] () {
+    PendingMessages *op = client()->messagingApi()->getHistory(m_peer, MessageFetchOptions::useLimit(10));
+    connect(op, &PendingMessages::finished, this, [this, op] () {
         processMessages(op->messages());
     });
 }

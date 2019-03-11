@@ -152,7 +152,7 @@ set(telegram_qt_public_HEADERS
     RsaKey.hpp
     TelegramNamespace.hpp
     Operations/ClientAuthOperation.hpp
-    Operations/ClientMessagesOperation.hpp
+    Operations/PendingMessages.hpp
     Operations/PendingContactsOperation.hpp
 )
 

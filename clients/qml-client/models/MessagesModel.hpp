@@ -33,8 +33,7 @@ namespace Telegram {
 namespace Client {
 
 class DeclarativeClient;
-class MessagesOperation;
-
+class PendingMessages;
 class Event
 {
     Q_GADGET

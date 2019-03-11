@@ -10,8 +10,8 @@
 #include "UpdatesLayer.hpp"
 #include "Utils.hpp"
 
-#include "Operations/ClientMessagesOperation.hpp"
-#include "Operations/ClientMessagesOperation_p.hpp"
+#include "Operations/PendingMessages.hpp"
+#include "Operations/PendingMessages_p.hpp"
 
 #include <QLoggingCategory>
 
@@ -135,14 +135,14 @@ PendingOperation *MessagingApiPrivate::getDialogs()
     return operation;
 }
 
-MessagesOperation *MessagingApiPrivate::getHistory(const Peer peer, const Telegram::Client::MessageFetchOptions &options)
+PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const Telegram::Client::MessageFetchOptions &options)
 {
     if (!peer.isValid()) {
-        return PendingOperation::failOperation<MessagesOperation>(QStringLiteral("Invalid peer for getHistory()"), this);
+        return PendingOperation::failOperation<PendingMessages>(QStringLiteral("Invalid peer for getHistory()"), this);
     }
     TLInputPeer inputPeer = dataInternalApi()->toInputPeer(peer);
-    MessagesOperation *apiOp = new MessagesOperation(this);
-    MessagesOperationPrivate *priv = MessagesOperationPrivate::get(apiOp);
+    PendingMessages *apiOp = new PendingMessages(this);
+    PendingMessagesPrivate *priv = PendingMessagesPrivate::get(apiOp);
     priv->m_peer = peer;
     priv->m_fetchOptions = options;
     MessagesRpcLayer::PendingMessagesMessages *rpcOp = messagesLayer()->getHistory(inputPeer,
@@ -204,9 +204,9 @@ DialogList *MessagingApi::getDialogList()
 }
 
 /*!
-    Returns pending MessagesOperation with messages sorted from newer (higher message id) to older (lower message id)
+    Returns PendingMessages with messages sorted from newer (higher message id) to older (lower message id)
 */
-MessagesOperation *MessagingApi::getHistory(const Telegram::Peer peer, const Telegram::Client::MessageFetchOptions &options)
+PendingMessages *MessagingApi::getHistory(const Telegram::Peer peer, const Telegram::Client::MessageFetchOptions &options)
 {
     Q_D(MessagingApi);
     return d->getHistory(peer, options);
@@ -267,12 +267,12 @@ void MessagingApiPrivate::onGetDialogsFinished(PendingOperation *operation, Mess
     operation->setFinished();
 }
 
-void MessagingApiPrivate::onGetHistoryFinished(MessagesOperation *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation)
+void MessagingApiPrivate::onGetHistoryFinished(PendingMessages *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation)
 {
     TLMessagesMessages messages;
     rpcOperation->getResult(&messages);
 
-    MessagesOperationPrivate *priv = MessagesOperationPrivate::get(operation);
+    PendingMessagesPrivate *priv = PendingMessagesPrivate::get(operation);
 
     dataInternalApi()->processData(messages);
 
