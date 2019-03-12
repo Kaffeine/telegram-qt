@@ -1,7 +1,7 @@
 #ifndef TELEGRAMQT_TEST_UTILS_HPP
 #define TELEGRAMQT_TEST_UTILS_HPP
 
-#include <qtestcase.h>
+#include <QTest>
 
 #ifndef TEST_TIMEOUT
 #define TEST_TIMEOUT 200
