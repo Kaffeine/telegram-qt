@@ -27,8 +27,9 @@ template <int Size> union TLNumber {
     static constexpr int size() { return Size / 8; }
 
     Q_DECL_RELAXED_CONSTEXPR TLNumber() {
-        for (int i = 0; i < Size / 8 / 8; ++i)
+        for (int i = 0; i < Size / 8 / 8; ++i) {
             parts[i] = 0;
+        }
     }
 
     Q_DECL_RELAXED_CONSTEXPR TLNumber &operator=(const TLNumber &anotherTLNumber) {
@@ -57,7 +58,7 @@ template <int Size> union TLNumber {
     }
 };
 
-typedef TLNumber<128> TLNumber128;
-typedef TLNumber<256> TLNumber256;
+using TLNumber128 = TLNumber<128>;
+using TLNumber256 = TLNumber<256>;
 
 #endif // TLNUMBERS_HPP

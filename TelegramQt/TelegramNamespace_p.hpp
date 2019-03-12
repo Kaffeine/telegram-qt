@@ -21,11 +21,13 @@
 #include "TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
-struct Telegram::MessageMediaInfo::Private : public TLMessageMedia
+namespace Telegram {
+
+struct MessageMediaInfo::Private : public TLMessageMedia
 {
 public:
-    static const Private *get(const Telegram::MessageMediaInfo *info) { return info->d; }
-    static Private *get(Telegram::MessageMediaInfo *info) { return info->d; }
+    static const Private *get(const MessageMediaInfo *info) { return info->d; }
+    static Private *get(MessageMediaInfo *info) { return info->d; }
 
     Private() = default;
 
@@ -49,7 +51,7 @@ public:
     TLInputFile *m_inputFile = nullptr;
 };
 
-struct Telegram::RemoteFile::Private
+struct RemoteFile::Private
 {
 public:
     enum Type {
@@ -102,24 +104,25 @@ public:
 
 };
 
-struct Telegram::UserInfo::Private : public TLUser
+struct UserInfo::Private : public TLUser
 {
-    static Private *get(Telegram::UserInfo *info) { return info->d; }
-    static const Private *get(const Telegram::UserInfo *info) { return info->d; }
+    static Private *get(UserInfo *info) { return info->d; }
+    static const Private *get(const UserInfo *info) { return info->d; }
 };
 
-struct Telegram::ChatInfo::Private : public TLChat
+struct ChatInfo::Private : public TLChat
 {
-    static Private *get(Telegram::ChatInfo *info) { return info->d; }
+    static Private *get(ChatInfo *info) { return info->d; }
 };
 
-struct Telegram::DialogInfo::Private : public TLDialog
+struct DialogInfo::Private : public TLDialog
 {
-    static Private *get(Telegram::DialogInfo *info) { return info->d; }
+    static Private *get(DialogInfo *info) { return info->d; }
 };
 
 TelegramNamespace::ContactStatus getApiContactStatus(TLValue status);
 quint32 getApiContactLastOnline(const TLUserStatus &status);
 
-#endif // TELEGRAMNAMESPACE_P_HPP
+} // Telegram namespace
 
+#endif // TELEGRAMNAMESPACE_P_HPP

@@ -66,7 +66,6 @@ class TELEGRAMQT_EXPORT FileAccountStorage : public AccountStorage
     Q_OBJECT
     Q_DECLARE_PRIVATE_D(d, FileAccountStorage)
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
-//    Q_PROPERTY(bool fileExists READ fileExists NOTIFY fileExistsChanged)
 public:
     explicit FileAccountStorage(QObject *parent = nullptr);
 
@@ -88,15 +87,6 @@ Q_SIGNALS:
     void fileExistsChanged(bool exists);
 
 };
-
-//class FileAccountStorage : public AccountStorage
-//{
-//    Q_OBJECT
-//    Q_PROPERTY(QString directory READ directory WRITE setDirectory NOTIFY directoryChanged)
-//    Q_PROPERTY(QStringList accounts READ accounts NOTIFY accountsChanged)
-//public:
-
-//};
 
 } // Client namespace
 

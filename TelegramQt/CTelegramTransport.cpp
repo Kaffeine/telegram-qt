@@ -27,7 +27,9 @@ BaseTransport::BaseTransport(QObject *parent) :
 
 quint64 BaseTransport::getNewMessageId(quint64 supposedId)
 {
-    // Client message identifiers are divisible by 4, server message identifiers modulo 4 yield 1 if the message is a response to a client message, and 3 otherwise.
+    // Client message identifiers are divisible by 4,
+    // server message identifiers modulo 4 yield 1 if the message is
+    // a response to a client message, and 3 otherwise.
     const quint8 moduleFour = supposedId % 4;
     quint64 result = supposedId;
     if (result <= m_lastMessageId) {
@@ -37,7 +39,8 @@ quint64 BaseTransport::getNewMessageId(quint64 supposedId)
         }
     }
     if (!(result & quint64(0xffffff))) {
-        // The lower 32 bits of messageId passed by the client must not contain that many zeroes.
+        // The lower 32 bits of messageId passed by the client
+        // must not contain that many zeroes.
         result += quint64(0x1230);
     }
     m_lastMessageId = result;

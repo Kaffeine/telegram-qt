@@ -116,7 +116,8 @@ void ContactsApiPrivate::onContactsImported(PendingContactsOperation *operation,
     operation->setFinished();
 }
 
-void ContactsApiPrivate::onGetContactsResult(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsContacts *rpcOperation)
+void ContactsApiPrivate::onGetContactsResult(PendingContactsOperation *operation,
+                                             ContactsRpcLayer::PendingContactsContacts *rpcOperation)
 {
     TLContactsContacts result;
     rpcOperation->getResult(&result);
@@ -134,7 +135,8 @@ void ContactsApiPrivate::onGetContactsResult(PendingContactsOperation *operation
     operation->setFinished();
 }
 
-void ContactsApiPrivate::onSelfUserResult(PendingOperation *operation, UsersRpcLayer::PendingUserVector *rpcOperation)
+void ContactsApiPrivate::onSelfUserResult(PendingOperation *operation,
+                                          UsersRpcLayer::PendingUserVector *rpcOperation)
 {
     TLVector<TLUser> result;
     rpcOperation->getResult(&result);

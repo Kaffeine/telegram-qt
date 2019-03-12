@@ -1,6 +1,7 @@
 #include "Connection.hpp"
 
 #include "ConnectionError.hpp"
+#include "Debug_p.hpp"
 #include "DhLayer.hpp"
 #include "RpcLayer.hpp"
 #include "SendPackageHelper.hpp"
@@ -41,13 +42,14 @@ void BaseConnection::setServerRsaKey(const RsaKey &key)
 void BaseConnection::setTransport(BaseTransport *newTransport)
 {
     m_transport = newTransport;
-    connect(m_transport, &BaseTransport::stateChanged, this, &BaseConnection::onTransportStateChanged);
-    connect(m_transport, &BaseTransport::packetReceived, this, &BaseConnection::onTransportPacketReceived);
-//    connect(m_transport, &CTelegramTransport::timeout, this, &CTelegramConnection::onTransportTimeout);
+    connect(m_transport, &BaseTransport::stateChanged,
+            this, &BaseConnection::onTransportStateChanged);
+    connect(m_transport, &BaseTransport::packetReceived,
+            this, &BaseConnection::onTransportPacketReceived);
     onTransportStateChanged();
 
     if (!m_dhLayer) {
-        qCCritical(c_baseConnectionCategory) << this << __func__ << "DH Layer must be set before transport";
+        qCCritical(c_baseConnectionCategory) << CALL_INFO << "DH Layer must be set before transport";
         return;
     }
     connect(m_dhLayer, &BaseDhLayer::stateChanged, this, &BaseConnection::onDhStateChanged);
@@ -73,7 +75,7 @@ void BaseConnection::setStatus(BaseConnection::Status status, BaseConnection::St
 
 void BaseConnection::onTransportStateChanged()
 {
-    qCDebug(c_baseConnectionCategory) << this << __func__ << m_transport->state();
+    qCDebug(c_baseConnectionCategory) << CALL_INFO << m_transport->state();
     switch (m_transport->state()) {
     case QAbstractSocket::ConnectedState:
         setStatus(Status::Connected, StatusReason::Remote);
@@ -85,7 +87,10 @@ void BaseConnection::onTransportStateChanged()
         }
         break;
     case QAbstractSocket::UnconnectedState:
-        setStatus(Status::Disconnected, status() == Status::Disconnecting ? StatusReason::Local : StatusReason::Remote);
+        setStatus(Status::Disconnected,
+                  status() == Status::Disconnecting
+                  ? StatusReason::Local
+                  : StatusReason::Remote);
         break;
     default:
         break;
@@ -94,7 +99,7 @@ void BaseConnection::onTransportStateChanged()
 
 void BaseConnection::onTransportPacketReceived(const QByteArray &payload)
 {
-    qCDebug(c_baseConnectionCategory) << this << __func__ << payload.size();
+    qCDebug(c_baseConnectionCategory) << CALL_INFO << payload.size();
     if (payload.size() == ConnectionError::packetSize()) {
         const ConnectionError e(payload.constData());
         qCDebug(c_baseConnectionCategory) << "Error:" << e.description();
@@ -108,32 +113,34 @@ void BaseConnection::onTransportPacketReceived(const QByteArray &payload)
         return;
     }
     if (payload.size() < 8) {
-        qCWarning(c_baseConnectionCategory) << "Received package is too small to process:" << payload.toHex();
+        qCWarning(c_baseConnectionCategory) << CALL_INFO
+                                            << "Received package is too small to process:"
+                                            << payload.toHex();
         return;
     }
     const quint64 *authKeyIdBytes = reinterpret_cast<const quint64*>(payload.constData());
     if (*authKeyIdBytes) {
         if (!processAuthKey(*authKeyIdBytes)) {
-            qCDebug(c_baseConnectionCategory) << this << "Received incorrect auth id.";
+            qCDebug(c_baseConnectionCategory) << CALL_INFO << "Received incorrect auth id.";
             return;
         }
         if (!m_rpcLayer->processPackage(payload)) {
-            qCDebug(c_baseConnectionCategory) << this << __func__
-                                              << "Unable to process RPC packet:" << payload.toHex();
+            qCDebug(c_baseConnectionCategory) << CALL_INFO
+                                              << "Unable to process RPC packet:"
+                                              << payload.toHex();
         }
     } else {
         if (!m_dhLayer->processPlainPackage(payload)) {
-            qCDebug(c_baseConnectionCategory) << this << __func__
-                                              << "Unable to process plain packet:" << payload.toHex();
+            qCDebug(c_baseConnectionCategory) << CALL_INFO
+                                              << "Unable to process plain packet:"
+                                              << payload.toHex();
         }
     }
 }
 
 void BaseConnection::onDhStateChanged()
 {
-#ifdef DEVELOPER_BUILD
-    qCDebug(c_baseConnectionCategory) << QString::fromLatin1(metaObject()->className()) + QStringLiteral("::onDhStateChanged(") << m_dhLayer->state() << ")";
-#endif
+    qCDebug(c_baseConnectionCategory) << CALL_INFO << m_dhLayer->state();
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
         setStatus(Status::HasDhKey, StatusReason::Remote);
     }

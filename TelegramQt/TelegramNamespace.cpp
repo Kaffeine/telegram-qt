@@ -89,24 +89,35 @@ Telegram::Peer Telegram::Peer::fromString(const QString &string)
 void TelegramNamespace::registerTypes()
 {
     static bool registered = false;
-    if (!registered) {
+    if (registered) {
+        return;
+    }
+    registered = true;
 
 #ifdef DEVELOPER_BUILD
-        qInfo() << "TelegramQt Developer build";
+    qInfo() << "TelegramQt Developer build";
 #endif
-        qInfo().noquote().nospace() << "Initialize TelegramQt v" << Telegram::version() << " (build " << Telegram::buildVersion() << ")";
+    qInfo().noquote().nospace() << "Initialize TelegramQt v" << Telegram::version()
+                                << " (build " << Telegram::buildVersion() << ")";
 
-        qRegisterMetaType<TelegramNamespace::ContactStatus>("TelegramNamespace::ContactStatus");
-        qRegisterMetaType<TelegramNamespace::MessageFlags>("TelegramNamespace::MessageFlags");
-        qRegisterMetaType<TelegramNamespace::MessageType>("TelegramNamespace::MessageType");
-        qRegisterMetaType<TelegramNamespace::AuthenticationError>("TelegramNamespace::AuthenticationError");
-        qRegisterMetaType<TelegramNamespace::UnauthorizedError>("TelegramNamespace::UnauthorizedError");
-        qRegisterMetaType<Telegram::Peer>("Telegram::Peer");
-        qRegisterMetaType<Telegram::PeerList>("Telegram::PeerList");
-        qRegisterMetaType<Telegram::Client::ConnectionApi::Status>("Telegram::Client::ConnectionApi::Status");
-        qRegisterMetaType<Telegram::Client::ConnectionApi::StatusReason>("Telegram::Client::ConnectionApi::StatusReason");
-        registered = true;
-    }
+    qRegisterMetaType<TelegramNamespace::ContactStatus>
+            ("TelegramNamespace::ContactStatus");
+    qRegisterMetaType<TelegramNamespace::MessageFlags>
+            ("TelegramNamespace::MessageFlags");
+    qRegisterMetaType<TelegramNamespace::MessageType>
+            ("TelegramNamespace::MessageType");
+    qRegisterMetaType<TelegramNamespace::AuthenticationError>
+            ("TelegramNamespace::AuthenticationError");
+    qRegisterMetaType<TelegramNamespace::UnauthorizedError>
+            ("TelegramNamespace::UnauthorizedError");
+    qRegisterMetaType<Telegram::Peer>
+            ("Telegram::Peer");
+    qRegisterMetaType<Telegram::PeerList>
+            ("Telegram::PeerList");
+    qRegisterMetaType<Telegram::Client::ConnectionApi::Status>
+            ("Telegram::Client::ConnectionApi::Status");
+    qRegisterMetaType<Telegram::Client::ConnectionApi::StatusReason>
+            ("Telegram::Client::ConnectionApi::StatusReason");
 }
 
 Telegram::Peer TelegramNamespace::emptyPeer()
@@ -129,31 +140,42 @@ Telegram::Peer TelegramNamespace::peerFromUserId(quint32 id)
     return Telegram::Peer::fromUserId(id);
 }
 
-Telegram::MessageMediaInfo::MessageMediaInfo() :
+namespace Telegram {
+
+void initialize()
+{
+    TelegramNamespace::registerTypes();
+    if (!RandomGenerator::instance()) {
+        static RandomGenerator defaultGenerator;
+        RandomGenerator::setInstance(&defaultGenerator);
+    }
+}
+
+MessageMediaInfo::MessageMediaInfo() :
     d(new Private())
 {
 }
 
-Telegram::MessageMediaInfo::MessageMediaInfo(const Telegram::MessageMediaInfo &info) :
+MessageMediaInfo::MessageMediaInfo(const MessageMediaInfo &info) :
     d(new Private())
 {
     *d = *info.d;
 }
 
-Telegram::MessageMediaInfo::~MessageMediaInfo()
+MessageMediaInfo::~MessageMediaInfo()
 {
     delete d;
 }
 
-Telegram::MessageMediaInfo &Telegram::MessageMediaInfo::operator=(const Telegram::MessageMediaInfo &info)
+MessageMediaInfo &MessageMediaInfo::operator=(const MessageMediaInfo &info)
 {
     *d = *info.d;
     return *this;
 }
 
-void Telegram::MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType type, const RemoteFile &file)
+void MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType type, const RemoteFile &file)
 {
-    d->tlType = Telegram::Utils::toTLValue(type);
+    d->tlType = Utils::toTLValue(type);
 
     d->m_isUploaded = true;
     const RemoteFile::Private *filePrivate = RemoteFile::Private::get(&file);
@@ -164,7 +186,7 @@ void Telegram::MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType ty
     }
 }
 
-bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) const
+bool MessageMediaInfo::getRemoteFileInfo(RemoteFile *file) const
 {
     TLInputFileLocation inputLocation;
 
@@ -191,12 +213,12 @@ bool Telegram::MessageMediaInfo::getRemoteFileInfo(Telegram::RemoteFile *file) c
     }
 }
 
-TelegramNamespace::MessageType Telegram::MessageMediaInfo::type() const
+TelegramNamespace::MessageType MessageMediaInfo::type() const
 {
-    return Telegram::Utils::getPublicMessageType(*d);
+    return Utils::getPublicMessageType(*d);
 }
 
-quint32 Telegram::MessageMediaInfo::size() const
+quint32 MessageMediaInfo::size() const
 {
     if (d->m_isUploaded) {
         return d->m_size;
@@ -215,7 +237,7 @@ quint32 Telegram::MessageMediaInfo::size() const
     }
 }
 
-quint32 Telegram::MessageMediaInfo::duration() const
+quint32 MessageMediaInfo::duration() const
 {
     switch (d->tlType) {
     default:
@@ -223,7 +245,7 @@ quint32 Telegram::MessageMediaInfo::duration() const
     }
 }
 
-bool Telegram::MessageMediaInfo::setDuration(quint32 duration)
+bool MessageMediaInfo::setDuration(quint32 duration)
 {
     Q_UNUSED(duration)
     switch (d->tlType) {
@@ -233,7 +255,7 @@ bool Telegram::MessageMediaInfo::setDuration(quint32 duration)
     return false;
 }
 
-QString Telegram::MessageMediaInfo::documentFileName() const
+QString MessageMediaInfo::documentFileName() const
 {
     if (d->tlType != TLValue::MessageMediaDocument) {
         return QString();
@@ -248,7 +270,7 @@ QString Telegram::MessageMediaInfo::documentFileName() const
     return QString();
 }
 
-bool Telegram::MessageMediaInfo::setDocumentFileName(const QString &fileName)
+bool MessageMediaInfo::setDocumentFileName(const QString &fileName)
 {
     if (d->tlType != TLValue::MessageMediaDocument) {
         return false;
@@ -272,12 +294,12 @@ bool Telegram::MessageMediaInfo::setDocumentFileName(const QString &fileName)
     return true;
 }
 
-QString Telegram::MessageMediaInfo::caption() const
+QString MessageMediaInfo::caption() const
 {
     return d->caption;
 }
 
-void Telegram::MessageMediaInfo::setCaption(const QString &caption)
+void MessageMediaInfo::setCaption(const QString &caption)
 {
     if (!d->m_isUploaded) {
         return;
@@ -286,7 +308,7 @@ void Telegram::MessageMediaInfo::setCaption(const QString &caption)
     d->caption = caption;
 }
 
-QByteArray Telegram::MessageMediaInfo::getCachedPhoto() const
+QByteArray MessageMediaInfo::getCachedPhoto() const
 {
     const TLVector<TLPhotoSize> *sizes = nullptr;
     switch (d->tlType) {
@@ -304,7 +326,7 @@ QByteArray Telegram::MessageMediaInfo::getCachedPhoto() const
     return QByteArray();
 }
 
-QString Telegram::MessageMediaInfo::mimeType() const
+QString MessageMediaInfo::mimeType() const
 {
     switch (d->tlType) {
     case TLValue::MessageMediaDocument:
@@ -315,7 +337,7 @@ QString Telegram::MessageMediaInfo::mimeType() const
     return QString();
 }
 
-bool Telegram::MessageMediaInfo::setMimeType(const QString &mimeType)
+bool MessageMediaInfo::setMimeType(const QString &mimeType)
 {
     switch (d->tlType) {
     case TLValue::MessageMediaDocument:
@@ -327,7 +349,7 @@ bool Telegram::MessageMediaInfo::setMimeType(const QString &mimeType)
     return false;
 }
 
-bool Telegram::MessageMediaInfo::getContactInfo(Telegram::UserInfo *info) const
+bool MessageMediaInfo::getContactInfo(UserInfo *info) const
 {
     if (d->tlType != TLValue::MessageMediaContact) {
         return false;
@@ -342,7 +364,7 @@ bool Telegram::MessageMediaInfo::getContactInfo(Telegram::UserInfo *info) const
     return true;
 }
 
-void Telegram::MessageMediaInfo::setContactInfo(const Telegram::UserInfo *info)
+void MessageMediaInfo::setContactInfo(const UserInfo *info)
 {
     const UserInfo::Private *infoPrivate = UserInfo::Private::get(info);
     d->tlType = TLValue::MessageMediaContact;
@@ -352,7 +374,7 @@ void Telegram::MessageMediaInfo::setContactInfo(const Telegram::UserInfo *info)
     d->userId = infoPrivate->id;
 }
 
-QString Telegram::MessageMediaInfo::alt() const
+QString MessageMediaInfo::alt() const
 {
     switch (d->tlType) {
     case TLValue::MessageMediaGeo:
@@ -384,17 +406,17 @@ QString Telegram::MessageMediaInfo::alt() const
     return QString();
 }
 
-double Telegram::MessageMediaInfo::latitude() const
+double MessageMediaInfo::latitude() const
 {
     return d->geo.latitude;
 }
 
-double Telegram::MessageMediaInfo::longitude() const
+double MessageMediaInfo::longitude() const
 {
     return d->geo.longitude;
 }
 
-void Telegram::MessageMediaInfo::setGeoPoint(double latitude, double longitude)
+void MessageMediaInfo::setGeoPoint(double latitude, double longitude)
 {
     d->tlType = TLValue::MessageMediaGeo;
     d->geo.tlType = TLValue::GeoPoint;
@@ -402,7 +424,7 @@ void Telegram::MessageMediaInfo::setGeoPoint(double latitude, double longitude)
     d->geo.latitude = latitude;
 }
 
-QString Telegram::MessageMediaInfo::url() const
+QString MessageMediaInfo::url() const
 {
     if (d->tlType != TLValue::MessageMediaWebPage) {
         return QString();
@@ -410,7 +432,7 @@ QString Telegram::MessageMediaInfo::url() const
     return d->webpage.url;
 }
 
-QString Telegram::MessageMediaInfo::displayUrl() const
+QString MessageMediaInfo::displayUrl() const
 {
     if (d->tlType != TLValue::MessageMediaWebPage) {
         return QString();
@@ -418,7 +440,7 @@ QString Telegram::MessageMediaInfo::displayUrl() const
     return d->webpage.displayUrl;
 }
 
-QString Telegram::MessageMediaInfo::siteName() const
+QString MessageMediaInfo::siteName() const
 {
     if (d->tlType != TLValue::MessageMediaWebPage) {
         return QString();
@@ -427,7 +449,7 @@ QString Telegram::MessageMediaInfo::siteName() const
     return d->webpage.siteName;
 }
 
-QString Telegram::MessageMediaInfo::title() const
+QString MessageMediaInfo::title() const
 {
     if (d->tlType != TLValue::MessageMediaWebPage) {
         return QString();
@@ -436,7 +458,7 @@ QString Telegram::MessageMediaInfo::title() const
     return d->webpage.title;
 }
 
-QString Telegram::MessageMediaInfo::description() const
+QString MessageMediaInfo::description() const
 {
     if (d->tlType != TLValue::MessageMediaWebPage) {
         return QString();
@@ -445,7 +467,7 @@ QString Telegram::MessageMediaInfo::description() const
     return d->webpage.description;
 }
 
-TLInputFileLocation Telegram::RemoteFile::Private::getInputFileLocation() const
+TLInputFileLocation RemoteFile::Private::getInputFileLocation() const
 {
     TLInputFileLocation result;
     switch (m_type) {
@@ -470,7 +492,7 @@ TLInputFileLocation Telegram::RemoteFile::Private::getInputFileLocation() const
     return result;
 }
 
-bool Telegram::RemoteFile::Private::setInputFileLocation(const TLInputFileLocation *inputFileLocation)
+bool RemoteFile::Private::setInputFileLocation(const TLInputFileLocation *inputFileLocation)
 {
     switch (inputFileLocation->tlType) {
     case TLValue::InputFileLocation:
@@ -495,7 +517,7 @@ bool Telegram::RemoteFile::Private::setInputFileLocation(const TLInputFileLocati
     return true;
 }
 
-TLInputFile Telegram::RemoteFile::Private::getInputFile() const
+TLInputFile RemoteFile::Private::getInputFile() const
 {
     TLInputFile result;
     switch (m_type) {
@@ -515,7 +537,7 @@ TLInputFile Telegram::RemoteFile::Private::getInputFile() const
     return result;
 }
 
-bool Telegram::RemoteFile::Private::setInputFile(const TLInputFile *inputFile)
+bool RemoteFile::Private::setInputFile(const TLInputFile *inputFile)
 {
     switch (inputFile->tlType) {
     case TLValue::InputFile:
@@ -536,7 +558,7 @@ bool Telegram::RemoteFile::Private::setInputFile(const TLInputFile *inputFile)
     return true;
 }
 
-TLFileLocation Telegram::RemoteFile::Private::getFileLocation() const
+TLFileLocation RemoteFile::Private::getFileLocation() const
 {
     switch (m_type) {
     case FileLocation:
@@ -554,7 +576,7 @@ TLFileLocation Telegram::RemoteFile::Private::getFileLocation() const
     return result;
 }
 
-bool Telegram::RemoteFile::Private::setFileLocation(const TLFileLocation *fileLocation)
+bool RemoteFile::Private::setFileLocation(const TLFileLocation *fileLocation)
 {
     switch (fileLocation->tlType) {
     case TLValue::FileLocation:
@@ -573,29 +595,29 @@ bool Telegram::RemoteFile::Private::setFileLocation(const TLFileLocation *fileLo
     return true;
 }
 
-Telegram::RemoteFile::RemoteFile():
+RemoteFile::RemoteFile():
     d(new Private())
 {
 }
 
-Telegram::RemoteFile::RemoteFile(const Telegram::RemoteFile &file) :
+RemoteFile::RemoteFile(const RemoteFile &file) :
     d(new Private)
 {
     *d = *file.d;
 }
 
-Telegram::RemoteFile::~RemoteFile()
+RemoteFile::~RemoteFile()
 {
     delete d;
 }
 
-Telegram::RemoteFile &Telegram::RemoteFile::operator=(const Telegram::RemoteFile &file)
+RemoteFile &RemoteFile::operator=(const RemoteFile &file)
 {
     *d = *file.d;
     return *this;
 }
 
-Telegram::RemoteFile::Type Telegram::RemoteFile::type() const
+RemoteFile::Type RemoteFile::type() const
 {
     switch (d->m_type) {
     case Private::InvalidLocation:
@@ -613,12 +635,12 @@ Telegram::RemoteFile::Type Telegram::RemoteFile::type() const
     return Undefined;
 }
 
-bool Telegram::RemoteFile::isValid() const
+bool RemoteFile::isValid() const
 {
     return d && (d->m_type != Private::InvalidLocation);
 }
 
-QString Telegram::RemoteFile::getUniqueId() const
+QString RemoteFile::getUniqueId() const
 {
     if (!isValid()) {
         return QString();
@@ -661,7 +683,7 @@ QString Telegram::RemoteFile::getUniqueId() const
     return QString();
 }
 
-Telegram::RemoteFile Telegram::RemoteFile::fromUniqueId(const QString &uniqueId)
+RemoteFile RemoteFile::fromUniqueId(const QString &uniqueId)
 {
     uint remoteFileType = Private::InvalidLocation;
     bool ok;
@@ -715,106 +737,106 @@ Telegram::RemoteFile Telegram::RemoteFile::fromUniqueId(const QString &uniqueId)
     return result;
 }
 
-QString Telegram::RemoteFile::fileName() const
+QString RemoteFile::fileName() const
 {
     return d->m_name;
 }
 
-quint32 Telegram::RemoteFile::size() const
+quint32 RemoteFile::size() const
 {
     return d->m_size;
 }
 
-QString Telegram::RemoteFile::md5Sum() const
+QString RemoteFile::md5Sum() const
 {
     return d->m_md5Checksum;
 }
 
-Telegram::DialogInfo::DialogInfo() :
+DialogInfo::DialogInfo() :
     d(new Private())
 {
 }
 
-Telegram::DialogInfo::DialogInfo(const Telegram::DialogInfo &info) :
+DialogInfo::DialogInfo(const DialogInfo &info) :
     d(new Private())
 {
     *d = *info.d;
 }
 
-Telegram::DialogInfo::~DialogInfo()
+DialogInfo::~DialogInfo()
 {
     delete d;
 }
 
-Telegram::DialogInfo &Telegram::DialogInfo::operator=(const Telegram::DialogInfo &info)
+DialogInfo &DialogInfo::operator=(const DialogInfo &info)
 {
     *d = *info.d;
     return *this;
 }
 
-quint32 Telegram::DialogInfo::unreadCount() const
+quint32 DialogInfo::unreadCount() const
 {
     return d->unreadCount;
 }
 
-QString Telegram::DialogInfo::draft() const
+QString DialogInfo::draft() const
 {
     return d->draft.message;
 }
 
-quint32 Telegram::DialogInfo::lastMessageId() const
+quint32 DialogInfo::lastMessageId() const
 {
     return d->topMessage;
 }
 
-quint32 Telegram::DialogInfo::readInboxMaxId() const
+quint32 DialogInfo::readInboxMaxId() const
 {
     return d->readInboxMaxId;
 }
 
-quint32 Telegram::DialogInfo::readOutboxMaxId() const
+quint32 DialogInfo::readOutboxMaxId() const
 {
     return d->readOutboxMaxId;
 }
 
-Telegram::Peer Telegram::DialogInfo::peer() const
+Peer DialogInfo::peer() const
 {
-    return Telegram::Utils::toPublicPeer(d->peer);
+    return Utils::toPublicPeer(d->peer);
 }
 
-quint32 Telegram::DialogInfo::muteUntil() const
+quint32 DialogInfo::muteUntil() const
 {
     return d->notifySettings.muteUntil;
 }
 
-bool Telegram::DialogInfo::isStillMuted() const
+bool DialogInfo::isStillMuted() const
 {
     return false;
 }
 
-Telegram::UserInfo::UserInfo() :
+UserInfo::UserInfo() :
     d(new Private())
 {
 }
 
-Telegram::UserInfo::UserInfo(const Telegram::UserInfo &info) :
+UserInfo::UserInfo(const UserInfo &info) :
     d(new Private())
 {
     *d = *info.d;
 }
 
-Telegram::UserInfo::~UserInfo()
+UserInfo::~UserInfo()
 {
     delete d;
 }
 
-Telegram::UserInfo &Telegram::UserInfo::operator=(const Telegram::UserInfo &info)
+UserInfo &UserInfo::operator=(const UserInfo &info)
 {
     *d = *info.d;
     return *this;
 }
 
-QString Telegram::UserInfo::getBestDisplayName() const
+QString UserInfo::getBestDisplayName() const
 {
     QString name;
     if (!firstName().isEmpty()) {
@@ -839,37 +861,37 @@ QString Telegram::UserInfo::getBestDisplayName() const
     return name;
 }
 
-quint32 Telegram::UserInfo::id() const
+quint32 UserInfo::id() const
 {
     return d->id;
 }
 
-QString Telegram::UserInfo::firstName() const
+QString UserInfo::firstName() const
 {
     return d->firstName;
 }
 
-QString Telegram::UserInfo::lastName() const
+QString UserInfo::lastName() const
 {
     return d->lastName;
 }
 
-QString Telegram::UserInfo::userName() const
+QString UserInfo::userName() const
 {
     return d->username;
 }
 
-QString Telegram::UserInfo::phone() const
+QString UserInfo::phone() const
 {
     return d->phone;
 }
 
-TelegramNamespace::ContactStatus Telegram::UserInfo::status() const
+TelegramNamespace::ContactStatus UserInfo::status() const
 {
     return getApiContactStatus(d->status.tlType);
 }
 
-/*! \fn quint32 Telegram::UserInfo::wasOnline() const
+/*!
   Return seconds since epoch for last online time.
 
   If user is online, this method return time when online expires,
@@ -889,42 +911,42 @@ TelegramNamespace::ContactStatus Telegram::UserInfo::status() const
       qDebug() << "Seconds since epoch";
   }
 */
-quint32 Telegram::UserInfo::wasOnline() const
+quint32 UserInfo::wasOnline() const
 {
     return getApiContactLastOnline(d->status);
 }
 
-bool Telegram::UserInfo::isBot() const
+bool UserInfo::isBot() const
 {
     return d->bot();
 }
 
-bool Telegram::UserInfo::isSelf() const
+bool UserInfo::isSelf() const
 {
     return d->self();
 }
 
-bool Telegram::UserInfo::isContact() const
+bool UserInfo::isContact() const
 {
     return d->contact();
 }
 
-bool Telegram::UserInfo::isMutualContact() const
+bool UserInfo::isMutualContact() const
 {
     return d->mutualContact();
 }
 
-bool Telegram::UserInfo::isDeleted() const
+bool UserInfo::isDeleted() const
 {
     return d->deleted();
 }
 
-quint32 Telegram::UserInfo::botVersion() const
+quint32 UserInfo::botVersion() const
 {
     return d->botInfoVersion;
 }
 
-bool Telegram::UserInfo::getPeerPicture(Telegram::RemoteFile *file, PeerPictureSize size) const
+bool UserInfo::getPeerPicture(RemoteFile *file, PeerPictureSize size) const
 {
     RemoteFile::Private *filePrivate = RemoteFile::Private::get(file);
     switch (size) {
@@ -937,70 +959,70 @@ bool Telegram::UserInfo::getPeerPicture(Telegram::RemoteFile *file, PeerPictureS
     return false;
 }
 
-Telegram::ChatInfo::ChatInfo() :
+ChatInfo::ChatInfo() :
     d(new Private())
 {
 
 }
 
-Telegram::ChatInfo::ChatInfo(const Telegram::ChatInfo &info) :
+ChatInfo::ChatInfo(const ChatInfo &info) :
     d(new Private())
 {
     *d = *info.d;
 }
 
-Telegram::ChatInfo::~ChatInfo()
+ChatInfo::~ChatInfo()
 {
     delete d;
 }
 
-Telegram::ChatInfo &Telegram::ChatInfo::operator=(const Telegram::ChatInfo &info)
+ChatInfo &ChatInfo::operator=(const ChatInfo &info)
 {
     *d = *info.d;
     return *this;
 }
 
-Telegram::Peer Telegram::ChatInfo::peer() const
+Peer ChatInfo::peer() const
 {
     switch(d->tlType) {
     case TLValue::Chat:
     case TLValue::ChatForbidden:
-        return Telegram::Peer(d->id, Telegram::Peer::Chat);
+        return Peer(d->id, Peer::Chat);
     case TLValue::Channel:
     case TLValue::ChannelForbidden:
-        return Telegram::Peer(d->id, Telegram::Peer::Channel);
+        return Peer(d->id, Peer::Channel);
     default:
         break;
     }
-    return Telegram::Peer();
+    return Peer();
 }
 
-QString Telegram::ChatInfo::title() const
+QString ChatInfo::title() const
 {
     return d->title;
 }
 
-quint32 Telegram::ChatInfo::participantsCount() const
+quint32 ChatInfo::participantsCount() const
 {
     return d->participantsCount;
 }
 
-quint32 Telegram::ChatInfo::date() const
+quint32 ChatInfo::date() const
 {
     return d->date;
 }
 
-bool Telegram::ChatInfo::left() const
+bool ChatInfo::left() const
 {
     return d->left();
 }
 
-bool Telegram::ChatInfo::broadcast() const
+bool ChatInfo::broadcast() const
 {
     return d->broadcast();
 }
 
-Telegram::Peer Telegram::ChatInfo::migratedTo() const
+Peer ChatInfo::migratedTo() const
 {
     if (d->migratedTo.tlType == TLValue::InputChannelEmpty) {
         return Peer();
@@ -1008,7 +1030,7 @@ Telegram::Peer Telegram::ChatInfo::migratedTo() const
     return Peer(d->migratedTo.channelId, Peer::Channel);
 }
 
-bool Telegram::ChatInfo::getPeerPicture(Telegram::RemoteFile *file, Telegram::PeerPictureSize size) const
+bool ChatInfo::getPeerPicture(RemoteFile *file, PeerPictureSize size) const
 {
     RemoteFile::Private *filePrivate = RemoteFile::Private::get(file);
     switch (size) {
@@ -1052,7 +1074,7 @@ quint32 getApiContactLastOnline(const TLUserStatus &status)
     }
 }
 
-quint64 Telegram::Utils::maskNumber(quint64 number)
+quint64 Utils::maskNumber(quint64 number)
 {
     quint64 leftPart = number >> 32;
     quint64 rightPart = number & 0xffffffff;
@@ -1064,12 +1086,12 @@ quint64 Telegram::Utils::maskNumber(quint64 number)
 }
 
 // Encode in shell: echo -n <string>telegram-qt | sha256sum | cut -c1-8
-QString Telegram::Utils::maskString(const QString &string)
+QString Utils::maskString(const QString &string)
 {
     return QString::fromLatin1(maskByteArray(string.toUtf8()));
 }
 
-QByteArray Telegram::Utils::maskByteArray(const QByteArray &array)
+QByteArray Utils::maskByteArray(const QByteArray &array)
 {
     if (array.isEmpty()) {
         return QByteArray();
@@ -1084,7 +1106,7 @@ QByteArray Telegram::Utils::maskByteArray(const QByteArray &array)
     return QByteArrayLiteral("<val_") + data.left(4).toHex() + QByteArrayLiteral(">");
 }
 
-QString Telegram::Utils::maskPhoneNumber(const QString &identifier)
+QString Utils::maskPhoneNumber(const QString &identifier)
 {
     if (identifier.isEmpty()) {
         return QString();
@@ -1099,7 +1121,7 @@ QString Telegram::Utils::maskPhoneNumber(const QString &identifier)
     return identifier.mid(0, identifier.size() / 4) + QString(identifier.size() - identifier.size() / 4, QLatin1Char('x')); // + QLatin1String(" (hidden)");
 }
 
-QStringList Telegram::Utils::maskPhoneNumber(const QStringList &list)
+QStringList Utils::maskPhoneNumber(const QStringList &list)
 {
     if (list.count() == 1) {
         return QStringList() << maskPhoneNumber(list.first());
@@ -1120,21 +1142,14 @@ QStringList Telegram::Utils::maskPhoneNumber(const QStringList &list)
     return result;
 }
 
-void Telegram::initialize()
-{
-    TelegramNamespace::registerTypes();
-    if (!RandomGenerator::instance()) {
-        static RandomGenerator defaultGenerator;
-        RandomGenerator::setInstance(&defaultGenerator);
-    }
-}
-
-QVector<quint32> Telegram::Utils::toIdList(const Telegram::PeerList &peerList)
+QVector<quint32> Utils::toIdList(const PeerList &peerList)
 {
     QVector<quint32> idList;
     idList.reserve(peerList.size());
-    for (const Telegram::Peer &peer : peerList) {
+    for (const Peer &peer : peerList) {
         idList.append(peer.id);
     }
     return idList;
 }
+
+} // Telegram namespace

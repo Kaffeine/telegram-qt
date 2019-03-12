@@ -120,7 +120,8 @@ private:
 
 namespace Telegram {
 
-// Slightly modified version of Euclidean algorithm. Once we are looking for prime numbers, we can drop parity of asked numbers.
+// Slightly modified version of Euclidean algorithm. Once we are looking for prime numbers,
+// we can drop parity of asked numbers.
 quint64 Utils::greatestCommonOddDivisor(quint64 a, quint64 b)
 {
     while (a != 0 && b != 0) {
@@ -140,10 +141,13 @@ quint64 Utils::greatestCommonOddDivisor(quint64 a, quint64 b)
 }
 
 // Yet another copy of some unknown pq-solver algorithm.
-// Links:
-// https://github.com/DrKLO/Telegram/blob/433f59c5b9ed17543d8e206c83f0bc7c7edb43a6/TMessagesProj/jni/jni.c#L86
-// https://github.com/ex3ndr/telegram-mt/blob/91b1186e567b0484d6f371b8e5c61c425daf867e/src/main/java/org/telegram/mtproto/secure/pq/PQLopatin.java#L35
-// https://github.com/vysheng/tg/blob/1dad2e89933085ea1e3d9fb1becb1907ce5de55f/mtproto-client.c#L296
+// Links (join lines):
+// https://github.com/DrKLO/Telegram/blob/433f59c5b9ed17543d8e206c83f0bc7c7edb43a6
+// /TMessagesProj/jni/jni.c#L86
+// https://github.com/ex3ndr/telegram-mt/blob/91b1186e567b0484d6f371b8e5c61c425daf867e
+// /src/main/java/org/telegram/mtproto/secure/pq/PQLopatin.java#L35
+// https://github.com/vysheng/tg/blob/1dad2e89933085ea1e3d9fb1becb1907ce5de55f
+// /mtproto-client.c#L296
 quint64 Utils::findDivider(quint64 number)
 {
     int it = 0;
@@ -240,21 +244,24 @@ QByteArray Utils::aesDecrypt(const QByteArray &data, const SAesKey &key)
     QByteArray initVector = key.iv;
     AES_KEY dec_key;
     AES_set_decrypt_key((const uchar *) key.key.constData(), key.key.length() * 8, &dec_key);
-    AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length(), &dec_key, (uchar *) initVector.data(), AES_DECRYPT);
+    AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length(),
+                    &dec_key, (uchar *) initVector.data(), AES_DECRYPT);
     return result;
 }
 
 QByteArray Utils::aesEncrypt(const QByteArray &data, const SAesKey &key)
 {
     if (data.length() % AES_BLOCK_SIZE) {
-        qCritical() << Q_FUNC_INFO << "Data is not padded (the size %" << AES_BLOCK_SIZE << " is not zero)";
+        qCritical() << Q_FUNC_INFO << "Data is not padded "
+                                      "(the size %" << AES_BLOCK_SIZE << " is not zero)";
         return QByteArray();
     }
     QByteArray result = data;
     QByteArray initVector = key.iv;
     AES_KEY enc_key;
     AES_set_encrypt_key((const uchar *) key.key.constData(), key.key.length() * 8, &enc_key);
-    AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length(), &enc_key, (uchar *) initVector.data(), AES_ENCRYPT);
+    AES_ige_encrypt((const uchar *) data.constData(), (uchar *) result.data(), data.length(),
+                    &enc_key, (uchar *) initVector.data(), AES_ENCRYPT);
     return result;
 }
 

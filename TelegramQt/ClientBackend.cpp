@@ -160,7 +160,9 @@ Connection *Backend::ensureConnection(const ConnectionSpec &dcSpec)
 void Backend::onGetDcConfigurationFinished(PendingOperation *operation)
 {
     if (!operation->isSucceeded()) {
-        qCDebug(c_clientBackendCategory) << Q_FUNC_INFO << "Unable to get dc configuration" << operation->errorDetails();
+        qCDebug(c_clientBackendCategory) << CALL_INFO
+                                         << "Unable to get dc configuration"
+                                         << operation->errorDetails();
         return;
     }
 }

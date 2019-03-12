@@ -18,6 +18,7 @@
 #include "AesCtr.hpp"
 #include "CTcpTransport.hpp"
 #include "CRawStream.hpp"
+#include "Debug_p.hpp"
 
 #include <QHostAddress>
 
@@ -44,14 +45,15 @@ BaseTcpTransport::~BaseTcpTransport()
     if (m_socket && m_socket->isWritable() && m_socket->isOpen()
             && m_socket->state() != QAbstractSocket::UnconnectedState) {
         m_socket->waitForBytesWritten(100);
-        qCDebug(c_loggingTcpTransport) << this << __func__ << "close socket" << m_socket;
+        qCDebug(c_loggingTcpTransport) << CALL_INFO << "close socket" << m_socket;
         m_socket->disconnectFromHost();
     }
 }
 
 int BaseTcpTransport::connectionTimeout()
 {
-    static const int connectionTimeout = qEnvironmentVariableIntValue(timeoutEnvironmentVariableName());
+    static const int connectionTimeout =
+            qEnvironmentVariableIntValue(timeoutEnvironmentVariableName());
     if (connectionTimeout > 0) {
         return connectionTimeout;
     }
@@ -65,9 +67,9 @@ QString BaseTcpTransport::remoteAddress() const
 
 void BaseTcpTransport::disconnectFromHost()
 {
-    qCDebug(c_loggingTcpTransport) << this << __func__;
+    qCDebug(c_loggingTcpTransport) << CALL_INFO;
     if (m_socket) {
-        qCDebug(c_loggingTcpTransport) << this << __func__ << "close socket" << m_socket;
+        qCDebug(c_loggingTcpTransport) << CALL_INFO << "close socket" << m_socket;
         m_socket->disconnectFromHost();
     }
     m_readBuffer.clear();
@@ -83,9 +85,10 @@ BaseTcpTransport::SessionType BaseTcpTransport::sessionType() const
 
 void BaseTcpTransport::sendPacketImplementation(const QByteArray &payload)
 {
-    qCDebug(c_loggingTcpTransport) << this << __func__ << payload.size();
+    qCDebug(c_loggingTcpTransport) << CALL_INFO << payload.size();
 
-    // quint32 length (included length itself + packet number + crc32 + payload (MUST be divisible by 4)
+    // quint32 length (included length itself + packet number
+    //                 + crc32 + payload (MUST be divisible by 4)
     // quint32 packet number
     // quint32 CRC32 (length, quint32 packet number, payload)
     // Payload
@@ -98,7 +101,7 @@ void BaseTcpTransport::sendPacketImplementation(const QByteArray &payload)
     // Payload
 
     if (payload.length() % 4) {
-        qCCritical(c_loggingTcpTransport) << this << __func__
+        qCCritical(c_loggingTcpTransport) << CALL_INFO
                                           << "Invalid outgoing packet! "
                                              "The payload size is not divisible by four!";
     }
@@ -137,7 +140,7 @@ void BaseTcpTransport::resetCryptoKeys()
 void BaseTcpTransport::setCryptoKeysSourceData(const QByteArray &source, SourceRevertion revertion)
 {
     if (source.size() != (Crypto::AesCtrContext::KeySize + Crypto::AesCtrContext::IvecSize)) {
-        qCWarning(c_loggingTcpTransport) << this << __func__ << "Invalid input data (size mismatch)";
+        qCWarning(c_loggingTcpTransport) << CALL_INFO << "Invalid input data (size mismatch)";
         return;
     }
     QByteArray reversed = source;
@@ -173,7 +176,7 @@ const char *BaseTcpTransport::timeoutEnvironmentVariableName()
 
 void BaseTcpTransport::setState(QAbstractSocket::SocketState newState)
 {
-    qCDebug(c_loggingTcpTransport) << this << __func__ << newState;
+    qCDebug(c_loggingTcpTransport) << CALL_INFO << newState;
     if (newState == QAbstractSocket::ConnectedState) {
         m_expectedLength = 0;
         setSessionType(Unknown);
@@ -183,7 +186,7 @@ void BaseTcpTransport::setState(QAbstractSocket::SocketState newState)
 
 void BaseTcpTransport::onReadyRead()
 {
-    qCDebug(c_loggingTcpTransport) << this << __func__ << m_socket->bytesAvailable();
+    qCDebug(c_loggingTcpTransport) << CALL_INFO << m_socket->bytesAvailable();
     readEvent();
     if (m_sessionType == Unknown) {
         qCCritical(c_loggingTcpTransport) << this << "Unknown session type!";
@@ -208,16 +211,15 @@ void BaseTcpTransport::onReadyRead()
                 m_expectedLength *= 4;
                 m_readBuffer = m_readBuffer.mid(4);
             } else {
-                qCWarning(c_loggingTcpTransport) << this << __func__ << "Invalid packet size byte"
+                qCWarning(c_loggingTcpTransport) << CALL_INFO << "Invalid packet size byte"
                                                  << hex << showbase << length_t1;
                 setError(QAbstractSocket::UnknownSocketError, QStringLiteral("Invalid read operation"));
-                qCDebug(c_loggingTcpTransport) << this << __func__ << "close socket" << m_socket;
                 disconnectFromHost();
                 return;
             }
         }
         if (m_readBuffer.size() < static_cast<int>(m_expectedLength)) {
-            qCDebug(c_loggingTcpTransport) << this << Q_FUNC_INFO << "Ready read, but only "
+            qCDebug(c_loggingTcpTransport) << CALL_INFO << "Ready read, but only "
                                            << m_readBuffer.size() << "bytes available ("
                                            << m_expectedLength << "bytes expected)";
             return;
@@ -225,8 +227,8 @@ void BaseTcpTransport::onReadyRead()
         const QByteArray payload = m_readBuffer.left(static_cast<int>(m_expectedLength));
         m_readBuffer = m_readBuffer.mid(static_cast<int>(m_expectedLength));
         m_expectedLength = 0;
-        qCDebug(c_loggingTcpTransport) << this << Q_FUNC_INFO
-                                         << "Received a packet (" << payload.size() << " bytes)";
+        qCDebug(c_loggingTcpTransport) << CALL_INFO
+                                       << "Received a packet (" << payload.size() << " bytes)";
         emit packetReceived(payload);
     }
 }
@@ -239,11 +241,12 @@ void BaseTcpTransport::onSocketErrorOccurred(QAbstractSocket::SocketError error)
 void BaseTcpTransport::setSocket(QAbstractSocket *socket)
 {
     if (m_socket) {
-        qCCritical(c_loggingTcpTransport()) << this << __func__ << "An attempt to set a socket twice";
+        qCCritical(c_loggingTcpTransport()) << CALL_INFO << "An attempt to set a socket twice";
     }
     m_socket = socket;
     connect(m_socket, &QAbstractSocket::stateChanged, this, &BaseTcpTransport::setState);
-    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(onSocketErrorOccurred(QAbstractSocket::SocketError)));
+    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)),
+            SLOT(onSocketErrorOccurred(QAbstractSocket::SocketError)));
     connect(m_socket, &QIODevice::readyRead, this, &BaseTcpTransport::onReadyRead);
 }
 

@@ -12,7 +12,9 @@ class BasePendingRpcResult : public PendingRpcOperation
 {
     Q_OBJECT
 public:
-    explicit BasePendingRpcResult(BaseRpcLayerExtension *layer, const QByteArray &requestData = QByteArray(), QObject *parent = nullptr);
+    explicit BasePendingRpcResult(BaseRpcLayerExtension *layer,
+                                  const QByteArray &requestData = QByteArray(),
+                                  QObject *parent = nullptr);
 
 protected:
     BaseRpcLayerExtension *m_layer = nullptr;
@@ -22,7 +24,9 @@ template <typename TLTypePtr>
 class PendingRpcResult : public BasePendingRpcResult
 {
 public:
-    explicit PendingRpcResult(BaseRpcLayerExtension *layer, const QByteArray &requestData = QByteArray(), QObject *parent = nullptr)
+    explicit PendingRpcResult(BaseRpcLayerExtension *layer,
+                              const QByteArray &requestData = QByteArray(),
+                              QObject *parent = nullptr)
         : BasePendingRpcResult(layer, requestData, parent)
     {
     }

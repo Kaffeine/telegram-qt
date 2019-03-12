@@ -63,7 +63,8 @@ public:
     void disconnectFromServer();
 
 Q_SIGNALS:
-    void statusChanged(Telegram::Client::ConnectionApi::Status status, Telegram::Client::ConnectionApi::StatusReason reason);
+    void statusChanged(Telegram::Client::ConnectionApi::Status status,
+                       Telegram::Client::ConnectionApi::StatusReason reason);
 
 protected:
     Q_DECLARE_PRIVATE_D(d, ConnectionApi)

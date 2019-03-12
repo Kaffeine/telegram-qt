@@ -4,8 +4,10 @@ namespace Telegram {
 
 namespace Client {
 
-BasePendingRpcResult::BasePendingRpcResult(BaseRpcLayerExtension *layer, const QByteArray &requestData, QObject *parent) :
-    PendingRpcOperation(requestData, parent ? parent : layer),
+BasePendingRpcResult::BasePendingRpcResult(BaseRpcLayerExtension *layer,
+                                           const QByteArray &requestData,
+                                           QObject *parent)
+    : PendingRpcOperation(requestData, parent ? parent : layer),
     m_layer(layer)
 {
 }

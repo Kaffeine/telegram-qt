@@ -46,6 +46,19 @@ Frame {
             }
         }
         onPasswordRequired: loginStack.replace("login/EnterPassword.qml")
+
+        onErrorOccurred: {
+            console.log(errorMessage)
+            console.log(errorCode)
+            console.log(Telegram.Namespace.AuthenticationErrorPhoneCodeInvalid)
+            switch (errorCode) {
+            case Telegram.Namespace.AuthenticationErrorPhoneCodeInvalid:
+                loginStack.replace("login/EnterCode.qml")
+                break
+            default:
+                break
+            }
+        }
     }
 
     StackView {

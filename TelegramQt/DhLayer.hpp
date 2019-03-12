@@ -86,7 +86,7 @@ public:
     template <typename T>
     static QByteArray intToBytes(const T value) {
         QByteArray bytes(sizeof(value), Qt::Uninitialized);
-        qToBigEndian<T>(value, (uchar *) bytes.data());
+        qToBigEndian<T>(value, reinterpret_cast<uchar *>(bytes.data()));
         return bytes;
     }
 

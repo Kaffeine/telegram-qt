@@ -60,7 +60,6 @@ bool AppInformation::setAppId(quint32 newId)
     }
 
     m_appId = newId;
-
     return true;
 }
 
@@ -71,7 +70,6 @@ bool AppInformation::setAppHash(const QString &newHash)
     }
 
     m_appHash = newHash;
-
     return true;
 }
 
@@ -82,7 +80,6 @@ bool AppInformation::setAppVersion(const QString &newVersion)
     }
 
     m_appVersion = newVersion;
-
     return true;
 }
 
@@ -93,7 +90,6 @@ bool AppInformation::setDeviceInfo(const QString &newDeviceInfo)
     }
 
     m_deviceInfo = newDeviceInfo;
-
     return true;
 }
 
@@ -104,7 +100,6 @@ bool AppInformation::setOsInfo(const QString &newOsInfo)
     }
 
     m_osInfo = newOsInfo;
-
     return true;
 }
 
@@ -115,7 +110,6 @@ bool AppInformation::setLanguageCode(const QString &newLanguageCode)
     }
 
     m_langCode = newLanguageCode;
-
     return true;
 }
 

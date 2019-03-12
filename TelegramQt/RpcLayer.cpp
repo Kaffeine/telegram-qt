@@ -130,7 +130,7 @@ SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
     QByteArray sha1_d = Utils::sha1(messageKey + authKey.mid(96 + x, 32));
 
     const QByteArray key = sha1_a.mid(0, 8) + sha1_b.mid(8, 12) + sha1_c.mid(4, 12);
-    const QByteArray iv  = sha1_a.mid(8, 12) + sha1_b.mid(0, 8) + sha1_c.mid(16, 4) + sha1_d.mid(0, 8);
+    const QByteArray iv  = sha1_a.mid(8, 12) + sha1_b.left(8) + sha1_c.mid(16, 4) + sha1_d.left(8);
 #else // MTProto_V2
     QByteArray sha256_a = Utils::sha256(messageKey + authKey.mid(x, 36));
     QByteArray sha256_b = Utils::sha256(authKey.mid(40 + x, 36) + messageKey);
@@ -204,7 +204,8 @@ bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
         encryptedPackage = Utils::aesEncrypt(decryptedData, key).left(packageLength);
 
 #ifdef BASE_RPC_IO_DEBUG
-        qCDebug(c_baseRpcLayerCategoryOut) << "authKeyId:" << hex << showbase << m_sendHelper->authId();
+        qCDebug(c_baseRpcLayerCategoryOut) << "authKeyId:"
+                                           << hex << showbase << m_sendHelper->authId();
         qCDebug(c_baseRpcLayerCategoryOut) << "messageKey:" << messageKey.toHex();
         qCDebug(c_baseRpcLayerCategoryOut) << "encryptedData:" << encryptedPackage.toHex();
         qCDebug(c_baseRpcLayerCategoryOut) << "decryptedData:" << decryptedData.toHex();
@@ -271,7 +272,8 @@ bool BaseRpcLayer::processMsgContainer(const MTProto::Message &message)
         QByteArray innerData = stream.readBytes(header.contentLength);
         MTProto::Message innerMessage(header, innerData);
 
-        // There is no break and 'processed' variable goes last, so we process next messages even if something fails.
+        // There is no break and the 'processed' variable goes last,
+        // so we process next messages even if something fails.
         processed = processMTProtoMessage(innerMessage) && processed;
     }
     return processed;

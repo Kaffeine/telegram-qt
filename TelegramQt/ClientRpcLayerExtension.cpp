@@ -17,6 +17,7 @@
 
 #include "ClientRpcLayerExtension_p.hpp"
 #include "CTelegramStream.hpp"
+#include "Debug_p.hpp"
 #include "PendingRpcOperation.hpp"
 #include "Utils.hpp"
 
@@ -35,12 +36,14 @@ BaseRpcLayerExtension::BaseRpcLayerExtension(QObject *parent) :
 {
 }
 
-void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream, PendingRpcOperation *operation)
+void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream,
+                                               PendingRpcOperation *operation)
 {
     // TODO: Implement static isValid(TLValue::Value) method for TLTypes and
     // add a generated check that TLType is valid type for the RPC request.
-    // Probably it would be better to hide this method from subclasses by adding a processReply()
-    // reimpl with type-specific code (check for TLType::isValid() and call this method)
+    // Probably it would be better to hide this method from subclasses and
+    // replace it with a processReply() reimpl with type-specific code
+    // (check for TLType::isValid() and call this method)
 
     QByteArray data = operation->replyData();
 
@@ -54,24 +57,29 @@ void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream, PendingRp
         }
     }
 #ifdef DUMP_CLIENT_RPC_PACKETS
-    qCDebug(c_clientRpcLayerExtensionCategory).noquote() << "BaseRpcLayerExtension: RPC Reply bytes:" << data.size() << data.toHex();
+    qCDebug(c_clientRpcLayerExtensionCategory).noquote() << "BaseRpcLayerExtension: RPC Reply bytes:"
+                                                         << data.size() << data.toHex();
 #endif
     stream->setData(data);
 }
 
 void BaseRpcLayerExtension::setRpcProcessingMethod(RpcProcessingMethod sendMethod)
 {
-    qCDebug(c_clientRpcLayerExtensionCategory) << this << "update processing method";
+    qCDebug(c_clientRpcLayerExtensionCategory) << CALL_INFO << "update processing method";
     m_processingMethod = sendMethod;
 }
 
 void BaseRpcLayerExtension::processRpcCall(PendingRpcOperation *operation)
 {
-    qCDebug(c_clientRpcLayerExtensionCategory) << this << "process" << operation << TLValue::firstFromArray(operation->requestData());
+    qCDebug(c_clientRpcLayerExtensionCategory) << CALL_INFO
+                                               << "process" << operation
+                                               << TLValue::firstFromArray(operation->requestData());
     if (m_processingMethod) {
         m_processingMethod(operation);
     } else {
-        qCWarning(c_clientRpcLayerExtensionCategory) << Q_FUNC_INFO << this << operation << TLValue::firstFromArray(operation->requestData()) << "is not processed";
+        qCWarning(c_clientRpcLayerExtensionCategory) << CALL_INFO
+                                                     << "unable to process" << operation
+                                                     << TLValue::firstFromArray(operation->requestData());
     }
 }
 

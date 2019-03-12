@@ -98,7 +98,8 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         processIgnoredMessageNotification(message.skipTLValue());
         break;
     case TLValue::GzipPacked:
-        qCWarning(c_clientRpcLayerCategory) << "processGzipPackedRpcQuery() // should be processed in the base class";
+        qCWarning(c_clientRpcLayerCategory) << CALL_INFO
+                                            << "GzipPacked should be processed in the base class";
         break;
     case TLValue::Pong:
     {
@@ -136,8 +137,10 @@ bool RpcLayer::processRpcResult(const MTProto::Message &message)
     op->setFinishedWithReplyData(stream.readAll());
 #define DUMP_CLIENT_RPC_PACKETS
 #ifdef DUMP_CLIENT_RPC_PACKETS
-    qCDebug(c_clientRpcLayerCategory) << "Client: Answer for message" << messageId << "op:" << op;
-    qCDebug(c_clientRpcLayerCategory).noquote() << "Client: RPC Reply bytes:" << op->replyData().size() << op->replyData().toHex();
+    qCDebug(c_clientRpcLayerCategory) << "Client: Answer for message"
+                                      << messageId << "op:" << op;
+    qCDebug(c_clientRpcLayerCategory).noquote() << "Client: RPC Reply bytes:"
+                                                << op->replyData().size() << op->replyData().toHex();
 #endif
     qCDebug(c_clientRpcLayerCategory) << "processRpcQuery():" << "Set finished op" << op
                                       << "messageId:" << hex << showbase << messageId
@@ -179,11 +182,11 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
     // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
     MTProto::IgnoredMessageNotification notification;
     stream >> notification;
-    qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification():" << notification.toString();
+    qCDebug(c_clientRpcLayerCategory) << CALL_INFO << notification.toString();
 
     MTProto::Message *m = m_messages.value(notification.messageId);
     if (!m) {
-        qCWarning(c_clientRpcLayerCategory) << "Received 'ignored' message notification "
+        qCWarning(c_clientRpcLayerCategory) << CALL_INFO
                                             << notification.toString() << "for unknown message id"
                                             << hex << showbase << notification.messageId;
         return;
@@ -199,7 +202,8 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
         resendIgnoredMessage(notification.messageId);
         break;
     case MTProto::IgnoredMessageNotification::SequenceNumberTooHigh:
-        qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooHigh): reduce seq num"
+        qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooHigh):"
+                                             " reduce seq num"
                                           << hex << showbase
                                           << " from" << m->sequenceNumber
                                           << " to" << (m->sequenceNumber - 2);
@@ -207,7 +211,8 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
         resendIgnoredMessage(notification.messageId);
         break;
     case MTProto::IgnoredMessageNotification::SequenceNumberTooLow:
-        qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooLow): increase seq num"
+        qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooLow):"
+                                             " increase seq num"
                                           << hex << showbase
                                           << " from" << m->sequenceNumber
                                           << " to" << (m->sequenceNumber + 2);
@@ -221,7 +226,8 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
         resendIgnoredMessage(notification.messageId);
         break;
     case MTProto::IgnoredMessageNotification::IncorrectTwoLowerOrderMessageIdBits:
-        qCCritical(c_clientRpcLayerCategory) << "How we ever managed to mess with lower messageId bytes?!";
+        qCCritical(c_clientRpcLayerCategory) << "How we ever managed to mess with"
+                                                " the lower messageId bytes?!";
         // Just resend the message. We regenerate message id, so it can help.
         resendIgnoredMessage(notification.messageId);
         break;
@@ -235,7 +241,8 @@ bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &h
 {
     if (serverSalt() != header.serverSalt) {
         qCDebug(c_clientRpcLayerCategory).noquote()
-                << QStringLiteral("Received different server salt: %1 (remote) vs %2 (local). Fix local to remote.")
+                << QStringLiteral("Received different server salt: %1 (remote) vs %2 (local)."
+                                  " Fix local to remote.")
                    .arg(toHex(header.serverSalt))
                    .arg(toHex(serverSalt()));
         setServerSalt(header.serverSalt);
@@ -266,7 +273,8 @@ quint64 RpcLayer::sendRpc(PendingRpcOperation *operation)
     message->messageId = m_sendHelper->newMessageId(SendMode::Client);
     if (operation->isContentRelated()) {
         if (m_contentRelatedMessages == 0) {
-            qCCritical(c_clientRpcLayerCategory) << Q_FUNC_INFO << "First message should be content related!";
+            qCCritical(c_clientRpcLayerCategory) << CALL_INFO
+                                                 << "First message should be content related!";
         }
         message->sequenceNumber = m_contentRelatedMessages * 2 + 1;
         ++m_contentRelatedMessages;
@@ -274,7 +282,8 @@ quint64 RpcLayer::sendRpc(PendingRpcOperation *operation)
         message->sequenceNumber = m_contentRelatedMessages * 2;
     }
 
-    // We have to add InitConnection here because sendPackage() implementation is shared with server
+    // We have to add InitConnection here because
+    // sendPackage() implementation is shared with server
     if (message->sequenceNumber == 1) {
         message->setData(getInitConnection() + operation->requestData());
     } else {
@@ -291,7 +300,9 @@ bool RpcLayer::resendIgnoredMessage(quint64 messageId)
     MTProto::Message *message = m_messages.take(messageId);
     PendingRpcOperation *operation = m_operations.take(messageId);
     if (!operation) {
-        qCCritical(c_clientRpcLayerCategory) << "Unable to find the message to resend" << hex << messageId;
+        qCCritical(c_clientRpcLayerCategory) << CALL_INFO
+                                             << "Unable to find the message to resend"
+                                             << hex << messageId;
         delete message;
         return false;
     }
@@ -327,7 +338,10 @@ void RpcLayer::onConnectionFailed()
 {
     for (PendingRpcOperation *op : m_operations) {
         if (!op->isFinished()) {
-            op->setFinishedWithError({{ PendingOperation::c_text(), QStringLiteral("connection failed")}});
+            op->setFinishedWithError({{
+                                          PendingOperation::c_text(),
+                                          QStringLiteral("connection failed")
+                                      }});
         }
     }
     m_operations.clear();
@@ -338,7 +352,7 @@ void RpcLayer::onConnectionFailed()
 QByteArray RpcLayer::getInitConnection() const
 {
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "layer" << TLValue::CurrentLayer;
+    qCDebug(c_clientRpcLayerCategory) << CALL_INFO << "layer" << TLValue::CurrentLayer;
 #endif
     CTelegramStream outputStream(CTelegramStream::WriteOnly);
     outputStream << TLValue::InvokeWithLayer;

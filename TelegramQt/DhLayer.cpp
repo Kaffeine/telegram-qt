@@ -54,7 +54,7 @@ void BaseDhLayer::setSendPackageHelper(BaseMTProtoSendHelper *helper)
 
 void BaseDhLayer::setServerRsaKey(const RsaKey &key)
 {
-    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << "Set server key:"
+    qCDebug(c_baseDhLayerCategory) << CALL_INFO << "Set server key:"
                                    << key.modulus.toHex() << key.exponent.toHex()
                                    << key.secretExponent.toHex() << key.fingerprint;
     m_rsaKey = key;
@@ -79,7 +79,7 @@ SAesKey BaseDhLayer::generateTmpAesKey() const
             + Utils::sha1(newNonceAndNewNonce)
             + QByteArray(m_newNonce.data, 4);
 
-    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << "key:" << key.toHex() << "iv:" << iv.toHex();
+    qCDebug(c_baseDhLayerCategory) << CALL_INFO << "key:" << key.toHex() << "iv:" << iv.toHex();
 
     return SAesKey(key, iv);
 }
@@ -89,13 +89,17 @@ bool BaseDhLayer::checkClientServerNonse(CTelegramStream &stream) const
     TLNumber128 nonce;
     stream >> nonce;
     if (nonce != m_clientNonce) {
-        qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << "Error: Client nonce in incoming package is different from our own.";
+        qCDebug(c_baseDhLayerCategory) << CALL_INFO
+                                       << "Error: Client nonce in the incoming package"
+                                          " is different from the local one.";
         return false;
     }
 
     stream >> nonce;
     if (nonce != m_serverNonce) {
-        qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << "Error: Client nonce in incoming package is different from our own.";
+        qCDebug(c_baseDhLayerCategory) << CALL_INFO
+                                       << "Error: Server nonce in the incoming package"
+                                          " is different from the local one.";
         return false;
     }
     return true;
@@ -117,7 +121,9 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
     outputStream << messageLength;
     outputStream << payload;
 
-    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << output.mid(0, 8).toHex() << output.mid(8).toHex();
+    qCDebug(c_baseDhLayerCategory) << CALL_INFO
+                                   << output.left(8).toHex()
+                                   << output.mid(8).toHex();
 
 #ifdef NETWORK_LOGGING
     {
@@ -127,7 +133,8 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
 
         QTextStream str(getLogFile());
 
-        str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz")) << QLatin1Char('|');
+        str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz"))
+            << QLatin1Char('|');
         str << QLatin1String("pln|");
         str << QString(QLatin1String("size: %1|")).arg(payload.length(), 4, 10, QLatin1Char('0'));
         str << formatTLValue(val1) << QLatin1Char('|');
@@ -147,7 +154,8 @@ bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
 #ifdef NETWORK_LOGGING
     {
         QTextStream str(getLogFile());
-        str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz")) << QLatin1Char('|');
+        str << QDateTime::currentDateTime().toString(QLatin1String("yyyyMMdd HH:mm:ss:zzz"))
+            << QLatin1Char('|');
         str << QLatin1String("pln|");
         str << QString(QLatin1String("size: %1|")).arg(buffer.length(), 4, 10, QLatin1Char('0'));
         str << QLatin1Char('|');
@@ -166,24 +174,26 @@ bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
     inputStream >> messageId;
     inputStream >> messageLength;
 
-    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << buffer.mid(0, 8).toHex() << buffer.mid(8).toHex();
+    qCDebug(c_baseDhLayerCategory) << CALL_INFO
+                                   << buffer.left(8).toHex()
+                                   << buffer.mid(8).toHex();
     if (inputStream.error()) {
-        qCWarning(c_baseDhLayerCategory) << Q_FUNC_INFO << "Corrupted package (unable to read header)";
+        qCWarning(c_baseDhLayerCategory) << CALL_INFO << "Unable to read header";
         return false;
     }
 
     if (inputStream.bytesAvailable() != int(messageLength)) {
-        qCWarning(c_baseDhLayerCategory) << QStringLiteral("%1::processPlainPackage(): Corrupted package. "
-                                                           "Specified length does not equal to the"
-                                                           " actually available")
-                                            .arg(QString::fromLatin1(metaObject()->className()));
+        qCWarning(c_baseDhLayerCategory) << CALL_INFO
+                                         << "Unable to read packet data. The specified"
+                                            " length does not equal to the actually available";
         return false;
     }
 
     payload = inputStream.readBytes(messageLength);
     qCDebug(c_baseDhLayerCategory) << "read payload:" << messageLength;
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << "new plain package in auth state" << m_state
+    qCDebug(c_baseDhLayerCategory) << CALL_INFO << "new plain package in auth state"
+                                   << m_state
                                    << "payload:" << TLValue::firstFromArray(payload);
 #endif
     processReceivedPacket(payload);
@@ -193,8 +203,7 @@ bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
 void BaseDhLayer::setState(BaseDhLayer::State state)
 {
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_baseDhLayerCategory) << QString::fromLatin1(metaObject()->className())
-                                      + QStringLiteral("::setState(") << state << ")";
+    qCDebug(c_baseDhLayerCategory) << CALL_INFO << state;
 #endif
     if (m_state == state) {
         return;
@@ -210,10 +219,10 @@ QFile *BaseDhLayer::getLogFile()
         QDir dir;
         dir.mkdir(QLatin1String("network"));
 
-        m_logFile = new QFile(QLatin1String("network/") + QString::number(long(this), 0x10) + QLatin1String(".log"));
+        m_logFile = new QFile(QLatin1String("network/%1.log").arg(ulong(this), 0, 0x10));
         m_logFile->open(QIODevice::WriteOnly);
     }
-    //qDebug() << Q_FUNC_INFO << m_dcInfo.id << m_dcInfo.ipAddress << m_transport->state();
+    //qDebug() << CALL_INFO << m_dcInfo.id << m_dcInfo.ipAddress << m_transport->state();
     return  m_logFile;
 }
 #endif

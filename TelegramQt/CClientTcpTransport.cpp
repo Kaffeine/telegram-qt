@@ -18,6 +18,7 @@
 #include "AesCtr.hpp"
 #include "CClientTcpTransport.hpp"
 #include "CRawStream.hpp"
+#include "Debug_p.hpp"
 #include "RandomGenerator.hpp"
 #include "TelegramNamespace.hpp"
 
@@ -48,7 +49,7 @@ TcpTransport::TcpTransport(QObject *parent) :
 
 TcpTransport::~TcpTransport()
 {
-    qCDebug(c_loggingTranport) << this << __func__;
+    qCDebug(c_loggingTranport) << CALL_INFO;
 }
 
 void TcpTransport::connectToHost(const QString &ipAddress, quint16 port)
@@ -65,7 +66,7 @@ void TcpTransport::connectToHost(const QString &ipAddress, quint16 port)
                     + QLatin1Char('@') + proxyStr;
         }
     }
-    qCDebug(c_loggingTranport).noquote().nospace() << this << ' ' << __func__
+    qCDebug(c_loggingTranport).noquote().nospace() << CALL_INFO
                                                    << '(' << ipAddress << ':' << port << ") "
                                                    << "proxy: " << proxyStr;
 
@@ -79,7 +80,7 @@ void TcpTransport::setPreferedSessionType(const BaseTcpTransport::SessionType se
 
 void TcpTransport::startObfuscatedSession()
 {
-    qCDebug(c_loggingTranport) << "Start the session in Obfuscated format";
+    qCDebug(c_loggingTranport) << CALL_INFO << "Start the session in Obfuscated format";
     // prepare random part
     const QVector<quint32> headerFirstWordBlackList = {
         0x44414548u, 0x54534f50u, 0x20544547u, 0x20544547u, c_intermediateVersionBytes,
@@ -92,7 +93,9 @@ void TcpTransport::startObfuscatedSession()
     // The first word must not concide with any of the previously known session first bytes
     do {
         first4Bytes = RandomGenerator::instance()->generate<quint32>();
-    } while (headerFirstWordBlackList.contains(first4Bytes) || ((first4Bytes & 0xffu) == c_abridgedVersionByte));
+    } while (headerFirstWordBlackList.contains(first4Bytes)
+             || ((first4Bytes & 0xffu) == c_abridgedVersionByte)
+             );
 
     quint32 next4Bytes;
     // The same about the second word.
@@ -130,7 +133,7 @@ void TcpTransport::startAbridgedSession()
 bool TcpTransport::setProxy(const QNetworkProxy &proxy)
 {
     if (m_socket->isOpen()) {
-        qCWarning(c_loggingTranport) << Q_FUNC_INFO << "Unable to set proxy on open socket";
+        qCWarning(c_loggingTranport) << CALL_INFO << "Unable to set proxy on open socket";
         return false;
     }
     m_socket->setProxy(proxy);
@@ -155,12 +158,12 @@ void TcpTransport::setState(QAbstractSocket::SocketState newState)
 
 void TcpTransport::onTimeout()
 {
-    qCDebug(c_loggingTranport) << this << __func__
-                                   << "socket state:" << m_socket->state()
-                                   << "peer:" << m_socket->peerName() << m_socket->peerPort()
-                                   << "local port:" << m_socket->localPort();
+    qCDebug(c_loggingTranport) << CALL_INFO
+                               << "socket state:" << m_socket->state()
+                               << "peer:" << m_socket->peerName() << m_socket->peerPort()
+                               << "local port:" << m_socket->localPort();
     emit timeout();
-    qCDebug(c_loggingTranport) << this << __func__ << "close socket" << m_socket;
+    qCDebug(c_loggingTranport) << CALL_INFO << "close socket" << m_socket;
     m_socket->disconnectFromHost();
 }
 
@@ -178,7 +181,10 @@ void TcpTransport::writeEvent()
         startAbridgedSession();
         break;
     default:
-        qCCritical(c_loggingTranport) << Q_FUNC_INFO << "The selected session type" << m_preferedSessionType << "is not supported";
+        qCCritical(c_loggingTranport) << CALL_INFO
+                                      << "The selected session type"
+                                      << m_preferedSessionType
+                                      << "is not supported";
         break;
     }
 }

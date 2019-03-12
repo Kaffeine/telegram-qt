@@ -1,4 +1,6 @@
 #include "AccountStorage.hpp"
+
+#include "Debug_p.hpp"
 #include "LegacySecretReader.hpp"
 #include "CRawStream.hpp"
 
@@ -37,7 +39,7 @@ public:
     static const QByteArray c_signature;
 };
 
-const QByteArray AccountStoragePrivate::c_signature = QByteArrayLiteral("TelegramQt_account");
+const QByteArray AccountStoragePrivate::c_signature = "TelegramQt_account";
 
 /*!
     \class Telegram::Client::AccountStorage
@@ -91,8 +93,9 @@ void AccountStorage::setPhoneNumber(const QString &phoneNumber) const
 bool AccountStorage::invalidateAuthKey(quint64 authId)
 {
     const bool hasKey = d->m_authId == authId;
-    qCWarning(c_clientAccountStorage) << __func__ << "Invalidate auth key"
-                                      << hex << showbase << authId << "(" << hasKey << ")";
+    qCWarning(c_clientAccountStorage) << CALL_INFO << "Invalidate auth key"
+                                      << hex << showbase << authId
+                                      << "(" << hasKey << ")";
     if (!hasKey) {
         return false;
     }
@@ -208,7 +211,9 @@ QString FileAccountStorage::getLocalFileName() const
     }
     const QUrl fileUrl = QUrl::fromUserInput(d->m_fileName);
     if (!fileUrl.isLocalFile()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a local file" << d->m_fileName;
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "The file is not a local file"
+                                          << d->m_fileName;
         return QString();
     }
     return fileUrl.toLocalFile();
@@ -225,18 +230,23 @@ bool FileAccountStorage::saveData() const
     Q_D(const FileAccountStorage);
     const QString localFileName = getLocalFileName();
     if (localFileName.isEmpty()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Invalid fileName" << d->m_fileName;
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "Invalid fileName"
+                                          << d->m_fileName;
         return false;
     }
     const QFileInfo fileInfo(localFileName);
     if (!QDir().mkpath(fileInfo.absolutePath())) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to create output directory" << fileInfo.absolutePath();
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "Unable to create output directory"
+                                          << fileInfo.absolutePath();
         return false;
     }
 
     QFile file(localFileName);
     if (!file.open(QIODevice::WriteOnly)) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to open file" << fileName();
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "Unable to open file" << fileName();
         return false;
     }
     CRawStreamEx stream(&file);
@@ -250,7 +260,9 @@ bool FileAccountStorage::saveData() const
     stream << d->m_authId;
     stream << d->m_sessionId;
     stream << d->m_contentRelatedMessagesNumber;
-    qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "Saved key" << QString::number(authId(), 0x10);
+    qCDebug(c_clientAccountStorage) << CALL_INFO
+                                    << "Saved key"
+                                    << QString::number(authId(), 0x10);
     return true;
 }
 
@@ -259,24 +271,30 @@ bool FileAccountStorage::loadData()
     Q_D(FileAccountStorage);
     const QString localFileName = getLocalFileName();
     if (localFileName.isEmpty()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Invalid fileName" << d->m_fileName;
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "Invalid fileName" << d->m_fileName;
         return false;
     }
     QFile file(localFileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to open file" << d->m_fileName;
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "Unable to open file" << d->m_fileName;
         return false;
     }
     CRawStreamEx stream(&file);
     QByteArray signature = stream.readBytes(AccountStoragePrivate::c_signature.size());
     if (signature != AccountStoragePrivate::c_signature) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file is not a Telegram secret file (unknown signature)";
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "The file is not a Telegram secret file"
+                                             " (unknown signature)";
         return false;
     }
     quint32 format = 0;
     stream >> format;
     if (format > AccountStoragePrivate::c_formatVersion) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "The file format version is unknown" << format;
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "The file format version is unknown"
+                                          << format;
         return false;
     }
     stream >> d->m_deltaTime;
@@ -290,7 +308,8 @@ bool FileAccountStorage::loadData()
     stream >> d->m_sessionId;
     stream >> d->m_contentRelatedMessagesNumber;
 
-    qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "Loaded key" << QString::number(authId(), 0x10);
+    qCDebug(c_clientAccountStorage) << CALL_INFO
+                                    << "Loaded key" << QString::number(authId(), 0x10);
     return !stream.error();
 }
 
@@ -298,23 +317,28 @@ bool FileAccountStorage::clearData()
 {
     Q_D(const FileAccountStorage);
     if (d->m_fileName.isEmpty()) {
-        qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "File name is not set";
+        qCDebug(c_clientAccountStorage) << CALL_INFO
+                                        << "File name is not set";
         return false;
     }
     const QString localFileName = getLocalFileName();
     if (localFileName.isEmpty()) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Invalid fileName" << d->m_fileName;
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "Invalid fileName" << d->m_fileName;
         return false;
     }
     const QFileInfo fileInfo(localFileName);
     if (!fileInfo.exists()) {
-        qCDebug(c_clientAccountStorage) << Q_FUNC_INFO << "The file does not exist";
+        qCDebug(c_clientAccountStorage) << CALL_INFO
+                                        << "The file does not exist";
         // Not an error
         return true;
     }
 
     if (!QFile::remove(fileInfo.absoluteFilePath())) {
-        qCWarning(c_clientAccountStorage) << Q_FUNC_INFO << "Unable to delete file" << fileInfo.absoluteFilePath();
+        qCWarning(c_clientAccountStorage) << CALL_INFO
+                                          << "Unable to delete file"
+                                          << fileInfo.absoluteFilePath();
         return false;
     }
     return true;

@@ -106,7 +106,7 @@ ConnectOperation *Connection::connectToDc()
         return PendingOperation::failOperation<ConnectOperation>(text, this);
     }
 
-    qCDebug(c_clientConnectionCategory) << this << __func__ << m_dcOption.id << m_dcOption.address << m_dcOption.port;
+    qCDebug(c_clientConnectionCategory) << CALL_INFO << m_dcOption.id << m_dcOption.address << m_dcOption.port;
 
     if (m_transport->state() != QAbstractSocket::UnconnectedState) {
         m_transport->disconnectFromHost(); // Ensure that there is no connection
@@ -125,20 +125,20 @@ void Connection::processSeeOthers(PendingRpcOperation *operation)
         connectToDc();
     }
     if (m_dhLayer->state() != DhLayer::State::HasKey) {
-        qCDebug(c_clientConnectionCategory) << this << __func__
+        qCDebug(c_clientConnectionCategory) << CALL_INFO
                                             << "queue operation:" << TLValue::firstFromArray(operation->requestData());
         m_queuedOperations.append(operation);
         return;
     }
     quint64 messageId = rpcLayer()->sendRpc(operation);
-    qCDebug(c_clientConnectionCategory) << this << __func__
+    qCDebug(c_clientConnectionCategory) << CALL_INFO
                                         << TLValue::firstFromArray(operation->requestData())
                                         << "sent with new id" << messageId;
 }
 
 void Connection::onClientDhStateChanged()
 {
-    qCDebug(c_clientConnectionCategory) << this << __func__
+    qCDebug(c_clientConnectionCategory) << CALL_INFO
                                         << m_dcOption.id << m_dcOption.address << "DH status:" << m_dhLayer->state();
     if (m_dhLayer->state() == BaseDhLayer::State::HasKey) {
         if (!m_rpcLayer->sessionId()) {
