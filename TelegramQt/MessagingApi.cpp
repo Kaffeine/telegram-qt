@@ -157,6 +157,12 @@ MessagesOperation *MessagingApiPrivate::getHistory(const Peer peer, const Telegr
     return apiOp;
 }
 
+/*!
+    \class Telegram::Client::MessagingApi
+    \brief Provides an API to work with messages
+    \inmodule TelegramQt
+    \ingroup Client
+ */
 MessagingApi::MessagingApi(QObject *parent) :
     ClientApi(parent)
 {

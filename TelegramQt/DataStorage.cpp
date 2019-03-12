@@ -32,7 +32,8 @@ namespace Client {
 
 /*!
     \class Telegram::Client::DataStorage
-    \brief Provides public API to get data
+    \brief Provides public API to get data.
+
     \inmodule TelegramQt
     \ingroup Client
 

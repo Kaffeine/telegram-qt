@@ -147,6 +147,13 @@ void ContactsApiPrivate::onSelfUserResult(PendingOperation *operation, UsersRpcL
     operation->setFinished();
 }
 
+/*!
+    \class Telegram::Client::ContactsApi
+    \brief Provides an API to work with contacts.
+
+    \inmodule TelegramQt
+    \ingroup Client
+ */
 ContactsApi::ContactsApi(QObject *parent) :
     ClientApi(parent)
 {

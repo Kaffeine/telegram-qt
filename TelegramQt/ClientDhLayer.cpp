@@ -34,9 +34,9 @@ namespace Telegram {
 
 namespace Client {
 
-/*!
+/*
     \class Telegram::Client::DhLayer
-    \brief The client implementation of Diffie-Hellman encryption
+    \brief The client implementation of Diffie-Hellman encryption.
     \inmodule TelegramQt
     \ingroup Client
 

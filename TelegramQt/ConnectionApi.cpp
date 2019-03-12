@@ -147,7 +147,7 @@ PendingOperation *ConnectionApiPrivate::connectToDc(quint32 dcId)
     return m_initialConnectOperation;
 }
 
-/*! \fn PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> &dcOptions)
+/*!
   Establish a connection to any of the given \a dcOptions
 
   Operation fails only in case of incorrect setup.
@@ -337,8 +337,6 @@ QVariantHash ConnectionApiPrivate::getBackendSetupErrorDetails() const
 }
 
 /*!
-  \fn Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
-
   The method constructs new Connection ready to connect to the passed server address.
 */
 Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
@@ -649,10 +647,32 @@ const char *ConnectionApi::reconnectionIntervalsEnvironmentVariableName()
 
 /*!
     \class Telegram::Client::ConnectionApi
+    \brief Provides an API to work with online status and authentication.
+
     \inmodule TelegramQt
     \ingroup Client
 */
 
+/*!
+    \enum Telegram::Client::ConnectionApi::Status
+
+    This enumeration describes the current state of connection.
+
+    \value StatusDisconnected
+        There is no active or pending connection.
+    \value StatusDisconnecting
+        Disconnection is requested, but not proceeded yet.
+    \value StatusWaitForConnection
+        A connection is requested, but we have to wait for some time before connect.
+    \value StatusConnecting
+        Connection is in progress.
+    \value StatusWaitForAuthentication
+        An encrypted connection is established, but the user is not authenticated yet.
+    \value StatusConnected
+        Connection established, but synchronization is not completed yet.
+    \value StatusReady
+        The user is authenticated and the initial synchronization finished.
+ */
 ConnectionApi::ConnectionApi(QObject *parent) :
     ClientApi(parent)
 {
@@ -683,8 +703,8 @@ Telegram::Client::AuthOperation *ConnectionApi::startAuthentication()
     return d->startAuthentication();
 }
 
-/*! \fn AuthOperation *ConnectionApi::checkIn()
-  High level API for establishing the main connection needed for the most of RPC calls
+/*!
+  High level API for establishing the main connection needed for the most of RPC calls.
 
   The operation succeed on connection established and server confirmed the session data.
   The typical reasons to fail are:

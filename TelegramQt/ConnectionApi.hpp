@@ -39,11 +39,11 @@ public:
     enum Status {
         StatusDisconnected,
         StatusDisconnecting,
-        StatusWaitForConnection, // Wait for some time before the try to connect
+        StatusWaitForConnection,
         StatusConnecting,
-        StatusWaitForAuthentication, // Has active DH connection and has DC config
+        StatusWaitForAuthentication,
         StatusConnected,
-        StatusReady // Authenticated and got initial data
+        StatusReady
     };
     Q_ENUM(Status)
 

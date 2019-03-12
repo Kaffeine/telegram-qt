@@ -46,9 +46,9 @@ public:
     }
 };
 
-/*!
+/*
     \class Telegram::Client::Connection
-    \brief Client-specific connection with DH and RPC layers
+    \brief Client-specific connection with DH and RPC layers.
     \inmodule TelegramQt
     \ingroup Client
 */
