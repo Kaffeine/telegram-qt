@@ -24,16 +24,14 @@
 #include <QVector>
 #include <QStringList>
 
-class CAppInformation;
-
 namespace Telegram {
 
 namespace Client {
 
+class AppInformation;
 class Settings;
 class DataStorage;
 class AccountStorage;
-using AppInformation = ::CAppInformation;
 
 class ConnectionApi;
 class ContactsApi;

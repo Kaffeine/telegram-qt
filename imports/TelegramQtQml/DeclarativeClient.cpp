@@ -18,7 +18,7 @@ DeclarativeClient::DeclarativeClient(QObject *parent) :
     connect(m_client, &Client::signedInChanged, this, &DeclarativeClient::signedInChanged);
 }
 
-CAppInformation *DeclarativeClient::appInformation() const
+AppInformation *DeclarativeClient::appInformation() const
 {
     return m_client->appInformation();
 }
@@ -38,7 +38,7 @@ DataStorage *DeclarativeClient::dataStorage() const
     return m_client->dataStorage();
 }
 
-void DeclarativeClient::setAppInformation(CAppInformation *newAppInfo)
+void DeclarativeClient::setAppInformation(AppInformation *newAppInfo)
 {
     m_client->setAppInformation(newAppInfo);
 }

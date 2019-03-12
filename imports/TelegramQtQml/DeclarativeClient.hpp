@@ -5,12 +5,11 @@
 
 #include "telegramqt_qml_global.h"
 
-class CAppInformation;
-
 namespace Telegram {
 
 namespace Client {
 
+class AppInformation;
 class Client;
 class DeclarativeSettings;
 class AccountStorage;
@@ -19,7 +18,7 @@ class DataStorage;
 class TELEGRAMQT_QML_EXPORT DeclarativeClient : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(CAppInformation *applicationInformation READ appInformation WRITE setAppInformation)
+    Q_PROPERTY(AppInformation *applicationInformation READ appInformation WRITE setAppInformation)
     Q_PROPERTY(bool signedIn READ isSignedIn NOTIFY signedInChanged)
     Q_PROPERTY(Telegram::Client::DeclarativeSettings *settings READ settings WRITE setSettings NOTIFY settingsChanged)
     Q_PROPERTY(Telegram::Client::AccountStorage *accountStorage READ accountStorage WRITE setAccountStorage NOTIFY accountStorageChanged)
@@ -27,7 +26,7 @@ class TELEGRAMQT_QML_EXPORT DeclarativeClient : public QObject
 public:
     explicit DeclarativeClient(QObject *parent = nullptr);
 
-    CAppInformation *appInformation() const;
+    AppInformation *appInformation() const;
 
     bool isSignedIn() const;
     Client *client() { return m_client; }
@@ -37,7 +36,7 @@ public:
     DataStorage *dataStorage() const;
 
 public slots:
-    void setAppInformation(CAppInformation *newAppInfo);
+    void setAppInformation(AppInformation *newAppInfo);
     void setSettings(DeclarativeSettings *settings);
     void setAccountStorage(AccountStorage *storage);
     void setDataStorage(DataStorage *storage);

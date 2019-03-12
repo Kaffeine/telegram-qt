@@ -23,7 +23,6 @@
 #include <QHash>
 #include <QVector>
 
-class CAppInformation;
 class CTelegramStream;
 
 namespace Telegram {
@@ -34,10 +33,9 @@ struct Message;
 
 } // MTProto namespace
 
-class AppInformation;
-
 namespace Client {
 
+class AppInformation;
 class AuthOperation;
 class PendingRpcOperation;
 class UpdatesInternalApi;
@@ -48,8 +46,8 @@ class RpcLayer : public Telegram::BaseRpcLayer
 public:
     explicit RpcLayer(QObject *parent = nullptr);
 
-    CAppInformation *appInformation() const { return m_appInfo; }
-    void setAppInformation(CAppInformation *appInfo);
+    AppInformation *appInformation() const { return m_appInfo; }
+    void setAppInformation(AppInformation *appInfo);
 
     void installUpdatesHandler(UpdatesInternalApi *updatesHandler);
 
@@ -87,7 +85,7 @@ protected:
 
     void addMessageToAck(quint64 messageId);
 
-    CAppInformation *m_appInfo = nullptr;
+    AppInformation *m_appInfo = nullptr;
     UpdatesInternalApi *m_UpdatesInternalApi = nullptr;
     AuthOperation *m_pendingAuthOperation = nullptr;
     QHash<quint64, PendingRpcOperation*> m_operations; // request message id, operation

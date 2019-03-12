@@ -7,8 +7,6 @@
 #include "TelegramNamespace.hpp"
 #include "DcConfiguration.hpp"
 
-class CAppInformation;
-
 namespace Telegram {
 
 class PendingOperation;
@@ -16,11 +14,11 @@ struct DcOption;
 
 namespace Client {
 
+class AppInformation;
 class Connection;
 class Client;
 class Settings;
 class AccountStorage;
-using AppInformation = ::CAppInformation;
 class DataStorage;
 class ConnectionApi;
 class ContactsApi;

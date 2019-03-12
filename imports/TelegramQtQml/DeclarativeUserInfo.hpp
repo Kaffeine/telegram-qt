@@ -3,8 +3,6 @@
 
 #include "DeclarativeClientOperator.hpp"
 
-class CAppInformation;
-
 namespace Telegram {
 
 namespace Client {

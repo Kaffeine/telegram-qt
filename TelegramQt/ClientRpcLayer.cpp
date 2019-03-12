@@ -42,7 +42,7 @@ RpcLayer::RpcLayer(QObject *parent) :
 {
 }
 
-void RpcLayer::setAppInformation(CAppInformation *appInfo)
+void RpcLayer::setAppInformation(AppInformation *appInfo)
 {
     m_appInfo = appInfo;
 }

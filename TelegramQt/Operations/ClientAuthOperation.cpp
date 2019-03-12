@@ -133,7 +133,7 @@ PendingOperation *AuthOperationPrivate::requestAuthCode()
 {
     Q_Q(AuthOperation);
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO;
-    const CAppInformation *appInfo = m_backend->m_appInformation;
+    const AppInformation *appInfo = m_backend->m_appInformation;
     if (!appInfo) {
         const QString text = QStringLiteral("Unable to request auth code, "
                                             "because the application information is not set");

@@ -4,8 +4,6 @@
 #include "DeclarativeClientOperator.hpp"
 #include "TelegramNamespace.hpp"
 
-class CAppInformation;
-
 namespace Telegram {
 
 namespace Client {

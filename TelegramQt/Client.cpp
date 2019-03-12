@@ -26,13 +26,13 @@ bool Client::isSignedIn() const
     return d->isSignedIn();
 }
 
-CAppInformation *Client::appInformation() const
+AppInformation *Client::appInformation() const
 {
     Q_D(const Client);
     return d->m_appInformation;
 }
 
-void Client::setAppInformation(CAppInformation *newAppInfo)
+void Client::setAppInformation(AppInformation *newAppInfo)
 {
     Q_D(Client);
     d->m_appInformation = newAppInfo;

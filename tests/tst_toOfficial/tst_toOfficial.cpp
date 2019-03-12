@@ -44,11 +44,11 @@
 
 using namespace Telegram;
 
-CAppInformation *getAppInfo()
+Client::AppInformation *getAppInfo()
 {
-    static CAppInformation *appInfo = nullptr;
+    static Client::AppInformation *appInfo = nullptr;
     if (!appInfo) {
-        appInfo = new CAppInformation();
+        appInfo = new Client::AppInformation();
         appInfo->setAppId(14617);
         appInfo->setAppHash(QLatin1String("e17ac360fd072f83d5d08db45ce9a121"));
         appInfo->setAppVersion(QLatin1String("0.1"));
