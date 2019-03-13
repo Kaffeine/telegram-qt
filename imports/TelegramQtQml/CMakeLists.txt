@@ -2,6 +2,8 @@ project(TelegramQtQml)
 
 find_package(Qt5 COMPONENTS Core Qml REQUIRED)
 
+add_definitions(-DTELEGRAMQT_QML_LIBRARY)
+
 add_definitions(-DQT_DEPRECATED_WARNINGS)
 add_definitions(-DQT_NO_CAST_FROM_ASCII)
 
@@ -12,15 +14,35 @@ if (NOT INSTALL_QML_IMPORT_DIR)
     set(INSTALL_QML_IMPORT_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/qml)
 endif()
 
-add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED plugin.cpp)
+add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED
+    DeclarativeChatInfo.cpp
+    DeclarativeChatInfo.hpp
+    DeclarativeClient.cpp
+    DeclarativeClient.hpp
+    DeclarativeClientOperator.cpp
+    DeclarativeClientOperator.hpp
+    DeclarativeMessageSender.cpp
+    DeclarativeMessageSender.hpp
+    DeclarativeOperation.cpp
+    DeclarativeOperation.hpp
+    DeclarativeAuthOperation.cpp
+    DeclarativeAuthOperation.hpp
+    DeclarativeSettings.cpp
+    DeclarativeSettings.hpp
+    DeclarativeUserInfo.cpp
+    DeclarativeUserInfo.hpp
+)
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
     Qt5::Core
     Qt5::Qml
 )
 
-target_include_directories(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
-    ${QT5_INCLUDES}
+target_include_directories(TelegramQt${QT_VERSION_MAJOR}Qml
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+    PRIVATE
+        ${QT5_INCLUDES}
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
@@ -32,11 +54,32 @@ target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
 set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
 set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_LIBDIR})
 
+set_target_properties(
+    TelegramQt${QT_VERSION_MAJOR}Qml PROPERTIES
+    SOVERSION ${TELEGRAM_QT_ABI}
+    VERSION ${TELEGRAM_QT_VERSION}
+)
+
 install(
     TARGETS TelegramQt${QT_VERSION_MAJOR}Qml
-    LIBRARY DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
+    LIBRARY DESTINATION ${TELEGRAM_QT_LIB_DIR}
     COMPONENT Library
 )
 
-install(TARGETS TelegramQt${QT_VERSION_MAJOR}Qml DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt)
-install(FILES qmldir plugins.qmltypes DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt)
+add_library(TelegramQmlPlugin SHARED plugin.cpp)
+
+target_link_libraries(TelegramQmlPlugin
+    Qt5::Core
+    Qt5::Qml
+    TelegramQt${QT_VERSION_MAJOR}Qml
+)
+
+install(
+    TARGETS TelegramQmlPlugin
+    LIBRARY DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
+)
+
+install(
+    FILES qmldir plugins.qmltypes
+    DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
+)

@@ -1,0 +1,16 @@
+#ifndef CLIENT_MESSAGES_OPERATION
+#define CLIENT_MESSAGES_OPERATION
+
+#include "PendingMessages"
+
+namespace Telegram {
+
+namespace Client {
+
+using MessagesOperation = PendingMessages;
+
+} // Client namespace
+
+} // Telegram namespace
+
+#endif // CLIENT_MESSAGES_OPERATION

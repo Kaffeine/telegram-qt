@@ -1,5 +1,33 @@
 /*!
    \module TelegramQt
    \title TelegramQt C++ Classes
-   \brief Provides C++ API for Telegram protocol
+   \brief Provides C++ API for Telegram protocol.
+*/
+
+/*!
+    \namespace Telegram
+    \inmodule TelegramQt
+
+    \brief Contains all TelegramQt classes.
+*/
+
+/*!
+    \namespace Telegram::Crypto
+    \inmodule TelegramQt
+
+    \brief Contains cryptographic utils and classes.
+*/
+
+/*!
+    \namespace Telegram::Client
+    \inmodule TelegramQt
+
+    \brief Contains client-specific utils and classes.
+*/
+
+/*!
+    \group Client
+    \title Client
+
+    \brief These classes are related to the Client implementation.
 */

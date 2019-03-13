@@ -20,42 +20,71 @@
 
 #include "CTelegramTransport.hpp"
 
-QT_FORWARD_DECLARE_CLASS(QTimer)
+class CRawStream;
 
-class CTcpTransport : public CTelegramTransport
+namespace Telegram {
+
+namespace Crypto {
+
+class AesCtrContext;
+
+} // Crypto namespace
+
+class TELEGRAMQT_INTERNAL_EXPORT BaseTcpTransport : public BaseTransport
 {
     Q_OBJECT
 public:
     enum SessionType {
         Unknown,
         Abridged, // char(0xef)
-        FullSize
+        FullSize,
+        Obfuscated,
+        Default = Unknown,
     };
     Q_ENUM(SessionType)
+    enum SourceRevertion {
+        DirectIsWriteReversedIsRead,
+        DirectIsReadReversedIsWrite,
+    };
 
-    explicit CTcpTransport(QObject *parent = nullptr);
-    ~CTcpTransport();
+    explicit BaseTcpTransport(QObject *parent = nullptr);
+    ~BaseTcpTransport() override;
 
-    void connectToHost(const QString &ipAddress, quint32 port) override;
+    static int connectionTimeout();
+
+    QString remoteAddress() const override;
+
     void disconnectFromHost() override;
+
+    SessionType sessionType() const;
 
 protected slots:
     void setState(QAbstractSocket::SocketState newState) override;
     void onReadyRead();
-    void onTimeout();
+
+    void onSocketErrorOccurred(QAbstractSocket::SocketError error);
 
 protected:
     void setSocket(QAbstractSocket *socket);
-    void sendPackageImplementation(const QByteArray &payload) override;
+    void sendPacketImplementation(const QByteArray &payload) override;
 
     void setSessionType(SessionType sessionType);
+    void resetCryptoKeys();
+    void setCryptoKeysSourceData(const QByteArray &source, SourceRevertion revertion);
 
     quint32 m_packetNumber = 0;
     quint32 m_expectedLength = 0;
     SessionType m_sessionType = Unknown;
 
     QAbstractSocket *m_socket = nullptr;
-    QTimer *m_timeoutTimer = nullptr;
+    QByteArray m_readBuffer;
+    Telegram::Crypto::AesCtrContext *m_readAesContext = nullptr;
+    Telegram::Crypto::AesCtrContext *m_writeAesContext = nullptr;
+
+public:
+    static const char *timeoutEnvironmentVariableName();
 };
+
+} // Telegram namespace
 
 #endif // CTCPTRANSPORT_HPP

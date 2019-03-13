@@ -20,9 +20,13 @@
 
 #include "telegramqt_global.h"
 
-#include "TelegramNamespace.hpp"
-
 #include <QDebug>
+
+namespace Telegram {
+
+struct Peer;
+
+} // Telegram namespace
 
 TELEGRAMQT_EXPORT QDebug operator<<(QDebug d, const Telegram::Peer &peer);
 

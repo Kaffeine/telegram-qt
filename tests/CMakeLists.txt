@@ -25,20 +25,35 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
 include_directories(
     ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/server
+    ${CMAKE_CURRENT_SOURCE_DIR}/data
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils
     ${CMAKE_CURRENT_BINARY_DIR}/..
-    ${CMAKE_CURRENT_SOURCE_DIR}/..
     ${ZLIB_INCLUDE_DIR}
 )
 
-add_executable(tst_generator
-    tst_generator/tst_generator.cpp
-    ../Generator.cpp
+set(test_extra_META_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils/TestAuthProvider.hpp
 )
 
-target_link_libraries(tst_generator LINK_PUBLIC
-    Qt5::Core
-    Qt5::Test
-    ${ZLIB_LIBRARIES}
-)
+QT5_WRAP_CPP(test_extra_MOC_SOURCES ${test_extra_META_HEADERS})
 
-add_test(NAME tst_generator COMMAND tst_generator)
+foreach(test_name
+    tst_all
+    tst_ConnectionApi
+    tst_MessagesApi
+)
+    FILE(GLOB TEST_SOURCES ${test_name}/*.cpp)
+    add_executable(${test_name} ${TEST_SOURCES} ${test_extra_MOC_SOURCES})
+    target_link_libraries(${test_name}
+        Qt5::Core
+        Qt5::Test
+        TelegramQt${QT_VERSION_MAJOR}
+    )
+    add_test(NAME ${test_name} COMMAND ${test_name} -maxwarnings 0)
+
+    target_link_libraries(${test_name}
+        TelegramServerQt${QT_VERSION_MAJOR}
+        test_keys_data
+    )
+endforeach()

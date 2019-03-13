@@ -24,11 +24,18 @@
 
 namespace Telegram {
 
-class RandomGenerator
+class TELEGRAMQT_EXPORT RandomGenerator
 {
 public:
     virtual ~RandomGenerator() = default;
     virtual int generate(void *buffer, int count);
+
+    QByteArray generate(int count)
+    {
+        QByteArray randBytes(count, Qt::Uninitialized);
+        generate(&randBytes);
+        return randBytes;
+    }
 
     int generate(QByteArray *array)
     {
@@ -53,22 +60,28 @@ public:
     static RandomGenerator *setInstance(RandomGenerator *instance);
 };
 
-class DeterministicGenerator : public RandomGenerator
+class TELEGRAMQT_EXPORT DeterministicGenerator : public RandomGenerator
 {
 public:
+    DeterministicGenerator();
+
     using RandomGenerator::generate;
 
     int generate(void *buffer, int count) override;
 
+    QByteArray initializationData() const { return  m_initializationData; }
+    void setInitializationData(const QByteArray &data);
+
 protected:
     void regenerate();
 
+    QByteArray m_initializationData;
     QByteArray m_generatedData;
     quint8 m_offset = 0;
 
 };
 
-class RandomGeneratorSetter
+class TELEGRAMQT_EXPORT RandomGeneratorSetter
 {
 public:
     RandomGeneratorSetter(RandomGenerator *generator)
@@ -84,6 +97,6 @@ private:
     RandomGenerator *m_previousGenerator;
 };
 
-} // Telegram
+} // Telegram namespace
 
 #endif // TELEGRAM_RANDOM_GENERATOR_HPP

@@ -5,15 +5,26 @@
 #include <QDir>
 #include <QTimer>
 
-#include "../../TelegramQt/CTelegramCore.hpp"
-#include "../../TelegramQt/CAppInformation.hpp"
+#include "AccountStorage.hpp"
+#include "Client.hpp"
+#include "CAppInformation.hpp"
+#include "DataStorage.hpp"
+#include "MessagingApi.hpp"
+
+#include "DeclarativeChatInfo.hpp"
+#include "DeclarativeClient.hpp"
+#include "DeclarativeAuthOperation.hpp"
+#include "DeclarativeMessageSender.hpp"
+#include "DeclarativeSettings.hpp"
+#include "DeclarativeUserInfo.hpp"
 
 class AccountSecretHelper : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(bool credentialDataExists READ credentialDataExists NOTIFY credentialDataExistsChanged)
-    Q_PROPERTY(QString secretDirectory READ secretDirectory WRITE setSecretDirectory NOTIFY secretDirectoryChanged)
-    Q_PROPERTY(QString phoneNumber READ phoneNumber WRITE setPhoneNumber NOTIFY phoneNumberChanged)
+    Q_PROPERTY(bool accountDataExists READ accountDataExists NOTIFY credentialDataExistsChanged)
+    Q_PROPERTY(QString directory READ directory WRITE setDirectory NOTIFY directoryChanged)
+    Q_PROPERTY(QString account READ account WRITE setAccount NOTIFY accountChanged)
+    Q_PROPERTY(QStringList accounts READ accounts NOTIFY accountsChanged)
     Q_PROPERTY(Format format READ format WRITE setFormat NOTIFY formatChanged)
 public:
     enum Format {
@@ -21,43 +32,39 @@ public:
         FormatHex
     };
     Q_ENUM(Format)
-//    enum CredentialDataState {
-//        CredentialDataStateUnknown, // Phone number is not set
-//        CredentialDataNotReadable,
-//        CredentialDataExists,
-//        CredentialDataIsReadOnly,
-//    };
 
     AccountSecretHelper(QObject *parent = nullptr) :
         QObject(parent),
         m_credentialDataExists(false),
         m_format(FormatBinary)
     {
-        connect(this, &AccountSecretHelper::phoneNumberChanged, this, &AccountSecretHelper::updateCredentialDataExist, Qt::QueuedConnection);
+        connect(this, &AccountSecretHelper::directoryChanged, this, &AccountSecretHelper::updateAccounts);
+        connect(this, &AccountSecretHelper::accountChanged, this, &AccountSecretHelper::updateCredentialDataExist, Qt::QueuedConnection);
     }
 
-    bool credentialDataExists() const { return m_credentialDataExists; }
-    QString secretDirectory() const { return m_secretDirectory; }
-    QString phoneNumber() const { return m_phoneNumber; }
+    bool accountDataExists() const { return m_credentialDataExists; }
+    QString directory() const { return m_directory; }
+    QString account() const { return m_accountIdentifier; }
+    QStringList accounts() const { return m_accounts; }
     Format format() const { return m_format; }
 
 public slots:
-    void setSecretDirectory(const QString &newDirectory)
+    void setDirectory(const QString &newDirectory)
     {
-        if (m_secretDirectory == newDirectory) {
+        if (m_directory == newDirectory) {
             return;
         }
-        m_secretDirectory = newDirectory;
-        emit secretDirectoryChanged(newDirectory);
+        m_directory = newDirectory;
+        emit directoryChanged(newDirectory);
     }
 
-    void setPhoneNumber(const QString &newPhoneNumber)
+    void setAccount(const QString &newAccount)
     {
-        if (m_phoneNumber == newPhoneNumber) {
+        if (m_accountIdentifier == newAccount) {
             return;
         }
-        m_phoneNumber = newPhoneNumber;
-        emit phoneNumberChanged(newPhoneNumber);
+        m_accountIdentifier = newAccount;
+        emit accountChanged(newAccount);
     }
 
     void setFormat(Format newFormat)
@@ -75,14 +82,14 @@ public slots:
             qWarning() << Q_FUNC_INFO << "Makes no sense to write empty secret data";
             return false;
         }
-        if (m_phoneNumber.isEmpty()) {
-            qWarning() << Q_FUNC_INFO << "Phone number is empty" << m_phoneNumber;
+        if (m_accountIdentifier.isEmpty()) {
+            qWarning() << Q_FUNC_INFO << "Phone number is empty" << m_accountIdentifier;
             return false;
         }
 
-        const QString fileName = m_secretDirectory + QLatin1Char('/') + m_phoneNumber;
+        const QString fileName = m_directory + QLatin1Char('/') + m_accountIdentifier;
         qDebug() << Q_FUNC_INFO << "dest filename:" << fileName;
-        QDir().mkpath(m_secretDirectory);
+        QDir().mkpath(m_directory);
         QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly)) {
             qWarning() << Q_FUNC_INFO << "Unable to open file" << fileName;
@@ -110,12 +117,12 @@ public slots:
 
     bool removeCredentialsData()
     {
-        if (m_phoneNumber.isEmpty()) {
-            qWarning() << Q_FUNC_INFO << "Phone number is empty" << m_phoneNumber;
+        if (m_accountIdentifier.isEmpty()) {
+            qWarning() << Q_FUNC_INFO << "Phone number is empty" << m_accountIdentifier;
             return false;
         }
 
-        const QString fileName = m_secretDirectory + QLatin1Char('/') + m_phoneNumber;
+        const QString fileName = m_directory + QLatin1Char('/') + m_accountIdentifier;
         QFile file(fileName);
         if (!file.open(QIODevice::ReadWrite)) {
             qWarning() << Q_FUNC_INFO << "Unable to open file" << fileName;
@@ -133,8 +140,9 @@ public slots:
 
 signals:
     void credentialDataExistsChanged(bool exist);
-    void secretDirectoryChanged(QString newDirectory);
-    void phoneNumberChanged(QString newPhoneNumber);
+    void directoryChanged(QString newDirectory);
+    void accountChanged(QString account);
+    void accountsChanged(QStringList accounts);
     void formatChanged(Format newFormat);
 
 protected:
@@ -149,21 +157,17 @@ protected:
 
     bool isCredentialDataReallyExist() const
     {
-        if (m_phoneNumber.isEmpty()) {
-            qDebug() << Q_FUNC_INFO << "Phone number is empty" << m_phoneNumber;
+        if (m_accountIdentifier.isEmpty()) {
+            qDebug() << Q_FUNC_INFO << "Account identifier is empty" << m_accountIdentifier;
             return false;
         }
 
         QString fileName;
-        if (m_secretDirectory.isEmpty()) {
-            fileName = m_phoneNumber;
-        } else {
-            fileName = m_secretDirectory + QLatin1Char('/') + m_phoneNumber;
+        if (!m_directory.isEmpty()) {
+            fileName = m_directory + QLatin1Char('/');
         }
-        qDebug() << Q_FUNC_INFO << "Filename:" << fileName;
-
-        // TODO: Check if the file is readable and do something if it is not.
-        return QFile::exists(fileName);
+        fileName += m_accountIdentifier;
+        return QFileInfo::exists(fileName);
     }
 
     void updateCredentialDataExist()
@@ -173,21 +177,45 @@ protected:
         setCredentialDataExists(exists);
     }
 
+    void updateAccounts()
+    {
+        const QUrl u(m_directory);
+        const QDir d(u.toLocalFile());
+        setAccounts(d.entryList(QDir::Files, QDir::Time));
+    }
+
+    void setAccounts(const QStringList &accounts)
+    {
+        if (m_accounts == accounts) {
+            return;
+        }
+        m_accounts = accounts;
+        emit accountsChanged(accounts);
+    }
+
 private:
     bool m_credentialDataExists;
-    QString m_secretDirectory;
-    QString m_phoneNumber;
+    QString m_directory;
+    QString m_accountIdentifier;
+    QStringList m_accounts;
     Format m_format;
-
 };
 
-class TelegramQmlPlugin : public QQmlExtensionPlugin
+static QObject *telegram_namespace_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+    TelegramNamespace *ns = new TelegramNamespace;
+    return ns;
+}
+
+class TelegramQtQmlPlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
 
 public:
-    TelegramQmlPlugin(QObject *parent = nullptr) :
+    TelegramQtQmlPlugin(QObject *parent = nullptr) :
         QQmlExtensionPlugin(parent)
     {
         qRegisterMetaType<AccountSecretHelper::Format>("AccountSecretHelper::Format");
@@ -196,10 +224,26 @@ public:
     void registerTypes(const char *uri) override
     {
         Q_ASSERT(QByteArray(uri) == QByteArray("TelegramQt"));
-        qmlRegisterUncreatableType<TelegramNamespace>(uri, 1, 0, "TelegramNamespace", tr("The class is a namespace actually"));
-        qmlRegisterType<CTelegramCore>(uri, 1, 0, "TelegramCore");
-        qmlRegisterType<CAppInformation>(uri, 1, 0, "AppInformation");
-        qmlRegisterType<AccountSecretHelper>(uri, 1, 0, "AccountSecretHelper");
+        Telegram::initialize();
+        int versionMajor = 0;
+        int versionMinor = 2;
+        qmlRegisterSingletonType<TelegramNamespace>(uri, versionMajor, versionMinor, "Namespace", &telegram_namespace_provider);
+        qmlRegisterUncreatableType<Telegram::Peer>(uri, versionMajor, versionMinor, "Peer", QStringLiteral("Peer is not a creatable object. Use 'var' instead."));
+        qmlRegisterType<Telegram::Client::AppInformation>(uri, versionMajor, versionMinor, "AppInformation");
+        qmlRegisterType<AccountSecretHelper>(uri, versionMajor, versionMinor, "AccountSecretHelper");
+        qmlRegisterType<Telegram::Client::DeclarativeAuthOperation>(uri, versionMajor, versionMinor, "AuthOperation");
+        qmlRegisterType<Telegram::Client::DeclarativeClient>(uri, versionMajor, versionMinor, "Client");
+        qmlRegisterType<Telegram::Client::DeclarativeUserInfo>(uri, versionMajor, versionMinor, "UserInfo");
+        qmlRegisterType<Telegram::Client::DeclarativeChatInfo>(uri, versionMajor, versionMinor, "ChatInfo");
+        qmlRegisterType<Telegram::Client::DeclarativeServerOption>(uri, versionMajor, versionMinor, "ServerOption");
+        qmlRegisterType<Telegram::Client::DeclarativeProxySettings>(uri, versionMajor, versionMinor, "ProxySettings");
+        qmlRegisterType<Telegram::Client::DeclarativeSettings>(uri, versionMajor, versionMinor, "Settings");
+        qmlRegisterType<Telegram::Client::DeclarativeRsaKey>(uri, versionMajor, versionMinor, "RsaKey");
+        qmlRegisterUncreatableType<Telegram::Client::AccountStorage>(uri, versionMajor, versionMinor, "AccountStorage", QStringLiteral("AccountStorage is an abstract type"));
+        qmlRegisterType<Telegram::Client::FileAccountStorage>(uri, versionMajor, versionMinor, "FileAccountStorage");
+        qmlRegisterUncreatableType<Telegram::Client::DataStorage>(uri, versionMajor, versionMinor, "DataStorage", QStringLiteral("DataStorage is an abstract type"));
+        qmlRegisterType<Telegram::Client::InMemoryDataStorage>(uri, versionMajor, versionMinor, "InMemoryDataStorage");
+        qmlRegisterType<Telegram::Client::DeclarativeMessageSender>(uri, versionMajor, versionMinor, "MessageSender");
     }
 };
 

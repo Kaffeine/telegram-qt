@@ -23,7 +23,11 @@
 #include <QString>
 #include <QObject>
 
-class TELEGRAMQT_EXPORT CAppInformation : public QObject
+namespace Telegram {
+
+namespace Client {
+
+class TELEGRAMQT_EXPORT AppInformation : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(quint32 appId READ appId WRITE setAppId)
@@ -33,8 +37,8 @@ class TELEGRAMQT_EXPORT CAppInformation : public QObject
     Q_PROPERTY(QString osInfo READ osInfo WRITE setOsInfo)
     Q_PROPERTY(QString languageCode READ languageCode WRITE setLanguageCode)
 public:
-    CAppInformation(QObject *parent = nullptr);
-    CAppInformation(const CAppInformation *anotherInfo, QObject *parent = nullptr);
+    AppInformation(QObject *parent = nullptr);
+    AppInformation(const AppInformation *anotherInfo, QObject *parent = nullptr);
 
     bool isValid() const;
 
@@ -64,41 +68,47 @@ private:
     QString m_langCode;
 };
 
-inline bool CAppInformation::isValid() const
+inline bool AppInformation::isValid() const
 {
     return m_appId && !m_appHash.isEmpty()
             && !m_appVersion.isEmpty() && !m_deviceInfo.isEmpty()
             && !m_osInfo.isEmpty() && !m_langCode.isEmpty();
 }
 
-inline quint32 CAppInformation::appId() const
+inline quint32 AppInformation::appId() const
 {
     return m_appId;
 }
 
-inline QString CAppInformation::appHash() const
+inline QString AppInformation::appHash() const
 {
     return m_appHash;
 }
 
-inline QString CAppInformation::appVersion() const
+inline QString AppInformation::appVersion() const
 {
     return m_appVersion;
 }
 
-inline QString CAppInformation::deviceInfo() const
+inline QString AppInformation::deviceInfo() const
 {
     return m_deviceInfo;
 }
 
-inline QString CAppInformation::osInfo() const
+inline QString AppInformation::osInfo() const
 {
     return m_osInfo;
 }
 
-inline QString CAppInformation::languageCode() const
+inline QString AppInformation::languageCode() const
 {
     return m_langCode;
 }
+
+} // Client namespace
+
+} // Telegram namespace
+
+using CAppInformation = Telegram::Client::AppInformation;
 
 #endif // CAPPINFORMATION_HPP

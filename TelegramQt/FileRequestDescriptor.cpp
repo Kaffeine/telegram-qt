@@ -16,10 +16,11 @@
  */
 
 #include "FileRequestDescriptor.hpp"
-#include "Utils.hpp"
 
 #include <QCryptographicHash>
 #include <QDebug>
+
+#include "RandomGenerator.hpp"
 
 #ifdef DEVELOPER_BUILD
 #include "TLTypesDebug.hpp"
@@ -41,7 +42,7 @@ FileRequestDescriptor FileRequestDescriptor::uploadRequest(const QByteArray &dat
         result.m_hash = new QCryptographicHash(QCryptographicHash::Md5);
     }
 
-    Utils::randomBytes(&result.m_fileId);
+    RandomGenerator::instance()->generate(&result.m_fileId);
 
     return result;
 }

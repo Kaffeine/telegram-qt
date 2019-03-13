@@ -15,56 +15,80 @@
 
  */
 
+#include "AesCtr.hpp"
 #include "CTcpTransport.hpp"
+#include "CRawStream.hpp"
+#include "Debug_p.hpp"
 
-#include <QTimer>
+#include <QHostAddress>
 
-#include <QDebug>
+#include <QLoggingCategory>
 
 #ifndef Q_FALLTHROUGH
 #define Q_FALLTHROUGH() (void)0
 #endif
 
-static const quint32 tcpTimeout = 15 * 1000;
+Q_LOGGING_CATEGORY(c_loggingTcpTransport, "telegram.transport.tcp", QtWarningMsg)
 
-CTcpTransport::CTcpTransport(QObject *parent) :
-    CTelegramTransport(parent),
-    m_socket(nullptr),
-    m_timeoutTimer(new QTimer(this))
+static const quint32 c_defaultConnectionTimeout = 15 * 1000;
+
+namespace Telegram {
+
+BaseTcpTransport::BaseTcpTransport(QObject *parent) :
+    BaseTransport(parent),
+    m_socket(nullptr)
 {
-    m_timeoutTimer->setInterval(tcpTimeout);
-    connect(m_timeoutTimer, &QTimer::timeout, this, &CTcpTransport::onTimeout);
 }
 
-CTcpTransport::~CTcpTransport()
+BaseTcpTransport::~BaseTcpTransport()
 {
-    if (m_socket && m_socket->isWritable()) {
+    if (m_socket && m_socket->isWritable() && m_socket->isOpen()
+            && m_socket->state() != QAbstractSocket::UnconnectedState) {
         m_socket->waitForBytesWritten(100);
+        qCDebug(c_loggingTcpTransport) << CALL_INFO << "close socket" << m_socket;
         m_socket->disconnectFromHost();
     }
 }
 
-void CTcpTransport::connectToHost(const QString &ipAddress, quint32 port)
+int BaseTcpTransport::connectionTimeout()
 {
-#ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << ipAddress << port;
-#endif
-    m_socket->connectToHost(ipAddress, port);
+    static const int connectionTimeout =
+            qEnvironmentVariableIntValue(timeoutEnvironmentVariableName());
+    if (connectionTimeout > 0) {
+        return connectionTimeout;
+    }
+    return c_defaultConnectionTimeout;
 }
 
-void CTcpTransport::disconnectFromHost()
+QString BaseTcpTransport::remoteAddress() const
 {
-#ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO;
-#endif
+    return m_socket ? m_socket->peerAddress().toString() : QString();
+}
+
+void BaseTcpTransport::disconnectFromHost()
+{
+    qCDebug(c_loggingTcpTransport) << CALL_INFO;
     if (m_socket) {
+        qCDebug(c_loggingTcpTransport) << CALL_INFO << "close socket" << m_socket;
         m_socket->disconnectFromHost();
     }
+    m_readBuffer.clear();
+    m_packetNumber = 0;
+    m_expectedLength = 0;
+    m_sessionType = Unknown;
 }
 
-void CTcpTransport::sendPackageImplementation(const QByteArray &payload)
+BaseTcpTransport::SessionType BaseTcpTransport::sessionType() const
 {
-    // quint32 length (included length itself + packet number + crc32 + payload // Length MUST be divisible by 4
+    return m_sessionType;
+}
+
+void BaseTcpTransport::sendPacketImplementation(const QByteArray &payload)
+{
+    qCDebug(c_loggingTcpTransport) << CALL_INFO << payload.size();
+
+    // quint32 length (included length itself + packet number
+    //                 + crc32 + payload (MUST be divisible by 4)
     // quint32 packet number
     // quint32 CRC32 (length, quint32 packet number, payload)
     // Payload
@@ -77,96 +101,153 @@ void CTcpTransport::sendPackageImplementation(const QByteArray &payload)
     // Payload
 
     if (payload.length() % 4) {
-        qCritical() << Q_FUNC_INFO << "Invalid outgoing package! The payload size is not divisible by four!";
+        qCCritical(c_loggingTcpTransport) << CALL_INFO
+                                          << "Invalid outgoing packet! "
+                                             "The payload size is not divisible by four!";
     }
 
-    QByteArray package;
-    package.reserve(payload.size() + 4);
+    QByteArray packet;
+    packet.reserve(payload.size() + 4);
     const quint32 length = payload.length() / 4;
     if (length < 0x7f) {
-        package.append(char(length));
+        packet.append(char(length));
     } else {
-        package.append(char(0x7f));
-        package.append(reinterpret_cast<const char *>(&length), 3);
+        packet.append(char(0x7f));
+        packet.append(reinterpret_cast<const char *>(&length), 3);
     }
-    package.append(payload);
-    m_socket->write(package);
-    emit packageSent(package);
+    packet.append(payload);
+
+    if (m_writeAesContext && m_writeAesContext->hasKey()) {
+        packet = m_writeAesContext->crypt(packet);
+    }
+
+    m_socket->write(packet);
 }
 
-void CTcpTransport::setSessionType(CTcpTransport::SessionType sessionType)
+void BaseTcpTransport::setSessionType(BaseTcpTransport::SessionType sessionType)
 {
     m_sessionType = sessionType;
 }
 
-void CTcpTransport::setState(QAbstractSocket::SocketState newState)
+void BaseTcpTransport::resetCryptoKeys()
 {
-    //    qDebug() << Q_FUNC_INFO << newState;
-    switch (newState) {
-    case QAbstractSocket::HostLookupState:
-    case QAbstractSocket::ConnectingState:
-        m_timeoutTimer->start();
-        break;
-    case QAbstractSocket::ConnectedState:
+    delete m_readAesContext;
+    m_readAesContext = nullptr;
+    delete m_writeAesContext;
+    m_writeAesContext = nullptr;
+}
+
+void BaseTcpTransport::setCryptoKeysSourceData(const QByteArray &source, SourceRevertion revertion)
+{
+    if (source.size() != (Crypto::AesCtrContext::KeySize + Crypto::AesCtrContext::IvecSize)) {
+        qCWarning(c_loggingTcpTransport) << CALL_INFO << "Invalid input data (size mismatch)";
+        return;
+    }
+    QByteArray reversed = source;
+    std::reverse(reversed.begin(), reversed.end());
+    const auto setSourceData = [](const QByteArray &source, Crypto::AesCtrContext *&context) {
+        if (!context) {
+            context = new Crypto::AesCtrContext();
+        }
+        context->setKey(source.left(Crypto::AesCtrContext::KeySize));
+        context->setIVec(source.mid(Crypto::AesCtrContext::KeySize));
+    };
+    if (revertion == DirectIsReadReversedIsWrite) {
+        setSourceData(source, m_readAesContext);
+        setSourceData(reversed, m_writeAesContext);
+    } else { // Server, DirectIsWriteReversedIsRead
+        setSourceData(source, m_writeAesContext);
+        setSourceData(reversed, m_readAesContext);
+    }
+    const char *className = metaObject()->className();
+    if (strstr(className, "Server")) {
+        m_readAesContext->setDescription(QByteArrayLiteral("server read"));
+        m_writeAesContext->setDescription(QByteArrayLiteral("server write"));
+    } else if (strstr(className, "Client")) {
+        m_readAesContext->setDescription(QByteArrayLiteral("client read"));
+        m_writeAesContext->setDescription(QByteArrayLiteral("client write"));
+    }
+}
+
+const char *BaseTcpTransport::timeoutEnvironmentVariableName()
+{
+    return "TELEGRAM_CONNECTION_TIMEOUT";
+}
+
+void BaseTcpTransport::setState(QAbstractSocket::SocketState newState)
+{
+    qCDebug(c_loggingTcpTransport) << CALL_INFO << newState;
+    if (newState == QAbstractSocket::ConnectedState) {
         m_expectedLength = 0;
         setSessionType(Unknown);
-        Q_FALLTHROUGH();
-    default:
-        m_timeoutTimer->stop();
-        break;
     }
-    CTelegramTransport::setState(newState);
+    BaseTransport::setState(newState);
 }
 
-void CTcpTransport::onReadyRead()
+void BaseTcpTransport::onReadyRead()
 {
+    qCDebug(c_loggingTcpTransport) << CALL_INFO << m_socket->bytesAvailable();
     readEvent();
-    while (m_socket->bytesAvailable() > 0) {
+    if (m_sessionType == Unknown) {
+        qCCritical(c_loggingTcpTransport) << this << "Unknown session type!";
+        return;
+    }
+    if (m_socket->bytesAvailable() > 0) {
+        QByteArray allData = m_socket->readAll();
+        if (m_readAesContext) {
+            allData = m_readAesContext->crypt(allData);
+        }
+        m_readBuffer.append(allData);
+    }
+    while (m_readBuffer.size() >= 4) {
         if (m_expectedLength == 0) {
-            if (m_socket->bytesAvailable() < 4) {
-                // Four bytes is minimum readable size for new package
+            const quint8 *data = reinterpret_cast<const quint8*>(m_readBuffer.constData());
+            quint8 length_t1 = data[0];
+            if (length_t1 < 0x7fu) {
+                m_expectedLength = length_t1 * 4;
+                m_readBuffer = m_readBuffer.mid(1);
+            } else if (length_t1 == 0x7fu) {
+                m_expectedLength = data[1] + data[2] * 256 + data[3] * 256 * 256;
+                m_expectedLength *= 4;
+                m_readBuffer = m_readBuffer.mid(4);
+            } else {
+                qCWarning(c_loggingTcpTransport) << CALL_INFO << "Invalid packet size byte"
+                                                 << hex << showbase << length_t1;
+                setError(QAbstractSocket::UnknownSocketError, QStringLiteral("Invalid read operation"));
+                disconnectFromHost();
                 return;
             }
-
-            char length;
-            m_socket->getChar(&length);
-
-            if (length < char(0x7f)) {
-                m_expectedLength = length * 4;
-            } else if (length == char(0x7f)) {
-                m_socket->read((char *) &m_expectedLength, 3);
-                m_expectedLength *= 4;
-            } else {
-                qDebug() << "Incorrect TCP package!";
-            }
         }
-
-        if (m_socket->bytesAvailable() < m_expectedLength) {
+        if (m_readBuffer.size() < static_cast<int>(m_expectedLength)) {
+            qCDebug(c_loggingTcpTransport) << CALL_INFO << "Ready read, but only "
+                                           << m_readBuffer.size() << "bytes available ("
+                                           << m_expectedLength << "bytes expected)";
             return;
         }
-
-        const QByteArray readPackage = m_socket->read(m_expectedLength);
+        const QByteArray payload = m_readBuffer.left(static_cast<int>(m_expectedLength));
+        m_readBuffer = m_readBuffer.mid(static_cast<int>(m_expectedLength));
         m_expectedLength = 0;
-        packageReceived(readPackage);
+        qCDebug(c_loggingTcpTransport) << CALL_INFO
+                                       << "Received a packet (" << payload.size() << " bytes)";
+        emit packetReceived(payload);
     }
 }
 
-void CTcpTransport::onTimeout()
+void BaseTcpTransport::onSocketErrorOccurred(QAbstractSocket::SocketError error)
 {
-#ifdef DEVELOPER_BUILD
-    qDebug() << Q_FUNC_INFO << "(connection to " << m_socket->peerName() << m_socket->peerPort() << ").";
-#endif
-    emit timeout();
-    m_socket->disconnectFromHost();
+    setError(error, m_socket->errorString());
 }
 
-void CTcpTransport::setSocket(QAbstractSocket *socket)
+void BaseTcpTransport::setSocket(QAbstractSocket *socket)
 {
     if (m_socket) {
-        qCritical() << Q_FUNC_INFO << "An attempt to set a socket twice";
+        qCCritical(c_loggingTcpTransport()) << CALL_INFO << "An attempt to set a socket twice";
     }
     m_socket = socket;
-    connect(m_socket, &QAbstractSocket::stateChanged, this, &CTcpTransport::setState);
-    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)), SLOT(setError(QAbstractSocket::SocketError)));
-    connect(m_socket, &QIODevice::readyRead, this, &CTcpTransport::onReadyRead);
+    connect(m_socket, &QAbstractSocket::stateChanged, this, &BaseTcpTransport::setState);
+    connect(m_socket, SIGNAL(error(QAbstractSocket::SocketError)),
+            SLOT(onSocketErrorOccurred(QAbstractSocket::SocketError)));
+    connect(m_socket, &QIODevice::readyRead, this, &BaseTcpTransport::onReadyRead);
 }
+
+} // Telegram namespace

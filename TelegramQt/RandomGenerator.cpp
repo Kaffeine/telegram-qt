@@ -42,6 +42,12 @@ RandomGenerator *RandomGenerator::setInstance(RandomGenerator *instance)
     return previousGenerator;
 }
 
+DeterministicGenerator::DeterministicGenerator() :
+    RandomGenerator(),
+    m_initializationData(QByteArrayLiteral("default"))
+{
+}
+
 int DeterministicGenerator::generate(void *buffer, int count)
 {
     int processedBytes = 0;
@@ -59,10 +65,15 @@ int DeterministicGenerator::generate(void *buffer, int count)
     return count;
 }
 
+void DeterministicGenerator::setInitializationData(const QByteArray &data)
+{
+    m_initializationData = data;
+}
+
 void DeterministicGenerator::regenerate()
 {
     if (m_generatedData.isEmpty()) {
-        m_generatedData = QByteArrayLiteral("default");
+        m_generatedData = m_initializationData;
     }
     m_generatedData = QCryptographicHash::hash(m_generatedData, QCryptographicHash::Sha512);
     m_offset = 0;

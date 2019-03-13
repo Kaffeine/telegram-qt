@@ -22,9 +22,51 @@
 #include "TLNumbers.hpp"
 #include "TLValues.hpp"
 
-QDebug operator<<(QDebug d, const TLValue &v);
+// Macro for stream debug output
+#define CALL_INFO this << ' ' << __func__
+
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLValue &v);
 
 template <int Size>
-QDebug operator<<(QDebug d, const TLNumber<Size> &n);
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLNumber<Size> &n);
+
+namespace Telegram {
+
+namespace MTProto {
+
+struct FullMessageHeader;
+struct IgnoredMessageNotification;
+
+} // MTProto namespace
+
+namespace Debug {
+
+class TELEGRAMQT_INTERNAL_EXPORT Spacer
+{
+public:
+    Spacer();
+    ~Spacer();
+
+    const char *innerSpaces();
+    const char *outerSpaces();
+
+private:
+    static int m_spacing;
+    static const int m_step = 4;
+    bool m_hasInnerCalls = false;
+};
+
+} // Debug namespace
+
+template <typename T>
+QString toHex(T number)
+{
+    return QStringLiteral("%1").arg(number, sizeof(number) * 2, 0x10, QLatin1Char('0'));
+}
+
+} // Telegram namespace
+
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::FullMessageHeader &header);
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const Telegram::MTProto::IgnoredMessageNotification &notification);
 
 #endif // TELEGRAMDEBUG_P_HPP

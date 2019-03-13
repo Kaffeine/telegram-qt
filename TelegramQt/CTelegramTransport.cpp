@@ -16,14 +16,20 @@
 
 #include "CTelegramTransport.hpp"
 
-CTelegramTransport::CTelegramTransport(QObject *parent) :
-    QObject(parent)
+namespace Telegram {
+
+BaseTransport::BaseTransport(QObject *parent) :
+    QObject(parent),
+    m_error(QAbstractSocket::UnknownSocketError),
+    m_state(QAbstractSocket::UnconnectedState)
 {
 }
 
-quint64 CTelegramTransport::getNewMessageId(quint64 supposedId)
+quint64 BaseTransport::getNewMessageId(quint64 supposedId)
 {
-    // Client message identifiers are divisible by 4, server message identifiers modulo 4 yield 1 if the message is a response to a client message, and 3 otherwise.
+    // Client message identifiers are divisible by 4,
+    // server message identifiers modulo 4 yield 1 if the message is
+    // a response to a client message, and 3 otherwise.
     const quint8 moduleFour = supposedId % 4;
     quint64 result = supposedId;
     if (result <= m_lastMessageId) {
@@ -33,28 +39,32 @@ quint64 CTelegramTransport::getNewMessageId(quint64 supposedId)
         }
     }
     if (!(result & quint64(0xffffff))) {
-        // The lower 32 bits of messageId passed by the client must not contain that many zeroes.
+        // The lower 32 bits of messageId passed by the client
+        // must not contain that many zeroes.
         result += quint64(0x1230);
     }
     m_lastMessageId = result;
     return m_lastMessageId;
 }
 
-void CTelegramTransport::sendPackage(const QByteArray &package)
+void BaseTransport::sendPacket(const QByteArray &payload)
 {
     writeEvent();
-    sendPackageImplementation(package);
-    emit packageSent(package);
+    sendPacketImplementation(payload);
+    emit packetSent(payload);
 }
 
-void CTelegramTransport::setError(QAbstractSocket::SocketError e)
+void BaseTransport::setError(QAbstractSocket::SocketError e, const QString &text)
 {
     m_error = e;
-    emit error(e);
+    m_errorText = text;
+    emit errorOccurred(e, text);
 }
 
-void CTelegramTransport::setState(QAbstractSocket::SocketState s)
+void BaseTransport::setState(QAbstractSocket::SocketState s)
 {
     m_state = s;
     emit stateChanged(s);
 }
+
+} // Telegram namespace

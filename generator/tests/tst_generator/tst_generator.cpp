@@ -86,6 +86,8 @@ private slots:
     void checkTypeWithMemberConflicts();
     void recursiveTypeMembers();
     void doubleRecursiveTypeMembers();
+    void predicateForCrc_data();
+    void predicateForCrc();
 };
 
 tst_Generator::tst_Generator(QObject *parent) :
@@ -193,7 +195,7 @@ void tst_Generator::recursiveTypeMembers()
     static const QStringList checkList = {
         QStringLiteral("QString email;"),
         QStringLiteral("QString stringText;"),
-        QStringLiteral("TLRichText *richText;"),
+        QStringLiteral("TLRichTextPtr richText;"),
         QStringLiteral("TLVector<TLRichText*> texts;"),
     };
     for (const QString &mustHaveMember : checkList) {
@@ -220,11 +222,11 @@ void tst_Generator::doubleRecursiveTypeMembers()
     QVERIFY(!solvedType.name.isEmpty());
     const QStringList structMembers = Generator::generateTLTypeMembers(solvedType);
     static const QStringList checkList = {
-        QStringLiteral("TLRichText *text;"),
+        QStringLiteral("TLRichTextPtr text;"),
         QStringLiteral("TLVector<TLRichText*> richTextItemsVector;"),
         QStringLiteral("TLVector<TLPageBlock*> blocks;"),
         QStringLiteral("TLVector<TLPageBlock*> pageBlockItemsVector;"),
-        QStringLiteral("TLRichText *caption;"),
+        QStringLiteral("TLRichTextPtr caption;"),
     };
     for (const QString &mustHaveMember : checkList) {
         if (!structMembers.contains(mustHaveMember)) {
@@ -233,6 +235,46 @@ void tst_Generator::doubleRecursiveTypeMembers()
             QFAIL(message.toUtf8().constData());
         }
     }
+}
+
+void tst_Generator::predicateForCrc_data()
+{
+    QTest::addColumn<QByteArray>("input");
+    QTest::addColumn<QByteArray>("output");
+
+    QTest::addRow("Trivial") << QByteArrayLiteral("help.getConfig#c4f9186b = Config;")
+                             << QByteArrayLiteral("help.getConfig = Config");
+
+    QTest::addRow("Trivial") << QByteArrayLiteral("req_pq#60469778 nonce:int128 = ResPQ;")
+                             << QByteArrayLiteral("req_pq nonce:int128 = ResPQ");
+
+    QTest::addRow("With true flags") << QByteArrayLiteral("channels.createChannel#f4893d7f flags:#"
+                                                          " broadcast:flags.0?true megagroup:flags.1?true"
+                                                          " title:string about:string = Updates;")
+                                     << QByteArrayLiteral("channels.createChannel flags:#"
+                                                          " title:string about:string = Updates");
+
+    QTest::addRow("With flags") << QByteArrayLiteral("updates.getDifference#25939651 flags:#"
+                                                     " pts:int pts_total_limit:flags.0?int date:int"
+                                                     " qts:int = updates.Difference;")
+                                << QByteArrayLiteral("updates.getDifference flags:#"
+                                                     " pts:int pts_total_limit:flags.0?int date:int"
+                                                     " qts:int = updates.Difference");
+
+    QTest::addRow("With vector") << QByteArrayLiteral("messages.getAllChats#eba80ff0"
+                                                      " except_ids:Vector<int> = messages.Chats;")
+                                 << QByteArrayLiteral("messages.getAllChats"
+                                                      " except_ids:Vector int = messages.Chats");
+
+    QTest::addRow("Vector") << QByteArrayLiteral("vector#1cb5c415 {t:Type} # [ t ] = Vector t;")
+                            << QByteArrayLiteral("vector t:Type # [ t ] = Vector t");
+}
+
+void tst_Generator::predicateForCrc()
+{
+    QFETCH(QByteArray, input);
+    QFETCH(QByteArray, output);
+    QCOMPARE(Generator::getBarePredicate(input), output);
 }
 
 QTEST_APPLESS_MAIN(tst_Generator)

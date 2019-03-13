@@ -34,6 +34,7 @@
 
 #include <QMimeDatabase>
 #include <QMimeType>
+#include <QStandardPaths>
 
 #include <QDebug>
 
@@ -588,6 +589,13 @@ void MainWindow::initStartConnection()
     if (!secretInfo.isEmpty()) {
         m_core->setSecretInfo(secretInfo);
     }
+//    m_core->setServerConfiguration({Telegram::DcOption(QStringLiteral("127.0.0.1"), 11443)});
+//    const Telegram::RsaKey key = Telegram::RsaKey::fromFile(QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first() + QStringLiteral("/TelegramServer/public_key.pem"));
+    const Telegram::RsaKey key = m_core->defaultServerPublicRsaKey();
+    if (!key.isValid()) {
+        qCritical() << "Unable to read RSA key";
+    }
+    m_core->setServerPublicRsaKey(key);
     if (!m_core->connectToServer()) {
         qWarning() << Q_FUNC_INFO << "Unable to connect";
     }

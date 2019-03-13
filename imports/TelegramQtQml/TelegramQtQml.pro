@@ -1,15 +1,38 @@
 QT = core network qml
 
 TEMPLATE = lib
-TARGET   = TelegramQt$${QT_MAJOR_VERSION}Qml
+TARGET   = TelegramQt$${QT_MAJOR_VERSION}QmlPlugin
 VERSION = 0.2.0
 
 include(../../options.pri)
 
 CONFIG += c++11
 
+DEFINES += TELEGRAMQT_QML_LIBRARY
+
 SOURCES = plugin.cpp
 OTHER_FILES += CMakeLists.txt
+
+INCLUDEPATH += ../../TelegramQt
+SOURCES += \
+    DeclarativeAuthOperation.cpp \
+    DeclarativeChatInfo.cpp \
+    DeclarativeClient.cpp \
+    DeclarativeClientOperator.cpp \
+    DeclarativeOperation.cpp \
+    DeclarativeMessageSender.cpp \
+    DeclarativeUserInfo.cpp \
+    DeclarativeSettings.cpp
+
+HEADERS += \
+    DeclarativeAuthOperation.hpp \
+    DeclarativeChatInfo.hpp \
+    DeclarativeClient.hpp \
+    DeclarativeClientOperator.hpp \
+    DeclarativeOperation.hpp \
+    DeclarativeMessageSender.hpp \
+    DeclarativeUserInfo.hpp \
+    DeclarativeSettings.hpp
 
 target.path += $$INSTALL_QML_IMPORT_DIR/TelegramQt
 INSTALLS += target

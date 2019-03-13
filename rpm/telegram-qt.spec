@@ -15,7 +15,7 @@ BuildRequires: pkgconfig(Qt5Core)
 BuildRequires: pkgconfig(Qt5Network)
 BuildRequires: pkgconfig(Qt5Qml)
 BuildRequires: pkgconfig(openssl)
-BuildRequires: cmake >= 2.8
+BuildRequires: cmake >= 3.1
 
 %description
 %{summary}.
@@ -32,6 +32,13 @@ Requires: openssl
 %description qt5
 %{summary}.
 
+%package qt5-devel
+Summary:    Development headers and pkg-config for TelegramQt library
+Group:      Development/Libraries
+Requires:   %{name}-qt5%{?_isa} = %{version}-%{release}
+%description qt5-devel
+%{summary}.
+
 %package qt5-declarative
 Summary:    Declarative plugin for TelegramQt library
 Group:      Development/Libraries
@@ -40,43 +47,64 @@ Requires: qt5-qtdeclarative
 %description qt5-declarative
 %{summary}.
 
-%package qt5-devel
-Summary:    Development headers and pkg-config for TelegramQt library
+%package qt5-declarative-devel
+Summary:    Development headers and pkg-config for TelegramQtQml library
 Group:      Development/Libraries
-Requires:   %{name}-qt5%{?_isa} = %{version}-%{release}
-%description qt5-devel
+Requires:   %{name}-qt5-declarative%{?_isa} = %{version}-%{release}
+%description qt5-declarative-devel
 %{summary}.
 
 %prep
 %setup -q
 
 %build
-%cmake -DENABLE_TESTAPP=FALSE
+mkdir build
+cd build
+
+%cmake \
+    -DENABLE_TESTAPP=FALSE \
+    -DBUILD_VERSION="%{version}" \
+    ..
 
 make %{?_smp_mflags}
 
 %install
+cd build
+
 rm -rf %{buildroot}
 %make_install
 
 %post qt5 -p /sbin/ldconfig
 %postun qt5 -p /sbin/ldconfig
 
+%post qt5-declarative -p /sbin/ldconfig
+%postun qt5-declarative -p /sbin/ldconfig
+
 %files qt5
 %defattr(-,root,root,-)
-%{_libdir}/libTelegramQt5.so
 %{_libdir}/libTelegramQt5.so.%{version_major}.%{version_minor}
 %{_libdir}/libTelegramQt5.so.%{version_major}.%{version_minor}.%{version_patch}
+
+%files qt5-devel
+%defattr(-,root,root,-)
+%dir %{_includedir}/TelegramQt5
+%dir %{_includedir}/TelegramQt5/TelegramQt
+%dir %{_libdir}/cmake/TelegramQt5
+%dir %{_libdir}/pkgconfig
+%{_includedir}/TelegramQt5/TelegramQt/*
+%{_libdir}/libTelegramQt5.so
+%{_libdir}/cmake/TelegramQt5/TelegramQt5Config.cmake
+%{_libdir}/cmake/TelegramQt5/TelegramQt5ConfigVersion.cmake
+%{_libdir}/pkgconfig/TelegramQt5.pc
 
 %files qt5-declarative
 %defattr(-,root,root,-)
 %{_libdir}/qt5/qml/TelegramQt/qmldir
-%{_libdir}/qt5/qml/TelegramQt/plugins.qmltypes
-%{_libdir}/qt5/qml/TelegramQt/libTelegramQt5Qml.so
+%{_libdir}/qt5/qml/TelegramQt/libTelegramQmlPlugin.so
+%{_libdir}/libTelegramQt5Qml.so.%{version_major}.%{version_minor}
+%{_libdir}/libTelegramQt5Qml.so.%{version_major}.%{version_minor}.%{version_patch}
 
-%files qt5-devel
+%files qt5-declarative-devel
 %defattr(-,root,root,-)
-%{_includedir}/TelegramQt5/TelegramQt/*
-%{_libdir}/cmake/TelegramQt5/TelegramQt5Config.cmake
-%{_libdir}/cmake/TelegramQt5/TelegramQt5ConfigVersion.cmake
-%{_libdir}/pkgconfig/TelegramQt5.pc
+%{_libdir}/qt5/qml/TelegramQt/plugins.qmltypes
+%{_libdir}/libTelegramQt5Qml.so

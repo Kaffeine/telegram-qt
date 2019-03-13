@@ -17,31 +17,32 @@
 
 #include <QObject>
 
+#include "ApiUtils.hpp"
 #include "CTelegramTransport.hpp"
-#include "CTelegramConnection.hpp"
-#include "TelegramUtils.hpp"
 
 #include <QTest>
 #include <QDebug>
 
 #include <QDateTime>
 
-class NullTransport : public CTelegramTransport
+class NullTransport : public Telegram::BaseTransport
 {
     Q_OBJECT
 public:
-    explicit NullTransport(QObject *parent = nullptr) : CTelegramTransport(parent) { }
+    explicit NullTransport(QObject *parent = nullptr) : BaseTransport(parent) { }
 
 public:
-    void connectToHost(const QString &ipAddress, quint32 port) override
+    void connectToHost(const QString &ipAddress, quint16 port) override
     {
         Q_UNUSED(ipAddress)
         Q_UNUSED(port)
     }
     void disconnectFromHost() override {}
 
+    QString remoteAddress() const override { return QString(); }
+
 protected:
-    void sendPackageImplementation(const QByteArray &package) override
+    void sendPacketImplementation(const QByteArray &package) override
     {
         Q_UNUSED(package)
     }
@@ -69,7 +70,7 @@ void tst_CTelegramTransport::testNewMessageId()
     NullTransport transport;
     const quint64 time = 1395335796550;
     for (quint64 t = 0; t < 12; ++t) {
-        const quint64 telegramTimeStamp = TelegramUtils::formatTimeStamp(time) + t;
+        const quint64 telegramTimeStamp = Telegram::Utils::formatTimeStamp(time) + t;
         const quint64 ending = telegramTimeStamp & 3;
         quint64 previousTS = telegramTimeStamp - 1;
         for (quint64 i = 0; i < 2000; ++i) {

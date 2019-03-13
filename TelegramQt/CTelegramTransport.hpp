@@ -15,43 +15,50 @@
 
  */
 
-#ifndef CTELEGRAMTRANSPORT_HPP
-#define CTELEGRAMTRANSPORT_HPP
+#ifndef TELEGRAM_BASE_TRANSPORT_HPP
+#define TELEGRAM_BASE_TRANSPORT_HPP
+
+#include "telegramqt_global.h"
 
 #include <QObject>
 
 #include <QByteArray>
 #include <QAbstractSocket>
 
-class CTelegramTransport : public QObject
+namespace Telegram {
+
+class TELEGRAMQT_INTERNAL_EXPORT BaseTransport : public QObject
 {
     Q_OBJECT
 public:
-    explicit CTelegramTransport(QObject *parent = nullptr);
-    virtual void connectToHost(const QString &ipAddress, quint32 port) = 0;
+    explicit BaseTransport(QObject *parent = nullptr);
+    virtual void connectToHost(const QString &ipAddress, quint16 port) = 0;
     virtual void disconnectFromHost() = 0;
     quint64 getNewMessageId(quint64 supposedId);
 
+    virtual QString remoteAddress() const = 0;
+
     QAbstractSocket::SocketError error() const { return m_error; }
     QAbstractSocket::SocketState state() const { return m_state; }
+
 signals:
-    void error(QAbstractSocket::SocketError error);
+    void errorOccurred(QAbstractSocket::SocketError error, const QString &text);
     void stateChanged(QAbstractSocket::SocketState state);
 
     void timeout();
 
-    void packageReceived(const QByteArray &package);
-    void packageSent(const QByteArray &package);
+    void packetReceived(const QByteArray &payload);
+    void packetSent(const QByteArray &payload);
 
 public slots:
-    void sendPackage(const QByteArray &package);
+    void sendPacket(const QByteArray &payload);
 
 protected slots:
-    void setError(QAbstractSocket::SocketError error);
+    void setError(QAbstractSocket::SocketError error, const QString &text);
     virtual void setState(QAbstractSocket::SocketState state);
 
 protected:
-    virtual void sendPackageImplementation(const QByteArray &package) = 0;
+    virtual void sendPacketImplementation(const QByteArray &payload) = 0;
     virtual void readEvent() {}
     virtual void writeEvent() {}
 
@@ -59,7 +66,10 @@ private:
     QAbstractSocket::SocketError m_error;
     QAbstractSocket::SocketState m_state;
     quint64 m_lastMessageId = 0;
+    QString m_errorText;
 
 };
 
-#endif // CTELEGRAMTRANSPORT_HPP
+} // Telegram namespace
+
+#endif // TELEGRAM_BASE_TRANSPORT_HPP

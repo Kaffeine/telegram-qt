@@ -26,19 +26,20 @@ template <int Size> union TLNumber {
 
     static constexpr int size() { return Size / 8; }
 
-    TLNumber() {
-        for (int i = 0; i < Size / 8 / 8; ++i)
+    Q_DECL_RELAXED_CONSTEXPR TLNumber() {
+        for (int i = 0; i < Size / 8 / 8; ++i) {
             parts[i] = 0;
+        }
     }
 
-    TLNumber &operator=(const TLNumber &anotherTLNumber) {
+    Q_DECL_RELAXED_CONSTEXPR TLNumber &operator=(const TLNumber &anotherTLNumber) {
         for (int i = 0; i < Size / 8 / 8; ++i)
             parts[i] = anotherTLNumber.parts[i];
 
         return *this;
     }
 
-    bool operator ==(const TLNumber &anotherTLNumber) const {
+    Q_DECL_RELAXED_CONSTEXPR bool operator ==(const TLNumber &anotherTLNumber) const {
         for (int i = 0; i < Size / 8 / 8; ++i) {
             if (parts[i] != anotherTLNumber.parts[i]) {
                 return false;
@@ -47,7 +48,7 @@ template <int Size> union TLNumber {
         return true;
     }
 
-    bool operator !=(const TLNumber &anotherTLNumber) const {
+    Q_DECL_RELAXED_CONSTEXPR bool operator !=(const TLNumber &anotherTLNumber) const {
         for (int i = 0; i < Size / 8 / 8; ++i) {
             if (parts[i] != anotherTLNumber.parts[i]) {
                 return true;
@@ -57,7 +58,7 @@ template <int Size> union TLNumber {
     }
 };
 
-typedef TLNumber<128> TLNumber128;
-typedef TLNumber<256> TLNumber256;
+using TLNumber128 = TLNumber<128>;
+using TLNumber256 = TLNumber<256>;
 
 #endif // TLNUMBERS_HPP

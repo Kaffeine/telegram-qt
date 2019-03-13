@@ -29,12 +29,14 @@ include_directories(
 )
 
 foreach(test_name
+    tst_crypto
     tst_CTelegramTransport
-    tst_CTelegramConnection
-    tst_CTelegramDispatcher
     tst_CTelegramStream
     tst_TelegramRemoteFile
+    tst_UniqueLazyPointer
     tst_utils
+    tst_RpcError
+    tst_RpcLayer
 )
     FILE(GLOB TEST_SOURCES ${test_name}/*.cpp)
     add_executable(${test_name} ${TEST_SOURCES})
