@@ -18,7 +18,7 @@ class DataStorage;
 class TELEGRAMQT_QML_EXPORT DeclarativeClient : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(AppInformation *applicationInformation READ appInformation WRITE setAppInformation)
+    Q_PROPERTY(Telegram::Client::AppInformation *applicationInformation READ appInformation WRITE setAppInformation)
     Q_PROPERTY(bool signedIn READ isSignedIn NOTIFY signedInChanged)
     Q_PROPERTY(Telegram::Client::DeclarativeSettings *settings READ settings WRITE setSettings NOTIFY settingsChanged)
     Q_PROPERTY(Telegram::Client::AccountStorage *accountStorage READ accountStorage WRITE setAccountStorage NOTIFY accountStorageChanged)
