@@ -27,6 +27,8 @@ namespace Telegram {
 
 namespace Server {
 
+class MessageData;
+
 class MessagesRpcOperation : public RpcOperation
 {
     Q_OBJECT
@@ -232,6 +234,8 @@ protected:
     void startImplementation() override { callMember<>(this, m_runMethod); }
 
     void setRunMethod(RunMethod method);
+
+    void submitMessageData(MessageData *messageData, quint64 randomId);
 
     RunMethod m_runMethod = nullptr;
 

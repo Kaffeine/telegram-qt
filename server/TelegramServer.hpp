@@ -89,6 +89,8 @@ public:
     QByteArray getAuthKeyById(quint64 authId) const override;
     quint32 getUserIdByAuthId(quint64 authId) const override;
 
+    QVector<UpdateNotification> processMessage(MessageData *messageData) override;
+
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
 
     void insertUser(LocalUser *user);

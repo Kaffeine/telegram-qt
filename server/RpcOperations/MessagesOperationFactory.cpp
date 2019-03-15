@@ -1624,100 +1624,15 @@ void MessagesRpcOperation::runSendMessage()
 
     LocalUser *self = layer()->getUser();
     Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, self->id());
-    const bool messageToSelf = self->toPeer() == targetPeer;
-    MessageRecipient *receiverInbox = api()->getRecipient(targetPeer, self);
+    MessageRecipient *recipient = api()->getRecipient(targetPeer, self);
 
-    if (!receiverInbox) {
+    if (!recipient) {
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
     }
-    const quint32 requestDate = Telegram::Utils::getCurrentTime();
-
-    // Result and broadcasted Updates date seems to be always older than the message date,
-    // so prepare the request date right on the start.
-
-    QVector<PostBox *> boxes = receiverInbox->postBoxes();
-    if ((targetPeer.type == Peer::User) && !messageToSelf) {
-        boxes.append(self->postBoxes());
-    }
-    // Boxes:
-    // message to contact
-    //    Users (self and recipient (if not self))
-    //
-    // message to group chat
-    //    Users (each member)
-    //
-    // message to megagroup or broadcast
-    //    Channel (the channel)
-
-    QVector<UpdateNotification> notifications;
-    UpdateNotification *selfNotification = nullptr;
-
     MessageData *messageData = api()->storage()->addMessage(self->id(), targetPeer, arguments.message);
 
-    for (PostBox *box : boxes) {
-        const quint32 newMessageId = box->addMessage(messageData);
-        UpdateNotification notification;
-        notification.type = UpdateNotification::Type::NewMessage;
-        notification.date = requestDate;
-        notification.messageId = newMessageId;
-        notification.pts = box->pts();
-        for (const quint32 userId : box->users()) {
-            notification.userId = userId;
-            if (targetPeer.type == Peer::User) {
-                if (userId == self->id()) {
-                    notification.dialogPeer = targetPeer;
-                } else {
-                    notification.dialogPeer = self->toPeer();
-                }
-            } else {
-                notification.dialogPeer = targetPeer;
-            }
-            notifications.append(notification);
-            if (userId == self->id()) {
-                selfNotification = &notifications.last();
-            }
-            LocalUser *user = api()->getUser(userId);
-            user->syncDialogTopMessage(notification.dialogPeer, newMessageId);
-        }
-    }
-
-    selfNotification->excludeSession = layer()->session();
-    selfNotification->dialogPeer = targetPeer;
-
-    TLUpdate updateMessageId;
-    updateMessageId.tlType = TLValue::UpdateMessageID;
-    updateMessageId.quint32Id = selfNotification->messageId;
-    updateMessageId.randomId = arguments.randomId;
-
-    TLUpdate newMessageUpdate;
-    newMessageUpdate.tlType = TLValue::UpdateNewMessage;
-    newMessageUpdate.pts = selfNotification->pts;
-    newMessageUpdate.ptsCount = 1;
-
-    Utils::setupTLMessage(&newMessageUpdate.message, messageData, selfNotification->messageId, self);
-
-    QSet<Peer> interestingPeers;
-    interestingPeers.insert(targetPeer);
-    if (!messageToSelf && newMessageUpdate.message.fromId) {
-        interestingPeers.insert(Peer::fromUserId(newMessageUpdate.message.fromId));
-    }
-
-    // Bake updates
-    TLUpdates result;
-    result.tlType = TLValue::Updates;
-    result.date = requestDate;
-
-    Utils::setupTLPeers(&result, interestingPeers, api(), self);
-    result.seq = 0; // Sender seq number seems to always equal zero
-    result.updates = {
-        updateMessageId,
-        newMessageUpdate,
-        // maybe UpdateReadChannelInbox or UpdateReadHistoryInbox
-    };
-    sendRpcReply(result);
-
-    api()->queueUpdates(notifications);
+    submitMessageData(messageData, arguments.randomId);
 }
 
 void MessagesRpcOperation::runSendScreenshotNotification()
@@ -1864,6 +1779,63 @@ void MessagesRpcOperation::runUploadMedia()
 void MessagesRpcOperation::setRunMethod(MessagesRpcOperation::RunMethod method)
 {
     m_runMethod = method;
+}
+
+void MessagesRpcOperation::submitMessageData(MessageData *messageData, quint64 randomId)
+{
+    if (!messageData) {
+        sendRpcError(RpcError());
+        return;
+    }
+
+    LocalUser *fromUser = layer()->getUser();
+    QVector<UpdateNotification> notifications = api()->processMessage(messageData);
+
+    UpdateNotification *selfNotification = nullptr;
+    for (UpdateNotification &notification : notifications) {
+        if (notification.userId == fromUser->id()) {
+            selfNotification = &notification;
+            break;
+        }
+    }
+
+    selfNotification->excludeSession = layer()->session();
+
+    TLUpdate updateMessageId;
+    updateMessageId.tlType = TLValue::UpdateMessageID;
+    updateMessageId.quint32Id = selfNotification->messageId;
+    updateMessageId.randomId = randomId;
+
+    TLUpdate newMessageUpdate;
+    newMessageUpdate.tlType = TLValue::UpdateNewMessage;
+    newMessageUpdate.pts = selfNotification->pts;
+    newMessageUpdate.ptsCount = 1;
+
+    Utils::setupTLMessage(&newMessageUpdate.message, messageData, selfNotification->messageId, fromUser);
+
+    const Peer targetPeer = messageData->toPeer();
+
+    QSet<Peer> interestingPeers;
+    interestingPeers.insert(targetPeer);
+    if ((fromUser->toPeer() != targetPeer) && newMessageUpdate.message.fromId) {
+        interestingPeers.insert(Peer::fromUserId(newMessageUpdate.message.fromId));
+    }
+
+    // Bake updates
+    TLUpdates result;
+    result.tlType = TLValue::Updates;
+    result.date = selfNotification->date;
+
+    Utils::setupTLPeers(&result, interestingPeers, api(), fromUser);
+    result.seq = 0; // Sender seq number seems to always equal zero
+    result.updates = {
+        updateMessageId,
+        newMessageUpdate,
+        // maybe UpdateReadChannelInbox or UpdateReadHistoryInbox
+    };
+    sendRpcReply(result);
+
+    api()->queueUpdates(notifications);
 }
 
 MessagesRpcOperation::ProcessingMethod MessagesRpcOperation::getMethodForRpcFunction(TLValue function)

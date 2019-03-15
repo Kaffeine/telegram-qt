@@ -333,6 +333,63 @@ quint32 Server::getUserIdByAuthId(quint64 authId) const
     return m_authToUser.value(authId);
 }
 
+QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
+{
+    const Peer targetPeer = messageData->toPeer();
+    LocalUser *fromUser = getUser(messageData->fromId());
+    MessageRecipient *recipient = getRecipient(targetPeer, fromUser);
+    QVector<PostBox *> boxes = recipient->postBoxes();
+    if ((targetPeer.type == Peer::User) && !messageData->isMessageToSelf()) {
+        boxes.append(fromUser->postBoxes());
+    }
+    // Boxes:
+    // message to contact
+    //    Users (self and recipient (if not self))
+    //
+    // message to group chat
+    //    Users (each member)
+    //
+    // message to megagroup or broadcast
+    //    Channel (the channel)
+
+    QVector<UpdateNotification> notifications;
+
+    // Result and broadcasted Updates date seems to be always older than the message date,
+    // so prepare the request date right on the start.
+    const quint32 requestDate = Telegram::Utils::getCurrentTime();
+    for (PostBox *box : boxes) {
+        const quint32 newMessageId = box->addMessage(messageData);
+        UpdateNotification notification;
+        notification.type = UpdateNotification::Type::NewMessage;
+        notification.date = requestDate;
+        notification.messageId = newMessageId;
+        notification.pts = box->pts();
+        for (const quint32 userId : box->users()) {
+            notification.userId = userId;
+            if (targetPeer.type == Peer::User) {
+                if (userId == fromUser->id()) {
+                    notification.dialogPeer = targetPeer;
+                } else {
+                    notification.dialogPeer = fromUser->toPeer();
+                }
+            } else {
+                notification.dialogPeer = targetPeer;
+            }
+            LocalUser *user = getUser(userId);
+            user->syncDialogTopMessage(notification.dialogPeer, newMessageId);
+
+            if ((userId == fromUser->id()) && !notifications.isEmpty()) {
+                notifications.append(notifications.constFirst());
+                notifications.first() = notification;
+                continue;
+            }
+            notifications.append(notification);
+        }
+    }
+
+    return notifications;
+}
+
 void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 {
     for (const UpdateNotification &notification : notifications) {

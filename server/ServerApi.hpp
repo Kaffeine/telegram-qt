@@ -29,6 +29,7 @@ class Session;
 class LocalUser;
 class RemoteClientConnection;
 class AbstractUser;
+class MessageData;
 class MessageRecipient;
 class Storage;
 
@@ -101,7 +102,10 @@ public:
 
     virtual LocalUser *addUser(const QString &identifier) = 0;
 
+    virtual QVector<UpdateNotification> processMessage(MessageData *messageData) = 0;
+
     virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;
+
 };
 
 } // Server namespace
