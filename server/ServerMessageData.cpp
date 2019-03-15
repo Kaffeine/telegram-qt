@@ -19,6 +19,11 @@ void MessageData::setGlobalId(quint64 id)
     m_globalId = id;
 }
 
+bool MessageData::isMessageToSelf() const
+{
+    return (m_to.type == Peer::User) && (m_to.id == m_fromId);
+}
+
 void MessageData::addReference(const Peer &peer, quint32 messageId)
 {
     m_references.insert(peer, messageId);

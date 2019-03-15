@@ -39,6 +39,7 @@ public:
     Peer toPeer() const { return m_to; }
     quint32 fromId() const { return m_fromId; }
     quint32 date() const { return m_date; }
+    bool isMessageToSelf() const;
 
     void addReference(const Peer &peer, quint32 messageId);
     quint32 getReference(const Peer &peer) const { return m_references.value(peer); }
