@@ -15,6 +15,8 @@ set(generator_SOURCES
     Generator.hpp
 )
 
+set(SCHEME_FILE "scheme-72.tl")
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -39,4 +41,11 @@ target_link_libraries(generator LINK_PUBLIC
     Qt5::Core
     Qt5::Network
     ${ZLIB_LIBRARIES}
+)
+
+add_custom_target(run_codegen
+    COMMAND generator --generate-from-text ${CMAKE_CURRENT_SOURCE_DIR}/${SCHEME_FILE} -I ${CMAKE_SOURCE_DIR}/TelegramQt
+    DEPENDS generator
+    SOURCES ${SCHEME_FILE}
+    VERBATIM
 )
