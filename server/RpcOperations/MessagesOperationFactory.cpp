@@ -1691,12 +1691,57 @@ void MessagesRpcOperation::runSendInlineBotResult()
 
 void MessagesRpcOperation::runSendMedia()
 {
-    // TLFunctions::TLMessagesSendMedia &arguments = m_sendMedia;
-    if (processNotImplementedMethod(TLValue::MessagesSendMedia)) {
+    TLFunctions::TLMessagesSendMedia &arguments = m_sendMedia;
+
+    LocalUser *self = layer()->getUser();
+    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, self->id());
+    MessageRecipient *recipient = api()->getRecipient(targetPeer, self);
+
+    if (!recipient) {
+        sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
     }
-    TLUpdates result;
-    sendRpcReply(result);
+
+    MediaData media;
+
+    if (arguments.media.file.id) {
+        const TLInputFile &inFile = arguments.media.file;
+        FileDescriptor desc = api()->storage()->getFileDescriptor(inFile.id, inFile.parts);
+
+        switch (arguments.media.tlType) {
+        case TLValue::InputMediaUploadedDocument:
+        {
+            desc = api()->storage()->saveDocumentFile(desc, inFile.name, arguments.media.mimeType);
+
+            if (!desc.isValid()) {
+                sendRpcError(RpcError());
+            }
+
+            media.type = MediaData::Document;
+            media.file = desc;
+            media.mimeType = arguments.media.mimeType;
+            media.caption = arguments.media.caption;
+            for (const TLDocumentAttribute &attribute : arguments.media.attributes) {
+                switch (attribute.tlType) {
+                case TLValue::DocumentAttributeFilename:
+                    media.attributes.append(DocumentAttribute::fromFileName(attribute.fileName));
+                    break;
+                default:
+                    break;
+                }
+            }
+            break;
+        }
+        default:
+            if (!desc.isValid()) {
+                sendRpcError(RpcError());
+            }
+            break;
+        }
+    }
+
+    MessageData *messageData = api()->storage()->addMessageMedia(self->id(), targetPeer, media);
+    submitMessageData(messageData, arguments.randomId);
 }
 
 void MessagesRpcOperation::runSendMessage()
