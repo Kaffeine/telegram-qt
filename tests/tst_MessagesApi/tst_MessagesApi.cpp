@@ -17,29 +17,27 @@
 
 #include <QObject>
 
+// Client
 #include "AccountStorage.hpp"
+#include "CAppInformation.hpp"
 #include "Client.hpp"
 #include "ClientSettings.hpp"
 #include "ConnectionApi.hpp"
+#include "ContactList.hpp"
+#include "ContactsApi.hpp"
 #include "DataStorage.hpp"
-#include "Utils.hpp"
 #include "TelegramNamespace.hpp"
-#include "CAppInformation.hpp"
+#include "DialogList.hpp"
+#include "DcConfiguration.hpp"
+#include "MessagingApi.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
 #include "Operations/PendingContactsOperation.hpp"
 #include "Operations/PendingMessages.hpp"
 
-#include "ContactList.hpp"
-#include "ContactsApi.hpp"
-#include "DialogList.hpp"
-#include "RemoteClientConnection.hpp"
+// Server
 #include "TelegramServerUser.hpp"
-#include "ServerApi.hpp"
-#include "ServerRpcLayer.hpp"
-#include "DcConfiguration.hpp"
 #include "LocalCluster.hpp"
-#include "MessagingApi.hpp"
 
 #include <QTest>
 #include <QSignalSpy>
@@ -52,8 +50,6 @@
 #include "TestServerUtils.hpp"
 #include "TestUserData.hpp"
 #include "TestUtils.hpp"
-
-using namespace Telegram;
 
 using namespace Telegram;
 
@@ -120,9 +116,6 @@ void tst_MessagesApi::getDialogs()
     cluster.setServerConfiguration(c_localDcConfiguration);
     QVERIFY(cluster.start());
 
-    Server::ServerApi *server = cluster.getServerApiInstance(user1Data.dcId);
-    QVERIFY(server);
-
     Server::LocalUser *user1 = tryAddUser(&cluster, user1Data);
     Server::LocalUser *user2 = tryAddUser(&cluster, user2Data);
     QVERIFY(user1 && user2);
@@ -134,10 +127,7 @@ void tst_MessagesApi::getDialogs()
         Client::AuthOperation *signInOperation1 = nullptr;
         signInHelper(&client1, user1Data, &authProvider, &signInOperation1);
         TRY_VERIFY2(signInOperation1->isSucceeded(), "Unexpected sign in fail");
-        quint64 client1AuthId = client1.accountStorage()->authId();
-        QVERIFY(client1AuthId);
         QCOMPARE(client1.accountStorage()->phoneNumber(), user1Data.phoneNumber);
-        QCOMPARE(client1.accountStorage()->dcInfo().id, server->dcId());
     }
     TRY_VERIFY(client1.isSignedIn());
 
@@ -147,10 +137,7 @@ void tst_MessagesApi::getDialogs()
         Client::AuthOperation *signInOperation2 = nullptr;
         signInHelper(&client2, user2Data, &authProvider, &signInOperation2);
         TRY_VERIFY2(signInOperation2->isSucceeded(), "Unexpected sign in fail");
-        quint64 client2AuthId = client2.accountStorage()->authId();
-        QVERIFY(client2AuthId);
         QCOMPARE(client2.accountStorage()->phoneNumber(), user2Data.phoneNumber);
-        QCOMPARE(client2.accountStorage()->dcInfo().id, server->dcId());
     }
     TRY_VERIFY(client2.isSignedIn());
 
@@ -324,31 +311,18 @@ void tst_MessagesApi::getMessage()
     cluster.setServerConfiguration(c_localDcConfiguration);
     QVERIFY(cluster.start());
 
-    Server::ServerApi *server = cluster.getServerApiInstance(user1Data.dcId);
-    QVERIFY(server);
-
     Server::LocalUser *user1 = tryAddUser(&cluster, user1Data);
     Server::LocalUser *user2 = tryAddUser(&cluster, user2Data);
     QVERIFY(user1 && user2);
 
     // Prepare clients
     Client::Client client1;
-    {
-        setupClientHelper(&client1, user1Data, publicKey, clientDcOption);
-        Client::AuthOperation *signInOperation1 = nullptr;
-        signInHelper(&client1, user1Data, &authProvider, &signInOperation1);
-        TRY_VERIFY2(signInOperation1->isSucceeded(), "Unexpected sign in fail");
-    }
-    TRY_VERIFY(client1.isSignedIn());
-
+    setupClientHelper(&client1, user1Data, publicKey, clientDcOption);
+    signInHelper(&client1, user1Data, &authProvider);
     Client::Client client2;
-    {
-        setupClientHelper(&client2, user2Data, publicKey, clientDcOption);
-        Client::AuthOperation *signInOperation2 = nullptr;
-        signInHelper(&client2, user2Data, &authProvider, &signInOperation2);
-        TRY_VERIFY2(signInOperation2->isSucceeded(), "Unexpected sign in fail");
-    }
-    TRY_VERIFY(client2.isSignedIn());
+    setupClientHelper(&client2, user2Data, publicKey, clientDcOption);
+    signInHelper(&client2, user2Data, &authProvider);
+    TRY_VERIFY2(client1.isSignedIn() && client2.isSignedIn(), "Unexpected sign in fail");
 
     Telegram::Peer client2AsClient1Peer;
     Telegram::Peer client1AsClient2Peer;
