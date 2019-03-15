@@ -16,16 +16,18 @@
  */
 
 #include <QCoreApplication>
-#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QLoggingCategory>
 #include <QCommandLineParser>
 
 #include <QJsonDocument>
 
 #include "Generator.hpp"
+
+Q_LOGGING_CATEGORY(c_loggingFileWriter, "telegram.generator.writer", QtWarningMsg)
 
 enum StatusCode {
     NoError,
@@ -395,13 +397,13 @@ OutputFile::~OutputFile()
         fileContent.replace(QByteArrayLiteral("\n"), QByteArrayLiteral("\r\n"));
     }
     if (previousContent == fileContent) {
-        printf("No changes in file %s\n", m_fileName.toUtf8().constData());
+        qCDebug(c_loggingFileWriter) << "No changes in file" << m_fileName;
         return;
     }
     fileToProcess.close();
     fileToProcess.setFileName(s_outputDir + m_fileName);
     if (s_dryRun) {
-        printf("Replacing is done (dry run).\n");
+        qCDebug(c_loggingFileWriter) << "Replacing is done (dry run)";
         return;
     }
     if (!fileToProcess.open(QIODevice::WriteOnly|QIODevice::Truncate)) {
@@ -409,7 +411,7 @@ OutputFile::~OutputFile()
         return;
     }
     fileToProcess.write(fileContent);
-    printf("Replacing is done.\n");
+    qCDebug(c_loggingFileWriter) << "Replacing is done.";
 }
 
 bool OutputFile::replaceParts(const char *marker, const QString &newContent, int spacing)
@@ -417,7 +419,8 @@ bool OutputFile::replaceParts(const char *marker, const QString &newContent, int
     const QString space(spacing, QChar(' '));
     if (!replace(QStringLiteral("%1// Partially generated %2\n").arg(space).arg(marker),
                  QStringLiteral("%1// End of partially generated %2\n").arg(space).arg(marker), newContent)) {
-        printf("Can not update file %s with marker %s.\n", m_fileName.toLatin1().constData(), marker);
+        qCWarning(c_loggingFileWriter) << "Can not update file" << m_fileName
+                                       << "with marker" << marker;
         return false;
     }
     return true;
@@ -426,9 +429,10 @@ bool OutputFile::replaceParts(const char *marker, const QString &newContent, int
 bool OutputFile::replace(const QString &marker, const QString &newContent, int spacing)
 {
     const QString space(spacing, QChar(' '));
-    if (!replace(QString("%1// Generated %2\n").arg(space, marker),
-                 QString("%1// End of generated %2\n").arg(space, marker), newContent)) {
-        printf("Can not update file %s with marker %s.\n", m_fileName.toLatin1().constData(), marker.toUtf8().constData());
+    if (!replace(QStringLiteral("%1// Generated %2\n").arg(space, marker),
+                 QStringLiteral("%1// End of generated %2\n").arg(space, marker), newContent)) {
+        qCWarning(c_loggingFileWriter) << "Can not update file" << m_fileName
+                                       << "with marker" << marker;
         return false;
     }
     return true;
@@ -441,12 +445,12 @@ bool OutputFile::replace(const QString &startMarker, const QString &endMarker, Q
 
     if (startPos >= 0) {
         if (endPos < 0) {
-            printf("There is only start marker in the file %s. Error.\n", m_fileName.toLocal8Bit().constData());
+            qCWarning(c_loggingFileWriter) << "There is only start marker in file" << m_fileName;
             return false;
         }
         endPos += endMarker.length();
     } else {
-        printf("There is no start marker in the file %s. Error.\n", m_fileName.toLocal8Bit().constData());
+        qCWarning(c_loggingFileWriter) << "There is no start marker in the file" << m_fileName;
         return false;
     }
 
@@ -472,7 +476,7 @@ bool OutputFile::replace(const QString &startMarker, const QString &endMarker, Q
                newContent.toLocal8Bit().constData());
     }
     if (!changed) {
-        printf("Nothing to do: new and previous contents are exactly same.\n");
+        qCDebug(c_loggingFileWriter) << "Nothing to do: the file is not changed" << m_fileName;
         return true;
     }
     m_content.remove(startPos, endPos - startPos);

@@ -30,7 +30,7 @@
 
 //Q_LOGGING_CATEGORY(c_loggingGenerator, "telegram.generator", QtDebugMsg)
 Q_LOGGING_CATEGORY(c_loggingTextParser, "telegram.generator.textParser", QtWarningMsg)
-Q_LOGGING_CATEGORY(c_loggingTlValues, "telegram.generator.values", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_loggingTlValues, "telegram.generator.values", QtWarningMsg)
 
 static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
@@ -1774,7 +1774,7 @@ bool Generator::loadFromText(const QByteArray &data)
     std::sort(m_functionGroups.begin(), m_functionGroups.end(), [](const QString &s1, const QString &s2) {
         return s1 < s2;
     });
-    qDebug() << "Sort:" << m_functionGroups;
+    qCDebug(c_loggingTextParser) << "Sort:" << m_functionGroups;
 
     return true;
 }
@@ -1932,7 +1932,7 @@ void Generator::generate()
 
 QStringList Generator::generateTLValues()
 {
-    qCDebug(c_loggingTlValues()) << Q_FUNC_INFO;
+    qCDebug(c_loggingTlValues) << Q_FUNC_INFO;
     QStringList result;
     foreach (const QStringList &group, m_groups) {
         if (group.isEmpty()) {
@@ -1972,7 +1972,7 @@ QStringList Generator::generateTLValues()
     }
     for (const Predicate *predicate : m_extraPredicates) {
         const QString value = generateTLValuesDefinition(predicate);
-        qCDebug(c_loggingTlValues()) << "Add extra predicate:" << value;
+        qCDebug(c_loggingTlValues) << "Add extra predicate:" << value;
         result.append(value);
     }
     return result;
@@ -2175,7 +2175,7 @@ Generator::LineParseResult Generator::parseLine(const QString &line)
         const int templateBegin = basePart.indexOf(QLatin1Char('{'));
         const int templateEnd = basePart.indexOf(QLatin1Char('}'));
         QStringRef templ = basePart.mid(templateBegin + 1, templateEnd - templateBegin - 1);
-        printf("Read template %s, type %s.\n", templ.toLatin1().constData(), predicateBaseName.toLatin1().constData());
+        qCDebug(c_loggingTextParser) << "Read template" << templ << "type" << predicateBaseName;
         skipParams = true;
     }
 
