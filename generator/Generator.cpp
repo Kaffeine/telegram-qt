@@ -2283,7 +2283,10 @@ QMap<quint8, QString> TLType::getBoolFlags() const
         QMap<quint8, QString> subTypeFlags = subType.getBoolFlags();
         for (quint8 flagBit : subTypeFlags.keys()) {
             if (result.contains(flagBit) && (result.value(flagBit) != subTypeFlags.value(flagBit))) {
-                qWarning() << Q_FUNC_INFO << "TODO: Process multiflags";
+                qCWarning(c_loggingTlValues).noquote()
+                        << Q_FUNC_INFO
+                        << "FIXME: Multiflag is not processed for type"
+                        << name << '/' << subType.name;
                 continue;
             }
             result.insert(flagBit, subTypeFlags.value(flagBit));
