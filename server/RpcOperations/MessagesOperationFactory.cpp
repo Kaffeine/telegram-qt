@@ -1067,7 +1067,7 @@ void MessagesRpcOperation::runGetHistory()
     const Peer peer = api()->getPeer(arguments.peer, self);
     const QHash<quint32,quint64> messageKeys = self->getPostBox()->getAllMessageKeys();
 
-    if (arguments.offsetDate || arguments.addOffset || arguments.minId || arguments.maxId || arguments.hash) {
+    if (arguments.offsetDate || arguments.minId || arguments.maxId || arguments.hash) {
         qCritical() << Q_FUNC_INFO << "Not implemented for requested arguments" << arguments.peer.tlType;
         processNotImplementedMethod(TLValue::MessagesGetHistory);
         sendRpcError(RpcError());
@@ -1107,6 +1107,11 @@ void MessagesRpcOperation::runGetHistory()
             if (peer != messageDialogPeer) {
                 continue;
             }
+        }
+
+        if (arguments.addOffset > 0) {
+            --arguments.addOffset;
+            continue;
         }
 
         result.messages.append(message);
