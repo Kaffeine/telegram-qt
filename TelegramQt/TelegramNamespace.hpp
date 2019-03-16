@@ -86,6 +86,7 @@ public:
 };
 
 using PeerList = QVector<Peer>;
+using MessageIdList = QVector<quint32>;
 
 inline uint qHash(const Peer &key, uint seed)
 {
