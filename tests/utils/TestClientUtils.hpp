@@ -57,10 +57,15 @@ void setupClientHelper(Telegram::Client::Client *client, const UserData &userDat
 }
 
 void signInHelper(Telegram::Client::Client *client, const UserData &userData, Telegram::Test::AuthProvider *authProvider,
+                           Telegram::Client::AuthOperation **output = nullptr);
+
+void signInHelper(Telegram::Client::Client *client, const UserData &userData, Telegram::Test::AuthProvider *authProvider,
                            Telegram::Client::AuthOperation **output)
 {
     Telegram::Client::AuthOperation *signInOperation = client->connectionApi()->startAuthentication();
-    *output = signInOperation;
+    if (output) {
+        *output = signInOperation;
+    }
     QSignalSpy serverAuthCodeSpy(authProvider, &Telegram::Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Telegram::Client::AuthOperation::authCodeRequired);
     signInOperation->setPhoneNumber(userData.phoneNumber);
