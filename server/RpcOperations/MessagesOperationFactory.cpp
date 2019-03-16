@@ -1067,7 +1067,7 @@ void MessagesRpcOperation::runGetHistory()
     const Peer peer = api()->getPeer(arguments.peer, self);
     const QHash<quint32,quint64> messageKeys = self->getPostBox()->getAllMessageKeys();
 
-    if (arguments.offsetId || arguments.offsetDate || arguments.addOffset || arguments.minId || arguments.maxId || arguments.hash) {
+    if (arguments.offsetDate || arguments.addOffset || arguments.minId || arguments.maxId || arguments.hash) {
         qCritical() << Q_FUNC_INFO << "Not implemented for requested arguments" << arguments.peer.tlType;
         processNotImplementedMethod(TLValue::MessagesGetHistory);
         sendRpcError(RpcError());
@@ -1081,7 +1081,10 @@ void MessagesRpcOperation::runGetHistory()
     TLMessagesMessages result;
     result.messages.reserve(actualLimit);
 
-    for (quint32 messageId = self->getPostBox()->lastMessageId(); messageId != 0; --messageId) {
+    const quint32 fromMessageId = arguments.offsetId
+            ? arguments.offsetId - 1
+            : self->getPostBox()->lastMessageId();
+    for (quint32 messageId = fromMessageId; messageId != 0; --messageId) {
         const quint64 globalMessageId = messageKeys.value(messageId);
         if (!globalMessageId) {
             // It's OK to have no message e.g. for deleted entires
