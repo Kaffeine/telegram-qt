@@ -20,9 +20,13 @@
 #include "ApiUtils.hpp"
 #include "RandomGenerator.hpp"
 #include "TLTypesDebug.hpp"
-#include "Debug.hpp"
+#include "Debug_p.hpp"
 
 #include "TelegramNamespace_p.hpp"
+
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include <QLoggingCategory>
 
@@ -190,11 +194,52 @@ InMemoryDataStorage::InMemoryDataStorage(QObject *parent) :
 QByteArray InMemoryDataStorage::saveState() const
 {
     Q_D(const DataStorage);
+
+    QJsonArray dialogArray;
+    qDebug() << "Dialogs to save:";
+    const QHash<Peer, DialogState> *dialogState = d->internalApi()->dialogStates();
+
+    for (const Peer &dialog : dialogState->keys()) {
+        DialogState state = dialogState->value(dialog);
+        qWarning() << "dialog:" << dialog.toString() << "last message id:" << state.syncedMessageId;
+        QJsonObject dialogObject;
+        dialogObject[QLatin1String("peer")] = dialog.toString();
+        dialogObject[QLatin1String("lastMessageId")] = static_cast<int>(state.syncedMessageId);
+        dialogArray.append(dialogObject);
+    }
+    QJsonObject root;
+    root[QLatin1String("version")] = 1;
+    root[QLatin1String("dialogs")] = dialogArray;
+    return QJsonDocument(root).toJson();
 }
 
 void InMemoryDataStorage::loadState(const QByteArray &data)
 {
     Q_D(DataStorage);
+    QHash<Peer, DialogState> *dialogState = d->internalApi()->dialogStates();
+    dialogState->clear();
+
+    // m_syncFinished = false;
+
+    const QJsonObject root = QJsonDocument::fromJson(data).object();
+    const QJsonArray dialogArray = root.value(QLatin1String("dialogs")).toArray();
+    for (const QJsonValue &dialogValue : dialogArray) {
+        const QJsonObject dialogObject = dialogValue.toObject();
+        const Telegram::Peer peer = Telegram::Peer::fromString(dialogObject.value(QLatin1String("peer")).toString());
+        if (!peer.isValid()) {
+            qWarning() << Q_FUNC_INFO << "Invalid dialog peer:" << dialogObject.value(QLatin1String("peer"));
+            continue;
+        }
+        DialogState state;
+        state.syncedMessageId = static_cast<quint32>(dialogObject.value(QLatin1String("lastMessageId")).toInt());
+        dialogState->insert(peer, state);
+    }
+
+    qDebug() << "Loaded dialogs:";
+    for (const Telegram::Peer &dialog : dialogState->keys()) {
+        DialogState state = dialogState->value(dialog);
+        qDebug() << "dialog:" << dialog.toString() << "last message id:" << state.syncedMessageId;
+    }
 }
 
 DataInternalApi::DataInternalApi(QObject *parent) :
@@ -495,6 +540,20 @@ int Telegram::Client::DataInternalApi::getDialogIndex(const Telegram::Peer &peer
         }
     }
     return -1;
+}
+
+DialogState *DataInternalApi::ensureDialogState(const Peer peer)
+{
+    if (!m_dialogStates.contains(peer)) {
+        qDebug() << CALL_INFO << "New dialog" << peer;
+        m_dialogStates.insert(peer, DialogState());
+    }
+    return &m_dialogStates[peer];
+}
+
+const DialogState DataInternalApi::getDialogState(const Peer peer) const
+{
+    return m_dialogStates.value(peer);
 }
 
 DataStoragePrivate *DataStoragePrivate::get(DataStorage *parent)

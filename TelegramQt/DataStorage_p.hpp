@@ -31,12 +31,24 @@ namespace Client {
 
 class DataInternalApi;
 
+struct DialogState {
+    bool isValid() const { return syncedMessageId || !pendingIds.isEmpty() || synced; }
+    // The most recent message id we ever know for this dialog
+    // The last message id that we sent to Telepathy Client for this dialog
+    quint32 syncedMessageId = 0;
+    QVector<quint32> pendingIds;
+
+    // This dialog is synced
+    bool synced = false;
+};
+
 class DataStoragePrivate
 {
 public:
     static DataStoragePrivate *get(DataStorage *parent);
 
     DataInternalApi *internalApi() { return m_api; }
+    const DataInternalApi *internalApi() const { return m_api; }
 
     DcConfiguration m_serverConfig;
     DataInternalApi *m_api = nullptr;
@@ -96,7 +108,16 @@ public:
     const TLVector<TLDialog> &dialogs() const { return m_dialogs; }
     int getDialogIndex(const Peer &peer) const;
 
+    const QHash<Peer, DialogState> *dialogStates() const { return &m_dialogStates; }
+    QHash<Peer, DialogState> *dialogStates() { return &m_dialogStates; }
+    DialogState *ensureDialogState(const Peer peer);
+
+    // For testing:
+    const DialogState getDialogState(const Peer peer) const;
+
 protected:
+    QHash<Telegram::Peer, DialogState> m_dialogStates;
+
     QHash<quint32, TLUser *> m_users;
     QHash<quint32, TLChat *> m_chats;
     QHash<quint32, TLMessage *> m_clientMessages;

@@ -83,6 +83,16 @@ public:
         // (flags & 1 << 7) stands for clearDraft "true" value
     };
 
+    enum SyncMode {
+        NoSync, // Do not load updates
+        ManualSync, // Fetch delta for selected peers
+        // AutoSync, // Fetch delta for all dialogs
+    };
+    void setSyncMode(SyncMode mode);
+    PendingOperation *syncPeers(const Telegram::PeerList &peers);
+    quint32 syncLimit() const;
+    void setSyncLimit(quint32 perDialogLimit); // 0 stands for 'unlimited'
+
     DialogList *getDialogList();
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
 
@@ -96,6 +106,8 @@ public slots:
     void readHistory(const Telegram::Peer peer, quint32 messageId);
 
 Q_SIGNALS:
+    void syncMessages(const Telegram::Peer &peer, const QVector<quint32> &messages);
+
     void messageReceived(const Telegram::Peer peer, quint32 messageId);
     void messageSent(const Telegram::Peer peer, quint64 messageRandomId, quint32 messageId);
     // We read an incoming message(s)

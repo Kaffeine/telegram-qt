@@ -21,8 +21,8 @@
 #include "ClientApi_p.hpp"
 #include "MessagingApi.hpp"
 
-#include "ClientRpcChannelsLayer.hpp"
-#include "ClientRpcMessagesLayer.hpp"
+#include "RpcLayers/ClientRpcChannelsLayer.hpp"
+#include "RpcLayers/ClientRpcMessagesLayer.hpp"
 
 namespace Telegram {
 
@@ -41,6 +41,11 @@ class MessagingApiPrivate : public ClientApiPrivate
     Q_OBJECT
     Q_DECLARE_PUBLIC(MessagingApi)
 public:
+    enum class SyncState {
+        NotStarted,
+        InProgress,
+        Finished,
+    };
     explicit MessagingApiPrivate(MessagingApi *parent = nullptr);
     static MessagingApiPrivate *get(MessagingApi *parent);
 
@@ -54,6 +59,8 @@ public:
     void onMessageInboxRead(const Telegram::Peer peer, quint32 messageId);
     void onMessageOutboxRead(const Telegram::Peer peer, quint32 messageId);
 
+    PendingOperation *syncPeers(const Telegram::PeerList &peers);
+
     PendingOperation *getDialogs();
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
 
@@ -66,12 +73,21 @@ public:
     MessagesRpcLayer *m_messagesLayer = nullptr;
     quint64 m_expectedRandomMessageId = 0;
 
+    PendingOperation *m_syncOperation = nullptr;
+    int m_syncJobs = 0;
+    quint32 m_syncLimit = 0;
+    MessagingApi::SyncMode m_syncMode = MessagingApi::NoSync;
+    SyncState m_syncState = SyncState::NotStarted;
+
 protected slots:
     void onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation);
     void onGetHistoryFinished(PendingMessages *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation);
     void onReadHistoryFinished(const Peer peer, quint32 messageId, MessagesRpcLayer::PendingMessagesAffectedMessages *rpcOperation);
     void onReadChannelHistoryFinished(const Peer peer, quint32 messageId, ChannelsRpcLayer::PendingBool *rpcOperation);
     void onHistoryReadSucceeded(const Peer peer, quint32 messageId);
+    void onSyncHistoryReceived(PendingMessages *operation);
+
+    bool pushBackNewOldMessages(const Telegram::Peer &peer, const QVector<quint32> &messages);
 };
 
 } // Client namespace
