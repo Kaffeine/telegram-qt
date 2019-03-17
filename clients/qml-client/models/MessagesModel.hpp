@@ -263,7 +263,7 @@ Q_SIGNALS:
 protected:
     void insertMessages(const QVector<quint32> &messageIds);
 
-    void processMessages(const QVector<quint32> &messageIds);
+    void processHistoryMessages(const QVector<quint32> &messageIds);
     void onMessageReceived(const Telegram::Peer peer, quint32 messageId);
 
     static Role intToRole(int value);
@@ -272,6 +272,7 @@ protected:
     QString roleToName(Role role) const;
 
     PendingMessages *m_fetchOperation = nullptr;
+    quint32 m_oldestMessageId = 0;
     QVector<Event*> m_events;
     Telegram::Peer m_peer;
 };

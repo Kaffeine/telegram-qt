@@ -501,10 +501,21 @@ void MessagesModel::onPeerChanged()
     qDeleteAll(m_events);
     m_events.clear();
     endResetModel();
-    if (m_peer.isValid()) {
-        fetchPrevious();
+
+    m_oldestMessageId = 0;
+
+    if (!m_peer.isValid()) {
         return;
     }
+
+    DialogInfo info;
+    dataStorage()->getDialogInfo(&info, m_peer);
+
+    m_oldestMessageId = info.lastMessageId();
+
+    insertMessages({m_oldestMessageId});
+
+    fetchPrevious();
 }
 
 void MessagesModel::fetchPrevious()
@@ -516,9 +527,17 @@ void MessagesModel::fetchPrevious()
     if (m_fetchOperation) {
         return;
     }
-    m_fetchOperation = client()->messagingApi()->getHistory(m_peer, MessageFetchOptions::useLimit(10));
+
+    DialogInfo info;
+    dataStorage()->getDialogInfo(&info, m_peer);
+
+    MessageFetchOptions fetchOptions;
+    fetchOptions.limit = 10;
+    fetchOptions.offsetId = m_oldestMessageId;
+
+    m_fetchOperation = client()->messagingApi()->getHistory(m_peer, fetchOptions);
     connect(m_fetchOperation, &PendingMessages::finished, this, [this] () {
-        processMessages(m_fetchOperation->messages());
+        processHistoryMessages(m_fetchOperation->messages());
         m_fetchOperation->deleteLater();
         m_fetchOperation = nullptr;
     });
@@ -553,13 +572,34 @@ void MessagesModel::insertMessages(const QVector<quint32> &messageIds)
     endInsertRows();
 }
 
-void MessagesModel::processMessages(const QVector<quint32> &messageIds)
+void MessagesModel::processHistoryMessages(const QVector<quint32> &messageIds)
 {
-    beginResetModel();
-    qDeleteAll(m_events);
-    m_events.clear();
-    insertMessages(messageIds);
-    endResetModel();
+    if (messageIds.isEmpty()) {
+        return;
+    }
+    m_oldestMessageId = messageIds.last();
+    QVector<Event*> newEvents;
+    // messageIds sorted from new to old
+    for (int i = messageIds.count() - 1; i >= 0; --i) {
+        // Reverse order from older to newer
+        const quint32 messageId = messageIds.at(i);
+        Message m;
+        if (!m_qmlClient->client()->dataStorage()->getMessage(&m, m_peer, messageId)) {
+            continue;
+        }
+
+        MessageEvent *event = new MessageEvent();
+        event->messageId = messageId;
+        event->fromId = m.fromId;
+        event->text = m.text;
+        event->receivedTimestamp = m.timestamp;
+        event->sentTimestamp = event->receivedTimestamp;
+        newEvents.append(event);
+    }
+
+    beginInsertRows(QModelIndex(), 0, newEvents.count() - 1);
+    m_events = newEvents + m_events;
+    endInsertRows();
 }
 
 void MessagesModel::onMessageReceived(const Peer peer, quint32 messageId)
