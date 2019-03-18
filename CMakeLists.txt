@@ -34,7 +34,6 @@ option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra out
 option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)
 option(ENABLE_COVERAGE_HTML "Generate an HTML report for the code-coverage analysis result" FALSE)
 
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
 
