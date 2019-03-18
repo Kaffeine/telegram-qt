@@ -1110,13 +1110,8 @@ void MessagesRpcOperation::runGetHistory()
             continue;
         }
 
-        TLMessage message;
-        Utils::setupTLMessage(&message, messageData, messageId, self);
-
-        // Possible optimization: filter out by message dialog before setupTLMessage()
-        const Telegram::Peer messageDialogPeer = Telegram::Utils::getMessageDialogPeer(message, self->userId());
         if (peer.isValid()) {
-            if (peer != messageDialogPeer) {
+            if (peer != messageData->getDialogPeer(self->id())) {
                 continue;
             }
         }
@@ -1125,6 +1120,9 @@ void MessagesRpcOperation::runGetHistory()
             --arguments.addOffset;
             continue;
         }
+
+        TLMessage message;
+        Utils::setupTLMessage(&message, messageData, messageId, self);
 
         result.messages.append(message);
         if (result.messages.count() >= actualLimit) {

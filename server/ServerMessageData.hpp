@@ -44,6 +44,8 @@ public:
     void addReference(const Peer &peer, quint32 messageId);
     quint32 getReference(const Peer &peer) const { return m_references.value(peer); }
 
+    Peer getDialogPeer(quint32 applicantUserId) const;
+
 protected:
     QHash<Peer, quint32> m_references;
     QString m_text;

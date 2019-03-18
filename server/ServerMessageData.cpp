@@ -29,6 +29,16 @@ void MessageData::addReference(const Peer &peer, quint32 messageId)
     m_references.insert(peer, messageId);
 }
 
+Peer MessageData::getDialogPeer(quint32 applicantUserId) const
+{
+    if (m_to.type == Peer::User) {
+        if (m_to.id == applicantUserId) {
+            return Peer::fromUserId(m_fromId);
+        }
+    }
+    return m_to;
+}
+
 } // Server namespace
 
 } // Telegram namespace
