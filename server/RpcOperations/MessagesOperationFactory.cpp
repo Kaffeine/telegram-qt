@@ -1076,26 +1076,23 @@ void MessagesRpcOperation::runGetHistory()
 
     constexpr int c_serverHistorySliceLimit = 30;
     const int serverLimit = qMin<int>(c_serverHistorySliceLimit, messageKeys.count());
-    const int actualLimit = arguments.limit
+    int maxMessagesToAppend = arguments.limit
             ? qMin<int>(static_cast<int>(arguments.limit), serverLimit)
             : serverLimit;
 
     TLMessagesMessages result;
-    result.messages.reserve(actualLimit);
+    result.messages.reserve(maxMessagesToAppend);
 
+    // from inclusive messageId
     const quint32 fromMessageId = arguments.offsetId
             ? arguments.offsetId - 1
             : self->getPostBox()->lastMessageId();
+
     // Iterate from newer messages (with bigger id) to older
-    for (quint32 messageId = fromMessageId; messageId != 0; --messageId) {
+    for (quint32 messageId = fromMessageId; (messageId != 0) && (maxMessagesToAppend > 0); --messageId) {
         if (arguments.minId) {
             if (messageId <= arguments.minId) {
                 break;
-            }
-        }
-        if (arguments.maxId) {
-            if (messageId >= arguments.maxId) {
-                continue;
             }
         }
 
@@ -1126,10 +1123,15 @@ void MessagesRpcOperation::runGetHistory()
         TLMessage message;
         Utils::setupTLMessage(&message, messageData, messageId, self);
 
-        result.messages.append(message);
-        if (result.messages.count() >= actualLimit) {
-            break;
+        --maxMessagesToAppend;
+
+        if (arguments.maxId) {
+            if (messageId >= arguments.maxId) {
+                continue;
+            }
         }
+
+        result.messages.append(message);
     }
 
     QSet<Peer> interestingPeers;
