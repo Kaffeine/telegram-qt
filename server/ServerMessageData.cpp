@@ -19,6 +19,12 @@ void MessageData::setGlobalId(quint64 id)
     m_globalId = id;
 }
 
+// Needed for save/load and for autotests
+void MessageData::setDate(quint32 date)
+{
+    m_date = date;
+}
+
 bool MessageData::isMessageToSelf() const
 {
     return (m_to.type == Peer::User) && (m_to.id == m_fromId);
