@@ -1067,7 +1067,7 @@ void MessagesRpcOperation::runGetHistory()
     const Peer peer = api()->getPeer(arguments.peer, self);
     const QHash<quint32,quint64> messageKeys = self->getPostBox()->getAllMessageKeys();
 
-    if (arguments.offsetDate || arguments.hash) {
+    if (arguments.hash) {
         qCritical() << Q_FUNC_INFO << "Not implemented for requested arguments" << arguments.peer.tlType;
         processNotImplementedMethod(TLValue::MessagesGetHistory);
         sendRpcError(RpcError());
@@ -1107,6 +1107,12 @@ void MessagesRpcOperation::runGetHistory()
         if (!messageData) {
             // It's OK to have no message e.g. for deleted entires
             continue;
+        }
+
+        if (arguments.offsetDate) {
+            if (messageData->date() > arguments.offsetDate) {
+                continue;
+            }
         }
 
         if (peer.isValid()) {
