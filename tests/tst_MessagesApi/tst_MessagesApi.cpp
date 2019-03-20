@@ -36,8 +36,10 @@
 #include "Operations/PendingMessages.hpp"
 
 // Server
-#include "TelegramServerUser.hpp"
 #include "LocalCluster.hpp"
+#include "ServerApi.hpp"
+#include "Storage.hpp"
+#include "TelegramServerUser.hpp"
 
 #include <QTest>
 #include <QSignalSpy>
@@ -82,6 +84,8 @@ private slots:
     void cleanupTestCase();
     void getDialogs();
     void getMessage();
+    void getHistory_data();
+    void getHistory();
 };
 
 tst_MessagesApi::tst_MessagesApi(QObject *parent) :
@@ -422,6 +426,209 @@ void tst_MessagesApi::getMessage()
     // Check message marked read for client 1
     {
         TRY_COMPARE(client1MessageReadSpy.count(), 1);
+    }
+}
+
+void tst_MessagesApi::getHistory_data()
+{
+    QTest::addColumn<Telegram::Client::MessageFetchOptions>("fetchOptions");
+    QTest::addColumn<Telegram::MessageIdList>("messageIds");
+    QTest::addColumn<int>("messagesCount");
+    QTest::addColumn<quint32>("baseDate");
+
+    quint32 baseDate = 1500000000ul;
+
+    {
+        int messagesCount = 50;
+        Client::MessageFetchOptions fetchOptions;
+        fetchOptions.limit = 10;
+        MessageIdList list;
+        for (quint32 i = 0; i < fetchOptions.limit; ++i) {
+            list.append(static_cast<quint32>(messagesCount) - i);
+        }
+        QTest::newRow("Limit")
+                << fetchOptions
+                << list
+                << messagesCount
+                << baseDate;
+    }
+
+    {
+        int messagesCount = 50;
+        Client::MessageFetchOptions fetchOptions;
+        fetchOptions.limit = 5;
+        fetchOptions.offsetId = messagesCount - 4;
+        MessageIdList list;
+        for (quint32 i = 0; i < fetchOptions.limit; ++i) {
+            // The -1 is needed because 'offsetId is not included'
+            list.append(fetchOptions.offsetId - i - 1);
+        }
+        QTest::newRow("OffsetId")
+                << fetchOptions
+                << list
+                << messagesCount
+                << baseDate;
+    }
+
+    {
+        int messagesCount = 50;
+        Client::MessageFetchOptions fetchOptions;
+        fetchOptions.limit = 5;
+        fetchOptions.offsetId = messagesCount - 4;
+        fetchOptions.addOffset = 15;
+        MessageIdList list;
+        for (quint32 i = 0; i < fetchOptions.limit; ++i) {
+            // The -1 is needed because 'offsetId is not included'
+            list.append(fetchOptions.offsetId - fetchOptions.addOffset - i - 1);
+        }
+        QTest::newRow("offsetId + addOffset")
+                << fetchOptions
+                << list
+                << messagesCount
+                << baseDate;
+    }
+
+    {
+        constexpr int messagesCount = 50;
+        Client::MessageFetchOptions fetchOptions;
+        fetchOptions.limit = 5;
+        fetchOptions.offsetId = messagesCount - 4; // 46
+        fetchOptions.addOffset = 10; // from 31
+        fetchOptions.maxId = messagesCount - 6; // Remove messages newer than 44 (no effect)
+        MessageIdList list;
+        for (quint32 i = 0; i < fetchOptions.limit; ++i) {
+            // The -1 is needed because 'offsetId is not included'
+             // - fetchOptions.offsetId
+            list.append(fetchOptions.offsetId - fetchOptions.addOffset - i - 1);
+        }
+        // (50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, ..
+        //                  ^^   \__||______________________________/    |___|___|___|___|
+        //                offset    ^^      addOffset (10 messages)      result (5 messages)
+        //                         maxId
+        QTest::newRow("addOffset + maxId (no effect)")
+                << fetchOptions
+                << list
+                << messagesCount
+                << baseDate;
+    }
+
+    {
+        constexpr int messagesCount = 50;
+        Client::MessageFetchOptions fetchOptions;
+        fetchOptions.limit = 5;
+        fetchOptions.offsetId = messagesCount - 4; // 46
+        fetchOptions.addOffset = 3; // from 31
+        fetchOptions.maxId = fetchOptions.offsetId - fetchOptions.addOffset - 3; // 40
+        MessageIdList list = { 39, 38 };
+        // (50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, ..
+        //                  ^^   \______/    |_x_|_x_||___|___|
+        //                offset addOffset    result (5 messages)
+        //                         maxId           maxId
+
+        QTest::newRow("addOffset + maxId")
+                << fetchOptions
+                << list
+                << messagesCount
+                << baseDate;
+    }
+
+    {
+        constexpr int messagesCount = 30;
+        Client::MessageFetchOptions fetchOptions;
+        fetchOptions.offsetDate = baseDate; // id 12
+        MessageIdList list = {1};
+
+        QTest::newRow("offsetDate")
+                << fetchOptions
+                << list
+                << messagesCount
+                << baseDate;
+    }
+
+    {
+        constexpr int messagesCount = 30;
+        Client::MessageFetchOptions fetchOptions;
+        fetchOptions.limit = 4;
+        fetchOptions.offsetDate = baseDate + 12; // id 13
+        fetchOptions.addOffset = 3;
+        MessageIdList list = { 10, 9, 8, 7 };
+
+        QTest::newRow("offsetDate + addOffset")
+                << fetchOptions
+                << list
+                << messagesCount
+                << baseDate;
+    }
+}
+
+void tst_MessagesApi::getHistory()
+{
+    QFETCH(Telegram::Client::MessageFetchOptions, fetchOptions);
+    QFETCH(Telegram::MessageIdList, messageIds);
+    QFETCH(int, messagesCount);
+    QFETCH(quint32, baseDate);
+
+    const UserData c_user1 = c_userWithPassword;
+
+    const DcOption clientDcOption = c_localDcOptions.first();
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+
+    // Prepare server
+    Test::AuthProvider authProvider;
+    Telegram::Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_localDcConfiguration);
+    QVERIFY(cluster.start());
+
+    Server::LocalUser *user1 = tryAddUser(&cluster, c_user1);
+    Server::AbstractUser *user2 = tryAddUser(&cluster, c_user2);
+    QVERIFY(user1 && user2);
+
+    Server::ServerApi *server = cluster.getServerApiInstance(c_user1.dcId);
+    QVERIFY(server);
+
+    for (int i = 0; i < messagesCount; ++i) {
+        Server::MessageData *messageData = server->storage()->addMessage(
+                    user2->id(), user1->toPeer(), QString::number(i + 1));
+        messageData->setDate(static_cast<quint32>(baseDate + i));
+        server->processMessage(messageData);
+    }
+
+    // Prepare clients
+    Client::Client client;
+    setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+    signInHelper(&client, c_user1, &authProvider);
+    TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+    TRY_COMPARE(client.connectionApi()->status(), Telegram::Client::ConnectionApi::StatusReady);
+
+    Client::MessagingApi *messagingApi = client.messagingApi();
+    Telegram::Client::DialogList *dialogList = messagingApi->getDialogList();
+    {
+        PendingOperation *dialogsReady = dialogList->becomeReady();
+        TRY_VERIFY(dialogsReady->isFinished());
+        QVERIFY(dialogsReady->isSucceeded());
+    }
+    QCOMPARE(dialogList->peers().count(), 1);
+    COMPARE_PEERS(dialogList->peers().constFirst(), user2->toPeer());
+    const Peer dialogPeer = user2->toPeer();
+
+    DialogInfo dialogInfo;
+    client.dataStorage()->getDialogInfo(&dialogInfo, dialogPeer);
+    QCOMPARE(static_cast<int>(dialogInfo.lastMessageId()), messagesCount);
+
+    Client::PendingMessages *op = messagingApi->getHistory(dialogPeer, fetchOptions);
+    TRY_VERIFY(op->isFinished());
+    QVERIFY(op->isSucceeded());
+    COMPARE_PEERS(op->peer(), dialogPeer);
+    QVector<quint32> ids = op->messages();
+
+    qDebug() << ids;
+    QCOMPARE(ids.count(), messageIds.count());
+
+    for (int i = 0; i < ids.count(); ++i) {
+        QCOMPARE(ids.at(i), messageIds.at(i));
     }
 }
 
