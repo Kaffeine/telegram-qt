@@ -53,6 +53,12 @@
 #include "TestUserData.hpp"
 #include "TestUtils.hpp"
 
+#define TEST_PRIVATE_API
+
+#ifdef TEST_PRIVATE_API
+#include "DataStorage_p.hpp"
+#endif
+
 using namespace Telegram;
 
 static const UserData c_userWithPassword = []() {
@@ -61,7 +67,10 @@ static const UserData c_userWithPassword = []() {
     return userData;
 }();
 
+static const UserData c_user1 = mkUserData(1, 1);
 static const UserData c_user2 = mkUserData(2, 1);
+static const UserData c_user3 = mkUserData(3, 1);
+static const UserData c_user4 = mkUserData(4, 1);
 
 class tst_MessagesApi : public QObject
 {
@@ -76,6 +85,7 @@ private slots:
     void getMessage();
     void getHistory_data();
     void getHistory();
+    void syncPeerDialogs();
 };
 
 tst_MessagesApi::tst_MessagesApi(QObject *parent) :
@@ -619,6 +629,483 @@ void tst_MessagesApi::getHistory()
 
     for (int i = 0; i < ids.count(); ++i) {
         QCOMPARE(ids.at(i), messageIds.at(i));
+    }
+}
+
+void tst_MessagesApi::syncPeerDialogs()
+{
+    const DcOption clientDcOption = c_localDcOptions.first();
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+
+    // Prepare server
+    Test::AuthProvider authProvider;
+    Telegram::Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_localDcConfiguration);
+    QVERIFY(cluster.start());
+
+    Server::LocalUser *user1 = tryAddUser(&cluster, c_user1);
+    Server::AbstractUser *user2 = tryAddUser(&cluster, c_user2);
+    Server::AbstractUser *user3 = tryAddUser(&cluster, c_user3);
+    Server::AbstractUser *user4 = tryAddUser(&cluster, c_user4);
+    QVERIFY(user1 && user2 && user3 && user4);
+    user1->importContact(user2->toContact());
+
+    Server::ServerApi *server = cluster.getServerApiInstance(c_user1.dcId);
+    QVERIFY(server);
+
+    const quint32 c_lastId1 = 5;
+    MessageIdList messagesVol1;
+    for (quint32 i = 0; i < c_lastId1; ++i) {
+        Server::MessageData *messageData = server->storage()->addMessage(
+                    user2->id(), user1->toPeer(), QString::number(i + 1));
+        server->processMessage(messageData);
+        messagesVol1.append(c_lastId1 - i);
+    }
+
+    // Part1. First sync, few messages in one dialog.
+    QByteArray state1;
+    {
+        // Prepare client
+        Client::Client client;
+        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
+        client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
+        client.messagingApi()->setSyncLimit(0);
+
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        signInHelper(&client, c_user1, &authProvider);
+        TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+
+        Telegram::Client::DialogList *dialogList = client.messagingApi()->getDialogList();
+        {
+            PendingOperation *dialogsReady = dialogList->becomeReady();
+            TRY_VERIFY(dialogsReady->isFinished());
+            QVERIFY(dialogsReady->isSucceeded());
+        }
+        QCOMPARE(dialogList->peers().count(), 1);
+        PendingOperation *syncOp = client.messagingApi()->syncPeers(dialogList->peers());
+
+        {
+            DialogInfo dialogInfo;
+            client.dataStorage()->getDialogInfo(&dialogInfo, user2->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId1);
+        }
+        TRY_VERIFY(syncOp->isFinished());
+        QVERIFY(syncOp->isSucceeded());
+
+        TRY_COMPARE(syncMessages.count(), 1);
+        QList<QVariant> firstSignal = syncMessages.takeFirst();
+        QCOMPARE(firstSignal.count(), 2); // The signal has two arguments
+        Peer p = firstSignal.constFirst().value<Peer>();
+        MessageIdList messageIds = firstSignal.constLast().value<MessageIdList>();
+        COMPARE_PEERS(p, user2->toPeer());
+        qDebug() << messageIds;
+        QCOMPARE(messageIds, messagesVol1);
+
+        state1 = dataStorage->saveState();
+    }
+
+    // Part2. A dozen more messages in the same dialog.
+    const quint32 c_lastId2 = 20;
+    MessageIdList messagesVol2;
+    for (quint32 i = 0; i < (c_lastId2 - c_lastId1); ++i) {
+        Server::MessageData *messageData = server->storage()->addMessage(
+                    user2->id(), user1->toPeer(), QString::number(i + c_lastId1 + 1));
+        server->processMessage(messageData);
+        messagesVol2.append(c_lastId2 - i);
+    }
+
+    QByteArray state2;
+    {
+        // Prepare client
+        Client::Client client;
+        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
+        dataStorage->loadState(state1);
+#ifdef TEST_PRIVATE_API
+        Client::DataInternalApi *internalApi = Client::DataInternalApi::get(client.dataStorage());
+        QCOMPARE(internalApi->getDialogState(user2->toPeer()).syncedMessageId, c_lastId1);
+#endif
+        client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
+        client.messagingApi()->setSyncLimit(0);
+
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        signInHelper(&client, c_user1, &authProvider);
+        TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+
+        Telegram::Client::DialogList *dialogList = client.messagingApi()->getDialogList();
+        {
+            PendingOperation *dialogsReady = dialogList->becomeReady();
+            TRY_VERIFY(dialogsReady->isFinished());
+            QVERIFY(dialogsReady->isSucceeded());
+        }
+        QCOMPARE(dialogList->peers().count(), 1);
+        PendingOperation *syncOp = client.messagingApi()->syncPeers(dialogList->peers());
+
+        {
+            DialogInfo dialogInfo;
+            client.dataStorage()->getDialogInfo(&dialogInfo, user2->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId2);
+        }
+        TRY_VERIFY(syncOp->isFinished());
+        QVERIFY(syncOp->isSucceeded());
+
+        TRY_COMPARE(syncMessages.count(), 1);
+        QList<QVariant> firstSignal = syncMessages.takeFirst();
+        QCOMPARE(firstSignal.count(), 2); // The signal has two arguments
+        Peer p = firstSignal.constFirst().value<Peer>();
+        MessageIdList messageIds = firstSignal.constLast().value<MessageIdList>();
+        COMPARE_PEERS(p, user2->toPeer());
+        qDebug() << messageIds;
+        QCOMPARE(messageIds, messagesVol2);
+
+        state2 = dataStorage->saveState();
+    }
+
+    // Part3. Sync without initial data and with sync limit.
+    {
+        // Prepare client
+        Client::Client client;
+        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
+        client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
+        client.messagingApi()->setSyncLimit(5);
+        QCOMPARE(client.messagingApi()->syncLimit(), 5u);
+
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        signInHelper(&client, c_user1, &authProvider);
+        TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+
+        Telegram::Client::DialogList *dialogList = client.messagingApi()->getDialogList();
+        {
+            PendingOperation *dialogsReady = dialogList->becomeReady();
+            TRY_VERIFY(dialogsReady->isFinished());
+            QVERIFY(dialogsReady->isSucceeded());
+        }
+        QCOMPARE(dialogList->peers().count(), 1);
+        PendingOperation *syncOp = client.messagingApi()->syncPeers(dialogList->peers());
+
+        {
+            DialogInfo dialogInfo;
+            client.dataStorage()->getDialogInfo(&dialogInfo, user2->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId2);
+        }
+        TRY_VERIFY(syncOp->isFinished());
+        QVERIFY(syncOp->isSucceeded());
+
+        TRY_COMPARE(syncMessages.count(), 1);
+        QList<QVariant> firstSignal = syncMessages.takeFirst();
+        QCOMPARE(firstSignal.count(), 2); // The signal has two arguments
+        Peer p = firstSignal.constFirst().value<Peer>();
+        MessageIdList messageIds = firstSignal.constLast().value<MessageIdList>();
+        COMPARE_PEERS(p, user2->toPeer());
+        qDebug() << messageIds;
+        qDebug() << messagesVol2;
+        QCOMPARE(static_cast<quint32>(messageIds.count()), client.messagingApi()->syncLimit());
+
+        QByteArray limitedSyncData = dataStorage->saveState();
+        // Currently the sync data will be same regardless of the limit.
+        QCOMPARE(state2, limitedSyncData);
+    }
+
+    // Part4. New sync without initial data, no limit.
+    {
+        // Prepare client
+        Client::Client client;
+        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
+        client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
+        client.messagingApi()->setSyncLimit(0);
+
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        signInHelper(&client, c_user1, &authProvider);
+        TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+
+        Telegram::Client::DialogList *dialogList = client.messagingApi()->getDialogList();
+        {
+            PendingOperation *dialogsReady = dialogList->becomeReady();
+            TRY_VERIFY(dialogsReady->isFinished());
+            QVERIFY(dialogsReady->isSucceeded());
+        }
+        QCOMPARE(dialogList->peers().count(), 1);
+        PendingOperation *syncOp = client.messagingApi()->syncPeers(dialogList->peers());
+
+        {
+            DialogInfo dialogInfo;
+            client.dataStorage()->getDialogInfo(&dialogInfo, user2->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId2);
+        }
+        TRY_VERIFY(syncOp->isFinished());
+        QVERIFY(syncOp->isSucceeded());
+
+        TRY_COMPARE(syncMessages.count(), 1);
+        QList<QVariant> firstSignal = syncMessages.takeFirst();
+        QCOMPARE(firstSignal.count(), 2); // The signal has two arguments
+        Peer p = firstSignal.constFirst().value<Peer>();
+        MessageIdList messageIds = firstSignal.constLast().value<MessageIdList>();
+        COMPARE_PEERS(p, user2->toPeer());
+        qDebug() << messageIds;
+        QCOMPARE(messageIds, messagesVol2 + messagesVol1);
+
+        QByteArray unlimitedSyncData = dataStorage->saveState();
+        // Currently the sync data will be same regardless of the limit.
+        QCOMPARE(state2, unlimitedSyncData);
+    }
+
+    // Part5. A new dialog with a dozen messages and dozen more messages in the first dialog.
+    const quint32 c_lastId3 = 50;
+    MessageIdList messagesVol3_1;
+    MessageIdList messagesVol3_2;
+    for (quint32 i = 0; i < (c_lastId3 - c_lastId2); ++i) {
+        const quint32 fromId = i %2 ? user2->id() : user3->id();
+        Server::MessageData *messageData = server->storage()->addMessage(
+                    fromId, user1->toPeer(), QString::number(i + c_lastId2 + 1));
+        server->processMessage(messageData);
+
+        if (i % 2) {
+            messagesVol3_1.append(c_lastId3 - i);
+        } else {
+            messagesVol3_2.append(c_lastId3 - i);
+        }
+    }
+    QHash<Peer, MessageIdList> expectedMessages3 = {
+        { user2->toPeer(), messagesVol3_2 },
+        { user3->toPeer(), messagesVol3_1 },
+    };
+
+    QByteArray state5;
+    {
+        // Prepare client
+        Client::Client client;
+        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
+        dataStorage->loadState(state2);
+#ifdef TEST_PRIVATE_API
+        Client::DataInternalApi *internalApi = Client::DataInternalApi::get(client.dataStorage());
+        QCOMPARE(internalApi->getDialogState(user2->toPeer()).syncedMessageId, c_lastId2);
+#endif
+        client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
+        client.messagingApi()->setSyncLimit(0);
+
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        signInHelper(&client, c_user1, &authProvider);
+        TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+
+        Telegram::Client::DialogList *dialogList = client.messagingApi()->getDialogList();
+        {
+            PendingOperation *dialogsReady = dialogList->becomeReady();
+            TRY_VERIFY(dialogsReady->isFinished());
+            QVERIFY(dialogsReady->isSucceeded());
+        }
+        QCOMPARE(dialogList->peers().count(), 2);
+        PendingOperation *syncOp = client.messagingApi()->syncPeers(dialogList->peers());
+
+        {
+            DialogInfo dialogInfo;
+            client.dataStorage()->getDialogInfo(&dialogInfo, user2->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId3);
+
+            client.dataStorage()->getDialogInfo(&dialogInfo, user3->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId3 - 1);
+        }
+        TRY_VERIFY(syncOp->isFinished());
+        QVERIFY(syncOp->isSucceeded());
+
+        TRY_COMPARE(syncMessages.count(), expectedMessages3.count());
+        for (const QList<QVariant> &syncSignal : syncMessages) {
+            Peer p = syncSignal.constFirst().value<Peer>();
+            QVERIFY(expectedMessages3.contains(p));
+
+            MessageIdList messageIds = syncSignal.constLast().value<MessageIdList>();
+            MessageIdList expectedIds = expectedMessages3.take(p);
+            QCOMPARE(messageIds, expectedIds);
+        }
+
+        state5 = dataStorage->saveState();
+    }
+
+    // Part4. More messages in the same two dialogs and new messages in both dialogs during the sync
+    const quint32 c_lastId4 = 100;
+    MessageIdList messagesVol4_1;
+    MessageIdList messagesVol4_2;
+    for (quint32 i = 0; i < (c_lastId4 - c_lastId3); ++i) {
+        const quint32 fromId = i %2 ? user2->id() : user3->id();
+        Server::MessageData *messageData = server->storage()->addMessage(
+                    fromId, user1->toPeer(), QString::number(i + c_lastId3 + 1));
+        server->processMessage(messageData);
+
+        if (i % 2) {
+            messagesVol4_1.append(c_lastId4 - i);
+        } else {
+            messagesVol4_2.append(c_lastId4 - i);
+        }
+    }
+    QHash<Peer, MessageIdList> expectedMessages4 = {
+        { user2->toPeer(), messagesVol4_2 },
+        { user3->toPeer(), messagesVol4_1 },
+    };
+
+    QByteArray state6;
+    {
+        // Prepare client
+        Client::Client client;
+        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
+        dataStorage->loadState(state5);
+#ifdef TEST_PRIVATE_API
+        Client::DataInternalApi *internalApi = Client::DataInternalApi::get(client.dataStorage());
+        QCOMPARE(internalApi->getDialogState(user2->toPeer()).syncedMessageId, c_lastId3);
+        QCOMPARE(internalApi->getDialogState(user3->toPeer()).syncedMessageId, c_lastId3 - 1);
+#endif
+
+        client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
+        client.messagingApi()->setSyncLimit(0);
+
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        QSignalSpy receivedMessages(client.messagingApi(), &Client::MessagingApi::messageReceived);
+        signInHelper(&client, c_user1, &authProvider);
+        TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+
+        Telegram::Client::DialogList *dialogList = client.messagingApi()->getDialogList();
+        {
+            PendingOperation *dialogsReady = dialogList->becomeReady();
+            TRY_VERIFY(dialogsReady->isFinished());
+            QVERIFY(dialogsReady->isSucceeded());
+        }
+        QCOMPARE(dialogList->peers().count(), 2);
+        PendingOperation *syncOp = client.messagingApi()->syncPeers(dialogList->peers());
+        {
+            DialogInfo dialogInfo;
+            client.dataStorage()->getDialogInfo(&dialogInfo, user2->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId4);
+
+            client.dataStorage()->getDialogInfo(&dialogInfo, user3->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId4 - 1);
+        }
+        QVERIFY2(!syncOp->isFinished(), "We need to check new messages during sync");
+
+        Server::MessageData *message1Data = server->storage()->addMessage(
+                    user2->id(), user1->toPeer(), QString::number(c_lastId4 + 1));
+        Server::MessageData *message2Data = server->storage()->addMessage(
+                    user3->id(), user1->toPeer(), QString::number(c_lastId4 + 2));
+        Server::MessageData *message3Data = server->storage()->addMessage(
+                    user4->id(), user1->toPeer(), QString::number(c_lastId4 + 3));
+        QVector<Server::UpdateNotification> newUpdates;
+        newUpdates.append(server->processMessage(message1Data));
+        newUpdates.append(server->processMessage(message2Data));
+        newUpdates.append(server->processMessage(message3Data));
+
+        QCOMPARE(receivedMessages.count(), 0);
+        server->queueUpdates(newUpdates);
+
+        expectedMessages4[user2->toPeer()].prepend(c_lastId4 + 1);
+        expectedMessages4[user3->toPeer()].prepend(c_lastId4 + 2);
+
+        TRY_COMPARE(receivedMessages.count(), 1);
+        {
+            const QList<QVariant> receivedMessage = receivedMessages.takeFirst();
+            Peer p = receivedMessage.constFirst().value<Peer>();
+            COMPARE_PEERS(p, user4->toPeer());
+
+            QCOMPARE(receivedMessage.constLast().value<quint32>(), c_lastId4 + 3);
+        }
+
+        TRY_VERIFY(syncOp->isFinished());
+        QVERIFY(syncOp->isSucceeded());
+
+        TRY_COMPARE(syncMessages.count(), expectedMessages4.count());
+        for (const QList<QVariant> &syncSignal : syncMessages) {
+            Peer p = syncSignal.constFirst().value<Peer>();
+            QVERIFY(expectedMessages4.contains(p));
+
+            MessageIdList messageIds = syncSignal.constLast().value<MessageIdList>();
+            MessageIdList expectedIds = expectedMessages4.take(p);
+            qDebug() << messageIds;
+            qDebug() << expectedIds;
+            QCOMPARE(messageIds, expectedIds);
+        }
+
+        QCOMPARE(receivedMessages.count(), 0);
+
+        Server::MessageData *message4Data = server->storage()->addMessage(
+                    user2->id(), user1->toPeer(), QString::number(c_lastId4 + 4));
+        Server::MessageData *message5Data = server->storage()->addMessage(
+                    user3->id(), user1->toPeer(), QString::number(c_lastId4 + 5));
+        newUpdates.clear();
+        newUpdates.append(server->processMessage(message4Data));
+        newUpdates.append(server->processMessage(message5Data));
+        server->queueUpdates(newUpdates);
+        TRY_COMPARE(receivedMessages.count(), 2);
+
+        state6 = dataStorage->saveState();
+    }
+    const quint32 c_lastId5 = c_lastId4 + 5;
+
+    QByteArray state7;
+    {
+        // Prepare client
+        Client::Client client;
+        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
+        dataStorage->loadState(state6);
+#ifdef TEST_PRIVATE_API
+        Client::DataInternalApi *internalApi = Client::DataInternalApi::get(client.dataStorage());
+        QCOMPARE(internalApi->getDialogState(user3->toPeer()).syncedMessageId, c_lastId5);
+        QCOMPARE(internalApi->getDialogState(user2->toPeer()).syncedMessageId, c_lastId5 - 1);
+        QCOMPARE(internalApi->getDialogState(user4->toPeer()).syncedMessageId, c_lastId5 - 2);
+#endif
+        client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
+        client.messagingApi()->setSyncLimit(0);
+
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        QSignalSpy receivedMessages(client.messagingApi(), &Client::MessagingApi::messageReceived);
+        signInHelper(&client, c_user1, &authProvider);
+        TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+
+        Telegram::Client::DialogList *dialogList = client.messagingApi()->getDialogList();
+        {
+            PendingOperation *dialogsReady = dialogList->becomeReady();
+            TRY_VERIFY(dialogsReady->isFinished());
+            QVERIFY(dialogsReady->isSucceeded());
+        }
+        QCOMPARE(dialogList->peers().count(), 3);
+        {
+            DialogInfo dialogInfo;
+            client.dataStorage()->getDialogInfo(&dialogInfo, user2->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId5 - 1);
+            client.dataStorage()->getDialogInfo(&dialogInfo, user3->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId5);
+            client.dataStorage()->getDialogInfo(&dialogInfo, user4->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId5 - 2);
+        }
+
+        PendingOperation *syncOp = client.messagingApi()->syncPeers(dialogList->peers());
+        TRY_VERIFY(syncOp->isFinished());
+        QVERIFY(syncOp->isSucceeded());
+        TRY_COMPARE(syncMessages.count(), expectedMessages3.count());
+
+        QCOMPARE(receivedMessages.count(), 0);
+        Server::MessageData *messageData = server->storage()->addMessage(
+                    user4->id(), user1->toPeer(), QString::number(c_lastId5 + 1));
+
+        QVector<Server::UpdateNotification> newUpdates = { server->processMessage(messageData) };
+        server->queueUpdates(newUpdates);
+
+        TRY_COMPARE(receivedMessages.count(), 1);
+        {
+            DialogInfo dialogInfo;
+            client.dataStorage()->getDialogInfo(&dialogInfo, user2->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId5 - 1);
+            client.dataStorage()->getDialogInfo(&dialogInfo, user3->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId5);
+            client.dataStorage()->getDialogInfo(&dialogInfo, user4->toPeer());
+            QCOMPARE(dialogInfo.lastMessageId(), c_lastId5 + 1);
+        }
+
+        state7 = dataStorage->saveState();
     }
 }
 
