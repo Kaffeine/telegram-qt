@@ -105,6 +105,9 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
         qDebug() << "Sent message ID not found in the local queue" << randomMessageId;
         return;
     }
+    DialogState *state = dataInternalApi()->ensureDialogState(sentMessage.peer);
+    state->syncedMessageId = messageId;
+
     m_expectedRandomMessageId = 0;
     emit q->messageSent(sentMessage.peer, randomMessageId, messageId);
 }
