@@ -113,4 +113,6 @@ protected:
 
 } // Telegram namespace
 
+Q_DECLARE_METATYPE(Telegram::Client::MessageFetchOptions)
+
 #endif // TELEGRAMQT_CLIENT_MESSAGING_API_HPP
