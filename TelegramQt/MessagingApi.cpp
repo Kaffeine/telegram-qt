@@ -332,7 +332,7 @@ DialogList *MessagingApi::getDialogList()
 /*!
     Returns PendingMessages with messages sorted from newer (higher message id) to older (lower message id)
 */
-PendingMessages *MessagingApi::getHistory(const Telegram::Peer peer, const Telegram::Client::MessageFetchOptions &options)
+PendingMessages *MessagingApi::getHistory(const Telegram::Peer peer, const MessageFetchOptions &options)
 {
     Q_D(MessagingApi);
     return d->getHistory(peer, options);
@@ -349,7 +349,7 @@ quint64 MessagingApi::sendMessage(const Peer peer, const QString &message, const
     return d->sendMessage(peer, message, options);
 }
 
-quint64 Telegram::Client::MessagingApi::forwardMessage(const Telegram::Peer peer, const Telegram::Peer fromPeer, quint32 messageId)
+quint64 MessagingApi::forwardMessage(const Peer peer, const Peer fromPeer, quint32 messageId)
 {
     return 0;
 }
