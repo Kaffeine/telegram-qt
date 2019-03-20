@@ -156,7 +156,7 @@ void MessagingApiPrivate::onMessageOutboxRead(const Telegram::Peer peer, quint32
 PendingOperation *MessagingApiPrivate::getDialogs()
 {
     PendingOperation *operation = new PendingOperation("MessagingApi::getDialogs", this);
-    MessagesRpcLayer::PendingMessagesDialogs *rpcOperation = messagesLayer()->getDialogs(0, 0, 0, TLInputPeer(), 5);
+    MessagesRpcLayer::PendingMessagesDialogs *rpcOperation = messagesLayer()->getDialogs(0, 0, 0, TLInputPeer(), 20);
     rpcOperation->connectToFinished(this, &MessagingApiPrivate::onGetDialogsFinished, operation, rpcOperation);
     return operation;
 }
