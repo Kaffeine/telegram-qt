@@ -1076,7 +1076,9 @@ void MessagesRpcOperation::runGetHistory()
 
     constexpr int c_serverHistorySliceLimit = 30;
     const int serverLimit = qMin<int>(c_serverHistorySliceLimit, messageKeys.count());
-    const int actualLimit = qMin<int>(static_cast<int>(arguments.limit), serverLimit);
+    const int actualLimit = arguments.limit
+            ? qMin<int>(static_cast<int>(arguments.limit), serverLimit)
+            : serverLimit;
 
     TLMessagesMessages result;
     result.messages.reserve(actualLimit);
