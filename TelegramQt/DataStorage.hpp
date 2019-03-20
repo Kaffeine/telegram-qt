@@ -33,8 +33,6 @@ class TELEGRAMQT_EXPORT DataStorage : public QObject
 {
     Q_OBJECT
 public:
-    explicit DataStorage(QObject *parent = nullptr);
-
     DcConfiguration serverConfiguration() const;
     void setServerConfiguration(const DcConfiguration &configuration);
 
@@ -50,6 +48,8 @@ public:
     bool getMessageMediaInfo(MessageMediaInfo *info, const Telegram::Peer &peer, quint32 messageId);
 
 protected:
+    explicit DataStorage(QObject *parent = nullptr);
+
     DataStorage(DataStoragePrivate *priv, QObject *parent);
     DataStoragePrivate *d = nullptr;
     Q_DECLARE_PRIVATE_D(d, DataStorage)
