@@ -34,12 +34,13 @@ class MessagingApiPrivate;
 
 struct TELEGRAMQT_EXPORT MessageFetchOptions
 {
-    quint32 offsetId = 0;
-    quint32 offsetDate = 0;
-    quint32 addOffset = 0;
-    quint32 limit = 0;
-    quint32 maxId = 0;
-    quint32 minId = 0;
+    quint32 offsetId = 0; // Fetch messages newer that this one (omit this id)
+    quint32 offsetDate = 0; // Fetch messages from this exact date/time and older
+    quint32 addOffset = 0; // Skip this number of messages
+    quint32 limit = 0; // Fetch up to N messages (including omitted via maxId!)
+
+    quint32 maxId = 0; // Exclude messages with id >= maxId. The excluded messages still counted in limit!
+    quint32 minId = 0; // Exclude messages with id <= minId
     quint32 hash = 0;
 
     static MessageFetchOptions useLimit(quint32 limit)
