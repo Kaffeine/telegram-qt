@@ -126,6 +126,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     void start();
     void startLater();
+    void finishLater();
     void deleteLater();
     void deleteOnFinished();
 

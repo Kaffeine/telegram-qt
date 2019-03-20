@@ -47,6 +47,16 @@ void PendingOperation::startLater()
 #endif
 }
 
+void PendingOperation::finishLater()
+{
+    qCDebug(c_pendingOperations) << this << "startLater()";
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    QMetaObject::invokeMethod(this, [this] (){ setFinished(); }, Qt::QueuedConnection);
+#else
+    QMetaObject::invokeMethod(this, "setFinished", Qt::QueuedConnection);
+#endif
+}
+
 void PendingOperation::deleteLater()
 {
     qCDebug(c_pendingOperations) << "deleteLater()" << this;
