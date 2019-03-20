@@ -3,6 +3,9 @@
 
 #include "Utils.hpp"
 
+#include <QString>
+#include <QMetaType>
+
 struct UserData
 {
     quint32 dcId;
@@ -42,6 +45,16 @@ struct UserData
         passwordHash = Telegram::Utils::sha256(pwdData);
     }
 };
+
+UserData mkUserData(int idNumber, quint32 dcId)
+{
+    const QString idStr = QString::number(idNumber);
+    UserData userData;
+    userData.dcId = dcId;
+    userData.setName(QLatin1String("First") + idStr, QLatin1String("Last") + idStr);
+    userData.phoneNumber = QLatin1String("12345") + idStr;
+    return userData;
+}
 
 Q_DECLARE_METATYPE(UserData)
 
