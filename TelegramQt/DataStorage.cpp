@@ -187,6 +187,16 @@ InMemoryDataStorage::InMemoryDataStorage(QObject *parent) :
 {
 }
 
+QByteArray InMemoryDataStorage::saveState() const
+{
+    Q_D(const DataStorage);
+}
+
+void InMemoryDataStorage::loadState(const QByteArray &data)
+{
+    Q_D(DataStorage);
+}
+
 DataInternalApi::DataInternalApi(QObject *parent) :
     QObject(parent)
 {

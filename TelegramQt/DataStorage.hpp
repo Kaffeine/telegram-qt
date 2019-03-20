@@ -61,6 +61,9 @@ class TELEGRAMQT_EXPORT InMemoryDataStorage : public DataStorage
     Q_OBJECT
 public:
     explicit InMemoryDataStorage(QObject *parent = nullptr);
+
+    QByteArray saveState() const;
+    void loadState(const QByteArray &data);
 };
 
 } // Client namespace
