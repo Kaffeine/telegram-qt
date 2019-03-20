@@ -56,22 +56,12 @@
 using namespace Telegram;
 
 static const UserData c_userWithPassword = []() {
-    UserData userData;
-    userData.dcId = 1;
-    userData.setName(QStringLiteral("First"), QStringLiteral("Last"));
-    userData.phoneNumber = QStringLiteral("123456");
-    userData.password = QByteArrayLiteral("mypassword");
-    userData.setPasswordSalt(QByteArrayLiteral("mysalt"));
+    UserData userData = mkUserData(1, 1);
+    userData.setPassword(QByteArrayLiteral("mypassword"), QByteArrayLiteral("mysalt"));
     return userData;
 }();
 
-static const UserData c_user2 = []() {
-    UserData userData;
-    userData.dcId = 1;
-    userData.setName(QStringLiteral("First2"), QStringLiteral("Last2"));
-    userData.phoneNumber = QStringLiteral("123457");
-    return userData;
-}();
+static const UserData c_user2 = mkUserData(2, 1);
 
 class tst_MessagesApi : public QObject
 {
