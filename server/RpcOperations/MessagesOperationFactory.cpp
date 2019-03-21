@@ -39,6 +39,8 @@
 
 #include <QLoggingCategory>
 
+constexpr int c_serverHistorySliceLimit = 30;
+
 namespace Telegram {
 
 namespace Server {
@@ -1074,7 +1076,6 @@ void MessagesRpcOperation::runGetHistory()
         return;
     }
 
-    constexpr int c_serverHistorySliceLimit = 30;
     const int serverLimit = qMin<int>(c_serverHistorySliceLimit, messageKeys.count());
     int maxMessagesToAppend = arguments.limit
             ? qMin<int>(static_cast<int>(arguments.limit), serverLimit)
