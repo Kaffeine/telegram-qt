@@ -115,31 +115,34 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
 void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
 {
     Q_Q(MessagingApi);
+
+    if (m_syncMode != MessagingApi::NoSync) {
+        if (m_syncState == SyncState::NotStarted) {
+            // Drop all new messages if sync is needed but not started yet.
+            // We'll get those messages later during the sync.
+            return;
+        }
+    }
+
     const Telegram::Peer peer = Telegram::Utils::getMessageDialogPeer(message, m_backend->dataStorage()->selfUserId());
     if (m_dialogList) {
         m_dialogList->ensurePeer(peer);
     }
-    if (m_syncMode != MessagingApi::NoSync) {
-        if (m_syncState == SyncState::NotStarted) {
-            // save to buffer
-        } else {
-            DialogState *state = dataInternalApi()->ensureDialogState(peer);
-            if (m_syncState == SyncState::InProgress) {
-                if (state->isValid()) {
-                    if (!state->synced) {
-                        state->pendingIds.prepend(message.id);
-                        return;
-                    }
-                } else {
-                    state->synced = true;
-                }
-            } else {
-                state->synced = true;
+
+    DialogState *state = dataInternalApi()->ensureDialogState(peer);
+    if (m_syncState == SyncState::InProgress) {
+        if (state->isValid()) {
+            if (!state->synced) {
+                state->pendingIds.prepend(message.id);
+                return;
             }
-            state->syncedMessageId = message.id;
-            // No return. We want to emit messageReceived()
+        } else {
+            state->synced = true;
         }
+    } else {
+        state->synced = true;
     }
+    state->syncedMessageId = message.id;
 
     emit q->messageReceived(peer, message.id);
 }
