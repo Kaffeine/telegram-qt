@@ -40,6 +40,7 @@
 #include <QLoggingCategory>
 
 constexpr int c_serverHistorySliceLimit = 30;
+constexpr int c_serverDialogsSliceLimit = 5;
 
 namespace Telegram {
 
@@ -963,36 +964,88 @@ void MessagesRpcOperation::runGetDhConfig()
 
 void MessagesRpcOperation::runGetDialogs()
 {
+    TLFunctions::TLMessagesGetDialogs &arguments = m_getDialogs;
     TLMessagesDialogs result;
     LocalUser *self = layer()->getUser();
+
     const QVector<UserDialog *> dialogs = self->dialogs();
+    result.count = static_cast<quint32>(dialogs.count());
 
-    for (const UserDialog *d : dialogs) {
-        TLDialog dialog;
-        const PostBox *box = self->getPostBox();
-        dialog.peer = Telegram::Utils::toTLPeer(d->peer);
-        dialog.topMessage = d->topMessage;
-        dialog.draft.message = d->draftText;
-        dialog.draft.tlType = d->draftText.isEmpty() ? TLValue::DraftMessageEmpty : TLValue::DraftMessage;
-        dialog.readInboxMaxId = d->readInboxMaxId;
-        dialog.readOutboxMaxId = d->readOutboxMaxId;
-        dialog.unreadCount = d->unreadCount;
-        dialog.unreadMentionsCount = d->unreadMentionsCount;
-        result.dialogs.append(dialog);
+    int dialogsToAdd = qMin(c_serverDialogsSliceLimit, dialogs.count());
+    if (arguments.limit) {
+        int limit = static_cast<int>(arguments.limit);
+        if (limit < dialogsToAdd) {
+            dialogsToAdd = limit;
+        }
+    }
+    if (dialogsToAdd >= dialogs.count()) {
+        result.tlType = TLValue::MessagesDialogs;
+    } else {
+        result.tlType = TLValue::MessagesDialogsSlice;
+    }
 
-        quint64 topMessageGlobalId = box->getMessageGlobalId(dialog.topMessage);
-        const MessageData *messageData = api()->storage()->getMessage(topMessageGlobalId);
-
-        if (messageData) {
-            result.messages.resize(result.messages.size() + 1);
-            Utils::setupTLMessage(&result.messages.last(), messageData, dialog.topMessage, self);
+    int fromDialogIndex = 0;
+    if (arguments.offsetId) {
+        Peer offsetPeer = api()->getPeer(arguments.offsetPeer, self);
+        const UserDialog *offsetDialog = self->getDialog(offsetPeer);
+        if (offsetDialog && (offsetDialog->topMessage == arguments.offsetId)) {
+            for (int i = 0; i < dialogs.count(); ++i) {
+                if (dialogs.at(i) == offsetDialog) {
+                    fromDialogIndex = i + 1;
+                    break;
+                }
+            }
+        } else {
+            // Peer not found or top message is changed. Fallback to 'date'.
+            // If there is no dialog that matches the filter then there is nothing to return.
+            fromDialogIndex = dialogs.count();
+            for (int i = 0; i < dialogs.count(); ++i) {
+                if (dialogs.at(i)->date <= arguments.offsetDate) {
+                    fromDialogIndex = i;
+                    break;
+                }
+            }
         }
     }
 
     QSet<Peer> interestingPeers;
-    for (const UserDialog *d : dialogs) {
-        interestingPeers.insert(d->peer);
+
+    dialogsToAdd = qMin(dialogsToAdd, dialogs.count() - fromDialogIndex);
+    result.dialogs.reserve(dialogsToAdd);
+
+    for (int i = fromDialogIndex; i < dialogs.count(); ++i) {
+        if (dialogsToAdd <= 0) {
+            break;
+        }
+
+        const UserDialog *dialog = dialogs.at(i);
+
+        TLDialog tlDialog;
+        tlDialog.peer = Telegram::Utils::toTLPeer(dialog->peer);
+        tlDialog.topMessage = dialog->topMessage;
+        tlDialog.draft.message = dialog->draftText;
+        tlDialog.draft.tlType = dialog->draftText.isEmpty() ? TLValue::DraftMessageEmpty : TLValue::DraftMessage;
+        tlDialog.readInboxMaxId = dialog->readInboxMaxId;
+        tlDialog.readOutboxMaxId = dialog->readOutboxMaxId;
+        tlDialog.unreadCount = dialog->unreadCount;
+        tlDialog.unreadMentionsCount = dialog->unreadMentionsCount;
+        result.dialogs.append(tlDialog);
+        if (dialogsToAdd) {
+            --dialogsToAdd;
+        }
+
+        const PostBox *box = self->getPostBox();
+        quint64 topMessageGlobalId = box->getMessageGlobalId(tlDialog.topMessage);
+        const MessageData *messageData = api()->storage()->getMessage(topMessageGlobalId);
+
+        if (messageData) {
+            result.messages.resize(result.messages.size() + 1);
+            Utils::setupTLMessage(&result.messages.last(), messageData, tlDialog.topMessage, self);
+        }
+
+        interestingPeers.insert(dialog->peer);
     }
+
     Utils::getInterestingPeers(&interestingPeers, result.messages);
     Utils::setupTLPeers(&result, interestingPeers, api(), self);
     sendRpcReply(result);
