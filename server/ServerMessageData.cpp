@@ -1,7 +1,5 @@
 #include "ServerMessageData.hpp"
 
-#include "ApiUtils.hpp"
-
 namespace Telegram {
 
 namespace Server {
@@ -11,7 +9,6 @@ MessageData::MessageData(quint32 from, Peer to, const QString &text) :
     m_to(to),
     m_fromId(from)
 {
-    m_date = Telegram::Utils::getCurrentTime();
 }
 
 void MessageData::setGlobalId(quint64 id)

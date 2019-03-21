@@ -31,6 +31,7 @@ MessageData *Storage::addMessage(quint32 fromId, Peer toPeer, const QString &tex
     ++m_lastGlobalId;
     m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, text));
     MessageData *message = &m_messages[m_lastGlobalId];
+    message->setDate(Telegram::Utils::getCurrentTime());
     message->setGlobalId(m_lastGlobalId);
     return message;
 }
