@@ -38,8 +38,15 @@ public:
     QString text() const { return m_text; }
     Peer toPeer() const { return m_to; }
     quint32 fromId() const { return m_fromId; }
-    quint32 date() const { return m_date; }
-    void setDate(quint32 date);
+    quint32 date() const;
+
+    // Wanted for autotests
+    void setDate32(quint32 date);
+
+    quint64 date64() const { return m_date; }
+    // Needed for save/load and for autotests
+    void setDate64(quint64 date);
+
     bool isMessageToSelf() const;
 
     void addReference(const Peer &peer, quint32 messageId);
@@ -53,7 +60,7 @@ protected:
     Peer m_to;
     quint64 m_globalId = 0;
     quint32 m_fromId = 0;
-    quint32 m_date = 0;
+    quint64 m_date = 0;
 };
 
 } // Server namespace

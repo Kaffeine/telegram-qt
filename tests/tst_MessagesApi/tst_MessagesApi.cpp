@@ -592,7 +592,7 @@ void tst_MessagesApi::getHistory()
     for (int i = 0; i < messagesCount; ++i) {
         Server::MessageData *messageData = server->storage()->addMessage(
                     user2->id(), user1->toPeer(), QString::number(i + 1));
-        messageData->setDate(static_cast<quint32>(baseDate + i));
+        messageData->setDate32(static_cast<quint32>(baseDate + i));
         server->processMessage(messageData);
     }
 

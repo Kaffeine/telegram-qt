@@ -30,6 +30,7 @@ struct UserDialog
     Telegram::Peer peer;
     QString draftText;
     quint32 topMessage = 0;
+    quint64 date = 0;
     quint32 readInboxMaxId = 0;
     quint32 readOutboxMaxId = 0;
     quint32 unreadCount = 0;

@@ -17,6 +17,10 @@
 
 #include "Storage.hpp"
 
+#include "ApiUtils.hpp"
+
+#include <QDateTime>
+
 namespace Telegram {
 
 namespace Server {
@@ -31,7 +35,7 @@ MessageData *Storage::addMessage(quint32 fromId, Peer toPeer, const QString &tex
     ++m_lastGlobalId;
     m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, text));
     MessageData *message = &m_messages[m_lastGlobalId];
-    message->setDate(Telegram::Utils::getCurrentTime());
+    message->setDate64(getMessageUniqueTs());
     message->setGlobalId(m_lastGlobalId);
     return message;
 }
@@ -42,6 +46,16 @@ const MessageData *Storage::getMessage(quint64 globalId)
         return nullptr;
     }
     return &m_messages[globalId];
+}
+
+quint64 Storage::getMessageUniqueTs()
+{
+    quint64 ts = Telegram::Utils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
+    if (ts <= m_lastTimestamp) {
+        ts = m_lastTimestamp + 1;
+    }
+    m_lastTimestamp = ts;
+    return ts;
 }
 
 } // Server namespace

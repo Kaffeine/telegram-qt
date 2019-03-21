@@ -16,8 +16,19 @@ void MessageData::setGlobalId(quint64 id)
     m_globalId = id;
 }
 
-// Needed for save/load and for autotests
-void MessageData::setDate(quint32 date)
+quint32 MessageData::date() const
+{
+    quint64 secs = m_date >> 32;
+    return static_cast<quint32>(secs);
+}
+
+void MessageData::setDate32(quint32 date)
+{
+    m_date = date;
+    m_date = m_date << 32;
+}
+
+void MessageData::setDate64(quint64 date)
 {
     m_date = date;
 }
