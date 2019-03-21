@@ -376,7 +376,7 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
                 notification.dialogPeer = targetPeer;
             }
             LocalUser *user = getUser(userId);
-            user->syncDialogTopMessage(notification.dialogPeer, newMessageId);
+            user->syncDialogTopMessage(notification.dialogPeer, newMessageId, messageData->date64());
 
             if ((userId == fromUser->id()) && !notifications.isEmpty()) {
                 notifications.append(notifications.constFirst());

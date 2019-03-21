@@ -130,7 +130,7 @@ public:
 
     QVector<UserContact> importedContacts() const { return m_importedContacts; }
 
-    void syncDialogTopMessage(const Telegram::Peer &peer, quint32 messageId);
+    void syncDialogTopMessage(const Telegram::Peer &peer, quint32 messageId, quint64 messageDate);
     UserDialog *getDialog(const Telegram::Peer &peer);
 
 protected:

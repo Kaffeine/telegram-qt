@@ -175,10 +175,16 @@ UserDialog *LocalUser::ensureDialog(const Telegram::Peer &peer)
     return dialog;
 }
 
-void LocalUser::syncDialogTopMessage(const Peer &peer, quint32 messageId)
+void LocalUser::syncDialogTopMessage(const Peer &peer, quint32 messageId, quint64 messageDate)
 {
     UserDialog *dialog = ensureDialog(peer);
     dialog->topMessage = messageId;
+    dialog->date = messageDate;
+
+    std::sort(m_dialogs.begin(), m_dialogs.end(), [](const UserDialog *left, const UserDialog *right) -> bool {
+        // return true if the first arg should be placed before the second one
+        return left->date > right->date;
+    });
 }
 
 UserDialog *LocalUser::getDialog(const Peer &peer)
