@@ -57,3 +57,5 @@ foreach(test_name
         test_keys_data
     )
 endforeach()
+
+add_subdirectory(manual)
