@@ -51,7 +51,8 @@ const QByteArray TestKeyData::keySecretExponent = QByteArray::fromHex(
 
 const quint64 TestKeyData::keyFingerprint = 0xf0f8c01a578dfee0ull;
 
-static QTemporaryFile *s_publicKeyFile = nullptr;
+static QTemporaryFile *s_publicKeyPkcs1File = nullptr;
+static QTemporaryFile *s_publicKeyPkcs8File = nullptr;
 static QTemporaryFile *s_privateKeyFile = nullptr;
 
 bool TestKeyData::copyFile(const QString &sourceFileName, QIODevice *output)
@@ -78,7 +79,11 @@ bool TestKeyData::initKeyFiles()
         const char *name;
     };
 
-    for (Pair entry : { Pair(s_publicKeyFile, "public_key"), Pair(s_privateKeyFile, "private_key") }) {
+    for (Pair entry : {
+         Pair(s_publicKeyPkcs1File, "public_key_PKCS1"),
+         Pair(s_publicKeyPkcs8File, "public_key_PKCS8"),
+         Pair(s_privateKeyFile, "private_key") })
+    {
         entry.file = new QTemporaryFile();
         entry.file->setFileTemplate(entry.file->fileTemplate() + QStringLiteral(".pem"));
         if (!entry.file->open()) {
@@ -91,7 +96,7 @@ bool TestKeyData::initKeyFiles()
         }
         entry.file->close();
     }
-    if (!s_publicKeyFile || !s_privateKeyFile) {
+    if (!s_publicKeyPkcs1File || !s_publicKeyPkcs8File || !s_privateKeyFile) {
         return false;
     }
     return true;
@@ -99,7 +104,8 @@ bool TestKeyData::initKeyFiles()
 
 bool TestKeyData::cleanupKeyFiles()
 {
-    delete s_publicKeyFile;
+    delete s_publicKeyPkcs1File;
+    delete s_publicKeyPkcs8File;
     delete s_privateKeyFile;
     return true;
 }
@@ -109,7 +115,12 @@ QString TestKeyData::privateKeyFileName()
     return s_privateKeyFile->fileName();
 }
 
-QString TestKeyData::publicKeyFileName()
+QString TestKeyData::publicKeyPkcs1FileName()
 {
-    return s_publicKeyFile->fileName();
+    return s_publicKeyPkcs1File->fileName();
+}
+
+QString TestKeyData::publicKeyPkcs8FileName()
+{
+    return s_publicKeyPkcs8File->fileName();
 }

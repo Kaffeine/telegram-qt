@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/data/keys">
         <file>private_key.pem</file>
-        <file>public_key.pem</file>
+        <file>public_key_PKCS1.pem</file>
+        <file>public_key_PKCS8.pem</file>
     </qresource>
 </RCC>

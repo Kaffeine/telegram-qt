@@ -36,7 +36,8 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
     void testAesEncryption();
-    void testRsaLoadPublicKey();
+    void testRsaLoadPublicPkcs1Key();
+    void testRsaLoadPublicPkcs8Key();
     void testRsaLoadPrivateKey();
     void testRsaFingersprint();
     void testRsaEncryption();
@@ -73,9 +74,17 @@ void tst_utils::testAesEncryption()
     QCOMPARE(sourceData, decodedData);
 }
 
-void tst_utils::testRsaLoadPublicKey()
+void tst_utils::testRsaLoadPublicPkcs1Key()
 {
-    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyPkcs1FileName());
+    QCOMPARE(publicKey.modulus, TestKeyData::keyModulus);
+    QCOMPARE(publicKey.exponent, TestKeyData::keyExponent);
+    QCOMPARE(publicKey.fingerprint, TestKeyData::keyFingerprint);
+}
+
+void tst_utils::testRsaLoadPublicPkcs8Key()
+{
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyPkcs1FileName());
     QCOMPARE(publicKey.modulus, TestKeyData::keyModulus);
     QCOMPARE(publicKey.exponent, TestKeyData::keyExponent);
     QCOMPARE(publicKey.fingerprint, TestKeyData::keyFingerprint);
