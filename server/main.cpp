@@ -112,7 +112,9 @@ int main(int argc, char *argv[])
     qInfo() << "DBus auth code provider enabled";
 #endif
 
-    cluster.start();
+    if (!cluster.start()) {
+        return -2;
+    }
 
     return a.exec();
 }

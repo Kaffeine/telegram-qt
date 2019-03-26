@@ -68,6 +68,18 @@ bool LocalCluster::start()
     }
 
     for (const DcOption &dc : m_serverConfiguration.dcOptions) {
+        if (!dc.id) {
+            qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Invalid configuration: DC id is null.";
+            return false;
+        }
+        if (!dc.port) {
+            qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Invalid configuration: Server port is not set.";
+            return false;
+        }
+        if (dc.address.isEmpty()) {
+            qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Invalid configuration: Server address is not set.";
+            return false;
+        }
         Server *server = m_constructor(this);
         server->setServerConfiguration(m_serverConfiguration);
         server->setDcOption(dc);
