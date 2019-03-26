@@ -77,6 +77,11 @@ void LocalUser::setPhoneNumber(const QString &phoneNumber)
     }
 }
 
+void LocalUser::setUserName(const QString &userName)
+{
+    m_userName = userName;
+}
+
 void LocalUser::setFirstName(const QString &firstName)
 {
     m_firstName = firstName;

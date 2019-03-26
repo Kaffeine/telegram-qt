@@ -23,6 +23,7 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "ServerUtils.hpp"
 #include "Session.hpp"
 #include "TelegramServerUser.hpp"
 
@@ -244,11 +245,8 @@ void AccountRpcOperation::runChangePhone()
 
 void AccountRpcOperation::runCheckUsername()
 {
-    // TLFunctions::TLAccountCheckUsername &arguments = m_checkUsername;
-    if (processNotImplementedMethod(TLValue::AccountCheckUsername)) {
-        return;
-    }
-    bool result;
+    TLFunctions::TLAccountCheckUsername &arguments = m_checkUsername;
+    bool result = !api()->peerByUserName(arguments.username).isValid();
     sendRpcReply(result);
 }
 
@@ -499,11 +497,12 @@ void AccountRpcOperation::runUpdateStatus()
 
 void AccountRpcOperation::runUpdateUsername()
 {
-    // TLFunctions::TLAccountUpdateUsername &arguments = m_updateUsername;
-    if (processNotImplementedMethod(TLValue::AccountUpdateUsername)) {
-        return;
-    }
+    TLFunctions::TLAccountUpdateUsername &arguments = m_updateUsername;
+    LocalUser *selfUser = layer()->getUser();
+    selfUser->setUserName(arguments.username);
+
     TLUser result;
+    Utils::setupTLUser(&result, selfUser, selfUser);
     sendRpcReply(result);
 }
 // End of generated run methods

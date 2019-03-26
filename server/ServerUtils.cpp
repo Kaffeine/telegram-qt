@@ -29,6 +29,7 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *app
     output->tlType = TLValue::User;
     output->firstName = input->firstName();
     output->lastName = input->lastName();
+    output->username = input->userName();
     // TODO: Check if the user has access to the requested user phone
     output->phone = input->phoneNumber();
 

@@ -73,6 +73,7 @@ class AbstractUser : public MessageRecipient
 public:
     virtual quint32 id() const = 0;
     virtual QString phoneNumber() const = 0;
+    virtual QString userName() const = 0;
     virtual QString firstName() const = 0;
     virtual QString lastName() const = 0;
     virtual bool isOnline() const = 0;
@@ -87,21 +88,22 @@ class LocalUser : public AbstractUser
 {
 public:
     quint32 userId() const { return m_id; }
-    quint32 id() const { return m_id; }
-    QString phoneNumber() const { return m_phoneNumber; }
+    quint32 id() const override { return m_id; }
+    QString phoneNumber() const override { return m_phoneNumber; }
     void setPhoneNumber(const QString &phoneNumber);
 
-    QString userName() const { return m_userName; }
+    QString userName() const override { return m_userName; }
+    void setUserName(const QString &userName);
 
-    QString firstName() const { return m_firstName; }
+    QString firstName() const override { return m_firstName; }
     void setFirstName(const QString &firstName);
 
-    QString lastName() const { return m_lastName; }
+    QString lastName() const override { return m_lastName; }
     void setLastName(const QString &lastName);
 
-    bool isOnline() const;
+    bool isOnline() const override;
 
-    quint32 dcId() const { return m_dcId; }
+    quint32 dcId() const override { return m_dcId; }
     void setDcId(quint32 id);
 
     Session *getSession(quint64 sessionId) const;

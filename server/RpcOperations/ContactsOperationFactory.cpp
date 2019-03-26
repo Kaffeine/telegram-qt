@@ -21,6 +21,7 @@
 // TODO: Instead of this include, add a generated cpp with all needed template instances
 #include "ServerRpcOperation_p.hpp"
 
+#include "ApiUtils.hpp"
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
@@ -308,11 +309,11 @@ void ContactsRpcOperation::runResetTopPeerRating()
 
 void ContactsRpcOperation::runResolveUsername()
 {
-    // TLFunctions::TLContactsResolveUsername &arguments = m_resolveUsername;
-    if (processNotImplementedMethod(TLValue::ContactsResolveUsername)) {
-        return;
-    }
+    TLFunctions::TLContactsResolveUsername &arguments = m_resolveUsername;
     TLContactsResolvedPeer result;
+    const Peer peer = api()->peerByUserName(arguments.username);
+    result.peer = Telegram::Utils::toTLPeer(peer);
+    Utils::setupTLPeers(&result, { peer }, api(), layer()->getUser());
     sendRpcReply(result);
 }
 

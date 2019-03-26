@@ -237,7 +237,7 @@ MessageRecipient *Server::getRecipient(const Peer &peer, const LocalUser *applic
 
 LocalUser *Server::getUser(const QString &identifier) const
 {
-    quint32 id = m_phoneToUserId.value(identifier);
+    const quint32 id = m_phoneToUserId.value(identifier);
     if (!id) {
         return nullptr;
     }
@@ -247,6 +247,17 @@ LocalUser *Server::getUser(const QString &identifier) const
 LocalUser *Server::getUser(quint32 userId) const
 {
     return m_users.value(userId);
+}
+
+Peer Server::peerByUserName(const QString &userName) const
+{
+    // iterate over all users (too bad?)
+    for (LocalUser *user: m_users) {
+        if (user->userName() == userName) {
+            return user->toPeer();
+        }
+    }
+    return Peer();  // not found
 }
 
 AbstractUser *Server::getUser(const TLInputUser &inputUser, LocalUser *self) const
