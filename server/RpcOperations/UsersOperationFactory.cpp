@@ -64,9 +64,23 @@ void UsersRpcOperation::runGetFullUser()
         sendRpcError(RpcError::UserIdInvalid);
         return;
     }
+    const ImageDescriptor profilePhoto = targetUser->getCurrentImage();
 
     TLUserFull result;
     Utils::setupTLUser(&result.user, targetUser, selfUser);
+    Utils::setupTLPhoto(&result.profilePhoto, profilePhoto);
+
+    quint32 flags = 0;
+    if (!result.about.isEmpty()) {
+        flags = TLUserFull::About;
+    }
+    if (!result.profilePhoto.sizes.isEmpty()) {
+        flags = TLUserFull::ProfilePhoto;
+    }
+    if (result.botInfo.userId) {
+        flags = TLUserFull::BotInfo;
+    }
+    result.flags = flags;
     sendRpcReply(result);
 }
 
