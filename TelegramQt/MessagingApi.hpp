@@ -103,6 +103,9 @@ public:
     bool getMessage(Message *message, const Telegram::Peer &peer, quint32 messageId);
     bool getMessageMediaInfo(MessageMediaInfo *info, const Telegram::Peer &peer, quint32 messageId);
 
+    bool getNotificationSettings(NotificationSettings *settings, const Peer &peer) const;
+    PendingOperation *setNotificationSettings(const Peer &peer, const NotificationSettings &settings);
+
 public slots:
     void setDraftMessage(const Telegram::Peer peer, const QString &text);
 

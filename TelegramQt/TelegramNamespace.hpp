@@ -20,10 +20,11 @@
 
 #include "telegramqt_global.h"
 
-#include <QObject>
 #include <QFlags>
 #include <QMetaType>
+#include <QObject>
 #include <QVector>
+#include <QSharedData>
 
 #ifndef Q_ENUM
 #define Q_ENUM(x) Q_ENUMS(x)
@@ -458,6 +459,32 @@ public:
     struct Private;
 protected:
     Private *d;
+};
+
+class TELEGRAMQT_EXPORT NotificationSettings
+{
+public:
+    // Peer notification settings exist independent of dialogs
+
+    NotificationSettings();
+    virtual ~NotificationSettings();
+
+    enum Flags {
+        ShowPreviews = 1 << 0,
+        Silent = 1 << 1,
+    };
+    quint32 flags() const;
+    QString sound() const;
+    quint32 muteUntil() const;
+
+    bool showPreviews() const { return flags() & ShowPreviews; }
+    bool silent() const { return flags() & Silent; }
+    bool isMutedForever() const;
+
+    class Private;
+    using DataPtr = QSharedDataPointer<Private>;
+protected:
+    DataPtr d;
 };
 
 namespace Utils
