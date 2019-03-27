@@ -466,6 +466,19 @@ bool MessagingApi::getMessageMediaInfo(MessageMediaInfo *info, const Peer &peer,
     return d->dataStorage()->getMessageMediaInfo(info, peer, messageId);
 }
 
+bool MessagingApi::getNotificationSettings(NotificationSettings *settings, const Peer &peer) const
+{
+    Q_D(const MessagingApi);
+    NotificationSettings::DataPtr &dataPtr = NotificationSettings::Private::get(settings);
+    dataPtr = d->dataInternalApi()->getNotificationSettings(peer);
+    return true;
+}
+
+PendingOperation *MessagingApi::setNotificationSettings(const Peer &peer, const NotificationSettings &settings)
+{
+    return nullptr;
+}
+
 void MessagingApi::setDraftMessage(const Peer peer, const QString &text)
 {
 

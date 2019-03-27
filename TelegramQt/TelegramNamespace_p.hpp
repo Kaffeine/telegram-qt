@@ -23,6 +23,35 @@
 
 namespace Telegram {
 
+class NotificationSettingsData : public QSharedData
+{
+public:
+    using SharedPtr = QSharedDataPointer<NotificationSettingsData>;
+
+    NotificationSettingsData() = default;
+    NotificationSettingsData(const NotificationSettingsData &other) :
+        QSharedData(other),
+        flags(other.flags)
+    {
+    }
+
+    // Peer notification settings exist independent of dialogs
+    enum Flags {
+        ShowPreviews = 1 << 0,
+        Silent = 1 << 1,
+    };
+    bool showPreviews() const { return flags & ShowPreviews; }
+    bool silent() const { return flags & Silent; }
+
+    static constexpr quint32 c_muteForever = ~quint32(0) >> 1; // 2147483647
+
+    quint32 flags = 0;
+    quint32 muteUntil = 0;
+    QString sound;
+
+    static const NotificationSettingsData &getDefaultSettingsData();
+};
+
 struct UserDialog
 {
     using Flags = TLDialog::Flags;
@@ -133,6 +162,13 @@ struct ChatInfo::Private : public TLChat
 struct DialogInfo::Private : public UserDialog
 {
     static Private *get(DialogInfo *info) { return info->d; }
+};
+
+class NotificationSettings::Private : public NotificationSettingsData
+{
+public:
+    static NotificationSettings::DataPtr get(const NotificationSettings *info) { return info->d; }
+    static NotificationSettings::DataPtr &get(NotificationSettings *info) { return info->d; }
 };
 
 Namespace::ContactStatus getApiContactStatus(TLValue status);
