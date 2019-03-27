@@ -256,6 +256,19 @@ bool setupTLMessageMedia(TLMessageMedia *output, const MediaData *mediaData)
     return true;
 }
 
+bool setupNotifySettings(TLPeerNotifySettings *output, const NotificationSettingsData &settings)
+{
+    if (settings.muteUntil || settings.flags || !settings.sound.isEmpty()) {
+        output->tlType = TLValue::PeerNotifySettingsEmpty;
+        return true;
+    }
+    output->tlType = TLValue::PeerNotifySettings;
+    output->flags = settings.flags;
+    output->sound = settings.sound;
+    output->muteUntil = settings.muteUntil;
+    return true;
+}
+
 } // Utils namespace
 
 } // Server namespace

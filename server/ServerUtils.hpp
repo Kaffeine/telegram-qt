@@ -3,8 +3,7 @@
 
 #include <QSet>
 
-#include "MTProto/TLTypes.hpp"
-#include "TelegramNamespace.hpp"
+#include "TelegramNamespace_p.hpp"
 
 namespace Telegram {
 
@@ -42,6 +41,7 @@ bool setupTLPeers(T *output,
 
 bool setupTLPhoto(TLPhoto *output, const ImageDescriptor &image);
 bool setupTLFileLocation(TLFileLocation *output, const FileDescriptor &file);
+bool setupNotifySettings(TLPeerNotifySettings *output, const NotificationSettingsData &settings);
 
 } // Utils namespace
 

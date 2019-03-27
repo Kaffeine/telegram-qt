@@ -171,6 +171,19 @@ void LocalUser::updateImage(const ImageDescriptor &image)
     m_photos.prepend(image);
 }
 
+const NotificationSettingsData *LocalUser::getNotificationSettings(const Peer &peer)
+{
+    if (m_notificationSettings.contains(peer)) {
+        return m_notificationSettings.value(peer);
+    }
+    return &NotificationSettingsData::getDefaultSettingsData();
+}
+
+void LocalUser::setNotificationSettings(const Peer &peer, NotificationSettingsData *settings)
+{
+    m_notificationSettings[peer] = settings;
+}
+
 void LocalUser::setPlainPassword(const QString &password)
 {
     if (password.isEmpty()) {

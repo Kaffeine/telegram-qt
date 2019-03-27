@@ -142,6 +142,9 @@ public:
     ImageDescriptor getCurrentImage() const override;
     void updateImage(const ImageDescriptor &image);
 
+    const NotificationSettingsData *getNotificationSettings(const Peer &peer);
+    void setNotificationSettings(const Peer &peer, NotificationSettingsData *settings);
+
     bool hasPassword() const { return !m_passwordSalt.isEmpty() && !m_passwordHash.isEmpty(); }
     QByteArray passwordSalt() const { return m_passwordSalt; }
     QByteArray passwordHash() const { return m_passwordHash; }
@@ -189,6 +192,7 @@ protected:
     QVector<UserDialog *> m_dialogs;
     QVector<quint32> m_contactList; // Contains only registered users from the added contacts
     QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)
+    QHash<Peer, NotificationSettingsData::SharedPtr> m_notificationSettings;
 };
 
 } // Server namespace
