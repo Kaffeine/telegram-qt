@@ -3,9 +3,6 @@
 
 #include "TelegramNamespace.hpp"
 
-#include <QHash>
-#include <QString>
-
 namespace Telegram {
 
 namespace Server {
