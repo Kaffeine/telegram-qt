@@ -18,6 +18,8 @@
 
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(c_serverAuthRpcCategory, "telegram.server.rpc.__VAR_GROUP_NAME_SMALL__", QtWarningMsg)
+
 namespace Telegram {
 
 namespace Server {
