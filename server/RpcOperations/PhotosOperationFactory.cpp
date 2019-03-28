@@ -83,11 +83,37 @@ void PhotosRpcOperation::runDeletePhotos()
 
 void PhotosRpcOperation::runGetUserPhotos()
 {
-    // TLFunctions::TLPhotosGetUserPhotos &arguments = m_getUserPhotos;
+    TLFunctions::TLPhotosGetUserPhotos &arguments = m_getUserPhotos;
     if (processNotImplementedMethod(TLValue::PhotosGetUserPhotos)) {
         return;
     }
+
+    LocalUser *self = layer()->getUser();
+    AbstractUser *targetUser = api()->getUser(arguments.userId, self);
+
+    QVector<ImageDescriptor> images = targetUser->getImages();
     TLPhotosPhotos result;
+    result.count = images.count();
+    result.users.resize(1);
+    Utils::setupTLUser(&result.users[0], targetUser, self);
+
+    quint32 toIndex = arguments.offset + arguments.limit;
+    if (toIndex > result.count) {
+        toIndex = result.count;
+    }
+    if (toIndex <= arguments.offset) {
+        // Nothing to send.
+        sendRpcReply(result);
+        return;
+    }
+    result.photos.resize(toIndex - arguments.offset);
+    for (quint32 i = arguments.offset; i < toIndex; ++i) {
+        if (images.at(i).id == arguments.maxId) {
+            break;
+        }
+        Utils::setupTLPhoto(&result.photos[i - arguments.offset], images.at(i));
+    }
+
     sendRpcReply(result);
 }
 
