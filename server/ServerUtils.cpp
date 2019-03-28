@@ -127,6 +127,53 @@ bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 m
     return true;
 }
 
+bool setupTLPhoto(TLPhoto *output, const ImageDescriptor &image)
+{
+    output->id = image.id;
+    if (!image.isValid()) {
+        output->tlType = TLValue::PhotoEmpty;
+        return false;
+    }
+
+    output->date = image.date;
+    output->flags = 0;
+    output->tlType = TLValue::Photo;
+    output->sizes.resize(image.sizes.count());
+
+    for (int i = 0; i < image.sizes.count(); ++i) {
+        const ImageSizeDescriptor &size = image.sizes.at(i);
+
+        output->sizes[i].tlType = TLValue::PhotoSize;
+        output->sizes[i].w = size.w;
+        output->sizes[i].h = size.h;
+        output->sizes[i].type = size.sizeType;
+        output->sizes[i].bytes = size.bytes;
+        output->sizes[i].size = size.size;
+
+        switch (size.sizeType) {
+        case ImageSizeDescriptor::Small:
+            output->sizes[i].type = QLatin1String("s");
+            break;
+        case ImageSizeDescriptor::Medium:
+            output->sizes[i].type = QLatin1String("m");
+            break;
+        case ImageSizeDescriptor::Large:
+            output->sizes[i].type = QLatin1String("x");
+            break;
+        case ImageSizeDescriptor::Max:
+            output->sizes[i].type = QLatin1String("y");
+            break;
+        default:
+            qCritical() << Q_FUNC_INFO << "Unexpected size type" << size.sizeType;
+            break;
+        }
+
+        setupTLFileLocation(&output->sizes[i].location, size.fileDescriptor);
+    }
+
+    return true;
+}
+
 bool setupTLFileLocation(TLFileLocation *output, const FileDescriptor &file)
 {
     if (!file.isValid()) {

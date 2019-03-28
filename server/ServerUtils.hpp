@@ -17,6 +17,7 @@ class MessageData;
 class ServerApi;
 
 class FileDescriptor;
+class ImageDescriptor;
 
 namespace Utils {
 
@@ -39,6 +40,7 @@ bool setupTLPeers(T *output,
                         peers, api, forUser);
 }
 
+bool setupTLPhoto(TLPhoto *output, const ImageDescriptor &image);
 bool setupTLFileLocation(TLFileLocation *output, const FileDescriptor &file);
 
 } // Utils namespace
