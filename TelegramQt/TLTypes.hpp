@@ -5530,6 +5530,22 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLChannelsAdminLogResults {
 };
 // End of generated TLTypes
 
+inline bool operator==(const TLPeer &left, const TLPeer &right) {
+    if (left.tlType != right.tlType) {
+        return false;
+    }
+    switch (left.tlType) {
+    case TLValue::PeerUser:
+        return left.userId == right.userId;
+    case TLValue::PeerChat:
+        return left.chatId == right.chatId;
+    case TLValue::PeerChannel:
+        return left.channelId == right.channelId;
+    }
+    // Object is not valid
+    return false;
+}
+
 Q_DECLARE_METATYPE(TLUploadFile)
 Q_DECLARE_METATYPE(QVector<TLUser>)
 Q_DECLARE_METATYPE(TLUpdates)
