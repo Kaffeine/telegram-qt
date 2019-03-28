@@ -39,7 +39,7 @@ protected:
     Peer m_peer;
     quint32 m_pts = 0;
     quint32 m_lastMessageId = 0;
-    QHash<quint32,quint64> m_messages;
+    QHash<quint32,quint64> m_messages; // messageId to MessageData object id
 };
 
 class UserPostBox : public PostBox
@@ -78,6 +78,8 @@ public:
     virtual QString lastName() const = 0;
     virtual bool isOnline() const = 0;
     virtual quint32 dcId() const = 0;
+    virtual QVector<ImageDescriptor> getImages() const = 0;
+    virtual ImageDescriptor getCurrentImage() const = 0;
     virtual QVector<quint32> contactList() const = 0;
 
     Peer toPeer() const override { return Peer::fromUserId(id()); }
@@ -111,6 +113,10 @@ public:
     QVector<Session*> activeSessions() const;
     bool hasActiveSession() const;
     void addSession(Session *session);
+
+    QVector<ImageDescriptor> getImages() const override { return m_photos; }
+    ImageDescriptor getCurrentImage() const override;
+    void updateImage(const ImageDescriptor &image);
 
     bool hasPassword() const { return !m_passwordSalt.isEmpty() && !m_passwordHash.isEmpty(); }
     QByteArray passwordSalt() const { return m_passwordSalt; }
@@ -149,6 +155,8 @@ protected:
     QByteArray m_passwordSalt;
     QByteArray m_passwordHash;
     QVector<Session*> m_sessions;
+    QVector<ImageDescriptor> m_photos;
+
     quint32 m_dcId = 0;
 
     QVector<UserDialog *> m_dialogs;

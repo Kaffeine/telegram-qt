@@ -34,6 +34,17 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *app
     // TODO: Check if the user has access to the requested user phone
     output->phone = input->phoneNumber();
 
+    ImageDescriptor image = input->getCurrentImage();
+
+    if (image.isValid()) {
+        output->photo.tlType = TLValue::UserProfilePhoto;
+        output->photo.photoId = image.id;
+        setupTLFileLocation(&output->photo.photoSmall, image.sizes.first().fileDescriptor);
+        setupTLFileLocation(&output->photo.photoBig, image.sizes.last().fileDescriptor);
+    } else {
+        output->photo.tlType = TLValue::UserProfilePhotoEmpty;
+    }
+
     quint32 flags = 0;
     if (!output->firstName.isEmpty()) {
         flags |= TLUser::FirstName;
@@ -46,6 +57,9 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *app
     }
     if (!output->phone.isEmpty()) {
         flags |= TLUser::Phone;
+    }
+    if (output->photo.tlType != TLValue::UserProfilePhotoEmpty) {
+        flags |= TLUser::Photo;
     }
     if (output->id == applicant->id()) {
         flags |= TLUser::Self;

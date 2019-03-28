@@ -139,6 +139,19 @@ void LocalUser::addSession(Session *session)
     session->setUser(this);
 }
 
+ImageDescriptor LocalUser::getCurrentImage() const
+{
+    if (m_photos.isEmpty()) {
+        return ImageDescriptor();
+    }
+    return m_photos.first();
+}
+
+void LocalUser::updateImage(const ImageDescriptor &image)
+{
+    m_photos.prepend(image);
+}
+
 void LocalUser::setPlainPassword(const QString &password)
 {
     if (password.isEmpty()) {

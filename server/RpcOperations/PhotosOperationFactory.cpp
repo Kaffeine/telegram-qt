@@ -23,6 +23,8 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "ServerUtils.hpp"
+#include "Storage.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
@@ -101,11 +103,24 @@ void PhotosRpcOperation::runUpdateProfilePhoto()
 
 void PhotosRpcOperation::runUploadProfilePhoto()
 {
-    // TLFunctions::TLPhotosUploadProfilePhoto &arguments = m_uploadProfilePhoto;
-    if (processNotImplementedMethod(TLValue::PhotosUploadProfilePhoto)) {
-        return;
+    TLFunctions::TLPhotosUploadProfilePhoto &arguments = m_uploadProfilePhoto;
+    const FileDescriptor desc = api()->storage()->getFileDescriptor(arguments.file.id, arguments.file.parts);
+
+    if (!desc.isValid()) {
+        sendRpcError(RpcError());
     }
+
+    const ImageDescriptor image = api()->storage()->processImageFile(desc, arguments.file.name);
+
+    LocalUser *self = layer()->getUser();
+
+    self->updateImage(image);
+
     TLPhotosPhoto result;
+    Utils::setupTLPhoto(&result.photo, image);
+    result.users.resize(1);
+    Utils::setupTLUser(&result.users[0], self, self);
+
     sendRpcReply(result);
 }
 // End of generated run methods

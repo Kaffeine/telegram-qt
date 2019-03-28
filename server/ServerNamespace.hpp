@@ -106,6 +106,13 @@ struct ImageDescriptor
     QVector<ImageSizeDescriptor> sizes;
 };
 
+struct PeerImage
+{
+    quint64 id = 0;
+    FileDescriptor small;
+    FileDescriptor big;
+};
+
 } // Server namespace
 
 } // Telegram namespace
