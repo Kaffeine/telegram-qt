@@ -41,6 +41,10 @@ public:
     const MessageData *getMessage(quint64 globalId);
 
     bool uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
+    FileDescriptor getFileDescriptor(quint64 fileId, quint32 parts) const;
+
+    FileDescriptor getSecretFileDescriptor(quint64 volumeId, quint32 localId, quint64 secret) const;
+    FileDescriptor getDocumentFileDescriptor(quint64 fileId, quint64 accessHash) const;
 
     QIODevice *beginReadFile(const FileDescriptor &descriptor);
     void endReadFile(QIODevice *device);

@@ -69,6 +69,51 @@ bool Storage::uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray 
     return true;
 }
 
+// InputFile
+FileDescriptor Storage::getFileDescriptor(quint64 fileId, quint32 parts) const
+{
+    if (!m_tmpFiles.contains(fileId)) {
+        return FileDescriptor();
+    }
+
+    const FileData &data = m_tmpFiles[fileId];
+    if (static_cast<quint32>(data.partList.count()) != parts) {
+        return FileDescriptor();
+    }
+
+    FileDescriptor descriptor;
+    descriptor.id = fileId;
+    return descriptor;
+}
+
+FileDescriptor Storage::getSecretFileDescriptor(quint64 volumeId,
+                                                quint32 localId,
+                                                quint64 secret) const
+{
+    for (const FileDescriptor &descriptor : m_allFileDescriptors) {
+        if ((descriptor.volumeId == volumeId) && (descriptor.localId == localId)) {
+            if (descriptor.secret == secret) {
+                return descriptor;
+            }
+            break;
+        }
+    }
+    return FileDescriptor();
+}
+
+FileDescriptor Storage::getDocumentFileDescriptor(quint64 fileId, quint64 accessHash) const
+{
+    for (const FileDescriptor &descriptor : m_allFileDescriptors) {
+        if (descriptor.id == fileId) {
+            if (descriptor.accessHash == accessHash) {
+                return descriptor;
+            }
+            break;
+        }
+    }
+    return FileDescriptor();
+}
+
 quint64 Storage::getMessageUniqueTs()
 {
     quint64 ts = Telegram::Utils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
