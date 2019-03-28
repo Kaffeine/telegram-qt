@@ -20,9 +20,13 @@
 
 #include <QObject>
 #include <QHash>
+#include <QSet>
 
 #include "ServerNamespace.hpp"
 #include "ServerMessageData.hpp"
+
+QT_FORWARD_DECLARE_CLASS(QFile)
+QT_FORWARD_DECLARE_CLASS(QIODevice)
 
 namespace Telegram {
 
@@ -36,12 +40,25 @@ public:
     MessageData *addMessage(quint32 fromId, Peer toPeer, const QString &text);
     const MessageData *getMessage(quint64 globalId);
 
+    bool uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
+
+    QIODevice *beginReadFile(const FileDescriptor &descriptor);
+    void endReadFile(QIODevice *device);
+
 protected:
     quint64 getMessageUniqueTs();
+    QIODevice *beginWriteFile();
+    FileDescriptor *endWriteFile(QIODevice *device, const QString &name);
 
+    quint64 volumeId() const;
+
+    QVector<FileDescriptor> m_allFileDescriptors;
     QHash<quint64, MessageData> m_messages;
+    QHash<quint64, FileData> m_tmpFiles;
+    QSet<QFile*> m_openFiles;
     quint64 m_lastGlobalId = 0;
     quint64 m_lastTimestamp = 0;
+    quint32 m_lastFileLocalId = 0;
 };
 
 } // Server namespace

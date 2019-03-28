@@ -43,6 +43,40 @@ struct UserContact
     QString lastName;
 };
 
+// Overall file descriptor
+struct FileDescriptor
+{
+    bool isValid() const { return true; }
+
+    // FileLocation:
+    quint64 volumeId = 0;
+    quint32 localId = 0;
+    quint64 secret = 0;
+    quint32 dcId = 0;
+
+    // InputFileLocation:
+    // quint64 volumeId;
+    // quint32 localId;
+    // quint64 secret;
+    quint64 id = 0;
+    quint64 accessHash = 0;
+
+    // InputFile:
+    // quint64 id;
+    quint32 parts = 0;
+    quint32 date = 0;
+    quint32 size = 0;
+    QString name;
+    QString md5Checksum;
+    QString mimeType;
+};
+
+struct FileData
+{
+    quint64 fileId = 0;
+    QByteArrayList partList;
+};
+
 } // Server namespace
 
 } // Telegram namespace

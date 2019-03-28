@@ -18,8 +18,14 @@
 #include "Storage.hpp"
 
 #include "ApiUtils.hpp"
+#include "Debug_p.hpp"
+#include "RandomGenerator.hpp"
 
 #include <QDateTime>
+#include <QDir>
+#include <QLoggingCategory>
+
+static const QString c_storageFileDir = QLatin1String("storage/volume%1");
 
 namespace Telegram {
 
@@ -48,6 +54,21 @@ const MessageData *Storage::getMessage(quint64 globalId)
     return &m_messages[globalId];
 }
 
+bool Storage::uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)
+{
+    if (!m_tmpFiles.contains(fileId)) {
+        FileData newFile;
+        newFile.fileId = fileId;
+        m_tmpFiles.insert(fileId, newFile);
+    }
+    FileData &data = m_tmpFiles[fileId];
+    if (filePart != static_cast<quint32>(data.partList.count())) {
+        return false;
+    }
+    data.partList.append(bytes);
+    return true;
+}
+
 quint64 Storage::getMessageUniqueTs()
 {
     quint64 ts = Telegram::Utils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
@@ -56,6 +77,78 @@ quint64 Storage::getMessageUniqueTs()
     }
     m_lastTimestamp = ts;
     return ts;
+}
+
+QIODevice *Storage::beginReadFile(const FileDescriptor &descriptor)
+{
+    QFile *file = new QFile();
+    m_openFiles.insert(file);
+    file->setFileName(c_storageFileDir.arg(descriptor.volumeId)
+                      + QLatin1Char('/') + QString::number(descriptor.localId));
+    qWarning() << CALL_INFO << file->fileName();
+    if (!file->open(QIODevice::ReadOnly)) {
+        qWarning() << CALL_INFO << "Unable to open file!";
+        return nullptr;
+    }
+    return file;
+}
+
+void Storage::endReadFile(QIODevice *device)
+{
+    QFile *file = static_cast<QFile *>(device);
+    if (!m_openFiles.contains(file)) {
+        qWarning() << CALL_INFO << "not such file" << device;
+        return;
+    }
+
+    m_openFiles.remove(file);
+    delete file;
+}
+
+QIODevice *Storage::beginWriteFile()
+{
+    QDir().mkpath(c_storageFileDir.arg(volumeId()));
+
+    QFile *file = new QFile();
+    m_openFiles.insert(file);
+    file->setFileName(c_storageFileDir.arg(volumeId()) + QLatin1Char('/') + QString::number(++m_lastFileLocalId));
+    qWarning() << CALL_INFO << file->fileName();
+    if (!file->open(QIODevice::WriteOnly)) {
+        qWarning() << CALL_INFO << "Unable to open file!";
+    }
+    return file;
+}
+
+FileDescriptor *Storage::endWriteFile(QIODevice *device, const QString &name)
+{
+    QFile *file = static_cast<QFile *>(device);
+    if (!m_openFiles.contains(file)) {
+        qWarning() << CALL_INFO << "not such file" << device;
+        return nullptr;
+    }
+
+    FileDescriptor result;
+    RandomGenerator::instance()->generate(&result.id);
+    result.dcId = 1;
+    result.volumeId = volumeId();
+    result.localId = m_lastFileLocalId;
+    result.secret = 0xbeef;
+    result.date = Telegram::Utils::getCurrentTime();
+    result.name = name;
+
+    m_openFiles.remove(file);
+    file->close();
+    result.size = static_cast<quint32>(file->size());
+    delete file;
+
+    m_allFileDescriptors.append(result);
+
+    return &m_allFileDescriptors.last();
+}
+
+quint64 Storage::volumeId() const
+{
+    return 1;
 }
 
 } // Server namespace
