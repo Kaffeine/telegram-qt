@@ -23,6 +23,7 @@
 
 #include <QDateTime>
 #include <QDir>
+#include <QImage>
 #include <QLoggingCategory>
 
 static const QString c_storageFileDir = QLatin1String("storage/volume%1");
@@ -30,6 +31,13 @@ static const QString c_storageFileDir = QLatin1String("storage/volume%1");
 namespace Telegram {
 
 namespace Server {
+
+const QVector<int> ImageSizeDescriptor::Sizes = {
+    ImageSizeDescriptor::Small,
+    ImageSizeDescriptor::Medium,
+    ImageSizeDescriptor::Large,
+    ImageSizeDescriptor::Max
+};
 
 Storage::Storage(QObject *parent) :
     QObject(parent)
@@ -216,6 +224,54 @@ FileDescriptor Storage::saveDocumentFile(const FileDescriptor &descriptor,
     RandomGenerator::instance()->generate(&savedFile->accessHash);
 
     return *savedFile;
+}
+
+ImageDescriptor Storage::processImageFile(const FileDescriptor &file, const QString &name)
+{
+    if (!m_tmpFiles.contains(file.id)) {
+        return ImageDescriptor();
+    }
+
+    QByteArray data = m_tmpFiles.value(file.id).partList.join();
+    QImage originalImage = QImage::fromData(data);
+
+    if (originalImage.isNull()) {
+        return ImageDescriptor();
+    }
+
+    ImageDescriptor result;
+    result.date = Telegram::Utils::getCurrentTime();
+    result.id = file.id;
+    result.accessHash = 0xdead;
+    result.flags = 0;
+
+    for (const int maxDimension : ImageSizeDescriptor::Sizes) {
+        const int imageMaxDimension = qMax(originalImage.width(), originalImage.height());
+        QImage sizedImage = originalImage;
+        if (imageMaxDimension > maxDimension) {
+            sizedImage = originalImage.scaled(maxDimension, maxDimension, Qt::KeepAspectRatio);
+        }
+        QIODevice *output = beginWriteFile();
+        if (!sizedImage.save(output, "PNG")) {
+            qCritical() << Q_FUNC_INFO << "Unable to save image size" << maxDimension;
+        }
+        const FileDescriptor *fileDescriptor = endWriteFile(output, name);
+
+        ImageSizeDescriptor sizeDescriptor;
+        sizeDescriptor.w = static_cast<quint32>(sizedImage.width());
+        sizeDescriptor.h = static_cast<quint32>(sizedImage.height());
+        sizeDescriptor.size = fileDescriptor->size;
+        sizeDescriptor.fileDescriptor = *fileDescriptor;
+        sizeDescriptor.sizeType = maxDimension;
+
+        result.sizes.append(sizeDescriptor);
+
+        if (imageMaxDimension <= maxDimension) {
+            break;
+        }
+    }
+
+    return result;
 }
 
 quint64 Storage::volumeId() const

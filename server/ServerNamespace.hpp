@@ -77,6 +77,35 @@ struct FileData
     QByteArrayList partList;
 };
 
+struct ImageSizeDescriptor
+{
+    static constexpr int Small = 90;   // S
+    static constexpr int Medium = 320; // M
+    static constexpr int Large = 800;  // X
+    static constexpr int Max = 1280;   // Y. Check that 1280 is the actual limit
+
+    static const QVector<int> Sizes;
+
+    int sizeType;
+    FileDescriptor fileDescriptor;
+    quint32 w = 0;
+    quint32 h = 0;
+    quint32 size = 0;
+    QByteArray bytes;
+};
+
+struct ImageDescriptor
+{
+    bool isValid() const { return id && !sizes.isEmpty(); }
+
+    quint64 id = 0;
+    quint64 accessHash = 0;
+    quint32 flags = 0;
+    quint32 date = 0;
+
+    QVector<ImageSizeDescriptor> sizes;
+};
+
 } // Server namespace
 
 } // Telegram namespace

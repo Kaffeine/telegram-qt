@@ -50,6 +50,8 @@ public:
     QIODevice *beginReadFile(const FileDescriptor &descriptor);
     void endReadFile(QIODevice *device);
 
+    // TODO: Make processImageFile() async and return a PendingOperation?
+    ImageDescriptor processImageFile(const FileDescriptor &file, const QString &name = QString());
     FileDescriptor saveDocumentFile(const FileDescriptor &descriptor,
                                     const QString &fileName,
                                     const QString &mimeType);

@@ -78,6 +78,8 @@ add_definitions(
     -DQT_STRICT_ITERATORS
 )
 
+find_package(Qt5 5.5 COMPONENTS Core Gui Network REQUIRED)
+
 add_library(TelegramServerQt${QT_VERSION_MAJOR} STATIC
     ${server_lib_SOURCES}
 )
@@ -88,6 +90,7 @@ target_include_directories(TelegramServerQt${QT_VERSION_MAJOR} PRIVATE ${CMAKE_C
 target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC
     Qt5::Core
     Qt5::Network
+    Qt5::Gui
 )
 
 if (DEVELOPER_BUILD)
