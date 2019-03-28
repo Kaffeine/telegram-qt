@@ -922,6 +922,7 @@ QString Generator::debugOperatorImplementationHead(const QString &argName, const
     Q_UNUSED(argName)
     QString code;
     code += QString("QDebug operator<<(QDebug d, const %1 &type)\n{\n").arg(typeName);
+    code += spacing + QLatin1String("QDebugStateSaver saver(d);\n");
     code += spacing + QStringLiteral("d.nospace();\n");
     code += spacing + QString("d << \"%1(\" << type.tlType << \") {\";\n").arg(typeName);
     code += spacing + QStringLiteral("Spacer spacer;\n");

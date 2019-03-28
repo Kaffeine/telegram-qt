@@ -19,6 +19,8 @@
 #include "Debug_p.hpp"
 #include "TelegramNamespace.hpp"
 
+#include <QDebugStateSaver>
+
 namespace Telegram {
 
 namespace Debug {
@@ -891,6 +893,7 @@ using namespace Telegram::Debug;
 // Generated TLTypes debug operators
 QDebug operator<<(QDebug d, const TLAccountDaysTTL &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAccountDaysTTL(" << type.tlType << ") {";
     Spacer spacer;
@@ -909,6 +912,7 @@ QDebug operator<<(QDebug d, const TLAccountDaysTTL &type)
 
 QDebug operator<<(QDebug d, const TLAccountPassword &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAccountPassword(" << type.tlType << ") {";
     Spacer spacer;
@@ -936,6 +940,7 @@ QDebug operator<<(QDebug d, const TLAccountPassword &type)
 
 QDebug operator<<(QDebug d, const TLAccountPasswordInputSettings &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAccountPasswordInputSettings(" << type.tlType << ") {";
     Spacer spacer;
@@ -966,6 +971,7 @@ QDebug operator<<(QDebug d, const TLAccountPasswordInputSettings &type)
 
 QDebug operator<<(QDebug d, const TLAccountPasswordSettings &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAccountPasswordSettings(" << type.tlType << ") {";
     Spacer spacer;
@@ -984,6 +990,7 @@ QDebug operator<<(QDebug d, const TLAccountPasswordSettings &type)
 
 QDebug operator<<(QDebug d, const TLAccountTmpPassword &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAccountTmpPassword(" << type.tlType << ") {";
     Spacer spacer;
@@ -1003,6 +1010,7 @@ QDebug operator<<(QDebug d, const TLAccountTmpPassword &type)
 
 QDebug operator<<(QDebug d, const TLAuthCheckedPhone &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAuthCheckedPhone(" << type.tlType << ") {";
     Spacer spacer;
@@ -1021,6 +1029,7 @@ QDebug operator<<(QDebug d, const TLAuthCheckedPhone &type)
 
 QDebug operator<<(QDebug d, const TLAuthCodeType &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAuthCodeType(" << type.tlType << ") {";
     Spacer spacer;
@@ -1040,6 +1049,7 @@ QDebug operator<<(QDebug d, const TLAuthCodeType &type)
 
 QDebug operator<<(QDebug d, const TLAuthExportedAuthorization &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAuthExportedAuthorization(" << type.tlType << ") {";
     Spacer spacer;
@@ -1059,6 +1069,7 @@ QDebug operator<<(QDebug d, const TLAuthExportedAuthorization &type)
 
 QDebug operator<<(QDebug d, const TLAuthPasswordRecovery &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAuthPasswordRecovery(" << type.tlType << ") {";
     Spacer spacer;
@@ -1077,6 +1088,7 @@ QDebug operator<<(QDebug d, const TLAuthPasswordRecovery &type)
 
 QDebug operator<<(QDebug d, const TLAuthSentCodeType &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAuthSentCodeType(" << type.tlType << ") {";
     Spacer spacer;
@@ -1101,6 +1113,7 @@ QDebug operator<<(QDebug d, const TLAuthSentCodeType &type)
 
 QDebug operator<<(QDebug d, const TLAuthorization &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAuthorization(" << type.tlType << ") {";
     Spacer spacer;
@@ -1131,6 +1144,7 @@ QDebug operator<<(QDebug d, const TLAuthorization &type)
 
 QDebug operator<<(QDebug d, const TLBadMsgNotification &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLBadMsgNotification(" << type.tlType << ") {";
     Spacer spacer;
@@ -1158,6 +1172,7 @@ QDebug operator<<(QDebug d, const TLBadMsgNotification &type)
 
 QDebug operator<<(QDebug d, const TLBotCommand &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLBotCommand(" << type.tlType << ") {";
     Spacer spacer;
@@ -1177,6 +1192,7 @@ QDebug operator<<(QDebug d, const TLBotCommand &type)
 
 QDebug operator<<(QDebug d, const TLBotInfo &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLBotInfo(" << type.tlType << ") {";
     Spacer spacer;
@@ -1197,6 +1213,7 @@ QDebug operator<<(QDebug d, const TLBotInfo &type)
 
 QDebug operator<<(QDebug d, const TLCdnFileHash &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLCdnFileHash(" << type.tlType << ") {";
     Spacer spacer;
@@ -1217,6 +1234,7 @@ QDebug operator<<(QDebug d, const TLCdnFileHash &type)
 
 QDebug operator<<(QDebug d, const TLCdnPublicKey &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLCdnPublicKey(" << type.tlType << ") {";
     Spacer spacer;
@@ -1236,6 +1254,7 @@ QDebug operator<<(QDebug d, const TLCdnPublicKey &type)
 
 QDebug operator<<(QDebug d, const TLChannelParticipantsFilter &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelParticipantsFilter(" << type.tlType << ") {";
     Spacer spacer;
@@ -1261,6 +1280,7 @@ QDebug operator<<(QDebug d, const TLChannelParticipantsFilter &type)
 
 QDebug operator<<(QDebug d, const TLChatParticipant &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChatParticipant(" << type.tlType << ") {";
     Spacer spacer;
@@ -1286,6 +1306,7 @@ QDebug operator<<(QDebug d, const TLChatParticipant &type)
 
 QDebug operator<<(QDebug d, const TLChatParticipants &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChatParticipants(" << type.tlType << ") {";
     Spacer spacer;
@@ -1314,6 +1335,7 @@ QDebug operator<<(QDebug d, const TLChatParticipants &type)
 
 QDebug operator<<(QDebug d, const TLClientDHInnerData &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLClientDHInnerData(" << type.tlType << ") {";
     Spacer spacer;
@@ -1335,6 +1357,7 @@ QDebug operator<<(QDebug d, const TLClientDHInnerData &type)
 
 QDebug operator<<(QDebug d, const TLContact &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContact(" << type.tlType << ") {";
     Spacer spacer;
@@ -1354,6 +1377,7 @@ QDebug operator<<(QDebug d, const TLContact &type)
 
 QDebug operator<<(QDebug d, const TLContactBlocked &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactBlocked(" << type.tlType << ") {";
     Spacer spacer;
@@ -1373,6 +1397,7 @@ QDebug operator<<(QDebug d, const TLContactBlocked &type)
 
 QDebug operator<<(QDebug d, const TLContactLink &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactLink(" << type.tlType << ") {";
     Spacer spacer;
@@ -1393,6 +1418,7 @@ QDebug operator<<(QDebug d, const TLContactLink &type)
 
 QDebug operator<<(QDebug d, const TLDataJSON &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLDataJSON(" << type.tlType << ") {";
     Spacer spacer;
@@ -1411,6 +1437,7 @@ QDebug operator<<(QDebug d, const TLDataJSON &type)
 
 QDebug operator<<(QDebug d, const TLDestroyAuthKeyRes &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLDestroyAuthKeyRes(" << type.tlType << ") {";
     Spacer spacer;
@@ -1430,6 +1457,7 @@ QDebug operator<<(QDebug d, const TLDestroyAuthKeyRes &type)
 
 QDebug operator<<(QDebug d, const TLDestroySessionRes &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLDestroySessionRes(" << type.tlType << ") {";
     Spacer spacer;
@@ -1449,6 +1477,7 @@ QDebug operator<<(QDebug d, const TLDestroySessionRes &type)
 
 QDebug operator<<(QDebug d, const TLDisabledFeature &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLDisabledFeature(" << type.tlType << ") {";
     Spacer spacer;
@@ -1468,6 +1497,7 @@ QDebug operator<<(QDebug d, const TLDisabledFeature &type)
 
 QDebug operator<<(QDebug d, const TLEncryptedChat &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLEncryptedChat(" << type.tlType << ") {";
     Spacer spacer;
@@ -1514,6 +1544,7 @@ QDebug operator<<(QDebug d, const TLEncryptedChat &type)
 
 QDebug operator<<(QDebug d, const TLEncryptedFile &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLEncryptedFile(" << type.tlType << ") {";
     Spacer spacer;
@@ -1539,6 +1570,7 @@ QDebug operator<<(QDebug d, const TLEncryptedFile &type)
 
 QDebug operator<<(QDebug d, const TLEncryptedMessage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLEncryptedMessage(" << type.tlType << ") {";
     Spacer spacer;
@@ -1568,6 +1600,7 @@ QDebug operator<<(QDebug d, const TLEncryptedMessage &type)
 
 QDebug operator<<(QDebug d, const TLError &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLError(" << type.tlType << ") {";
     Spacer spacer;
@@ -1587,6 +1620,7 @@ QDebug operator<<(QDebug d, const TLError &type)
 
 QDebug operator<<(QDebug d, const TLExportedChatInvite &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLExportedChatInvite(" << type.tlType << ") {";
     Spacer spacer;
@@ -1608,6 +1642,7 @@ QDebug operator<<(QDebug d, const TLExportedChatInvite &type)
 
 QDebug operator<<(QDebug d, const TLExportedMessageLink &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLExportedMessageLink(" << type.tlType << ") {";
     Spacer spacer;
@@ -1626,6 +1661,7 @@ QDebug operator<<(QDebug d, const TLExportedMessageLink &type)
 
 QDebug operator<<(QDebug d, const TLFileLocation &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLFileLocation(" << type.tlType << ") {";
     Spacer spacer;
@@ -1653,6 +1689,7 @@ QDebug operator<<(QDebug d, const TLFileLocation &type)
 
 QDebug operator<<(QDebug d, const TLFutureSalt &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLFutureSalt(" << type.tlType << ") {";
     Spacer spacer;
@@ -1673,6 +1710,7 @@ QDebug operator<<(QDebug d, const TLFutureSalt &type)
 
 QDebug operator<<(QDebug d, const TLFutureSalts &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLFutureSalts(" << type.tlType << ") {";
     Spacer spacer;
@@ -1693,6 +1731,7 @@ QDebug operator<<(QDebug d, const TLFutureSalts &type)
 
 QDebug operator<<(QDebug d, const TLGeoPoint &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLGeoPoint(" << type.tlType << ") {";
     Spacer spacer;
@@ -1715,6 +1754,7 @@ QDebug operator<<(QDebug d, const TLGeoPoint &type)
 
 QDebug operator<<(QDebug d, const TLHelpAppUpdate &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLHelpAppUpdate(" << type.tlType << ") {";
     Spacer spacer;
@@ -1739,6 +1779,7 @@ QDebug operator<<(QDebug d, const TLHelpAppUpdate &type)
 
 QDebug operator<<(QDebug d, const TLHelpInviteText &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLHelpInviteText(" << type.tlType << ") {";
     Spacer spacer;
@@ -1757,6 +1798,7 @@ QDebug operator<<(QDebug d, const TLHelpInviteText &type)
 
 QDebug operator<<(QDebug d, const TLHelpTermsOfService &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLHelpTermsOfService(" << type.tlType << ") {";
     Spacer spacer;
@@ -1775,6 +1817,7 @@ QDebug operator<<(QDebug d, const TLHelpTermsOfService &type)
 
 QDebug operator<<(QDebug d, const TLHighScore &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLHighScore(" << type.tlType << ") {";
     Spacer spacer;
@@ -1795,6 +1838,7 @@ QDebug operator<<(QDebug d, const TLHighScore &type)
 
 QDebug operator<<(QDebug d, const TLHttpWait &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLHttpWait(" << type.tlType << ") {";
     Spacer spacer;
@@ -1815,6 +1859,7 @@ QDebug operator<<(QDebug d, const TLHttpWait &type)
 
 QDebug operator<<(QDebug d, const TLImportedContact &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLImportedContact(" << type.tlType << ") {";
     Spacer spacer;
@@ -1834,6 +1879,7 @@ QDebug operator<<(QDebug d, const TLImportedContact &type)
 
 QDebug operator<<(QDebug d, const TLInlineBotSwitchPM &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInlineBotSwitchPM(" << type.tlType << ") {";
     Spacer spacer;
@@ -1853,6 +1899,7 @@ QDebug operator<<(QDebug d, const TLInlineBotSwitchPM &type)
 
 QDebug operator<<(QDebug d, const TLInputAppEvent &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputAppEvent(" << type.tlType << ") {";
     Spacer spacer;
@@ -1874,6 +1921,7 @@ QDebug operator<<(QDebug d, const TLInputAppEvent &type)
 
 QDebug operator<<(QDebug d, const TLInputBotInlineMessageID &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputBotInlineMessageID(" << type.tlType << ") {";
     Spacer spacer;
@@ -1894,6 +1942,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessageID &type)
 
 QDebug operator<<(QDebug d, const TLInputChannel &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputChannel(" << type.tlType << ") {";
     Spacer spacer;
@@ -1916,6 +1965,7 @@ QDebug operator<<(QDebug d, const TLInputChannel &type)
 
 QDebug operator<<(QDebug d, const TLInputContact &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputContact(" << type.tlType << ") {";
     Spacer spacer;
@@ -1937,6 +1987,7 @@ QDebug operator<<(QDebug d, const TLInputContact &type)
 
 QDebug operator<<(QDebug d, const TLInputDocument &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputDocument(" << type.tlType << ") {";
     Spacer spacer;
@@ -1959,6 +2010,7 @@ QDebug operator<<(QDebug d, const TLInputDocument &type)
 
 QDebug operator<<(QDebug d, const TLInputEncryptedChat &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputEncryptedChat(" << type.tlType << ") {";
     Spacer spacer;
@@ -1978,6 +2030,7 @@ QDebug operator<<(QDebug d, const TLInputEncryptedChat &type)
 
 QDebug operator<<(QDebug d, const TLInputEncryptedFile &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputEncryptedFile(" << type.tlType << ") {";
     Spacer spacer;
@@ -2013,6 +2066,7 @@ QDebug operator<<(QDebug d, const TLInputEncryptedFile &type)
 
 QDebug operator<<(QDebug d, const TLInputFile &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputFile(" << type.tlType << ") {";
     Spacer spacer;
@@ -2040,6 +2094,7 @@ QDebug operator<<(QDebug d, const TLInputFile &type)
 
 QDebug operator<<(QDebug d, const TLInputFileLocation &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputFileLocation(" << type.tlType << ") {";
     Spacer spacer;
@@ -2071,6 +2126,7 @@ QDebug operator<<(QDebug d, const TLInputFileLocation &type)
 
 QDebug operator<<(QDebug d, const TLInputGeoPoint &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputGeoPoint(" << type.tlType << ") {";
     Spacer spacer;
@@ -2093,6 +2149,7 @@ QDebug operator<<(QDebug d, const TLInputGeoPoint &type)
 
 QDebug operator<<(QDebug d, const TLInputPeer &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputPeer(" << type.tlType << ") {";
     Spacer spacer;
@@ -2125,6 +2182,7 @@ QDebug operator<<(QDebug d, const TLInputPeer &type)
 
 QDebug operator<<(QDebug d, const TLInputPeerNotifyEvents &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputPeerNotifyEvents(" << type.tlType << ") {";
     Spacer spacer;
@@ -2143,6 +2201,7 @@ QDebug operator<<(QDebug d, const TLInputPeerNotifyEvents &type)
 
 QDebug operator<<(QDebug d, const TLInputPhoneCall &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputPhoneCall(" << type.tlType << ") {";
     Spacer spacer;
@@ -2162,6 +2221,7 @@ QDebug operator<<(QDebug d, const TLInputPhoneCall &type)
 
 QDebug operator<<(QDebug d, const TLInputPhoto &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputPhoto(" << type.tlType << ") {";
     Spacer spacer;
@@ -2184,6 +2244,7 @@ QDebug operator<<(QDebug d, const TLInputPhoto &type)
 
 QDebug operator<<(QDebug d, const TLInputPrivacyKey &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputPrivacyKey(" << type.tlType << ") {";
     Spacer spacer;
@@ -2203,6 +2264,7 @@ QDebug operator<<(QDebug d, const TLInputPrivacyKey &type)
 
 QDebug operator<<(QDebug d, const TLInputStickerSet &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputStickerSet(" << type.tlType << ") {";
     Spacer spacer;
@@ -2229,6 +2291,7 @@ QDebug operator<<(QDebug d, const TLInputStickerSet &type)
 
 QDebug operator<<(QDebug d, const TLInputStickeredMedia &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputStickeredMedia(" << type.tlType << ") {";
     Spacer spacer;
@@ -2251,6 +2314,7 @@ QDebug operator<<(QDebug d, const TLInputStickeredMedia &type)
 
 QDebug operator<<(QDebug d, const TLInputUser &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputUser(" << type.tlType << ") {";
     Spacer spacer;
@@ -2274,6 +2338,7 @@ QDebug operator<<(QDebug d, const TLInputUser &type)
 
 QDebug operator<<(QDebug d, const TLInputWebFileLocation &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputWebFileLocation(" << type.tlType << ") {";
     Spacer spacer;
@@ -2293,6 +2358,7 @@ QDebug operator<<(QDebug d, const TLInputWebFileLocation &type)
 
 QDebug operator<<(QDebug d, const TLIpPort &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLIpPort(" << type.tlType << ") {";
     Spacer spacer;
@@ -2312,6 +2378,7 @@ QDebug operator<<(QDebug d, const TLIpPort &type)
 
 QDebug operator<<(QDebug d, const TLLabeledPrice &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLLabeledPrice(" << type.tlType << ") {";
     Spacer spacer;
@@ -2331,6 +2398,7 @@ QDebug operator<<(QDebug d, const TLLabeledPrice &type)
 
 QDebug operator<<(QDebug d, const TLLangPackLanguage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLLangPackLanguage(" << type.tlType << ") {";
     Spacer spacer;
@@ -2351,6 +2419,7 @@ QDebug operator<<(QDebug d, const TLLangPackLanguage &type)
 
 QDebug operator<<(QDebug d, const TLLangPackString &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLLangPackString(" << type.tlType << ") {";
     Spacer spacer;
@@ -2395,6 +2464,7 @@ QDebug operator<<(QDebug d, const TLLangPackString &type)
 
 QDebug operator<<(QDebug d, const TLMaskCoords &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMaskCoords(" << type.tlType << ") {";
     Spacer spacer;
@@ -2416,6 +2486,7 @@ QDebug operator<<(QDebug d, const TLMaskCoords &type)
 
 QDebug operator<<(QDebug d, const TLMessageEntity &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessageEntity(" << type.tlType << ") {";
     Spacer spacer;
@@ -2467,6 +2538,7 @@ QDebug operator<<(QDebug d, const TLMessageEntity &type)
 
 QDebug operator<<(QDebug d, const TLMessageFwdHeader &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessageFwdHeader(" << type.tlType << ") {";
     Spacer spacer;
@@ -2498,6 +2570,7 @@ QDebug operator<<(QDebug d, const TLMessageFwdHeader &type)
 
 QDebug operator<<(QDebug d, const TLMessageRange &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessageRange(" << type.tlType << ") {";
     Spacer spacer;
@@ -2517,6 +2590,7 @@ QDebug operator<<(QDebug d, const TLMessageRange &type)
 
 QDebug operator<<(QDebug d, const TLMessagesAffectedHistory &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesAffectedHistory(" << type.tlType << ") {";
     Spacer spacer;
@@ -2537,6 +2611,7 @@ QDebug operator<<(QDebug d, const TLMessagesAffectedHistory &type)
 
 QDebug operator<<(QDebug d, const TLMessagesAffectedMessages &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesAffectedMessages(" << type.tlType << ") {";
     Spacer spacer;
@@ -2556,6 +2631,7 @@ QDebug operator<<(QDebug d, const TLMessagesAffectedMessages &type)
 
 QDebug operator<<(QDebug d, const TLMessagesDhConfig &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesDhConfig(" << type.tlType << ") {";
     Spacer spacer;
@@ -2581,6 +2657,7 @@ QDebug operator<<(QDebug d, const TLMessagesDhConfig &type)
 
 QDebug operator<<(QDebug d, const TLMessagesSentEncryptedMessage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesSentEncryptedMessage(" << type.tlType << ") {";
     Spacer spacer;
@@ -2604,6 +2681,7 @@ QDebug operator<<(QDebug d, const TLMessagesSentEncryptedMessage &type)
 
 QDebug operator<<(QDebug d, const TLMsgDetailedInfo &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMsgDetailedInfo(" << type.tlType << ") {";
     Spacer spacer;
@@ -2631,6 +2709,7 @@ QDebug operator<<(QDebug d, const TLMsgDetailedInfo &type)
 
 QDebug operator<<(QDebug d, const TLMsgResendReq &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMsgResendReq(" << type.tlType << ") {";
     Spacer spacer;
@@ -2649,6 +2728,7 @@ QDebug operator<<(QDebug d, const TLMsgResendReq &type)
 
 QDebug operator<<(QDebug d, const TLMsgsAck &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMsgsAck(" << type.tlType << ") {";
     Spacer spacer;
@@ -2667,6 +2747,7 @@ QDebug operator<<(QDebug d, const TLMsgsAck &type)
 
 QDebug operator<<(QDebug d, const TLMsgsAllInfo &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMsgsAllInfo(" << type.tlType << ") {";
     Spacer spacer;
@@ -2686,6 +2767,7 @@ QDebug operator<<(QDebug d, const TLMsgsAllInfo &type)
 
 QDebug operator<<(QDebug d, const TLMsgsStateInfo &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMsgsStateInfo(" << type.tlType << ") {";
     Spacer spacer;
@@ -2705,6 +2787,7 @@ QDebug operator<<(QDebug d, const TLMsgsStateInfo &type)
 
 QDebug operator<<(QDebug d, const TLMsgsStateReq &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMsgsStateReq(" << type.tlType << ") {";
     Spacer spacer;
@@ -2723,6 +2806,7 @@ QDebug operator<<(QDebug d, const TLMsgsStateReq &type)
 
 QDebug operator<<(QDebug d, const TLNearestDc &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLNearestDc(" << type.tlType << ") {";
     Spacer spacer;
@@ -2743,6 +2827,7 @@ QDebug operator<<(QDebug d, const TLNearestDc &type)
 
 QDebug operator<<(QDebug d, const TLNewSession &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLNewSession(" << type.tlType << ") {";
     Spacer spacer;
@@ -2763,6 +2848,7 @@ QDebug operator<<(QDebug d, const TLNewSession &type)
 
 QDebug operator<<(QDebug d, const TLPQInnerData &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPQInnerData(" << type.tlType << ") {";
     Spacer spacer;
@@ -2786,6 +2872,7 @@ QDebug operator<<(QDebug d, const TLPQInnerData &type)
 
 QDebug operator<<(QDebug d, const TLPaymentCharge &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPaymentCharge(" << type.tlType << ") {";
     Spacer spacer;
@@ -2805,6 +2892,7 @@ QDebug operator<<(QDebug d, const TLPaymentCharge &type)
 
 QDebug operator<<(QDebug d, const TLPaymentSavedCredentials &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPaymentSavedCredentials(" << type.tlType << ") {";
     Spacer spacer;
@@ -2824,6 +2912,7 @@ QDebug operator<<(QDebug d, const TLPaymentSavedCredentials &type)
 
 QDebug operator<<(QDebug d, const TLPeer &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPeer(" << type.tlType << ") {";
     Spacer spacer;
@@ -2850,6 +2939,7 @@ QDebug operator<<(QDebug d, const TLPeer &type)
 
 QDebug operator<<(QDebug d, const TLPeerNotifyEvents &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPeerNotifyEvents(" << type.tlType << ") {";
     Spacer spacer;
@@ -2868,6 +2958,7 @@ QDebug operator<<(QDebug d, const TLPeerNotifyEvents &type)
 
 QDebug operator<<(QDebug d, const TLPhoneCallDiscardReason &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPhoneCallDiscardReason(" << type.tlType << ") {";
     Spacer spacer;
@@ -2888,6 +2979,7 @@ QDebug operator<<(QDebug d, const TLPhoneCallDiscardReason &type)
 
 QDebug operator<<(QDebug d, const TLPhoneConnection &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPhoneConnection(" << type.tlType << ") {";
     Spacer spacer;
@@ -2910,6 +3002,7 @@ QDebug operator<<(QDebug d, const TLPhoneConnection &type)
 
 QDebug operator<<(QDebug d, const TLPhotoSize &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPhotoSize(" << type.tlType << ") {";
     Spacer spacer;
@@ -2944,6 +3037,7 @@ QDebug operator<<(QDebug d, const TLPhotoSize &type)
 
 QDebug operator<<(QDebug d, const TLPong &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPong(" << type.tlType << ") {";
     Spacer spacer;
@@ -2963,6 +3057,7 @@ QDebug operator<<(QDebug d, const TLPong &type)
 
 QDebug operator<<(QDebug d, const TLPopularContact &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPopularContact(" << type.tlType << ") {";
     Spacer spacer;
@@ -2982,6 +3077,7 @@ QDebug operator<<(QDebug d, const TLPopularContact &type)
 
 QDebug operator<<(QDebug d, const TLPostAddress &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPostAddress(" << type.tlType << ") {";
     Spacer spacer;
@@ -3005,6 +3101,7 @@ QDebug operator<<(QDebug d, const TLPostAddress &type)
 
 QDebug operator<<(QDebug d, const TLPrivacyKey &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPrivacyKey(" << type.tlType << ") {";
     Spacer spacer;
@@ -3024,6 +3121,7 @@ QDebug operator<<(QDebug d, const TLPrivacyKey &type)
 
 QDebug operator<<(QDebug d, const TLPrivacyRule &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPrivacyRule(" << type.tlType << ") {";
     Spacer spacer;
@@ -3049,6 +3147,7 @@ QDebug operator<<(QDebug d, const TLPrivacyRule &type)
 
 QDebug operator<<(QDebug d, const TLReceivedNotifyMessage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLReceivedNotifyMessage(" << type.tlType << ") {";
     Spacer spacer;
@@ -3068,6 +3167,7 @@ QDebug operator<<(QDebug d, const TLReceivedNotifyMessage &type)
 
 QDebug operator<<(QDebug d, const TLReportReason &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLReportReason(" << type.tlType << ") {";
     Spacer spacer;
@@ -3091,6 +3191,7 @@ QDebug operator<<(QDebug d, const TLReportReason &type)
 
 QDebug operator<<(QDebug d, const TLResPQ &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLResPQ(" << type.tlType << ") {";
     Spacer spacer;
@@ -3112,6 +3213,7 @@ QDebug operator<<(QDebug d, const TLResPQ &type)
 
 QDebug operator<<(QDebug d, const TLRichText &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLRichText(" << type.tlType << ") {";
     Spacer spacer;
@@ -3156,6 +3258,7 @@ QDebug operator<<(QDebug d, const TLRichText &type)
 
 QDebug operator<<(QDebug d, const TLRpcDropAnswer &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLRpcDropAnswer(" << type.tlType << ") {";
     Spacer spacer;
@@ -3180,6 +3283,7 @@ QDebug operator<<(QDebug d, const TLRpcDropAnswer &type)
 
 QDebug operator<<(QDebug d, const TLRpcError &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLRpcError(" << type.tlType << ") {";
     Spacer spacer;
@@ -3199,6 +3303,7 @@ QDebug operator<<(QDebug d, const TLRpcError &type)
 
 QDebug operator<<(QDebug d, const TLSendMessageAction &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLSendMessageAction(" << type.tlType << ") {";
     Spacer spacer;
@@ -3231,6 +3336,7 @@ QDebug operator<<(QDebug d, const TLSendMessageAction &type)
 
 QDebug operator<<(QDebug d, const TLServerDHInnerData &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLServerDHInnerData(" << type.tlType << ") {";
     Spacer spacer;
@@ -3254,6 +3360,7 @@ QDebug operator<<(QDebug d, const TLServerDHInnerData &type)
 
 QDebug operator<<(QDebug d, const TLServerDHParams &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLServerDHParams(" << type.tlType << ") {";
     Spacer spacer;
@@ -3280,6 +3387,7 @@ QDebug operator<<(QDebug d, const TLServerDHParams &type)
 
 QDebug operator<<(QDebug d, const TLSetClientDHParamsAnswer &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLSetClientDHParamsAnswer(" << type.tlType << ") {";
     Spacer spacer;
@@ -3312,6 +3420,7 @@ QDebug operator<<(QDebug d, const TLSetClientDHParamsAnswer &type)
 
 QDebug operator<<(QDebug d, const TLShippingOption &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLShippingOption(" << type.tlType << ") {";
     Spacer spacer;
@@ -3332,6 +3441,7 @@ QDebug operator<<(QDebug d, const TLShippingOption &type)
 
 QDebug operator<<(QDebug d, const TLStickerPack &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLStickerPack(" << type.tlType << ") {";
     Spacer spacer;
@@ -3351,6 +3461,7 @@ QDebug operator<<(QDebug d, const TLStickerPack &type)
 
 QDebug operator<<(QDebug d, const TLStorageFileType &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLStorageFileType(" << type.tlType << ") {";
     Spacer spacer;
@@ -3377,6 +3488,7 @@ QDebug operator<<(QDebug d, const TLStorageFileType &type)
 
 QDebug operator<<(QDebug d, const TLTopPeer &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLTopPeer(" << type.tlType << ") {";
     Spacer spacer;
@@ -3396,6 +3508,7 @@ QDebug operator<<(QDebug d, const TLTopPeer &type)
 
 QDebug operator<<(QDebug d, const TLTopPeerCategory &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLTopPeerCategory(" << type.tlType << ") {";
     Spacer spacer;
@@ -3418,6 +3531,7 @@ QDebug operator<<(QDebug d, const TLTopPeerCategory &type)
 
 QDebug operator<<(QDebug d, const TLTopPeerCategoryPeers &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLTopPeerCategoryPeers(" << type.tlType << ") {";
     Spacer spacer;
@@ -3438,6 +3552,7 @@ QDebug operator<<(QDebug d, const TLTopPeerCategoryPeers &type)
 
 QDebug operator<<(QDebug d, const TLUpdatesState &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUpdatesState(" << type.tlType << ") {";
     Spacer spacer;
@@ -3460,6 +3575,7 @@ QDebug operator<<(QDebug d, const TLUpdatesState &type)
 
 QDebug operator<<(QDebug d, const TLUploadCdnFile &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUploadCdnFile(" << type.tlType << ") {";
     Spacer spacer;
@@ -3482,6 +3598,7 @@ QDebug operator<<(QDebug d, const TLUploadCdnFile &type)
 
 QDebug operator<<(QDebug d, const TLUploadFile &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUploadFile(" << type.tlType << ") {";
     Spacer spacer;
@@ -3510,6 +3627,7 @@ QDebug operator<<(QDebug d, const TLUploadFile &type)
 
 QDebug operator<<(QDebug d, const TLUploadWebFile &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUploadWebFile(" << type.tlType << ") {";
     Spacer spacer;
@@ -3532,6 +3650,7 @@ QDebug operator<<(QDebug d, const TLUploadWebFile &type)
 
 QDebug operator<<(QDebug d, const TLUserProfilePhoto &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUserProfilePhoto(" << type.tlType << ") {";
     Spacer spacer;
@@ -3555,6 +3674,7 @@ QDebug operator<<(QDebug d, const TLUserProfilePhoto &type)
 
 QDebug operator<<(QDebug d, const TLUserStatus &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUserStatus(" << type.tlType << ") {";
     Spacer spacer;
@@ -3583,6 +3703,7 @@ QDebug operator<<(QDebug d, const TLUserStatus &type)
 
 QDebug operator<<(QDebug d, const TLWallPaper &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLWallPaper(" << type.tlType << ") {";
     Spacer spacer;
@@ -3611,6 +3732,7 @@ QDebug operator<<(QDebug d, const TLWallPaper &type)
 
 QDebug operator<<(QDebug d, const TLAccountAuthorizations &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAccountAuthorizations(" << type.tlType << ") {";
     Spacer spacer;
@@ -3629,6 +3751,7 @@ QDebug operator<<(QDebug d, const TLAccountAuthorizations &type)
 
 QDebug operator<<(QDebug d, const TLAuthSentCode &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAuthSentCode(" << type.tlType << ") {";
     Spacer spacer;
@@ -3656,6 +3779,7 @@ QDebug operator<<(QDebug d, const TLAuthSentCode &type)
 
 QDebug operator<<(QDebug d, const TLCdnConfig &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLCdnConfig(" << type.tlType << ") {";
     Spacer spacer;
@@ -3674,6 +3798,7 @@ QDebug operator<<(QDebug d, const TLCdnConfig &type)
 
 QDebug operator<<(QDebug d, const TLChannelAdminLogEventsFilter &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelAdminLogEventsFilter(" << type.tlType << ") {";
     Spacer spacer;
@@ -3693,6 +3818,7 @@ QDebug operator<<(QDebug d, const TLChannelAdminLogEventsFilter &type)
 
 QDebug operator<<(QDebug d, const TLChannelAdminRights &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelAdminRights(" << type.tlType << ") {";
     Spacer spacer;
@@ -3712,6 +3838,7 @@ QDebug operator<<(QDebug d, const TLChannelAdminRights &type)
 
 QDebug operator<<(QDebug d, const TLChannelBannedRights &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelBannedRights(" << type.tlType << ") {";
     Spacer spacer;
@@ -3732,6 +3859,7 @@ QDebug operator<<(QDebug d, const TLChannelBannedRights &type)
 
 QDebug operator<<(QDebug d, const TLChannelMessagesFilter &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelMessagesFilter(" << type.tlType << ") {";
     Spacer spacer;
@@ -3755,6 +3883,7 @@ QDebug operator<<(QDebug d, const TLChannelMessagesFilter &type)
 
 QDebug operator<<(QDebug d, const TLChannelParticipant &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelParticipant(" << type.tlType << ") {";
     Spacer spacer;
@@ -3803,6 +3932,7 @@ QDebug operator<<(QDebug d, const TLChannelParticipant &type)
 
 QDebug operator<<(QDebug d, const TLChatPhoto &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChatPhoto(" << type.tlType << ") {";
     Spacer spacer;
@@ -3825,6 +3955,7 @@ QDebug operator<<(QDebug d, const TLChatPhoto &type)
 
 QDebug operator<<(QDebug d, const TLContactStatus &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactStatus(" << type.tlType << ") {";
     Spacer spacer;
@@ -3844,6 +3975,7 @@ QDebug operator<<(QDebug d, const TLContactStatus &type)
 
 QDebug operator<<(QDebug d, const TLDcOption &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLDcOption(" << type.tlType << ") {";
     Spacer spacer;
@@ -3866,6 +3998,7 @@ QDebug operator<<(QDebug d, const TLDcOption &type)
 
 QDebug operator<<(QDebug d, const TLDocumentAttribute &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLDocumentAttribute(" << type.tlType << ") {";
     Spacer spacer;
@@ -3926,6 +4059,7 @@ QDebug operator<<(QDebug d, const TLDocumentAttribute &type)
 
 QDebug operator<<(QDebug d, const TLDraftMessage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLDraftMessage(" << type.tlType << ") {";
     Spacer spacer;
@@ -3956,6 +4090,7 @@ QDebug operator<<(QDebug d, const TLDraftMessage &type)
 
 QDebug operator<<(QDebug d, const TLHelpConfigSimple &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLHelpConfigSimple(" << type.tlType << ") {";
     Spacer spacer;
@@ -3977,6 +4112,7 @@ QDebug operator<<(QDebug d, const TLHelpConfigSimple &type)
 
 QDebug operator<<(QDebug d, const TLInputChatPhoto &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputChatPhoto(" << type.tlType << ") {";
     Spacer spacer;
@@ -4002,6 +4138,7 @@ QDebug operator<<(QDebug d, const TLInputChatPhoto &type)
 
 QDebug operator<<(QDebug d, const TLInputGame &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputGame(" << type.tlType << ") {";
     Spacer spacer;
@@ -4026,6 +4163,7 @@ QDebug operator<<(QDebug d, const TLInputGame &type)
 
 QDebug operator<<(QDebug d, const TLInputNotifyPeer &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputNotifyPeer(" << type.tlType << ") {";
     Spacer spacer;
@@ -4049,6 +4187,7 @@ QDebug operator<<(QDebug d, const TLInputNotifyPeer &type)
 
 QDebug operator<<(QDebug d, const TLInputPaymentCredentials &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputPaymentCredentials(" << type.tlType << ") {";
     Spacer spacer;
@@ -4082,6 +4221,7 @@ QDebug operator<<(QDebug d, const TLInputPaymentCredentials &type)
 
 QDebug operator<<(QDebug d, const TLInputPeerNotifySettings &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputPeerNotifySettings(" << type.tlType << ") {";
     Spacer spacer;
@@ -4103,6 +4243,7 @@ QDebug operator<<(QDebug d, const TLInputPeerNotifySettings &type)
 
 QDebug operator<<(QDebug d, const TLInputPrivacyRule &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputPrivacyRule(" << type.tlType << ") {";
     Spacer spacer;
@@ -4128,6 +4269,7 @@ QDebug operator<<(QDebug d, const TLInputPrivacyRule &type)
 
 QDebug operator<<(QDebug d, const TLInputStickerSetItem &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputStickerSetItem(" << type.tlType << ") {";
     Spacer spacer;
@@ -4151,6 +4293,7 @@ QDebug operator<<(QDebug d, const TLInputStickerSetItem &type)
 
 QDebug operator<<(QDebug d, const TLInputWebDocument &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputWebDocument(" << type.tlType << ") {";
     Spacer spacer;
@@ -4172,6 +4315,7 @@ QDebug operator<<(QDebug d, const TLInputWebDocument &type)
 
 QDebug operator<<(QDebug d, const TLInvoice &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInvoice(" << type.tlType << ") {";
     Spacer spacer;
@@ -4193,6 +4337,7 @@ QDebug operator<<(QDebug d, const TLInvoice &type)
 
 QDebug operator<<(QDebug d, const TLKeyboardButton &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLKeyboardButton(" << type.tlType << ") {";
     Spacer spacer;
@@ -4232,6 +4377,7 @@ QDebug operator<<(QDebug d, const TLKeyboardButton &type)
 
 QDebug operator<<(QDebug d, const TLKeyboardButtonRow &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLKeyboardButtonRow(" << type.tlType << ") {";
     Spacer spacer;
@@ -4250,6 +4396,7 @@ QDebug operator<<(QDebug d, const TLKeyboardButtonRow &type)
 
 QDebug operator<<(QDebug d, const TLLangPackDifference &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLLangPackDifference(" << type.tlType << ") {";
     Spacer spacer;
@@ -4271,6 +4418,7 @@ QDebug operator<<(QDebug d, const TLLangPackDifference &type)
 
 QDebug operator<<(QDebug d, const TLMessagesBotCallbackAnswer &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesBotCallbackAnswer(" << type.tlType << ") {";
     Spacer spacer;
@@ -4297,6 +4445,7 @@ QDebug operator<<(QDebug d, const TLMessagesBotCallbackAnswer &type)
 
 QDebug operator<<(QDebug d, const TLMessagesFilter &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesFilter(" << type.tlType << ") {";
     Spacer spacer;
@@ -4333,6 +4482,7 @@ QDebug operator<<(QDebug d, const TLMessagesFilter &type)
 
 QDebug operator<<(QDebug d, const TLMessagesMessageEditData &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesMessageEditData(" << type.tlType << ") {";
     Spacer spacer;
@@ -4352,6 +4502,7 @@ QDebug operator<<(QDebug d, const TLMessagesMessageEditData &type)
 
 QDebug operator<<(QDebug d, const TLNotifyPeer &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLNotifyPeer(" << type.tlType << ") {";
     Spacer spacer;
@@ -4375,6 +4526,7 @@ QDebug operator<<(QDebug d, const TLNotifyPeer &type)
 
 QDebug operator<<(QDebug d, const TLPaymentRequestedInfo &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPaymentRequestedInfo(" << type.tlType << ") {";
     Spacer spacer;
@@ -4405,6 +4557,7 @@ QDebug operator<<(QDebug d, const TLPaymentRequestedInfo &type)
 
 QDebug operator<<(QDebug d, const TLPaymentsSavedInfo &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPaymentsSavedInfo(" << type.tlType << ") {";
     Spacer spacer;
@@ -4427,6 +4580,7 @@ QDebug operator<<(QDebug d, const TLPaymentsSavedInfo &type)
 
 QDebug operator<<(QDebug d, const TLPaymentsValidatedRequestedInfo &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPaymentsValidatedRequestedInfo(" << type.tlType << ") {";
     Spacer spacer;
@@ -4451,6 +4605,7 @@ QDebug operator<<(QDebug d, const TLPaymentsValidatedRequestedInfo &type)
 
 QDebug operator<<(QDebug d, const TLPeerNotifySettings &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPeerNotifySettings(" << type.tlType << ") {";
     Spacer spacer;
@@ -4475,6 +4630,7 @@ QDebug operator<<(QDebug d, const TLPeerNotifySettings &type)
 
 QDebug operator<<(QDebug d, const TLPeerSettings &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPeerSettings(" << type.tlType << ") {";
     Spacer spacer;
@@ -4494,6 +4650,7 @@ QDebug operator<<(QDebug d, const TLPeerSettings &type)
 
 QDebug operator<<(QDebug d, const TLPhoneCallProtocol &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPhoneCallProtocol(" << type.tlType << ") {";
     Spacer spacer;
@@ -4515,6 +4672,7 @@ QDebug operator<<(QDebug d, const TLPhoneCallProtocol &type)
 
 QDebug operator<<(QDebug d, const TLPhoto &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPhoto(" << type.tlType << ") {";
     Spacer spacer;
@@ -4542,6 +4700,7 @@ QDebug operator<<(QDebug d, const TLPhoto &type)
 
 QDebug operator<<(QDebug d, const TLReplyMarkup &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLReplyMarkup(" << type.tlType << ") {";
     Spacer spacer;
@@ -4572,6 +4731,7 @@ QDebug operator<<(QDebug d, const TLReplyMarkup &type)
 
 QDebug operator<<(QDebug d, const TLStickerSet &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLStickerSet(" << type.tlType << ") {";
     Spacer spacer;
@@ -4597,6 +4757,7 @@ QDebug operator<<(QDebug d, const TLStickerSet &type)
 
 QDebug operator<<(QDebug d, const TLUser &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUser(" << type.tlType << ") {";
     Spacer spacer;
@@ -4654,6 +4815,7 @@ QDebug operator<<(QDebug d, const TLUser &type)
 
 QDebug operator<<(QDebug d, const TLWebDocument &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLWebDocument(" << type.tlType << ") {";
     Spacer spacer;
@@ -4677,6 +4839,7 @@ QDebug operator<<(QDebug d, const TLWebDocument &type)
 
 QDebug operator<<(QDebug d, const TLAccountPrivacyRules &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAccountPrivacyRules(" << type.tlType << ") {";
     Spacer spacer;
@@ -4696,6 +4859,7 @@ QDebug operator<<(QDebug d, const TLAccountPrivacyRules &type)
 
 QDebug operator<<(QDebug d, const TLAuthAuthorization &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLAuthAuthorization(" << type.tlType << ") {";
     Spacer spacer;
@@ -4718,6 +4882,7 @@ QDebug operator<<(QDebug d, const TLAuthAuthorization &type)
 
 QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLBotInlineMessage(" << type.tlType << ") {";
     Spacer spacer;
@@ -4783,6 +4948,7 @@ QDebug operator<<(QDebug d, const TLBotInlineMessage &type)
 
 QDebug operator<<(QDebug d, const TLChannelsChannelParticipant &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelsChannelParticipant(" << type.tlType << ") {";
     Spacer spacer;
@@ -4802,6 +4968,7 @@ QDebug operator<<(QDebug d, const TLChannelsChannelParticipant &type)
 
 QDebug operator<<(QDebug d, const TLChannelsChannelParticipants &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelsChannelParticipants(" << type.tlType << ") {";
     Spacer spacer;
@@ -4825,6 +4992,7 @@ QDebug operator<<(QDebug d, const TLChannelsChannelParticipants &type)
 
 QDebug operator<<(QDebug d, const TLChat &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChat(" << type.tlType << ") {";
     Spacer spacer;
@@ -4898,6 +5066,7 @@ QDebug operator<<(QDebug d, const TLChat &type)
 
 QDebug operator<<(QDebug d, const TLChatFull &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChatFull(" << type.tlType << ") {";
     Spacer spacer;
@@ -4962,6 +5131,7 @@ QDebug operator<<(QDebug d, const TLChatFull &type)
 
 QDebug operator<<(QDebug d, const TLChatInvite &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChatInvite(" << type.tlType << ") {";
     Spacer spacer;
@@ -4991,6 +5161,7 @@ QDebug operator<<(QDebug d, const TLChatInvite &type)
 
 QDebug operator<<(QDebug d, const TLConfig &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLConfig(" << type.tlType << ") {";
     Spacer spacer;
@@ -5049,6 +5220,7 @@ QDebug operator<<(QDebug d, const TLConfig &type)
 
 QDebug operator<<(QDebug d, const TLContactsBlocked &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactsBlocked(" << type.tlType << ") {";
     Spacer spacer;
@@ -5074,6 +5246,7 @@ QDebug operator<<(QDebug d, const TLContactsBlocked &type)
 
 QDebug operator<<(QDebug d, const TLContactsContacts &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactsContacts(" << type.tlType << ") {";
     Spacer spacer;
@@ -5097,6 +5270,7 @@ QDebug operator<<(QDebug d, const TLContactsContacts &type)
 
 QDebug operator<<(QDebug d, const TLContactsFound &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactsFound(" << type.tlType << ") {";
     Spacer spacer;
@@ -5117,6 +5291,7 @@ QDebug operator<<(QDebug d, const TLContactsFound &type)
 
 QDebug operator<<(QDebug d, const TLContactsImportedContacts &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactsImportedContacts(" << type.tlType << ") {";
     Spacer spacer;
@@ -5138,6 +5313,7 @@ QDebug operator<<(QDebug d, const TLContactsImportedContacts &type)
 
 QDebug operator<<(QDebug d, const TLContactsLink &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactsLink(" << type.tlType << ") {";
     Spacer spacer;
@@ -5158,6 +5334,7 @@ QDebug operator<<(QDebug d, const TLContactsLink &type)
 
 QDebug operator<<(QDebug d, const TLContactsResolvedPeer &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactsResolvedPeer(" << type.tlType << ") {";
     Spacer spacer;
@@ -5178,6 +5355,7 @@ QDebug operator<<(QDebug d, const TLContactsResolvedPeer &type)
 
 QDebug operator<<(QDebug d, const TLContactsTopPeers &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLContactsTopPeers(" << type.tlType << ") {";
     Spacer spacer;
@@ -5201,6 +5379,7 @@ QDebug operator<<(QDebug d, const TLContactsTopPeers &type)
 
 QDebug operator<<(QDebug d, const TLDialog &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLDialog(" << type.tlType << ") {";
     Spacer spacer;
@@ -5233,6 +5412,7 @@ QDebug operator<<(QDebug d, const TLDialog &type)
 
 QDebug operator<<(QDebug d, const TLDocument &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLDocument(" << type.tlType << ") {";
     Spacer spacer;
@@ -5263,6 +5443,7 @@ QDebug operator<<(QDebug d, const TLDocument &type)
 
 QDebug operator<<(QDebug d, const TLFoundGif &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLFoundGif(" << type.tlType << ") {";
     Spacer spacer;
@@ -5292,6 +5473,7 @@ QDebug operator<<(QDebug d, const TLFoundGif &type)
 
 QDebug operator<<(QDebug d, const TLGame &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLGame(" << type.tlType << ") {";
     Spacer spacer;
@@ -5319,6 +5501,7 @@ QDebug operator<<(QDebug d, const TLGame &type)
 
 QDebug operator<<(QDebug d, const TLHelpSupport &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLHelpSupport(" << type.tlType << ") {";
     Spacer spacer;
@@ -5338,6 +5521,7 @@ QDebug operator<<(QDebug d, const TLHelpSupport &type)
 
 QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputBotInlineMessage(" << type.tlType << ") {";
     Spacer spacer;
@@ -5410,6 +5594,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineMessage &type)
 
 QDebug operator<<(QDebug d, const TLInputBotInlineResult &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputBotInlineResult(" << type.tlType << ") {";
     Spacer spacer;
@@ -5485,6 +5670,7 @@ QDebug operator<<(QDebug d, const TLInputBotInlineResult &type)
 
 QDebug operator<<(QDebug d, const TLInputMedia &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLInputMedia(" << type.tlType << ") {";
     Spacer spacer;
@@ -5606,6 +5792,7 @@ QDebug operator<<(QDebug d, const TLInputMedia &type)
 
 QDebug operator<<(QDebug d, const TLMessageAction &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessageAction(" << type.tlType << ") {";
     Spacer spacer;
@@ -5701,6 +5888,7 @@ QDebug operator<<(QDebug d, const TLMessageAction &type)
 
 QDebug operator<<(QDebug d, const TLMessagesAllStickers &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesAllStickers(" << type.tlType << ") {";
     Spacer spacer;
@@ -5723,6 +5911,7 @@ QDebug operator<<(QDebug d, const TLMessagesAllStickers &type)
 
 QDebug operator<<(QDebug d, const TLMessagesChatFull &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesChatFull(" << type.tlType << ") {";
     Spacer spacer;
@@ -5743,6 +5932,7 @@ QDebug operator<<(QDebug d, const TLMessagesChatFull &type)
 
 QDebug operator<<(QDebug d, const TLMessagesChats &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesChats(" << type.tlType << ") {";
     Spacer spacer;
@@ -5766,6 +5956,7 @@ QDebug operator<<(QDebug d, const TLMessagesChats &type)
 
 QDebug operator<<(QDebug d, const TLMessagesFavedStickers &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesFavedStickers(" << type.tlType << ") {";
     Spacer spacer;
@@ -5789,6 +5980,7 @@ QDebug operator<<(QDebug d, const TLMessagesFavedStickers &type)
 
 QDebug operator<<(QDebug d, const TLMessagesFoundGifs &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesFoundGifs(" << type.tlType << ") {";
     Spacer spacer;
@@ -5808,6 +6000,7 @@ QDebug operator<<(QDebug d, const TLMessagesFoundGifs &type)
 
 QDebug operator<<(QDebug d, const TLMessagesHighScores &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesHighScores(" << type.tlType << ") {";
     Spacer spacer;
@@ -5827,6 +6020,7 @@ QDebug operator<<(QDebug d, const TLMessagesHighScores &type)
 
 QDebug operator<<(QDebug d, const TLMessagesRecentStickers &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesRecentStickers(" << type.tlType << ") {";
     Spacer spacer;
@@ -5849,6 +6043,7 @@ QDebug operator<<(QDebug d, const TLMessagesRecentStickers &type)
 
 QDebug operator<<(QDebug d, const TLMessagesSavedGifs &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesSavedGifs(" << type.tlType << ") {";
     Spacer spacer;
@@ -5871,6 +6066,7 @@ QDebug operator<<(QDebug d, const TLMessagesSavedGifs &type)
 
 QDebug operator<<(QDebug d, const TLMessagesStickerSet &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesStickerSet(" << type.tlType << ") {";
     Spacer spacer;
@@ -5891,6 +6087,7 @@ QDebug operator<<(QDebug d, const TLMessagesStickerSet &type)
 
 QDebug operator<<(QDebug d, const TLMessagesStickers &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesStickers(" << type.tlType << ") {";
     Spacer spacer;
@@ -5913,6 +6110,7 @@ QDebug operator<<(QDebug d, const TLMessagesStickers &type)
 
 QDebug operator<<(QDebug d, const TLPageBlock &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPageBlock(" << type.tlType << ") {";
     Spacer spacer;
@@ -6023,6 +6221,7 @@ QDebug operator<<(QDebug d, const TLPageBlock &type)
 
 QDebug operator<<(QDebug d, const TLPaymentsPaymentForm &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPaymentsPaymentForm(" << type.tlType << ") {";
     Spacer spacer;
@@ -6059,6 +6258,7 @@ QDebug operator<<(QDebug d, const TLPaymentsPaymentForm &type)
 
 QDebug operator<<(QDebug d, const TLPaymentsPaymentReceipt &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPaymentsPaymentReceipt(" << type.tlType << ") {";
     Spacer spacer;
@@ -6091,6 +6291,7 @@ QDebug operator<<(QDebug d, const TLPaymentsPaymentReceipt &type)
 
 QDebug operator<<(QDebug d, const TLPhoneCall &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPhoneCall(" << type.tlType << ") {";
     Spacer spacer;
@@ -6168,6 +6369,7 @@ QDebug operator<<(QDebug d, const TLPhoneCall &type)
 
 QDebug operator<<(QDebug d, const TLPhonePhoneCall &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPhonePhoneCall(" << type.tlType << ") {";
     Spacer spacer;
@@ -6187,6 +6389,7 @@ QDebug operator<<(QDebug d, const TLPhonePhoneCall &type)
 
 QDebug operator<<(QDebug d, const TLPhotosPhoto &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPhotosPhoto(" << type.tlType << ") {";
     Spacer spacer;
@@ -6206,6 +6409,7 @@ QDebug operator<<(QDebug d, const TLPhotosPhoto &type)
 
 QDebug operator<<(QDebug d, const TLPhotosPhotos &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPhotosPhotos(" << type.tlType << ") {";
     Spacer spacer;
@@ -6231,6 +6435,7 @@ QDebug operator<<(QDebug d, const TLPhotosPhotos &type)
 
 QDebug operator<<(QDebug d, const TLStickerSetCovered &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLStickerSetCovered(" << type.tlType << ") {";
     Spacer spacer;
@@ -6255,6 +6460,7 @@ QDebug operator<<(QDebug d, const TLStickerSetCovered &type)
 
 QDebug operator<<(QDebug d, const TLUserFull &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUserFull(" << type.tlType << ") {";
     Spacer spacer;
@@ -6287,6 +6493,7 @@ QDebug operator<<(QDebug d, const TLUserFull &type)
 
 QDebug operator<<(QDebug d, const TLBotInlineResult &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLBotInlineResult(" << type.tlType << ") {";
     Spacer spacer;
@@ -6354,6 +6561,7 @@ QDebug operator<<(QDebug d, const TLBotInlineResult &type)
 
 QDebug operator<<(QDebug d, const TLMessagesArchivedStickers &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesArchivedStickers(" << type.tlType << ") {";
     Spacer spacer;
@@ -6373,6 +6581,7 @@ QDebug operator<<(QDebug d, const TLMessagesArchivedStickers &type)
 
 QDebug operator<<(QDebug d, const TLMessagesBotResults &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesBotResults(" << type.tlType << ") {";
     Spacer spacer;
@@ -6402,6 +6611,7 @@ QDebug operator<<(QDebug d, const TLMessagesBotResults &type)
 
 QDebug operator<<(QDebug d, const TLMessagesFeaturedStickers &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesFeaturedStickers(" << type.tlType << ") {";
     Spacer spacer;
@@ -6425,6 +6635,7 @@ QDebug operator<<(QDebug d, const TLMessagesFeaturedStickers &type)
 
 QDebug operator<<(QDebug d, const TLMessagesStickerSetInstallResult &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesStickerSetInstallResult(" << type.tlType << ") {";
     Spacer spacer;
@@ -6446,6 +6657,7 @@ QDebug operator<<(QDebug d, const TLMessagesStickerSetInstallResult &type)
 
 QDebug operator<<(QDebug d, const TLPage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPage(" << type.tlType << ") {";
     Spacer spacer;
@@ -6467,6 +6679,7 @@ QDebug operator<<(QDebug d, const TLPage &type)
 
 QDebug operator<<(QDebug d, const TLRecentMeUrl &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLRecentMeUrl(" << type.tlType << ") {";
     Spacer spacer;
@@ -6505,6 +6718,7 @@ QDebug operator<<(QDebug d, const TLRecentMeUrl &type)
 
 QDebug operator<<(QDebug d, const TLWebPage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLWebPage(" << type.tlType << ") {";
     Spacer spacer;
@@ -6578,6 +6792,7 @@ QDebug operator<<(QDebug d, const TLWebPage &type)
 
 QDebug operator<<(QDebug d, const TLHelpRecentMeUrls &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLHelpRecentMeUrls(" << type.tlType << ") {";
     Spacer spacer;
@@ -6598,6 +6813,7 @@ QDebug operator<<(QDebug d, const TLHelpRecentMeUrls &type)
 
 QDebug operator<<(QDebug d, const TLMessageMedia &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessageMedia(" << type.tlType << ") {";
     Spacer spacer;
@@ -6691,6 +6907,7 @@ QDebug operator<<(QDebug d, const TLMessageMedia &type)
 
 QDebug operator<<(QDebug d, const TLMessage &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessage(" << type.tlType << ") {";
     Spacer spacer;
@@ -6763,6 +6980,7 @@ QDebug operator<<(QDebug d, const TLMessage &type)
 
 QDebug operator<<(QDebug d, const TLMessagesDialogs &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesDialogs(" << type.tlType << ") {";
     Spacer spacer;
@@ -6792,6 +7010,7 @@ QDebug operator<<(QDebug d, const TLMessagesDialogs &type)
 
 QDebug operator<<(QDebug d, const TLMessagesMessages &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesMessages(" << type.tlType << ") {";
     Spacer spacer;
@@ -6832,6 +7051,7 @@ QDebug operator<<(QDebug d, const TLMessagesMessages &type)
 
 QDebug operator<<(QDebug d, const TLMessagesPeerDialogs &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLMessagesPeerDialogs(" << type.tlType << ") {";
     Spacer spacer;
@@ -6854,6 +7074,7 @@ QDebug operator<<(QDebug d, const TLMessagesPeerDialogs &type)
 
 QDebug operator<<(QDebug d, const TLUpdate &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUpdate(" << type.tlType << ") {";
     Spacer spacer;
@@ -7216,6 +7437,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
 
 QDebug operator<<(QDebug d, const TLUpdates &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUpdates(" << type.tlType << ") {";
     Spacer spacer;
@@ -7317,6 +7539,7 @@ QDebug operator<<(QDebug d, const TLUpdates &type)
 
 QDebug operator<<(QDebug d, const TLUpdatesChannelDifference &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUpdatesChannelDifference(" << type.tlType << ") {";
     Spacer spacer;
@@ -7370,6 +7593,7 @@ QDebug operator<<(QDebug d, const TLUpdatesChannelDifference &type)
 
 QDebug operator<<(QDebug d, const TLUpdatesDifference &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLUpdatesDifference(" << type.tlType << ") {";
     Spacer spacer;
@@ -7411,6 +7635,7 @@ QDebug operator<<(QDebug d, const TLUpdatesDifference &type)
 
 QDebug operator<<(QDebug d, const TLChannelAdminLogEventAction &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelAdminLogEventAction(" << type.tlType << ") {";
     Spacer spacer;
@@ -7472,6 +7697,7 @@ QDebug operator<<(QDebug d, const TLChannelAdminLogEventAction &type)
 
 QDebug operator<<(QDebug d, const TLPaymentsPaymentResult &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLPaymentsPaymentResult(" << type.tlType << ") {";
     Spacer spacer;
@@ -7494,6 +7720,7 @@ QDebug operator<<(QDebug d, const TLPaymentsPaymentResult &type)
 
 QDebug operator<<(QDebug d, const TLChannelAdminLogEvent &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelAdminLogEvent(" << type.tlType << ") {";
     Spacer spacer;
@@ -7515,6 +7742,7 @@ QDebug operator<<(QDebug d, const TLChannelAdminLogEvent &type)
 
 QDebug operator<<(QDebug d, const TLChannelsAdminLogResults &type)
 {
+    QDebugStateSaver saver(d);
     d.nospace();
     d << "TLChannelsAdminLogResults(" << type.tlType << ") {";
     Spacer spacer;
