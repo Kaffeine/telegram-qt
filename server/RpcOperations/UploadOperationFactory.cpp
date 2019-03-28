@@ -23,6 +23,7 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
+#include "Storage.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
@@ -33,6 +34,8 @@
 #include "FunctionStreamOperators.hpp"
 
 #include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(c_serverUploadRpcCategory, "telegram.server.rpc.upload", QtWarningMsg)
 
 namespace Telegram {
 
@@ -112,11 +115,51 @@ void UploadRpcOperation::runGetCdnFileHashes()
 
 void UploadRpcOperation::runGetFile()
 {
-    // TLFunctions::TLUploadGetFile &arguments = m_getFile;
-    if (processNotImplementedMethod(TLValue::UploadGetFile)) {
+    TLFunctions::TLUploadGetFile &arguments = m_getFile;
+
+    FileDescriptor descriptor;
+
+    switch (arguments.location.tlType) {
+    case TLValue::InputFileLocation:
+        descriptor = api()->storage()->getSecretFileDescriptor(
+                    arguments.location.volumeId,
+                    arguments.location.localId,
+                    arguments.location.secret
+                    );
+        break;
+    case TLValue::InputDocumentFileLocation:
+        descriptor = api()->storage()->getDocumentFileDescriptor(
+                    arguments.location.id,
+                    arguments.location.accessHash
+                    );
+        break;
+    default:
+        qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Not implemented" << arguments.location.tlType.toString();
+        sendRpcError(RpcError());
         return;
     }
+
+    if (!descriptor.isValid()) {
+        qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Invalid descriptor";
+        sendRpcError(RpcError());
+        return;
+    }
+
+    QIODevice *file = api()->storage()->beginReadFile(descriptor);
+    if (!file) {
+        qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Unable to read file";
+        sendRpcError(RpcError());
+        return;
+    }
+    file->seek(arguments.offset);
+
     TLUploadFile result;
+    result.tlType = TLValue::UploadFile;
+    result.type.tlType = TLValue::StorageFilePng;
+    result.mtime = descriptor.date;
+    result.bytes = file->read(arguments.limit);
+    api()->storage()->endReadFile(file);
+
     sendRpcReply(result);
 }
 
@@ -152,11 +195,8 @@ void UploadRpcOperation::runSaveBigFilePart()
 
 void UploadRpcOperation::runSaveFilePart()
 {
-    // TLFunctions::TLUploadSaveFilePart &arguments = m_saveFilePart;
-    if (processNotImplementedMethod(TLValue::UploadSaveFilePart)) {
-        return;
-    }
-    bool result;
+    TLFunctions::TLUploadSaveFilePart &arguments = m_saveFilePart;
+    bool result = api()->storage()->uploadFilePart(arguments.fileId, arguments.filePart, arguments.bytes);
     sendRpcReply(result);
 }
 // End of generated run methods
