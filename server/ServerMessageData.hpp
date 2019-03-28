@@ -55,6 +55,8 @@ public:
     Peer getDialogPeer(quint32 applicantUserId) const;
 
 protected:
+    MessageData(quint32 from, Peer to);
+
     QHash<Peer, quint32> m_references;
     QString m_text;
     Peer m_to;

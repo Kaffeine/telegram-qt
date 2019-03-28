@@ -4,11 +4,16 @@ namespace Telegram {
 
 namespace Server {
 
-MessageData::MessageData(quint32 from, Peer to, const QString &text) :
-    m_text(text),
+MessageData::MessageData(quint32 from, Peer to) :
     m_to(to),
     m_fromId(from)
 {
+}
+
+MessageData::MessageData(quint32 from, Peer to, const QString &text) :
+    MessageData(from, to)
+{
+    m_text = text;
 }
 
 void MessageData::setGlobalId(quint64 id)
