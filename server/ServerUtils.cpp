@@ -3,6 +3,7 @@
 #include "ApiUtils.hpp"
 #include "ServerApi.hpp"
 #include "ServerMessageData.hpp"
+#include "ServerNamespace.hpp"
 #include "TelegramServerUser.hpp"
 
 #include <QLoggingCategory>
@@ -110,6 +111,11 @@ bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 m
     output->date = messageData->date();
     output->toId = Telegram::Utils::toTLPeer(messageData->toPeer());
 
+    if (messageData->media().isValid()) {
+        setupTLMessageMedia(&output->media, &messageData->media());
+        flags |= TLMessage::Media;
+    }
+
     const bool messageToSelf = messageData->toPeer() == forUser->toPeer();
     if (messageData->fromId() == forUser->userId()) {
         if (!messageToSelf) {
@@ -117,6 +123,62 @@ bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 m
         }
     }
     output->flags = flags;
+
+    return true;
+}
+
+bool setupTLFileLocation(TLFileLocation *output, const FileDescriptor &file)
+{
+    if (!file.isValid()) {
+        output->tlType = TLValue::FileLocationUnavailable;
+        return false;
+    }
+
+    output->dcId = file.dcId;
+    output->volumeId = file.volumeId;
+    output->localId = file.localId;
+    output->secret = file.secret;
+    output->tlType = TLValue::FileLocation;
+    return true;
+}
+
+bool setupTLMessageMedia(TLMessageMedia *output, const MediaData *mediaData)
+{
+    switch (mediaData->type) {
+    case MediaData::Invalid:
+        return false;
+    case MediaData::Document:
+        output->tlType = TLValue::MessageMediaDocument;
+        output->flags = 0;
+        output->flags |= TLMessageMedia::Document;
+        output->document.tlType = TLValue::Document;
+        output->document.date = mediaData->file.date;
+        output->document.size = mediaData->file.size;
+        output->document.mimeType = mediaData->mimeType;
+        output->document.dcId = mediaData->file.dcId;
+        output->document.accessHash = mediaData->file.accessHash;
+        output->document.id = mediaData->file.id;
+
+        for (const DocumentAttribute &attribute : mediaData->attributes) {
+            TLDocumentAttribute tlAttribute;
+            switch (attribute.type) {
+            case DocumentAttribute::FileName:
+                tlAttribute.tlType = TLValue::DocumentAttributeFilename;
+                tlAttribute.fileName = attribute.value.toString();
+                output->document.attributes.append(tlAttribute);
+                break;
+            default:
+                break;
+            }
+        }
+
+        break;
+    }
+
+    if (!mediaData->caption.isEmpty()) {
+        output->caption = mediaData->caption;
+        output->flags |= TLMessageMedia::Caption;
+    }
 
     return true;
 }

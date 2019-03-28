@@ -12,8 +12,11 @@ namespace Server {
 
 class AbstractUser;
 class LocalUser;
+class MediaData;
 class MessageData;
 class ServerApi;
+
+class FileDescriptor;
 
 namespace Utils {
 
@@ -26,6 +29,8 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
 bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 messageId,
                     const LocalUser *forUser);
 
+bool setupTLMessageMedia(TLMessageMedia *output, const MediaData *mediaData);
+
 template <typename T>
 bool setupTLPeers(T *output,
                   const QSet<Peer> &peers, const ServerApi *api, const LocalUser *forUser)
@@ -33,6 +38,8 @@ bool setupTLPeers(T *output,
     return setupTLPeers(&output->users, &output->chats,
                         peers, api, forUser);
 }
+
+bool setupTLFileLocation(TLFileLocation *output, const FileDescriptor &file);
 
 } // Utils namespace
 

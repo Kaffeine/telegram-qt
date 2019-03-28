@@ -22,10 +22,30 @@
 #include "ServerNamespace.hpp"
 
 #include <QHash>
+#include <QVariant>
 
 namespace Telegram {
 
 namespace Server {
+
+struct DocumentAttribute
+{
+    enum Type {
+        Invalid,
+        FileName,
+    };
+
+    static DocumentAttribute fromFileName(const QString &fileName)
+    {
+        DocumentAttribute attribute;
+        attribute.type = FileName;
+        attribute.value = fileName;
+        return attribute;
+    }
+
+    Type type = Invalid;
+    QVariant value;
+};
 
 class MediaData
 {
@@ -37,8 +57,11 @@ public:
 
     bool isValid() const { return type != Invalid; }
 
+    QString caption;
+
     // Document
     FileDescriptor file;
+    QVector<DocumentAttribute> attributes;
     QString mimeType;
 
     Type type = Invalid;

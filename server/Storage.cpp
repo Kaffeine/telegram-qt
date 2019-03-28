@@ -200,6 +200,23 @@ FileDescriptor *Storage::endWriteFile(QIODevice *device, const QString &name)
     return &m_allFileDescriptors.last();
 }
 
+FileDescriptor Storage::saveDocumentFile(const FileDescriptor &descriptor,
+                                         const QString &fileName,
+                                         const QString &mimeType)
+{
+    QIODevice *output = beginWriteFile();
+    QByteArray data = m_tmpFiles.value(descriptor.id).partList.join();
+    output->write(data);
+    FileDescriptor *savedFile = endWriteFile(output, fileName);
+    if (!savedFile) {
+        return FileDescriptor();
+    }
+    savedFile->mimeType = mimeType;
+    RandomGenerator::instance()->generate(&savedFile->accessHash);
+
+    return *savedFile;
+}
+
 quint64 Storage::volumeId() const
 {
     return 1;

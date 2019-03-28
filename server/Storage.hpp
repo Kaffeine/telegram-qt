@@ -50,6 +50,10 @@ public:
     QIODevice *beginReadFile(const FileDescriptor &descriptor);
     void endReadFile(QIODevice *device);
 
+    FileDescriptor saveDocumentFile(const FileDescriptor &descriptor,
+                                    const QString &fileName,
+                                    const QString &mimeType);
+
 protected:
     quint64 getMessageUniqueTs();
     QIODevice *beginWriteFile();
