@@ -1753,6 +1753,20 @@ void MessagesRpcOperation::runSendMedia()
         media.contact.id = contactPeer.id;
         break;
     }
+    case TLValue::InputMediaUploadedPhoto:
+    {
+        const TLInputFile &inFile = arguments.media.file;
+        FileDescriptor desc = api()->mediaService()->getFileDescriptor(inFile.id, inFile.parts);
+        ImageDescriptor image = api()->mediaService()->processImageFile(desc, inFile.name);
+        if (!image.isValid()) {
+            sendRpcError(RpcError());
+        }
+
+        media.type = MediaData::Photo;
+        media.caption = arguments.media.caption;
+        media.image = image;
+        break;
+    }
     case TLValue::InputMediaUploadedDocument:
     {
         const TLInputFile &inFile = arguments.media.file;

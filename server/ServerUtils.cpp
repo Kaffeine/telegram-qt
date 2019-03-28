@@ -246,6 +246,12 @@ bool setupTLMessageMedia(TLMessageMedia *output, const MediaData *mediaData)
         }
 
         break;
+    case MediaData::Photo:
+        output->tlType = TLValue::MessageMediaPhoto;
+        output->flags = 0;
+        output->flags |= TLMessageMedia::Photo;
+        Utils::setupTLPhoto(&output->photo, mediaData->image);
+        break;
     }
 
     if (!mediaData->caption.isEmpty()) {

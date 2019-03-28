@@ -54,11 +54,13 @@ public:
         Invalid,
         Contact,
         Document,
+        Photo,
     };
 
     bool isValid() const { return type != Invalid; }
 
     QString caption;
+    ImageDescriptor image;
 
     // Document
     FileDescriptor file;
