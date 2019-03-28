@@ -16,6 +16,12 @@ MessageData::MessageData(quint32 from, Peer to, const QString &text) :
     m_text = text;
 }
 
+MessageData::MessageData(quint32 from, Peer to, const MediaData &media) :
+    MessageData(from, to)
+{
+    m_media = media;
+}
+
 void MessageData::setGlobalId(quint64 id)
 {
     m_globalId = id;

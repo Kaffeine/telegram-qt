@@ -19,6 +19,7 @@
 #define TELEGRAM_SERVER_MESSAGE_DATA_HPP
 
 #include "TelegramNamespace.hpp"
+#include "ServerNamespace.hpp"
 
 #include <QHash>
 
@@ -26,15 +27,34 @@ namespace Telegram {
 
 namespace Server {
 
+class MediaData
+{
+public:
+    enum Type {
+        Invalid,
+        Document,
+    };
+
+    bool isValid() const { return type != Invalid; }
+
+    // Document
+    FileDescriptor file;
+    QString mimeType;
+
+    Type type = Invalid;
+};
+
 class MessageData
 {
 public:
     MessageData() = default;
     MessageData(quint32 from, Peer to, const QString &text);
+    MessageData(quint32 from, Peer to, const MediaData &media);
 
     quint64 globalId() const { return m_globalId; }
     void setGlobalId(quint64 id);
 
+    const MediaData &media() const { return m_media; }
     QString text() const { return m_text; }
     Peer toPeer() const { return m_to; }
     quint32 fromId() const { return m_fromId; }
@@ -58,6 +78,7 @@ protected:
     MessageData(quint32 from, Peer to);
 
     QHash<Peer, quint32> m_references;
+    MediaData m_media;
     QString m_text;
     Peer m_to;
     quint64 m_globalId = 0;

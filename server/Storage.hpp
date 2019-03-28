@@ -38,6 +38,7 @@ class Storage : public QObject
 public:
     explicit Storage(QObject *parent = nullptr);
     MessageData *addMessage(quint32 fromId, Peer toPeer, const QString &text);
+    MessageData *addMessageMedia(quint32 fromId, Peer toPeer, const MediaData &media);
     const MessageData *getMessage(quint64 globalId);
 
     bool uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
