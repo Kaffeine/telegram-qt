@@ -23,6 +23,7 @@ set(server_lib_SOURCES
     ServerDhLayer.hpp
     ServerMessageData.cpp
     ServerMessageData.hpp
+    ServerNamespace.hpp
     ServerRpcLayer.cpp
     ServerRpcLayer.hpp
     ServerRpcOperation.cpp
