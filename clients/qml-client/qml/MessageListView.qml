@@ -53,7 +53,9 @@ ListView {
         if (atYEnd) {
             keepViewAtBottom()
         } else {
-            keepViewAtIndexY(count > 1 ? 1 : 0)
+            if (keepVisibleY == viewKeeperValue.unset) {
+                keepViewAtIndexY(count > 1 ? 1 : 0)
+            }
         }
         model.fetchPrevious()
     }
@@ -99,10 +101,19 @@ ListView {
         if (inMotion) {
             return
         }
+        forceLayout()
+
+        console.log("ContentY: " + messageView_.contentY + " " + "contentHeight: " + messageView_.contentHeight + "keep: " + keepVisibleY)
+
+        if (messageView_.contentHeight < messageView_.height) {
+            keepViewAtBottom()
+        }
 
         if (keepVisibleY == viewKeeperValue.keepAtBottom) {
-            positionViewAtEnd()
+            Qt.callLater(messageView_.positionViewAtEnd)
+            return
         }
+
         if (keepVisibleY < 0) {
             return
         }
