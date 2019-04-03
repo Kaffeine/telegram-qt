@@ -33,7 +33,7 @@
 
 using namespace Telegram::Server;
 
-class DBusCodeAuthProvider : public Authorization::DefaultProvider
+class ConstantAuthCodeProvider : public Authorization::DefaultProvider
 {
 public:
     static QString s_code;
@@ -41,9 +41,9 @@ protected:
     Authorization::Code generateCode(Session *session, const QString &identifier) override;
 };
 
-QString DBusCodeAuthProvider::s_code = QStringLiteral("11111");
+QString ConstantAuthCodeProvider::s_code = QStringLiteral("11111");
 
-Authorization::Code DBusCodeAuthProvider::generateCode(Session *session, const QString &identifier)
+Authorization::Code ConstantAuthCodeProvider::generateCode(Session *session, const QString &identifier)
 {
     Authorization::Code code = DefaultProvider::generateCode(session, identifier);
     code.code = s_code;
@@ -98,9 +98,9 @@ int main(int argc, char *argv[])
     cluster.setServerPrivateRsaKey(privateKey);
     cluster.setServerConfiguration(dcConfig);
 
-    DBusCodeAuthProvider authProvider;
+    ConstantAuthCodeProvider authProvider;
     cluster.setAuthorizationProvider(&authProvider);
-    qInfo() << "Custom auth code provider enabled. The code:" << DBusCodeAuthProvider::s_code;
+    qInfo() << "Custom auth code provider enabled. The code:" << ConstantAuthCodeProvider::s_code;
     qInfo() << "Start server with unsafe (not secret) encryption RSA key:";
     qInfo() << "    Private:" << TestKeyData::privateKeyFileName();
     qInfo() << "    Public PKCS1:" << TestKeyData::publicKeyPkcs1FileName();
