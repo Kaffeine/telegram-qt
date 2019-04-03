@@ -28,7 +28,7 @@ RpcLayer *Session::rpcLayer() const
     return m_connection ? m_connection->rpcLayer() : nullptr;
 }
 
-quint64 Session::getOldSalt()
+quint64 Session::getOldSalt() const
 {
     if (m_oldSalt.validUntil < getCurrentTime()) {
         return 0;
@@ -36,7 +36,7 @@ quint64 Session::getOldSalt()
     return m_oldSalt.salt;
 }
 
-quint64 Session::getServerSalt()
+quint64 Session::getServerSalt() const
 {
     Q_ASSERT_X(!m_salts.isEmpty(), "ServerSession", "server salt requested, but initial salt is not set");
     // https://core.telegram.org/api/optimisation#server-salt
@@ -57,7 +57,7 @@ quint64 Session::getServerSalt()
     return m_salts.constFirst().salt;
 }
 
-bool Session::checkSalt(quint64 salt)
+bool Session::checkSalt(quint64 salt) const
 {
     return salt && ((getServerSalt() == salt) || (getOldSalt() == salt));
 }
@@ -88,7 +88,7 @@ void Session::setInitialServerSalt(quint64 salt)
     addSalt();
 }
 
-QVector<ServerSalt> Session::getSalts(quint32 numberLimit)
+QVector<ServerSalt> Session::getSalts(quint32 numberLimit) const
 {
     const int limit = static_cast<int>(qMin<quint32>(numberLimit, c_maxServerSalts));
     m_salts.reserve(limit);
@@ -107,8 +107,10 @@ ServerSalt Session::generateSalt(quint32 validSince)
     return s;
 }
 
-void Session::addSalt()
+void Session::addSalt() const
 {
+    // This method is a part of private lazy salts generation mechanism.
+    // Externally we're 'const'.
     m_salts.append(generateSalt(m_salts.constLast().validUntil - c_sessionOverlapping));
 }
 

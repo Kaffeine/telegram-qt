@@ -34,12 +34,12 @@ public:
     quint32 layer() const { return m_layer; }
     void setLayer(quint32 layer) { m_layer = layer; }
 
-    quint64 getOldSalt();
-    quint64 getServerSalt();
-    bool checkSalt(quint64 salt);
+    quint64 getOldSalt() const;
+    quint64 getServerSalt() const;
+    bool checkSalt(quint64 salt) const;
     bool generateInitialServerSalt();
     void setInitialServerSalt(quint64 salt);
-    QVector<ServerSalt> getSalts(quint32 numberLimit);
+    QVector<ServerSalt> getSalts(quint32 numberLimit) const;
 
     static ServerSalt generateSalt(quint32 validSince);
 
@@ -57,13 +57,13 @@ public:
     quint64 timestamp = 0;
 
 protected:
-    void addSalt();
+    void addSalt() const;
 
     RemoteClientConnection *m_connection = nullptr;
     LocalUser *m_wanterUser = nullptr;
     LocalUser *m_user = nullptr;
-    QVector<ServerSalt> m_salts;
-    ServerSalt m_oldSalt;
+    mutable QVector<ServerSalt> m_salts;
+    mutable ServerSalt m_oldSalt;
     quint32 m_layer = 0;
 };
 
