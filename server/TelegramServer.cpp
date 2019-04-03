@@ -348,6 +348,12 @@ quint32 Server::getUserIdByAuthId(quint64 authId) const
     return m_authToUser.value(authId);
 }
 
+/*
+    Process the message data, deliver the message to all recipients, add
+    the new message to dialogs and generate UpdateNotification list.
+
+    The sender notification (if any) will be the first one in the result list.
+ */
 QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
 {
     const Peer targetPeer = messageData->toPeer();
