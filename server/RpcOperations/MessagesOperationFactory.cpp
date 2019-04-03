@@ -1704,40 +1704,37 @@ void MessagesRpcOperation::runSendMedia()
 
     MediaData media;
 
-    if (arguments.media.file.id) {
+    switch (arguments.media.tlType) {
+    case TLValue::InputMediaUploadedDocument:
+    {
         const TLInputFile &inFile = arguments.media.file;
         FileDescriptor desc = api()->storage()->getFileDescriptor(inFile.id, inFile.parts);
+        desc = api()->storage()->saveDocumentFile(desc, inFile.name, arguments.media.mimeType);
 
-        switch (arguments.media.tlType) {
-        case TLValue::InputMediaUploadedDocument:
-        {
-            desc = api()->storage()->saveDocumentFile(desc, inFile.name, arguments.media.mimeType);
-
-            if (!desc.isValid()) {
-                sendRpcError(RpcError());
-            }
-
-            media.type = MediaData::Document;
-            media.file = desc;
-            media.mimeType = arguments.media.mimeType;
-            media.caption = arguments.media.caption;
-            for (const TLDocumentAttribute &attribute : arguments.media.attributes) {
-                switch (attribute.tlType) {
-                case TLValue::DocumentAttributeFilename:
-                    media.attributes.append(DocumentAttribute::fromFileName(attribute.fileName));
-                    break;
-                default:
-                    break;
-                }
-            }
-            break;
+        if (!desc.isValid()) {
+            sendRpcError(RpcError());
         }
-        default:
-            if (!desc.isValid()) {
-                sendRpcError(RpcError());
+
+        media.type = MediaData::Document;
+        media.file = desc;
+        media.mimeType = arguments.media.mimeType;
+        media.caption = arguments.media.caption;
+        for (const TLDocumentAttribute &attribute : arguments.media.attributes) {
+            switch (attribute.tlType) {
+            case TLValue::DocumentAttributeFilename:
+                media.attributes.append(DocumentAttribute::fromFileName(attribute.fileName));
+                break;
+            default:
+                break;
             }
-            break;
         }
+        break;
+    }
+    default:
+        if (processNotImplementedMethod(TLValue::MessagesSendMedia)) {
+            return;
+        }
+        break;
     }
 
     MessageData *messageData = api()->storage()->addMessageMedia(self->id(), targetPeer, media);
