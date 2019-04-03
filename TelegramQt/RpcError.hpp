@@ -70,6 +70,7 @@ public:
         ActiveUserRequired,
         AuthKeyPermEmpty,
         SessionPasswordNeeded,
+        InputFetchError,
         FloodWaitX,
         PeerIdInvalid,
         UserIdInvalid,

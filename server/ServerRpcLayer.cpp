@@ -151,7 +151,9 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << requestValue.toString() << "is not processed!";
         return false;
     }
-    op->startLater();
+    if (!op->isFinished()) {
+        op->startLater();
+    }
     return true;
 }
 
