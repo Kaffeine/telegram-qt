@@ -55,12 +55,19 @@ struct UpdateNotification
     enum class Type {
         Invalid,
         NewMessage,
+        MessageAction,
         ReadInbox,
         ReadOutbox,
     };
 
     Peer dialogPeer;
-    quint32 userId = 0;
+    quint32 userId = 0; // The Update recipient
+    quint32 fromId = 0;
+
+    // Message Action:
+    quint32 progress = 0;
+    TLValue actionType = TLValue::SendMessageTypingAction;
+
     quint32 messageId = 0;
     quint32 pts = 0;
     quint32 date = 0;

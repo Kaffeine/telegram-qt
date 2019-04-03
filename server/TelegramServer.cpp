@@ -454,6 +454,17 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             updates.updates = { update };
         }
             break;
+        case UpdateNotification::Type::MessageAction:
+        {
+            TLUpdate &update = updates.update;
+            update.tlType = TLValue::UpdateUserTyping;
+            update.userId = notification.fromId;
+            // Note: action depends on Layer. Process this to support different layers.
+            update.action.tlType = notification.actionType;
+            update.action.progress = notification.progress;
+            updates.tlType = TLValue::UpdateShort;
+        }
+            break;
         case UpdateNotification::Type::ReadInbox:
         case UpdateNotification::Type::ReadOutbox:
         {

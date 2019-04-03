@@ -1888,12 +1888,79 @@ void MessagesRpcOperation::runSetInlineGameScore()
 
 void MessagesRpcOperation::runSetTyping()
 {
-    // TLFunctions::TLMessagesSetTyping &arguments = m_setTyping;
-    if (processNotImplementedMethod(TLValue::MessagesSetTyping)) {
+    TLFunctions::TLMessagesSetTyping &arguments = m_setTyping;
+
+    LocalUser *selfUser = layer()->getUser();
+    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
+    MessageRecipient *recipient = api()->getRecipient(targetPeer, selfUser);
+
+    if (!recipient) {
+        sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
     }
-    bool result;
+
+    if (!arguments.action.isValid()) {
+        // Invalid argument
+        sendRpcError(RpcError());
+        return;
+    }
+
+    QVector<PostBox *> boxes = recipient->postBoxes();
+    if (targetPeer != selfUser->toPeer()) {
+        boxes.append(selfUser->getPostBox());
+    }
+
+    QVector<UpdateNotification> notifications;
+
+    // Result and broadcasted Updates date seems to be always older than the message date,
+    // so prepare the request date right on the start.
+    const quint32 requestDate = Telegram::Utils::getCurrentTime();
+    for (PostBox *box : boxes) {
+        UpdateNotification notification;
+        notification.type = UpdateNotification::Type::MessageAction;
+        notification.date = requestDate;
+        notification.fromId = selfUser->id();
+        notification.progress = arguments.action.progress;
+        notification.actionType = arguments.action.tlType;
+
+        for (const quint32 userId : box->users()) {
+            // The Update recipient
+            notification.userId = userId;
+            if (targetPeer.type == Peer::User) {
+                if (userId == selfUser->id()) {
+                    notification.dialogPeer = targetPeer;
+                } else {
+                    notification.dialogPeer = selfUser->toPeer();
+                }
+            } else {
+                notification.dialogPeer = targetPeer;
+            }
+
+            if ((userId == selfUser->id()) && !notifications.isEmpty()) {
+                // Keep the sender Notification on the first place
+                notifications.append(notifications.constFirst());
+                notifications.first() = notification;
+                continue;
+            }
+
+            notifications.append(notification);
+        }
+    }
+
+    UpdateNotification *selfNotification = nullptr;
+    for (UpdateNotification &notification : notifications) {
+        if (notification.userId == selfUser->id()) {
+            selfNotification = &notification;
+            break;
+        }
+    }
+
+    selfNotification->excludeSession = layer()->session();
+
+    bool result = true;
     sendRpcReply(result);
+
+    api()->queueUpdates(notifications);
 }
 
 void MessagesRpcOperation::runStartBot()
