@@ -21,6 +21,10 @@ void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages)
             Telegram::Peer messagePeer = Peer::fromUserId(message.fromId);
             peers->insert(messagePeer);
         }
+        if (message.media.userId) {
+            Telegram::Peer messagePeer = Peer::fromUserId(message.media.userId);
+            peers->insert(messagePeer);
+        }
     }
 }
 
@@ -208,6 +212,13 @@ bool setupTLMessageMedia(TLMessageMedia *output, const MediaData *mediaData)
     switch (mediaData->type) {
     case MediaData::Invalid:
         return false;
+    case MediaData::Contact:
+        output->tlType = TLValue::MessageMediaContact;
+        output->phoneNumber = mediaData->contact.phone;
+        output->firstName = mediaData->contact.firstName;
+        output->lastName = mediaData->contact.lastName;
+        output->userId = mediaData->contact.id;
+        break;
     case MediaData::Document:
         output->tlType = TLValue::MessageMediaDocument;
         output->flags = 0;

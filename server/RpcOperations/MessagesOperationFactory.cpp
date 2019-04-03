@@ -1705,6 +1705,21 @@ void MessagesRpcOperation::runSendMedia()
     MediaData media;
 
     switch (arguments.media.tlType) {
+    case TLValue::InputMediaContact:
+    {
+        Telegram::Peer contactPeer = Telegram::Utils::toPublicPeer(arguments.peer, self->id());
+        if (!contactPeer.isValid() || (contactPeer.type != Peer::User)) {
+            sendRpcError(RpcError(RpcError::PeerIdInvalid)); // TODO: Check if the error is correct
+            return;
+        }
+
+        media.type = MediaData::Contact;
+        media.contact.phone = arguments.media.phoneNumber;
+        media.contact.firstName = arguments.media.firstName;
+        media.contact.lastName = arguments.media.lastName;
+        media.contact.id = contactPeer.id;
+        break;
+    }
     case TLValue::InputMediaUploadedDocument:
     {
         const TLInputFile &inFile = arguments.media.file;

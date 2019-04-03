@@ -52,6 +52,7 @@ class MediaData
 public:
     enum Type {
         Invalid,
+        Contact,
         Document,
     };
 
@@ -63,6 +64,8 @@ public:
     FileDescriptor file;
     QVector<DocumentAttribute> attributes;
     QString mimeType;
+
+    UserContact contact;
 
     Type type = Invalid;
 };
