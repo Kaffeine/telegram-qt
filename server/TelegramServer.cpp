@@ -179,6 +179,13 @@ void Server::onNewConnection()
     m_activeConnections.insert(client);
 }
 
+Session *Server::addSession(quint64 sessionId)
+{
+    Session *session = new Session(sessionId);
+    m_sessions.insert(sessionId, session);
+    return session;
+}
+
 void Server::onClientConnectionStatusChanged()
 {
     RemoteClientConnection *client = qobject_cast<RemoteClientConnection*>(sender());
@@ -305,10 +312,9 @@ bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId
     Session *session = getSessionById(sessionId);
 
     if (!session) {
-        session = new Session(sessionId);
+        session = addSession(sessionId);
         session->ip = client->transport()->remoteAddress();
         session->generateInitialServerSalt();
-        m_sessions.insert(sessionId, session);
 
         if (client->dhLayer()->state() == DhLayer::State::HasKey) {
             session->setInitialServerSalt(client->dhLayer()->serverSalt());
@@ -334,7 +340,7 @@ Session *Server::getSessionById(quint64 sessionId) const
 void Server::bindUserSession(LocalUser *user, Session *session)
 {
     user->addSession(session);
-    m_authToUser.insert(session->getConnection()->authId(), user->userId());
+    addUserAuthorization(user, session->getConnection()->authId());
 }
 
 QByteArray Server::getAuthKeyById(quint64 authId) const
@@ -344,7 +350,12 @@ QByteArray Server::getAuthKeyById(quint64 authId) const
 
 quint32 Server::getUserIdByAuthId(quint64 authId) const
 {
-    return m_authToUser.value(authId);
+    return m_authToUserId.value(authId);
+}
+
+void Server::addUserAuthorization(LocalUser *user, quint64 authKeyId)
+{
+    m_authToUserId.insert(authKeyId, user->userId());
 }
 
 /*

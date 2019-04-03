@@ -89,6 +89,7 @@ public:
     void bindUserSession(LocalUser *user, Session *session) override;
     QByteArray getAuthKeyById(quint64 authId) const override;
     quint32 getUserIdByAuthId(quint64 authId) const override;
+    void addUserAuthorization(LocalUser *user, quint64 authKeyId);
 
     QVector<UpdateNotification> processMessage(MessageData *messageData) override;
 
@@ -104,6 +105,8 @@ protected slots:
     void onNewConnection();
 
 protected:
+    Session *addSession(quint64 sessionId);
+
     void onClientConnectionStatusChanged();
 
 protected:
@@ -115,15 +118,19 @@ private:
     DcOption m_dcOption;
     Telegram::RsaKey m_key;
 
-    QHash<QString, quint32> m_phoneToUserId;
-    QHash<quint64, Session*> m_sessions; // Session id to session
-    QHash<quint64, QByteArray> m_authorizations; // Auth id to auth key
-    QHash<quint64, quint32> m_authToUser; // Auth key to userId
-    QHash<quint32, LocalUser*> m_users; // userId to User
     QSet<RemoteClientConnection*> m_activeConnections;
     QSet<RemoteServerConnection*> m_remoteServers;
     QVector<RpcOperationFactory*> m_rpcOperationFactories;
     DcConfiguration m_dcConfiguration;
+
+    // Data
+    QHash<quint64, QByteArray> m_authorizations; // Auth id to auth key
+    QHash<quint32, LocalUser*> m_users; // userId to User
+    QHash<quint64, Session*> m_sessions; // Session id to Session
+
+    // Maps for faster lookup
+    QHash<QString, quint32> m_phoneToUserId;
+    QHash<quint64, quint32> m_authToUserId;
 };
 
 } // Server namespace
