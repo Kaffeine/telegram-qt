@@ -56,6 +56,16 @@ public:
     {
         m_peer = Peer::fromUserId(userId);
     }
+
+    quint32 unreadCount() const
+    {
+        return m_unreadCount;
+    }
+
+    void setUnreadCount(quint32 count);
+
+protected:
+    quint32 m_unreadCount = 0;
 };
 
 class MessageRecipient
@@ -127,8 +137,8 @@ public:
 
     QString passwordHint() const { return QString(); }
 
-    PostBox *getPostBox() { return &m_box; }
-    const PostBox *getPostBox() const { return &m_box; }
+    UserPostBox *getPostBox() { return &m_box; }
+    const UserPostBox *getPostBox() const { return &m_box; }
 
     QVector<PostBox *> postBoxes() override { return { &m_box }; }
 
@@ -138,8 +148,10 @@ public:
 
     QVector<UserContact> importedContacts() const { return m_importedContacts; }
 
-    void syncDialogTopMessage(const Telegram::Peer &peer, quint32 messageId, quint64 messageDate);
+    void bumpDialogUnreadCount(const Telegram::Peer &peer);
+    void addNewMessage(const Telegram::Peer &peer, quint32 messageId, quint64 messageDate);
     UserDialog *getDialog(const Telegram::Peer &peer);
+    void syncDialogsOrder();
 
 protected:
     UserDialog *ensureDialog(const Telegram::Peer &peer);

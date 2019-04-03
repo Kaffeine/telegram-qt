@@ -361,7 +361,7 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
     MessageRecipient *recipient = getRecipient(targetPeer, fromUser);
     QVector<PostBox *> boxes = recipient->postBoxes();
     if ((targetPeer.type == Peer::User) && !messageData->isMessageToSelf()) {
-        boxes.append(fromUser->postBoxes());
+        boxes.append(fromUser->getPostBox());
     }
     // Boxes:
     // message to contact
@@ -397,13 +397,18 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
                 notification.dialogPeer = targetPeer;
             }
             LocalUser *user = getUser(userId);
-            user->syncDialogTopMessage(notification.dialogPeer, newMessageId, messageData->date64());
+            user->addNewMessage(notification.dialogPeer, newMessageId, messageData->date64());
+            if (user != fromUser) {
+                user->bumpDialogUnreadCount(notification.dialogPeer);
+            }
 
             if ((userId == fromUser->id()) && !notifications.isEmpty()) {
+                // Keep the sender Notification on the first place
                 notifications.append(notifications.constFirst());
                 notifications.first() = notification;
                 continue;
             }
+
             notifications.append(notification);
         }
     }

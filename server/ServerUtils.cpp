@@ -81,11 +81,12 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *app
 
 bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser)
 {
-    output->pts = forUser->getPostBox()->pts();
+    const UserPostBox *box = forUser->getPostBox();
+    output->pts = box->pts();
     output->date = Telegram::Utils::getCurrentTime();
     output->seq = 1; // FIXME
     output->qts = 0;
-    output->unreadCount = 0;
+    output->unreadCount = box->unreadCount();
     return true;
 }
 

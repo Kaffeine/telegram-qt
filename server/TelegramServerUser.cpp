@@ -182,6 +182,12 @@ void LocalUser::importContact(const UserContact &contact)
     }
 }
 
+void LocalUser::bumpDialogUnreadCount(const Peer &peer)
+{
+    getDialog(peer)->unreadCount += 1;
+    m_box.setUnreadCount(m_box.unreadCount() + 1);
+}
+
 UserDialog *LocalUser::ensureDialog(const Telegram::Peer &peer)
 {
     UserDialog *dialog = getDialog(peer);
@@ -193,16 +199,13 @@ UserDialog *LocalUser::ensureDialog(const Telegram::Peer &peer)
     return dialog;
 }
 
-void LocalUser::syncDialogTopMessage(const Peer &peer, quint32 messageId, quint64 messageDate)
+void LocalUser::addNewMessage(const Peer &peer, quint32 messageId, quint64 messageDate)
 {
     UserDialog *dialog = ensureDialog(peer);
     dialog->topMessage = messageId;
     dialog->date = messageDate;
 
-    std::sort(m_dialogs.begin(), m_dialogs.end(), [](const UserDialog *left, const UserDialog *right) -> bool {
-        // return true if the first arg should be placed before the second one
-        return left->date > right->date;
-    });
+    syncDialogsOrder();
 }
 
 UserDialog *LocalUser::getDialog(const Peer &peer)
@@ -215,10 +218,23 @@ UserDialog *LocalUser::getDialog(const Peer &peer)
     return nullptr;
 }
 
+void LocalUser::syncDialogsOrder()
+{
+    std::sort(m_dialogs.begin(), m_dialogs.end(), [](const UserDialog *left, const UserDialog *right) -> bool {
+        // return true if the first arg should be placed before the second one
+        return left->date > right->date;
+    });
+}
+
 void LocalUser::setUserId(quint32 userId)
 {
     m_id = userId;
     m_box.setUserId(m_id);
+}
+
+void UserPostBox::setUnreadCount(quint32 count)
+{
+    m_unreadCount = count;
 }
 
 } // Server namespace

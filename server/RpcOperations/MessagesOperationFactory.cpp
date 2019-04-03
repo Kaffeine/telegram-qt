@@ -1428,21 +1428,21 @@ void MessagesRpcOperation::runReadHistory()
 {
     TLFunctions::TLMessagesReadHistory &arguments = m_readHistory;
 
-    LocalUser *self = layer()->getUser();
-    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, self->id());
+    LocalUser *selfUser = layer()->getUser();
+    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
     if (targetPeer.type == Peer::Channel) {
         // There is channels.readHistory for that
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
     }
 
-    UserDialog *dialog = self->getDialog(targetPeer);
-    if (!dialog) {
+    UserDialog *selfUserDialog = selfUser->getDialog(targetPeer);
+    if (!selfUserDialog) {
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
     }
 
-    MessageRecipient *receiverInbox = api()->getRecipient(targetPeer, self);
+    MessageRecipient *receiverInbox = api()->getRecipient(targetPeer, selfUser);
     if (!receiverInbox) {
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
@@ -1450,14 +1450,47 @@ void MessagesRpcOperation::runReadHistory()
 
     const quint32 requestDate = Telegram::Utils::getCurrentTime();
     QVector<quint32> affectedMessages;
-    quint32 maxId = qMax(dialog->topMessage, arguments.maxId);
-    for (quint32 messageId = maxId; messageId > dialog->readInboxMaxId; --messageId) {
+    quint32 maxId = qMax(selfUserDialog->topMessage, arguments.maxId);
+
+    UserPostBox *selfUserPostBox = selfUser->getPostBox();
+    const QHash<quint32,quint64> messageKeys = selfUserPostBox->getAllMessageKeys();
+
+    for (quint32 messageId = maxId; messageId > selfUserDialog->readInboxMaxId; --messageId) {
+        const quint64 globalMessageId = messageKeys.value(messageId);
+        if (!globalMessageId) {
+            // It's OK to have no message e.g. for deleted entires
+            continue;
+        }
+
+        const MessageData *messageData = api()->storage()->getMessage(globalMessageId);
+        if (messageData->fromId() == selfUser->id()) {
+            continue;
+        }
+        if (messageData->getDialogPeer(selfUser->id()) != targetPeer) {
+            continue;
+        }
+
         affectedMessages.append(messageId);
     }
 
-    dialog->readInboxMaxId = maxId;
+    selfUserDialog->readInboxMaxId = maxId;
+    const quint32 readCount = static_cast<quint32>(affectedMessages.count());
+    if (selfUserDialog->unreadCount < readCount) {
+        // TODO: Print warning (internal error)
+        selfUserDialog->unreadCount = 0;
+    } else {
+        selfUserDialog->unreadCount -= readCount;
+    }
+    if (selfUserPostBox->unreadCount() < readCount) {
+        // TODO: Print warning (internal error)
+        selfUserPostBox->setUnreadCount(0);
+    } else {
+        selfUserPostBox->setUnreadCount(selfUserPostBox->unreadCount() - readCount);
+    }
 
-    const quint64 globalMessageId = self->getPostBox()->getMessageGlobalId(maxId);
+    selfUserPostBox->bumpPts();
+
+    const quint64 globalMessageId = selfUser->getPostBox()->getMessageGlobalId(maxId);
     const MessageData *messageData = api()->storage()->getMessage(globalMessageId);
 
     LocalUser *messageSender = api()->getUser(messageData->fromId());
@@ -1471,13 +1504,13 @@ void MessagesRpcOperation::runReadHistory()
     }
 
     TLMessagesAffectedMessages result;
-    result.pts = self->getPostBox()->bumpPts();
     result.ptsCount = 1;
+    result.pts = selfUser->getPostBox()->pts();
     sendRpcReply(result);
 
-    if (self->activeSessions().count() > 1) {
+    if (selfUser->activeSessions().count() > 1) {
         UpdateNotification readNotification;
-        readNotification.userId = self->userId();
+        readNotification.userId = selfUser->userId();
         readNotification.type = UpdateNotification::Type::ReadInbox;
         readNotification.date = requestDate;
         readNotification.pts = result.pts;
