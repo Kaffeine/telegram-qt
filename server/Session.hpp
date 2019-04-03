@@ -16,11 +16,13 @@ class LocalUser;
 class Session
 {
 public:
+    explicit Session(quint64 sessionId);
+
     bool isActive() const { return m_connection; }
     RemoteClientConnection *getConnection() const { return m_connection; }
     void setConnection(RemoteClientConnection *connection) { m_connection = connection; }
 
-    quint64 id() const { return sessionId; }
+    quint64 id() const { return m_sessionId; }
 
     RpcLayer *rpcLayer() const;
 
@@ -46,7 +48,6 @@ public:
     quint32 appId = 0;
     quint32 lastSequenceNumber = 0;
     quint64 lastMessageNumber = 0;
-    quint64 sessionId = 0;
     QString deviceInfo;
     QString osInfo;
     QString appVersion;
@@ -59,6 +60,7 @@ public:
 protected:
     void addSalt() const;
 
+    quint64 m_sessionId = 0;
     RemoteClientConnection *m_connection = nullptr;
     LocalUser *m_wanterUser = nullptr;
     LocalUser *m_user = nullptr;

@@ -305,9 +305,8 @@ bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId
     Session *session = getSessionById(sessionId);
 
     if (!session) {
-        session = new Session();
+        session = new Session(sessionId);
         session->ip = client->transport()->remoteAddress();
-        session->sessionId = sessionId;
         session->generateInitialServerSalt();
         m_sessions.insert(sessionId, session);
 

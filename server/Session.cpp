@@ -23,6 +23,11 @@ constexpr quint32 c_sessionRotation = 1 * 60 * 60;
 constexpr quint32 c_sessionOverlapping = 300;
 constexpr quint32 c_maxServerSalts = 64;
 
+Session::Session(quint64 sessionId) :
+    m_sessionId(sessionId)
+{
+}
+
 RpcLayer *Session::rpcLayer() const
 {
     return m_connection ? m_connection->rpcLayer() : nullptr;

@@ -82,7 +82,7 @@ quint64 RpcLayer::serverSalt() const
 
 quint64 RpcLayer::sessionId() const
 {
-    return m_session ? m_session->sessionId : 0;
+    return m_session ? m_session->id() : 0;
 }
 
 Session *RpcLayer::session() const
@@ -304,10 +304,10 @@ bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &h
         api()->bindClientSession(getHelper()->getRemoteClientConnection(), header.sessionId);
     }
 
-    if (m_session->sessionId != header.sessionId) {
+    if (m_session->id() != header.sessionId) {
         qCWarning(c_serverRpcLayerCategory) << this << __func__ << "Unexpected Session Id"
                                             << showbase << hex
-                                            << m_session->sessionId << "(in session),"
+                                            << m_session->id() << "(in session),"
                                             << header.sessionId << "(in package header)";
         return false;
     }
