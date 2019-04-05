@@ -1,6 +1,7 @@
 
 set(telegram_qt_SOURCES
     AbridgedLength.cpp
+    AccountApi.cpp
     AccountStorage.cpp
     ApiUtils.cpp
     CAppInformation.cpp
@@ -51,6 +52,8 @@ set(telegram_qt_SOURCES
 
 set(telegram_qt_META_HEADERS
     AbridgedLength.hpp
+    AccountApi.hpp
+    AccountApi_p.hpp
     AccountStorage.hpp
     CAppInformation.hpp
     CClientTcpTransport.hpp
@@ -132,6 +135,7 @@ set(telegram_qt_HEADERS
 )
 
 set(telegram_qt_public_HEADERS
+    AccountApi.hpp
     AccountStorage.hpp
     CAppInformation.hpp
     Client.hpp

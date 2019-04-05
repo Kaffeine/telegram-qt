@@ -1,5 +1,6 @@
 #include "ClientBackend.hpp"
 
+#include "AccountApi.hpp"
 #include "AccountStorage.hpp"
 #include "Client.hpp"
 #include "ClientConnection.hpp"
@@ -95,6 +96,9 @@ Backend::Backend(Client *parent) :
     m_usersLayer = new UsersRpcLayer(this);
     m_usersLayer->setRpcProcessingMethod(rpcProcessMethod);
     // End of generated low-level layer initialization
+
+    m_accountApi = new AccountApi(this);
+    ClientApiPrivate::get(m_accountApi)->setBackend(this);
 
     m_connectionApi = new ConnectionApi(this);
     ClientApiPrivate::get(m_connectionApi)->setBackend(this);

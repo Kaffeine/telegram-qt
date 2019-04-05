@@ -42,6 +42,7 @@ DEFINES += QT_STRICT_ITERATORS
 SOURCES += \
     CAppInformation.cpp \
     AbridgedLength.cpp \
+    AccountApi.cpp \
     AccountStorage.cpp \
     ApiUtils.cpp \
     DcConfiguration.cpp \
@@ -88,6 +89,7 @@ SOURCES += \
 
 PUBLIC_HEADERS += \
     telegramqt_global.h \
+    AccountApi.hpp \
     CAppInformation.hpp \
     ClientApi.hpp \
     ConnectionApi.hpp \
@@ -99,6 +101,7 @@ PUBLIC_HEADERS += \
     ReadyObject.hpp \
     RsaKey.hpp \
     TelegramNamespace.hpp \
+    TelegramQt/AccountApi \
     TelegramQt/CAppInformation \
     TelegramQt/CTelegramCore \
     TelegramQt/AccountStorage \
@@ -109,6 +112,8 @@ HEADERS += \
     CAppInformation.hpp \
     AbridgedLength.hpp \
     AccountStorage.hpp \
+    AccountApi.hpp \
+    AccountApi_p.hpp \
     ApiUtils.hpp \
     DcConfiguration.hpp \
     Debug.hpp \

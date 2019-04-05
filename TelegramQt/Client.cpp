@@ -80,6 +80,12 @@ void Client::setDataStorage(DataStorage *storage)
     d->m_dataStorage = storage;
 }
 
+AccountApi *Client::accountApi() const
+{
+    Q_D(const Client);
+    return d->m_accountApi;
+}
+
 ConnectionApi *Client::connectionApi() const
 {
     Q_D(const Client);

@@ -33,6 +33,7 @@ class Settings;
 class DataStorage;
 class AccountStorage;
 
+class AccountApi;
 class ConnectionApi;
 class ContactsApi;
 class MessagingApi;
@@ -61,6 +62,7 @@ public:
     DataStorage *dataStorage() const;
     void setDataStorage(DataStorage *storage);
 
+    AccountApi *accountApi() const;
     ConnectionApi *connectionApi() const;
     ContactsApi *contactsApi() const;
     MessagingApi *messagingApi() const;

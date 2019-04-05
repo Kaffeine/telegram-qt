@@ -14,6 +14,7 @@ struct DcOption;
 
 namespace Client {
 
+class AccountApi;
 class AppInformation;
 class Connection;
 class Client;
@@ -94,6 +95,7 @@ public:
     Settings *m_settings = nullptr;
     AccountStorage *m_accountStorage = nullptr;
     DataStorage *m_dataStorage = nullptr;
+    AccountApi *m_accountApi = nullptr;
     ConnectionApi *m_connectionApi = nullptr;
     ContactsApi *m_contactsApi = nullptr;
     MessagingApi *m_messagingApi = nullptr;
