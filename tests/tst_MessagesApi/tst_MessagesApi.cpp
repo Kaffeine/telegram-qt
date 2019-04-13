@@ -83,6 +83,7 @@ private slots:
     void cleanupTestCase();
     void getSelfUserDialog();
     void getDialogs();
+    void getAllDialogs();
     void getMessage();
     void getHistory_data();
     void getHistory();
@@ -334,6 +335,48 @@ void tst_MessagesApi::getDialogs()
         QCOMPARE(historyOperation->messages().last(), client2Message1Id);
         QVERIFY(historyOperation->messages().first() > historyOperation->messages().last());
     }
+}
+
+void tst_MessagesApi::getAllDialogs()
+{
+    const quint32 baseDate = 1500000000ul;
+    const DcOption clientDcOption = c_localDcOptions.first();
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+    const int dialogsCount = 60;
+
+    // Prepare server
+    Test::AuthProvider authProvider;
+    Telegram::Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_localDcConfiguration);
+    QVERIFY(cluster.start());
+
+    Server::LocalUser *user = tryAddUser(&cluster, c_user1);
+    Server::ServerApi *serverApi = cluster.getServerApiInstance(c_user1.dcId);
+    QVERIFY(serverApi);
+
+    for (int i = 0; i < dialogsCount; ++i) {
+        Server::LocalUser *dialogN = tryAddUser(&cluster, mkUserData(i, /* dc */ 1));
+        QVERIFY(dialogN);
+        Server::MessageData *data = serverApi->storage()
+                ->addMessage(dialogN->userId(), user->toPeer(), QStringLiteral("mgs%1").arg(i + 1));
+        data->setDate32(baseDate - dialogsCount + i);
+        serverApi->processMessage(data);
+    }
+
+    // Prepare client
+    Client::Client client;
+    setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+    signInHelper(&client, c_user1, &authProvider);
+    TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+
+    Telegram::Client::DialogList *dialogList = client.messagingApi()->getDialogList();
+    PendingOperation *dialogsReady = dialogList->becomeReady();
+    TRY_VERIFY(dialogsReady->isFinished());
+    QVERIFY(dialogsReady->isSucceeded());
+    QCOMPARE(dialogList->peers().count(), dialogsCount);
 }
 
 void tst_MessagesApi::getMessage()
