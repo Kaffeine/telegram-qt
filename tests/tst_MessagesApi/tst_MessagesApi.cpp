@@ -67,10 +67,10 @@ static const UserData c_userWithPassword = []() {
     return userData;
 }();
 
-static const UserData c_user1 = mkUserData(1, 1);
-static const UserData c_user2 = mkUserData(2, 1);
-static const UserData c_user3 = mkUserData(3, 1);
-static const UserData c_user4 = mkUserData(4, 1);
+static const UserData c_user1 = mkUserData(1000, 1);
+static const UserData c_user2 = mkUserData(2000, 1);
+static const UserData c_user3 = mkUserData(3000, 1);
+static const UserData c_user4 = mkUserData(4000, 1);
 
 class tst_MessagesApi : public QObject
 {
