@@ -117,9 +117,15 @@ void LocalCluster::stop()
 
 LocalUser *LocalCluster::addUser(const QString &identifier, quint32 dcId)
 {
+    if (getUser(identifier)) {
+        qCWarning(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to add user"
+                                            << identifier << "(the identifier is already taken)";
+        return nullptr;
+    }
     Server *server = getServerInstance(dcId);
     if (!server) {
-        qCWarning(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to add user" << identifier << "to unknown server id" << dcId;
+        qCWarning(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to add user"
+                                            << identifier << "to unknown server id" << dcId;
         return nullptr;
     }
     return server->addUser(identifier);
@@ -128,6 +134,9 @@ LocalUser *LocalCluster::addUser(const QString &identifier, quint32 dcId)
 LocalUser *LocalCluster::getUser(const QString &identifier)
 {
     AbstractUser *u = m_serverInstances.first()->getAbstractUser(identifier);
+    if (!u) {
+        return nullptr;
+    }
     Server *s = getServerInstance(u->dcId());
     return s->getUser(identifier);
 }
