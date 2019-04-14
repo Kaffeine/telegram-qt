@@ -72,6 +72,12 @@ QVector<Peer> DataStorage::dialogs() const
     return result;
 }
 
+QVector<Peer> DataStorage::pinnedDialogs() const
+{
+    Q_D(const DataStorage);
+    return d->m_api->pinnedDialogs();
+}
+
 QVector<Peer> DataStorage::contactList() const
 {
     Q_D(const DataStorage);
@@ -290,6 +296,16 @@ bool DataInternalApi::processNewMessage(const TLMessage &message, quint32 pts)
     updateDialogsOrder();
 
     return true;
+}
+
+void DataInternalApi::processPinnedDialogs(const TLVector<TLDialog> &dialogs)
+{
+    m_pinnedDialogs.clear();
+    for (const TLDialog &dialog : dialogs) {
+        if (dialog.pinned()) {
+            m_pinnedDialogs.append(Telegram::Utils::toPublicPeer(dialog.peer));
+        }
+    }
 }
 
 void DataInternalApi::processData(const TLMessage &message)

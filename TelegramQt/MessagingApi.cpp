@@ -22,6 +22,7 @@ class PendingOperation;
 namespace Client {
 
 static constexpr quint32 c_fetchLimit = 10;
+static constexpr quint32 c_dialogsFetchPortion = 20;
 static constexpr quint32 c_defaultSyncLimit = 50;
 
 MessagingApiPrivate::MessagingApiPrivate(MessagingApi *parent) :
@@ -162,7 +163,7 @@ void MessagingApiPrivate::onMessageOutboxRead(const Telegram::Peer peer, quint32
 PendingOperation *MessagingApiPrivate::getDialogs()
 {
     PendingOperation *operation = new PendingOperation("MessagingApi::getDialogs", this);
-    MessagesRpcLayer::PendingMessagesDialogs *rpcOperation = messagesLayer()->getDialogs(0, 0, 0, TLInputPeer(), 20);
+    MessagesRpcLayer::PendingMessagesDialogs *rpcOperation = messagesLayer()->getDialogs(0, 0, 0, TLInputPeer(), c_dialogsFetchPortion);
     rpcOperation->connectToFinished(this, &MessagingApiPrivate::onGetDialogsFinished, operation, rpcOperation);
     return operation;
 }
@@ -393,6 +394,35 @@ void MessagingApiPrivate::onGetDialogsFinished(PendingOperation *operation, Mess
     TLMessagesDialogs dialogs;
     rpcOperation->getResult(&dialogs);
     dataInternalApi()->processData(dialogs);
+    dataInternalApi()->processPinnedDialogs(dialogs.dialogs);
+    rpcOperation->deleteLater();
+
+    if (m_dialogList) {
+        PeerList receivedPeers;
+        for (const TLDialog &dialog : dialogs.dialogs) {
+            receivedPeers.append(Utils::toPublicPeer(dialog.peer));
+        }
+
+        m_dialogList->ensurePeers(receivedPeers);
+    }
+
+    if (static_cast<quint32>(dataInternalApi()->dialogs().count()) < dialogs.count) {
+        const TLDialog &lastTlDialog = dialogs.dialogs.last();
+        const TLInputPeer inputPeer = dataInternalApi()->toInputPeer(lastTlDialog.peer);
+        quint32 date = 0;
+        // Iterate over messages to get the last dialog date
+        for (const TLMessage &message : dialogs.messages) {
+            if ((message.id == lastTlDialog.topMessage) && (message.toId == lastTlDialog.peer)) {
+                date = message.date;
+                break;
+            }
+        }
+
+        quint32 excludePinned = 1;
+        rpcOperation = messagesLayer()->getDialogs(excludePinned, date, lastTlDialog.topMessage, inputPeer, c_dialogsFetchPortion);
+        rpcOperation->connectToFinished(this, &MessagingApiPrivate::onGetDialogsFinished, operation, rpcOperation);
+        return;
+    }
     operation->setFinished();
 }
 

@@ -37,6 +37,7 @@ public:
     void setServerConfiguration(const DcConfiguration &configuration);
 
     QVector<Telegram::Peer> dialogs() const;
+    QVector<Telegram::Peer> pinnedDialogs() const;
     QVector<Telegram::Peer> contactList() const;
 
     quint32 selfUserId() const;
