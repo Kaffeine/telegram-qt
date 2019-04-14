@@ -29,13 +29,21 @@ PendingOperation *DialogList::becomeReady()
     return m_readyOperation;
 }
 
-void DialogList::ensurePeer(const Peer &peer)
+void DialogList::ensurePeers(const PeerList &peers)
 {
-    if (m_peers.contains(peer)) {
+    PeerList newPeers;
+
+    for (const Peer &p : peers) {
+        if (m_peers.contains(p)) {
+            continue;
+        }
+        newPeers.append(p);
+    }
+    if (newPeers.isEmpty()) {
         return;
     }
-    m_peers.append(peer);
-    emit listChanged({peer}, {});
+    m_peers.append(peers);
+    emit listChanged({peers}, {});
 }
 
 void DialogList::onFinished()

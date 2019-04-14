@@ -27,7 +27,7 @@ Q_SIGNALS:
 
     // Internal API
 public:
-    void ensurePeer(const Telegram::Peer &peer);
+    void ensurePeers(const Telegram::PeerList &peers);
 
 protected:
     void onFinished();

@@ -126,7 +126,7 @@ void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
 
     const Telegram::Peer peer = Telegram::Utils::getMessageDialogPeer(message, m_backend->dataStorage()->selfUserId());
     if (m_dialogList) {
-        m_dialogList->ensurePeer(peer);
+        m_dialogList->ensurePeers({peer});
     }
 
     DialogState *state = dataInternalApi()->ensureDialogState(peer);
