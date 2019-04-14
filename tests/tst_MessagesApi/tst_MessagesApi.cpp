@@ -81,6 +81,7 @@ public:
 private slots:
     void initTestCase();
     void cleanupTestCase();
+    void getSelfUserDialog();
     void getDialogs();
     void getMessage();
     void getHistory_data();
@@ -102,6 +103,43 @@ void tst_MessagesApi::initTestCase()
 void tst_MessagesApi::cleanupTestCase()
 {
     QVERIFY(TestKeyData::cleanupKeyFiles());
+}
+
+void tst_MessagesApi::getSelfUserDialog()
+{
+    const DcOption clientDcOption = c_localDcOptions.first();
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+
+    // Prepare server
+    Test::AuthProvider authProvider;
+    Telegram::Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_localDcConfiguration);
+    QVERIFY(cluster.start());
+
+    Server::LocalUser *user = tryAddUser(&cluster, c_user1);
+    Server::ServerApi *serverApi = cluster.getServerApiInstance(c_user1.dcId);
+    QVERIFY(serverApi);
+
+    {
+        Server::MessageData *data = serverApi->storage()
+                ->addMessage(user->userId(), user->toPeer(), QStringLiteral("message to self"));
+        serverApi->processMessage(data);
+    }
+
+    // Prepare client
+    Client::Client client;
+    setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+    signInHelper(&client, c_user1, &authProvider);
+    TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
+
+    Telegram::Client::DialogList *dialogList = client.messagingApi()->getDialogList();
+    PendingOperation *dialogsReady = dialogList->becomeReady();
+    TRY_VERIFY(dialogsReady->isFinished());
+    QVERIFY(dialogsReady->isSucceeded());
+    QCOMPARE(dialogList->peers().count(), 1);
 }
 
 void tst_MessagesApi::getDialogs()
