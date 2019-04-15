@@ -356,6 +356,7 @@ quint32 Server::getUserIdByAuthId(quint64 authId) const
 void Server::addUserAuthorization(LocalUser *user, quint64 authKeyId)
 {
     m_authToUserId.insert(authKeyId, user->userId());
+    user->addAuthKey(authKeyId);
 }
 
 /*

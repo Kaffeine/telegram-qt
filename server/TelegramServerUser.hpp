@@ -122,6 +122,10 @@ public:
     void setDcId(quint32 id);
 
     Session *getSession(quint64 sessionId) const;
+
+    QVector<quint64> authorizations() const { return m_authKeyIds; }
+    void addAuthKey(quint64 authId);
+
     QVector<Session*> sessions() const { return m_sessions; }
     QVector<Session*> activeSessions() const;
     bool hasActiveSession() const;
@@ -174,6 +178,7 @@ protected:
 
     quint32 m_dcId = 0;
 
+    QVector<quint64> m_authKeyIds;
     QVector<UserDialog *> m_dialogs;
     QVector<quint32> m_contactList; // Contains only registered users from the added contacts
     QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)

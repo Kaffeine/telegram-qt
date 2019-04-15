@@ -118,6 +118,14 @@ Session *LocalUser::getSession(quint64 sessionId) const
     return nullptr;
 }
 
+void LocalUser::addAuthKey(quint64 authId)
+{
+    if (m_authKeyIds.contains(authId)) {
+        return;
+    }
+    m_authKeyIds.append(authId);
+}
+
 QVector<Session *> LocalUser::activeSessions() const
 {
     QVector<Session *> result;
