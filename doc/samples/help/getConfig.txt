@@ -1,0 +1,118 @@
+TLConfig("Config") {
+    flags: 10 (PhonecallsEnabled)
+    date: 1557958768
+    expires: 1557962467
+    testMode: false
+    thisDc: 1
+    dcOptions: QVector(TLDcOption("DcOption") {
+        flags: 0 (<no bool flags>)
+        id: 1
+        ipAddress: "149.154.175.50"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 16 (IsStatic)
+        id: 1
+        ipAddress: "149.154.175.50"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 1 (Ipv6)
+        id: 1
+        ipAddress: "2001:0b28:f23d:f001:0000:0000:0000:000a"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 0 (<no bool flags>)
+        id: 2
+        ipAddress: "149.154.167.51"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 16 (IsStatic)
+        id: 2
+        ipAddress: "149.154.167.51"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 1 (Ipv6)
+        id: 2
+        ipAddress: "2001:067c:04e8:f002:0000:0000:0000:000a"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 0 (<no bool flags>)
+        id: 3
+        ipAddress: "149.154.175.100"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 16 (IsStatic)
+        id: 3
+        ipAddress: "149.154.175.100"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 1 (Ipv6)
+        id: 3
+        ipAddress: "2001:0b28:f23d:f003:0000:0000:0000:000a"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 0 (<no bool flags>)
+        id: 4
+        ipAddress: "149.154.167.92"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 16 (IsStatic)
+        id: 4
+        ipAddress: "149.154.167.92"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 1 (Ipv6)
+        id: 4
+        ipAddress: "2001:067c:04e8:f004:0000:0000:0000:000a"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 2 (MediaOnly)
+        id: 4
+        ipAddress: "149.154.164.250"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 3 (Ipv6|MediaOnly)
+        id: 4
+        ipAddress: "2001:067c:04e8:f004:0000:0000:0000:000b"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 1 (Ipv6)
+        id: 5
+        ipAddress: "2001:0b28:f23f:f005:0000:0000:0000:000a"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 16 (IsStatic)
+        id: 5
+        ipAddress: "91.108.56.200"
+        port: 443
+    }, TLDcOption("DcOption") {
+        flags: 0 (<no bool flags>)
+        id: 5
+        ipAddress: "91.108.56.154"
+        port: 443
+    })
+    chatSizeMax: 200
+    megagroupSizeMax: 200000
+    forwardedCountMax: 100
+    onlineUpdatePeriodMs: 210000
+    offlineBlurTimeoutMs: 5000
+    offlineIdleTimeoutMs: 30000
+    onlineCloudTimeoutMs: 300000
+    notifyCloudDelayMs: 30000
+    notifyDefaultDelayMs: 1500
+    chatBigSize: 10
+    pushChatPeriodMs: 60000
+    pushChatLimit: 2
+    savedGifsLimit: 200
+    editTimeLimit: 172800
+    ratingEDecay: 2419200
+    stickersRecentLimit: 30
+    stickersFavedLimit: 5
+    channelsReadMediaPeriod: 604800
+    pinnedDialogsCountMax: 5
+    callReceiveTimeoutMs: 20000
+    callRingTimeoutMs: 90000
+    callConnectTimeoutMs: 30000
+    callPacketTimeoutMs: 10000
+    meUrlPrefix: "https://t.me/"
+    disabledFeatures: QVector()
+}
