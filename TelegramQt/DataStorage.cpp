@@ -455,6 +455,11 @@ bool DataInternalApi::updateOutboxRead(const Telegram::Peer peer, quint32 messag
     return true;
 }
 
+TLInputPeer DataInternalApi::toInputPeer(const TLPeer &peer) const
+{
+    return toInputPeer(Utils::toPublicPeer(peer));
+}
+
 TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
 {
     TLInputPeer inputPeer;

@@ -96,6 +96,7 @@ public:
 
     quint32 selfUserId() const { return m_selfUserId; }
 
+    TLInputPeer toInputPeer(const TLPeer &peer) const;
     TLInputPeer toInputPeer(const Telegram::Peer &peer) const;
     TLInputUser toInputUser(quint32 userId) const;
     TLInputChannel toInputChannel(quint32 channelId) const;
