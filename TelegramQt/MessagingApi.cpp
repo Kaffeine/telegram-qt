@@ -77,6 +77,23 @@ void MessagingApiPrivate::setMessageRead(const Peer peer, quint32 messageId)
     }
 }
 
+void MessagingApiPrivate::setMessageAction(const Peer peer, const MessageAction &action)
+{
+    if (!peer.isValid()) {
+        return;
+    }
+    TLInputPeer inputPeer = dataInternalApi()->toInputPeer(peer);
+    TLSendMessageAction act = Telegram::Utils::toTL(action);
+
+    messagesLayer()->setTyping(inputPeer, act);
+}
+
+void Telegram::Client::MessagingApiPrivate::processMessageAction(const Peer peer, quint32 userId, const MessageAction &action)
+{
+    Q_Q(MessagingApi);
+    emit q->messageActionChanged(peer, userId, action);
+}
+
 void MessagingApiPrivate::onMessageSendResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation)
 {
     TLUpdates result;
@@ -161,6 +178,16 @@ void MessagingApiPrivate::onMessageOutboxRead(const Telegram::Peer peer, quint32
 {
     Q_Q(MessagingApi);
     emit q->messageReadOutbox(peer, messageId);
+}
+
+void MessagingApiPrivate::onUserActionChanged(quint32 userId, const TLSendMessageAction &action)
+{
+    processMessageAction(Peer::fromUserId(userId), userId, Utils::toPublic(action));
+}
+
+void MessagingApiPrivate::onChatUserActionChanged(const Peer peer, quint32 userId, const TLSendMessageAction &action)
+{
+    processMessageAction(peer, userId, Utils::toPublic(action));
 }
 
 PendingOperation *MessagingApiPrivate::getDialogs()
@@ -396,7 +423,8 @@ quint64 MessagingApi::forwardMessage(const Peer peer, const Peer fromPeer, quint
 
 void MessagingApi::setMessageAction(const Peer peer, const Telegram::MessageAction &action)
 {
-
+    Q_D(MessagingApi);
+    return d->setMessageAction(peer, action);
 }
 
 void MessagingApi::readHistory(const Peer peer, quint32 messageId)

@@ -168,6 +168,12 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
         }
     }
         return true;
+    case TLValue::UpdateUserTyping:
+        messagingApi()->onUserActionChanged(update.userId, update.action);
+        return true;
+    case TLValue::UpdateChatUserTyping:
+        messagingApi()->onChatUserActionChanged(Peer::fromChatId(update.chatId), update.userId, update.action);
+        return true;
     default:
         break;
     }

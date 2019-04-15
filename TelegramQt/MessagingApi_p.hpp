@@ -50,12 +50,17 @@ public:
     quint64 sendMessage(const Telegram::Peer peer, const QString &message, const MessagingApi::SendOptions &options);
     void setMessageRead(const Telegram::Peer peer, quint32 messageId);
 
+    void setMessageAction(const Peer peer, const Telegram::MessageAction &action);
+    void processMessageAction(const Peer peer, quint32 userId, const MessageAction &action);
+
     void onMessageSendResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation);
     void onSentMessageIdResolved(quint64 randomMessageId, quint32 messageId);
 
     void onMessageReceived(const TLMessage &message);
     void onMessageInboxRead(const Telegram::Peer peer, quint32 messageId);
     void onMessageOutboxRead(const Telegram::Peer peer, quint32 messageId);
+    void onUserActionChanged(quint32 userId, const TLSendMessageAction &action);
+    void onChatUserActionChanged(const Telegram::Peer peer, quint32 userId, const TLSendMessageAction &action);
 
     PendingOperation *syncPeers(const Telegram::PeerList &peers);
 
