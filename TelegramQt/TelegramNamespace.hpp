@@ -135,6 +135,16 @@ public:
     Q_ENUM(MessageType)
     Q_DECLARE_FLAGS(MessageTypeFlags, MessageType)
 
+    enum ChatType {
+        ChatTypeInvalid,
+        ChatTypeSelfChat,
+        ChatTypeDialog,
+        ChatTypeGroup,
+        ChatTypeMegaGroup,
+        ChatTypeBroadcast,
+    };
+    Q_ENUM(ChatType)
+
     enum AuthenticationError {
         AuthenticationErrorUnknown,
         AuthenticationErrorAppIdInvalid,
