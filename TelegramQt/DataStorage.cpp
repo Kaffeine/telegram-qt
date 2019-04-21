@@ -414,6 +414,7 @@ void DataInternalApi::processData(const TLMessagesDialogs &dialogs)
         dialog->unreadMentionsCount = tlDialog.unreadMentionsCount;
         dialog->pts = tlDialog.pts;
         dialog->draftText = tlDialog.draft.message;
+        dialog->flags = tlDialog.flags;
 
         const TLMessage *message = getMessage(peer, tlDialog.topMessage);
         if (message) {
