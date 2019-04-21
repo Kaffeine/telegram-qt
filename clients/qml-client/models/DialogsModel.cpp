@@ -1,13 +1,14 @@
 #include "DialogsModel.hpp"
 
 #include "Client.hpp"
-#include "DataStorage.hpp"
+#include "DataStorage_p.hpp"
 #include "Debug.hpp"
 #include "MessagingApi.hpp"
 #include "DialogList.hpp"
 #include "PendingOperation.hpp"
 
 #include "DeclarativeClient.hpp"
+#include "TelegramNamespace_p.hpp"
 
 #include <QDateTime>
 
@@ -70,13 +71,13 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
 
     switch (role) {
     case Role::Peer:
-        return QVariant::fromValue(dialog.peer);
+        return QVariant::fromValue(dialog.internal->peer);
     case Role::PeerTypeIcon:
         return QVariant::fromValue(dialog.typeIcon);
     case Role::DisplayName:
         return dialog.name;
     case Role::UnreadMessageCount:
-        return dialog.unreadCount;
+        return dialog.internal->unreadCount;
     case Role::FormattedLastMessage:
         return dialog.formattedLastMessage;
     case Role::LastMessage:
@@ -104,7 +105,7 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
         text = lastChatMessage.text;
     } else {
         Telegram::MessageMediaInfo info;
-        client()->dataStorage()->getMessageMediaInfo(&info, dialog.peer, lastChatMessage.id);
+        client()->dataStorage()->getMessageMediaInfo(&info, dialog.internal->peer, lastChatMessage.id);
         switch (lastChatMessage.type) {
         case TelegramNamespace::MessageTypeWebPage:
             text = lastChatMessage.text;
@@ -208,20 +209,15 @@ void DialogsModel::addPeer(const Peer &peer)
 {
     Client *c = client();
     DialogEntry d;
-    d.name = getPeerAlias(peer, c);
-    d.peer = peer;
-
-    Telegram::DialogInfo apiInfo;
-    if (c->dataStorage()->getDialogInfo(&apiInfo, peer)) {
-        d.unreadCount = apiInfo.unreadCount();
-
-        quint32 messageId = apiInfo.lastMessageId();
-        Message message;
-        c->dataStorage()->getMessage(&message, peer, messageId);
-        d.lastChatMessage = message;
-    } else {
-        qDebug() << Q_FUNC_INFO << "Peer" << peer << "has no dialog info in storage";
+    DataInternalApi *internalApi = DataInternalApi::get(client()->dataStorage());
+    UserDialog *dialogData = internalApi->getDialog(peer);
+    if (!dialogData) {
+        qWarning() << Q_FUNC_INFO << "Unknown dialog";
+        return;
     }
+    d.internal = dialogData;
+    d.name = getPeerAlias(peer, c);
+    c->messagingApi()->getMessage(&d.lastChatMessage, peer, dialogData->topMessage);
 
     m_dialogs << d;
 }

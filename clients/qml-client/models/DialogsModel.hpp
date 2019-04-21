@@ -9,6 +9,8 @@
 
 namespace Telegram {
 
+struct UserDialog;
+
 namespace Client {
 
 class DeclarativeClient;
@@ -20,12 +22,11 @@ class DialogsModel : public QAbstractListModel, public DeclarativeClientMixin
     Q_PROPERTY(Telegram::Client::DeclarativeClient *client READ qmlClient WRITE setQmlClient NOTIFY clientChanged)
 public:
     struct DialogEntry {
-        Telegram::Peer peer;
-        QString typeIcon;
+        TelegramNamespace::ChatType chatType;
         QString name;
         QString formattedLastMessage;
         Telegram::Message lastChatMessage;
-        quint32 unreadCount = 0;
+        UserDialog *internal = nullptr;
     };
 
     enum class Column {
