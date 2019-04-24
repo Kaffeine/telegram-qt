@@ -23,6 +23,19 @@
 
 namespace Telegram {
 
+struct UserDialog
+{
+    Telegram::Peer peer;
+    QString draftText;
+    quint32 topMessage = 0;
+    quint64 date = 0;
+    quint32 readInboxMaxId = 0;
+    quint32 readOutboxMaxId = 0;
+    quint32 unreadCount = 0;
+    quint32 unreadMentionsCount = 0;
+    quint32 pts = 0;
+};
+
 struct MessageMediaInfo::Private : public TLMessageMedia
 {
 public:
@@ -115,7 +128,7 @@ struct ChatInfo::Private : public TLChat
     static Private *get(ChatInfo *info) { return info->d; }
 };
 
-struct DialogInfo::Private : public TLDialog
+struct DialogInfo::Private : public UserDialog
 {
     static Private *get(DialogInfo *info) { return info->d; }
 };

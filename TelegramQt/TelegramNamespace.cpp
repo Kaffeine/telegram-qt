@@ -781,7 +781,7 @@ quint32 DialogInfo::unreadCount() const
 
 QString DialogInfo::draft() const
 {
-    return d->draft.message;
+    return d->draftText;
 }
 
 quint32 DialogInfo::lastMessageId() const
@@ -801,7 +801,7 @@ quint32 DialogInfo::readOutboxMaxId() const
 
 Peer DialogInfo::peer() const
 {
-    return Utils::toPublicPeer(d->peer);
+    return d->peer;
 }
 
 UserInfo::UserInfo() :

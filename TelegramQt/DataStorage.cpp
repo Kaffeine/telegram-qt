@@ -65,8 +65,9 @@ QVector<Peer> DataStorage::dialogs() const
 {
     Q_D(const DataStorage);
     QVector<Peer> result;
-    for (const TLDialog &dialog : d->m_api->dialogs()) {
-        result.append(Utils::toPublicPeer(dialog.peer));
+    result.reserve(d->m_api->dialogs().count());
+    for (const UserDialog *dialog : d->m_api->dialogs()) {
+        result.append(dialog->peer);
     }
     return result;
 }
@@ -92,11 +93,10 @@ quint32 DataStorage::selfUserId() const
 bool DataStorage::getDialogInfo(DialogInfo *info, const Peer &peer) const
 {
     Q_D(const DataStorage);
-    for (const TLDialog &dialog : d->m_api->dialogs()) {
-        Telegram::Peer thisDialogPeer = Utils::toPublicPeer(dialog.peer);
-        if (thisDialogPeer == peer) {
-            TLDialog *infoData = Telegram::DialogInfo::Private::get(info);
-            *infoData = dialog;
+    for (const UserDialog *dialog : d->m_api->dialogs()) {
+        if (dialog->peer == peer) {
+            UserDialog *infoData = Telegram::DialogInfo::Private::get(info);
+            *infoData = *dialog;
             return true;
         }
     }
@@ -277,20 +277,17 @@ bool DataInternalApi::processNewMessage(const TLMessage &message, quint32 pts)
     processData(message);
 
     const Peer dialogPeer = Utils::getMessageDialogPeer(message, selfUserId());
-    int dialogIndex = getDialogIndex(dialogPeer);
-    if (dialogIndex < 0) {
-        dialogIndex = m_dialogs.count();
-        m_dialogs.append(TLDialog());
-        m_dialogs.last().peer = Utils::toTLPeer(dialogPeer);
-    }
-    TLDialog *dialog = &m_dialogs[dialogIndex];
+    UserDialog *dialog = ensureDialog(dialogPeer);
     if (dialog->topMessage < message.id) {
         dialog->topMessage = message.id;
+        dialog->date = message.date;
     }
     if (dialog->pts < pts) {
         dialog->pts = pts;
     }
     ++dialog->unreadCount;
+
+    updateDialogsOrder();
 
     return true;
 }
@@ -361,12 +358,32 @@ void DataInternalApi::processData(const TLAuthAuthorization &authorization)
 
 void DataInternalApi::processData(const TLMessagesDialogs &dialogs)
 {
-    m_dialogs = dialogs.dialogs;
+    if (m_dialogs.isEmpty()) {
+        m_dialogs.reserve(dialogs.count);
+    }
     processData(dialogs.users);
     processData(dialogs.chats);
     for (const TLMessage &message : dialogs.messages) {
         processData(message);
     }
+    for (const TLDialog &tlDialog : dialogs.dialogs) {
+        Peer peer = Utils::toPublicPeer(tlDialog.peer);
+        UserDialog *dialog = ensureDialog(peer);
+
+        dialog->readInboxMaxId = tlDialog.readInboxMaxId;
+        dialog->readOutboxMaxId = tlDialog.readOutboxMaxId;
+        dialog->unreadCount = tlDialog.unreadCount;
+        dialog->unreadMentionsCount = tlDialog.unreadMentionsCount;
+        dialog->pts = tlDialog.pts;
+        dialog->draftText = tlDialog.draft.message;
+
+        const TLMessage *message = getMessage(peer, tlDialog.topMessage);
+        if (message) {
+            dialog->topMessage = message->id;
+            dialog->date = message->date;
+        }
+    }
+    updateDialogsOrder();
 }
 
 void DataInternalApi::processData(const TLMessagesMessages &messages)
@@ -537,14 +554,25 @@ quint64 DataInternalApi::channelMessageToKey(quint32 channelId, quint32 messageI
     return (key << 32) + messageId;
 }
 
-int Telegram::Client::DataInternalApi::getDialogIndex(const Telegram::Peer &peer) const
+UserDialog *DataInternalApi::getDialog(const Peer &peer) const
 {
-    for (int i = 0; i < m_dialogs.count(); ++i) {
-        if (Utils::toPublicPeer(m_dialogs.at(i).peer) == peer) {
-            return i;
+    for (UserDialog *dialog : m_dialogs) {
+        if (dialog->peer == peer) {
+            return dialog;
         }
     }
-    return -1;
+    return nullptr;
+}
+
+UserDialog *DataInternalApi::ensureDialog(const Peer &peer)
+{
+    UserDialog *dialog = getDialog(peer);
+    if (!dialog) {
+        dialog = new UserDialog();
+        dialog->peer = peer;
+        m_dialogs.append(dialog);
+    }
+    return dialog;
 }
 
 DialogState *DataInternalApi::ensureDialogState(const Peer peer)
@@ -559,6 +587,14 @@ DialogState *DataInternalApi::ensureDialogState(const Peer peer)
 const DialogState DataInternalApi::getDialogState(const Peer peer) const
 {
     return m_dialogStates.value(peer);
+}
+
+void DataInternalApi::updateDialogsOrder()
+{
+    std::sort(m_dialogs.begin(), m_dialogs.end(), [](const UserDialog *left, const UserDialog *right) -> bool {
+        // return true if the first arg should be placed before the second one
+        return left->date > right->date;
+    });
 }
 
 DataStoragePrivate *DataStoragePrivate::get(DataStorage *parent)

@@ -1,7 +1,7 @@
 #ifndef TELEGRAM_SERVER_NAMESPACE_HPP
 #define TELEGRAM_SERVER_NAMESPACE_HPP
 
-#include "TelegramNamespace.hpp"
+#include "TelegramNamespace_p.hpp"
 
 namespace Telegram {
 
@@ -20,19 +20,6 @@ struct ServerSalt
     quint64 salt = 0;
     quint32 validSince = 0;
     quint32 validUntil = 0;
-};
-
-struct UserDialog
-{
-    Telegram::Peer peer;
-    QString draftText;
-    quint32 topMessage = 0;
-    quint64 date = 0;
-    quint32 readInboxMaxId = 0;
-    quint32 readOutboxMaxId = 0;
-    quint32 unreadCount = 0;
-    quint32 unreadMentionsCount = 0;
-    quint32 pts = 0;
 };
 
 struct UserContact

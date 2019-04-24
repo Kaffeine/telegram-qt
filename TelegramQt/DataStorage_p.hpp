@@ -20,6 +20,7 @@
 
 #include "DataStorage.hpp"
 
+#include "TelegramNamespace_p.hpp"
 #include "TLTypes.hpp"
 
 #include <QHash>
@@ -106,8 +107,9 @@ public:
     TLVector<TLContact> contactList() const { return m_contactList; }
     const QHash<quint32, TLUser *> &users() const { return m_users; }
     const QHash<quint32, TLChat *> &chats() const { return m_chats; }
-    const TLVector<TLDialog> &dialogs() const { return m_dialogs; }
-    int getDialogIndex(const Peer &peer) const;
+    const TLVector<UserDialog *> &dialogs() const { return m_dialogs; }
+    UserDialog *getDialog(const Peer &peer) const;
+    UserDialog *ensureDialog(const Peer &peer);
 
     const QHash<Peer, DialogState> *dialogStates() const { return &m_dialogStates; }
     QHash<Peer, DialogState> *dialogStates() { return &m_dialogStates; }
@@ -117,13 +119,15 @@ public:
     const DialogState getDialogState(const Peer peer) const;
 
 protected:
+    void updateDialogsOrder();
+
     QHash<Telegram::Peer, DialogState> m_dialogStates;
 
     QHash<quint32, TLUser *> m_users;
     QHash<quint32, TLChat *> m_chats;
     QHash<quint32, TLMessage *> m_clientMessages;
     QHash<quint64, TLMessage *> m_channelMessages;
-    TLVector<TLDialog> m_dialogs;
+    TLVector<UserDialog *> m_dialogs;
     TLVector<TLContact> m_contactList;
     QQueue<SentMessage> m_queuedMessages;
     quint32 m_selfUserId = 0;
