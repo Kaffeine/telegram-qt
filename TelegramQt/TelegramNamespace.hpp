@@ -366,8 +366,6 @@ public:
     quint32 readOutboxMaxId() const;
 
     Peer peer() const;
-    quint32 muteUntil() const;
-    bool isStillMuted() const;
 
     struct Private;
 protected:

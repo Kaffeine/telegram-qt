@@ -804,16 +804,6 @@ Peer DialogInfo::peer() const
     return Utils::toPublicPeer(d->peer);
 }
 
-quint32 DialogInfo::muteUntil() const
-{
-    return d->notifySettings.muteUntil;
-}
-
-bool DialogInfo::isStillMuted() const
-{
-    return false;
-}
-
 UserInfo::UserInfo() :
     d(new Private())
 {
