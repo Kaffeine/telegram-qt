@@ -69,6 +69,12 @@ UserContact AbstractUser::toContact() const
     return contact;
 }
 
+LocalUser::LocalUser(quint32 userId, const QString &phoneNumber)
+{
+    m_phoneNumber = phoneNumber;
+    setUserId(userId);
+}
+
 void LocalUser::setPhoneNumber(const QString &phoneNumber)
 {
     m_phoneNumber = phoneNumber;

@@ -99,6 +99,9 @@ public:
 class LocalUser : public AbstractUser
 {
 public:
+    explicit LocalUser(quint32 userId, const QString &phoneNumber);
+    LocalUser() = default;
+
     quint32 userId() const { return m_id; }
     quint32 id() const override { return m_id; }
     QString phoneNumber() const override { return m_phoneNumber; }
