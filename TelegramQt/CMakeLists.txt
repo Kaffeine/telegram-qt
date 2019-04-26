@@ -3,7 +3,13 @@ set(telegram_qt_SOURCES
     AbridgedLength.cpp
     AccountStorage.cpp
     ApiUtils.cpp
-    TelegramNamespace.cpp
+    CAppInformation.cpp
+    CClientTcpTransport.cpp
+    CRawStream.cpp
+    CTcpTransport.cpp
+    CTelegramStream.cpp
+    CTelegramStreamExtraOperators.cpp
+    CTelegramTransport.cpp
     Client.cpp
     ClientApi.cpp
     ClientBackend.cpp
@@ -12,48 +18,45 @@ set(telegram_qt_SOURCES
     ClientRpcLayer.cpp
     ClientRpcLayerExtension.cpp
     ClientSettings.cpp
-    ConnectionApi.cpp
     Connection.cpp
+    ConnectionApi.cpp
     ConnectionError.cpp
     ContactList.cpp
     ContactsApi.cpp
-    CAppInformation.cpp
-    CTelegramTransport.cpp
     DataStorage.cpp
+    DcConfiguration.cpp
+    Debug.cpp
+    DhLayer.cpp
     DialogList.cpp
+    FileRequestDescriptor.cpp
     IgnoredMessageNotification.cpp
     LegacySecretReader.cpp
     MessagingApi.cpp
+    PendingOperation.cpp
+    PendingRpcOperation.cpp
+    PendingRpcResult.cpp
+    RandomGenerator.cpp
     RpcError.cpp
     RpcLayer.cpp
     RsaKey.cpp
     RsaKey.hpp
-    RandomGenerator.cpp
     SendPackageHelper.cpp
     SslBigNumber.cpp
     SslBigNumber.hpp
-    CTelegramStream.cpp
-    CTelegramStreamExtraOperators.cpp
-    CTcpTransport.cpp
-    CClientTcpTransport.cpp
-    CRawStream.cpp
-    DcConfiguration.cpp
-    Debug.cpp
-    DhLayer.cpp
-    Utils.cpp
-    FileRequestDescriptor.cpp
-    PendingOperation.cpp
-    PendingRpcOperation.cpp
-    PendingRpcResult.cpp
     TLValues.cpp
+    TelegramNamespace.cpp
     UpdatesLayer.cpp
+    Utils.cpp
 )
 
 set(telegram_qt_META_HEADERS
     AbridgedLength.hpp
     AccountStorage.hpp
+    CAppInformation.hpp
+    CClientTcpTransport.hpp
+    CTcpTransport.hpp
+    CTelegramTransport.hpp
     Client.hpp
-    Client_p.hpp
     ClientApi.hpp
     ClientApi_p.hpp
     ClientBackend.hpp
@@ -62,6 +65,7 @@ set(telegram_qt_META_HEADERS
     ClientRpcLayer.hpp
     ClientRpcLayerExtension.hpp
     ClientSettings.hpp
+    Client_p.hpp
     Connection.hpp
     ConnectionApi.hpp
     ConnectionApi_p.hpp
@@ -70,23 +74,19 @@ set(telegram_qt_META_HEADERS
     ContactsApi_p.hpp
     DataStorage.hpp
     DataStorage_p.hpp
-    DialogList.hpp
     DhLayer.hpp
+    DialogList.hpp
     LegacySecretReader.hpp
     MessagingApi.hpp
     MessagingApi_p.hpp
-    RpcError.hpp
-    RpcLayer.hpp
-    SendPackageHelper.hpp
-    TelegramNamespace.hpp
     PendingOperation.hpp
     PendingRpcOperation.hpp
     PendingRpcResult.hpp
-    CAppInformation.hpp
-    CTelegramTransport.hpp
-    CTcpTransport.hpp
-    CClientTcpTransport.hpp
+    RpcError.hpp
+    RpcLayer.hpp
+    SendPackageHelper.hpp
     TLValues.hpp
+    TelegramNamespace.hpp
     UpdatesLayer.hpp
 )
 
@@ -108,31 +108,30 @@ list(APPEND telegram_qt_META_HEADERS ${CLIENT_OPERATIONS_HEADERS})
 set(telegram_qt_HEADERS
     ${telegram_qt_META_HEADERS}
     ApiUtils.hpp
-    telegramqt_global.h
-    TelegramNamespace_p.hpp
-    ConnectionError.hpp
-    CTelegramStream.hpp
-    CTelegramStream_p.hpp
-    CTelegramStreamExtraOperators.hpp
-    ReadyObject.hpp
-    RandomGenerator.hpp
     CRawStream.hpp
+    CTelegramStream.hpp
+    CTelegramStreamExtraOperators.hpp
+    CTelegramStream_p.hpp
+    ConnectionError.hpp
     DataStorage_p.hpp
     Debug.hpp
     Debug_p.hpp
+    FileRequestDescriptor.hpp
     IgnoredMessageNotification.hpp
     PendingOperation_p.hpp
-    UniqueLazyPointer.hpp
-    Utils.hpp
-    FileRequestDescriptor.hpp
+    RandomGenerator.hpp
+    ReadyObject.hpp
     TLNumbers.hpp
     TLTypes.hpp
-    crypto-rsa.hpp
+    TelegramNamespace_p.hpp
+    UniqueLazyPointer.hpp
+    Utils.hpp
     crypto-aes.hpp
+    crypto-rsa.hpp
+    telegramqt_global.h
 )
 
 set(telegram_qt_public_HEADERS
-    telegramqt_global.h
     AccountStorage.hpp
     CAppInformation.hpp
     Client.hpp
@@ -147,13 +146,14 @@ set(telegram_qt_public_HEADERS
     Debug.hpp
     DialogList.hpp
     MessagingApi.hpp
+    Operations/ClientAuthOperation.hpp
+    Operations/PendingContactsOperation.hpp
+    Operations/PendingMessages.hpp
     PendingOperation.hpp
     ReadyObject.hpp
     RsaKey.hpp
     TelegramNamespace.hpp
-    Operations/ClientAuthOperation.hpp
-    Operations/PendingMessages.hpp
-    Operations/PendingContactsOperation.hpp
+    telegramqt_global.h
 )
 
 include_directories(
