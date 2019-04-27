@@ -116,5 +116,8 @@ int main(int argc, char *argv[])
         return -2;
     }
 
-    return a.exec();
+    int retCode = a.exec();
+    cluster.stop();
+
+    return retCode;
 }
