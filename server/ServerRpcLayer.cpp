@@ -21,6 +21,10 @@
 #include "CTelegramStreamExtraOperators.hpp"
 #include <QLoggingCategory>
 
+#ifdef DEVELOPER_BUILD
+#include "TLTypesDebug.hpp"
+#endif
+
 Q_LOGGING_CATEGORY(c_serverRpcLayerCategory, "telegram.server.rpclayer", QtWarningMsg)
 Q_LOGGING_CATEGORY(c_serverRpcDumpPackageCategory, "telegram.server.rpclayer.dump", QtWarningMsg)
 
@@ -159,6 +163,15 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 
 void RpcLayer::sendUpdates(const TLUpdates &updates)
 {
+    qCDebug(c_serverRpcLayerCategory) << CALL_INFO << "Send update to"
+                                      << session()->user()->phoneNumber()
+                                      << "session:" << sessionId()
+                                      << "IP:" << session()->ip;
+
+#ifdef DEVELOPER_BUILD
+    qCDebug(c_serverRpcLayerCategory) << updates;
+#endif
+
     CTelegramStream stream(CTelegramStream::WriteOnly);
     stream << updates;
     sendRpcMessage(stream.getData());

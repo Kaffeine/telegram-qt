@@ -166,7 +166,7 @@ void Server::onNewConnection()
         qCDebug(loggingCategoryServer) << "expected pending connection does not exist";
         return;
     }
-    qCInfo(loggingCategoryServer) << this << "An incoming connection from" << socket->peerAddress().toString();
+    qCInfo(loggingCategoryServer) << CALL_INFO << socket->peerAddress().toString();
     TcpTransport *transport = new TcpTransport(socket, this);
     socket->setParent(transport);
     RemoteClientConnection *client = new RemoteClientConnection(this);
