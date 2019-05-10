@@ -19,11 +19,13 @@ class TELEGRAMQT_QML_EXPORT DeclarativeRsaKey : public QObject
     Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
     Q_PROPERTY(bool valid READ isValid NOTIFY validChanged)
     Q_PROPERTY(bool loadDefault READ loadDefault WRITE setLoadDefault NOTIFY loadDefaultChanged)
+    Q_PROPERTY(QString fingerprint READ fingerprint NOTIFY fingerprintChanged)
 public:
     explicit DeclarativeRsaKey(QObject *parent = nullptr);
     QString fileName() const { return m_fileName; }
     bool isValid() const;
     bool loadDefault() const;
+    QString fingerprint() const;
     RsaKey key() const { return m_key; }
 
 public slots:
@@ -34,6 +36,7 @@ signals:
     void fileNameChanged(const QString &fileName);
     void validChanged(bool valid);
     void loadDefaultChanged(bool loadDefault);
+    void fingerprintChanged();
 
 protected:
     void setKey(const RsaKey &key);

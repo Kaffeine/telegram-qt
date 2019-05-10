@@ -21,6 +21,11 @@ bool DeclarativeRsaKey::loadDefault() const
     return m_loadDefaultKey;
 }
 
+QString DeclarativeRsaKey::fingerprint() const
+{
+    return QStringLiteral("%1").arg(m_key.fingerprint, 16, 0x10, QLatin1Char('0'));
+}
+
 void DeclarativeRsaKey::setFileName(const QString &fileName)
 {
     qDebug() << Q_FUNC_INFO << fileName;
@@ -52,6 +57,9 @@ void DeclarativeRsaKey::setKey(const RsaKey &key)
     m_key = key;
     if (oldKey.isValid() != key.isValid()) {
         emit validChanged(key.isValid());
+    }
+    if (oldKey.fingerprint != key.fingerprint) {
+        emit fingerprintChanged();
     }
 }
 
