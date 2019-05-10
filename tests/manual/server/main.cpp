@@ -20,6 +20,7 @@
 #include "DcConfiguration.hpp"
 #include "DefaultAuthorizationProvider.hpp"
 #include "LocalCluster.hpp"
+#include "RandomGenerator.hpp"
 #include "Session.hpp"
 
 // Test keys
@@ -45,8 +46,13 @@ QString ConstantAuthCodeProvider::s_code = QStringLiteral("11111");
 
 Authorization::Code ConstantAuthCodeProvider::generateCode(Session *session, const QString &identifier)
 {
-    Authorization::Code code = DefaultProvider::generateCode(session, identifier);
+    Authorization::Code code;
+    code.hash = Telegram::RandomGenerator::instance()->generate(8).toHex();
     code.code = s_code;
+    code.type = Authorization::Code::Type::Default;
+    qInfo().nospace().noquote() << "sendAppCode(" << identifier << '/' << session->id() << "):"
+                                << " hash: " << code.hash
+                                << " code: " << code.code;
     return code;
 }
 
