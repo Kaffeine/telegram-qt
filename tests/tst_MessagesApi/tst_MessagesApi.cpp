@@ -286,6 +286,18 @@ void tst_MessagesApi::getDialogs()
         QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
         QCOMPARE(receivedArgs.takeFirst().value<Telegram::Peer>(), client2AsClient1Peer);
         QCOMPARE(receivedArgs.takeFirst().value<quint32>(), client1Message1Id);
+
+        Telegram::Message message;
+        client1.dataStorage()->getMessage(&message, client2AsClient1Peer, client1Message1Id);
+        QCOMPARE(message.id, client1Message1Id);
+        QCOMPARE(message.peer(), client2AsClient1Peer);
+        QCOMPARE(message.text, c_message1Text);
+        QCOMPARE(message.fromId, client1.dataStorage()->selfUserId());
+        QCOMPARE(message.forwardContactId, 0u);
+        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
+        QCOMPARE(message.flags, TelegramNamespace::MessageFlagOut);
     }
 
     // Check received by client 2
