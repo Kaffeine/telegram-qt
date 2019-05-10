@@ -124,14 +124,21 @@ void tst_MessagesApi::getSelfUserDialog()
     Server::ServerApi *serverApi = cluster.getServerApiInstance(c_user1.dcId);
     QVERIFY(serverApi);
 
+    const QString c_messageText = QStringLiteral("message to self");
+
     {
         Server::MessageData *data = serverApi->storage()
-                ->addMessage(user->userId(), user->toPeer(), QStringLiteral("message to self"));
+                ->addMessage(user->userId(), user->toPeer(), c_messageText);
         serverApi->processMessage(data);
     }
 
     // Prepare client
     Client::Client client;
+    client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
+    client.messagingApi()->setSyncLimit(5);
+
+    QSignalSpy syncedMessagesSpy(client.messagingApi(), &Client::MessagingApi::syncMessages);
+
     setupClientHelper(&client, c_user1, publicKey, clientDcOption);
     signInHelper(&client, c_user1, &authProvider);
     TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
@@ -141,6 +148,33 @@ void tst_MessagesApi::getSelfUserDialog()
     TRY_VERIFY(dialogsReady->isFinished());
     QVERIFY(dialogsReady->isSucceeded());
     QCOMPARE(dialogList->peers().count(), 1);
+
+    PendingOperation *syncOp = client.messagingApi()->syncPeers(dialogList->peers());
+    TRY_VERIFY(syncOp->isFinished());
+    QVERIFY(syncOp->isSucceeded());
+    TRY_COMPARE(syncedMessagesSpy.count(), 1);
+
+    // Check the message
+    {
+        QList<QVariant> receivedArgs = syncedMessagesSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        QCOMPARE(receivedArgs.takeFirst().value<Telegram::Peer>(), user->toPeer());
+
+        QVector<quint32> clientMessages = receivedArgs.takeFirst().value< QVector<quint32> >();
+        QCOMPARE(clientMessages.count(), 1);
+
+        Telegram::Message message;
+        client.dataStorage()->getMessage(&message, user->toPeer(), clientMessages.constFirst());
+        QCOMPARE(message.id, clientMessages.constFirst());
+        QCOMPARE(message.peer(), user->toPeer());
+        QCOMPARE(message.text, c_messageText);
+        QCOMPARE(message.fromId, user->id());
+        QCOMPARE(message.forwardContactId, 0u);
+        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
+        QCOMPARE(message.flags, TelegramNamespace::MessageFlagNone);
+    }
 }
 
 void tst_MessagesApi::getDialogs()
