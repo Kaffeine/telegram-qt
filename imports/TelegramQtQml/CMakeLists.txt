@@ -27,6 +27,8 @@ add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED
     DeclarativeMessageSender.hpp
     DeclarativeOperation.cpp
     DeclarativeOperation.hpp
+    DeclarativeRsaKey.cpp
+    DeclarativeRsaKey.hpp
     DeclarativeSettings.cpp
     DeclarativeSettings.hpp
     DeclarativeUserInfo.cpp

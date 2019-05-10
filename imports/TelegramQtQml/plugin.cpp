@@ -15,6 +15,7 @@
 #include "DeclarativeClient.hpp"
 #include "DeclarativeAuthOperation.hpp"
 #include "DeclarativeMessageSender.hpp"
+#include "DeclarativeRsaKey.hpp"
 #include "DeclarativeSettings.hpp"
 #include "DeclarativeUserInfo.hpp"
 

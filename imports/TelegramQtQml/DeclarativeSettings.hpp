@@ -13,35 +13,7 @@ namespace Telegram {
 
 namespace Client {
 
-class TELEGRAMQT_QML_EXPORT DeclarativeRsaKey : public QObject
-{
-    Q_OBJECT
-    Q_PROPERTY(QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged)
-    Q_PROPERTY(bool valid READ isValid NOTIFY validChanged)
-    Q_PROPERTY(bool loadDefault READ loadDefault WRITE setLoadDefault NOTIFY loadDefaultChanged)
-public:
-    explicit DeclarativeRsaKey(QObject *parent = nullptr);
-    QString fileName() const { return m_fileName; }
-    bool isValid() const;
-    bool loadDefault() const;
-    RsaKey key() const { return m_key; }
-
-public slots:
-    void setFileName(const QString &fileName);
-    void setLoadDefault(bool loadDefault);
-
-signals:
-    void fileNameChanged(const QString &fileName);
-    void validChanged(bool valid);
-    void loadDefaultChanged(bool loadDefault);
-
-protected:
-    void setKey(const RsaKey &key);
-
-    bool m_loadDefaultKey = false;
-    QString m_fileName;
-    RsaKey m_key;
-};
+class DeclarativeRsaKey;
 
 class TELEGRAMQT_QML_EXPORT DeclarativeServerOption : public QObject, public DcOption
 {
