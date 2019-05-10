@@ -182,7 +182,7 @@ void tst_utils::testDeterministicRandom()
     RandomGenerator::instance()->generate(&r2);
     QCOMPARE(r1, 0xb7cd2516u);
     QCOMPARE(r2, 0x7927fd99f6d9255dull);
-    QByteArray bigChunk(0x80, 0);
+    QByteArray bigChunk(0x80, '\0');
     RandomGenerator::instance()->generate(&bigChunk);
     QCOMPARE(bigChunk.toHex(), QByteArrayLiteral(
                  "f44095b6e320767f606f095eb7edab5581e9e3441adbb0d628832f7dc4574a77"
