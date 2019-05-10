@@ -14,10 +14,25 @@ set(CMAKE_AUTOMOC ON)
 
 set(server_lib_SOURCES
     AuthorizationProvider.hpp
+    CServerTcpTransport.cpp
+    CServerTcpTransport.hpp
     DefaultAuthorizationProvider.cpp
     DefaultAuthorizationProvider.hpp
+    FunctionStreamOperators.cpp
+    FunctionStreamOperators.hpp
     LocalCluster.cpp
     LocalCluster.hpp
+    RemoteClientConnection.cpp
+    RemoteClientConnection.hpp
+    RemoteClientConnectionHelper.cpp
+    RemoteClientConnectionHelper.hpp
+    RemoteServerConnection.cpp
+    RemoteServerConnection.hpp
+    RpcOperationFactory.cpp
+    RpcOperationFactory.hpp
+    RpcOperationFactory_p.hpp
+    RpcProcessingContext.cpp
+    RpcProcessingContext.hpp
     ServerApi.hpp
     ServerDhLayer.cpp
     ServerDhLayer.hpp
@@ -34,27 +49,12 @@ set(server_lib_SOURCES
     Session.hpp
     Storage.cpp
     Storage.hpp
-    RpcOperationFactory.cpp
-    RpcOperationFactory.hpp
-    RpcOperationFactory_p.hpp
-    RpcProcessingContext.cpp
-    RpcProcessingContext.hpp
     TelegramServer.cpp
     TelegramServer.hpp
     TelegramServerConfig.cpp
     TelegramServerConfig.hpp
     TelegramServerUser.cpp
     TelegramServerUser.hpp
-    CServerTcpTransport.cpp
-    CServerTcpTransport.hpp
-    RemoteClientConnection.cpp
-    RemoteClientConnection.hpp
-    RemoteClientConnectionHelper.cpp
-    RemoteClientConnectionHelper.hpp
-    RemoteServerConnection.cpp
-    RemoteServerConnection.hpp
-    FunctionStreamOperators.cpp
-    FunctionStreamOperators.hpp
 )
 
 FILE(GLOB RPC_SOURCES RpcOperations/*.cpp)

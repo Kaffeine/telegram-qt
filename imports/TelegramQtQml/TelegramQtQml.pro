@@ -19,20 +19,20 @@ SOURCES += \
     DeclarativeChatInfo.cpp \
     DeclarativeClient.cpp \
     DeclarativeClientOperator.cpp \
-    DeclarativeOperation.cpp \
     DeclarativeMessageSender.cpp \
+    DeclarativeOperation.cpp \
+    DeclarativeSettings.cpp \
     DeclarativeUserInfo.cpp \
-    DeclarativeSettings.cpp
 
 HEADERS += \
     DeclarativeAuthOperation.hpp \
     DeclarativeChatInfo.hpp \
     DeclarativeClient.hpp \
     DeclarativeClientOperator.hpp \
-    DeclarativeOperation.hpp \
     DeclarativeMessageSender.hpp \
+    DeclarativeOperation.hpp \
+    DeclarativeSettings.hpp \
     DeclarativeUserInfo.hpp \
-    DeclarativeSettings.hpp
 
 target.path += $$INSTALL_QML_IMPORT_DIR/TelegramQt
 INSTALLS += target
