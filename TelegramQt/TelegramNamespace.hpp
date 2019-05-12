@@ -98,6 +98,8 @@ inline uint qHash(const Peer &key, uint seed)
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString version READ version CONSTANT)
+    Q_PROPERTY(QString buildVersion READ buildVersion CONSTANT)
 public:
     enum ContactStatus {
         ContactStatusUnknown,
@@ -193,6 +195,9 @@ public:
         MessageActionChooseContact
     };
     Q_ENUM(MessageAction)
+
+    static QString version() { return Telegram::version(); }
+    static QString buildVersion() { return Telegram::buildVersion(); }
 
     static void registerTypes();
     Q_INVOKABLE static Telegram::Peer emptyPeer();
