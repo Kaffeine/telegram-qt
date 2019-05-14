@@ -25,6 +25,7 @@ DcOption DcConfiguration::getOption(const ConnectionSpec spec) const
                 // Best match
                 return opt;
             }
+            continue;
         }
         // The Option meet the requirements, but maybe there is a better one
         result = opt;
