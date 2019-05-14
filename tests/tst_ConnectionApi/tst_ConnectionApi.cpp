@@ -69,6 +69,42 @@ static const UserData c_userWithPassword = []() {
     return userData;
 }();
 
+static const Telegram::DcConfiguration c_customDcConfiguration = []() {
+    Telegram::DcConfiguration configuration;
+    {
+        Telegram::DcOption opt(QStringLiteral("127.0.0.11"), 11441, 1);
+        configuration.dcOptions.append(opt);
+    }
+    {
+        Telegram::DcOption opt(QStringLiteral("127.0.0.111"), 11441, 1);
+        opt.flags |= Telegram::DcOption::IsStatic;
+        configuration.dcOptions.append(opt);
+    }
+    {
+        Telegram::DcOption opt(QStringLiteral("127.0.0.111"), 11442, 1);
+        opt.flags |= Telegram::DcOption::MediaOnly;
+        configuration.dcOptions.append(opt);
+    }
+
+    {
+        Telegram::DcOption opt(QStringLiteral("127.0.0.112"), 11441, 2);
+        opt.flags |= Telegram::DcOption::IsStatic;
+        configuration.dcOptions.append(opt);
+    }
+    {
+        Telegram::DcOption opt(QStringLiteral("127.0.0.112"), 11442, 2);
+        opt.flags |= Telegram::DcOption::MediaOnly;
+        configuration.dcOptions.append(opt);
+    }
+
+    {
+        Telegram::DcOption opt(QStringLiteral("127.0.0.13"), 11441, 3);
+        configuration.dcOptions.append(opt);
+    }
+
+    return configuration;
+}();
+
 class tst_ConnectionApi : public QObject
 {
     Q_OBJECT
@@ -187,7 +223,7 @@ void tst_ConnectionApi::testClientConnection()
     Telegram::Server::LocalCluster cluster;
     cluster.setAuthorizationProvider(&authProvider);
     cluster.setServerPrivateRsaKey(privateKey);
-    cluster.setServerConfiguration(c_localDcConfiguration);
+    cluster.setServerConfiguration(c_customDcConfiguration);
     QVERIFY(cluster.start());
 
     Server::ServerApi *server = cluster.getServerApiInstance(userData.dcId);
