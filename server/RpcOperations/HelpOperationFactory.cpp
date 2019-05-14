@@ -160,7 +160,7 @@ void HelpRpcOperation::runGetConfig()
         tlDcOption.id = dcOption.id;
         tlDcOption.ipAddress = dcOption.address;
         tlDcOption.port = dcOption.port;
-        tlDcOption.flags = 0; // TODO: which flags to set?
+        tlDcOption.flags = dcOption.flags;
         result.dcOptions.append(std::move(tlDcOption));
     }
     sendRpcReply(result);
