@@ -60,8 +60,8 @@ public:
     void startNewSession();
 
     bool processMTProtoMessage(const MTProto::Message &message) override;
-    void processSessionCreated(const MTProto::Message &message);
-    void processIgnoredMessageNotification(const MTProto::Message &message);
+    bool processSessionCreated(const MTProto::Message &message);
+    bool processIgnoredMessageNotification(const MTProto::Message &message);
     bool processRpcResult(const MTProto::Message &message);
     bool processUpdates(const MTProto::Message &message);
 

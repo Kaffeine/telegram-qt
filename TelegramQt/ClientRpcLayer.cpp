@@ -80,22 +80,24 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         return processUpdates(message);
     }
 
+    bool result = false;
+
     switch (firstValue) {
     case TLValue::NewSessionCreated:
-        processSessionCreated(message.skipTLValue());
+        result = processSessionCreated(message.skipTLValue());
         break;
     case TLValue::MsgContainer:
-        processMsgContainer(message.skipTLValue());
+        result = processMsgContainer(message.skipTLValue());
         break;
     case TLValue::RpcResult:
-        processRpcResult(message.skipTLValue());
+        result = processRpcResult(message.skipTLValue());
         break;
     case TLValue::MsgsAck:
         qCDebug(c_clientRpcLayerCategory) << "processMessageAck(stream);";
         break;
     case TLValue::BadMsgNotification:
     case TLValue::BadServerSalt:
-        processIgnoredMessageNotification(message.skipTLValue());
+        result = processIgnoredMessageNotification(message.skipTLValue());
         break;
     case TLValue::GzipPacked:
         qCWarning(c_clientRpcLayerCategory) << CALL_INFO
@@ -107,20 +109,22 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         TLPong pong;
         stream >> pong;
         PendingRpcOperation *op = m_operations.take(pong.msgId);
-        if (!op) {
+        if (op) {
+            op->setFinishedWithReplyData(message.data);
+            result = true;
+        } else {
             qCWarning(c_clientRpcLayerCategory) << "Unexpected pong?!" << pong.msgId << pong.pingId;
-            return false;
         }
-        op->setFinishedWithReplyData(message.data);
-        return true;
     }
         break;
     default:
         qCDebug(c_clientRpcLayerCategory) << Q_FUNC_INFO << "value:" << message.firstValue();
         break;
     }
-    return false;
+
+    return result;
 }
+
 bool RpcLayer::processRpcResult(const MTProto::Message &message)
 {
     qCDebug(c_clientRpcLayerCategory) << "processRpcQuery(stream);";
@@ -158,7 +162,7 @@ bool RpcLayer::processUpdates(const MTProto::Message &message)
     return m_UpdatesInternalApi->processUpdates(updates);
 }
 
-void RpcLayer::processSessionCreated(const MTProto::Message &message)
+bool RpcLayer::processSessionCreated(const MTProto::Message &message)
 {
     MTProto::Stream stream(message.data);
     // https://core.telegram.org/mtproto/service_messages#new-session-creation-notification
@@ -174,9 +178,11 @@ void RpcLayer::processSessionCreated(const MTProto::Message &message)
                                       << "    firstMsgId:" << firstMsgId
                                       << "    uniqueId:" << uniqueId
                                       << "    serverSalt:" << serverSalt;
+
+    return true;
 }
 
-void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message)
+bool RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message)
 {
     RawStream stream(message.data);
     // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
@@ -189,18 +195,16 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
         qCWarning(c_clientRpcLayerCategory) << CALL_INFO
                                             << notification.toString() << "for unknown message id"
                                             << hex << showbase << notification.messageId;
-        return;
+        return false;
     }
 
     switch (notification.errorCode) {
     case MTProto::IgnoredMessageNotification::IncorrectServerSalt:
         // We sync local serverSalt value in processDecryptedMessageHeader().
         // Resend message will automatically apply the new salt
-        resendIgnoredMessage(notification.messageId);
-        break;
+        return resendIgnoredMessage(notification.messageId);
     case MTProto::IgnoredMessageNotification::MessageIdTooOld:
-        resendIgnoredMessage(notification.messageId);
-        break;
+        return resendIgnoredMessage(notification.messageId);
     case MTProto::IgnoredMessageNotification::SequenceNumberTooHigh:
         qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooHigh):"
                                              " reduce seq num"
@@ -208,8 +212,7 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
                                           << " from" << m->sequenceNumber
                                           << " to" << (m->sequenceNumber - 2);
         m->sequenceNumber -= 2;
-        resendIgnoredMessage(notification.messageId);
-        break;
+        return resendIgnoredMessage(notification.messageId);
     case MTProto::IgnoredMessageNotification::SequenceNumberTooLow:
         qCDebug(c_clientRpcLayerCategory) << "processIgnoredMessageNotification(SequenceNumberTooLow):"
                                              " increase seq num"
@@ -223,18 +226,18 @@ void RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
             m_contentRelatedMessages = messageContentNumber + 1;
         }
     }
-        resendIgnoredMessage(notification.messageId);
-        break;
+        return resendIgnoredMessage(notification.messageId);
     case MTProto::IgnoredMessageNotification::IncorrectTwoLowerOrderMessageIdBits:
         qCCritical(c_clientRpcLayerCategory) << "How we ever managed to mess with"
                                                 " the lower messageId bytes?!";
         // Just resend the message. We regenerate message id, so it can help.
-        resendIgnoredMessage(notification.messageId);
-        break;
+        return resendIgnoredMessage(notification.messageId);
     default:
-        qCWarning(c_clientRpcLayerCategory) << "Unhandled error:" << notification.toString();
         break;
     }
+
+    qCWarning(c_clientRpcLayerCategory) << "Unhandled error:" << notification.toString();
+    return false;
 }
 
 bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
