@@ -314,7 +314,6 @@ bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId
     if (!session) {
         session = addSession(sessionId);
         session->ip = client->transport()->remoteAddress();
-        session->generateInitialServerSalt();
 
         if (client->dhLayer()->state() == DhLayer::State::HasKey) {
             session->setInitialServerSalt(client->dhLayer()->serverSalt());
