@@ -220,18 +220,18 @@ bool RpcLayer::processInvokeWithLayer(const MTProto::Message &message)
 void RpcLayer::sendIgnoredMessageNotification(quint32 errorCode, const MTProto::FullMessageHeader &header)
 {
     MTProto::IgnoredMessageNotification messageNotification;
-    messageNotification.errorCode = errorCode; // MTProto::IgnoredMessageNotification::IncorrectServerSalt;
+    if (errorCode == MTProto::IgnoredMessageNotification::IncorrectServerSalt) {
+        messageNotification.newServerSalt = m_session->getServerSalt();
+    }
+    messageNotification.errorCode = errorCode;
     messageNotification.seqNo = header.sequenceNumber;
     messageNotification.messageId = header.messageId;
     qCDebug(c_serverRpcLayerCategory) << messageNotification.toString();
 
-    CRawStream output(CRawStream::WriteOnly);
-    if (errorCode == MTProto::IgnoredMessageNotification::IncorrectServerSalt) {
-        output << TLValue::BadServerSalt;
-    } else {
-        output << TLValue::BadMsgNotification;
-    }
-    output << messageNotification;
+    MTProto::Stream output(CRawStream::WriteOnly);
+    TLBadMsgNotification tlNotification;
+    messageNotification.toTlNotification(&tlNotification);
+    output << tlNotification;
     sendPackage(output.getData(), SendMode::ServerReply);
 }
 

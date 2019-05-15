@@ -97,7 +97,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         break;
     case TLValue::BadMsgNotification:
     case TLValue::BadServerSalt:
-        result = processIgnoredMessageNotification(message.skipTLValue());
+        result = processIgnoredMessageNotification(message);
         break;
     case TLValue::GzipPacked:
         qCWarning(c_clientRpcLayerCategory) << CALL_INFO
@@ -184,10 +184,11 @@ bool RpcLayer::processSessionCreated(const MTProto::Message &message)
 
 bool RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message)
 {
-    RawStream stream(message.data);
+    MTProto::Stream stream(message.data);
+    TLBadMsgNotification tlNotification;
+    stream >> tlNotification;
     // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
-    MTProto::IgnoredMessageNotification notification;
-    stream >> notification;
+    MTProto::IgnoredMessageNotification notification(tlNotification);
     qCDebug(c_clientRpcLayerCategory) << CALL_INFO << notification.toString();
 
     MTProto::Message *m = m_messages.value(notification.messageId);

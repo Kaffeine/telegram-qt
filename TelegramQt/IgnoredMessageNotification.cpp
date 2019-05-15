@@ -18,12 +18,20 @@
 #include "IgnoredMessageNotification.hpp"
 
 #include "CRawStream.hpp"
+#include "TLTypes.hpp"
+
+#include <QLoggingCategory>
 
 namespace Telegram {
 
 namespace MTProto {
 
 // https://core.telegram.org/mtproto/service_messages_about_messages#notice-of-ignored-error-message
+
+IgnoredMessageNotification::IgnoredMessageNotification(const TLBadMsgNotification &tlNotification)
+{
+    fromTlNotification(&tlNotification);
+}
 
 QString IgnoredMessageNotification::codeToString(quint32 code)
 {
@@ -63,20 +71,46 @@ QString IgnoredMessageNotification::toString() const
             .arg(codeToString(errorCode));
 }
 
-CRawStream &operator>>(CRawStream &stream, IgnoredMessageNotification &error)
+bool IgnoredMessageNotification::toTlNotification(TLBadMsgNotification *output) const
 {
-    stream >> error.messageId;
-    stream >> error.seqNo;
-    stream >> error.errorCode;
-    return stream;
+    if (errorCode == UnknownError) {
+        qCritical() << __func__ << "Invalid error code";
+        return false;
+    }
+
+    if (errorCode == IncorrectServerSalt) {
+        output->tlType = TLValue::BadServerSalt;
+        output->newServerSalt = newServerSalt;
+    } else {
+        output->tlType = TLValue::BadMsgNotification;
+    }
+    output->badMsgId = messageId;
+    output->badMsgSeqno = seqNo;
+    output->errorCode = errorCode;
+    return true;
 }
 
-CRawStream &operator<<(CRawStream &stream, const IgnoredMessageNotification &error)
+bool IgnoredMessageNotification::fromTlNotification(const TLBadMsgNotification *input)
 {
-    stream << error.messageId;
-    stream << error.seqNo;
-    stream << error.errorCode;
-    return stream;
+    if (!input->isValid()) {
+        qCritical() << __func__ << "Invalid input";
+        return false;
+    }
+    messageId = input->badMsgId;
+    seqNo = input->badMsgSeqno;
+    errorCode = input->errorCode;
+    newServerSalt = input->newServerSalt;
+    if (input->tlType == TLValue::BadServerSalt) {
+        if (errorCode != IncorrectServerSalt) {
+            qCritical() << __func__ << "Invalid input error code";
+            return false;
+        }
+        if (!input->newServerSalt) {
+            qCritical() << __func__ << "Invalid input (no server salt)";
+            return false;
+        }
+    }
+    return true;
 }
 
 } // MTProto

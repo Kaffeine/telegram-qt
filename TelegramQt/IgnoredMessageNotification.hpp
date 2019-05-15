@@ -23,6 +23,7 @@
 #include <QObject>
 
 class CRawStream;
+struct TLBadMsgNotification;
 
 namespace Telegram {
 
@@ -48,17 +49,19 @@ public:
     };
     Q_ENUM(ErrorCode)
     constexpr IgnoredMessageNotification() = default;
+    explicit IgnoredMessageNotification(const TLBadMsgNotification &tlNotification);
 
     quint64 messageId = 0;
+    quint64 newServerSalt = 0;
     quint32 seqNo = 0;
     quint32 errorCode = 0;
 
     static QString codeToString(quint32 code);
     QString toString() const;
-};
 
-TELEGRAMQT_INTERNAL_EXPORT CRawStream &operator>>(CRawStream &stream, IgnoredMessageNotification &error);
-TELEGRAMQT_INTERNAL_EXPORT CRawStream &operator<<(CRawStream &stream, const IgnoredMessageNotification &error);
+    bool toTlNotification(TLBadMsgNotification *output) const;
+    bool fromTlNotification(const TLBadMsgNotification *input);
+};
 
 } // MTProto namespace
 
