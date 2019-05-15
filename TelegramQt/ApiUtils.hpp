@@ -29,20 +29,20 @@ namespace Telegram {
 
 namespace Utils {
 
-TELEGRAMQT_EXPORT Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer, quint32 selfId);
-TELEGRAMQT_EXPORT Telegram::Peer toPublicPeer(const TLPeer &peer);
-TELEGRAMQT_EXPORT Telegram::Peer toPublicPeer(const TLUser &user);
-TELEGRAMQT_EXPORT Telegram::Peer toPublicPeer(const TLChat *chat);
+TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer toPublicPeer(const TLInputPeer &inputPeer, quint32 selfId);
+TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer toPublicPeer(const TLPeer &peer);
+TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer toPublicPeer(const TLUser &user);
+TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer toPublicPeer(const TLChat *chat);
 
-TELEGRAMQT_EXPORT TLPeer toTLPeer(const Telegram::Peer &peer);
+TELEGRAMQT_INTERNAL_EXPORT TLPeer toTLPeer(const Telegram::Peer &peer);
 
-TELEGRAMQT_EXPORT Telegram::Peer getMessageDialogPeer(const TLMessage &message, quint32 applicantUserId);
+TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer getMessageDialogPeer(const TLMessage &message, quint32 applicantUserId);
 
-TELEGRAMQT_EXPORT QString mimeTypeByStorageFileType(TLValue type);
-TELEGRAMQT_EXPORT TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media);
-TELEGRAMQT_EXPORT TLValue::Value toTLValue(TelegramNamespace::MessageType type);
-TELEGRAMQT_EXPORT TelegramNamespace::MessageAction toPublicMessageAction(TLValue action);
-TELEGRAMQT_EXPORT TLValue::Value toTLValue(TelegramNamespace::MessageAction action);
+TELEGRAMQT_INTERNAL_EXPORT QString mimeTypeByStorageFileType(TLValue type);
+TELEGRAMQT_INTERNAL_EXPORT TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media);
+TELEGRAMQT_INTERNAL_EXPORT TLValue::Value toTLValue(TelegramNamespace::MessageType type);
+TELEGRAMQT_INTERNAL_EXPORT TelegramNamespace::MessageAction toPublicMessageAction(TLValue action);
+TELEGRAMQT_INTERNAL_EXPORT TLValue::Value toTLValue(TelegramNamespace::MessageAction action);
 
 TELEGRAMQT_EXPORT quint64 formatTimeStamp(qint64 timeInMs);
 TELEGRAMQT_EXPORT quint64 timeStampToMSecsSinceEpoch(quint64 ts);
