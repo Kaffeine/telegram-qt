@@ -94,7 +94,8 @@ int main(int argc, char *argv[])
     for (quint32 i = 0; i < 3; ++i) {
         Telegram::DcOption dcOption;
         dcOption.id = i + 1;
-        dcOption.flags = Telegram::DcOption::TcpOnly;
+        // A DC that does not accepts any transport considered as invalid in some client.
+        // dcOption.flags = Telegram::DcOption::TcpOnly;
         dcOption.address = parser.value(ipAddressOption);
         dcOption.port = static_cast<quint16>(parser.value(portOption).toUInt() + i);
         dcConfig.dcOptions.append(dcOption);
