@@ -477,12 +477,44 @@ void AccountRpcOperation::runUpdatePasswordSettings()
 
 void AccountRpcOperation::runUpdateProfile()
 {
-    // TLFunctions::TLAccountUpdateProfile &arguments = m_updateProfile;
-    if (processNotImplementedMethod(TLValue::AccountUpdateProfile)) {
+    TLFunctions::TLAccountUpdateProfile &arguments = m_updateProfile;
+    LocalUser *selfUser = layer()->getUser();
+
+    bool nameChanged = false;
+    if (arguments.flags & 1 << 0) {
+        QString name = arguments.firstName.trimmed();
+        if (name.isEmpty()) {
+            sendRpcError(RpcError(RpcError::FirstnameInvalid));
+            return;
+        }
+        if (name != selfUser->firstName()) {
+            nameChanged = true;
+            selfUser->setFirstName(name);
+        }
+    }
+    if (arguments.flags & 1 << 1) {
+        QString name = arguments.lastName.trimmed();
+        if (name != selfUser->lastName()) {
+            nameChanged = true;
+            selfUser->setLastName(name);
+        }
+    }
+    if (arguments.flags & 1 << 2) {
+        QString about = arguments.about.trimmed();
+        selfUser->setAbout(about);
+    }
+
+    TLUser result;
+    Utils::setupTLUser(&result, selfUser, selfUser);
+    sendRpcReply(result);
+
+    if (!nameChanged) {
         return;
     }
-    TLUser result;
-    sendRpcReply(result);
+
+    const auto notifications = api()->createUpdates(UpdateNotification::Type::UpdateName,
+                                                    selfUser, layer()->session());
+    api()->queueUpdates(notifications);
 }
 
 void AccountRpcOperation::runUpdateStatus()

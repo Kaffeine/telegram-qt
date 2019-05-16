@@ -98,6 +98,11 @@ void LocalUser::setLastName(const QString &lastName)
     m_lastName = lastName;
 }
 
+void LocalUser::setAbout(const QString &about)
+{
+    m_about = about;
+}
+
 bool LocalUser::isOnline() const
 {
     return true;

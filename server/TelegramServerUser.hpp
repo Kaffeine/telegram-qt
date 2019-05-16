@@ -116,6 +116,9 @@ public:
     QString lastName() const override { return m_lastName; }
     void setLastName(const QString &lastName);
 
+    QString about() const { return m_about; }
+    void setAbout(const QString &about);
+
     bool isOnline() const override;
 
     quint32 dcId() const override { return m_dcId; }
@@ -171,6 +174,7 @@ protected:
     QString m_firstName;
     QString m_lastName;
     QString m_userName;
+    QString m_about;
     QByteArray m_passwordSalt;
     QByteArray m_passwordHash;
     QVector<Session*> m_sessions;
