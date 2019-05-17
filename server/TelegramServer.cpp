@@ -35,10 +35,11 @@
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
 #include "Storage.hpp"
-#include "Debug.hpp"
+#include "Debug_p.hpp"
 
 Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtInfoMsg)
 Q_LOGGING_CATEGORY(loggingCategoryServerApi, "telegram.server.api", QtWarningMsg)
+Q_LOGGING_CATEGORY(lcServerUpdates, "telegram.server.updates", QtInfoMsg)
 
 namespace Telegram {
 
@@ -498,7 +499,8 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
     for (const UpdateNotification &notification : notifications) {
         LocalUser *recipient = getUser(notification.userId);
         if (!recipient) {
-            qWarning() << Q_FUNC_INFO << "Invalid user!" << notification.userId;
+            qCWarning(lcServerUpdates) << CALL_INFO << "Invalid user!" << notification.userId;
+            continue;
         }
 
         TLUpdates updates;
@@ -515,7 +517,7 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             const MessageData *messageData = storage()->getMessage(globalMessageId);
 
             if (!messageData) {
-                qWarning() << Q_FUNC_INFO << "no message";
+                qCWarning(lcServerUpdates) << CALL_INFO << "no message";
                 continue;
             }
             Utils::setupTLMessage(&update.message, messageData, notification.messageId, recipient);
@@ -533,13 +535,13 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             break;
         case UpdateNotification::Type::MessageAction:
         {
+            updates.tlType = TLValue::UpdateShort;
             TLUpdate &update = updates.update;
             update.tlType = TLValue::UpdateUserTyping;
             update.userId = notification.fromId;
             // Note: action depends on Layer. Process this to support different layers.
             update.action.tlType = notification.actionType;
             update.action.progress = notification.progress;
-            updates.tlType = TLValue::UpdateShort;
         }
             break;
         case UpdateNotification::Type::ReadInbox:
@@ -562,7 +564,15 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             break;
         }
 
-        Utils::setupTLPeers(&updates, interestingPeers, this, recipient);
+        switch (updates.tlType) {
+        case TLValue::UpdatesCombined:
+        case TLValue::Updates:
+            Utils::setupTLPeers(&updates, interestingPeers, this, recipient);
+            break;
+        default:
+            break;
+        }
+
         for (Session *session : recipient->activeSessions()) {
             if (session == notification.excludeSession) {
                 continue;
