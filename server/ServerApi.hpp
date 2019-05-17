@@ -52,13 +52,17 @@ struct PasswordInfo
 
 struct UpdateNotification
 {
+    Q_GADGET
+public:
     enum class Type {
         Invalid,
         NewMessage,
         MessageAction,
         ReadInbox,
         ReadOutbox,
+        UpdateName,
     };
+    Q_ENUM(Type)
 
     Peer dialogPeer;
     quint32 userId = 0; // The Update recipient
