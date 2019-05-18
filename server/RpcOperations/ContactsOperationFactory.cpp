@@ -310,7 +310,7 @@ void ContactsRpcOperation::runResolveUsername()
 {
     TLFunctions::TLContactsResolveUsername &arguments = m_resolveUsername;
     TLContactsResolvedPeer result;
-    const Peer peer = api()->peerByUserName(arguments.username);
+    const Peer peer = api()->getPeerByUserName(arguments.username);
     result.peer = Telegram::Utils::toTLPeer(peer);
     Utils::setupTLPeers(&result, { peer }, api(), layer()->getUser());
     sendRpcReply(result);

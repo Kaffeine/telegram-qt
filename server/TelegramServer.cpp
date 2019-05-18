@@ -260,7 +260,7 @@ LocalUser *Server::getUser(quint32 userId) const
     return m_users.value(userId);
 }
 
-Peer Server::peerByUserName(const QString &userName) const
+Peer Server::getPeerByUserName(const QString &userName) const
 {
     // iterate over all users (too bad?)
     for (LocalUser *user: m_users) {

@@ -245,7 +245,7 @@ void AccountRpcOperation::runChangePhone()
 void AccountRpcOperation::runCheckUsername()
 {
     TLFunctions::TLAccountCheckUsername &arguments = m_checkUsername;
-    bool result = !api()->peerByUserName(arguments.username).isValid();
+    bool result = !api()->getPeerByUserName(arguments.username).isValid();
     sendRpcReply(result);
 }
 
