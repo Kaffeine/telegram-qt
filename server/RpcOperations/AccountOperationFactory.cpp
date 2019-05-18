@@ -498,7 +498,7 @@ void AccountRpcOperation::runUpdateUsername()
 {
     TLFunctions::TLAccountUpdateUsername &arguments = m_updateUsername;
     LocalUser *selfUser = layer()->getUser();
-    selfUser->setUserName(arguments.username);
+    api()->setUserName(selfUser, arguments.username);
 
     TLUser result;
     Utils::setupTLUser(&result, selfUser, selfUser);

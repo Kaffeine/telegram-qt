@@ -350,6 +350,12 @@ void Server::bindUserSession(LocalUser *user, Session *session)
     addUserAuthorization(user, session->getConnection()->authId());
 }
 
+bool Server::setUserName(LocalUser *user, const QString &newUsername)
+{
+    user->setUserName(newUsername);
+    return true;
+}
+
 QByteArray Server::getAuthKeyById(quint64 authId) const
 {
     return m_authorizations.value(authId);

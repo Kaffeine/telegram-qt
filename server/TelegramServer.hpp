@@ -87,6 +87,7 @@ public:
     bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) override;
     Session *getSessionById(quint64 sessionId) const override;
     void bindUserSession(LocalUser *user, Session *session) override;
+    bool setUserName(LocalUser *user, const QString &newUsername) override;
     QByteArray getAuthKeyById(quint64 authId) const override;
     quint32 getUserIdByAuthId(quint64 authId) const override;
     void addUserAuthorization(LocalUser *user, quint64 authKeyId);

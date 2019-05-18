@@ -109,6 +109,7 @@ public:
     virtual bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) = 0;
     virtual Session *getSessionById(quint64 authId) const = 0;
     virtual void bindUserSession(LocalUser *user, Session *session) = 0;
+    virtual bool setUserName(LocalUser *user, const QString &newUsername) = 0;
     virtual QByteArray getAuthKeyById(quint64 authId) const = 0;
     virtual quint32 getUserIdByAuthId(quint64 authId) const = 0;
 
