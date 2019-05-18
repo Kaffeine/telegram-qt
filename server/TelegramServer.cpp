@@ -295,6 +295,14 @@ AbstractUser *Server::tryAccessUser(quint32 userId, quint64 accessHash, LocalUse
 LocalUser *Server::addUser(const QString &identifier)
 {
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << identifier;
+    AbstractUser *existsUser = getAbstractUser(identifier);
+    if (existsUser) {
+        qCDebug(loggingCategoryServerApi) << CALL_INFO << "Unable to add user"
+                                          << identifier << "(the identifier is already taken)"
+                                          << "by user id" << existsUser->id();
+        return nullptr;
+    }
+
     LocalUser *user = new LocalUser();
     user->setPhoneNumber(identifier);
     user->setDcId(dcId());
