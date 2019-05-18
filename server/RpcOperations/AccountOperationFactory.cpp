@@ -17,6 +17,7 @@
 
 #include "AccountOperationFactory.hpp"
 
+#include "ApiUtils.hpp"
 #include "RpcOperationFactory_p.hpp"
 // TODO: Instead of this include, add a generated cpp with all needed template instances
 #include "ServerRpcOperation_p.hpp"
@@ -498,11 +499,20 @@ void AccountRpcOperation::runUpdateUsername()
 {
     TLFunctions::TLAccountUpdateUsername &arguments = m_updateUsername;
     LocalUser *selfUser = layer()->getUser();
-    api()->setUserName(selfUser, arguments.username);
+
+    const bool nameChanged = api()->setUserName(selfUser, arguments.username);
 
     TLUser result;
     Utils::setupTLUser(&result, selfUser, selfUser);
     sendRpcReply(result);
+
+    if (!nameChanged) {
+        return;
+    }
+
+    const auto notifications = api()->createUpdates(UpdateNotification::Type::UpdateName,
+                                                    selfUser, layer()->session());
+    api()->queueUpdates(notifications);
 }
 // End of generated run methods
 

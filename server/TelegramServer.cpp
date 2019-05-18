@@ -471,6 +471,11 @@ QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updat
     UpdateNotification notification;
 
     switch (updateType) {
+    case UpdateNotification::Type::UpdateName:
+        notification.type = updateType;
+        notification.date = requestDate;
+        notification.fromId = applicant->id();
+        break;
     default:
         return { };
     }
@@ -496,6 +501,8 @@ QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updat
 
 void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 {
+   AbstractUser *interestingUser = nullptr;
+
     for (const UpdateNotification &notification : notifications) {
         LocalUser *recipient = getUser(notification.userId);
         if (!recipient) {
@@ -558,6 +565,28 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 
             updates.seq = 0; // ??
             updates.updates = { update };
+        }
+            break;
+        case UpdateNotification::Type::UpdateName:
+        {
+            updates.tlType = TLValue::UpdateShort;
+            TLUpdate &update = updates.update;
+            update.tlType = TLValue::UpdateUserName;
+            update.userId = notification.fromId;
+
+            if (!interestingUser || (interestingUser->id() != update.userId)) {
+                interestingUser = getAbstractUser(update.userId);
+                if (!interestingUser) {
+                    qCWarning(lcServerUpdates) << CALL_INFO
+                                               << "Invalid interesting user" << notification.userId
+                                               << "for update" << notification.type;
+                    continue;
+                }
+            }
+
+            update.firstName = interestingUser->firstName();
+            update.lastName = interestingUser->lastName();
+            update.username = interestingUser->userName();
         }
             break;
         case UpdateNotification::Type::Invalid:
