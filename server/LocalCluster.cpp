@@ -1,5 +1,6 @@
 #include "LocalCluster.hpp"
 
+#include "Debug_p.hpp"
 #include "TelegramServer.hpp"
 #include "RemoteServerConnection.hpp"
 #include "Storage.hpp"
@@ -8,7 +9,7 @@
 
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(c_loggingClusterCategory, "telegram.server.cluster", QtWarningMsg)
+Q_LOGGING_CATEGORY(lcCluster, "telegram.server.cluster", QtWarningMsg)
 
 namespace Telegram {
 
@@ -48,36 +49,36 @@ void LocalCluster::setServerPrivateRsaKey(const Telegram::RsaKey &key)
 bool LocalCluster::start()
 {
     if (m_serverConfiguration.dcOptions.isEmpty()) {
-        qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to start cluster: DC options is empty.";
+        qCCritical(lcCluster) << CALL_INFO << "Unable to start cluster: DC options is empty.";
         return false;
     }
 
     if (!m_key.isPrivate()) {
-        qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to start cluster: Invalid private key.";
+        qCCritical(lcCluster) << CALL_INFO << "Unable to start cluster: Invalid private key.";
         return false;
     }
 
     if (!m_storage) {
-        qCDebug(c_loggingClusterCategory) << Q_FUNC_INFO << "Fallback to default Storage implementation";
+        qCDebug(lcCluster) << CALL_INFO << "Fallback to default Storage implementation";
         m_storage = new Storage(this);
     }
 
     if (!m_authProvider) {
-        qCDebug(c_loggingClusterCategory) << Q_FUNC_INFO << "Fallback to default auth provider";
+        qCDebug(lcCluster) << CALL_INFO << "Fallback to default auth provider";
         m_authProvider = new Authorization::DefaultProvider();
     }
 
     for (const DcOption &dc : m_serverConfiguration.dcOptions) {
         if (!dc.id) {
-            qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Invalid configuration: DC id is null.";
+            qCCritical(lcCluster) << CALL_INFO << "Invalid configuration: DC id is null.";
             return false;
         }
         if (!dc.port) {
-            qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Invalid configuration: Server port is not set.";
+            qCCritical(lcCluster) << CALL_INFO << "Invalid configuration: Server port is not set.";
             return false;
         }
         if (dc.address.isEmpty()) {
-            qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Invalid configuration: Server address is not set.";
+            qCCritical(lcCluster) << CALL_INFO << "Invalid configuration: Server address is not set.";
             return false;
         }
         Server *server = m_constructor(this);
@@ -101,7 +102,7 @@ bool LocalCluster::start()
         }
 
         if (!server->start()) {
-            qCCritical(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to start server" << server->dcId();
+            qCCritical(lcCluster) << CALL_INFO << "Unable to start server" << server->dcId();
             hasFails = true;
         }
     }
@@ -117,18 +118,17 @@ void LocalCluster::stop()
 
 LocalUser *LocalCluster::addUser(const QString &identifier, quint32 dcId)
 {
-    if (getUser(identifier)) {
-        qCWarning(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to add user"
-                                            << identifier << "(the identifier is already taken)";
-        return nullptr;
-    }
     Server *server = getServerInstance(dcId);
     if (!server) {
-        qCWarning(c_loggingClusterCategory) << Q_FUNC_INFO << "Unable to add user"
-                                            << identifier << "to unknown server id" << dcId;
+        qCWarning(lcCluster) << CALL_INFO << "Unable to add user"
+                             << identifier << "to unknown server id" << dcId;
         return nullptr;
     }
-    return server->addUser(identifier);
+    LocalUser *user = server->addUser(identifier);
+    if (!user) {
+        qCWarning(lcCluster) << CALL_INFO << "Unable to add user";
+    }
+    return user;
 }
 
 LocalUser *LocalCluster::getUser(const QString &identifier)
