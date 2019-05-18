@@ -262,13 +262,11 @@ LocalUser *Server::getUser(quint32 userId) const
 
 Peer Server::getPeerByUserName(const QString &userName) const
 {
-    // iterate over all users (too bad?)
-    for (LocalUser *user: m_users) {
-        if (user->userName() == userName) {
-            return user->toPeer();
-        }
+    quint32 userId = m_usernameToUserId.value(userName);
+    if (userId) {
+        return Peer::fromUserId(userId);
     }
-    return Peer();  // not found
+    return Peer();
 }
 
 AbstractUser *Server::getUser(const TLInputUser &inputUser, LocalUser *self) const
@@ -352,7 +350,17 @@ void Server::bindUserSession(LocalUser *user, Session *session)
 
 bool Server::setUserName(LocalUser *user, const QString &newUsername)
 {
+    if (user->userName() == newUsername) {
+        return true;
+    }
+    const Peer p = getPeerByUserName(newUsername);
+    if (p.isValid()) {
+        return false;
+    }
+    QString previousName = user->userName();
+    m_usernameToUserId.insert(newUsername, user->id());
     user->setUserName(newUsername);
+    m_usernameToUserId.remove(previousName);
     return true;
 }
 
