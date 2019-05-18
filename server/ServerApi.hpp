@@ -98,6 +98,8 @@ public:
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
     virtual MessageRecipient *getRecipient(const Peer &peer, const LocalUser *applicant) const = 0;
 
+    virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
+
     virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(const QString &identifier) const = 0;

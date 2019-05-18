@@ -246,6 +246,17 @@ MessageRecipient *Server::getRecipient(const Peer &peer, const LocalUser *applic
     return nullptr;
 }
 
+// Returns the list of Users who interesting in the peer info updates
+QVector<quint32> Server::getPeerWatchers(const Peer &peer) const
+{
+    QVector<quint32> watchers;
+    if (peer.type == Peer::User) {
+        // Any user is interesting in themself
+        watchers << peer.id;
+    }
+    return watchers;
+}
+
 LocalUser *Server::getUser(const QString &identifier) const
 {
     const quint32 id = m_phoneToUserId.value(identifier);
