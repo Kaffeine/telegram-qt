@@ -424,6 +424,10 @@ void AuthRpcOperation::runSignUp()
         return;
     }
     LocalUser *user = api()->addUser(arguments.phoneNumber);
+    if (!user) {
+        sendRpcError(RpcError::PhoneNumberOccupied);
+        return;
+    }
     user->setFirstName(arguments.firstName);
     user->setLastName(arguments.lastName);
     api()->bindUserSession(user, layer()->session());
