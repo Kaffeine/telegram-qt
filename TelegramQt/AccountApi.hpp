@@ -24,6 +24,9 @@
 
 namespace Telegram {
 
+class PendingOperation;
+class PendingBoolOperation;
+
 namespace Client {
 
 class AccountApiPrivate;
@@ -33,6 +36,9 @@ class TELEGRAMQT_EXPORT AccountApi : public ClientApi
     Q_OBJECT
 public:
     explicit AccountApi(QObject *parent = nullptr);
+
+    PendingBoolOperation *checkUsernameAvailability(const QString &newUsername);
+    PendingOperation *updateUsername(const QString &newUsername);
 
 protected:
     Q_DECLARE_PRIVATE_D(d, AccountApi)

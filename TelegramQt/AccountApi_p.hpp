@@ -34,6 +34,8 @@ public:
     explicit AccountApiPrivate(AccountApi *parent = nullptr);
     static AccountApiPrivate *get(AccountApi *parent);
 
+    PendingBoolOperation *checkUsernameAvailability(const QString &newUsername);
+    PendingOperation *updateUsername(const QString &newUsername);
 };
 
 } // Client namespace

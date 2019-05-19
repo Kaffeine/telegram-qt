@@ -65,6 +65,7 @@ public:
 
 Q_SIGNALS:
     void contactStatusChanged(quint32 userId, Telegram::Namespace::ContactStatus status);
+    void contactNameChanged(quint32 userId); // username, firstname, lastname
 
 protected:
     Q_DECLARE_PRIVATE_D(d, ContactsApi)

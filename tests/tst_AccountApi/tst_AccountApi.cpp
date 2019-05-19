@@ -43,6 +43,7 @@ public:
 private slots:
     void initTestCase();
     void cleanupTestCase();
+    void updateFirstLastName();
 };
 
 tst_AccountApi::tst_AccountApi(QObject *parent) :
@@ -59,6 +60,11 @@ void tst_AccountApi::initTestCase()
 void tst_AccountApi::cleanupTestCase()
 {
     QVERIFY(TestKeyData::cleanupKeyFiles());
+}
+
+void tst_AccountApi::updateFirstLastName()
+{
+
 }
 
 QTEST_GUILESS_MAIN(tst_AccountApi)
