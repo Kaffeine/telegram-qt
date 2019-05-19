@@ -95,6 +95,9 @@ public:
     void addUserAuthorization(LocalUser *user, quint64 authKeyId);
 
     QVector<UpdateNotification> processMessage(MessageData *messageData) override;
+    QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
+                                              LocalUser *applicant,
+                                              Session *excludeSession) const override;
 
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
 

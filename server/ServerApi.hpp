@@ -118,6 +118,9 @@ public:
     virtual LocalUser *addUser(const QString &identifier) = 0;
 
     virtual QVector<UpdateNotification> processMessage(MessageData *messageData) = 0;
+    virtual QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
+                                                      LocalUser *applicant,
+                                                      Session *excludeSession) const = 0;
 
     virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;
 

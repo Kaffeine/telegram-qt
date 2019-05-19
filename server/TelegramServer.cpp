@@ -459,6 +459,40 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
     return notifications;
 }
 
+QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updateType,
+                                                  LocalUser *applicant,
+                                                  Session *excludeSession) const
+{
+    QVector<UpdateNotification> notifications;
+    const quint32 requestDate = Telegram::Utils::getCurrentTime();
+    const QVector<quint32> watchers = getPeerWatchers(applicant->toPeer());
+
+    UpdateNotification notification;
+
+    switch (updateType) {
+    default:
+        return { };
+    }
+
+    for (const quint32 userId : watchers) {
+        notification.userId = userId;
+        notifications.append(notification);
+    }
+
+    UpdateNotification *selfNotification = nullptr;
+    for (UpdateNotification &notification : notifications) {
+        if (notification.userId == applicant->id()) {
+            selfNotification = &notification;
+            break;
+        }
+    }
+    if (selfNotification) {
+        selfNotification->excludeSession = excludeSession;
+    }
+
+    return notifications;
+}
+
 void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 {
     for (const UpdateNotification &notification : notifications) {
