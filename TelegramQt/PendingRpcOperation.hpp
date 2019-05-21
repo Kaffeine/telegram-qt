@@ -38,6 +38,7 @@ Q_SIGNALS:
 protected:
     void setRequestData(const QByteArray &requestData);
 
+    // The class is private, don't care about ABI
     QByteArray m_replyData;
     QByteArray m_requestData;
     RpcError *m_error = nullptr;

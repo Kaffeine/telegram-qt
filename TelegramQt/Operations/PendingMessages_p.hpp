@@ -32,6 +32,13 @@ class PendingMessages;
 class PendingMessagesPrivate : public PendingOperationPrivate
 {
 public:
+    Q_DECLARE_PUBLIC(PendingOperation)
+
+    explicit PendingMessagesPrivate(PendingOperation *parent) :
+        PendingOperationPrivate(parent)
+    {
+    }
+
     static PendingMessagesPrivate *get(PendingMessages *parent);
 
     Peer m_peer;

@@ -31,7 +31,8 @@ ContactsApiPrivate *ContactsApiPrivate::get(ContactsApi *parent)
 
 PendingOperation *ContactsApiPrivate::sync()
 {
-    PendingOperation *operation = new PendingOperation("ContactsApi::sync", this);
+    PendingOperation *operation = new PendingOperation(this);
+    operation->setOperationName("ContactsApi::sync");
 
     TLInputUser selfInputUser;
     selfInputUser.tlType = TLValue::InputUserSelf;

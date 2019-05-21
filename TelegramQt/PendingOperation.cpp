@@ -7,17 +7,15 @@ Q_LOGGING_CATEGORY(c_pendingOperations, "telegram.operations", QtWarningMsg)
 
 namespace Telegram {
 
-PendingOperation::PendingOperation(QObject *parent) :
+PendingOperation::PendingOperation(PendingOperationPrivate *priv, QObject *parent) :
     QObject(parent),
-    m_finished(false),
-    m_succeeded(true)
+    d(priv)
 {
 }
 
-PendingOperation::PendingOperation(const char *objectName, QObject *parent) :
-    PendingOperation(parent)
+PendingOperation::PendingOperation(QObject *parent) :
+    PendingOperation(new PendingOperationPrivate(this), parent)
 {
-    setObjectName(QString::fromLatin1(objectName));
 }
 
 PendingOperation::~PendingOperation()
@@ -28,22 +26,26 @@ PendingOperation::~PendingOperation()
 
 bool PendingOperation::isFinished() const
 {
-    return m_finished;
+    Q_D(const PendingOperation);
+    return d->m_finished;
 }
 
 bool PendingOperation::isSucceeded() const
 {
-    return m_finished && m_succeeded;
+    Q_D(const PendingOperation);
+    return d->m_finished && d->m_succeeded;
 }
 
 bool PendingOperation::isFailed() const
 {
-    return m_finished && !m_succeeded;
+    Q_D(const PendingOperation);
+    return d->m_finished && !d->m_succeeded;
 }
 
 QVariantHash PendingOperation::errorDetails() const
 {
-    return m_errorDetails;
+    Q_D(const PendingOperation);
+    return d->m_errorDetails;
 }
 
 QString PendingOperation::c_text()
@@ -111,17 +113,17 @@ void PendingOperation::runAfter(PendingOperation *operation)
 
 void PendingOperation::setFinished()
 {
-    if (m_finished) {
+    if (d->m_finished) {
         qCWarning(c_pendingOperations) << "setFinished() called for an already finished operation" << this;
         return;
     }
-    m_finished = true;
-    if (m_succeeded) {
+    d->m_finished = true;
+    if (d->m_succeeded) {
         qCDebug(c_pendingOperations) << this << "setFinished(succeeded)";
         emit succeeded(this);
     } else {
         qCDebug(c_pendingOperations) << this << "setFinished(failed)";
-        emit failed(this, m_errorDetails);
+        emit failed(this, d->m_errorDetails);
     }
     emit finished(this);
 }
@@ -129,8 +131,8 @@ void PendingOperation::setFinished()
 void PendingOperation::setFinishedWithError(const QVariantHash &details)
 {
     qCDebug(c_pendingOperations) << this << "setFinishedWithError(" << details << ")";
-    m_succeeded = false;
-    m_errorDetails = details;
+    d->m_succeeded = false;
+    d->m_errorDetails = details;
     setFinished();
 }
 
@@ -139,12 +141,17 @@ void PendingOperation::setDelayedFinishedWithError(const QVariantHash &details)
     QMetaObject::invokeMethod(this, "setFinishedWithError", Qt::QueuedConnection, Q_ARG(QVariantHash, details)); // Invoke after return
 }
 
+void PendingOperation::setOperationName(const char *name)
+{
+    setObjectName(QString::fromLatin1(name));
+}
+
 void PendingOperation::clearResult()
 {
     qCDebug(c_pendingOperations) << "clearResult()" << this;
-    m_finished = false;
-    m_succeeded = true;
-    m_errorDetails.clear();
+    d->m_finished = false;
+    d->m_succeeded = true;
+    d->m_errorDetails.clear();
 }
 
 void PendingOperation::onPreviousFailed(PendingOperation *operation, const QVariantHash &details)

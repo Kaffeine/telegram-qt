@@ -98,9 +98,6 @@ protected:
     void setPasswordCurrentSalt(const QByteArray &salt);
     void setPasswordHint(const QString &hint);
     void setRegistered(bool registered);
-
-private:
-    AuthOperation *q_ptr = nullptr;
 };
 
 } // Client namespace

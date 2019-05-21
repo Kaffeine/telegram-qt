@@ -168,7 +168,8 @@ PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> 
                                                 << m_initialConnectOperation;
         return m_initialConnectOperation;
     }
-    m_initialConnectOperation = new PendingOperation("ConnectionApi::connectToServer(options)", this);
+    m_initialConnectOperation = new PendingOperation(this);
+    m_initialConnectOperation->setOperationName("ConnectionApi::connectToServer(options)");
     m_serverConfiguration = dcOptions;
     m_nextServerAddressIndex = 0;
     m_connectionAttemptNumber = 0;

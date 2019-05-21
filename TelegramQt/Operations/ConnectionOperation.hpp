@@ -19,6 +19,7 @@ public:
 protected:
     void startImplementation() override;
 
+    // The class is private, don't care about ABI
     Connection *m_connection = nullptr;
 };
 

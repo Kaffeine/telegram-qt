@@ -38,8 +38,7 @@ bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAuthS
 
 AuthOperationPrivate::AuthOperationPrivate(AuthOperation *parent) :
     QObject(parent),
-    PendingOperationPrivate(),
-    q_ptr(parent)
+    PendingOperationPrivate(parent)
 {
 }
 
@@ -189,20 +188,18 @@ PendingOperation *AuthOperationPrivate::submitAuthCode(const QString &code)
         return PendingOperation::failOperation(text);
     }
 
-    PendingOperation *submitOperation = new PendingOperation("AuthOperationPrivate::submitAuthCode", this);
+    QObject *parent = this;
+    PendingOperation *submitOperation = new PendingOperation(parent);
+    submitOperation->setOperationName("AuthOperationPrivate::submitAuthCode");
     PendingRpcOperation *sendCodeOperation = nullptr;
     if (m_registered) {
         sendCodeOperation = authLayer()->signIn(m_phoneNumber, m_authCodeHash, code);
-        connect(sendCodeOperation, &PendingRpcOperation::finished, this,
-                [this, sendCodeOperation, submitOperation]() {
-            this->onSignInRpcFinished(sendCodeOperation, submitOperation);
-        });
+        sendCodeOperation->connectToFinished(this, &AuthOperationPrivate::onSignInRpcFinished,
+                                             sendCodeOperation, submitOperation);
     } else {
         sendCodeOperation = authLayer()->signUp(m_phoneNumber, m_authCodeHash, code, m_firstName, m_lastName);
-        connect(sendCodeOperation, &PendingRpcOperation::finished, this,
-                [this, sendCodeOperation, submitOperation]() {
-            this->onSignUpRpcFinished(sendCodeOperation, submitOperation);
-        });
+        sendCodeOperation->connectToFinished(this, &AuthOperationPrivate::onSignUpRpcFinished,
+                                             sendCodeOperation, submitOperation);
     }
 
     return sendCodeOperation;

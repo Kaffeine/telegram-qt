@@ -11,9 +11,8 @@ PendingContactsOperationPrivate *PendingContactsOperationPrivate::get(PendingCon
 }
 
 PendingContactsOperation::PendingContactsOperation(QObject *parent) :
-    PendingOperation(parent)
+    PendingOperation(new PendingContactsOperationPrivate(this), parent)
 {
-    d = new PendingContactsOperationPrivate();
 }
 
 PendingContactsOperation::~PendingContactsOperation()

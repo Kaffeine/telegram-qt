@@ -17,9 +17,8 @@ PendingMessagesPrivate *PendingMessagesPrivate::get(PendingMessages *parent)
     \ingroup Client
  */
 PendingMessages::PendingMessages(QObject *parent) :
-    PendingOperation(parent)
+    PendingOperation(new PendingMessagesPrivate(this), parent)
 {
-    d = new PendingMessagesPrivate;
 }
 
 Peer PendingMessages::peer() const

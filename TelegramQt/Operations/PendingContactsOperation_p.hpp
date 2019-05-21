@@ -30,6 +30,11 @@ class PendingContactsOperation;
 class PendingContactsOperationPrivate : public PendingOperationPrivate
 {
 public:
+    explicit PendingContactsOperationPrivate(PendingOperation *op) :
+        PendingOperationPrivate(op)
+    {
+    }
+
     static PendingContactsOperationPrivate *get(PendingContactsOperation *parent);
 
     QVector<quint32> m_userIds;

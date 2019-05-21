@@ -165,7 +165,8 @@ void MessagingApiPrivate::onMessageOutboxRead(const Telegram::Peer peer, quint32
 
 PendingOperation *MessagingApiPrivate::getDialogs()
 {
-    PendingOperation *operation = new PendingOperation("MessagingApi::getDialogs", this);
+    PendingOperation *operation = new PendingOperation(this);
+    operation->setOperationName("MessagingApi::getDialogs");
     MessagesRpcLayer::PendingMessagesDialogs *rpcOperation = messagesLayer()->getDialogs(0, 0, 0, TLInputPeer(), c_dialogsFetchPortion);
     rpcOperation->connectToFinished(this, &MessagingApiPrivate::onGetDialogsFinished, operation, rpcOperation);
     return operation;
@@ -289,7 +290,8 @@ PendingOperation *MessagingApiPrivate::syncPeers(const PeerList &peers)
     }
     m_syncState = SyncState::InProgress;
 
-    m_syncOperation = new PendingOperation("SyncOperation", this);
+    m_syncOperation = new PendingOperation(this);
+    m_syncOperation->setOperationName("SyncOperation");
     m_syncJobs = peers.count();
 
     for (const Telegram::Peer &peer : peers) {
