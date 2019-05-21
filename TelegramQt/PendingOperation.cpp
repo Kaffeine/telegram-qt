@@ -167,7 +167,7 @@ SucceededPendingOperation::SucceededPendingOperation(QObject *parent) :
 
 void SucceededPendingOperation::startImplementation()
 {
-    QMetaObject::invokeMethod(this, "setFinished", Qt::QueuedConnection);
+    finishLater();
 }
 
 } // Telegram namespace
