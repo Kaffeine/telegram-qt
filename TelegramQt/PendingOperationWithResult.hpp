@@ -17,6 +17,29 @@ public Q_SLOTS:
     void finishLater();
 };
 
+template <typename Result>
+class PendingOperationWithResult : public PendingOperation
+{
+public:
+    PendingOperationWithResult(QObject *parent)
+        : PendingOperation(parent)
+    {
+    }
+    Result getResult() const;
+
+    void setFinished(const Result &result);
+};
+
+class PendingBoolOperation : public PendingOperationWithResult<bool>
+{
+    Q_OBJECT
+public:
+     PendingBoolOperation(QObject *parent)
+         : PendingOperationWithResult(parent)
+     {
+     }
+};
+
 } // Telegram namespace
 
 #endif // TELEGRAMQT_PENDING_OPERATION_WITH_RESULT
