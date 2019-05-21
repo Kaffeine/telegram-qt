@@ -1,5 +1,8 @@
 #include "AccountApi_p.hpp"
 
+#include "ClientBackend.hpp"
+#include "PendingOperationWithResult.hpp"
+
 #include <QLoggingCategory>
 
 Q_LOGGING_CATEGORY(lcAccountApi, "telegram.client.api.account", QtInfoMsg)
@@ -20,12 +23,23 @@ AccountApiPrivate *AccountApiPrivate::get(AccountApi *parent)
 
 PendingBoolOperation *AccountApiPrivate::checkUsernameAvailability(const QString &newUsername)
 {
-    return nullptr;
+    PendingBoolOperation *operation = new PendingBoolOperation(this);
+    operation->setOperationName("AccountApi::checkUsername");
+    AccountRpcLayer::PendingBool *rpcOperation = m_backend->accountLayer()->checkUsername(newUsername);
+    rpcOperation->connectToFinished(this, &AccountApiPrivate::onCheckUsernameFinished, operation, rpcOperation);
+    return operation;
 }
 
 PendingOperation *AccountApiPrivate::updateUsername(const QString &newUsername)
 {
     return nullptr;
+}
+
+void AccountApiPrivate::onCheckUsernameFinished(PendingBoolOperation *operation, AccountRpcLayer::PendingBool *rpcOperation)
+{
+    TLBool result;
+    rpcOperation->getResult(&result);
+    //operation->setFinished(result);
 }
 
 /*!

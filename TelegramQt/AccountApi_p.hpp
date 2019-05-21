@@ -21,6 +21,8 @@
 #include "ClientApi_p.hpp"
 #include "AccountApi.hpp"
 
+#include "RpcLayers/ClientRpcAccountLayer.hpp"
+
 namespace Telegram {
 
 namespace Client {
@@ -36,6 +38,10 @@ public:
 
     PendingBoolOperation *checkUsernameAvailability(const QString &newUsername);
     PendingOperation *updateUsername(const QString &newUsername);
+
+protected slots:
+    void onCheckUsernameFinished(PendingBoolOperation *operation, AccountRpcLayer::PendingBool *rpcOperation);
+
 };
 
 } // Client namespace
