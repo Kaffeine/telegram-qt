@@ -161,26 +161,6 @@ public:
     void startImplementation() override;
 };
 
-inline bool PendingOperation::isFinished() const
-{
-    return m_finished;
-}
-
-inline bool PendingOperation::isSucceeded() const
-{
-    return m_finished && m_succeeded;
-}
-
-inline bool PendingOperation::isFailed() const
-{
-    return m_finished && !m_succeeded;
-}
-
-inline QVariantHash PendingOperation::errorDetails() const
-{
-    return m_errorDetails;
-}
-
 } // Telegram namespace
 
 #endif // TELEGRAMQT_PENDING_OPERATION

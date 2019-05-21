@@ -26,6 +26,26 @@ PendingOperation::~PendingOperation()
     delete d;
 }
 
+bool PendingOperation::isFinished() const
+{
+    return m_finished;
+}
+
+bool PendingOperation::isSucceeded() const
+{
+    return m_finished && m_succeeded;
+}
+
+bool PendingOperation::isFailed() const
+{
+    return m_finished && !m_succeeded;
+}
+
+QVariantHash PendingOperation::errorDetails() const
+{
+    return m_errorDetails;
+}
+
 QString PendingOperation::c_text()
 {
     return QStringLiteral("text");
