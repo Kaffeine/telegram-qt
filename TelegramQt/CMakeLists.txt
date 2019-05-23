@@ -82,6 +82,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     MessagingApi_p.hpp
     PendingOperation.cpp
     PendingOperation.hpp
+    PendingOperationWithResult.cpp
     PendingOperation_p.hpp
     PendingRpcOperation.cpp
     PendingRpcOperation.hpp

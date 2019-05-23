@@ -77,6 +77,7 @@ SOURCES += \
     LegacySecretReader.cpp \
     MessagingApi.cpp \
     PendingOperation.cpp \
+    PendingOperationWithResult.cpp \
     PendingRpcOperation.cpp \
     PendingRpcResult.cpp \
     RandomGenerator.cpp \
@@ -157,6 +158,7 @@ HEADERS += \
     LegacySecretReader.hpp \
     PendingOperation.hpp \
     PendingOperation_p.hpp \
+    PendingOperationWithResult.hpp \
     PendingRpcOperation.hpp \
     PendingRpcResult.hpp \
     RandomGenerator.hpp \
