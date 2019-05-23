@@ -18,6 +18,7 @@ public:
     virtual ~PendingOperationPrivate() = default;
 
     static const PendingOperationPrivate *get(const PendingOperation *op) { return op->d; }
+    static PendingOperationPrivate *get(PendingOperation *op) { return op->d; }
 
     virtual QObject *toQObject() { return nullptr; }
     virtual const QObject *toQObject() const { return nullptr; }
