@@ -18,6 +18,7 @@ Label {
     color: "white"
 
     property int count
+    property bool active
 
     TextMetrics {
         id: metrics
@@ -26,7 +27,8 @@ Label {
     }
 
     background: Rectangle {
-        color: "gray"
+        id: background
         radius: 4
+        color: active ? "steelblue" : "gray"
     }
 }

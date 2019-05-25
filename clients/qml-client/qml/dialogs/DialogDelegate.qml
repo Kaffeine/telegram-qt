@@ -24,6 +24,7 @@ ItemDelegate {
 
     property bool debugGeometry: false
     property int smallSpacing: spacing / 2
+    property int muteUntil
 
     contentItem: Item {
         id: content
@@ -216,6 +217,7 @@ ItemDelegate {
                     UnreadMessageIndicator {
                         id: unreadIndicator
                         count: dialogDelegate.unreadMessageCount
+                        active: dialogDelegate.muteUntil == 0 || dialogDelegate.muteUntil < 1521708852
                     }
 
                     Text {
