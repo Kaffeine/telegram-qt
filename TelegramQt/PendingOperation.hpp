@@ -6,8 +6,6 @@
 #include <QObject>
 #include <QVariantHash>
 
-#include "telegramqt_global.h"
-
 namespace Telegram {
 
 class PendingOperationPrivate;

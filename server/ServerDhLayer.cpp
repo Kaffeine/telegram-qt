@@ -19,10 +19,10 @@
 
 #include "CTelegramStream.hpp"
 #include "CTelegramTransport.hpp"
-#include "Utils.hpp"
+#include "Debug_p.hpp"
 #include "RandomGenerator.hpp"
 #include "SendPackageHelper.hpp"
-#include "Debug_p.hpp"
+#include "Utils.hpp"
 
 #include <QDateTime>
 #include <QLoggingCategory>

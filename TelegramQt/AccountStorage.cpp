@@ -1,8 +1,8 @@
 #include "AccountStorage.hpp"
 
+#include "CRawStream.hpp"
 #include "Debug_p.hpp"
 #include "LegacySecretReader.hpp"
-#include "CRawStream.hpp"
 
 #include <QDir>
 #include <QFile>

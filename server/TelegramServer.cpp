@@ -1,16 +1,15 @@
 #include "TelegramServer.hpp"
 
-#include <QLoggingCategory>
-#include <QTcpServer>
-#include <QTcpSocket>
-
-#include "ApiUtils.hpp"
-#include "TelegramServerUser.hpp"
+#include "CServerTcpTransport.hpp"
 #include "RemoteClientConnection.hpp"
 #include "RemoteServerConnection.hpp"
+#include "ServerDhLayer.hpp"
+#include "ServerMessageData.hpp"
+#include "ServerRpcLayer.hpp"
+#include "ServerUtils.hpp"
 #include "Session.hpp"
-
-#include "CServerTcpTransport.hpp"
+#include "Storage.hpp"
+#include "TelegramServerUser.hpp"
 
 // Generated RPC Operation Factory includes
 #include "AccountOperationFactory.hpp"
@@ -30,12 +29,12 @@
 #include "UsersOperationFactory.hpp"
 // End of generated RPC Operation Factory includes
 
-#include "ServerMessageData.hpp"
-#include "ServerDhLayer.hpp"
-#include "ServerRpcLayer.hpp"
-#include "ServerUtils.hpp"
-#include "Storage.hpp"
+#include "ApiUtils.hpp"
 #include "Debug_p.hpp"
+
+#include <QLoggingCategory>
+#include <QTcpServer>
+#include <QTcpSocket>
 
 Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtInfoMsg)
 Q_LOGGING_CATEGORY(loggingCategoryServerApi, "telegram.server.api", QtWarningMsg)

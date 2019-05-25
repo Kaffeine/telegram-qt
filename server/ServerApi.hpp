@@ -2,10 +2,10 @@
 #define TELEGRAM_SERVER_API_HPP
 
 #include <QObject>
-#include "TLTypes.hpp"
-#include "TelegramNamespace.hpp"
 
 #include "DcConfiguration.hpp"
+#include "TLValues.hpp"
+#include "TelegramNamespace.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QTcpServer)
 QT_FORWARD_DECLARE_CLASS(QTcpSocket)
@@ -14,6 +14,9 @@ QT_FORWARD_DECLARE_CLASS(QTimer)
 #include <QHash>
 #include <QMap>
 #include <QSet>
+
+struct TLInputPeer;
+struct TLInputUser;
 
 namespace Telegram {
 

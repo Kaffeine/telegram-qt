@@ -1,15 +1,14 @@
 #include "CServerTcpTransport.hpp"
 
-#include <QHostAddress>
-#include <QMetaMethod>
-#include <QTcpSocket>
-
 #include "AesCtr.hpp"
 #include "CRawStream.hpp"
-#include "Utils.hpp"
 #include "TLValues.hpp"
+#include "Utils.hpp"
 
+#include <QHostAddress>
 #include <QLoggingCategory>
+#include <QMetaMethod>
+#include <QTcpSocket>
 
 Q_LOGGING_CATEGORY(c_loggingServerTcpTransport, "telegram.server.transport.tcp", QtWarningMsg)
 

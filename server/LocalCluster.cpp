@@ -1,11 +1,12 @@
 #include "LocalCluster.hpp"
 
-#include "Debug_p.hpp"
-#include "TelegramServer.hpp"
+#include "DefaultAuthorizationProvider.hpp"
 #include "RemoteServerConnection.hpp"
 #include "Storage.hpp"
+#include "TelegramServer.hpp"
 #include "TelegramServerUser.hpp"
-#include "DefaultAuthorizationProvider.hpp"
+
+#include "Debug_p.hpp"
 
 #include <QLoggingCategory>
 

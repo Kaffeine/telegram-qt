@@ -1,10 +1,10 @@
 #include "TelegramServerUser.hpp"
 
 #include "ApiUtils.hpp"
+#include "RandomGenerator.hpp"
 #include "ServerMessageData.hpp"
 #include "ServerUtils.hpp"
 #include "Session.hpp"
-#include "RandomGenerator.hpp"
 #include "Utils.hpp"
 
 #include <QCryptographicHash>
