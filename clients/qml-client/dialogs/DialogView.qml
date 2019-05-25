@@ -40,6 +40,7 @@ Frame {
             highlighted: currentPeer === peer
             isPinned: model.isPinned
             chatType: model.chatType
+            muteUntil: model.muteUntil
         }
         ScrollBar.vertical: ScrollBar {}
 
