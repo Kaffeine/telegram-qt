@@ -189,6 +189,27 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
     case TLValue::UpdateChatUserTyping:
         messagingApi()->onChatUserActionChanged(Peer::fromChatId(update.chatId), update.userId, update.action);
         return true;
+    case TLValue::UpdateUserName:
+    {
+        const QHash<quint32, TLUser *> & users = dataInternalApi()->users();
+        TLUser userInStack;
+        TLUser *user = nullptr;
+        if (users.contains(update.userId)) {
+            user = users.value(update.userId);
+        } else {
+            userInStack.id = update.userId;
+            user = &userInStack;
+        }
+        user->firstName = update.firstName;
+        user->lastName = update.lastName;
+        user->username = update.username;
+        if (userInStack.id) {
+            dataInternalApi()->processData(userInStack);
+        } else {
+            // dataInternalApi()->syncUser(user->id);
+        }
+    }
+        return true;
     default:
         break;
     }
