@@ -47,6 +47,7 @@ class DataStoragePrivate
 {
 public:
     static DataStoragePrivate *get(DataStorage *parent);
+    static DataStoragePrivate *get(const DataStorage *parent);
 
     DataInternalApi *internalApi() { return m_api; }
     const DataInternalApi *internalApi() const { return m_api; }
@@ -70,6 +71,7 @@ public:
     };
 
     static DataInternalApi *get(DataStorage *parent) { return DataStoragePrivate::get(parent)->internalApi(); }
+    static DataInternalApi *get(const DataStorage *parent) { return DataStoragePrivate::get(parent)->internalApi(); }
 
     const TLUser *getSelfUser() const;
     const TLMessage *getMessage(const Telegram::Peer &peer, quint32 messageId) const;

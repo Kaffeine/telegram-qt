@@ -30,8 +30,6 @@ class PendingOperation;
 
 namespace Client {
 
-class DataInternalApi;
-class DataStorage;
 class DialogList;
 class PendingMessages;
 class MessagesRpcLayer;
@@ -64,8 +62,6 @@ public:
     PendingOperation *getDialogs();
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
 
-    DataStorage *dataStorage();
-    DataInternalApi *dataInternalApi();
     MessagesRpcLayer *messagesLayer();
     ChannelsRpcLayer *channelsLayer();
 

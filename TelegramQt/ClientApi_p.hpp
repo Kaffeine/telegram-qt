@@ -25,8 +25,10 @@ namespace Telegram {
 
 namespace Client {
 
-class ClientApi;
 class Backend;
+class ClientApi;
+class DataInternalApi;
+class DataStorage;
 
 class ClientApiPrivate : public QObject
 {
@@ -37,6 +39,11 @@ public:
 
     Backend *backend() const { return m_backend; }
     void setBackend(Backend *backend);
+
+    DataStorage *dataStorage();
+    const DataStorage *dataStorage() const;
+    DataInternalApi *dataInternalApi();
+    const DataInternalApi *dataInternalApi() const;
 
 protected:
     ClientApi *q_ptr = nullptr;

@@ -618,6 +618,11 @@ DataStoragePrivate *DataStoragePrivate::get(DataStorage *parent)
     return parent->d;
 }
 
+DataStoragePrivate *DataStoragePrivate::get(const DataStorage *parent)
+{
+    return parent->d;
+}
+
 } // Client namespace
 
 } // Telegram namespace

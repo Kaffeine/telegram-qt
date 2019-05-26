@@ -374,16 +374,6 @@ void MessagingApi::readHistory(const Peer peer, quint32 messageId)
     return d->setMessageRead(peer, messageId);
 }
 
-DataStorage *MessagingApiPrivate::dataStorage()
-{
-    return m_backend->dataStorage();
-}
-
-DataInternalApi *MessagingApiPrivate::dataInternalApi()
-{
-    return DataInternalApi::get(m_backend->dataStorage());
-}
-
 MessagesRpcLayer *MessagingApiPrivate::messagesLayer()
 {
     return m_backend->messagesLayer();
