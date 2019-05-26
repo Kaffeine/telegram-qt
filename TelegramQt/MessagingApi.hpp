@@ -93,8 +93,14 @@ public:
     quint32 syncLimit() const;
     void setSyncLimit(quint32 perDialogLimit); // 0 stands for 'unlimited'
 
+    quint32 selfUserId() const;
     DialogList *getDialogList();
+    bool getDialogInfo(DialogInfo *info, const Telegram::Peer &peer) const;
+
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
+
+    bool getMessage(Message *message, const Telegram::Peer &peer, quint32 messageId);
+    bool getMessageMediaInfo(MessageMediaInfo *info, const Telegram::Peer &peer, quint32 messageId);
 
 public slots:
     void setDraftMessage(const Telegram::Peer peer, const QString &text);

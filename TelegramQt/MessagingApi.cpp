@@ -328,6 +328,12 @@ void MessagingApi::setSyncLimit(quint32 perDialogLimit)
     d->m_syncLimit = perDialogLimit;
 }
 
+quint32 MessagingApi::selfUserId() const
+{
+    Q_D(const MessagingApi);
+    return d->dataStorage()->selfUserId();
+}
+
 DialogList *MessagingApi::getDialogList()
 {
     Q_D(MessagingApi);
@@ -338,6 +344,12 @@ DialogList *MessagingApi::getDialogList()
     return d->m_dialogList;
 }
 
+bool MessagingApi::getDialogInfo(DialogInfo *info, const Peer &peer) const
+{
+    Q_D(const MessagingApi);
+    return d->dataStorage()->getDialogInfo(info, peer);
+}
+
 /*!
     Returns PendingMessages with messages sorted from newer (higher message id) to older (lower message id)
 */
@@ -345,6 +357,18 @@ PendingMessages *MessagingApi::getHistory(const Telegram::Peer peer, const Messa
 {
     Q_D(MessagingApi);
     return d->getHistory(peer, options);
+}
+
+bool MessagingApi::getMessage(Message *message, const Peer &peer, quint32 messageId)
+{
+    Q_D(MessagingApi);
+    return d->dataStorage()->getMessage(message, peer, messageId);
+}
+
+bool MessagingApi::getMessageMediaInfo(MessageMediaInfo *info, const Peer &peer, quint32 messageId)
+{
+    Q_D(MessagingApi);
+    return d->dataStorage()->getMessageMediaInfo(info, peer, messageId);
 }
 
 void MessagingApi::setDraftMessage(const Peer peer, const QString &text)
