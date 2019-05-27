@@ -24,7 +24,6 @@
 #include "../../imports/TelegramQtQml/DeclarativeClient.hpp"
 
 #include "Client.hpp"
-#include "DataStorage.hpp"
 #include "DialogList.hpp"
 #include "PendingOperation.hpp"
 #include "MessagingApi.hpp"
@@ -303,7 +302,7 @@ void MessagesModel::setQmlClient(DeclarativeClient *qmlClient)
     m_qmlClient = qmlClient;
     emit clientChanged();
 
-    connect(client()->messagingApi(), &MessagingApi::messageReceived,
+    connect(messagingApi(), &MessagingApi::messageReceived,
             this, &MessagesModel::onMessageReceived);
 }
 
@@ -509,7 +508,7 @@ void MessagesModel::onPeerChanged()
     }
 
     DialogInfo info;
-    dataStorage()->getDialogInfo(&info, m_peer);
+    messagingApi()->getDialogInfo(&info, m_peer);
 
     m_oldestMessageId = info.lastMessageId();
 
@@ -529,13 +528,13 @@ void MessagesModel::fetchPrevious()
     }
 
     DialogInfo info;
-    dataStorage()->getDialogInfo(&info, m_peer);
+    messagingApi()->getDialogInfo(&info, m_peer);
 
     MessageFetchOptions fetchOptions;
     fetchOptions.limit = 10;
     fetchOptions.offsetId = m_oldestMessageId;
 
-    m_fetchOperation = client()->messagingApi()->getHistory(m_peer, fetchOptions);
+    m_fetchOperation = messagingApi()->getHistory(m_peer, fetchOptions);
     connect(m_fetchOperation, &PendingMessages::finished, this, [this] () {
         processHistoryMessages(m_fetchOperation->messages());
         m_fetchOperation->deleteLater();
@@ -554,7 +553,7 @@ void MessagesModel::insertMessages(const QVector<quint32> &messageIds)
     QVector<Event*> newEvents;
     for (const quint32 messageId : messagesToInsertNow) {
         Message m;
-        if (!m_qmlClient->client()->dataStorage()->getMessage(&m, m_peer, messageId)) {
+        if (!messagingApi()->getMessage(&m, m_peer, messageId)) {
             continue;
         }
 
@@ -584,7 +583,7 @@ void MessagesModel::processHistoryMessages(const QVector<quint32> &messageIds)
         // Reverse order from older to newer
         const quint32 messageId = messageIds.at(i);
         Message m;
-        if (!m_qmlClient->client()->dataStorage()->getMessage(&m, m_peer, messageId)) {
+        if (!messagingApi()->getMessage(&m, m_peer, messageId)) {
             continue;
         }
 
@@ -665,6 +664,11 @@ QString MessagesModel::roleToName(MessagesModel::Role role) const
         }
     }
     return names.value(static_cast<int>(role));
+}
+
+MessagingApi *MessagesModel::messagingApi() const
+{
+    return client()->messagingApi();
 }
 
 MessageEvent::MessageEvent() :

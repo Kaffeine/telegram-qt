@@ -33,7 +33,9 @@ namespace Telegram {
 namespace Client {
 
 class DeclarativeClient;
+class MessagingApi;
 class PendingMessages;
+
 class Event
 {
     Q_GADGET
@@ -270,6 +272,8 @@ protected:
     static Column intToColumn(int value);
     static Role indexToRole(const QModelIndex &index, int role = Qt::DisplayRole);
     QString roleToName(Role role) const;
+
+    MessagingApi *messagingApi() const;
 
     PendingMessages *m_fetchOperation = nullptr;
     quint32 m_oldestMessageId = 0;
