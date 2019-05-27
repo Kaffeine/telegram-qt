@@ -24,6 +24,7 @@
 #include "TelegramNamespace.hpp"
 
 #include "DeclarativeClientOperator.hpp"
+#include "ItemModelExtensions.hpp"
 
 //#include "Event.hpp"
 //#include "Types.hpp"
@@ -175,7 +176,9 @@ public:
     QDate date;
 };
 
-class MessagesModel : public QAbstractTableModel, public DeclarativeClientMixin
+class MessagesModel : public QAbstractTableModel,
+        public DeclarativeClientMixin,
+        public ItemModelExtensions
 {
     Q_OBJECT
     //Q_PROPERTY(Classes enabledClass NOTIFY classChanged)
@@ -266,7 +269,7 @@ Q_SIGNALS:
     void peerChanged(Telegram::Peer peer);
 
 protected:
-    void insertMessages(const QVector<quint32> &messageIds);
+    void insertMessages(const QVector<quint32> &messageIds, Mode mode = CallModelApi);
 
     void processHistoryMessages(const QVector<quint32> &messageIds);
     void onMessageReceived(const Telegram::Peer peer, quint32 messageId);
