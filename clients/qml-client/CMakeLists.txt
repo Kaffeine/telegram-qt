@@ -12,6 +12,7 @@ set(app_SOURCES
     main.cpp
     models/DialogsModel.cpp
     models/DialogsModel.hpp
+    models/ItemModelExtensions.hpp
     models/MessagesModel.cpp
     models/MessagesModel.hpp
     qml.qrc
