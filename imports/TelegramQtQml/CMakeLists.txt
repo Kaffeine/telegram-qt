@@ -85,3 +85,15 @@ install(
     FILES qmldir plugins.qmltypes
     DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
 )
+
+if (DEVELOPER_BUILD)
+    message(STATUS "Hint: To update plugins.qmltypes run the following command:\n"
+        "    LD_LIBRARY_PATH=${CMAKE_INSTALL_FULL_LIBDIR} "
+        "${_qt5Core_install_prefix}/bin/qmlplugindump "
+        "-noinstantiate -nonrelocatable -v TelegramQt 0.2 "
+        "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml "
+        "> ${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes"
+        "\n"
+        ""
+        )
+endif()
