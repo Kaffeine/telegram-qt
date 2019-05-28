@@ -118,6 +118,7 @@ private slots:
     void testClientConnection();
     void registrationAuthError();
     void reconnect();
+    void reconnectNow();
 };
 
 tst_ConnectionApi::tst_ConnectionApi(QObject *parent) :
@@ -494,7 +495,7 @@ void tst_ConnectionApi::reconnect()
 
         QVariantList firstSignal = clientConnectionStatusSpy.takeFirst();
         QCOMPARE(firstSignal.first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
-        QCOMPARE(firstSignal.last().value<int>(), static_cast<int>(Client::ConnectionApi::StatusReasonRemote));
+        QCOMPARE(firstSignal.last().value<int>(), static_cast<int>(Client::ConnectionApi::StatusReasonError));
         clientConnectionStatusSpy.clear();
     }
 
@@ -508,6 +509,79 @@ void tst_ConnectionApi::reconnect()
         interestingSignal = clientConnectionStatusSpy.takeLast();
         QCOMPARE(interestingSignal.first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnected));
         clientConnectionStatusSpy.clear();
+    }
+}
+
+void tst_ConnectionApi::reconnectNow()
+{
+    const UserData userData = c_userWithPassword;
+    const DcOption clientDcOption = c_localDcOptions.first();
+
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+    QVERIFY2(privateKey.isValid(), "Unable to read private RSA key");
+
+    // Do not start the server yet
+
+    Client::Client client;
+    setupClientHelper(&client, userData, publicKey, clientDcOption);
+    Client::ConnectionApi *connectionApi = client.connectionApi();
+
+    QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusDisconnected);
+    QCOMPARE(connectionApi->remainingTimeToConnect(), -1);
+
+    QVector<int> remainingTimeList;
+    QVector<Client::ConnectionApi::Status> connectionStatusList;
+
+    connect(connectionApi, &Client::ConnectionApi::statusChanged,
+            this, [&remainingTimeList, &connectionStatusList, connectionApi] (Client::ConnectionApi::Status status) {
+        qWarning() << "status on changed:" << status << "rem time:" << connectionApi->remainingTimeToConnect();
+        connectionStatusList << status;
+        remainingTimeList << connectionApi->remainingTimeToConnect();
+    });
+
+    // --- Sign in ---
+    Client::AuthOperation *authOperation = connectionApi->startAuthentication();
+    QVERIFY(authOperation);
+
+    // First attempt
+    TRY_VERIFY(connectionStatusList.count() >= 2);
+    QCOMPARE(connectionStatusList.takeFirst(), Client::ConnectionApi::StatusWaitForConnection);
+    QCOMPARE(remainingTimeList.takeFirst(), 0); // The initial connection should always be scheduled with zero delay
+
+    QCOMPARE(connectionStatusList.takeFirst(), Client::ConnectionApi::StatusConnecting);
+    QCOMPARE(remainingTimeList.takeFirst(), -1);
+
+    int remainingAttempts = 5;
+    while (true) {
+        qWarning() << "remainingAttempts:" << remainingAttempts;
+        TRY_VERIFY(!connectionStatusList.isEmpty());
+        QCOMPARE(connectionStatusList.takeFirst(), Client::ConnectionApi::StatusWaitForConnection);
+        int timeAtTheMomentOfSignal = remainingTimeList.takeFirst();
+
+        if (connectionStatusList.isEmpty()) {
+            int currentRemainingTime = connectionApi->remainingTimeToConnect();
+            QVERIFY(timeAtTheMomentOfSignal >= currentRemainingTime);
+            if (currentRemainingTime > 50) {
+                connectionApi->connectRightNow();
+                QCOMPARE(connectionApi->remainingTimeToConnect(), 0);
+                break;
+            }
+        }
+        qWarning() << "Take connecting";
+        TRY_VERIFY(!connectionStatusList.isEmpty());
+        QCOMPARE(connectionStatusList.takeFirst(), Client::ConnectionApi::StatusConnecting);
+        QCOMPARE(remainingTimeList.takeFirst(), -1);
+
+        --remainingAttempts;
+        if (remainingAttempts <= 0) {
+#ifdef FAST_PASS
+            QSKIP("Unable to test for connectRightNow() (probably because of the FAST PASS mode ON");
+#else
+            QFAIL("Unable to test for connectRightNow()");
+#endif
+        }
     }
 }
 
