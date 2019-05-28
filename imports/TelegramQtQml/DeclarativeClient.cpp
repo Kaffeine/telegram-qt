@@ -38,6 +38,16 @@ DataStorage *DeclarativeClient::dataStorage() const
     return m_client->dataStorage();
 }
 
+ConnectionApi *DeclarativeClient::connectionApi() const
+{
+    return m_client->connectionApi();
+}
+
+MessagingApi *DeclarativeClient::messagingApi() const
+{
+    return m_client->messagingApi();
+}
+
 void DeclarativeClient::setAppInformation(AppInformation *newAppInfo)
 {
     m_client->setAppInformation(newAppInfo);

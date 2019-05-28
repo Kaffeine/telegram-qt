@@ -8,6 +8,7 @@
 #include "AccountStorage.hpp"
 #include "Client.hpp"
 #include "CAppInformation.hpp"
+#include "ConnectionApi.hpp"
 #include "DataStorage.hpp"
 #include "MessagingApi.hpp"
 
@@ -245,6 +246,12 @@ public:
         qmlRegisterUncreatableType<Telegram::Client::DataStorage>(uri, versionMajor, versionMinor, "DataStorage", QStringLiteral("DataStorage is an abstract type"));
         qmlRegisterType<Telegram::Client::InMemoryDataStorage>(uri, versionMajor, versionMinor, "InMemoryDataStorage");
         qmlRegisterType<Telegram::Client::DeclarativeMessageSender>(uri, versionMajor, versionMinor, "MessageSender");
+
+        QString cppOnlyText = QStringLiteral("API classes are not creatable");
+        qmlRegisterUncreatableType<Telegram::Client::ConnectionApi>
+                (uri, versionMajor, versionMinor, "ConnectionApi", cppOnlyText);
+        qmlRegisterUncreatableType<Telegram::Client::MessagingApi>
+                (uri, versionMajor, versionMinor, "MessagingApi", cppOnlyText);
     }
 };
 
