@@ -60,6 +60,8 @@ public:
 
     AuthOperation *startAuthentication();
     AuthOperation *checkIn();
+
+public Q_SLOTS:
     void disconnectFromServer();
 
 Q_SIGNALS:
