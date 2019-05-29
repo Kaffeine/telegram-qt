@@ -135,7 +135,7 @@ void tst_ConnectionApi::initTestCase()
         qputenv(BaseTcpTransport::timeoutEnvironmentVariableName(), QByteArrayLiteral("50"));
     }
     if (!qEnvironmentVariableIsSet(Client::ConnectionApi::reconnectionIntervalsEnvironmentVariableName())) {
-        qputenv(Client::ConnectionApi::reconnectionIntervalsEnvironmentVariableName(), QByteArrayLiteral("0,5,5,30,30,60"));
+        qputenv(Client::ConnectionApi::reconnectionIntervalsEnvironmentVariableName(), QByteArrayLiteral("0,20,50,100,300,500"));
     }
 #endif
 }
