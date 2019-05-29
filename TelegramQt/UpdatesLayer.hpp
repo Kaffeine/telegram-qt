@@ -29,7 +29,7 @@ namespace Client {
 class Backend;
 class DataStorage;
 class DataInternalApi;
-class MessagingApi;
+class MessagingApiPrivate;
 
 class UpdatesInternalApi : public QObject
 {
@@ -43,7 +43,7 @@ public:
     bool processUpdate(const TLUpdate &update);
 
 protected:
-    MessagingApi *messagingApi();
+    MessagingApiPrivate *messagingApi();
     DataStorage *dataStorage();
     DataInternalApi *dataInternalApi();
 

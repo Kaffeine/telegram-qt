@@ -4,7 +4,6 @@
 #include "ClientBackend.hpp"
 #include "DataStorage.hpp"
 #include "DataStorage_p.hpp"
-#include "MessagingApi.hpp"
 #include "MessagingApi_p.hpp"
 
 #ifdef DEVELOPER_BUILD
@@ -125,8 +124,7 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
         break;
     case TLValue::UpdateShortSentMessage:
     {
-        MessagingApiPrivate *messaging = MessagingApiPrivate::get(messagingApi());
-        messaging->onSentMessageIdResolved(0, updates.id);
+        messagingApi()->onSentMessageIdResolved(0, updates.id);
         // TODO: Check that the follow state update is the right thing to do.
         // This fixes scenario: "send sendMessage" -> "receive UpdateShortSentMessage" -> "receive UpdateReadHistoryOutbox with update.pts == m_updatesState.pts + 2"
         // setUpdateState(m_updatesState.pts + 1, 0, 0);
@@ -144,23 +142,21 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
 #ifdef DEVELOPER_BUILD
     qCDebug(c_updatesLoggingCategory) << Q_FUNC_INFO << update;
 #endif
-    MessagingApiPrivate *messaging = MessagingApiPrivate::get(messagingApi());
-
     switch (update.tlType) {
     case TLValue::UpdateMessageID:
-        messaging->onSentMessageIdResolved(update.randomId, update.quint32Id);
+        messagingApi()->onSentMessageIdResolved(update.randomId, update.quint32Id);
         return true;
     case TLValue::UpdateNewMessage:
     case TLValue::UpdateNewChannelMessage:
         if (dataInternalApi()->processNewMessage(update.message, update.pts)) {
-            messaging->onMessageReceived(update.message);
+            messagingApi()->onMessageReceived(update.message);
         }
         return true;
     case TLValue::UpdateReadHistoryInbox:
     {
         const Peer peer = Utils::toPublicPeer(update.peer);
         if (dataInternalApi()->updateInboxRead(peer, update.maxId)) {
-            messaging->onMessageInboxRead(peer, update.maxId);
+            messagingApi()->onMessageInboxRead(peer, update.maxId);
         }
     }
         return true;
@@ -168,7 +164,7 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
     {
         const Peer peer = Utils::toPublicPeer(update.peer);
         if (dataInternalApi()->updateOutboxRead(peer, update.maxId)) {
-            messaging->onMessageOutboxRead(peer, update.maxId);
+            messagingApi()->onMessageOutboxRead(peer, update.maxId);
         }
     }
         return true;
@@ -179,9 +175,9 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
     return false;
 }
 
-MessagingApi *UpdatesInternalApi::messagingApi()
+MessagingApiPrivate *UpdatesInternalApi::messagingApi()
 {
-    return m_backend->messagingApi();
+    return MessagingApiPrivate::get(m_backend->messagingApi());
 }
 
 DataStorage *UpdatesInternalApi::dataStorage()
