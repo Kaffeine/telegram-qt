@@ -430,7 +430,7 @@ void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Stat
         // Nothing to do; wait for Disconnected
         break;
     case BaseConnection::Status::Connecting:
-        setStatus(ConnectionApi::StatusConnecting, ConnectionApi::StatusReasonNone);
+        setStatus(ConnectionApi::StatusConnecting, ConnectionApi::StatusReasonLocal);
         break;
     case BaseConnection::Status::Connected:
         // Nothing to do; wait for DH
@@ -457,7 +457,7 @@ void ConnectionApiPrivate::onGotDcConfig(PendingOperation *operation)
         qCWarning(c_connectionApiLoggingCategory) << CALL_INFO;
     }
     if (m_initialConnection && m_initialConnection->status() == Connection::Status::HasDhKey) {
-        setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonNone);
+        setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonLocal);
         m_initialConnectOperation->setFinished();
     }
 }
@@ -496,7 +496,7 @@ void ConnectionApiPrivate::onNewAuthenticationFinished(PendingOperation *operati
         return;
     }
     if (!operation->isSucceeded()) {
-        setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonNone);
+        setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonError);
         qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << "TODO?";
         return;
     }
@@ -516,7 +516,7 @@ void ConnectionApiPrivate::onNewAuthenticationFinished(PendingOperation *operati
 
 void ConnectionApiPrivate::onAuthCodeRequired()
 {
-    setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonRemote);
+    setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonLocal);
 }
 
 void ConnectionApiPrivate::onConnectionStatusChanged(BaseConnection::Status status,
@@ -561,7 +561,7 @@ void ConnectionApiPrivate::onMainConnectionStatusChanged(BaseConnection::Status 
     case Connection::Status::Signed:
     {
         backend()->syncAccountToStorage();
-        setStatus(ConnectionApi::StatusConnected, ConnectionApi::StatusReasonNone);
+        setStatus(ConnectionApi::StatusConnected, ConnectionApi::StatusReasonLocal);
         PendingOperation *syncOperation = backend()->sync();
         connect(syncOperation, &PendingOperation::finished,
                 this, &ConnectionApiPrivate::onSyncFinished);
@@ -592,7 +592,7 @@ void ConnectionApiPrivate::onMainConnectionStatusChanged(BaseConnection::Status 
 
 void ConnectionApiPrivate::onMainConnectionLost()
 {
-    setStatus(ConnectionApi::StatusConnecting, ConnectionApi::StatusReasonRemote);
+    setStatus(ConnectionApi::StatusConnecting, ConnectionApi::StatusReasonError);
     AccountStorage *storage = backend()->accountStorage();
     storage->setAuthKey(m_mainConnection->authKey());
     storage->setAuthId(m_mainConnection->authId());

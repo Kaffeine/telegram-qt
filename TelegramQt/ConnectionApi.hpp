@@ -50,8 +50,7 @@ public:
     enum StatusReason {
         StatusReasonNone,
         StatusReasonLocal,
-        StatusReasonRemote,
-        StatusReasonTimeout
+        StatusReasonError,
     };
     Q_ENUM(StatusReason)
 
