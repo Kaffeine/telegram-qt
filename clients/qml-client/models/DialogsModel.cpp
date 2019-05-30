@@ -20,7 +20,7 @@ namespace Client {
 static const int UserRoleOffset = Qt::UserRole + 1;
 
 DialogsModel::DialogsModel(QObject *parent) :
-    QAbstractTableModel(parent)
+    QAbstractListModel(parent)
 {
 }
 
@@ -45,14 +45,6 @@ bool DialogsModel::hasPeer(const Peer peer) const
 QString DialogsModel::getName(const Peer peer) const
 {
     return QString();
-}
-
-int DialogsModel::columnCount(const QModelIndex &parent) const
-{
-    if (parent.isValid()) {
-        return 0;
-    }
-    return static_cast<int>(Column::Count);
 }
 
 int DialogsModel::rowCount(const QModelIndex &parent) const
@@ -234,20 +226,12 @@ DialogsModel::Role DialogsModel::intToRole(int value)
     return static_cast<Role>(value);
 }
 
-DialogsModel::Column DialogsModel::intToColumn(int value)
+DialogsModel::Role DialogsModel::indexToRole(const QModelIndex &index, int role) const
 {
-    if (value < 0 || value > static_cast<int>(Column::Count)) {
-        return Column::Invalid;
-    }
-    return static_cast<Column>(value);
-}
-
-DialogsModel::Role DialogsModel::indexToRole(const QModelIndex &index, int role)
-{
+    Q_UNUSED(index)
     if (role >= UserRoleOffset) {
         return intToRole(role - UserRoleOffset);
     }
-    //const Column section = intToColumn(index.column());
     return Role::Invalid;
 }
 

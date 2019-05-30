@@ -14,7 +14,7 @@ namespace Client {
 class DeclarativeClient;
 class DialogList;
 
-class DialogsModel : public QAbstractTableModel, public DeclarativeClientMixin
+class DialogsModel : public QAbstractListModel, public DeclarativeClientMixin
 {
     Q_OBJECT
     Q_PROPERTY(Telegram::Client::DeclarativeClient *client READ qmlClient WRITE setQmlClient NOTIFY clientChanged)
@@ -61,7 +61,6 @@ public:
     bool hasPeer(const Peer peer) const;
     QString getName(const Peer peer) const;
 
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -91,9 +90,10 @@ private slots:
 
 private:
     QVariantMap getDialogLastMessageData(const DialogEntry &dialog) const;
+
     static Role intToRole(int value);
-    static Column intToColumn(int value);
-    static Role indexToRole(const QModelIndex &index, int role = Qt::DisplayRole);
+    virtual Role indexToRole(const QModelIndex &index, int role = Qt::DisplayRole) const;
+
     QVector<DialogEntry> m_dialogs;
     DialogList *m_list = nullptr;
 
