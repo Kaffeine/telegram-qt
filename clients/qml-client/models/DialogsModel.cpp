@@ -35,6 +35,8 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
         { UserRoleOffset + static_cast<int>(Role::UnreadMessageCount), "unreadMessageCount" },
         { UserRoleOffset + static_cast<int>(Role::LastMessage), "lastMessage" },
         { UserRoleOffset + static_cast<int>(Role::FormattedLastMessage), "formattedLastMessage" },
+        { UserRoleOffset + static_cast<int>(Role::MuteUntil), "muteUntil" },
+        { UserRoleOffset + static_cast<int>(Role::MuteUntilDate), "muteUntilDate" },
     };
 
     return extraRoles;
@@ -87,8 +89,12 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
     case Role::LastMessage:
         return getDialogLastMessageData(dialog);
     case Role::Picture:
+        // Not implemented yet
+        return QVariant();
     case Role::MuteUntil:
+        return dialog.notificationSettings.muteUntil();
     case Role::MuteUntilDate:
+        return QDateTime::fromSecsSinceEpoch(dialog.notificationSettings.muteUntil());
         // invalid roles
     case Role::Count:
     case Role::Invalid:
@@ -224,6 +230,7 @@ void DialogsModel::addPeer(const Peer &peer)
     d.chatType = c->messagingApi()->getChatType(peer);
     d.name = getPeerAlias(peer, c);
     c->messagingApi()->getMessage(&d.lastChatMessage, peer, dialogData->topMessage);
+    c->messagingApi()->getNotificationSettings(&d.notificationSettings, peer);
 
     m_dialogs << d;
 }

@@ -27,6 +27,7 @@ public:
         QString formattedLastMessage;
         Telegram::Message lastChatMessage;
         UserDialog *internal = nullptr;
+        NotificationSettings notificationSettings;
     };
 
     enum class Column {
