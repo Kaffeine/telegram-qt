@@ -16,6 +16,7 @@ ItemDelegate {
     property var timestamp
     property var peer
     property var draft
+    property bool isPinned
     readonly property bool isGroupChat: (chatType === Telegram.Namespace.ChatTypeGroup)
                                         || (chatType === Telegram.Namespace.ChatTypeMegaGroup)
     property var lastMessage
@@ -202,11 +203,26 @@ ItemDelegate {
                     }
                     readonly property color emphasedContentColor: palette.link
                 }
-                UnreadMessageIndicator {
-                    id: unreadIndicator
-                    count: dialogDelegate.unreadMessageCount
+
+                Flow {
+                    id: dialogIndicator
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
+
+                    UnreadMessageIndicator {
+                        id: unreadIndicator
+                        count: dialogDelegate.unreadMessageCount
+                    }
+
+                    Text {
+                        id: pinnedIndicator
+                        visible: dialogDelegate.isPinned && (unreadIndicator.count == 0)
+                        text: "<pin>"
+                        color: "gray"
+                        font: lastMessageDateTime.font
+                        height: font.pixelSize
+                        textFormat: Text.PlainText
+                    }
                 }
 
                 Rectangle {

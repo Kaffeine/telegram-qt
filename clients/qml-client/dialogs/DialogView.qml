@@ -38,6 +38,7 @@ Frame {
             lastMessage: model.lastMessage
             peer: model.peer
             highlighted: currentPeer === peer
+            isPinned: model.isPinned
             chatType: model.chatType
         }
         ScrollBar.vertical: ScrollBar {}
