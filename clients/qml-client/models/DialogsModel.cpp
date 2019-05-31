@@ -31,6 +31,7 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
         { UserRoleOffset + static_cast<int>(Role::Peer), "peer" },
         { UserRoleOffset + static_cast<int>(Role::DisplayName), "displayName" },
         { UserRoleOffset + static_cast<int>(Role::ChatType), "chatType" },
+        { UserRoleOffset + static_cast<int>(Role::IsPinned), "isPinned" },
         { UserRoleOffset + static_cast<int>(Role::UnreadMessageCount), "unreadMessageCount" },
         { UserRoleOffset + static_cast<int>(Role::LastMessage), "lastMessage" },
         { UserRoleOffset + static_cast<int>(Role::FormattedLastMessage), "formattedLastMessage" },
@@ -77,6 +78,8 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
         return static_cast<int>(dialog.chatType);
     case Role::DisplayName:
         return dialog.name;
+    case Role::IsPinned:
+        return dialog.internal->flags & UserDialog::Flags::Pinned;
     case Role::UnreadMessageCount:
         return dialog.internal->unreadCount;
     case Role::FormattedLastMessage:

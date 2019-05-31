@@ -34,6 +34,7 @@ public:
         PeerId,
         PeerName,
         ChatType,
+        IsPinned,
         Picture, // Photo (in terms of Telegram)
         FormattedLastMessage,
         MuteUntil,
@@ -46,6 +47,7 @@ public:
         Peer,
         DisplayName,
         ChatType,
+        IsPinned,
         Picture, // Photo (in terms of Telegram)
         LastMessage,
         FormattedLastMessage,
