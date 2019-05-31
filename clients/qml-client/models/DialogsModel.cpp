@@ -175,8 +175,16 @@ void DialogsModel::onListReady()
     connect(m_list, &DialogList::listChanged, this, &DialogsModel::onListChanged);
     beginResetModel();
     m_dialogs.clear();
-    const QVector<Telegram::Peer> peers = m_list->peers();
-    for (const Telegram::Peer &peer : peers) {
+
+    const QVector<Telegram::Peer> pinned = client()->dataStorage()->pinnedDialogs();
+    for (const Telegram::Peer &peer : pinned) {
+        addPeer(peer);
+    }
+    const QVector<Telegram::Peer> dialogs = client()->dataStorage()->dialogs();
+    for (const Telegram::Peer &peer : dialogs) {
+        if (pinned.contains(peer)) {
+            continue;
+        }
         addPeer(peer);
     }
     endResetModel();
