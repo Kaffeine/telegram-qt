@@ -28,7 +28,7 @@ ApplicationWindow {
 
     QtObject {
         id: options
-        property bool localServer: true && false
+        property bool localServer: true //&& false
     }
 
     Telegram.FileAccountStorage {
@@ -75,14 +75,14 @@ ApplicationWindow {
 
     Telegram.RsaKey {
         id: localServerKey
-        fileName: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/TelegramServer/public_key.pem"
+        fileName: "/tmp/TelegramTestServer.RlcpbW.pem" //StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/TelegramServer/public_key.pem"
     }
     Telegram.Settings {
         id: localSettings
         serverOptions: [
             Telegram.ServerOption {
                 address: "127.0.0.1"
-                port: 11441
+                port: 10443
             }
         ]
         serverKey: localServerKey
