@@ -103,15 +103,19 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
 
 QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) const
 {
+    if (dialog.lastChatMessage.id == 0) {
+        return {};
+    }
+    const Telegram::Message &lastChatMessage = dialog.lastChatMessage;
     QString text;
-    if (dialog.lastChatMessage.type == TelegramNamespace::MessageTypeText) {
-        text = dialog.lastChatMessage.text;
+    if (lastChatMessage.type == TelegramNamespace::MessageTypeText) {
+        text = lastChatMessage.text;
     } else {
         Telegram::MessageMediaInfo info;
-        client()->dataStorage()->getMessageMediaInfo(&info, dialog.peer, dialog.lastChatMessage.id);
-        switch (dialog.lastChatMessage.type) {
+        client()->dataStorage()->getMessageMediaInfo(&info, dialog.peer, lastChatMessage.id);
+        switch (lastChatMessage.type) {
         case TelegramNamespace::MessageTypeWebPage:
-            text = dialog.lastChatMessage.text;
+            text = lastChatMessage.text;
             //text = info.url();
             break;
         case TelegramNamespace::MessageTypeSticker:
@@ -127,9 +131,9 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
     }
 
     return {
-        { "type", static_cast<int>(dialog.lastChatMessage.type) },
+        { "type", static_cast<int>(lastChatMessage.type) },
         { "text", text },
-        { "flags", static_cast<int>(dialog.lastChatMessage.flags / 2) },
+        { "flags", static_cast<int>(lastChatMessage.flags / 2) },
     };
 }
 
