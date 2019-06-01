@@ -91,24 +91,25 @@ ItemDelegate {
 
                     function formatRelativeCurrentDay(date)
                     {
-                        var today = new Date
-                        today.setHours(0,0,0,0)
-                        if (dialogDelegate.timestamp >= today) {
-                            return Qt.formatTime(dialogDelegate.timestamp, "hh:mm")
+                        var referenceDate = new Date
+                        referenceDate.setHours(0,0,0,0)
+                        if (dialogDelegate.timestamp >= referenceDate) {
+                            // Today
+                            return dialogDelegate.timestamp.toLocaleTimeString(Qt.locale(), Locale.ShortFormat);
                         }
-                        today.setDate(today.getDate() - 1)
-                        console.log(today)
-                        if (dialogDelegate.timestamp >= today) {
+                        referenceDate.setDate(referenceDate.getDate() - 1)
+                        if (dialogDelegate.timestamp >= referenceDate) {
                             return qsTr("Yesterday")
                         }
-                        today.setDate(today.getDate() - 6)
-                        if (dialogDelegate.timestamp >= today) {
+                        referenceDate.setDate(referenceDate.getDate() - 6)
+                        if (dialogDelegate.timestamp >= referenceDate) {
+                            // Less than a week ago
                             return dialogDelegate.timestamp.toLocaleString(Qt.locale(), "ddd")
                         }
-                        return Qt.formatDateTime(dialogDelegate.timestamp, "d MMM hh:mm")
+                        return dialogDelegate.timestamp.toLocaleDateString(Qt.locale(), Locale.ShortFormat)
                     }
 
-                    text: typeof(dialogDelegate.timestamp) === "undefined" ? "" : formatRelativeCurrentDay(dialogDelegate.timestamp)
+                    text: typeof(dialogDelegate.timestamp) === "undefined" ? "<none>" : formatRelativeCurrentDay(dialogDelegate.timestamp)
                 }
                 Rectangle {
                     opacity: 0.1
