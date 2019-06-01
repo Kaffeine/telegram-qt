@@ -133,6 +133,7 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
     return {
         { "type", static_cast<int>(lastChatMessage.type) },
         { "text", text },
+        { "timestamp", QDateTime::fromSecsSinceEpoch(lastChatMessage.timestamp) },
         { "flags", static_cast<int>(lastChatMessage.flags / 2) },
     };
 }
