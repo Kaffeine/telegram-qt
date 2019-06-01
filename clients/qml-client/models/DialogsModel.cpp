@@ -130,9 +130,17 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
         }
     }
 
+    QString senderName;
+    if (lastChatMessage.fromId) {
+        Telegram::UserInfo userInfo;
+        client()->dataStorage()->getUserInfo(&userInfo, lastChatMessage.fromId);
+        senderName = userInfo.firstName();
+    }
+
     return {
         { "type", static_cast<int>(lastChatMessage.type) },
         { "text", text },
+        { "senderName", senderName },
         { "timestamp", QDateTime::fromSecsSinceEpoch(lastChatMessage.timestamp) },
         { "flags", static_cast<int>(lastChatMessage.flags / 2) },
     };
