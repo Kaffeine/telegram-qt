@@ -9,15 +9,15 @@ import ".."
 ItemDelegate {
     id: dialogDelegate
     width: 200
-    property int margin: (peerPicture.width - picture.width) / 2
-    readonly property int defaultMargin: dialogDelegate.margin
 
     property string displayName
+    property int chatType
     property int unreadMessageCount
     property var timestamp
     property var peer
     property var draft
-
+    readonly property bool isGroupChat: (chatType === Telegram.Namespace.ChatTypeGroup)
+                                        || (chatType === Telegram.Namespace.ChatTypeMegaGroup)
     property var lastMessage
 
     property bool debugGeometry: false
@@ -50,24 +50,26 @@ ItemDelegate {
                 anchors.top: parent.top
                 width: parent.width
                 height: displayNameLabel.implicitHeight
-                Rectangle {
-                    id: chatTypeIcon
-                    radius: 4
-                    width: height
-                    height: displayNameLabel.height
-                    visible: model.dialogType === 1
-                    color: "blue"
-                    anchors.verticalCenter: parent.verticalCenter
-                }
+                Row {
+                    spacing: dialogDelegate.smallSpacing
+                    height: displayNameLabel.implicitHeight
+                    Rectangle {
+                        id: chatTypeIcon
+                        radius: 4
+                        width: height
+                        height: displayNameLabel.height
+                        visible: false // func(dialogDelegate.chatType)
+                        color: "blue"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
 
-                InlineHeader {
-                    id: displayNameLabel
-                    anchors.left: chatTypeIcon.visible ? chatTypeIcon.right : parent.left
-                    anchors.leftMargin: chatTypeIcon.visible ? dialogDelegate.smallSpacing : 0
+                    InlineHeader {
+                        id: displayNameLabel
+                        text: dialogDelegate.displayName
+                    }
+                    anchors.left: parent.left
                     anchors.right: deliveryIcon.visible ? deliveryIcon.left : lastMessageDateTime.left
                     anchors.rightMargin: dialogDelegate.spacing
-                    anchors.verticalCenter: parent.verticalCenter
-                    text: dialogDelegate.displayName
                 }
 
                 Rectangle {
@@ -75,7 +77,7 @@ ItemDelegate {
                     width: height
                     height: lastMessageDateTime.font.pixelSize
                     color: "green"
-                    visible: !draft && (typeof(model.lastMessage) != "undefined" && model.lastMessage.flags & 1)
+                    visible: !draft && (typeof(dialogDelegate.lastMessage) != "undefined" && dialogDelegate.lastMessage.flags & 1)
                     anchors.right: lastMessageDateTime.left
                     anchors.rightMargin: dialogDelegate.smallSpacing
                     anchors.verticalCenter: parent.verticalCenter
@@ -129,9 +131,7 @@ ItemDelegate {
                     elide: Text.ElideRight
                     text: prefixStyledText + contentText
                     anchors.left: parent.left
-                    anchors.rightMargin: unreadIndicator.visible ? dialogDelegate.spacing : 0
-                    //anchors.right: unreadIndicator.visible ? unreadIndicator.left : parent.right
-                    anchors.right: parent.right
+                    anchors.right: dialogIndicator.visible ? dialogIndicator.left : parent.right
                     anchors.verticalCenter: parent.verticalCenter
                     maximumLineCount: 1
 
