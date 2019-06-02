@@ -147,8 +147,8 @@ ItemDelegate {
                             if (lastMessage.flags & 1) {
                                 return "You: "
                             }
-                            if (model.dialogType === 1) {
-                                return lastMessage.senderFirstName + ": "
+                            if (dialogDelegate.isGroupChat) {
+                                return lastMessage.senderName + ": "
                             }
                         }
                         return ""
