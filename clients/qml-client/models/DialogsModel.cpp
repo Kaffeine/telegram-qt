@@ -30,6 +30,7 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
     static const QHash<int, QByteArray> extraRoles {
         { UserRoleOffset + static_cast<int>(Role::Peer), "peer" },
         { UserRoleOffset + static_cast<int>(Role::DisplayName), "displayName" },
+        { UserRoleOffset + static_cast<int>(Role::ChatType), "chatType" },
         { UserRoleOffset + static_cast<int>(Role::UnreadMessageCount), "unreadMessageCount" },
         { UserRoleOffset + static_cast<int>(Role::LastMessage), "lastMessage" },
         { UserRoleOffset + static_cast<int>(Role::FormattedLastMessage), "formattedLastMessage" },
@@ -72,8 +73,8 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
     switch (role) {
     case Role::Peer:
         return QVariant::fromValue(dialog.internal->peer);
-    case Role::PeerTypeIcon:
-        return QVariant::fromValue(dialog.typeIcon);
+    case Role::ChatType:
+        return static_cast<int>(dialog.chatType);
     case Role::DisplayName:
         return dialog.name;
     case Role::UnreadMessageCount:
@@ -216,6 +217,7 @@ void DialogsModel::addPeer(const Peer &peer)
         return;
     }
     d.internal = dialogData;
+    d.chatType = c->messagingApi()->getChatType(peer);
     d.name = getPeerAlias(peer, c);
     c->messagingApi()->getMessage(&d.lastChatMessage, peer, dialogData->topMessage);
 

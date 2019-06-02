@@ -33,6 +33,7 @@ public:
         PeerType,
         PeerId,
         PeerName,
+        ChatType,
         Picture, // Photo (in terms of Telegram)
         FormattedLastMessage,
         MuteUntil,
@@ -43,8 +44,8 @@ public:
 
     enum class Role {
         Peer,
-        PeerTypeIcon,
         DisplayName,
+        ChatType,
         Picture, // Photo (in terms of Telegram)
         LastMessage,
         FormattedLastMessage,
