@@ -661,16 +661,11 @@ void MessagesModel::onMessageSent(const Peer peer, quint64 sentRandomId, quint32
             continue;
         }
 
-        Telegram::Message m;
-        if (!messagingApi()->getMessage(&m, m_peer, acceptedMessageId)) {
-            qWarning() << Q_FUNC_INFO << "Sent message" << sentRandomId << "/" << acceptedMessageId
-                       << "for peer" << peer << "not found";
-            break;
-        }
-        messageEvent->receivedTimestamp = m.timestamp;
+        messageEvent->messageId = acceptedMessageId;
+
         QModelIndex left = index(i, 0);
         QModelIndex right = index(i, columnCount());
-        emit dataChanged(left, right, {Qt::DisplayRole, static_cast<int>(Role::ReceivedTimestamp)});
+        emit dataChanged(left, right, {Qt::DisplayRole, static_cast<int>(Role::Identifier)});
         break;
     }
 }
