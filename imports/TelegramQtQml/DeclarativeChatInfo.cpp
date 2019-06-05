@@ -35,12 +35,22 @@ void DeclarativeChatInfo::setDisplayName(const QString &displayName)
     emit displayNameChanged(displayName);
 }
 
+void DeclarativeChatInfo::setChatType(TelegramNamespace::ChatType chatType)
+{
+    if (m_chatType == chatType) {
+        return;
+    }
+    m_chatType = chatType;
+    emit chatTypeChanged();
+}
+
 void DeclarativeChatInfo::updateInfo()
 {
     if (!client()) {
         qCWarning(c_qmlLoggingCategory) << this << "Client not set!";
         return;
     }
+    setChatType(dataStorage()->getChatType(m_peer));
     if (!m_peer.isValid() || (m_peer.type == Peer::User)) {
         setDisplayName(QString());
         return;
