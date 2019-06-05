@@ -141,6 +141,29 @@ bool DataStorage::getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const
     return true;
 }
 
+TelegramNamespace::ChatType DataStorage::getChatType(const Peer &peer) const
+{
+    if (!peer.isValid()) {
+        return TelegramNamespace::ChatTypeInvalid;
+    }
+    if (peer.type == Peer::User) {
+        if (peer.id == selfUserId()) {
+            return TelegramNamespace::ChatTypeSelfChat;
+        }
+        return TelegramNamespace::ChatTypeDialog;
+    }
+    if (peer.type == Telegram::Peer::Channel) {
+        Telegram::ChatInfo info;
+        if (getChatInfo(&info, peer)) {
+            if (info.broadcast()) {
+                return TelegramNamespace::ChatTypeBroadcast;
+            }
+        }
+        return TelegramNamespace::ChatTypeGroup;
+    }
+    return TelegramNamespace::ChatTypeMegaGroup;
+}
+
 bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 messageId)
 {
     Q_D(const DataStorage);

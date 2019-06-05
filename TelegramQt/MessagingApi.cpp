@@ -350,6 +350,12 @@ bool MessagingApi::getDialogInfo(DialogInfo *info, const Peer &peer) const
     return d->dataStorage()->getDialogInfo(info, peer);
 }
 
+TelegramNamespace::ChatType MessagingApi::getChatType(const Peer &peer) const
+{
+    Q_D(const MessagingApi);
+    return d->dataStorage()->getChatType(peer);
+}
+
 /*!
     Returns PendingMessages with messages sorted from newer (higher message id) to older (lower message id)
 */
