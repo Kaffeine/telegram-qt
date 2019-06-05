@@ -321,16 +321,6 @@ bool DataInternalApi::processNewMessage(const TLMessage &message, quint32 pts)
     return true;
 }
 
-void DataInternalApi::processPinnedDialogs(const TLVector<TLDialog> &dialogs)
-{
-    m_pinnedDialogs.clear();
-    for (const TLDialog &dialog : dialogs) {
-        if (dialog.pinned()) {
-            m_pinnedDialogs.append(Telegram::Utils::toPublicPeer(dialog.peer));
-        }
-    }
-}
-
 void DataInternalApi::processData(const TLMessage &message)
 {
     TLMessage *m = nullptr;
@@ -409,6 +399,15 @@ void DataInternalApi::processData(const TLMessagesDialogs &dialogs)
         Peer peer = Utils::toPublicPeer(tlDialog.peer);
         UserDialog *dialog = ensureDialog(peer);
 
+        bool wasPinned = m_pinnedDialogs.contains(peer);
+        if (tlDialog.pinned() != wasPinned) {
+            if (tlDialog.pinned()) {
+                m_pinnedDialogs.append(peer);
+            } else {
+                m_pinnedDialogs.removeOne(peer);
+            }
+        }
+
         dialog->readInboxMaxId = tlDialog.readInboxMaxId;
         dialog->readOutboxMaxId = tlDialog.readOutboxMaxId;
         dialog->unreadCount = tlDialog.unreadCount;
@@ -437,6 +436,11 @@ void DataInternalApi::processData(const TLMessagesMessages &messages)
 void DataInternalApi::setContactList(const TLVector<TLContact> &contacts)
 {
     m_contactList = contacts;
+}
+
+void DataInternalApi::clearPinnedDialogs()
+{
+    m_pinnedDialogs.clear();
 }
 
 quint64 DataInternalApi::enqueueMessage(const Telegram::Peer peer, const QString &message, quint32 replyToMsgId)

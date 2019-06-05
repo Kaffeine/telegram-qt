@@ -168,6 +168,7 @@ PendingOperation *MessagingApiPrivate::getDialogs()
     PendingOperation *operation = new PendingOperation(this);
     operation->setOperationName("MessagingApi::getDialogs");
     MessagesRpcLayer::PendingMessagesDialogs *rpcOperation = messagesLayer()->getDialogs(0, 0, 0, TLInputPeer(), c_dialogsFetchPortion);
+    dataInternalApi()->clearPinnedDialogs();
     rpcOperation->connectToFinished(this, &MessagingApiPrivate::onGetDialogsFinished, operation, rpcOperation);
     return operation;
 }
@@ -419,7 +420,6 @@ void MessagingApiPrivate::onGetDialogsFinished(PendingOperation *operation, Mess
     TLMessagesDialogs dialogs;
     rpcOperation->getResult(&dialogs);
     dataInternalApi()->processData(dialogs);
-    dataInternalApi()->processPinnedDialogs(dialogs.dialogs);
     rpcOperation->deleteLater();
 
     if (m_dialogList) {

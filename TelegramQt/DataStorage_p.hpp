@@ -77,7 +77,6 @@ public:
     const TLMessage *getMessage(const Telegram::Peer &peer, quint32 messageId) const;
 
     bool processNewMessage(const TLMessage &message, quint32 pts);
-    void processPinnedDialogs(const TLVector<TLDialog> &dialogs);
     void processData(const TLMessage &message);
     void processData(const TLVector<TLChat> &chats);
     void processData(const TLChat &chat);
@@ -88,6 +87,7 @@ public:
     void processData(const TLMessagesMessages &messages);
 
     void setContactList(const TLVector<TLContact> &contacts);
+    void clearPinnedDialogs();
 
     quint64 enqueueMessage(const Peer peer, const QString &message, quint32 replyToMsgId);
     SentMessage getQueuedMessage(quint64 randomMessageId) const;
