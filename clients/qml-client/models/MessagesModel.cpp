@@ -571,6 +571,12 @@ void MessagesModel::insertMessages(const QVector<quint32> &messageIds, Mode mode
 
     QVector<Event*> newEvents;
     for (const quint32 messageId : messagesToInsertNow) {
+        int messageIndex = getMessageEventIndex(messageId);
+        if (messageIndex >= 0) {
+            // TODO: Update roles
+            continue;
+        }
+
         Message m;
         if (!messagingApi()->getMessage(&m, m_peer, messageId)) {
             continue;
@@ -581,6 +587,11 @@ void MessagesModel::insertMessages(const QVector<quint32> &messageIds, Mode mode
         newEvents.prepend(event);
     }
 
+    if (newEvents.isEmpty()) {
+        return;
+    }
+
+    // Will we ever need a random insertion?
     if (mode == CallModelApi) {
         beginInsertRows(QModelIndex(), m_events.count(), m_events.count() + newEvents.count() - 1);
     }
