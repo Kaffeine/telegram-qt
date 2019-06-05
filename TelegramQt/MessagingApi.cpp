@@ -222,6 +222,11 @@ void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
     } else {
         state->synced = true;
     }
+
+    if (state->syncedMessageId >= message.id) {
+        return;
+    }
+
     state->syncedMessageId = message.id;
 
     emit q->messageReceived(peer, message.id);
