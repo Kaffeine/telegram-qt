@@ -284,6 +284,8 @@ protected:
 
     MessagingApi *messagingApi() const;
 
+    static void setupEventFromMessage(MessageEvent *event, const Telegram::Message &message);
+
     PendingMessages *m_fetchOperation = nullptr;
     quint32 m_oldestMessageId = 0;
     QVector<Event*> m_events;

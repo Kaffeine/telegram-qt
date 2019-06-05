@@ -577,11 +577,7 @@ void MessagesModel::insertMessages(const QVector<quint32> &messageIds, Mode mode
         }
 
         MessageEvent *event = new MessageEvent();
-        event->messageId = messageId;
-        event->fromId = m.fromId;
-        event->text = m.text;
-        event->receivedTimestamp = m.timestamp;
-        event->sentTimestamp = event->receivedTimestamp;
+        setupEventFromMessage(event, m);
         newEvents.prepend(event);
     }
 
@@ -613,11 +609,7 @@ void MessagesModel::processHistoryMessages(const QVector<quint32> &messageIds)
         }
 
         MessageEvent *event = new MessageEvent();
-        event->messageId = messageId;
-        event->fromId = m.fromId;
-        event->text = m.text;
-        event->receivedTimestamp = m.timestamp;
-        event->sentTimestamp = event->receivedTimestamp;
+        setupEventFromMessage(event, m);
         newEvents.append(event);
     }
 
@@ -742,6 +734,17 @@ QString MessagesModel::roleToName(MessagesModel::Role role) const
 MessagingApi *MessagesModel::messagingApi() const
 {
     return client()->messagingApi();
+}
+
+void MessagesModel::setupEventFromMessage(MessageEvent *event, const Telegram::Message &message)
+{
+    event->messageId = message.id;
+    event->fromId = message.fromId;
+    event->text = message.text;
+    event->receivedTimestamp = message.timestamp;
+    if (!event->sentTimestamp) {
+        event->sentTimestamp = message.timestamp;
+    }
 }
 
 MessageEvent::MessageEvent() :
