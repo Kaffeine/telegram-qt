@@ -647,7 +647,7 @@ void MessagesModel::onMessageQueued(const Telegram::Peer peer, quint64 messageRa
     event->sentMessageId = messageRandomId;
     event->sentTimestamp = static_cast<quint32>(QDateTime::currentMSecsSinceEpoch() / 1000);
 
-    beginInsertRows(QModelIndex(), m_events.count(), m_events.count() + m_events.count());
+    beginInsertRows(QModelIndex(), m_events.count(), m_events.count());
     m_events.append(event);
     endInsertRows();
 }
