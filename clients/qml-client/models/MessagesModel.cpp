@@ -731,6 +731,22 @@ MessagingApi *MessagesModel::messagingApi() const
     return client()->messagingApi();
 }
 
+int MessagesModel::getMessageEventIndex(quint32 messageId) const
+{
+    for (int i = 0; i < m_events.count(); ++i) {
+        const Event *event = m_events.at(i);
+        if (event->type != Event::Type::Message) {
+            continue;
+        }
+        const MessageEvent *messageEvent = static_cast<const MessageEvent *>(event);
+        if (messageEvent->messageId != messageId) {
+            continue;
+        }
+        return i;
+    }
+    return -1;
+}
+
 void MessagesModel::setupEventFromMessage(MessageEvent *event, const Telegram::Message &message)
 {
     event->messageId = message.id;
