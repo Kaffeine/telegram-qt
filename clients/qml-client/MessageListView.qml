@@ -80,6 +80,13 @@ ListView {
     onHeightChanged: syncViewPosition()
     onMovementStarted: resetViewPositionKeeper()
 
+    Connections {
+        target: model
+        onModelReset: {
+            fetchPrevious()
+        }
+    }
+
     function syncViewPosition()
     {
         if (inMotion) {
