@@ -307,6 +307,10 @@ bool DataInternalApi::processNewMessage(const TLMessage &message, quint32 pts)
 
     const Peer dialogPeer = Utils::getMessageDialogPeer(message, selfUserId());
     UserDialog *dialog = ensureDialog(dialogPeer);
+    if (dialog->topMessage >= message.id) {
+        return false; // The message already exists
+    }
+
     if (dialog->topMessage < message.id) {
         dialog->topMessage = message.id;
         dialog->date = message.date;
