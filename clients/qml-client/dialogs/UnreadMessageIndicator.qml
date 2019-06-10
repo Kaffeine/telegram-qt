@@ -1,5 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.2
+import QtQuick.Controls.Material 2.12
+import QtQuick.Controls.Material.impl 2.12
 
 Label {
     id: control
@@ -15,7 +17,8 @@ Label {
     horizontalAlignment: Text.AlignHCenter
     verticalAlignment: Text.AlignVCenter
     text: control.count
-    color: "white"
+
+    // readonly property color prefixColor: model.draft ? Material.color(Material.Red) : Material.color(Material.Blue)
 
     property int count
     property bool active
@@ -29,6 +32,6 @@ Label {
     background: Rectangle {
         id: background
         radius: 4
-        color: active ? "steelblue" : "gray"
+        color: control.active ? "steelblue" : "gray"
     }
 }

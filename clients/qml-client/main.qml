@@ -16,8 +16,12 @@ ApplicationWindow {
 
 //    width: recommendedDialogWidth
 //    height: recommendedDialogHeight
-    width: Screen.width * 1/4
+    width: Screen.width * 2/4
     height: Screen.height * 2/4
+
+     //Material.theme: Material.Dark
+//    Material.accent: Material.LightGreen
+//    Material.foreground: Material.DeepOrange
 
     readonly property int recommendedDialogWidth: width < Screen.width * 2/4 ? width : Screen.width * 2/4
     readonly property int recommendedDialogHeight: height < Screen.height * 2/4 ? height : Screen.height * 2/4
@@ -33,7 +37,7 @@ ApplicationWindow {
 
     Telegram.FileAccountStorage {
         id: accountStorage
-        accountIdentifier: options.localServer ? "default-local" : "default-official"
+        accountIdentifier: options.localServer ? "default-local0" : "default-official"
         fileName: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/telegram-qt/secrets/" + accountIdentifier
         onSynced: console.log("Account synced")
     }
@@ -75,13 +79,13 @@ ApplicationWindow {
 
     Telegram.RsaKey {
         id: localServerKey
-        fileName: "/tmp/TelegramTestServer.RlcpbW.pem" //StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/TelegramServer/public_key.pem"
+        fileName: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/TelegramServer/public_key.pem"
     }
     Telegram.Settings {
         id: localSettings
         serverOptions: [
             Telegram.ServerOption {
-                address: "127.0.0.1"
+                address: "192.168.1.183"
                 port: 10443
             }
         ]

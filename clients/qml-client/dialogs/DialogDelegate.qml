@@ -1,6 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
-import QtQuick.Controls.Material 2.0
+import QtQuick.Controls.Material 2.12
 
 import TelegramQt 0.2 as Telegram
 
@@ -138,7 +138,12 @@ ItemDelegate {
                     maximumLineCount: 1
 
                     readonly property string prefixStyledText: prefixText ? "<font color=\"" + prefixColor + "\">" + prefixText + "</font>" : ""
-                    readonly property color prefixColor: model.draft ? "red" : palette.link
+                    readonly property color prefixColor: dialogDelegate.highlighted
+                                                         ? palette.highlightedText
+                                                         : model.draft ? "red" : palette.link
+
+                    //readonly property color prefixColor: model.draft ? "red" : palette.link
+//                    readonly property color prefixColor: model.draft ? Material.color(Material.Red) : Material.color(Material.Blue)
                     readonly property string prefixText: {
                         if (model.draft) {
                             return "Draft: "
