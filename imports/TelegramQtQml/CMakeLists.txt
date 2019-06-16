@@ -10,10 +10,6 @@ add_definitions(-DQT_NO_CAST_FROM_ASCII)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC TRUE)
 
-if (NOT INSTALL_QML_IMPORT_DIR)
-    set(INSTALL_QML_IMPORT_DIR ${CMAKE_INSTALL_LIBDIR}/qt5/qml)
-endif()
-
 add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED
     DeclarativeAuthOperation.cpp
     DeclarativeAuthOperation.hpp
