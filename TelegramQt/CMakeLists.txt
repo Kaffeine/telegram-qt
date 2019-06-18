@@ -220,17 +220,13 @@ target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/RpcLayers
 )
 
-target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
+target_link_libraries(TelegramQt${QT_VERSION_MAJOR} PUBLIC
     Qt5::Core
     Qt5::Network
 )
-target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE
-    ${QT5_INCLUDES}
-)
 
-target_link_libraries(TelegramQt${QT_VERSION_MAJOR}
-    ${OPENSSL_LIBRARIES}
-    ${ZLIB_LIBRARIES}
+target_link_libraries(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    OpenSSL::Crypto
 )
 
 set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
