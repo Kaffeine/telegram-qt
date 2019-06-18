@@ -2,7 +2,7 @@
 #include <QTest>
 #include <QDebug>
 
-#include "Generator.hpp"
+#include "../Generator.hpp"
 
 const QString c_typesSection = QStringLiteral("---types---");
 const QString c_functionsSection = QStringLiteral("---functions---");
