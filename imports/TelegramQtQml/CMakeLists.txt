@@ -74,7 +74,7 @@ target_link_libraries(TelegramQmlPlugin
 
 install(
     TARGETS TelegramQmlPlugin
-    LIBRARY DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
+    DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
 )
 
 install(
