@@ -40,8 +40,19 @@ option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra out
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
 
+if(ENABLE_TESTS)
+    list(APPEND QT_COMPONENTS Test)
+endif()
+
+if(ENABLE_QML_IMPORT)
+    list(APPEND QT_COMPONENTS Qml)
+endif()
+
 if (BUILD_SERVER)
+    # QtGui is used by the server to resize images
+    list(APPEND QT_COMPONENTS Gui)
     if (DEVELOPER_BUILD)
+        # In Developer mode the server shows auth code via Notification DBus iface
         list(APPEND QT_COMPONENTS DBus)
     endif()
 endif()

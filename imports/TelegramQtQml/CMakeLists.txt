@@ -1,7 +1,5 @@
 project(TelegramQtQml)
 
-find_package(Qt5 COMPONENTS Core Qml REQUIRED)
-
 add_definitions(-DTELEGRAMQT_QML_LIBRARY)
 
 add_definitions(-DQT_DEPRECATED_WARNINGS)
