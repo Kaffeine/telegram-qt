@@ -342,10 +342,7 @@ void RpcLayer::onConnectionFailed()
 {
     for (PendingRpcOperation *op : m_operations) {
         if (!op->isFinished()) {
-            op->setFinishedWithError({{
-                                          PendingOperation::c_text(),
-                                          QStringLiteral("connection failed")
-                                      }});
+            op->setFinishedWithTextError(QLatin1String("Connection failed"));
         }
     }
     m_operations.clear();

@@ -50,6 +50,7 @@ QVariantHash PendingOperation::errorDetails() const
 
 QString PendingOperation::c_text()
 {
+    // Keep this as QStringLiteral because it is a short string used everywhere.
     return QStringLiteral("text");
 }
 

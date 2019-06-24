@@ -32,7 +32,7 @@ QString ConnectionError::description() const
 {
     switch (m_code) {
     case InvalidAuthKey:
-        return QStringLiteral("Invalid auth key");
+        return QLatin1String("Invalid auth key");
     default:
         return QStringLiteral("Unknown error bytes: %1").arg(QString::fromLatin1(toByteArray().toHex()));
     }

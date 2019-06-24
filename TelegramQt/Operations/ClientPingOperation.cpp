@@ -63,7 +63,7 @@ void PingOperation::onTimeToKeepAlive()
 {
     if (m_pingMessageId) {
          qCWarning(c_clientPingCategory) << Q_FUNC_INFO << "Incomplete ping operation";
-         emit pingFailed({{PendingOperation::c_text(), QStringLiteral("The previous ping has no respond at the time for the next ping")}});
+         emit pingFailed({{PendingOperation::c_text(), QLatin1String("The previous ping has no respond at the time for the next ping")}});
          return;
     }
 
@@ -109,15 +109,15 @@ void PingOperation::onPingRpcFinished()
     stream >> pong;
     qCDebug(c_clientPingCategory) << "onPingRpcFinished() ping id:" << pong.pingId << "messageId:" << hex << pong.msgId << m_pingMessageId;
     if (!pong.isValid()) {
-        emit pingFailed({{PendingOperation::c_text(), QStringLiteral("Invalid ping reply")}});
+        emit pingFailed({{PendingOperation::c_text(), QLatin1String("Invalid ping reply")}});
         return;
     }
     if (m_pingMessageId != pong.msgId) {
-        emit pingFailed({{PendingOperation::c_text(), QStringLiteral("Unexpected message id")}});
+        emit pingFailed({{PendingOperation::c_text(), QLatin1String("Unexpected message id")}});
         return;
     }
     if (m_pingId != pong.pingId) {
-        emit pingFailed({{PendingOperation::c_text(), QStringLiteral("Unexpected ping id")}});
+        emit pingFailed({{PendingOperation::c_text(), QLatin1String("Unexpected ping id")}});
         return;
     }
     m_pingMessageId = 0;

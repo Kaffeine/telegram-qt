@@ -102,7 +102,7 @@ RpcLayer *Connection::rpcLayer()
 ConnectOperation *Connection::connectToDc()
 {
     if (m_status != Status::Disconnected) {
-        const QString text = QStringLiteral("Connection is already in progress");
+        const QString text = QLatin1String("Connection is already in progress");
         return PendingOperation::failOperation<ConnectOperation>(text, this);
     }
 

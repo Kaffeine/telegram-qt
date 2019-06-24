@@ -17,8 +17,8 @@ ConnectOperation::ConnectOperation(Connection *connection) :
     connect(connection->transport(), &BaseTransport::errorOccurred, this,
             [this] (QAbstractSocket::SocketError error, const QString &text) {
         setFinishedWithError({
-                                 { QStringLiteral("qtError"), error },
-                                 { QStringLiteral("qtErrorText"), text },
+                                 { QLatin1String("qtError"), error },
+                                 { QLatin1String("qtErrorText"), text },
                              });
     });
 

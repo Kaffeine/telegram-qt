@@ -143,10 +143,10 @@ PendingOperation *ConnectionApiPrivate::connectToDc(quint32 dcId)
                 );
     if (!opt.isValid()) {
         return PendingOperation::failOperation(
-                    QStringLiteral("Unable to connect: the requested DC not found in configuration)"));
+                    QLatin1String("Unable to connect: the requested DC not found in configuration)"));
     }
     connectToServer({ opt });
-    m_initialConnectOperation->setObjectName(QStringLiteral("ConnectionApi::connectToServer(id)"));
+    m_initialConnectOperation->setObjectName(QLatin1String("ConnectionApi::connectToServer(id)"));
     return m_initialConnectOperation;
 }
 
@@ -161,7 +161,7 @@ PendingOperation *ConnectionApiPrivate::connectToServer(const QVector<DcOption> 
     qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << "(dcOptions)";
 
     if (dcOptions.isEmpty()) {
-        return PendingOperation::failOperation(QStringLiteral("Unable to connect to server: no address given"));
+        return PendingOperation::failOperation(QLatin1String("Unable to connect to server: no address given"));
     }
     if (m_initialConnectOperation) {
         qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << "return existing connect operation"
@@ -273,12 +273,12 @@ AuthOperation *ConnectionApiPrivate::startAuthentication()
             delete m_authOperation;
         } else {
             return PendingOperation::failOperation<AuthOperation>
-                    (QStringLiteral("Auth operation is already in progress"), this);
+                    (QLatin1String("Auth operation is already in progress"), this);
         }
     }
 
     m_authOperation = new AuthOperation(this);
-    m_authOperation->setObjectName(QStringLiteral("Auth/StartAuthentication"));
+    m_authOperation->setObjectName(QLatin1String("Auth/StartAuthentication"));
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
     priv->setBackend(backend());
     priv->setRunMethod(&AuthOperationPrivate::requestAuthCode);
@@ -287,7 +287,7 @@ AuthOperation *ConnectionApiPrivate::startAuthentication()
     connect(m_authOperation, &AuthOperation::authCodeRequired,
             this, &ConnectionApiPrivate::onAuthCodeRequired);
     PendingOperation *connectionOperation = connectToServer(backend()->settings()->serverConfiguration());
-    connectionOperation->setObjectName(QStringLiteral("ConnectionApi::connectToServer(dcs from settings)"));
+    connectionOperation->setObjectName(QLatin1String("ConnectionApi::connectToServer(dcs from settings)"));
     m_authOperation->runAfter(connectionOperation);
     return m_authOperation;
 }
@@ -301,16 +301,16 @@ AuthOperation *ConnectionApiPrivate::checkIn()
 
     if (m_authOperation && !m_authOperation->isFinished()) {
         return PendingOperation::failOperation<AuthOperation>
-                (QStringLiteral("Auth operation is already in progress"), this);
+                (QLatin1String("Auth operation is already in progress"), this);
     }
     AccountStorage *accountStorage = backend()->accountStorage();
     if (!accountStorage || !accountStorage->hasMinimalDataSet()) {
         return PendingOperation::failOperation<AuthOperation>
-                (QStringLiteral("No minimal account data set"), this);
+                (QLatin1String("No minimal account data set"), this);
     }
     m_authOperation = new AuthOperation(this);
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
-    m_authOperation->setObjectName(QStringLiteral("Auth/CheckIn"));
+    m_authOperation->setObjectName(QLatin1String("Auth/CheckIn"));
     priv->setBackend(backend());
     priv->setRunMethod(&AuthOperationPrivate::checkAuthorization);
     connect(m_authOperation, &AuthOperation::finished,
@@ -327,20 +327,20 @@ AuthOperation *ConnectionApiPrivate::checkIn()
 QVariantHash ConnectionApiPrivate::getBackendSetupErrorDetails() const
 {
     if (!backend()->accountStorage()) {
-        return {{PendingOperation::c_text(), QStringLiteral("Account storage is missing")}};
+        return {{PendingOperation::c_text(), QLatin1String("Account storage is missing")}};
     }
     if (!backend()->dataStorage()) {
-        return {{PendingOperation::c_text(), QStringLiteral("Data storage is missing")}};
+        return {{PendingOperation::c_text(), QLatin1String("Data storage is missing")}};
     }
     Settings *settings = backend()->settings();
     if (!settings) {
-        return {{PendingOperation::c_text(), QStringLiteral("Settings object is missing")}};
+        return {{PendingOperation::c_text(), QLatin1String("Settings object is missing")}};
     }
     if (!settings->serverRsaKey().isValid()) {
-        return {{PendingOperation::c_text(), QStringLiteral("Invalid server RSA key")}};
+        return {{PendingOperation::c_text(), QLatin1String("Invalid server RSA key")}};
     }
     if (!settings->isValid()) {
-        return {{PendingOperation::c_text(), QStringLiteral("Invalid settings")}};
+        return {{PendingOperation::c_text(), QLatin1String("Invalid settings")}};
     }
     return {};
 }
@@ -620,7 +620,7 @@ void ConnectionApiPrivate::onMainConnectionRestored()
     }
 
     m_authOperation = new AuthOperation(this);
-    m_authOperation->setObjectName(QStringLiteral("Auth/CheckIn(Restore)"));
+    m_authOperation->setObjectName(QLatin1String("Auth/CheckIn(Restore)"));
     AuthOperationPrivate *priv = AuthOperationPrivate::get(m_authOperation);
     priv->setBackend(backend());
     priv->setRunMethod(&AuthOperationPrivate::checkAuthorization);

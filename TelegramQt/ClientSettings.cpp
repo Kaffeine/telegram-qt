@@ -46,11 +46,11 @@ void Settings::setPingInterval(quint32 interval, quint32 serverDisconnectionAddi
 QVector<DcOption> Settings::defaultServerConfiguration()
 {
     static const QVector<DcOption> s_builtInDcs = {
-            DcOption(QStringLiteral("149.154.175.50") , 443),
-            DcOption(QStringLiteral("149.154.167.51") , 443),
-            DcOption(QStringLiteral("149.154.175.100"), 443),
-            DcOption(QStringLiteral("149.154.167.91") , 443),
-            DcOption(QStringLiteral("91.108.56.165")  , 443),
+            DcOption(QLatin1String("149.154.175.50") , 443),
+            DcOption(QLatin1String("149.154.167.51") , 443),
+            DcOption(QLatin1String("149.154.175.100"), 443),
+            DcOption(QLatin1String("149.154.167.91") , 443),
+            DcOption(QLatin1String("91.108.56.165")  , 443),
     };
     return s_builtInDcs;
 }
@@ -58,7 +58,7 @@ QVector<DcOption> Settings::defaultServerConfiguration()
 QVector<DcOption> Settings::testServerConfiguration()
 {
     static const QVector<DcOption> s_builtInTestDcs = {
-            DcOption(QStringLiteral("149.154.167.40") , 443, 2),
+            DcOption(QLatin1String("149.154.167.40") , 443, 2),
     };
     return s_builtInTestDcs;
 }

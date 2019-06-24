@@ -176,7 +176,7 @@ PendingOperation *MessagingApiPrivate::getDialogs()
 PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const Telegram::Client::MessageFetchOptions &options)
 {
     if (!peer.isValid()) {
-        return PendingOperation::failOperation<PendingMessages>(QStringLiteral("Invalid peer for getHistory()"), this);
+        return PendingOperation::failOperation<PendingMessages>(QLatin1String("Invalid peer for getHistory()"), this);
     }
     TLInputPeer inputPeer = dataInternalApi()->toInputPeer(peer);
     PendingMessages *apiOp = new PendingMessages(this);

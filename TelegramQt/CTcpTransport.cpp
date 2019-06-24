@@ -213,7 +213,7 @@ void BaseTcpTransport::onReadyRead()
             } else {
                 qCWarning(c_loggingTcpTransport) << CALL_INFO << "Invalid packet size byte"
                                                  << hex << showbase << length_t1;
-                setError(QAbstractSocket::UnknownSocketError, QStringLiteral("Invalid read operation"));
+                setError(QAbstractSocket::UnknownSocketError, QLatin1String("Invalid read operation"));
                 disconnectFromHost();
                 return;
             }
