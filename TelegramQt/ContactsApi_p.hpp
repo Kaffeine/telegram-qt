@@ -53,12 +53,14 @@ public:
     DataInternalApi *dataInternalApi();
     ContactsRpcLayer *contactsLayer();
 
-    ContactList *m_contactList = nullptr;
-
 protected slots:
     void onContactsImported(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsImportedContacts *rpcOperation);
     void onGetContactsResult(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsContacts *rpcOperation);
     void onSelfUserResult(PendingOperation *operation, UsersRpcLayer::PendingUserVector *rpcOperation);
+
+protected:
+    ContactList *m_contactList = nullptr;
+
 };
 
 } // Client namespace
