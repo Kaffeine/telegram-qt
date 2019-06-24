@@ -111,24 +111,23 @@ void AuthOperation::abort()
     qCWarning(c_loggingClientAuthOperation) << CALL_INFO << "STUB";
 }
 
-PendingOperation *AuthOperationPrivate::checkAuthorization()
+void AuthOperationPrivate::checkAuthorization()
 {
     Q_Q(AuthOperation);
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO;
     AccountStorage *storage = m_backend->accountStorage();
     if (!storage->hasMinimalDataSet()) {
         q->setFinishedWithError({{PendingOperation::c_text(), QStringLiteral("No minimal account data set")}});
-        return nullptr;
+        return;
     }
     // Backend::connectToServer() automatically takes the data from the account storage,
     // So just make some RPC call to check if connection works.
-    PendingRpcOperation *updateStatusOperation = accountLayer()->updateStatus(false);
-    connect(updateStatusOperation, &PendingRpcOperation::finished,
+    PendingRpcOperation *rpcOperation = accountLayer()->updateStatus(false);
+    connect(rpcOperation, &PendingRpcOperation::finished,
             this, &AuthOperationPrivate::onAccountStatusUpdateFinished);
-    return updateStatusOperation;
 }
 
-PendingOperation *AuthOperationPrivate::requestAuthCode()
+void AuthOperationPrivate::requestAuthCode()
 {
     Q_Q(AuthOperation);
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO;
@@ -136,36 +135,35 @@ PendingOperation *AuthOperationPrivate::requestAuthCode()
     if (!appInfo) {
         const QString text = QStringLiteral("Unable to request auth code, "
                                             "because the application information is not set");
-        return PendingOperation::failOperation(text, this);
+        q->setFinishedWithError({{PendingOperation::c_text(), text}});
+        return;
     }
 
     if (m_backend->connectionApi()->status() != ConnectionApi::StatusWaitForAuthentication) {
         qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "Connection doesn't wait for authentication";
-        return nullptr;
+        return;
     }
 
     if (m_phoneNumber.isEmpty()) {
         emit q->phoneNumberRequired();
-        return nullptr;
+        return;
     }
 
     Connection *connection = ConnectionApiPrivate::get(m_backend->connectionApi())->getDefaultConnection();
     if (!connection) {
-        qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unable to get default connection!";
-        return nullptr;
+        q->setFinishedWithError({{PendingOperation::c_text(), QStringLiteral("Unable to get default connection!")}});
+        return;
     }
 
-    AuthRpcLayer::PendingAuthSentCode *requestCodeOperation
+    AuthRpcLayer::PendingAuthSentCode *rpcOperation
             = authLayer()->sendCode(m_phoneNumber, appInfo->appId(), appInfo->appHash());
     connect(connection, &BaseConnection::errorOccured, this, &AuthOperationPrivate::onConnectionError);
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO
                                           << "requestPhoneCode"
                                           << Telegram::Utils::maskPhoneNumber(m_phoneNumber)
                                           << "on dc" << connection->dcOption().id;
-    connect(requestCodeOperation, &PendingOperation::finished, this, [this, requestCodeOperation] {
-       this->onRequestAuthCodeFinished(requestCodeOperation);
-    });
-    return requestCodeOperation;
+    connect(rpcOperation, &PendingRpcOperation::finished,
+            this, &AuthOperationPrivate::onRequestAuthCodeFinished);
 }
 
 PendingOperation *AuthOperation::submitAuthCode(const QString &code)

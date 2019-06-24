@@ -56,11 +56,12 @@ public:
     AccountRpcLayer *accountLayer() const;
     AuthRpcLayer *authLayer() const;
 
-    using RunMethod = PendingOperation *(AuthOperationPrivate::*)();
+    using RunMethod = void (AuthOperationPrivate::*)();
     void setRunMethod(RunMethod method);
 
-    PendingOperation *checkAuthorization();
-    PendingOperation *requestAuthCode();
+    void checkAuthorization();
+    void requestAuthCode();
+
     PendingOperation *submitAuthCode(const QString &code);
     PendingOperation *submitPassword(const QString &password);
 
