@@ -129,7 +129,6 @@ set(telegram_qt_HEADERS
     TelegramNamespace_p.hpp
     UniqueLazyPointer.hpp
     Utils.hpp
-    crypto-aes.hpp
     crypto-rsa.hpp
     telegramqt_global.h
 )
@@ -171,10 +170,12 @@ list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp)
 list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp)
 
 list(APPEND telegram_qt_SOURCES
+    Crypto/Aes.cpp
     Crypto/AesCtr.cpp
 )
 
 list(APPEND telegram_qt_HEADERS
+    Crypto/Aes.hpp
     Crypto/AesCtr.hpp
 )
 

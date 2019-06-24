@@ -60,7 +60,7 @@ void BaseDhLayer::setServerRsaKey(const RsaKey &key)
     m_rsaKey = key;
 }
 
-SAesKey BaseDhLayer::generateTmpAesKey() const
+Crypto::AesKey BaseDhLayer::generateTmpAesKey() const
 {
     qCDebug(c_baseDhLayerCategory) << Q_FUNC_INFO << m_serverNonce << m_newNonce;
     QByteArray newNonceAndServerNonce;
@@ -81,7 +81,7 @@ SAesKey BaseDhLayer::generateTmpAesKey() const
 
     qCDebug(c_baseDhLayerCategory) << CALL_INFO << "key:" << key.toHex() << "iv:" << iv.toHex();
 
-    return SAesKey(key, iv);
+    return Crypto::AesKey(key, iv);
 }
 
 bool BaseDhLayer::checkClientServerNonse(CTelegramStream &stream) const

@@ -21,6 +21,7 @@
 #include "TelegramNamespace.hpp"
 #include "RandomGenerator.hpp"
 #include "RsaKey.hpp"
+#include "Crypto/Aes.hpp"
 
 #include <QTest>
 #include <QDebug>
@@ -66,11 +67,11 @@ void tst_utils::testAesEncryption()
 {
     const QByteArray key(32, char(1));
     const QByteArray iv(32, char(2));
-    const SAesKey aesKey(key, iv);
+    const Crypto::AesKey aesKey(key, iv);
     const QByteArray sourceData = QByteArrayLiteral("TestData12345678");
-    const QByteArray encodedData = Utils::aesEncrypt(sourceData, aesKey);
+    const QByteArray encodedData = Crypto::aesEncrypt(sourceData, aesKey);
     QVERIFY(!encodedData.isEmpty());
-    const QByteArray decodedData = Utils::aesDecrypt(encodedData, aesKey);
+    const QByteArray decodedData = Crypto::aesDecrypt(encodedData, aesKey);
     QCOMPARE(sourceData, decodedData);
 }
 

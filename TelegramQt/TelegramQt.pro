@@ -159,7 +159,6 @@ HEADERS += \
     TLFunctions.hpp \
     TLTypes.hpp \
     TLNumbers.hpp \
-    crypto-aes.hpp \
     crypto-rsa.hpp \
     LegacySecretReader.hpp \
     PendingOperation.hpp \

@@ -62,8 +62,8 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
 #endif
     const QByteArray messageKey = package.mid(8, 16);
     const QByteArray encryptedData = package.mid(24);
-    const SAesKey key = getDecryptionAesKey(messageKey);
-    const QByteArray decryptedData = Utils::aesDecrypt(encryptedData, key).left(encryptedData.length());
+    const Crypto::AesKey key = getDecryptionAesKey(messageKey);
+    const QByteArray decryptedData = Crypto::aesDecrypt(encryptedData, key).left(encryptedData.length());
 #ifdef BASE_RPC_IO_DEBUG
     qCDebug(c_baseRpcLayerCategoryIn) << "authKeyId:" << hex << showbase << *authKeyIdBytes;
     qCDebug(c_baseRpcLayerCategoryIn) << "messageKey:" << messageKey.toHex();
@@ -120,7 +120,7 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     return processMTProtoMessage(message);
 }
 
-SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
+Crypto::AesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
 {
     const QByteArray authKey = m_sendHelper->authKey();
 #ifdef USE_MTProto_V1
@@ -138,7 +138,7 @@ SAesKey BaseRpcLayer::generateAesKey(const QByteArray &messageKey, int x) const
     const QByteArray iv  = sha256_b.left(8) + sha256_a.mid(8, 16) + sha256_b.mid(24, 8);
 #endif
 
-    return SAesKey(key, iv);
+    return Crypto::AesKey(key, iv);
 }
 
 quint32 BaseRpcLayer::contentRelatedMessagesNumber() const
@@ -200,8 +200,8 @@ bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
         const QByteArray decryptedData = stream.getData();
         messageKey = Utils::sha256(getEncryptionKeyPart() + decryptedData).mid(8, 16);
 #endif
-        const SAesKey key = getEncryptionAesKey(messageKey);
-        encryptedPackage = Utils::aesEncrypt(decryptedData, key).left(packageLength);
+        const Crypto::AesKey key = getEncryptionAesKey(messageKey);
+        encryptedPackage = Crypto::aesEncrypt(decryptedData, key).left(packageLength);
 
 #ifdef BASE_RPC_IO_DEBUG
         qCDebug(c_baseRpcLayerCategoryOut) << "authKeyId:"

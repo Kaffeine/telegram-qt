@@ -253,7 +253,7 @@ bool DhLayer::acceptDhParams()
         packageLength += randomPadding.size();
     }
 
-    const QByteArray encryptedAnswer = Utils::aesEncrypt(sha + innerData + randomPadding, m_tmpAesKey);
+    const QByteArray encryptedAnswer = Crypto::aesEncrypt(sha + innerData + randomPadding, m_tmpAesKey);
 
     QByteArray output;
     CTelegramStream outputStream(&output, /* write */ true);
@@ -288,7 +288,7 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
     QByteArray encryptedPackage;
     stream >> encryptedPackage;
 
-    const QByteArray answerWithHash = Utils::aesDecrypt(encryptedPackage, m_tmpAesKey);
+    const QByteArray answerWithHash = Crypto::aesDecrypt(encryptedPackage, m_tmpAesKey);
     const QByteArray sha1OfAnswer = answerWithHash.mid(0, 20);
     const QByteArray answer = answerWithHash.mid(20, 304);
 

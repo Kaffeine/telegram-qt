@@ -20,7 +20,6 @@
 
 #include <QByteArray>
 
-#include "crypto-aes.hpp"
 #include "RsaKey.hpp"
 
 namespace Telegram {
@@ -39,8 +38,6 @@ QByteArray sha256(const QByteArray &data);
 quint64 getFingerprints(const QByteArray &data, const BitsOrder64 order);
 QByteArray binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp);
 QByteArray rsa(const QByteArray &data, const Telegram::RsaKey &key);
-QByteArray aesDecrypt(const QByteArray &data, const SAesKey &key);
-QByteArray aesEncrypt(const QByteArray &data, const SAesKey &key);
 QByteArray packGZip(const QByteArray &data);
 QByteArray unpackGZip(const QByteArray &data);
 

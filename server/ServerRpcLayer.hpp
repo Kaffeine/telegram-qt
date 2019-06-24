@@ -61,8 +61,8 @@ public:
 
 protected:
     bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) override;
-    SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
-    SAesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
+    Crypto::AesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
+    Crypto::AesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
 
     QByteArray getEncryptionKeyPart() const final;
     QByteArray getVerificationKeyPart() const final;

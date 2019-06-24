@@ -283,7 +283,7 @@ bool DhLayer::processServerDHParamsOK(const QByteArray &encryptedAnswer)
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "encryptedAnswer.size():" << encryptedAnswer.size();
     m_tmpAesKey = generateTmpAesKey();
 
-    const QByteArray answerWithHash = Utils::aesDecrypt(encryptedAnswer, m_tmpAesKey);
+    const QByteArray answerWithHash = Crypto::aesDecrypt(encryptedAnswer, m_tmpAesKey);
     const QByteArray sha1OfAnswer = answerWithHash.mid(0, 20);
     const QByteArray answer = answerWithHash.mid(20, 564);
     if (Utils::sha1(answer) != sha1OfAnswer) {
@@ -386,7 +386,7 @@ PendingRpcOperation *DhLayer::requestDhGenerationResult()
         }
         qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << "Inner data size:" << innerData.size();
 
-        encryptedPackage = Utils::aesEncrypt(sha + innerData + randomPadding, m_tmpAesKey);
+        encryptedPackage = Crypto::aesEncrypt(sha + innerData + randomPadding, m_tmpAesKey);
         encryptedPackage.truncate(packageLength);
     }
 

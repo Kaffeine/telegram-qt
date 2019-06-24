@@ -121,12 +121,12 @@ public:
     bool processMTProtoMessage(const MTProto::Message &message) override { m_lastProcessedMessage = message; return false; }
 
 protected:
-    SAesKey getEncryptionAesKey(const QByteArray &messageKey) const final
+    Crypto::AesKey getEncryptionAesKey(const QByteArray &messageKey) const final
     {
         return m_mode == Mode::Client ? generateClientToServerAesKey(messageKey) : generateServerToClientAesKey(messageKey);
     }
 
-    SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final
+    Crypto::AesKey getDecryptionAesKey(const QByteArray &messageKey) const final
     {
         return m_mode == Mode::Client ? generateServerToClientAesKey(messageKey) : generateClientToServerAesKey(messageKey);
     }

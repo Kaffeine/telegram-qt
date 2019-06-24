@@ -75,8 +75,8 @@ protected Q_SLOTS:
 
 protected:
     bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) override;
-    SAesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
-    SAesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
+    Crypto::AesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
+    Crypto::AesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
 
     QByteArray getEncryptionKeyPart() const final;
     QByteArray getVerificationKeyPart() const final;

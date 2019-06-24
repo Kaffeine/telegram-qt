@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014-2017 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2014-2019 Alexandr Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
@@ -15,19 +15,25 @@
 
  */
 
-#ifndef CRYPTOAES_HPP
-#define CRYPTOAES_HPP
+#ifndef TELEGRAM_AES_KEY_HPP
+#define TELEGRAM_AES_KEY_HPP
 
 #include <QByteArray>
 
-struct SAesKey {
+namespace Telegram {
+
+namespace Crypto {
+
+// Internal class
+struct AesKey {
     QByteArray key;
     QByteArray iv;
 
-    SAesKey(const QByteArray &initialKey = QByteArray(), const QByteArray &initialIV = QByteArray()) :
+    AesKey() = default;
+    AesKey(const QByteArray &initialKey, const QByteArray &initialIV) :
         key(initialKey), iv(initialIV) { }
 
-    SAesKey &operator=(const SAesKey &anotherKey)
+    AesKey &operator=(const AesKey &anotherKey)
     {
         key = anotherKey.key;
         iv  = anotherKey.iv;
@@ -35,4 +41,11 @@ struct SAesKey {
     }
 };
 
-#endif // CRYPTOAES_HPP
+QByteArray aesDecrypt(const QByteArray &data, const AesKey &key);
+QByteArray aesEncrypt(const QByteArray &data, const AesKey &key);
+
+} // Crypto namespace
+
+} // Telegram namespace
+
+#endif // TELEGRAM_AES_KEY_HPP

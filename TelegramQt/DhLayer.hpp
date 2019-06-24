@@ -20,9 +20,9 @@
 
 #include <QObject>
 
+#include "Crypto/Aes.hpp"
 #include "RsaKey.hpp"
 #include "TLNumbers.hpp"
-#include "crypto-aes.hpp"
 #include <QtEndian>
 
 #ifdef NETWORK_LOGGING
@@ -67,7 +67,7 @@ public:
     void setServerRsaKey(const RsaKey &key);
 
     // AES
-    SAesKey generateTmpAesKey() const;
+    Crypto::AesKey generateTmpAesKey() const;
 
     // Helpers
     bool checkClientServerNonse(CTelegramStream &stream) const;
@@ -109,7 +109,7 @@ protected:
     quint32 m_q = 0;
 
     RsaKey m_rsaKey;
-    SAesKey m_tmpAesKey;
+    Crypto::AesKey m_tmpAesKey;
 
     quint32 m_g = 0;
     QByteArray m_dhPrime;

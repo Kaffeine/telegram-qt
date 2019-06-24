@@ -22,7 +22,7 @@
 
 #include <QObject>
 
-#include "crypto-aes.hpp"
+#include "Crypto/Aes.hpp"
 
 class CTelegramStream;
 
@@ -64,11 +64,11 @@ public:
     virtual void onConnectionFailed() {}
 
 protected:
-    SAesKey generateAesKey(const QByteArray &messageKey, int x) const;
-    SAesKey generateClientToServerAesKey(const QByteArray &messageKey) const { return generateAesKey(messageKey, 0); }
-    SAesKey generateServerToClientAesKey(const QByteArray &messageKey) const { return generateAesKey(messageKey, 8); }
-    virtual SAesKey getDecryptionAesKey(const QByteArray &messageKey) const = 0;
-    virtual SAesKey getEncryptionAesKey(const QByteArray &messageKey) const = 0;
+    Crypto::AesKey generateAesKey(const QByteArray &messageKey, int x) const;
+    Crypto::AesKey generateClientToServerAesKey(const QByteArray &messageKey) const { return generateAesKey(messageKey, 0); }
+    Crypto::AesKey generateServerToClientAesKey(const QByteArray &messageKey) const { return generateAesKey(messageKey, 8); }
+    virtual Crypto::AesKey getDecryptionAesKey(const QByteArray &messageKey) const = 0;
+    virtual Crypto::AesKey getEncryptionAesKey(const QByteArray &messageKey) const = 0;
 
     virtual QByteArray getEncryptionKeyPart() const = 0;
     virtual QByteArray getVerificationKeyPart() const = 0;
