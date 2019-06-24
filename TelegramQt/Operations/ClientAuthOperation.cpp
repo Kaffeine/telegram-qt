@@ -117,7 +117,7 @@ void AuthOperationPrivate::checkAuthorization()
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO;
     AccountStorage *storage = m_backend->accountStorage();
     if (!storage->hasMinimalDataSet()) {
-        q->setFinishedWithError({{PendingOperation::c_text(), QStringLiteral("No minimal account data set")}});
+        q->setFinishedWithTextError(QLatin1String("No minimal account data set"));
         return;
     }
     // Backend::connectToServer() automatically takes the data from the account storage,
@@ -133,25 +133,25 @@ void AuthOperationPrivate::requestAuthCode()
     qCDebug(c_loggingClientAuthOperation) << CALL_INFO;
     const AppInformation *appInfo = m_backend->m_appInformation;
     if (!appInfo) {
-        const QString text = QStringLiteral("Unable to request auth code, "
-                                            "because the application information is not set");
-        q->setFinishedWithError({{PendingOperation::c_text(), text}});
+        q->setFinishedWithTextError(QLatin1String("Unable to request auth code: "
+                                                  "Client::appInformation() is not set"));
         return;
     }
 
     if (m_backend->connectionApi()->status() != ConnectionApi::StatusWaitForAuthentication) {
-        qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "Connection doesn't wait for authentication";
+        qCWarning(c_loggingClientAuthOperation) << CALL_INFO << "Connection doesn't wait for authentication";
         return;
     }
 
     if (m_phoneNumber.isEmpty()) {
+        qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "Phone number required";
         emit q->phoneNumberRequired();
         return;
     }
 
     Connection *connection = ConnectionApiPrivate::get(m_backend->connectionApi())->getDefaultConnection();
     if (!connection) {
-        q->setFinishedWithError({{PendingOperation::c_text(), QStringLiteral("Unable to get default connection!")}});
+        q->setFinishedWithTextError(QLatin1String("Unable to get default connection!"));
         return;
     }
 
@@ -175,13 +175,13 @@ PendingOperation *AuthOperation::submitAuthCode(const QString &code)
 PendingOperation *AuthOperationPrivate::submitAuthCode(const QString &code)
 {
     if (m_authCodeHash.isEmpty()) {
-        const QString text = QStringLiteral("Unable to submit auth code without a code hash");
+        const QString text = QLatin1String("Unable to submit auth code without a code hash");
         qCWarning(c_loggingClientAuthOperation) << CALL_INFO << text;
         return PendingOperation::failOperation(text);
     }
 
     if (code.isEmpty()) {
-        const QString text = QStringLiteral("Deny to submit empty auth code");
+        const QString text = QLatin1String("Deny to submit empty auth code");
         qCWarning(c_loggingClientAuthOperation) << CALL_INFO << text;
         return PendingOperation::failOperation(text);
     }
@@ -219,8 +219,8 @@ PendingOperation *AuthOperation::submitPassword(const QString &password)
 PendingOperation *AuthOperationPrivate::submitPassword(const QString &password)
 {
     if (m_passwordCurrentSalt.isEmpty()) {
-        const QString text = QStringLiteral("Unable to submit auth password (password salt is missing)");
-        return PendingOperation::failOperation({{QStringLiteral("text"), text}});
+        const QString text = QLatin1String("Unable to submit auth password (password salt is missing)");
+        return PendingOperation::failOperation(text);
     }
     const QByteArray pwdData = m_passwordCurrentSalt + password.toUtf8() + m_passwordCurrentSalt;
     const QByteArray pwdHash = Utils::sha256(pwdData);
@@ -511,7 +511,7 @@ void AuthOperationPrivate::onConnectionError(const QByteArray &errorBytes)
         qCDebug(c_loggingClientAuthOperation) << CALL_INFO << "Connection error on finished auth operation:" << error.description();
         return;
     }
-    q->setFinishedWithError({{PendingOperation::c_text(), error.description()}});
+    q->setFinishedWithTextError(error.description());
 }
 
 void AuthOperationPrivate::onRedirectedConnectFinished(PendingOperation *operation)
