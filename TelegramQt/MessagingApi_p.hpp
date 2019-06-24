@@ -65,6 +65,17 @@ public:
     MessagesRpcLayer *messagesLayer();
     ChannelsRpcLayer *channelsLayer();
 
+protected slots:
+    void onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation);
+    void onGetHistoryFinished(PendingMessages *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation);
+    void onReadHistoryFinished(const Peer peer, quint32 messageId, MessagesRpcLayer::PendingMessagesAffectedMessages *rpcOperation);
+    void onReadChannelHistoryFinished(const Peer peer, quint32 messageId, ChannelsRpcLayer::PendingBool *rpcOperation);
+    void onHistoryReadSucceeded(const Peer peer, quint32 messageId);
+    void onSyncHistoryReceived(PendingMessages *operation);
+
+    bool pushBackNewOldMessages(const Telegram::Peer &peer, const QVector<quint32> &messages);
+
+protected:
     DialogList *m_dialogList = nullptr;
     MessagesRpcLayer *m_messagesLayer = nullptr;
     quint64 m_expectedRandomMessageId = 0;
@@ -75,15 +86,6 @@ public:
     MessagingApi::SyncMode m_syncMode = MessagingApi::NoSync;
     SyncState m_syncState = SyncState::NotStarted;
 
-protected slots:
-    void onGetDialogsFinished(PendingOperation *operation, MessagesRpcLayer::PendingMessagesDialogs *rpcOperation);
-    void onGetHistoryFinished(PendingMessages *operation, MessagesRpcLayer::PendingMessagesMessages *rpcOperation);
-    void onReadHistoryFinished(const Peer peer, quint32 messageId, MessagesRpcLayer::PendingMessagesAffectedMessages *rpcOperation);
-    void onReadChannelHistoryFinished(const Peer peer, quint32 messageId, ChannelsRpcLayer::PendingBool *rpcOperation);
-    void onHistoryReadSucceeded(const Peer peer, quint32 messageId);
-    void onSyncHistoryReceived(PendingMessages *operation);
-
-    bool pushBackNewOldMessages(const Telegram::Peer &peer, const QVector<quint32> &messages);
 };
 
 } // Client namespace
