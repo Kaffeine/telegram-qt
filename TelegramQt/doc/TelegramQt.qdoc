@@ -1,4 +1,16 @@
 /*!
+   \page TelegramQt-index.html
+   \title TelegramQt
+   \brief The TelegramQt module provides C++ API for Telegram protocol
+
+   \section1 API Reference
+
+   \list
+    \li \l{TelegramQt C++ Classes}{C++ Classes}
+   \endlist
+*/
+
+/*!
    \module TelegramQt
    \title TelegramQt C++ Classes
    \brief Provides C++ API for Telegram protocol.

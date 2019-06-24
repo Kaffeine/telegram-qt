@@ -3,10 +3,13 @@ include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
 project                 = TelegramQt
 description             = TelegramQt
 url                     = https://github.com/Kaffeine/TelegramQt
-version                 = 0.2.0
+version                 = $PROJECT_VERSION
 
 outputdir = html
 depends = qtcore qtnetwork
+
+moduleheader = TelegramQtDoc
+includepaths = . ../TelegramQt
 
 headerdirs  += ../TelegramQt
 sourcedirs  += ../TelegramQt

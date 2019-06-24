@@ -1,6 +1,8 @@
 
 add_library(TelegramQt${QT_VERSION_MAJOR})
 
+set_property(TARGET TelegramQt${QT_VERSION_MAJOR} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+
 target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE TELEGRAMQT_LIBRARY)
 
 target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
