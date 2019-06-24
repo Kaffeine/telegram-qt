@@ -1,1 +1,4 @@
-#include <TelegramQt/TelegramQt>
+#include "../TelegramQt/Client.hpp"
+#include "../TelegramQt/AccountApi.hpp"
+#include "../TelegramQt/ConnectionApi.hpp"
+#include "../TelegramQt/MessagingApi.hpp"
