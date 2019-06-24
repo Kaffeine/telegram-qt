@@ -132,6 +132,7 @@ public Q_SLOTS:
 
     void setFinished();
     void setFinishedWithError(const QVariantHash &details);
+    void setFinishedWithTextError(const QString &text);
     void setDelayedFinishedWithError(const QVariantHash &details);
     void setOperationName(const char *name);
     virtual void clearResult();
@@ -147,6 +148,11 @@ protected:
     Q_DECLARE_PRIVATE_D(d, PendingOperation)
     PendingOperationPrivate *d = nullptr;
 };
+
+inline void PendingOperation::setFinishedWithTextError(const QString &text)
+{
+    setFinishedWithError({{PendingOperation::c_text(), text}});
+}
 
 class SucceededPendingOperation : public PendingOperation
 {
