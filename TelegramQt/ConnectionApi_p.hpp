@@ -58,6 +58,7 @@ public:
     PendingOperation *connectToDc(quint32 dcId);
     PendingOperation *connectToServer(const QVector<DcOption> &dcOptions);
 
+    AuthOperation *getAuthenticationOperation() const { return m_authOperation; }
     AuthOperation *startAuthentication();
     AuthOperation *checkIn();
     ConnectionApi::Status status() const { return m_status; }
