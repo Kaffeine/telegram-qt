@@ -77,7 +77,8 @@ public:
     AbstractUser *getRemoteUser(const QString &identifier) const;
 
     Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const override;
-    MessageRecipient *getRecipient(const Peer &peer, const LocalUser *applicant) const override;
+    MessageRecipient *getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const override;
+    MessageRecipient *getRecipient(const Peer &peer) const override;
 
     QVector<quint32> getPeerWatchers(const Peer &peer) const override;
 

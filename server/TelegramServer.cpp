@@ -230,20 +230,38 @@ Peer Server::getPeer(const TLInputPeer &peer, const LocalUser *applicant) const
     };
 }
 
-MessageRecipient *Server::getRecipient(const Peer &peer, const LocalUser *applicant) const
+MessageRecipient *Server::getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const
 {
-    Q_UNUSED(applicant)
-    switch (peer.type) {
-    case Telegram::Peer::User:
-        return getAbstractUser(peer.id);
-    case Telegram::Peer::Chat:
-        // recipient = api()->getChannel(arguments.peer.groupId, arguments.peer.accessHash);
-        break;
-    case Telegram::Peer::Channel:
-        //recipient = api()->getChannel(arguments.peer.channelId, arguments.peer.accessHash);
+    switch (peer.tlType) {
+    case TLValue::InputPeerEmpty:
+        return nullptr;
+    case TLValue::InputPeerSelf:
+        return getAbstractUser(applicant->id());
+    case TLValue::InputPeerUser:
+        return getAbstractUser(peer.userId);
+    case TLValue::InputPeerChat:
+        // recipient = api()->getChat(peer.groupId, peer.accessHash);
+        return nullptr;
+    case TLValue::InputPeerChannel:
+        //recipient = api()->getChannel(peer.channelId, peer.accessHash);
+        return nullptr;
+    default:
         break;
     }
     return nullptr;
+}
+
+MessageRecipient *Server::getRecipient(const Peer &peer) const
+{
+    if (!peer.isValid()) {
+        return nullptr;
+    }
+    switch (peer.type) {
+    case Peer::User:
+        return getAbstractUser(peer.id);
+    default:
+        return nullptr;
+    }
 }
 
 // Returns the list of Users who interesting in the peer info updates
@@ -400,8 +418,8 @@ void Server::addUserAuthorization(LocalUser *user, quint64 authKeyId)
 QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
 {
     const Peer targetPeer = messageData->toPeer();
-    LocalUser *fromUser = getUser(messageData->fromId());
-    MessageRecipient *recipient = getRecipient(targetPeer, fromUser);
+    AbstractUser *fromUser = getUser(messageData->fromId());
+    MessageRecipient *recipient = getRecipient(messageData->toPeer());
     QVector<PostBox *> boxes = recipient->postBoxes();
     if ((targetPeer.type == Peer::User) && !messageData->isMessageToSelf()) {
         boxes.append(fromUser->getPostBox());

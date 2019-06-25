@@ -99,8 +99,8 @@ public:
     virtual Storage *storage() const = 0;
 
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
-    virtual MessageRecipient *getRecipient(const Peer &peer, const LocalUser *applicant) const = 0;
-
+    virtual MessageRecipient *getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
+    virtual MessageRecipient *getRecipient(const Peer &peer) const = 0;
     virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
 
     virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;

@@ -1442,7 +1442,7 @@ void MessagesRpcOperation::runReadHistory()
         return;
     }
 
-    MessageRecipient *receiverInbox = api()->getRecipient(targetPeer, selfUser);
+    MessageRecipient *receiverInbox = api()->getRecipient(arguments.peer, selfUser);
     if (!receiverInbox) {
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
@@ -1727,8 +1727,7 @@ void MessagesRpcOperation::runSendMedia()
     TLFunctions::TLMessagesSendMedia &arguments = m_sendMedia;
 
     LocalUser *self = layer()->getUser();
-    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, self->id());
-    MessageRecipient *recipient = api()->getRecipient(targetPeer, self);
+    MessageRecipient *recipient = api()->getRecipient(arguments.peer, self);
 
     if (!recipient) {
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
@@ -1785,7 +1784,7 @@ void MessagesRpcOperation::runSendMedia()
         break;
     }
 
-    MessageData *messageData = api()->storage()->addMessageMedia(self->id(), targetPeer, media);
+    MessageData *messageData = api()->storage()->addMessageMedia(self->id(), recipient->toPeer(), media);
     submitMessageData(messageData, arguments.randomId);
 }
 
@@ -1794,8 +1793,8 @@ void MessagesRpcOperation::runSendMessage()
     TLFunctions::TLMessagesSendMessage &arguments = m_sendMessage;
 
     LocalUser *self = layer()->getUser();
-    Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, self->id());
-    MessageRecipient *recipient = api()->getRecipient(targetPeer, self);
+    Telegram::Peer targetPeer = api()->getPeer(arguments.peer, self);
+    MessageRecipient *recipient = api()->getRecipient(arguments.peer, self);
 
     if (!recipient) {
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
@@ -1892,7 +1891,7 @@ void MessagesRpcOperation::runSetTyping()
 
     LocalUser *selfUser = layer()->getUser();
     Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
-    MessageRecipient *recipient = api()->getRecipient(targetPeer, selfUser);
+    MessageRecipient *recipient = api()->getRecipient(arguments.peer, selfUser);
 
     if (!recipient) {
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
