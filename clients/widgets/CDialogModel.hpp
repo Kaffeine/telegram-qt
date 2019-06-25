@@ -29,7 +29,7 @@ public:
         Invalid,
     };
 
-    explicit CDialogModel(CTelegramCore *backend, QObject *parent = nullptr);
+    explicit CDialogModel(Telegram::Client::Client *backend, QObject *parent = nullptr);
 
     bool hasPeer(const Telegram::Peer peer) const override;
     QString getName(const Telegram::Peer peer) const override;

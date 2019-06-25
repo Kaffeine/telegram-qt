@@ -16,20 +16,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     MainWindow.cpp \
-    CFileManager.cpp \
     CPeerModel.cpp \
     CContactModel.cpp \
     CContactsFilterModel.cpp \
-    CChatInfoModel.cpp \
     CDialogModel.cpp \
     CMessageModel.cpp
 
 HEADERS  += MainWindow.hpp \
-    CFileManager.hpp \
     CPeerModel.hpp \
     CContactModel.hpp \
     CContactsFilterModel.hpp \
-    CChatInfoModel.hpp \
     CDialogModel.hpp \
     CMessageModel.hpp
 

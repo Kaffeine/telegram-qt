@@ -1,25 +1,34 @@
 project(testApp)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(CMAKE_AUTOMOC TRUE)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 set(testApp_SOURCES
     main.cpp
     MainWindow.cpp
-    CFileManager.cpp
+#    CFileManager.cpp
     CPeerModel.cpp
     CContactModel.cpp
     CContactsFilterModel.cpp
     CMessageModel.cpp
-    CChatInfoModel.cpp
+#    CChatInfoModel.cpp
     CDialogModel.cpp
 )
 
 set(testApp_HEADERS
     MainWindow.hpp
-    CFileManager.hpp
+#    CFileManager.hpp
     CPeerModel.hpp
     CContactModel.hpp
     CContactsFilterModel.hpp
     CMessageModel.hpp
-    CChatInfoModel.hpp
+#    CChatInfoModel.hpp
     CDialogModel.hpp
 )
 
@@ -31,8 +40,6 @@ set(testApp_RESOURCES
     resources.qrc
 )
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
 include_directories(
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
@@ -40,12 +47,9 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-QT5_WRAP_UI(testApp_FORMS_HEADERS ${testApp_FORMS})
-QT5_ADD_RESOURCES(testApp_RESOURCES_RCC ${testApp_RESOURCES})
+find_package(Qt5 5.9 COMPONENTS Core Gui Widgets REQUIRED)
 
-add_executable(testApp-qt${QT_VERSION_MAJOR} ${testApp_SOURCES} ${testApp_FORMS_HEADERS} ${testApp_RESOURCES_RCC})
-
-set_target_properties(testApp-qt${QT_VERSION_MAJOR} PROPERTIES AUTOMOC TRUE)
+add_executable(testApp-qt${QT_VERSION_MAJOR} ${testApp_SOURCES} ${testApp_FORMS} ${testApp_RESOURCES})
 
 target_include_directories(testApp-qt${QT_VERSION_MAJOR} PRIVATE
     ${QT5_INCLUDES}
