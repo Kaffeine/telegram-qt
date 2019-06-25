@@ -736,6 +736,12 @@ int ConnectionApi::remainingTimeToConnect() const
     return d->m_queuedConnectionTimer->remainingTime();
 }
 
+AuthOperation *ConnectionApi::getAuthenticationOperation() const
+{
+    Q_D(const ConnectionApi);
+    return d->getAuthenticationOperation();
+}
+
 void ConnectionApi::disconnectFromServer()
 {
     Q_D(ConnectionApi);
