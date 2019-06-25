@@ -37,8 +37,8 @@
 
 // Server
 #include "LocalCluster.hpp"
-#include "ServerApi.hpp"
 #include "Storage.hpp"
+#include "TelegramServer.hpp"
 #include "TelegramServerUser.hpp"
 
 #include <QTest>
@@ -129,7 +129,7 @@ void tst_MessagesApi::getSelfUserDialog()
     {
         Server::MessageData *data = serverApi->storage()
                 ->addMessage(user->userId(), user->toPeer(), c_messageText);
-        serverApi->processMessage(data);
+        cluster.processMessage(data);
     }
 
     // Prepare client
@@ -409,7 +409,7 @@ void tst_MessagesApi::getAllDialogs()
         Server::MessageData *data = serverApi->storage()
                 ->addMessage(dialogN->userId(), user->toPeer(), QStringLiteral("mgs%1").arg(i + 1));
         data->setDate32(baseDate - dialogsCount + i);
-        serverApi->processMessage(data);
+        cluster.processMessage(data);
     }
 
     // Prepare client
@@ -720,7 +720,7 @@ void tst_MessagesApi::getHistory()
         Server::MessageData *messageData = server->storage()->addMessage(
                     user2->id(), user1->toPeer(), QString::number(i + 1));
         messageData->setDate32(static_cast<quint32>(baseDate + i));
-        server->processMessage(messageData);
+        cluster.processMessage(messageData);
     }
 
     // Prepare clients
@@ -780,7 +780,7 @@ void tst_MessagesApi::syncPeerDialogs()
     QVERIFY(user1 && user2 && user3 && user4);
     user1->importContact(user2->toContact());
 
-    Server::ServerApi *server = cluster.getServerApiInstance(c_user1.dcId);
+    Server::Server *server = cluster.getServerInstance(c_user1.dcId);
     QVERIFY(server);
 
     const quint32 c_lastId1 = 5;
@@ -788,7 +788,7 @@ void tst_MessagesApi::syncPeerDialogs()
     for (quint32 i = 0; i < c_lastId1; ++i) {
         Server::MessageData *messageData = server->storage()->addMessage(
                     user2->id(), user1->toPeer(), QString::number(i + 1));
-        server->processMessage(messageData);
+        cluster.processMessage(messageData);
         messagesVol1.append(c_lastId1 - i);
     }
 
@@ -841,7 +841,7 @@ void tst_MessagesApi::syncPeerDialogs()
     for (quint32 i = 0; i < (c_lastId2 - c_lastId1); ++i) {
         Server::MessageData *messageData = server->storage()->addMessage(
                     user2->id(), user1->toPeer(), QString::number(i + c_lastId1 + 1));
-        server->processMessage(messageData);
+        cluster.processMessage(messageData);
         messagesVol2.append(c_lastId2 - i);
     }
 
@@ -990,7 +990,7 @@ void tst_MessagesApi::syncPeerDialogs()
         const quint32 fromId = i %2 ? user2->id() : user3->id();
         Server::MessageData *messageData = server->storage()->addMessage(
                     fromId, user1->toPeer(), QString::number(i + c_lastId2 + 1));
-        server->processMessage(messageData);
+        cluster.processMessage(messageData);
 
         if (i % 2) {
             messagesVol3_1.append(c_lastId3 - i);
@@ -1062,7 +1062,7 @@ void tst_MessagesApi::syncPeerDialogs()
         const quint32 fromId = i %2 ? user2->id() : user3->id();
         Server::MessageData *messageData = server->storage()->addMessage(
                     fromId, user1->toPeer(), QString::number(i + c_lastId3 + 1));
-        server->processMessage(messageData);
+        cluster.processMessage(messageData);
 
         if (i % 2) {
             messagesVol4_1.append(c_lastId4 - i);
