@@ -227,7 +227,7 @@ void tst_ConnectionApi::testClientConnection()
     cluster.setServerConfiguration(c_customDcConfiguration);
     QVERIFY(cluster.start());
 
-    Server::ServerApi *server = cluster.getServerApiInstance(userData.dcId);
+    Server::AbstractServerApi *server = cluster.getServerApiInstance(userData.dcId);
     QVERIFY(server);
 
     Server::LocalUser *user = tryAddUser(&cluster, userData);

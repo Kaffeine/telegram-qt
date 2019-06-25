@@ -36,7 +36,7 @@ class Provider;
 
 class Server;
 class Session;
-class ServerApi;
+class AbstractServerApi;
 class Storage;
 class LocalUser;
 class MessageData;
@@ -67,7 +67,7 @@ public:
 
     QVector<Server*> getServerInstances() { return m_serverInstances; }
     Server *getServerInstance(quint32 dcId);
-    ServerApi *getServerApiInstance(quint32 dcId);
+    AbstractServerApi *getServerApiInstance(quint32 dcId);
 
     void processMessage(MessageData *messageData);
 

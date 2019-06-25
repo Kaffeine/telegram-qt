@@ -64,12 +64,12 @@ RpcLayer::RpcLayer(QObject *parent) :
 {
 }
 
-ServerApi *RpcLayer::api()
+LocalServerApi *RpcLayer::api()
 {
     return m_api;
 }
 
-void RpcLayer::setServerApi(ServerApi *api)
+void RpcLayer::setServerApi(LocalServerApi *api)
 {
     m_api = api;
 }

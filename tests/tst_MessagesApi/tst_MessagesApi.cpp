@@ -121,7 +121,7 @@ void tst_MessagesApi::getSelfUserDialog()
     QVERIFY(cluster.start());
 
     Server::LocalUser *user = tryAddUser(&cluster, c_user1);
-    Server::ServerApi *serverApi = cluster.getServerApiInstance(c_user1.dcId);
+    Server::AbstractServerApi *serverApi = cluster.getServerApiInstance(c_user1.dcId);
     QVERIFY(serverApi);
 
     const QString c_messageText = QStringLiteral("message to self");
@@ -400,7 +400,7 @@ void tst_MessagesApi::getAllDialogs()
     QVERIFY(cluster.start());
 
     Server::LocalUser *user = tryAddUser(&cluster, c_user1);
-    Server::ServerApi *serverApi = cluster.getServerApiInstance(c_user1.dcId);
+    Server::AbstractServerApi *serverApi = cluster.getServerApiInstance(c_user1.dcId);
     QVERIFY(serverApi);
 
     for (int i = 0; i < dialogsCount; ++i) {
@@ -713,7 +713,7 @@ void tst_MessagesApi::getHistory()
     Server::AbstractUser *user2 = tryAddUser(&cluster, c_user2);
     QVERIFY(user1 && user2);
 
-    Server::ServerApi *server = cluster.getServerApiInstance(c_user1.dcId);
+    Server::AbstractServerApi *server = cluster.getServerApiInstance(c_user1.dcId);
     QVERIFY(server);
 
     for (int i = 0; i < messagesCount; ++i) {

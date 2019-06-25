@@ -703,7 +703,7 @@ AbstractUser *Server::getAbstractUser(const QString &identifier) const
 AbstractUser *Server::getRemoteUser(quint32 userId) const
 {
     for (RemoteServerConnection *remoteServer : m_remoteServers) {
-        AbstractUser *u = remoteServer->api()->getAbstractUser(userId);
+        AbstractUser *u = remoteServer->getUser(userId);
         if (u) {
             return u;
         }
@@ -714,7 +714,7 @@ AbstractUser *Server::getRemoteUser(quint32 userId) const
 AbstractUser *Server::getRemoteUser(const QString &identifier) const
 {
     for (RemoteServerConnection *remoteServer : m_remoteServers) {
-        AbstractUser *u = remoteServer->api()->getAbstractUser(identifier);
+        AbstractUser *u = remoteServer->getUser(identifier);
         if (u) {
             return u;
         }

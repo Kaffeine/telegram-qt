@@ -13,7 +13,7 @@ namespace Telegram {
 namespace Server {
 
 class RpcLayer;
-class ServerApi;
+class LocalServerApi;
 
 class RpcOperation : public PendingOperation
 {
@@ -26,7 +26,7 @@ public:
 
 //    void sendReply(const QByteArray &reply);
 
-    ServerApi *api() { return m_api; }
+    LocalServerApi *api() { return m_api; }
     RpcLayer *layer() { return m_rpcLayer; }
 
     bool sendRpcError(const RpcError &error);
@@ -40,7 +40,7 @@ protected:
     virtual bool processNotImplementedMethod(TLValue functionCode);
 
     RpcLayer *m_rpcLayer = nullptr;
-    ServerApi *m_api = nullptr;
+    LocalServerApi *m_api = nullptr;
     quint64 m_requestId = 0;
     quint32 m_layer = 0;
 //    QByteArray m_request;

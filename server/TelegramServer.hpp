@@ -28,7 +28,7 @@ class RemoteServerConnection;
 class AbstractUser;
 class RpcOperationFactory;
 
-class Server : public QObject, public ServerApi
+class Server : public QObject, public LocalServerApi
 {
     Q_OBJECT
 public:

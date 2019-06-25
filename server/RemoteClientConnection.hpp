@@ -10,7 +10,7 @@ namespace Telegram {
 
 namespace Server {
 
-class ServerApi;
+class LocalServerApi;
 class RpcLayer;
 class RpcOperationFactory;
 class Session;
@@ -26,8 +26,8 @@ public:
 
     void setRpcFactories(const QVector<RpcOperationFactory*> &rpcFactories);
 
-    ServerApi *api() const;
-    void setServerApi(ServerApi *api);
+    LocalServerApi *api() const;
+    void setServerApi(Telegram::Server::LocalServerApi *api);
 
     Session *session() const;
     void setSession(Session *session);

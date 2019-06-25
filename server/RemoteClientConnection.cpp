@@ -45,12 +45,12 @@ void RemoteClientConnection::setRpcFactories(const QVector<RpcOperationFactory *
     rpcLayer()->setRpcFactories(rpcFactories);
 }
 
-ServerApi *RemoteClientConnection::api() const
+LocalServerApi *RemoteClientConnection::api() const
 {
     return rpcLayer()->api();
 }
 
-void RemoteClientConnection::setServerApi(ServerApi *api)
+void RemoteClientConnection::setServerApi(LocalServerApi *api)
 {
     rpcLayer()->setServerApi(api);
 }

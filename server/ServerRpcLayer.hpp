@@ -22,7 +22,7 @@ class RpcOperation;
 class RpcOperationFactory;
 
 class LocalUser;
-class ServerApi;
+class LocalServerApi;
 class Session;
 
 class RpcLayer : public BaseRpcLayer
@@ -30,8 +30,8 @@ class RpcLayer : public BaseRpcLayer
 public:
     explicit RpcLayer(QObject *parent = nullptr);
 
-    ServerApi *api();
-    void setServerApi(ServerApi *api);
+    LocalServerApi *api();
+    void setServerApi(LocalServerApi *api);
 
     LocalUser *getUser() const;
 
@@ -70,7 +70,7 @@ protected:
     MTProtoSendHelper *getHelper() const;
 
     Session *m_session = nullptr;
-    ServerApi *m_api = nullptr;
+    LocalServerApi *m_api = nullptr;
     QStack<quint32> m_invokeWithLayer;
 
     QVector<RpcOperationFactory*> m_operationFactories;

@@ -12,17 +12,22 @@ RemoteServerConnection::RemoteServerConnection(QObject *parent)
 {
 }
 
-void RemoteServerConnection::setRemoteServer(ServerApi *remoteServer)
+void RemoteServerConnection::setRemoteServer(LocalServerApi *remoteServer)
 {
     m_server = remoteServer;
 }
 
-AbstractUser *RemoteServerConnection::getUser(const QString &identifier)
+AbstractUser *RemoteServerConnection::getUser(const quint32 userId)
 {
-    return m_server->getAbstractUser(identifier);
+    return m_server->getUser(userId);
 }
 
-ServerApi *RemoteServerConnection::api()
+AbstractUser *RemoteServerConnection::getUser(const QString &identifier)
+{
+    return m_server->getUser(identifier);
+}
+
+AbstractServerApi *RemoteServerConnection::api()
 {
     return m_server;
 }

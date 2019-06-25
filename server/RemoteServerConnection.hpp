@@ -7,8 +7,9 @@ namespace Telegram {
 
 namespace Server {
 
-class ServerApi;
+class AbstractServerApi;
 class AbstractUser;
+class LocalServerApi;
 
 class RemoteServerConnection : public QObject
 {
@@ -18,13 +19,14 @@ public:
 
     quint32 dcId() const;
 
-    void setRemoteServer(ServerApi *remoteServer);
+    void setRemoteServer(LocalServerApi *remoteServer);
 
+    AbstractUser *getUser(const quint32 userId);
     AbstractUser *getUser(const QString &identifier);
-    ServerApi *api();
+    AbstractServerApi *api();
 
 protected:
-    ServerApi *m_server = nullptr;
+    LocalServerApi *m_server = nullptr;
 };
 
 } // Server namespace

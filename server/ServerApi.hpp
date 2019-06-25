@@ -82,17 +82,14 @@ public:
     Type type = Type::Invalid;
 };
 
-class ServerApi
+class AbstractServerApi
 {
 public:
-    virtual ~ServerApi() = default;
+    virtual ~AbstractServerApi() = default;
 
     virtual DcConfiguration serverConfiguration() const = 0;
     virtual quint32 dcId() const = 0;
     virtual PhoneStatus getPhoneStatus(const QString &identifier) const = 0;
-    virtual PasswordInfo getPassword(const QString &identifier) = 0;
-    virtual bool checkPassword(const QString &identifier, const QByteArray &hash) = 0;
-    virtual Authorization::Provider *getAuthorizationProvider() = 0;
     virtual bool identifierIsValid(const QString &identifier) const = 0; // Argument is 'phoneNumber'
     virtual QString normalizeIdentifier(const QString &identifier) const = 0;
 
@@ -101,15 +98,26 @@ public:
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
     virtual MessageRecipient *getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
     virtual MessageRecipient *getRecipient(const Peer &peer) const = 0;
-    virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
 
     virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
     virtual AbstractUser *getAbstractUser(const TLInputUser &inputUser, LocalUser *self) const = 0;
     virtual AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const = 0;
+    virtual Peer getPeerByUserName(const QString &userName) const = 0;
+
+    virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;
+};
+
+class LocalServerApi : public AbstractServerApi
+{
+public:
+    virtual PasswordInfo getPassword(const QString &identifier) = 0;
+    virtual bool checkPassword(const QString &identifier, const QByteArray &hash) = 0;
+    virtual Authorization::Provider *getAuthorizationProvider() = 0;
+
+    virtual LocalUser *addUser(const QString &identifier) = 0;
     virtual LocalUser *getUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(quint32 userId) const = 0;
-    virtual Peer getPeerByUserName(const QString &userName) const = 0;
 
     virtual bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) = 0;
     virtual Session *getSessionById(quint64 authId) const = 0;
@@ -118,15 +126,11 @@ public:
     virtual QByteArray getAuthKeyById(quint64 authId) const = 0;
     virtual quint32 getUserIdByAuthId(quint64 authId) const = 0;
 
-    virtual LocalUser *addUser(const QString &identifier) = 0;
-
+    virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
     virtual QVector<UpdateNotification> processMessage(MessageData *messageData) = 0;
     virtual QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
                                                       LocalUser *applicant,
                                                       Session *excludeSession) const = 0;
-
-    virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;
-
 };
 
 } // Server namespace
