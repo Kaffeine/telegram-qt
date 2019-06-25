@@ -87,6 +87,13 @@ ListView {
         }
     }
 
+    Connections {
+        target: model
+        onModelReset: {
+            fetchPrevious()
+        }
+    }
+
     function syncViewPosition()
     {
         if (inMotion) {
