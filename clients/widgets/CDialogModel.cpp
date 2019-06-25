@@ -1,11 +1,15 @@
 #include "CDialogModel.hpp"
 
-#include "CTelegramCore.hpp"
+#include "Client.hpp"
+#include "DataStorage.hpp"
+#include "MessagingApi.hpp"
+#include "DialogList.hpp"
+#include "PendingOperation.hpp"
 #include "Debug.hpp"
 
 #include <QDateTime>
 
-CDialogModel::CDialogModel(CTelegramCore *backend, QObject *parent) :
+CDialogModel::CDialogModel(Telegram::Client::Client *backend, QObject *parent) :
     CPeerModel(parent)
 {
     setBackend(backend);
@@ -127,11 +131,11 @@ QVariant CDialogModel::data(int dialogIndex, CDialogModel::Role role) const
     case Role::PeerId:
         return dialog->peer().id;
     case Role::MuteUntil:
-        return dialog->muteUntil();
+        return 0; //dialog->muteUntil();
     case Role::MuteUntilDate:
-        if (dialog->muteUntil()) {
-            return QDateTime::fromMSecsSinceEpoch(dialog->muteUntil() * 1000);
-        }
+        // if (dialog->muteUntil()) {
+        //     return QDateTime::fromMSecsSinceEpoch(dialog->muteUntil() * 1000);
+        // }
         return QVariant();
         // PeerModel roles:
     case Role::PeerName:
@@ -162,7 +166,7 @@ void CDialogModel::setDialogs(const QVector<Telegram::Peer> &dialogs)
     m_dialogs.clear();
     for (const Telegram::Peer &peer : dialogs) {
         Telegram::DialogInfo *info = new Telegram::DialogInfo();
-        m_backend->getDialogInfo(info, peer);
+        m_backend->dataStorage()->getDialogInfo(info, peer);
         m_dialogs.append(info);
     }
     endResetModel();
@@ -184,7 +188,7 @@ void CDialogModel::syncDialogs(const QVector<Telegram::Peer> &added, const QVect
     beginInsertRows(QModelIndex(), m_dialogs.count(), m_dialogs.count() + reallyAddedDialogs.count() - 1);
     for (const Telegram::Peer &peer : reallyAddedDialogs) {
         Telegram::DialogInfo *info = new Telegram::DialogInfo();
-        m_backend->getDialogInfo(info, peer);
+        m_backend->dataStorage()->getDialogInfo(info, peer);
         m_dialogs.append(info);
     }
     endInsertRows();

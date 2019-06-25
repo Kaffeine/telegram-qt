@@ -1,7 +1,6 @@
 #include "CPeerModel.hpp"
 
-#include"CFileManager.hpp"
-#include "CTelegramCore.hpp"
+#include "Client.hpp"
 
 #include <QPixmapCache>
 
@@ -13,7 +12,7 @@ CPeerModel::CPeerModel(QObject *parent) :
 
 }
 
-void CPeerModel::setBackend(CTelegramCore *backend)
+void CPeerModel::setBackend(Telegram::Client::Client *backend)
 {
     m_backend = backend;
 }
@@ -21,12 +20,12 @@ void CPeerModel::setBackend(CTelegramCore *backend)
 void CPeerModel::setFileManager(CFileManager *manager)
 {
     m_fileManager = manager;
-    connect(m_fileManager, &CFileManager::requestComplete, this, &CPeerModel::onFileRequestComplete);
+    // connect(m_fileManager, &CFileManager::requestComplete, this, &CPeerModel::onFileRequestComplete);
 }
 
 PeerPicture CPeerModel::getPicture(const Telegram::Peer peer, const Telegram::PeerPictureSize size) const
 {
-    return getPicture(m_backend->peerPictureToken(peer), size);
+    return PeerPicture(); //getPicture(m_backend->peerPictureToken(peer), size);
 }
 
 PeerPicture CPeerModel::getPicture(const QString &fileId, const Telegram::PeerPictureSize size) const
@@ -36,7 +35,7 @@ PeerPicture CPeerModel::getPicture(const QString &fileId, const Telegram::PeerPi
     if (fileId.isEmpty()) {
         return PeerPicture();
     }
-    const QByteArray data = m_fileManager->getData(fileId);
+    const QByteArray data; // = m_fileManager->getData(fileId);
     const QString pictureToken = getPictureCacheToken(fileId);
     const QPixmap picture = getScaledPixmap(QPixmap::fromImage(QImage::fromData(data)));
     if (!picture.isNull()) {
@@ -74,7 +73,7 @@ PeerPicture CPeerModel::getPeerPictureNowOrLater(const Telegram::Peer peer)
 {
     const PeerPicture pictureData = getPicture(peer);
     if (pictureData.pixmap.isNull()) {
-        const QString requestToken = m_fileManager->requestPeerPicture(peer);
+        const QString requestToken; // = m_fileManager->requestPeerPicture(peer);
         m_requests.insert(requestToken);
     }
     return pictureData;

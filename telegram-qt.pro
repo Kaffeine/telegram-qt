@@ -59,10 +59,10 @@ equals(BUILD_QCH, "true") {
     include(doc/doc.pri)
 }
 
-#equals(BUILD_WIDGETS_CLIENT, "true") {
-#    SUBDIRS += clients/widgets
-#    CONFIG += ordered
-#}
+equals(BUILD_WIDGETS_CLIENT, "true") {
+    SUBDIRS += clients/widgets
+    CONFIG += ordered
+}
 
 equals(BUILD_QML_IMPORT, "true") {
     SUBDIRS += clients/qml-client

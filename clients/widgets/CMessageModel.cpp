@@ -19,10 +19,19 @@
 #include "CFileManager.hpp"
 #include "CContactModel.hpp"
 
-#include "CTelegramCore.hpp"
+#include "Client.hpp"
+#include "DataStorage.hpp"
+#include "DialogList.hpp"
+#include "PendingOperation.hpp"
+#include "MessagingApi.hpp"
+#include "Debug.hpp"
+
+#include "Operations/PendingMessages.hpp"
 
 #include <QDateTime>
 #include <QDebug>
+
+using namespace Telegram::Client;
 
 QString messageDeliveryStatusStr(CMessageModel::SMessage::Status status)
 {
@@ -47,34 +56,42 @@ CMessageModel::SMessage::SMessage(const Telegram::Message &m) :
     id64(0),
     status(StatusUnknown)
 {
-    if (flags & TelegramNamespace::MessageFlagRead) {
+    if (flags & Telegram::Namespace::MessageFlagRead) {
         status = StatusRead;
-    } else if (flags & TelegramNamespace::MessageFlagOut) {
+    } else if (flags & Telegram::Namespace::MessageFlagOut) {
         status = StatusSent;
     } else {
         status = StatusReceived;
     }
 }
 
-CMessageModel::CMessageModel(CTelegramCore *backend, QObject *parent) :
+CMessageModel::CMessageModel(Telegram::Client::Client *backend, QObject *parent) :
     QAbstractTableModel(parent),
     m_backend(backend),
     m_fileManager(nullptr),
     m_contactsModel(nullptr)
 {
-    connect(m_backend, SIGNAL(sentMessageIdReceived(quint64,quint32)),
-            SLOT(setResolvedMessageId(quint64,quint32)));
 
-    connect(m_backend, SIGNAL(messageReadInbox(Telegram::Peer,quint32)),
-            SLOT(setMessageInboxRead(Telegram::Peer,quint32)));
-    connect(m_backend, SIGNAL(messageReadOutbox(Telegram::Peer,quint32)),
-            SLOT(setMessageOutboxRead(Telegram::Peer,quint32)));
+//    connect(m_backend->messagingApi(), &MessagingApi::messageReceived,
+//            this, &CMessageModel::onMessageReceived);
+//    connect(m_backend->messagingApi(), &MessagingApi::messageEnqueued,
+//            this, &CMessageModel::onMessageQueued);
+//    connect(m_backend->messagingApi(), &MessagingApi::messageSent,
+//            this, &CMessageModel::onMessageSent);
+
+//    connect(m_backend, SIGNAL(sentMessageIdReceived(quint64,quint32)),
+//            SLOT(setResolvedMessageId(quint64,quint32)));
+
+//    connect(m_backend, SIGNAL(messageReadInbox(Telegram::Peer,quint32)),
+//            SLOT(setMessageInboxRead(Telegram::Peer,quint32)));
+//    connect(m_backend, SIGNAL(messageReadOutbox(Telegram::Peer,quint32)),
+//            SLOT(setMessageOutboxRead(Telegram::Peer,quint32)));
 }
 
 void CMessageModel::setFileManager(CFileManager *manager)
 {
     m_fileManager = manager;
-    connect(m_fileManager, &CFileManager::requestComplete, this, &CMessageModel::onFileRequestComplete);
+    // connect(m_fileManager, &CFileManager::requestComplete, this, &CMessageModel::onFileRequestComplete);
 }
 
 void CMessageModel::setContactsModel(CContactModel *model)
@@ -86,7 +103,7 @@ QString CMessageModel::peerToText(const Telegram::Peer &peer) const
 {
     if (peer.type == Telegram::Peer::User) {
         Telegram::UserInfo info;
-        m_backend->getUserInfo(&info, peer.id);
+        m_backend->dataStorage()->getUserInfo(&info, peer.id);
         if (!info.id()) {
             qDebug() << Q_FUNC_INFO << "Unknown contact..";
             return QStringLiteral("user%1").arg(peer.id);
@@ -94,7 +111,7 @@ QString CMessageModel::peerToText(const Telegram::Peer &peer) const
         return CContactModel::formatName(info);
     }
     Telegram::ChatInfo info;
-    m_backend->getChatInfo(&info, peer.id);
+    m_backend->dataStorage()->getChatInfo(&info, peer.id);
     if (!info.title().isEmpty()) {
         return info.title();
     }
@@ -205,7 +222,7 @@ QVariant CMessageModel::rowData(quint32 messageIndex, int column) const
         }
         return message.fromId;
     case Direction:
-        return (message.flags & TelegramNamespace::MessageFlagOut) ? tr("out") : tr("in");
+        return (message.flags & Telegram::Namespace::MessageFlagOut) ? tr("out") : tr("in");
     case Timestamp:
         return QDateTime::fromMSecsSinceEpoch(quint64(message.timestamp) * 1000);
     case MessageId:
@@ -262,21 +279,21 @@ void CMessageModel::addMessage(const SMessage &message)
     Telegram::RemoteFile fileInfo;
     SMessage processedMessage = message;
     bool needFileData = false;
-    if (message.type != TelegramNamespace::MessageTypeText) {
-        m_backend->getMessageMediaInfo(&mediaInfo, message.id, message.peer());
+    if (message.type != Telegram::Namespace::MessageTypeText) {
+        m_backend->dataStorage()->getMessageMediaInfo(&mediaInfo, message.peer(), message.id);
         mediaInfo.getRemoteFileInfo(&fileInfo);
         switch (message.type) {
-        case TelegramNamespace::MessageTypePhoto:
-        case TelegramNamespace::MessageTypeVideo:
+        case Telegram::Namespace::MessageTypePhoto:
+        case Telegram::Namespace::MessageTypeVideo:
             needFileData = true;
             break;
-        case TelegramNamespace::MessageTypeDocument: {
+        case Telegram::Namespace::MessageTypeDocument: {
             if (mediaInfo.mimeType().startsWith(QLatin1String("image/"))) {
                 needFileData = true;
             }
         }
             break;
-        case TelegramNamespace::MessageTypeGeo:
+        case Telegram::Namespace::MessageTypeGeo:
             processedMessage.text = QString("%1%2, %3%4").arg(mediaInfo.latitude()).arg(QChar(0x00b0)).arg(mediaInfo.longitude()).arg(QChar(0x00b0));
             break;
         default:
@@ -285,12 +302,14 @@ void CMessageModel::addMessage(const SMessage &message)
     }
 
     if (needFileData) {
+#if 0
         const QByteArray data = m_fileManager->getData(fileInfo.getUniqueId());
         const QPixmap picture = QPixmap::fromImage(QImage::fromData(data));
         if (!picture.isNull()) {
             processedMessage.mediaData = picture;
             needFileData = false;
         }
+#endif
     }
 
     for (int i = 0; i < m_messages.count(); ++i) {
@@ -310,11 +329,12 @@ void CMessageModel::addMessage(const SMessage &message)
 
     if (needFileData) {
         const quint64 id = message.id ? message.id : message.id64;
-        const QString uniqueId = m_fileManager->requestFile(fileInfo);
+        const QString uniqueId; // = m_fileManager->requestFile(fileInfo);
         m_fileRequests.insert(uniqueId, id);
     }
 }
 
+#if 0
 void CMessageModel::onFileRequestComplete(const QString &uniqueId)
 {
     if (!m_fileRequests.contains(uniqueId)) {
@@ -338,6 +358,7 @@ int CMessageModel::setMessageMediaData(quint64 messageId, const QVariant &data)
     emit dataChanged(index(i, Message), index(i, Message), QVector<int>() << Qt::DecorationRole);
     return i;
 }
+#endif
 
 void CMessageModel::setMessageRead(Telegram::Peer peer, quint32 messageId, bool out)
 {
@@ -345,7 +366,7 @@ void CMessageModel::setMessageRead(Telegram::Peer peer, quint32 messageId, bool 
     for (int i = 0; i < m_messages.count(); ++i) {
         SMessage &message = m_messages[i];
 
-        const bool hasFlagOut = message.flags & TelegramNamespace::MessageFlagOut;
+        const bool hasFlagOut = message.flags & Telegram::Namespace::MessageFlagOut;
         const bool hasRightDirection = hasFlagOut == out;
         const bool idIsFitInRange = message.id <= messageId;
         const bool isNotAlreadyRead = message.status != CMessageModel::SMessage::StatusRead;
