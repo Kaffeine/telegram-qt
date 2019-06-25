@@ -26,6 +26,7 @@ class Provider;
 
 } // Authorization namespace
 
+class BotUser;
 class LocalUser;
 class MediaService;
 class Session;
@@ -115,6 +116,9 @@ public:
     void queueServerUpdates(const QVector<UpdateNotification> &notifications) override;
 
     void insertUser(LocalUser *user);
+
+    BotUser *addBot(const QString &userName);
+    BotUser *getBot(const QString &userName);
 
 signals:
 

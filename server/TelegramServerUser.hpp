@@ -35,6 +35,8 @@ public:
 
     QHash<quint32,quint64> getAllMessageKeys() const;
 
+    void importMessage(MessageData *message, quint32 messageId);
+
 protected:
     Peer m_peer;
     quint32 m_pts = 0;
@@ -94,6 +96,8 @@ public:
     virtual QVector<ImageDescriptor> getImages() const = 0;
     virtual ImageDescriptor getCurrentImage() const = 0;
     virtual QVector<quint32> contactList() const = 0;
+
+    virtual bool isBot() const { return false; }
 
     Peer toPeer() const override { return Peer::fromUserId(id()); }
     UserContact toContact() const;

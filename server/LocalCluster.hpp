@@ -37,6 +37,7 @@ class Provider;
 class Server;
 class Session;
 class AbstractServerApi;
+class BotUser;
 class MessageService;
 class LocalUser;
 class MessageData;
@@ -64,6 +65,9 @@ public:
 
     LocalUser *addUser(const QString &identifier, quint32 dcId);
     LocalUser *getUser(const QString &identifier);
+
+    BotUser *addBot(const QString &userName, quint32 dcId);
+    BotUser *getBot(const QString &userName, quint32 dcId);
 
     QVector<Server*> getServerInstances() { return m_serverInstances; }
     Server *getServerInstance(quint32 dcId);

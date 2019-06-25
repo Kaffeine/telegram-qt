@@ -19,8 +19,7 @@ quint32 PostBox::addMessage(MessageData *message)
     ++m_lastMessageId;
     ++m_pts;
 
-    message->addReference(peer(), m_lastMessageId);
-    m_messages.insert(m_lastMessageId, message->globalId());
+    importMessage(message, m_lastMessageId);
     return m_lastMessageId;
 }
 
@@ -32,6 +31,12 @@ quint64 PostBox::getMessageGlobalId(quint32 messageId) const
 QHash<quint32, quint64> PostBox::getAllMessageKeys() const
 {
     return m_messages;
+}
+
+void Telegram::Server::PostBox::importMessage(MessageData *message, quint32 messageId)
+{
+    message->addReference(peer(), messageId);
+    m_messages.insert(messageId, message->globalId());
 }
 
 TLPeer MessageRecipient::toTLPeer() const

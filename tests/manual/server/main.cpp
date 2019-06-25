@@ -15,6 +15,7 @@
 
  */
 
+#include "BotUser.hpp"
 #include "DcConfiguration.hpp"
 #include "DefaultAuthorizationProvider.hpp"
 #include "JsonDataImporter.hpp"
@@ -40,6 +41,7 @@
 #include <QFile>
 #include <QImage>
 #include <QStandardPaths>
+#include <QCommandLineParser>
 #include <QTimer>
 
 using namespace Telegram::Server;
@@ -183,8 +185,75 @@ int main(int argc, char *argv[])
         api->processMessage(data);
     }
 
+    AbstractServerApi *api = cluster.getServerApiInstance(1);
+    LocalUser *dialog = cluster.addUser(QStringLiteral("123455"), /* dc */ 1);
+    dialog->setFirstName(QLatin1String("LongFirstName"));
+    dialog->setLastName(QLatin1String("LastNameIsLongToo"));
+    MessageData *data = api->storage()->addMessage(dialog->userId(), u1->toPeer(), QStringLiteral("Message"));
+    data->setDate32(data->date() - 60);
+    cluster.processMessage(data);
+
+//    for (int i = 0; i < 60; ++i) {
+//        QString nId = QString::number(i + 1);
+//        LocalUser *dialogN = cluster.addUser(QStringLiteral("123456") + nId, /* dc */ 1);
+//        dialogN->setFirstName(QStringLiteral("First") + nId);
+//        dialogN->setLastName(QStringLiteral("Last") + nId);
+//        MessageData *data = api->storage()->addMessage(dialogN->userId(), u1->toPeer(), QStringLiteral("Message ") + nId);
+//        data->setDate32(data->date() - 60 + i);
+//        api->processMessage(data);
+//    }
+
+//    m_storage->loadData();
+//    for (Server *server : m_serverInstances) {
+//        server->loadData();
+//    }
+
+    BotUser *bot = nullptr;
+    if (!cluster.getUser(QStringLiteral("123456789"))) {
+        LocalUser *u1 = cluster.addUser(QStringLiteral("123456789"), /* dc */ 1);
+        u1->setFirstName(QStringLiteral("Dc1User1"));
+        u1->setLastName(QStringLiteral("Dc1"));
+
+        AbstractServerApi *api = cluster.getServerApiInstance(1);
+        LocalUser *dialog = cluster.addUser(QStringLiteral("123455"), /* dc */ 1);
+        dialog->setFirstName(QLatin1String("LongFirstName"));
+        dialog->setLastName(QLatin1String("LastNameIsLongToo"));
+        MessageData *data = api->storage()->addMessage(dialog->userId(), u1->toPeer(), QStringLiteral("Message"));
+        data->setDate32(data->date() - 60);
+        cluster.processMessage(data);
+
+        //    for (int i = 0; i < 60; ++i) {
+        //        QString nId = QString::number(i + 1);
+        //        LocalUser *dialogN = cluster.addUser(QStringLiteral("123456") + nId, /* dc */ 1);
+        //        dialogN->setFirstName(QStringLiteral("First") + nId);
+        //        dialogN->setLastName(QStringLiteral("Last") + nId);
+        //        MessageData *data = api->storage()->addMessage(dialogN->userId(), u1->toPeer(), QStringLiteral("Message ") + nId);
+        //        data->setDate32(data->date() - 60 + i);
+        //        api->processMessage(data);
+        //    }
+
+        //    for (int i = 0; i < 50; ++i) {
+        //        QString nId = QString::number(i + 1);
+        //        MessageData *data = api->storage()->addMessage(u1->userId(), u1->toPeer(), QStringLiteral("Message ") + nId);
+        //        data->setDate32(data->date() - 60 + i);
+        //        api->processMessage(data);
+        //    }
+
+        bot = cluster.addBot("root", 1);
+        bot->setFirstName("root");
+        bot->sendMessage(u1->toPeer(), QLatin1String("I'm online!"));
+    } else {
+        bot = cluster.getBot("root", 1);
+    }
+
+    bot->addMessageCallback(QLatin1String("poweroff"), [&a]() {
+        QMetaObject::invokeMethod(&a, "quit", Qt::QueuedConnection);
+    });
+
+     QTimer::singleShot(30000, &a, SLOT(quit()));
+
     int retCode = a.exec();
-    //cluster.stop();
+    cluster.stop();
 
     importer.saveData();
 

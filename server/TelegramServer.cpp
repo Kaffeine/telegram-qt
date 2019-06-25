@@ -2,6 +2,7 @@
 
 #include "ApiUtils.hpp"
 #include "AuthService.hpp"
+#include "BotUser.hpp"
 #include "CServerTcpTransport.hpp"
 #include "Debug_p.hpp"
 #include "MediaService.hpp"
@@ -906,6 +907,24 @@ void Server::insertUser(LocalUser *user)
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
     m_users.insert(user->id(), user);
     m_phoneToUserId.insert(user->phoneNumber(), user->id());
+}
+
+BotUser *Server::addBot(const QString &userName)
+{
+    qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << userName;
+    Peer existingPeer = getPeerByUserName(userName);
+    if (existingPeer.isValid()) {
+        qCDebug(loggingCategoryServerApi) << CALL_INFO << "Unable to add bot"
+                                          << userName << "(the username is already taken)"
+                                          << "by" << existingPeer.toString();
+        return nullptr;
+    }
+
+
+    BotUser *bot = new BotUser(qHash(userName));
+    bot->setDcId(dcId());
+    // insertUser(user);
+    return bot;
 }
 
 PhoneStatus Server::getPhoneStatus(const QString &identifier) const

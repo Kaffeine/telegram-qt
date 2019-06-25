@@ -3,6 +3,8 @@ set(server_lib_SOURCES
     AuthService.cpp
     AuthService.hpp
     AuthorizationProvider.hpp
+    BotUser.cpp
+    BotUser.hpp
     CServerTcpTransport.cpp
     CServerTcpTransport.hpp
     DefaultAuthorizationProvider.cpp
