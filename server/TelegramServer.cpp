@@ -298,13 +298,13 @@ Peer Server::getPeerByUserName(const QString &userName) const
     return Peer();
 }
 
-AbstractUser *Server::getAbstractUser(const TLInputUser &inputUser, LocalUser *self) const
+AbstractUser *Server::getAbstractUser(const TLInputUser &inputUser, const LocalUser *applicant) const
 {
     switch (inputUser.tlType) {
     case TLValue::InputUserSelf:
-        return self;
+        return getUser(applicant->userId());
     case TLValue::InputUser:
-        return getAbstractUser(inputUser.userId, inputUser.accessHash, self);
+        return getAbstractUser(inputUser.userId, inputUser.accessHash, applicant);
     case TLValue::InputUserEmpty:
         return nullptr;
     default:
@@ -312,7 +312,7 @@ AbstractUser *Server::getAbstractUser(const TLInputUser &inputUser, LocalUser *s
     }
 }
 
-AbstractUser *Server::getAbstractUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const
+AbstractUser *Server::getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const
 {
     AbstractUser *u = getAbstractUser(userId);
     // TODO: Check access hash

@@ -101,8 +101,8 @@ public:
 
     virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
-    virtual AbstractUser *getAbstractUser(const TLInputUser &inputUser, LocalUser *self) const = 0;
-    virtual AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const = 0;
+    virtual AbstractUser *getAbstractUser(const TLInputUser &inputUser, const LocalUser *applicant) const = 0;
+    virtual AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const = 0;
     virtual Peer getPeerByUserName(const QString &userName) const = 0;
 
     virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;

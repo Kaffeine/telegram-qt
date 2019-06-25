@@ -71,8 +71,8 @@ public:
 
     AbstractUser *getAbstractUser(quint32 userId) const override;
     AbstractUser *getAbstractUser(const QString &identifier) const override;
-    AbstractUser *getAbstractUser(const TLInputUser &inputUser, LocalUser *self) const override;
-    AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const override;
+    AbstractUser *getAbstractUser(const TLInputUser &inputUser, const LocalUser *applicant) const override;
+    AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const override;
     AbstractUser *getRemoteUser(quint32 userId) const;
     AbstractUser *getRemoteUser(const QString &identifier) const;
 
