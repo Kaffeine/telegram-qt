@@ -157,6 +157,18 @@ ServerApi *LocalCluster::getServerApiInstance(quint32 dcId)
     return getServerInstance(dcId);
 }
 
+void LocalCluster::processMessage(MessageData *messageData)
+{
+    if (messageData->fromId() == 0) {
+        qCWarning(lcCluster) << CALL_INFO << "Unable to process message without a sender";
+        return;
+    }
+    AbstractUser *user = m_serverInstances.first()->getAbstractUser(messageData->fromId());
+
+    Server *server = getServerInstance(user->dcId());
+    server->processMessage(messageData);
+}
+
 } // Server namespace
 
 } // Telegram namespace

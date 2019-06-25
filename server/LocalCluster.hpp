@@ -39,6 +39,7 @@ class Session;
 class ServerApi;
 class Storage;
 class LocalUser;
+class MessageData;
 class AbstractUser;
 
 class LocalCluster : public QObject
@@ -67,6 +68,8 @@ public:
     QVector<Server*> getServerInstances() { return m_serverInstances; }
     Server *getServerInstance(quint32 dcId);
     ServerApi *getServerApiInstance(quint32 dcId);
+
+    void processMessage(MessageData *messageData);
 
 protected:
     ServerConstructor m_constructor;
