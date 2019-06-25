@@ -286,7 +286,7 @@ AbstractUser *Server::getAbstractUser(const TLInputUser &inputUser, LocalUser *s
     case TLValue::InputUserSelf:
         return self;
     case TLValue::InputUser:
-        return tryAccessUser(inputUser.userId, inputUser.accessHash, self);
+        return getAbstractUser(inputUser.userId, inputUser.accessHash, self);
     case TLValue::InputUserEmpty:
         return nullptr;
     default:
@@ -294,7 +294,7 @@ AbstractUser *Server::getAbstractUser(const TLInputUser &inputUser, LocalUser *s
     }
 }
 
-AbstractUser *Server::tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const
+AbstractUser *Server::getAbstractUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const
 {
     AbstractUser *u = getAbstractUser(userId);
     // TODO: Check access hash
