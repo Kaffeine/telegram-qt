@@ -176,6 +176,13 @@ int main(int argc, char *argv[])
         dialogN->updateImage(image);
     }
 
+    for (int i = 0; i < 50; ++i) {
+        QString nId = QString::number(i + 1);
+        MessageData *data = api->storage()->addMessage(u1->userId(), u1->toPeer(), QStringLiteral("Message ") + nId);
+        data->setDate32(data->date() - 60 + i);
+        api->processMessage(data);
+    }
+
     int retCode = a.exec();
     //cluster.stop();
 
