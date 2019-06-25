@@ -24,6 +24,17 @@
 
 #include "CPeerModel.hpp"
 
+namespace Telegram {
+
+namespace Client {
+
+class ContactList;
+
+} // Client namespace
+
+} // Telegram namespace
+
+
 struct SContact : Telegram::UserInfo {
     SContact() :
         Telegram::UserInfo(),
@@ -52,7 +63,7 @@ public:
         ColumnsCount
     };
 
-    explicit CContactModel(CTelegramCore *backend, QObject *parent = nullptr);
+    explicit CContactModel(Telegram::Client::Client *backend, QObject *parent = nullptr);
 
     bool hasPeer(const Telegram::Peer peer) const override;
     QString getName(const Telegram::Peer peer) const override;
@@ -72,6 +83,7 @@ public:
     bool hasContact(quint32 contactId) const;
     const SContact *contactAt(int index) const;
     const SContact *getContact(quint32 id) const;
+    const SContact *getContact(const QString &phone) const;
 
     QVector<quint32> contacts() const;
     QString contactAt(int index, bool addName) const;
@@ -82,6 +94,7 @@ public:
 
 public slots:
     void addContact(quint32 id);
+    void addContacts(const QVector<quint32> &ids);
     bool removeContact(quint32 id);
     void setContactList(const QVector<quint32> &newContactList);
     void setTypingStatus(quint32 id, TelegramNamespace::MessageAction action);
@@ -99,6 +112,7 @@ private:
     void addContactId(quint32 id);
     QString contactStatusStr(const SContact &contact) const;
 
+    Telegram::Client::ContactList *m_contactList = nullptr;
     QList<SContact> m_contacts;
 };
 

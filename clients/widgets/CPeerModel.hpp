@@ -9,7 +9,16 @@
 
 #include "TelegramNamespace.hpp"
 
-class CTelegramCore;
+namespace Telegram {
+
+namespace Client {
+
+class Client;
+
+} // Client namespace
+
+} // Telegram namespace
+
 class CFileManager;
 
 struct PeerPicture {
@@ -23,7 +32,7 @@ class CPeerModel : public QAbstractTableModel
 public:
     explicit CPeerModel(QObject *parent = nullptr);
 
-    void setBackend(CTelegramCore *backend);
+    void setBackend(Telegram::Client::Client *backend);
     void setFileManager(CFileManager *manager);
 
     virtual bool hasPeer(const Telegram::Peer peer) const = 0;
@@ -47,7 +56,7 @@ protected:
 
     QSet<QString> m_requests;
 
-    CTelegramCore *m_backend;
+    Telegram::Client::Client *m_backend;
     CFileManager *m_fileManager;
 };
 

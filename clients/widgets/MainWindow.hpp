@@ -22,6 +22,7 @@
 #include <QMap>
 
 #include "TelegramNamespace.hpp"
+#include "ConnectionApi.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +38,17 @@ class CFileManager;
 
 class QModelIndex;
 
+namespace Telegram {
+
+namespace Client {
+
+class Client;
+class PendingContactsOperation;
+
+} // Client namespace
+
+} // Telegram namespace
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -50,9 +62,8 @@ public:
         AppStateDisconnected,
         AppStateConnected,
         AppStateAuthRequired,
-        AppStateCodeRequested,
-        AppStateCodeSent,
-        AppStateCodeProvided,
+        AppStateCodeRequired,
+        AppStateCodeSubmitted,
         AppStatePasswordRequired,
         AppStatePasswordProvided,
         AppStateSignedIn,
@@ -62,24 +73,26 @@ public:
     Q_ENUM(AppState)
 
 protected slots:
-    void onConnectionStateChanged(TelegramNamespace::ConnectionState state);
+    void onConnectionStateChanged(Telegram::Client::ConnectionApi::Status status);
+    void onAuthOperationFailed(Telegram::PendingOperation *operation, const QVariantHash &details);
     void onLoggedOut(bool result);
-    void onPhoneStatusReceived(const QString &phone, bool registered);
-    void onPhoneCodeRequested();
-    void onPasswordInfoReceived(quint64 requestId);
-    void onUnauthorizedErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
-    void onAuthSignErrorReceived(TelegramNamespace::AuthSignError errorCode, const QString &errorMessage);
+    void onAuthPhoneCodeRequired();
+    void onAuthRegisteredChanged(bool registered);
+    void onAuthPasswordRequested();
+    void onAuthSignErrorReceived(TelegramNamespace::AuthenticationError errorCode, const QString &errorMessage);
     void updateContactList();
-    void onMessageReceived(const Telegram::Message &message);
+    void onMessageReceived(const Telegram::Peer peer, quint32 messageId);
     void onContactChatMessageActionChanged(quint32 chatId, quint32 userId, TelegramNamespace::MessageAction action);
     void onContactMessageActionChanged(quint32 userId, TelegramNamespace::MessageAction action);
     void onContactStatusChanged(quint32 contact);
+#if 0
     void onCreatedChatIdResolved(quint64 requestId, quint32 chatId);
     void onChatChanged(quint32 chatId);
     void updateActiveChat();
 
     void onUploadingStatusUpdated(quint32 requestId, quint32 currentOffset, quint32 size);
     void onFileRequestFinished(quint32 requestId, Telegram::RemoteFile info);
+#endif
     void onUserNameStatusUpdated(const QString &userName, TelegramNamespace::UserNameStatus status);
 
     void onCustomMenuRequested(const QPoint &pos);
@@ -112,7 +125,7 @@ protected slots:
     void on_messagingAttachButton_clicked();
     void on_groupChatAttachButton_clicked();
     void on_messagingMessage_textChanged(const QString &arg1);
-    void on_messagingContactIdentifier_textChanged(const QString &arg1);
+    void on_messagingContactIdentifier_textChanged(const QString &identifier);
     void on_messagingGetHistoryRequest_clicked();
     void on_groupChatGetHistoryRequest_clicked();
 
@@ -144,10 +157,13 @@ protected:
     void sendMedia(const Telegram::Peer peer);
 
     void initStartConnection();
-    void initRequestAuthCode();
-    void initTryAuthCode();
-    void initTryPassword();
+    void authSubmitPhoneNumber();
+    void authSubmitCode();
+    void authSubmitPassword();
     void initLogout();
+
+    void onContactOperationFinished(Telegram::Client::PendingContactsOperation *operation);
+    void onContactSearchOperationFinished(Telegram::Client::PendingContactsOperation *operation);
 
 private slots:
     void on_restoreSession_clicked();
@@ -173,25 +189,24 @@ private:
 
     CContactModel *searchResultModel();
 
-    Ui::MainWindow *ui;
+    Ui::MainWindow *ui = nullptr;
 
-    CTelegramCore *m_core;
+    Telegram::Client::Client *m_backend = nullptr;
 
-    Telegram::PasswordInfo *m_passwordInfo;
     QMap<quint32,quint64> m_contactLastMessageList;
     QMap<quint32, Telegram::Peer> m_uploadingRequests;
 
-    CFileManager *m_fileManager;
-    CContactModel *m_contactsModel;
-    CContactsFilterModel *m_contactListModel;
-    CDialogModel *m_dialogModel;
-    CMessageModel *m_messagingModel;
+    CFileManager *m_fileManager = nullptr;
+    CContactModel *m_contactsModel = nullptr;
+    CContactsFilterModel *m_contactListModel = nullptr;
+    CDialogModel *m_dialogModel = nullptr;
+    CMessageModel *m_messagingModel = nullptr;
 
-    CContactsFilterModel *m_chatContactsModel;
-    CMessageModel *m_chatMessagingModel;
+    CContactsFilterModel *m_chatContactsModel = nullptr;
+    CMessageModel *m_chatMessagingModel = nullptr;
 
-    CChatInfoModel *m_chatInfoModel;
-    CContactModel *m_contactSearchResultModel;
+    CChatInfoModel *m_chatInfoModel = nullptr;
+    CContactModel *m_contactSearchResultModel = nullptr;
     QString m_searchQuery;
 
     quint32 m_activeContactId;
@@ -199,9 +214,9 @@ private:
     quint64 m_pendingChatId;
     bool m_chatCreationMode;
 
-    bool m_registered;
+    bool m_registered = false;
     bool m_workLikeAClient;
-    bool m_phoneNumberSubmitted;
+    bool m_phoneNumberSubmitted = false;
 
     AppState m_appState;
 

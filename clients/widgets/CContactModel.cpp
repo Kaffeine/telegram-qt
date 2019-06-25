@@ -16,7 +16,11 @@
  */
 
 #include "CContactModel.hpp"
-#include "CTelegramCore.hpp"
+
+#include "Client.hpp"
+#include "ContactsApi.hpp"
+#include "ContactList.hpp"
+#include "DataStorage.hpp"
 
 #include "CFileManager.hpp"
 
@@ -24,10 +28,11 @@
 
 #include <QDebug>
 
-CContactModel::CContactModel(CTelegramCore *backend, QObject *parent) :
+CContactModel::CContactModel(Telegram::Client::Client *backend, QObject *parent) :
     CPeerModel(parent)
 {
     setBackend(backend);
+
     connect(m_backend, SIGNAL(contactProfileChanged(quint32)),
             SLOT(onContactProfileChanged(quint32)));
     connect(m_backend, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
@@ -182,7 +187,7 @@ void CContactModel::addContactId(quint32 id)
 {
     const Telegram::Peer peer(id, Telegram::Peer::User);
     m_contacts.append(SContact());
-    m_backend->getUserInfo(&m_contacts.last(), id);
+    m_backend->dataStorage()->getUserInfo(&m_contacts.last(), id);
     m_contacts.last().m_picture = getPeerPictureNowOrLater(peer);
     qDebug() << Q_FUNC_INFO << peer.id << m_contacts.last().m_picture.token;
 }
@@ -196,6 +201,26 @@ void CContactModel::addContact(quint32 id)
 
     beginInsertRows(QModelIndex(), m_contacts.count(), m_contacts.count());
     addContactId(id);
+    endInsertRows();
+}
+
+void CContactModel::addContacts(const QVector<quint32> &ids)
+{
+    QVector<quint32> newIds;
+    for (quint32 id : ids) {
+        if (hasContact(id)) {
+            continue;
+        }
+        newIds.append(id);
+    }
+    if (newIds.isEmpty()) {
+        return;
+    }
+
+    beginInsertRows(QModelIndex(), m_contacts.count(), m_contacts.count() + newIds.count() - 1);
+    for (quint32 userId : newIds) {
+        addContactId(userId);
+    }
     endInsertRows();
 }
 
@@ -252,7 +277,7 @@ void CContactModel::onContactProfileChanged(quint32 id)
         return;
     }
 
-    m_backend->getUserInfo(&m_contacts[index], id);
+    m_backend->dataStorage()->getUserInfo(&m_contacts[index], id);
     QModelIndex modelIndexFirst = createIndex(index, UserName);
     QModelIndex modelIndexLast = createIndex(index, FullName);
     emit dataChanged(modelIndexFirst, modelIndexLast);
@@ -266,7 +291,7 @@ void CContactModel::onContactStatusChanged(quint32 id)
         return;
     }
 
-    m_backend->getUserInfo(&m_contacts[index], id);
+    m_backend->dataStorage()->getUserInfo(&m_contacts[index], id);
     QModelIndex modelIndex = createIndex(index, Status);
     emit dataChanged(modelIndex, modelIndex);
 }
@@ -323,6 +348,16 @@ const SContact *CContactModel::contactAt(int index) const
 const SContact *CContactModel::getContact(quint32 id) const
 {
     int index = indexOfContact(id);
+    if (index < 0) {
+        return nullptr;
+    }
+
+    return contactAt(index);
+}
+
+const SContact *CContactModel::getContact(const QString &phone) const
+{
+    int index = indexOfContact(phone);
     if (index < 0) {
         return nullptr;
     }
