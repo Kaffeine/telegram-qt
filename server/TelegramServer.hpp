@@ -71,6 +71,7 @@ public:
 
     AbstractUser *getAbstractUser(quint32 userId) const override;
     AbstractUser *getAbstractUser(const QString &identifier) const override;
+    AbstractUser *getAbstractUser(const TLInputUser &inputUser, LocalUser *self) const override;
     AbstractUser *getRemoteUser(quint32 userId) const;
     AbstractUser *getRemoteUser(const QString &identifier) const;
 
@@ -82,7 +83,6 @@ public:
     LocalUser *getUser(const QString &identifier) const override;
     LocalUser *getUser(quint32 userId) const override;
     Peer getPeerByUserName(const QString &userName) const override;
-    AbstractUser *getUser(const TLInputUser &inputUser, LocalUser *self) const override;
     AbstractUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const override;
     LocalUser *addUser(const QString &identifier) override;
 

@@ -19,7 +19,7 @@ void RemoteServerConnection::setRemoteServer(ServerApi *remoteServer)
 
 AbstractUser *RemoteServerConnection::getUser(const QString &identifier)
 {
-    return m_server->getUser(identifier);
+    return m_server->getAbstractUser(identifier);
 }
 
 ServerApi *RemoteServerConnection::api()

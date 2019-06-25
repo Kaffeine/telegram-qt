@@ -89,7 +89,7 @@ void PhotosRpcOperation::runGetUserPhotos()
     }
 
     LocalUser *self = layer()->getUser();
-    AbstractUser *targetUser = api()->getUser(arguments.userId, self);
+    AbstractUser *targetUser = api()->getAbstractUser(arguments.userId, self);
 
     QVector<ImageDescriptor> images = targetUser->getImages();
     TLPhotosPhotos result;

@@ -235,7 +235,7 @@ MessageRecipient *Server::getRecipient(const Peer &peer, const LocalUser *applic
     Q_UNUSED(applicant)
     switch (peer.type) {
     case Telegram::Peer::User:
-        return getUser(peer.id);
+        return getAbstractUser(peer.id);
     case Telegram::Peer::Chat:
         // recipient = api()->getChannel(arguments.peer.groupId, arguments.peer.accessHash);
         break;
@@ -280,7 +280,7 @@ Peer Server::getPeerByUserName(const QString &userName) const
     return Peer();
 }
 
-AbstractUser *Server::getUser(const TLInputUser &inputUser, LocalUser *self) const
+AbstractUser *Server::getAbstractUser(const TLInputUser &inputUser, LocalUser *self) const
 {
     switch (inputUser.tlType) {
     case TLValue::InputUserSelf:
@@ -685,7 +685,7 @@ AbstractUser *Server::getAbstractUser(const QString &identifier) const
 AbstractUser *Server::getRemoteUser(quint32 userId) const
 {
     for (RemoteServerConnection *remoteServer : m_remoteServers) {
-        AbstractUser *u = remoteServer->api()->getUser(userId);
+        AbstractUser *u = remoteServer->api()->getAbstractUser(userId);
         if (u) {
             return u;
         }
@@ -696,7 +696,7 @@ AbstractUser *Server::getRemoteUser(quint32 userId) const
 AbstractUser *Server::getRemoteUser(const QString &identifier) const
 {
     for (RemoteServerConnection *remoteServer : m_remoteServers) {
-        AbstractUser *u = remoteServer->api()->getUser(identifier);
+        AbstractUser *u = remoteServer->api()->getAbstractUser(identifier);
         if (u) {
             return u;
         }

@@ -105,10 +105,10 @@ public:
 
     virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
+    virtual AbstractUser *getAbstractUser(const TLInputUser &inputUser, LocalUser *self) const = 0;
     virtual LocalUser *getUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(quint32 userId) const = 0;
     virtual Peer getPeerByUserName(const QString &userName) const = 0;
-    virtual AbstractUser *getUser(const TLInputUser &inputUser, LocalUser *self) const = 0;
     virtual AbstractUser *tryAccessUser(quint32 userId, quint64 accessHash, LocalUser *applicant) const = 0;
 
     virtual bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) = 0;

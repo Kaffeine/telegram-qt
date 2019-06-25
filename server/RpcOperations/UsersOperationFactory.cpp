@@ -59,7 +59,7 @@ bool UsersRpcOperation::processGetUsers(RpcProcessingContext &context)
 void UsersRpcOperation::runGetFullUser()
 {
     LocalUser *self = layer()->getUser();
-    AbstractUser *user = api()->getUser(m_getFullUser.id, self);
+    AbstractUser *user = api()->getAbstractUser(m_getFullUser.id, self);
     if (!user) {
         sendRpcError(RpcError::UserIdInvalid);
         return;
@@ -77,7 +77,7 @@ void UsersRpcOperation::runGetUsers()
     TLVector<TLUser> result;
     result.reserve(m_getUsers.id.count());
     for (const TLInputUser &input : m_getUsers.id) {
-        AbstractUser *remoteUser = api()->getUser(input, self);
+        AbstractUser *remoteUser = api()->getAbstractUser(input, self);
         if (!remoteUser) {
             sendRpcError(RpcError::UserIdInvalid);
             return;
