@@ -59,6 +59,7 @@ public:
     Status status() const;
 
     Q_INVOKABLE int remainingTimeToConnect() const;
+    AuthOperation *getAuthenticationOperation() const;
 
     AuthOperation *startAuthentication();
     AuthOperation *checkIn();
