@@ -50,6 +50,9 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *app
     }
 
     quint32 flags = 0;
+    if (input->isBot()) {
+        flags |= TLUser::Bot;
+    }
     if (!output->firstName.isEmpty()) {
         flags |= TLUser::FirstName;
     }

@@ -34,6 +34,7 @@ class Provider;
 
 } // Authorization namespace
 
+class BotUser;
 class Server;
 class Session;
 class AbstractServerApi;
@@ -64,6 +65,9 @@ public:
 
     LocalUser *addUser(const QString &identifier, quint32 dcId);
     LocalUser *getUser(const QString &identifier);
+
+    BotUser *addBot(const QString &userName, quint32 dcId);
+    BotUser *getBot(const QString &userName, quint32 dcId);
 
     QVector<Server*> getServerInstances() { return m_serverInstances; }
     Server *getServerInstance(quint32 dcId);

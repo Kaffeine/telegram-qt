@@ -142,6 +142,32 @@ LocalUser *LocalCluster::getUser(const QString &identifier)
     return s->getUser(identifier);
 }
 
+BotUser *LocalCluster::addBot(const QString &userName, quint32 dcId)
+{
+    Server *server = getServerInstance(dcId);
+    if (!server) {
+        qCWarning(lcCluster) << CALL_INFO << "Unable to add a bot"
+                             << userName << "to unknown server id" << dcId;
+        return nullptr;
+    }
+    BotUser *bot = server->addBot(userName);
+    if (!bot) {
+        qCWarning(lcCluster) << CALL_INFO << "Unable to add a bot";
+    }
+    return bot;
+}
+
+BotUser *LocalCluster::getBot(const QString &userName, quint32 dcId)
+{
+    Server *server = getServerInstance(dcId);
+    if (!server) {
+        qCWarning(lcCluster) << CALL_INFO << "Unable to add a bot"
+                             << userName << "to unknown server id" << dcId;
+        return nullptr;
+    }
+    return server->getBot(userName);
+}
+
 Server *LocalCluster::getServerInstance(quint32 dcId)
 {
     for (Server *server : m_serverInstances) {

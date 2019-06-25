@@ -2,6 +2,7 @@
 
 #include "ApiUtils.hpp"
 #include "AuthService.hpp"
+#include "BotUser.hpp"
 #include "CServerTcpTransport.hpp"
 #include "Debug_p.hpp"
 #include "MediaService.hpp"
@@ -328,9 +329,9 @@ LocalUser *Server::addUser(const QString &identifier)
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << identifier;
     AbstractUser *existsUser = getAbstractUser(identifier);
     if (existsUser) {
-        qCDebug(loggingCategoryServerApi) << CALL_INFO << "Unable to add user"
-                                          << identifier << "(the identifier is already taken)"
-                                          << "by user id" << existsUser->id();
+        qCWarning(loggingCategoryServerApi) << CALL_INFO << "Unable to add user"
+                                            << identifier << "(the identifier is already taken)"
+                                            << "by user id" << existsUser->id();
         return nullptr;
     }
 
@@ -615,6 +616,39 @@ void Server::insertUser(LocalUser *user)
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
     m_users.insert(user->id(), user);
     m_phoneToUserId.insert(user->phoneNumber(), user->id());
+}
+
+BotUser *Server::addBot(const QString &userName)
+{
+    qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << userName;
+    Peer existingPeer = getPeerByUserName(userName);
+    if (existingPeer.isValid()) {
+        qCDebug(loggingCategoryServerApi) << CALL_INFO << "Unable to add bot"
+                                          << userName << "(the username is already taken)"
+                                          << "by" << existingPeer.toString();
+        return nullptr;
+    }
+
+
+    BotUser *bot = new BotUser(qHash(userName), this);
+    bot->setDcId(dcId());
+    insertUser(bot);
+    setUserName(bot, userName);
+
+    return bot;
+}
+
+Telegram::Server::BotUser *Telegram::Server::Server::getBot(const QString &userName)
+{
+    Peer existingPeer = getPeerByUserName(userName);
+    if (!existingPeer.isValid()) {
+        return nullptr;
+    }
+    LocalUser *user = getUser(existingPeer.id);
+    if (!user->isBot()) {
+        return nullptr;
+    }
+    return static_cast<BotUser*>(user);
 }
 
 PhoneStatus Server::getPhoneStatus(const QString &identifier) const

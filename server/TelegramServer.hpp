@@ -26,6 +26,7 @@ class Provider;
 
 } // Authorization namespace
 
+class BotUser;
 class LocalUser;
 class Session;
 class RemoteClientConnection;
@@ -100,6 +101,9 @@ public:
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
 
     void insertUser(LocalUser *user);
+
+    BotUser *addBot(const QString &userName);
+    BotUser *getBot(const QString &userName);
 
 signals:
 
