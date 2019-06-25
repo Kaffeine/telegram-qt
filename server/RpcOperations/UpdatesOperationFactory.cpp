@@ -86,8 +86,8 @@ void UpdatesRpcOperation::runGetDifference()
 void UpdatesRpcOperation::runGetState()
 {
     TLUpdatesState result;
-    LocalUser *self = layer()->getUser();
-    Utils::setupTLUpdatesState(&result, self);
+    const LocalUser *selfUser = layer()->getUser();
+    Utils::setupTLUpdatesState(&result, selfUser);
     sendRpcReply(result);
 }
 // End of generated run methods

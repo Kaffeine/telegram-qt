@@ -965,9 +965,9 @@ void MessagesRpcOperation::runGetDialogs()
 {
     TLFunctions::TLMessagesGetDialogs &arguments = m_getDialogs;
     TLMessagesDialogs result;
-    LocalUser *self = layer()->getUser();
+    const LocalUser *selfUser = layer()->getUser();
 
-    const QVector<UserDialog *> dialogs = self->dialogs();
+    const QVector<UserDialog *> dialogs = selfUser->dialogs();
     result.count = static_cast<quint32>(dialogs.count());
 
     int dialogsToAdd = qMin(c_serverDialogsSliceLimit, dialogs.count());
@@ -985,8 +985,8 @@ void MessagesRpcOperation::runGetDialogs()
 
     int fromDialogIndex = 0;
     if (arguments.offsetId) {
-        Peer offsetPeer = api()->getPeer(arguments.offsetPeer, self);
-        const UserDialog *offsetDialog = self->getDialog(offsetPeer);
+        Peer offsetPeer = api()->getPeer(arguments.offsetPeer, selfUser);
+        const UserDialog *offsetDialog = selfUser->getDialog(offsetPeer);
         if (offsetDialog && (offsetDialog->topMessage == arguments.offsetId)) {
             for (int i = 0; i < dialogs.count(); ++i) {
                 if (dialogs.at(i) == offsetDialog) {
@@ -1033,20 +1033,20 @@ void MessagesRpcOperation::runGetDialogs()
             --dialogsToAdd;
         }
 
-        const PostBox *box = self->getPostBox();
+        const PostBox *box = selfUser->getPostBox();
         quint64 topMessageGlobalId = box->getMessageGlobalId(tlDialog.topMessage);
         const MessageData *messageData = api()->storage()->getMessage(topMessageGlobalId);
 
         if (messageData) {
             result.messages.resize(result.messages.size() + 1);
-            Utils::setupTLMessage(&result.messages.last(), messageData, tlDialog.topMessage, self);
+            Utils::setupTLMessage(&result.messages.last(), messageData, tlDialog.topMessage, selfUser);
         }
 
         interestingPeers.insert(dialog->peer);
     }
 
     Utils::getInterestingPeers(&interestingPeers, result.messages);
-    Utils::setupTLPeers(&result, interestingPeers, api(), self);
+    Utils::setupTLPeers(&result, interestingPeers, api(), selfUser);
     sendRpcReply(result);
 }
 
@@ -1117,9 +1117,9 @@ void MessagesRpcOperation::runGetHistory()
         return;
     }
 
-    const LocalUser *self = layer()->getUser();
-    const Peer peer = api()->getPeer(arguments.peer, self);
-    const QHash<quint32,quint64> messageKeys = self->getPostBox()->getAllMessageKeys();
+    const LocalUser *selfUser = layer()->getUser();
+    const Peer peer = api()->getPeer(arguments.peer, selfUser);
+    const QHash<quint32,quint64> messageKeys = selfUser->getPostBox()->getAllMessageKeys();
 
     if (arguments.hash) {
         qCritical() << Q_FUNC_INFO << "Not implemented for requested arguments" << arguments.peer.tlType;
@@ -1139,7 +1139,7 @@ void MessagesRpcOperation::runGetHistory()
     // from inclusive messageId
     const quint32 fromMessageId = arguments.offsetId
             ? arguments.offsetId - 1
-            : self->getPostBox()->lastMessageId();
+            : selfUser->getPostBox()->lastMessageId();
 
     // Iterate from newer messages (with bigger id) to older
     for (quint32 messageId = fromMessageId; (messageId != 0) && (maxMessagesToAppend > 0); --messageId) {
@@ -1169,7 +1169,7 @@ void MessagesRpcOperation::runGetHistory()
         }
 
         if (peer.isValid()) {
-            if (peer != messageData->getDialogPeer(self->id())) {
+            if (peer != messageData->getDialogPeer(selfUser->id())) {
                 continue;
             }
         }
@@ -1180,7 +1180,7 @@ void MessagesRpcOperation::runGetHistory()
         }
 
         TLMessage message;
-        Utils::setupTLMessage(&message, messageData, messageId, self);
+        Utils::setupTLMessage(&message, messageData, messageId, selfUser);
 
         --maxMessagesToAppend;
 
@@ -1198,7 +1198,7 @@ void MessagesRpcOperation::runGetHistory()
         interestingPeers.insert(peer);
     }
     Utils::getInterestingPeers(&interestingPeers, result.messages);
-    Utils::setupTLPeers(&result, interestingPeers, api(), self);
+    Utils::setupTLPeers(&result, interestingPeers, api(), selfUser);
     sendRpcReply(result);
 }
 
@@ -1288,9 +1288,9 @@ void MessagesRpcOperation::runGetPinnedDialogs()
         return;
     }
 
-    LocalUser *self = layer()->getUser();
+    const LocalUser *selfUser = layer()->getUser();
     TLMessagesPeerDialogs result;
-    Utils::setupTLUpdatesState(&result.state, self);
+    Utils::setupTLUpdatesState(&result.state, selfUser);
     sendRpcReply(result);
 }
 
@@ -1726,8 +1726,8 @@ void MessagesRpcOperation::runSendMedia()
 {
     TLFunctions::TLMessagesSendMedia &arguments = m_sendMedia;
 
-    LocalUser *self = layer()->getUser();
-    MessageRecipient *recipient = api()->getRecipient(arguments.peer, self);
+    LocalUser *selfUser = layer()->getUser();
+    MessageRecipient *recipient = api()->getRecipient(arguments.peer, selfUser);
 
     if (!recipient) {
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
@@ -1739,7 +1739,7 @@ void MessagesRpcOperation::runSendMedia()
     switch (arguments.media.tlType) {
     case TLValue::InputMediaContact:
     {
-        Telegram::Peer contactPeer = Telegram::Utils::toPublicPeer(arguments.peer, self->id());
+        Telegram::Peer contactPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
         if (!contactPeer.isValid() || (contactPeer.type != Peer::User)) {
             sendRpcError(RpcError(RpcError::PeerIdInvalid)); // TODO: Check if the error is correct
             return;
@@ -1784,7 +1784,7 @@ void MessagesRpcOperation::runSendMedia()
         break;
     }
 
-    MessageData *messageData = api()->storage()->addMessageMedia(self->id(), recipient->toPeer(), media);
+    MessageData *messageData = api()->storage()->addMessageMedia(selfUser->id(), recipient->toPeer(), media);
     submitMessageData(messageData, arguments.randomId);
 }
 
@@ -1792,15 +1792,15 @@ void MessagesRpcOperation::runSendMessage()
 {
     TLFunctions::TLMessagesSendMessage &arguments = m_sendMessage;
 
-    LocalUser *self = layer()->getUser();
-    Telegram::Peer targetPeer = api()->getPeer(arguments.peer, self);
-    MessageRecipient *recipient = api()->getRecipient(arguments.peer, self);
+    LocalUser *selfUser = layer()->getUser();
+    Telegram::Peer targetPeer = api()->getPeer(arguments.peer, selfUser);
+    MessageRecipient *recipient = api()->getRecipient(arguments.peer, selfUser);
 
     if (!recipient) {
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
     }
-    MessageData *messageData = api()->storage()->addMessage(self->id(), targetPeer, arguments.message);
+    MessageData *messageData = api()->storage()->addMessage(selfUser->id(), targetPeer, arguments.message);
 
     submitMessageData(messageData, arguments.randomId);
 }

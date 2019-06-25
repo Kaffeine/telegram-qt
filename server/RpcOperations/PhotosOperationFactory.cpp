@@ -88,14 +88,14 @@ void PhotosRpcOperation::runGetUserPhotos()
         return;
     }
 
-    LocalUser *self = layer()->getUser();
-    AbstractUser *targetUser = api()->getAbstractUser(arguments.userId, self);
+    const LocalUser *selfUser = layer()->getUser();
+    AbstractUser *targetUser = api()->getAbstractUser(arguments.userId, selfUser);
 
     QVector<ImageDescriptor> images = targetUser->getImages();
     TLPhotosPhotos result;
     result.count = images.count();
     result.users.resize(1);
-    Utils::setupTLUser(&result.users[0], targetUser, self);
+    Utils::setupTLUser(&result.users[0], targetUser, selfUser);
 
     quint32 toIndex = arguments.offset + arguments.limit;
     if (toIndex > result.count) {
@@ -138,14 +138,14 @@ void PhotosRpcOperation::runUploadProfilePhoto()
 
     const ImageDescriptor image = api()->storage()->processImageFile(desc, arguments.file.name);
 
-    LocalUser *self = layer()->getUser();
+    LocalUser *selfUser = layer()->getUser();
 
-    self->updateImage(image);
+    selfUser->updateImage(image);
 
     TLPhotosPhoto result;
     Utils::setupTLPhoto(&result.photo, image);
     result.users.resize(1);
-    Utils::setupTLUser(&result.users[0], self, self);
+    Utils::setupTLUser(&result.users[0], selfUser, selfUser);
 
     sendRpcReply(result);
 }
