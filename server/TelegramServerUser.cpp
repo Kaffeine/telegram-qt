@@ -237,6 +237,16 @@ UserDialog *LocalUser::getDialog(const Peer &peer)
     return nullptr;
 }
 
+const UserDialog *LocalUser::getDialog(const Peer &peer) const
+{
+    for (int i = 0; i < m_dialogs.count(); ++i) {
+        if (m_dialogs.at(i)->peer == peer) {
+            return m_dialogs.at(i);
+        }
+    }
+    return nullptr;
+}
+
 void LocalUser::syncDialogsOrder()
 {
     std::sort(m_dialogs.begin(), m_dialogs.end(), [](const UserDialog *left, const UserDialog *right) -> bool {

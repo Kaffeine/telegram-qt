@@ -163,6 +163,7 @@ public:
     void bumpDialogUnreadCount(const Telegram::Peer &peer);
     void addNewMessage(const Telegram::Peer &peer, quint32 messageId, quint64 messageDate);
     UserDialog *getDialog(const Telegram::Peer &peer);
+    const UserDialog *getDialog(const Telegram::Peer &peer) const;
     void syncDialogsOrder();
 
 protected:
