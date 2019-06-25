@@ -28,6 +28,29 @@
            <string>Data center</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
+           <item row="2" column="0">
+            <widget class="QRadioButton" name="testingDcRadio">
+             <property name="text">
+              <string>Testing DC</string>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLineEdit" name="customDcAddress">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>127.0.0.1:10443</string>
+             </property>
+             <property name="placeholderText">
+              <string>address:port</string>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="0">
             <widget class="QRadioButton" name="mainDcRadio">
              <property name="text">
@@ -38,13 +61,10 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <widget class="QRadioButton" name="testingDcRadio">
+           <item row="3" column="0">
+            <widget class="QRadioButton" name="customDcRadio">
              <property name="text">
-              <string>Testing DC</string>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
+              <string>Custom DC</string>
              </property>
             </widget>
            </item>
@@ -907,7 +927,7 @@
      <x>0</x>
      <y>0</y>
      <width>1360</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

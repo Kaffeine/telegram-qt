@@ -989,6 +989,12 @@ AuthOperation *ConnectionApi::checkIn()
     return d->checkIn();
 }
 
+AuthOperation *ConnectionApi::getActiveOperation() const
+{
+    Q_D(const ConnectionApi);
+    return d->getActiveOperation();
+}
+
 } // Client namespace
 
 } // Telegram namespace

@@ -60,6 +60,7 @@ public:
 
     AuthOperation *startAuthentication();
     AuthOperation *checkIn();
+    AuthOperation *getActiveOperation() const { return m_authOperation; }
     ConnectionApi::Status status() const { return m_status; }
 
     QVariantHash getBackendSetupErrorDetails() const;

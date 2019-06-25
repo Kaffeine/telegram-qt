@@ -63,6 +63,8 @@ public:
     AuthOperation *startAuthentication();
     AuthOperation *checkIn();
 
+    AuthOperation *getActiveOperation() const;
+
 public Q_SLOTS:
     void disconnectFromServer();
     bool connectRightNow();

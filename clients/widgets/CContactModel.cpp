@@ -16,38 +16,43 @@
  */
 
 #include "CContactModel.hpp"
-#include "CTelegramCore.hpp"
 
-#include "CFileManager.hpp"
+#include "Client.hpp"
+#include "ContactsApi.hpp"
+#include "ContactList.hpp"
+#include "DataStorage.hpp"
+
+#include "FilesApi.hpp"
 
 #include <QDateTime>
 
 #include <QDebug>
 
-CContactModel::CContactModel(CTelegramCore *backend, QObject *parent) :
+CContactModel::CContactModel(Telegram::Client::Client *backend, QObject *parent) :
     CPeerModel(parent)
 {
     setBackend(backend);
-    connect(m_backend, SIGNAL(contactProfileChanged(quint32)),
-            SLOT(onContactProfileChanged(quint32)));
-    connect(m_backend, SIGNAL(contactStatusChanged(quint32,TelegramNamespace::ContactStatus)),
-            SLOT(onContactStatusChanged(quint32)));
+
+    // connect(m_backend->contactsApi(), SIGNAL(contactProfileChanged(quint32)),
+    //         this, SLOT(onContactProfileChanged(quint32)));
+    connect(m_backend->contactsApi(), &Telegram::Client::ContactsApi::contactStatusChanged,
+            this, &CContactModel::onContactStatusChanged);
 }
 
 bool CContactModel::hasPeer(const Telegram::Peer peer) const
 {
-    if (peer.type != Telegram::Peer::User) {
+    if (peer.type() != Telegram::Peer::User) {
         return false;
     }
-    return indexOfContact(peer.id) >= 0;
+    return indexOfContact(peer.id()) >= 0;
 }
 
 QString CContactModel::getName(const Telegram::Peer peer) const
 {
-    if (peer.type != Telegram::Peer::User) {
+    if (peer.type() != Telegram::Peer::User) {
         return QString();
     }
-    const int i = indexOfContact(peer.id);
+    const int i = indexOfContact(peer.id());
     if (i < 0) {
         return QString();
     }
@@ -65,6 +70,8 @@ QVariant CContactModel::headerData(int section, Qt::Orientation orientation, int
     }
 
     switch (section) {
+    case Id:
+        return tr("Id");
     case Phone:
         return tr("Phone");
     case UserName:
@@ -107,26 +114,26 @@ QVariant CContactModel::data(const QModelIndex &index, int role) const
     case Status:
         return contactStatusStr(m_contacts.at(contactIndex));
     case TypingStatus:
-        switch (m_contacts.at(contactIndex).typing) {
-        case TelegramNamespace::MessageActionNone:
+        switch (m_contacts.at(contactIndex).typing.type) {
+        case Telegram::MessageAction::None:
             return tr("No action");
-        case TelegramNamespace::MessageActionTyping:
+        case Telegram::MessageAction::Typing:
             return tr("Typing");
-        case TelegramNamespace::MessageActionRecordVideo:
+        case Telegram::MessageAction::RecordVideo:
             return tr("Recording a video");
-        case TelegramNamespace::MessageActionRecordAudio:
+        case Telegram::MessageAction::RecordAudio:
             return tr("Recording a audio");
-        case TelegramNamespace::MessageActionUploadVideo:
+        case Telegram::MessageAction::UploadVideo:
             return tr("Uploading a video");
-        case TelegramNamespace::MessageActionUploadAudio:
+        case Telegram::MessageAction::UploadAudio:
             return tr("Uploading a audio");
-        case TelegramNamespace::MessageActionUploadPhoto:
+        case Telegram::MessageAction::UploadPhoto:
             return tr("Uploading a photo");
-        case TelegramNamespace::MessageActionUploadDocument:
+        case Telegram::MessageAction::UploadDocument:
             return tr("Uploading a file");
-        case TelegramNamespace::MessageActionGeoLocation:
+        case Telegram::MessageAction::GeoLocation:
             return tr("Selecting a location");
-        case TelegramNamespace::MessageActionChooseContact:
+        case Telegram::MessageAction::ChooseContact:
             return tr("Selecting a contact");
         default:
             return tr("Unknown action");
@@ -168,7 +175,7 @@ QVariant CContactModel::data(int contactIndex, CContactModel::Column column) con
     case Status:
         return contactStatusStr(m_contacts.at(contactIndex));
     case TypingStatus:
-        return m_contacts.at(contactIndex).typing;
+        return m_contacts.at(contactIndex).typing.type;
     case Blocked:
         return m_contacts.at(contactIndex).blocked;
     case Avatar:
@@ -182,9 +189,9 @@ void CContactModel::addContactId(quint32 id)
 {
     const Telegram::Peer peer(id, Telegram::Peer::User);
     m_contacts.append(SContact());
-    m_backend->getUserInfo(&m_contacts.last(), id);
+    m_backend->dataStorage()->getUserInfo(&m_contacts.last(), id);
     m_contacts.last().m_picture = getPeerPictureNowOrLater(peer);
-    qDebug() << Q_FUNC_INFO << peer.id << m_contacts.last().m_picture.token;
+    qDebug() << Q_FUNC_INFO << peer.id() << m_contacts.last().m_picture.token;
 }
 
 void CContactModel::addContact(quint32 id)
@@ -196,6 +203,26 @@ void CContactModel::addContact(quint32 id)
 
     beginInsertRows(QModelIndex(), m_contacts.count(), m_contacts.count());
     addContactId(id);
+    endInsertRows();
+}
+
+void CContactModel::addContacts(const QVector<quint32> &ids)
+{
+    QVector<quint32> newIds;
+    for (quint32 id : ids) {
+        if (hasContact(id)) {
+            continue;
+        }
+        newIds.append(id);
+    }
+    if (newIds.isEmpty()) {
+        return;
+    }
+
+    beginInsertRows(QModelIndex(), m_contacts.count(), m_contacts.count() + newIds.count() - 1);
+    for (quint32 userId : newIds) {
+        addContactId(userId);
+    }
     endInsertRows();
 }
 
@@ -224,7 +251,7 @@ void CContactModel::setContactList(const QVector<quint32> &newContactList)
     endResetModel();
 }
 
-void CContactModel::setTypingStatus(quint32 id, TelegramNamespace::MessageAction action)
+void CContactModel::setTypingStatus(quint32 id, Telegram::MessageAction action)
 {
     int index = indexOfContact(id);
 
@@ -252,7 +279,7 @@ void CContactModel::onContactProfileChanged(quint32 id)
         return;
     }
 
-    m_backend->getUserInfo(&m_contacts[index], id);
+    m_backend->dataStorage()->getUserInfo(&m_contacts[index], id);
     QModelIndex modelIndexFirst = createIndex(index, UserName);
     QModelIndex modelIndexLast = createIndex(index, FullName);
     emit dataChanged(modelIndexFirst, modelIndexLast);
@@ -266,7 +293,7 @@ void CContactModel::onContactStatusChanged(quint32 id)
         return;
     }
 
-    m_backend->getUserInfo(&m_contacts[index], id);
+    m_backend->dataStorage()->getUserInfo(&m_contacts[index], id);
     QModelIndex modelIndex = createIndex(index, Status);
     emit dataChanged(modelIndex, modelIndex);
 }
@@ -323,6 +350,16 @@ const SContact *CContactModel::contactAt(int index) const
 const SContact *CContactModel::getContact(quint32 id) const
 {
     int index = indexOfContact(id);
+    if (index < 0) {
+        return nullptr;
+    }
+
+    return contactAt(index);
+}
+
+const SContact *CContactModel::getContact(const QString &phone) const
+{
+    int index = indexOfContact(phone);
     if (index < 0) {
         return nullptr;
     }
@@ -390,9 +427,9 @@ QString CContactModel::getContactIdentifier(const Telegram::UserInfo &contact)
 QString CContactModel::contactStatusStr(const SContact &contact) const
 {
     switch (contact.status()) {
-    case TelegramNamespace::ContactStatusOnline:
+    case Telegram::Namespace::ContactStatusOnline:
         return tr("Online");
-    case TelegramNamespace::ContactStatusOffline:
+    case Telegram::Namespace::ContactStatusOffline:
         if (contact.wasOnline() > 0) {
             const QDateTime wasOnline = QDateTime::fromMSecsSinceEpoch(quint64(contact.wasOnline()) * 1000);
             const QDate currentDate = QDateTime::currentDateTime().date();
@@ -406,7 +443,7 @@ QString CContactModel::contactStatusStr(const SContact &contact) const
         } else  {
             return tr("Offline");
         }
-    case TelegramNamespace::ContactStatusUnknown:
+    case Telegram::Namespace::ContactStatusUnknown:
     default:
         return tr("Unknown");
     }

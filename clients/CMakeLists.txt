@@ -3,4 +3,4 @@ if(TELEGRAMQT_BUILD_QML_IMPORT)
 endif()
 
 # The widget client is not ported to the new API yet
-#add_subdirectory(widgets)
+add_subdirectory(widgets)
