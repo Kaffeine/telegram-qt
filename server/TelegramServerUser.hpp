@@ -88,12 +88,16 @@ public:
     virtual QString lastName() const = 0;
     virtual bool isOnline() const = 0;
     virtual quint32 dcId() const = 0;
+    virtual UserPostBox *getPostBox() = 0;
+    virtual const UserPostBox *getPostBox() const = 0;
     virtual QVector<ImageDescriptor> getImages() const = 0;
     virtual ImageDescriptor getCurrentImage() const = 0;
     virtual QVector<quint32> contactList() const = 0;
 
     Peer toPeer() const override { return Peer::fromUserId(id()); }
     UserContact toContact() const;
+
+    QVector<PostBox *> postBoxes() override { return { getPostBox() }; }
 };
 
 class LocalUser : public AbstractUser
@@ -147,10 +151,8 @@ public:
 
     QString passwordHint() const { return QString(); }
 
-    UserPostBox *getPostBox() { return &m_box; }
-    const UserPostBox *getPostBox() const { return &m_box; }
-
-    QVector<PostBox *> postBoxes() override { return { &m_box }; }
+    UserPostBox *getPostBox() override { return &m_box; }
+    const UserPostBox *getPostBox() const override { return &m_box; }
 
     void importContact(const UserContact &contact);
     QVector<quint32> contactList() const override { return m_contactList; }
