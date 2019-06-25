@@ -15,16 +15,16 @@ struct DcOption;
 namespace Client {
 
 class AccountApi;
-class AppInformation;
-class Connection;
-class Client;
-class Settings;
 class AccountStorage;
-class DataStorage;
+class AppInformation;
+class Client;
+class Connection;
 class ConnectionApi;
 class ContactsApi;
+class DataStorage;
 class MessagingApi;
 class PendingRpcOperation;
+class Settings;
 class UpdatesInternalApi;
 
 // Generated low-level layers forward declarations
