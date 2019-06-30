@@ -19,7 +19,7 @@
 
 #include "ApiUtils.hpp"
 #include "RandomGenerator.hpp"
-#include "TLTypesDebug.hpp"
+#include "MTProto/TLTypesDebug.hpp"
 #include "Debug_p.hpp"
 
 #include "TelegramNamespace_p.hpp"

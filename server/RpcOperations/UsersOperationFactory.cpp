@@ -30,7 +30,7 @@
 #include "RpcError.hpp"
 #include "RpcProcessingContext.hpp"
 
-#include "CTelegramStreamExtraOperators.hpp"
+#include "MTProto/CTelegramStreamExtraOperators.hpp"
 #include "FunctionStreamOperators.hpp"
 
 #include <QLoggingCategory>

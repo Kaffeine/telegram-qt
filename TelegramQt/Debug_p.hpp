@@ -19,8 +19,8 @@
 #define TELEGRAMDEBUG_P_HPP
 
 #include "Debug.hpp"
-#include "TLNumbers.hpp"
-#include "TLValues.hpp"
+#include "MTProto/TLNumbers.hpp"
+#include "MTProto/TLValues.hpp"
 
 // Macro for stream debug output
 #define CALL_INFO this << ' ' << __func__

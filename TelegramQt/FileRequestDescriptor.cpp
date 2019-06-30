@@ -23,7 +23,7 @@
 #include "RandomGenerator.hpp"
 
 #ifdef DEVELOPER_BUILD
-#include "TLTypesDebug.hpp"
+#include "MTProto/TLTypesDebug.hpp"
 #endif
 
 using namespace Telegram;

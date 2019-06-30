@@ -22,7 +22,7 @@
 #include "RandomGenerator.hpp"
 #include "SendPackageHelper.hpp"
 #include "Utils.hpp"
-#include "TLValues.hpp"
+#include "MTProto/TLValues.hpp"
 
 #include "MTProto/MessageHeader.hpp"
 #include "MTProto/Stream.hpp"

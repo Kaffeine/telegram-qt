@@ -67,8 +67,6 @@ SOURCES += \
     Connection.cpp \
     ConnectionError.cpp \
     CRawStream.cpp \
-    CTelegramStream.cpp \
-    CTelegramStreamExtraOperators.cpp \
     Debug.cpp \
     Utils.cpp \
     FileRequestDescriptor.cpp \
@@ -84,7 +82,6 @@ SOURCES += \
     RandomGenerator.cpp \
     SendPackageHelper.cpp \
     SslBigNumber.cpp \
-    TLValues.cpp \
     UpdatesLayer.cpp
 
 PUBLIC_HEADERS += \
@@ -146,9 +143,6 @@ HEADERS += \
     RpcLayer.hpp \
     Connection.hpp \
     ConnectionError.hpp \
-    CTelegramStream.hpp \
-    CTelegramStreamExtraOperators.hpp \
-    CTelegramStream_p.hpp \
     CRawStream.hpp \
     UniqueLazyPointer.hpp \
     Utils.hpp \
@@ -171,7 +165,6 @@ HEADERS += \
     TelegramNamespace.hpp \
     TelegramNamespace_p.hpp \
     telegramqt_global.h \
-    TLValues.hpp \
     UpdatesLayer.hpp
 
 include(RpcLayers/layers.pri)
@@ -179,18 +172,25 @@ include(Crypto/crypto.pri)
 include(Operations/operations.pri)
 
 SOURCES += \
-    MTProto/MessageHeader.cpp
+    MTProto/CTelegramStream.cpp \
+    MTProto/CTelegramStreamExtraOperators.cpp \
+    MTProto/MessageHeader.cpp \
+    MTProto/TLValues.cpp \
 
 HEADERS += \
+    MTProto/CTelegramStream.hpp \
+    MTProto/CTelegramStreamExtraOperators.hpp \
+    MTProto/CTelegramStream_p.hpp \
     MTProto/MessageHeader.hpp \
-    MTProto/Stream.hpp
+    MTProto/Stream.hpp \
+    MTProto/TLValues.hpp \
 
-SOURCES += TLTypesDebug.cpp
-HEADERS += TLTypesDebug.hpp
+SOURCES += MTProto/TLTypesDebug.cpp
+HEADERS += MTProto/TLTypesDebug.hpp
 
 contains(options, developer-build) {
-    SOURCES += TLRpcDebug.cpp
-    HEADERS += TLRpcDebug.hpp
+    SOURCES += MTProto/TLRpcDebug.cpp
+    HEADERS += MTProto/TLRpcDebug.hpp
     DEFINES += DEVELOPER_BUILD
     DEFINES += QT_DEPRECATED_WARNINGS
 }

@@ -16,9 +16,9 @@
  */
 
 #include "ClientRpcLayerExtension_p.hpp"
-#include "CTelegramStream.hpp"
 #include "Debug_p.hpp"
 #include "PendingRpcOperation.hpp"
+#include "MTProto/Stream.hpp"
 #include "Utils.hpp"
 
 #include <QLoggingCategory>

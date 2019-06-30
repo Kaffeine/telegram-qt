@@ -8,8 +8,6 @@ set(telegram_qt_SOURCES
     CClientTcpTransport.cpp
     CRawStream.cpp
     CTcpTransport.cpp
-    CTelegramStream.cpp
-    CTelegramStreamExtraOperators.cpp
     CTelegramTransport.cpp
     Client.cpp
     ClientApi.cpp
@@ -44,7 +42,6 @@ set(telegram_qt_SOURCES
     SendPackageHelper.cpp
     SslBigNumber.cpp
     SslBigNumber.hpp
-    TLValues.cpp
     TelegramNamespace.cpp
     UpdatesLayer.cpp
     Utils.cpp
@@ -88,7 +85,6 @@ set(telegram_qt_META_HEADERS
     RpcError.hpp
     RpcLayer.hpp
     SendPackageHelper.hpp
-    TLValues.hpp
     TelegramNamespace.hpp
     UpdatesLayer.hpp
 )
@@ -166,8 +162,8 @@ include_directories(
     ${ZLIB_INCLUDE_DIR}
 )
 
-list(APPEND telegram_qt_SOURCES TLTypesDebug.cpp)
-list(APPEND telegram_qt_HEADERS TLTypesDebug.hpp)
+list(APPEND telegram_qt_SOURCES MTProto/TLTypesDebug.cpp)
+list(APPEND telegram_qt_HEADERS MTProto/TLTypesDebug.hpp)
 
 list(APPEND telegram_qt_SOURCES
     Crypto/Aes.cpp
@@ -180,8 +176,8 @@ list(APPEND telegram_qt_HEADERS
 )
 
 if (DEVELOPER_BUILD)
-    list(APPEND telegram_qt_SOURCES TLRpcDebug.cpp)
-    list(APPEND telegram_qt_HEADERS TLRpcDebug.hpp)
+    list(APPEND telegram_qt_SOURCES MTProto/TLRpcDebug.cpp)
+    list(APPEND telegram_qt_HEADERS MTProto/TLRpcDebug.hpp)
     add_definitions(-DDEVELOPER_BUILD)
     add_definitions(-DQT_DEPRECATED_WARNINGS)
 endif()

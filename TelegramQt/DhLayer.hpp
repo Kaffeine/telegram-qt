@@ -19,11 +19,11 @@
 #define DH_LAYER_HPP
 
 #include <QObject>
+#include <QtEndian>
 
 #include "Crypto/Aes.hpp"
+#include "MTProto/TLNumbers.hpp"
 #include "RsaKey.hpp"
-#include "TLNumbers.hpp"
-#include <QtEndian>
 
 #ifdef NETWORK_LOGGING
 QT_FORWARD_DECLARE_CLASS(QFile)

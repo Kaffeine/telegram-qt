@@ -18,7 +18,7 @@
 #include "RpcError.hpp"
 
 #include "CRawStream.hpp"
-#include "TLValues.hpp"
+#include "MTProto/TLValues.hpp"
 
 #include <QHash>
 #include <QMetaEnum>

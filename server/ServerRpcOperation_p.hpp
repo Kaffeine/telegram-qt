@@ -1,10 +1,10 @@
 #include "ServerRpcOperation.hpp"
 
 #include "ServerRpcLayer.hpp"
-#include "CTelegramStream.hpp"
+#include "MTProto/Stream.hpp"
 
 #ifdef DEVELOPER_BUILD
-#include "TLTypesDebug.hpp"
+#include "MTProto/TLTypesDebug.hpp"
 #endif
 
 namespace Telegram {

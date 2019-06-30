@@ -1,4 +1,4 @@
-#include "CTelegramStreamExtraOperators.hpp"
+#include "MTProto/CTelegramStreamExtraOperators.hpp"
 
 #include "CTelegramStream_p.hpp"
 

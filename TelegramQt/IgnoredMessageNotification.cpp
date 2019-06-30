@@ -18,7 +18,7 @@
 #include "IgnoredMessageNotification.hpp"
 
 #include "CRawStream.hpp"
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
 
 #include <QLoggingCategory>
 

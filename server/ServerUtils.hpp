@@ -3,7 +3,7 @@
 
 #include <QSet>
 
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
 namespace Telegram {

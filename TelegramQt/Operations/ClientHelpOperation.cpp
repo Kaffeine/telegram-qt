@@ -10,7 +10,7 @@
 #include "RpcError.hpp"
 
 #ifdef DEVELOPER_BUILD
-#include "TLTypesDebug.hpp"
+#include "MTProto/TLTypesDebug.hpp"
 #endif
 
 #include <QLoggingCategory>

@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "DcConfiguration.hpp"
-#include "TLValues.hpp"
+#include "MTProto/TLValues.hpp"
 #include "TelegramNamespace.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QTcpServer)

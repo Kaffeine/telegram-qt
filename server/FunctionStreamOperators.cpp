@@ -16,8 +16,8 @@
  */
 
 #include "FunctionStreamOperators.hpp"
-#include "CTelegramStream_p.hpp"
-#include "CTelegramStreamExtraOperators.hpp"
+#include "MTProto/CTelegramStream_p.hpp"
+#include "MTProto/CTelegramStreamExtraOperators.hpp"
 
 // TODO: Generate templates instancing
 template CTelegramStream &CTelegramStream::operator>>(TLVector<TLAuthorization> &v);

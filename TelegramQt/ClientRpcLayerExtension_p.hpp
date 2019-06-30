@@ -19,11 +19,12 @@
 #define TELEGRAM_CLIENT_BASE_RPC_LAYER_EXTENSION_PRIVATE_HPP
 
 #include "ClientRpcLayerExtension.hpp"
-#include "CTelegramStream.hpp"
+
+#include "MTProto/Stream.hpp"
 #include "PendingOperation.hpp"
 
 #ifdef DEVELOPER_BUILD
-#include "TLTypesDebug.hpp"
+#include "MTProto/TLTypesDebug.hpp"
 #endif
 
 #ifndef DUMP_CLIENT_RPC_PACKETS

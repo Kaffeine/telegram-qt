@@ -2,7 +2,7 @@
 #define TELEGRAM_SERVER_RPC_OPERATION_HPP
 
 #include "PendingOperation.hpp"
-#include "TLFunctions.hpp"
+#include "MTProto/TLFunctions.hpp"
 #include "RpcError.hpp"
 
 class CTelegramStream;

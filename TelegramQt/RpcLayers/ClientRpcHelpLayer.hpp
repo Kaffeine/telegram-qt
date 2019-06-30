@@ -20,8 +20,8 @@
 
 #include "ClientRpcLayerExtension.hpp"
 
+#include "MTProto/TLTypes.hpp"
 #include "PendingRpcResult.hpp"
-#include "TLTypes.hpp"
 
 namespace Telegram {
 

@@ -18,7 +18,7 @@
 #ifndef TELEGRAMNAMESPACE_P_HPP
 #define TELEGRAMNAMESPACE_P_HPP
 
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
 namespace Telegram {

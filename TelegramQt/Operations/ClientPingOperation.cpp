@@ -4,7 +4,7 @@
 #include "ClientSettings.hpp"
 #include "ClientConnection.hpp"
 #include "MTProto/Stream.hpp"
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
 
 #include <QDateTime>
 #include <QLoggingCategory>

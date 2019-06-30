@@ -20,7 +20,7 @@
 
 #include <QtGlobal>
 
-#include "TLValues.hpp"
+#include "MTProto/TLValues.hpp"
 
 class CTelegramStream;
 

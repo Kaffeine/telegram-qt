@@ -20,8 +20,8 @@
 
 #include "telegramqt_global.h"
 
+#include "MTProto/TLTypes.hpp"
 #include "TelegramNamespace.hpp"
-#include "TLTypes.hpp"
 
 #include <QDateTime>
 

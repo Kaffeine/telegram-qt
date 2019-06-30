@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "RsaKey.hpp"
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
 #include "ServerApi.hpp"

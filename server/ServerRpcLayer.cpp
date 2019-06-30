@@ -15,14 +15,14 @@
 
 #include "FunctionStreamOperators.hpp"
 
+#include "MTProto/CTelegramStreamExtraOperators.hpp"
 #include "MTProto/MessageHeader.hpp"
+#include "MTProto/Stream.hpp"
 
-#include "CTelegramStream.hpp"
-#include "CTelegramStreamExtraOperators.hpp"
 #include <QLoggingCategory>
 
 #ifdef DEVELOPER_BUILD
-#include "TLTypesDebug.hpp"
+#include "MTProto/TLTypesDebug.hpp"
 #endif
 
 Q_LOGGING_CATEGORY(c_serverRpcLayerCategory, "telegram.server.rpclayer", QtWarningMsg)

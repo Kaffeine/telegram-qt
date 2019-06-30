@@ -17,8 +17,8 @@
 
 #include <QObject>
 
-#include "CTelegramStream_p.hpp"
-#include "CTelegramStreamExtraOperators.hpp"
+#include "MTProto/CTelegramStream_p.hpp"
+#include "MTProto/CTelegramStreamExtraOperators.hpp"
 
 #include <QBuffer>
 #include <QTest>

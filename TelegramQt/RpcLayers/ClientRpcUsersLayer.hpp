@@ -19,9 +19,9 @@
 #define TELEGRAM_CLIENT_RPC_USERS_LAYER_HPP
 
 #include "ClientRpcLayerExtension.hpp"
-#include "PendingRpcResult.hpp"
 
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
+#include "PendingRpcResult.hpp"
 
 namespace Telegram {
 

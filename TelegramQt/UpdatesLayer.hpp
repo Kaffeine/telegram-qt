@@ -20,7 +20,7 @@
 
 #include <QObject>
 
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
 
 namespace Telegram {
 

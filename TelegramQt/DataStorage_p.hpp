@@ -20,8 +20,8 @@
 
 #include "DataStorage.hpp"
 
+#include "MTProto/TLTypes.hpp"
 #include "TelegramNamespace_p.hpp"
-#include "TLTypes.hpp"
 
 #include <QHash>
 #include <QQueue>

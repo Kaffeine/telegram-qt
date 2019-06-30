@@ -557,24 +557,24 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         generator.dumpSolvedTypes();
     }
 
-    generator.existsStreamReadTemplateInstancing = getGeneratedContent(QStringLiteral("CTelegramStream.cpp"), 0, QLatin1String("vector read templates instancing"));
-    generator.existsStreamWriteTemplateInstancing = getGeneratedContent(QStringLiteral("CTelegramStream.cpp"), 0, QLatin1String("vector write templates instancing"));
+    generator.existsStreamReadTemplateInstancing = getGeneratedContent(QStringLiteral("MTProto/Stream.cpp"), 0, QLatin1String("vector read templates instancing"));
+    generator.existsStreamWriteTemplateInstancing = getGeneratedContent(QStringLiteral("MTProto/Stream.cpp"), 0, QLatin1String("vector write templates instancing"));
     generator.generate();
 
     {
-        OutputFile fileValues("TLValues.hpp");
+        OutputFile fileValues("MTProto/TLValues.hpp");
         fileValues.replace("TLValues", generator.codeOfTLValues, 8);
     }
     {
-        OutputFile fileValues("TLTypes.hpp");
+        OutputFile fileValues("MTProto/TLTypes.hpp");
         fileValues.replace("TLTypes", generator.codeOfTLTypes);
     }
 
     {
-        OutputFile fileTelegramStreamHeader("CTelegramStream.hpp");
-        OutputFile fileTelegramStreamSource("CTelegramStream.cpp");
-        OutputFile fileTelegramStreamExtraOperatorsHeader("CTelegramStreamExtraOperators.hpp");
-        OutputFile fileTelegramStreamExtraOperatorsSource("CTelegramStreamExtraOperators.cpp");
+        OutputFile fileTelegramStreamHeader("MTProto/Stream.hpp");
+        OutputFile fileTelegramStreamSource("MTProto/Stream.cpp");
+        OutputFile fileTelegramStreamExtraOperatorsHeader("MTProto/StreamExtraOperators.hpp");
+        OutputFile fileTelegramStreamExtraOperatorsSource("MTProto/StreamExtraOperators.cpp");
         fileTelegramStreamHeader.replace("read operators", generator.codeStreamReadDeclarations, 4);
         fileTelegramStreamSource.replace("read operators implementation", generator.codeStreamReadDefinitions);
         fileTelegramStreamSource.replace("vector read templates instancing", generator.codeStreamReadTemplateInstancing);
@@ -586,8 +586,8 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     }
 
     {
-        OutputFile fileTypesDebugHeader("TLTypesDebug.hpp");
-        OutputFile fileTypesDebugSource("TLTypesDebug.cpp");
+        OutputFile fileTypesDebugHeader("MTProto/TLTypesDebug.hpp");
+        OutputFile fileTypesDebugSource("MTProto/TLTypesDebug.cpp");
         fileTypesDebugHeader.replace("TLTypes debug operators", generator.codeDebugWriteDeclarations);
         fileTypesDebugSource.replace("TLTypes debug operators", generator.codeDebugWriteDefinitions);
 
@@ -595,7 +595,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
         const QString flagsToStringCode = flagsToStringCodeBlocks.join(QLatin1Char('\n'));
         fileTypesDebugSource.replace("TLTypes flagsToString", flagsToStringCode);
 
-        OutputFile fileRpcDebugSource("TLRpcDebug.cpp");
+        OutputFile fileRpcDebugSource("MTProto/TLRpcDebug.cpp");
         fileRpcDebugSource.replace("RPC debug cases", generator.codeDebugRpcParse, 4);
     }
 
@@ -670,7 +670,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     }
 
     {
-        OutputFile fileTypes("TLFunctions.hpp");
+        OutputFile fileTypes("MTProto/TLFunctions.hpp");
         fileTypes.replace("TLFunctions", generator.generateFunctionStructs());
     }
 

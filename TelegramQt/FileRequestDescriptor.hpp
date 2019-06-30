@@ -20,7 +20,7 @@
 
 #include <QByteArray>
 
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QCryptographicHash)

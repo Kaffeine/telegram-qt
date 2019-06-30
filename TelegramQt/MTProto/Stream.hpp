@@ -1,7 +1,7 @@
 #ifndef TELEGRAM_QT_MTPROTO_STREAM_HPP
 #define TELEGRAM_QT_MTPROTO_STREAM_HPP
 
-#include "../CTelegramStream.hpp"
+#include "CTelegramStream.hpp"
 
 namespace Telegram {
 

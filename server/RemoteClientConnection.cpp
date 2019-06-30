@@ -9,7 +9,7 @@
 
 #include "ApiUtils.hpp"
 #include "CTelegramTransport.hpp"
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
 
 #include <QDateTime>
 #include <QLoggingCategory>

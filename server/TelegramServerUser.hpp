@@ -6,7 +6,7 @@
 #include <QHash>
 
 #include "ServerNamespace.hpp"
-#include "TLTypes.hpp"
+#include "MTProto/TLTypes.hpp"
 
 namespace Telegram {
 

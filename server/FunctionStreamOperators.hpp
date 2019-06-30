@@ -18,7 +18,7 @@
 #ifndef TELEGRAM_SERVER_FUNCTION_STREAM_OPERATORS_HPP
 #define TELEGRAM_SERVER_FUNCTION_STREAM_OPERATORS_HPP
 
-#include "TLFunctions.hpp"
+#include "MTProto/TLFunctions.hpp"
 
 class CTelegramStream;
 

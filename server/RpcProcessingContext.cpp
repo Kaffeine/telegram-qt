@@ -20,7 +20,7 @@
 #include "MTProto/Stream.hpp"
 
 #ifdef DEVELOPER_BUILD
-#include "TLRpcDebug.hpp"
+#include "MTProto/TLRpcDebug.hpp"
 #endif
 
 namespace Telegram {
