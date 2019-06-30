@@ -167,7 +167,7 @@ public:
     bool loadFromText(const QByteArray &data);
     bool resolveTypes();
     void generate();
-    QStringList generateTLValues();
+    QStringList generateTLValues() const;
 
     void dumpReadData() const;
     void dumpSolvedTypes() const;
@@ -287,7 +287,6 @@ public:
 
     void getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const;
 
-    QString codeOfTLValues;
     QString codeOfTLTypes;
     QString codeStreamReadDeclarations;
     QString codeStreamReadDefinitions;

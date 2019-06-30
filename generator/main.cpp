@@ -563,7 +563,8 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
 
     {
         OutputFile fileValues("MTProto/TLValues.hpp");
-        fileValues.replace("TLValues", generator.codeOfTLValues, 8);
+        const QString codeOfTLValues = Generator::joinLinesWithPrepend(generator.generateTLValues(), Generator::doubleSpacing);
+        fileValues.replace("TLValues", codeOfTLValues, 8);
     }
     {
         OutputFile fileValues("MTProto/TLTypes.hpp");

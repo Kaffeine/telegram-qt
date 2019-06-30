@@ -1931,10 +1931,9 @@ void Generator::generate()
         codeDebugWriteDeclarations.append(generateDebugWriteOperatorDeclaration(type));
         codeDebugWriteDefinitions .append(generateDebugWriteOperatorDefinition(type));
     }
-    codeOfTLValues = joinLinesWithPrepend(generateTLValues(), doubleSpacing);
 }
 
-QStringList Generator::generateTLValues()
+QStringList Generator::generateTLValues() const
 {
     qCDebug(c_loggingTlValues) << Q_FUNC_INFO;
     QStringList result;
