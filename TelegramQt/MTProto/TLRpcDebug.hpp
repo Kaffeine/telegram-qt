@@ -20,8 +20,16 @@
 
 #include "telegramqt_global.h"
 
-class CTelegramStream;
+namespace Telegram {
 
-TELEGRAMQT_INTERNAL_EXPORT void dumpRpc(CTelegramStream &stream);
+namespace MTProto {
+
+class Stream;
+
+TELEGRAMQT_INTERNAL_EXPORT void dumpRpc(Stream &stream);
+
+} // MTProto namespace
+
+} // Telegram namespace
 
 #endif // TLRPCDEBUG_HPP

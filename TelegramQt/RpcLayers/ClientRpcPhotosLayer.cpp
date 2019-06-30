@@ -45,7 +45,7 @@ PhotosRpcLayer::PhotosRpcLayer(QObject *parent) :
 PhotosRpcLayer::PendingQuint64Vector *PhotosRpcLayer::deletePhotos(const TLVector<TLInputPhoto> &id)
 {
     qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhotosDeletePhotos;
     outputStream << id;
     PendingQuint64Vector *op = new PendingQuint64Vector(this, outputStream.getData());
@@ -56,7 +56,7 @@ PhotosRpcLayer::PendingQuint64Vector *PhotosRpcLayer::deletePhotos(const TLVecto
 PhotosRpcLayer::PendingPhotosPhotos *PhotosRpcLayer::getUserPhotos(const TLInputUser &userId, quint32 offset, quint64 maxId, quint32 limit)
 {
     qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << userId << offset << maxId << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhotosGetUserPhotos;
     outputStream << userId;
     outputStream << offset;
@@ -70,7 +70,7 @@ PhotosRpcLayer::PendingPhotosPhotos *PhotosRpcLayer::getUserPhotos(const TLInput
 PhotosRpcLayer::PendingUserProfilePhoto *PhotosRpcLayer::updateProfilePhoto(const TLInputPhoto &id)
 {
     qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhotosUpdateProfilePhoto;
     outputStream << id;
     PendingUserProfilePhoto *op = new PendingUserProfilePhoto(this, outputStream.getData());
@@ -81,7 +81,7 @@ PhotosRpcLayer::PendingUserProfilePhoto *PhotosRpcLayer::updateProfilePhoto(cons
 PhotosRpcLayer::PendingPhotosPhoto *PhotosRpcLayer::uploadProfilePhoto(const TLInputFile &file)
 {
     qCDebug(c_clientRpcPhotosCategory) << Q_FUNC_INFO << file;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhotosUploadProfilePhoto;
     outputStream << file;
     PendingPhotosPhoto *op = new PendingPhotosPhoto(this, outputStream.getData());

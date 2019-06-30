@@ -84,7 +84,7 @@ Crypto::AesKey BaseDhLayer::generateTmpAesKey() const
     return Crypto::AesKey(key, iv);
 }
 
-bool BaseDhLayer::checkClientServerNonse(CTelegramStream &stream) const
+bool BaseDhLayer::checkClientServerNonse(MTProto::Stream &stream) const
 {
     TLNumber128 nonce;
     stream >> nonce;
@@ -127,7 +127,7 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
 
 #ifdef NETWORK_LOGGING
     {
-        CTelegramStream readBack(payload);
+        MTProto::Stream readBack(payload);
         TLValue val1;
         readBack >> val1;
 

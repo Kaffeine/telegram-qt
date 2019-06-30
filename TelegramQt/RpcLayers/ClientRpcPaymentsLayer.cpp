@@ -49,7 +49,7 @@ PaymentsRpcLayer::PaymentsRpcLayer(QObject *parent) :
 PaymentsRpcLayer::PendingBool *PaymentsRpcLayer::clearSavedInfo(quint32 flags)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << flags;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PaymentsClearSavedInfo;
     outputStream << flags;
     // (flags & 1 << 0) stands for credentials "true" value
@@ -62,7 +62,7 @@ PaymentsRpcLayer::PendingBool *PaymentsRpcLayer::clearSavedInfo(quint32 flags)
 PaymentsRpcLayer::PendingPaymentsPaymentForm *PaymentsRpcLayer::getPaymentForm(quint32 msgId)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << msgId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PaymentsGetPaymentForm;
     outputStream << msgId;
     PendingPaymentsPaymentForm *op = new PendingPaymentsPaymentForm(this, outputStream.getData());
@@ -73,7 +73,7 @@ PaymentsRpcLayer::PendingPaymentsPaymentForm *PaymentsRpcLayer::getPaymentForm(q
 PaymentsRpcLayer::PendingPaymentsPaymentReceipt *PaymentsRpcLayer::getPaymentReceipt(quint32 msgId)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << msgId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PaymentsGetPaymentReceipt;
     outputStream << msgId;
     PendingPaymentsPaymentReceipt *op = new PendingPaymentsPaymentReceipt(this, outputStream.getData());
@@ -84,7 +84,7 @@ PaymentsRpcLayer::PendingPaymentsPaymentReceipt *PaymentsRpcLayer::getPaymentRec
 PaymentsRpcLayer::PendingPaymentsSavedInfo *PaymentsRpcLayer::getSavedInfo()
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PaymentsGetSavedInfo;
     PendingPaymentsSavedInfo *op = new PendingPaymentsSavedInfo(this, outputStream.getData());
     processRpcCall(op);
@@ -94,7 +94,7 @@ PaymentsRpcLayer::PendingPaymentsSavedInfo *PaymentsRpcLayer::getSavedInfo()
 PaymentsRpcLayer::PendingPaymentsPaymentResult *PaymentsRpcLayer::sendPaymentForm(quint32 flags, quint32 msgId, const QString &requestedInfoId, const QString &shippingOptionId, const TLInputPaymentCredentials &credentials)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << flags << msgId << requestedInfoId << shippingOptionId << credentials;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PaymentsSendPaymentForm;
     outputStream << flags;
     outputStream << msgId;
@@ -113,7 +113,7 @@ PaymentsRpcLayer::PendingPaymentsPaymentResult *PaymentsRpcLayer::sendPaymentFor
 PaymentsRpcLayer::PendingPaymentsValidatedRequestedInfo *PaymentsRpcLayer::validateRequestedInfo(quint32 flags, quint32 msgId, const TLPaymentRequestedInfo &info)
 {
     qCDebug(c_clientRpcPaymentsCategory) << Q_FUNC_INFO << flags << msgId << info;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PaymentsValidateRequestedInfo;
     outputStream << flags;
     // (flags & 1 << 0) stands for save "true" value

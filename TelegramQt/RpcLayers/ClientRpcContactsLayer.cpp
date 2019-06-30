@@ -52,7 +52,7 @@ ContactsRpcLayer::ContactsRpcLayer(QObject *parent) :
 ContactsRpcLayer::PendingBool *ContactsRpcLayer::block(const TLInputUser &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsBlock;
     outputStream << id;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -63,7 +63,7 @@ ContactsRpcLayer::PendingBool *ContactsRpcLayer::block(const TLInputUser &id)
 ContactsRpcLayer::PendingContactsLink *ContactsRpcLayer::deleteContact(const TLInputUser &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsDeleteContact;
     outputStream << id;
     PendingContactsLink *op = new PendingContactsLink(this, outputStream.getData());
@@ -74,7 +74,7 @@ ContactsRpcLayer::PendingContactsLink *ContactsRpcLayer::deleteContact(const TLI
 ContactsRpcLayer::PendingBool *ContactsRpcLayer::deleteContacts(const TLVector<TLInputUser> &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsDeleteContacts;
     outputStream << id;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -85,7 +85,7 @@ ContactsRpcLayer::PendingBool *ContactsRpcLayer::deleteContacts(const TLVector<T
 ContactsRpcLayer::PendingQuint32Vector *ContactsRpcLayer::exportCard()
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsExportCard;
     PendingQuint32Vector *op = new PendingQuint32Vector(this, outputStream.getData());
     processRpcCall(op);
@@ -95,7 +95,7 @@ ContactsRpcLayer::PendingQuint32Vector *ContactsRpcLayer::exportCard()
 ContactsRpcLayer::PendingContactsBlocked *ContactsRpcLayer::getBlocked(quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << offset << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsGetBlocked;
     outputStream << offset;
     outputStream << limit;
@@ -107,7 +107,7 @@ ContactsRpcLayer::PendingContactsBlocked *ContactsRpcLayer::getBlocked(quint32 o
 ContactsRpcLayer::PendingContactsContacts *ContactsRpcLayer::getContacts(quint32 hash)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsGetContacts;
     outputStream << hash;
     PendingContactsContacts *op = new PendingContactsContacts(this, outputStream.getData());
@@ -118,7 +118,7 @@ ContactsRpcLayer::PendingContactsContacts *ContactsRpcLayer::getContacts(quint32
 ContactsRpcLayer::PendingContactStatusVector *ContactsRpcLayer::getStatuses()
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsGetStatuses;
     PendingContactStatusVector *op = new PendingContactStatusVector(this, outputStream.getData());
     processRpcCall(op);
@@ -128,7 +128,7 @@ ContactsRpcLayer::PendingContactStatusVector *ContactsRpcLayer::getStatuses()
 ContactsRpcLayer::PendingContactsTopPeers *ContactsRpcLayer::getTopPeers(quint32 flags, quint32 offset, quint32 limit, quint32 hash)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << flags << offset << limit << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsGetTopPeers;
     outputStream << flags;
     // (flags & 1 << 0) stands for correspondents "true" value
@@ -148,7 +148,7 @@ ContactsRpcLayer::PendingContactsTopPeers *ContactsRpcLayer::getTopPeers(quint32
 ContactsRpcLayer::PendingUser *ContactsRpcLayer::importCard(const TLVector<quint32> &exportCard)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << exportCard;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsImportCard;
     outputStream << exportCard;
     PendingUser *op = new PendingUser(this, outputStream.getData());
@@ -159,7 +159,7 @@ ContactsRpcLayer::PendingUser *ContactsRpcLayer::importCard(const TLVector<quint
 ContactsRpcLayer::PendingContactsImportedContacts *ContactsRpcLayer::importContacts(const TLVector<TLInputContact> &contacts)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << contacts;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsImportContacts;
     outputStream << contacts;
     PendingContactsImportedContacts *op = new PendingContactsImportedContacts(this, outputStream.getData());
@@ -170,7 +170,7 @@ ContactsRpcLayer::PendingContactsImportedContacts *ContactsRpcLayer::importConta
 ContactsRpcLayer::PendingBool *ContactsRpcLayer::resetSaved()
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsResetSaved;
     PendingBool *op = new PendingBool(this, outputStream.getData());
     processRpcCall(op);
@@ -180,7 +180,7 @@ ContactsRpcLayer::PendingBool *ContactsRpcLayer::resetSaved()
 ContactsRpcLayer::PendingBool *ContactsRpcLayer::resetTopPeerRating(const TLTopPeerCategory &category, const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << category << peer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsResetTopPeerRating;
     outputStream << category;
     outputStream << peer;
@@ -192,7 +192,7 @@ ContactsRpcLayer::PendingBool *ContactsRpcLayer::resetTopPeerRating(const TLTopP
 ContactsRpcLayer::PendingContactsResolvedPeer *ContactsRpcLayer::resolveUsername(const QString &username)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << username;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsResolveUsername;
     outputStream << username;
     PendingContactsResolvedPeer *op = new PendingContactsResolvedPeer(this, outputStream.getData());
@@ -203,7 +203,7 @@ ContactsRpcLayer::PendingContactsResolvedPeer *ContactsRpcLayer::resolveUsername
 ContactsRpcLayer::PendingContactsFound *ContactsRpcLayer::search(const QString &q, quint32 limit)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << q << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsSearch;
     outputStream << q;
     outputStream << limit;
@@ -215,7 +215,7 @@ ContactsRpcLayer::PendingContactsFound *ContactsRpcLayer::search(const QString &
 ContactsRpcLayer::PendingBool *ContactsRpcLayer::unblock(const TLInputUser &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ContactsUnblock;
     outputStream << id;
     PendingBool *op = new PendingBool(this, outputStream.getData());

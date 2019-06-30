@@ -14,7 +14,7 @@ namespace Server {
 template<typename TLType>
 bool RpcOperation::sendRpcReply(const TLType &reply)
 {
-    CTelegramStream output(CTelegramStream::WriteOnly);
+    MTProto::Stream output(MTProto::Stream::WriteOnly);
     output << reply;
 #ifdef DEVELOPER_BUILD
     qDebug() << this << reply;

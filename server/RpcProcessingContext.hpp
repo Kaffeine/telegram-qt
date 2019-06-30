@@ -22,13 +22,11 @@
 
 #include "MTProto/TLValues.hpp"
 
-class CTelegramStream;
-
 namespace Telegram {
 
 namespace MTProto {
 
-using Stream = ::CTelegramStream;
+class Stream;
 
 } // MTProto namespace
 

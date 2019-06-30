@@ -46,7 +46,7 @@ PhoneRpcLayer::PhoneRpcLayer(QObject *parent) :
 PhoneRpcLayer::PendingPhonePhoneCall *PhoneRpcLayer::acceptCall(const TLInputPhoneCall &peer, const QByteArray &gB, const TLPhoneCallProtocol &protocol)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << gB.toHex() << protocol;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhoneAcceptCall;
     outputStream << peer;
     outputStream << gB;
@@ -59,7 +59,7 @@ PhoneRpcLayer::PendingPhonePhoneCall *PhoneRpcLayer::acceptCall(const TLInputPho
 PhoneRpcLayer::PendingPhonePhoneCall *PhoneRpcLayer::confirmCall(const TLInputPhoneCall &peer, const QByteArray &gA, quint64 keyFingerprint, const TLPhoneCallProtocol &protocol)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << gA.toHex() << keyFingerprint << protocol;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhoneConfirmCall;
     outputStream << peer;
     outputStream << gA;
@@ -73,7 +73,7 @@ PhoneRpcLayer::PendingPhonePhoneCall *PhoneRpcLayer::confirmCall(const TLInputPh
 PhoneRpcLayer::PendingUpdates *PhoneRpcLayer::discardCall(const TLInputPhoneCall &peer, quint32 duration, const TLPhoneCallDiscardReason &reason, quint64 connectionId)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << duration << reason << connectionId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhoneDiscardCall;
     outputStream << peer;
     outputStream << duration;
@@ -87,7 +87,7 @@ PhoneRpcLayer::PendingUpdates *PhoneRpcLayer::discardCall(const TLInputPhoneCall
 PhoneRpcLayer::PendingDataJSON *PhoneRpcLayer::getCallConfig()
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhoneGetCallConfig;
     PendingDataJSON *op = new PendingDataJSON(this, outputStream.getData());
     processRpcCall(op);
@@ -97,7 +97,7 @@ PhoneRpcLayer::PendingDataJSON *PhoneRpcLayer::getCallConfig()
 PhoneRpcLayer::PendingBool *PhoneRpcLayer::receivedCall(const TLInputPhoneCall &peer)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhoneReceivedCall;
     outputStream << peer;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -108,7 +108,7 @@ PhoneRpcLayer::PendingBool *PhoneRpcLayer::receivedCall(const TLInputPhoneCall &
 PhoneRpcLayer::PendingPhonePhoneCall *PhoneRpcLayer::requestCall(const TLInputUser &userId, quint32 randomId, const QByteArray &gAHash, const TLPhoneCallProtocol &protocol)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << userId << randomId << gAHash.toHex() << protocol;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhoneRequestCall;
     outputStream << userId;
     outputStream << randomId;
@@ -122,7 +122,7 @@ PhoneRpcLayer::PendingPhonePhoneCall *PhoneRpcLayer::requestCall(const TLInputUs
 PhoneRpcLayer::PendingBool *PhoneRpcLayer::saveCallDebug(const TLInputPhoneCall &peer, const TLDataJSON &debug)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << debug;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhoneSaveCallDebug;
     outputStream << peer;
     outputStream << debug;
@@ -134,7 +134,7 @@ PhoneRpcLayer::PendingBool *PhoneRpcLayer::saveCallDebug(const TLInputPhoneCall 
 PhoneRpcLayer::PendingUpdates *PhoneRpcLayer::setCallRating(const TLInputPhoneCall &peer, quint32 rating, const QString &comment)
 {
     qCDebug(c_clientRpcPhoneCategory) << Q_FUNC_INFO << peer << rating << comment;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::PhoneSetCallRating;
     outputStream << peer;
     outputStream << rating;

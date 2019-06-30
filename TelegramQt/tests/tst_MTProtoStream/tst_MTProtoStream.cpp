@@ -17,8 +17,8 @@
 
 #include <QObject>
 
-#include "MTProto/CTelegramStream_p.hpp"
-#include "MTProto/CTelegramStreamExtraOperators.hpp"
+#include "MTProto/Stream_p.hpp"
+#include "MTProto/StreamExtraOperators.hpp"
 
 #include <QBuffer>
 #include <QTest>
@@ -192,11 +192,11 @@ struct STestData {
     STestData(QVariant v, QByteArray e) : value(v), serializedData(e) { }
 };
 
-class tst_CTelegramStream : public QObject
+class tst_MTProtoStream : public QObject
 {
     Q_OBJECT
 public:
-    explicit tst_CTelegramStream(QObject *parent = nullptr);
+    explicit tst_MTProtoStream(QObject *parent = nullptr);
 
 private slots:
     void testEncode();
@@ -229,12 +229,12 @@ private slots:
 
 };
 
-tst_CTelegramStream::tst_CTelegramStream(QObject *parent) :
+tst_MTProtoStream::tst_MTProtoStream(QObject *parent) :
     QObject(parent)
 {
 }
 
-void tst_CTelegramStream::testEncode()
+void tst_MTProtoStream::testEncode()
 {
     const QStringList dataList = {
         QStringLiteral("1"), QStringLiteral("02"), QStringLiteral("003"), QStringLiteral("0004"),
@@ -242,7 +242,7 @@ void tst_CTelegramStream::testEncode()
     };
 
     for (const QString &s : dataList) {
-        CTelegramStream stream(CTelegramStream::WriteOnly);
+        Telegram::MTProto::Stream stream(Telegram::MTProto::Stream::WriteOnly);
         stream << s;
         const int writtenBytes = stream.getData().size();
         if (writtenBytes != getValueEncodedSize(s)) {
@@ -251,7 +251,7 @@ void tst_CTelegramStream::testEncode()
         QCOMPARE(writtenBytes, getValueEncodedSize(s));
     }
     for (const QString &s : dataList) {
-        CTelegramStream stream(CTelegramStream::WriteOnly);
+        Telegram::MTProto::Stream stream(Telegram::MTProto::Stream::WriteOnly);
         stream << s;
         const QByteArray encodedStr = encodeData(s);
         const QByteArray streamedStr = stream.getData();
@@ -264,7 +264,7 @@ void tst_CTelegramStream::testEncode()
     {
         const TLValue testValue = TLValue::AccountChangePhone;
         const QByteArray encoded = encodeData(testValue);
-        CTelegramStream stream(encoded);
+        Telegram::MTProto::Stream stream(encoded);
         TLValue readValue;
         stream >> readValue;
         QCOMPARE(testValue, readValue);
@@ -275,7 +275,7 @@ void tst_CTelegramStream::testEncode()
         const QString phoneCodeHash = QStringLiteral("7531"); // size = 4
         const QByteArray encoded = encodeData(testValue, phoneNumber, phoneCodeHash);
 
-        CTelegramStream stream(encoded);
+        Telegram::MTProto::Stream stream(encoded);
         TLValue readValue;
         QString readPhoneNumber;
         QString readPhoneCodeHash;
@@ -289,7 +289,7 @@ void tst_CTelegramStream::testEncode()
     }
 }
 
-void tst_CTelegramStream::benchmarkEncodeTLValuePlacement()
+void tst_MTProtoStream::benchmarkEncodeTLValuePlacement()
 {
     QBENCHMARK {
         const TLValue testValue = TLValue::AccountChangePhone;
@@ -297,17 +297,17 @@ void tst_CTelegramStream::benchmarkEncodeTLValuePlacement()
         Q_UNUSED(encoded)
     }
 }
-void tst_CTelegramStream::benchmarkEncodeTLValueStream()
+void tst_MTProtoStream::benchmarkEncodeTLValueStream()
 {
     QBENCHMARK {
-        CTelegramStream stream(CTelegramStream::WriteOnly);
+        Telegram::MTProto::Stream stream(Telegram::MTProto::Stream::WriteOnly);
         stream << TLValue::AccountChangePhone;
         const QByteArray encoded = stream.getData();
         Q_UNUSED(encoded)
     }
 }
 
-void tst_CTelegramStream::benchmarkEncodeStream()
+void tst_MTProtoStream::benchmarkEncodeStream()
 {
     const QStringList dataList = {
         QStringLiteral("1"), QStringLiteral("02"), QStringLiteral("003"), QStringLiteral("0004"),
@@ -316,14 +316,14 @@ void tst_CTelegramStream::benchmarkEncodeStream()
 
     QBENCHMARK {
         for (const QString &s : dataList) {
-            CTelegramStream stream(CTelegramStream::WriteOnly);
+            Telegram::MTProto::Stream stream(Telegram::MTProto::Stream::WriteOnly);
             stream << s;
             stream.getData();
         }
     }
 }
 
-void tst_CTelegramStream::benchmarkEncodePlacement()
+void tst_MTProtoStream::benchmarkEncodePlacement()
 {
     const QStringList dataList = {
         QStringLiteral("1"), QStringLiteral("02"), QStringLiteral("003"), QStringLiteral("0004"),
@@ -342,19 +342,19 @@ static const QString encArg2 = QStringLiteral("myphonecode");
 static const quint64 encArg3 = 12345678ull;
 static const TLValue encArg4 = TLValue::RpcResult;
 
-void tst_CTelegramStream::benchmarkEncodeStream1()
+void tst_MTProtoStream::benchmarkEncodeStream1()
 {
     QBENCHMARK {
-        CTelegramStream stream(CTelegramStream::WriteOnly);
+        Telegram::MTProto::Stream stream(Telegram::MTProto::Stream::WriteOnly);
         stream << encArg1;
         stream.getData();
     }
 }
 
-void tst_CTelegramStream::benchmarkEncodeStream2()
+void tst_MTProtoStream::benchmarkEncodeStream2()
 {
     QBENCHMARK {
-        CTelegramStream stream(CTelegramStream::WriteOnly);
+        Telegram::MTProto::Stream stream(Telegram::MTProto::Stream::WriteOnly);
         stream << encArg1;
         stream << encArg2;
         stream << encArg2;
@@ -366,10 +366,10 @@ void tst_CTelegramStream::benchmarkEncodeStream2()
 
 }
 
-void tst_CTelegramStream::benchmarkEncodeStream3()
+void tst_MTProtoStream::benchmarkEncodeStream3()
 {
     QBENCHMARK {
-        CTelegramStream stream(CTelegramStream::WriteOnly);
+        Telegram::MTProto::Stream stream(Telegram::MTProto::Stream::WriteOnly);
         stream << encArg1;
         stream << encArg2;
         stream << encArg3;
@@ -377,10 +377,10 @@ void tst_CTelegramStream::benchmarkEncodeStream3()
     }
 }
 
-void tst_CTelegramStream::benchmarkEncodeStream4()
+void tst_MTProtoStream::benchmarkEncodeStream4()
 {
     QBENCHMARK {
-        CTelegramStream stream(CTelegramStream::WriteOnly);
+        Telegram::MTProto::Stream stream(Telegram::MTProto::Stream::WriteOnly);
         stream << encArg1;
         stream << encArg2;
         stream << encArg3;
@@ -389,14 +389,14 @@ void tst_CTelegramStream::benchmarkEncodeStream4()
     }
 }
 
-void tst_CTelegramStream::benchmarkEncodePlacement1()
+void tst_MTProtoStream::benchmarkEncodePlacement1()
 {
     QBENCHMARK {
         encodeData(encArg1);
     }
 }
 
-void tst_CTelegramStream::benchmarkEncodePlacement2()
+void tst_MTProtoStream::benchmarkEncodePlacement2()
 {
     QBENCHMARK {
         encodeData(encArg1, encArg2,
@@ -407,21 +407,21 @@ void tst_CTelegramStream::benchmarkEncodePlacement2()
     }
 }
 
-void tst_CTelegramStream::benchmarkEncodePlacement3()
+void tst_MTProtoStream::benchmarkEncodePlacement3()
 {
     QBENCHMARK {
         encodeData(encArg1, encArg2, encArg3);
     }
 }
 
-void tst_CTelegramStream::benchmarkEncodePlacement4()
+void tst_MTProtoStream::benchmarkEncodePlacement4()
 {
     QBENCHMARK {
         encodeData(encArg1, encArg2, encArg3, encArg4);
     }
 }
 
-void tst_CTelegramStream::shortStringSerialization()
+void tst_MTProtoStream::shortStringSerialization()
 {
     QList<STestData> data;
 
@@ -439,7 +439,7 @@ void tst_CTelegramStream::shortStringSerialization()
         QBuffer device;
         device.open(QBuffer::WriteOnly);
 
-        CTelegramStream stream(&device);
+        Telegram::MTProto::Stream stream(&device);
 
         stream << data.at(i).value.toString();
 
@@ -451,7 +451,7 @@ void tst_CTelegramStream::shortStringSerialization()
         device.setData(data.at(i).serializedData);
         device.open(QBuffer::ReadOnly);
 
-        CTelegramStream stream(&device);
+        Telegram::MTProto::Stream stream(&device);
 
         QString result;
 
@@ -461,7 +461,7 @@ void tst_CTelegramStream::shortStringSerialization()
     }
 }
 
-void tst_CTelegramStream::stringsLimitSerialization()
+void tst_MTProtoStream::stringsLimitSerialization()
 {
     QList<STestData> data;
 
@@ -504,7 +504,7 @@ void tst_CTelegramStream::stringsLimitSerialization()
         QBuffer device;
         device.open(QBuffer::WriteOnly);
 
-        CTelegramStream stream(&device);
+        Telegram::MTProto::Stream stream(&device);
 
         stream << data.at(i).value.toString();
 
@@ -521,7 +521,7 @@ void tst_CTelegramStream::stringsLimitSerialization()
         device.setData(data.at(i).serializedData);
         device.open(QBuffer::ReadOnly);
 
-        CTelegramStream stream(&device);
+        Telegram::MTProto::Stream stream(&device);
 
         QString result;
 
@@ -535,7 +535,7 @@ void tst_CTelegramStream::stringsLimitSerialization()
     }
 }
 
-void tst_CTelegramStream::longStringSerialization()
+void tst_MTProtoStream::longStringSerialization()
 {
     QList<STestData> data;
 
@@ -580,7 +580,7 @@ void tst_CTelegramStream::longStringSerialization()
     /* Serialization */
     for (int i = 0; i < data.count(); ++i) {
         QByteArray dataArray;
-        CTelegramStream stream(&dataArray, true);
+        Telegram::MTProto::Stream stream(&dataArray, true);
         const QString originString = data.at(i).value.toString();
         stream << originString;
         QVERIFY2(!(dataArray.length() % 4), "Results data is not padded (total length is not divisible by 4)");
@@ -592,14 +592,14 @@ void tst_CTelegramStream::longStringSerialization()
 
     /* Deserialization */
     for (int i = 0; i < data.count(); ++i) {
-        CTelegramStream stream(data.at(i).serializedData);
+        Telegram::MTProto::Stream stream(data.at(i).serializedData);
         QString result;
         stream >> result;
         QCOMPARE(result, data.at(i).value.toString());
     }
 }
 
-void tst_CTelegramStream::intSerialization()
+void tst_MTProtoStream::intSerialization()
 {
     QList<STestData> data;
 
@@ -626,7 +626,7 @@ void tst_CTelegramStream::intSerialization()
         QBuffer device;
         device.open(QBuffer::WriteOnly);
 
-        CTelegramStream stream(&device);
+        Telegram::MTProto::Stream stream(&device);
 
         stream << data.at(i).value.value<quint32>();
 
@@ -638,7 +638,7 @@ void tst_CTelegramStream::intSerialization()
         device.setData(data.at(i).serializedData);
         device.open(QBuffer::ReadOnly);
 
-        CTelegramStream stream(&device);
+        Telegram::MTProto::Stream stream(&device);
 
         quint32 result;
 
@@ -648,7 +648,7 @@ void tst_CTelegramStream::intSerialization()
     }
 }
 
-void tst_CTelegramStream::vectorOfIntsSerialization()
+void tst_MTProtoStream::vectorOfIntsSerialization()
 {
     TLVector<quint64> vector;
     vector.append(0x12345678);
@@ -660,13 +660,13 @@ void tst_CTelegramStream::vectorOfIntsSerialization()
 
     {
         QByteArray output;
-        CTelegramStream stream(&output, /* write */ true);
+        Telegram::MTProto::Stream stream(&output, /* write */ true);
         stream << vector;
         QCOMPARE(output, encoded);
     }
 
     {
-        CTelegramStream stream(encoded);
+        Telegram::MTProto::Stream stream(encoded);
         TLVector<quint64> value;
         stream >> value;
 
@@ -674,21 +674,21 @@ void tst_CTelegramStream::vectorOfIntsSerialization()
     }
 }
 
-void tst_CTelegramStream::vectorDeserializationError()
+void tst_MTProtoStream::vectorDeserializationError()
 {
     TLVector<quint32> vector;
 
     const QByteArray encoded = QByteArray::fromHex("12345678");
 
     {
-        CTelegramStream stream(encoded);
+        Telegram::MTProto::Stream stream(encoded);
 
         stream >> vector;
         QVERIFY(!vector.isValid());
     }
 }
 
-void tst_CTelegramStream::pointerVectorSerialization()
+void tst_MTProtoStream::pointerVectorSerialization()
 {
     TLVector<quint32> values = { 1, 2, 3, 4, 5 };
     const TLVector<quint32*> writePtrs = {
@@ -701,12 +701,12 @@ void tst_CTelegramStream::pointerVectorSerialization()
 
     QByteArray buffer;
     {
-        CTelegramStream stream(&buffer, true);
+        Telegram::MTProto::Stream stream(&buffer, true);
         stream << writePtrs;
     }
     QVERIFY(!buffer.isEmpty());
 
-    CTelegramStream stream(buffer);
+    Telegram::MTProto::Stream stream(buffer);
     TLVector<quint32> readValues;
     stream >> readValues;
     QCOMPARE(values.count(), readValues.count());
@@ -715,18 +715,18 @@ void tst_CTelegramStream::pointerVectorSerialization()
     }
 }
 
-void tst_CTelegramStream::pointerVectorDeserialization()
+void tst_MTProtoStream::pointerVectorDeserialization()
 {
     const TLVector<quint32> writeValues = { 1, 2, 3, 4, 5 };
 
     QByteArray buffer;
     {
-        CTelegramStream stream(&buffer, true);
+        Telegram::MTProto::Stream stream(&buffer, true);
         stream << writeValues;
     }
     QVERIFY(!buffer.isEmpty());
 
-    CTelegramStream stream(buffer);
+    Telegram::MTProto::Stream stream(buffer);
     TLVector<quint32*> readPtrs;
     stream >> readPtrs;
     QCOMPARE(writeValues.count(), readPtrs.count());
@@ -735,7 +735,7 @@ void tst_CTelegramStream::pointerVectorDeserialization()
     }
 }
 
-void tst_CTelegramStream::tlNumbersSerialization()
+void tst_MTProtoStream::tlNumbersSerialization()
 {
     QVector<TLNumber128> vector128;
     QVector<QByteArray> encoded128;
@@ -776,7 +776,7 @@ void tst_CTelegramStream::tlNumbersSerialization()
         QBuffer device;
         device.open(QBuffer::WriteOnly);
 
-        CTelegramStream stream(&device);
+        Telegram::MTProto::Stream stream(&device);
 
         stream << vector128.at(i);
         QCOMPARE(device.data().toHex(), encoded128.at(i).toHex());
@@ -787,7 +787,7 @@ void tst_CTelegramStream::tlNumbersSerialization()
         device.setData(encoded128.at(i));
         device.open(QBuffer::ReadOnly);
 
-        CTelegramStream stream(&device);
+        Telegram::MTProto::Stream stream(&device);
 
         TLNumber128 value;
 
@@ -797,10 +797,10 @@ void tst_CTelegramStream::tlNumbersSerialization()
     }
 }
 
-void tst_CTelegramStream::tlDcOptionDeserialization()
+void tst_MTProtoStream::tlDcOptionDeserialization()
 {
     QByteArray dcOptionsData;
-    CTelegramStream inputStream(&dcOptionsData, /* write */ true);
+    Telegram::MTProto::Stream inputStream(&dcOptionsData, /* write */ true);
     TLVector<TLDcOption> optionsVector;
 
     TLDcOption opt1;
@@ -821,7 +821,7 @@ void tst_CTelegramStream::tlDcOptionDeserialization()
     optionsVector << opt1 << opt2 << opt3;
     inputStream << optionsVector;
 
-    CTelegramStream stream(dcOptionsData);
+    Telegram::MTProto::Stream stream(dcOptionsData);
     TLVector<TLDcOption> readOptionsVector;
     stream >> readOptionsVector;
 
@@ -838,28 +838,28 @@ void tst_CTelegramStream::tlDcOptionDeserialization()
     QVERIFY(readOptionsVector.isValid());
 }
 
-void tst_CTelegramStream::recursiveTypeWriteRead()
+void tst_MTProtoStream::recursiveTypeWriteRead()
 {
     TLRichText text;
     text.tlType = TLValue::TextPlain;
     text.stringText = QStringLiteral("123");
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    Telegram::MTProto::Stream outputStream(Telegram::MTProto::Stream::WriteOnly);
     outputStream << text;
     const QByteArray data = outputStream.getData();
 
-    CTelegramStream inputStream(data);
+    Telegram::MTProto::Stream inputStream(data);
     TLRichText text2;
     inputStream >> text2;
     QCOMPARE(text2.stringText, text.stringText);
 }
 
-void tst_CTelegramStream::readError()
+void tst_MTProtoStream::readError()
 {
     {
         static const char input[8] = { char(6), 't', 'e', 's', 't', '1', 'a', 0 };
         static const QByteArray data(input, sizeof(input));
 
-        CTelegramStream stream(data);
+        Telegram::MTProto::Stream stream(data);
 
         QVERIFY2(!stream.error(), "Unexpected error (there was been no read operation, so nothing can cause an error).");
 
@@ -878,7 +878,7 @@ void tst_CTelegramStream::readError()
         static const char input[5] = { char(0xcc), char(0xbb), char(0xaa), char(0x00), char(0x20) };
         static const QByteArray data(input, sizeof(input));
 
-        CTelegramStream stream(data);
+        Telegram::MTProto::Stream stream(data);
 
         QVERIFY(!stream.error());
 
@@ -894,17 +894,17 @@ void tst_CTelegramStream::readError()
 
 }
 
-void tst_CTelegramStream::byteArrays()
+void tst_MTProtoStream::byteArrays()
 {
     QByteArray output;
-    CTelegramStream stream(&output, /* write */ true);
+    Telegram::MTProto::Stream stream(&output, /* write */ true);
     QByteArray array1 = QByteArrayLiteral("array1");
     QByteArray array2 = QByteArrayLiteral("array2");
 
     stream << array1;
     stream << array2;
 
-    CTelegramStream inputStream(output);
+    Telegram::MTProto::Stream inputStream(output);
     QByteArray a1;
     QByteArray a2;
     inputStream >> a1;
@@ -913,7 +913,7 @@ void tst_CTelegramStream::byteArrays()
     QCOMPARE(array2, a2);
 }
 
-void tst_CTelegramStream::reqPqData()
+void tst_MTProtoStream::reqPqData()
 {
     TLNumber128 clientNonce;
     clientNonce.parts[0] = 0x123456789abcdef0ull;
@@ -934,7 +934,7 @@ void tst_CTelegramStream::reqPqData()
     QVector<int> bytes;
     QByteArray output;
     {
-        CTelegramStream outputStream(&output, /* write */ true);
+        Telegram::MTProto::Stream outputStream(&output, /* write */ true);
         outputStream << TLValue::ResPQ;
         bytes << output.size();
         outputStream << clientNonce;
@@ -947,7 +947,7 @@ void tst_CTelegramStream::reqPqData()
         bytes << output.size();
     }
 
-    CTelegramStream inputStream(output);
+    Telegram::MTProto::Stream inputStream(output);
     {
         TLValue responsePqValue;
         inputStream >> responsePqValue;
@@ -988,7 +988,7 @@ void tst_CTelegramStream::reqPqData()
     }
 }
 
-//QTEST_APPLESS_MAIN(tst_CTelegramStream)
-QTEST_GUILESS_MAIN(tst_CTelegramStream)
+//QTEST_APPLESS_MAIN(tst_MTProtoStream)
+QTEST_GUILESS_MAIN(tst_MTProtoStream)
 
-#include "tst_CTelegramStream.moc"
+#include "tst_MTProtoStream.moc"

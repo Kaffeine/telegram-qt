@@ -323,7 +323,7 @@ bool RpcLayer::resendIgnoredMessage(quint64 messageId)
 
 void RpcLayer::acknowledgeMessages()
 {
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     TLVector<quint64> idsVector = m_messagesToAck;
     m_messagesToAck.clear();
     outputStream << TLValue::MsgsAck;
@@ -355,7 +355,7 @@ QByteArray RpcLayer::getInitConnection() const
 #ifdef DEVELOPER_BUILD
     qCDebug(c_clientRpcLayerCategory) << CALL_INFO << "layer" << TLValue::CurrentLayer;
 #endif
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::InvokeWithLayer;
     outputStream << TLValue::CurrentLayer;
     outputStream << TLValue::InitConnection;

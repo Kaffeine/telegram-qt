@@ -44,7 +44,7 @@ UploadRpcLayer::UploadRpcLayer(QObject *parent) :
 UploadRpcLayer::PendingUploadCdnFile *UploadRpcLayer::getCdnFile(const QByteArray &fileToken, quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << offset << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UploadGetCdnFile;
     outputStream << fileToken;
     outputStream << offset;
@@ -57,7 +57,7 @@ UploadRpcLayer::PendingUploadCdnFile *UploadRpcLayer::getCdnFile(const QByteArra
 UploadRpcLayer::PendingCdnFileHashVector *UploadRpcLayer::getCdnFileHashes(const QByteArray &fileToken, quint32 offset)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << offset;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UploadGetCdnFileHashes;
     outputStream << fileToken;
     outputStream << offset;
@@ -69,7 +69,7 @@ UploadRpcLayer::PendingCdnFileHashVector *UploadRpcLayer::getCdnFileHashes(const
 UploadRpcLayer::PendingUploadFile *UploadRpcLayer::getFile(const TLInputFileLocation &location, quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << location << offset << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UploadGetFile;
     outputStream << location;
     outputStream << offset;
@@ -82,7 +82,7 @@ UploadRpcLayer::PendingUploadFile *UploadRpcLayer::getFile(const TLInputFileLoca
 UploadRpcLayer::PendingUploadWebFile *UploadRpcLayer::getWebFile(const TLInputWebFileLocation &location, quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << location << offset << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UploadGetWebFile;
     outputStream << location;
     outputStream << offset;
@@ -95,7 +95,7 @@ UploadRpcLayer::PendingUploadWebFile *UploadRpcLayer::getWebFile(const TLInputWe
 UploadRpcLayer::PendingCdnFileHashVector *UploadRpcLayer::reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << requestToken.toHex();
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UploadReuploadCdnFile;
     outputStream << fileToken;
     outputStream << requestToken;
@@ -107,7 +107,7 @@ UploadRpcLayer::PendingCdnFileHashVector *UploadRpcLayer::reuploadCdnFile(const 
 UploadRpcLayer::PendingBool *UploadRpcLayer::saveBigFilePart(quint64 fileId, quint32 filePart, quint32 fileTotalParts, const QByteArray &bytes)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileId << filePart << fileTotalParts << bytes.toHex();
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UploadSaveBigFilePart;
     outputStream << fileId;
     outputStream << filePart;
@@ -121,7 +121,7 @@ UploadRpcLayer::PendingBool *UploadRpcLayer::saveBigFilePart(quint64 fileId, qui
 UploadRpcLayer::PendingBool *UploadRpcLayer::saveFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileId << filePart << bytes.toHex();
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UploadSaveFilePart;
     outputStream << fileId;
     outputStream << filePart;

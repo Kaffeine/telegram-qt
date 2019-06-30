@@ -45,7 +45,7 @@ BotsRpcLayer::BotsRpcLayer(QObject *parent) :
 BotsRpcLayer::PendingBool *BotsRpcLayer::answerWebhookJSONQuery(quint64 queryId, const TLDataJSON &data)
 {
     qCDebug(c_clientRpcBotsCategory) << Q_FUNC_INFO << queryId << data;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::BotsAnswerWebhookJSONQuery;
     outputStream << queryId;
     outputStream << data;
@@ -57,7 +57,7 @@ BotsRpcLayer::PendingBool *BotsRpcLayer::answerWebhookJSONQuery(quint64 queryId,
 BotsRpcLayer::PendingDataJSON *BotsRpcLayer::sendCustomRequest(const QString &customMethod, const TLDataJSON &params)
 {
     qCDebug(c_clientRpcBotsCategory) << Q_FUNC_INFO << customMethod << params;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::BotsSendCustomRequest;
     outputStream << customMethod;
     outputStream << params;

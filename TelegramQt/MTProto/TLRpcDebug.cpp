@@ -20,9 +20,13 @@
 #include "TLTypesDebug.hpp"
 #include "Debug_p.hpp"
 
-#include "CTelegramStream.hpp"
+#include "Stream.hpp"
 
-void dumpRpc(CTelegramStream &stream)
+namespace Telegram {
+
+namespace MTProto {
+
+void dumpRpc(Stream &stream)
 {
     TLValue request;
     stream >> request;
@@ -46,7 +50,7 @@ void dumpRpc(CTelegramStream &stream)
             stream >> size;
 
             const QByteArray data = stream.readBytes(size);
-            CTelegramStream innerStream(data);
+            Stream innerStream(data);
             dumpRpc(innerStream);
         }
         break;
@@ -3242,3 +3246,7 @@ void dumpRpc(CTelegramStream &stream)
         break;
     }
 }
+
+} // MTProto namespace
+
+} // Telegram namespace

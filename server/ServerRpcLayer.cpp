@@ -15,9 +15,9 @@
 
 #include "FunctionStreamOperators.hpp"
 
-#include "MTProto/CTelegramStreamExtraOperators.hpp"
 #include "MTProto/MessageHeader.hpp"
 #include "MTProto/Stream.hpp"
+#include "MTProto/StreamExtraOperators.hpp"
 
 #include <QLoggingCategory>
 
@@ -172,7 +172,7 @@ void RpcLayer::sendUpdates(const TLUpdates &updates)
     qCDebug(c_serverRpcLayerCategory) << updates;
 #endif
 
-    CTelegramStream stream(CTelegramStream::WriteOnly);
+    MTProto::Stream stream(MTProto::Stream::WriteOnly);
     stream << updates;
     sendRpcMessage(stream.getData());
 }
@@ -268,7 +268,7 @@ bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
     if (reply.size() > 128) { // Telegram spec says it should be 255, but we need to lower the limit to pack DcConfig
         const QByteArray innerData = Utils::packGZip(reply);
         if (innerData.size() + 8 < reply.size()) {
-            CTelegramStream innerStream(CRawStream::WriteOnly);
+            MTProto::Stream innerStream(CRawStream::WriteOnly);
             innerStream << TLValue::GzipPacked;
             innerStream << innerData;
             output.writeBytes(innerStream.getData());

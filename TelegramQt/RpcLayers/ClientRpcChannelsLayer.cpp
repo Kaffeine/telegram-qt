@@ -52,7 +52,7 @@ ChannelsRpcLayer::ChannelsRpcLayer(QObject *parent) :
 ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::checkUsername(const TLInputChannel &channel, const QString &username)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << username;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsCheckUsername;
     outputStream << channel;
     outputStream << username;
@@ -64,7 +64,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::checkUsername(const TLInputChan
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::createChannel(quint32 flags, const QString &title, const QString &about)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << flags << title << about;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsCreateChannel;
     outputStream << flags;
     // (flags & 1 << 0) stands for broadcast "true" value
@@ -79,7 +79,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::createChannel(quint32 flags,
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::deleteChannel(const TLInputChannel &channel)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsDeleteChannel;
     outputStream << channel;
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
@@ -90,7 +90,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::deleteChannel(const TLInputC
 ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::deleteHistory(const TLInputChannel &channel, quint32 maxId)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << maxId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsDeleteHistory;
     outputStream << channel;
     outputStream << maxId;
@@ -102,7 +102,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::deleteHistory(const TLInputChan
 ChannelsRpcLayer::PendingMessagesAffectedMessages *ChannelsRpcLayer::deleteMessages(const TLInputChannel &channel, const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsDeleteMessages;
     outputStream << channel;
     outputStream << id;
@@ -114,7 +114,7 @@ ChannelsRpcLayer::PendingMessagesAffectedMessages *ChannelsRpcLayer::deleteMessa
 ChannelsRpcLayer::PendingMessagesAffectedHistory *ChannelsRpcLayer::deleteUserHistory(const TLInputChannel &channel, const TLInputUser &userId)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << userId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsDeleteUserHistory;
     outputStream << channel;
     outputStream << userId;
@@ -126,7 +126,7 @@ ChannelsRpcLayer::PendingMessagesAffectedHistory *ChannelsRpcLayer::deleteUserHi
 ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::editAbout(const TLInputChannel &channel, const QString &about)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << about;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsEditAbout;
     outputStream << channel;
     outputStream << about;
@@ -138,7 +138,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::editAbout(const TLInputChannel 
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::editAdmin(const TLInputChannel &channel, const TLInputUser &userId, const TLChannelAdminRights &adminRights)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << userId << adminRights;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsEditAdmin;
     outputStream << channel;
     outputStream << userId;
@@ -151,7 +151,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::editAdmin(const TLInputChann
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::editBanned(const TLInputChannel &channel, const TLInputUser &userId, const TLChannelBannedRights &bannedRights)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << userId << bannedRights;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsEditBanned;
     outputStream << channel;
     outputStream << userId;
@@ -164,7 +164,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::editBanned(const TLInputChan
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::editPhoto(const TLInputChannel &channel, const TLInputChatPhoto &photo)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << photo;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsEditPhoto;
     outputStream << channel;
     outputStream << photo;
@@ -176,7 +176,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::editPhoto(const TLInputChann
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::editTitle(const TLInputChannel &channel, const QString &title)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << title;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsEditTitle;
     outputStream << channel;
     outputStream << title;
@@ -188,7 +188,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::editTitle(const TLInputChann
 ChannelsRpcLayer::PendingExportedChatInvite *ChannelsRpcLayer::exportInvite(const TLInputChannel &channel)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsExportInvite;
     outputStream << channel;
     PendingExportedChatInvite *op = new PendingExportedChatInvite(this, outputStream.getData());
@@ -199,7 +199,7 @@ ChannelsRpcLayer::PendingExportedChatInvite *ChannelsRpcLayer::exportInvite(cons
 ChannelsRpcLayer::PendingExportedMessageLink *ChannelsRpcLayer::exportMessageLink(const TLInputChannel &channel, quint32 id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsExportMessageLink;
     outputStream << channel;
     outputStream << id;
@@ -211,7 +211,7 @@ ChannelsRpcLayer::PendingExportedMessageLink *ChannelsRpcLayer::exportMessageLin
 ChannelsRpcLayer::PendingChannelsAdminLogResults *ChannelsRpcLayer::getAdminLog(quint32 flags, const TLInputChannel &channel, const QString &q, const TLChannelAdminLogEventsFilter &eventsFilter, const TLVector<TLInputUser> &admins, quint64 maxId, quint64 minId, quint32 limit)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << flags << channel << q << eventsFilter << admins << maxId << minId << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsGetAdminLog;
     outputStream << flags;
     outputStream << channel;
@@ -233,7 +233,7 @@ ChannelsRpcLayer::PendingChannelsAdminLogResults *ChannelsRpcLayer::getAdminLog(
 ChannelsRpcLayer::PendingMessagesChats *ChannelsRpcLayer::getAdminedPublicChannels()
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsGetAdminedPublicChannels;
     PendingMessagesChats *op = new PendingMessagesChats(this, outputStream.getData());
     processRpcCall(op);
@@ -243,7 +243,7 @@ ChannelsRpcLayer::PendingMessagesChats *ChannelsRpcLayer::getAdminedPublicChanne
 ChannelsRpcLayer::PendingMessagesChats *ChannelsRpcLayer::getChannels(const TLVector<TLInputChannel> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsGetChannels;
     outputStream << id;
     PendingMessagesChats *op = new PendingMessagesChats(this, outputStream.getData());
@@ -254,7 +254,7 @@ ChannelsRpcLayer::PendingMessagesChats *ChannelsRpcLayer::getChannels(const TLVe
 ChannelsRpcLayer::PendingMessagesChatFull *ChannelsRpcLayer::getFullChannel(const TLInputChannel &channel)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsGetFullChannel;
     outputStream << channel;
     PendingMessagesChatFull *op = new PendingMessagesChatFull(this, outputStream.getData());
@@ -265,7 +265,7 @@ ChannelsRpcLayer::PendingMessagesChatFull *ChannelsRpcLayer::getFullChannel(cons
 ChannelsRpcLayer::PendingMessagesMessages *ChannelsRpcLayer::getMessages(const TLInputChannel &channel, const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsGetMessages;
     outputStream << channel;
     outputStream << id;
@@ -277,7 +277,7 @@ ChannelsRpcLayer::PendingMessagesMessages *ChannelsRpcLayer::getMessages(const T
 ChannelsRpcLayer::PendingChannelsChannelParticipant *ChannelsRpcLayer::getParticipant(const TLInputChannel &channel, const TLInputUser &userId)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << userId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsGetParticipant;
     outputStream << channel;
     outputStream << userId;
@@ -289,7 +289,7 @@ ChannelsRpcLayer::PendingChannelsChannelParticipant *ChannelsRpcLayer::getPartic
 ChannelsRpcLayer::PendingChannelsChannelParticipants *ChannelsRpcLayer::getParticipants(const TLInputChannel &channel, const TLChannelParticipantsFilter &filter, quint32 offset, quint32 limit, quint32 hash)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << filter << offset << limit << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsGetParticipants;
     outputStream << channel;
     outputStream << filter;
@@ -304,7 +304,7 @@ ChannelsRpcLayer::PendingChannelsChannelParticipants *ChannelsRpcLayer::getParti
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::inviteToChannel(const TLInputChannel &channel, const TLVector<TLInputUser> &users)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << users;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsInviteToChannel;
     outputStream << channel;
     outputStream << users;
@@ -316,7 +316,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::inviteToChannel(const TLInpu
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::joinChannel(const TLInputChannel &channel)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsJoinChannel;
     outputStream << channel;
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
@@ -327,7 +327,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::joinChannel(const TLInputCha
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::leaveChannel(const TLInputChannel &channel)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsLeaveChannel;
     outputStream << channel;
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
@@ -338,7 +338,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::leaveChannel(const TLInputCh
 ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::readHistory(const TLInputChannel &channel, quint32 maxId)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << maxId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsReadHistory;
     outputStream << channel;
     outputStream << maxId;
@@ -350,7 +350,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::readHistory(const TLInputChanne
 ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::readMessageContents(const TLInputChannel &channel, const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsReadMessageContents;
     outputStream << channel;
     outputStream << id;
@@ -362,7 +362,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::readMessageContents(const TLInp
 ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::reportSpam(const TLInputChannel &channel, const TLInputUser &userId, const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << userId << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsReportSpam;
     outputStream << channel;
     outputStream << userId;
@@ -375,7 +375,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::reportSpam(const TLInputChannel
 ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::setStickers(const TLInputChannel &channel, const TLInputStickerSet &stickerset)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << stickerset;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsSetStickers;
     outputStream << channel;
     outputStream << stickerset;
@@ -387,7 +387,7 @@ ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::setStickers(const TLInputChanne
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::toggleInvites(const TLInputChannel &channel, bool enabled)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << enabled;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsToggleInvites;
     outputStream << channel;
     outputStream << enabled;
@@ -399,7 +399,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::toggleInvites(const TLInputC
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::togglePreHistoryHidden(const TLInputChannel &channel, bool enabled)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << enabled;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsTogglePreHistoryHidden;
     outputStream << channel;
     outputStream << enabled;
@@ -411,7 +411,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::togglePreHistoryHidden(const
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::toggleSignatures(const TLInputChannel &channel, bool enabled)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << enabled;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsToggleSignatures;
     outputStream << channel;
     outputStream << enabled;
@@ -423,7 +423,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::toggleSignatures(const TLInp
 ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::updatePinnedMessage(quint32 flags, const TLInputChannel &channel, quint32 id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << flags << channel << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsUpdatePinnedMessage;
     outputStream << flags;
     // (flags & 1 << 0) stands for silent "true" value
@@ -437,7 +437,7 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::updatePinnedMessage(quint32 
 ChannelsRpcLayer::PendingBool *ChannelsRpcLayer::updateUsername(const TLInputChannel &channel, const QString &username)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << username;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsUpdateUsername;
     outputStream << channel;
     outputStream << username;

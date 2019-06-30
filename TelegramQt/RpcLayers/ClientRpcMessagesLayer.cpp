@@ -71,7 +71,7 @@ MessagesRpcLayer::MessagesRpcLayer(QObject *parent) :
 MessagesRpcLayer::PendingEncryptedChat *MessagesRpcLayer::acceptEncryption(const TLInputEncryptedChat &peer, const QByteArray &gB, quint64 keyFingerprint)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << gB.toHex() << keyFingerprint;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesAcceptEncryption;
     outputStream << peer;
     outputStream << gB;
@@ -84,7 +84,7 @@ MessagesRpcLayer::PendingEncryptedChat *MessagesRpcLayer::acceptEncryption(const
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::addChatUser(quint32 chatId, const TLInputUser &userId, quint32 fwdLimit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << userId << fwdLimit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesAddChatUser;
     outputStream << chatId;
     outputStream << userId;
@@ -97,7 +97,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::addChatUser(quint32 chatId, 
 MessagesRpcLayer::PendingChatInvite *MessagesRpcLayer::checkChatInvite(const QString &hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesCheckChatInvite;
     outputStream << hash;
     PendingChatInvite *op = new PendingChatInvite(this, outputStream.getData());
@@ -108,7 +108,7 @@ MessagesRpcLayer::PendingChatInvite *MessagesRpcLayer::checkChatInvite(const QSt
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::clearRecentStickers(quint32 flags)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesClearRecentStickers;
     outputStream << flags;
     // (flags & 1 << 0) stands for attached "true" value
@@ -120,7 +120,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::clearRecentStickers(quint32 fla
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::createChat(const TLVector<TLInputUser> &users, const QString &title)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << users << title;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesCreateChat;
     outputStream << users;
     outputStream << title;
@@ -132,7 +132,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::createChat(const TLVector<TL
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::deleteChatUser(quint32 chatId, const TLInputUser &userId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << userId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesDeleteChatUser;
     outputStream << chatId;
     outputStream << userId;
@@ -144,7 +144,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::deleteChatUser(quint32 chatI
 MessagesRpcLayer::PendingMessagesAffectedHistory *MessagesRpcLayer::deleteHistory(quint32 flags, const TLInputPeer &peer, quint32 maxId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << maxId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesDeleteHistory;
     outputStream << flags;
     // (flags & 1 << 0) stands for justClear "true" value
@@ -158,7 +158,7 @@ MessagesRpcLayer::PendingMessagesAffectedHistory *MessagesRpcLayer::deleteHistor
 MessagesRpcLayer::PendingMessagesAffectedMessages *MessagesRpcLayer::deleteMessages(quint32 flags, const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesDeleteMessages;
     outputStream << flags;
     // (flags & 1 << 0) stands for revoke "true" value
@@ -171,7 +171,7 @@ MessagesRpcLayer::PendingMessagesAffectedMessages *MessagesRpcLayer::deleteMessa
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::discardEncryption(quint32 chatId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesDiscardEncryption;
     outputStream << chatId;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -182,7 +182,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::discardEncryption(quint32 chatI
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::editChatAdmin(quint32 chatId, const TLInputUser &userId, bool isAdmin)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << userId << isAdmin;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesEditChatAdmin;
     outputStream << chatId;
     outputStream << userId;
@@ -195,7 +195,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::editChatAdmin(quint32 chatId, c
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editChatPhoto(quint32 chatId, const TLInputChatPhoto &photo)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << photo;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesEditChatPhoto;
     outputStream << chatId;
     outputStream << photo;
@@ -207,7 +207,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editChatPhoto(quint32 chatId
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editChatTitle(quint32 chatId, const QString &title)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << title;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesEditChatTitle;
     outputStream << chatId;
     outputStream << title;
@@ -219,7 +219,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editChatTitle(quint32 chatId
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::editInlineBotMessage(quint32 flags, const TLInputBotInlineMessageID &id, const QString &message, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities, const TLInputGeoPoint &geoPoint)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id << message << replyMarkup << entities << geoPoint;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesEditInlineBotMessage;
     outputStream << flags;
     // (flags & 1 << 1) stands for noWebpage "true" value
@@ -245,7 +245,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::editInlineBotMessage(quint32 fl
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editMessage(quint32 flags, const TLInputPeer &peer, quint32 id, const QString &message, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities, const TLInputGeoPoint &geoPoint)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << id << message << replyMarkup << entities << geoPoint;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesEditMessage;
     outputStream << flags;
     // (flags & 1 << 1) stands for noWebpage "true" value
@@ -272,7 +272,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editMessage(quint32 flags, c
 MessagesRpcLayer::PendingExportedChatInvite *MessagesRpcLayer::exportChatInvite(quint32 chatId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesExportChatInvite;
     outputStream << chatId;
     PendingExportedChatInvite *op = new PendingExportedChatInvite(this, outputStream.getData());
@@ -283,7 +283,7 @@ MessagesRpcLayer::PendingExportedChatInvite *MessagesRpcLayer::exportChatInvite(
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::faveSticker(const TLInputDocument &id, bool unfave)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id << unfave;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesFaveSticker;
     outputStream << id;
     outputStream << unfave;
@@ -295,7 +295,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::faveSticker(const TLInputDocume
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::forwardMessage(const TLInputPeer &peer, quint32 id, quint64 randomId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id << randomId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesForwardMessage;
     outputStream << peer;
     outputStream << id;
@@ -308,7 +308,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::forwardMessage(const TLInput
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::forwardMessages(quint32 flags, const TLInputPeer &fromPeer, const TLVector<quint32> &id, const TLVector<quint64> &randomId, const TLInputPeer &toPeer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << fromPeer << id << randomId << toPeer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesForwardMessages;
     outputStream << flags;
     // (flags & 1 << 5) stands for silent "true" value
@@ -326,7 +326,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::forwardMessages(quint32 flag
 MessagesRpcLayer::PendingMessagesChats *MessagesRpcLayer::getAllChats(const TLVector<quint32> &exceptIds)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << exceptIds;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetAllChats;
     outputStream << exceptIds;
     PendingMessagesChats *op = new PendingMessagesChats(this, outputStream.getData());
@@ -337,7 +337,7 @@ MessagesRpcLayer::PendingMessagesChats *MessagesRpcLayer::getAllChats(const TLVe
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::getAllDrafts()
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetAllDrafts;
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
     processRpcCall(op);
@@ -347,7 +347,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::getAllDrafts()
 MessagesRpcLayer::PendingMessagesAllStickers *MessagesRpcLayer::getAllStickers(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetAllStickers;
     outputStream << hash;
     PendingMessagesAllStickers *op = new PendingMessagesAllStickers(this, outputStream.getData());
@@ -358,7 +358,7 @@ MessagesRpcLayer::PendingMessagesAllStickers *MessagesRpcLayer::getAllStickers(q
 MessagesRpcLayer::PendingMessagesArchivedStickers *MessagesRpcLayer::getArchivedStickers(quint32 flags, quint64 offsetId, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << offsetId << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetArchivedStickers;
     outputStream << flags;
     // (flags & 1 << 0) stands for masks "true" value
@@ -372,7 +372,7 @@ MessagesRpcLayer::PendingMessagesArchivedStickers *MessagesRpcLayer::getArchived
 MessagesRpcLayer::PendingStickerSetCoveredVector *MessagesRpcLayer::getAttachedStickers(const TLInputStickeredMedia &media)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << media;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetAttachedStickers;
     outputStream << media;
     PendingStickerSetCoveredVector *op = new PendingStickerSetCoveredVector(this, outputStream.getData());
@@ -383,7 +383,7 @@ MessagesRpcLayer::PendingStickerSetCoveredVector *MessagesRpcLayer::getAttachedS
 MessagesRpcLayer::PendingMessagesBotCallbackAnswer *MessagesRpcLayer::getBotCallbackAnswer(quint32 flags, const TLInputPeer &peer, quint32 msgId, const QByteArray &data)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << msgId << data.toHex();
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetBotCallbackAnswer;
     outputStream << flags;
     // (flags & 1 << 1) stands for game "true" value
@@ -400,7 +400,7 @@ MessagesRpcLayer::PendingMessagesBotCallbackAnswer *MessagesRpcLayer::getBotCall
 MessagesRpcLayer::PendingMessagesChats *MessagesRpcLayer::getChats(const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetChats;
     outputStream << id;
     PendingMessagesChats *op = new PendingMessagesChats(this, outputStream.getData());
@@ -411,7 +411,7 @@ MessagesRpcLayer::PendingMessagesChats *MessagesRpcLayer::getChats(const TLVecto
 MessagesRpcLayer::PendingMessagesChats *MessagesRpcLayer::getCommonChats(const TLInputUser &userId, quint32 maxId, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << userId << maxId << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetCommonChats;
     outputStream << userId;
     outputStream << maxId;
@@ -424,7 +424,7 @@ MessagesRpcLayer::PendingMessagesChats *MessagesRpcLayer::getCommonChats(const T
 MessagesRpcLayer::PendingMessagesDhConfig *MessagesRpcLayer::getDhConfig(quint32 version, quint32 randomLength)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << version << randomLength;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetDhConfig;
     outputStream << version;
     outputStream << randomLength;
@@ -436,7 +436,7 @@ MessagesRpcLayer::PendingMessagesDhConfig *MessagesRpcLayer::getDhConfig(quint32
 MessagesRpcLayer::PendingMessagesDialogs *MessagesRpcLayer::getDialogs(quint32 flags, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << offsetDate << offsetId << offsetPeer << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetDialogs;
     outputStream << flags;
     // (flags & 1 << 0) stands for excludePinned "true" value
@@ -452,7 +452,7 @@ MessagesRpcLayer::PendingMessagesDialogs *MessagesRpcLayer::getDialogs(quint32 f
 MessagesRpcLayer::PendingDocument *MessagesRpcLayer::getDocumentByHash(const QByteArray &sha256, quint32 size, const QString &mimeType)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << sha256.toHex() << size << mimeType;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetDocumentByHash;
     outputStream << sha256;
     outputStream << size;
@@ -465,7 +465,7 @@ MessagesRpcLayer::PendingDocument *MessagesRpcLayer::getDocumentByHash(const QBy
 MessagesRpcLayer::PendingMessagesFavedStickers *MessagesRpcLayer::getFavedStickers(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetFavedStickers;
     outputStream << hash;
     PendingMessagesFavedStickers *op = new PendingMessagesFavedStickers(this, outputStream.getData());
@@ -476,7 +476,7 @@ MessagesRpcLayer::PendingMessagesFavedStickers *MessagesRpcLayer::getFavedSticke
 MessagesRpcLayer::PendingMessagesFeaturedStickers *MessagesRpcLayer::getFeaturedStickers(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetFeaturedStickers;
     outputStream << hash;
     PendingMessagesFeaturedStickers *op = new PendingMessagesFeaturedStickers(this, outputStream.getData());
@@ -487,7 +487,7 @@ MessagesRpcLayer::PendingMessagesFeaturedStickers *MessagesRpcLayer::getFeatured
 MessagesRpcLayer::PendingMessagesChatFull *MessagesRpcLayer::getFullChat(quint32 chatId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetFullChat;
     outputStream << chatId;
     PendingMessagesChatFull *op = new PendingMessagesChatFull(this, outputStream.getData());
@@ -498,7 +498,7 @@ MessagesRpcLayer::PendingMessagesChatFull *MessagesRpcLayer::getFullChat(quint32
 MessagesRpcLayer::PendingMessagesHighScores *MessagesRpcLayer::getGameHighScores(const TLInputPeer &peer, quint32 id, const TLInputUser &userId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id << userId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetGameHighScores;
     outputStream << peer;
     outputStream << id;
@@ -511,7 +511,7 @@ MessagesRpcLayer::PendingMessagesHighScores *MessagesRpcLayer::getGameHighScores
 MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getHistory(const TLInputPeer &peer, quint32 offsetId, quint32 offsetDate, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId, quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << offsetId << offsetDate << addOffset << limit << maxId << minId << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetHistory;
     outputStream << peer;
     outputStream << offsetId;
@@ -529,7 +529,7 @@ MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getHistory(const TL
 MessagesRpcLayer::PendingMessagesBotResults *MessagesRpcLayer::getInlineBotResults(quint32 flags, const TLInputUser &bot, const TLInputPeer &peer, const TLInputGeoPoint &geoPoint, const QString &query, const QString &offset)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << bot << peer << geoPoint << query << offset;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetInlineBotResults;
     outputStream << flags;
     outputStream << bot;
@@ -547,7 +547,7 @@ MessagesRpcLayer::PendingMessagesBotResults *MessagesRpcLayer::getInlineBotResul
 MessagesRpcLayer::PendingMessagesHighScores *MessagesRpcLayer::getInlineGameHighScores(const TLInputBotInlineMessageID &id, const TLInputUser &userId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id << userId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetInlineGameHighScores;
     outputStream << id;
     outputStream << userId;
@@ -559,7 +559,7 @@ MessagesRpcLayer::PendingMessagesHighScores *MessagesRpcLayer::getInlineGameHigh
 MessagesRpcLayer::PendingMessagesAllStickers *MessagesRpcLayer::getMaskStickers(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetMaskStickers;
     outputStream << hash;
     PendingMessagesAllStickers *op = new PendingMessagesAllStickers(this, outputStream.getData());
@@ -570,7 +570,7 @@ MessagesRpcLayer::PendingMessagesAllStickers *MessagesRpcLayer::getMaskStickers(
 MessagesRpcLayer::PendingMessagesMessageEditData *MessagesRpcLayer::getMessageEditData(const TLInputPeer &peer, quint32 id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetMessageEditData;
     outputStream << peer;
     outputStream << id;
@@ -582,7 +582,7 @@ MessagesRpcLayer::PendingMessagesMessageEditData *MessagesRpcLayer::getMessageEd
 MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getMessages(const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetMessages;
     outputStream << id;
     PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
@@ -593,7 +593,7 @@ MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getMessages(const T
 MessagesRpcLayer::PendingQuint32Vector *MessagesRpcLayer::getMessagesViews(const TLInputPeer &peer, const TLVector<quint32> &id, bool increment)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id << increment;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetMessagesViews;
     outputStream << peer;
     outputStream << id;
@@ -606,7 +606,7 @@ MessagesRpcLayer::PendingQuint32Vector *MessagesRpcLayer::getMessagesViews(const
 MessagesRpcLayer::PendingMessagesPeerDialogs *MessagesRpcLayer::getPeerDialogs(const TLVector<TLInputPeer> &peers)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peers;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetPeerDialogs;
     outputStream << peers;
     PendingMessagesPeerDialogs *op = new PendingMessagesPeerDialogs(this, outputStream.getData());
@@ -617,7 +617,7 @@ MessagesRpcLayer::PendingMessagesPeerDialogs *MessagesRpcLayer::getPeerDialogs(c
 MessagesRpcLayer::PendingPeerSettings *MessagesRpcLayer::getPeerSettings(const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetPeerSettings;
     outputStream << peer;
     PendingPeerSettings *op = new PendingPeerSettings(this, outputStream.getData());
@@ -628,7 +628,7 @@ MessagesRpcLayer::PendingPeerSettings *MessagesRpcLayer::getPeerSettings(const T
 MessagesRpcLayer::PendingMessagesPeerDialogs *MessagesRpcLayer::getPinnedDialogs()
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetPinnedDialogs;
     PendingMessagesPeerDialogs *op = new PendingMessagesPeerDialogs(this, outputStream.getData());
     processRpcCall(op);
@@ -638,7 +638,7 @@ MessagesRpcLayer::PendingMessagesPeerDialogs *MessagesRpcLayer::getPinnedDialogs
 MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getRecentLocations(const TLInputPeer &peer, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetRecentLocations;
     outputStream << peer;
     outputStream << limit;
@@ -650,7 +650,7 @@ MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getRecentLocations(
 MessagesRpcLayer::PendingMessagesRecentStickers *MessagesRpcLayer::getRecentStickers(quint32 flags, quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetRecentStickers;
     outputStream << flags;
     // (flags & 1 << 0) stands for attached "true" value
@@ -663,7 +663,7 @@ MessagesRpcLayer::PendingMessagesRecentStickers *MessagesRpcLayer::getRecentStic
 MessagesRpcLayer::PendingMessagesSavedGifs *MessagesRpcLayer::getSavedGifs(quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetSavedGifs;
     outputStream << hash;
     PendingMessagesSavedGifs *op = new PendingMessagesSavedGifs(this, outputStream.getData());
@@ -674,7 +674,7 @@ MessagesRpcLayer::PendingMessagesSavedGifs *MessagesRpcLayer::getSavedGifs(quint
 MessagesRpcLayer::PendingMessagesStickerSet *MessagesRpcLayer::getStickerSet(const TLInputStickerSet &stickerset)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << stickerset;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetStickerSet;
     outputStream << stickerset;
     PendingMessagesStickerSet *op = new PendingMessagesStickerSet(this, outputStream.getData());
@@ -685,7 +685,7 @@ MessagesRpcLayer::PendingMessagesStickerSet *MessagesRpcLayer::getStickerSet(con
 MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getUnreadMentions(const TLInputPeer &peer, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << offsetId << addOffset << limit << maxId << minId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetUnreadMentions;
     outputStream << peer;
     outputStream << offsetId;
@@ -701,7 +701,7 @@ MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getUnreadMentions(c
 MessagesRpcLayer::PendingWebPage *MessagesRpcLayer::getWebPage(const QString &url, quint32 hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << url << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetWebPage;
     outputStream << url;
     outputStream << hash;
@@ -713,7 +713,7 @@ MessagesRpcLayer::PendingWebPage *MessagesRpcLayer::getWebPage(const QString &ur
 MessagesRpcLayer::PendingMessageMedia *MessagesRpcLayer::getWebPagePreview(const QString &message)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << message;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetWebPagePreview;
     outputStream << message;
     PendingMessageMedia *op = new PendingMessageMedia(this, outputStream.getData());
@@ -724,7 +724,7 @@ MessagesRpcLayer::PendingMessageMedia *MessagesRpcLayer::getWebPagePreview(const
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::hideReportSpam(const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesHideReportSpam;
     outputStream << peer;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -735,7 +735,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::hideReportSpam(const TLInputPee
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::importChatInvite(const QString &hash)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesImportChatInvite;
     outputStream << hash;
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
@@ -746,7 +746,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::importChatInvite(const QStri
 MessagesRpcLayer::PendingMessagesStickerSetInstallResult *MessagesRpcLayer::installStickerSet(const TLInputStickerSet &stickerset, bool archived)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << stickerset << archived;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesInstallStickerSet;
     outputStream << stickerset;
     outputStream << archived;
@@ -758,7 +758,7 @@ MessagesRpcLayer::PendingMessagesStickerSetInstallResult *MessagesRpcLayer::inst
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::migrateChat(quint32 chatId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesMigrateChat;
     outputStream << chatId;
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
@@ -769,7 +769,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::migrateChat(quint32 chatId)
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::readEncryptedHistory(const TLInputEncryptedChat &peer, quint32 maxDate)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << maxDate;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReadEncryptedHistory;
     outputStream << peer;
     outputStream << maxDate;
@@ -781,7 +781,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::readEncryptedHistory(const TLIn
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::readFeaturedStickers(const TLVector<quint64> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReadFeaturedStickers;
     outputStream << id;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -792,7 +792,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::readFeaturedStickers(const TLVe
 MessagesRpcLayer::PendingMessagesAffectedMessages *MessagesRpcLayer::readHistory(const TLInputPeer &peer, quint32 maxId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << maxId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReadHistory;
     outputStream << peer;
     outputStream << maxId;
@@ -804,7 +804,7 @@ MessagesRpcLayer::PendingMessagesAffectedMessages *MessagesRpcLayer::readHistory
 MessagesRpcLayer::PendingMessagesAffectedHistory *MessagesRpcLayer::readMentions(const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReadMentions;
     outputStream << peer;
     PendingMessagesAffectedHistory *op = new PendingMessagesAffectedHistory(this, outputStream.getData());
@@ -815,7 +815,7 @@ MessagesRpcLayer::PendingMessagesAffectedHistory *MessagesRpcLayer::readMentions
 MessagesRpcLayer::PendingMessagesAffectedMessages *MessagesRpcLayer::readMessageContents(const TLVector<quint32> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReadMessageContents;
     outputStream << id;
     PendingMessagesAffectedMessages *op = new PendingMessagesAffectedMessages(this, outputStream.getData());
@@ -826,7 +826,7 @@ MessagesRpcLayer::PendingMessagesAffectedMessages *MessagesRpcLayer::readMessage
 MessagesRpcLayer::PendingReceivedNotifyMessageVector *MessagesRpcLayer::receivedMessages(quint32 maxId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << maxId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReceivedMessages;
     outputStream << maxId;
     PendingReceivedNotifyMessageVector *op = new PendingReceivedNotifyMessageVector(this, outputStream.getData());
@@ -837,7 +837,7 @@ MessagesRpcLayer::PendingReceivedNotifyMessageVector *MessagesRpcLayer::received
 MessagesRpcLayer::PendingQuint64Vector *MessagesRpcLayer::receivedQueue(quint32 maxQts)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << maxQts;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReceivedQueue;
     outputStream << maxQts;
     PendingQuint64Vector *op = new PendingQuint64Vector(this, outputStream.getData());
@@ -848,7 +848,7 @@ MessagesRpcLayer::PendingQuint64Vector *MessagesRpcLayer::receivedQueue(quint32 
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::reorderPinnedDialogs(quint32 flags, const TLVector<TLInputPeer> &order)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << order;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReorderPinnedDialogs;
     outputStream << flags;
     // (flags & 1 << 0) stands for force "true" value
@@ -861,7 +861,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::reorderPinnedDialogs(quint32 fl
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::reorderStickerSets(quint32 flags, const TLVector<quint64> &order)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << order;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReorderStickerSets;
     outputStream << flags;
     // (flags & 1 << 0) stands for masks "true" value
@@ -874,7 +874,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::reorderStickerSets(quint32 flag
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::reportEncryptedSpam(const TLInputEncryptedChat &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReportEncryptedSpam;
     outputStream << peer;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -885,7 +885,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::reportEncryptedSpam(const TLInp
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::reportSpam(const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesReportSpam;
     outputStream << peer;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -896,7 +896,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::reportSpam(const TLInputPeer &p
 MessagesRpcLayer::PendingEncryptedChat *MessagesRpcLayer::requestEncryption(const TLInputUser &userId, quint32 randomId, const QByteArray &gA)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << userId << randomId << gA.toHex();
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesRequestEncryption;
     outputStream << userId;
     outputStream << randomId;
@@ -909,7 +909,7 @@ MessagesRpcLayer::PendingEncryptedChat *MessagesRpcLayer::requestEncryption(cons
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveDraft(quint32 flags, quint32 replyToMsgId, const TLInputPeer &peer, const QString &message, const TLVector<TLMessageEntity> &entities)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << replyToMsgId << peer << message << entities;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSaveDraft;
     outputStream << flags;
     // (flags & 1 << 1) stands for noWebpage "true" value
@@ -929,7 +929,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveDraft(quint32 flags, quint3
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveGif(const TLInputDocument &id, bool unsave)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id << unsave;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSaveGif;
     outputStream << id;
     outputStream << unsave;
@@ -941,7 +941,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveGif(const TLInputDocument &
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveRecentSticker(quint32 flags, const TLInputDocument &id, bool unsave)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id << unsave;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSaveRecentSticker;
     outputStream << flags;
     // (flags & 1 << 0) stands for attached "true" value
@@ -955,7 +955,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveRecentSticker(quint32 flags
 MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::search(quint32 flags, const TLInputPeer &peer, const QString &q, const TLInputUser &fromId, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << q << fromId << filter << minDate << maxDate << offsetId << addOffset << limit << maxId << minId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSearch;
     outputStream << flags;
     outputStream << peer;
@@ -979,7 +979,7 @@ MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::search(quint32 flag
 MessagesRpcLayer::PendingMessagesFoundGifs *MessagesRpcLayer::searchGifs(const QString &q, quint32 offset)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << q << offset;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSearchGifs;
     outputStream << q;
     outputStream << offset;
@@ -991,7 +991,7 @@ MessagesRpcLayer::PendingMessagesFoundGifs *MessagesRpcLayer::searchGifs(const Q
 MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::searchGlobal(const QString &q, quint32 offsetDate, const TLInputPeer &offsetPeer, quint32 offsetId, quint32 limit)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << q << offsetDate << offsetPeer << offsetId << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSearchGlobal;
     outputStream << q;
     outputStream << offsetDate;
@@ -1006,7 +1006,7 @@ MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::searchGlobal(const 
 MessagesRpcLayer::PendingMessagesSentEncryptedMessage *MessagesRpcLayer::sendEncrypted(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << randomId << data.toHex();
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSendEncrypted;
     outputStream << peer;
     outputStream << randomId;
@@ -1019,7 +1019,7 @@ MessagesRpcLayer::PendingMessagesSentEncryptedMessage *MessagesRpcLayer::sendEnc
 MessagesRpcLayer::PendingMessagesSentEncryptedMessage *MessagesRpcLayer::sendEncryptedFile(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data, const TLInputEncryptedFile &file)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << randomId << data.toHex() << file;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSendEncryptedFile;
     outputStream << peer;
     outputStream << randomId;
@@ -1033,7 +1033,7 @@ MessagesRpcLayer::PendingMessagesSentEncryptedMessage *MessagesRpcLayer::sendEnc
 MessagesRpcLayer::PendingMessagesSentEncryptedMessage *MessagesRpcLayer::sendEncryptedService(const TLInputEncryptedChat &peer, quint64 randomId, const QByteArray &data)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << randomId << data.toHex();
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSendEncryptedService;
     outputStream << peer;
     outputStream << randomId;
@@ -1046,7 +1046,7 @@ MessagesRpcLayer::PendingMessagesSentEncryptedMessage *MessagesRpcLayer::sendEnc
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendInlineBotResult(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, quint64 randomId, quint64 queryId, const QString &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << replyToMsgId << randomId << queryId << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSendInlineBotResult;
     outputStream << flags;
     // (flags & 1 << 5) stands for silent "true" value
@@ -1067,7 +1067,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendInlineBotResult(quint32 
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMedia(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const TLInputMedia &media, quint64 randomId, const TLReplyMarkup &replyMarkup)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << replyToMsgId << media << randomId << replyMarkup;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSendMedia;
     outputStream << flags;
     // (flags & 1 << 5) stands for silent "true" value
@@ -1090,7 +1090,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMedia(quint32 flags, con
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMessage(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const QString &message, quint64 randomId, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << replyToMsgId << message << randomId << replyMarkup << entities;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSendMessage;
     outputStream << flags;
     // (flags & 1 << 1) stands for noWebpage "true" value
@@ -1117,7 +1117,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMessage(quint32 flags, c
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendScreenshotNotification(const TLInputPeer &peer, quint32 replyToMsgId, quint64 randomId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << replyToMsgId << randomId;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSendScreenshotNotification;
     outputStream << peer;
     outputStream << replyToMsgId;
@@ -1130,7 +1130,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendScreenshotNotification(c
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::setBotCallbackAnswer(quint32 flags, quint64 queryId, const QString &message, const QString &url, quint32 cacheTime)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << queryId << message << url << cacheTime;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSetBotCallbackAnswer;
     outputStream << flags;
     // (flags & 1 << 1) stands for alert "true" value
@@ -1150,7 +1150,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::setBotCallbackAnswer(quint32 fl
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::setBotPrecheckoutResults(quint32 flags, quint64 queryId, const QString &error)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << queryId << error;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSetBotPrecheckoutResults;
     outputStream << flags;
     // (flags & 1 << 1) stands for success "true" value
@@ -1166,7 +1166,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::setBotPrecheckoutResults(quint3
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::setBotShippingResults(quint32 flags, quint64 queryId, const QString &error, const TLVector<TLShippingOption> &shippingOptions)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << queryId << error << shippingOptions;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSetBotShippingResults;
     outputStream << flags;
     outputStream << queryId;
@@ -1184,7 +1184,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::setBotShippingResults(quint32 f
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::setEncryptedTyping(const TLInputEncryptedChat &peer, bool typing)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << typing;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSetEncryptedTyping;
     outputStream << peer;
     outputStream << typing;
@@ -1196,7 +1196,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::setEncryptedTyping(const TLInpu
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::setGameScore(quint32 flags, const TLInputPeer &peer, quint32 id, const TLInputUser &userId, quint32 score)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << id << userId << score;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSetGameScore;
     outputStream << flags;
     // (flags & 1 << 0) stands for editMessage "true" value
@@ -1213,7 +1213,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::setGameScore(quint32 flags, 
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::setInlineBotResults(quint32 flags, quint64 queryId, const TLVector<TLInputBotInlineResult> &results, quint32 cacheTime, const QString &nextOffset, const TLInlineBotSwitchPM &switchPm)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << queryId << results << cacheTime << nextOffset << switchPm;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSetInlineBotResults;
     outputStream << flags;
     // (flags & 1 << 0) stands for gallery "true" value
@@ -1235,7 +1235,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::setInlineBotResults(quint32 fla
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::setInlineGameScore(quint32 flags, const TLInputBotInlineMessageID &id, const TLInputUser &userId, quint32 score)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id << userId << score;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSetInlineGameScore;
     outputStream << flags;
     // (flags & 1 << 0) stands for editMessage "true" value
@@ -1251,7 +1251,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::setInlineGameScore(quint32 flag
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::setTyping(const TLInputPeer &peer, const TLSendMessageAction &action)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << action;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSetTyping;
     outputStream << peer;
     outputStream << action;
@@ -1263,7 +1263,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::setTyping(const TLInputPeer &pe
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::startBot(const TLInputUser &bot, const TLInputPeer &peer, quint64 randomId, const QString &startParam)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << bot << peer << randomId << startParam;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesStartBot;
     outputStream << bot;
     outputStream << peer;
@@ -1277,7 +1277,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::startBot(const TLInputUser &
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::toggleChatAdmins(quint32 chatId, bool enabled)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << chatId << enabled;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesToggleChatAdmins;
     outputStream << chatId;
     outputStream << enabled;
@@ -1289,7 +1289,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::toggleChatAdmins(quint32 cha
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::toggleDialogPin(quint32 flags, const TLInputPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesToggleDialogPin;
     outputStream << flags;
     // (flags & 1 << 0) stands for pinned "true" value
@@ -1302,7 +1302,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::toggleDialogPin(quint32 flags, 
 MessagesRpcLayer::PendingBool *MessagesRpcLayer::uninstallStickerSet(const TLInputStickerSet &stickerset)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << stickerset;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesUninstallStickerSet;
     outputStream << stickerset;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -1313,7 +1313,7 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::uninstallStickerSet(const TLInp
 MessagesRpcLayer::PendingMessageMedia *MessagesRpcLayer::uploadMedia(const TLInputPeer &peer, const TLInputMedia &media)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << media;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesUploadMedia;
     outputStream << peer;
     outputStream << media;

@@ -27,7 +27,11 @@ class CTelegramStream;
 
 namespace Telegram {
 
-using TelegramStream = ::CTelegramStream;
+namespace MTProto {
+
+class Stream;
+
+} // MTProto namespace
 
 namespace Client {
 
@@ -46,7 +50,7 @@ public:
     template <typename TLType>
     bool processReply(PendingRpcOperation *operation, TLType *output);
 
-    void prepareReplyStream(TelegramStream *stream, PendingRpcOperation *operation);
+    void prepareReplyStream(MTProto::Stream *stream, PendingRpcOperation *operation);
 
 protected:
     void processRpcCall(PendingRpcOperation *operation);

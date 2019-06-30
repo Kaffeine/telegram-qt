@@ -31,7 +31,7 @@ include_directories(
 foreach(test_name
     tst_crypto
     tst_CTelegramTransport
-    tst_CTelegramStream
+    tst_MTProtoStream
     tst_TelegramRemoteFile
     tst_UniqueLazyPointer
     tst_utils

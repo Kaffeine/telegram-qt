@@ -61,7 +61,7 @@ void DhLayer::init()
 PendingRpcOperation *DhLayer::requestPqAuthorization()
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ReqPq;
     outputStream << m_clientNonce;
     return sendPlainPackage(outputStream.getData());
@@ -88,7 +88,7 @@ void DhLayer::onPqAuthorizationAnswer(PendingRpcOperation *operation)
 bool DhLayer::acceptPqAuthorization(const QByteArray &payload)
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
-    CTelegramStream inputStream(payload);
+    MTProto::Stream inputStream(payload);
 
     TLValue responsePqValue;
     inputStream >> responsePqValue;
@@ -185,7 +185,7 @@ PendingRpcOperation *DhLayer::requestDhParameters()
     QByteArray encryptedPackage;
     {
         static const int requestedEncryptedPackageLength = 255;
-        CTelegramStream encryptedStream(CTelegramStream::WriteOnly);
+        MTProto::Stream encryptedStream(MTProto::Stream::WriteOnly);
         encryptedStream << TLValue::PQInnerData;
 
         qToBigEndian(m_pq, (uchar *) bigEndianNumber.data());
@@ -216,7 +216,7 @@ PendingRpcOperation *DhLayer::requestDhParameters()
     #endif
     }
 
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ReqDHParams;
     outputStream << m_clientNonce;
     outputStream << m_serverNonce;
@@ -257,7 +257,7 @@ void DhLayer::onDhParametersAnswer(PendingRpcOperation *operation)
 bool DhLayer::acceptDhAnswer(const QByteArray &payload)
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
-    CTelegramStream inputStream(payload);
+    MTProto::Stream inputStream(payload);
 
     TLValue responseTLValue;
     inputStream >> responseTLValue;
@@ -291,7 +291,7 @@ bool DhLayer::processServerDHParamsOK(const QByteArray &encryptedAnswer)
         return false;
     }
 
-    CTelegramStream encryptedInputStream(answer);
+    MTProto::Stream encryptedInputStream(answer);
 
     TLValue responseTLValue;
     encryptedInputStream >> responseTLValue;
@@ -354,14 +354,14 @@ void DhLayer::generateDh()
 PendingRpcOperation *DhLayer::requestDhGenerationResult()
 {
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::SetClientDHParams;
     outputStream << m_clientNonce;
     outputStream << m_serverNonce;
 
     QByteArray encryptedPackage;
     {
-        CTelegramStream encryptedStream(CTelegramStream::WriteOnly);
+        MTProto::Stream encryptedStream(MTProto::Stream::WriteOnly);
         encryptedStream << TLValue::ClientDHInnerData;
         encryptedStream << m_clientNonce;
         encryptedStream << m_serverNonce;
@@ -412,7 +412,7 @@ void DhLayer::onDhGenerationResultAnswer(PendingRpcOperation *operation)
 
 bool DhLayer::processServerDhAnswer(const QByteArray &payload)
 {
-    CTelegramStream inputStream(payload);
+    MTProto::Stream inputStream(payload);
     TLValue responseTLValue;
     inputStream >> responseTLValue;
     qCDebug(c_clientDhLayerCategory) << Q_FUNC_INFO << responseTLValue;

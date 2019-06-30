@@ -15,13 +15,17 @@
 
  */
 
-#ifndef TELEGRAM_STREAM_P_HPP
-#define TELEGRAM_STREAM_P_HPP
+#ifndef TELEGRAM_QT_MTPROTO_STREAM_P_HPP
+#define TELEGRAM_QT_MTPROTO_STREAM_P_HPP
 
-#include "CTelegramStream.hpp"
+#include "Stream.hpp"
+
+namespace Telegram {
+
+namespace MTProto {
 
 template <typename T>
-CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
+Stream &Stream::operator>>(TLVector<T> &v)
 {
     TLVector<T> result;
 
@@ -42,7 +46,7 @@ CTelegramStream &CTelegramStream::operator>>(TLVector<T> &v)
 }
 
 template <typename T>
-CTelegramStream &CTelegramStream::operator>>(TLVector<T*> &v)
+Stream &Stream::operator>>(TLVector<T*> &v)
 {
     TLVector<T*> result;
 
@@ -64,7 +68,7 @@ CTelegramStream &CTelegramStream::operator>>(TLVector<T*> &v)
 }
 
 template <typename T>
-CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
+Stream &Stream::operator<<(const TLVector<T> &v)
 {
     *this << v.tlType;
 
@@ -80,7 +84,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLVector<T> &v)
 }
 
 template <typename T>
-CTelegramStream &CTelegramStream::operator<<(const TLVector<T*> &v)
+Stream &Stream::operator<<(const TLVector<T*> &v)
 {
     *this << v.tlType;
 
@@ -95,4 +99,8 @@ CTelegramStream &CTelegramStream::operator<<(const TLVector<T*> &v)
     return *this;
 }
 
-#endif // TELEGRAM_STREAM_P_HPP
+} // MTProto namespace
+
+} // Telegram namespace
+
+#endif // TELEGRAM_QT_MTPROTO_STREAM_P_HPP

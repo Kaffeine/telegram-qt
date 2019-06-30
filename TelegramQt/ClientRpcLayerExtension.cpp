@@ -36,7 +36,7 @@ BaseRpcLayerExtension::BaseRpcLayerExtension(QObject *parent) :
 {
 }
 
-void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream,
+void BaseRpcLayerExtension::prepareReplyStream(MTProto::Stream *stream,
                                                PendingRpcOperation *operation)
 {
     // TODO: Implement static isValid(TLValue::Value) method for TLTypes and
@@ -49,7 +49,7 @@ void BaseRpcLayerExtension::prepareReplyStream(TelegramStream *stream,
 
     if (data.size() > 4) {
         if (TLValue::firstFromArray(data) == TLValue::GzipPacked) {
-            TelegramStream packedStream(data);
+            MTProto::Stream packedStream(data);
             TLValue gzipValue;
             packedStream >> gzipValue;
             packedStream >> data;

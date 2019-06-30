@@ -110,7 +110,7 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     if (message.firstValue() == TLValue::GzipPacked) {
         qCDebug(c_baseRpcLayerCategoryIn) << this << __func__ << "message is GzipPacked";
         QByteArray data;
-        CTelegramStream packedStream(innerData);
+        MTProto::Stream packedStream(innerData);
         TLValue gzipValue;
         packedStream >> gzipValue;
         packedStream >> data;

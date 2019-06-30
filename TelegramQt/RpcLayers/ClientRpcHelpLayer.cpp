@@ -48,7 +48,7 @@ HelpRpcLayer::HelpRpcLayer(QObject *parent) :
 HelpRpcLayer::PendingUpdates *HelpRpcLayer::getAppChangelog(const QString &prevAppVersion)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << prevAppVersion;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetAppChangelog;
     outputStream << prevAppVersion;
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
@@ -59,7 +59,7 @@ HelpRpcLayer::PendingUpdates *HelpRpcLayer::getAppChangelog(const QString &prevA
 HelpRpcLayer::PendingHelpAppUpdate *HelpRpcLayer::getAppUpdate()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetAppUpdate;
     PendingHelpAppUpdate *op = new PendingHelpAppUpdate(this, outputStream.getData());
     processRpcCall(op);
@@ -69,7 +69,7 @@ HelpRpcLayer::PendingHelpAppUpdate *HelpRpcLayer::getAppUpdate()
 HelpRpcLayer::PendingCdnConfig *HelpRpcLayer::getCdnConfig()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetCdnConfig;
     PendingCdnConfig *op = new PendingCdnConfig(this, outputStream.getData());
     processRpcCall(op);
@@ -79,7 +79,7 @@ HelpRpcLayer::PendingCdnConfig *HelpRpcLayer::getCdnConfig()
 HelpRpcLayer::PendingConfig *HelpRpcLayer::getConfig()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetConfig;
     PendingConfig *op = new PendingConfig(this, outputStream.getData());
     processRpcCall(op);
@@ -89,7 +89,7 @@ HelpRpcLayer::PendingConfig *HelpRpcLayer::getConfig()
 HelpRpcLayer::PendingHelpInviteText *HelpRpcLayer::getInviteText()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetInviteText;
     PendingHelpInviteText *op = new PendingHelpInviteText(this, outputStream.getData());
     processRpcCall(op);
@@ -99,7 +99,7 @@ HelpRpcLayer::PendingHelpInviteText *HelpRpcLayer::getInviteText()
 HelpRpcLayer::PendingNearestDc *HelpRpcLayer::getNearestDc()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetNearestDc;
     PendingNearestDc *op = new PendingNearestDc(this, outputStream.getData());
     processRpcCall(op);
@@ -109,7 +109,7 @@ HelpRpcLayer::PendingNearestDc *HelpRpcLayer::getNearestDc()
 HelpRpcLayer::PendingHelpRecentMeUrls *HelpRpcLayer::getRecentMeUrls(const QString &referer)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << referer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetRecentMeUrls;
     outputStream << referer;
     PendingHelpRecentMeUrls *op = new PendingHelpRecentMeUrls(this, outputStream.getData());
@@ -120,7 +120,7 @@ HelpRpcLayer::PendingHelpRecentMeUrls *HelpRpcLayer::getRecentMeUrls(const QStri
 HelpRpcLayer::PendingHelpSupport *HelpRpcLayer::getSupport()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetSupport;
     PendingHelpSupport *op = new PendingHelpSupport(this, outputStream.getData());
     processRpcCall(op);
@@ -130,7 +130,7 @@ HelpRpcLayer::PendingHelpSupport *HelpRpcLayer::getSupport()
 HelpRpcLayer::PendingHelpTermsOfService *HelpRpcLayer::getTermsOfService()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetTermsOfService;
     PendingHelpTermsOfService *op = new PendingHelpTermsOfService(this, outputStream.getData());
     processRpcCall(op);
@@ -140,7 +140,7 @@ HelpRpcLayer::PendingHelpTermsOfService *HelpRpcLayer::getTermsOfService()
 HelpRpcLayer::PendingBool *HelpRpcLayer::saveAppLog(const TLVector<TLInputAppEvent> &events)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << events;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpSaveAppLog;
     outputStream << events;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -151,7 +151,7 @@ HelpRpcLayer::PendingBool *HelpRpcLayer::saveAppLog(const TLVector<TLInputAppEve
 HelpRpcLayer::PendingBool *HelpRpcLayer::setBotUpdatesStatus(quint32 pendingUpdatesCount, const QString &message)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << pendingUpdatesCount << message;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpSetBotUpdatesStatus;
     outputStream << pendingUpdatesCount;
     outputStream << message;

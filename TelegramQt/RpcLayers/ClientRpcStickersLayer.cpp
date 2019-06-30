@@ -44,7 +44,7 @@ StickersRpcLayer::StickersRpcLayer(QObject *parent) :
 StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::addStickerToSet(const TLInputStickerSet &stickerset, const TLInputStickerSetItem &sticker)
 {
     qCDebug(c_clientRpcStickersCategory) << Q_FUNC_INFO << stickerset << sticker;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::StickersAddStickerToSet;
     outputStream << stickerset;
     outputStream << sticker;
@@ -56,7 +56,7 @@ StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::addStickerToSet(c
 StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::changeStickerPosition(const TLInputDocument &sticker, quint32 position)
 {
     qCDebug(c_clientRpcStickersCategory) << Q_FUNC_INFO << sticker << position;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::StickersChangeStickerPosition;
     outputStream << sticker;
     outputStream << position;
@@ -68,7 +68,7 @@ StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::changeStickerPosi
 StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::createStickerSet(quint32 flags, const TLInputUser &userId, const QString &title, const QString &shortName, const TLVector<TLInputStickerSetItem> &stickers)
 {
     qCDebug(c_clientRpcStickersCategory) << Q_FUNC_INFO << flags << userId << title << shortName << stickers;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::StickersCreateStickerSet;
     outputStream << flags;
     // (flags & 1 << 0) stands for masks "true" value
@@ -84,7 +84,7 @@ StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::createStickerSet(
 StickersRpcLayer::PendingMessagesStickerSet *StickersRpcLayer::removeStickerFromSet(const TLInputDocument &sticker)
 {
     qCDebug(c_clientRpcStickersCategory) << Q_FUNC_INFO << sticker;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::StickersRemoveStickerFromSet;
     outputStream << sticker;
     PendingMessagesStickerSet *op = new PendingMessagesStickerSet(this, outputStream.getData());

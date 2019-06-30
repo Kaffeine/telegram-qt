@@ -44,7 +44,7 @@ namespace Client {
 template <typename TLType>
 bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLType *output)
 {
-    TelegramStream stream;
+    MTProto::Stream stream;
     prepareReplyStream(&stream, operation);
     stream >> *output;
 #ifdef DEVELOPER_BUILD

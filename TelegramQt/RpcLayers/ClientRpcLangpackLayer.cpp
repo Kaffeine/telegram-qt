@@ -41,7 +41,7 @@ LangpackRpcLayer::LangpackRpcLayer(QObject *parent) :
 LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getDifference(quint32 fromVersion)
 {
     qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << fromVersion;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::LangpackGetDifference;
     outputStream << fromVersion;
     PendingLangPackDifference *op = new PendingLangPackDifference(this, outputStream.getData());
@@ -52,7 +52,7 @@ LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getDifference(qui
 LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getLangPack(const QString &langCode)
 {
     qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langCode;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::LangpackGetLangPack;
     outputStream << langCode;
     PendingLangPackDifference *op = new PendingLangPackDifference(this, outputStream.getData());
@@ -63,7 +63,7 @@ LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getLangPack(const
 LangpackRpcLayer::PendingLangPackLanguageVector *LangpackRpcLayer::getLanguages()
 {
     qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::LangpackGetLanguages;
     PendingLangPackLanguageVector *op = new PendingLangPackLanguageVector(this, outputStream.getData());
     processRpcCall(op);
@@ -73,7 +73,7 @@ LangpackRpcLayer::PendingLangPackLanguageVector *LangpackRpcLayer::getLanguages(
 LangpackRpcLayer::PendingLangPackStringVector *LangpackRpcLayer::getStrings(const QString &langCode, const TLVector<QString> &keys)
 {
     qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langCode << keys;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::LangpackGetStrings;
     outputStream << langCode;
     outputStream << keys;

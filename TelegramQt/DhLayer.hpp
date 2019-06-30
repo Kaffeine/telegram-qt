@@ -29,9 +29,13 @@
 QT_FORWARD_DECLARE_CLASS(QFile)
 #endif
 
-class CTelegramStream;
-
 namespace Telegram {
+
+namespace MTProto {
+
+class Stream;
+
+} // MTProto namespace
 
 class BaseMTProtoSendHelper;
 enum class SendMode : quint8;
@@ -70,7 +74,7 @@ public:
     Crypto::AesKey generateTmpAesKey() const;
 
     // Helpers
-    bool checkClientServerNonse(CTelegramStream &stream) const;
+    bool checkClientServerNonse(MTProto::Stream &stream) const;
     quint64 sendPlainPackage(const QByteArray &payload, SendMode mode);
     bool processPlainPackage(const QByteArray &buffer);
 

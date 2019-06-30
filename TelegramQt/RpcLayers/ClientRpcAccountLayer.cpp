@@ -48,7 +48,7 @@ AccountRpcLayer::AccountRpcLayer(QObject *parent) :
 AccountRpcLayer::PendingUser *AccountRpcLayer::changePhone(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << phoneNumber << phoneCodeHash << phoneCode;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountChangePhone;
     outputStream << phoneNumber;
     outputStream << phoneCodeHash;
@@ -61,7 +61,7 @@ AccountRpcLayer::PendingUser *AccountRpcLayer::changePhone(const QString &phoneN
 AccountRpcLayer::PendingBool *AccountRpcLayer::checkUsername(const QString &username)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << username;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountCheckUsername;
     outputStream << username;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -72,7 +72,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::checkUsername(const QString &user
 AccountRpcLayer::PendingBool *AccountRpcLayer::confirmPhone(const QString &phoneCodeHash, const QString &phoneCode)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << phoneCodeHash << phoneCode;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountConfirmPhone;
     outputStream << phoneCodeHash;
     outputStream << phoneCode;
@@ -84,7 +84,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::confirmPhone(const QString &phone
 AccountRpcLayer::PendingBool *AccountRpcLayer::deleteAccount(const QString &reason)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << reason;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountDeleteAccount;
     outputStream << reason;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -95,7 +95,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::deleteAccount(const QString &reas
 AccountRpcLayer::PendingAccountDaysTTL *AccountRpcLayer::getAccountTTL()
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountGetAccountTTL;
     PendingAccountDaysTTL *op = new PendingAccountDaysTTL(this, outputStream.getData());
     processRpcCall(op);
@@ -105,7 +105,7 @@ AccountRpcLayer::PendingAccountDaysTTL *AccountRpcLayer::getAccountTTL()
 AccountRpcLayer::PendingAccountAuthorizations *AccountRpcLayer::getAuthorizations()
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountGetAuthorizations;
     PendingAccountAuthorizations *op = new PendingAccountAuthorizations(this, outputStream.getData());
     processRpcCall(op);
@@ -115,7 +115,7 @@ AccountRpcLayer::PendingAccountAuthorizations *AccountRpcLayer::getAuthorization
 AccountRpcLayer::PendingPeerNotifySettings *AccountRpcLayer::getNotifySettings(const TLInputNotifyPeer &peer)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << peer;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountGetNotifySettings;
     outputStream << peer;
     PendingPeerNotifySettings *op = new PendingPeerNotifySettings(this, outputStream.getData());
@@ -126,7 +126,7 @@ AccountRpcLayer::PendingPeerNotifySettings *AccountRpcLayer::getNotifySettings(c
 AccountRpcLayer::PendingAccountPassword *AccountRpcLayer::getPassword()
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountGetPassword;
     PendingAccountPassword *op = new PendingAccountPassword(this, outputStream.getData());
     processRpcCall(op);
@@ -136,7 +136,7 @@ AccountRpcLayer::PendingAccountPassword *AccountRpcLayer::getPassword()
 AccountRpcLayer::PendingAccountPasswordSettings *AccountRpcLayer::getPasswordSettings(const QByteArray &currentPasswordHash)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << currentPasswordHash.toHex();
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountGetPasswordSettings;
     outputStream << currentPasswordHash;
     PendingAccountPasswordSettings *op = new PendingAccountPasswordSettings(this, outputStream.getData());
@@ -147,7 +147,7 @@ AccountRpcLayer::PendingAccountPasswordSettings *AccountRpcLayer::getPasswordSet
 AccountRpcLayer::PendingAccountPrivacyRules *AccountRpcLayer::getPrivacy(const TLInputPrivacyKey &key)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << key;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountGetPrivacy;
     outputStream << key;
     PendingAccountPrivacyRules *op = new PendingAccountPrivacyRules(this, outputStream.getData());
@@ -158,7 +158,7 @@ AccountRpcLayer::PendingAccountPrivacyRules *AccountRpcLayer::getPrivacy(const T
 AccountRpcLayer::PendingAccountTmpPassword *AccountRpcLayer::getTmpPassword(const QByteArray &passwordHash, quint32 period)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << passwordHash.toHex() << period;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountGetTmpPassword;
     outputStream << passwordHash;
     outputStream << period;
@@ -170,7 +170,7 @@ AccountRpcLayer::PendingAccountTmpPassword *AccountRpcLayer::getTmpPassword(cons
 AccountRpcLayer::PendingWallPaperVector *AccountRpcLayer::getWallPapers()
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountGetWallPapers;
     PendingWallPaperVector *op = new PendingWallPaperVector(this, outputStream.getData());
     processRpcCall(op);
@@ -180,7 +180,7 @@ AccountRpcLayer::PendingWallPaperVector *AccountRpcLayer::getWallPapers()
 AccountRpcLayer::PendingBool *AccountRpcLayer::registerDevice(quint32 tokenType, const QString &token)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << tokenType << token;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountRegisterDevice;
     outputStream << tokenType;
     outputStream << token;
@@ -192,7 +192,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::registerDevice(quint32 tokenType,
 AccountRpcLayer::PendingBool *AccountRpcLayer::reportPeer(const TLInputPeer &peer, const TLReportReason &reason)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << peer << reason;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountReportPeer;
     outputStream << peer;
     outputStream << reason;
@@ -204,7 +204,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::reportPeer(const TLInputPeer &pee
 AccountRpcLayer::PendingBool *AccountRpcLayer::resetAuthorization(quint64 hash)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << hash;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountResetAuthorization;
     outputStream << hash;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -215,7 +215,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::resetAuthorization(quint64 hash)
 AccountRpcLayer::PendingBool *AccountRpcLayer::resetNotifySettings()
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountResetNotifySettings;
     PendingBool *op = new PendingBool(this, outputStream.getData());
     processRpcCall(op);
@@ -225,7 +225,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::resetNotifySettings()
 AccountRpcLayer::PendingAuthSentCode *AccountRpcLayer::sendChangePhoneCode(quint32 flags, const QString &phoneNumber, bool currentNumber)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << flags << phoneNumber << currentNumber;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountSendChangePhoneCode;
     outputStream << flags;
     // (flags & 1 << 0) stands for allowFlashcall "true" value
@@ -241,7 +241,7 @@ AccountRpcLayer::PendingAuthSentCode *AccountRpcLayer::sendChangePhoneCode(quint
 AccountRpcLayer::PendingAuthSentCode *AccountRpcLayer::sendConfirmPhoneCode(quint32 flags, const QString &hash, bool currentNumber)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << flags << hash << currentNumber;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountSendConfirmPhoneCode;
     outputStream << flags;
     // (flags & 1 << 0) stands for allowFlashcall "true" value
@@ -257,7 +257,7 @@ AccountRpcLayer::PendingAuthSentCode *AccountRpcLayer::sendConfirmPhoneCode(quin
 AccountRpcLayer::PendingBool *AccountRpcLayer::setAccountTTL(const TLAccountDaysTTL &ttl)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << ttl;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountSetAccountTTL;
     outputStream << ttl;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -268,7 +268,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::setAccountTTL(const TLAccountDays
 AccountRpcLayer::PendingAccountPrivacyRules *AccountRpcLayer::setPrivacy(const TLInputPrivacyKey &key, const TLVector<TLInputPrivacyRule> &rules)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << key << rules;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountSetPrivacy;
     outputStream << key;
     outputStream << rules;
@@ -280,7 +280,7 @@ AccountRpcLayer::PendingAccountPrivacyRules *AccountRpcLayer::setPrivacy(const T
 AccountRpcLayer::PendingBool *AccountRpcLayer::unregisterDevice(quint32 tokenType, const QString &token)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << tokenType << token;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountUnregisterDevice;
     outputStream << tokenType;
     outputStream << token;
@@ -292,7 +292,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::unregisterDevice(quint32 tokenTyp
 AccountRpcLayer::PendingBool *AccountRpcLayer::updateDeviceLocked(quint32 period)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << period;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountUpdateDeviceLocked;
     outputStream << period;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -303,7 +303,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::updateDeviceLocked(quint32 period
 AccountRpcLayer::PendingBool *AccountRpcLayer::updateNotifySettings(const TLInputNotifyPeer &peer, const TLInputPeerNotifySettings &settings)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << peer << settings;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountUpdateNotifySettings;
     outputStream << peer;
     outputStream << settings;
@@ -315,7 +315,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::updateNotifySettings(const TLInpu
 AccountRpcLayer::PendingBool *AccountRpcLayer::updatePasswordSettings(const QByteArray &currentPasswordHash, const TLAccountPasswordInputSettings &newSettings)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << currentPasswordHash.toHex() << newSettings;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountUpdatePasswordSettings;
     outputStream << currentPasswordHash;
     outputStream << newSettings;
@@ -327,7 +327,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::updatePasswordSettings(const QByt
 AccountRpcLayer::PendingUser *AccountRpcLayer::updateProfile(quint32 flags, const QString &firstName, const QString &lastName, const QString &about)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << flags << firstName << lastName << about;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountUpdateProfile;
     outputStream << flags;
     if (flags & 1 << 0) {
@@ -347,7 +347,7 @@ AccountRpcLayer::PendingUser *AccountRpcLayer::updateProfile(quint32 flags, cons
 AccountRpcLayer::PendingBool *AccountRpcLayer::updateStatus(bool offline)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << offline;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountUpdateStatus;
     outputStream << offline;
     PendingBool *op = new PendingBool(this, outputStream.getData());
@@ -358,7 +358,7 @@ AccountRpcLayer::PendingBool *AccountRpcLayer::updateStatus(bool offline)
 AccountRpcLayer::PendingUser *AccountRpcLayer::updateUsername(const QString &username)
 {
     qCDebug(c_clientRpcAccountCategory) << Q_FUNC_INFO << username;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AccountUpdateUsername;
     outputStream << username;
     PendingUser *op = new PendingUser(this, outputStream.getData());

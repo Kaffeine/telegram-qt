@@ -46,7 +46,7 @@ UpdatesRpcLayer::UpdatesRpcLayer(QObject *parent) :
 UpdatesRpcLayer::PendingUpdatesChannelDifference *UpdatesRpcLayer::getChannelDifference(quint32 flags, const TLInputChannel &channel, const TLChannelMessagesFilter &filter, quint32 pts, quint32 limit)
 {
     qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO << flags << channel << filter << pts << limit;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UpdatesGetChannelDifference;
     outputStream << flags;
     // (flags & 1 << 0) stands for force "true" value
@@ -62,7 +62,7 @@ UpdatesRpcLayer::PendingUpdatesChannelDifference *UpdatesRpcLayer::getChannelDif
 UpdatesRpcLayer::PendingUpdatesDifference *UpdatesRpcLayer::getDifference(quint32 flags, quint32 pts, quint32 ptsTotalLimit, quint32 date, quint32 qts)
 {
     qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO << flags << pts << ptsTotalLimit << date << qts;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UpdatesGetDifference;
     outputStream << flags;
     outputStream << pts;
@@ -79,7 +79,7 @@ UpdatesRpcLayer::PendingUpdatesDifference *UpdatesRpcLayer::getDifference(quint3
 UpdatesRpcLayer::PendingUpdatesState *UpdatesRpcLayer::getState()
 {
     qCDebug(c_clientRpcUpdatesCategory) << Q_FUNC_INFO;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UpdatesGetState;
     PendingUpdatesState *op = new PendingUpdatesState(this, outputStream.getData());
     processRpcCall(op);

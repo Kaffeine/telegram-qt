@@ -32,6 +32,8 @@
 Q_LOGGING_CATEGORY(c_loggingTextParser, "telegram.generator.textParser", QtWarningMsg)
 Q_LOGGING_CATEGORY(c_loggingTlValues, "telegram.generator.values", QtWarningMsg)
 
+static const QString tlNamespace = QLatin1Literal("MTProto");
+static const QString tlNamespacePrefix = tlNamespace + QLatin1Literal("::");
 static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
 static const QString tlTypeMember = QLatin1String("tlType");
@@ -65,7 +67,7 @@ static const QHash<QString,QString> c_privacyFilter = {
 QString Generator::spacing = QString(4, QLatin1Char(' '));
 QString Generator::doubleSpacing = Generator::spacing + Generator::spacing;
 
-static const QString streamClassName = QLatin1String("CTelegramStream");
+static const QString streamClassName = QLatin1String("Stream");
 static const QString methodsClassName = QLatin1String("CTelegramConnection");
 
 static const QStringList typesBlackList = QStringList()
@@ -671,7 +673,7 @@ QString Generator::streamReadFunctionFreeImplementationHead(const TypedEntity *t
                                                                    functionsType,
                                                                    type->getEntityTLType(),
                                                                    type->variableName()));
-    // CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthCheckPassword &function)
+    // MTProto::Stream &operator>>(MTProto::Stream &stream, TLFunctions::TLAuthCheckPassword &function)
     // {
     //     // stream >> function.tlType;
     return code;
@@ -828,10 +830,10 @@ QString Generator::streamReadOperatorDeclaration(const TypedEntity *type)
 
 QString Generator::streamReadFreeOperatorDeclaration(const TypedEntity *type)
 {
-    // CTelegramStream &operator>>(CTelegramStream &stream, TLAccountDaysTTL &accountDaysTTLValue);
+    // MTProto::Stream &operator>>(MTProto::Stream &stream, TLAccountDaysTTL &accountDaysTTLValue);
     QString result;
     QTextStream stream(&result);
-    stream << streamClassName << " &operator>>(" << streamClassName << " &stream, "
+    stream << tlNamespacePrefix + streamClassName << " &operator>>(" << tlNamespacePrefix + streamClassName << " &stream, "
            << type->getEntityTLType() << " &" << type->variableName() << ");" << endl;
     return result;
 }
@@ -867,7 +869,7 @@ QString Generator::streamWriteOperatorDeclaration(const TLType &type)
 
 QString Generator::streamWriteFreeOperatorDeclaration(const TypedEntity *type)
 {
-    // CTelegramStream &operator<<(CTelegramStream &stream, const TLFunctions::TLAuthSendCode &function)
+    // MTProto::Stream &operator<<(MTProto::Stream &stream, const TLFunctions::TLAuthSendCode &function)
     QString result;
     QTextStream stream(&result);
     stream << c_internalExportMacro << " "
@@ -2057,7 +2059,11 @@ Generator::MethodsCode Generator::generateClientFunctions(const QString &prefix)
 
         // qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumber << smsType << apiId << apiHash << langCode;
         definitionCode += spacing + QStringLiteral("qCDebug(c_clientRpc%1Category)%2;\n").arg(prefixFirstUpper, joinLinesWithPrepend(debugArguments, QStringLiteral(" << ")));
-        definitionCode += spacing + streamClassName + QLatin1String(" outputStream(CTelegramStream::WriteOnly);\n");
+        definitionCode += spacing
+                + tlNamespacePrefix + streamClassName
+                + QLatin1String(" outputStream(")
+                + tlNamespacePrefix + streamClassName
+                + QLatin1String("::WriteOnly);\n");
         definitionCode += spacing + QString("outputStream << %1::%2;\n").arg(tlValueName, formatName(method.name, FormatOption::UpperCaseFirstLetter));
 
         foreach (const TLParam &param, method.params) {

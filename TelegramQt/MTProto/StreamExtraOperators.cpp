@@ -1,17 +1,21 @@
-#include "MTProto/CTelegramStreamExtraOperators.hpp"
+#include "StreamExtraOperators.hpp"
 
-#include "CTelegramStream_p.hpp"
+#include "Stream_p.hpp"
 
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLDcOption> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLCdnFileHash> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLLangPackString> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLStickerSetCovered> &v);
+namespace Telegram {
+
+namespace MTProto {
+
+template Stream &Stream::operator<<(const TLVector<TLDcOption> &v);
+template Stream &Stream::operator<<(const TLVector<TLCdnFileHash> &v);
+template Stream &Stream::operator<<(const TLVector<TLLangPackString> &v);
+template Stream &Stream::operator<<(const TLVector<TLStickerSetCovered> &v);
 
 // Generated vector write templates instancing
 // End of generated vector write templates instancing
 
 // Generated write operators implementation
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountPassword &accountPasswordValue)
+Stream &operator<<(Stream &stream, const TLAccountPassword &accountPasswordValue)
 {
     stream << accountPasswordValue.tlType;
     switch (accountPasswordValue.tlType) {
@@ -33,7 +37,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountPassword &ac
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountPasswordSettings &accountPasswordSettingsValue)
+Stream &operator<<(Stream &stream, const TLAccountPasswordSettings &accountPasswordSettingsValue)
 {
     stream << accountPasswordSettingsValue.tlType;
     switch (accountPasswordSettingsValue.tlType) {
@@ -47,7 +51,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountPasswordSett
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountTmpPassword &accountTmpPasswordValue)
+Stream &operator<<(Stream &stream, const TLAccountTmpPassword &accountTmpPasswordValue)
 {
     stream << accountTmpPasswordValue.tlType;
     switch (accountTmpPasswordValue.tlType) {
@@ -62,7 +66,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountTmpPassword 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthCheckedPhone &authCheckedPhoneValue)
+Stream &operator<<(Stream &stream, const TLAuthCheckedPhone &authCheckedPhoneValue)
 {
     stream << authCheckedPhoneValue.tlType;
     switch (authCheckedPhoneValue.tlType) {
@@ -76,7 +80,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthCheckedPhone &a
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthCodeType &authCodeTypeValue)
+Stream &operator<<(Stream &stream, const TLAuthCodeType &authCodeTypeValue)
 {
     stream << authCodeTypeValue.tlType;
     switch (authCodeTypeValue.tlType) {
@@ -91,7 +95,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthCodeType &authC
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthExportedAuthorization &authExportedAuthorizationValue)
+Stream &operator<<(Stream &stream, const TLAuthExportedAuthorization &authExportedAuthorizationValue)
 {
     stream << authExportedAuthorizationValue.tlType;
     switch (authExportedAuthorizationValue.tlType) {
@@ -106,7 +110,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthExportedAuthori
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthPasswordRecovery &authPasswordRecoveryValue)
+Stream &operator<<(Stream &stream, const TLAuthPasswordRecovery &authPasswordRecoveryValue)
 {
     stream << authPasswordRecoveryValue.tlType;
     switch (authPasswordRecoveryValue.tlType) {
@@ -120,7 +124,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthPasswordRecover
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthSentCodeType &authSentCodeTypeValue)
+Stream &operator<<(Stream &stream, const TLAuthSentCodeType &authSentCodeTypeValue)
 {
     stream << authSentCodeTypeValue.tlType;
     switch (authSentCodeTypeValue.tlType) {
@@ -139,7 +143,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthSentCodeType &a
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthorization &authorizationValue)
+Stream &operator<<(Stream &stream, const TLAuthorization &authorizationValue)
 {
     stream << authorizationValue.tlType;
     switch (authorizationValue.tlType) {
@@ -165,7 +169,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthorization &auth
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLBadMsgNotification &badMsgNotificationValue)
+Stream &operator<<(Stream &stream, const TLBadMsgNotification &badMsgNotificationValue)
 {
     stream << badMsgNotificationValue.tlType;
     switch (badMsgNotificationValue.tlType) {
@@ -187,7 +191,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLBadMsgNotification 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLBotCommand &botCommandValue)
+Stream &operator<<(Stream &stream, const TLBotCommand &botCommandValue)
 {
     stream << botCommandValue.tlType;
     switch (botCommandValue.tlType) {
@@ -202,7 +206,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLBotCommand &botComm
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLBotInfo &botInfoValue)
+Stream &operator<<(Stream &stream, const TLBotInfo &botInfoValue)
 {
     stream << botInfoValue.tlType;
     switch (botInfoValue.tlType) {
@@ -218,7 +222,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLBotInfo &botInfoVal
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLCdnFileHash &cdnFileHashValue)
+Stream &operator<<(Stream &stream, const TLCdnFileHash &cdnFileHashValue)
 {
     stream << cdnFileHashValue.tlType;
     switch (cdnFileHashValue.tlType) {
@@ -234,7 +238,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLCdnFileHash &cdnFil
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLCdnPublicKey &cdnPublicKeyValue)
+Stream &operator<<(Stream &stream, const TLCdnPublicKey &cdnPublicKeyValue)
 {
     stream << cdnPublicKeyValue.tlType;
     switch (cdnPublicKeyValue.tlType) {
@@ -249,7 +253,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLCdnPublicKey &cdnPu
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChatParticipant &chatParticipantValue)
+Stream &operator<<(Stream &stream, const TLChatParticipant &chatParticipantValue)
 {
     stream << chatParticipantValue.tlType;
     switch (chatParticipantValue.tlType) {
@@ -269,7 +273,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChatParticipant &ch
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChatParticipants &chatParticipantsValue)
+Stream &operator<<(Stream &stream, const TLChatParticipants &chatParticipantsValue)
 {
     stream << chatParticipantsValue.tlType;
     switch (chatParticipantsValue.tlType) {
@@ -292,7 +296,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChatParticipants &c
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLClientDHInnerData &clientDHInnerDataValue)
+Stream &operator<<(Stream &stream, const TLClientDHInnerData &clientDHInnerDataValue)
 {
     stream << clientDHInnerDataValue.tlType;
     switch (clientDHInnerDataValue.tlType) {
@@ -309,7 +313,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLClientDHInnerData &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContact &contactValue)
+Stream &operator<<(Stream &stream, const TLContact &contactValue)
 {
     stream << contactValue.tlType;
     switch (contactValue.tlType) {
@@ -324,7 +328,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContact &contactVal
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactBlocked &contactBlockedValue)
+Stream &operator<<(Stream &stream, const TLContactBlocked &contactBlockedValue)
 {
     stream << contactBlockedValue.tlType;
     switch (contactBlockedValue.tlType) {
@@ -339,7 +343,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactBlocked &con
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactLink &contactLinkValue)
+Stream &operator<<(Stream &stream, const TLContactLink &contactLinkValue)
 {
     stream << contactLinkValue.tlType;
     switch (contactLinkValue.tlType) {
@@ -355,7 +359,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactLink &contac
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLDestroyAuthKeyRes &destroyAuthKeyResValue)
+Stream &operator<<(Stream &stream, const TLDestroyAuthKeyRes &destroyAuthKeyResValue)
 {
     stream << destroyAuthKeyResValue.tlType;
     switch (destroyAuthKeyResValue.tlType) {
@@ -370,7 +374,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLDestroyAuthKeyRes &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLDestroySessionRes &destroySessionResValue)
+Stream &operator<<(Stream &stream, const TLDestroySessionRes &destroySessionResValue)
 {
     stream << destroySessionResValue.tlType;
     switch (destroySessionResValue.tlType) {
@@ -385,7 +389,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLDestroySessionRes &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLDisabledFeature &disabledFeatureValue)
+Stream &operator<<(Stream &stream, const TLDisabledFeature &disabledFeatureValue)
 {
     stream << disabledFeatureValue.tlType;
     switch (disabledFeatureValue.tlType) {
@@ -400,7 +404,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLDisabledFeature &di
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLEncryptedChat &encryptedChatValue)
+Stream &operator<<(Stream &stream, const TLEncryptedChat &encryptedChatValue)
 {
     stream << encryptedChatValue.tlType;
     switch (encryptedChatValue.tlType) {
@@ -439,7 +443,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLEncryptedChat &encr
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLEncryptedFile &encryptedFileValue)
+Stream &operator<<(Stream &stream, const TLEncryptedFile &encryptedFileValue)
 {
     stream << encryptedFileValue.tlType;
     switch (encryptedFileValue.tlType) {
@@ -459,7 +463,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLEncryptedFile &encr
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLEncryptedMessage &encryptedMessageValue)
+Stream &operator<<(Stream &stream, const TLEncryptedMessage &encryptedMessageValue)
 {
     stream << encryptedMessageValue.tlType;
     switch (encryptedMessageValue.tlType) {
@@ -483,7 +487,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLEncryptedMessage &e
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLError &errorValue)
+Stream &operator<<(Stream &stream, const TLError &errorValue)
 {
     stream << errorValue.tlType;
     switch (errorValue.tlType) {
@@ -498,7 +502,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLError &errorValue)
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLExportedChatInvite &exportedChatInviteValue)
+Stream &operator<<(Stream &stream, const TLExportedChatInvite &exportedChatInviteValue)
 {
     stream << exportedChatInviteValue.tlType;
     switch (exportedChatInviteValue.tlType) {
@@ -514,7 +518,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLExportedChatInvite 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLExportedMessageLink &exportedMessageLinkValue)
+Stream &operator<<(Stream &stream, const TLExportedMessageLink &exportedMessageLinkValue)
 {
     stream << exportedMessageLinkValue.tlType;
     switch (exportedMessageLinkValue.tlType) {
@@ -528,7 +532,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLExportedMessageLink
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLFileLocation &fileLocationValue)
+Stream &operator<<(Stream &stream, const TLFileLocation &fileLocationValue)
 {
     stream << fileLocationValue.tlType;
     switch (fileLocationValue.tlType) {
@@ -550,7 +554,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLFileLocation &fileL
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLFutureSalt &futureSaltValue)
+Stream &operator<<(Stream &stream, const TLFutureSalt &futureSaltValue)
 {
     stream << futureSaltValue.tlType;
     switch (futureSaltValue.tlType) {
@@ -566,7 +570,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLFutureSalt &futureS
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLFutureSalts &futureSaltsValue)
+Stream &operator<<(Stream &stream, const TLFutureSalts &futureSaltsValue)
 {
     stream << futureSaltsValue.tlType;
     switch (futureSaltsValue.tlType) {
@@ -582,7 +586,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLFutureSalts &future
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLGeoPoint &geoPointValue)
+Stream &operator<<(Stream &stream, const TLGeoPoint &geoPointValue)
 {
     stream << geoPointValue.tlType;
     switch (geoPointValue.tlType) {
@@ -599,7 +603,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLGeoPoint &geoPointV
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpAppUpdate &helpAppUpdateValue)
+Stream &operator<<(Stream &stream, const TLHelpAppUpdate &helpAppUpdateValue)
 {
     stream << helpAppUpdateValue.tlType;
     switch (helpAppUpdateValue.tlType) {
@@ -618,7 +622,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpAppUpdate &help
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpInviteText &helpInviteTextValue)
+Stream &operator<<(Stream &stream, const TLHelpInviteText &helpInviteTextValue)
 {
     stream << helpInviteTextValue.tlType;
     switch (helpInviteTextValue.tlType) {
@@ -632,7 +636,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpInviteText &hel
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpTermsOfService &helpTermsOfServiceValue)
+Stream &operator<<(Stream &stream, const TLHelpTermsOfService &helpTermsOfServiceValue)
 {
     stream << helpTermsOfServiceValue.tlType;
     switch (helpTermsOfServiceValue.tlType) {
@@ -646,7 +650,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpTermsOfService 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLHighScore &highScoreValue)
+Stream &operator<<(Stream &stream, const TLHighScore &highScoreValue)
 {
     stream << highScoreValue.tlType;
     switch (highScoreValue.tlType) {
@@ -662,7 +666,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLHighScore &highScor
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLHttpWait &httpWaitValue)
+Stream &operator<<(Stream &stream, const TLHttpWait &httpWaitValue)
 {
     stream << httpWaitValue.tlType;
     switch (httpWaitValue.tlType) {
@@ -678,7 +682,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLHttpWait &httpWaitV
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLImportedContact &importedContactValue)
+Stream &operator<<(Stream &stream, const TLImportedContact &importedContactValue)
 {
     stream << importedContactValue.tlType;
     switch (importedContactValue.tlType) {
@@ -693,7 +697,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLImportedContact &im
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLInputPeerNotifyEvents &inputPeerNotifyEventsValue)
+Stream &operator<<(Stream &stream, const TLInputPeerNotifyEvents &inputPeerNotifyEventsValue)
 {
     stream << inputPeerNotifyEventsValue.tlType;
     switch (inputPeerNotifyEventsValue.tlType) {
@@ -707,7 +711,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLInputPeerNotifyEven
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLIpPort &ipPortValue)
+Stream &operator<<(Stream &stream, const TLIpPort &ipPortValue)
 {
     stream << ipPortValue.tlType;
     switch (ipPortValue.tlType) {
@@ -722,7 +726,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLIpPort &ipPortValue
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLLangPackLanguage &langPackLanguageValue)
+Stream &operator<<(Stream &stream, const TLLangPackLanguage &langPackLanguageValue)
 {
     stream << langPackLanguageValue.tlType;
     switch (langPackLanguageValue.tlType) {
@@ -738,7 +742,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLLangPackLanguage &l
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLLangPackString &langPackStringValue)
+Stream &operator<<(Stream &stream, const TLLangPackString &langPackStringValue)
 {
     stream << langPackStringValue.tlType;
     switch (langPackStringValue.tlType) {
@@ -776,7 +780,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLLangPackString &lan
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessageFwdHeader &messageFwdHeaderValue)
+Stream &operator<<(Stream &stream, const TLMessageFwdHeader &messageFwdHeaderValue)
 {
     stream << messageFwdHeaderValue.tlType;
     switch (messageFwdHeaderValue.tlType) {
@@ -803,7 +807,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessageFwdHeader &m
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesAffectedHistory &messagesAffectedHistoryValue)
+Stream &operator<<(Stream &stream, const TLMessagesAffectedHistory &messagesAffectedHistoryValue)
 {
     stream << messagesAffectedHistoryValue.tlType;
     switch (messagesAffectedHistoryValue.tlType) {
@@ -819,7 +823,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesAffectedHis
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesAffectedMessages &messagesAffectedMessagesValue)
+Stream &operator<<(Stream &stream, const TLMessagesAffectedMessages &messagesAffectedMessagesValue)
 {
     stream << messagesAffectedMessagesValue.tlType;
     switch (messagesAffectedMessagesValue.tlType) {
@@ -834,7 +838,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesAffectedMes
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesDhConfig &messagesDhConfigValue)
+Stream &operator<<(Stream &stream, const TLMessagesDhConfig &messagesDhConfigValue)
 {
     stream << messagesDhConfigValue.tlType;
     switch (messagesDhConfigValue.tlType) {
@@ -854,7 +858,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesDhConfig &m
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesSentEncryptedMessage &messagesSentEncryptedMessageValue)
+Stream &operator<<(Stream &stream, const TLMessagesSentEncryptedMessage &messagesSentEncryptedMessageValue)
 {
     stream << messagesSentEncryptedMessageValue.tlType;
     switch (messagesSentEncryptedMessageValue.tlType) {
@@ -872,7 +876,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesSentEncrypt
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgDetailedInfo &msgDetailedInfoValue)
+Stream &operator<<(Stream &stream, const TLMsgDetailedInfo &msgDetailedInfoValue)
 {
     stream << msgDetailedInfoValue.tlType;
     switch (msgDetailedInfoValue.tlType) {
@@ -894,7 +898,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgDetailedInfo &ms
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgResendReq &msgResendReqValue)
+Stream &operator<<(Stream &stream, const TLMsgResendReq &msgResendReqValue)
 {
     stream << msgResendReqValue.tlType;
     switch (msgResendReqValue.tlType) {
@@ -908,7 +912,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgResendReq &msgRe
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgsAck &msgsAckValue)
+Stream &operator<<(Stream &stream, const TLMsgsAck &msgsAckValue)
 {
     stream << msgsAckValue.tlType;
     switch (msgsAckValue.tlType) {
@@ -922,7 +926,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgsAck &msgsAckVal
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgsAllInfo &msgsAllInfoValue)
+Stream &operator<<(Stream &stream, const TLMsgsAllInfo &msgsAllInfoValue)
 {
     stream << msgsAllInfoValue.tlType;
     switch (msgsAllInfoValue.tlType) {
@@ -937,7 +941,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgsAllInfo &msgsAl
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgsStateInfo &msgsStateInfoValue)
+Stream &operator<<(Stream &stream, const TLMsgsStateInfo &msgsStateInfoValue)
 {
     stream << msgsStateInfoValue.tlType;
     switch (msgsStateInfoValue.tlType) {
@@ -952,7 +956,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgsStateInfo &msgs
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgsStateReq &msgsStateReqValue)
+Stream &operator<<(Stream &stream, const TLMsgsStateReq &msgsStateReqValue)
 {
     stream << msgsStateReqValue.tlType;
     switch (msgsStateReqValue.tlType) {
@@ -966,7 +970,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMsgsStateReq &msgsS
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLNearestDc &nearestDcValue)
+Stream &operator<<(Stream &stream, const TLNearestDc &nearestDcValue)
 {
     stream << nearestDcValue.tlType;
     switch (nearestDcValue.tlType) {
@@ -982,7 +986,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLNearestDc &nearestD
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLNewSession &newSessionValue)
+Stream &operator<<(Stream &stream, const TLNewSession &newSessionValue)
 {
     stream << newSessionValue.tlType;
     switch (newSessionValue.tlType) {
@@ -998,7 +1002,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLNewSession &newSess
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPQInnerData &pQInnerDataValue)
+Stream &operator<<(Stream &stream, const TLPQInnerData &pQInnerDataValue)
 {
     stream << pQInnerDataValue.tlType;
     switch (pQInnerDataValue.tlType) {
@@ -1017,7 +1021,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPQInnerData &pQInne
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentCharge &paymentChargeValue)
+Stream &operator<<(Stream &stream, const TLPaymentCharge &paymentChargeValue)
 {
     stream << paymentChargeValue.tlType;
     switch (paymentChargeValue.tlType) {
@@ -1032,7 +1036,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentCharge &paym
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentSavedCredentials &paymentSavedCredentialsValue)
+Stream &operator<<(Stream &stream, const TLPaymentSavedCredentials &paymentSavedCredentialsValue)
 {
     stream << paymentSavedCredentialsValue.tlType;
     switch (paymentSavedCredentialsValue.tlType) {
@@ -1047,7 +1051,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentSavedCredent
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPeer &peerValue)
+Stream &operator<<(Stream &stream, const TLPeer &peerValue)
 {
     stream << peerValue.tlType;
     switch (peerValue.tlType) {
@@ -1067,7 +1071,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPeer &peerValue)
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPeerNotifyEvents &peerNotifyEventsValue)
+Stream &operator<<(Stream &stream, const TLPeerNotifyEvents &peerNotifyEventsValue)
 {
     stream << peerNotifyEventsValue.tlType;
     switch (peerNotifyEventsValue.tlType) {
@@ -1081,7 +1085,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPeerNotifyEvents &p
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPhoneConnection &phoneConnectionValue)
+Stream &operator<<(Stream &stream, const TLPhoneConnection &phoneConnectionValue)
 {
     stream << phoneConnectionValue.tlType;
     switch (phoneConnectionValue.tlType) {
@@ -1099,7 +1103,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPhoneConnection &ph
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPhotoSize &photoSizeValue)
+Stream &operator<<(Stream &stream, const TLPhotoSize &photoSizeValue)
 {
     stream << photoSizeValue.tlType;
     switch (photoSizeValue.tlType) {
@@ -1127,7 +1131,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPhotoSize &photoSiz
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPong &pongValue)
+Stream &operator<<(Stream &stream, const TLPong &pongValue)
 {
     stream << pongValue.tlType;
     switch (pongValue.tlType) {
@@ -1142,7 +1146,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPong &pongValue)
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPopularContact &popularContactValue)
+Stream &operator<<(Stream &stream, const TLPopularContact &popularContactValue)
 {
     stream << popularContactValue.tlType;
     switch (popularContactValue.tlType) {
@@ -1157,7 +1161,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPopularContact &pop
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPrivacyKey &privacyKeyValue)
+Stream &operator<<(Stream &stream, const TLPrivacyKey &privacyKeyValue)
 {
     stream << privacyKeyValue.tlType;
     switch (privacyKeyValue.tlType) {
@@ -1172,7 +1176,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPrivacyKey &privacy
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPrivacyRule &privacyRuleValue)
+Stream &operator<<(Stream &stream, const TLPrivacyRule &privacyRuleValue)
 {
     stream << privacyRuleValue.tlType;
     switch (privacyRuleValue.tlType) {
@@ -1192,7 +1196,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPrivacyRule &privac
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLReceivedNotifyMessage &receivedNotifyMessageValue)
+Stream &operator<<(Stream &stream, const TLReceivedNotifyMessage &receivedNotifyMessageValue)
 {
     stream << receivedNotifyMessageValue.tlType;
     switch (receivedNotifyMessageValue.tlType) {
@@ -1207,7 +1211,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLReceivedNotifyMessa
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLResPQ &resPQValue)
+Stream &operator<<(Stream &stream, const TLResPQ &resPQValue)
 {
     stream << resPQValue.tlType;
     switch (resPQValue.tlType) {
@@ -1224,7 +1228,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLResPQ &resPQValue)
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLRichText &richTextValue)
+Stream &operator<<(Stream &stream, const TLRichText &richTextValue)
 {
     stream << richTextValue.tlType;
     switch (richTextValue.tlType) {
@@ -1259,7 +1263,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLRichText &richTextV
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLRpcDropAnswer &rpcDropAnswerValue)
+Stream &operator<<(Stream &stream, const TLRpcDropAnswer &rpcDropAnswerValue)
 {
     stream << rpcDropAnswerValue.tlType;
     switch (rpcDropAnswerValue.tlType) {
@@ -1278,7 +1282,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLRpcDropAnswer &rpcD
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLRpcError &rpcErrorValue)
+Stream &operator<<(Stream &stream, const TLRpcError &rpcErrorValue)
 {
     stream << rpcErrorValue.tlType;
     switch (rpcErrorValue.tlType) {
@@ -1293,7 +1297,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLRpcError &rpcErrorV
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLServerDHInnerData &serverDHInnerDataValue)
+Stream &operator<<(Stream &stream, const TLServerDHInnerData &serverDHInnerDataValue)
 {
     stream << serverDHInnerDataValue.tlType;
     switch (serverDHInnerDataValue.tlType) {
@@ -1312,7 +1316,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLServerDHInnerData &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLServerDHParams &serverDHParamsValue)
+Stream &operator<<(Stream &stream, const TLServerDHParams &serverDHParamsValue)
 {
     stream << serverDHParamsValue.tlType;
     switch (serverDHParamsValue.tlType) {
@@ -1333,7 +1337,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLServerDHParams &ser
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLSetClientDHParamsAnswer &setClientDHParamsAnswerValue)
+Stream &operator<<(Stream &stream, const TLSetClientDHParamsAnswer &setClientDHParamsAnswerValue)
 {
     stream << setClientDHParamsAnswerValue.tlType;
     switch (setClientDHParamsAnswerValue.tlType) {
@@ -1359,7 +1363,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLSetClientDHParamsAn
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLStickerPack &stickerPackValue)
+Stream &operator<<(Stream &stream, const TLStickerPack &stickerPackValue)
 {
     stream << stickerPackValue.tlType;
     switch (stickerPackValue.tlType) {
@@ -1374,7 +1378,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLStickerPack &sticke
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLStorageFileType &storageFileTypeValue)
+Stream &operator<<(Stream &stream, const TLStorageFileType &storageFileTypeValue)
 {
     stream << storageFileTypeValue.tlType;
     switch (storageFileTypeValue.tlType) {
@@ -1396,7 +1400,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLStorageFileType &st
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLTopPeer &topPeerValue)
+Stream &operator<<(Stream &stream, const TLTopPeer &topPeerValue)
 {
     stream << topPeerValue.tlType;
     switch (topPeerValue.tlType) {
@@ -1411,7 +1415,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLTopPeer &topPeerVal
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLTopPeerCategoryPeers &topPeerCategoryPeersValue)
+Stream &operator<<(Stream &stream, const TLTopPeerCategoryPeers &topPeerCategoryPeersValue)
 {
     stream << topPeerCategoryPeersValue.tlType;
     switch (topPeerCategoryPeersValue.tlType) {
@@ -1427,7 +1431,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLTopPeerCategoryPeer
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdatesState &updatesStateValue)
+Stream &operator<<(Stream &stream, const TLUpdatesState &updatesStateValue)
 {
     stream << updatesStateValue.tlType;
     switch (updatesStateValue.tlType) {
@@ -1445,7 +1449,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdatesState &updat
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUploadCdnFile &uploadCdnFileValue)
+Stream &operator<<(Stream &stream, const TLUploadCdnFile &uploadCdnFileValue)
 {
     stream << uploadCdnFileValue.tlType;
     switch (uploadCdnFileValue.tlType) {
@@ -1462,7 +1466,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUploadCdnFile &uplo
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUploadFile &uploadFileValue)
+Stream &operator<<(Stream &stream, const TLUploadFile &uploadFileValue)
 {
     stream << uploadFileValue.tlType;
     switch (uploadFileValue.tlType) {
@@ -1485,7 +1489,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUploadFile &uploadF
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUploadWebFile &uploadWebFileValue)
+Stream &operator<<(Stream &stream, const TLUploadWebFile &uploadWebFileValue)
 {
     stream << uploadWebFileValue.tlType;
     switch (uploadWebFileValue.tlType) {
@@ -1503,7 +1507,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUploadWebFile &uplo
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUserProfilePhoto &userProfilePhotoValue)
+Stream &operator<<(Stream &stream, const TLUserProfilePhoto &userProfilePhotoValue)
 {
     stream << userProfilePhotoValue.tlType;
     switch (userProfilePhotoValue.tlType) {
@@ -1521,7 +1525,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUserProfilePhoto &u
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUserStatus &userStatusValue)
+Stream &operator<<(Stream &stream, const TLUserStatus &userStatusValue)
 {
     stream << userStatusValue.tlType;
     switch (userStatusValue.tlType) {
@@ -1543,7 +1547,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUserStatus &userSta
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLWallPaper &wallPaperValue)
+Stream &operator<<(Stream &stream, const TLWallPaper &wallPaperValue)
 {
     stream << wallPaperValue.tlType;
     switch (wallPaperValue.tlType) {
@@ -1566,7 +1570,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLWallPaper &wallPape
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountAuthorizations &accountAuthorizationsValue)
+Stream &operator<<(Stream &stream, const TLAccountAuthorizations &accountAuthorizationsValue)
 {
     stream << accountAuthorizationsValue.tlType;
     switch (accountAuthorizationsValue.tlType) {
@@ -1580,7 +1584,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountAuthorizatio
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthSentCode &authSentCodeValue)
+Stream &operator<<(Stream &stream, const TLAuthSentCode &authSentCodeValue)
 {
     stream << authSentCodeValue.tlType;
     switch (authSentCodeValue.tlType) {
@@ -1602,7 +1606,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthSentCode &authS
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLCdnConfig &cdnConfigValue)
+Stream &operator<<(Stream &stream, const TLCdnConfig &cdnConfigValue)
 {
     stream << cdnConfigValue.tlType;
     switch (cdnConfigValue.tlType) {
@@ -1616,7 +1620,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLCdnConfig &cdnConfi
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelParticipant &channelParticipantValue)
+Stream &operator<<(Stream &stream, const TLChannelParticipant &channelParticipantValue)
 {
     stream << channelParticipantValue.tlType;
     switch (channelParticipantValue.tlType) {
@@ -1654,7 +1658,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelParticipant 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChatPhoto &chatPhotoValue)
+Stream &operator<<(Stream &stream, const TLChatPhoto &chatPhotoValue)
 {
     stream << chatPhotoValue.tlType;
     switch (chatPhotoValue.tlType) {
@@ -1671,7 +1675,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChatPhoto &chatPhot
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactStatus &contactStatusValue)
+Stream &operator<<(Stream &stream, const TLContactStatus &contactStatusValue)
 {
     stream << contactStatusValue.tlType;
     switch (contactStatusValue.tlType) {
@@ -1686,7 +1690,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactStatus &cont
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLDcOption &dcOptionValue)
+Stream &operator<<(Stream &stream, const TLDcOption &dcOptionValue)
 {
     stream << dcOptionValue.tlType;
     switch (dcOptionValue.tlType) {
@@ -1703,7 +1707,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLDcOption &dcOptionV
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLDraftMessage &draftMessageValue)
+Stream &operator<<(Stream &stream, const TLDraftMessage &draftMessageValue)
 {
     stream << draftMessageValue.tlType;
     switch (draftMessageValue.tlType) {
@@ -1727,7 +1731,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLDraftMessage &draft
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpConfigSimple &helpConfigSimpleValue)
+Stream &operator<<(Stream &stream, const TLHelpConfigSimple &helpConfigSimpleValue)
 {
     stream << helpConfigSimpleValue.tlType;
     switch (helpConfigSimpleValue.tlType) {
@@ -1744,7 +1748,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpConfigSimple &h
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLLangPackDifference &langPackDifferenceValue)
+Stream &operator<<(Stream &stream, const TLLangPackDifference &langPackDifferenceValue)
 {
     stream << langPackDifferenceValue.tlType;
     switch (langPackDifferenceValue.tlType) {
@@ -1761,7 +1765,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLLangPackDifference 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesBotCallbackAnswer &messagesBotCallbackAnswerValue)
+Stream &operator<<(Stream &stream, const TLMessagesBotCallbackAnswer &messagesBotCallbackAnswerValue)
 {
     stream << messagesBotCallbackAnswerValue.tlType;
     switch (messagesBotCallbackAnswerValue.tlType) {
@@ -1782,7 +1786,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesBotCallback
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesMessageEditData &messagesMessageEditDataValue)
+Stream &operator<<(Stream &stream, const TLMessagesMessageEditData &messagesMessageEditDataValue)
 {
     stream << messagesMessageEditDataValue.tlType;
     switch (messagesMessageEditDataValue.tlType) {
@@ -1796,7 +1800,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesMessageEdit
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLNotifyPeer &notifyPeerValue)
+Stream &operator<<(Stream &stream, const TLNotifyPeer &notifyPeerValue)
 {
     stream << notifyPeerValue.tlType;
     switch (notifyPeerValue.tlType) {
@@ -1814,7 +1818,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLNotifyPeer &notifyP
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsSavedInfo &paymentsSavedInfoValue)
+Stream &operator<<(Stream &stream, const TLPaymentsSavedInfo &paymentsSavedInfoValue)
 {
     stream << paymentsSavedInfoValue.tlType;
     switch (paymentsSavedInfoValue.tlType) {
@@ -1831,7 +1835,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsSavedInfo &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsValidatedRequestedInfo &paymentsValidatedRequestedInfoValue)
+Stream &operator<<(Stream &stream, const TLPaymentsValidatedRequestedInfo &paymentsValidatedRequestedInfoValue)
 {
     stream << paymentsValidatedRequestedInfoValue.tlType;
     switch (paymentsValidatedRequestedInfoValue.tlType) {
@@ -1851,7 +1855,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsValidatedRe
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPeerNotifySettings &peerNotifySettingsValue)
+Stream &operator<<(Stream &stream, const TLPeerNotifySettings &peerNotifySettingsValue)
 {
     stream << peerNotifySettingsValue.tlType;
     switch (peerNotifySettingsValue.tlType) {
@@ -1869,7 +1873,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPeerNotifySettings 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPeerSettings &peerSettingsValue)
+Stream &operator<<(Stream &stream, const TLPeerSettings &peerSettingsValue)
 {
     stream << peerSettingsValue.tlType;
     switch (peerSettingsValue.tlType) {
@@ -1883,7 +1887,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPeerSettings &peerS
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPhoto &photoValue)
+Stream &operator<<(Stream &stream, const TLPhoto &photoValue)
 {
     stream << photoValue.tlType;
     switch (photoValue.tlType) {
@@ -1904,7 +1908,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPhoto &photoValue)
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLStickerSet &stickerSetValue)
+Stream &operator<<(Stream &stream, const TLStickerSet &stickerSetValue)
 {
     stream << stickerSetValue.tlType;
     switch (stickerSetValue.tlType) {
@@ -1924,7 +1928,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLStickerSet &sticker
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUser &userValue)
+Stream &operator<<(Stream &stream, const TLUser &userValue)
 {
     stream << userValue.tlType;
     switch (userValue.tlType) {
@@ -1975,7 +1979,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUser &userValue)
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLWebDocument &webDocumentValue)
+Stream &operator<<(Stream &stream, const TLWebDocument &webDocumentValue)
 {
     stream << webDocumentValue.tlType;
     switch (webDocumentValue.tlType) {
@@ -1994,7 +1998,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLWebDocument &webDoc
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountPrivacyRules &accountPrivacyRulesValue)
+Stream &operator<<(Stream &stream, const TLAccountPrivacyRules &accountPrivacyRulesValue)
 {
     stream << accountPrivacyRulesValue.tlType;
     switch (accountPrivacyRulesValue.tlType) {
@@ -2009,7 +2013,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAccountPrivacyRules
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthAuthorization &authAuthorizationValue)
+Stream &operator<<(Stream &stream, const TLAuthAuthorization &authAuthorizationValue)
 {
     stream << authAuthorizationValue.tlType;
     switch (authAuthorizationValue.tlType) {
@@ -2027,7 +2031,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLAuthAuthorization &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLBotInlineMessage &botInlineMessageValue)
+Stream &operator<<(Stream &stream, const TLBotInlineMessage &botInlineMessageValue)
 {
     stream << botInlineMessageValue.tlType;
     switch (botInlineMessageValue.tlType) {
@@ -2083,7 +2087,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLBotInlineMessage &b
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelsChannelParticipant &channelsChannelParticipantValue)
+Stream &operator<<(Stream &stream, const TLChannelsChannelParticipant &channelsChannelParticipantValue)
 {
     stream << channelsChannelParticipantValue.tlType;
     switch (channelsChannelParticipantValue.tlType) {
@@ -2098,7 +2102,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelsChannelPart
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelsChannelParticipants &channelsChannelParticipantsValue)
+Stream &operator<<(Stream &stream, const TLChannelsChannelParticipants &channelsChannelParticipantsValue)
 {
     stream << channelsChannelParticipantsValue.tlType;
     switch (channelsChannelParticipantsValue.tlType) {
@@ -2116,7 +2120,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelsChannelPart
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChat &chatValue)
+Stream &operator<<(Stream &stream, const TLChat &chatValue)
 {
     stream << chatValue.tlType;
     switch (chatValue.tlType) {
@@ -2178,7 +2182,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChat &chatValue)
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChatFull &chatFullValue)
+Stream &operator<<(Stream &stream, const TLChatFull &chatFullValue)
 {
     stream << chatFullValue.tlType;
     switch (chatFullValue.tlType) {
@@ -2236,7 +2240,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChatFull &chatFullV
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChatInvite &chatInviteValue)
+Stream &operator<<(Stream &stream, const TLChatInvite &chatInviteValue)
 {
     stream << chatInviteValue.tlType;
     switch (chatInviteValue.tlType) {
@@ -2259,7 +2263,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChatInvite &chatInv
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLConfig &configValue)
+Stream &operator<<(Stream &stream, const TLConfig &configValue)
 {
     stream << configValue.tlType;
     switch (configValue.tlType) {
@@ -2312,7 +2316,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLConfig &configValue
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsBlocked &contactsBlockedValue)
+Stream &operator<<(Stream &stream, const TLContactsBlocked &contactsBlockedValue)
 {
     stream << contactsBlockedValue.tlType;
     switch (contactsBlockedValue.tlType) {
@@ -2332,7 +2336,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsBlocked &co
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsContacts &contactsContactsValue)
+Stream &operator<<(Stream &stream, const TLContactsContacts &contactsContactsValue)
 {
     stream << contactsContactsValue.tlType;
     switch (contactsContactsValue.tlType) {
@@ -2350,7 +2354,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsContacts &c
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsFound &contactsFoundValue)
+Stream &operator<<(Stream &stream, const TLContactsFound &contactsFoundValue)
 {
     stream << contactsFoundValue.tlType;
     switch (contactsFoundValue.tlType) {
@@ -2366,7 +2370,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsFound &cont
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsImportedContacts &contactsImportedContactsValue)
+Stream &operator<<(Stream &stream, const TLContactsImportedContacts &contactsImportedContactsValue)
 {
     stream << contactsImportedContactsValue.tlType;
     switch (contactsImportedContactsValue.tlType) {
@@ -2383,7 +2387,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsImportedCon
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsLink &contactsLinkValue)
+Stream &operator<<(Stream &stream, const TLContactsLink &contactsLinkValue)
 {
     stream << contactsLinkValue.tlType;
     switch (contactsLinkValue.tlType) {
@@ -2399,7 +2403,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsLink &conta
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsResolvedPeer &contactsResolvedPeerValue)
+Stream &operator<<(Stream &stream, const TLContactsResolvedPeer &contactsResolvedPeerValue)
 {
     stream << contactsResolvedPeerValue.tlType;
     switch (contactsResolvedPeerValue.tlType) {
@@ -2415,7 +2419,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsResolvedPee
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsTopPeers &contactsTopPeersValue)
+Stream &operator<<(Stream &stream, const TLContactsTopPeers &contactsTopPeersValue)
 {
     stream << contactsTopPeersValue.tlType;
     switch (contactsTopPeersValue.tlType) {
@@ -2433,7 +2437,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLContactsTopPeers &c
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLDialog &dialogValue)
+Stream &operator<<(Stream &stream, const TLDialog &dialogValue)
 {
     stream << dialogValue.tlType;
     switch (dialogValue.tlType) {
@@ -2460,7 +2464,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLDialog &dialogValue
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLDocument &documentValue)
+Stream &operator<<(Stream &stream, const TLDocument &documentValue)
 {
     stream << documentValue.tlType;
     switch (documentValue.tlType) {
@@ -2485,7 +2489,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLDocument &documentV
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLFoundGif &foundGifValue)
+Stream &operator<<(Stream &stream, const TLFoundGif &foundGifValue)
 {
     stream << foundGifValue.tlType;
     switch (foundGifValue.tlType) {
@@ -2509,7 +2513,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLFoundGif &foundGifV
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLGame &gameValue)
+Stream &operator<<(Stream &stream, const TLGame &gameValue)
 {
     stream << gameValue.tlType;
     switch (gameValue.tlType) {
@@ -2532,7 +2536,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLGame &gameValue)
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpSupport &helpSupportValue)
+Stream &operator<<(Stream &stream, const TLHelpSupport &helpSupportValue)
 {
     stream << helpSupportValue.tlType;
     switch (helpSupportValue.tlType) {
@@ -2547,7 +2551,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpSupport &helpSu
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessageAction &messageActionValue)
+Stream &operator<<(Stream &stream, const TLMessageAction &messageActionValue)
 {
     stream << messageActionValue.tlType;
     switch (messageActionValue.tlType) {
@@ -2625,7 +2629,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessageAction &mess
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesAllStickers &messagesAllStickersValue)
+Stream &operator<<(Stream &stream, const TLMessagesAllStickers &messagesAllStickersValue)
 {
     stream << messagesAllStickersValue.tlType;
     switch (messagesAllStickersValue.tlType) {
@@ -2642,7 +2646,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesAllStickers
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesChatFull &messagesChatFullValue)
+Stream &operator<<(Stream &stream, const TLMessagesChatFull &messagesChatFullValue)
 {
     stream << messagesChatFullValue.tlType;
     switch (messagesChatFullValue.tlType) {
@@ -2658,7 +2662,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesChatFull &m
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesChats &messagesChatsValue)
+Stream &operator<<(Stream &stream, const TLMessagesChats &messagesChatsValue)
 {
     stream << messagesChatsValue.tlType;
     switch (messagesChatsValue.tlType) {
@@ -2676,7 +2680,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesChats &mess
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesFavedStickers &messagesFavedStickersValue)
+Stream &operator<<(Stream &stream, const TLMessagesFavedStickers &messagesFavedStickersValue)
 {
     stream << messagesFavedStickersValue.tlType;
     switch (messagesFavedStickersValue.tlType) {
@@ -2694,7 +2698,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesFavedSticke
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesFoundGifs &messagesFoundGifsValue)
+Stream &operator<<(Stream &stream, const TLMessagesFoundGifs &messagesFoundGifsValue)
 {
     stream << messagesFoundGifsValue.tlType;
     switch (messagesFoundGifsValue.tlType) {
@@ -2709,7 +2713,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesFoundGifs &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesHighScores &messagesHighScoresValue)
+Stream &operator<<(Stream &stream, const TLMessagesHighScores &messagesHighScoresValue)
 {
     stream << messagesHighScoresValue.tlType;
     switch (messagesHighScoresValue.tlType) {
@@ -2724,7 +2728,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesHighScores 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesRecentStickers &messagesRecentStickersValue)
+Stream &operator<<(Stream &stream, const TLMessagesRecentStickers &messagesRecentStickersValue)
 {
     stream << messagesRecentStickersValue.tlType;
     switch (messagesRecentStickersValue.tlType) {
@@ -2741,7 +2745,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesRecentStick
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesSavedGifs &messagesSavedGifsValue)
+Stream &operator<<(Stream &stream, const TLMessagesSavedGifs &messagesSavedGifsValue)
 {
     stream << messagesSavedGifsValue.tlType;
     switch (messagesSavedGifsValue.tlType) {
@@ -2758,7 +2762,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesSavedGifs &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesStickerSet &messagesStickerSetValue)
+Stream &operator<<(Stream &stream, const TLMessagesStickerSet &messagesStickerSetValue)
 {
     stream << messagesStickerSetValue.tlType;
     switch (messagesStickerSetValue.tlType) {
@@ -2774,7 +2778,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesStickerSet 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesStickers &messagesStickersValue)
+Stream &operator<<(Stream &stream, const TLMessagesStickers &messagesStickersValue)
 {
     stream << messagesStickersValue.tlType;
     switch (messagesStickersValue.tlType) {
@@ -2791,7 +2795,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesStickers &m
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPageBlock &pageBlockValue)
+Stream &operator<<(Stream &stream, const TLPageBlock &pageBlockValue)
 {
     stream << pageBlockValue.tlType;
     switch (pageBlockValue.tlType) {
@@ -2881,7 +2885,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPageBlock &pageBloc
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsPaymentForm &paymentsPaymentFormValue)
+Stream &operator<<(Stream &stream, const TLPaymentsPaymentForm &paymentsPaymentFormValue)
 {
     stream << paymentsPaymentFormValue.tlType;
     switch (paymentsPaymentFormValue.tlType) {
@@ -2912,7 +2916,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsPaymentForm
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsPaymentReceipt &paymentsPaymentReceiptValue)
+Stream &operator<<(Stream &stream, const TLPaymentsPaymentReceipt &paymentsPaymentReceiptValue)
 {
     stream << paymentsPaymentReceiptValue.tlType;
     switch (paymentsPaymentReceiptValue.tlType) {
@@ -2940,7 +2944,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsPaymentRece
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPhoneCall &phoneCallValue)
+Stream &operator<<(Stream &stream, const TLPhoneCall &phoneCallValue)
 {
     stream << phoneCallValue.tlType;
     switch (phoneCallValue.tlType) {
@@ -3007,7 +3011,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPhoneCall &phoneCal
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPhonePhoneCall &phonePhoneCallValue)
+Stream &operator<<(Stream &stream, const TLPhonePhoneCall &phonePhoneCallValue)
 {
     stream << phonePhoneCallValue.tlType;
     switch (phonePhoneCallValue.tlType) {
@@ -3022,7 +3026,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPhonePhoneCall &pho
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPhotosPhoto &photosPhotoValue)
+Stream &operator<<(Stream &stream, const TLPhotosPhoto &photosPhotoValue)
 {
     stream << photosPhotoValue.tlType;
     switch (photosPhotoValue.tlType) {
@@ -3037,7 +3041,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPhotosPhoto &photos
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPhotosPhotos &photosPhotosValue)
+Stream &operator<<(Stream &stream, const TLPhotosPhotos &photosPhotosValue)
 {
     stream << photosPhotosValue.tlType;
     switch (photosPhotosValue.tlType) {
@@ -3057,7 +3061,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPhotosPhotos &photo
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLStickerSetCovered &stickerSetCoveredValue)
+Stream &operator<<(Stream &stream, const TLStickerSetCovered &stickerSetCoveredValue)
 {
     stream << stickerSetCoveredValue.tlType;
     switch (stickerSetCoveredValue.tlType) {
@@ -3076,7 +3080,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLStickerSetCovered &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUserFull &userFullValue)
+Stream &operator<<(Stream &stream, const TLUserFull &userFullValue)
 {
     stream << userFullValue.tlType;
     switch (userFullValue.tlType) {
@@ -3103,7 +3107,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUserFull &userFullV
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLBotInlineResult &botInlineResultValue)
+Stream &operator<<(Stream &stream, const TLBotInlineResult &botInlineResultValue)
 {
     stream << botInlineResultValue.tlType;
     switch (botInlineResultValue.tlType) {
@@ -3165,7 +3169,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLBotInlineResult &bo
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesArchivedStickers &messagesArchivedStickersValue)
+Stream &operator<<(Stream &stream, const TLMessagesArchivedStickers &messagesArchivedStickersValue)
 {
     stream << messagesArchivedStickersValue.tlType;
     switch (messagesArchivedStickersValue.tlType) {
@@ -3180,7 +3184,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesArchivedSti
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesBotResults &messagesBotResultsValue)
+Stream &operator<<(Stream &stream, const TLMessagesBotResults &messagesBotResultsValue)
 {
     stream << messagesBotResultsValue.tlType;
     switch (messagesBotResultsValue.tlType) {
@@ -3204,7 +3208,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesBotResults 
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesFeaturedStickers &messagesFeaturedStickersValue)
+Stream &operator<<(Stream &stream, const TLMessagesFeaturedStickers &messagesFeaturedStickersValue)
 {
     stream << messagesFeaturedStickersValue.tlType;
     switch (messagesFeaturedStickersValue.tlType) {
@@ -3222,7 +3226,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesFeaturedSti
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesStickerSetInstallResult &messagesStickerSetInstallResultValue)
+Stream &operator<<(Stream &stream, const TLMessagesStickerSetInstallResult &messagesStickerSetInstallResultValue)
 {
     stream << messagesStickerSetInstallResultValue.tlType;
     switch (messagesStickerSetInstallResultValue.tlType) {
@@ -3238,7 +3242,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesStickerSetI
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPage &pageValue)
+Stream &operator<<(Stream &stream, const TLPage &pageValue)
 {
     stream << pageValue.tlType;
     switch (pageValue.tlType) {
@@ -3255,7 +3259,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPage &pageValue)
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLRecentMeUrl &recentMeUrlValue)
+Stream &operator<<(Stream &stream, const TLRecentMeUrl &recentMeUrlValue)
 {
     stream << recentMeUrlValue.tlType;
     switch (recentMeUrlValue.tlType) {
@@ -3285,7 +3289,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLRecentMeUrl &recent
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLWebPage &webPageValue)
+Stream &operator<<(Stream &stream, const TLWebPage &webPageValue)
 {
     stream << webPageValue.tlType;
     switch (webPageValue.tlType) {
@@ -3351,7 +3355,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLWebPage &webPageVal
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpRecentMeUrls &helpRecentMeUrlsValue)
+Stream &operator<<(Stream &stream, const TLHelpRecentMeUrls &helpRecentMeUrlsValue)
 {
     stream << helpRecentMeUrlsValue.tlType;
     switch (helpRecentMeUrlsValue.tlType) {
@@ -3367,7 +3371,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLHelpRecentMeUrls &h
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessageMedia &messageMediaValue)
+Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue)
 {
     stream << messageMediaValue.tlType;
     switch (messageMediaValue.tlType) {
@@ -3446,7 +3450,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessageMedia &messa
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessage &messageValue)
+Stream &operator<<(Stream &stream, const TLMessage &messageValue)
 {
     stream << messageValue.tlType;
     switch (messageValue.tlType) {
@@ -3510,7 +3514,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessage &messageVal
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesDialogs &messagesDialogsValue)
+Stream &operator<<(Stream &stream, const TLMessagesDialogs &messagesDialogsValue)
 {
     stream << messagesDialogsValue.tlType;
     switch (messagesDialogsValue.tlType) {
@@ -3534,7 +3538,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesDialogs &me
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesMessages &messagesMessagesValue)
+Stream &operator<<(Stream &stream, const TLMessagesMessages &messagesMessagesValue)
 {
     stream << messagesMessagesValue.tlType;
     switch (messagesMessagesValue.tlType) {
@@ -3567,7 +3571,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesMessages &m
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesPeerDialogs &messagesPeerDialogsValue)
+Stream &operator<<(Stream &stream, const TLMessagesPeerDialogs &messagesPeerDialogsValue)
 {
     stream << messagesPeerDialogsValue.tlType;
     switch (messagesPeerDialogsValue.tlType) {
@@ -3585,7 +3589,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLMessagesPeerDialogs
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdate &updateValue)
+Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
 {
     stream << updateValue.tlType;
     switch (updateValue.tlType) {
@@ -3889,7 +3893,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdate &updateValue
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdates &updatesValue)
+Stream &operator<<(Stream &stream, const TLUpdates &updatesValue)
 {
     stream << updatesValue.tlType;
     switch (updatesValue.tlType) {
@@ -3977,7 +3981,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdates &updatesVal
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdatesChannelDifference &updatesChannelDifferenceValue)
+Stream &operator<<(Stream &stream, const TLUpdatesChannelDifference &updatesChannelDifferenceValue)
 {
     stream << updatesChannelDifferenceValue.tlType;
     switch (updatesChannelDifferenceValue.tlType) {
@@ -4021,7 +4025,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdatesChannelDiffe
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdatesDifference &updatesDifferenceValue)
+Stream &operator<<(Stream &stream, const TLUpdatesDifference &updatesDifferenceValue)
 {
     stream << updatesDifferenceValue.tlType;
     switch (updatesDifferenceValue.tlType) {
@@ -4055,7 +4059,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLUpdatesDifference &
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelAdminLogEventAction &channelAdminLogEventActionValue)
+Stream &operator<<(Stream &stream, const TLChannelAdminLogEventAction &channelAdminLogEventActionValue)
 {
     stream << channelAdminLogEventActionValue.tlType;
     switch (channelAdminLogEventActionValue.tlType) {
@@ -4104,7 +4108,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelAdminLogEven
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsPaymentResult &paymentsPaymentResultValue)
+Stream &operator<<(Stream &stream, const TLPaymentsPaymentResult &paymentsPaymentResultValue)
 {
     stream << paymentsPaymentResultValue.tlType;
     switch (paymentsPaymentResultValue.tlType) {
@@ -4121,7 +4125,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLPaymentsPaymentResu
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelAdminLogEvent &channelAdminLogEventValue)
+Stream &operator<<(Stream &stream, const TLChannelAdminLogEvent &channelAdminLogEventValue)
 {
     stream << channelAdminLogEventValue.tlType;
     switch (channelAdminLogEventValue.tlType) {
@@ -4138,7 +4142,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelAdminLogEven
     return stream;
 }
 
-CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelsAdminLogResults &channelsAdminLogResultsValue)
+Stream &operator<<(Stream &stream, const TLChannelsAdminLogResults &channelsAdminLogResultsValue)
 {
     stream << channelsAdminLogResultsValue.tlType;
     switch (channelsAdminLogResultsValue.tlType) {
@@ -4154,3 +4158,7 @@ CTelegramStream &operator<<(CTelegramStream &stream, const TLChannelsAdminLogRes
     return stream;
 }
 // End of generated write operators implementation
+
+} // MTProto namespace
+
+} // Telegram namespace

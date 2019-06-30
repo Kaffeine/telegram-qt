@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014-2017 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2014-2019 Alexandr Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
@@ -15,128 +15,132 @@
 
  */
 
-#include "CTelegramStream_p.hpp"
+#include "Stream_p.hpp"
 
 #include <QIODevice>
 #include <QDebug>
 
-template CTelegramStream &CTelegramStream::operator>>(TLVector<qint32> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<quint32> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<qint64> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<quint64> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<QString> &v);
+namespace Telegram {
 
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<qint32> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<quint32> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<qint64> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<quint64> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<QString> &v);
+namespace MTProto {
 
-template CTelegramStream &CTelegramStream::operator>>(TLNumber128 &v);
-template CTelegramStream &CTelegramStream::operator>>(TLNumber256 &v);
+template Stream &Stream::operator>>(TLVector<qint32> &v);
+template Stream &Stream::operator>>(TLVector<quint32> &v);
+template Stream &Stream::operator>>(TLVector<qint64> &v);
+template Stream &Stream::operator>>(TLVector<quint64> &v);
+template Stream &Stream::operator>>(TLVector<QString> &v);
 
-template CTelegramStream &CTelegramStream::operator<<(const TLNumber128 &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLNumber256 &v);
+template Stream &Stream::operator<<(const TLVector<qint32> &v);
+template Stream &Stream::operator<<(const TLVector<quint32> &v);
+template Stream &Stream::operator<<(const TLVector<qint64> &v);
+template Stream &Stream::operator<<(const TLVector<quint64> &v);
+template Stream &Stream::operator<<(const TLVector<QString> &v);
+
+template Stream &Stream::operator>>(TLNumber128 &v);
+template Stream &Stream::operator>>(TLNumber256 &v);
+
+template Stream &Stream::operator<<(const TLNumber128 &v);
+template Stream &Stream::operator<<(const TLNumber256 &v);
 
 // Generated vector read templates instancing
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLAuthorization> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPrivacyRule> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLUser> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLWallPaper> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLContactBlocked> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLContact> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLContactStatus> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLImportedContact> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLChat> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPeer> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDcOption> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDisabledFeature> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessageEntity> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLUpdate> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLStickerSet> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDialog> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessage> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDocumentAttribute> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLBotInlineResult> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDocument> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLStickerPack> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLReceivedNotifyMessage> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLFoundGif> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLEncryptedMessage> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLBotCommand> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLChatParticipant> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLKeyboardButton> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPhotoSize> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessageRange> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputUser> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLKeyboardButtonRow> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLChannelParticipant> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLBotInfo> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPhoto> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputPrivacyRule> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputChannel> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputContact> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputAppEvent> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputBotInlineResult> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputPhoto> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLChannelAdminLogEvent> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLTopPeerCategoryPeers> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPopularContact> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLCdnPublicKey> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLRecentMeUrl> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLStickerSetCovered> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLHighScore> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLCdnFileHash> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLFutureSalt> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLRichText> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLLabeledPrice> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLTopPeer> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLIpPort> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLLangPackString> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLShippingOption> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputDocument> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPageBlock> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPhoneConnection> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputPeer> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputStickerSetItem> &v);
+template Stream &Stream::operator>>(TLVector<TLAuthorization> &v);
+template Stream &Stream::operator>>(TLVector<TLPrivacyRule> &v);
+template Stream &Stream::operator>>(TLVector<TLUser> &v);
+template Stream &Stream::operator>>(TLVector<TLWallPaper> &v);
+template Stream &Stream::operator>>(TLVector<TLContactBlocked> &v);
+template Stream &Stream::operator>>(TLVector<TLContact> &v);
+template Stream &Stream::operator>>(TLVector<TLContactStatus> &v);
+template Stream &Stream::operator>>(TLVector<TLImportedContact> &v);
+template Stream &Stream::operator>>(TLVector<TLChat> &v);
+template Stream &Stream::operator>>(TLVector<TLPeer> &v);
+template Stream &Stream::operator>>(TLVector<TLDcOption> &v);
+template Stream &Stream::operator>>(TLVector<TLDisabledFeature> &v);
+template Stream &Stream::operator>>(TLVector<TLMessageEntity> &v);
+template Stream &Stream::operator>>(TLVector<TLUpdate> &v);
+template Stream &Stream::operator>>(TLVector<TLStickerSet> &v);
+template Stream &Stream::operator>>(TLVector<TLDialog> &v);
+template Stream &Stream::operator>>(TLVector<TLMessage> &v);
+template Stream &Stream::operator>>(TLVector<TLDocumentAttribute> &v);
+template Stream &Stream::operator>>(TLVector<TLBotInlineResult> &v);
+template Stream &Stream::operator>>(TLVector<TLDocument> &v);
+template Stream &Stream::operator>>(TLVector<TLStickerPack> &v);
+template Stream &Stream::operator>>(TLVector<TLReceivedNotifyMessage> &v);
+template Stream &Stream::operator>>(TLVector<TLFoundGif> &v);
+template Stream &Stream::operator>>(TLVector<TLEncryptedMessage> &v);
+template Stream &Stream::operator>>(TLVector<TLBotCommand> &v);
+template Stream &Stream::operator>>(TLVector<TLChatParticipant> &v);
+template Stream &Stream::operator>>(TLVector<TLKeyboardButton> &v);
+template Stream &Stream::operator>>(TLVector<TLPhotoSize> &v);
+template Stream &Stream::operator>>(TLVector<TLMessageRange> &v);
+template Stream &Stream::operator>>(TLVector<TLInputUser> &v);
+template Stream &Stream::operator>>(TLVector<TLKeyboardButtonRow> &v);
+template Stream &Stream::operator>>(TLVector<TLChannelParticipant> &v);
+template Stream &Stream::operator>>(TLVector<TLBotInfo> &v);
+template Stream &Stream::operator>>(TLVector<TLPhoto> &v);
+template Stream &Stream::operator>>(TLVector<TLInputPrivacyRule> &v);
+template Stream &Stream::operator>>(TLVector<TLInputChannel> &v);
+template Stream &Stream::operator>>(TLVector<TLInputContact> &v);
+template Stream &Stream::operator>>(TLVector<TLInputAppEvent> &v);
+template Stream &Stream::operator>>(TLVector<TLInputBotInlineResult> &v);
+template Stream &Stream::operator>>(TLVector<TLInputPhoto> &v);
+template Stream &Stream::operator>>(TLVector<TLChannelAdminLogEvent> &v);
+template Stream &Stream::operator>>(TLVector<TLTopPeerCategoryPeers> &v);
+template Stream &Stream::operator>>(TLVector<TLPopularContact> &v);
+template Stream &Stream::operator>>(TLVector<TLCdnPublicKey> &v);
+template Stream &Stream::operator>>(TLVector<TLRecentMeUrl> &v);
+template Stream &Stream::operator>>(TLVector<TLStickerSetCovered> &v);
+template Stream &Stream::operator>>(TLVector<TLHighScore> &v);
+template Stream &Stream::operator>>(TLVector<TLCdnFileHash> &v);
+template Stream &Stream::operator>>(TLVector<TLFutureSalt> &v);
+template Stream &Stream::operator>>(TLVector<TLRichText> &v);
+template Stream &Stream::operator>>(TLVector<TLLabeledPrice> &v);
+template Stream &Stream::operator>>(TLVector<TLTopPeer> &v);
+template Stream &Stream::operator>>(TLVector<TLIpPort> &v);
+template Stream &Stream::operator>>(TLVector<TLLangPackString> &v);
+template Stream &Stream::operator>>(TLVector<TLShippingOption> &v);
+template Stream &Stream::operator>>(TLVector<TLInputDocument> &v);
+template Stream &Stream::operator>>(TLVector<TLPageBlock> &v);
+template Stream &Stream::operator>>(TLVector<TLPhoneConnection> &v);
+template Stream &Stream::operator>>(TLVector<TLInputPeer> &v);
+template Stream &Stream::operator>>(TLVector<TLInputStickerSetItem> &v);
 // End of generated vector read templates instancing
 
 // Generated vector write templates instancing
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputPrivacyRule> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputChannel> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputUser> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputContact> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputAppEvent> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLMessageEntity> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputBotInlineResult> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputPhoto> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLDocumentAttribute> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLKeyboardButtonRow> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLMessageRange> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLKeyboardButton> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputPeer> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLShippingOption> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputStickerSetItem> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLInputDocument> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLLabeledPrice> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputPrivacyRule> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputChannel> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputUser> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputContact> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputAppEvent> &v);
+template Stream &Stream::operator<<(const TLVector<TLMessageEntity> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputBotInlineResult> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputPhoto> &v);
+template Stream &Stream::operator<<(const TLVector<TLDocumentAttribute> &v);
+template Stream &Stream::operator<<(const TLVector<TLKeyboardButtonRow> &v);
+template Stream &Stream::operator<<(const TLVector<TLMessageRange> &v);
+template Stream &Stream::operator<<(const TLVector<TLKeyboardButton> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputPeer> &v);
+template Stream &Stream::operator<<(const TLVector<TLShippingOption> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputStickerSetItem> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputDocument> &v);
+template Stream &Stream::operator<<(const TLVector<TLLabeledPrice> &v);
 // End of generated vector write templates instancing
 
 template <int Size>
-CTelegramStream &CTelegramStream::operator>>(TLNumber<Size> &n)
+Stream &Stream::operator>>(TLNumber<Size> &n)
 {
     read(n.data, Size / 8);
     return *this;
 }
 
 template <int Size>
-CTelegramStream &CTelegramStream::operator<<(const TLNumber<Size> &n)
+Stream &Stream::operator<<(const TLNumber<Size> &n)
 {
     write(n.data, Size / 8);
     return *this;
 }
 
 // Generated read operators implementation
-CTelegramStream &CTelegramStream::operator>>(TLAccountDaysTTL &accountDaysTTLValue)
+Stream &Stream::operator>>(TLAccountDaysTTL &accountDaysTTLValue)
 {
     TLAccountDaysTTL result;
 
@@ -155,7 +159,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountDaysTTL &accountDaysTTLVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountPassword &accountPasswordValue)
+Stream &Stream::operator>>(TLAccountPassword &accountPasswordValue)
 {
     TLAccountPassword result;
 
@@ -182,7 +186,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountPassword &accountPasswordV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
+Stream &Stream::operator>>(TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
 {
     TLAccountPasswordInputSettings result;
 
@@ -213,7 +217,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordInputSettings &acc
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordSettings &accountPasswordSettingsValue)
+Stream &Stream::operator>>(TLAccountPasswordSettings &accountPasswordSettingsValue)
 {
     TLAccountPasswordSettings result;
 
@@ -232,7 +236,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountPasswordSettings &accountP
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountTmpPassword &accountTmpPasswordValue)
+Stream &Stream::operator>>(TLAccountTmpPassword &accountTmpPasswordValue)
 {
     TLAccountTmpPassword result;
 
@@ -252,7 +256,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountTmpPassword &accountTmpPas
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthCheckedPhone &authCheckedPhoneValue)
+Stream &Stream::operator>>(TLAuthCheckedPhone &authCheckedPhoneValue)
 {
     TLAuthCheckedPhone result;
 
@@ -271,7 +275,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthCheckedPhone &authCheckedPhon
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthCodeType &authCodeTypeValue)
+Stream &Stream::operator>>(TLAuthCodeType &authCodeTypeValue)
 {
     TLAuthCodeType result;
 
@@ -291,7 +295,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthCodeType &authCodeTypeValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthExportedAuthorization &authExportedAuthorizationValue)
+Stream &Stream::operator>>(TLAuthExportedAuthorization &authExportedAuthorizationValue)
 {
     TLAuthExportedAuthorization result;
 
@@ -311,7 +315,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthExportedAuthorization &authEx
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthPasswordRecovery &authPasswordRecoveryValue)
+Stream &Stream::operator>>(TLAuthPasswordRecovery &authPasswordRecoveryValue)
 {
     TLAuthPasswordRecovery result;
 
@@ -330,7 +334,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthPasswordRecovery &authPasswor
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthSentCodeType &authSentCodeTypeValue)
+Stream &Stream::operator>>(TLAuthSentCodeType &authSentCodeTypeValue)
 {
     TLAuthSentCodeType result;
 
@@ -354,7 +358,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthSentCodeType &authSentCodeTyp
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthorization &authorizationValue)
+Stream &Stream::operator>>(TLAuthorization &authorizationValue)
 {
     TLAuthorization result;
 
@@ -385,7 +389,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthorization &authorizationValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLBadMsgNotification &badMsgNotificationValue)
+Stream &Stream::operator>>(TLBadMsgNotification &badMsgNotificationValue)
 {
     TLBadMsgNotification result;
 
@@ -412,7 +416,7 @@ CTelegramStream &CTelegramStream::operator>>(TLBadMsgNotification &badMsgNotific
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLBotCommand &botCommandValue)
+Stream &Stream::operator>>(TLBotCommand &botCommandValue)
 {
     TLBotCommand result;
 
@@ -432,7 +436,7 @@ CTelegramStream &CTelegramStream::operator>>(TLBotCommand &botCommandValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLBotInfo &botInfoValue)
+Stream &Stream::operator>>(TLBotInfo &botInfoValue)
 {
     TLBotInfo result;
 
@@ -453,7 +457,7 @@ CTelegramStream &CTelegramStream::operator>>(TLBotInfo &botInfoValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLCdnFileHash &cdnFileHashValue)
+Stream &Stream::operator>>(TLCdnFileHash &cdnFileHashValue)
 {
     TLCdnFileHash result;
 
@@ -474,7 +478,7 @@ CTelegramStream &CTelegramStream::operator>>(TLCdnFileHash &cdnFileHashValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLCdnPublicKey &cdnPublicKeyValue)
+Stream &Stream::operator>>(TLCdnPublicKey &cdnPublicKeyValue)
 {
     TLCdnPublicKey result;
 
@@ -494,7 +498,7 @@ CTelegramStream &CTelegramStream::operator>>(TLCdnPublicKey &cdnPublicKeyValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelParticipantsFilter &channelParticipantsFilterValue)
+Stream &Stream::operator>>(TLChannelParticipantsFilter &channelParticipantsFilterValue)
 {
     TLChannelParticipantsFilter result;
 
@@ -519,7 +523,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelParticipantsFilter &channe
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatParticipant &chatParticipantValue)
+Stream &Stream::operator>>(TLChatParticipant &chatParticipantValue)
 {
     TLChatParticipant result;
 
@@ -544,7 +548,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChatParticipant &chatParticipantV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatParticipants &chatParticipantsValue)
+Stream &Stream::operator>>(TLChatParticipants &chatParticipantsValue)
 {
     TLChatParticipants result;
 
@@ -572,7 +576,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChatParticipants &chatParticipant
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLClientDHInnerData &clientDHInnerDataValue)
+Stream &Stream::operator>>(TLClientDHInnerData &clientDHInnerDataValue)
 {
     TLClientDHInnerData result;
 
@@ -594,7 +598,7 @@ CTelegramStream &CTelegramStream::operator>>(TLClientDHInnerData &clientDHInnerD
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContact &contactValue)
+Stream &Stream::operator>>(TLContact &contactValue)
 {
     TLContact result;
 
@@ -614,7 +618,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContact &contactValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactBlocked &contactBlockedValue)
+Stream &Stream::operator>>(TLContactBlocked &contactBlockedValue)
 {
     TLContactBlocked result;
 
@@ -634,7 +638,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactBlocked &contactBlockedVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactLink &contactLinkValue)
+Stream &Stream::operator>>(TLContactLink &contactLinkValue)
 {
     TLContactLink result;
 
@@ -655,7 +659,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactLink &contactLinkValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDataJSON &dataJSONValue)
+Stream &Stream::operator>>(TLDataJSON &dataJSONValue)
 {
     TLDataJSON result;
 
@@ -674,7 +678,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDataJSON &dataJSONValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDestroyAuthKeyRes &destroyAuthKeyResValue)
+Stream &Stream::operator>>(TLDestroyAuthKeyRes &destroyAuthKeyResValue)
 {
     TLDestroyAuthKeyRes result;
 
@@ -694,7 +698,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDestroyAuthKeyRes &destroyAuthKey
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDestroySessionRes &destroySessionResValue)
+Stream &Stream::operator>>(TLDestroySessionRes &destroySessionResValue)
 {
     TLDestroySessionRes result;
 
@@ -714,7 +718,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDestroySessionRes &destroySession
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDisabledFeature &disabledFeatureValue)
+Stream &Stream::operator>>(TLDisabledFeature &disabledFeatureValue)
 {
     TLDisabledFeature result;
 
@@ -734,7 +738,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDisabledFeature &disabledFeatureV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLEncryptedChat &encryptedChatValue)
+Stream &Stream::operator>>(TLEncryptedChat &encryptedChatValue)
 {
     TLEncryptedChat result;
 
@@ -778,7 +782,7 @@ CTelegramStream &CTelegramStream::operator>>(TLEncryptedChat &encryptedChatValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLEncryptedFile &encryptedFileValue)
+Stream &Stream::operator>>(TLEncryptedFile &encryptedFileValue)
 {
     TLEncryptedFile result;
 
@@ -803,7 +807,7 @@ CTelegramStream &CTelegramStream::operator>>(TLEncryptedFile &encryptedFileValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLEncryptedMessage &encryptedMessageValue)
+Stream &Stream::operator>>(TLEncryptedMessage &encryptedMessageValue)
 {
     TLEncryptedMessage result;
 
@@ -832,7 +836,7 @@ CTelegramStream &CTelegramStream::operator>>(TLEncryptedMessage &encryptedMessag
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLError &errorValue)
+Stream &Stream::operator>>(TLError &errorValue)
 {
     TLError result;
 
@@ -852,7 +856,7 @@ CTelegramStream &CTelegramStream::operator>>(TLError &errorValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLExportedChatInvite &exportedChatInviteValue)
+Stream &Stream::operator>>(TLExportedChatInvite &exportedChatInviteValue)
 {
     TLExportedChatInvite result;
 
@@ -873,7 +877,7 @@ CTelegramStream &CTelegramStream::operator>>(TLExportedChatInvite &exportedChatI
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLExportedMessageLink &exportedMessageLinkValue)
+Stream &Stream::operator>>(TLExportedMessageLink &exportedMessageLinkValue)
 {
     TLExportedMessageLink result;
 
@@ -892,7 +896,7 @@ CTelegramStream &CTelegramStream::operator>>(TLExportedMessageLink &exportedMess
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLFileLocation &fileLocationValue)
+Stream &Stream::operator>>(TLFileLocation &fileLocationValue)
 {
     TLFileLocation result;
 
@@ -919,7 +923,7 @@ CTelegramStream &CTelegramStream::operator>>(TLFileLocation &fileLocationValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLFutureSalt &futureSaltValue)
+Stream &Stream::operator>>(TLFutureSalt &futureSaltValue)
 {
     TLFutureSalt result;
 
@@ -940,7 +944,7 @@ CTelegramStream &CTelegramStream::operator>>(TLFutureSalt &futureSaltValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLFutureSalts &futureSaltsValue)
+Stream &Stream::operator>>(TLFutureSalts &futureSaltsValue)
 {
     TLFutureSalts result;
 
@@ -961,7 +965,7 @@ CTelegramStream &CTelegramStream::operator>>(TLFutureSalts &futureSaltsValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLGeoPoint &geoPointValue)
+Stream &Stream::operator>>(TLGeoPoint &geoPointValue)
 {
     TLGeoPoint result;
 
@@ -983,7 +987,7 @@ CTelegramStream &CTelegramStream::operator>>(TLGeoPoint &geoPointValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHelpAppUpdate &helpAppUpdateValue)
+Stream &Stream::operator>>(TLHelpAppUpdate &helpAppUpdateValue)
 {
     TLHelpAppUpdate result;
 
@@ -1007,7 +1011,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpAppUpdate &helpAppUpdateValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHelpInviteText &helpInviteTextValue)
+Stream &Stream::operator>>(TLHelpInviteText &helpInviteTextValue)
 {
     TLHelpInviteText result;
 
@@ -1026,7 +1030,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpInviteText &helpInviteTextVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHelpTermsOfService &helpTermsOfServiceValue)
+Stream &Stream::operator>>(TLHelpTermsOfService &helpTermsOfServiceValue)
 {
     TLHelpTermsOfService result;
 
@@ -1045,7 +1049,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpTermsOfService &helpTermsOfSe
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHighScore &highScoreValue)
+Stream &Stream::operator>>(TLHighScore &highScoreValue)
 {
     TLHighScore result;
 
@@ -1066,7 +1070,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHighScore &highScoreValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHttpWait &httpWaitValue)
+Stream &Stream::operator>>(TLHttpWait &httpWaitValue)
 {
     TLHttpWait result;
 
@@ -1087,7 +1091,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHttpWait &httpWaitValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLImportedContact &importedContactValue)
+Stream &Stream::operator>>(TLImportedContact &importedContactValue)
 {
     TLImportedContact result;
 
@@ -1107,7 +1111,7 @@ CTelegramStream &CTelegramStream::operator>>(TLImportedContact &importedContactV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInlineBotSwitchPM &inlineBotSwitchPMValue)
+Stream &Stream::operator>>(TLInlineBotSwitchPM &inlineBotSwitchPMValue)
 {
     TLInlineBotSwitchPM result;
 
@@ -1127,7 +1131,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInlineBotSwitchPM &inlineBotSwitc
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputAppEvent &inputAppEventValue)
+Stream &Stream::operator>>(TLInputAppEvent &inputAppEventValue)
 {
     TLInputAppEvent result;
 
@@ -1149,7 +1153,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputAppEvent &inputAppEventValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputBotInlineMessageID &inputBotInlineMessageIDValue)
+Stream &Stream::operator>>(TLInputBotInlineMessageID &inputBotInlineMessageIDValue)
 {
     TLInputBotInlineMessageID result;
 
@@ -1170,7 +1174,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputBotInlineMessageID &inputBot
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputChannel &inputChannelValue)
+Stream &Stream::operator>>(TLInputChannel &inputChannelValue)
 {
     TLInputChannel result;
 
@@ -1192,7 +1196,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputChannel &inputChannelValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputContact &inputContactValue)
+Stream &Stream::operator>>(TLInputContact &inputContactValue)
 {
     TLInputContact result;
 
@@ -1214,7 +1218,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputContact &inputContactValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputDocument &inputDocumentValue)
+Stream &Stream::operator>>(TLInputDocument &inputDocumentValue)
 {
     TLInputDocument result;
 
@@ -1236,7 +1240,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputDocument &inputDocumentValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedChat &inputEncryptedChatValue)
+Stream &Stream::operator>>(TLInputEncryptedChat &inputEncryptedChatValue)
 {
     TLInputEncryptedChat result;
 
@@ -1256,7 +1260,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedChat &inputEncrypte
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedFile &inputEncryptedFileValue)
+Stream &Stream::operator>>(TLInputEncryptedFile &inputEncryptedFileValue)
 {
     TLInputEncryptedFile result;
 
@@ -1289,7 +1293,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputEncryptedFile &inputEncrypte
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputFile &inputFileValue)
+Stream &Stream::operator>>(TLInputFile &inputFileValue)
 {
     TLInputFile result;
 
@@ -1316,7 +1320,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputFile &inputFileValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputFileLocation &inputFileLocationValue)
+Stream &Stream::operator>>(TLInputFileLocation &inputFileLocationValue)
 {
     TLInputFileLocation result;
 
@@ -1346,7 +1350,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputFileLocation &inputFileLocat
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputGeoPoint &inputGeoPointValue)
+Stream &Stream::operator>>(TLInputGeoPoint &inputGeoPointValue)
 {
     TLInputGeoPoint result;
 
@@ -1368,7 +1372,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputGeoPoint &inputGeoPointValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPeer &inputPeerValue)
+Stream &Stream::operator>>(TLInputPeer &inputPeerValue)
 {
     TLInputPeer result;
 
@@ -1398,7 +1402,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPeer &inputPeerValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifyEvents &inputPeerNotifyEventsValue)
+Stream &Stream::operator>>(TLInputPeerNotifyEvents &inputPeerNotifyEventsValue)
 {
     TLInputPeerNotifyEvents result;
 
@@ -1417,7 +1421,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifyEvents &inputPeerN
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPhoneCall &inputPhoneCallValue)
+Stream &Stream::operator>>(TLInputPhoneCall &inputPhoneCallValue)
 {
     TLInputPhoneCall result;
 
@@ -1437,7 +1441,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPhoneCall &inputPhoneCallVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPhoto &inputPhotoValue)
+Stream &Stream::operator>>(TLInputPhoto &inputPhotoValue)
 {
     TLInputPhoto result;
 
@@ -1459,7 +1463,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPhoto &inputPhotoValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyKey &inputPrivacyKeyValue)
+Stream &Stream::operator>>(TLInputPrivacyKey &inputPrivacyKeyValue)
 {
     TLInputPrivacyKey result;
 
@@ -1479,7 +1483,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyKey &inputPrivacyKeyV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputStickerSet &inputStickerSetValue)
+Stream &Stream::operator>>(TLInputStickerSet &inputStickerSetValue)
 {
     TLInputStickerSet result;
 
@@ -1504,7 +1508,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputStickerSet &inputStickerSetV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputStickeredMedia &inputStickeredMediaValue)
+Stream &Stream::operator>>(TLInputStickeredMedia &inputStickeredMediaValue)
 {
     TLInputStickeredMedia result;
 
@@ -1526,7 +1530,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputStickeredMedia &inputSticker
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputUser &inputUserValue)
+Stream &Stream::operator>>(TLInputUser &inputUserValue)
 {
     TLInputUser result;
 
@@ -1549,7 +1553,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputUser &inputUserValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputWebFileLocation &inputWebFileLocationValue)
+Stream &Stream::operator>>(TLInputWebFileLocation &inputWebFileLocationValue)
 {
     TLInputWebFileLocation result;
 
@@ -1569,7 +1573,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputWebFileLocation &inputWebFil
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLIpPort &ipPortValue)
+Stream &Stream::operator>>(TLIpPort &ipPortValue)
 {
     TLIpPort result;
 
@@ -1589,7 +1593,7 @@ CTelegramStream &CTelegramStream::operator>>(TLIpPort &ipPortValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLLabeledPrice &labeledPriceValue)
+Stream &Stream::operator>>(TLLabeledPrice &labeledPriceValue)
 {
     TLLabeledPrice result;
 
@@ -1609,7 +1613,7 @@ CTelegramStream &CTelegramStream::operator>>(TLLabeledPrice &labeledPriceValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLLangPackLanguage &langPackLanguageValue)
+Stream &Stream::operator>>(TLLangPackLanguage &langPackLanguageValue)
 {
     TLLangPackLanguage result;
 
@@ -1630,7 +1634,7 @@ CTelegramStream &CTelegramStream::operator>>(TLLangPackLanguage &langPackLanguag
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLLangPackString &langPackStringValue)
+Stream &Stream::operator>>(TLLangPackString &langPackStringValue)
 {
     TLLangPackString result;
 
@@ -1673,7 +1677,7 @@ CTelegramStream &CTelegramStream::operator>>(TLLangPackString &langPackStringVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMaskCoords &maskCoordsValue)
+Stream &Stream::operator>>(TLMaskCoords &maskCoordsValue)
 {
     TLMaskCoords result;
 
@@ -1695,7 +1699,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMaskCoords &maskCoordsValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessageEntity &messageEntityValue)
+Stream &Stream::operator>>(TLMessageEntity &messageEntityValue)
 {
     TLMessageEntity result;
 
@@ -1743,7 +1747,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageEntity &messageEntityValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessageFwdHeader &messageFwdHeaderValue)
+Stream &Stream::operator>>(TLMessageFwdHeader &messageFwdHeaderValue)
 {
     TLMessageFwdHeader result;
 
@@ -1775,7 +1779,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageFwdHeader &messageFwdHeade
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessageRange &messageRangeValue)
+Stream &Stream::operator>>(TLMessageRange &messageRangeValue)
 {
     TLMessageRange result;
 
@@ -1795,7 +1799,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageRange &messageRangeValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedHistory &messagesAffectedHistoryValue)
+Stream &Stream::operator>>(TLMessagesAffectedHistory &messagesAffectedHistoryValue)
 {
     TLMessagesAffectedHistory result;
 
@@ -1816,7 +1820,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedHistory &messages
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedMessages &messagesAffectedMessagesValue)
+Stream &Stream::operator>>(TLMessagesAffectedMessages &messagesAffectedMessagesValue)
 {
     TLMessagesAffectedMessages result;
 
@@ -1836,7 +1840,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesAffectedMessages &message
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesDhConfig &messagesDhConfigValue)
+Stream &Stream::operator>>(TLMessagesDhConfig &messagesDhConfigValue)
 {
     TLMessagesDhConfig result;
 
@@ -1861,7 +1865,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesDhConfig &messagesDhConfi
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesSentEncryptedMessage &messagesSentEncryptedMessageValue)
+Stream &Stream::operator>>(TLMessagesSentEncryptedMessage &messagesSentEncryptedMessageValue)
 {
     TLMessagesSentEncryptedMessage result;
 
@@ -1884,7 +1888,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesSentEncryptedMessage &mes
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMsgDetailedInfo &msgDetailedInfoValue)
+Stream &Stream::operator>>(TLMsgDetailedInfo &msgDetailedInfoValue)
 {
     TLMsgDetailedInfo result;
 
@@ -1911,7 +1915,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMsgDetailedInfo &msgDetailedInfoV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMsgResendReq &msgResendReqValue)
+Stream &Stream::operator>>(TLMsgResendReq &msgResendReqValue)
 {
     TLMsgResendReq result;
 
@@ -1930,7 +1934,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMsgResendReq &msgResendReqValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMsgsAck &msgsAckValue)
+Stream &Stream::operator>>(TLMsgsAck &msgsAckValue)
 {
     TLMsgsAck result;
 
@@ -1949,7 +1953,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMsgsAck &msgsAckValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMsgsAllInfo &msgsAllInfoValue)
+Stream &Stream::operator>>(TLMsgsAllInfo &msgsAllInfoValue)
 {
     TLMsgsAllInfo result;
 
@@ -1969,7 +1973,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMsgsAllInfo &msgsAllInfoValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMsgsStateInfo &msgsStateInfoValue)
+Stream &Stream::operator>>(TLMsgsStateInfo &msgsStateInfoValue)
 {
     TLMsgsStateInfo result;
 
@@ -1989,7 +1993,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMsgsStateInfo &msgsStateInfoValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMsgsStateReq &msgsStateReqValue)
+Stream &Stream::operator>>(TLMsgsStateReq &msgsStateReqValue)
 {
     TLMsgsStateReq result;
 
@@ -2008,7 +2012,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMsgsStateReq &msgsStateReqValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLNearestDc &nearestDcValue)
+Stream &Stream::operator>>(TLNearestDc &nearestDcValue)
 {
     TLNearestDc result;
 
@@ -2029,7 +2033,7 @@ CTelegramStream &CTelegramStream::operator>>(TLNearestDc &nearestDcValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLNewSession &newSessionValue)
+Stream &Stream::operator>>(TLNewSession &newSessionValue)
 {
     TLNewSession result;
 
@@ -2050,7 +2054,7 @@ CTelegramStream &CTelegramStream::operator>>(TLNewSession &newSessionValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPQInnerData &pQInnerDataValue)
+Stream &Stream::operator>>(TLPQInnerData &pQInnerDataValue)
 {
     TLPQInnerData result;
 
@@ -2074,7 +2078,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPQInnerData &pQInnerDataValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPaymentCharge &paymentChargeValue)
+Stream &Stream::operator>>(TLPaymentCharge &paymentChargeValue)
 {
     TLPaymentCharge result;
 
@@ -2094,7 +2098,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPaymentCharge &paymentChargeValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPaymentSavedCredentials &paymentSavedCredentialsValue)
+Stream &Stream::operator>>(TLPaymentSavedCredentials &paymentSavedCredentialsValue)
 {
     TLPaymentSavedCredentials result;
 
@@ -2114,7 +2118,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPaymentSavedCredentials &paymentS
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPeer &peerValue)
+Stream &Stream::operator>>(TLPeer &peerValue)
 {
     TLPeer result;
 
@@ -2139,7 +2143,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPeer &peerValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPeerNotifyEvents &peerNotifyEventsValue)
+Stream &Stream::operator>>(TLPeerNotifyEvents &peerNotifyEventsValue)
 {
     TLPeerNotifyEvents result;
 
@@ -2158,7 +2162,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPeerNotifyEvents &peerNotifyEvent
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhoneCallDiscardReason &phoneCallDiscardReasonValue)
+Stream &Stream::operator>>(TLPhoneCallDiscardReason &phoneCallDiscardReasonValue)
 {
     TLPhoneCallDiscardReason result;
 
@@ -2179,7 +2183,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhoneCallDiscardReason &phoneCall
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhoneConnection &phoneConnectionValue)
+Stream &Stream::operator>>(TLPhoneConnection &phoneConnectionValue)
 {
     TLPhoneConnection result;
 
@@ -2202,7 +2206,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhoneConnection &phoneConnectionV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhotoSize &photoSizeValue)
+Stream &Stream::operator>>(TLPhotoSize &photoSizeValue)
 {
     TLPhotoSize result;
 
@@ -2235,7 +2239,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhotoSize &photoSizeValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPong &pongValue)
+Stream &Stream::operator>>(TLPong &pongValue)
 {
     TLPong result;
 
@@ -2255,7 +2259,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPong &pongValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPopularContact &popularContactValue)
+Stream &Stream::operator>>(TLPopularContact &popularContactValue)
 {
     TLPopularContact result;
 
@@ -2275,7 +2279,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPopularContact &popularContactVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPostAddress &postAddressValue)
+Stream &Stream::operator>>(TLPostAddress &postAddressValue)
 {
     TLPostAddress result;
 
@@ -2299,7 +2303,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPostAddress &postAddressValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPrivacyKey &privacyKeyValue)
+Stream &Stream::operator>>(TLPrivacyKey &privacyKeyValue)
 {
     TLPrivacyKey result;
 
@@ -2319,7 +2323,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPrivacyKey &privacyKeyValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPrivacyRule &privacyRuleValue)
+Stream &Stream::operator>>(TLPrivacyRule &privacyRuleValue)
 {
     TLPrivacyRule result;
 
@@ -2344,7 +2348,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPrivacyRule &privacyRuleValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLReceivedNotifyMessage &receivedNotifyMessageValue)
+Stream &Stream::operator>>(TLReceivedNotifyMessage &receivedNotifyMessageValue)
 {
     TLReceivedNotifyMessage result;
 
@@ -2364,7 +2368,7 @@ CTelegramStream &CTelegramStream::operator>>(TLReceivedNotifyMessage &receivedNo
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLReportReason &reportReasonValue)
+Stream &Stream::operator>>(TLReportReason &reportReasonValue)
 {
     TLReportReason result;
 
@@ -2387,7 +2391,7 @@ CTelegramStream &CTelegramStream::operator>>(TLReportReason &reportReasonValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLResPQ &resPQValue)
+Stream &Stream::operator>>(TLResPQ &resPQValue)
 {
     TLResPQ result;
 
@@ -2409,7 +2413,7 @@ CTelegramStream &CTelegramStream::operator>>(TLResPQ &resPQValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLRichText &richTextValue)
+Stream &Stream::operator>>(TLRichText &richTextValue)
 {
     TLRichText result;
 
@@ -2449,7 +2453,7 @@ CTelegramStream &CTelegramStream::operator>>(TLRichText &richTextValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLRpcDropAnswer &rpcDropAnswerValue)
+Stream &Stream::operator>>(TLRpcDropAnswer &rpcDropAnswerValue)
 {
     TLRpcDropAnswer result;
 
@@ -2473,7 +2477,7 @@ CTelegramStream &CTelegramStream::operator>>(TLRpcDropAnswer &rpcDropAnswerValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLRpcError &rpcErrorValue)
+Stream &Stream::operator>>(TLRpcError &rpcErrorValue)
 {
     TLRpcError result;
 
@@ -2493,7 +2497,7 @@ CTelegramStream &CTelegramStream::operator>>(TLRpcError &rpcErrorValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLSendMessageAction &sendMessageActionValue)
+Stream &Stream::operator>>(TLSendMessageAction &sendMessageActionValue)
 {
     TLSendMessageAction result;
 
@@ -2525,7 +2529,7 @@ CTelegramStream &CTelegramStream::operator>>(TLSendMessageAction &sendMessageAct
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLServerDHInnerData &serverDHInnerDataValue)
+Stream &Stream::operator>>(TLServerDHInnerData &serverDHInnerDataValue)
 {
     TLServerDHInnerData result;
 
@@ -2549,7 +2553,7 @@ CTelegramStream &CTelegramStream::operator>>(TLServerDHInnerData &serverDHInnerD
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLServerDHParams &serverDHParamsValue)
+Stream &Stream::operator>>(TLServerDHParams &serverDHParamsValue)
 {
     TLServerDHParams result;
 
@@ -2575,7 +2579,7 @@ CTelegramStream &CTelegramStream::operator>>(TLServerDHParams &serverDHParamsVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLSetClientDHParamsAnswer &setClientDHParamsAnswerValue)
+Stream &Stream::operator>>(TLSetClientDHParamsAnswer &setClientDHParamsAnswerValue)
 {
     TLSetClientDHParamsAnswer result;
 
@@ -2606,7 +2610,7 @@ CTelegramStream &CTelegramStream::operator>>(TLSetClientDHParamsAnswer &setClien
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLShippingOption &shippingOptionValue)
+Stream &Stream::operator>>(TLShippingOption &shippingOptionValue)
 {
     TLShippingOption result;
 
@@ -2627,7 +2631,7 @@ CTelegramStream &CTelegramStream::operator>>(TLShippingOption &shippingOptionVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLStickerPack &stickerPackValue)
+Stream &Stream::operator>>(TLStickerPack &stickerPackValue)
 {
     TLStickerPack result;
 
@@ -2647,7 +2651,7 @@ CTelegramStream &CTelegramStream::operator>>(TLStickerPack &stickerPackValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLStorageFileType &storageFileTypeValue)
+Stream &Stream::operator>>(TLStorageFileType &storageFileTypeValue)
 {
     TLStorageFileType result;
 
@@ -2674,7 +2678,7 @@ CTelegramStream &CTelegramStream::operator>>(TLStorageFileType &storageFileTypeV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLTopPeer &topPeerValue)
+Stream &Stream::operator>>(TLTopPeer &topPeerValue)
 {
     TLTopPeer result;
 
@@ -2694,7 +2698,7 @@ CTelegramStream &CTelegramStream::operator>>(TLTopPeer &topPeerValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLTopPeerCategory &topPeerCategoryValue)
+Stream &Stream::operator>>(TLTopPeerCategory &topPeerCategoryValue)
 {
     TLTopPeerCategory result;
 
@@ -2717,7 +2721,7 @@ CTelegramStream &CTelegramStream::operator>>(TLTopPeerCategory &topPeerCategoryV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLTopPeerCategoryPeers &topPeerCategoryPeersValue)
+Stream &Stream::operator>>(TLTopPeerCategoryPeers &topPeerCategoryPeersValue)
 {
     TLTopPeerCategoryPeers result;
 
@@ -2738,7 +2742,7 @@ CTelegramStream &CTelegramStream::operator>>(TLTopPeerCategoryPeers &topPeerCate
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUpdatesState &updatesStateValue)
+Stream &Stream::operator>>(TLUpdatesState &updatesStateValue)
 {
     TLUpdatesState result;
 
@@ -2761,7 +2765,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdatesState &updatesStateValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUploadCdnFile &uploadCdnFileValue)
+Stream &Stream::operator>>(TLUploadCdnFile &uploadCdnFileValue)
 {
     TLUploadCdnFile result;
 
@@ -2783,7 +2787,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUploadCdnFile &uploadCdnFileValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUploadFile &uploadFileValue)
+Stream &Stream::operator>>(TLUploadFile &uploadFileValue)
 {
     TLUploadFile result;
 
@@ -2811,7 +2815,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUploadFile &uploadFileValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUploadWebFile &uploadWebFileValue)
+Stream &Stream::operator>>(TLUploadWebFile &uploadWebFileValue)
 {
     TLUploadWebFile result;
 
@@ -2834,7 +2838,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUploadWebFile &uploadWebFileValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUserProfilePhoto &userProfilePhotoValue)
+Stream &Stream::operator>>(TLUserProfilePhoto &userProfilePhotoValue)
 {
     TLUserProfilePhoto result;
 
@@ -2857,7 +2861,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUserProfilePhoto &userProfilePhot
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUserStatus &userStatusValue)
+Stream &Stream::operator>>(TLUserStatus &userStatusValue)
 {
     TLUserStatus result;
 
@@ -2884,7 +2888,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUserStatus &userStatusValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLWallPaper &wallPaperValue)
+Stream &Stream::operator>>(TLWallPaper &wallPaperValue)
 {
     TLWallPaper result;
 
@@ -2912,7 +2916,7 @@ CTelegramStream &CTelegramStream::operator>>(TLWallPaper &wallPaperValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountAuthorizations &accountAuthorizationsValue)
+Stream &Stream::operator>>(TLAccountAuthorizations &accountAuthorizationsValue)
 {
     TLAccountAuthorizations result;
 
@@ -2931,7 +2935,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountAuthorizations &accountAut
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthSentCode &authSentCodeValue)
+Stream &Stream::operator>>(TLAuthSentCode &authSentCodeValue)
 {
     TLAuthSentCode result;
 
@@ -2958,7 +2962,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthSentCode &authSentCodeValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLCdnConfig &cdnConfigValue)
+Stream &Stream::operator>>(TLCdnConfig &cdnConfigValue)
 {
     TLCdnConfig result;
 
@@ -2977,7 +2981,7 @@ CTelegramStream &CTelegramStream::operator>>(TLCdnConfig &cdnConfigValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelAdminLogEventsFilter &channelAdminLogEventsFilterValue)
+Stream &Stream::operator>>(TLChannelAdminLogEventsFilter &channelAdminLogEventsFilterValue)
 {
     TLChannelAdminLogEventsFilter result;
 
@@ -2996,7 +3000,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelAdminLogEventsFilter &chan
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelAdminRights &channelAdminRightsValue)
+Stream &Stream::operator>>(TLChannelAdminRights &channelAdminRightsValue)
 {
     TLChannelAdminRights result;
 
@@ -3015,7 +3019,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelAdminRights &channelAdminR
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelBannedRights &channelBannedRightsValue)
+Stream &Stream::operator>>(TLChannelBannedRights &channelBannedRightsValue)
 {
     TLChannelBannedRights result;
 
@@ -3035,7 +3039,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelBannedRights &channelBanne
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelMessagesFilter &channelMessagesFilterValue)
+Stream &Stream::operator>>(TLChannelMessagesFilter &channelMessagesFilterValue)
 {
     TLChannelMessagesFilter result;
 
@@ -3057,7 +3061,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelMessagesFilter &channelMes
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelParticipant &channelParticipantValue)
+Stream &Stream::operator>>(TLChannelParticipant &channelParticipantValue)
 {
     TLChannelParticipant result;
 
@@ -3100,7 +3104,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelParticipant &channelPartic
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatPhoto &chatPhotoValue)
+Stream &Stream::operator>>(TLChatPhoto &chatPhotoValue)
 {
     TLChatPhoto result;
 
@@ -3122,7 +3126,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChatPhoto &chatPhotoValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactStatus &contactStatusValue)
+Stream &Stream::operator>>(TLContactStatus &contactStatusValue)
 {
     TLContactStatus result;
 
@@ -3142,7 +3146,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactStatus &contactStatusValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDcOption &dcOptionValue)
+Stream &Stream::operator>>(TLDcOption &dcOptionValue)
 {
     TLDcOption result;
 
@@ -3164,7 +3168,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDcOption &dcOptionValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDocumentAttribute &documentAttributeValue)
+Stream &Stream::operator>>(TLDocumentAttribute &documentAttributeValue)
 {
     TLDocumentAttribute result;
 
@@ -3217,7 +3221,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDocumentAttribute &documentAttrib
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDraftMessage &draftMessageValue)
+Stream &Stream::operator>>(TLDraftMessage &draftMessageValue)
 {
     TLDraftMessage result;
 
@@ -3246,7 +3250,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDraftMessage &draftMessageValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHelpConfigSimple &helpConfigSimpleValue)
+Stream &Stream::operator>>(TLHelpConfigSimple &helpConfigSimpleValue)
 {
     TLHelpConfigSimple result;
 
@@ -3268,7 +3272,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpConfigSimple &helpConfigSimpl
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputChatPhoto &inputChatPhotoValue)
+Stream &Stream::operator>>(TLInputChatPhoto &inputChatPhotoValue)
 {
     TLInputChatPhoto result;
 
@@ -3292,7 +3296,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputChatPhoto &inputChatPhotoVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputGame &inputGameValue)
+Stream &Stream::operator>>(TLInputGame &inputGameValue)
 {
     TLInputGame result;
 
@@ -3316,7 +3320,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputGame &inputGameValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputNotifyPeer &inputNotifyPeerValue)
+Stream &Stream::operator>>(TLInputNotifyPeer &inputNotifyPeerValue)
 {
     TLInputNotifyPeer result;
 
@@ -3339,7 +3343,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputNotifyPeer &inputNotifyPeerV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPaymentCredentials &inputPaymentCredentialsValue)
+Stream &Stream::operator>>(TLInputPaymentCredentials &inputPaymentCredentialsValue)
 {
     TLInputPaymentCredentials result;
 
@@ -3369,7 +3373,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPaymentCredentials &inputPay
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
+Stream &Stream::operator>>(TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
 {
     TLInputPeerNotifySettings result;
 
@@ -3390,7 +3394,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPeerNotifySettings &inputPee
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyRule &inputPrivacyRuleValue)
+Stream &Stream::operator>>(TLInputPrivacyRule &inputPrivacyRuleValue)
 {
     TLInputPrivacyRule result;
 
@@ -3415,7 +3419,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputPrivacyRule &inputPrivacyRul
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputStickerSetItem &inputStickerSetItemValue)
+Stream &Stream::operator>>(TLInputStickerSetItem &inputStickerSetItemValue)
 {
     TLInputStickerSetItem result;
 
@@ -3439,7 +3443,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputStickerSetItem &inputSticker
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputWebDocument &inputWebDocumentValue)
+Stream &Stream::operator>>(TLInputWebDocument &inputWebDocumentValue)
 {
     TLInputWebDocument result;
 
@@ -3461,7 +3465,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputWebDocument &inputWebDocumen
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInvoice &invoiceValue)
+Stream &Stream::operator>>(TLInvoice &invoiceValue)
 {
     TLInvoice result;
 
@@ -3482,7 +3486,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInvoice &invoiceValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLKeyboardButton &keyboardButtonValue)
+Stream &Stream::operator>>(TLKeyboardButton &keyboardButtonValue)
 {
     TLKeyboardButton result;
 
@@ -3518,7 +3522,7 @@ CTelegramStream &CTelegramStream::operator>>(TLKeyboardButton &keyboardButtonVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLKeyboardButtonRow &keyboardButtonRowValue)
+Stream &Stream::operator>>(TLKeyboardButtonRow &keyboardButtonRowValue)
 {
     TLKeyboardButtonRow result;
 
@@ -3537,7 +3541,7 @@ CTelegramStream &CTelegramStream::operator>>(TLKeyboardButtonRow &keyboardButton
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLLangPackDifference &langPackDifferenceValue)
+Stream &Stream::operator>>(TLLangPackDifference &langPackDifferenceValue)
 {
     TLLangPackDifference result;
 
@@ -3559,7 +3563,7 @@ CTelegramStream &CTelegramStream::operator>>(TLLangPackDifference &langPackDiffe
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesBotCallbackAnswer &messagesBotCallbackAnswerValue)
+Stream &Stream::operator>>(TLMessagesBotCallbackAnswer &messagesBotCallbackAnswerValue)
 {
     TLMessagesBotCallbackAnswer result;
 
@@ -3585,7 +3589,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesBotCallbackAnswer &messag
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesFilter &messagesFilterValue)
+Stream &Stream::operator>>(TLMessagesFilter &messagesFilterValue)
 {
     TLMessagesFilter result;
 
@@ -3620,7 +3624,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesFilter &messagesFilterVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesMessageEditData &messagesMessageEditDataValue)
+Stream &Stream::operator>>(TLMessagesMessageEditData &messagesMessageEditDataValue)
 {
     TLMessagesMessageEditData result;
 
@@ -3639,7 +3643,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesMessageEditData &messages
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLNotifyPeer &notifyPeerValue)
+Stream &Stream::operator>>(TLNotifyPeer &notifyPeerValue)
 {
     TLNotifyPeer result;
 
@@ -3662,7 +3666,7 @@ CTelegramStream &CTelegramStream::operator>>(TLNotifyPeer &notifyPeerValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPaymentRequestedInfo &paymentRequestedInfoValue)
+Stream &Stream::operator>>(TLPaymentRequestedInfo &paymentRequestedInfoValue)
 {
     TLPaymentRequestedInfo result;
 
@@ -3693,7 +3697,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPaymentRequestedInfo &paymentRequ
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPaymentsSavedInfo &paymentsSavedInfoValue)
+Stream &Stream::operator>>(TLPaymentsSavedInfo &paymentsSavedInfoValue)
 {
     TLPaymentsSavedInfo result;
 
@@ -3715,7 +3719,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPaymentsSavedInfo &paymentsSavedI
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPaymentsValidatedRequestedInfo &paymentsValidatedRequestedInfoValue)
+Stream &Stream::operator>>(TLPaymentsValidatedRequestedInfo &paymentsValidatedRequestedInfoValue)
 {
     TLPaymentsValidatedRequestedInfo result;
 
@@ -3740,7 +3744,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPaymentsValidatedRequestedInfo &p
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPeerNotifySettings &peerNotifySettingsValue)
+Stream &Stream::operator>>(TLPeerNotifySettings &peerNotifySettingsValue)
 {
     TLPeerNotifySettings result;
 
@@ -3763,7 +3767,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPeerNotifySettings &peerNotifySet
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPeerSettings &peerSettingsValue)
+Stream &Stream::operator>>(TLPeerSettings &peerSettingsValue)
 {
     TLPeerSettings result;
 
@@ -3782,7 +3786,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPeerSettings &peerSettingsValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhoneCallProtocol &phoneCallProtocolValue)
+Stream &Stream::operator>>(TLPhoneCallProtocol &phoneCallProtocolValue)
 {
     TLPhoneCallProtocol result;
 
@@ -3803,7 +3807,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhoneCallProtocol &phoneCallProto
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhoto &photoValue)
+Stream &Stream::operator>>(TLPhoto &photoValue)
 {
     TLPhoto result;
 
@@ -3829,7 +3833,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhoto &photoValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLReplyMarkup &replyMarkupValue)
+Stream &Stream::operator>>(TLReplyMarkup &replyMarkupValue)
 {
     TLReplyMarkup result;
 
@@ -3856,7 +3860,7 @@ CTelegramStream &CTelegramStream::operator>>(TLReplyMarkup &replyMarkupValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLStickerSet &stickerSetValue)
+Stream &Stream::operator>>(TLStickerSet &stickerSetValue)
 {
     TLStickerSet result;
 
@@ -3881,7 +3885,7 @@ CTelegramStream &CTelegramStream::operator>>(TLStickerSet &stickerSetValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUser &userValue)
+Stream &Stream::operator>>(TLUser &userValue)
 {
     TLUser result;
 
@@ -3937,7 +3941,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUser &userValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLWebDocument &webDocumentValue)
+Stream &Stream::operator>>(TLWebDocument &webDocumentValue)
 {
     TLWebDocument result;
 
@@ -3961,7 +3965,7 @@ CTelegramStream &CTelegramStream::operator>>(TLWebDocument &webDocumentValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAccountPrivacyRules &accountPrivacyRulesValue)
+Stream &Stream::operator>>(TLAccountPrivacyRules &accountPrivacyRulesValue)
 {
     TLAccountPrivacyRules result;
 
@@ -3981,7 +3985,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAccountPrivacyRules &accountPriva
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLAuthAuthorization &authAuthorizationValue)
+Stream &Stream::operator>>(TLAuthAuthorization &authAuthorizationValue)
 {
     TLAuthAuthorization result;
 
@@ -4004,7 +4008,7 @@ CTelegramStream &CTelegramStream::operator>>(TLAuthAuthorization &authAuthorizat
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLBotInlineMessage &botInlineMessageValue)
+Stream &Stream::operator>>(TLBotInlineMessage &botInlineMessageValue)
 {
     TLBotInlineMessage result;
 
@@ -4065,7 +4069,7 @@ CTelegramStream &CTelegramStream::operator>>(TLBotInlineMessage &botInlineMessag
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelsChannelParticipant &channelsChannelParticipantValue)
+Stream &Stream::operator>>(TLChannelsChannelParticipant &channelsChannelParticipantValue)
 {
     TLChannelsChannelParticipant result;
 
@@ -4085,7 +4089,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelsChannelParticipant &chann
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelsChannelParticipants &channelsChannelParticipantsValue)
+Stream &Stream::operator>>(TLChannelsChannelParticipants &channelsChannelParticipantsValue)
 {
     TLChannelsChannelParticipants result;
 
@@ -4108,7 +4112,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelsChannelParticipants &chan
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChat &chatValue)
+Stream &Stream::operator>>(TLChat &chatValue)
 {
     TLChat result;
 
@@ -4175,7 +4179,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChat &chatValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatFull &chatFullValue)
+Stream &Stream::operator>>(TLChatFull &chatFullValue)
 {
     TLChatFull result;
 
@@ -4238,7 +4242,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChatFull &chatFullValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChatInvite &chatInviteValue)
+Stream &Stream::operator>>(TLChatInvite &chatInviteValue)
 {
     TLChatInvite result;
 
@@ -4266,7 +4270,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChatInvite &chatInviteValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLConfig &configValue)
+Stream &Stream::operator>>(TLConfig &configValue)
 {
     TLConfig result;
 
@@ -4324,7 +4328,7 @@ CTelegramStream &CTelegramStream::operator>>(TLConfig &configValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsBlocked &contactsBlockedValue)
+Stream &Stream::operator>>(TLContactsBlocked &contactsBlockedValue)
 {
     TLContactsBlocked result;
 
@@ -4349,7 +4353,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsBlocked &contactsBlockedV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsContacts &contactsContactsValue)
+Stream &Stream::operator>>(TLContactsContacts &contactsContactsValue)
 {
     TLContactsContacts result;
 
@@ -4372,7 +4376,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsContacts &contactsContact
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsFound &contactsFoundValue)
+Stream &Stream::operator>>(TLContactsFound &contactsFoundValue)
 {
     TLContactsFound result;
 
@@ -4393,7 +4397,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsFound &contactsFoundValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsImportedContacts &contactsImportedContactsValue)
+Stream &Stream::operator>>(TLContactsImportedContacts &contactsImportedContactsValue)
 {
     TLContactsImportedContacts result;
 
@@ -4415,7 +4419,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsImportedContacts &contact
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsLink &contactsLinkValue)
+Stream &Stream::operator>>(TLContactsLink &contactsLinkValue)
 {
     TLContactsLink result;
 
@@ -4436,7 +4440,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsLink &contactsLinkValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsResolvedPeer &contactsResolvedPeerValue)
+Stream &Stream::operator>>(TLContactsResolvedPeer &contactsResolvedPeerValue)
 {
     TLContactsResolvedPeer result;
 
@@ -4457,7 +4461,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsResolvedPeer &contactsRes
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLContactsTopPeers &contactsTopPeersValue)
+Stream &Stream::operator>>(TLContactsTopPeers &contactsTopPeersValue)
 {
     TLContactsTopPeers result;
 
@@ -4480,7 +4484,7 @@ CTelegramStream &CTelegramStream::operator>>(TLContactsTopPeers &contactsTopPeer
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDialog &dialogValue)
+Stream &Stream::operator>>(TLDialog &dialogValue)
 {
     TLDialog result;
 
@@ -4512,7 +4516,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDialog &dialogValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLDocument &documentValue)
+Stream &Stream::operator>>(TLDocument &documentValue)
 {
     TLDocument result;
 
@@ -4542,7 +4546,7 @@ CTelegramStream &CTelegramStream::operator>>(TLDocument &documentValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLFoundGif &foundGifValue)
+Stream &Stream::operator>>(TLFoundGif &foundGifValue)
 {
     TLFoundGif result;
 
@@ -4571,7 +4575,7 @@ CTelegramStream &CTelegramStream::operator>>(TLFoundGif &foundGifValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLGame &gameValue)
+Stream &Stream::operator>>(TLGame &gameValue)
 {
     TLGame result;
 
@@ -4599,7 +4603,7 @@ CTelegramStream &CTelegramStream::operator>>(TLGame &gameValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHelpSupport &helpSupportValue)
+Stream &Stream::operator>>(TLHelpSupport &helpSupportValue)
 {
     TLHelpSupport result;
 
@@ -4619,7 +4623,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpSupport &helpSupportValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputBotInlineMessage &inputBotInlineMessageValue)
+Stream &Stream::operator>>(TLInputBotInlineMessage &inputBotInlineMessageValue)
 {
     TLInputBotInlineMessage result;
 
@@ -4686,7 +4690,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputBotInlineMessage &inputBotIn
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputBotInlineResult &inputBotInlineResultValue)
+Stream &Stream::operator>>(TLInputBotInlineResult &inputBotInlineResultValue)
 {
     TLInputBotInlineResult result;
 
@@ -4759,7 +4763,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputBotInlineResult &inputBotInl
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMediaValue)
+Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
 {
     TLInputMedia result;
 
@@ -4868,7 +4872,7 @@ CTelegramStream &CTelegramStream::operator>>(TLInputMedia &inputMediaValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessageAction &messageActionValue)
+Stream &Stream::operator>>(TLMessageAction &messageActionValue)
 {
     TLMessageAction result;
 
@@ -4951,7 +4955,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageAction &messageActionValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesAllStickers &messagesAllStickersValue)
+Stream &Stream::operator>>(TLMessagesAllStickers &messagesAllStickersValue)
 {
     TLMessagesAllStickers result;
 
@@ -4973,7 +4977,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesAllStickers &messagesAllS
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesChatFull &messagesChatFullValue)
+Stream &Stream::operator>>(TLMessagesChatFull &messagesChatFullValue)
 {
     TLMessagesChatFull result;
 
@@ -4994,7 +4998,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesChatFull &messagesChatFul
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesChats &messagesChatsValue)
+Stream &Stream::operator>>(TLMessagesChats &messagesChatsValue)
 {
     TLMessagesChats result;
 
@@ -5017,7 +5021,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesChats &messagesChatsValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesFavedStickers &messagesFavedStickersValue)
+Stream &Stream::operator>>(TLMessagesFavedStickers &messagesFavedStickersValue)
 {
     TLMessagesFavedStickers result;
 
@@ -5040,7 +5044,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesFavedStickers &messagesFa
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesFoundGifs &messagesFoundGifsValue)
+Stream &Stream::operator>>(TLMessagesFoundGifs &messagesFoundGifsValue)
 {
     TLMessagesFoundGifs result;
 
@@ -5060,7 +5064,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesFoundGifs &messagesFoundG
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesHighScores &messagesHighScoresValue)
+Stream &Stream::operator>>(TLMessagesHighScores &messagesHighScoresValue)
 {
     TLMessagesHighScores result;
 
@@ -5080,7 +5084,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesHighScores &messagesHighS
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesRecentStickers &messagesRecentStickersValue)
+Stream &Stream::operator>>(TLMessagesRecentStickers &messagesRecentStickersValue)
 {
     TLMessagesRecentStickers result;
 
@@ -5102,7 +5106,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesRecentStickers &messagesR
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesSavedGifs &messagesSavedGifsValue)
+Stream &Stream::operator>>(TLMessagesSavedGifs &messagesSavedGifsValue)
 {
     TLMessagesSavedGifs result;
 
@@ -5124,7 +5128,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesSavedGifs &messagesSavedG
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesStickerSet &messagesStickerSetValue)
+Stream &Stream::operator>>(TLMessagesStickerSet &messagesStickerSetValue)
 {
     TLMessagesStickerSet result;
 
@@ -5145,7 +5149,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesStickerSet &messagesStick
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesStickers &messagesStickersValue)
+Stream &Stream::operator>>(TLMessagesStickers &messagesStickersValue)
 {
     TLMessagesStickers result;
 
@@ -5167,7 +5171,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesStickers &messagesSticker
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPageBlock &pageBlockValue)
+Stream &Stream::operator>>(TLPageBlock &pageBlockValue)
 {
     TLPageBlock result;
 
@@ -5262,7 +5266,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPageBlock &pageBlockValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPaymentsPaymentForm &paymentsPaymentFormValue)
+Stream &Stream::operator>>(TLPaymentsPaymentForm &paymentsPaymentFormValue)
 {
     TLPaymentsPaymentForm result;
 
@@ -5298,7 +5302,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPaymentsPaymentForm &paymentsPaym
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPaymentsPaymentReceipt &paymentsPaymentReceiptValue)
+Stream &Stream::operator>>(TLPaymentsPaymentReceipt &paymentsPaymentReceiptValue)
 {
     TLPaymentsPaymentReceipt result;
 
@@ -5331,7 +5335,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPaymentsPaymentReceipt &paymentsP
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhoneCall &phoneCallValue)
+Stream &Stream::operator>>(TLPhoneCall &phoneCallValue)
 {
     TLPhoneCall result;
 
@@ -5403,7 +5407,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhoneCall &phoneCallValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhonePhoneCall &phonePhoneCallValue)
+Stream &Stream::operator>>(TLPhonePhoneCall &phonePhoneCallValue)
 {
     TLPhonePhoneCall result;
 
@@ -5423,7 +5427,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhonePhoneCall &phonePhoneCallVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhotosPhoto &photosPhotoValue)
+Stream &Stream::operator>>(TLPhotosPhoto &photosPhotoValue)
 {
     TLPhotosPhoto result;
 
@@ -5443,7 +5447,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhotosPhoto &photosPhotoValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPhotosPhotos &photosPhotosValue)
+Stream &Stream::operator>>(TLPhotosPhotos &photosPhotosValue)
 {
     TLPhotosPhotos result;
 
@@ -5468,7 +5472,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPhotosPhotos &photosPhotosValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLStickerSetCovered &stickerSetCoveredValue)
+Stream &Stream::operator>>(TLStickerSetCovered &stickerSetCoveredValue)
 {
     TLStickerSetCovered result;
 
@@ -5492,7 +5496,7 @@ CTelegramStream &CTelegramStream::operator>>(TLStickerSetCovered &stickerSetCove
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUserFull &userFullValue)
+Stream &Stream::operator>>(TLUserFull &userFullValue)
 {
     TLUserFull result;
 
@@ -5524,7 +5528,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUserFull &userFullValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLBotInlineResult &botInlineResultValue)
+Stream &Stream::operator>>(TLBotInlineResult &botInlineResultValue)
 {
     TLBotInlineResult result;
 
@@ -5591,7 +5595,7 @@ CTelegramStream &CTelegramStream::operator>>(TLBotInlineResult &botInlineResultV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesArchivedStickers &messagesArchivedStickersValue)
+Stream &Stream::operator>>(TLMessagesArchivedStickers &messagesArchivedStickersValue)
 {
     TLMessagesArchivedStickers result;
 
@@ -5611,7 +5615,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesArchivedStickers &message
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesBotResults &messagesBotResultsValue)
+Stream &Stream::operator>>(TLMessagesBotResults &messagesBotResultsValue)
 {
     TLMessagesBotResults result;
 
@@ -5640,7 +5644,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesBotResults &messagesBotRe
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesFeaturedStickers &messagesFeaturedStickersValue)
+Stream &Stream::operator>>(TLMessagesFeaturedStickers &messagesFeaturedStickersValue)
 {
     TLMessagesFeaturedStickers result;
 
@@ -5663,7 +5667,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesFeaturedStickers &message
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesStickerSetInstallResult &messagesStickerSetInstallResultValue)
+Stream &Stream::operator>>(TLMessagesStickerSetInstallResult &messagesStickerSetInstallResultValue)
 {
     TLMessagesStickerSetInstallResult result;
 
@@ -5684,7 +5688,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesStickerSetInstallResult &
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPage &pageValue)
+Stream &Stream::operator>>(TLPage &pageValue)
 {
     TLPage result;
 
@@ -5706,7 +5710,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPage &pageValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLRecentMeUrl &recentMeUrlValue)
+Stream &Stream::operator>>(TLRecentMeUrl &recentMeUrlValue)
 {
     TLRecentMeUrl result;
 
@@ -5741,7 +5745,7 @@ CTelegramStream &CTelegramStream::operator>>(TLRecentMeUrl &recentMeUrlValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLWebPage &webPageValue)
+Stream &Stream::operator>>(TLWebPage &webPageValue)
 {
     TLWebPage result;
 
@@ -5812,7 +5816,7 @@ CTelegramStream &CTelegramStream::operator>>(TLWebPage &webPageValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLHelpRecentMeUrls &helpRecentMeUrlsValue)
+Stream &Stream::operator>>(TLHelpRecentMeUrls &helpRecentMeUrlsValue)
 {
     TLHelpRecentMeUrls result;
 
@@ -5833,7 +5837,7 @@ CTelegramStream &CTelegramStream::operator>>(TLHelpRecentMeUrls &helpRecentMeUrl
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessageMedia &messageMediaValue)
+Stream &Stream::operator>>(TLMessageMedia &messageMediaValue)
 {
     TLMessageMedia result;
 
@@ -5917,7 +5921,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessageMedia &messageMediaValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessage &messageValue)
+Stream &Stream::operator>>(TLMessage &messageValue)
 {
     TLMessage result;
 
@@ -5986,7 +5990,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessage &messageValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesDialogs &messagesDialogsValue)
+Stream &Stream::operator>>(TLMessagesDialogs &messagesDialogsValue)
 {
     TLMessagesDialogs result;
 
@@ -6015,7 +6019,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesDialogs &messagesDialogsV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesMessages &messagesMessagesValue)
+Stream &Stream::operator>>(TLMessagesMessages &messagesMessagesValue)
 {
     TLMessagesMessages result;
 
@@ -6053,7 +6057,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesMessages &messagesMessage
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLMessagesPeerDialogs &messagesPeerDialogsValue)
+Stream &Stream::operator>>(TLMessagesPeerDialogs &messagesPeerDialogsValue)
 {
     TLMessagesPeerDialogs result;
 
@@ -6076,7 +6080,7 @@ CTelegramStream &CTelegramStream::operator>>(TLMessagesPeerDialogs &messagesPeer
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
+Stream &Stream::operator>>(TLUpdate &updateValue)
 {
     TLUpdate result;
 
@@ -6385,7 +6389,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdate &updateValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUpdates &updatesValue)
+Stream &Stream::operator>>(TLUpdates &updatesValue)
 {
     TLUpdates result;
 
@@ -6478,7 +6482,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdates &updatesValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUpdatesChannelDifference &updatesChannelDifferenceValue)
+Stream &Stream::operator>>(TLUpdatesChannelDifference &updatesChannelDifferenceValue)
 {
     TLUpdatesChannelDifference result;
 
@@ -6527,7 +6531,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdatesChannelDifference &updates
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLUpdatesDifference &updatesDifferenceValue)
+Stream &Stream::operator>>(TLUpdatesDifference &updatesDifferenceValue)
 {
     TLUpdatesDifference result;
 
@@ -6566,7 +6570,7 @@ CTelegramStream &CTelegramStream::operator>>(TLUpdatesDifference &updatesDiffere
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelAdminLogEventAction &channelAdminLogEventActionValue)
+Stream &Stream::operator>>(TLChannelAdminLogEventAction &channelAdminLogEventActionValue)
 {
     TLChannelAdminLogEventAction result;
 
@@ -6620,7 +6624,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelAdminLogEventAction &chann
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLPaymentsPaymentResult &paymentsPaymentResultValue)
+Stream &Stream::operator>>(TLPaymentsPaymentResult &paymentsPaymentResultValue)
 {
     TLPaymentsPaymentResult result;
 
@@ -6642,7 +6646,7 @@ CTelegramStream &CTelegramStream::operator>>(TLPaymentsPaymentResult &paymentsPa
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelAdminLogEvent &channelAdminLogEventValue)
+Stream &Stream::operator>>(TLChannelAdminLogEvent &channelAdminLogEventValue)
 {
     TLChannelAdminLogEvent result;
 
@@ -6664,7 +6668,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelAdminLogEvent &channelAdmi
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator>>(TLChannelsAdminLogResults &channelsAdminLogResultsValue)
+Stream &Stream::operator>>(TLChannelsAdminLogResults &channelsAdminLogResultsValue)
 {
     TLChannelsAdminLogResults result;
 
@@ -6687,7 +6691,7 @@ CTelegramStream &CTelegramStream::operator>>(TLChannelsAdminLogResults &channels
 // End of generated read operators implementation
 
 // Generated write operators implementation
-CTelegramStream &CTelegramStream::operator<<(const TLAccountDaysTTL &accountDaysTTLValue)
+Stream &Stream::operator<<(const TLAccountDaysTTL &accountDaysTTLValue)
 {
     *this << accountDaysTTLValue.tlType;
 
@@ -6702,7 +6706,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLAccountDaysTTL &accountDays
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
+Stream &Stream::operator<<(const TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
 {
     *this << accountPasswordInputSettingsValue.tlType;
 
@@ -6729,7 +6733,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLAccountPasswordInputSetting
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLChannelParticipantsFilter &channelParticipantsFilterValue)
+Stream &Stream::operator<<(const TLChannelParticipantsFilter &channelParticipantsFilterValue)
 {
     *this << channelParticipantsFilterValue.tlType;
 
@@ -6750,7 +6754,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLChannelParticipantsFilter &
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLDataJSON &dataJSONValue)
+Stream &Stream::operator<<(const TLDataJSON &dataJSONValue)
 {
     *this << dataJSONValue.tlType;
 
@@ -6765,7 +6769,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLDataJSON &dataJSONValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInlineBotSwitchPM &inlineBotSwitchPMValue)
+Stream &Stream::operator<<(const TLInlineBotSwitchPM &inlineBotSwitchPMValue)
 {
     *this << inlineBotSwitchPMValue.tlType;
 
@@ -6781,7 +6785,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInlineBotSwitchPM &inlineBo
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputAppEvent &inputAppEventValue)
+Stream &Stream::operator<<(const TLInputAppEvent &inputAppEventValue)
 {
     *this << inputAppEventValue.tlType;
 
@@ -6799,7 +6803,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputAppEvent &inputAppEven
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputBotInlineMessageID &inputBotInlineMessageIDValue)
+Stream &Stream::operator<<(const TLInputBotInlineMessageID &inputBotInlineMessageIDValue)
 {
     *this << inputBotInlineMessageIDValue.tlType;
 
@@ -6816,7 +6820,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputBotInlineMessageID &in
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputChannel &inputChannelValue)
+Stream &Stream::operator<<(const TLInputChannel &inputChannelValue)
 {
     *this << inputChannelValue.tlType;
 
@@ -6834,7 +6838,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputChannel &inputChannelV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputContact &inputContactValue)
+Stream &Stream::operator<<(const TLInputContact &inputContactValue)
 {
     *this << inputContactValue.tlType;
 
@@ -6852,7 +6856,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputContact &inputContactV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputDocument &inputDocumentValue)
+Stream &Stream::operator<<(const TLInputDocument &inputDocumentValue)
 {
     *this << inputDocumentValue.tlType;
 
@@ -6870,7 +6874,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputDocument &inputDocumen
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedChat &inputEncryptedChatValue)
+Stream &Stream::operator<<(const TLInputEncryptedChat &inputEncryptedChatValue)
 {
     *this << inputEncryptedChatValue.tlType;
 
@@ -6886,7 +6890,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedChat &inputEn
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedFile &inputEncryptedFileValue)
+Stream &Stream::operator<<(const TLInputEncryptedFile &inputEncryptedFileValue)
 {
     *this << inputEncryptedFileValue.tlType;
 
@@ -6915,7 +6919,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputEncryptedFile &inputEn
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputFile &inputFileValue)
+Stream &Stream::operator<<(const TLInputFile &inputFileValue)
 {
     *this << inputFileValue.tlType;
 
@@ -6938,7 +6942,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputFile &inputFileValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFileLocationValue)
+Stream &Stream::operator<<(const TLInputFileLocation &inputFileLocationValue)
 {
     *this << inputFileLocationValue.tlType;
 
@@ -6964,7 +6968,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputFileLocation &inputFil
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputGeoPoint &inputGeoPointValue)
+Stream &Stream::operator<<(const TLInputGeoPoint &inputGeoPointValue)
 {
     *this << inputGeoPointValue.tlType;
 
@@ -6982,7 +6986,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputGeoPoint &inputGeoPoin
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPeer &inputPeerValue)
+Stream &Stream::operator<<(const TLInputPeer &inputPeerValue)
 {
     *this << inputPeerValue.tlType;
 
@@ -7008,7 +7012,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPeer &inputPeerValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPhoneCall &inputPhoneCallValue)
+Stream &Stream::operator<<(const TLInputPhoneCall &inputPhoneCallValue)
 {
     *this << inputPhoneCallValue.tlType;
 
@@ -7024,7 +7028,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPhoneCall &inputPhoneC
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPhoto &inputPhotoValue)
+Stream &Stream::operator<<(const TLInputPhoto &inputPhotoValue)
 {
     *this << inputPhotoValue.tlType;
 
@@ -7042,7 +7046,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPhoto &inputPhotoValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyKey &inputPrivacyKeyValue)
+Stream &Stream::operator<<(const TLInputPrivacyKey &inputPrivacyKeyValue)
 {
     *this << inputPrivacyKeyValue.tlType;
 
@@ -7058,7 +7062,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyKey &inputPriva
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputStickerSet &inputStickerSetValue)
+Stream &Stream::operator<<(const TLInputStickerSet &inputStickerSetValue)
 {
     *this << inputStickerSetValue.tlType;
 
@@ -7079,7 +7083,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputStickerSet &inputStick
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputStickeredMedia &inputStickeredMediaValue)
+Stream &Stream::operator<<(const TLInputStickeredMedia &inputStickeredMediaValue)
 {
     *this << inputStickeredMediaValue.tlType;
 
@@ -7097,7 +7101,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputStickeredMedia &inputS
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputUser &inputUserValue)
+Stream &Stream::operator<<(const TLInputUser &inputUserValue)
 {
     *this << inputUserValue.tlType;
 
@@ -7116,7 +7120,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputUser &inputUserValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputWebFileLocation &inputWebFileLocationValue)
+Stream &Stream::operator<<(const TLInputWebFileLocation &inputWebFileLocationValue)
 {
     *this << inputWebFileLocationValue.tlType;
 
@@ -7132,7 +7136,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputWebFileLocation &input
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLLabeledPrice &labeledPriceValue)
+Stream &Stream::operator<<(const TLLabeledPrice &labeledPriceValue)
 {
     *this << labeledPriceValue.tlType;
 
@@ -7148,7 +7152,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLLabeledPrice &labeledPriceV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLMaskCoords &maskCoordsValue)
+Stream &Stream::operator<<(const TLMaskCoords &maskCoordsValue)
 {
     *this << maskCoordsValue.tlType;
 
@@ -7166,7 +7170,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLMaskCoords &maskCoordsValue
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLMessageEntity &messageEntityValue)
+Stream &Stream::operator<<(const TLMessageEntity &messageEntityValue)
 {
     *this << messageEntityValue.tlType;
 
@@ -7210,7 +7214,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLMessageEntity &messageEntit
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLMessageRange &messageRangeValue)
+Stream &Stream::operator<<(const TLMessageRange &messageRangeValue)
 {
     *this << messageRangeValue.tlType;
 
@@ -7226,7 +7230,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLMessageRange &messageRangeV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLPhoneCallDiscardReason &phoneCallDiscardReasonValue)
+Stream &Stream::operator<<(const TLPhoneCallDiscardReason &phoneCallDiscardReasonValue)
 {
     *this << phoneCallDiscardReasonValue.tlType;
 
@@ -7243,7 +7247,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLPhoneCallDiscardReason &pho
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLPostAddress &postAddressValue)
+Stream &Stream::operator<<(const TLPostAddress &postAddressValue)
 {
     *this << postAddressValue.tlType;
 
@@ -7263,7 +7267,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLPostAddress &postAddressVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLReportReason &reportReasonValue)
+Stream &Stream::operator<<(const TLReportReason &reportReasonValue)
 {
     *this << reportReasonValue.tlType;
 
@@ -7282,7 +7286,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLReportReason &reportReasonV
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLSendMessageAction &sendMessageActionValue)
+Stream &Stream::operator<<(const TLSendMessageAction &sendMessageActionValue)
 {
     *this << sendMessageActionValue.tlType;
 
@@ -7310,7 +7314,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLSendMessageAction &sendMess
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLShippingOption &shippingOptionValue)
+Stream &Stream::operator<<(const TLShippingOption &shippingOptionValue)
 {
     *this << shippingOptionValue.tlType;
 
@@ -7327,7 +7331,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLShippingOption &shippingOpt
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLTopPeerCategory &topPeerCategoryValue)
+Stream &Stream::operator<<(const TLTopPeerCategory &topPeerCategoryValue)
 {
     *this << topPeerCategoryValue.tlType;
 
@@ -7346,7 +7350,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLTopPeerCategory &topPeerCat
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLChannelAdminLogEventsFilter &channelAdminLogEventsFilterValue)
+Stream &Stream::operator<<(const TLChannelAdminLogEventsFilter &channelAdminLogEventsFilterValue)
 {
     *this << channelAdminLogEventsFilterValue.tlType;
 
@@ -7361,7 +7365,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLChannelAdminLogEventsFilter
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLChannelAdminRights &channelAdminRightsValue)
+Stream &Stream::operator<<(const TLChannelAdminRights &channelAdminRightsValue)
 {
     *this << channelAdminRightsValue.tlType;
 
@@ -7376,7 +7380,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLChannelAdminRights &channel
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLChannelBannedRights &channelBannedRightsValue)
+Stream &Stream::operator<<(const TLChannelBannedRights &channelBannedRightsValue)
 {
     *this << channelBannedRightsValue.tlType;
 
@@ -7392,7 +7396,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLChannelBannedRights &channe
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLChannelMessagesFilter &channelMessagesFilterValue)
+Stream &Stream::operator<<(const TLChannelMessagesFilter &channelMessagesFilterValue)
 {
     *this << channelMessagesFilterValue.tlType;
 
@@ -7410,7 +7414,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLChannelMessagesFilter &chan
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLDocumentAttribute &documentAttributeValue)
+Stream &Stream::operator<<(const TLDocumentAttribute &documentAttributeValue)
 {
     *this << documentAttributeValue.tlType;
 
@@ -7459,7 +7463,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLDocumentAttribute &document
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputChatPhoto &inputChatPhotoValue)
+Stream &Stream::operator<<(const TLInputChatPhoto &inputChatPhotoValue)
 {
     *this << inputChatPhotoValue.tlType;
 
@@ -7479,7 +7483,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputChatPhoto &inputChatPh
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputGame &inputGameValue)
+Stream &Stream::operator<<(const TLInputGame &inputGameValue)
 {
     *this << inputGameValue.tlType;
 
@@ -7499,7 +7503,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputGame &inputGameValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotifyPeerValue)
+Stream &Stream::operator<<(const TLInputNotifyPeer &inputNotifyPeerValue)
 {
     *this << inputNotifyPeerValue.tlType;
 
@@ -7518,7 +7522,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputNotifyPeer &inputNotif
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPaymentCredentials &inputPaymentCredentialsValue)
+Stream &Stream::operator<<(const TLInputPaymentCredentials &inputPaymentCredentialsValue)
 {
     *this << inputPaymentCredentialsValue.tlType;
 
@@ -7544,7 +7548,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPaymentCredentials &in
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
+Stream &Stream::operator<<(const TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
 {
     *this << inputPeerNotifySettingsValue.tlType;
 
@@ -7561,7 +7565,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPeerNotifySettings &in
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyRule &inputPrivacyRuleValue)
+Stream &Stream::operator<<(const TLInputPrivacyRule &inputPrivacyRuleValue)
 {
     *this << inputPrivacyRuleValue.tlType;
 
@@ -7582,7 +7586,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputPrivacyRule &inputPriv
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputStickerSetItem &inputStickerSetItemValue)
+Stream &Stream::operator<<(const TLInputStickerSetItem &inputStickerSetItemValue)
 {
     *this << inputStickerSetItemValue.tlType;
 
@@ -7602,7 +7606,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputStickerSetItem &inputS
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputWebDocument &inputWebDocumentValue)
+Stream &Stream::operator<<(const TLInputWebDocument &inputWebDocumentValue)
 {
     *this << inputWebDocumentValue.tlType;
 
@@ -7620,7 +7624,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputWebDocument &inputWebD
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInvoice &invoiceValue)
+Stream &Stream::operator<<(const TLInvoice &invoiceValue)
 {
     *this << invoiceValue.tlType;
 
@@ -7637,7 +7641,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInvoice &invoiceValue)
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLKeyboardButton &keyboardButtonValue)
+Stream &Stream::operator<<(const TLKeyboardButton &keyboardButtonValue)
 {
     *this << keyboardButtonValue.tlType;
 
@@ -7669,7 +7673,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLKeyboardButton &keyboardBut
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLKeyboardButtonRow &keyboardButtonRowValue)
+Stream &Stream::operator<<(const TLKeyboardButtonRow &keyboardButtonRowValue)
 {
     *this << keyboardButtonRowValue.tlType;
 
@@ -7684,7 +7688,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLKeyboardButtonRow &keyboard
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLMessagesFilter &messagesFilterValue)
+Stream &Stream::operator<<(const TLMessagesFilter &messagesFilterValue)
 {
     *this << messagesFilterValue.tlType;
 
@@ -7715,7 +7719,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLMessagesFilter &messagesFil
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLPaymentRequestedInfo &paymentRequestedInfoValue)
+Stream &Stream::operator<<(const TLPaymentRequestedInfo &paymentRequestedInfoValue)
 {
     *this << paymentRequestedInfoValue.tlType;
 
@@ -7742,7 +7746,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLPaymentRequestedInfo &payme
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLPhoneCallProtocol &phoneCallProtocolValue)
+Stream &Stream::operator<<(const TLPhoneCallProtocol &phoneCallProtocolValue)
 {
     *this << phoneCallProtocolValue.tlType;
 
@@ -7759,7 +7763,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLPhoneCallProtocol &phoneCal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLReplyMarkup &replyMarkupValue)
+Stream &Stream::operator<<(const TLReplyMarkup &replyMarkupValue)
 {
     *this << replyMarkupValue.tlType;
 
@@ -7782,7 +7786,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLReplyMarkup &replyMarkupVal
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputBotInlineMessage &inputBotInlineMessageValue)
+Stream &Stream::operator<<(const TLInputBotInlineMessage &inputBotInlineMessageValue)
 {
     *this << inputBotInlineMessageValue.tlType;
 
@@ -7845,7 +7849,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputBotInlineMessage &inpu
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputBotInlineResult &inputBotInlineResultValue)
+Stream &Stream::operator<<(const TLInputBotInlineResult &inputBotInlineResultValue)
 {
     *this << inputBotInlineResultValue.tlType;
 
@@ -7914,7 +7918,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputBotInlineResult &input
     return *this;
 }
 
-CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMediaValue)
+Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
 {
     *this << inputMediaValue.tlType;
 
@@ -8019,3 +8023,7 @@ CTelegramStream &CTelegramStream::operator<<(const TLInputMedia &inputMediaValue
     return *this;
 }
 // End of generated write operators implementation
+
+} // MTProto namespace
+
+} // Telegram namespace

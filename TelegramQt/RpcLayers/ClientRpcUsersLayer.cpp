@@ -49,7 +49,7 @@ UsersRpcLayer::UsersRpcLayer(QObject *parent) :
 UsersRpcLayer::PendingUserFull *UsersRpcLayer::getFullUser(const TLInputUser &id)
 {
     qCDebug(c_clientRpcUsersCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UsersGetFullUser;
     outputStream << id;
     PendingUserFull *op = new PendingUserFull(this, outputStream.getData());
@@ -60,7 +60,7 @@ UsersRpcLayer::PendingUserFull *UsersRpcLayer::getFullUser(const TLInputUser &id
 UsersRpcLayer::PendingUserVector *UsersRpcLayer::getUsers(const TLVector<TLInputUser> &id)
 {
     qCDebug(c_clientRpcUsersCategory) << Q_FUNC_INFO << id;
-    CTelegramStream outputStream(CTelegramStream::WriteOnly);
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UsersGetUsers;
     outputStream << id;
     PendingUserVector *op = new PendingUserVector(this, outputStream.getData());

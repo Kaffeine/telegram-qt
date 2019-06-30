@@ -16,59 +16,61 @@
  */
 
 #include "FunctionStreamOperators.hpp"
-#include "MTProto/CTelegramStream_p.hpp"
-#include "MTProto/CTelegramStreamExtraOperators.hpp"
-
-// TODO: Generate templates instancing
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLAuthorization> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPrivacyRule> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLUser> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLWallPaper> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLContactBlocked> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLContact> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLContactStatus> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLImportedContact> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLChat> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPeer> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDcOption> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDisabledFeature> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessageEntity> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLUpdate> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLStickerSet> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDialog> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessage> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDocumentAttribute> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLBotInlineResult> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLDocument> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLStickerPack> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLReceivedNotifyMessage> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLFoundGif> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLEncryptedMessage> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLBotCommand> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLChatParticipant> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLKeyboardButton> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPhotoSize> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLMessageRange> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputUser> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLKeyboardButtonRow> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLChannelParticipant> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLBotInfo> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLPhoto> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputPrivacyRule> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputChannel> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputContact> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputAppEvent> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputBotInlineResult> &v);
-template CTelegramStream &CTelegramStream::operator>>(TLVector<TLInputPhoto> &v);
-
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLContactStatus> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLReceivedNotifyMessage> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLLangPackLanguage> &v);
-template CTelegramStream &CTelegramStream::operator<<(const TLVector<TLWallPaper> &v);
+#include "MTProto/Stream_p.hpp"
+#include "MTProto/StreamExtraOperators.hpp"
 
 namespace Telegram {
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPing &ping)
+namespace MTProto {
+
+// TODO: Generate templates instancing
+template Stream &Stream::operator>>(TLVector<TLAuthorization> &v);
+template Stream &Stream::operator>>(TLVector<TLPrivacyRule> &v);
+template Stream &Stream::operator>>(TLVector<TLUser> &v);
+template Stream &Stream::operator>>(TLVector<TLWallPaper> &v);
+template Stream &Stream::operator>>(TLVector<TLContactBlocked> &v);
+template Stream &Stream::operator>>(TLVector<TLContact> &v);
+template Stream &Stream::operator>>(TLVector<TLContactStatus> &v);
+template Stream &Stream::operator>>(TLVector<TLImportedContact> &v);
+template Stream &Stream::operator>>(TLVector<TLChat> &v);
+template Stream &Stream::operator>>(TLVector<TLPeer> &v);
+template Stream &Stream::operator>>(TLVector<TLDcOption> &v);
+template Stream &Stream::operator>>(TLVector<TLDisabledFeature> &v);
+template Stream &Stream::operator>>(TLVector<TLMessageEntity> &v);
+template Stream &Stream::operator>>(TLVector<TLUpdate> &v);
+template Stream &Stream::operator>>(TLVector<TLStickerSet> &v);
+template Stream &Stream::operator>>(TLVector<TLDialog> &v);
+template Stream &Stream::operator>>(TLVector<TLMessage> &v);
+template Stream &Stream::operator>>(TLVector<TLDocumentAttribute> &v);
+template Stream &Stream::operator>>(TLVector<TLBotInlineResult> &v);
+template Stream &Stream::operator>>(TLVector<TLDocument> &v);
+template Stream &Stream::operator>>(TLVector<TLStickerPack> &v);
+template Stream &Stream::operator>>(TLVector<TLReceivedNotifyMessage> &v);
+template Stream &Stream::operator>>(TLVector<TLFoundGif> &v);
+template Stream &Stream::operator>>(TLVector<TLEncryptedMessage> &v);
+template Stream &Stream::operator>>(TLVector<TLBotCommand> &v);
+template Stream &Stream::operator>>(TLVector<TLChatParticipant> &v);
+template Stream &Stream::operator>>(TLVector<TLKeyboardButton> &v);
+template Stream &Stream::operator>>(TLVector<TLPhotoSize> &v);
+template Stream &Stream::operator>>(TLVector<TLMessageRange> &v);
+template Stream &Stream::operator>>(TLVector<TLInputUser> &v);
+template Stream &Stream::operator>>(TLVector<TLKeyboardButtonRow> &v);
+template Stream &Stream::operator>>(TLVector<TLChannelParticipant> &v);
+template Stream &Stream::operator>>(TLVector<TLBotInfo> &v);
+template Stream &Stream::operator>>(TLVector<TLPhoto> &v);
+template Stream &Stream::operator>>(TLVector<TLInputPrivacyRule> &v);
+template Stream &Stream::operator>>(TLVector<TLInputChannel> &v);
+template Stream &Stream::operator>>(TLVector<TLInputContact> &v);
+template Stream &Stream::operator>>(TLVector<TLInputAppEvent> &v);
+template Stream &Stream::operator>>(TLVector<TLInputBotInlineResult> &v);
+template Stream &Stream::operator>>(TLVector<TLInputPhoto> &v);
+
+template Stream &Stream::operator<<(const TLVector<TLContactStatus> &v);
+template Stream &Stream::operator<<(const TLVector<TLReceivedNotifyMessage> &v);
+template Stream &Stream::operator<<(const TLVector<TLLangPackLanguage> &v);
+template Stream &Stream::operator<<(const TLVector<TLWallPaper> &v);
+
+Stream &operator>>(Stream &stream, TLFunctions::TLPing &ping)
 {
     // stream >> function.tlType;
     stream >> ping.tlType;
@@ -87,7 +89,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPing &ping)
 }
 
 // Generated write operators
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountChangePhone &accountChangePhoneFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountChangePhone &accountChangePhoneFunction)
 {
     // stream >> function.tlType;
     stream >> accountChangePhoneFunction.phoneNumber;
@@ -96,14 +98,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountChang
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountCheckUsername &accountCheckUsernameFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountCheckUsername &accountCheckUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> accountCheckUsernameFunction.username;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountConfirmPhone &accountConfirmPhoneFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountConfirmPhone &accountConfirmPhoneFunction)
 {
     // stream >> function.tlType;
     stream >> accountConfirmPhoneFunction.phoneCodeHash;
@@ -111,56 +113,56 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountConfi
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountDeleteAccount &accountDeleteAccountFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountDeleteAccount &accountDeleteAccountFunction)
 {
     // stream >> function.tlType;
     stream >> accountDeleteAccountFunction.reason;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountGetAccountTTL &accountGetAccountTTLFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetAccountTTL &accountGetAccountTTLFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountGetAccountTTLFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountGetAuthorizations &accountGetAuthorizationsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetAuthorizations &accountGetAuthorizationsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountGetAuthorizationsFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountGetNotifySettings &accountGetNotifySettingsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetNotifySettings &accountGetNotifySettingsFunction)
 {
     // stream >> function.tlType;
     stream >> accountGetNotifySettingsFunction.peer;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountGetPassword &accountGetPasswordFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetPassword &accountGetPasswordFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountGetPasswordFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountGetPasswordSettings &accountGetPasswordSettingsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetPasswordSettings &accountGetPasswordSettingsFunction)
 {
     // stream >> function.tlType;
     stream >> accountGetPasswordSettingsFunction.currentPasswordHash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountGetPrivacy &accountGetPrivacyFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetPrivacy &accountGetPrivacyFunction)
 {
     // stream >> function.tlType;
     stream >> accountGetPrivacyFunction.key;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountGetTmpPassword &accountGetTmpPasswordFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetTmpPassword &accountGetTmpPasswordFunction)
 {
     // stream >> function.tlType;
     stream >> accountGetTmpPasswordFunction.passwordHash;
@@ -168,14 +170,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountGetTm
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountGetWallPapers &accountGetWallPapersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetWallPapers &accountGetWallPapersFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountGetWallPapersFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountRegisterDevice &accountRegisterDeviceFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountRegisterDevice &accountRegisterDeviceFunction)
 {
     // stream >> function.tlType;
     stream >> accountRegisterDeviceFunction.tokenType;
@@ -183,7 +185,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountRegis
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountReportPeer &accountReportPeerFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountReportPeer &accountReportPeerFunction)
 {
     // stream >> function.tlType;
     stream >> accountReportPeerFunction.peer;
@@ -191,21 +193,21 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountRepor
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountResetAuthorization &accountResetAuthorizationFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountResetAuthorization &accountResetAuthorizationFunction)
 {
     // stream >> function.tlType;
     stream >> accountResetAuthorizationFunction.hash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountResetNotifySettings &accountResetNotifySettingsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountResetNotifySettings &accountResetNotifySettingsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountResetNotifySettingsFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountSendChangePhoneCode &accountSendChangePhoneCodeFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountSendChangePhoneCode &accountSendChangePhoneCodeFunction)
 {
     // stream >> function.tlType;
     stream >> accountSendChangePhoneCodeFunction.flags;
@@ -217,7 +219,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountSendC
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountSendConfirmPhoneCode &accountSendConfirmPhoneCodeFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountSendConfirmPhoneCode &accountSendConfirmPhoneCodeFunction)
 {
     // stream >> function.tlType;
     stream >> accountSendConfirmPhoneCodeFunction.flags;
@@ -229,14 +231,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountSendC
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountSetAccountTTL &accountSetAccountTTLFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountSetAccountTTL &accountSetAccountTTLFunction)
 {
     // stream >> function.tlType;
     stream >> accountSetAccountTTLFunction.ttl;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountSetPrivacy &accountSetPrivacyFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountSetPrivacy &accountSetPrivacyFunction)
 {
     // stream >> function.tlType;
     stream >> accountSetPrivacyFunction.key;
@@ -244,7 +246,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountSetPr
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUnregisterDevice &accountUnregisterDeviceFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountUnregisterDevice &accountUnregisterDeviceFunction)
 {
     // stream >> function.tlType;
     stream >> accountUnregisterDeviceFunction.tokenType;
@@ -252,14 +254,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUnreg
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUpdateDeviceLocked &accountUpdateDeviceLockedFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateDeviceLocked &accountUpdateDeviceLockedFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateDeviceLockedFunction.period;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUpdateNotifySettings &accountUpdateNotifySettingsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateNotifySettings &accountUpdateNotifySettingsFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateNotifySettingsFunction.peer;
@@ -267,7 +269,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUpdat
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUpdatePasswordSettings &accountUpdatePasswordSettingsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdatePasswordSettings &accountUpdatePasswordSettingsFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdatePasswordSettingsFunction.currentPasswordHash;
@@ -275,7 +277,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUpdat
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUpdateProfile &accountUpdateProfileFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateProfile &accountUpdateProfileFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateProfileFunction.flags;
@@ -291,21 +293,21 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUpdat
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUpdateStatus &accountUpdateStatusFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateStatus &accountUpdateStatusFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateStatusFunction.offline;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAccountUpdateUsername &accountUpdateUsernameFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateUsername &accountUpdateUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateUsernameFunction.username;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthBindTempAuthKey &authBindTempAuthKeyFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthBindTempAuthKey &authBindTempAuthKeyFunction)
 {
     // stream >> function.tlType;
     stream >> authBindTempAuthKeyFunction.permAuthKeyId;
@@ -315,7 +317,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthBindTemp
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthCancelCode &authCancelCodeFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthCancelCode &authCancelCodeFunction)
 {
     // stream >> function.tlType;
     stream >> authCancelCodeFunction.phoneNumber;
@@ -323,35 +325,35 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthCancelCo
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthCheckPassword &authCheckPasswordFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthCheckPassword &authCheckPasswordFunction)
 {
     // stream >> function.tlType;
     stream >> authCheckPasswordFunction.passwordHash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthCheckPhone &authCheckPhoneFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthCheckPhone &authCheckPhoneFunction)
 {
     // stream >> function.tlType;
     stream >> authCheckPhoneFunction.phoneNumber;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthDropTempAuthKeys &authDropTempAuthKeysFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthDropTempAuthKeys &authDropTempAuthKeysFunction)
 {
     // stream >> function.tlType;
     stream >> authDropTempAuthKeysFunction.exceptAuthKeys;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthExportAuthorization &authExportAuthorizationFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthExportAuthorization &authExportAuthorizationFunction)
 {
     // stream >> function.tlType;
     stream >> authExportAuthorizationFunction.dcId;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthImportAuthorization &authImportAuthorizationFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthImportAuthorization &authImportAuthorizationFunction)
 {
     // stream >> function.tlType;
     stream >> authImportAuthorizationFunction.id;
@@ -359,7 +361,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthImportAu
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthImportBotAuthorization &authImportBotAuthorizationFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthImportBotAuthorization &authImportBotAuthorizationFunction)
 {
     // stream >> function.tlType;
     stream >> authImportBotAuthorizationFunction.flags;
@@ -369,28 +371,28 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthImportBo
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthLogOut &authLogOutFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthLogOut &authLogOutFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(authLogOutFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthRecoverPassword &authRecoverPasswordFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthRecoverPassword &authRecoverPasswordFunction)
 {
     // stream >> function.tlType;
     stream >> authRecoverPasswordFunction.code;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthRequestPasswordRecovery &authRequestPasswordRecoveryFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthRequestPasswordRecovery &authRequestPasswordRecoveryFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(authRequestPasswordRecoveryFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthResendCode &authResendCodeFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthResendCode &authResendCodeFunction)
 {
     // stream >> function.tlType;
     stream >> authResendCodeFunction.phoneNumber;
@@ -398,14 +400,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthResendCo
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthResetAuthorizations &authResetAuthorizationsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthResetAuthorizations &authResetAuthorizationsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(authResetAuthorizationsFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthSendCode &authSendCodeFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthSendCode &authSendCodeFunction)
 {
     // stream >> function.tlType;
     stream >> authSendCodeFunction.flags;
@@ -419,7 +421,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthSendCode
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthSendInvites &authSendInvitesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthSendInvites &authSendInvitesFunction)
 {
     // stream >> function.tlType;
     stream >> authSendInvitesFunction.phoneNumbers;
@@ -427,7 +429,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthSendInvi
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthSignIn &authSignInFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthSignIn &authSignInFunction)
 {
     // stream >> function.tlType;
     stream >> authSignInFunction.phoneNumber;
@@ -436,7 +438,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthSignIn &
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthSignUp &authSignUpFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLAuthSignUp &authSignUpFunction)
 {
     // stream >> function.tlType;
     stream >> authSignUpFunction.phoneNumber;
@@ -447,7 +449,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLAuthSignUp &
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLBotsAnswerWebhookJSONQuery &botsAnswerWebhookJSONQueryFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLBotsAnswerWebhookJSONQuery &botsAnswerWebhookJSONQueryFunction)
 {
     // stream >> function.tlType;
     stream >> botsAnswerWebhookJSONQueryFunction.queryId;
@@ -455,7 +457,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLBotsAnswerWe
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLBotsSendCustomRequest &botsSendCustomRequestFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLBotsSendCustomRequest &botsSendCustomRequestFunction)
 {
     // stream >> function.tlType;
     stream >> botsSendCustomRequestFunction.customMethod;
@@ -463,7 +465,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLBotsSendCust
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsCheckUsername &channelsCheckUsernameFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsCheckUsername &channelsCheckUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> channelsCheckUsernameFunction.channel;
@@ -471,7 +473,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsChec
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsCreateChannel &channelsCreateChannelFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsCreateChannel &channelsCreateChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsCreateChannelFunction.flags;
@@ -482,14 +484,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsCrea
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsDeleteChannel &channelsDeleteChannelFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteChannel &channelsDeleteChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsDeleteChannelFunction.channel;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsDeleteHistory &channelsDeleteHistoryFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteHistory &channelsDeleteHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> channelsDeleteHistoryFunction.channel;
@@ -497,7 +499,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsDele
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsDeleteMessages &channelsDeleteMessagesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteMessages &channelsDeleteMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> channelsDeleteMessagesFunction.channel;
@@ -505,7 +507,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsDele
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsDeleteUserHistory &channelsDeleteUserHistoryFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteUserHistory &channelsDeleteUserHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> channelsDeleteUserHistoryFunction.channel;
@@ -513,7 +515,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsDele
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEditAbout &channelsEditAboutFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditAbout &channelsEditAboutFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditAboutFunction.channel;
@@ -521,7 +523,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEditAdmin &channelsEditAdminFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditAdmin &channelsEditAdminFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditAdminFunction.channel;
@@ -530,7 +532,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEditBanned &channelsEditBannedFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditBanned &channelsEditBannedFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditBannedFunction.channel;
@@ -539,7 +541,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEditPhoto &channelsEditPhotoFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditPhoto &channelsEditPhotoFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditPhotoFunction.channel;
@@ -547,7 +549,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEditTitle &channelsEditTitleFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditTitle &channelsEditTitleFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditTitleFunction.channel;
@@ -555,14 +557,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsExportInvite &channelsExportInviteFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsExportInvite &channelsExportInviteFunction)
 {
     // stream >> function.tlType;
     stream >> channelsExportInviteFunction.channel;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsExportMessageLink &channelsExportMessageLinkFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsExportMessageLink &channelsExportMessageLinkFunction)
 {
     // stream >> function.tlType;
     stream >> channelsExportMessageLinkFunction.channel;
@@ -570,7 +572,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsExpo
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetAdminLog &channelsGetAdminLogFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetAdminLog &channelsGetAdminLogFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetAdminLogFunction.flags;
@@ -588,28 +590,28 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetA
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetAdminedPublicChannels &channelsGetAdminedPublicChannelsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetAdminedPublicChannels &channelsGetAdminedPublicChannelsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(channelsGetAdminedPublicChannelsFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetChannels &channelsGetChannelsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetChannels &channelsGetChannelsFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetChannelsFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetFullChannel &channelsGetFullChannelFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetFullChannel &channelsGetFullChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetFullChannelFunction.channel;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetMessages &channelsGetMessagesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetMessages &channelsGetMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetMessagesFunction.channel;
@@ -617,7 +619,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetM
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetParticipant &channelsGetParticipantFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetParticipant &channelsGetParticipantFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetParticipantFunction.channel;
@@ -625,7 +627,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetP
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetParticipants &channelsGetParticipantsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetParticipants &channelsGetParticipantsFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetParticipantsFunction.channel;
@@ -636,7 +638,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsGetP
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsInviteToChannel &channelsInviteToChannelFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsInviteToChannel &channelsInviteToChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsInviteToChannelFunction.channel;
@@ -644,21 +646,21 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsInvi
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsJoinChannel &channelsJoinChannelFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsJoinChannel &channelsJoinChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsJoinChannelFunction.channel;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsLeaveChannel &channelsLeaveChannelFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsLeaveChannel &channelsLeaveChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsLeaveChannelFunction.channel;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsReadHistory &channelsReadHistoryFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsReadHistory &channelsReadHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> channelsReadHistoryFunction.channel;
@@ -666,7 +668,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsRead
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsReadMessageContents &channelsReadMessageContentsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsReadMessageContents &channelsReadMessageContentsFunction)
 {
     // stream >> function.tlType;
     stream >> channelsReadMessageContentsFunction.channel;
@@ -674,7 +676,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsRead
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsReportSpam &channelsReportSpamFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsReportSpam &channelsReportSpamFunction)
 {
     // stream >> function.tlType;
     stream >> channelsReportSpamFunction.channel;
@@ -683,7 +685,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsRepo
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsSetStickers &channelsSetStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsSetStickers &channelsSetStickersFunction)
 {
     // stream >> function.tlType;
     stream >> channelsSetStickersFunction.channel;
@@ -691,7 +693,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsSetS
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsToggleInvites &channelsToggleInvitesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsToggleInvites &channelsToggleInvitesFunction)
 {
     // stream >> function.tlType;
     stream >> channelsToggleInvitesFunction.channel;
@@ -699,7 +701,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsTogg
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsTogglePreHistoryHidden &channelsTogglePreHistoryHiddenFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsTogglePreHistoryHidden &channelsTogglePreHistoryHiddenFunction)
 {
     // stream >> function.tlType;
     stream >> channelsTogglePreHistoryHiddenFunction.channel;
@@ -707,7 +709,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsTogg
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsToggleSignatures &channelsToggleSignaturesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsToggleSignatures &channelsToggleSignaturesFunction)
 {
     // stream >> function.tlType;
     stream >> channelsToggleSignaturesFunction.channel;
@@ -715,7 +717,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsTogg
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsUpdatePinnedMessage &channelsUpdatePinnedMessageFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsUpdatePinnedMessage &channelsUpdatePinnedMessageFunction)
 {
     // stream >> function.tlType;
     stream >> channelsUpdatePinnedMessageFunction.flags;
@@ -725,7 +727,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsUpda
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsUpdateUsername &channelsUpdateUsernameFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLChannelsUpdateUsername &channelsUpdateUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> channelsUpdateUsernameFunction.channel;
@@ -733,35 +735,35 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLChannelsUpda
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsBlock &contactsBlockFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsBlock &contactsBlockFunction)
 {
     // stream >> function.tlType;
     stream >> contactsBlockFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsDeleteContact &contactsDeleteContactFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsDeleteContact &contactsDeleteContactFunction)
 {
     // stream >> function.tlType;
     stream >> contactsDeleteContactFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsDeleteContacts &contactsDeleteContactsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsDeleteContacts &contactsDeleteContactsFunction)
 {
     // stream >> function.tlType;
     stream >> contactsDeleteContactsFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsExportCard &contactsExportCardFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsExportCard &contactsExportCardFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(contactsExportCardFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsGetBlocked &contactsGetBlockedFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetBlocked &contactsGetBlockedFunction)
 {
     // stream >> function.tlType;
     stream >> contactsGetBlockedFunction.offset;
@@ -769,21 +771,21 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsGetB
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsGetContacts &contactsGetContactsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetContacts &contactsGetContactsFunction)
 {
     // stream >> function.tlType;
     stream >> contactsGetContactsFunction.hash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsGetStatuses &contactsGetStatusesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetStatuses &contactsGetStatusesFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(contactsGetStatusesFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsGetTopPeers &contactsGetTopPeersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetTopPeers &contactsGetTopPeersFunction)
 {
     // stream >> function.tlType;
     stream >> contactsGetTopPeersFunction.flags;
@@ -799,28 +801,28 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsGetT
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsImportCard &contactsImportCardFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsImportCard &contactsImportCardFunction)
 {
     // stream >> function.tlType;
     stream >> contactsImportCardFunction.exportCard;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsImportContacts &contactsImportContactsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsImportContacts &contactsImportContactsFunction)
 {
     // stream >> function.tlType;
     stream >> contactsImportContactsFunction.contacts;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsResetSaved &contactsResetSavedFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsResetSaved &contactsResetSavedFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(contactsResetSavedFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsResetTopPeerRating &contactsResetTopPeerRatingFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsResetTopPeerRating &contactsResetTopPeerRatingFunction)
 {
     // stream >> function.tlType;
     stream >> contactsResetTopPeerRatingFunction.category;
@@ -828,14 +830,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsRese
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsResolveUsername &contactsResolveUsernameFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsResolveUsername &contactsResolveUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> contactsResolveUsernameFunction.username;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsSearch &contactsSearchFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsSearch &contactsSearchFunction)
 {
     // stream >> function.tlType;
     stream >> contactsSearchFunction.q;
@@ -843,84 +845,84 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsSear
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLContactsUnblock &contactsUnblockFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLContactsUnblock &contactsUnblockFunction)
 {
     // stream >> function.tlType;
     stream >> contactsUnblockFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpGetAppChangelog &helpGetAppChangelogFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetAppChangelog &helpGetAppChangelogFunction)
 {
     // stream >> function.tlType;
     stream >> helpGetAppChangelogFunction.prevAppVersion;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpGetAppUpdate &helpGetAppUpdateFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetAppUpdate &helpGetAppUpdateFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetAppUpdateFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpGetCdnConfig &helpGetCdnConfigFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetCdnConfig &helpGetCdnConfigFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetCdnConfigFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpGetConfig &helpGetConfigFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetConfig &helpGetConfigFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetConfigFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpGetInviteText &helpGetInviteTextFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetInviteText &helpGetInviteTextFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetInviteTextFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpGetNearestDc &helpGetNearestDcFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetNearestDc &helpGetNearestDcFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetNearestDcFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpGetRecentMeUrls &helpGetRecentMeUrlsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetRecentMeUrls &helpGetRecentMeUrlsFunction)
 {
     // stream >> function.tlType;
     stream >> helpGetRecentMeUrlsFunction.referer;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpGetSupport &helpGetSupportFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetSupport &helpGetSupportFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetSupportFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpGetTermsOfService &helpGetTermsOfServiceFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetTermsOfService &helpGetTermsOfServiceFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetTermsOfServiceFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpSaveAppLog &helpSaveAppLogFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpSaveAppLog &helpSaveAppLogFunction)
 {
     // stream >> function.tlType;
     stream >> helpSaveAppLogFunction.events;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpSetBotUpdatesStatus &helpSetBotUpdatesStatusFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLHelpSetBotUpdatesStatus &helpSetBotUpdatesStatusFunction)
 {
     // stream >> function.tlType;
     stream >> helpSetBotUpdatesStatusFunction.pendingUpdatesCount;
@@ -928,28 +930,28 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLHelpSetBotUp
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLLangpackGetDifference &langpackGetDifferenceFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLLangpackGetDifference &langpackGetDifferenceFunction)
 {
     // stream >> function.tlType;
     stream >> langpackGetDifferenceFunction.fromVersion;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLLangpackGetLangPack &langpackGetLangPackFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLLangpackGetLangPack &langpackGetLangPackFunction)
 {
     // stream >> function.tlType;
     stream >> langpackGetLangPackFunction.langCode;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLLangpackGetLanguages &langpackGetLanguagesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLLangpackGetLanguages &langpackGetLanguagesFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(langpackGetLanguagesFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLLangpackGetStrings &langpackGetStringsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLLangpackGetStrings &langpackGetStringsFunction)
 {
     // stream >> function.tlType;
     stream >> langpackGetStringsFunction.langCode;
@@ -957,7 +959,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLLangpackGetS
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesAcceptEncryption &messagesAcceptEncryptionFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesAcceptEncryption &messagesAcceptEncryptionFunction)
 {
     // stream >> function.tlType;
     stream >> messagesAcceptEncryptionFunction.peer;
@@ -966,7 +968,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesAcce
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesAddChatUser &messagesAddChatUserFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesAddChatUser &messagesAddChatUserFunction)
 {
     // stream >> function.tlType;
     stream >> messagesAddChatUserFunction.chatId;
@@ -975,14 +977,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesAddC
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesCheckChatInvite &messagesCheckChatInviteFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesCheckChatInvite &messagesCheckChatInviteFunction)
 {
     // stream >> function.tlType;
     stream >> messagesCheckChatInviteFunction.hash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesClearRecentStickers &messagesClearRecentStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesClearRecentStickers &messagesClearRecentStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesClearRecentStickersFunction.flags;
@@ -990,7 +992,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesClea
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesCreateChat &messagesCreateChatFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesCreateChat &messagesCreateChatFunction)
 {
     // stream >> function.tlType;
     stream >> messagesCreateChatFunction.users;
@@ -998,7 +1000,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesCrea
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesDeleteChatUser &messagesDeleteChatUserFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDeleteChatUser &messagesDeleteChatUserFunction)
 {
     // stream >> function.tlType;
     stream >> messagesDeleteChatUserFunction.chatId;
@@ -1006,7 +1008,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesDele
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesDeleteHistory &messagesDeleteHistoryFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDeleteHistory &messagesDeleteHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> messagesDeleteHistoryFunction.flags;
@@ -1016,7 +1018,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesDele
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesDeleteMessages &messagesDeleteMessagesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDeleteMessages &messagesDeleteMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> messagesDeleteMessagesFunction.flags;
@@ -1025,14 +1027,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesDele
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesDiscardEncryption &messagesDiscardEncryptionFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDiscardEncryption &messagesDiscardEncryptionFunction)
 {
     // stream >> function.tlType;
     stream >> messagesDiscardEncryptionFunction.chatId;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEditChatAdmin &messagesEditChatAdminFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditChatAdmin &messagesEditChatAdminFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditChatAdminFunction.chatId;
@@ -1041,7 +1043,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEditChatPhoto &messagesEditChatPhotoFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditChatPhoto &messagesEditChatPhotoFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditChatPhotoFunction.chatId;
@@ -1049,7 +1051,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEditChatTitle &messagesEditChatTitleFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditChatTitle &messagesEditChatTitleFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditChatTitleFunction.chatId;
@@ -1057,7 +1059,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEditInlineBotMessage &messagesEditInlineBotMessageFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditInlineBotMessage &messagesEditInlineBotMessageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditInlineBotMessageFunction.flags;
@@ -1079,7 +1081,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEditMessage &messagesEditMessageFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditMessage &messagesEditMessageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditMessageFunction.flags;
@@ -1102,14 +1104,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesEdit
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesExportChatInvite &messagesExportChatInviteFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesExportChatInvite &messagesExportChatInviteFunction)
 {
     // stream >> function.tlType;
     stream >> messagesExportChatInviteFunction.chatId;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesFaveSticker &messagesFaveStickerFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesFaveSticker &messagesFaveStickerFunction)
 {
     // stream >> function.tlType;
     stream >> messagesFaveStickerFunction.id;
@@ -1117,7 +1119,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesFave
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesForwardMessage &messagesForwardMessageFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesForwardMessage &messagesForwardMessageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesForwardMessageFunction.peer;
@@ -1126,7 +1128,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesForw
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesForwardMessages &messagesForwardMessagesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesForwardMessages &messagesForwardMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> messagesForwardMessagesFunction.flags;
@@ -1140,28 +1142,28 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesForw
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetAllChats &messagesGetAllChatsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetAllChats &messagesGetAllChatsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetAllChatsFunction.exceptIds;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetAllDrafts &messagesGetAllDraftsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetAllDrafts &messagesGetAllDraftsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(messagesGetAllDraftsFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetAllStickers &messagesGetAllStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetAllStickers &messagesGetAllStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetAllStickersFunction.hash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetArchivedStickers &messagesGetArchivedStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetArchivedStickers &messagesGetArchivedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetArchivedStickersFunction.flags;
@@ -1171,14 +1173,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetA
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetAttachedStickers &messagesGetAttachedStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetAttachedStickers &messagesGetAttachedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetAttachedStickersFunction.media;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetBotCallbackAnswer &messagesGetBotCallbackAnswerFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetBotCallbackAnswer &messagesGetBotCallbackAnswerFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetBotCallbackAnswerFunction.flags;
@@ -1191,14 +1193,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetB
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetChats &messagesGetChatsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetChats &messagesGetChatsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetChatsFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetCommonChats &messagesGetCommonChatsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetCommonChats &messagesGetCommonChatsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetCommonChatsFunction.userId;
@@ -1207,7 +1209,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetC
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetDhConfig &messagesGetDhConfigFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetDhConfig &messagesGetDhConfigFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetDhConfigFunction.version;
@@ -1215,7 +1217,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetD
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetDialogs &messagesGetDialogsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetDialogs &messagesGetDialogsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetDialogsFunction.flags;
@@ -1227,7 +1229,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetD
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetDocumentByHash &messagesGetDocumentByHashFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetDocumentByHash &messagesGetDocumentByHashFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetDocumentByHashFunction.sha256;
@@ -1236,28 +1238,28 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetD
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetFavedStickers &messagesGetFavedStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetFavedStickers &messagesGetFavedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetFavedStickersFunction.hash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetFeaturedStickers &messagesGetFeaturedStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetFeaturedStickers &messagesGetFeaturedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetFeaturedStickersFunction.hash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetFullChat &messagesGetFullChatFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetFullChat &messagesGetFullChatFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetFullChatFunction.chatId;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetGameHighScores &messagesGetGameHighScoresFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetGameHighScores &messagesGetGameHighScoresFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetGameHighScoresFunction.peer;
@@ -1266,7 +1268,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetG
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetHistory &messagesGetHistoryFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetHistory &messagesGetHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetHistoryFunction.peer;
@@ -1280,7 +1282,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetH
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetInlineBotResults &messagesGetInlineBotResultsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetInlineBotResults &messagesGetInlineBotResultsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetInlineBotResultsFunction.flags;
@@ -1294,7 +1296,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetI
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetInlineGameHighScores &messagesGetInlineGameHighScoresFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetInlineGameHighScores &messagesGetInlineGameHighScoresFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetInlineGameHighScoresFunction.id;
@@ -1302,14 +1304,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetI
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetMaskStickers &messagesGetMaskStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMaskStickers &messagesGetMaskStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetMaskStickersFunction.hash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetMessageEditData &messagesGetMessageEditDataFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMessageEditData &messagesGetMessageEditDataFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetMessageEditDataFunction.peer;
@@ -1317,14 +1319,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetM
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetMessages &messagesGetMessagesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMessages &messagesGetMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetMessagesFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetMessagesViews &messagesGetMessagesViewsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMessagesViews &messagesGetMessagesViewsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetMessagesViewsFunction.peer;
@@ -1333,28 +1335,28 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetM
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetPeerDialogs &messagesGetPeerDialogsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetPeerDialogs &messagesGetPeerDialogsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetPeerDialogsFunction.peers;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetPeerSettings &messagesGetPeerSettingsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetPeerSettings &messagesGetPeerSettingsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetPeerSettingsFunction.peer;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetPinnedDialogs &messagesGetPinnedDialogsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetPinnedDialogs &messagesGetPinnedDialogsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(messagesGetPinnedDialogsFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetRecentLocations &messagesGetRecentLocationsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetRecentLocations &messagesGetRecentLocationsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetRecentLocationsFunction.peer;
@@ -1362,7 +1364,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetR
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetRecentStickers &messagesGetRecentStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetRecentStickers &messagesGetRecentStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetRecentStickersFunction.flags;
@@ -1371,21 +1373,21 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetR
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetSavedGifs &messagesGetSavedGifsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetSavedGifs &messagesGetSavedGifsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetSavedGifsFunction.hash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetStickerSet &messagesGetStickerSetFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetStickerSet &messagesGetStickerSetFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetStickerSetFunction.stickerset;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetUnreadMentions &messagesGetUnreadMentionsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetUnreadMentions &messagesGetUnreadMentionsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetUnreadMentionsFunction.peer;
@@ -1397,7 +1399,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetU
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetWebPage &messagesGetWebPageFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetWebPage &messagesGetWebPageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetWebPageFunction.url;
@@ -1405,28 +1407,28 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetW
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesGetWebPagePreview &messagesGetWebPagePreviewFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetWebPagePreview &messagesGetWebPagePreviewFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetWebPagePreviewFunction.message;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesHideReportSpam &messagesHideReportSpamFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesHideReportSpam &messagesHideReportSpamFunction)
 {
     // stream >> function.tlType;
     stream >> messagesHideReportSpamFunction.peer;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesImportChatInvite &messagesImportChatInviteFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesImportChatInvite &messagesImportChatInviteFunction)
 {
     // stream >> function.tlType;
     stream >> messagesImportChatInviteFunction.hash;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesInstallStickerSet &messagesInstallStickerSetFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesInstallStickerSet &messagesInstallStickerSetFunction)
 {
     // stream >> function.tlType;
     stream >> messagesInstallStickerSetFunction.stickerset;
@@ -1434,14 +1436,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesInst
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesMigrateChat &messagesMigrateChatFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesMigrateChat &messagesMigrateChatFunction)
 {
     // stream >> function.tlType;
     stream >> messagesMigrateChatFunction.chatId;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReadEncryptedHistory &messagesReadEncryptedHistoryFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadEncryptedHistory &messagesReadEncryptedHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadEncryptedHistoryFunction.peer;
@@ -1449,14 +1451,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesRead
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReadFeaturedStickers &messagesReadFeaturedStickersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadFeaturedStickers &messagesReadFeaturedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadFeaturedStickersFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReadHistory &messagesReadHistoryFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadHistory &messagesReadHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadHistoryFunction.peer;
@@ -1464,35 +1466,35 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesRead
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReadMentions &messagesReadMentionsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadMentions &messagesReadMentionsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadMentionsFunction.peer;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReadMessageContents &messagesReadMessageContentsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadMessageContents &messagesReadMessageContentsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadMessageContentsFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReceivedMessages &messagesReceivedMessagesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReceivedMessages &messagesReceivedMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReceivedMessagesFunction.maxId;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReceivedQueue &messagesReceivedQueueFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReceivedQueue &messagesReceivedQueueFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReceivedQueueFunction.maxQts;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReorderPinnedDialogs &messagesReorderPinnedDialogsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReorderPinnedDialogs &messagesReorderPinnedDialogsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReorderPinnedDialogsFunction.flags;
@@ -1501,7 +1503,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReor
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReorderStickerSets &messagesReorderStickerSetsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReorderStickerSets &messagesReorderStickerSetsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReorderStickerSetsFunction.flags;
@@ -1510,21 +1512,21 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReor
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReportEncryptedSpam &messagesReportEncryptedSpamFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReportEncryptedSpam &messagesReportEncryptedSpamFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReportEncryptedSpamFunction.peer;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesReportSpam &messagesReportSpamFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReportSpam &messagesReportSpamFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReportSpamFunction.peer;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesRequestEncryption &messagesRequestEncryptionFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesRequestEncryption &messagesRequestEncryptionFunction)
 {
     // stream >> function.tlType;
     stream >> messagesRequestEncryptionFunction.userId;
@@ -1533,7 +1535,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesRequ
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSaveDraft &messagesSaveDraftFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSaveDraft &messagesSaveDraftFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSaveDraftFunction.flags;
@@ -1549,7 +1551,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSave
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSaveGif &messagesSaveGifFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSaveGif &messagesSaveGifFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSaveGifFunction.id;
@@ -1557,7 +1559,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSave
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSaveRecentSticker &messagesSaveRecentStickerFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSaveRecentSticker &messagesSaveRecentStickerFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSaveRecentStickerFunction.flags;
@@ -1567,7 +1569,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSave
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSearch &messagesSearchFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSearch &messagesSearchFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSearchFunction.flags;
@@ -1587,7 +1589,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSear
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSearchGifs &messagesSearchGifsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSearchGifs &messagesSearchGifsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSearchGifsFunction.q;
@@ -1595,7 +1597,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSear
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSearchGlobal &messagesSearchGlobalFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSearchGlobal &messagesSearchGlobalFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSearchGlobalFunction.q;
@@ -1606,7 +1608,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSear
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSendEncrypted &messagesSendEncryptedFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendEncrypted &messagesSendEncryptedFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendEncryptedFunction.peer;
@@ -1615,7 +1617,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSend
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSendEncryptedFile &messagesSendEncryptedFileFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendEncryptedFile &messagesSendEncryptedFileFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendEncryptedFileFunction.peer;
@@ -1625,7 +1627,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSend
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSendEncryptedService &messagesSendEncryptedServiceFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendEncryptedService &messagesSendEncryptedServiceFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendEncryptedServiceFunction.peer;
@@ -1634,7 +1636,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSend
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSendInlineBotResult &messagesSendInlineBotResultFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendInlineBotResult &messagesSendInlineBotResultFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendInlineBotResultFunction.flags;
@@ -1651,7 +1653,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSend
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSendMedia &messagesSendMediaFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendMedia &messagesSendMediaFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendMediaFunction.flags;
@@ -1670,7 +1672,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSend
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSendMessage &messagesSendMessageFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendMessage &messagesSendMessageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendMessageFunction.flags;
@@ -1693,7 +1695,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSend
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSendScreenshotNotification &messagesSendScreenshotNotificationFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendScreenshotNotification &messagesSendScreenshotNotificationFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendScreenshotNotificationFunction.peer;
@@ -1702,7 +1704,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSend
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetBotCallbackAnswer &messagesSetBotCallbackAnswerFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetBotCallbackAnswer &messagesSetBotCallbackAnswerFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetBotCallbackAnswerFunction.flags;
@@ -1718,7 +1720,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetB
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetBotPrecheckoutResults &messagesSetBotPrecheckoutResultsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetBotPrecheckoutResults &messagesSetBotPrecheckoutResultsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetBotPrecheckoutResultsFunction.flags;
@@ -1730,7 +1732,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetB
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetBotShippingResults &messagesSetBotShippingResultsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetBotShippingResults &messagesSetBotShippingResultsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetBotShippingResultsFunction.flags;
@@ -1744,7 +1746,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetB
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetEncryptedTyping &messagesSetEncryptedTypingFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetEncryptedTyping &messagesSetEncryptedTypingFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetEncryptedTypingFunction.peer;
@@ -1752,7 +1754,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetE
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetGameScore &messagesSetGameScoreFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetGameScore &messagesSetGameScoreFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetGameScoreFunction.flags;
@@ -1765,7 +1767,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetG
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetInlineBotResults &messagesSetInlineBotResultsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetInlineBotResults &messagesSetInlineBotResultsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetInlineBotResultsFunction.flags;
@@ -1783,7 +1785,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetI
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetInlineGameScore &messagesSetInlineGameScoreFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetInlineGameScore &messagesSetInlineGameScoreFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetInlineGameScoreFunction.flags;
@@ -1795,7 +1797,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetI
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetTyping &messagesSetTypingFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetTyping &messagesSetTypingFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetTypingFunction.peer;
@@ -1803,7 +1805,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesSetT
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesStartBot &messagesStartBotFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesStartBot &messagesStartBotFunction)
 {
     // stream >> function.tlType;
     stream >> messagesStartBotFunction.bot;
@@ -1813,7 +1815,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesStar
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesToggleChatAdmins &messagesToggleChatAdminsFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesToggleChatAdmins &messagesToggleChatAdminsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesToggleChatAdminsFunction.chatId;
@@ -1821,7 +1823,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesTogg
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesToggleDialogPin &messagesToggleDialogPinFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesToggleDialogPin &messagesToggleDialogPinFunction)
 {
     // stream >> function.tlType;
     stream >> messagesToggleDialogPinFunction.flags;
@@ -1830,14 +1832,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesTogg
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesUninstallStickerSet &messagesUninstallStickerSetFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesUninstallStickerSet &messagesUninstallStickerSetFunction)
 {
     // stream >> function.tlType;
     stream >> messagesUninstallStickerSetFunction.stickerset;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesUploadMedia &messagesUploadMediaFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLMessagesUploadMedia &messagesUploadMediaFunction)
 {
     // stream >> function.tlType;
     stream >> messagesUploadMediaFunction.peer;
@@ -1845,7 +1847,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLMessagesUplo
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPaymentsClearSavedInfo &paymentsClearSavedInfoFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsClearSavedInfo &paymentsClearSavedInfoFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsClearSavedInfoFunction.flags;
@@ -1854,28 +1856,28 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPaymentsClea
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPaymentsGetPaymentForm &paymentsGetPaymentFormFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsGetPaymentForm &paymentsGetPaymentFormFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsGetPaymentFormFunction.msgId;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPaymentsGetPaymentReceipt &paymentsGetPaymentReceiptFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsGetPaymentReceipt &paymentsGetPaymentReceiptFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsGetPaymentReceiptFunction.msgId;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPaymentsGetSavedInfo &paymentsGetSavedInfoFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsGetSavedInfo &paymentsGetSavedInfoFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(paymentsGetSavedInfoFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPaymentsSendPaymentForm &paymentsSendPaymentFormFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsSendPaymentForm &paymentsSendPaymentFormFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsSendPaymentFormFunction.flags;
@@ -1890,7 +1892,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPaymentsSend
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPaymentsValidateRequestedInfo &paymentsValidateRequestedInfoFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsValidateRequestedInfo &paymentsValidateRequestedInfoFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsValidateRequestedInfoFunction.flags;
@@ -1900,7 +1902,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPaymentsVali
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneAcceptCall &phoneAcceptCallFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhoneAcceptCall &phoneAcceptCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneAcceptCallFunction.peer;
@@ -1909,7 +1911,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneAcceptC
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneConfirmCall &phoneConfirmCallFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhoneConfirmCall &phoneConfirmCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneConfirmCallFunction.peer;
@@ -1919,7 +1921,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneConfirm
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneDiscardCall &phoneDiscardCallFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhoneDiscardCall &phoneDiscardCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneDiscardCallFunction.peer;
@@ -1929,21 +1931,21 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneDiscard
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneGetCallConfig &phoneGetCallConfigFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhoneGetCallConfig &phoneGetCallConfigFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(phoneGetCallConfigFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneReceivedCall &phoneReceivedCallFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhoneReceivedCall &phoneReceivedCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneReceivedCallFunction.peer;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneRequestCall &phoneRequestCallFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhoneRequestCall &phoneRequestCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneRequestCallFunction.userId;
@@ -1953,7 +1955,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneRequest
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneSaveCallDebug &phoneSaveCallDebugFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhoneSaveCallDebug &phoneSaveCallDebugFunction)
 {
     // stream >> function.tlType;
     stream >> phoneSaveCallDebugFunction.peer;
@@ -1961,7 +1963,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneSaveCal
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneSetCallRating &phoneSetCallRatingFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhoneSetCallRating &phoneSetCallRatingFunction)
 {
     // stream >> function.tlType;
     stream >> phoneSetCallRatingFunction.peer;
@@ -1970,14 +1972,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhoneSetCall
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhotosDeletePhotos &photosDeletePhotosFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhotosDeletePhotos &photosDeletePhotosFunction)
 {
     // stream >> function.tlType;
     stream >> photosDeletePhotosFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhotosGetUserPhotos &photosGetUserPhotosFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhotosGetUserPhotos &photosGetUserPhotosFunction)
 {
     // stream >> function.tlType;
     stream >> photosGetUserPhotosFunction.userId;
@@ -1987,21 +1989,21 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhotosGetUse
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhotosUpdateProfilePhoto &photosUpdateProfilePhotoFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhotosUpdateProfilePhoto &photosUpdateProfilePhotoFunction)
 {
     // stream >> function.tlType;
     stream >> photosUpdateProfilePhotoFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLPhotosUploadProfilePhoto &photosUploadProfilePhotoFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLPhotosUploadProfilePhoto &photosUploadProfilePhotoFunction)
 {
     // stream >> function.tlType;
     stream >> photosUploadProfilePhotoFunction.file;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLStickersAddStickerToSet &stickersAddStickerToSetFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLStickersAddStickerToSet &stickersAddStickerToSetFunction)
 {
     // stream >> function.tlType;
     stream >> stickersAddStickerToSetFunction.stickerset;
@@ -2009,7 +2011,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLStickersAddS
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLStickersChangeStickerPosition &stickersChangeStickerPositionFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLStickersChangeStickerPosition &stickersChangeStickerPositionFunction)
 {
     // stream >> function.tlType;
     stream >> stickersChangeStickerPositionFunction.sticker;
@@ -2017,7 +2019,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLStickersChan
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLStickersCreateStickerSet &stickersCreateStickerSetFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLStickersCreateStickerSet &stickersCreateStickerSetFunction)
 {
     // stream >> function.tlType;
     stream >> stickersCreateStickerSetFunction.flags;
@@ -2029,14 +2031,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLStickersCrea
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLStickersRemoveStickerFromSet &stickersRemoveStickerFromSetFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLStickersRemoveStickerFromSet &stickersRemoveStickerFromSetFunction)
 {
     // stream >> function.tlType;
     stream >> stickersRemoveStickerFromSetFunction.sticker;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUpdatesGetChannelDifference &updatesGetChannelDifferenceFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUpdatesGetChannelDifference &updatesGetChannelDifferenceFunction)
 {
     // stream >> function.tlType;
     stream >> updatesGetChannelDifferenceFunction.flags;
@@ -2048,7 +2050,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUpdatesGetCh
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUpdatesGetDifference &updatesGetDifferenceFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUpdatesGetDifference &updatesGetDifferenceFunction)
 {
     // stream >> function.tlType;
     stream >> updatesGetDifferenceFunction.flags;
@@ -2061,14 +2063,14 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUpdatesGetDi
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUpdatesGetState &updatesGetStateFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUpdatesGetState &updatesGetStateFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(updatesGetStateFunction)
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadGetCdnFile &uploadGetCdnFileFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetCdnFile &uploadGetCdnFileFunction)
 {
     // stream >> function.tlType;
     stream >> uploadGetCdnFileFunction.fileToken;
@@ -2077,7 +2079,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadGetCdn
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadGetCdnFileHashes &uploadGetCdnFileHashesFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetCdnFileHashes &uploadGetCdnFileHashesFunction)
 {
     // stream >> function.tlType;
     stream >> uploadGetCdnFileHashesFunction.fileToken;
@@ -2085,7 +2087,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadGetCdn
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadGetFile &uploadGetFileFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetFile &uploadGetFileFunction)
 {
     // stream >> function.tlType;
     stream >> uploadGetFileFunction.location;
@@ -2094,7 +2096,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadGetFil
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadGetWebFile &uploadGetWebFileFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetWebFile &uploadGetWebFileFunction)
 {
     // stream >> function.tlType;
     stream >> uploadGetWebFileFunction.location;
@@ -2103,7 +2105,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadGetWeb
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadReuploadCdnFile &uploadReuploadCdnFileFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUploadReuploadCdnFile &uploadReuploadCdnFileFunction)
 {
     // stream >> function.tlType;
     stream >> uploadReuploadCdnFileFunction.fileToken;
@@ -2111,7 +2113,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadReuplo
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadSaveBigFilePart &uploadSaveBigFilePartFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUploadSaveBigFilePart &uploadSaveBigFilePartFunction)
 {
     // stream >> function.tlType;
     stream >> uploadSaveBigFilePartFunction.fileId;
@@ -2121,7 +2123,7 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadSaveBi
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadSaveFilePart &uploadSaveFilePartFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUploadSaveFilePart &uploadSaveFilePartFunction)
 {
     // stream >> function.tlType;
     stream >> uploadSaveFilePartFunction.fileId;
@@ -2130,19 +2132,21 @@ CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUploadSaveFi
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUsersGetFullUser &usersGetFullUserFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUsersGetFullUser &usersGetFullUserFunction)
 {
     // stream >> function.tlType;
     stream >> usersGetFullUserFunction.id;
     return stream;
 }
 
-CTelegramStream &operator>>(CTelegramStream &stream, TLFunctions::TLUsersGetUsers &usersGetUsersFunction)
+Stream &operator>>(Stream &stream, TLFunctions::TLUsersGetUsers &usersGetUsersFunction)
 {
     // stream >> function.tlType;
     stream >> usersGetUsersFunction.id;
     return stream;
 }
 // End of generated write operators
+
+} // MTProto namespace
 
 } // Telegram namespace

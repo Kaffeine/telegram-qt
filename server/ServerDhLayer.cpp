@@ -60,7 +60,7 @@ void DhLayer::init()
 
 bool DhLayer::processRequestPQ(const QByteArray &data)
 {
-    CTelegramStream inputStream(data);
+    MTProto::Stream inputStream(data);
     TLValue value;
     inputStream >> value;
     inputStream >> m_clientNonce;
@@ -76,7 +76,7 @@ bool DhLayer::sendResultPQ()
     RandomGenerator::instance()->generate(m_serverNonce.data, m_serverNonce.size());
     const TLVector<quint64> fingerprints = { m_rsaKey.fingerprint };
     QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
+    MTProto::Stream outputStream(&output, /* write */ true);
 //    qCDebug(c_serverDhLayerCategory) << "Write data:" << m_clientNonce << m_serverNonce << pqAsByteArray.toHex() << "fp:" << fingerprints << "(pq:" << m_pq << ")";
     outputStream << TLValue::ResPQ;
     outputStream << m_clientNonce;
@@ -91,7 +91,7 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
 {
     QByteArray encryptedPackage;
     {
-        CTelegramStream inputStream(data);
+        MTProto::Stream inputStream(data);
         TLValue value;
         inputStream >> value;
         if (value != TLValue::ReqDHParams) {
@@ -145,7 +145,7 @@ bool DhLayer::processRequestDHParams(const QByteArray &data)
     {
         QByteArray bigEndianNumber;
 //        QByteArray innerData;
-        CTelegramStream encryptedStream(innerData);
+        MTProto::Stream encryptedStream(innerData);
         TLValue v;
         encryptedStream >> v;
         if (v != TLValue::PQInnerData) {
@@ -231,7 +231,7 @@ bool DhLayer::acceptDhParams()
 
     const QByteArray innerData = [this](){
         QByteArray data;
-        CTelegramStream stream(&data, /* write */ true);
+        MTProto::Stream stream(&data, /* write */ true);
         stream << TLValue::ServerDHInnerData;
         stream << m_clientNonce;
         stream << m_serverNonce;
@@ -256,7 +256,7 @@ bool DhLayer::acceptDhParams()
     const QByteArray encryptedAnswer = Crypto::aesEncrypt(sha + innerData + randomPadding, m_tmpAesKey);
 
     QByteArray output;
-    CTelegramStream outputStream(&output, /* write */ true);
+    MTProto::Stream outputStream(&output, /* write */ true);
     outputStream << TLValue::ServerDHParamsOk;
     outputStream << m_clientNonce;
     outputStream << m_serverNonce;
@@ -271,7 +271,7 @@ bool DhLayer::declineDhParams()
 
 bool DhLayer::processSetClientDHParams(const QByteArray &data)
 {
-    CTelegramStream stream(data);
+    MTProto::Stream stream(data);
 
     TLValue value;
     stream >> value;
@@ -292,7 +292,7 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
     const QByteArray sha1OfAnswer = answerWithHash.mid(0, 20);
     const QByteArray answer = answerWithHash.mid(20, 304);
 
-    CTelegramStream encryptedInputStream(answer);
+    MTProto::Stream encryptedInputStream(answer);
 
     TLValue responseTLValue;
     encryptedInputStream >> responseTLValue;
@@ -321,7 +321,7 @@ bool DhLayer::processSetClientDHParams(const QByteArray &data)
         qCDebug(c_serverDhLayerCategory) << Q_FUNC_INFO << "answerDcGenOk";
 
         QByteArray output;
-        CTelegramStream outputStream(&output, /* write */ true);
+        MTProto::Stream outputStream(&output, /* write */ true);
 
         outputStream << TLValue::DhGenOk;
         outputStream << m_clientNonce;

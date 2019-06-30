@@ -33,7 +33,7 @@ RpcProcessingContext::RpcProcessingContext(MTProto::Stream &stream, quint64 requ
 {
 #ifdef DEVELOPER_BUILD
     MTProto::Stream debugStream(stream.getData());
-    dumpRpc(debugStream);
+    MTProto::dumpRpc(debugStream);
 #endif
 }
 

@@ -24,18 +24,15 @@
 
 #include "Crypto/Aes.hpp"
 
-class CTelegramStream;
-
 namespace Telegram {
 
 namespace MTProto {
 
+class Stream;
 struct FullMessageHeader;
 struct Message;
 
-using Stream = ::CTelegramStream;
-
-} // MTProto
+} // MTProto namespace
 
 class BaseMTProtoSendHelper;
 enum class SendMode : quint8;
