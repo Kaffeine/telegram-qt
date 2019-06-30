@@ -1,7 +1,7 @@
 #ifndef CSERVERTCPTRANSPORT_HPP
 #define CSERVERTCPTRANSPORT_HPP
 
-#include "../TelegramQt/CTcpTransport.hpp"
+#include "CTcpTransport.hpp"
 
 QT_FORWARD_DECLARE_CLASS(QTcpSocket)
 

@@ -3,19 +3,18 @@
 
 #include <QObject>
 
-#include "RsaKey.hpp"
 #include "MTProto/TLTypes.hpp"
-#include "TelegramNamespace.hpp"
-
+#include "RsaKey.hpp"
 #include "ServerApi.hpp"
-
-QT_FORWARD_DECLARE_CLASS(QTcpServer)
-QT_FORWARD_DECLARE_CLASS(QTcpSocket)
-QT_FORWARD_DECLARE_CLASS(QTimer)
+#include "TelegramNamespace.hpp"
 
 #include <QHash>
 #include <QSet>
 #include <QVector>
+
+QT_FORWARD_DECLARE_CLASS(QTcpServer)
+QT_FORWARD_DECLARE_CLASS(QTcpSocket)
+QT_FORWARD_DECLARE_CLASS(QTimer)
 
 namespace Telegram {
 

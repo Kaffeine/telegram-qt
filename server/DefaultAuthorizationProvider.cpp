@@ -1,10 +1,5 @@
 #include "DefaultAuthorizationProvider.hpp"
 
-#include "ServerApi.hpp"
-#include "ServerRpcLayer.hpp"
-#include "Session.hpp"
-#include "TelegramServerUser.hpp"
-
 #include "RandomGenerator.hpp"
 
 #include <QLoggingCategory>

@@ -1,6 +1,7 @@
 #include "Session.hpp"
-#include "RemoteClientConnection.hpp"
+
 #include "RandomGenerator.hpp"
+#include "RemoteClientConnection.hpp"
 
 #include <QDateTime>
 #include <QLoggingCategory>

@@ -2,8 +2,6 @@
 
 #include "AesCtr.hpp"
 #include "CRawStream.hpp"
-#include "MTProto/TLValues.hpp"
-#include "Utils.hpp"
 
 #include <QHostAddress>
 #include <QLoggingCategory>

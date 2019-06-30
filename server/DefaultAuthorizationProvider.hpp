@@ -3,6 +3,9 @@
 
 #include "AuthorizationProvider.hpp"
 
+#include <QObject>
+#include <QHash>
+
 namespace Telegram {
 
 namespace Server {

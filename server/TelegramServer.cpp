@@ -1,6 +1,8 @@
 #include "TelegramServer.hpp"
 
+#include "ApiUtils.hpp"
 #include "CServerTcpTransport.hpp"
+#include "Debug_p.hpp"
 #include "RemoteClientConnection.hpp"
 #include "RemoteServerConnection.hpp"
 #include "ServerDhLayer.hpp"
@@ -28,9 +30,6 @@
 #include "UploadOperationFactory.hpp"
 #include "UsersOperationFactory.hpp"
 // End of generated RPC Operation Factory includes
-
-#include "ApiUtils.hpp"
-#include "Debug_p.hpp"
 
 #include <QLoggingCategory>
 #include <QTcpServer>

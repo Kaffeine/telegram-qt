@@ -45,6 +45,7 @@ set(server_lib_SOURCES
     ServerRpcOperation.hpp
     ServerRpcOperation_p.hpp
     ServerUtils.cpp
+    ServerUtils.hpp
     Session.cpp
     Session.hpp
     Storage.cpp

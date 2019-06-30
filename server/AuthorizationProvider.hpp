@@ -1,12 +1,14 @@
 #ifndef TELEGRAM_QT_SERVER_AUTHORIZATION_PROVIDER_HPP
 #define TELEGRAM_QT_SERVER_AUTHORIZATION_PROVIDER_HPP
 
-#include "ServerNamespace.hpp"
-#include "ServerApi.hpp"
+#include <QByteArray>
+#include <QString>
 
 namespace Telegram {
 
 namespace Server {
+
+class Session;
 
 namespace Authorization {
 
