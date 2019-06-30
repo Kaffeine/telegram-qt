@@ -24,6 +24,14 @@ set(generator_SOURCES
 
 add_executable(generator ${generator_SOURCES})
 
+set(generator_TEMPLATES
+    templates/ClientRpcLayerTemplate.cpp
+    templates/ClientRpcLayerTemplate.hpp
+    templates/LICENSE.template
+    templates/ServerOperationFactory.cpp
+    templates/ServerOperationFactory.hpp
+)
+
 target_link_libraries(generator
     Qt5::Core
     Qt5::Network
@@ -33,6 +41,6 @@ target_link_libraries(generator
 add_custom_target(run_codegen
     COMMAND generator --generate-from-text ${SCHEME_FILE} -I ${CMAKE_SOURCE_DIR}/TelegramQt
     DEPENDS generator
-    SOURCES ${SCHEME_FILE}
+    SOURCES ${SCHEME_FILE} ${generator_TEMPLATES}
     VERBATIM
 )
