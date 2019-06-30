@@ -121,7 +121,7 @@ QString processOperationType(const QString &typeName)
 QString removeTypePrefix(QString name)
 {
     if (name.startsWith(tlPrefix)) {
-        return name.mid(2);
+        return name.mid(tlPrefix.length());
     }
     if (name.startsWith(QLatin1Char('Q')) && (name.size() > 1) && name.at(1).isUpper()) {
         return name.mid(1);
