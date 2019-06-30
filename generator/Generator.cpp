@@ -77,6 +77,24 @@ static const QStringList typesBlackList = QStringList()
         << tlTrueType
            ;
 
+QDebug operator<<(QDebug d, const TLParam &param)
+{
+    d << param.type() << ":" << param.getAlias() << "; ";
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLType &type)
+{
+    d << "TLType(" << type.name << ") {";
+    foreach (const TLSubType &sub, type.subTypes) {
+        d << sub.name << ":" << sub.members;
+    }
+
+    d << "}";
+
+    return d;
+}
+
 QString ensureGoodName(const QString &name, const QVariantHash &context)
 {
     static const QStringList badNames = QStringList()
@@ -108,43 +126,6 @@ QString ensureGoodName(const QString &name, const QVariantHash &context)
     }
 
     return badNamesReplacers.at(index);
-}
-
-QString processOperationType(const QString &typeName)
-{
-    if (typeName == QLatin1String("bool")) {
-        return tlPrefix + QLatin1String("Bool");
-    }
-    return typeName;
-}
-
-QString removeTypePrefix(QString name)
-{
-    if (name.startsWith(tlPrefix)) {
-        return name.mid(tlPrefix.length());
-    }
-    if (name.startsWith(QLatin1Char('Q')) && (name.size() > 1) && name.at(1).isUpper()) {
-        return name.mid(1);
-    }
-    return name;
-}
-
-QDebug operator<<(QDebug d, const TLParam &param)
-{
-    d << param.type() << ":" << param.getAlias() << "; ";
-    return d;
-}
-
-QDebug operator<<(QDebug d, const TLType &type)
-{
-    d << "TLType(" << type.name << ") {";
-    foreach (const TLSubType &sub, type.subTypes) {
-        d << sub.name << ":" << sub.members;
-    }
-
-    d << "}";
-
-    return d;
 }
 
 inline int indexOfSeparator(const QString &str, int minIndex)
@@ -212,6 +193,25 @@ QString Generator::formatName(const QStringList &nameParts, const FormatOptions 
         result[0] = result.at(0).toLower();
     }
     return result;
+}
+
+QString processOperationType(const QString &typeName)
+{
+    if (typeName == QLatin1String("bool")) {
+        return tlPrefix + QLatin1String("Bool");
+    }
+    return typeName;
+}
+
+QString removeTypePrefix(QString name)
+{
+    if (name.startsWith(tlPrefix)) {
+        return name.mid(tlPrefix.length());
+    }
+    if (name.startsWith(QLatin1Char('Q')) && (name.size() > 1) && name.at(1).isUpper()) {
+        return name.mid(1);
+    }
+    return name;
 }
 
 QString removePrefix(const QString &str)
