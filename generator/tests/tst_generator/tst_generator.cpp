@@ -212,7 +212,10 @@ void tst_Generator::checkTypeWithMemberConflicts()
     };
     for (const QString &mustHaveMember : checkList) {
         if (!structMembers.contains(mustHaveMember)) {
-            // qDebug().noquote() << structMembers.join(QLatin1Char('\n'));
+            qDebug().noquote() << "Generated members:";
+            for (const QString &member : structMembers) {
+                qDebug().noquote() << "    " << member;
+            }
             QString message = QStringLiteral("The member \"%1\" is missing in the generated struct of the type %2.").arg(mustHaveMember, generatedTypeName);
             QFAIL(message.toUtf8().constData());
         }
@@ -242,7 +245,10 @@ void tst_Generator::recursiveTypeMembers()
     };
     for (const QString &mustHaveMember : checkList) {
         if (!structMembers.contains(mustHaveMember)) {
-            // qDebug().noquote() << structMembers.join(QLatin1Char('\n'));
+            qDebug().noquote() << "Generated members:";
+            for (const QString &member : structMembers) {
+                qDebug().noquote() << "    " << member;
+            }
             QString message = QStringLiteral("The member \"%1\" is missing in the generated struct of the type %2.").arg(mustHaveMember, generatedTypeName);
             QFAIL(message.toUtf8().constData());
         }
@@ -272,7 +278,10 @@ void tst_Generator::doubleRecursiveTypeMembers()
     };
     for (const QString &mustHaveMember : checkList) {
         if (!structMembers.contains(mustHaveMember)) {
-             qDebug().noquote() << structMembers.join(QLatin1Char('\n'));
+            qDebug().noquote() << "Generated members:";
+            for (const QString &member : structMembers) {
+                qDebug().noquote() << "    " << member;
+            }
             QString message = QStringLiteral("The member \"%1\" is missing in the generated struct of the type %2.").arg(mustHaveMember, generatedTypeName);
             QFAIL(message.toUtf8().constData());
         }
