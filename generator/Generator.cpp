@@ -37,18 +37,19 @@ static const QString tlNamespacePrefix = tlNamespace + QLatin1Literal("::");
 static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
 static const QString tlTypeMember = QLatin1String("tlType");
-static const QString tlVectorType = QLatin1String("TLVector");
+static const QString tlVectorType = tlPrefix + QLatin1String("Vector");
 static const QString functionsType = QLatin1String("TLFunctions");
-static const QString tlTrueType = QLatin1String("TLTrue");
+static const QString tlTrueType = tlPrefix + QLatin1String("True");
+static const QString tlNullType = tlPrefix + QLatin1String("Null");
 static const QStringList podTypes = QStringList() << "bool" << "quint32" << "quint64" << "double" << tlValueName;
 static const QStringList initTypesValues = QStringList() << "false" << "0" << "0" << "0" << "0";
 static const QStringList plainTypes = QStringList() << "Bool" << "#" << "int" << "long" << "double" << "string" << "bytes"
-                                                    << QStringLiteral("int128")
-                                                    << QStringLiteral("int256")
+                                                    << QLatin1String("int128")
+                                                    << QLatin1String("int256")
                                                        ;
 static const QStringList nativeTypes = QStringList() << "bool" << "quint32" << "quint32" << "quint64" << "double" << "QString" << "QByteArray"
-                                                     << QStringLiteral("TLNumber128")
-                                                     << QStringLiteral("TLNumber256")
+                                                     << tlPrefix + QLatin1String("Number128")
+                                                     << tlPrefix + QLatin1String("Number256")
                                                         ;
 static const QLatin1String c_internalExportMacro = QLatin1String("TELEGRAMQT_INTERNAL_EXPORT");
 
@@ -71,8 +72,8 @@ static const QString streamClassName = QLatin1String("Stream");
 static const QString methodsClassName = QLatin1String("CTelegramConnection");
 
 static const QStringList typesBlackList = QStringList()
-        << QLatin1String("TLVector t")
-        << QLatin1String("TLNull")
+        << tlVectorType + QLatin1String(" t")
+        << tlNullType
         << tlTrueType
            ;
 
