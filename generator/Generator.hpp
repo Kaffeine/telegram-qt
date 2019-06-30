@@ -320,6 +320,7 @@ private:
     QStringList m_functionGroups;
 };
 
+Q_DECLARE_METATYPE(Generator::FormatOptions)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Generator::FormatOptions)
 
 #endif // GENERATORNG_HPP

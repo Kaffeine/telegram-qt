@@ -83,6 +83,8 @@ public:
 private slots:
     void checkRemoveWord_data();
     void checkRemoveWord();
+    void checkFormatName_data();
+    void checkFormatName();
     void checkTypeWithMemberConflicts();
     void recursiveTypeMembers();
     void doubleRecursiveTypeMembers();
@@ -148,6 +150,46 @@ void tst_Generator::checkRemoveWord()
     QFETCH(QString, output);
     QFETCH(QString, word);
     QCOMPARE(Generator::removeWord(input, word), output);
+}
+
+void tst_Generator::checkFormatName_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("output");
+    QTest::addColumn<Generator::FormatOptions>("options");
+
+    QTest::newRow("UpperCaseFirstLetter")
+            << "inputVideo"
+            << "InputVideo"
+            << Generator::FormatOptions(Generator::FormatOption::UpperCaseFirstLetter);
+
+    QTest::newRow("LowerCaseFirstLetter")
+            << "InputVideo"
+            << "inputVideo"
+            << Generator::FormatOptions(Generator::FormatOption::LowerCaseFirstLetter);
+
+    QTest::newRow("SkipFirstWord")
+            << "AuthCheckPassword"
+            << "CheckPassword"
+            << Generator::FormatOptions(Generator::FormatOption::SkipFirstWord);
+
+    QTest::newRow("RemoveSeparators")
+            << "auth_checkPassword"
+            << "authCheckPassword"
+            << Generator::FormatOptions(Generator::FormatOption::RemoveSeparators);
+
+    QTest::newRow("SkipTl")
+            << "TLInputPeer"
+            << "InputPeer"
+            << Generator::FormatOptions(Generator::FormatOption::SkipTl);
+}
+
+void tst_Generator::checkFormatName()
+{
+    QFETCH(QString, input);
+    QFETCH(QString, output);
+    QFETCH(Generator::FormatOptions, options);
+    QCOMPARE(Generator::formatName(input, options), output);
 }
 
 void tst_Generator::checkTypeWithMemberConflicts()
