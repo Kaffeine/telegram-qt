@@ -12,7 +12,7 @@
 #include "RpcError.hpp"
 #include "RpcProcessingContext.hpp"
 
-#include "CTelegramStreamExtraOperators.hpp"
+#include "MTProto/StreamExtraOperators.hpp"
 #include "FunctionStreamOperators.hpp"
 
 #include <QLoggingCategory>

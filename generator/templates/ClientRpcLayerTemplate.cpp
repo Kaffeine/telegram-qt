@@ -1,7 +1,7 @@
 #include "ClientRpc__VAR_GROUP_NAME__Layer.hpp"
 #include "ClientRpcLayerExtension_p.hpp"
-#include "CTelegramStream.hpp"
-#include "TLTypesDebug.hpp"
+#include "MTProto/Stream.hpp"
+#include "MTProto/TLTypesDebug.hpp"
 #include "Debug_p.hpp"
 #include "PendingOperation.hpp"
 
