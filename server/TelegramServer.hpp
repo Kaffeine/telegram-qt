@@ -50,7 +50,7 @@ public:
     quint32 getDcIdForUserIdentifier(const QString &phoneNumber);
 
     void setAuthorizationProvider(Authorization::Provider *provider);
-    void setStorage(Storage *storage);
+    void setMessageService(MessageService *messageService);
 
     void registerAuthKey(quint64 authId, const QByteArray &authKey);
 
@@ -66,7 +66,7 @@ public:
     bool identifierIsValid(const QString &identifier) const override;
     QString normalizeIdentifier(const QString &identifier) const override;
 
-    Storage *storage() const override { return m_storage; }
+    MessageService *messageService() const override { return m_messageService; }
 
     AbstractUser *getAbstractUser(quint32 userId) const override;
     AbstractUser *getAbstractUser(const QString &identifier) const override;
@@ -117,7 +117,7 @@ protected:
 
 protected:
     Authorization::Provider *m_authProvider = nullptr;
-    Storage *m_storage = nullptr;
+    MessageService *m_messageService = nullptr;
 
 private:
     QTcpServer *m_serverSocket;

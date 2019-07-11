@@ -22,6 +22,8 @@ set(server_lib_SOURCES
     FunctionStreamOperators.hpp
     LocalCluster.cpp
     LocalCluster.hpp
+    MessageService.cpp
+    MessageService.hpp
     RemoteClientConnection.cpp
     RemoteClientConnection.hpp
     RemoteClientConnectionHelper.cpp
@@ -48,8 +50,6 @@ set(server_lib_SOURCES
     ServerUtils.hpp
     Session.cpp
     Session.hpp
-    Storage.cpp
-    Storage.hpp
     TelegramServer.cpp
     TelegramServer.hpp
     TelegramServerConfig.cpp

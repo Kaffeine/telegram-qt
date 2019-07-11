@@ -3,6 +3,7 @@
 #include "ApiUtils.hpp"
 #include "CServerTcpTransport.hpp"
 #include "Debug_p.hpp"
+#include "MessageService.hpp"
 #include "RemoteClientConnection.hpp"
 #include "RemoteServerConnection.hpp"
 #include "ServerDhLayer.hpp"
@@ -10,7 +11,6 @@
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
 #include "Session.hpp"
-#include "Storage.hpp"
 #include "TelegramServerUser.hpp"
 
 // Generated RPC Operation Factory includes
@@ -153,9 +153,9 @@ void Server::setAuthorizationProvider(Authorization::Provider *provider)
     m_authProvider = provider;
 }
 
-void Server::setStorage(Storage *storage)
+void Server::setMessageService(MessageService *storage)
 {
-    m_storage = storage;
+    m_messageService = storage;
 }
 
 void Server::onNewConnection()
@@ -537,7 +537,7 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             update.tlType = TLValue::UpdateNewMessage;
 
             const quint64 globalMessageId = recipient->getPostBox()->getMessageGlobalId(notification.messageId);
-            const MessageData *messageData = storage()->getMessage(globalMessageId);
+            const MessageData *messageData = messageService()->getMessage(globalMessageId);
 
             if (!messageData) {
                 qCWarning(lcServerUpdates) << CALL_INFO << "no message";

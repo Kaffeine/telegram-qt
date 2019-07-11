@@ -26,7 +26,7 @@
 #include "ServerMessageData.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
-#include "Storage.hpp"
+#include "MessageService.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
@@ -1035,7 +1035,7 @@ void MessagesRpcOperation::runGetDialogs()
 
         const PostBox *box = selfUser->getPostBox();
         quint64 topMessageGlobalId = box->getMessageGlobalId(tlDialog.topMessage);
-        const MessageData *messageData = api()->storage()->getMessage(topMessageGlobalId);
+        const MessageData *messageData = api()->messageService()->getMessage(topMessageGlobalId);
 
         if (messageData) {
             result.messages.resize(result.messages.size() + 1);
@@ -1155,7 +1155,7 @@ void MessagesRpcOperation::runGetHistory()
             continue;
         }
 
-        const MessageData *messageData = api()->storage()->getMessage(globalMessageId);
+        const MessageData *messageData = api()->messageService()->getMessage(globalMessageId);
 
         if (!messageData) {
             // It's OK to have no message e.g. for deleted entires
@@ -1462,7 +1462,7 @@ void MessagesRpcOperation::runReadHistory()
             continue;
         }
 
-        const MessageData *messageData = api()->storage()->getMessage(globalMessageId);
+        const MessageData *messageData = api()->messageService()->getMessage(globalMessageId);
         if (messageData->fromId() == selfUser->id()) {
             continue;
         }
@@ -1491,7 +1491,7 @@ void MessagesRpcOperation::runReadHistory()
     selfUserPostBox->bumpPts();
 
     const quint64 globalMessageId = selfUser->getPostBox()->getMessageGlobalId(maxId);
-    const MessageData *messageData = api()->storage()->getMessage(globalMessageId);
+    const MessageData *messageData = api()->messageService()->getMessage(globalMessageId);
 
     LocalUser *messageSender = api()->getUser(messageData->fromId());
     UserDialog *senderDialog = messageSender->getDialog(messageData->toPeer());
@@ -1755,8 +1755,8 @@ void MessagesRpcOperation::runSendMedia()
     case TLValue::InputMediaUploadedDocument:
     {
         const TLInputFile &inFile = arguments.media.file;
-        FileDescriptor desc = api()->storage()->getFileDescriptor(inFile.id, inFile.parts);
-        desc = api()->storage()->saveDocumentFile(desc, inFile.name, arguments.media.mimeType);
+        FileDescriptor desc = api()->messageService()->getFileDescriptor(inFile.id, inFile.parts);
+        desc = api()->messageService()->saveDocumentFile(desc, inFile.name, arguments.media.mimeType);
 
         if (!desc.isValid()) {
             sendRpcError(RpcError());
@@ -1784,7 +1784,7 @@ void MessagesRpcOperation::runSendMedia()
         break;
     }
 
-    MessageData *messageData = api()->storage()->addMessageMedia(selfUser->id(), recipient->toPeer(), media);
+    MessageData *messageData = api()->messageService()->addMessageMedia(selfUser->id(), recipient->toPeer(), media);
     submitMessageData(messageData, arguments.randomId);
 }
 
@@ -1800,7 +1800,7 @@ void MessagesRpcOperation::runSendMessage()
         sendRpcError(RpcError(RpcError::PeerIdInvalid));
         return;
     }
-    MessageData *messageData = api()->storage()->addMessage(selfUser->id(), targetPeer, arguments.message);
+    MessageData *messageData = api()->messageService()->addMessage(selfUser->id(), targetPeer, arguments.message);
 
     submitMessageData(messageData, arguments.randomId);
 }

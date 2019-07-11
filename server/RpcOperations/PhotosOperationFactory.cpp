@@ -24,7 +24,7 @@
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
-#include "Storage.hpp"
+#include "MessageService.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
@@ -130,13 +130,13 @@ void PhotosRpcOperation::runUpdateProfilePhoto()
 void PhotosRpcOperation::runUploadProfilePhoto()
 {
     TLFunctions::TLPhotosUploadProfilePhoto &arguments = m_uploadProfilePhoto;
-    const FileDescriptor desc = api()->storage()->getFileDescriptor(arguments.file.id, arguments.file.parts);
+    const FileDescriptor desc = api()->messageService()->getFileDescriptor(arguments.file.id, arguments.file.parts);
 
     if (!desc.isValid()) {
         sendRpcError(RpcError());
     }
 
-    const ImageDescriptor image = api()->storage()->processImageFile(desc, arguments.file.name);
+    const ImageDescriptor image = api()->messageService()->processImageFile(desc, arguments.file.name);
 
     LocalUser *selfUser = layer()->getUser();
 

@@ -15,15 +15,15 @@
 
  */
 
-#ifndef TELEGRAM_QT_SERVER_STORAGE_HPP
-#define TELEGRAM_QT_SERVER_STORAGE_HPP
-
-#include <QObject>
-#include <QHash>
-#include <QSet>
+#ifndef TELEGRAM_QT_SERVER_MESSAGE_SERVICE_HPP
+#define TELEGRAM_QT_SERVER_MESSAGE_SERVICE_HPP
 
 #include "ServerNamespace.hpp"
 #include "ServerMessageData.hpp"
+
+#include <QHash>
+#include <QObject>
+#include <QSet>
 
 QT_FORWARD_DECLARE_CLASS(QFile)
 QT_FORWARD_DECLARE_CLASS(QIODevice)
@@ -32,11 +32,11 @@ namespace Telegram {
 
 namespace Server {
 
-class Storage : public QObject
+class MessageService : public QObject
 {
     Q_OBJECT
 public:
-    explicit Storage(QObject *parent = nullptr);
+    explicit MessageService(QObject *parent = nullptr);
     MessageData *addMessage(quint32 fromId, Peer toPeer, const QString &text);
     MessageData *addMessageMedia(quint32 fromId, Peer toPeer, const MediaData &media);
     const MessageData *getMessage(quint64 globalId);
@@ -76,4 +76,4 @@ protected:
 
 } // Telegram namespace
 
-#endif // TELEGRAM_QT_SERVER_STORAGE_HPP
+#endif // TELEGRAM_QT_SERVER_MESSAGE_SERVICE_HPP

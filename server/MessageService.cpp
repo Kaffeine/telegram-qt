@@ -15,7 +15,7 @@
 
  */
 
-#include "Storage.hpp"
+#include "MessageService.hpp"
 
 #include "ApiUtils.hpp"
 #include "Debug_p.hpp"
@@ -39,12 +39,12 @@ const QVector<int> ImageSizeDescriptor::Sizes = {
     ImageSizeDescriptor::Max
 };
 
-Storage::Storage(QObject *parent) :
+MessageService::MessageService(QObject *parent) :
     QObject(parent)
 {
 }
 
-MessageData *Storage::addMessage(quint32 fromId, Peer toPeer, const QString &text)
+MessageData *MessageService::addMessage(quint32 fromId, Peer toPeer, const QString &text)
 {
     ++m_lastGlobalId;
     m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, text));
@@ -54,7 +54,7 @@ MessageData *Storage::addMessage(quint32 fromId, Peer toPeer, const QString &tex
     return message;
 }
 
-MessageData *Storage::addMessageMedia(quint32 fromId, Peer toPeer, const MediaData &media)
+MessageData *MessageService::addMessageMedia(quint32 fromId, Peer toPeer, const MediaData &media)
 {
     ++m_lastGlobalId;
     m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, media));
@@ -64,7 +64,7 @@ MessageData *Storage::addMessageMedia(quint32 fromId, Peer toPeer, const MediaDa
     return message;
 }
 
-const MessageData *Storage::getMessage(quint64 globalId)
+const MessageData *MessageService::getMessage(quint64 globalId)
 {
     if (!m_messages.contains(globalId)) {
         return nullptr;
@@ -72,7 +72,7 @@ const MessageData *Storage::getMessage(quint64 globalId)
     return &m_messages[globalId];
 }
 
-bool Storage::uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)
+bool MessageService::uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)
 {
     if (!m_tmpFiles.contains(fileId)) {
         FileData newFile;
@@ -88,7 +88,7 @@ bool Storage::uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray 
 }
 
 // InputFile
-FileDescriptor Storage::getFileDescriptor(quint64 fileId, quint32 parts) const
+FileDescriptor MessageService::getFileDescriptor(quint64 fileId, quint32 parts) const
 {
     if (!m_tmpFiles.contains(fileId)) {
         return FileDescriptor();
@@ -104,7 +104,7 @@ FileDescriptor Storage::getFileDescriptor(quint64 fileId, quint32 parts) const
     return descriptor;
 }
 
-FileDescriptor Storage::getSecretFileDescriptor(quint64 volumeId,
+FileDescriptor MessageService::getSecretFileDescriptor(quint64 volumeId,
                                                 quint32 localId,
                                                 quint64 secret) const
 {
@@ -119,7 +119,7 @@ FileDescriptor Storage::getSecretFileDescriptor(quint64 volumeId,
     return FileDescriptor();
 }
 
-FileDescriptor Storage::getDocumentFileDescriptor(quint64 fileId, quint64 accessHash) const
+FileDescriptor MessageService::getDocumentFileDescriptor(quint64 fileId, quint64 accessHash) const
 {
     for (const FileDescriptor &descriptor : m_allFileDescriptors) {
         if (descriptor.id == fileId) {
@@ -132,7 +132,7 @@ FileDescriptor Storage::getDocumentFileDescriptor(quint64 fileId, quint64 access
     return FileDescriptor();
 }
 
-quint64 Storage::getMessageUniqueTs()
+quint64 MessageService::getMessageUniqueTs()
 {
     quint64 ts = Telegram::Utils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
     if (ts <= m_lastTimestamp) {
@@ -142,7 +142,7 @@ quint64 Storage::getMessageUniqueTs()
     return ts;
 }
 
-QIODevice *Storage::beginReadFile(const FileDescriptor &descriptor)
+QIODevice *MessageService::beginReadFile(const FileDescriptor &descriptor)
 {
     QFile *file = new QFile();
     m_openFiles.insert(file);
@@ -156,7 +156,7 @@ QIODevice *Storage::beginReadFile(const FileDescriptor &descriptor)
     return file;
 }
 
-void Storage::endReadFile(QIODevice *device)
+void MessageService::endReadFile(QIODevice *device)
 {
     QFile *file = static_cast<QFile *>(device);
     if (!m_openFiles.contains(file)) {
@@ -168,7 +168,7 @@ void Storage::endReadFile(QIODevice *device)
     delete file;
 }
 
-QIODevice *Storage::beginWriteFile()
+QIODevice *MessageService::beginWriteFile()
 {
     QDir().mkpath(c_storageFileDir.arg(volumeId()));
 
@@ -182,7 +182,7 @@ QIODevice *Storage::beginWriteFile()
     return file;
 }
 
-FileDescriptor *Storage::endWriteFile(QIODevice *device, const QString &name)
+FileDescriptor *MessageService::endWriteFile(QIODevice *device, const QString &name)
 {
     QFile *file = static_cast<QFile *>(device);
     if (!m_openFiles.contains(file)) {
@@ -209,7 +209,7 @@ FileDescriptor *Storage::endWriteFile(QIODevice *device, const QString &name)
     return &m_allFileDescriptors.last();
 }
 
-FileDescriptor Storage::saveDocumentFile(const FileDescriptor &descriptor,
+FileDescriptor MessageService::saveDocumentFile(const FileDescriptor &descriptor,
                                          const QString &fileName,
                                          const QString &mimeType)
 {
@@ -226,7 +226,7 @@ FileDescriptor Storage::saveDocumentFile(const FileDescriptor &descriptor,
     return *savedFile;
 }
 
-ImageDescriptor Storage::processImageFile(const FileDescriptor &file, const QString &name)
+ImageDescriptor MessageService::processImageFile(const FileDescriptor &file, const QString &name)
 {
     if (!m_tmpFiles.contains(file.id)) {
         return ImageDescriptor();
@@ -274,7 +274,7 @@ ImageDescriptor Storage::processImageFile(const FileDescriptor &file, const QStr
     return result;
 }
 
-quint64 Storage::volumeId() const
+quint64 MessageService::volumeId() const
 {
     return 1;
 }

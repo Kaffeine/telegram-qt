@@ -2,7 +2,7 @@
 
 #include "DefaultAuthorizationProvider.hpp"
 #include "RemoteServerConnection.hpp"
-#include "Storage.hpp"
+#include "MessageService.hpp"
 #include "TelegramServer.hpp"
 #include "TelegramServerUser.hpp"
 
@@ -27,9 +27,9 @@ void LocalCluster::setServerContructor(LocalCluster::ServerConstructor construct
     m_constructor = constructor;
 }
 
-void LocalCluster::setStorage(Storage *storage)
+void LocalCluster::setMessageService(MessageService *service)
 {
-    m_storage = storage;
+    m_messageService = service;
 }
 
 void LocalCluster::setAuthorizationProvider(Authorization::Provider *provider)
@@ -59,9 +59,9 @@ bool LocalCluster::start()
         return false;
     }
 
-    if (!m_storage) {
+    if (!m_messageService) {
         qCDebug(lcCluster) << CALL_INFO << "Fallback to default Storage implementation";
-        m_storage = new Storage(this);
+        m_messageService = new MessageService(this);
     }
 
     if (!m_authProvider) {
@@ -86,7 +86,7 @@ bool LocalCluster::start()
         server->setServerConfiguration(m_serverConfiguration);
         server->setDcOption(dc);
         server->setServerPrivateRsaKey(m_key);
-        server->setStorage(m_storage);
+        server->setMessageService(m_messageService);
         server->setAuthorizationProvider(m_authProvider);
         m_serverInstances.append(server);
     }
