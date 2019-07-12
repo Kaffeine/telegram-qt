@@ -14,12 +14,7 @@ namespace Telegram {
 
 namespace Server {
 
-namespace Authorization {
-
-class Provider;
-
-} // Authorization namespace
-
+class AuthService;
 class Session;
 class LocalUser;
 class RemoteClientConnection;
@@ -34,16 +29,6 @@ struct PhoneStatus
     bool online = false;
     quint32 dcId = 0;
     bool exists() const { return dcId; }
-};
-
-struct PasswordInfo
-{
-    bool hasPassword() const { return !currentSalt.isEmpty(); }
-    QByteArray newSalt;
-    QString emailUnconfirmedPattern;
-    QByteArray currentSalt;
-    QString hint;
-    bool hasRecovery = false;
 };
 
 struct UpdateNotification
@@ -86,6 +71,7 @@ public:
     virtual bool identifierIsValid(const QString &identifier) const = 0; // Argument is 'phoneNumber'
     virtual QString normalizeIdentifier(const QString &identifier) const = 0;
 
+    virtual AuthService *authService() const = 0;
     virtual MediaService *mediaService() const = 0;
     virtual MessageService *messageService() const = 0;
 
@@ -105,10 +91,6 @@ public:
 class LocalServerApi : public AbstractServerApi
 {
 public:
-    virtual PasswordInfo getPassword(const QString &identifier) = 0;
-    virtual bool checkPassword(const QString &identifier, const QByteArray &hash) = 0;
-    virtual Authorization::Provider *getAuthorizationProvider() = 0;
-
     virtual LocalUser *addUser(const QString &identifier) = 0;
     virtual LocalUser *getUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(quint32 userId) const = 0;
@@ -117,8 +99,6 @@ public:
     virtual Session *getSessionById(quint64 authId) const = 0;
     virtual void bindUserSession(LocalUser *user, Session *session) = 0;
     virtual bool setUserName(LocalUser *user, const QString &newUsername) = 0;
-    virtual QByteArray getAuthKeyById(quint64 authId) const = 0;
-    virtual quint32 getUserIdByAuthId(quint64 authId) const = 0;
 
     virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
     virtual QVector<UpdateNotification> processMessage(MessageData *messageData) = 0;

@@ -33,6 +33,7 @@
 
 #include "ContactList.hpp"
 #include "ContactsApi.hpp"
+#include "AuthService.hpp"
 #include "DefaultAuthorizationProvider.hpp"
 #include "TelegramServer.hpp"
 #include "RemoteClientConnection.hpp"
@@ -336,7 +337,7 @@ void tst_all::testCheckInSignIn()
 
     quint64 clientAuthId = accountStorage.authId();
     QVERIFY(clientAuthId);
-    const quint32 clientUserId = server->getUserIdByAuthId(clientAuthId);
+    const quint32 clientUserId = server->authService()->getUserIdByAuthId(clientAuthId);
     QVERIFY(clientUserId);
 
     Telegram::Server::LocalUser *serverSideUser = server->getUser(clientUserId);
@@ -502,7 +503,7 @@ void tst_all::testSignUp()
     QCOMPARE(clientConnections.count(), 1);
     Server::RemoteClientConnection *remoteClientConnection = *clientConnections.cbegin();
     QCOMPARE(remoteClientConnection->authId(), clientAuthId);
-    quint32 clientUserId = server->getUserIdByAuthId(clientAuthId);
+    quint32 clientUserId = server->authService()->getUserIdByAuthId(clientAuthId);
     QVERIFY(clientUserId);
     Telegram::Server::LocalUser *serverSideUser = server->getUser(clientUserId);
     QVERIFY(serverSideUser);

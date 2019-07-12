@@ -1,5 +1,6 @@
 #include "AuthOperationFactory.hpp"
 
+#include "AuthService.hpp"
 #include "RpcOperationFactory_p.hpp"
 
 // TODO: Instead of this include, add a generated cpp with all needed template instances
@@ -179,7 +180,7 @@ void AuthRpcOperation::runCheckPassword()
         return;
     }
     LocalUser *user = session->wanterUser();
-    const bool passwordIsCorrect = api()->checkPassword(user->phoneNumber(), m_checkPassword.passwordHash);
+    const bool passwordIsCorrect = api()->authService()->checkPassword(user, m_checkPassword.passwordHash);
     if (!passwordIsCorrect) {
         sendRpcError(RpcError::PasswordHashInvalid);
         return;
@@ -311,7 +312,7 @@ void AuthRpcOperation::runSendCode()
         return;
     }
 
-    Authorization::Provider *provider = api()->getAuthorizationProvider();
+    Authorization::Provider *provider = api()->authService()->getAuthorizationProvider();
     const Authorization::SentCodeInfo code = provider->sendCode(layer()->session(), arguments.phoneNumber);
 
     TLAuthSentCode result;
@@ -440,7 +441,7 @@ void AuthRpcOperation::runSignUp()
 
 bool AuthRpcOperation::verifyAuthCode(const QString &phoneNumber, const QString &hash, const QString &code)
 {
-    Authorization::Provider *provider = api()->getAuthorizationProvider();
+    Authorization::Provider *provider = api()->authService()->getAuthorizationProvider();
     Authorization::CodeStatus status = provider->getCodeStatus(phoneNumber, hash.toLatin1(), code);
     if (status == Authorization::CodeStatus::CodeValid) {
         return true;

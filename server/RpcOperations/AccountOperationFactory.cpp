@@ -18,6 +18,7 @@
 #include "AccountOperationFactory.hpp"
 
 #include "ApiUtils.hpp"
+#include "AuthService.hpp"
 #include "RpcOperationFactory_p.hpp"
 // TODO: Instead of this include, add a generated cpp with all needed template instances
 #include "ServerRpcOperation_p.hpp"
@@ -304,7 +305,7 @@ void AccountRpcOperation::runGetPassword()
         return;
     }
     LocalUser *user = layer()->session()->userOrWantedUser();
-    PasswordInfo info = api()->getPassword(user->phoneNumber());
+    PasswordInfo info = api()->authService()->getPassword(user);
 
     TLAccountPassword result;
     if (info.hasPassword()) {

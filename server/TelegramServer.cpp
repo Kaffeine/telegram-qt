@@ -1,6 +1,7 @@
 #include "TelegramServer.hpp"
 
 #include "ApiUtils.hpp"
+#include "AuthService.hpp"
 #include "CServerTcpTransport.hpp"
 #include "Debug_p.hpp"
 #include "MediaService.hpp"
@@ -47,6 +48,7 @@ namespace Server {
 Server::Server(QObject *parent) :
     QObject(parent)
 {
+    m_authService = new AuthService(this);
     m_mediaService = new MediaService(this);
 
     m_rpcOperationFactories = {
@@ -153,7 +155,7 @@ quint32 Server::getDcIdForUserIdentifier(const QString &phoneNumber)
 
 void Server::setAuthorizationProvider(Authorization::Provider *provider)
 {
-    m_authProvider = provider;
+    m_authService->setAuthorizationProvider(provider);
 }
 
 void Server::setMessageService(MessageService *storage)
@@ -193,7 +195,7 @@ void Server::onClientConnectionStatusChanged()
     RemoteClientConnection *client = qobject_cast<RemoteClientConnection*>(sender());
     if (client->status() == RemoteClientConnection::Status::HasDhKey) {
         if (!client->session()) {
-            registerAuthKey(client->authId(), client->authKey());
+            m_authService->registerAuthKey(client->authId(), client->authKey());
             qCDebug(loggingCategoryServer) << Q_FUNC_INFO << "Connected a client with a new auth key"
                                               << "from" << client->transport()->remoteAddress();
         }
@@ -339,11 +341,6 @@ LocalUser *Server::addUser(const QString &identifier)
     return user;
 }
 
-void Server::registerAuthKey(quint64 authId, const QByteArray &authKey)
-{
-    m_authorizations.insert(authId, authKey);
-}
-
 bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId)
 {
     Session *session = getSessionById(sessionId);
@@ -358,7 +355,7 @@ bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId
             session->generateInitialServerSalt();
         }
 
-        const quint32 userId = getUserIdByAuthId(client->authId());
+        const quint32 userId = m_authService->getUserIdByAuthId(client->authId());
         if (userId) {
             session->setUser(getUser(userId));
         }
@@ -376,7 +373,7 @@ Session *Server::getSessionById(quint64 sessionId) const
 void Server::bindUserSession(LocalUser *user, Session *session)
 {
     user->addSession(session);
-    addUserAuthorization(user, session->getConnection()->authId());
+    m_authService->addUserAuthorization(user, session->getConnection()->authId());
 }
 
 bool Server::setUserName(LocalUser *user, const QString &newUsername)
@@ -393,22 +390,6 @@ bool Server::setUserName(LocalUser *user, const QString &newUsername)
     user->setUserName(newUsername);
     m_usernameToUserId.remove(previousName);
     return true;
-}
-
-QByteArray Server::getAuthKeyById(quint64 authId) const
-{
-    return m_authorizations.value(authId);
-}
-
-quint32 Server::getUserIdByAuthId(quint64 authId) const
-{
-    return m_authToUserId.value(authId);
-}
-
-void Server::addUserAuthorization(LocalUser *user, quint64 authKeyId)
-{
-    m_authToUserId.insert(authKeyId, user->userId());
-    user->addAuthKey(authKeyId);
 }
 
 /*
@@ -646,27 +627,6 @@ PhoneStatus Server::getPhoneStatus(const QString &identifier) const
         result.dcId = user->dcId();
     }
     return result;
-}
-
-PasswordInfo Server::getPassword(const QString &identifier)
-{
-    PasswordInfo result;
-    LocalUser *user = getUser(identifier);
-    if (user && user->hasPassword()) {
-        result.currentSalt = user->passwordSalt();
-        result.hint = user->passwordHint();
-    }
-    return result;
-}
-
-bool Server::checkPassword(const QString &identifier, const QByteArray &hash)
-{
-    LocalUser *user = getUser(identifier);
-    if (user && user->hasPassword()) {
-        return user->passwordHash() == hash;
-    }
-    return false;
-
 }
 
 bool Server::identifierIsValid(const QString &identifier) const

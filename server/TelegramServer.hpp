@@ -20,6 +20,12 @@ namespace Telegram {
 
 namespace Server {
 
+namespace Authorization {
+
+class Provider;
+
+} // Authorization namespace
+
 class LocalUser;
 class Session;
 class RemoteClientConnection;
@@ -52,20 +58,14 @@ public:
     void setAuthorizationProvider(Authorization::Provider *provider);
     void setMessageService(MessageService *messageService);
 
-    void registerAuthKey(quint64 authId, const QByteArray &authKey);
-
-    // ServerAPI:
-    Authorization::Provider *getAuthorizationProvider() override { return m_authProvider; }
-
     DcConfiguration serverConfiguration() const override { return m_dcConfiguration; }
     quint32 dcId() const override { return m_dcOption.id; }
 
     PhoneStatus getPhoneStatus(const QString &identifier) const override;
-    PasswordInfo getPassword(const QString &identifier) override;
-    bool checkPassword(const QString &identifier, const QByteArray &hash) override;
     bool identifierIsValid(const QString &identifier) const override;
     QString normalizeIdentifier(const QString &identifier) const override;
 
+    AuthService *authService() const override { return m_authService; }
     MediaService *mediaService() const override { return m_mediaService; }
     MessageService *messageService() const override { return m_messageService; }
 
@@ -91,9 +91,6 @@ public:
     Session *getSessionById(quint64 sessionId) const override;
     void bindUserSession(LocalUser *user, Session *session) override;
     bool setUserName(LocalUser *user, const QString &newUsername) override;
-    QByteArray getAuthKeyById(quint64 authId) const override;
-    quint32 getUserIdByAuthId(quint64 authId) const override;
-    void addUserAuthorization(LocalUser *user, quint64 authKeyId);
 
     QVector<UpdateNotification> processMessage(MessageData *messageData) override;
     QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
@@ -117,7 +114,7 @@ protected:
     void onClientConnectionStatusChanged();
 
 protected:
-    Authorization::Provider *m_authProvider = nullptr;
+    AuthService *m_authService = nullptr;
     MediaService *m_mediaService = nullptr;
     MessageService *m_messageService = nullptr;
 
@@ -132,14 +129,12 @@ private:
     DcConfiguration m_dcConfiguration;
 
     // Data
-    QHash<quint64, QByteArray> m_authorizations; // Auth id to auth key
     QHash<quint32, LocalUser*> m_users; // userId to User
     QHash<quint64, Session*> m_sessions; // Session id to Session
 
     // Maps for faster lookup
     QHash<QString, quint32> m_phoneToUserId;
     QHash<QString, quint32> m_usernameToUserId;
-    QHash<quint64, quint32> m_authToUserId;
 };
 
 } // Server namespace

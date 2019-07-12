@@ -2,6 +2,7 @@
 #include "RemoteClientConnectionHelper.hpp"
 
 #include "ApiUtils.hpp"
+#include "AuthService.hpp"
 #include "CTelegramTransport.hpp"
 #include "ServerApi.hpp"
 #include "ServerDhLayer.hpp"
@@ -82,7 +83,7 @@ bool RemoteClientConnection::processAuthKey(quint64 authKeyId)
                                                       << "is different from the expected"
                                                       << m_sendHelper->authId();
     } else {
-        const QByteArray authKey = api()->getAuthKeyById(authKeyId);
+        const QByteArray authKey = api()->authService()->getAuthKeyById(authKeyId);
         if (authKey.isEmpty()) {
             qCInfo(loggingCategoryRemoteClientConnection) << this << transport()->remoteAddress()
                                                           << "Unable to find an authorization with id"

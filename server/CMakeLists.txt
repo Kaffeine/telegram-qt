@@ -13,6 +13,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_AUTOMOC ON)
 
 set(server_lib_SOURCES
+    AuthService.cpp
+    AuthService.hpp
     AuthorizationProvider.hpp
     CServerTcpTransport.cpp
     CServerTcpTransport.hpp
