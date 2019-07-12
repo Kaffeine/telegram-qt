@@ -66,6 +66,7 @@ public:
     bool identifierIsValid(const QString &identifier) const override;
     QString normalizeIdentifier(const QString &identifier) const override;
 
+    MediaService *mediaService() const override { return m_mediaService; }
     MessageService *messageService() const override { return m_messageService; }
 
     AbstractUser *getAbstractUser(quint32 userId) const override;
@@ -117,6 +118,7 @@ protected:
 
 protected:
     Authorization::Provider *m_authProvider = nullptr;
+    MediaService *m_mediaService = nullptr;
     MessageService *m_messageService = nullptr;
 
 private:

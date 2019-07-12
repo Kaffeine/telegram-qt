@@ -1,6 +1,7 @@
 
 SOURCES += $$PWD/DefaultAuthorizationProvider.cpp
 SOURCES += $$PWD/LocalCluster.cpp
+SOURCES += $$PWD/MediaService.cpp
 SOURCES += $$PWD/MessageService.cpp
 SOURCES += $$PWD/ServerDhLayer.cpp
 SOURCES += $$PWD/ServerMessageData.cpp
@@ -22,6 +23,7 @@ SOURCES += $$PWD/FunctionStreamOperators.cpp
 HEADERS += $$PWD/AuthorizationProvider.hpp
 HEADERS += $$PWD/DefaultAuthorizationProvider.hpp
 HEADERS += $$PWD/LocalCluster.hpp
+HEADERS += $$PWD/MediaService.hpp
 HEADERS += $$PWD/MessageService.hpp
 HEADERS += $$PWD/ServerApi.hpp
 HEADERS += $$PWD/ServerDhLayer.hpp

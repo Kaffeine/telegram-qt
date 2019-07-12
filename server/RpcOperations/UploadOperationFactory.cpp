@@ -23,7 +23,7 @@
 
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
-#include "MessageService.hpp"
+#include "MediaService.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"
@@ -121,14 +121,14 @@ void UploadRpcOperation::runGetFile()
 
     switch (arguments.location.tlType) {
     case TLValue::InputFileLocation:
-        descriptor = api()->messageService()->getSecretFileDescriptor(
+        descriptor = api()->mediaService()->getSecretFileDescriptor(
                     arguments.location.volumeId,
                     arguments.location.localId,
                     arguments.location.secret
                     );
         break;
     case TLValue::InputDocumentFileLocation:
-        descriptor = api()->messageService()->getDocumentFileDescriptor(
+        descriptor = api()->mediaService()->getDocumentFileDescriptor(
                     arguments.location.id,
                     arguments.location.accessHash
                     );
@@ -145,7 +145,7 @@ void UploadRpcOperation::runGetFile()
         return;
     }
 
-    QIODevice *file = api()->messageService()->beginReadFile(descriptor);
+    QIODevice *file = api()->mediaService()->beginReadFile(descriptor);
     if (!file) {
         qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Unable to read file";
         sendRpcError(RpcError());
@@ -158,7 +158,7 @@ void UploadRpcOperation::runGetFile()
     result.type.tlType = TLValue::StorageFilePng;
     result.mtime = descriptor.date;
     result.bytes = file->read(arguments.limit);
-    api()->messageService()->endReadFile(file);
+    api()->mediaService()->endReadFile(file);
 
     sendRpcReply(result);
 }
@@ -196,7 +196,7 @@ void UploadRpcOperation::runSaveBigFilePart()
 void UploadRpcOperation::runSaveFilePart()
 {
     TLFunctions::TLUploadSaveFilePart &arguments = m_saveFilePart;
-    bool result = api()->messageService()->uploadFilePart(arguments.fileId, arguments.filePart, arguments.bytes);
+    bool result = api()->mediaService()->uploadFilePart(arguments.fileId, arguments.filePart, arguments.bytes);
     sendRpcReply(result);
 }
 // End of generated run methods

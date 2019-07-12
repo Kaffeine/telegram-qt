@@ -25,9 +25,6 @@
 #include <QObject>
 #include <QSet>
 
-QT_FORWARD_DECLARE_CLASS(QFile)
-QT_FORWARD_DECLARE_CLASS(QIODevice)
-
 namespace Telegram {
 
 namespace Server {
@@ -41,38 +38,15 @@ public:
     MessageData *addMessageMedia(quint32 fromId, Peer toPeer, const MediaData &media);
     const MessageData *getMessage(quint64 globalId);
 
-    bool uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
-    FileDescriptor getFileDescriptor(quint64 fileId, quint32 parts) const;
-
-    FileDescriptor getSecretFileDescriptor(quint64 volumeId, quint32 localId, quint64 secret) const;
-    FileDescriptor getDocumentFileDescriptor(quint64 fileId, quint64 accessHash) const;
-
-    QIODevice *beginReadFile(const FileDescriptor &descriptor);
-    void endReadFile(QIODevice *device);
-
-    // TODO: Make processImageFile() async and return a PendingOperation?
-    ImageDescriptor processImageFile(const FileDescriptor &file, const QString &name = QString());
-    FileDescriptor saveDocumentFile(const FileDescriptor &descriptor,
-                                    const QString &fileName,
-                                    const QString &mimeType);
-
 protected:
     quint64 getMessageUniqueTs();
-    QIODevice *beginWriteFile();
-    FileDescriptor *endWriteFile(QIODevice *device, const QString &name);
 
-    quint64 volumeId() const;
-
-    QVector<FileDescriptor> m_allFileDescriptors;
     QHash<quint64, MessageData> m_messages;
-    QHash<quint64, FileData> m_tmpFiles;
-    QSet<QFile*> m_openFiles;
     quint64 m_lastGlobalId = 0;
     quint64 m_lastTimestamp = 0;
-    quint32 m_lastFileLocalId = 0;
 };
 
-} // Server namespace
+} // Server namespaceMediaService
 
 } // Telegram namespace
 

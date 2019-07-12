@@ -24,6 +24,7 @@ class Session;
 class LocalUser;
 class RemoteClientConnection;
 class AbstractUser;
+class MediaService;
 class MessageData;
 class MessageRecipient;
 class MessageService;
@@ -85,6 +86,7 @@ public:
     virtual bool identifierIsValid(const QString &identifier) const = 0; // Argument is 'phoneNumber'
     virtual QString normalizeIdentifier(const QString &identifier) const = 0;
 
+    virtual MediaService *mediaService() const = 0;
     virtual MessageService *messageService() const = 0;
 
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;

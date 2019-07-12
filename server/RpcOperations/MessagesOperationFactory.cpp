@@ -26,6 +26,7 @@
 #include "ServerMessageData.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
+#include "MediaService.hpp"
 #include "MessageService.hpp"
 #include "TelegramServerUser.hpp"
 
@@ -1755,8 +1756,8 @@ void MessagesRpcOperation::runSendMedia()
     case TLValue::InputMediaUploadedDocument:
     {
         const TLInputFile &inFile = arguments.media.file;
-        FileDescriptor desc = api()->messageService()->getFileDescriptor(inFile.id, inFile.parts);
-        desc = api()->messageService()->saveDocumentFile(desc, inFile.name, arguments.media.mimeType);
+        FileDescriptor desc = api()->mediaService()->getFileDescriptor(inFile.id, inFile.parts);
+        desc = api()->mediaService()->saveDocumentFile(desc, inFile.name, arguments.media.mimeType);
 
         if (!desc.isValid()) {
             sendRpcError(RpcError());

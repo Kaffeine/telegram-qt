@@ -3,6 +3,7 @@
 #include "ApiUtils.hpp"
 #include "CServerTcpTransport.hpp"
 #include "Debug_p.hpp"
+#include "MediaService.hpp"
 #include "MessageService.hpp"
 #include "RemoteClientConnection.hpp"
 #include "RemoteServerConnection.hpp"
@@ -46,6 +47,8 @@ namespace Server {
 Server::Server(QObject *parent) :
     QObject(parent)
 {
+    m_mediaService = new MediaService(this);
+
     m_rpcOperationFactories = {
         // Generated RPC Operation Factory initialization
         new AccountOperationFactory(),

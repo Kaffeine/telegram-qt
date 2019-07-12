@@ -22,6 +22,8 @@ set(server_lib_SOURCES
     FunctionStreamOperators.hpp
     LocalCluster.cpp
     LocalCluster.hpp
+    MediaService.cpp
+    MediaService.hpp
     MessageService.cpp
     MessageService.hpp
     RemoteClientConnection.cpp
