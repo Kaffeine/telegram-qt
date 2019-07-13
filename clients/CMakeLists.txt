@@ -1,4 +1,4 @@
-if (ENABLE_QML_IMPORT)
+if (BUILD_QML_IMPORT)
     add_subdirectory(qml-client)
 endif()
 

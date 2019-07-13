@@ -18,35 +18,27 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_AUTOMOC TRUE)
 
-# Add an option for building tests
-option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
-
 option(BUILD_CLIENT "Build a client app" FALSE)
+option(BUILD_DOCUMENTATION "Enable generation of Qt Help (qch) file" FALSE)
+option(BUILD_GENERATOR "Build protocol code generator (useful for developers)" FALSE)
+option(BUILD_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
+option(BUILD_SERVER "Build server" FALSE)
+option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
+
+option(STATIC_BUILD "Compile static library instead of shared" FALSE)
+option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
 
 option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)
 option(ENABLE_COVERAGE_HTML "Generate an HTML report for the code-coverage analysis result" FALSE)
 
-# Add an option for building tests
-option(ENABLE_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
-# Add an option for building tests
-option(ENABLE_QCH_BUILD "Enable generation of Qt Help (qch) file" FALSE)
-# Add an option for building tests
-option(STATIC_BUILD "Compile static library instead of shared" FALSE)
-# Add an option for building server
-option(BUILD_SERVER "Build server" FALSE)
-# Add an option for building GeneratorNG
-option(BUILD_GENERATOR "Build protocol code generator" FALSE)
-# Add an option for dev build
-option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
-
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
 
-if(ENABLE_TESTS)
+if(BUILD_TESTS)
     list(APPEND QT_COMPONENTS Test)
 endif()
 
-if(ENABLE_QML_IMPORT)
+if(BUILD_QML_IMPORT)
     list(APPEND QT_COMPONENTS Qml)
 endif()
 
@@ -78,7 +70,7 @@ endif()
 # Add the source subdirectories
 add_subdirectory(TelegramQt)
 
-if (ENABLE_QML_IMPORT)
+if (BUILD_QML_IMPORT)
     add_subdirectory(imports/TelegramQtQml)
 endif()
 
@@ -86,7 +78,7 @@ if (BUILD_CLIENT)
     add_subdirectory(clients)
 endif()
 
-if (ENABLE_TESTS)
+if (BUILD_TESTS)
     enable_testing()
     add_subdirectory(TelegramQt/tests)
     add_subdirectory(tests/data)
@@ -107,7 +99,7 @@ if (BUILD_GENERATOR)
     endif()
 endif()
 
-if (ENABLE_QCH_BUILD)
+if (BUILD_DOCUMENTATION)
     add_subdirectory(doc)
 endif()
 

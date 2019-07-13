@@ -9,10 +9,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
+option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
 set(SCHEME_FILE "${CMAKE_CURRENT_SOURCE_DIR}/scheme-72.tl" CACHE STRING "Input Telegram scheme file")
 
-if (ENABLE_TESTS)
+if (BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
