@@ -1,132 +1,238 @@
 
-set(telegram_qt_SOURCES
+if (STATIC_BUILD)
+    add_library(TelegramQt${QT_VERSION_MAJOR} STATIC)
+else()
+    add_library(TelegramQt${QT_VERSION_MAJOR} SHARED)
+endif()
+
+target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE TELEGRAMQT_LIBRARY)
+
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     AbridgedLength.cpp
+    AbridgedLength.hpp
     AccountApi.cpp
+    AccountApi.hpp
+    AccountApi_p.hpp
     AccountStorage.cpp
+    AccountStorage.hpp
     ApiUtils.cpp
+    ApiUtils.hpp
     CAppInformation.cpp
+    CAppInformation.hpp
     CClientTcpTransport.cpp
+    CClientTcpTransport.hpp
     CRawStream.cpp
+    CRawStream.hpp
     CTcpTransport.cpp
+    CTcpTransport.hpp
     CTelegramTransport.cpp
+    CTelegramTransport.hpp
     Client.cpp
+    Client.hpp
     ClientApi.cpp
+    ClientApi.hpp
+    ClientApi_p.hpp
     ClientBackend.cpp
+    ClientBackend.hpp
     ClientConnection.cpp
+    ClientConnection.hpp
     ClientDhLayer.cpp
+    ClientDhLayer.hpp
     ClientRpcLayer.cpp
+    ClientRpcLayer.hpp
     ClientRpcLayerExtension.cpp
+    ClientRpcLayerExtension.hpp
     ClientSettings.cpp
+    ClientSettings.hpp
+    Client_p.hpp
     Connection.cpp
+    Connection.hpp
     ConnectionApi.cpp
+    ConnectionApi.hpp
+    ConnectionApi_p.hpp
     ConnectionError.cpp
+    ConnectionError.hpp
     ContactList.cpp
+    ContactList.hpp
     ContactsApi.cpp
+    ContactsApi.hpp
+    ContactsApi_p.hpp
+    Crypto/Aes.cpp
+    Crypto/Aes.hpp
+    Crypto/AesCtr.cpp
+    Crypto/AesCtr.hpp
     DataStorage.cpp
+    DataStorage.hpp
+    DataStorage_p.hpp
+    DataStorage_p.hpp
     DcConfiguration.cpp
     Debug.cpp
+    Debug.hpp
+    Debug_p.hpp
     DhLayer.cpp
+    DhLayer.hpp
     DialogList.cpp
+    DialogList.hpp
     FileRequestDescriptor.cpp
+    FileRequestDescriptor.hpp
     IgnoredMessageNotification.cpp
+    IgnoredMessageNotification.hpp
     LegacySecretReader.cpp
+    LegacySecretReader.hpp
     MessagingApi.cpp
+    MessagingApi.hpp
+    MessagingApi_p.hpp
     PendingOperation.cpp
+    PendingOperation.hpp
+    PendingOperation_p.hpp
     PendingRpcOperation.cpp
+    PendingRpcOperation.hpp
     PendingRpcResult.cpp
+    PendingRpcResult.hpp
     RandomGenerator.cpp
+    RandomGenerator.hpp
+    ReadyObject.hpp
     RpcError.cpp
+    RpcError.hpp
     RpcLayer.cpp
+    RpcLayer.hpp
     RsaKey.cpp
     RsaKey.hpp
     SendPackageHelper.cpp
+    SendPackageHelper.hpp
     SslBigNumber.cpp
     SslBigNumber.hpp
     TelegramNamespace.cpp
-    UpdatesLayer.cpp
-    Utils.cpp
-)
-
-set(telegram_qt_META_HEADERS
-    AbridgedLength.hpp
-    AccountApi.hpp
-    AccountApi_p.hpp
-    AccountStorage.hpp
-    CAppInformation.hpp
-    CClientTcpTransport.hpp
-    CTcpTransport.hpp
-    CTelegramTransport.hpp
-    Client.hpp
-    ClientApi.hpp
-    ClientApi_p.hpp
-    ClientBackend.hpp
-    ClientConnection.hpp
-    ClientDhLayer.hpp
-    ClientRpcLayer.hpp
-    ClientRpcLayerExtension.hpp
-    ClientSettings.hpp
-    Client_p.hpp
-    Connection.hpp
-    ConnectionApi.hpp
-    ConnectionApi_p.hpp
-    ContactList.hpp
-    ContactsApi.hpp
-    ContactsApi_p.hpp
-    DataStorage.hpp
-    DataStorage_p.hpp
-    DhLayer.hpp
-    DialogList.hpp
-    LegacySecretReader.hpp
-    MessagingApi.hpp
-    MessagingApi_p.hpp
-    PendingOperation.hpp
-    PendingRpcOperation.hpp
-    PendingRpcResult.hpp
-    RpcError.hpp
-    RpcLayer.hpp
-    SendPackageHelper.hpp
     TelegramNamespace.hpp
-    UpdatesLayer.hpp
-)
-
-FILE(GLOB RPC_SOURCES RpcLayers/*.cpp)
-FILE(GLOB RPC_HEADERS RpcLayers/*.hpp)
-
-FILE(GLOB MTPROTO_SOURCES MTProto/*.cpp)
-FILE(GLOB MTPROTO_HEADERS MTProto/*.hpp)
-
-list(APPEND telegram_qt_SOURCES ${RPC_SOURCES} ${MTPROTO_SOURCES})
-list(APPEND telegram_qt_META_HEADERS ${RPC_HEADERS} ${MTPROTO_HEADERS})
-
-FILE(GLOB CLIENT_OPERATIONS_SOURCES Operations/*.cpp)
-FILE(GLOB CLIENT_OPERATIONS_HEADERS Operations/*.hpp)
-
-list(APPEND telegram_qt_SOURCES ${CLIENT_OPERATIONS_SOURCES})
-list(APPEND telegram_qt_META_HEADERS ${CLIENT_OPERATIONS_HEADERS})
-
-set(telegram_qt_HEADERS
-    ${telegram_qt_META_HEADERS}
-    ApiUtils.hpp
-    CRawStream.hpp
-    CTelegramStream.hpp
-    CTelegramStreamExtraOperators.hpp
-    CTelegramStream_p.hpp
-    ConnectionError.hpp
-    DataStorage_p.hpp
-    Debug.hpp
-    Debug_p.hpp
-    FileRequestDescriptor.hpp
-    IgnoredMessageNotification.hpp
-    PendingOperation_p.hpp
-    RandomGenerator.hpp
-    ReadyObject.hpp
-    TLNumbers.hpp
-    TLTypes.hpp
     TelegramNamespace_p.hpp
     UniqueLazyPointer.hpp
+    UpdatesLayer.cpp
+    UpdatesLayer.hpp
+    Utils.cpp
     Utils.hpp
-    crypto-rsa.hpp
     telegramqt_global.h
+)
+
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    RpcLayers/ClientRpcAccountLayer.cpp
+    RpcLayers/ClientRpcAccountLayer.hpp
+    RpcLayers/ClientRpcAuthLayer.cpp
+    RpcLayers/ClientRpcAuthLayer.hpp
+    RpcLayers/ClientRpcBotsLayer.cpp
+    RpcLayers/ClientRpcBotsLayer.hpp
+    RpcLayers/ClientRpcChannelsLayer.cpp
+    RpcLayers/ClientRpcChannelsLayer.hpp
+    RpcLayers/ClientRpcContactsLayer.cpp
+    RpcLayers/ClientRpcContactsLayer.hpp
+    RpcLayers/ClientRpcHelpLayer.cpp
+    RpcLayers/ClientRpcHelpLayer.hpp
+    RpcLayers/ClientRpcLangpackLayer.cpp
+    RpcLayers/ClientRpcLangpackLayer.hpp
+    RpcLayers/ClientRpcMessagesLayer.cpp
+    RpcLayers/ClientRpcMessagesLayer.hpp
+    RpcLayers/ClientRpcPaymentsLayer.cpp
+    RpcLayers/ClientRpcPaymentsLayer.hpp
+    RpcLayers/ClientRpcPhoneLayer.cpp
+    RpcLayers/ClientRpcPhoneLayer.hpp
+    RpcLayers/ClientRpcPhotosLayer.cpp
+    RpcLayers/ClientRpcPhotosLayer.hpp
+    RpcLayers/ClientRpcStickersLayer.cpp
+    RpcLayers/ClientRpcStickersLayer.hpp
+    RpcLayers/ClientRpcUpdatesLayer.cpp
+    RpcLayers/ClientRpcUpdatesLayer.hpp
+    RpcLayers/ClientRpcUploadLayer.cpp
+    RpcLayers/ClientRpcUploadLayer.hpp
+    RpcLayers/ClientRpcUsersLayer.cpp
+    RpcLayers/ClientRpcUsersLayer.hpp
+)
+
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    MTProto/TLNumbers.hpp
+    MTProto/TLTypes.hpp
+    MTProto/TLValues.cpp
+    MTProto/TLValues.hpp
+    MTProto/MessageHeader.cpp
+    MTProto/MessageHeader.hpp
+    MTProto/Stream.cpp # 1.0 Mb
+    MTProto/Stream.hpp
+    MTProto/StreamExtraOperators.cpp # 0.2 Mb
+    MTProto/StreamExtraOperators.hpp
+    MTProto/Stream_p.hpp
+)
+
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    Operations/ClientAuthOperation.cpp
+    Operations/ClientAuthOperation.hpp
+    Operations/ClientAuthOperation_p.hpp
+    Operations/ClientHelpOperation.cpp
+    Operations/ClientHelpOperation.hpp
+    Operations/ClientPingOperation.cpp
+    Operations/ClientPingOperation.hpp
+    Operations/ConnectionOperation.cpp
+    Operations/ConnectionOperation.hpp
+    Operations/PendingContactsOperation.cpp
+    Operations/PendingContactsOperation.hpp
+    Operations/PendingContactsOperation_p.hpp
+    Operations/PendingMessages.cpp
+    Operations/PendingMessages.hpp
+    Operations/PendingMessages_p.hpp
+)
+
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    RpcLayers/ClientRpcAccountLayer.cpp
+    RpcLayers/ClientRpcAccountLayer.hpp
+    RpcLayers/ClientRpcAuthLayer.cpp
+    RpcLayers/ClientRpcAuthLayer.hpp
+    RpcLayers/ClientRpcBotsLayer.cpp
+    RpcLayers/ClientRpcBotsLayer.hpp
+    RpcLayers/ClientRpcChannelsLayer.cpp
+    RpcLayers/ClientRpcChannelsLayer.hpp
+    RpcLayers/ClientRpcContactsLayer.cpp
+    RpcLayers/ClientRpcContactsLayer.hpp
+    RpcLayers/ClientRpcHelpLayer.cpp
+    RpcLayers/ClientRpcHelpLayer.hpp
+    RpcLayers/ClientRpcLangpackLayer.cpp
+    RpcLayers/ClientRpcLangpackLayer.hpp
+    RpcLayers/ClientRpcMessagesLayer.cpp
+    RpcLayers/ClientRpcMessagesLayer.hpp
+    RpcLayers/ClientRpcPaymentsLayer.cpp
+    RpcLayers/ClientRpcPaymentsLayer.hpp
+    RpcLayers/ClientRpcPhoneLayer.cpp
+    RpcLayers/ClientRpcPhoneLayer.hpp
+    RpcLayers/ClientRpcPhotosLayer.cpp
+    RpcLayers/ClientRpcPhotosLayer.hpp
+    RpcLayers/ClientRpcStickersLayer.cpp
+    RpcLayers/ClientRpcStickersLayer.hpp
+    RpcLayers/ClientRpcUpdatesLayer.cpp
+    RpcLayers/ClientRpcUpdatesLayer.hpp
+    RpcLayers/ClientRpcUploadLayer.cpp
+    RpcLayers/ClientRpcUploadLayer.hpp
+    RpcLayers/ClientRpcUsersLayer.cpp
+    RpcLayers/ClientRpcUsersLayer.hpp
+)
+
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    MTProto/MessageHeader.cpp
+    MTProto/MessageHeader.hpp
+    MTProto/Stream.hpp
+)
+
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    Operations/ClientAuthOperation.cpp
+    Operations/ClientAuthOperation.hpp
+    Operations/ClientAuthOperation_p.hpp
+    Operations/ClientHelpOperation.cpp
+    Operations/ClientHelpOperation.hpp
+    Operations/ClientPingOperation.cpp
+    Operations/ClientPingOperation.hpp
+    Operations/ConnectionOperation.cpp
+    Operations/ConnectionOperation.hpp
+    Operations/PendingContactsOperation.cpp
+    Operations/PendingContactsOperation.hpp
+    Operations/PendingContactsOperation_p.hpp
+    Operations/PendingMessages.cpp
+    Operations/PendingMessages.hpp
+    Operations/PendingMessages_p.hpp
 )
 
 set(telegram_qt_public_HEADERS
@@ -158,28 +264,17 @@ set(telegram_qt_public_HEADERS
 include_directories(
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
-    ${OPENSSL_INCLUDE_DIR}
-    ${ZLIB_INCLUDE_DIR}
 )
 
-list(APPEND telegram_qt_SOURCES MTProto/TLTypesDebug.cpp)
-list(APPEND telegram_qt_HEADERS MTProto/TLTypesDebug.hpp)
-
-list(APPEND telegram_qt_SOURCES
-    Crypto/Aes.cpp
-    Crypto/AesCtr.cpp
-)
-
-list(APPEND telegram_qt_HEADERS
-    Crypto/Aes.hpp
-    Crypto/AesCtr.hpp
-)
+# TODO: Use TypesDebug only in Developer or Debug build
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLTypesDebug.cpp) # 0.5 Mb
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLTypesDebug.hpp)
 
 if (DEVELOPER_BUILD)
-    list(APPEND telegram_qt_SOURCES MTProto/TLRpcDebug.cpp)
-    list(APPEND telegram_qt_HEADERS MTProto/TLRpcDebug.hpp)
-    add_definitions(-DDEVELOPER_BUILD)
-    add_definitions(-DQT_DEPRECATED_WARNINGS)
+    target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLRpcDebug.cpp)
+    target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLRpcDebug.hpp)
+    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE DEVELOPER_BUILD)
+    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE QT_DEPRECATED_WARNINGS)
 endif()
 
 if (NOT BUILD_VERSION)
@@ -187,9 +282,9 @@ if (NOT BUILD_VERSION)
 endif()
 
 configure_file(Version.cpp.in "${CMAKE_CURRENT_BINARY_DIR}/Version.cpp" @ONLY)
-list(APPEND telegram_qt_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/Version.cpp")
-
-add_definitions(-DTELEGRAMQT_LIBRARY)
+target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+    "${CMAKE_CURRENT_BINARY_DIR}/Version.cpp"
+)
 
 add_definitions(
     -DQT_NO_CAST_TO_ASCII
@@ -200,14 +295,6 @@ add_definitions(
     -DQT_USE_QSTRINGBUILDER
     -DQT_STRICT_ITERATORS
 )
-
-QT5_WRAP_CPP(telegram_qt_MOC_SOURCES ${telegram_qt_META_HEADERS})
-
-if (STATIC_BUILD)
-    add_library(TelegramQt${QT_VERSION_MAJOR} STATIC ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURCES})
-else()
-    add_library(TelegramQt${QT_VERSION_MAJOR} SHARED ${telegram_qt_SOURCES} ${telegram_qt_MOC_SOURCES})
-endif()
 
 target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -224,10 +311,10 @@ target_link_libraries(TelegramQt${QT_VERSION_MAJOR} PUBLIC
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     OpenSSL::Crypto
+    ZLIB::ZLIB
 )
 
-set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
-set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_FULL_LIBDIR})
+set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
 
 # Set the correct version number
 set_target_properties(
@@ -238,8 +325,9 @@ set_target_properties(
 
 install(
     TARGETS TelegramQt${QT_VERSION_MAJOR}
-    LIBRARY DESTINATION ${TELEGRAM_QT_LIB_DIR}
-    ARCHIVE DESTINATION ${TELEGRAM_QT_LIB_DIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Library
 )
 
@@ -277,6 +365,6 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}ConfigVe
 configure_file(TelegramQt.pc.in "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}.pc" @ONLY)
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}.pc"
-    DESTINATION "${TELEGRAM_QT_LIB_DIR}/pkgconfig"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
     COMPONENT pkgconfig
 )

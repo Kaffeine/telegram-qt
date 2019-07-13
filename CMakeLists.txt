@@ -16,6 +16,8 @@ set(CMAKE_CXX_STANDARD ${OVERRIDE_CXX_STANDARD})
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(CMAKE_AUTOMOC TRUE)
+
 # Add an option for building tests
 option(ENABLE_TESTS "Enable compilation of automated tests" FALSE)
 
