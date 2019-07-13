@@ -23,9 +23,9 @@ option(BUILD_DOCUMENTATION "Enable generation of Qt Help (qch) file" FALSE)
 option(BUILD_GENERATOR "Build protocol code generator (useful for developers)" FALSE)
 option(BUILD_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
 option(BUILD_SERVER "Build server" FALSE)
+option(BUILD_SHARED_LIBS "Compile libraries as shared" TRUE)
 option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
 
-option(STATIC_BUILD "Compile static library instead of shared" FALSE)
 option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
 
 option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)

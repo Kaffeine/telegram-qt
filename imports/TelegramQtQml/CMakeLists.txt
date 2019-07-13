@@ -8,7 +8,7 @@ add_definitions(-DQT_NO_CAST_FROM_ASCII)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC TRUE)
 
-add_library(TelegramQt${QT_VERSION_MAJOR}Qml SHARED
+add_library(TelegramQt${QT_VERSION_MAJOR}Qml
     DeclarativeAuthOperation.cpp
     DeclarativeAuthOperation.hpp
     DeclarativeChatInfo.cpp

@@ -1,9 +1,5 @@
 
-if (STATIC_BUILD)
-    add_library(TelegramQt${QT_VERSION_MAJOR} STATIC)
-else()
-    add_library(TelegramQt${QT_VERSION_MAJOR} SHARED)
-endif()
+add_library(TelegramQt${QT_VERSION_MAJOR})
 
 target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE TELEGRAMQT_LIBRARY)
 
