@@ -18,7 +18,7 @@
 #ifndef TELEGRAM_QT_SERVER_MEDIA_SERVICE_HPP
 #define TELEGRAM_QT_SERVER_MEDIA_SERVICE_HPP
 
-#include "ServerNamespace.hpp"
+#include "IMediaService.hpp"
 
 #include <QHash>
 #include <QObject>
@@ -31,26 +31,26 @@ namespace Telegram {
 
 namespace Server {
 
-class MediaService : public QObject
+class MediaService : public QObject, public IMediaService
 {
     Q_OBJECT
 public:
     explicit MediaService(QObject *parent = nullptr);
 
-    bool uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
-    FileDescriptor getFileDescriptor(quint64 fileId, quint32 parts) const;
+    bool uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes) override;
+    FileDescriptor getFileDescriptor(quint64 fileId, quint32 parts) const override;
 
-    FileDescriptor getSecretFileDescriptor(quint64 volumeId, quint32 localId, quint64 secret) const;
-    FileDescriptor getDocumentFileDescriptor(quint64 fileId, quint64 accessHash) const;
+    FileDescriptor getSecretFileDescriptor(quint64 volumeId, quint32 localId, quint64 secret) const override;
+    FileDescriptor getDocumentFileDescriptor(quint64 fileId, quint64 accessHash) const override;
 
-    QIODevice *beginReadFile(const FileDescriptor &descriptor);
-    void endReadFile(QIODevice *device);
+    QIODevice *beginReadFile(const FileDescriptor &descriptor) override;
+    void endReadFile(QIODevice *device) override;
 
     // TODO: Make processImageFile() async and return a PendingOperation?
-    ImageDescriptor processImageFile(const FileDescriptor &file, const QString &name = QString());
+    ImageDescriptor processImageFile(const FileDescriptor &file, const QString &name = QString()) override;
     FileDescriptor saveDocumentFile(const FileDescriptor &descriptor,
                                     const QString &fileName,
-                                    const QString &mimeType);
+                                    const QString &mimeType) override;
 
 protected:
     QIODevice *beginWriteFile();

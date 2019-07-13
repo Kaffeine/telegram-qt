@@ -21,9 +21,9 @@
 // TODO: Instead of this include, add a generated cpp with all needed template instances
 #include "ServerRpcOperation_p.hpp"
 
+#include "IMediaService.hpp"
 #include "ServerApi.hpp"
 #include "ServerRpcLayer.hpp"
-#include "MediaService.hpp"
 #include "TelegramServerUser.hpp"
 
 #include "Debug_p.hpp"

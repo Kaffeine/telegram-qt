@@ -22,6 +22,7 @@ SOURCES += $$PWD/FunctionStreamOperators.cpp
 
 HEADERS += $$PWD/AuthorizationProvider.hpp
 HEADERS += $$PWD/DefaultAuthorizationProvider.hpp
+HEADERS += $$PWD/IMediaService.hpp
 HEADERS += $$PWD/LocalCluster.hpp
 HEADERS += $$PWD/MediaService.hpp
 HEADERS += $$PWD/MessageService.hpp

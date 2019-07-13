@@ -66,7 +66,7 @@ public:
     QString normalizeIdentifier(const QString &identifier) const override;
 
     AuthService *authService() const override { return m_authService; }
-    MediaService *mediaService() const override { return m_mediaService; }
+    IMediaService *mediaService() const override { return m_mediaService; }
     MessageService *messageService() const override { return m_messageService; }
 
     AbstractUser *getAbstractUser(quint32 userId) const override;
@@ -115,7 +115,7 @@ protected:
 
 protected:
     AuthService *m_authService = nullptr;
-    MediaService *m_mediaService = nullptr;
+    IMediaService *m_mediaService = nullptr;
     MessageService *m_messageService = nullptr;
 
 private:

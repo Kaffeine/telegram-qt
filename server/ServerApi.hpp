@@ -15,11 +15,11 @@ namespace Telegram {
 namespace Server {
 
 class AuthService;
+class IMediaService;
 class Session;
 class LocalUser;
 class RemoteClientConnection;
 class AbstractUser;
-class MediaService;
 class MessageData;
 class MessageRecipient;
 class MessageService;
@@ -72,7 +72,7 @@ public:
     virtual QString normalizeIdentifier(const QString &identifier) const = 0;
 
     virtual AuthService *authService() const = 0;
-    virtual MediaService *mediaService() const = 0;
+    virtual IMediaService *mediaService() const = 0;
     virtual MessageService *messageService() const = 0;
 
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
