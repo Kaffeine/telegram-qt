@@ -135,6 +135,8 @@ private:
     // Maps for faster lookup
     QHash<QString, quint32> m_phoneToUserId;
     QHash<QString, quint32> m_usernameToUserId;
+
+    friend class ServerImportApi;
 };
 
 } // Server namespace

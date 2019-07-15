@@ -68,6 +68,16 @@ FILE(GLOB RPC_HEADERS RpcOperations/*.hpp)
 
 list(APPEND server_lib_SOURCES ${RPC_SOURCES} ${RPC_HEADERS})
 
+set(server_json_SOURCES
+    DataImporter.cpp
+    DataImporter.hpp
+    JsonDataImporter.cpp
+    JsonDataImporter.hpp
+    JsonUtils_p.hpp
+    ServerImportApi.cpp
+    ServerImportApi.hpp
+)
+
 if (DEVELOPER_BUILD)
     add_definitions(-DDEVELOPER_BUILD)
     add_definitions(-DQT_DEPRECATED_WARNINGS)
@@ -88,6 +98,7 @@ find_package(Qt5 5.5 COMPONENTS Core Gui Network REQUIRED)
 
 add_library(TelegramServerQt${QT_VERSION_MAJOR} STATIC
     ${server_lib_SOURCES}
+    ${server_json_SOURCES}
 )
 
 target_include_directories(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

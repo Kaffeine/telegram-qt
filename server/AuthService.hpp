@@ -45,6 +45,8 @@ struct PasswordInfo
     bool hasRecovery = false;
 };
 
+class ServerImportApi;
+
 class AuthService : public QObject
 {
     Q_OBJECT
@@ -69,6 +71,7 @@ protected:
     QHash<quint64, quint32> m_authToUserId;
     Authorization::Provider *m_authProvider = nullptr;
 
+    friend class ServerImportApi;
 };
 
 } // Server namespaceMediaService
