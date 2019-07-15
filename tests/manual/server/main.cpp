@@ -15,6 +15,7 @@
 
  */
 
+#include "TelegramServer.hpp"
 #include "TelegramServerConfig.hpp"
 #include "TelegramServerUser.hpp"
 #include "DcConfiguration.hpp"
@@ -22,6 +23,9 @@
 #include "LocalCluster.hpp"
 #include "RandomGenerator.hpp"
 #include "Session.hpp"
+#include "MessageService.hpp"
+
+#include "JsonDataImporter.hpp"
 
 // Test keys
 #include "keys_data.hpp"
@@ -31,6 +35,7 @@
 #include <QDebug>
 #include <QStandardPaths>
 #include <QCommandLineParser>
+#include <QTimer>
 
 using namespace Telegram::Server;
 
@@ -116,8 +121,48 @@ int main(int argc, char *argv[])
         return -2;
     }
 
+    JsonDataImporter importer;
+    importer.setBaseDirectory(QLatin1String("dump"));
+    importer.setTarget(&cluster);
+    importer.loadData();
+
+    if (!cluster.getUser(QStringLiteral("123456789"))) {
+        LocalUser *u1 = cluster.addUser(QStringLiteral("123456789"), /* dc */ 1);
+        u1->setFirstName(QStringLiteral("Dc1User1"));
+        u1->setLastName(QStringLiteral("Dc1"));
+
+        Server *api = cluster.getServerInstance(1);
+        LocalUser *dialog = cluster.addUser(QStringLiteral("123455"), /* dc */ 1);
+        dialog->setFirstName(QLatin1String("LongFirstName"));
+        dialog->setLastName(QLatin1String("LastNameIsLongToo"));
+        MessageData *data = api->messageService()->addMessage(dialog->userId(), u1->toPeer(), QStringLiteral("Message"));
+        data->setDate32(data->date() - 60);
+        cluster.processMessage(data);
+
+        for (int i = 0; i < 60; ++i) {
+            QString nId = QString::number(i + 1);
+            LocalUser *dialogN = cluster.addUser(QStringLiteral("123456") + nId, /* dc */ 1);
+            dialogN->setFirstName(QStringLiteral("First") + nId);
+            dialogN->setLastName(QStringLiteral("Last") + nId);
+            MessageData *data = api->messageService()->addMessage(dialogN->userId(), u1->toPeer(), QStringLiteral("Message ") + nId);
+            data->setDate32(data->date() - 60 + i);
+            api->processMessage(data);
+        }
+
+        for (int i = 0; i < 50; ++i) {
+            QString nId = QString::number(i + 1);
+            MessageData *data = api->messageService()->addMessage(u1->userId(), u1->toPeer(), QStringLiteral("Message ") + nId);
+            data->setDate32(data->date() - 60 + i);
+            api->processMessage(data);
+        }
+    }
+
+    QTimer::singleShot(1000, &a, SLOT(quit()));
+
     int retCode = a.exec();
     cluster.stop();
+
+    importer.saveData();
 
     TestKeyData::cleanupKeyFiles();
     return retCode;
