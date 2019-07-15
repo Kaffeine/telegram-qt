@@ -18,35 +18,12 @@
 #include <QObject>
 
 #include "ApiUtils.hpp"
-#include "CTelegramTransport.hpp"
+#include "../utils/TestTransport.hpp"
 
 #include <QTest>
 #include <QDebug>
 
 #include <QDateTime>
-
-class NullTransport : public Telegram::BaseTransport
-{
-    Q_OBJECT
-public:
-    explicit NullTransport(QObject *parent = nullptr) : BaseTransport(parent) { }
-
-public:
-    void connectToHost(const QString &ipAddress, quint16 port) override
-    {
-        Q_UNUSED(ipAddress)
-        Q_UNUSED(port)
-    }
-    void disconnectFromHost() override {}
-
-    QString remoteAddress() const override { return QString(); }
-
-protected:
-    void sendPacketImplementation(const QByteArray &package) override
-    {
-        Q_UNUSED(package)
-    }
-};
 
 class tst_CTelegramTransport : public QObject
 {
@@ -67,7 +44,7 @@ tst_CTelegramTransport::tst_CTelegramTransport(QObject *parent) :
 
 void tst_CTelegramTransport::testNewMessageId()
 {
-    NullTransport transport;
+    Telegram::Test::Transport transport;
     const quint64 time = 1395335796550;
     for (quint64 t = 0; t < 12; ++t) {
         const quint64 telegramTimeStamp = Telegram::Utils::formatTimeStamp(time) + t;
@@ -101,7 +78,7 @@ void tst_CTelegramTransport::testNewMessageIdExtra()
         0x1234567893ull, // Server own message
         0x1234567891ull, // Server response3 to a client message
                                    };
-    NullTransport transport;
+    Telegram::Test::Transport transport;
 
     const QVector<quint64> expectedTimeStamp = {
         0x1234567891ull, // Server response1 to a client message

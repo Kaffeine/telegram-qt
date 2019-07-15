@@ -48,5 +48,13 @@ foreach(test_name
     add_test(NAME ${test_name} COMMAND ${test_name})
 endforeach()
 
+target_sources(tst_CTelegramTransport PRIVATE
+    utils/TestTransport.hpp
+)
+
+target_sources(tst_RpcLayer PRIVATE
+    utils/TestTransport.hpp
+)
+
 #target_include_directories(tst_utils ${CMAKE_SOURCE_DIR}/tests/data)
 target_link_libraries(tst_utils test_keys_data)

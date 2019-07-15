@@ -22,6 +22,7 @@
 #include "SendPackageHelper.hpp"
 #include "TelegramNamespace.hpp"
 #include "CTelegramTransport.hpp"
+#include "../utils/TestTransport.hpp"
 
 #include "MTProto/MessageHeader.hpp"
 
@@ -32,21 +33,6 @@
 namespace Telegram {
 
 namespace Test {
-
-class Transport : public BaseTransport
-{
-    Q_OBJECT
-public:
-    explicit Transport(QObject *parent = nullptr) : BaseTransport(parent) { }
-
-public:
-    void connectToHost(const QString &, quint16 ) override { }
-    void disconnectFromHost() override { }
-    QString remoteAddress() const override { return QString(); }
-
-protected:
-    void sendPacketImplementation(const QByteArray &) override { }
-};
 
 class MTProtoSendHelper : public BaseMTProtoSendHelper
 {
