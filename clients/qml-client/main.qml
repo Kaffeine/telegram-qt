@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.0
+import QtQuick.Controls.Material 2.3
 import Qt.labs.platform 1.0
 
 import TelegramQt 0.2 as Telegram
@@ -22,6 +23,8 @@ ApplicationWindow {
     readonly property int recommendedDialogHeight: height < Screen.height * 2/4 ? height : Screen.height * 2/4
 
     property string appname: Qt.application.name
+
+    Material.theme: Material.Dark
 
     QtObject {
         id: options
