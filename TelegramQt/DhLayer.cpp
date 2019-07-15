@@ -143,7 +143,7 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
     }
 #endif
 
-    m_sendHelper->sendPackage(output);
+    m_sendHelper->sendPacket(output);
     return messageId;
 }
 

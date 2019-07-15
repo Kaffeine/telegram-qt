@@ -50,10 +50,10 @@ public:
     virtual quint64 sessionId() const = 0;
     virtual quint64 serverSalt() const = 0;
     quint32 contentRelatedMessagesNumber() const;
-    void setSendPackageHelper(BaseMTProtoSendHelper *helper);
+    void setSendHelper(BaseMTProtoSendHelper *helper);
 
-    bool processPackage(const QByteArray &package);
-    virtual bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) = 0;
+    bool processPacket(const QByteArray &package);
+    virtual bool processMessageHeader(const MTProto::FullMessageHeader &header) = 0;
     virtual bool processMTProtoMessage(const MTProto::Message &message) = 0;
 
     bool processMsgContainer(const MTProto::Message &message);
@@ -71,8 +71,8 @@ protected:
     virtual QByteArray getVerificationKeyPart() const = 0;
     quint32 getNextMessageSequenceNumber(MessageType messageType);
 
-    bool sendPackage(const MTProto::Message &message);
-    quint64 sendPackage(const QByteArray &buffer, SendMode mode);
+    bool sendPacket(const MTProto::Message &message);
+    quint64 sendPacket(const QByteArray &buffer, SendMode mode);
 
     BaseMTProtoSendHelper *m_sendHelper = nullptr;
     quint32 m_sequenceNumber = 0;

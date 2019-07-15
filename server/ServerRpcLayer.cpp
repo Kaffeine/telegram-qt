@@ -125,7 +125,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         output << TLValue::Pong;
         output << message.messageId;
         output << ping.pingId;
-        sendPackage(output.getData(), SendMode::ServerReply);
+        sendPacket(output.getData(), SendMode::ServerReply);
     }
         return true;
     default:
@@ -243,7 +243,7 @@ void RpcLayer::sendIgnoredMessageNotification(quint32 errorCode, const MTProto::
     TLBadMsgNotification tlNotification;
     messageNotification.toTlNotification(&tlNotification);
     output << tlNotification;
-    sendPackage(output.getData(), SendMode::ServerReply);
+    sendPacket(output.getData(), SendMode::ServerReply);
 }
 
 bool RpcLayer::sendRpcError(const RpcError &error, quint64 messageId)
@@ -279,12 +279,12 @@ bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
         output.writeBytes(reply);
     }
     qCDebug(c_serverRpcDumpPackageCategory) << Q_FUNC_INFO << TLValue::firstFromArray(reply) << "for message id" << messageId;
-    return sendPackage(output.getData(), SendMode::ServerReply);
+    return sendPacket(output.getData(), SendMode::ServerReply);
 }
 
 bool RpcLayer::sendRpcMessage(const QByteArray &message)
 {
-    return sendPackage(message, SendMode::ServerInitiative);
+    return sendPacket(message, SendMode::ServerInitiative);
 }
 
 const char *RpcLayer::gzipPackMessage()
@@ -304,7 +304,7 @@ quint32 RpcLayer::activeLayer() const
     return m_invokeWithLayer.top();
 }
 
-bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
+bool RpcLayer::processMessageHeader(const MTProto::FullMessageHeader &header)
 {
     if (!header.sessionId) {
         qCWarning(c_serverRpcLayerCategory) << this << __func__ << "Unexpected RPC packet without sessionId";

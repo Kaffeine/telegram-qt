@@ -40,7 +40,7 @@ public:
         return m_connection->transport()->getNewMessageId(ts);
     }
 
-    void sendPackage(const QByteArray &package) override
+    void sendPacket(const QByteArray &package) override
     {
         return m_connection->transport()->sendPacket(package);
     }
@@ -60,7 +60,7 @@ Connection::Connection(QObject *parent) :
     m_dhLayer->setSendPackageHelper(m_sendHelper);
     connect(m_dhLayer, &BaseDhLayer::stateChanged, this, &Connection::onClientDhStateChanged);
     m_rpcLayer = new RpcLayer(this);
-    m_rpcLayer->setSendPackageHelper(m_sendHelper);
+    m_rpcLayer->setSendHelper(m_sendHelper);
 }
 
 void Connection::setDcOption(const DcOption &dcOption)

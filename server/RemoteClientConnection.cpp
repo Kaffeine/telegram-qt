@@ -26,7 +26,7 @@ RemoteClientConnection::RemoteClientConnection(QObject *parent) :
     m_dhLayer = new DhLayer(this);
     m_dhLayer->setSendPackageHelper(m_sendHelper);
     m_rpcLayer = new RpcLayer(this);
-    m_rpcLayer->setSendPackageHelper(m_sendHelper);
+    m_rpcLayer->setSendHelper(m_sendHelper);
 }
 
 RpcLayer *RemoteClientConnection::rpcLayer() const

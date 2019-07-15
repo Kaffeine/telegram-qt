@@ -241,7 +241,7 @@ bool RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
     return false;
 }
 
-bool RpcLayer::processDecryptedMessageHeader(const MTProto::FullMessageHeader &header)
+bool RpcLayer::processMessageHeader(const MTProto::FullMessageHeader &header)
 {
     if (serverSalt() != header.serverSalt) {
         qCDebug(c_clientRpcLayerCategory).noquote()
@@ -295,7 +295,7 @@ quint64 RpcLayer::sendRpc(PendingRpcOperation *operation)
     }
     m_operations.insert(message->messageId, operation);
     m_messages.insert(message->messageId, message);
-    sendPackage(*message);
+    sendPacket(*message);
     return message->messageId;
 }
 
@@ -316,7 +316,7 @@ bool RpcLayer::resendIgnoredMessage(quint64 messageId)
     message->messageId = m_sendHelper->newMessageId(SendMode::Client);
     m_operations.insert(message->messageId, operation);
     m_messages.insert(message->messageId, message);
-    sendPackage(*message);
+    sendPacket(*message);
     emit operation->resent(messageId, message->messageId);
     return message->messageId;
 }
@@ -335,7 +335,7 @@ void RpcLayer::acknowledgeMessages()
     message->setData(outputStream.getData());
 
     m_messages.insert(message->messageId, message);
-    sendPackage(*message);
+    sendPacket(*message);
 }
 
 void RpcLayer::onConnectionFailed()

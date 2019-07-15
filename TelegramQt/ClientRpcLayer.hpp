@@ -74,7 +74,7 @@ protected Q_SLOTS:
     void acknowledgeMessages();
 
 protected:
-    bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &header) override;
+    bool processMessageHeader(const MTProto::FullMessageHeader &header) override;
     Crypto::AesKey getDecryptionAesKey(const QByteArray &messageKey) const final { return generateServerToClientAesKey(messageKey); }
     Crypto::AesKey getEncryptionAesKey(const QByteArray &messageKey) const final { return generateClientToServerAesKey(messageKey); }
 

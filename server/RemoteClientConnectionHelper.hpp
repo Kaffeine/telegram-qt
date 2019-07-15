@@ -29,7 +29,7 @@ public:
     explicit MTProtoSendHelper(BaseConnection *connection);
 
     quint64 newMessageId(SendMode mode) override;
-    void sendPackage(const QByteArray &package) override;
+    void sendPacket(const QByteArray &package) override;
 
     RemoteClientConnection *getRemoteClientConnection() const;
 };

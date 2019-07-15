@@ -39,7 +39,7 @@ public:
     virtual quint64 newMessageId(SendMode mode) = 0;
     BaseConnection *getConnection() const { return m_connection; }
 
-    virtual void sendPackage(const QByteArray &package) = 0;
+    virtual void sendPacket(const QByteArray &package) = 0;
 
     qint32 deltaTime() const { return m_deltaTime; }
     void setDeltaTime(const qint32 newDt);

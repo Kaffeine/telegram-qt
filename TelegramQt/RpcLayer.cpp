@@ -44,12 +44,12 @@ BaseRpcLayer::BaseRpcLayer(QObject *parent) :
 {
 }
 
-void BaseRpcLayer::setSendPackageHelper(BaseMTProtoSendHelper *helper)
+void BaseRpcLayer::setSendHelper(BaseMTProtoSendHelper *helper)
 {
     m_sendHelper = helper;
 }
 
-bool BaseRpcLayer::processPackage(const QByteArray &package)
+bool BaseRpcLayer::processPacket(const QByteArray &package)
 {
     if (package.size() < 24) {
         return false;
@@ -79,7 +79,7 @@ bool BaseRpcLayer::processPackage(const QByteArray &package)
     qCDebug(c_baseRpcLayerCategoryIn) << this << __func__ << messageHeader;
 #endif
 
-    if (!processDecryptedMessageHeader(messageHeader)) {
+    if (!processMessageHeader(messageHeader)) {
         return false;
     }
 
@@ -157,7 +157,7 @@ quint32 BaseRpcLayer::getNextMessageSequenceNumber(MessageType messageType)
     return newNumber;
 }
 
-bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
+bool BaseRpcLayer::sendPacket(const MTProto::Message &message)
 {
     if (!m_sendHelper->authId()) {
         qCCritical(c_baseRpcLayerCategoryOut) << Q_FUNC_INFO << "Auth key is not set!";
@@ -216,7 +216,7 @@ bool BaseRpcLayer::sendPackage(const MTProto::Message &message)
     output << m_sendHelper->authId(); // keyId
     output << messageKey;
     output << encryptedPackage;
-    m_sendHelper->sendPackage(output.getData());
+    m_sendHelper->sendPacket(output.getData());
     return true;
 }
 
@@ -234,7 +234,7 @@ static QLatin1String getModeText(SendMode mode)
     return QLatin1String("Invalid");
 }
 
-quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
+quint64 BaseRpcLayer::sendPacket(const QByteArray &buffer, SendMode mode)
 {
     MTProto::Message message;
     message.setData(buffer);
@@ -251,7 +251,7 @@ quint64 BaseRpcLayer::sendPackage(const QByteArray &buffer, SendMode mode)
             << "message" << message.firstValue()
             << "with id" << message.messageId;
 
-    if (!sendPackage(message)) {
+    if (!sendPacket(message)) {
         return 0;
     }
     return message.messageId;

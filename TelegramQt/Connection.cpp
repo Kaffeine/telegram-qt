@@ -124,7 +124,7 @@ void BaseConnection::onTransportPacketReceived(const QByteArray &payload)
             qCDebug(c_baseConnectionCategory) << CALL_INFO << "Received incorrect auth id.";
             return;
         }
-        if (!m_rpcLayer->processPackage(payload)) {
+        if (!m_rpcLayer->processPacket(payload)) {
             qCDebug(c_baseConnectionCategory) << CALL_INFO
                                               << "Unable to process RPC packet:"
                                               << payload.toHex();

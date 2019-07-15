@@ -49,7 +49,7 @@ quint64 MTProtoSendHelper::newMessageId(SendMode mode)
     return m_connection->transport()->getNewMessageId(ts);
 }
 
-void MTProtoSendHelper::sendPackage(const QByteArray &package)
+void MTProtoSendHelper::sendPacket(const QByteArray &package)
 {
     return m_connection->transport()->sendPacket(package);
 }

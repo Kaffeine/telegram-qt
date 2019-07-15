@@ -71,7 +71,7 @@ public:
         return m_transport->getNewMessageId(ts);
     }
 
-    void sendPackage(const QByteArray &package) override
+    void sendPacket(const QByteArray &package) override
     {
         return m_transport->sendPacket(package);
     }
@@ -101,7 +101,7 @@ public:
         m_sendHelper->setBaseTimestamp(1537207803787ull);
         setSessionId(123456789ull);
 
-        setSendPackageHelper(m_sendHelper);
+        setSendHelper(m_sendHelper);
     }
     ~RpcLayer() override
     {
@@ -117,7 +117,7 @@ public:
 
     MTProto::Message lastProcessedMessage() const { return m_lastProcessedMessage; }
 
-    bool processDecryptedMessageHeader(const MTProto::FullMessageHeader &) override { return true; }
+    bool processMessageHeader(const MTProto::FullMessageHeader &) override { return true; }
     bool processMTProtoMessage(const MTProto::Message &message) override { m_lastProcessedMessage = message; return false; }
 
 protected:
@@ -163,7 +163,7 @@ class ClientRpcLayer : public RpcLayer
 public:
     ClientRpcLayer() : RpcLayer(Mode::Client) { }
 
-    quint64 sendPackageAsClient(const QByteArray &buffer) { return sendPackage(buffer, SendMode::Client); }
+    quint64 sendPackageAsClient(const QByteArray &buffer) { return sendPacket(buffer, SendMode::Client); }
 };
 
 class ServerRpcLayer : public RpcLayer
@@ -172,8 +172,8 @@ class ServerRpcLayer : public RpcLayer
 public:
     ServerRpcLayer() : RpcLayer(Mode::Server) { }
 
-    quint64 sendPackageAsServerReply(const QByteArray &buffer) { return sendPackage(buffer, SendMode::ServerReply); }
-    quint64 sendPackageAsServerInitiative(const QByteArray &buffer) { return sendPackage(buffer, SendMode::ServerInitiative); }
+    quint64 sendPackageAsServerReply(const QByteArray &buffer) { return sendPacket(buffer, SendMode::ServerReply); }
+    quint64 sendPackageAsServerInitiative(const QByteArray &buffer) { return sendPacket(buffer, SendMode::ServerInitiative); }
 };
 
 } // Test
@@ -268,7 +268,7 @@ void tst_RpcLayer::processServerReply()
 
     Telegram::Test::ClientRpcLayer rpcLayer;
     rpcLayer.sendHelper()->setAuthKey(c_authKey);
-    rpcLayer.processPackage(c_serverReplyPackage);
+    rpcLayer.processPacket(c_serverReplyPackage);
 
     Telegram::MTProto::Message m = rpcLayer.lastProcessedMessage();
     QCOMPARE(m.data, data);
