@@ -175,8 +175,8 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     app.setApplicationName("TelegramQt");
     app.setApplicationVersion(QStringLiteral("0.2"));
-     QQuickStyle::setStyle("Fusion");
-//    QQuickStyle::setStyle("Material");
+//     QQuickStyle::setStyle("Fusion");
+    QQuickStyle::setStyle("Material");
 
     qmlRegisterType<Telegram::Client::DialogsModel>("Client", 1, 0, "DialogsModel");
     qmlRegisterType<Telegram::Client::MessagesModel>("Client", 1, 0, "MessagesModel");
