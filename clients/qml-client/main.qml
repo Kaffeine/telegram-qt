@@ -28,11 +28,9 @@ ApplicationWindow {
 
     property string appname: Qt.application.name
 
-    Material.theme: Material.Dark
-
     QtObject {
         id: options
-        property bool localServer: true //&& false
+        property bool localServer: true && false
     }
 
     Telegram.FileAccountStorage {
