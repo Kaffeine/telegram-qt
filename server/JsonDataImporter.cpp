@@ -2,6 +2,7 @@
 
 #include "AuthService.hpp"
 #include "JsonUtils_p.hpp"
+#include "ServerTelegramJson.hpp"
 #include "ServerImportApi.hpp"
 #include "Session.hpp"
 #include "TelegramServer.hpp"
@@ -99,6 +100,11 @@ void JsonDataImporter::exportForServer(Server *server)
             QJsonArray authorizationsArray = Json::toJsonArray(user->authorizations());
             if (!authorizationsArray.isEmpty()) {
                 userObject[QLatin1String("authorizations")] = authorizationsArray;
+            }
+
+            QJsonArray importedContactsArray = Json::toJsonArray(user->importedContacts(), &Json::toValue);
+            if (!importedContactsArray.isEmpty()) {
+                userObject[QLatin1String("importedContacts")] = importedContactsArray;
             }
 
             usersArray.append(userObject);

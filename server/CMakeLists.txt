@@ -78,6 +78,8 @@ set(server_json_SOURCES
     JsonUtils_p.hpp
     ServerImportApi.cpp
     ServerImportApi.hpp
+    ServerTelegramJson.cpp
+    ServerTelegramJson.hpp
 )
 
 if (DEVELOPER_BUILD)
