@@ -72,6 +72,15 @@ static const UserData c_user2 = mkUserData(2000, 1);
 static const UserData c_user3 = mkUserData(3000, 1);
 static const UserData c_user4 = mkUserData(4000, 1);
 
+Client::ContactsApi::ContactInfo toContactInfo(const Server::AbstractUser *user)
+{
+    Client::ContactsApi::ContactInfo info;
+    info.phoneNumber = user->phoneNumber();
+    info.firstName = user->firstName();
+    info.lastName = user->lastName();
+    return info;
+}
+
 class tst_MessagesApi : public QObject
 {
     Q_OBJECT
@@ -88,6 +97,7 @@ private slots:
     void getHistory_data();
     void getHistory();
     void syncPeerDialogs();
+    void messageAction();
 };
 
 tst_MessagesApi::tst_MessagesApi(QObject *parent) :
@@ -1233,6 +1243,136 @@ void tst_MessagesApi::syncPeerDialogs()
         }
 
         state7 = dataStorage->saveState();
+    }
+}
+
+void tst_MessagesApi::messageAction()
+{
+    const UserData user1Data = c_user1;
+    const UserData user2Data = c_user2;
+    const DcOption clientDcOption = c_localDcOptions.first();
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+    QVERIFY(publicKey.isValid() && privateKey.isPrivate()); // Sanity check
+
+    // Prepare server
+    Test::AuthProvider authProvider;
+    Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_localDcConfiguration);
+    QVERIFY(cluster.start());
+
+    Server::LocalUser *user1 = tryAddUser(&cluster, user1Data);
+    Server::LocalUser *user2 = tryAddUser(&cluster, user2Data);
+    QVERIFY(user1 && user2);
+
+    // Prepare clients
+    Client::Client client1;
+    Test::setupClientHelper(&client1, user1Data, publicKey, clientDcOption);
+    signInHelper(&client1, user1Data, &authProvider);
+    Client::Client client2;
+    Test::setupClientHelper(&client2, user2Data, publicKey, clientDcOption);
+    signInHelper(&client2, user2Data, &authProvider);
+    TRY_VERIFY2(client1.isSignedIn() && client2.isSignedIn(), "Unexpected sign in fail");
+
+    // Everyone is online. Setup contacts
+    Peer client2AsClient1Peer;
+    Peer client1AsClient2Peer;
+    Client::ContactList *client1ContactList = client1.contactsApi()->getContactList();
+    {
+        const Client::ContactsApi::ContactInfo user2ContactInfo = toContactInfo(user2);
+        Client::PendingContactsOperation *addContactOperation = client1.contactsApi()->addContacts({user2ContactInfo});
+        TRY_VERIFY(addContactOperation->isFinished());
+        QVERIFY(addContactOperation->isSucceeded());
+
+        QCOMPARE(addContactOperation->peers().count(), 1);
+        client2AsClient1Peer = addContactOperation->peers().first();
+        UserInfo userInfo;
+        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id));
+        QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
+
+        PendingOperation *contactListReadyOperation = client1ContactList->becomeReady();
+        TRY_VERIFY(contactListReadyOperation->isFinished());
+        QVERIFY(contactListReadyOperation->isSucceeded());
+        QCOMPARE(client1ContactList->peers().count(), 1);
+    }
+
+    const QString c_message1Text = QStringLiteral("Hello");
+
+    QSignalSpy client1MessageSentSpy(client1.messagingApi(), &Client::MessagingApi::messageSent);
+    QSignalSpy client1MessageReceivedSpy(client1.messagingApi(), &Client::MessagingApi::messageReceived);
+    QSignalSpy client2MessageReceivedSpy(client2.messagingApi(), &Client::MessagingApi::messageReceived);
+
+    quint32 client1Message1Id = 0;
+    quint32 client2Message1Id = 0;
+
+    // Check sent by client 1
+    {
+        quint64 sentMessageId = client1.messagingApi()->sendMessage(client2AsClient1Peer, c_message1Text);
+        TRY_COMPARE(client1MessageSentSpy.count(), 1);
+        QList<QVariant> sentArgs = client1MessageSentSpy.takeFirst();
+        QCOMPARE(sentArgs.count(), 3); // messageSent has 'peer', 'random message id' and 'messageId' args
+        QVERIFY(sentMessageId);
+        QCOMPARE(sentArgs.takeFirst().value<Telegram::Peer>(), client2AsClient1Peer);
+        QCOMPARE(sentArgs.takeFirst().value<quint64>(), sentMessageId);
+        client1Message1Id = sentArgs.takeFirst().value<quint32>();
+        QVERIFY(client1Message1Id);
+    }
+
+    // Check received back by client1
+    {
+        // The sent message should be received as proper TLMessage right after the messageSent() signal
+        TRY_COMPARE(client1MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client1MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        QCOMPARE(receivedArgs.takeFirst().value<Telegram::Peer>(), client2AsClient1Peer);
+        QCOMPARE(receivedArgs.takeFirst().value<quint32>(), client1Message1Id);
+        Telegram::Message message;
+        client1.dataStorage()->getMessage(&message, client2AsClient1Peer, client1Message1Id);
+        QCOMPARE(message.id, client1Message1Id);
+        QCOMPARE(message.peer(), client2AsClient1Peer);
+        QCOMPARE(message.text, c_message1Text);
+        QCOMPARE(message.fromId, client1.dataStorage()->selfUserId());
+        QCOMPARE(message.forwardContactId, 0u);
+        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
+        QCOMPARE(message.flags, TelegramNamespace::MessageFlagOut);
+    }
+
+    // Check received by client 2
+    {
+        TRY_COMPARE(client2MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client2MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        client1AsClient2Peer = receivedArgs.first().value<Telegram::Peer>();
+
+        client2Message1Id = receivedArgs.last().toUInt();
+        QVERIFY(client2Message1Id);
+        Telegram::Message message;
+        client2.dataStorage()->getMessage(&message, client1AsClient2Peer, client2Message1Id);
+        QCOMPARE(message.id, client2Message1Id);
+        QCOMPARE(message.peer(), client1AsClient2Peer);
+        QCOMPARE(message.text, c_message1Text);
+        QCOMPARE(message.fromId, client1AsClient2Peer.id);
+        QCOMPARE(message.forwardContactId, 0u);
+        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
+        QCOMPARE(message.flags, TelegramNamespace::MessageFlagNone);
+    }
+
+    // Check message actions
+    QSignalSpy client1MessageActionsSpy(client1.messagingApi(), &Client::MessagingApi::messageActionChanged);
+    QSignalSpy client2MessageActionsSpy(client2.messagingApi(), &Client::MessagingApi::messageActionChanged);
+    client2.messagingApi()->setMessageAction(client1AsClient2Peer, Telegram::MessageAction::Type::Typing);
+    TRY_VERIFY(!client1MessageActionsSpy.isEmpty());
+    QCOMPARE(client1MessageActionsSpy.count(), 1);
+    {
+        QList<QVariant> receivedArgs = client1MessageActionsSpy.takeFirst();
+        const Peer peer = receivedArgs.first().value<Telegram::Peer>();
+        COMPARE_PEERS(peer, client2AsClient1Peer);
     }
 }
 
