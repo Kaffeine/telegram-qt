@@ -124,7 +124,7 @@ Q_SIGNALS:
     // Our outgoing message(s) was read
     void messageReadOutbox(const Telegram::Peer peer, quint32 messageId);
 
-    void messageActionChanged(const Telegram::Peer &peer, quint32 contactId, const Telegram::MessageAction &action);
+    void messageActionChanged(const Telegram::Peer &peer, quint32 userId, const Telegram::MessageAction &action);
 
 protected:
     Q_DECLARE_PRIVATE_D(d, MessagingApi)

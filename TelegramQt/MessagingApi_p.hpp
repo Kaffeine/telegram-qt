@@ -24,6 +24,8 @@
 #include "RpcLayers/ClientRpcChannelsLayer.hpp"
 #include "RpcLayers/ClientRpcMessagesLayer.hpp"
 
+QT_FORWARD_DECLARE_CLASS(QTimer)
+
 namespace Telegram {
 
 class PendingOperation;
@@ -33,6 +35,33 @@ namespace Client {
 class DialogList;
 class PendingMessages;
 class MessagesRpcLayer;
+
+struct UserMessageAction : public MessageAction
+{
+    UserMessageAction() = default;
+    UserMessageAction(Peer p, quint32 user)
+        : peer(p)
+        , userId(user)
+    {
+    }
+
+    static int findInVector(const QVector<UserMessageAction> &vector,
+                            Peer p,
+                            quint32 id)
+    {
+        for (int i = 0; i < vector.count(); ++i) {
+            const UserMessageAction &a = vector.at(i);
+            if ((a.peer == p) && (a.userId == id)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    Peer peer;
+    quint32 userId = 0;
+    int remainingTime = 0; // (ms)
+};
 
 class MessagingApiPrivate : public ClientApiPrivate
 {
@@ -79,8 +108,11 @@ protected slots:
     void onSyncHistoryReceived(PendingMessages *operation);
 
     bool pushBackNewOldMessages(const Telegram::Peer &peer, const QVector<quint32> &messages);
+    void onMessageActionTimerTimeout();
 
 protected:
+    QVector<UserMessageAction> m_currentMessageActions;
+    QTimer *m_messageActionTimer = nullptr;
     DialogList *m_dialogList = nullptr;
     MessagesRpcLayer *m_messagesLayer = nullptr;
     quint64 m_expectedRandomMessageId = 0;

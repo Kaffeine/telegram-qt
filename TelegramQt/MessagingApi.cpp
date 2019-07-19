@@ -14,6 +14,7 @@
 #include "Operations/PendingMessages_p.hpp"
 
 #include <QLoggingCategory>
+#include <QTimer>
 
 namespace Telegram {
 
@@ -91,6 +92,43 @@ void MessagingApiPrivate::setMessageAction(const Peer peer, const MessageAction 
 void Telegram::Client::MessagingApiPrivate::processMessageAction(const Peer peer, quint32 userId, const MessageAction &action)
 {
     Q_Q(MessagingApi);
+    const int index = UserMessageAction::findInVector(m_currentMessageActions, peer, userId);
+    if (action.type == MessageAction::None) {
+        if (index >= 0) {
+            m_currentMessageActions.removeAt(index);
+        }
+
+        emit q->messageActionChanged(peer, userId, action);
+        return;
+    }
+
+    if (!m_messageActionTimer) {
+        m_messageActionTimer = new QTimer(this);
+        m_messageActionTimer->setSingleShot(true);
+        connect(m_messageActionTimer, &QTimer::timeout, this, &MessagingApiPrivate::onMessageActionTimerTimeout);
+    }
+
+    UserMessageAction *storedAction = nullptr;
+    if (index >= 0) {
+        storedAction = &m_currentMessageActions[index];
+        if ((storedAction->type == action.type) && (storedAction->progress == action.progress)) {
+            // No changes
+            storedAction->remainingTime = static_cast<int>(MessagingApi::messageActionValidPeriod());
+            return;
+        }
+    } else {
+        m_currentMessageActions.append(UserMessageAction(peer, userId));
+        storedAction = &m_currentMessageActions.last();
+    }
+
+    storedAction->type = action.type;
+    storedAction->progress = action.progress;
+    storedAction->remainingTime = static_cast<int>(MessagingApi::messageActionValidPeriod());
+
+    if (!m_messageActionTimer->isActive()) {
+        m_messageActionTimer->start(storedAction->remainingTime);
+    }
+
     emit q->messageActionChanged(peer, userId, action);
 }
 
@@ -604,6 +642,33 @@ bool MessagingApiPrivate::pushBackNewOldMessages(const Peer &peer, const QVector
     historyOp->connectToFinished(this, &MessagingApiPrivate::onSyncHistoryReceived, historyOp);
 
     return false;
+}
+
+void Telegram::Client::MessagingApiPrivate::onMessageActionTimerTimeout()
+{
+    Q_Q(MessagingApi);
+    int minTime = static_cast<int>(MessagingApi::messageActionValidPeriod());
+
+    for (int i = m_currentMessageActions.count() - 1; i >= 0; --i) {
+        UserMessageAction *action = &m_currentMessageActions[i];
+        int remainingTime = action->remainingTime - m_messageActionTimer->interval();
+        if (remainingTime < 15) { // Consider 15 ms as an acceptable deviation
+            const Peer peer = action->peer;
+            const quint32 userId = action->userId;
+            m_currentMessageActions.remove(i);
+
+            emit q->messageActionChanged(peer, userId, Telegram::MessageAction::None);
+        } else {
+            m_currentMessageActions[i].remainingTime = remainingTime;
+            if (minTime > remainingTime) {
+                minTime = remainingTime;
+            }
+        }
+    }
+
+    if (!m_currentMessageActions.isEmpty()) {
+        m_messageActionTimer->start(minTime);
+    }
 }
 
 MessagingApi::SendOptions::SendOptions() :
