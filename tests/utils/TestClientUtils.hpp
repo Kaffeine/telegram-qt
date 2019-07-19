@@ -18,6 +18,10 @@
 
 #include <QSignalSpy>
 
+namespace Telegram {
+
+namespace Test {
+
 Telegram::Client::AppInformation *getAppInfo()
 {
     static Telegram::Client::AppInformation *appInfo = nullptr;
@@ -95,5 +99,9 @@ void signInHelper(Telegram::Client::Client *client, const UserData &userData, Te
         signInOperation->submitPassword(userData.password);
     }
 }
+
+} // Test namespace
+
+} // Telegram namespace
 
 #endif // TEST_CLIENT_UTILS_HPP

@@ -139,7 +139,7 @@ void tst_MessagesApi::getSelfUserDialog()
 
     QSignalSpy syncedMessagesSpy(client.messagingApi(), &Client::MessagingApi::syncMessages);
 
-    setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+    Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
     signInHelper(&client, c_user1, &authProvider);
     TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
 
@@ -200,7 +200,7 @@ void tst_MessagesApi::getDialogs()
     // Prepare clients
     Client::Client client1;
     {
-        setupClientHelper(&client1, user1Data, publicKey, clientDcOption);
+        Test::setupClientHelper(&client1, user1Data, publicKey, clientDcOption);
         Client::AuthOperation *signInOperation1 = nullptr;
         signInHelper(&client1, user1Data, &authProvider, &signInOperation1);
         TRY_VERIFY2(signInOperation1->isSucceeded(), "Unexpected sign in fail");
@@ -210,7 +210,7 @@ void tst_MessagesApi::getDialogs()
 
     Client::Client client2;
     {
-        setupClientHelper(&client2, user2Data, publicKey, clientDcOption);
+        Test::setupClientHelper(&client2, user2Data, publicKey, clientDcOption);
         Client::AuthOperation *signInOperation2 = nullptr;
         signInHelper(&client2, user2Data, &authProvider, &signInOperation2);
         TRY_VERIFY2(signInOperation2->isSucceeded(), "Unexpected sign in fail");
@@ -414,7 +414,7 @@ void tst_MessagesApi::getAllDialogs()
 
     // Prepare client
     Client::Client client;
-    setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+    Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
     signInHelper(&client, c_user1, &authProvider);
     TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
 
@@ -448,10 +448,10 @@ void tst_MessagesApi::getMessage()
 
     // Prepare clients
     Client::Client client1;
-    setupClientHelper(&client1, user1Data, publicKey, clientDcOption);
+    Test::setupClientHelper(&client1, user1Data, publicKey, clientDcOption);
     signInHelper(&client1, user1Data, &authProvider);
     Client::Client client2;
-    setupClientHelper(&client2, user2Data, publicKey, clientDcOption);
+    Test::setupClientHelper(&client2, user2Data, publicKey, clientDcOption);
     signInHelper(&client2, user2Data, &authProvider);
     TRY_VERIFY2(client1.isSignedIn() && client2.isSignedIn(), "Unexpected sign in fail");
 
@@ -725,7 +725,7 @@ void tst_MessagesApi::getHistory()
 
     // Prepare clients
     Client::Client client;
-    setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+    Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
     signInHelper(&client, c_user1, &authProvider);
     TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
     TRY_COMPARE(client.connectionApi()->status(), Telegram::Client::ConnectionApi::StatusReady);
@@ -797,7 +797,7 @@ void tst_MessagesApi::syncPeerDialogs()
     {
         // Prepare client
         Client::Client client;
-        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
         Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
         client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
         client.messagingApi()->setSyncLimit(0);
@@ -849,7 +849,7 @@ void tst_MessagesApi::syncPeerDialogs()
     {
         // Prepare client
         Client::Client client;
-        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
         Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
         dataStorage->loadState(state1);
 #ifdef TEST_PRIVATE_API
@@ -896,7 +896,7 @@ void tst_MessagesApi::syncPeerDialogs()
     {
         // Prepare client
         Client::Client client;
-        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
         Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
         client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
         client.messagingApi()->setSyncLimit(5);
@@ -942,7 +942,7 @@ void tst_MessagesApi::syncPeerDialogs()
     {
         // Prepare client
         Client::Client client;
-        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
         Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
         client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
         client.messagingApi()->setSyncLimit(0);
@@ -1007,7 +1007,7 @@ void tst_MessagesApi::syncPeerDialogs()
     {
         // Prepare client
         Client::Client client;
-        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
         Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
         dataStorage->loadState(state2);
 #ifdef TEST_PRIVATE_API
@@ -1079,7 +1079,7 @@ void tst_MessagesApi::syncPeerDialogs()
     {
         // Prepare client
         Client::Client client;
-        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
         Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
         dataStorage->loadState(state5);
 #ifdef TEST_PRIVATE_API
@@ -1175,7 +1175,7 @@ void tst_MessagesApi::syncPeerDialogs()
     {
         // Prepare client
         Client::Client client;
-        setupClientHelper(&client, c_user1, publicKey, clientDcOption);
+        Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
         Client::InMemoryDataStorage *dataStorage = static_cast<Client::InMemoryDataStorage *>(client.dataStorage());
         dataStorage->loadState(state6);
 #ifdef TEST_PRIVATE_API

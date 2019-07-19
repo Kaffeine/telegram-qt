@@ -168,7 +168,7 @@ void tst_all::testSignIn()
     Client::AccountStorage accountStorage;
     Client::Settings clientSettings;
     Client::InMemoryDataStorage dataStorage;
-    client.setAppInformation(getAppInfo());
+    client.setAppInformation(Test::getAppInfo());
     client.setSettings(&clientSettings);
     client.setAccountStorage(&accountStorage);
     client.setDataStorage(&dataStorage);
@@ -271,7 +271,7 @@ void tst_all::testCheckInSignIn()
 
     Client::Settings clientSettings;
     Client::InMemoryDataStorage dataStorage;
-    client.setAppInformation(getAppInfo());
+    client.setAppInformation(Test::getAppInfo());
     client.setSettings(&clientSettings);
     client.setAccountStorage(&accountStorage);
     client.setDataStorage(&dataStorage);
@@ -385,7 +385,7 @@ void tst_all::testSignInCheckIn()
     {
         Client::Client client;
         Client::InMemoryDataStorage *dataStorage = new Client::InMemoryDataStorage(&client);
-        client.setAppInformation(getAppInfo());
+        client.setAppInformation(Test::getAppInfo());
         client.setSettings(&clientSettings);
         client.setAccountStorage(&accountStorage);
         client.setDataStorage(dataStorage);
@@ -412,7 +412,7 @@ void tst_all::testSignInCheckIn()
     {
         Client::Client client;
         Client::InMemoryDataStorage *dataStorage = new Client::InMemoryDataStorage(&client);
-        client.setAppInformation(getAppInfo());
+        client.setAppInformation(Test::getAppInfo());
         client.setSettings(&clientSettings);
         client.setAccountStorage(&accountStorage);
         client.setDataStorage(dataStorage);
@@ -462,7 +462,7 @@ void tst_all::testSignUp()
     Client::AccountStorage accountStorage;
     Client::Settings clientSettings;
     Client::InMemoryDataStorage dataStorage;
-    client.setAppInformation(getAppInfo());
+    client.setAppInformation(Test::getAppInfo());
     client.setSettings(&clientSettings);
     client.setAccountStorage(&accountStorage);
     client.setDataStorage(&dataStorage);

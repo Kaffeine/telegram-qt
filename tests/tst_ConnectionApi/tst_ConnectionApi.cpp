@@ -234,7 +234,7 @@ void tst_ConnectionApi::testClientConnection()
     QVERIFY(user);
 
     Client::Client client;
-    setupClientHelper(&client, userData, publicKey, clientDcOption, sessionType);
+    Test::setupClientHelper(&client, userData, publicKey, clientDcOption, sessionType);
     Client::ConnectionApi *connectionApi = client.connectionApi();
 
     QSignalSpy clientConnectionStatusSpy(connectionApi, &Client::ConnectionApi::statusChanged);
@@ -326,7 +326,7 @@ void tst_ConnectionApi::registrationAuthError()
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
 
     Client::Client client;
-    setupClientHelper(&client, UserData(), publicKey, clientDcOption);
+    Test::setupClientHelper(&client, UserData(), publicKey, clientDcOption);
     Client::ConnectionApi *connectionApi = client.connectionApi();
 
     QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusDisconnected);
@@ -403,7 +403,7 @@ void tst_ConnectionApi::reconnect()
     QVERIFY(user);
 
     Client::Client client;
-    setupClientHelper(&client, userData, publicKey, clientDcOption);
+    Test::setupClientHelper(&client, userData, publicKey, clientDcOption);
     Client::ConnectionApi *connectionApi = client.connectionApi();
 
     QSignalSpy clientConnectionStatusSpy(connectionApi, &Client::ConnectionApi::statusChanged);
@@ -525,7 +525,7 @@ void tst_ConnectionApi::reconnectNow()
     // Do not start the server yet
 
     Client::Client client;
-    setupClientHelper(&client, userData, publicKey, clientDcOption);
+    Test::setupClientHelper(&client, userData, publicKey, clientDcOption);
     Client::ConnectionApi *connectionApi = client.connectionApi();
 
     QCOMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusDisconnected);
