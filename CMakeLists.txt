@@ -8,8 +8,11 @@ project(TelegramQt
 set(TELEGRAM_QT_VERSION "${PROJECT_VERSION}")
 set(TELEGRAM_QT_ABI "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 
+include(GNUInstallDirs)
+include(FeatureSummary)
+
 set(OVERRIDE_CXX_STANDARD 11 CACHE STRING "Compile with custom C++ standard version")
-set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_LIBDIR}/qt5/qml"
+set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
     CACHE PATH "Custom QML import installation directory")
 
 set(CMAKE_CXX_STANDARD ${OVERRIDE_CXX_STANDARD})
@@ -50,9 +53,6 @@ if (BUILD_SERVER)
         list(APPEND QT_COMPONENTS DBus)
     endif()
 endif()
-
-include(GNUInstallDirs)
-include(FeatureSummary)
 
 find_package(Qt5 5.5.0 REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(OpenSSL REQUIRED)
