@@ -310,7 +310,8 @@ target_link_libraries(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     ZLIB::ZLIB
 )
 
-set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
+set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
+set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_FULL_LIBDIR})
 
 # Set the correct version number
 set_target_properties(
