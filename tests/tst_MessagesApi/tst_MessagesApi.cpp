@@ -109,6 +109,10 @@ void tst_MessagesApi::initTestCase()
 {
     qRegisterMetaType<UserData>();
     QVERIFY(TestKeyData::initKeyFiles());
+
+    if (!qEnvironmentVariableIsSet(Client::MessagingApi::messageActionIntervalEnvironmentVariableName())) {
+        qputenv(Client::MessagingApi::messageActionIntervalEnvironmentVariableName(), QByteArrayLiteral("50"));
+    }
 }
 
 void tst_MessagesApi::cleanupTestCase()
@@ -1367,6 +1371,15 @@ void tst_MessagesApi::messageAction()
     QSignalSpy client1MessageActionsSpy(client1.messagingApi(), &Client::MessagingApi::messageActionChanged);
     QSignalSpy client2MessageActionsSpy(client2.messagingApi(), &Client::MessagingApi::messageActionChanged);
     client2.messagingApi()->setMessageAction(client1AsClient2Peer, Telegram::MessageAction::Type::Typing);
+    TRY_VERIFY(!client1MessageActionsSpy.isEmpty());
+    QCOMPARE(client1MessageActionsSpy.count(), 1);
+    {
+        QList<QVariant> receivedArgs = client1MessageActionsSpy.takeFirst();
+        const Peer peer = receivedArgs.first().value<Telegram::Peer>();
+        COMPARE_PEERS(peer, client2AsClient1Peer);
+    }
+
+    // Wait for the status invalidation (should happen in about 6 seconds in real application)
     TRY_VERIFY(!client1MessageActionsSpy.isEmpty());
     QCOMPARE(client1MessageActionsSpy.count(), 1);
     {
