@@ -152,6 +152,8 @@ void DialogsModel::setQmlClient(DeclarativeClient *target)
 void DialogsModel::populate()
 {
     m_list = client()->messagingApi()->getDialogList();
+
+    connect(m_list, &DialogList::listChanged, this, &DialogsModel::onListChanged);
     connect(m_list->becomeReady(), &Telegram::PendingOperation::finished, this, &DialogsModel::onListReady);
     if (m_list->isReady()) {
         onListReady();
@@ -177,7 +179,6 @@ QString getPeerAlias(const Telegram::Peer &peer, const Telegram::Client::Client 
 void DialogsModel::onListReady()
 {
     qWarning() << Q_FUNC_INFO;
-    connect(m_list, &DialogList::listChanged, this, &DialogsModel::onListChanged);
     beginResetModel();
     m_dialogs.clear();
 
