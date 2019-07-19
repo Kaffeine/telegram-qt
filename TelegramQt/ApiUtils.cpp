@@ -208,6 +208,10 @@ Telegram::MessageAction toPublic(const TLSendMessageAction &action)
         publicAction.type = Telegram::MessageAction::Type::UploadDocument;
         publicAction.progress = action.progress;
         break;
+    case TLValue::SendMessageUploadRoundAction:
+        publicAction.type = Telegram::MessageAction::Type::UploadRoundVideo;
+        publicAction.progress = action.progress;
+        break;
     case TLValue::SendMessageGeoLocationAction:
         publicAction.type = Telegram::MessageAction::Type::GeoLocation;
         break;
@@ -251,6 +255,10 @@ TLSendMessageAction toTL(const Telegram::MessageAction &action)
         break;
     case Telegram::MessageAction::Type::UploadDocument:
         tlAction.tlType = TLValue::SendMessageUploadDocumentAction;
+        tlAction.progress = action.progress;
+        break;
+    case Telegram::MessageAction::Type::UploadRoundVideo:
+        tlAction.tlType = TLValue::SendMessageUploadRoundAction;
         tlAction.progress = action.progress;
         break;
     case Telegram::MessageAction::Type::GeoLocation:

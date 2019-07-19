@@ -108,6 +108,7 @@ public:
         UploadAudio,
         UploadPhoto,
         UploadDocument,
+        UploadRoundVideo,
         GeoLocation,
         ChooseContact
     };
