@@ -176,40 +176,92 @@ TLValue::Value toTLValue(TelegramNamespace::MessageType type)
     }
 }
 
-TelegramNamespace::MessageAction toPublicMessageAction(TLValue action)
+Telegram::MessageAction toPublic(const TLSendMessageAction &action)
 {
-    switch (action) {
-    case TLValue::SendMessageCancelAction:         return TelegramNamespace::MessageActionNone;
-    case TLValue::SendMessageTypingAction:         return TelegramNamespace::MessageActionTyping;
-    case TLValue::SendMessageRecordVideoAction:    return TelegramNamespace::MessageActionRecordVideo;
-    case TLValue::SendMessageRecordAudioAction:    return TelegramNamespace::MessageActionRecordAudio;
-    case TLValue::SendMessageUploadVideoAction:    return TelegramNamespace::MessageActionUploadVideo;
-    case TLValue::SendMessageUploadAudioAction:    return TelegramNamespace::MessageActionUploadAudio;
-    case TLValue::SendMessageUploadPhotoAction:    return TelegramNamespace::MessageActionUploadPhoto;
-    case TLValue::SendMessageUploadDocumentAction: return TelegramNamespace::MessageActionUploadDocument;
-    case TLValue::SendMessageGeoLocationAction:    return TelegramNamespace::MessageActionGeoLocation;
-    case TLValue::SendMessageChooseContactAction:  return TelegramNamespace::MessageActionChooseContact;
+    Telegram::MessageAction publicAction;
+    switch (action.tlType) {
+    case TLValue::SendMessageCancelAction:
+        publicAction.type = Telegram::MessageAction::Type::None;
+        break;
+    case TLValue::SendMessageTypingAction:
+        publicAction.type = Telegram::MessageAction::Type::Typing;
+        break;
+    case TLValue::SendMessageRecordVideoAction:
+        publicAction.type = Telegram::MessageAction::Type::RecordVideo;
+        break;
+    case TLValue::SendMessageRecordAudioAction:
+        publicAction.type = Telegram::MessageAction::Type::RecordAudio;
+        break;
+    case TLValue::SendMessageUploadVideoAction:
+        publicAction.type = Telegram::MessageAction::Type::UploadVideo;
+        publicAction.progress = action.progress;
+        break;
+    case TLValue::SendMessageUploadAudioAction:
+        publicAction.type = Telegram::MessageAction::Type::UploadAudio;
+        publicAction.progress = action.progress;
+        break;
+    case TLValue::SendMessageUploadPhotoAction:
+        publicAction.type = Telegram::MessageAction::Type::UploadPhoto;
+        publicAction.progress = action.progress;
+        break;
+    case TLValue::SendMessageUploadDocumentAction:
+        publicAction.type = Telegram::MessageAction::Type::UploadDocument;
+        publicAction.progress = action.progress;
+        break;
+    case TLValue::SendMessageGeoLocationAction:
+        publicAction.type = Telegram::MessageAction::Type::GeoLocation;
+        break;
+    case TLValue::SendMessageChooseContactAction:
+        publicAction.type = Telegram::MessageAction::Type::ChooseContact;
+        break;
     default:
-        return TelegramNamespace::MessageActionNone;
+        break;
     }
+    return publicAction;
 }
 
-TLValue::Value toTLValue(TelegramNamespace::MessageAction action)
+TLSendMessageAction toTL(const Telegram::MessageAction &action)
 {
-    switch (action) {
-    case TelegramNamespace::MessageActionNone:           return TLValue::SendMessageCancelAction;
-    case TelegramNamespace::MessageActionTyping:         return TLValue::SendMessageTypingAction;
-    case TelegramNamespace::MessageActionRecordVideo:    return TLValue::SendMessageRecordVideoAction;
-    case TelegramNamespace::MessageActionRecordAudio:    return TLValue::SendMessageRecordAudioAction;
-    case TelegramNamespace::MessageActionUploadVideo:    return TLValue::SendMessageUploadVideoAction;
-    case TelegramNamespace::MessageActionUploadAudio:    return TLValue::SendMessageUploadAudioAction;
-    case TelegramNamespace::MessageActionUploadPhoto:    return TLValue::SendMessageUploadPhotoAction;
-    case TelegramNamespace::MessageActionUploadDocument: return TLValue::SendMessageUploadDocumentAction;
-    case TelegramNamespace::MessageActionGeoLocation:    return TLValue::SendMessageGeoLocationAction;
-    case TelegramNamespace::MessageActionChooseContact:  return TLValue::SendMessageChooseContactAction;
+    TLSendMessageAction tlAction;
+
+    switch (action.type) {
+    case Telegram::MessageAction::Type::None:
+        tlAction.tlType = TLValue::SendMessageCancelAction;
+        break;
+    case Telegram::MessageAction::Type::Typing:
+        tlAction.tlType = TLValue::SendMessageTypingAction;
+        break;
+    case Telegram::MessageAction::Type::RecordVideo:
+        tlAction.tlType = TLValue::SendMessageRecordVideoAction;
+        break;
+    case Telegram::MessageAction::Type::RecordAudio:
+        tlAction.tlType = TLValue::SendMessageRecordAudioAction;
+        break;
+    case Telegram::MessageAction::Type::UploadVideo:
+        tlAction.tlType = TLValue::SendMessageUploadVideoAction;
+        tlAction.progress = action.progress;
+        break;
+    case Telegram::MessageAction::Type::UploadAudio:
+        tlAction.tlType = TLValue::SendMessageUploadAudioAction;
+        tlAction.progress = action.progress;
+        break;
+    case Telegram::MessageAction::Type::UploadPhoto:
+        tlAction.tlType = TLValue::SendMessageUploadPhotoAction;
+        tlAction.progress = action.progress;
+        break;
+    case Telegram::MessageAction::Type::UploadDocument:
+        tlAction.tlType = TLValue::SendMessageUploadDocumentAction;
+        tlAction.progress = action.progress;
+        break;
+    case Telegram::MessageAction::Type::GeoLocation:
+        tlAction.tlType = TLValue::SendMessageGeoLocationAction;
+        break;
+    case Telegram::MessageAction::Type::ChooseContact:
+        tlAction.tlType = TLValue::SendMessageChooseContactAction;
+        break;
     }
 
-    return TLValue::BoolFalse;
+    return tlAction;
 }
 
 quint64 formatTimeStamp(qint64 timeInMs)

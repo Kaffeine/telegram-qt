@@ -394,7 +394,7 @@ quint64 MessagingApi::forwardMessage(const Peer peer, const Peer fromPeer, quint
     return 0;
 }
 
-void MessagingApi::setMessageAction(const Peer peer, TelegramNamespace::MessageAction action)
+void MessagingApi::setMessageAction(const Peer peer, const Telegram::MessageAction &action)
 {
 
 }

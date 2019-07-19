@@ -547,8 +547,7 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             update.tlType = TLValue::UpdateUserTyping;
             update.userId = notification.fromId;
             // Note: action depends on Layer. Process this to support different layers.
-            update.action.tlType = notification.actionType;
-            update.action.progress = notification.progress;
+            update.action = Telegram::Utils::toTL(notification.messageAction);
         }
             break;
         case UpdateNotification::Type::ReadInbox:

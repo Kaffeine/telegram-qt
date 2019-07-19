@@ -41,8 +41,8 @@ TELEGRAMQT_INTERNAL_EXPORT Telegram::Peer getMessageDialogPeer(const TLMessage &
 TELEGRAMQT_INTERNAL_EXPORT QString mimeTypeByStorageFileType(TLValue type);
 TELEGRAMQT_INTERNAL_EXPORT TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media);
 TELEGRAMQT_INTERNAL_EXPORT TLValue::Value toTLValue(TelegramNamespace::MessageType type);
-TELEGRAMQT_INTERNAL_EXPORT TelegramNamespace::MessageAction toPublicMessageAction(TLValue action);
-TELEGRAMQT_INTERNAL_EXPORT TLValue::Value toTLValue(TelegramNamespace::MessageAction action);
+TELEGRAMQT_INTERNAL_EXPORT Telegram::MessageAction toPublic(const TLSendMessageAction &action);
+TELEGRAMQT_INTERNAL_EXPORT TLSendMessageAction toTL(const Telegram::MessageAction &action);
 
 TELEGRAMQT_EXPORT quint64 formatTimeStamp(qint64 timeInMs);
 TELEGRAMQT_EXPORT quint64 timeStampToMSecsSinceEpoch(quint64 ts);

@@ -1920,8 +1920,7 @@ void MessagesRpcOperation::runSetTyping()
         notification.type = UpdateNotification::Type::MessageAction;
         notification.date = requestDate;
         notification.fromId = selfUser->id();
-        notification.progress = arguments.action.progress;
-        notification.actionType = arguments.action.tlType;
+        notification.messageAction = Telegram::Utils::toPublic(arguments.action);
 
         for (const quint32 userId : box->users()) {
             // The Update recipient

@@ -93,6 +93,37 @@ inline uint qHash(const Peer &key, uint seed)
     return ::qHash(static_cast<ulong>(key.id | (static_cast<quint64>(key.type) << (sizeof(key.id) * 8))), seed);
 }
 
+struct MessageAction
+{
+    Q_GADGET
+    Q_PROPERTY(Telegram::MessageAction::Type type MEMBER type)
+    Q_PROPERTY(quint32 progress MEMBER progress)
+public:
+    enum Type {
+        None, // Cancel
+        Typing,
+        RecordVideo,
+        RecordAudio,
+        UploadVideo,
+        UploadAudio,
+        UploadPhoto,
+        UploadDocument,
+        GeoLocation,
+        ChooseContact
+    };
+    Q_ENUM(Type)
+
+    MessageAction() = default;
+    // The constructor is implicit "on purpose"
+    MessageAction(Type t)
+        : type(t)
+    {
+    }
+
+    Type type = None;
+    quint32 progress = 0;
+};
+
 } // Telegram namespace
 
 class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
@@ -191,20 +222,6 @@ public:
         ContactLastOnlineLastMonth,
         ContactLastOnlineMask = 0xf
     };
-
-    enum MessageAction {
-        MessageActionNone, // Cancel
-        MessageActionTyping,
-        MessageActionRecordVideo,
-        MessageActionRecordAudio,
-        MessageActionUploadVideo,
-        MessageActionUploadAudio,
-        MessageActionUploadPhoto,
-        MessageActionUploadDocument,
-        MessageActionGeoLocation,
-        MessageActionChooseContact
-    };
-    Q_ENUM(MessageAction)
 
     static QString version() { return Telegram::version(); }
     static QString buildVersion() { return Telegram::buildVersion(); }
@@ -470,6 +487,7 @@ TELEGRAMQT_EXPORT QVector<quint32> toIdList(const Telegram::PeerList &peerList);
 
 } // Telegram namespace
 
+Q_DECLARE_METATYPE(Telegram::MessageAction)
 Q_DECLARE_METATYPE(Telegram::Peer)
 Q_DECLARE_METATYPE(Telegram::Peer::Type)
 Q_DECLARE_METATYPE(Telegram::PeerList)
@@ -479,6 +497,7 @@ Q_DECLARE_METATYPE(Telegram::ChatInfo)
 Q_DECLARE_METATYPE(Telegram::RemoteFile)
 Q_DECLARE_METATYPE(Telegram::UserInfo)
 
+Q_DECLARE_TYPEINFO(Telegram::MessageAction, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::DcOption, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::Message, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::ChatInfo, Q_MOVABLE_TYPE);

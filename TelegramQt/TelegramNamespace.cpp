@@ -116,6 +116,8 @@ void TelegramNamespace::registerTypes()
             ("TelegramNamespace::AuthenticationError");
     qRegisterMetaType<TelegramNamespace::UnauthorizedError>
             ("TelegramNamespace::UnauthorizedError");
+    qRegisterMetaType<Telegram::MessageAction>
+            ("Telegram::MessageAction");
     qRegisterMetaType<Telegram::Peer>
             ("Telegram::Peer");
     qRegisterMetaType<Telegram::PeerList>
