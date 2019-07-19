@@ -33,6 +33,12 @@ static const QLatin1String c_userPrefix = QLatin1String("user");
 static const QLatin1String c_chatPrefix = QLatin1String("chat");
 static const QLatin1String c_channelPrefix = QLatin1String("channel");
 
+/*!
+    \class Telegram::Peer
+    \brief Holds an ID of a contact or a group
+
+    \inmodule TelegramQt
+ */
 QString Telegram::Peer::toString() const
 {
     switch (type) {
