@@ -69,6 +69,26 @@ inline QJsonArray toJsonArray(const T &container)
 }
 
 template <typename T>
+inline QJsonArray toJsonArray(const QVector<T> &container, QJsonValue (*method)(const T &))
+{
+    QJsonArray result;
+    for (const T &value : container) {
+        result.append((*method)(value));
+    }
+    return result;
+}
+
+template <typename T>
+inline QJsonArray toJsonArray(const QList<T> &container, QJsonValue (*method)(const T &))
+{
+    QJsonArray result;
+    for (const T &value : container) {
+        result.append((*method)(value));
+    }
+    return result;
+}
+
+template <typename T>
 inline T fromValue(const QJsonValue &v)
 {
     return v.toVariant().value<T>();
