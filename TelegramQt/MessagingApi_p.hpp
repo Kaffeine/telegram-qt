@@ -76,6 +76,9 @@ public:
     explicit MessagingApiPrivate(MessagingApi *parent = nullptr);
     static MessagingApiPrivate *get(MessagingApi *parent);
 
+    static quint32 getMessageRepeatInterval();
+    static const char *messageActionIntervalVarName();
+
     quint64 sendMessage(const Telegram::Peer peer, const QString &message, const MessagingApi::SendOptions &options);
     void setMessageRead(const Telegram::Peer peer, quint32 messageId);
 

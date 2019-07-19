@@ -26,6 +26,27 @@ static constexpr quint32 c_fetchLimit = 10;
 static constexpr quint32 c_dialogsFetchPortion = 20;
 static constexpr quint32 c_defaultSyncLimit = 50;
 
+const char *MessagingApi::messageActionIntervalEnvironmentVariableName()
+{
+    return MessagingApiPrivate::messageActionIntervalVarName();
+}
+
+const char *MessagingApiPrivate::messageActionIntervalVarName()
+{
+    return "TELEGRAM_MESSAGE_ACTION_DURATION";
+}
+
+quint32 MessagingApiPrivate::getMessageRepeatInterval()
+{
+    if (qEnvironmentVariableIsSet(messageActionIntervalVarName())) {
+        int value = qEnvironmentVariableIntValue(messageActionIntervalVarName());
+        if (value) {
+            return static_cast<quint32>(value);
+        }
+    }
+    return 5000; // 5 seconds
+}
+
 MessagingApiPrivate::MessagingApiPrivate(MessagingApi *parent) :
     ClientApiPrivate(parent),
     m_syncLimit(c_defaultSyncLimit)
@@ -281,7 +302,8 @@ MessagingApi::MessagingApi(QObject *parent) :
 */
 quint32 MessagingApi::messageActionValidPeriod()
 {
-    return 6000; // 6 seconds
+    static quint32 period = messageActionRepeatInterval() / 5 * 6;
+    return period;
 }
 
 /*!
@@ -293,7 +315,8 @@ quint32 MessagingApi::messageActionValidPeriod()
 */
 quint32 MessagingApi::messageActionRepeatInterval()
 {
-    return 5000; // 5 seconds
+    static quint32 period = MessagingApiPrivate::getMessageRepeatInterval();
+    return period;
 }
 
 /*!

@@ -128,6 +128,9 @@ Q_SIGNALS:
 
 protected:
     Q_DECLARE_PRIVATE_D(d, MessagingApi)
+
+public:
+    static const char *messageActionIntervalEnvironmentVariableName();
 };
 
 } // Client namespace
