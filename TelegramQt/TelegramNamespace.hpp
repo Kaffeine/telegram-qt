@@ -378,6 +378,14 @@ protected:
     Private *d;
 };
 
+class TELEGRAMQT_EXPORT PeerInfo
+{
+public:
+    virtual Peer peer() const = 0;
+    virtual bool getPeerPicture(FileInfo *file, PeerPictureSize size) const = 0;
+    virtual QString displayName() const = 0;
+};
+
 class TELEGRAMQT_EXPORT DialogInfo
 {
 public:
@@ -387,20 +395,20 @@ public:
 
     DialogInfo &operator=(const DialogInfo &info);
 
+    Peer peer() const;
+
     quint32 unreadCount() const;
     QString draft() const;
     quint32 lastMessageId() const;
     quint32 readInboxMaxId() const;
     quint32 readOutboxMaxId() const;
 
-    Peer peer() const;
-
     struct Private;
 protected:
     Private *d;
 };
 
-class TELEGRAMQT_EXPORT UserInfo
+class TELEGRAMQT_EXPORT UserInfo : public PeerInfo
 {
 public:
     UserInfo();
@@ -408,6 +416,10 @@ public:
     ~UserInfo();
 
     UserInfo &operator=(const UserInfo &info);
+
+    Peer peer() const final;
+    QString displayName() const final;
+    bool getPeerPicture(FileInfo *file, PeerPictureSize size) const final;
 
     QString getBestDisplayName() const;
 
@@ -425,8 +437,6 @@ public:
     bool isDeleted() const;
 
     quint32 botVersion() const;
-    bool getPeerPicture(FileInfo *file, PeerPictureSize size = PeerPictureSize::Small) const;
-
     // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
 
     struct Private;
@@ -434,7 +444,7 @@ protected:
     Private *d;
 };
 
-class TELEGRAMQT_EXPORT ChatInfo
+class TELEGRAMQT_EXPORT ChatInfo : public PeerInfo
 {
 public:
     ChatInfo();
@@ -443,7 +453,9 @@ public:
 
     ChatInfo &operator=(const ChatInfo &info);
 
-    Peer peer() const;
+    Peer peer() const final;
+    QString displayName() const final;
+    bool getPeerPicture(FileInfo *file, PeerPictureSize size) const final;
 
     QString title() const;
     quint32 participantsCount() const;
@@ -451,8 +463,6 @@ public:
     bool left() const;
     bool broadcast() const;
     Peer migratedTo() const;
-
-    bool getPeerPicture(FileInfo *file, PeerPictureSize size = PeerPictureSize::Small) const;
 
     struct Private;
 protected:

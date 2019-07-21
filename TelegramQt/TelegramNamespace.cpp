@@ -774,6 +774,16 @@ UserInfo::~UserInfo()
     delete d;
 }
 
+Peer UserInfo::peer() const
+{
+    return Peer::fromUserId(d->id);
+}
+
+QString UserInfo::displayName() const
+{
+    return getBestDisplayName();
+}
+
 UserInfo &UserInfo::operator=(const UserInfo &info)
 {
     *d = *info.d;
@@ -939,6 +949,11 @@ Peer ChatInfo::peer() const
         break;
     }
     return Peer();
+}
+
+QString ChatInfo::displayName() const
+{
+    return title();
 }
 
 QString ChatInfo::title() const
