@@ -66,7 +66,7 @@ public:
     TLInputFile *m_inputFile = nullptr;
 };
 
-struct RemoteFile::Private
+struct FileInfo::Private
 {
 public:
     enum Type {
@@ -82,9 +82,9 @@ public:
 
     Private() = default;
 
-    static const Private *get(const RemoteFile *f) { return f->d; }
-    static Private *get(RemoteFile *f) { return f->d; }
-    static void set(RemoteFile *f, Private *p) { f->d = p; }
+    static const Private *get(const FileInfo *f) { return f->d; }
+    static Private *get(FileInfo *f) { return f->d; }
+    static void set(FileInfo *f, Private *p) { f->d = p; }
 
     TLInputFileLocation getInputFileLocation() const;
     bool setInputFileLocation(const TLInputFileLocation *inputFileLocation);

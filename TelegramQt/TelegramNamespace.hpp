@@ -235,7 +235,7 @@ public:
 TELEGRAMQT_EXPORT void initialize();
 
 class UserInfo;
-class RemoteFile;
+class FileInfo;
 class MessageMediaInfo;
 
 enum class PeerPictureSize {
@@ -302,9 +302,9 @@ public:
 
     MessageMediaInfo &operator=(const MessageMediaInfo &info);
 
-    void setUploadFile(Namespace::MessageType type, const RemoteFile &file);
+    void setUploadFile(Namespace::MessageType type, const FileInfo &file);
 
-    bool getRemoteFileInfo(RemoteFile *file) const;
+    bool getRemoteFileInfo(FileInfo *file) const;
 
     Namespace::MessageType type() const;
 
@@ -350,7 +350,7 @@ protected:
     Private *d;
 };
 
-class TELEGRAMQT_EXPORT RemoteFile
+class TELEGRAMQT_EXPORT FileInfo
 {
 public:
     enum Type {
@@ -358,17 +358,16 @@ public:
         Download,
         Upload
     };
-    RemoteFile();
-    RemoteFile(const RemoteFile &file);
-    ~RemoteFile();
+    FileInfo();
+    FileInfo(const FileInfo &file);
+    ~FileInfo();
 
-    RemoteFile &operator=(const RemoteFile &file);
+    FileInfo &operator=(const FileInfo &file);
 
     Type type() const;
 
     bool isValid() const;
-    QString getUniqueId() const;
-    static RemoteFile fromUniqueId(const QString &uniqueId);
+    QString getFileId() const;
 
     QString fileName() const;
     quint32 size() const;
@@ -426,7 +425,7 @@ public:
     bool isDeleted() const;
 
     quint32 botVersion() const;
-    bool getPeerPicture(RemoteFile *file, PeerPictureSize size = PeerPictureSize::Small) const;
+    bool getPeerPicture(FileInfo *file, PeerPictureSize size = PeerPictureSize::Small) const;
 
     // See TelegramNamespace::ContactLastOnline enum and a documentation for the contactLastOnline() method in the cpp file.
 
@@ -453,7 +452,7 @@ public:
     bool broadcast() const;
     Peer migratedTo() const;
 
-    bool getPeerPicture(RemoteFile *file, PeerPictureSize size = PeerPictureSize::Small) const;
+    bool getPeerPicture(FileInfo *file, PeerPictureSize size = PeerPictureSize::Small) const;
 
     struct Private;
 protected:
@@ -491,14 +490,14 @@ Q_DECLARE_METATYPE(Telegram::PeerList)
 Q_DECLARE_METATYPE(Telegram::DcOption)
 Q_DECLARE_METATYPE(Telegram::Message)
 Q_DECLARE_METATYPE(Telegram::ChatInfo)
-Q_DECLARE_METATYPE(Telegram::RemoteFile)
+Q_DECLARE_METATYPE(Telegram::FileInfo)
 Q_DECLARE_METATYPE(Telegram::UserInfo)
 
 Q_DECLARE_TYPEINFO(Telegram::MessageAction, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::DcOption, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::Message, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::ChatInfo, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(Telegram::RemoteFile, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(Telegram::FileInfo, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::DialogInfo, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::UserInfo, Q_MOVABLE_TYPE);
 

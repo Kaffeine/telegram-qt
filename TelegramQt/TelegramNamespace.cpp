@@ -181,12 +181,12 @@ MessageMediaInfo &MessageMediaInfo::operator=(const MessageMediaInfo &info)
     return *this;
 }
 
-void MessageMediaInfo::setUploadFile(Namespace::MessageType type, const RemoteFile &file)
+void MessageMediaInfo::setUploadFile(Namespace::MessageType type, const FileInfo &file)
 {
     d->tlType = Utils::toTLValue(type);
 
     d->m_isUploaded = true;
-    const RemoteFile::Private *filePrivate = RemoteFile::Private::get(&file);
+    const FileInfo::Private *filePrivate = FileInfo::Private::get(&file);
     d->m_size = filePrivate->m_size;
 
     if (!d->m_inputFile) {
@@ -194,11 +194,11 @@ void MessageMediaInfo::setUploadFile(Namespace::MessageType type, const RemoteFi
     }
 }
 
-bool MessageMediaInfo::getRemoteFileInfo(RemoteFile *file) const
+bool MessageMediaInfo::getRemoteFileInfo(FileInfo *file) const
 {
     TLInputFileLocation inputLocation;
 
-    RemoteFile::Private *filePrivate = RemoteFile::Private::get(file);
+    FileInfo::Private *filePrivate = FileInfo::Private::get(file);
     switch (d->tlType) {
     case TLValue::MessageMediaPhoto:
         if (d->photo.sizes.isEmpty()) {
@@ -475,7 +475,7 @@ QString MessageMediaInfo::description() const
     return d->webpage.description;
 }
 
-TLInputFileLocation RemoteFile::Private::getInputFileLocation() const
+TLInputFileLocation FileInfo::Private::getInputFileLocation() const
 {
     TLInputFileLocation result;
     switch (m_type) {
@@ -500,7 +500,7 @@ TLInputFileLocation RemoteFile::Private::getInputFileLocation() const
     return result;
 }
 
-bool RemoteFile::Private::setInputFileLocation(const TLInputFileLocation *inputFileLocation)
+bool FileInfo::Private::setInputFileLocation(const TLInputFileLocation *inputFileLocation)
 {
     switch (inputFileLocation->tlType) {
     case TLValue::InputFileLocation:
@@ -525,7 +525,7 @@ bool RemoteFile::Private::setInputFileLocation(const TLInputFileLocation *inputF
     return true;
 }
 
-TLInputFile RemoteFile::Private::getInputFile() const
+TLInputFile FileInfo::Private::getInputFile() const
 {
     TLInputFile result;
     switch (m_type) {
@@ -545,7 +545,7 @@ TLInputFile RemoteFile::Private::getInputFile() const
     return result;
 }
 
-bool RemoteFile::Private::setInputFile(const TLInputFile *inputFile)
+bool FileInfo::Private::setInputFile(const TLInputFile *inputFile)
 {
     switch (inputFile->tlType) {
     case TLValue::InputFile:
@@ -566,7 +566,7 @@ bool RemoteFile::Private::setInputFile(const TLInputFile *inputFile)
     return true;
 }
 
-TLFileLocation RemoteFile::Private::getFileLocation() const
+TLFileLocation FileInfo::Private::getFileLocation() const
 {
     switch (m_type) {
     case FileLocation:
@@ -584,7 +584,7 @@ TLFileLocation RemoteFile::Private::getFileLocation() const
     return result;
 }
 
-bool RemoteFile::Private::setFileLocation(const TLFileLocation *fileLocation)
+bool FileInfo::Private::setFileLocation(const TLFileLocation *fileLocation)
 {
     switch (fileLocation->tlType) {
     case TLValue::FileLocation:
@@ -603,29 +603,29 @@ bool RemoteFile::Private::setFileLocation(const TLFileLocation *fileLocation)
     return true;
 }
 
-RemoteFile::RemoteFile():
+FileInfo::FileInfo():
     d(new Private())
 {
 }
 
-RemoteFile::RemoteFile(const RemoteFile &file) :
+FileInfo::FileInfo(const FileInfo &file) :
     d(new Private)
 {
     *d = *file.d;
 }
 
-RemoteFile::~RemoteFile()
+FileInfo::~FileInfo()
 {
     delete d;
 }
 
-RemoteFile &RemoteFile::operator=(const RemoteFile &file)
+FileInfo &FileInfo::operator=(const FileInfo &file)
 {
     *d = *file.d;
     return *this;
 }
 
-RemoteFile::Type RemoteFile::type() const
+FileInfo::Type FileInfo::type() const
 {
     switch (d->m_type) {
     case Private::InvalidLocation:
@@ -643,12 +643,12 @@ RemoteFile::Type RemoteFile::type() const
     return Undefined;
 }
 
-bool RemoteFile::isValid() const
+bool FileInfo::isValid() const
 {
     return d && (d->m_type != Private::InvalidLocation);
 }
 
-QString RemoteFile::getUniqueId() const
+QString FileInfo::getFileId() const
 {
     if (!isValid()) {
         return QString();
@@ -691,71 +691,17 @@ QString RemoteFile::getUniqueId() const
     return QString();
 }
 
-RemoteFile RemoteFile::fromUniqueId(const QString &uniqueId)
-{
-    uint remoteFileType = Private::InvalidLocation;
-    bool ok;
-    remoteFileType = uniqueId.midRef(0, 2).toUInt(&ok, 16);
-    if (!ok) {
-        return RemoteFile();
-    }
-    RemoteFile result;
-    result.d->m_type = static_cast<Private::Type>(remoteFileType);
-    result.d->m_dcId = uniqueId.midRef(2, 8).toULong(&ok, 16); // 32 bits
-    if (!ok) {
-        return RemoteFile();
-    }
-    result.d->m_size = uniqueId.midRef(10, 8).toULongLong(&ok, 16); // 32 bits
-    if (!ok) {
-        return RemoteFile();
-    }
-
-    switch (result.d->m_type) {
-    case Private::FileLocation:
-        result.d->m_volumeId = uniqueId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
-        if (!ok) {
-            return RemoteFile();
-        }
-        result.d->m_secret = uniqueId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
-        if (!ok) {
-            return RemoteFile();
-        }
-        result.d->m_localId = uniqueId.midRef(50, 8).toULong(&ok, 16); // 32 bits
-        if (!ok) {
-            return RemoteFile();
-        }
-        break;
-    case Private::EncryptedFileLocation:
-    case Private::VideoFileLocation:
-    case Private::AudioFileLocation:
-    case Private::DocumentFileLocation:
-        result.d->m_id = uniqueId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
-        if (!ok) {
-            return RemoteFile();
-        }
-        result.d->m_accessHash = uniqueId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
-        if (!ok) {
-            return RemoteFile();
-        }
-        break;
-    case Private::InvalidLocation:
-    default:
-        return RemoteFile();
-    }
-    return result;
-}
-
-QString RemoteFile::fileName() const
+QString FileInfo::fileName() const
 {
     return d->m_name;
 }
 
-quint32 RemoteFile::size() const
+quint32 FileInfo::size() const
 {
     return d->m_size;
 }
 
-QString RemoteFile::md5Sum() const
+QString FileInfo::md5Sum() const
 {
     return d->m_md5Checksum;
 }
@@ -944,9 +890,9 @@ quint32 UserInfo::botVersion() const
     return d->botInfoVersion;
 }
 
-bool UserInfo::getPeerPicture(RemoteFile *file, PeerPictureSize size) const
+bool UserInfo::getPeerPicture(FileInfo *file, PeerPictureSize size) const
 {
-    RemoteFile::Private *filePrivate = RemoteFile::Private::get(file);
+    FileInfo::Private *filePrivate = FileInfo::Private::get(file);
     switch (size) {
     case PeerPictureSize::Big:
         return filePrivate->setFileLocation(&d->photo.photoBig);
@@ -1028,9 +974,9 @@ Peer ChatInfo::migratedTo() const
     return Peer(d->migratedTo.channelId, Peer::Channel);
 }
 
-bool ChatInfo::getPeerPicture(RemoteFile *file, PeerPictureSize size) const
+bool ChatInfo::getPeerPicture(FileInfo *file, PeerPictureSize size) const
 {
-    RemoteFile::Private *filePrivate = RemoteFile::Private::get(file);
+    FileInfo::Private *filePrivate = FileInfo::Private::get(file);
     switch (size) {
     case PeerPictureSize::Big:
         return filePrivate->setFileLocation(&d->photo.photoBig);
