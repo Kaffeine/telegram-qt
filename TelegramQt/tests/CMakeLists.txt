@@ -32,7 +32,6 @@ foreach(test_name
     tst_crypto
     tst_CTelegramTransport
     tst_MTProtoStream
-    tst_TelegramRemoteFile
     tst_UniqueLazyPointer
     tst_utils
     tst_RpcError
