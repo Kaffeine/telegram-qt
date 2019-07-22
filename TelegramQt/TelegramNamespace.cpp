@@ -33,13 +33,15 @@ static const QLatin1String c_userPrefix = QLatin1String("user");
 static const QLatin1String c_chatPrefix = QLatin1String("chat");
 static const QLatin1String c_channelPrefix = QLatin1String("channel");
 
+namespace Telegram {
+
 /*!
     \class Telegram::Peer
     \brief Holds an ID of a contact or a group
 
     \inmodule TelegramQt
  */
-QString Telegram::Peer::toString() const
+QString Peer::toString() const
 {
     switch (type) {
     case User:
@@ -53,7 +55,7 @@ QString Telegram::Peer::toString() const
     return QString();
 }
 
-Telegram::Peer Telegram::Peer::fromString(const QString &string)
+Telegram::Peer Peer::fromString(const QString &string)
 {
     // Possible schemes: user1234, chat1234, channel1234
     if (string.length() < 5) {
@@ -91,6 +93,8 @@ Telegram::Peer Telegram::Peer::fromString(const QString &string)
     }
     return Peer();
 }
+
+} // Telegram namespace
 
 void TelegramNamespace::registerTypes()
 {
