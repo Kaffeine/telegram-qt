@@ -96,7 +96,7 @@ public:
     quint32 selfUserId() const;
     DialogList *getDialogList();
     bool getDialogInfo(DialogInfo *info, const Telegram::Peer &peer) const;
-    TelegramNamespace::ChatType getChatType(const Peer &peer) const;
+    Namespace::ChatType getChatType(const Peer &peer) const;
 
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
 

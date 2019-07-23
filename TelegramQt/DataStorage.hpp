@@ -44,7 +44,7 @@ public:
     bool getDialogInfo(DialogInfo *info, const Telegram::Peer &peer) const;
     bool getUserInfo(UserInfo *info, quint32 userId) const;
     bool getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const;
-    TelegramNamespace::ChatType getChatType(const Peer &peer) const;
+    Namespace::ChatType getChatType(const Peer &peer) const;
 
     bool getMessage(Message *message, const Telegram::Peer &peer, quint32 messageId);
     bool getMessageMediaInfo(MessageMediaInfo *info, const Telegram::Peer &peer, quint32 messageId);

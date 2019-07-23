@@ -86,8 +86,8 @@ Q_SIGNALS:
     void statusChanged(AuthStatus status);
 
     // Error message description: https://core.telegram.org/api/errors#400-bad-request
-    void errorOccurred(TelegramNamespace::AuthenticationError errorCode, const QByteArray &errorMessage);
-    void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QString &errorMessage);
+    void errorOccurred(Telegram::Namespace::AuthenticationError errorCode, const QByteArray &errorMessage);
+    void authorizationErrorReceived(Telegram::Namespace::UnauthorizedError errorCode, const QString &errorMessage);
 
 public slots:
     Q_DECL_DEPRECATED void checkRegistration() { return startAuthentication(); }

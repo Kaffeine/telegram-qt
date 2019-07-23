@@ -94,9 +94,7 @@ Telegram::Peer Peer::fromString(const QString &string)
     return Peer();
 }
 
-} // Telegram namespace
-
-void TelegramNamespace::registerTypes()
+void Namespace::registerTypes()
 {
     static bool registered = false;
     if (registered) {
@@ -110,16 +108,16 @@ void TelegramNamespace::registerTypes()
     qInfo().noquote().nospace() << "Initialize TelegramQt v" << Telegram::version()
                                 << " (build " << Telegram::buildVersion() << ")";
 
-    qRegisterMetaType<TelegramNamespace::ContactStatus>
-            ("TelegramNamespace::ContactStatus");
-    qRegisterMetaType<TelegramNamespace::MessageFlags>
-            ("TelegramNamespace::MessageFlags");
-    qRegisterMetaType<TelegramNamespace::MessageType>
-            ("TelegramNamespace::MessageType");
-    qRegisterMetaType<TelegramNamespace::AuthenticationError>
-            ("TelegramNamespace::AuthenticationError");
-    qRegisterMetaType<TelegramNamespace::UnauthorizedError>
-            ("TelegramNamespace::UnauthorizedError");
+    qRegisterMetaType<Namespace::ContactStatus>
+            ("Telegram::Namespace::ContactStatus");
+    qRegisterMetaType<Namespace::MessageFlags>
+            ("Telegram::Namespace::MessageFlags");
+    qRegisterMetaType<Namespace::MessageType>
+            ("Telegram::Namespace::MessageType");
+    qRegisterMetaType<Namespace::AuthenticationError>
+            ("Telegram::Namespace::AuthenticationError");
+    qRegisterMetaType<Namespace::UnauthorizedError>
+            ("Telegram::Namespace::UnauthorizedError");
     qRegisterMetaType<Telegram::MessageAction>
             ("Telegram::MessageAction");
     qRegisterMetaType<Telegram::Peer>
@@ -132,31 +130,29 @@ void TelegramNamespace::registerTypes()
             ("Telegram::Client::ConnectionApi::StatusReason");
 }
 
-Telegram::Peer TelegramNamespace::emptyPeer()
+Telegram::Peer Namespace::emptyPeer()
 {
-    return Telegram::Peer();
+    return Peer();
 }
 
-Telegram::Peer TelegramNamespace::peerFromChatId(quint32 id)
+Telegram::Peer Namespace::peerFromChatId(quint32 id)
 {
-    return Telegram::Peer::fromChatId(id);
+    return Peer::fromChatId(id);
 }
 
-Telegram::Peer TelegramNamespace::peerFromChannelId(quint32 id)
+Telegram::Peer Namespace::peerFromChannelId(quint32 id)
 {
-    return Telegram::Peer::fromChannelId(id);
+    return Peer::fromChannelId(id);
 }
 
-Telegram::Peer TelegramNamespace::peerFromUserId(quint32 id)
+Telegram::Peer Namespace::peerFromUserId(quint32 id)
 {
-    return Telegram::Peer::fromUserId(id);
+    return Peer::fromUserId(id);
 }
-
-namespace Telegram {
 
 void initialize()
 {
-    TelegramNamespace::registerTypes();
+    Namespace::registerTypes();
     if (!RandomGenerator::instance()) {
         static RandomGenerator defaultGenerator;
         RandomGenerator::setInstance(&defaultGenerator);
@@ -185,7 +181,7 @@ MessageMediaInfo &MessageMediaInfo::operator=(const MessageMediaInfo &info)
     return *this;
 }
 
-void MessageMediaInfo::setUploadFile(TelegramNamespace::MessageType type, const RemoteFile &file)
+void MessageMediaInfo::setUploadFile(Namespace::MessageType type, const RemoteFile &file)
 {
     d->tlType = Utils::toTLValue(type);
 
@@ -225,7 +221,7 @@ bool MessageMediaInfo::getRemoteFileInfo(RemoteFile *file) const
     }
 }
 
-TelegramNamespace::MessageType MessageMediaInfo::type() const
+Namespace::MessageType MessageMediaInfo::type() const
 {
     return Utils::getPublicMessageType(*d);
 }
@@ -888,7 +884,7 @@ QString UserInfo::phone() const
     return d->phone;
 }
 
-TelegramNamespace::ContactStatus UserInfo::status() const
+Namespace::ContactStatus UserInfo::status() const
 {
     return getApiContactStatus(d->status.tlType);
 }
@@ -901,13 +897,13 @@ TelegramNamespace::ContactStatus UserInfo::status() const
 
   Depending on the contact privacy, the method can return some special values:
 
-  TelegramNamespace::ContactLastOnlineUnknown - User last online time is not known.
-  TelegramNamespace::ContactLastOnlineRecently - User hides exact online time, but was online recently.
-  TelegramNamespace::ContactLastOnlineLastWeek - User hides exact online time, but was online last week.
-  TelegramNamespace::ContactLastOnlineLastMonth - User hides exact online time, but was online last month.
+  Telegram::Namespace::ContactLastOnlineUnknown - User last online time is not known.
+  Telegram::Namespace::ContactLastOnlineRecently - User hides exact online time, but was online recently.
+  Telegram::Namespace::ContactLastOnlineLastWeek - User hides exact online time, but was online last week.
+  Telegram::Namespace::ContactLastOnlineLastMonth - User hides exact online time, but was online last month.
 
-  The TelegramNamespace::ContactLastOnlineMask can be used to determine if there is special value:
-  if ((contactLastOnline(contact) & TelegramNamespace::ContactLastOnlineMask) == contactLastOnline(contact)) {
+  The Telegram::Namespace::ContactLastOnlineMask can be used to determine if there is special value:
+  if ((contactLastOnline(contact) & Telegram::Namespace::ContactLastOnlineMask) == contactLastOnline(contact)) {
       qDebug() << "Special value";
   } else {
       qDebug() << "Seconds since epoch";
@@ -1045,16 +1041,16 @@ bool ChatInfo::getPeerPicture(RemoteFile *file, PeerPictureSize size) const
     return false;
 }
 
-TelegramNamespace::ContactStatus getApiContactStatus(TLValue status)
+Namespace::ContactStatus getApiContactStatus(TLValue status)
 {
     switch (status) {
     default:
     case TLValue::UserStatusEmpty:
-        return TelegramNamespace::ContactStatusUnknown;
+        return Namespace::ContactStatusUnknown;
     case TLValue::UserStatusOnline:
-        return TelegramNamespace::ContactStatusOnline;
+        return Namespace::ContactStatusOnline;
     case TLValue::UserStatusOffline:
-        return TelegramNamespace::ContactStatusOffline;
+        return Namespace::ContactStatusOffline;
     }
 }
 
@@ -1066,13 +1062,13 @@ quint32 getApiContactLastOnline(const TLUserStatus &status)
     case TLValue::UserStatusOffline:
         return status.wasOnline;
     case TLValue::UserStatusRecently:
-        return TelegramNamespace::ContactLastOnlineRecently;
+        return Namespace::ContactLastOnlineRecently;
     case TLValue::UserStatusLastWeek:
-        return TelegramNamespace::ContactLastOnlineLastWeek;
+        return Namespace::ContactLastOnlineLastWeek;
     case TLValue::UserStatusLastMonth:
-        return TelegramNamespace::ContactLastOnlineLastMonth;
+        return Namespace::ContactLastOnlineLastMonth;
     default:
-        return TelegramNamespace::ContactLastOnlineUnknown;
+        return Namespace::ContactLastOnlineUnknown;
     }
 }
 

@@ -311,8 +311,8 @@ void tst_all::testCheckInSignIn()
     signInOperation->submitAuthCode(QString(authCode.size(), QLatin1Char('0')));
     TRY_VERIFY(!authErrorSpy.isEmpty());
     QCOMPARE(authErrorSpy.count(), 1);
-    QCOMPARE(authErrorSpy.takeFirst().constFirst().value<TelegramNamespace::AuthenticationError>(),
-             TelegramNamespace::AuthenticationErrorPhoneCodeInvalid);
+    QCOMPARE(authErrorSpy.takeFirst().constFirst().value<Namespace::AuthenticationError>(),
+             Namespace::AuthenticationErrorPhoneCodeInvalid);
 
     signInOperation->submitAuthCode(authCode);
 

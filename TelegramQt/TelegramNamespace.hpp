@@ -125,9 +125,7 @@ public:
     quint32 progress = 0;
 };
 
-} // Telegram namespace
-
-class TELEGRAMQT_EXPORT TelegramNamespace : public QObject
+class TELEGRAMQT_EXPORT Namespace : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QString version READ version CONSTANT)
@@ -234,8 +232,6 @@ public:
     Q_INVOKABLE static Telegram::Peer peerFromUserId(quint32 id);
 };
 
-namespace Telegram {
-
 TELEGRAMQT_EXPORT void initialize();
 
 class UserInfo;
@@ -289,8 +285,8 @@ struct TELEGRAMQT_EXPORT Message
     quint32 fwdTimestamp = 0;
     quint32 forwardContactId = 0;
     quint32 replyToMessageId = 0;
-    TelegramNamespace::MessageType type = TelegramNamespace::MessageTypeUnsupported;
-    TelegramNamespace::MessageFlags flags = TelegramNamespace::MessageFlagNone;
+    Namespace::MessageType type = Namespace::MessageTypeUnsupported;
+    Namespace::MessageFlags flags = Namespace::MessageFlagNone;
 
 private:
     Peer m_peer;
@@ -306,11 +302,11 @@ public:
 
     MessageMediaInfo &operator=(const MessageMediaInfo &info);
 
-    void setUploadFile(TelegramNamespace::MessageType type, const RemoteFile &file);
+    void setUploadFile(Namespace::MessageType type, const RemoteFile &file);
 
     bool getRemoteFileInfo(RemoteFile *file) const;
 
-    TelegramNamespace::MessageType type() const;
+    Namespace::MessageType type() const;
 
     quint32 size() const;
 
@@ -421,7 +417,7 @@ public:
     QString lastName() const;
     QString userName() const;
     QString phone() const;
-    TelegramNamespace::ContactStatus status() const;
+    Namespace::ContactStatus status() const;
     quint32 wasOnline() const;
     bool isBot() const;
     bool isSelf() const;
@@ -506,7 +502,7 @@ Q_DECLARE_TYPEINFO(Telegram::RemoteFile, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::DialogInfo, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(Telegram::UserInfo, Q_MOVABLE_TYPE);
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageFlags)
-Q_DECLARE_OPERATORS_FOR_FLAGS(TelegramNamespace::MessageTypeFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Telegram::Namespace::MessageFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Telegram::Namespace::MessageTypeFlags)
 
 #endif // TELEGRAMNAMESPACE_HPP

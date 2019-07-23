@@ -22,7 +22,7 @@ class DialogsModel : public QAbstractListModel, public DeclarativeClientMixin
     Q_PROPERTY(Telegram::Client::DeclarativeClient *client READ qmlClient WRITE setQmlClient NOTIFY clientChanged)
 public:
     struct DialogEntry {
-        TelegramNamespace::ChatType chatType;
+        Namespace::ChatType chatType;
         QString name;
         QString formattedLastMessage;
         Telegram::Message lastChatMessage;

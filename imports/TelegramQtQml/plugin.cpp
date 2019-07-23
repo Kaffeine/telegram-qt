@@ -207,7 +207,7 @@ static QObject *telegram_namespace_provider(QQmlEngine *engine, QJSEngine *scrip
 {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
-    TelegramNamespace *ns = new TelegramNamespace;
+    Telegram::Namespace *ns = new Telegram::Namespace;
     return ns;
 }
 
@@ -229,7 +229,7 @@ public:
         Telegram::initialize();
         int versionMajor = 0;
         int versionMinor = 2;
-        qmlRegisterSingletonType<TelegramNamespace>(uri, versionMajor, versionMinor, "Namespace", &telegram_namespace_provider);
+        qmlRegisterSingletonType<Telegram::Namespace>(uri, versionMajor, versionMinor, "Namespace", &telegram_namespace_provider);
         qmlRegisterUncreatableType<Telegram::Peer>(uri, versionMajor, versionMinor, "Peer", QLatin1String("Peer is not a creatable object. Use 'var' instead."));
         qmlRegisterType<Telegram::Client::AppInformation>(uri, versionMajor, versionMinor, "AppInformation");
         qmlRegisterType<AccountSecretHelper>(uri, versionMajor, versionMinor, "AccountSecretHelper");

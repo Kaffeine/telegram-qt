@@ -353,11 +353,11 @@ void tst_ConnectionApi::registrationAuthError()
     {
         TRY_VERIFY(!authErrorSpy.isEmpty());
         QCOMPARE(authErrorSpy.count(), 1);
-        TelegramNamespace::AuthenticationError error =
-                authErrorSpy.takeFirst().constFirst().value<TelegramNamespace::AuthenticationError>();
-        QVERIFY2(QVector<TelegramNamespace::AuthenticationError>({
-                            TelegramNamespace::AuthenticationErrorFirstNameInvalid,
-                            TelegramNamespace::AuthenticationErrorLastNameInvalid,
+        Namespace::AuthenticationError error =
+                authErrorSpy.takeFirst().constFirst().value<Telegram::Namespace::AuthenticationError>();
+        QVERIFY2(QVector<Namespace::AuthenticationError>({
+                            Namespace::AuthenticationErrorFirstNameInvalid,
+                            Namespace::AuthenticationErrorLastNameInvalid,
                         }).contains(error), "The error must be one of the two (first or last name invalid)");
     }
 
@@ -367,9 +367,9 @@ void tst_ConnectionApi::registrationAuthError()
     {
         TRY_VERIFY(!authErrorSpy.isEmpty());
         QCOMPARE(authErrorSpy.count(), 1);
-        TelegramNamespace::AuthenticationError error =
-                authErrorSpy.takeFirst().constFirst().value<TelegramNamespace::AuthenticationError>();
-        QCOMPARE(error, TelegramNamespace::AuthenticationErrorPhoneCodeInvalid);
+        Namespace::AuthenticationError error =
+                authErrorSpy.takeFirst().constFirst().value<Namespace::AuthenticationError>();
+        QCOMPARE(error, Namespace::AuthenticationErrorPhoneCodeInvalid);
     }
 
     signUpOperation->submitAuthCode(authCode);

@@ -105,20 +105,20 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
     }
     const Telegram::Message &lastChatMessage = dialog.lastChatMessage;
     QString text;
-    if (lastChatMessage.type == TelegramNamespace::MessageTypeText) {
+    if (lastChatMessage.type == Namespace::MessageTypeText) {
         text = lastChatMessage.text;
     } else {
         Telegram::MessageMediaInfo info;
         client()->dataStorage()->getMessageMediaInfo(&info, dialog.internal->peer, lastChatMessage.id);
         switch (lastChatMessage.type) {
-        case TelegramNamespace::MessageTypeWebPage:
+        case Namespace::MessageTypeWebPage:
             text = lastChatMessage.text;
             //text = info.url();
             break;
-        case TelegramNamespace::MessageTypeSticker:
+        case Namespace::MessageTypeSticker:
             text = info.alt();
             break;
-        case TelegramNamespace::MessageTypeDocument:
+        case Namespace::MessageTypeDocument:
             text = info.documentFileName();
             break;
         default:

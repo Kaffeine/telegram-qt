@@ -35,7 +35,7 @@ void DeclarativeChatInfo::setDisplayName(const QString &displayName)
     emit displayNameChanged(displayName);
 }
 
-void DeclarativeChatInfo::setChatType(TelegramNamespace::ChatType chatType)
+void DeclarativeChatInfo::setChatType(Namespace::ChatType chatType)
 {
     if (m_chatType == chatType) {
         return;

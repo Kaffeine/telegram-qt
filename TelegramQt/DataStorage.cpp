@@ -141,27 +141,27 @@ bool DataStorage::getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const
     return true;
 }
 
-TelegramNamespace::ChatType DataStorage::getChatType(const Peer &peer) const
+Namespace::ChatType DataStorage::getChatType(const Peer &peer) const
 {
     if (!peer.isValid()) {
-        return TelegramNamespace::ChatTypeInvalid;
+        return Namespace::ChatTypeInvalid;
     }
     if (peer.type == Peer::User) {
         if (peer.id == selfUserId()) {
-            return TelegramNamespace::ChatTypeSelfChat;
+            return Namespace::ChatTypeSelfChat;
         }
-        return TelegramNamespace::ChatTypeDialog;
+        return Namespace::ChatTypeDialog;
     }
     if (peer.type == Telegram::Peer::Channel) {
         Telegram::ChatInfo info;
         if (getChatInfo(&info, peer)) {
             if (info.broadcast()) {
-                return TelegramNamespace::ChatTypeBroadcast;
+                return Namespace::ChatTypeBroadcast;
             }
         }
-        return TelegramNamespace::ChatTypeGroup;
+        return Namespace::ChatTypeGroup;
     }
-    return TelegramNamespace::ChatTypeMegaGroup;
+    return Namespace::ChatTypeMegaGroup;
 }
 
 bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 messageId)
@@ -180,12 +180,12 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
     message->fromId = m->fromId;
     message->timestamp = m->date;
     message->text = m->message;
-    message->flags = TelegramNamespace::MessageFlagNone;
+    message->flags = Namespace::MessageFlagNone;
     if (m->out()) {
-        message->flags |= TelegramNamespace::MessageFlagOut;
+        message->flags |= Namespace::MessageFlagOut;
     }
     if (m->flags & TLMessage::FwdFrom) {
-        message->flags |= TelegramNamespace::MessageFlagForwarded;
+        message->flags |= Namespace::MessageFlagForwarded;
         if (m->fwdFrom.flags & TLMessageFwdHeader::FromId) {
             //message->setForwardFromPeer((m->fwdFrom))
         }

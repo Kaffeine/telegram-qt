@@ -342,20 +342,20 @@ void AuthOperationPrivate::onAuthenticationRpcError(const RpcError *error)
         getPassword();
         return;
     case RpcError::FirstnameInvalid:
-        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorFirstNameInvalid, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorFirstNameInvalid, error->message);
         break;
     case RpcError::LastnameInvalid:
-        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorLastNameInvalid, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorLastNameInvalid, error->message);
         break;
     case RpcError::PhoneCodeHashEmpty:
     case RpcError::PhoneCodeEmpty:
-        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorUnknown, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorUnknown, error->message);
         break;
     case RpcError::PhoneCodeInvalid:
-        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorPhoneCodeInvalid, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorPhoneCodeInvalid, error->message);
         return;
     case RpcError::PhoneCodeExpired:
-        emit q->errorOccurred(TelegramNamespace::AuthenticationErrorPhoneCodeExpired, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorPhoneCodeExpired, error->message);
         return;
     default:
         qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message;

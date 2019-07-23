@@ -115,36 +115,36 @@ QString mimeTypeByStorageFileType(TLValue type)
     }
 }
 
-TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media)
+Namespace::MessageType getPublicMessageType(const TLMessageMedia &media)
 {
     const TLValue type = media.tlType;
     switch (type) {
     case TLValue::MessageMediaEmpty:
-        return TelegramNamespace::MessageTypeText;
+        return Namespace::MessageTypeText;
     case TLValue::MessageMediaPhoto:
-        return TelegramNamespace::MessageTypePhoto;
+        return Namespace::MessageTypePhoto;
     case TLValue::MessageMediaGeo:
-        return TelegramNamespace::MessageTypeGeo;
+        return Namespace::MessageTypeGeo;
     case TLValue::MessageMediaContact:
-        return TelegramNamespace::MessageTypeContact;
+        return Namespace::MessageTypeContact;
     case TLValue::MessageMediaDocument:
         for (const TLDocumentAttribute &attribute : media.document.attributes) {
             switch (attribute.tlType) {
             case TLValue::DocumentAttributeSticker:
-                return TelegramNamespace::MessageTypeSticker;
+                return Namespace::MessageTypeSticker;
             case TLValue::DocumentAttributeAnimated:
-                return TelegramNamespace::MessageTypeAnimation;
+                return Namespace::MessageTypeAnimation;
             case TLValue::DocumentAttributeAudio:
-                return TelegramNamespace::MessageTypeAudio;
+                return Namespace::MessageTypeAudio;
             case TLValue::DocumentAttributeVideo:
-                return TelegramNamespace::MessageTypeVideo;
+                return Namespace::MessageTypeVideo;
             default:
                 break;
             }
         }
-        return TelegramNamespace::MessageTypeDocument;
+        return Namespace::MessageTypeDocument;
     case TLValue::MessageMediaWebPage:
-        return TelegramNamespace::MessageTypeWebPage;
+        return Namespace::MessageTypeWebPage;
         // TODO:
     case TLValue::MessageMediaVenue:
     case TLValue::MessageMediaGame:
@@ -152,24 +152,24 @@ TelegramNamespace::MessageType getPublicMessageType(const TLMessageMedia &media)
     case TLValue::MessageMediaGeoLive:
     case TLValue::MessageMediaUnsupported:
     default:
-        return TelegramNamespace::MessageTypeUnsupported;
+        return Namespace::MessageTypeUnsupported;
     }
 }
 
-TLValue::Value toTLValue(TelegramNamespace::MessageType type)
+TLValue::Value toTLValue(Namespace::MessageType type)
 {
     switch (type) {
-    case TelegramNamespace::MessageTypeText:
+    case Namespace::MessageTypeText:
         return TLValue::MessageMediaEmpty;
-    case TelegramNamespace::MessageTypePhoto:
+    case Namespace::MessageTypePhoto:
         return TLValue::MessageMediaPhoto;
-    case TelegramNamespace::MessageTypeGeo:
+    case Namespace::MessageTypeGeo:
         return TLValue::MessageMediaGeo;
-    case TelegramNamespace::MessageTypeContact:
+    case Namespace::MessageTypeContact:
         return TLValue::MessageMediaContact;
-    case TelegramNamespace::MessageTypeDocument:
+    case Namespace::MessageTypeDocument:
         return TLValue::MessageMediaDocument;
-    case TelegramNamespace::MessageTypeWebPage:
+    case Namespace::MessageTypeWebPage:
         return TLValue::MessageMediaWebPage;
     default:
         return TLValue::MessageMediaUnsupported;

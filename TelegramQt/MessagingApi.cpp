@@ -439,7 +439,7 @@ bool MessagingApi::getDialogInfo(DialogInfo *info, const Peer &peer) const
     return d->dataStorage()->getDialogInfo(info, peer);
 }
 
-TelegramNamespace::ChatType MessagingApi::getChatType(const Peer &peer) const
+Namespace::ChatType MessagingApi::getChatType(const Peer &peer) const
 {
     Q_D(const MessagingApi);
     return d->dataStorage()->getChatType(peer);

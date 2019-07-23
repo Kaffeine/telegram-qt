@@ -135,7 +135,7 @@ struct DialogInfo::Private : public UserDialog
     static Private *get(DialogInfo *info) { return info->d; }
 };
 
-TelegramNamespace::ContactStatus getApiContactStatus(TLValue status);
+Namespace::ContactStatus getApiContactStatus(TLValue status);
 quint32 getApiContactLastOnline(const TLUserStatus &status);
 
 } // Telegram namespace

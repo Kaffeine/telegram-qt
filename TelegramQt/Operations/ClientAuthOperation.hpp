@@ -47,8 +47,8 @@ Q_SIGNALS:
     void registeredChanged(bool registered); // Always emitted before authCodeRequired()
 
     // Error message description: https://core.telegram.org/api/errors
-    void errorOccurred(TelegramNamespace::AuthenticationError errorCode, const QByteArray &errorMessage);
-    void authorizationErrorReceived(TelegramNamespace::UnauthorizedError errorCode, const QByteArray &errorMessage);
+    void errorOccurred(Telegram::Namespace::AuthenticationError errorCode, const QByteArray &errorMessage);
+    void authorizationErrorReceived(Telegram::Namespace::UnauthorizedError errorCode, const QByteArray &errorMessage);
 
 protected:
     void startImplementation() override;

@@ -186,8 +186,8 @@ void tst_MessagesApi::getSelfUserDialog()
         QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
-        QCOMPARE(message.flags, TelegramNamespace::MessageFlagNone);
+        QCOMPARE(message.type, Namespace::MessageTypeText);
+        QCOMPARE(message.flags, Namespace::MessageFlagNone);
     }
 }
 
@@ -310,8 +310,8 @@ void tst_MessagesApi::getDialogs()
         QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
-        QCOMPARE(message.flags, TelegramNamespace::MessageFlagOut);
+        QCOMPARE(message.type, Namespace::MessageTypeText);
+        QCOMPARE(message.flags, Namespace::MessageFlagOut);
     }
 
     // Check received by client 2
@@ -534,8 +534,8 @@ void tst_MessagesApi::getMessage()
         QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
-        QCOMPARE(message.flags, TelegramNamespace::MessageFlagOut);
+        QCOMPARE(message.type, Namespace::MessageTypeText);
+        QCOMPARE(message.flags, Namespace::MessageFlagOut);
     }
 
     // Check received by client 2
@@ -556,8 +556,8 @@ void tst_MessagesApi::getMessage()
         QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
-        QCOMPARE(message.flags, TelegramNamespace::MessageFlagNone);
+        QCOMPARE(message.type, Namespace::MessageTypeText);
+        QCOMPARE(message.flags, Namespace::MessageFlagNone);
     }
 
     QSignalSpy client1MessageReadSpy(client1.messagingApi(), &Client::MessagingApi::messageReadOutbox);
@@ -1341,8 +1341,8 @@ void tst_MessagesApi::messageAction()
         QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
-        QCOMPARE(message.flags, TelegramNamespace::MessageFlagOut);
+        QCOMPARE(message.type, Namespace::MessageTypeText);
+        QCOMPARE(message.flags, Namespace::MessageFlagOut);
     }
 
     // Check received by client 2
@@ -1363,8 +1363,8 @@ void tst_MessagesApi::messageAction()
         QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, TelegramNamespace::MessageTypeText);
-        QCOMPARE(message.flags, TelegramNamespace::MessageFlagNone);
+        QCOMPARE(message.type, Namespace::MessageTypeText);
+        QCOMPARE(message.flags, Namespace::MessageFlagNone);
     }
 
     // Check message actions
