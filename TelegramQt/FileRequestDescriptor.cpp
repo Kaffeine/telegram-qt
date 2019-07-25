@@ -140,12 +140,15 @@ quint32 FileRequestDescriptor::chunkSize() const
 
 void FileRequestDescriptor::setChunkSize(quint32 size)
 {
+    if (size % 1024) {
+        qCritical() << "Requested chunk size is not valid";
+    }
     m_chunkSize = size;
 }
 
 quint32 FileRequestDescriptor::defaultDownloadPartSize()
 {
-    return 128 * 256; // Set chunkSize to some big number to get the whole avatar at once
+    return 1024 * 32; // Set chunkSize to some big number to get the whole avatar at once
 }
 
 FileRequestDescriptor::FileRequestDescriptor() :
