@@ -73,6 +73,9 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     DialogList.hpp
     FileRequestDescriptor.cpp
     FileRequestDescriptor.hpp
+    FilesApi.cpp
+    FilesApi.hpp
+    FilesApi_p.hpp
     IgnoredMessageNotification.cpp
     IgnoredMessageNotification.hpp
     LegacySecretReader.cpp
@@ -182,6 +185,9 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     Operations/ClientPingOperation.hpp
     Operations/ConnectionOperation.cpp
     Operations/ConnectionOperation.hpp
+    Operations/FileOperation.cpp
+    Operations/FileOperation.hpp
+    Operations/FileOperation_p.hpp
     Operations/PendingContactsOperation.cpp
     Operations/PendingContactsOperation.hpp
     Operations/PendingContactsOperation_p.hpp
@@ -205,8 +211,10 @@ set(telegram_qt_public_HEADERS
     DcConfiguration.hpp
     Debug.hpp
     DialogList.hpp
+    FilesApi.hpp
     MessagingApi.hpp
     Operations/ClientAuthOperation.hpp
+    Operations/FileOperation.hpp
     Operations/PendingContactsOperation.hpp
     Operations/PendingMessages.hpp
     PendingOperation.hpp

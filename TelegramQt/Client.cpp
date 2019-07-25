@@ -104,6 +104,12 @@ MessagingApi *Client::messagingApi() const
     return d->m_messagingApi;
 }
 
+FilesApi *Client::filesApi() const
+{
+    Q_D(const Client);
+    return d->filesApi();
+}
+
 } // Client
 
 } // Telegram

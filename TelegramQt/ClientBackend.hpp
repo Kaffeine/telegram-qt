@@ -22,6 +22,7 @@ class Connection;
 class ConnectionApi;
 class ContactsApi;
 class DataStorage;
+class FilesApi;
 class MessagingApi;
 class PendingRpcOperation;
 class Settings;
@@ -60,6 +61,7 @@ public:
     const DataStorage *dataStorage() const { return m_dataStorage; }
 
     ConnectionApi *connectionApi() const { return m_connectionApi; }
+    FilesApi *filesApi() const { return m_filesApi; }
     MessagingApi *messagingApi() const { return m_messagingApi; }
     ContactsApi *contactsApi() const { return m_contactsApi; }
 
@@ -85,6 +87,7 @@ public:
     ConnectionApi *m_connectionApi = nullptr;
     ContactsApi *m_contactsApi = nullptr;
     MessagingApi *m_messagingApi = nullptr;
+    FilesApi *m_filesApi = nullptr;
 
     AccountRpcLayer *m_accountLayer = nullptr;
     AuthRpcLayer *m_authLayer = nullptr;

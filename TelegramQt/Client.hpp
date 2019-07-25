@@ -37,6 +37,7 @@ class AccountApi;
 class ConnectionApi;
 class ContactsApi;
 class MessagingApi;
+class FilesApi;
 
 class ClientPrivate;
 
@@ -66,6 +67,7 @@ public:
     ConnectionApi *connectionApi() const;
     ContactsApi *contactsApi() const;
     MessagingApi *messagingApi() const;
+    FilesApi *filesApi() const;
 
 Q_SIGNALS:
     void signedInChanged(bool signedIn);
