@@ -146,9 +146,12 @@ RpcError::RpcError(RpcError::Reason r, quint32 arg) :
     case PeerIdInvalid:
     case UserIdInvalid:
     case InputFetchError:
+    case LocationInvalid:
+    case OffsetInvalid: // Offset must be divisible by 1KB
+    case LimitInvalid: // Limit must be divisible by 1KB
         type = BadRequest;
         break;
-//    case FileMigrateX:
+    case FileMigrateX:
     case PhoneMigrateX:
 //    case NetworkMigrateX:
 //    case UserMigrateX:

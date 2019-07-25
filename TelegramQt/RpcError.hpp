@@ -74,6 +74,9 @@ public:
         FloodWaitX,
         PeerIdInvalid,
         UserIdInvalid,
+        LocationInvalid,
+        OffsetInvalid,
+        LimitInvalid,
     };
     Q_ENUM(Reason)
 
