@@ -118,10 +118,23 @@ void UploadRpcOperation::runGetFile()
     TLFunctions::TLUploadGetFile &arguments = m_getFile;
     const TLInputFileLocation &location = arguments.location;
 
+    if (arguments.offset % 1024) {
+        sendRpcError(RpcError(RpcError::OffsetInvalid));
+        return;
+    }
+    if (arguments.limit % 1024) {
+        sendRpcError(RpcError(RpcError::LimitInvalid));
+        return;
+    }
+
     FileDescriptor descriptor;
 
     switch (arguments.location.tlType) {
     case TLValue::InputFileLocation:
+        if (!location.isValid() || !location.volumeId || !location.localId || !location.secret) {
+            sendRpcError(RpcError(RpcError::LocationInvalid));
+            return;
+        }
         descriptor = api()->mediaService()->getSecretFileDescriptor(
                     location.volumeId,
                     location.localId,
@@ -129,6 +142,10 @@ void UploadRpcOperation::runGetFile()
                     );
         break;
     case TLValue::InputDocumentFileLocation:
+        if (!location.isValid() || !location.id || !location.accessHash) {
+            sendRpcError(RpcError(RpcError::LocationInvalid));
+            return;
+        }
         descriptor = api()->mediaService()->getDocumentFileDescriptor(
                     location.id,
                     location.accessHash
