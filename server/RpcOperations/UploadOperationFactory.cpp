@@ -116,25 +116,26 @@ void UploadRpcOperation::runGetCdnFileHashes()
 void UploadRpcOperation::runGetFile()
 {
     TLFunctions::TLUploadGetFile &arguments = m_getFile;
+    const TLInputFileLocation &location = arguments.location;
 
     FileDescriptor descriptor;
 
     switch (arguments.location.tlType) {
     case TLValue::InputFileLocation:
         descriptor = api()->mediaService()->getSecretFileDescriptor(
-                    arguments.location.volumeId,
-                    arguments.location.localId,
-                    arguments.location.secret
+                    location.volumeId,
+                    location.localId,
+                    location.secret
                     );
         break;
     case TLValue::InputDocumentFileLocation:
         descriptor = api()->mediaService()->getDocumentFileDescriptor(
-                    arguments.location.id,
-                    arguments.location.accessHash
+                    location.id,
+                    location.accessHash
                     );
         break;
     default:
-        qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Not implemented" << arguments.location.tlType.toString();
+        qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Not implemented" << location.tlType.toString();
         sendRpcError(RpcError());
         return;
     }
