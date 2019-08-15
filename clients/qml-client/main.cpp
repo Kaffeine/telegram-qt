@@ -4,7 +4,7 @@
 #include <QColor>
 #include <QPalette>
 
-#include "models/DialogsModel.hpp"
+#include "models/DeclarativeDialogsModel.hpp"
 #include "models/MessagesModel.hpp"
 
 #ifdef QT_WIDGETS_LIB
@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
 //     QQuickStyle::setStyle("Fusion");
     QQuickStyle::setStyle("Material");
 
-    qmlRegisterType<Telegram::Client::DialogsModel>("Client", 1, 0, "DialogsModel");
+    qmlRegisterType<Telegram::Client::DeclarativeDialogsModel>("Client", 1, 0, "DialogsModel");
     qmlRegisterType<Telegram::Client::MessagesModel>("Client", 1, 0, "MessagesModel");
     qmlRegisterUncreatableType<Telegram::Client::Event>("Client", 1, 0, "Event", QStringLiteral("Event can be created only from C++"));
 

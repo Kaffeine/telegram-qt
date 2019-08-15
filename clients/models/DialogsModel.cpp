@@ -7,7 +7,6 @@
 #include "DialogList.hpp"
 #include "PendingOperation.hpp"
 
-#include "DeclarativeClient.hpp"
 #include "TelegramNamespace_p.hpp"
 
 #include <QDateTime>
@@ -18,28 +17,33 @@ namespace Telegram {
 
 namespace Client {
 
-static const int UserRoleOffset = Qt::UserRole + 1;
-
 DialogsModel::DialogsModel(QObject *parent) :
-    QAbstractListModel(parent)
+    QAbstractItemModel(parent)
 {
 }
 
-QHash<int, QByteArray> DialogsModel::roleNames() const
+void DialogsModel::setClient(Client *client)
 {
-    static const QHash<int, QByteArray> extraRoles {
-        { UserRoleOffset + static_cast<int>(Role::Peer), "peer" },
-        { UserRoleOffset + static_cast<int>(Role::DisplayName), "displayName" },
-        { UserRoleOffset + static_cast<int>(Role::ChatType), "chatType" },
-        { UserRoleOffset + static_cast<int>(Role::IsPinned), "isPinned" },
-        { UserRoleOffset + static_cast<int>(Role::UnreadMessageCount), "unreadMessageCount" },
-        { UserRoleOffset + static_cast<int>(Role::LastMessage), "lastMessage" },
-        { UserRoleOffset + static_cast<int>(Role::FormattedLastMessage), "formattedLastMessage" },
-        { UserRoleOffset + static_cast<int>(Role::MuteUntil), "muteUntil" },
-        { UserRoleOffset + static_cast<int>(Role::MuteUntilDate), "muteUntilDate" },
-    };
+    m_client = client;
+}
 
-    return extraRoles;
+QModelIndex DialogsModel::index(int row, int column, const QModelIndex &parent) const
+{
+    return hasIndex(row, column, parent) ? createIndex(row, column) : QModelIndex();
+}
+
+Qt::ItemFlags DialogsModel::flags(const QModelIndex &index) const
+{
+    Qt::ItemFlags f = QAbstractItemModel::flags(index);
+    if (index.isValid()) {
+        f |= Qt::ItemNeverHasChildren;
+    }
+    return f;
+}
+
+bool DialogsModel::hasChildren(const QModelIndex &parent) const
+{
+    return parent.isValid() ? false : !m_dialogs.isEmpty();
 }
 
 bool DialogsModel::hasPeer(const Peer peer) const
@@ -50,6 +54,14 @@ bool DialogsModel::hasPeer(const Peer peer) const
 QString DialogsModel::getName(const Peer peer) const
 {
     return QString();
+}
+
+Peer DialogsModel::getPeer(int index) const
+{
+    if (index < 0 || index >= m_dialogs.count()) {
+        return Peer();
+    }
+    return m_dialogs.at(index).internal->peer;
 }
 
 int DialogsModel::rowCount(const QModelIndex &parent) const
@@ -149,12 +161,6 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
     };
 }
 
-void DialogsModel::setQmlClient(DeclarativeClient *target)
-{
-    m_qmlClient = target;
-    emit clientChanged();
-}
-
 void DialogsModel::populate()
 {
     m_list = client()->messagingApi()->getDialogList();
@@ -235,21 +241,17 @@ void DialogsModel::addPeer(const Peer &peer)
     m_dialogs << d;
 }
 
+QModelIndex DialogsModel::parent(const QModelIndex & /* child */) const
+{
+    return QModelIndex();
+}
+
 DialogsModel::Role DialogsModel::intToRole(int value)
 {
     if (value < 0 || value > static_cast<int>(Role::Count)) {
         return Role::Invalid;
     }
     return static_cast<Role>(value);
-}
-
-DialogsModel::Role DialogsModel::indexToRole(const QModelIndex &index, int role) const
-{
-    Q_UNUSED(index)
-    if (role >= UserRoleOffset) {
-        return intToRole(role - UserRoleOffset);
-    }
-    return Role::Invalid;
 }
 
 } // Client namespace

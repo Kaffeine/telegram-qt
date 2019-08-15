@@ -10,17 +10,26 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(app_SOURCES
     main.cpp
-    models/DialogsModel.cpp
-    models/DialogsModel.hpp
-    models/ItemModelExtensions.hpp
+    models/DeclarativeDialogsModel.cpp
+    models/DeclarativeDialogsModel.hpp
     models/MessagesModel.cpp
     models/MessagesModel.hpp
     qml.qrc
 )
 
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../models
+)
+
 find_package(Qt5 5.9 COMPONENTS Core Gui Quick QuickControls2 REQUIRED)
 
 add_executable(qml-client-qt${QT_VERSION_MAJOR} ${app_SOURCES})
+
+target_sources(qml-client-qt${QT_VERSION_MAJOR} PRIVATE
+    ../models/DialogsModel.cpp
+    ../models/DialogsModel.hpp
+    ../models/ItemModelExtensions.hpp
+)
 
 target_link_libraries(qml-client-qt${QT_VERSION_MAJOR} LINK_PUBLIC
     Qt5::Core
