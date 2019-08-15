@@ -43,6 +43,7 @@ namespace Telegram {
 namespace Client {
 
 class Client;
+class FileAccountStorage;
 class PendingContactsOperation;
 
 } // Client namespace
@@ -77,7 +78,6 @@ protected slots:
     void onAuthOperationFailed(Telegram::PendingOperation *operation, const QVariantHash &details);
     void onLoggedOut(bool result);
     void onAuthPhoneCodeRequired();
-    void onAuthRegisteredChanged(bool registered);
     void onAuthPasswordRequested();
     void onAuthSignErrorReceived(Telegram::Namespace::AuthenticationError errorCode, const QString &errorMessage);
     void updateContactList();
@@ -179,6 +179,10 @@ private slots:
     void setWorkLikeAClient(bool enabled);
     void updateClientUi();
 
+    void on_customServerKeyButton_clicked();
+
+    void on_customDcRadio_toggled();
+
 private:
     void searchByUsername();
     void setRegistered(bool newRegistered);
@@ -192,6 +196,7 @@ private:
     Ui::MainWindow *ui = nullptr;
 
     Telegram::Client::Client *m_backend = nullptr;
+    Telegram::Client::FileAccountStorage *m_accountStorage = nullptr;
 
     QMap<quint32,quint64> m_contactLastMessageList;
     QMap<quint32, Telegram::Peer> m_uploadingRequests;

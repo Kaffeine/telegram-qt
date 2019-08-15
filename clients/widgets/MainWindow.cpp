@@ -112,7 +112,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->secretOpenFile, &QAbstractButton::clicked, this, &MainWindow::loadSecretFromBrowsedFile);
     connect(ui->getSecretInfo, &QAbstractButton::clicked, this, &MainWindow::getConnectionSecretInfo);
 
-    m_backend->setAccountStorage(new Telegram::Client::AccountStorage(m_backend));
+    m_accountStorage = new Telegram::Client::FileAccountStorage(this);
+    m_backend->setAccountStorage(m_accountStorage);
     m_backend->setDataStorage(new Telegram::Client::InMemoryDataStorage(m_backend));
     m_backend->setSettings(new Telegram::Client::Settings(m_backend));
 
@@ -188,6 +189,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->groupChatAddContactForwardMessages->hide();
     updateClientUi();
 
+    ui->customServerConfiguration->setVisible(ui->customDcRadio->isChecked());
 }
 
 MainWindow::~MainWindow()
@@ -232,13 +234,6 @@ void MainWindow::onAuthPhoneCodeRequired()
     setAppState(AppStateCodeRequired);
 
     //m_backend->requestPhoneStatus(ui->phoneNumber->text());
-}
-
-void MainWindow::onAuthRegisteredChanged(bool registered)
-{
-    QString registeredText = registered ? tr("Registered") : tr("Not registered");
-    ui->phoneStatus->setText(registeredText);
-    setRegistered(registered);
 }
 
 void MainWindow::onAuthPasswordRequested()
@@ -568,28 +563,25 @@ void MainWindow::initStartConnection()
         proxySettings.setUser(ui->settingsProxyUser->text());
         proxySettings.setPassword(ui->settingsProxyPassword->text());
         proxySettings.setHostName(ui->settingsProxyHost->text());
-        proxySettings.setPort(ui->settingsProxyPort->value());
+        proxySettings.setPort(static_cast<quint16>(ui->settingsProxyPort->value()));
         m_backend->settings()->setProxy(proxySettings);
     }
 //    m_backend->setUpdatesEnabled(ui->settingsUpdatesEnabled->isChecked());
 
-    if (ui->testingDcRadio->isChecked()) {
-        m_backend->settings()->setServerConfiguration({Telegram::DcOption(QLatin1String("149.154.175.10"), 443)});
+    if (ui->customDcRadio->isChecked()) {
+        Telegram::DcOption option;
+        option.address = ui->customServerAddressEdit->text();
+        option.port = static_cast<quint16>(ui->customServerPortBox->value());
+        m_backend->settings()->setServerConfiguration({option});
     }
-//    const QByteArray secretInfo = QByteArray::fromHex(ui->secretInfo->toPlainText().toLatin1());
-//    if (!secretInfo.isEmpty()) {
-//        m_backend->setSecretInfo(secretInfo);
-//    }
-    m_backend->settings()->setServerConfiguration({Telegram::DcOption(QStringLiteral("127.0.0.1"), 11443)});
-    m_backend->settings()->setServerConfiguration({Telegram::DcOption(QStringLiteral("192.168.2.8"), 11443)});
-    const Telegram::RsaKey key = Telegram::RsaKey::fromFile(QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first() + QStringLiteral("/TelegramServer/public_key.pem"));
-//    const Telegram::RsaKey key = m_backend->defaultServerPublicRsaKey();
-    if (!key.isValid()) {
-        qCritical() << "Unable to read RSA key";
-    }
-    m_backend->settings()->setServerRsaKey(key);
 
-    Telegram::Client::AuthOperation *operation = m_backend->connectionApi()->startAuthentication();
+    Telegram::Client::AuthOperation *operation = nullptr;
+
+    if (m_backend->accountStorage()->hasMinimalDataSet()) {
+        operation = m_backend->connectionApi()->checkIn();
+    } else {
+        operation = m_backend->connectionApi()->startAuthentication();
+    }
     connect(operation, &Telegram::Client::AuthOperation::failed,
             this, &MainWindow::onAuthOperationFailed);
 
@@ -598,7 +590,7 @@ void MainWindow::initStartConnection()
     connect(operation, &Telegram::Client::AuthOperation::authCodeRequired,
             this, &MainWindow::onAuthPhoneCodeRequired);
     connect(operation, &Telegram::Client::AuthOperation::registeredChanged,
-            this, &MainWindow::onAuthRegisteredChanged);
+            this, &MainWindow::setRegistered);
     connect(operation, &Telegram::Client::AuthOperation::passwordRequired,
             this, &MainWindow::onAuthPasswordRequested);
 }
@@ -669,6 +661,9 @@ void MainWindow::getConnectionSecretInfo()
 
 void MainWindow::setRegistered(bool newRegistered)
 {
+    QString registeredText = newRegistered ? tr("Registered") : tr("Not registered");
+    ui->phoneStatus->setText(registeredText);
+
     m_registered = newRegistered;
 
     ui->firstName->setDisabled(m_registered);
@@ -788,16 +783,21 @@ void MainWindow::setAppState(MainWindow::AppState newState)
         break;
     case AppStateReady:
         ui->connectionState->setText(tr("Ready"));
-        // TODO: // ui->phoneNumber->setText(m_backend->selfPhone());
         updateContactList();
     {
         Telegram::UserInfo selfInfo;
         m_backend->dataStorage()->getUserInfo(&selfInfo, m_backend->dataStorage()->selfUserId());
+        ui->phoneNumber->setText(selfInfo.phone());
         ui->firstName->setText(selfInfo.firstName());
         ui->lastName->setText(selfInfo.lastName());
+        setRegistered(true);
 
         m_contactsModel->addContact(selfInfo.id());
     }
+
+        // Telegram::Client::DialogList *dialogs = m_backend->messagingApi()->getDialogList();
+        // dialogs->becomeReady();
+
         break;
     case AppStateLoggedOut:
         ui->connectionState->setText(tr("Logged out"));
@@ -1235,32 +1235,22 @@ static const auto c_hexSecretFileNameExtension = QStringLiteral(".tgsecret");
 
 void MainWindow::on_secretSaveAs_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save secret info..."), QString(), tr("Telegram secret files (*%1);;Binary secret file (*)").arg(c_hexSecretFileNameExtension));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save secret info..."),
+                                                    QString(),
+                                                    tr("Telegram secret files (*%1);;Binary secret file (*)").arg(c_hexSecretFileNameExtension));
     if (fileName.isEmpty()) {
         return;
     }
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::WriteOnly)) {
-        return;
-    }
-
-    if (ui->secretInfo->toPlainText().isEmpty()) {
-        getConnectionSecretInfo();
-    }
-
-    QByteArray data = ui->secretInfo->toPlainText().toLatin1();
-    if (!fileName.endsWith(c_hexSecretFileNameExtension)) {
-        data = QByteArray::fromHex(data);
-    }
-    file.write(data);
+    m_accountStorage->setFileName(fileName);
+    m_accountStorage->saveData();
 }
 
 void MainWindow::on_restoreSession_clicked()
 {
     loadSecretFromBrowsedFile();
 
-    if (ui->secretInfo->toPlainText().isEmpty()) {
+    if (!m_accountStorage->hasMinimalDataSet()) {
         return;
     }
 
@@ -1269,22 +1259,15 @@ void MainWindow::on_restoreSession_clicked()
 
 void MainWindow::loadSecretFromBrowsedFile()
 {
-    const QString fileName = QFileDialog::getOpenFileName(this, tr("Load secret info..."), QString(), tr("Telegram secret files (*%1);;All files (*)").arg(c_hexSecretFileNameExtension));
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Load secret info..."),
+                                                          QString(),
+                                                          tr("Telegram secret files (*%1);;All files (*)").arg(c_hexSecretFileNameExtension));
     if (fileName.isEmpty()) {
         return;
     }
 
-    QFile file(fileName);
-    if (!file.open(QIODevice::ReadOnly)) {
-        return;
-    }
-
-    QByteArray data = file.readAll();
-    if (!fileName.endsWith(c_hexSecretFileNameExtension)) {
-        data = data.toHex();
-    }
-
-    ui->secretInfo->setPlainText(data);
+    m_accountStorage->setFileName(fileName);
+    m_accountStorage->loadData();
 }
 
 void MainWindow::updateGroupChatAddContactButtonText()
@@ -1308,4 +1291,27 @@ void MainWindow::on_groupChatLeaveChat_clicked()
         unsetChatCreationMode();
         setActiveChat(m_activeChatId);
     }
+}
+
+void MainWindow::on_customServerKeyButton_clicked()
+{
+    const QString fileName = QFileDialog::getOpenFileName(this, tr("Select server certificate file..."),
+                                                          /* dir */ QString(),
+                                                          tr("Key files (*.pem);;All files (*)"));
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    const Telegram::RsaKey key = Telegram::RsaKey::fromFile(fileName);
+    if (!key.isValid()) {
+        qWarning() << "Unable to load key" << fileName;
+        return;
+    }
+    qDebug() << "Loaded key" << hex << showbase << key.fingerprint;
+    m_backend->settings()->setServerRsaKey(key);
+}
+
+void MainWindow::on_customDcRadio_toggled()
+{
+    ui->customServerConfiguration->setVisible(ui->customDcRadio->isChecked());
 }
