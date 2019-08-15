@@ -22,12 +22,15 @@
 #include "AccountStorage.hpp"
 #include "DataStorage.hpp"
 #include "Debug.hpp"
+#include "DialogList.hpp"
 #include "Client.hpp"
 
 #include "ClientSettings.hpp"
 #include "ContactsApi.hpp"
 #include "ConnectionApi.hpp"
 #include "MessagingApi.hpp"
+
+#include "DialogsModel.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
 #include "Operations/PendingContactsOperation.hpp"
@@ -62,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // m_fileManager(new CFileManager(m_backend, this)),
     m_contactsModel(new CContactModel(m_backend, this)),
     m_contactListModel(new CContactsFilterModel(this)),
-    m_dialogModel(new CDialogModel(m_backend, this)),
+    m_dialogModel(new Telegram::Client::DialogsTableModel(this)),
     m_messagingModel(new CMessageModel(m_backend, this)),
     m_chatContactsModel(new CContactsFilterModel(this)),
     m_chatMessagingModel(new CMessageModel(m_backend, this)),
@@ -81,8 +84,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_chatMessagingModel->setFileManager(m_fileManager);
 #endif
 
-    m_dialogModel->addSourceModel(m_contactsModel);
-    m_dialogModel->addSourceModel(m_chatInfoModel);
+    m_dialogModel->setClient(m_backend);
 
     ui->setupUi(this);
     ui->workLikeClient->setChecked(m_workLikeAClient);
@@ -793,6 +795,7 @@ void MainWindow::setAppState(MainWindow::AppState newState)
         setRegistered(true);
 
         m_contactsModel->addContact(selfInfo.id());
+        m_dialogModel->populate();
     }
 
         // Telegram::Client::DialogList *dialogs = m_backend->messagingApi()->getDialogList();
@@ -880,7 +883,7 @@ void MainWindow::on_deleteContact_clicked()
 void MainWindow::on_dialogList_doubleClicked(const QModelIndex &index)
 {
     qDebug() << Q_FUNC_INFO;
-    const Telegram::Peer peer = m_dialogModel->getPeer(index);
+    const Telegram::Peer peer = m_dialogModel->getPeer(index.row());
     if (!peer.isValid()) {
         return;
     }

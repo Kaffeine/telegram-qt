@@ -30,7 +30,6 @@ class MainWindow;
 
 class CTelegramCore;
 class CContactModel;
-class CDialogModel;
 class CMessageModel;
 class CContactsFilterModel;
 class CChatInfoModel;
@@ -43,6 +42,7 @@ namespace Telegram {
 namespace Client {
 
 class Client;
+class DialogsModel;
 class FileAccountStorage;
 class PendingContactsOperation;
 
@@ -204,7 +204,7 @@ private:
     CFileManager *m_fileManager = nullptr;
     CContactModel *m_contactsModel = nullptr;
     CContactsFilterModel *m_contactListModel = nullptr;
-    CDialogModel *m_dialogModel = nullptr;
+    Telegram::Client::DialogsModel *m_dialogModel = nullptr;
     CMessageModel *m_messagingModel = nullptr;
 
     CContactsFilterModel *m_chatContactsModel = nullptr;

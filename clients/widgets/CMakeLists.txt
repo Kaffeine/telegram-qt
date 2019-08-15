@@ -45,11 +45,20 @@ include_directories(
     ${CMAKE_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../models
 )
 
 find_package(Qt5 5.9 COMPONENTS Core Gui Widgets REQUIRED)
 
 add_executable(testApp-qt${QT_VERSION_MAJOR} ${testApp_SOURCES} ${testApp_FORMS} ${testApp_RESOURCES})
+
+target_sources(testApp-qt${QT_VERSION_MAJOR} PRIVATE
+    ../models/DialogsModel.cpp
+    ../models/DialogsModel.hpp
+    ../models/ItemModelExtensions.hpp
+#    ../models/MessagesModel.cpp
+#    ../models/MessagesModel.hpp
+)
 
 target_include_directories(testApp-qt${QT_VERSION_MAJOR} PRIVATE
     ${QT5_INCLUDES}
