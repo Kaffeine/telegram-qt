@@ -87,6 +87,29 @@ protected:
     DialogList *m_list = nullptr;
 };
 
+class DialogsTableModel : public DialogsModel
+{
+    Q_OBJECT
+public:
+    enum class Column {
+        PeerName,
+        Picture, // Photo (in terms of Telegram)
+        FormattedLastMessage,
+        MuteUntil,
+        Count,
+        Invalid
+    };
+
+    explicit DialogsTableModel(QObject *parent = nullptr);
+
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+
+protected:
+    Role indexToRole(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+};
+
 } // Client namespace
 
 } // Telegram namespace

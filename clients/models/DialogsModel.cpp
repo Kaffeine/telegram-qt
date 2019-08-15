@@ -254,6 +254,69 @@ DialogsModel::Role DialogsModel::intToRole(int value)
     return static_cast<Role>(value);
 }
 
+DialogsTableModel::DialogsTableModel(QObject *parent)
+    : DialogsModel(parent)
+{
+}
+
+int DialogsTableModel::columnCount(const QModelIndex &parent) const
+{
+    if (parent.isValid()) {
+        return 0;
+    }
+    return static_cast<int>(Column::Count);
+}
+
+QVariant DialogsTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    Column s = static_cast<Column>(section);
+
+    if (orientation != Qt::Horizontal) {
+        return QVariant();
+    }
+
+    if (role != Qt::DisplayRole) {
+        return QVariant();
+    }
+
+    switch (s) {
+    case Column::PeerName:
+        return tr("Name");
+    case Column::Picture:
+        return tr("Picture");
+    case Column::FormattedLastMessage:
+        return tr("Message");
+    case Column::MuteUntil:
+        return tr("MuteUntil");
+    default:
+        break;
+    }
+
+    return QVariant();
+}
+
+DialogsModel::Role DialogsTableModel::indexToRole(const QModelIndex &index, int role) const
+{
+    switch (role) {
+    case Qt::DisplayRole:
+        break;
+    default:
+        return Role::Invalid;
+    }
+
+    Column column = static_cast<Column>(index.column());
+    switch (column) {
+    case Column::PeerName:
+        return Role::DisplayName;
+    case Column::FormattedLastMessage:
+        return Role::FormattedLastMessage;
+    case Column::MuteUntil:
+        return Role::MuteUntilDate;
+    default:
+        return Role::Invalid;
+    }
+}
+
 } // Client namespace
 
 } // Telegram namespace
