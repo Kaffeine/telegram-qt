@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
     }
 
     int retCode = a.exec();
-    cluster.stop();
+    //cluster.stop();
 
     importer.saveData();
 
