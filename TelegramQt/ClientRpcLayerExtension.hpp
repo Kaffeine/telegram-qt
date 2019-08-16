@@ -45,6 +45,7 @@ public:
 
     using RpcProcessingMethod = std::function<void (PendingRpcOperation *)>;
 
+    RpcProcessingMethod rpcProcessingMethod() const { return m_processingMethod; }
     void setRpcProcessingMethod(RpcProcessingMethod sendMethod);
 
     template <typename TLType>
