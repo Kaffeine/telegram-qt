@@ -685,6 +685,16 @@ AbstractUser *Server::getRemoteUser(const QString &identifier) const
     return nullptr;
 }
 
+RemoteServerConnection *Server::getRemoteServer(quint32 dcId) const
+{
+    for (RemoteServerConnection *remoteServer : m_remoteServers) {
+        if (remoteServer->dcId() == dcId) {
+            return remoteServer;
+        }
+    }
+    return nullptr;
+}
+
 } // Server namespace
 
 } // Telegram namespace
