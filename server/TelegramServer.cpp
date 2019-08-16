@@ -40,6 +40,7 @@
 Q_LOGGING_CATEGORY(loggingCategoryServer, "telegram.server.main", QtInfoMsg)
 Q_LOGGING_CATEGORY(loggingCategoryServerApi, "telegram.server.api", QtWarningMsg)
 Q_LOGGING_CATEGORY(lcServerUpdates, "telegram.server.updates", QtInfoMsg)
+Q_LOGGING_CATEGORY(lcServerCrossUpdates, "telegram.server.cross.updates", QtInfoMsg)
 
 namespace Telegram {
 
@@ -443,6 +444,23 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
                 notification.dialogPeer = targetPeer;
             }
             LocalUser *user = getUser(userId);
+            if (!user) {
+                // User is not a local user
+                AbstractUser *remoteUser = getRemoteUser(userId);
+                if (!remoteUser) {
+                    qCWarning(loggingCategoryServerApi) << CALL_INFO
+                                                        << "Invalid userId"
+                                                        << userId;
+                    continue;
+                }
+                RemoteServerConnection *remoteServerConnection = getRemoteServer(remoteUser->dcId());
+                AbstractServerApi *remoteApi = remoteServerConnection->api();
+                // if (!remoteApi->messageService()->hasMessage()) {
+                //     remoteApi->messageService()->importMessage(messageData)
+                // }
+                remoteApi->queueServerUpdates({notification});
+                continue;
+            }
             user->addNewMessage(notification.dialogPeer, newMessageId, messageData->date64());
             if (user != fromUser) {
                 user->bumpDialogUnreadCount(notification.dialogPeer);
@@ -610,6 +628,33 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             session->rpcLayer()->sendUpdates(updates);
         }
     }
+}
+
+void Server::queueServerUpdates(const QVector<UpdateNotification> &notifications)
+{
+    for (const UpdateNotification &notification : notifications) {
+        LocalUser *user = getUser(notification.userId);
+        if (!user) {
+            qCWarning(lcServerCrossUpdates) << CALL_INFO << "Invalid user!" << notification.userId;
+            continue;
+        }
+
+        switch (notification.type) {
+        case UpdateNotification::Type::NewMessage: {
+            PostBox *box = user->getPostBox();
+            quint64 globalId = box->getMessageGlobalId(notification.messageId);
+            const MessageData *messageData = messageService()->getMessage(globalId);
+
+            user->addNewMessage(notification.dialogPeer, notification.messageId, messageData->date64());
+            user->bumpDialogUnreadCount(notification.dialogPeer);
+        }
+            break;
+        default:
+            break;
+        }
+    }
+
+    queueUpdates(notifications);
 }
 
 void Server::insertUser(LocalUser *user)

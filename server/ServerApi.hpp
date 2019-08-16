@@ -82,6 +82,7 @@ public:
     virtual Peer getPeerByUserName(const QString &userName) const = 0;
 
     virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;
+    virtual void queueServerUpdates(const QVector<UpdateNotification> &updates) = 0;
 };
 
 class LocalServerApi : public AbstractServerApi

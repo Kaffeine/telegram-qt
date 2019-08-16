@@ -101,6 +101,7 @@ public:
                                               Session *excludeSession) const override;
 
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
+    void queueServerUpdates(const QVector<UpdateNotification> &notifications) override;
 
     void insertUser(LocalUser *user);
 
