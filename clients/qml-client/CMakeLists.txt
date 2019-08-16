@@ -16,6 +16,10 @@ set(app_SOURCES
     models/MessagesModel.cpp
     models/MessagesModel.hpp
     qml.qrc
+    src/ImageProvider.cpp
+    src/ImageProvider.hpp
+    src/ImageResponse.cpp
+    src/ImageResponse.hpp
 )
 
 find_package(Qt5 5.9 COMPONENTS Core Gui Quick QuickControls2 REQUIRED)

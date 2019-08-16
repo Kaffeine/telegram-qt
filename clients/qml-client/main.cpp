@@ -6,6 +6,8 @@
 
 #include "models/DialogsModel.hpp"
 #include "models/MessagesModel.hpp"
+#include "src/ImageProvider.hpp"
+#include "DeclarativeClientOperator.hpp"
 
 #ifdef QT_WIDGETS_LIB
 #include <QApplication>
@@ -166,6 +168,36 @@ static QObject *theme_type_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
     return theme;
 }
 
+class ImageProviderWrapper : public Telegram::Client::DeclarativeClientOperator
+{
+    Q_OBJECT
+public:
+    explicit ImageProviderWrapper(QObject *parent = nullptr);
+
+    void registerClient();
+};
+
+ImageProviderWrapper::ImageProviderWrapper(QObject *parent)
+    : Telegram::Client::DeclarativeClientOperator(parent)
+{
+    connect(this, &ImageProviderWrapper::clientChanged,
+            this, &ImageProviderWrapper::registerClient);
+}
+
+void ImageProviderWrapper::registerClient()
+{
+    QQmlEngine *engine = qmlEngine(this);
+    if (!engine) {
+        return;
+    }
+
+    QQmlImageProviderBase *baseProvider = engine->imageProvider(Telegram::Client::AsyncImageProvider::id());
+    Telegram::Client::AsyncImageProvider *provider = static_cast<Telegram::Client::AsyncImageProvider*>(baseProvider);
+    provider->registerClient(client());
+
+    qDebug() << Q_FUNC_INFO << "Client registered for image provider" << provider;
+}
+
 #include <QQuickStyle>
 
 int main(int argc, char *argv[])
@@ -179,6 +211,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<Telegram::Client::DialogsModel>("Client", 1, 0, "DialogsModel");
     qmlRegisterType<Telegram::Client::MessagesModel>("Client", 1, 0, "MessagesModel");
+    qmlRegisterType<ImageProviderWrapper>("Client", 1, 0, "ImageProviderWrapper");
     qmlRegisterUncreatableType<Telegram::Client::Event>("Client", 1, 0, "Event", QStringLiteral("Event can be created only from C++"));
 
     QQmlApplicationEngine engine;
@@ -199,6 +232,8 @@ int main(int argc, char *argv[])
     });
 
     qmlRegisterSingletonType<Theme>("TelegramQtTheme", 1, 0, "Theme", theme_type_provider);
+    Telegram::Client::AsyncImageProvider *imageProvider = new Telegram::Client::AsyncImageProvider();
+    engine.addImageProvider(imageProvider->id(), imageProvider);
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
     return app.exec();

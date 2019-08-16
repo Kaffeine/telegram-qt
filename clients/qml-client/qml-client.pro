@@ -8,6 +8,10 @@ CONFIG += plugin
 TARGET = qml-client
 
 SOURCES += main.cpp
+SOURCES += src/ImageProvider.cpp
+SOURCES += src/ImageProvider.hpp
+SOURCES += src/ImageResponse.cpp
+SOURCES += src/ImageResponse.hpp
 
 SOURCES += models/DialogsModel.cpp models/MessagesModel.cpp
 HEADERS += models/DialogsModel.hpp models/MessagesModel.hpp
