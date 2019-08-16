@@ -39,5 +39,5 @@ install(
     DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-message(STATUS "Hint: Add 'QML2_IMPORT_PATH=\"${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml\"' "
+message(STATUS "Hint: Add 'QML2_IMPORT_PATH=${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml' "
     "to 'qml-client-qt${QT_VERSION_MAJOR}' run enviroment variables to ensure that the QML import is correct.")
