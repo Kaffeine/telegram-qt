@@ -43,6 +43,16 @@ MediaService::MediaService(QObject *parent) :
 {
 }
 
+quint32 MediaService::dcId() const
+{
+    return m_dcId;
+}
+
+void MediaService::setDcId(quint32 dcId)
+{
+    m_dcId = dcId;
+}
+
 bool MediaService::uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)
 {
     if (!m_tmpFiles.contains(fileId)) {
@@ -153,7 +163,7 @@ FileDescriptor *MediaService::endWriteFile(QIODevice *device, const QString &nam
 
     FileDescriptor result;
     RandomGenerator::instance()->generate(&result.id);
-    result.dcId = 1;
+    result.dcId = dcId();
     result.volumeId = volumeId();
     result.localId = m_lastFileLocalId;
     result.secret = 0xbeef;

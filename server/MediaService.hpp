@@ -37,6 +37,9 @@ class MediaService : public QObject, public IMediaService
 public:
     explicit MediaService(QObject *parent = nullptr);
 
+    quint32 dcId() const;
+    void setDcId(quint32 dcId);
+
     bool uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes) override;
     FileDescriptor getFileDescriptor(quint64 fileId, quint32 parts) const override;
 
@@ -63,6 +66,7 @@ protected:
     QSet<QFile*> m_openFiles;
     quint64 m_lastGlobalId = 0;
     quint64 m_lastTimestamp = 0;
+    quint32 m_dcId = 0;
     quint32 m_lastFileLocalId = 0;
 };
 

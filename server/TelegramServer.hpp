@@ -27,6 +27,7 @@ class Provider;
 } // Authorization namespace
 
 class LocalUser;
+class MediaService;
 class Session;
 class RemoteClientConnection;
 class RemoteServerConnection;
@@ -66,7 +67,7 @@ public:
     QString normalizeIdentifier(const QString &identifier) const override;
 
     AuthService *authService() const override { return m_authService; }
-    IMediaService *mediaService() const override { return m_mediaService; }
+    IMediaService *mediaService() const override { return m_mediaServiceIface; }
     MessageService *messageService() const override { return m_messageService; }
 
     AbstractUser *getAbstractUser(quint32 userId) const override;
@@ -115,7 +116,8 @@ protected:
 
 protected:
     AuthService *m_authService = nullptr;
-    IMediaService *m_mediaService = nullptr;
+    IMediaService *m_mediaServiceIface = nullptr;
+    MediaService *m_mediaService = nullptr;
     MessageService *m_messageService = nullptr;
 
 private:

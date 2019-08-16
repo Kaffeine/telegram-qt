@@ -50,6 +50,7 @@ Server::Server(QObject *parent) :
 {
     m_authService = new AuthService(this);
     m_mediaService = new MediaService(this);
+    m_mediaServiceIface = m_mediaService;
 
     m_rpcOperationFactories = {
         // Generated RPC Operation Factory initialization
@@ -84,6 +85,7 @@ Server::~Server()
 void Server::setDcOption(const DcOption &option)
 {
     m_dcOption = option;
+    m_mediaService->setDcId(option.id);
 }
 
 void Server::setServerPrivateRsaKey(const Telegram::RsaKey &key)
