@@ -2,6 +2,20 @@
 
 namespace Telegram {
 
+int DcConfiguration::dcCount() const
+{
+    QVector<quint32> dcs;
+
+    for (const DcOption &opt : dcOptions) {
+        const quint32 dcId = opt.id;
+        if (dcs.contains(dcId)) {
+            continue;
+        }
+        dcs.append(dcId);
+    }
+    return dcs.count();
+}
+
 DcOption DcConfiguration::getOption(const ConnectionSpec spec) const
 {
     DcOption result;

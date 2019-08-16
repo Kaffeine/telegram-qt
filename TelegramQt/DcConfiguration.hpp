@@ -38,6 +38,8 @@ struct ConnectionSpec
 
 struct DcConfiguration
 {
+    int dcCount() const;
+
     DcOption getOption(const ConnectionSpec spec) const;
     bool isValid() const { return !dcOptions.isEmpty(); }
 
