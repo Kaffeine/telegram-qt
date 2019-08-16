@@ -62,6 +62,15 @@ void DeclarativePeerInfo::setChatType(Namespace::ChatType chatType)
     emit chatTypeChanged();
 }
 
+void DeclarativePeerInfo::setPictureFileId(const QString &fileId)
+{
+    if (m_pictureFileId == fileId) {
+        return;
+    }
+    m_pictureFileId = fileId;
+    emit pictureFileIdChanged();
+}
+
 void DeclarativePeerInfo::updateInfo()
 {
     if (!client()) {
@@ -92,6 +101,7 @@ void DeclarativePeerInfo::updateInfo(const PeerInfo *info)
     FileInfo file;
     info->getPeerPicture(&file, PeerPictureSize::Small);
     setDisplayName(info->displayName());
+    setPictureFileId(file.getFileId());
 }
 
 } // Client

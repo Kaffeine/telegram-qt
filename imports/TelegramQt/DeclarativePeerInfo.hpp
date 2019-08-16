@@ -15,6 +15,7 @@ class TELEGRAMQT_QML_EXPORT DeclarativePeerInfo : public DeclarativeClientOperat
     Q_PROPERTY(quint32 userId READ userId WRITE setUserId NOTIFY userIdChanged)
     Q_PROPERTY(Namespace::ChatType chatType READ chatType NOTIFY chatTypeChanged)
     Q_PROPERTY(QString displayName READ displayName NOTIFY displayNameChanged)
+    Q_PROPERTY(QString pictureFileId READ pictureFileId NOTIFY pictureFileIdChanged)
 public:
     explicit DeclarativePeerInfo(QObject *parent = nullptr);
 
@@ -22,6 +23,7 @@ public:
     quint32 userId() const;
     Namespace::ChatType chatType() const { return m_chatType; }
     QString displayName() const { return m_displayName; }
+    QString pictureFileId() const { return m_pictureFileId; }
 
 public slots:
     void setPeer(const Telegram::Peer &peer);
@@ -32,16 +34,19 @@ signals:
     void userIdChanged();
     void chatTypeChanged();
     void displayNameChanged(const QString &displayName);
+    void pictureFileIdChanged();
 
 protected:
     void setDisplayName(const QString &displayName);
     void setChatType(Namespace::ChatType chatType);
+    void setPictureFileId(const QString &fileId);
     void updateInfo();
     void updateInfo(const PeerInfo *info);
 
     Telegram::Peer m_peer;
     Namespace::ChatType m_chatType = Namespace::ChatTypeInvalid;
     QString m_displayName;
+    QString m_pictureFileId;
 };
 
 } // Client
