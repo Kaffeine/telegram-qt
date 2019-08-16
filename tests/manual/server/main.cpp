@@ -19,19 +19,26 @@
 #include "DefaultAuthorizationProvider.hpp"
 #include "JsonDataImporter.hpp"
 #include "LocalCluster.hpp"
+#include "ServerApi.hpp"
+#include "IMediaService.hpp"
+#include "MessageService.hpp"
 #include "RandomGenerator.hpp"
 #include "Session.hpp"
 #include "TelegramServerConfig.hpp"
 #include "TelegramServerUser.hpp"
 #include "Utils.hpp"
 
-// Test keys
+// Test
+#include "TestServerUtils.hpp"
+#include "TestUserData.hpp"
 #include "keys_data.hpp"
 
+#include <QBuffer>
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
+#include <QImage>
 #include <QStandardPaths>
 #include <QTimer>
 
@@ -144,6 +151,30 @@ int main(int argc, char *argv[])
         importer.saveData();
     });
     saveTimer.start();
+
+    LocalUser *user = cluster.addUser(QStringLiteral("123456789"), /* dc */ 1);
+    user->setFirstName(QStringLiteral("Dc1User1"));
+    user->setLastName(QStringLiteral("Dc1"));
+    AbstractServerApi *serverApi = cluster.getServerApiInstance(user->dcId());
+
+    const int dcCount = cluster.serverConfiguration().dcCount();
+    const int dialogsCount = 3;
+
+    for (int i = 0; i < dialogsCount; ++i) {
+        LocalUser *dialogN = tryAddUser(&cluster,
+                                        // Add users to different DCs
+                                        mkUserData(i, static_cast<quint32>((i % dcCount) + 1)));
+        AbstractServerApi *contactServer = cluster.getServerApiInstance(dialogN->dcId());
+
+        MessageData *data = serverApi->messageService()
+                ->addMessage(dialogN->userId(), user->toPeer(), QStringLiteral("mgs%1").arg(i + 1));
+        data->setDate32(data->date() - 60);
+        cluster.processMessage(data);
+
+        // Upload an image
+        const ImageDescriptor image = uploadUserImage(contactServer);
+        dialogN->updateImage(image);
+    }
 
     int retCode = a.exec();
     cluster.stop();
