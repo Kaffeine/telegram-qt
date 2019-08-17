@@ -1,4 +1,3 @@
-#include "MessagingApi.hpp"
 #include "MessagingApi_p.hpp"
 
 #include "ApiUtils.hpp"
