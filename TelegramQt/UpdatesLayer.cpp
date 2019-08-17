@@ -2,6 +2,7 @@
 
 #include "ApiUtils.hpp"
 #include "ClientBackend.hpp"
+#include "ContactsApi_p.hpp"
 #include "DataStorage.hpp"
 #include "DataStorage_p.hpp"
 #include "MessagingApi_p.hpp"
@@ -168,6 +169,9 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
         }
     }
         return true;
+    case TLValue::UpdateUserStatus:
+        contactsApi()->onUserStatusChanged(update.userId, update.status);
+        return true;
     case TLValue::UpdateUserTyping:
         messagingApi()->onUserActionChanged(update.userId, update.action);
         return true;
@@ -184,6 +188,11 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
 MessagingApiPrivate *UpdatesInternalApi::messagingApi()
 {
     return MessagingApiPrivate::get(m_backend->messagingApi());
+}
+
+ContactsApiPrivate *UpdatesInternalApi::contactsApi()
+{
+    return ContactsApiPrivate::get(m_backend->contactsApi());
 }
 
 DataStorage *UpdatesInternalApi::dataStorage()

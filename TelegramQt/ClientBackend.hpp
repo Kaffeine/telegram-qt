@@ -69,6 +69,7 @@ public:
 
     ConnectionApi *connectionApi() const { return m_connectionApi; }
     MessagingApi *messagingApi() const { return m_messagingApi; }
+    ContactsApi *contactsApi() const { return m_contactsApi; }
 
     AccountStorage *accountStorage() { return m_accountStorage; }
 

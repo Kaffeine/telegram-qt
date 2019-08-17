@@ -99,6 +99,19 @@ ContactsRpcLayer *ContactsApiPrivate::contactsLayer()
     return m_backend->contactsLayer();
 }
 
+void ContactsApiPrivate::onUserStatusChanged(quint32 userId, const TLUserStatus &status)
+{
+    Q_Q(ContactsApi);
+    DataInternalApi *dataApi = dataInternalApi();
+    TLUser *user = dataApi->users().value(userId);
+    if (!user) {
+        // ignore
+        return;
+    }
+    user->status = status;
+    emit q->contactStatusChanged(userId, getApiContactStatus(status.tlType));
+}
+
 void ContactsApiPrivate::onContactsImported(PendingContactsOperation *operation,
                                             ContactsRpcLayer::PendingContactsImportedContacts *rpcOperation)
 {

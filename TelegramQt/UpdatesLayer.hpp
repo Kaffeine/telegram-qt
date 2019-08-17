@@ -27,6 +27,7 @@ namespace Telegram {
 namespace Client {
 
 class Backend;
+class ContactsApiPrivate;
 class DataStorage;
 class DataInternalApi;
 class MessagingApiPrivate;
@@ -44,6 +45,7 @@ public:
 
 protected:
     MessagingApiPrivate *messagingApi();
+    ContactsApiPrivate *contactsApi();
     DataStorage *dataStorage();
     DataInternalApi *dataInternalApi();
 

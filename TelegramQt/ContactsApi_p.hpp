@@ -53,6 +53,9 @@ public:
     DataInternalApi *dataInternalApi();
     ContactsRpcLayer *contactsLayer();
 
+public slots:
+    void onUserStatusChanged(quint32 userId, const TLUserStatus &status);
+
 protected slots:
     void onContactsImported(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsImportedContacts *rpcOperation);
     void onGetContactsResult(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsContacts *rpcOperation);
