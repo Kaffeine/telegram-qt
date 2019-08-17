@@ -137,12 +137,6 @@ Connection *Backend::getDefaultConnection()
     return privateApi->getDefaultConnection();
 }
 
-Connection *Backend::ensureConnection(const ConnectionSpec &dcSpec)
-{
-    ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_connectionApi);
-    return privateApi->ensureConnection(dcSpec);
-}
-
 void Backend::onGetDcConfigurationFinished(PendingOperation *operation)
 {
     if (!operation->isSucceeded()) {

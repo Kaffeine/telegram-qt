@@ -55,7 +55,6 @@ public:
     PendingOperation *sync();
 
     Connection *getDefaultConnection();
-    Connection *ensureConnection(const ConnectionSpec &dcSpec);
 
     DataStorage *dataStorage() { return m_dataStorage; }
     const DataStorage *dataStorage() const { return m_dataStorage; }
