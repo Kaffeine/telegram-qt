@@ -653,6 +653,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
             lowLevelInitCode.append(QStringLiteral("m_%1Layer->setRpcProcessingMethod(rpcProcessMethod);").arg(group.nameSmall));
         }
 
+#if 0
         {
             const QString lowLevelForwardDeclarationsCode = Generator::joinLinesWithPrepend(lowLevelForwardDeclarations, QString(), QStringLiteral("\n"));
             const QString lowLevelRpcGettersCode = Generator::joinLinesWithPrepend(lowLevelRpcGetters, Generator::spacing, QStringLiteral("\n"));
@@ -668,6 +669,7 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
             sourceFile.replace("low-level layer initialization", lowLevelInitCodeCode, 4);
             sourceFile.replace("low-level layer includes", lowLevelIncludesCode);
         }
+#endif
     }
 
     {
