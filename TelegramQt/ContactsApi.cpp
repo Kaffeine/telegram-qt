@@ -182,11 +182,6 @@ ContactList *ContactsApi::getContactList()
     return d->getContactList();
 }
 
-QString ContactsApi::selfPhone() const
-{
-    return QString();
-}
-
 quint32 ContactsApi::selfContactId() const
 {
     Q_D(const ContactsApi);

@@ -48,7 +48,6 @@ public:
 
     ContactList *getContactList();
 
-    QString selfPhone() const;
     quint32 selfContactId() const;
 
     PendingContactsOperation *addContacts(const ContactInfoList &contacts);
