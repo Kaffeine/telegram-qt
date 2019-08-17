@@ -42,7 +42,7 @@ PendingOperation *ContactsApiPrivate::sync()
     return operation;
 }
 
-quint32 ContactsApiPrivate::selfContactId() const
+quint32 ContactsApiPrivate::selfUserId() const
 {
     return m_backend->dataStorage()->selfUserId();
 }
@@ -182,10 +182,10 @@ ContactList *ContactsApi::getContactList()
     return d->getContactList();
 }
 
-quint32 ContactsApi::selfContactId() const
+quint32 ContactsApi::selfUserId() const
 {
     Q_D(const ContactsApi);
-    return d->selfContactId();
+    return d->selfUserId();
 }
 
 PendingContactsOperation *ContactsApi::addContacts(const ContactsApi::ContactInfoList &contacts)

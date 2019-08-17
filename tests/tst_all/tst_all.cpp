@@ -402,8 +402,8 @@ void tst_all::testSignInCheckIn()
 //        QCOMPARE(discOp->isSucceeded(), true);
 
         TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusReady);
-        QVERIFY(client.contactsApi()->selfContactId());
-        QCOMPARE(client.contactsApi()->selfContactId(), serversideUser->id());
+        QVERIFY(client.contactsApi()->selfUserId());
+        QCOMPARE(client.contactsApi()->selfUserId(), serversideUser->id());
     }
 
     TRY_COMPARE(firstClientConnection->status(), Telegram::Server::RemoteClientConnection::Status::Disconnected);
@@ -422,8 +422,8 @@ void tst_all::testSignInCheckIn()
         QVERIFY2(checkInOperation->isSucceeded(), "checkIn() failed");
 
         TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusReady);
-        QVERIFY(client.contactsApi()->selfContactId());
-        QCOMPARE(client.contactsApi()->selfContactId(), serversideUser->id());
+        QVERIFY(client.contactsApi()->selfUserId());
+        QCOMPARE(client.contactsApi()->selfUserId(), serversideUser->id());
     }
 }
 

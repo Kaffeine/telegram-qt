@@ -48,7 +48,7 @@ public:
 
     ContactList *getContactList();
 
-    quint32 selfContactId() const;
+    quint32 selfUserId() const;
 
     PendingContactsOperation *addContacts(const ContactInfoList &contacts);
 

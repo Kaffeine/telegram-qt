@@ -141,7 +141,7 @@ PendingOperation *Backend::getDcConfig()
 
 PendingOperation *Backend::sync()
 {
-    if (!m_contactsApi->selfContactId()) {
+    if (!m_contactsApi->selfUserId()) {
         ContactsApiPrivate *privateApi = ContactsApiPrivate::get(m_contactsApi);
         return privateApi->sync();
     }

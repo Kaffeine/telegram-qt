@@ -43,7 +43,7 @@ public:
 
     PendingOperation *sync();
 
-    quint32 selfContactId() const;
+    quint32 selfUserId() const;
 
     PendingContactsOperation *importContacts(const ContactsApi::ContactInfoList &contacts);
     PendingContactsOperation *getContacts();
