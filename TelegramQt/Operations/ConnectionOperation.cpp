@@ -11,6 +11,10 @@ ConnectOperation::ConnectOperation(Connection *connection) :
     PendingOperation(connection),
     m_connection(connection)
 {
+    if (!connection) {
+        setObjectName(QLatin1String("ConnectTo(unknown)"));
+        return;
+    }
     const DcOption opt = m_connection->dcOption();
     setObjectName(QStringLiteral("ConnectTo(%1:%2)").arg(opt.address).arg(opt.port));
 
@@ -34,6 +38,10 @@ ConnectOperation::ConnectOperation(Connection *connection) :
 
 void ConnectOperation::startImplementation()
 {
+    if (!m_connection) {
+        setDelayedFinishedWithError({{ c_text(), QLatin1String("No connection") }});
+        return;
+    }
     const DcOption opt = m_connection->dcOption();
     m_connection->transport()->connectToHost(opt.address, opt.port);
 }
