@@ -19,23 +19,16 @@
 #include "Operations/ClientHelpOperation.hpp"
 #include "PendingRpcOperation.hpp"
 
-// Generated low-level layer includes
 #include "ClientRpcAccountLayer.hpp"
 #include "ClientRpcAuthLayer.hpp"
-#include "ClientRpcBotsLayer.hpp"
 #include "ClientRpcChannelsLayer.hpp"
 #include "ClientRpcContactsLayer.hpp"
 #include "ClientRpcHelpLayer.hpp"
-#include "ClientRpcLangpackLayer.hpp"
 #include "ClientRpcMessagesLayer.hpp"
-#include "ClientRpcPaymentsLayer.hpp"
-#include "ClientRpcPhoneLayer.hpp"
 #include "ClientRpcPhotosLayer.hpp"
-#include "ClientRpcStickersLayer.hpp"
 #include "ClientRpcUpdatesLayer.hpp"
 #include "ClientRpcUploadLayer.hpp"
 #include "ClientRpcUsersLayer.hpp"
-// End of generated low-level layer includes
 
 #include <QLoggingCategory>
 #include <QTimer>
@@ -64,38 +57,26 @@ Backend::Backend(Client *parent) :
         connection->rpcLayer()->sendRpc(operation);
     };
 
-    // Generated low-level layer initialization
     m_accountLayer = new AccountRpcLayer(this);
     m_accountLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_authLayer = new AuthRpcLayer(this);
     m_authLayer->setRpcProcessingMethod(rpcProcessMethod);
-    m_botsLayer = new BotsRpcLayer(this);
-    m_botsLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_channelsLayer = new ChannelsRpcLayer(this);
     m_channelsLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_contactsLayer = new ContactsRpcLayer(this);
     m_contactsLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_helpLayer = new HelpRpcLayer(this);
     m_helpLayer->setRpcProcessingMethod(rpcProcessMethod);
-    m_langpackLayer = new LangpackRpcLayer(this);
-    m_langpackLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_messagesLayer = new MessagesRpcLayer(this);
     m_messagesLayer->setRpcProcessingMethod(rpcProcessMethod);
-    m_paymentsLayer = new PaymentsRpcLayer(this);
-    m_paymentsLayer->setRpcProcessingMethod(rpcProcessMethod);
-    m_phoneLayer = new PhoneRpcLayer(this);
-    m_phoneLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_photosLayer = new PhotosRpcLayer(this);
     m_photosLayer->setRpcProcessingMethod(rpcProcessMethod);
-    m_stickersLayer = new StickersRpcLayer(this);
-    m_stickersLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_updatesLayer = new UpdatesRpcLayer(this);
     m_updatesLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_uploadLayer = new UploadRpcLayer(this);
     m_uploadLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_usersLayer = new UsersRpcLayer(this);
     m_usersLayer->setRpcProcessingMethod(rpcProcessMethod);
-    // End of generated low-level layer initialization
 
     m_accountApi = new AccountApi(this);
     ClientApiPrivate::get(m_accountApi)->setBackend(this);
