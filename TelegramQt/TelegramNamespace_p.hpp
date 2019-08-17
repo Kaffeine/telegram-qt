@@ -81,6 +81,7 @@ public:
     };
 
     Private() = default;
+    static Private fromFileId(const QString &fileId);
 
     static const Private *get(const FileInfo *f) { return f->d; }
     static Private *get(FileInfo *f) { return f->d; }

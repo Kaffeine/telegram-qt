@@ -475,6 +475,60 @@ QString MessageMediaInfo::description() const
     return d->webpage.description;
 }
 
+Telegram::FileInfo::Private FileInfo::Private::fromFileId(const QString &fileId)
+{
+    uint remoteFileType = InvalidLocation;
+    bool ok;
+    remoteFileType = fileId.midRef(0, 2).toUInt(&ok, 16);
+    if (!ok) {
+        return Private();
+    }
+    Private result;
+    result.m_type = static_cast<Type>(remoteFileType);
+    result.m_dcId = fileId.midRef(2, 8).toULong(&ok, 16); // 32 bits
+    if (!ok) {
+        return Private();
+    }
+    result.m_size = fileId.midRef(10, 8).toULong(&ok, 16); // 32 bits
+    if (!ok) {
+        return Private();
+    }
+
+    switch (result.m_type) {
+    case Private::FileLocation:
+        result.m_volumeId = fileId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
+        if (!ok) {
+            return Private();
+        }
+        result.m_secret = fileId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
+        if (!ok) {
+            return Private();
+        }
+        result.m_localId = fileId.midRef(50, 8).toULong(&ok, 16); // 32 bits
+        if (!ok) {
+            return Private();
+        }
+        break;
+    case Private::EncryptedFileLocation:
+    case Private::VideoFileLocation:
+    case Private::AudioFileLocation:
+    case Private::DocumentFileLocation:
+        result.m_id = fileId.midRef(18, 16).toULongLong(&ok, 16); // 64 bits
+        if (!ok) {
+            return Private();
+        }
+        result.m_accessHash = fileId.midRef(34, 16).toULongLong(&ok, 16); // 64 bits
+        if (!ok) {
+            return Private();
+        }
+        break;
+    case Private::InvalidLocation:
+    default:
+        return Private();
+    }
+    return result;
+}
+
 bool FileInfo::Private::isValid() const
 {
     return m_type != InvalidLocation;
