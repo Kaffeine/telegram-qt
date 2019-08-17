@@ -110,39 +110,6 @@ target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
 )
 
 target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
-    RpcLayers/ClientRpcAccountLayer.cpp
-    RpcLayers/ClientRpcAccountLayer.hpp
-    RpcLayers/ClientRpcAuthLayer.cpp
-    RpcLayers/ClientRpcAuthLayer.hpp
-    RpcLayers/ClientRpcBotsLayer.cpp
-    RpcLayers/ClientRpcBotsLayer.hpp
-    RpcLayers/ClientRpcChannelsLayer.cpp
-    RpcLayers/ClientRpcChannelsLayer.hpp
-    RpcLayers/ClientRpcContactsLayer.cpp
-    RpcLayers/ClientRpcContactsLayer.hpp
-    RpcLayers/ClientRpcHelpLayer.cpp
-    RpcLayers/ClientRpcHelpLayer.hpp
-    RpcLayers/ClientRpcLangpackLayer.cpp
-    RpcLayers/ClientRpcLangpackLayer.hpp
-    RpcLayers/ClientRpcMessagesLayer.cpp
-    RpcLayers/ClientRpcMessagesLayer.hpp
-    RpcLayers/ClientRpcPaymentsLayer.cpp
-    RpcLayers/ClientRpcPaymentsLayer.hpp
-    RpcLayers/ClientRpcPhoneLayer.cpp
-    RpcLayers/ClientRpcPhoneLayer.hpp
-    RpcLayers/ClientRpcPhotosLayer.cpp
-    RpcLayers/ClientRpcPhotosLayer.hpp
-    RpcLayers/ClientRpcStickersLayer.cpp
-    RpcLayers/ClientRpcStickersLayer.hpp
-    RpcLayers/ClientRpcUpdatesLayer.cpp
-    RpcLayers/ClientRpcUpdatesLayer.hpp
-    RpcLayers/ClientRpcUploadLayer.cpp
-    RpcLayers/ClientRpcUploadLayer.hpp
-    RpcLayers/ClientRpcUsersLayer.cpp
-    RpcLayers/ClientRpcUsersLayer.hpp
-)
-
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     MTProto/TLNumbers.hpp
     MTProto/TLTypes.hpp
     MTProto/TLValues.cpp
