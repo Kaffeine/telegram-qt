@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014-2017 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2014-2019 Alexandr Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
@@ -15,15 +15,20 @@
 
  */
 
-#ifndef FILEREQUESTDESCRIPTOR_HPP
-#define FILEREQUESTDESCRIPTOR_HPP
-
-#include <QByteArray>
+#ifndef TELEGRAMQT_FILE_REQUEST_DESCRIPTOR_HPP
+#define TELEGRAMQT_FILE_REQUEST_DESCRIPTOR_HPP
 
 #include "MTProto/TLTypes.hpp"
 #include "TelegramNamespace.hpp"
 
+#include <QByteArray>
+#include <QString>
+
 QT_FORWARD_DECLARE_CLASS(QCryptographicHash)
+
+namespace Telegram {
+
+namespace Client {
 
 class FileRequestDescriptor
 {
@@ -34,9 +39,10 @@ public:
         Upload
     };
 
-    FileRequestDescriptor();
+    FileRequestDescriptor() = default;
 
-    static FileRequestDescriptor uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc);
+    static FileRequestDescriptor downloadRequest(quint32 dcId, const TLInputFileLocation &inputLocation, quint32 size);
+    static FileRequestDescriptor uploadRequest(const QByteArray &data, const QString &fileName, quint32 dcId);
 
     Type type() const { return m_type; }
     void setType(Type type) { m_type = type; }
@@ -77,20 +83,22 @@ public:
     static quint32 defaultDownloadPartSize();
 
 protected:
-    Type m_type;
-    quint32 m_size;
-    quint32 m_offset;
-    quint32 m_part;
-    quint32 m_chunkSize;
+    TLInputFileLocation m_inputLocation;
     QByteArray m_data;
     QByteArray m_md5Sum;
     QString m_fileName;
-    quint64 m_fileId;
-    QCryptographicHash *m_hash;
-
-    TLInputFileLocation m_inputLocation;
-    quint32 m_dcId;
-
+    QCryptographicHash *m_hash = nullptr;
+    quint64 m_fileId = 0;
+    quint32 m_size = 0;
+    quint32 m_offset = 0;
+    quint32 m_part = 0;
+    quint32 m_chunkSize = 0;
+    quint32 m_dcId = 0;
+    Type m_type = Invalid;
 };
 
-#endif // FILEREQUESTDESCRIPTOR_HPP
+} // Client namespace
+
+} // Telegram namespace
+
+#endif // TELEGRAMQT_FILE_REQUEST_DESCRIPTOR_HPP

@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2014-2017 Alexandr Akulich <akulichalexander@gmail.com>
+   Copyright (C) 2014-2019 Alexandr Akulich <akulichalexander@gmail.com>
 
    This file is a part of TelegramQt library.
 
@@ -17,26 +17,37 @@
 
 #include "FileRequestDescriptor.hpp"
 
-#include <QCryptographicHash>
-#include <QDebug>
-
 #include "RandomGenerator.hpp"
 
 #ifdef DEVELOPER_BUILD
 #include "MTProto/TLTypesDebug.hpp"
 #endif
 
-using namespace Telegram;
+#include <QCryptographicHash>
+#include <QLoggingCategory>
 
-FileRequestDescriptor FileRequestDescriptor::uploadRequest(const QByteArray &data, const QString &fileName, quint32 dc)
+namespace Telegram {
+
+namespace Client {
+
+FileRequestDescriptor FileRequestDescriptor::downloadRequest(quint32 dcId, const TLInputFileLocation &inputLocation, quint32 size)
 {
     FileRequestDescriptor result;
+    result.m_type = Download;
+    result.m_dcId = dcId;
+    result.m_inputLocation = inputLocation;
+    result.m_size = size;
+    return result;
+}
 
+FileRequestDescriptor FileRequestDescriptor::uploadRequest(const QByteArray &data, const QString &fileName, quint32 dcId)
+{
+    FileRequestDescriptor result;
     result.m_type = Upload;
+    result.m_dcId = dcId;
     result.m_data = data;
     result.m_size = data.size();
     result.m_fileName = fileName;
-    result.m_dcId = dc;
 
     if (!result.isBigFile()) {
         result.m_hash = new QCryptographicHash(QCryptographicHash::Md5);
@@ -151,15 +162,6 @@ quint32 FileRequestDescriptor::defaultDownloadPartSize()
     return 1024 * 32; // Set chunkSize to some big number to get the whole avatar at once
 }
 
-FileRequestDescriptor::FileRequestDescriptor() :
-    m_type(Invalid),
-    m_size(0),
-    m_offset(0),
-    m_part(0),
-    m_chunkSize(0),
-    m_fileId(0),
-    m_hash(0),
-    m_dcId(0)
-{
-}
+} // Client namespace
 
+} // Telegram namespace

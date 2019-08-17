@@ -49,9 +49,33 @@ public:
     FileOperation *uploadFile(const QByteArray &fileContent, const QString &fileName);
     FileOperation *uploadFile(QIODevice *source, const QString &fileName);
 
+    ConnectOperation *ensureConnection(quint32 dcId);
+
+    void processFileRequestForConnection(FileOperation *operation, Connection *connection);
+
     UploadRpcLayer *uploadLayer() { return m_uploadLayer; }
 
+protected slots:
+    void onGetFileResult(FileOperation *operation, UploadRpcLayer::PendingUploadFile *rpcOperation);
+
+    void onOperationCanceled(PendingOperation *operation);
+
+    void onConnectOperationFinished(ConnectOperation *operation);
+    void onFileOperationFinished(PendingOperation *operation);
+    void onConnectionStatusChanged();
+    void processConnectionStatus(Connection *connection);
+
+    void processNextRequest();
+    void processCurrentRequest();
 protected:
+//    FileOperation *addFileRequest(const FileInfo *file, QIODevice *device);
+    FileOperation *addFileRequest(const FileRequestDescriptor &descriptor, QIODevice *device);
+
+    bool isConnectionNeeded(quint32 dcId) const;
+
+    // QHash<quint32, Connection *> m_connections; // dcId to connection
+    QQueue<FileOperation*> m_fileRequests;
+    FileOperation *m_currentOperation = nullptr;
     UploadRpcLayer *m_uploadLayer = nullptr;
 };
 
