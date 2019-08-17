@@ -27,7 +27,6 @@
 #include "Utils.hpp"
 #include "TelegramNamespace.hpp"
 #include "CAppInformation.hpp"
-#include "CRawStream.hpp"
 
 #include "Operations/ClientAuthOperation.hpp"
 

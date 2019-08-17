@@ -18,8 +18,8 @@
 #include "RpcLayer.hpp"
 
 #include "AbridgedLength.hpp"
-#include "CRawStream.hpp"
 #include "RandomGenerator.hpp"
+#include "RawStream.hpp"
 #include "SendPackageHelper.hpp"
 #include "Utils.hpp"
 #include "MTProto/TLValues.hpp"
@@ -70,7 +70,7 @@ bool BaseRpcLayer::processPacket(const QByteArray &package)
     qCDebug(c_baseRpcLayerCategoryIn) << "encryptedData:" << encryptedData.toHex();
     qCDebug(c_baseRpcLayerCategoryIn) << "decryptedData:" << decryptedData.toHex();
 #endif
-    CRawStream decryptedStream(decryptedData);
+    RawStream decryptedStream(decryptedData);
 
     MTProto::FullMessageHeader messageHeader;
     decryptedStream >> messageHeader;
@@ -172,7 +172,7 @@ bool BaseRpcLayer::sendPacket(const MTProto::Message &message)
 #ifdef DEVELOPER_BUILD
         qCDebug(c_baseRpcLayerCategoryOut) << "RpcLayer::sendPackage():" << messageHeader;
 #endif
-        CRawStream stream(CRawStream::WriteOnly);
+        RawStream stream(RawStream::WriteOnly);
         stream << messageHeader;
         stream.writeBytes(message.data);
 
@@ -212,7 +212,7 @@ bool BaseRpcLayer::sendPacket(const MTProto::Message &message)
 #endif
     }
 
-    CRawStream output(CRawStream::WriteOnly);
+    RawStream output(RawStream::WriteOnly);
     output << m_sendHelper->authId(); // keyId
     output << messageKey;
     output << encryptedPackage;

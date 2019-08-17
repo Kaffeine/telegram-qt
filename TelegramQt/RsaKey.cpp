@@ -25,7 +25,7 @@
 #include <QFileInfo>
 #include <QLoggingCategory>
 
-#include "CRawStream.hpp"
+#include "RawStream.hpp"
 #include "Utils.hpp"
 
 #include "SslBigNumber.hpp"
@@ -70,7 +70,7 @@ quint64 RsaKey::getFingerprint(const RsaKey &key)
     if (key.modulus.isEmpty() || key.exponent.isEmpty()) {
         return 0;
     }
-    CRawStreamEx stream(CRawStreamEx::WriteOnly);
+    RawStreamEx stream(RawStreamEx::WriteOnly);
     stream << key.modulus;
     stream << key.exponent;
     return Utils::getFingerprints(stream.getData(), Utils::Lower64Bits);

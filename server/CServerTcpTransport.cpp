@@ -1,7 +1,7 @@
 #include "CServerTcpTransport.hpp"
 
 #include "AesCtr.hpp"
-#include "CRawStream.hpp"
+#include "RawStream.hpp"
 
 #include <QHostAddress>
 #include <QLoggingCategory>
@@ -39,7 +39,7 @@ bool TcpTransport::startObfuscatedSession()
         return false;
     }
     QByteArray plainData = m_socket->read(56);
-    CRawStream raw(plainData);
+    RawStream raw(plainData);
 
     quint32 firstByte;
     quint32 secondByte;

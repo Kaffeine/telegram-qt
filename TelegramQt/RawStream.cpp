@@ -15,7 +15,7 @@
 
  */
 
-#include "CRawStream.hpp"
+#include "RawStream.hpp"
 #include "AbridgedLength.hpp"
 
 #include <QIODevice>
@@ -23,7 +23,9 @@
 
 static const char s_nulls[4] = { 0, 0, 0, 0 };
 
-CRawStream::CRawStream(QByteArray *data, bool write) :
+namespace Telegram {
+
+RawStream::RawStream(QByteArray *data, bool write) :
     m_ownDevice(true)
 {
     setDevice(new QBuffer(data));
@@ -34,12 +36,12 @@ CRawStream::CRawStream(QByteArray *data, bool write) :
     }
 }
 
-CRawStream::CRawStream(const QByteArray &data)
+RawStream::RawStream(const QByteArray &data)
 {
     setData(data);
 }
 
-CRawStream::CRawStream(CRawStream::Mode m, quint32 reserveBytes) :
+RawStream::RawStream(Mode m, quint32 reserveBytes) :
     m_ownDevice(true)
 {
     Q_UNUSED(m)
@@ -51,19 +53,19 @@ CRawStream::CRawStream(CRawStream::Mode m, quint32 reserveBytes) :
     m_device->open(QIODevice::WriteOnly);
 }
 
-CRawStream::CRawStream(QIODevice *d)
+RawStream::RawStream(QIODevice *d)
 {
     setDevice(d);
 }
 
-CRawStream::~CRawStream()
+RawStream::~RawStream()
 {
     if (m_device && m_ownDevice) {
         delete m_device;
     }
 }
 
-void CRawStream::setData(const QByteArray &data)
+void RawStream::setData(const QByteArray &data)
 {
     QBuffer *buffer = new QBuffer();
     buffer->setData(data);
@@ -72,7 +74,7 @@ void CRawStream::setData(const QByteArray &data)
     m_ownDevice = true;
 }
 
-QByteArray CRawStream::getData() const
+QByteArray RawStream::getData() const
 {
     if (m_ownDevice) {
         QBuffer *buffer = static_cast<QBuffer*>(m_device);
@@ -81,7 +83,7 @@ QByteArray CRawStream::getData() const
     return QByteArray();
 }
 
-void CRawStream::setDevice(QIODevice *newDevice)
+void RawStream::setDevice(QIODevice *newDevice)
 {
     if (m_device) {
         if (m_ownDevice) {
@@ -93,28 +95,28 @@ void CRawStream::setDevice(QIODevice *newDevice)
     m_device = newDevice;
 }
 
-void CRawStream::unsetDevice()
+void RawStream::unsetDevice()
 {
     setDevice(nullptr);
 }
 
-bool CRawStream::atEnd() const
+bool RawStream::atEnd() const
 {
     return m_device ? m_device->atEnd() : true;
 }
 
-int CRawStream::bytesAvailable() const
+int RawStream::bytesAvailable() const
 {
     return m_device ? static_cast<int>(m_device->bytesAvailable()) : 0;
 }
 
-bool CRawStream::writeBytes(const QByteArray &data)
+bool RawStream::writeBytes(const QByteArray &data)
 {
     m_error = m_error || m_device->write(data) != data.size();
     return m_error;
 }
 
-bool CRawStream::read(void *data, qint64 size)
+bool RawStream::read(void *data, qint64 size)
 {
     if (size) {
         m_error = m_error || m_device->read(static_cast<char *>(data), size) != size;
@@ -122,7 +124,7 @@ bool CRawStream::read(void *data, qint64 size)
     return m_error;
 }
 
-bool CRawStream::write(const void *data, qint64 size)
+bool RawStream::write(const void *data, qint64 size)
 {
     if (size) {
         m_error = m_error || m_device->write(static_cast<const char *>(data), size) != size;
@@ -130,91 +132,91 @@ bool CRawStream::write(const void *data, qint64 size)
     return m_error;
 }
 
-void CRawStream::setError(bool error)
+void RawStream::setError(bool error)
 {
     m_error = error;
 }
 
-QByteArray CRawStream::readBytes(int count)
+QByteArray RawStream::readBytes(int count)
 {
     QByteArray result = m_device->read(count);
     m_error = m_error || result.size() != count;
     return result;
 }
 
-CRawStream &CRawStream::operator>>(qint8 &i)
+RawStream &RawStream::operator>>(qint8 &i)
 {
     return protectedRead(i);
 }
 
-CRawStream &CRawStream::operator>>(qint16 &i)
+RawStream &RawStream::operator>>(qint16 &i)
 {
     return protectedRead(i);
 }
 
-CRawStream &CRawStream::operator>>(qint32 &i)
+RawStream &RawStream::operator>>(qint32 &i)
 {
     return protectedRead(i);
 }
 
-CRawStream &CRawStream::operator>>(qint64 &i)
+RawStream &RawStream::operator>>(qint64 &i)
 {
     return protectedRead(i);
 }
 
 template<typename Int>
-CRawStream &CRawStream::protectedRead(Int &i)
+RawStream &RawStream::protectedRead(Int &i)
 {
     read(&i, sizeof(Int));
     return *this;
 }
 
-CRawStream &CRawStream::operator<<(qint8 i)
+RawStream &RawStream::operator<<(qint8 i)
 {
     return protectedWrite(i);
 }
 
-CRawStream &CRawStream::operator<<(qint16 i)
+RawStream &RawStream::operator<<(qint16 i)
 {
     return protectedWrite(i);
 }
 
-CRawStream &CRawStream::operator<<(qint32 i)
+RawStream &RawStream::operator<<(qint32 i)
 {
     return protectedWrite(i);
 }
 
-CRawStream &CRawStream::operator<<(qint64 i)
+RawStream &RawStream::operator<<(qint64 i)
 {
     return protectedWrite(i);
 }
 
 template<typename Int>
-CRawStream &CRawStream::protectedWrite(Int i)
+RawStream &RawStream::protectedWrite(Int i)
 {
     write(&i, sizeof(Int));
     return *this;
 }
 
-CRawStream &CRawStream::operator>>(double &d)
+RawStream &RawStream::operator>>(double &d)
 {
     read(&d, 8);
     return *this;
 }
 
-CRawStream &CRawStream::operator<<(const double &d)
+RawStream &RawStream::operator<<(const double &d)
 {
     write(&d, 8);
     return *this;
 }
 
-CRawStream &CRawStream::operator<<(const QByteArray &data)
+RawStream &RawStream::operator<<(const QByteArray &data)
 {
     writeBytes(data);
     return *this;
 }
 
-CRawStreamEx &CRawStreamEx::operator>>(Telegram::AbridgedLength &data)
+RawStreamEx &RawStreamEx::operator>>(Telegram::AbridgedLength &data)
 {
     quint32 length = 0;
     read(&length, 1);
@@ -227,7 +229,7 @@ CRawStreamEx &CRawStreamEx::operator>>(Telegram::AbridgedLength &data)
     return *this;
 }
 
-CRawStreamEx &CRawStreamEx::operator<<(const Telegram::AbridgedLength &data)
+RawStreamEx &RawStreamEx::operator<<(const Telegram::AbridgedLength &data)
 {
     if (data.packedSize() == 1) {
         quint8 l = static_cast<quint8>(data);
@@ -238,7 +240,7 @@ CRawStreamEx &CRawStreamEx::operator<<(const Telegram::AbridgedLength &data)
     return *this;
 }
 
-CRawStreamEx &CRawStreamEx::operator>>(QByteArray &data)
+RawStreamEx &RawStreamEx::operator>>(QByteArray &data)
 {
     Telegram::AbridgedLength length;
     *this >> length;
@@ -248,7 +250,7 @@ CRawStreamEx &CRawStreamEx::operator>>(QByteArray &data)
     return *this;
 }
 
-CRawStreamEx &CRawStreamEx::operator<<(const QByteArray &data)
+RawStreamEx &RawStreamEx::operator<<(const QByteArray &data)
 {
     Telegram::AbridgedLength length(static_cast<quint32>(data.size()));
     *this << length;
@@ -256,3 +258,5 @@ CRawStreamEx &CRawStreamEx::operator<<(const QByteArray &data)
     write(s_nulls, length.paddingForAlignment(4));
     return *this;
 }
+
+} // Telegram namespace

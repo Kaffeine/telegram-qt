@@ -1,6 +1,6 @@
 #include "LegacySecretReader.hpp"
 
-#include "CRawStream.hpp"
+#include "RawStream.hpp"
 #include "Utils.hpp"
 
 #include <QLoggingCategory>
@@ -55,7 +55,7 @@ bool LegacySecretReader::loadFromData(const QByteArray &data)
 
 bool LegacySecretReader::setSecretInfo(const QByteArray &secret)
 {
-    CRawStreamEx inputStream(secret);
+    RawStreamEx inputStream(secret);
     quint32 format;
     inputStream >> format;
 

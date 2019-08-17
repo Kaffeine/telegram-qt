@@ -66,7 +66,7 @@ SOURCES += \
     RsaKey.cpp \
     Connection.cpp \
     ConnectionError.cpp \
-    CRawStream.cpp \
+    RawStream.cpp \
     Debug.cpp \
     Utils.cpp \
     FileRequestDescriptor.cpp \
@@ -143,7 +143,7 @@ HEADERS += \
     RpcLayer.hpp \
     Connection.hpp \
     ConnectionError.hpp \
-    CRawStream.hpp \
+    RawStream.hpp \
     UniqueLazyPointer.hpp \
     Utils.hpp \
     FileRequestDescriptor.hpp \

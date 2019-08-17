@@ -17,13 +17,13 @@
 
 #include "MessageHeader.hpp"
 
-#include "CRawStream.hpp"
+#include "RawStream.hpp"
 
 namespace Telegram {
 
 namespace MTProto {
 
-CRawStream &operator>>(CRawStream &stream, MessageHeader &message)
+RawStream &operator>>(RawStream &stream, MessageHeader &message)
 {
     stream >> message.messageId;
     stream >> message.sequenceNumber;
@@ -31,7 +31,7 @@ CRawStream &operator>>(CRawStream &stream, MessageHeader &message)
     return stream;
 }
 
-CRawStream &operator<<(CRawStream &stream, const MessageHeader &message)
+RawStream &operator<<(RawStream &stream, const MessageHeader &message)
 {
     stream << message.messageId;
     stream << message.sequenceNumber;
@@ -39,7 +39,7 @@ CRawStream &operator<<(CRawStream &stream, const MessageHeader &message)
     return stream;
 }
 
-CRawStream &operator>>(CRawStream &stream, FullMessageHeader &header)
+RawStream &operator>>(RawStream &stream, FullMessageHeader &header)
 {
     stream >> header.serverSalt;
     stream >> header.sessionId;
@@ -49,7 +49,7 @@ CRawStream &operator>>(CRawStream &stream, FullMessageHeader &header)
     return stream;
 }
 
-CRawStream &operator<<(CRawStream &stream, const FullMessageHeader &header)
+RawStream &operator<<(RawStream &stream, const FullMessageHeader &header)
 {
     stream << header.serverSalt;
     stream << header.sessionId;

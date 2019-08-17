@@ -17,8 +17,8 @@
 
 #include "RpcError.hpp"
 
-#include "CRawStream.hpp"
 #include "MTProto/TLValues.hpp"
+#include "RawStream.hpp"
 
 #include <QHash>
 #include <QMetaEnum>
@@ -33,7 +33,7 @@ namespace Telegram {
 //    return reasonEnum;
 //}
 
-bool RpcError::readFromStream(CRawStreamEx &stream)
+bool RpcError::readFromStream(RawStreamEx &stream)
 {
     quint32 v;
     quint32 code;
@@ -114,13 +114,13 @@ bool RpcError::reasonFromString(const QByteArray &str, RpcError::Reason *reason,
     return true;
 }
 
-CRawStreamEx &operator>>(CRawStreamEx &stream, RpcError &error)
+RawStreamEx &operator>>(RawStreamEx &stream, RpcError &error)
 {
     error.readFromStream(stream);
     return stream;
 }
 
-CRawStreamEx &operator<<(CRawStreamEx &stream, const RpcError &error)
+RawStreamEx &operator<<(RawStreamEx &stream, const RpcError &error)
 {
     stream << TLValue::RpcError;
     quint32 code = error.type;

@@ -239,7 +239,7 @@ void RpcLayer::sendIgnoredMessageNotification(quint32 errorCode, const MTProto::
     messageNotification.messageId = header.messageId;
     qCDebug(c_serverRpcLayerCategory) << messageNotification.toString();
 
-    MTProto::Stream output(CRawStream::WriteOnly);
+    MTProto::Stream output(RawStream::WriteOnly);
     TLBadMsgNotification tlNotification;
     messageNotification.toTlNotification(&tlNotification);
     output << tlNotification;
@@ -248,7 +248,7 @@ void RpcLayer::sendIgnoredMessageNotification(quint32 errorCode, const MTProto::
 
 bool RpcLayer::sendRpcError(const RpcError &error, quint64 messageId)
 {
-    CRawStreamEx output(CRawStreamEx::WriteOnly);
+    RawStreamEx output(RawStreamEx::WriteOnly);
     output << error;
     return sendRpcReply(output.getData(), messageId);
 }
@@ -260,13 +260,13 @@ bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
     qCDebug(c_serverRpcDumpPackageCategory) << "Server: Answer for message" << messageId;
     qCDebug(c_serverRpcDumpPackageCategory).noquote() << "Server: RPC Reply bytes:" << reply.size() << reply.toHex();
 #endif
-    CRawStream output(CRawStream::WriteOnly);
+    RawStream output(RawStream::WriteOnly);
     output << TLValue::RpcResult;
     output << messageId;
     if (reply.size() > 128) { // Telegram spec says it should be 255, but we need to lower the limit to pack DcConfig
         const QByteArray innerData = Utils::packGZip(reply);
         if (innerData.size() + 8 < reply.size()) {
-            MTProto::Stream innerStream(CRawStream::WriteOnly);
+            MTProto::Stream innerStream(RawStream::WriteOnly);
             innerStream << TLValue::GzipPacked;
             innerStream << innerData;
             output.writeBytes(innerStream.getData());

@@ -1,8 +1,8 @@
 #include "AccountStorage.hpp"
 
-#include "CRawStream.hpp"
 #include "Debug_p.hpp"
 #include "LegacySecretReader.hpp"
+#include "RawStream.hpp"
 
 #include <QDir>
 #include <QFile>
@@ -249,7 +249,7 @@ bool FileAccountStorage::saveData() const
                                           << "Unable to open file" << fileName();
         return false;
     }
-    CRawStreamEx stream(&file);
+    RawStreamEx stream(&file);
     stream.writeBytes(AccountStoragePrivate::c_signature);
     stream << AccountStoragePrivate::c_formatVersion;
     stream << d->m_deltaTime;
@@ -281,7 +281,7 @@ bool FileAccountStorage::loadData()
                                           << "Unable to open file" << d->m_fileName;
         return false;
     }
-    CRawStreamEx stream(&file);
+    RawStreamEx stream(&file);
     QByteArray signature = stream.readBytes(AccountStoragePrivate::c_signature.size());
     if (signature != AccountStoragePrivate::c_signature) {
         qCWarning(c_clientAccountStorage) << CALL_INFO

@@ -47,7 +47,7 @@ bool RpcOperation::processNotImplementedMethod(TLValue functionCode)
 
 //void ServerRpcOperation::sendReply(const QByteArray &buffer)
 //{
-//    CRawStreamEx output(CRawStream::WriteOnly);
+//    RawStreamEx output(RawStream::WriteOnly);
 //    output << TLValue::RpcResult;
 //    output << m_messageId;
 //    output << buffer;

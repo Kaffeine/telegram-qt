@@ -21,7 +21,7 @@
 #include <QVector>
 #include <QString>
 
-#include "CRawStream.hpp"
+#include "RawStream.hpp"
 #include "TLNumbers.hpp"
 #include "TLTypes.hpp"
 
@@ -29,12 +29,12 @@ namespace Telegram {
 
 namespace MTProto {
 
-class TELEGRAMQT_INTERNAL_EXPORT Stream : public CRawStreamEx
+class TELEGRAMQT_INTERNAL_EXPORT Stream : public RawStreamEx
 {
 public:
-    using CRawStreamEx::CRawStreamEx;
-    using CRawStreamEx::operator <<;
-    using CRawStreamEx::operator >>;
+    using RawStreamEx::RawStreamEx;
+    using RawStreamEx::operator <<;
+    using RawStreamEx::operator >>;
 
     Stream &operator>>(TLValue::Value &v);
     Stream &operator<<(const TLValue::Value v);

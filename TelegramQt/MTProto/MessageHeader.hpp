@@ -21,7 +21,7 @@
 #include "telegramqt_global.h"
 #include "TLValues.hpp"
 
-#include "CRawStream.hpp"
+#include "RawStream.hpp"
 
 #include <QByteArray>
 
@@ -79,11 +79,11 @@ inline void Message::setData(const QByteArray &newData)
     contentLength = static_cast<quint32>(newData.size());
 }
 
-CRawStream &operator>>(CRawStream &stream, MessageHeader &message);
-CRawStream &operator<<(CRawStream &stream, const MessageHeader &message);
+RawStream &operator>>(RawStream &stream, MessageHeader &message);
+RawStream &operator<<(RawStream &stream, const MessageHeader &message);
 
-CRawStream &operator>>(CRawStream &stream, FullMessageHeader &header);
-CRawStream &operator<<(CRawStream &stream, const FullMessageHeader &header);
+RawStream &operator>>(RawStream &stream, FullMessageHeader &header);
+RawStream &operator<<(RawStream &stream, const FullMessageHeader &header);
 
 } // MTProto
 

@@ -1,6 +1,6 @@
 #include "PendingRpcOperation.hpp"
 
-#include "CRawStream.hpp"
+#include "RawStream.hpp"
 #include "RpcError.hpp"
 #include "MTProto/TLValues.hpp"
 
@@ -35,7 +35,7 @@ void PendingRpcOperation::setFinishedWithReplyData(const QByteArray &data)
         if (!m_error) {
             m_error = new RpcError();
         }
-        CRawStreamEx stream(data);
+        RawStreamEx stream(data);
         stream >> *m_error;
         setFinishedWithError({
                                  {QStringLiteral("RpcRequestType"), TLValue::firstFromArray(m_requestData).toString() },

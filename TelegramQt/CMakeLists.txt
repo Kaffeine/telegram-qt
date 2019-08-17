@@ -17,8 +17,6 @@ target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     CAppInformation.hpp
     CClientTcpTransport.cpp
     CClientTcpTransport.hpp
-    CRawStream.cpp
-    CRawStream.hpp
     CTcpTransport.cpp
     CTcpTransport.hpp
     CTelegramTransport.cpp
@@ -87,6 +85,8 @@ target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     PendingRpcResult.hpp
     RandomGenerator.cpp
     RandomGenerator.hpp
+    RawStream.cpp
+    RawStream.hpp
     ReadyObject.hpp
     RpcError.cpp
     RpcError.hpp

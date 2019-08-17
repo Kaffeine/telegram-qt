@@ -20,8 +20,6 @@
 
 #include "CTelegramTransport.hpp"
 
-class CRawStream;
-
 namespace Telegram {
 
 namespace Crypto {

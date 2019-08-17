@@ -17,8 +17,8 @@
 
 #include "AesCtr.hpp"
 #include "CTcpTransport.hpp"
-#include "CRawStream.hpp"
 #include "Debug_p.hpp"
+#include "RawStream.hpp"
 
 #include <QHostAddress>
 

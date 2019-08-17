@@ -17,9 +17,9 @@
 
 #include "AesCtr.hpp"
 #include "CClientTcpTransport.hpp"
-#include "CRawStream.hpp"
 #include "Debug_p.hpp"
 #include "RandomGenerator.hpp"
+#include "RawStream.hpp"
 #include "TelegramNamespace.hpp"
 
 #include <QNetworkProxy>
@@ -111,7 +111,7 @@ void TcpTransport::startObfuscatedSession()
     // xxxx | xxxx | xxxx ... xxxx (48 bytes) | 0xefefefefU | xxxx |
     const quint32 trailingRandom = RandomGenerator::instance()->generate<quint32>();
 
-    CRawStream raw(CRawStream::WriteOnly);
+    RawStream raw(RawStream::WriteOnly);
     raw << first4Bytes;
     raw << next4Bytes;
     raw << aesSourceData;

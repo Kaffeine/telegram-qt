@@ -22,7 +22,6 @@
 
 #include <QObject>
 
-class CRawStream;
 struct TLBadMsgNotification;
 
 namespace Telegram {

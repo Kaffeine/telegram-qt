@@ -114,7 +114,7 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
 
     QByteArray output;
     output.reserve(headerSize + payload.size());
-    CRawStream outputStream(&output, /* write */ true);
+    RawStream outputStream(&output, /* write */ true);
 
     outputStream << authKeyId;
     outputStream << messageId;
@@ -149,7 +149,7 @@ quint64 BaseDhLayer::sendPlainPackage(const QByteArray &payload, SendMode mode)
 
 bool BaseDhLayer::processPlainPackage(const QByteArray &buffer)
 {
-    CRawStream inputStream(buffer);
+    RawStream inputStream(buffer);
 
 #ifdef NETWORK_LOGGING
     {

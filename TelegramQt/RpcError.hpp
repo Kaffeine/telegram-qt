@@ -22,9 +22,9 @@
 
 #include <QObject>
 
-class CRawStreamEx;
-
 namespace Telegram {
+
+class RawStreamEx;
 
 class TELEGRAMQT_EXPORT RpcError
 {
@@ -87,14 +87,14 @@ public:
     QByteArray message;
     Type type = UnknownType;
 
-    bool readFromStream(CRawStreamEx &stream);
+    bool readFromStream(RawStreamEx &stream);
 
     static QString reasonToString(Reason reason, quint32 argument = 0);
     static bool reasonFromString(const QByteArray &str, Reason *reason, quint32 *argument);
 };
 
-TELEGRAMQT_INTERNAL_EXPORT CRawStreamEx &operator>>(CRawStreamEx &stream, RpcError &error);
-TELEGRAMQT_INTERNAL_EXPORT CRawStreamEx &operator<<(CRawStreamEx &stream, const RpcError &error);
+TELEGRAMQT_INTERNAL_EXPORT RawStreamEx &operator>>(RawStreamEx &stream, RpcError &error);
+TELEGRAMQT_INTERNAL_EXPORT RawStreamEx &operator<<(RawStreamEx &stream, const RpcError &error);
 
 } // Telegram namespace
 
