@@ -28,7 +28,7 @@ void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages)
     }
 }
 
-bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *applicant)
+bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *applicant)
 {
     output->id = input->id();
     output->tlType = TLValue::User;
@@ -79,7 +79,7 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *app
     return true;
 }
 
-bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser)
+bool setupTLUpdatesState(TLUpdatesState *output, const AbstractUser *forUser)
 {
     const UserPostBox *box = forUser->getPostBox();
     output->pts = box->pts();
@@ -91,7 +91,7 @@ bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser)
 }
 
 bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
-                  const QSet<Peer> &peers, const AbstractServerApi *api, const LocalUser *forUser)
+                  const QSet<Peer> &peers, const AbstractServerApi *api, const AbstractUser *forUser)
 {
     users->clear();
     chats->clear();
@@ -116,7 +116,7 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
 }
 
 bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 messageId,
-                    const LocalUser *forUser)
+                    const AbstractUser *forUser)
 {
     output->tlType = TLValue::Message;
     output->id = messageId;
@@ -136,7 +136,7 @@ bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 m
     }
 
     const bool messageToSelf = messageData->toPeer() == forUser->toPeer();
-    if (messageData->fromId() == forUser->userId()) {
+    if (messageData->fromId() == forUser->id()) {
         if (!messageToSelf) {
             flags |= TLMessage::Out;
         }

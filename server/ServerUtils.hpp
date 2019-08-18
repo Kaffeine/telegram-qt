@@ -11,7 +11,6 @@ namespace Telegram {
 namespace Server {
 
 class AbstractUser;
-class LocalUser;
 class MediaData;
 class MessageData;
 class AbstractServerApi;
@@ -23,18 +22,18 @@ namespace Utils {
 
 void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages);
 
-bool setupTLUser(TLUser *output, const AbstractUser *input, const LocalUser *forUser);
-bool setupTLUpdatesState(TLUpdatesState *output, const LocalUser *forUser);
+bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *forUser);
+bool setupTLUpdatesState(TLUpdatesState *output, const AbstractUser *forUser);
 bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
-                  const QSet<Peer> &peers, const AbstractServerApi *api, const LocalUser *forUser);
+                  const QSet<Peer> &peers, const AbstractServerApi *api, const AbstractUser *forUser);
 bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 messageId,
-                    const LocalUser *forUser);
+                    const AbstractUser *forUser);
 
 bool setupTLMessageMedia(TLMessageMedia *output, const MediaData *mediaData);
 
 template <typename T>
 bool setupTLPeers(T *output,
-                  const QSet<Peer> &peers, const AbstractServerApi *api, const LocalUser *forUser)
+                  const QSet<Peer> &peers, const AbstractServerApi *api, const AbstractUser *forUser)
 {
     return setupTLPeers(&output->users, &output->chats,
                         peers, api, forUser);
