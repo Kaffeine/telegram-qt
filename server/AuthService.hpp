@@ -27,6 +27,7 @@ namespace Telegram {
 
 namespace Server {
 
+class AuthorizedUser;
 class LocalUser;
 
 namespace Authorization {
@@ -64,7 +65,7 @@ public:
 
     void registerAuthKey(quint64 authId, const QByteArray &authKey);
 
-    void addUserAuthorization(LocalUser *user, quint64 authKeyId);
+    void addUserAuthorization(AuthorizedUser *user, quint64 authKeyId);
 
 protected:
     QHash<quint64, QByteArray> m_authorizations; // Auth id to auth key

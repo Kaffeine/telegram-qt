@@ -373,7 +373,7 @@ Session *Server::getSessionById(quint64 sessionId) const
     return m_sessions.value(sessionId);
 }
 
-void Server::bindUserSession(LocalUser *user, Session *session)
+void Server::bindUserSession(AuthorizedUser *user, Session *session)
 {
     user->addSession(session);
     m_authService->addUserAuthorization(user, session->getConnection()->authId());

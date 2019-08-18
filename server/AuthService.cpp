@@ -74,7 +74,7 @@ quint32 AuthService::getUserIdByAuthId(quint64 authId) const
     return m_authToUserId.value(authId);
 }
 
-void AuthService::addUserAuthorization(LocalUser *user, quint64 authKeyId)
+void AuthService::addUserAuthorization(AuthorizedUser *user, quint64 authKeyId)
 {
     m_authToUserId.insert(authKeyId, user->userId());
     user->addAuthKey(authKeyId);

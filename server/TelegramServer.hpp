@@ -92,7 +92,7 @@ public:
 
     bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) override;
     Session *getSessionById(quint64 sessionId) const override;
-    void bindUserSession(LocalUser *user, Session *session) override;
+    void bindUserSession(AuthorizedUser *user, Session *session) override;
     bool setUserName(LocalUser *user, const QString &newUsername) override;
 
     QVector<UpdateNotification> processMessage(MessageData *messageData) override;

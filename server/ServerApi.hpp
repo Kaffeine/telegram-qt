@@ -15,6 +15,7 @@ namespace Telegram {
 namespace Server {
 
 class AuthService;
+class AuthorizedUser;
 class IMediaService;
 class Session;
 class LocalUser;
@@ -94,7 +95,7 @@ public:
 
     virtual bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) = 0;
     virtual Session *getSessionById(quint64 authId) const = 0;
-    virtual void bindUserSession(LocalUser *user, Session *session) = 0;
+    virtual void bindUserSession(AuthorizedUser *user, Session *session) = 0;
     virtual bool setUserName(LocalUser *user, const QString &newUsername) = 0;
 
     virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
