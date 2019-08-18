@@ -137,7 +137,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 
     context.inputStream() >> requestValue;
     context.setReadCode(requestValue);
-    if (!session() && !c_unregisteredUserAllowedRpcList.contains(requestValue)) {
+    if (!getUser() && !c_unregisteredUserAllowedRpcList.contains(requestValue)) {
         RpcError error(RpcError::Reason::AuthKeyUnregistered);
         return sendRpcError(error, context.requestId());
     }
