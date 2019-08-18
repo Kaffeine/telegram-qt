@@ -155,7 +155,7 @@ bool LocalUser::hasActiveSession() const
 void LocalUser::addSession(Session *session)
 {
     m_sessions.append(session);
-    session->setUser(this);
+    session->setUserId(userId());
 }
 
 ImageDescriptor LocalUser::getCurrentImage() const

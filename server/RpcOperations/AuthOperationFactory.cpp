@@ -175,11 +175,11 @@ void AuthRpcOperation::runCheckPassword()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
     Session *session = layer()->session();
-    if (!session || !session->wanterUser()) {
+    if (!session || !session->wantedUserId()) {
         sendRpcError(RpcError::AuthKeyUnregistered);
         return;
     }
-    LocalUser *user = session->wanterUser();
+    LocalUser *user = api()->getUser(session->wantedUserId());
     const bool passwordIsCorrect = api()->authService()->checkPassword(user, m_checkPassword.passwordHash);
     if (!passwordIsCorrect) {
         sendRpcError(RpcError::PasswordHashInvalid);
@@ -390,7 +390,7 @@ void AuthRpcOperation::runSignIn()
         return;
     }
     if (!user->passwordHash().isEmpty()) {
-        layer()->session()->setWantedUser(user);
+        layer()->session()->setWantedUserId(user->userId());
         sendRpcError(RpcError::SessionPasswordNeeded);
         return;
     }

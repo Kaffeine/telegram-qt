@@ -304,7 +304,7 @@ void AccountRpcOperation::runGetPassword()
     if (!verifyHasUserOrWantedUser()) {
         return;
     }
-    LocalUser *user = layer()->session()->userOrWantedUser();
+    LocalUser *user = api()->getUser(layer()->session()->userOrWantedUserId());
     PasswordInfo info = api()->authService()->getPassword(user);
 
     TLAccountPassword result;

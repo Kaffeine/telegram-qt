@@ -360,7 +360,7 @@ bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId
 
         const quint32 userId = m_authService->getUserIdByAuthId(client->authId());
         if (userId) {
-            session->setUser(getUser(userId));
+            session->setUserId(userId);
         }
     }
 

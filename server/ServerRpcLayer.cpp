@@ -74,7 +74,13 @@ void RpcLayer::setServerApi(LocalServerApi *api)
 
 LocalUser *RpcLayer::getUser() const
 {
-    return m_session ? m_session->user() : nullptr;
+    if (!m_session) {
+        return nullptr;
+    }
+    if (!m_session->userId()) {
+        return nullptr;
+    }
+    return m_api->getUser(m_session->userId());
 }
 
 quint64 RpcLayer::serverSalt() const
@@ -162,7 +168,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 void RpcLayer::sendUpdates(const TLUpdates &updates)
 {
     qCDebug(c_serverRpcLayerCategory) << CALL_INFO << "Send update to"
-                                      << session()->user()->phoneNumber()
+                                      << session()->userId()
                                       << "session:" << sessionId()
                                       << "IP:" << session()->ip;
 

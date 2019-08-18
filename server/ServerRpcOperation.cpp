@@ -33,7 +33,7 @@ bool RpcOperation::verifyHasUserOrWantedUser()
     if (!layer()->session()) {
         return false;
     }
-    if (!layer()->session()->userOrWantedUser()) {
+    if (!layer()->session()->userOrWantedUserId()) {
         return false;
     }
     return true;

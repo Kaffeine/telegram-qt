@@ -226,7 +226,7 @@ void tst_all::testSignIn()
     Server::Session *serverSession = server->getSessionById(remoteClientConnection->session()->id());
     QCOMPARE(remoteClientConnection->session(), serverSession);
     QVERIFY(serverSession);
-    QVERIFY(serverSession->user());
+    QVERIFY(serverSession->userId());
     QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
     QCOMPARE(accountStorage.dcInfo().id, server->dcId());
     TRY_VERIFY(client.isSignedIn());
