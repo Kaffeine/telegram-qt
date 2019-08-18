@@ -108,12 +108,12 @@ bool LocalUser::isOnline() const
     return true;
 }
 
-void LocalUser::setDcId(quint32 id)
+void AuthorizedUser::setDcId(quint32 id)
 {
     m_dcId = id;
 }
 
-Session *LocalUser::getSession(quint64 sessionId) const
+Session *AuthorizedUser::getSession(quint64 sessionId) const
 {
     for (Session *s : m_sessions) {
         if (s->id() == sessionId) {
@@ -123,7 +123,7 @@ Session *LocalUser::getSession(quint64 sessionId) const
     return nullptr;
 }
 
-void LocalUser::addAuthKey(quint64 authId)
+void AuthorizedUser::addAuthKey(quint64 authId)
 {
     if (m_authKeyIds.contains(authId)) {
         return;
@@ -131,7 +131,7 @@ void LocalUser::addAuthKey(quint64 authId)
     m_authKeyIds.append(authId);
 }
 
-QVector<Session *> LocalUser::activeSessions() const
+QVector<Session *> AuthorizedUser::activeSessions() const
 {
     QVector<Session *> result;
     for (Session *s : m_sessions) {
@@ -142,7 +142,7 @@ QVector<Session *> LocalUser::activeSessions() const
     return result;
 }
 
-bool LocalUser::hasActiveSession() const
+bool AuthorizedUser::hasActiveSession() const
 {
     for (Session *s : m_sessions) {
         if (s->isActive()) {
@@ -152,7 +152,7 @@ bool LocalUser::hasActiveSession() const
     return false;
 }
 
-void LocalUser::addSession(Session *session)
+void AuthorizedUser::addSession(Session *session)
 {
     m_sessions.append(session);
     session->setUserId(userId());

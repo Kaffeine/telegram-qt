@@ -100,14 +100,39 @@ public:
     QVector<PostBox *> postBoxes() override { return { getPostBox() }; }
 };
 
-class LocalUser : public AbstractUser
+class AuthorizedUser : public AbstractUser
+{
+public:
+    quint32 userId() const { return m_id; }
+    quint32 id() const override { return m_id; }
+
+    quint32 dcId() const override { return m_dcId; }
+    void setDcId(quint32 id);
+
+    Session *getSession(quint64 sessionId) const;
+
+    QVector<quint64> authorizations() const { return m_authKeyIds; }
+    void addAuthKey(quint64 authId);
+
+    QVector<Session*> sessions() const { return m_sessions; }
+    QVector<Session*> activeSessions() const;
+    bool hasActiveSession() const;
+    void addSession(Session *session);
+
+protected:
+    QVector<quint64> m_authKeyIds;
+    QVector<Session*> m_sessions;
+
+    quint32 m_id = 0;
+    quint32 m_dcId = 0;
+};
+
+class LocalUser : public AuthorizedUser
 {
 public:
     explicit LocalUser(quint32 userId, const QString &phoneNumber);
     LocalUser() = default;
 
-    quint32 userId() const { return m_id; }
-    quint32 id() const override { return m_id; }
     QString phoneNumber() const override { return m_phoneNumber; }
     void setPhoneNumber(const QString &phoneNumber);
 
@@ -124,19 +149,6 @@ public:
     void setAbout(const QString &about);
 
     bool isOnline() const override;
-
-    quint32 dcId() const override { return m_dcId; }
-    void setDcId(quint32 id);
-
-    Session *getSession(quint64 sessionId) const;
-
-    QVector<quint64> authorizations() const { return m_authKeyIds; }
-    void addAuthKey(quint64 authId);
-
-    QVector<Session*> sessions() const { return m_sessions; }
-    QVector<Session*> activeSessions() const;
-    bool hasActiveSession() const;
-    void addSession(Session *session);
 
     QVector<ImageDescriptor> getImages() const override { return m_photos; }
     ImageDescriptor getCurrentImage() const override;
@@ -172,7 +184,6 @@ protected:
 
     UserPostBox m_box;
 
-    quint32 m_id = 0;
     QString m_phoneNumber;
     QString m_firstName;
     QString m_lastName;
@@ -180,12 +191,8 @@ protected:
     QString m_about;
     QByteArray m_passwordSalt;
     QByteArray m_passwordHash;
-    QVector<Session*> m_sessions;
     QVector<ImageDescriptor> m_photos;
 
-    quint32 m_dcId = 0;
-
-    QVector<quint64> m_authKeyIds;
     QVector<UserDialog *> m_dialogs;
     QVector<quint32> m_contactList; // Contains only registered users from the added contacts
     QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)
