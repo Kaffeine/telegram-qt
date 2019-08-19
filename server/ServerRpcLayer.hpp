@@ -27,6 +27,7 @@ class Session;
 
 class RpcLayer : public BaseRpcLayer
 {
+    Q_OBJECT
 public:
     explicit RpcLayer(QObject *parent = nullptr);
 
