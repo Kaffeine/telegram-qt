@@ -90,10 +90,10 @@ LocalUser *RpcLayer::getUser() const
     if (!m_session) {
         return nullptr;
     }
-    if (!m_session->userId()) {
+    if (!m_session->userOrWantedUserId()) {
         return nullptr;
     }
-    return m_api->getUser(m_session->userId());
+    return m_api->getUser(m_session->userOrWantedUserId());
 }
 
 quint64 RpcLayer::serverSalt() const
@@ -164,7 +164,12 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
     }
 
     RpcOperation *op = nullptr;
+    LocalUser *localUser = getUser();
     for (RpcOperationFactory *f : m_operationFactories) {
+        if (f->needLocalUser() && !localUser) {
+            // Skip
+            continue;
+        }
         op = f->processRpcCall(this, context);
         if (op) {
             break;

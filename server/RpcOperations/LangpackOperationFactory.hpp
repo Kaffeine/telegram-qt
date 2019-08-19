@@ -70,6 +70,7 @@ class LangpackOperationFactory : public RpcOperationFactory
 {
 public:
     RpcOperation *processRpcCall(RpcLayer *layer, RpcProcessingContext &context) override;
+    bool needLocalUser() const override { return false; }
 };
 
 } // Server namespace

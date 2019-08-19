@@ -14,7 +14,10 @@ class RpcProcessingContext;
 class RpcOperationFactory
 {
 public:
+    virtual ~RpcOperationFactory() = default;
+
     virtual RpcOperation *processRpcCall(RpcLayer *layer, RpcProcessingContext &context) = 0;
+    virtual bool needLocalUser() const { return true; }
 };
 
 } // Server namespace
