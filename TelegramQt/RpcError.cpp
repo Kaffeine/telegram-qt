@@ -137,25 +137,44 @@ RpcError::RpcError(RpcError::Reason r, quint32 arg) :
     case UnknownReason:
         type = UnknownType;
         break;
+    case ApiIdInvalid:
+    case DcIdInvalid:
+    case FilePartXMissing:
+    case FirstnameInvalid:
     case InputFetchError:
+    case LastnameInvalid:
     case LimitInvalid: // Limit must be divisible by 1KB
     case LocationInvalid:
     case OffsetInvalid: // Offset must be divisible by 1KB
+    case PasswordHashInvalid:
     case PeerIdInvalid:
     case PhoneCodeEmpty:
     case PhoneCodeExpired:
     case PhoneCodeHashEmpty:
     case PhoneCodeInvalid:
     case PhoneNumberInvalid:
+    case PhoneNumberOccupied:
     case PhoneNumberUnoccupied:
     case UserIdInvalid:
+    case UsernameInvalid:
+    case UsernameNotModified:
+    case UsernameOccupied:
         type = BadRequest;
         break;
     case FileMigrateX:
+    case NetworkMigrateX:
     case PhoneMigrateX:
+    case UserMigrateX:
         type = SeeOther;
         break;
+    case ActiveUserRequired:
+    case AuthKeyInvalid:
+    case AuthKeyPermEmpty:
+    case AuthKeyUnregistered:
+    case SessionExpired:
     case SessionPasswordNeeded:
+    case SessionRevoked:
+    case UserDeactivated:
         type = Unauthorized;
         break;
     case FloodWaitX:

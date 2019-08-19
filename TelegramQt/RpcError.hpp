@@ -49,6 +49,7 @@ public:
         AuthKeyInvalid,
         AuthKeyPermEmpty,
         AuthKeyUnregistered,
+        DcIdInvalid,
         FileMigrateX,
         FilePartXMissing,
         FirstnameInvalid,
