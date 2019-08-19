@@ -475,6 +475,11 @@ QString MessageMediaInfo::description() const
     return d->webpage.description;
 }
 
+bool FileInfo::Private::isValid() const
+{
+    return m_type != InvalidLocation;
+}
+
 TLInputFileLocation FileInfo::Private::getInputFileLocation() const
 {
     TLInputFileLocation result;
@@ -603,6 +608,11 @@ bool FileInfo::Private::setFileLocation(const TLFileLocation *fileLocation)
     return true;
 }
 
+void FileInfo::Private::setMimeType(const QString &mimeType)
+{
+    m_mimeType = mimeType;
+}
+
 FileInfo::FileInfo():
     d(new Private())
 {
@@ -645,7 +655,7 @@ FileInfo::Type FileInfo::type() const
 
 bool FileInfo::isValid() const
 {
-    return d && (d->m_type != Private::InvalidLocation);
+    return d && d->isValid();
 }
 
 QString FileInfo::getFileId() const
@@ -704,6 +714,11 @@ quint32 FileInfo::size() const
 QString FileInfo::md5Sum() const
 {
     return d->m_md5Checksum;
+}
+
+QString FileInfo::mimeType() const
+{
+    return d->m_mimeType;
 }
 
 DialogInfo::DialogInfo() :

@@ -86,6 +86,8 @@ public:
     static Private *get(FileInfo *f) { return f->d; }
     static void set(FileInfo *f, Private *p) { f->d = p; }
 
+    bool isValid() const;
+
     TLInputFileLocation getInputFileLocation() const;
     bool setInputFileLocation(const TLInputFileLocation *inputFileLocation);
 
@@ -94,6 +96,11 @@ public:
 
     TLFileLocation getFileLocation() const;
     bool setFileLocation(const TLFileLocation *fileLocation);
+
+    quint32 dcId() const { return m_dcId; }
+    quint32 size() const { return m_size; }
+
+    void setMimeType(const QString &mimeType);
 
     Type m_type = InvalidLocation;
 
@@ -116,6 +123,7 @@ public:
     quint32 m_size = 0;
     QString m_name;
     QString m_md5Checksum;
+    QString m_mimeType;
 
 };
 

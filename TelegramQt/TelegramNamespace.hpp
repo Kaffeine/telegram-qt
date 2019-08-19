@@ -372,6 +372,7 @@ public:
     QString fileName() const;
     quint32 size() const;
     QString md5Sum() const;
+    QString mimeType() const;
 
     struct Private;
 protected:
