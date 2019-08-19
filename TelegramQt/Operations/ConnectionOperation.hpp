@@ -13,8 +13,10 @@ class ConnectOperation : public PendingOperation
 {
     Q_OBJECT
 public:
-    explicit ConnectOperation(Connection *connection = nullptr);
+    explicit ConnectOperation(QObject *parent = nullptr);
+
     Connection *connection() const { return m_connection; }
+    void setConnection(Connection *connection);
 
 protected:
     void startImplementation() override;

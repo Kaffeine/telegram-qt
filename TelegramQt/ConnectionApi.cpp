@@ -13,6 +13,7 @@
 #include "Operations/ClientAuthOperation_p.hpp"
 #include "Operations/ClientPingOperation.hpp"
 #include "Operations/ConnectionOperation.hpp"
+#include "RpcLayers/ClientRpcAuthLayer.hpp"
 
 #include <QLoggingCategory>
 #include <QTimer>
@@ -128,6 +129,10 @@ void ConnectionApiPrivate::disconnectFromServer()
     setMainConnection(nullptr);
     m_initialConnectOperation->deleteLater();
     m_initialConnectOperation = nullptr;
+
+    qDeleteAll(m_connections);
+    m_connections.clear();
+    m_connectionOperations.clear();
 }
 
 PendingOperation *ConnectionApiPrivate::connectToDc(quint32 dcId)
@@ -213,7 +218,9 @@ void ConnectionApiPrivate::connectToNextServer()
                     accountStorage->contentRelatedMessagesNumber());
     }
 
-    ConnectOperation *connectionOperation = m_initialConnection->connectToDc();
+    ConnectOperation *connectionOperation = new ConnectOperation(this);
+    connectionOperation->setConnection(m_initialConnection);
+    connectionOperation->deleteOnFinished();
     connect(connectionOperation, &PendingOperation::finished, this, [](PendingOperation *op) {
         if (op->isFailed()) {
             qCInfo(c_connectionApiLoggingCategory) << op << op->errorDetails();
@@ -221,6 +228,7 @@ void ConnectionApiPrivate::connectToNextServer()
             qCDebug(c_connectionApiLoggingCategory) << op << "succeeded";
         }
     });
+    connectionOperation->start();
     m_connectionQueued = false;
 }
 
@@ -348,6 +356,71 @@ QVariantHash ConnectionApiPrivate::getBackendSetupErrorDetails() const
     return {};
 }
 
+/* Return operation instead of Connection to be able to return errors if connection uncreatable */
+ConnectOperation *ConnectionApiPrivate::connectToExtraDc(const ConnectionSpec &connectionSpec)
+{
+    qCDebug(c_connectionApiLoggingCategory) << CALL_INFO
+                                            << connectionSpec.dcId << connectionSpec.flags;
+    ConnectionSpec spec = connectionSpec;
+    spec.flags |= ConnectionSpec::RequestFlag::Ipv4Only; // Enable only ipv4 for now
+    ConnectOperation *operation = m_connectionOperations.value(connectionSpec);
+    if (operation) {
+        qCDebug(c_connectionApiLoggingCategory) << __func__ << "Preexist operation:" << operation;
+        // verify that the operation is suitable for reuse
+        if (operation->isFinished()) {
+            // if (operation->)
+        } else {
+            // OK, operation is not finished yet
+        }
+    } else {
+        qCDebug(c_connectionApiLoggingCategory) << __func__ << "New operation";
+    }
+
+    if (!m_connectionOperations.contains(connectionSpec)) {
+        const DcOption opt = backend()->dataStorage()->serverConfiguration().getOption(spec);
+        if (!opt.isValid()) {
+            const QString text = QLatin1String("Unable to find suitable DC option");
+            return PendingOperation::failOperation<ConnectOperation>(text, this);
+        }
+
+        Connection *conn = ensureConnection(connectionSpec);
+        if (connectionSpec.dcId == mainConnection()->dcOption().id) {
+            // Same DC, auth export is not needed
+            conn->setAuthKey(mainConnection()->authKey());
+            conn->rpcLayer()->startNewSession();
+        } else {
+            if (!m_exportedAuthorizations.contains(connectionSpec.dcId)) {
+                AuthRpcLayer::PendingAuthExportedAuthorization *rpcOperation = nullptr;
+                rpcOperation = backend()->authLayer()->exportAuthorization(connectionSpec.dcId);
+                rpcOperation->setObjectName(rpcOperation->objectName()
+                                            + QStringLiteral("/dc%1").arg(connectionSpec.dcId));
+                rpcOperation->connectToFinished(this, &ConnectionApiPrivate::onRpcExportAuthorizationResult,
+                                                connectionSpec.dcId,
+                                                rpcOperation);
+            }
+
+            // if has exported authentication
+            //     use it
+            // else
+            //     export authentication
+            //     save authentication
+            //
+            // connectToDc
+            // conn - start new DH
+            // conn - start new Rpc session
+            // conn - import authentication
+            // emit finished()
+            // const QString text = QLatin1String("NOT IMPLEMENTED");
+            // return PendingOperation::failOperation<ConnectOperation>(text, this);
+        }
+        ConnectOperation *operation = new ConnectOperation(this);
+        operation->setConnection(conn);
+        m_connectionOperations.insert(connectionSpec, operation);
+        operation->start();
+    }
+    return m_connectionOperations.value(connectionSpec);
+}
+
 /*!
   The method constructs new Connection ready to connect to the passed server address.
 */
@@ -380,7 +453,9 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
     connection->setTransport(transport);
 
     connect(connection, &BaseConnection::statusChanged,
-            this, &ConnectionApiPrivate::onConnectionStatusChanged);
+            this, [this, connection] (BaseConnection::Status status, BaseConnection::StatusReason reason) {
+        this->onConnectionStatusChanged(connection, status, reason);
+    });
     connect(connection, &BaseConnection::errorOccured,
             this, &ConnectionApiPrivate::onConnectionError);
 
@@ -410,6 +485,31 @@ Connection *ConnectionApiPrivate::ensureConnection(const ConnectionSpec &connect
         m_connections.insert(connectionSpec, createConnection(opt));
     }
     return m_connections.value(connectionSpec);
+}
+
+void ConnectionApiPrivate::ensureConnected(Connection *connection)
+{
+    // mainConnection()->rpcLayer()->
+}
+
+PendingOperation *ConnectionApiPrivate::getAuthentication(quint32 dcId)
+{
+    AuthRpcLayer::PendingAuthExportedAuthorization *rpcOperation = nullptr;
+    rpcOperation = backend()->authLayer()->exportAuthorization(dcId);
+
+    return rpcOperation;
+}
+
+PendingOperation *ConnectionApiPrivate::ensureDcHasAuthentication(quint32 dcId)
+{
+    AuthRpcLayer::PendingAuthExportedAuthorization *rpcOperation = nullptr;
+    rpcOperation = backend()->authLayer()->exportAuthorization(dcId);
+    rpcOperation->setObjectName(rpcOperation->objectName()
+                                + QStringLiteral("/dc%1").arg(dcId));
+    rpcOperation->connectToFinished(this, &ConnectionApiPrivate::onRpcExportAuthorizationResult,
+                                    dcId,
+                                    rpcOperation);
+    return rpcOperation;
 }
 
 void ConnectionApiPrivate::onReconnectOperationFinished(PendingOperation *operation)
@@ -523,17 +623,42 @@ void ConnectionApiPrivate::onAuthCodeRequired()
     setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonLocal);
 }
 
-void ConnectionApiPrivate::onConnectionStatusChanged(BaseConnection::Status status,
+void ConnectionApiPrivate::onConnectionStatusChanged(Connection *connection, BaseConnection::Status status,
                                                      BaseConnection::StatusReason reason)
 {
-    if (sender() == m_initialConnection) {
+    if (connection == m_initialConnection) {
         onInitialConnectionStatusChanged(status, reason);
-    } else if (sender() == m_mainConnection) {
+    } else if (connection == m_mainConnection) {
         onMainConnectionStatusChanged(status, reason);
     } else {
+        if (connection->status() == Connection::Status::HasDhKey) {
+            if (connection->authId() == mainConnection()->authId()) {
+                connection->setStatus(Connection::Status::Signed, Connection::StatusReason::Local);
+            } else if (m_exportedAuthorizations.contains(connection->dcOption().id)) {
+                importAuthentication(connection);
+            }
+        }
         qCWarning(c_connectionApiLoggingCategory) << CALL_INFO
-                                                  << sender()
+                                                  << connection
                                                   << status << reason << "is not processed";
+    }
+
+    for (const ConnectionSpec &spec : m_connectionOperations.keys()) {
+        ConnectOperation *operation = m_connectionOperations.value(spec);
+
+        if (operation && operation->connection() == connection) {
+            if (status == BaseConnection::Status::Disconnected) {
+                qCDebug(c_connectionApiLoggingCategory) << __func__
+                                                        << "cleanup operation" << operation;
+                // operation->deleteLater();
+                delete operation;
+                connection->deleteLater();
+
+                m_connectionOperations.remove(spec);
+                m_connections.remove(spec);
+                break;
+            }
+        }
     }
 }
 
@@ -670,6 +795,58 @@ void ConnectionApiPrivate::onAllDcOptionsTried()
     connectToNextServer();
 }
 
+void ConnectionApiPrivate::onRpcExportAuthorizationResult(quint32 dcId, BasePendingRpcResult *rpcOperation)
+{
+    if (rpcOperation->isFailed()) {
+        qCCritical(c_connectionApiLoggingCategory) << CALL_INFO
+                                                   << "TODO: Implement 'op failed' case" << rpcOperation->errorDetails();
+        return;
+    }
+
+    AuthRpcLayer::PendingAuthExportedAuthorization *operation = nullptr;
+    operation = static_cast<AuthRpcLayer::PendingAuthExportedAuthorization*>(rpcOperation);
+
+    TLAuthExportedAuthorization result;
+    operation->getResult(&result);
+
+    if (result.id != dataStorage()->selfUserId()) {
+        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << "Exported id:" << result.id
+                                                  << "own:" << dataStorage()->selfUserId();
+    }
+    if (result.bytes.isEmpty()) {
+        qCCritical(c_connectionApiLoggingCategory) << CALL_INFO << "Unexpected empty auth data";
+        return;
+    }
+
+    m_exportedAuthorizations.insert(dcId, result.bytes);
+
+    for (const ConnectionSpec &spec : m_connectionOperations.keys()) {
+        if (spec.dcId != dcId) {
+            continue;
+        }
+        ConnectOperation *op = m_connectionOperations.value(spec);
+        if (op->connection()->status() == Connection::Status::HasDhKey) {
+            importAuthentication(op->connection());
+        }
+    }
+}
+
+void ConnectionApiPrivate::onRpcImportAuthorizationResult(Connection *connection, BasePendingRpcResult *rpcOperation)
+{
+    if (rpcOperation->isFailed()) {
+        qCCritical(c_connectionApiLoggingCategory) << CALL_INFO
+                                                   << "TODO: Implement 'op failed' case" << rpcOperation->errorDetails();
+        return;
+    }
+
+    AuthRpcLayer::PendingAuthAuthorization *operation = nullptr;
+    operation = static_cast<AuthRpcLayer::PendingAuthAuthorization*>(rpcOperation);
+
+    TLAuthAuthorization result;
+    operation->getResult(&result);
+    connection->setStatus(Connection::Status::Signed, Connection::StatusReason::Remote);
+}
+
 void ConnectionApiPrivate::setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason)
 {
     qCDebug(c_connectionApiLoggingCategory) << CALL_INFO << status << reason;
@@ -679,6 +856,26 @@ void ConnectionApiPrivate::setStatus(ConnectionApi::Status status, ConnectionApi
     }
     m_status = status;
     emit q->statusChanged(status, reason);
+}
+
+void ConnectionApiPrivate::importAuthentication(Connection *connection)
+{
+    AuthRpcLayer *authLayer = backend()->authLayer();
+    BaseRpcLayerExtension::RpcProcessingMethod method = authLayer->rpcProcessingMethod();
+    authLayer->setRpcProcessingMethod(nullptr);
+    const QByteArray bytes = m_exportedAuthorizations.value(connection->dcOption().id);
+    const quint32 userId = dataStorage()->selfUserId();
+    AuthRpcLayer::PendingAuthAuthorization *rpcOperation = authLayer->importAuthorization(userId, bytes);
+    rpcOperation->setObjectName(rpcOperation->objectName()
+                                + QStringLiteral("/dc%1").arg(connection->dcOption().id));
+
+    authLayer->setRpcProcessingMethod(method);
+
+    connection->rpcLayer()->sendRpc(rpcOperation);
+
+    rpcOperation->connectToFinished(this, &ConnectionApiPrivate::onRpcImportAuthorizationResult,
+                                    connection,
+                                    rpcOperation);
 }
 
 // Valid value is a comma-separated list of intervals in msecs. E.g.: "0,5000,30000,60000"

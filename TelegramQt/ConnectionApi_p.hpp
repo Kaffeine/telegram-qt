@@ -35,6 +35,7 @@ namespace Client {
 class Connection;
 class ConnectOperation;
 class PingOperation;
+class BasePendingRpcResult;
 
 class ConnectionApiPrivate : public ClientApiPrivate
 {
@@ -63,10 +64,16 @@ public:
 
     QVariantHash getBackendSetupErrorDetails() const;
 
-public:
     // Internal TelegramQt API
+    ConnectOperation *connectToExtraDc(const ConnectionSpec &connectionSpec);
+
     Connection *createConnection(const DcOption &dcOption);
     Connection *ensureConnection(const ConnectionSpec &connectionSpec);
+//    Connection *ensureConnection2(const ConnectionSpec &connectionSpec);
+    void ensureConnected(Connection *connection);
+    PendingOperation *getAuthentication(quint32 dcId);
+
+    PendingOperation *ensureDcHasAuthentication(quint32 dcId);
 
     Connection *getDefaultConnection();
     Connection *mainConnection();
@@ -83,7 +90,9 @@ protected slots:
     void onCheckInFinished(PendingOperation *operation);
     void onNewAuthenticationFinished(PendingOperation *operation);
     void onAuthCodeRequired();
-    void onConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
+    void onConnectionStatusChanged(Connection *connection,
+                                   BaseConnection::Status status,
+                                   BaseConnection::StatusReason reason);
     void onMainConnectionStatusChanged(BaseConnection::Status status, BaseConnection::StatusReason reason);
     void onMainConnectionLost();
     void onMainConnectionRestored();
@@ -91,16 +100,23 @@ protected slots:
     void onPingFailed();
     void onConnectionError(const QByteArray &errorBytes);
     void onAllDcOptionsTried();
+    void onRpcExportAuthorizationResult(quint32 dcId, BasePendingRpcResult *rpcOperation);
+    void onRpcImportAuthorizationResult(Connection *connection, BasePendingRpcResult *rpcOperation);
 
 protected:
     void setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason);
 
+    void importAuthentication(Connection *connection);
+
     QHash<ConnectionSpec, Connection *> m_connections;
+    QHash<ConnectionSpec, ConnectOperation *> m_connectionOperations;
     Connection *m_mainConnection = nullptr;
     Connection *m_initialConnection = nullptr;
     PendingOperation *m_initialConnectOperation = nullptr;
     AuthOperation *m_authOperation = nullptr;
     PingOperation *m_pingOperation = nullptr;
+
+    QHash<quint32, QByteArray> m_exportedAuthorizations; // dc, data
 
     ConnectionApi::Status m_status = ConnectionApi::StatusDisconnected;
     QVector<DcOption> m_serverConfiguration;

@@ -9,7 +9,6 @@ namespace Telegram {
 namespace Client {
 
 class PendingRpcOperation;
-class ConnectOperation;
 class RpcLayer;
 
 class Connection : public Telegram::BaseConnection
@@ -29,9 +28,8 @@ public:
     RpcLayer *rpcLayer();
 
 public slots:
-    ConnectOperation *connectToDc();
+    void connectToDc();
 //    void disconnectFromDc();
-    void processSeeOthers(PendingRpcOperation *operation);
 
 protected slots:
     void onClientDhStateChanged();

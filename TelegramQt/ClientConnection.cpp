@@ -95,51 +95,22 @@ RpcLayer *Connection::rpcLayer()
 }
 
 /*!
-  \fn ConnectOperation *Connection::connectToDc()
-
-  Initiates connection to DC and returns an Operation object.
+  \fn void Connection::connectToDc()
 
   This method establish Transport (TCP/UDP/HTTP) level connection.
-  Operation is finished on transport (network) error or on DH layer
-  connection established.
 
   \sa BaseTransport::connectToHost()
 */
-ConnectOperation *Connection::connectToDc()
+void Connection::connectToDc()
 {
-    if (m_status != Status::Disconnected) {
-        const QString text = QLatin1String("Connection is already in progress");
-        return PendingOperation::failOperation<ConnectOperation>(text, this);
-    }
-
     qCDebug(c_clientConnectionCategory) << CALL_INFO << m_dcOption.id << m_dcOption.address << m_dcOption.port;
 
-    if (m_transport->state() != QAbstractSocket::UnconnectedState) {
-        m_transport->disconnectFromHost(); // Ensure that there is no connection
+    if (transport()->state() != QAbstractSocket::UnconnectedState) {
+        transport()->disconnectFromHost(); // Ensure that there is no connection
     }
 
     setStatus(Status::Connecting, StatusReason::Local);
-    ConnectOperation *op = new ConnectOperation(this);
-    op->start();
-    op->deleteOnFinished();
-    return op;
-}
-
-void Connection::processSeeOthers(PendingRpcOperation *operation)
-{
-    if (m_status == Status::Disconnected) {
-        connectToDc();
-    }
-    if (m_dhLayer->state() != DhLayer::State::HasKey) {
-        qCDebug(c_clientConnectionCategory) << CALL_INFO
-                                            << "queue operation:" << TLValue::firstFromArray(operation->requestData());
-        m_queuedOperations.append(operation);
-        return;
-    }
-    quint64 messageId = rpcLayer()->sendRpc(operation);
-    qCDebug(c_clientConnectionCategory) << CALL_INFO
-                                        << TLValue::firstFromArray(operation->requestData())
-                                        << "sent with new id" << messageId;
+    transport()->connectToHost(m_dcOption.address, m_dcOption.port);
 }
 
 void Connection::onClientDhStateChanged()
