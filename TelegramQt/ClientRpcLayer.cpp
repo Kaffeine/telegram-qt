@@ -286,13 +286,13 @@ quint64 RpcLayer::sendRpc(PendingRpcOperation *operation)
     MTProto::Message *message = new MTProto::Message();
     message->messageId = m_sendHelper->newMessageId(SendMode::Client);
     if (operation->isContentRelated()) {
+        message->sequenceNumber = m_contentRelatedMessages * 2 + 1;
+        ++m_contentRelatedMessages;
+    } else {
         if (m_contentRelatedMessages == 0) {
             qCCritical(c_clientRpcLayerCategory) << CALL_INFO
                                                  << "First message should be content related!";
         }
-        message->sequenceNumber = m_contentRelatedMessages * 2 + 1;
-        ++m_contentRelatedMessages;
-    } else {
         message->sequenceNumber = m_contentRelatedMessages * 2;
     }
 
