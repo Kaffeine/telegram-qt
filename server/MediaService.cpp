@@ -51,6 +51,7 @@ quint32 MediaService::dcId() const
 void MediaService::setDcId(quint32 dcId)
 {
     m_dcId = dcId;
+    setObjectName(QStringLiteral("MediaService(dc%1)").arg(dcId));
 }
 
 bool MediaService::uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)

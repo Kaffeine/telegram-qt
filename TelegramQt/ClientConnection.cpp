@@ -66,6 +66,9 @@ Connection::Connection(QObject *parent) :
 void Connection::setDcOption(const DcOption &dcOption)
 {
     m_dcOption = dcOption;
+    setObjectName(QStringLiteral("Client(dc%1)").arg(dcOption.id));
+    m_dhLayer->setObjectName(objectName());
+    m_rpcLayer->setObjectName(objectName());
 }
 
 qint32 Connection::deltaTime() const

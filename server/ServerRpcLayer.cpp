@@ -78,6 +78,7 @@ LocalServerApi *RpcLayer::api()
 void RpcLayer::setServerApi(LocalServerApi *api)
 {
     m_api = api;
+    setObjectName(QStringLiteral("dc%1").arg(api->dcId()));
 }
 
 bool RpcLayer::isAuthorized() const

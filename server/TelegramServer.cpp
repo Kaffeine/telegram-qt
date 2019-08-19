@@ -86,6 +86,8 @@ Server::~Server()
 void Server::setDcOption(const DcOption &option)
 {
     m_dcOption = option;
+    setObjectName(QStringLiteral("Server(dc%1)").arg(dcId()));
+
     m_mediaService->setDcId(option.id);
 }
 
@@ -173,10 +175,12 @@ void Server::onNewConnection()
         qCDebug(loggingCategoryServer) << "expected pending connection does not exist";
         return;
     }
-    qCInfo(loggingCategoryServer) << CALL_INFO << socket->peerAddress().toString();
     TcpTransport *transport = new TcpTransport(socket, this);
     socket->setParent(transport);
     RemoteClientConnection *client = new RemoteClientConnection(this);
+    const QString address = transport->remoteAddress();
+    qCInfo(loggingCategoryServer) << CALL_INFO << client;
+    client->setObjectName(QStringLiteral("cli %1 on dc%2").arg(address).arg(dcId()));
     connect(client, &BaseConnection::statusChanged, this, &Server::onClientConnectionStatusChanged);
     client->setServerRsaKey(m_key);
     client->setTransport(transport);
