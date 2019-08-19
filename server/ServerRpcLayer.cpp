@@ -80,6 +80,11 @@ void RpcLayer::setServerApi(LocalServerApi *api)
     m_api = api;
 }
 
+bool RpcLayer::isAuthorized() const
+{
+    return m_session && m_session->userId();
+}
+
 LocalUser *RpcLayer::getUser() const
 {
     if (!m_session) {
@@ -153,7 +158,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 
     context.inputStream() >> requestValue;
     context.setReadCode(requestValue);
-    if (!getUser() && !c_unregisteredUserAllowedRpcList.contains(requestValue)) {
+    if (!isAuthorized() && !c_unregisteredUserAllowedRpcList.contains(requestValue)) {
         RpcError error(RpcError::Reason::AuthKeyUnregistered);
         return sendRpcError(error, context.requestId());
     }

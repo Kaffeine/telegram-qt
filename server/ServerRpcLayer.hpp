@@ -34,6 +34,7 @@ public:
     LocalServerApi *api();
     void setServerApi(LocalServerApi *api);
 
+    bool isAuthorized() const;
     LocalUser *getUser() const;
 
     quint64 serverSalt() const override;
