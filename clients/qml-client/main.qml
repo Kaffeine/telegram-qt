@@ -57,16 +57,6 @@ ApplicationWindow {
         pingInterval: 15000
         proxy.address: "127.0.0.1"
         proxy.port: 12343
-        serverOptions: [
-            Telegram.ServerOption {
-                address: "149.154.175.50"
-                port: 443
-            },
-            Telegram.ServerOption {
-                address: "149.154.167.51"
-                port: 443
-            }
-        ]
         serverKey: officialServerKey
     }
 
