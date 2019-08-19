@@ -41,6 +41,7 @@ const QVector<int> ImageSizeDescriptor::Sizes = {
 MediaService::MediaService(QObject *parent) :
     QObject(parent)
 {
+    RandomGenerator::instance()->generate(&m_lastFileLocalId);
 }
 
 quint32 MediaService::dcId() const
