@@ -164,7 +164,13 @@ void tst_ConnectionApi::testClientConnection_data()
 
     DcOption opt = c_localDcOptions.first();
 
-    QTest::newRow("Abridged")
+    QTest::newRow("Abridged (no pw, dc1)")
+            << Client::Settings::SessionType::Abridged
+            << mkUserData(1, 1)
+            << opt
+            << c_dontWaitForPhoneRequest;
+
+    QTest::newRow("Abridged (with pw)")
             << Client::Settings::SessionType::Abridged
             << userOnDc1
             << opt
