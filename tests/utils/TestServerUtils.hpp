@@ -5,6 +5,8 @@
 #include "LocalCluster.hpp"
 #include "TelegramServerUser.hpp"
 
+#include <QDebug>
+
 Telegram::Server::LocalUser *tryAddUser(Telegram::Server::LocalCluster *cluster, const UserData &data)
 {
     Telegram::Server::LocalUser *u = cluster->addUser(data.phoneNumber, data.dcId);
