@@ -93,7 +93,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         result = processRpcResult(message.skipTLValue());
         break;
     case TLValue::MsgsAck:
-        qCDebug(c_clientRpcLayerCategory) << "processMessageAck(stream);";
+        result = processMessageAck(message.skipTLValue());
         break;
     case TLValue::BadMsgNotification:
     case TLValue::BadServerSalt:
@@ -160,6 +160,16 @@ bool RpcLayer::processUpdates(const MTProto::Message &message)
     TLUpdates updates;
     stream >> updates;
     return m_UpdatesInternalApi->processUpdates(updates);
+}
+
+bool RpcLayer::processMessageAck(const MTProto::Message &message)
+{
+    MTProto::Stream stream(message.data);
+    TLVector<quint64> idsVector;
+    stream >> idsVector;
+    qCDebug(c_clientRpcLayerCategory) << "processMessageAck():" << idsVector;
+
+    return true;
 }
 
 bool RpcLayer::processSessionCreated(const MTProto::Message &message)

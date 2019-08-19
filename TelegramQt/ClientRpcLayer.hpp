@@ -64,6 +64,7 @@ public:
     bool processIgnoredMessageNotification(const MTProto::Message &message);
     bool processRpcResult(const MTProto::Message &message);
     bool processUpdates(const MTProto::Message &message);
+    bool processMessageAck(const MTProto::Message &message);
 
     quint64 sendRpc(PendingRpcOperation *operation);
     bool resendIgnoredMessage(quint64 messageId);
