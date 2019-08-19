@@ -134,6 +134,8 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         sendPacket(output.getData(), SendMode::ServerReply);
     }
         return true;
+    case TLValue::MsgsAck:
+        return true;
     default:
         break;
     }
