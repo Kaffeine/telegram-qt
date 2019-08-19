@@ -149,7 +149,10 @@ class ClientRpcLayer : public RpcLayer
 public:
     ClientRpcLayer() : RpcLayer(Mode::Client) { }
 
-    quint64 sendPackageAsClient(const QByteArray &buffer) { return sendPacket(buffer, SendMode::Client); }
+    quint64 sendPackageAsClient(const QByteArray &buffer)
+    {
+        return sendPacket(buffer, SendMode::Client, MessageType::ContentRelatedMessage);
+    }
 };
 
 class ServerRpcLayer : public RpcLayer
@@ -158,8 +161,15 @@ class ServerRpcLayer : public RpcLayer
 public:
     ServerRpcLayer() : RpcLayer(Mode::Server) { }
 
-    quint64 sendPackageAsServerReply(const QByteArray &buffer) { return sendPacket(buffer, SendMode::ServerReply); }
-    quint64 sendPackageAsServerInitiative(const QByteArray &buffer) { return sendPacket(buffer, SendMode::ServerInitiative); }
+    quint64 sendPackageAsServerReply(const QByteArray &buffer)
+    {
+        return sendPacket(buffer, SendMode::ServerReply, MessageType::ContentRelatedMessage);
+    }
+
+    quint64 sendPackageAsServerInitiative(const QByteArray &buffer)
+    {
+        return sendPacket(buffer, SendMode::ServerInitiative, MessageType::ContentRelatedMessage);
+    }
 };
 
 } // Test

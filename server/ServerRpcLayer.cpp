@@ -147,7 +147,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         output << TLValue::Pong;
         output << message.messageId;
         output << ping.pingId;
-        sendPacket(output.getData(), SendMode::ServerReply);
+        sendPacket(output.getData(), SendMode::ServerReply, MessageType::NotContentRelatedMessage);
     }
         return true;
     case TLValue::MsgsAck:
@@ -295,7 +295,7 @@ void RpcLayer::sendIgnoredMessageNotification(quint32 errorCode, const MTProto::
     TLBadMsgNotification tlNotification;
     messageNotification.toTlNotification(&tlNotification);
     output << tlNotification;
-    sendPacket(output.getData(), SendMode::ServerReply);
+    sendPacket(output.getData(), SendMode::ServerReply, MessageType::NotContentRelatedMessage);
 }
 
 bool RpcLayer::sendRpcError(const RpcError &error, quint64 messageId)
@@ -331,12 +331,12 @@ quint64 RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
         output.writeBytes(reply);
     }
     qCDebug(c_serverRpcDumpPackageCategory) << Q_FUNC_INFO << TLValue::firstFromArray(reply) << "for message id" << messageId;
-    return sendPacket(output.getData(), SendMode::ServerReply);
+    return sendPacket(output.getData(), SendMode::ServerReply, MessageType::ContentRelatedMessage);
 }
 
 bool RpcLayer::sendRpcMessage(const QByteArray &message)
 {
-    return sendPacket(message, SendMode::ServerInitiative);
+    return sendPacket(message, SendMode::ServerInitiative, MessageType::ContentRelatedMessage);
 }
 
 bool RpcLayer::sendRpcReply(RpcOperation *operation, const QByteArray &replyData)

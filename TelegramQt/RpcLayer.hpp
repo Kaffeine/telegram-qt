@@ -72,7 +72,7 @@ protected:
     quint32 getNextMessageSequenceNumber(MessageType messageType);
 
     bool sendPacket(const MTProto::Message &message);
-    quint64 sendPacket(const QByteArray &buffer, SendMode mode);
+    quint64 sendPacket(const QByteArray &buffer, SendMode mode, MessageType messageType);
 
     BaseMTProtoSendHelper *m_sendHelper = nullptr;
     quint32 m_sequenceNumber = 0;

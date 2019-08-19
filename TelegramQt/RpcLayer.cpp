@@ -235,7 +235,7 @@ static QLatin1String getModeText(SendMode mode)
     return QLatin1String("Invalid");
 }
 
-quint64 BaseRpcLayer::sendPacket(const QByteArray &buffer, SendMode mode)
+quint64 BaseRpcLayer::sendPacket(const QByteArray &buffer, SendMode mode, MessageType messageType)
 {
     MTProto::Message message;
     message.setData(buffer);
@@ -246,7 +246,7 @@ quint64 BaseRpcLayer::sendPacket(const QByteArray &buffer, SendMode mode)
         return 0;
     }
     message.messageId = m_sendHelper->newMessageId(mode);
-    message.sequenceNumber = getNextMessageSequenceNumber(ContentRelatedMessage);
+    message.sequenceNumber = getNextMessageSequenceNumber(messageType);
 
     qCDebug(c_baseRpcLayerCategoryOut) << CALL_INFO
             << "(" << getModeText(mode) << "):"
