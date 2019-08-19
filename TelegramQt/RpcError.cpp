@@ -137,49 +137,32 @@ RpcError::RpcError(RpcError::Reason r, quint32 arg) :
     case UnknownReason:
         type = UnknownType;
         break;
-    case PhoneNumberInvalid:
-    case PhoneCodeHashEmpty:
-    case PhoneCodeInvalid:
-    case PhoneCodeEmpty:
-    case PhoneCodeExpired:
-    case PhoneNumberUnoccupied:
-    case PeerIdInvalid:
-    case UserIdInvalid:
     case InputFetchError:
+    case LimitInvalid: // Limit must be divisible by 1KB
     case LocationInvalid:
     case OffsetInvalid: // Offset must be divisible by 1KB
-    case LimitInvalid: // Limit must be divisible by 1KB
+    case PeerIdInvalid:
+    case PhoneCodeEmpty:
+    case PhoneCodeExpired:
+    case PhoneCodeHashEmpty:
+    case PhoneCodeInvalid:
+    case PhoneNumberInvalid:
+    case PhoneNumberUnoccupied:
+    case UserIdInvalid:
         type = BadRequest;
         break;
     case FileMigrateX:
     case PhoneMigrateX:
-//    case NetworkMigrateX:
-//    case UserMigrateX:
         type = SeeOther;
         break;
-//    case FirstnameInvalid:
-//    case LastnameInvalid:
-//    case UsernameInvalid:
-//    case UsernameOccupied:
-//    case UsernameNotModified:
-
-//    case ApiIdInvalid:
-//    case PasswordHashInvalid:
-//    case PhoneNumberOccupied:
-//    case FilePartXMissing:
-//    case AuthKeyUnregistered:
-//    case AuthKeyInvalid:
-//    case UserDeactivated:
-//    case SessionRevoked:
-//    case SessionExpired:
-//    case ActiveUserRequired:
-//    case AuthKeyPermEmpty:
     case SessionPasswordNeeded:
         type = Unauthorized;
         break;
     case FloodWaitX:
         type = Flood;
+        break;
     default:
+        type = UnknownType;
         break;
     }
     message = reasonToString(r, argument).toLatin1();
