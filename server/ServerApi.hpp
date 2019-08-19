@@ -12,6 +12,8 @@ struct TLInputUser;
 
 namespace Telegram {
 
+class PendingOperation;
+
 namespace Server {
 
 class AuthService;
@@ -97,6 +99,10 @@ public:
     virtual Session *getSessionById(quint64 authId) const = 0;
     virtual void bindUserSession(AuthorizedUser *user, Session *session) = 0;
     virtual bool setUserName(LocalUser *user, const QString &newUsername) = 0;
+
+    virtual PendingOperation *exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes) = 0;
+    virtual QByteArray generateExportedAuthorization(quint32 userId) = 0;
+    virtual AuthorizedUser *getAuthorizedUser(quint32 userId, const QByteArray &authBytes) = 0;
 
     virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
     virtual QVector<UpdateNotification> processMessage(MessageData *messageData) = 0;

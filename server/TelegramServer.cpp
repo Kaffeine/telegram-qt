@@ -6,6 +6,7 @@
 #include "Debug_p.hpp"
 #include "MediaService.hpp"
 #include "MessageService.hpp"
+#include "RandomGenerator.hpp"
 #include "RemoteClientConnection.hpp"
 #include "RemoteServerConnection.hpp"
 #include "ServerDhLayer.hpp"
@@ -43,6 +44,8 @@ Q_LOGGING_CATEGORY(lcServerUpdates, "telegram.server.updates", QtInfoMsg)
 Q_LOGGING_CATEGORY(lcServerCrossUpdates, "telegram.server.cross.updates", QtInfoMsg)
 
 namespace Telegram {
+
+static constexpr int ExportedAuthorizationKeySize = 128;
 
 namespace Server {
 
@@ -397,6 +400,51 @@ bool Server::setUserName(LocalUser *user, const QString &newUsername)
     user->setUserName(newUsername);
     m_usernameToUserId.remove(previousName);
     return true;
+}
+
+PendingOperation *Server::exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes)
+{
+    if (dcId == m_dcOption.id) {
+        return PendingOperation::failOperation(QLatin1String("Invalid request: this DC is the target one"));
+    }
+
+    RemoteServerConnection *targetDc = getRemoteServer(dcId);
+    if (!targetDc) {
+        return PendingOperation::failOperation(QLatin1String("Target DC is not available"));
+    }
+
+    *outputAuthBytes = targetDc->getForeingUserAuthorization(userId);
+    PendingOperation *operation = new PendingOperation(this);
+    operation->setObjectName(QStringLiteral("ExportAuthOperation(user%1 from %2 to %3)")
+                             .arg(userId).arg(m_dcOption.id).arg(dcId));
+    operation->finishLater();
+    return operation;
+}
+
+QByteArray Server::generateExportedAuthorization(quint32 userId)
+{
+    QByteArray bytes = RandomGenerator::instance()->generate(ExportedAuthorizationKeySize);
+    m_exportedAuthorizations.insertMulti(userId, bytes);
+    return bytes;
+}
+
+AuthorizedUser *Server::getAuthorizedUser(quint32 userId, const QByteArray &authBytes)
+{
+    if (!userId || authBytes.isEmpty()) {
+        return nullptr;
+    }
+    if (!m_exportedAuthorizations.values(userId).contains(authBytes)) {
+        return nullptr;
+    }
+    if (!m_authorizedUsers.contains(userId)) {
+        AbstractUser *originUser = getRemoteUser(userId);
+        // Use LocalUser for now
+        AuthorizedUser *newUser = new LocalUser(userId, originUser->phoneNumber());
+        newUser->setDcId(originUser->dcId());
+
+        m_authorizedUsers.insert(userId, newUser);
+    }
+    return m_authorizedUsers.value(userId);
 }
 
 /*

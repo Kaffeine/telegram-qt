@@ -83,9 +83,13 @@ public:
 protected:
     void startImplementation() override { callMember<>(this, m_runMethod); }
 
+    void onExportedAuthorizationFinished();
+
     void setRunMethod(RunMethod method);
 
     RunMethod m_runMethod = nullptr;
+
+    QByteArray m_authBytes;
 
     // Generated RPC members
     TLFunctions::TLAuthBindTempAuthKey m_bindTempAuthKey;

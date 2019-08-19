@@ -91,9 +91,14 @@ public:
     LocalUser *addUser(const QString &identifier) override;
 
     bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) override;
+
     Session *getSessionById(quint64 sessionId) const override;
     void bindUserSession(AuthorizedUser *user, Session *session) override;
     bool setUserName(LocalUser *user, const QString &newUsername) override;
+
+    PendingOperation *exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes) override;
+    QByteArray generateExportedAuthorization(quint32 userId);
+    AuthorizedUser *getAuthorizedUser(quint32 userId, const QByteArray &authBytes) override;
 
     QVector<UpdateNotification> processMessage(MessageData *messageData) override;
     QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
@@ -132,6 +137,10 @@ private:
     QSet<RemoteServerConnection*> m_remoteServers;
     QVector<RpcOperationFactory*> m_rpcOperationFactories;
     DcConfiguration m_dcConfiguration;
+
+    // Session data
+    QHash<quint32, QByteArray> m_exportedAuthorizations; // userId to auth bytes
+    QHash<quint32, AuthorizedUser *> m_authorizedUsers; // userId to AuthorizedUser
 
     // Data
     QHash<quint32, LocalUser*> m_users; // userId to User

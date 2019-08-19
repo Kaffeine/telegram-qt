@@ -32,6 +32,11 @@ AbstractServerApi *RemoteServerConnection::api()
     return m_server;
 }
 
+QByteArray RemoteServerConnection::getForeingUserAuthorization(quint32 userId)
+{
+    return m_server->generateExportedAuthorization(userId);
+}
+
 quint32 RemoteServerConnection::dcId() const
 {
     if (!m_server) {

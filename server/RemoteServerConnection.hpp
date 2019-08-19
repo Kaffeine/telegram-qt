@@ -25,6 +25,8 @@ public:
     AbstractUser *getUser(const QString &identifier);
     AbstractServerApi *api();
 
+    QByteArray getForeingUserAuthorization(quint32 userId);
+
 protected:
     LocalServerApi *m_server = nullptr;
 };

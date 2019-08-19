@@ -220,21 +220,48 @@ void AuthRpcOperation::runDropTempAuthKeys()
 
 void AuthRpcOperation::runExportAuthorization()
 {
-    // TLFunctions::TLAuthExportAuthorization &arguments = m_exportAuthorization;
-    if (processNotImplementedMethod(TLValue::AuthExportAuthorization)) {
+    TLFunctions::TLAuthExportAuthorization &arguments = m_exportAuthorization;
+    if (arguments.dcId == api()->dcId()) {
+        sendRpcError(RpcError::DcIdInvalid);
         return;
     }
-    TLAuthExportedAuthorization result;
-    sendRpcReply(result);
+    const DcOption wantedDc = api()->serverConfiguration().getOption(ConnectionSpec(arguments.dcId));
+    if (!wantedDc.isValid()) {
+        // The wanted DC is not listed in the configuration
+        sendRpcError(RpcError::DcIdInvalid);
+        return;
+    }
+
+    PendingOperation *exportOperation = api()->exportAuthorization(arguments.dcId, layer()->session()->userId(), &m_authBytes);
+    exportOperation->connectToFinished(this, &AuthRpcOperation::onExportedAuthorizationFinished);
 }
 
 void AuthRpcOperation::runImportAuthorization()
 {
-    // TLFunctions::TLAuthImportAuthorization &arguments = m_importAuthorization;
-    if (processNotImplementedMethod(TLValue::AuthImportAuthorization)) {
+    TLFunctions::TLAuthImportAuthorization &arguments = m_importAuthorization;
+    AuthorizedUser *user = api()->getAuthorizedUser(arguments.id, arguments.bytes);
+    if (!user) {
+        // TODO: Proper error
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
+
+    if (layer()->session()->userOrWantedUserId()) {
+        if (layer()->session()->userId() == arguments.id) {
+            TLAuthAuthorization result;
+            Utils::setupTLUser(&result.user, user, user);
+            sendRpcReply(result);
+        }
+
+        // TODO: Proper error
+        sendRpcError(RpcError::UnknownReason);
+        return;
+    }
+
+    api()->bindUserSession(user, layer()->session());
+
     TLAuthAuthorization result;
+    Utils::setupTLUser(&result.user, user, user);
     sendRpcReply(result);
 }
 
@@ -519,6 +546,21 @@ AuthRpcOperation::ProcessingMethod AuthRpcOperation::getMethodForRpcFunction(TLV
     default:
         return nullptr;
     }
+}
+
+void AuthRpcOperation::onExportedAuthorizationFinished()
+{
+    if (m_authBytes.isEmpty()) {
+        RpcError error;
+        error.type = RpcError::Type::Internal;
+        sendRpcError(error);
+        return;
+    }
+    const LocalUser *selfUser = layer()->getUser();
+    TLAuthExportedAuthorization result;
+    result.id = selfUser->id();
+    result.bytes = m_authBytes;
+    sendRpcReply(result);
 }
 
 RpcOperation *AuthOperationFactory::processRpcCall(RpcLayer *layer, RpcProcessingContext &context)
