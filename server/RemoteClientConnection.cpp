@@ -3,6 +3,7 @@
 
 #include "ApiUtils.hpp"
 #include "AuthService.hpp"
+#include "ConnectionError.hpp"
 #include "CTelegramTransport.hpp"
 #include "ServerApi.hpp"
 #include "ServerDhLayer.hpp"
@@ -67,7 +68,8 @@ void RemoteClientConnection::setSession(Session *session)
 
 void RemoteClientConnection::sendKeyError()
 {
-    static const QByteArray errorPackage = QByteArray::fromHex(QByteArrayLiteral("6cfeffff"));
+    static const ConnectionError keyError(ConnectionError::InvalidAuthKey);
+    static const QByteArray errorPackage = keyError.toByteArray();
     m_transport->sendPacket(errorPackage);
 }
 
