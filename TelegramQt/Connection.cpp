@@ -61,6 +61,8 @@ void BaseConnection::setStatus(BaseConnection::Status status, BaseConnection::St
         return;
     }
 
+    qCDebug(c_baseConnectionCategory) << CALL_INFO << status << reason;
+
     m_status = status;
     emit statusChanged(status, reason);
 
@@ -102,7 +104,7 @@ void BaseConnection::onTransportPacketReceived(const QByteArray &payload)
     qCDebug(c_baseConnectionCategory) << CALL_INFO << payload.size();
     if (payload.size() == ConnectionError::packetSize()) {
         const ConnectionError e(payload.constData());
-        qCDebug(c_baseConnectionCategory) << "Error:" << e.description();
+        qCWarning(c_baseConnectionCategory) << CALL_INFO << "Error:" << e.description();
         if (status() == Status::Failed) {
             // We still can get replies to already sent message even if the connection
             // is already failed, but it makes no sense to shout them out.

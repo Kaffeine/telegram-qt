@@ -125,7 +125,7 @@ void RpcLayer::setRpcFactories(const QVector<RpcOperationFactory *> &rpcFactorie
 bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
 {
     TLValue requestValue = message.firstValue();
-    qCInfo(c_serverRpcLayerCategory) << this << __func__ << requestValue.toString();
+    qCInfo(c_serverRpcLayerCategory) << CALL_INFO << requestValue.toString();
 
     switch (requestValue) {
     case TLValue::InitConnection:
@@ -160,6 +160,8 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
     context.inputStream() >> requestValue;
     context.setReadCode(requestValue);
     if (!isAuthorized() && !c_unregisteredUserAllowedRpcList.contains(requestValue)) {
+        qCInfo(c_serverRpcLayerCategory) << CALL_INFO << "block" << requestValue.toString()
+                                         << "for unauthorized connection" << getHelper()->authId();
         RpcError error(RpcError::Reason::AuthKeyUnregistered);
         return sendRpcError(error, context.requestId());
     }

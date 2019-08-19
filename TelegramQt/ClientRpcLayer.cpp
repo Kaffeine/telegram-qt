@@ -122,6 +122,10 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         break;
     }
 
+    if (!result) {
+        qCWarning(c_clientRpcLayerCategory) << CALL_INFO << "Unable to process" << message.firstValue();
+    }
+
     return result;
 }
 
@@ -263,7 +267,7 @@ bool RpcLayer::processMessageHeader(const MTProto::FullMessageHeader &header)
     }
 
     if (m_sessionId != header.sessionId) {
-        qCWarning(c_clientRpcLayerCategory) << Q_FUNC_INFO << "Session Id is wrong.";
+        qCWarning(c_clientRpcLayerCategory) << CALL_INFO << "Session Id is wrong.";
         return false;
     }
     return true;

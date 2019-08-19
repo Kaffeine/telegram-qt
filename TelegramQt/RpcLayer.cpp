@@ -27,9 +27,7 @@
 #include "MTProto/MessageHeader.hpp"
 #include "MTProto/Stream.hpp"
 
-#ifdef DEVELOPER_BUILD
 #include "Debug_p.hpp"
-#endif
 
 #include <QLoggingCategory>
 
@@ -52,9 +50,11 @@ void BaseRpcLayer::setSendHelper(BaseMTProtoSendHelper *helper)
 bool BaseRpcLayer::processPacket(const QByteArray &package)
 {
     if (package.size() < 24) {
+        qCWarning(c_baseRpcLayerCategoryIn) << CALL_INFO
+                                            << "Packet is too small:" << package.size() << " < 24";
         return false;
     }
-    qCDebug(c_baseRpcLayerCategoryIn) << this << __func__
+    qCDebug(c_baseRpcLayerCategoryIn) << CALL_INFO
                                       << "Read" << package.length() << "bytes:";
     // Encrypted Message
 #ifdef BASE_RPC_IO_DEBUG
@@ -76,15 +76,16 @@ bool BaseRpcLayer::processPacket(const QByteArray &package)
     decryptedStream >> messageHeader;
 
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_baseRpcLayerCategoryIn) << this << __func__ << messageHeader;
+    qCDebug(c_baseRpcLayerCategoryIn) << CALL_INFO << messageHeader;
 #endif
 
     if (!processMessageHeader(messageHeader)) {
+        qCWarning(c_baseRpcLayerCategoryIn) << CALL_INFO << "Unable to process message header";
         return false;
     }
 
     if (int(messageHeader.contentLength) > decryptedStream.bytesAvailable()) {
-        qCWarning(c_baseRpcLayerCategoryIn) << this << __func__ << "Expected more data than actually available."
+        qCWarning(c_baseRpcLayerCategoryIn) << CALL_INFO << "Expected more data than actually available."
                                             << "Actual:" << decryptedStream.bytesAvailable()
                                             << "Expected:" << messageHeader.contentLength;
         return false;
@@ -97,18 +98,18 @@ bool BaseRpcLayer::processPacket(const QByteArray &package)
 #endif
 
     if (messageKey != expectedMessageKey) {
-        qCWarning(c_baseRpcLayerCategoryIn) << this << __func__ << "Invalid message key";
+        qCWarning(c_baseRpcLayerCategoryIn) << CALL_INFO << "Invalid message key";
         return false;
     }
 
     QByteArray innerData = decryptedStream.readBytes(messageHeader.contentLength);
     if (decryptedStream.error()) {
-        qCWarning(c_baseRpcLayerCategoryIn) << this << __func__ << "Decrypted content read error";
+        qCWarning(c_baseRpcLayerCategoryIn) << CALL_INFO << "Decrypted content read error";
         return false;
     }
     MTProto::Message message(messageHeader, innerData);
     if (message.firstValue() == TLValue::GzipPacked) {
-        qCDebug(c_baseRpcLayerCategoryIn) << this << __func__ << "message is GzipPacked";
+        qCDebug(c_baseRpcLayerCategoryIn) << CALL_INFO << "message is GzipPacked";
         QByteArray data;
         MTProto::Stream packedStream(innerData);
         TLValue gzipValue;
@@ -160,7 +161,7 @@ quint32 BaseRpcLayer::getNextMessageSequenceNumber(MessageType messageType)
 bool BaseRpcLayer::sendPacket(const MTProto::Message &message)
 {
     if (!m_sendHelper->authId()) {
-        qCCritical(c_baseRpcLayerCategoryOut) << Q_FUNC_INFO << "Auth key is not set!";
+        qCCritical(c_baseRpcLayerCategoryOut) << CALL_INFO << "Auth key is not set!";
         return 0;
     }
     QByteArray encryptedPackage;
@@ -240,14 +241,15 @@ quint64 BaseRpcLayer::sendPacket(const QByteArray &buffer, SendMode mode)
     message.setData(buffer);
 
     if (!m_sendHelper->authId()) {
-        qCCritical(c_baseRpcLayerCategoryOut) << Q_FUNC_INFO << "Auth key is not set!";
+        qCCritical(c_baseRpcLayerCategoryOut) << CALL_INFO
+                                              << "Auth key is not set!";
         return 0;
     }
     message.messageId = m_sendHelper->newMessageId(mode);
     message.sequenceNumber = getNextMessageSequenceNumber(ContentRelatedMessage);
 
-    qCDebug(c_baseRpcLayerCategoryOut)
-            << "sendPackage(" << getModeText(mode) << "):"
+    qCDebug(c_baseRpcLayerCategoryOut) << CALL_INFO
+            << "(" << getModeText(mode) << "):"
             << "message" << message.firstValue()
             << "with id" << message.messageId;
 
@@ -263,7 +265,7 @@ bool BaseRpcLayer::processMsgContainer(const MTProto::Message &message)
     quint32 itemsCount;
     RawStream stream(message.data);
     stream >> itemsCount;
-    qCDebug(c_baseRpcLayerCategoryIn) << this << __func__ << itemsCount << "items";
+    qCDebug(c_baseRpcLayerCategoryIn) << CALL_INFO << itemsCount << "items";
 
     bool processed = true;
     for (quint32 i = 0; i < itemsCount; ++i) {
