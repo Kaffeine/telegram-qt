@@ -100,6 +100,24 @@ bool setupTLUserStatus(TLUserStatus *output, const AbstractUser *input, const Ab
     return true;
 }
 
+bool setupTLContactsLink(TLContactsLink *output, const AbstractUser *input, const AbstractUser *forUser)
+{
+    setupTLUser(&output->user, input, forUser);
+    if (forUser->contactList().contains(input->id())) {
+        output->myLink.tlType = TLValue::ContactLinkContact;
+    } else {
+        output->myLink.tlType = TLValue::ContactLinkNone;
+    }
+
+    if (input->contactList().contains(forUser->id())) {
+        output->foreignLink.tlType = TLValue::ContactLinkContact;
+    } else {
+        output->foreignLink.tlType = TLValue::ContactLinkNone;
+    }
+
+    return true;
+}
+
 bool setupTLUpdatesState(TLUpdatesState *output, const AbstractUser *forUser)
 {
     const UserPostBox *box = forUser->getPostBox();
