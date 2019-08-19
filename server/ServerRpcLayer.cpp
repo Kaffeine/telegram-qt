@@ -50,11 +50,19 @@ namespace Server {
 static const QVector<TLValue> c_unregisteredUserAllowedRpcList =
 {
     TLValue::HelpGetConfig,
+    TLValue::HelpGetNearestDc,
+    TLValue::HelpGetAppUpdate,
+    TLValue::HelpGetCdnConfig,
     TLValue::AuthSendCode,
     TLValue::AuthCheckPassword,
+    TLValue::AuthCheckPhone,
     TLValue::AuthSignIn,
     TLValue::AuthSignUp,
     TLValue::AccountGetPassword,
+    TLValue::LangpackGetLangPack,
+    TLValue::LangpackGetStrings,
+    TLValue::LangpackGetDifference,
+    TLValue::LangpackGetLanguages,
 };
 
 RpcLayer::RpcLayer(QObject *parent) :
