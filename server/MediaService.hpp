@@ -59,6 +59,9 @@ protected:
     QIODevice *beginWriteFile();
     FileDescriptor *endWriteFile(QIODevice *device, const QString &name);
 
+    QString getVolumeDirName(quint64 volumeId) const;
+    QString getFileName(quint64 volumeId, quint32 localId) const;
+
     quint64 volumeId() const;
 
     QVector<FileDescriptor> m_allFileDescriptors;

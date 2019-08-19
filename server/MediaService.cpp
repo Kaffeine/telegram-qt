@@ -25,7 +25,7 @@
 #include <QImage>
 #include <QLoggingCategory>
 
-static const QString c_storageFileDir = QLatin1String("storage/volume%1");
+static const QString c_storageFileDir = QLatin1String("storage%1/volume%2");
 
 namespace Telegram {
 
@@ -118,8 +118,7 @@ QIODevice *MediaService::beginReadFile(const FileDescriptor &descriptor)
 {
     QFile *file = new QFile();
     m_openFiles.insert(file);
-    file->setFileName(c_storageFileDir.arg(descriptor.volumeId)
-                      + QLatin1Char('/') + QString::number(descriptor.localId));
+    file->setFileName(getFileName(descriptor.volumeId, descriptor.localId));
     qWarning() << CALL_INFO << file->fileName();
     if (!file->open(QIODevice::ReadOnly)) {
         qWarning() << CALL_INFO << "Unable to open file!";
@@ -142,11 +141,11 @@ void MediaService::endReadFile(QIODevice *device)
 
 QIODevice *MediaService::beginWriteFile()
 {
-    QDir().mkpath(c_storageFileDir.arg(volumeId()));
+    QDir().mkpath(getVolumeDirName(volumeId()));
 
     QFile *file = new QFile();
     m_openFiles.insert(file);
-    file->setFileName(c_storageFileDir.arg(volumeId()) + QLatin1Char('/') + QString::number(++m_lastFileLocalId));
+    file->setFileName(getFileName(volumeId(), ++m_lastFileLocalId));
     qWarning() << CALL_INFO << file->fileName();
     if (!file->open(QIODevice::WriteOnly)) {
         qWarning() << CALL_INFO << "Unable to open file!";
@@ -167,7 +166,7 @@ FileDescriptor *MediaService::endWriteFile(QIODevice *device, const QString &nam
     result.dcId = dcId();
     result.volumeId = volumeId();
     result.localId = m_lastFileLocalId;
-    result.secret = 0xbeef;
+    RandomGenerator::instance()->generate(&result.secret);
     result.date = Telegram::Utils::getCurrentTime();
     result.name = name;
 
@@ -179,6 +178,16 @@ FileDescriptor *MediaService::endWriteFile(QIODevice *device, const QString &nam
     m_allFileDescriptors.append(result);
 
     return &m_allFileDescriptors.last();
+}
+
+QString MediaService::getVolumeDirName(quint64 volumeId) const
+{
+    return c_storageFileDir.arg(dcId()).arg(volumeId);
+}
+
+QString MediaService::getFileName(quint64 volumeId, quint32 localId) const
+{
+    return getVolumeDirName(volumeId) + QLatin1Char('/') + QString::number(localId);
 }
 
 FileDescriptor MediaService::saveDocumentFile(const FileDescriptor &descriptor,
