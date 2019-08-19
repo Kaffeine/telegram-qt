@@ -71,15 +71,12 @@ void BaseRpcLayerExtension::setRpcProcessingMethod(RpcProcessingMethod sendMetho
 
 void BaseRpcLayerExtension::processRpcCall(PendingRpcOperation *operation)
 {
+    const bool hasMethod(m_processingMethod);
     qCDebug(c_clientRpcLayerExtensionCategory) << CALL_INFO
-                                               << "process" << operation
+                                               << "process (" << hasMethod << ")" << operation
                                                << TLValue::firstFromArray(operation->requestData());
     if (m_processingMethod) {
         m_processingMethod(operation);
-    } else {
-        qCWarning(c_clientRpcLayerExtensionCategory) << CALL_INFO
-                                                     << "unable to process" << operation
-                                                     << TLValue::firstFromArray(operation->requestData());
     }
 }
 
