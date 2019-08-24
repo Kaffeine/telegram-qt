@@ -11,8 +11,6 @@ set(CMAKE_AUTOMOC TRUE)
 add_library(TelegramQt${QT_VERSION_MAJOR}Qml
     DeclarativeAuthOperation.cpp
     DeclarativeAuthOperation.hpp
-    DeclarativeChatInfo.cpp
-    DeclarativeChatInfo.hpp
     DeclarativeClient.cpp
     DeclarativeClient.hpp
     DeclarativeClientOperator.cpp
@@ -21,12 +19,12 @@ add_library(TelegramQt${QT_VERSION_MAJOR}Qml
     DeclarativeMessageSender.hpp
     DeclarativeOperation.cpp
     DeclarativeOperation.hpp
+    DeclarativePeerInfo.cpp
+    DeclarativePeerInfo.hpp
     DeclarativeRsaKey.cpp
     DeclarativeRsaKey.hpp
     DeclarativeSettings.cpp
     DeclarativeSettings.hpp
-    DeclarativeUserInfo.cpp
-    DeclarativeUserInfo.hpp
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml

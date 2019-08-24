@@ -16,25 +16,23 @@ OTHER_FILES += CMakeLists.txt
 INCLUDEPATH += ../../TelegramQt
 SOURCES += \
     DeclarativeAuthOperation.cpp \
-    DeclarativeChatInfo.cpp \
     DeclarativeClient.cpp \
     DeclarativeClientOperator.cpp \
     DeclarativeMessageSender.cpp \
     DeclarativeOperation.cpp \
+    DeclarativePeerInfo.cpp \
     DeclarativeRsaKey.cpp \
     DeclarativeSettings.cpp \
-    DeclarativeUserInfo.cpp \
 
 HEADERS += \
     DeclarativeAuthOperation.hpp \
-    DeclarativeChatInfo.hpp \
     DeclarativeClient.hpp \
     DeclarativeClientOperator.hpp \
     DeclarativeMessageSender.hpp \
     DeclarativeOperation.hpp \
+    DeclarativePeerInfo.hpp \
     DeclarativeRsaKey.hpp \
     DeclarativeSettings.hpp \
-    DeclarativeUserInfo.hpp \
 
 target.path += $$INSTALL_QML_IMPORT_DIR/TelegramQt
 INSTALLS += target

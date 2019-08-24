@@ -12,13 +12,12 @@
 #include "DataStorage.hpp"
 #include "MessagingApi.hpp"
 
-#include "DeclarativeChatInfo.hpp"
 #include "DeclarativeClient.hpp"
 #include "DeclarativeAuthOperation.hpp"
 #include "DeclarativeMessageSender.hpp"
+#include "DeclarativePeerInfo.hpp"
 #include "DeclarativeRsaKey.hpp"
 #include "DeclarativeSettings.hpp"
-#include "DeclarativeUserInfo.hpp"
 
 class AccountSecretHelper : public QObject
 {
@@ -235,9 +234,8 @@ public:
         qmlRegisterType<AccountSecretHelper>(uri, versionMajor, versionMinor, "AccountSecretHelper");
         qmlRegisterType<Telegram::Client::DeclarativeAuthOperation>(uri, versionMajor, versionMinor, "AuthOperation");
         qmlRegisterType<Telegram::Client::DeclarativeClient>(uri, versionMajor, versionMinor, "Client");
-        qmlRegisterType<Telegram::Client::DeclarativeUserInfo>(uri, versionMajor, versionMinor, "UserInfo");
-        qmlRegisterType<Telegram::Client::DeclarativeChatInfo>(uri, versionMajor, versionMinor, "ChatInfo");
         qmlRegisterType<Telegram::Client::DeclarativeServerOption>(uri, versionMajor, versionMinor, "ServerOption");
+        qmlRegisterType<Telegram::Client::DeclarativePeerInfo>(uri, versionMajor, versionMinor, "PeerInfo");
         qmlRegisterType<Telegram::Client::DeclarativeProxySettings>(uri, versionMajor, versionMinor, "ProxySettings");
         qmlRegisterType<Telegram::Client::DeclarativeSettings>(uri, versionMajor, versionMinor, "Settings");
         qmlRegisterType<Telegram::Client::DeclarativeRsaKey>(uri, versionMajor, versionMinor, "RsaKey");
