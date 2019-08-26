@@ -551,9 +551,11 @@ TLInputFileLocation FileInfo::Private::getInputFileLocation() const
         return TLInputFileLocation();
     }
 
+    // InputFileLocation
     result.volumeId   = m_volumeId;
     result.localId    = m_localId;
     result.secret     = m_secret;
+    // InputDocumentFileLocation, InputEncryptedFileLocation
     result.id         = m_id;
     result.accessHash = m_accessHash;
     return result;

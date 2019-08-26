@@ -389,15 +389,15 @@ ConnectOperation *ConnectionApiPrivate::connectToExtraDc(const ConnectionSpec &c
             conn->setAuthKey(mainConnection()->authKey());
             conn->rpcLayer()->startNewSession();
         } else {
-            if (!m_exportedAuthorizations.contains(connectionSpec.dcId)) {
-                AuthRpcLayer::PendingAuthExportedAuthorization *rpcOperation = nullptr;
-                rpcOperation = backend()->authLayer()->exportAuthorization(connectionSpec.dcId);
-                rpcOperation->setObjectName(rpcOperation->objectName()
-                                            + QStringLiteral("/dc%1").arg(connectionSpec.dcId));
-                rpcOperation->connectToFinished(this, &ConnectionApiPrivate::onRpcExportAuthorizationResult,
-                                                connectionSpec.dcId,
-                                                rpcOperation);
-            }
+//            if (!m_exportedAuthorizations.contains(connectionSpec.dcId)) {
+//                AuthRpcLayer::PendingAuthExportedAuthorization *rpcOperation = nullptr;
+//                rpcOperation = backend()->authLayer()->exportAuthorization(connectionSpec.dcId);
+//                rpcOperation->setObjectName(rpcOperation->objectName()
+//                                            + QStringLiteral("/dc%1").arg(connectionSpec.dcId));
+//                rpcOperation->connectToFinished(this, &ConnectionApiPrivate::onRpcExportAuthorizationResult,
+//                                                connectionSpec.dcId,
+//                                                rpcOperation);
+//            }
 
             // if has exported authentication
             //     use it
@@ -410,8 +410,8 @@ ConnectOperation *ConnectionApiPrivate::connectToExtraDc(const ConnectionSpec &c
             // conn - start new Rpc session
             // conn - import authentication
             // emit finished()
-            // const QString text = QLatin1String("NOT IMPLEMENTED");
-            // return PendingOperation::failOperation<ConnectOperation>(text, this);
+            const QString text = QLatin1String("NOT IMPLEMENTED");
+            return PendingOperation::failOperation<ConnectOperation>(text, this);
         }
         ConnectOperation *operation = new ConnectOperation(this);
         operation->setConnection(conn);
