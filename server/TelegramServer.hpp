@@ -100,6 +100,8 @@ public:
     QByteArray generateExportedAuthorization(quint32 userId);
     AuthorizedUser *getAuthorizedUser(quint32 userId, const QByteArray &authBytes) override;
 
+    void reportMessageRead(const MessageData *messageData) override;
+
     QVector<UpdateNotification> processMessage(MessageData *messageData) override;
     QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
                                               LocalUser *applicant,
@@ -121,6 +123,8 @@ protected:
     Session *addSession(quint64 sessionId);
 
     void onClientConnectionStatusChanged();
+
+    void reportLocalMessageRead(LocalUser *user, const UpdateNotification &notification);
 
 protected:
     AuthService *m_authService = nullptr;

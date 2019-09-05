@@ -225,6 +225,25 @@ void Server::onClientConnectionStatusChanged()
     }
 }
 
+void Server::reportLocalMessageRead(LocalUser *user, const UpdateNotification &notification)
+{
+    UserDialog *senderDialog = user->getDialog(notification.dialogPeer);
+
+    if (senderDialog->readOutboxMaxId >= notification.messageId) {
+        return;
+    }
+
+    // Outbox is actually updated, so bump PTS and generate an update
+    senderDialog->readOutboxMaxId = notification.messageId;
+    user->getPostBox()->bumpPts();
+
+    if (user->hasActiveSession()) {
+        UpdateNotification userNotification = notification;
+        userNotification.pts = user->getPostBox()->pts();
+        queueUpdates({userNotification});
+    }
+}
+
 Peer Server::getPeer(const TLInputPeer &peer, const LocalUser *applicant) const
 {
     switch (peer.tlType) {
@@ -445,6 +464,35 @@ AuthorizedUser *Server::getAuthorizedUser(quint32 userId, const QByteArray &auth
         m_authorizedUsers.insert(userId, newUser);
     }
     return m_authorizedUsers.value(userId);
+}
+
+void Server::reportMessageRead(const MessageData *messageData)
+{
+    const Peer senderPostBoxPeer = messageData->fromId()
+            ? Peer::fromUserId(messageData->fromId())
+            : messageData->toPeer();
+    const quint32 senderMessageId = messageData->getReference(senderPostBoxPeer);
+
+    const quint32 requestDate = Telegram::Utils::getCurrentTime();
+    UpdateNotification notification;
+    notification.userId = messageData->fromId();
+    notification.type = UpdateNotification::Type::ReadOutbox;
+    notification.date = requestDate;
+    notification.messageId = senderMessageId;
+    notification.dialogPeer = messageData->toPeer();
+
+    // The sender is Remote User
+    AbstractUser *remoteUser = getAbstractUser(messageData->fromId());
+    if (remoteUser->dcId() != dcId()) {
+        RemoteServerConnection *remoteServerConnection = getRemoteServer(remoteUser->dcId());
+        AbstractServerApi *remoteApi = remoteServerConnection->api();
+        remoteApi->queueServerUpdates({notification});
+        return;
+    }
+
+    // The sender is Local User
+    LocalUser *messageSender = getUser(notification.userId);
+    reportLocalMessageRead(messageSender, notification);
 }
 
 /*
@@ -700,6 +748,9 @@ void Server::queueServerUpdates(const QVector<UpdateNotification> &notifications
             user->addNewMessage(notification.dialogPeer, notification.messageId, messageData->date64());
             user->bumpDialogUnreadCount(notification.dialogPeer);
         }
+            break;
+        case UpdateNotification::Type::ReadOutbox:
+            reportLocalMessageRead(user, notification);
             break;
         default:
             break;

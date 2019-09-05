@@ -1502,15 +1502,7 @@ void MessagesRpcOperation::runReadHistory()
     const quint64 globalMessageId = selfUser->getPostBox()->getMessageGlobalId(maxId);
     const MessageData *messageData = api()->messageService()->getMessage(globalMessageId);
 
-    LocalUser *messageSender = api()->getUser(messageData->fromId());
-    UserDialog *senderDialog = messageSender->getDialog(messageData->toPeer());
-    quint32 senderMessageId = messageData->getReference(messageSender->toPeer());
-
-    if (senderDialog->readOutboxMaxId < senderMessageId) {
-        // Message sender update needed
-        senderDialog->readOutboxMaxId = senderMessageId;
-        messageSender->getPostBox()->bumpPts();
-    }
+    api()->reportMessageRead(messageData);
 
     TLMessagesAffectedMessages result;
     result.ptsCount = 1;
@@ -1526,17 +1518,6 @@ void MessagesRpcOperation::runReadHistory()
         readNotification.messageId = maxId;
         readNotification.dialogPeer = targetPeer;
         readNotification.excludeSession = layer()->session();
-        api()->queueUpdates({readNotification});
-    }
-
-    if (messageSender->hasActiveSession()) {
-        UpdateNotification readNotification;
-        readNotification.userId = messageSender->userId();
-        readNotification.type = UpdateNotification::Type::ReadOutbox;
-        readNotification.date = requestDate;
-        readNotification.pts = messageSender->getPostBox()->pts();
-        readNotification.messageId = senderMessageId;
-        readNotification.dialogPeer = messageData->toPeer();
         api()->queueUpdates({readNotification});
     }
 }

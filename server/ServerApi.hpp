@@ -104,6 +104,8 @@ public:
     virtual QByteArray generateExportedAuthorization(quint32 userId) = 0;
     virtual AuthorizedUser *getAuthorizedUser(quint32 userId, const QByteArray &authBytes) = 0;
 
+    virtual void reportMessageRead(const MessageData *messageData) = 0;
+
     virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
     virtual QVector<UpdateNotification> processMessage(MessageData *messageData) = 0;
     virtual QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
