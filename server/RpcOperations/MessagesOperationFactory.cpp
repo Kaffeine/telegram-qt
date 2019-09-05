@@ -1474,6 +1474,14 @@ void MessagesRpcOperation::runReadHistory()
         affectedMessages.append(messageId);
     }
 
+    if (selfUserDialog->readInboxMaxId >= maxId) {
+        TLMessagesAffectedMessages result;
+        result.ptsCount = 0;
+        result.pts = selfUser->getPostBox()->pts();
+        sendRpcReply(result);
+        return;
+    }
+
     selfUserDialog->readInboxMaxId = maxId;
     const quint32 readCount = static_cast<quint32>(affectedMessages.count());
     if (selfUserDialog->unreadCount < readCount) {
