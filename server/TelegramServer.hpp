@@ -97,7 +97,7 @@ public:
     bool setUserName(LocalUser *user, const QString &newUsername) override;
 
     PendingOperation *exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes) override;
-    QByteArray generateExportedAuthorization(quint32 userId);
+    QByteArray generateExportedAuthorization(quint32 userId) override;
     AuthorizedUser *getAuthorizedUser(quint32 userId, const QByteArray &authBytes) override;
 
     void reportMessageRead(const MessageData *messageData) override;
