@@ -7,7 +7,7 @@ import TelegramQt 0.2 as Telegram
 import TelegramQtTheme 1.0
 
 ApplicationWindow {
-    id: window
+    id: window_
     visible: true
     title: qsTr("TelegramQt Example")
 
@@ -24,23 +24,23 @@ ApplicationWindow {
     property string appname: Qt.application.name
 
     QtObject {
-        id: options
+        id: options_
         property bool localServer: true && false
     }
 
     Telegram.FileAccountStorage {
-        id: accountStorage
-        accountIdentifier: options.localServer ? "default-local" : "default-official"
+        id: accountStorage_
+        accountIdentifier: options_.localServer ? "default-local" : "default-official"
         fileName: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.cache/telegram-qt/secrets/" + accountIdentifier
         onSynced: console.log("Account synced")
     }
 
     Telegram.InMemoryDataStorage {
-        id: dataStorage
+        id: dataStorage_
     }
 
     Telegram.AppInformation {
-        id: appInfo
+        id: appInfo_
         appId: 14617
         appHash: "e17ac360fd072f83d5d08db45ce9a121" // Telepathy-Morse app hash
         appVersion: Qt.application.version
@@ -48,61 +48,58 @@ ApplicationWindow {
         osInfo: "GNU/Linux"
         languageCode: "en"
     }
-    Telegram.RsaKey {
-        id: officialServerKey
-        loadDefault: true
-    }
+
     Telegram.Settings {
-        id: settings
+        id: settings_
         pingInterval: 15000
         proxy.address: "127.0.0.1"
         proxy.port: 12343
-        serverKey: officialServerKey
     }
 
     Telegram.RsaKey {
-        id: localServerKey
-        fileName: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/TelegramServer/public_key.pem"
+        id: localServerKey_
+        fileName: StandardPaths.writableLocation(StandardPaths.TempLocation) + "/TelegramTestServer.pem"
     }
+
     Telegram.Settings {
-        id: localSettings
+        id: localSettings_
         serverOptions: [
             Telegram.ServerOption {
                 address: "127.0.0.1"
-                port: 11441
+                port: 10443
             }
         ]
-        serverKey: localServerKey
+        serverKey: localServerKey_
     }
 
     Telegram.Client {
-        id: telegramClient
-        applicationInformation: appInfo
-        settings: options.localServer ? localSettings : settings
-        dataStorage: dataStorage
-        accountStorage: accountStorage
+        id: telegramClient_
+        applicationInformation: appInfo_
+        settings: options_.localServer ? localSettings_ : settings_
+        dataStorage: dataStorage_
+        accountStorage: accountStorage_
     }
 
     Timer {
-        id: startupOperation
+        id: startupOperation_
         interval: 30
         running: true
         onTriggered: {
-            if (accountStorage.fileExists() && accountStorage.loadData()) {
-                signInOperation.checkIn()
+            if (accountStorage_.fileExists() && accountStorage_.loadData()) {
+                signInOperation_.checkIn()
             } else {
-                signInOperation.signIn()
+                signInOperation_.signIn()
             }
         }
     }
 
     Telegram.AuthOperation {
-        id: signInOperation
-        client: telegramClient
+        id: signInOperation_
+        client: telegramClient_
         onCheckInFinished: {
             console.log("check in finished:" + signedIn)
             if (signedIn) {
-                window.currentView = mainScreen
+                mainView_.sourceComponent = mainScreenComponent_
             } else {
                 // TODO: Process network errors
                 signIn()
@@ -112,64 +109,51 @@ ApplicationWindow {
         onStatusChanged: {
             console.log("New status:" + status)
             if (status == Telegram.AuthOperation.SignedIn) {
-                window.currentView = mainScreen
+                mainView_.sourceComponent = mainScreenComponent_
             }
         }
 
         onPhoneNumberRequired: {
-            window.currentView = loginScreen
+            mainView_.sourceComponent = loginViewComponent_
         }
         onFinished: {
             console.log("Auth operation finished. Succeeded: " + succeeded)
         }
     }
 
-    property Item currentView: busyScreen
-
-    Loader {
-        id: loginScreen
-        anchors.centerIn: parent
-        width: recommendedDialogWidth
-        height: recommendedDialogHeight
-        visible: window.currentView === loginScreen
-        active: visible
-        sourceComponent: Login {
+    Component {
+        id: loginViewComponent_
+        Item {
+            Login {
+                anchors.centerIn: parent
+                width: recommendedDialogWidth
+                height: recommendedDialogHeight
+            }
         }
     }
 
-    QtObject {
-        id: messageSendStubProxy
-        signal messageSent(string message, var peer)
-        onMessageSent: {
-            var typeText = (peer.type == 0 ? "User" : "Chat")
-            console.log("Message to " + typeText + " " + peer.id)
-        }
-        signal draftChanged(string message, var peer)
+    Component {
+        id: mainScreenComponent_
+        MainScreen { }
     }
 
-    Loader {
-        id: mainScreen
-        active: visible
-        visible: window.currentView === mainScreen
-        anchors.fill: parent
-        sourceComponent: MainScreen {
-        }
-    }
-
-    Loader {
-        id: busyScreen
-        active: visible
-        visible: window.currentView === busyScreen
-        anchors.fill: parent
-        sourceComponent: Frame {
+    Component {
+        id: loadingViewComponent_
+        Frame {
             BusyIndicator {
                 anchors.centerIn: parent
             }
         }
     }
 
+    Loader {
+        id: mainView_
+        anchors.fill: parent
+        sourceComponent: loadingViewComponent_
+    }
+
     Shortcut {
         sequence: StandardKey.Quit
-        onActivated: window.close()
+        onActivated: window_.close()
     }
 }

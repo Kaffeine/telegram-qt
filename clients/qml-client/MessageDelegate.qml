@@ -8,7 +8,7 @@ ItemDelegate {
 
     Telegram.UserInfo {
         id: userInfo
-        client: telegramClient
+        client: telegramClient_
         userId: model.message.sender
     }
 

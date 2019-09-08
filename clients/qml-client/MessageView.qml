@@ -18,7 +18,7 @@ Frame {
 
     Telegram.MessagesModel {
         id: messagesModel
-        client: telegramClient
+        client: telegramClient_
     }
 
 //    Telegram.PeerInfoProvider {
@@ -28,7 +28,7 @@ Frame {
 
     Telegram.MessageSender {
         id: sender
-        client: telegramClient
+        client: telegramClient_
         peer: messagesModel.peer
     }
 

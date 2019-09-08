@@ -37,9 +37,9 @@ Frame {
     }
 
     Connections {
-        target: signInOperation
+        target: signInOperation_
         onAuthCodeRequired: {
-            if (signInOperation.registered) {
+            if (signInOperation_.registered) {
                 loginStack.replace("login/EnterCode.qml")
             } else {
                 loginStack.replace("login/EnterName.qml")
@@ -77,16 +77,16 @@ Frame {
         Connections {
             target: loginStack.currentItem
             ignoreUnknownSignals: true
-            onSubmitAuthCode: signInOperation.submitAuthCode(code)
-            onSubmitPassword: signInOperation.submitPassword(password)
-            onSubmitPhoneNumber: signInOperation.submitPhoneNumber(phoneNumber)
+            onSubmitAuthCode: signInOperation_.submitAuthCode(code)
+            onSubmitPassword: signInOperation_.submitPassword(password)
+            onSubmitPhoneNumber: signInOperation_.submitPhoneNumber(phoneNumber)
             onSubmitName: {
-                if (signInOperation.submitName(firstName, lastName)) {
+                if (signInOperation_.submitName(firstName, lastName)) {
                     loginStack.replace("login/EnterCode.qml")
                 }
             }
         }
-        opacity: signInOperation.busy ? 0 : 1
+        opacity: signInOperation_.busy ? 0 : 1
         Behavior on opacity { NumberAnimation { } }
     }
 
@@ -100,7 +100,7 @@ Frame {
     }
 
     BusyIndicator {
-        running: signInOperation.busy
+        running: signInOperation_.busy
         anchors.centerIn: parent
     }
 }

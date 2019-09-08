@@ -23,20 +23,20 @@ Item {
 
     Telegram.UserInfo {
         id: currentUserInfo
-        client: telegramClient
+        client: telegramClient_
         userId: currentPeer.type === Telegram.Peer.User ? currentPeer.id : 0
     }
 
     Telegram.ChatInfo {
         id: currentChatInfo
-        client: telegramClient
+        client: telegramClient_
         peer: currentPeer
     }
 
     Telegram.MessageSender {
         id: sender
         peer: currentPeer
-        client: telegramClient
+        client: telegramClient_
     }
 
     RowLayout {

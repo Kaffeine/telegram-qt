@@ -18,7 +18,7 @@ Frame {
 
     DialogsModel {
         id: dialogsModel
-        client: telegramClient
+        client: telegramClient_
         Component.onCompleted: {
             populate()
         }
