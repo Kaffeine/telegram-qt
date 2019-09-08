@@ -51,9 +51,9 @@ Config::Config(const QString &fileName)
 
     // default config
     m_serverConfiguration.dcOptions = {
-        Telegram::DcOption(QStringLiteral("127.0.0.1"), 11441, 1),
-        Telegram::DcOption(QStringLiteral("127.0.0.2"), 11442, 2),
-        Telegram::DcOption(QStringLiteral("127.0.0.3"), 11443, 3),
+        Telegram::DcOption(QStringLiteral("127.0.0.1"), 10443, 1),
+        Telegram::DcOption(QStringLiteral("127.0.0.2"), 10443, 2),
+        Telegram::DcOption(QStringLiteral("127.0.0.3"), 10443, 3),
     };
     m_privateKeyFile = QStringLiteral("private_key.pem");
 }
