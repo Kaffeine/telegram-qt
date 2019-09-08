@@ -52,7 +52,7 @@ isEmpty(BUILD_QML_IMPORT) {
 }
 
 equals(BUILD_QML_IMPORT, "true") {
-    SUBDIRS += imports/TelegramQtQml
+    SUBDIRS += imports/TelegramQt/TelegramQtQml.pro
 }
 
 equals(BUILD_QCH, "true") {

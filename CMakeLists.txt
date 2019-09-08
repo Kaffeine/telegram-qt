@@ -87,7 +87,7 @@ endif()
 add_subdirectory(TelegramQt)
 
 if (BUILD_QML_IMPORT)
-    add_subdirectory(imports/TelegramQtQml)
+    add_subdirectory(imports/TelegramQt)
 endif()
 
 if (BUILD_CLIENT)
