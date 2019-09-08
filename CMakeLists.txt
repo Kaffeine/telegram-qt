@@ -88,6 +88,8 @@ add_subdirectory(TelegramQt)
 
 if (BUILD_QML_IMPORT)
     add_subdirectory(imports/TelegramQt)
+    set(QML_IMPORT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imports ${CMAKE_CURRENT_BINARY_DIR}/imports
+        CACHE STRING "QML Import path for IDE code model" FORCE)
 endif()
 
 if (BUILD_CLIENT)
