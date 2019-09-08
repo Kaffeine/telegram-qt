@@ -182,6 +182,22 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<Telegram::Client::Event>("Client", 1, 0, "Event", QStringLiteral("Event can be created only from C++"));
 
     QQmlApplicationEngine engine;
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated, [](QObject *object) {
+        if (object) {
+            return;
+        }
+        qCritical() << "Unable to instantiate the root component.";
+        qCritical() << "Ensure that the application is installed correctly and double check"
+                       " that QML2_IMPORT_PATH environment variable is set to the correct"
+                       " installation directory with TelegramQt inside.";
+        qCritical() << "If you built the project from CMake then ensure that you did\n"
+                       "    cmake --build <your_build_directory> --target install\n"
+                       "and also follow the hint about QML2_IMPORT_PATH from CMake"
+                       " configure output.";
+
+        exit(1);
+    });
+
     qmlRegisterSingletonType<Theme>("TelegramQtTheme", 1, 0, "Theme", theme_type_provider);
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
