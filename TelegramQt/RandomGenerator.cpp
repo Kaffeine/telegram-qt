@@ -30,8 +30,15 @@ int RandomGenerator::generate(void *buffer, int count)
     return RAND_bytes(static_cast<unsigned char *>(buffer), count);
 }
 
+bool RandomGenerator::hasInstance()
+{
+    return s_randomGenerator;
+}
+
 RandomGenerator *RandomGenerator::instance()
 {
+    Q_ASSERT_X(s_randomGenerator, "RandomGenerator", "RandomGenerator is not set."
+                                        " Ensure that Telegram::initialize() was called.");
     return s_randomGenerator;
 }
 

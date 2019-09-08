@@ -56,6 +56,7 @@ public:
         return result;
     }
 
+    static bool hasInstance();
     static RandomGenerator *instance(); // Returns the currently active instance
     static RandomGenerator *setInstance(RandomGenerator *instance);
 };

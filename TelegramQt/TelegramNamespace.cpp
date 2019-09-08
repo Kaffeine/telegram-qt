@@ -153,7 +153,7 @@ Telegram::Peer Namespace::peerFromUserId(quint32 id)
 void initialize()
 {
     Namespace::registerTypes();
-    if (!RandomGenerator::instance()) {
+    if (!RandomGenerator::hasInstance()) {
         static RandomGenerator defaultGenerator;
         RandomGenerator::setInstance(&defaultGenerator);
     }
