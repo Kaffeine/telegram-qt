@@ -21,7 +21,7 @@
 #include <QDebug>
 #include <QTimer>
 
-#include "../../imports/TelegramQtQml/DeclarativeClient.hpp"
+#include "DeclarativeClient.hpp"
 
 #include "Client.hpp"
 #include "DialogList.hpp"
