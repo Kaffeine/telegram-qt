@@ -1,24 +1,23 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>Login.qml</file>
-        <file>dialogs/DialogDelegate.qml</file>
-        <file>dialogs/DialogView.qml</file>
-        <file>dialogs/UnreadMessageIndicator.qml</file>
-        <file>PeerHeader.qml</file>
-        <file>PeerPicture.qml</file>
-        <file>MainScreen.qml</file>
-        <file>MessageView.qml</file>
-        <file>MessageListView.qml</file>
-        <file>MessageDelegate.qml</file>
-        <file>MessageEditor.qml</file>
-        <file>ServiceMessageDelegate.qml</file>
-        <file>login/AuthScreen.qml</file>
-        <file>login/EnterCode.qml</file>
-        <file>login/EnterName.qml</file>
-        <file>login/EnterPassword.qml</file>
-        <file>login/EnterPhone.qml</file>
-
-        <file>InlineHeader.qml</file>
+        <file>qml/InlineHeader.qml</file>
+        <file>qml/Login.qml</file>
+        <file>qml/MainScreen.qml</file>
+        <file>qml/MessageDelegate.qml</file>
+        <file>qml/MessageEditor.qml</file>
+        <file>qml/MessageListView.qml</file>
+        <file>qml/MessageView.qml</file>
+        <file>qml/PeerHeader.qml</file>
+        <file>qml/PeerPicture.qml</file>
+        <file>qml/ServiceMessageDelegate.qml</file>
+        <file>qml/dialogs/DialogDelegate.qml</file>
+        <file>qml/dialogs/DialogView.qml</file>
+        <file>qml/dialogs/UnreadMessageIndicator.qml</file>
+        <file>qml/login/AuthScreen.qml</file>
+        <file>qml/login/EnterCode.qml</file>
+        <file>qml/login/EnterName.qml</file>
+        <file>qml/login/EnterPassword.qml</file>
+        <file>qml/login/EnterPhone.qml</file>
+        <file>qml/main.qml</file>
     </qresource>
 </RCC>
