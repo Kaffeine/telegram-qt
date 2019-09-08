@@ -30,6 +30,7 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QFile>
 #include <QStandardPaths>
 
 using namespace Telegram::Server;
@@ -61,6 +62,8 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     a.setOrganizationName(QLatin1String("TelegramQt"));
     a.setApplicationName(QLatin1String("TelegramTestServer"));
+    const QString persistentKeyFilePath = QStandardPaths::writableLocation(QStandardPaths::TempLocation)
+            + QLatin1Literal("/TelegramTestServer.pem");
 
     Telegram::initialize();
     if (!TestKeyData::initKeyFiles()) {
@@ -112,6 +115,13 @@ int main(int argc, char *argv[])
     qInfo() << "    Private:" << TestKeyData::privateKeyFileName();
     qInfo() << "    Public PKCS1:" << TestKeyData::publicKeyPkcs1FileName();
     qInfo() << "    Public PKCS8:" << TestKeyData::publicKeyPkcs8FileName();
+
+    QFile::remove(persistentKeyFilePath);
+    if (QFile::copy(TestKeyData::publicKeyPkcs1FileName(), persistentKeyFilePath)) {
+        qInfo() << "    Persistent file location:" << persistentKeyFilePath;
+    } else {
+        qWarning() << "Unable to save the RSA key in a persistent location.";
+    }
     if (!cluster.start()) {
         return -2;
     }
