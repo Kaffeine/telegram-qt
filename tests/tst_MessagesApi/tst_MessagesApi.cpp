@@ -107,6 +107,7 @@ tst_MessagesApi::tst_MessagesApi(QObject *parent) :
 
 void tst_MessagesApi::initTestCase()
 {
+    Telegram::initialize();
     qRegisterMetaType<UserData>();
     QVERIFY(TestKeyData::initKeyFiles());
 

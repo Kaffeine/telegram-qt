@@ -128,6 +128,7 @@ tst_ConnectionApi::tst_ConnectionApi(QObject *parent) :
 
 void tst_ConnectionApi::initTestCase()
 {
+    Telegram::initialize();
     qRegisterMetaType<UserData>();
     QVERIFY(TestKeyData::initKeyFiles());
 
