@@ -15,22 +15,22 @@
 
  */
 
-#include "TelegramServerConfig.hpp"
-#include "TelegramServerUser.hpp"
 #include "DcConfiguration.hpp"
 #include "DefaultAuthorizationProvider.hpp"
 #include "LocalCluster.hpp"
 #include "RandomGenerator.hpp"
 #include "Session.hpp"
+#include "TelegramServerConfig.hpp"
+#include "TelegramServerUser.hpp"
+#include "Utils.hpp"
 
 // Test keys
 #include "keys_data.hpp"
 
-#include "Utils.hpp"
+#include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QDebug>
 #include <QStandardPaths>
-#include <QCommandLineParser>
 
 using namespace Telegram::Server;
 
