@@ -591,6 +591,30 @@ Module {
         Method { name: "testServerConfiguration"; type: "QVector<DcOption>" }
     }
     Component {
+        name: "Telegram::MessageAction"
+        exports: ["TelegramQt/MessageAction 0.2"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "Type"
+            values: {
+                "None": 0,
+                "Typing": 1,
+                "RecordVideo": 2,
+                "RecordAudio": 3,
+                "UploadVideo": 4,
+                "UploadAudio": 5,
+                "UploadPhoto": 6,
+                "UploadDocument": 7,
+                "UploadRoundVideo": 8,
+                "GeoLocation": 9,
+                "ChooseContact": 10
+            }
+        }
+        Property { name: "type"; type: "Telegram::MessageAction::Type" }
+        Property { name: "progress"; type: "uint" }
+    }
+    Component {
         name: "Telegram::Namespace"
         prototype: "QObject"
         exports: ["TelegramQt/Namespace 0.2"]
@@ -683,21 +707,6 @@ Module {
                 "UserNameStatusCanNotBeUsed": 5,
                 "UserNameStatusResolved": 6,
                 "UserNameStatusAccepted": 7
-            }
-        }
-        Enum {
-            name: "MessageAction"
-            values: {
-                "MessageActionNone": 0,
-                "MessageActionTyping": 1,
-                "MessageActionRecordVideo": 2,
-                "MessageActionRecordAudio": 3,
-                "MessageActionUploadVideo": 4,
-                "MessageActionUploadAudio": 5,
-                "MessageActionUploadPhoto": 6,
-                "MessageActionUploadDocument": 7,
-                "MessageActionGeoLocation": 8,
-                "MessageActionChooseContact": 9
             }
         }
         Property { name: "version"; type: "string"; isReadonly: true }

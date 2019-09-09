@@ -236,6 +236,9 @@ void TelegramQtQmlPlugin::registerTypes(const char *uri)
     qmlRegisterUncreatableType<Telegram::Peer>
             (uri, versionMajor, versionMinor, "Peer",
              QLatin1String("Peer is not a creatable object. Use 'var' instead."));
+    qmlRegisterUncreatableType<Telegram::MessageAction>
+            (uri, versionMajor, versionMinor, "MessageAction",
+             QLatin1String("MessageAction is not intended to be created from QML"));
     qmlRegisterType<Telegram::Client::AppInformation>
             (uri, versionMajor, versionMinor, "AppInformation");
     qmlRegisterType<AccountSecretHelper>
