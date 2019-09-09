@@ -21,14 +21,8 @@ Item {
         console.log("Activated dialog (" + currentPeer.type + ", " + currentPeer.id + ")")
     }
 
-    Telegram.UserInfo {
-        id: currentUserInfo
-        client: telegramClient_
-        userId: currentPeer.type === Telegram.Peer.User ? currentPeer.id : 0
-    }
-
-    Telegram.ChatInfo {
-        id: currentChatInfo
+    Telegram.PeerInfo {
+        id: currentPeerInfo_
         client: telegramClient_
         peer: currentPeer
     }
@@ -62,7 +56,7 @@ Item {
                 height: 64
                 peer: currentPeer
                 spacing: rightPadding
-                peerInfo: peer.type === Telegram.Peer.User ? currentUserInfo : currentChatInfo
+                peerInfo: currentPeerInfo_
             }
 
             MessageView {

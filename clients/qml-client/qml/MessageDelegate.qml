@@ -6,13 +6,11 @@ import TelegramQtTheme 1.0
 ItemDelegate {
     id: messageDelegate
 
-    Telegram.UserInfo {
-        id: userInfo
+    Telegram.PeerInfo {
+        id: peerInfo_
         client: telegramClient_
         userId: model.fromUserId
     }
-
-    property var senderInfo: userInfo //userInfoProvider.getUserInfo(model.message.sender)
 
     contentItem: Item {
         id: content
@@ -21,8 +19,8 @@ ItemDelegate {
             id: pictureFrame
             width: 48
             height: 48
-            peer: Telegram.Namespace.peerFromUserId(userInfo.userId)
-            displayName: senderInfo.displayName
+            peer: peerInfo_.peer
+            displayName: peerInfo_.displayName
         }
         Item {
             id: details
@@ -38,7 +36,7 @@ ItemDelegate {
 
             Label {
                 id: nameLabel
-                text: senderInfo.displayName
+                text: peerInfo_.displayName
                 font.bold: true
                 anchors.left: details.left
                 anchors.leftMargin: messageDelegate.spacing

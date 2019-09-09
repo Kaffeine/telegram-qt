@@ -21,11 +21,6 @@ Frame {
         client: telegramClient_
     }
 
-//    Telegram.PeerInfoProvider {
-//        id: userInfoProvider
-//        client: telegramClient
-//    }
-
     Telegram.MessageSender {
         id: sender
         client: telegramClient_
@@ -72,13 +67,6 @@ Frame {
                 id: loader
                 width: listView.width
                 property var model: parent.itemModel // inject 'model' to the loaded item's context
-
-//                Telegram.UserInfo {
-//                    id: userInfo
-//                    client: telegramClient
-//                    provider: infoPull
-//                    //contactId: model.message.sender
-//                }
 
                 sourceComponent: {
                     if (model.eventType == Telegram.Event.Type.NewDay) {
