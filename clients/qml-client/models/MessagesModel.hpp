@@ -212,7 +212,7 @@ public:
         ReceivedTimestamp,
         Identifier, // Message ID
         Peer,
-        Contact,
+        FromUserId,
         Message,
         NewDay,
         ActionType, // Service action type, such as Partici

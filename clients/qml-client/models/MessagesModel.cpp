@@ -107,7 +107,7 @@ QHash<int, QByteArray> MessagesModel::roleNames() const
 {
     static const QHash<int, QByteArray> extraRoles {
         { UserRoleOffset + static_cast<int>(Role::Identifier), "identifier" },
-        { UserRoleOffset + static_cast<int>(Role::Contact), "sender" },
+        { UserRoleOffset + static_cast<int>(Role::FromUserId), "fromUserId" },
         { UserRoleOffset + static_cast<int>(Role::MessageType), "messageType" },
         { UserRoleOffset + static_cast<int>(Role::EventType), "eventType" },
         { UserRoleOffset + static_cast<int>(Role::Timestamp), "timestamp" },
@@ -239,7 +239,7 @@ QVariant MessagesModel::getData(int index, Role role) const
             return QVariant::fromValue(QDateTime::fromSecsSinceEpoch(message->receivedTimestamp));
         case Role::Identifier:
             return QVariant::fromValue(message->messageId);
-        case Role::Contact:
+        case Role::FromUserId:
             return QVariant::fromValue(message->fromId);
         case Role::Message:
             return QVariant::fromValue(*message);
@@ -292,7 +292,7 @@ QVariant MessagesModel::getSiblingEntryData(int index) const
     return QVariantMap({
                            { roleToName(Role::MessageType),
                              QVariant::fromValue(static_cast<int>(message->messageType)) },
-                           { roleToName(Role::Contact),
+                           { roleToName(Role::FromUserId),
                              QVariant::fromValue(message->fromId) },
                        });
 }

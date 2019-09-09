@@ -9,7 +9,7 @@ ItemDelegate {
     Telegram.UserInfo {
         id: userInfo
         client: telegramClient_
-        userId: model.message.sender
+        userId: model.fromUserId
     }
 
     property var senderInfo: userInfo //userInfoProvider.getUserInfo(model.message.sender)
