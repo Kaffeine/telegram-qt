@@ -194,12 +194,12 @@ Module {
         }
         Signal {
             name: "errorOccurred"
-            Parameter { name: "errorCode"; type: "TelegramNamespace::AuthenticationError" }
+            Parameter { name: "errorCode"; type: "Telegram::Namespace::AuthenticationError" }
             Parameter { name: "errorMessage"; type: "QByteArray" }
         }
         Signal {
             name: "authorizationErrorReceived"
-            Parameter { name: "errorCode"; type: "TelegramNamespace::UnauthorizedError" }
+            Parameter { name: "errorCode"; type: "Telegram::Namespace::UnauthorizedError" }
             Parameter { name: "errorMessage"; type: "string" }
         }
         Method { name: "startAuthentication" }
@@ -234,22 +234,6 @@ Module {
         Method { name: "requestSms"; type: "bool" }
         Method { name: "checkRegistration" }
         Method { name: "signIn" }
-    }
-    Component {
-        name: "Telegram::Client::DeclarativeChatInfo"
-        prototype: "Telegram::Client::DeclarativeClientOperator"
-        exports: ["TelegramQt/ChatInfo 0.2"]
-        exportMetaObjectRevisions: [0]
-        Property { name: "peer"; type: "Telegram::Peer" }
-        Property { name: "displayName"; type: "string"; isReadonly: true }
-        Signal {
-            name: "displayNameChanged"
-            Parameter { name: "displayName"; type: "string" }
-        }
-        Method {
-            name: "setPeer"
-            Parameter { name: "peer"; type: "Telegram::Peer" }
-        }
     }
     Component {
         name: "Telegram::Client::DeclarativeClient"
@@ -348,6 +332,28 @@ Module {
             Parameter { name: "details"; type: "QVariantHash" }
         }
         Method { name: "start" }
+    }
+    Component {
+        name: "Telegram::Client::DeclarativePeerInfo"
+        prototype: "Telegram::Client::DeclarativeClientOperator"
+        exports: ["TelegramQt/PeerInfo 0.2"]
+        exportMetaObjectRevisions: [0]
+        Property { name: "peer"; type: "Telegram::Peer" }
+        Property { name: "userId"; type: "uint" }
+        Property { name: "chatType"; type: "Namespace::ChatType"; isReadonly: true }
+        Property { name: "displayName"; type: "string"; isReadonly: true }
+        Signal {
+            name: "displayNameChanged"
+            Parameter { name: "displayName"; type: "string" }
+        }
+        Method {
+            name: "setPeer"
+            Parameter { name: "peer"; type: "Telegram::Peer" }
+        }
+        Method {
+            name: "setUserId"
+            Parameter { name: "userId"; type: "uint" }
+        }
     }
     Component {
         name: "Telegram::Client::DeclarativeProxySettings"
@@ -453,26 +459,6 @@ Module {
         }
     }
     Component {
-        name: "Telegram::Client::DeclarativeUserInfo"
-        prototype: "Telegram::Client::DeclarativeClientOperator"
-        exports: ["TelegramQt/UserInfo 0.2"]
-        exportMetaObjectRevisions: [0]
-        Property { name: "userId"; type: "uint" }
-        Property { name: "displayName"; type: "string"; isReadonly: true }
-        Signal {
-            name: "userIdChanged"
-            Parameter { name: "userId"; type: "uint" }
-        }
-        Signal {
-            name: "displayNameChanged"
-            Parameter { name: "displayName"; type: "string" }
-        }
-        Method {
-            name: "setUserId"
-            Parameter { name: "userId"; type: "uint" }
-        }
-    }
-    Component {
         name: "Telegram::Client::FileAccountStorage"
         prototype: "Telegram::Client::AccountStorage"
         exports: ["TelegramQt/FileAccountStorage 0.2"]
@@ -544,8 +530,8 @@ Module {
         Signal {
             name: "messageActionChanged"
             Parameter { name: "peer"; type: "Telegram::Peer" }
-            Parameter { name: "contactId"; type: "uint" }
-            Parameter { name: "action"; type: "TelegramNamespace::MessageAction" }
+            Parameter { name: "userId"; type: "uint" }
+            Parameter { name: "action"; type: "Telegram::MessageAction" }
         }
         Method {
             name: "setDraftMessage"
@@ -575,7 +561,7 @@ Module {
         Method {
             name: "setMessageAction"
             Parameter { name: "peer"; type: "Telegram::Peer" }
-            Parameter { name: "action"; type: "TelegramNamespace::MessageAction" }
+            Parameter { name: "action"; type: "Telegram::MessageAction" }
         }
         Method {
             name: "readHistory"
@@ -605,24 +591,7 @@ Module {
         Method { name: "testServerConfiguration"; type: "QVector<DcOption>" }
     }
     Component {
-        name: "Telegram::Peer"
-        exports: ["TelegramQt/Peer 0.2"]
-        isCreatable: false
-        exportMetaObjectRevisions: [0]
-        Enum {
-            name: "Type"
-            values: {
-                "User": 0,
-                "Chat": 1,
-                "Channel": 2
-            }
-        }
-        Property { name: "type"; type: "Telegram::Peer::Type" }
-        Property { name: "id"; type: "uint" }
-        Method { name: "isValid"; type: "bool" }
-    }
-    Component {
-        name: "TelegramNamespace"
+        name: "Telegram::Namespace"
         prototype: "QObject"
         exports: ["TelegramQt/Namespace 0.2"]
         isCreatable: false
@@ -661,6 +630,17 @@ Module {
                 "MessageTypeSticker": 256,
                 "MessageTypeAnimation": 512,
                 "MessageTypeAll": 65535
+            }
+        }
+        Enum {
+            name: "ChatType"
+            values: {
+                "ChatTypeInvalid": 0,
+                "ChatTypeSelfChat": 1,
+                "ChatTypeDialog": 2,
+                "ChatTypeGroup": 3,
+                "ChatTypeMegaGroup": 4,
+                "ChatTypeBroadcast": 5
             }
         }
         Enum {
@@ -738,5 +718,22 @@ Module {
             type: "Telegram::Peer"
             Parameter { name: "id"; type: "uint" }
         }
+    }
+    Component {
+        name: "Telegram::Peer"
+        exports: ["TelegramQt/Peer 0.2"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "Type"
+            values: {
+                "User": 0,
+                "Chat": 1,
+                "Channel": 2
+            }
+        }
+        Property { name: "type"; type: "Telegram::Peer::Type" }
+        Property { name: "id"; type: "uint" }
+        Method { name: "isValid"; type: "bool" }
     }
 }
