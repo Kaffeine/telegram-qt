@@ -222,35 +222,56 @@ public:
         qRegisterMetaType<AccountSecretHelper::Format>("AccountSecretHelper::Format");
     }
 
-    void registerTypes(const char *uri) override
-    {
-        Q_ASSERT(QByteArray(uri) == QByteArray("TelegramQt"));
-        Telegram::initialize();
-        int versionMajor = 0;
-        int versionMinor = 2;
-        qmlRegisterSingletonType<Telegram::Namespace>(uri, versionMajor, versionMinor, "Namespace", &telegram_namespace_provider);
-        qmlRegisterUncreatableType<Telegram::Peer>(uri, versionMajor, versionMinor, "Peer", QLatin1String("Peer is not a creatable object. Use 'var' instead."));
-        qmlRegisterType<Telegram::Client::AppInformation>(uri, versionMajor, versionMinor, "AppInformation");
-        qmlRegisterType<AccountSecretHelper>(uri, versionMajor, versionMinor, "AccountSecretHelper");
-        qmlRegisterType<Telegram::Client::DeclarativeAuthOperation>(uri, versionMajor, versionMinor, "AuthOperation");
-        qmlRegisterType<Telegram::Client::DeclarativeClient>(uri, versionMajor, versionMinor, "Client");
-        qmlRegisterType<Telegram::Client::DeclarativeServerOption>(uri, versionMajor, versionMinor, "ServerOption");
-        qmlRegisterType<Telegram::Client::DeclarativePeerInfo>(uri, versionMajor, versionMinor, "PeerInfo");
-        qmlRegisterType<Telegram::Client::DeclarativeProxySettings>(uri, versionMajor, versionMinor, "ProxySettings");
-        qmlRegisterType<Telegram::Client::DeclarativeSettings>(uri, versionMajor, versionMinor, "Settings");
-        qmlRegisterType<Telegram::Client::DeclarativeRsaKey>(uri, versionMajor, versionMinor, "RsaKey");
-        qmlRegisterUncreatableType<Telegram::Client::AccountStorage>(uri, versionMajor, versionMinor, "AccountStorage", QLatin1String("AccountStorage is an abstract type"));
-        qmlRegisterType<Telegram::Client::FileAccountStorage>(uri, versionMajor, versionMinor, "FileAccountStorage");
-        qmlRegisterUncreatableType<Telegram::Client::DataStorage>(uri, versionMajor, versionMinor, "DataStorage", QLatin1String("DataStorage is an abstract type"));
-        qmlRegisterType<Telegram::Client::InMemoryDataStorage>(uri, versionMajor, versionMinor, "InMemoryDataStorage");
-        qmlRegisterType<Telegram::Client::DeclarativeMessageSender>(uri, versionMajor, versionMinor, "MessageSender");
-
-        QString cppOnlyText = QLatin1String("API classes are not creatable");
-        qmlRegisterUncreatableType<Telegram::Client::ConnectionApi>
-                (uri, versionMajor, versionMinor, "ConnectionApi", cppOnlyText);
-        qmlRegisterUncreatableType<Telegram::Client::MessagingApi>
-                (uri, versionMajor, versionMinor, "MessagingApi", cppOnlyText);
-    }
+    void registerTypes(const char *uri) override;
 };
+
+void TelegramQtQmlPlugin::registerTypes(const char *uri)
+{
+    Q_ASSERT(QByteArray(uri) == QByteArray("TelegramQt"));
+    Telegram::initialize();
+    int versionMajor = 0;
+    int versionMinor = 2;
+    qmlRegisterSingletonType<Telegram::Namespace>
+            (uri, versionMajor, versionMinor, "Namespace", &telegram_namespace_provider);
+    qmlRegisterUncreatableType<Telegram::Peer>
+            (uri, versionMajor, versionMinor, "Peer",
+             QLatin1String("Peer is not a creatable object. Use 'var' instead."));
+    qmlRegisterType<Telegram::Client::AppInformation>
+            (uri, versionMajor, versionMinor, "AppInformation");
+    qmlRegisterType<AccountSecretHelper>
+            (uri, versionMajor, versionMinor, "AccountSecretHelper");
+    qmlRegisterType<Telegram::Client::DeclarativeAuthOperation>
+            (uri, versionMajor, versionMinor, "AuthOperation");
+    qmlRegisterType<Telegram::Client::DeclarativeClient>
+            (uri, versionMajor, versionMinor, "Client");
+    qmlRegisterType<Telegram::Client::DeclarativeServerOption>
+            (uri, versionMajor, versionMinor, "ServerOption");
+    qmlRegisterType<Telegram::Client::DeclarativePeerInfo>
+            (uri, versionMajor, versionMinor, "PeerInfo");
+    qmlRegisterType<Telegram::Client::DeclarativeProxySettings>
+            (uri, versionMajor, versionMinor, "ProxySettings");
+    qmlRegisterType<Telegram::Client::DeclarativeSettings>
+            (uri, versionMajor, versionMinor, "Settings");
+    qmlRegisterType<Telegram::Client::DeclarativeRsaKey>
+            (uri, versionMajor, versionMinor, "RsaKey");
+    qmlRegisterUncreatableType<Telegram::Client::AccountStorage>
+            (uri, versionMajor, versionMinor, "AccountStorage",
+             QLatin1String("AccountStorage is an abstract type"));
+    qmlRegisterType<Telegram::Client::FileAccountStorage>
+            (uri, versionMajor, versionMinor, "FileAccountStorage");
+    qmlRegisterUncreatableType<Telegram::Client::DataStorage>
+            (uri, versionMajor, versionMinor, "DataStorage",
+             QLatin1String("DataStorage is an abstract type"));
+    qmlRegisterType<Telegram::Client::InMemoryDataStorage>
+            (uri, versionMajor, versionMinor, "InMemoryDataStorage");
+    qmlRegisterType<Telegram::Client::DeclarativeMessageSender>
+            (uri, versionMajor, versionMinor, "MessageSender");
+
+    QString cppOnlyText = QLatin1String("API classes are not creatable");
+    qmlRegisterUncreatableType<Telegram::Client::ConnectionApi>
+            (uri, versionMajor, versionMinor, "ConnectionApi", cppOnlyText);
+    qmlRegisterUncreatableType<Telegram::Client::MessagingApi>
+            (uri, versionMajor, versionMinor, "MessagingApi", cppOnlyText);
+}
 
 #include "plugin.moc"
