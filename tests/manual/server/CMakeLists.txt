@@ -50,9 +50,11 @@ target_link_libraries(TelegramTestServer
 )
 
 if (DEVELOPER_BUILD)
-    add_definitions(-DDEVELOPER_BUILD)
-    add_definitions(-DQT_DEPRECATED_WARNINGS)
-    add_definitions(-DUSE_DBUS_NOTIFIER)
+    target_compile_definitions(TelegramTestServer PRIVATE
+        DEVELOPER_BUILD
+        QT_DEPRECATED_WARNINGS
+        USE_DBUS_NOTIFIER
+    )
 
     target_link_libraries(TelegramTestServer
         Qt5::DBus

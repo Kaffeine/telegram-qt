@@ -1,10 +1,5 @@
 project(TelegramQtQml)
 
-add_definitions(-DTELEGRAMQT_QML_LIBRARY)
-
-add_definitions(-DQT_DEPRECATED_WARNINGS)
-add_definitions(-DQT_NO_CAST_FROM_ASCII)
-
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC TRUE)
 
@@ -25,6 +20,20 @@ add_library(TelegramQt${QT_VERSION_MAJOR}Qml
     DeclarativeRsaKey.hpp
     DeclarativeSettings.cpp
     DeclarativeSettings.hpp
+)
+
+target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
+    TELEGRAMQT_QML_LIBRARY
+)
+
+target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
+    QT_NO_CAST_TO_ASCII
+    QT_NO_CAST_FROM_ASCII
+    QT_NO_URL_CAST_FROM_STRING
+    QT_NO_CAST_FROM_BYTEARRAY
+    QT_USE_FAST_OPERATOR_PLUS
+    QT_USE_QSTRINGBUILDER
+    QT_STRICT_ITERATORS
 )
 
 target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
