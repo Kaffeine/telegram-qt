@@ -306,6 +306,10 @@ void ContactsRpcOperation::runResetTopPeerRating()
 void ContactsRpcOperation::runResolveUsername()
 {
     MTProto::Functions::TLContactsResolveUsername &arguments = m_resolveUsername;
+    if (!api()->usernameIsValid(arguments.username)) {
+        sendRpcError(RpcError::UsernameInvalid);
+        return;
+    }
     TLContactsResolvedPeer result;
     const Peer peer = api()->getPeerByUserName(arguments.username);
     result.peer = Telegram::Utils::toTLPeer(peer);

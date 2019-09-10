@@ -534,15 +534,23 @@ void AccountRpcOperation::runUpdateUsername()
     MTProto::Functions::TLAccountUpdateUsername &arguments = m_updateUsername;
     LocalUser *selfUser = layer()->getUser();
 
-    const bool nameChanged = api()->setUserName(selfUser, arguments.username);
+    // empty string if username is to be removed
+    if (!arguments.username.isEmpty()) {
+        if (!api()->usernameIsValid(arguments.username)) {
+            sendRpcError(RpcError::UsernameInvalid);
+            return;
+        }
+    }
+    RpcError error;
+    api()->setUserName(selfUser, arguments.username, &error);
+    if (error.isValid()) {
+        sendRpcError(error);
+        return;
+    }
 
     TLUser result;
     Utils::setupTLUser(&result, selfUser, selfUser);
     sendRpcReply(result);
-
-    if (!nameChanged) {
-        return;
-    }
 
     const auto notifications = api()->createUpdates(UpdateNotification::Type::UpdateName,
                                                     selfUser, layer()->session());
