@@ -230,7 +230,7 @@ if (DEVELOPER_BUILD)
     target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE QT_DEPRECATED_WARNINGS)
 endif()
 
-if (NOT BUILD_VERSION)
+if(NOT BUILD_VERSION)
     set(BUILD_VERSION "unknown")
 endif()
 

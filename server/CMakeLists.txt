@@ -78,7 +78,7 @@ set(server_json_SOURCES
     ServerImportApi.hpp
 )
 
-if (DEVELOPER_BUILD)
+if(DEVELOPER_BUILD)
     add_definitions(-DDEVELOPER_BUILD)
     add_definitions(-DQT_DEPRECATED_WARNINGS)
     add_definitions(-DUSE_DBUS_NOTIFIER)
@@ -110,7 +110,7 @@ target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC
     Qt5::Gui
 )
 
-if (DEVELOPER_BUILD)
+if(DEVELOPER_BUILD)
     target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC
         Qt5::DBus
     )

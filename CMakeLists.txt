@@ -45,10 +45,10 @@ if(BUILD_QML_IMPORT)
     list(APPEND QT_COMPONENTS Qml)
 endif()
 
-if (BUILD_SERVER)
+if(BUILD_SERVER)
     # QtGui is used by the server to resize images
     list(APPEND QT_COMPONENTS Gui)
-    if (DEVELOPER_BUILD)
+    if(DEVELOPER_BUILD)
         # In Developer mode the server shows auth code via Notification DBus iface
         list(APPEND QT_COMPONENTS DBus)
     endif()
@@ -64,7 +64,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=return-type")
 endif()
 
-if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT APPLE) OR
+if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT APPLE) OR
         (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT APPLE) OR
         (CMAKE_CXX_COMPILER_ID STREQUAL "Intel" AND NOT WIN32))
     # Linker warnings should be treated as errors
@@ -76,7 +76,7 @@ if ((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT APPLE) OR
     set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_MODULE_LINKER_FLAGS}")
 endif()
 
-if (ENABLE_COVERAGE_BUILD)
+if(ENABLE_COVERAGE_BUILD)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
     set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
     SET(CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
@@ -86,42 +86,47 @@ endif()
 # Add the source subdirectories
 add_subdirectory(TelegramQt)
 
-if (BUILD_QML_IMPORT)
+if(BUILD_QML_IMPORT)
     add_subdirectory(imports/TelegramQt)
-    set(QML_IMPORT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/imports ${CMAKE_CURRENT_BINARY_DIR}/imports
-        CACHE STRING "QML Import path for IDE code model" FORCE)
+    set(QML_IMPORT_PATH
+            ${CMAKE_CURRENT_SOURCE_DIR}/imports
+            ${CMAKE_CURRENT_BINARY_DIR}/imports
+        CACHE
+        STRING "QML Import path for IDE code model"
+        FORCE
+    )
 endif()
 
-if (BUILD_CLIENT)
+if(BUILD_CLIENT)
     add_subdirectory(clients)
 endif()
 
-if (BUILD_TESTS)
+if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(TelegramQt/tests)
     add_subdirectory(tests/data)
-    if (BUILD_SERVER)
+    if(BUILD_SERVER)
         add_subdirectory(tests)
     endif()
 endif()
 
-if (BUILD_SERVER)
+if(BUILD_SERVER)
     add_subdirectory(server)
 endif()
 
-if (BUILD_GENERATOR)
-    if (Qt5_VERSION VERSION_LESS "5.6.0")
+if(BUILD_GENERATOR)
+    if(Qt5_VERSION VERSION_LESS "5.6.0")
         message(WARNING "Use Qt 5.6.0 or higher to build GeneratorNG")
     else()
         add_subdirectory(generator)
     endif()
 endif()
 
-if (BUILD_DOCUMENTATION)
+if(BUILD_DOCUMENTATION)
     add_subdirectory(doc)
 endif()
 
-if (ENABLE_COVERAGE_BUILD)
+if(ENABLE_COVERAGE_BUILD)
     # Code coverage
     find_program(LCOV_PATH lcov)
 
@@ -143,7 +148,7 @@ if (ENABLE_COVERAGE_BUILD)
     )
     add_custom_target(coverage DEPENDS ${coverage_info})
 
-    if (ENABLE_COVERAGE_HTML)
+    if(ENABLE_COVERAGE_HTML)
         find_program(GENHTML_PATH genhtml)
         add_custom_target(coverage_html
             COMMAND ${GENHTML_PATH} -o coverage_report ${coverage_info}

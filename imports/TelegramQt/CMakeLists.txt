@@ -78,7 +78,7 @@ install(
     DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
 )
 
-if (DEVELOPER_BUILD)
+if(DEVELOPER_BUILD)
     message(STATUS "Hint: To update plugins.qmltypes run the following command:\n"
         "    LD_LIBRARY_PATH=${CMAKE_INSTALL_FULL_LIBDIR} "
         "${_qt5Core_install_prefix}/bin/qmlplugindump "
