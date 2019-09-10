@@ -9,6 +9,7 @@ QString version()
 
 QString buildVersion()
 {
+    // Build version is can be passed from the superior build script (e.g from RPC spec file)
     return QLatin1String("@BUILD_VERSION@");
 }
 
