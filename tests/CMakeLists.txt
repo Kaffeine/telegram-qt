@@ -23,15 +23,6 @@ SET(CMAKE_INSTALL_RPATH "")
 # which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
-include_directories(
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/server
-    ${CMAKE_CURRENT_SOURCE_DIR}/data
-    ${CMAKE_CURRENT_SOURCE_DIR}/utils
-    ${CMAKE_CURRENT_BINARY_DIR}/..
-    ${ZLIB_INCLUDE_DIR}
-)
-
 set(test_extra_META_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/utils/TestAuthProvider.hpp
 )
@@ -50,12 +41,15 @@ foreach(test_name
         Qt5::Test
         TelegramQt${QT_VERSION_MAJOR}
     )
-    add_test(NAME ${test_name} COMMAND ${test_name} -maxwarnings 0)
-
     target_link_libraries(${test_name}
         TelegramServerQt${QT_VERSION_MAJOR}
         test_keys_data
     )
+    target_include_directories(${test_name} PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/utils
+    )
+
+    add_test(NAME ${test_name} COMMAND ${test_name} -maxwarnings 0)
 endforeach()
 
 add_subdirectory(manual)

@@ -214,11 +214,6 @@ set(telegram_qt_public_HEADERS
     telegramqt_global.h
 )
 
-include_directories(
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_BINARY_DIR}
-)
-
 # TODO: Use TypesDebug only in Developer or Debug build
 target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLTypesDebug.cpp) # 0.5 Mb
 target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLTypesDebug.hpp)

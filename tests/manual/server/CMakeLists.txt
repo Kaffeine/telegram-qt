@@ -58,10 +58,3 @@ if (DEVELOPER_BUILD)
         Qt5::DBus
     )
 endif()
-
-include_directories(
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/server
-    ${CMAKE_SOURCE_DIR}/tests/data
-    ${CMAKE_SOURCE_DIR}/tests/utils
-)

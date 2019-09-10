@@ -22,12 +22,6 @@ SET(CMAKE_INSTALL_RPATH "")
 # which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
-include_directories(
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}/..
-    ${CMAKE_CURRENT_SOURCE_DIR}/..
-)
-
 foreach(test_name
     tst_crypto
     tst_CTelegramTransport
@@ -55,5 +49,4 @@ target_sources(tst_RpcLayer PRIVATE
     utils/TestTransport.hpp
 )
 
-#target_include_directories(tst_utils ${CMAKE_SOURCE_DIR}/tests/data)
 target_link_libraries(tst_utils test_keys_data)
