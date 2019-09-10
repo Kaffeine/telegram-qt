@@ -54,6 +54,7 @@ static const QVector<TLValue> c_unregisteredUserAllowedRpcList =
     TLValue::HelpGetAppUpdate,
     TLValue::HelpGetCdnConfig,
     TLValue::AuthSendCode,
+    TLValue::AuthResendCode,
     TLValue::AuthCheckPassword,
     TLValue::AuthCheckPhone,
     TLValue::AuthSignIn,
