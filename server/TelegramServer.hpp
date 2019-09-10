@@ -94,6 +94,7 @@ public:
 
     Session *getSessionById(quint64 sessionId) const override;
     void bindUserSession(AuthorizedUser *user, Session *session) override;
+    bool usernameIsValid(const QString &username) const override;
     bool setUserName(LocalUser *user, const QString &newUsername) override;
     bool setUserOnline(LocalUser *user, bool online, Session *fromSession = nullptr) override;
 

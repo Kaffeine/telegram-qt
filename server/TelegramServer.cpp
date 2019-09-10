@@ -465,6 +465,19 @@ void Server::bindUserSession(AuthorizedUser *user, Session *session)
     }
 }
 
+bool Server::usernameIsValid(const QString &username) const
+{
+    static constexpr int MinimumUsernameLength = 5;
+    static constexpr int MaximumUsernameLength = 32;
+    // Length: 5-32 characters.
+    if ((username.length() < MinimumUsernameLength) || (username.length() > MaximumUsernameLength)) {
+        return false;
+    }
+    // Accepted characters: A-z (case-insensitive), 0-9 and underscores.
+    // Only single underscore
+    return true;
+}
+
 bool Server::setUserName(LocalUser *user, const QString &newUsername)
 {
     if (user->userName() == newUsername) {

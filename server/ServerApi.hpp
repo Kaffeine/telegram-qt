@@ -100,6 +100,7 @@ public:
     virtual bool bindClientConnectionSession(RemoteClientConnection *connection, quint64 sessionId) = 0;
     virtual Session *getSessionById(quint64 authId) const = 0;
     virtual void bindUserSession(AuthorizedUser *user, Session *session) = 0;
+    virtual bool usernameIsValid(const QString &username) const = 0;
     virtual bool setUserName(LocalUser *user, const QString &newUsername) = 0;
     virtual bool setUserOnline(LocalUser *user, bool online, Session *fromSession = nullptr) = 0;
 
