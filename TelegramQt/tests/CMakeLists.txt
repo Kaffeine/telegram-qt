@@ -36,7 +36,7 @@ foreach(test_name
     target_link_libraries(${test_name}
         Qt5::Core
         Qt5::Test
-        TelegramQt${QT_VERSION_MAJOR}
+        TelegramQt${QT_VERSION_MAJOR}::Core
     )
     add_test(NAME ${test_name} COMMAND ${test_name})
 endforeach()

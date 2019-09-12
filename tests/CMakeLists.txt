@@ -36,13 +36,11 @@ foreach(test_name
 )
     FILE(GLOB TEST_SOURCES ${test_name}/*.cpp)
     add_executable(${test_name} ${TEST_SOURCES} ${test_extra_MOC_SOURCES})
-    target_link_libraries(${test_name}
+    target_link_libraries(${test_name} PRIVATE
         Qt5::Core
         Qt5::Test
-        TelegramQt${QT_VERSION_MAJOR}
-    )
-    target_link_libraries(${test_name}
-        TelegramServerQt${QT_VERSION_MAJOR}
+        TelegramQt${QT_VERSION_MAJOR}::Core
+        TelegramQt${QT_VERSION_MAJOR}::Server
         test_keys_data
     )
     target_include_directories(${test_name} PRIVATE

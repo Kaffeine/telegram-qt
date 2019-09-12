@@ -78,9 +78,10 @@ set(server_json_SOURCES
     ServerImportApi.hpp
 )
 
-add_library(TelegramServerQt${QT_VERSION_MAJOR} STATIC)
+add_library(TelegramQt${QT_VERSION_MAJOR}Server STATIC)
+add_library(TelegramQt${QT_VERSION_MAJOR}::Server ALIAS TelegramQt${QT_VERSION_MAJOR}Server)
 
-target_compile_definitions(TelegramServerQt${QT_VERSION_MAJOR} PRIVATE
+target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
     QT_NO_CAST_TO_ASCII
     QT_NO_CAST_FROM_ASCII
     QT_NO_URL_CAST_FROM_STRING
@@ -92,40 +93,33 @@ target_compile_definitions(TelegramServerQt${QT_VERSION_MAJOR} PRIVATE
 
 find_package(Qt5 5.5 COMPONENTS Core Gui Network REQUIRED)
 
-target_sources(TelegramServerQt${QT_VERSION_MAJOR} PRIVATE
+target_sources(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
     ${server_lib_SOURCES}
     ${server_json_SOURCES}
 )
 
-target_include_directories(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(TelegramServerQt${QT_VERSION_MAJOR} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/RpcOperations)
+target_include_directories(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/RpcOperations)
 
-target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC
+target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC
     Qt5::Core
     Qt5::Network
     Qt5::Gui
+    TelegramQt${QT_VERSION_MAJOR}::Core
 )
 
 if(DEVELOPER_BUILD)
-    target_compile_definitions(TelegramServerQt${QT_VERSION_MAJOR} PRIVATE
+    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
         DEVELOPER_BUILD
         QT_DEPRECATED_WARNINGS
         USE_DBUS_NOTIFIER
     )
-    target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC
+    target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC
         Qt5::DBus
     )
 endif()
 
-target_link_libraries(TelegramServerQt${QT_VERSION_MAJOR} PUBLIC
-    TelegramQt${QT_VERSION_MAJOR}
-)
-
-set(server_SOURCES
-    main.cpp
-)
-
-add_executable(TelegramServer ${server_SOURCES})
+add_executable(TelegramServer main.cpp)
 target_link_libraries(TelegramServer PUBLIC
-    TelegramServerQt${QT_VERSION_MAJOR}
+    TelegramQt${QT_VERSION_MAJOR}::Server
 )

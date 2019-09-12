@@ -23,15 +23,12 @@ find_package(Qt5 5.9 COMPONENTS Core Gui Quick QuickControls2 REQUIRED)
 add_executable(qml-client-qt${QT_VERSION_MAJOR} ${app_SOURCES})
 
 target_link_libraries(qml-client-qt${QT_VERSION_MAJOR} LINK_PUBLIC
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Quick
-    Qt5::QuickControls2
-)
-
-target_link_libraries(qml-client-qt${QT_VERSION_MAJOR} LINK_PUBLIC
-    TelegramQt${QT_VERSION_MAJOR}
-    TelegramQt${QT_VERSION_MAJOR}Qml
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Quick
+    Qt${QT_VERSION_MAJOR}::QuickControls2
+    TelegramQt${QT_VERSION_MAJOR}::Core
+    TelegramQt${QT_VERSION_MAJOR}::Qml
 )
 
 install(
@@ -39,5 +36,5 @@ install(
     DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-message(STATUS "Hint: Add 'QML2_IMPORT_PATH=${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml' "
+message(STATUS "Hint: Add 'QML2_IMPORT_PATH=${CMAKE_INSTALL_FULL_LIBDIR}/qt${QT_VERSION_MAJOR}/qml' "
     "to 'qml-client-qt${QT_VERSION_MAJOR}' run enviroment variables to ensure that the QML import is correct.")

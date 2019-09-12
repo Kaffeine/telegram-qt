@@ -1,9 +1,10 @@
 
-add_library(TelegramQt${QT_VERSION_MAJOR})
+add_library(TelegramQt${QT_VERSION_MAJOR}Core)
+add_library(TelegramQt${QT_VERSION_MAJOR}::Core ALIAS TelegramQt${QT_VERSION_MAJOR}Core)
 
-target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE TELEGRAMQT_LIBRARY)
+target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE TELEGRAMQT_LIBRARY)
 
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     AbridgedLength.cpp
     AbridgedLength.hpp
     AccountApi.cpp
@@ -109,7 +110,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     telegramqt_global.h
 )
 
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     MTProto/TLNumbers.hpp
     MTProto/TLTypes.hpp
     MTProto/TLValues.cpp
@@ -123,7 +124,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     MTProto/Stream_p.hpp
 )
 
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     Operations/ClientAuthOperation.cpp
     Operations/ClientAuthOperation.hpp
     Operations/ClientAuthOperation_p.hpp
@@ -141,7 +142,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     Operations/PendingMessages_p.hpp
 )
 
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     RpcLayers/ClientRpcAccountLayer.cpp
     RpcLayers/ClientRpcAccountLayer.hpp
     RpcLayers/ClientRpcAuthLayer.cpp
@@ -164,13 +165,13 @@ target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     RpcLayers/ClientRpcUsersLayer.hpp
 )
 
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     MTProto/MessageHeader.cpp
     MTProto/MessageHeader.hpp
     MTProto/Stream.hpp
 )
 
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     Operations/ClientAuthOperation.cpp
     Operations/ClientAuthOperation.hpp
     Operations/ClientAuthOperation_p.hpp
@@ -215,14 +216,14 @@ set(telegram_qt_public_HEADERS
 )
 
 # TODO: Use TypesDebug only in Developer or Debug build
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLTypesDebug.cpp) # 0.5 Mb
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLTypesDebug.hpp)
+target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLTypesDebug.cpp) # 0.5 Mb
+target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLTypesDebug.hpp)
 
 if (DEVELOPER_BUILD)
-    target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLRpcDebug.cpp)
-    target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE MTProto/TLRpcDebug.hpp)
-    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE DEVELOPER_BUILD)
-    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE QT_DEPRECATED_WARNINGS)
+    target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLRpcDebug.cpp)
+    target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLRpcDebug.hpp)
+    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE DEVELOPER_BUILD)
+    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE QT_DEPRECATED_WARNINGS)
 endif()
 
 if(NOT BUILD_VERSION)
@@ -230,11 +231,11 @@ if(NOT BUILD_VERSION)
 endif()
 
 configure_file(Version.cpp.in "${CMAKE_CURRENT_BINARY_DIR}/Version.cpp" @ONLY)
-target_sources(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     "${CMAKE_CURRENT_BINARY_DIR}/Version.cpp"
 )
 
-target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     QT_NO_CAST_TO_ASCII
     QT_NO_CAST_FROM_ASCII
     QT_NO_URL_CAST_FROM_STRING
@@ -244,39 +245,51 @@ target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     QT_STRICT_ITERATORS
 )
 
-target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
+set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
+set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_FULL_LIBDIR})
+
+target_include_directories(TelegramQt${QT_VERSION_MAJOR}Core PUBLIC
+    $<INSTALL_INTERFACE:${TELEGRAM_QT_INCLUDE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_include_directories(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/RpcLayers
 )
 
-target_link_libraries(TelegramQt${QT_VERSION_MAJOR} PUBLIC
+target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Core PUBLIC
     Qt5::Core
     Qt5::Network
 )
 
-target_link_libraries(TelegramQt${QT_VERSION_MAJOR} PRIVATE
+target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     OpenSSL::Crypto
     ZLIB::ZLIB
 )
 
-set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
-set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_FULL_LIBDIR})
-
 # Set the correct version number
 set_target_properties(
-    TelegramQt${QT_VERSION_MAJOR} PROPERTIES
-    SOVERSION ${TELEGRAM_QT_ABI}
-    VERSION ${TELEGRAM_QT_VERSION}
+    TelegramQt${QT_VERSION_MAJOR}Core
+    PROPERTIES
+        SOVERSION ${TELEGRAM_QT_ABI}
+        VERSION ${TELEGRAM_QT_VERSION}
+        EXPORT_NAME Core
 )
 
 install(
-    TARGETS TelegramQt${QT_VERSION_MAJOR}
+    TARGETS TelegramQt${QT_VERSION_MAJOR}Core
+    EXPORT TelegramQt${QT_VERSION_MAJOR}Core-export
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Library
+)
+
+install(
+    EXPORT TelegramQt${QT_VERSION_MAJOR}Core-export
+    FILE TelegramQt${QT_VERSION_MAJOR}CoreTargets.cmake
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/TelegramQt${QT_VERSION_MAJOR}"
+    NAMESPACE TelegramQt${QT_VERSION_MAJOR}::
+    COMPONENT Devel
 )
 
 install(
@@ -294,7 +307,6 @@ foreach (public_header ${telegram_qt_public_HEADERS})
     )
 endforeach()
 
-
 # CMake find package stuff
 include(CMakePackageConfigHelpers)
 
@@ -303,10 +315,14 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VER
                                     VERSION ${TELEGRAM_QT_VERSION}
                                     COMPATIBILITY ExactVersion)
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}ConfigVersion.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}Config.cmake"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/TelegramQt${QT_VERSION_MAJOR}"
-    COMPONENT Devel
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}ConfigVersion.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}Config.cmake"
+    DESTINATION
+        "${CMAKE_INSTALL_LIBDIR}/cmake/TelegramQt${QT_VERSION_MAJOR}"
+    COMPONENT
+        Devel
 )
 
 # pkg-config files

@@ -95,6 +95,7 @@ rm -rf %{buildroot}
 %{_libdir}/libTelegramQt5.so
 %{_libdir}/cmake/TelegramQt5/TelegramQt5Config.cmake
 %{_libdir}/cmake/TelegramQt5/TelegramQt5ConfigVersion.cmake
+%{_libdir}/cmake/TelegramQt5/TelegramQt5CoreTargets*.cmake
 %{_libdir}/pkgconfig/TelegramQt5.pc
 
 %files qt5-declarative
@@ -108,3 +109,4 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_libdir}/qt5/qml/TelegramQt/plugins.qmltypes
 %{_libdir}/libTelegramQt5Qml.so
+%{_libdir}/cmake/TelegramQt5/TelegramQt5QmlTargets*.cmake

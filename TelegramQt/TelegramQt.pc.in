@@ -5,5 +5,5 @@ Name: TelegramQt@QT_VERSION_MAJOR@
 Description: Qt library for Telegram network
 Version: @PROJECT_VERSION@
 Requires.private: openssl zlib
-Libs: -L${libdir} -lTelegramQt@QT_VERSION_MAJOR@
+Libs: -L${libdir} -lTelegramQt@QT_VERSION_MAJOR@Core
 Cflags: -I${includedir}

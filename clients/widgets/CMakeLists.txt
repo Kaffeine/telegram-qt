@@ -56,8 +56,5 @@ target_link_libraries(testApp-qt${QT_VERSION_MAJOR} LINK_PUBLIC
     Qt5::Gui
     Qt5::Widgets
     Qt5::Network
-)
-
-target_link_libraries(testApp-qt${QT_VERSION_MAJOR} LINK_PUBLIC
-    TelegramQt${QT_VERSION_MAJOR}
+    TelegramQt${QT_VERSION_MAJOR}::Core
 )

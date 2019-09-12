@@ -21,6 +21,7 @@ add_library(TelegramQt${QT_VERSION_MAJOR}Qml
     DeclarativeSettings.cpp
     DeclarativeSettings.hpp
 )
+add_library(TelegramQt${QT_VERSION_MAJOR}::Qml ALIAS TelegramQt${QT_VERSION_MAJOR}Qml)
 
 target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
     TELEGRAMQT_QML_LIBRARY
@@ -36,37 +37,42 @@ target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
     QT_STRICT_ITERATORS
 )
 
-target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
+target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml PUBLIC
     Qt5::Core
     Qt5::Qml
+    TelegramQt${QT_VERSION_MAJOR}::Core
 )
 
 target_include_directories(TelegramQt${QT_VERSION_MAJOR}Qml
     PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
     PRIVATE
         ${QT5_INCLUDES}
 )
 
-target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Qml
-    ${OPENSSL_LIBRARIES}
-    ${ZLIB_LIBRARIES}
-    TelegramQt${QT_VERSION_MAJOR}
-)
-
-set(TELEGRAM_QT_INCLUDE_DIR ${CMAKE_INSTALL_FULL_INCLUDEDIR}/TelegramQt${QT_VERSION_MAJOR})
-set(TELEGRAM_QT_LIB_DIR ${CMAKE_INSTALL_FULL_LIBDIR})
-
 set_target_properties(
-    TelegramQt${QT_VERSION_MAJOR}Qml PROPERTIES
-    SOVERSION ${TELEGRAM_QT_ABI}
-    VERSION ${TELEGRAM_QT_VERSION}
+    TelegramQt${QT_VERSION_MAJOR}Qml
+    PROPERTIES
+        SOVERSION ${TELEGRAM_QT_ABI}
+        VERSION ${TELEGRAM_QT_VERSION}
+        EXPORT_NAME Qml
 )
 
 install(
     TARGETS TelegramQt${QT_VERSION_MAJOR}Qml
-    LIBRARY DESTINATION ${TELEGRAM_QT_LIB_DIR}
+    EXPORT TelegramQt${QT_VERSION_MAJOR}Qml-export
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Library
+)
+
+install(
+    EXPORT TelegramQt${QT_VERSION_MAJOR}Qml-export
+    FILE TelegramQt${QT_VERSION_MAJOR}QmlTargets.cmake
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/TelegramQt${QT_VERSION_MAJOR}"
+    NAMESPACE TelegramQt${QT_VERSION_MAJOR}::
+    COMPONENT Devel
 )
 
 add_library(TelegramQmlPlugin SHARED plugin.cpp)
@@ -74,7 +80,7 @@ add_library(TelegramQmlPlugin SHARED plugin.cpp)
 target_link_libraries(TelegramQmlPlugin
     Qt5::Core
     Qt5::Qml
-    TelegramQt${QT_VERSION_MAJOR}Qml
+    TelegramQt${QT_VERSION_MAJOR}::Qml
 )
 
 install(
