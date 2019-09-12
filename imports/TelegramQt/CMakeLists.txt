@@ -54,7 +54,7 @@ set_target_properties(
     TelegramQt${QT_VERSION_MAJOR}Qml
     PROPERTIES
         SOVERSION ${TELEGRAM_QT_ABI}
-        VERSION ${TELEGRAM_QT_VERSION}
+        VERSION ${TelegramQt_VERSION}
         EXPORT_NAME Qml
 )
 

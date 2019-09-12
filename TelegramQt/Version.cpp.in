@@ -4,7 +4,7 @@ namespace Telegram {
 
 QString version()
 {
-    return QLatin1String("@TELEGRAM_QT_VERSION@");
+    return QLatin1String("@TelegramQt_VERSION@");
 }
 
 QString buildVersion()

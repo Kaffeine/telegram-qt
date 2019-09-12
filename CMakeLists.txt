@@ -5,8 +5,7 @@ project(TelegramQt
     LANGUAGES CXX
 )
 
-set(TELEGRAM_QT_VERSION "${PROJECT_VERSION}")
-set(TELEGRAM_QT_ABI "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
+set(TELEGRAM_QT_ABI "${TelegramQt_VERSION_MAJOR}.${TelegramQt_VERSION_MINOR}")
 
 include(GNUInstallDirs)
 include(FeatureSummary)

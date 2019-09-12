@@ -271,7 +271,7 @@ set_target_properties(
     TelegramQt${QT_VERSION_MAJOR}Core
     PROPERTIES
         SOVERSION ${TELEGRAM_QT_ABI}
-        VERSION ${TELEGRAM_QT_VERSION}
+        VERSION ${TelegramQt_VERSION}
         EXPORT_NAME Core
 )
 
@@ -312,7 +312,7 @@ include(CMakePackageConfigHelpers)
 
 configure_file(TelegramQtConfig.cmake.in "${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}Config.cmake" @ONLY)
 write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/TelegramQt${QT_VERSION_MAJOR}ConfigVersion.cmake"
-                                    VERSION ${TELEGRAM_QT_VERSION}
+                                    VERSION ${TelegramQt_VERSION}
                                     COMPATIBILITY ExactVersion)
 
 install(
