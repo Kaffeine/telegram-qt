@@ -246,7 +246,6 @@ target_compile_definitions(TelegramQt${QT_VERSION_MAJOR} PRIVATE
 
 target_include_directories(TelegramQt${QT_VERSION_MAJOR} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/Crypto
 )
 target_include_directories(TelegramQt${QT_VERSION_MAJOR} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/RpcLayers
