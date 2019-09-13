@@ -25,6 +25,7 @@
 #include "ServerRpcLayer.hpp"
 #include "TelegramServerUser.hpp"
 
+#include "ApiUtils.hpp"
 #include "Debug_p.hpp"
 #include "RpcError.hpp"
 #include "RpcProcessingContext.hpp"
@@ -151,6 +152,7 @@ void HelpRpcOperation::runGetConfig()
     const DcConfiguration dcConfig = api()->serverConfiguration();
     TLConfig result;
     result.flags = TLConfig::PhonecallsEnabled;
+    result.date = Telegram::Utils::getCurrentTime();
     result.testMode = true;
     result.thisDc = api()->dcId();
     // TODO: fill other fields of result
