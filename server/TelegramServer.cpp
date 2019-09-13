@@ -409,7 +409,9 @@ Session *Server::getSessionById(quint64 sessionId) const
 void Server::bindUserSession(AuthorizedUser *user, Session *session)
 {
     user->addSession(session);
-    m_authService->addUserAuthorization(user, session->getConnection()->authId());
+    if (session->isActive()) {
+        m_authService->addUserAuthorization(user, session->getConnection()->authId());
+    }
 }
 
 bool Server::setUserName(LocalUser *user, const QString &newUsername)

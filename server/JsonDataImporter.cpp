@@ -176,7 +176,7 @@ void JsonDataImporter::importForServer(Server *server)
                 if (!session) {
                     continue;
                 }
-                user->addSession(session);
+                server->bindUserSession(user, session);
             }
             const QJsonArray authorizationsArray = userObject[QLatin1String("authorizations")].toArray();
             const QVector<quint64> authKeys = Json::fromValue< QVector<quint64> >(authorizationsArray);
