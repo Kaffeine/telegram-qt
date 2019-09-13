@@ -9,7 +9,7 @@ AuthScreen {
     objectName: "AuthEnterCodeComponent"
     width: loginStack.width
     title: qsTr("Your code")
-    description: qsTr("We have sent an SMS with an activation code to your phone +" + signInOperation.phoneNumber)
+    description: qsTr("We have sent an SMS with an activation code to your phone +" + signInOperation_.phoneNumber)
     signal submitAuthCode(string code)
 
     onActivate: authCodeField.forceActiveFocus()
