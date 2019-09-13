@@ -214,7 +214,7 @@ void Server::onClientConnectionStatusChanged()
             qCInfo(loggingCategoryServer) << this << __func__ << "Disconnected a client with session id"
                                           << hex << showbase << client->session()->id()
                                           << "from" << client->transport()->remoteAddress();
-            client->session()->setConnection(nullptr);
+            setSessionConnection(client->session(), nullptr);
         } else {
             qCInfo(loggingCategoryServer) << this << __func__ << "Disconnected a client without a session"
                                           << "from" << client->transport()->remoteAddress();
@@ -242,6 +242,11 @@ void Server::reportLocalMessageRead(LocalUser *user, const UpdateNotification &n
         userNotification.pts = user->getPostBox()->pts();
         queueUpdates({userNotification});
     }
+}
+
+void Server::setSessionConnection(Session *session, RemoteClientConnection *connection)
+{
+    session->setConnection(connection);
 }
 
 Peer Server::getPeer(const TLInputPeer &peer, const LocalUser *applicant) const
@@ -397,7 +402,7 @@ bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId
     }
 
     client->setSession(session);
-    session->setConnection(client);
+    setSessionConnection(session, client);
     return true;
 }
 

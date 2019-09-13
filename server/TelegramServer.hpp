@@ -125,6 +125,7 @@ protected:
     void onClientConnectionStatusChanged();
 
     void reportLocalMessageRead(LocalUser *user, const UpdateNotification &notification);
+    void setSessionConnection(Session *session, RemoteClientConnection *connection);
 
 protected:
     AuthService *m_authService = nullptr;
