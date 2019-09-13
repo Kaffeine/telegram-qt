@@ -45,6 +45,7 @@ public:
         ReadInbox,
         ReadOutbox,
         UpdateName,
+        UpdateUserStatus,
     };
     Q_ENUM(Type)
 

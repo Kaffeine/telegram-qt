@@ -467,6 +467,9 @@ bool Server::setUserOnline(LocalUser *user, bool online, Session *fromSession)
         return false;
     }
 
+    const auto notifications = createUpdates(UpdateNotification::Type::UpdateUserStatus,
+                                             user, fromSession);
+    queueUpdates(notifications);
     return true;
 }
 
@@ -645,6 +648,11 @@ QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updat
         notification.date = requestDate;
         notification.fromId = applicant->id();
         break;
+    case UpdateNotification::Type::UpdateUserStatus:
+        notification.type = updateType;
+        notification.date = requestDate;
+        notification.fromId = applicant->id();
+        break;
     default:
         return { };
     }
@@ -755,6 +763,26 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             update.firstName = interestingUser->firstName();
             update.lastName = interestingUser->lastName();
             update.username = interestingUser->userName();
+        }
+            break;
+        case UpdateNotification::Type::UpdateUserStatus:
+        {
+            updates.tlType = TLValue::UpdateShort;
+            TLUpdate &update = updates.update;
+            update.tlType = TLValue::UpdateUserStatus;
+            update.userId = notification.fromId;
+
+            if (!interestingUser || (interestingUser->id() != notification.userId)) {
+                interestingUser = getAbstractUser(update.userId);
+                if (!interestingUser) {
+                    qCWarning(lcServerUpdates) << CALL_INFO
+                                               << "Invalid interesting user" << notification.userId
+                                               << "for update" << notification.type;
+                    continue;
+                }
+            }
+
+            Utils::setupTLUserStatus(&update.status, interestingUser, recipient);
         }
             break;
         case UpdateNotification::Type::Invalid:
