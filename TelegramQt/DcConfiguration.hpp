@@ -43,6 +43,15 @@ struct DcConfiguration
     DcOption getOption(const ConnectionSpec spec) const;
     bool isValid() const { return !dcOptions.isEmpty(); }
 
+    quint32 chatSizeMax = 0;
+    quint32 megagroupSizeMax = 0;
+    quint32 forwardedCountMax = 0;
+    quint32 onlineCloudTimeoutMs = 0;
+    quint32 onlineUpdatePeriodMs = 0;
+    quint32 offlineBlurTimeoutMs = 0;
+    quint32 offlineIdleTimeoutMs = 0;
+    bool testMode = false;
+    QString meUrlPrefix;
     QVector<DcOption> dcOptions;
 };
 

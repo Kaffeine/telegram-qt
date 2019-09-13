@@ -154,7 +154,7 @@ void HelpRpcOperation::runGetConfig()
     result.flags = TLConfig::PhonecallsEnabled;
     result.date = Telegram::Utils::getCurrentTime();
     result.expires = result.date + 60 * 60;
-    result.testMode = true;
+    result.testMode = dcConfig.testMode;
     result.thisDc = api()->dcId();
     // TODO: fill other fields of result
     // manually copy fields from all DcOption's to TLDcOption's
@@ -166,6 +166,15 @@ void HelpRpcOperation::runGetConfig()
         tlDcOption.flags = dcOption.flags;
         result.dcOptions.append(std::move(tlDcOption));
     }
+    result.chatSizeMax = dcConfig.chatSizeMax;
+    result.megagroupSizeMax = dcConfig.megagroupSizeMax;
+    result.forwardedCountMax = dcConfig.forwardedCountMax;
+    result.onlineCloudTimeoutMs = dcConfig.onlineCloudTimeoutMs;
+    result.onlineUpdatePeriodMs = dcConfig.onlineUpdatePeriodMs;
+    result.offlineBlurTimeoutMs = dcConfig.offlineBlurTimeoutMs;
+    result.offlineIdleTimeoutMs = dcConfig.offlineIdleTimeoutMs;
+    result.meUrlPrefix = dcConfig.meUrlPrefix;
+
     sendRpcReply(result);
 }
 

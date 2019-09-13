@@ -78,6 +78,11 @@ void HelpOperation::onGetDcConfigurationFinished(PendingRpcOperation *operation)
     DcOption thisOpt = c->dcOption();
     thisOpt.id = result.thisDc;
     c->setDcOption(thisOpt);
+    config.testMode = result.testMode;
+    config.chatSizeMax = result.chatSizeMax;
+    config.megagroupSizeMax = result.megagroupSizeMax;
+    config.forwardedCountMax = result.forwardedCountMax;
+    config.meUrlPrefix = result.meUrlPrefix;
     m_backend->dataStorage()->setServerConfiguration(config);
     setFinished();
 }

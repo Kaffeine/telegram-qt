@@ -34,10 +34,19 @@ namespace ConfigKey {
 
 static const QLatin1String c_privateKeyFile = QLatin1String("privateKeyFile");
 static const QLatin1String c_serverConfiguration = QLatin1String("serverConfiguration");
+static const QLatin1String c_testMode = QLatin1String("testMode");
 static const QLatin1String c_dcOptions = QLatin1String("dcOptions");
 static const QLatin1String c_address = QLatin1String("address");
 static const QLatin1String c_port = QLatin1String("port");
 static const QLatin1String c_id = QLatin1String("id");
+static const QLatin1String c_chatSizeMax = QLatin1String("chatSizeMax");
+static const QLatin1String c_megagroupSizeMax = QLatin1String("megagroupSizeMax");
+static const QLatin1String c_forwardedCountMax = QLatin1String("forwardedCountMax");
+static const QLatin1String c_onlineCloudTimeoutMs = QLatin1String("onlineCloudTimeoutMs");
+static const QLatin1String c_onlineUpdatePeriodMs = QLatin1String("onlineUpdatePeriodMs");
+static const QLatin1String c_offlineBlurTimeoutMs = QLatin1String("offlineBlurTimeoutMs");
+static const QLatin1String c_offlineIdleTimeoutMs = QLatin1String("offlineIdleTimeoutMs");
+static const QLatin1String c_meUrlPrefix = QLatin1String("meUrlPrefix");
 
 } // ConfigKey namespace
 
@@ -66,6 +75,15 @@ DcConfiguration Config::getDefaultDcConfiguration()
             Telegram::DcOption(QStringLiteral("127.0.0.2"), 10443, 2),
             Telegram::DcOption(QStringLiteral("127.0.0.3"), 10443, 3),
         };
+
+        dcConfig.chatSizeMax = 200;
+        dcConfig.megagroupSizeMax = 2000;
+        dcConfig.forwardedCountMax = 100;
+        dcConfig.onlineCloudTimeoutMs = 300000;
+        dcConfig.onlineUpdatePeriodMs = 210000;
+        dcConfig.offlineBlurTimeoutMs = 5000;
+        dcConfig.offlineIdleTimeoutMs = 30000;
+        dcConfig.testMode = false;
     }
     return dcConfig;
 }
@@ -120,6 +138,15 @@ bool Config::load()
         dcOpt.id = static_cast<quint32>(dcOptionObject[ConfigKey::c_id].toInt());
         m_serverConfiguration.dcOptions.append(dcOpt);
     }
+    m_serverConfiguration.testMode = root[ConfigKey::c_testMode].toBool();
+    m_serverConfiguration.chatSizeMax = static_cast<quint32>(configObject[ConfigKey::c_chatSizeMax].toInt());
+    m_serverConfiguration.megagroupSizeMax = static_cast<quint32>(configObject[ConfigKey::c_megagroupSizeMax].toInt());
+    m_serverConfiguration.forwardedCountMax = static_cast<quint32>(configObject[ConfigKey::c_forwardedCountMax].toInt());
+    m_serverConfiguration.onlineCloudTimeoutMs = static_cast<quint32>(configObject[ConfigKey::c_onlineCloudTimeoutMs].toInt());
+    m_serverConfiguration.onlineUpdatePeriodMs = static_cast<quint32>(configObject[ConfigKey::c_onlineUpdatePeriodMs].toInt());
+    m_serverConfiguration.offlineBlurTimeoutMs = static_cast<quint32>(configObject[ConfigKey::c_offlineBlurTimeoutMs].toInt());
+    m_serverConfiguration.offlineIdleTimeoutMs = static_cast<quint32>(configObject[ConfigKey::c_offlineIdleTimeoutMs].toInt());
+    m_serverConfiguration.meUrlPrefix = configObject[ConfigKey::c_meUrlPrefix].toString();
 
     qCInfo(lcServerConfig) << "Loaded config from " << m_fileName;
     return true;
@@ -140,6 +167,15 @@ bool Config::save() const
         dcOptionsArray.append(QJsonValue(dcOptionObject));
     }
     configObject[ConfigKey::c_dcOptions] = dcOptionsArray;
+    configObject[ConfigKey::c_testMode] = m_serverConfiguration.testMode;
+    configObject[ConfigKey::c_chatSizeMax] = QJsonValue::fromVariant(m_serverConfiguration.chatSizeMax);
+    configObject[ConfigKey::c_megagroupSizeMax] = QJsonValue::fromVariant(m_serverConfiguration.megagroupSizeMax);
+    configObject[ConfigKey::c_forwardedCountMax] = QJsonValue::fromVariant(m_serverConfiguration.forwardedCountMax);
+    configObject[ConfigKey::c_onlineCloudTimeoutMs] = QJsonValue::fromVariant(m_serverConfiguration.onlineCloudTimeoutMs);
+    configObject[ConfigKey::c_onlineUpdatePeriodMs] = QJsonValue::fromVariant(m_serverConfiguration.onlineUpdatePeriodMs);
+    configObject[ConfigKey::c_offlineBlurTimeoutMs] = QJsonValue::fromVariant(m_serverConfiguration.offlineBlurTimeoutMs);
+    configObject[ConfigKey::c_offlineIdleTimeoutMs] = QJsonValue::fromVariant(m_serverConfiguration.offlineIdleTimeoutMs);
+    configObject[ConfigKey::c_meUrlPrefix] = m_serverConfiguration.meUrlPrefix;
     root[ConfigKey::c_serverConfiguration] = configObject;
 
     const QByteArray bytes = QJsonDocument(root).toJson(QJsonDocument::Indented);
