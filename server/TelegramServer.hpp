@@ -90,7 +90,7 @@ public:
     Peer getPeerByUserName(const QString &userName) const override;
     LocalUser *addUser(const QString &identifier) override;
 
-    bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) override;
+    bool bindClientConnectionSession(RemoteClientConnection *connection, quint64 sessionId) override;
 
     Session *getSessionById(quint64 sessionId) const override;
     void bindUserSession(AuthorizedUser *user, Session *session) override;

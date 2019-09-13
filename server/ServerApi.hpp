@@ -95,7 +95,7 @@ public:
     virtual LocalUser *getUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(quint32 userId) const = 0;
 
-    virtual bool bindClientSession(RemoteClientConnection *client, quint64 sessionId) = 0;
+    virtual bool bindClientConnectionSession(RemoteClientConnection *connection, quint64 sessionId) = 0;
     virtual Session *getSessionById(quint64 authId) const = 0;
     virtual void bindUserSession(AuthorizedUser *user, Session *session) = 0;
     virtual bool setUserName(LocalUser *user, const QString &newUsername) = 0;

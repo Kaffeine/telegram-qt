@@ -375,21 +375,21 @@ LocalUser *Server::addUser(const QString &identifier)
     return user;
 }
 
-bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId)
+bool Server::bindClientConnectionSession(RemoteClientConnection *connection, quint64 sessionId)
 {
     Session *session = getSessionById(sessionId);
 
     if (!session) {
         session = addSession(sessionId);
-        session->ip = client->transport()->remoteAddress();
+        session->ip = connection->transport()->remoteAddress();
 
-        if (client->dhLayer()->state() == DhLayer::State::HasKey) {
-            session->setInitialServerSalt(client->dhLayer()->serverSalt());
+        if (connection->dhLayer()->state() == DhLayer::State::HasKey) {
+            session->setInitialServerSalt(connection->dhLayer()->serverSalt());
         } else {
             session->generateInitialServerSalt();
         }
 
-        const quint32 userId = m_authService->getUserIdByAuthId(client->authId());
+        const quint32 userId = m_authService->getUserIdByAuthId(connection->authId());
 
         if (userId) {
             LocalUser *localUser = getUser(userId);
@@ -401,8 +401,8 @@ bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId
         }
     }
 
-    client->setSession(session);
-    setSessionConnection(session, client);
+    connection->setSession(session);
+    setSessionConnection(session, connection);
     return true;
 }
 

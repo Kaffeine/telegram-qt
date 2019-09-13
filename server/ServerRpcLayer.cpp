@@ -343,7 +343,7 @@ bool RpcLayer::processMessageHeader(const MTProto::FullMessageHeader &header)
     }
 
     if (!m_session) {
-        api()->bindClientSession(getHelper()->getRemoteClientConnection(), header.sessionId);
+        api()->bindClientConnectionSession(getHelper()->getRemoteClientConnection(), header.sessionId);
     }
 
     if (m_session->id() != header.sessionId) {
