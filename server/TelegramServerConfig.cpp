@@ -24,7 +24,7 @@
 #include <QFile>
 #include <QLoggingCategory>
 
-Q_LOGGING_CATEGORY(loggingCategoryConfig, "telegram.server.config", QtDebugMsg)
+Q_LOGGING_CATEGORY(lcServerConfig, "telegram.server.config", QtDebugMsg)
 
 namespace Telegram {
 
@@ -48,19 +48,26 @@ Config::Config(const QString &fileName)
     } else {
         m_fileName = fileName;
     }
-
-    // default config
-    m_serverConfiguration.dcOptions = {
-        Telegram::DcOption(QStringLiteral("127.0.0.1"), 10443, 1),
-        Telegram::DcOption(QStringLiteral("127.0.0.2"), 10443, 2),
-        Telegram::DcOption(QStringLiteral("127.0.0.3"), 10443, 3),
-    };
+    m_serverConfiguration = getDefaultDcConfiguration();
     m_privateKeyFile = QStringLiteral("private_key.pem");
 }
 
 void Config::setFileName(const QString &fileName)
 {
     m_fileName = fileName;
+}
+
+DcConfiguration Config::getDefaultDcConfiguration()
+{
+    static DcConfiguration dcConfig;
+    if (!dcConfig.isValid()) {
+        dcConfig.dcOptions = {
+            Telegram::DcOption(QStringLiteral("127.0.0.1"), 10443, 1),
+            Telegram::DcOption(QStringLiteral("127.0.0.2"), 10443, 2),
+            Telegram::DcOption(QStringLiteral("127.0.0.3"), 10443, 3),
+        };
+    }
+    return dcConfig;
 }
 
 void Config::setServerConfiguration(const DcConfiguration &configuration)
@@ -75,73 +82,71 @@ void Config::setPrivateKeyFile(const QString &fileName)
 
 bool Config::load()
 {
-    QByteArray bytes;
-    QFile f(m_fileName);
-    if (!f.open(QIODevice::ReadOnly)) {
-        qCWarning(loggingCategoryConfig) << "Failed to open config file:" << m_fileName;
+    QFile configFile(m_fileName);
+    if (!configFile.open(QIODevice::ReadOnly)) {
+        qCWarning(lcServerConfig) << "Failed to open config file:" << m_fileName;
         return false;
     }
-    bytes = f.readAll();
-    f.close();
+    QByteArray configBytes = configFile.readAll();
+    configFile.close();
 
-    QJsonParseError jErr;
-    const QJsonDocument doc = QJsonDocument::fromJson(bytes, &jErr);
-    if (jErr.error != QJsonParseError::NoError) {
-        qCWarning(loggingCategoryConfig) << "Failed to parse config file: " << jErr.errorString();
-        qCWarning(loggingCategoryConfig) << "Using default config.";
-        return false;
-    }
-
-    const QJsonObject obj = doc.object();
-    if (obj.isEmpty()) {
-        qCWarning(loggingCategoryConfig) << "Failed to parse config file: " << jErr.errorString();
-        qCWarning(loggingCategoryConfig) << "Using default config.";
+    QJsonParseError parseError;
+    const QJsonDocument document = QJsonDocument::fromJson(configBytes, &parseError);
+    if (parseError.error != QJsonParseError::NoError) {
+        qCWarning(lcServerConfig) << "Failed to parse config file: " << parseError.errorString();
         return false;
     }
 
+    const QJsonObject root = document.object();
+    if (root.isEmpty()) {
+        qCWarning(lcServerConfig) << "Failed to parse config file: " << parseError.errorString();
+        return false;
+    }
+
+    m_serverConfiguration = getDefaultDcConfiguration();
     // read private key setting
-    m_privateKeyFile = obj[ConfigKey::c_privateKeyFile].toString();
+    m_privateKeyFile = root[ConfigKey::c_privateKeyFile].toString();
 
     // read server configuration
-    const QJsonObject &jserverConfig = obj[ConfigKey::c_serverConfiguration].toObject();
+    const QJsonObject configObject = root[ConfigKey::c_serverConfiguration].toObject();
     // read dc options
     m_serverConfiguration.dcOptions.clear();
-    const QJsonArray &jdcConfigArr = jserverConfig[ConfigKey::c_dcOptions].toArray();
-    for (const QJsonValue &jval : jdcConfigArr) {
-        const QJsonObject &jobj = jval.toObject();
+    const QJsonArray dcOptionsArray = configObject[ConfigKey::c_dcOptions].toArray();
+    for (const QJsonValue &dcOptionValue : dcOptionsArray) {
+        const QJsonObject dcOptionObject = dcOptionValue.toObject();
         DcOption dcOpt;
-        dcOpt.address = jobj[ConfigKey::c_address].toString();
-        dcOpt.port = static_cast<quint16>(jobj[ConfigKey::c_port].toInt());
-        dcOpt.id = static_cast<quint32>(jobj[ConfigKey::c_id].toInt());
+        dcOpt.address = dcOptionObject[ConfigKey::c_address].toString();
+        dcOpt.port = static_cast<quint16>(dcOptionObject[ConfigKey::c_port].toInt());
+        dcOpt.id = static_cast<quint32>(dcOptionObject[ConfigKey::c_id].toInt());
         m_serverConfiguration.dcOptions.append(dcOpt);
     }
 
-    qCInfo(loggingCategoryConfig) << "Loaded config from " << m_fileName;
+    qCInfo(lcServerConfig) << "Loaded config from " << m_fileName;
     return true;
 }
 
 bool Config::save() const
 {
-    QJsonObject jobj;
-    jobj[ConfigKey::c_privateKeyFile] = m_privateKeyFile;
+    QJsonObject root;
+    root[ConfigKey::c_privateKeyFile] = m_privateKeyFile;
 
-    QJsonObject jserverConfiguration;
-    QJsonArray jdcArr;
+    QJsonObject configObject;
+    QJsonArray dcOptionsArray;
     for (const DcOption &opt: m_serverConfiguration.dcOptions) {
-        QJsonObject jdcOpt;
-        jdcOpt[ConfigKey::c_address] = opt.address;
-        jdcOpt[ConfigKey::c_port] = opt.port;
-        jdcOpt[ConfigKey::c_id] = static_cast<int>(opt.id);
-        jdcArr.append(QJsonValue(jdcOpt));
+        QJsonObject dcOptionObject;
+        dcOptionObject[ConfigKey::c_address] = opt.address;
+        dcOptionObject[ConfigKey::c_port] = opt.port;
+        dcOptionObject[ConfigKey::c_id] = static_cast<int>(opt.id);
+        dcOptionsArray.append(QJsonValue(dcOptionObject));
     }
-    jserverConfiguration[ConfigKey::c_dcOptions] = jdcArr;
-    jobj[ConfigKey::c_serverConfiguration] = jserverConfiguration;
+    configObject[ConfigKey::c_dcOptions] = dcOptionsArray;
+    root[ConfigKey::c_serverConfiguration] = configObject;
 
-    const QByteArray bytes = QJsonDocument(jobj).toJson(QJsonDocument::Indented);
+    const QByteArray bytes = QJsonDocument(root).toJson(QJsonDocument::Indented);
 
     QFile f(m_fileName);
     if (!f.open(QIODevice::WriteOnly)) {
-        qCWarning(loggingCategoryConfig) << "Failed to open config file:" << m_fileName;
+        qCWarning(lcServerConfig) << "Failed to open config file:" << m_fileName;
         return false;
     }
     qint64 written = f.write(bytes);

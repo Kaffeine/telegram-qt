@@ -24,13 +24,15 @@ namespace Telegram {
 
 namespace Server {
 
-class Config {
+class Config
+{
 public:
     explicit Config(const QString &fileName = QString());
 
     QString fileName() const { return m_fileName; }
     void setFileName(const QString &fileName);
 
+    static DcConfiguration getDefaultDcConfiguration();
     DcConfiguration serverConfiguration() const { return m_serverConfiguration; }
     void setServerConfiguration(const DcConfiguration &configuration);
 
