@@ -93,7 +93,9 @@ int main(int argc, char *argv[])
 
     parser.process(a);
 
-    Telegram::DcConfiguration dcConfig;
+    Telegram::DcConfiguration dcConfig = Config().serverConfiguration();
+    dcConfig.dcOptions.clear();
+
     for (quint32 i = 0; i < 3; ++i) {
         Telegram::DcOption dcOption;
         dcOption.id = i + 1;
