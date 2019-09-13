@@ -153,6 +153,7 @@ void HelpRpcOperation::runGetConfig()
     TLConfig result;
     result.flags = TLConfig::PhonecallsEnabled;
     result.date = Telegram::Utils::getCurrentTime();
+    result.expires = result.date + 60 * 60;
     result.testMode = true;
     result.thisDc = api()->dcId();
     // TODO: fill other fields of result
