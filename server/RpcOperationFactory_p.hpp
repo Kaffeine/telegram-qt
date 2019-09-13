@@ -19,7 +19,7 @@ RpcOperation *processRpcCallImpl(RpcLayer *layer, RpcProcessingContext &context)
     if (!method) {
         return nullptr;
     }
-    qDebug() << Q_FUNC_INFO << "Process" << context.readCode().toString() << "with messageId" << context.requestId();
+    qDebug() << "processRpcCallImpl:" << context.readCode().toString() << "with messageId" << context.requestId();
     T *operation = new T(layer);
     operation->setRequestId(context.requestId());
     bool fetchResult = (operation->*method)(context);
