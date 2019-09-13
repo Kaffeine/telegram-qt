@@ -38,6 +38,11 @@ DataStorage *DeclarativeClient::dataStorage() const
     return m_client->dataStorage();
 }
 
+AccountApi *DeclarativeClient::accountApi() const
+{
+    return m_client->accountApi();
+}
+
 ConnectionApi *DeclarativeClient::connectionApi() const
 {
     return m_client->connectionApi();

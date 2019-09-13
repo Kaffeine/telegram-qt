@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QTimer>
 
+#include "AccountApi.hpp"
 #include "AccountStorage.hpp"
 #include "Client.hpp"
 #include "CAppInformation.hpp"
@@ -271,6 +272,8 @@ void TelegramQtQmlPlugin::registerTypes(const char *uri)
             (uri, versionMajor, versionMinor, "MessageSender");
 
     QString cppOnlyText = QLatin1String("API classes are not creatable");
+    qmlRegisterUncreatableType<Telegram::Client::AccountApi>
+            (uri, versionMajor, versionMinor, "AccountApi", cppOnlyText);
     qmlRegisterUncreatableType<Telegram::Client::ConnectionApi>
             (uri, versionMajor, versionMinor, "ConnectionApi", cppOnlyText);
     qmlRegisterUncreatableType<Telegram::Client::MessagingApi>

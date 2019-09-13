@@ -9,6 +9,7 @@ namespace Telegram {
 
 namespace Client {
 
+class AccountApi;
 class AppInformation;
 class Client;
 class DeclarativeSettings;
@@ -26,6 +27,7 @@ class TELEGRAMQT_QML_EXPORT DeclarativeClient : public QObject
     Q_PROPERTY(Telegram::Client::AccountStorage *accountStorage READ accountStorage WRITE setAccountStorage NOTIFY accountStorageChanged)
     Q_PROPERTY(Telegram::Client::DataStorage *dataStorage READ dataStorage WRITE setDataStorage NOTIFY dataStorageChanged)
 
+    Q_PROPERTY(Telegram::Client::AccountApi *accountApi READ accountApi CONSTANT)
     Q_PROPERTY(Telegram::Client::ConnectionApi *connectionApi READ connectionApi CONSTANT)
     Q_PROPERTY(Telegram::Client::MessagingApi *messagingApi READ messagingApi CONSTANT)
 public:
@@ -39,6 +41,7 @@ public:
     DeclarativeSettings *settings() const { return m_settings; }
     AccountStorage *accountStorage() const;
     DataStorage *dataStorage() const;
+    AccountApi *accountApi() const;
     ConnectionApi *connectionApi() const;
     MessagingApi *messagingApi() const;
 
