@@ -43,12 +43,6 @@ struct DcConfiguration
     DcOption getOption(const ConnectionSpec spec) const;
     bool isValid() const { return !dcOptions.isEmpty(); }
 
-    DcConfiguration &operator=(const DcConfiguration &other)
-    {
-        dcOptions = other.dcOptions;
-        return *this;
-    }
-
     QVector<DcOption> dcOptions;
 };
 
