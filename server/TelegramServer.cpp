@@ -391,6 +391,7 @@ bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId
     }
 
     client->setSession(session);
+    session->setConnection(client);
     return true;
 }
 
@@ -725,7 +726,7 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             if (session == notification.excludeSession) {
                 continue;
             }
-            session->rpcLayer()->sendUpdates(updates);
+            session->getConnection()->rpcLayer()->sendUpdates(updates);
         }
     }
 }

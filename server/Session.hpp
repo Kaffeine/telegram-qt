@@ -10,7 +10,6 @@ namespace Telegram {
 namespace Server {
 
 class RemoteClientConnection;
-class RpcLayer;
 
 class Session
 {
@@ -22,8 +21,6 @@ public:
     void setConnection(RemoteClientConnection *connection) { m_connection = connection; }
 
     quint64 id() const { return m_sessionId; }
-
-    RpcLayer *rpcLayer() const;
 
     quint32 userId() const { return m_userId; }
     void setUserId(quint32 userId) { m_userId = userId; }
