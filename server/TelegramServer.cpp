@@ -385,8 +385,14 @@ bool Server::bindClientSession(RemoteClientConnection *client, quint64 sessionId
         }
 
         const quint32 userId = m_authService->getUserIdByAuthId(client->authId());
+
         if (userId) {
-            session->setUserId(userId);
+            LocalUser *localUser = getUser(userId);
+            if (localUser) {
+                localUser->addSession(session);
+            } else {
+                qCWarning(loggingCategoryServer) << CALL_INFO << "Unable to get user";
+            }
         }
     }
 
