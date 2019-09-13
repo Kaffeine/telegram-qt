@@ -103,9 +103,14 @@ void LocalUser::setAbout(const QString &about)
     m_about = about;
 }
 
+void LocalUser::setOnlineTimestamp(quint32 onlineTimestampSec)
+{
+    m_onlineTimestamp = onlineTimestampSec;
+}
+
 bool LocalUser::isOnline() const
 {
-    return true;
+    return m_onlineTimestamp >= Telegram::Utils::getCurrentTime();
 }
 
 void AuthorizedUser::setDcId(quint32 id)

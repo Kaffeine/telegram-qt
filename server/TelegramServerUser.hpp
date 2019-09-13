@@ -86,6 +86,7 @@ public:
     virtual QString userName() const = 0;
     virtual QString firstName() const = 0;
     virtual QString lastName() const = 0;
+    virtual quint32 onlineTimestamp() const = 0;
     virtual bool isOnline() const = 0;
     virtual quint32 dcId() const = 0;
     virtual UserPostBox *getPostBox() = 0;
@@ -148,6 +149,9 @@ public:
     QString about() const { return m_about; }
     void setAbout(const QString &about);
 
+    quint32 onlineTimestamp() const override { return m_onlineTimestamp; }
+    void setOnlineTimestamp(quint32 onlineTimestampSec);
+
     bool isOnline() const override;
 
     QVector<ImageDescriptor> getImages() const override { return m_photos; }
@@ -196,6 +200,8 @@ protected:
     QVector<UserDialog *> m_dialogs;
     QVector<quint32> m_contactList; // Contains only registered users from the added contacts
     QVector<UserContact> m_importedContacts; // Contains phone + name of all added contacts (including not registered yet)
+
+    quint32 m_onlineTimestamp = 0;
 };
 
 } // Server namespace

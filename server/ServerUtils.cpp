@@ -37,6 +37,7 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *
     output->username = input->userName();
     // TODO: Check if the user has access to the requested user phone
     output->phone = input->phoneNumber();
+    setupTLUserStatus(&output->status, input, applicant);
 
     ImageDescriptor image = input->getCurrentImage();
 
@@ -65,6 +66,9 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *
     if (output->photo.tlType != TLValue::UserProfilePhotoEmpty) {
         flags |= TLUser::Photo;
     }
+    if (output->status.tlType != TLValue::UserStatusEmpty) {
+        flags |= TLUser::Status;
+    }
     if (output->id == applicant->id()) {
         flags |= TLUser::Self;
     }
@@ -75,6 +79,23 @@ bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *
         }
     }
     output->flags = flags;
+
+    return true;
+}
+
+bool setupTLUserStatus(TLUserStatus *output, const AbstractUser *input, const AbstractUser *forUser)
+{
+    Q_UNUSED(forUser)
+    const quint32 onlineDate = input->onlineTimestamp();
+    const quint32 currentDate = Telegram::Utils::getCurrentTime();
+
+    if (currentDate > onlineDate) {
+        output->tlType = TLValue::UserStatusOffline;
+        output->wasOnline = onlineDate;
+    } else {
+        output->tlType = TLValue::UserStatusOnline;
+        output->expires = onlineDate;
+    }
 
     return true;
 }

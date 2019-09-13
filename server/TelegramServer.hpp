@@ -95,6 +95,7 @@ public:
     Session *getSessionById(quint64 sessionId) const override;
     void bindUserSession(AuthorizedUser *user, Session *session) override;
     bool setUserName(LocalUser *user, const QString &newUsername) override;
+    bool setUserOnline(LocalUser *user, bool online, Session *fromSession = nullptr) override;
 
     PendingOperation *exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes) override;
     QByteArray generateExportedAuthorization(quint32 userId) override;
@@ -123,6 +124,7 @@ protected:
     Session *addSession(quint64 sessionId);
 
     void onClientConnectionStatusChanged();
+    void onUserSessionStatusChanged(LocalUser *user, Session *session);
 
     void reportLocalMessageRead(LocalUser *user, const UpdateNotification &notification);
     void setSessionConnection(Session *session, RemoteClientConnection *connection);

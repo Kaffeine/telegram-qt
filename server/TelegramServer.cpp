@@ -225,6 +225,20 @@ void Server::onClientConnectionStatusChanged()
     }
 }
 
+void Server::onUserSessionStatusChanged(LocalUser *user, Session *session)
+{
+    if (session->isActive()) {
+        // The user become online
+        // Wait for account.updateStatus API call
+    } else if (!user->hasActiveSession()) {
+        // The user has no connected devices.
+        // Definitely offline.
+        if (user->isOnline()) {
+            setUserOnline(user, false);
+        }
+    }
+}
+
 void Server::reportLocalMessageRead(LocalUser *user, const UpdateNotification &notification)
 {
     UserDialog *senderDialog = user->getDialog(notification.dialogPeer);
@@ -247,6 +261,15 @@ void Server::reportLocalMessageRead(LocalUser *user, const UpdateNotification &n
 void Server::setSessionConnection(Session *session, RemoteClientConnection *connection)
 {
     session->setConnection(connection);
+
+    if (session->userId()) {
+        LocalUser *localUser = getUser(session->userId());
+        if (localUser) {
+            // It is OK to have no local user
+            // because we have sessions for imported authorizations as well.
+            onUserSessionStatusChanged(localUser, session);
+        }
+    }
 }
 
 Peer Server::getPeer(const TLInputPeer &peer, const LocalUser *applicant) const
@@ -378,6 +401,8 @@ LocalUser *Server::addUser(const QString &identifier)
 bool Server::bindClientConnectionSession(RemoteClientConnection *connection, quint64 sessionId)
 {
     Session *session = getSessionById(sessionId);
+    const quint32 userId = m_authService->getUserIdByAuthId(connection->authId());
+    LocalUser *localUser = userId ? getUser(userId) : nullptr;
 
     if (!session) {
         session = addSession(sessionId);
@@ -389,20 +414,14 @@ bool Server::bindClientConnectionSession(RemoteClientConnection *connection, qui
             session->generateInitialServerSalt();
         }
 
-        const quint32 userId = m_authService->getUserIdByAuthId(connection->authId());
-
-        if (userId) {
-            LocalUser *localUser = getUser(userId);
-            if (localUser) {
-                localUser->addSession(session);
-            } else {
-                qCWarning(loggingCategoryServer) << CALL_INFO << "Unable to get user";
-            }
+        if (localUser) {
+            localUser->addSession(session);
         }
     }
 
     connection->setSession(session);
     setSessionConnection(session, connection);
+
     return true;
 }
 
@@ -432,6 +451,22 @@ bool Server::setUserName(LocalUser *user, const QString &newUsername)
     m_usernameToUserId.insert(newUsername, user->id());
     user->setUserName(newUsername);
     m_usernameToUserId.remove(previousName);
+    return true;
+}
+
+// Returns true is the status changed.
+bool Server::setUserOnline(LocalUser *user, bool online, Session *fromSession)
+{
+    quint32 date = Telegram::Utils::getCurrentTime();
+    const bool wasOnline = user->onlineTimestamp() > date;
+    if (online) {
+        date += m_dcConfiguration.onlineCloudTimeoutMs / 1000;
+    }
+    user->setOnlineTimestamp(date);
+    if (online == wasOnline) {
+        return false;
+    }
+
     return true;
 }
 

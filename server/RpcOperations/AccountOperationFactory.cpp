@@ -520,12 +520,13 @@ void AccountRpcOperation::runUpdateProfile()
 
 void AccountRpcOperation::runUpdateStatus()
 {
-    // TLFunctions::TLAccountUpdateStatus &arguments = m_updateStatus;
-    if (processNotImplementedMethod(TLValue::AccountUpdateStatus)) {
-        return;
-    }
-    bool result;
-    sendRpcReply(result);
+    TLFunctions::TLAccountUpdateStatus &arguments = m_updateStatus;
+    LocalUser *selfUser = layer()->getUser();
+    const bool statusChanged = api()->setUserOnline(selfUser, !arguments.offline,
+                                                    layer()->session());
+
+    // Return true is the status changed.
+    sendRpcReply(statusChanged);
 }
 
 void AccountRpcOperation::runUpdateUsername()

@@ -23,6 +23,7 @@ namespace Utils {
 void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages);
 
 bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *forUser);
+bool setupTLUserStatus(TLUserStatus *output, const AbstractUser *input, const AbstractUser *forUser);
 bool setupTLUpdatesState(TLUpdatesState *output, const AbstractUser *forUser);
 bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
                   const QSet<Peer> &peers, const AbstractServerApi *api, const AbstractUser *forUser);
