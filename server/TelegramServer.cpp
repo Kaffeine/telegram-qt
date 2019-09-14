@@ -330,9 +330,34 @@ QVector<quint32> Server::getPeerWatchers(const Peer &peer) const
 {
     QVector<quint32> watchers;
     if (peer.type == Peer::User) {
+        const LocalUser *localUser = getUser(peer.id);
+        if (localUser) {
+            const QVector<UserDialog *> dialogs = localUser->dialogs();
+            for (const UserDialog *dialog : dialogs) {
+                if (!dialog->peer.isValid()) {
+                    // Sanity check was failed.
+                    continue;
+                }
+                if (dialog->peer.type == Peer::User) {
+                    watchers.append(dialog->peer.id);
+                }
+            }
+        }
+        const AbstractUser *user = localUser ? localUser : getAbstractUser(peer.id);
+        const QVector<quint32> contactList = user->contactList();
+        for (const quint32 contactId : contactList) {
+            if (watchers.contains(contactId)) {
+                continue;
+            }
+            watchers.append(contactId);
+        }
+
         // Any user is interesting in themself
-        watchers << peer.id;
+        if (!watchers.contains(peer.id)) {
+            watchers << peer.id;
+        }
     }
+
     return watchers;
 }
 
