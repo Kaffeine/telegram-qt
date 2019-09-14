@@ -55,7 +55,7 @@ ItemDelegate {
                 id: deliveryStatus
                 anchors.bottom: details.bottom
                 anchors.right: details.right
-                readonly property string time: model.time
+                readonly property string time: Qt.formatTime(model.sentTimestamp)
                 text: {
                     if (model.messageFlags & Telegram.Namespace.MessageFlagOut) {
                         if (model.messageFlags & Telegram.Namespace.MessageFlagRead) {
