@@ -62,7 +62,6 @@ mkdir build
 cd build
 
 %cmake \
-    -DENABLE_TESTAPP=FALSE \
     -DBUILD_VERSION="%{version}" \
     ..
 
