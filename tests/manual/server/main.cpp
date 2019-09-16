@@ -17,6 +17,7 @@
 
 #include "DcConfiguration.hpp"
 #include "DefaultAuthorizationProvider.hpp"
+#include "JsonDataImporter.hpp"
 #include "LocalCluster.hpp"
 #include "RandomGenerator.hpp"
 #include "Session.hpp"
@@ -32,6 +33,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QStandardPaths>
+#include <QTimer>
 
 using namespace Telegram::Server;
 
@@ -124,12 +126,29 @@ int main(int argc, char *argv[])
     } else {
         qWarning() << "Unable to save the RSA key in a persistent location.";
     }
+
     if (!cluster.start()) {
         return -2;
     }
 
+    JsonDataImporter importer;
+    importer.setBaseDirectory(QLatin1String("TelegramServer/io"));
+    importer.setTarget(&cluster);
+    importer.loadData();
+
+    QTimer saveTimer;
+    saveTimer.setInterval(30000);
+    saveTimer.setSingleShot(false);
+    QObject::connect(&saveTimer, &QTimer::timeout, [&importer]() {
+        qInfo() << "Sync server data";
+        importer.saveData();
+    });
+    saveTimer.start();
+
     int retCode = a.exec();
     cluster.stop();
+
+    importer.saveData();
 
     TestKeyData::cleanupKeyFiles();
     return retCode;
