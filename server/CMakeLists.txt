@@ -76,6 +76,8 @@ set(server_json_SOURCES
     JsonUtils_p.hpp
     ServerImportApi.cpp
     ServerImportApi.hpp
+    ServerTelegramJson.cpp
+    ServerTelegramJson.hpp
 )
 
 add_library(TelegramQt${QT_VERSION_MAJOR}Server STATIC)
