@@ -52,7 +52,7 @@ public:
     QString languagePack;
     QString languageCode;
     QString ip;
-    quint64 timestamp = 0;
+    quint32 timestamp = 0;
 
 protected:
     void addSalt() const;

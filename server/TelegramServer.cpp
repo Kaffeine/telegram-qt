@@ -215,6 +215,8 @@ void Server::onClientConnectionStatusChanged()
                                           << hex << showbase << client->session()->id()
                                           << "from" << client->transport()->remoteAddress();
             setSessionConnection(client->session(), nullptr);
+            // Update session 'last seen' timestamp on disconnect
+            client->session()->timestamp = Telegram::Utils::getCurrentTime();
         } else {
             qCInfo(loggingCategoryServer) << this << __func__ << "Disconnected a client without a session"
                                           << "from" << client->transport()->remoteAddress();
