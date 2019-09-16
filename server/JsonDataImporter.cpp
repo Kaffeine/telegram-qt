@@ -88,6 +88,11 @@ void JsonDataImporter::exportForServer(Server *server)
                 userObject[QLatin1String("userName")] = user->userName();
             }
 
+            quint32 onlineTimestamp = user->onlineTimestamp();
+            if (onlineTimestamp) {
+                userObject["onlineTimestamp"] = Json::toValue(onlineTimestamp);
+            }
+
             QJsonArray sessionsArray;
             for (const Session *session : user->sessions()) {
                 sessionsArray.append(Json::toValue(session->id()));
@@ -167,6 +172,7 @@ void JsonDataImporter::importForServer(Server *server)
             user->setFirstName(userObject[QLatin1String("firstName")].toString());
             user->setLastName(userObject[QLatin1String("lastName")].toString());
             user->setUserName(userObject[QLatin1String("userName")].toString());
+            user->setOnlineTimestamp(Json::fromValue<quint32>(userObject[QLatin1String("onlineTimestamp")]));
             server->insertUser(user);
 
             const QJsonArray sessionArray = userObject[QLatin1String("sessions")].toArray();
