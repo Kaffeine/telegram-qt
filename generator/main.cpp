@@ -120,7 +120,7 @@ QString getSectionContent(const QString &fileName, const QString &startMarker, c
     if (!fileToProcess.open(QIODevice::ReadOnly))
         return QString();
 
-    QString fileContent = fileToProcess.readAll();
+    QString fileContent = QString::fromUtf8(fileToProcess.readAll());
     fileToProcess.close();
 
     bool winNewLines = fileContent.indexOf(QLatin1String("\r\n")) > 0;
@@ -377,7 +377,7 @@ OutputFile::OutputFile(const QString &fileName) :
     if (m_FileEolFormat == EolFormat::Windows) {
         fileContent.replace(QByteArrayLiteral("\r\n"), QByteArrayLiteral("\n"));
     }
-    setContent(fileContent);
+    setContent(QString::fromUtf8(fileContent));
 }
 
 OutputFile::OutputFile(const char *fileName) :
@@ -416,9 +416,10 @@ OutputFile::~OutputFile()
 
 bool OutputFile::replaceParts(const char *marker, const QString &newContent, int spacing)
 {
-    const QString space(spacing, QChar(' '));
-    if (!replace(QStringLiteral("%1// Partially generated %2\n").arg(space).arg(marker),
-                 QStringLiteral("%1// End of partially generated %2\n").arg(space).arg(marker), newContent)) {
+    const QString space(spacing, QLatin1Char(' '));
+    const QString markerStr = QString::fromLatin1(marker);
+    if (!replace(QStringLiteral("%1// Partially generated %2\n").arg(space).arg(markerStr),
+                 QStringLiteral("%1// End of partially generated %2\n").arg(space).arg(markerStr), newContent)) {
         qCWarning(c_loggingFileWriter) << "Can not update file" << m_fileName
                                        << "with marker" << marker;
         return false;

@@ -32,6 +32,10 @@ set(generator_TEMPLATES
     templates/ServerOperationFactory.hpp
 )
 
+target_compile_definitions(generator PRIVATE
+    QT_RESTRICTED_CAST_FROM_ASCII
+)
+
 target_link_libraries(generator
     Qt5::Core
     Qt5::Network
