@@ -26,6 +26,7 @@ class AbstractUser;
 class MessageData;
 class MessageRecipient;
 class MessageService;
+struct UserContact;
 
 struct PhoneStatus
 {
@@ -113,6 +114,8 @@ public:
     virtual QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
                                                       LocalUser *applicant,
                                                       Session *excludeSession) const = 0;
+
+    virtual AbstractUser *importUserContact(LocalUser *user, const UserContact &contact) = 0;
 };
 
 } // Server namespace

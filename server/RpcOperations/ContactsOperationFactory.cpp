@@ -266,21 +266,18 @@ void ContactsRpcOperation::runImportContacts()
         contact.firstName = c.firstName;
         contact.lastName = c.lastName;
 
-        AbstractUser *registeredUser = api()->getAbstractUser(contact.phone);
-        if (registeredUser) {
-            contact.id = registeredUser->id();
-        } else {
-            result.retryContacts.append(c.clientId);
-        }
-        selfUser->importContact(contact);
-        if (registeredUser) {
+        AbstractUser *contactUser = api()->importUserContact(selfUser, contact);
+        if (contactUser) {
             result.users.append(TLUser());
-            Utils::setupTLUser(&result.users.last(), registeredUser, selfUser);
+            Utils::setupTLUser(&result.users.last(), contactUser, selfUser);
 
             TLImportedContact imported;
             imported.clientId = c.clientId;
             imported.userId = contact.id;
             result.imported.append(imported);
+        } else {
+            // TODO: Check if this is correct.
+            result.retryContacts.append(c.clientId);
         }
     }
 

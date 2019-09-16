@@ -703,6 +703,18 @@ QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updat
     return notifications;
 }
 
+AbstractUser *Server::importUserContact(LocalUser *user, const UserContact &contact)
+{
+    UserContact userContact = contact;
+    AbstractUser *registeredUser = getAbstractUser(contact.phone);
+    if (registeredUser) {
+        userContact.id = registeredUser->id();
+    }
+    user->importContact(userContact);
+
+    return registeredUser;
+}
+
 void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 {
    AbstractUser *interestingUser = nullptr;

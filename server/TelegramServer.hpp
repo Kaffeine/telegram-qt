@@ -108,6 +108,8 @@ public:
                                               LocalUser *applicant,
                                               Session *excludeSession) const override;
 
+    AbstractUser *importUserContact(LocalUser *user, const UserContact &contact) override;
+
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
     void queueServerUpdates(const QVector<UpdateNotification> &notifications) override;
 
