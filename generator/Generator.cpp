@@ -1280,7 +1280,15 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
         // void runCheckPhone();
         result.declarations.append(QString("void run%1();").arg(method.nameFromSecondWord()));
 
-        static const auto addDefinition = [&className](const TLMethod &method, const QString &previousCode) {
+        static const QString argumentsMusthavePart = QLatin1String(" &arguments = m_");
+        QString argumentsLine;
+        argumentsLine = functionsType + QLatin1String("::")
+                + method.nameFirstCapital()
+                + argumentsMusthavePart + method.predicateName() + QLatin1Char(';');
+
+        static const auto addDefinition = [&className](const TLMethod &method,
+                const QString &previousCode, const QString &argumentsLine
+                ) {
             const QString signature = QString("void %1::run%2()\n").arg(className, method.nameFromSecondWord());
             int index = previousCode.indexOf(signature);
             if (index >= 0) {
@@ -1290,6 +1298,20 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
                     QString code = previousCode.mid(index, indexOfEnd - index) + QLatin1String("\n}\n\n");
                     bool keepCustomNotImplemented = true;
                     bool notImplemented = code.contains("NotImplemented") || code.contains("not implemented");
+                    if (!code.contains(argumentsLine)) {
+                        QStringList codeLines = code.split(QLatin1Char('\n'));
+                        for (QString &line :codeLines) {
+                            if (line.contains(argumentsMusthavePart)) {
+                                if (line.trimmed().startsWith(QLatin1String("//"))) {
+                                    line = spacing + QLatin1String("// ") + argumentsLine;
+                                } else {
+                                    line = spacing + argumentsLine;
+                                }
+                            }
+                        }
+                        code = codeLines.join(QLatin1Char('\n'));
+                    }
+
                     if (!notImplemented || keepCustomNotImplemented) {
                         return code;
                     }
