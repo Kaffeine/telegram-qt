@@ -3803,7 +3803,7 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         stream << updateValue.queryId;
         stream << updateValue.userId;
         stream << updateValue.peer;
-        stream << updateValue.quint32MsgId;
+        stream << updateValue.msgId;
         stream << updateValue.chatInstance;
         if (updateValue.flags & 1 << 0) {
             stream << updateValue.byteArrayData;

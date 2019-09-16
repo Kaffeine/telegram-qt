@@ -2520,7 +2520,7 @@ QDebug operator<<(QDebug d, const TLMessageEntity &type)
         d << "\n";
         d << spacer.innerSpaces() << "offset: " << type.offset <<"\n";
         d << spacer.innerSpaces() << "length: " << type.length <<"\n";
-        d << spacer.innerSpaces() << "quint32UserId: " << type.quint32UserId <<"\n";
+        d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         break;
     case TLValue::InputMessageEntityMentionName:
         d << "\n";
@@ -7329,7 +7329,7 @@ QDebug operator<<(QDebug d, const TLUpdate &type)
         d << spacer.innerSpaces() << "queryId: " << type.queryId <<"\n";
         d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
         d << spacer.innerSpaces() << "peer: " << type.peer <<"\n";
-        d << spacer.innerSpaces() << "quint32MsgId: " << type.quint32MsgId <<"\n";
+        d << spacer.innerSpaces() << "msgId: " << type.msgId <<"\n";
         d << spacer.innerSpaces() << "chatInstance: " << type.chatInstance <<"\n";
         if (type.flags & 1 << 0) {
             d << spacer.innerSpaces() << "byteArrayData: " << type.byteArrayData.toHex() <<"\n";

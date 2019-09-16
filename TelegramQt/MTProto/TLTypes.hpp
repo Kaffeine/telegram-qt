@@ -1418,7 +1418,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessageEntity {
     quint32 length = 0;
     QString language;
     QString url;
-    quint32 quint32UserId = 0;
+    quint32 userId = 0;
     TLInputUser inputUserUserId;
     TLValue tlType = TLValue::MessageEntityUnknown;
 };
@@ -5292,7 +5292,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdate {
     QString offset;
     QString stringId;
     TLInputBotInlineMessageID inputBotInlineMessageIDMsgId;
-    quint32 quint32MsgId = 0;
+    quint32 msgId = 0;
     quint64 chatInstance = 0;
     QByteArray byteArrayData;
     QString gameShortName;

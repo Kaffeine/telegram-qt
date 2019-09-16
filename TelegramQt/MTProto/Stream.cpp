@@ -1731,7 +1731,7 @@ Stream &Stream::operator>>(TLMessageEntity &messageEntityValue)
     case TLValue::MessageEntityMentionName:
         *this >> result.offset;
         *this >> result.length;
-        *this >> result.quint32UserId;
+        *this >> result.userId;
         break;
     case TLValue::InputMessageEntityMentionName:
         *this >> result.offset;
@@ -6296,7 +6296,7 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         *this >> result.queryId;
         *this >> result.userId;
         *this >> result.peer;
-        *this >> result.quint32MsgId;
+        *this >> result.msgId;
         *this >> result.chatInstance;
         if (result.flags & 1 << 0) {
             *this >> result.byteArrayData;
@@ -7200,7 +7200,7 @@ Stream &Stream::operator<<(const TLMessageEntity &messageEntityValue)
     case TLValue::MessageEntityMentionName:
         *this << messageEntityValue.offset;
         *this << messageEntityValue.length;
-        *this << messageEntityValue.quint32UserId;
+        *this << messageEntityValue.userId;
         break;
     case TLValue::InputMessageEntityMentionName:
         *this << messageEntityValue.offset;
