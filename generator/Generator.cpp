@@ -28,7 +28,7 @@
 
 #include <zlib.h>
 
-//Q_LOGGING_CATEGORY(c_loggingGenerator, "telegram.generator", QtDebugMsg)
+Q_LOGGING_CATEGORY(c_loggingTypes, "telegram.generator.types", QtWarningMsg)
 Q_LOGGING_CATEGORY(c_loggingTextParser, "telegram.generator.textParser", QtWarningMsg)
 Q_LOGGING_CATEGORY(c_loggingTlValues, "telegram.generator.values", QtWarningMsg)
 
@@ -63,6 +63,12 @@ static const QHash<QString,QString> c_privacyFilter = {
     { QLatin1String("phone"), c_phonePrivacyFilter },
     { QLatin1String("phoneNumber"), c_phonePrivacyFilter },
     { QLatin1String("accessHash"), c_numberPrivacyFilter },
+};
+
+static const QHash<QString, QString> c_preferredMemberTypes = {
+    { "userId", "quint32" },
+    { "msgId", "quint32" },
+    { "peer", "TLPeer" },
 };
 
 QString Generator::spacing = QString(4, QLatin1Char(' '));
@@ -1456,6 +1462,9 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
             for (TLSubType &subType : type.subTypes) {
                 for (TLParam &member : subType.members) {
                     if (members.values(member.getName()).count() > 1) {
+                        if (c_preferredMemberTypes.value(member.getName()) == member.getType()) {
+                            continue;
+                        }
                         QString typeWithoutTL = removeTypePrefix(member.bareType());
                         typeWithoutTL = removeWord(typeWithoutTL, member.getName());
                         if (member.getName().compare(typeWithoutTL, Qt::CaseInsensitive) != 0) {
@@ -1465,6 +1474,7 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                                 member.setAlias(formatName({typeWithoutTL, member.getName()}, FormatOption::LowerCaseFirstLetter));
                             }
                         }
+                        qCDebug(c_loggingTypes) << "Member name conflict:" << member.getName() << member.type() << "solved to" << member.getAlias();
                     }
                 }
             }
