@@ -8,11 +8,6 @@ This server is developed to test a Telegram client without bothering the officia
 There is also no intention to make it a "production-ready" server and though it runs as
 a cluster there is no purpose to make it scalable or performant.
 
-Note
-=============
-The server is expected to work with any Telegram client, though now there is no plan for
-multilayer support and currently it work only with layer 72.
-
 Key Generation
 ==============
 
@@ -72,6 +67,12 @@ Photos:
 
 - photos.getUserPhotos
 - photos.uploadProfilePhoto
+
+Note
+=============
+
+The server is expected to work with any Telegram client, though now there is no plan for
+multilayer support and currently it work only with layer 72.
 
 License
 =======
