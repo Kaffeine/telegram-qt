@@ -22,6 +22,57 @@ Key Generation
     openssl rsa -pubout -in private_key.pem -out public_key.pem
     openssl rsa -pubin -in public_key.pem -RSAPublicKey_out > public_key_PKCS1.pem
 
+Implemented API
+===============
+
+Registration/Authorization:
+
+- auth.checkPassword
+- auth.checkPhone
+- auth.exportAuthorization
+- auth.importAuthorization
+- auth.sendCode
+- auth.signIn
+- auth.signUp
+
+Account:
+
+- account.checkUsername
+- account.getPassword
+- account.updateProfile
+- account.updateStatus
+- account.updateUsername
+
+Contacts:
+
+- contacts.getContacts
+- contacts.importContacts
+- contacts.resolveUsername
+
+Users:
+
+- users.getFullUser
+- users.getUsers
+
+Messages:
+
+- messages.sendMessage
+- messages.sendMedia (contact and uploaded document)
+- messages.setTyping
+- messages.getDialogs
+- messages.getHistory
+- messages.readHistory
+
+Files:
+
+- upload.getFile
+- upload.saveFilePart
+
+Photos:
+
+- photos.getUserPhotos
+- photos.uploadProfilePhoto
+
 License
 =======
 
