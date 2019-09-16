@@ -38,7 +38,7 @@ static const QString tlPrefix = QLatin1String("TL");
 static const QString tlValueName = tlPrefix + QLatin1String("Value");
 static const QString tlTypeMember = QLatin1String("tlType");
 static const QString tlVectorType = tlPrefix + QLatin1String("Vector");
-static const QString functionsType = QLatin1String("TLFunctions");
+static const QString functionsType = QLatin1String("Functions");
 static const QString tlTrueType = tlPrefix + QLatin1String("True");
 static const QString tlNullType = tlPrefix + QLatin1String("Null");
 static const QStringList podTypes = QStringList() << "bool" << "quint32" << "quint64" << "double" << tlValueName;
@@ -1244,7 +1244,7 @@ QStringList Generator::generateServerRpcMembers(const QString &groupName) const
         if (!method.name.startsWith(groupName)) {
             continue;
         }
-        result.append(QStringLiteral("%1::%2 m_%3;").arg(functionsType, method.functionTypeName(), method.predicateName()));
+        result.append(QStringLiteral("%1::%2::%3 m_%4;").arg(tlNamespace, functionsType, method.functionTypeName(), method.predicateName()));
     }
     // TLFunctions::TLAuthCheckPhone m_checkPhone;
     // TLFunctions::TLAuthSendCode m_sendCode;
@@ -1280,9 +1280,10 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
         // void runCheckPhone();
         result.declarations.append(QString("void run%1();").arg(method.nameFromSecondWord()));
 
+        // MTProto::Functions::AuthCheckPhone &arguments = m_checkPhone;
         static const QString argumentsMusthavePart = QLatin1String(" &arguments = m_");
         QString argumentsLine;
-        argumentsLine = functionsType + QLatin1String("::")
+        argumentsLine = tlNamespace + QLatin1String("::") + functionsType + QLatin1String("::")
                 + method.functionTypeName()
                 + argumentsMusthavePart + method.predicateName() + QLatin1Char(';');
 
@@ -1321,7 +1322,7 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
             }
             // void AuthRpcOperation::runCheckPhone()
             // {
-            //     // TLFunctions::TLAuthCheckPhone &arguments = m_checkPhone;
+            //     // MTProto::Functions::AuthCheckPhone &arguments = m_checkPhone;
             //     if (processNotImplementedMethod(TLValue::AuthCheckPhone)) {
             //         return;
             //     }

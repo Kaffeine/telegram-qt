@@ -60,10 +60,10 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLStickersAddStickerToSet m_addStickerToSet;
-    TLFunctions::TLStickersChangeStickerPosition m_changeStickerPosition;
-    TLFunctions::TLStickersCreateStickerSet m_createStickerSet;
-    TLFunctions::TLStickersRemoveStickerFromSet m_removeStickerFromSet;
+    MTProto::Functions::TLStickersAddStickerToSet m_addStickerToSet;
+    MTProto::Functions::TLStickersChangeStickerPosition m_changeStickerPosition;
+    MTProto::Functions::TLStickersCreateStickerSet m_createStickerSet;
+    MTProto::Functions::TLStickersRemoveStickerFromSet m_removeStickerFromSet;
     // End of generated RPC members
 };
 

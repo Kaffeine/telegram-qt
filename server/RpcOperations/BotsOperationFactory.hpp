@@ -56,8 +56,8 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLBotsAnswerWebhookJSONQuery m_answerWebhookJSONQuery;
-    TLFunctions::TLBotsSendCustomRequest m_sendCustomRequest;
+    MTProto::Functions::TLBotsAnswerWebhookJSONQuery m_answerWebhookJSONQuery;
+    MTProto::Functions::TLBotsSendCustomRequest m_sendCustomRequest;
     // End of generated RPC members
 };
 

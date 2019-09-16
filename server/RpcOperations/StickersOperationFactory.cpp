@@ -71,7 +71,7 @@ bool StickersRpcOperation::processRemoveStickerFromSet(RpcProcessingContext &con
 // Generated run methods
 void StickersRpcOperation::runAddStickerToSet()
 {
-    // TLFunctions::TLStickersAddStickerToSet &arguments = m_addStickerToSet;
+    // MTProto::Functions::TLStickersAddStickerToSet &arguments = m_addStickerToSet;
     if (processNotImplementedMethod(TLValue::StickersAddStickerToSet)) {
         return;
     }
@@ -81,7 +81,7 @@ void StickersRpcOperation::runAddStickerToSet()
 
 void StickersRpcOperation::runChangeStickerPosition()
 {
-    // TLFunctions::TLStickersChangeStickerPosition &arguments = m_changeStickerPosition;
+    // MTProto::Functions::TLStickersChangeStickerPosition &arguments = m_changeStickerPosition;
     if (processNotImplementedMethod(TLValue::StickersChangeStickerPosition)) {
         return;
     }
@@ -91,7 +91,7 @@ void StickersRpcOperation::runChangeStickerPosition()
 
 void StickersRpcOperation::runCreateStickerSet()
 {
-    // TLFunctions::TLStickersCreateStickerSet &arguments = m_createStickerSet;
+    // MTProto::Functions::TLStickersCreateStickerSet &arguments = m_createStickerSet;
     if (processNotImplementedMethod(TLValue::StickersCreateStickerSet)) {
         return;
     }
@@ -101,7 +101,7 @@ void StickersRpcOperation::runCreateStickerSet()
 
 void StickersRpcOperation::runRemoveStickerFromSet()
 {
-    // TLFunctions::TLStickersRemoveStickerFromSet &arguments = m_removeStickerFromSet;
+    // MTProto::Functions::TLStickersRemoveStickerFromSet &arguments = m_removeStickerFromSet;
     if (processNotImplementedMethod(TLValue::StickersRemoveStickerFromSet)) {
         return;
     }

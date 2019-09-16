@@ -140,7 +140,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
     case TLValue::PingDelayDisconnect:
     {
         MTProto::Stream stream(message.data);
-        TLFunctions::TLPing ping;
+        MTProto::Functions::TLPing ping;
         stream >> ping;
 
         MTProto::Stream output(MTProto::Stream::WriteOnly);

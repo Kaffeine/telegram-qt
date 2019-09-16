@@ -236,7 +236,7 @@ bool AccountRpcOperation::processUpdateUsername(RpcProcessingContext &context)
 // Generated run methods
 void AccountRpcOperation::runChangePhone()
 {
-    // TLFunctions::TLAccountChangePhone &arguments = m_changePhone;
+    // MTProto::Functions::TLAccountChangePhone &arguments = m_changePhone;
     if (processNotImplementedMethod(TLValue::AccountChangePhone)) {
         return;
     }
@@ -246,14 +246,14 @@ void AccountRpcOperation::runChangePhone()
 
 void AccountRpcOperation::runCheckUsername()
 {
-    TLFunctions::TLAccountCheckUsername &arguments = m_checkUsername;
+    MTProto::Functions::TLAccountCheckUsername &arguments = m_checkUsername;
     bool result = !api()->getPeerByUserName(arguments.username).isValid();
     sendRpcReply(result);
 }
 
 void AccountRpcOperation::runConfirmPhone()
 {
-    // TLFunctions::TLAccountConfirmPhone &arguments = m_confirmPhone;
+    // MTProto::Functions::TLAccountConfirmPhone &arguments = m_confirmPhone;
     if (processNotImplementedMethod(TLValue::AccountConfirmPhone)) {
         return;
     }
@@ -263,7 +263,7 @@ void AccountRpcOperation::runConfirmPhone()
 
 void AccountRpcOperation::runDeleteAccount()
 {
-    // TLFunctions::TLAccountDeleteAccount &arguments = m_deleteAccount;
+    // MTProto::Functions::TLAccountDeleteAccount &arguments = m_deleteAccount;
     if (processNotImplementedMethod(TLValue::AccountDeleteAccount)) {
         return;
     }
@@ -291,7 +291,7 @@ void AccountRpcOperation::runGetAuthorizations()
 
 void AccountRpcOperation::runGetNotifySettings()
 {
-    // TLFunctions::TLAccountGetNotifySettings &arguments = m_getNotifySettings;
+    // MTProto::Functions::TLAccountGetNotifySettings &arguments = m_getNotifySettings;
     if (processNotImplementedMethod(TLValue::AccountGetNotifySettings)) {
         return;
     }
@@ -320,7 +320,7 @@ void AccountRpcOperation::runGetPassword()
 
 void AccountRpcOperation::runGetPasswordSettings()
 {
-    // TLFunctions::TLAccountGetPasswordSettings &arguments = m_getPasswordSettings;
+    // MTProto::Functions::TLAccountGetPasswordSettings &arguments = m_getPasswordSettings;
     if (processNotImplementedMethod(TLValue::AccountGetPasswordSettings)) {
         return;
     }
@@ -330,7 +330,7 @@ void AccountRpcOperation::runGetPasswordSettings()
 
 void AccountRpcOperation::runGetPrivacy()
 {
-    // TLFunctions::TLAccountGetPrivacy &arguments = m_getPrivacy;
+    // MTProto::Functions::TLAccountGetPrivacy &arguments = m_getPrivacy;
     if (processNotImplementedMethod(TLValue::AccountGetPrivacy)) {
         return;
     }
@@ -340,7 +340,7 @@ void AccountRpcOperation::runGetPrivacy()
 
 void AccountRpcOperation::runGetTmpPassword()
 {
-    // TLFunctions::TLAccountGetTmpPassword &arguments = m_getTmpPassword;
+    // MTProto::Functions::TLAccountGetTmpPassword &arguments = m_getTmpPassword;
     if (processNotImplementedMethod(TLValue::AccountGetTmpPassword)) {
         return;
     }
@@ -359,7 +359,7 @@ void AccountRpcOperation::runGetWallPapers()
 
 void AccountRpcOperation::runRegisterDevice()
 {
-    // TLFunctions::TLAccountRegisterDevice &arguments = m_registerDevice;
+    // MTProto::Functions::TLAccountRegisterDevice &arguments = m_registerDevice;
     if (processNotImplementedMethod(TLValue::AccountRegisterDevice)) {
         return;
     }
@@ -369,7 +369,7 @@ void AccountRpcOperation::runRegisterDevice()
 
 void AccountRpcOperation::runReportPeer()
 {
-    // TLFunctions::TLAccountReportPeer &arguments = m_reportPeer;
+    // MTProto::Functions::TLAccountReportPeer &arguments = m_reportPeer;
     if (processNotImplementedMethod(TLValue::AccountReportPeer)) {
         return;
     }
@@ -379,7 +379,7 @@ void AccountRpcOperation::runReportPeer()
 
 void AccountRpcOperation::runResetAuthorization()
 {
-    // TLFunctions::TLAccountResetAuthorization &arguments = m_resetAuthorization;
+    // MTProto::Functions::TLAccountResetAuthorization &arguments = m_resetAuthorization;
     if (processNotImplementedMethod(TLValue::AccountResetAuthorization)) {
         return;
     }
@@ -398,7 +398,7 @@ void AccountRpcOperation::runResetNotifySettings()
 
 void AccountRpcOperation::runSendChangePhoneCode()
 {
-    // TLFunctions::TLAccountSendChangePhoneCode &arguments = m_sendChangePhoneCode;
+    // MTProto::Functions::TLAccountSendChangePhoneCode &arguments = m_sendChangePhoneCode;
     if (processNotImplementedMethod(TLValue::AccountSendChangePhoneCode)) {
         return;
     }
@@ -408,7 +408,7 @@ void AccountRpcOperation::runSendChangePhoneCode()
 
 void AccountRpcOperation::runSendConfirmPhoneCode()
 {
-    // TLFunctions::TLAccountSendConfirmPhoneCode &arguments = m_sendConfirmPhoneCode;
+    // MTProto::Functions::TLAccountSendConfirmPhoneCode &arguments = m_sendConfirmPhoneCode;
     if (processNotImplementedMethod(TLValue::AccountSendConfirmPhoneCode)) {
         return;
     }
@@ -418,7 +418,7 @@ void AccountRpcOperation::runSendConfirmPhoneCode()
 
 void AccountRpcOperation::runSetAccountTTL()
 {
-    // TLFunctions::TLAccountSetAccountTTL &arguments = m_setAccountTTL;
+    // MTProto::Functions::TLAccountSetAccountTTL &arguments = m_setAccountTTL;
     if (processNotImplementedMethod(TLValue::AccountSetAccountTTL)) {
         return;
     }
@@ -428,7 +428,7 @@ void AccountRpcOperation::runSetAccountTTL()
 
 void AccountRpcOperation::runSetPrivacy()
 {
-    // TLFunctions::TLAccountSetPrivacy &arguments = m_setPrivacy;
+    // MTProto::Functions::TLAccountSetPrivacy &arguments = m_setPrivacy;
     if (processNotImplementedMethod(TLValue::AccountSetPrivacy)) {
         return;
     }
@@ -438,7 +438,7 @@ void AccountRpcOperation::runSetPrivacy()
 
 void AccountRpcOperation::runUnregisterDevice()
 {
-    // TLFunctions::TLAccountUnregisterDevice &arguments = m_unregisterDevice;
+    // MTProto::Functions::TLAccountUnregisterDevice &arguments = m_unregisterDevice;
     if (processNotImplementedMethod(TLValue::AccountUnregisterDevice)) {
         return;
     }
@@ -448,7 +448,7 @@ void AccountRpcOperation::runUnregisterDevice()
 
 void AccountRpcOperation::runUpdateDeviceLocked()
 {
-    // TLFunctions::TLAccountUpdateDeviceLocked &arguments = m_updateDeviceLocked;
+    // MTProto::Functions::TLAccountUpdateDeviceLocked &arguments = m_updateDeviceLocked;
     if (processNotImplementedMethod(TLValue::AccountUpdateDeviceLocked)) {
         return;
     }
@@ -458,7 +458,7 @@ void AccountRpcOperation::runUpdateDeviceLocked()
 
 void AccountRpcOperation::runUpdateNotifySettings()
 {
-    // TLFunctions::TLAccountUpdateNotifySettings &arguments = m_updateNotifySettings;
+    // MTProto::Functions::TLAccountUpdateNotifySettings &arguments = m_updateNotifySettings;
     if (processNotImplementedMethod(TLValue::AccountUpdateNotifySettings)) {
         return;
     }
@@ -468,7 +468,7 @@ void AccountRpcOperation::runUpdateNotifySettings()
 
 void AccountRpcOperation::runUpdatePasswordSettings()
 {
-    // TLFunctions::TLAccountUpdatePasswordSettings &arguments = m_updatePasswordSettings;
+    // MTProto::Functions::TLAccountUpdatePasswordSettings &arguments = m_updatePasswordSettings;
     if (processNotImplementedMethod(TLValue::AccountUpdatePasswordSettings)) {
         return;
     }
@@ -478,7 +478,7 @@ void AccountRpcOperation::runUpdatePasswordSettings()
 
 void AccountRpcOperation::runUpdateProfile()
 {
-    TLFunctions::TLAccountUpdateProfile &arguments = m_updateProfile;
+    MTProto::Functions::TLAccountUpdateProfile &arguments = m_updateProfile;
     LocalUser *selfUser = layer()->getUser();
 
     bool nameChanged = false;
@@ -520,7 +520,7 @@ void AccountRpcOperation::runUpdateProfile()
 
 void AccountRpcOperation::runUpdateStatus()
 {
-    TLFunctions::TLAccountUpdateStatus &arguments = m_updateStatus;
+    MTProto::Functions::TLAccountUpdateStatus &arguments = m_updateStatus;
     LocalUser *selfUser = layer()->getUser();
     const bool statusChanged = api()->setUserOnline(selfUser, !arguments.offline,
                                                     layer()->session());
@@ -531,7 +531,7 @@ void AccountRpcOperation::runUpdateStatus()
 
 void AccountRpcOperation::runUpdateUsername()
 {
-    TLFunctions::TLAccountUpdateUsername &arguments = m_updateUsername;
+    MTProto::Functions::TLAccountUpdateUsername &arguments = m_updateUsername;
     LocalUser *selfUser = layer()->getUser();
 
     const bool nameChanged = api()->setUserName(selfUser, arguments.username);

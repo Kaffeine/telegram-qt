@@ -57,7 +57,7 @@ bool BotsRpcOperation::processSendCustomRequest(RpcProcessingContext &context)
 // Generated run methods
 void BotsRpcOperation::runAnswerWebhookJSONQuery()
 {
-    // TLFunctions::TLBotsAnswerWebhookJSONQuery &arguments = m_answerWebhookJSONQuery;
+    // MTProto::Functions::TLBotsAnswerWebhookJSONQuery &arguments = m_answerWebhookJSONQuery;
     if (processNotImplementedMethod(TLValue::BotsAnswerWebhookJSONQuery)) {
         return;
     }
@@ -67,7 +67,7 @@ void BotsRpcOperation::runAnswerWebhookJSONQuery()
 
 void BotsRpcOperation::runSendCustomRequest()
 {
-    // TLFunctions::TLBotsSendCustomRequest &arguments = m_sendCustomRequest;
+    // MTProto::Functions::TLBotsSendCustomRequest &arguments = m_sendCustomRequest;
     if (processNotImplementedMethod(TLValue::BotsSendCustomRequest)) {
         return;
     }

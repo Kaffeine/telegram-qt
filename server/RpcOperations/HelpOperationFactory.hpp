@@ -74,17 +74,17 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLHelpGetAppChangelog m_getAppChangelog;
-    TLFunctions::TLHelpGetAppUpdate m_getAppUpdate;
-    TLFunctions::TLHelpGetCdnConfig m_getCdnConfig;
-    TLFunctions::TLHelpGetConfig m_getConfig;
-    TLFunctions::TLHelpGetInviteText m_getInviteText;
-    TLFunctions::TLHelpGetNearestDc m_getNearestDc;
-    TLFunctions::TLHelpGetRecentMeUrls m_getRecentMeUrls;
-    TLFunctions::TLHelpGetSupport m_getSupport;
-    TLFunctions::TLHelpGetTermsOfService m_getTermsOfService;
-    TLFunctions::TLHelpSaveAppLog m_saveAppLog;
-    TLFunctions::TLHelpSetBotUpdatesStatus m_setBotUpdatesStatus;
+    MTProto::Functions::TLHelpGetAppChangelog m_getAppChangelog;
+    MTProto::Functions::TLHelpGetAppUpdate m_getAppUpdate;
+    MTProto::Functions::TLHelpGetCdnConfig m_getCdnConfig;
+    MTProto::Functions::TLHelpGetConfig m_getConfig;
+    MTProto::Functions::TLHelpGetInviteText m_getInviteText;
+    MTProto::Functions::TLHelpGetNearestDc m_getNearestDc;
+    MTProto::Functions::TLHelpGetRecentMeUrls m_getRecentMeUrls;
+    MTProto::Functions::TLHelpGetSupport m_getSupport;
+    MTProto::Functions::TLHelpGetTermsOfService m_getTermsOfService;
+    MTProto::Functions::TLHelpSaveAppLog m_saveAppLog;
+    MTProto::Functions::TLHelpSetBotUpdatesStatus m_setBotUpdatesStatus;
     // End of generated RPC members
 };
 

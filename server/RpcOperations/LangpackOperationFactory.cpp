@@ -71,7 +71,7 @@ bool LangpackRpcOperation::processGetStrings(RpcProcessingContext &context)
 // Generated run methods
 void LangpackRpcOperation::runGetDifference()
 {
-    // TLFunctions::TLLangpackGetDifference &arguments = m_getDifference;
+    // MTProto::Functions::TLLangpackGetDifference &arguments = m_getDifference;
     if (processNotImplementedMethod(TLValue::LangpackGetDifference)) {
         return;
     }
@@ -81,7 +81,7 @@ void LangpackRpcOperation::runGetDifference()
 
 void LangpackRpcOperation::runGetLangPack()
 {
-    // TLFunctions::TLLangpackGetLangPack &arguments = m_getLangPack;
+    // MTProto::Functions::TLLangpackGetLangPack &arguments = m_getLangPack;
     if (processNotImplementedMethod(TLValue::LangpackGetLangPack)) {
         return;
     }
@@ -100,7 +100,7 @@ void LangpackRpcOperation::runGetLanguages()
 
 void LangpackRpcOperation::runGetStrings()
 {
-    // TLFunctions::TLLangpackGetStrings &arguments = m_getStrings;
+    // MTProto::Functions::TLLangpackGetStrings &arguments = m_getStrings;
     if (processNotImplementedMethod(TLValue::LangpackGetStrings)) {
         return;
     }

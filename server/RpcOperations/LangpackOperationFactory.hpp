@@ -59,10 +59,10 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLLangpackGetDifference m_getDifference;
-    TLFunctions::TLLangpackGetLangPack m_getLangPack;
-    TLFunctions::TLLangpackGetLanguages m_getLanguages;
-    TLFunctions::TLLangpackGetStrings m_getStrings;
+    MTProto::Functions::TLLangpackGetDifference m_getDifference;
+    MTProto::Functions::TLLangpackGetLangPack m_getLangPack;
+    MTProto::Functions::TLLangpackGetLanguages m_getLanguages;
+    MTProto::Functions::TLLangpackGetStrings m_getStrings;
     // End of generated RPC members
 };
 

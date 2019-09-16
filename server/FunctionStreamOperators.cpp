@@ -70,15 +70,15 @@ template Stream &Stream::operator<<(const TLVector<TLReceivedNotifyMessage> &v);
 template Stream &Stream::operator<<(const TLVector<TLLangPackLanguage> &v);
 template Stream &Stream::operator<<(const TLVector<TLWallPaper> &v);
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPing &ping)
+Stream &operator>>(Stream &stream, Functions::TLPing &ping)
 {
     // stream >> function.tlType;
     stream >> ping.tlType;
     switch (ping.tlType) {
-    case TLFunctions::TLPing::predicate:
+    case Functions::TLPing::predicate:
         stream >> ping.pingId;
         break;
-    case TLFunctions::TLPing::predicateDisconnect:
+    case Functions::TLPing::predicateDisconnect:
         stream >> ping.pingId;
         stream >> ping.disconnectDelay;
         break;
@@ -89,7 +89,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPing &ping)
 }
 
 // Generated write operators
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountChangePhone &accountChangePhoneFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountChangePhone &accountChangePhoneFunction)
 {
     // stream >> function.tlType;
     stream >> accountChangePhoneFunction.phoneNumber;
@@ -98,14 +98,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountChangePhone &accountCha
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountCheckUsername &accountCheckUsernameFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountCheckUsername &accountCheckUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> accountCheckUsernameFunction.username;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountConfirmPhone &accountConfirmPhoneFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountConfirmPhone &accountConfirmPhoneFunction)
 {
     // stream >> function.tlType;
     stream >> accountConfirmPhoneFunction.phoneCodeHash;
@@ -113,56 +113,56 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountConfirmPhone &accountCo
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountDeleteAccount &accountDeleteAccountFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountDeleteAccount &accountDeleteAccountFunction)
 {
     // stream >> function.tlType;
     stream >> accountDeleteAccountFunction.reason;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetAccountTTL &accountGetAccountTTLFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountGetAccountTTL &accountGetAccountTTLFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountGetAccountTTLFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetAuthorizations &accountGetAuthorizationsFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountGetAuthorizations &accountGetAuthorizationsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountGetAuthorizationsFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetNotifySettings &accountGetNotifySettingsFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountGetNotifySettings &accountGetNotifySettingsFunction)
 {
     // stream >> function.tlType;
     stream >> accountGetNotifySettingsFunction.peer;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetPassword &accountGetPasswordFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountGetPassword &accountGetPasswordFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountGetPasswordFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetPasswordSettings &accountGetPasswordSettingsFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountGetPasswordSettings &accountGetPasswordSettingsFunction)
 {
     // stream >> function.tlType;
     stream >> accountGetPasswordSettingsFunction.currentPasswordHash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetPrivacy &accountGetPrivacyFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountGetPrivacy &accountGetPrivacyFunction)
 {
     // stream >> function.tlType;
     stream >> accountGetPrivacyFunction.key;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetTmpPassword &accountGetTmpPasswordFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountGetTmpPassword &accountGetTmpPasswordFunction)
 {
     // stream >> function.tlType;
     stream >> accountGetTmpPasswordFunction.passwordHash;
@@ -170,14 +170,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetTmpPassword &account
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountGetWallPapers &accountGetWallPapersFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountGetWallPapers &accountGetWallPapersFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountGetWallPapersFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountRegisterDevice &accountRegisterDeviceFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountRegisterDevice &accountRegisterDeviceFunction)
 {
     // stream >> function.tlType;
     stream >> accountRegisterDeviceFunction.tokenType;
@@ -185,7 +185,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountRegisterDevice &account
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountReportPeer &accountReportPeerFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountReportPeer &accountReportPeerFunction)
 {
     // stream >> function.tlType;
     stream >> accountReportPeerFunction.peer;
@@ -193,21 +193,21 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountReportPeer &accountRepo
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountResetAuthorization &accountResetAuthorizationFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountResetAuthorization &accountResetAuthorizationFunction)
 {
     // stream >> function.tlType;
     stream >> accountResetAuthorizationFunction.hash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountResetNotifySettings &accountResetNotifySettingsFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountResetNotifySettings &accountResetNotifySettingsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(accountResetNotifySettingsFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountSendChangePhoneCode &accountSendChangePhoneCodeFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountSendChangePhoneCode &accountSendChangePhoneCodeFunction)
 {
     // stream >> function.tlType;
     stream >> accountSendChangePhoneCodeFunction.flags;
@@ -219,7 +219,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountSendChangePhoneCode &ac
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountSendConfirmPhoneCode &accountSendConfirmPhoneCodeFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountSendConfirmPhoneCode &accountSendConfirmPhoneCodeFunction)
 {
     // stream >> function.tlType;
     stream >> accountSendConfirmPhoneCodeFunction.flags;
@@ -231,14 +231,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountSendConfirmPhoneCode &a
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountSetAccountTTL &accountSetAccountTTLFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountSetAccountTTL &accountSetAccountTTLFunction)
 {
     // stream >> function.tlType;
     stream >> accountSetAccountTTLFunction.ttl;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountSetPrivacy &accountSetPrivacyFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountSetPrivacy &accountSetPrivacyFunction)
 {
     // stream >> function.tlType;
     stream >> accountSetPrivacyFunction.key;
@@ -246,7 +246,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountSetPrivacy &accountSetP
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountUnregisterDevice &accountUnregisterDeviceFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountUnregisterDevice &accountUnregisterDeviceFunction)
 {
     // stream >> function.tlType;
     stream >> accountUnregisterDeviceFunction.tokenType;
@@ -254,14 +254,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountUnregisterDevice &accou
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateDeviceLocked &accountUpdateDeviceLockedFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountUpdateDeviceLocked &accountUpdateDeviceLockedFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateDeviceLockedFunction.period;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateNotifySettings &accountUpdateNotifySettingsFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountUpdateNotifySettings &accountUpdateNotifySettingsFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateNotifySettingsFunction.peer;
@@ -269,7 +269,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateNotifySettings &a
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdatePasswordSettings &accountUpdatePasswordSettingsFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountUpdatePasswordSettings &accountUpdatePasswordSettingsFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdatePasswordSettingsFunction.currentPasswordHash;
@@ -277,7 +277,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdatePasswordSettings 
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateProfile &accountUpdateProfileFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountUpdateProfile &accountUpdateProfileFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateProfileFunction.flags;
@@ -293,21 +293,21 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateProfile &accountU
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateStatus &accountUpdateStatusFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountUpdateStatus &accountUpdateStatusFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateStatusFunction.offline;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAccountUpdateUsername &accountUpdateUsernameFunction)
+Stream &operator>>(Stream &stream, Functions::TLAccountUpdateUsername &accountUpdateUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> accountUpdateUsernameFunction.username;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthBindTempAuthKey &authBindTempAuthKeyFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthBindTempAuthKey &authBindTempAuthKeyFunction)
 {
     // stream >> function.tlType;
     stream >> authBindTempAuthKeyFunction.permAuthKeyId;
@@ -317,7 +317,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAuthBindTempAuthKey &authBindT
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthCancelCode &authCancelCodeFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthCancelCode &authCancelCodeFunction)
 {
     // stream >> function.tlType;
     stream >> authCancelCodeFunction.phoneNumber;
@@ -325,35 +325,35 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAuthCancelCode &authCancelCode
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthCheckPassword &authCheckPasswordFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthCheckPassword &authCheckPasswordFunction)
 {
     // stream >> function.tlType;
     stream >> authCheckPasswordFunction.passwordHash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthCheckPhone &authCheckPhoneFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthCheckPhone &authCheckPhoneFunction)
 {
     // stream >> function.tlType;
     stream >> authCheckPhoneFunction.phoneNumber;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthDropTempAuthKeys &authDropTempAuthKeysFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthDropTempAuthKeys &authDropTempAuthKeysFunction)
 {
     // stream >> function.tlType;
     stream >> authDropTempAuthKeysFunction.exceptAuthKeys;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthExportAuthorization &authExportAuthorizationFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthExportAuthorization &authExportAuthorizationFunction)
 {
     // stream >> function.tlType;
     stream >> authExportAuthorizationFunction.dcId;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthImportAuthorization &authImportAuthorizationFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthImportAuthorization &authImportAuthorizationFunction)
 {
     // stream >> function.tlType;
     stream >> authImportAuthorizationFunction.id;
@@ -361,7 +361,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAuthImportAuthorization &authI
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthImportBotAuthorization &authImportBotAuthorizationFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthImportBotAuthorization &authImportBotAuthorizationFunction)
 {
     // stream >> function.tlType;
     stream >> authImportBotAuthorizationFunction.flags;
@@ -371,28 +371,28 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAuthImportBotAuthorization &au
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthLogOut &authLogOutFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthLogOut &authLogOutFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(authLogOutFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthRecoverPassword &authRecoverPasswordFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthRecoverPassword &authRecoverPasswordFunction)
 {
     // stream >> function.tlType;
     stream >> authRecoverPasswordFunction.code;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthRequestPasswordRecovery &authRequestPasswordRecoveryFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthRequestPasswordRecovery &authRequestPasswordRecoveryFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(authRequestPasswordRecoveryFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthResendCode &authResendCodeFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthResendCode &authResendCodeFunction)
 {
     // stream >> function.tlType;
     stream >> authResendCodeFunction.phoneNumber;
@@ -400,14 +400,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAuthResendCode &authResendCode
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthResetAuthorizations &authResetAuthorizationsFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthResetAuthorizations &authResetAuthorizationsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(authResetAuthorizationsFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthSendCode &authSendCodeFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthSendCode &authSendCodeFunction)
 {
     // stream >> function.tlType;
     stream >> authSendCodeFunction.flags;
@@ -421,7 +421,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAuthSendCode &authSendCodeFunc
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthSendInvites &authSendInvitesFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthSendInvites &authSendInvitesFunction)
 {
     // stream >> function.tlType;
     stream >> authSendInvitesFunction.phoneNumbers;
@@ -429,7 +429,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAuthSendInvites &authSendInvit
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthSignIn &authSignInFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthSignIn &authSignInFunction)
 {
     // stream >> function.tlType;
     stream >> authSignInFunction.phoneNumber;
@@ -438,7 +438,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAuthSignIn &authSignInFunction
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLAuthSignUp &authSignUpFunction)
+Stream &operator>>(Stream &stream, Functions::TLAuthSignUp &authSignUpFunction)
 {
     // stream >> function.tlType;
     stream >> authSignUpFunction.phoneNumber;
@@ -449,7 +449,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLAuthSignUp &authSignUpFunction
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLBotsAnswerWebhookJSONQuery &botsAnswerWebhookJSONQueryFunction)
+Stream &operator>>(Stream &stream, Functions::TLBotsAnswerWebhookJSONQuery &botsAnswerWebhookJSONQueryFunction)
 {
     // stream >> function.tlType;
     stream >> botsAnswerWebhookJSONQueryFunction.queryId;
@@ -457,7 +457,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLBotsAnswerWebhookJSONQuery &bo
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLBotsSendCustomRequest &botsSendCustomRequestFunction)
+Stream &operator>>(Stream &stream, Functions::TLBotsSendCustomRequest &botsSendCustomRequestFunction)
 {
     // stream >> function.tlType;
     stream >> botsSendCustomRequestFunction.customMethod;
@@ -465,7 +465,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLBotsSendCustomRequest &botsSen
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsCheckUsername &channelsCheckUsernameFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsCheckUsername &channelsCheckUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> channelsCheckUsernameFunction.channel;
@@ -473,7 +473,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsCheckUsername &channel
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsCreateChannel &channelsCreateChannelFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsCreateChannel &channelsCreateChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsCreateChannelFunction.flags;
@@ -484,14 +484,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsCreateChannel &channel
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteChannel &channelsDeleteChannelFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsDeleteChannel &channelsDeleteChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsDeleteChannelFunction.channel;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteHistory &channelsDeleteHistoryFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsDeleteHistory &channelsDeleteHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> channelsDeleteHistoryFunction.channel;
@@ -499,7 +499,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteHistory &channel
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteMessages &channelsDeleteMessagesFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsDeleteMessages &channelsDeleteMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> channelsDeleteMessagesFunction.channel;
@@ -507,7 +507,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteMessages &channe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteUserHistory &channelsDeleteUserHistoryFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsDeleteUserHistory &channelsDeleteUserHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> channelsDeleteUserHistoryFunction.channel;
@@ -515,7 +515,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsDeleteUserHistory &cha
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditAbout &channelsEditAboutFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsEditAbout &channelsEditAboutFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditAboutFunction.channel;
@@ -523,7 +523,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditAbout &channelsEdi
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditAdmin &channelsEditAdminFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsEditAdmin &channelsEditAdminFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditAdminFunction.channel;
@@ -532,7 +532,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditAdmin &channelsEdi
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditBanned &channelsEditBannedFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsEditBanned &channelsEditBannedFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditBannedFunction.channel;
@@ -541,7 +541,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditBanned &channelsEd
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditPhoto &channelsEditPhotoFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsEditPhoto &channelsEditPhotoFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditPhotoFunction.channel;
@@ -549,7 +549,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditPhoto &channelsEdi
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditTitle &channelsEditTitleFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsEditTitle &channelsEditTitleFunction)
 {
     // stream >> function.tlType;
     stream >> channelsEditTitleFunction.channel;
@@ -557,14 +557,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsEditTitle &channelsEdi
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsExportInvite &channelsExportInviteFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsExportInvite &channelsExportInviteFunction)
 {
     // stream >> function.tlType;
     stream >> channelsExportInviteFunction.channel;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsExportMessageLink &channelsExportMessageLinkFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsExportMessageLink &channelsExportMessageLinkFunction)
 {
     // stream >> function.tlType;
     stream >> channelsExportMessageLinkFunction.channel;
@@ -572,7 +572,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsExportMessageLink &cha
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetAdminLog &channelsGetAdminLogFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsGetAdminLog &channelsGetAdminLogFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetAdminLogFunction.flags;
@@ -590,28 +590,28 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetAdminLog &channelsG
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetAdminedPublicChannels &channelsGetAdminedPublicChannelsFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsGetAdminedPublicChannels &channelsGetAdminedPublicChannelsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(channelsGetAdminedPublicChannelsFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetChannels &channelsGetChannelsFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsGetChannels &channelsGetChannelsFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetChannelsFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetFullChannel &channelsGetFullChannelFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsGetFullChannel &channelsGetFullChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetFullChannelFunction.channel;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetMessages &channelsGetMessagesFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsGetMessages &channelsGetMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetMessagesFunction.channel;
@@ -619,7 +619,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetMessages &channelsG
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetParticipant &channelsGetParticipantFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsGetParticipant &channelsGetParticipantFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetParticipantFunction.channel;
@@ -627,7 +627,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetParticipant &channe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetParticipants &channelsGetParticipantsFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsGetParticipants &channelsGetParticipantsFunction)
 {
     // stream >> function.tlType;
     stream >> channelsGetParticipantsFunction.channel;
@@ -638,7 +638,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsGetParticipants &chann
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsInviteToChannel &channelsInviteToChannelFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsInviteToChannel &channelsInviteToChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsInviteToChannelFunction.channel;
@@ -646,21 +646,21 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsInviteToChannel &chann
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsJoinChannel &channelsJoinChannelFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsJoinChannel &channelsJoinChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsJoinChannelFunction.channel;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsLeaveChannel &channelsLeaveChannelFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsLeaveChannel &channelsLeaveChannelFunction)
 {
     // stream >> function.tlType;
     stream >> channelsLeaveChannelFunction.channel;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsReadHistory &channelsReadHistoryFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsReadHistory &channelsReadHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> channelsReadHistoryFunction.channel;
@@ -668,7 +668,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsReadHistory &channelsR
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsReadMessageContents &channelsReadMessageContentsFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsReadMessageContents &channelsReadMessageContentsFunction)
 {
     // stream >> function.tlType;
     stream >> channelsReadMessageContentsFunction.channel;
@@ -676,7 +676,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsReadMessageContents &c
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsReportSpam &channelsReportSpamFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsReportSpam &channelsReportSpamFunction)
 {
     // stream >> function.tlType;
     stream >> channelsReportSpamFunction.channel;
@@ -685,7 +685,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsReportSpam &channelsRe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsSetStickers &channelsSetStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsSetStickers &channelsSetStickersFunction)
 {
     // stream >> function.tlType;
     stream >> channelsSetStickersFunction.channel;
@@ -693,7 +693,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsSetStickers &channelsS
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsToggleInvites &channelsToggleInvitesFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsToggleInvites &channelsToggleInvitesFunction)
 {
     // stream >> function.tlType;
     stream >> channelsToggleInvitesFunction.channel;
@@ -701,7 +701,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsToggleInvites &channel
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsTogglePreHistoryHidden &channelsTogglePreHistoryHiddenFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsTogglePreHistoryHidden &channelsTogglePreHistoryHiddenFunction)
 {
     // stream >> function.tlType;
     stream >> channelsTogglePreHistoryHiddenFunction.channel;
@@ -709,7 +709,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsTogglePreHistoryHidden
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsToggleSignatures &channelsToggleSignaturesFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsToggleSignatures &channelsToggleSignaturesFunction)
 {
     // stream >> function.tlType;
     stream >> channelsToggleSignaturesFunction.channel;
@@ -717,7 +717,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsToggleSignatures &chan
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsUpdatePinnedMessage &channelsUpdatePinnedMessageFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsUpdatePinnedMessage &channelsUpdatePinnedMessageFunction)
 {
     // stream >> function.tlType;
     stream >> channelsUpdatePinnedMessageFunction.flags;
@@ -727,7 +727,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsUpdatePinnedMessage &c
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLChannelsUpdateUsername &channelsUpdateUsernameFunction)
+Stream &operator>>(Stream &stream, Functions::TLChannelsUpdateUsername &channelsUpdateUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> channelsUpdateUsernameFunction.channel;
@@ -735,35 +735,35 @@ Stream &operator>>(Stream &stream, TLFunctions::TLChannelsUpdateUsername &channe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsBlock &contactsBlockFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsBlock &contactsBlockFunction)
 {
     // stream >> function.tlType;
     stream >> contactsBlockFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsDeleteContact &contactsDeleteContactFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsDeleteContact &contactsDeleteContactFunction)
 {
     // stream >> function.tlType;
     stream >> contactsDeleteContactFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsDeleteContacts &contactsDeleteContactsFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsDeleteContacts &contactsDeleteContactsFunction)
 {
     // stream >> function.tlType;
     stream >> contactsDeleteContactsFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsExportCard &contactsExportCardFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsExportCard &contactsExportCardFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(contactsExportCardFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetBlocked &contactsGetBlockedFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsGetBlocked &contactsGetBlockedFunction)
 {
     // stream >> function.tlType;
     stream >> contactsGetBlockedFunction.offset;
@@ -771,21 +771,21 @@ Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetBlocked &contactsGe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetContacts &contactsGetContactsFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsGetContacts &contactsGetContactsFunction)
 {
     // stream >> function.tlType;
     stream >> contactsGetContactsFunction.hash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetStatuses &contactsGetStatusesFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsGetStatuses &contactsGetStatusesFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(contactsGetStatusesFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetTopPeers &contactsGetTopPeersFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsGetTopPeers &contactsGetTopPeersFunction)
 {
     // stream >> function.tlType;
     stream >> contactsGetTopPeersFunction.flags;
@@ -801,28 +801,28 @@ Stream &operator>>(Stream &stream, TLFunctions::TLContactsGetTopPeers &contactsG
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsImportCard &contactsImportCardFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsImportCard &contactsImportCardFunction)
 {
     // stream >> function.tlType;
     stream >> contactsImportCardFunction.exportCard;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsImportContacts &contactsImportContactsFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsImportContacts &contactsImportContactsFunction)
 {
     // stream >> function.tlType;
     stream >> contactsImportContactsFunction.contacts;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsResetSaved &contactsResetSavedFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsResetSaved &contactsResetSavedFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(contactsResetSavedFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsResetTopPeerRating &contactsResetTopPeerRatingFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsResetTopPeerRating &contactsResetTopPeerRatingFunction)
 {
     // stream >> function.tlType;
     stream >> contactsResetTopPeerRatingFunction.category;
@@ -830,14 +830,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLContactsResetTopPeerRating &co
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsResolveUsername &contactsResolveUsernameFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsResolveUsername &contactsResolveUsernameFunction)
 {
     // stream >> function.tlType;
     stream >> contactsResolveUsernameFunction.username;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsSearch &contactsSearchFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsSearch &contactsSearchFunction)
 {
     // stream >> function.tlType;
     stream >> contactsSearchFunction.q;
@@ -845,84 +845,84 @@ Stream &operator>>(Stream &stream, TLFunctions::TLContactsSearch &contactsSearch
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLContactsUnblock &contactsUnblockFunction)
+Stream &operator>>(Stream &stream, Functions::TLContactsUnblock &contactsUnblockFunction)
 {
     // stream >> function.tlType;
     stream >> contactsUnblockFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetAppChangelog &helpGetAppChangelogFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpGetAppChangelog &helpGetAppChangelogFunction)
 {
     // stream >> function.tlType;
     stream >> helpGetAppChangelogFunction.prevAppVersion;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetAppUpdate &helpGetAppUpdateFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpGetAppUpdate &helpGetAppUpdateFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetAppUpdateFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetCdnConfig &helpGetCdnConfigFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpGetCdnConfig &helpGetCdnConfigFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetCdnConfigFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetConfig &helpGetConfigFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpGetConfig &helpGetConfigFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetConfigFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetInviteText &helpGetInviteTextFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpGetInviteText &helpGetInviteTextFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetInviteTextFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetNearestDc &helpGetNearestDcFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpGetNearestDc &helpGetNearestDcFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetNearestDcFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetRecentMeUrls &helpGetRecentMeUrlsFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpGetRecentMeUrls &helpGetRecentMeUrlsFunction)
 {
     // stream >> function.tlType;
     stream >> helpGetRecentMeUrlsFunction.referer;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetSupport &helpGetSupportFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpGetSupport &helpGetSupportFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetSupportFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpGetTermsOfService &helpGetTermsOfServiceFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpGetTermsOfService &helpGetTermsOfServiceFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(helpGetTermsOfServiceFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpSaveAppLog &helpSaveAppLogFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpSaveAppLog &helpSaveAppLogFunction)
 {
     // stream >> function.tlType;
     stream >> helpSaveAppLogFunction.events;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLHelpSetBotUpdatesStatus &helpSetBotUpdatesStatusFunction)
+Stream &operator>>(Stream &stream, Functions::TLHelpSetBotUpdatesStatus &helpSetBotUpdatesStatusFunction)
 {
     // stream >> function.tlType;
     stream >> helpSetBotUpdatesStatusFunction.pendingUpdatesCount;
@@ -930,28 +930,28 @@ Stream &operator>>(Stream &stream, TLFunctions::TLHelpSetBotUpdatesStatus &helpS
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLLangpackGetDifference &langpackGetDifferenceFunction)
+Stream &operator>>(Stream &stream, Functions::TLLangpackGetDifference &langpackGetDifferenceFunction)
 {
     // stream >> function.tlType;
     stream >> langpackGetDifferenceFunction.fromVersion;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLLangpackGetLangPack &langpackGetLangPackFunction)
+Stream &operator>>(Stream &stream, Functions::TLLangpackGetLangPack &langpackGetLangPackFunction)
 {
     // stream >> function.tlType;
     stream >> langpackGetLangPackFunction.langCode;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLLangpackGetLanguages &langpackGetLanguagesFunction)
+Stream &operator>>(Stream &stream, Functions::TLLangpackGetLanguages &langpackGetLanguagesFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(langpackGetLanguagesFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLLangpackGetStrings &langpackGetStringsFunction)
+Stream &operator>>(Stream &stream, Functions::TLLangpackGetStrings &langpackGetStringsFunction)
 {
     // stream >> function.tlType;
     stream >> langpackGetStringsFunction.langCode;
@@ -959,7 +959,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLLangpackGetStrings &langpackGe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesAcceptEncryption &messagesAcceptEncryptionFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesAcceptEncryption &messagesAcceptEncryptionFunction)
 {
     // stream >> function.tlType;
     stream >> messagesAcceptEncryptionFunction.peer;
@@ -968,7 +968,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesAcceptEncryption &mess
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesAddChatUser &messagesAddChatUserFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesAddChatUser &messagesAddChatUserFunction)
 {
     // stream >> function.tlType;
     stream >> messagesAddChatUserFunction.chatId;
@@ -977,14 +977,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesAddChatUser &messagesA
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesCheckChatInvite &messagesCheckChatInviteFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesCheckChatInvite &messagesCheckChatInviteFunction)
 {
     // stream >> function.tlType;
     stream >> messagesCheckChatInviteFunction.hash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesClearRecentStickers &messagesClearRecentStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesClearRecentStickers &messagesClearRecentStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesClearRecentStickersFunction.flags;
@@ -992,7 +992,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesClearRecentStickers &m
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesCreateChat &messagesCreateChatFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesCreateChat &messagesCreateChatFunction)
 {
     // stream >> function.tlType;
     stream >> messagesCreateChatFunction.users;
@@ -1000,7 +1000,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesCreateChat &messagesCr
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDeleteChatUser &messagesDeleteChatUserFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesDeleteChatUser &messagesDeleteChatUserFunction)
 {
     // stream >> function.tlType;
     stream >> messagesDeleteChatUserFunction.chatId;
@@ -1008,7 +1008,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDeleteChatUser &messag
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDeleteHistory &messagesDeleteHistoryFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesDeleteHistory &messagesDeleteHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> messagesDeleteHistoryFunction.flags;
@@ -1018,7 +1018,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDeleteHistory &message
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDeleteMessages &messagesDeleteMessagesFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesDeleteMessages &messagesDeleteMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> messagesDeleteMessagesFunction.flags;
@@ -1027,14 +1027,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDeleteMessages &messag
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesDiscardEncryption &messagesDiscardEncryptionFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesDiscardEncryption &messagesDiscardEncryptionFunction)
 {
     // stream >> function.tlType;
     stream >> messagesDiscardEncryptionFunction.chatId;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditChatAdmin &messagesEditChatAdminFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesEditChatAdmin &messagesEditChatAdminFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditChatAdminFunction.chatId;
@@ -1043,7 +1043,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditChatAdmin &message
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditChatPhoto &messagesEditChatPhotoFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesEditChatPhoto &messagesEditChatPhotoFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditChatPhotoFunction.chatId;
@@ -1051,7 +1051,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditChatPhoto &message
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditChatTitle &messagesEditChatTitleFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesEditChatTitle &messagesEditChatTitleFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditChatTitleFunction.chatId;
@@ -1059,7 +1059,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditChatTitle &message
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditInlineBotMessage &messagesEditInlineBotMessageFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesEditInlineBotMessage &messagesEditInlineBotMessageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditInlineBotMessageFunction.flags;
@@ -1081,7 +1081,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditInlineBotMessage &
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditMessage &messagesEditMessageFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesEditMessage &messagesEditMessageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesEditMessageFunction.flags;
@@ -1104,14 +1104,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesEditMessage &messagesE
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesExportChatInvite &messagesExportChatInviteFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesExportChatInvite &messagesExportChatInviteFunction)
 {
     // stream >> function.tlType;
     stream >> messagesExportChatInviteFunction.chatId;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesFaveSticker &messagesFaveStickerFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesFaveSticker &messagesFaveStickerFunction)
 {
     // stream >> function.tlType;
     stream >> messagesFaveStickerFunction.id;
@@ -1119,7 +1119,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesFaveSticker &messagesF
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesForwardMessage &messagesForwardMessageFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesForwardMessage &messagesForwardMessageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesForwardMessageFunction.peer;
@@ -1128,7 +1128,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesForwardMessage &messag
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesForwardMessages &messagesForwardMessagesFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesForwardMessages &messagesForwardMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> messagesForwardMessagesFunction.flags;
@@ -1142,28 +1142,28 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesForwardMessages &messa
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetAllChats &messagesGetAllChatsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetAllChats &messagesGetAllChatsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetAllChatsFunction.exceptIds;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetAllDrafts &messagesGetAllDraftsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetAllDrafts &messagesGetAllDraftsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(messagesGetAllDraftsFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetAllStickers &messagesGetAllStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetAllStickers &messagesGetAllStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetAllStickersFunction.hash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetArchivedStickers &messagesGetArchivedStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetArchivedStickers &messagesGetArchivedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetArchivedStickersFunction.flags;
@@ -1173,14 +1173,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetArchivedStickers &m
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetAttachedStickers &messagesGetAttachedStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetAttachedStickers &messagesGetAttachedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetAttachedStickersFunction.media;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetBotCallbackAnswer &messagesGetBotCallbackAnswerFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetBotCallbackAnswer &messagesGetBotCallbackAnswerFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetBotCallbackAnswerFunction.flags;
@@ -1193,14 +1193,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetBotCallbackAnswer &
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetChats &messagesGetChatsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetChats &messagesGetChatsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetChatsFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetCommonChats &messagesGetCommonChatsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetCommonChats &messagesGetCommonChatsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetCommonChatsFunction.userId;
@@ -1209,7 +1209,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetCommonChats &messag
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetDhConfig &messagesGetDhConfigFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetDhConfig &messagesGetDhConfigFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetDhConfigFunction.version;
@@ -1217,7 +1217,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetDhConfig &messagesG
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetDialogs &messagesGetDialogsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetDialogs &messagesGetDialogsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetDialogsFunction.flags;
@@ -1229,7 +1229,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetDialogs &messagesGe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetDocumentByHash &messagesGetDocumentByHashFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetDocumentByHash &messagesGetDocumentByHashFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetDocumentByHashFunction.sha256;
@@ -1238,28 +1238,28 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetDocumentByHash &mes
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetFavedStickers &messagesGetFavedStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetFavedStickers &messagesGetFavedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetFavedStickersFunction.hash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetFeaturedStickers &messagesGetFeaturedStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetFeaturedStickers &messagesGetFeaturedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetFeaturedStickersFunction.hash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetFullChat &messagesGetFullChatFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetFullChat &messagesGetFullChatFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetFullChatFunction.chatId;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetGameHighScores &messagesGetGameHighScoresFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetGameHighScores &messagesGetGameHighScoresFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetGameHighScoresFunction.peer;
@@ -1268,7 +1268,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetGameHighScores &mes
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetHistory &messagesGetHistoryFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetHistory &messagesGetHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetHistoryFunction.peer;
@@ -1282,7 +1282,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetHistory &messagesGe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetInlineBotResults &messagesGetInlineBotResultsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetInlineBotResults &messagesGetInlineBotResultsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetInlineBotResultsFunction.flags;
@@ -1296,7 +1296,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetInlineBotResults &m
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetInlineGameHighScores &messagesGetInlineGameHighScoresFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetInlineGameHighScores &messagesGetInlineGameHighScoresFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetInlineGameHighScoresFunction.id;
@@ -1304,14 +1304,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetInlineGameHighScore
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMaskStickers &messagesGetMaskStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetMaskStickers &messagesGetMaskStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetMaskStickersFunction.hash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMessageEditData &messagesGetMessageEditDataFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetMessageEditData &messagesGetMessageEditDataFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetMessageEditDataFunction.peer;
@@ -1319,14 +1319,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMessageEditData &me
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMessages &messagesGetMessagesFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetMessages &messagesGetMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetMessagesFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMessagesViews &messagesGetMessagesViewsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetMessagesViews &messagesGetMessagesViewsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetMessagesViewsFunction.peer;
@@ -1335,28 +1335,28 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetMessagesViews &mess
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetPeerDialogs &messagesGetPeerDialogsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetPeerDialogs &messagesGetPeerDialogsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetPeerDialogsFunction.peers;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetPeerSettings &messagesGetPeerSettingsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetPeerSettings &messagesGetPeerSettingsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetPeerSettingsFunction.peer;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetPinnedDialogs &messagesGetPinnedDialogsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetPinnedDialogs &messagesGetPinnedDialogsFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(messagesGetPinnedDialogsFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetRecentLocations &messagesGetRecentLocationsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetRecentLocations &messagesGetRecentLocationsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetRecentLocationsFunction.peer;
@@ -1364,7 +1364,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetRecentLocations &me
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetRecentStickers &messagesGetRecentStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetRecentStickers &messagesGetRecentStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetRecentStickersFunction.flags;
@@ -1373,21 +1373,21 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetRecentStickers &mes
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetSavedGifs &messagesGetSavedGifsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetSavedGifs &messagesGetSavedGifsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetSavedGifsFunction.hash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetStickerSet &messagesGetStickerSetFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetStickerSet &messagesGetStickerSetFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetStickerSetFunction.stickerset;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetUnreadMentions &messagesGetUnreadMentionsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetUnreadMentions &messagesGetUnreadMentionsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetUnreadMentionsFunction.peer;
@@ -1399,7 +1399,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetUnreadMentions &mes
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetWebPage &messagesGetWebPageFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetWebPage &messagesGetWebPageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetWebPageFunction.url;
@@ -1407,28 +1407,28 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetWebPage &messagesGe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesGetWebPagePreview &messagesGetWebPagePreviewFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesGetWebPagePreview &messagesGetWebPagePreviewFunction)
 {
     // stream >> function.tlType;
     stream >> messagesGetWebPagePreviewFunction.message;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesHideReportSpam &messagesHideReportSpamFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesHideReportSpam &messagesHideReportSpamFunction)
 {
     // stream >> function.tlType;
     stream >> messagesHideReportSpamFunction.peer;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesImportChatInvite &messagesImportChatInviteFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesImportChatInvite &messagesImportChatInviteFunction)
 {
     // stream >> function.tlType;
     stream >> messagesImportChatInviteFunction.hash;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesInstallStickerSet &messagesInstallStickerSetFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesInstallStickerSet &messagesInstallStickerSetFunction)
 {
     // stream >> function.tlType;
     stream >> messagesInstallStickerSetFunction.stickerset;
@@ -1436,14 +1436,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesInstallStickerSet &mes
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesMigrateChat &messagesMigrateChatFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesMigrateChat &messagesMigrateChatFunction)
 {
     // stream >> function.tlType;
     stream >> messagesMigrateChatFunction.chatId;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadEncryptedHistory &messagesReadEncryptedHistoryFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReadEncryptedHistory &messagesReadEncryptedHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadEncryptedHistoryFunction.peer;
@@ -1451,14 +1451,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadEncryptedHistory &
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadFeaturedStickers &messagesReadFeaturedStickersFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReadFeaturedStickers &messagesReadFeaturedStickersFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadFeaturedStickersFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadHistory &messagesReadHistoryFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReadHistory &messagesReadHistoryFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadHistoryFunction.peer;
@@ -1466,35 +1466,35 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadHistory &messagesR
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadMentions &messagesReadMentionsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReadMentions &messagesReadMentionsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadMentionsFunction.peer;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReadMessageContents &messagesReadMessageContentsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReadMessageContents &messagesReadMessageContentsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReadMessageContentsFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReceivedMessages &messagesReceivedMessagesFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReceivedMessages &messagesReceivedMessagesFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReceivedMessagesFunction.maxId;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReceivedQueue &messagesReceivedQueueFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReceivedQueue &messagesReceivedQueueFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReceivedQueueFunction.maxQts;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReorderPinnedDialogs &messagesReorderPinnedDialogsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReorderPinnedDialogs &messagesReorderPinnedDialogsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReorderPinnedDialogsFunction.flags;
@@ -1503,7 +1503,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReorderPinnedDialogs &
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReorderStickerSets &messagesReorderStickerSetsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReorderStickerSets &messagesReorderStickerSetsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReorderStickerSetsFunction.flags;
@@ -1512,21 +1512,21 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReorderStickerSets &me
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReportEncryptedSpam &messagesReportEncryptedSpamFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReportEncryptedSpam &messagesReportEncryptedSpamFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReportEncryptedSpamFunction.peer;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesReportSpam &messagesReportSpamFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesReportSpam &messagesReportSpamFunction)
 {
     // stream >> function.tlType;
     stream >> messagesReportSpamFunction.peer;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesRequestEncryption &messagesRequestEncryptionFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesRequestEncryption &messagesRequestEncryptionFunction)
 {
     // stream >> function.tlType;
     stream >> messagesRequestEncryptionFunction.userId;
@@ -1535,7 +1535,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesRequestEncryption &mes
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSaveDraft &messagesSaveDraftFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSaveDraft &messagesSaveDraftFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSaveDraftFunction.flags;
@@ -1551,7 +1551,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSaveDraft &messagesSav
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSaveGif &messagesSaveGifFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSaveGif &messagesSaveGifFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSaveGifFunction.id;
@@ -1559,7 +1559,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSaveGif &messagesSaveG
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSaveRecentSticker &messagesSaveRecentStickerFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSaveRecentSticker &messagesSaveRecentStickerFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSaveRecentStickerFunction.flags;
@@ -1569,7 +1569,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSaveRecentSticker &mes
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSearch &messagesSearchFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSearch &messagesSearchFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSearchFunction.flags;
@@ -1589,7 +1589,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSearch &messagesSearch
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSearchGifs &messagesSearchGifsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSearchGifs &messagesSearchGifsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSearchGifsFunction.q;
@@ -1597,7 +1597,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSearchGifs &messagesSe
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSearchGlobal &messagesSearchGlobalFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSearchGlobal &messagesSearchGlobalFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSearchGlobalFunction.q;
@@ -1608,7 +1608,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSearchGlobal &messages
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendEncrypted &messagesSendEncryptedFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSendEncrypted &messagesSendEncryptedFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendEncryptedFunction.peer;
@@ -1617,7 +1617,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendEncrypted &message
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendEncryptedFile &messagesSendEncryptedFileFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSendEncryptedFile &messagesSendEncryptedFileFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendEncryptedFileFunction.peer;
@@ -1627,7 +1627,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendEncryptedFile &mes
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendEncryptedService &messagesSendEncryptedServiceFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSendEncryptedService &messagesSendEncryptedServiceFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendEncryptedServiceFunction.peer;
@@ -1636,7 +1636,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendEncryptedService &
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendInlineBotResult &messagesSendInlineBotResultFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSendInlineBotResult &messagesSendInlineBotResultFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendInlineBotResultFunction.flags;
@@ -1653,7 +1653,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendInlineBotResult &m
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendMedia &messagesSendMediaFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSendMedia &messagesSendMediaFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendMediaFunction.flags;
@@ -1672,7 +1672,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendMedia &messagesSen
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendMessage &messagesSendMessageFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSendMessage &messagesSendMessageFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendMessageFunction.flags;
@@ -1695,7 +1695,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendMessage &messagesS
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendScreenshotNotification &messagesSendScreenshotNotificationFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSendScreenshotNotification &messagesSendScreenshotNotificationFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSendScreenshotNotificationFunction.peer;
@@ -1704,7 +1704,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSendScreenshotNotifica
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetBotCallbackAnswer &messagesSetBotCallbackAnswerFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSetBotCallbackAnswer &messagesSetBotCallbackAnswerFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetBotCallbackAnswerFunction.flags;
@@ -1720,7 +1720,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetBotCallbackAnswer &
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetBotPrecheckoutResults &messagesSetBotPrecheckoutResultsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSetBotPrecheckoutResults &messagesSetBotPrecheckoutResultsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetBotPrecheckoutResultsFunction.flags;
@@ -1732,7 +1732,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetBotPrecheckoutResul
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetBotShippingResults &messagesSetBotShippingResultsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSetBotShippingResults &messagesSetBotShippingResultsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetBotShippingResultsFunction.flags;
@@ -1746,7 +1746,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetBotShippingResults 
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetEncryptedTyping &messagesSetEncryptedTypingFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSetEncryptedTyping &messagesSetEncryptedTypingFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetEncryptedTypingFunction.peer;
@@ -1754,7 +1754,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetEncryptedTyping &me
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetGameScore &messagesSetGameScoreFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSetGameScore &messagesSetGameScoreFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetGameScoreFunction.flags;
@@ -1767,7 +1767,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetGameScore &messages
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetInlineBotResults &messagesSetInlineBotResultsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSetInlineBotResults &messagesSetInlineBotResultsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetInlineBotResultsFunction.flags;
@@ -1785,7 +1785,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetInlineBotResults &m
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetInlineGameScore &messagesSetInlineGameScoreFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSetInlineGameScore &messagesSetInlineGameScoreFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetInlineGameScoreFunction.flags;
@@ -1797,7 +1797,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetInlineGameScore &me
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetTyping &messagesSetTypingFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesSetTyping &messagesSetTypingFunction)
 {
     // stream >> function.tlType;
     stream >> messagesSetTypingFunction.peer;
@@ -1805,7 +1805,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesSetTyping &messagesSet
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesStartBot &messagesStartBotFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesStartBot &messagesStartBotFunction)
 {
     // stream >> function.tlType;
     stream >> messagesStartBotFunction.bot;
@@ -1815,7 +1815,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesStartBot &messagesStar
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesToggleChatAdmins &messagesToggleChatAdminsFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesToggleChatAdmins &messagesToggleChatAdminsFunction)
 {
     // stream >> function.tlType;
     stream >> messagesToggleChatAdminsFunction.chatId;
@@ -1823,7 +1823,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesToggleChatAdmins &mess
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesToggleDialogPin &messagesToggleDialogPinFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesToggleDialogPin &messagesToggleDialogPinFunction)
 {
     // stream >> function.tlType;
     stream >> messagesToggleDialogPinFunction.flags;
@@ -1832,14 +1832,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesToggleDialogPin &messa
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesUninstallStickerSet &messagesUninstallStickerSetFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesUninstallStickerSet &messagesUninstallStickerSetFunction)
 {
     // stream >> function.tlType;
     stream >> messagesUninstallStickerSetFunction.stickerset;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLMessagesUploadMedia &messagesUploadMediaFunction)
+Stream &operator>>(Stream &stream, Functions::TLMessagesUploadMedia &messagesUploadMediaFunction)
 {
     // stream >> function.tlType;
     stream >> messagesUploadMediaFunction.peer;
@@ -1847,7 +1847,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLMessagesUploadMedia &messagesU
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsClearSavedInfo &paymentsClearSavedInfoFunction)
+Stream &operator>>(Stream &stream, Functions::TLPaymentsClearSavedInfo &paymentsClearSavedInfoFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsClearSavedInfoFunction.flags;
@@ -1856,28 +1856,28 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsClearSavedInfo &paymen
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsGetPaymentForm &paymentsGetPaymentFormFunction)
+Stream &operator>>(Stream &stream, Functions::TLPaymentsGetPaymentForm &paymentsGetPaymentFormFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsGetPaymentFormFunction.msgId;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsGetPaymentReceipt &paymentsGetPaymentReceiptFunction)
+Stream &operator>>(Stream &stream, Functions::TLPaymentsGetPaymentReceipt &paymentsGetPaymentReceiptFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsGetPaymentReceiptFunction.msgId;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsGetSavedInfo &paymentsGetSavedInfoFunction)
+Stream &operator>>(Stream &stream, Functions::TLPaymentsGetSavedInfo &paymentsGetSavedInfoFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(paymentsGetSavedInfoFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsSendPaymentForm &paymentsSendPaymentFormFunction)
+Stream &operator>>(Stream &stream, Functions::TLPaymentsSendPaymentForm &paymentsSendPaymentFormFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsSendPaymentFormFunction.flags;
@@ -1892,7 +1892,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsSendPaymentForm &payme
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsValidateRequestedInfo &paymentsValidateRequestedInfoFunction)
+Stream &operator>>(Stream &stream, Functions::TLPaymentsValidateRequestedInfo &paymentsValidateRequestedInfoFunction)
 {
     // stream >> function.tlType;
     stream >> paymentsValidateRequestedInfoFunction.flags;
@@ -1902,7 +1902,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPaymentsValidateRequestedInfo 
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhoneAcceptCall &phoneAcceptCallFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhoneAcceptCall &phoneAcceptCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneAcceptCallFunction.peer;
@@ -1911,7 +1911,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPhoneAcceptCall &phoneAcceptCa
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhoneConfirmCall &phoneConfirmCallFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhoneConfirmCall &phoneConfirmCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneConfirmCallFunction.peer;
@@ -1921,7 +1921,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPhoneConfirmCall &phoneConfirm
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhoneDiscardCall &phoneDiscardCallFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhoneDiscardCall &phoneDiscardCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneDiscardCallFunction.peer;
@@ -1931,21 +1931,21 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPhoneDiscardCall &phoneDiscard
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhoneGetCallConfig &phoneGetCallConfigFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhoneGetCallConfig &phoneGetCallConfigFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(phoneGetCallConfigFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhoneReceivedCall &phoneReceivedCallFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhoneReceivedCall &phoneReceivedCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneReceivedCallFunction.peer;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhoneRequestCall &phoneRequestCallFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhoneRequestCall &phoneRequestCallFunction)
 {
     // stream >> function.tlType;
     stream >> phoneRequestCallFunction.userId;
@@ -1955,7 +1955,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPhoneRequestCall &phoneRequest
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhoneSaveCallDebug &phoneSaveCallDebugFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhoneSaveCallDebug &phoneSaveCallDebugFunction)
 {
     // stream >> function.tlType;
     stream >> phoneSaveCallDebugFunction.peer;
@@ -1963,7 +1963,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPhoneSaveCallDebug &phoneSaveC
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhoneSetCallRating &phoneSetCallRatingFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhoneSetCallRating &phoneSetCallRatingFunction)
 {
     // stream >> function.tlType;
     stream >> phoneSetCallRatingFunction.peer;
@@ -1972,14 +1972,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPhoneSetCallRating &phoneSetCa
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhotosDeletePhotos &photosDeletePhotosFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhotosDeletePhotos &photosDeletePhotosFunction)
 {
     // stream >> function.tlType;
     stream >> photosDeletePhotosFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhotosGetUserPhotos &photosGetUserPhotosFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhotosGetUserPhotos &photosGetUserPhotosFunction)
 {
     // stream >> function.tlType;
     stream >> photosGetUserPhotosFunction.userId;
@@ -1989,21 +1989,21 @@ Stream &operator>>(Stream &stream, TLFunctions::TLPhotosGetUserPhotos &photosGet
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhotosUpdateProfilePhoto &photosUpdateProfilePhotoFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhotosUpdateProfilePhoto &photosUpdateProfilePhotoFunction)
 {
     // stream >> function.tlType;
     stream >> photosUpdateProfilePhotoFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLPhotosUploadProfilePhoto &photosUploadProfilePhotoFunction)
+Stream &operator>>(Stream &stream, Functions::TLPhotosUploadProfilePhoto &photosUploadProfilePhotoFunction)
 {
     // stream >> function.tlType;
     stream >> photosUploadProfilePhotoFunction.file;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLStickersAddStickerToSet &stickersAddStickerToSetFunction)
+Stream &operator>>(Stream &stream, Functions::TLStickersAddStickerToSet &stickersAddStickerToSetFunction)
 {
     // stream >> function.tlType;
     stream >> stickersAddStickerToSetFunction.stickerset;
@@ -2011,7 +2011,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLStickersAddStickerToSet &stick
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLStickersChangeStickerPosition &stickersChangeStickerPositionFunction)
+Stream &operator>>(Stream &stream, Functions::TLStickersChangeStickerPosition &stickersChangeStickerPositionFunction)
 {
     // stream >> function.tlType;
     stream >> stickersChangeStickerPositionFunction.sticker;
@@ -2019,7 +2019,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLStickersChangeStickerPosition 
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLStickersCreateStickerSet &stickersCreateStickerSetFunction)
+Stream &operator>>(Stream &stream, Functions::TLStickersCreateStickerSet &stickersCreateStickerSetFunction)
 {
     // stream >> function.tlType;
     stream >> stickersCreateStickerSetFunction.flags;
@@ -2031,14 +2031,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLStickersCreateStickerSet &stic
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLStickersRemoveStickerFromSet &stickersRemoveStickerFromSetFunction)
+Stream &operator>>(Stream &stream, Functions::TLStickersRemoveStickerFromSet &stickersRemoveStickerFromSetFunction)
 {
     // stream >> function.tlType;
     stream >> stickersRemoveStickerFromSetFunction.sticker;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUpdatesGetChannelDifference &updatesGetChannelDifferenceFunction)
+Stream &operator>>(Stream &stream, Functions::TLUpdatesGetChannelDifference &updatesGetChannelDifferenceFunction)
 {
     // stream >> function.tlType;
     stream >> updatesGetChannelDifferenceFunction.flags;
@@ -2050,7 +2050,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLUpdatesGetChannelDifference &u
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUpdatesGetDifference &updatesGetDifferenceFunction)
+Stream &operator>>(Stream &stream, Functions::TLUpdatesGetDifference &updatesGetDifferenceFunction)
 {
     // stream >> function.tlType;
     stream >> updatesGetDifferenceFunction.flags;
@@ -2063,14 +2063,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLUpdatesGetDifference &updatesG
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUpdatesGetState &updatesGetStateFunction)
+Stream &operator>>(Stream &stream, Functions::TLUpdatesGetState &updatesGetStateFunction)
 {
     // stream >> function.tlType;
     Q_UNUSED(updatesGetStateFunction)
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetCdnFile &uploadGetCdnFileFunction)
+Stream &operator>>(Stream &stream, Functions::TLUploadGetCdnFile &uploadGetCdnFileFunction)
 {
     // stream >> function.tlType;
     stream >> uploadGetCdnFileFunction.fileToken;
@@ -2079,7 +2079,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetCdnFile &uploadGetCdn
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetCdnFileHashes &uploadGetCdnFileHashesFunction)
+Stream &operator>>(Stream &stream, Functions::TLUploadGetCdnFileHashes &uploadGetCdnFileHashesFunction)
 {
     // stream >> function.tlType;
     stream >> uploadGetCdnFileHashesFunction.fileToken;
@@ -2087,7 +2087,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetCdnFileHashes &upload
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetFile &uploadGetFileFunction)
+Stream &operator>>(Stream &stream, Functions::TLUploadGetFile &uploadGetFileFunction)
 {
     // stream >> function.tlType;
     stream >> uploadGetFileFunction.location;
@@ -2096,7 +2096,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetFile &uploadGetFileFu
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetWebFile &uploadGetWebFileFunction)
+Stream &operator>>(Stream &stream, Functions::TLUploadGetWebFile &uploadGetWebFileFunction)
 {
     // stream >> function.tlType;
     stream >> uploadGetWebFileFunction.location;
@@ -2105,7 +2105,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLUploadGetWebFile &uploadGetWeb
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUploadReuploadCdnFile &uploadReuploadCdnFileFunction)
+Stream &operator>>(Stream &stream, Functions::TLUploadReuploadCdnFile &uploadReuploadCdnFileFunction)
 {
     // stream >> function.tlType;
     stream >> uploadReuploadCdnFileFunction.fileToken;
@@ -2113,7 +2113,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLUploadReuploadCdnFile &uploadR
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUploadSaveBigFilePart &uploadSaveBigFilePartFunction)
+Stream &operator>>(Stream &stream, Functions::TLUploadSaveBigFilePart &uploadSaveBigFilePartFunction)
 {
     // stream >> function.tlType;
     stream >> uploadSaveBigFilePartFunction.fileId;
@@ -2123,7 +2123,7 @@ Stream &operator>>(Stream &stream, TLFunctions::TLUploadSaveBigFilePart &uploadS
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUploadSaveFilePart &uploadSaveFilePartFunction)
+Stream &operator>>(Stream &stream, Functions::TLUploadSaveFilePart &uploadSaveFilePartFunction)
 {
     // stream >> function.tlType;
     stream >> uploadSaveFilePartFunction.fileId;
@@ -2132,14 +2132,14 @@ Stream &operator>>(Stream &stream, TLFunctions::TLUploadSaveFilePart &uploadSave
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUsersGetFullUser &usersGetFullUserFunction)
+Stream &operator>>(Stream &stream, Functions::TLUsersGetFullUser &usersGetFullUserFunction)
 {
     // stream >> function.tlType;
     stream >> usersGetFullUserFunction.id;
     return stream;
 }
 
-Stream &operator>>(Stream &stream, TLFunctions::TLUsersGetUsers &usersGetUsersFunction)
+Stream &operator>>(Stream &stream, Functions::TLUsersGetUsers &usersGetUsersFunction)
 {
     // stream >> function.tlType;
     stream >> usersGetUsersFunction.id;

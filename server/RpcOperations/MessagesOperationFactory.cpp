@@ -695,7 +695,7 @@ bool MessagesRpcOperation::processUploadMedia(RpcProcessingContext &context)
 // Generated run methods
 void MessagesRpcOperation::runAcceptEncryption()
 {
-    // TLFunctions::TLMessagesAcceptEncryption &arguments = m_acceptEncryption;
+    // MTProto::Functions::TLMessagesAcceptEncryption &arguments = m_acceptEncryption;
     if (processNotImplementedMethod(TLValue::MessagesAcceptEncryption)) {
         return;
     }
@@ -705,7 +705,7 @@ void MessagesRpcOperation::runAcceptEncryption()
 
 void MessagesRpcOperation::runAddChatUser()
 {
-    // TLFunctions::TLMessagesAddChatUser &arguments = m_addChatUser;
+    // MTProto::Functions::TLMessagesAddChatUser &arguments = m_addChatUser;
     if (processNotImplementedMethod(TLValue::MessagesAddChatUser)) {
         return;
     }
@@ -715,7 +715,7 @@ void MessagesRpcOperation::runAddChatUser()
 
 void MessagesRpcOperation::runCheckChatInvite()
 {
-    // TLFunctions::TLMessagesCheckChatInvite &arguments = m_checkChatInvite;
+    // MTProto::Functions::TLMessagesCheckChatInvite &arguments = m_checkChatInvite;
     if (processNotImplementedMethod(TLValue::MessagesCheckChatInvite)) {
         return;
     }
@@ -725,7 +725,7 @@ void MessagesRpcOperation::runCheckChatInvite()
 
 void MessagesRpcOperation::runClearRecentStickers()
 {
-    // TLFunctions::TLMessagesClearRecentStickers &arguments = m_clearRecentStickers;
+    // MTProto::Functions::TLMessagesClearRecentStickers &arguments = m_clearRecentStickers;
     if (processNotImplementedMethod(TLValue::MessagesClearRecentStickers)) {
         return;
     }
@@ -735,7 +735,7 @@ void MessagesRpcOperation::runClearRecentStickers()
 
 void MessagesRpcOperation::runCreateChat()
 {
-    // TLFunctions::TLMessagesCreateChat &arguments = m_createChat;
+    // MTProto::Functions::TLMessagesCreateChat &arguments = m_createChat;
     if (processNotImplementedMethod(TLValue::MessagesCreateChat)) {
         return;
     }
@@ -745,7 +745,7 @@ void MessagesRpcOperation::runCreateChat()
 
 void MessagesRpcOperation::runDeleteChatUser()
 {
-    // TLFunctions::TLMessagesDeleteChatUser &arguments = m_deleteChatUser;
+    // MTProto::Functions::TLMessagesDeleteChatUser &arguments = m_deleteChatUser;
     if (processNotImplementedMethod(TLValue::MessagesDeleteChatUser)) {
         return;
     }
@@ -755,7 +755,7 @@ void MessagesRpcOperation::runDeleteChatUser()
 
 void MessagesRpcOperation::runDeleteHistory()
 {
-    // TLFunctions::TLMessagesDeleteHistory &arguments = m_deleteHistory;
+    // MTProto::Functions::TLMessagesDeleteHistory &arguments = m_deleteHistory;
     if (processNotImplementedMethod(TLValue::MessagesDeleteHistory)) {
         return;
     }
@@ -765,7 +765,7 @@ void MessagesRpcOperation::runDeleteHistory()
 
 void MessagesRpcOperation::runDeleteMessages()
 {
-    // TLFunctions::TLMessagesDeleteMessages &arguments = m_deleteMessages;
+    // MTProto::Functions::TLMessagesDeleteMessages &arguments = m_deleteMessages;
     if (processNotImplementedMethod(TLValue::MessagesDeleteMessages)) {
         return;
     }
@@ -775,7 +775,7 @@ void MessagesRpcOperation::runDeleteMessages()
 
 void MessagesRpcOperation::runDiscardEncryption()
 {
-    // TLFunctions::TLMessagesDiscardEncryption &arguments = m_discardEncryption;
+    // MTProto::Functions::TLMessagesDiscardEncryption &arguments = m_discardEncryption;
     if (processNotImplementedMethod(TLValue::MessagesDiscardEncryption)) {
         return;
     }
@@ -785,7 +785,7 @@ void MessagesRpcOperation::runDiscardEncryption()
 
 void MessagesRpcOperation::runEditChatAdmin()
 {
-    // TLFunctions::TLMessagesEditChatAdmin &arguments = m_editChatAdmin;
+    // MTProto::Functions::TLMessagesEditChatAdmin &arguments = m_editChatAdmin;
     if (processNotImplementedMethod(TLValue::MessagesEditChatAdmin)) {
         return;
     }
@@ -795,7 +795,7 @@ void MessagesRpcOperation::runEditChatAdmin()
 
 void MessagesRpcOperation::runEditChatPhoto()
 {
-    // TLFunctions::TLMessagesEditChatPhoto &arguments = m_editChatPhoto;
+    // MTProto::Functions::TLMessagesEditChatPhoto &arguments = m_editChatPhoto;
     if (processNotImplementedMethod(TLValue::MessagesEditChatPhoto)) {
         return;
     }
@@ -805,7 +805,7 @@ void MessagesRpcOperation::runEditChatPhoto()
 
 void MessagesRpcOperation::runEditChatTitle()
 {
-    // TLFunctions::TLMessagesEditChatTitle &arguments = m_editChatTitle;
+    // MTProto::Functions::TLMessagesEditChatTitle &arguments = m_editChatTitle;
     if (processNotImplementedMethod(TLValue::MessagesEditChatTitle)) {
         return;
     }
@@ -815,7 +815,7 @@ void MessagesRpcOperation::runEditChatTitle()
 
 void MessagesRpcOperation::runEditInlineBotMessage()
 {
-    // TLFunctions::TLMessagesEditInlineBotMessage &arguments = m_editInlineBotMessage;
+    // MTProto::Functions::TLMessagesEditInlineBotMessage &arguments = m_editInlineBotMessage;
     if (processNotImplementedMethod(TLValue::MessagesEditInlineBotMessage)) {
         return;
     }
@@ -825,7 +825,7 @@ void MessagesRpcOperation::runEditInlineBotMessage()
 
 void MessagesRpcOperation::runEditMessage()
 {
-    // TLFunctions::TLMessagesEditMessage &arguments = m_editMessage;
+    // MTProto::Functions::TLMessagesEditMessage &arguments = m_editMessage;
     if (processNotImplementedMethod(TLValue::MessagesEditMessage)) {
         return;
     }
@@ -835,7 +835,7 @@ void MessagesRpcOperation::runEditMessage()
 
 void MessagesRpcOperation::runExportChatInvite()
 {
-    // TLFunctions::TLMessagesExportChatInvite &arguments = m_exportChatInvite;
+    // MTProto::Functions::TLMessagesExportChatInvite &arguments = m_exportChatInvite;
     if (processNotImplementedMethod(TLValue::MessagesExportChatInvite)) {
         return;
     }
@@ -845,7 +845,7 @@ void MessagesRpcOperation::runExportChatInvite()
 
 void MessagesRpcOperation::runFaveSticker()
 {
-    // TLFunctions::TLMessagesFaveSticker &arguments = m_faveSticker;
+    // MTProto::Functions::TLMessagesFaveSticker &arguments = m_faveSticker;
     if (processNotImplementedMethod(TLValue::MessagesFaveSticker)) {
         return;
     }
@@ -855,7 +855,7 @@ void MessagesRpcOperation::runFaveSticker()
 
 void MessagesRpcOperation::runForwardMessage()
 {
-    // TLFunctions::TLMessagesForwardMessage &arguments = m_forwardMessage;
+    // MTProto::Functions::TLMessagesForwardMessage &arguments = m_forwardMessage;
     if (processNotImplementedMethod(TLValue::MessagesForwardMessage)) {
         return;
     }
@@ -865,7 +865,7 @@ void MessagesRpcOperation::runForwardMessage()
 
 void MessagesRpcOperation::runForwardMessages()
 {
-    // TLFunctions::TLMessagesForwardMessages &arguments = m_forwardMessages;
+    // MTProto::Functions::TLMessagesForwardMessages &arguments = m_forwardMessages;
     if (processNotImplementedMethod(TLValue::MessagesForwardMessages)) {
         return;
     }
@@ -875,7 +875,7 @@ void MessagesRpcOperation::runForwardMessages()
 
 void MessagesRpcOperation::runGetAllChats()
 {
-    // TLFunctions::TLMessagesGetAllChats &arguments = m_getAllChats;
+    // MTProto::Functions::TLMessagesGetAllChats &arguments = m_getAllChats;
     if (processNotImplementedMethod(TLValue::MessagesGetAllChats)) {
         return;
     }
@@ -894,7 +894,7 @@ void MessagesRpcOperation::runGetAllDrafts()
 
 void MessagesRpcOperation::runGetAllStickers()
 {
-    // TLFunctions::TLMessagesGetAllStickers &arguments = m_getAllStickers;
+    // MTProto::Functions::TLMessagesGetAllStickers &arguments = m_getAllStickers;
     if (processNotImplementedMethod(TLValue::MessagesGetAllStickers)) {
         return;
     }
@@ -904,7 +904,7 @@ void MessagesRpcOperation::runGetAllStickers()
 
 void MessagesRpcOperation::runGetArchivedStickers()
 {
-    // TLFunctions::TLMessagesGetArchivedStickers &arguments = m_getArchivedStickers;
+    // MTProto::Functions::TLMessagesGetArchivedStickers &arguments = m_getArchivedStickers;
     if (processNotImplementedMethod(TLValue::MessagesGetArchivedStickers)) {
         return;
     }
@@ -914,7 +914,7 @@ void MessagesRpcOperation::runGetArchivedStickers()
 
 void MessagesRpcOperation::runGetAttachedStickers()
 {
-    // TLFunctions::TLMessagesGetAttachedStickers &arguments = m_getAttachedStickers;
+    // MTProto::Functions::TLMessagesGetAttachedStickers &arguments = m_getAttachedStickers;
     if (processNotImplementedMethod(TLValue::MessagesGetAttachedStickers)) {
         return;
     }
@@ -924,7 +924,7 @@ void MessagesRpcOperation::runGetAttachedStickers()
 
 void MessagesRpcOperation::runGetBotCallbackAnswer()
 {
-    // TLFunctions::TLMessagesGetBotCallbackAnswer &arguments = m_getBotCallbackAnswer;
+    // MTProto::Functions::TLMessagesGetBotCallbackAnswer &arguments = m_getBotCallbackAnswer;
     if (processNotImplementedMethod(TLValue::MessagesGetBotCallbackAnswer)) {
         return;
     }
@@ -934,7 +934,7 @@ void MessagesRpcOperation::runGetBotCallbackAnswer()
 
 void MessagesRpcOperation::runGetChats()
 {
-    // TLFunctions::TLMessagesGetChats &arguments = m_getChats;
+    // MTProto::Functions::TLMessagesGetChats &arguments = m_getChats;
     if (processNotImplementedMethod(TLValue::MessagesGetChats)) {
         return;
     }
@@ -944,7 +944,7 @@ void MessagesRpcOperation::runGetChats()
 
 void MessagesRpcOperation::runGetCommonChats()
 {
-    // TLFunctions::TLMessagesGetCommonChats &arguments = m_getCommonChats;
+    // MTProto::Functions::TLMessagesGetCommonChats &arguments = m_getCommonChats;
     if (processNotImplementedMethod(TLValue::MessagesGetCommonChats)) {
         return;
     }
@@ -954,7 +954,7 @@ void MessagesRpcOperation::runGetCommonChats()
 
 void MessagesRpcOperation::runGetDhConfig()
 {
-    // TLFunctions::TLMessagesGetDhConfig &arguments = m_getDhConfig;
+    // MTProto::Functions::TLMessagesGetDhConfig &arguments = m_getDhConfig;
     if (processNotImplementedMethod(TLValue::MessagesGetDhConfig)) {
         return;
     }
@@ -964,7 +964,7 @@ void MessagesRpcOperation::runGetDhConfig()
 
 void MessagesRpcOperation::runGetDialogs()
 {
-    TLFunctions::TLMessagesGetDialogs &arguments = m_getDialogs;
+    MTProto::Functions::TLMessagesGetDialogs &arguments = m_getDialogs;
     TLMessagesDialogs result;
     const LocalUser *selfUser = layer()->getUser();
 
@@ -1053,7 +1053,7 @@ void MessagesRpcOperation::runGetDialogs()
 
 void MessagesRpcOperation::runGetDocumentByHash()
 {
-    // TLFunctions::TLMessagesGetDocumentByHash &arguments = m_getDocumentByHash;
+    // MTProto::Functions::TLMessagesGetDocumentByHash &arguments = m_getDocumentByHash;
     if (processNotImplementedMethod(TLValue::MessagesGetDocumentByHash)) {
         return;
     }
@@ -1063,7 +1063,7 @@ void MessagesRpcOperation::runGetDocumentByHash()
 
 void MessagesRpcOperation::runGetFavedStickers()
 {
-    // TLFunctions::TLMessagesGetFavedStickers &arguments = m_getFavedStickers;
+    // MTProto::Functions::TLMessagesGetFavedStickers &arguments = m_getFavedStickers;
     if (processNotImplementedMethod(TLValue::MessagesGetFavedStickers)) {
         return;
     }
@@ -1073,7 +1073,7 @@ void MessagesRpcOperation::runGetFavedStickers()
 
 void MessagesRpcOperation::runGetFeaturedStickers()
 {
-    // TLFunctions::TLMessagesGetFeaturedStickers &arguments = m_getFeaturedStickers;
+    // MTProto::Functions::TLMessagesGetFeaturedStickers &arguments = m_getFeaturedStickers;
     if (processNotImplementedMethod(TLValue::MessagesGetFeaturedStickers)) {
         return;
     }
@@ -1083,7 +1083,7 @@ void MessagesRpcOperation::runGetFeaturedStickers()
 
 void MessagesRpcOperation::runGetFullChat()
 {
-    // TLFunctions::TLMessagesGetFullChat &arguments = m_getFullChat;
+    // MTProto::Functions::TLMessagesGetFullChat &arguments = m_getFullChat;
     if (processNotImplementedMethod(TLValue::MessagesGetFullChat)) {
         return;
     }
@@ -1093,7 +1093,7 @@ void MessagesRpcOperation::runGetFullChat()
 
 void MessagesRpcOperation::runGetGameHighScores()
 {
-    // TLFunctions::TLMessagesGetGameHighScores &arguments = m_getGameHighScores;
+    // MTProto::Functions::TLMessagesGetGameHighScores &arguments = m_getGameHighScores;
     if (processNotImplementedMethod(TLValue::MessagesGetGameHighScores)) {
         return;
     }
@@ -1103,7 +1103,7 @@ void MessagesRpcOperation::runGetGameHighScores()
 
 void MessagesRpcOperation::runGetHistory()
 {
-    TLFunctions::TLMessagesGetHistory &arguments = m_getHistory;
+    MTProto::Functions::TLMessagesGetHistory &arguments = m_getHistory;
     switch (arguments.peer.tlType) {
     case TLValue::InputPeerEmpty:
     case TLValue::InputPeerSelf:
@@ -1205,7 +1205,7 @@ void MessagesRpcOperation::runGetHistory()
 
 void MessagesRpcOperation::runGetInlineBotResults()
 {
-    // TLFunctions::TLMessagesGetInlineBotResults &arguments = m_getInlineBotResults;
+    // MTProto::Functions::TLMessagesGetInlineBotResults &arguments = m_getInlineBotResults;
     if (processNotImplementedMethod(TLValue::MessagesGetInlineBotResults)) {
         return;
     }
@@ -1215,7 +1215,7 @@ void MessagesRpcOperation::runGetInlineBotResults()
 
 void MessagesRpcOperation::runGetInlineGameHighScores()
 {
-    // TLFunctions::TLMessagesGetInlineGameHighScores &arguments = m_getInlineGameHighScores;
+    // MTProto::Functions::TLMessagesGetInlineGameHighScores &arguments = m_getInlineGameHighScores;
     if (processNotImplementedMethod(TLValue::MessagesGetInlineGameHighScores)) {
         return;
     }
@@ -1225,7 +1225,7 @@ void MessagesRpcOperation::runGetInlineGameHighScores()
 
 void MessagesRpcOperation::runGetMaskStickers()
 {
-    // TLFunctions::TLMessagesGetMaskStickers &arguments = m_getMaskStickers;
+    // MTProto::Functions::TLMessagesGetMaskStickers &arguments = m_getMaskStickers;
     if (processNotImplementedMethod(TLValue::MessagesGetMaskStickers)) {
         return;
     }
@@ -1235,7 +1235,7 @@ void MessagesRpcOperation::runGetMaskStickers()
 
 void MessagesRpcOperation::runGetMessageEditData()
 {
-    // TLFunctions::TLMessagesGetMessageEditData &arguments = m_getMessageEditData;
+    // MTProto::Functions::TLMessagesGetMessageEditData &arguments = m_getMessageEditData;
     if (processNotImplementedMethod(TLValue::MessagesGetMessageEditData)) {
         return;
     }
@@ -1245,7 +1245,7 @@ void MessagesRpcOperation::runGetMessageEditData()
 
 void MessagesRpcOperation::runGetMessages()
 {
-    // TLFunctions::TLMessagesGetMessages &arguments = m_getMessages;
+    // MTProto::Functions::TLMessagesGetMessages &arguments = m_getMessages;
     if (processNotImplementedMethod(TLValue::MessagesGetMessages)) {
         return;
     }
@@ -1255,7 +1255,7 @@ void MessagesRpcOperation::runGetMessages()
 
 void MessagesRpcOperation::runGetMessagesViews()
 {
-    // TLFunctions::TLMessagesGetMessagesViews &arguments = m_getMessagesViews;
+    // MTProto::Functions::TLMessagesGetMessagesViews &arguments = m_getMessagesViews;
     if (processNotImplementedMethod(TLValue::MessagesGetMessagesViews)) {
         return;
     }
@@ -1265,7 +1265,7 @@ void MessagesRpcOperation::runGetMessagesViews()
 
 void MessagesRpcOperation::runGetPeerDialogs()
 {
-    // TLFunctions::TLMessagesGetPeerDialogs &arguments = m_getPeerDialogs;
+    // MTProto::Functions::TLMessagesGetPeerDialogs &arguments = m_getPeerDialogs;
     if (processNotImplementedMethod(TLValue::MessagesGetPeerDialogs)) {
         return;
     }
@@ -1275,7 +1275,7 @@ void MessagesRpcOperation::runGetPeerDialogs()
 
 void MessagesRpcOperation::runGetPeerSettings()
 {
-    // TLFunctions::TLMessagesGetPeerSettings &arguments = m_getPeerSettings;
+    // MTProto::Functions::TLMessagesGetPeerSettings &arguments = m_getPeerSettings;
     if (processNotImplementedMethod(TLValue::MessagesGetPeerSettings)) {
         return;
     }
@@ -1297,7 +1297,7 @@ void MessagesRpcOperation::runGetPinnedDialogs()
 
 void MessagesRpcOperation::runGetRecentLocations()
 {
-    // TLFunctions::TLMessagesGetRecentLocations &arguments = m_getRecentLocations;
+    // MTProto::Functions::TLMessagesGetRecentLocations &arguments = m_getRecentLocations;
     if (processNotImplementedMethod(TLValue::MessagesGetRecentLocations)) {
         return;
     }
@@ -1307,7 +1307,7 @@ void MessagesRpcOperation::runGetRecentLocations()
 
 void MessagesRpcOperation::runGetRecentStickers()
 {
-    // TLFunctions::TLMessagesGetRecentStickers &arguments = m_getRecentStickers;
+    // MTProto::Functions::TLMessagesGetRecentStickers &arguments = m_getRecentStickers;
     if (processNotImplementedMethod(TLValue::MessagesGetRecentStickers)) {
         return;
     }
@@ -1317,7 +1317,7 @@ void MessagesRpcOperation::runGetRecentStickers()
 
 void MessagesRpcOperation::runGetSavedGifs()
 {
-    // TLFunctions::TLMessagesGetSavedGifs &arguments = m_getSavedGifs;
+    // MTProto::Functions::TLMessagesGetSavedGifs &arguments = m_getSavedGifs;
     if (processNotImplementedMethod(TLValue::MessagesGetSavedGifs)) {
         return;
     }
@@ -1327,7 +1327,7 @@ void MessagesRpcOperation::runGetSavedGifs()
 
 void MessagesRpcOperation::runGetStickerSet()
 {
-    // TLFunctions::TLMessagesGetStickerSet &arguments = m_getStickerSet;
+    // MTProto::Functions::TLMessagesGetStickerSet &arguments = m_getStickerSet;
     if (processNotImplementedMethod(TLValue::MessagesGetStickerSet)) {
         return;
     }
@@ -1337,7 +1337,7 @@ void MessagesRpcOperation::runGetStickerSet()
 
 void MessagesRpcOperation::runGetUnreadMentions()
 {
-    // TLFunctions::TLMessagesGetUnreadMentions &arguments = m_getUnreadMentions;
+    // MTProto::Functions::TLMessagesGetUnreadMentions &arguments = m_getUnreadMentions;
     if (processNotImplementedMethod(TLValue::MessagesGetUnreadMentions)) {
         return;
     }
@@ -1347,7 +1347,7 @@ void MessagesRpcOperation::runGetUnreadMentions()
 
 void MessagesRpcOperation::runGetWebPage()
 {
-    // TLFunctions::TLMessagesGetWebPage &arguments = m_getWebPage;
+    // MTProto::Functions::TLMessagesGetWebPage &arguments = m_getWebPage;
     if (processNotImplementedMethod(TLValue::MessagesGetWebPage)) {
         return;
     }
@@ -1357,7 +1357,7 @@ void MessagesRpcOperation::runGetWebPage()
 
 void MessagesRpcOperation::runGetWebPagePreview()
 {
-    // TLFunctions::TLMessagesGetWebPagePreview &arguments = m_getWebPagePreview;
+    // MTProto::Functions::TLMessagesGetWebPagePreview &arguments = m_getWebPagePreview;
     if (processNotImplementedMethod(TLValue::MessagesGetWebPagePreview)) {
         return;
     }
@@ -1367,7 +1367,7 @@ void MessagesRpcOperation::runGetWebPagePreview()
 
 void MessagesRpcOperation::runHideReportSpam()
 {
-    // TLFunctions::TLMessagesHideReportSpam &arguments = m_hideReportSpam;
+    // MTProto::Functions::TLMessagesHideReportSpam &arguments = m_hideReportSpam;
     if (processNotImplementedMethod(TLValue::MessagesHideReportSpam)) {
         return;
     }
@@ -1377,7 +1377,7 @@ void MessagesRpcOperation::runHideReportSpam()
 
 void MessagesRpcOperation::runImportChatInvite()
 {
-    // TLFunctions::TLMessagesImportChatInvite &arguments = m_importChatInvite;
+    // MTProto::Functions::TLMessagesImportChatInvite &arguments = m_importChatInvite;
     if (processNotImplementedMethod(TLValue::MessagesImportChatInvite)) {
         return;
     }
@@ -1387,7 +1387,7 @@ void MessagesRpcOperation::runImportChatInvite()
 
 void MessagesRpcOperation::runInstallStickerSet()
 {
-    // TLFunctions::TLMessagesInstallStickerSet &arguments = m_installStickerSet;
+    // MTProto::Functions::TLMessagesInstallStickerSet &arguments = m_installStickerSet;
     if (processNotImplementedMethod(TLValue::MessagesInstallStickerSet)) {
         return;
     }
@@ -1397,7 +1397,7 @@ void MessagesRpcOperation::runInstallStickerSet()
 
 void MessagesRpcOperation::runMigrateChat()
 {
-    // TLFunctions::TLMessagesMigrateChat &arguments = m_migrateChat;
+    // MTProto::Functions::TLMessagesMigrateChat &arguments = m_migrateChat;
     if (processNotImplementedMethod(TLValue::MessagesMigrateChat)) {
         return;
     }
@@ -1407,7 +1407,7 @@ void MessagesRpcOperation::runMigrateChat()
 
 void MessagesRpcOperation::runReadEncryptedHistory()
 {
-    // TLFunctions::TLMessagesReadEncryptedHistory &arguments = m_readEncryptedHistory;
+    // MTProto::Functions::TLMessagesReadEncryptedHistory &arguments = m_readEncryptedHistory;
     if (processNotImplementedMethod(TLValue::MessagesReadEncryptedHistory)) {
         return;
     }
@@ -1417,7 +1417,7 @@ void MessagesRpcOperation::runReadEncryptedHistory()
 
 void MessagesRpcOperation::runReadFeaturedStickers()
 {
-    // TLFunctions::TLMessagesReadFeaturedStickers &arguments = m_readFeaturedStickers;
+    // MTProto::Functions::TLMessagesReadFeaturedStickers &arguments = m_readFeaturedStickers;
     if (processNotImplementedMethod(TLValue::MessagesReadFeaturedStickers)) {
         return;
     }
@@ -1427,7 +1427,7 @@ void MessagesRpcOperation::runReadFeaturedStickers()
 
 void MessagesRpcOperation::runReadHistory()
 {
-    TLFunctions::TLMessagesReadHistory &arguments = m_readHistory;
+    MTProto::Functions::TLMessagesReadHistory &arguments = m_readHistory;
 
     LocalUser *selfUser = layer()->getUser();
     Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
@@ -1524,7 +1524,7 @@ void MessagesRpcOperation::runReadHistory()
 
 void MessagesRpcOperation::runReadMentions()
 {
-    // TLFunctions::TLMessagesReadMentions &arguments = m_readMentions;
+    // MTProto::Functions::TLMessagesReadMentions &arguments = m_readMentions;
     if (processNotImplementedMethod(TLValue::MessagesReadMentions)) {
         return;
     }
@@ -1534,7 +1534,7 @@ void MessagesRpcOperation::runReadMentions()
 
 void MessagesRpcOperation::runReadMessageContents()
 {
-    // TLFunctions::TLMessagesReadMessageContents &arguments = m_readMessageContents;
+    // MTProto::Functions::TLMessagesReadMessageContents &arguments = m_readMessageContents;
     if (processNotImplementedMethod(TLValue::MessagesReadMessageContents)) {
         return;
     }
@@ -1544,7 +1544,7 @@ void MessagesRpcOperation::runReadMessageContents()
 
 void MessagesRpcOperation::runReceivedMessages()
 {
-    // TLFunctions::TLMessagesReceivedMessages &arguments = m_receivedMessages;
+    // MTProto::Functions::TLMessagesReceivedMessages &arguments = m_receivedMessages;
     if (processNotImplementedMethod(TLValue::MessagesReceivedMessages)) {
         return;
     }
@@ -1554,7 +1554,7 @@ void MessagesRpcOperation::runReceivedMessages()
 
 void MessagesRpcOperation::runReceivedQueue()
 {
-    // TLFunctions::TLMessagesReceivedQueue &arguments = m_receivedQueue;
+    // MTProto::Functions::TLMessagesReceivedQueue &arguments = m_receivedQueue;
     if (processNotImplementedMethod(TLValue::MessagesReceivedQueue)) {
         return;
     }
@@ -1564,7 +1564,7 @@ void MessagesRpcOperation::runReceivedQueue()
 
 void MessagesRpcOperation::runReorderPinnedDialogs()
 {
-    // TLFunctions::TLMessagesReorderPinnedDialogs &arguments = m_reorderPinnedDialogs;
+    // MTProto::Functions::TLMessagesReorderPinnedDialogs &arguments = m_reorderPinnedDialogs;
     if (processNotImplementedMethod(TLValue::MessagesReorderPinnedDialogs)) {
         return;
     }
@@ -1574,7 +1574,7 @@ void MessagesRpcOperation::runReorderPinnedDialogs()
 
 void MessagesRpcOperation::runReorderStickerSets()
 {
-    // TLFunctions::TLMessagesReorderStickerSets &arguments = m_reorderStickerSets;
+    // MTProto::Functions::TLMessagesReorderStickerSets &arguments = m_reorderStickerSets;
     if (processNotImplementedMethod(TLValue::MessagesReorderStickerSets)) {
         return;
     }
@@ -1584,7 +1584,7 @@ void MessagesRpcOperation::runReorderStickerSets()
 
 void MessagesRpcOperation::runReportEncryptedSpam()
 {
-    // TLFunctions::TLMessagesReportEncryptedSpam &arguments = m_reportEncryptedSpam;
+    // MTProto::Functions::TLMessagesReportEncryptedSpam &arguments = m_reportEncryptedSpam;
     if (processNotImplementedMethod(TLValue::MessagesReportEncryptedSpam)) {
         return;
     }
@@ -1594,7 +1594,7 @@ void MessagesRpcOperation::runReportEncryptedSpam()
 
 void MessagesRpcOperation::runReportSpam()
 {
-    // TLFunctions::TLMessagesReportSpam &arguments = m_reportSpam;
+    // MTProto::Functions::TLMessagesReportSpam &arguments = m_reportSpam;
     if (processNotImplementedMethod(TLValue::MessagesReportSpam)) {
         return;
     }
@@ -1604,7 +1604,7 @@ void MessagesRpcOperation::runReportSpam()
 
 void MessagesRpcOperation::runRequestEncryption()
 {
-    // TLFunctions::TLMessagesRequestEncryption &arguments = m_requestEncryption;
+    // MTProto::Functions::TLMessagesRequestEncryption &arguments = m_requestEncryption;
     if (processNotImplementedMethod(TLValue::MessagesRequestEncryption)) {
         return;
     }
@@ -1614,7 +1614,7 @@ void MessagesRpcOperation::runRequestEncryption()
 
 void MessagesRpcOperation::runSaveDraft()
 {
-    // TLFunctions::TLMessagesSaveDraft &arguments = m_saveDraft;
+    // MTProto::Functions::TLMessagesSaveDraft &arguments = m_saveDraft;
     if (processNotImplementedMethod(TLValue::MessagesSaveDraft)) {
         return;
     }
@@ -1624,7 +1624,7 @@ void MessagesRpcOperation::runSaveDraft()
 
 void MessagesRpcOperation::runSaveGif()
 {
-    // TLFunctions::TLMessagesSaveGif &arguments = m_saveGif;
+    // MTProto::Functions::TLMessagesSaveGif &arguments = m_saveGif;
     if (processNotImplementedMethod(TLValue::MessagesSaveGif)) {
         return;
     }
@@ -1634,7 +1634,7 @@ void MessagesRpcOperation::runSaveGif()
 
 void MessagesRpcOperation::runSaveRecentSticker()
 {
-    // TLFunctions::TLMessagesSaveRecentSticker &arguments = m_saveRecentSticker;
+    // MTProto::Functions::TLMessagesSaveRecentSticker &arguments = m_saveRecentSticker;
     if (processNotImplementedMethod(TLValue::MessagesSaveRecentSticker)) {
         return;
     }
@@ -1644,7 +1644,7 @@ void MessagesRpcOperation::runSaveRecentSticker()
 
 void MessagesRpcOperation::runSearch()
 {
-    // TLFunctions::TLMessagesSearch &arguments = m_search;
+    // MTProto::Functions::TLMessagesSearch &arguments = m_search;
     if (processNotImplementedMethod(TLValue::MessagesSearch)) {
         return;
     }
@@ -1654,7 +1654,7 @@ void MessagesRpcOperation::runSearch()
 
 void MessagesRpcOperation::runSearchGifs()
 {
-    // TLFunctions::TLMessagesSearchGifs &arguments = m_searchGifs;
+    // MTProto::Functions::TLMessagesSearchGifs &arguments = m_searchGifs;
     if (processNotImplementedMethod(TLValue::MessagesSearchGifs)) {
         return;
     }
@@ -1664,7 +1664,7 @@ void MessagesRpcOperation::runSearchGifs()
 
 void MessagesRpcOperation::runSearchGlobal()
 {
-    // TLFunctions::TLMessagesSearchGlobal &arguments = m_searchGlobal;
+    // MTProto::Functions::TLMessagesSearchGlobal &arguments = m_searchGlobal;
     if (processNotImplementedMethod(TLValue::MessagesSearchGlobal)) {
         return;
     }
@@ -1674,7 +1674,7 @@ void MessagesRpcOperation::runSearchGlobal()
 
 void MessagesRpcOperation::runSendEncrypted()
 {
-    // TLFunctions::TLMessagesSendEncrypted &arguments = m_sendEncrypted;
+    // MTProto::Functions::TLMessagesSendEncrypted &arguments = m_sendEncrypted;
     if (processNotImplementedMethod(TLValue::MessagesSendEncrypted)) {
         return;
     }
@@ -1684,7 +1684,7 @@ void MessagesRpcOperation::runSendEncrypted()
 
 void MessagesRpcOperation::runSendEncryptedFile()
 {
-    // TLFunctions::TLMessagesSendEncryptedFile &arguments = m_sendEncryptedFile;
+    // MTProto::Functions::TLMessagesSendEncryptedFile &arguments = m_sendEncryptedFile;
     if (processNotImplementedMethod(TLValue::MessagesSendEncryptedFile)) {
         return;
     }
@@ -1694,7 +1694,7 @@ void MessagesRpcOperation::runSendEncryptedFile()
 
 void MessagesRpcOperation::runSendEncryptedService()
 {
-    // TLFunctions::TLMessagesSendEncryptedService &arguments = m_sendEncryptedService;
+    // MTProto::Functions::TLMessagesSendEncryptedService &arguments = m_sendEncryptedService;
     if (processNotImplementedMethod(TLValue::MessagesSendEncryptedService)) {
         return;
     }
@@ -1704,7 +1704,7 @@ void MessagesRpcOperation::runSendEncryptedService()
 
 void MessagesRpcOperation::runSendInlineBotResult()
 {
-    // TLFunctions::TLMessagesSendInlineBotResult &arguments = m_sendInlineBotResult;
+    // MTProto::Functions::TLMessagesSendInlineBotResult &arguments = m_sendInlineBotResult;
     if (processNotImplementedMethod(TLValue::MessagesSendInlineBotResult)) {
         return;
     }
@@ -1714,7 +1714,7 @@ void MessagesRpcOperation::runSendInlineBotResult()
 
 void MessagesRpcOperation::runSendMedia()
 {
-    TLFunctions::TLMessagesSendMedia &arguments = m_sendMedia;
+    MTProto::Functions::TLMessagesSendMedia &arguments = m_sendMedia;
 
     LocalUser *selfUser = layer()->getUser();
     MessageRecipient *recipient = api()->getRecipient(arguments.peer, selfUser);
@@ -1780,7 +1780,7 @@ void MessagesRpcOperation::runSendMedia()
 
 void MessagesRpcOperation::runSendMessage()
 {
-    TLFunctions::TLMessagesSendMessage &arguments = m_sendMessage;
+    MTProto::Functions::TLMessagesSendMessage &arguments = m_sendMessage;
 
     LocalUser *selfUser = layer()->getUser();
     Telegram::Peer targetPeer = api()->getPeer(arguments.peer, selfUser);
@@ -1797,7 +1797,7 @@ void MessagesRpcOperation::runSendMessage()
 
 void MessagesRpcOperation::runSendScreenshotNotification()
 {
-    // TLFunctions::TLMessagesSendScreenshotNotification &arguments = m_sendScreenshotNotification;
+    // MTProto::Functions::TLMessagesSendScreenshotNotification &arguments = m_sendScreenshotNotification;
     if (processNotImplementedMethod(TLValue::MessagesSendScreenshotNotification)) {
         return;
     }
@@ -1807,7 +1807,7 @@ void MessagesRpcOperation::runSendScreenshotNotification()
 
 void MessagesRpcOperation::runSetBotCallbackAnswer()
 {
-    // TLFunctions::TLMessagesSetBotCallbackAnswer &arguments = m_setBotCallbackAnswer;
+    // MTProto::Functions::TLMessagesSetBotCallbackAnswer &arguments = m_setBotCallbackAnswer;
     if (processNotImplementedMethod(TLValue::MessagesSetBotCallbackAnswer)) {
         return;
     }
@@ -1817,7 +1817,7 @@ void MessagesRpcOperation::runSetBotCallbackAnswer()
 
 void MessagesRpcOperation::runSetBotPrecheckoutResults()
 {
-    // TLFunctions::TLMessagesSetBotPrecheckoutResults &arguments = m_setBotPrecheckoutResults;
+    // MTProto::Functions::TLMessagesSetBotPrecheckoutResults &arguments = m_setBotPrecheckoutResults;
     if (processNotImplementedMethod(TLValue::MessagesSetBotPrecheckoutResults)) {
         return;
     }
@@ -1827,7 +1827,7 @@ void MessagesRpcOperation::runSetBotPrecheckoutResults()
 
 void MessagesRpcOperation::runSetBotShippingResults()
 {
-    // TLFunctions::TLMessagesSetBotShippingResults &arguments = m_setBotShippingResults;
+    // MTProto::Functions::TLMessagesSetBotShippingResults &arguments = m_setBotShippingResults;
     if (processNotImplementedMethod(TLValue::MessagesSetBotShippingResults)) {
         return;
     }
@@ -1837,7 +1837,7 @@ void MessagesRpcOperation::runSetBotShippingResults()
 
 void MessagesRpcOperation::runSetEncryptedTyping()
 {
-    // TLFunctions::TLMessagesSetEncryptedTyping &arguments = m_setEncryptedTyping;
+    // MTProto::Functions::TLMessagesSetEncryptedTyping &arguments = m_setEncryptedTyping;
     if (processNotImplementedMethod(TLValue::MessagesSetEncryptedTyping)) {
         return;
     }
@@ -1847,7 +1847,7 @@ void MessagesRpcOperation::runSetEncryptedTyping()
 
 void MessagesRpcOperation::runSetGameScore()
 {
-    // TLFunctions::TLMessagesSetGameScore &arguments = m_setGameScore;
+    // MTProto::Functions::TLMessagesSetGameScore &arguments = m_setGameScore;
     if (processNotImplementedMethod(TLValue::MessagesSetGameScore)) {
         return;
     }
@@ -1857,7 +1857,7 @@ void MessagesRpcOperation::runSetGameScore()
 
 void MessagesRpcOperation::runSetInlineBotResults()
 {
-    // TLFunctions::TLMessagesSetInlineBotResults &arguments = m_setInlineBotResults;
+    // MTProto::Functions::TLMessagesSetInlineBotResults &arguments = m_setInlineBotResults;
     if (processNotImplementedMethod(TLValue::MessagesSetInlineBotResults)) {
         return;
     }
@@ -1867,7 +1867,7 @@ void MessagesRpcOperation::runSetInlineBotResults()
 
 void MessagesRpcOperation::runSetInlineGameScore()
 {
-    // TLFunctions::TLMessagesSetInlineGameScore &arguments = m_setInlineGameScore;
+    // MTProto::Functions::TLMessagesSetInlineGameScore &arguments = m_setInlineGameScore;
     if (processNotImplementedMethod(TLValue::MessagesSetInlineGameScore)) {
         return;
     }
@@ -1877,7 +1877,7 @@ void MessagesRpcOperation::runSetInlineGameScore()
 
 void MessagesRpcOperation::runSetTyping()
 {
-    TLFunctions::TLMessagesSetTyping &arguments = m_setTyping;
+    MTProto::Functions::TLMessagesSetTyping &arguments = m_setTyping;
 
     LocalUser *selfUser = layer()->getUser();
     Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
@@ -1953,7 +1953,7 @@ void MessagesRpcOperation::runSetTyping()
 
 void MessagesRpcOperation::runStartBot()
 {
-    // TLFunctions::TLMessagesStartBot &arguments = m_startBot;
+    // MTProto::Functions::TLMessagesStartBot &arguments = m_startBot;
     if (processNotImplementedMethod(TLValue::MessagesStartBot)) {
         return;
     }
@@ -1963,7 +1963,7 @@ void MessagesRpcOperation::runStartBot()
 
 void MessagesRpcOperation::runToggleChatAdmins()
 {
-    // TLFunctions::TLMessagesToggleChatAdmins &arguments = m_toggleChatAdmins;
+    // MTProto::Functions::TLMessagesToggleChatAdmins &arguments = m_toggleChatAdmins;
     if (processNotImplementedMethod(TLValue::MessagesToggleChatAdmins)) {
         return;
     }
@@ -1973,7 +1973,7 @@ void MessagesRpcOperation::runToggleChatAdmins()
 
 void MessagesRpcOperation::runToggleDialogPin()
 {
-    // TLFunctions::TLMessagesToggleDialogPin &arguments = m_toggleDialogPin;
+    // MTProto::Functions::TLMessagesToggleDialogPin &arguments = m_toggleDialogPin;
     if (processNotImplementedMethod(TLValue::MessagesToggleDialogPin)) {
         return;
     }
@@ -1983,7 +1983,7 @@ void MessagesRpcOperation::runToggleDialogPin()
 
 void MessagesRpcOperation::runUninstallStickerSet()
 {
-    // TLFunctions::TLMessagesUninstallStickerSet &arguments = m_uninstallStickerSet;
+    // MTProto::Functions::TLMessagesUninstallStickerSet &arguments = m_uninstallStickerSet;
     if (processNotImplementedMethod(TLValue::MessagesUninstallStickerSet)) {
         return;
     }
@@ -1993,7 +1993,7 @@ void MessagesRpcOperation::runUninstallStickerSet()
 
 void MessagesRpcOperation::runUploadMedia()
 {
-    // TLFunctions::TLMessagesUploadMedia &arguments = m_uploadMedia;
+    // MTProto::Functions::TLMessagesUploadMedia &arguments = m_uploadMedia;
     if (processNotImplementedMethod(TLValue::MessagesUploadMedia)) {
         return;
     }

@@ -153,7 +153,7 @@ bool AuthRpcOperation::processSignUp(RpcProcessingContext &context)
 // Generated run methods
 void AuthRpcOperation::runBindTempAuthKey()
 {
-    // TLFunctions::TLAuthBindTempAuthKey &arguments = m_bindTempAuthKey;
+    // MTProto::Functions::TLAuthBindTempAuthKey &arguments = m_bindTempAuthKey;
     if (processNotImplementedMethod(TLValue::AuthBindTempAuthKey)) {
         return;
     }
@@ -163,7 +163,7 @@ void AuthRpcOperation::runBindTempAuthKey()
 
 void AuthRpcOperation::runCancelCode()
 {
-    // TLFunctions::TLAuthCancelCode &arguments = m_cancelCode;
+    // MTProto::Functions::TLAuthCancelCode &arguments = m_cancelCode;
     if (processNotImplementedMethod(TLValue::AuthCancelCode)) {
         return;
     }
@@ -195,7 +195,7 @@ void AuthRpcOperation::runCheckPassword()
 
 void AuthRpcOperation::runCheckPhone()
 {
-    TLFunctions::TLAuthCheckPhone &arguments = m_checkPhone;
+    MTProto::Functions::TLAuthCheckPhone &arguments = m_checkPhone;
     arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
 
     if (!api()->identifierIsValid(arguments.phoneNumber)) {
@@ -210,7 +210,7 @@ void AuthRpcOperation::runCheckPhone()
 
 void AuthRpcOperation::runDropTempAuthKeys()
 {
-    // TLFunctions::TLAuthDropTempAuthKeys &arguments = m_dropTempAuthKeys;
+    // MTProto::Functions::TLAuthDropTempAuthKeys &arguments = m_dropTempAuthKeys;
     if (processNotImplementedMethod(TLValue::AuthDropTempAuthKeys)) {
         return;
     }
@@ -220,7 +220,7 @@ void AuthRpcOperation::runDropTempAuthKeys()
 
 void AuthRpcOperation::runExportAuthorization()
 {
-    TLFunctions::TLAuthExportAuthorization &arguments = m_exportAuthorization;
+    MTProto::Functions::TLAuthExportAuthorization &arguments = m_exportAuthorization;
     if (arguments.dcId == api()->dcId()) {
         sendRpcError(RpcError::DcIdInvalid);
         return;
@@ -238,7 +238,7 @@ void AuthRpcOperation::runExportAuthorization()
 
 void AuthRpcOperation::runImportAuthorization()
 {
-    TLFunctions::TLAuthImportAuthorization &arguments = m_importAuthorization;
+    MTProto::Functions::TLAuthImportAuthorization &arguments = m_importAuthorization;
     AuthorizedUser *user = api()->getAuthorizedUser(arguments.id, arguments.bytes);
     if (!user) {
         // TODO: Proper error
@@ -267,7 +267,7 @@ void AuthRpcOperation::runImportAuthorization()
 
 void AuthRpcOperation::runImportBotAuthorization()
 {
-    // TLFunctions::TLAuthImportBotAuthorization &arguments = m_importBotAuthorization;
+    // MTProto::Functions::TLAuthImportBotAuthorization &arguments = m_importBotAuthorization;
     if (processNotImplementedMethod(TLValue::AuthImportBotAuthorization)) {
         return;
     }
@@ -286,7 +286,7 @@ void AuthRpcOperation::runLogOut()
 
 void AuthRpcOperation::runRecoverPassword()
 {
-    // TLFunctions::TLAuthRecoverPassword &arguments = m_recoverPassword;
+    // MTProto::Functions::TLAuthRecoverPassword &arguments = m_recoverPassword;
     if (processNotImplementedMethod(TLValue::AuthRecoverPassword)) {
         return;
     }
@@ -305,7 +305,7 @@ void AuthRpcOperation::runRequestPasswordRecovery()
 
 void AuthRpcOperation::runResendCode()
 {
-    // TLFunctions::TLAuthResendCode &arguments = m_resendCode;
+    // MTProto::Functions::TLAuthResendCode &arguments = m_resendCode;
     if (processNotImplementedMethod(TLValue::AuthResendCode)) {
         return;
     }
@@ -325,7 +325,7 @@ void AuthRpcOperation::runResetAuthorizations()
 void AuthRpcOperation::runSendCode()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
-    TLFunctions::TLAuthSendCode &arguments = m_sendCode;
+    MTProto::Functions::TLAuthSendCode &arguments = m_sendCode;
     arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
 
     if (!api()->identifierIsValid(arguments.phoneNumber)) {
@@ -382,7 +382,7 @@ void AuthRpcOperation::runSendCode()
 
 void AuthRpcOperation::runSendInvites()
 {
-    // TLFunctions::TLAuthSendInvites &arguments = m_sendInvites;
+    // MTProto::Functions::TLAuthSendInvites &arguments = m_sendInvites;
     if (processNotImplementedMethod(TLValue::AuthSendInvites)) {
         return;
     }
@@ -393,7 +393,7 @@ void AuthRpcOperation::runSendInvites()
 void AuthRpcOperation::runSignIn()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
-    TLFunctions::TLAuthSignIn &arguments = m_signIn;
+    MTProto::Functions::TLAuthSignIn &arguments = m_signIn;
     arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
 
     if (!api()->identifierIsValid(arguments.phoneNumber)) {
@@ -431,7 +431,7 @@ void AuthRpcOperation::runSignIn()
 void AuthRpcOperation::runSignUp()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
-    TLFunctions::TLAuthSignUp &arguments = m_signUp;
+    MTProto::Functions::TLAuthSignUp &arguments = m_signUp;
     arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
 
     if (!api()->identifierIsValid(arguments.phoneNumber)) {

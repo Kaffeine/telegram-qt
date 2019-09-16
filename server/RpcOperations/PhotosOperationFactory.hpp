@@ -60,10 +60,10 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLPhotosDeletePhotos m_deletePhotos;
-    TLFunctions::TLPhotosGetUserPhotos m_getUserPhotos;
-    TLFunctions::TLPhotosUpdateProfilePhoto m_updateProfilePhoto;
-    TLFunctions::TLPhotosUploadProfilePhoto m_uploadProfilePhoto;
+    MTProto::Functions::TLPhotosDeletePhotos m_deletePhotos;
+    MTProto::Functions::TLPhotosGetUserPhotos m_getUserPhotos;
+    MTProto::Functions::TLPhotosUpdateProfilePhoto m_updateProfilePhoto;
+    MTProto::Functions::TLPhotosUploadProfilePhoto m_uploadProfilePhoto;
     // End of generated RPC members
 };
 

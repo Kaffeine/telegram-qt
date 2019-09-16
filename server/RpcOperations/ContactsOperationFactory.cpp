@@ -150,7 +150,7 @@ bool ContactsRpcOperation::processUnblock(RpcProcessingContext &context)
 // Generated run methods
 void ContactsRpcOperation::runBlock()
 {
-    // TLFunctions::TLContactsBlock &arguments = m_block;
+    // MTProto::Functions::TLContactsBlock &arguments = m_block;
     if (processNotImplementedMethod(TLValue::ContactsBlock)) {
         return;
     }
@@ -167,7 +167,7 @@ void ContactsRpcOperation::runDeleteContact()
 
 void ContactsRpcOperation::runDeleteContacts()
 {
-    // TLFunctions::TLContactsDeleteContacts &arguments = m_deleteContacts;
+    // MTProto::Functions::TLContactsDeleteContacts &arguments = m_deleteContacts;
     if (processNotImplementedMethod(TLValue::ContactsDeleteContacts)) {
         return;
     }
@@ -186,7 +186,7 @@ void ContactsRpcOperation::runExportCard()
 
 void ContactsRpcOperation::runGetBlocked()
 {
-    // TLFunctions::TLContactsGetBlocked &arguments = m_getBlocked;
+    // MTProto::Functions::TLContactsGetBlocked &arguments = m_getBlocked;
     if (processNotImplementedMethod(TLValue::ContactsGetBlocked)) {
         return;
     }
@@ -235,7 +235,7 @@ void ContactsRpcOperation::runGetStatuses()
 
 void ContactsRpcOperation::runGetTopPeers()
 {
-    // TLFunctions::TLContactsGetTopPeers &arguments = m_getTopPeers;
+    // MTProto::Functions::TLContactsGetTopPeers &arguments = m_getTopPeers;
     if (processNotImplementedMethod(TLValue::ContactsGetTopPeers)) {
         return;
     }
@@ -245,7 +245,7 @@ void ContactsRpcOperation::runGetTopPeers()
 
 void ContactsRpcOperation::runImportCard()
 {
-    // TLFunctions::TLContactsImportCard &arguments = m_importCard;
+    // MTProto::Functions::TLContactsImportCard &arguments = m_importCard;
     if (processNotImplementedMethod(TLValue::ContactsImportCard)) {
         return;
     }
@@ -295,7 +295,7 @@ void ContactsRpcOperation::runResetSaved()
 
 void ContactsRpcOperation::runResetTopPeerRating()
 {
-    // TLFunctions::TLContactsResetTopPeerRating &arguments = m_resetTopPeerRating;
+    // MTProto::Functions::TLContactsResetTopPeerRating &arguments = m_resetTopPeerRating;
     if (processNotImplementedMethod(TLValue::ContactsResetTopPeerRating)) {
         return;
     }
@@ -305,7 +305,7 @@ void ContactsRpcOperation::runResetTopPeerRating()
 
 void ContactsRpcOperation::runResolveUsername()
 {
-    TLFunctions::TLContactsResolveUsername &arguments = m_resolveUsername;
+    MTProto::Functions::TLContactsResolveUsername &arguments = m_resolveUsername;
     TLContactsResolvedPeer result;
     const Peer peer = api()->getPeerByUserName(arguments.username);
     result.peer = Telegram::Utils::toTLPeer(peer);
@@ -315,7 +315,7 @@ void ContactsRpcOperation::runResolveUsername()
 
 void ContactsRpcOperation::runSearch()
 {
-    // TLFunctions::TLContactsSearch &arguments = m_search;
+    // MTProto::Functions::TLContactsSearch &arguments = m_search;
     if (processNotImplementedMethod(TLValue::ContactsSearch)) {
         return;
     }
@@ -325,7 +325,7 @@ void ContactsRpcOperation::runSearch()
 
 void ContactsRpcOperation::runUnblock()
 {
-    // TLFunctions::TLContactsUnblock &arguments = m_unblock;
+    // MTProto::Functions::TLContactsUnblock &arguments = m_unblock;
     if (processNotImplementedMethod(TLValue::ContactsUnblock)) {
         return;
     }

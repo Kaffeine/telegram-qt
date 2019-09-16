@@ -26,7 +26,7 @@ namespace MTProto {
 
 class Stream;
 
-using namespace TLFunctions;
+using namespace Functions;
 
 MTProto::Stream &operator>>(MTProto::Stream &stream, TLPing &ping);
 // Generated write operators

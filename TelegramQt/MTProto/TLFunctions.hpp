@@ -22,7 +22,9 @@
 
 namespace Telegram {
 
-namespace TLFunctions {
+namespace MTProto {
+
+namespace Functions {
 
 struct TLPing
 {
@@ -1706,6 +1708,8 @@ struct TLUsersGetUsers
 // End of generated TLFunctions
 
 } // TLFunctions namespace
+
+} // MTProto namespace
 
 } // Telegram namespace
 

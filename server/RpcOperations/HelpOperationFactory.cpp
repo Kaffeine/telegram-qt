@@ -121,7 +121,7 @@ bool HelpRpcOperation::processSetBotUpdatesStatus(RpcProcessingContext &context)
 // Generated run methods
 void HelpRpcOperation::runGetAppChangelog()
 {
-    // TLFunctions::TLHelpGetAppChangelog &arguments = m_getAppChangelog;
+    // MTProto::Functions::TLHelpGetAppChangelog &arguments = m_getAppChangelog;
     if (processNotImplementedMethod(TLValue::HelpGetAppChangelog)) {
         return;
     }
@@ -199,7 +199,7 @@ void HelpRpcOperation::runGetNearestDc()
 
 void HelpRpcOperation::runGetRecentMeUrls()
 {
-    // TLFunctions::TLHelpGetRecentMeUrls &arguments = m_getRecentMeUrls;
+    // MTProto::Functions::TLHelpGetRecentMeUrls &arguments = m_getRecentMeUrls;
     if (processNotImplementedMethod(TLValue::HelpGetRecentMeUrls)) {
         return;
     }
@@ -227,7 +227,7 @@ void HelpRpcOperation::runGetTermsOfService()
 
 void HelpRpcOperation::runSaveAppLog()
 {
-    // TLFunctions::TLHelpSaveAppLog &arguments = m_saveAppLog;
+    // MTProto::Functions::TLHelpSaveAppLog &arguments = m_saveAppLog;
     if (processNotImplementedMethod(TLValue::HelpSaveAppLog)) {
         return;
     }
@@ -237,7 +237,7 @@ void HelpRpcOperation::runSaveAppLog()
 
 void HelpRpcOperation::runSetBotUpdatesStatus()
 {
-    // TLFunctions::TLHelpSetBotUpdatesStatus &arguments = m_setBotUpdatesStatus;
+    // MTProto::Functions::TLHelpSetBotUpdatesStatus &arguments = m_setBotUpdatesStatus;
     if (processNotImplementedMethod(TLValue::HelpSetBotUpdatesStatus)) {
         return;
     }

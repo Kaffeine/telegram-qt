@@ -58,9 +58,9 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLUpdatesGetChannelDifference m_getChannelDifference;
-    TLFunctions::TLUpdatesGetDifference m_getDifference;
-    TLFunctions::TLUpdatesGetState m_getState;
+    MTProto::Functions::TLUpdatesGetChannelDifference m_getChannelDifference;
+    MTProto::Functions::TLUpdatesGetDifference m_getDifference;
+    MTProto::Functions::TLUpdatesGetState m_getState;
     // End of generated RPC members
 };
 

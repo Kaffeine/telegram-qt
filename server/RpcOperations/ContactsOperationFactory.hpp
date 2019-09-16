@@ -82,21 +82,21 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLContactsBlock m_block;
-    TLFunctions::TLContactsDeleteContact m_deleteContact;
-    TLFunctions::TLContactsDeleteContacts m_deleteContacts;
-    TLFunctions::TLContactsExportCard m_exportCard;
-    TLFunctions::TLContactsGetBlocked m_getBlocked;
-    TLFunctions::TLContactsGetContacts m_getContacts;
-    TLFunctions::TLContactsGetStatuses m_getStatuses;
-    TLFunctions::TLContactsGetTopPeers m_getTopPeers;
-    TLFunctions::TLContactsImportCard m_importCard;
-    TLFunctions::TLContactsImportContacts m_importContacts;
-    TLFunctions::TLContactsResetSaved m_resetSaved;
-    TLFunctions::TLContactsResetTopPeerRating m_resetTopPeerRating;
-    TLFunctions::TLContactsResolveUsername m_resolveUsername;
-    TLFunctions::TLContactsSearch m_search;
-    TLFunctions::TLContactsUnblock m_unblock;
+    MTProto::Functions::TLContactsBlock m_block;
+    MTProto::Functions::TLContactsDeleteContact m_deleteContact;
+    MTProto::Functions::TLContactsDeleteContacts m_deleteContacts;
+    MTProto::Functions::TLContactsExportCard m_exportCard;
+    MTProto::Functions::TLContactsGetBlocked m_getBlocked;
+    MTProto::Functions::TLContactsGetContacts m_getContacts;
+    MTProto::Functions::TLContactsGetStatuses m_getStatuses;
+    MTProto::Functions::TLContactsGetTopPeers m_getTopPeers;
+    MTProto::Functions::TLContactsImportCard m_importCard;
+    MTProto::Functions::TLContactsImportContacts m_importContacts;
+    MTProto::Functions::TLContactsResetSaved m_resetSaved;
+    MTProto::Functions::TLContactsResetTopPeerRating m_resetTopPeerRating;
+    MTProto::Functions::TLContactsResolveUsername m_resolveUsername;
+    MTProto::Functions::TLContactsSearch m_search;
+    MTProto::Functions::TLContactsUnblock m_unblock;
     // End of generated RPC members
 };
 

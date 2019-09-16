@@ -68,14 +68,14 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLPhoneAcceptCall m_acceptCall;
-    TLFunctions::TLPhoneConfirmCall m_confirmCall;
-    TLFunctions::TLPhoneDiscardCall m_discardCall;
-    TLFunctions::TLPhoneGetCallConfig m_getCallConfig;
-    TLFunctions::TLPhoneReceivedCall m_receivedCall;
-    TLFunctions::TLPhoneRequestCall m_requestCall;
-    TLFunctions::TLPhoneSaveCallDebug m_saveCallDebug;
-    TLFunctions::TLPhoneSetCallRating m_setCallRating;
+    MTProto::Functions::TLPhoneAcceptCall m_acceptCall;
+    MTProto::Functions::TLPhoneConfirmCall m_confirmCall;
+    MTProto::Functions::TLPhoneDiscardCall m_discardCall;
+    MTProto::Functions::TLPhoneGetCallConfig m_getCallConfig;
+    MTProto::Functions::TLPhoneReceivedCall m_receivedCall;
+    MTProto::Functions::TLPhoneRequestCall m_requestCall;
+    MTProto::Functions::TLPhoneSaveCallDebug m_saveCallDebug;
+    MTProto::Functions::TLPhoneSetCallRating m_setCallRating;
     // End of generated RPC members
 };
 

@@ -267,7 +267,7 @@ bool ChannelsRpcOperation::processUpdateUsername(RpcProcessingContext &context)
 // Generated run methods
 void ChannelsRpcOperation::runCheckUsername()
 {
-    // TLFunctions::TLChannelsCheckUsername &arguments = m_checkUsername;
+    // MTProto::Functions::TLChannelsCheckUsername &arguments = m_checkUsername;
     if (processNotImplementedMethod(TLValue::ChannelsCheckUsername)) {
         return;
     }
@@ -277,7 +277,7 @@ void ChannelsRpcOperation::runCheckUsername()
 
 void ChannelsRpcOperation::runCreateChannel()
 {
-    // TLFunctions::TLChannelsCreateChannel &arguments = m_createChannel;
+    // MTProto::Functions::TLChannelsCreateChannel &arguments = m_createChannel;
     if (processNotImplementedMethod(TLValue::ChannelsCreateChannel)) {
         return;
     }
@@ -287,7 +287,7 @@ void ChannelsRpcOperation::runCreateChannel()
 
 void ChannelsRpcOperation::runDeleteChannel()
 {
-    // TLFunctions::TLChannelsDeleteChannel &arguments = m_deleteChannel;
+    // MTProto::Functions::TLChannelsDeleteChannel &arguments = m_deleteChannel;
     if (processNotImplementedMethod(TLValue::ChannelsDeleteChannel)) {
         return;
     }
@@ -297,7 +297,7 @@ void ChannelsRpcOperation::runDeleteChannel()
 
 void ChannelsRpcOperation::runDeleteHistory()
 {
-    // TLFunctions::TLChannelsDeleteHistory &arguments = m_deleteHistory;
+    // MTProto::Functions::TLChannelsDeleteHistory &arguments = m_deleteHistory;
     if (processNotImplementedMethod(TLValue::ChannelsDeleteHistory)) {
         return;
     }
@@ -307,7 +307,7 @@ void ChannelsRpcOperation::runDeleteHistory()
 
 void ChannelsRpcOperation::runDeleteMessages()
 {
-    // TLFunctions::TLChannelsDeleteMessages &arguments = m_deleteMessages;
+    // MTProto::Functions::TLChannelsDeleteMessages &arguments = m_deleteMessages;
     if (processNotImplementedMethod(TLValue::ChannelsDeleteMessages)) {
         return;
     }
@@ -317,7 +317,7 @@ void ChannelsRpcOperation::runDeleteMessages()
 
 void ChannelsRpcOperation::runDeleteUserHistory()
 {
-    // TLFunctions::TLChannelsDeleteUserHistory &arguments = m_deleteUserHistory;
+    // MTProto::Functions::TLChannelsDeleteUserHistory &arguments = m_deleteUserHistory;
     if (processNotImplementedMethod(TLValue::ChannelsDeleteUserHistory)) {
         return;
     }
@@ -327,7 +327,7 @@ void ChannelsRpcOperation::runDeleteUserHistory()
 
 void ChannelsRpcOperation::runEditAbout()
 {
-    // TLFunctions::TLChannelsEditAbout &arguments = m_editAbout;
+    // MTProto::Functions::TLChannelsEditAbout &arguments = m_editAbout;
     if (processNotImplementedMethod(TLValue::ChannelsEditAbout)) {
         return;
     }
@@ -337,7 +337,7 @@ void ChannelsRpcOperation::runEditAbout()
 
 void ChannelsRpcOperation::runEditAdmin()
 {
-    // TLFunctions::TLChannelsEditAdmin &arguments = m_editAdmin;
+    // MTProto::Functions::TLChannelsEditAdmin &arguments = m_editAdmin;
     if (processNotImplementedMethod(TLValue::ChannelsEditAdmin)) {
         return;
     }
@@ -347,7 +347,7 @@ void ChannelsRpcOperation::runEditAdmin()
 
 void ChannelsRpcOperation::runEditBanned()
 {
-    // TLFunctions::TLChannelsEditBanned &arguments = m_editBanned;
+    // MTProto::Functions::TLChannelsEditBanned &arguments = m_editBanned;
     if (processNotImplementedMethod(TLValue::ChannelsEditBanned)) {
         return;
     }
@@ -357,7 +357,7 @@ void ChannelsRpcOperation::runEditBanned()
 
 void ChannelsRpcOperation::runEditPhoto()
 {
-    // TLFunctions::TLChannelsEditPhoto &arguments = m_editPhoto;
+    // MTProto::Functions::TLChannelsEditPhoto &arguments = m_editPhoto;
     if (processNotImplementedMethod(TLValue::ChannelsEditPhoto)) {
         return;
     }
@@ -367,7 +367,7 @@ void ChannelsRpcOperation::runEditPhoto()
 
 void ChannelsRpcOperation::runEditTitle()
 {
-    // TLFunctions::TLChannelsEditTitle &arguments = m_editTitle;
+    // MTProto::Functions::TLChannelsEditTitle &arguments = m_editTitle;
     if (processNotImplementedMethod(TLValue::ChannelsEditTitle)) {
         return;
     }
@@ -377,7 +377,7 @@ void ChannelsRpcOperation::runEditTitle()
 
 void ChannelsRpcOperation::runExportInvite()
 {
-    // TLFunctions::TLChannelsExportInvite &arguments = m_exportInvite;
+    // MTProto::Functions::TLChannelsExportInvite &arguments = m_exportInvite;
     if (processNotImplementedMethod(TLValue::ChannelsExportInvite)) {
         return;
     }
@@ -387,7 +387,7 @@ void ChannelsRpcOperation::runExportInvite()
 
 void ChannelsRpcOperation::runExportMessageLink()
 {
-    // TLFunctions::TLChannelsExportMessageLink &arguments = m_exportMessageLink;
+    // MTProto::Functions::TLChannelsExportMessageLink &arguments = m_exportMessageLink;
     if (processNotImplementedMethod(TLValue::ChannelsExportMessageLink)) {
         return;
     }
@@ -397,7 +397,7 @@ void ChannelsRpcOperation::runExportMessageLink()
 
 void ChannelsRpcOperation::runGetAdminLog()
 {
-    // TLFunctions::TLChannelsGetAdminLog &arguments = m_getAdminLog;
+    // MTProto::Functions::TLChannelsGetAdminLog &arguments = m_getAdminLog;
     if (processNotImplementedMethod(TLValue::ChannelsGetAdminLog)) {
         return;
     }
@@ -416,7 +416,7 @@ void ChannelsRpcOperation::runGetAdminedPublicChannels()
 
 void ChannelsRpcOperation::runGetChannels()
 {
-    // TLFunctions::TLChannelsGetChannels &arguments = m_getChannels;
+    // MTProto::Functions::TLChannelsGetChannels &arguments = m_getChannels;
     if (processNotImplementedMethod(TLValue::ChannelsGetChannels)) {
         return;
     }
@@ -426,7 +426,7 @@ void ChannelsRpcOperation::runGetChannels()
 
 void ChannelsRpcOperation::runGetFullChannel()
 {
-    // TLFunctions::TLChannelsGetFullChannel &arguments = m_getFullChannel;
+    // MTProto::Functions::TLChannelsGetFullChannel &arguments = m_getFullChannel;
     if (processNotImplementedMethod(TLValue::ChannelsGetFullChannel)) {
         return;
     }
@@ -436,7 +436,7 @@ void ChannelsRpcOperation::runGetFullChannel()
 
 void ChannelsRpcOperation::runGetMessages()
 {
-    // TLFunctions::TLChannelsGetMessages &arguments = m_getMessages;
+    // MTProto::Functions::TLChannelsGetMessages &arguments = m_getMessages;
     if (processNotImplementedMethod(TLValue::ChannelsGetMessages)) {
         return;
     }
@@ -446,7 +446,7 @@ void ChannelsRpcOperation::runGetMessages()
 
 void ChannelsRpcOperation::runGetParticipant()
 {
-    // TLFunctions::TLChannelsGetParticipant &arguments = m_getParticipant;
+    // MTProto::Functions::TLChannelsGetParticipant &arguments = m_getParticipant;
     if (processNotImplementedMethod(TLValue::ChannelsGetParticipant)) {
         return;
     }
@@ -456,7 +456,7 @@ void ChannelsRpcOperation::runGetParticipant()
 
 void ChannelsRpcOperation::runGetParticipants()
 {
-    // TLFunctions::TLChannelsGetParticipants &arguments = m_getParticipants;
+    // MTProto::Functions::TLChannelsGetParticipants &arguments = m_getParticipants;
     if (processNotImplementedMethod(TLValue::ChannelsGetParticipants)) {
         return;
     }
@@ -466,7 +466,7 @@ void ChannelsRpcOperation::runGetParticipants()
 
 void ChannelsRpcOperation::runInviteToChannel()
 {
-    // TLFunctions::TLChannelsInviteToChannel &arguments = m_inviteToChannel;
+    // MTProto::Functions::TLChannelsInviteToChannel &arguments = m_inviteToChannel;
     if (processNotImplementedMethod(TLValue::ChannelsInviteToChannel)) {
         return;
     }
@@ -476,7 +476,7 @@ void ChannelsRpcOperation::runInviteToChannel()
 
 void ChannelsRpcOperation::runJoinChannel()
 {
-    // TLFunctions::TLChannelsJoinChannel &arguments = m_joinChannel;
+    // MTProto::Functions::TLChannelsJoinChannel &arguments = m_joinChannel;
     if (processNotImplementedMethod(TLValue::ChannelsJoinChannel)) {
         return;
     }
@@ -486,7 +486,7 @@ void ChannelsRpcOperation::runJoinChannel()
 
 void ChannelsRpcOperation::runLeaveChannel()
 {
-    // TLFunctions::TLChannelsLeaveChannel &arguments = m_leaveChannel;
+    // MTProto::Functions::TLChannelsLeaveChannel &arguments = m_leaveChannel;
     if (processNotImplementedMethod(TLValue::ChannelsLeaveChannel)) {
         return;
     }
@@ -496,7 +496,7 @@ void ChannelsRpcOperation::runLeaveChannel()
 
 void ChannelsRpcOperation::runReadHistory()
 {
-    // TLFunctions::TLChannelsReadHistory &arguments = m_readHistory;
+    // MTProto::Functions::TLChannelsReadHistory &arguments = m_readHistory;
     if (processNotImplementedMethod(TLValue::ChannelsReadHistory)) {
         return;
     }
@@ -506,7 +506,7 @@ void ChannelsRpcOperation::runReadHistory()
 
 void ChannelsRpcOperation::runReadMessageContents()
 {
-    // TLFunctions::TLChannelsReadMessageContents &arguments = m_readMessageContents;
+    // MTProto::Functions::TLChannelsReadMessageContents &arguments = m_readMessageContents;
     if (processNotImplementedMethod(TLValue::ChannelsReadMessageContents)) {
         return;
     }
@@ -516,7 +516,7 @@ void ChannelsRpcOperation::runReadMessageContents()
 
 void ChannelsRpcOperation::runReportSpam()
 {
-    // TLFunctions::TLChannelsReportSpam &arguments = m_reportSpam;
+    // MTProto::Functions::TLChannelsReportSpam &arguments = m_reportSpam;
     if (processNotImplementedMethod(TLValue::ChannelsReportSpam)) {
         return;
     }
@@ -526,7 +526,7 @@ void ChannelsRpcOperation::runReportSpam()
 
 void ChannelsRpcOperation::runSetStickers()
 {
-    // TLFunctions::TLChannelsSetStickers &arguments = m_setStickers;
+    // MTProto::Functions::TLChannelsSetStickers &arguments = m_setStickers;
     if (processNotImplementedMethod(TLValue::ChannelsSetStickers)) {
         return;
     }
@@ -536,7 +536,7 @@ void ChannelsRpcOperation::runSetStickers()
 
 void ChannelsRpcOperation::runToggleInvites()
 {
-    // TLFunctions::TLChannelsToggleInvites &arguments = m_toggleInvites;
+    // MTProto::Functions::TLChannelsToggleInvites &arguments = m_toggleInvites;
     if (processNotImplementedMethod(TLValue::ChannelsToggleInvites)) {
         return;
     }
@@ -546,7 +546,7 @@ void ChannelsRpcOperation::runToggleInvites()
 
 void ChannelsRpcOperation::runTogglePreHistoryHidden()
 {
-    // TLFunctions::TLChannelsTogglePreHistoryHidden &arguments = m_togglePreHistoryHidden;
+    // MTProto::Functions::TLChannelsTogglePreHistoryHidden &arguments = m_togglePreHistoryHidden;
     if (processNotImplementedMethod(TLValue::ChannelsTogglePreHistoryHidden)) {
         return;
     }
@@ -556,7 +556,7 @@ void ChannelsRpcOperation::runTogglePreHistoryHidden()
 
 void ChannelsRpcOperation::runToggleSignatures()
 {
-    // TLFunctions::TLChannelsToggleSignatures &arguments = m_toggleSignatures;
+    // MTProto::Functions::TLChannelsToggleSignatures &arguments = m_toggleSignatures;
     if (processNotImplementedMethod(TLValue::ChannelsToggleSignatures)) {
         return;
     }
@@ -566,7 +566,7 @@ void ChannelsRpcOperation::runToggleSignatures()
 
 void ChannelsRpcOperation::runUpdatePinnedMessage()
 {
-    // TLFunctions::TLChannelsUpdatePinnedMessage &arguments = m_updatePinnedMessage;
+    // MTProto::Functions::TLChannelsUpdatePinnedMessage &arguments = m_updatePinnedMessage;
     if (processNotImplementedMethod(TLValue::ChannelsUpdatePinnedMessage)) {
         return;
     }
@@ -576,7 +576,7 @@ void ChannelsRpcOperation::runUpdatePinnedMessage()
 
 void ChannelsRpcOperation::runUpdateUsername()
 {
-    // TLFunctions::TLChannelsUpdateUsername &arguments = m_updateUsername;
+    // MTProto::Functions::TLChannelsUpdateUsername &arguments = m_updateUsername;
     if (processNotImplementedMethod(TLValue::ChannelsUpdateUsername)) {
         return;
     }

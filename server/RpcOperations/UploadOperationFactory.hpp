@@ -66,13 +66,13 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLUploadGetCdnFile m_getCdnFile;
-    TLFunctions::TLUploadGetCdnFileHashes m_getCdnFileHashes;
-    TLFunctions::TLUploadGetFile m_getFile;
-    TLFunctions::TLUploadGetWebFile m_getWebFile;
-    TLFunctions::TLUploadReuploadCdnFile m_reuploadCdnFile;
-    TLFunctions::TLUploadSaveBigFilePart m_saveBigFilePart;
-    TLFunctions::TLUploadSaveFilePart m_saveFilePart;
+    MTProto::Functions::TLUploadGetCdnFile m_getCdnFile;
+    MTProto::Functions::TLUploadGetCdnFileHashes m_getCdnFileHashes;
+    MTProto::Functions::TLUploadGetFile m_getFile;
+    MTProto::Functions::TLUploadGetWebFile m_getWebFile;
+    MTProto::Functions::TLUploadReuploadCdnFile m_reuploadCdnFile;
+    MTProto::Functions::TLUploadSaveBigFilePart m_saveBigFilePart;
+    MTProto::Functions::TLUploadSaveFilePart m_saveFilePart;
     // End of generated RPC members
 };
 

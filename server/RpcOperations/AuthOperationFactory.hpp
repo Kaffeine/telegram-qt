@@ -92,23 +92,23 @@ protected:
     QByteArray m_authBytes;
 
     // Generated RPC members
-    TLFunctions::TLAuthBindTempAuthKey m_bindTempAuthKey;
-    TLFunctions::TLAuthCancelCode m_cancelCode;
-    TLFunctions::TLAuthCheckPassword m_checkPassword;
-    TLFunctions::TLAuthCheckPhone m_checkPhone;
-    TLFunctions::TLAuthDropTempAuthKeys m_dropTempAuthKeys;
-    TLFunctions::TLAuthExportAuthorization m_exportAuthorization;
-    TLFunctions::TLAuthImportAuthorization m_importAuthorization;
-    TLFunctions::TLAuthImportBotAuthorization m_importBotAuthorization;
-    TLFunctions::TLAuthLogOut m_logOut;
-    TLFunctions::TLAuthRecoverPassword m_recoverPassword;
-    TLFunctions::TLAuthRequestPasswordRecovery m_requestPasswordRecovery;
-    TLFunctions::TLAuthResendCode m_resendCode;
-    TLFunctions::TLAuthResetAuthorizations m_resetAuthorizations;
-    TLFunctions::TLAuthSendCode m_sendCode;
-    TLFunctions::TLAuthSendInvites m_sendInvites;
-    TLFunctions::TLAuthSignIn m_signIn;
-    TLFunctions::TLAuthSignUp m_signUp;
+    MTProto::Functions::TLAuthBindTempAuthKey m_bindTempAuthKey;
+    MTProto::Functions::TLAuthCancelCode m_cancelCode;
+    MTProto::Functions::TLAuthCheckPassword m_checkPassword;
+    MTProto::Functions::TLAuthCheckPhone m_checkPhone;
+    MTProto::Functions::TLAuthDropTempAuthKeys m_dropTempAuthKeys;
+    MTProto::Functions::TLAuthExportAuthorization m_exportAuthorization;
+    MTProto::Functions::TLAuthImportAuthorization m_importAuthorization;
+    MTProto::Functions::TLAuthImportBotAuthorization m_importBotAuthorization;
+    MTProto::Functions::TLAuthLogOut m_logOut;
+    MTProto::Functions::TLAuthRecoverPassword m_recoverPassword;
+    MTProto::Functions::TLAuthRequestPasswordRecovery m_requestPasswordRecovery;
+    MTProto::Functions::TLAuthResendCode m_resendCode;
+    MTProto::Functions::TLAuthResetAuthorizations m_resetAuthorizations;
+    MTProto::Functions::TLAuthSendCode m_sendCode;
+    MTProto::Functions::TLAuthSendInvites m_sendInvites;
+    MTProto::Functions::TLAuthSignIn m_signIn;
+    MTProto::Functions::TLAuthSignUp m_signUp;
     // End of generated RPC members
 };
 

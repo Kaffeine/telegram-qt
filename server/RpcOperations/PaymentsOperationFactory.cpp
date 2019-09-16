@@ -85,7 +85,7 @@ bool PaymentsRpcOperation::processValidateRequestedInfo(RpcProcessingContext &co
 // Generated run methods
 void PaymentsRpcOperation::runClearSavedInfo()
 {
-    // TLFunctions::TLPaymentsClearSavedInfo &arguments = m_clearSavedInfo;
+    // MTProto::Functions::TLPaymentsClearSavedInfo &arguments = m_clearSavedInfo;
     if (processNotImplementedMethod(TLValue::PaymentsClearSavedInfo)) {
         return;
     }
@@ -95,7 +95,7 @@ void PaymentsRpcOperation::runClearSavedInfo()
 
 void PaymentsRpcOperation::runGetPaymentForm()
 {
-    // TLFunctions::TLPaymentsGetPaymentForm &arguments = m_getPaymentForm;
+    // MTProto::Functions::TLPaymentsGetPaymentForm &arguments = m_getPaymentForm;
     if (processNotImplementedMethod(TLValue::PaymentsGetPaymentForm)) {
         return;
     }
@@ -105,7 +105,7 @@ void PaymentsRpcOperation::runGetPaymentForm()
 
 void PaymentsRpcOperation::runGetPaymentReceipt()
 {
-    // TLFunctions::TLPaymentsGetPaymentReceipt &arguments = m_getPaymentReceipt;
+    // MTProto::Functions::TLPaymentsGetPaymentReceipt &arguments = m_getPaymentReceipt;
     if (processNotImplementedMethod(TLValue::PaymentsGetPaymentReceipt)) {
         return;
     }
@@ -124,7 +124,7 @@ void PaymentsRpcOperation::runGetSavedInfo()
 
 void PaymentsRpcOperation::runSendPaymentForm()
 {
-    // TLFunctions::TLPaymentsSendPaymentForm &arguments = m_sendPaymentForm;
+    // MTProto::Functions::TLPaymentsSendPaymentForm &arguments = m_sendPaymentForm;
     if (processNotImplementedMethod(TLValue::PaymentsSendPaymentForm)) {
         return;
     }
@@ -134,7 +134,7 @@ void PaymentsRpcOperation::runSendPaymentForm()
 
 void PaymentsRpcOperation::runValidateRequestedInfo()
 {
-    // TLFunctions::TLPaymentsValidateRequestedInfo &arguments = m_validateRequestedInfo;
+    // MTProto::Functions::TLPaymentsValidateRequestedInfo &arguments = m_validateRequestedInfo;
     if (processNotImplementedMethod(TLValue::PaymentsValidateRequestedInfo)) {
         return;
     }

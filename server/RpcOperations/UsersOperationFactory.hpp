@@ -56,8 +56,8 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLUsersGetFullUser m_getFullUser;
-    TLFunctions::TLUsersGetUsers m_getUsers;
+    MTProto::Functions::TLUsersGetFullUser m_getFullUser;
+    MTProto::Functions::TLUsersGetUsers m_getUsers;
     // End of generated RPC members
 };
 

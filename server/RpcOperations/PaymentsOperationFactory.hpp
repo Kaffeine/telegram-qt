@@ -64,12 +64,12 @@ protected:
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
-    TLFunctions::TLPaymentsClearSavedInfo m_clearSavedInfo;
-    TLFunctions::TLPaymentsGetPaymentForm m_getPaymentForm;
-    TLFunctions::TLPaymentsGetPaymentReceipt m_getPaymentReceipt;
-    TLFunctions::TLPaymentsGetSavedInfo m_getSavedInfo;
-    TLFunctions::TLPaymentsSendPaymentForm m_sendPaymentForm;
-    TLFunctions::TLPaymentsValidateRequestedInfo m_validateRequestedInfo;
+    MTProto::Functions::TLPaymentsClearSavedInfo m_clearSavedInfo;
+    MTProto::Functions::TLPaymentsGetPaymentForm m_getPaymentForm;
+    MTProto::Functions::TLPaymentsGetPaymentReceipt m_getPaymentReceipt;
+    MTProto::Functions::TLPaymentsGetSavedInfo m_getSavedInfo;
+    MTProto::Functions::TLPaymentsSendPaymentForm m_sendPaymentForm;
+    MTProto::Functions::TLPaymentsValidateRequestedInfo m_validateRequestedInfo;
     // End of generated RPC members
 };
 

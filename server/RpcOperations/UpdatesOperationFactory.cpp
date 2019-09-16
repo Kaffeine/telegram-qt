@@ -65,7 +65,7 @@ bool UpdatesRpcOperation::processGetState(RpcProcessingContext &context)
 // Generated run methods
 void UpdatesRpcOperation::runGetChannelDifference()
 {
-    // TLFunctions::TLUpdatesGetChannelDifference &arguments = m_getChannelDifference;
+    // MTProto::Functions::TLUpdatesGetChannelDifference &arguments = m_getChannelDifference;
     if (processNotImplementedMethod(TLValue::UpdatesGetChannelDifference)) {
         return;
     }
@@ -75,7 +75,7 @@ void UpdatesRpcOperation::runGetChannelDifference()
 
 void UpdatesRpcOperation::runGetDifference()
 {
-    // TLFunctions::TLUpdatesGetDifference &arguments = m_getDifference;
+    // MTProto::Functions::TLUpdatesGetDifference &arguments = m_getDifference;
     if (processNotImplementedMethod(TLValue::UpdatesGetDifference)) {
         return;
     }
