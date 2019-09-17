@@ -82,7 +82,8 @@ public:
     };
     Q_ENUM(Reason)
 
-    RpcError(Reason r = UnknownReason, quint32 arg = 0);
+    RpcError(Reason reason, quint32 arg = 0);
+    RpcError() = default;
 
     Reason reason = UnknownReason;
     quint32 argument = 0;

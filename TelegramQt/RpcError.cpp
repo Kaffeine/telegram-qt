@@ -129,13 +129,13 @@ RawStreamEx &operator<<(RawStreamEx &stream, const RpcError &error)
     return stream;
 }
 
-RpcError::RpcError(RpcError::Reason r, quint32 arg) :
-    reason(r),
+RpcError::RpcError(RpcError::Reason reason, quint32 arg) :
+    reason(reason),
     argument(arg)
 {
-    switch (r) {
+    switch (reason) {
     case UnknownReason:
-        type = UnknownType;
+        type = Internal;
         break;
     case ApiIdInvalid:
     case DcIdInvalid:
@@ -180,11 +180,8 @@ RpcError::RpcError(RpcError::Reason r, quint32 arg) :
     case FloodWaitX:
         type = Flood;
         break;
-    default:
-        type = UnknownType;
-        break;
     }
-    message = reasonToString(r, argument).toLatin1();
+    message = reasonToString(reason, argument).toLatin1();
 }
 
 } // Telegram
