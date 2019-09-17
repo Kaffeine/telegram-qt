@@ -485,7 +485,7 @@ void AccountRpcOperation::runUpdateProfile()
     if (arguments.flags & 1 << 0) {
         QString name = arguments.firstName.trimmed();
         if (name.isEmpty()) {
-            sendRpcError(RpcError(RpcError::FirstnameInvalid));
+            sendRpcError(RpcError::FirstnameInvalid);
             return;
         }
         if (name != selfUser->firstName()) {

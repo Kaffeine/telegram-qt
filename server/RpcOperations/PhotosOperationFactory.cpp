@@ -133,7 +133,7 @@ void PhotosRpcOperation::runUploadProfilePhoto()
     const FileDescriptor desc = api()->mediaService()->getFileDescriptor(arguments.file.id, arguments.file.parts);
 
     if (!desc.isValid()) {
-        sendRpcError(RpcError());
+        sendRpcError(RpcError::UnknownReason);
     }
 
     const ImageDescriptor image = api()->mediaService()->processImageFile(desc, arguments.file.name);

@@ -119,11 +119,11 @@ void UploadRpcOperation::runGetFile()
     const TLInputFileLocation &location = arguments.location;
 
     if (arguments.offset % 1024) {
-        sendRpcError(RpcError(RpcError::OffsetInvalid));
+        sendRpcError(RpcError::OffsetInvalid);
         return;
     }
     if (arguments.limit % 1024) {
-        sendRpcError(RpcError(RpcError::LimitInvalid));
+        sendRpcError(RpcError::LimitInvalid);
         return;
     }
 
@@ -132,7 +132,7 @@ void UploadRpcOperation::runGetFile()
     switch (arguments.location.tlType) {
     case TLValue::InputFileLocation:
         if (!location.isValid() || !location.volumeId || !location.localId || !location.secret) {
-            sendRpcError(RpcError(RpcError::LocationInvalid));
+            sendRpcError(RpcError::LocationInvalid);
             return;
         }
         descriptor = api()->mediaService()->getSecretFileDescriptor(
@@ -143,7 +143,7 @@ void UploadRpcOperation::runGetFile()
         break;
     case TLValue::InputDocumentFileLocation:
         if (!location.isValid() || !location.id || !location.accessHash) {
-            sendRpcError(RpcError(RpcError::LocationInvalid));
+            sendRpcError(RpcError::LocationInvalid);
             return;
         }
         descriptor = api()->mediaService()->getDocumentFileDescriptor(
@@ -153,20 +153,20 @@ void UploadRpcOperation::runGetFile()
         break;
     default:
         qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Not implemented" << location.tlType.toString();
-        sendRpcError(RpcError());
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
 
     if (!descriptor.isValid()) {
         qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Invalid descriptor";
-        sendRpcError(RpcError());
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
 
     QIODevice *file = api()->mediaService()->beginReadFile(descriptor);
     if (!file) {
         qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Unable to read file";
-        sendRpcError(RpcError());
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
     file->seek(arguments.offset);

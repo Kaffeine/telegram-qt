@@ -1114,7 +1114,7 @@ void MessagesRpcOperation::runGetHistory()
     default:
         qCritical() << Q_FUNC_INFO << "Not implemented for requested peer" << arguments.peer.tlType;
         processNotImplementedMethod(TLValue::MessagesGetHistory);
-        sendRpcError(RpcError());
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
 
@@ -1125,7 +1125,7 @@ void MessagesRpcOperation::runGetHistory()
     if (arguments.hash) {
         qCritical() << Q_FUNC_INFO << "Not implemented for requested arguments" << arguments.peer.tlType;
         processNotImplementedMethod(TLValue::MessagesGetHistory);
-        sendRpcError(RpcError());
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
 
@@ -1433,19 +1433,19 @@ void MessagesRpcOperation::runReadHistory()
     Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
     if (targetPeer.type == Peer::Channel) {
         // There is channels.readHistory for that
-        sendRpcError(RpcError(RpcError::PeerIdInvalid));
+        sendRpcError(RpcError::PeerIdInvalid);
         return;
     }
 
     UserDialog *selfUserDialog = selfUser->getDialog(targetPeer);
     if (!selfUserDialog) {
-        sendRpcError(RpcError(RpcError::PeerIdInvalid));
+        sendRpcError(RpcError::PeerIdInvalid);
         return;
     }
 
     MessageRecipient *receiverInbox = api()->getRecipient(arguments.peer, selfUser);
     if (!receiverInbox) {
-        sendRpcError(RpcError(RpcError::PeerIdInvalid));
+        sendRpcError(RpcError::PeerIdInvalid);
         return;
     }
 
@@ -1720,7 +1720,7 @@ void MessagesRpcOperation::runSendMedia()
     MessageRecipient *recipient = api()->getRecipient(arguments.peer, selfUser);
 
     if (!recipient) {
-        sendRpcError(RpcError(RpcError::PeerIdInvalid));
+        sendRpcError(RpcError::PeerIdInvalid);
         return;
     }
 
@@ -1731,7 +1731,7 @@ void MessagesRpcOperation::runSendMedia()
     {
         Telegram::Peer contactPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
         if (!contactPeer.isValid() || (contactPeer.type != Peer::User)) {
-            sendRpcError(RpcError(RpcError::PeerIdInvalid)); // TODO: Check if the error is correct
+            sendRpcError(RpcError::PeerIdInvalid); // TODO: Check if the error is correct
             return;
         }
 
@@ -1749,7 +1749,7 @@ void MessagesRpcOperation::runSendMedia()
         desc = api()->mediaService()->saveDocumentFile(desc, inFile.name, arguments.media.mimeType);
 
         if (!desc.isValid()) {
-            sendRpcError(RpcError());
+            sendRpcError(RpcError::UnknownReason);
         }
 
         media.type = MediaData::Document;
@@ -1787,7 +1787,7 @@ void MessagesRpcOperation::runSendMessage()
     MessageRecipient *recipient = api()->getRecipient(arguments.peer, selfUser);
 
     if (!recipient) {
-        sendRpcError(RpcError(RpcError::PeerIdInvalid));
+        sendRpcError(RpcError::PeerIdInvalid);
         return;
     }
     MessageData *messageData = api()->messageService()->addMessage(selfUser->id(), targetPeer, arguments.message);
@@ -1884,13 +1884,13 @@ void MessagesRpcOperation::runSetTyping()
     MessageRecipient *recipient = api()->getRecipient(arguments.peer, selfUser);
 
     if (!recipient) {
-        sendRpcError(RpcError(RpcError::PeerIdInvalid));
+        sendRpcError(RpcError::PeerIdInvalid);
         return;
     }
 
     if (!arguments.action.isValid()) {
         // Invalid argument
-        sendRpcError(RpcError());
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
 
@@ -2010,7 +2010,7 @@ void MessagesRpcOperation::setRunMethod(MessagesRpcOperation::RunMethod method)
 void MessagesRpcOperation::submitMessageData(MessageData *messageData, quint64 randomId)
 {
     if (!messageData) {
-        sendRpcError(RpcError());
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
 
