@@ -1283,7 +1283,7 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
         static const QString argumentsMusthavePart = QLatin1String(" &arguments = m_");
         QString argumentsLine;
         argumentsLine = functionsType + QLatin1String("::")
-                + method.nameFirstCapital()
+                + method.functionTypeName()
                 + argumentsMusthavePart + method.predicateName() + QLatin1Char(';');
 
         static const auto addDefinition = [&className](const TLMethod &method,
@@ -1333,7 +1333,7 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
             stream << "void " << className << "::run" << method.nameFromSecondWord() << "()" << endl;
             stream << "{" << endl;
             if (!method.params.isEmpty()) {
-                stream << "    // TLFunctions::TL" << method.nameFirstCapital() << " &arguments = m_" << method.predicateName() << ";" << endl;
+                stream << "    // " << argumentsLine << endl;
             }
             stream << "    if (processNotImplementedMethod(TLValue::" << method.nameFirstCapital() << ")) {" << endl;
             stream << "        return;" << endl;
@@ -1345,7 +1345,7 @@ Generator::MethodsCode Generator::generateServerRpcRunMethods(const QString &gro
 
             return definition;
         };
-        result.definitions.append(addDefinition(method, previousSourceCode));
+        result.definitions.append(addDefinition(method, previousSourceCode, argumentsLine));
     }
     return result;
 }
