@@ -11,6 +11,7 @@ AuthScreen {
     title: qsTr("Password")
     description: qsTr("You have enabled Two-Step Verification, so your account is protected with an additional password.")
     signal submitPassword(string password)
+    signal requestPasswordRecovery()
 
     onActivate: passwordField.forceActiveFocus()
     onSubmit: submitPassword(passwordField.text)
@@ -29,7 +30,7 @@ AuthScreen {
         text: "<a href=\"" + forgotUrl + "\">Forgot password?</a>"
         onLinkActivated: {
             if (link == forgotUrl) {
-                signInOperation.recovery()
+                baseColumn.requestPasswordRecovery()
             }
         }
         font.pixelSize: Theme.fontSizeSmall

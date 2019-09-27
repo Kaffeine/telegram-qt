@@ -85,6 +85,7 @@ Frame {
                     loginStack.replace("login/EnterCode.qml")
                 }
             }
+            onRequestPasswordRecovery: signInOperation_.recovery()
         }
         opacity: signInOperation_.busy ? 0 : 1
         Behavior on opacity { NumberAnimation { } }
