@@ -478,19 +478,30 @@ bool Server::usernameIsValid(const QString &username) const
     return true;
 }
 
-bool Server::setUserName(LocalUser *user, const QString &newUsername)
+bool Server::setUserName(LocalUser *user, const QString &newUsername, RpcError *error)
 {
     if (user->userName() == newUsername) {
+        if (error) {
+            error->setReason(RpcError::UsernameNotModified);
+        }
         return true;
     }
     const Peer p = getPeerByUserName(newUsername);
     if (p.isValid()) {
+        if (error) {
+            error->setReason(RpcError::UsernameOccupied);
+        }
         return false;
     }
-    QString previousName = user->userName();
-    m_usernameToUserId.insert(newUsername, user->id());
+    const QString previousName = user->userName();
+    if (!newUsername.isEmpty()) {
+        m_usernameToUserId.insert(newUsername, user->id());
+    }
     user->setUserName(newUsername);
     m_usernameToUserId.remove(previousName);
+    if (error) {
+        error->unset();
+    }
     return true;
 }
 

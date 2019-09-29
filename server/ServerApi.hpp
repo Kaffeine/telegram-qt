@@ -13,6 +13,7 @@ struct TLInputUser;
 namespace Telegram {
 
 class PendingOperation;
+class RpcError;
 
 namespace Server {
 
@@ -101,7 +102,7 @@ public:
     virtual Session *getSessionById(quint64 authId) const = 0;
     virtual void bindUserSession(AuthorizedUser *user, Session *session) = 0;
     virtual bool usernameIsValid(const QString &username) const = 0;
-    virtual bool setUserName(LocalUser *user, const QString &newUsername) = 0;
+    virtual bool setUserName(LocalUser *user, const QString &newUsername, RpcError *error = nullptr) = 0;
     virtual bool setUserOnline(LocalUser *user, bool online, Session *fromSession = nullptr) = 0;
 
     virtual PendingOperation *exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes) = 0;
