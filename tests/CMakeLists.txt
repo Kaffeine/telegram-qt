@@ -41,8 +41,7 @@ foreach(test_name
     tst_ConnectionApi
     tst_MessagesApi
 )
-    FILE(GLOB TEST_SOURCES ${test_name}/*.cpp)
-    add_executable(${test_name} ${TEST_SOURCES} ${test_extra_MOC_SOURCES})
+    add_executable(${test_name} ${test_name}/${test_name}.cpp ${test_extra_MOC_SOURCES})
     target_link_libraries(${test_name} PRIVATE
         Qt5::Core
         Qt5::Test
