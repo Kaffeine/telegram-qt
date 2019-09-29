@@ -23,6 +23,13 @@ SET(CMAKE_INSTALL_RPATH "")
 # which point to directories outside the build tree to the install RPATH
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
+add_library(TelegramQt${QT_VERSION_MAJOR}Test INTERFACE)
+add_library(TelegramQt${QT_VERSION_MAJOR}::Test ALIAS TelegramQt${QT_VERSION_MAJOR}Test)
+
+target_include_directories(TelegramQt${QT_VERSION_MAJOR}Test INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/utils
+)
+
 set(test_extra_META_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/utils/TestAuthProvider.hpp
 )
@@ -41,10 +48,8 @@ foreach(test_name
         Qt5::Test
         TelegramQt${QT_VERSION_MAJOR}::Core
         TelegramQt${QT_VERSION_MAJOR}::Server
+        TelegramQt${QT_VERSION_MAJOR}::Test
         test_keys_data
-    )
-    target_include_directories(${test_name} PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR}/utils
     )
 
     add_test(NAME ${test_name} COMMAND ${test_name} -maxwarnings 0)

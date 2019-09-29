@@ -46,6 +46,7 @@ target_link_libraries(TelegramTestServer
     Qt5::Network
 
     TelegramQt${QT_VERSION_MAJOR}::Server
+    TelegramQt${QT_VERSION_MAJOR}::Test
     test_keys_data
 )
 
