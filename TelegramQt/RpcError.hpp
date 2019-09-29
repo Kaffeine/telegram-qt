@@ -26,7 +26,7 @@ namespace Telegram {
 
 class RawStreamEx;
 
-class TELEGRAMQT_EXPORT RpcError
+class TELEGRAMQT_INTERNAL_EXPORT RpcError
 {
     Q_GADGET
 public:
