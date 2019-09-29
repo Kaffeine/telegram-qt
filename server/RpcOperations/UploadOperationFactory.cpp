@@ -159,7 +159,7 @@ void UploadRpcOperation::runGetFile()
 
     if (!descriptor.isValid()) {
         qCWarning(c_serverUploadRpcCategory) << CALL_INFO << "Invalid descriptor";
-        sendRpcError(RpcError::UnknownReason);
+        sendRpcError(RpcError::LocationInvalid);
         return;
     }
 
