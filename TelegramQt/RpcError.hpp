@@ -31,7 +31,7 @@ class TELEGRAMQT_EXPORT RpcError
     Q_GADGET
 public:
     enum Type {
-        UnknownType,
+        NoError,
         SeeOther = 303,
         BadRequest = 400,
         Unauthorized = 401,
@@ -85,15 +85,26 @@ public:
     RpcError(Reason reason, quint32 arg = 0);
     RpcError() = default;
 
-    Reason reason = UnknownReason;
-    quint32 argument = 0;
-    QByteArray message;
-    Type type = UnknownType;
+    void unset();
+    bool isValid() const;
+
+    Type type() const { return m_type; }
+    Reason reason() const { return m_reason; }
+    quint32 argument() const { return m_argument; }
+    QByteArray message() const { return m_message; }
+
+    void setReason(Reason reason, quint32 arg = 0);
 
     bool readFromStream(RawStreamEx &stream);
 
     static QString reasonToString(Reason reason, quint32 argument = 0);
     static bool reasonFromString(const QByteArray &str, Reason *reason, quint32 *argument);
+
+private:
+    Reason m_reason = UnknownReason;
+    quint32 m_argument = 0;
+    QByteArray m_message;
+    Type m_type = NoError;
 };
 
 TELEGRAMQT_INTERNAL_EXPORT RawStreamEx &operator>>(RawStreamEx &stream, RpcError &error);

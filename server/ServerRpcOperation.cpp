@@ -24,7 +24,7 @@ void RpcOperation::setRequestId(quint64 messageId)
 
 bool RpcOperation::sendRpcError(const RpcError &error)
 {
-    qDebug() << Q_FUNC_INFO << error.type << error.reason << error.argument << error.message << m_requestId;
+    qDebug() << Q_FUNC_INFO << error.type() << error.reason() << error.argument() << error.message() << m_requestId;
     return layer()->sendRpcError(error, m_requestId);
 }
 

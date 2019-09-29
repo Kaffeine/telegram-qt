@@ -28,7 +28,7 @@ RpcOperation *processRpcCallImpl(RpcLayer *layer, RpcProcessingContext &context)
         RpcError error(RpcError::InputFetchError);
         result->sendRpcError(error);
         result->deleteLater();
-        result->setFinishedWithError({{T::c_text(), error.message}});
+        result->setFinishedWithError({{T::c_text(), error.message()}});
         return nullptr;
     }
     return result;

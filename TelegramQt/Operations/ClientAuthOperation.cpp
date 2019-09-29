@@ -308,11 +308,11 @@ const AuthOperationPrivate *AuthOperation::d_func() const
 void AuthOperationPrivate::onRequestAuthCodeFinished(PendingRpcOperation *rpcOperation)
 {
     Q_Q(AuthOperation);
-    if (rpcOperation->rpcError() && rpcOperation->rpcError()->type == RpcError::SeeOther) {
+    if (rpcOperation->rpcError() && rpcOperation->rpcError()->type() == RpcError::SeeOther) {
         if (m_backend->connectionApi()->status() != ConnectionApi::StatusWaitForAuthentication) {
             qCWarning(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected SeeOther";
         }
-        const quint32 dcId = rpcOperation->rpcError()->argument;
+        const quint32 dcId = rpcOperation->rpcError()->argument();
         ConnectionApiPrivate *privateApi = ConnectionApiPrivate::get(m_backend->connectionApi());
         connect(privateApi->connectToDc(dcId), &PendingOperation::finished,
                 this, &AuthOperationPrivate::onRedirectedConnectFinished);
@@ -337,33 +337,33 @@ void AuthOperationPrivate::onRequestAuthCodeFinished(PendingRpcOperation *rpcOpe
 void AuthOperationPrivate::onAuthenticationRpcError(const RpcError *error)
 {
     Q_Q(AuthOperation);
-    switch (error->reason) {
+    switch (error->reason()) {
     case RpcError::SessionPasswordNeeded:
         getPassword();
         return;
     case RpcError::FirstnameInvalid:
-        emit q->errorOccurred(Namespace::AuthenticationErrorFirstNameInvalid, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorFirstNameInvalid, error->message());
         break;
     case RpcError::LastnameInvalid:
-        emit q->errorOccurred(Namespace::AuthenticationErrorLastNameInvalid, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorLastNameInvalid, error->message());
         break;
     case RpcError::PhoneCodeHashEmpty:
     case RpcError::PhoneCodeEmpty:
-        emit q->errorOccurred(Namespace::AuthenticationErrorUnknown, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorUnknown, error->message());
         break;
     case RpcError::PhoneCodeInvalid:
-        emit q->errorOccurred(Namespace::AuthenticationErrorPhoneCodeInvalid, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorPhoneCodeInvalid, error->message());
         return;
     case RpcError::PhoneCodeExpired:
-        emit q->errorOccurred(Namespace::AuthenticationErrorPhoneCodeExpired, error->message);
+        emit q->errorOccurred(Namespace::AuthenticationErrorPhoneCodeExpired, error->message());
         return;
     default:
-        qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message;
+        qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message();
         return;
     }
     // The errors with 'break' usually means bad request from the client
     // side and can be prevented by local requests validation.
-    qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
+    qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message();
 }
 
 void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation, PendingOperation *submitAuthCodeOperation)
@@ -372,22 +372,22 @@ void AuthOperationPrivate::onSignInRpcFinished(PendingRpcOperation *rpcOperation
     if (rpcOperation->rpcError()) {
         onAuthenticationRpcError(rpcOperation->rpcError());
         const RpcError *error = rpcOperation->rpcError();
-        switch (error->reason) {
+        switch (error->reason()) {
         case RpcError::SessionPasswordNeeded:
             submitAuthCodeOperation->setFinished();
             return;
         case RpcError::PhoneCodeHashEmpty:
-            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message();
             break;
         case RpcError::PhoneCodeEmpty:
-            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message;
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "internal error?" << error->message();
             break;
         case RpcError::PhoneCodeInvalid:
         case RpcError::PhoneCodeExpired:
             submitAuthCodeOperation->setDelayedFinishedWithError(rpcOperation->errorDetails());
             return;
         default:
-            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message;
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message();
             break;
         }
     }
@@ -409,7 +409,7 @@ void AuthOperationPrivate::onSignUpRpcFinished(PendingRpcOperation *rpcOperation
     if (rpcOperation->rpcError()) {
         onAuthenticationRpcError(rpcOperation->rpcError());
         const RpcError *error = rpcOperation->rpcError();
-        switch (error->reason) {
+        switch (error->reason()) {
         case RpcError::FirstnameInvalid:
         case RpcError::LastnameInvalid:
         case RpcError::PhoneCodeInvalid:
@@ -418,7 +418,7 @@ void AuthOperationPrivate::onSignUpRpcFinished(PendingRpcOperation *rpcOperation
             return;
         case RpcError::SessionPasswordNeeded:
         default:
-            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message;
+            qCCritical(c_loggingClientAuthOperation) << CALL_INFO << "Unexpected error" << error->message();
             break;
         }
     }
@@ -457,11 +457,11 @@ void AuthOperationPrivate::onCheckPasswordFinished(PendingRpcOperation *operatio
     Q_Q(AuthOperation);
     if (operation->rpcError()) {
         const RpcError *error = operation->rpcError();
-        if (error->reason == RpcError::PasswordHashInvalid) {
+        if (error->reason() == RpcError::PasswordHashInvalid) {
             emit q->passwordCheckFailed();
             return;
         }
-        qCDebug(c_loggingClientAuthOperation) << CALL_INFO << error->message;
+        qCDebug(c_loggingClientAuthOperation) << CALL_INFO << error->message();
     }
 
     if (!operation->isSucceeded()) {

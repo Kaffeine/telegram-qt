@@ -551,9 +551,7 @@ AuthRpcOperation::ProcessingMethod AuthRpcOperation::getMethodForRpcFunction(TLV
 void AuthRpcOperation::onExportedAuthorizationFinished()
 {
     if (m_authBytes.isEmpty()) {
-        RpcError error;
-        error.type = RpcError::Type::Internal;
-        sendRpcError(error);
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
     const LocalUser *selfUser = layer()->getUser();

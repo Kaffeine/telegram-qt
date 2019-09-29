@@ -42,9 +42,9 @@ bool RpcError::readFromStream(RawStreamEx &stream)
         return false;
     }
     stream >> code;
-    stream >> message;
-    type = static_cast<RpcError::Type>(code);
-    reasonFromString(message, &reason, &argument);
+    stream >> m_message;
+    m_type = static_cast<RpcError::Type>(code);
+    reasonFromString(m_message, &m_reason, &m_argument);
     return !stream.error();
 }
 
@@ -123,19 +123,39 @@ RawStreamEx &operator>>(RawStreamEx &stream, RpcError &error)
 RawStreamEx &operator<<(RawStreamEx &stream, const RpcError &error)
 {
     stream << TLValue::RpcError;
-    quint32 code = error.type;
+    quint32 code = error.type();
     stream << code;
-    stream << error.message;
+    stream << error.message();
     return stream;
 }
 
 RpcError::RpcError(RpcError::Reason reason, quint32 arg) :
-    reason(reason),
-    argument(arg)
+    RpcError()
 {
+    setReason(reason, arg);
+}
+
+void RpcError::unset()
+{
+    m_type = NoError;
+    m_reason = UnknownReason;
+    m_argument = 0;
+    m_message.clear();
+}
+
+bool RpcError::isValid() const
+{
+    return m_type != NoError;
+}
+
+void RpcError::setReason(RpcError::Reason reason, quint32 arg)
+{
+    m_reason = reason;
+    m_argument = arg;
+
     switch (reason) {
     case UnknownReason:
-        type = Internal;
+        m_type = Internal;
         break;
     case ApiIdInvalid:
     case DcIdInvalid:
@@ -159,13 +179,13 @@ RpcError::RpcError(RpcError::Reason reason, quint32 arg) :
     case UsernameInvalid:
     case UsernameNotModified:
     case UsernameOccupied:
-        type = BadRequest;
+        m_type = BadRequest;
         break;
     case FileMigrateX:
     case NetworkMigrateX:
     case PhoneMigrateX:
     case UserMigrateX:
-        type = SeeOther;
+        m_type = SeeOther;
         break;
     case ActiveUserRequired:
     case AuthKeyInvalid:
@@ -175,13 +195,13 @@ RpcError::RpcError(RpcError::Reason reason, quint32 arg) :
     case SessionPasswordNeeded:
     case SessionRevoked:
     case UserDeactivated:
-        type = Unauthorized;
+        m_type = Unauthorized;
         break;
     case FloodWaitX:
-        type = Flood;
+        m_type = Flood;
         break;
     }
-    message = reasonToString(reason, argument).toLatin1();
+    m_message = reasonToString(reason, m_argument).toLatin1();
 }
 
 } // Telegram
