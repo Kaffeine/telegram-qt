@@ -33,6 +33,7 @@ namespace Client {
 
 class Connection;
 class ConnectOperation;
+class UploadRpcLayer;
 
 class FilesApiPrivate : public ClientApiPrivate
 {
@@ -47,6 +48,11 @@ public:
 
     FileOperation *uploadFile(const QByteArray &fileContent, const QString &fileName);
     FileOperation *uploadFile(QIODevice *source, const QString &fileName);
+
+    UploadRpcLayer *uploadLayer() { return m_uploadLayer; }
+
+protected:
+    UploadRpcLayer *m_uploadLayer = nullptr;
 };
 
 } // Client namespace

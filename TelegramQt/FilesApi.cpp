@@ -22,6 +22,7 @@ namespace Client {
 FilesApiPrivate::FilesApiPrivate(FilesApi *parent) :
     ClientApiPrivate(parent)
 {
+    m_uploadLayer = new UploadRpcLayer(this);
 }
 
 FilesApiPrivate *FilesApiPrivate::get(FilesApi *parent)

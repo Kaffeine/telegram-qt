@@ -28,7 +28,6 @@
 #include "ClientRpcMessagesLayer.hpp"
 #include "ClientRpcPhotosLayer.hpp"
 #include "ClientRpcUpdatesLayer.hpp"
-#include "ClientRpcUploadLayer.hpp"
 #include "ClientRpcUsersLayer.hpp"
 
 #include <QLoggingCategory>
@@ -74,8 +73,6 @@ Backend::Backend(Client *parent) :
     m_photosLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_updatesLayer = new UpdatesRpcLayer(this);
     m_updatesLayer->setRpcProcessingMethod(rpcProcessMethod);
-    m_uploadLayer = new UploadRpcLayer(this);
-    m_uploadLayer->setRpcProcessingMethod(rpcProcessMethod);
     m_usersLayer = new UsersRpcLayer(this);
     m_usersLayer->setRpcProcessingMethod(rpcProcessMethod);
 

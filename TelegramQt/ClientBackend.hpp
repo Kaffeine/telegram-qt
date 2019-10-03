@@ -36,7 +36,6 @@ class HelpRpcLayer;
 class MessagesRpcLayer;
 class PhotosRpcLayer;
 class UpdatesRpcLayer;
-class UploadRpcLayer;
 class UsersRpcLayer;
 
 class BaseRpcLayerExtension;
@@ -75,7 +74,6 @@ public:
     MessagesRpcLayer *messagesLayer() { return m_messagesLayer; }
     PhotosRpcLayer *photosLayer() { return m_photosLayer; }
     UpdatesRpcLayer *updatesLayer() { return m_updatesLayer; }
-    UploadRpcLayer *uploadLayer() { return m_uploadLayer; }
     UsersRpcLayer *usersLayer() { return m_usersLayer; }
 
     AppInformation *m_appInformation = nullptr;
@@ -97,7 +95,6 @@ public:
     MessagesRpcLayer *m_messagesLayer = nullptr;
     PhotosRpcLayer *m_photosLayer = nullptr;
     UpdatesRpcLayer *m_updatesLayer = nullptr;
-    UploadRpcLayer *m_uploadLayer = nullptr;
     UsersRpcLayer *m_usersLayer = nullptr;
 
     UpdatesInternalApi *updatesApi() const { return m_updatesApi; }
