@@ -106,7 +106,7 @@ protected:
     void startEvent() override;
 
     bool m_busy = false;
-    AuthStatus m_status;
+    AuthStatus m_status = AuthStatus::Idle;
     QString m_phoneNumber;
 
 };
