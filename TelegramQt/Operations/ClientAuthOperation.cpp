@@ -37,7 +37,9 @@ template <>
 bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLAuthSentCode *output);
 
 AuthOperationPrivate::AuthOperationPrivate(AuthOperation *parent) :
-    QObject(parent),
+    // It is important to NOT set QObject parent,
+    // because the parent is not fully constructed yet.
+    QObject(nullptr),
     PendingOperationPrivate(parent)
 {
 }
@@ -63,9 +65,10 @@ void AuthOperationPrivate::setRunMethod(RunMethod method)
 }
 
 AuthOperation::AuthOperation(QObject *parent) :
-    PendingOperation(parent)
+    PendingOperation(new AuthOperationPrivate(this), parent)
 {
-    d = new AuthOperationPrivate(this);
+    Q_D(AuthOperation);
+    d->setParent(this);
 }
 
 QString AuthOperation::phoneNumber() const
