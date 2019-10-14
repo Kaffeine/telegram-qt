@@ -122,7 +122,7 @@ public:
 
 protected:
     QVector<quint64> m_authKeyIds;
-    QVector<Session*> m_sessions;
+    QVector<Session*> m_sessions; // Sessions are owned by the Server class
 
     quint32 m_id = 0;
     quint32 m_dcId = 0;
@@ -133,6 +133,7 @@ class LocalUser : public AuthorizedUser
 public:
     explicit LocalUser(quint32 userId, const QString &phoneNumber);
     LocalUser() = default;
+    ~LocalUser() override;
 
     QString phoneNumber() const override { return m_phoneNumber; }
     void setPhoneNumber(const QString &phoneNumber);

@@ -19,6 +19,12 @@ BaseConnection::BaseConnection(QObject *parent) :
 {
 }
 
+BaseConnection::~BaseConnection()
+{
+    delete m_sendHelper;
+    m_sendHelper = nullptr;
+}
+
 quint64 BaseConnection::authId() const
 {
     return m_sendHelper->authId();

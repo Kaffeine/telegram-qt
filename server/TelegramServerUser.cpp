@@ -75,6 +75,11 @@ LocalUser::LocalUser(quint32 userId, const QString &phoneNumber)
     setUserId(userId);
 }
 
+LocalUser::~LocalUser()
+{
+    qDeleteAll(m_dialogs);
+}
+
 void LocalUser::setPhoneNumber(const QString &phoneNumber)
 {
     m_phoneNumber = phoneNumber;

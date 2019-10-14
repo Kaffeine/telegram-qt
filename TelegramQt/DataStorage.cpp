@@ -49,6 +49,11 @@ DataStorage::DataStorage(QObject *parent) :
 {
 }
 
+DataStorage::~DataStorage()
+{
+    delete d;
+}
+
 DcConfiguration DataStorage::serverConfiguration() const
 {
     Q_D(const DataStorage);
@@ -278,6 +283,11 @@ DataInternalApi::DataInternalApi(QObject *parent) :
 
 DataInternalApi::~DataInternalApi()
 {
+    qDeleteAll(m_users);
+    qDeleteAll(m_chats);
+    qDeleteAll(m_clientMessages);
+    qDeleteAll(m_channelMessages);
+    qDeleteAll(m_dialogs);
 }
 
 const TLUser *DataInternalApi::getSelfUser() const

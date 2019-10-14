@@ -33,6 +33,7 @@ class TELEGRAMQT_EXPORT DataStorage : public QObject
 {
     Q_OBJECT
 public:
+    ~DataStorage() override;
     DcConfiguration serverConfiguration() const;
     void setServerConfiguration(const DcConfiguration &configuration);
 

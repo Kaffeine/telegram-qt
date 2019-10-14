@@ -48,6 +48,8 @@ BaseTcpTransport::~BaseTcpTransport()
         qCDebug(c_loggingTcpTransport) << CALL_INFO << "close socket" << m_socket;
         m_socket->disconnectFromHost();
     }
+    delete m_readAesContext;
+    delete m_writeAesContext;
 }
 
 int BaseTcpTransport::connectionTimeout()
@@ -145,19 +147,21 @@ void BaseTcpTransport::setCryptoKeysSourceData(const QByteArray &source, SourceR
     }
     QByteArray reversed = source;
     std::reverse(reversed.begin(), reversed.end());
-    const auto setSourceData = [](const QByteArray &source, Crypto::AesCtrContext *&context) {
-        if (!context) {
-            context = new Crypto::AesCtrContext();
+    const auto setSourceData = [](const QByteArray &source, Crypto::AesCtrContext **context) {
+        Crypto::AesCtrContext *&localContext = *context;
+
+        if (!localContext) {
+            localContext = new Crypto::AesCtrContext();
         }
-        context->setKey(source.left(Crypto::AesCtrContext::KeySize));
-        context->setIVec(source.mid(Crypto::AesCtrContext::KeySize));
+        localContext->setKey(source.left(Crypto::AesCtrContext::KeySize));
+        localContext->setIVec(source.mid(Crypto::AesCtrContext::KeySize));
     };
     if (revertion == DirectIsReadReversedIsWrite) {
-        setSourceData(source, m_readAesContext);
-        setSourceData(reversed, m_writeAesContext);
+        setSourceData(source, &m_readAesContext);
+        setSourceData(reversed, &m_writeAesContext);
     } else { // Server, DirectIsWriteReversedIsRead
-        setSourceData(source, m_writeAesContext);
-        setSourceData(reversed, m_readAesContext);
+        setSourceData(source, &m_writeAesContext);
+        setSourceData(reversed, &m_readAesContext);
     }
     const char *className = metaObject()->className();
     if (strstr(className, "Server")) {

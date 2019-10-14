@@ -42,6 +42,11 @@ RpcLayer::RpcLayer(QObject *parent) :
 {
 }
 
+RpcLayer::~RpcLayer()
+{
+    qDeleteAll(m_messages);
+}
+
 void RpcLayer::setAppInformation(AppInformation *appInfo)
 {
     m_appInfo = appInfo;

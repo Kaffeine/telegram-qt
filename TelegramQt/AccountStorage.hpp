@@ -15,6 +15,7 @@ class TELEGRAMQT_EXPORT AccountStorage : public QObject
     Q_PROPERTY(QString accountIdentifier READ accountIdentifier WRITE setAccountIdentifier NOTIFY accountIdentifierChanged)
 public:
     explicit AccountStorage(QObject *parent = nullptr);
+    ~AccountStorage() override;
 
     bool hasMinimalDataSet() const;
 

@@ -45,6 +45,7 @@ class RpcLayer : public Telegram::BaseRpcLayer
     Q_OBJECT
 public:
     explicit RpcLayer(QObject *parent = nullptr);
+    ~RpcLayer() override;
 
     AppInformation *appInformation() const { return m_appInfo; }
     void setAppInformation(AppInformation *appInfo);

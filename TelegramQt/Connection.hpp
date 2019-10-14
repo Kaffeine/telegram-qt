@@ -40,6 +40,7 @@ public:
     Q_ENUM(StatusReason)
 
     explicit BaseConnection(QObject *parent = nullptr);
+    ~BaseConnection() override;
 
     quint64 authId() const;
 

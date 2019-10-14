@@ -61,6 +61,11 @@ AccountStorage::AccountStorage(QObject *parent) :
 {
 }
 
+AccountStorage::~AccountStorage()
+{
+    delete d;
+}
+
 bool AccountStorage::hasMinimalDataSet() const
 {
     return !d->m_dcInfo.address.isEmpty() && !d->m_authKey.isEmpty() && sessionId();
