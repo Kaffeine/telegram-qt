@@ -22,19 +22,14 @@ namespace Telegram {
 
 namespace Test {
 
-Telegram::Client::AppInformation *getAppInfo()
+void setupAppInfo(Client::AppInformation *appInfo)
 {
-    static Telegram::Client::AppInformation *appInfo = nullptr;
-    if (!appInfo) {
-        appInfo = new Telegram::Client::AppInformation();
-        appInfo->setAppId(14617);
-        appInfo->setAppHash(QLatin1String("e17ac360fd072f83d5d08db45ce9a121"));
-        appInfo->setAppVersion(QLatin1String("0.1"));
-        appInfo->setDeviceInfo(QLatin1String("pc"));
-        appInfo->setOsInfo(QLatin1String("GNU/Linux"));
-        appInfo->setLanguageCode(QLatin1String("en"));
-    }
-    return appInfo;
+    appInfo->setAppId(14617);
+    appInfo->setAppHash(QLatin1String("e17ac360fd072f83d5d08db45ce9a121"));
+    appInfo->setAppVersion(QLatin1String("0.1"));
+    appInfo->setDeviceInfo(QLatin1String("pc"));
+    appInfo->setOsInfo(QLatin1String("GNU/Linux"));
+    appInfo->setLanguageCode(QLatin1String("en"));
 }
 
 void setupClientHelper(Telegram::Client::Client *client, const UserData &userData, const Telegram::RsaKey &serverPublicKey,
@@ -45,7 +40,8 @@ void setupClientHelper(Telegram::Client::Client *client, const UserData &userDat
     accountStorage->setDcInfo(clientDcOption);
     Telegram::Client::Settings *clientSettings = new Telegram::Client::Settings(client);
     Telegram::Client::InMemoryDataStorage *dataStorage = new Telegram::Client::InMemoryDataStorage(client);
-    client->setAppInformation(getAppInfo());
+    client->setAppInformation(new Client::AppInformation(client));
+    setupAppInfo(client->appInformation());
     client->setSettings(clientSettings);
     client->setAccountStorage(accountStorage);
     client->setDataStorage(dataStorage);
