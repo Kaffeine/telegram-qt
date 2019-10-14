@@ -164,29 +164,23 @@ void tst_all::testSignIn()
     QVERIFY(user);
 
     Client::Client client;
-    Client::AccountStorage accountStorage;
-    Client::Settings clientSettings;
-    Client::InMemoryDataStorage dataStorage;
-    client.setAppInformation(Test::getAppInfo());
-    client.setSettings(&clientSettings);
-    client.setAccountStorage(&accountStorage);
-    client.setDataStorage(&dataStorage);
-    QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
-    QVERIFY(clientSettings.setServerRsaKey(publicKey));
-    clientSettings.setPreferedSessionType(sessionType);
+    Test::setupClientHelper(&client, userData, publicKey, clientDcOption, sessionType);
+
+    Client::AccountStorage *accountStorage = client.accountStorage();
+    Client::DataStorage *dataStorage = client.dataStorage();
 
     QTest::ignoreMessage(QtDebugMsg,
                          QRegularExpression(QString::fromLatin1(Server::RpcLayer::gzipPackMessage())
                                             + QStringLiteral(" .* \"Config\"")));
 
     // --- Sign in ---
-    QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
+    QSignalSpy accountStorageSynced(accountStorage, &Client::AccountStorage::synced);
     Client::AuthOperation *signInOperation = client.connectionApi()->startAuthentication();
     signInOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
     TRY_COMPARE(client.connectionApi()->status(), Client::ConnectionApi::StatusWaitForAuthentication);
-    TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
+    TRY_COMPARE(dataStorage->serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
     QCOMPARE(signInOperation->isRegistered(), true);
     QCOMPARE(authCodeSpy.count(), 1);
@@ -216,7 +210,7 @@ void tst_all::testSignIn()
     TRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
     TRY_VERIFY(!accountStorageSynced.isEmpty());
 
-    quint64 clientAuthId = accountStorage.authId();
+    quint64 clientAuthId = accountStorage->authId();
     QVERIFY(clientAuthId);
     QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
     QCOMPARE(clientConnections.count(), 1);
@@ -227,8 +221,8 @@ void tst_all::testSignIn()
     QCOMPARE(remoteClientConnection->session(), serverSession);
     QVERIFY(serverSession);
     QVERIFY(serverSession->userId());
-    QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
-    QCOMPARE(accountStorage.dcInfo().id, server->dcId());
+    QCOMPARE(accountStorage->phoneNumber(), userData.phoneNumber);
+    QCOMPARE(accountStorage->dcInfo().id, server->dcId());
     TRY_VERIFY(client.isSignedIn());
 }
 
@@ -257,29 +251,23 @@ void tst_all::testCheckInSignIn()
     QVERIFY(user);
 
     Client::Client client;
-    Client::AccountStorage accountStorage;
+    Test::setupClientHelper(&client, userData, publicKey, clientDcOption, sessionType);
+
+    Client::AccountStorage *accountStorage = client.accountStorage();
+    Client::DataStorage *dataStorage = client.dataStorage();
+
     const QByteArray c_authKey = QByteArrayLiteral("some_auth_key_data_123456789_abcdefghijklmnopqrstuvwxyz");
     const quint64 c_authId = Utils::getFingerprints(c_authKey, Utils::Lower64Bits);
 
-    accountStorage.setAuthKey(c_authKey);
-    accountStorage.setAuthId(c_authId);
-    accountStorage.setSessionId(c_authId);
-    accountStorage.setPhoneNumber(userData.phoneNumber);
-    accountStorage.setDcInfo(clientDcOption);
-    QVERIFY(accountStorage.hasMinimalDataSet());
-
-    Client::Settings clientSettings;
-    Client::InMemoryDataStorage dataStorage;
-    client.setAppInformation(Test::getAppInfo());
-    client.setSettings(&clientSettings);
-    client.setAccountStorage(&accountStorage);
-    client.setDataStorage(&dataStorage);
-    QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
-    QVERIFY(clientSettings.setServerRsaKey(publicKey));
-    clientSettings.setPreferedSessionType(sessionType);
+    accountStorage->setAuthKey(c_authKey);
+    accountStorage->setAuthId(c_authId);
+    accountStorage->setSessionId(c_authId);
+    accountStorage->setPhoneNumber(userData.phoneNumber);
+    accountStorage->setDcInfo(clientDcOption);
+    QVERIFY(accountStorage->hasMinimalDataSet());
 
     // --- Check in ---
-    QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
+    QSignalSpy accountStorageSynced(accountStorage, &Client::AccountStorage::synced);
 
     static const QString errorText = ConnectionError(ConnectionError::InvalidAuthKey).description();
     QTest::ignoreMessage(QtWarningMsg, QRegularExpression(errorText));
@@ -297,8 +285,8 @@ void tst_all::testCheckInSignIn()
 
     signInOperation->setPhoneNumber(userData.phoneNumber);
     // Check whether the server configuration is synced to the client data storage
-    TRY_VERIFY(!dataStorage.serverConfiguration().dcOptions.isEmpty());
-    TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
+    TRY_VERIFY(!dataStorage->serverConfiguration().dcOptions.isEmpty());
+    TRY_COMPARE(dataStorage->serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
     QCOMPARE(authCodeSpy.count(), 1);
     QCOMPARE(serverAuthCodeSpy.count(), 1);
@@ -334,7 +322,7 @@ void tst_all::testCheckInSignIn()
     TRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
     TRY_VERIFY(!accountStorageSynced.isEmpty());
 
-    quint64 clientAuthId = accountStorage.authId();
+    quint64 clientAuthId = accountStorage->authId();
     QVERIFY(clientAuthId);
     const quint32 clientUserId = server->authService()->getUserIdByAuthId(clientAuthId);
     QVERIFY(clientUserId);
@@ -342,8 +330,8 @@ void tst_all::testCheckInSignIn()
     Telegram::Server::LocalUser *serverSideUser = server->getUser(clientUserId);
     QVERIFY(serverSideUser);
     QCOMPARE(serverSideUser->phoneNumber(), userData.phoneNumber);
-    QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
-    QCOMPARE(accountStorage.dcInfo().id, server->dcId());
+    QCOMPARE(accountStorage->phoneNumber(), userData.phoneNumber);
+    QCOMPARE(accountStorage->dcInfo().id, server->dcId());
     TRY_VERIFY(client.isSignedIn());
 }
 
@@ -375,19 +363,11 @@ void tst_all::testSignInCheckIn()
     accountStorage.setPhoneNumber(userData.phoneNumber);
     accountStorage.setDcInfo(clientDcOption);
 
-    Client::Settings clientSettings;
-    QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
-    QVERIFY(clientSettings.setServerRsaKey(publicKey));
-    clientSettings.setPreferedSessionType(sessionType);
-
     Server::RemoteClientConnection *firstClientConnection = nullptr;
     {
         Client::Client client;
-        Client::InMemoryDataStorage *dataStorage = new Client::InMemoryDataStorage(&client);
-        client.setAppInformation(Test::getAppInfo());
-        client.setSettings(&clientSettings);
+        Test::setupClientHelper(&client, userData, publicKey, clientDcOption, sessionType);
         client.setAccountStorage(&accountStorage);
-        client.setDataStorage(dataStorage);
 
         Client::AuthOperation *signInOperation = nullptr;
         signInHelper(&client, userData, &authProvider, &signInOperation);
@@ -410,11 +390,8 @@ void tst_all::testSignInCheckIn()
     // Reconnect
     {
         Client::Client client;
-        Client::InMemoryDataStorage *dataStorage = new Client::InMemoryDataStorage(&client);
-        client.setAppInformation(Test::getAppInfo());
-        client.setSettings(&clientSettings);
+        Test::setupClientHelper(&client, userData, publicKey, clientDcOption, sessionType);
         client.setAccountStorage(&accountStorage);
-        client.setDataStorage(dataStorage);
 
         Client::AuthOperation *checkInOperation = client.connectionApi()->checkIn();
         TRY_VERIFY2(checkInOperation->isFinished(), "checkIn() not finished");
@@ -440,6 +417,7 @@ void tst_all::testSignUp_data()
 void tst_all::testSignUp()
 {
     QFETCH(UserData, userData);
+    const DcOption clientDcOption = c_localDcOptions.first();
 
     const Telegram::Client::Settings::SessionType sessionType = Telegram::Client::Settings::SessionType::Obfuscated;
     const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
@@ -458,29 +436,23 @@ void tst_all::testSignUp()
     QVERIFY(server);
 
     Client::Client client;
-    Client::AccountStorage accountStorage;
-    Client::Settings clientSettings;
-    Client::InMemoryDataStorage dataStorage;
-    client.setAppInformation(Test::getAppInfo());
-    client.setSettings(&clientSettings);
-    client.setAccountStorage(&accountStorage);
-    client.setDataStorage(&dataStorage);
-    QVERIFY(clientSettings.setServerConfiguration({c_localDcOptions.first()}));
-    QVERIFY(clientSettings.setServerRsaKey(publicKey));
-    clientSettings.setPreferedSessionType(sessionType);
+    Test::setupClientHelper(&client, userData, publicKey, clientDcOption, sessionType);
+
+    Client::AccountStorage *accountStorage = client.accountStorage();
+    Client::DataStorage *dataStorage = client.dataStorage();
 
     QTest::ignoreMessage(QtDebugMsg,
                          QRegularExpression(QString::fromLatin1(Server::RpcLayer::gzipPackMessage())
                                             + QStringLiteral(" .* \"Config\"")));
 
     // --- Sign up ---
-    QSignalSpy accountStorageSynced(&accountStorage, &Client::AccountStorage::synced);
+    QSignalSpy accountStorageSynced(accountStorage, &Client::AccountStorage::synced);
     Client::AuthOperation *signUpOperation = client.connectionApi()->startAuthentication();
     signUpOperation->setPhoneNumber(userData.phoneNumber);
     QSignalSpy serverAuthCodeSpy(&authProvider, &Test::AuthProvider::codeSent);
     QSignalSpy authCodeSpy(signUpOperation, &Client::AuthOperation::authCodeRequired);
     QSignalSpy registrationStatusSpy(signUpOperation, &Client::AuthOperation::registeredChanged);
-    TRY_COMPARE(dataStorage.serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
+    TRY_COMPARE(dataStorage->serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
     QCOMPARE(authCodeSpy.count(), 1);
     QCOMPARE(serverAuthCodeSpy.count(), 1);
@@ -496,7 +468,7 @@ void tst_all::testSignUp()
     TRY_VERIFY2(signUpOperation->isSucceeded(), "Unexpected sign in fail");
     TRY_VERIFY(!accountStorageSynced.isEmpty());
 
-    quint64 clientAuthId = accountStorage.authId();
+    quint64 clientAuthId = accountStorage->authId();
     QVERIFY(clientAuthId);
     QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
     QCOMPARE(clientConnections.count(), 1);
@@ -509,8 +481,8 @@ void tst_all::testSignUp()
     QCOMPARE(serverSideUser->firstName(), userData.firstName);
     QCOMPARE(serverSideUser->lastName(), userData.lastName);
     QCOMPARE(serverSideUser->phoneNumber(), userData.phoneNumber);
-    QCOMPARE(accountStorage.phoneNumber(), userData.phoneNumber);
-    QCOMPARE(accountStorage.dcInfo().id, server->dcId());
+    QCOMPARE(accountStorage->phoneNumber(), userData.phoneNumber);
+    QCOMPARE(accountStorage->dcInfo().id, server->dcId());
     TRY_VERIFY(client.isSignedIn());
 }
 
