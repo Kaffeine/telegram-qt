@@ -363,7 +363,6 @@ void tst_all::testSignInCheckIn()
     accountStorage.setPhoneNumber(userData.phoneNumber);
     accountStorage.setDcInfo(clientDcOption);
 
-    Server::RemoteClientConnection *firstClientConnection = nullptr;
     {
         Client::Client client;
         Test::setupClientHelper(&client, userData, publicKey, clientDcOption, sessionType);
@@ -375,7 +374,6 @@ void tst_all::testSignInCheckIn()
 
         QSet<Server::RemoteClientConnection*> clientConnections = server->getConnections();
         QCOMPARE(clientConnections.count(), 1);
-        firstClientConnection = *clientConnections.cbegin();
 //        PendingOperation *discOp = client.connectionApi()->disconnectFromHost();
 //        TRY_VERIFY(discOp->isFinished());
 //        QCOMPARE(discOp->isSucceeded(), true);
@@ -385,7 +383,7 @@ void tst_all::testSignInCheckIn()
         QCOMPARE(client.contactsApi()->selfUserId(), serversideUser->id());
     }
 
-    TRY_COMPARE(firstClientConnection->status(), Telegram::Server::RemoteClientConnection::Status::Disconnected);
+    TRY_VERIFY(server->getConnections().isEmpty());
 
     // Reconnect
     {
