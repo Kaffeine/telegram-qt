@@ -12,6 +12,23 @@ if (${_CORE_INDEX} LESS 0)
     list(APPEND _WANTED_COMPONENTS Core)
 endif()
 
+# Find dependencies
+include(CMakeFindDependencyMacro)
+
+# Base Qt components set
+set(_QT_COMPONENTS Core Network)
+
+# Look for extra Qt modules wanted by some TelegramQt components
+foreach(module ${_WANTED_COMPONENTS})
+    if(${module} STREQUAL "Qml")
+        list(APPEND QT_COMPONENTS Qml)
+    endif()
+endforeach()
+
+find_dependency(Qt5 @QT_MINUMUM_VERSION@ COMPONENTS ${_QT_COMPONENTS})
+unset(_QT_COMPONENTS)
+
+# Finally include TelegramQt targets
 foreach(module ${_WANTED_COMPONENTS})
     include("${CMAKE_CURRENT_LIST_DIR}/TelegramQt5${module}Targets.cmake")
 endforeach()
@@ -19,16 +36,20 @@ endforeach()
 unset(_WANTED_COMPONENTS)
 
 # The code below is needed only for backward compatibility and will be removed from the release
+
+# Setup the LIBRARIES variable
 get_target_property(TELEGRAM_QT@QT_VERSION_MAJOR@_LIBRARIES
     TelegramQt@QT_VERSION_MAJOR@::Core
     IMPORTED_LOCATION
 )
 
 if(NOT TELEGRAM_QT@QT_VERSION_MAJOR@_LIBRARIES)
+    # If there is no default IMPORTED_LOCATION then get all configurations...
     get_target_property(_IMPORTED_CONFIGURATIONS
         TelegramQt@QT_VERSION_MAJOR@::Core
         IMPORTED_CONFIGURATIONS
     )
+    # ... and pick up the first one
     list(GET _IMPORTED_CONFIGURATIONS 0 _SELECTED_CONFIGURATION)
     get_target_property(TELEGRAM_QT@QT_VERSION_MAJOR@_LIBRARIES
         TelegramQt@QT_VERSION_MAJOR@::Core
@@ -38,6 +59,7 @@ if(NOT TELEGRAM_QT@QT_VERSION_MAJOR@_LIBRARIES)
     unset(_SELECTED_CONFIGURATION)
 endif()
 
+# Setup the INCLUDE_DIR variable
 get_target_property(TELEGRAM_QT@QT_VERSION_MAJOR@_INCLUDE_DIR
     TelegramQt@QT_VERSION_MAJOR@::Core
     INTERFACE_INCLUDE_DIRECTORIES

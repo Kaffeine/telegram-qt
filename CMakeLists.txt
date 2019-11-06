@@ -57,7 +57,9 @@ if(BUILD_SERVER)
     endif()
 endif()
 
-find_package(Qt5 5.5.0 REQUIRED COMPONENTS ${QT_COMPONENTS})
+set(QT_MINUMUM_VERSION 5.5.0)
+
+find_package(Qt5 ${QT_MINUMUM_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 
