@@ -60,7 +60,7 @@ set_target_properties(
 
 install(
     TARGETS TelegramQt${QT_VERSION_MAJOR}Qml
-    EXPORT TelegramQt${QT_VERSION_MAJOR}Qml-export
+    EXPORT TelegramQt${QT_VERSION_MAJOR}QmlTargets
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -68,8 +68,7 @@ install(
 )
 
 install(
-    EXPORT TelegramQt${QT_VERSION_MAJOR}Qml-export
-    FILE TelegramQt${QT_VERSION_MAJOR}QmlTargets.cmake
+    EXPORT TelegramQt${QT_VERSION_MAJOR}QmlTargets
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/TelegramQt${QT_VERSION_MAJOR}"
     NAMESPACE TelegramQt${QT_VERSION_MAJOR}::
     COMPONENT Devel
