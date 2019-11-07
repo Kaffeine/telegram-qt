@@ -30,10 +30,26 @@ unset(_QT_COMPONENTS)
 
 # Finally include TelegramQt targets
 foreach(module ${_WANTED_COMPONENTS})
-    include("${CMAKE_CURRENT_LIST_DIR}/TelegramQt5${module}Targets.cmake")
-endforeach()
+    set(module_target "${CMAKE_CURRENT_LIST_DIR}/TelegramQt5${module}Targets.cmake")
+    if(EXISTS "${module_target}")
+        include("${module_target}")
+    endif()
 
+    if(NOT TARGET TelegramQt@QT_VERSION_MAJOR@::${module})
+        if (TelegramQt@QT_VERSION_MAJOR@_FIND_REQUIRED_${module})
+            set(_TelegramQt@QT_VERSION_MAJOR@_NOTFOUND_MESSAGE
+                "${_TelegramQt@QT_VERSION_MAJOR@_NOTFOUND_MESSAGE}Failed to find TelegramQt@QT_VERSION_MAJOR@ component \"${module}\"\n")
+        elseif(NOT TelegramQt@QT_VERSION_MAJOR@_FIND_QUIETLY)
+            message(WARNING "Failed to find TelegramQt@QT_VERSION_MAJOR@ component \"${module}\"")
+        endif()
+    endif()
+endforeach()
 unset(_WANTED_COMPONENTS)
+
+if (_TelegramQt@QT_VERSION_MAJOR@_NOTFOUND_MESSAGE)
+    set(TelegramQt@QT_VERSION_MAJOR@_NOT_FOUND_MESSAGE "${_TelegramQt@QT_VERSION_MAJOR@_NOTFOUND_MESSAGE}")
+    set(TelegramQt@QT_VERSION_MAJOR@_FOUND False)
+endif()
 
 # The code below is needed only for backward compatibility and will be removed from the release
 
