@@ -14,6 +14,8 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     AccountStorage.hpp
     ApiUtils.cpp
     ApiUtils.hpp
+    BigNumber.cpp
+    BigNumber.hpp
     CAppInformation.cpp
     CAppInformation.hpp
     CClientTcpTransport.cpp
@@ -97,8 +99,6 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     RsaKey.hpp
     SendPackageHelper.cpp
     SendPackageHelper.hpp
-    SslBigNumber.cpp
-    SslBigNumber.hpp
     TelegramNamespace.cpp
     TelegramNamespace.hpp
     TelegramNamespace_p.hpp

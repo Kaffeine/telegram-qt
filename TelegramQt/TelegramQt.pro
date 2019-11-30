@@ -45,6 +45,7 @@ SOURCES += \
     AccountApi.cpp \
     AccountStorage.cpp \
     ApiUtils.cpp \
+    BigNumber.cpp \
     DcConfiguration.cpp \
     DialogList.cpp \
     DhLayer.cpp \
@@ -81,7 +82,6 @@ SOURCES += \
     PendingRpcResult.cpp \
     RandomGenerator.cpp \
     SendPackageHelper.cpp \
-    SslBigNumber.cpp \
     UpdatesLayer.cpp
 
 PUBLIC_HEADERS += \
@@ -112,6 +112,8 @@ HEADERS += \
     AccountApi.hpp \
     AccountApi_p.hpp \
     ApiUtils.hpp \
+    BigNumber.hpp \
+    BigNumber_p.hpp \
     DcConfiguration.hpp \
     Debug.hpp \
     Debug_p.hpp \
@@ -161,7 +163,6 @@ HEADERS += \
     PendingRpcResult.hpp \
     RandomGenerator.hpp \
     SendPackageHelper.hpp \
-    SslBigNumber.hpp \
     TelegramNamespace.hpp \
     TelegramNamespace_p.hpp \
     telegramqt_global.h \

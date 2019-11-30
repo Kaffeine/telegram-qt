@@ -17,7 +17,6 @@
 
 #include "RsaKey.hpp"
 
-#include <openssl/bn.h>
 #include <openssl/pem.h>
 #include <openssl/rsa.h>
 #include <openssl/opensslv.h>
@@ -28,7 +27,8 @@
 #include "RawStream.hpp"
 #include "Utils.hpp"
 
-#include "SslBigNumber.hpp"
+#include "BigNumber_p.hpp"
+#include "BigNumber.hpp"
 
 static const QByteArray c_hardcodedRsaDataKey(
         "0c150023e2f70db7985ded064759cfecf0af328e69a41daf4d6f01b53813"
@@ -125,10 +125,10 @@ RsaKey RsaKey::fromFile(const QString &fileName)
     }
 #endif
 
-    result.modulus = Utils::SslBigNumber::toByteArray(n);
-    result.exponent = Utils::SslBigNumber::toByteArray(e);
+    result.modulus = Utils::bignumToByteArray(n);
+    result.exponent = Utils::bignumToByteArray(e);
     if (keyIsPrivate) {
-        result.secretExponent = Utils::SslBigNumber::toByteArray(d);
+        result.secretExponent = Utils::bignumToByteArray(d);
     }
     result.updateFingersprint();
     RSA_free(key);
@@ -138,8 +138,8 @@ RsaKey RsaKey::fromFile(const QString &fileName)
 RsaKey RsaKey::defaultKey()
 {
     RsaKey result;
-    result.modulus = Utils::SslBigNumber::fromHex(c_hardcodedRsaDataKey).toByteArray();
-    result.exponent = Utils::SslBigNumber::fromHex(c_hardcodedRsaDataExp).toByteArray();
+    result.modulus = Utils::BigNumber::fromHex(c_hardcodedRsaDataKey).toByteArray();
+    result.exponent = Utils::BigNumber::fromHex(c_hardcodedRsaDataExp).toByteArray();
     result.fingerprint = c_hardcodedRsaDataFingersprint;
     return result;
 }

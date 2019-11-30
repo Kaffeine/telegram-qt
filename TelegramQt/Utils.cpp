@@ -17,11 +17,6 @@
 
 #include "Utils.hpp"
 
-#include <openssl/bn.h>
-#include <openssl/pem.h>
-#include <openssl/rsa.h>
-#include <openssl/opensslv.h>
-
 #define ZLIB_CONST
 #include <zlib.h>
 
@@ -31,91 +26,7 @@
 
 #include "RandomGenerator.hpp"
 
-struct SslBigNumberContext {
-    SslBigNumberContext() :
-        m_context(BN_CTX_new())
-    {
-    }
-    ~SslBigNumberContext()
-    {
-        BN_CTX_free(m_context);
-    }
-    BN_CTX *context() { return m_context; }
-
-private:
-    BN_CTX *m_context;
-};
-
-struct SslBigNumber {
-    SslBigNumber() :
-        m_number(BN_new())
-    {
-    }
-
-    SslBigNumber(SslBigNumber &&number) :
-        m_number(number.m_number)
-    {
-        number.m_number = nullptr;
-    }
-
-    SslBigNumber(const SslBigNumber &number) :
-        m_number(BN_new())
-    {
-        BN_copy(m_number, number.m_number);
-    }
-
-    ~SslBigNumber()
-    {
-        if (m_number) {
-            BN_free(m_number);
-        }
-    }
-
-    static SslBigNumber fromHex(const QByteArray &hex)
-    {
-        SslBigNumber result;
-        if (BN_hex2bn(&result.m_number, hex.constData()) != 0) {
-            return result;
-        }
-        return SslBigNumber();
-    }
-
-    static SslBigNumber fromByteArray(const QByteArray &bin)
-    {
-        SslBigNumber result;
-        if (BN_bin2bn((uchar *) bin.constData(), bin.length(), result.m_number) != 0) {
-            return result;
-        }
-        return SslBigNumber();
-    }
-
-    static QByteArray toByteArray(const BIGNUM *number)
-    {
-        QByteArray result;
-        result.resize(BN_num_bytes(number));
-        BN_bn2bin(number, (uchar *) result.data());
-        return result;
-    }
-
-    QByteArray toByteArray() const
-    {
-        return toByteArray(m_number);
-    }
-
-    SslBigNumber mod_exp(const SslBigNumber &exponent, const SslBigNumber &modulus) const
-    {
-        SslBigNumberContext context;
-        SslBigNumber result;
-        BN_mod_exp(result.m_number, number(), exponent.number(), modulus.number(), context.context());
-        return result;
-    }
-
-    const BIGNUM *number() const { return m_number; }
-    BIGNUM *number() { return m_number; }
-
-private:
-    BIGNUM *m_number;
-};
+#include "BigNumber.hpp"
 
 namespace Telegram {
 
@@ -203,16 +114,6 @@ QByteArray Utils::sha256(const QByteArray &data)
     return QCryptographicHash::hash(data, QCryptographicHash::Sha256);
 }
 
-bool hexArrayToBN(const QByteArray &hex, BIGNUM **n)
-{
-    return BN_hex2bn(n, hex.constData()) != 0;
-}
-
-bool binArrayToBN(const QByteArray &bin, BIGNUM **n)
-{
-    return BN_bin2bn((uchar *) bin.constData(), bin.length(), *n) != 0;
-}
-
 quint64 Utils::getFingerprints(const QByteArray &data, const BitsOrder64 order)
 {
     QByteArray shaSum = sha1(data);
@@ -226,10 +127,10 @@ quint64 Utils::getFingerprints(const QByteArray &data, const BitsOrder64 order)
 
 QByteArray Utils::binaryNumberModExp(const QByteArray &data, const QByteArray &mod, const QByteArray &exp)
 {
-    const SslBigNumber dataNum = SslBigNumber::fromByteArray(data);
-    const SslBigNumber pubModulus = SslBigNumber::fromByteArray(mod);
-    const SslBigNumber pubExponent = SslBigNumber::fromByteArray(exp);
-    const SslBigNumber resultNum = dataNum.mod_exp(pubExponent, pubModulus);
+    const BigNumber dataNum = BigNumber::fromByteArray(data);
+    const BigNumber pubModulus = BigNumber::fromByteArray(mod);
+    const BigNumber pubExponent = BigNumber::fromByteArray(exp);
+    const BigNumber resultNum = dataNum.mod_exp(pubExponent, pubModulus);
     return resultNum.toByteArray();
 }
 
