@@ -11,8 +11,11 @@ project(TelegramQt
 
 set(TELEGRAM_QT_ABI "${TelegramQt_VERSION_MAJOR}.${TelegramQt_VERSION_MINOR}")
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+
 include(GNUInstallDirs)
 include(FeatureSummary)
+include(CCache)
 
 set(OVERRIDE_CXX_STANDARD 11 CACHE STRING "Compile with custom C++ standard version")
 set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
