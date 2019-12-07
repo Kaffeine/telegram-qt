@@ -39,6 +39,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     ClientRpcLayer.hpp
     ClientRpcLayerExtension.cpp
     ClientRpcLayerExtension.hpp
+    ClientRpcLayerExtension_p.hpp
     ClientSettings.cpp
     ClientSettings.hpp
     Client_p.hpp
