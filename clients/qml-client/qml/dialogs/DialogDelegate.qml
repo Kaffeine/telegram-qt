@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
+import QtQuick.Layouts 1.1
 
 import TelegramQt 0.2 as Telegram
 
@@ -51,7 +52,8 @@ ItemDelegate {
                 anchors.top: parent.top
                 width: parent.width
                 height: displayNameLabel.implicitHeight
-                Row {
+                RowLayout {
+                    id: displayNameRow_
                     spacing: dialogDelegate.smallSpacing
                     height: displayNameLabel.implicitHeight
                     Rectangle {
@@ -61,13 +63,15 @@ ItemDelegate {
                         height: displayNameLabel.height
                         visible: false // func(dialogDelegate.chatType)
                         color: "blue"
-                        anchors.verticalCenter: parent.verticalCenter
+                        Layout.alignment: Qt.AlignVCenter
                     }
 
                     InlineHeader {
                         id: displayNameLabel
                         text: dialogDelegate.displayName
+                        Layout.fillWidth: true
                     }
+
                     anchors.left: parent.left
                     anchors.right: deliveryIcon.visible ? deliveryIcon.left : lastMessageDateTime.left
                     anchors.rightMargin: dialogDelegate.spacing
