@@ -5,7 +5,6 @@ Frame {
     id: root
 
     property alias showPicture: peerPicture.visible
-    property var peer
     property var peerInfo
 
     Row {
@@ -18,7 +17,7 @@ Frame {
             anchors.verticalCenter: parent.verticalCenter
 
             displayName: peerInfo.displayName
-            peer: root.peer
+            peer: root.peerInfo.peer
         }
 
         InlineHeader {

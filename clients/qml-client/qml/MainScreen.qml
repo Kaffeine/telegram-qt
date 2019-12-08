@@ -54,7 +54,6 @@ Item {
                 id: messagePageHeader
                 width: parent.width
                 height: 64
-                peer: currentPeer
                 spacing: rightPadding
                 peerInfo: currentPeerInfo_
             }
