@@ -4,12 +4,16 @@ import TelegramQt 0.2 as Telegram
 import TelegramQtTheme 1.0
 
 ItemDelegate {
-    id: messageDelegate
+    id: root_
+
+    property var fromUserId
+    property int messageFlags
+    property var sentTimestamp
 
     Telegram.PeerInfo {
         id: peerInfo_
         client: telegramClient_
-        userId: model.fromUserId
+        userId: root_.fromUserId
     }
 
     contentItem: Item {
@@ -39,15 +43,15 @@ ItemDelegate {
                 text: peerInfo_.displayName
                 font.bold: true
                 anchors.left: details.left
-                anchors.leftMargin: messageDelegate.spacing
+                anchors.leftMargin: root_.spacing
             }
             Label {
                 id: messageLabel
                 anchors.top: nameLabel.bottom
                 anchors.left: details.left
-                anchors.leftMargin: messageDelegate.spacing
+                anchors.leftMargin: root_.spacing
                 anchors.right: details.right
-                text: model.message.text
+                text: root_.text
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                 font.pixelSize: Theme.fontSizeTiny
             }
@@ -55,10 +59,10 @@ ItemDelegate {
                 id: deliveryStatus
                 anchors.bottom: details.bottom
                 anchors.right: details.right
-                readonly property string time: Qt.formatTime(model.sentTimestamp)
+                readonly property string time: Qt.formatTime(root_.sentTimestamp)
                 text: {
-                    if (model.messageFlags & Telegram.Namespace.MessageFlagOut) {
-                        if (model.messageFlags & Telegram.Namespace.MessageFlagRead) {
+                    if (root_.messageFlags & Telegram.Namespace.MessageFlagOut) {
+                        if (root_.messageFlags & Telegram.Namespace.MessageFlagRead) {
                             return "\u2713\u2713 " + time // "\u2714"?
                         }
                         return "\u2713 " + time

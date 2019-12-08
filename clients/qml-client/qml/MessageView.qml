@@ -30,6 +30,7 @@ Frame {
     Component {
         id: messageDelegate
         MessageDelegate {
+            id: messageDelegateObject_
         }
     }
 
@@ -59,26 +60,34 @@ Frame {
         id: listView
         anchors.fill: parent
         model: messagesModel
-        delegate: Item {
+        delegate: Loader {
+            id: messageDelegateLoader_
+            width: listView.width
             property var itemModel: model
-            width: loader.width
-            height: loader.height
-            Loader {
-                id: loader
-                width: listView.width
-                property var model: parent.itemModel // inject 'model' to the loaded item's context
 
-                sourceComponent: {
-                    if (model.eventType == Telegram.Event.Type.NewDay) {
-                        return newDayDelegate
-                    } else if (model.eventType == Telegram.Event.Type.Message) {
-                        return messageDelegate
-                    } else if (model.eventType == Telegram.Event.Type.ServiceAction) {
-                        return serviceActionDelegate
-                    }
+            sourceComponent: {
+                if (itemModel.eventType == Telegram.Event.Type.NewDay) {
+                    return newDayDelegate
+                } else if (itemModel.eventType == Telegram.Event.Type.Message) {
                     return messageDelegate
+                } else if (itemModel.eventType == Telegram.Event.Type.ServiceAction) {
+                    return serviceActionDelegate
                 }
+                return messageDelegate
             }
+
+            states: [
+                State {
+                    name: "loaded"
+                    PropertyChanges {
+                        target: messageDelegateLoader_.item
+                        fromUserId: messageDelegateLoader_.itemModel.fromUserId
+                        text: messageDelegateLoader_.itemModel.message.text
+                        sentTimestamp: messageDelegateLoader_.itemModel.sentTimestamp
+                    }
+                    when: messageDelegateLoader_.item && !!messageDelegateLoader_.itemModel
+                }
+            ]
         }
     }
 
