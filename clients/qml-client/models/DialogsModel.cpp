@@ -143,9 +143,9 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
     };
 }
 
-void DialogsModel::setQmlClient(DeclarativeClient *target)
+void DialogsModel::setQmlClient(DeclarativeClient *client)
 {
-    m_qmlClient = target;
+    m_qmlClient = client;
     emit clientChanged();
 }
 
