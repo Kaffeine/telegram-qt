@@ -88,7 +88,7 @@ ApplicationWindow {
             if (accountStorage_.fileExists() && accountStorage_.loadData()) {
                 signInOperation_.checkIn()
             } else {
-                signInOperation_.signIn()
+                signInOperation_.startAuthentication()
             }
         }
     }
@@ -102,7 +102,7 @@ ApplicationWindow {
                 mainView_.sourceComponent = mainScreenComponent_
             } else {
                 // TODO: Process network errors
-                signIn()
+                startAuthentication()
             }
         }
 
