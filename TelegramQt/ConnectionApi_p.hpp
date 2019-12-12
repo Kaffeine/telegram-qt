@@ -90,6 +90,7 @@ protected slots:
     void onSyncFinished(PendingOperation *operation);
     void onPingFailed();
     void onConnectionError(const QByteArray &errorBytes);
+    void onAllDcOptionsTried();
 
 protected:
     void setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason);

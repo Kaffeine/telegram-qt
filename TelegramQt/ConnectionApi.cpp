@@ -184,11 +184,14 @@ void ConnectionApiPrivate::connectToNextServer()
         return;
     }
 
+    if (m_nextServerAddressIndex >= m_serverConfiguration.count()) {
+        onAllDcOptionsTried();
+        return;
+    }
+
     const DcOption dcOption = m_serverConfiguration.at(m_nextServerAddressIndex);
     ++m_nextServerAddressIndex;
-    if (m_serverConfiguration.count() <= m_nextServerAddressIndex) {
-        m_nextServerAddressIndex = 0;
-    }
+
     if (dcOption.flags & (DcOption::Ipv6|DcOption::MediaOnly)) {
         qCDebug(c_connectionApiLoggingCategory) << CALL_INFO
                                                 << "dequeued unsupported dc option, go for the next one...";
@@ -659,6 +662,12 @@ void ConnectionApiPrivate::onConnectionError(const QByteArray &errorBytes)
             }
         }
     }
+}
+
+void ConnectionApiPrivate::onAllDcOptionsTried()
+{
+    m_nextServerAddressIndex = 0;
+    connectToNextServer();
 }
 
 void ConnectionApiPrivate::setStatus(ConnectionApi::Status status, ConnectionApi::StatusReason reason)
