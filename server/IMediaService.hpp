@@ -30,7 +30,8 @@ class IMediaService
 {
 public:
     virtual bool uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes) = 0;
-    virtual FileDescriptor getFileDescriptor(quint64 fileId, quint32 parts) const = 0;
+    virtual UploadDescriptor getUploadedData(quint64 fileId) const = 0;
+    virtual void freeUploadedData(qint64 fileId) = 0;
 
     virtual FileDescriptor getSecretFileDescriptor(quint64 volumeId,
                                                    quint32 localId,
@@ -42,9 +43,9 @@ public:
     virtual void endReadFile(QIODevice *device) = 0;
 
     // TODO: Make processImageFile() async and return a PendingOperation?
-    virtual ImageDescriptor processImageFile(const FileDescriptor &file,
+    virtual ImageDescriptor processImageFile(const UploadDescriptor &upload,
                                              const QString &name = QString()) = 0;
-    virtual FileDescriptor saveDocumentFile(const FileDescriptor &descriptor,
+    virtual FileDescriptor saveDocumentFile(const UploadDescriptor &upload,
                                             const QString &fileName,
                                             const QString &mimeType) = 0;
 };

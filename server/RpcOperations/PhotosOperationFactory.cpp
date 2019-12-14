@@ -130,13 +130,15 @@ void PhotosRpcOperation::runUpdateProfilePhoto()
 void PhotosRpcOperation::runUploadProfilePhoto()
 {
     MTProto::Functions::TLPhotosUploadProfilePhoto &arguments = m_uploadProfilePhoto;
-    const FileDescriptor desc = api()->mediaService()->getFileDescriptor(arguments.file.id, arguments.file.parts);
+    const UploadDescriptor upload = api()->mediaService()->getUploadedData(arguments.file.id);
 
-    if (!desc.isValid()) {
+    if (!upload.fileId) {
+        // Upload not found
         sendRpcError(RpcError::UnknownReason);
+        return;
     }
 
-    const ImageDescriptor image = api()->mediaService()->processImageFile(desc, arguments.file.name);
+    const ImageDescriptor image = api()->mediaService()->processImageFile(upload, arguments.file.name);
 
     LocalUser *selfUser = layer()->getUser();
 

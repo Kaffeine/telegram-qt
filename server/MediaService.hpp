@@ -41,7 +41,8 @@ public:
     void setDcId(quint32 dcId);
 
     bool uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes) override;
-    FileDescriptor getFileDescriptor(quint64 fileId, quint32 parts) const override;
+    UploadDescriptor getUploadedData(quint64 fileId) const override;
+    void freeUploadedData(qint64 fileId) override;
 
     FileDescriptor getSecretFileDescriptor(quint64 volumeId, quint32 localId, quint64 secret) const override;
     FileDescriptor getDocumentFileDescriptor(quint64 fileId, quint64 accessHash) const override;
@@ -50,8 +51,8 @@ public:
     void endReadFile(QIODevice *device) override;
 
     // TODO: Make processImageFile() async and return a PendingOperation?
-    ImageDescriptor processImageFile(const FileDescriptor &file, const QString &name = QString()) override;
-    FileDescriptor saveDocumentFile(const FileDescriptor &descriptor,
+    ImageDescriptor processImageFile(const UploadDescriptor &upload, const QString &name = QString()) override;
+    FileDescriptor saveDocumentFile(const UploadDescriptor &upload,
                                     const QString &fileName,
                                     const QString &mimeType) override;
 
@@ -65,7 +66,7 @@ protected:
     quint64 volumeId() const;
 
     QVector<FileDescriptor> m_allFileDescriptors;
-    QHash<quint64, FileData> m_tmpFiles;
+    QHash<quint64, UploadDescriptor> m_tmpFiles;
     QSet<QFile*> m_openFiles;
     quint64 m_lastGlobalId = 0;
     quint64 m_lastTimestamp = 0;

@@ -60,11 +60,11 @@ void MediaService::setDcId(quint32 dcId)
 bool MediaService::uploadFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes)
 {
     if (!m_tmpFiles.contains(fileId)) {
-        FileData newFile;
+        UploadDescriptor newFile;
         newFile.fileId = fileId;
         m_tmpFiles.insert(fileId, newFile);
     }
-    FileData &data = m_tmpFiles[fileId];
+    UploadDescriptor &data = m_tmpFiles[fileId];
     if (filePart != static_cast<quint32>(data.partList.count())) {
         return false;
     }
@@ -72,21 +72,14 @@ bool MediaService::uploadFilePart(quint64 fileId, quint32 filePart, const QByteA
     return true;
 }
 
-// InputFile
-FileDescriptor MediaService::getFileDescriptor(quint64 fileId, quint32 parts) const
+UploadDescriptor MediaService::getUploadedData(quint64 fileId) const
 {
-    if (!m_tmpFiles.contains(fileId)) {
-        return FileDescriptor();
-    }
+    return m_tmpFiles.value(fileId);
+}
 
-    const FileData &data = m_tmpFiles[fileId];
-    if (static_cast<quint32>(data.partList.count()) != parts) {
-        return FileDescriptor();
-    }
-
-    FileDescriptor descriptor;
-    descriptor.id = fileId;
-    return descriptor;
+void MediaService::freeUploadedData(qint64 fileId)
+{
+    m_tmpFiles.remove(fileId);
 }
 
 FileDescriptor MediaService::getSecretFileDescriptor(quint64 volumeId,
@@ -193,12 +186,12 @@ QString MediaService::getFileName(quint64 volumeId, quint32 localId) const
     return getVolumeDirName(volumeId) + QLatin1Char('/') + QString::number(localId);
 }
 
-FileDescriptor MediaService::saveDocumentFile(const FileDescriptor &descriptor,
+FileDescriptor MediaService::saveDocumentFile(const UploadDescriptor &upload,
                                          const QString &fileName,
                                          const QString &mimeType)
 {
     QIODevice *output = beginWriteFile();
-    QByteArray data = m_tmpFiles.value(descriptor.id).partList.join();
+    QByteArray data = upload.partList.join();
     output->write(data);
     FileDescriptor *savedFile = endWriteFile(output, fileName);
     if (!savedFile) {
@@ -207,16 +200,18 @@ FileDescriptor MediaService::saveDocumentFile(const FileDescriptor &descriptor,
     savedFile->mimeType = mimeType;
     RandomGenerator::instance()->generate(&savedFile->accessHash);
 
+    freeUploadedData(upload.fileId);
+
     return *savedFile;
 }
 
-ImageDescriptor MediaService::processImageFile(const FileDescriptor &file, const QString &name)
+ImageDescriptor MediaService::processImageFile(const UploadDescriptor &upload, const QString &name)
 {
-    if (!m_tmpFiles.contains(file.id)) {
+    if (!upload.fileId) {
         return ImageDescriptor();
     }
 
-    QByteArray data = m_tmpFiles.value(file.id).partList.join();
+    QByteArray data = upload.partList.join();
     QImage originalImage = QImage::fromData(data);
 
     if (originalImage.isNull()) {
@@ -225,7 +220,7 @@ ImageDescriptor MediaService::processImageFile(const FileDescriptor &file, const
 
     ImageDescriptor result;
     result.date = Telegram::Utils::getCurrentTime();
-    result.id = file.id;
+    result.id = upload.fileId;
     result.accessHash = 0xdead;
     result.flags = 0;
 
@@ -254,6 +249,8 @@ ImageDescriptor MediaService::processImageFile(const FileDescriptor &file, const
             break;
         }
     }
+
+    freeUploadedData(upload.fileId);
 
     return result;
 }

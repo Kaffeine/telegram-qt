@@ -1745,15 +1745,16 @@ void MessagesRpcOperation::runSendMedia()
     case TLValue::InputMediaUploadedDocument:
     {
         const TLInputFile &inFile = arguments.media.file;
-        FileDescriptor desc = api()->mediaService()->getFileDescriptor(inFile.id, inFile.parts);
-        desc = api()->mediaService()->saveDocumentFile(desc, inFile.name, arguments.media.mimeType);
+        const UploadDescriptor upload = api()->mediaService()->getUploadedData(inFile.id);
+        const FileDescriptor file = api()->mediaService()->saveDocumentFile(upload, inFile.name, arguments.media.mimeType);
 
-        if (!desc.isValid()) {
+        if (!file.isValid()) {
             sendRpcError(RpcError::UnknownReason);
+            return;
         }
 
         media.type = MediaData::Document;
-        media.file = desc;
+        media.file = file;
         media.mimeType = arguments.media.mimeType;
         media.caption = arguments.media.caption;
         for (const TLDocumentAttribute &attribute : arguments.media.attributes) {

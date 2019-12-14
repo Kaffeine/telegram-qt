@@ -58,7 +58,7 @@ struct FileDescriptor
     QString mimeType;
 };
 
-struct FileData
+struct UploadDescriptor
 {
     quint64 fileId = 0;
     QByteArrayList partList;
