@@ -85,7 +85,7 @@ void dumpRpc(Stream &stream)
         d << "AccountChangePhone(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
         d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
@@ -102,7 +102,7 @@ void dumpRpc(Stream &stream)
         d << "AccountCheckUsername(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString username;
         stream >> username;
         d << spacer.innerSpaces() << "username: " << username << endl;
@@ -113,7 +113,7 @@ void dumpRpc(Stream &stream)
         d << "AccountConfirmPhone(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString phoneCodeHash;
         stream >> phoneCodeHash;
         d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << endl;
@@ -127,7 +127,7 @@ void dumpRpc(Stream &stream)
         d << "AccountDeleteAccount(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString reason;
         stream >> reason;
         d << spacer.innerSpaces() << "reason: " << reason << endl;
@@ -146,7 +146,7 @@ void dumpRpc(Stream &stream)
         d << "AccountGetNotifySettings(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputNotifyPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -161,10 +161,10 @@ void dumpRpc(Stream &stream)
         d << "AccountGetPasswordSettings(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QByteArray currentPasswordHash;
         stream >> currentPasswordHash;
-        d << spacer.innerSpaces() << "currentPasswordHash: " << currentPasswordHash << endl;
+        d << spacer.innerSpaces() << "currentPasswordHash: " << currentPasswordHash.toHex() << endl;
     }
         d << ")";
         break;
@@ -172,7 +172,7 @@ void dumpRpc(Stream &stream)
         d << "AccountGetPrivacy(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPrivacyKey key;
         stream >> key;
         d << spacer.innerSpaces() << "key: " << key << endl;
@@ -183,10 +183,10 @@ void dumpRpc(Stream &stream)
         d << "AccountGetTmpPassword(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QByteArray passwordHash;
         stream >> passwordHash;
-        d << spacer.innerSpaces() << "passwordHash: " << passwordHash << endl;
+        d << spacer.innerSpaces() << "passwordHash: " << passwordHash.toHex() << endl;
         quint32 period;
         stream >> period;
         d << spacer.innerSpaces() << "period: " << period << endl;
@@ -201,7 +201,7 @@ void dumpRpc(Stream &stream)
         d << "AccountRegisterDevice(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 tokenType;
         stream >> tokenType;
         d << spacer.innerSpaces() << "tokenType: " << tokenType << endl;
@@ -215,7 +215,7 @@ void dumpRpc(Stream &stream)
         d << "AccountReportPeer(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -229,7 +229,7 @@ void dumpRpc(Stream &stream)
         d << "AccountResetAuthorization(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint64 hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << endl;
@@ -244,7 +244,7 @@ void dumpRpc(Stream &stream)
         d << "AccountSendChangePhoneCode(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -258,7 +258,7 @@ void dumpRpc(Stream &stream)
         d << "AccountSendConfirmPhoneCode(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -272,7 +272,7 @@ void dumpRpc(Stream &stream)
         d << "AccountSetAccountTTL(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLAccountDaysTTL ttl;
         stream >> ttl;
         d << spacer.innerSpaces() << "ttl: " << ttl << endl;
@@ -283,7 +283,7 @@ void dumpRpc(Stream &stream)
         d << "AccountSetPrivacy(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPrivacyKey key;
         stream >> key;
         d << spacer.innerSpaces() << "key: " << key << endl;
@@ -297,7 +297,7 @@ void dumpRpc(Stream &stream)
         d << "AccountUnregisterDevice(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 tokenType;
         stream >> tokenType;
         d << spacer.innerSpaces() << "tokenType: " << tokenType << endl;
@@ -311,7 +311,7 @@ void dumpRpc(Stream &stream)
         d << "AccountUpdateDeviceLocked(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 period;
         stream >> period;
         d << spacer.innerSpaces() << "period: " << period << endl;
@@ -322,7 +322,7 @@ void dumpRpc(Stream &stream)
         d << "AccountUpdateNotifySettings(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputNotifyPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -336,10 +336,10 @@ void dumpRpc(Stream &stream)
         d << "AccountUpdatePasswordSettings(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QByteArray currentPasswordHash;
         stream >> currentPasswordHash;
-        d << spacer.innerSpaces() << "currentPasswordHash: " << currentPasswordHash << endl;
+        d << spacer.innerSpaces() << "currentPasswordHash: " << currentPasswordHash.toHex() << endl;
         TLAccountPasswordInputSettings newSettings;
         stream >> newSettings;
         d << spacer.innerSpaces() << "newSettings: " << newSettings << endl;
@@ -350,7 +350,7 @@ void dumpRpc(Stream &stream)
         d << "AccountUpdateProfile(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -361,7 +361,7 @@ void dumpRpc(Stream &stream)
         d << "AccountUpdateStatus(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         bool offline;
         stream >> offline;
         d << spacer.innerSpaces() << "offline: " << offline << endl;
@@ -372,7 +372,7 @@ void dumpRpc(Stream &stream)
         d << "AccountUpdateUsername(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString username;
         stream >> username;
         d << spacer.innerSpaces() << "username: " << username << endl;
@@ -383,7 +383,7 @@ void dumpRpc(Stream &stream)
         d << "AuthBindTempAuthKey(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint64 permAuthKeyId;
         stream >> permAuthKeyId;
         d << spacer.innerSpaces() << "permAuthKeyId: " << permAuthKeyId << endl;
@@ -395,7 +395,7 @@ void dumpRpc(Stream &stream)
         d << spacer.innerSpaces() << "expiresAt: " << expiresAt << endl;
         QByteArray encryptedMessage;
         stream >> encryptedMessage;
-        d << spacer.innerSpaces() << "encryptedMessage: " << encryptedMessage << endl;
+        d << spacer.innerSpaces() << "encryptedMessage: " << encryptedMessage.toHex() << endl;
     }
         d << ")";
         break;
@@ -403,7 +403,7 @@ void dumpRpc(Stream &stream)
         d << "AuthCancelCode(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
         d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
@@ -417,10 +417,10 @@ void dumpRpc(Stream &stream)
         d << "AuthCheckPassword(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QByteArray passwordHash;
         stream >> passwordHash;
-        d << spacer.innerSpaces() << "passwordHash: " << passwordHash << endl;
+        d << spacer.innerSpaces() << "passwordHash: " << passwordHash.toHex() << endl;
     }
         d << ")";
         break;
@@ -428,7 +428,7 @@ void dumpRpc(Stream &stream)
         d << "AuthCheckPhone(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
         d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
@@ -439,7 +439,7 @@ void dumpRpc(Stream &stream)
         d << "AuthDropTempAuthKeys(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<quint64> exceptAuthKeys;
         stream >> exceptAuthKeys;
         d << spacer.innerSpaces() << "exceptAuthKeys: " << exceptAuthKeys << endl;
@@ -450,7 +450,7 @@ void dumpRpc(Stream &stream)
         d << "AuthExportAuthorization(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 dcId;
         stream >> dcId;
         d << spacer.innerSpaces() << "dcId: " << dcId << endl;
@@ -461,13 +461,13 @@ void dumpRpc(Stream &stream)
         d << "AuthImportAuthorization(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
         QByteArray bytes;
         stream >> bytes;
-        d << spacer.innerSpaces() << "bytes: " << bytes << endl;
+        d << spacer.innerSpaces() << "bytes: " << printBytes(bytes) << endl;
     }
         d << ")";
         break;
@@ -475,7 +475,7 @@ void dumpRpc(Stream &stream)
         d << "AuthImportBotAuthorization(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -499,7 +499,7 @@ void dumpRpc(Stream &stream)
         d << "AuthRecoverPassword(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString code;
         stream >> code;
         d << spacer.innerSpaces() << "code: " << code << endl;
@@ -514,7 +514,7 @@ void dumpRpc(Stream &stream)
         d << "AuthResendCode(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
         d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
@@ -532,7 +532,7 @@ void dumpRpc(Stream &stream)
         d << "AuthSendCode(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -552,7 +552,7 @@ void dumpRpc(Stream &stream)
         d << "AuthSendInvites(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<QString> phoneNumbers;
         stream >> phoneNumbers;
         d << spacer.innerSpaces() << "phoneNumbers: " << phoneNumbers << endl;
@@ -566,7 +566,7 @@ void dumpRpc(Stream &stream)
         d << "AuthSignIn(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
         d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
@@ -583,7 +583,7 @@ void dumpRpc(Stream &stream)
         d << "AuthSignUp(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString phoneNumber;
         stream >> phoneNumber;
         d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << endl;
@@ -606,7 +606,7 @@ void dumpRpc(Stream &stream)
         d << "BotsAnswerWebhookJSONQuery(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint64 queryId;
         stream >> queryId;
         d << spacer.innerSpaces() << "queryId: " << queryId << endl;
@@ -620,7 +620,7 @@ void dumpRpc(Stream &stream)
         d << "BotsSendCustomRequest(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString customMethod;
         stream >> customMethod;
         d << spacer.innerSpaces() << "customMethod: " << customMethod << endl;
@@ -634,7 +634,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsCheckUsername(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -648,7 +648,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsCreateChannel(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -665,7 +665,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsDeleteChannel(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -676,7 +676,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsDeleteHistory(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -690,7 +690,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsDeleteMessages(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -704,7 +704,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsDeleteUserHistory(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -718,7 +718,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsEditAbout(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -732,7 +732,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsEditAdmin(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -749,7 +749,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsEditBanned(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -766,7 +766,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsEditPhoto(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -780,7 +780,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsEditTitle(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -794,7 +794,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsExportInvite(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -805,7 +805,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsExportMessageLink(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -819,7 +819,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsGetAdminLog(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -849,7 +849,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsGetChannels(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<TLInputChannel> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -860,7 +860,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsGetFullChannel(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -871,7 +871,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsGetMessages(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -885,7 +885,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsGetParticipant(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -899,7 +899,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsGetParticipants(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -922,7 +922,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsInviteToChannel(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -936,7 +936,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsJoinChannel(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -947,7 +947,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsLeaveChannel(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -958,7 +958,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsReadHistory(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -972,7 +972,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsReadMessageContents(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -986,7 +986,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsReportSpam(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -1003,7 +1003,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsSetStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -1017,7 +1017,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsToggleInvites(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -1031,7 +1031,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsTogglePreHistoryHidden(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -1045,7 +1045,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsToggleSignatures(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -1059,7 +1059,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsUpdatePinnedMessage(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1076,7 +1076,7 @@ void dumpRpc(Stream &stream)
         d << "ChannelsUpdateUsername(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << endl;
@@ -1090,7 +1090,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsBlock(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputUser id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -1101,7 +1101,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsDeleteContact(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputUser id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -1112,7 +1112,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsDeleteContacts(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<TLInputUser> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -1127,7 +1127,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsGetBlocked(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 offset;
         stream >> offset;
         d << spacer.innerSpaces() << "offset: " << offset << endl;
@@ -1141,7 +1141,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsGetContacts(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << endl;
@@ -1156,7 +1156,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsGetTopPeers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1176,7 +1176,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsImportCard(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<quint32> exportCard;
         stream >> exportCard;
         d << spacer.innerSpaces() << "exportCard: " << exportCard << endl;
@@ -1187,7 +1187,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsImportContacts(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<TLInputContact> contacts;
         stream >> contacts;
         d << spacer.innerSpaces() << "contacts: " << contacts << endl;
@@ -1202,7 +1202,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsResetTopPeerRating(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLTopPeerCategory category;
         stream >> category;
         d << spacer.innerSpaces() << "category: " << category << endl;
@@ -1216,7 +1216,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsResolveUsername(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString username;
         stream >> username;
         d << spacer.innerSpaces() << "username: " << username << endl;
@@ -1227,7 +1227,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsSearch(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString q;
         stream >> q;
         d << spacer.innerSpaces() << "q: " << q << endl;
@@ -1241,7 +1241,7 @@ void dumpRpc(Stream &stream)
         d << "ContactsUnblock(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputUser id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -1252,7 +1252,7 @@ void dumpRpc(Stream &stream)
         d << "HelpGetAppChangelog(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString prevAppVersion;
         stream >> prevAppVersion;
         d << spacer.innerSpaces() << "prevAppVersion: " << prevAppVersion << endl;
@@ -1283,7 +1283,7 @@ void dumpRpc(Stream &stream)
         d << "HelpGetRecentMeUrls(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString referer;
         stream >> referer;
         d << spacer.innerSpaces() << "referer: " << referer << endl;
@@ -1302,7 +1302,7 @@ void dumpRpc(Stream &stream)
         d << "HelpSaveAppLog(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<TLInputAppEvent> events;
         stream >> events;
         d << spacer.innerSpaces() << "events: " << events << endl;
@@ -1313,7 +1313,7 @@ void dumpRpc(Stream &stream)
         d << "HelpSetBotUpdatesStatus(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 pendingUpdatesCount;
         stream >> pendingUpdatesCount;
         d << spacer.innerSpaces() << "pendingUpdatesCount: " << pendingUpdatesCount << endl;
@@ -1327,7 +1327,7 @@ void dumpRpc(Stream &stream)
         d << "LangpackGetDifference(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 fromVersion;
         stream >> fromVersion;
         d << spacer.innerSpaces() << "fromVersion: " << fromVersion << endl;
@@ -1338,7 +1338,7 @@ void dumpRpc(Stream &stream)
         d << "LangpackGetLangPack(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString langCode;
         stream >> langCode;
         d << spacer.innerSpaces() << "langCode: " << langCode << endl;
@@ -1353,7 +1353,7 @@ void dumpRpc(Stream &stream)
         d << "LangpackGetStrings(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString langCode;
         stream >> langCode;
         d << spacer.innerSpaces() << "langCode: " << langCode << endl;
@@ -1367,13 +1367,13 @@ void dumpRpc(Stream &stream)
         d << "MessagesAcceptEncryption(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
         QByteArray gB;
         stream >> gB;
-        d << spacer.innerSpaces() << "gB: " << gB << endl;
+        d << spacer.innerSpaces() << "gB: " << gB.toHex() << endl;
         quint64 keyFingerprint;
         stream >> keyFingerprint;
         d << spacer.innerSpaces() << "keyFingerprint: " << keyFingerprint << endl;
@@ -1384,7 +1384,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesAddChatUser(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -1401,7 +1401,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesCheckChatInvite(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << endl;
@@ -1412,7 +1412,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesClearRecentStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1423,7 +1423,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesCreateChat(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<TLInputUser> users;
         stream >> users;
         d << spacer.innerSpaces() << "users: " << users << endl;
@@ -1437,7 +1437,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesDeleteChatUser(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -1451,7 +1451,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesDeleteHistory(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1468,7 +1468,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesDeleteMessages(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1482,7 +1482,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesDiscardEncryption(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -1493,7 +1493,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesEditChatAdmin(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -1510,7 +1510,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesEditChatPhoto(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -1524,7 +1524,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesEditChatTitle(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -1538,7 +1538,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesEditInlineBotMessage(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1552,7 +1552,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesEditMessage(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1569,7 +1569,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesExportChatInvite(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -1580,7 +1580,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesFaveSticker(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputDocument id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -1594,7 +1594,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesForwardMessage(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -1611,7 +1611,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesForwardMessages(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1634,7 +1634,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetAllChats(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<quint32> exceptIds;
         stream >> exceptIds;
         d << spacer.innerSpaces() << "exceptIds: " << exceptIds << endl;
@@ -1649,7 +1649,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetAllStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << endl;
@@ -1660,7 +1660,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetArchivedStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1677,7 +1677,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetAttachedStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputStickeredMedia media;
         stream >> media;
         d << spacer.innerSpaces() << "media: " << media << endl;
@@ -1688,7 +1688,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetBotCallbackAnswer(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1705,7 +1705,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetChats(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -1716,7 +1716,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetCommonChats(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputUser userId;
         stream >> userId;
         d << spacer.innerSpaces() << "userId: " << userId << endl;
@@ -1733,7 +1733,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetDhConfig(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 version;
         stream >> version;
         d << spacer.innerSpaces() << "version: " << version << endl;
@@ -1747,7 +1747,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetDialogs(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1770,10 +1770,10 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetDocumentByHash(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QByteArray sha256;
         stream >> sha256;
-        d << spacer.innerSpaces() << "sha256: " << sha256 << endl;
+        d << spacer.innerSpaces() << "sha256: " << sha256.toHex() << endl;
         quint32 size;
         stream >> size;
         d << spacer.innerSpaces() << "size: " << size << endl;
@@ -1787,7 +1787,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetFavedStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << endl;
@@ -1798,7 +1798,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetFeaturedStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << endl;
@@ -1809,7 +1809,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetFullChat(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -1820,7 +1820,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetGameHighScores(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -1837,7 +1837,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetHistory(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -1869,7 +1869,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetInlineBotResults(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -1892,7 +1892,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetInlineGameHighScores(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputBotInlineMessageID id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -1906,7 +1906,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetMaskStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << endl;
@@ -1917,7 +1917,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetMessageEditData(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -1931,7 +1931,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetMessages(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -1942,7 +1942,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetMessagesViews(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -1959,7 +1959,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetPeerDialogs(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<TLInputPeer> peers;
         stream >> peers;
         d << spacer.innerSpaces() << "peers: " << peers << endl;
@@ -1970,7 +1970,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetPeerSettings(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -1985,7 +1985,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetRecentLocations(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -1999,7 +1999,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetRecentStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2013,7 +2013,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetSavedGifs(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << endl;
@@ -2024,7 +2024,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetStickerSet(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputStickerSet stickerset;
         stream >> stickerset;
         d << spacer.innerSpaces() << "stickerset: " << stickerset << endl;
@@ -2035,7 +2035,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetUnreadMentions(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2061,7 +2061,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetWebPage(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString url;
         stream >> url;
         d << spacer.innerSpaces() << "url: " << url << endl;
@@ -2075,7 +2075,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetWebPagePreview(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString message;
         stream >> message;
         d << spacer.innerSpaces() << "message: " << message << endl;
@@ -2086,7 +2086,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesHideReportSpam(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2097,7 +2097,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesImportChatInvite(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << endl;
@@ -2108,7 +2108,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesInstallStickerSet(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputStickerSet stickerset;
         stream >> stickerset;
         d << spacer.innerSpaces() << "stickerset: " << stickerset << endl;
@@ -2122,7 +2122,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesMigrateChat(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -2133,7 +2133,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReadEncryptedHistory(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2147,7 +2147,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReadFeaturedStickers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<quint64> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -2158,7 +2158,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReadHistory(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2172,7 +2172,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReadMentions(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2183,7 +2183,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReadMessageContents(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<quint32> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -2194,7 +2194,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReceivedMessages(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 maxId;
         stream >> maxId;
         d << spacer.innerSpaces() << "maxId: " << maxId << endl;
@@ -2205,7 +2205,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReceivedQueue(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 maxQts;
         stream >> maxQts;
         d << spacer.innerSpaces() << "maxQts: " << maxQts << endl;
@@ -2216,7 +2216,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReorderPinnedDialogs(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2230,7 +2230,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReorderStickerSets(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2244,7 +2244,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReportEncryptedSpam(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2255,7 +2255,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesReportSpam(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2266,7 +2266,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesRequestEncryption(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputUser userId;
         stream >> userId;
         d << spacer.innerSpaces() << "userId: " << userId << endl;
@@ -2275,7 +2275,7 @@ void dumpRpc(Stream &stream)
         d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray gA;
         stream >> gA;
-        d << spacer.innerSpaces() << "gA: " << gA << endl;
+        d << spacer.innerSpaces() << "gA: " << gA.toHex() << endl;
     }
         d << ")";
         break;
@@ -2283,7 +2283,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSaveDraft(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2300,7 +2300,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSaveGif(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputDocument id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -2314,7 +2314,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSaveRecentSticker(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2331,7 +2331,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSearch(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2372,7 +2372,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSearchGifs(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString q;
         stream >> q;
         d << spacer.innerSpaces() << "q: " << q << endl;
@@ -2386,7 +2386,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSearchGlobal(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QString q;
         stream >> q;
         d << spacer.innerSpaces() << "q: " << q << endl;
@@ -2409,7 +2409,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSendEncrypted(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2418,7 +2418,7 @@ void dumpRpc(Stream &stream)
         d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray data;
         stream >> data;
-        d << spacer.innerSpaces() << "data: " << data << endl;
+        d << spacer.innerSpaces() << "data: " << data.toHex() << endl;
     }
         d << ")";
         break;
@@ -2426,7 +2426,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSendEncryptedFile(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2435,7 +2435,7 @@ void dumpRpc(Stream &stream)
         d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray data;
         stream >> data;
-        d << spacer.innerSpaces() << "data: " << data << endl;
+        d << spacer.innerSpaces() << "data: " << data.toHex() << endl;
         TLInputEncryptedFile file;
         stream >> file;
         d << spacer.innerSpaces() << "file: " << file << endl;
@@ -2446,7 +2446,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSendEncryptedService(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2455,7 +2455,7 @@ void dumpRpc(Stream &stream)
         d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray data;
         stream >> data;
-        d << spacer.innerSpaces() << "data: " << data << endl;
+        d << spacer.innerSpaces() << "data: " << data.toHex() << endl;
     }
         d << ")";
         break;
@@ -2463,7 +2463,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSendInlineBotResult(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2486,7 +2486,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSendMedia(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2506,7 +2506,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSendMessage(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2526,7 +2526,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSendScreenshotNotification(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2543,7 +2543,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSetBotCallbackAnswer(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2560,7 +2560,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSetBotPrecheckoutResults(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2574,7 +2574,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSetBotShippingResults(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2588,7 +2588,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSetEncryptedTyping(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputEncryptedChat peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2602,7 +2602,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSetGameScore(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2625,7 +2625,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSetInlineBotResults(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2645,7 +2645,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSetInlineGameScore(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2665,7 +2665,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesSetTyping(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2679,7 +2679,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesStartBot(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputUser bot;
         stream >> bot;
         d << spacer.innerSpaces() << "bot: " << bot << endl;
@@ -2699,7 +2699,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesToggleChatAdmins(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 chatId;
         stream >> chatId;
         d << spacer.innerSpaces() << "chatId: " << chatId << endl;
@@ -2713,7 +2713,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesToggleDialogPin(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2727,7 +2727,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesUninstallStickerSet(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputStickerSet stickerset;
         stream >> stickerset;
         d << spacer.innerSpaces() << "stickerset: " << stickerset << endl;
@@ -2738,7 +2738,7 @@ void dumpRpc(Stream &stream)
         d << "MessagesUploadMedia(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2752,7 +2752,7 @@ void dumpRpc(Stream &stream)
         d << "PaymentsClearSavedInfo(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2763,7 +2763,7 @@ void dumpRpc(Stream &stream)
         d << "PaymentsGetPaymentForm(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 msgId;
         stream >> msgId;
         d << spacer.innerSpaces() << "msgId: " << msgId << endl;
@@ -2774,7 +2774,7 @@ void dumpRpc(Stream &stream)
         d << "PaymentsGetPaymentReceipt(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 msgId;
         stream >> msgId;
         d << spacer.innerSpaces() << "msgId: " << msgId << endl;
@@ -2789,7 +2789,7 @@ void dumpRpc(Stream &stream)
         d << "PaymentsSendPaymentForm(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2806,7 +2806,7 @@ void dumpRpc(Stream &stream)
         d << "PaymentsValidateRequestedInfo(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -2823,13 +2823,13 @@ void dumpRpc(Stream &stream)
         d << "PhoneAcceptCall(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
         QByteArray gB;
         stream >> gB;
-        d << spacer.innerSpaces() << "gB: " << gB << endl;
+        d << spacer.innerSpaces() << "gB: " << gB.toHex() << endl;
         TLPhoneCallProtocol protocol;
         stream >> protocol;
         d << spacer.innerSpaces() << "protocol: " << protocol << endl;
@@ -2840,13 +2840,13 @@ void dumpRpc(Stream &stream)
         d << "PhoneConfirmCall(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
         QByteArray gA;
         stream >> gA;
-        d << spacer.innerSpaces() << "gA: " << gA << endl;
+        d << spacer.innerSpaces() << "gA: " << gA.toHex() << endl;
         quint64 keyFingerprint;
         stream >> keyFingerprint;
         d << spacer.innerSpaces() << "keyFingerprint: " << keyFingerprint << endl;
@@ -2860,7 +2860,7 @@ void dumpRpc(Stream &stream)
         d << "PhoneDiscardCall(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2884,7 +2884,7 @@ void dumpRpc(Stream &stream)
         d << "PhoneReceivedCall(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2895,7 +2895,7 @@ void dumpRpc(Stream &stream)
         d << "PhoneRequestCall(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputUser userId;
         stream >> userId;
         d << spacer.innerSpaces() << "userId: " << userId << endl;
@@ -2904,7 +2904,7 @@ void dumpRpc(Stream &stream)
         d << spacer.innerSpaces() << "randomId: " << randomId << endl;
         QByteArray gAHash;
         stream >> gAHash;
-        d << spacer.innerSpaces() << "gAHash: " << gAHash << endl;
+        d << spacer.innerSpaces() << "gAHash: " << gAHash.toHex() << endl;
         TLPhoneCallProtocol protocol;
         stream >> protocol;
         d << spacer.innerSpaces() << "protocol: " << protocol << endl;
@@ -2915,7 +2915,7 @@ void dumpRpc(Stream &stream)
         d << "PhoneSaveCallDebug(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2929,7 +2929,7 @@ void dumpRpc(Stream &stream)
         d << "PhoneSetCallRating(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPhoneCall peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << endl;
@@ -2946,7 +2946,7 @@ void dumpRpc(Stream &stream)
         d << "PhotosDeletePhotos(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<TLInputPhoto> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -2957,7 +2957,7 @@ void dumpRpc(Stream &stream)
         d << "PhotosGetUserPhotos(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputUser userId;
         stream >> userId;
         d << spacer.innerSpaces() << "userId: " << userId << endl;
@@ -2977,7 +2977,7 @@ void dumpRpc(Stream &stream)
         d << "PhotosUpdateProfilePhoto(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputPhoto id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -2988,7 +2988,7 @@ void dumpRpc(Stream &stream)
         d << "PhotosUploadProfilePhoto(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputFile file;
         stream >> file;
         d << spacer.innerSpaces() << "file: " << file << endl;
@@ -2999,7 +2999,7 @@ void dumpRpc(Stream &stream)
         d << "StickersAddStickerToSet(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputStickerSet stickerset;
         stream >> stickerset;
         d << spacer.innerSpaces() << "stickerset: " << stickerset << endl;
@@ -3013,7 +3013,7 @@ void dumpRpc(Stream &stream)
         d << "StickersChangeStickerPosition(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputDocument sticker;
         stream >> sticker;
         d << spacer.innerSpaces() << "sticker: " << sticker << endl;
@@ -3027,7 +3027,7 @@ void dumpRpc(Stream &stream)
         d << "StickersCreateStickerSet(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -3050,7 +3050,7 @@ void dumpRpc(Stream &stream)
         d << "StickersRemoveStickerFromSet(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputDocument sticker;
         stream >> sticker;
         d << spacer.innerSpaces() << "sticker: " << sticker << endl;
@@ -3061,7 +3061,7 @@ void dumpRpc(Stream &stream)
         d << "UpdatesGetChannelDifference(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -3084,7 +3084,7 @@ void dumpRpc(Stream &stream)
         d << "UpdatesGetDifference(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << endl;
@@ -3108,10 +3108,10 @@ void dumpRpc(Stream &stream)
         d << "UploadGetCdnFile(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QByteArray fileToken;
         stream >> fileToken;
-        d << spacer.innerSpaces() << "fileToken: " << fileToken << endl;
+        d << spacer.innerSpaces() << "fileToken: " << fileToken.toHex() << endl;
         quint32 offset;
         stream >> offset;
         d << spacer.innerSpaces() << "offset: " << offset << endl;
@@ -3125,10 +3125,10 @@ void dumpRpc(Stream &stream)
         d << "UploadGetCdnFileHashes(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QByteArray fileToken;
         stream >> fileToken;
-        d << spacer.innerSpaces() << "fileToken: " << fileToken << endl;
+        d << spacer.innerSpaces() << "fileToken: " << fileToken.toHex() << endl;
         quint32 offset;
         stream >> offset;
         d << spacer.innerSpaces() << "offset: " << offset << endl;
@@ -3139,7 +3139,7 @@ void dumpRpc(Stream &stream)
         d << "UploadGetFile(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputFileLocation location;
         stream >> location;
         d << spacer.innerSpaces() << "location: " << location << endl;
@@ -3156,7 +3156,7 @@ void dumpRpc(Stream &stream)
         d << "UploadGetWebFile(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputWebFileLocation location;
         stream >> location;
         d << spacer.innerSpaces() << "location: " << location << endl;
@@ -3173,13 +3173,13 @@ void dumpRpc(Stream &stream)
         d << "UploadReuploadCdnFile(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         QByteArray fileToken;
         stream >> fileToken;
-        d << spacer.innerSpaces() << "fileToken: " << fileToken << endl;
+        d << spacer.innerSpaces() << "fileToken: " << fileToken.toHex() << endl;
         QByteArray requestToken;
         stream >> requestToken;
-        d << spacer.innerSpaces() << "requestToken: " << requestToken << endl;
+        d << spacer.innerSpaces() << "requestToken: " << requestToken.toHex() << endl;
     }
         d << ")";
         break;
@@ -3187,7 +3187,7 @@ void dumpRpc(Stream &stream)
         d << "UploadSaveBigFilePart(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint64 fileId;
         stream >> fileId;
         d << spacer.innerSpaces() << "fileId: " << fileId << endl;
@@ -3199,7 +3199,7 @@ void dumpRpc(Stream &stream)
         d << spacer.innerSpaces() << "fileTotalParts: " << fileTotalParts << endl;
         QByteArray bytes;
         stream >> bytes;
-        d << spacer.innerSpaces() << "bytes: " << bytes << endl;
+        d << spacer.innerSpaces() << "bytes: " << printBytes(bytes) << endl;
     }
         d << ")";
         break;
@@ -3207,7 +3207,7 @@ void dumpRpc(Stream &stream)
         d << "UploadSaveFilePart(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         quint64 fileId;
         stream >> fileId;
         d << spacer.innerSpaces() << "fileId: " << fileId << endl;
@@ -3216,7 +3216,7 @@ void dumpRpc(Stream &stream)
         d << spacer.innerSpaces() << "filePart: " << filePart << endl;
         QByteArray bytes;
         stream >> bytes;
-        d << spacer.innerSpaces() << "bytes: " << bytes << endl;
+        d << spacer.innerSpaces() << "bytes: " << printBytes(bytes) << endl;
     }
         d << ")";
         break;
@@ -3224,7 +3224,7 @@ void dumpRpc(Stream &stream)
         d << "UsersGetFullUser(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLInputUser id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;
@@ -3235,7 +3235,7 @@ void dumpRpc(Stream &stream)
         d << "UsersGetUsers(";
     {
         d << endl;
-        Telegram::Debug::Spacer spacer;
+        Spacer spacer;
         TLVector<TLInputUser> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << endl;

@@ -1057,7 +1057,7 @@ QDebug operator<<(QDebug d, const TLAuthExportedAuthorization &type)
     case TLValue::AuthExportedAuthorization:
         d << "\n";
         d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << printBytes(type.bytes) <<"\n";
         break;
     default:
         break;
@@ -1580,7 +1580,7 @@ QDebug operator<<(QDebug d, const TLEncryptedMessage &type)
         d << spacer.innerSpaces() << "randomId: " << type.randomId <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << printBytes(type.bytes) <<"\n";
         d << spacer.innerSpaces() << "file: " << type.file <<"\n";
         break;
     case TLValue::EncryptedMessageService:
@@ -1588,7 +1588,7 @@ QDebug operator<<(QDebug d, const TLEncryptedMessage &type)
         d << spacer.innerSpaces() << "randomId: " << type.randomId <<"\n";
         d << spacer.innerSpaces() << "chatId: " << type.chatId <<"\n";
         d << spacer.innerSpaces() << "date: " << type.date <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << printBytes(type.bytes) <<"\n";
         break;
     default:
         break;
@@ -3025,7 +3025,7 @@ QDebug operator<<(QDebug d, const TLPhotoSize &type)
         d << spacer.innerSpaces() << "location: " << type.location <<"\n";
         d << spacer.innerSpaces() << "w: " << type.w <<"\n";
         d << spacer.innerSpaces() << "h: " << type.h <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << printBytes(type.bytes) <<"\n";
         break;
     default:
         break;
@@ -3586,7 +3586,7 @@ QDebug operator<<(QDebug d, const TLUploadCdnFile &type)
         break;
     case TLValue::UploadCdnFile:
         d << "\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << printBytes(type.bytes) <<"\n";
         break;
     default:
         break;
@@ -3607,7 +3607,7 @@ QDebug operator<<(QDebug d, const TLUploadFile &type)
         d << "\n";
         d << spacer.innerSpaces() << "type: " << type.type <<"\n";
         d << spacer.innerSpaces() << "mtime: " << type.mtime <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << printBytes(type.bytes) <<"\n";
         break;
     case TLValue::UploadFileCdnRedirect:
         d << "\n";
@@ -3638,7 +3638,7 @@ QDebug operator<<(QDebug d, const TLUploadWebFile &type)
         d << spacer.innerSpaces() << "mimeType: " << type.mimeType <<"\n";
         d << spacer.innerSpaces() << "fileType: " << type.fileType <<"\n";
         d << spacer.innerSpaces() << "mtime: " << type.mtime <<"\n";
-        d << spacer.innerSpaces() << "bytes: " << type.bytes.toHex() <<"\n";
+        d << spacer.innerSpaces() << "bytes: " << printBytes(type.bytes) <<"\n";
         break;
     default:
         break;
