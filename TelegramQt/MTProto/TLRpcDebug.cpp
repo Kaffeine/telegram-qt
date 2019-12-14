@@ -22,6 +22,8 @@
 
 #include "Stream.hpp"
 
+using namespace Telegram::Debug;
+
 namespace Telegram {
 
 namespace MTProto {

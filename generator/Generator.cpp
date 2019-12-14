@@ -1407,7 +1407,7 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
     if (!method.params.isEmpty()) {
         stream << spacing << "{" << endl;
         stream << spacing << "    d << endl;" << endl;
-        stream << spacing << QStringLiteral("    Telegram::Debug::Spacer spacer;") << endl;
+        stream << spacing << QStringLiteral("    Spacer spacer;") << endl;
 
         for (const TLParam &param : method.params) {
             if (param.dependOnFlag()) {
