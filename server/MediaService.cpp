@@ -25,6 +25,8 @@
 #include <QImage>
 #include <QLoggingCategory>
 
+Q_LOGGING_CATEGORY(lcMediaService, "telegram.server.media", QtWarningMsg)
+
 static const QString c_storageFileDir = QLatin1String("storage%1/volume%2");
 
 namespace Telegram {
@@ -120,9 +122,9 @@ QIODevice *MediaService::beginReadFile(const FileDescriptor &descriptor)
     QFile *file = new QFile();
     m_openFiles.insert(file);
     file->setFileName(getFileName(descriptor.volumeId, descriptor.localId));
-    qWarning() << CALL_INFO << file->fileName();
+    qCDebug(lcMediaService) << CALL_INFO << file->fileName();
     if (!file->open(QIODevice::ReadOnly)) {
-        qWarning() << CALL_INFO << "Unable to open file!";
+        qCWarning(lcMediaService) << CALL_INFO << "Unable to open file!";
         return nullptr;
     }
     return file;
@@ -132,7 +134,7 @@ void MediaService::endReadFile(QIODevice *device)
 {
     QFile *file = static_cast<QFile *>(device);
     if (!m_openFiles.contains(file)) {
-        qWarning() << CALL_INFO << "not such file" << device;
+        qCWarning(lcMediaService) << CALL_INFO << "not such file" << device;
         return;
     }
 
@@ -147,9 +149,9 @@ QIODevice *MediaService::beginWriteFile()
     QFile *file = new QFile();
     m_openFiles.insert(file);
     file->setFileName(getFileName(volumeId(), ++m_lastFileLocalId));
-    qWarning() << CALL_INFO << file->fileName();
+    qCDebug(lcMediaService) << CALL_INFO << file->fileName();
     if (!file->open(QIODevice::WriteOnly)) {
-        qWarning() << CALL_INFO << "Unable to open file!";
+        qCWarning(lcMediaService) << CALL_INFO << "Unable to open file!";
     }
     return file;
 }
@@ -158,7 +160,7 @@ FileDescriptor *MediaService::endWriteFile(QIODevice *device, const QString &nam
 {
     QFile *file = static_cast<QFile *>(device);
     if (!m_openFiles.contains(file)) {
-        qWarning() << CALL_INFO << "not such file" << device;
+        qCWarning(lcMediaService) << CALL_INFO << "not such file" << device;
         return nullptr;
     }
 
@@ -235,7 +237,7 @@ ImageDescriptor MediaService::processImageFile(const FileDescriptor &file, const
         }
         QIODevice *output = beginWriteFile();
         if (!sizedImage.save(output, "PNG")) {
-            qCritical() << Q_FUNC_INFO << "Unable to save image size" << maxDimension;
+            qCWarning(lcMediaService) << Q_FUNC_INFO << "Unable to save image size" << maxDimension;
         }
         const FileDescriptor *fileDescriptor = endWriteFile(output, name);
 
