@@ -22,6 +22,7 @@
 #include "IgnoredMessageNotification.hpp"
 
 static const QByteArray c_spaces = QByteArray(40, ' ');
+static constexpr int c_maxBytesPrintedLength = 42;
 
 const char *getSpaces(int count)
 {
@@ -63,6 +64,19 @@ const char *Spacer::outerSpaces()
     } else {
         return " ";
     }
+}
+
+QByteArray printBytes(const QByteArray &bytes)
+{
+    if (bytes.size() > c_maxBytesPrintedLength) {
+        static QString bytesTemplateString = QLatin1String("..(%1 bytes in total)..");
+        static const int contextLength = c_maxBytesPrintedLength - bytesTemplateString.length();
+
+        return bytes.left(contextLength).toHex()
+                + bytesTemplateString.arg(bytes.size()).toLatin1()
+                + bytes.right(contextLength).toHex();
+    }
+    return bytes.toHex();
 }
 
 } // Debug namespace

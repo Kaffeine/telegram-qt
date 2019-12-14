@@ -56,6 +56,8 @@ private:
     bool m_hasInnerCalls = false;
 };
 
+TELEGRAMQT_INTERNAL_EXPORT QByteArray printBytes(const QByteArray &bytes);
+
 } // Debug namespace
 
 template <typename T>
