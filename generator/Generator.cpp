@@ -1415,8 +1415,20 @@ QString Generator::generateDebugRpcParse(const TLMethod &method)
             }
             stream << spacing << QStringLiteral("    %1 %2;").arg(param.type(), param.getAlias()) << endl;
             stream << spacing << QStringLiteral("    stream >> %1;").arg(param.getAlias()) << endl;
+
+            QString typeDebugStatement;
+            if (param.type().contains(QLatin1String("QByteArray"))) {
+                if (param.getAlias() == QLatin1String("bytes")) {
+                    typeDebugStatement = QStringLiteral("printBytes(bytes)");
+                } else {
+                    typeDebugStatement = QStringLiteral("%1.toHex()").arg(param.getAlias());
+                }
+            } else {
+                typeDebugStatement = param.getAlias();
+            }
+
             stream << spacing << "    d << spacer.innerSpaces()"
-                   << " << \"" << param.getAlias() << ": \" << " << param.getAlias()
+                   << " << \"" << param.getAlias() << ": \" << " << typeDebugStatement
                    << " << endl;" << endl;
         }
         stream << spacing << "}" << endl;
