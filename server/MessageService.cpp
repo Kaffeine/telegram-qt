@@ -24,8 +24,6 @@
 #include <QDateTime>
 #include <QLoggingCategory>
 
-static const QString c_storageFileDir = QLatin1String("storage/volume%1");
-
 namespace Telegram {
 
 namespace Server {
