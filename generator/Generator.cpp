@@ -967,7 +967,11 @@ QString Generator::debugOperatorPerTypeImplementation(const QString &argName, co
     for (const TLParam &member : subType.members) {
         QString typeDebugStatement = QStringLiteral("type.%1");
         if (member.type().contains(QLatin1String("QByteArray"))) {
-            typeDebugStatement = QStringLiteral("type.%1.toHex()");
+            if (member.getAlias() == QLatin1String("bytes")) {
+                typeDebugStatement = QStringLiteral("printBytes(type.%1)");
+            } else {
+                typeDebugStatement = QStringLiteral("type.%1.toHex()");
+            }
         }
         typeDebugStatement = typeDebugStatement.arg(member.getAlias());
         typeDebugStatement = c_privacyFilter.value(member.getAlias(), QStringLiteral("%1")).arg(typeDebugStatement);
