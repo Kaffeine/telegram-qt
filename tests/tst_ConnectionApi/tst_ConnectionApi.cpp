@@ -222,6 +222,8 @@ void tst_ConnectionApi::testClientConnection()
     QFETCH(DcOption, clientDcOption);
     QFETCH(bool, waitForPhoneRequest);
 
+    const bool withMigration = userData.dcId != clientDcOption.id;
+
     const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
     QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
     const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
@@ -264,9 +266,24 @@ void tst_ConnectionApi::testClientConnection()
             TRY_COMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
         }
 
-        QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForConnection));
-        QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
-        QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForAuthentication));
+        QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<Telegram::Client::ConnectionApi::Status>(),
+                 Client::ConnectionApi::StatusWaitForConnection);
+        QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<Telegram::Client::ConnectionApi::Status>(),
+                 Client::ConnectionApi::StatusConnecting);
+        QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<Telegram::Client::ConnectionApi::Status>(),
+                 Client::ConnectionApi::StatusWaitForAuthentication);
+        if (withMigration) {
+            TRY_COMPARE(clientConnectionStatusSpy.count(), 3);
+            // In case of migration we have those signals received twice
+            // (once for the first connection DC and once for the target DC connection)
+            QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<Telegram::Client::ConnectionApi::Status>(),
+                     Client::ConnectionApi::StatusWaitForConnection);
+            QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<Telegram::Client::ConnectionApi::Status>(),
+                     Client::ConnectionApi::StatusConnecting);
+            QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<Telegram::Client::ConnectionApi::Status>(),
+                     Client::ConnectionApi::StatusWaitForAuthentication);
+        }
+        QVERIFY(clientConnectionStatusSpy.isEmpty());
 
         TRY_COMPARE(client.dataStorage()->serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
         TRY_VERIFY(!authCodeSpy.isEmpty());
@@ -423,9 +440,13 @@ void tst_ConnectionApi::reconnect()
     QSignalSpy authCodeSpy(signInOperation, &Client::AuthOperation::authCodeRequired);
 
     TRY_COMPARE(connectionApi->status(), Telegram::Client::ConnectionApi::StatusWaitForAuthentication);
-    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForConnection));
-    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusConnecting));
-    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<int>(), static_cast<int>(Client::ConnectionApi::StatusWaitForAuthentication));
+    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<Telegram::Client::ConnectionApi::Status>(),
+             Client::ConnectionApi::StatusWaitForConnection);
+    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<Telegram::Client::ConnectionApi::Status>(),
+             Client::ConnectionApi::StatusConnecting);
+    QCOMPARE(clientConnectionStatusSpy.takeFirst().first().value<Telegram::Client::ConnectionApi::Status>(),
+             Client::ConnectionApi::StatusWaitForAuthentication);
+    QVERIFY(clientConnectionStatusSpy.isEmpty());
 
     TRY_COMPARE(client.dataStorage()->serverConfiguration().dcOptions, cluster.serverConfiguration().dcOptions);
     TRY_VERIFY(!authCodeSpy.isEmpty());
