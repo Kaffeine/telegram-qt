@@ -66,7 +66,10 @@ Connection::Connection(QObject *parent) :
 void Connection::setDcOption(const DcOption &dcOption)
 {
     m_dcOption = dcOption;
-    setObjectName(QStringLiteral("Client(dc%1)").arg(dcOption.id));
+    setObjectName(QStringLiteral("Client(dc%1, flags %2)")
+                  .arg(dcOption.id)
+                  .arg(dcOption.flags)
+                  );
     m_dhLayer->setObjectName(objectName());
     m_rpcLayer->setObjectName(objectName());
 }
