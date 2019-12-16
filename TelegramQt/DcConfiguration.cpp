@@ -41,8 +41,12 @@ DcOption DcConfiguration::getOption(const ConnectionSpec spec) const
             }
             continue;
         }
+
         // The Option meet the requirements, but maybe there is a better one
         result = opt;
+        if (spec.flags & ConnectionSpec::RequestFlag::MediaOnly) {
+            result.flags |= DcOption::MediaOnly;
+        }
     }
     return result;
 }
