@@ -284,7 +284,7 @@ bool RpcLayer::sendRpcError(const RpcError &error, quint64 messageId)
     return sendRpcReply(output.getData(), messageId);
 }
 
-bool RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
+quint64 RpcLayer::sendRpcReply(const QByteArray &reply, quint64 messageId)
 {
 #define DUMP_SERVER_RPC_PACKETS
 #ifdef DUMP_SERVER_RPC_PACKETS

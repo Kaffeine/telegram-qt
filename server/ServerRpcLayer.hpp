@@ -54,7 +54,7 @@ public:
 
     void sendIgnoredMessageNotification(quint32 errorCode, const MTProto::FullMessageHeader &header);
     bool sendRpcError(const Telegram::RpcError &error, quint64 messageId);
-    bool sendRpcReply(const QByteArray &reply, quint64 messageId);
+    quint64 sendRpcReply(const QByteArray &reply, quint64 messageId);
     bool sendRpcMessage(const QByteArray &message);
 
     static const char *gzipPackMessage();
