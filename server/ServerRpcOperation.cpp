@@ -11,9 +11,9 @@ namespace Server {
 
 RpcOperation::RpcOperation(RpcLayer *rpcLayer) :
     PendingOperation(rpcLayer),
-    m_rpcLayer(rpcLayer),
+    m_layer(rpcLayer),
     m_api(rpcLayer->api()),
-    m_layer(rpcLayer->activeLayer())
+    m_layerNumber(rpcLayer->activeLayerNumber())
 {
 }
 

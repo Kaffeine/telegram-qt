@@ -28,7 +28,7 @@ public:
 //    void sendReply(const QByteArray &reply);
 
     LocalServerApi *api() { return m_api; }
-    RpcLayer *layer() { return m_rpcLayer; }
+    RpcLayer *layer() { return m_layer; }
 
     bool sendRpcError(const RpcError &error);
 
@@ -40,10 +40,10 @@ public:
 protected:
     virtual bool processNotImplementedMethod(TLValue functionCode);
 
-    RpcLayer *m_rpcLayer = nullptr;
+    RpcLayer *m_layer = nullptr;
     LocalServerApi *m_api = nullptr;
     quint64 m_messageId = 0;
-    quint32 m_layer = 0;
+    quint32 m_layerNumber = 0;
 //    QByteArray m_request;
 };
 

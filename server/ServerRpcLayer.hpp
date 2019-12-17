@@ -59,7 +59,7 @@ public:
 
     static const char *gzipPackMessage();
 
-    quint32 activeLayer() const;
+    quint32 activeLayerNumber() const;
 
 protected:
     bool processMessageHeader(const MTProto::FullMessageHeader &header) override;

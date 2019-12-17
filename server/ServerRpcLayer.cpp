@@ -223,7 +223,7 @@ bool RpcLayer::processInitConnection(const MTProto::Message &message)
     stream >> osInfo;
     stream >> appVersion;
 #if TELEGRAMQT_LAYER >= 67
-    if (activeLayer() >= 67) {
+    if (activeLayerNumber() >= 67) {
         stream >> systemLanguage;
         // If the pack is not registered on server, raise CONNECTION_LANG_PACK_INVALID RPC Error
         stream >> languagePack;
@@ -236,7 +236,7 @@ bool RpcLayer::processInitConnection(const MTProto::Message &message)
         qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << "Invalid read!";
         return false;
     }
-    session()->setLayer(activeLayer());
+    session()->setLayer(activeLayerNumber());
     session()->appId = appId;
     session()->appVersion = appVersion;
     session()->languageCode = languageCode;
@@ -323,7 +323,7 @@ const char *RpcLayer::gzipPackMessage()
     return "Server: gzip the answer for message";
 }
 
-quint32 RpcLayer::activeLayer() const
+quint32 RpcLayer::activeLayerNumber() const
 {
     if (m_invokeWithLayer.isEmpty()) {
         if (m_session) {
