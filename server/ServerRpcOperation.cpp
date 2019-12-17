@@ -1,6 +1,7 @@
 #include "ServerRpcOperation.hpp"
 
 #include "Debug_p.hpp"
+#include "RawStream.hpp"
 #include "ServerRpcLayer.hpp"
 #include "Session.hpp"
 #include "TelegramServerUser.hpp"
@@ -25,7 +26,11 @@ void RpcOperation::setMessageId(quint64 messageId)
 bool RpcOperation::sendRpcError(const RpcError &error)
 {
     qDebug() << Q_FUNC_INFO << error.type() << error.reason() << error.argument() << error.message() << m_messageId;
-    return layer()->sendRpcError(error, m_messageId);
+
+    RawStreamEx output(RawStreamEx::WriteOnly);
+    output << error;
+
+    return layer()->sendRpcReply(this, output.getData());
 }
 
 bool RpcOperation::verifyHasUserOrWantedUser()

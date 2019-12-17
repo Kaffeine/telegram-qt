@@ -318,6 +318,16 @@ bool RpcLayer::sendRpcMessage(const QByteArray &message)
     return sendPacket(message, SendMode::ServerInitiative);
 }
 
+bool RpcLayer::sendRpcReply(RpcOperation *operation, const QByteArray &replyData)
+{
+    const quint64 operationReplyId = sendRpcReply(replyData, operation->messageId());
+    if (!operationReplyId) {
+        qCWarning(c_serverRpcLayerCategory) << "Unable to send RPC reply for" << operation << "op messageId:" << operation->messageId();
+        return false;
+    }
+    return true;
+}
+
 const char *RpcLayer::gzipPackMessage()
 {
     return "Server: gzip the answer for message";
