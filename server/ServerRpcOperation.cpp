@@ -17,15 +17,15 @@ RpcOperation::RpcOperation(RpcLayer *rpcLayer) :
 {
 }
 
-void RpcOperation::setRequestId(quint64 messageId)
+void RpcOperation::setMessageId(quint64 messageId)
 {
-    m_requestId = messageId;
+    m_messageId = messageId;
 }
 
 bool RpcOperation::sendRpcError(const RpcError &error)
 {
-    qDebug() << Q_FUNC_INFO << error.type() << error.reason() << error.argument() << error.message() << m_requestId;
-    return layer()->sendRpcError(error, m_requestId);
+    qDebug() << Q_FUNC_INFO << error.type() << error.reason() << error.argument() << error.message() << m_messageId;
+    return layer()->sendRpcError(error, m_messageId);
 }
 
 bool RpcOperation::verifyHasUserOrWantedUser()

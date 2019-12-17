@@ -35,18 +35,18 @@ namespace Server {
 class RpcProcessingContext
 {
 public:
-    RpcProcessingContext(MTProto::Stream &inputStream, quint64 requestId);
+    RpcProcessingContext(MTProto::Stream &inputStream, quint64 messageId);
 
     MTProto::Stream &inputStream() { return m_inputStream; }
 
-    quint64 requestId() const { return m_id; }
+    quint64 messageId() const { return m_messageId; }
 
     TLValue readCode() const { return m_code; }
     void setReadCode(const TLValue code);
 
 protected:
     MTProto::Stream &m_inputStream;
-    quint64 m_id;
+    quint64 m_messageId;
     TLValue m_code;
 };
 

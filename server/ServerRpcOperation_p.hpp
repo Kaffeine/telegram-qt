@@ -19,7 +19,7 @@ bool RpcOperation::sendRpcReply(const TLType &reply)
 #ifdef DEVELOPER_BUILD
     qDebug() << this << reply;
 #endif
-    return layer()->sendRpcReply(output.getData(), m_requestId);
+    return layer()->sendRpcReply(output.getData(), m_messageId);
 }
 
 } // Server namespace

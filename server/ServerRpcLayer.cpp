@@ -165,7 +165,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         qCInfo(c_serverRpcLayerCategory) << CALL_INFO << "block" << requestValue.toString()
                                          << "for unauthorized connection" << getHelper()->authId();
         RpcError error(RpcError::Reason::AuthKeyUnregistered);
-        return sendRpcError(error, context.requestId());
+        return sendRpcError(error, context.messageId());
     }
 
     RpcOperation *op = nullptr;

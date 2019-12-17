@@ -22,7 +22,8 @@ class RpcOperation : public PendingOperation
 public:
     explicit RpcOperation(RpcLayer *rpcLayer);
 
-    void setRequestId(quint64 messageId);
+    quint64 messageId() const { return m_messageId; }
+    void setMessageId(quint64 messageId);
 
 //    void sendReply(const QByteArray &reply);
 
@@ -41,7 +42,7 @@ protected:
 
     RpcLayer *m_rpcLayer = nullptr;
     LocalServerApi *m_api = nullptr;
-    quint64 m_requestId = 0;
+    quint64 m_messageId = 0;
     quint32 m_layer = 0;
 //    QByteArray m_request;
 };

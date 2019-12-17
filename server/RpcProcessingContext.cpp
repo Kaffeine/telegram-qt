@@ -27,9 +27,9 @@ namespace Telegram {
 
 namespace Server {
 
-RpcProcessingContext::RpcProcessingContext(MTProto::Stream &stream, quint64 requestId) :
+RpcProcessingContext::RpcProcessingContext(MTProto::Stream &stream, quint64 messageId) :
     m_inputStream(stream),
-    m_id(requestId)
+    m_messageId(messageId)
 {
 #ifdef DEVELOPER_BUILD
     MTProto::Stream debugStream(stream.getData());
