@@ -28,6 +28,16 @@
 #define TELEGRAMQT_LAYER 72
 #endif
 
+namespace Telegram {
+
+namespace MTProto {
+
+constexpr quint32 LayerNumber67 = 67;
+
+} // MTProto namespace
+
+} // Telegram namespace
+
 struct TELEGRAMQT_INTERNAL_EXPORT TLValue {
     Q_GADGET
     Q_ENUMS(Value)

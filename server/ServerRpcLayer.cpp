@@ -223,7 +223,7 @@ bool RpcLayer::processInitConnection(const MTProto::Message &message)
     stream >> osInfo;
     stream >> appVersion;
 #if TELEGRAMQT_LAYER >= 67
-    if (activeLayerNumber() >= 67) {
+    if (activeLayerNumber() >= MTProto::LayerNumber67) {
         stream >> systemLanguage;
         // If the pack is not registered on server, raise CONNECTION_LANG_PACK_INVALID RPC Error
         stream >> languagePack;
