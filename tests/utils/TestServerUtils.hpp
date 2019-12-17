@@ -45,11 +45,10 @@ Telegram::Server::ImageDescriptor uploadUserImage(Telegram::Server::AbstractServ
     Telegram::RandomGenerator::instance()->generate(&fileId);
     QString pictureFileName = QLatin1String("my_profile.png");
     quint32 filePartId = 0;
-    quint32 partsCount = 1;
 
     Telegram::Server::IMediaService *mediaService = server->mediaService();
     mediaService->uploadFilePart(fileId, filePartId, pictureData);
-    const Telegram::Server::FileDescriptor desc = mediaService->getFileDescriptor(fileId, partsCount);
+    const Telegram::Server::UploadDescriptor desc = mediaService->getUploadedData(fileId);
     return mediaService->processImageFile(desc, pictureFileName);
 }
 
