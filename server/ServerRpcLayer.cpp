@@ -151,7 +151,7 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
     }
         return true;
     case TLValue::MsgsAck:
-        return true;
+        return processMessageAck(message.skipTLValue());
     default:
         break;
     }
@@ -184,9 +184,30 @@ bool RpcLayer::processMTProtoMessage(const MTProto::Message &message)
         qCWarning(c_serverRpcLayerCategory) << Q_FUNC_INFO << requestValue.toString() << "is not processed!";
         return false;
     }
+
     if (!op->isFinished()) {
         op->startLater();
+        op->deleteOnFinished();
     }
+    return true;
+}
+
+bool RpcLayer::processMessageAck(const MTProto::Message &message)
+{
+    MTProto::Stream stream(message.data);
+    TLVector<quint64> idsVector;
+    stream >> idsVector;
+    qCDebug(c_serverRpcLayerCategory) << "processMessageAck():" << idsVector;
+
+    for (quint64 messageId : idsVector) {
+        RpcOperation *operation = m_operationsToConfirm.take(messageId);
+        if (!operation) {
+            continue;
+        }
+        qCDebug(c_serverRpcLayerCategory) << operation << "confirmed";
+        operation->setFinished();
+    }
+
     return true;
 }
 
@@ -322,9 +343,12 @@ bool RpcLayer::sendRpcReply(RpcOperation *operation, const QByteArray &replyData
 {
     const quint64 operationReplyId = sendRpcReply(replyData, operation->messageId());
     if (!operationReplyId) {
-        qCWarning(c_serverRpcLayerCategory) << "Unable to send RPC reply for" << operation << "op messageId:" << operation->messageId();
+        qCWarning(c_serverRpcLayerCategory) << "Unable to send RPC reply for" << operation
+                                            << "op messageId:" << operation->messageId();
         return false;
     }
+    qCDebug(c_serverRpcLayerCategory) << "Track reply" << operationReplyId << "for" << operation;
+    m_operationsToConfirm.insert(operationReplyId, operation);
     return true;
 }
 

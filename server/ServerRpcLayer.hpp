@@ -3,6 +3,7 @@
 
 #include "RpcLayer.hpp"
 
+#include <QHash>
 #include <QStack>
 #include <QVector>
 
@@ -45,6 +46,7 @@ public:
     void setRpcFactories(const QVector<RpcOperationFactory*> &rpcFactories);
 
     bool processMTProtoMessage(const MTProto::Message &message) override;
+    bool processMessageAck(const MTProto::Message &message);
 
     void sendUpdates(const TLUpdates &updates);
 
@@ -77,6 +79,7 @@ protected:
     QStack<quint32> m_invokeWithLayer;
 
     QVector<RpcOperationFactory*> m_operationFactories;
+    QHash<quint64, RpcOperation *> m_operationsToConfirm; // messageId to operation
 };
 
 } // Server namespace
