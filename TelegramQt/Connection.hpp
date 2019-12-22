@@ -21,13 +21,13 @@ class TELEGRAMQT_EXPORT BaseConnection : public QObject
     Q_OBJECT
 public:
     enum class Status {
-        Disconnected,
-        Disconnecting,
-        Connecting, // Never bypassed, setted on connectToDc() call
+        Disconnected, // The initial and final status.
+        Disconnecting, // Setted on disconnect initialized by the client.
+        Connecting, // Never bypassed, setted on connectToDc() call.
         Connected, // Never bypassed, setted on transport connected.
         HasDhKey, // Never bypassed, setted on connected and has auth key or on DH established.
         Signed, // Never bypassed, setted by auth operation. CheckIn leads to reason Local, SignUp/SignIn leads to reason remote.
-        Failed // Transport maybe still connected, but reconnection is needed
+        Failed // Transport maybe still connected, but reconnection is needed.
     };
     Q_ENUM(Status)
 
