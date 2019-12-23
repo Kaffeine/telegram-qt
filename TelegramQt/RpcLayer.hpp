@@ -58,7 +58,7 @@ public:
 
     bool processMsgContainer(const MTProto::Message &message);
 
-    virtual void onConnectionFailed() {}
+    virtual void onConnectionLost(const QVariantHash &details);
 
 protected:
     Crypto::AesKey generateAesKey(const QByteArray &messageKey, int x) const;

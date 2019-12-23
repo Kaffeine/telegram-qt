@@ -3,6 +3,7 @@
 #include "ConnectionError.hpp"
 #include "Debug_p.hpp"
 #include "DhLayer.hpp"
+#include "PendingOperation.hpp"
 #include "RpcLayer.hpp"
 #include "SendPackageHelper.hpp"
 #include "CTelegramTransport.hpp"
@@ -81,16 +82,31 @@ void BaseConnection::setStatus(BaseConnection::Status status, BaseConnection::St
 
     qCDebug(c_baseConnectionCategory) << CALL_INFO << status << reason;
 
+    Status previousStatus = m_status;
     m_status = status;
-    emit statusChanged(status, reason);
-
 //    if (status < ConnectionStatusConnected) {
 //        stopPingTimer();
 //    }
 
+    bool failed = false;
     if (status == Status::Failed) {
-        m_rpcLayer->onConnectionFailed();
+        failed = true;
+    } else if (status == Status::Disconnected) {
+        if (previousStatus != Status::Failed) {
+            failed = true;
+        }
     }
+
+    if (failed) {
+        const QVariantHash details = {
+            { PendingOperation::c_text(), QLatin1String("connection failed") },
+            { c_statusKey(), static_cast<int>(status) },
+            { c_statusReasonKey(), static_cast<int>(reason) },
+        };
+        m_rpcLayer->onConnectionLost(details);
+    }
+
+    emit statusChanged(status, reason);
 }
 
 void BaseConnection::onTransportStateChanged()

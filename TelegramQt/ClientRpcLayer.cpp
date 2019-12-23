@@ -357,11 +357,11 @@ void RpcLayer::acknowledgeMessages()
     sendPacket(*message);
 }
 
-void RpcLayer::onConnectionFailed()
+void RpcLayer::onConnectionLost(const QVariantHash &details)
 {
     for (PendingRpcOperation *op : m_operations) {
         if (!op->isFinished()) {
-            op->setFinishedWithTextError(QLatin1String("Connection failed"));
+            op->setFinishedWithError(details);
         }
     }
     m_operations.clear();

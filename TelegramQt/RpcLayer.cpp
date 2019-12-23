@@ -281,4 +281,9 @@ bool BaseRpcLayer::processMsgContainer(const MTProto::Message &message)
     return processed;
 }
 
+void BaseRpcLayer::onConnectionLost(const QVariantHash &details)
+{
+    Q_UNUSED(details)
+}
+
 } // Telegram namespace

@@ -70,7 +70,7 @@ public:
     quint64 sendRpc(PendingRpcOperation *operation);
     bool resendIgnoredMessage(quint64 messageId);
 
-    void onConnectionFailed() override;
+    void onConnectionLost(const QVariantHash &details) override;
 
 protected Q_SLOTS:
     void acknowledgeMessages();
