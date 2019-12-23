@@ -42,6 +42,9 @@ public:
     explicit BaseConnection(QObject *parent = nullptr);
     ~BaseConnection() override;
 
+    static QString c_statusKey();
+    static QString c_statusReasonKey();
+
     quint64 authId() const;
 
     QByteArray authKey() const;

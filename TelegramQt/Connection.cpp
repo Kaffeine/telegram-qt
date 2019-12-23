@@ -25,6 +25,18 @@ BaseConnection::~BaseConnection()
     m_sendHelper = nullptr;
 }
 
+QString BaseConnection::c_statusKey()
+{
+    static const QString key = QLatin1String("connection-status");
+    return key;
+}
+
+QString BaseConnection::c_statusReasonKey()
+{
+    static const QString key = QLatin1String("connection-status-reason");
+    return key;
+}
+
 quint64 BaseConnection::authId() const
 {
     return m_sendHelper->authId();
