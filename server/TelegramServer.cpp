@@ -81,6 +81,7 @@ Server::Server(QObject *parent) :
 
 Server::~Server()
 {
+    qDeleteAll(m_authorizedUsers);
     qDeleteAll(m_sessions);
     qDeleteAll(m_users);
     qDeleteAll(m_rpcOperationFactories);
