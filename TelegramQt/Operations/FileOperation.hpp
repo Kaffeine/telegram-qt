@@ -21,6 +21,8 @@ public:
     const FileInfo *fileInfo();
     QIODevice *device() const;
 
+    quint32 bytesTransferred() const;
+
 public slots:
     void cancel();
 

@@ -219,6 +219,7 @@ void FilesApiPrivate::onGetFileResult(FileOperation *operation, UploadRpcLayer::
 
     FileRequestDescriptor &descriptor = privOperation->m_descriptor;
     const quint32 totalBytesDownloaded = descriptor.offset() + result.bytes.size();
+    privOperation->m_totalTransferredBytes = totalBytesDownloaded;
 
 #ifdef DEVELOPER_BUILD
     qCDebug(lcFilesApi).nospace() << operation

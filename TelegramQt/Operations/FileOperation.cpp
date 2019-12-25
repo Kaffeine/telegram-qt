@@ -29,6 +29,12 @@ QIODevice *FileOperation::device() const
     return d->m_device;
 }
 
+quint32 FileOperation::bytesTransferred() const
+{
+    Q_D(const FileOperation);
+    return d->m_totalTransferredBytes;
+}
+
 void FileOperation::cancel()
 {
     emit canceled(this);
@@ -69,6 +75,7 @@ void FileOperationPrivate::prepareForDownload()
     if (m_ownBuffer) {
         m_ownBuffer->open(QIODevice::WriteOnly);
     }
+    m_totalTransferredBytes = 0;
 }
 
 void FileOperationPrivate::finalizeDownload()

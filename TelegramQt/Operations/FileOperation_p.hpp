@@ -32,6 +32,7 @@ public:
 
     FileRequestDescriptor m_descriptor;
     FileInfo *m_fileInfo = nullptr;
+    quint32 m_totalTransferredBytes = 0;
 
 private:
     QIODevice *m_device = nullptr;
