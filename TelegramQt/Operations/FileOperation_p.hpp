@@ -15,8 +15,19 @@ namespace Client {
 
 class FileOperationPrivate : public PendingOperationPrivate
 {
+    Q_GADGET
 public:
     Q_DECLARE_PUBLIC(FileOperation)
+
+    enum class TransferStatus {
+        Invalid,
+        WaitingForConnection,
+        WaitingForAuthorization,
+        WaitingForItsTurn,
+        TransferringBytes,
+        Finished,
+    };
+    Q_ENUM(TransferStatus)
 
     explicit FileOperationPrivate(PendingOperation *parent);
     ~FileOperationPrivate() override;
@@ -33,6 +44,7 @@ public:
     FileRequestDescriptor m_descriptor;
     FileInfo *m_fileInfo = nullptr;
     quint32 m_totalTransferredBytes = 0;
+    TransferStatus m_transferStatus = TransferStatus::Invalid;
 
 private:
     QIODevice *m_device = nullptr;

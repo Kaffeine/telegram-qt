@@ -171,6 +171,7 @@ ConnectOperation *FilesApiPrivate::ensureConnection(quint32 dcId)
 void FilesApiPrivate::processFileRequestForConnection(FileOperation *operation, Connection *connection)
 {
     FileOperationPrivate *privOperation = FileOperationPrivate::get(operation);
+    privOperation->m_transferStatus = FileOperationPrivate::TransferStatus::TransferringBytes;
     const FileRequestDescriptor &descriptor = privOperation->m_descriptor;
     UploadRpcLayer::PendingUploadFile *rpcOperation = nullptr;
     rpcOperation = uploadLayer()->getFile(descriptor.inputLocation(), descriptor.offset(), descriptor.chunkSize());
@@ -246,6 +247,7 @@ void FilesApiPrivate::onGetFileResult(FileOperation *operation, UploadRpcLayer::
     }
 
     if (finished) {
+        privOperation->m_transferStatus = FileOperationPrivate::TransferStatus::Finished;
         privOperation->finalizeDownload();
         operation->setFinished();
         return;
@@ -282,9 +284,12 @@ void FilesApiPrivate::onConnectOperationFinished(ConnectOperation *operation)
         qCDebug(lcFilesApi) << __func__ << m_currentOperation
                             << "failed due to connection" << operation->errorDetails();
 
+        privOperation->m_transferStatus = FileOperationPrivate::TransferStatus::Finished;
         m_currentOperation->setFinishedWithError(operation->errorDetails());
         return;
     }
+
+    privOperation->m_transferStatus = FileOperationPrivate::TransferStatus::WaitingForAuthorization;
 
     connect(connection, &Connection::statusChanged, this, &FilesApiPrivate::onConnectionStatusChanged, Qt::UniqueConnection);
     processConnectionStatus(connection);
