@@ -12,6 +12,7 @@
 #include "RpcLayers/ClientRpcUploadLayer.hpp"
 
 #include <QLoggingCategory>
+#include <QTimer>
 
 Q_LOGGING_CATEGORY(lcFilesApi, "telegram.client.api.files", QtWarningMsg)
 
@@ -23,6 +24,14 @@ FilesApiPrivate::FilesApiPrivate(FilesApi *parent) :
     ClientApiPrivate(parent)
 {
     m_uploadLayer = new UploadRpcLayer(this);
+
+    if (lcFilesApi().isDebugEnabled()) {
+        m_monitorTimer = new QTimer(this);
+        m_monitorTimer->setInterval(5000);
+        m_monitorTimer->setSingleShot(false);
+        connect(m_monitorTimer, &QTimer::timeout, this, &FilesApiPrivate::dumpCurrentState);
+        m_monitorTimer->start();
+    }
 }
 
 FilesApiPrivate *FilesApiPrivate::get(FilesApi *parent)
@@ -107,6 +116,23 @@ FileOperation *FilesApiPrivate::addFileRequest(const FileRequestDescriptor &desc
     }
 
     return operation;
+}
+
+void FilesApiPrivate::dumpCurrentState() const
+{
+    if (m_currentOperation) {
+        qCInfo(lcFilesApi) << "Current operation:" << m_currentOperation;
+        const FileOperationPrivate *privOperation = FileOperationPrivate::get(m_currentOperation);
+        qCInfo(lcFilesApi) << "  Child:" << privOperation->m_childOperation;
+        qCInfo(lcFilesApi) << "  Status:" << privOperation->m_transferStatus;
+    } else {
+        qCInfo(lcFilesApi) << "No current operation";
+    }
+    if (m_fileRequests.isEmpty()) {
+        qCInfo(lcFilesApi) << "No file requests in queue";
+    } else {
+        qCInfo(lcFilesApi) << m_fileRequests.count() << "requests in queue";
+    }
 }
 
 void FilesApiPrivate::processNextRequest()

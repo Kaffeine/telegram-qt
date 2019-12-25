@@ -27,6 +27,8 @@
 
 #include "RpcLayers/ClientRpcUploadLayer.hpp"
 
+QT_FORWARD_DECLARE_CLASS(QTimer)
+
 namespace Telegram {
 
 namespace Client {
@@ -71,12 +73,15 @@ protected:
 //    FileOperation *addFileRequest(const FileInfo *file, QIODevice *device);
     FileOperation *addFileRequest(const FileRequestDescriptor &descriptor, QIODevice *device);
 
+    void dumpCurrentState() const;
+
     bool isConnectionNeeded(quint32 dcId) const;
 
     // QHash<quint32, Connection *> m_connections; // dcId to connection
     QQueue<FileOperation*> m_fileRequests;
     FileOperation *m_currentOperation = nullptr;
     UploadRpcLayer *m_uploadLayer = nullptr;
+    QTimer *m_monitorTimer = nullptr;
 };
 
 } // Client namespace
