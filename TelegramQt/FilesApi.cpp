@@ -132,6 +132,7 @@ void FilesApiPrivate::processCurrentRequest()
     qCDebug(lcFilesApi) << __func__;
     FileOperationPrivate *privOperation = FileOperationPrivate::get(m_currentOperation);
     ConnectOperation *connectionOperation = ensureConnection(privOperation->dcId());
+    privOperation->m_childOperation = connectionOperation;
 
     if (connectionOperation->isFinished()) {
         onConnectOperationFinished(connectionOperation);
@@ -176,6 +177,7 @@ void FilesApiPrivate::processFileRequestForConnection(FileOperation *operation, 
     UploadRpcLayer::PendingUploadFile *rpcOperation = nullptr;
     rpcOperation = uploadLayer()->getFile(descriptor.inputLocation(), descriptor.offset(), descriptor.chunkSize());
     qCDebug(lcFilesApi) << __func__ << operation << connection->dcOption().id << rpcOperation;
+    privOperation->m_childOperation = rpcOperation;
     connection->rpcLayer()->sendRpc(rpcOperation);
     rpcOperation->connectToFinished(this, &FilesApiPrivate::onGetFileResult, operation, rpcOperation);
 }
@@ -274,12 +276,18 @@ void FilesApiPrivate::onConnectOperationFinished(ConnectOperation *operation)
     }
 
     FileOperationPrivate *privOperation = FileOperationPrivate::get(m_currentOperation);
+    if (privOperation->m_childOperation != operation) {
+        qCWarning(lcFilesApi) << __func__ << "Unexpected connection operation" << operation
+                              << "for" << m_currentOperation;
+        return;
+    }
 
     if (connection->dcOption().id != privOperation->dcId()) {
         qCWarning(lcFilesApi) << "Invalid operation dcOption";
         return;
     }
 
+    privOperation->m_childOperation = nullptr;
     if (operation->isFailed()) {
         qCDebug(lcFilesApi) << __func__ << m_currentOperation
                             << "failed due to connection" << operation->errorDetails();

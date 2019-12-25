@@ -45,6 +45,7 @@ public:
     FileInfo *m_fileInfo = nullptr;
     quint32 m_totalTransferredBytes = 0;
     TransferStatus m_transferStatus = TransferStatus::Invalid;
+    PendingOperation *m_childOperation = nullptr;
 
 private:
     QIODevice *m_device = nullptr;
