@@ -7,6 +7,8 @@
 
 #include <QVector>
 
+QT_FORWARD_DECLARE_CLASS(QBuffer)
+
 namespace Telegram {
 
 namespace Client {
@@ -23,9 +25,17 @@ public:
 
     quint32 dcId() const { return m_descriptor.dcId(); }
 
+    QIODevice *device() const { return m_device; }
+    void ensureDeviceIsSet(QIODevice *device = nullptr);
+    void prepareForDownload();
+    void finalizeDownload();
+
     FileRequestDescriptor m_descriptor;
-    QIODevice *m_device = nullptr;
     FileInfo *m_fileInfo = nullptr;
+
+private:
+    QIODevice *m_device = nullptr;
+    QBuffer *m_ownBuffer = nullptr;
 };
 
 } // Client namespace

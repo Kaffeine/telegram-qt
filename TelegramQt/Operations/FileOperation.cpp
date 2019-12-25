@@ -1,5 +1,7 @@
 #include "FileOperation_p.hpp"
 
+#include <QBuffer>
+
 namespace Telegram {
 
 namespace Client {
@@ -41,11 +43,40 @@ FileOperationPrivate::~FileOperationPrivate()
 {
     delete m_fileInfo;
     m_fileInfo = nullptr;
+
+    if (m_ownBuffer) {
+        delete m_ownBuffer;
+        m_ownBuffer = nullptr;
+    }
 }
 
 FileOperationPrivate *FileOperationPrivate::get(FileOperation *parent)
 {
     return static_cast<FileOperationPrivate*>(parent->d);
+}
+
+void FileOperationPrivate::ensureDeviceIsSet(QIODevice *device)
+{
+    if (!device) {
+        m_ownBuffer = new QBuffer(q_ptr);
+        device = m_ownBuffer;
+    }
+    m_device = device;
+}
+
+void FileOperationPrivate::prepareForDownload()
+{
+    if (m_ownBuffer) {
+        m_ownBuffer->open(QIODevice::WriteOnly);
+    }
+}
+
+void FileOperationPrivate::finalizeDownload()
+{
+    if (m_ownBuffer) {
+        m_ownBuffer->close();
+        m_ownBuffer->open(QIODevice::ReadOnly);
+    }
 }
 
 } // Client namespace

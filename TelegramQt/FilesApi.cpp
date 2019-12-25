@@ -99,7 +99,7 @@ FileOperation *FilesApiPrivate::addFileRequest(const FileRequestDescriptor &desc
     FileOperation *operation = new FileOperation(this);
     FileOperationPrivate *privOperation = FileOperationPrivate::get(operation);
     privOperation->m_descriptor = descriptor;
-    privOperation->m_device = device;
+    privOperation->ensureDeviceIsSet(device);
     m_fileRequests.enqueue(operation);
 
     if (!m_currentOperation) {
@@ -122,6 +122,7 @@ void FilesApiPrivate::processNextRequest()
 
     qCDebug(lcFilesApi) << __func__ << "Current operation:" << m_currentOperation;
     FileOperationPrivate *privOperation = FileOperationPrivate::get(m_currentOperation);
+    privOperation->prepareForDownload();
 
     processCurrentRequest();
 }
@@ -244,6 +245,7 @@ void FilesApiPrivate::onGetFileResult(FileOperation *operation, UploadRpcLayer::
     }
 
     if (finished) {
+        privOperation->finalizeDownload();
         operation->setFinished();
         return;
     }
