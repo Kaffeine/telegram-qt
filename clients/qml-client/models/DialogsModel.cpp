@@ -3,16 +3,13 @@
 #include "Client.hpp"
 #include "DataStorage_p.hpp"
 #include "Debug.hpp"
-#include "MessagingApi.hpp"
 #include "DialogList.hpp"
+#include "MessagingApi.hpp"
 #include "PendingOperation.hpp"
 
 #include "DeclarativeClient.hpp"
-#include "TelegramNamespace_p.hpp"
 
 #include <QDateTime>
-
-#include <QDebug>
 
 namespace Telegram {
 
@@ -86,7 +83,6 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
         return dialog.formattedLastMessage;
     case Role::LastMessage:
         return getDialogLastMessageData(dialog);
-    case Role::Picture:
     case Role::MuteUntil:
     case Role::MuteUntilDate:
         // invalid roles

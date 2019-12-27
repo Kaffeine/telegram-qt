@@ -1,11 +1,11 @@
 #ifndef TELEGRAMQT_DIALOGS_MODEL_HPP
 #define TELEGRAMQT_DIALOGS_MODEL_HPP
 
-#include <QAbstractTableModel>
-
 #include "TelegramNamespace.hpp"
 
 #include "DeclarativeClientOperator.hpp"
+
+#include <QAbstractListModel>
 
 namespace Telegram {
 
@@ -29,26 +29,11 @@ public:
         DialogInfo info;
     };
 
-    enum class Column {
-        PeerType,
-        PeerId,
-        PeerName,
-        ChatType,
-        IsPinned,
-        Picture, // Photo (in terms of Telegram)
-        FormattedLastMessage,
-        MuteUntil,
-        MuteUntilDate,
-        Count,
-        Invalid
-    };
-
     enum class Role {
         Peer,
         DisplayName,
         ChatType,
         IsPinned,
-        Picture, // Photo (in terms of Telegram)
         LastMessage,
         FormattedLastMessage,
         MuteUntil,
