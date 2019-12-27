@@ -29,6 +29,7 @@ QHash<int, QByteArray> DialogsModel::roleNames() const
         { UserRoleOffset + static_cast<int>(Role::DisplayName), "displayName" },
         { UserRoleOffset + static_cast<int>(Role::ChatType), "chatType" },
         { UserRoleOffset + static_cast<int>(Role::IsPinned), "isPinned" },
+        { UserRoleOffset + static_cast<int>(Role::PictureFileId), "pictureFileId" },
         { UserRoleOffset + static_cast<int>(Role::UnreadMessageCount), "unreadMessageCount" },
         { UserRoleOffset + static_cast<int>(Role::LastMessage), "lastMessage" },
         { UserRoleOffset + static_cast<int>(Role::FormattedLastMessage), "formattedLastMessage" },
@@ -83,6 +84,8 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
         return dialog.formattedLastMessage;
     case Role::LastMessage:
         return getDialogLastMessageData(dialog);
+    case Role::PictureFileId:
+        return dialog.pictureFileId;
     case Role::MuteUntil:
     case Role::MuteUntilDate:
         // invalid roles
@@ -172,6 +175,23 @@ QString getPeerAlias(const Telegram::Peer &peer, const Telegram::Client::Client 
     return peer.toString();
 }
 
+QString getPeerPictureId(const Telegram::Peer &peer, const Telegram::Client::Client *client)
+{
+    FileInfo file;
+    if (peer.type == Telegram::Peer::Type::User) {
+        Telegram::UserInfo info;
+        if (client->dataStorage()->getUserInfo(&info, peer.id)) {
+            info.getPeerPicture(&file, PeerPictureSize::Small);
+        }
+    } else {
+        Telegram::ChatInfo info;
+        if (client->dataStorage()->getChatInfo(&info, peer.id)) {
+            info.getPeerPicture(&file, PeerPictureSize::Small);
+        }
+    }
+    return file.getFileId();
+}
+
 void DialogsModel::onListReady()
 {
     qWarning() << Q_FUNC_INFO;
@@ -215,6 +235,7 @@ void DialogsModel::addPeer(const Peer &peer)
 
     dialog.chatType = c->messagingApi()->getChatType(peer);
     dialog.name = getPeerAlias(peer, c);
+    dialog.pictureFileId = getPeerPictureId(peer, c);
     c->messagingApi()->getMessage(&dialog.lastChatMessage, peer, dialog.info.lastMessageId());
 }
 

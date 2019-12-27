@@ -27,6 +27,7 @@ public:
         QString formattedLastMessage;
         Telegram::Message lastChatMessage;
         DialogInfo info;
+        QString pictureFileId;
     };
 
     enum class Role {
@@ -34,6 +35,7 @@ public:
         DisplayName,
         ChatType,
         IsPinned,
+        PictureFileId, // Photo (in terms of Telegram)
         LastMessage,
         FormattedLastMessage,
         MuteUntil,
