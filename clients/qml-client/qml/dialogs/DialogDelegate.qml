@@ -80,6 +80,13 @@ ItemDelegate {
                 }
 
                 Rectangle {
+                    color: "red"
+                    opacity: 0.3
+                    anchors.fill: displayNameRow_
+                    visible: dialogDelegate.debugGeometry
+                }
+
+                Rectangle {
                     id: deliveryIcon
                     width: height
                     height: lastMessageDateTime.font.pixelSize
@@ -96,7 +103,7 @@ ItemDelegate {
                     horizontalAlignment: Qt.AlignRight
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
-                    font.pixelSize: 14
+                    font.pixelSize: Theme.fontSizeTiny
 
                     function formatRelativeCurrentDay(date)
                     {

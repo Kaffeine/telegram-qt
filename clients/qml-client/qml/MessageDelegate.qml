@@ -69,7 +69,7 @@ ItemDelegate {
                     }
                     return time
                 }
-                font.pixelSize: Theme.fontSizeTiny - 4
+                font.pixelSize: Theme.fontSizeTiny
             }
         }
     }
