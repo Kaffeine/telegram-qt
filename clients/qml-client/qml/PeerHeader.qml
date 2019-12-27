@@ -1,6 +1,8 @@
 import QtQuick 2.9
 import QtQuick.Controls 2.2
 
+import TelegramQtTheme 1.0
+
 Frame {
     id: root
 
@@ -12,8 +14,7 @@ Frame {
 
         PeerPicture {
             id: peerPicture
-            height: 42
-            width: height
+            sizePx: Theme.iconSizeMedium
             anchors.verticalCenter: parent.verticalCenter
 
             displayName: peerInfo.displayName

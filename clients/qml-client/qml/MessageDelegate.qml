@@ -21,8 +21,7 @@ ItemDelegate {
         implicitHeight: details.height
         PeerPicture {
             id: pictureFrame
-            width: 48
-            height: 48
+            sizePx: Theme.iconSizeMedium
             peer: peerInfo_.peer
             displayName: peerInfo_.displayName
         }

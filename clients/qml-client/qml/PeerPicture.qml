@@ -2,16 +2,17 @@ import QtQuick 2.6
 import QtQuick.Controls.Material 2.0
 
 Item {
-    id: root
-    height: picture.height
-    width: height
+    id: root_
+    height: sizePx
+    width: sizePx
 
+    property real sizePx: 42
     property string displayName
     property var peer
 
     Rectangle {
-        id: picture
-        visible: root.displayName
+        id: placeholder_
+        visible: root_.displayName
         readonly property var colors: [
             Material.Purple,
             Material.DeepPurple,
@@ -48,7 +49,7 @@ Item {
         Text {
             anchors.centerIn: parent
             font.pixelSize: parent.width * 0.8
-            text: root.displayName ? root.displayName[0] : ""
+            text: root_.displayName ? root_.displayName[0] : ""
             font.capitalization: Font.AllUppercase
         }
     }

@@ -4,6 +4,7 @@ import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.1
 
 import TelegramQt 0.2 as Telegram
+import TelegramQtTheme 1.0
 
 import ".."
 
@@ -31,8 +32,7 @@ ItemDelegate {
 
         PeerPicture {
             id: peerPicture
-            height: 42
-            width: height
+            sizePx: Theme.iconSizeMedium
             anchors.verticalCenter: parent.verticalCenter
             visible: content.width > width * 4
 
