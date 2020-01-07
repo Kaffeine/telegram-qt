@@ -141,7 +141,7 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
 bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
 {
 #ifdef DEVELOPER_BUILD
-    qCDebug(c_updatesLoggingCategory) << Q_FUNC_INFO << update;
+    qCDebug(c_updatesLoggingCategory) << __func__ << update.tlType;
 #endif
     switch (update.tlType) {
     case TLValue::UpdateMessageID:
@@ -182,6 +182,9 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
         break;
     }
 
+#ifdef DEVELOPER_BUILD
+    qCWarning(c_updatesLoggingCategory) << __func__ << "update" << update << "is ignored";
+#endif
     return false;
 }
 
