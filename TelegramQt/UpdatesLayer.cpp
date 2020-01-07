@@ -159,6 +159,12 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
     case TLValue::UpdateReadHistoryOutbox:
         processReadOutbox(Utils::toPublicPeer(update.peer), update.maxId);
         return true;
+    case TLValue::UpdateReadChannelInbox:
+        processReadInbox(Peer::fromChannelId(update.channelId), update.maxId);
+        return true;
+    case TLValue::UpdateReadChannelOutbox:
+        processReadOutbox(Peer::fromChannelId(update.channelId), update.maxId);
+        return true;
     case TLValue::UpdateUserStatus:
         contactsApi()->onUserStatusChanged(update.userId, update.status);
         return true;
