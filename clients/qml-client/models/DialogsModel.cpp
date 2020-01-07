@@ -247,6 +247,17 @@ DialogsModel::Role DialogsModel::intToRole(int value)
     return static_cast<Role>(value);
 }
 
+QVector<int> DialogsModel::rolesToInt(const QVector<DialogsModel::Role> &roles)
+{
+    QVector<int> qtRoles;
+    qtRoles.reserve(roles.count());
+    for (const Role role : roles) {
+        qtRoles << (static_cast<int>(role) + UserRoleOffset);
+    }
+
+    return qtRoles;
+}
+
 DialogsModel::Role DialogsModel::indexToRole(const QModelIndex &index, int role) const
 {
     Q_UNUSED(index)

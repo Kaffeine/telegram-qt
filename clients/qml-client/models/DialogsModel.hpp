@@ -83,6 +83,7 @@ private:
     QVariantMap getDialogLastMessageData(const DialogEntry &dialog) const;
 
     static Role intToRole(int value);
+    static QVector<int> rolesToInt(const QVector<Role> &roles);
     virtual Role indexToRole(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
     QVector<DialogEntry> m_dialogs;
