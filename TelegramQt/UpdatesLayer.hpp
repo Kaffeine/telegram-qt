@@ -21,6 +21,7 @@
 #include <QObject>
 
 #include "MTProto/TLTypes.hpp"
+#include "TelegramNamespace.hpp"
 
 namespace Telegram {
 
@@ -42,6 +43,8 @@ public:
 
     bool processUpdates(const TLUpdates &updates);
     bool processUpdate(const TLUpdate &update);
+    void processReadInbox(const Telegram::Peer peer, quint32 maxId);
+    void processReadOutbox(const Telegram::Peer peer, quint32 maxId);
 
 protected:
     MessagingApiPrivate *messagingApi();

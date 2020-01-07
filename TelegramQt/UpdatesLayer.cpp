@@ -154,20 +154,10 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
         }
         return true;
     case TLValue::UpdateReadHistoryInbox:
-    {
-        const Peer peer = Utils::toPublicPeer(update.peer);
-        if (dataInternalApi()->updateInboxRead(peer, update.maxId)) {
-            messagingApi()->onMessageInboxRead(peer, update.maxId);
-        }
-    }
+        processReadInbox(Utils::toPublicPeer(update.peer), update.maxId);
         return true;
     case TLValue::UpdateReadHistoryOutbox:
-    {
-        const Peer peer = Utils::toPublicPeer(update.peer);
-        if (dataInternalApi()->updateOutboxRead(peer, update.maxId)) {
-            messagingApi()->onMessageOutboxRead(peer, update.maxId);
-        }
-    }
+        processReadOutbox(Utils::toPublicPeer(update.peer), update.maxId);
         return true;
     case TLValue::UpdateUserStatus:
         contactsApi()->onUserStatusChanged(update.userId, update.status);
@@ -186,6 +176,20 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
     qCWarning(c_updatesLoggingCategory) << __func__ << "update" << update << "is ignored";
 #endif
     return false;
+}
+
+void UpdatesInternalApi::processReadInbox(const Telegram::Peer peer, quint32 maxId)
+{
+    if (dataInternalApi()->updateInboxRead(peer, maxId)) {
+        messagingApi()->onMessageInboxRead(peer, maxId);
+    }
+}
+
+void UpdatesInternalApi::processReadOutbox(const Telegram::Peer peer, quint32 maxId)
+{
+    if (dataInternalApi()->updateOutboxRead(peer, maxId)) {
+        messagingApi()->onMessageOutboxRead(peer, maxId);
+    }
 }
 
 MessagingApiPrivate *UpdatesInternalApi::messagingApi()
