@@ -631,8 +631,10 @@ QStringList Generator::generateTLTypeMembers(const TLType &type)
     return membersCode;
 }
 
-QString Generator::streamReadImplementationHead(const QString &argName, const QString &typeName)
+QString Generator::streamReadImplementationHead(const TypedEntity *type)
 {
+    const QString argName = type->variableName();
+    const QString typeName = type->name;
     QString code;
     code.append(QString("%1 &%1::operator>>(%2 &%3)\n{\n").arg(streamClassName, typeName, argName));
     code.append(QString("%1%2 result;\n\n").arg(spacing, typeName));
@@ -709,16 +711,20 @@ QString Generator::streamReadFunctionFreePerArgumentImplementation(const QString
     return result;
 }
 
-QString Generator::streamWriteImplementationHead(const QString &argName, const QString &typeName)
+QString Generator::streamWriteImplementationHead(const TypedEntity *type)
 {
+    const QString argName = type->variableName();
+    const QString typeName = type->name;
     QString code;
     code.append(QString("%1 &%1::operator<<(const %2 &%3)\n{\n").arg(streamClassName, typeName, argName));
     code.append(QString("%1*this << %2.tlType;\n\n%1switch (%2.tlType) {\n").arg(spacing, argName));
     return code;
 }
 
-QString Generator::streamWriteFreeImplementationHead(const QString &argName, const QString &typeName)
+QString Generator::streamWriteFreeImplementationHead(const TypedEntity *type)
 {
+    const QString argName = type->variableName();
+    const QString typeName = type->name;
     QString code;
     code.append(QString("%1 &operator<<(%1 &stream, const %2 &%3)\n{\n").arg(streamClassName, typeName, argName));
     code.append(QString("%1stream << %2.tlType;\n%1switch (%2.tlType) {\n").arg(spacing, argName));
@@ -777,12 +783,12 @@ QString Generator::streamWritePerTypeImplementationBase(const QString &argName, 
     return code;
 }
 
-QString Generator::generateStreamOperatorDefinition(const TLType *type, std::function<QString (const QString &, const QString &)> head,
+QString Generator::generateStreamOperatorDefinition(const TLType *type, std::function<QString (const TypedEntity *type)> head,
                                                     std::function<QString (const QString &, const TLSubType &)> generateSubtypeCode,
                                                     std::function<QString (const QString &)> end)
 {
     const QString argName = type->variableName();
-    QString code = head(argName, type->name);
+    QString code = head(type);
     QHash<QString,int> implementationHash; // type name to implementation index map
     QStringList implementations;
     implementations.reserve(type->subTypes.count());
@@ -926,9 +932,9 @@ QString Generator::generateDebugWriteOperatorDeclaration(const TLType *type)
             .arg(type->name, type->variableName());
 }
 
-QString Generator::debugOperatorImplementationHead(const QString &argName, const QString &typeName)
+QString Generator::debugOperatorImplementationHead(const TypedEntity *type)
 {
-    Q_UNUSED(argName)
+    const QString typeName = type->name;
     QString code;
     code += QString("QDebug operator<<(QDebug d, const %1 &type)\n{\n").arg(typeName);
     code += spacing + QLatin1String("QDebugStateSaver saver(d);\n");

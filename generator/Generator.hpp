@@ -214,15 +214,15 @@ public:
     static QStringList generateTLTypeMemberGetters(const TLType &type);
     static QStringList generateTLTypeMembers(const TLType &type);
 
-    static QString streamReadImplementationHead(const QString &argName, const QString &typeName);
+    static QString streamReadImplementationHead(const TypedEntity *type);
     static QString streamReadImplementationEnd(const QString &argName);
     static QString streamReadPerTypeImplementation(const QString &argName, const TLSubType &subType);
     static QString streamReadFunctionFreeImplementationHead(const TypedEntity *type);
     static QString streamReadFunctionFreeImplementationEnd();
     static QString streamReadFunctionFreePerArgumentImplementation(const QString &argName, const TLParam &param);
 
-    static QString streamWriteImplementationHead(const QString &argName, const QString &typeName);
-    static QString streamWriteFreeImplementationHead(const QString &argName, const QString &typeName);
+    static QString streamWriteImplementationHead(const TypedEntity *type);
+    static QString streamWriteFreeImplementationHead(const TypedEntity *type);
     static QString streamWriteImplementationEnd(const QString &argName);
     static QString streamWriteFreeImplementationEnd(const QString &argName);
     static QString streamWritePerTypeImplementation(const QString &argName, const TLSubType &subType);
@@ -230,7 +230,7 @@ public:
     static QString streamWritePerTypeImplementationBase(const QString &argName, const TLSubType &subType, const QString &streamGetter);
 
     static QString generateStreamOperatorDefinition(const TLType *type,
-                                                    std::function<QString(const QString &argName, const QString &typeName)> head,
+                                                    std::function<QString(const TypedEntity *type)> head,
                                                     std::function<QString(const QString &argName, const TLSubType &subType)> generateSubtypeCode,
                                                     std::function<QString(const QString &argName)> end
                                                     );
@@ -255,7 +255,7 @@ public:
     QStringList generateRpcReplyTemplates(const QString &groupName) const;
 
     static QString generateDebugWriteOperatorDeclaration(const TLType *type);
-    static QString debugOperatorImplementationHead(const QString &argName, const QString &typeName);
+    static QString debugOperatorImplementationHead(const TypedEntity *type);
     static QString debugOperatorImplementationEnd(const QString &argName);
     static QString debugOperatorPerTypeImplementation(const QString &argName, const TLSubType &subType);
     static QString generateDebugWriteOperatorDefinition(const TLType *type);
