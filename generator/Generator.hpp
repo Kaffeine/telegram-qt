@@ -216,28 +216,28 @@ public:
 
     static QString streamReadImplementationHead(const TypedEntity *type);
     static QString streamReadImplementationEnd(const QString &argName);
-    static QString streamReadPerTypeImplementation(const QString &argName, const TLSubType &subType);
+    static QString streamReadPerTypeImplementation(const TypedEntity *type, const TLSubType &subType);
     static QString streamReadFunctionFreeImplementationHead(const TypedEntity *type);
     static QString streamReadFunctionFreeImplementationEnd();
-    static QString streamReadFunctionFreePerArgumentImplementation(const QString &argName, const TLParam &param);
+    static QString streamReadFunctionFreePerArgumentImplementation(const TypedEntity *type, const TLParam &param);
 
     static QString streamWriteImplementationHead(const TypedEntity *type);
     static QString streamWriteFreeImplementationHead(const TypedEntity *type);
     static QString streamWriteImplementationEnd(const QString &argName);
     static QString streamWriteFreeImplementationEnd(const QString &argName);
-    static QString streamWritePerTypeImplementation(const QString &argName, const TLSubType &subType);
-    static QString streamWritePerTypeFreeImplementation(const QString &argName, const TLSubType &subType);
-    static QString streamWritePerTypeImplementationBase(const QString &argName, const TLSubType &subType, const QString &streamGetter);
+    static QString streamWritePerTypeImplementation(const TypedEntity *type, const TLSubType &subType);
+    static QString streamWritePerTypeFreeImplementation(const TypedEntity *type, const TLSubType &subType);
+    static QString streamWritePerTypeImplementationBase(const TypedEntity *type, const TLSubType &subType, const QString &streamGetter);
 
     static QString generateStreamOperatorDefinition(const TLType *type,
                                                     std::function<QString(const TypedEntity *type)> head,
-                                                    std::function<QString(const QString &argName, const TLSubType &subType)> generateSubtypeCode,
+                                                    std::function<QString(const TypedEntity *type, const TLSubType &subType)> generateSubtypeCode,
                                                     std::function<QString(const QString &argName)> end
                                                     );
 
     static QString generateStreamOperatorDefinition(const TLMethod *type,
                                                     std::function<QString(const TypedEntity *type)> head,
-                                                    std::function<QString(const QString &argName, const TLParam &param)> generateSubtypeCode,
+                                                    std::function<QString(const TypedEntity *type, const TLParam &param)> generateSubtypeCode,
                                                     std::function<QString()> end
                                                     );
     static QString streamReadOperatorDeclaration(const TypedEntity *type);
@@ -257,7 +257,7 @@ public:
     static QString generateDebugWriteOperatorDeclaration(const TLType *type);
     static QString debugOperatorImplementationHead(const TypedEntity *type);
     static QString debugOperatorImplementationEnd(const QString &argName);
-    static QString debugOperatorPerTypeImplementation(const QString &argName, const TLSubType &subType);
+    static QString debugOperatorPerTypeImplementation(const TypedEntity *type, const TLSubType &subType);
     static QString generateDebugWriteOperatorDefinition(const TLType *type);
 
     static QString generateConnectionMethodDeclaration(const TLMethod &method);

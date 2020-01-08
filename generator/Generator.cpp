@@ -650,9 +650,9 @@ QString Generator::streamReadImplementationEnd(const QString &argName)
     return code;
 }
 
-QString Generator::streamReadPerTypeImplementation(const QString &argName, const TLSubType &subType)
+QString Generator::streamReadPerTypeImplementation(const TypedEntity *type, const TLSubType &subType)
 {
-    Q_UNUSED(argName)
+    Q_UNUSED(type)
     QString code;
     foreach (const TLParam &member, subType.members) {
         if (member.dependOnFlag()) {
@@ -694,8 +694,9 @@ QString Generator::streamReadFunctionFreeImplementationEnd()
                           "}\n\n");
 }
 
-QString Generator::streamReadFunctionFreePerArgumentImplementation(const QString &argName, const TLParam &param)
+QString Generator::streamReadFunctionFreePerArgumentImplementation(const TypedEntity *type, const TLParam &param)
 {
+    const QString argName = type->variableName();
     QString result;
     if (param.dependOnFlag()) {
         if (param.type() == tlTrueType) {
@@ -750,18 +751,19 @@ QString Generator::streamWriteFreeImplementationEnd(const QString &argName)
     return code;
 }
 
-QString Generator::streamWritePerTypeImplementation(const QString &argName, const TLSubType &subType)
+QString Generator::streamWritePerTypeImplementation(const TypedEntity *type, const TLSubType &subType)
 {
-    return streamWritePerTypeImplementationBase(argName, subType, QStringLiteral("*this"));
+    return streamWritePerTypeImplementationBase(type, subType, QStringLiteral("*this"));
 }
 
-QString Generator::streamWritePerTypeFreeImplementation(const QString &argName, const TLSubType &subType)
+QString Generator::streamWritePerTypeFreeImplementation(const TypedEntity *type, const TLSubType &subType)
 {
-    return streamWritePerTypeImplementationBase(argName, subType, QStringLiteral("stream"));
+    return streamWritePerTypeImplementationBase(type, subType, QStringLiteral("stream"));
 }
 
-QString Generator::streamWritePerTypeImplementationBase(const QString &argName, const TLSubType &subType, const QString &streamGetter)
+QString Generator::streamWritePerTypeImplementationBase(const TypedEntity *type, const TLSubType &subType, const QString &streamGetter)
 {
+    const QString argName = type->variableName();
     QString code;
     foreach (const TLParam &member, subType.members) {
         if (member.dependOnFlag()) {
@@ -769,13 +771,13 @@ QString Generator::streamWritePerTypeImplementationBase(const QString &argName, 
                 continue;
             }
             code.append(doubleSpacing + QString("if (%1.%2 & 1 << %3) {\n").arg(argName).arg(member.flagMember).arg(member.flagBit));
-            code.append(doubleSpacing + spacing + streamGetter + QString(" << %1.%2;\n").arg(argName).arg(member.getAlias()));
+            code.append(doubleSpacing + spacing + streamGetter + QString(" << %1.%2;\n").arg(argName, member.getAlias()));
             code.append(doubleSpacing + QLatin1Literal("}\n"));
         } else {
             if (member.accessByPointer() && !member.isVector()) {
-                code.append(doubleSpacing + streamGetter + QString(" << *%1.%2;\n").arg(argName).arg(member.getAlias()));
+                code.append(doubleSpacing + streamGetter + QString(" << *%1.%2;\n").arg(argName, member.getAlias()));
             } else {
-                code.append(doubleSpacing + streamGetter + QString(" << %1.%2;\n").arg(argName).arg(member.getAlias()));
+                code.append(doubleSpacing + streamGetter + QString(" << %1.%2;\n").arg(argName, member.getAlias()));
             }
         }
     }
@@ -784,7 +786,7 @@ QString Generator::streamWritePerTypeImplementationBase(const QString &argName, 
 }
 
 QString Generator::generateStreamOperatorDefinition(const TLType *type, std::function<QString (const TypedEntity *type)> head,
-                                                    std::function<QString (const QString &, const TLSubType &)> generateSubtypeCode,
+                                                    std::function<QString (const TypedEntity *, const TLSubType &)> generateSubtypeCode,
                                                     std::function<QString (const QString &)> end)
 {
     const QString argName = type->variableName();
@@ -793,7 +795,7 @@ QString Generator::generateStreamOperatorDefinition(const TLType *type, std::fun
     QStringList implementations;
     implementations.reserve(type->subTypes.count());
     foreach (const TLSubType &subType, type->subTypes) {
-        const QString caseImplementation = generateSubtypeCode(argName, subType);
+        const QString caseImplementation = generateSubtypeCode(type, subType);
         const int implementationIndex = implementations.indexOf(caseImplementation);
         if (implementationIndex >= 0) {
             implementationHash.insert(subType.name, implementationIndex);
@@ -815,13 +817,13 @@ QString Generator::generateStreamOperatorDefinition(const TLType *type, std::fun
 }
 
 QString Generator::generateStreamOperatorDefinition(const TLMethod *type, std::function<QString (const TypedEntity *type)> head,
-                                                    std::function<QString (const QString &, const TLParam &)> generateSubtypeCode,
+                                                    std::function<QString (const TypedEntity *, const TLParam &)> generateSubtypeCode,
                                                     std::function<QString ()> end)
 {
     QString result = head(type);
     QString paramsCode;
     foreach (const TLParam &param, type->params) {
-        paramsCode += generateSubtypeCode(type->variableName(), param);
+        paramsCode += generateSubtypeCode(type, param);
     }
     if (paramsCode.isEmpty()) {
         paramsCode = spacing + QStringLiteral("Q_UNUSED(%1)\n").arg(type->variableName());
@@ -957,9 +959,9 @@ QString Generator::debugOperatorImplementationEnd(const QString &argName)
     return code;
 }
 
-QString Generator::debugOperatorPerTypeImplementation(const QString &argName, const TLSubType &subType)
+QString Generator::debugOperatorPerTypeImplementation(const TypedEntity *type, const TLSubType &subType)
 {
-    Q_UNUSED(argName)
+    Q_UNUSED(type)
     QString code;
     if (subType.members.isEmpty()) {
         code += doubleSpacing + "d << \" }\";\n";
