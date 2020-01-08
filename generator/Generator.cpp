@@ -443,6 +443,10 @@ QString Predicate::predicateName() const
 
 QString TLParam::flagName() const
 {
+    if (!m_flagName.isEmpty()) {
+        return m_flagName;
+    }
+
     QString flagName = getAlias();
     if (flagName.isEmpty()) {
         qCritical() << "Invalid flagName of a param";
@@ -450,6 +454,11 @@ QString TLParam::flagName() const
     }
     flagName[0] = flagName.at(0).toUpper();
     return flagName;
+}
+
+void TLParam::setFlagName(const QString &flagName)
+{
+    m_flagName = flagName;
 }
 
 void TLParam::setType(const QString &newType)
@@ -1522,6 +1531,41 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                             }
                         }
                         qCDebug(c_loggingTypes) << "Member name conflict:" << member.getName() << member.type() << "solved to" << member.getAlias();
+                    }
+                }
+            }
+
+            // Bake conflicted member flags
+            {
+                QStringList conflictedFlags;
+
+                QMap<QString, quint8> memberFlags;
+                for (const TLSubType &subType : type.subTypes) {
+                    foreach (const TLParam &member, subType.members) {
+                        if (!member.dependOnFlag()) {
+                            continue;
+                        }
+                        const QString flagName = member.flagName();
+                        if (memberFlags.contains(flagName)) {
+                            quint8 existsFlagValue = memberFlags.value(flagName);
+                            if (existsFlagValue != member.flagBit) {
+                                conflictedFlags << flagName;
+                            }
+                            continue;
+                        }
+                        memberFlags.insert(flagName, member.flagBit);
+                    }
+                }
+
+                for (TLSubType &subType : type.subTypes) {
+                    for (TLParam &member : subType.members) {
+                        const QString flagName = member.flagName();
+                        if (conflictedFlags.contains(flagName)) {
+                            member.setFlagName(flagName + QString::number(member.flagBit));
+                            qCDebug(c_loggingTypes) << "Member flag conflict:"
+                                                    << member.getName() << flagName
+                                                    << "solved to" << member.flagName();
+                        }
                     }
                 }
             }

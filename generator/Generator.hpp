@@ -76,6 +76,7 @@ struct TLParam {
     qint8 flagBit = -1;
     QString flagMember;
     QString flagName() const;
+    void setFlagName(const QString &flagName);
 
     QString getType() const { return type(); }
 
@@ -100,6 +101,7 @@ protected:
     QString m_bareType;
     QString m_alias;
     QString m_name;
+    QString m_flagName;
     bool m_isVector = false;
     bool m_accessByPointer = false;
 };
