@@ -229,7 +229,7 @@ public:
     static QString streamWritePerTypeFreeImplementation(const QString &argName, const TLSubType &subType);
     static QString streamWritePerTypeImplementationBase(const QString &argName, const TLSubType &subType, const QString &streamGetter);
 
-    static QString generateStreamOperatorDefinition(const TLType &type,
+    static QString generateStreamOperatorDefinition(const TLType *type,
                                                     std::function<QString(const QString &argName, const QString &typeName)> head,
                                                     std::function<QString(const QString &argName, const TLSubType &subType)> generateSubtypeCode,
                                                     std::function<QString(const QString &argName)> end
@@ -243,22 +243,22 @@ public:
     static QString streamReadOperatorDeclaration(const TypedEntity *type);
     static QString streamReadFreeOperatorDeclaration(const TypedEntity *type);
     static QString streamReadFreeOperatorDefinition(const TLMethod *method);
-    static QString streamReadOperatorDefinition(const TLType &type);
+    static QString streamReadOperatorDefinition(const TLType *type);
     static QString streamReadVectorTemplate(const QString &type);
-    static QString streamWriteOperatorDeclaration(const TLType &type);
+    static QString streamWriteOperatorDeclaration(const TLType *type);
     static QString streamWriteFreeOperatorDeclaration(const TypedEntity *type);
-    static QString streamWriteOperatorDefinition(const TLType &type);
-    static QString streamWriteFreeOperatorDefinition(const TLType &type);
+    static QString streamWriteOperatorDefinition(const TLType *type);
+    static QString streamWriteFreeOperatorDefinition(const TLType *type);
     static QString streamWriteVectorTemplate(const QString &type);
     static QString streamWriteFreeVectorTemplate(const QString &type);
 
     QStringList generateRpcReplyTemplates(const QString &groupName) const;
 
-    static QString generateDebugWriteOperatorDeclaration(const TLType &type);
+    static QString generateDebugWriteOperatorDeclaration(const TLType *type);
     static QString debugOperatorImplementationHead(const QString &argName, const QString &typeName);
     static QString debugOperatorImplementationEnd(const QString &argName);
     static QString debugOperatorPerTypeImplementation(const QString &argName, const TLSubType &subType);
-    static QString generateDebugWriteOperatorDefinition(const TLType &type);
+    static QString generateDebugWriteOperatorDefinition(const TLType *type);
 
     static QString generateConnectionMethodDeclaration(const TLMethod &method);
     static QString generateConnectionMethodDefinition(const TLMethod &method, QStringList &usedTypes);

@@ -777,16 +777,16 @@ QString Generator::streamWritePerTypeImplementationBase(const QString &argName, 
     return code;
 }
 
-QString Generator::generateStreamOperatorDefinition(const TLType &type, std::function<QString (const QString &, const QString &)> head,
+QString Generator::generateStreamOperatorDefinition(const TLType *type, std::function<QString (const QString &, const QString &)> head,
                                                     std::function<QString (const QString &, const TLSubType &)> generateSubtypeCode,
                                                     std::function<QString (const QString &)> end)
 {
-    const QString argName = type.variableName();
-    QString code = head(argName, type.name);
+    const QString argName = type->variableName();
+    QString code = head(argName, type->name);
     QHash<QString,int> implementationHash; // type name to implementation index map
     QStringList implementations;
-    implementations.reserve(type.subTypes.count());
-    foreach (const TLSubType &subType, type.subTypes) {
+    implementations.reserve(type->subTypes.count());
+    foreach (const TLSubType &subType, type->subTypes) {
         const QString caseImplementation = generateSubtypeCode(argName, subType);
         const int implementationIndex = implementations.indexOf(caseImplementation);
         if (implementationIndex >= 0) {
@@ -797,7 +797,7 @@ QString Generator::generateStreamOperatorDefinition(const TLType &type, std::fun
         }
     }
     for (int i = 0; i < implementations.count(); ++i) {
-        foreach (const TLSubType &subType, type.subTypes) {
+        foreach (const TLSubType &subType, type->subTypes) {
             if (implementationHash.value(subType.name) == i) {
                 code.append(QString("%1case %2::%3:\n").arg(spacing, tlValueName, subType.name));
             }
@@ -853,7 +853,7 @@ QString Generator::streamReadFreeOperatorDefinition(const TLMethod *method)
                                             streamReadFunctionFreeImplementationEnd);
 }
 
-QString Generator::streamReadOperatorDefinition(const TLType &type)
+QString Generator::streamReadOperatorDefinition(const TLType *type)
 {
     return generateStreamOperatorDefinition(type,
                                             streamReadImplementationHead,
@@ -866,11 +866,11 @@ QString Generator::streamReadVectorTemplate(const QString &type)
     return QString(QLatin1String("template %1 &%1::operator>>(TLVector<%2> &v);")).arg(streamClassName, type);
 }
 
-QString Generator::streamWriteOperatorDeclaration(const TLType &type)
+QString Generator::streamWriteOperatorDeclaration(const TLType *type)
 {
     QString result;
     QTextStream stream(&result);
-    stream << spacing << streamClassName << " &operator<<(const " << type.name << " &" << type.variableName() << ");" << endl;
+    stream << spacing << streamClassName << " &operator<<(const " << type->name << " &" << type->variableName() << ");" << endl;
     return result;
 }
 
@@ -885,12 +885,12 @@ QString Generator::streamWriteFreeOperatorDeclaration(const TypedEntity *type)
     return result;
 }
 
-QString Generator::streamWriteOperatorDefinition(const TLType &type)
+QString Generator::streamWriteOperatorDefinition(const TLType *type)
 {
     return generateStreamOperatorDefinition(type, streamWriteImplementationHead, streamWritePerTypeImplementation, streamWriteImplementationEnd);
 }
 
-QString Generator::streamWriteFreeOperatorDefinition(const TLType &type)
+QString Generator::streamWriteFreeOperatorDefinition(const TLType *type)
 {
     return generateStreamOperatorDefinition(type, streamWriteFreeImplementationHead, streamWritePerTypeFreeImplementation, streamWriteFreeImplementationEnd);
 }
@@ -920,10 +920,10 @@ QStringList Generator::generateRpcReplyTemplates(const QString &groupName) const
     return result;
 }
 
-QString Generator::generateDebugWriteOperatorDeclaration(const TLType &type)
+QString Generator::generateDebugWriteOperatorDeclaration(const TLType *type)
 {
     return c_internalExportMacro + QStringLiteral(" QDebug operator<<(QDebug d, const %1 &%2);\n")
-            .arg(type.name, type.variableName());
+            .arg(type->name, type->variableName());
 }
 
 QString Generator::debugOperatorImplementationHead(const QString &argName, const QString &typeName)
@@ -998,7 +998,7 @@ QString Generator::debugOperatorPerTypeImplementation(const QString &argName, co
     return code;
 }
 
-QString Generator::generateDebugWriteOperatorDefinition(const TLType &type)
+QString Generator::generateDebugWriteOperatorDefinition(const TLType *type)
 {
     return generateStreamOperatorDefinition(type, debugOperatorImplementationHead, debugOperatorPerTypeImplementation, debugOperatorImplementationEnd);
 //    QDebug operator << (QDebug d, const TLUpdatesState &type) {
@@ -1967,18 +1967,18 @@ void Generator::generate()
         codeOfTLTypes.append(generateTLTypeDefinition(type, m_addSpecSources));
 
         codeStreamReadDeclarations.append(streamReadOperatorDeclaration(&type));
-        codeStreamReadDefinitions.append(streamReadOperatorDefinition(type));
+        codeStreamReadDefinitions.append(streamReadOperatorDefinition(&type));
 
         if (typesUsedForWrite.contains(type.name)) {
-            codeStreamWriteDeclarations.append(streamWriteOperatorDeclaration(type));
-            codeStreamWriteDefinitions.append(streamWriteOperatorDefinition(type));
+            codeStreamWriteDeclarations.append(streamWriteOperatorDeclaration(&type));
+            codeStreamWriteDefinitions.append(streamWriteOperatorDefinition(&type));
         } else {
             codeStreamExtraWriteDeclarations.append(streamWriteFreeOperatorDeclaration(&type));
-            codeStreamExtraWriteDefinitions .append(streamWriteFreeOperatorDefinition(type));
+            codeStreamExtraWriteDefinitions .append(streamWriteFreeOperatorDefinition(&type));
         }
 
-        codeDebugWriteDeclarations.append(generateDebugWriteOperatorDeclaration(type));
-        codeDebugWriteDefinitions .append(generateDebugWriteOperatorDefinition(type));
+        codeDebugWriteDeclarations.append(generateDebugWriteOperatorDeclaration(&type));
+        codeDebugWriteDefinitions .append(generateDebugWriteOperatorDefinition(&type));
     }
 }
 
