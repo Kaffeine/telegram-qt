@@ -568,23 +568,34 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 
 QStringList Generator::generateTLTypeMemberFlags(const TLType &type)
 {
-    QStringList addedMembers;
+    QStringList addedFlags;
     QMap<quint8,QString> memberFlags;
 
     foreach (const TLSubType &subType, type.subTypes) {
         foreach (const TLParam &member, subType.members) {
-            if (addedMembers.contains(member.getAlias())) {
+            if (!member.dependOnFlag()) {
                 continue;
             }
-            addedMembers.append(member.getAlias());
-            if (member.dependOnFlag()) {
-                memberFlags.insertMulti(member.flagBit, member.flagName() + QStringLiteral(" = 1 << %1,").arg(member.flagBit));
+            const QString flagName = member.flagName();
+            if (addedFlags.contains(flagName)) {
+                quint8 existsFlagValue = memberFlags.key(flagName);
+                if (existsFlagValue != member.flagBit) {
+                    qCritical() << "Critical codegen error for type" << type.name
+                                << ": the same flag needs to have a different value"
+                                << flagName << member.flagBit << "vs" << existsFlagValue;
+                }
+                continue;
             }
+            addedFlags.append(flagName);
+            memberFlags.insertMulti(member.flagBit, flagName);
         }
     }
     QStringList result;
     for (quint8 flag : memberFlags.uniqueKeys()) {
-        result.append(memberFlags.values(flag));
+        for (const QString &flagName : memberFlags.values(flag)) {
+            QString flagCode = flagName + QStringLiteral(" = 1 << %1,").arg(flag);
+            result.append(flagCode);
+        }
     }
     return result;
 }
