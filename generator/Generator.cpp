@@ -672,14 +672,13 @@ QString Generator::streamReadImplementationEnd(const QString &argName)
 
 QString Generator::streamReadPerTypeImplementation(const TypedEntity *type, const TLSubType &subType)
 {
-    Q_UNUSED(type)
     QString code;
     foreach (const TLParam &member, subType.members) {
         if (member.dependOnFlag()) {
             if (member.type() == tlTrueType) {
                 continue;
             }
-            code.append(doubleSpacing + QString("if (result.%1 & 1 << %2) {\n").arg(member.flagMember).arg(member.flagBit));
+            code.append(doubleSpacing + QString("if (result.%1 & %2::%3) {\n").arg(member.flagMember, type->name, member.flagName()));
             code.append(doubleSpacing + spacing + QString("*this >> result.%1;\n").arg(member.getAlias()));
             code.append(doubleSpacing + QLatin1Literal("}\n"));
         } else {
@@ -790,7 +789,7 @@ QString Generator::streamWritePerTypeImplementationBase(const TypedEntity *type,
             if (member.type() == tlTrueType) {
                 continue;
             }
-            code.append(doubleSpacing + QString("if (%1.%2 & 1 << %3) {\n").arg(argName).arg(member.flagMember).arg(member.flagBit));
+            code.append(doubleSpacing + QString("if (%1.%2 & %3::%4) {\n").arg(argName, member.flagMember, type->name, member.flagName()));
             code.append(doubleSpacing + spacing + streamGetter + QString(" << %1.%2;\n").arg(argName, member.getAlias()));
             code.append(doubleSpacing + QLatin1Literal("}\n"));
         } else {
