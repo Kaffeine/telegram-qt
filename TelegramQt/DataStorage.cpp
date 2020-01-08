@@ -328,7 +328,9 @@ bool DataInternalApi::processNewMessage(const TLMessage &message, quint32 pts)
     if (dialog->pts < pts) {
         dialog->pts = pts;
     }
-    ++dialog->unreadCount;
+    if (!message.out()) {
+        ++dialog->unreadCount;
+    }
 
     updateDialogsOrder();
 
