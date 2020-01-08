@@ -157,6 +157,8 @@ void DialogsModel::populate()
     if (m_list->isReady()) {
         onListReady();
     }
+    connect(client()->messagingApi(), &MessagingApi::messageReceived,
+            this, &DialogsModel::onNewMessage);
 }
 
 QString getPeerAlias(const Telegram::Peer &peer, const Telegram::Client::Client *client)
@@ -236,7 +238,50 @@ void DialogsModel::addPeer(const Peer &peer)
     dialog.chatType = c->messagingApi()->getChatType(peer);
     dialog.name = getPeerAlias(peer, c);
     dialog.pictureFileId = getPeerPictureId(peer, c);
-    c->messagingApi()->getMessage(&dialog.lastChatMessage, peer, dialog.info.lastMessageId());
+    updateDialogLastMessage(&dialog);
+}
+
+void DialogsModel::onNewMessage(const Telegram::Peer peer, quint32 messageId)
+{
+    // The method is called on dialog message sent or received
+    Q_UNUSED(messageId)
+    int dialogIndex = getDialogIndex(peer);
+    if (dialogIndex < 0) {
+        return;
+    }
+    DialogEntry &dialog = m_dialogs[dialogIndex];
+    if (!updateDialogLastMessage(&dialog)) {
+        return;
+    }
+    const QModelIndex changedIndex = index(dialogIndex);
+    emit dataChanged(changedIndex, changedIndex, rolesToInt({
+                                                                Role::LastMessage,
+                                                                Role::FormattedLastMessage,
+                                                                Role::UnreadMessageCount,
+                                                            }));
+}
+
+int DialogsModel::getDialogIndex(const Peer peer) const
+{
+    for (int i = 0; i < m_dialogs.count(); ++i) {
+        const DialogEntry &entry = m_dialogs.at(i);
+        if (entry.info.peer() != peer) {
+            continue;
+        }
+        return i;
+    }
+    return -1;
+}
+
+bool DialogsModel::updateDialogLastMessage(DialogEntry *entry)
+{
+    Client *c = client();
+    c->dataStorage()->getDialogInfo(&entry->info, entry->info.peer());
+    if (!entry->lastMessageIsOutdated()) {
+        return false;
+    }
+    c->messagingApi()->getMessage(&entry->lastChatMessage, entry->info.peer(), entry->info.lastMessageId());
+    return true;
 }
 
 DialogsModel::Role DialogsModel::intToRole(int value)
@@ -265,6 +310,11 @@ DialogsModel::Role DialogsModel::indexToRole(const QModelIndex &index, int role)
         return intToRole(role - UserRoleOffset);
     }
     return Role::Invalid;
+}
+
+bool DialogsModel::DialogEntry::lastMessageIsOutdated() const
+{
+    return info.lastMessageId() != lastChatMessage.id;
 }
 
 } // Client namespace

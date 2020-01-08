@@ -21,7 +21,10 @@ class DialogsModel : public QAbstractListModel, public DeclarativeClientMixin
     Q_OBJECT
     Q_PROPERTY(Telegram::Client::DeclarativeClient *client READ qmlClient WRITE setQmlClient NOTIFY clientChanged)
 public:
-    struct DialogEntry {
+    class DialogEntry
+    {
+    public:
+        bool lastMessageIsOutdated() const;
         Namespace::ChatType chatType;
         QString name;
         QString formattedLastMessage;
@@ -78,8 +81,11 @@ private slots:
     void onListReady();
     void onListChanged(const Telegram::PeerList &added, const Telegram::PeerList &removed);
     void addPeer(const Telegram::Peer &peer);
+    void onNewMessage(const Telegram::Peer peer, quint32 messageId);
 
 private:
+    int getDialogIndex(const Telegram::Peer peer) const;
+    bool updateDialogLastMessage(DialogEntry *entry);
     QVariantMap getDialogLastMessageData(const DialogEntry &dialog) const;
 
     static Role intToRole(int value);
