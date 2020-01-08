@@ -76,7 +76,7 @@ quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message
 
     MessagesRpcLayer::PendingUpdates *rpcOperation = messagesLayer()->sendMessage(flags, inputPeer, options.replyToMessageId(),
                                                                                   message, randomId, TLReplyMarkup(), {});
-    rpcOperation->connectToFinished(this, &MessagingApiPrivate::onMessageSendResult, randomId, rpcOperation);
+    rpcOperation->connectToFinished(this, &MessagingApiPrivate::onSendMessageResult, randomId, rpcOperation);
     return randomId;
 }
 
@@ -152,27 +152,36 @@ void Telegram::Client::MessagingApiPrivate::processMessageAction(const Peer peer
     emit q->messageActionChanged(peer, userId, action);
 }
 
-void MessagingApiPrivate::onMessageSendResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation)
+void MessagingApiPrivate::onSendMessageResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation)
 {
     TLUpdates result;
     rpcOperation->getResult(&result);
     m_expectedRandomMessageId = randomMessageId;
     backend()->updatesApi()->processUpdates(result);
     if (m_expectedRandomMessageId) {
+        // onShortSentMessage() was not called
         qWarning() << Q_FUNC_INFO << "Expected messageId is missing in updates";
     }
+    m_expectedRandomMessageId = 0;
+}
+
+void MessagingApiPrivate::onShortSentMessage(quint32 messageId)
+{
+    if (!m_expectedRandomMessageId) {
+        qWarning() << Q_FUNC_INFO << "Unexpected message" << messageId;
+        return;
+    }
+    onSentMessageIdResolved(m_expectedRandomMessageId, messageId);
     m_expectedRandomMessageId = 0;
 }
 
 void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint32 messageId)
 {
     Q_Q(MessagingApi);
-    if (randomMessageId && (randomMessageId != m_expectedRandomMessageId)) {
-        qWarning() << Q_FUNC_INFO << "Unexpected random message id."
-                   << "Actual:" << randomMessageId << "Expected:" << m_expectedRandomMessageId;
+    if (!randomMessageId) {
+        qWarning() << Q_FUNC_INFO << "Message randomId is missing";
         return;
     }
-    randomMessageId = m_expectedRandomMessageId;
 
     if (!messageId) {
         qWarning() << Q_FUNC_INFO << "Message id is missing";
@@ -187,7 +196,6 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
     DialogState *state = dataInternalApi()->ensureDialogState(sentMessage.peer);
     state->syncedMessageId = messageId;
 
-    m_expectedRandomMessageId = 0;
     emit q->messageSent(sentMessage.peer, randomMessageId, messageId);
 }
 

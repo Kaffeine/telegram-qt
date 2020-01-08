@@ -85,7 +85,8 @@ public:
     void setMessageAction(const Peer peer, const Telegram::MessageAction &action);
     void processMessageAction(const Peer peer, quint32 userId, const MessageAction &action);
 
-    void onMessageSendResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation);
+    void onSendMessageResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation);
+    void onShortSentMessage(quint32 messageId);
     void onSentMessageIdResolved(quint64 randomMessageId, quint32 messageId);
 
     void onMessageReceived(const TLMessage &message);

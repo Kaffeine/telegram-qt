@@ -125,7 +125,7 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
         break;
     case TLValue::UpdateShortSentMessage:
     {
-        messagingApi()->onSentMessageIdResolved(0, updates.id);
+        messagingApi()->onShortSentMessage(updates.id);
         // TODO: Check that the follow state update is the right thing to do.
         // This fixes scenario: "send sendMessage" -> "receive UpdateShortSentMessage" -> "receive UpdateReadHistoryOutbox with update.pts == m_updatesState.pts + 2"
         // setUpdateState(m_updatesState.pts + 1, 0, 0);
