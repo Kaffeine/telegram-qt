@@ -95,8 +95,8 @@ public:
     QVector<quint64> getPostedMessages() const;
     void enqueueMessageRead(const Peer peer, quint32 messageId);
     void dequeueMessageRead(const Peer peer, quint32 messageId);
-    bool updateInboxRead(const Peer peer, quint32 messageId);
-    bool updateOutboxRead(const Peer peer, quint32 messageId);
+    bool updateInboxRead(const Peer peer, quint32 maxId);
+    bool updateOutboxRead(const Peer peer, quint32 maxId);
 
     quint32 selfUserId() const { return m_selfUserId; }
 

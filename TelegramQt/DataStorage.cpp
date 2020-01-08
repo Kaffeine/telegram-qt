@@ -516,8 +516,38 @@ void DataInternalApi::dequeueMessageRead(const Peer peer, quint32 messageId)
 
     Returns \c true if the dialog read status is actually changed.
 */
-bool DataInternalApi::updateInboxRead(const Telegram::Peer peer, quint32 messageId)
+bool DataInternalApi::updateInboxRead(const Telegram::Peer peer, quint32 maxId)
 {
+    UserDialog *dialog = getDialog(peer);
+    if (!dialog) {
+        // TODO: messagesLayer()->getPeerDialogs()
+        return false;
+    }
+    if (dialog->readInboxMaxId == maxId) {
+        return false;
+    }
+    quint32 unreadCount = 0;
+    // The unreadCount calculation is inaccurate :-(
+    // Currently we count only fetched unread messages.
+#if TELEGRAMQT_LAYER >= 99
+#error "Wire up TLUpdate::stillUnreadCount"
+#endif
+    for (quint32 messageId = maxId + 1; messageId < dialog->topMessage; ++messageId) {
+        const TLMessage *unreadMessage = getMessage(peer, messageId);
+        if (unreadMessage) {
+            ++unreadCount;
+        }
+    }
+    if (dialog->topMessage > maxId) {
+        if (unreadCount == 0) {
+            // Even if we have no loaded messages, the fact that the topMessage > maxId
+            // means that there is at least one unread message.
+            unreadCount = 1;
+        }
+    }
+    dialog->unreadCount = unreadCount;
+    dialog->readInboxMaxId = maxId;
+
     return true;
 }
 
@@ -525,8 +555,18 @@ bool DataInternalApi::updateInboxRead(const Telegram::Peer peer, quint32 message
 
     Returns \c true if the dialog read status is actually changed.
 */
-bool DataInternalApi::updateOutboxRead(const Telegram::Peer peer, quint32 messageId)
+bool DataInternalApi::updateOutboxRead(const Telegram::Peer peer, quint32 maxId)
 {
+    UserDialog *dialog = getDialog(peer);
+    if (!dialog) {
+        // TODO: messagesLayer()->getPeerDialogs()
+        return false;
+    }
+    if (dialog->readOutboxMaxId == maxId) {
+        return false;
+    }
+    dialog->readOutboxMaxId = maxId;
+
     return true;
 }
 
