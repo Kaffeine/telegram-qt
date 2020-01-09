@@ -101,6 +101,7 @@ private slots:
     void doubleRecursiveTypeMembers();
     void predicateForCrc_data();
     void predicateForCrc();
+    void checkStreamReadOperator();
 };
 
 tst_Generator::tst_Generator(QObject *parent) :
@@ -352,6 +353,100 @@ void tst_Generator::predicateForCrc()
     QFETCH(QByteArray, input);
     QFETCH(QByteArray, output);
     QCOMPARE(Generator::getBarePredicate(input), output);
+}
+
+void tst_Generator::checkStreamReadOperator()
+{
+    QByteArray sources =
+            "\n"
+            "postAddress#1e8caaeb"
+            " street_line1:string"
+            " street_line2:string"
+            " city:string state:string"
+            " country_iso2:string"
+            " post_code:string = PostAddress;"
+            "\n"
+            "paymentRequestedInfo#909c3f94 flags:#"
+            " name:flags.0?string"
+            " phone:flags.1?string"
+            " email:flags.2?string"
+            " shipping_address:flags.3?PostAddress"
+            " = PaymentRequestedInfo;";
+
+    QByteArray declarationsCode =
+            "    Stream &operator>>(TLPostAddress &postAddressValue);\n"
+            "    Stream &operator>>(TLPaymentRequestedInfo &paymentRequestedInfoValue);\n";
+
+    QByteArray definitionsCode =
+            "Stream &Stream::operator>>(TLPostAddress &postAddressValue)\n"
+            "{\n"
+            "    TLPostAddress result;\n"
+            "\n"
+            "    *this >> result.tlType;\n"
+            "\n"
+            "    switch (result.tlType) {\n"
+            "    case TLValue::PostAddress:\n"
+            "        *this >> result.streetLine1;\n"
+            "        *this >> result.streetLine2;\n"
+            "        *this >> result.city;\n"
+            "        *this >> result.state;\n"
+            "        *this >> result.countryIso2;\n"
+            "        *this >> result.postCode;\n"
+            "        break;\n"
+            "    default:\n"
+            "        break;\n"
+            "    }\n"
+            "\n"
+            "    postAddressValue = result;\n"
+            "\n"
+            "    return *this;\n"
+            "}\n"
+            "\n"
+            "Stream &Stream::operator>>(TLPaymentRequestedInfo &paymentRequestedInfoValue)\n"
+            "{\n"
+            "    TLPaymentRequestedInfo result;\n"
+            "\n"
+            "    *this >> result.tlType;\n"
+            "\n"
+            "    switch (result.tlType) {\n"
+            "    case TLValue::PaymentRequestedInfo:\n"
+            "        *this >> result.flags;\n"
+            "        if (result.flags & TLPaymentRequestedInfo::Name) {\n"
+            "            *this >> result.name;\n"
+            "        }\n"
+            "        if (result.flags & TLPaymentRequestedInfo::Phone) {\n"
+            "            *this >> result.phone;\n"
+            "        }\n"
+            "        if (result.flags & TLPaymentRequestedInfo::Email) {\n"
+            "            *this >> result.email;\n"
+            "        }\n"
+            "        if (result.flags & TLPaymentRequestedInfo::ShippingAddress) {\n"
+            "            *this >> result.shippingAddress;\n"
+            "        }\n"
+            "        break;\n"
+            "    default:\n"
+            "        break;\n"
+            "    }\n"
+            "\n"
+            "    paymentRequestedInfoValue = result;\n"
+            "\n"
+            "    return *this;\n"
+            "}\n"
+            "\n";
+
+    const QByteArray textData = c_typesSection + sources;
+
+    Generator generator;
+    QVERIFY(generator.loadFromText(textData));
+    QMap<QString, TLType> types = generator.types();
+    QVERIFY(!types.isEmpty());
+    QVERIFY(generator.resolveTypes());
+    QVERIFY(!generator.solvedTypes().isEmpty());
+    generator.generate();
+
+    QCOMPARE(generator.codeStreamReadDeclarations.toLatin1(), declarationsCode);
+    qWarning().noquote() << generator.codeStreamReadDefinitions;
+    QCOMPARE(generator.codeStreamReadDefinitions.toLatin1(), definitionsCode);
 }
 
 QTEST_APPLESS_MAIN(tst_Generator)
