@@ -34,7 +34,8 @@ const QStringList c_sourcesInputMediaDeps =
 const QStringList c_sourcesInputMedia =
 {
     QStringLiteral("inputMediaEmpty#9664f57f = InputMedia;"),
-    QStringLiteral("inputMediaUploadedPhoto#f7aff1c0 file:InputFile caption:string = InputMedia;"),
+    QStringLiteral("inputMediaUploadedPhoto#2f37e231 flags:# file:InputFile caption:string stickers:flags.0?Vector<InputDocument> ttl_seconds:flags.1?int = InputMedia;"),
+    QStringLiteral("inputMediaPhotoExternal#922aec1 flags:# url:string caption:string ttl_seconds:flags.0?int = InputMedia;"),
     QStringLiteral("inputMediaPhoto#e9bfb4f3 id:InputPhoto caption:string = InputMedia;"),
     QStringLiteral("inputMediaContact#a6e45987 phone_number:string first_name:string last_name:string = InputMedia;"),
     QStringLiteral("inputMediaUploadedVideo#82713fdf file:InputFile duration:int w:int h:int mime_type:string caption:string = InputMedia;"),
@@ -45,6 +46,13 @@ const QStringList c_sourcesInputMedia =
     QStringLiteral("inputMediaUploadedDocument#1d89306d file:InputFile mime_type:string attributes:Vector<DocumentAttribute> caption:string = InputMedia;"),
     QStringLiteral("inputMediaUploadedThumbDocument#ad613491 file:InputFile thumb:InputFile mime_type:string attributes:Vector<DocumentAttribute> caption:string = InputMedia;"),
     QStringLiteral("inputMediaDocument#1a77f29c id:InputDocument caption:string = InputMedia;"),
+};
+
+const QStringList c_inputMediaFlags =
+{
+    QStringLiteral("TtlSeconds0 = 1 << 0,"),
+    QStringLiteral("Stickers = 1 << 0,"),
+    QStringLiteral("TtlSeconds1 = 1 << 1,"),
 };
 
 const QStringList c_sourcesRichText =
@@ -86,6 +94,7 @@ private slots:
     void checkFormatName_data();
     void checkFormatName();
     void checkTypeWithMemberConflicts();
+    void typeWithMemberFlagsConflict();
     void recursiveTypeMembers();
     void doubleRecursiveTypeMembers();
     void predicateForCrc_data();
@@ -220,6 +229,21 @@ void tst_Generator::checkTypeWithMemberConflicts()
             QFAIL(message.toUtf8().constData());
         }
     }
+}
+
+void tst_Generator::typeWithMemberFlagsConflict()
+{
+    const QStringList sources = c_sourcesInputMediaDeps + c_sourcesInputMedia;
+    const QString generatedTypeName = Generator::parseLine(c_sourcesInputMedia.first()).typeName;
+    const QByteArray textData = generateTextSpec(sources);
+    Generator generator;
+    QVERIFY(generator.loadFromText(textData));
+    QVERIFY(generator.resolveTypes());
+    QVERIFY(!generator.solvedTypes().isEmpty());
+    const TLType solvedType = getSolvedType(generator, generatedTypeName);
+    QVERIFY(!solvedType.name.isEmpty());
+    const QStringList flags = Generator::generateTLTypeMemberFlags(solvedType);
+    QCOMPARE(flags, c_inputMediaFlags);
 }
 
 void tst_Generator::recursiveTypeMembers()
