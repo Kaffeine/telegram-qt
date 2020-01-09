@@ -281,7 +281,7 @@ Stream &operator<<(Stream &stream, const TLChatParticipants &chatParticipantsVal
     case TLValue::ChatParticipantsForbidden:
         stream << chatParticipantsValue.flags;
         stream << chatParticipantsValue.chatId;
-        if (chatParticipantsValue.flags & 1 << 0) {
+        if (chatParticipantsValue.flags & TLChatParticipants::SelfParticipant) {
             stream << chatParticipantsValue.selfParticipant;
         }
         break;
@@ -754,19 +754,19 @@ Stream &operator<<(Stream &stream, const TLLangPackString &langPackStringValue)
     case TLValue::LangPackStringPluralized:
         stream << langPackStringValue.flags;
         stream << langPackStringValue.key;
-        if (langPackStringValue.flags & 1 << 0) {
+        if (langPackStringValue.flags & TLLangPackString::ZeroValue) {
             stream << langPackStringValue.zeroValue;
         }
-        if (langPackStringValue.flags & 1 << 1) {
+        if (langPackStringValue.flags & TLLangPackString::OneValue) {
             stream << langPackStringValue.oneValue;
         }
-        if (langPackStringValue.flags & 1 << 2) {
+        if (langPackStringValue.flags & TLLangPackString::TwoValue) {
             stream << langPackStringValue.twoValue;
         }
-        if (langPackStringValue.flags & 1 << 3) {
+        if (langPackStringValue.flags & TLLangPackString::FewValue) {
             stream << langPackStringValue.fewValue;
         }
-        if (langPackStringValue.flags & 1 << 4) {
+        if (langPackStringValue.flags & TLLangPackString::ManyValue) {
             stream << langPackStringValue.manyValue;
         }
         stream << langPackStringValue.otherValue;
@@ -787,17 +787,17 @@ Stream &operator<<(Stream &stream, const TLMessageFwdHeader &messageFwdHeaderVal
     switch (messageFwdHeaderValue.tlType) {
     case TLValue::MessageFwdHeader:
         stream << messageFwdHeaderValue.flags;
-        if (messageFwdHeaderValue.flags & 1 << 0) {
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::FromId) {
             stream << messageFwdHeaderValue.fromId;
         }
         stream << messageFwdHeaderValue.date;
-        if (messageFwdHeaderValue.flags & 1 << 1) {
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::ChannelId) {
             stream << messageFwdHeaderValue.channelId;
         }
-        if (messageFwdHeaderValue.flags & 1 << 2) {
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::ChannelPost) {
             stream << messageFwdHeaderValue.channelPost;
         }
-        if (messageFwdHeaderValue.flags & 1 << 3) {
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::PostAuthor) {
             stream << messageFwdHeaderValue.postAuthor;
         }
         break;
@@ -1593,10 +1593,10 @@ Stream &operator<<(Stream &stream, const TLAuthSentCode &authSentCodeValue)
         stream << authSentCodeValue.flags;
         stream << authSentCodeValue.type;
         stream << authSentCodeValue.phoneCodeHash;
-        if (authSentCodeValue.flags & 1 << 1) {
+        if (authSentCodeValue.flags & TLAuthSentCode::NextType) {
             stream << authSentCodeValue.nextType;
         }
-        if (authSentCodeValue.flags & 1 << 2) {
+        if (authSentCodeValue.flags & TLAuthSentCode::Timeout) {
             stream << authSentCodeValue.timeout;
         }
         break;
@@ -1716,11 +1716,11 @@ Stream &operator<<(Stream &stream, const TLDraftMessage &draftMessageValue)
         break;
     case TLValue::DraftMessage:
         stream << draftMessageValue.flags;
-        if (draftMessageValue.flags & 1 << 0) {
+        if (draftMessageValue.flags & TLDraftMessage::ReplyToMsgId) {
             stream << draftMessageValue.replyToMsgId;
         }
         stream << draftMessageValue.message;
-        if (draftMessageValue.flags & 1 << 3) {
+        if (draftMessageValue.flags & TLDraftMessage::Entities) {
             stream << draftMessageValue.entities;
         }
         stream << draftMessageValue.date;
@@ -1772,10 +1772,10 @@ Stream &operator<<(Stream &stream, const TLMessagesBotCallbackAnswer &messagesBo
     switch (messagesBotCallbackAnswerValue.tlType) {
     case TLValue::MessagesBotCallbackAnswer:
         stream << messagesBotCallbackAnswerValue.flags;
-        if (messagesBotCallbackAnswerValue.flags & 1 << 0) {
+        if (messagesBotCallbackAnswerValue.flags & TLMessagesBotCallbackAnswer::Message) {
             stream << messagesBotCallbackAnswerValue.message;
         }
-        if (messagesBotCallbackAnswerValue.flags & 1 << 2) {
+        if (messagesBotCallbackAnswerValue.flags & TLMessagesBotCallbackAnswer::Url) {
             stream << messagesBotCallbackAnswerValue.url;
         }
         stream << messagesBotCallbackAnswerValue.cacheTime;
@@ -1825,7 +1825,7 @@ Stream &operator<<(Stream &stream, const TLPaymentsSavedInfo &paymentsSavedInfoV
     switch (paymentsSavedInfoValue.tlType) {
     case TLValue::PaymentsSavedInfo:
         stream << paymentsSavedInfoValue.flags;
-        if (paymentsSavedInfoValue.flags & 1 << 0) {
+        if (paymentsSavedInfoValue.flags & TLPaymentsSavedInfo::SavedInfo) {
             stream << paymentsSavedInfoValue.savedInfo;
         }
         break;
@@ -1842,10 +1842,10 @@ Stream &operator<<(Stream &stream, const TLPaymentsValidatedRequestedInfo &payme
     switch (paymentsValidatedRequestedInfoValue.tlType) {
     case TLValue::PaymentsValidatedRequestedInfo:
         stream << paymentsValidatedRequestedInfoValue.flags;
-        if (paymentsValidatedRequestedInfoValue.flags & 1 << 0) {
+        if (paymentsValidatedRequestedInfoValue.flags & TLPaymentsValidatedRequestedInfo::Id) {
             stream << paymentsValidatedRequestedInfoValue.id;
         }
-        if (paymentsValidatedRequestedInfoValue.flags & 1 << 1) {
+        if (paymentsValidatedRequestedInfoValue.flags & TLPaymentsValidatedRequestedInfo::ShippingOptions) {
             stream << paymentsValidatedRequestedInfoValue.shippingOptions;
         }
         break;
@@ -1939,37 +1939,37 @@ Stream &operator<<(Stream &stream, const TLUser &userValue)
     case TLValue::User:
         stream << userValue.flags;
         stream << userValue.id;
-        if (userValue.flags & 1 << 0) {
+        if (userValue.flags & TLUser::AccessHash) {
             stream << userValue.accessHash;
         }
-        if (userValue.flags & 1 << 1) {
+        if (userValue.flags & TLUser::FirstName) {
             stream << userValue.firstName;
         }
-        if (userValue.flags & 1 << 2) {
+        if (userValue.flags & TLUser::LastName) {
             stream << userValue.lastName;
         }
-        if (userValue.flags & 1 << 3) {
+        if (userValue.flags & TLUser::Username) {
             stream << userValue.username;
         }
-        if (userValue.flags & 1 << 4) {
+        if (userValue.flags & TLUser::Phone) {
             stream << userValue.phone;
         }
-        if (userValue.flags & 1 << 5) {
+        if (userValue.flags & TLUser::Photo) {
             stream << userValue.photo;
         }
-        if (userValue.flags & 1 << 6) {
+        if (userValue.flags & TLUser::Status) {
             stream << userValue.status;
         }
-        if (userValue.flags & 1 << 14) {
+        if (userValue.flags & TLUser::BotInfoVersion) {
             stream << userValue.botInfoVersion;
         }
-        if (userValue.flags & 1 << 18) {
+        if (userValue.flags & TLUser::RestrictionReason) {
             stream << userValue.restrictionReason;
         }
-        if (userValue.flags & 1 << 19) {
+        if (userValue.flags & TLUser::BotInlinePlaceholder) {
             stream << userValue.botInlinePlaceholder;
         }
-        if (userValue.flags & 1 << 22) {
+        if (userValue.flags & TLUser::LangCode) {
             stream << userValue.langCode;
         }
         break;
@@ -2020,7 +2020,7 @@ Stream &operator<<(Stream &stream, const TLAuthAuthorization &authAuthorizationV
     switch (authAuthorizationValue.tlType) {
     case TLValue::AuthAuthorization:
         stream << authAuthorizationValue.flags;
-        if (authAuthorizationValue.flags & 1 << 0) {
+        if (authAuthorizationValue.flags & TLAuthAuthorization::TmpSessions) {
             stream << authAuthorizationValue.tmpSessions;
         }
         stream << authAuthorizationValue.user;
@@ -2039,17 +2039,17 @@ Stream &operator<<(Stream &stream, const TLBotInlineMessage &botInlineMessageVal
     case TLValue::BotInlineMessageMediaAuto:
         stream << botInlineMessageValue.flags;
         stream << botInlineMessageValue.caption;
-        if (botInlineMessageValue.flags & 1 << 2) {
+        if (botInlineMessageValue.flags & TLBotInlineMessage::ReplyMarkup) {
             stream << botInlineMessageValue.replyMarkup;
         }
         break;
     case TLValue::BotInlineMessageText:
         stream << botInlineMessageValue.flags;
         stream << botInlineMessageValue.message;
-        if (botInlineMessageValue.flags & 1 << 1) {
+        if (botInlineMessageValue.flags & TLBotInlineMessage::Entities) {
             stream << botInlineMessageValue.entities;
         }
-        if (botInlineMessageValue.flags & 1 << 2) {
+        if (botInlineMessageValue.flags & TLBotInlineMessage::ReplyMarkup) {
             stream << botInlineMessageValue.replyMarkup;
         }
         break;
@@ -2057,7 +2057,7 @@ Stream &operator<<(Stream &stream, const TLBotInlineMessage &botInlineMessageVal
         stream << botInlineMessageValue.flags;
         stream << botInlineMessageValue.geo;
         stream << botInlineMessageValue.period;
-        if (botInlineMessageValue.flags & 1 << 2) {
+        if (botInlineMessageValue.flags & TLBotInlineMessage::ReplyMarkup) {
             stream << botInlineMessageValue.replyMarkup;
         }
         break;
@@ -2068,7 +2068,7 @@ Stream &operator<<(Stream &stream, const TLBotInlineMessage &botInlineMessageVal
         stream << botInlineMessageValue.address;
         stream << botInlineMessageValue.provider;
         stream << botInlineMessageValue.venueId;
-        if (botInlineMessageValue.flags & 1 << 2) {
+        if (botInlineMessageValue.flags & TLBotInlineMessage::ReplyMarkup) {
             stream << botInlineMessageValue.replyMarkup;
         }
         break;
@@ -2077,7 +2077,7 @@ Stream &operator<<(Stream &stream, const TLBotInlineMessage &botInlineMessageVal
         stream << botInlineMessageValue.phoneNumber;
         stream << botInlineMessageValue.firstName;
         stream << botInlineMessageValue.lastName;
-        if (botInlineMessageValue.flags & 1 << 2) {
+        if (botInlineMessageValue.flags & TLBotInlineMessage::ReplyMarkup) {
             stream << botInlineMessageValue.replyMarkup;
         }
         break;
@@ -2136,7 +2136,7 @@ Stream &operator<<(Stream &stream, const TLChat &chatValue)
         stream << chatValue.participantsCount;
         stream << chatValue.date;
         stream << chatValue.version;
-        if (chatValue.flags & 1 << 6) {
+        if (chatValue.flags & TLChat::MigratedTo) {
             stream << chatValue.migratedTo;
         }
         break;
@@ -2147,23 +2147,23 @@ Stream &operator<<(Stream &stream, const TLChat &chatValue)
     case TLValue::Channel:
         stream << chatValue.flags;
         stream << chatValue.id;
-        if (chatValue.flags & 1 << 13) {
+        if (chatValue.flags & TLChat::AccessHash) {
             stream << chatValue.accessHash;
         }
         stream << chatValue.title;
-        if (chatValue.flags & 1 << 6) {
+        if (chatValue.flags & TLChat::Username) {
             stream << chatValue.username;
         }
         stream << chatValue.photo;
         stream << chatValue.date;
         stream << chatValue.version;
-        if (chatValue.flags & 1 << 9) {
+        if (chatValue.flags & TLChat::RestrictionReason) {
             stream << chatValue.restrictionReason;
         }
-        if (chatValue.flags & 1 << 14) {
+        if (chatValue.flags & TLChat::AdminRights) {
             stream << chatValue.adminRights;
         }
-        if (chatValue.flags & 1 << 15) {
+        if (chatValue.flags & TLChat::BannedRights) {
             stream << chatValue.bannedRights;
         }
         break;
@@ -2172,7 +2172,7 @@ Stream &operator<<(Stream &stream, const TLChat &chatValue)
         stream << chatValue.id;
         stream << chatValue.accessHash;
         stream << chatValue.title;
-        if (chatValue.flags & 1 << 16) {
+        if (chatValue.flags & TLChat::UntilDate) {
             stream << chatValue.untilDate;
         }
         break;
@@ -2199,16 +2199,16 @@ Stream &operator<<(Stream &stream, const TLChatFull &chatFullValue)
         stream << chatFullValue.flags;
         stream << chatFullValue.id;
         stream << chatFullValue.about;
-        if (chatFullValue.flags & 1 << 0) {
+        if (chatFullValue.flags & TLChatFull::ParticipantsCount) {
             stream << chatFullValue.participantsCount;
         }
-        if (chatFullValue.flags & 1 << 1) {
+        if (chatFullValue.flags & TLChatFull::AdminsCount) {
             stream << chatFullValue.adminsCount;
         }
-        if (chatFullValue.flags & 1 << 2) {
+        if (chatFullValue.flags & TLChatFull::KickedCount) {
             stream << chatFullValue.kickedCount;
         }
-        if (chatFullValue.flags & 1 << 2) {
+        if (chatFullValue.flags & TLChatFull::BannedCount) {
             stream << chatFullValue.bannedCount;
         }
         stream << chatFullValue.readInboxMaxId;
@@ -2218,19 +2218,19 @@ Stream &operator<<(Stream &stream, const TLChatFull &chatFullValue)
         stream << chatFullValue.notifySettings;
         stream << chatFullValue.exportedInvite;
         stream << chatFullValue.botInfo;
-        if (chatFullValue.flags & 1 << 4) {
+        if (chatFullValue.flags & TLChatFull::MigratedFromChatId) {
             stream << chatFullValue.migratedFromChatId;
         }
-        if (chatFullValue.flags & 1 << 4) {
+        if (chatFullValue.flags & TLChatFull::MigratedFromMaxId) {
             stream << chatFullValue.migratedFromMaxId;
         }
-        if (chatFullValue.flags & 1 << 5) {
+        if (chatFullValue.flags & TLChatFull::PinnedMsgId) {
             stream << chatFullValue.pinnedMsgId;
         }
-        if (chatFullValue.flags & 1 << 8) {
+        if (chatFullValue.flags & TLChatFull::Stickerset) {
             stream << chatFullValue.stickerset;
         }
-        if (chatFullValue.flags & 1 << 9) {
+        if (chatFullValue.flags & TLChatFull::AvailableMinId) {
             stream << chatFullValue.availableMinId;
         }
         break;
@@ -2253,7 +2253,7 @@ Stream &operator<<(Stream &stream, const TLChatInvite &chatInviteValue)
         stream << chatInviteValue.title;
         stream << chatInviteValue.photo;
         stream << chatInviteValue.participantsCount;
-        if (chatInviteValue.flags & 1 << 4) {
+        if (chatInviteValue.flags & TLChatInvite::Participants) {
             stream << chatInviteValue.participants;
         }
         break;
@@ -2293,7 +2293,7 @@ Stream &operator<<(Stream &stream, const TLConfig &configValue)
         stream << configValue.stickersRecentLimit;
         stream << configValue.stickersFavedLimit;
         stream << configValue.channelsReadMediaPeriod;
-        if (configValue.flags & 1 << 0) {
+        if (configValue.flags & TLConfig::TmpSessions) {
             stream << configValue.tmpSessions;
         }
         stream << configValue.pinnedDialogsCountMax;
@@ -2302,10 +2302,10 @@ Stream &operator<<(Stream &stream, const TLConfig &configValue)
         stream << configValue.callConnectTimeoutMs;
         stream << configValue.callPacketTimeoutMs;
         stream << configValue.meUrlPrefix;
-        if (configValue.flags & 1 << 2) {
+        if (configValue.flags & TLConfig::SuggestedLangCode) {
             stream << configValue.suggestedLangCode;
         }
-        if (configValue.flags & 1 << 2) {
+        if (configValue.flags & TLConfig::LangPackVersion) {
             stream << configValue.langPackVersion;
         }
         stream << configValue.disabledFeatures;
@@ -2451,10 +2451,10 @@ Stream &operator<<(Stream &stream, const TLDialog &dialogValue)
         stream << dialogValue.unreadCount;
         stream << dialogValue.unreadMentionsCount;
         stream << dialogValue.notifySettings;
-        if (dialogValue.flags & 1 << 0) {
+        if (dialogValue.flags & TLDialog::Pts) {
             stream << dialogValue.pts;
         }
-        if (dialogValue.flags & 1 << 1) {
+        if (dialogValue.flags & TLDialog::Draft) {
             stream << dialogValue.draft;
         }
         break;
@@ -2526,7 +2526,7 @@ Stream &operator<<(Stream &stream, const TLGame &gameValue)
         stream << gameValue.title;
         stream << gameValue.description;
         stream << gameValue.photo;
-        if (gameValue.flags & 1 << 0) {
+        if (gameValue.flags & TLGame::Document) {
             stream << gameValue.document;
         }
         break;
@@ -2598,10 +2598,10 @@ Stream &operator<<(Stream &stream, const TLMessageAction &messageActionValue)
         stream << messageActionValue.currency;
         stream << messageActionValue.totalAmount;
         stream << messageActionValue.payload;
-        if (messageActionValue.flags & 1 << 0) {
+        if (messageActionValue.flags & TLMessageAction::Info) {
             stream << messageActionValue.info;
         }
-        if (messageActionValue.flags & 1 << 1) {
+        if (messageActionValue.flags & TLMessageAction::ShippingOptionId) {
             stream << messageActionValue.shippingOptionId;
         }
         stream << messageActionValue.charge;
@@ -2613,10 +2613,10 @@ Stream &operator<<(Stream &stream, const TLMessageAction &messageActionValue)
     case TLValue::MessageActionPhoneCall:
         stream << messageActionValue.flags;
         stream << messageActionValue.callId;
-        if (messageActionValue.flags & 1 << 0) {
+        if (messageActionValue.flags & TLMessageAction::Reason) {
             stream << messageActionValue.reason;
         }
-        if (messageActionValue.flags & 1 << 1) {
+        if (messageActionValue.flags & TLMessageAction::Duration) {
             stream << messageActionValue.duration;
         }
         break;
@@ -2845,13 +2845,13 @@ Stream &operator<<(Stream &stream, const TLPageBlock &pageBlockValue)
         break;
     case TLValue::PageBlockEmbed:
         stream << pageBlockValue.flags;
-        if (pageBlockValue.flags & 1 << 1) {
+        if (pageBlockValue.flags & TLPageBlock::Url) {
             stream << pageBlockValue.url;
         }
-        if (pageBlockValue.flags & 1 << 2) {
+        if (pageBlockValue.flags & TLPageBlock::Html) {
             stream << pageBlockValue.html;
         }
-        if (pageBlockValue.flags & 1 << 4) {
+        if (pageBlockValue.flags & TLPageBlock::PosterPhotoId) {
             stream << pageBlockValue.posterPhotoId;
         }
         stream << pageBlockValue.w;
@@ -2896,16 +2896,16 @@ Stream &operator<<(Stream &stream, const TLPaymentsPaymentForm &paymentsPaymentF
         stream << paymentsPaymentFormValue.invoice;
         stream << paymentsPaymentFormValue.providerId;
         stream << paymentsPaymentFormValue.url;
-        if (paymentsPaymentFormValue.flags & 1 << 4) {
+        if (paymentsPaymentFormValue.flags & TLPaymentsPaymentForm::NativeProvider) {
             stream << paymentsPaymentFormValue.nativeProvider;
         }
-        if (paymentsPaymentFormValue.flags & 1 << 4) {
+        if (paymentsPaymentFormValue.flags & TLPaymentsPaymentForm::NativeParams) {
             stream << paymentsPaymentFormValue.nativeParams;
         }
-        if (paymentsPaymentFormValue.flags & 1 << 0) {
+        if (paymentsPaymentFormValue.flags & TLPaymentsPaymentForm::SavedInfo) {
             stream << paymentsPaymentFormValue.savedInfo;
         }
-        if (paymentsPaymentFormValue.flags & 1 << 1) {
+        if (paymentsPaymentFormValue.flags & TLPaymentsPaymentForm::SavedCredentials) {
             stream << paymentsPaymentFormValue.savedCredentials;
         }
         stream << paymentsPaymentFormValue.users;
@@ -2927,10 +2927,10 @@ Stream &operator<<(Stream &stream, const TLPaymentsPaymentReceipt &paymentsPayme
         stream << paymentsPaymentReceiptValue.botId;
         stream << paymentsPaymentReceiptValue.invoice;
         stream << paymentsPaymentReceiptValue.providerId;
-        if (paymentsPaymentReceiptValue.flags & 1 << 0) {
+        if (paymentsPaymentReceiptValue.flags & TLPaymentsPaymentReceipt::Info) {
             stream << paymentsPaymentReceiptValue.info;
         }
-        if (paymentsPaymentReceiptValue.flags & 1 << 1) {
+        if (paymentsPaymentReceiptValue.flags & TLPaymentsPaymentReceipt::Shipping) {
             stream << paymentsPaymentReceiptValue.shipping;
         }
         stream << paymentsPaymentReceiptValue.currency;
@@ -2960,7 +2960,7 @@ Stream &operator<<(Stream &stream, const TLPhoneCall &phoneCallValue)
         stream << phoneCallValue.adminId;
         stream << phoneCallValue.participantId;
         stream << phoneCallValue.protocol;
-        if (phoneCallValue.flags & 1 << 0) {
+        if (phoneCallValue.flags & TLPhoneCall::ReceiveDate) {
             stream << phoneCallValue.receiveDate;
         }
         break;
@@ -2998,10 +2998,10 @@ Stream &operator<<(Stream &stream, const TLPhoneCall &phoneCallValue)
     case TLValue::PhoneCallDiscarded:
         stream << phoneCallValue.flags;
         stream << phoneCallValue.id;
-        if (phoneCallValue.flags & 1 << 0) {
+        if (phoneCallValue.flags & TLPhoneCall::Reason) {
             stream << phoneCallValue.reason;
         }
-        if (phoneCallValue.flags & 1 << 1) {
+        if (phoneCallValue.flags & TLPhoneCall::Duration) {
             stream << phoneCallValue.duration;
         }
         break;
@@ -3088,15 +3088,15 @@ Stream &operator<<(Stream &stream, const TLUserFull &userFullValue)
     case TLValue::UserFull:
         stream << userFullValue.flags;
         stream << userFullValue.user;
-        if (userFullValue.flags & 1 << 1) {
+        if (userFullValue.flags & TLUserFull::About) {
             stream << userFullValue.about;
         }
         stream << userFullValue.link;
-        if (userFullValue.flags & 1 << 2) {
+        if (userFullValue.flags & TLUserFull::ProfilePhoto) {
             stream << userFullValue.profilePhoto;
         }
         stream << userFullValue.notifySettings;
-        if (userFullValue.flags & 1 << 3) {
+        if (userFullValue.flags & TLUserFull::BotInfo) {
             stream << userFullValue.botInfo;
         }
         stream << userFullValue.commonChatsCount;
@@ -3116,31 +3116,31 @@ Stream &operator<<(Stream &stream, const TLBotInlineResult &botInlineResultValue
         stream << botInlineResultValue.flags;
         stream << botInlineResultValue.id;
         stream << botInlineResultValue.type;
-        if (botInlineResultValue.flags & 1 << 1) {
+        if (botInlineResultValue.flags & TLBotInlineResult::Title1) {
             stream << botInlineResultValue.title;
         }
-        if (botInlineResultValue.flags & 1 << 2) {
+        if (botInlineResultValue.flags & TLBotInlineResult::Description2) {
             stream << botInlineResultValue.description;
         }
-        if (botInlineResultValue.flags & 1 << 3) {
+        if (botInlineResultValue.flags & TLBotInlineResult::Url) {
             stream << botInlineResultValue.url;
         }
-        if (botInlineResultValue.flags & 1 << 4) {
+        if (botInlineResultValue.flags & TLBotInlineResult::ThumbUrl) {
             stream << botInlineResultValue.thumbUrl;
         }
-        if (botInlineResultValue.flags & 1 << 5) {
+        if (botInlineResultValue.flags & TLBotInlineResult::ContentUrl) {
             stream << botInlineResultValue.contentUrl;
         }
-        if (botInlineResultValue.flags & 1 << 5) {
+        if (botInlineResultValue.flags & TLBotInlineResult::ContentType) {
             stream << botInlineResultValue.contentType;
         }
-        if (botInlineResultValue.flags & 1 << 6) {
+        if (botInlineResultValue.flags & TLBotInlineResult::W) {
             stream << botInlineResultValue.w;
         }
-        if (botInlineResultValue.flags & 1 << 6) {
+        if (botInlineResultValue.flags & TLBotInlineResult::H) {
             stream << botInlineResultValue.h;
         }
-        if (botInlineResultValue.flags & 1 << 7) {
+        if (botInlineResultValue.flags & TLBotInlineResult::Duration) {
             stream << botInlineResultValue.duration;
         }
         stream << botInlineResultValue.sendMessage;
@@ -3149,16 +3149,16 @@ Stream &operator<<(Stream &stream, const TLBotInlineResult &botInlineResultValue
         stream << botInlineResultValue.flags;
         stream << botInlineResultValue.id;
         stream << botInlineResultValue.type;
-        if (botInlineResultValue.flags & 1 << 0) {
+        if (botInlineResultValue.flags & TLBotInlineResult::Photo) {
             stream << botInlineResultValue.photo;
         }
-        if (botInlineResultValue.flags & 1 << 1) {
+        if (botInlineResultValue.flags & TLBotInlineResult::Document) {
             stream << botInlineResultValue.document;
         }
-        if (botInlineResultValue.flags & 1 << 2) {
+        if (botInlineResultValue.flags & TLBotInlineResult::Title2) {
             stream << botInlineResultValue.title;
         }
-        if (botInlineResultValue.flags & 1 << 3) {
+        if (botInlineResultValue.flags & TLBotInlineResult::Description3) {
             stream << botInlineResultValue.description;
         }
         stream << botInlineResultValue.sendMessage;
@@ -3192,10 +3192,10 @@ Stream &operator<<(Stream &stream, const TLMessagesBotResults &messagesBotResult
     case TLValue::MessagesBotResults:
         stream << messagesBotResultsValue.flags;
         stream << messagesBotResultsValue.queryId;
-        if (messagesBotResultsValue.flags & 1 << 1) {
+        if (messagesBotResultsValue.flags & TLMessagesBotResults::NextOffset) {
             stream << messagesBotResultsValue.nextOffset;
         }
-        if (messagesBotResultsValue.flags & 1 << 2) {
+        if (messagesBotResultsValue.flags & TLMessagesBotResults::SwitchPm) {
             stream << messagesBotResultsValue.switchPm;
         }
         stream << messagesBotResultsValue.results;
@@ -3307,43 +3307,43 @@ Stream &operator<<(Stream &stream, const TLWebPage &webPageValue)
         stream << webPageValue.url;
         stream << webPageValue.displayUrl;
         stream << webPageValue.hash;
-        if (webPageValue.flags & 1 << 0) {
+        if (webPageValue.flags & TLWebPage::Type) {
             stream << webPageValue.type;
         }
-        if (webPageValue.flags & 1 << 1) {
+        if (webPageValue.flags & TLWebPage::SiteName) {
             stream << webPageValue.siteName;
         }
-        if (webPageValue.flags & 1 << 2) {
+        if (webPageValue.flags & TLWebPage::Title) {
             stream << webPageValue.title;
         }
-        if (webPageValue.flags & 1 << 3) {
+        if (webPageValue.flags & TLWebPage::Description) {
             stream << webPageValue.description;
         }
-        if (webPageValue.flags & 1 << 4) {
+        if (webPageValue.flags & TLWebPage::Photo) {
             stream << webPageValue.photo;
         }
-        if (webPageValue.flags & 1 << 5) {
+        if (webPageValue.flags & TLWebPage::EmbedUrl) {
             stream << webPageValue.embedUrl;
         }
-        if (webPageValue.flags & 1 << 5) {
+        if (webPageValue.flags & TLWebPage::EmbedType) {
             stream << webPageValue.embedType;
         }
-        if (webPageValue.flags & 1 << 6) {
+        if (webPageValue.flags & TLWebPage::EmbedWidth) {
             stream << webPageValue.embedWidth;
         }
-        if (webPageValue.flags & 1 << 6) {
+        if (webPageValue.flags & TLWebPage::EmbedHeight) {
             stream << webPageValue.embedHeight;
         }
-        if (webPageValue.flags & 1 << 7) {
+        if (webPageValue.flags & TLWebPage::Duration) {
             stream << webPageValue.duration;
         }
-        if (webPageValue.flags & 1 << 8) {
+        if (webPageValue.flags & TLWebPage::Author) {
             stream << webPageValue.author;
         }
-        if (webPageValue.flags & 1 << 9) {
+        if (webPageValue.flags & TLWebPage::Document) {
             stream << webPageValue.document;
         }
-        if (webPageValue.flags & 1 << 10) {
+        if (webPageValue.flags & TLWebPage::CachedPage) {
             stream << webPageValue.cachedPage;
         }
         break;
@@ -3381,13 +3381,13 @@ Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue)
         break;
     case TLValue::MessageMediaPhoto:
         stream << messageMediaValue.flags;
-        if (messageMediaValue.flags & 1 << 0) {
+        if (messageMediaValue.flags & TLMessageMedia::Photo) {
             stream << messageMediaValue.photo;
         }
-        if (messageMediaValue.flags & 1 << 1) {
+        if (messageMediaValue.flags & TLMessageMedia::Caption) {
             stream << messageMediaValue.caption;
         }
-        if (messageMediaValue.flags & 1 << 2) {
+        if (messageMediaValue.flags & TLMessageMedia::TtlSeconds) {
             stream << messageMediaValue.ttlSeconds;
         }
         break;
@@ -3402,13 +3402,13 @@ Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue)
         break;
     case TLValue::MessageMediaDocument:
         stream << messageMediaValue.flags;
-        if (messageMediaValue.flags & 1 << 0) {
+        if (messageMediaValue.flags & TLMessageMedia::Document) {
             stream << messageMediaValue.document;
         }
-        if (messageMediaValue.flags & 1 << 1) {
+        if (messageMediaValue.flags & TLMessageMedia::Caption) {
             stream << messageMediaValue.caption;
         }
-        if (messageMediaValue.flags & 1 << 2) {
+        if (messageMediaValue.flags & TLMessageMedia::TtlSeconds) {
             stream << messageMediaValue.ttlSeconds;
         }
         break;
@@ -3430,10 +3430,10 @@ Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue)
         stream << messageMediaValue.flags;
         stream << messageMediaValue.title;
         stream << messageMediaValue.description;
-        if (messageMediaValue.flags & 1 << 0) {
+        if (messageMediaValue.flags & TLMessageMedia::WebDocumentPhoto) {
             stream << messageMediaValue.webDocumentPhoto;
         }
-        if (messageMediaValue.flags & 1 << 2) {
+        if (messageMediaValue.flags & TLMessageMedia::ReceiptMsgId) {
             stream << messageMediaValue.receiptMsgId;
         }
         stream << messageMediaValue.currency;
@@ -3461,48 +3461,48 @@ Stream &operator<<(Stream &stream, const TLMessage &messageValue)
     case TLValue::Message:
         stream << messageValue.flags;
         stream << messageValue.id;
-        if (messageValue.flags & 1 << 8) {
+        if (messageValue.flags & TLMessage::FromId) {
             stream << messageValue.fromId;
         }
         stream << messageValue.toId;
-        if (messageValue.flags & 1 << 2) {
+        if (messageValue.flags & TLMessage::FwdFrom) {
             stream << messageValue.fwdFrom;
         }
-        if (messageValue.flags & 1 << 11) {
+        if (messageValue.flags & TLMessage::ViaBotId) {
             stream << messageValue.viaBotId;
         }
-        if (messageValue.flags & 1 << 3) {
+        if (messageValue.flags & TLMessage::ReplyToMsgId) {
             stream << messageValue.replyToMsgId;
         }
         stream << messageValue.date;
         stream << messageValue.message;
-        if (messageValue.flags & 1 << 9) {
+        if (messageValue.flags & TLMessage::Media) {
             stream << messageValue.media;
         }
-        if (messageValue.flags & 1 << 6) {
+        if (messageValue.flags & TLMessage::ReplyMarkup) {
             stream << messageValue.replyMarkup;
         }
-        if (messageValue.flags & 1 << 7) {
+        if (messageValue.flags & TLMessage::Entities) {
             stream << messageValue.entities;
         }
-        if (messageValue.flags & 1 << 10) {
+        if (messageValue.flags & TLMessage::Views) {
             stream << messageValue.views;
         }
-        if (messageValue.flags & 1 << 15) {
+        if (messageValue.flags & TLMessage::EditDate) {
             stream << messageValue.editDate;
         }
-        if (messageValue.flags & 1 << 16) {
+        if (messageValue.flags & TLMessage::PostAuthor) {
             stream << messageValue.postAuthor;
         }
         break;
     case TLValue::MessageService:
         stream << messageValue.flags;
         stream << messageValue.id;
-        if (messageValue.flags & 1 << 8) {
+        if (messageValue.flags & TLMessage::FromId) {
             stream << messageValue.fromId;
         }
         stream << messageValue.toId;
-        if (messageValue.flags & 1 << 3) {
+        if (messageValue.flags & TLMessage::ReplyToMsgId) {
             stream << messageValue.replyToMsgId;
         }
         stream << messageValue.date;
@@ -3690,7 +3690,7 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         break;
     case TLValue::UpdateServiceNotification:
         stream << updateValue.flags;
-        if (updateValue.flags & 1 << 1) {
+        if (updateValue.flags & TLUpdate::InboxDate) {
             stream << updateValue.inboxDate;
         }
         stream << updateValue.type;
@@ -3721,7 +3721,7 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
     case TLValue::UpdateChannelTooLong:
         stream << updateValue.flags;
         stream << updateValue.channelId;
-        if (updateValue.flags & 1 << 0) {
+        if (updateValue.flags & TLUpdate::Pts) {
             stream << updateValue.pts;
         }
         break;
@@ -3777,7 +3777,7 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         stream << updateValue.queryId;
         stream << updateValue.userId;
         stream << updateValue.query;
-        if (updateValue.flags & 1 << 0) {
+        if (updateValue.flags & TLUpdate::Geo) {
             stream << updateValue.geo;
         }
         stream << updateValue.offset;
@@ -3786,11 +3786,11 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         stream << updateValue.flags;
         stream << updateValue.userId;
         stream << updateValue.query;
-        if (updateValue.flags & 1 << 0) {
+        if (updateValue.flags & TLUpdate::Geo) {
             stream << updateValue.geo;
         }
         stream << updateValue.stringId;
-        if (updateValue.flags & 1 << 1) {
+        if (updateValue.flags & TLUpdate::InputBotInlineMessageIDMsgId) {
             stream << updateValue.inputBotInlineMessageIDMsgId;
         }
         break;
@@ -3805,10 +3805,10 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         stream << updateValue.peer;
         stream << updateValue.msgId;
         stream << updateValue.chatInstance;
-        if (updateValue.flags & 1 << 0) {
+        if (updateValue.flags & TLUpdate::ByteArrayData) {
             stream << updateValue.byteArrayData;
         }
-        if (updateValue.flags & 1 << 1) {
+        if (updateValue.flags & TLUpdate::GameShortName) {
             stream << updateValue.gameShortName;
         }
         break;
@@ -3818,10 +3818,10 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         stream << updateValue.userId;
         stream << updateValue.inputBotInlineMessageIDMsgId;
         stream << updateValue.chatInstance;
-        if (updateValue.flags & 1 << 0) {
+        if (updateValue.flags & TLUpdate::ByteArrayData) {
             stream << updateValue.byteArrayData;
         }
-        if (updateValue.flags & 1 << 1) {
+        if (updateValue.flags & TLUpdate::GameShortName) {
             stream << updateValue.gameShortName;
         }
         break;
@@ -3841,7 +3841,7 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         break;
     case TLValue::UpdatePinnedDialogs:
         stream << updateValue.flags;
-        if (updateValue.flags & 1 << 0) {
+        if (updateValue.flags & TLUpdate::PeerOrderVector) {
             stream << updateValue.peerOrderVector;
         }
         break;
@@ -3864,10 +3864,10 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         stream << updateValue.queryId;
         stream << updateValue.userId;
         stream << updateValue.payload;
-        if (updateValue.flags & 1 << 0) {
+        if (updateValue.flags & TLUpdate::Info) {
             stream << updateValue.info;
         }
-        if (updateValue.flags & 1 << 1) {
+        if (updateValue.flags & TLUpdate::ShippingOptionId) {
             stream << updateValue.shippingOptionId;
         }
         stream << updateValue.currency;
@@ -3908,16 +3908,16 @@ Stream &operator<<(Stream &stream, const TLUpdates &updatesValue)
         stream << updatesValue.pts;
         stream << updatesValue.ptsCount;
         stream << updatesValue.date;
-        if (updatesValue.flags & 1 << 2) {
+        if (updatesValue.flags & TLUpdates::FwdFrom) {
             stream << updatesValue.fwdFrom;
         }
-        if (updatesValue.flags & 1 << 11) {
+        if (updatesValue.flags & TLUpdates::ViaBotId) {
             stream << updatesValue.viaBotId;
         }
-        if (updatesValue.flags & 1 << 3) {
+        if (updatesValue.flags & TLUpdates::ReplyToMsgId) {
             stream << updatesValue.replyToMsgId;
         }
-        if (updatesValue.flags & 1 << 7) {
+        if (updatesValue.flags & TLUpdates::Entities) {
             stream << updatesValue.entities;
         }
         break;
@@ -3930,16 +3930,16 @@ Stream &operator<<(Stream &stream, const TLUpdates &updatesValue)
         stream << updatesValue.pts;
         stream << updatesValue.ptsCount;
         stream << updatesValue.date;
-        if (updatesValue.flags & 1 << 2) {
+        if (updatesValue.flags & TLUpdates::FwdFrom) {
             stream << updatesValue.fwdFrom;
         }
-        if (updatesValue.flags & 1 << 11) {
+        if (updatesValue.flags & TLUpdates::ViaBotId) {
             stream << updatesValue.viaBotId;
         }
-        if (updatesValue.flags & 1 << 3) {
+        if (updatesValue.flags & TLUpdates::ReplyToMsgId) {
             stream << updatesValue.replyToMsgId;
         }
-        if (updatesValue.flags & 1 << 7) {
+        if (updatesValue.flags & TLUpdates::Entities) {
             stream << updatesValue.entities;
         }
         break;
@@ -3968,10 +3968,10 @@ Stream &operator<<(Stream &stream, const TLUpdates &updatesValue)
         stream << updatesValue.pts;
         stream << updatesValue.ptsCount;
         stream << updatesValue.date;
-        if (updatesValue.flags & 1 << 9) {
+        if (updatesValue.flags & TLUpdates::Media) {
             stream << updatesValue.media;
         }
-        if (updatesValue.flags & 1 << 7) {
+        if (updatesValue.flags & TLUpdates::Entities) {
             stream << updatesValue.entities;
         }
         break;
@@ -3989,14 +3989,14 @@ Stream &operator<<(Stream &stream, const TLUpdatesChannelDifference &updatesChan
     case TLValue::UpdatesChannelDifferenceEmpty:
         stream << updatesChannelDifferenceValue.flags;
         stream << updatesChannelDifferenceValue.pts;
-        if (updatesChannelDifferenceValue.flags & 1 << 1) {
+        if (updatesChannelDifferenceValue.flags & TLUpdatesChannelDifference::Timeout) {
             stream << updatesChannelDifferenceValue.timeout;
         }
         break;
     case TLValue::UpdatesChannelDifferenceTooLong:
         stream << updatesChannelDifferenceValue.flags;
         stream << updatesChannelDifferenceValue.pts;
-        if (updatesChannelDifferenceValue.flags & 1 << 1) {
+        if (updatesChannelDifferenceValue.flags & TLUpdatesChannelDifference::Timeout) {
             stream << updatesChannelDifferenceValue.timeout;
         }
         stream << updatesChannelDifferenceValue.topMessage;
@@ -4011,7 +4011,7 @@ Stream &operator<<(Stream &stream, const TLUpdatesChannelDifference &updatesChan
     case TLValue::UpdatesChannelDifference:
         stream << updatesChannelDifferenceValue.flags;
         stream << updatesChannelDifferenceValue.pts;
-        if (updatesChannelDifferenceValue.flags & 1 << 1) {
+        if (updatesChannelDifferenceValue.flags & TLUpdatesChannelDifference::Timeout) {
             stream << updatesChannelDifferenceValue.timeout;
         }
         stream << updatesChannelDifferenceValue.newMessages;

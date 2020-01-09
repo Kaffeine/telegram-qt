@@ -4157,8 +4157,9 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLInputMedia {
     }
     enum Flags {
         Photo = 1 << 0,
+        TtlSeconds0 = 1 << 0,
         Stickers = 1 << 0,
-        TtlSeconds = 1 << 1,
+        TtlSeconds1 = 1 << 1,
         Thumb = 1 << 2,
         NosoundVideo = 1 << 3,
     };
@@ -4743,8 +4744,10 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLBotInlineResult {
     enum Flags {
         Photo = 1 << 0,
         Document = 1 << 1,
-        Title = 1 << 1,
-        Description = 1 << 2,
+        Title1 = 1 << 1,
+        Title2 = 1 << 2,
+        Description2 = 1 << 2,
+        Description3 = 1 << 3,
         Url = 1 << 3,
         ThumbUrl = 1 << 4,
         ContentType = 1 << 5,
@@ -5230,6 +5233,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUpdate {
         ByteArrayData = 1 << 0,
         Geo = 1 << 0,
         Masks = 1 << 0,
+        Pts = 1 << 0,
         Popup = 1 << 0,
         ShippingOptionId = 1 << 1,
         GameShortName = 1 << 1,

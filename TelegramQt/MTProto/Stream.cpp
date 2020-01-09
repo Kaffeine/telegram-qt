@@ -195,16 +195,16 @@ Stream &Stream::operator>>(TLAccountPasswordInputSettings &accountPasswordInputS
     switch (result.tlType) {
     case TLValue::AccountPasswordInputSettings:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLAccountPasswordInputSettings::NewSalt) {
             *this >> result.newSalt;
         }
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLAccountPasswordInputSettings::NewPasswordHash) {
             *this >> result.newPasswordHash;
         }
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLAccountPasswordInputSettings::Hint) {
             *this >> result.hint;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLAccountPasswordInputSettings::Email) {
             *this >> result.email;
         }
         break;
@@ -558,7 +558,7 @@ Stream &Stream::operator>>(TLChatParticipants &chatParticipantsValue)
     case TLValue::ChatParticipantsForbidden:
         *this >> result.flags;
         *this >> result.chatId;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLChatParticipants::SelfParticipant) {
             *this >> result.selfParticipant;
         }
         break;
@@ -1648,19 +1648,19 @@ Stream &Stream::operator>>(TLLangPackString &langPackStringValue)
     case TLValue::LangPackStringPluralized:
         *this >> result.flags;
         *this >> result.key;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLLangPackString::ZeroValue) {
             *this >> result.zeroValue;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLLangPackString::OneValue) {
             *this >> result.oneValue;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLLangPackString::TwoValue) {
             *this >> result.twoValue;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLLangPackString::FewValue) {
             *this >> result.fewValue;
         }
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLLangPackString::ManyValue) {
             *this >> result.manyValue;
         }
         *this >> result.otherValue;
@@ -1756,17 +1756,17 @@ Stream &Stream::operator>>(TLMessageFwdHeader &messageFwdHeaderValue)
     switch (result.tlType) {
     case TLValue::MessageFwdHeader:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLMessageFwdHeader::FromId) {
             *this >> result.fromId;
         }
         *this >> result.date;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLMessageFwdHeader::ChannelId) {
             *this >> result.channelId;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLMessageFwdHeader::ChannelPost) {
             *this >> result.channelPost;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLMessageFwdHeader::PostAuthor) {
             *this >> result.postAuthor;
         }
         break;
@@ -2946,10 +2946,10 @@ Stream &Stream::operator>>(TLAuthSentCode &authSentCodeValue)
         *this >> result.flags;
         *this >> result.type;
         *this >> result.phoneCodeHash;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLAuthSentCode::NextType) {
             *this >> result.nextType;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLAuthSentCode::Timeout) {
             *this >> result.timeout;
         }
         break;
@@ -3186,7 +3186,7 @@ Stream &Stream::operator>>(TLDocumentAttribute &documentAttributeValue)
         *this >> result.flags;
         *this >> result.alt;
         *this >> result.stickerset;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLDocumentAttribute::MaskCoords) {
             *this >> result.maskCoords;
         }
         break;
@@ -3199,13 +3199,13 @@ Stream &Stream::operator>>(TLDocumentAttribute &documentAttributeValue)
     case TLValue::DocumentAttributeAudio:
         *this >> result.flags;
         *this >> result.duration;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLDocumentAttribute::Title) {
             *this >> result.title;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLDocumentAttribute::Performer) {
             *this >> result.performer;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLDocumentAttribute::Waveform) {
             *this >> result.waveform;
         }
         break;
@@ -3232,11 +3232,11 @@ Stream &Stream::operator>>(TLDraftMessage &draftMessageValue)
         break;
     case TLValue::DraftMessage:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLDraftMessage::ReplyToMsgId) {
             *this >> result.replyToMsgId;
         }
         *this >> result.message;
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLDraftMessage::Entities) {
             *this >> result.entities;
         }
         *this >> result.date;
@@ -3430,7 +3430,7 @@ Stream &Stream::operator>>(TLInputStickerSetItem &inputStickerSetItemValue)
         *this >> result.flags;
         *this >> result.document;
         *this >> result.emoji;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLInputStickerSetItem::MaskCoords) {
             *this >> result.maskCoords;
         }
         break;
@@ -3572,10 +3572,10 @@ Stream &Stream::operator>>(TLMessagesBotCallbackAnswer &messagesBotCallbackAnswe
     switch (result.tlType) {
     case TLValue::MessagesBotCallbackAnswer:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLMessagesBotCallbackAnswer::Message) {
             *this >> result.message;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLMessagesBotCallbackAnswer::Url) {
             *this >> result.url;
         }
         *this >> result.cacheTime;
@@ -3675,16 +3675,16 @@ Stream &Stream::operator>>(TLPaymentRequestedInfo &paymentRequestedInfoValue)
     switch (result.tlType) {
     case TLValue::PaymentRequestedInfo:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLPaymentRequestedInfo::Name) {
             *this >> result.name;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLPaymentRequestedInfo::Phone) {
             *this >> result.phone;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLPaymentRequestedInfo::Email) {
             *this >> result.email;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLPaymentRequestedInfo::ShippingAddress) {
             *this >> result.shippingAddress;
         }
         break;
@@ -3706,7 +3706,7 @@ Stream &Stream::operator>>(TLPaymentsSavedInfo &paymentsSavedInfoValue)
     switch (result.tlType) {
     case TLValue::PaymentsSavedInfo:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLPaymentsSavedInfo::SavedInfo) {
             *this >> result.savedInfo;
         }
         break;
@@ -3728,10 +3728,10 @@ Stream &Stream::operator>>(TLPaymentsValidatedRequestedInfo &paymentsValidatedRe
     switch (result.tlType) {
     case TLValue::PaymentsValidatedRequestedInfo:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLPaymentsValidatedRequestedInfo::Id) {
             *this >> result.id;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLPaymentsValidatedRequestedInfo::ShippingOptions) {
             *this >> result.shippingOptions;
         }
         break;
@@ -3898,37 +3898,37 @@ Stream &Stream::operator>>(TLUser &userValue)
     case TLValue::User:
         *this >> result.flags;
         *this >> result.id;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLUser::AccessHash) {
             *this >> result.accessHash;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUser::FirstName) {
             *this >> result.firstName;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLUser::LastName) {
             *this >> result.lastName;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLUser::Username) {
             *this >> result.username;
         }
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLUser::Phone) {
             *this >> result.phone;
         }
-        if (result.flags & 1 << 5) {
+        if (result.flags & TLUser::Photo) {
             *this >> result.photo;
         }
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLUser::Status) {
             *this >> result.status;
         }
-        if (result.flags & 1 << 14) {
+        if (result.flags & TLUser::BotInfoVersion) {
             *this >> result.botInfoVersion;
         }
-        if (result.flags & 1 << 18) {
+        if (result.flags & TLUser::RestrictionReason) {
             *this >> result.restrictionReason;
         }
-        if (result.flags & 1 << 19) {
+        if (result.flags & TLUser::BotInlinePlaceholder) {
             *this >> result.botInlinePlaceholder;
         }
-        if (result.flags & 1 << 22) {
+        if (result.flags & TLUser::LangCode) {
             *this >> result.langCode;
         }
         break;
@@ -3994,7 +3994,7 @@ Stream &Stream::operator>>(TLAuthAuthorization &authAuthorizationValue)
     switch (result.tlType) {
     case TLValue::AuthAuthorization:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLAuthAuthorization::TmpSessions) {
             *this >> result.tmpSessions;
         }
         *this >> result.user;
@@ -4018,17 +4018,17 @@ Stream &Stream::operator>>(TLBotInlineMessage &botInlineMessageValue)
     case TLValue::BotInlineMessageMediaAuto:
         *this >> result.flags;
         *this >> result.caption;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
     case TLValue::BotInlineMessageText:
         *this >> result.flags;
         *this >> result.message;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLBotInlineMessage::Entities) {
             *this >> result.entities;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
@@ -4036,7 +4036,7 @@ Stream &Stream::operator>>(TLBotInlineMessage &botInlineMessageValue)
         *this >> result.flags;
         *this >> result.geo;
         *this >> result.period;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
@@ -4047,7 +4047,7 @@ Stream &Stream::operator>>(TLBotInlineMessage &botInlineMessageValue)
         *this >> result.address;
         *this >> result.provider;
         *this >> result.venueId;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
@@ -4056,7 +4056,7 @@ Stream &Stream::operator>>(TLBotInlineMessage &botInlineMessageValue)
         *this >> result.phoneNumber;
         *this >> result.firstName;
         *this >> result.lastName;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
@@ -4130,7 +4130,7 @@ Stream &Stream::operator>>(TLChat &chatValue)
         *this >> result.participantsCount;
         *this >> result.date;
         *this >> result.version;
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLChat::MigratedTo) {
             *this >> result.migratedTo;
         }
         break;
@@ -4141,23 +4141,23 @@ Stream &Stream::operator>>(TLChat &chatValue)
     case TLValue::Channel:
         *this >> result.flags;
         *this >> result.id;
-        if (result.flags & 1 << 13) {
+        if (result.flags & TLChat::AccessHash) {
             *this >> result.accessHash;
         }
         *this >> result.title;
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLChat::Username) {
             *this >> result.username;
         }
         *this >> result.photo;
         *this >> result.date;
         *this >> result.version;
-        if (result.flags & 1 << 9) {
+        if (result.flags & TLChat::RestrictionReason) {
             *this >> result.restrictionReason;
         }
-        if (result.flags & 1 << 14) {
+        if (result.flags & TLChat::AdminRights) {
             *this >> result.adminRights;
         }
-        if (result.flags & 1 << 15) {
+        if (result.flags & TLChat::BannedRights) {
             *this >> result.bannedRights;
         }
         break;
@@ -4166,7 +4166,7 @@ Stream &Stream::operator>>(TLChat &chatValue)
         *this >> result.id;
         *this >> result.accessHash;
         *this >> result.title;
-        if (result.flags & 1 << 16) {
+        if (result.flags & TLChat::UntilDate) {
             *this >> result.untilDate;
         }
         break;
@@ -4198,16 +4198,16 @@ Stream &Stream::operator>>(TLChatFull &chatFullValue)
         *this >> result.flags;
         *this >> result.id;
         *this >> result.about;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLChatFull::ParticipantsCount) {
             *this >> result.participantsCount;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLChatFull::AdminsCount) {
             *this >> result.adminsCount;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLChatFull::KickedCount) {
             *this >> result.kickedCount;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLChatFull::BannedCount) {
             *this >> result.bannedCount;
         }
         *this >> result.readInboxMaxId;
@@ -4217,19 +4217,19 @@ Stream &Stream::operator>>(TLChatFull &chatFullValue)
         *this >> result.notifySettings;
         *this >> result.exportedInvite;
         *this >> result.botInfo;
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLChatFull::MigratedFromChatId) {
             *this >> result.migratedFromChatId;
         }
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLChatFull::MigratedFromMaxId) {
             *this >> result.migratedFromMaxId;
         }
-        if (result.flags & 1 << 5) {
+        if (result.flags & TLChatFull::PinnedMsgId) {
             *this >> result.pinnedMsgId;
         }
-        if (result.flags & 1 << 8) {
+        if (result.flags & TLChatFull::Stickerset) {
             *this >> result.stickerset;
         }
-        if (result.flags & 1 << 9) {
+        if (result.flags & TLChatFull::AvailableMinId) {
             *this >> result.availableMinId;
         }
         break;
@@ -4257,7 +4257,7 @@ Stream &Stream::operator>>(TLChatInvite &chatInviteValue)
         *this >> result.title;
         *this >> result.photo;
         *this >> result.participantsCount;
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLChatInvite::Participants) {
             *this >> result.participants;
         }
         break;
@@ -4302,7 +4302,7 @@ Stream &Stream::operator>>(TLConfig &configValue)
         *this >> result.stickersRecentLimit;
         *this >> result.stickersFavedLimit;
         *this >> result.channelsReadMediaPeriod;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLConfig::TmpSessions) {
             *this >> result.tmpSessions;
         }
         *this >> result.pinnedDialogsCountMax;
@@ -4311,10 +4311,10 @@ Stream &Stream::operator>>(TLConfig &configValue)
         *this >> result.callConnectTimeoutMs;
         *this >> result.callPacketTimeoutMs;
         *this >> result.meUrlPrefix;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLConfig::SuggestedLangCode) {
             *this >> result.suggestedLangCode;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLConfig::LangPackVersion) {
             *this >> result.langPackVersion;
         }
         *this >> result.disabledFeatures;
@@ -4500,10 +4500,10 @@ Stream &Stream::operator>>(TLDialog &dialogValue)
         *this >> result.unreadCount;
         *this >> result.unreadMentionsCount;
         *this >> result.notifySettings;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLDialog::Pts) {
             *this >> result.pts;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLDialog::Draft) {
             *this >> result.draft;
         }
         break;
@@ -4590,7 +4590,7 @@ Stream &Stream::operator>>(TLGame &gameValue)
         *this >> result.title;
         *this >> result.description;
         *this >> result.photo;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLGame::Document) {
             *this >> result.document;
         }
         break;
@@ -4633,17 +4633,17 @@ Stream &Stream::operator>>(TLInputBotInlineMessage &inputBotInlineMessageValue)
     case TLValue::InputBotInlineMessageMediaAuto:
         *this >> result.flags;
         *this >> result.caption;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
     case TLValue::InputBotInlineMessageText:
         *this >> result.flags;
         *this >> result.message;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLInputBotInlineMessage::Entities) {
             *this >> result.entities;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
@@ -4651,7 +4651,7 @@ Stream &Stream::operator>>(TLInputBotInlineMessage &inputBotInlineMessageValue)
         *this >> result.flags;
         *this >> result.geoPoint;
         *this >> result.period;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
@@ -4662,7 +4662,7 @@ Stream &Stream::operator>>(TLInputBotInlineMessage &inputBotInlineMessageValue)
         *this >> result.address;
         *this >> result.provider;
         *this >> result.venueId;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
@@ -4671,13 +4671,13 @@ Stream &Stream::operator>>(TLInputBotInlineMessage &inputBotInlineMessageValue)
         *this >> result.phoneNumber;
         *this >> result.firstName;
         *this >> result.lastName;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
     case TLValue::InputBotInlineMessageGame:
         *this >> result.flags;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
         break;
@@ -4701,31 +4701,31 @@ Stream &Stream::operator>>(TLInputBotInlineResult &inputBotInlineResultValue)
         *this >> result.flags;
         *this >> result.id;
         *this >> result.type;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLInputBotInlineResult::Title) {
             *this >> result.title;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLInputBotInlineResult::Description) {
             *this >> result.description;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLInputBotInlineResult::Url) {
             *this >> result.url;
         }
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLInputBotInlineResult::ThumbUrl) {
             *this >> result.thumbUrl;
         }
-        if (result.flags & 1 << 5) {
+        if (result.flags & TLInputBotInlineResult::ContentUrl) {
             *this >> result.contentUrl;
         }
-        if (result.flags & 1 << 5) {
+        if (result.flags & TLInputBotInlineResult::ContentType) {
             *this >> result.contentType;
         }
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLInputBotInlineResult::W) {
             *this >> result.w;
         }
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLInputBotInlineResult::H) {
             *this >> result.h;
         }
-        if (result.flags & 1 << 7) {
+        if (result.flags & TLInputBotInlineResult::Duration) {
             *this >> result.duration;
         }
         *this >> result.sendMessage;
@@ -4740,10 +4740,10 @@ Stream &Stream::operator>>(TLInputBotInlineResult &inputBotInlineResultValue)
         *this >> result.flags;
         *this >> result.id;
         *this >> result.type;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLInputBotInlineResult::Title) {
             *this >> result.title;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLInputBotInlineResult::Description) {
             *this >> result.description;
         }
         *this >> result.document;
@@ -4776,10 +4776,10 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.flags;
         *this >> result.file;
         *this >> result.caption;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLInputMedia::Stickers) {
             *this >> result.stickers;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLInputMedia::TtlSeconds1) {
             *this >> result.ttlSeconds;
         }
         break;
@@ -4787,7 +4787,7 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.flags;
         *this >> result.inputPhotoId;
         *this >> result.caption;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLInputMedia::TtlSeconds0) {
             *this >> result.ttlSeconds;
         }
         break;
@@ -4802,16 +4802,16 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
     case TLValue::InputMediaUploadedDocument:
         *this >> result.flags;
         *this >> result.file;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLInputMedia::Thumb) {
             *this >> result.thumb;
         }
         *this >> result.mimeType;
         *this >> result.attributes;
         *this >> result.caption;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLInputMedia::Stickers) {
             *this >> result.stickers;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLInputMedia::TtlSeconds1) {
             *this >> result.ttlSeconds;
         }
         break;
@@ -4819,7 +4819,7 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.flags;
         *this >> result.inputDocumentId;
         *this >> result.caption;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLInputMedia::TtlSeconds0) {
             *this >> result.ttlSeconds;
         }
         break;
@@ -4840,7 +4840,7 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.flags;
         *this >> result.url;
         *this >> result.caption;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLInputMedia::TtlSeconds0) {
             *this >> result.ttlSeconds;
         }
         break;
@@ -4851,7 +4851,7 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.flags;
         *this >> result.title;
         *this >> result.description;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLInputMedia::Photo) {
             *this >> result.photo;
         }
         *this >> result.invoice;
@@ -4921,10 +4921,10 @@ Stream &Stream::operator>>(TLMessageAction &messageActionValue)
         *this >> result.currency;
         *this >> result.totalAmount;
         *this >> result.payload;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLMessageAction::Info) {
             *this >> result.info;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLMessageAction::ShippingOptionId) {
             *this >> result.shippingOptionId;
         }
         *this >> result.charge;
@@ -4936,10 +4936,10 @@ Stream &Stream::operator>>(TLMessageAction &messageActionValue)
     case TLValue::MessageActionPhoneCall:
         *this >> result.flags;
         *this >> result.callId;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLMessageAction::Reason) {
             *this >> result.reason;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLMessageAction::Duration) {
             *this >> result.duration;
         }
         break;
@@ -5223,13 +5223,13 @@ Stream &Stream::operator>>(TLPageBlock &pageBlockValue)
         break;
     case TLValue::PageBlockEmbed:
         *this >> result.flags;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLPageBlock::Url) {
             *this >> result.url;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLPageBlock::Html) {
             *this >> result.html;
         }
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLPageBlock::PosterPhotoId) {
             *this >> result.posterPhotoId;
         }
         *this >> result.w;
@@ -5279,16 +5279,16 @@ Stream &Stream::operator>>(TLPaymentsPaymentForm &paymentsPaymentFormValue)
         *this >> result.invoice;
         *this >> result.providerId;
         *this >> result.url;
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLPaymentsPaymentForm::NativeProvider) {
             *this >> result.nativeProvider;
         }
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLPaymentsPaymentForm::NativeParams) {
             *this >> result.nativeParams;
         }
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLPaymentsPaymentForm::SavedInfo) {
             *this >> result.savedInfo;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLPaymentsPaymentForm::SavedCredentials) {
             *this >> result.savedCredentials;
         }
         *this >> result.users;
@@ -5315,10 +5315,10 @@ Stream &Stream::operator>>(TLPaymentsPaymentReceipt &paymentsPaymentReceiptValue
         *this >> result.botId;
         *this >> result.invoice;
         *this >> result.providerId;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLPaymentsPaymentReceipt::Info) {
             *this >> result.info;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLPaymentsPaymentReceipt::Shipping) {
             *this >> result.shipping;
         }
         *this >> result.currency;
@@ -5353,7 +5353,7 @@ Stream &Stream::operator>>(TLPhoneCall &phoneCallValue)
         *this >> result.adminId;
         *this >> result.participantId;
         *this >> result.protocol;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLPhoneCall::ReceiveDate) {
             *this >> result.receiveDate;
         }
         break;
@@ -5391,10 +5391,10 @@ Stream &Stream::operator>>(TLPhoneCall &phoneCallValue)
     case TLValue::PhoneCallDiscarded:
         *this >> result.flags;
         *this >> result.id;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLPhoneCall::Reason) {
             *this >> result.reason;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLPhoneCall::Duration) {
             *this >> result.duration;
         }
         break;
@@ -5506,15 +5506,15 @@ Stream &Stream::operator>>(TLUserFull &userFullValue)
     case TLValue::UserFull:
         *this >> result.flags;
         *this >> result.user;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUserFull::About) {
             *this >> result.about;
         }
         *this >> result.link;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLUserFull::ProfilePhoto) {
             *this >> result.profilePhoto;
         }
         *this >> result.notifySettings;
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLUserFull::BotInfo) {
             *this >> result.botInfo;
         }
         *this >> result.commonChatsCount;
@@ -5539,31 +5539,31 @@ Stream &Stream::operator>>(TLBotInlineResult &botInlineResultValue)
         *this >> result.flags;
         *this >> result.id;
         *this >> result.type;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLBotInlineResult::Title1) {
             *this >> result.title;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLBotInlineResult::Description2) {
             *this >> result.description;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLBotInlineResult::Url) {
             *this >> result.url;
         }
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLBotInlineResult::ThumbUrl) {
             *this >> result.thumbUrl;
         }
-        if (result.flags & 1 << 5) {
+        if (result.flags & TLBotInlineResult::ContentUrl) {
             *this >> result.contentUrl;
         }
-        if (result.flags & 1 << 5) {
+        if (result.flags & TLBotInlineResult::ContentType) {
             *this >> result.contentType;
         }
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLBotInlineResult::W) {
             *this >> result.w;
         }
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLBotInlineResult::H) {
             *this >> result.h;
         }
-        if (result.flags & 1 << 7) {
+        if (result.flags & TLBotInlineResult::Duration) {
             *this >> result.duration;
         }
         *this >> result.sendMessage;
@@ -5572,16 +5572,16 @@ Stream &Stream::operator>>(TLBotInlineResult &botInlineResultValue)
         *this >> result.flags;
         *this >> result.id;
         *this >> result.type;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLBotInlineResult::Photo) {
             *this >> result.photo;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLBotInlineResult::Document) {
             *this >> result.document;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLBotInlineResult::Title2) {
             *this >> result.title;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLBotInlineResult::Description3) {
             *this >> result.description;
         }
         *this >> result.sendMessage;
@@ -5625,10 +5625,10 @@ Stream &Stream::operator>>(TLMessagesBotResults &messagesBotResultsValue)
     case TLValue::MessagesBotResults:
         *this >> result.flags;
         *this >> result.queryId;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLMessagesBotResults::NextOffset) {
             *this >> result.nextOffset;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLMessagesBotResults::SwitchPm) {
             *this >> result.switchPm;
         }
         *this >> result.results;
@@ -5765,43 +5765,43 @@ Stream &Stream::operator>>(TLWebPage &webPageValue)
         *this >> result.url;
         *this >> result.displayUrl;
         *this >> result.hash;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLWebPage::Type) {
             *this >> result.type;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLWebPage::SiteName) {
             *this >> result.siteName;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLWebPage::Title) {
             *this >> result.title;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLWebPage::Description) {
             *this >> result.description;
         }
-        if (result.flags & 1 << 4) {
+        if (result.flags & TLWebPage::Photo) {
             *this >> result.photo;
         }
-        if (result.flags & 1 << 5) {
+        if (result.flags & TLWebPage::EmbedUrl) {
             *this >> result.embedUrl;
         }
-        if (result.flags & 1 << 5) {
+        if (result.flags & TLWebPage::EmbedType) {
             *this >> result.embedType;
         }
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLWebPage::EmbedWidth) {
             *this >> result.embedWidth;
         }
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLWebPage::EmbedHeight) {
             *this >> result.embedHeight;
         }
-        if (result.flags & 1 << 7) {
+        if (result.flags & TLWebPage::Duration) {
             *this >> result.duration;
         }
-        if (result.flags & 1 << 8) {
+        if (result.flags & TLWebPage::Author) {
             *this >> result.author;
         }
-        if (result.flags & 1 << 9) {
+        if (result.flags & TLWebPage::Document) {
             *this >> result.document;
         }
-        if (result.flags & 1 << 10) {
+        if (result.flags & TLWebPage::CachedPage) {
             *this >> result.cachedPage;
         }
         break;
@@ -5849,13 +5849,13 @@ Stream &Stream::operator>>(TLMessageMedia &messageMediaValue)
         break;
     case TLValue::MessageMediaPhoto:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLMessageMedia::Photo) {
             *this >> result.photo;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLMessageMedia::Caption) {
             *this >> result.caption;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLMessageMedia::TtlSeconds) {
             *this >> result.ttlSeconds;
         }
         break;
@@ -5870,13 +5870,13 @@ Stream &Stream::operator>>(TLMessageMedia &messageMediaValue)
         break;
     case TLValue::MessageMediaDocument:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLMessageMedia::Document) {
             *this >> result.document;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLMessageMedia::Caption) {
             *this >> result.caption;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLMessageMedia::TtlSeconds) {
             *this >> result.ttlSeconds;
         }
         break;
@@ -5898,10 +5898,10 @@ Stream &Stream::operator>>(TLMessageMedia &messageMediaValue)
         *this >> result.flags;
         *this >> result.title;
         *this >> result.description;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLMessageMedia::WebDocumentPhoto) {
             *this >> result.webDocumentPhoto;
         }
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLMessageMedia::ReceiptMsgId) {
             *this >> result.receiptMsgId;
         }
         *this >> result.currency;
@@ -5934,48 +5934,48 @@ Stream &Stream::operator>>(TLMessage &messageValue)
     case TLValue::Message:
         *this >> result.flags;
         *this >> result.id;
-        if (result.flags & 1 << 8) {
+        if (result.flags & TLMessage::FromId) {
             *this >> result.fromId;
         }
         *this >> result.toId;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLMessage::FwdFrom) {
             *this >> result.fwdFrom;
         }
-        if (result.flags & 1 << 11) {
+        if (result.flags & TLMessage::ViaBotId) {
             *this >> result.viaBotId;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLMessage::ReplyToMsgId) {
             *this >> result.replyToMsgId;
         }
         *this >> result.date;
         *this >> result.message;
-        if (result.flags & 1 << 9) {
+        if (result.flags & TLMessage::Media) {
             *this >> result.media;
         }
-        if (result.flags & 1 << 6) {
+        if (result.flags & TLMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
-        if (result.flags & 1 << 7) {
+        if (result.flags & TLMessage::Entities) {
             *this >> result.entities;
         }
-        if (result.flags & 1 << 10) {
+        if (result.flags & TLMessage::Views) {
             *this >> result.views;
         }
-        if (result.flags & 1 << 15) {
+        if (result.flags & TLMessage::EditDate) {
             *this >> result.editDate;
         }
-        if (result.flags & 1 << 16) {
+        if (result.flags & TLMessage::PostAuthor) {
             *this >> result.postAuthor;
         }
         break;
     case TLValue::MessageService:
         *this >> result.flags;
         *this >> result.id;
-        if (result.flags & 1 << 8) {
+        if (result.flags & TLMessage::FromId) {
             *this >> result.fromId;
         }
         *this >> result.toId;
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLMessage::ReplyToMsgId) {
             *this >> result.replyToMsgId;
         }
         *this >> result.date;
@@ -6183,7 +6183,7 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         break;
     case TLValue::UpdateServiceNotification:
         *this >> result.flags;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUpdate::InboxDate) {
             *this >> result.inboxDate;
         }
         *this >> result.type;
@@ -6214,7 +6214,7 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
     case TLValue::UpdateChannelTooLong:
         *this >> result.flags;
         *this >> result.channelId;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLUpdate::Pts) {
             *this >> result.pts;
         }
         break;
@@ -6270,7 +6270,7 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         *this >> result.queryId;
         *this >> result.userId;
         *this >> result.query;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLUpdate::Geo) {
             *this >> result.geo;
         }
         *this >> result.offset;
@@ -6279,11 +6279,11 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         *this >> result.flags;
         *this >> result.userId;
         *this >> result.query;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLUpdate::Geo) {
             *this >> result.geo;
         }
         *this >> result.stringId;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUpdate::InputBotInlineMessageIDMsgId) {
             *this >> result.inputBotInlineMessageIDMsgId;
         }
         break;
@@ -6298,10 +6298,10 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         *this >> result.peer;
         *this >> result.msgId;
         *this >> result.chatInstance;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLUpdate::ByteArrayData) {
             *this >> result.byteArrayData;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUpdate::GameShortName) {
             *this >> result.gameShortName;
         }
         break;
@@ -6311,10 +6311,10 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         *this >> result.userId;
         *this >> result.inputBotInlineMessageIDMsgId;
         *this >> result.chatInstance;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLUpdate::ByteArrayData) {
             *this >> result.byteArrayData;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUpdate::GameShortName) {
             *this >> result.gameShortName;
         }
         break;
@@ -6334,7 +6334,7 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         break;
     case TLValue::UpdatePinnedDialogs:
         *this >> result.flags;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLUpdate::PeerOrderVector) {
             *this >> result.peerOrderVector;
         }
         break;
@@ -6357,10 +6357,10 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         *this >> result.queryId;
         *this >> result.userId;
         *this >> result.payload;
-        if (result.flags & 1 << 0) {
+        if (result.flags & TLUpdate::Info) {
             *this >> result.info;
         }
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUpdate::ShippingOptionId) {
             *this >> result.shippingOptionId;
         }
         *this >> result.currency;
@@ -6406,16 +6406,16 @@ Stream &Stream::operator>>(TLUpdates &updatesValue)
         *this >> result.pts;
         *this >> result.ptsCount;
         *this >> result.date;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLUpdates::FwdFrom) {
             *this >> result.fwdFrom;
         }
-        if (result.flags & 1 << 11) {
+        if (result.flags & TLUpdates::ViaBotId) {
             *this >> result.viaBotId;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLUpdates::ReplyToMsgId) {
             *this >> result.replyToMsgId;
         }
-        if (result.flags & 1 << 7) {
+        if (result.flags & TLUpdates::Entities) {
             *this >> result.entities;
         }
         break;
@@ -6428,16 +6428,16 @@ Stream &Stream::operator>>(TLUpdates &updatesValue)
         *this >> result.pts;
         *this >> result.ptsCount;
         *this >> result.date;
-        if (result.flags & 1 << 2) {
+        if (result.flags & TLUpdates::FwdFrom) {
             *this >> result.fwdFrom;
         }
-        if (result.flags & 1 << 11) {
+        if (result.flags & TLUpdates::ViaBotId) {
             *this >> result.viaBotId;
         }
-        if (result.flags & 1 << 3) {
+        if (result.flags & TLUpdates::ReplyToMsgId) {
             *this >> result.replyToMsgId;
         }
-        if (result.flags & 1 << 7) {
+        if (result.flags & TLUpdates::Entities) {
             *this >> result.entities;
         }
         break;
@@ -6466,10 +6466,10 @@ Stream &Stream::operator>>(TLUpdates &updatesValue)
         *this >> result.pts;
         *this >> result.ptsCount;
         *this >> result.date;
-        if (result.flags & 1 << 9) {
+        if (result.flags & TLUpdates::Media) {
             *this >> result.media;
         }
-        if (result.flags & 1 << 7) {
+        if (result.flags & TLUpdates::Entities) {
             *this >> result.entities;
         }
         break;
@@ -6492,14 +6492,14 @@ Stream &Stream::operator>>(TLUpdatesChannelDifference &updatesChannelDifferenceV
     case TLValue::UpdatesChannelDifferenceEmpty:
         *this >> result.flags;
         *this >> result.pts;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUpdatesChannelDifference::Timeout) {
             *this >> result.timeout;
         }
         break;
     case TLValue::UpdatesChannelDifferenceTooLong:
         *this >> result.flags;
         *this >> result.pts;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUpdatesChannelDifference::Timeout) {
             *this >> result.timeout;
         }
         *this >> result.topMessage;
@@ -6514,7 +6514,7 @@ Stream &Stream::operator>>(TLUpdatesChannelDifference &updatesChannelDifferenceV
     case TLValue::UpdatesChannelDifference:
         *this >> result.flags;
         *this >> result.pts;
-        if (result.flags & 1 << 1) {
+        if (result.flags & TLUpdatesChannelDifference::Timeout) {
             *this >> result.timeout;
         }
         *this >> result.newMessages;
@@ -6713,16 +6713,16 @@ Stream &Stream::operator<<(const TLAccountPasswordInputSettings &accountPassword
     switch (accountPasswordInputSettingsValue.tlType) {
     case TLValue::AccountPasswordInputSettings:
         *this << accountPasswordInputSettingsValue.flags;
-        if (accountPasswordInputSettingsValue.flags & 1 << 0) {
+        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::NewSalt) {
             *this << accountPasswordInputSettingsValue.newSalt;
         }
-        if (accountPasswordInputSettingsValue.flags & 1 << 0) {
+        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::NewPasswordHash) {
             *this << accountPasswordInputSettingsValue.newPasswordHash;
         }
-        if (accountPasswordInputSettingsValue.flags & 1 << 0) {
+        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::Hint) {
             *this << accountPasswordInputSettingsValue.hint;
         }
-        if (accountPasswordInputSettingsValue.flags & 1 << 1) {
+        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::Email) {
             *this << accountPasswordInputSettingsValue.email;
         }
         break;
@@ -7430,7 +7430,7 @@ Stream &Stream::operator<<(const TLDocumentAttribute &documentAttributeValue)
         *this << documentAttributeValue.flags;
         *this << documentAttributeValue.alt;
         *this << documentAttributeValue.stickerset;
-        if (documentAttributeValue.flags & 1 << 0) {
+        if (documentAttributeValue.flags & TLDocumentAttribute::MaskCoords) {
             *this << documentAttributeValue.maskCoords;
         }
         break;
@@ -7443,13 +7443,13 @@ Stream &Stream::operator<<(const TLDocumentAttribute &documentAttributeValue)
     case TLValue::DocumentAttributeAudio:
         *this << documentAttributeValue.flags;
         *this << documentAttributeValue.duration;
-        if (documentAttributeValue.flags & 1 << 0) {
+        if (documentAttributeValue.flags & TLDocumentAttribute::Title) {
             *this << documentAttributeValue.title;
         }
-        if (documentAttributeValue.flags & 1 << 1) {
+        if (documentAttributeValue.flags & TLDocumentAttribute::Performer) {
             *this << documentAttributeValue.performer;
         }
-        if (documentAttributeValue.flags & 1 << 2) {
+        if (documentAttributeValue.flags & TLDocumentAttribute::Waveform) {
             *this << documentAttributeValue.waveform;
         }
         break;
@@ -7595,7 +7595,7 @@ Stream &Stream::operator<<(const TLInputStickerSetItem &inputStickerSetItemValue
         *this << inputStickerSetItemValue.flags;
         *this << inputStickerSetItemValue.document;
         *this << inputStickerSetItemValue.emoji;
-        if (inputStickerSetItemValue.flags & 1 << 0) {
+        if (inputStickerSetItemValue.flags & TLInputStickerSetItem::MaskCoords) {
             *this << inputStickerSetItemValue.maskCoords;
         }
         break;
@@ -7794,17 +7794,17 @@ Stream &Stream::operator<<(const TLInputBotInlineMessage &inputBotInlineMessageV
     case TLValue::InputBotInlineMessageMediaAuto:
         *this << inputBotInlineMessageValue.flags;
         *this << inputBotInlineMessageValue.caption;
-        if (inputBotInlineMessageValue.flags & 1 << 2) {
+        if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this << inputBotInlineMessageValue.replyMarkup;
         }
         break;
     case TLValue::InputBotInlineMessageText:
         *this << inputBotInlineMessageValue.flags;
         *this << inputBotInlineMessageValue.message;
-        if (inputBotInlineMessageValue.flags & 1 << 1) {
+        if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::Entities) {
             *this << inputBotInlineMessageValue.entities;
         }
-        if (inputBotInlineMessageValue.flags & 1 << 2) {
+        if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this << inputBotInlineMessageValue.replyMarkup;
         }
         break;
@@ -7812,7 +7812,7 @@ Stream &Stream::operator<<(const TLInputBotInlineMessage &inputBotInlineMessageV
         *this << inputBotInlineMessageValue.flags;
         *this << inputBotInlineMessageValue.geoPoint;
         *this << inputBotInlineMessageValue.period;
-        if (inputBotInlineMessageValue.flags & 1 << 2) {
+        if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this << inputBotInlineMessageValue.replyMarkup;
         }
         break;
@@ -7823,7 +7823,7 @@ Stream &Stream::operator<<(const TLInputBotInlineMessage &inputBotInlineMessageV
         *this << inputBotInlineMessageValue.address;
         *this << inputBotInlineMessageValue.provider;
         *this << inputBotInlineMessageValue.venueId;
-        if (inputBotInlineMessageValue.flags & 1 << 2) {
+        if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this << inputBotInlineMessageValue.replyMarkup;
         }
         break;
@@ -7832,13 +7832,13 @@ Stream &Stream::operator<<(const TLInputBotInlineMessage &inputBotInlineMessageV
         *this << inputBotInlineMessageValue.phoneNumber;
         *this << inputBotInlineMessageValue.firstName;
         *this << inputBotInlineMessageValue.lastName;
-        if (inputBotInlineMessageValue.flags & 1 << 2) {
+        if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this << inputBotInlineMessageValue.replyMarkup;
         }
         break;
     case TLValue::InputBotInlineMessageGame:
         *this << inputBotInlineMessageValue.flags;
-        if (inputBotInlineMessageValue.flags & 1 << 2) {
+        if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this << inputBotInlineMessageValue.replyMarkup;
         }
         break;
@@ -7858,31 +7858,31 @@ Stream &Stream::operator<<(const TLInputBotInlineResult &inputBotInlineResultVal
         *this << inputBotInlineResultValue.flags;
         *this << inputBotInlineResultValue.id;
         *this << inputBotInlineResultValue.type;
-        if (inputBotInlineResultValue.flags & 1 << 1) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Title) {
             *this << inputBotInlineResultValue.title;
         }
-        if (inputBotInlineResultValue.flags & 1 << 2) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Description) {
             *this << inputBotInlineResultValue.description;
         }
-        if (inputBotInlineResultValue.flags & 1 << 3) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Url) {
             *this << inputBotInlineResultValue.url;
         }
-        if (inputBotInlineResultValue.flags & 1 << 4) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::ThumbUrl) {
             *this << inputBotInlineResultValue.thumbUrl;
         }
-        if (inputBotInlineResultValue.flags & 1 << 5) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::ContentUrl) {
             *this << inputBotInlineResultValue.contentUrl;
         }
-        if (inputBotInlineResultValue.flags & 1 << 5) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::ContentType) {
             *this << inputBotInlineResultValue.contentType;
         }
-        if (inputBotInlineResultValue.flags & 1 << 6) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::W) {
             *this << inputBotInlineResultValue.w;
         }
-        if (inputBotInlineResultValue.flags & 1 << 6) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::H) {
             *this << inputBotInlineResultValue.h;
         }
-        if (inputBotInlineResultValue.flags & 1 << 7) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Duration) {
             *this << inputBotInlineResultValue.duration;
         }
         *this << inputBotInlineResultValue.sendMessage;
@@ -7897,10 +7897,10 @@ Stream &Stream::operator<<(const TLInputBotInlineResult &inputBotInlineResultVal
         *this << inputBotInlineResultValue.flags;
         *this << inputBotInlineResultValue.id;
         *this << inputBotInlineResultValue.type;
-        if (inputBotInlineResultValue.flags & 1 << 1) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Title) {
             *this << inputBotInlineResultValue.title;
         }
-        if (inputBotInlineResultValue.flags & 1 << 2) {
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Description) {
             *this << inputBotInlineResultValue.description;
         }
         *this << inputBotInlineResultValue.document;
@@ -7929,10 +7929,10 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
         *this << inputMediaValue.flags;
         *this << inputMediaValue.file;
         *this << inputMediaValue.caption;
-        if (inputMediaValue.flags & 1 << 0) {
+        if (inputMediaValue.flags & TLInputMedia::Stickers) {
             *this << inputMediaValue.stickers;
         }
-        if (inputMediaValue.flags & 1 << 1) {
+        if (inputMediaValue.flags & TLInputMedia::TtlSeconds1) {
             *this << inputMediaValue.ttlSeconds;
         }
         break;
@@ -7940,7 +7940,7 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
         *this << inputMediaValue.flags;
         *this << inputMediaValue.inputPhotoId;
         *this << inputMediaValue.caption;
-        if (inputMediaValue.flags & 1 << 0) {
+        if (inputMediaValue.flags & TLInputMedia::TtlSeconds0) {
             *this << inputMediaValue.ttlSeconds;
         }
         break;
@@ -7955,16 +7955,16 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
     case TLValue::InputMediaUploadedDocument:
         *this << inputMediaValue.flags;
         *this << inputMediaValue.file;
-        if (inputMediaValue.flags & 1 << 2) {
+        if (inputMediaValue.flags & TLInputMedia::Thumb) {
             *this << inputMediaValue.thumb;
         }
         *this << inputMediaValue.mimeType;
         *this << inputMediaValue.attributes;
         *this << inputMediaValue.caption;
-        if (inputMediaValue.flags & 1 << 0) {
+        if (inputMediaValue.flags & TLInputMedia::Stickers) {
             *this << inputMediaValue.stickers;
         }
-        if (inputMediaValue.flags & 1 << 1) {
+        if (inputMediaValue.flags & TLInputMedia::TtlSeconds1) {
             *this << inputMediaValue.ttlSeconds;
         }
         break;
@@ -7972,7 +7972,7 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
         *this << inputMediaValue.flags;
         *this << inputMediaValue.inputDocumentId;
         *this << inputMediaValue.caption;
-        if (inputMediaValue.flags & 1 << 0) {
+        if (inputMediaValue.flags & TLInputMedia::TtlSeconds0) {
             *this << inputMediaValue.ttlSeconds;
         }
         break;
@@ -7993,7 +7993,7 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
         *this << inputMediaValue.flags;
         *this << inputMediaValue.url;
         *this << inputMediaValue.caption;
-        if (inputMediaValue.flags & 1 << 0) {
+        if (inputMediaValue.flags & TLInputMedia::TtlSeconds0) {
             *this << inputMediaValue.ttlSeconds;
         }
         break;
@@ -8004,7 +8004,7 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
         *this << inputMediaValue.flags;
         *this << inputMediaValue.title;
         *this << inputMediaValue.description;
-        if (inputMediaValue.flags & 1 << 0) {
+        if (inputMediaValue.flags & TLInputMedia::Photo) {
             *this << inputMediaValue.photo;
         }
         *this << inputMediaValue.invoice;
