@@ -4,18 +4,20 @@
 
 #include "../Generator.hpp"
 
-const QString c_typesSection = QStringLiteral("---types---");
-const QString c_functionsSection = QStringLiteral("---functions---");
+const QByteArray c_typesSection = QByteArrayLiteral("---types---");
+const QByteArray c_functionsSection = QByteArrayLiteral("---functions---");
 
 static QByteArray generateTextSpec(const QStringList &types, const QStringList &functions = {})
 {
     QByteArray result;
     if (!types.isEmpty()) {
-        const QString textData = c_typesSection + QLatin1Char('\n') + types.join(QLatin1Char('\n')) + QLatin1Char('\n');
+        const QString textData = QLatin1Char('\n') + types.join(QLatin1Char('\n')) + QLatin1Char('\n');
+        result += c_typesSection;
         result += textData.toLocal8Bit();
     }
     if (!functions.isEmpty()) {
-        const QString textData = c_functionsSection + QLatin1Char('\n') + functions.join(QLatin1Char('\n')) + QLatin1Char('\n');
+        const QString textData = QLatin1Char('\n') + functions.join(QLatin1Char('\n')) + QLatin1Char('\n');
+        result += c_functionsSection;
         result += textData.toLocal8Bit();
     }
     return result;
