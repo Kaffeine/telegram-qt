@@ -9,16 +9,12 @@ namespace Client {
 DeclarativeRsaKey::DeclarativeRsaKey(QObject *parent)
     : QObject(parent)
 {
+    setKey(RsaKey::defaultKey());
 }
 
 bool DeclarativeRsaKey::isValid() const
 {
     return m_key.isValid();
-}
-
-bool DeclarativeRsaKey::loadDefault() const
-{
-    return m_loadDefaultKey;
 }
 
 QString DeclarativeRsaKey::fingerprint() const
@@ -33,22 +29,12 @@ void DeclarativeRsaKey::setFileName(const QString &fileName)
         return;
     }
     m_fileName = fileName;
-    if (!fileName.isEmpty()) {
+    if (fileName.isEmpty()) {
+        setKey(RsaKey::defaultKey());
+    } else {
         setKey(RsaKey::fromFile(QUrl::fromUserInput(fileName).toLocalFile()));
     }
     emit fileNameChanged(fileName);
-}
-
-void DeclarativeRsaKey::setLoadDefault(bool loadDefault)
-{
-    if (m_loadDefaultKey == loadDefault) {
-        return;
-    }
-    m_loadDefaultKey = loadDefault;
-    if (loadDefault) {
-        setKey(RsaKey::defaultKey());
-    }
-    emit loadDefaultChanged(loadDefault);
 }
 
 void DeclarativeRsaKey::setKey(const RsaKey &key)
