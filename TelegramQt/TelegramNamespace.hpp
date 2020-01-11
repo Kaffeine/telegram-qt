@@ -93,7 +93,7 @@ inline uint qHash(const Peer &key, uint seed)
     return ::qHash(static_cast<ulong>(key.id | (static_cast<quint64>(key.type) << (sizeof(key.id) * 8))), seed);
 }
 
-struct MessageAction
+struct TELEGRAMQT_EXPORT MessageAction
 {
     Q_GADGET
     Q_PROPERTY(Telegram::MessageAction::Type type MEMBER type)
