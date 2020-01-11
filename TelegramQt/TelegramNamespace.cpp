@@ -827,6 +827,11 @@ Peer DialogInfo::peer() const
     return d->peer;
 }
 
+bool DialogInfo::isPinned() const
+{
+    return d->flags & UserDialog::Flags::Pinned;
+}
+
 UserInfo::UserInfo() :
     d(new Private())
 {

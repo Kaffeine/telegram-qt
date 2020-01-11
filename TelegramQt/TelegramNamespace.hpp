@@ -398,6 +398,7 @@ public:
 
     Peer peer() const;
 
+    bool isPinned() const;
     quint32 unreadCount() const;
     QString draft() const;
     quint32 lastMessageId() const;
