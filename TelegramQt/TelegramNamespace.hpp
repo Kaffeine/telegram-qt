@@ -140,10 +140,9 @@ public:
 
     enum MessageFlag {
         MessageFlagNone      = 0x0,
-        MessageFlagRead      = 0x1, // Message was read
-        MessageFlagOut       = 0x2, // Message is outgoing
-        MessageFlagForwarded = 0x4,
-        MessageFlagIsReply   = 0x8,
+        MessageFlagOut       = 0x1, // Message is outgoing
+        MessageFlagForwarded = 0x2,
+        MessageFlagIsReply   = 0x4,
     };
     Q_ENUM(MessageFlag)
     Q_DECLARE_FLAGS(MessageFlags, MessageFlag)
