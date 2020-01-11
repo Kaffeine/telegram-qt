@@ -37,6 +37,12 @@ option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
 
 option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
 
+set(TELEGRAMQT_EXPORT_INTERNAL_API FALSE)
+if(BUILD_SERVER)
+    message(STATUS "Internal TelegramQt API will be exported for Telegram Server")
+    set(TELEGRAMQT_EXPORT_INTERNAL_API TRUE)
+endif()
+
 option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)
 option(ENABLE_COVERAGE_HTML "Generate an HTML report for the code-coverage analysis result" FALSE)
 
@@ -111,7 +117,9 @@ endif()
 
 if(BUILD_TESTS)
     enable_testing()
-    add_subdirectory(TelegramQt/tests)
+    if(TELEGRAMQT_EXPORT_INTERNAL_API)
+        add_subdirectory(TelegramQt/tests)
+    endif()
     add_subdirectory(tests/data)
     if(BUILD_SERVER)
         add_subdirectory(tests)

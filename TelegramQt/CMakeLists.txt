@@ -4,6 +4,10 @@ add_library(TelegramQt${QT_VERSION_MAJOR}::Core ALIAS TelegramQt${QT_VERSION_MAJ
 
 target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE TELEGRAMQT_LIBRARY)
 
+if(TELEGRAMQT_EXPORT_INTERNAL_API)
+    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE TELEGRAMQT_EXPORT_INTERNAL_API)
+endif()
+
 target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     AbridgedLength.cpp
     AbridgedLength.hpp
