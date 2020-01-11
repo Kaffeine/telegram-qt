@@ -1,16 +1,3 @@
-cmake_minimum_required(VERSION 3.1)
-
-project(TelegramTestServer
-    LANGUAGES CXX
-)
-
-set(OVERRIDE_CXX_STANDARD 11 CACHE STRING "Compile with custom C++ standard version")
-
-set(CMAKE_CXX_STANDARD ${OVERRIDE_CXX_STANDARD})
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-set(CMAKE_AUTOMOC ON)
 
 # use, i.e. don't skip the full RPATH for the build tree
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
