@@ -89,10 +89,6 @@ Q_SIGNALS:
     void errorOccurred(Telegram::Namespace::AuthenticationError errorCode, const QByteArray &errorMessage);
     void authorizationErrorReceived(Telegram::Namespace::UnauthorizedError errorCode, const QString &errorMessage);
 
-public slots:
-    Q_DECL_DEPRECATED void checkRegistration() { return startAuthentication(); }
-    Q_DECL_DEPRECATED void signIn() { startAuthentication(); }
-
 protected:
     void setStatus(const DeclarativeAuthOperation::AuthStatus status);
     void setBusy(bool busy);
