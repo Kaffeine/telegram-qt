@@ -7726,16 +7726,16 @@ Stream &Stream::operator<<(const TLPaymentRequestedInfo &paymentRequestedInfoVal
     switch (paymentRequestedInfoValue.tlType) {
     case TLValue::PaymentRequestedInfo:
         *this << paymentRequestedInfoValue.flags;
-        if (paymentRequestedInfoValue.flags & 1 << 0) {
+        if (paymentRequestedInfoValue.flags & TLPaymentRequestedInfo::Name) {
             *this << paymentRequestedInfoValue.name;
         }
-        if (paymentRequestedInfoValue.flags & 1 << 1) {
+        if (paymentRequestedInfoValue.flags & TLPaymentRequestedInfo::Phone) {
             *this << paymentRequestedInfoValue.phone;
         }
-        if (paymentRequestedInfoValue.flags & 1 << 2) {
+        if (paymentRequestedInfoValue.flags & TLPaymentRequestedInfo::Email) {
             *this << paymentRequestedInfoValue.email;
         }
-        if (paymentRequestedInfoValue.flags & 1 << 3) {
+        if (paymentRequestedInfoValue.flags & TLPaymentRequestedInfo::ShippingAddress) {
             *this << paymentRequestedInfoValue.shippingAddress;
         }
         break;
