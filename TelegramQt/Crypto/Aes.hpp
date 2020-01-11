@@ -18,6 +18,8 @@
 #ifndef TELEGRAM_AES_KEY_HPP
 #define TELEGRAM_AES_KEY_HPP
 
+#include "telegramqt_global.h"
+
 #include <QByteArray>
 
 namespace Telegram {
@@ -25,7 +27,7 @@ namespace Telegram {
 namespace Crypto {
 
 // Internal class
-struct AesKey {
+struct TELEGRAMQT_INTERNAL_EXPORT AesKey {
     QByteArray key;
     QByteArray iv;
 
@@ -41,8 +43,8 @@ struct AesKey {
     }
 };
 
-QByteArray aesDecrypt(const QByteArray &data, const AesKey &key);
-QByteArray aesEncrypt(const QByteArray &data, const AesKey &key);
+TELEGRAMQT_INTERNAL_EXPORT QByteArray aesDecrypt(const QByteArray &data, const AesKey &key);
+TELEGRAMQT_INTERNAL_EXPORT QByteArray aesEncrypt(const QByteArray &data, const AesKey &key);
 
 } // Crypto namespace
 

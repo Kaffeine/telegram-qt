@@ -43,7 +43,7 @@ struct DialogState {
     bool synced = false;
 };
 
-class DataStoragePrivate
+class TELEGRAMQT_INTERNAL_EXPORT DataStoragePrivate
 {
 public:
     static DataStoragePrivate *get(DataStorage *parent);
@@ -56,7 +56,7 @@ public:
     DataInternalApi *m_api = nullptr;
 };
 
-class DataInternalApi : public QObject
+class TELEGRAMQT_INTERNAL_EXPORT DataInternalApi : public QObject
 {
     Q_OBJECT
 public:

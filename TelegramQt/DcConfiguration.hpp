@@ -36,7 +36,7 @@ struct ConnectionSpec
     RequestFlags flags;
 };
 
-struct DcConfiguration
+struct TELEGRAMQT_INTERNAL_EXPORT DcConfiguration
 {
     int dcCount() const;
 
