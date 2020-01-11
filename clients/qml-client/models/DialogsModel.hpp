@@ -26,7 +26,7 @@ public:
         QString name;
         QString formattedLastMessage;
         Telegram::Message lastChatMessage;
-        UserDialog *internal = nullptr;
+        DialogInfo info;
     };
 
     enum class Column {

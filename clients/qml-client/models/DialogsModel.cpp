@@ -73,15 +73,15 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
 
     switch (role) {
     case Role::Peer:
-        return QVariant::fromValue(dialog.internal->peer);
+        return QVariant::fromValue(dialog.info.peer());
     case Role::ChatType:
         return static_cast<int>(dialog.chatType);
     case Role::DisplayName:
         return dialog.name;
     case Role::IsPinned:
-        return dialog.internal->flags & UserDialog::Flags::Pinned;
+        return dialog.info.isPinned();
     case Role::UnreadMessageCount:
-        return dialog.internal->unreadCount;
+        return dialog.info.unreadCount();
     case Role::FormattedLastMessage:
         return dialog.formattedLastMessage;
     case Role::LastMessage:
@@ -109,7 +109,7 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
         text = lastChatMessage.text;
     } else {
         Telegram::MessageMediaInfo info;
-        client()->dataStorage()->getMessageMediaInfo(&info, dialog.internal->peer, lastChatMessage.id);
+        client()->dataStorage()->getMessageMediaInfo(&info, dialog.info.peer(), lastChatMessage.id);
         switch (lastChatMessage.type) {
         case Namespace::MessageTypeWebPage:
             text = lastChatMessage.text;
@@ -212,20 +212,14 @@ void DialogsModel::onListChanged(const PeerList &added, const PeerList &removed)
 
 void DialogsModel::addPeer(const Peer &peer)
 {
+    m_dialogs.resize(m_dialogs.size() + 1);
+    DialogEntry &dialog = m_dialogs.last();
     Client *c = client();
-    DialogEntry d;
-    DataInternalApi *internalApi = DataInternalApi::get(client()->dataStorage());
-    UserDialog *dialogData = internalApi->getDialog(peer);
-    if (!dialogData) {
-        qWarning() << Q_FUNC_INFO << "Unknown dialog";
-        return;
-    }
-    d.internal = dialogData;
-    d.chatType = c->messagingApi()->getChatType(peer);
-    d.name = getPeerAlias(peer, c);
-    c->messagingApi()->getMessage(&d.lastChatMessage, peer, dialogData->topMessage);
+    c->dataStorage()->getDialogInfo(&dialog.info, peer);
 
-    m_dialogs << d;
+    dialog.chatType = c->messagingApi()->getChatType(peer);
+    dialog.name = getPeerAlias(peer, c);
+    c->messagingApi()->getMessage(&dialog.lastChatMessage, peer, dialog.info.lastMessageId());
 }
 
 DialogsModel::Role DialogsModel::intToRole(int value)
