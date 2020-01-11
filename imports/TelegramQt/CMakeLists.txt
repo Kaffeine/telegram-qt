@@ -93,7 +93,7 @@ install(
 )
 
 if(DEVELOPER_BUILD)
-    message(STATUS "Hint: To update plugins.qmltypes run the following command:\n"
+    message(STATUS "Hint: To update plugins.qmltypes build CMake target generate-qmltypes or run the following command:\n"
         "    LD_LIBRARY_PATH=${CMAKE_INSTALL_FULL_LIBDIR} "
         "${_qt5Core_install_prefix}/bin/qmlplugindump "
         "-noinstantiate -nonrelocatable -v TelegramQt 0.2 "
@@ -102,4 +102,14 @@ if(DEVELOPER_BUILD)
         "\n"
         ""
         )
+
+    set(GENERATED_QML_TYPES "${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes")
+    add_custom_target(generate-qmltypes
+        COMMAND LD_LIBRARY_PATH=${CMAKE_INSTALL_FULL_LIBDIR} ${_qt5Core_install_prefix}/bin/qmlplugindump -noinstantiate -nonrelocatable -v TelegramQt 0.2 ${INSTALL_QML_IMPORT_DIR} > ${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes
+        COMMAND sed -i "s/\\[\"QtQuick 2.*\"\\]/\\[\"QtQuick 2.6\"\\]/" ${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes
+        COMMAND sed -i "s/TelegramQt 0.2.*\'/TelegramQt 0.2\'/" ${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes
+        SOURCES qmldir
+        BYPRODUCTS "${CMAKE_CURRENT_SOURCE_DIR}/plugins.qmltypes"
+        VERBATIM
+    )
 endif()
