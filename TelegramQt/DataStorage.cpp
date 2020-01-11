@@ -195,6 +195,13 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
             //message->setForwardFromPeer((m->fwdFrom))
         }
     }
+    if (m->flags & TLMessage::ReplyToMsgId) {
+        message->flags |= Namespace::MessageFlagIsReply;
+        message->replyToMessageId = m->replyToMsgId;
+    } else {
+        message->replyToMessageId = 0;
+    }
+
     return true;
 }
 
