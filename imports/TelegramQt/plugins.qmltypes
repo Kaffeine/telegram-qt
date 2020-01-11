@@ -7,7 +7,7 @@ import QtQuick.tooling 1.2
 // 'qmlplugindump -noinstantiate -nonrelocatable -v TelegramQt 0.2'
 
 Module {
-    dependencies: ["QtQuick 2.8"]
+    dependencies: ["QtQuick 2.6"]
     Component {
         name: "AccountSecretHelper"
         prototype: "QObject"
@@ -63,6 +63,13 @@ Module {
             Parameter { name: "data"; type: "QByteArray" }
         }
         Method { name: "removeCredentialsData"; type: "bool" }
+    }
+    Component {
+        name: "Telegram::Client::AccountApi"
+        prototype: "Telegram::Client::ClientApi"
+        exports: ["TelegramQt/AccountApi 0.2"]
+        isCreatable: false
+        exportMetaObjectRevisions: [0]
     }
     Component {
         name: "Telegram::Client::AccountStorage"
@@ -250,6 +257,12 @@ Module {
         Property { name: "accountStorage"; type: "Telegram::Client::AccountStorage"; isPointer: true }
         Property { name: "dataStorage"; type: "Telegram::Client::DataStorage"; isPointer: true }
         Property {
+            name: "accountApi"
+            type: "Telegram::Client::AccountApi"
+            isReadonly: true
+            isPointer: true
+        }
+        Property {
             name: "connectionApi"
             type: "Telegram::Client::ConnectionApi"
             isReadonly: true
@@ -342,6 +355,7 @@ Module {
         Property { name: "userId"; type: "uint" }
         Property { name: "chatType"; type: "Namespace::ChatType"; isReadonly: true }
         Property { name: "displayName"; type: "string"; isReadonly: true }
+        Property { name: "pictureFileId"; type: "string"; isReadonly: true }
         Signal {
             name: "displayNameChanged"
             Parameter { name: "displayName"; type: "string" }
@@ -404,7 +418,6 @@ Module {
         exportMetaObjectRevisions: [0]
         Property { name: "fileName"; type: "string" }
         Property { name: "valid"; type: "bool"; isReadonly: true }
-        Property { name: "loadDefault"; type: "bool" }
         Property { name: "fingerprint"; type: "string"; isReadonly: true }
         Signal {
             name: "fileNameChanged"
@@ -414,17 +427,9 @@ Module {
             name: "validChanged"
             Parameter { name: "valid"; type: "bool" }
         }
-        Signal {
-            name: "loadDefaultChanged"
-            Parameter { name: "loadDefault"; type: "bool" }
-        }
         Method {
             name: "setFileName"
             Parameter { name: "fileName"; type: "string" }
-        }
-        Method {
-            name: "setLoadDefault"
-            Parameter { name: "loadDefault"; type: "bool" }
         }
     }
     Component {
