@@ -13,10 +13,14 @@ git:
 matrix:
     include:
        - compiler: clang
+         # Experimental build
          env:
            - DEVELOPER_BUILD=true
+           - BUILD_SERVER=true
        - compiler: gcc
+         # Production build
          env:
+           - BUILD_CLIENT=true
            - BUILD_DOCUMENTATION=true
 #          - ENABLE_COVERAGE_BUILD=true
 
@@ -34,13 +38,16 @@ before_script:
   - export PATH="$QTDIR/bin:$PATH"
   - qt56-env.sh
   - mkdir ../build; cd ../build
+  - if [ "${BUILD_CLIENT}" != "true" ]; then export BUILD_CLIENT="false"; fi
   - if [ "${BUILD_DOCUMENTATION}" != "true" ]; then export BUILD_DOCUMENTATION="false"; fi
+  - if [ "${BUILD_SERVER}" != "true" ]; then export BUILD_SERVER="false"; fi
   - if [ "${DEVELOPER_BUILD}" != "true" ]; then export DEVELOPER_BUILD="false"; fi
   - if [ "${ENABLE_COVERAGE_BUILD}" != "true" ]; then export ENABLE_COVERAGE_BUILD="false"; fi
   - cmake >
+    -DBUILD_CLIENT=${BUILD_CLIENT}
     -DBUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}
     -DBUILD_TESTS=true
-    -DBUILD_SERVER=true
+    -DBUILD_SERVER=${BUILD_SERVER}
     -DDEVELOPER_BUILD=${DEVELOPER_BUILD}
     -DENABLE_COVERAGE_BUILD=${ENABLE_COVERAGE_BUILD}
     ../telegram-qt
