@@ -40,6 +40,7 @@ class Theme : public QObject
     Q_PROPERTY(qreal itemSizeExtraLarge MEMBER m_itemSizeExtraLarge CONSTANT)
 
     Q_PROPERTY(qreal iconSizeSmall MEMBER m_iconSizeSmall CONSTANT)
+    Q_PROPERTY(qreal iconSizeMedium MEMBER m_iconSizeMedium CONSTANT)
 
     Q_PROPERTY(qreal buttonWidthSmall MEMBER m_buttonWidthSmall CONSTANT)
     Q_PROPERTY(qreal buttonWidthMedium MEMBER m_buttonWidthMedium CONSTANT)
@@ -69,10 +70,10 @@ public:
         m_itemSizeLarge(110),
         m_itemSizeExtraLarge(135),
         m_itemSizeHuge(180),
-        m_iconSizeExtraSmall(24),
-        m_iconSizeSmall(32),
-        m_iconSizeSmallPlus(48),
-        m_iconSizeMedium(64),
+        m_iconSizeExtraSmall(16),
+        m_iconSizeSmall(24),
+        m_iconSizeSmallPlus(32),
+        m_iconSizeMedium(42),
         m_iconSizeLarge(96),
         m_iconSizeExtraLarge(128),
         m_iconSizeLauncher(86),
