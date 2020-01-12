@@ -13,6 +13,7 @@ ItemDelegate {
     width: 200
 
     property string displayName
+    property string pictureFileId
     property int chatType
     property int unreadMessageCount
     property var timestamp
@@ -38,6 +39,7 @@ ItemDelegate {
 
             displayName: dialogDelegate.displayName
             peer: dialogDelegate.peer
+            pictureFileId: dialogDelegate.pictureFileId
         }
 
         Item {

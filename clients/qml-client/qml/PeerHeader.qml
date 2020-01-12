@@ -19,6 +19,7 @@ Frame {
 
             displayName: peerInfo.displayName
             peer: root.peerInfo.peer
+            pictureFileId: root.peerInfo.pictureFileId
         }
 
         InlineHeader {

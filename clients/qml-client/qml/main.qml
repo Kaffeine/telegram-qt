@@ -6,6 +6,8 @@ import Qt.labs.platform 1.0
 import TelegramQt 0.2 as Telegram
 import TelegramQtTheme 1.0
 
+import Client 1.0
+
 ApplicationWindow {
     id: window_
     visible: true
@@ -78,6 +80,11 @@ ApplicationWindow {
         settings: options_.localServer ? localSettings_ : settings_
         dataStorage: dataStorage_
         accountStorage: accountStorage_
+    }
+
+    ImageProviderWrapper {
+        id: imageProvider_
+        client: telegramClient_
     }
 
     Timer {

@@ -24,6 +24,7 @@ ItemDelegate {
             sizePx: Theme.iconSizeMedium
             peer: peerInfo_.peer
             displayName: peerInfo_.displayName
+            pictureFileId: peerInfo_.pictureFileId
         }
         Item {
             id: details

@@ -37,6 +37,7 @@ Frame {
             timestamp: typeof(model.lastMessage) != "undefined" ? model.lastMessage.timestamp : undefined
             lastMessage: model.lastMessage
             peer: model.peer
+            pictureFileId: model.pictureFileId
             highlighted: currentPeer === peer
             isPinned: model.isPinned
             chatType: model.chatType
