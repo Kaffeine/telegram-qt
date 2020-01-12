@@ -473,11 +473,11 @@ protected:
 namespace Utils
 {
 
-quint64 maskNumber(quint64 number);
+TELEGRAMQT_EXPORT quint64 maskNumber(quint64 number);
 TELEGRAMQT_EXPORT QString maskString(const QString &string);
 TELEGRAMQT_EXPORT QByteArray maskByteArray(const QByteArray &data);
-QString maskPhoneNumber(const QString &identifier);
-QStringList maskPhoneNumber(const QStringList &list);
+TELEGRAMQT_EXPORT QString maskPhoneNumber(const QString &identifier);
+TELEGRAMQT_EXPORT QStringList maskPhoneNumber(const QStringList &list);
 
 template <typename T>
 T maskPhoneNumber(T container, const QString &key)
