@@ -568,7 +568,7 @@ void MessagingApiPrivate::onGetDialogsFinished(PendingOperation *operation, Mess
         m_dialogList->ensurePeers(receivedPeers);
     }
 
-    if (static_cast<quint32>(dataInternalApi()->dialogs().count()) < dialogs.count) {
+    if (false) {//static_cast<quint32>(dataInternalApi()->dialogs().count()) < dialogs.count) {
         const TLDialog &lastTlDialog = dialogs.dialogs.last();
         const TLInputPeer inputPeer = dataInternalApi()->toInputPeer(lastTlDialog.peer);
         quint32 date = 0;
