@@ -852,8 +852,10 @@ QString Generator::streamReadFunctionFreePerArgumentImplementation(const TypedEn
     QString result;
     if (param.dependOnFlag()) {
         if (param.type() == tlTrueType) {
+            // result += spacing + QString("// (%1.%2 & %3::%4) stands for %5 \"true\" value\n").arg(argName, param.flagMember, type->name, param.flagName(), param.getAlias());
             result += spacing + QString("// (%1.%2 & 1 << %3) stands for %4 \"true\" value\n").arg(argName, param.flagMember).arg(param.flagBit).arg(param.getAlias());
         } else {
+            // result += spacing + QString("if (%1.%2 & %3::%4) {\n").arg(argName, param.flagMember, type->name, param.flagName());
             result += spacing + QString("if (%1.%2 & 1 << %3) {\n").arg(argName, param.flagMember).arg(param.flagBit);
             result += spacing + spacing + QString("stream >> %1.%2;\n").arg(argName, param.getAlias());
             result += spacing + QLatin1String("}\n");
