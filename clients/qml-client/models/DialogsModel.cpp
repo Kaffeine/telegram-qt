@@ -159,6 +159,10 @@ void DialogsModel::populate()
     }
     connect(client()->messagingApi(), &MessagingApi::messageReceived,
             this, &DialogsModel::onNewMessage);
+    connect(client()->messagingApi(), &MessagingApi::messageReadInbox,
+            this, &DialogsModel::onMessageReadInbox);
+    connect(client()->messagingApi(), &MessagingApi::messageReadOutbox,
+            this, &DialogsModel::onMessageReadOutbox);
 }
 
 QString getPeerAlias(const Telegram::Peer &peer, const Telegram::Client::Client *client)
@@ -258,6 +262,32 @@ void DialogsModel::onNewMessage(const Telegram::Peer peer, quint32 messageId)
                                                                 Role::LastMessage,
                                                                 Role::FormattedLastMessage,
                                                                 Role::UnreadMessageCount,
+                                                            }));
+}
+
+void DialogsModel::onMessageReadInbox(const Peer peer, quint32 messageId)
+{
+    Q_UNUSED(messageId)
+    int dialogIndex = getDialogIndex(peer);
+    if (dialogIndex < 0) {
+        return;
+    }
+    const QModelIndex changedIndex = index(dialogIndex);
+    emit dataChanged(changedIndex, changedIndex, rolesToInt({Role::UnreadMessageCount}));
+}
+
+void DialogsModel::onMessageReadOutbox(const Peer peer, quint32 messageId)
+{
+    Q_UNUSED(messageId)
+    int dialogIndex = getDialogIndex(peer);
+    if (dialogIndex < 0) {
+        return;
+    }
+    const QModelIndex changedIndex = index(dialogIndex);
+    // Message read status is a part of Role::LastMessage data
+    emit dataChanged(changedIndex, changedIndex, rolesToInt({
+                                                                Role::LastMessage,
+                                                                Role::FormattedLastMessage,
                                                             }));
 }
 

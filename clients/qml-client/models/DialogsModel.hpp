@@ -82,6 +82,8 @@ private slots:
     void onListChanged(const Telegram::PeerList &added, const Telegram::PeerList &removed);
     void addPeer(const Telegram::Peer &peer);
     void onNewMessage(const Telegram::Peer peer, quint32 messageId);
+    void onMessageReadInbox(const Telegram::Peer peer, quint32 messageId);
+    void onMessageReadOutbox(const Telegram::Peer peer, quint32 messageId);
 
 private:
     int getDialogIndex(const Telegram::Peer peer) const;
