@@ -220,6 +220,9 @@ bool RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
     }
 
     switch (notification.errorCode) {
+    case MTProto::IgnoredMessageNotification::MessageIdTooHigh:
+    case MTProto::IgnoredMessageNotification::MessageIdTooLow:
+        return processUnsyncMessageId(notification);
     case MTProto::IgnoredMessageNotification::IncorrectServerSalt:
         // We sync local serverSalt value in processDecryptedMessageHeader().
         // Resend message will automatically apply the new salt
@@ -259,6 +262,48 @@ bool RpcLayer::processIgnoredMessageNotification(const MTProto::Message &message
 
     qCWarning(c_clientRpcLayerCategory) << "Unhandled error:" << notification.toString();
     return false;
+}
+
+bool RpcLayer::processUnsyncMessageId(const MTProto::IgnoredMessageNotification &notification)
+{
+    if (notification.errorCode == MTProto::IgnoredMessageNotification::MessageIdTooHigh) {
+        if (m_deltaTimeHeuristicState == DeltaTimeHeuristicState::Ok) {
+            // Step 1: initial direction
+            m_deltaTimeHeuristicState = DeltaTimeHeuristicState::ForwardStep1;
+        } else if (m_deltaTimeHeuristicState == DeltaTimeHeuristicState::BackwardStep1) {
+            // Step 2: invert direction
+            m_deltaTimeHeuristicState = DeltaTimeHeuristicState::ForwardStep2;
+        }
+
+        if (m_deltaTimeHeuristicState == DeltaTimeHeuristicState::ForwardStep1) {
+            m_sendHelper->setDeltaTime(m_sendHelper->deltaTime() + 1000);
+        } else if (m_deltaTimeHeuristicState == DeltaTimeHeuristicState::ForwardStep2) {
+            m_sendHelper->setDeltaTime(m_sendHelper->deltaTime() + 100);
+        }
+
+        qCDebug(c_clientRpcLayerCategory) << "DeltaTime factor increased to" << m_sendHelper->deltaTime();
+    } else if (notification.errorCode == MTProto::IgnoredMessageNotification::MessageIdTooLow) {
+        if (m_deltaTimeHeuristicState == DeltaTimeHeuristicState::Ok) {
+            // Step 1: initial direction
+            m_deltaTimeHeuristicState = DeltaTimeHeuristicState::BackwardStep1;
+        } else if (m_deltaTimeHeuristicState == DeltaTimeHeuristicState::ForwardStep1) {
+            // Step 2: invert direction
+            m_deltaTimeHeuristicState = DeltaTimeHeuristicState::BackwardStep2;
+        }
+
+        if (m_deltaTimeHeuristicState == DeltaTimeHeuristicState::BackwardStep1) {
+            m_sendHelper->setDeltaTime(m_sendHelper->deltaTime() - 1000);
+        } else if (m_deltaTimeHeuristicState == DeltaTimeHeuristicState::BackwardStep2) {
+            m_sendHelper->setDeltaTime(m_sendHelper->deltaTime() - 100);
+        }
+
+        qCDebug(c_clientRpcLayerCategory) << "DeltaTime factor reduced to" << m_sendHelper->deltaTime();
+    } else {
+        qCCritical(c_clientRpcLayerCategory) << "Unexpected notification" << __func__;
+        return false;
+    }
+
+    return resendIgnoredMessage(notification.messageId);
 }
 
 bool RpcLayer::processMessageHeader(const MTProto::FullMessageHeader &header)

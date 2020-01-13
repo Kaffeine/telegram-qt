@@ -29,6 +29,7 @@ namespace Telegram {
 
 namespace MTProto {
 
+struct IgnoredMessageNotification;
 struct Message;
 
 } // MTProto namespace
@@ -44,6 +45,14 @@ class RpcLayer : public Telegram::BaseRpcLayer
 {
     Q_OBJECT
 public:
+    enum class DeltaTimeHeuristicState {
+        Ok,
+        ForwardStep1,
+        ForwardStep2,
+        BackwardStep1,
+        BackwardStep2,
+    };
+
     explicit RpcLayer(QObject *parent = nullptr);
     ~RpcLayer() override;
 
@@ -63,6 +72,7 @@ public:
     bool processMTProtoMessage(const MTProto::Message &message) override;
     bool processSessionCreated(const MTProto::Message &message);
     bool processIgnoredMessageNotification(const MTProto::Message &message);
+    bool processUnsyncMessageId(const MTProto::IgnoredMessageNotification &notification);
     bool processRpcResult(const MTProto::Message &message);
     bool processUpdates(const MTProto::Message &message);
     bool processMessageAck(const MTProto::Message &message);
@@ -95,6 +105,7 @@ protected:
     quint64 m_sessionId = 0;
     quint64 m_serverSalt = 0;
     QVector<quint64> m_messagesToAck;
+    DeltaTimeHeuristicState m_deltaTimeHeuristicState = DeltaTimeHeuristicState::Ok;
 };
 
 } // Client namespace
