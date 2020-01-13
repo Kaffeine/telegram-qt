@@ -17,10 +17,12 @@ class TELEGRAMQT_QML_EXPORT DeclarativeOperation : public DeclarativeClientOpera
 {
     Q_OBJECT
     Q_PROPERTY(bool succeeded READ isSucceeded NOTIFY succeededChanged)
+    Q_PROPERTY(QVariantHash errorDetails READ errorDetails NOTIFY errorDetailsChanged)
 public:
     explicit DeclarativeOperation(QObject *parent = nullptr);
 
     bool isSucceeded() const;
+    QVariantHash errorDetails() const;
 
 public slots:
     void start();
@@ -30,6 +32,7 @@ Q_SIGNALS:
     void finished(bool succeeded);
     void succeededChanged();
     void failed(const QVariantHash &details);
+    void errorDetailsChanged();
 
 protected:
     virtual void startEvent();

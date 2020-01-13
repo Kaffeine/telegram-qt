@@ -18,6 +18,15 @@ bool DeclarativeOperation::isSucceeded() const
     return m_operation && m_operation->isSucceeded();
 }
 
+QVariantHash DeclarativeOperation::errorDetails() const
+{
+    static const QVariantHash defaultError = {
+        { PendingOperation::c_text(), QLatin1String("no operation") },
+    };
+
+    return m_operation ? m_operation->errorDetails() : defaultError;
+}
+
 void DeclarativeOperation::start()
 {
 //    m_running = true;
@@ -48,6 +57,7 @@ void DeclarativeOperation::onOperationFinished(PendingOperation *operation)
         emit failed(operation->errorDetails());
     }
     emit finished(operation->isSucceeded());
+    emit errorDetailsChanged();
 }
 
 } // Telegram
