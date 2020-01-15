@@ -55,6 +55,7 @@ public:
 
 public slots:
     void onUserStatusChanged(quint32 userId, const TLUserStatus &status);
+    void onUserPhotoChanged(quint32 userId, const TLUserProfilePhoto &photo);
 
 protected slots:
     void onContactsImported(PendingContactsOperation *operation, ContactsRpcLayer::PendingContactsImportedContacts *rpcOperation);

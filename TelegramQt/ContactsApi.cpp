@@ -112,6 +112,15 @@ void ContactsApiPrivate::onUserStatusChanged(quint32 userId, const TLUserStatus 
     emit q->contactStatusChanged(userId, getApiContactStatus(status.tlType));
 }
 
+void ContactsApiPrivate::onUserPhotoChanged(quint32 userId, const TLUserProfilePhoto &photo)
+{
+    Q_Q(ContactsApi);
+    if (!dataInternalApi()->updateUserPhoto(userId, photo)) {
+        return;
+    }
+    emit q->contactPhotoChanged(userId);
+}
+
 void ContactsApiPrivate::onContactsImported(PendingContactsOperation *operation,
                                             ContactsRpcLayer::PendingContactsImportedContacts *rpcOperation)
 {

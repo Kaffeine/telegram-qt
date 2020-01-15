@@ -579,6 +579,26 @@ bool DataInternalApi::updateOutboxRead(const Telegram::Peer peer, quint32 maxId)
     return true;
 }
 
+bool DataInternalApi::updateUserPhoto(quint32 userId, const TLUserProfilePhoto &photo)
+{
+    TLUser *existsUser = m_users.value(userId);
+    if (!existsUser) {
+        return false;
+    }
+    if (existsUser->photo.photoId == photo.photoId) {
+        return false;
+    }
+
+    existsUser->photo = photo;
+    if (existsUser->photo.tlType == TLValue::UserProfilePhotoEmpty) {
+        existsUser->flags &= ~TLUser::Photo;
+    } else {
+        existsUser->flags |= TLUser::Photo;
+    }
+
+    return true;
+}
+
 TLInputPeer DataInternalApi::toInputPeer(const TLPeer &peer) const
 {
     return toInputPeer(Utils::toPublicPeer(peer));

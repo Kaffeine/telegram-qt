@@ -97,6 +97,7 @@ public:
     void dequeueMessageRead(const Peer peer, quint32 messageId);
     bool updateInboxRead(const Peer peer, quint32 maxId);
     bool updateOutboxRead(const Peer peer, quint32 maxId);
+    bool updateUserPhoto(quint32 userId, const TLUserProfilePhoto &photo);
 
     quint32 selfUserId() const { return m_selfUserId; }
 

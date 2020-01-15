@@ -174,6 +174,9 @@ bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
     case TLValue::UpdateChatUserTyping:
         messagingApi()->onChatUserActionChanged(Peer::fromChatId(update.chatId), update.userId, update.action);
         return true;
+    case TLValue::UpdateUserPhoto:
+        contactsApi()->onUserPhotoChanged(update.userId, update.photo);
+        return true;
     default:
         break;
     }
