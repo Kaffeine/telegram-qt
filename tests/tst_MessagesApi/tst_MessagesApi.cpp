@@ -186,7 +186,6 @@ void tst_MessagesApi::getSelfUserDialog()
         QCOMPARE(message.peer(), user->toPeer());
         QCOMPARE(message.text, c_messageText);
         QCOMPARE(message.fromId, user->id());
-        QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type, Namespace::MessageTypeText);
@@ -310,7 +309,6 @@ void tst_MessagesApi::getDialogs()
         QCOMPARE(message.peer(), client2AsClient1Peer);
         QCOMPARE(message.text, c_message1Text);
         QCOMPARE(message.fromId, client1.dataStorage()->selfUserId());
-        QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type, Namespace::MessageTypeText);
@@ -534,7 +532,6 @@ void tst_MessagesApi::getMessage()
         QCOMPARE(message.peer(), client2AsClient1Peer);
         QCOMPARE(message.text, c_message1Text);
         QCOMPARE(message.fromId, client1.dataStorage()->selfUserId());
-        QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type, Namespace::MessageTypeText);
@@ -556,7 +553,6 @@ void tst_MessagesApi::getMessage()
         QCOMPARE(message.peer(), client1AsClient2Peer);
         QCOMPARE(message.text, c_message1Text);
         QCOMPARE(message.fromId, client1AsClient2Peer.id);
-        QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type, Namespace::MessageTypeText);
@@ -1341,7 +1337,6 @@ void tst_MessagesApi::messageAction()
         QCOMPARE(message.peer(), client2AsClient1Peer);
         QCOMPARE(message.text, c_message1Text);
         QCOMPARE(message.fromId, client1.dataStorage()->selfUserId());
-        QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type, Namespace::MessageTypeText);
@@ -1363,7 +1358,6 @@ void tst_MessagesApi::messageAction()
         QCOMPARE(message.peer(), client1AsClient2Peer);
         QCOMPARE(message.text, c_message1Text);
         QCOMPARE(message.fromId, client1AsClient2Peer.id);
-        QCOMPARE(message.forwardContactId, 0u);
         QCOMPARE(message.fwdTimestamp, 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type, Namespace::MessageTypeText);

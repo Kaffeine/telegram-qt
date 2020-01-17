@@ -282,7 +282,6 @@ struct TELEGRAMQT_EXPORT Message
     quint32 fromId = 0; // Telegram user id
     quint32 timestamp = 0;
     quint32 fwdTimestamp = 0;
-    quint32 forwardContactId = 0;
     quint32 replyToMessageId = 0;
     Namespace::MessageType type = Namespace::MessageTypeUnsupported;
     Namespace::MessageFlags flags = Namespace::MessageFlagNone;
