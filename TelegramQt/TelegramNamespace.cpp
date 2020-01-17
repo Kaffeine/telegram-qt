@@ -159,6 +159,12 @@ void initialize()
     }
 }
 
+void Message::resetForwardFrom()
+{
+    m_forwardFromPeer = Peer();
+    m_forwardFromMessageId = 0;
+}
+
 MessageMediaInfo::MessageMediaInfo() :
     d(new Private())
 {

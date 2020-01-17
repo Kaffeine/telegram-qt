@@ -274,8 +274,13 @@ struct TELEGRAMQT_EXPORT Message
     const Peer peer() const { return m_peer; }
     void setPeer(const Peer &peer) { m_peer = peer; }
 
-    const Peer forwardFromPeer() const { return m_forwardPeer; }
-    void setForwardFromPeer(const Peer &peer) { m_forwardPeer = peer; }
+    const Peer forwardFromPeer() const { return m_forwardFromPeer; }
+    void setForwardFromPeer(const Peer &peer) { m_forwardFromPeer = peer; }
+
+    quint32 forwardFromMessageId() const { return m_forwardFromMessageId; }
+    void setForwardFromMessageId(quint32 messageId) { m_forwardFromMessageId = messageId; }
+
+    void resetForwardFrom();
 
     QString text;
     quint32 id = 0;
@@ -288,7 +293,8 @@ struct TELEGRAMQT_EXPORT Message
 
 private:
     Peer m_peer;
-    Peer m_forwardPeer;
+    Peer m_forwardFromPeer;
+    quint32 m_forwardFromMessageId = 0;
 };
 
 class TELEGRAMQT_EXPORT MessageMediaInfo

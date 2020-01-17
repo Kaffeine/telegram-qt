@@ -186,13 +186,19 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
     message->timestamp = m->date;
     message->text = m->message;
     message->flags = Namespace::MessageFlagNone;
+    message->resetForwardFrom();
     if (m->out()) {
         message->flags |= Namespace::MessageFlagOut;
     }
     if (m->flags & TLMessage::FwdFrom) {
         message->flags |= Namespace::MessageFlagForwarded;
         if (m->fwdFrom.flags & TLMessageFwdHeader::FromId) {
-            //message->setForwardFromPeer((m->fwdFrom))
+            message->setForwardFromPeer(Peer::fromUserId(m->fwdFrom.fromId));
+        } else if (m->fwdFrom.flags & TLMessageFwdHeader::ChannelId) {
+            message->setForwardFromPeer(Peer::fromChannelId(m->fwdFrom.channelId));
+            if (m->fwdFrom.flags & TLMessageFwdHeader::ChannelPost) {
+                message->setForwardFromMessageId(m->fwdFrom.channelPost);
+            }
         }
     }
     if (m->flags & TLMessage::ReplyToMsgId) {
