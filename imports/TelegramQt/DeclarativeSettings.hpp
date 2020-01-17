@@ -18,13 +18,18 @@ class DeclarativeRsaKey;
 class TELEGRAMQT_QML_EXPORT DeclarativeServerOption : public QObject, public DcOption
 {
     Q_OBJECT
-    Q_PROPERTY(QString address MEMBER address)
-    Q_PROPERTY(quint32 port MEMBER port)
+    Q_PROPERTY(QString address MEMBER address NOTIFY addressChanged)
+    Q_PROPERTY(quint32 port MEMBER port NOTIFY portChanged)
 public:
     explicit DeclarativeServerOption(QObject *parent = nullptr) :
         QObject(parent)
     {
     }
+
+Q_SIGNALS:
+    void addressChanged();
+    void portChanged();
+
 private:
     Q_DISABLE_COPY(DeclarativeServerOption)
 };
