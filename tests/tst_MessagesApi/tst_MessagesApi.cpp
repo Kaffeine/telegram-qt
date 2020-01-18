@@ -182,14 +182,14 @@ void tst_MessagesApi::getSelfUserDialog()
 
         Telegram::Message message;
         client.dataStorage()->getMessage(&message, user->toPeer(), clientMessages.constFirst());
-        QCOMPARE(message.id, clientMessages.constFirst());
+        QCOMPARE(message.id(), clientMessages.constFirst());
         QCOMPARE(message.peer(), user->toPeer());
-        QCOMPARE(message.text, c_messageText);
-        QCOMPARE(message.fromId, user->id());
-        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.text(), c_messageText);
+        QCOMPARE(message.fromUserId(), user->id());
+        QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, Namespace::MessageTypeText);
-        QCOMPARE(message.flags, Namespace::MessageFlagNone);
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagNone);
     }
 }
 
@@ -305,14 +305,14 @@ void tst_MessagesApi::getDialogs()
 
         Telegram::Message message;
         client1.dataStorage()->getMessage(&message, client2AsClient1Peer, client1Message1Id);
-        QCOMPARE(message.id, client1Message1Id);
+        QCOMPARE(message.id(), client1Message1Id);
         QCOMPARE(message.peer(), client2AsClient1Peer);
-        QCOMPARE(message.text, c_message1Text);
-        QCOMPARE(message.fromId, client1.dataStorage()->selfUserId());
-        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.text(), c_message1Text);
+        QCOMPARE(message.fromUserId(), client1.dataStorage()->selfUserId());
+        QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, Namespace::MessageTypeText);
-        QCOMPARE(message.flags, Namespace::MessageFlagOut);
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagOut);
     }
 
     // Check received by client 2
@@ -327,7 +327,7 @@ void tst_MessagesApi::getDialogs()
         QVERIFY(client2Message1Id);
         Telegram::Message messageData;
         client2.dataStorage()->getMessage(&messageData, client1AsClient2Peer, client2Message1Id);
-        QCOMPARE(messageData.text, c_message1Text);
+        QCOMPARE(messageData.text(), c_message1Text);
     }
 
     // Check the dialog is added to the client 2 dialog list
@@ -372,7 +372,7 @@ void tst_MessagesApi::getDialogs()
         QVERIFY(client1Message2Id);
         Telegram::Message messageData;
         client1.dataStorage()->getMessage(&messageData, fromPeer, client1Message2Id);
-        QCOMPARE(messageData.text, c_message2Text);
+        QCOMPARE(messageData.text(), c_message2Text);
     }
 
     // Check client 1 history
@@ -528,14 +528,14 @@ void tst_MessagesApi::getMessage()
         QCOMPARE(receivedArgs.takeFirst().value<quint32>(), client1Message1Id);
         Telegram::Message message;
         client1.dataStorage()->getMessage(&message, client2AsClient1Peer, client1Message1Id);
-        QCOMPARE(message.id, client1Message1Id);
+        QCOMPARE(message.id(), client1Message1Id);
         QCOMPARE(message.peer(), client2AsClient1Peer);
-        QCOMPARE(message.text, c_message1Text);
-        QCOMPARE(message.fromId, client1.dataStorage()->selfUserId());
-        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.text(), c_message1Text);
+        QCOMPARE(message.fromUserId(), client1.dataStorage()->selfUserId());
+        QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, Namespace::MessageTypeText);
-        QCOMPARE(message.flags, Namespace::MessageFlagOut);
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagOut);
     }
 
     // Check received by client 2
@@ -549,14 +549,14 @@ void tst_MessagesApi::getMessage()
         QVERIFY(client2Message1Id);
         Telegram::Message message;
         client2.dataStorage()->getMessage(&message, client1AsClient2Peer, client2Message1Id);
-        QCOMPARE(message.id, client2Message1Id);
+        QCOMPARE(message.id(), client2Message1Id);
         QCOMPARE(message.peer(), client1AsClient2Peer);
-        QCOMPARE(message.text, c_message1Text);
-        QCOMPARE(message.fromId, client1AsClient2Peer.id);
-        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.text(), c_message1Text);
+        QCOMPARE(message.fromUserId(), client1AsClient2Peer.id);
+        QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, Namespace::MessageTypeText);
-        QCOMPARE(message.flags, Namespace::MessageFlagNone);
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagNone);
     }
 
     QSignalSpy client1MessageReadSpy(client1.messagingApi(), &Client::MessagingApi::messageReadOutbox);
@@ -1333,14 +1333,14 @@ void tst_MessagesApi::messageAction()
         QCOMPARE(receivedArgs.takeFirst().value<quint32>(), client1Message1Id);
         Telegram::Message message;
         client1.dataStorage()->getMessage(&message, client2AsClient1Peer, client1Message1Id);
-        QCOMPARE(message.id, client1Message1Id);
+        QCOMPARE(message.id(), client1Message1Id);
         QCOMPARE(message.peer(), client2AsClient1Peer);
-        QCOMPARE(message.text, c_message1Text);
-        QCOMPARE(message.fromId, client1.dataStorage()->selfUserId());
-        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.text(), c_message1Text);
+        QCOMPARE(message.fromUserId(), client1.dataStorage()->selfUserId());
+        QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, Namespace::MessageTypeText);
-        QCOMPARE(message.flags, Namespace::MessageFlagOut);
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagOut);
     }
 
     // Check received by client 2
@@ -1354,14 +1354,14 @@ void tst_MessagesApi::messageAction()
         QVERIFY(client2Message1Id);
         Telegram::Message message;
         client2.dataStorage()->getMessage(&message, client1AsClient2Peer, client2Message1Id);
-        QCOMPARE(message.id, client2Message1Id);
+        QCOMPARE(message.id(), client2Message1Id);
         QCOMPARE(message.peer(), client1AsClient2Peer);
-        QCOMPARE(message.text, c_message1Text);
-        QCOMPARE(message.fromId, client1AsClient2Peer.id);
-        QCOMPARE(message.fwdTimestamp, 0u);
+        QCOMPARE(message.text(), c_message1Text);
+        QCOMPARE(message.fromUserId(), client1AsClient2Peer.id);
+        QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
-        QCOMPARE(message.type, Namespace::MessageTypeText);
-        QCOMPARE(message.flags, Namespace::MessageFlagNone);
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagNone);
     }
 
     // Check message actions

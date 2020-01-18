@@ -270,31 +270,27 @@ inline bool DcOption::operator==(const DcOption &option) const
 
 struct TELEGRAMQT_EXPORT Message
 {
-    Message() = default;
-    const Peer peer() const { return m_peer; }
-    void setPeer(const Peer &peer) { m_peer = peer; }
+    Message();
+    Message(const Message &message);
+    ~Message();
 
-    const Peer forwardFromPeer() const { return m_forwardFromPeer; }
-    void setForwardFromPeer(const Peer &peer) { m_forwardFromPeer = peer; }
+    Peer peer() const;
+    quint32 id() const;
+    Namespace::MessageType type() const;
+    Namespace::MessageFlags flags() const;
 
-    quint32 forwardFromMessageId() const { return m_forwardFromMessageId; }
-    void setForwardFromMessageId(quint32 messageId) { m_forwardFromMessageId = messageId; }
+    quint32 fromUserId() const;
+    QString text() const;
+    quint32 timestamp() const;
 
-    void resetForwardFrom();
+    quint32 forwardTimestamp() const;
+    Peer forwardFromPeer() const;
+    quint32 forwardFromMessageId() const;
 
-    QString text;
-    quint32 id = 0;
-    quint32 fromId = 0; // Telegram user id
-    quint32 timestamp = 0;
-    quint32 fwdTimestamp = 0;
-    quint32 replyToMessageId = 0;
-    Namespace::MessageType type = Namespace::MessageTypeUnsupported;
-    Namespace::MessageFlags flags = Namespace::MessageFlagNone;
+    struct Private;
 
-private:
-    Peer m_peer;
-    Peer m_forwardFromPeer;
-    quint32 m_forwardFromMessageId = 0;
+protected:
+    Private *d;
 };
 
 class TELEGRAMQT_EXPORT MessageMediaInfo

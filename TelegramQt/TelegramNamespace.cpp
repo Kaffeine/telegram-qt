@@ -159,10 +159,95 @@ void initialize()
     }
 }
 
-void Message::resetForwardFrom()
+void Message::Private::reset()
 {
-    m_forwardFromPeer = Peer();
-    m_forwardFromMessageId = 0;
+    *this = Private();
+}
+
+void Message::Private::setForwardFromUser(quint32 userId)
+{
+    flags |= Namespace::MessageFlagForwarded;
+    forwardFromPeer = Peer::fromUserId(userId);
+}
+
+void Message::Private::setForwardFromChannel(quint32 channelId, quint32 messageId, const QString &postAuthor)
+{
+    flags |= Namespace::MessageFlagForwarded;
+    forwardFromPeer = Peer::fromChannelId(channelId);
+    forwardFromMessageId = messageId;
+    forwardPostAuthor = postAuthor;
+}
+
+void Message::Private::setReplyToMessageId(quint32 messageId)
+{
+    flags |= Namespace::MessageFlagIsReply;
+    replyToMessageId = messageId;
+}
+
+Message::Message() :
+    d(new Private())
+{
+}
+
+Message::Message(const Message &message) :
+    d(new Private())
+{
+    *d = *message.d;
+}
+
+Message::~Message()
+{
+    delete d;
+}
+
+Peer Message::peer() const
+{
+    return d->peer;
+}
+
+quint32 Message::id() const
+{
+    return d->id;
+}
+
+Namespace::MessageType Message::type() const
+{
+    return d->type;
+}
+
+Namespace::MessageFlags Message::flags() const
+{
+    return d->flags;
+}
+
+quint32 Message::fromUserId() const
+{
+    return d->fromId;
+}
+
+QString Message::text() const
+{
+    return d->text;
+}
+
+quint32 Message::timestamp() const
+{
+    return d->timestamp;
+}
+
+quint32 Message::forwardTimestamp() const
+{
+    return d->forwardTimestamp;
+}
+
+Peer Message::forwardFromPeer() const
+{
+    return d->forwardFromPeer;
+}
+
+quint32 Message::forwardFromMessageId() const
+{
+    return d->forwardFromMessageId;
 }
 
 MessageMediaInfo::MessageMediaInfo() :

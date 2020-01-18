@@ -760,12 +760,12 @@ int MessagesModel::getMessageEventIndex(quint32 messageId) const
 
 void MessagesModel::setupEventFromMessage(MessageEvent *event, const Telegram::Message &message)
 {
-    event->messageId = message.id;
-    event->fromId = message.fromId;
-    event->text = message.text;
-    event->receivedTimestamp = message.timestamp;
+    event->messageId = message.id();
+    event->fromId = message.fromUserId();
+    event->text = message.text();
+    event->receivedTimestamp = message.timestamp();
     if (!event->sentTimestamp) {
-        event->sentTimestamp = message.timestamp;
+        event->sentTimestamp = message.timestamp();
     }
 }
 

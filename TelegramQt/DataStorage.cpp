@@ -179,33 +179,28 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
     }
     const TLMessageMedia &media = m->media;
 
-    message->setPeer(peer);
-    message->id = messageId;
-    message->type = Telegram::Utils::getPublicMessageType(media);
-    message->fromId = m->fromId;
-    message->timestamp = m->date;
-    message->text = m->message;
-    message->flags = Namespace::MessageFlagNone;
-    message->resetForwardFrom();
+    Message::Private *privateData = Message::Private::get(message);
+    privateData->reset();
+    privateData->peer = peer;
+    privateData->id = messageId;
+    privateData->type = Telegram::Utils::getPublicMessageType(media);
+    privateData->fromId = m->fromId;
+    privateData->timestamp = m->date;
+    privateData->text = m->message;
+    privateData->flags = Namespace::MessageFlagNone;
+
     if (m->out()) {
-        message->flags |= Namespace::MessageFlagOut;
+        privateData->flags |= Namespace::MessageFlagOut;
     }
     if (m->flags & TLMessage::FwdFrom) {
-        message->flags |= Namespace::MessageFlagForwarded;
         if (m->fwdFrom.flags & TLMessageFwdHeader::FromId) {
-            message->setForwardFromPeer(Peer::fromUserId(m->fwdFrom.fromId));
+            privateData->setForwardFromUser(m->fwdFrom.fromId);
         } else if (m->fwdFrom.flags & TLMessageFwdHeader::ChannelId) {
-            message->setForwardFromPeer(Peer::fromChannelId(m->fwdFrom.channelId));
-            if (m->fwdFrom.flags & TLMessageFwdHeader::ChannelPost) {
-                message->setForwardFromMessageId(m->fwdFrom.channelPost);
-            }
+            privateData->setForwardFromChannel(m->fwdFrom.channelId, m->fwdFrom.channelPost, m->fwdFrom.postAuthor);
         }
     }
     if (m->flags & TLMessage::ReplyToMsgId) {
-        message->flags |= Namespace::MessageFlagIsReply;
-        message->replyToMessageId = m->replyToMsgId;
-    } else {
-        message->replyToMessageId = 0;
+        privateData->setReplyToMessageId(m->replyToMsgId);
     }
 
     return true;

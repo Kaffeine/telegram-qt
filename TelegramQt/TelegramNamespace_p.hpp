@@ -38,6 +38,32 @@ struct UserDialog
     quint32 flags = 0;
 };
 
+struct Message::Private
+{
+    static const Private *get(const Message *info) { return info->d; }
+    static Private *get(Message *info) { return info->d; }
+
+    void reset();
+    void setForwardFromUser(quint32 userId);
+    void setForwardFromChannel(quint32 channelId, quint32 messageId, const QString &postAuthor);
+
+    void setReplyToMessageId(quint32 messageId);
+
+    QString text;
+    quint32 id = 0;
+    quint32 fromId = 0; // Telegram user id
+    quint32 timestamp = 0;
+    quint32 forwardTimestamp = 0;
+    quint32 replyToMessageId = 0;
+    Namespace::MessageType type = Namespace::MessageTypeUnsupported;
+    Namespace::MessageFlags flags = Namespace::MessageFlagNone;
+
+    Peer peer;
+    QString forwardPostAuthor;
+    Peer forwardFromPeer;
+    quint32 forwardFromMessageId = 0;
+};
+
 struct MessageMediaInfo::Private : public TLMessageMedia
 {
 public:

@@ -99,19 +99,19 @@ QVariant DialogsModel::getData(int index, DialogsModel::Role role) const
 
 QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) const
 {
-    if (dialog.lastChatMessage.id == 0) {
+    if (dialog.lastChatMessage.id() == 0) {
         return {};
     }
     const Telegram::Message &lastChatMessage = dialog.lastChatMessage;
     QString text;
-    if (lastChatMessage.type == Namespace::MessageTypeText) {
-        text = lastChatMessage.text;
+    if (lastChatMessage.type() == Namespace::MessageTypeText) {
+        text = lastChatMessage.text();
     } else {
         Telegram::MessageMediaInfo info;
-        client()->dataStorage()->getMessageMediaInfo(&info, dialog.info.peer(), lastChatMessage.id);
-        switch (lastChatMessage.type) {
+        client()->dataStorage()->getMessageMediaInfo(&info, dialog.info.peer(), lastChatMessage.id());
+        switch (lastChatMessage.type()) {
         case Namespace::MessageTypeWebPage:
-            text = lastChatMessage.text;
+            text = lastChatMessage.text();
             //text = info.url();
             break;
         case Namespace::MessageTypeSticker:
@@ -127,18 +127,18 @@ QVariantMap DialogsModel::getDialogLastMessageData(const DialogEntry &dialog) co
     }
 
     QString senderName;
-    if (lastChatMessage.fromId) {
+    if (lastChatMessage.fromUserId()) {
         Telegram::UserInfo userInfo;
-        client()->dataStorage()->getUserInfo(&userInfo, lastChatMessage.fromId);
+        client()->dataStorage()->getUserInfo(&userInfo, lastChatMessage.fromUserId());
         senderName = userInfo.firstName();
     }
 
     return {
-        { "type", static_cast<int>(lastChatMessage.type) },
+        { "type", static_cast<int>(lastChatMessage.type()) },
         { "text", text },
         { "senderName", senderName },
-        { "timestamp", QDateTime::fromSecsSinceEpoch(lastChatMessage.timestamp) },
-        { "flags", static_cast<int>(lastChatMessage.flags) },
+        { "timestamp", QDateTime::fromSecsSinceEpoch(lastChatMessage.timestamp()) },
+        { "flags", static_cast<int>(lastChatMessage.flags()) },
     };
 }
 
@@ -314,7 +314,7 @@ DialogsModel::Role DialogsModel::indexToRole(const QModelIndex &index, int role)
 
 bool DialogsModel::DialogEntry::lastMessageIsOutdated() const
 {
-    return info.lastMessageId() != lastChatMessage.id;
+    return info.lastMessageId() != lastChatMessage.id();
 }
 
 } // Client namespace
