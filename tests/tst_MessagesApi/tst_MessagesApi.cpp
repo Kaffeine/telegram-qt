@@ -252,9 +252,9 @@ void tst_MessagesApi::getDialogs()
         QCOMPARE(addContactOperation->peers().count(), 1);
         client2AsClient1Peer = addContactOperation->peers().first();
         QVERIFY(client2AsClient1Peer.isValid());
-        QCOMPARE(client2AsClient1Peer.type, Telegram::Peer::User);
+        QCOMPARE(client2AsClient1Peer.type(), Telegram::Peer::User);
         UserInfo userInfo;
-        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id));
+        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id()));
         QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
         QVERIFY(userInfo.isContact());
 
@@ -487,7 +487,7 @@ void tst_MessagesApi::getMessage()
         QCOMPARE(addContactOperation->peers().count(), 1);
         client2AsClient1Peer = addContactOperation->peers().first();
         UserInfo userInfo;
-        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id));
+        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id()));
         QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
 
         PendingOperation *contactListReadyOperation = client1ContactList->becomeReady();
@@ -552,7 +552,7 @@ void tst_MessagesApi::getMessage()
         QCOMPARE(message.id(), client2Message1Id);
         QCOMPARE(message.peer(), client1AsClient2Peer);
         QCOMPARE(message.text(), c_message1Text);
-        QCOMPARE(message.fromUserId(), client1AsClient2Peer.id);
+        QCOMPARE(message.fromUserId(), client1AsClient2Peer.id());
         QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type(), Namespace::MessageTypeText);
@@ -1292,7 +1292,7 @@ void tst_MessagesApi::messageAction()
         QCOMPARE(addContactOperation->peers().count(), 1);
         client2AsClient1Peer = addContactOperation->peers().first();
         UserInfo userInfo;
-        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id));
+        QVERIFY(client1.dataStorage()->getUserInfo(&userInfo, client2AsClient1Peer.id()));
         QCOMPARE(userInfo.phone(), user2ContactInfo.phoneNumber);
 
         PendingOperation *contactListReadyOperation = client1ContactList->becomeReady();
@@ -1357,7 +1357,7 @@ void tst_MessagesApi::messageAction()
         QCOMPARE(message.id(), client2Message1Id);
         QCOMPARE(message.peer(), client1AsClient2Peer);
         QCOMPARE(message.text(), c_message1Text);
-        QCOMPARE(message.fromUserId(), client1AsClient2Peer.id);
+        QCOMPARE(message.fromUserId(), client1AsClient2Peer.id());
         QCOMPARE(message.forwardTimestamp(), 0u);
         QCOMPARE(message.forwardFromPeer(), Peer());
         QCOMPARE(message.type(), Namespace::MessageTypeText);

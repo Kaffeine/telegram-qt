@@ -31,7 +31,7 @@ PeerList PendingContactsOperation::peers() const
     PeerList result;
     result.reserve(d->m_userIds.count());
     for (quint32 userId : d->m_userIds) {
-        result.append(userId);
+        result.append(Peer::fromUserId(userId));
     }
     return result;
 }

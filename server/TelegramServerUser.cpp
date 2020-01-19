@@ -42,18 +42,18 @@ TLPeer MessageRecipient::toTLPeer() const
         return TLPeer();
     }
     TLPeer result;
-    switch (p.type) {
+    switch (p.type()) {
     case Peer::User:
         result.tlType = TLValue::PeerUser;
-        result.userId = p.id;
+        result.userId = p.id();
         break;
     case Peer::Chat:
         result.tlType = TLValue::PeerChat;
-        result.chatId = p.id;
+        result.chatId = p.id();
         break;
     case Peer::Channel:
         result.tlType = TLValue::PeerChannel;
-        result.channelId = p.id;
+        result.channelId = p.id();
         break;
     }
     return result;

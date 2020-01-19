@@ -24,7 +24,7 @@ void DeclarativePeerInfo::setPeer(const Peer &peer)
     m_peer = peer;
     emit peerChanged();
 
-    if ((previousPeer.type == Peer::User) || (peer.type == Peer::User)) {
+    if ((previousPeer.type() == Peer::User) || (peer.type() == Peer::User)) {
         emit userIdChanged();
     }
 
@@ -33,10 +33,10 @@ void DeclarativePeerInfo::setPeer(const Peer &peer)
 
 quint32 DeclarativePeerInfo::userId() const
 {
-    if (m_peer.type != Peer::User) {
+    if (m_peer.type() != Peer::User) {
         return 0;
     }
-    return m_peer.id;
+    return m_peer.id();
 }
 
 void DeclarativePeerInfo::setUserId(quint32 userId)
@@ -83,9 +83,9 @@ void DeclarativePeerInfo::updateInfo()
         return;
     }
 
-    if (m_peer.type == Peer::User) {
+    if (m_peer.type() == Peer::User) {
         UserInfo info;
-        dataStorage()->getUserInfo(&info, m_peer.id);
+        dataStorage()->getUserInfo(&info, m_peer.id());
         setChatType(Namespace::ChatTypeInvalid);
         updateInfo(&info);
     } else {

@@ -320,9 +320,9 @@ MessageRecipient *Server::getRecipient(const Peer &peer) const
     if (!peer.isValid()) {
         return nullptr;
     }
-    switch (peer.type) {
+    switch (peer.type()) {
     case Peer::User:
-        return getAbstractUser(peer.id);
+        return getAbstractUser(peer.id());
     default:
         return nullptr;
     }
@@ -332,8 +332,8 @@ MessageRecipient *Server::getRecipient(const Peer &peer) const
 QVector<quint32> Server::getPeerWatchers(const Peer &peer) const
 {
     QVector<quint32> watchers;
-    if (peer.type == Peer::User) {
-        const LocalUser *localUser = getUser(peer.id);
+    if (peer.type() == Peer::User) {
+        const LocalUser *localUser = getUser(peer.id());
         if (localUser) {
             const QVector<UserDialog *> dialogs = localUser->dialogs();
             for (const UserDialog *dialog : dialogs) {
@@ -341,12 +341,12 @@ QVector<quint32> Server::getPeerWatchers(const Peer &peer) const
                     // Sanity check was failed.
                     continue;
                 }
-                if (dialog->peer.type == Peer::User) {
-                    watchers.append(dialog->peer.id);
+                if (dialog->peer.type() == Peer::User) {
+                    watchers.append(dialog->peer.id());
                 }
             }
         }
-        const AbstractUser *user = localUser ? localUser : getAbstractUser(peer.id);
+        const AbstractUser *user = localUser ? localUser : getAbstractUser(peer.id());
         const QVector<quint32> contactList = user->contactList();
         for (const quint32 contactId : contactList) {
             if (watchers.contains(contactId)) {
@@ -356,8 +356,8 @@ QVector<quint32> Server::getPeerWatchers(const Peer &peer) const
         }
 
         // Any user is interesting in themself
-        if (!watchers.contains(peer.id)) {
-            watchers << peer.id;
+        if (!watchers.contains(peer.id())) {
+            watchers << peer.id();
         }
     }
 
@@ -611,7 +611,7 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
     AbstractUser *fromUser = getUser(messageData->fromId());
     MessageRecipient *recipient = getRecipient(messageData->toPeer());
     QVector<PostBox *> boxes = recipient->postBoxes();
-    if ((targetPeer.type == Peer::User) && !messageData->isMessageToSelf()) {
+    if ((targetPeer.type() == Peer::User) && !messageData->isMessageToSelf()) {
         boxes.append(fromUser->getPostBox());
     }
     // Boxes:
@@ -638,7 +638,7 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
         notification.pts = box->pts();
         for (const quint32 userId : box->users()) {
             notification.userId = userId;
-            if (targetPeer.type == Peer::User) {
+            if (targetPeer.type() == Peer::User) {
                 if (userId == fromUser->id()) {
                     notification.dialogPeer = targetPeer;
                 } else {

@@ -1431,7 +1431,7 @@ void MessagesRpcOperation::runReadHistory()
 
     LocalUser *selfUser = layer()->getUser();
     Telegram::Peer targetPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
-    if (targetPeer.type == Peer::Channel) {
+    if (targetPeer.type() == Peer::Channel) {
         // There is channels.readHistory for that
         sendRpcError(RpcError::PeerIdInvalid);
         return;
@@ -1730,7 +1730,7 @@ void MessagesRpcOperation::runSendMedia()
     case TLValue::InputMediaContact:
     {
         Telegram::Peer contactPeer = Telegram::Utils::toPublicPeer(arguments.peer, selfUser->id());
-        if (!contactPeer.isValid() || (contactPeer.type != Peer::User)) {
+        if (!contactPeer.isValid() || (contactPeer.type() != Peer::User)) {
             sendRpcError(RpcError::PeerIdInvalid); // TODO: Check if the error is correct
             return;
         }
@@ -1739,7 +1739,7 @@ void MessagesRpcOperation::runSendMedia()
         media.contact.phone = arguments.media.phoneNumber;
         media.contact.firstName = arguments.media.firstName;
         media.contact.lastName = arguments.media.lastName;
-        media.contact.id = contactPeer.id;
+        media.contact.id = contactPeer.id();
         break;
     }
     case TLValue::InputMediaUploadedPhoto:
@@ -1930,7 +1930,7 @@ void MessagesRpcOperation::runSetTyping()
         for (const quint32 userId : box->users()) {
             // The Update recipient
             notification.userId = userId;
-            if (targetPeer.type == Peer::User) {
+            if (targetPeer.type() == Peer::User) {
                 if (userId == selfUser->id()) {
                     notification.dialogPeer = targetPeer;
                 } else {

@@ -97,6 +97,7 @@ PUBLIC_HEADERS += \
     DialogList.hpp \
     FilesApi.hpp \
     MessagingApi.hpp \
+    Peer.hpp
     ReadyObject.hpp \
     RsaKey.hpp \
     TelegramNamespace.hpp \

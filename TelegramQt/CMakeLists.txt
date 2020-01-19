@@ -87,6 +87,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     MessagingApi.cpp
     MessagingApi.hpp
     MessagingApi_p.hpp
+    Peer.hpp
     PendingOperation.cpp
     PendingOperation.hpp
     PendingOperation_p.hpp
@@ -221,6 +222,7 @@ set(telegram_qt_public_HEADERS
     Operations/FileOperation.hpp
     Operations/PendingContactsOperation.hpp
     Operations/PendingMessages.hpp
+    Peer.hpp
     PendingOperation.hpp
     ReadyObject.hpp
     RsaKey.hpp

@@ -133,7 +133,7 @@ bool DataStorage::getUserInfo(UserInfo *info, quint32 userId) const
 bool DataStorage::getChatInfo(ChatInfo *info, const Telegram::Peer &peer) const
 {
     Q_D(const DataStorage);
-    const quint32 chatId = peer.id;
+    const quint32 chatId = peer.id();
     const QHash<quint32, TLChat *> &chats = d->m_api->chats();
     if (!chats.contains(chatId)) {
         qDebug() << Q_FUNC_INFO << "Unknown chat" << chatId;
@@ -151,13 +151,13 @@ Namespace::ChatType DataStorage::getChatType(const Peer &peer) const
     if (!peer.isValid()) {
         return Namespace::ChatTypeInvalid;
     }
-    if (peer.type == Peer::User) {
-        if (peer.id == selfUserId()) {
+    if (peer.type() == Peer::User) {
+        if (peer.id() == selfUserId()) {
             return Namespace::ChatTypeSelfChat;
         }
         return Namespace::ChatTypeDialog;
     }
-    if (peer.type == Telegram::Peer::Channel) {
+    if (peer.type() == Telegram::Peer::Channel) {
         Telegram::ChatInfo info;
         if (getChatInfo(&info, peer)) {
             if (info.broadcast()) {
@@ -308,8 +308,8 @@ const TLUser *DataInternalApi::getSelfUser() const
 
 const TLMessage *DataInternalApi::getMessage(const Peer &peer, quint32 messageId) const
 {
-    if (peer.type == Peer::Channel) {
-        quint64 key = DataInternalApi::channelMessageToKey(peer.id, messageId);
+    if (peer.type() == Peer::Channel) {
+        quint64 key = DataInternalApi::channelMessageToKey(peer.id(), messageId);
         return m_channelMessages.value(key);
     }
     return m_clientMessages.value(messageId);
@@ -608,30 +608,30 @@ TLInputPeer DataInternalApi::toInputPeer(const TLPeer &peer) const
 TLInputPeer DataInternalApi::toInputPeer(const Peer &peer) const
 {
     TLInputPeer inputPeer;
-    switch (peer.type) {
+    switch (peer.type()) {
     case Telegram::Peer::Chat:
         inputPeer.tlType = TLValue::InputPeerChat;
-        inputPeer.chatId = peer.id;
+        inputPeer.chatId = peer.id();
         break;
     case Telegram::Peer::Channel:
-        if (m_chats.contains(peer.id)) {
+        if (m_chats.contains(peer.id())) {
             inputPeer.tlType = TLValue::InputPeerChannel;
-            inputPeer.channelId = peer.id;
-            inputPeer.accessHash = m_chats.value(peer.id)->accessHash;
+            inputPeer.channelId = peer.id();
+            inputPeer.accessHash = m_chats.value(peer.id())->accessHash;
         } else {
-            qWarning() << Q_FUNC_INFO << "Unknown public channel id" << peer.id;
+            qWarning() << Q_FUNC_INFO << "Unknown public channel id" << peer.id();
         }
         break;
     case Telegram::Peer::User:
-        if (peer.id == m_selfUserId) {
+        if (peer.id() == m_selfUserId) {
             inputPeer.tlType = TLValue::InputPeerSelf;
         } else {
-            if (m_users.contains(peer.id)) {
+            if (m_users.contains(peer.id())) {
                 inputPeer.tlType = TLValue::InputPeerUser;
-                inputPeer.userId = peer.id;
-                inputPeer.accessHash = m_users.value(peer.id)->accessHash;
+                inputPeer.userId = peer.id();
+                inputPeer.accessHash = m_users.value(peer.id())->accessHash;
             } else {
-                qWarning() << Q_FUNC_INFO << "Unknown user" << peer.id;
+                qWarning() << Q_FUNC_INFO << "Unknown user" << peer.id();
             }
         }
         break;

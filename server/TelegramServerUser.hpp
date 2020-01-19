@@ -49,7 +49,7 @@ public:
 
     QVector<quint32> users() const override
     {
-        return { m_peer.id };
+        return { m_peer.id() };
     }
 
     void setUserId(quint32 userId)

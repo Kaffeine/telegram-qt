@@ -163,14 +163,14 @@ void DialogsModel::populate()
 
 QString getPeerAlias(const Telegram::Peer &peer, const Telegram::Client::Client *client)
 {
-    if (peer.type == Telegram::Peer::Type::User) {
+    if (peer.type() == Telegram::Peer::Type::User) {
         Telegram::UserInfo info;
-        if (client->dataStorage()->getUserInfo(&info, peer.id)) {
+        if (client->dataStorage()->getUserInfo(&info, peer.id())) {
             return info.getBestDisplayName();
         }
     } else {
         Telegram::ChatInfo info;
-        if (client->dataStorage()->getChatInfo(&info, peer.id)) {
+        if (client->dataStorage()->getChatInfo(&info, peer)) {
             return info.title();
         }
     }
@@ -180,14 +180,14 @@ QString getPeerAlias(const Telegram::Peer &peer, const Telegram::Client::Client 
 QString getPeerPictureId(const Telegram::Peer &peer, const Telegram::Client::Client *client)
 {
     FileInfo file;
-    if (peer.type == Telegram::Peer::Type::User) {
+    if (peer.type() == Telegram::Peer::Type::User) {
         Telegram::UserInfo info;
-        if (client->dataStorage()->getUserInfo(&info, peer.id)) {
+        if (client->dataStorage()->getUserInfo(&info, peer.id())) {
             info.getPeerPicture(&file, PeerPictureSize::Small);
         }
     } else {
         Telegram::ChatInfo info;
-        if (client->dataStorage()->getChatInfo(&info, peer.id)) {
+        if (client->dataStorage()->getChatInfo(&info, peer)) {
             info.getPeerPicture(&file, PeerPictureSize::Small);
         }
     }

@@ -43,13 +43,13 @@ namespace Telegram {
  */
 QString Peer::toString() const
 {
-    switch (type) {
+    switch (m_type) {
     case User:
-        return c_userPrefix + QString::number(id);
+        return c_userPrefix + QString::number(m_id);
     case Chat:
-        return c_chatPrefix + QString::number(id);
+        return c_chatPrefix + QString::number(m_id);
     case Channel:
-        return c_channelPrefix + QString::number(id);
+        return c_channelPrefix + QString::number(m_id);
     }
     Q_UNREACHABLE();
     return QString();
@@ -1271,7 +1271,7 @@ QVector<quint32> Utils::toIdList(const PeerList &peerList)
     QVector<quint32> idList;
     idList.reserve(peerList.size());
     for (const Peer &peer : peerList) {
-        idList.append(peer.id);
+        idList.append(peer.id());
     }
     return idList;
 }

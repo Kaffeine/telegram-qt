@@ -46,7 +46,7 @@ void MessageData::setDate64(quint64 date)
 
 bool MessageData::isMessageToSelf() const
 {
-    return (m_to.type == Peer::User) && (m_to.id == m_fromId);
+    return (m_to.type() == Peer::User) && (m_to.id() == m_fromId);
 }
 
 void MessageData::addReference(const Peer &peer, quint32 messageId)
@@ -56,8 +56,8 @@ void MessageData::addReference(const Peer &peer, quint32 messageId)
 
 Peer MessageData::getDialogPeer(quint32 applicantUserId) const
 {
-    if (m_to.type == Peer::User) {
-        if (m_to.id == applicantUserId) {
+    if (m_to.type() == Peer::User) {
+        if (m_to.id() == applicantUserId) {
             return Peer::fromUserId(m_fromId);
         }
     }

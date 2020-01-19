@@ -85,8 +85,8 @@ void MessagingApiPrivate::setMessageRead(const Peer peer, quint32 messageId)
     DataInternalApi *dataApi = dataInternalApi();
     dataApi->enqueueMessageRead(peer, messageId);
 
-    if (peer.type == Peer::Channel) {
-        const TLInputChannel inputChannel = dataApi->toInputChannel(peer.id);
+    if (peer.type() == Peer::Channel) {
+        const TLInputChannel inputChannel = dataApi->toInputChannel(peer.id());
         ChannelsRpcLayer::PendingBool *rpcOperation = channelsLayer()->readHistory(inputChannel, messageId);
         rpcOperation->connectToFinished(this, &MessagingApiPrivate::onReadChannelHistoryFinished,
                                         peer, messageId, rpcOperation);

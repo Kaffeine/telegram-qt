@@ -20,6 +20,8 @@
 
 #include "telegramqt_global.h"
 
+#include "Peer.hpp"
+
 #include <QObject>
 #include <QFlags>
 #include <QMetaType>
@@ -34,64 +36,8 @@ namespace Telegram {
 TELEGRAMQT_EXPORT QString version();
 TELEGRAMQT_EXPORT QString buildVersion();
 
-struct TELEGRAMQT_EXPORT Peer
-{
-    Q_GADGET
-    Q_PROPERTY(Telegram::Peer::Type type MEMBER type)
-    Q_PROPERTY(quint32 id MEMBER id)
-public:
-    enum Type {
-        User,
-        Chat,
-        Channel,
-    };
-    Q_ENUM(Type)
-
-    constexpr Peer(quint32 id = 0, Type t = User) : type(t), id(id)
-    {
-    }
-
-    Type type = User;
-    quint32 id = 0;
-
-    Q_INVOKABLE constexpr bool isValid() const { return id; }
-
-    constexpr bool operator==(const Peer &p) const
-    {
-        return (p.id == id) && (p.type == type);
-    }
-
-    constexpr bool operator!=(const Peer &p) const
-    {
-        return (p.id != id) || (p.type != type);
-    }
-
-    constexpr static Peer fromUserId(quint32 id)
-    {
-        return Peer(id, User);
-    }
-
-    constexpr static Peer fromChatId(quint32 id)
-    {
-        return Peer(id, Chat);
-    }
-
-    constexpr static Peer fromChannelId(quint32 id)
-    {
-        return Peer(id, Channel);
-    }
-
-    QString toString() const;
-    static Peer fromString(const QString &string);
-};
-
 using PeerList = QVector<Peer>;
 using MessageIdList = QVector<quint32>;
-
-inline uint qHash(const Peer &key, uint seed)
-{
-    return ::qHash(static_cast<ulong>(key.id | (static_cast<quint64>(key.type) << (sizeof(key.id) * 8))), seed);
-}
 
 struct TELEGRAMQT_EXPORT MessageAction
 {
