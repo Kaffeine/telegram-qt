@@ -101,6 +101,20 @@ if(ENABLE_COVERAGE_BUILD)
     SET(CMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
+if (NOT BUILD_VERSION)
+    find_package(Git QUIET)
+    if(GIT_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
+        execute_process(COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            OUTPUT_VARIABLE BUILD_VERSION
+            ERROR_QUIET
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+    else()
+        set(BUILD_VERSION "unknown")
+    endif()
+endif()
+
 # Add the source subdirectories
 add_subdirectory(TelegramQt)
 
