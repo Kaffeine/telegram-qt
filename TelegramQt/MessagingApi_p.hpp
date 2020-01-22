@@ -33,6 +33,7 @@ class PendingOperation;
 namespace Client {
 
 class DialogList;
+class DialogState;
 class PendingMessages;
 class MessagesRpcLayer;
 
@@ -96,6 +97,9 @@ public:
     void onChatUserActionChanged(const Telegram::Peer peer, quint32 userId, const TLSendMessageAction &action);
 
     PendingOperation *syncPeers(const Telegram::PeerList &peers);
+    void syncMorePeerMessages(const Peer &peer, DialogState *state);
+    void checkIfSyncFinished();
+    void onPeerSyncFinished(const Peer &peer, DialogState *state);
 
     PendingOperation *getDialogs();
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
@@ -111,7 +115,7 @@ protected slots:
     void onHistoryReadSucceeded(const Peer peer, quint32 messageId);
     void onSyncHistoryReceived(PendingMessages *operation);
 
-    bool pushBackNewOldMessages(const Telegram::Peer &peer, const QVector<quint32> &messages);
+    void processNewSyncMessages(const Telegram::Peer &peer, const QVector<quint32> &messages);
     void onMessageActionTimerTimeout();
 
 protected:

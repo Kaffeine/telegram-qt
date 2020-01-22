@@ -32,7 +32,8 @@ namespace Client {
 
 class DataInternalApi;
 
-struct DialogState {
+class DialogState {
+public:
     bool isValid() const { return syncedMessageId || !pendingIds.isEmpty() || synced; }
     // The most recent message id we ever know for this dialog
     // The last message id that we sent to Telepathy Client for this dialog

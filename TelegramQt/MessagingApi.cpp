@@ -293,11 +293,75 @@ PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const Telegram
     \brief Provides an API to work with messages
     \inmodule TelegramQt
     \ingroup Client
+
+    \section1 Message synchronization
+
+    The idea is to store the top message id of each dialog and use them to get messages since
+    the last connection. New messages received during the synchronization are held until
+    the history is fetched.
+
+    \note The dialogs state is stored in DataStorage internals and should be saved/loaded
+    via appropriate interface. See DataStorage documentation for details.
+
+    The synchronization process is expected to go as follows:
+
+    \list
+        \li The initial (internal) state is "sync not started".
+        \li The application sets synchorization mode to ManualSync.
+        \li The application uses DataStorage API to load the previous synchorization state.
+            The state includes the top message ID for each dialog.
+        \li The application initiates the connection and waits until the ConnectionApi::status
+            becomes ConnectionApi::StatusReady.
+        \li The application can optionaly get DialogList or ContactList.
+        \li The application connects to MessagingApi::syncMessagesReceived() signal to receive the
+            per peer list of messages added since the last synchronization.
+        \li The application calls MessagingApi::syncPeers() the list of the interesting peers as
+            argument. The typical use-case is to pass all peers from the DialogList or ContactList.
+        \li The internal state become "sync started" on syncPeers() called.
+        \li For each peer the MessagingApi marks the "dialog sync state" as "not synchronized".
+        \li For each peer the MessagingApi processes the top dialog message via the internal sync
+            API call.
+        \li On each call the API decides to either initiate further fetching or mark the dialog as
+            synced.
+        \li For each further fetching result the MessagingAPI makes the same internal sync API call.
+        \li For each synced dialog the MessagingAPI emits MessagingApi::syncMessagesReceived()
+            signal with the synced \c peer and the list of the synced messages.
+        \li If a new message received during the synchronization then if the dialog was asked for
+            synchronization (in other words: if the syncPeers() argument contains the new message
+            peer) and was not synced yet, then the MessagingAPI inserts the new message into the
+            list of messages received during the peer synchronization (so the message will be listed
+            in the MessagingApi::syncMessagesReceived() signal arguments).
+            The message will trigger the usual messageReceived() in all other cases.
+        \li The sync is done once all requested dialogs synced.
+        \li The internal state become "sync finished".
+    \endlist
+
+    The internal sync API processes fetched messages as the follows:
+    \list
+        \li For each feed the API picks up all messages newer than the loaded dialog top message ID
+            and adds them to the dialog pending IDs list.
+        \li If there are no messages or the oldest message ID equals 1 or the oldest message ID is
+            less or equal to the the previously completed (loaded) dialog sync ID, then the dialog
+            considered as "fetched".
+        \li If the syncLimit is set and the dialog pending IDs list has more than syncLimit
+            elements, then the dialog fetch limit considered as exceeded.
+        \li If the dialog is fetched or the fetch limit exceeded, then the dialog considered as
+            "synchronized".
+        \li The MessagingApi emits syncMessagesReceived() signal on dialog synchronized and clears
+            the dialog pending messages.
+    \endlist
+
+    \sa MessagingApi::syncLimit()
+    \sa InMemoryDataStorage::loadState()
+    \sa InMemoryDataStorage::saveState()
  */
 MessagingApi::MessagingApi(QObject *parent) :
     ClientApi(parent)
 {
     d = new MessagingApiPrivate(this);
+
+    // Wire up the deprecated signals
+    connect(this, &MessagingApi::syncMessagesReceived, this, &MessagingApi::syncMessages);
 }
 
 /*!
@@ -326,53 +390,6 @@ quint32 MessagingApi::messageActionRepeatInterval()
     return period;
 }
 
-/*!
-    \brief setSyncMode keeps messages in sync across connections.
-
-    The idea is to get messages since last connection (as scrollback) and hold
-    new messages until the dialog history is fetched.
-
-    The dialogs state is stored in DataStorage internals and should be saved/loaded
-    via appropriate interface. See DataStorage documentation for details.
-
-    \sa InMemoryDataStorage::loadState()
-    \sa InMemoryDataStorage::saveState()
-
-    On dialoglist received: {
-        foreach dialog {
-            if state[dialog] does not exist {
-                processNewDialog(dialog)
-                continue
-            }
-            if dialog.topMessage > state[dialog].syncedId {
-                request last N messages newer than state[dialog].syncedId
-            } else {
-                state[dialog].synced = true
-            }
-        }
-    }
-
-    processNewDialog(dialog): {
-        add state[dialog]
-        request last N messages from the dialog
-    }
-
-    onHistoryReceived: {
-        onMessageReceived()
-    }
-
-    onMessageReceived: {
-        if dialog exists but not synced {
-            hold the message
-            return
-        }
-
-        propogate the message to the appropriate channel
-        update state[dialog].syncedId
-        schedule save()
-    }
- */
-
 void MessagingApi::setSyncMode(MessagingApi::SyncMode mode)
 {
     Q_D(MessagingApi);
@@ -393,15 +410,10 @@ PendingOperation *MessagingApiPrivate::syncPeers(const PeerList &peers)
     for (const Telegram::Peer &peer : peers) {
         Telegram::DialogInfo info;
         dataStorage()->getDialogInfo(&info, peer);
-        if (pushBackNewOldMessages(peer, {info.lastMessageId()})) {
-            --m_syncJobs;
-        }
+        processNewSyncMessages(peer, {info.lastMessageId()});
     }
 
-    if (m_syncJobs == 0) {
-        m_syncState = SyncState::Finished;
-        m_syncOperation->finishLater();
-    }
+    checkIfSyncFinished();
 
     return m_syncOperation;
 }
@@ -595,22 +607,8 @@ void MessagingApiPrivate::onHistoryReadSucceeded(const Peer peer, quint32 messag
     emit q->messageReadInbox(peer, messageId);
 }
 
-void MessagingApiPrivate::onSyncHistoryReceived(PendingMessages *op)
+void MessagingApiPrivate::processNewSyncMessages(const Peer &peer, const QVector<quint32> &messages)
 {
-    if (pushBackNewOldMessages(op->peer(), op->messages())) {
-        --m_syncJobs;
-    }
-    if (m_syncJobs == 0) {
-        m_syncState = SyncState::Finished;
-        m_syncOperation->finishLater();
-    }
-
-    op->deleteLater();
-}
-
-bool MessagingApiPrivate::pushBackNewOldMessages(const Peer &peer, const QVector<quint32> &messages)
-{
-    Q_Q(MessagingApi);
     DialogState *state = dataInternalApi()->ensureDialogState(peer);
 
     if (messages.isEmpty()) {
@@ -638,19 +636,20 @@ bool MessagingApiPrivate::pushBackNewOldMessages(const Peer &peer, const QVector
             && (static_cast<quint32>(state->pendingIds.count()) >= m_syncLimit);
 
     if (allMessagesFetched || limitIsReached) {
-        qDebug() << CALL_INFO << "Dialog sync complete for peer" << peer;
-        state->synced = true;
-
-        if (!state->pendingIds.isEmpty()) {
-            state->syncedMessageId = state->pendingIds.constFirst();
-            emit q->syncMessages(peer, state->pendingIds);
-            state->pendingIds.clear();
-        }
-        return true;
+        onPeerSyncFinished(peer, state);
+        return;
     }
 
+    syncMorePeerMessages(peer, state);
+}
+
+void MessagingApiPrivate::syncMorePeerMessages(const Peer &peer, DialogState *state)
+{
     Telegram::Client::MessageFetchOptions options;
-    options.offsetId = state->pendingIds.last();
+    if (!state->pendingIds.isEmpty()) {
+        options.offsetId = state->pendingIds.last();
+    }
+
     if (m_syncLimit) {
         // m_syncLimit > pendingIds.count() because of the limitIsReached check
         options.limit = qMin(m_syncLimit - static_cast<quint32>(state->pendingIds.count()), c_fetchLimit);
@@ -670,11 +669,41 @@ bool MessagingApiPrivate::pushBackNewOldMessages(const Peer &peer, const QVector
 
     Telegram::Client::PendingMessages *historyOp = getHistory(peer, options);
     historyOp->connectToFinished(this, &MessagingApiPrivate::onSyncHistoryReceived, historyOp);
-
-    return false;
 }
 
-void Telegram::Client::MessagingApiPrivate::onMessageActionTimerTimeout()
+void MessagingApiPrivate::checkIfSyncFinished()
+{
+    if (m_syncJobs == 0) {
+        m_syncState = SyncState::Finished;
+        m_syncOperation->finishLater();
+    }
+}
+
+void MessagingApiPrivate::onPeerSyncFinished(const Peer &peer, DialogState *state)
+{
+    Q_Q(MessagingApi);
+
+    qDebug() << CALL_INFO << "Dialog sync complete for peer" << peer;
+    state->synced = true;
+
+    if (!state->pendingIds.isEmpty()) {
+        state->syncedMessageId = state->pendingIds.constFirst();
+        emit q->syncMessagesReceived(peer, state->pendingIds);
+        state->pendingIds.clear();
+    }
+
+    --m_syncJobs;
+}
+
+void MessagingApiPrivate::onSyncHistoryReceived(PendingMessages *op)
+{
+    op->deleteLater();
+
+    processNewSyncMessages(op->peer(), op->messages());
+    checkIfSyncFinished();
+}
+
+void MessagingApiPrivate::onMessageActionTimerTimeout()
 {
     Q_Q(MessagingApi);
     int minTime = static_cast<int>(MessagingApi::messageActionValidPeriod());

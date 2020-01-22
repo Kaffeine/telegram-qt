@@ -154,7 +154,7 @@ void tst_MessagesApi::getSelfUserDialog()
     client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
     client.messagingApi()->setSyncLimit(5);
 
-    QSignalSpy syncedMessagesSpy(client.messagingApi(), &Client::MessagingApi::syncMessages);
+    QSignalSpy syncedMessagesSpy(client.messagingApi(), &Client::MessagingApi::syncMessagesReceived);
 
     Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
     signInHelper(&client, c_user1, &authProvider);
@@ -815,7 +815,7 @@ void tst_MessagesApi::syncPeerDialogs()
         client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
         client.messagingApi()->setSyncLimit(0);
 
-        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessagesReceived);
         signInHelper(&client, c_user1, &authProvider);
         TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
 
@@ -872,7 +872,7 @@ void tst_MessagesApi::syncPeerDialogs()
         client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
         client.messagingApi()->setSyncLimit(0);
 
-        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessagesReceived);
         signInHelper(&client, c_user1, &authProvider);
         TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
 
@@ -915,7 +915,7 @@ void tst_MessagesApi::syncPeerDialogs()
         client.messagingApi()->setSyncLimit(5);
         QCOMPARE(client.messagingApi()->syncLimit(), 5u);
 
-        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessagesReceived);
         signInHelper(&client, c_user1, &authProvider);
         TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
 
@@ -960,7 +960,7 @@ void tst_MessagesApi::syncPeerDialogs()
         client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
         client.messagingApi()->setSyncLimit(0);
 
-        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessagesReceived);
         signInHelper(&client, c_user1, &authProvider);
         TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
 
@@ -1030,7 +1030,7 @@ void tst_MessagesApi::syncPeerDialogs()
         client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
         client.messagingApi()->setSyncLimit(0);
 
-        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessagesReceived);
         signInHelper(&client, c_user1, &authProvider);
         TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
 
@@ -1104,7 +1104,7 @@ void tst_MessagesApi::syncPeerDialogs()
         client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
         client.messagingApi()->setSyncLimit(0);
 
-        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessagesReceived);
         QSignalSpy receivedMessages(client.messagingApi(), &Client::MessagingApi::messageReceived);
         signInHelper(&client, c_user1, &authProvider);
         TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
@@ -1200,7 +1200,7 @@ void tst_MessagesApi::syncPeerDialogs()
         client.messagingApi()->setSyncMode(Client::MessagingApi::ManualSync);
         client.messagingApi()->setSyncLimit(0);
 
-        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessages);
+        QSignalSpy syncMessages(client.messagingApi(), &Client::MessagingApi::syncMessagesReceived);
         QSignalSpy receivedMessages(client.messagingApi(), &Client::MessagingApi::messageReceived);
         signInHelper(&client, c_user1, &authProvider);
         TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
