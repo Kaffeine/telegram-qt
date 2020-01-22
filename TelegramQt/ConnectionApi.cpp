@@ -558,7 +558,7 @@ void ConnectionApiPrivate::onInitialConnectionStatusChanged(BaseConnection::Stat
 void ConnectionApiPrivate::onGotDcConfig(PendingOperation *operation)
 {
     if (!operation->isSucceeded()) {
-        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO;
+        qCWarning(c_connectionApiLoggingCategory) << CALL_INFO << operation->errorDetails();
     }
     if (m_initialConnection && m_initialConnection->status() == Connection::Status::HasDhKey) {
         setStatus(ConnectionApi::StatusWaitForAuthentication, ConnectionApi::StatusReasonLocal);
