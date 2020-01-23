@@ -175,12 +175,6 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
 )
 
 target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
-    MTProto/MessageHeader.cpp
-    MTProto/MessageHeader.hpp
-    MTProto/Stream.hpp
-)
-
-target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     Operations/ClientAuthOperation.cpp
     Operations/ClientAuthOperation.hpp
     Operations/ClientAuthOperation_p.hpp
