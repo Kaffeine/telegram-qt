@@ -40,11 +40,16 @@ option(BUILD_SHARED_LIBS "Compile libraries as shared" TRUE)
 option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
 
 option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
+option(EXPORT_INTERNAL_API "Export internal and unstable API" FALSE)
 
-set(TELEGRAMQT_EXPORT_INTERNAL_API FALSE)
-if(BUILD_SERVER)
-    message(STATUS "Internal TelegramQt API will be exported for Telegram Server")
+if(DEVELOPER_BUILD)
+    set(EXPORT_INTERNAL_API TRUE)
+endif()
+
+if(EXPORT_INTERNAL_API)
     set(TELEGRAMQT_EXPORT_INTERNAL_API TRUE)
+else()
+    set(TELEGRAMQT_EXPORT_INTERNAL_API FALSE)
 endif()
 
 option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)
@@ -62,6 +67,9 @@ if(BUILD_QML_IMPORT)
 endif()
 
 if(BUILD_SERVER)
+    if(NOT EXPORT_INTERNAL_API)
+        message(SEND_ERROR "Unable to build the server because the internal API export disabled")
+    endif()
     # QtGui is used by the server to resize images
     list(APPEND QT_COMPONENTS Gui)
     if(DEVELOPER_BUILD)
@@ -134,13 +142,17 @@ if(BUILD_CLIENT)
 endif()
 
 if(BUILD_TESTS)
-    enable_testing()
-    if(TELEGRAMQT_EXPORT_INTERNAL_API)
-        add_subdirectory(TelegramQt/tests)
+    if(NOT EXPORT_INTERNAL_API)
+        message(SEND_ERROR "Unable to the tests because the internal API export disabled")
     endif()
+    enable_testing()
+    add_subdirectory(TelegramQt/tests)
     add_subdirectory(tests/data)
     if(BUILD_SERVER)
+        # All top-level tests are "client-server"
         add_subdirectory(tests)
+    else()
+        message(STATUS "Some tests are disabled because the server is not a part of the build")
     endif()
 endif()
 
@@ -194,6 +206,7 @@ if(ENABLE_COVERAGE_BUILD)
 endif()
 
 message(STATUS "${PROJECT_NAME} configuration:")
+message(STATUS "  Export internal API: ${EXPORT_INTERNAL_API}")
 message(STATUS "  Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "  Qt: ${Qt5_VERSION} at ${_qt5Core_install_prefix}")
 
