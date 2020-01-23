@@ -70,7 +70,7 @@ public:
 
     int generate(void *buffer, int count) override;
 
-    QByteArray initializationData() const { return  m_initializationData; }
+    QByteArray initializationData() const { return m_initializationData; }
     void setInitializationData(const QByteArray &data);
 
 protected:
@@ -85,17 +85,11 @@ protected:
 class TELEGRAMQT_INTERNAL_EXPORT RandomGeneratorSetter
 {
 public:
-    RandomGeneratorSetter(RandomGenerator *generator)
-    {
-        m_previousGenerator = RandomGenerator::setInstance(generator);
-    }
+    explicit RandomGeneratorSetter(RandomGenerator *generator);
+    ~RandomGeneratorSetter();
 
-    ~RandomGeneratorSetter()
-    {
-        RandomGenerator::setInstance(m_previousGenerator);
-    }
 private:
-    RandomGenerator *m_previousGenerator;
+    RandomGenerator *m_previousGenerator = nullptr;
 };
 
 } // Telegram namespace

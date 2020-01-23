@@ -86,4 +86,14 @@ void DeterministicGenerator::regenerate()
     m_offset = 0;
 }
 
+RandomGeneratorSetter::RandomGeneratorSetter(RandomGenerator *generator)
+{
+    m_previousGenerator = RandomGenerator::setInstance(generator);
+}
+
+RandomGeneratorSetter::~RandomGeneratorSetter()
+{
+    RandomGenerator::setInstance(m_previousGenerator);
+}
+
 } // Telegram
