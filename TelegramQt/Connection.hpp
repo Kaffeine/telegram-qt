@@ -16,7 +16,7 @@ class BaseDhLayer;
 class BaseRpcLayer;
 class BaseTransport;
 
-class TELEGRAMQT_EXPORT BaseConnection : public QObject
+class TELEGRAMQT_INTERNAL_EXPORT BaseConnection : public QObject
 {
     Q_OBJECT
 public:

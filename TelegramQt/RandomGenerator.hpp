@@ -24,7 +24,7 @@
 
 namespace Telegram {
 
-class TELEGRAMQT_EXPORT RandomGenerator
+class TELEGRAMQT_INTERNAL_EXPORT RandomGenerator
 {
 public:
     virtual ~RandomGenerator() = default;
@@ -61,7 +61,7 @@ public:
     static RandomGenerator *setInstance(RandomGenerator *instance);
 };
 
-class TELEGRAMQT_EXPORT DeterministicGenerator : public RandomGenerator
+class TELEGRAMQT_INTERNAL_EXPORT DeterministicGenerator : public RandomGenerator
 {
 public:
     DeterministicGenerator();
@@ -82,7 +82,7 @@ protected:
 
 };
 
-class TELEGRAMQT_EXPORT RandomGeneratorSetter
+class TELEGRAMQT_INTERNAL_EXPORT RandomGeneratorSetter
 {
 public:
     RandomGeneratorSetter(RandomGenerator *generator)

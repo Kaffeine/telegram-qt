@@ -26,7 +26,7 @@ namespace Telegram {
 
 namespace Crypto {
 
-class TELEGRAMQT_EXPORT AesCtrContext
+class TELEGRAMQT_INTERNAL_EXPORT AesCtrContext
 {
 public:
     explicit AesCtrContext();

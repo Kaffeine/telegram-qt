@@ -23,7 +23,7 @@
 
 namespace Telegram {
 
-struct UserDialog
+struct TELEGRAMQT_INTERNAL_EXPORT UserDialog
 {
     using Flags = TLDialog::Flags;
     Telegram::Peer peer;
@@ -38,7 +38,8 @@ struct UserDialog
     quint32 flags = 0;
 };
 
-struct Message::Private
+// The parent Message class is marked as exportable, so we have to explicitly hide the private structs.
+struct TELEGRAMQT_INTERNAL_EXPORT Message::Private
 {
     static const Private *get(const Message *info) { return info->d; }
     static Private *get(Message *info) { return info->d; }
@@ -64,7 +65,7 @@ struct Message::Private
     quint32 forwardFromMessageId = 0;
 };
 
-struct MessageMediaInfo::Private : public TLMessageMedia
+struct TELEGRAMQT_INTERNAL_EXPORT MessageMediaInfo::Private : public TLMessageMedia
 {
 public:
     static const Private *get(const MessageMediaInfo *info) { return info->d; }
@@ -92,7 +93,7 @@ public:
     TLInputFile *m_inputFile = nullptr;
 };
 
-struct FileInfo::Private
+struct TELEGRAMQT_INTERNAL_EXPORT FileInfo::Private
 {
 public:
     enum Type {
@@ -154,18 +155,18 @@ public:
 
 };
 
-struct UserInfo::Private : public TLUser
+struct TELEGRAMQT_INTERNAL_EXPORT UserInfo::Private : public TLUser
 {
     static Private *get(UserInfo *info) { return info->d; }
     static const Private *get(const UserInfo *info) { return info->d; }
 };
 
-struct ChatInfo::Private : public TLChat
+struct TELEGRAMQT_INTERNAL_EXPORT ChatInfo::Private : public TLChat
 {
     static Private *get(ChatInfo *info) { return info->d; }
 };
 
-struct DialogInfo::Private : public UserDialog
+struct TELEGRAMQT_INTERNAL_EXPORT DialogInfo::Private : public UserDialog
 {
     static Private *get(DialogInfo *info) { return info->d; }
 };

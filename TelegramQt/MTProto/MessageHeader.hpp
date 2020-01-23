@@ -29,7 +29,7 @@ namespace Telegram {
 
 namespace MTProto {
 
-struct TELEGRAMQT_EXPORT MessageHeader {
+struct TELEGRAMQT_INTERNAL_EXPORT MessageHeader {
     quint64 messageId;
     quint32 sequenceNumber;
     quint32 contentLength;
@@ -37,7 +37,7 @@ struct TELEGRAMQT_EXPORT MessageHeader {
     static constexpr int headerLength = sizeof(messageId) + sizeof(sequenceNumber) + sizeof(contentLength);
 };
 
-struct TELEGRAMQT_EXPORT FullMessageHeader : public MessageHeader
+struct TELEGRAMQT_INTERNAL_EXPORT FullMessageHeader : public MessageHeader
 {
     FullMessageHeader() = default;
     FullMessageHeader(const MessageHeader &header, quint64 salt, quint64 session) :
@@ -54,7 +54,7 @@ struct TELEGRAMQT_EXPORT FullMessageHeader : public MessageHeader
             + sizeof(messageId) + sizeof(sequenceNumber) + sizeof(contentLength);
 };
 
-struct TELEGRAMQT_EXPORT Message : public MessageHeader {
+struct TELEGRAMQT_INTERNAL_EXPORT Message : public MessageHeader {
     Message() = default;
     Message(const MessageHeader &header, const QByteArray &data) :
         MessageHeader(header),

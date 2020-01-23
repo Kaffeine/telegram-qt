@@ -22,7 +22,7 @@
 
 namespace Telegram {
 
-class TELEGRAMQT_EXPORT AbridgedLength
+class TELEGRAMQT_INTERNAL_EXPORT AbridgedLength
 {
 public:
     constexpr explicit AbridgedLength(quint32 value = 0) : m_value(value) { }
