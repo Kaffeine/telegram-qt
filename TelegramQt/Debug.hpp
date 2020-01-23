@@ -24,7 +24,7 @@
 
 namespace Telegram {
 
-struct Peer;
+class Peer;
 
 } // Telegram namespace
 
