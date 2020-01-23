@@ -17,6 +17,7 @@ matrix:
          env:
            - DEVELOPER_BUILD=true
            - BUILD_SERVER=true
+           - BUILD_TESTS=true
        - compiler: gcc
          # Production build
          env:
@@ -46,7 +47,7 @@ before_script:
   - cmake >
     -DBUILD_CLIENT=${BUILD_CLIENT}
     -DBUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}
-    -DBUILD_TESTS=true
+    -DBUILD_TESTS=${BUILD_TESTS}
     -DBUILD_SERVER=${BUILD_SERVER}
     -DDEVELOPER_BUILD=${DEVELOPER_BUILD}
     -DENABLE_COVERAGE_BUILD=${ENABLE_COVERAGE_BUILD}
