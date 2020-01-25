@@ -34,7 +34,10 @@ add_custom_command(OUTPUT ${QCHFILE}
     VERBATIM
 )
 
-add_custom_target(qch_docs ALL DEPENDS ${QCHFILE})
+add_custom_target(qch_docs ALL
+    DEPENDS ${QCHFILE}
+    SOURCES ${QDOCCONFFILE}
+)
 
 install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/${QCHFILE}
