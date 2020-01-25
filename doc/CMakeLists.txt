@@ -23,6 +23,7 @@ set(QHELPGENERATOR_EXECUTABLE "${QT_INSTALL_BINS}/qhelpgenerator")
 
 set(VARS
     "QT_INSTALL_DOCS=${QT_INSTALL_DOCS}"
+    "PROJECT_VERSION=${TelegramQt_VERSION}"
 )
 
 add_custom_command(OUTPUT ${QCHFILE}
