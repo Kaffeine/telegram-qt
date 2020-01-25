@@ -960,7 +960,7 @@ bool ConnectionApi::connectRightNow()
     return true;
 }
 
-Telegram::Client::AuthOperation *ConnectionApi::startAuthentication()
+AuthOperation *ConnectionApi::startAuthentication()
 {
     Q_D(ConnectionApi);
     return d->startAuthentication();
@@ -983,7 +983,7 @@ Telegram::Client::AuthOperation *ConnectionApi::startAuthentication()
 
   \sa PendingOperation::errorDetails()
 */
-Telegram::Client::AuthOperation *ConnectionApi::checkIn()
+AuthOperation *ConnectionApi::checkIn()
 {
     Q_D(ConnectionApi);
     return d->checkIn();

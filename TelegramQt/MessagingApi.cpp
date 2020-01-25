@@ -109,7 +109,7 @@ void MessagingApiPrivate::setMessageAction(const Peer peer, const MessageAction 
     messagesLayer()->setTyping(inputPeer, act);
 }
 
-void Telegram::Client::MessagingApiPrivate::processMessageAction(const Peer peer, quint32 userId, const MessageAction &action)
+void MessagingApiPrivate::processMessageAction(const Peer peer, quint32 userId, const MessageAction &action)
 {
     Q_Q(MessagingApi);
     const int index = UserMessageAction::findInVector(m_currentMessageActions, peer, userId);
@@ -266,7 +266,7 @@ PendingOperation *MessagingApiPrivate::getDialogs()
     return operation;
 }
 
-PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const Telegram::Client::MessageFetchOptions &options)
+PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const MessageFetchOptions &options)
 {
     if (!peer.isValid()) {
         return PendingOperation::failOperation<PendingMessages>(QLatin1String("Invalid peer for getHistory()"), this);
@@ -645,7 +645,7 @@ void MessagingApiPrivate::processNewSyncMessages(const Peer &peer, const QVector
 
 void MessagingApiPrivate::syncMorePeerMessages(const Peer &peer, DialogState *state)
 {
-    Telegram::Client::MessageFetchOptions options;
+    MessageFetchOptions options;
     if (!state->pendingIds.isEmpty()) {
         options.offsetId = state->pendingIds.last();
     }
@@ -667,7 +667,7 @@ void MessagingApiPrivate::syncMorePeerMessages(const Peer &peer, DialogState *st
              << "minId" << options.minId
                 ;
 
-    Telegram::Client::PendingMessages *historyOp = getHistory(peer, options);
+    PendingMessages *historyOp = getHistory(peer, options);
     historyOp->connectToFinished(this, &MessagingApiPrivate::onSyncHistoryReceived, historyOp);
 }
 
