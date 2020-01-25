@@ -463,7 +463,7 @@ Connection *ConnectionApiPrivate::createConnection(const DcOption &dcOption)
 }
 
 /*!
-  \fn Connection *ConnectionApiPrivate::ensureConnection(const DcOption &dcOption)
+  \fn Connection *ConnectionApiPrivate::ensureConnection(const ConnectionSpec &connectionSpec)
 
   The method returns new or existing Connection to the passed server address.
 
