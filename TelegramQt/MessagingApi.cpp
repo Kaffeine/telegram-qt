@@ -636,7 +636,7 @@ void MessagingApiPrivate::processNewSyncMessages(const Peer &peer, const QVector
     syncMorePeerMessages(peer, state);
 }
 
-void MessagingApiPrivate::syncMorePeerMessages(const Peer &peer, DialogState *state)
+void MessagingApiPrivate::syncMorePeerMessages(const Peer &peer, const DialogState *state)
 {
     MessageFetchOptions options;
     if (!state->pendingIds.isEmpty()) {

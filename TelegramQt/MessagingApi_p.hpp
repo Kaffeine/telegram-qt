@@ -97,7 +97,7 @@ public:
     void onChatUserActionChanged(const Telegram::Peer peer, quint32 userId, const TLSendMessageAction &action);
 
     PendingOperation *syncPeers(const Telegram::PeerList &peers);
-    void syncMorePeerMessages(const Peer &peer, DialogState *state);
+    void syncMorePeerMessages(const Peer &peer, const DialogState *state);
     void checkIfSyncFinished();
     void onPeerSyncFinished(const Peer &peer, DialogState *state);
     bool syncAndFilterMessage(const Peer &peer, quint32 messageId);
