@@ -703,15 +703,6 @@ UserDialog *DataInternalApi::ensureDialog(const Peer &peer)
     return dialog;
 }
 
-DialogState *DataInternalApi::ensureDialogState(const Peer peer)
-{
-    if (!m_dialogStates.contains(peer)) {
-        qDebug() << CALL_INFO << "New dialog" << peer;
-        m_dialogStates.insert(peer, DialogState());
-    }
-    return &m_dialogStates[peer];
-}
-
 const DialogState DataInternalApi::getDialogState(const Peer peer) const
 {
     return m_dialogStates.value(peer);

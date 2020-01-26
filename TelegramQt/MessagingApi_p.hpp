@@ -100,6 +100,8 @@ public:
     void syncMorePeerMessages(const Peer &peer, DialogState *state);
     void checkIfSyncFinished();
     void onPeerSyncFinished(const Peer &peer, DialogState *state);
+    bool syncAndFilterMessage(const Peer &peer, quint32 messageId);
+    DialogState *ensureDialogSyncState(const Peer &peer);
 
     PendingOperation *getDialogs();
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);

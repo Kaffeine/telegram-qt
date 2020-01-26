@@ -197,7 +197,8 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
         qCDebug(lcMessagingApi) << "Sent message ID not found in the local queue" << randomMessageId;
         return;
     }
-    DialogState *state = dataInternalApi()->ensureDialogState(sentMessage.peer);
+    // TODO: Check the correctess
+    DialogState *state = ensureDialogSyncState(sentMessage.peer);
     state->syncedMessageId = messageId;
 
     emit q->messageSent(sentMessage.peer, randomMessageId, messageId);
@@ -208,34 +209,15 @@ void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
     Q_Q(MessagingApi);
     const Telegram::Peer peer = Telegram::Utils::getMessageDialogPeer(message, m_backend->dataStorage()->selfUserId());
 
-    if (m_syncMode != MessagingApi::NoSync) {
-        if (m_syncState == SyncState::NotStarted) {
-            // but not started yet.
-            qCDebug(lcMessagingApi) << "Drop message" << message.id << "in dialog"
-                                    << peer << "(sync not started yet)";
-            // Drop all new messages; we'll get those messages later during the sync.
-            return;
-        }
-    }
-
     if (m_dialogList) {
         m_dialogList->ensurePeers({peer});
     }
 
-    DialogState *state = dataInternalApi()->ensureDialogState(peer);
-    if (m_syncState == SyncState::InProgress) {
-        if (state->isValid()) {
-            if (!state->synced) {
-                state->pendingIds.prepend(message.id);
-                return;
-            }
-        } else {
-            state->synced = true;
+    if (m_syncMode != MessagingApi::NoSync) {
+        if (syncAndFilterMessage(peer, message.id)) {
+            return;
         }
-    } else {
-        state->synced = true;
     }
-    state->syncedMessageId = message.id;
 
     emit q->messageReceived(peer, message.id);
 }
@@ -616,7 +598,7 @@ void MessagingApiPrivate::onHistoryReadSucceeded(const Peer peer, quint32 messag
 
 void MessagingApiPrivate::processNewSyncMessages(const Peer &peer, const QVector<quint32> &messages)
 {
-    DialogState *state = dataInternalApi()->ensureDialogState(peer);
+    DialogState *state = ensureDialogSyncState(peer);
 
     if (messages.isEmpty()) {
         qCDebug(lcMessagingApi) << __func__ << "No messages for" << peer;
@@ -705,6 +687,58 @@ void MessagingApiPrivate::onPeerSyncFinished(const Peer &peer, DialogState *stat
     }
 
     --m_syncJobs;
+}
+
+// Returns true if the message should be filtered out
+bool MessagingApiPrivate::syncAndFilterMessage(const Peer &peer, quint32 messageId)
+{
+    if (m_syncMode == MessagingApi::NoSync) {
+        return false;
+    }
+
+    qCDebug(lcMessagingApi) << __func__ << "Examine message"  << messageId << "in dialog" << peer;
+
+    // Sync is required...
+    if (m_syncState == SyncState::NotStarted) {
+        // but not started yet.
+        qCDebug(lcMessagingApi) << "Drop message" << messageId << "in dialog"
+                                << peer << "(sync not started yet)";
+        // Drop all new messages; we'll get those messages later during the sync.
+        return true;
+    }
+
+    DialogState *state = ensureDialogSyncState(peer);
+    if (!state->isValid()) {
+        // This is a new dialog and the sync is either InProgress or Finished.
+        // Maybe we would like to fetch all messages, but just process the dialog as synced for now.
+        qCDebug(lcMessagingApi) << __func__ << "mark" << peer << "as synced";
+        state->synced = true;
+    }
+
+    if (!state->synced) {
+        // SyncState is InProgress and the dialog sync is not finished yet.
+        qCDebug(lcMessagingApi) << __func__ << "prepend message" << messageId << "for peer" << peer;
+        state->pendingIds.prepend(messageId);
+        return true;
+    }
+
+    const quint32 previousSyncedMessageId = state->syncedMessageId;
+    state->syncedMessageId = messageId;
+    qCDebug(lcMessagingApi) << __func__ << "change syncedMessageId from" << previousSyncedMessageId
+                            << "to" << messageId << "for peer" << peer;
+    return false;
+}
+
+DialogState *MessagingApiPrivate::ensureDialogSyncState(const Peer &peer)
+{
+    QHash<Peer, DialogState> *dialogStates = dataInternalApi()->dialogStates();
+    QHash<Peer, DialogState> &statesRef = *dialogStates;
+
+    if (!statesRef.contains(peer)) {
+        qDebug() << CALL_INFO << "New dialog" << peer;
+        statesRef.insert(peer, DialogState());
+    }
+    return &statesRef[peer];
 }
 
 void MessagingApiPrivate::onSyncHistoryReceived(PendingMessages *op)

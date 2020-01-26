@@ -119,7 +119,6 @@ public:
 
     const QHash<Peer, DialogState> *dialogStates() const { return &m_dialogStates; }
     QHash<Peer, DialogState> *dialogStates() { return &m_dialogStates; }
-    DialogState *ensureDialogState(const Peer peer);
 
     // For testing:
     const DialogState getDialogState(const Peer peer) const;
