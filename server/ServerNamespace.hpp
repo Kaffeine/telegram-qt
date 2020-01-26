@@ -31,8 +31,9 @@ struct UserContact
 };
 
 // Overall file descriptor
-struct FileDescriptor
+class FileDescriptor
 {
+public:
     bool isValid() const { return true; }
 
     // FileLocation:
