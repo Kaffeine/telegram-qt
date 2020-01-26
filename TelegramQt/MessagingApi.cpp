@@ -15,6 +15,8 @@
 #include <QLoggingCategory>
 #include <QTimer>
 
+Q_LOGGING_CATEGORY(lcMessagingApi, "telegram.client.api.messaging", QtWarningMsg)
+
 namespace Telegram {
 
 class PendingOperation;
@@ -101,6 +103,7 @@ void MessagingApiPrivate::setMessageRead(const Peer peer, quint32 messageId)
 void MessagingApiPrivate::setMessageAction(const Peer peer, const MessageAction &action)
 {
     if (!peer.isValid()) {
+        qCWarning(lcMessagingApi) << __func__ << "Invalid peer";
         return;
     }
     TLInputPeer inputPeer = dataInternalApi()->toInputPeer(peer);
@@ -160,7 +163,8 @@ void MessagingApiPrivate::onSendMessageResult(quint64 randomMessageId, MessagesR
     backend()->updatesApi()->processUpdates(result);
     if (m_expectedRandomMessageId) {
         // onShortSentMessage() was not called
-        qWarning() << Q_FUNC_INFO << "Expected messageId is missing in updates";
+        qCWarning(lcMessagingApi) << __func__
+                                  << "The expected messageId was not processed during updates";
     }
     m_expectedRandomMessageId = 0;
 }
@@ -168,7 +172,7 @@ void MessagingApiPrivate::onSendMessageResult(quint64 randomMessageId, MessagesR
 void MessagingApiPrivate::onShortSentMessage(quint32 messageId)
 {
     if (!m_expectedRandomMessageId) {
-        qWarning() << Q_FUNC_INFO << "Unexpected message" << messageId;
+        qCWarning(lcMessagingApi) << __func__ << "Unexpected message" << messageId;
         return;
     }
     onSentMessageIdResolved(m_expectedRandomMessageId, messageId);
@@ -179,18 +183,18 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
 {
     Q_Q(MessagingApi);
     if (!randomMessageId) {
-        qWarning() << Q_FUNC_INFO << "Message randomId is missing";
+        qCWarning(lcMessagingApi) << __func__ << "Message randomId is missing";
         return;
     }
 
     if (!messageId) {
-        qWarning() << Q_FUNC_INFO << "Message id is missing";
+        qCWarning(lcMessagingApi) << __func__ << "Message id is missing";
         return;
     }
 
     const DataInternalApi::SentMessage sentMessage = dataInternalApi()->dequeueMessage(randomMessageId, messageId);
     if (sentMessage.randomId != randomMessageId) {
-        qDebug() << "Sent message ID not found in the local queue" << randomMessageId;
+        qCDebug(lcMessagingApi) << "Sent message ID not found in the local queue" << randomMessageId;
         return;
     }
     DialogState *state = dataInternalApi()->ensureDialogState(sentMessage.peer);
@@ -202,16 +206,18 @@ void MessagingApiPrivate::onSentMessageIdResolved(quint64 randomMessageId, quint
 void MessagingApiPrivate::onMessageReceived(const TLMessage &message)
 {
     Q_Q(MessagingApi);
+    const Telegram::Peer peer = Telegram::Utils::getMessageDialogPeer(message, m_backend->dataStorage()->selfUserId());
 
     if (m_syncMode != MessagingApi::NoSync) {
         if (m_syncState == SyncState::NotStarted) {
-            // Drop all new messages if sync is needed but not started yet.
-            // We'll get those messages later during the sync.
+            // but not started yet.
+            qCDebug(lcMessagingApi) << "Drop message" << message.id << "in dialog"
+                                    << peer << "(sync not started yet)";
+            // Drop all new messages; we'll get those messages later during the sync.
             return;
         }
     }
 
-    const Telegram::Peer peer = Telegram::Utils::getMessageDialogPeer(message, m_backend->dataStorage()->selfUserId());
     if (m_dialogList) {
         m_dialogList->ensurePeers({peer});
     }
@@ -401,6 +407,7 @@ PendingOperation *MessagingApiPrivate::syncPeers(const PeerList &peers)
     if (m_syncState != SyncState::NotStarted) {
         return PendingOperation::failOperation(QLatin1String("Sync is already triggered"), this);
     }
+    qCDebug(lcMessagingApi) << __func__ << "Sync started for peers" << peers;
     m_syncState = SyncState::InProgress;
 
     m_syncOperation = new PendingOperation(this);
@@ -578,7 +585,7 @@ void MessagingApiPrivate::onGetHistoryFinished(PendingMessages *operation, Messa
 void MessagingApiPrivate::onReadHistoryFinished(const Peer peer, quint32 messageId, MessagesRpcLayer::PendingMessagesAffectedMessages *rpcOperation)
 {
     if (!rpcOperation->isSucceeded()) {
-        qWarning() << Q_FUNC_INFO << this << peer << messageId << "failed" << rpcOperation->errorDetails();
+        qCWarning(lcMessagingApi) << __func__ << this << peer << messageId << "failed" << rpcOperation->errorDetails();
         return;
     }
 
@@ -590,7 +597,7 @@ void MessagingApiPrivate::onReadHistoryFinished(const Peer peer, quint32 message
 void MessagingApiPrivate::onReadChannelHistoryFinished(const Peer peer, quint32 messageId, ChannelsRpcLayer::PendingBool *rpcOperation)
 {
     if (!rpcOperation->isSucceeded()) {
-        qWarning() << Q_FUNC_INFO << this << peer << messageId << "failed" << rpcOperation->errorDetails();
+        qCWarning(lcMessagingApi) << __func__ << this << peer << messageId << "failed" << rpcOperation->errorDetails();
         return;
     }
 
@@ -612,9 +619,9 @@ void MessagingApiPrivate::processNewSyncMessages(const Peer &peer, const QVector
     DialogState *state = dataInternalApi()->ensureDialogState(peer);
 
     if (messages.isEmpty()) {
-        qDebug() << CALL_INFO << "No messages for" << peer;
+        qCDebug(lcMessagingApi) << __func__ << "No messages for" << peer;
     } else {
-        qDebug() << CALL_INFO << "Update dialog with" << peer
+        qCDebug(lcMessagingApi) << __func__ << "Update dialog with" << peer
                  << "from" << state->syncedMessageId
                  << "to" << messages.first()
                  << " - " << messages.last();
@@ -634,6 +641,10 @@ void MessagingApiPrivate::processNewSyncMessages(const Peer &peer, const QVector
             || (messages.last() == 1);
     const bool limitIsReached = m_syncLimit
             && (static_cast<quint32>(state->pendingIds.count()) >= m_syncLimit);
+
+    if (limitIsReached) {
+        qCDebug(lcMessagingApi) << __func__ << "Limit reached for peer" << peer;
+    }
 
     if (allMessagesFetched || limitIsReached) {
         onPeerSyncFinished(peer, state);
@@ -661,7 +672,7 @@ void MessagingApiPrivate::syncMorePeerMessages(const Peer &peer, DialogState *st
         options.minId = state->syncedMessageId - 1;
     }
 
-    qDebug() << CALL_INFO << "Request history for" << peer
+    qCDebug(lcMessagingApi) << __func__ << "Request history for" << peer
              << "offsetId" << options.offsetId
              << "limit" << options.limit
              << "minId" << options.minId
@@ -674,6 +685,7 @@ void MessagingApiPrivate::syncMorePeerMessages(const Peer &peer, DialogState *st
 void MessagingApiPrivate::checkIfSyncFinished()
 {
     if (m_syncJobs == 0) {
+        qCDebug(lcMessagingApi) << __func__ << "Sync finished";
         m_syncState = SyncState::Finished;
         m_syncOperation->finishLater();
     }
@@ -683,7 +695,7 @@ void MessagingApiPrivate::onPeerSyncFinished(const Peer &peer, DialogState *stat
 {
     Q_Q(MessagingApi);
 
-    qDebug() << CALL_INFO << "Dialog sync complete for peer" << peer;
+    qCDebug(lcMessagingApi) << __func__ << "Sync complete for peer" << peer;
     state->synced = true;
 
     if (!state->pendingIds.isEmpty()) {
