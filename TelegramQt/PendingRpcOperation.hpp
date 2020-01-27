@@ -10,7 +10,7 @@ class BaseConnection;
 
 namespace Client {
 
-class PendingRpcOperation : public PendingOperation
+class TELEGRAMQT_INTERNAL_EXPORT PendingRpcOperation : public PendingOperation
 {
     Q_OBJECT
 public:
