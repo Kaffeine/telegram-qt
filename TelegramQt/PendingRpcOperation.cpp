@@ -27,6 +27,24 @@ PendingRpcOperation::~PendingRpcOperation()
     }
 }
 
+QString PendingRpcOperation::c_rpcErrorRequestKey()
+{
+    static const QString key = QLatin1String("rpc-error-request");
+    return key;
+}
+
+QString PendingRpcOperation::c_rpcErrorCodeKey()
+{
+    static const QString key = QLatin1String("rpc-error-code");
+    return key;
+}
+
+QString PendingRpcOperation::c_rpcErrorMessageKey()
+{
+    static const QString key = QLatin1String("rpc-error-message");
+    return key;
+}
+
 void PendingRpcOperation::setFinishedWithReplyData(const QByteArray &data)
 {
     m_replyData = data;
@@ -37,11 +55,12 @@ void PendingRpcOperation::setFinishedWithReplyData(const QByteArray &data)
         }
         RawStreamEx stream(data);
         stream >> *m_error;
-        setFinishedWithError({
-                                 {QStringLiteral("RpcRequestType"), TLValue::firstFromArray(m_requestData).toString() },
-                                 {QStringLiteral("RpcErrorCode"), m_error->type() },
-                                 {QStringLiteral("RpcErrorMessage"), m_error->message() }
-                             });
+        const QVariantHash details = {
+            { c_rpcErrorRequestKey(), TLValue::firstFromArray(m_requestData).toString() },
+            { c_rpcErrorCodeKey(), m_error->type() },
+            { c_rpcErrorMessageKey(), m_error->message() },
+        };
+        setFinishedWithError(details);
     } else {
         setFinished();
     }

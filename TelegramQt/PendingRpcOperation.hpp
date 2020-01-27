@@ -18,6 +18,10 @@ public:
     explicit PendingRpcOperation(const QByteArray &requestData, QObject *parent = nullptr);
     ~PendingRpcOperation() override;
 
+    static QString c_rpcErrorRequestKey();
+    static QString c_rpcErrorCodeKey();
+    static QString c_rpcErrorMessageKey();
+
     bool isContentRelated() const { return m_contentRelated; }
     void setContentRelated(bool related) { m_contentRelated = related; }
     QByteArray requestData() const { return m_requestData; }
