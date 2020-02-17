@@ -82,6 +82,10 @@ void HelpOperation::onGetDcConfigurationFinished(PendingRpcOperation *operation)
     config.chatSizeMax = result.chatSizeMax;
     config.megagroupSizeMax = result.megagroupSizeMax;
     config.forwardedCountMax = result.forwardedCountMax;
+    config.onlineCloudTimeoutMs = result.onlineCloudTimeoutMs;
+    config.onlineUpdatePeriodMs = result.onlineUpdatePeriodMs;
+    config.offlineBlurTimeoutMs = result.offlineBlurTimeoutMs;
+    config.offlineIdleTimeoutMs = result.offlineIdleTimeoutMs;
     config.meUrlPrefix = result.meUrlPrefix;
     m_backend->dataStorage()->setServerConfiguration(config);
     setFinished();
