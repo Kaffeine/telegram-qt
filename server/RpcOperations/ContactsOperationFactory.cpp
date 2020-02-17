@@ -319,11 +319,17 @@ void ContactsRpcOperation::runResolveUsername()
 
 void ContactsRpcOperation::runSearch()
 {
-    // MTProto::Functions::TLContactsSearch &arguments = m_search;
+    MTProto::Functions::TLContactsSearch &arguments = m_search;
     if (processNotImplementedMethod(TLValue::ContactsSearch)) {
         return;
     }
     TLContactsFound result;
+    const Peer peer = api()->getPeerByUserName(arguments.q);
+    if (peer.isValid()) {
+        result.results = { Telegram::Utils::toTLPeer(peer) };
+        Utils::setupTLPeers(&result, { peer }, api(), layer()->getUser());
+    }
+
     sendRpcReply(result);
 }
 

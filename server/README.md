@@ -43,6 +43,7 @@ Contacts:
 - contacts.getContacts
 - contacts.importContacts
 - contacts.resolveUsername
+- contacts.search (just resolve username for now)
 
 Users:
 
