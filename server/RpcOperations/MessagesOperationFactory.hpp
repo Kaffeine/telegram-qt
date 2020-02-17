@@ -235,6 +235,7 @@ protected:
 
     void setRunMethod(RunMethod method);
 
+    void editMessageData(MessageData *messageData, quint64 randomId);
     void submitMessageData(MessageData *messageData, quint64 randomId);
 
     RunMethod m_runMethod = nullptr;

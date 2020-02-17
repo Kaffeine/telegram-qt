@@ -51,6 +51,7 @@ Users:
 
 Messages:
 
+- messages.editMessage
 - messages.getDialogs
 - messages.getHistory
 - messages.readHistory

@@ -684,6 +684,82 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
     return notifications;
 }
 
+QVector<UpdateNotification> Server::processMessageEdit(MessageData *messageData)
+{
+    const Peer targetPeer = messageData->toPeer();
+    AbstractUser *fromUser = getUser(messageData->fromId());
+    MessageRecipient *recipient = getRecipient(messageData->toPeer());
+    QVector<PostBox *> boxes = recipient->postBoxes();
+    if ((targetPeer.type() == Peer::User) && !messageData->isMessageToSelf()) {
+        boxes.append(fromUser->getPostBox());
+    }
+    // Boxes:
+    // message to contact
+    //    Users (self and recipient (if not self))
+    //
+    // message to group chat
+    //    Users (each member)
+    //
+    // message to megagroup or broadcast
+    //    Channel (the channel)
+
+    QVector<UpdateNotification> notifications;
+
+    // Result and broadcasted Updates date seems to be always older than the message date,
+    // so prepare the request date right on the start.
+    const quint32 requestDate = Telegram::Utils::getCurrentTime();
+    for (PostBox *box : boxes) {
+        box->bumpPts();
+        const quint32 messageId = messageData->getReference(box->peer());
+        UpdateNotification notification;
+        notification.type = UpdateNotification::Type::EditMessage;
+        notification.date = requestDate;
+        notification.messageId = messageId;
+        notification.pts = box->pts();
+        for (const quint32 userId : box->users()) {
+            notification.userId = userId;
+            if (targetPeer.type() == Peer::User) {
+                if (userId == fromUser->id()) {
+                    notification.dialogPeer = targetPeer;
+                } else {
+                    notification.dialogPeer = fromUser->toPeer();
+                }
+            } else {
+                notification.dialogPeer = targetPeer;
+            }
+            LocalUser *user = getUser(userId);
+            if (!user) {
+                // User is not a local user
+                AbstractUser *remoteUser = getRemoteUser(userId);
+                if (!remoteUser) {
+                    qCWarning(loggingCategoryServerApi) << CALL_INFO
+                                                        << "Invalid userId"
+                                                        << userId;
+                    continue;
+                }
+                RemoteServerConnection *remoteServerConnection = getRemoteServer(remoteUser->dcId());
+                AbstractServerApi *remoteApi = remoteServerConnection->api();
+                // if (!remoteApi->messageService()->hasMessage()) {
+                //     remoteApi->messageService()->importMessage(messageData)
+                // }
+                remoteApi->queueServerUpdates({notification});
+                continue;
+            }
+
+            if ((userId == fromUser->id()) && !notifications.isEmpty()) {
+                // Keep the sender Notification on the first place
+                notifications.append(notifications.constFirst());
+                notifications.first() = notification;
+                continue;
+            }
+
+            notifications.append(notification);
+        }
+    }
+
+    return notifications;
+}
+
 QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updateType,
                                                   LocalUser *applicant,
                                                   Session *excludeSession) const

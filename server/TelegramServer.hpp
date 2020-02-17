@@ -105,6 +105,7 @@ public:
     void reportMessageRead(const MessageData *messageData) override;
 
     QVector<UpdateNotification> processMessage(MessageData *messageData) override;
+    QVector<UpdateNotification> processMessageEdit(MessageData *messageData) override;
     QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
                                               LocalUser *applicant,
                                               Session *excludeSession) const override;

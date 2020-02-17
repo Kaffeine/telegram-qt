@@ -825,12 +825,73 @@ void MessagesRpcOperation::runEditInlineBotMessage()
 
 void MessagesRpcOperation::runEditMessage()
 {
-    // MTProto::Functions::TLMessagesEditMessage &arguments = m_editMessage;
-    if (processNotImplementedMethod(TLValue::MessagesEditMessage)) {
+    MTProto::Functions::TLMessagesEditMessage &arguments = m_editMessage;
+    const quint32 &messageId = arguments.id;
+    LocalUser *selfUser = layer()->getUser();
+    MessageRecipient *recipient = api()->getRecipient(arguments.peer, selfUser);
+
+    if (!recipient) {
+        sendRpcError(RpcError::PeerIdInvalid);
         return;
     }
+
+    const QHash<quint32,quint64> messageKeys = selfUser->getPostBox()->getAllMessageKeys();
+
+    const quint64 globalMessageId = messageKeys.value(messageId);
+    const MessageData *previousData = globalMessageId
+            ? api()->messageService()->getMessage(globalMessageId)
+            : nullptr;
+    if (!globalMessageId || !previousData) {
+        sendRpcError(RpcError::MessageIdInvalid);
+        return;
+    }
+
+    const quint32 requestDate = Telegram::Utils::getCurrentTime();
+    if (requestDate >= previousData->date() + api()->serverConfiguration().editTimeLimit) {
+        sendRpcError(RpcError::MessageEditTimeExpired);
+        return;
+    }
+
+    const MessageContent newContent(arguments.message);
+    if (previousData->content() == newContent) {
+        sendRpcError(RpcError::MessageNotModified);
+        return;
+    }
+
+    MessageData *messageData = api()->messageService()->replaceMessageContent(globalMessageId, newContent);
+
+    if (!messageData) {
+        sendRpcError(RpcError::MessageIdInvalid);
+        return;
+    }
+
+    QVector<UpdateNotification> notifications = api()->processMessageEdit(messageData);
+
+    UpdateNotification *selfNotification = nullptr;
+    for (UpdateNotification &notification : notifications) {
+        if (notification.userId == selfUser->userId()) {
+            selfNotification = &notification;
+            break;
+        }
+    }
+
+    selfNotification->excludeSession = layer()->session();
+
+    QSet<Peer> interestingPeers;
+    TLUpdate editMessageUpdate;
+    api()->bakeUpdate(&editMessageUpdate, *selfNotification, &interestingPeers);
+
+    // Bake updates
     TLUpdates result;
+    result.tlType = TLValue::Updates;
+    result.date = selfNotification->date;
+
+    Utils::setupTLPeers(&result, interestingPeers, api(), selfUser);
+    result.seq = 0; // Sender seq number seems to always equal zero
+    result.updates = { editMessageUpdate };
     sendRpcReply(result);
+
+    api()->queueUpdates(notifications);
 }
 
 void MessagesRpcOperation::runExportChatInvite()
