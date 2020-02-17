@@ -86,6 +86,7 @@ void HelpOperation::onGetDcConfigurationFinished(PendingRpcOperation *operation)
     config.onlineUpdatePeriodMs = result.onlineUpdatePeriodMs;
     config.offlineBlurTimeoutMs = result.offlineBlurTimeoutMs;
     config.offlineIdleTimeoutMs = result.offlineIdleTimeoutMs;
+    config.editTimeLimit = result.editTimeLimit;
     config.meUrlPrefix = result.meUrlPrefix;
     m_backend->dataStorage()->setServerConfiguration(config);
     setFinished();

@@ -173,6 +173,7 @@ void HelpRpcOperation::runGetConfig()
     result.onlineUpdatePeriodMs = dcConfig.onlineUpdatePeriodMs;
     result.offlineBlurTimeoutMs = dcConfig.offlineBlurTimeoutMs;
     result.offlineIdleTimeoutMs = dcConfig.offlineIdleTimeoutMs;
+    result.editTimeLimit = dcConfig.editTimeLimit;
     result.meUrlPrefix = dcConfig.meUrlPrefix;
 
     sendRpcReply(result);

@@ -46,6 +46,7 @@ static const QLatin1String c_onlineCloudTimeoutMs = QLatin1String("onlineCloudTi
 static const QLatin1String c_onlineUpdatePeriodMs = QLatin1String("onlineUpdatePeriodMs");
 static const QLatin1String c_offlineBlurTimeoutMs = QLatin1String("offlineBlurTimeoutMs");
 static const QLatin1String c_offlineIdleTimeoutMs = QLatin1String("offlineIdleTimeoutMs");
+static const QLatin1String c_editTimeLimit = QLatin1String("editTimeLimit");
 static const QLatin1String c_meUrlPrefix = QLatin1String("meUrlPrefix");
 
 } // ConfigKey namespace
@@ -83,6 +84,7 @@ DcConfiguration Config::getDefaultDcConfiguration()
         dcConfig.onlineUpdatePeriodMs = 210000;
         dcConfig.offlineBlurTimeoutMs = 5000;
         dcConfig.offlineIdleTimeoutMs = 30000;
+        dcConfig.editTimeLimit = 172800;
         dcConfig.testMode = false;
     }
     return dcConfig;
@@ -146,6 +148,7 @@ bool Config::load()
     m_serverConfiguration.onlineUpdatePeriodMs = static_cast<quint32>(configObject[ConfigKey::c_onlineUpdatePeriodMs].toInt());
     m_serverConfiguration.offlineBlurTimeoutMs = static_cast<quint32>(configObject[ConfigKey::c_offlineBlurTimeoutMs].toInt());
     m_serverConfiguration.offlineIdleTimeoutMs = static_cast<quint32>(configObject[ConfigKey::c_offlineIdleTimeoutMs].toInt());
+    m_serverConfiguration.editTimeLimit = static_cast<quint32>(configObject[ConfigKey::c_editTimeLimit].toInt());
     m_serverConfiguration.meUrlPrefix = configObject[ConfigKey::c_meUrlPrefix].toString();
 
     qCInfo(lcServerConfig) << "Loaded config from " << m_fileName;
@@ -175,6 +178,7 @@ bool Config::save() const
     configObject[ConfigKey::c_onlineUpdatePeriodMs] = QJsonValue::fromVariant(m_serverConfiguration.onlineUpdatePeriodMs);
     configObject[ConfigKey::c_offlineBlurTimeoutMs] = QJsonValue::fromVariant(m_serverConfiguration.offlineBlurTimeoutMs);
     configObject[ConfigKey::c_offlineIdleTimeoutMs] = QJsonValue::fromVariant(m_serverConfiguration.offlineIdleTimeoutMs);
+    configObject[ConfigKey::c_editTimeLimit] = QJsonValue::fromVariant(m_serverConfiguration.editTimeLimit);
     configObject[ConfigKey::c_meUrlPrefix] = m_serverConfiguration.meUrlPrefix;
     root[ConfigKey::c_serverConfiguration] = configObject;
 

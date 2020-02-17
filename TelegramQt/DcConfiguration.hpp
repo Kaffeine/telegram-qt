@@ -50,6 +50,7 @@ struct TELEGRAMQT_INTERNAL_EXPORT DcConfiguration
     quint32 onlineUpdatePeriodMs = 0;
     quint32 offlineBlurTimeoutMs = 0;
     quint32 offlineIdleTimeoutMs = 0;
+    quint32 editTimeLimit = 0; // seconds
     bool testMode = false;
     QString meUrlPrefix;
     QVector<DcOption> dcOptions;
