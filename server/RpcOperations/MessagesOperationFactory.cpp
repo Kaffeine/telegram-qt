@@ -2048,20 +2048,9 @@ void MessagesRpcOperation::submitMessageData(MessageData *messageData, quint64 r
     updateMessageId.quint32Id = selfNotification->messageId;
     updateMessageId.randomId = randomId;
 
-    TLUpdate newMessageUpdate;
-    newMessageUpdate.tlType = TLValue::UpdateNewMessage;
-    newMessageUpdate.pts = selfNotification->pts;
-    newMessageUpdate.ptsCount = 1;
-
-    Utils::setupTLMessage(&newMessageUpdate.message, messageData, selfNotification->messageId, fromUser);
-
-    const Peer targetPeer = messageData->toPeer();
-
     QSet<Peer> interestingPeers;
-    interestingPeers.insert(targetPeer);
-    if ((fromUser->toPeer() != targetPeer) && newMessageUpdate.message.fromId) {
-        interestingPeers.insert(Peer::fromUserId(newMessageUpdate.message.fromId));
-    }
+    TLUpdate newMessageUpdate;
+    api()->bakeUpdate(&newMessageUpdate, *selfNotification, &interestingPeers);
 
     // Bake updates
     TLUpdates result;
