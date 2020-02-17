@@ -4,6 +4,24 @@ namespace Telegram {
 
 namespace Server {
 
+DocumentAttribute DocumentAttribute::fromFileName(const QString &fileName)
+{
+    DocumentAttribute attribute;
+    attribute.type = FileName;
+    attribute.value = fileName;
+    return attribute;
+}
+
+bool DocumentAttribute::operator==(const DocumentAttribute &another) const
+{
+    return (type == another.type) && (value == another.value);
+}
+
+bool DocumentAttribute::operator!=(const DocumentAttribute &another) const
+{
+    return !(*this == another);
+}
+
 MessageData::MessageData(quint32 from, Peer to, const MessageContent &content)
     : m_content(content)
     , m_to(to)
@@ -66,6 +84,49 @@ MessageContent::MessageContent(const QString &text)
 MessageContent::MessageContent(const MediaData &media)
     : m_media(media)
 {
+}
+
+bool MessageContent::operator==(const MessageContent &anotherContent) const
+{
+    return m_text == anotherContent.m_text && m_media == anotherContent.m_media;
+}
+
+bool MediaData::operator==(const MediaData &anotherMediaData) const
+{
+    if (type != anotherMediaData.type) {
+        return false;
+    }
+    switch (type) {
+    case Invalid:
+        return true;
+    case Contact:
+        return contact == anotherMediaData.contact;
+    case Document:
+        if (caption != anotherMediaData.caption) {
+            return false;
+        }
+        if (file != anotherMediaData.file) {
+            return false;
+        }
+        if (attributes != anotherMediaData.attributes) {
+            return false;
+        }
+        if (mimeType != anotherMediaData.mimeType) {
+            return false;
+        }
+        return true;
+    case Photo:
+        if (caption != anotherMediaData.caption) {
+            return false;
+        }
+        if (image != anotherMediaData.image) {
+            return false;
+        }
+        return true;
+    }
+
+    Q_UNREACHABLE();
+    return false;
 }
 
 } // Server namespace

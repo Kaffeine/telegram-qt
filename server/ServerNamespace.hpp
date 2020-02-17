@@ -24,6 +24,9 @@ struct ServerSalt
 
 struct UserContact
 {
+    bool operator==(const UserContact &another) const;
+    bool operator!=(const UserContact &another) const;
+
     quint32 id = 0;
     QString phone;
     QString firstName;
@@ -35,6 +38,9 @@ class FileDescriptor
 {
 public:
     bool isValid() const { return true; }
+
+    bool operator==(const FileDescriptor &another) const;
+    bool operator!=(const FileDescriptor &another) const;
 
     // FileLocation:
     quint64 volumeId = 0;
@@ -74,6 +80,8 @@ struct ImageSizeDescriptor
 
     static const QVector<int> Sizes;
 
+    bool operator==(const ImageSizeDescriptor &another) const;
+
     int sizeType;
     FileDescriptor fileDescriptor;
     quint32 w = 0;
@@ -85,6 +93,8 @@ struct ImageSizeDescriptor
 struct ImageDescriptor
 {
     bool isValid() const { return id && !sizes.isEmpty(); }
+    bool operator==(const ImageDescriptor &another) const;
+    bool operator!=(const ImageDescriptor &another) const;
 
     quint64 id = 0;
     quint64 accessHash = 0;
@@ -96,6 +106,8 @@ struct ImageDescriptor
 
 struct PeerImage
 {
+    bool operator==(const PeerImage &another) const;
+
     quint64 id = 0;
     FileDescriptor small;
     FileDescriptor big;

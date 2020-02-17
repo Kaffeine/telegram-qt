@@ -35,13 +35,9 @@ struct DocumentAttribute
         FileName,
     };
 
-    static DocumentAttribute fromFileName(const QString &fileName)
-    {
-        DocumentAttribute attribute;
-        attribute.type = FileName;
-        attribute.value = fileName;
-        return attribute;
-    }
+    static DocumentAttribute fromFileName(const QString &fileName);
+    bool operator==(const DocumentAttribute &another) const;
+    bool operator!=(const DocumentAttribute &another) const;
 
     Type type = Invalid;
     QVariant value;
@@ -58,6 +54,8 @@ public:
     };
 
     bool isValid() const { return type != Invalid; }
+
+    bool operator==(const MediaData &anotherMediaData) const;
 
     QString caption;
     ImageDescriptor image;
@@ -81,6 +79,8 @@ public:
 
     const MediaData &media() const { return m_media; }
     QString text() const { return m_text; }
+
+    bool operator==(const MessageContent &anotherContent) const;
 
 protected:
     MediaData m_media;
