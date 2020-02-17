@@ -273,7 +273,7 @@ void ContactsRpcOperation::runImportContacts()
 
             TLImportedContact imported;
             imported.clientId = c.clientId;
-            imported.userId = contact.id;
+            imported.userId = contactUser->id();
             result.imported.append(imported);
         } else {
             // TODO: Check if this is correct.
