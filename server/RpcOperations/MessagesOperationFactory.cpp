@@ -1790,7 +1790,7 @@ void MessagesRpcOperation::runSendMedia()
         break;
     }
 
-    MessageData *messageData = api()->messageService()->addMessageMedia(selfUser->id(), recipient->toPeer(), media);
+    MessageData *messageData = api()->messageService()->addMessage(selfUser->id(), recipient->toPeer(), media);
     submitMessageData(messageData, arguments.randomId);
 }
 

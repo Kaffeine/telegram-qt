@@ -33,20 +33,10 @@ MessageService::MessageService(QObject *parent) :
 {
 }
 
-MessageData *MessageService::addMessage(quint32 fromId, Peer toPeer, const QString &text)
+MessageData *MessageService::addMessage(quint32 fromId, Peer toPeer, const MessageContent &content)
 {
     ++m_lastGlobalId;
-    m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, text));
-    MessageData *message = &m_messages[m_lastGlobalId];
-    message->setDate64(getMessageUniqueTs());
-    message->setGlobalId(m_lastGlobalId);
-    return message;
-}
-
-MessageData *MessageService::addMessageMedia(quint32 fromId, Peer toPeer, const MediaData &media)
-{
-    ++m_lastGlobalId;
-    m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, media));
+    m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, content));
     MessageData *message = &m_messages[m_lastGlobalId];
     message->setDate64(getMessageUniqueTs());
     message->setGlobalId(m_lastGlobalId);

@@ -4,22 +4,11 @@ namespace Telegram {
 
 namespace Server {
 
-MessageData::MessageData(quint32 from, Peer to) :
-    m_to(to),
-    m_fromId(from)
+MessageData::MessageData(quint32 from, Peer to, const MessageContent &content)
+    : m_content(content)
+    , m_to(to)
+    , m_fromId(from)
 {
-}
-
-MessageData::MessageData(quint32 from, Peer to, const QString &text) :
-    MessageData(from, to)
-{
-    m_text = text;
-}
-
-MessageData::MessageData(quint32 from, Peer to, const MediaData &media) :
-    MessageData(from, to)
-{
-    m_media = media;
 }
 
 void MessageData::setGlobalId(quint64 id)
@@ -31,6 +20,11 @@ quint32 MessageData::date() const
 {
     quint64 secs = m_date >> 32;
     return static_cast<quint32>(secs);
+}
+
+void MessageData::setContent(const MessageContent &newContent)
+{
+    m_content = newContent;
 }
 
 void MessageData::setDate32(quint32 date)
@@ -62,6 +56,16 @@ Peer MessageData::getDialogPeer(quint32 applicantUserId) const
         }
     }
     return m_to;
+}
+
+MessageContent::MessageContent(const QString &text)
+    : m_text(text)
+{
+}
+
+MessageContent::MessageContent(const MediaData &media)
+    : m_media(media)
+{
 }
 
 } // Server namespace

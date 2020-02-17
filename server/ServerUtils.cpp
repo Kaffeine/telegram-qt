@@ -165,12 +165,12 @@ bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 m
         output->fromId = messageData->fromId();
         flags |= TLMessage::FromId;
     //}
-    output->message = messageData->text();
+    output->message = messageData->content().text();
     output->date = messageData->date();
     output->toId = Telegram::Utils::toTLPeer(messageData->toPeer());
 
-    if (messageData->media().isValid()) {
-        setupTLMessageMedia(&output->media, &messageData->media());
+    if (messageData->content().media().isValid()) {
+        setupTLMessageMedia(&output->media, &messageData->content().media());
         flags |= TLMessage::Media;
     }
 

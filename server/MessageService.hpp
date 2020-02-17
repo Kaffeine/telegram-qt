@@ -34,8 +34,7 @@ class MessageService : public QObject
     Q_OBJECT
 public:
     explicit MessageService(QObject *parent = nullptr);
-    MessageData *addMessage(quint32 fromId, Peer toPeer, const QString &text);
-    MessageData *addMessageMedia(quint32 fromId, Peer toPeer, const MediaData &media);
+    MessageData *addMessage(quint32 fromId, Peer toPeer, const MessageContent &content);
     const MessageData *getMessage(quint64 globalId);
 
 protected:

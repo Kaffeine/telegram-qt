@@ -72,21 +72,36 @@ public:
     Type type = Invalid;
 };
 
+class MessageContent
+{
+public:
+    MessageContent() = default;
+    MessageContent(const QString &text);
+    MessageContent(const MediaData &media);
+
+    const MediaData &media() const { return m_media; }
+    QString text() const { return m_text; }
+
+protected:
+    MediaData m_media;
+    QString m_text;
+};
+
 class MessageData
 {
 public:
     MessageData() = default;
-    MessageData(quint32 from, Peer to, const QString &text);
-    MessageData(quint32 from, Peer to, const MediaData &media);
+    MessageData(quint32 from, Peer to, const MessageContent &content);
 
     quint64 globalId() const { return m_globalId; }
     void setGlobalId(quint64 id);
 
-    const MediaData &media() const { return m_media; }
-    QString text() const { return m_text; }
     Peer toPeer() const { return m_to; }
     quint32 fromId() const { return m_fromId; }
     quint32 date() const;
+
+    const MessageContent &content() const { return m_content; }
+    void setContent(const MessageContent &newContent);
 
     // Wanted for autotests
     void setDate32(quint32 date);
@@ -103,15 +118,12 @@ public:
     Peer getDialogPeer(quint32 applicantUserId) const;
 
 protected:
-    MessageData(quint32 from, Peer to);
-
+    MessageContent m_content;
     QHash<Peer, quint32> m_references;
-    MediaData m_media;
-    QString m_text;
     Peer m_to;
     quint64 m_globalId = 0;
-    quint32 m_fromId = 0;
     quint64 m_date = 0;
+    quint32 m_fromId = 0;
 };
 
 } // Server namespace
