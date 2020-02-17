@@ -51,12 +51,12 @@ Users:
 
 Messages:
 
-- messages.sendMessage
-- messages.sendMedia (contact and uploaded document)
-- messages.setTyping
 - messages.getDialogs
 - messages.getHistory
 - messages.readHistory
+- messages.sendMedia (contact and uploaded document)
+- messages.sendMessage
+- messages.setTyping
 
 Files:
 
