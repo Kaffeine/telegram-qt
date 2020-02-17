@@ -165,6 +165,10 @@ void RpcError::setReason(RpcError::Reason reason, quint32 arg)
     case LastnameInvalid:
     case LimitInvalid: // Limit must be divisible by 1KB
     case LocationInvalid:
+    case MessageEditTimeExpired:
+    case MessageEmpty:
+    case MessageIdInvalid:
+    case MessageNotModified:
     case OffsetInvalid: // Offset must be divisible by 1KB
     case PasswordHashInvalid:
     case PeerIdInvalid:
