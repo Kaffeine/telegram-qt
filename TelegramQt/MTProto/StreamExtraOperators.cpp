@@ -2796,6 +2796,23 @@ Stream &operator<<(Stream &stream, const TLMessagesStickers &messagesStickersVal
     return stream;
 }
 
+Stream &operator<<(Stream &stream, const TLPage &pageValue)
+{
+    stream << pageValue.tlType;
+    switch (pageValue.tlType) {
+    case TLValue::PagePart:
+    case TLValue::PageFull:
+        stream << pageValue.blocks;
+        stream << pageValue.photos;
+        stream << pageValue.documents;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
 Stream &operator<<(Stream &stream, const TLPageBlock &pageBlockValue)
 {
     stream << pageBlockValue.tlType;
@@ -3108,6 +3125,72 @@ Stream &operator<<(Stream &stream, const TLUserFull &userFullValue)
     return stream;
 }
 
+Stream &operator<<(Stream &stream, const TLWebPage &webPageValue)
+{
+    stream << webPageValue.tlType;
+    switch (webPageValue.tlType) {
+    case TLValue::WebPageEmpty:
+        stream << webPageValue.id;
+        break;
+    case TLValue::WebPagePending:
+        stream << webPageValue.id;
+        stream << webPageValue.date;
+        break;
+    case TLValue::WebPage:
+        stream << webPageValue.flags;
+        stream << webPageValue.id;
+        stream << webPageValue.url;
+        stream << webPageValue.displayUrl;
+        stream << webPageValue.hash;
+        if (webPageValue.flags & TLWebPage::Type) {
+            stream << webPageValue.type;
+        }
+        if (webPageValue.flags & TLWebPage::SiteName) {
+            stream << webPageValue.siteName;
+        }
+        if (webPageValue.flags & TLWebPage::Title) {
+            stream << webPageValue.title;
+        }
+        if (webPageValue.flags & TLWebPage::Description) {
+            stream << webPageValue.description;
+        }
+        if (webPageValue.flags & TLWebPage::Photo) {
+            stream << webPageValue.photo;
+        }
+        if (webPageValue.flags & TLWebPage::EmbedUrl) {
+            stream << webPageValue.embedUrl;
+        }
+        if (webPageValue.flags & TLWebPage::EmbedType) {
+            stream << webPageValue.embedType;
+        }
+        if (webPageValue.flags & TLWebPage::EmbedWidth) {
+            stream << webPageValue.embedWidth;
+        }
+        if (webPageValue.flags & TLWebPage::EmbedHeight) {
+            stream << webPageValue.embedHeight;
+        }
+        if (webPageValue.flags & TLWebPage::Duration) {
+            stream << webPageValue.duration;
+        }
+        if (webPageValue.flags & TLWebPage::Author) {
+            stream << webPageValue.author;
+        }
+        if (webPageValue.flags & TLWebPage::Document) {
+            stream << webPageValue.document;
+        }
+        if (webPageValue.flags & TLWebPage::CachedPage) {
+            stream << webPageValue.cachedPage;
+        }
+        break;
+    case TLValue::WebPageNotModified:
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
 Stream &operator<<(Stream &stream, const TLBotInlineResult &botInlineResultValue)
 {
     stream << botInlineResultValue.tlType;
@@ -3162,6 +3245,85 @@ Stream &operator<<(Stream &stream, const TLBotInlineResult &botInlineResultValue
             stream << botInlineResultValue.description;
         }
         stream << botInlineResultValue.sendMessage;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue)
+{
+    stream << messageMediaValue.tlType;
+    switch (messageMediaValue.tlType) {
+    case TLValue::MessageMediaEmpty:
+    case TLValue::MessageMediaUnsupported:
+        break;
+    case TLValue::MessageMediaPhoto:
+        stream << messageMediaValue.flags;
+        if (messageMediaValue.flags & TLMessageMedia::Photo) {
+            stream << messageMediaValue.photo;
+        }
+        if (messageMediaValue.flags & TLMessageMedia::Caption) {
+            stream << messageMediaValue.caption;
+        }
+        if (messageMediaValue.flags & TLMessageMedia::TtlSeconds) {
+            stream << messageMediaValue.ttlSeconds;
+        }
+        break;
+    case TLValue::MessageMediaGeo:
+        stream << messageMediaValue.geo;
+        break;
+    case TLValue::MessageMediaContact:
+        stream << messageMediaValue.phoneNumber;
+        stream << messageMediaValue.firstName;
+        stream << messageMediaValue.lastName;
+        stream << messageMediaValue.userId;
+        break;
+    case TLValue::MessageMediaDocument:
+        stream << messageMediaValue.flags;
+        if (messageMediaValue.flags & TLMessageMedia::Document) {
+            stream << messageMediaValue.document;
+        }
+        if (messageMediaValue.flags & TLMessageMedia::Caption) {
+            stream << messageMediaValue.caption;
+        }
+        if (messageMediaValue.flags & TLMessageMedia::TtlSeconds) {
+            stream << messageMediaValue.ttlSeconds;
+        }
+        break;
+    case TLValue::MessageMediaWebPage:
+        stream << messageMediaValue.webpage;
+        break;
+    case TLValue::MessageMediaVenue:
+        stream << messageMediaValue.geo;
+        stream << messageMediaValue.title;
+        stream << messageMediaValue.address;
+        stream << messageMediaValue.provider;
+        stream << messageMediaValue.venueId;
+        stream << messageMediaValue.venueType;
+        break;
+    case TLValue::MessageMediaGame:
+        stream << messageMediaValue.game;
+        break;
+    case TLValue::MessageMediaInvoice:
+        stream << messageMediaValue.flags;
+        stream << messageMediaValue.title;
+        stream << messageMediaValue.description;
+        if (messageMediaValue.flags & TLMessageMedia::WebDocumentPhoto) {
+            stream << messageMediaValue.webDocumentPhoto;
+        }
+        if (messageMediaValue.flags & TLMessageMedia::ReceiptMsgId) {
+            stream << messageMediaValue.receiptMsgId;
+        }
+        stream << messageMediaValue.currency;
+        stream << messageMediaValue.totalAmount;
+        stream << messageMediaValue.startParam;
+        break;
+    case TLValue::MessageMediaGeoLive:
+        stream << messageMediaValue.geo;
+        stream << messageMediaValue.period;
         break;
     default:
         break;
@@ -3243,23 +3405,6 @@ Stream &operator<<(Stream &stream, const TLMessagesStickerSetInstallResult &mess
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLPage &pageValue)
-{
-    stream << pageValue.tlType;
-    switch (pageValue.tlType) {
-    case TLValue::PagePart:
-    case TLValue::PageFull:
-        stream << pageValue.blocks;
-        stream << pageValue.photos;
-        stream << pageValue.documents;
-        break;
-    default:
-        break;
-    }
-
-    return stream;
-}
-
 Stream &operator<<(Stream &stream, const TLRecentMeUrl &recentMeUrlValue)
 {
     stream << recentMeUrlValue.tlType;
@@ -3290,72 +3435,6 @@ Stream &operator<<(Stream &stream, const TLRecentMeUrl &recentMeUrlValue)
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLWebPage &webPageValue)
-{
-    stream << webPageValue.tlType;
-    switch (webPageValue.tlType) {
-    case TLValue::WebPageEmpty:
-        stream << webPageValue.id;
-        break;
-    case TLValue::WebPagePending:
-        stream << webPageValue.id;
-        stream << webPageValue.date;
-        break;
-    case TLValue::WebPage:
-        stream << webPageValue.flags;
-        stream << webPageValue.id;
-        stream << webPageValue.url;
-        stream << webPageValue.displayUrl;
-        stream << webPageValue.hash;
-        if (webPageValue.flags & TLWebPage::Type) {
-            stream << webPageValue.type;
-        }
-        if (webPageValue.flags & TLWebPage::SiteName) {
-            stream << webPageValue.siteName;
-        }
-        if (webPageValue.flags & TLWebPage::Title) {
-            stream << webPageValue.title;
-        }
-        if (webPageValue.flags & TLWebPage::Description) {
-            stream << webPageValue.description;
-        }
-        if (webPageValue.flags & TLWebPage::Photo) {
-            stream << webPageValue.photo;
-        }
-        if (webPageValue.flags & TLWebPage::EmbedUrl) {
-            stream << webPageValue.embedUrl;
-        }
-        if (webPageValue.flags & TLWebPage::EmbedType) {
-            stream << webPageValue.embedType;
-        }
-        if (webPageValue.flags & TLWebPage::EmbedWidth) {
-            stream << webPageValue.embedWidth;
-        }
-        if (webPageValue.flags & TLWebPage::EmbedHeight) {
-            stream << webPageValue.embedHeight;
-        }
-        if (webPageValue.flags & TLWebPage::Duration) {
-            stream << webPageValue.duration;
-        }
-        if (webPageValue.flags & TLWebPage::Author) {
-            stream << webPageValue.author;
-        }
-        if (webPageValue.flags & TLWebPage::Document) {
-            stream << webPageValue.document;
-        }
-        if (webPageValue.flags & TLWebPage::CachedPage) {
-            stream << webPageValue.cachedPage;
-        }
-        break;
-    case TLValue::WebPageNotModified:
-        break;
-    default:
-        break;
-    }
-
-    return stream;
-}
-
 Stream &operator<<(Stream &stream, const TLHelpRecentMeUrls &helpRecentMeUrlsValue)
 {
     stream << helpRecentMeUrlsValue.tlType;
@@ -3364,85 +3443,6 @@ Stream &operator<<(Stream &stream, const TLHelpRecentMeUrls &helpRecentMeUrlsVal
         stream << helpRecentMeUrlsValue.urls;
         stream << helpRecentMeUrlsValue.chats;
         stream << helpRecentMeUrlsValue.users;
-        break;
-    default:
-        break;
-    }
-
-    return stream;
-}
-
-Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue)
-{
-    stream << messageMediaValue.tlType;
-    switch (messageMediaValue.tlType) {
-    case TLValue::MessageMediaEmpty:
-    case TLValue::MessageMediaUnsupported:
-        break;
-    case TLValue::MessageMediaPhoto:
-        stream << messageMediaValue.flags;
-        if (messageMediaValue.flags & TLMessageMedia::Photo) {
-            stream << messageMediaValue.photo;
-        }
-        if (messageMediaValue.flags & TLMessageMedia::Caption) {
-            stream << messageMediaValue.caption;
-        }
-        if (messageMediaValue.flags & TLMessageMedia::TtlSeconds) {
-            stream << messageMediaValue.ttlSeconds;
-        }
-        break;
-    case TLValue::MessageMediaGeo:
-        stream << messageMediaValue.geo;
-        break;
-    case TLValue::MessageMediaContact:
-        stream << messageMediaValue.phoneNumber;
-        stream << messageMediaValue.firstName;
-        stream << messageMediaValue.lastName;
-        stream << messageMediaValue.userId;
-        break;
-    case TLValue::MessageMediaDocument:
-        stream << messageMediaValue.flags;
-        if (messageMediaValue.flags & TLMessageMedia::Document) {
-            stream << messageMediaValue.document;
-        }
-        if (messageMediaValue.flags & TLMessageMedia::Caption) {
-            stream << messageMediaValue.caption;
-        }
-        if (messageMediaValue.flags & TLMessageMedia::TtlSeconds) {
-            stream << messageMediaValue.ttlSeconds;
-        }
-        break;
-    case TLValue::MessageMediaWebPage:
-        stream << messageMediaValue.webpage;
-        break;
-    case TLValue::MessageMediaVenue:
-        stream << messageMediaValue.geo;
-        stream << messageMediaValue.title;
-        stream << messageMediaValue.address;
-        stream << messageMediaValue.provider;
-        stream << messageMediaValue.venueId;
-        stream << messageMediaValue.venueType;
-        break;
-    case TLValue::MessageMediaGame:
-        stream << messageMediaValue.game;
-        break;
-    case TLValue::MessageMediaInvoice:
-        stream << messageMediaValue.flags;
-        stream << messageMediaValue.title;
-        stream << messageMediaValue.description;
-        if (messageMediaValue.flags & TLMessageMedia::WebDocumentPhoto) {
-            stream << messageMediaValue.webDocumentPhoto;
-        }
-        if (messageMediaValue.flags & TLMessageMedia::ReceiptMsgId) {
-            stream << messageMediaValue.receiptMsgId;
-        }
-        stream << messageMediaValue.currency;
-        stream << messageMediaValue.totalAmount;
-        stream << messageMediaValue.startParam;
-        break;
-    case TLValue::MessageMediaGeoLive:
-        stream << messageMediaValue.geo;
-        stream << messageMediaValue.period;
         break;
     default:
         break;

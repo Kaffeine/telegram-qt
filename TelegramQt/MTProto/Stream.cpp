@@ -5171,6 +5171,28 @@ Stream &Stream::operator>>(TLMessagesStickers &messagesStickersValue)
     return *this;
 }
 
+Stream &Stream::operator>>(TLPage &pageValue)
+{
+    TLPage result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PagePart:
+    case TLValue::PageFull:
+        *this >> result.blocks;
+        *this >> result.photos;
+        *this >> result.documents;
+        break;
+    default:
+        break;
+    }
+
+    pageValue = result;
+
+    return *this;
+}
+
 Stream &Stream::operator>>(TLPageBlock &pageBlockValue)
 {
     TLPageBlock result;
@@ -5528,6 +5550,77 @@ Stream &Stream::operator>>(TLUserFull &userFullValue)
     return *this;
 }
 
+Stream &Stream::operator>>(TLWebPage &webPageValue)
+{
+    TLWebPage result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::WebPageEmpty:
+        *this >> result.id;
+        break;
+    case TLValue::WebPagePending:
+        *this >> result.id;
+        *this >> result.date;
+        break;
+    case TLValue::WebPage:
+        *this >> result.flags;
+        *this >> result.id;
+        *this >> result.url;
+        *this >> result.displayUrl;
+        *this >> result.hash;
+        if (result.flags & TLWebPage::Type) {
+            *this >> result.type;
+        }
+        if (result.flags & TLWebPage::SiteName) {
+            *this >> result.siteName;
+        }
+        if (result.flags & TLWebPage::Title) {
+            *this >> result.title;
+        }
+        if (result.flags & TLWebPage::Description) {
+            *this >> result.description;
+        }
+        if (result.flags & TLWebPage::Photo) {
+            *this >> result.photo;
+        }
+        if (result.flags & TLWebPage::EmbedUrl) {
+            *this >> result.embedUrl;
+        }
+        if (result.flags & TLWebPage::EmbedType) {
+            *this >> result.embedType;
+        }
+        if (result.flags & TLWebPage::EmbedWidth) {
+            *this >> result.embedWidth;
+        }
+        if (result.flags & TLWebPage::EmbedHeight) {
+            *this >> result.embedHeight;
+        }
+        if (result.flags & TLWebPage::Duration) {
+            *this >> result.duration;
+        }
+        if (result.flags & TLWebPage::Author) {
+            *this >> result.author;
+        }
+        if (result.flags & TLWebPage::Document) {
+            *this >> result.document;
+        }
+        if (result.flags & TLWebPage::CachedPage) {
+            *this >> result.cachedPage;
+        }
+        break;
+    case TLValue::WebPageNotModified:
+        break;
+    default:
+        break;
+    }
+
+    webPageValue = result;
+
+    return *this;
+}
+
 Stream &Stream::operator>>(TLBotInlineResult &botInlineResultValue)
 {
     TLBotInlineResult result;
@@ -5591,6 +5684,90 @@ Stream &Stream::operator>>(TLBotInlineResult &botInlineResultValue)
     }
 
     botInlineResultValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLMessageMedia &messageMediaValue)
+{
+    TLMessageMedia result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::MessageMediaEmpty:
+    case TLValue::MessageMediaUnsupported:
+        break;
+    case TLValue::MessageMediaPhoto:
+        *this >> result.flags;
+        if (result.flags & TLMessageMedia::Photo) {
+            *this >> result.photo;
+        }
+        if (result.flags & TLMessageMedia::Caption) {
+            *this >> result.caption;
+        }
+        if (result.flags & TLMessageMedia::TtlSeconds) {
+            *this >> result.ttlSeconds;
+        }
+        break;
+    case TLValue::MessageMediaGeo:
+        *this >> result.geo;
+        break;
+    case TLValue::MessageMediaContact:
+        *this >> result.phoneNumber;
+        *this >> result.firstName;
+        *this >> result.lastName;
+        *this >> result.userId;
+        break;
+    case TLValue::MessageMediaDocument:
+        *this >> result.flags;
+        if (result.flags & TLMessageMedia::Document) {
+            *this >> result.document;
+        }
+        if (result.flags & TLMessageMedia::Caption) {
+            *this >> result.caption;
+        }
+        if (result.flags & TLMessageMedia::TtlSeconds) {
+            *this >> result.ttlSeconds;
+        }
+        break;
+    case TLValue::MessageMediaWebPage:
+        *this >> result.webpage;
+        break;
+    case TLValue::MessageMediaVenue:
+        *this >> result.geo;
+        *this >> result.title;
+        *this >> result.address;
+        *this >> result.provider;
+        *this >> result.venueId;
+        *this >> result.venueType;
+        break;
+    case TLValue::MessageMediaGame:
+        *this >> result.game;
+        break;
+    case TLValue::MessageMediaInvoice:
+        *this >> result.flags;
+        *this >> result.title;
+        *this >> result.description;
+        if (result.flags & TLMessageMedia::WebDocumentPhoto) {
+            *this >> result.webDocumentPhoto;
+        }
+        if (result.flags & TLMessageMedia::ReceiptMsgId) {
+            *this >> result.receiptMsgId;
+        }
+        *this >> result.currency;
+        *this >> result.totalAmount;
+        *this >> result.startParam;
+        break;
+    case TLValue::MessageMediaGeoLive:
+        *this >> result.geo;
+        *this >> result.period;
+        break;
+    default:
+        break;
+    }
+
+    messageMediaValue = result;
 
     return *this;
 }
@@ -5688,28 +5865,6 @@ Stream &Stream::operator>>(TLMessagesStickerSetInstallResult &messagesStickerSet
     return *this;
 }
 
-Stream &Stream::operator>>(TLPage &pageValue)
-{
-    TLPage result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::PagePart:
-    case TLValue::PageFull:
-        *this >> result.blocks;
-        *this >> result.photos;
-        *this >> result.documents;
-        break;
-    default:
-        break;
-    }
-
-    pageValue = result;
-
-    return *this;
-}
-
 Stream &Stream::operator>>(TLRecentMeUrl &recentMeUrlValue)
 {
     TLRecentMeUrl result;
@@ -5745,77 +5900,6 @@ Stream &Stream::operator>>(TLRecentMeUrl &recentMeUrlValue)
     return *this;
 }
 
-Stream &Stream::operator>>(TLWebPage &webPageValue)
-{
-    TLWebPage result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::WebPageEmpty:
-        *this >> result.id;
-        break;
-    case TLValue::WebPagePending:
-        *this >> result.id;
-        *this >> result.date;
-        break;
-    case TLValue::WebPage:
-        *this >> result.flags;
-        *this >> result.id;
-        *this >> result.url;
-        *this >> result.displayUrl;
-        *this >> result.hash;
-        if (result.flags & TLWebPage::Type) {
-            *this >> result.type;
-        }
-        if (result.flags & TLWebPage::SiteName) {
-            *this >> result.siteName;
-        }
-        if (result.flags & TLWebPage::Title) {
-            *this >> result.title;
-        }
-        if (result.flags & TLWebPage::Description) {
-            *this >> result.description;
-        }
-        if (result.flags & TLWebPage::Photo) {
-            *this >> result.photo;
-        }
-        if (result.flags & TLWebPage::EmbedUrl) {
-            *this >> result.embedUrl;
-        }
-        if (result.flags & TLWebPage::EmbedType) {
-            *this >> result.embedType;
-        }
-        if (result.flags & TLWebPage::EmbedWidth) {
-            *this >> result.embedWidth;
-        }
-        if (result.flags & TLWebPage::EmbedHeight) {
-            *this >> result.embedHeight;
-        }
-        if (result.flags & TLWebPage::Duration) {
-            *this >> result.duration;
-        }
-        if (result.flags & TLWebPage::Author) {
-            *this >> result.author;
-        }
-        if (result.flags & TLWebPage::Document) {
-            *this >> result.document;
-        }
-        if (result.flags & TLWebPage::CachedPage) {
-            *this >> result.cachedPage;
-        }
-        break;
-    case TLValue::WebPageNotModified:
-        break;
-    default:
-        break;
-    }
-
-    webPageValue = result;
-
-    return *this;
-}
-
 Stream &Stream::operator>>(TLHelpRecentMeUrls &helpRecentMeUrlsValue)
 {
     TLHelpRecentMeUrls result;
@@ -5833,90 +5917,6 @@ Stream &Stream::operator>>(TLHelpRecentMeUrls &helpRecentMeUrlsValue)
     }
 
     helpRecentMeUrlsValue = result;
-
-    return *this;
-}
-
-Stream &Stream::operator>>(TLMessageMedia &messageMediaValue)
-{
-    TLMessageMedia result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::MessageMediaEmpty:
-    case TLValue::MessageMediaUnsupported:
-        break;
-    case TLValue::MessageMediaPhoto:
-        *this >> result.flags;
-        if (result.flags & TLMessageMedia::Photo) {
-            *this >> result.photo;
-        }
-        if (result.flags & TLMessageMedia::Caption) {
-            *this >> result.caption;
-        }
-        if (result.flags & TLMessageMedia::TtlSeconds) {
-            *this >> result.ttlSeconds;
-        }
-        break;
-    case TLValue::MessageMediaGeo:
-        *this >> result.geo;
-        break;
-    case TLValue::MessageMediaContact:
-        *this >> result.phoneNumber;
-        *this >> result.firstName;
-        *this >> result.lastName;
-        *this >> result.userId;
-        break;
-    case TLValue::MessageMediaDocument:
-        *this >> result.flags;
-        if (result.flags & TLMessageMedia::Document) {
-            *this >> result.document;
-        }
-        if (result.flags & TLMessageMedia::Caption) {
-            *this >> result.caption;
-        }
-        if (result.flags & TLMessageMedia::TtlSeconds) {
-            *this >> result.ttlSeconds;
-        }
-        break;
-    case TLValue::MessageMediaWebPage:
-        *this >> result.webpage;
-        break;
-    case TLValue::MessageMediaVenue:
-        *this >> result.geo;
-        *this >> result.title;
-        *this >> result.address;
-        *this >> result.provider;
-        *this >> result.venueId;
-        *this >> result.venueType;
-        break;
-    case TLValue::MessageMediaGame:
-        *this >> result.game;
-        break;
-    case TLValue::MessageMediaInvoice:
-        *this >> result.flags;
-        *this >> result.title;
-        *this >> result.description;
-        if (result.flags & TLMessageMedia::WebDocumentPhoto) {
-            *this >> result.webDocumentPhoto;
-        }
-        if (result.flags & TLMessageMedia::ReceiptMsgId) {
-            *this >> result.receiptMsgId;
-        }
-        *this >> result.currency;
-        *this >> result.totalAmount;
-        *this >> result.startParam;
-        break;
-    case TLValue::MessageMediaGeoLive:
-        *this >> result.geo;
-        *this >> result.period;
-        break;
-    default:
-        break;
-    }
-
-    messageMediaValue = result;
 
     return *this;
 }

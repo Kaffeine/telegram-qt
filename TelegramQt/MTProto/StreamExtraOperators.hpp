@@ -168,6 +168,7 @@ TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesRe
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesSavedGifs &messagesSavedGifsValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesStickerSet &messagesStickerSetValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesStickers &messagesStickersValue);
+TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLPage &pageValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLPageBlock &pageBlockValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLPaymentsPaymentForm &paymentsPaymentFormValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLPaymentsPaymentReceipt &paymentsPaymentReceiptValue);
@@ -177,16 +178,15 @@ TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLPhotosPhot
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLPhotosPhotos &photosPhotosValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLStickerSetCovered &stickerSetCoveredValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLUserFull &userFullValue);
+TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLWebPage &webPageValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLBotInlineResult &botInlineResultValue);
+TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesArchivedStickers &messagesArchivedStickersValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesBotResults &messagesBotResultsValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesFeaturedStickers &messagesFeaturedStickersValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesStickerSetInstallResult &messagesStickerSetInstallResultValue);
-TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLPage &pageValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLRecentMeUrl &recentMeUrlValue);
-TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLWebPage &webPageValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLHelpRecentMeUrls &helpRecentMeUrlsValue);
-TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessage &messageValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesDialogs &messagesDialogsValue);
 TELEGRAMQT_INTERNAL_EXPORT Stream &operator<<(Stream &stream, const TLMessagesMessages &messagesMessagesValue);

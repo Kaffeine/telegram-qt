@@ -110,6 +110,12 @@ public:
 };
 
 // Generated TLTypes
+struct TLRichText;
+struct TLPageBlock;
+
+using TLRichTextPtr = TLPtr<TLRichText>;
+using TLPageBlockPtr = TLPtr<TLPageBlock>;
+
 struct TELEGRAMQT_INTERNAL_EXPORT TLAccountDaysTTL {
     constexpr TLAccountDaysTTL() = default;
 
@@ -1977,9 +1983,6 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLResPQ {
     TLVector<quint64> serverPublicKeyFingerprints;
     TLValue tlType = TLValue::ResPQ;
 };
-
-struct TLRichText;
-using TLRichTextPtr = TLPtr<TLRichText>;
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLRichText {
     TLRichText() = default;
@@ -4433,8 +4436,24 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickers {
     TLValue tlType = TLValue::MessagesStickersNotModified;
 };
 
-struct TLPageBlock;
-using TLPageBlockPtr = TLPtr<TLPageBlock>;
+struct TELEGRAMQT_INTERNAL_EXPORT TLPage {
+    TLPage() = default;
+
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
+        case TLValue::PagePart:
+        case TLValue::PageFull:
+            return true;
+        default:
+            return false;
+        };
+    }
+    TLVector<TLPageBlock*> blocks;
+    TLVector<TLPhoto> photos;
+    TLVector<TLDocument> documents;
+    TLValue tlType = TLValue::PagePart;
+};
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLPageBlock {
     TLPageBlock() = default;
@@ -4728,6 +4747,58 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLUserFull {
     TLValue tlType = TLValue::UserFull;
 };
 
+struct TELEGRAMQT_INTERNAL_EXPORT TLWebPage {
+    TLWebPage() = default;
+
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
+        case TLValue::WebPageEmpty:
+        case TLValue::WebPagePending:
+        case TLValue::WebPage:
+        case TLValue::WebPageNotModified:
+            return true;
+        default:
+            return false;
+        };
+    }
+    enum Flags {
+        Type = 1 << 0,
+        SiteName = 1 << 1,
+        Title = 1 << 2,
+        Description = 1 << 3,
+        Photo = 1 << 4,
+        EmbedType = 1 << 5,
+        EmbedUrl = 1 << 5,
+        EmbedHeight = 1 << 6,
+        EmbedWidth = 1 << 6,
+        Duration = 1 << 7,
+        Author = 1 << 8,
+        Document = 1 << 9,
+        CachedPage = 1 << 10,
+    };
+    quint64 id = 0;
+    quint32 date = 0;
+    quint32 flags = 0;
+    QString url;
+    QString displayUrl;
+    quint32 hash = 0;
+    QString type;
+    QString siteName;
+    QString title;
+    QString description;
+    TLPhoto photo;
+    QString embedUrl;
+    QString embedType;
+    quint32 embedWidth = 0;
+    quint32 embedHeight = 0;
+    quint32 duration = 0;
+    QString author;
+    TLDocument document;
+    TLPage cachedPage;
+    TLValue tlType = TLValue::WebPageEmpty;
+};
+
 struct TELEGRAMQT_INTERNAL_EXPORT TLBotInlineResult {
     TLBotInlineResult() = default;
 
@@ -4772,6 +4843,67 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLBotInlineResult {
     TLPhoto photo;
     TLDocument document;
     TLValue tlType = TLValue::BotInlineResult;
+};
+
+struct TELEGRAMQT_INTERNAL_EXPORT TLMessageMedia {
+    TLMessageMedia() = default;
+
+    bool isValid() const { return hasType(tlType); }
+    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
+        switch (value) {
+        case TLValue::MessageMediaEmpty:
+        case TLValue::MessageMediaPhoto:
+        case TLValue::MessageMediaGeo:
+        case TLValue::MessageMediaContact:
+        case TLValue::MessageMediaUnsupported:
+        case TLValue::MessageMediaDocument:
+        case TLValue::MessageMediaWebPage:
+        case TLValue::MessageMediaVenue:
+        case TLValue::MessageMediaGame:
+        case TLValue::MessageMediaInvoice:
+        case TLValue::MessageMediaGeoLive:
+            return true;
+        default:
+            return false;
+        };
+    }
+    enum Flags {
+        WebDocumentPhoto = 1 << 0,
+        Document = 1 << 0,
+        Photo = 1 << 0,
+        ShippingAddressRequested = 1 << 1,
+        Caption = 1 << 1,
+        ReceiptMsgId = 1 << 2,
+        TtlSeconds = 1 << 2,
+        Test = 1 << 3,
+    };
+    bool shippingAddressRequested() const { return flags & ShippingAddressRequested; }
+    bool test() const { return flags & Test; }
+    quint32 flags = 0;
+    TLPhoto photo;
+    QString caption;
+    quint32 ttlSeconds = 0;
+    TLGeoPoint geo;
+    QString phoneNumber;
+    QString firstName;
+    QString lastName;
+    quint32 userId = 0;
+    TLDocument document;
+    TLWebPage webpage;
+    QString title;
+    QString address;
+    QString provider;
+    QString venueId;
+    QString venueType;
+    TLGame game;
+    QString description;
+    TLWebDocument webDocumentPhoto;
+    quint32 receiptMsgId = 0;
+    QString currency;
+    quint64 totalAmount = 0;
+    QString startParam;
+    quint32 period = 0;
+    TLValue tlType = TLValue::MessageMediaEmpty;
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesArchivedStickers {
@@ -4855,25 +4987,6 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLMessagesStickerSetInstallResult {
     TLValue tlType = TLValue::MessagesStickerSetInstallResultSuccess;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLPage {
-    TLPage() = default;
-
-    bool isValid() const { return hasType(tlType); }
-    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
-        switch (value) {
-        case TLValue::PagePart:
-        case TLValue::PageFull:
-            return true;
-        default:
-            return false;
-        };
-    }
-    TLVector<TLPageBlock*> blocks;
-    TLVector<TLPhoto> photos;
-    TLVector<TLDocument> documents;
-    TLValue tlType = TLValue::PagePart;
-};
-
 struct TELEGRAMQT_INTERNAL_EXPORT TLRecentMeUrl {
     TLRecentMeUrl() = default;
 
@@ -4898,58 +5011,6 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLRecentMeUrl {
     TLValue tlType = TLValue::RecentMeUrlUnknown;
 };
 
-struct TELEGRAMQT_INTERNAL_EXPORT TLWebPage {
-    TLWebPage() = default;
-
-    bool isValid() const { return hasType(tlType); }
-    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
-        switch (value) {
-        case TLValue::WebPageEmpty:
-        case TLValue::WebPagePending:
-        case TLValue::WebPage:
-        case TLValue::WebPageNotModified:
-            return true;
-        default:
-            return false;
-        };
-    }
-    enum Flags {
-        Type = 1 << 0,
-        SiteName = 1 << 1,
-        Title = 1 << 2,
-        Description = 1 << 3,
-        Photo = 1 << 4,
-        EmbedType = 1 << 5,
-        EmbedUrl = 1 << 5,
-        EmbedHeight = 1 << 6,
-        EmbedWidth = 1 << 6,
-        Duration = 1 << 7,
-        Author = 1 << 8,
-        Document = 1 << 9,
-        CachedPage = 1 << 10,
-    };
-    quint64 id = 0;
-    quint32 date = 0;
-    quint32 flags = 0;
-    QString url;
-    QString displayUrl;
-    quint32 hash = 0;
-    QString type;
-    QString siteName;
-    QString title;
-    QString description;
-    TLPhoto photo;
-    QString embedUrl;
-    QString embedType;
-    quint32 embedWidth = 0;
-    quint32 embedHeight = 0;
-    quint32 duration = 0;
-    QString author;
-    TLDocument document;
-    TLPage cachedPage;
-    TLValue tlType = TLValue::WebPageEmpty;
-};
-
 struct TELEGRAMQT_INTERNAL_EXPORT TLHelpRecentMeUrls {
     TLHelpRecentMeUrls() = default;
 
@@ -4966,67 +5027,6 @@ struct TELEGRAMQT_INTERNAL_EXPORT TLHelpRecentMeUrls {
     TLVector<TLChat> chats;
     TLVector<TLUser> users;
     TLValue tlType = TLValue::HelpRecentMeUrls;
-};
-
-struct TELEGRAMQT_INTERNAL_EXPORT TLMessageMedia {
-    TLMessageMedia() = default;
-
-    bool isValid() const { return hasType(tlType); }
-    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {
-        switch (value) {
-        case TLValue::MessageMediaEmpty:
-        case TLValue::MessageMediaPhoto:
-        case TLValue::MessageMediaGeo:
-        case TLValue::MessageMediaContact:
-        case TLValue::MessageMediaUnsupported:
-        case TLValue::MessageMediaDocument:
-        case TLValue::MessageMediaWebPage:
-        case TLValue::MessageMediaVenue:
-        case TLValue::MessageMediaGame:
-        case TLValue::MessageMediaInvoice:
-        case TLValue::MessageMediaGeoLive:
-            return true;
-        default:
-            return false;
-        };
-    }
-    enum Flags {
-        WebDocumentPhoto = 1 << 0,
-        Document = 1 << 0,
-        Photo = 1 << 0,
-        ShippingAddressRequested = 1 << 1,
-        Caption = 1 << 1,
-        ReceiptMsgId = 1 << 2,
-        TtlSeconds = 1 << 2,
-        Test = 1 << 3,
-    };
-    bool shippingAddressRequested() const { return flags & ShippingAddressRequested; }
-    bool test() const { return flags & Test; }
-    quint32 flags = 0;
-    TLPhoto photo;
-    QString caption;
-    quint32 ttlSeconds = 0;
-    TLGeoPoint geo;
-    QString phoneNumber;
-    QString firstName;
-    QString lastName;
-    quint32 userId = 0;
-    TLDocument document;
-    TLWebPage webpage;
-    QString title;
-    QString address;
-    QString provider;
-    QString venueId;
-    QString venueType;
-    TLGame game;
-    QString description;
-    TLWebDocument webDocumentPhoto;
-    quint32 receiptMsgId = 0;
-    QString currency;
-    quint64 totalAmount = 0;
-    QString startParam;
-    quint32 period = 0;
-    TLValue tlType = TLValue::MessageMediaEmpty;
 };
 
 struct TELEGRAMQT_INTERNAL_EXPORT TLMessage {

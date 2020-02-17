@@ -261,6 +261,7 @@ public:
     Stream &operator>>(TLMessagesSavedGifs &messagesSavedGifsValue);
     Stream &operator>>(TLMessagesStickerSet &messagesStickerSetValue);
     Stream &operator>>(TLMessagesStickers &messagesStickersValue);
+    Stream &operator>>(TLPage &pageValue);
     Stream &operator>>(TLPageBlock &pageBlockValue);
     Stream &operator>>(TLPaymentsPaymentForm &paymentsPaymentFormValue);
     Stream &operator>>(TLPaymentsPaymentReceipt &paymentsPaymentReceiptValue);
@@ -270,16 +271,15 @@ public:
     Stream &operator>>(TLPhotosPhotos &photosPhotosValue);
     Stream &operator>>(TLStickerSetCovered &stickerSetCoveredValue);
     Stream &operator>>(TLUserFull &userFullValue);
+    Stream &operator>>(TLWebPage &webPageValue);
     Stream &operator>>(TLBotInlineResult &botInlineResultValue);
+    Stream &operator>>(TLMessageMedia &messageMediaValue);
     Stream &operator>>(TLMessagesArchivedStickers &messagesArchivedStickersValue);
     Stream &operator>>(TLMessagesBotResults &messagesBotResultsValue);
     Stream &operator>>(TLMessagesFeaturedStickers &messagesFeaturedStickersValue);
     Stream &operator>>(TLMessagesStickerSetInstallResult &messagesStickerSetInstallResultValue);
-    Stream &operator>>(TLPage &pageValue);
     Stream &operator>>(TLRecentMeUrl &recentMeUrlValue);
-    Stream &operator>>(TLWebPage &webPageValue);
     Stream &operator>>(TLHelpRecentMeUrls &helpRecentMeUrlsValue);
-    Stream &operator>>(TLMessageMedia &messageMediaValue);
     Stream &operator>>(TLMessage &messageValue);
     Stream &operator>>(TLMessagesDialogs &messagesDialogsValue);
     Stream &operator>>(TLMessagesMessages &messagesMessagesValue);

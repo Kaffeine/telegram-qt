@@ -776,20 +776,6 @@ QString flagsToString(const TLUserFull &instance)
 }
 
 template<>
-QString flagsToString(const TLMessagesBotResults &instance)
-{
-    const quint32 flags = instance.flags;
-    QStringList result;
-    if (flags & TLMessagesBotResults::Gallery) {
-        result << QLatin1String("Gallery");
-    }
-    if (result.isEmpty()) {
-        return QLatin1String("<no bool flags>");
-    }
-    return result.join(QLatin1Char('|'));
-}
-
-template<>
 QString flagsToString(const TLMessageMedia &instance)
 {
     const quint32 flags = instance.flags;
@@ -799,6 +785,20 @@ QString flagsToString(const TLMessageMedia &instance)
     }
     if (flags & TLMessageMedia::Test) {
         result << QLatin1String("Test");
+    }
+    if (result.isEmpty()) {
+        return QLatin1String("<no bool flags>");
+    }
+    return result.join(QLatin1Char('|'));
+}
+
+template<>
+QString flagsToString(const TLMessagesBotResults &instance)
+{
+    const quint32 flags = instance.flags;
+    QStringList result;
+    if (flags & TLMessagesBotResults::Gallery) {
+        result << QLatin1String("Gallery");
     }
     if (result.isEmpty()) {
         return QLatin1String("<no bool flags>");
@@ -6108,6 +6108,28 @@ QDebug operator<<(QDebug d, const TLMessagesStickers &type)
     return d;
 }
 
+QDebug operator<<(QDebug d, const TLPage &type)
+{
+    QDebugStateSaver saver(d);
+    d.nospace();
+    d << "TLPage(" << type.tlType << ") {";
+    Spacer spacer;
+    switch (type.tlType) {
+    case TLValue::PagePart:
+    case TLValue::PageFull:
+        d << "\n";
+        d << spacer.innerSpaces() << "blocks: " << type.blocks <<"\n";
+        d << spacer.innerSpaces() << "photos: " << type.photos <<"\n";
+        d << spacer.innerSpaces() << "documents: " << type.documents <<"\n";
+        break;
+    default:
+        break;
+    }
+    d << spacer.outerSpaces() << "}";
+
+    return d;
+}
+
 QDebug operator<<(QDebug d, const TLPageBlock &type)
 {
     QDebugStateSaver saver(d);
@@ -6491,6 +6513,80 @@ QDebug operator<<(QDebug d, const TLUserFull &type)
     return d;
 }
 
+QDebug operator<<(QDebug d, const TLWebPage &type)
+{
+    QDebugStateSaver saver(d);
+    d.nospace();
+    d << "TLWebPage(" << type.tlType << ") {";
+    Spacer spacer;
+    switch (type.tlType) {
+    case TLValue::WebPageEmpty:
+        d << "\n";
+        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
+        break;
+    case TLValue::WebPagePending:
+        d << "\n";
+        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
+        d << spacer.innerSpaces() << "date: " << type.date <<"\n";
+        break;
+    case TLValue::WebPage:
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
+        d << spacer.innerSpaces() << "url: " << type.url <<"\n";
+        d << spacer.innerSpaces() << "displayUrl: " << type.displayUrl <<"\n";
+        d << spacer.innerSpaces() << "hash: " << type.hash <<"\n";
+        if (type.flags & 1 << 0) {
+            d << spacer.innerSpaces() << "type: " << type.type <<"\n";
+        }
+        if (type.flags & 1 << 1) {
+            d << spacer.innerSpaces() << "siteName: " << type.siteName <<"\n";
+        }
+        if (type.flags & 1 << 2) {
+            d << spacer.innerSpaces() << "title: " << type.title <<"\n";
+        }
+        if (type.flags & 1 << 3) {
+            d << spacer.innerSpaces() << "description: " << type.description <<"\n";
+        }
+        if (type.flags & 1 << 4) {
+            d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
+        }
+        if (type.flags & 1 << 5) {
+            d << spacer.innerSpaces() << "embedUrl: " << type.embedUrl <<"\n";
+        }
+        if (type.flags & 1 << 5) {
+            d << spacer.innerSpaces() << "embedType: " << type.embedType <<"\n";
+        }
+        if (type.flags & 1 << 6) {
+            d << spacer.innerSpaces() << "embedWidth: " << type.embedWidth <<"\n";
+        }
+        if (type.flags & 1 << 6) {
+            d << spacer.innerSpaces() << "embedHeight: " << type.embedHeight <<"\n";
+        }
+        if (type.flags & 1 << 7) {
+            d << spacer.innerSpaces() << "duration: " << type.duration <<"\n";
+        }
+        if (type.flags & 1 << 8) {
+            d << spacer.innerSpaces() << "author: " << type.author <<"\n";
+        }
+        if (type.flags & 1 << 9) {
+            d << spacer.innerSpaces() << "document: " << type.document <<"\n";
+        }
+        if (type.flags & 1 << 10) {
+            d << spacer.innerSpaces() << "cachedPage: " << type.cachedPage <<"\n";
+        }
+        break;
+    case TLValue::WebPageNotModified:
+        d << " }";
+        return d;
+    default:
+        break;
+    }
+    d << spacer.outerSpaces() << "}";
+
+    return d;
+}
+
 QDebug operator<<(QDebug d, const TLBotInlineResult &type)
 {
     QDebugStateSaver saver(d);
@@ -6550,6 +6646,100 @@ QDebug operator<<(QDebug d, const TLBotInlineResult &type)
             d << spacer.innerSpaces() << "description: " << type.description <<"\n";
         }
         d << spacer.innerSpaces() << "sendMessage: " << type.sendMessage <<"\n";
+        break;
+    default:
+        break;
+    }
+    d << spacer.outerSpaces() << "}";
+
+    return d;
+}
+
+QDebug operator<<(QDebug d, const TLMessageMedia &type)
+{
+    QDebugStateSaver saver(d);
+    d.nospace();
+    d << "TLMessageMedia(" << type.tlType << ") {";
+    Spacer spacer;
+    switch (type.tlType) {
+    case TLValue::MessageMediaEmpty:
+    case TLValue::MessageMediaUnsupported:
+        d << " }";
+        return d;
+    case TLValue::MessageMediaPhoto:
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        if (type.flags & 1 << 0) {
+            d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
+        }
+        if (type.flags & 1 << 1) {
+            d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
+        }
+        if (type.flags & 1 << 2) {
+            d << spacer.innerSpaces() << "ttlSeconds: " << type.ttlSeconds <<"\n";
+        }
+        break;
+    case TLValue::MessageMediaGeo:
+        d << "\n";
+        d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
+        break;
+    case TLValue::MessageMediaContact:
+        d << "\n";
+        d << spacer.innerSpaces() << "phoneNumber: " << Telegram::Utils::maskPhoneNumber(type.phoneNumber) <<"\n";
+        d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
+        d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
+        d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
+        break;
+    case TLValue::MessageMediaDocument:
+        d << "\n";
+        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
+        if (type.flags & 1 << 0) {
+            d << spacer.innerSpaces() << "document: " << type.document <<"\n";
+        }
+        if (type.flags & 1 << 1) {
+            d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
+        }
+        if (type.flags & 1 << 2) {
+            d << spacer.innerSpaces() << "ttlSeconds: " << type.ttlSeconds <<"\n";
+        }
+        break;
+    case TLValue::MessageMediaWebPage:
+        d << "\n";
+        d << spacer.innerSpaces() << "webpage: " << type.webpage <<"\n";
+        break;
+    case TLValue::MessageMediaVenue:
+        d << "\n";
+        d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
+        d << spacer.innerSpaces() << "title: " << type.title <<"\n";
+        d << spacer.innerSpaces() << "address: " << type.address <<"\n";
+        d << spacer.innerSpaces() << "provider: " << type.provider <<"\n";
+        d << spacer.innerSpaces() << "venueId: " << type.venueId <<"\n";
+        d << spacer.innerSpaces() << "venueType: " << type.venueType <<"\n";
+        break;
+    case TLValue::MessageMediaGame:
+        d << "\n";
+        d << spacer.innerSpaces() << "game: " << type.game <<"\n";
+        break;
+    case TLValue::MessageMediaInvoice:
+        d << "\n";
+        d.noquote() << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
+        d.quote();
+        d << spacer.innerSpaces() << "title: " << type.title <<"\n";
+        d << spacer.innerSpaces() << "description: " << type.description <<"\n";
+        if (type.flags & 1 << 0) {
+            d << spacer.innerSpaces() << "webDocumentPhoto: " << type.webDocumentPhoto <<"\n";
+        }
+        if (type.flags & 1 << 2) {
+            d << spacer.innerSpaces() << "receiptMsgId: " << type.receiptMsgId <<"\n";
+        }
+        d << spacer.innerSpaces() << "currency: " << type.currency <<"\n";
+        d << spacer.innerSpaces() << "totalAmount: " << type.totalAmount <<"\n";
+        d << spacer.innerSpaces() << "startParam: " << type.startParam <<"\n";
+        break;
+    case TLValue::MessageMediaGeoLive:
+        d << "\n";
+        d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
+        d << spacer.innerSpaces() << "period: " << type.period <<"\n";
         break;
     default:
         break;
@@ -6655,28 +6845,6 @@ QDebug operator<<(QDebug d, const TLMessagesStickerSetInstallResult &type)
     return d;
 }
 
-QDebug operator<<(QDebug d, const TLPage &type)
-{
-    QDebugStateSaver saver(d);
-    d.nospace();
-    d << "TLPage(" << type.tlType << ") {";
-    Spacer spacer;
-    switch (type.tlType) {
-    case TLValue::PagePart:
-    case TLValue::PageFull:
-        d << "\n";
-        d << spacer.innerSpaces() << "blocks: " << type.blocks <<"\n";
-        d << spacer.innerSpaces() << "photos: " << type.photos <<"\n";
-        d << spacer.innerSpaces() << "documents: " << type.documents <<"\n";
-        break;
-    default:
-        break;
-    }
-    d << spacer.outerSpaces() << "}";
-
-    return d;
-}
-
 QDebug operator<<(QDebug d, const TLRecentMeUrl &type)
 {
     QDebugStateSaver saver(d);
@@ -6716,80 +6884,6 @@ QDebug operator<<(QDebug d, const TLRecentMeUrl &type)
     return d;
 }
 
-QDebug operator<<(QDebug d, const TLWebPage &type)
-{
-    QDebugStateSaver saver(d);
-    d.nospace();
-    d << "TLWebPage(" << type.tlType << ") {";
-    Spacer spacer;
-    switch (type.tlType) {
-    case TLValue::WebPageEmpty:
-        d << "\n";
-        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        break;
-    case TLValue::WebPagePending:
-        d << "\n";
-        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "date: " << type.date <<"\n";
-        break;
-    case TLValue::WebPage:
-        d << "\n";
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
-        d << spacer.innerSpaces() << "id: " << type.id <<"\n";
-        d << spacer.innerSpaces() << "url: " << type.url <<"\n";
-        d << spacer.innerSpaces() << "displayUrl: " << type.displayUrl <<"\n";
-        d << spacer.innerSpaces() << "hash: " << type.hash <<"\n";
-        if (type.flags & 1 << 0) {
-            d << spacer.innerSpaces() << "type: " << type.type <<"\n";
-        }
-        if (type.flags & 1 << 1) {
-            d << spacer.innerSpaces() << "siteName: " << type.siteName <<"\n";
-        }
-        if (type.flags & 1 << 2) {
-            d << spacer.innerSpaces() << "title: " << type.title <<"\n";
-        }
-        if (type.flags & 1 << 3) {
-            d << spacer.innerSpaces() << "description: " << type.description <<"\n";
-        }
-        if (type.flags & 1 << 4) {
-            d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
-        }
-        if (type.flags & 1 << 5) {
-            d << spacer.innerSpaces() << "embedUrl: " << type.embedUrl <<"\n";
-        }
-        if (type.flags & 1 << 5) {
-            d << spacer.innerSpaces() << "embedType: " << type.embedType <<"\n";
-        }
-        if (type.flags & 1 << 6) {
-            d << spacer.innerSpaces() << "embedWidth: " << type.embedWidth <<"\n";
-        }
-        if (type.flags & 1 << 6) {
-            d << spacer.innerSpaces() << "embedHeight: " << type.embedHeight <<"\n";
-        }
-        if (type.flags & 1 << 7) {
-            d << spacer.innerSpaces() << "duration: " << type.duration <<"\n";
-        }
-        if (type.flags & 1 << 8) {
-            d << spacer.innerSpaces() << "author: " << type.author <<"\n";
-        }
-        if (type.flags & 1 << 9) {
-            d << spacer.innerSpaces() << "document: " << type.document <<"\n";
-        }
-        if (type.flags & 1 << 10) {
-            d << spacer.innerSpaces() << "cachedPage: " << type.cachedPage <<"\n";
-        }
-        break;
-    case TLValue::WebPageNotModified:
-        d << " }";
-        return d;
-    default:
-        break;
-    }
-    d << spacer.outerSpaces() << "}";
-
-    return d;
-}
-
 QDebug operator<<(QDebug d, const TLHelpRecentMeUrls &type)
 {
     QDebugStateSaver saver(d);
@@ -6802,100 +6896,6 @@ QDebug operator<<(QDebug d, const TLHelpRecentMeUrls &type)
         d << spacer.innerSpaces() << "urls: " << type.urls <<"\n";
         d << spacer.innerSpaces() << "chats: " << type.chats <<"\n";
         d << spacer.innerSpaces() << "users: " << type.users <<"\n";
-        break;
-    default:
-        break;
-    }
-    d << spacer.outerSpaces() << "}";
-
-    return d;
-}
-
-QDebug operator<<(QDebug d, const TLMessageMedia &type)
-{
-    QDebugStateSaver saver(d);
-    d.nospace();
-    d << "TLMessageMedia(" << type.tlType << ") {";
-    Spacer spacer;
-    switch (type.tlType) {
-    case TLValue::MessageMediaEmpty:
-    case TLValue::MessageMediaUnsupported:
-        d << " }";
-        return d;
-    case TLValue::MessageMediaPhoto:
-        d << "\n";
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
-        if (type.flags & 1 << 0) {
-            d << spacer.innerSpaces() << "photo: " << type.photo <<"\n";
-        }
-        if (type.flags & 1 << 1) {
-            d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
-        }
-        if (type.flags & 1 << 2) {
-            d << spacer.innerSpaces() << "ttlSeconds: " << type.ttlSeconds <<"\n";
-        }
-        break;
-    case TLValue::MessageMediaGeo:
-        d << "\n";
-        d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
-        break;
-    case TLValue::MessageMediaContact:
-        d << "\n";
-        d << spacer.innerSpaces() << "phoneNumber: " << Telegram::Utils::maskPhoneNumber(type.phoneNumber) <<"\n";
-        d << spacer.innerSpaces() << "firstName: " << type.firstName <<"\n";
-        d << spacer.innerSpaces() << "lastName: " << type.lastName <<"\n";
-        d << spacer.innerSpaces() << "userId: " << type.userId <<"\n";
-        break;
-    case TLValue::MessageMediaDocument:
-        d << "\n";
-        d << spacer.innerSpaces() << "flags: " << type.flags <<"\n";
-        if (type.flags & 1 << 0) {
-            d << spacer.innerSpaces() << "document: " << type.document <<"\n";
-        }
-        if (type.flags & 1 << 1) {
-            d << spacer.innerSpaces() << "caption: " << type.caption <<"\n";
-        }
-        if (type.flags & 1 << 2) {
-            d << spacer.innerSpaces() << "ttlSeconds: " << type.ttlSeconds <<"\n";
-        }
-        break;
-    case TLValue::MessageMediaWebPage:
-        d << "\n";
-        d << spacer.innerSpaces() << "webpage: " << type.webpage <<"\n";
-        break;
-    case TLValue::MessageMediaVenue:
-        d << "\n";
-        d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
-        d << spacer.innerSpaces() << "title: " << type.title <<"\n";
-        d << spacer.innerSpaces() << "address: " << type.address <<"\n";
-        d << spacer.innerSpaces() << "provider: " << type.provider <<"\n";
-        d << spacer.innerSpaces() << "venueId: " << type.venueId <<"\n";
-        d << spacer.innerSpaces() << "venueType: " << type.venueType <<"\n";
-        break;
-    case TLValue::MessageMediaGame:
-        d << "\n";
-        d << spacer.innerSpaces() << "game: " << type.game <<"\n";
-        break;
-    case TLValue::MessageMediaInvoice:
-        d << "\n";
-        d.noquote() << spacer.innerSpaces() << "flags: " << type.flags << " (" << flagsToString(type) <<")\n";
-        d.quote();
-        d << spacer.innerSpaces() << "title: " << type.title <<"\n";
-        d << spacer.innerSpaces() << "description: " << type.description <<"\n";
-        if (type.flags & 1 << 0) {
-            d << spacer.innerSpaces() << "webDocumentPhoto: " << type.webDocumentPhoto <<"\n";
-        }
-        if (type.flags & 1 << 2) {
-            d << spacer.innerSpaces() << "receiptMsgId: " << type.receiptMsgId <<"\n";
-        }
-        d << spacer.innerSpaces() << "currency: " << type.currency <<"\n";
-        d << spacer.innerSpaces() << "totalAmount: " << type.totalAmount <<"\n";
-        d << spacer.innerSpaces() << "startParam: " << type.startParam <<"\n";
-        break;
-    case TLValue::MessageMediaGeoLive:
-        d << "\n";
-        d << spacer.innerSpaces() << "geo: " << type.geo <<"\n";
-        d << spacer.innerSpaces() << "period: " << type.period <<"\n";
         break;
     default:
         break;

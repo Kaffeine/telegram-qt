@@ -228,6 +228,7 @@ TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesRecentSti
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesSavedGifs &messagesSavedGifsValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesStickerSet &messagesStickerSetValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesStickers &messagesStickersValue);
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLPage &pageValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLPageBlock &pageBlockValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLPaymentsPaymentForm &paymentsPaymentFormValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLPaymentsPaymentReceipt &paymentsPaymentReceiptValue);
@@ -237,16 +238,15 @@ TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLPhotosPhoto &phot
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLPhotosPhotos &photosPhotosValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLStickerSetCovered &stickerSetCoveredValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLUserFull &userFullValue);
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLWebPage &webPageValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLBotInlineResult &botInlineResultValue);
+TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessageMedia &messageMediaValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesArchivedStickers &messagesArchivedStickersValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesBotResults &messagesBotResultsValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesFeaturedStickers &messagesFeaturedStickersValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesStickerSetInstallResult &messagesStickerSetInstallResultValue);
-TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLPage &pageValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLRecentMeUrl &recentMeUrlValue);
-TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLWebPage &webPageValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLHelpRecentMeUrls &helpRecentMeUrlsValue);
-TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessageMedia &messageMediaValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessage &messageValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesDialogs &messagesDialogsValue);
 TELEGRAMQT_INTERNAL_EXPORT QDebug operator<<(QDebug d, const TLMessagesMessages &messagesMessagesValue);
