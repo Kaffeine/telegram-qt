@@ -1,5 +1,6 @@
 #include "Session.hpp"
 
+#include "ApiUtils.hpp"
 #include "RandomGenerator.hpp"
 
 #include <QDateTime>
@@ -8,16 +9,6 @@
 namespace Telegram {
 
 namespace Server {
-
-static quint32 getCurrentTime()
-{
-#if QT_VERSION > QT_VERSION_CHECK(5, 8, 0)
-    qint64 timestamp = QDateTime::currentSecsSinceEpoch();
-#else
-    qint64 timestamp = QDateTime::currentMSecsSinceEpoch() / 1000;
-#endif
-    return static_cast<quint32>(timestamp);
-}
 
 constexpr quint32 c_sessionRotation = 1 * 60 * 60;
 constexpr quint32 c_sessionOverlapping = 300;
@@ -30,7 +21,7 @@ Session::Session(quint64 sessionId) :
 
 quint64 Session::getOldSalt() const
 {
-    if (m_oldSalt.validUntil < getCurrentTime()) {
+    if (m_oldSalt.validUntil < Utils::getCurrentTime()) {
         return 0;
     }
     return m_oldSalt.salt;
@@ -48,7 +39,7 @@ quint64 Session::getServerSalt() const
     // https://core.telegram.org/mtproto/service_messages#request-for-several-future-salts
     // "a server salt is attached to the authorization key rather than being session-specific"
 
-    if (m_salts.at(1).validSince < getCurrentTime()) {
+    if (m_salts.at(1).validSince < Utils::getCurrentTime()) {
         m_oldSalt = m_salts.takeFirst();
         if (m_salts.count() < 2) {
             addSalt();
@@ -68,7 +59,7 @@ bool Session::generateInitialServerSalt()
         qCritical() << Q_FUNC_INFO << "a salt is already set";
         return false;
     }
-    ServerSalt s = generateSalt(getCurrentTime());
+    ServerSalt s = generateSalt(Utils::getCurrentTime());
     m_salts.append(s);
     addSalt();
     return true;
@@ -82,7 +73,7 @@ void Session::setInitialServerSalt(quint64 salt)
     }
     ServerSalt s;
     s.salt = salt;
-    s.validSince = getCurrentTime();
+    s.validSince = Utils::getCurrentTime();
     s.validUntil = s.validSince + c_sessionRotation;
     m_salts.append(s);
     addSalt();
