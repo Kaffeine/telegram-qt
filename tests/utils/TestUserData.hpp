@@ -46,13 +46,19 @@ struct UserData
     }
 };
 
+QString phoneNumberForIdNumber(int idNumber)
+{
+    const QString idStr = QString::number(idNumber);
+    return QLatin1String("12345") + idStr;
+}
+
 UserData mkUserData(int idNumber, quint32 dcId)
 {
     const QString idStr = QString::number(idNumber);
     UserData userData;
     userData.dcId = dcId;
     userData.setName(QLatin1String("First") + idStr, QLatin1String("Last") + idStr);
-    userData.phoneNumber = QLatin1String("12345") + idStr;
+    userData.phoneNumber = phoneNumberForIdNumber(idNumber);
     return userData;
 }
 

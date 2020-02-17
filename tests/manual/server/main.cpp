@@ -16,6 +16,7 @@
  */
 
 #include "DcConfiguration.hpp"
+#include "Debug.hpp"
 #include "DefaultAuthorizationProvider.hpp"
 #include "JsonDataImporter.hpp"
 #include "LocalCluster.hpp"
@@ -66,6 +67,43 @@ Authorization::Code ConstantAuthCodeProvider::generateCode(Session *session, con
     return code;
 }
 
+void generateDialogs(LocalCluster *cluster, const QString &userPhone, const int dialogsCount)
+{
+    qInfo() << "Generate" << dialogsCount << "dialogs for user" << userPhone;
+    LocalUser *user = cluster->getUser(userPhone);
+    if (!user) {
+        user = cluster->addUser(userPhone, /* dc */ 1);
+        user->setFirstName(user->toPeer().toString());
+        user->setLastName(QStringLiteral("Dc%1").arg(user->dcId()));
+    }
+
+    AbstractServerApi *serverApi = cluster->getServerApiInstance(user->dcId());
+
+    const int dcCount = cluster->serverConfiguration().dcCount();
+
+    int startId = 0;
+    while (cluster->getUser(phoneNumberForIdNumber(startId))) {
+        ++startId;
+    }
+
+    for (int i = 0; i < dialogsCount; ++i) {
+        // Add users to different DCs
+        const quint32 userDcId = static_cast<quint32>((i % dcCount) + 1);
+        LocalUser *dialogN = tryAddUser(cluster, mkUserData(startId + i, userDcId));
+        qInfo() << "    Add dialog" << dialogN->toPeer();
+        AbstractServerApi *contactServer = cluster->getServerApiInstance(dialogN->dcId());
+
+        MessageData *data = serverApi->messageService()
+                ->addMessage(dialogN->userId(), user->toPeer(), QStringLiteral("mgs%1").arg(i + 1));
+        data->setDate32(data->date() - 60);
+        cluster->processMessage(data);
+
+        // Upload an image
+        const ImageDescriptor image = uploadUserImage(contactServer);
+        dialogN->updateImage(image);
+    }
+}
+
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
@@ -99,6 +137,15 @@ int main(int argc, char *argv[])
     portOption.setValueName(QLatin1String("port"));
     portOption.setDefaultValue(QLatin1String("10443"));
     parser.addOption(portOption);
+
+    QCommandLineOption generateDataOption(QStringList({ QLatin1String("g"), QLatin1String("generate") }));
+    generateDataOption.setDescription(QLatin1String("Generate some data"));
+    parser.addOption(generateDataOption);
+
+    QCommandLineOption userOption(QStringList({ QLatin1String("u"), QLatin1String("user") }));
+    userOption.setValueName(QLatin1String("phone number"));
+    userOption.setDefaultValue(QLatin1String("123456789"));
+    parser.addOption(userOption);
 
     parser.process(a);
 
@@ -152,28 +199,10 @@ int main(int argc, char *argv[])
     });
     saveTimer.start();
 
-    LocalUser *user = cluster.addUser(QStringLiteral("123456789"), /* dc */ 1);
-    user->setFirstName(QStringLiteral("Dc1User1"));
-    user->setLastName(QStringLiteral("Dc1"));
-    AbstractServerApi *serverApi = cluster.getServerApiInstance(user->dcId());
-
-    const int dcCount = cluster.serverConfiguration().dcCount();
-    const int dialogsCount = 3;
-
-    for (int i = 0; i < dialogsCount; ++i) {
-        LocalUser *dialogN = tryAddUser(&cluster,
-                                        // Add users to different DCs
-                                        mkUserData(i, static_cast<quint32>((i % dcCount) + 1)));
-        AbstractServerApi *contactServer = cluster.getServerApiInstance(dialogN->dcId());
-
-        MessageData *data = serverApi->messageService()
-                ->addMessage(dialogN->userId(), user->toPeer(), QStringLiteral("mgs%1").arg(i + 1));
-        data->setDate32(data->date() - 60);
-        cluster.processMessage(data);
-
-        // Upload an image
-        const ImageDescriptor image = uploadUserImage(contactServer);
-        dialogN->updateImage(image);
+    if (parser.isSet(generateDataOption)) {
+        QString userPhone = parser.value(userOption);
+        const int dialogsCount = 3;
+        generateDialogs(&cluster, userPhone, dialogsCount);
     }
 
     int retCode = a.exec();
