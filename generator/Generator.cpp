@@ -475,10 +475,6 @@ QString Generator::generateTLValuesDefinition(const Predicate *predicate)
 QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSources)
 {
     QString code;
-    if (type.isSelfReferenced()) {
-        code.append(QStringLiteral("struct %1;\n").arg(type.name));
-        code.append(QStringLiteral("using %1Ptr = TLPtr<%1>;\n\n").arg(type.name));
-    }
     code.append(QString("struct %1 %2 {\n").arg(c_internalExportMacro, type.name));
 
     bool constExpr = true;
@@ -1485,12 +1481,13 @@ QStringList Generator::reorderLinesAsExist(QStringList newLines, QStringList exi
 struct TypeTreeItem
 {
     TypeTreeItem() { }
-    TypeTreeItem(const QString &type) :
+    explicit TypeTreeItem(const QString &type) :
         typeName(type)
     {
     }
 
     QString typeName;
+    bool refByPointer = false;
     QVector<TypeTreeItem*> dependencies;
     void ensureDependence(TypeTreeItem *item) {
         if (dependencies.contains(item)) {
@@ -1604,8 +1601,10 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
         QHash<QString,TypeTreeItem*> typeItemHash;
         typeItemHash.reserve(typeTree.count());
         for (const QString &typeName : types.keys() + solvedTypesNames) {
-            typeTree.append(typeName);
-            typeItemHash.insert(typeName, &typeTree.last());
+            typeTree.append(TypeTreeItem(typeName));
+            TypeTreeItem *newItem = &typeTree.last();
+            newItem->refByPointer = types.value(typeName).isSelfReferenced();
+            typeItemHash.insert(typeName, newItem);
         }
 
         for (const QString &typeName : types.keys()) {
@@ -1644,7 +1643,7 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                 TypeTreeItem *item = *currentItemIt;
                 bool solved = true;
                 for (TypeTreeItem *dependence : item->dependencies) {
-                    if (item == dependence) {
+                    if (dependence->refByPointer) {
                         continue;
                     }
                     if (!notSolvedTypes.contains(dependence)) {
@@ -2016,6 +2015,12 @@ void Generator::generate()
             continue;
         }
 
+        if (type.isSelfReferenced()) {
+            if (type.isSelfReferenced()) {
+                tlStructCode.append(QStringLiteral("struct %1;\n").arg(type.name));
+                tlPtrsCode.append(QStringLiteral("using %1Ptr = TLPtr<%1>;\n").arg(type.name));
+            }
+        }
         codeOfTLTypes.append(generateTLTypeDefinition(type, m_addSpecSources));
 
         codeStreamReadDeclarations.append(streamReadOperatorDeclaration(&type));

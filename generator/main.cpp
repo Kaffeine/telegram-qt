@@ -569,7 +569,10 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     }
     {
         OutputFile fileValues("MTProto/TLTypes.hpp");
-        fileValues.replace("TLTypes", generator.codeOfTLTypes);
+        QString completeTlCode = generator.tlStructCode
+                + QLatin1Char('\n') + generator.tlPtrsCode
+                + QLatin1Char('\n') + generator.codeOfTLTypes;
+        fileValues.replace("TLTypes", completeTlCode);
     }
 
     {

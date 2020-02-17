@@ -289,6 +289,8 @@ public:
 
     void getUsedAndVectorTypes(QStringList &usedTypes, QStringList &vectors) const;
 
+    QString tlStructCode;
+    QString tlPtrsCode;
     QString codeOfTLTypes;
     QString codeStreamReadDeclarations;
     QString codeStreamReadDefinitions;
