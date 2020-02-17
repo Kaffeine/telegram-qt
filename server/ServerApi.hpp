@@ -44,6 +44,7 @@ public:
     enum class Type {
         Invalid,
         NewMessage,
+        EditMessage,
         MessageAction,
         ReadInbox,
         ReadOutbox,
@@ -115,6 +116,7 @@ public:
 
     virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
     virtual QVector<UpdateNotification> processMessage(MessageData *messageData) = 0;
+    virtual QVector<UpdateNotification> processMessageEdit(MessageData *messageData) = 0;
     virtual QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
                                                       LocalUser *applicant,
                                                       Session *excludeSession) const = 0;

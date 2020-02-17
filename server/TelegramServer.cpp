@@ -751,6 +751,7 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
 
     switch (notification.type) {
     case UpdateNotification::Type::NewMessage:
+    case UpdateNotification::Type::EditMessage:
     {
         const quint64 globalMessageId = recipient->getPostBox()->getMessageGlobalId(notification.messageId);
         const MessageData *messageData = messageService()->getMessage(globalMessageId);
@@ -765,6 +766,12 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
                 update->tlType = TLValue::UpdateNewChannelMessage;
             } else {
                 update->tlType = TLValue::UpdateNewMessage;
+            }
+        } else if (notification.type == UpdateNotification::Type::EditMessage) {
+            if (messageData->toPeer().type() == Peer::Channel) {
+                update->tlType = TLValue::UpdateEditChannelMessage;
+            } else {
+                update->tlType = TLValue::UpdateEditMessage;
             }
         } else {
             qCWarning(lcServerUpdates) << CALL_INFO << "unexpected notification type";
@@ -867,6 +874,7 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
         updates.date = notification.date;
 
         switch (notification.type) {
+        case UpdateNotification::Type::EditMessage:
         case UpdateNotification::Type::NewMessage:
         case UpdateNotification::Type::ReadInbox:
         case UpdateNotification::Type::ReadOutbox:
