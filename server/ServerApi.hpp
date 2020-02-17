@@ -9,6 +9,7 @@
 
 struct TLInputPeer;
 struct TLInputUser;
+struct TLUpdate;
 
 namespace Telegram {
 
@@ -87,6 +88,7 @@ public:
     virtual AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const = 0;
     virtual Peer getPeerByUserName(const QString &userName) const = 0;
 
+    virtual bool bakeUpdate(TLUpdate *update, const UpdateNotification &notification, QSet<Peer> *interestingPeers) const = 0;
     virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;
     virtual void queueServerUpdates(const QVector<UpdateNotification> &updates) = 0;
 };

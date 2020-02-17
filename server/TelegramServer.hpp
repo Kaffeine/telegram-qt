@@ -111,6 +111,7 @@ public:
 
     AbstractUser *importUserContact(LocalUser *user, const UserContact &contact) override;
 
+    bool bakeUpdate(TLUpdate *update, const UpdateNotification &notification, QSet<Peer> *interestingPeers) const override;
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
     void queueServerUpdates(const QVector<UpdateNotification> &notifications) override;
 

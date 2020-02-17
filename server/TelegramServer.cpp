@@ -740,125 +740,146 @@ AbstractUser *Server::importUserContact(LocalUser *user, const UserContact &cont
     return registeredUser;
 }
 
+bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification, QSet<Peer> *interestingPeers) const
+{
+    LocalUser *recipient = getUser(notification.userId);
+    AbstractUser *interestingUser = nullptr;
+    if (!recipient) {
+        qCWarning(lcServerUpdates) << CALL_INFO << "Invalid user!" << notification.userId;
+        return false;
+    }
+
+    switch (notification.type) {
+    case UpdateNotification::Type::NewMessage:
+    {
+        const quint64 globalMessageId = recipient->getPostBox()->getMessageGlobalId(notification.messageId);
+        const MessageData *messageData = messageService()->getMessage(globalMessageId);
+
+        if (!messageData) {
+            qCWarning(lcServerUpdates) << CALL_INFO << "no message";
+            return false;
+        }
+
+        if (notification.type == UpdateNotification::Type::NewMessage) {
+            if (messageData->toPeer().type() == Peer::Channel) {
+                update->tlType = TLValue::UpdateNewChannelMessage;
+            } else {
+                update->tlType = TLValue::UpdateNewMessage;
+            }
+        } else {
+            qCWarning(lcServerUpdates) << CALL_INFO << "unexpected notification type";
+            return false;
+        }
+
+        Utils::setupTLMessage(&update->message, messageData, notification.messageId, recipient);
+        update->pts = notification.pts;
+        update->ptsCount = 1;
+
+        interestingPeers->insert(messageData->toPeer());
+        if (update->message.fromId) {
+            interestingPeers->insert(Peer::fromUserId(update->message.fromId));
+        }
+    }
+        break;
+    case UpdateNotification::Type::MessageAction:
+    {
+        update->tlType = TLValue::UpdateUserTyping;
+        update->userId = notification.fromId;
+        // Note: action depends on Layer. Process this to support different layers.
+        update->action = Telegram::Utils::toTL(notification.messageAction);
+    }
+        break;
+    case UpdateNotification::Type::ReadInbox:
+    case UpdateNotification::Type::ReadOutbox:
+    {
+        update->tlType = notification.type == UpdateNotification::Type::ReadInbox
+                  ? TLValue::UpdateReadHistoryInbox
+                  : TLValue::UpdateReadHistoryOutbox;
+        update->pts = notification.pts;
+        update->ptsCount = 1;
+        update->peer = Telegram::Utils::toTLPeer(notification.dialogPeer);
+        update->maxId = notification.messageId;
+    }
+        break;
+    case UpdateNotification::Type::UpdateName:
+    {
+        update->tlType = TLValue::UpdateUserName;
+        update->userId = notification.fromId;
+
+        if (!interestingUser || (interestingUser->id() != update->userId)) {
+            interestingUser = getAbstractUser(update->userId);
+            if (!interestingUser) {
+                qCWarning(lcServerUpdates) << CALL_INFO
+                                           << "Invalid interesting user" << notification.userId
+                                           << "for update" << notification.type;
+                return false;
+            }
+        }
+
+        update->firstName = interestingUser->firstName();
+        update->lastName = interestingUser->lastName();
+        update->username = interestingUser->userName();
+    }
+        break;
+    case UpdateNotification::Type::UpdateUserStatus:
+    {
+        update->tlType = TLValue::UpdateUserStatus;
+        update->userId = notification.fromId;
+
+        if (!interestingUser || (interestingUser->id() != notification.userId)) {
+            interestingUser = getAbstractUser(update->userId);
+            if (!interestingUser) {
+                qCWarning(lcServerUpdates) << CALL_INFO
+                                           << "Invalid interesting user" << notification.userId
+                                           << "for update" << notification.type;
+                return false;
+            }
+        }
+
+        Utils::setupTLUserStatus(&update->status, interestingUser, recipient);
+    }
+        break;
+    case UpdateNotification::Type::Invalid:
+        return false;
+    }
+
+    return true;
+}
+
 void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 {
-   AbstractUser *interestingUser = nullptr;
-
     for (const UpdateNotification &notification : notifications) {
+        QSet<Peer> interestingPeers;
+
+        TLUpdates updates;
+        TLUpdate &update = updates.update;
+        if (!bakeUpdate(&update, notification, &interestingPeers)) {
+            qCWarning(lcServerUpdates) << CALL_INFO << "Unable to prepare update";
+            continue;
+        }
+
         LocalUser *recipient = getUser(notification.userId);
         if (!recipient) {
             qCWarning(lcServerUpdates) << CALL_INFO << "Invalid user!" << notification.userId;
             continue;
         }
 
-        TLUpdates updates;
-        updates.tlType = TLValue::Updates;
         updates.date = notification.date;
 
-        QSet<Peer> interestingPeers;
         switch (notification.type) {
         case UpdateNotification::Type::NewMessage:
-        {
-            TLUpdate update;
-            const quint64 globalMessageId = recipient->getPostBox()->getMessageGlobalId(notification.messageId);
-            const MessageData *messageData = messageService()->getMessage(globalMessageId);
-
-            if (!messageData) {
-                qCWarning(lcServerUpdates) << CALL_INFO << "no message";
-                continue;
-            }
-
-            if (notification.type == UpdateNotification::Type::NewMessage) {
-                if (messageData->toPeer().type() == Peer::Channel) {
-                    update.tlType = TLValue::UpdateNewChannelMessage;
-                } else {
-                    update.tlType = TLValue::UpdateNewMessage;
-                }
-            } else {
-                qCWarning(lcServerUpdates) << CALL_INFO << "unexpected notification type";
-                continue;
-            }
-
-            Utils::setupTLMessage(&update.message, messageData, notification.messageId, recipient);
-            update.pts = notification.pts;
-            update.ptsCount = 1;
-
-            interestingPeers.insert(messageData->toPeer());
-            if (update.message.fromId) {
-                interestingPeers.insert(Peer::fromUserId(update.message.fromId));
-            }
-
-            updates.seq = 0; // ??
-            updates.updates = { update };
-        }
-            break;
-        case UpdateNotification::Type::MessageAction:
-        {
-            updates.tlType = TLValue::UpdateShort;
-            TLUpdate &update = updates.update;
-            update.tlType = TLValue::UpdateUserTyping;
-            update.userId = notification.fromId;
-            // Note: action depends on Layer. Process this to support different layers.
-            update.action = Telegram::Utils::toTL(notification.messageAction);
-        }
-            break;
         case UpdateNotification::Type::ReadInbox:
         case UpdateNotification::Type::ReadOutbox:
-        {
-            TLUpdate update;
-            update.tlType = notification.type == UpdateNotification::Type::ReadInbox
-                      ? TLValue::UpdateReadHistoryInbox
-                      : TLValue::UpdateReadHistoryOutbox;
-            update.pts = notification.pts;
-            update.ptsCount = 1;
-            update.peer = Telegram::Utils::toTLPeer(notification.dialogPeer);
-            update.maxId = notification.messageId;
-
+            updates.tlType = TLValue::Updates;
             updates.seq = 0; // ??
+            // bakeUpdate modified the updates.update object inplace
             updates.updates = { update };
-        }
             break;
+        case UpdateNotification::Type::MessageAction:
         case UpdateNotification::Type::UpdateName:
-        {
-            updates.tlType = TLValue::UpdateShort;
-            TLUpdate &update = updates.update;
-            update.tlType = TLValue::UpdateUserName;
-            update.userId = notification.fromId;
-
-            if (!interestingUser || (interestingUser->id() != update.userId)) {
-                interestingUser = getAbstractUser(update.userId);
-                if (!interestingUser) {
-                    qCWarning(lcServerUpdates) << CALL_INFO
-                                               << "Invalid interesting user" << notification.userId
-                                               << "for update" << notification.type;
-                    continue;
-                }
-            }
-
-            update.firstName = interestingUser->firstName();
-            update.lastName = interestingUser->lastName();
-            update.username = interestingUser->userName();
-        }
-            break;
         case UpdateNotification::Type::UpdateUserStatus:
-        {
             updates.tlType = TLValue::UpdateShort;
-            TLUpdate &update = updates.update;
-            update.tlType = TLValue::UpdateUserStatus;
-            update.userId = notification.fromId;
-
-            if (!interestingUser || (interestingUser->id() != notification.userId)) {
-                interestingUser = getAbstractUser(update.userId);
-                if (!interestingUser) {
-                    qCWarning(lcServerUpdates) << CALL_INFO
-                                               << "Invalid interesting user" << notification.userId
-                                               << "for update" << notification.type;
-                    continue;
-                }
-            }
-
-            Utils::setupTLUserStatus(&update.status, interestingUser, recipient);
-        }
+            // bakeUpdate modified the updates.update object inplace
             break;
         case UpdateNotification::Type::Invalid:
             break;
