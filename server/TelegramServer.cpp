@@ -757,10 +757,9 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 
         QSet<Peer> interestingPeers;
         switch (notification.type) {
-        case UpdateNotification::Type::NewMessage: {
+        case UpdateNotification::Type::NewMessage:
+        {
             TLUpdate update;
-            update.tlType = TLValue::UpdateNewMessage;
-
             const quint64 globalMessageId = recipient->getPostBox()->getMessageGlobalId(notification.messageId);
             const MessageData *messageData = messageService()->getMessage(globalMessageId);
 
@@ -768,6 +767,18 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
                 qCWarning(lcServerUpdates) << CALL_INFO << "no message";
                 continue;
             }
+
+            if (notification.type == UpdateNotification::Type::NewMessage) {
+                if (messageData->toPeer().type() == Peer::Channel) {
+                    update.tlType = TLValue::UpdateNewChannelMessage;
+                } else {
+                    update.tlType = TLValue::UpdateNewMessage;
+                }
+            } else {
+                qCWarning(lcServerUpdates) << CALL_INFO << "unexpected notification type";
+                continue;
+            }
+
             Utils::setupTLMessage(&update.message, messageData, notification.messageId, recipient);
             update.pts = notification.pts;
             update.ptsCount = 1;
