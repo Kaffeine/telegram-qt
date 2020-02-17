@@ -708,7 +708,8 @@ void tst_MessagesApi::getHistory()
     QFETCH(int, messagesCount);
     QFETCH(quint32, baseDate);
 
-    const UserData c_user1 = c_userWithPassword;
+    const UserData user1Data = c_userWithPassword;
+    const UserData user2Data = c_user2;
 
     const DcOption clientDcOption = c_localDcOptions.first();
     const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
@@ -722,11 +723,11 @@ void tst_MessagesApi::getHistory()
     cluster.setServerConfiguration(c_localDcConfiguration);
     QVERIFY(cluster.start());
 
-    Server::LocalUser *user1 = tryAddUser(&cluster, c_user1);
-    Server::AbstractUser *user2 = tryAddUser(&cluster, c_user2);
+    Server::LocalUser *user1 = tryAddUser(&cluster, user1Data);
+    Server::AbstractUser *user2 = tryAddUser(&cluster, user2Data);
     QVERIFY(user1 && user2);
 
-    Server::AbstractServerApi *server = cluster.getServerApiInstance(c_user1.dcId);
+    Server::AbstractServerApi *server = cluster.getServerApiInstance(user1Data.dcId);
     QVERIFY(server);
 
     for (int i = 0; i < messagesCount; ++i) {
@@ -738,8 +739,8 @@ void tst_MessagesApi::getHistory()
 
     // Prepare clients
     Client::Client client;
-    Test::setupClientHelper(&client, c_user1, publicKey, clientDcOption);
-    signInHelper(&client, c_user1, &authProvider);
+    Test::setupClientHelper(&client, user1Data, publicKey, clientDcOption);
+    signInHelper(&client, user1Data, &authProvider);
     TRY_VERIFY2(client.isSignedIn(), "Unexpected sign in fail");
     TRY_COMPARE(client.connectionApi()->status(), Telegram::Client::ConnectionApi::StatusReady);
 
