@@ -1505,11 +1505,12 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
     QStringList solvedTypesNames = nativeTypes;
     solvedTypesNames.append(tlValueName);
 
-    { // Bake types
+    {
+        qCDebug(c_loggingTypes) << "Bake types...";
         for (const QString &typeName : types.keys()) {
             TLType &type = types[typeName];
             QHash<QString,QString> members;
-            // Bake member types
+            qCDebug(c_loggingTypes) << "Bake member types...";
             for (const TLSubType &subType : type.subTypes) {
                 for (const TLParam &member : subType.members) {
                     if (members.contains(member.getName())) {
@@ -1524,7 +1525,7 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                 }
             }
 
-            // Bake conflicted member aliases
+            qCDebug(c_loggingTypes) << "Bake conflicted member aliases...";
             for (TLSubType &subType : type.subTypes) {
                 for (TLParam &member : subType.members) {
                     if (members.values(member.getName()).count() > 1) {
@@ -1540,12 +1541,13 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                                 member.setAlias(formatName({typeWithoutTL, member.getName()}, FormatOption::LowerCaseFirstLetter));
                             }
                         }
-                        qCDebug(c_loggingTypes) << "Member name conflict:" << member.getName() << member.type() << "solved to" << member.getAlias();
+                        qCDebug(c_loggingTypes) << "Member name conflict:" << type.name
+                                                << member.getName() << member.type() << "solved to" << member.getAlias();
                     }
                 }
             }
 
-            // Bake conflicted member flags
+            qCDebug(c_loggingTypes) << "Bake conflicted member flags...";
             {
                 QStringList conflictedFlags;
 
@@ -1572,7 +1574,7 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                         const QString flagName = member.flagName();
                         if (conflictedFlags.contains(flagName)) {
                             member.setFlagName(flagName + QString::number(member.flagBit));
-                            qCDebug(c_loggingTypes) << "Member flag conflict:"
+                            qCDebug(c_loggingTypes) << "Member flag conflict:" << type.name
                                                     << member.getName() << flagName
                                                     << "solved to" << member.flagName();
                         }
@@ -1581,7 +1583,7 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
             }
         }
 
-        // Bake access by pointer
+        qCDebug(c_loggingTypes) << "Bake access by pointer...";
         for (const QString &typeName : types.keys()) {
             TLType &type = types[typeName];
 
@@ -1596,7 +1598,8 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
     }
 
     QVector<TypeTreeItem> typeTree;
-    { // Setup the tree
+    {
+        qCDebug(c_loggingTypes) << "Build the types tree...";
         typeTree.reserve(types.count() + solvedTypesNames.count());
         QHash<QString,TypeTreeItem*> typeItemHash;
         typeItemHash.reserve(typeTree.count());
@@ -1622,7 +1625,8 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
     }
 
     QList<TLType> solvedTypes;
-    { // Solve!
+    {
+        qCDebug(c_loggingTypes) << "Solve the types tree...";
         QVector<TypeTreeItem*> notSolvedTypes;
         notSolvedTypes.reserve(typeTree.count());
         solvedTypes.reserve(typeTree.count());
@@ -1634,7 +1638,7 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
         }
 
         while (!notSolvedTypes.isEmpty()) {
-            bool hasSolved = false;
+            int newlySolvedCounter = 0;
             auto currentItemIt = notSolvedTypes.begin();
             while (currentItemIt != notSolvedTypes.end()) {
                 TypeTreeItem *item = *currentItemIt;
@@ -1653,48 +1657,34 @@ QList<TLType> Generator::solveTypes(QMap<QString, TLType> types, QMap<QString, T
                 if (solved) {
                     const TLType &type = types.value(item->typeName);
                     solvedTypes.append(type);
-                    hasSolved = true;
+                    ++newlySolvedCounter;
                     currentItemIt = notSolvedTypes.erase(currentItemIt);
                 } else {
                     ++currentItemIt;
                 }
             }
-            if (!hasSolved) {
-                // Unable to solve any one type
+            if (newlySolvedCounter) {
+                qCDebug(c_loggingTypes) << "Solved" << newlySolvedCounter << "more types";
+            } else {
+                qCDebug(c_loggingTypes) << "Unable to solve any single type";
                 break;
             }
         }
 
-        QVector<TypeTreeItem*> notSolvedEnds = notSolvedTypes;
-        {
-            auto currentItemIt = notSolvedEnds.begin();
-            while (currentItemIt != notSolvedEnds.end()) {
-                TypeTreeItem *item = *currentItemIt;
-                bool hasNotSolvedDeps = false;
-                for (TypeTreeItem *dependence : item->dependencies) {
-                    if (notSolvedTypes.contains(dependence)) {
-                        hasNotSolvedDeps = true;
-                        break;
-                    }
-                }
-                if (hasNotSolvedDeps) {
-                    // This item depends on an another one, so it is not a end point
-                    currentItemIt = notSolvedEnds.erase(currentItemIt);
-                } else {
-                    ++currentItemIt;
-                }
-            }
-        }
-
-        for (const TypeTreeItem *item : notSolvedEnds) {
+        qCDebug(c_loggingTypes) << "Unresolved types count:" << notSolvedTypes.count();
+        for (const TypeTreeItem *item : notSolvedTypes) {
             if (unresolved) {
                 const TLType &type = types.value(item->typeName);
                 unresolved->insert(type.name, type);
             }
 
-            qDebug() << "Not solved ends:" << item->typeName;
+            qCDebug(c_loggingTypes) << "Not solved end:" << item->typeName;
             for (TypeTreeItem *child : item->dependencies) {
-                qDebug() << "    Sub member:" << child->typeName;
+                const bool resolved = !notSolvedTypes.contains(child);
+                if (resolved) {
+                    continue;
+                }
+                qCDebug(c_loggingTypes) << "    Unresolved member:" << child->typeName;
             }
         }
     }
