@@ -167,6 +167,11 @@ bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 m
     //}
     output->message = messageData->content().text();
     output->date = messageData->date();
+    output->editDate = messageData->editDate();
+    if (output->editDate) {
+        flags |= TLMessage::EditDate;
+    }
+
     output->toId = Telegram::Utils::toTLPeer(messageData->toPeer());
 
     if (messageData->content().media().isValid()) {

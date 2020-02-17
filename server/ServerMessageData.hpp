@@ -99,6 +99,7 @@ public:
     Peer toPeer() const { return m_to; }
     quint32 fromId() const { return m_fromId; }
     quint32 date() const;
+    quint32 editDate() const;
 
     const MessageContent &content() const { return m_content; }
     void setContent(const MessageContent &newContent);
@@ -109,6 +110,7 @@ public:
     quint64 date64() const { return m_date; }
     // Needed for save/load and for autotests
     void setDate64(quint64 date);
+    void setEditDate(quint32 date);
 
     bool isMessageToSelf() const;
 
@@ -124,6 +126,7 @@ protected:
     quint64 m_globalId = 0;
     quint64 m_date = 0;
     quint32 m_fromId = 0;
+    quint32 m_editDate = 0;
 };
 
 } // Server namespace

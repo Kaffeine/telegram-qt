@@ -43,6 +43,14 @@ MessageData *MessageService::addMessage(quint32 fromId, Peer toPeer, const Messa
     return message;
 }
 
+MessageData *MessageService::replaceMessageContent(quint64 globalId, const MessageContent &content)
+{
+    MessageData *message = &m_messages[globalId];
+    message->setContent(content);
+    message->setEditDate(Telegram::Utils::getCurrentTime());
+    return message;
+}
+
 const MessageData *MessageService::getMessage(quint64 globalId)
 {
     if (!m_messages.contains(globalId)) {

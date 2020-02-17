@@ -40,6 +40,11 @@ quint32 MessageData::date() const
     return static_cast<quint32>(secs);
 }
 
+quint32 MessageData::editDate() const
+{
+    return m_editDate;
+}
+
 void MessageData::setContent(const MessageContent &newContent)
 {
     m_content = newContent;
@@ -54,6 +59,11 @@ void MessageData::setDate32(quint32 date)
 void MessageData::setDate64(quint64 date)
 {
     m_date = date;
+}
+
+void MessageData::setEditDate(quint32 date)
+{
+    m_editDate = date;
 }
 
 bool MessageData::isMessageToSelf() const

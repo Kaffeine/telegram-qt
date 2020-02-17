@@ -35,6 +35,7 @@ class MessageService : public QObject
 public:
     explicit MessageService(QObject *parent = nullptr);
     MessageData *addMessage(quint32 fromId, Peer toPeer, const MessageContent &content);
+    MessageData *replaceMessageContent(quint64 globalId, const MessageContent &content);
     const MessageData *getMessage(quint64 globalId);
 
 protected:
