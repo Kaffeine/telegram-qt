@@ -418,6 +418,11 @@ QByteArray MessageMediaInfo::getCachedPhoto() const
         return QByteArray();
     }
     for (const TLPhotoSize &size : *sizes) {
+#if TELEGRAMQT_LAYER > 92
+        if (size.tlType == TLValue::PhotoStrippedSize) {
+            return size.bytes;
+        }
+#endif
         if (size.tlType == TLValue::PhotoCachedSize) {
             return size.bytes;
         }
