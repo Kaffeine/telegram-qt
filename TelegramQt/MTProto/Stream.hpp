@@ -65,6 +65,11 @@ public:
     template <int Size>
     Stream &operator>>(TLNumber<Size> &n);
 
+    template <typename T>
+    Stream &operator<<(const TLPtr<T> &v);
+    template <typename T>
+    Stream &operator>>(TLPtr<T> &v);
+
     // Generated read operators
     Stream &operator>>(TLAccountDaysTTL &accountDaysTTLValue);
     Stream &operator>>(TLAccountPassword &accountPasswordValue);
