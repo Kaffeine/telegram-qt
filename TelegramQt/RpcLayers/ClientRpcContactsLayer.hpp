@@ -38,12 +38,12 @@ public:
     // Generated Telegram operations using
     using PendingBool = PendingRpcResult<TLBool *>;
     using PendingContactsLink = PendingRpcResult<TLContactsLink *>;
-    using PendingQuint32Vector = PendingRpcResult<TLVector<quint32> *>;
     using PendingContactsBlocked = PendingRpcResult<TLContactsBlocked *>;
+    using PendingQuint32Vector = PendingRpcResult<TLVector<quint32> *>;
     using PendingContactsContacts = PendingRpcResult<TLContactsContacts *>;
+    using PendingSavedContactVector = PendingRpcResult<TLVector<TLSavedContact> *>;
     using PendingContactStatusVector = PendingRpcResult<TLVector<TLContactStatus> *>;
     using PendingContactsTopPeers = PendingRpcResult<TLContactsTopPeers *>;
-    using PendingUser = PendingRpcResult<TLUser *>;
     using PendingContactsImportedContacts = PendingRpcResult<TLContactsImportedContacts *>;
     using PendingContactsResolvedPeer = PendingRpcResult<TLContactsResolvedPeer *>;
     using PendingContactsFound = PendingRpcResult<TLContactsFound *>;
@@ -51,19 +51,21 @@ public:
 
     // Generated Telegram API declarations
     PendingBool *block(const TLInputUser &id);
+    PendingBool *deleteByPhones(const TLVector<QString> &phones);
     PendingContactsLink *deleteContact(const TLInputUser &id);
     PendingBool *deleteContacts(const TLVector<TLInputUser> &id);
-    PendingQuint32Vector *exportCard();
     PendingContactsBlocked *getBlocked(quint32 offset, quint32 limit);
+    PendingQuint32Vector *getContactIDs(quint32 hash);
     PendingContactsContacts *getContacts(quint32 hash);
+    PendingSavedContactVector *getSaved();
     PendingContactStatusVector *getStatuses();
     PendingContactsTopPeers *getTopPeers(quint32 flags, quint32 offset, quint32 limit, quint32 hash);
-    PendingUser *importCard(const TLVector<quint32> &exportCard);
     PendingContactsImportedContacts *importContacts(const TLVector<TLInputContact> &contacts);
     PendingBool *resetSaved();
     PendingBool *resetTopPeerRating(const TLTopPeerCategory &category, const TLInputPeer &peer);
     PendingContactsResolvedPeer *resolveUsername(const QString &username);
     PendingContactsFound *search(const QString &q, quint32 limit);
+    PendingBool *toggleTopPeers(bool enabled);
     PendingBool *unblock(const TLInputUser &id);
     // End of generated Telegram API declarations
 };

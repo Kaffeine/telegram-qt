@@ -54,7 +54,6 @@ template Stream &Stream::operator>>(TLVector<TLImportedContact> &v);
 template Stream &Stream::operator>>(TLVector<TLChat> &v);
 template Stream &Stream::operator>>(TLVector<TLPeer> &v);
 template Stream &Stream::operator>>(TLVector<TLDcOption> &v);
-template Stream &Stream::operator>>(TLVector<TLDisabledFeature> &v);
 template Stream &Stream::operator>>(TLVector<TLMessageEntity> &v);
 template Stream &Stream::operator>>(TLVector<TLUpdate> &v);
 template Stream &Stream::operator>>(TLVector<TLStickerSet> &v);
@@ -90,7 +89,6 @@ template Stream &Stream::operator>>(TLVector<TLCdnPublicKey> &v);
 template Stream &Stream::operator>>(TLVector<TLRecentMeUrl> &v);
 template Stream &Stream::operator>>(TLVector<TLStickerSetCovered> &v);
 template Stream &Stream::operator>>(TLVector<TLHighScore> &v);
-template Stream &Stream::operator>>(TLVector<TLCdnFileHash> &v);
 template Stream &Stream::operator>>(TLVector<TLFutureSalt> &v);
 template Stream &Stream::operator>>(TLVector<TLRichText> &v);
 template Stream &Stream::operator>>(TLVector<TLLabeledPrice> &v);
@@ -101,8 +99,31 @@ template Stream &Stream::operator>>(TLVector<TLShippingOption> &v);
 template Stream &Stream::operator>>(TLVector<TLInputDocument> &v);
 template Stream &Stream::operator>>(TLVector<TLPageBlock> &v);
 template Stream &Stream::operator>>(TLVector<TLPhoneConnection> &v);
-template Stream &Stream::operator>>(TLVector<TLInputPeer> &v);
 template Stream &Stream::operator>>(TLVector<TLInputStickerSetItem> &v);
+template Stream &Stream::operator>>(TLVector<TLSecureValue> &v);
+template Stream &Stream::operator>>(TLVector<TLSecureRequiredType> &v);
+template Stream &Stream::operator>>(TLVector<TLSecureValueError> &v);
+template Stream &Stream::operator>>(TLVector<TLWebAuthorization> &v);
+template Stream &Stream::operator>>(TLVector<TLSecureFile> &v);
+template Stream &Stream::operator>>(TLVector<TLSavedContact> &v);
+template Stream &Stream::operator>>(TLVector<TLJSONValue> &v);
+template Stream &Stream::operator>>(TLVector<TLJSONObjectValue> &v);
+template Stream &Stream::operator>>(TLVector<TLDialogPeer> &v);
+template Stream &Stream::operator>>(TLVector<TLFileHash> &v);
+template Stream &Stream::operator>>(TLVector<TLAccessPointRule> &v);
+template Stream &Stream::operator>>(TLVector<TLInputSecureFile> &v);
+template Stream &Stream::operator>>(TLVector<TLPageTableCell> &v);
+template Stream &Stream::operator>>(TLVector<TLPollAnswer> &v);
+template Stream &Stream::operator>>(TLVector<TLPollAnswerVoters> &v);
+template Stream &Stream::operator>>(TLVector<TLSecureValueType> &v);
+template Stream &Stream::operator>>(TLVector<TLPageListItem> &v);
+template Stream &Stream::operator>>(TLVector<TLPageTableRow> &v);
+template Stream &Stream::operator>>(TLVector<TLPageListOrderedItem> &v);
+template Stream &Stream::operator>>(TLVector<TLPageRelatedArticle> &v);
+template Stream &Stream::operator>>(TLVector<TLSecureValueHash> &v);
+template Stream &Stream::operator>>(TLVector<TLInputMessage> &v);
+template Stream &Stream::operator>>(TLVector<TLInputDialogPeer> &v);
+template Stream &Stream::operator>>(TLVector<TLInputSingleMedia> &v);
 // End of generated vector read templates instancing
 
 // Generated vector write templates instancing
@@ -118,11 +139,20 @@ template Stream &Stream::operator<<(const TLVector<TLDocumentAttribute> &v);
 template Stream &Stream::operator<<(const TLVector<TLKeyboardButtonRow> &v);
 template Stream &Stream::operator<<(const TLVector<TLMessageRange> &v);
 template Stream &Stream::operator<<(const TLVector<TLKeyboardButton> &v);
-template Stream &Stream::operator<<(const TLVector<TLInputPeer> &v);
 template Stream &Stream::operator<<(const TLVector<TLShippingOption> &v);
 template Stream &Stream::operator<<(const TLVector<TLInputStickerSetItem> &v);
 template Stream &Stream::operator<<(const TLVector<TLInputDocument> &v);
 template Stream &Stream::operator<<(const TLVector<TLLabeledPrice> &v);
+template Stream &Stream::operator<<(const TLVector<TLSecureValueHash> &v);
+template Stream &Stream::operator<<(const TLVector<TLSecureValueType> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputMessage> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputDialogPeer> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputSingleMedia> &v);
+template Stream &Stream::operator<<(const TLVector<TLSecureValueError> &v);
+template Stream &Stream::operator<<(const TLVector<TLInputSecureFile> &v);
+template Stream &Stream::operator<<(const TLVector<TLJSONValue> &v);
+template Stream &Stream::operator<<(const TLVector<TLJSONObjectValue> &v);
+template Stream &Stream::operator<<(const TLVector<TLPollAnswer> &v);
 // End of generated vector write templates instancing
 
 template <int Size>
@@ -159,79 +189,41 @@ Stream &Stream::operator>>(TLAccountDaysTTL &accountDaysTTLValue)
     return *this;
 }
 
-Stream &Stream::operator>>(TLAccountPassword &accountPasswordValue)
+Stream &Stream::operator>>(TLAccountSentEmailCode &accountSentEmailCodeValue)
 {
-    TLAccountPassword result;
+    TLAccountSentEmailCode result;
 
     *this >> result.tlType;
 
     switch (result.tlType) {
-    case TLValue::AccountNoPassword:
-        *this >> result.newSalt;
-        *this >> result.emailUnconfirmedPattern;
-        break;
-    case TLValue::AccountPassword:
-        *this >> result.currentSalt;
-        *this >> result.newSalt;
-        *this >> result.hint;
-        *this >> result.hasRecovery;
-        *this >> result.emailUnconfirmedPattern;
+    case TLValue::AccountSentEmailCode:
+        *this >> result.emailPattern;
+        *this >> result.length;
         break;
     default:
         break;
     }
 
-    accountPasswordValue = result;
+    accountSentEmailCodeValue = result;
 
     return *this;
 }
 
-Stream &Stream::operator>>(TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
+Stream &Stream::operator>>(TLAccountTakeout &accountTakeoutValue)
 {
-    TLAccountPasswordInputSettings result;
+    TLAccountTakeout result;
 
     *this >> result.tlType;
 
     switch (result.tlType) {
-    case TLValue::AccountPasswordInputSettings:
-        *this >> result.flags;
-        if (result.flags & TLAccountPasswordInputSettings::NewSalt) {
-            *this >> result.newSalt;
-        }
-        if (result.flags & TLAccountPasswordInputSettings::NewPasswordHash) {
-            *this >> result.newPasswordHash;
-        }
-        if (result.flags & TLAccountPasswordInputSettings::Hint) {
-            *this >> result.hint;
-        }
-        if (result.flags & TLAccountPasswordInputSettings::Email) {
-            *this >> result.email;
-        }
+    case TLValue::AccountTakeout:
+        *this >> result.id;
         break;
     default:
         break;
     }
 
-    accountPasswordInputSettingsValue = result;
-
-    return *this;
-}
-
-Stream &Stream::operator>>(TLAccountPasswordSettings &accountPasswordSettingsValue)
-{
-    TLAccountPasswordSettings result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::AccountPasswordSettings:
-        *this >> result.email;
-        break;
-    default:
-        break;
-    }
-
-    accountPasswordSettingsValue = result;
+    accountTakeoutValue = result;
 
     return *this;
 }
@@ -358,37 +350,6 @@ Stream &Stream::operator>>(TLAuthSentCodeType &authSentCodeTypeValue)
     return *this;
 }
 
-Stream &Stream::operator>>(TLAuthorization &authorizationValue)
-{
-    TLAuthorization result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::Authorization:
-        *this >> result.hash;
-        *this >> result.flags;
-        *this >> result.deviceModel;
-        *this >> result.platform;
-        *this >> result.systemVersion;
-        *this >> result.apiId;
-        *this >> result.appName;
-        *this >> result.appVersion;
-        *this >> result.dateCreated;
-        *this >> result.dateActive;
-        *this >> result.ip;
-        *this >> result.country;
-        *this >> result.region;
-        break;
-    default:
-        break;
-    }
-
-    authorizationValue = result;
-
-    return *this;
-}
-
 Stream &Stream::operator>>(TLBadMsgNotification &badMsgNotificationValue)
 {
     TLBadMsgNotification result;
@@ -457,27 +418,6 @@ Stream &Stream::operator>>(TLBotInfo &botInfoValue)
     return *this;
 }
 
-Stream &Stream::operator>>(TLCdnFileHash &cdnFileHashValue)
-{
-    TLCdnFileHash result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::CdnFileHash:
-        *this >> result.offset;
-        *this >> result.limit;
-        *this >> result.hash;
-        break;
-    default:
-        break;
-    }
-
-    cdnFileHashValue = result;
-
-    return *this;
-}
-
 Stream &Stream::operator>>(TLCdnPublicKey &cdnPublicKeyValue)
 {
     TLCdnPublicKey result;
@@ -519,6 +459,25 @@ Stream &Stream::operator>>(TLChannelParticipantsFilter &channelParticipantsFilte
     }
 
     channelParticipantsFilterValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLChatOnlines &chatOnlinesValue)
+{
+    TLChatOnlines result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::ChatOnlines:
+        *this >> result.onlines;
+        break;
+    default:
+        break;
+    }
+
+    chatOnlinesValue = result;
 
     return *this;
 }
@@ -718,26 +677,6 @@ Stream &Stream::operator>>(TLDestroySessionRes &destroySessionResValue)
     return *this;
 }
 
-Stream &Stream::operator>>(TLDisabledFeature &disabledFeatureValue)
-{
-    TLDisabledFeature result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::DisabledFeature:
-        *this >> result.feature;
-        *this >> result.description;
-        break;
-    default:
-        break;
-    }
-
-    disabledFeatureValue = result;
-
-    return *this;
-}
-
 Stream &Stream::operator>>(TLEncryptedChat &encryptedChatValue)
 {
     TLEncryptedChat result;
@@ -886,12 +825,34 @@ Stream &Stream::operator>>(TLExportedMessageLink &exportedMessageLinkValue)
     switch (result.tlType) {
     case TLValue::ExportedMessageLink:
         *this >> result.link;
+        *this >> result.html;
         break;
     default:
         break;
     }
 
     exportedMessageLinkValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLFileHash &fileHashValue)
+{
+    TLFileHash result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::FileHash:
+        *this >> result.offset;
+        *this >> result.limit;
+        *this >> result.hash;
+        break;
+    default:
+        break;
+    }
+
+    fileHashValue = result;
 
     return *this;
 }
@@ -913,6 +874,7 @@ Stream &Stream::operator>>(TLFileLocation &fileLocationValue)
         *this >> result.volumeId;
         *this >> result.localId;
         *this >> result.secret;
+        *this >> result.fileReference;
         break;
     default:
         break;
@@ -977,36 +939,13 @@ Stream &Stream::operator>>(TLGeoPoint &geoPointValue)
     case TLValue::GeoPoint:
         *this >> result.longitude;
         *this >> result.latitude;
+        *this >> result.accessHash;
         break;
     default:
         break;
     }
 
     geoPointValue = result;
-
-    return *this;
-}
-
-Stream &Stream::operator>>(TLHelpAppUpdate &helpAppUpdateValue)
-{
-    TLHelpAppUpdate result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::HelpAppUpdate:
-        *this >> result.id;
-        *this >> result.critical;
-        *this >> result.url;
-        *this >> result.text;
-        break;
-    case TLValue::HelpNoAppUpdate:
-        break;
-    default:
-        break;
-    }
-
-    helpAppUpdateValue = result;
 
     return *this;
 }
@@ -1030,21 +969,43 @@ Stream &Stream::operator>>(TLHelpInviteText &helpInviteTextValue)
     return *this;
 }
 
-Stream &Stream::operator>>(TLHelpTermsOfService &helpTermsOfServiceValue)
+Stream &Stream::operator>>(TLHelpPassportConfig &helpPassportConfigValue)
 {
-    TLHelpTermsOfService result;
+    TLHelpPassportConfig result;
 
     *this >> result.tlType;
 
     switch (result.tlType) {
-    case TLValue::HelpTermsOfService:
-        *this >> result.text;
+    case TLValue::HelpPassportConfigNotModified:
+        break;
+    case TLValue::HelpPassportConfig:
+        *this >> result.hash;
+        *this >> result.countriesLangs;
         break;
     default:
         break;
     }
 
-    helpTermsOfServiceValue = result;
+    helpPassportConfigValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLHelpSupportName &helpSupportNameValue)
+{
+    TLHelpSupportName result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::HelpSupportName:
+        *this >> result.name;
+        break;
+    default:
+        break;
+    }
+
+    helpSupportNameValue = result;
 
     return *this;
 }
@@ -1142,7 +1103,7 @@ Stream &Stream::operator>>(TLInputAppEvent &inputAppEventValue)
         *this >> result.time;
         *this >> result.type;
         *this >> result.peer;
-        *this >> result.data;
+        *this >> *result.data;
         break;
     default:
         break;
@@ -1196,6 +1157,49 @@ Stream &Stream::operator>>(TLInputChannel &inputChannelValue)
     return *this;
 }
 
+Stream &Stream::operator>>(TLInputCheckPasswordSRP &inputCheckPasswordSRPValue)
+{
+    TLInputCheckPasswordSRP result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::InputCheckPasswordEmpty:
+        break;
+    case TLValue::InputCheckPasswordSRP:
+        *this >> result.srpId;
+        *this >> result.A;
+        *this >> result.M1;
+        break;
+    default:
+        break;
+    }
+
+    inputCheckPasswordSRPValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLInputClientProxy &inputClientProxyValue)
+{
+    TLInputClientProxy result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::InputClientProxy:
+        *this >> result.address;
+        *this >> result.port;
+        break;
+    default:
+        break;
+    }
+
+    inputClientProxyValue = result;
+
+    return *this;
+}
+
 Stream &Stream::operator>>(TLInputContact &inputContactValue)
 {
     TLInputContact result;
@@ -1230,6 +1234,7 @@ Stream &Stream::operator>>(TLInputDocument &inputDocumentValue)
     case TLValue::InputDocument:
         *this >> result.id;
         *this >> result.accessHash;
+        *this >> result.fileReference;
         break;
     default:
         break;
@@ -1331,15 +1336,19 @@ Stream &Stream::operator>>(TLInputFileLocation &inputFileLocationValue)
         *this >> result.volumeId;
         *this >> result.localId;
         *this >> result.secret;
+        *this >> result.fileReference;
         break;
     case TLValue::InputEncryptedFileLocation:
+    case TLValue::InputSecureFileLocation:
         *this >> result.id;
         *this >> result.accessHash;
         break;
     case TLValue::InputDocumentFileLocation:
         *this >> result.id;
         *this >> result.accessHash;
-        *this >> result.version;
+        *this >> result.fileReference;
+        break;
+    case TLValue::InputTakeoutFileLocation:
         break;
     default:
         break;
@@ -1368,6 +1377,28 @@ Stream &Stream::operator>>(TLInputGeoPoint &inputGeoPointValue)
     }
 
     inputGeoPointValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLInputMessage &inputMessageValue)
+{
+    TLInputMessage result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::InputMessageID:
+    case TLValue::InputMessageReplyTo:
+        *this >> result.id;
+        break;
+    case TLValue::InputMessagePinned:
+        break;
+    default:
+        break;
+    }
+
+    inputMessageValue = result;
 
     return *this;
 }
@@ -1402,21 +1433,33 @@ Stream &Stream::operator>>(TLInputPeer &inputPeerValue)
     return *this;
 }
 
-Stream &Stream::operator>>(TLInputPeerNotifyEvents &inputPeerNotifyEventsValue)
+Stream &Stream::operator>>(TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
 {
-    TLInputPeerNotifyEvents result;
+    TLInputPeerNotifySettings result;
 
     *this >> result.tlType;
 
     switch (result.tlType) {
-    case TLValue::InputPeerNotifyEventsEmpty:
-    case TLValue::InputPeerNotifyEventsAll:
+    case TLValue::InputPeerNotifySettings:
+        *this >> result.flags;
+        if (result.flags & TLInputPeerNotifySettings::ShowPreviews) {
+            *this >> result.showPreviews;
+        }
+        if (result.flags & TLInputPeerNotifySettings::Silent) {
+            *this >> result.silent;
+        }
+        if (result.flags & TLInputPeerNotifySettings::MuteUntil) {
+            *this >> result.muteUntil;
+        }
+        if (result.flags & TLInputPeerNotifySettings::Sound) {
+            *this >> result.sound;
+        }
         break;
     default:
         break;
     }
 
-    inputPeerNotifyEventsValue = result;
+    inputPeerNotifySettingsValue = result;
 
     return *this;
 }
@@ -1453,6 +1496,7 @@ Stream &Stream::operator>>(TLInputPhoto &inputPhotoValue)
     case TLValue::InputPhoto:
         *this >> result.id;
         *this >> result.accessHash;
+        *this >> result.fileReference;
         break;
     default:
         break;
@@ -1473,12 +1517,40 @@ Stream &Stream::operator>>(TLInputPrivacyKey &inputPrivacyKeyValue)
     case TLValue::InputPrivacyKeyStatusTimestamp:
     case TLValue::InputPrivacyKeyChatInvite:
     case TLValue::InputPrivacyKeyPhoneCall:
+    case TLValue::InputPrivacyKeyPhoneP2P:
         break;
     default:
         break;
     }
 
     inputPrivacyKeyValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLInputSecureFile &inputSecureFileValue)
+{
+    TLInputSecureFile result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::InputSecureFileUploaded:
+        *this >> result.id;
+        *this >> result.parts;
+        *this >> result.md5Checksum;
+        *this >> result.fileHash;
+        *this >> result.secret;
+        break;
+    case TLValue::InputSecureFile:
+        *this >> result.id;
+        *this >> result.accessHash;
+        break;
+    default:
+        break;
+    }
+
+    inputSecureFileValue = result;
 
     return *this;
 }
@@ -1564,6 +1636,14 @@ Stream &Stream::operator>>(TLInputWebFileLocation &inputWebFileLocationValue)
         *this >> result.url;
         *this >> result.accessHash;
         break;
+    case TLValue::InputWebFileGeoPointLocation:
+        *this >> result.geoPoint;
+        *this >> result.accessHash;
+        *this >> result.w;
+        *this >> result.h;
+        *this >> result.zoom;
+        *this >> result.scale;
+        break;
     default:
         break;
     }
@@ -1584,11 +1664,69 @@ Stream &Stream::operator>>(TLIpPort &ipPortValue)
         *this >> result.ipv4;
         *this >> result.port;
         break;
+    case TLValue::IpPortSecret:
+        *this >> result.ipv4;
+        *this >> result.port;
+        *this >> result.secret;
+        break;
     default:
         break;
     }
 
     ipPortValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLJSONObjectValue &jSONObjectValueValue)
+{
+    TLJSONObjectValue result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::JsonObjectValue:
+        *this >> result.key;
+        *this >> *result.value;
+        break;
+    default:
+        break;
+    }
+
+    jSONObjectValueValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLJSONValue &jSONValueValue)
+{
+    TLJSONValue result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::JsonNull:
+        break;
+    case TLValue::JsonBool:
+        *this >> result.boolValue;
+        break;
+    case TLValue::JsonNumber:
+        *this >> result.doubleValue;
+        break;
+    case TLValue::JsonString:
+        *this >> result.stringValue;
+        break;
+    case TLValue::JsonArray:
+        *this >> result.jSONValueVector;
+        break;
+    case TLValue::JsonObject:
+        *this >> result.jSONObjectValueVector;
+        break;
+    default:
+        break;
+    }
+
+    jSONValueValue = result;
 
     return *this;
 }
@@ -1609,27 +1747,6 @@ Stream &Stream::operator>>(TLLabeledPrice &labeledPriceValue)
     }
 
     labeledPriceValue = result;
-
-    return *this;
-}
-
-Stream &Stream::operator>>(TLLangPackLanguage &langPackLanguageValue)
-{
-    TLLangPackLanguage result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::LangPackLanguage:
-        *this >> result.name;
-        *this >> result.nativeName;
-        *this >> result.langCode;
-        break;
-    default:
-        break;
-    }
-
-    langPackLanguageValue = result;
 
     return *this;
 }
@@ -1715,6 +1832,8 @@ Stream &Stream::operator>>(TLMessageEntity &messageEntityValue)
     case TLValue::MessageEntityBold:
     case TLValue::MessageEntityItalic:
     case TLValue::MessageEntityCode:
+    case TLValue::MessageEntityPhone:
+    case TLValue::MessageEntityCashtag:
         *this >> result.offset;
         *this >> result.length;
         break;
@@ -1743,38 +1862,6 @@ Stream &Stream::operator>>(TLMessageEntity &messageEntityValue)
     }
 
     messageEntityValue = result;
-
-    return *this;
-}
-
-Stream &Stream::operator>>(TLMessageFwdHeader &messageFwdHeaderValue)
-{
-    TLMessageFwdHeader result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::MessageFwdHeader:
-        *this >> result.flags;
-        if (result.flags & TLMessageFwdHeader::FromId) {
-            *this >> result.fromId;
-        }
-        *this >> result.date;
-        if (result.flags & TLMessageFwdHeader::ChannelId) {
-            *this >> result.channelId;
-        }
-        if (result.flags & TLMessageFwdHeader::ChannelPost) {
-            *this >> result.channelPost;
-        }
-        if (result.flags & TLMessageFwdHeader::PostAuthor) {
-            *this >> result.postAuthor;
-        }
-        break;
-    default:
-        break;
-    }
-
-    messageFwdHeaderValue = result;
 
     return *this;
 }
@@ -2069,11 +2156,165 @@ Stream &Stream::operator>>(TLPQInnerData &pQInnerDataValue)
         *this >> result.serverNonce;
         *this >> result.newNonce;
         break;
+    case TLValue::PQInnerDataDc:
+        *this >> result.pq;
+        *this >> result.p;
+        *this >> result.q;
+        *this >> result.nonce;
+        *this >> result.serverNonce;
+        *this >> result.newNonce;
+        *this >> result.dc;
+        break;
+    case TLValue::PQInnerDataTemp:
+        *this >> result.pq;
+        *this >> result.p;
+        *this >> result.q;
+        *this >> result.nonce;
+        *this >> result.serverNonce;
+        *this >> result.newNonce;
+        *this >> result.expiresIn;
+        break;
+    case TLValue::PQInnerDataTempDc:
+        *this >> result.pq;
+        *this >> result.p;
+        *this >> result.q;
+        *this >> result.nonce;
+        *this >> result.serverNonce;
+        *this >> result.newNonce;
+        *this >> result.dc;
+        *this >> result.expiresIn;
+        break;
     default:
         break;
     }
 
     pQInnerDataValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPageCaption &pageCaptionValue)
+{
+    TLPageCaption result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PageCaption:
+        *this >> *result.text;
+        *this >> *result.credit;
+        break;
+    default:
+        break;
+    }
+
+    pageCaptionValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPageListItem &pageListItemValue)
+{
+    TLPageListItem result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PageListItemText:
+        *this >> *result.text;
+        break;
+    case TLValue::PageListItemBlocks:
+        *this >> result.blocks;
+        break;
+    default:
+        break;
+    }
+
+    pageListItemValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPageListOrderedItem &pageListOrderedItemValue)
+{
+    TLPageListOrderedItem result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PageListOrderedItemText:
+        *this >> result.num;
+        *this >> *result.text;
+        break;
+    case TLValue::PageListOrderedItemBlocks:
+        *this >> result.num;
+        *this >> result.blocks;
+        break;
+    default:
+        break;
+    }
+
+    pageListOrderedItemValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPageRelatedArticle &pageRelatedArticleValue)
+{
+    TLPageRelatedArticle result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PageRelatedArticle:
+        *this >> result.flags;
+        *this >> result.url;
+        *this >> result.webpageId;
+        if (result.flags & TLPageRelatedArticle::Title) {
+            *this >> result.title;
+        }
+        if (result.flags & TLPageRelatedArticle::Description) {
+            *this >> result.description;
+        }
+        if (result.flags & TLPageRelatedArticle::PhotoId) {
+            *this >> result.photoId;
+        }
+        if (result.flags & TLPageRelatedArticle::Author) {
+            *this >> result.author;
+        }
+        if (result.flags & TLPageRelatedArticle::PublishedDate) {
+            *this >> result.publishedDate;
+        }
+        break;
+    default:
+        break;
+    }
+
+    pageRelatedArticleValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPasswordKdfAlgo &passwordKdfAlgoValue)
+{
+    TLPasswordKdfAlgo result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PasswordKdfAlgoUnknown:
+        break;
+    case TLValue::PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow:
+        *this >> result.salt1;
+        *this >> result.salt2;
+        *this >> result.g;
+        *this >> result.p;
+        break;
+    default:
+        break;
+    }
+
+    passwordKdfAlgoValue = result;
 
     return *this;
 }
@@ -2143,21 +2384,33 @@ Stream &Stream::operator>>(TLPeer &peerValue)
     return *this;
 }
 
-Stream &Stream::operator>>(TLPeerNotifyEvents &peerNotifyEventsValue)
+Stream &Stream::operator>>(TLPeerNotifySettings &peerNotifySettingsValue)
 {
-    TLPeerNotifyEvents result;
+    TLPeerNotifySettings result;
 
     *this >> result.tlType;
 
     switch (result.tlType) {
-    case TLValue::PeerNotifyEventsEmpty:
-    case TLValue::PeerNotifyEventsAll:
+    case TLValue::PeerNotifySettings:
+        *this >> result.flags;
+        if (result.flags & TLPeerNotifySettings::ShowPreviews) {
+            *this >> result.showPreviews;
+        }
+        if (result.flags & TLPeerNotifySettings::Silent) {
+            *this >> result.silent;
+        }
+        if (result.flags & TLPeerNotifySettings::MuteUntil) {
+            *this >> result.muteUntil;
+        }
+        if (result.flags & TLPeerNotifySettings::Sound) {
+            *this >> result.sound;
+        }
         break;
     default:
         break;
     }
 
-    peerNotifyEventsValue = result;
+    peerNotifySettingsValue = result;
 
     return *this;
 }
@@ -2230,11 +2483,35 @@ Stream &Stream::operator>>(TLPhotoSize &photoSizeValue)
         *this >> result.h;
         *this >> result.bytes;
         break;
+    case TLValue::PhotoStrippedSize:
+        *this >> result.type;
+        *this >> result.bytes;
+        break;
     default:
         break;
     }
 
     photoSizeValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPollAnswer &pollAnswerValue)
+{
+    TLPollAnswer result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PollAnswer:
+        *this >> result.text;
+        *this >> result.option;
+        break;
+    default:
+        break;
+    }
+
+    pollAnswerValue = result;
 
     return *this;
 }
@@ -2313,6 +2590,7 @@ Stream &Stream::operator>>(TLPrivacyKey &privacyKeyValue)
     case TLValue::PrivacyKeyStatusTimestamp:
     case TLValue::PrivacyKeyChatInvite:
     case TLValue::PrivacyKeyPhoneCall:
+    case TLValue::PrivacyKeyPhoneP2P:
         break;
     default:
         break;
@@ -2378,6 +2656,8 @@ Stream &Stream::operator>>(TLReportReason &reportReasonValue)
     case TLValue::InputReportReasonSpam:
     case TLValue::InputReportReasonViolence:
     case TLValue::InputReportReasonPornography:
+    case TLValue::InputReportReasonChildAbuse:
+    case TLValue::InputReportReasonCopyright:
         break;
     case TLValue::InputReportReasonOther:
         *this >> result.text;
@@ -2430,6 +2710,9 @@ Stream &Stream::operator>>(TLRichText &richTextValue)
     case TLValue::TextUnderline:
     case TLValue::TextStrike:
     case TLValue::TextFixed:
+    case TLValue::TextSubscript:
+    case TLValue::TextSuperscript:
+    case TLValue::TextMarked:
         *this >> *result.richText;
         break;
     case TLValue::TextUrl:
@@ -2443,6 +2726,19 @@ Stream &Stream::operator>>(TLRichText &richTextValue)
         break;
     case TLValue::TextConcat:
         *this >> result.texts;
+        break;
+    case TLValue::TextPhone:
+        *this >> *result.richText;
+        *this >> result.phone;
+        break;
+    case TLValue::TextImage:
+        *this >> result.documentId;
+        *this >> result.w;
+        *this >> result.h;
+        break;
+    case TLValue::TextAnchor:
+        *this >> *result.richText;
+        *this >> result.name;
         break;
     default:
         break;
@@ -2493,6 +2789,192 @@ Stream &Stream::operator>>(TLRpcError &rpcErrorValue)
     }
 
     rpcErrorValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSavedContact &savedContactValue)
+{
+    TLSavedContact result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SavedPhoneContact:
+        *this >> result.phone;
+        *this >> result.firstName;
+        *this >> result.lastName;
+        *this >> result.date;
+        break;
+    default:
+        break;
+    }
+
+    savedContactValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecureCredentialsEncrypted &secureCredentialsEncryptedValue)
+{
+    TLSecureCredentialsEncrypted result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecureCredentialsEncrypted:
+        *this >> result.data;
+        *this >> result.hash;
+        *this >> result.secret;
+        break;
+    default:
+        break;
+    }
+
+    secureCredentialsEncryptedValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecureData &secureDataValue)
+{
+    TLSecureData result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecureData:
+        *this >> result.data;
+        *this >> result.dataHash;
+        *this >> result.secret;
+        break;
+    default:
+        break;
+    }
+
+    secureDataValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecureFile &secureFileValue)
+{
+    TLSecureFile result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecureFileEmpty:
+        break;
+    case TLValue::SecureFile:
+        *this >> result.id;
+        *this >> result.accessHash;
+        *this >> result.size;
+        *this >> result.dcId;
+        *this >> result.date;
+        *this >> result.fileHash;
+        *this >> result.secret;
+        break;
+    default:
+        break;
+    }
+
+    secureFileValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecurePasswordKdfAlgo &securePasswordKdfAlgoValue)
+{
+    TLSecurePasswordKdfAlgo result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecurePasswordKdfAlgoUnknown:
+        break;
+    case TLValue::SecurePasswordKdfAlgoPBKDF2HMACSHA512iter100000:
+    case TLValue::SecurePasswordKdfAlgoSHA512:
+        *this >> result.salt;
+        break;
+    default:
+        break;
+    }
+
+    securePasswordKdfAlgoValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecurePlainData &securePlainDataValue)
+{
+    TLSecurePlainData result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecurePlainPhone:
+        *this >> result.phone;
+        break;
+    case TLValue::SecurePlainEmail:
+        *this >> result.email;
+        break;
+    default:
+        break;
+    }
+
+    securePlainDataValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecureSecretSettings &secureSecretSettingsValue)
+{
+    TLSecureSecretSettings result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecureSecretSettings:
+        *this >> result.secureAlgo;
+        *this >> result.secureSecret;
+        *this >> result.secureSecretId;
+        break;
+    default:
+        break;
+    }
+
+    secureSecretSettingsValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecureValueType &secureValueTypeValue)
+{
+    TLSecureValueType result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecureValueTypePersonalDetails:
+    case TLValue::SecureValueTypePassport:
+    case TLValue::SecureValueTypeDriverLicense:
+    case TLValue::SecureValueTypeIdentityCard:
+    case TLValue::SecureValueTypeInternalPassport:
+    case TLValue::SecureValueTypeAddress:
+    case TLValue::SecureValueTypeUtilityBill:
+    case TLValue::SecureValueTypeBankStatement:
+    case TLValue::SecureValueTypeRentalAgreement:
+    case TLValue::SecureValueTypePassportRegistration:
+    case TLValue::SecureValueTypeTemporaryRegistration:
+    case TLValue::SecureValueTypePhone:
+    case TLValue::SecureValueTypeEmail:
+        break;
+    default:
+        break;
+    }
+
+    secureValueTypeValue = result;
 
     return *this;
 }
@@ -2627,6 +3109,25 @@ Stream &Stream::operator>>(TLShippingOption &shippingOptionValue)
     }
 
     shippingOptionValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLStatsURL &statsURLValue)
+{
+    TLStatsURL result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::StatsURL:
+        *this >> result.url;
+        break;
+    default:
+        break;
+    }
+
+    statsURLValue = result;
 
     return *this;
 }
@@ -2804,7 +3305,7 @@ Stream &Stream::operator>>(TLUploadFile &uploadFileValue)
         *this >> result.fileToken;
         *this >> result.encryptionKey;
         *this >> result.encryptionIv;
-        *this >> result.cdnFileHashes;
+        *this >> result.fileHashes;
         break;
     default:
         break;
@@ -2916,48 +3417,177 @@ Stream &Stream::operator>>(TLWallPaper &wallPaperValue)
     return *this;
 }
 
-Stream &Stream::operator>>(TLAccountAuthorizations &accountAuthorizationsValue)
+Stream &Stream::operator>>(TLWebAuthorization &webAuthorizationValue)
 {
-    TLAccountAuthorizations result;
+    TLWebAuthorization result;
 
     *this >> result.tlType;
 
     switch (result.tlType) {
-    case TLValue::AccountAuthorizations:
-        *this >> result.authorizations;
+    case TLValue::WebAuthorization:
+        *this >> result.hash;
+        *this >> result.botId;
+        *this >> result.domain;
+        *this >> result.browser;
+        *this >> result.platform;
+        *this >> result.dateCreated;
+        *this >> result.dateActive;
+        *this >> result.ip;
+        *this >> result.region;
         break;
     default:
         break;
     }
 
-    accountAuthorizationsValue = result;
+    webAuthorizationValue = result;
 
     return *this;
 }
 
-Stream &Stream::operator>>(TLAuthSentCode &authSentCodeValue)
+Stream &Stream::operator>>(TLAccessPointRule &accessPointRuleValue)
 {
-    TLAuthSentCode result;
+    TLAccessPointRule result;
 
     *this >> result.tlType;
 
     switch (result.tlType) {
-    case TLValue::AuthSentCode:
+    case TLValue::AccessPointRule:
+        *this >> result.phonePrefixRules;
+        *this >> result.dcId;
+        *this >> result.ips;
+        break;
+    default:
+        break;
+    }
+
+    accessPointRuleValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLAccountPassword &accountPasswordValue)
+{
+    TLAccountPassword result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::AccountPassword:
         *this >> result.flags;
-        *this >> result.type;
-        *this >> result.phoneCodeHash;
-        if (result.flags & TLAuthSentCode::NextType) {
-            *this >> result.nextType;
+        if (result.flags & TLAccountPassword::CurrentAlgo) {
+            *this >> result.currentAlgo;
         }
-        if (result.flags & TLAuthSentCode::Timeout) {
-            *this >> result.timeout;
+        if (result.flags & TLAccountPassword::SrpB) {
+            *this >> result.srpB;
+        }
+        if (result.flags & TLAccountPassword::SrpId) {
+            *this >> result.srpId;
+        }
+        if (result.flags & TLAccountPassword::Hint) {
+            *this >> result.hint;
+        }
+        if (result.flags & TLAccountPassword::EmailUnconfirmedPattern) {
+            *this >> result.emailUnconfirmedPattern;
+        }
+        *this >> result.newAlgo;
+        *this >> result.newSecureAlgo;
+        *this >> result.secureRandom;
+        break;
+    default:
+        break;
+    }
+
+    accountPasswordValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
+{
+    TLAccountPasswordInputSettings result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::AccountPasswordInputSettings:
+        *this >> result.flags;
+        if (result.flags & TLAccountPasswordInputSettings::NewAlgo) {
+            *this >> result.newAlgo;
+        }
+        if (result.flags & TLAccountPasswordInputSettings::NewPasswordHash) {
+            *this >> result.newPasswordHash;
+        }
+        if (result.flags & TLAccountPasswordInputSettings::Hint) {
+            *this >> result.hint;
+        }
+        if (result.flags & TLAccountPasswordInputSettings::Email) {
+            *this >> result.email;
+        }
+        if (result.flags & TLAccountPasswordInputSettings::NewSecureSettings) {
+            *this >> result.newSecureSettings;
         }
         break;
     default:
         break;
     }
 
-    authSentCodeValue = result;
+    accountPasswordInputSettingsValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLAccountPasswordSettings &accountPasswordSettingsValue)
+{
+    TLAccountPasswordSettings result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::AccountPasswordSettings:
+        *this >> result.flags;
+        if (result.flags & TLAccountPasswordSettings::Email) {
+            *this >> result.email;
+        }
+        if (result.flags & TLAccountPasswordSettings::SecureSettings) {
+            *this >> result.secureSettings;
+        }
+        break;
+    default:
+        break;
+    }
+
+    accountPasswordSettingsValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLAuthorization &authorizationValue)
+{
+    TLAuthorization result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::Authorization:
+        *this >> result.flags;
+        *this >> result.hash;
+        *this >> result.deviceModel;
+        *this >> result.platform;
+        *this >> result.systemVersion;
+        *this >> result.apiId;
+        *this >> result.appName;
+        *this >> result.appVersion;
+        *this >> result.dateCreated;
+        *this >> result.dateActive;
+        *this >> result.ip;
+        *this >> result.country;
+        *this >> result.region;
+        break;
+    default:
+        break;
+    }
+
+    authorizationValue = result;
 
     return *this;
 }
@@ -3158,12 +3788,34 @@ Stream &Stream::operator>>(TLDcOption &dcOptionValue)
         *this >> result.id;
         *this >> result.ipAddress;
         *this >> result.port;
+        if (result.flags & TLDcOption::Secret) {
+            *this >> result.secret;
+        }
         break;
     default:
         break;
     }
 
     dcOptionValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLDialogPeer &dialogPeerValue)
+{
+    TLDialogPeer result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::DialogPeer:
+        *this >> result.peer;
+        break;
+    default:
+        break;
+    }
+
+    dialogPeerValue = result;
 
     return *this;
 }
@@ -3229,6 +3881,10 @@ Stream &Stream::operator>>(TLDraftMessage &draftMessageValue)
 
     switch (result.tlType) {
     case TLValue::DraftMessageEmpty:
+        *this >> result.flags;
+        if (result.flags & TLDraftMessage::Date) {
+            *this >> result.date;
+        }
         break;
     case TLValue::DraftMessage:
         *this >> result.flags;
@@ -3260,14 +3916,110 @@ Stream &Stream::operator>>(TLHelpConfigSimple &helpConfigSimpleValue)
     case TLValue::HelpConfigSimple:
         *this >> result.date;
         *this >> result.expires;
-        *this >> result.dcId;
-        *this >> result.ipPortList;
+        *this >> result.rules;
         break;
     default:
         break;
     }
 
     helpConfigSimpleValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLHelpDeepLinkInfo &helpDeepLinkInfoValue)
+{
+    TLHelpDeepLinkInfo result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::HelpDeepLinkInfoEmpty:
+        break;
+    case TLValue::HelpDeepLinkInfo:
+        *this >> result.flags;
+        *this >> result.message;
+        if (result.flags & TLHelpDeepLinkInfo::Entities) {
+            *this >> result.entities;
+        }
+        break;
+    default:
+        break;
+    }
+
+    helpDeepLinkInfoValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLHelpTermsOfService &helpTermsOfServiceValue)
+{
+    TLHelpTermsOfService result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::HelpTermsOfService:
+        *this >> result.flags;
+        *this >> result.id;
+        *this >> result.text;
+        *this >> result.entities;
+        if (result.flags & TLHelpTermsOfService::MinAgeConfirm) {
+            *this >> result.minAgeConfirm;
+        }
+        break;
+    default:
+        break;
+    }
+
+    helpTermsOfServiceValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLHelpTermsOfServiceUpdate &helpTermsOfServiceUpdateValue)
+{
+    TLHelpTermsOfServiceUpdate result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::HelpTermsOfServiceUpdateEmpty:
+        *this >> result.expires;
+        break;
+    case TLValue::HelpTermsOfServiceUpdate:
+        *this >> result.expires;
+        *this >> result.termsOfService;
+        break;
+    default:
+        break;
+    }
+
+    helpTermsOfServiceUpdateValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLHelpUserInfo &helpUserInfoValue)
+{
+    TLHelpUserInfo result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::HelpUserInfoEmpty:
+        break;
+    case TLValue::HelpUserInfo:
+        *this >> result.message;
+        *this >> result.entities;
+        *this >> result.author;
+        *this >> result.date;
+        break;
+    default:
+        break;
+    }
+
+    helpUserInfoValue = result;
 
     return *this;
 }
@@ -3292,6 +4044,25 @@ Stream &Stream::operator>>(TLInputChatPhoto &inputChatPhotoValue)
     }
 
     inputChatPhotoValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLInputDialogPeer &inputDialogPeerValue)
+{
+    TLInputDialogPeer result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::InputDialogPeer:
+        *this >> result.peer;
+        break;
+    default:
+        break;
+    }
+
+    inputDialogPeerValue = result;
 
     return *this;
 }
@@ -3332,7 +4103,7 @@ Stream &Stream::operator>>(TLInputNotifyPeer &inputNotifyPeerValue)
         break;
     case TLValue::InputNotifyUsers:
     case TLValue::InputNotifyChats:
-    case TLValue::InputNotifyAll:
+    case TLValue::InputNotifyBroadcasts:
         break;
     default:
         break;
@@ -3363,33 +4134,13 @@ Stream &Stream::operator>>(TLInputPaymentCredentials &inputPaymentCredentialsVal
         break;
     case TLValue::InputPaymentCredentialsAndroidPay:
         *this >> result.paymentToken;
+        *this >> result.googleTransactionId;
         break;
     default:
         break;
     }
 
     inputPaymentCredentialsValue = result;
-
-    return *this;
-}
-
-Stream &Stream::operator>>(TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
-{
-    TLInputPeerNotifySettings result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::InputPeerNotifySettings:
-        *this >> result.flags;
-        *this >> result.muteUntil;
-        *this >> result.sound;
-        break;
-    default:
-        break;
-    }
-
-    inputPeerNotifySettingsValue = result;
 
     return *this;
 }
@@ -3415,6 +4166,47 @@ Stream &Stream::operator>>(TLInputPrivacyRule &inputPrivacyRuleValue)
     }
 
     inputPrivacyRuleValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLInputSecureValue &inputSecureValueValue)
+{
+    TLInputSecureValue result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::InputSecureValue:
+        *this >> result.flags;
+        *this >> result.type;
+        if (result.flags & TLInputSecureValue::Data) {
+            *this >> result.data;
+        }
+        if (result.flags & TLInputSecureValue::FrontSide) {
+            *this >> result.frontSide;
+        }
+        if (result.flags & TLInputSecureValue::ReverseSide) {
+            *this >> result.reverseSide;
+        }
+        if (result.flags & TLInputSecureValue::Selfie) {
+            *this >> result.selfie;
+        }
+        if (result.flags & TLInputSecureValue::Translation) {
+            *this >> result.translation;
+        }
+        if (result.flags & TLInputSecureValue::Files) {
+            *this >> result.files;
+        }
+        if (result.flags & TLInputSecureValue::PlainData) {
+            *this >> result.plainData;
+        }
+        break;
+    default:
+        break;
+    }
+
+    inputSecureValueValue = result;
 
     return *this;
 }
@@ -3563,6 +4355,73 @@ Stream &Stream::operator>>(TLLangPackDifference &langPackDifferenceValue)
     return *this;
 }
 
+Stream &Stream::operator>>(TLLangPackLanguage &langPackLanguageValue)
+{
+    TLLangPackLanguage result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::LangPackLanguage:
+        *this >> result.flags;
+        *this >> result.name;
+        *this >> result.nativeName;
+        *this >> result.langCode;
+        if (result.flags & TLLangPackLanguage::BaseLangCode) {
+            *this >> result.baseLangCode;
+        }
+        *this >> result.pluralCode;
+        *this >> result.stringsCount;
+        *this >> result.translatedCount;
+        *this >> result.translationsUrl;
+        break;
+    default:
+        break;
+    }
+
+    langPackLanguageValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLMessageFwdHeader &messageFwdHeaderValue)
+{
+    TLMessageFwdHeader result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::MessageFwdHeader:
+        *this >> result.flags;
+        if (result.flags & TLMessageFwdHeader::FromId) {
+            *this >> result.fromId;
+        }
+        *this >> result.date;
+        if (result.flags & TLMessageFwdHeader::ChannelId) {
+            *this >> result.channelId;
+        }
+        if (result.flags & TLMessageFwdHeader::ChannelPost) {
+            *this >> result.channelPost;
+        }
+        if (result.flags & TLMessageFwdHeader::PostAuthor) {
+            *this >> result.postAuthor;
+        }
+        if (result.flags & TLMessageFwdHeader::SavedFromPeer) {
+            *this >> result.savedFromPeer;
+        }
+        if (result.flags & TLMessageFwdHeader::SavedFromMsgId) {
+            *this >> result.savedFromMsgId;
+        }
+        break;
+    default:
+        break;
+    }
+
+    messageFwdHeaderValue = result;
+
+    return *this;
+}
+
 Stream &Stream::operator>>(TLMessagesBotCallbackAnswer &messagesBotCallbackAnswerValue)
 {
     TLMessagesBotCallbackAnswer result;
@@ -3655,13 +4514,60 @@ Stream &Stream::operator>>(TLNotifyPeer &notifyPeerValue)
         break;
     case TLValue::NotifyUsers:
     case TLValue::NotifyChats:
-    case TLValue::NotifyAll:
+    case TLValue::NotifyBroadcasts:
         break;
     default:
         break;
     }
 
     notifyPeerValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPageTableCell &pageTableCellValue)
+{
+    TLPageTableCell result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PageTableCell:
+        *this >> result.flags;
+        if (result.flags & TLPageTableCell::Text) {
+            *this >> result.text;
+        }
+        if (result.flags & TLPageTableCell::Colspan) {
+            *this >> result.colspan;
+        }
+        if (result.flags & TLPageTableCell::Rowspan) {
+            *this >> result.rowspan;
+        }
+        break;
+    default:
+        break;
+    }
+
+    pageTableCellValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPageTableRow &pageTableRowValue)
+{
+    TLPageTableRow result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PageTableRow:
+        *this >> result.cells;
+        break;
+    default:
+        break;
+    }
+
+    pageTableRowValue = result;
 
     return *this;
 }
@@ -3744,29 +4650,6 @@ Stream &Stream::operator>>(TLPaymentsValidatedRequestedInfo &paymentsValidatedRe
     return *this;
 }
 
-Stream &Stream::operator>>(TLPeerNotifySettings &peerNotifySettingsValue)
-{
-    TLPeerNotifySettings result;
-
-    *this >> result.tlType;
-
-    switch (result.tlType) {
-    case TLValue::PeerNotifySettingsEmpty:
-        break;
-    case TLValue::PeerNotifySettings:
-        *this >> result.flags;
-        *this >> result.muteUntil;
-        *this >> result.sound;
-        break;
-    default:
-        break;
-    }
-
-    peerNotifySettingsValue = result;
-
-    return *this;
-}
-
 Stream &Stream::operator>>(TLPeerSettings &peerSettingsValue)
 {
     TLPeerSettings result;
@@ -3821,6 +4704,7 @@ Stream &Stream::operator>>(TLPhoto &photoValue)
         *this >> result.flags;
         *this >> result.id;
         *this >> result.accessHash;
+        *this >> result.fileReference;
         *this >> result.date;
         *this >> result.sizes;
         break;
@@ -3829,6 +4713,74 @@ Stream &Stream::operator>>(TLPhoto &photoValue)
     }
 
     photoValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPoll &pollValue)
+{
+    TLPoll result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::Poll:
+        *this >> result.id;
+        *this >> result.flags;
+        *this >> result.question;
+        *this >> result.answers;
+        break;
+    default:
+        break;
+    }
+
+    pollValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPollAnswerVoters &pollAnswerVotersValue)
+{
+    TLPollAnswerVoters result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PollAnswerVoters:
+        *this >> result.flags;
+        *this >> result.option;
+        *this >> result.voters;
+        break;
+    default:
+        break;
+    }
+
+    pollAnswerVotersValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLPollResults &pollResultsValue)
+{
+    TLPollResults result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::PollResults:
+        *this >> result.flags;
+        if (result.flags & TLPollResults::Results) {
+            *this >> result.results;
+        }
+        if (result.flags & TLPollResults::TotalVoters) {
+            *this >> result.totalVoters;
+        }
+        break;
+    default:
+        break;
+    }
+
+    pollResultsValue = result;
 
     return *this;
 }
@@ -3860,6 +4812,133 @@ Stream &Stream::operator>>(TLReplyMarkup &replyMarkupValue)
     return *this;
 }
 
+Stream &Stream::operator>>(TLSecureRequiredType &secureRequiredTypeValue)
+{
+    TLSecureRequiredType result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecureRequiredType:
+        *this >> result.flags;
+        *this >> result.type;
+        break;
+    case TLValue::SecureRequiredTypeOneOf:
+        *this >> result.types;
+        break;
+    default:
+        break;
+    }
+
+    secureRequiredTypeValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecureValue &secureValueValue)
+{
+    TLSecureValue result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecureValue:
+        *this >> result.flags;
+        *this >> result.type;
+        if (result.flags & TLSecureValue::Data) {
+            *this >> result.data;
+        }
+        if (result.flags & TLSecureValue::FrontSide) {
+            *this >> result.frontSide;
+        }
+        if (result.flags & TLSecureValue::ReverseSide) {
+            *this >> result.reverseSide;
+        }
+        if (result.flags & TLSecureValue::Selfie) {
+            *this >> result.selfie;
+        }
+        if (result.flags & TLSecureValue::Translation) {
+            *this >> result.translation;
+        }
+        if (result.flags & TLSecureValue::Files) {
+            *this >> result.files;
+        }
+        if (result.flags & TLSecureValue::PlainData) {
+            *this >> result.plainData;
+        }
+        *this >> result.hash;
+        break;
+    default:
+        break;
+    }
+
+    secureValueValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecureValueError &secureValueErrorValue)
+{
+    TLSecureValueError result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecureValueErrorData:
+        *this >> result.type;
+        *this >> result.dataHash;
+        *this >> result.field;
+        *this >> result.text;
+        break;
+    case TLValue::SecureValueErrorFrontSide:
+    case TLValue::SecureValueErrorReverseSide:
+    case TLValue::SecureValueErrorSelfie:
+    case TLValue::SecureValueErrorFile:
+    case TLValue::SecureValueErrorTranslationFile:
+        *this >> result.type;
+        *this >> result.byteArrayFileHash;
+        *this >> result.text;
+        break;
+    case TLValue::SecureValueErrorFiles:
+    case TLValue::SecureValueErrorTranslationFiles:
+        *this >> result.type;
+        *this >> result.byteArrayFileHashVector;
+        *this >> result.text;
+        break;
+    case TLValue::SecureValueError:
+        *this >> result.type;
+        *this >> result.hash;
+        *this >> result.text;
+        break;
+    default:
+        break;
+    }
+
+    secureValueErrorValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLSecureValueHash &secureValueHashValue)
+{
+    TLSecureValueHash result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::SecureValueHash:
+        *this >> result.type;
+        *this >> result.hash;
+        break;
+    default:
+        break;
+    }
+
+    secureValueHashValue = result;
+
+    return *this;
+}
+
 Stream &Stream::operator>>(TLStickerSet &stickerSetValue)
 {
     TLStickerSet result;
@@ -3869,6 +4948,9 @@ Stream &Stream::operator>>(TLStickerSet &stickerSetValue)
     switch (result.tlType) {
     case TLValue::StickerSet:
         *this >> result.flags;
+        if (result.flags & TLStickerSet::InstalledDate) {
+            *this >> result.installedDate;
+        }
         *this >> result.id;
         *this >> result.accessHash;
         *this >> result.title;
@@ -3954,13 +5036,63 @@ Stream &Stream::operator>>(TLWebDocument &webDocumentValue)
         *this >> result.size;
         *this >> result.mimeType;
         *this >> result.attributes;
-        *this >> result.dcId;
+        break;
+    case TLValue::WebDocumentNoProxy:
+        *this >> result.url;
+        *this >> result.size;
+        *this >> result.mimeType;
+        *this >> result.attributes;
         break;
     default:
         break;
     }
 
     webDocumentValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLAccountAuthorizationForm &accountAuthorizationFormValue)
+{
+    TLAccountAuthorizationForm result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::AccountAuthorizationForm:
+        *this >> result.flags;
+        *this >> result.requiredTypes;
+        *this >> result.values;
+        *this >> result.errors;
+        *this >> result.users;
+        if (result.flags & TLAccountAuthorizationForm::PrivacyPolicyUrl) {
+            *this >> result.privacyPolicyUrl;
+        }
+        break;
+    default:
+        break;
+    }
+
+    accountAuthorizationFormValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLAccountAuthorizations &accountAuthorizationsValue)
+{
+    TLAccountAuthorizations result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::AccountAuthorizations:
+        *this >> result.authorizations;
+        break;
+    default:
+        break;
+    }
+
+    accountAuthorizationsValue = result;
 
     return *this;
 }
@@ -3981,6 +5113,26 @@ Stream &Stream::operator>>(TLAccountPrivacyRules &accountPrivacyRulesValue)
     }
 
     accountPrivacyRulesValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLAccountWebAuthorizations &accountWebAuthorizationsValue)
+{
+    TLAccountWebAuthorizations result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::AccountWebAuthorizations:
+        *this >> result.authorizations;
+        *this >> result.users;
+        break;
+    default:
+        break;
+    }
+
+    accountWebAuthorizationsValue = result;
 
     return *this;
 }
@@ -4008,6 +5160,36 @@ Stream &Stream::operator>>(TLAuthAuthorization &authAuthorizationValue)
     return *this;
 }
 
+Stream &Stream::operator>>(TLAuthSentCode &authSentCodeValue)
+{
+    TLAuthSentCode result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::AuthSentCode:
+        *this >> result.flags;
+        *this >> result.type;
+        *this >> result.phoneCodeHash;
+        if (result.flags & TLAuthSentCode::NextType) {
+            *this >> result.nextType;
+        }
+        if (result.flags & TLAuthSentCode::Timeout) {
+            *this >> result.timeout;
+        }
+        if (result.flags & TLAuthSentCode::TermsOfService) {
+            *this >> result.termsOfService;
+        }
+        break;
+    default:
+        break;
+    }
+
+    authSentCodeValue = result;
+
+    return *this;
+}
+
 Stream &Stream::operator>>(TLBotInlineMessage &botInlineMessageValue)
 {
     TLBotInlineMessage result;
@@ -4016,12 +5198,6 @@ Stream &Stream::operator>>(TLBotInlineMessage &botInlineMessageValue)
 
     switch (result.tlType) {
     case TLValue::BotInlineMessageMediaAuto:
-        *this >> result.flags;
-        *this >> result.caption;
-        if (result.flags & TLBotInlineMessage::ReplyMarkup) {
-            *this >> result.replyMarkup;
-        }
-        break;
     case TLValue::BotInlineMessageText:
         *this >> result.flags;
         *this >> result.message;
@@ -4047,6 +5223,7 @@ Stream &Stream::operator>>(TLBotInlineMessage &botInlineMessageValue)
         *this >> result.address;
         *this >> result.provider;
         *this >> result.venueId;
+        *this >> result.venueType;
         if (result.flags & TLBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
@@ -4056,6 +5233,7 @@ Stream &Stream::operator>>(TLBotInlineMessage &botInlineMessageValue)
         *this >> result.phoneNumber;
         *this >> result.firstName;
         *this >> result.lastName;
+        *this >> result.vcard;
         if (result.flags & TLBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
@@ -4160,6 +5338,9 @@ Stream &Stream::operator>>(TLChat &chatValue)
         if (result.flags & TLChat::BannedRights) {
             *this >> result.bannedRights;
         }
+        if (result.flags & TLChat::ParticipantsCount) {
+            *this >> result.participantsCount;
+        }
         break;
     case TLValue::ChannelForbidden:
         *this >> result.flags;
@@ -4187,12 +5368,20 @@ Stream &Stream::operator>>(TLChatFull &chatFullValue)
 
     switch (result.tlType) {
     case TLValue::ChatFull:
+        *this >> result.flags;
         *this >> result.id;
         *this >> result.participants;
-        *this >> result.chatPhoto;
+        if (result.flags & TLChatFull::ChatPhoto) {
+            *this >> result.chatPhoto;
+        }
         *this >> result.notifySettings;
         *this >> result.exportedInvite;
-        *this >> result.botInfo;
+        if (result.flags & TLChatFull::BotInfo) {
+            *this >> result.botInfo;
+        }
+        if (result.flags & TLChatFull::PinnedMsgId6) {
+            *this >> result.pinnedMsgId;
+        }
         break;
     case TLValue::ChannelFull:
         *this >> result.flags;
@@ -4210,6 +5399,9 @@ Stream &Stream::operator>>(TLChatFull &chatFullValue)
         if (result.flags & TLChatFull::BannedCount) {
             *this >> result.bannedCount;
         }
+        if (result.flags & TLChatFull::OnlineCount) {
+            *this >> result.onlineCount;
+        }
         *this >> result.readInboxMaxId;
         *this >> result.readOutboxMaxId;
         *this >> result.unreadCount;
@@ -4223,7 +5415,7 @@ Stream &Stream::operator>>(TLChatFull &chatFullValue)
         if (result.flags & TLChatFull::MigratedFromMaxId) {
             *this >> result.migratedFromMaxId;
         }
-        if (result.flags & TLChatFull::PinnedMsgId) {
+        if (result.flags & TLChatFull::PinnedMsgId5) {
             *this >> result.pinnedMsgId;
         }
         if (result.flags & TLChatFull::Stickerset) {
@@ -4284,6 +5476,7 @@ Stream &Stream::operator>>(TLConfig &configValue)
         *this >> result.testMode;
         *this >> result.thisDc;
         *this >> result.dcOptions;
+        *this >> result.dcTxtDomainName;
         *this >> result.chatSizeMax;
         *this >> result.megagroupSizeMax;
         *this >> result.forwardedCountMax;
@@ -4293,11 +5486,12 @@ Stream &Stream::operator>>(TLConfig &configValue)
         *this >> result.onlineCloudTimeoutMs;
         *this >> result.notifyCloudDelayMs;
         *this >> result.notifyDefaultDelayMs;
-        *this >> result.chatBigSize;
         *this >> result.pushChatPeriodMs;
         *this >> result.pushChatLimit;
         *this >> result.savedGifsLimit;
         *this >> result.editTimeLimit;
+        *this >> result.revokeTimeLimit;
+        *this >> result.revokePmTimeLimit;
         *this >> result.ratingEDecay;
         *this >> result.stickersRecentLimit;
         *this >> result.stickersFavedLimit;
@@ -4311,13 +5505,33 @@ Stream &Stream::operator>>(TLConfig &configValue)
         *this >> result.callConnectTimeoutMs;
         *this >> result.callPacketTimeoutMs;
         *this >> result.meUrlPrefix;
+        if (result.flags & TLConfig::AutoupdateUrlPrefix) {
+            *this >> result.autoupdateUrlPrefix;
+        }
+        if (result.flags & TLConfig::GifSearchUsername) {
+            *this >> result.gifSearchUsername;
+        }
+        if (result.flags & TLConfig::VenueSearchUsername) {
+            *this >> result.venueSearchUsername;
+        }
+        if (result.flags & TLConfig::ImgSearchUsername) {
+            *this >> result.imgSearchUsername;
+        }
+        if (result.flags & TLConfig::StaticMapsProvider) {
+            *this >> result.staticMapsProvider;
+        }
+        *this >> result.captionLengthMax;
+        *this >> result.messageLengthMax;
+        *this >> result.webfileDcId;
         if (result.flags & TLConfig::SuggestedLangCode) {
             *this >> result.suggestedLangCode;
         }
         if (result.flags & TLConfig::LangPackVersion) {
             *this >> result.langPackVersion;
         }
-        *this >> result.disabledFeatures;
+        if (result.flags & TLConfig::BaseLangPackVersion) {
+            *this >> result.baseLangPackVersion;
+        }
         break;
     default:
         break;
@@ -4384,6 +5598,7 @@ Stream &Stream::operator>>(TLContactsFound &contactsFoundValue)
 
     switch (result.tlType) {
     case TLValue::ContactsFound:
+        *this >> result.myResults;
         *this >> result.results;
         *this >> result.chats;
         *this >> result.users;
@@ -4469,6 +5684,7 @@ Stream &Stream::operator>>(TLContactsTopPeers &contactsTopPeersValue)
 
     switch (result.tlType) {
     case TLValue::ContactsTopPeersNotModified:
+    case TLValue::ContactsTopPeersDisabled:
         break;
     case TLValue::ContactsTopPeers:
         *this >> result.categories;
@@ -4529,12 +5745,12 @@ Stream &Stream::operator>>(TLDocument &documentValue)
     case TLValue::Document:
         *this >> result.id;
         *this >> result.accessHash;
+        *this >> result.fileReference;
         *this >> result.date;
         *this >> result.mimeType;
         *this >> result.size;
         *this >> result.thumb;
         *this >> result.dcId;
-        *this >> result.version;
         *this >> result.attributes;
         break;
     default:
@@ -4603,6 +5819,62 @@ Stream &Stream::operator>>(TLGame &gameValue)
     return *this;
 }
 
+Stream &Stream::operator>>(TLHelpAppUpdate &helpAppUpdateValue)
+{
+    TLHelpAppUpdate result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::HelpAppUpdate:
+        *this >> result.flags;
+        *this >> result.id;
+        *this >> result.version;
+        *this >> result.text;
+        *this >> result.entities;
+        if (result.flags & TLHelpAppUpdate::Document) {
+            *this >> result.document;
+        }
+        if (result.flags & TLHelpAppUpdate::Url) {
+            *this >> result.url;
+        }
+        break;
+    case TLValue::HelpNoAppUpdate:
+        break;
+    default:
+        break;
+    }
+
+    helpAppUpdateValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLHelpProxyData &helpProxyDataValue)
+{
+    TLHelpProxyData result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::HelpProxyDataEmpty:
+        *this >> result.expires;
+        break;
+    case TLValue::HelpProxyDataPromo:
+        *this >> result.expires;
+        *this >> result.peer;
+        *this >> result.chats;
+        *this >> result.users;
+        break;
+    default:
+        break;
+    }
+
+    helpProxyDataValue = result;
+
+    return *this;
+}
+
 Stream &Stream::operator>>(TLHelpSupport &helpSupportValue)
 {
     TLHelpSupport result;
@@ -4631,12 +5903,6 @@ Stream &Stream::operator>>(TLInputBotInlineMessage &inputBotInlineMessageValue)
 
     switch (result.tlType) {
     case TLValue::InputBotInlineMessageMediaAuto:
-        *this >> result.flags;
-        *this >> result.caption;
-        if (result.flags & TLInputBotInlineMessage::ReplyMarkup) {
-            *this >> result.replyMarkup;
-        }
-        break;
     case TLValue::InputBotInlineMessageText:
         *this >> result.flags;
         *this >> result.message;
@@ -4662,6 +5928,7 @@ Stream &Stream::operator>>(TLInputBotInlineMessage &inputBotInlineMessageValue)
         *this >> result.address;
         *this >> result.provider;
         *this >> result.venueId;
+        *this >> result.venueType;
         if (result.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
@@ -4671,6 +5938,7 @@ Stream &Stream::operator>>(TLInputBotInlineMessage &inputBotInlineMessageValue)
         *this >> result.phoneNumber;
         *this >> result.firstName;
         *this >> result.lastName;
+        *this >> result.vcard;
         if (result.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this >> result.replyMarkup;
         }
@@ -4710,23 +5978,11 @@ Stream &Stream::operator>>(TLInputBotInlineResult &inputBotInlineResultValue)
         if (result.flags & TLInputBotInlineResult::Url) {
             *this >> result.url;
         }
-        if (result.flags & TLInputBotInlineResult::ThumbUrl) {
-            *this >> result.thumbUrl;
+        if (result.flags & TLInputBotInlineResult::Thumb) {
+            *this >> result.thumb;
         }
-        if (result.flags & TLInputBotInlineResult::ContentUrl) {
-            *this >> result.contentUrl;
-        }
-        if (result.flags & TLInputBotInlineResult::ContentType) {
-            *this >> result.contentType;
-        }
-        if (result.flags & TLInputBotInlineResult::W) {
-            *this >> result.w;
-        }
-        if (result.flags & TLInputBotInlineResult::H) {
-            *this >> result.h;
-        }
-        if (result.flags & TLInputBotInlineResult::Duration) {
-            *this >> result.duration;
+        if (result.flags & TLInputBotInlineResult::Content) {
+            *this >> result.content;
         }
         *this >> result.sendMessage;
         break;
@@ -4775,7 +6031,6 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
     case TLValue::InputMediaUploadedPhoto:
         *this >> result.flags;
         *this >> result.file;
-        *this >> result.caption;
         if (result.flags & TLInputMedia::Stickers) {
             *this >> result.stickers;
         }
@@ -4786,7 +6041,6 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
     case TLValue::InputMediaPhoto:
         *this >> result.flags;
         *this >> result.inputPhotoId;
-        *this >> result.caption;
         if (result.flags & TLInputMedia::TtlSeconds0) {
             *this >> result.ttlSeconds;
         }
@@ -4798,6 +6052,7 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.phoneNumber;
         *this >> result.firstName;
         *this >> result.lastName;
+        *this >> result.vcard;
         break;
     case TLValue::InputMediaUploadedDocument:
         *this >> result.flags;
@@ -4807,7 +6062,6 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
         }
         *this >> result.mimeType;
         *this >> result.attributes;
-        *this >> result.caption;
         if (result.flags & TLInputMedia::Stickers) {
             *this >> result.stickers;
         }
@@ -4818,7 +6072,6 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
     case TLValue::InputMediaDocument:
         *this >> result.flags;
         *this >> result.inputDocumentId;
-        *this >> result.caption;
         if (result.flags & TLInputMedia::TtlSeconds0) {
             *this >> result.ttlSeconds;
         }
@@ -4839,7 +6092,6 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
     case TLValue::InputMediaDocumentExternal:
         *this >> result.flags;
         *this >> result.url;
-        *this >> result.caption;
         if (result.flags & TLInputMedia::TtlSeconds0) {
             *this >> result.ttlSeconds;
         }
@@ -4857,17 +6109,49 @@ Stream &Stream::operator>>(TLInputMedia &inputMediaValue)
         *this >> result.invoice;
         *this >> result.payload;
         *this >> result.provider;
+        *this >> result.providerData;
         *this >> result.startParam;
         break;
     case TLValue::InputMediaGeoLive:
+        *this >> result.flags;
         *this >> result.geoPoint;
-        *this >> result.period;
+        if (result.flags & TLInputMedia::Period) {
+            *this >> result.period;
+        }
+        break;
+    case TLValue::InputMediaPoll:
+        *this >> result.poll;
         break;
     default:
         break;
     }
 
     inputMediaValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLInputSingleMedia &inputSingleMediaValue)
+{
+    TLInputSingleMedia result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::InputSingleMedia:
+        *this >> result.flags;
+        *this >> result.media;
+        *this >> result.randomId;
+        *this >> result.message;
+        if (result.flags & TLInputSingleMedia::Entities) {
+            *this >> result.entities;
+        }
+        break;
+    default:
+        break;
+    }
+
+    inputSingleMediaValue = result;
 
     return *this;
 }
@@ -4884,6 +6168,7 @@ Stream &Stream::operator>>(TLMessageAction &messageActionValue)
     case TLValue::MessageActionPinMessage:
     case TLValue::MessageActionHistoryClear:
     case TLValue::MessageActionScreenshotTaken:
+    case TLValue::MessageActionContactSignUp:
         break;
     case TLValue::MessageActionChatCreate:
         *this >> result.title;
@@ -4945,6 +6230,16 @@ Stream &Stream::operator>>(TLMessageAction &messageActionValue)
         break;
     case TLValue::MessageActionCustomAction:
         *this >> result.message;
+        break;
+    case TLValue::MessageActionBotAllowed:
+        *this >> result.domain;
+        break;
+    case TLValue::MessageActionSecureValuesSentMe:
+        *this >> result.values;
+        *this >> result.credentials;
+        break;
+    case TLValue::MessageActionSecureValuesSent:
+        *this >> result.types;
         break;
     default:
         break;
@@ -5095,7 +6390,9 @@ Stream &Stream::operator>>(TLMessagesRecentStickers &messagesRecentStickersValue
         break;
     case TLValue::MessagesRecentStickers:
         *this >> result.hash;
+        *this >> result.packs;
         *this >> result.stickers;
+        *this >> result.dates;
         break;
     default:
         break;
@@ -5178,8 +6475,9 @@ Stream &Stream::operator>>(TLPage &pageValue)
     *this >> result.tlType;
 
     switch (result.tlType) {
-    case TLValue::PagePart:
-    case TLValue::PageFull:
+    case TLValue::Page:
+        *this >> result.flags;
+        *this >> result.url;
         *this >> result.blocks;
         *this >> result.photos;
         *this >> result.documents;
@@ -5209,6 +6507,7 @@ Stream &Stream::operator>>(TLPageBlock &pageBlockValue)
     case TLValue::PageBlockSubheader:
     case TLValue::PageBlockParagraph:
     case TLValue::PageBlockFooter:
+    case TLValue::PageBlockKicker:
         *this >> *result.text;
         break;
     case TLValue::PageBlockAuthorDate:
@@ -5223,29 +6522,35 @@ Stream &Stream::operator>>(TLPageBlock &pageBlockValue)
         *this >> result.name;
         break;
     case TLValue::PageBlockList:
-        *this >> result.ordered;
-        *this >> result.richTextItemsVector;
+        *this >> result.pageListItemItemsVector;
         break;
     case TLValue::PageBlockBlockquote:
     case TLValue::PageBlockPullquote:
         *this >> *result.text;
-        *this >> *result.caption;
+        *this >> *result.richTextCaption;
         break;
     case TLValue::PageBlockPhoto:
+        *this >> result.flags;
         *this >> result.photoId;
-        *this >> *result.caption;
+        *this >> result.pageCaption;
+        if (result.flags & TLPageBlock::Url0) {
+            *this >> result.url;
+        }
+        if (result.flags & TLPageBlock::WebpageId) {
+            *this >> result.webpageId;
+        }
         break;
     case TLValue::PageBlockVideo:
         *this >> result.flags;
         *this >> result.videoId;
-        *this >> *result.caption;
+        *this >> result.pageCaption;
         break;
     case TLValue::PageBlockCover:
         *this >> *result.cover;
         break;
     case TLValue::PageBlockEmbed:
         *this >> result.flags;
-        if (result.flags & TLPageBlock::Url) {
+        if (result.flags & TLPageBlock::Url1) {
             *this >> result.url;
         }
         if (result.flags & TLPageBlock::Html) {
@@ -5254,9 +6559,13 @@ Stream &Stream::operator>>(TLPageBlock &pageBlockValue)
         if (result.flags & TLPageBlock::PosterPhotoId) {
             *this >> result.posterPhotoId;
         }
-        *this >> result.w;
-        *this >> result.h;
-        *this >> *result.caption;
+        if (result.flags & TLPageBlock::W) {
+            *this >> result.w;
+        }
+        if (result.flags & TLPageBlock::H) {
+            *this >> result.h;
+        }
+        *this >> result.pageCaption;
         break;
     case TLValue::PageBlockEmbedPost:
         *this >> result.url;
@@ -5265,19 +6574,43 @@ Stream &Stream::operator>>(TLPageBlock &pageBlockValue)
         *this >> result.stringAuthor;
         *this >> result.date;
         *this >> result.blocks;
-        *this >> *result.caption;
+        *this >> result.pageCaption;
         break;
     case TLValue::PageBlockCollage:
     case TLValue::PageBlockSlideshow:
         *this >> result.pageBlockItemsVector;
-        *this >> *result.caption;
+        *this >> result.pageCaption;
         break;
     case TLValue::PageBlockChannel:
         *this >> result.channel;
         break;
     case TLValue::PageBlockAudio:
         *this >> result.audioId;
-        *this >> *result.caption;
+        *this >> result.pageCaption;
+        break;
+    case TLValue::PageBlockTable:
+        *this >> result.flags;
+        *this >> *result.title;
+        *this >> result.rows;
+        break;
+    case TLValue::PageBlockOrderedList:
+        *this >> result.pageListOrderedItemItemsVector;
+        break;
+    case TLValue::PageBlockDetails:
+        *this >> result.flags;
+        *this >> result.blocks;
+        *this >> *result.title;
+        break;
+    case TLValue::PageBlockRelatedArticles:
+        *this >> *result.title;
+        *this >> result.articles;
+        break;
+    case TLValue::PageBlockMap:
+        *this >> result.geo;
+        *this >> result.zoom;
+        *this >> result.w;
+        *this >> result.h;
+        *this >> result.pageCaption;
         break;
     default:
         break;
@@ -5398,6 +6731,7 @@ Stream &Stream::operator>>(TLPhoneCall &phoneCallValue)
         *this >> result.protocol;
         break;
     case TLValue::PhoneCall:
+        *this >> result.flags;
         *this >> result.id;
         *this >> result.accessHash;
         *this >> result.date;
@@ -5539,6 +6873,9 @@ Stream &Stream::operator>>(TLUserFull &userFullValue)
         if (result.flags & TLUserFull::BotInfo) {
             *this >> result.botInfo;
         }
+        if (result.flags & TLUserFull::PinnedMsgId) {
+            *this >> result.pinnedMsgId;
+        }
         *this >> result.commonChatsCount;
         break;
     default:
@@ -5641,23 +6978,11 @@ Stream &Stream::operator>>(TLBotInlineResult &botInlineResultValue)
         if (result.flags & TLBotInlineResult::Url) {
             *this >> result.url;
         }
-        if (result.flags & TLBotInlineResult::ThumbUrl) {
-            *this >> result.thumbUrl;
+        if (result.flags & TLBotInlineResult::Thumb) {
+            *this >> result.thumb;
         }
-        if (result.flags & TLBotInlineResult::ContentUrl) {
-            *this >> result.contentUrl;
-        }
-        if (result.flags & TLBotInlineResult::ContentType) {
-            *this >> result.contentType;
-        }
-        if (result.flags & TLBotInlineResult::W) {
-            *this >> result.w;
-        }
-        if (result.flags & TLBotInlineResult::H) {
-            *this >> result.h;
-        }
-        if (result.flags & TLBotInlineResult::Duration) {
-            *this >> result.duration;
+        if (result.flags & TLBotInlineResult::Content) {
+            *this >> result.content;
         }
         *this >> result.sendMessage;
         break;
@@ -5703,9 +7028,6 @@ Stream &Stream::operator>>(TLMessageMedia &messageMediaValue)
         if (result.flags & TLMessageMedia::Photo) {
             *this >> result.photo;
         }
-        if (result.flags & TLMessageMedia::Caption) {
-            *this >> result.caption;
-        }
         if (result.flags & TLMessageMedia::TtlSeconds) {
             *this >> result.ttlSeconds;
         }
@@ -5717,15 +7039,13 @@ Stream &Stream::operator>>(TLMessageMedia &messageMediaValue)
         *this >> result.phoneNumber;
         *this >> result.firstName;
         *this >> result.lastName;
+        *this >> result.vcard;
         *this >> result.userId;
         break;
     case TLValue::MessageMediaDocument:
         *this >> result.flags;
         if (result.flags & TLMessageMedia::Document) {
             *this >> result.document;
-        }
-        if (result.flags & TLMessageMedia::Caption) {
-            *this >> result.caption;
         }
         if (result.flags & TLMessageMedia::TtlSeconds) {
             *this >> result.ttlSeconds;
@@ -5762,6 +7082,10 @@ Stream &Stream::operator>>(TLMessageMedia &messageMediaValue)
     case TLValue::MessageMediaGeoLive:
         *this >> result.geo;
         *this >> result.period;
+        break;
+    case TLValue::MessageMediaPoll:
+        *this >> result.poll;
+        *this >> result.results;
         break;
     default:
         break;
@@ -5840,6 +7164,28 @@ Stream &Stream::operator>>(TLMessagesFeaturedStickers &messagesFeaturedStickersV
     }
 
     messagesFeaturedStickersValue = result;
+
+    return *this;
+}
+
+Stream &Stream::operator>>(TLMessagesFoundStickerSets &messagesFoundStickerSetsValue)
+{
+    TLMessagesFoundStickerSets result;
+
+    *this >> result.tlType;
+
+    switch (result.tlType) {
+    case TLValue::MessagesFoundStickerSetsNotModified:
+        break;
+    case TLValue::MessagesFoundStickerSets:
+        *this >> result.hash;
+        *this >> result.sets;
+        break;
+    default:
+        break;
+    }
+
+    messagesFoundStickerSetsValue = result;
 
     return *this;
 }
@@ -5967,6 +7313,9 @@ Stream &Stream::operator>>(TLMessage &messageValue)
         if (result.flags & TLMessage::PostAuthor) {
             *this >> result.postAuthor;
         }
+        if (result.flags & TLMessage::GroupedId) {
+            *this >> result.groupedId;
+        }
         break;
     case TLValue::MessageService:
         *this >> result.flags;
@@ -6010,6 +7359,9 @@ Stream &Stream::operator>>(TLMessagesDialogs &messagesDialogsValue)
         *this >> result.chats;
         *this >> result.users;
         break;
+    case TLValue::MessagesDialogsNotModified:
+        *this >> result.count;
+        break;
     default:
         break;
     }
@@ -6032,6 +7384,7 @@ Stream &Stream::operator>>(TLMessagesMessages &messagesMessagesValue)
         *this >> result.users;
         break;
     case TLValue::MessagesMessagesSlice:
+        *this >> result.flags;
         *this >> result.count;
         *this >> result.messages;
         *this >> result.chats;
@@ -6132,10 +7485,6 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         *this >> result.date;
         *this >> result.photo;
         *this >> result.previous;
-        break;
-    case TLValue::UpdateContactRegistered:
-        *this >> result.userId;
-        *this >> result.date;
         break;
     case TLValue::UpdateContactLink:
         *this >> result.userId;
@@ -6261,7 +7610,6 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
     case TLValue::UpdateRecentStickers:
     case TLValue::UpdateConfig:
     case TLValue::UpdatePtsChanged:
-    case TLValue::UpdateLangPackTooLong:
     case TLValue::UpdateFavedStickers:
     case TLValue::UpdateContactsReset:
         break;
@@ -6329,13 +7677,14 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
         *this >> result.ptsCount;
         break;
     case TLValue::UpdateDialogPinned:
+    case TLValue::UpdateDialogUnreadMark:
         *this >> result.flags;
-        *this >> result.peer;
+        *this >> result.dialogPeer;
         break;
     case TLValue::UpdatePinnedDialogs:
         *this >> result.flags;
-        if (result.flags & TLUpdate::PeerOrderVector) {
-            *this >> result.peerOrderVector;
+        if (result.flags & TLUpdate::DialogPeerOrderVector) {
+            *this >> result.dialogPeerOrderVector;
         }
         break;
     case TLValue::UpdateBotWebhookJSON:
@@ -6369,6 +7718,9 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
     case TLValue::UpdatePhoneCall:
         *this >> result.phoneCall;
         break;
+    case TLValue::UpdateLangPackTooLong:
+        *this >> result.langCode;
+        break;
     case TLValue::UpdateLangPack:
         *this >> result.difference;
         break;
@@ -6379,6 +7731,22 @@ Stream &Stream::operator>>(TLUpdate &updateValue)
     case TLValue::UpdateChannelAvailableMessages:
         *this >> result.channelId;
         *this >> result.availableMinId;
+        break;
+    case TLValue::UpdateUserPinnedMessage:
+        *this >> result.userId;
+        *this >> result.quint32Id;
+        break;
+    case TLValue::UpdateChatPinnedMessage:
+        *this >> result.chatId;
+        *this >> result.quint32Id;
+        break;
+    case TLValue::UpdateMessagePoll:
+        *this >> result.flags;
+        *this >> result.pollId;
+        if (result.flags & TLUpdate::Poll) {
+            *this >> result.poll;
+        }
+        *this >> result.results;
         break;
     default:
         break;
@@ -6706,33 +8074,6 @@ Stream &Stream::operator<<(const TLAccountDaysTTL &accountDaysTTLValue)
     return *this;
 }
 
-Stream &Stream::operator<<(const TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
-{
-    *this << accountPasswordInputSettingsValue.tlType;
-
-    switch (accountPasswordInputSettingsValue.tlType) {
-    case TLValue::AccountPasswordInputSettings:
-        *this << accountPasswordInputSettingsValue.flags;
-        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::NewSalt) {
-            *this << accountPasswordInputSettingsValue.newSalt;
-        }
-        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::NewPasswordHash) {
-            *this << accountPasswordInputSettingsValue.newPasswordHash;
-        }
-        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::Hint) {
-            *this << accountPasswordInputSettingsValue.hint;
-        }
-        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::Email) {
-            *this << accountPasswordInputSettingsValue.email;
-        }
-        break;
-    default:
-        break;
-    }
-
-    return *this;
-}
-
 Stream &Stream::operator<<(const TLChannelParticipantsFilter &channelParticipantsFilterValue)
 {
     *this << channelParticipantsFilterValue.tlType;
@@ -6794,7 +8135,7 @@ Stream &Stream::operator<<(const TLInputAppEvent &inputAppEventValue)
         *this << inputAppEventValue.time;
         *this << inputAppEventValue.type;
         *this << inputAppEventValue.peer;
-        *this << inputAppEventValue.data;
+        *this << *inputAppEventValue.data;
         break;
     default:
         break;
@@ -6838,6 +8179,25 @@ Stream &Stream::operator<<(const TLInputChannel &inputChannelValue)
     return *this;
 }
 
+Stream &Stream::operator<<(const TLInputCheckPasswordSRP &inputCheckPasswordSRPValue)
+{
+    *this << inputCheckPasswordSRPValue.tlType;
+
+    switch (inputCheckPasswordSRPValue.tlType) {
+    case TLValue::InputCheckPasswordEmpty:
+        break;
+    case TLValue::InputCheckPasswordSRP:
+        *this << inputCheckPasswordSRPValue.srpId;
+        *this << inputCheckPasswordSRPValue.A;
+        *this << inputCheckPasswordSRPValue.M1;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
 Stream &Stream::operator<<(const TLInputContact &inputContactValue)
 {
     *this << inputContactValue.tlType;
@@ -6866,6 +8226,7 @@ Stream &Stream::operator<<(const TLInputDocument &inputDocumentValue)
     case TLValue::InputDocument:
         *this << inputDocumentValue.id;
         *this << inputDocumentValue.accessHash;
+        *this << inputDocumentValue.fileReference;
         break;
     default:
         break;
@@ -6951,15 +8312,19 @@ Stream &Stream::operator<<(const TLInputFileLocation &inputFileLocationValue)
         *this << inputFileLocationValue.volumeId;
         *this << inputFileLocationValue.localId;
         *this << inputFileLocationValue.secret;
+        *this << inputFileLocationValue.fileReference;
         break;
     case TLValue::InputEncryptedFileLocation:
+    case TLValue::InputSecureFileLocation:
         *this << inputFileLocationValue.id;
         *this << inputFileLocationValue.accessHash;
         break;
     case TLValue::InputDocumentFileLocation:
         *this << inputFileLocationValue.id;
         *this << inputFileLocationValue.accessHash;
-        *this << inputFileLocationValue.version;
+        *this << inputFileLocationValue.fileReference;
+        break;
+    case TLValue::InputTakeoutFileLocation:
         break;
     default:
         break;
@@ -6978,6 +8343,24 @@ Stream &Stream::operator<<(const TLInputGeoPoint &inputGeoPointValue)
     case TLValue::InputGeoPoint:
         *this << inputGeoPointValue.latitude;
         *this << inputGeoPointValue.longitude;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLInputMessage &inputMessageValue)
+{
+    *this << inputMessageValue.tlType;
+
+    switch (inputMessageValue.tlType) {
+    case TLValue::InputMessageID:
+    case TLValue::InputMessageReplyTo:
+        *this << inputMessageValue.id;
+        break;
+    case TLValue::InputMessagePinned:
         break;
     default:
         break;
@@ -7012,6 +8395,33 @@ Stream &Stream::operator<<(const TLInputPeer &inputPeerValue)
     return *this;
 }
 
+Stream &Stream::operator<<(const TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
+{
+    *this << inputPeerNotifySettingsValue.tlType;
+
+    switch (inputPeerNotifySettingsValue.tlType) {
+    case TLValue::InputPeerNotifySettings:
+        *this << inputPeerNotifySettingsValue.flags;
+        if (inputPeerNotifySettingsValue.flags & TLInputPeerNotifySettings::ShowPreviews) {
+            *this << inputPeerNotifySettingsValue.showPreviews;
+        }
+        if (inputPeerNotifySettingsValue.flags & TLInputPeerNotifySettings::Silent) {
+            *this << inputPeerNotifySettingsValue.silent;
+        }
+        if (inputPeerNotifySettingsValue.flags & TLInputPeerNotifySettings::MuteUntil) {
+            *this << inputPeerNotifySettingsValue.muteUntil;
+        }
+        if (inputPeerNotifySettingsValue.flags & TLInputPeerNotifySettings::Sound) {
+            *this << inputPeerNotifySettingsValue.sound;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
 Stream &Stream::operator<<(const TLInputPhoneCall &inputPhoneCallValue)
 {
     *this << inputPhoneCallValue.tlType;
@@ -7038,6 +8448,7 @@ Stream &Stream::operator<<(const TLInputPhoto &inputPhotoValue)
     case TLValue::InputPhoto:
         *this << inputPhotoValue.id;
         *this << inputPhotoValue.accessHash;
+        *this << inputPhotoValue.fileReference;
         break;
     default:
         break;
@@ -7054,6 +8465,30 @@ Stream &Stream::operator<<(const TLInputPrivacyKey &inputPrivacyKeyValue)
     case TLValue::InputPrivacyKeyStatusTimestamp:
     case TLValue::InputPrivacyKeyChatInvite:
     case TLValue::InputPrivacyKeyPhoneCall:
+    case TLValue::InputPrivacyKeyPhoneP2P:
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLInputSecureFile &inputSecureFileValue)
+{
+    *this << inputSecureFileValue.tlType;
+
+    switch (inputSecureFileValue.tlType) {
+    case TLValue::InputSecureFileUploaded:
+        *this << inputSecureFileValue.id;
+        *this << inputSecureFileValue.parts;
+        *this << inputSecureFileValue.md5Checksum;
+        *this << inputSecureFileValue.fileHash;
+        *this << inputSecureFileValue.secret;
+        break;
+    case TLValue::InputSecureFile:
+        *this << inputSecureFileValue.id;
+        *this << inputSecureFileValue.accessHash;
         break;
     default:
         break;
@@ -7129,6 +8564,59 @@ Stream &Stream::operator<<(const TLInputWebFileLocation &inputWebFileLocationVal
         *this << inputWebFileLocationValue.url;
         *this << inputWebFileLocationValue.accessHash;
         break;
+    case TLValue::InputWebFileGeoPointLocation:
+        *this << inputWebFileLocationValue.geoPoint;
+        *this << inputWebFileLocationValue.accessHash;
+        *this << inputWebFileLocationValue.w;
+        *this << inputWebFileLocationValue.h;
+        *this << inputWebFileLocationValue.zoom;
+        *this << inputWebFileLocationValue.scale;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLJSONObjectValue &jSONObjectValueValue)
+{
+    *this << jSONObjectValueValue.tlType;
+
+    switch (jSONObjectValueValue.tlType) {
+    case TLValue::JsonObjectValue:
+        *this << jSONObjectValueValue.key;
+        *this << *jSONObjectValueValue.value;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLJSONValue &jSONValueValue)
+{
+    *this << jSONValueValue.tlType;
+
+    switch (jSONValueValue.tlType) {
+    case TLValue::JsonNull:
+        break;
+    case TLValue::JsonBool:
+        *this << jSONValueValue.boolValue;
+        break;
+    case TLValue::JsonNumber:
+        *this << jSONValueValue.doubleValue;
+        break;
+    case TLValue::JsonString:
+        *this << jSONValueValue.stringValue;
+        break;
+    case TLValue::JsonArray:
+        *this << jSONValueValue.jSONValueVector;
+        break;
+    case TLValue::JsonObject:
+        *this << jSONValueValue.jSONObjectValueVector;
+        break;
     default:
         break;
     }
@@ -7184,6 +8672,8 @@ Stream &Stream::operator<<(const TLMessageEntity &messageEntityValue)
     case TLValue::MessageEntityBold:
     case TLValue::MessageEntityItalic:
     case TLValue::MessageEntityCode:
+    case TLValue::MessageEntityPhone:
+    case TLValue::MessageEntityCashtag:
         *this << messageEntityValue.offset;
         *this << messageEntityValue.length;
         break;
@@ -7230,6 +8720,26 @@ Stream &Stream::operator<<(const TLMessageRange &messageRangeValue)
     return *this;
 }
 
+Stream &Stream::operator<<(const TLPasswordKdfAlgo &passwordKdfAlgoValue)
+{
+    *this << passwordKdfAlgoValue.tlType;
+
+    switch (passwordKdfAlgoValue.tlType) {
+    case TLValue::PasswordKdfAlgoUnknown:
+        break;
+    case TLValue::PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow:
+        *this << passwordKdfAlgoValue.salt1;
+        *this << passwordKdfAlgoValue.salt2;
+        *this << passwordKdfAlgoValue.g;
+        *this << passwordKdfAlgoValue.p;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
 Stream &Stream::operator<<(const TLPhoneCallDiscardReason &phoneCallDiscardReasonValue)
 {
     *this << phoneCallDiscardReasonValue.tlType;
@@ -7239,6 +8749,22 @@ Stream &Stream::operator<<(const TLPhoneCallDiscardReason &phoneCallDiscardReaso
     case TLValue::PhoneCallDiscardReasonDisconnect:
     case TLValue::PhoneCallDiscardReasonHangup:
     case TLValue::PhoneCallDiscardReasonBusy:
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLPollAnswer &pollAnswerValue)
+{
+    *this << pollAnswerValue.tlType;
+
+    switch (pollAnswerValue.tlType) {
+    case TLValue::PollAnswer:
+        *this << pollAnswerValue.text;
+        *this << pollAnswerValue.option;
         break;
     default:
         break;
@@ -7275,9 +8801,124 @@ Stream &Stream::operator<<(const TLReportReason &reportReasonValue)
     case TLValue::InputReportReasonSpam:
     case TLValue::InputReportReasonViolence:
     case TLValue::InputReportReasonPornography:
+    case TLValue::InputReportReasonChildAbuse:
+    case TLValue::InputReportReasonCopyright:
         break;
     case TLValue::InputReportReasonOther:
         *this << reportReasonValue.text;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLSecureCredentialsEncrypted &secureCredentialsEncryptedValue)
+{
+    *this << secureCredentialsEncryptedValue.tlType;
+
+    switch (secureCredentialsEncryptedValue.tlType) {
+    case TLValue::SecureCredentialsEncrypted:
+        *this << secureCredentialsEncryptedValue.data;
+        *this << secureCredentialsEncryptedValue.hash;
+        *this << secureCredentialsEncryptedValue.secret;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLSecureData &secureDataValue)
+{
+    *this << secureDataValue.tlType;
+
+    switch (secureDataValue.tlType) {
+    case TLValue::SecureData:
+        *this << secureDataValue.data;
+        *this << secureDataValue.dataHash;
+        *this << secureDataValue.secret;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLSecurePasswordKdfAlgo &securePasswordKdfAlgoValue)
+{
+    *this << securePasswordKdfAlgoValue.tlType;
+
+    switch (securePasswordKdfAlgoValue.tlType) {
+    case TLValue::SecurePasswordKdfAlgoUnknown:
+        break;
+    case TLValue::SecurePasswordKdfAlgoPBKDF2HMACSHA512iter100000:
+    case TLValue::SecurePasswordKdfAlgoSHA512:
+        *this << securePasswordKdfAlgoValue.salt;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLSecurePlainData &securePlainDataValue)
+{
+    *this << securePlainDataValue.tlType;
+
+    switch (securePlainDataValue.tlType) {
+    case TLValue::SecurePlainPhone:
+        *this << securePlainDataValue.phone;
+        break;
+    case TLValue::SecurePlainEmail:
+        *this << securePlainDataValue.email;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLSecureSecretSettings &secureSecretSettingsValue)
+{
+    *this << secureSecretSettingsValue.tlType;
+
+    switch (secureSecretSettingsValue.tlType) {
+    case TLValue::SecureSecretSettings:
+        *this << secureSecretSettingsValue.secureAlgo;
+        *this << secureSecretSettingsValue.secureSecret;
+        *this << secureSecretSettingsValue.secureSecretId;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLSecureValueType &secureValueTypeValue)
+{
+    *this << secureValueTypeValue.tlType;
+
+    switch (secureValueTypeValue.tlType) {
+    case TLValue::SecureValueTypePersonalDetails:
+    case TLValue::SecureValueTypePassport:
+    case TLValue::SecureValueTypeDriverLicense:
+    case TLValue::SecureValueTypeIdentityCard:
+    case TLValue::SecureValueTypeInternalPassport:
+    case TLValue::SecureValueTypeAddress:
+    case TLValue::SecureValueTypeUtilityBill:
+    case TLValue::SecureValueTypeBankStatement:
+    case TLValue::SecureValueTypeRentalAgreement:
+    case TLValue::SecureValueTypePassportRegistration:
+    case TLValue::SecureValueTypeTemporaryRegistration:
+    case TLValue::SecureValueTypePhone:
+    case TLValue::SecureValueTypeEmail:
         break;
     default:
         break;
@@ -7342,6 +8983,36 @@ Stream &Stream::operator<<(const TLTopPeerCategory &topPeerCategoryValue)
     case TLValue::TopPeerCategoryGroups:
     case TLValue::TopPeerCategoryChannels:
     case TLValue::TopPeerCategoryPhoneCalls:
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLAccountPasswordInputSettings &accountPasswordInputSettingsValue)
+{
+    *this << accountPasswordInputSettingsValue.tlType;
+
+    switch (accountPasswordInputSettingsValue.tlType) {
+    case TLValue::AccountPasswordInputSettings:
+        *this << accountPasswordInputSettingsValue.flags;
+        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::NewAlgo) {
+            *this << accountPasswordInputSettingsValue.newAlgo;
+        }
+        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::NewPasswordHash) {
+            *this << accountPasswordInputSettingsValue.newPasswordHash;
+        }
+        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::Hint) {
+            *this << accountPasswordInputSettingsValue.hint;
+        }
+        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::Email) {
+            *this << accountPasswordInputSettingsValue.email;
+        }
+        if (accountPasswordInputSettingsValue.flags & TLAccountPasswordInputSettings::NewSecureSettings) {
+            *this << accountPasswordInputSettingsValue.newSecureSettings;
+        }
         break;
     default:
         break;
@@ -7483,6 +9154,21 @@ Stream &Stream::operator<<(const TLInputChatPhoto &inputChatPhotoValue)
     return *this;
 }
 
+Stream &Stream::operator<<(const TLInputDialogPeer &inputDialogPeerValue)
+{
+    *this << inputDialogPeerValue.tlType;
+
+    switch (inputDialogPeerValue.tlType) {
+    case TLValue::InputDialogPeer:
+        *this << inputDialogPeerValue.peer;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
 Stream &Stream::operator<<(const TLInputGame &inputGameValue)
 {
     *this << inputGameValue.tlType;
@@ -7513,7 +9199,7 @@ Stream &Stream::operator<<(const TLInputNotifyPeer &inputNotifyPeerValue)
         break;
     case TLValue::InputNotifyUsers:
     case TLValue::InputNotifyChats:
-    case TLValue::InputNotifyAll:
+    case TLValue::InputNotifyBroadcasts:
         break;
     default:
         break;
@@ -7540,23 +9226,7 @@ Stream &Stream::operator<<(const TLInputPaymentCredentials &inputPaymentCredenti
         break;
     case TLValue::InputPaymentCredentialsAndroidPay:
         *this << inputPaymentCredentialsValue.paymentToken;
-        break;
-    default:
-        break;
-    }
-
-    return *this;
-}
-
-Stream &Stream::operator<<(const TLInputPeerNotifySettings &inputPeerNotifySettingsValue)
-{
-    *this << inputPeerNotifySettingsValue.tlType;
-
-    switch (inputPeerNotifySettingsValue.tlType) {
-    case TLValue::InputPeerNotifySettings:
-        *this << inputPeerNotifySettingsValue.flags;
-        *this << inputPeerNotifySettingsValue.muteUntil;
-        *this << inputPeerNotifySettingsValue.sound;
+        *this << inputPaymentCredentialsValue.googleTransactionId;
         break;
     default:
         break;
@@ -7578,6 +9248,43 @@ Stream &Stream::operator<<(const TLInputPrivacyRule &inputPrivacyRuleValue)
     case TLValue::InputPrivacyValueAllowUsers:
     case TLValue::InputPrivacyValueDisallowUsers:
         *this << inputPrivacyRuleValue.users;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLInputSecureValue &inputSecureValueValue)
+{
+    *this << inputSecureValueValue.tlType;
+
+    switch (inputSecureValueValue.tlType) {
+    case TLValue::InputSecureValue:
+        *this << inputSecureValueValue.flags;
+        *this << inputSecureValueValue.type;
+        if (inputSecureValueValue.flags & TLInputSecureValue::Data) {
+            *this << inputSecureValueValue.data;
+        }
+        if (inputSecureValueValue.flags & TLInputSecureValue::FrontSide) {
+            *this << inputSecureValueValue.frontSide;
+        }
+        if (inputSecureValueValue.flags & TLInputSecureValue::ReverseSide) {
+            *this << inputSecureValueValue.reverseSide;
+        }
+        if (inputSecureValueValue.flags & TLInputSecureValue::Selfie) {
+            *this << inputSecureValueValue.selfie;
+        }
+        if (inputSecureValueValue.flags & TLInputSecureValue::Translation) {
+            *this << inputSecureValueValue.translation;
+        }
+        if (inputSecureValueValue.flags & TLInputSecureValue::Files) {
+            *this << inputSecureValueValue.files;
+        }
+        if (inputSecureValueValue.flags & TLInputSecureValue::PlainData) {
+            *this << inputSecureValueValue.plainData;
+        }
         break;
     default:
         break;
@@ -7763,6 +9470,24 @@ Stream &Stream::operator<<(const TLPhoneCallProtocol &phoneCallProtocolValue)
     return *this;
 }
 
+Stream &Stream::operator<<(const TLPoll &pollValue)
+{
+    *this << pollValue.tlType;
+
+    switch (pollValue.tlType) {
+    case TLValue::Poll:
+        *this << pollValue.id;
+        *this << pollValue.flags;
+        *this << pollValue.question;
+        *this << pollValue.answers;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
 Stream &Stream::operator<<(const TLReplyMarkup &replyMarkupValue)
 {
     *this << replyMarkupValue.tlType;
@@ -7786,18 +9511,66 @@ Stream &Stream::operator<<(const TLReplyMarkup &replyMarkupValue)
     return *this;
 }
 
+Stream &Stream::operator<<(const TLSecureValueError &secureValueErrorValue)
+{
+    *this << secureValueErrorValue.tlType;
+
+    switch (secureValueErrorValue.tlType) {
+    case TLValue::SecureValueErrorData:
+        *this << secureValueErrorValue.type;
+        *this << secureValueErrorValue.dataHash;
+        *this << secureValueErrorValue.field;
+        *this << secureValueErrorValue.text;
+        break;
+    case TLValue::SecureValueErrorFrontSide:
+    case TLValue::SecureValueErrorReverseSide:
+    case TLValue::SecureValueErrorSelfie:
+    case TLValue::SecureValueErrorFile:
+    case TLValue::SecureValueErrorTranslationFile:
+        *this << secureValueErrorValue.type;
+        *this << secureValueErrorValue.byteArrayFileHash;
+        *this << secureValueErrorValue.text;
+        break;
+    case TLValue::SecureValueErrorFiles:
+    case TLValue::SecureValueErrorTranslationFiles:
+        *this << secureValueErrorValue.type;
+        *this << secureValueErrorValue.byteArrayFileHashVector;
+        *this << secureValueErrorValue.text;
+        break;
+    case TLValue::SecureValueError:
+        *this << secureValueErrorValue.type;
+        *this << secureValueErrorValue.hash;
+        *this << secureValueErrorValue.text;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLSecureValueHash &secureValueHashValue)
+{
+    *this << secureValueHashValue.tlType;
+
+    switch (secureValueHashValue.tlType) {
+    case TLValue::SecureValueHash:
+        *this << secureValueHashValue.type;
+        *this << secureValueHashValue.hash;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
 Stream &Stream::operator<<(const TLInputBotInlineMessage &inputBotInlineMessageValue)
 {
     *this << inputBotInlineMessageValue.tlType;
 
     switch (inputBotInlineMessageValue.tlType) {
     case TLValue::InputBotInlineMessageMediaAuto:
-        *this << inputBotInlineMessageValue.flags;
-        *this << inputBotInlineMessageValue.caption;
-        if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::ReplyMarkup) {
-            *this << inputBotInlineMessageValue.replyMarkup;
-        }
-        break;
     case TLValue::InputBotInlineMessageText:
         *this << inputBotInlineMessageValue.flags;
         *this << inputBotInlineMessageValue.message;
@@ -7823,6 +9596,7 @@ Stream &Stream::operator<<(const TLInputBotInlineMessage &inputBotInlineMessageV
         *this << inputBotInlineMessageValue.address;
         *this << inputBotInlineMessageValue.provider;
         *this << inputBotInlineMessageValue.venueId;
+        *this << inputBotInlineMessageValue.venueType;
         if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this << inputBotInlineMessageValue.replyMarkup;
         }
@@ -7832,6 +9606,7 @@ Stream &Stream::operator<<(const TLInputBotInlineMessage &inputBotInlineMessageV
         *this << inputBotInlineMessageValue.phoneNumber;
         *this << inputBotInlineMessageValue.firstName;
         *this << inputBotInlineMessageValue.lastName;
+        *this << inputBotInlineMessageValue.vcard;
         if (inputBotInlineMessageValue.flags & TLInputBotInlineMessage::ReplyMarkup) {
             *this << inputBotInlineMessageValue.replyMarkup;
         }
@@ -7867,23 +9642,11 @@ Stream &Stream::operator<<(const TLInputBotInlineResult &inputBotInlineResultVal
         if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Url) {
             *this << inputBotInlineResultValue.url;
         }
-        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::ThumbUrl) {
-            *this << inputBotInlineResultValue.thumbUrl;
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Thumb) {
+            *this << inputBotInlineResultValue.thumb;
         }
-        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::ContentUrl) {
-            *this << inputBotInlineResultValue.contentUrl;
-        }
-        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::ContentType) {
-            *this << inputBotInlineResultValue.contentType;
-        }
-        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::W) {
-            *this << inputBotInlineResultValue.w;
-        }
-        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::H) {
-            *this << inputBotInlineResultValue.h;
-        }
-        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Duration) {
-            *this << inputBotInlineResultValue.duration;
+        if (inputBotInlineResultValue.flags & TLInputBotInlineResult::Content) {
+            *this << inputBotInlineResultValue.content;
         }
         *this << inputBotInlineResultValue.sendMessage;
         break;
@@ -7928,7 +9691,6 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
     case TLValue::InputMediaUploadedPhoto:
         *this << inputMediaValue.flags;
         *this << inputMediaValue.file;
-        *this << inputMediaValue.caption;
         if (inputMediaValue.flags & TLInputMedia::Stickers) {
             *this << inputMediaValue.stickers;
         }
@@ -7939,7 +9701,6 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
     case TLValue::InputMediaPhoto:
         *this << inputMediaValue.flags;
         *this << inputMediaValue.inputPhotoId;
-        *this << inputMediaValue.caption;
         if (inputMediaValue.flags & TLInputMedia::TtlSeconds0) {
             *this << inputMediaValue.ttlSeconds;
         }
@@ -7951,6 +9712,7 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
         *this << inputMediaValue.phoneNumber;
         *this << inputMediaValue.firstName;
         *this << inputMediaValue.lastName;
+        *this << inputMediaValue.vcard;
         break;
     case TLValue::InputMediaUploadedDocument:
         *this << inputMediaValue.flags;
@@ -7960,7 +9722,6 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
         }
         *this << inputMediaValue.mimeType;
         *this << inputMediaValue.attributes;
-        *this << inputMediaValue.caption;
         if (inputMediaValue.flags & TLInputMedia::Stickers) {
             *this << inputMediaValue.stickers;
         }
@@ -7971,7 +9732,6 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
     case TLValue::InputMediaDocument:
         *this << inputMediaValue.flags;
         *this << inputMediaValue.inputDocumentId;
-        *this << inputMediaValue.caption;
         if (inputMediaValue.flags & TLInputMedia::TtlSeconds0) {
             *this << inputMediaValue.ttlSeconds;
         }
@@ -7992,7 +9752,6 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
     case TLValue::InputMediaDocumentExternal:
         *this << inputMediaValue.flags;
         *this << inputMediaValue.url;
-        *this << inputMediaValue.caption;
         if (inputMediaValue.flags & TLInputMedia::TtlSeconds0) {
             *this << inputMediaValue.ttlSeconds;
         }
@@ -8010,11 +9769,39 @@ Stream &Stream::operator<<(const TLInputMedia &inputMediaValue)
         *this << inputMediaValue.invoice;
         *this << inputMediaValue.payload;
         *this << inputMediaValue.provider;
+        *this << inputMediaValue.providerData;
         *this << inputMediaValue.startParam;
         break;
     case TLValue::InputMediaGeoLive:
+        *this << inputMediaValue.flags;
         *this << inputMediaValue.geoPoint;
-        *this << inputMediaValue.period;
+        if (inputMediaValue.flags & TLInputMedia::Period) {
+            *this << inputMediaValue.period;
+        }
+        break;
+    case TLValue::InputMediaPoll:
+        *this << inputMediaValue.poll;
+        break;
+    default:
+        break;
+    }
+
+    return *this;
+}
+
+Stream &Stream::operator<<(const TLInputSingleMedia &inputSingleMediaValue)
+{
+    *this << inputSingleMediaValue.tlType;
+
+    switch (inputSingleMediaValue.tlType) {
+    case TLValue::InputSingleMedia:
+        *this << inputSingleMediaValue.flags;
+        *this << inputSingleMediaValue.media;
+        *this << inputSingleMediaValue.randomId;
+        *this << inputSingleMediaValue.message;
+        if (inputSingleMediaValue.flags & TLInputSingleMedia::Entities) {
+            *this << inputSingleMediaValue.entities;
+        }
         break;
     default:
         break;

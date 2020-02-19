@@ -73,24 +73,13 @@ AuthRpcLayer::PendingBool *AuthRpcLayer::cancelCode(const QString &phoneNumber, 
     return op;
 }
 
-AuthRpcLayer::PendingAuthAuthorization *AuthRpcLayer::checkPassword(const QByteArray &passwordHash)
+AuthRpcLayer::PendingAuthAuthorization *AuthRpcLayer::checkPassword(const TLInputCheckPasswordSRP &password)
 {
-    qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << passwordHash.toHex();
+    qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << password;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::AuthCheckPassword;
-    outputStream << passwordHash;
+    outputStream << password;
     PendingAuthAuthorization *op = new PendingAuthAuthorization(this, outputStream.getData());
-    processRpcCall(op);
-    return op;
-}
-
-AuthRpcLayer::PendingAuthCheckedPhone *AuthRpcLayer::checkPhone(const QString &phoneNumber)
-{
-    qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumber;
-    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
-    outputStream << TLValue::AuthCheckPhone;
-    outputStream << phoneNumber;
-    PendingAuthCheckedPhone *op = new PendingAuthCheckedPhone(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
@@ -210,18 +199,6 @@ AuthRpcLayer::PendingAuthSentCode *AuthRpcLayer::sendCode(quint32 flags, const Q
     outputStream << apiId;
     outputStream << apiHash;
     PendingAuthSentCode *op = new PendingAuthSentCode(this, outputStream.getData());
-    processRpcCall(op);
-    return op;
-}
-
-AuthRpcLayer::PendingBool *AuthRpcLayer::sendInvites(const TLVector<QString> &phoneNumbers, const QString &message)
-{
-    qCDebug(c_clientRpcAuthCategory) << Q_FUNC_INFO << phoneNumbers << message;
-    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
-    outputStream << TLValue::AuthSendInvites;
-    outputStream << phoneNumbers;
-    outputStream << message;
-    PendingBool *op = new PendingBool(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }

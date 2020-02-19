@@ -196,13 +196,14 @@ ChannelsRpcLayer::PendingExportedChatInvite *ChannelsRpcLayer::exportInvite(cons
     return op;
 }
 
-ChannelsRpcLayer::PendingExportedMessageLink *ChannelsRpcLayer::exportMessageLink(const TLInputChannel &channel, quint32 id)
+ChannelsRpcLayer::PendingExportedMessageLink *ChannelsRpcLayer::exportMessageLink(const TLInputChannel &channel, quint32 id, bool grouped)
 {
-    qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id;
+    qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id << grouped;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::ChannelsExportMessageLink;
     outputStream << channel;
     outputStream << id;
+    outputStream << grouped;
     PendingExportedMessageLink *op = new PendingExportedMessageLink(this, outputStream.getData());
     processRpcCall(op);
     return op;
@@ -262,7 +263,18 @@ ChannelsRpcLayer::PendingMessagesChatFull *ChannelsRpcLayer::getFullChannel(cons
     return op;
 }
 
-ChannelsRpcLayer::PendingMessagesMessages *ChannelsRpcLayer::getMessages(const TLInputChannel &channel, const TLVector<quint32> &id)
+ChannelsRpcLayer::PendingMessagesChats *ChannelsRpcLayer::getLeftChannels(quint32 offset)
+{
+    qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << offset;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::ChannelsGetLeftChannels;
+    outputStream << offset;
+    PendingMessagesChats *op = new PendingMessagesChats(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+ChannelsRpcLayer::PendingMessagesMessages *ChannelsRpcLayer::getMessages(const TLInputChannel &channel, const TLVector<TLInputMessage> &id)
 {
     qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << channel << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -415,20 +427,6 @@ ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::toggleSignatures(const TLInp
     outputStream << TLValue::ChannelsToggleSignatures;
     outputStream << channel;
     outputStream << enabled;
-    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
-    processRpcCall(op);
-    return op;
-}
-
-ChannelsRpcLayer::PendingUpdates *ChannelsRpcLayer::updatePinnedMessage(quint32 flags, const TLInputChannel &channel, quint32 id)
-{
-    qCDebug(c_clientRpcChannelsCategory) << Q_FUNC_INFO << flags << channel << id;
-    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
-    outputStream << TLValue::ChannelsUpdatePinnedMessage;
-    outputStream << flags;
-    // (flags & 1 << 0) stands for silent "true" value
-    outputStream << channel;
-    outputStream << id;
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
     processRpcCall(op);
     return op;

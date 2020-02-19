@@ -37,6 +37,7 @@ public:
     // Generated process methods
     bool processGetDifference(RpcProcessingContext &context);
     bool processGetLangPack(RpcProcessingContext &context);
+    bool processGetLanguage(RpcProcessingContext &context);
     bool processGetLanguages(RpcProcessingContext &context);
     bool processGetStrings(RpcProcessingContext &context);
     // End of generated process methods
@@ -44,6 +45,7 @@ public:
     // Generated run methods
     void runGetDifference();
     void runGetLangPack();
+    void runGetLanguage();
     void runGetLanguages();
     void runGetStrings();
     // End of generated run methods
@@ -61,6 +63,7 @@ protected:
     // Generated RPC members
     MTProto::Functions::TLLangpackGetDifference m_getDifference;
     MTProto::Functions::TLLangpackGetLangPack m_getLangPack;
+    MTProto::Functions::TLLangpackGetLanguage m_getLanguage;
     MTProto::Functions::TLLangpackGetLanguages m_getLanguages;
     MTProto::Functions::TLLangpackGetStrings m_getStrings;
     // End of generated RPC members

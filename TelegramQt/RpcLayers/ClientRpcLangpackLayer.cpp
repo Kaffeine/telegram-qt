@@ -38,43 +38,59 @@ LangpackRpcLayer::LangpackRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
-LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getDifference(quint32 fromVersion)
+LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getDifference(const QString &langCode, quint32 fromVersion)
 {
-    qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << fromVersion;
+    qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langCode << fromVersion;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::LangpackGetDifference;
+    outputStream << langCode;
     outputStream << fromVersion;
     PendingLangPackDifference *op = new PendingLangPackDifference(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
 
-LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getLangPack(const QString &langCode)
+LangpackRpcLayer::PendingLangPackDifference *LangpackRpcLayer::getLangPack(const QString &langPack, const QString &langCode)
 {
-    qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langCode;
+    qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langPack << langCode;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::LangpackGetLangPack;
+    outputStream << langPack;
     outputStream << langCode;
     PendingLangPackDifference *op = new PendingLangPackDifference(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
 
-LangpackRpcLayer::PendingLangPackLanguageVector *LangpackRpcLayer::getLanguages()
+LangpackRpcLayer::PendingLangPackLanguage *LangpackRpcLayer::getLanguage(const QString &langPack, const QString &langCode)
 {
-    qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO;
+    qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langPack << langCode;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::LangpackGetLanguage;
+    outputStream << langPack;
+    outputStream << langCode;
+    PendingLangPackLanguage *op = new PendingLangPackLanguage(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+LangpackRpcLayer::PendingLangPackLanguageVector *LangpackRpcLayer::getLanguages(const QString &langPack)
+{
+    qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langPack;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::LangpackGetLanguages;
+    outputStream << langPack;
     PendingLangPackLanguageVector *op = new PendingLangPackLanguageVector(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
 
-LangpackRpcLayer::PendingLangPackStringVector *LangpackRpcLayer::getStrings(const QString &langCode, const TLVector<QString> &keys)
+LangpackRpcLayer::PendingLangPackStringVector *LangpackRpcLayer::getStrings(const QString &langPack, const QString &langCode, const TLVector<QString> &keys)
 {
-    qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langCode << keys;
+    qCDebug(c_clientRpcLangpackCategory) << Q_FUNC_INFO << langPack << langCode << keys;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::LangpackGetStrings;
+    outputStream << langPack;
     outputStream << langCode;
     outputStream << keys;
     PendingLangPackStringVector *op = new PendingLangPackStringVector(this, outputStream.getData());

@@ -63,6 +63,13 @@ bool UploadRpcOperation::processGetFile(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool UploadRpcOperation::processGetFileHashes(RpcProcessingContext &context)
+{
+    setRunMethod(&UploadRpcOperation::runGetFileHashes);
+    context.inputStream() >> m_getFileHashes;
+    return !context.inputStream().error();
+}
+
 bool UploadRpcOperation::processGetWebFile(RpcProcessingContext &context)
 {
     setRunMethod(&UploadRpcOperation::runGetWebFile);
@@ -181,6 +188,16 @@ void UploadRpcOperation::runGetFile()
     sendRpcReply(result);
 }
 
+void UploadRpcOperation::runGetFileHashes()
+{
+    // MTProto::Functions::TLUploadGetFileHashes &arguments = m_getFileHashes;
+    if (processNotImplementedMethod(TLValue::UploadGetFileHashes)) {
+        return;
+    }
+    TLVector<TLFileHash> result;
+    sendRpcReply(result);
+}
+
 void UploadRpcOperation::runGetWebFile()
 {
     // MTProto::Functions::TLUploadGetWebFile &arguments = m_getWebFile;
@@ -234,6 +251,8 @@ UploadRpcOperation::ProcessingMethod UploadRpcOperation::getMethodForRpcFunction
         return &UploadRpcOperation::processGetCdnFileHashes;
     case TLValue::UploadGetFile:
         return &UploadRpcOperation::processGetFile;
+    case TLValue::UploadGetFileHashes:
+        return &UploadRpcOperation::processGetFileHashes;
     case TLValue::UploadGetWebFile:
         return &UploadRpcOperation::processGetWebFile;
     case TLValue::UploadReuploadCdnFile:

@@ -53,6 +53,13 @@ bool UsersRpcOperation::processGetUsers(RpcProcessingContext &context)
     context.inputStream() >> m_getUsers;
     return !context.inputStream().error();
 }
+
+bool UsersRpcOperation::processSetSecureValueErrors(RpcProcessingContext &context)
+{
+    setRunMethod(&UsersRpcOperation::runSetSecureValueErrors);
+    context.inputStream() >> m_setSecureValueErrors;
+    return !context.inputStream().error();
+}
 // End of generated process methods
 
 // Generated run methods
@@ -103,6 +110,16 @@ void UsersRpcOperation::runGetUsers()
     }
     sendRpcReply(result);
 }
+
+void UsersRpcOperation::runSetSecureValueErrors()
+{
+    // MTProto::Functions::TLUsersSetSecureValueErrors &arguments = m_setSecureValueErrors;
+    if (processNotImplementedMethod(TLValue::UsersSetSecureValueErrors)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
 // End of generated run methods
 
 void UsersRpcOperation::setRunMethod(UsersRpcOperation::RunMethod method)
@@ -118,6 +135,8 @@ UsersRpcOperation::ProcessingMethod UsersRpcOperation::getMethodForRpcFunction(T
         return &UsersRpcOperation::processGetFullUser;
     case TLValue::UsersGetUsers:
         return &UsersRpcOperation::processGetUsers;
+    case TLValue::UsersSetSecureValueErrors:
+        return &UsersRpcOperation::processSetSecureValueErrors;
     // End of generated methodForRpcFunction cases
     default:
         return nullptr;

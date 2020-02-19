@@ -67,6 +67,18 @@ UsersRpcLayer::PendingUserVector *UsersRpcLayer::getUsers(const TLVector<TLInput
     processRpcCall(op);
     return op;
 }
+
+UsersRpcLayer::PendingBool *UsersRpcLayer::setSecureValueErrors(const TLInputUser &id, const TLVector<TLSecureValueError> &errors)
+{
+    qCDebug(c_clientRpcUsersCategory) << Q_FUNC_INFO << id << errors;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::UsersSetSecureValueErrors;
+    outputStream << id;
+    outputStream << errors;
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
 // End of generated Telegram API definitions
 
 

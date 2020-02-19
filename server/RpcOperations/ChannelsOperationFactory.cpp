@@ -158,6 +158,13 @@ bool ChannelsRpcOperation::processGetFullChannel(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool ChannelsRpcOperation::processGetLeftChannels(RpcProcessingContext &context)
+{
+    setRunMethod(&ChannelsRpcOperation::runGetLeftChannels);
+    context.inputStream() >> m_getLeftChannels;
+    return !context.inputStream().error();
+}
+
 bool ChannelsRpcOperation::processGetMessages(RpcProcessingContext &context)
 {
     setRunMethod(&ChannelsRpcOperation::runGetMessages);
@@ -246,13 +253,6 @@ bool ChannelsRpcOperation::processToggleSignatures(RpcProcessingContext &context
 {
     setRunMethod(&ChannelsRpcOperation::runToggleSignatures);
     context.inputStream() >> m_toggleSignatures;
-    return !context.inputStream().error();
-}
-
-bool ChannelsRpcOperation::processUpdatePinnedMessage(RpcProcessingContext &context)
-{
-    setRunMethod(&ChannelsRpcOperation::runUpdatePinnedMessage);
-    context.inputStream() >> m_updatePinnedMessage;
     return !context.inputStream().error();
 }
 
@@ -434,6 +434,16 @@ void ChannelsRpcOperation::runGetFullChannel()
     sendRpcReply(result);
 }
 
+void ChannelsRpcOperation::runGetLeftChannels()
+{
+    // MTProto::Functions::TLChannelsGetLeftChannels &arguments = m_getLeftChannels;
+    if (processNotImplementedMethod(TLValue::ChannelsGetLeftChannels)) {
+        return;
+    }
+    TLMessagesChats result;
+    sendRpcReply(result);
+}
+
 void ChannelsRpcOperation::runGetMessages()
 {
     // MTProto::Functions::TLChannelsGetMessages &arguments = m_getMessages;
@@ -564,16 +574,6 @@ void ChannelsRpcOperation::runToggleSignatures()
     sendRpcReply(result);
 }
 
-void ChannelsRpcOperation::runUpdatePinnedMessage()
-{
-    // MTProto::Functions::TLChannelsUpdatePinnedMessage &arguments = m_updatePinnedMessage;
-    if (processNotImplementedMethod(TLValue::ChannelsUpdatePinnedMessage)) {
-        return;
-    }
-    TLUpdates result;
-    sendRpcReply(result);
-}
-
 void ChannelsRpcOperation::runUpdateUsername()
 {
     // MTProto::Functions::TLChannelsUpdateUsername &arguments = m_updateUsername;
@@ -628,6 +628,8 @@ ChannelsRpcOperation::ProcessingMethod ChannelsRpcOperation::getMethodForRpcFunc
         return &ChannelsRpcOperation::processGetChannels;
     case TLValue::ChannelsGetFullChannel:
         return &ChannelsRpcOperation::processGetFullChannel;
+    case TLValue::ChannelsGetLeftChannels:
+        return &ChannelsRpcOperation::processGetLeftChannels;
     case TLValue::ChannelsGetMessages:
         return &ChannelsRpcOperation::processGetMessages;
     case TLValue::ChannelsGetParticipant:
@@ -654,8 +656,6 @@ ChannelsRpcOperation::ProcessingMethod ChannelsRpcOperation::getMethodForRpcFunc
         return &ChannelsRpcOperation::processTogglePreHistoryHidden;
     case TLValue::ChannelsToggleSignatures:
         return &ChannelsRpcOperation::processToggleSignatures;
-    case TLValue::ChannelsUpdatePinnedMessage:
-        return &ChannelsRpcOperation::processUpdatePinnedMessage;
     case TLValue::ChannelsUpdateUsername:
         return &ChannelsRpcOperation::processUpdateUsername;
     // End of generated methodForRpcFunction cases

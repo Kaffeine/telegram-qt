@@ -35,7 +35,7 @@ public:
 
     // Generated Telegram operations using
     using PendingUploadCdnFile = PendingRpcResult<TLUploadCdnFile *>;
-    using PendingCdnFileHashVector = PendingRpcResult<TLVector<TLCdnFileHash> *>;
+    using PendingFileHashVector = PendingRpcResult<TLVector<TLFileHash> *>;
     using PendingUploadFile = PendingRpcResult<TLUploadFile *>;
     using PendingUploadWebFile = PendingRpcResult<TLUploadWebFile *>;
     using PendingBool = PendingRpcResult<TLBool *>;
@@ -43,10 +43,11 @@ public:
 
     // Generated Telegram API declarations
     PendingUploadCdnFile *getCdnFile(const QByteArray &fileToken, quint32 offset, quint32 limit);
-    PendingCdnFileHashVector *getCdnFileHashes(const QByteArray &fileToken, quint32 offset);
+    PendingFileHashVector *getCdnFileHashes(const QByteArray &fileToken, quint32 offset);
     PendingUploadFile *getFile(const TLInputFileLocation &location, quint32 offset, quint32 limit);
+    PendingFileHashVector *getFileHashes(const TLInputFileLocation &location, quint32 offset);
     PendingUploadWebFile *getWebFile(const TLInputWebFileLocation &location, quint32 offset, quint32 limit);
-    PendingCdnFileHashVector *reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken);
+    PendingFileHashVector *reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken);
     PendingBool *saveBigFilePart(quint64 fileId, quint32 filePart, quint32 fileTotalParts, const QByteArray &bytes);
     PendingBool *saveFilePart(quint64 fileId, quint32 filePart, const QByteArray &bytes);
     // End of generated Telegram API declarations

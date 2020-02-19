@@ -16,20 +16,13 @@ template Stream &Stream::operator<<(const TLVector<TLUser> &v);
 // End of generated vector write templates instancing
 
 // Generated write operators implementation
-Stream &operator<<(Stream &stream, const TLAccountPassword &accountPasswordValue)
+Stream &operator<<(Stream &stream, const TLAccountSentEmailCode &accountSentEmailCodeValue)
 {
-    stream << accountPasswordValue.tlType;
-    switch (accountPasswordValue.tlType) {
-    case TLValue::AccountNoPassword:
-        stream << accountPasswordValue.newSalt;
-        stream << accountPasswordValue.emailUnconfirmedPattern;
-        break;
-    case TLValue::AccountPassword:
-        stream << accountPasswordValue.currentSalt;
-        stream << accountPasswordValue.newSalt;
-        stream << accountPasswordValue.hint;
-        stream << accountPasswordValue.hasRecovery;
-        stream << accountPasswordValue.emailUnconfirmedPattern;
+    stream << accountSentEmailCodeValue.tlType;
+    switch (accountSentEmailCodeValue.tlType) {
+    case TLValue::AccountSentEmailCode:
+        stream << accountSentEmailCodeValue.emailPattern;
+        stream << accountSentEmailCodeValue.length;
         break;
     default:
         break;
@@ -38,12 +31,12 @@ Stream &operator<<(Stream &stream, const TLAccountPassword &accountPasswordValue
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLAccountPasswordSettings &accountPasswordSettingsValue)
+Stream &operator<<(Stream &stream, const TLAccountTakeout &accountTakeoutValue)
 {
-    stream << accountPasswordSettingsValue.tlType;
-    switch (accountPasswordSettingsValue.tlType) {
-    case TLValue::AccountPasswordSettings:
-        stream << accountPasswordSettingsValue.email;
+    stream << accountTakeoutValue.tlType;
+    switch (accountTakeoutValue.tlType) {
+    case TLValue::AccountTakeout:
+        stream << accountTakeoutValue.id;
         break;
     default:
         break;
@@ -144,32 +137,6 @@ Stream &operator<<(Stream &stream, const TLAuthSentCodeType &authSentCodeTypeVal
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLAuthorization &authorizationValue)
-{
-    stream << authorizationValue.tlType;
-    switch (authorizationValue.tlType) {
-    case TLValue::Authorization:
-        stream << authorizationValue.hash;
-        stream << authorizationValue.flags;
-        stream << authorizationValue.deviceModel;
-        stream << authorizationValue.platform;
-        stream << authorizationValue.systemVersion;
-        stream << authorizationValue.apiId;
-        stream << authorizationValue.appName;
-        stream << authorizationValue.appVersion;
-        stream << authorizationValue.dateCreated;
-        stream << authorizationValue.dateActive;
-        stream << authorizationValue.ip;
-        stream << authorizationValue.country;
-        stream << authorizationValue.region;
-        break;
-    default:
-        break;
-    }
-
-    return stream;
-}
-
 Stream &operator<<(Stream &stream, const TLBadMsgNotification &badMsgNotificationValue)
 {
     stream << badMsgNotificationValue.tlType;
@@ -223,14 +190,13 @@ Stream &operator<<(Stream &stream, const TLBotInfo &botInfoValue)
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLCdnFileHash &cdnFileHashValue)
+Stream &operator<<(Stream &stream, const TLCdnPublicKey &cdnPublicKeyValue)
 {
-    stream << cdnFileHashValue.tlType;
-    switch (cdnFileHashValue.tlType) {
-    case TLValue::CdnFileHash:
-        stream << cdnFileHashValue.offset;
-        stream << cdnFileHashValue.limit;
-        stream << cdnFileHashValue.hash;
+    stream << cdnPublicKeyValue.tlType;
+    switch (cdnPublicKeyValue.tlType) {
+    case TLValue::CdnPublicKey:
+        stream << cdnPublicKeyValue.dcId;
+        stream << cdnPublicKeyValue.publicKey;
         break;
     default:
         break;
@@ -239,13 +205,12 @@ Stream &operator<<(Stream &stream, const TLCdnFileHash &cdnFileHashValue)
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLCdnPublicKey &cdnPublicKeyValue)
+Stream &operator<<(Stream &stream, const TLChatOnlines &chatOnlinesValue)
 {
-    stream << cdnPublicKeyValue.tlType;
-    switch (cdnPublicKeyValue.tlType) {
-    case TLValue::CdnPublicKey:
-        stream << cdnPublicKeyValue.dcId;
-        stream << cdnPublicKeyValue.publicKey;
+    stream << chatOnlinesValue.tlType;
+    switch (chatOnlinesValue.tlType) {
+    case TLValue::ChatOnlines:
+        stream << chatOnlinesValue.onlines;
         break;
     default:
         break;
@@ -390,21 +355,6 @@ Stream &operator<<(Stream &stream, const TLDestroySessionRes &destroySessionResV
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLDisabledFeature &disabledFeatureValue)
-{
-    stream << disabledFeatureValue.tlType;
-    switch (disabledFeatureValue.tlType) {
-    case TLValue::DisabledFeature:
-        stream << disabledFeatureValue.feature;
-        stream << disabledFeatureValue.description;
-        break;
-    default:
-        break;
-    }
-
-    return stream;
-}
-
 Stream &operator<<(Stream &stream, const TLEncryptedChat &encryptedChatValue)
 {
     stream << encryptedChatValue.tlType;
@@ -525,6 +475,23 @@ Stream &operator<<(Stream &stream, const TLExportedMessageLink &exportedMessageL
     switch (exportedMessageLinkValue.tlType) {
     case TLValue::ExportedMessageLink:
         stream << exportedMessageLinkValue.link;
+        stream << exportedMessageLinkValue.html;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLFileHash &fileHashValue)
+{
+    stream << fileHashValue.tlType;
+    switch (fileHashValue.tlType) {
+    case TLValue::FileHash:
+        stream << fileHashValue.offset;
+        stream << fileHashValue.limit;
+        stream << fileHashValue.hash;
         break;
     default:
         break;
@@ -547,6 +514,7 @@ Stream &operator<<(Stream &stream, const TLFileLocation &fileLocationValue)
         stream << fileLocationValue.volumeId;
         stream << fileLocationValue.localId;
         stream << fileLocationValue.secret;
+        stream << fileLocationValue.fileReference;
         break;
     default:
         break;
@@ -596,25 +564,7 @@ Stream &operator<<(Stream &stream, const TLGeoPoint &geoPointValue)
     case TLValue::GeoPoint:
         stream << geoPointValue.longitude;
         stream << geoPointValue.latitude;
-        break;
-    default:
-        break;
-    }
-
-    return stream;
-}
-
-Stream &operator<<(Stream &stream, const TLHelpAppUpdate &helpAppUpdateValue)
-{
-    stream << helpAppUpdateValue.tlType;
-    switch (helpAppUpdateValue.tlType) {
-    case TLValue::HelpAppUpdate:
-        stream << helpAppUpdateValue.id;
-        stream << helpAppUpdateValue.critical;
-        stream << helpAppUpdateValue.url;
-        stream << helpAppUpdateValue.text;
-        break;
-    case TLValue::HelpNoAppUpdate:
+        stream << geoPointValue.accessHash;
         break;
     default:
         break;
@@ -637,12 +587,29 @@ Stream &operator<<(Stream &stream, const TLHelpInviteText &helpInviteTextValue)
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLHelpTermsOfService &helpTermsOfServiceValue)
+Stream &operator<<(Stream &stream, const TLHelpPassportConfig &helpPassportConfigValue)
 {
-    stream << helpTermsOfServiceValue.tlType;
-    switch (helpTermsOfServiceValue.tlType) {
-    case TLValue::HelpTermsOfService:
-        stream << helpTermsOfServiceValue.text;
+    stream << helpPassportConfigValue.tlType;
+    switch (helpPassportConfigValue.tlType) {
+    case TLValue::HelpPassportConfigNotModified:
+        break;
+    case TLValue::HelpPassportConfig:
+        stream << helpPassportConfigValue.hash;
+        stream << helpPassportConfigValue.countriesLangs;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLHelpSupportName &helpSupportNameValue)
+{
+    stream << helpSupportNameValue.tlType;
+    switch (helpSupportNameValue.tlType) {
+    case TLValue::HelpSupportName:
+        stream << helpSupportNameValue.name;
         break;
     default:
         break;
@@ -698,12 +665,13 @@ Stream &operator<<(Stream &stream, const TLImportedContact &importedContactValue
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLInputPeerNotifyEvents &inputPeerNotifyEventsValue)
+Stream &operator<<(Stream &stream, const TLInputClientProxy &inputClientProxyValue)
 {
-    stream << inputPeerNotifyEventsValue.tlType;
-    switch (inputPeerNotifyEventsValue.tlType) {
-    case TLValue::InputPeerNotifyEventsEmpty:
-    case TLValue::InputPeerNotifyEventsAll:
+    stream << inputClientProxyValue.tlType;
+    switch (inputClientProxyValue.tlType) {
+    case TLValue::InputClientProxy:
+        stream << inputClientProxyValue.address;
+        stream << inputClientProxyValue.port;
         break;
     default:
         break;
@@ -720,21 +688,10 @@ Stream &operator<<(Stream &stream, const TLIpPort &ipPortValue)
         stream << ipPortValue.ipv4;
         stream << ipPortValue.port;
         break;
-    default:
-        break;
-    }
-
-    return stream;
-}
-
-Stream &operator<<(Stream &stream, const TLLangPackLanguage &langPackLanguageValue)
-{
-    stream << langPackLanguageValue.tlType;
-    switch (langPackLanguageValue.tlType) {
-    case TLValue::LangPackLanguage:
-        stream << langPackLanguageValue.name;
-        stream << langPackLanguageValue.nativeName;
-        stream << langPackLanguageValue.langCode;
+    case TLValue::IpPortSecret:
+        stream << ipPortValue.ipv4;
+        stream << ipPortValue.port;
+        stream << ipPortValue.secret;
         break;
     default:
         break;
@@ -773,33 +730,6 @@ Stream &operator<<(Stream &stream, const TLLangPackString &langPackStringValue)
         break;
     case TLValue::LangPackStringDeleted:
         stream << langPackStringValue.key;
-        break;
-    default:
-        break;
-    }
-
-    return stream;
-}
-
-Stream &operator<<(Stream &stream, const TLMessageFwdHeader &messageFwdHeaderValue)
-{
-    stream << messageFwdHeaderValue.tlType;
-    switch (messageFwdHeaderValue.tlType) {
-    case TLValue::MessageFwdHeader:
-        stream << messageFwdHeaderValue.flags;
-        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::FromId) {
-            stream << messageFwdHeaderValue.fromId;
-        }
-        stream << messageFwdHeaderValue.date;
-        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::ChannelId) {
-            stream << messageFwdHeaderValue.channelId;
-        }
-        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::ChannelPost) {
-            stream << messageFwdHeaderValue.channelPost;
-        }
-        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::PostAuthor) {
-            stream << messageFwdHeaderValue.postAuthor;
-        }
         break;
     default:
         break;
@@ -1015,6 +945,116 @@ Stream &operator<<(Stream &stream, const TLPQInnerData &pQInnerDataValue)
         stream << pQInnerDataValue.serverNonce;
         stream << pQInnerDataValue.newNonce;
         break;
+    case TLValue::PQInnerDataDc:
+        stream << pQInnerDataValue.pq;
+        stream << pQInnerDataValue.p;
+        stream << pQInnerDataValue.q;
+        stream << pQInnerDataValue.nonce;
+        stream << pQInnerDataValue.serverNonce;
+        stream << pQInnerDataValue.newNonce;
+        stream << pQInnerDataValue.dc;
+        break;
+    case TLValue::PQInnerDataTemp:
+        stream << pQInnerDataValue.pq;
+        stream << pQInnerDataValue.p;
+        stream << pQInnerDataValue.q;
+        stream << pQInnerDataValue.nonce;
+        stream << pQInnerDataValue.serverNonce;
+        stream << pQInnerDataValue.newNonce;
+        stream << pQInnerDataValue.expiresIn;
+        break;
+    case TLValue::PQInnerDataTempDc:
+        stream << pQInnerDataValue.pq;
+        stream << pQInnerDataValue.p;
+        stream << pQInnerDataValue.q;
+        stream << pQInnerDataValue.nonce;
+        stream << pQInnerDataValue.serverNonce;
+        stream << pQInnerDataValue.newNonce;
+        stream << pQInnerDataValue.dc;
+        stream << pQInnerDataValue.expiresIn;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLPageCaption &pageCaptionValue)
+{
+    stream << pageCaptionValue.tlType;
+    switch (pageCaptionValue.tlType) {
+    case TLValue::PageCaption:
+        stream << *pageCaptionValue.text;
+        stream << *pageCaptionValue.credit;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLPageListItem &pageListItemValue)
+{
+    stream << pageListItemValue.tlType;
+    switch (pageListItemValue.tlType) {
+    case TLValue::PageListItemText:
+        stream << *pageListItemValue.text;
+        break;
+    case TLValue::PageListItemBlocks:
+        stream << pageListItemValue.blocks;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLPageListOrderedItem &pageListOrderedItemValue)
+{
+    stream << pageListOrderedItemValue.tlType;
+    switch (pageListOrderedItemValue.tlType) {
+    case TLValue::PageListOrderedItemText:
+        stream << pageListOrderedItemValue.num;
+        stream << *pageListOrderedItemValue.text;
+        break;
+    case TLValue::PageListOrderedItemBlocks:
+        stream << pageListOrderedItemValue.num;
+        stream << pageListOrderedItemValue.blocks;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLPageRelatedArticle &pageRelatedArticleValue)
+{
+    stream << pageRelatedArticleValue.tlType;
+    switch (pageRelatedArticleValue.tlType) {
+    case TLValue::PageRelatedArticle:
+        stream << pageRelatedArticleValue.flags;
+        stream << pageRelatedArticleValue.url;
+        stream << pageRelatedArticleValue.webpageId;
+        if (pageRelatedArticleValue.flags & TLPageRelatedArticle::Title) {
+            stream << pageRelatedArticleValue.title;
+        }
+        if (pageRelatedArticleValue.flags & TLPageRelatedArticle::Description) {
+            stream << pageRelatedArticleValue.description;
+        }
+        if (pageRelatedArticleValue.flags & TLPageRelatedArticle::PhotoId) {
+            stream << pageRelatedArticleValue.photoId;
+        }
+        if (pageRelatedArticleValue.flags & TLPageRelatedArticle::Author) {
+            stream << pageRelatedArticleValue.author;
+        }
+        if (pageRelatedArticleValue.flags & TLPageRelatedArticle::PublishedDate) {
+            stream << pageRelatedArticleValue.publishedDate;
+        }
+        break;
     default:
         break;
     }
@@ -1072,12 +1112,24 @@ Stream &operator<<(Stream &stream, const TLPeer &peerValue)
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLPeerNotifyEvents &peerNotifyEventsValue)
+Stream &operator<<(Stream &stream, const TLPeerNotifySettings &peerNotifySettingsValue)
 {
-    stream << peerNotifyEventsValue.tlType;
-    switch (peerNotifyEventsValue.tlType) {
-    case TLValue::PeerNotifyEventsEmpty:
-    case TLValue::PeerNotifyEventsAll:
+    stream << peerNotifySettingsValue.tlType;
+    switch (peerNotifySettingsValue.tlType) {
+    case TLValue::PeerNotifySettings:
+        stream << peerNotifySettingsValue.flags;
+        if (peerNotifySettingsValue.flags & TLPeerNotifySettings::ShowPreviews) {
+            stream << peerNotifySettingsValue.showPreviews;
+        }
+        if (peerNotifySettingsValue.flags & TLPeerNotifySettings::Silent) {
+            stream << peerNotifySettingsValue.silent;
+        }
+        if (peerNotifySettingsValue.flags & TLPeerNotifySettings::MuteUntil) {
+            stream << peerNotifySettingsValue.muteUntil;
+        }
+        if (peerNotifySettingsValue.flags & TLPeerNotifySettings::Sound) {
+            stream << peerNotifySettingsValue.sound;
+        }
         break;
     default:
         break;
@@ -1125,6 +1177,10 @@ Stream &operator<<(Stream &stream, const TLPhotoSize &photoSizeValue)
         stream << photoSizeValue.h;
         stream << photoSizeValue.bytes;
         break;
+    case TLValue::PhotoStrippedSize:
+        stream << photoSizeValue.type;
+        stream << photoSizeValue.bytes;
+        break;
     default:
         break;
     }
@@ -1169,6 +1225,7 @@ Stream &operator<<(Stream &stream, const TLPrivacyKey &privacyKeyValue)
     case TLValue::PrivacyKeyStatusTimestamp:
     case TLValue::PrivacyKeyChatInvite:
     case TLValue::PrivacyKeyPhoneCall:
+    case TLValue::PrivacyKeyPhoneP2P:
         break;
     default:
         break;
@@ -1243,6 +1300,9 @@ Stream &operator<<(Stream &stream, const TLRichText &richTextValue)
     case TLValue::TextUnderline:
     case TLValue::TextStrike:
     case TLValue::TextFixed:
+    case TLValue::TextSubscript:
+    case TLValue::TextSuperscript:
+    case TLValue::TextMarked:
         stream << *richTextValue.richText;
         break;
     case TLValue::TextUrl:
@@ -1256,6 +1316,19 @@ Stream &operator<<(Stream &stream, const TLRichText &richTextValue)
         break;
     case TLValue::TextConcat:
         stream << richTextValue.texts;
+        break;
+    case TLValue::TextPhone:
+        stream << *richTextValue.richText;
+        stream << richTextValue.phone;
+        break;
+    case TLValue::TextImage:
+        stream << richTextValue.documentId;
+        stream << richTextValue.w;
+        stream << richTextValue.h;
+        break;
+    case TLValue::TextAnchor:
+        stream << *richTextValue.richText;
+        stream << richTextValue.name;
         break;
     default:
         break;
@@ -1290,6 +1363,45 @@ Stream &operator<<(Stream &stream, const TLRpcError &rpcErrorValue)
     case TLValue::RpcError:
         stream << rpcErrorValue.errorCode;
         stream << rpcErrorValue.errorMessage;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLSavedContact &savedContactValue)
+{
+    stream << savedContactValue.tlType;
+    switch (savedContactValue.tlType) {
+    case TLValue::SavedPhoneContact:
+        stream << savedContactValue.phone;
+        stream << savedContactValue.firstName;
+        stream << savedContactValue.lastName;
+        stream << savedContactValue.date;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLSecureFile &secureFileValue)
+{
+    stream << secureFileValue.tlType;
+    switch (secureFileValue.tlType) {
+    case TLValue::SecureFileEmpty:
+        break;
+    case TLValue::SecureFile:
+        stream << secureFileValue.id;
+        stream << secureFileValue.accessHash;
+        stream << secureFileValue.size;
+        stream << secureFileValue.dcId;
+        stream << secureFileValue.date;
+        stream << secureFileValue.fileHash;
+        stream << secureFileValue.secret;
         break;
     default:
         break;
@@ -1356,6 +1468,20 @@ Stream &operator<<(Stream &stream, const TLSetClientDHParamsAnswer &setClientDHP
         stream << setClientDHParamsAnswerValue.nonce;
         stream << setClientDHParamsAnswerValue.serverNonce;
         stream << setClientDHParamsAnswerValue.newNonceHash3;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLStatsURL &statsURLValue)
+{
+    stream << statsURLValue.tlType;
+    switch (statsURLValue.tlType) {
+    case TLValue::StatsURL:
+        stream << statsURLValue.url;
         break;
     default:
         break;
@@ -1481,7 +1607,7 @@ Stream &operator<<(Stream &stream, const TLUploadFile &uploadFileValue)
         stream << uploadFileValue.fileToken;
         stream << uploadFileValue.encryptionKey;
         stream << uploadFileValue.encryptionIv;
-        stream << uploadFileValue.cdnFileHashes;
+        stream << uploadFileValue.fileHashes;
         break;
     default:
         break;
@@ -1571,12 +1697,20 @@ Stream &operator<<(Stream &stream, const TLWallPaper &wallPaperValue)
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLAccountAuthorizations &accountAuthorizationsValue)
+Stream &operator<<(Stream &stream, const TLWebAuthorization &webAuthorizationValue)
 {
-    stream << accountAuthorizationsValue.tlType;
-    switch (accountAuthorizationsValue.tlType) {
-    case TLValue::AccountAuthorizations:
-        stream << accountAuthorizationsValue.authorizations;
+    stream << webAuthorizationValue.tlType;
+    switch (webAuthorizationValue.tlType) {
+    case TLValue::WebAuthorization:
+        stream << webAuthorizationValue.hash;
+        stream << webAuthorizationValue.botId;
+        stream << webAuthorizationValue.domain;
+        stream << webAuthorizationValue.browser;
+        stream << webAuthorizationValue.platform;
+        stream << webAuthorizationValue.dateCreated;
+        stream << webAuthorizationValue.dateActive;
+        stream << webAuthorizationValue.ip;
+        stream << webAuthorizationValue.region;
         break;
     default:
         break;
@@ -1585,20 +1719,92 @@ Stream &operator<<(Stream &stream, const TLAccountAuthorizations &accountAuthori
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLAuthSentCode &authSentCodeValue)
+Stream &operator<<(Stream &stream, const TLAccessPointRule &accessPointRuleValue)
 {
-    stream << authSentCodeValue.tlType;
-    switch (authSentCodeValue.tlType) {
-    case TLValue::AuthSentCode:
-        stream << authSentCodeValue.flags;
-        stream << authSentCodeValue.type;
-        stream << authSentCodeValue.phoneCodeHash;
-        if (authSentCodeValue.flags & TLAuthSentCode::NextType) {
-            stream << authSentCodeValue.nextType;
+    stream << accessPointRuleValue.tlType;
+    switch (accessPointRuleValue.tlType) {
+    case TLValue::AccessPointRule:
+        stream << accessPointRuleValue.phonePrefixRules;
+        stream << accessPointRuleValue.dcId;
+        stream << accessPointRuleValue.ips;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLAccountPassword &accountPasswordValue)
+{
+    stream << accountPasswordValue.tlType;
+    switch (accountPasswordValue.tlType) {
+    case TLValue::AccountPassword:
+        stream << accountPasswordValue.flags;
+        if (accountPasswordValue.flags & TLAccountPassword::CurrentAlgo) {
+            stream << accountPasswordValue.currentAlgo;
         }
-        if (authSentCodeValue.flags & TLAuthSentCode::Timeout) {
-            stream << authSentCodeValue.timeout;
+        if (accountPasswordValue.flags & TLAccountPassword::SrpB) {
+            stream << accountPasswordValue.srpB;
         }
+        if (accountPasswordValue.flags & TLAccountPassword::SrpId) {
+            stream << accountPasswordValue.srpId;
+        }
+        if (accountPasswordValue.flags & TLAccountPassword::Hint) {
+            stream << accountPasswordValue.hint;
+        }
+        if (accountPasswordValue.flags & TLAccountPassword::EmailUnconfirmedPattern) {
+            stream << accountPasswordValue.emailUnconfirmedPattern;
+        }
+        stream << accountPasswordValue.newAlgo;
+        stream << accountPasswordValue.newSecureAlgo;
+        stream << accountPasswordValue.secureRandom;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLAccountPasswordSettings &accountPasswordSettingsValue)
+{
+    stream << accountPasswordSettingsValue.tlType;
+    switch (accountPasswordSettingsValue.tlType) {
+    case TLValue::AccountPasswordSettings:
+        stream << accountPasswordSettingsValue.flags;
+        if (accountPasswordSettingsValue.flags & TLAccountPasswordSettings::Email) {
+            stream << accountPasswordSettingsValue.email;
+        }
+        if (accountPasswordSettingsValue.flags & TLAccountPasswordSettings::SecureSettings) {
+            stream << accountPasswordSettingsValue.secureSettings;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLAuthorization &authorizationValue)
+{
+    stream << authorizationValue.tlType;
+    switch (authorizationValue.tlType) {
+    case TLValue::Authorization:
+        stream << authorizationValue.flags;
+        stream << authorizationValue.hash;
+        stream << authorizationValue.deviceModel;
+        stream << authorizationValue.platform;
+        stream << authorizationValue.systemVersion;
+        stream << authorizationValue.apiId;
+        stream << authorizationValue.appName;
+        stream << authorizationValue.appVersion;
+        stream << authorizationValue.dateCreated;
+        stream << authorizationValue.dateActive;
+        stream << authorizationValue.ip;
+        stream << authorizationValue.country;
+        stream << authorizationValue.region;
         break;
     default:
         break;
@@ -1700,6 +1906,23 @@ Stream &operator<<(Stream &stream, const TLDcOption &dcOptionValue)
         stream << dcOptionValue.id;
         stream << dcOptionValue.ipAddress;
         stream << dcOptionValue.port;
+        if (dcOptionValue.flags & TLDcOption::Secret) {
+            stream << dcOptionValue.secret;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLDialogPeer &dialogPeerValue)
+{
+    stream << dialogPeerValue.tlType;
+    switch (dialogPeerValue.tlType) {
+    case TLValue::DialogPeer:
+        stream << dialogPeerValue.peer;
         break;
     default:
         break;
@@ -1713,6 +1936,10 @@ Stream &operator<<(Stream &stream, const TLDraftMessage &draftMessageValue)
     stream << draftMessageValue.tlType;
     switch (draftMessageValue.tlType) {
     case TLValue::DraftMessageEmpty:
+        stream << draftMessageValue.flags;
+        if (draftMessageValue.flags & TLDraftMessage::Date) {
+            stream << draftMessageValue.date;
+        }
         break;
     case TLValue::DraftMessage:
         stream << draftMessageValue.flags;
@@ -1739,8 +1966,84 @@ Stream &operator<<(Stream &stream, const TLHelpConfigSimple &helpConfigSimpleVal
     case TLValue::HelpConfigSimple:
         stream << helpConfigSimpleValue.date;
         stream << helpConfigSimpleValue.expires;
-        stream << helpConfigSimpleValue.dcId;
-        stream << helpConfigSimpleValue.ipPortList;
+        stream << helpConfigSimpleValue.rules;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLHelpDeepLinkInfo &helpDeepLinkInfoValue)
+{
+    stream << helpDeepLinkInfoValue.tlType;
+    switch (helpDeepLinkInfoValue.tlType) {
+    case TLValue::HelpDeepLinkInfoEmpty:
+        break;
+    case TLValue::HelpDeepLinkInfo:
+        stream << helpDeepLinkInfoValue.flags;
+        stream << helpDeepLinkInfoValue.message;
+        if (helpDeepLinkInfoValue.flags & TLHelpDeepLinkInfo::Entities) {
+            stream << helpDeepLinkInfoValue.entities;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLHelpTermsOfService &helpTermsOfServiceValue)
+{
+    stream << helpTermsOfServiceValue.tlType;
+    switch (helpTermsOfServiceValue.tlType) {
+    case TLValue::HelpTermsOfService:
+        stream << helpTermsOfServiceValue.flags;
+        stream << helpTermsOfServiceValue.id;
+        stream << helpTermsOfServiceValue.text;
+        stream << helpTermsOfServiceValue.entities;
+        if (helpTermsOfServiceValue.flags & TLHelpTermsOfService::MinAgeConfirm) {
+            stream << helpTermsOfServiceValue.minAgeConfirm;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLHelpTermsOfServiceUpdate &helpTermsOfServiceUpdateValue)
+{
+    stream << helpTermsOfServiceUpdateValue.tlType;
+    switch (helpTermsOfServiceUpdateValue.tlType) {
+    case TLValue::HelpTermsOfServiceUpdateEmpty:
+        stream << helpTermsOfServiceUpdateValue.expires;
+        break;
+    case TLValue::HelpTermsOfServiceUpdate:
+        stream << helpTermsOfServiceUpdateValue.expires;
+        stream << helpTermsOfServiceUpdateValue.termsOfService;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLHelpUserInfo &helpUserInfoValue)
+{
+    stream << helpUserInfoValue.tlType;
+    switch (helpUserInfoValue.tlType) {
+    case TLValue::HelpUserInfoEmpty:
+        break;
+    case TLValue::HelpUserInfo:
+        stream << helpUserInfoValue.message;
+        stream << helpUserInfoValue.entities;
+        stream << helpUserInfoValue.author;
+        stream << helpUserInfoValue.date;
         break;
     default:
         break;
@@ -1758,6 +2061,63 @@ Stream &operator<<(Stream &stream, const TLLangPackDifference &langPackDifferenc
         stream << langPackDifferenceValue.fromVersion;
         stream << langPackDifferenceValue.version;
         stream << langPackDifferenceValue.strings;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLLangPackLanguage &langPackLanguageValue)
+{
+    stream << langPackLanguageValue.tlType;
+    switch (langPackLanguageValue.tlType) {
+    case TLValue::LangPackLanguage:
+        stream << langPackLanguageValue.flags;
+        stream << langPackLanguageValue.name;
+        stream << langPackLanguageValue.nativeName;
+        stream << langPackLanguageValue.langCode;
+        if (langPackLanguageValue.flags & TLLangPackLanguage::BaseLangCode) {
+            stream << langPackLanguageValue.baseLangCode;
+        }
+        stream << langPackLanguageValue.pluralCode;
+        stream << langPackLanguageValue.stringsCount;
+        stream << langPackLanguageValue.translatedCount;
+        stream << langPackLanguageValue.translationsUrl;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLMessageFwdHeader &messageFwdHeaderValue)
+{
+    stream << messageFwdHeaderValue.tlType;
+    switch (messageFwdHeaderValue.tlType) {
+    case TLValue::MessageFwdHeader:
+        stream << messageFwdHeaderValue.flags;
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::FromId) {
+            stream << messageFwdHeaderValue.fromId;
+        }
+        stream << messageFwdHeaderValue.date;
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::ChannelId) {
+            stream << messageFwdHeaderValue.channelId;
+        }
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::ChannelPost) {
+            stream << messageFwdHeaderValue.channelPost;
+        }
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::PostAuthor) {
+            stream << messageFwdHeaderValue.postAuthor;
+        }
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::SavedFromPeer) {
+            stream << messageFwdHeaderValue.savedFromPeer;
+        }
+        if (messageFwdHeaderValue.flags & TLMessageFwdHeader::SavedFromMsgId) {
+            stream << messageFwdHeaderValue.savedFromMsgId;
+        }
         break;
     default:
         break;
@@ -1810,7 +2170,44 @@ Stream &operator<<(Stream &stream, const TLNotifyPeer &notifyPeerValue)
         break;
     case TLValue::NotifyUsers:
     case TLValue::NotifyChats:
-    case TLValue::NotifyAll:
+    case TLValue::NotifyBroadcasts:
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLPageTableCell &pageTableCellValue)
+{
+    stream << pageTableCellValue.tlType;
+    switch (pageTableCellValue.tlType) {
+    case TLValue::PageTableCell:
+        stream << pageTableCellValue.flags;
+        if (pageTableCellValue.flags & TLPageTableCell::Text) {
+            stream << pageTableCellValue.text;
+        }
+        if (pageTableCellValue.flags & TLPageTableCell::Colspan) {
+            stream << pageTableCellValue.colspan;
+        }
+        if (pageTableCellValue.flags & TLPageTableCell::Rowspan) {
+            stream << pageTableCellValue.rowspan;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLPageTableRow &pageTableRowValue)
+{
+    stream << pageTableRowValue.tlType;
+    switch (pageTableRowValue.tlType) {
+    case TLValue::PageTableRow:
+        stream << pageTableRowValue.cells;
         break;
     default:
         break;
@@ -1856,24 +2253,6 @@ Stream &operator<<(Stream &stream, const TLPaymentsValidatedRequestedInfo &payme
     return stream;
 }
 
-Stream &operator<<(Stream &stream, const TLPeerNotifySettings &peerNotifySettingsValue)
-{
-    stream << peerNotifySettingsValue.tlType;
-    switch (peerNotifySettingsValue.tlType) {
-    case TLValue::PeerNotifySettingsEmpty:
-        break;
-    case TLValue::PeerNotifySettings:
-        stream << peerNotifySettingsValue.flags;
-        stream << peerNotifySettingsValue.muteUntil;
-        stream << peerNotifySettingsValue.sound;
-        break;
-    default:
-        break;
-    }
-
-    return stream;
-}
-
 Stream &operator<<(Stream &stream, const TLPeerSettings &peerSettingsValue)
 {
     stream << peerSettingsValue.tlType;
@@ -1899,8 +2278,100 @@ Stream &operator<<(Stream &stream, const TLPhoto &photoValue)
         stream << photoValue.flags;
         stream << photoValue.id;
         stream << photoValue.accessHash;
+        stream << photoValue.fileReference;
         stream << photoValue.date;
         stream << photoValue.sizes;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLPollAnswerVoters &pollAnswerVotersValue)
+{
+    stream << pollAnswerVotersValue.tlType;
+    switch (pollAnswerVotersValue.tlType) {
+    case TLValue::PollAnswerVoters:
+        stream << pollAnswerVotersValue.flags;
+        stream << pollAnswerVotersValue.option;
+        stream << pollAnswerVotersValue.voters;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLPollResults &pollResultsValue)
+{
+    stream << pollResultsValue.tlType;
+    switch (pollResultsValue.tlType) {
+    case TLValue::PollResults:
+        stream << pollResultsValue.flags;
+        if (pollResultsValue.flags & TLPollResults::Results) {
+            stream << pollResultsValue.results;
+        }
+        if (pollResultsValue.flags & TLPollResults::TotalVoters) {
+            stream << pollResultsValue.totalVoters;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLSecureRequiredType &secureRequiredTypeValue)
+{
+    stream << secureRequiredTypeValue.tlType;
+    switch (secureRequiredTypeValue.tlType) {
+    case TLValue::SecureRequiredType:
+        stream << secureRequiredTypeValue.flags;
+        stream << secureRequiredTypeValue.type;
+        break;
+    case TLValue::SecureRequiredTypeOneOf:
+        stream << secureRequiredTypeValue.types;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLSecureValue &secureValueValue)
+{
+    stream << secureValueValue.tlType;
+    switch (secureValueValue.tlType) {
+    case TLValue::SecureValue:
+        stream << secureValueValue.flags;
+        stream << secureValueValue.type;
+        if (secureValueValue.flags & TLSecureValue::Data) {
+            stream << secureValueValue.data;
+        }
+        if (secureValueValue.flags & TLSecureValue::FrontSide) {
+            stream << secureValueValue.frontSide;
+        }
+        if (secureValueValue.flags & TLSecureValue::ReverseSide) {
+            stream << secureValueValue.reverseSide;
+        }
+        if (secureValueValue.flags & TLSecureValue::Selfie) {
+            stream << secureValueValue.selfie;
+        }
+        if (secureValueValue.flags & TLSecureValue::Translation) {
+            stream << secureValueValue.translation;
+        }
+        if (secureValueValue.flags & TLSecureValue::Files) {
+            stream << secureValueValue.files;
+        }
+        if (secureValueValue.flags & TLSecureValue::PlainData) {
+            stream << secureValueValue.plainData;
+        }
+        stream << secureValueValue.hash;
         break;
     default:
         break;
@@ -1915,6 +2386,9 @@ Stream &operator<<(Stream &stream, const TLStickerSet &stickerSetValue)
     switch (stickerSetValue.tlType) {
     case TLValue::StickerSet:
         stream << stickerSetValue.flags;
+        if (stickerSetValue.flags & TLStickerSet::InstalledDate) {
+            stream << stickerSetValue.installedDate;
+        }
         stream << stickerSetValue.id;
         stream << stickerSetValue.accessHash;
         stream << stickerSetValue.title;
@@ -1990,7 +2464,47 @@ Stream &operator<<(Stream &stream, const TLWebDocument &webDocumentValue)
         stream << webDocumentValue.size;
         stream << webDocumentValue.mimeType;
         stream << webDocumentValue.attributes;
-        stream << webDocumentValue.dcId;
+        break;
+    case TLValue::WebDocumentNoProxy:
+        stream << webDocumentValue.url;
+        stream << webDocumentValue.size;
+        stream << webDocumentValue.mimeType;
+        stream << webDocumentValue.attributes;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLAccountAuthorizationForm &accountAuthorizationFormValue)
+{
+    stream << accountAuthorizationFormValue.tlType;
+    switch (accountAuthorizationFormValue.tlType) {
+    case TLValue::AccountAuthorizationForm:
+        stream << accountAuthorizationFormValue.flags;
+        stream << accountAuthorizationFormValue.requiredTypes;
+        stream << accountAuthorizationFormValue.values;
+        stream << accountAuthorizationFormValue.errors;
+        stream << accountAuthorizationFormValue.users;
+        if (accountAuthorizationFormValue.flags & TLAccountAuthorizationForm::PrivacyPolicyUrl) {
+            stream << accountAuthorizationFormValue.privacyPolicyUrl;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLAccountAuthorizations &accountAuthorizationsValue)
+{
+    stream << accountAuthorizationsValue.tlType;
+    switch (accountAuthorizationsValue.tlType) {
+    case TLValue::AccountAuthorizations:
+        stream << accountAuthorizationsValue.authorizations;
         break;
     default:
         break;
@@ -2006,6 +2520,21 @@ Stream &operator<<(Stream &stream, const TLAccountPrivacyRules &accountPrivacyRu
     case TLValue::AccountPrivacyRules:
         stream << accountPrivacyRulesValue.rules;
         stream << accountPrivacyRulesValue.users;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLAccountWebAuthorizations &accountWebAuthorizationsValue)
+{
+    stream << accountWebAuthorizationsValue.tlType;
+    switch (accountWebAuthorizationsValue.tlType) {
+    case TLValue::AccountWebAuthorizations:
+        stream << accountWebAuthorizationsValue.authorizations;
+        stream << accountWebAuthorizationsValue.users;
         break;
     default:
         break;
@@ -2032,17 +2561,36 @@ Stream &operator<<(Stream &stream, const TLAuthAuthorization &authAuthorizationV
     return stream;
 }
 
+Stream &operator<<(Stream &stream, const TLAuthSentCode &authSentCodeValue)
+{
+    stream << authSentCodeValue.tlType;
+    switch (authSentCodeValue.tlType) {
+    case TLValue::AuthSentCode:
+        stream << authSentCodeValue.flags;
+        stream << authSentCodeValue.type;
+        stream << authSentCodeValue.phoneCodeHash;
+        if (authSentCodeValue.flags & TLAuthSentCode::NextType) {
+            stream << authSentCodeValue.nextType;
+        }
+        if (authSentCodeValue.flags & TLAuthSentCode::Timeout) {
+            stream << authSentCodeValue.timeout;
+        }
+        if (authSentCodeValue.flags & TLAuthSentCode::TermsOfService) {
+            stream << authSentCodeValue.termsOfService;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
 Stream &operator<<(Stream &stream, const TLBotInlineMessage &botInlineMessageValue)
 {
     stream << botInlineMessageValue.tlType;
     switch (botInlineMessageValue.tlType) {
     case TLValue::BotInlineMessageMediaAuto:
-        stream << botInlineMessageValue.flags;
-        stream << botInlineMessageValue.caption;
-        if (botInlineMessageValue.flags & TLBotInlineMessage::ReplyMarkup) {
-            stream << botInlineMessageValue.replyMarkup;
-        }
-        break;
     case TLValue::BotInlineMessageText:
         stream << botInlineMessageValue.flags;
         stream << botInlineMessageValue.message;
@@ -2068,6 +2616,7 @@ Stream &operator<<(Stream &stream, const TLBotInlineMessage &botInlineMessageVal
         stream << botInlineMessageValue.address;
         stream << botInlineMessageValue.provider;
         stream << botInlineMessageValue.venueId;
+        stream << botInlineMessageValue.venueType;
         if (botInlineMessageValue.flags & TLBotInlineMessage::ReplyMarkup) {
             stream << botInlineMessageValue.replyMarkup;
         }
@@ -2077,6 +2626,7 @@ Stream &operator<<(Stream &stream, const TLBotInlineMessage &botInlineMessageVal
         stream << botInlineMessageValue.phoneNumber;
         stream << botInlineMessageValue.firstName;
         stream << botInlineMessageValue.lastName;
+        stream << botInlineMessageValue.vcard;
         if (botInlineMessageValue.flags & TLBotInlineMessage::ReplyMarkup) {
             stream << botInlineMessageValue.replyMarkup;
         }
@@ -2166,6 +2716,9 @@ Stream &operator<<(Stream &stream, const TLChat &chatValue)
         if (chatValue.flags & TLChat::BannedRights) {
             stream << chatValue.bannedRights;
         }
+        if (chatValue.flags & TLChat::ParticipantsCount) {
+            stream << chatValue.participantsCount;
+        }
         break;
     case TLValue::ChannelForbidden:
         stream << chatValue.flags;
@@ -2188,12 +2741,20 @@ Stream &operator<<(Stream &stream, const TLChatFull &chatFullValue)
     stream << chatFullValue.tlType;
     switch (chatFullValue.tlType) {
     case TLValue::ChatFull:
+        stream << chatFullValue.flags;
         stream << chatFullValue.id;
         stream << chatFullValue.participants;
-        stream << chatFullValue.chatPhoto;
+        if (chatFullValue.flags & TLChatFull::ChatPhoto) {
+            stream << chatFullValue.chatPhoto;
+        }
         stream << chatFullValue.notifySettings;
         stream << chatFullValue.exportedInvite;
-        stream << chatFullValue.botInfo;
+        if (chatFullValue.flags & TLChatFull::BotInfo) {
+            stream << chatFullValue.botInfo;
+        }
+        if (chatFullValue.flags & TLChatFull::PinnedMsgId6) {
+            stream << chatFullValue.pinnedMsgId;
+        }
         break;
     case TLValue::ChannelFull:
         stream << chatFullValue.flags;
@@ -2211,6 +2772,9 @@ Stream &operator<<(Stream &stream, const TLChatFull &chatFullValue)
         if (chatFullValue.flags & TLChatFull::BannedCount) {
             stream << chatFullValue.bannedCount;
         }
+        if (chatFullValue.flags & TLChatFull::OnlineCount) {
+            stream << chatFullValue.onlineCount;
+        }
         stream << chatFullValue.readInboxMaxId;
         stream << chatFullValue.readOutboxMaxId;
         stream << chatFullValue.unreadCount;
@@ -2224,7 +2788,7 @@ Stream &operator<<(Stream &stream, const TLChatFull &chatFullValue)
         if (chatFullValue.flags & TLChatFull::MigratedFromMaxId) {
             stream << chatFullValue.migratedFromMaxId;
         }
-        if (chatFullValue.flags & TLChatFull::PinnedMsgId) {
+        if (chatFullValue.flags & TLChatFull::PinnedMsgId5) {
             stream << chatFullValue.pinnedMsgId;
         }
         if (chatFullValue.flags & TLChatFull::Stickerset) {
@@ -2275,6 +2839,7 @@ Stream &operator<<(Stream &stream, const TLConfig &configValue)
         stream << configValue.testMode;
         stream << configValue.thisDc;
         stream << configValue.dcOptions;
+        stream << configValue.dcTxtDomainName;
         stream << configValue.chatSizeMax;
         stream << configValue.megagroupSizeMax;
         stream << configValue.forwardedCountMax;
@@ -2284,11 +2849,12 @@ Stream &operator<<(Stream &stream, const TLConfig &configValue)
         stream << configValue.onlineCloudTimeoutMs;
         stream << configValue.notifyCloudDelayMs;
         stream << configValue.notifyDefaultDelayMs;
-        stream << configValue.chatBigSize;
         stream << configValue.pushChatPeriodMs;
         stream << configValue.pushChatLimit;
         stream << configValue.savedGifsLimit;
         stream << configValue.editTimeLimit;
+        stream << configValue.revokeTimeLimit;
+        stream << configValue.revokePmTimeLimit;
         stream << configValue.ratingEDecay;
         stream << configValue.stickersRecentLimit;
         stream << configValue.stickersFavedLimit;
@@ -2302,13 +2868,33 @@ Stream &operator<<(Stream &stream, const TLConfig &configValue)
         stream << configValue.callConnectTimeoutMs;
         stream << configValue.callPacketTimeoutMs;
         stream << configValue.meUrlPrefix;
+        if (configValue.flags & TLConfig::AutoupdateUrlPrefix) {
+            stream << configValue.autoupdateUrlPrefix;
+        }
+        if (configValue.flags & TLConfig::GifSearchUsername) {
+            stream << configValue.gifSearchUsername;
+        }
+        if (configValue.flags & TLConfig::VenueSearchUsername) {
+            stream << configValue.venueSearchUsername;
+        }
+        if (configValue.flags & TLConfig::ImgSearchUsername) {
+            stream << configValue.imgSearchUsername;
+        }
+        if (configValue.flags & TLConfig::StaticMapsProvider) {
+            stream << configValue.staticMapsProvider;
+        }
+        stream << configValue.captionLengthMax;
+        stream << configValue.messageLengthMax;
+        stream << configValue.webfileDcId;
         if (configValue.flags & TLConfig::SuggestedLangCode) {
             stream << configValue.suggestedLangCode;
         }
         if (configValue.flags & TLConfig::LangPackVersion) {
             stream << configValue.langPackVersion;
         }
-        stream << configValue.disabledFeatures;
+        if (configValue.flags & TLConfig::BaseLangPackVersion) {
+            stream << configValue.baseLangPackVersion;
+        }
         break;
     default:
         break;
@@ -2360,6 +2946,7 @@ Stream &operator<<(Stream &stream, const TLContactsFound &contactsFoundValue)
     stream << contactsFoundValue.tlType;
     switch (contactsFoundValue.tlType) {
     case TLValue::ContactsFound:
+        stream << contactsFoundValue.myResults;
         stream << contactsFoundValue.results;
         stream << contactsFoundValue.chats;
         stream << contactsFoundValue.users;
@@ -2425,6 +3012,7 @@ Stream &operator<<(Stream &stream, const TLContactsTopPeers &contactsTopPeersVal
     stream << contactsTopPeersValue.tlType;
     switch (contactsTopPeersValue.tlType) {
     case TLValue::ContactsTopPeersNotModified:
+    case TLValue::ContactsTopPeersDisabled:
         break;
     case TLValue::ContactsTopPeers:
         stream << contactsTopPeersValue.categories;
@@ -2475,12 +3063,12 @@ Stream &operator<<(Stream &stream, const TLDocument &documentValue)
     case TLValue::Document:
         stream << documentValue.id;
         stream << documentValue.accessHash;
+        stream << documentValue.fileReference;
         stream << documentValue.date;
         stream << documentValue.mimeType;
         stream << documentValue.size;
         stream << documentValue.thumb;
         stream << documentValue.dcId;
-        stream << documentValue.version;
         stream << documentValue.attributes;
         break;
     default:
@@ -2537,6 +3125,52 @@ Stream &operator<<(Stream &stream, const TLGame &gameValue)
     return stream;
 }
 
+Stream &operator<<(Stream &stream, const TLHelpAppUpdate &helpAppUpdateValue)
+{
+    stream << helpAppUpdateValue.tlType;
+    switch (helpAppUpdateValue.tlType) {
+    case TLValue::HelpAppUpdate:
+        stream << helpAppUpdateValue.flags;
+        stream << helpAppUpdateValue.id;
+        stream << helpAppUpdateValue.version;
+        stream << helpAppUpdateValue.text;
+        stream << helpAppUpdateValue.entities;
+        if (helpAppUpdateValue.flags & TLHelpAppUpdate::Document) {
+            stream << helpAppUpdateValue.document;
+        }
+        if (helpAppUpdateValue.flags & TLHelpAppUpdate::Url) {
+            stream << helpAppUpdateValue.url;
+        }
+        break;
+    case TLValue::HelpNoAppUpdate:
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLHelpProxyData &helpProxyDataValue)
+{
+    stream << helpProxyDataValue.tlType;
+    switch (helpProxyDataValue.tlType) {
+    case TLValue::HelpProxyDataEmpty:
+        stream << helpProxyDataValue.expires;
+        break;
+    case TLValue::HelpProxyDataPromo:
+        stream << helpProxyDataValue.expires;
+        stream << helpProxyDataValue.peer;
+        stream << helpProxyDataValue.chats;
+        stream << helpProxyDataValue.users;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
 Stream &operator<<(Stream &stream, const TLHelpSupport &helpSupportValue)
 {
     stream << helpSupportValue.tlType;
@@ -2561,6 +3195,7 @@ Stream &operator<<(Stream &stream, const TLMessageAction &messageActionValue)
     case TLValue::MessageActionPinMessage:
     case TLValue::MessageActionHistoryClear:
     case TLValue::MessageActionScreenshotTaken:
+    case TLValue::MessageActionContactSignUp:
         break;
     case TLValue::MessageActionChatCreate:
         stream << messageActionValue.title;
@@ -2622,6 +3257,16 @@ Stream &operator<<(Stream &stream, const TLMessageAction &messageActionValue)
         break;
     case TLValue::MessageActionCustomAction:
         stream << messageActionValue.message;
+        break;
+    case TLValue::MessageActionBotAllowed:
+        stream << messageActionValue.domain;
+        break;
+    case TLValue::MessageActionSecureValuesSentMe:
+        stream << messageActionValue.values;
+        stream << messageActionValue.credentials;
+        break;
+    case TLValue::MessageActionSecureValuesSent:
+        stream << messageActionValue.types;
         break;
     default:
         break;
@@ -2737,7 +3382,9 @@ Stream &operator<<(Stream &stream, const TLMessagesRecentStickers &messagesRecen
         break;
     case TLValue::MessagesRecentStickers:
         stream << messagesRecentStickersValue.hash;
+        stream << messagesRecentStickersValue.packs;
         stream << messagesRecentStickersValue.stickers;
+        stream << messagesRecentStickersValue.dates;
         break;
     default:
         break;
@@ -2800,8 +3447,9 @@ Stream &operator<<(Stream &stream, const TLPage &pageValue)
 {
     stream << pageValue.tlType;
     switch (pageValue.tlType) {
-    case TLValue::PagePart:
-    case TLValue::PageFull:
+    case TLValue::Page:
+        stream << pageValue.flags;
+        stream << pageValue.url;
         stream << pageValue.blocks;
         stream << pageValue.photos;
         stream << pageValue.documents;
@@ -2826,6 +3474,7 @@ Stream &operator<<(Stream &stream, const TLPageBlock &pageBlockValue)
     case TLValue::PageBlockSubheader:
     case TLValue::PageBlockParagraph:
     case TLValue::PageBlockFooter:
+    case TLValue::PageBlockKicker:
         stream << *pageBlockValue.text;
         break;
     case TLValue::PageBlockAuthorDate:
@@ -2840,29 +3489,35 @@ Stream &operator<<(Stream &stream, const TLPageBlock &pageBlockValue)
         stream << pageBlockValue.name;
         break;
     case TLValue::PageBlockList:
-        stream << pageBlockValue.ordered;
-        stream << pageBlockValue.richTextItemsVector;
+        stream << pageBlockValue.pageListItemItemsVector;
         break;
     case TLValue::PageBlockBlockquote:
     case TLValue::PageBlockPullquote:
         stream << *pageBlockValue.text;
-        stream << *pageBlockValue.caption;
+        stream << *pageBlockValue.richTextCaption;
         break;
     case TLValue::PageBlockPhoto:
+        stream << pageBlockValue.flags;
         stream << pageBlockValue.photoId;
-        stream << *pageBlockValue.caption;
+        stream << pageBlockValue.pageCaption;
+        if (pageBlockValue.flags & TLPageBlock::Url0) {
+            stream << pageBlockValue.url;
+        }
+        if (pageBlockValue.flags & TLPageBlock::WebpageId) {
+            stream << pageBlockValue.webpageId;
+        }
         break;
     case TLValue::PageBlockVideo:
         stream << pageBlockValue.flags;
         stream << pageBlockValue.videoId;
-        stream << *pageBlockValue.caption;
+        stream << pageBlockValue.pageCaption;
         break;
     case TLValue::PageBlockCover:
         stream << *pageBlockValue.cover;
         break;
     case TLValue::PageBlockEmbed:
         stream << pageBlockValue.flags;
-        if (pageBlockValue.flags & TLPageBlock::Url) {
+        if (pageBlockValue.flags & TLPageBlock::Url1) {
             stream << pageBlockValue.url;
         }
         if (pageBlockValue.flags & TLPageBlock::Html) {
@@ -2871,9 +3526,13 @@ Stream &operator<<(Stream &stream, const TLPageBlock &pageBlockValue)
         if (pageBlockValue.flags & TLPageBlock::PosterPhotoId) {
             stream << pageBlockValue.posterPhotoId;
         }
-        stream << pageBlockValue.w;
-        stream << pageBlockValue.h;
-        stream << *pageBlockValue.caption;
+        if (pageBlockValue.flags & TLPageBlock::W) {
+            stream << pageBlockValue.w;
+        }
+        if (pageBlockValue.flags & TLPageBlock::H) {
+            stream << pageBlockValue.h;
+        }
+        stream << pageBlockValue.pageCaption;
         break;
     case TLValue::PageBlockEmbedPost:
         stream << pageBlockValue.url;
@@ -2882,19 +3541,43 @@ Stream &operator<<(Stream &stream, const TLPageBlock &pageBlockValue)
         stream << pageBlockValue.stringAuthor;
         stream << pageBlockValue.date;
         stream << pageBlockValue.blocks;
-        stream << *pageBlockValue.caption;
+        stream << pageBlockValue.pageCaption;
         break;
     case TLValue::PageBlockCollage:
     case TLValue::PageBlockSlideshow:
         stream << pageBlockValue.pageBlockItemsVector;
-        stream << *pageBlockValue.caption;
+        stream << pageBlockValue.pageCaption;
         break;
     case TLValue::PageBlockChannel:
         stream << pageBlockValue.channel;
         break;
     case TLValue::PageBlockAudio:
         stream << pageBlockValue.audioId;
-        stream << *pageBlockValue.caption;
+        stream << pageBlockValue.pageCaption;
+        break;
+    case TLValue::PageBlockTable:
+        stream << pageBlockValue.flags;
+        stream << *pageBlockValue.title;
+        stream << pageBlockValue.rows;
+        break;
+    case TLValue::PageBlockOrderedList:
+        stream << pageBlockValue.pageListOrderedItemItemsVector;
+        break;
+    case TLValue::PageBlockDetails:
+        stream << pageBlockValue.flags;
+        stream << pageBlockValue.blocks;
+        stream << *pageBlockValue.title;
+        break;
+    case TLValue::PageBlockRelatedArticles:
+        stream << *pageBlockValue.title;
+        stream << pageBlockValue.articles;
+        break;
+    case TLValue::PageBlockMap:
+        stream << pageBlockValue.geo;
+        stream << pageBlockValue.zoom;
+        stream << pageBlockValue.w;
+        stream << pageBlockValue.h;
+        stream << pageBlockValue.pageCaption;
         break;
     default:
         break;
@@ -3000,6 +3683,7 @@ Stream &operator<<(Stream &stream, const TLPhoneCall &phoneCallValue)
         stream << phoneCallValue.protocol;
         break;
     case TLValue::PhoneCall:
+        stream << phoneCallValue.flags;
         stream << phoneCallValue.id;
         stream << phoneCallValue.accessHash;
         stream << phoneCallValue.date;
@@ -3116,6 +3800,9 @@ Stream &operator<<(Stream &stream, const TLUserFull &userFullValue)
         if (userFullValue.flags & TLUserFull::BotInfo) {
             stream << userFullValue.botInfo;
         }
+        if (userFullValue.flags & TLUserFull::PinnedMsgId) {
+            stream << userFullValue.pinnedMsgId;
+        }
         stream << userFullValue.commonChatsCount;
         break;
     default:
@@ -3208,23 +3895,11 @@ Stream &operator<<(Stream &stream, const TLBotInlineResult &botInlineResultValue
         if (botInlineResultValue.flags & TLBotInlineResult::Url) {
             stream << botInlineResultValue.url;
         }
-        if (botInlineResultValue.flags & TLBotInlineResult::ThumbUrl) {
-            stream << botInlineResultValue.thumbUrl;
+        if (botInlineResultValue.flags & TLBotInlineResult::Thumb) {
+            stream << botInlineResultValue.thumb;
         }
-        if (botInlineResultValue.flags & TLBotInlineResult::ContentUrl) {
-            stream << botInlineResultValue.contentUrl;
-        }
-        if (botInlineResultValue.flags & TLBotInlineResult::ContentType) {
-            stream << botInlineResultValue.contentType;
-        }
-        if (botInlineResultValue.flags & TLBotInlineResult::W) {
-            stream << botInlineResultValue.w;
-        }
-        if (botInlineResultValue.flags & TLBotInlineResult::H) {
-            stream << botInlineResultValue.h;
-        }
-        if (botInlineResultValue.flags & TLBotInlineResult::Duration) {
-            stream << botInlineResultValue.duration;
+        if (botInlineResultValue.flags & TLBotInlineResult::Content) {
+            stream << botInlineResultValue.content;
         }
         stream << botInlineResultValue.sendMessage;
         break;
@@ -3265,9 +3940,6 @@ Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue)
         if (messageMediaValue.flags & TLMessageMedia::Photo) {
             stream << messageMediaValue.photo;
         }
-        if (messageMediaValue.flags & TLMessageMedia::Caption) {
-            stream << messageMediaValue.caption;
-        }
         if (messageMediaValue.flags & TLMessageMedia::TtlSeconds) {
             stream << messageMediaValue.ttlSeconds;
         }
@@ -3279,15 +3951,13 @@ Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue)
         stream << messageMediaValue.phoneNumber;
         stream << messageMediaValue.firstName;
         stream << messageMediaValue.lastName;
+        stream << messageMediaValue.vcard;
         stream << messageMediaValue.userId;
         break;
     case TLValue::MessageMediaDocument:
         stream << messageMediaValue.flags;
         if (messageMediaValue.flags & TLMessageMedia::Document) {
             stream << messageMediaValue.document;
-        }
-        if (messageMediaValue.flags & TLMessageMedia::Caption) {
-            stream << messageMediaValue.caption;
         }
         if (messageMediaValue.flags & TLMessageMedia::TtlSeconds) {
             stream << messageMediaValue.ttlSeconds;
@@ -3324,6 +3994,10 @@ Stream &operator<<(Stream &stream, const TLMessageMedia &messageMediaValue)
     case TLValue::MessageMediaGeoLive:
         stream << messageMediaValue.geo;
         stream << messageMediaValue.period;
+        break;
+    case TLValue::MessageMediaPoll:
+        stream << messageMediaValue.poll;
+        stream << messageMediaValue.results;
         break;
     default:
         break;
@@ -3381,6 +4055,23 @@ Stream &operator<<(Stream &stream, const TLMessagesFeaturedStickers &messagesFea
         stream << messagesFeaturedStickersValue.hash;
         stream << messagesFeaturedStickersValue.sets;
         stream << messagesFeaturedStickersValue.unread;
+        break;
+    default:
+        break;
+    }
+
+    return stream;
+}
+
+Stream &operator<<(Stream &stream, const TLMessagesFoundStickerSets &messagesFoundStickerSetsValue)
+{
+    stream << messagesFoundStickerSetsValue.tlType;
+    switch (messagesFoundStickerSetsValue.tlType) {
+    case TLValue::MessagesFoundStickerSetsNotModified:
+        break;
+    case TLValue::MessagesFoundStickerSets:
+        stream << messagesFoundStickerSetsValue.hash;
+        stream << messagesFoundStickerSetsValue.sets;
         break;
     default:
         break;
@@ -3494,6 +4185,9 @@ Stream &operator<<(Stream &stream, const TLMessage &messageValue)
         if (messageValue.flags & TLMessage::PostAuthor) {
             stream << messageValue.postAuthor;
         }
+        if (messageValue.flags & TLMessage::GroupedId) {
+            stream << messageValue.groupedId;
+        }
         break;
     case TLValue::MessageService:
         stream << messageValue.flags;
@@ -3532,6 +4226,9 @@ Stream &operator<<(Stream &stream, const TLMessagesDialogs &messagesDialogsValue
         stream << messagesDialogsValue.chats;
         stream << messagesDialogsValue.users;
         break;
+    case TLValue::MessagesDialogsNotModified:
+        stream << messagesDialogsValue.count;
+        break;
     default:
         break;
     }
@@ -3549,6 +4246,7 @@ Stream &operator<<(Stream &stream, const TLMessagesMessages &messagesMessagesVal
         stream << messagesMessagesValue.users;
         break;
     case TLValue::MessagesMessagesSlice:
+        stream << messagesMessagesValue.flags;
         stream << messagesMessagesValue.count;
         stream << messagesMessagesValue.messages;
         stream << messagesMessagesValue.chats;
@@ -3639,10 +4337,6 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         stream << updateValue.date;
         stream << updateValue.photo;
         stream << updateValue.previous;
-        break;
-    case TLValue::UpdateContactRegistered:
-        stream << updateValue.userId;
-        stream << updateValue.date;
         break;
     case TLValue::UpdateContactLink:
         stream << updateValue.userId;
@@ -3768,7 +4462,6 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
     case TLValue::UpdateRecentStickers:
     case TLValue::UpdateConfig:
     case TLValue::UpdatePtsChanged:
-    case TLValue::UpdateLangPackTooLong:
     case TLValue::UpdateFavedStickers:
     case TLValue::UpdateContactsReset:
         break;
@@ -3836,13 +4529,14 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
         stream << updateValue.ptsCount;
         break;
     case TLValue::UpdateDialogPinned:
+    case TLValue::UpdateDialogUnreadMark:
         stream << updateValue.flags;
-        stream << updateValue.peer;
+        stream << updateValue.dialogPeer;
         break;
     case TLValue::UpdatePinnedDialogs:
         stream << updateValue.flags;
-        if (updateValue.flags & TLUpdate::PeerOrderVector) {
-            stream << updateValue.peerOrderVector;
+        if (updateValue.flags & TLUpdate::DialogPeerOrderVector) {
+            stream << updateValue.dialogPeerOrderVector;
         }
         break;
     case TLValue::UpdateBotWebhookJSON:
@@ -3876,6 +4570,9 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
     case TLValue::UpdatePhoneCall:
         stream << updateValue.phoneCall;
         break;
+    case TLValue::UpdateLangPackTooLong:
+        stream << updateValue.langCode;
+        break;
     case TLValue::UpdateLangPack:
         stream << updateValue.difference;
         break;
@@ -3886,6 +4583,22 @@ Stream &operator<<(Stream &stream, const TLUpdate &updateValue)
     case TLValue::UpdateChannelAvailableMessages:
         stream << updateValue.channelId;
         stream << updateValue.availableMinId;
+        break;
+    case TLValue::UpdateUserPinnedMessage:
+        stream << updateValue.userId;
+        stream << updateValue.quint32Id;
+        break;
+    case TLValue::UpdateChatPinnedMessage:
+        stream << updateValue.chatId;
+        stream << updateValue.quint32Id;
+        break;
+    case TLValue::UpdateMessagePoll:
+        stream << updateValue.flags;
+        stream << updateValue.pollId;
+        if (updateValue.flags & TLUpdate::Poll) {
+            stream << updateValue.poll;
+        }
+        stream << updateValue.results;
         break;
     default:
         break;

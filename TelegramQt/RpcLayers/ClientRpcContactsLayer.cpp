@@ -60,6 +60,17 @@ ContactsRpcLayer::PendingBool *ContactsRpcLayer::block(const TLInputUser &id)
     return op;
 }
 
+ContactsRpcLayer::PendingBool *ContactsRpcLayer::deleteByPhones(const TLVector<QString> &phones)
+{
+    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << phones;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::ContactsDeleteByPhones;
+    outputStream << phones;
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
 ContactsRpcLayer::PendingContactsLink *ContactsRpcLayer::deleteContact(const TLInputUser &id)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << id;
@@ -82,16 +93,6 @@ ContactsRpcLayer::PendingBool *ContactsRpcLayer::deleteContacts(const TLVector<T
     return op;
 }
 
-ContactsRpcLayer::PendingQuint32Vector *ContactsRpcLayer::exportCard()
-{
-    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO;
-    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
-    outputStream << TLValue::ContactsExportCard;
-    PendingQuint32Vector *op = new PendingQuint32Vector(this, outputStream.getData());
-    processRpcCall(op);
-    return op;
-}
-
 ContactsRpcLayer::PendingContactsBlocked *ContactsRpcLayer::getBlocked(quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << offset << limit;
@@ -104,6 +105,17 @@ ContactsRpcLayer::PendingContactsBlocked *ContactsRpcLayer::getBlocked(quint32 o
     return op;
 }
 
+ContactsRpcLayer::PendingQuint32Vector *ContactsRpcLayer::getContactIDs(quint32 hash)
+{
+    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << hash;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::ContactsGetContactIDs;
+    outputStream << hash;
+    PendingQuint32Vector *op = new PendingQuint32Vector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
 ContactsRpcLayer::PendingContactsContacts *ContactsRpcLayer::getContacts(quint32 hash)
 {
     qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << hash;
@@ -111,6 +123,16 @@ ContactsRpcLayer::PendingContactsContacts *ContactsRpcLayer::getContacts(quint32
     outputStream << TLValue::ContactsGetContacts;
     outputStream << hash;
     PendingContactsContacts *op = new PendingContactsContacts(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+ContactsRpcLayer::PendingSavedContactVector *ContactsRpcLayer::getSaved()
+{
+    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::ContactsGetSaved;
+    PendingSavedContactVector *op = new PendingSavedContactVector(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
@@ -141,17 +163,6 @@ ContactsRpcLayer::PendingContactsTopPeers *ContactsRpcLayer::getTopPeers(quint32
     outputStream << limit;
     outputStream << hash;
     PendingContactsTopPeers *op = new PendingContactsTopPeers(this, outputStream.getData());
-    processRpcCall(op);
-    return op;
-}
-
-ContactsRpcLayer::PendingUser *ContactsRpcLayer::importCard(const TLVector<quint32> &exportCard)
-{
-    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << exportCard;
-    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
-    outputStream << TLValue::ContactsImportCard;
-    outputStream << exportCard;
-    PendingUser *op = new PendingUser(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
@@ -208,6 +219,17 @@ ContactsRpcLayer::PendingContactsFound *ContactsRpcLayer::search(const QString &
     outputStream << q;
     outputStream << limit;
     PendingContactsFound *op = new PendingContactsFound(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+ContactsRpcLayer::PendingBool *ContactsRpcLayer::toggleTopPeers(bool enabled)
+{
+    qCDebug(c_clientRpcContactsCategory) << Q_FUNC_INFO << enabled;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::ContactsToggleTopPeers;
+    outputStream << enabled;
+    PendingBool *op = new PendingBool(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }

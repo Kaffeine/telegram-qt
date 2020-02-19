@@ -82,6 +82,33 @@ void dumpRpc(Stream &stream)
         break;
     }
     // Generated RPC debug cases
+    case TLValue::AccountAcceptAuthorization:
+        d << "AccountAcceptAuthorization(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 botId;
+        stream >> botId;
+        d << spacer.innerSpaces() << "botId: " << botId << TELEGRAMQT_ENDL;
+        QString scope;
+        stream >> scope;
+        d << spacer.innerSpaces() << "scope: " << scope << TELEGRAMQT_ENDL;
+        QString publicKey;
+        stream >> publicKey;
+        d << spacer.innerSpaces() << "publicKey: " << publicKey << TELEGRAMQT_ENDL;
+        TLVector<TLSecureValueHash> valueHashes;
+        stream >> valueHashes;
+        d << spacer.innerSpaces() << "valueHashes: " << valueHashes << TELEGRAMQT_ENDL;
+        TLSecureCredentialsEncrypted credentials;
+        stream >> credentials;
+        d << spacer.innerSpaces() << "credentials: " << credentials << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::AccountCancelPasswordEmail:
+        d << "AccountCancelPasswordEmail(";
+        d << ")";
+        break;
     case TLValue::AccountChangePhone:
         d << "AccountChangePhone(";
     {
@@ -110,6 +137,17 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::AccountConfirmPasswordEmail:
+        d << "AccountConfirmPasswordEmail(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        QString code;
+        stream >> code;
+        d << spacer.innerSpaces() << "code: " << code << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::AccountConfirmPhone:
         d << "AccountConfirmPhone(";
     {
@@ -135,12 +173,70 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::AccountDeleteSecureValue:
+        d << "AccountDeleteSecureValue(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLVector<TLSecureValueType> types;
+        stream >> types;
+        d << spacer.innerSpaces() << "types: " << types << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::AccountFinishTakeoutSession:
+        d << "AccountFinishTakeoutSession(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 flags;
+        stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::AccountGetAccountTTL:
         d << "AccountGetAccountTTL(";
         d << ")";
         break;
+    case TLValue::AccountGetAllSecureValues:
+        d << "AccountGetAllSecureValues(";
+        d << ")";
+        break;
+    case TLValue::AccountGetAuthorizationForm:
+        d << "AccountGetAuthorizationForm(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 botId;
+        stream >> botId;
+        d << spacer.innerSpaces() << "botId: " << botId << TELEGRAMQT_ENDL;
+        QString scope;
+        stream >> scope;
+        d << spacer.innerSpaces() << "scope: " << scope << TELEGRAMQT_ENDL;
+        QString publicKey;
+        stream >> publicKey;
+        d << spacer.innerSpaces() << "publicKey: " << publicKey << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::AccountGetAuthorizations:
         d << "AccountGetAuthorizations(";
+        d << ")";
+        break;
+    case TLValue::AccountGetContactSignUpNotification:
+        d << "AccountGetContactSignUpNotification(";
+        d << ")";
+        break;
+    case TLValue::AccountGetNotifyExceptions:
+        d << "AccountGetNotifyExceptions(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 flags;
+        stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
+    }
         d << ")";
         break;
     case TLValue::AccountGetNotifySettings:
@@ -163,9 +259,9 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        QByteArray currentPasswordHash;
-        stream >> currentPasswordHash;
-        d << spacer.innerSpaces() << "currentPasswordHash: " << currentPasswordHash.toHex() << TELEGRAMQT_ENDL;
+        TLInputCheckPasswordSRP password;
+        stream >> password;
+        d << spacer.innerSpaces() << "password: " << password << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -180,14 +276,25 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::AccountGetSecureValue:
+        d << "AccountGetSecureValue(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLVector<TLSecureValueType> types;
+        stream >> types;
+        d << spacer.innerSpaces() << "types: " << types << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::AccountGetTmpPassword:
         d << "AccountGetTmpPassword(";
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        QByteArray passwordHash;
-        stream >> passwordHash;
-        d << spacer.innerSpaces() << "passwordHash: " << passwordHash.toHex() << TELEGRAMQT_ENDL;
+        TLInputCheckPasswordSRP password;
+        stream >> password;
+        d << spacer.innerSpaces() << "password: " << password << TELEGRAMQT_ENDL;
         quint32 period;
         stream >> period;
         d << spacer.innerSpaces() << "period: " << period << TELEGRAMQT_ENDL;
@@ -196,6 +303,21 @@ void dumpRpc(Stream &stream)
         break;
     case TLValue::AccountGetWallPapers:
         d << "AccountGetWallPapers(";
+        d << ")";
+        break;
+    case TLValue::AccountGetWebAuthorizations:
+        d << "AccountGetWebAuthorizations(";
+        d << ")";
+        break;
+    case TLValue::AccountInitTakeoutSession:
+        d << "AccountInitTakeoutSession(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 flags;
+        stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
+    }
         d << ")";
         break;
     case TLValue::AccountRegisterDevice:
@@ -209,6 +331,15 @@ void dumpRpc(Stream &stream)
         QString token;
         stream >> token;
         d << spacer.innerSpaces() << "token: " << token << TELEGRAMQT_ENDL;
+        bool appSandbox;
+        stream >> appSandbox;
+        d << spacer.innerSpaces() << "appSandbox: " << appSandbox << TELEGRAMQT_ENDL;
+        QByteArray secret;
+        stream >> secret;
+        d << spacer.innerSpaces() << "secret: " << secret.toHex() << TELEGRAMQT_ENDL;
+        TLVector<quint32> otherUids;
+        stream >> otherUids;
+        d << spacer.innerSpaces() << "otherUids: " << otherUids << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -226,6 +357,10 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::AccountResendPasswordEmail:
+        d << "AccountResendPasswordEmail(";
+        d << ")";
+        break;
     case TLValue::AccountResetAuthorization:
         d << "AccountResetAuthorization(";
     {
@@ -239,6 +374,35 @@ void dumpRpc(Stream &stream)
         break;
     case TLValue::AccountResetNotifySettings:
         d << "AccountResetNotifySettings(";
+        d << ")";
+        break;
+    case TLValue::AccountResetWebAuthorization:
+        d << "AccountResetWebAuthorization(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint64 hash;
+        stream >> hash;
+        d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::AccountResetWebAuthorizations:
+        d << "AccountResetWebAuthorizations(";
+        d << ")";
+        break;
+    case TLValue::AccountSaveSecureValue:
+        d << "AccountSaveSecureValue(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputSecureValue value;
+        stream >> value;
+        d << spacer.innerSpaces() << "value: " << value << TELEGRAMQT_ENDL;
+        quint64 secureSecretId;
+        stream >> secureSecretId;
+        d << spacer.innerSpaces() << "secureSecretId: " << secureSecretId << TELEGRAMQT_ENDL;
+    }
         d << ")";
         break;
     case TLValue::AccountSendChangePhoneCode:
@@ -269,6 +433,31 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::AccountSendVerifyEmailCode:
+        d << "AccountSendVerifyEmailCode(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        QString email;
+        stream >> email;
+        d << spacer.innerSpaces() << "email: " << email << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::AccountSendVerifyPhoneCode:
+        d << "AccountSendVerifyPhoneCode(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 flags;
+        stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
+        QString phoneNumber;
+        stream >> phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::AccountSetAccountTTL:
         d << "AccountSetAccountTTL(";
     {
@@ -277,6 +466,17 @@ void dumpRpc(Stream &stream)
         TLAccountDaysTTL ttl;
         stream >> ttl;
         d << spacer.innerSpaces() << "ttl: " << ttl << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::AccountSetContactSignUpNotification:
+        d << "AccountSetContactSignUpNotification(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        bool silent;
+        stream >> silent;
+        d << spacer.innerSpaces() << "silent: " << silent << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -305,6 +505,9 @@ void dumpRpc(Stream &stream)
         QString token;
         stream >> token;
         d << spacer.innerSpaces() << "token: " << token << TELEGRAMQT_ENDL;
+        TLVector<quint32> otherUids;
+        stream >> otherUids;
+        d << spacer.innerSpaces() << "otherUids: " << otherUids << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -338,9 +541,9 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        QByteArray currentPasswordHash;
-        stream >> currentPasswordHash;
-        d << spacer.innerSpaces() << "currentPasswordHash: " << currentPasswordHash.toHex() << TELEGRAMQT_ENDL;
+        TLInputCheckPasswordSRP password;
+        stream >> password;
+        d << spacer.innerSpaces() << "password: " << password << TELEGRAMQT_ENDL;
         TLAccountPasswordInputSettings newSettings;
         stream >> newSettings;
         d << spacer.innerSpaces() << "newSettings: " << newSettings << TELEGRAMQT_ENDL;
@@ -377,6 +580,37 @@ void dumpRpc(Stream &stream)
         QString username;
         stream >> username;
         d << spacer.innerSpaces() << "username: " << username << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::AccountVerifyEmail:
+        d << "AccountVerifyEmail(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        QString email;
+        stream >> email;
+        d << spacer.innerSpaces() << "email: " << email << TELEGRAMQT_ENDL;
+        QString code;
+        stream >> code;
+        d << spacer.innerSpaces() << "code: " << code << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::AccountVerifyPhone:
+        d << "AccountVerifyPhone(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        QString phoneNumber;
+        stream >> phoneNumber;
+        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << TELEGRAMQT_ENDL;
+        QString phoneCodeHash;
+        stream >> phoneCodeHash;
+        d << spacer.innerSpaces() << "phoneCodeHash: " << phoneCodeHash << TELEGRAMQT_ENDL;
+        QString phoneCode;
+        stream >> phoneCode;
+        d << spacer.innerSpaces() << "phoneCode: " << phoneCode << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -419,20 +653,9 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        QByteArray passwordHash;
-        stream >> passwordHash;
-        d << spacer.innerSpaces() << "passwordHash: " << passwordHash.toHex() << TELEGRAMQT_ENDL;
-    }
-        d << ")";
-        break;
-    case TLValue::AuthCheckPhone:
-        d << "AuthCheckPhone(";
-    {
-        d << TELEGRAMQT_ENDL;
-        Spacer spacer;
-        QString phoneNumber;
-        stream >> phoneNumber;
-        d << spacer.innerSpaces() << "phoneNumber: " << phoneNumber << TELEGRAMQT_ENDL;
+        TLInputCheckPasswordSRP password;
+        stream >> password;
+        d << spacer.innerSpaces() << "password: " << password << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -546,20 +769,6 @@ void dumpRpc(Stream &stream)
         QString apiHash;
         stream >> apiHash;
         d << spacer.innerSpaces() << "apiHash: " << apiHash << TELEGRAMQT_ENDL;
-    }
-        d << ")";
-        break;
-    case TLValue::AuthSendInvites:
-        d << "AuthSendInvites(";
-    {
-        d << TELEGRAMQT_ENDL;
-        Spacer spacer;
-        TLVector<QString> phoneNumbers;
-        stream >> phoneNumbers;
-        d << spacer.innerSpaces() << "phoneNumbers: " << phoneNumbers << TELEGRAMQT_ENDL;
-        QString message;
-        stream >> message;
-        d << spacer.innerSpaces() << "message: " << message << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -813,6 +1022,9 @@ void dumpRpc(Stream &stream)
         quint32 id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
+        bool grouped;
+        stream >> grouped;
+        d << spacer.innerSpaces() << "grouped: " << grouped << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -868,6 +1080,17 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::ChannelsGetLeftChannels:
+        d << "ChannelsGetLeftChannels(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 offset;
+        stream >> offset;
+        d << spacer.innerSpaces() << "offset: " << offset << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::ChannelsGetMessages:
         d << "ChannelsGetMessages(";
     {
@@ -876,7 +1099,7 @@ void dumpRpc(Stream &stream)
         TLInputChannel channel;
         stream >> channel;
         d << spacer.innerSpaces() << "channel: " << channel << TELEGRAMQT_ENDL;
-        TLVector<quint32> id;
+        TLVector<TLInputMessage> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -1056,23 +1279,6 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
-    case TLValue::ChannelsUpdatePinnedMessage:
-        d << "ChannelsUpdatePinnedMessage(";
-    {
-        d << TELEGRAMQT_ENDL;
-        Spacer spacer;
-        quint32 flags;
-        stream >> flags;
-        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
-        TLInputChannel channel;
-        stream >> channel;
-        d << spacer.innerSpaces() << "channel: " << channel << TELEGRAMQT_ENDL;
-        quint32 id;
-        stream >> id;
-        d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
-    }
-        d << ")";
-        break;
     case TLValue::ChannelsUpdateUsername:
         d << "ChannelsUpdateUsername(";
     {
@@ -1098,6 +1304,17 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::ContactsDeleteByPhones:
+        d << "ContactsDeleteByPhones(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLVector<QString> phones;
+        stream >> phones;
+        d << spacer.innerSpaces() << "phones: " << phones << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::ContactsDeleteContact:
         d << "ContactsDeleteContact(";
     {
@@ -1120,10 +1337,6 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
-    case TLValue::ContactsExportCard:
-        d << "ContactsExportCard(";
-        d << ")";
-        break;
     case TLValue::ContactsGetBlocked:
         d << "ContactsGetBlocked(";
     {
@@ -1138,6 +1351,17 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::ContactsGetContactIDs:
+        d << "ContactsGetContactIDs(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 hash;
+        stream >> hash;
+        d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::ContactsGetContacts:
         d << "ContactsGetContacts(";
     {
@@ -1147,6 +1371,10 @@ void dumpRpc(Stream &stream)
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
     }
+        d << ")";
+        break;
+    case TLValue::ContactsGetSaved:
+        d << "ContactsGetSaved(";
         d << ")";
         break;
     case TLValue::ContactsGetStatuses:
@@ -1170,17 +1398,6 @@ void dumpRpc(Stream &stream)
         quint32 hash;
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
-    }
-        d << ")";
-        break;
-    case TLValue::ContactsImportCard:
-        d << "ContactsImportCard(";
-    {
-        d << TELEGRAMQT_ENDL;
-        Spacer spacer;
-        TLVector<quint32> exportCard;
-        stream >> exportCard;
-        d << spacer.innerSpaces() << "exportCard: " << exportCard << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -1238,6 +1455,17 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::ContactsToggleTopPeers:
+        d << "ContactsToggleTopPeers(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        bool enabled;
+        stream >> enabled;
+        d << spacer.innerSpaces() << "enabled: " << enabled << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::ContactsUnblock:
         d << "ContactsUnblock(";
     {
@@ -1246,6 +1474,34 @@ void dumpRpc(Stream &stream)
         TLInputUser id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::HelpAcceptTermsOfService:
+        d << "HelpAcceptTermsOfService(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLDataJSON id;
+        stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::HelpEditUserInfo:
+        d << "HelpEditUserInfo(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputUser userId;
+        stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << TELEGRAMQT_ENDL;
+        QString message;
+        stream >> message;
+        d << spacer.innerSpaces() << "message: " << message << TELEGRAMQT_ENDL;
+        TLVector<TLMessageEntity> entities;
+        stream >> entities;
+        d << spacer.innerSpaces() << "entities: " << entities << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -1260,8 +1516,19 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::HelpGetAppConfig:
+        d << "HelpGetAppConfig(";
+        d << ")";
+        break;
     case TLValue::HelpGetAppUpdate:
         d << "HelpGetAppUpdate(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        QString source;
+        stream >> source;
+        d << spacer.innerSpaces() << "source: " << source << TELEGRAMQT_ENDL;
+    }
         d << ")";
         break;
     case TLValue::HelpGetCdnConfig:
@@ -1272,12 +1539,38 @@ void dumpRpc(Stream &stream)
         d << "HelpGetConfig(";
         d << ")";
         break;
+    case TLValue::HelpGetDeepLinkInfo:
+        d << "HelpGetDeepLinkInfo(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        QString path;
+        stream >> path;
+        d << spacer.innerSpaces() << "path: " << path << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::HelpGetInviteText:
         d << "HelpGetInviteText(";
         d << ")";
         break;
     case TLValue::HelpGetNearestDc:
         d << "HelpGetNearestDc(";
+        d << ")";
+        break;
+    case TLValue::HelpGetPassportConfig:
+        d << "HelpGetPassportConfig(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 hash;
+        stream >> hash;
+        d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::HelpGetProxyData:
+        d << "HelpGetProxyData(";
         d << ")";
         break;
     case TLValue::HelpGetRecentMeUrls:
@@ -1295,8 +1588,23 @@ void dumpRpc(Stream &stream)
         d << "HelpGetSupport(";
         d << ")";
         break;
-    case TLValue::HelpGetTermsOfService:
-        d << "HelpGetTermsOfService(";
+    case TLValue::HelpGetSupportName:
+        d << "HelpGetSupportName(";
+        d << ")";
+        break;
+    case TLValue::HelpGetTermsOfServiceUpdate:
+        d << "HelpGetTermsOfServiceUpdate(";
+        d << ")";
+        break;
+    case TLValue::HelpGetUserInfo:
+        d << "HelpGetUserInfo(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputUser userId;
+        stream >> userId;
+        d << spacer.innerSpaces() << "userId: " << userId << TELEGRAMQT_ENDL;
+    }
         d << ")";
         break;
     case TLValue::HelpSaveAppLog:
@@ -1329,6 +1637,9 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
+        QString langCode;
+        stream >> langCode;
+        d << spacer.innerSpaces() << "langCode: " << langCode << TELEGRAMQT_ENDL;
         quint32 fromVersion;
         stream >> fromVersion;
         d << spacer.innerSpaces() << "fromVersion: " << fromVersion << TELEGRAMQT_ENDL;
@@ -1340,6 +1651,23 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
+        QString langPack;
+        stream >> langPack;
+        d << spacer.innerSpaces() << "langPack: " << langPack << TELEGRAMQT_ENDL;
+        QString langCode;
+        stream >> langCode;
+        d << spacer.innerSpaces() << "langCode: " << langCode << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::LangpackGetLanguage:
+        d << "LangpackGetLanguage(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        QString langPack;
+        stream >> langPack;
+        d << spacer.innerSpaces() << "langPack: " << langPack << TELEGRAMQT_ENDL;
         QString langCode;
         stream >> langCode;
         d << spacer.innerSpaces() << "langCode: " << langCode << TELEGRAMQT_ENDL;
@@ -1348,6 +1676,13 @@ void dumpRpc(Stream &stream)
         break;
     case TLValue::LangpackGetLanguages:
         d << "LangpackGetLanguages(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        QString langPack;
+        stream >> langPack;
+        d << spacer.innerSpaces() << "langPack: " << langPack << TELEGRAMQT_ENDL;
+    }
         d << ")";
         break;
     case TLValue::LangpackGetStrings:
@@ -1355,6 +1690,9 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
+        QString langPack;
+        stream >> langPack;
+        d << spacer.innerSpaces() << "langPack: " << langPack << TELEGRAMQT_ENDL;
         QString langCode;
         stream >> langCode;
         d << spacer.innerSpaces() << "langCode: " << langCode << TELEGRAMQT_ENDL;
@@ -1407,6 +1745,10 @@ void dumpRpc(Stream &stream)
         stream >> hash;
         d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
     }
+        d << ")";
+        break;
+    case TLValue::MessagesClearAllDrafts:
+        d << "MessagesClearAllDrafts(";
         d << ")";
         break;
     case TLValue::MessagesClearRecentStickers:
@@ -1591,23 +1933,6 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
-    case TLValue::MessagesForwardMessage:
-        d << "MessagesForwardMessage(";
-    {
-        d << TELEGRAMQT_ENDL;
-        Spacer spacer;
-        TLInputPeer peer;
-        stream >> peer;
-        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
-        quint32 id;
-        stream >> id;
-        d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
-        quint64 randomId;
-        stream >> randomId;
-        d << spacer.innerSpaces() << "randomId: " << randomId << TELEGRAMQT_ENDL;
-    }
-        d << ")";
-        break;
     case TLValue::MessagesForwardMessages:
         d << "MessagesForwardMessages(";
     {
@@ -1744,6 +2069,10 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::MessagesGetDialogUnreadMarks:
+        d << "MessagesGetDialogUnreadMarks(";
+        d << ")";
+        break;
     case TLValue::MessagesGetDialogs:
         d << "MessagesGetDialogs(";
     {
@@ -1764,6 +2093,9 @@ void dumpRpc(Stream &stream)
         quint32 limit;
         stream >> limit;
         d << spacer.innerSpaces() << "limit: " << limit << TELEGRAMQT_ENDL;
+        quint32 hash;
+        stream >> hash;
+        d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -1933,7 +2265,7 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<quint32> id;
+        TLVector<TLInputMessage> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
     }
@@ -1956,12 +2288,23 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::MessagesGetOnlines:
+        d << "MessagesGetOnlines(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputPeer peer;
+        stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::MessagesGetPeerDialogs:
         d << "MessagesGetPeerDialogs(";
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
-        TLVector<TLInputPeer> peers;
+        TLVector<TLInputDialogPeer> peers;
         stream >> peers;
         d << spacer.innerSpaces() << "peers: " << peers << TELEGRAMQT_ENDL;
     }
@@ -1982,6 +2325,20 @@ void dumpRpc(Stream &stream)
         d << "MessagesGetPinnedDialogs(";
         d << ")";
         break;
+    case TLValue::MessagesGetPollResults:
+        d << "MessagesGetPollResults(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputPeer peer;
+        stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
+        quint32 msgId;
+        stream >> msgId;
+        d << spacer.innerSpaces() << "msgId: " << msgId << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::MessagesGetRecentLocations:
         d << "MessagesGetRecentLocations(";
     {
@@ -1993,6 +2350,9 @@ void dumpRpc(Stream &stream)
         quint32 limit;
         stream >> limit;
         d << spacer.innerSpaces() << "limit: " << limit << TELEGRAMQT_ENDL;
+        quint32 hash;
+        stream >> hash;
+        d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -2021,6 +2381,21 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::MessagesGetSplitRanges:
+        d << "MessagesGetSplitRanges(";
+        d << ")";
+        break;
+    case TLValue::MessagesGetStatsURL:
+        d << "MessagesGetStatsURL(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputPeer peer;
+        stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::MessagesGetStickerSet:
         d << "MessagesGetStickerSet(";
     {
@@ -2029,6 +2404,20 @@ void dumpRpc(Stream &stream)
         TLInputStickerSet stickerset;
         stream >> stickerset;
         d << spacer.innerSpaces() << "stickerset: " << stickerset << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::MessagesGetStickers:
+        d << "MessagesGetStickers(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        QString emoticon;
+        stream >> emoticon;
+        d << spacer.innerSpaces() << "emoticon: " << emoticon << TELEGRAMQT_ENDL;
+        quint32 hash;
+        stream >> hash;
+        d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -2077,6 +2466,9 @@ void dumpRpc(Stream &stream)
     {
         d << TELEGRAMQT_ENDL;
         Spacer spacer;
+        quint32 flags;
+        stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
         QString message;
         stream >> message;
         d << spacer.innerSpaces() << "message: " << message << TELEGRAMQT_ENDL;
@@ -2116,6 +2508,20 @@ void dumpRpc(Stream &stream)
         bool archived;
         stream >> archived;
         d << spacer.innerSpaces() << "archived: " << archived << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::MessagesMarkDialogUnread:
+        d << "MessagesMarkDialogUnread(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 flags;
+        stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
+        TLInputDialogPeer peer;
+        stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -2221,7 +2627,7 @@ void dumpRpc(Stream &stream)
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
-        TLVector<TLInputPeer> order;
+        TLVector<TLInputDialogPeer> order;
         stream >> order;
         d << spacer.innerSpaces() << "order: " << order << TELEGRAMQT_ENDL;
     }
@@ -2238,6 +2644,23 @@ void dumpRpc(Stream &stream)
         TLVector<quint64> order;
         stream >> order;
         d << spacer.innerSpaces() << "order: " << order << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::MessagesReport:
+        d << "MessagesReport(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputPeer peer;
+        stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
+        TLVector<quint32> id;
+        stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
+        TLReportReason reason;
+        stream >> reason;
+        d << spacer.innerSpaces() << "reason: " << reason << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -2366,6 +2789,9 @@ void dumpRpc(Stream &stream)
         quint32 minId;
         stream >> minId;
         d << spacer.innerSpaces() << "minId: " << minId << TELEGRAMQT_ENDL;
+        quint32 hash;
+        stream >> hash;
+        d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -2403,6 +2829,23 @@ void dumpRpc(Stream &stream)
         quint32 limit;
         stream >> limit;
         d << spacer.innerSpaces() << "limit: " << limit << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::MessagesSearchStickerSets:
+        d << "MessagesSearchStickerSets(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 flags;
+        stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
+        QString q;
+        stream >> q;
+        d << spacer.innerSpaces() << "q: " << q << TELEGRAMQT_ENDL;
+        quint32 hash;
+        stream >> hash;
+        d << spacer.innerSpaces() << "hash: " << hash << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -2497,6 +2940,9 @@ void dumpRpc(Stream &stream)
         TLInputMedia media;
         stream >> media;
         d << spacer.innerSpaces() << "media: " << media << TELEGRAMQT_ENDL;
+        QString message;
+        stream >> message;
+        d << spacer.innerSpaces() << "message: " << message << TELEGRAMQT_ENDL;
         quint64 randomId;
         stream >> randomId;
         d << spacer.innerSpaces() << "randomId: " << randomId << TELEGRAMQT_ENDL;
@@ -2523,6 +2969,23 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::MessagesSendMultiMedia:
+        d << "MessagesSendMultiMedia(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 flags;
+        stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
+        TLInputPeer peer;
+        stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
+        TLVector<TLInputSingleMedia> multiMedia;
+        stream >> multiMedia;
+        d << spacer.innerSpaces() << "multiMedia: " << multiMedia << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::MessagesSendScreenshotNotification:
         d << "MessagesSendScreenshotNotification(";
     {
@@ -2537,6 +3000,23 @@ void dumpRpc(Stream &stream)
         quint64 randomId;
         stream >> randomId;
         d << spacer.innerSpaces() << "randomId: " << randomId << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::MessagesSendVote:
+        d << "MessagesSendVote(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputPeer peer;
+        stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
+        quint32 msgId;
+        stream >> msgId;
+        d << spacer.innerSpaces() << "msgId: " << msgId << TELEGRAMQT_ENDL;
+        TLVector<QByteArray> options;
+        stream >> options;
+        d << spacer.innerSpaces() << "options: " << options << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -2718,7 +3198,7 @@ void dumpRpc(Stream &stream)
         quint32 flags;
         stream >> flags;
         d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
-        TLInputPeer peer;
+        TLInputDialogPeer peer;
         stream >> peer;
         d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
     }
@@ -2732,6 +3212,37 @@ void dumpRpc(Stream &stream)
         TLInputStickerSet stickerset;
         stream >> stickerset;
         d << spacer.innerSpaces() << "stickerset: " << stickerset << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::MessagesUpdatePinnedMessage:
+        d << "MessagesUpdatePinnedMessage(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        quint32 flags;
+        stream >> flags;
+        d << spacer.innerSpaces() << "flags: " << flags << TELEGRAMQT_ENDL;
+        TLInputPeer peer;
+        stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
+        quint32 id;
+        stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::MessagesUploadEncryptedFile:
+        d << "MessagesUploadEncryptedFile(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputEncryptedChat peer;
+        stream >> peer;
+        d << spacer.innerSpaces() << "peer: " << peer << TELEGRAMQT_ENDL;
+        TLInputEncryptedFile file;
+        stream >> file;
+        d << spacer.innerSpaces() << "file: " << file << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;
@@ -3153,6 +3664,20 @@ void dumpRpc(Stream &stream)
     }
         d << ")";
         break;
+    case TLValue::UploadGetFileHashes:
+        d << "UploadGetFileHashes(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputFileLocation location;
+        stream >> location;
+        d << spacer.innerSpaces() << "location: " << location << TELEGRAMQT_ENDL;
+        quint32 offset;
+        stream >> offset;
+        d << spacer.innerSpaces() << "offset: " << offset << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
     case TLValue::UploadGetWebFile:
         d << "UploadGetWebFile(";
     {
@@ -3240,6 +3765,20 @@ void dumpRpc(Stream &stream)
         TLVector<TLInputUser> id;
         stream >> id;
         d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
+    }
+        d << ")";
+        break;
+    case TLValue::UsersSetSecureValueErrors:
+        d << "UsersSetSecureValueErrors(";
+    {
+        d << TELEGRAMQT_ENDL;
+        Spacer spacer;
+        TLInputUser id;
+        stream >> id;
+        d << spacer.innerSpaces() << "id: " << id << TELEGRAMQT_ENDL;
+        TLVector<TLSecureValueError> errors;
+        stream >> errors;
+        d << spacer.innerSpaces() << "errors: " << errors << TELEGRAMQT_ENDL;
     }
         d << ")";
         break;

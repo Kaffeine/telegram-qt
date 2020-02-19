@@ -32,10 +32,16 @@ namespace Client {
 // Generated Telegram API reply template specializations
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpAppUpdate *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpConfigSimple *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpDeepLinkInfo *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpInviteText *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpPassportConfig *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpProxyData *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpRecentMeUrls *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpSupport *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpSupportName *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpTermsOfService *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpTermsOfServiceUpdate *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLHelpUserInfo *output);
 // End of generated Telegram API reply template specializations
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLConfig *output);
 
@@ -45,6 +51,30 @@ HelpRpcLayer::HelpRpcLayer(QObject *parent) :
 }
 
 // Generated Telegram API definitions
+HelpRpcLayer::PendingBool *HelpRpcLayer::acceptTermsOfService(const TLDataJSON &id)
+{
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << id;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::HelpAcceptTermsOfService;
+    outputStream << id;
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+HelpRpcLayer::PendingHelpUserInfo *HelpRpcLayer::editUserInfo(const TLInputUser &userId, const QString &message, const TLVector<TLMessageEntity> &entities)
+{
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << userId << message << entities;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::HelpEditUserInfo;
+    outputStream << userId;
+    outputStream << message;
+    outputStream << entities;
+    PendingHelpUserInfo *op = new PendingHelpUserInfo(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
 HelpRpcLayer::PendingUpdates *HelpRpcLayer::getAppChangelog(const QString &prevAppVersion)
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << prevAppVersion;
@@ -56,11 +86,22 @@ HelpRpcLayer::PendingUpdates *HelpRpcLayer::getAppChangelog(const QString &prevA
     return op;
 }
 
-HelpRpcLayer::PendingHelpAppUpdate *HelpRpcLayer::getAppUpdate()
+HelpRpcLayer::PendingJSONValue *HelpRpcLayer::getAppConfig()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::HelpGetAppConfig;
+    PendingJSONValue *op = new PendingJSONValue(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+HelpRpcLayer::PendingHelpAppUpdate *HelpRpcLayer::getAppUpdate(const QString &source)
+{
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << source;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetAppUpdate;
+    outputStream << source;
     PendingHelpAppUpdate *op = new PendingHelpAppUpdate(this, outputStream.getData());
     processRpcCall(op);
     return op;
@@ -86,6 +127,17 @@ HelpRpcLayer::PendingConfig *HelpRpcLayer::getConfig()
     return op;
 }
 
+HelpRpcLayer::PendingHelpDeepLinkInfo *HelpRpcLayer::getDeepLinkInfo(const QString &path)
+{
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << path;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::HelpGetDeepLinkInfo;
+    outputStream << path;
+    PendingHelpDeepLinkInfo *op = new PendingHelpDeepLinkInfo(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
 HelpRpcLayer::PendingHelpInviteText *HelpRpcLayer::getInviteText()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
@@ -102,6 +154,27 @@ HelpRpcLayer::PendingNearestDc *HelpRpcLayer::getNearestDc()
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::HelpGetNearestDc;
     PendingNearestDc *op = new PendingNearestDc(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+HelpRpcLayer::PendingHelpPassportConfig *HelpRpcLayer::getPassportConfig(quint32 hash)
+{
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << hash;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::HelpGetPassportConfig;
+    outputStream << hash;
+    PendingHelpPassportConfig *op = new PendingHelpPassportConfig(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+HelpRpcLayer::PendingHelpProxyData *HelpRpcLayer::getProxyData()
+{
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::HelpGetProxyData;
+    PendingHelpProxyData *op = new PendingHelpProxyData(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
@@ -127,12 +200,33 @@ HelpRpcLayer::PendingHelpSupport *HelpRpcLayer::getSupport()
     return op;
 }
 
-HelpRpcLayer::PendingHelpTermsOfService *HelpRpcLayer::getTermsOfService()
+HelpRpcLayer::PendingHelpSupportName *HelpRpcLayer::getSupportName()
 {
     qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
-    outputStream << TLValue::HelpGetTermsOfService;
-    PendingHelpTermsOfService *op = new PendingHelpTermsOfService(this, outputStream.getData());
+    outputStream << TLValue::HelpGetSupportName;
+    PendingHelpSupportName *op = new PendingHelpSupportName(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+HelpRpcLayer::PendingHelpTermsOfServiceUpdate *HelpRpcLayer::getTermsOfServiceUpdate()
+{
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::HelpGetTermsOfServiceUpdate;
+    PendingHelpTermsOfServiceUpdate *op = new PendingHelpTermsOfServiceUpdate(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+HelpRpcLayer::PendingHelpUserInfo *HelpRpcLayer::getUserInfo(const TLInputUser &userId)
+{
+    qCDebug(c_clientRpcHelpCategory) << Q_FUNC_INFO << userId;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::HelpGetUserInfo;
+    outputStream << userId;
+    PendingHelpUserInfo *op = new PendingHelpUserInfo(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }

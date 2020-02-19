@@ -37,11 +37,13 @@ public:
     // Generated process methods
     bool processGetFullUser(RpcProcessingContext &context);
     bool processGetUsers(RpcProcessingContext &context);
+    bool processSetSecureValueErrors(RpcProcessingContext &context);
     // End of generated process methods
 
     // Generated run methods
     void runGetFullUser();
     void runGetUsers();
+    void runSetSecureValueErrors();
     // End of generated run methods
 
     using RunMethod = void (UsersRpcOperation::*)();
@@ -58,6 +60,7 @@ protected:
     // Generated RPC members
     MTProto::Functions::TLUsersGetFullUser m_getFullUser;
     MTProto::Functions::TLUsersGetUsers m_getUsers;
+    MTProto::Functions::TLUsersSetSecureValueErrors m_setSecureValueErrors;
     // End of generated RPC members
 };
 

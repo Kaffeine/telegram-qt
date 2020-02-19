@@ -36,7 +36,6 @@ public:
     // Generated Telegram operations using
     using PendingBool = PendingRpcResult<TLBool *>;
     using PendingAuthAuthorization = PendingRpcResult<TLAuthAuthorization *>;
-    using PendingAuthCheckedPhone = PendingRpcResult<TLAuthCheckedPhone *>;
     using PendingAuthExportedAuthorization = PendingRpcResult<TLAuthExportedAuthorization *>;
     using PendingAuthPasswordRecovery = PendingRpcResult<TLAuthPasswordRecovery *>;
     using PendingAuthSentCode = PendingRpcResult<TLAuthSentCode *>;
@@ -45,8 +44,7 @@ public:
     // Generated Telegram API declarations
     PendingBool *bindTempAuthKey(quint64 permAuthKeyId, quint64 nonce, quint32 expiresAt, const QByteArray &encryptedMessage);
     PendingBool *cancelCode(const QString &phoneNumber, const QString &phoneCodeHash);
-    PendingAuthAuthorization *checkPassword(const QByteArray &passwordHash);
-    PendingAuthCheckedPhone *checkPhone(const QString &phoneNumber);
+    PendingAuthAuthorization *checkPassword(const TLInputCheckPasswordSRP &password);
     PendingBool *dropTempAuthKeys(const TLVector<quint64> &exceptAuthKeys);
     PendingAuthExportedAuthorization *exportAuthorization(quint32 dcId);
     PendingAuthAuthorization *importAuthorization(quint32 id, const QByteArray &bytes);
@@ -57,7 +55,6 @@ public:
     PendingAuthSentCode *resendCode(const QString &phoneNumber, const QString &phoneCodeHash);
     PendingBool *resetAuthorizations();
     PendingAuthSentCode *sendCode(quint32 flags, const QString &phoneNumber, bool currentNumber, quint32 apiId, const QString &apiHash);
-    PendingBool *sendInvites(const TLVector<QString> &phoneNumbers, const QString &message);
     PendingAuthAuthorization *signIn(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode);
     PendingAuthAuthorization *signUp(const QString &phoneNumber, const QString &phoneCodeHash, const QString &phoneCode, const QString &firstName, const QString &lastName);
     // End of generated Telegram API declarations

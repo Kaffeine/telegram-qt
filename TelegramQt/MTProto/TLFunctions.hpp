@@ -36,6 +36,21 @@ struct TLPing
 };
 
 // Generated TLFunctions
+struct TLAccountAcceptAuthorization
+{
+    static constexpr TLValue predicate = TLValue::AccountAcceptAuthorization;
+    quint32 botId = 0;
+    QString scope;
+    QString publicKey;
+    TLVector<TLSecureValueHash> valueHashes;
+    TLSecureCredentialsEncrypted credentials;
+};
+
+struct TLAccountCancelPasswordEmail
+{
+    static constexpr TLValue predicate = TLValue::AccountCancelPasswordEmail;
+};
+
 struct TLAccountChangePhone
 {
     static constexpr TLValue predicate = TLValue::AccountChangePhone;
@@ -48,6 +63,12 @@ struct TLAccountCheckUsername
 {
     static constexpr TLValue predicate = TLValue::AccountCheckUsername;
     QString username;
+};
+
+struct TLAccountConfirmPasswordEmail
+{
+    static constexpr TLValue predicate = TLValue::AccountConfirmPasswordEmail;
+    QString code;
 };
 
 struct TLAccountConfirmPhone
@@ -63,14 +84,58 @@ struct TLAccountDeleteAccount
     QString reason;
 };
 
+struct TLAccountDeleteSecureValue
+{
+    static constexpr TLValue predicate = TLValue::AccountDeleteSecureValue;
+    TLVector<TLSecureValueType> types;
+};
+
+struct TLAccountFinishTakeoutSession
+{
+    static constexpr TLValue predicate = TLValue::AccountFinishTakeoutSession;
+    enum Flag {
+        Success = 1 << 0,
+    };
+    quint32 flags = 0;
+};
+
 struct TLAccountGetAccountTTL
 {
     static constexpr TLValue predicate = TLValue::AccountGetAccountTTL;
 };
 
+struct TLAccountGetAllSecureValues
+{
+    static constexpr TLValue predicate = TLValue::AccountGetAllSecureValues;
+};
+
+struct TLAccountGetAuthorizationForm
+{
+    static constexpr TLValue predicate = TLValue::AccountGetAuthorizationForm;
+    quint32 botId = 0;
+    QString scope;
+    QString publicKey;
+};
+
 struct TLAccountGetAuthorizations
 {
     static constexpr TLValue predicate = TLValue::AccountGetAuthorizations;
+};
+
+struct TLAccountGetContactSignUpNotification
+{
+    static constexpr TLValue predicate = TLValue::AccountGetContactSignUpNotification;
+};
+
+struct TLAccountGetNotifyExceptions
+{
+    static constexpr TLValue predicate = TLValue::AccountGetNotifyExceptions;
+    enum Flag {
+        Peer = 1 << 0,
+        CompareSound = 1 << 1,
+    };
+    quint32 flags = 0;
+    TLInputNotifyPeer peer;
 };
 
 struct TLAccountGetNotifySettings
@@ -87,7 +152,7 @@ struct TLAccountGetPassword
 struct TLAccountGetPasswordSettings
 {
     static constexpr TLValue predicate = TLValue::AccountGetPasswordSettings;
-    QByteArray currentPasswordHash;
+    TLInputCheckPasswordSRP password;
 };
 
 struct TLAccountGetPrivacy
@@ -96,10 +161,16 @@ struct TLAccountGetPrivacy
     TLInputPrivacyKey key;
 };
 
+struct TLAccountGetSecureValue
+{
+    static constexpr TLValue predicate = TLValue::AccountGetSecureValue;
+    TLVector<TLSecureValueType> types;
+};
+
 struct TLAccountGetTmpPassword
 {
     static constexpr TLValue predicate = TLValue::AccountGetTmpPassword;
-    QByteArray passwordHash;
+    TLInputCheckPasswordSRP password;
     quint32 period = 0;
 };
 
@@ -108,11 +179,35 @@ struct TLAccountGetWallPapers
     static constexpr TLValue predicate = TLValue::AccountGetWallPapers;
 };
 
+struct TLAccountGetWebAuthorizations
+{
+    static constexpr TLValue predicate = TLValue::AccountGetWebAuthorizations;
+};
+
+struct TLAccountInitTakeoutSession
+{
+    static constexpr TLValue predicate = TLValue::AccountInitTakeoutSession;
+    enum Flag {
+        Contacts = 1 << 0,
+        MessageUsers = 1 << 1,
+        MessageChats = 1 << 2,
+        MessageMegagroups = 1 << 3,
+        MessageChannels = 1 << 4,
+        FileMaxSize = 1 << 5,
+        Files = 1 << 5,
+    };
+    quint32 flags = 0;
+    quint32 fileMaxSize = 0;
+};
+
 struct TLAccountRegisterDevice
 {
     static constexpr TLValue predicate = TLValue::AccountRegisterDevice;
     quint32 tokenType = 0;
     QString token;
+    bool appSandbox = false;
+    QByteArray secret;
+    TLVector<quint32> otherUids;
 };
 
 struct TLAccountReportPeer
@@ -120,6 +215,11 @@ struct TLAccountReportPeer
     static constexpr TLValue predicate = TLValue::AccountReportPeer;
     TLInputPeer peer;
     TLReportReason reason;
+};
+
+struct TLAccountResendPasswordEmail
+{
+    static constexpr TLValue predicate = TLValue::AccountResendPasswordEmail;
 };
 
 struct TLAccountResetAuthorization
@@ -131,6 +231,24 @@ struct TLAccountResetAuthorization
 struct TLAccountResetNotifySettings
 {
     static constexpr TLValue predicate = TLValue::AccountResetNotifySettings;
+};
+
+struct TLAccountResetWebAuthorization
+{
+    static constexpr TLValue predicate = TLValue::AccountResetWebAuthorization;
+    quint64 hash = 0;
+};
+
+struct TLAccountResetWebAuthorizations
+{
+    static constexpr TLValue predicate = TLValue::AccountResetWebAuthorizations;
+};
+
+struct TLAccountSaveSecureValue
+{
+    static constexpr TLValue predicate = TLValue::AccountSaveSecureValue;
+    TLInputSecureValue value;
+    quint64 secureSecretId = 0;
 };
 
 struct TLAccountSendChangePhoneCode
@@ -157,10 +275,34 @@ struct TLAccountSendConfirmPhoneCode
     bool currentNumber = false;
 };
 
+struct TLAccountSendVerifyEmailCode
+{
+    static constexpr TLValue predicate = TLValue::AccountSendVerifyEmailCode;
+    QString email;
+};
+
+struct TLAccountSendVerifyPhoneCode
+{
+    static constexpr TLValue predicate = TLValue::AccountSendVerifyPhoneCode;
+    enum Flag {
+        CurrentNumber = 1 << 0,
+        AllowFlashcall = 1 << 0,
+    };
+    quint32 flags = 0;
+    QString phoneNumber;
+    bool currentNumber = false;
+};
+
 struct TLAccountSetAccountTTL
 {
     static constexpr TLValue predicate = TLValue::AccountSetAccountTTL;
     TLAccountDaysTTL ttl;
+};
+
+struct TLAccountSetContactSignUpNotification
+{
+    static constexpr TLValue predicate = TLValue::AccountSetContactSignUpNotification;
+    bool silent = false;
 };
 
 struct TLAccountSetPrivacy
@@ -175,6 +317,7 @@ struct TLAccountUnregisterDevice
     static constexpr TLValue predicate = TLValue::AccountUnregisterDevice;
     quint32 tokenType = 0;
     QString token;
+    TLVector<quint32> otherUids;
 };
 
 struct TLAccountUpdateDeviceLocked
@@ -193,7 +336,7 @@ struct TLAccountUpdateNotifySettings
 struct TLAccountUpdatePasswordSettings
 {
     static constexpr TLValue predicate = TLValue::AccountUpdatePasswordSettings;
-    QByteArray currentPasswordHash;
+    TLInputCheckPasswordSRP password;
     TLAccountPasswordInputSettings newSettings;
 };
 
@@ -223,6 +366,21 @@ struct TLAccountUpdateUsername
     QString username;
 };
 
+struct TLAccountVerifyEmail
+{
+    static constexpr TLValue predicate = TLValue::AccountVerifyEmail;
+    QString email;
+    QString code;
+};
+
+struct TLAccountVerifyPhone
+{
+    static constexpr TLValue predicate = TLValue::AccountVerifyPhone;
+    QString phoneNumber;
+    QString phoneCodeHash;
+    QString phoneCode;
+};
+
 struct TLAuthBindTempAuthKey
 {
     static constexpr TLValue predicate = TLValue::AuthBindTempAuthKey;
@@ -242,13 +400,7 @@ struct TLAuthCancelCode
 struct TLAuthCheckPassword
 {
     static constexpr TLValue predicate = TLValue::AuthCheckPassword;
-    QByteArray passwordHash;
-};
-
-struct TLAuthCheckPhone
-{
-    static constexpr TLValue predicate = TLValue::AuthCheckPhone;
-    QString phoneNumber;
+    TLInputCheckPasswordSRP password;
 };
 
 struct TLAuthDropTempAuthKeys
@@ -319,13 +471,6 @@ struct TLAuthSendCode
     bool currentNumber = false;
     quint32 apiId = 0;
     QString apiHash;
-};
-
-struct TLAuthSendInvites
-{
-    static constexpr TLValue predicate = TLValue::AuthSendInvites;
-    TLVector<QString> phoneNumbers;
-    QString message;
 };
 
 struct TLAuthSignIn
@@ -454,6 +599,7 @@ struct TLChannelsExportMessageLink
     static constexpr TLValue predicate = TLValue::ChannelsExportMessageLink;
     TLInputChannel channel;
     quint32 id = 0;
+    bool grouped = false;
 };
 
 struct TLChannelsGetAdminLog
@@ -490,11 +636,17 @@ struct TLChannelsGetFullChannel
     TLInputChannel channel;
 };
 
+struct TLChannelsGetLeftChannels
+{
+    static constexpr TLValue predicate = TLValue::ChannelsGetLeftChannels;
+    quint32 offset = 0;
+};
+
 struct TLChannelsGetMessages
 {
     static constexpr TLValue predicate = TLValue::ChannelsGetMessages;
     TLInputChannel channel;
-    TLVector<quint32> id;
+    TLVector<TLInputMessage> id;
 };
 
 struct TLChannelsGetParticipant
@@ -583,17 +735,6 @@ struct TLChannelsToggleSignatures
     bool enabled = false;
 };
 
-struct TLChannelsUpdatePinnedMessage
-{
-    static constexpr TLValue predicate = TLValue::ChannelsUpdatePinnedMessage;
-    enum Flag {
-        Silent = 1 << 0,
-    };
-    quint32 flags = 0;
-    TLInputChannel channel;
-    quint32 id = 0;
-};
-
 struct TLChannelsUpdateUsername
 {
     static constexpr TLValue predicate = TLValue::ChannelsUpdateUsername;
@@ -605,6 +746,12 @@ struct TLContactsBlock
 {
     static constexpr TLValue predicate = TLValue::ContactsBlock;
     TLInputUser id;
+};
+
+struct TLContactsDeleteByPhones
+{
+    static constexpr TLValue predicate = TLValue::ContactsDeleteByPhones;
+    TLVector<QString> phones;
 };
 
 struct TLContactsDeleteContact
@@ -619,11 +766,6 @@ struct TLContactsDeleteContacts
     TLVector<TLInputUser> id;
 };
 
-struct TLContactsExportCard
-{
-    static constexpr TLValue predicate = TLValue::ContactsExportCard;
-};
-
 struct TLContactsGetBlocked
 {
     static constexpr TLValue predicate = TLValue::ContactsGetBlocked;
@@ -631,10 +773,21 @@ struct TLContactsGetBlocked
     quint32 limit = 0;
 };
 
+struct TLContactsGetContactIDs
+{
+    static constexpr TLValue predicate = TLValue::ContactsGetContactIDs;
+    quint32 hash = 0;
+};
+
 struct TLContactsGetContacts
 {
     static constexpr TLValue predicate = TLValue::ContactsGetContacts;
     quint32 hash = 0;
+};
+
+struct TLContactsGetSaved
+{
+    static constexpr TLValue predicate = TLValue::ContactsGetSaved;
 };
 
 struct TLContactsGetStatuses
@@ -657,12 +810,6 @@ struct TLContactsGetTopPeers
     quint32 offset = 0;
     quint32 limit = 0;
     quint32 hash = 0;
-};
-
-struct TLContactsImportCard
-{
-    static constexpr TLValue predicate = TLValue::ContactsImportCard;
-    TLVector<quint32> exportCard;
 };
 
 struct TLContactsImportContacts
@@ -696,10 +843,30 @@ struct TLContactsSearch
     quint32 limit = 0;
 };
 
+struct TLContactsToggleTopPeers
+{
+    static constexpr TLValue predicate = TLValue::ContactsToggleTopPeers;
+    bool enabled = false;
+};
+
 struct TLContactsUnblock
 {
     static constexpr TLValue predicate = TLValue::ContactsUnblock;
     TLInputUser id;
+};
+
+struct TLHelpAcceptTermsOfService
+{
+    static constexpr TLValue predicate = TLValue::HelpAcceptTermsOfService;
+    TLDataJSON id;
+};
+
+struct TLHelpEditUserInfo
+{
+    static constexpr TLValue predicate = TLValue::HelpEditUserInfo;
+    TLInputUser userId;
+    QString message;
+    TLVector<TLMessageEntity> entities;
 };
 
 struct TLHelpGetAppChangelog
@@ -708,9 +875,15 @@ struct TLHelpGetAppChangelog
     QString prevAppVersion;
 };
 
+struct TLHelpGetAppConfig
+{
+    static constexpr TLValue predicate = TLValue::HelpGetAppConfig;
+};
+
 struct TLHelpGetAppUpdate
 {
     static constexpr TLValue predicate = TLValue::HelpGetAppUpdate;
+    QString source;
 };
 
 struct TLHelpGetCdnConfig
@@ -723,6 +896,12 @@ struct TLHelpGetConfig
     static constexpr TLValue predicate = TLValue::HelpGetConfig;
 };
 
+struct TLHelpGetDeepLinkInfo
+{
+    static constexpr TLValue predicate = TLValue::HelpGetDeepLinkInfo;
+    QString path;
+};
+
 struct TLHelpGetInviteText
 {
     static constexpr TLValue predicate = TLValue::HelpGetInviteText;
@@ -731,6 +910,17 @@ struct TLHelpGetInviteText
 struct TLHelpGetNearestDc
 {
     static constexpr TLValue predicate = TLValue::HelpGetNearestDc;
+};
+
+struct TLHelpGetPassportConfig
+{
+    static constexpr TLValue predicate = TLValue::HelpGetPassportConfig;
+    quint32 hash = 0;
+};
+
+struct TLHelpGetProxyData
+{
+    static constexpr TLValue predicate = TLValue::HelpGetProxyData;
 };
 
 struct TLHelpGetRecentMeUrls
@@ -744,9 +934,20 @@ struct TLHelpGetSupport
     static constexpr TLValue predicate = TLValue::HelpGetSupport;
 };
 
-struct TLHelpGetTermsOfService
+struct TLHelpGetSupportName
 {
-    static constexpr TLValue predicate = TLValue::HelpGetTermsOfService;
+    static constexpr TLValue predicate = TLValue::HelpGetSupportName;
+};
+
+struct TLHelpGetTermsOfServiceUpdate
+{
+    static constexpr TLValue predicate = TLValue::HelpGetTermsOfServiceUpdate;
+};
+
+struct TLHelpGetUserInfo
+{
+    static constexpr TLValue predicate = TLValue::HelpGetUserInfo;
+    TLInputUser userId;
 };
 
 struct TLHelpSaveAppLog
@@ -765,23 +966,34 @@ struct TLHelpSetBotUpdatesStatus
 struct TLLangpackGetDifference
 {
     static constexpr TLValue predicate = TLValue::LangpackGetDifference;
+    QString langCode;
     quint32 fromVersion = 0;
 };
 
 struct TLLangpackGetLangPack
 {
     static constexpr TLValue predicate = TLValue::LangpackGetLangPack;
+    QString langPack;
+    QString langCode;
+};
+
+struct TLLangpackGetLanguage
+{
+    static constexpr TLValue predicate = TLValue::LangpackGetLanguage;
+    QString langPack;
     QString langCode;
 };
 
 struct TLLangpackGetLanguages
 {
     static constexpr TLValue predicate = TLValue::LangpackGetLanguages;
+    QString langPack;
 };
 
 struct TLLangpackGetStrings
 {
     static constexpr TLValue predicate = TLValue::LangpackGetStrings;
+    QString langPack;
     QString langCode;
     TLVector<QString> keys;
 };
@@ -806,6 +1018,11 @@ struct TLMessagesCheckChatInvite
 {
     static constexpr TLValue predicate = TLValue::MessagesCheckChatInvite;
     QString hash;
+};
+
+struct TLMessagesClearAllDrafts
+{
+    static constexpr TLValue predicate = TLValue::MessagesClearAllDrafts;
 };
 
 struct TLMessagesClearRecentStickers
@@ -888,15 +1105,14 @@ struct TLMessagesEditInlineBotMessage
         ReplyMarkup = 1 << 2,
         Entities = 1 << 3,
         Message = 1 << 11,
-        StopGeoLive = 1 << 12,
-        GeoPoint = 1 << 13,
+        Media = 1 << 14,
     };
     quint32 flags = 0;
     TLInputBotInlineMessageID id;
     QString message;
+    TLInputMedia media;
     TLReplyMarkup replyMarkup;
     TLVector<TLMessageEntity> entities;
-    TLInputGeoPoint geoPoint;
 };
 
 struct TLMessagesEditMessage
@@ -907,16 +1123,15 @@ struct TLMessagesEditMessage
         ReplyMarkup = 1 << 2,
         Entities = 1 << 3,
         Message = 1 << 11,
-        StopGeoLive = 1 << 12,
-        GeoPoint = 1 << 13,
+        Media = 1 << 14,
     };
     quint32 flags = 0;
     TLInputPeer peer;
     quint32 id = 0;
     QString message;
+    TLInputMedia media;
     TLReplyMarkup replyMarkup;
     TLVector<TLMessageEntity> entities;
-    TLInputGeoPoint geoPoint;
 };
 
 struct TLMessagesExportChatInvite
@@ -932,14 +1147,6 @@ struct TLMessagesFaveSticker
     bool unfave = false;
 };
 
-struct TLMessagesForwardMessage
-{
-    static constexpr TLValue predicate = TLValue::MessagesForwardMessage;
-    TLInputPeer peer;
-    quint32 id = 0;
-    quint64 randomId = 0;
-};
-
 struct TLMessagesForwardMessages
 {
     static constexpr TLValue predicate = TLValue::MessagesForwardMessages;
@@ -947,6 +1154,7 @@ struct TLMessagesForwardMessages
         Silent = 1 << 5,
         Background = 1 << 6,
         WithMyScore = 1 << 8,
+        Grouped = 1 << 9,
     };
     quint32 flags = 0;
     TLInputPeer fromPeer;
@@ -1023,6 +1231,11 @@ struct TLMessagesGetDhConfig
     quint32 randomLength = 0;
 };
 
+struct TLMessagesGetDialogUnreadMarks
+{
+    static constexpr TLValue predicate = TLValue::MessagesGetDialogUnreadMarks;
+};
+
 struct TLMessagesGetDialogs
 {
     static constexpr TLValue predicate = TLValue::MessagesGetDialogs;
@@ -1034,6 +1247,7 @@ struct TLMessagesGetDialogs
     quint32 offsetId = 0;
     TLInputPeer offsetPeer;
     quint32 limit = 0;
+    quint32 hash = 0;
 };
 
 struct TLMessagesGetDocumentByHash
@@ -1120,7 +1334,7 @@ struct TLMessagesGetMessageEditData
 struct TLMessagesGetMessages
 {
     static constexpr TLValue predicate = TLValue::MessagesGetMessages;
-    TLVector<quint32> id;
+    TLVector<TLInputMessage> id;
 };
 
 struct TLMessagesGetMessagesViews
@@ -1131,10 +1345,16 @@ struct TLMessagesGetMessagesViews
     bool increment = false;
 };
 
+struct TLMessagesGetOnlines
+{
+    static constexpr TLValue predicate = TLValue::MessagesGetOnlines;
+    TLInputPeer peer;
+};
+
 struct TLMessagesGetPeerDialogs
 {
     static constexpr TLValue predicate = TLValue::MessagesGetPeerDialogs;
-    TLVector<TLInputPeer> peers;
+    TLVector<TLInputDialogPeer> peers;
 };
 
 struct TLMessagesGetPeerSettings
@@ -1148,11 +1368,19 @@ struct TLMessagesGetPinnedDialogs
     static constexpr TLValue predicate = TLValue::MessagesGetPinnedDialogs;
 };
 
+struct TLMessagesGetPollResults
+{
+    static constexpr TLValue predicate = TLValue::MessagesGetPollResults;
+    TLInputPeer peer;
+    quint32 msgId = 0;
+};
+
 struct TLMessagesGetRecentLocations
 {
     static constexpr TLValue predicate = TLValue::MessagesGetRecentLocations;
     TLInputPeer peer;
     quint32 limit = 0;
+    quint32 hash = 0;
 };
 
 struct TLMessagesGetRecentStickers
@@ -1171,10 +1399,28 @@ struct TLMessagesGetSavedGifs
     quint32 hash = 0;
 };
 
+struct TLMessagesGetSplitRanges
+{
+    static constexpr TLValue predicate = TLValue::MessagesGetSplitRanges;
+};
+
+struct TLMessagesGetStatsURL
+{
+    static constexpr TLValue predicate = TLValue::MessagesGetStatsURL;
+    TLInputPeer peer;
+};
+
 struct TLMessagesGetStickerSet
 {
     static constexpr TLValue predicate = TLValue::MessagesGetStickerSet;
     TLInputStickerSet stickerset;
+};
+
+struct TLMessagesGetStickers
+{
+    static constexpr TLValue predicate = TLValue::MessagesGetStickers;
+    QString emoticon;
+    quint32 hash = 0;
 };
 
 struct TLMessagesGetUnreadMentions
@@ -1198,7 +1444,12 @@ struct TLMessagesGetWebPage
 struct TLMessagesGetWebPagePreview
 {
     static constexpr TLValue predicate = TLValue::MessagesGetWebPagePreview;
+    enum Flag {
+        Entities = 1 << 3,
+    };
+    quint32 flags = 0;
     QString message;
+    TLVector<TLMessageEntity> entities;
 };
 
 struct TLMessagesHideReportSpam
@@ -1218,6 +1469,16 @@ struct TLMessagesInstallStickerSet
     static constexpr TLValue predicate = TLValue::MessagesInstallStickerSet;
     TLInputStickerSet stickerset;
     bool archived = false;
+};
+
+struct TLMessagesMarkDialogUnread
+{
+    static constexpr TLValue predicate = TLValue::MessagesMarkDialogUnread;
+    enum Flag {
+        Unread = 1 << 0,
+    };
+    quint32 flags = 0;
+    TLInputDialogPeer peer;
 };
 
 struct TLMessagesMigrateChat
@@ -1277,7 +1538,7 @@ struct TLMessagesReorderPinnedDialogs
         Force = 1 << 0,
     };
     quint32 flags = 0;
-    TLVector<TLInputPeer> order;
+    TLVector<TLInputDialogPeer> order;
 };
 
 struct TLMessagesReorderStickerSets
@@ -1288,6 +1549,14 @@ struct TLMessagesReorderStickerSets
     };
     quint32 flags = 0;
     TLVector<quint64> order;
+};
+
+struct TLMessagesReport
+{
+    static constexpr TLValue predicate = TLValue::MessagesReport;
+    TLInputPeer peer;
+    TLVector<quint32> id;
+    TLReportReason reason;
 };
 
 struct TLMessagesReportEncryptedSpam
@@ -1361,6 +1630,7 @@ struct TLMessagesSearch
     quint32 limit = 0;
     quint32 maxId = 0;
     quint32 minId = 0;
+    quint32 hash = 0;
 };
 
 struct TLMessagesSearchGifs
@@ -1378,6 +1648,17 @@ struct TLMessagesSearchGlobal
     TLInputPeer offsetPeer;
     quint32 offsetId = 0;
     quint32 limit = 0;
+};
+
+struct TLMessagesSearchStickerSets
+{
+    static constexpr TLValue predicate = TLValue::MessagesSearchStickerSets;
+    enum Flag {
+        ExcludeFeatured = 1 << 0,
+    };
+    quint32 flags = 0;
+    QString q;
+    quint32 hash = 0;
 };
 
 struct TLMessagesSendEncrypted
@@ -1413,6 +1694,7 @@ struct TLMessagesSendInlineBotResult
         Silent = 1 << 5,
         Background = 1 << 6,
         ClearDraft = 1 << 7,
+        HideVia = 1 << 11,
     };
     quint32 flags = 0;
     TLInputPeer peer;
@@ -1428,6 +1710,7 @@ struct TLMessagesSendMedia
     enum Flag {
         ReplyToMsgId = 1 << 0,
         ReplyMarkup = 1 << 2,
+        Entities = 1 << 3,
         Silent = 1 << 5,
         Background = 1 << 6,
         ClearDraft = 1 << 7,
@@ -1436,8 +1719,10 @@ struct TLMessagesSendMedia
     TLInputPeer peer;
     quint32 replyToMsgId = 0;
     TLInputMedia media;
+    QString message;
     quint64 randomId = 0;
     TLReplyMarkup replyMarkup;
+    TLVector<TLMessageEntity> entities;
 };
 
 struct TLMessagesSendMessage
@@ -1461,12 +1746,35 @@ struct TLMessagesSendMessage
     TLVector<TLMessageEntity> entities;
 };
 
+struct TLMessagesSendMultiMedia
+{
+    static constexpr TLValue predicate = TLValue::MessagesSendMultiMedia;
+    enum Flag {
+        ReplyToMsgId = 1 << 0,
+        Silent = 1 << 5,
+        Background = 1 << 6,
+        ClearDraft = 1 << 7,
+    };
+    quint32 flags = 0;
+    TLInputPeer peer;
+    quint32 replyToMsgId = 0;
+    TLVector<TLInputSingleMedia> multiMedia;
+};
+
 struct TLMessagesSendScreenshotNotification
 {
     static constexpr TLValue predicate = TLValue::MessagesSendScreenshotNotification;
     TLInputPeer peer;
     quint32 replyToMsgId = 0;
     quint64 randomId = 0;
+};
+
+struct TLMessagesSendVote
+{
+    static constexpr TLValue predicate = TLValue::MessagesSendVote;
+    TLInputPeer peer;
+    quint32 msgId = 0;
+    TLVector<QByteArray> options;
 };
 
 struct TLMessagesSetBotCallbackAnswer
@@ -1590,13 +1898,31 @@ struct TLMessagesToggleDialogPin
         Pinned = 1 << 0,
     };
     quint32 flags = 0;
-    TLInputPeer peer;
+    TLInputDialogPeer peer;
 };
 
 struct TLMessagesUninstallStickerSet
 {
     static constexpr TLValue predicate = TLValue::MessagesUninstallStickerSet;
     TLInputStickerSet stickerset;
+};
+
+struct TLMessagesUpdatePinnedMessage
+{
+    static constexpr TLValue predicate = TLValue::MessagesUpdatePinnedMessage;
+    enum Flag {
+        Silent = 1 << 0,
+    };
+    quint32 flags = 0;
+    TLInputPeer peer;
+    quint32 id = 0;
+};
+
+struct TLMessagesUploadEncryptedFile
+{
+    static constexpr TLValue predicate = TLValue::MessagesUploadEncryptedFile;
+    TLInputEncryptedChat peer;
+    TLInputEncryptedFile file;
 };
 
 struct TLMessagesUploadMedia
@@ -1833,6 +2159,13 @@ struct TLUploadGetFile
     quint32 limit = 0;
 };
 
+struct TLUploadGetFileHashes
+{
+    static constexpr TLValue predicate = TLValue::UploadGetFileHashes;
+    TLInputFileLocation location;
+    quint32 offset = 0;
+};
+
 struct TLUploadGetWebFile
 {
     static constexpr TLValue predicate = TLValue::UploadGetWebFile;
@@ -1875,6 +2208,13 @@ struct TLUsersGetUsers
 {
     static constexpr TLValue predicate = TLValue::UsersGetUsers;
     TLVector<TLInputUser> id;
+};
+
+struct TLUsersSetSecureValueErrors
+{
+    static constexpr TLValue predicate = TLValue::UsersSetSecureValueErrors;
+    TLInputUser id;
+    TLVector<TLSecureValueError> errors;
 };
 // End of generated TLFunctions
 

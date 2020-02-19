@@ -43,6 +43,20 @@ namespace Telegram {
 namespace Server {
 
 // Generated process methods
+bool AccountRpcOperation::processAcceptAuthorization(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runAcceptAuthorization);
+    context.inputStream() >> m_acceptAuthorization;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processCancelPasswordEmail(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runCancelPasswordEmail);
+    context.inputStream() >> m_cancelPasswordEmail;
+    return !context.inputStream().error();
+}
+
 bool AccountRpcOperation::processChangePhone(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runChangePhone);
@@ -54,6 +68,13 @@ bool AccountRpcOperation::processCheckUsername(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runCheckUsername);
     context.inputStream() >> m_checkUsername;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processConfirmPasswordEmail(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runConfirmPasswordEmail);
+    context.inputStream() >> m_confirmPasswordEmail;
     return !context.inputStream().error();
 }
 
@@ -71,6 +92,20 @@ bool AccountRpcOperation::processDeleteAccount(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool AccountRpcOperation::processDeleteSecureValue(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runDeleteSecureValue);
+    context.inputStream() >> m_deleteSecureValue;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processFinishTakeoutSession(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runFinishTakeoutSession);
+    context.inputStream() >> m_finishTakeoutSession;
+    return !context.inputStream().error();
+}
+
 bool AccountRpcOperation::processGetAccountTTL(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runGetAccountTTL);
@@ -78,10 +113,38 @@ bool AccountRpcOperation::processGetAccountTTL(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool AccountRpcOperation::processGetAllSecureValues(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runGetAllSecureValues);
+    context.inputStream() >> m_getAllSecureValues;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processGetAuthorizationForm(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runGetAuthorizationForm);
+    context.inputStream() >> m_getAuthorizationForm;
+    return !context.inputStream().error();
+}
+
 bool AccountRpcOperation::processGetAuthorizations(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runGetAuthorizations);
     context.inputStream() >> m_getAuthorizations;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processGetContactSignUpNotification(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runGetContactSignUpNotification);
+    context.inputStream() >> m_getContactSignUpNotification;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processGetNotifyExceptions(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runGetNotifyExceptions);
+    context.inputStream() >> m_getNotifyExceptions;
     return !context.inputStream().error();
 }
 
@@ -113,6 +176,13 @@ bool AccountRpcOperation::processGetPrivacy(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool AccountRpcOperation::processGetSecureValue(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runGetSecureValue);
+    context.inputStream() >> m_getSecureValue;
+    return !context.inputStream().error();
+}
+
 bool AccountRpcOperation::processGetTmpPassword(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runGetTmpPassword);
@@ -124,6 +194,20 @@ bool AccountRpcOperation::processGetWallPapers(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runGetWallPapers);
     context.inputStream() >> m_getWallPapers;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processGetWebAuthorizations(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runGetWebAuthorizations);
+    context.inputStream() >> m_getWebAuthorizations;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processInitTakeoutSession(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runInitTakeoutSession);
+    context.inputStream() >> m_initTakeoutSession;
     return !context.inputStream().error();
 }
 
@@ -141,6 +225,13 @@ bool AccountRpcOperation::processReportPeer(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool AccountRpcOperation::processResendPasswordEmail(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runResendPasswordEmail);
+    context.inputStream() >> m_resendPasswordEmail;
+    return !context.inputStream().error();
+}
+
 bool AccountRpcOperation::processResetAuthorization(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runResetAuthorization);
@@ -152,6 +243,27 @@ bool AccountRpcOperation::processResetNotifySettings(RpcProcessingContext &conte
 {
     setRunMethod(&AccountRpcOperation::runResetNotifySettings);
     context.inputStream() >> m_resetNotifySettings;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processResetWebAuthorization(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runResetWebAuthorization);
+    context.inputStream() >> m_resetWebAuthorization;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processResetWebAuthorizations(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runResetWebAuthorizations);
+    context.inputStream() >> m_resetWebAuthorizations;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processSaveSecureValue(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runSaveSecureValue);
+    context.inputStream() >> m_saveSecureValue;
     return !context.inputStream().error();
 }
 
@@ -169,10 +281,31 @@ bool AccountRpcOperation::processSendConfirmPhoneCode(RpcProcessingContext &cont
     return !context.inputStream().error();
 }
 
+bool AccountRpcOperation::processSendVerifyEmailCode(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runSendVerifyEmailCode);
+    context.inputStream() >> m_sendVerifyEmailCode;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processSendVerifyPhoneCode(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runSendVerifyPhoneCode);
+    context.inputStream() >> m_sendVerifyPhoneCode;
+    return !context.inputStream().error();
+}
+
 bool AccountRpcOperation::processSetAccountTTL(RpcProcessingContext &context)
 {
     setRunMethod(&AccountRpcOperation::runSetAccountTTL);
     context.inputStream() >> m_setAccountTTL;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processSetContactSignUpNotification(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runSetContactSignUpNotification);
+    context.inputStream() >> m_setContactSignUpNotification;
     return !context.inputStream().error();
 }
 
@@ -231,9 +364,42 @@ bool AccountRpcOperation::processUpdateUsername(RpcProcessingContext &context)
     context.inputStream() >> m_updateUsername;
     return !context.inputStream().error();
 }
+
+bool AccountRpcOperation::processVerifyEmail(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runVerifyEmail);
+    context.inputStream() >> m_verifyEmail;
+    return !context.inputStream().error();
+}
+
+bool AccountRpcOperation::processVerifyPhone(RpcProcessingContext &context)
+{
+    setRunMethod(&AccountRpcOperation::runVerifyPhone);
+    context.inputStream() >> m_verifyPhone;
+    return !context.inputStream().error();
+}
 // End of generated process methods
 
 // Generated run methods
+void AccountRpcOperation::runAcceptAuthorization()
+{
+    // MTProto::Functions::TLAccountAcceptAuthorization &arguments = m_acceptAuthorization;
+    if (processNotImplementedMethod(TLValue::AccountAcceptAuthorization)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runCancelPasswordEmail()
+{
+    if (processNotImplementedMethod(TLValue::AccountCancelPasswordEmail)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
 void AccountRpcOperation::runChangePhone()
 {
     // MTProto::Functions::TLAccountChangePhone &arguments = m_changePhone;
@@ -248,6 +414,16 @@ void AccountRpcOperation::runCheckUsername()
 {
     MTProto::Functions::TLAccountCheckUsername &arguments = m_checkUsername;
     bool result = !api()->getPeerByUserName(arguments.username).isValid();
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runConfirmPasswordEmail()
+{
+    // MTProto::Functions::TLAccountConfirmPasswordEmail &arguments = m_confirmPasswordEmail;
+    if (processNotImplementedMethod(TLValue::AccountConfirmPasswordEmail)) {
+        return;
+    }
+    bool result;
     sendRpcReply(result);
 }
 
@@ -271,6 +447,26 @@ void AccountRpcOperation::runDeleteAccount()
     sendRpcReply(result);
 }
 
+void AccountRpcOperation::runDeleteSecureValue()
+{
+    // MTProto::Functions::TLAccountDeleteSecureValue &arguments = m_deleteSecureValue;
+    if (processNotImplementedMethod(TLValue::AccountDeleteSecureValue)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runFinishTakeoutSession()
+{
+    // MTProto::Functions::TLAccountFinishTakeoutSession &arguments = m_finishTakeoutSession;
+    if (processNotImplementedMethod(TLValue::AccountFinishTakeoutSession)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
 void AccountRpcOperation::runGetAccountTTL()
 {
     if (processNotImplementedMethod(TLValue::AccountGetAccountTTL)) {
@@ -280,12 +476,50 @@ void AccountRpcOperation::runGetAccountTTL()
     sendRpcReply(result);
 }
 
+void AccountRpcOperation::runGetAllSecureValues()
+{
+    if (processNotImplementedMethod(TLValue::AccountGetAllSecureValues)) {
+        return;
+    }
+    TLVector<TLSecureValue> result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runGetAuthorizationForm()
+{
+    // MTProto::Functions::TLAccountGetAuthorizationForm &arguments = m_getAuthorizationForm;
+    if (processNotImplementedMethod(TLValue::AccountGetAuthorizationForm)) {
+        return;
+    }
+    TLAccountAuthorizationForm result;
+    sendRpcReply(result);
+}
+
 void AccountRpcOperation::runGetAuthorizations()
 {
     if (processNotImplementedMethod(TLValue::AccountGetAuthorizations)) {
         return;
     }
     TLAccountAuthorizations result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runGetContactSignUpNotification()
+{
+    if (processNotImplementedMethod(TLValue::AccountGetContactSignUpNotification)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runGetNotifyExceptions()
+{
+    // MTProto::Functions::TLAccountGetNotifyExceptions &arguments = m_getNotifyExceptions;
+    if (processNotImplementedMethod(TLValue::AccountGetNotifyExceptions)) {
+        return;
+    }
+    TLUpdates result;
     sendRpcReply(result);
 }
 
@@ -338,6 +572,16 @@ void AccountRpcOperation::runGetPrivacy()
     sendRpcReply(result);
 }
 
+void AccountRpcOperation::runGetSecureValue()
+{
+    // MTProto::Functions::TLAccountGetSecureValue &arguments = m_getSecureValue;
+    if (processNotImplementedMethod(TLValue::AccountGetSecureValue)) {
+        return;
+    }
+    TLVector<TLSecureValue> result;
+    sendRpcReply(result);
+}
+
 void AccountRpcOperation::runGetTmpPassword()
 {
     // MTProto::Functions::TLAccountGetTmpPassword &arguments = m_getTmpPassword;
@@ -357,6 +601,25 @@ void AccountRpcOperation::runGetWallPapers()
     sendRpcReply(result);
 }
 
+void AccountRpcOperation::runGetWebAuthorizations()
+{
+    if (processNotImplementedMethod(TLValue::AccountGetWebAuthorizations)) {
+        return;
+    }
+    TLAccountWebAuthorizations result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runInitTakeoutSession()
+{
+    // MTProto::Functions::TLAccountInitTakeoutSession &arguments = m_initTakeoutSession;
+    if (processNotImplementedMethod(TLValue::AccountInitTakeoutSession)) {
+        return;
+    }
+    TLAccountTakeout result;
+    sendRpcReply(result);
+}
+
 void AccountRpcOperation::runRegisterDevice()
 {
     // MTProto::Functions::TLAccountRegisterDevice &arguments = m_registerDevice;
@@ -371,6 +634,15 @@ void AccountRpcOperation::runReportPeer()
 {
     // MTProto::Functions::TLAccountReportPeer &arguments = m_reportPeer;
     if (processNotImplementedMethod(TLValue::AccountReportPeer)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runResendPasswordEmail()
+{
+    if (processNotImplementedMethod(TLValue::AccountResendPasswordEmail)) {
         return;
     }
     bool result;
@@ -396,6 +668,35 @@ void AccountRpcOperation::runResetNotifySettings()
     sendRpcReply(result);
 }
 
+void AccountRpcOperation::runResetWebAuthorization()
+{
+    // MTProto::Functions::TLAccountResetWebAuthorization &arguments = m_resetWebAuthorization;
+    if (processNotImplementedMethod(TLValue::AccountResetWebAuthorization)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runResetWebAuthorizations()
+{
+    if (processNotImplementedMethod(TLValue::AccountResetWebAuthorizations)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runSaveSecureValue()
+{
+    // MTProto::Functions::TLAccountSaveSecureValue &arguments = m_saveSecureValue;
+    if (processNotImplementedMethod(TLValue::AccountSaveSecureValue)) {
+        return;
+    }
+    TLSecureValue result;
+    sendRpcReply(result);
+}
+
 void AccountRpcOperation::runSendChangePhoneCode()
 {
     // MTProto::Functions::TLAccountSendChangePhoneCode &arguments = m_sendChangePhoneCode;
@@ -416,10 +717,40 @@ void AccountRpcOperation::runSendConfirmPhoneCode()
     sendRpcReply(result);
 }
 
+void AccountRpcOperation::runSendVerifyEmailCode()
+{
+    // MTProto::Functions::TLAccountSendVerifyEmailCode &arguments = m_sendVerifyEmailCode;
+    if (processNotImplementedMethod(TLValue::AccountSendVerifyEmailCode)) {
+        return;
+    }
+    TLAccountSentEmailCode result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runSendVerifyPhoneCode()
+{
+    // MTProto::Functions::TLAccountSendVerifyPhoneCode &arguments = m_sendVerifyPhoneCode;
+    if (processNotImplementedMethod(TLValue::AccountSendVerifyPhoneCode)) {
+        return;
+    }
+    TLAuthSentCode result;
+    sendRpcReply(result);
+}
+
 void AccountRpcOperation::runSetAccountTTL()
 {
     // MTProto::Functions::TLAccountSetAccountTTL &arguments = m_setAccountTTL;
     if (processNotImplementedMethod(TLValue::AccountSetAccountTTL)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runSetContactSignUpNotification()
+{
+    // MTProto::Functions::TLAccountSetContactSignUpNotification &arguments = m_setContactSignUpNotification;
+    if (processNotImplementedMethod(TLValue::AccountSetContactSignUpNotification)) {
         return;
     }
     bool result;
@@ -556,6 +887,26 @@ void AccountRpcOperation::runUpdateUsername()
                                                     selfUser, layer()->session());
     api()->queueUpdates(notifications);
 }
+
+void AccountRpcOperation::runVerifyEmail()
+{
+    // MTProto::Functions::TLAccountVerifyEmail &arguments = m_verifyEmail;
+    if (processNotImplementedMethod(TLValue::AccountVerifyEmail)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void AccountRpcOperation::runVerifyPhone()
+{
+    // MTProto::Functions::TLAccountVerifyPhone &arguments = m_verifyPhone;
+    if (processNotImplementedMethod(TLValue::AccountVerifyPhone)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
 // End of generated run methods
 
 
@@ -568,18 +919,36 @@ AccountRpcOperation::ProcessingMethod AccountRpcOperation::getMethodForRpcFuncti
 {
     switch (function) {
     // Generated methodForRpcFunction cases
+    case TLValue::AccountAcceptAuthorization:
+        return &AccountRpcOperation::processAcceptAuthorization;
+    case TLValue::AccountCancelPasswordEmail:
+        return &AccountRpcOperation::processCancelPasswordEmail;
     case TLValue::AccountChangePhone:
         return &AccountRpcOperation::processChangePhone;
     case TLValue::AccountCheckUsername:
         return &AccountRpcOperation::processCheckUsername;
+    case TLValue::AccountConfirmPasswordEmail:
+        return &AccountRpcOperation::processConfirmPasswordEmail;
     case TLValue::AccountConfirmPhone:
         return &AccountRpcOperation::processConfirmPhone;
     case TLValue::AccountDeleteAccount:
         return &AccountRpcOperation::processDeleteAccount;
+    case TLValue::AccountDeleteSecureValue:
+        return &AccountRpcOperation::processDeleteSecureValue;
+    case TLValue::AccountFinishTakeoutSession:
+        return &AccountRpcOperation::processFinishTakeoutSession;
     case TLValue::AccountGetAccountTTL:
         return &AccountRpcOperation::processGetAccountTTL;
+    case TLValue::AccountGetAllSecureValues:
+        return &AccountRpcOperation::processGetAllSecureValues;
+    case TLValue::AccountGetAuthorizationForm:
+        return &AccountRpcOperation::processGetAuthorizationForm;
     case TLValue::AccountGetAuthorizations:
         return &AccountRpcOperation::processGetAuthorizations;
+    case TLValue::AccountGetContactSignUpNotification:
+        return &AccountRpcOperation::processGetContactSignUpNotification;
+    case TLValue::AccountGetNotifyExceptions:
+        return &AccountRpcOperation::processGetNotifyExceptions;
     case TLValue::AccountGetNotifySettings:
         return &AccountRpcOperation::processGetNotifySettings;
     case TLValue::AccountGetPassword:
@@ -588,24 +957,44 @@ AccountRpcOperation::ProcessingMethod AccountRpcOperation::getMethodForRpcFuncti
         return &AccountRpcOperation::processGetPasswordSettings;
     case TLValue::AccountGetPrivacy:
         return &AccountRpcOperation::processGetPrivacy;
+    case TLValue::AccountGetSecureValue:
+        return &AccountRpcOperation::processGetSecureValue;
     case TLValue::AccountGetTmpPassword:
         return &AccountRpcOperation::processGetTmpPassword;
     case TLValue::AccountGetWallPapers:
         return &AccountRpcOperation::processGetWallPapers;
+    case TLValue::AccountGetWebAuthorizations:
+        return &AccountRpcOperation::processGetWebAuthorizations;
+    case TLValue::AccountInitTakeoutSession:
+        return &AccountRpcOperation::processInitTakeoutSession;
     case TLValue::AccountRegisterDevice:
         return &AccountRpcOperation::processRegisterDevice;
     case TLValue::AccountReportPeer:
         return &AccountRpcOperation::processReportPeer;
+    case TLValue::AccountResendPasswordEmail:
+        return &AccountRpcOperation::processResendPasswordEmail;
     case TLValue::AccountResetAuthorization:
         return &AccountRpcOperation::processResetAuthorization;
     case TLValue::AccountResetNotifySettings:
         return &AccountRpcOperation::processResetNotifySettings;
+    case TLValue::AccountResetWebAuthorization:
+        return &AccountRpcOperation::processResetWebAuthorization;
+    case TLValue::AccountResetWebAuthorizations:
+        return &AccountRpcOperation::processResetWebAuthorizations;
+    case TLValue::AccountSaveSecureValue:
+        return &AccountRpcOperation::processSaveSecureValue;
     case TLValue::AccountSendChangePhoneCode:
         return &AccountRpcOperation::processSendChangePhoneCode;
     case TLValue::AccountSendConfirmPhoneCode:
         return &AccountRpcOperation::processSendConfirmPhoneCode;
+    case TLValue::AccountSendVerifyEmailCode:
+        return &AccountRpcOperation::processSendVerifyEmailCode;
+    case TLValue::AccountSendVerifyPhoneCode:
+        return &AccountRpcOperation::processSendVerifyPhoneCode;
     case TLValue::AccountSetAccountTTL:
         return &AccountRpcOperation::processSetAccountTTL;
+    case TLValue::AccountSetContactSignUpNotification:
+        return &AccountRpcOperation::processSetContactSignUpNotification;
     case TLValue::AccountSetPrivacy:
         return &AccountRpcOperation::processSetPrivacy;
     case TLValue::AccountUnregisterDevice:
@@ -622,6 +1011,10 @@ AccountRpcOperation::ProcessingMethod AccountRpcOperation::getMethodForRpcFuncti
         return &AccountRpcOperation::processUpdateStatus;
     case TLValue::AccountUpdateUsername:
         return &AccountRpcOperation::processUpdateUsername;
+    case TLValue::AccountVerifyEmail:
+        return &AccountRpcOperation::processVerifyEmail;
+    case TLValue::AccountVerifyPhone:
+        return &AccountRpcOperation::processVerifyPhone;
     // End of generated methodForRpcFunction cases
     default:
         return nullptr;

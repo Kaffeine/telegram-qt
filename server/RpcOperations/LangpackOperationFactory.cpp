@@ -53,6 +53,13 @@ bool LangpackRpcOperation::processGetLangPack(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool LangpackRpcOperation::processGetLanguage(RpcProcessingContext &context)
+{
+    setRunMethod(&LangpackRpcOperation::runGetLanguage);
+    context.inputStream() >> m_getLanguage;
+    return !context.inputStream().error();
+}
+
 bool LangpackRpcOperation::processGetLanguages(RpcProcessingContext &context)
 {
     setRunMethod(&LangpackRpcOperation::runGetLanguages);
@@ -89,6 +96,16 @@ void LangpackRpcOperation::runGetLangPack()
     sendRpcReply(result);
 }
 
+void LangpackRpcOperation::runGetLanguage()
+{
+    // MTProto::Functions::TLLangpackGetLanguage &arguments = m_getLanguage;
+    if (processNotImplementedMethod(TLValue::LangpackGetLanguage)) {
+        return;
+    }
+    TLLangPackLanguage result;
+    sendRpcReply(result);
+}
+
 void LangpackRpcOperation::runGetLanguages()
 {
     if (processNotImplementedMethod(TLValue::LangpackGetLanguages)) {
@@ -122,6 +139,8 @@ LangpackRpcOperation::ProcessingMethod LangpackRpcOperation::getMethodForRpcFunc
         return &LangpackRpcOperation::processGetDifference;
     case TLValue::LangpackGetLangPack:
         return &LangpackRpcOperation::processGetLangPack;
+    case TLValue::LangpackGetLanguage:
+        return &LangpackRpcOperation::processGetLanguage;
     case TLValue::LangpackGetLanguages:
         return &LangpackRpcOperation::processGetLanguages;
     case TLValue::LangpackGetStrings:

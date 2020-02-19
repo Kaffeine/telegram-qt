@@ -35,37 +35,41 @@ public:
 
     // Generated process methods
     bool processBlock(RpcProcessingContext &context);
+    bool processDeleteByPhones(RpcProcessingContext &context);
     bool processDeleteContact(RpcProcessingContext &context);
     bool processDeleteContacts(RpcProcessingContext &context);
-    bool processExportCard(RpcProcessingContext &context);
     bool processGetBlocked(RpcProcessingContext &context);
+    bool processGetContactIDs(RpcProcessingContext &context);
     bool processGetContacts(RpcProcessingContext &context);
+    bool processGetSaved(RpcProcessingContext &context);
     bool processGetStatuses(RpcProcessingContext &context);
     bool processGetTopPeers(RpcProcessingContext &context);
-    bool processImportCard(RpcProcessingContext &context);
     bool processImportContacts(RpcProcessingContext &context);
     bool processResetSaved(RpcProcessingContext &context);
     bool processResetTopPeerRating(RpcProcessingContext &context);
     bool processResolveUsername(RpcProcessingContext &context);
     bool processSearch(RpcProcessingContext &context);
+    bool processToggleTopPeers(RpcProcessingContext &context);
     bool processUnblock(RpcProcessingContext &context);
     // End of generated process methods
 
     // Generated run methods
     void runBlock();
+    void runDeleteByPhones();
     void runDeleteContact();
     void runDeleteContacts();
-    void runExportCard();
     void runGetBlocked();
+    void runGetContactIDs();
     void runGetContacts();
+    void runGetSaved();
     void runGetStatuses();
     void runGetTopPeers();
-    void runImportCard();
     void runImportContacts();
     void runResetSaved();
     void runResetTopPeerRating();
     void runResolveUsername();
     void runSearch();
+    void runToggleTopPeers();
     void runUnblock();
     // End of generated run methods
 
@@ -84,19 +88,21 @@ protected:
 
     // Generated RPC members
     MTProto::Functions::TLContactsBlock m_block;
+    MTProto::Functions::TLContactsDeleteByPhones m_deleteByPhones;
     MTProto::Functions::TLContactsDeleteContact m_deleteContact;
     MTProto::Functions::TLContactsDeleteContacts m_deleteContacts;
-    MTProto::Functions::TLContactsExportCard m_exportCard;
     MTProto::Functions::TLContactsGetBlocked m_getBlocked;
+    MTProto::Functions::TLContactsGetContactIDs m_getContactIDs;
     MTProto::Functions::TLContactsGetContacts m_getContacts;
+    MTProto::Functions::TLContactsGetSaved m_getSaved;
     MTProto::Functions::TLContactsGetStatuses m_getStatuses;
     MTProto::Functions::TLContactsGetTopPeers m_getTopPeers;
-    MTProto::Functions::TLContactsImportCard m_importCard;
     MTProto::Functions::TLContactsImportContacts m_importContacts;
     MTProto::Functions::TLContactsResetSaved m_resetSaved;
     MTProto::Functions::TLContactsResetTopPeerRating m_resetTopPeerRating;
     MTProto::Functions::TLContactsResolveUsername m_resolveUsername;
     MTProto::Functions::TLContactsSearch m_search;
+    MTProto::Functions::TLContactsToggleTopPeers m_toggleTopPeers;
     MTProto::Functions::TLContactsUnblock m_unblock;
     // End of generated RPC members
 

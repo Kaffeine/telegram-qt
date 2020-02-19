@@ -50,6 +50,7 @@ template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesFeaturedStickers *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesFilter *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesFoundGifs *output);
+template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesFoundStickerSets *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesHighScores *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesMessageEditData *output);
 template bool BaseRpcLayerExtension::processReply(PendingRpcOperation *operation, TLMessagesMessages *output);
@@ -101,6 +102,16 @@ MessagesRpcLayer::PendingChatInvite *MessagesRpcLayer::checkChatInvite(const QSt
     outputStream << TLValue::MessagesCheckChatInvite;
     outputStream << hash;
     PendingChatInvite *op = new PendingChatInvite(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::clearAllDrafts()
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesClearAllDrafts;
+    PendingBool *op = new PendingBool(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
@@ -216,53 +227,51 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editChatTitle(quint32 chatId
     return op;
 }
 
-MessagesRpcLayer::PendingBool *MessagesRpcLayer::editInlineBotMessage(quint32 flags, const TLInputBotInlineMessageID &id, const QString &message, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities, const TLInputGeoPoint &geoPoint)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::editInlineBotMessage(quint32 flags, const TLInputBotInlineMessageID &id, const QString &message, const TLInputMedia &media, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities)
 {
-    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id << message << replyMarkup << entities << geoPoint;
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << id << message << media << replyMarkup << entities;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesEditInlineBotMessage;
     outputStream << flags;
     // (flags & 1 << 1) stands for noWebpage "true" value
-    // (flags & 1 << 12) stands for stopGeoLive "true" value
     outputStream << id;
     if (flags & 1 << 11) {
         outputStream << message;
+    }
+    if (flags & 1 << 14) {
+        outputStream << media;
     }
     if (flags & 1 << 2) {
         outputStream << replyMarkup;
     }
     if (flags & 1 << 3) {
         outputStream << entities;
-    }
-    if (flags & 1 << 13) {
-        outputStream << geoPoint;
     }
     PendingBool *op = new PendingBool(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
 
-MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editMessage(quint32 flags, const TLInputPeer &peer, quint32 id, const QString &message, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities, const TLInputGeoPoint &geoPoint)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::editMessage(quint32 flags, const TLInputPeer &peer, quint32 id, const QString &message, const TLInputMedia &media, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities)
 {
-    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << id << message << replyMarkup << entities << geoPoint;
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << id << message << media << replyMarkup << entities;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesEditMessage;
     outputStream << flags;
     // (flags & 1 << 1) stands for noWebpage "true" value
-    // (flags & 1 << 12) stands for stopGeoLive "true" value
     outputStream << peer;
     outputStream << id;
     if (flags & 1 << 11) {
         outputStream << message;
+    }
+    if (flags & 1 << 14) {
+        outputStream << media;
     }
     if (flags & 1 << 2) {
         outputStream << replyMarkup;
     }
     if (flags & 1 << 3) {
         outputStream << entities;
-    }
-    if (flags & 1 << 13) {
-        outputStream << geoPoint;
     }
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
     processRpcCall(op);
@@ -292,19 +301,6 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::faveSticker(const TLInputDocume
     return op;
 }
 
-MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::forwardMessage(const TLInputPeer &peer, quint32 id, quint64 randomId)
-{
-    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id << randomId;
-    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
-    outputStream << TLValue::MessagesForwardMessage;
-    outputStream << peer;
-    outputStream << id;
-    outputStream << randomId;
-    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
-    processRpcCall(op);
-    return op;
-}
-
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::forwardMessages(quint32 flags, const TLInputPeer &fromPeer, const TLVector<quint32> &id, const TLVector<quint64> &randomId, const TLInputPeer &toPeer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << fromPeer << id << randomId << toPeer;
@@ -314,6 +310,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::forwardMessages(quint32 flag
     // (flags & 1 << 5) stands for silent "true" value
     // (flags & 1 << 6) stands for background "true" value
     // (flags & 1 << 8) stands for withMyScore "true" value
+    // (flags & 1 << 9) stands for grouped "true" value
     outputStream << fromPeer;
     outputStream << id;
     outputStream << randomId;
@@ -433,9 +430,19 @@ MessagesRpcLayer::PendingMessagesDhConfig *MessagesRpcLayer::getDhConfig(quint32
     return op;
 }
 
-MessagesRpcLayer::PendingMessagesDialogs *MessagesRpcLayer::getDialogs(quint32 flags, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit)
+MessagesRpcLayer::PendingDialogPeerVector *MessagesRpcLayer::getDialogUnreadMarks()
 {
-    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << offsetDate << offsetId << offsetPeer << limit;
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesGetDialogUnreadMarks;
+    PendingDialogPeerVector *op = new PendingDialogPeerVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingMessagesDialogs *MessagesRpcLayer::getDialogs(quint32 flags, quint32 offsetDate, quint32 offsetId, const TLInputPeer &offsetPeer, quint32 limit, quint32 hash)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << offsetDate << offsetId << offsetPeer << limit << hash;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetDialogs;
     outputStream << flags;
@@ -444,6 +451,7 @@ MessagesRpcLayer::PendingMessagesDialogs *MessagesRpcLayer::getDialogs(quint32 f
     outputStream << offsetId;
     outputStream << offsetPeer;
     outputStream << limit;
+    outputStream << hash;
     PendingMessagesDialogs *op = new PendingMessagesDialogs(this, outputStream.getData());
     processRpcCall(op);
     return op;
@@ -579,7 +587,7 @@ MessagesRpcLayer::PendingMessagesMessageEditData *MessagesRpcLayer::getMessageEd
     return op;
 }
 
-MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getMessages(const TLVector<quint32> &id)
+MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getMessages(const TLVector<TLInputMessage> &id)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << id;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -603,7 +611,18 @@ MessagesRpcLayer::PendingQuint32Vector *MessagesRpcLayer::getMessagesViews(const
     return op;
 }
 
-MessagesRpcLayer::PendingMessagesPeerDialogs *MessagesRpcLayer::getPeerDialogs(const TLVector<TLInputPeer> &peers)
+MessagesRpcLayer::PendingChatOnlines *MessagesRpcLayer::getOnlines(const TLInputPeer &peer)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesGetOnlines;
+    outputStream << peer;
+    PendingChatOnlines *op = new PendingChatOnlines(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingMessagesPeerDialogs *MessagesRpcLayer::getPeerDialogs(const TLVector<TLInputDialogPeer> &peers)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peers;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -635,13 +654,26 @@ MessagesRpcLayer::PendingMessagesPeerDialogs *MessagesRpcLayer::getPinnedDialogs
     return op;
 }
 
-MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getRecentLocations(const TLInputPeer &peer, quint32 limit)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::getPollResults(const TLInputPeer &peer, quint32 msgId)
 {
-    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << limit;
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << msgId;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesGetPollResults;
+    outputStream << peer;
+    outputStream << msgId;
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::getRecentLocations(const TLInputPeer &peer, quint32 limit, quint32 hash)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << limit << hash;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetRecentLocations;
     outputStream << peer;
     outputStream << limit;
+    outputStream << hash;
     PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
     processRpcCall(op);
     return op;
@@ -671,6 +703,27 @@ MessagesRpcLayer::PendingMessagesSavedGifs *MessagesRpcLayer::getSavedGifs(quint
     return op;
 }
 
+MessagesRpcLayer::PendingMessageRangeVector *MessagesRpcLayer::getSplitRanges()
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesGetSplitRanges;
+    PendingMessageRangeVector *op = new PendingMessageRangeVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingStatsURL *MessagesRpcLayer::getStatsURL(const TLInputPeer &peer)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesGetStatsURL;
+    outputStream << peer;
+    PendingStatsURL *op = new PendingStatsURL(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
 MessagesRpcLayer::PendingMessagesStickerSet *MessagesRpcLayer::getStickerSet(const TLInputStickerSet &stickerset)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << stickerset;
@@ -678,6 +731,18 @@ MessagesRpcLayer::PendingMessagesStickerSet *MessagesRpcLayer::getStickerSet(con
     outputStream << TLValue::MessagesGetStickerSet;
     outputStream << stickerset;
     PendingMessagesStickerSet *op = new PendingMessagesStickerSet(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingMessagesStickers *MessagesRpcLayer::getStickers(const QString &emoticon, quint32 hash)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << emoticon << hash;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesGetStickers;
+    outputStream << emoticon;
+    outputStream << hash;
+    PendingMessagesStickers *op = new PendingMessagesStickers(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
@@ -710,12 +775,16 @@ MessagesRpcLayer::PendingWebPage *MessagesRpcLayer::getWebPage(const QString &ur
     return op;
 }
 
-MessagesRpcLayer::PendingMessageMedia *MessagesRpcLayer::getWebPagePreview(const QString &message)
+MessagesRpcLayer::PendingMessageMedia *MessagesRpcLayer::getWebPagePreview(quint32 flags, const QString &message, const TLVector<TLMessageEntity> &entities)
 {
-    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << message;
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << message << entities;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesGetWebPagePreview;
+    outputStream << flags;
     outputStream << message;
+    if (flags & 1 << 3) {
+        outputStream << entities;
+    }
     PendingMessageMedia *op = new PendingMessageMedia(this, outputStream.getData());
     processRpcCall(op);
     return op;
@@ -751,6 +820,19 @@ MessagesRpcLayer::PendingMessagesStickerSetInstallResult *MessagesRpcLayer::inst
     outputStream << stickerset;
     outputStream << archived;
     PendingMessagesStickerSetInstallResult *op = new PendingMessagesStickerSetInstallResult(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::markDialogUnread(quint32 flags, const TLInputDialogPeer &peer)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesMarkDialogUnread;
+    outputStream << flags;
+    // (flags & 1 << 0) stands for unread "true" value
+    outputStream << peer;
+    PendingBool *op = new PendingBool(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
@@ -845,7 +927,7 @@ MessagesRpcLayer::PendingQuint64Vector *MessagesRpcLayer::receivedQueue(quint32 
     return op;
 }
 
-MessagesRpcLayer::PendingBool *MessagesRpcLayer::reorderPinnedDialogs(quint32 flags, const TLVector<TLInputPeer> &order)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::reorderPinnedDialogs(quint32 flags, const TLVector<TLInputDialogPeer> &order)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << order;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -866,6 +948,19 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::reorderStickerSets(quint32 flag
     outputStream << flags;
     // (flags & 1 << 0) stands for masks "true" value
     outputStream << order;
+    PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::report(const TLInputPeer &peer, const TLVector<quint32> &id, const TLReportReason &reason)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << id << reason;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesReport;
+    outputStream << peer;
+    outputStream << id;
+    outputStream << reason;
     PendingBool *op = new PendingBool(this, outputStream.getData());
     processRpcCall(op);
     return op;
@@ -952,9 +1047,9 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::saveRecentSticker(quint32 flags
     return op;
 }
 
-MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::search(quint32 flags, const TLInputPeer &peer, const QString &q, const TLInputUser &fromId, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId)
+MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::search(quint32 flags, const TLInputPeer &peer, const QString &q, const TLInputUser &fromId, const TLMessagesFilter &filter, quint32 minDate, quint32 maxDate, quint32 offsetId, quint32 addOffset, quint32 limit, quint32 maxId, quint32 minId, quint32 hash)
 {
-    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << q << fromId << filter << minDate << maxDate << offsetId << addOffset << limit << maxId << minId;
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << q << fromId << filter << minDate << maxDate << offsetId << addOffset << limit << maxId << minId << hash;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSearch;
     outputStream << flags;
@@ -971,6 +1066,7 @@ MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::search(quint32 flag
     outputStream << limit;
     outputStream << maxId;
     outputStream << minId;
+    outputStream << hash;
     PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
     processRpcCall(op);
     return op;
@@ -999,6 +1095,20 @@ MessagesRpcLayer::PendingMessagesMessages *MessagesRpcLayer::searchGlobal(const 
     outputStream << offsetId;
     outputStream << limit;
     PendingMessagesMessages *op = new PendingMessagesMessages(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingMessagesFoundStickerSets *MessagesRpcLayer::searchStickerSets(quint32 flags, const QString &q, quint32 hash)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << q << hash;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesSearchStickerSets;
+    outputStream << flags;
+    // (flags & 1 << 0) stands for excludeFeatured "true" value
+    outputStream << q;
+    outputStream << hash;
+    PendingMessagesFoundStickerSets *op = new PendingMessagesFoundStickerSets(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
@@ -1052,6 +1162,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendInlineBotResult(quint32 
     // (flags & 1 << 5) stands for silent "true" value
     // (flags & 1 << 6) stands for background "true" value
     // (flags & 1 << 7) stands for clearDraft "true" value
+    // (flags & 1 << 11) stands for hideVia "true" value
     outputStream << peer;
     if (flags & 1 << 0) {
         outputStream << replyToMsgId;
@@ -1064,9 +1175,9 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendInlineBotResult(quint32 
     return op;
 }
 
-MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMedia(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const TLInputMedia &media, quint64 randomId, const TLReplyMarkup &replyMarkup)
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMedia(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const TLInputMedia &media, const QString &message, quint64 randomId, const TLReplyMarkup &replyMarkup, const TLVector<TLMessageEntity> &entities)
 {
-    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << replyToMsgId << media << randomId << replyMarkup;
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << replyToMsgId << media << message << randomId << replyMarkup << entities;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::MessagesSendMedia;
     outputStream << flags;
@@ -1078,9 +1189,13 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMedia(quint32 flags, con
         outputStream << replyToMsgId;
     }
     outputStream << media;
+    outputStream << message;
     outputStream << randomId;
     if (flags & 1 << 2) {
         outputStream << replyMarkup;
+    }
+    if (flags & 1 << 3) {
+        outputStream << entities;
     }
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
     processRpcCall(op);
@@ -1114,6 +1229,25 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMessage(quint32 flags, c
     return op;
 }
 
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendMultiMedia(quint32 flags, const TLInputPeer &peer, quint32 replyToMsgId, const TLVector<TLInputSingleMedia> &multiMedia)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << replyToMsgId << multiMedia;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesSendMultiMedia;
+    outputStream << flags;
+    // (flags & 1 << 5) stands for silent "true" value
+    // (flags & 1 << 6) stands for background "true" value
+    // (flags & 1 << 7) stands for clearDraft "true" value
+    outputStream << peer;
+    if (flags & 1 << 0) {
+        outputStream << replyToMsgId;
+    }
+    outputStream << multiMedia;
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
 MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendScreenshotNotification(const TLInputPeer &peer, quint32 replyToMsgId, quint64 randomId)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << replyToMsgId << randomId;
@@ -1122,6 +1256,19 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendScreenshotNotification(c
     outputStream << peer;
     outputStream << replyToMsgId;
     outputStream << randomId;
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::sendVote(const TLInputPeer &peer, quint32 msgId, const TLVector<QByteArray> &options)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << msgId << options;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesSendVote;
+    outputStream << peer;
+    outputStream << msgId;
+    outputStream << options;
     PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
     processRpcCall(op);
     return op;
@@ -1286,7 +1433,7 @@ MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::toggleChatAdmins(quint32 cha
     return op;
 }
 
-MessagesRpcLayer::PendingBool *MessagesRpcLayer::toggleDialogPin(quint32 flags, const TLInputPeer &peer)
+MessagesRpcLayer::PendingBool *MessagesRpcLayer::toggleDialogPin(quint32 flags, const TLInputDialogPeer &peer)
 {
     qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
@@ -1306,6 +1453,32 @@ MessagesRpcLayer::PendingBool *MessagesRpcLayer::uninstallStickerSet(const TLInp
     outputStream << TLValue::MessagesUninstallStickerSet;
     outputStream << stickerset;
     PendingBool *op = new PendingBool(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingUpdates *MessagesRpcLayer::updatePinnedMessage(quint32 flags, const TLInputPeer &peer, quint32 id)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << flags << peer << id;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesUpdatePinnedMessage;
+    outputStream << flags;
+    // (flags & 1 << 0) stands for silent "true" value
+    outputStream << peer;
+    outputStream << id;
+    PendingUpdates *op = new PendingUpdates(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
+MessagesRpcLayer::PendingEncryptedFile *MessagesRpcLayer::uploadEncryptedFile(const TLInputEncryptedChat &peer, const TLInputEncryptedFile &file)
+{
+    qCDebug(c_clientRpcMessagesCategory) << Q_FUNC_INFO << peer << file;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::MessagesUploadEncryptedFile;
+    outputStream << peer;
+    outputStream << file;
+    PendingEncryptedFile *op = new PendingEncryptedFile(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
