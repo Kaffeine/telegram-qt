@@ -38,6 +38,7 @@ public:
     bool processGetCdnFile(RpcProcessingContext &context);
     bool processGetCdnFileHashes(RpcProcessingContext &context);
     bool processGetFile(RpcProcessingContext &context);
+    bool processGetFileHashes(RpcProcessingContext &context);
     bool processGetWebFile(RpcProcessingContext &context);
     bool processReuploadCdnFile(RpcProcessingContext &context);
     bool processSaveBigFilePart(RpcProcessingContext &context);
@@ -48,6 +49,7 @@ public:
     void runGetCdnFile();
     void runGetCdnFileHashes();
     void runGetFile();
+    void runGetFileHashes();
     void runGetWebFile();
     void runReuploadCdnFile();
     void runSaveBigFilePart();
@@ -69,6 +71,7 @@ protected:
     MTProto::Functions::TLUploadGetCdnFile m_getCdnFile;
     MTProto::Functions::TLUploadGetCdnFileHashes m_getCdnFileHashes;
     MTProto::Functions::TLUploadGetFile m_getFile;
+    MTProto::Functions::TLUploadGetFileHashes m_getFileHashes;
     MTProto::Functions::TLUploadGetWebFile m_getWebFile;
     MTProto::Functions::TLUploadReuploadCdnFile m_reuploadCdnFile;
     MTProto::Functions::TLUploadSaveBigFilePart m_saveBigFilePart;

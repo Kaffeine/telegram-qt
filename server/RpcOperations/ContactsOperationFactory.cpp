@@ -48,6 +48,13 @@ bool ContactsRpcOperation::processBlock(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool ContactsRpcOperation::processDeleteByPhones(RpcProcessingContext &context)
+{
+    setRunMethod(&ContactsRpcOperation::runDeleteByPhones);
+    context.inputStream() >> m_deleteByPhones;
+    return !context.inputStream().error();
+}
+
 bool ContactsRpcOperation::processDeleteContact(RpcProcessingContext &context)
 {
     setRunMethod(&ContactsRpcOperation::runDeleteContact);
@@ -62,13 +69,6 @@ bool ContactsRpcOperation::processDeleteContacts(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool ContactsRpcOperation::processExportCard(RpcProcessingContext &context)
-{
-    setRunMethod(&ContactsRpcOperation::runExportCard);
-    context.inputStream() >> m_exportCard;
-    return !context.inputStream().error();
-}
-
 bool ContactsRpcOperation::processGetBlocked(RpcProcessingContext &context)
 {
     setRunMethod(&ContactsRpcOperation::runGetBlocked);
@@ -76,10 +76,24 @@ bool ContactsRpcOperation::processGetBlocked(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool ContactsRpcOperation::processGetContactIDs(RpcProcessingContext &context)
+{
+    setRunMethod(&ContactsRpcOperation::runGetContactIDs);
+    context.inputStream() >> m_getContactIDs;
+    return !context.inputStream().error();
+}
+
 bool ContactsRpcOperation::processGetContacts(RpcProcessingContext &context)
 {
     setRunMethod(&ContactsRpcOperation::runGetContacts);
     context.inputStream() >> m_getContacts;
+    return !context.inputStream().error();
+}
+
+bool ContactsRpcOperation::processGetSaved(RpcProcessingContext &context)
+{
+    setRunMethod(&ContactsRpcOperation::runGetSaved);
+    context.inputStream() >> m_getSaved;
     return !context.inputStream().error();
 }
 
@@ -94,13 +108,6 @@ bool ContactsRpcOperation::processGetTopPeers(RpcProcessingContext &context)
 {
     setRunMethod(&ContactsRpcOperation::runGetTopPeers);
     context.inputStream() >> m_getTopPeers;
-    return !context.inputStream().error();
-}
-
-bool ContactsRpcOperation::processImportCard(RpcProcessingContext &context)
-{
-    setRunMethod(&ContactsRpcOperation::runImportCard);
-    context.inputStream() >> m_importCard;
     return !context.inputStream().error();
 }
 
@@ -139,6 +146,13 @@ bool ContactsRpcOperation::processSearch(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool ContactsRpcOperation::processToggleTopPeers(RpcProcessingContext &context)
+{
+    setRunMethod(&ContactsRpcOperation::runToggleTopPeers);
+    context.inputStream() >> m_toggleTopPeers;
+    return !context.inputStream().error();
+}
+
 bool ContactsRpcOperation::processUnblock(RpcProcessingContext &context)
 {
     setRunMethod(&ContactsRpcOperation::runUnblock);
@@ -152,6 +166,16 @@ void ContactsRpcOperation::runBlock()
 {
     // MTProto::Functions::TLContactsBlock &arguments = m_block;
     if (processNotImplementedMethod(TLValue::ContactsBlock)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void ContactsRpcOperation::runDeleteByPhones()
+{
+    // MTProto::Functions::TLContactsDeleteByPhones &arguments = m_deleteByPhones;
+    if (processNotImplementedMethod(TLValue::ContactsDeleteByPhones)) {
         return;
     }
     bool result;
@@ -175,15 +199,6 @@ void ContactsRpcOperation::runDeleteContacts()
     sendRpcReply(result);
 }
 
-void ContactsRpcOperation::runExportCard()
-{
-    if (processNotImplementedMethod(TLValue::ContactsExportCard)) {
-        return;
-    }
-    QVector<quint32> result;
-    sendRpcReply(result);
-}
-
 void ContactsRpcOperation::runGetBlocked()
 {
     // MTProto::Functions::TLContactsGetBlocked &arguments = m_getBlocked;
@@ -191,6 +206,16 @@ void ContactsRpcOperation::runGetBlocked()
         return;
     }
     TLContactsBlocked result;
+    sendRpcReply(result);
+}
+
+void ContactsRpcOperation::runGetContactIDs()
+{
+    // MTProto::Functions::TLContactsGetContactIDs &arguments = m_getContactIDs;
+    if (processNotImplementedMethod(TLValue::ContactsGetContactIDs)) {
+        return;
+    }
+    QVector<quint32> result;
     sendRpcReply(result);
 }
 
@@ -224,6 +249,15 @@ void ContactsRpcOperation::runGetContacts()
     sendRpcReply(result);
 }
 
+void ContactsRpcOperation::runGetSaved()
+{
+    if (processNotImplementedMethod(TLValue::ContactsGetSaved)) {
+        return;
+    }
+    QVector<TLSavedContact> result;
+    sendRpcReply(result);
+}
+
 void ContactsRpcOperation::runGetStatuses()
 {
     if (processNotImplementedMethod(TLValue::ContactsGetStatuses)) {
@@ -240,16 +274,6 @@ void ContactsRpcOperation::runGetTopPeers()
         return;
     }
     TLContactsTopPeers result;
-    sendRpcReply(result);
-}
-
-void ContactsRpcOperation::runImportCard()
-{
-    // MTProto::Functions::TLContactsImportCard &arguments = m_importCard;
-    if (processNotImplementedMethod(TLValue::ContactsImportCard)) {
-        return;
-    }
-    TLUser result;
     sendRpcReply(result);
 }
 
@@ -323,6 +347,16 @@ void ContactsRpcOperation::runSearch()
     op->connectToFinished(this, &ContactsRpcOperation::onContactsSearchFinished);
 }
 
+void ContactsRpcOperation::runToggleTopPeers()
+{
+    // MTProto::Functions::TLContactsToggleTopPeers &arguments = m_toggleTopPeers;
+    if (processNotImplementedMethod(TLValue::ContactsToggleTopPeers)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
 void ContactsRpcOperation::runUnblock()
 {
     // MTProto::Functions::TLContactsUnblock &arguments = m_unblock;
@@ -364,22 +398,24 @@ ContactsRpcOperation::ProcessingMethod ContactsRpcOperation::getMethodForRpcFunc
     // Generated methodForRpcFunction cases
     case TLValue::ContactsBlock:
         return &ContactsRpcOperation::processBlock;
+    case TLValue::ContactsDeleteByPhones:
+        return &ContactsRpcOperation::processDeleteByPhones;
     case TLValue::ContactsDeleteContact:
         return &ContactsRpcOperation::processDeleteContact;
     case TLValue::ContactsDeleteContacts:
         return &ContactsRpcOperation::processDeleteContacts;
-    case TLValue::ContactsExportCard:
-        return &ContactsRpcOperation::processExportCard;
     case TLValue::ContactsGetBlocked:
         return &ContactsRpcOperation::processGetBlocked;
+    case TLValue::ContactsGetContactIDs:
+        return &ContactsRpcOperation::processGetContactIDs;
     case TLValue::ContactsGetContacts:
         return &ContactsRpcOperation::processGetContacts;
+    case TLValue::ContactsGetSaved:
+        return &ContactsRpcOperation::processGetSaved;
     case TLValue::ContactsGetStatuses:
         return &ContactsRpcOperation::processGetStatuses;
     case TLValue::ContactsGetTopPeers:
         return &ContactsRpcOperation::processGetTopPeers;
-    case TLValue::ContactsImportCard:
-        return &ContactsRpcOperation::processImportCard;
     case TLValue::ContactsImportContacts:
         return &ContactsRpcOperation::processImportContacts;
     case TLValue::ContactsResetSaved:
@@ -390,6 +426,8 @@ ContactsRpcOperation::ProcessingMethod ContactsRpcOperation::getMethodForRpcFunc
         return &ContactsRpcOperation::processResolveUsername;
     case TLValue::ContactsSearch:
         return &ContactsRpcOperation::processSearch;
+    case TLValue::ContactsToggleTopPeers:
+        return &ContactsRpcOperation::processToggleTopPeers;
     case TLValue::ContactsUnblock:
         return &ContactsRpcOperation::processUnblock;
     // End of generated methodForRpcFunction cases

@@ -52,6 +52,7 @@ public:
     bool processGetAdminedPublicChannels(RpcProcessingContext &context);
     bool processGetChannels(RpcProcessingContext &context);
     bool processGetFullChannel(RpcProcessingContext &context);
+    bool processGetLeftChannels(RpcProcessingContext &context);
     bool processGetMessages(RpcProcessingContext &context);
     bool processGetParticipant(RpcProcessingContext &context);
     bool processGetParticipants(RpcProcessingContext &context);
@@ -65,7 +66,6 @@ public:
     bool processToggleInvites(RpcProcessingContext &context);
     bool processTogglePreHistoryHidden(RpcProcessingContext &context);
     bool processToggleSignatures(RpcProcessingContext &context);
-    bool processUpdatePinnedMessage(RpcProcessingContext &context);
     bool processUpdateUsername(RpcProcessingContext &context);
     // End of generated process methods
 
@@ -87,6 +87,7 @@ public:
     void runGetAdminedPublicChannels();
     void runGetChannels();
     void runGetFullChannel();
+    void runGetLeftChannels();
     void runGetMessages();
     void runGetParticipant();
     void runGetParticipants();
@@ -100,7 +101,6 @@ public:
     void runToggleInvites();
     void runTogglePreHistoryHidden();
     void runToggleSignatures();
-    void runUpdatePinnedMessage();
     void runUpdateUsername();
     // End of generated run methods
 
@@ -133,6 +133,7 @@ protected:
     MTProto::Functions::TLChannelsGetAdminedPublicChannels m_getAdminedPublicChannels;
     MTProto::Functions::TLChannelsGetChannels m_getChannels;
     MTProto::Functions::TLChannelsGetFullChannel m_getFullChannel;
+    MTProto::Functions::TLChannelsGetLeftChannels m_getLeftChannels;
     MTProto::Functions::TLChannelsGetMessages m_getMessages;
     MTProto::Functions::TLChannelsGetParticipant m_getParticipant;
     MTProto::Functions::TLChannelsGetParticipants m_getParticipants;
@@ -146,7 +147,6 @@ protected:
     MTProto::Functions::TLChannelsToggleInvites m_toggleInvites;
     MTProto::Functions::TLChannelsTogglePreHistoryHidden m_togglePreHistoryHidden;
     MTProto::Functions::TLChannelsToggleSignatures m_toggleSignatures;
-    MTProto::Functions::TLChannelsUpdatePinnedMessage m_updatePinnedMessage;
     MTProto::Functions::TLChannelsUpdateUsername m_updateUsername;
     // End of generated RPC members
 };

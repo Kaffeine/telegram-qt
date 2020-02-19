@@ -38,7 +38,6 @@ public:
     bool processBindTempAuthKey(RpcProcessingContext &context);
     bool processCancelCode(RpcProcessingContext &context);
     bool processCheckPassword(RpcProcessingContext &context);
-    bool processCheckPhone(RpcProcessingContext &context);
     bool processDropTempAuthKeys(RpcProcessingContext &context);
     bool processExportAuthorization(RpcProcessingContext &context);
     bool processImportAuthorization(RpcProcessingContext &context);
@@ -49,7 +48,6 @@ public:
     bool processResendCode(RpcProcessingContext &context);
     bool processResetAuthorizations(RpcProcessingContext &context);
     bool processSendCode(RpcProcessingContext &context);
-    bool processSendInvites(RpcProcessingContext &context);
     bool processSignIn(RpcProcessingContext &context);
     bool processSignUp(RpcProcessingContext &context);
     // End of generated process methods
@@ -58,7 +56,6 @@ public:
     void runBindTempAuthKey();
     void runCancelCode();
     void runCheckPassword();
-    void runCheckPhone();
     void runDropTempAuthKeys();
     void runExportAuthorization();
     void runImportAuthorization();
@@ -69,7 +66,6 @@ public:
     void runResendCode();
     void runResetAuthorizations();
     void runSendCode();
-    void runSendInvites();
     void runSignIn();
     void runSignUp();
     // End of generated run methods
@@ -95,7 +91,6 @@ protected:
     MTProto::Functions::TLAuthBindTempAuthKey m_bindTempAuthKey;
     MTProto::Functions::TLAuthCancelCode m_cancelCode;
     MTProto::Functions::TLAuthCheckPassword m_checkPassword;
-    MTProto::Functions::TLAuthCheckPhone m_checkPhone;
     MTProto::Functions::TLAuthDropTempAuthKeys m_dropTempAuthKeys;
     MTProto::Functions::TLAuthExportAuthorization m_exportAuthorization;
     MTProto::Functions::TLAuthImportAuthorization m_importAuthorization;
@@ -106,7 +101,6 @@ protected:
     MTProto::Functions::TLAuthResendCode m_resendCode;
     MTProto::Functions::TLAuthResetAuthorizations m_resetAuthorizations;
     MTProto::Functions::TLAuthSendCode m_sendCode;
-    MTProto::Functions::TLAuthSendInvites m_sendInvites;
     MTProto::Functions::TLAuthSignIn m_signIn;
     MTProto::Functions::TLAuthSignUp m_signUp;
     // End of generated RPC members

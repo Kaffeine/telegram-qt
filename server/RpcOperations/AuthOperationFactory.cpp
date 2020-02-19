@@ -51,13 +51,6 @@ bool AuthRpcOperation::processCheckPassword(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool AuthRpcOperation::processCheckPhone(RpcProcessingContext &context)
-{
-    setRunMethod(&AuthRpcOperation::runCheckPhone);
-    context.inputStream() >> m_checkPhone;
-    return !context.inputStream().error();
-}
-
 bool AuthRpcOperation::processDropTempAuthKeys(RpcProcessingContext &context)
 {
     setRunMethod(&AuthRpcOperation::runDropTempAuthKeys);
@@ -128,13 +121,6 @@ bool AuthRpcOperation::processSendCode(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool AuthRpcOperation::processSendInvites(RpcProcessingContext &context)
-{
-    setRunMethod(&AuthRpcOperation::runSendInvites);
-    context.inputStream() >> m_sendInvites;
-    return !context.inputStream().error();
-}
-
 bool AuthRpcOperation::processSignIn(RpcProcessingContext &context)
 {
     setRunMethod(&AuthRpcOperation::runSignIn);
@@ -190,21 +176,6 @@ void AuthRpcOperation::runCheckPassword()
     TLAuthAuthorization result;
     qCDebug(c_serverAuthRpcCategory) << "Result type:" << result.tlType;
     Utils::setupTLUser(&result.user, user, user);
-    sendRpcReply(result);
-}
-
-void AuthRpcOperation::runCheckPhone()
-{
-    MTProto::Functions::TLAuthCheckPhone &arguments = m_checkPhone;
-    arguments.phoneNumber = api()->normalizeIdentifier(arguments.phoneNumber);
-
-    if (!api()->identifierIsValid(arguments.phoneNumber)) {
-        sendRpcError(RpcError::PhoneNumberInvalid);
-        return;
-    }
-    PhoneStatus status = api()->getPhoneStatus(arguments.phoneNumber);
-    TLAuthCheckedPhone result;
-    result.phoneRegistered = status.exists();
     sendRpcReply(result);
 }
 
@@ -380,16 +351,6 @@ void AuthRpcOperation::runSendCode()
     sendRpcReply(result);
 }
 
-void AuthRpcOperation::runSendInvites()
-{
-    // MTProto::Functions::TLAuthSendInvites &arguments = m_sendInvites;
-    if (processNotImplementedMethod(TLValue::AuthSendInvites)) {
-        return;
-    }
-    bool result;
-    sendRpcReply(result);
-}
-
 void AuthRpcOperation::runSignIn()
 {
     qCDebug(c_serverAuthRpcCategory) << Q_FUNC_INFO;
@@ -514,8 +475,6 @@ AuthRpcOperation::ProcessingMethod AuthRpcOperation::getMethodForRpcFunction(TLV
         return &AuthRpcOperation::processCancelCode;
     case TLValue::AuthCheckPassword:
         return &AuthRpcOperation::processCheckPassword;
-    case TLValue::AuthCheckPhone:
-        return &AuthRpcOperation::processCheckPhone;
     case TLValue::AuthDropTempAuthKeys:
         return &AuthRpcOperation::processDropTempAuthKeys;
     case TLValue::AuthExportAuthorization:
@@ -536,8 +495,6 @@ AuthRpcOperation::ProcessingMethod AuthRpcOperation::getMethodForRpcFunction(TLV
         return &AuthRpcOperation::processResetAuthorizations;
     case TLValue::AuthSendCode:
         return &AuthRpcOperation::processSendCode;
-    case TLValue::AuthSendInvites:
-        return &AuthRpcOperation::processSendInvites;
     case TLValue::AuthSignIn:
         return &AuthRpcOperation::processSignIn;
     case TLValue::AuthSignUp:

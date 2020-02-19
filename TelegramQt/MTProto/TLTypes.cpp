@@ -42,91 +42,52 @@ bool TLAccountDaysTTL::operator==(const TLAccountDaysTTL &v) const
     }
 }
 
-bool TLAccountPassword::hasType(const quint32 value)
+bool TLAccountSentEmailCode::hasType(const quint32 value)
 {
     switch (value) {
-    case TLValue::AccountNoPassword:
-    case TLValue::AccountPassword:
+    case TLValue::AccountSentEmailCode:
         return true;
     default:
         return false;
     }
 }
 
-bool TLAccountPassword::operator==(const TLAccountPassword &v) const
+bool TLAccountSentEmailCode::operator==(const TLAccountSentEmailCode &v) const
 {
     if (tlType != v.tlType) {
         return false;
     }
 
     switch (tlType) {
-    case TLValue::AccountNoPassword:
+    case TLValue::AccountSentEmailCode:
         return true
-                && newSalt == v.newSalt
-                && emailUnconfirmedPattern == v.emailUnconfirmedPattern
-                ;
-    case TLValue::AccountPassword:
-        return true
-                && currentSalt == v.currentSalt
-                && newSalt == v.newSalt
-                && hint == v.hint
-                && hasRecovery == v.hasRecovery
-                && emailUnconfirmedPattern == v.emailUnconfirmedPattern
+                && emailPattern == v.emailPattern
+                && length == v.length
                 ;
     default:
         return false;
     }
 }
 
-bool TLAccountPasswordInputSettings::hasType(const quint32 value)
+bool TLAccountTakeout::hasType(const quint32 value)
 {
     switch (value) {
-    case TLValue::AccountPasswordInputSettings:
+    case TLValue::AccountTakeout:
         return true;
     default:
         return false;
     }
 }
 
-bool TLAccountPasswordInputSettings::operator==(const TLAccountPasswordInputSettings &v) const
+bool TLAccountTakeout::operator==(const TLAccountTakeout &v) const
 {
     if (tlType != v.tlType) {
         return false;
     }
 
     switch (tlType) {
-    case TLValue::AccountPasswordInputSettings:
-        return true
-                && flags == v.flags
-                && newSalt == v.newSalt
-                && newPasswordHash == v.newPasswordHash
-                && hint == v.hint
-                && email == v.email
-                ;
-    default:
-        return false;
-    }
-}
-
-bool TLAccountPasswordSettings::hasType(const quint32 value)
-{
-    switch (value) {
-    case TLValue::AccountPasswordSettings:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool TLAccountPasswordSettings::operator==(const TLAccountPasswordSettings &v) const
-{
-    if (tlType != v.tlType) {
-        return false;
-    }
-
-    switch (tlType) {
-    case TLValue::AccountPasswordSettings:
-        return email == v.email;
+    case TLValue::AccountTakeout:
+        return id == v.id;
     default:
         return false;
     }
@@ -293,44 +254,6 @@ bool TLAuthSentCodeType::operator==(const TLAuthSentCodeType &v) const
     }
 }
 
-bool TLAuthorization::hasType(const quint32 value)
-{
-    switch (value) {
-    case TLValue::Authorization:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool TLAuthorization::operator==(const TLAuthorization &v) const
-{
-    if (tlType != v.tlType) {
-        return false;
-    }
-
-    switch (tlType) {
-    case TLValue::Authorization:
-        return true
-                && hash == v.hash
-                && flags == v.flags
-                && deviceModel == v.deviceModel
-                && platform == v.platform
-                && systemVersion == v.systemVersion
-                && apiId == v.apiId
-                && appName == v.appName
-                && appVersion == v.appVersion
-                && dateCreated == v.dateCreated
-                && dateActive == v.dateActive
-                && ip == v.ip
-                && country == v.country
-                && region == v.region
-                ;
-    default:
-        return false;
-    }
-}
-
 bool TLBadMsgNotification::hasType(const quint32 value)
 {
     switch (value) {
@@ -422,34 +345,6 @@ bool TLBotInfo::operator==(const TLBotInfo &v) const
     }
 }
 
-bool TLCdnFileHash::hasType(const quint32 value)
-{
-    switch (value) {
-    case TLValue::CdnFileHash:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool TLCdnFileHash::operator==(const TLCdnFileHash &v) const
-{
-    if (tlType != v.tlType) {
-        return false;
-    }
-
-    switch (tlType) {
-    case TLValue::CdnFileHash:
-        return true
-                && offset == v.offset
-                && limit == v.limit
-                && hash == v.hash
-                ;
-    default:
-        return false;
-    }
-}
-
 bool TLCdnPublicKey::hasType(const quint32 value)
 {
     switch (value) {
@@ -507,6 +402,30 @@ bool TLChannelParticipantsFilter::operator==(const TLChannelParticipantsFilter &
     case TLValue::ChannelParticipantsBanned:
     case TLValue::ChannelParticipantsSearch:
         return q == v.q;
+    default:
+        return false;
+    }
+}
+
+bool TLChatOnlines::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::ChatOnlines:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLChatOnlines::operator==(const TLChatOnlines &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::ChatOnlines:
+        return onlines == v.onlines;
     default:
         return false;
     }
@@ -771,33 +690,6 @@ bool TLDestroySessionRes::operator==(const TLDestroySessionRes &v) const
     }
 }
 
-bool TLDisabledFeature::hasType(const quint32 value)
-{
-    switch (value) {
-    case TLValue::DisabledFeature:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool TLDisabledFeature::operator==(const TLDisabledFeature &v) const
-{
-    if (tlType != v.tlType) {
-        return false;
-    }
-
-    switch (tlType) {
-    case TLValue::DisabledFeature:
-        return true
-                && feature == v.feature
-                && description == v.description
-                ;
-    default:
-        return false;
-    }
-}
-
 bool TLEncryptedChat::hasType(const quint32 value)
 {
     switch (value) {
@@ -997,7 +889,38 @@ bool TLExportedMessageLink::operator==(const TLExportedMessageLink &v) const
 
     switch (tlType) {
     case TLValue::ExportedMessageLink:
-        return link == v.link;
+        return true
+                && link == v.link
+                && html == v.html
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLFileHash::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::FileHash:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLFileHash::operator==(const TLFileHash &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::FileHash:
+        return true
+                && offset == v.offset
+                && limit == v.limit
+                && hash == v.hash
+                ;
     default:
         return false;
     }
@@ -1033,6 +956,7 @@ bool TLFileLocation::operator==(const TLFileLocation &v) const
                 && volumeId == v.volumeId
                 && localId == v.localId
                 && secret == v.secret
+                && fileReference == v.fileReference
                 ;
     default:
         return false;
@@ -1119,39 +1043,8 @@ bool TLGeoPoint::operator==(const TLGeoPoint &v) const
         return true
                 && longitude == v.longitude
                 && latitude == v.latitude
+                && accessHash == v.accessHash
                 ;
-    default:
-        return false;
-    }
-}
-
-bool TLHelpAppUpdate::hasType(const quint32 value)
-{
-    switch (value) {
-    case TLValue::HelpAppUpdate:
-    case TLValue::HelpNoAppUpdate:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool TLHelpAppUpdate::operator==(const TLHelpAppUpdate &v) const
-{
-    if (tlType != v.tlType) {
-        return false;
-    }
-
-    switch (tlType) {
-    case TLValue::HelpAppUpdate:
-        return true
-                && id == v.id
-                && critical == v.critical
-                && url == v.url
-                && text == v.text
-                ;
-    case TLValue::HelpNoAppUpdate:
-        return true;
     default:
         return false;
     }
@@ -1181,25 +1074,55 @@ bool TLHelpInviteText::operator==(const TLHelpInviteText &v) const
     }
 }
 
-bool TLHelpTermsOfService::hasType(const quint32 value)
+bool TLHelpPassportConfig::hasType(const quint32 value)
 {
     switch (value) {
-    case TLValue::HelpTermsOfService:
+    case TLValue::HelpPassportConfigNotModified:
+    case TLValue::HelpPassportConfig:
         return true;
     default:
         return false;
     }
 }
 
-bool TLHelpTermsOfService::operator==(const TLHelpTermsOfService &v) const
+bool TLHelpPassportConfig::operator==(const TLHelpPassportConfig &v) const
 {
     if (tlType != v.tlType) {
         return false;
     }
 
     switch (tlType) {
-    case TLValue::HelpTermsOfService:
-        return text == v.text;
+    case TLValue::HelpPassportConfigNotModified:
+        return true;
+    case TLValue::HelpPassportConfig:
+        return true
+                && hash == v.hash
+                && countriesLangs == v.countriesLangs
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpSupportName::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::HelpSupportName:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpSupportName::operator==(const TLHelpSupportName &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::HelpSupportName:
+        return name == v.name;
     default:
         return false;
     }
@@ -1402,6 +1325,64 @@ bool TLInputChannel::operator==(const TLInputChannel &v) const
     }
 }
 
+bool TLInputCheckPasswordSRP::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::InputCheckPasswordEmpty:
+    case TLValue::InputCheckPasswordSRP:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLInputCheckPasswordSRP::operator==(const TLInputCheckPasswordSRP &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::InputCheckPasswordEmpty:
+        return true;
+    case TLValue::InputCheckPasswordSRP:
+        return true
+                && srpId == v.srpId
+                && A == v.A
+                && M1 == v.M1
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLInputClientProxy::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::InputClientProxy:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLInputClientProxy::operator==(const TLInputClientProxy &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::InputClientProxy:
+        return true
+                && address == v.address
+                && port == v.port
+                ;
+    default:
+        return false;
+    }
+}
+
 bool TLInputContact::hasType(const quint32 value)
 {
     switch (value) {
@@ -1455,6 +1436,7 @@ bool TLInputDocument::operator==(const TLInputDocument &v) const
         return true
                 && id == v.id
                 && accessHash == v.accessHash
+                && fileReference == v.fileReference
                 ;
     default:
         return false;
@@ -1575,6 +1557,8 @@ bool TLInputFileLocation::hasType(const quint32 value)
     case TLValue::InputFileLocation:
     case TLValue::InputEncryptedFileLocation:
     case TLValue::InputDocumentFileLocation:
+    case TLValue::InputSecureFileLocation:
+    case TLValue::InputTakeoutFileLocation:
         return true;
     default:
         return false;
@@ -1593,8 +1577,10 @@ bool TLInputFileLocation::operator==(const TLInputFileLocation &v) const
                 && volumeId == v.volumeId
                 && localId == v.localId
                 && secret == v.secret
+                && fileReference == v.fileReference
                 ;
     case TLValue::InputEncryptedFileLocation:
+    case TLValue::InputSecureFileLocation:
         return true
                 && id == v.id
                 && accessHash == v.accessHash
@@ -1603,8 +1589,10 @@ bool TLInputFileLocation::operator==(const TLInputFileLocation &v) const
         return true
                 && id == v.id
                 && accessHash == v.accessHash
-                && version == v.version
+                && fileReference == v.fileReference
                 ;
+    case TLValue::InputTakeoutFileLocation:
+        return true;
     default:
         return false;
     }
@@ -1635,6 +1623,35 @@ bool TLInputGeoPoint::operator==(const TLInputGeoPoint &v) const
                 && latitude == v.latitude
                 && longitude == v.longitude
                 ;
+    default:
+        return false;
+    }
+}
+
+bool TLInputMessage::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::InputMessageID:
+    case TLValue::InputMessageReplyTo:
+    case TLValue::InputMessagePinned:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLInputMessage::operator==(const TLInputMessage &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::InputMessageID:
+    case TLValue::InputMessageReplyTo:
+        return id == v.id;
+    case TLValue::InputMessagePinned:
+        return true;
     default:
         return false;
     }
@@ -1681,27 +1698,31 @@ bool TLInputPeer::operator==(const TLInputPeer &v) const
     }
 }
 
-bool TLInputPeerNotifyEvents::hasType(const quint32 value)
+bool TLInputPeerNotifySettings::hasType(const quint32 value)
 {
     switch (value) {
-    case TLValue::InputPeerNotifyEventsEmpty:
-    case TLValue::InputPeerNotifyEventsAll:
+    case TLValue::InputPeerNotifySettings:
         return true;
     default:
         return false;
     }
 }
 
-bool TLInputPeerNotifyEvents::operator==(const TLInputPeerNotifyEvents &v) const
+bool TLInputPeerNotifySettings::operator==(const TLInputPeerNotifySettings &v) const
 {
     if (tlType != v.tlType) {
         return false;
     }
 
     switch (tlType) {
-    case TLValue::InputPeerNotifyEventsEmpty:
-    case TLValue::InputPeerNotifyEventsAll:
-        return true;
+    case TLValue::InputPeerNotifySettings:
+        return true
+                && flags == v.flags
+                && showPreviews == v.showPreviews
+                && silent == v.silent
+                && muteUntil == v.muteUntil
+                && sound == v.sound
+                ;
     default:
         return false;
     }
@@ -1758,6 +1779,7 @@ bool TLInputPhoto::operator==(const TLInputPhoto &v) const
         return true
                 && id == v.id
                 && accessHash == v.accessHash
+                && fileReference == v.fileReference
                 ;
     default:
         return false;
@@ -1770,6 +1792,7 @@ bool TLInputPrivacyKey::hasType(const quint32 value)
     case TLValue::InputPrivacyKeyStatusTimestamp:
     case TLValue::InputPrivacyKeyChatInvite:
     case TLValue::InputPrivacyKeyPhoneCall:
+    case TLValue::InputPrivacyKeyPhoneP2P:
         return true;
     default:
         return false;
@@ -1786,7 +1809,44 @@ bool TLInputPrivacyKey::operator==(const TLInputPrivacyKey &v) const
     case TLValue::InputPrivacyKeyStatusTimestamp:
     case TLValue::InputPrivacyKeyChatInvite:
     case TLValue::InputPrivacyKeyPhoneCall:
+    case TLValue::InputPrivacyKeyPhoneP2P:
         return true;
+    default:
+        return false;
+    }
+}
+
+bool TLInputSecureFile::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::InputSecureFileUploaded:
+    case TLValue::InputSecureFile:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLInputSecureFile::operator==(const TLInputSecureFile &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::InputSecureFileUploaded:
+        return true
+                && id == v.id
+                && parts == v.parts
+                && md5Checksum == v.md5Checksum
+                && fileHash == v.fileHash
+                && secret == v.secret
+                ;
+    case TLValue::InputSecureFile:
+        return true
+                && id == v.id
+                && accessHash == v.accessHash
+                ;
     default:
         return false;
     }
@@ -1888,6 +1948,7 @@ bool TLInputWebFileLocation::hasType(const quint32 value)
 {
     switch (value) {
     case TLValue::InputWebFileLocation:
+    case TLValue::InputWebFileGeoPointLocation:
         return true;
     default:
         return false;
@@ -1906,6 +1967,15 @@ bool TLInputWebFileLocation::operator==(const TLInputWebFileLocation &v) const
                 && url == v.url
                 && accessHash == v.accessHash
                 ;
+    case TLValue::InputWebFileGeoPointLocation:
+        return true
+                && geoPoint == v.geoPoint
+                && accessHash == v.accessHash
+                && w == v.w
+                && h == v.h
+                && zoom == v.zoom
+                && scale == v.scale
+                ;
     default:
         return false;
     }
@@ -1915,6 +1985,7 @@ bool TLIpPort::hasType(const quint32 value)
 {
     switch (value) {
     case TLValue::IpPort:
+    case TLValue::IpPortSecret:
         return true;
     default:
         return false;
@@ -1933,6 +2004,78 @@ bool TLIpPort::operator==(const TLIpPort &v) const
                 && ipv4 == v.ipv4
                 && port == v.port
                 ;
+    case TLValue::IpPortSecret:
+        return true
+                && ipv4 == v.ipv4
+                && port == v.port
+                && secret == v.secret
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLJSONObjectValue::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::JsonObjectValue:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLJSONObjectValue::operator==(const TLJSONObjectValue &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::JsonObjectValue:
+        return true
+                && key == v.key
+                && value == v.value
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLJSONValue::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::JsonNull:
+    case TLValue::JsonBool:
+    case TLValue::JsonNumber:
+    case TLValue::JsonString:
+    case TLValue::JsonArray:
+    case TLValue::JsonObject:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLJSONValue::operator==(const TLJSONValue &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::JsonNull:
+        return true;
+    case TLValue::JsonBool:
+        return boolValue == v.boolValue;
+    case TLValue::JsonNumber:
+        return doubleValue == v.doubleValue;
+    case TLValue::JsonString:
+        return stringValue == v.stringValue;
+    case TLValue::JsonArray:
+        return jSONValueVector == v.jSONValueVector;
+    case TLValue::JsonObject:
+        return jSONObjectValueVector == v.jSONObjectValueVector;
     default:
         return false;
     }
@@ -1959,34 +2102,6 @@ bool TLLabeledPrice::operator==(const TLLabeledPrice &v) const
         return true
                 && label == v.label
                 && amount == v.amount
-                ;
-    default:
-        return false;
-    }
-}
-
-bool TLLangPackLanguage::hasType(const quint32 value)
-{
-    switch (value) {
-    case TLValue::LangPackLanguage:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool TLLangPackLanguage::operator==(const TLLangPackLanguage &v) const
-{
-    if (tlType != v.tlType) {
-        return false;
-    }
-
-    switch (tlType) {
-    case TLValue::LangPackLanguage:
-        return true
-                && name == v.name
-                && nativeName == v.nativeName
-                && langCode == v.langCode
                 ;
     default:
         return false;
@@ -2080,6 +2195,8 @@ bool TLMessageEntity::hasType(const quint32 value)
     case TLValue::MessageEntityTextUrl:
     case TLValue::MessageEntityMentionName:
     case TLValue::InputMessageEntityMentionName:
+    case TLValue::MessageEntityPhone:
+    case TLValue::MessageEntityCashtag:
         return true;
     default:
         return false;
@@ -2102,6 +2219,8 @@ bool TLMessageEntity::operator==(const TLMessageEntity &v) const
     case TLValue::MessageEntityBold:
     case TLValue::MessageEntityItalic:
     case TLValue::MessageEntityCode:
+    case TLValue::MessageEntityPhone:
+    case TLValue::MessageEntityCashtag:
         return true
                 && offset == v.offset
                 && length == v.length
@@ -2129,37 +2248,6 @@ bool TLMessageEntity::operator==(const TLMessageEntity &v) const
                 && offset == v.offset
                 && length == v.length
                 && inputUserUserId == v.inputUserUserId
-                ;
-    default:
-        return false;
-    }
-}
-
-bool TLMessageFwdHeader::hasType(const quint32 value)
-{
-    switch (value) {
-    case TLValue::MessageFwdHeader:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool TLMessageFwdHeader::operator==(const TLMessageFwdHeader &v) const
-{
-    if (tlType != v.tlType) {
-        return false;
-    }
-
-    switch (tlType) {
-    case TLValue::MessageFwdHeader:
-        return true
-                && flags == v.flags
-                && fromId == v.fromId
-                && date == v.date
-                && channelId == v.channelId
-                && channelPost == v.channelPost
-                && postAuthor == v.postAuthor
                 ;
     default:
         return false;
@@ -2532,6 +2620,9 @@ bool TLPQInnerData::hasType(const quint32 value)
 {
     switch (value) {
     case TLValue::PQInnerData:
+    case TLValue::PQInnerDataDc:
+    case TLValue::PQInnerDataTemp:
+    case TLValue::PQInnerDataTempDc:
         return true;
     default:
         return false;
@@ -2553,6 +2644,189 @@ bool TLPQInnerData::operator==(const TLPQInnerData &v) const
                 && nonce == v.nonce
                 && serverNonce == v.serverNonce
                 && newNonce == v.newNonce
+                ;
+    case TLValue::PQInnerDataDc:
+        return true
+                && pq == v.pq
+                && p == v.p
+                && q == v.q
+                && nonce == v.nonce
+                && serverNonce == v.serverNonce
+                && newNonce == v.newNonce
+                && dc == v.dc
+                ;
+    case TLValue::PQInnerDataTemp:
+        return true
+                && pq == v.pq
+                && p == v.p
+                && q == v.q
+                && nonce == v.nonce
+                && serverNonce == v.serverNonce
+                && newNonce == v.newNonce
+                && expiresIn == v.expiresIn
+                ;
+    case TLValue::PQInnerDataTempDc:
+        return true
+                && pq == v.pq
+                && p == v.p
+                && q == v.q
+                && nonce == v.nonce
+                && serverNonce == v.serverNonce
+                && newNonce == v.newNonce
+                && dc == v.dc
+                && expiresIn == v.expiresIn
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLPageCaption::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PageCaption:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPageCaption::operator==(const TLPageCaption &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PageCaption:
+        return true
+                && text == v.text
+                && credit == v.credit
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLPageListItem::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PageListItemText:
+    case TLValue::PageListItemBlocks:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPageListItem::operator==(const TLPageListItem &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PageListItemText:
+        return text == v.text;
+    case TLValue::PageListItemBlocks:
+        return blocks == v.blocks;
+    default:
+        return false;
+    }
+}
+
+bool TLPageListOrderedItem::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PageListOrderedItemText:
+    case TLValue::PageListOrderedItemBlocks:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPageListOrderedItem::operator==(const TLPageListOrderedItem &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PageListOrderedItemText:
+        return true
+                && num == v.num
+                && text == v.text
+                ;
+    case TLValue::PageListOrderedItemBlocks:
+        return true
+                && num == v.num
+                && blocks == v.blocks
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLPageRelatedArticle::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PageRelatedArticle:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPageRelatedArticle::operator==(const TLPageRelatedArticle &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PageRelatedArticle:
+        return true
+                && flags == v.flags
+                && url == v.url
+                && webpageId == v.webpageId
+                && title == v.title
+                && description == v.description
+                && photoId == v.photoId
+                && author == v.author
+                && publishedDate == v.publishedDate
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLPasswordKdfAlgo::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PasswordKdfAlgoUnknown:
+    case TLValue::PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPasswordKdfAlgo::operator==(const TLPasswordKdfAlgo &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PasswordKdfAlgoUnknown:
+        return true;
+    case TLValue::PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow:
+        return true
+                && salt1 == v.salt1
+                && salt2 == v.salt2
+                && g == v.g
+                && p == v.p
                 ;
     default:
         return false;
@@ -2643,27 +2917,31 @@ bool TLPeer::operator==(const TLPeer &v) const
     }
 }
 
-bool TLPeerNotifyEvents::hasType(const quint32 value)
+bool TLPeerNotifySettings::hasType(const quint32 value)
 {
     switch (value) {
-    case TLValue::PeerNotifyEventsEmpty:
-    case TLValue::PeerNotifyEventsAll:
+    case TLValue::PeerNotifySettings:
         return true;
     default:
         return false;
     }
 }
 
-bool TLPeerNotifyEvents::operator==(const TLPeerNotifyEvents &v) const
+bool TLPeerNotifySettings::operator==(const TLPeerNotifySettings &v) const
 {
     if (tlType != v.tlType) {
         return false;
     }
 
     switch (tlType) {
-    case TLValue::PeerNotifyEventsEmpty:
-    case TLValue::PeerNotifyEventsAll:
-        return true;
+    case TLValue::PeerNotifySettings:
+        return true
+                && flags == v.flags
+                && showPreviews == v.showPreviews
+                && silent == v.silent
+                && muteUntil == v.muteUntil
+                && sound == v.sound
+                ;
     default:
         return false;
     }
@@ -2735,6 +3013,7 @@ bool TLPhotoSize::hasType(const quint32 value)
     case TLValue::PhotoSizeEmpty:
     case TLValue::PhotoSize:
     case TLValue::PhotoCachedSize:
+    case TLValue::PhotoStrippedSize:
         return true;
     default:
         return false;
@@ -2765,6 +3044,38 @@ bool TLPhotoSize::operator==(const TLPhotoSize &v) const
                 && w == v.w
                 && h == v.h
                 && bytes == v.bytes
+                ;
+    case TLValue::PhotoStrippedSize:
+        return true
+                && type == v.type
+                && bytes == v.bytes
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLPollAnswer::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PollAnswer:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPollAnswer::operator==(const TLPollAnswer &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PollAnswer:
+        return true
+                && text == v.text
+                && option == v.option
                 ;
     default:
         return false;
@@ -2862,6 +3173,7 @@ bool TLPrivacyKey::hasType(const quint32 value)
     case TLValue::PrivacyKeyStatusTimestamp:
     case TLValue::PrivacyKeyChatInvite:
     case TLValue::PrivacyKeyPhoneCall:
+    case TLValue::PrivacyKeyPhoneP2P:
         return true;
     default:
         return false;
@@ -2878,6 +3190,7 @@ bool TLPrivacyKey::operator==(const TLPrivacyKey &v) const
     case TLValue::PrivacyKeyStatusTimestamp:
     case TLValue::PrivacyKeyChatInvite:
     case TLValue::PrivacyKeyPhoneCall:
+    case TLValue::PrivacyKeyPhoneP2P:
         return true;
     default:
         return false;
@@ -2952,7 +3265,9 @@ bool TLReportReason::hasType(const quint32 value)
     case TLValue::InputReportReasonSpam:
     case TLValue::InputReportReasonViolence:
     case TLValue::InputReportReasonPornography:
+    case TLValue::InputReportReasonChildAbuse:
     case TLValue::InputReportReasonOther:
+    case TLValue::InputReportReasonCopyright:
         return true;
     default:
         return false;
@@ -2969,6 +3284,8 @@ bool TLReportReason::operator==(const TLReportReason &v) const
     case TLValue::InputReportReasonSpam:
     case TLValue::InputReportReasonViolence:
     case TLValue::InputReportReasonPornography:
+    case TLValue::InputReportReasonChildAbuse:
+    case TLValue::InputReportReasonCopyright:
         return true;
     case TLValue::InputReportReasonOther:
         return text == v.text;
@@ -3019,6 +3336,12 @@ bool TLRichText::hasType(const quint32 value)
     case TLValue::TextUrl:
     case TLValue::TextEmail:
     case TLValue::TextConcat:
+    case TLValue::TextSubscript:
+    case TLValue::TextSuperscript:
+    case TLValue::TextMarked:
+    case TLValue::TextPhone:
+    case TLValue::TextImage:
+    case TLValue::TextAnchor:
         return true;
     default:
         return false;
@@ -3041,6 +3364,9 @@ bool TLRichText::operator==(const TLRichText &v) const
     case TLValue::TextUnderline:
     case TLValue::TextStrike:
     case TLValue::TextFixed:
+    case TLValue::TextSubscript:
+    case TLValue::TextSuperscript:
+    case TLValue::TextMarked:
         return richText == v.richText;
     case TLValue::TextUrl:
         return true
@@ -3055,6 +3381,22 @@ bool TLRichText::operator==(const TLRichText &v) const
                 ;
     case TLValue::TextConcat:
         return texts == v.texts;
+    case TLValue::TextPhone:
+        return true
+                && richText == v.richText
+                && phone == v.phone
+                ;
+    case TLValue::TextImage:
+        return true
+                && documentId == v.documentId
+                && w == v.w
+                && h == v.h
+                ;
+    case TLValue::TextAnchor:
+        return true
+                && richText == v.richText
+                && name == v.name
+                ;
     default:
         return false;
     }
@@ -3115,6 +3457,258 @@ bool TLRpcError::operator==(const TLRpcError &v) const
                 && errorCode == v.errorCode
                 && errorMessage == v.errorMessage
                 ;
+    default:
+        return false;
+    }
+}
+
+bool TLSavedContact::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SavedPhoneContact:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSavedContact::operator==(const TLSavedContact &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SavedPhoneContact:
+        return true
+                && phone == v.phone
+                && firstName == v.firstName
+                && lastName == v.lastName
+                && date == v.date
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureCredentialsEncrypted::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecureCredentialsEncrypted:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureCredentialsEncrypted::operator==(const TLSecureCredentialsEncrypted &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecureCredentialsEncrypted:
+        return true
+                && data == v.data
+                && hash == v.hash
+                && secret == v.secret
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureData::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecureData:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureData::operator==(const TLSecureData &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecureData:
+        return true
+                && data == v.data
+                && dataHash == v.dataHash
+                && secret == v.secret
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureFile::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecureFileEmpty:
+    case TLValue::SecureFile:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureFile::operator==(const TLSecureFile &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecureFileEmpty:
+        return true;
+    case TLValue::SecureFile:
+        return true
+                && id == v.id
+                && accessHash == v.accessHash
+                && size == v.size
+                && dcId == v.dcId
+                && date == v.date
+                && fileHash == v.fileHash
+                && secret == v.secret
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLSecurePasswordKdfAlgo::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecurePasswordKdfAlgoUnknown:
+    case TLValue::SecurePasswordKdfAlgoPBKDF2HMACSHA512iter100000:
+    case TLValue::SecurePasswordKdfAlgoSHA512:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecurePasswordKdfAlgo::operator==(const TLSecurePasswordKdfAlgo &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecurePasswordKdfAlgoUnknown:
+        return true;
+    case TLValue::SecurePasswordKdfAlgoPBKDF2HMACSHA512iter100000:
+    case TLValue::SecurePasswordKdfAlgoSHA512:
+        return salt == v.salt;
+    default:
+        return false;
+    }
+}
+
+bool TLSecurePlainData::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecurePlainPhone:
+    case TLValue::SecurePlainEmail:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecurePlainData::operator==(const TLSecurePlainData &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecurePlainPhone:
+        return phone == v.phone;
+    case TLValue::SecurePlainEmail:
+        return email == v.email;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureSecretSettings::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecureSecretSettings:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureSecretSettings::operator==(const TLSecureSecretSettings &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecureSecretSettings:
+        return true
+                && secureAlgo == v.secureAlgo
+                && secureSecret == v.secureSecret
+                && secureSecretId == v.secureSecretId
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureValueType::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecureValueTypePersonalDetails:
+    case TLValue::SecureValueTypePassport:
+    case TLValue::SecureValueTypeDriverLicense:
+    case TLValue::SecureValueTypeIdentityCard:
+    case TLValue::SecureValueTypeInternalPassport:
+    case TLValue::SecureValueTypeAddress:
+    case TLValue::SecureValueTypeUtilityBill:
+    case TLValue::SecureValueTypeBankStatement:
+    case TLValue::SecureValueTypeRentalAgreement:
+    case TLValue::SecureValueTypePassportRegistration:
+    case TLValue::SecureValueTypeTemporaryRegistration:
+    case TLValue::SecureValueTypePhone:
+    case TLValue::SecureValueTypeEmail:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureValueType::operator==(const TLSecureValueType &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecureValueTypePersonalDetails:
+    case TLValue::SecureValueTypePassport:
+    case TLValue::SecureValueTypeDriverLicense:
+    case TLValue::SecureValueTypeIdentityCard:
+    case TLValue::SecureValueTypeInternalPassport:
+    case TLValue::SecureValueTypeAddress:
+    case TLValue::SecureValueTypeUtilityBill:
+    case TLValue::SecureValueTypeBankStatement:
+    case TLValue::SecureValueTypeRentalAgreement:
+    case TLValue::SecureValueTypePassportRegistration:
+    case TLValue::SecureValueTypeTemporaryRegistration:
+    case TLValue::SecureValueTypePhone:
+    case TLValue::SecureValueTypeEmail:
+        return true;
     default:
         return false;
     }
@@ -3300,6 +3894,30 @@ bool TLShippingOption::operator==(const TLShippingOption &v) const
                 && title == v.title
                 && prices == v.prices
                 ;
+    default:
+        return false;
+    }
+}
+
+bool TLStatsURL::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::StatsURL:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLStatsURL::operator==(const TLStatsURL &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::StatsURL:
+        return url == v.url;
     default:
         return false;
     }
@@ -3550,7 +4168,7 @@ bool TLUploadFile::operator==(const TLUploadFile &v) const
                 && fileToken == v.fileToken
                 && encryptionKey == v.encryptionKey
                 && encryptionIv == v.encryptionIv
-                && cdnFileHashes == v.cdnFileHashes
+                && fileHashes == v.fileHashes
                 ;
     default:
         return false;
@@ -3691,54 +4309,193 @@ bool TLWallPaper::operator==(const TLWallPaper &v) const
     }
 }
 
-bool TLAccountAuthorizations::hasType(const quint32 value)
+bool TLWebAuthorization::hasType(const quint32 value)
 {
     switch (value) {
-    case TLValue::AccountAuthorizations:
+    case TLValue::WebAuthorization:
         return true;
     default:
         return false;
     }
 }
 
-bool TLAccountAuthorizations::operator==(const TLAccountAuthorizations &v) const
+bool TLWebAuthorization::operator==(const TLWebAuthorization &v) const
 {
     if (tlType != v.tlType) {
         return false;
     }
 
     switch (tlType) {
-    case TLValue::AccountAuthorizations:
-        return authorizations == v.authorizations;
+    case TLValue::WebAuthorization:
+        return true
+                && hash == v.hash
+                && botId == v.botId
+                && domain == v.domain
+                && browser == v.browser
+                && platform == v.platform
+                && dateCreated == v.dateCreated
+                && dateActive == v.dateActive
+                && ip == v.ip
+                && region == v.region
+                ;
     default:
         return false;
     }
 }
 
-bool TLAuthSentCode::hasType(const quint32 value)
+bool TLAccessPointRule::hasType(const quint32 value)
 {
     switch (value) {
-    case TLValue::AuthSentCode:
+    case TLValue::AccessPointRule:
         return true;
     default:
         return false;
     }
 }
 
-bool TLAuthSentCode::operator==(const TLAuthSentCode &v) const
+bool TLAccessPointRule::operator==(const TLAccessPointRule &v) const
 {
     if (tlType != v.tlType) {
         return false;
     }
 
     switch (tlType) {
-    case TLValue::AuthSentCode:
+    case TLValue::AccessPointRule:
+        return true
+                && phonePrefixRules == v.phonePrefixRules
+                && dcId == v.dcId
+                && ips == v.ips
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountPassword::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::AccountPassword:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountPassword::operator==(const TLAccountPassword &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::AccountPassword:
         return true
                 && flags == v.flags
-                && type == v.type
-                && phoneCodeHash == v.phoneCodeHash
-                && nextType == v.nextType
-                && timeout == v.timeout
+                && currentAlgo == v.currentAlgo
+                && srpB == v.srpB
+                && srpId == v.srpId
+                && hint == v.hint
+                && emailUnconfirmedPattern == v.emailUnconfirmedPattern
+                && newAlgo == v.newAlgo
+                && newSecureAlgo == v.newSecureAlgo
+                && secureRandom == v.secureRandom
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountPasswordInputSettings::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::AccountPasswordInputSettings:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountPasswordInputSettings::operator==(const TLAccountPasswordInputSettings &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::AccountPasswordInputSettings:
+        return true
+                && flags == v.flags
+                && newAlgo == v.newAlgo
+                && newPasswordHash == v.newPasswordHash
+                && hint == v.hint
+                && email == v.email
+                && newSecureSettings == v.newSecureSettings
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountPasswordSettings::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::AccountPasswordSettings:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountPasswordSettings::operator==(const TLAccountPasswordSettings &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::AccountPasswordSettings:
+        return true
+                && flags == v.flags
+                && email == v.email
+                && secureSettings == v.secureSettings
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLAuthorization::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::Authorization:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLAuthorization::operator==(const TLAuthorization &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::Authorization:
+        return true
+                && flags == v.flags
+                && hash == v.hash
+                && deviceModel == v.deviceModel
+                && platform == v.platform
+                && systemVersion == v.systemVersion
+                && apiId == v.apiId
+                && appName == v.appName
+                && appVersion == v.appVersion
+                && dateCreated == v.dateCreated
+                && dateActive == v.dateActive
+                && ip == v.ip
+                && country == v.country
+                && region == v.region
                 ;
     default:
         return false;
@@ -4014,7 +4771,32 @@ bool TLDcOption::operator==(const TLDcOption &v) const
                 && id == v.id
                 && ipAddress == v.ipAddress
                 && port == v.port
+                && secret == v.secret
                 ;
+    default:
+        return false;
+    }
+}
+
+bool TLDialogPeer::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::DialogPeer:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLDialogPeer::operator==(const TLDialogPeer &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::DialogPeer:
+        return peer == v.peer;
     default:
         return false;
     }
@@ -4099,7 +4881,10 @@ bool TLDraftMessage::operator==(const TLDraftMessage &v) const
 
     switch (tlType) {
     case TLValue::DraftMessageEmpty:
-        return true;
+        return true
+                && flags == v.flags
+                && date == v.date
+                ;
     case TLValue::DraftMessage:
         return true
                 && flags == v.flags
@@ -4134,8 +4919,130 @@ bool TLHelpConfigSimple::operator==(const TLHelpConfigSimple &v) const
         return true
                 && date == v.date
                 && expires == v.expires
-                && dcId == v.dcId
-                && ipPortList == v.ipPortList
+                && rules == v.rules
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpDeepLinkInfo::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::HelpDeepLinkInfoEmpty:
+    case TLValue::HelpDeepLinkInfo:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpDeepLinkInfo::operator==(const TLHelpDeepLinkInfo &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::HelpDeepLinkInfoEmpty:
+        return true;
+    case TLValue::HelpDeepLinkInfo:
+        return true
+                && flags == v.flags
+                && message == v.message
+                && entities == v.entities
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpTermsOfService::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::HelpTermsOfService:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpTermsOfService::operator==(const TLHelpTermsOfService &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::HelpTermsOfService:
+        return true
+                && flags == v.flags
+                && id == v.id
+                && text == v.text
+                && entities == v.entities
+                && minAgeConfirm == v.minAgeConfirm
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpTermsOfServiceUpdate::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::HelpTermsOfServiceUpdateEmpty:
+    case TLValue::HelpTermsOfServiceUpdate:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpTermsOfServiceUpdate::operator==(const TLHelpTermsOfServiceUpdate &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::HelpTermsOfServiceUpdateEmpty:
+        return expires == v.expires;
+    case TLValue::HelpTermsOfServiceUpdate:
+        return true
+                && expires == v.expires
+                && termsOfService == v.termsOfService
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpUserInfo::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::HelpUserInfoEmpty:
+    case TLValue::HelpUserInfo:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpUserInfo::operator==(const TLHelpUserInfo &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::HelpUserInfoEmpty:
+        return true;
+    case TLValue::HelpUserInfo:
+        return true
+                && message == v.message
+                && entities == v.entities
+                && author == v.author
+                && date == v.date
                 ;
     default:
         return false;
@@ -4167,6 +5074,30 @@ bool TLInputChatPhoto::operator==(const TLInputChatPhoto &v) const
         return file == v.file;
     case TLValue::InputChatPhoto:
         return id == v.id;
+    default:
+        return false;
+    }
+}
+
+bool TLInputDialogPeer::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::InputDialogPeer:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLInputDialogPeer::operator==(const TLInputDialogPeer &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::InputDialogPeer:
+        return peer == v.peer;
     default:
         return false;
     }
@@ -4211,7 +5142,7 @@ bool TLInputNotifyPeer::hasType(const quint32 value)
     case TLValue::InputNotifyPeer:
     case TLValue::InputNotifyUsers:
     case TLValue::InputNotifyChats:
-    case TLValue::InputNotifyAll:
+    case TLValue::InputNotifyBroadcasts:
         return true;
     default:
         return false;
@@ -4229,7 +5160,7 @@ bool TLInputNotifyPeer::operator==(const TLInputNotifyPeer &v) const
         return peer == v.peer;
     case TLValue::InputNotifyUsers:
     case TLValue::InputNotifyChats:
-    case TLValue::InputNotifyAll:
+    case TLValue::InputNotifyBroadcasts:
         return true;
     default:
         return false;
@@ -4269,34 +5200,9 @@ bool TLInputPaymentCredentials::operator==(const TLInputPaymentCredentials &v) c
     case TLValue::InputPaymentCredentialsApplePay:
         return paymentData == v.paymentData;
     case TLValue::InputPaymentCredentialsAndroidPay:
-        return paymentToken == v.paymentToken;
-    default:
-        return false;
-    }
-}
-
-bool TLInputPeerNotifySettings::hasType(const quint32 value)
-{
-    switch (value) {
-    case TLValue::InputPeerNotifySettings:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool TLInputPeerNotifySettings::operator==(const TLInputPeerNotifySettings &v) const
-{
-    if (tlType != v.tlType) {
-        return false;
-    }
-
-    switch (tlType) {
-    case TLValue::InputPeerNotifySettings:
         return true
-                && flags == v.flags
-                && muteUntil == v.muteUntil
-                && sound == v.sound
+                && paymentToken == v.paymentToken
+                && googleTransactionId == v.googleTransactionId
                 ;
     default:
         return false;
@@ -4333,6 +5239,40 @@ bool TLInputPrivacyRule::operator==(const TLInputPrivacyRule &v) const
     case TLValue::InputPrivacyValueAllowUsers:
     case TLValue::InputPrivacyValueDisallowUsers:
         return users == v.users;
+    default:
+        return false;
+    }
+}
+
+bool TLInputSecureValue::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::InputSecureValue:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLInputSecureValue::operator==(const TLInputSecureValue &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::InputSecureValue:
+        return true
+                && flags == v.flags
+                && type == v.type
+                && data == v.data
+                && frontSide == v.frontSide
+                && reverseSide == v.reverseSide
+                && selfie == v.selfie
+                && translation == v.translation
+                && files == v.files
+                && plainData == v.plainData
+                ;
     default:
         return false;
     }
@@ -4528,6 +5468,73 @@ bool TLLangPackDifference::operator==(const TLLangPackDifference &v) const
     }
 }
 
+bool TLLangPackLanguage::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::LangPackLanguage:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLLangPackLanguage::operator==(const TLLangPackLanguage &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::LangPackLanguage:
+        return true
+                && flags == v.flags
+                && name == v.name
+                && nativeName == v.nativeName
+                && langCode == v.langCode
+                && baseLangCode == v.baseLangCode
+                && pluralCode == v.pluralCode
+                && stringsCount == v.stringsCount
+                && translatedCount == v.translatedCount
+                && translationsUrl == v.translationsUrl
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLMessageFwdHeader::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::MessageFwdHeader:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLMessageFwdHeader::operator==(const TLMessageFwdHeader &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::MessageFwdHeader:
+        return true
+                && flags == v.flags
+                && fromId == v.fromId
+                && date == v.date
+                && channelId == v.channelId
+                && channelPost == v.channelPost
+                && postAuthor == v.postAuthor
+                && savedFromPeer == v.savedFromPeer
+                && savedFromMsgId == v.savedFromMsgId
+                ;
+    default:
+        return false;
+    }
+}
+
 bool TLMessagesBotCallbackAnswer::hasType(const quint32 value)
 {
     switch (value) {
@@ -4646,7 +5653,7 @@ bool TLNotifyPeer::hasType(const quint32 value)
     case TLValue::NotifyPeer:
     case TLValue::NotifyUsers:
     case TLValue::NotifyChats:
-    case TLValue::NotifyAll:
+    case TLValue::NotifyBroadcasts:
         return true;
     default:
         return false;
@@ -4664,8 +5671,61 @@ bool TLNotifyPeer::operator==(const TLNotifyPeer &v) const
         return peer == v.peer;
     case TLValue::NotifyUsers:
     case TLValue::NotifyChats:
-    case TLValue::NotifyAll:
+    case TLValue::NotifyBroadcasts:
         return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPageTableCell::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PageTableCell:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPageTableCell::operator==(const TLPageTableCell &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PageTableCell:
+        return true
+                && flags == v.flags
+                && text == v.text
+                && colspan == v.colspan
+                && rowspan == v.rowspan
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLPageTableRow::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PageTableRow:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPageTableRow::operator==(const TLPageTableRow &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PageTableRow:
+        return cells == v.cells;
     default:
         return false;
     }
@@ -4756,37 +5816,6 @@ bool TLPaymentsValidatedRequestedInfo::operator==(const TLPaymentsValidatedReque
     }
 }
 
-bool TLPeerNotifySettings::hasType(const quint32 value)
-{
-    switch (value) {
-    case TLValue::PeerNotifySettingsEmpty:
-    case TLValue::PeerNotifySettings:
-        return true;
-    default:
-        return false;
-    }
-}
-
-bool TLPeerNotifySettings::operator==(const TLPeerNotifySettings &v) const
-{
-    if (tlType != v.tlType) {
-        return false;
-    }
-
-    switch (tlType) {
-    case TLValue::PeerNotifySettingsEmpty:
-        return true;
-    case TLValue::PeerNotifySettings:
-        return true
-                && flags == v.flags
-                && muteUntil == v.muteUntil
-                && sound == v.sound
-                ;
-    default:
-        return false;
-    }
-}
-
 bool TLPeerSettings::hasType(const quint32 value)
 {
     switch (value) {
@@ -4866,8 +5895,94 @@ bool TLPhoto::operator==(const TLPhoto &v) const
                 && flags == v.flags
                 && id == v.id
                 && accessHash == v.accessHash
+                && fileReference == v.fileReference
                 && date == v.date
                 && sizes == v.sizes
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLPoll::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::Poll:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPoll::operator==(const TLPoll &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::Poll:
+        return true
+                && id == v.id
+                && flags == v.flags
+                && question == v.question
+                && answers == v.answers
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLPollAnswerVoters::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PollAnswerVoters:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPollAnswerVoters::operator==(const TLPollAnswerVoters &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PollAnswerVoters:
+        return true
+                && flags == v.flags
+                && option == v.option
+                && voters == v.voters
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLPollResults::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::PollResults:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLPollResults::operator==(const TLPollResults &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::PollResults:
+        return true
+                && flags == v.flags
+                && results == v.results
+                && totalVoters == v.totalVoters
                 ;
     default:
         return false;
@@ -4911,6 +6026,158 @@ bool TLReplyMarkup::operator==(const TLReplyMarkup &v) const
     }
 }
 
+bool TLSecureRequiredType::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecureRequiredType:
+    case TLValue::SecureRequiredTypeOneOf:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureRequiredType::operator==(const TLSecureRequiredType &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecureRequiredType:
+        return true
+                && flags == v.flags
+                && type == v.type
+                ;
+    case TLValue::SecureRequiredTypeOneOf:
+        return types == v.types;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureValue::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecureValue:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureValue::operator==(const TLSecureValue &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecureValue:
+        return true
+                && flags == v.flags
+                && type == v.type
+                && data == v.data
+                && frontSide == v.frontSide
+                && reverseSide == v.reverseSide
+                && selfie == v.selfie
+                && translation == v.translation
+                && files == v.files
+                && plainData == v.plainData
+                && hash == v.hash
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureValueError::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecureValueErrorData:
+    case TLValue::SecureValueErrorFrontSide:
+    case TLValue::SecureValueErrorReverseSide:
+    case TLValue::SecureValueErrorSelfie:
+    case TLValue::SecureValueErrorFile:
+    case TLValue::SecureValueErrorFiles:
+    case TLValue::SecureValueError:
+    case TLValue::SecureValueErrorTranslationFile:
+    case TLValue::SecureValueErrorTranslationFiles:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureValueError::operator==(const TLSecureValueError &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecureValueErrorData:
+        return true
+                && type == v.type
+                && dataHash == v.dataHash
+                && field == v.field
+                && text == v.text
+                ;
+    case TLValue::SecureValueErrorFrontSide:
+    case TLValue::SecureValueErrorReverseSide:
+    case TLValue::SecureValueErrorSelfie:
+    case TLValue::SecureValueErrorFile:
+    case TLValue::SecureValueErrorTranslationFile:
+        return true
+                && type == v.type
+                && byteArrayFileHash == v.byteArrayFileHash
+                && text == v.text
+                ;
+    case TLValue::SecureValueErrorFiles:
+    case TLValue::SecureValueErrorTranslationFiles:
+        return true
+                && type == v.type
+                && byteArrayFileHashVector == v.byteArrayFileHashVector
+                && text == v.text
+                ;
+    case TLValue::SecureValueError:
+        return true
+                && type == v.type
+                && hash == v.hash
+                && text == v.text
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureValueHash::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::SecureValueHash:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLSecureValueHash::operator==(const TLSecureValueHash &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::SecureValueHash:
+        return true
+                && type == v.type
+                && hash == v.hash
+                ;
+    default:
+        return false;
+    }
+}
+
 bool TLStickerSet::hasType(const quint32 value)
 {
     switch (value) {
@@ -4931,6 +6198,7 @@ bool TLStickerSet::operator==(const TLStickerSet &v) const
     case TLValue::StickerSet:
         return true
                 && flags == v.flags
+                && installedDate == v.installedDate
                 && id == v.id
                 && accessHash == v.accessHash
                 && title == v.title
@@ -4988,6 +6256,7 @@ bool TLWebDocument::hasType(const quint32 value)
 {
     switch (value) {
     case TLValue::WebDocument:
+    case TLValue::WebDocumentNoProxy:
         return true;
     default:
         return false;
@@ -5008,8 +6277,69 @@ bool TLWebDocument::operator==(const TLWebDocument &v) const
                 && size == v.size
                 && mimeType == v.mimeType
                 && attributes == v.attributes
-                && dcId == v.dcId
                 ;
+    case TLValue::WebDocumentNoProxy:
+        return true
+                && url == v.url
+                && size == v.size
+                && mimeType == v.mimeType
+                && attributes == v.attributes
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountAuthorizationForm::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::AccountAuthorizationForm:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountAuthorizationForm::operator==(const TLAccountAuthorizationForm &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::AccountAuthorizationForm:
+        return true
+                && flags == v.flags
+                && requiredTypes == v.requiredTypes
+                && values == v.values
+                && errors == v.errors
+                && users == v.users
+                && privacyPolicyUrl == v.privacyPolicyUrl
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountAuthorizations::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::AccountAuthorizations:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountAuthorizations::operator==(const TLAccountAuthorizations &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::AccountAuthorizations:
+        return authorizations == v.authorizations;
     default:
         return false;
     }
@@ -5035,6 +6365,33 @@ bool TLAccountPrivacyRules::operator==(const TLAccountPrivacyRules &v) const
     case TLValue::AccountPrivacyRules:
         return true
                 && rules == v.rules
+                && users == v.users
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountWebAuthorizations::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::AccountWebAuthorizations:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLAccountWebAuthorizations::operator==(const TLAccountWebAuthorizations &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::AccountWebAuthorizations:
+        return true
+                && authorizations == v.authorizations
                 && users == v.users
                 ;
     default:
@@ -5070,6 +6427,37 @@ bool TLAuthAuthorization::operator==(const TLAuthAuthorization &v) const
     }
 }
 
+bool TLAuthSentCode::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::AuthSentCode:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLAuthSentCode::operator==(const TLAuthSentCode &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::AuthSentCode:
+        return true
+                && flags == v.flags
+                && type == v.type
+                && phoneCodeHash == v.phoneCodeHash
+                && nextType == v.nextType
+                && timeout == v.timeout
+                && termsOfService == v.termsOfService
+                ;
+    default:
+        return false;
+    }
+}
+
 bool TLBotInlineMessage::hasType(const quint32 value)
 {
     switch (value) {
@@ -5092,11 +6480,6 @@ bool TLBotInlineMessage::operator==(const TLBotInlineMessage &v) const
 
     switch (tlType) {
     case TLValue::BotInlineMessageMediaAuto:
-        return true
-                && flags == v.flags
-                && caption == v.caption
-                && replyMarkup == v.replyMarkup
-                ;
     case TLValue::BotInlineMessageText:
         return true
                 && flags == v.flags
@@ -5119,6 +6502,7 @@ bool TLBotInlineMessage::operator==(const TLBotInlineMessage &v) const
                 && address == v.address
                 && provider == v.provider
                 && venueId == v.venueId
+                && venueType == v.venueType
                 && replyMarkup == v.replyMarkup
                 ;
     case TLValue::BotInlineMessageMediaContact:
@@ -5127,6 +6511,7 @@ bool TLBotInlineMessage::operator==(const TLBotInlineMessage &v) const
                 && phoneNumber == v.phoneNumber
                 && firstName == v.firstName
                 && lastName == v.lastName
+                && vcard == v.vcard
                 && replyMarkup == v.replyMarkup
                 ;
     default:
@@ -5244,6 +6629,7 @@ bool TLChat::operator==(const TLChat &v) const
                 && restrictionReason == v.restrictionReason
                 && adminRights == v.adminRights
                 && bannedRights == v.bannedRights
+                && participantsCount == v.participantsCount
                 ;
     case TLValue::ChannelForbidden:
         return true
@@ -5278,12 +6664,14 @@ bool TLChatFull::operator==(const TLChatFull &v) const
     switch (tlType) {
     case TLValue::ChatFull:
         return true
+                && flags == v.flags
                 && id == v.id
                 && participants == v.participants
                 && chatPhoto == v.chatPhoto
                 && notifySettings == v.notifySettings
                 && exportedInvite == v.exportedInvite
                 && botInfo == v.botInfo
+                && pinnedMsgId == v.pinnedMsgId
                 ;
     case TLValue::ChannelFull:
         return true
@@ -5294,6 +6682,7 @@ bool TLChatFull::operator==(const TLChatFull &v) const
                 && adminsCount == v.adminsCount
                 && kickedCount == v.kickedCount
                 && bannedCount == v.bannedCount
+                && onlineCount == v.onlineCount
                 && readInboxMaxId == v.readInboxMaxId
                 && readOutboxMaxId == v.readOutboxMaxId
                 && unreadCount == v.unreadCount
@@ -5370,6 +6759,7 @@ bool TLConfig::operator==(const TLConfig &v) const
                 && testMode == v.testMode
                 && thisDc == v.thisDc
                 && dcOptions == v.dcOptions
+                && dcTxtDomainName == v.dcTxtDomainName
                 && chatSizeMax == v.chatSizeMax
                 && megagroupSizeMax == v.megagroupSizeMax
                 && forwardedCountMax == v.forwardedCountMax
@@ -5379,11 +6769,12 @@ bool TLConfig::operator==(const TLConfig &v) const
                 && onlineCloudTimeoutMs == v.onlineCloudTimeoutMs
                 && notifyCloudDelayMs == v.notifyCloudDelayMs
                 && notifyDefaultDelayMs == v.notifyDefaultDelayMs
-                && chatBigSize == v.chatBigSize
                 && pushChatPeriodMs == v.pushChatPeriodMs
                 && pushChatLimit == v.pushChatLimit
                 && savedGifsLimit == v.savedGifsLimit
                 && editTimeLimit == v.editTimeLimit
+                && revokeTimeLimit == v.revokeTimeLimit
+                && revokePmTimeLimit == v.revokePmTimeLimit
                 && ratingEDecay == v.ratingEDecay
                 && stickersRecentLimit == v.stickersRecentLimit
                 && stickersFavedLimit == v.stickersFavedLimit
@@ -5395,9 +6786,17 @@ bool TLConfig::operator==(const TLConfig &v) const
                 && callConnectTimeoutMs == v.callConnectTimeoutMs
                 && callPacketTimeoutMs == v.callPacketTimeoutMs
                 && meUrlPrefix == v.meUrlPrefix
+                && autoupdateUrlPrefix == v.autoupdateUrlPrefix
+                && gifSearchUsername == v.gifSearchUsername
+                && venueSearchUsername == v.venueSearchUsername
+                && imgSearchUsername == v.imgSearchUsername
+                && staticMapsProvider == v.staticMapsProvider
+                && captionLengthMax == v.captionLengthMax
+                && messageLengthMax == v.messageLengthMax
+                && webfileDcId == v.webfileDcId
                 && suggestedLangCode == v.suggestedLangCode
                 && langPackVersion == v.langPackVersion
-                && disabledFeatures == v.disabledFeatures
+                && baseLangPackVersion == v.baseLangPackVersion
                 ;
     default:
         return false;
@@ -5488,6 +6887,7 @@ bool TLContactsFound::operator==(const TLContactsFound &v) const
     switch (tlType) {
     case TLValue::ContactsFound:
         return true
+                && myResults == v.myResults
                 && results == v.results
                 && chats == v.chats
                 && users == v.users
@@ -5587,6 +6987,7 @@ bool TLContactsTopPeers::hasType(const quint32 value)
     switch (value) {
     case TLValue::ContactsTopPeersNotModified:
     case TLValue::ContactsTopPeers:
+    case TLValue::ContactsTopPeersDisabled:
         return true;
     default:
         return false;
@@ -5601,6 +7002,7 @@ bool TLContactsTopPeers::operator==(const TLContactsTopPeers &v) const
 
     switch (tlType) {
     case TLValue::ContactsTopPeersNotModified:
+    case TLValue::ContactsTopPeersDisabled:
         return true;
     case TLValue::ContactsTopPeers:
         return true
@@ -5672,12 +7074,12 @@ bool TLDocument::operator==(const TLDocument &v) const
         return true
                 && id == v.id
                 && accessHash == v.accessHash
+                && fileReference == v.fileReference
                 && date == v.date
                 && mimeType == v.mimeType
                 && size == v.size
                 && thumb == v.thumb
                 && dcId == v.dcId
-                && version == v.version
                 && attributes == v.attributes
                 ;
     default:
@@ -5756,6 +7158,73 @@ bool TLGame::operator==(const TLGame &v) const
     }
 }
 
+bool TLHelpAppUpdate::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::HelpAppUpdate:
+    case TLValue::HelpNoAppUpdate:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpAppUpdate::operator==(const TLHelpAppUpdate &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::HelpAppUpdate:
+        return true
+                && flags == v.flags
+                && id == v.id
+                && version == v.version
+                && text == v.text
+                && entities == v.entities
+                && document == v.document
+                && url == v.url
+                ;
+    case TLValue::HelpNoAppUpdate:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpProxyData::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::HelpProxyDataEmpty:
+    case TLValue::HelpProxyDataPromo:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLHelpProxyData::operator==(const TLHelpProxyData &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::HelpProxyDataEmpty:
+        return expires == v.expires;
+    case TLValue::HelpProxyDataPromo:
+        return true
+                && expires == v.expires
+                && peer == v.peer
+                && chats == v.chats
+                && users == v.users
+                ;
+    default:
+        return false;
+    }
+}
+
 bool TLHelpSupport::hasType(const quint32 value)
 {
     switch (value) {
@@ -5806,11 +7275,6 @@ bool TLInputBotInlineMessage::operator==(const TLInputBotInlineMessage &v) const
 
     switch (tlType) {
     case TLValue::InputBotInlineMessageMediaAuto:
-        return true
-                && flags == v.flags
-                && caption == v.caption
-                && replyMarkup == v.replyMarkup
-                ;
     case TLValue::InputBotInlineMessageText:
         return true
                 && flags == v.flags
@@ -5833,6 +7297,7 @@ bool TLInputBotInlineMessage::operator==(const TLInputBotInlineMessage &v) const
                 && address == v.address
                 && provider == v.provider
                 && venueId == v.venueId
+                && venueType == v.venueType
                 && replyMarkup == v.replyMarkup
                 ;
     case TLValue::InputBotInlineMessageMediaContact:
@@ -5841,6 +7306,7 @@ bool TLInputBotInlineMessage::operator==(const TLInputBotInlineMessage &v) const
                 && phoneNumber == v.phoneNumber
                 && firstName == v.firstName
                 && lastName == v.lastName
+                && vcard == v.vcard
                 && replyMarkup == v.replyMarkup
                 ;
     case TLValue::InputBotInlineMessageGame:
@@ -5881,12 +7347,8 @@ bool TLInputBotInlineResult::operator==(const TLInputBotInlineResult &v) const
                 && title == v.title
                 && description == v.description
                 && url == v.url
-                && thumbUrl == v.thumbUrl
-                && contentUrl == v.contentUrl
-                && contentType == v.contentType
-                && w == v.w
-                && h == v.h
-                && duration == v.duration
+                && thumb == v.thumb
+                && content == v.content
                 && sendMessage == v.sendMessage
                 ;
     case TLValue::InputBotInlineResultPhoto:
@@ -5934,6 +7396,7 @@ bool TLInputMedia::hasType(const quint32 value)
     case TLValue::InputMediaGame:
     case TLValue::InputMediaInvoice:
     case TLValue::InputMediaGeoLive:
+    case TLValue::InputMediaPoll:
         return true;
     default:
         return false;
@@ -5953,7 +7416,6 @@ bool TLInputMedia::operator==(const TLInputMedia &v) const
         return true
                 && flags == v.flags
                 && file == v.file
-                && caption == v.caption
                 && stickers == v.stickers
                 && ttlSeconds == v.ttlSeconds
                 ;
@@ -5961,7 +7423,6 @@ bool TLInputMedia::operator==(const TLInputMedia &v) const
         return true
                 && flags == v.flags
                 && inputPhotoId == v.inputPhotoId
-                && caption == v.caption
                 && ttlSeconds == v.ttlSeconds
                 ;
     case TLValue::InputMediaGeoPoint:
@@ -5971,6 +7432,7 @@ bool TLInputMedia::operator==(const TLInputMedia &v) const
                 && phoneNumber == v.phoneNumber
                 && firstName == v.firstName
                 && lastName == v.lastName
+                && vcard == v.vcard
                 ;
     case TLValue::InputMediaUploadedDocument:
         return true
@@ -5979,7 +7441,6 @@ bool TLInputMedia::operator==(const TLInputMedia &v) const
                 && thumb == v.thumb
                 && mimeType == v.mimeType
                 && attributes == v.attributes
-                && caption == v.caption
                 && stickers == v.stickers
                 && ttlSeconds == v.ttlSeconds
                 ;
@@ -5987,7 +7448,6 @@ bool TLInputMedia::operator==(const TLInputMedia &v) const
         return true
                 && flags == v.flags
                 && inputDocumentId == v.inputDocumentId
-                && caption == v.caption
                 && ttlSeconds == v.ttlSeconds
                 ;
     case TLValue::InputMediaVenue:
@@ -6009,7 +7469,6 @@ bool TLInputMedia::operator==(const TLInputMedia &v) const
         return true
                 && flags == v.flags
                 && url == v.url
-                && caption == v.caption
                 && ttlSeconds == v.ttlSeconds
                 ;
     case TLValue::InputMediaGame:
@@ -6023,12 +7482,46 @@ bool TLInputMedia::operator==(const TLInputMedia &v) const
                 && invoice == v.invoice
                 && payload == v.payload
                 && provider == v.provider
+                && providerData == v.providerData
                 && startParam == v.startParam
                 ;
     case TLValue::InputMediaGeoLive:
         return true
+                && flags == v.flags
                 && geoPoint == v.geoPoint
                 && period == v.period
+                ;
+    case TLValue::InputMediaPoll:
+        return poll == v.poll;
+    default:
+        return false;
+    }
+}
+
+bool TLInputSingleMedia::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::InputSingleMedia:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLInputSingleMedia::operator==(const TLInputSingleMedia &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::InputSingleMedia:
+        return true
+                && flags == v.flags
+                && media == v.media
+                && randomId == v.randomId
+                && message == v.message
+                && entities == v.entities
                 ;
     default:
         return false;
@@ -6057,6 +7550,10 @@ bool TLMessageAction::hasType(const quint32 value)
     case TLValue::MessageActionPhoneCall:
     case TLValue::MessageActionScreenshotTaken:
     case TLValue::MessageActionCustomAction:
+    case TLValue::MessageActionBotAllowed:
+    case TLValue::MessageActionSecureValuesSentMe:
+    case TLValue::MessageActionSecureValuesSent:
+    case TLValue::MessageActionContactSignUp:
         return true;
     default:
         return false;
@@ -6075,6 +7572,7 @@ bool TLMessageAction::operator==(const TLMessageAction &v) const
     case TLValue::MessageActionPinMessage:
     case TLValue::MessageActionHistoryClear:
     case TLValue::MessageActionScreenshotTaken:
+    case TLValue::MessageActionContactSignUp:
         return true;
     case TLValue::MessageActionChatCreate:
         return true
@@ -6128,6 +7626,15 @@ bool TLMessageAction::operator==(const TLMessageAction &v) const
                 ;
     case TLValue::MessageActionCustomAction:
         return message == v.message;
+    case TLValue::MessageActionBotAllowed:
+        return domain == v.domain;
+    case TLValue::MessageActionSecureValuesSentMe:
+        return true
+                && values == v.values
+                && credentials == v.credentials
+                ;
+    case TLValue::MessageActionSecureValuesSent:
+        return types == v.types;
     default:
         return false;
     }
@@ -6329,7 +7836,9 @@ bool TLMessagesRecentStickers::operator==(const TLMessagesRecentStickers &v) con
     case TLValue::MessagesRecentStickers:
         return true
                 && hash == v.hash
+                && packs == v.packs
                 && stickers == v.stickers
+                && dates == v.dates
                 ;
     default:
         return false;
@@ -6427,8 +7936,7 @@ bool TLMessagesStickers::operator==(const TLMessagesStickers &v) const
 bool TLPage::hasType(const quint32 value)
 {
     switch (value) {
-    case TLValue::PagePart:
-    case TLValue::PageFull:
+    case TLValue::Page:
         return true;
     default:
         return false;
@@ -6442,9 +7950,10 @@ bool TLPage::operator==(const TLPage &v) const
     }
 
     switch (tlType) {
-    case TLValue::PagePart:
-    case TLValue::PageFull:
+    case TLValue::Page:
         return true
+                && flags == v.flags
+                && url == v.url
                 && blocks == v.blocks
                 && photos == v.photos
                 && documents == v.documents
@@ -6480,6 +7989,12 @@ bool TLPageBlock::hasType(const quint32 value)
     case TLValue::PageBlockSlideshow:
     case TLValue::PageBlockChannel:
     case TLValue::PageBlockAudio:
+    case TLValue::PageBlockKicker:
+    case TLValue::PageBlockTable:
+    case TLValue::PageBlockOrderedList:
+    case TLValue::PageBlockDetails:
+    case TLValue::PageBlockRelatedArticles:
+    case TLValue::PageBlockMap:
         return true;
     default:
         return false;
@@ -6502,6 +8017,7 @@ bool TLPageBlock::operator==(const TLPageBlock &v) const
     case TLValue::PageBlockSubheader:
     case TLValue::PageBlockParagraph:
     case TLValue::PageBlockFooter:
+    case TLValue::PageBlockKicker:
         return text == v.text;
     case TLValue::PageBlockAuthorDate:
         return true
@@ -6516,26 +8032,26 @@ bool TLPageBlock::operator==(const TLPageBlock &v) const
     case TLValue::PageBlockAnchor:
         return name == v.name;
     case TLValue::PageBlockList:
-        return true
-                && ordered == v.ordered
-                && richTextItemsVector == v.richTextItemsVector
-                ;
+        return pageListItemItemsVector == v.pageListItemItemsVector;
     case TLValue::PageBlockBlockquote:
     case TLValue::PageBlockPullquote:
         return true
                 && text == v.text
-                && caption == v.caption
+                && richTextCaption == v.richTextCaption
                 ;
     case TLValue::PageBlockPhoto:
         return true
+                && flags == v.flags
                 && photoId == v.photoId
-                && caption == v.caption
+                && pageCaption == v.pageCaption
+                && url == v.url
+                && webpageId == v.webpageId
                 ;
     case TLValue::PageBlockVideo:
         return true
                 && flags == v.flags
                 && videoId == v.videoId
-                && caption == v.caption
+                && pageCaption == v.pageCaption
                 ;
     case TLValue::PageBlockCover:
         return cover == v.cover;
@@ -6547,7 +8063,7 @@ bool TLPageBlock::operator==(const TLPageBlock &v) const
                 && posterPhotoId == v.posterPhotoId
                 && w == v.w
                 && h == v.h
-                && caption == v.caption
+                && pageCaption == v.pageCaption
                 ;
     case TLValue::PageBlockEmbedPost:
         return true
@@ -6557,20 +8073,47 @@ bool TLPageBlock::operator==(const TLPageBlock &v) const
                 && stringAuthor == v.stringAuthor
                 && date == v.date
                 && blocks == v.blocks
-                && caption == v.caption
+                && pageCaption == v.pageCaption
                 ;
     case TLValue::PageBlockCollage:
     case TLValue::PageBlockSlideshow:
         return true
                 && pageBlockItemsVector == v.pageBlockItemsVector
-                && caption == v.caption
+                && pageCaption == v.pageCaption
                 ;
     case TLValue::PageBlockChannel:
         return channel == v.channel;
     case TLValue::PageBlockAudio:
         return true
                 && audioId == v.audioId
-                && caption == v.caption
+                && pageCaption == v.pageCaption
+                ;
+    case TLValue::PageBlockTable:
+        return true
+                && flags == v.flags
+                && title == v.title
+                && rows == v.rows
+                ;
+    case TLValue::PageBlockOrderedList:
+        return pageListOrderedItemItemsVector == v.pageListOrderedItemItemsVector;
+    case TLValue::PageBlockDetails:
+        return true
+                && flags == v.flags
+                && blocks == v.blocks
+                && title == v.title
+                ;
+    case TLValue::PageBlockRelatedArticles:
+        return true
+                && title == v.title
+                && articles == v.articles
+                ;
+    case TLValue::PageBlockMap:
+        return true
+                && geo == v.geo
+                && zoom == v.zoom
+                && w == v.w
+                && h == v.h
+                && pageCaption == v.pageCaption
                 ;
     default:
         return false;
@@ -6705,6 +8248,7 @@ bool TLPhoneCall::operator==(const TLPhoneCall &v) const
                 ;
     case TLValue::PhoneCall:
         return true
+                && flags == v.flags
                 && id == v.id
                 && accessHash == v.accessHash
                 && date == v.date
@@ -6876,6 +8420,7 @@ bool TLUserFull::operator==(const TLUserFull &v) const
                 && profilePhoto == v.profilePhoto
                 && notifySettings == v.notifySettings
                 && botInfo == v.botInfo
+                && pinnedMsgId == v.pinnedMsgId
                 && commonChatsCount == v.commonChatsCount
                 ;
     default:
@@ -6964,12 +8509,8 @@ bool TLBotInlineResult::operator==(const TLBotInlineResult &v) const
                 && title == v.title
                 && description == v.description
                 && url == v.url
-                && thumbUrl == v.thumbUrl
-                && contentUrl == v.contentUrl
-                && contentType == v.contentType
-                && w == v.w
-                && h == v.h
-                && duration == v.duration
+                && thumb == v.thumb
+                && content == v.content
                 && sendMessage == v.sendMessage
                 ;
     case TLValue::BotInlineMediaResult:
@@ -7002,6 +8543,7 @@ bool TLMessageMedia::hasType(const quint32 value)
     case TLValue::MessageMediaGame:
     case TLValue::MessageMediaInvoice:
     case TLValue::MessageMediaGeoLive:
+    case TLValue::MessageMediaPoll:
         return true;
     default:
         return false;
@@ -7022,7 +8564,6 @@ bool TLMessageMedia::operator==(const TLMessageMedia &v) const
         return true
                 && flags == v.flags
                 && photo == v.photo
-                && caption == v.caption
                 && ttlSeconds == v.ttlSeconds
                 ;
     case TLValue::MessageMediaGeo:
@@ -7032,13 +8573,13 @@ bool TLMessageMedia::operator==(const TLMessageMedia &v) const
                 && phoneNumber == v.phoneNumber
                 && firstName == v.firstName
                 && lastName == v.lastName
+                && vcard == v.vcard
                 && userId == v.userId
                 ;
     case TLValue::MessageMediaDocument:
         return true
                 && flags == v.flags
                 && document == v.document
-                && caption == v.caption
                 && ttlSeconds == v.ttlSeconds
                 ;
     case TLValue::MessageMediaWebPage:
@@ -7069,6 +8610,11 @@ bool TLMessageMedia::operator==(const TLMessageMedia &v) const
         return true
                 && geo == v.geo
                 && period == v.period
+                ;
+    case TLValue::MessageMediaPoll:
+        return true
+                && poll == v.poll
+                && results == v.results
                 ;
     default:
         return false;
@@ -7159,6 +8705,36 @@ bool TLMessagesFeaturedStickers::operator==(const TLMessagesFeaturedStickers &v)
                 && hash == v.hash
                 && sets == v.sets
                 && unread == v.unread
+                ;
+    default:
+        return false;
+    }
+}
+
+bool TLMessagesFoundStickerSets::hasType(const quint32 value)
+{
+    switch (value) {
+    case TLValue::MessagesFoundStickerSetsNotModified:
+    case TLValue::MessagesFoundStickerSets:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool TLMessagesFoundStickerSets::operator==(const TLMessagesFoundStickerSets &v) const
+{
+    if (tlType != v.tlType) {
+        return false;
+    }
+
+    switch (tlType) {
+    case TLValue::MessagesFoundStickerSetsNotModified:
+        return true;
+    case TLValue::MessagesFoundStickerSets:
+        return true
+                && hash == v.hash
+                && sets == v.sets
                 ;
     default:
         return false;
@@ -7306,6 +8882,7 @@ bool TLMessage::operator==(const TLMessage &v) const
                 && views == v.views
                 && editDate == v.editDate
                 && postAuthor == v.postAuthor
+                && groupedId == v.groupedId
                 ;
     case TLValue::MessageService:
         return true
@@ -7327,6 +8904,7 @@ bool TLMessagesDialogs::hasType(const quint32 value)
     switch (value) {
     case TLValue::MessagesDialogs:
     case TLValue::MessagesDialogsSlice:
+    case TLValue::MessagesDialogsNotModified:
         return true;
     default:
         return false;
@@ -7355,6 +8933,8 @@ bool TLMessagesDialogs::operator==(const TLMessagesDialogs &v) const
                 && chats == v.chats
                 && users == v.users
                 ;
+    case TLValue::MessagesDialogsNotModified:
+        return count == v.count;
     default:
         return false;
     }
@@ -7388,6 +8968,7 @@ bool TLMessagesMessages::operator==(const TLMessagesMessages &v) const
                 ;
     case TLValue::MessagesMessagesSlice:
         return true
+                && flags == v.flags
                 && count == v.count
                 && messages == v.messages
                 && chats == v.chats
@@ -7451,7 +9032,6 @@ bool TLUpdate::hasType(const quint32 value)
     case TLValue::UpdateUserStatus:
     case TLValue::UpdateUserName:
     case TLValue::UpdateUserPhoto:
-    case TLValue::UpdateContactRegistered:
     case TLValue::UpdateContactLink:
     case TLValue::UpdateNewEncryptedMessage:
     case TLValue::UpdateEncryptedChatTyping:
@@ -7508,6 +9088,10 @@ bool TLUpdate::hasType(const quint32 value)
     case TLValue::UpdateChannelReadMessagesContents:
     case TLValue::UpdateContactsReset:
     case TLValue::UpdateChannelAvailableMessages:
+    case TLValue::UpdateDialogUnreadMark:
+    case TLValue::UpdateUserPinnedMessage:
+    case TLValue::UpdateChatPinnedMessage:
+    case TLValue::UpdateMessagePoll:
         return true;
     default:
         return false;
@@ -7573,11 +9157,6 @@ bool TLUpdate::operator==(const TLUpdate &v) const
                 && date == v.date
                 && photo == v.photo
                 && previous == v.previous
-                ;
-    case TLValue::UpdateContactRegistered:
-        return true
-                && userId == v.userId
-                && date == v.date
                 ;
     case TLValue::UpdateContactLink:
         return true
@@ -7715,7 +9294,6 @@ bool TLUpdate::operator==(const TLUpdate &v) const
     case TLValue::UpdateRecentStickers:
     case TLValue::UpdateConfig:
     case TLValue::UpdatePtsChanged:
-    case TLValue::UpdateLangPackTooLong:
     case TLValue::UpdateFavedStickers:
     case TLValue::UpdateContactsReset:
         return true;
@@ -7776,14 +9354,15 @@ bool TLUpdate::operator==(const TLUpdate &v) const
                 && ptsCount == v.ptsCount
                 ;
     case TLValue::UpdateDialogPinned:
+    case TLValue::UpdateDialogUnreadMark:
         return true
                 && flags == v.flags
-                && peer == v.peer
+                && dialogPeer == v.dialogPeer
                 ;
     case TLValue::UpdatePinnedDialogs:
         return true
                 && flags == v.flags
-                && peerOrderVector == v.peerOrderVector
+                && dialogPeerOrderVector == v.dialogPeerOrderVector
                 ;
     case TLValue::UpdateBotWebhookJSON:
         return jSONData == v.jSONData;
@@ -7813,6 +9392,8 @@ bool TLUpdate::operator==(const TLUpdate &v) const
                 ;
     case TLValue::UpdatePhoneCall:
         return phoneCall == v.phoneCall;
+    case TLValue::UpdateLangPackTooLong:
+        return langCode == v.langCode;
     case TLValue::UpdateLangPack:
         return difference == v.difference;
     case TLValue::UpdateChannelReadMessagesContents:
@@ -7824,6 +9405,23 @@ bool TLUpdate::operator==(const TLUpdate &v) const
         return true
                 && channelId == v.channelId
                 && availableMinId == v.availableMinId
+                ;
+    case TLValue::UpdateUserPinnedMessage:
+        return true
+                && userId == v.userId
+                && quint32Id == v.quint32Id
+                ;
+    case TLValue::UpdateChatPinnedMessage:
+        return true
+                && chatId == v.chatId
+                && quint32Id == v.quint32Id
+                ;
+    case TLValue::UpdateMessagePoll:
+        return true
+                && flags == v.flags
+                && pollId == v.pollId
+                && poll == v.poll
+                && results == v.results
                 ;
     default:
         return false;

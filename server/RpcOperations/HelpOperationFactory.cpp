@@ -40,10 +40,31 @@ namespace Telegram {
 namespace Server {
 
 // Generated process methods
+bool HelpRpcOperation::processAcceptTermsOfService(RpcProcessingContext &context)
+{
+    setRunMethod(&HelpRpcOperation::runAcceptTermsOfService);
+    context.inputStream() >> m_acceptTermsOfService;
+    return !context.inputStream().error();
+}
+
+bool HelpRpcOperation::processEditUserInfo(RpcProcessingContext &context)
+{
+    setRunMethod(&HelpRpcOperation::runEditUserInfo);
+    context.inputStream() >> m_editUserInfo;
+    return !context.inputStream().error();
+}
+
 bool HelpRpcOperation::processGetAppChangelog(RpcProcessingContext &context)
 {
     setRunMethod(&HelpRpcOperation::runGetAppChangelog);
     context.inputStream() >> m_getAppChangelog;
+    return !context.inputStream().error();
+}
+
+bool HelpRpcOperation::processGetAppConfig(RpcProcessingContext &context)
+{
+    setRunMethod(&HelpRpcOperation::runGetAppConfig);
+    context.inputStream() >> m_getAppConfig;
     return !context.inputStream().error();
 }
 
@@ -68,6 +89,13 @@ bool HelpRpcOperation::processGetConfig(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
+bool HelpRpcOperation::processGetDeepLinkInfo(RpcProcessingContext &context)
+{
+    setRunMethod(&HelpRpcOperation::runGetDeepLinkInfo);
+    context.inputStream() >> m_getDeepLinkInfo;
+    return !context.inputStream().error();
+}
+
 bool HelpRpcOperation::processGetInviteText(RpcProcessingContext &context)
 {
     setRunMethod(&HelpRpcOperation::runGetInviteText);
@@ -79,6 +107,20 @@ bool HelpRpcOperation::processGetNearestDc(RpcProcessingContext &context)
 {
     setRunMethod(&HelpRpcOperation::runGetNearestDc);
     context.inputStream() >> m_getNearestDc;
+    return !context.inputStream().error();
+}
+
+bool HelpRpcOperation::processGetPassportConfig(RpcProcessingContext &context)
+{
+    setRunMethod(&HelpRpcOperation::runGetPassportConfig);
+    context.inputStream() >> m_getPassportConfig;
+    return !context.inputStream().error();
+}
+
+bool HelpRpcOperation::processGetProxyData(RpcProcessingContext &context)
+{
+    setRunMethod(&HelpRpcOperation::runGetProxyData);
+    context.inputStream() >> m_getProxyData;
     return !context.inputStream().error();
 }
 
@@ -96,10 +138,24 @@ bool HelpRpcOperation::processGetSupport(RpcProcessingContext &context)
     return !context.inputStream().error();
 }
 
-bool HelpRpcOperation::processGetTermsOfService(RpcProcessingContext &context)
+bool HelpRpcOperation::processGetSupportName(RpcProcessingContext &context)
 {
-    setRunMethod(&HelpRpcOperation::runGetTermsOfService);
-    context.inputStream() >> m_getTermsOfService;
+    setRunMethod(&HelpRpcOperation::runGetSupportName);
+    context.inputStream() >> m_getSupportName;
+    return !context.inputStream().error();
+}
+
+bool HelpRpcOperation::processGetTermsOfServiceUpdate(RpcProcessingContext &context)
+{
+    setRunMethod(&HelpRpcOperation::runGetTermsOfServiceUpdate);
+    context.inputStream() >> m_getTermsOfServiceUpdate;
+    return !context.inputStream().error();
+}
+
+bool HelpRpcOperation::processGetUserInfo(RpcProcessingContext &context)
+{
+    setRunMethod(&HelpRpcOperation::runGetUserInfo);
+    context.inputStream() >> m_getUserInfo;
     return !context.inputStream().error();
 }
 
@@ -119,6 +175,26 @@ bool HelpRpcOperation::processSetBotUpdatesStatus(RpcProcessingContext &context)
 // End of generated process methods
 
 // Generated run methods
+void HelpRpcOperation::runAcceptTermsOfService()
+{
+    // MTProto::Functions::TLHelpAcceptTermsOfService &arguments = m_acceptTermsOfService;
+    if (processNotImplementedMethod(TLValue::HelpAcceptTermsOfService)) {
+        return;
+    }
+    bool result;
+    sendRpcReply(result);
+}
+
+void HelpRpcOperation::runEditUserInfo()
+{
+    // MTProto::Functions::TLHelpEditUserInfo &arguments = m_editUserInfo;
+    if (processNotImplementedMethod(TLValue::HelpEditUserInfo)) {
+        return;
+    }
+    TLHelpUserInfo result;
+    sendRpcReply(result);
+}
+
 void HelpRpcOperation::runGetAppChangelog()
 {
     // MTProto::Functions::TLHelpGetAppChangelog &arguments = m_getAppChangelog;
@@ -126,6 +202,15 @@ void HelpRpcOperation::runGetAppChangelog()
         return;
     }
     TLUpdates result;
+    sendRpcReply(result);
+}
+
+void HelpRpcOperation::runGetAppConfig()
+{
+    if (processNotImplementedMethod(TLValue::HelpGetAppConfig)) {
+        return;
+    }
+    TLJSONValue result;
     sendRpcReply(result);
 }
 
@@ -179,6 +264,16 @@ void HelpRpcOperation::runGetConfig()
     sendRpcReply(result);
 }
 
+void HelpRpcOperation::runGetDeepLinkInfo()
+{
+    // MTProto::Functions::TLHelpGetDeepLinkInfo &arguments = m_getDeepLinkInfo;
+    if (processNotImplementedMethod(TLValue::HelpGetDeepLinkInfo)) {
+        return;
+    }
+    TLHelpDeepLinkInfo result;
+    sendRpcReply(result);
+}
+
 void HelpRpcOperation::runGetInviteText()
 {
     if (processNotImplementedMethod(TLValue::HelpGetInviteText)) {
@@ -195,6 +290,25 @@ void HelpRpcOperation::runGetNearestDc()
     result.nearestDc = 1;
     // ISO 3166-1 alpha-2
     result.country = QStringLiteral("AQ");
+    sendRpcReply(result);
+}
+
+void HelpRpcOperation::runGetPassportConfig()
+{
+    // MTProto::Functions::TLHelpGetPassportConfig &arguments = m_getPassportConfig;
+    if (processNotImplementedMethod(TLValue::HelpGetPassportConfig)) {
+        return;
+    }
+    TLHelpPassportConfig result;
+    sendRpcReply(result);
+}
+
+void HelpRpcOperation::runGetProxyData()
+{
+    if (processNotImplementedMethod(TLValue::HelpGetProxyData)) {
+        return;
+    }
+    TLHelpProxyData result;
     sendRpcReply(result);
 }
 
@@ -217,12 +331,31 @@ void HelpRpcOperation::runGetSupport()
     sendRpcReply(result);
 }
 
-void HelpRpcOperation::runGetTermsOfService()
+void HelpRpcOperation::runGetSupportName()
 {
-    if (processNotImplementedMethod(TLValue::HelpGetTermsOfService)) {
+    if (processNotImplementedMethod(TLValue::HelpGetSupportName)) {
         return;
     }
-    TLHelpTermsOfService result;
+    TLHelpSupportName result;
+    sendRpcReply(result);
+}
+
+void HelpRpcOperation::runGetTermsOfServiceUpdate()
+{
+    if (processNotImplementedMethod(TLValue::HelpGetTermsOfServiceUpdate)) {
+        return;
+    }
+    TLHelpTermsOfServiceUpdate result;
+    sendRpcReply(result);
+}
+
+void HelpRpcOperation::runGetUserInfo()
+{
+    // MTProto::Functions::TLHelpGetUserInfo &arguments = m_getUserInfo;
+    if (processNotImplementedMethod(TLValue::HelpGetUserInfo)) {
+        return;
+    }
+    TLHelpUserInfo result;
     sendRpcReply(result);
 }
 
@@ -256,24 +389,40 @@ HelpRpcOperation::ProcessingMethod HelpRpcOperation::getMethodForRpcFunction(TLV
 {
     switch (function) {
     // Generated methodForRpcFunction cases
+    case TLValue::HelpAcceptTermsOfService:
+        return &HelpRpcOperation::processAcceptTermsOfService;
+    case TLValue::HelpEditUserInfo:
+        return &HelpRpcOperation::processEditUserInfo;
     case TLValue::HelpGetAppChangelog:
         return &HelpRpcOperation::processGetAppChangelog;
+    case TLValue::HelpGetAppConfig:
+        return &HelpRpcOperation::processGetAppConfig;
     case TLValue::HelpGetAppUpdate:
         return &HelpRpcOperation::processGetAppUpdate;
     case TLValue::HelpGetCdnConfig:
         return &HelpRpcOperation::processGetCdnConfig;
     case TLValue::HelpGetConfig:
         return &HelpRpcOperation::processGetConfig;
+    case TLValue::HelpGetDeepLinkInfo:
+        return &HelpRpcOperation::processGetDeepLinkInfo;
     case TLValue::HelpGetInviteText:
         return &HelpRpcOperation::processGetInviteText;
     case TLValue::HelpGetNearestDc:
         return &HelpRpcOperation::processGetNearestDc;
+    case TLValue::HelpGetPassportConfig:
+        return &HelpRpcOperation::processGetPassportConfig;
+    case TLValue::HelpGetProxyData:
+        return &HelpRpcOperation::processGetProxyData;
     case TLValue::HelpGetRecentMeUrls:
         return &HelpRpcOperation::processGetRecentMeUrls;
     case TLValue::HelpGetSupport:
         return &HelpRpcOperation::processGetSupport;
-    case TLValue::HelpGetTermsOfService:
-        return &HelpRpcOperation::processGetTermsOfService;
+    case TLValue::HelpGetSupportName:
+        return &HelpRpcOperation::processGetSupportName;
+    case TLValue::HelpGetTermsOfServiceUpdate:
+        return &HelpRpcOperation::processGetTermsOfServiceUpdate;
+    case TLValue::HelpGetUserInfo:
+        return &HelpRpcOperation::processGetUserInfo;
     case TLValue::HelpSaveAppLog:
         return &HelpRpcOperation::processSaveAppLog;
     case TLValue::HelpSetBotUpdatesStatus:

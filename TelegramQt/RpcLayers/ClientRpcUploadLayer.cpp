@@ -54,14 +54,14 @@ UploadRpcLayer::PendingUploadCdnFile *UploadRpcLayer::getCdnFile(const QByteArra
     return op;
 }
 
-UploadRpcLayer::PendingCdnFileHashVector *UploadRpcLayer::getCdnFileHashes(const QByteArray &fileToken, quint32 offset)
+UploadRpcLayer::PendingFileHashVector *UploadRpcLayer::getCdnFileHashes(const QByteArray &fileToken, quint32 offset)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << offset;
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UploadGetCdnFileHashes;
     outputStream << fileToken;
     outputStream << offset;
-    PendingCdnFileHashVector *op = new PendingCdnFileHashVector(this, outputStream.getData());
+    PendingFileHashVector *op = new PendingFileHashVector(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
@@ -79,6 +79,18 @@ UploadRpcLayer::PendingUploadFile *UploadRpcLayer::getFile(const TLInputFileLoca
     return op;
 }
 
+UploadRpcLayer::PendingFileHashVector *UploadRpcLayer::getFileHashes(const TLInputFileLocation &location, quint32 offset)
+{
+    qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << location << offset;
+    MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
+    outputStream << TLValue::UploadGetFileHashes;
+    outputStream << location;
+    outputStream << offset;
+    PendingFileHashVector *op = new PendingFileHashVector(this, outputStream.getData());
+    processRpcCall(op);
+    return op;
+}
+
 UploadRpcLayer::PendingUploadWebFile *UploadRpcLayer::getWebFile(const TLInputWebFileLocation &location, quint32 offset, quint32 limit)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << location << offset << limit;
@@ -92,14 +104,14 @@ UploadRpcLayer::PendingUploadWebFile *UploadRpcLayer::getWebFile(const TLInputWe
     return op;
 }
 
-UploadRpcLayer::PendingCdnFileHashVector *UploadRpcLayer::reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken)
+UploadRpcLayer::PendingFileHashVector *UploadRpcLayer::reuploadCdnFile(const QByteArray &fileToken, const QByteArray &requestToken)
 {
     qCDebug(c_clientRpcUploadCategory) << Q_FUNC_INFO << fileToken.toHex() << requestToken.toHex();
     MTProto::Stream outputStream(MTProto::Stream::WriteOnly);
     outputStream << TLValue::UploadReuploadCdnFile;
     outputStream << fileToken;
     outputStream << requestToken;
-    PendingCdnFileHashVector *op = new PendingCdnFileHashVector(this, outputStream.getData());
+    PendingFileHashVector *op = new PendingFileHashVector(this, outputStream.getData());
     processRpcCall(op);
     return op;
 }
