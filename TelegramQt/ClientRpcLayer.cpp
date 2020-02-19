@@ -380,6 +380,10 @@ QByteArray RpcLayer::getInitConnection() const
     outputStream << TLValue::InvokeWithLayer;
     outputStream << TLValue::CurrentLayer;
     outputStream << TLValue::InitConnection;
+#if TELEGRAMQT_LAYER >= 81
+    quint32 flags = 0;
+    outputStream << flags;
+#endif
     outputStream << m_appInfo->appId();
     outputStream << m_appInfo->deviceInfo();
     outputStream << m_appInfo->osInfo();
@@ -389,6 +393,9 @@ QByteArray RpcLayer::getInitConnection() const
     outputStream << QString(); // Langpack
 #endif
     outputStream << m_appInfo->languageCode(); // Lang code
+#if TELEGRAMQT_LAYER >= 81
+    // if (flags & 1) << outputStream << InputClientProxy()
+#endif
     return outputStream.getData();
 }
 
