@@ -395,7 +395,12 @@ bool MessageMediaInfo::setDocumentFileName(const QString &fileName)
 
 QString MessageMediaInfo::caption() const
 {
+#if TELEGRAMQT_LAYER > 73
+    // There is no caption since layer 73. Caption moved to the Message text.
+    return QString();
+#else
     return d->caption;
+#endif
 }
 
 void MessageMediaInfo::setCaption(const QString &caption)
@@ -404,7 +409,11 @@ void MessageMediaInfo::setCaption(const QString &caption)
         return;
     }
 
+#if TELEGRAMQT_LAYER > 73
+    // TODO
+#else
     d->caption = caption;
+#endif
 }
 
 QByteArray MessageMediaInfo::getCachedPhoto() const
