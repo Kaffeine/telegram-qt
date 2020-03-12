@@ -603,6 +603,16 @@ void MessagesModel::insertMessages(const QVector<quint32> &messageIds, Mode mode
     }
 }
 
+void MessagesModel::setBusy(bool busy)
+{
+    if (m_busy == busy) {
+        qCritical() << Q_FUNC_INFO << "Invalid call()";
+        return;
+    }
+    m_busy = busy;
+    emit busyChanged();
+}
+
 void MessagesModel::processHistoryMessages(const QVector<quint32> &messageIds)
 {
     if (messageIds.isEmpty()) {

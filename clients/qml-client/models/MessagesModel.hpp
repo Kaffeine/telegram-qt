@@ -184,6 +184,7 @@ class MessagesModel : public QAbstractTableModel,
     //Q_PROPERTY(Classes enabledClass NOTIFY classChanged)
     Q_PROPERTY(Telegram::Peer peer READ peer WRITE setPeer NOTIFY peerChanged)
     Q_PROPERTY(Telegram::Client::DeclarativeClient *client READ qmlClient WRITE setQmlClient NOTIFY clientChanged)
+    Q_PROPERTY(bool busy READ isBusy NOTIFY busyChanged)
 public:
     enum class Column {
         Peer,
@@ -240,6 +241,8 @@ public:
     QVariant getData(int index, Role role) const;
     QVariant getSiblingEntryData(int index) const;
 
+    bool isBusy() const { return m_busy; }
+
     Telegram::Peer peer() const { return m_peer; }
 
 public slots:
@@ -267,9 +270,12 @@ Q_SIGNALS:
 
     void classChanged();
     void peerChanged(Telegram::Peer peer);
+    void busyChanged();
 
 protected:
     void insertMessages(const QVector<quint32> &messageIds, Mode mode = CallModelApi);
+
+    void setBusy(bool busy);
 
     void processHistoryMessages(const QVector<quint32> &messageIds);
     void onMessageReceived(const Telegram::Peer peer, quint32 messageId);
@@ -291,6 +297,7 @@ protected:
     quint32 m_oldestMessageId = 0;
     QVector<Event*> m_events;
     Telegram::Peer m_peer;
+    bool m_busy = false;
 };
 
 inline int MessagesModel::columnCount(const QModelIndex &parent) const
