@@ -60,6 +60,7 @@ enum class ExitCode {
     UnknownError,
     RsaKeyError,
     UnableToStartServer,
+    InvalidArgumentFormat,
 };
 
 Authorization::Code ConstantAuthCodeProvider::generateCode(Session *session, const QString &identifier)
@@ -74,9 +75,11 @@ Authorization::Code ConstantAuthCodeProvider::generateCode(Session *session, con
     return code;
 }
 
-void generateDialogs(LocalCluster *cluster, const QString &userPhone, const int dialogsCount)
+void generateDialogs(LocalCluster *cluster, const QString &userPhone, const int dialogsNumber, const int messagesNumber)
 {
-    qInfo() << "Generate" << dialogsCount << "dialogs for user" << userPhone;
+    qInfo() << "Generate" << dialogsNumber << "dialogs"
+            << "with" << messagesNumber << "messages"
+            << "for user" << userPhone;
     LocalUser *user = cluster->getUser(userPhone);
     if (!user) {
         user = cluster->addUser(userPhone, /* dc */ 1);
@@ -93,21 +96,23 @@ void generateDialogs(LocalCluster *cluster, const QString &userPhone, const int 
         ++startId;
     }
 
-    for (int i = 0; i < dialogsCount; ++i) {
+    for (int dialogIndex = 0; dialogIndex < dialogsNumber; ++dialogIndex) {
         // Add users to different DCs
-        const quint32 userDcId = static_cast<quint32>((i % dcCount) + 1);
-        LocalUser *dialogN = tryAddUser(cluster, mkUserData(startId + i, userDcId));
+        const quint32 userDcId = static_cast<quint32>((dialogIndex % dcCount) + 1);
+        LocalUser *dialogN = tryAddUser(cluster, mkUserData(startId + dialogIndex, userDcId));
         qInfo() << "    Add dialog" << dialogN->toPeer();
         AbstractServerApi *contactServer = cluster->getServerApiInstance(dialogN->dcId());
-
-        MessageData *data = serverApi->messageService()
-                ->addMessage(dialogN->userId(), user->toPeer(), QStringLiteral("mgs%1").arg(i + 1));
-        data->setDate32(data->date() - 60);
-        cluster->processMessage(data);
-
         // Upload an image
         const ImageDescriptor image = uploadUserImage(contactServer);
         dialogN->updateImage(image);
+
+        // Generate the messages
+        for (int messageIndex = 0; messageIndex < messagesNumber; ++ messageIndex) {
+            const QString text = QStringLiteral("mgs%1 (d%2)").arg(messageIndex + 1).arg(dialogIndex);
+            MessageData *data = serverApi->messageService()->addMessage(dialogN->userId(), user->toPeer(), text);
+            data->setDate32(data->date() - 60);
+            cluster->processMessage(data);
+        }
     }
 }
 
@@ -149,12 +154,39 @@ ExitCode internalMain(int argc, char *argv[])
     generateDataOption.setDescription(QLatin1String("Generate some data"));
     parser.addOption(generateDataOption);
 
+    QCommandLineOption dialogsNumberOption(QStringList({ QLatin1String("dialogs-number") }));
+    dialogsNumberOption.setDescription(QLatin1String("The number of dialogs"));
+    dialogsNumberOption.setValueName(QLatin1String("number"));
+    dialogsNumberOption.setDefaultValue(QLatin1String("10"));
+    parser.addOption(dialogsNumberOption);
+
+    QCommandLineOption messagesNumberOption(QStringList({ QLatin1String("messages-number") }));
+    messagesNumberOption.setDescription(QLatin1String("The number of messages"));
+    messagesNumberOption.setValueName(QLatin1String("number"));
+    messagesNumberOption.setDefaultValue(QLatin1String("10"));
+    parser.addOption(messagesNumberOption);
+
     QCommandLineOption userOption(QStringList({ QLatin1String("u"), QLatin1String("user") }));
     userOption.setValueName(QLatin1String("phone number"));
     userOption.setDefaultValue(QLatin1String("123456789"));
     parser.addOption(userOption);
 
     parser.process(a);
+
+    {
+        // Validate arguments
+        bool ok;
+        parser.value(dialogsNumberOption).toInt(&ok);
+        if (!ok) {
+            qCritical() << "Invalid dialogs number";
+            return ExitCode::InvalidArgumentFormat;
+        }
+        parser.value(messagesNumberOption).toInt(&ok);
+        if (!ok) {
+            qCritical() << "Invalid messages number";
+            return ExitCode::InvalidArgumentFormat;
+        }
+    }
 
     Telegram::DcConfiguration dcConfig = Config().serverConfiguration();
     dcConfig.dcOptions.clear();
@@ -208,8 +240,9 @@ ExitCode internalMain(int argc, char *argv[])
 
     if (parser.isSet(generateDataOption)) {
         QString userPhone = parser.value(userOption);
-        const int dialogsCount = 3;
-        generateDialogs(&cluster, userPhone, dialogsCount);
+        const int dialogsNumber = parser.value(dialogsNumberOption).toInt();
+        const int messagesNumber = parser.value(messagesNumberOption).toInt();
+        generateDialogs(&cluster, userPhone, dialogsNumber, messagesNumber);
     }
 
     int retCode = a.exec();
