@@ -55,6 +55,13 @@ protected:
 
 QString ConstantAuthCodeProvider::s_code = QStringLiteral("11111");
 
+enum class ExitCode {
+    Ok = 0,
+    UnknownError,
+    RsaKeyError,
+    UnableToStartServer,
+};
+
 Authorization::Code ConstantAuthCodeProvider::generateCode(Session *session, const QString &identifier)
 {
     Authorization::Code code;
@@ -104,7 +111,7 @@ void generateDialogs(LocalCluster *cluster, const QString &userPhone, const int 
     }
 }
 
-int main(int argc, char *argv[])
+ExitCode internalMain(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
     a.setOrganizationName(QLatin1String("TelegramQt"));
@@ -115,13 +122,13 @@ int main(int argc, char *argv[])
     Telegram::initialize();
     if (!TestKeyData::initKeyFiles()) {
         qCritical() << "Unable to init RSA key files.";
-        return -1;
+        return ExitCode::RsaKeyError;
     }
 
     const Telegram::RsaKey privateKey = Telegram::RsaKey::fromFile(TestKeyData::privateKeyFileName());
     if (!privateKey.isValid()) {
         qCritical() << "Unable to read RSA key.";
-        return -1;
+        return ExitCode::RsaKeyError;
     }
 
     QCommandLineParser parser;
@@ -182,7 +189,7 @@ int main(int argc, char *argv[])
     }
 
     if (!cluster.start()) {
-        return -2;
+        return ExitCode::UnableToStartServer;
     }
 
     JsonDataImporter importer;
@@ -208,8 +215,19 @@ int main(int argc, char *argv[])
     int retCode = a.exec();
     cluster.stop();
 
+    TestKeyData::cleanupKeyFiles();
+    if (retCode) {
+        qCritical() << "Internal return code:" << retCode;
+        return ExitCode::UnknownError;
+    }
+
     importer.saveData();
 
-    TestKeyData::cleanupKeyFiles();
-    return retCode;
+    return ExitCode::Ok;
+}
+
+int main(int argc, char *argv[])
+{
+    ExitCode code = internalMain(argc, argv);
+    return static_cast<int>(code);
 }
