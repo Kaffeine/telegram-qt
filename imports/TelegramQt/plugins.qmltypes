@@ -239,8 +239,6 @@ Module {
         Method { name: "recovery"; type: "bool" }
         Method { name: "requestCall"; type: "bool" }
         Method { name: "requestSms"; type: "bool" }
-        Method { name: "checkRegistration" }
-        Method { name: "signIn" }
     }
     Component {
         name: "Telegram::Client::DeclarativeClient"
@@ -505,6 +503,11 @@ Module {
             Parameter { name: "messages"; type: "QVector<quint32>" }
         }
         Signal {
+            name: "syncMessagesReceived"
+            Parameter { name: "peer"; type: "Telegram::Peer" }
+            Parameter { name: "messages"; type: "QVector<quint32>" }
+        }
+        Signal {
             name: "messageReceived"
             Parameter { name: "peer"; type: "Telegram::Peer" }
             Parameter { name: "messageId"; type: "uint" }
@@ -638,10 +641,9 @@ Module {
             name: "MessageFlag"
             values: {
                 "MessageFlagNone": 0,
-                "MessageFlagRead": 1,
-                "MessageFlagOut": 2,
-                "MessageFlagForwarded": 4,
-                "MessageFlagIsReply": 8
+                "MessageFlagOut": 1,
+                "MessageFlagForwarded": 2,
+                "MessageFlagIsReply": 4
             }
         }
         Enum {
