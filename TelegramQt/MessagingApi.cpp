@@ -777,7 +777,6 @@ void MessagingApiPrivate::onMessageActionTimerTimeout()
 }
 
 MessagingApi::SendOptions::SendOptions() :
-    m_replyMessageId(0),
     m_clearDraft(true)
 {
 }

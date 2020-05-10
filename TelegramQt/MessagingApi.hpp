@@ -70,8 +70,8 @@ public:
         void setReplyToMessageId(quint32 id) { m_replyMessageId = id; }
 
     protected:
-        quint32 m_replyMessageId;
-        bool m_clearDraft;
+        quint32 m_replyMessageId = 0;
+        bool m_clearDraft = false;
         // Message entities
 
         // (flags & 1 << 0) enables replyToMsgId
