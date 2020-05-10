@@ -89,6 +89,7 @@ public:
         MessageFlagOut       = 1 << 0, // Message is outgoing
         MessageFlagForwarded = 1 << 1,
         MessageFlagIsReply   = 1 << 2,
+        MessageFlagSilent    = 1 << 3,
     };
     Q_ENUM(MessageFlag)
     Q_DECLARE_FLAGS(MessageFlags, MessageFlag)

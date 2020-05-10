@@ -192,6 +192,9 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
     if (m->out()) {
         privateData->flags |= Namespace::MessageFlagOut;
     }
+    if (m->silent()) {
+        privateData->flags |= Namespace::MessageFlagSilent;
+    }
     if (m->flags & TLMessage::FwdFrom) {
         if (m->fwdFrom.flags & TLMessageFwdHeader::FromId) {
             privateData->setForwardFromUser(m->fwdFrom.fromId);

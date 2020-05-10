@@ -66,12 +66,16 @@ public:
         bool clearDraft() const { return m_clearDraft; }
         void setClearDraft(bool clear) { m_clearDraft = clear; }
 
+        bool isSilent() const { return m_silent; }
+        void setSilent(bool silent) { m_silent = silent; }
+
         quint32 replyToMessageId() const { return m_replyMessageId; }
         void setReplyToMessageId(quint32 id) { m_replyMessageId = id; }
 
     protected:
         quint32 m_replyMessageId = 0;
         bool m_clearDraft = false;
+        bool m_silent = false;
         // Message entities
 
         // (flags & 1 << 0) enables replyToMsgId

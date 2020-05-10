@@ -65,9 +65,11 @@ quint64 MessagingApiPrivate::sendMessage(const Peer peer, const QString &message
     DataInternalApi *dataApi = dataInternalApi();
 
     quint32 flags = 0;
+    if (options.isSilent()) {
+        flags |= 1 << 5;
+    }
     if (options.clearDraft()) {
         // flags |= 1 << 1 for noWebpage "true" value
-        // flags |= 1 << 5 for silent "true" value
         // flags |= 1 << 6 for background "true" value
         flags |= 1 << 7; // clearDraft
     }
