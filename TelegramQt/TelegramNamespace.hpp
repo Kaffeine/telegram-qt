@@ -85,27 +85,27 @@ public:
     Q_ENUM(ContactStatus)
 
     enum MessageFlag {
-        MessageFlagNone      = 0x0,
-        MessageFlagOut       = 0x1, // Message is outgoing
-        MessageFlagForwarded = 0x2,
-        MessageFlagIsReply   = 0x4,
+        MessageFlagNone      = 0,
+        MessageFlagOut       = 1 << 0, // Message is outgoing
+        MessageFlagForwarded = 1 << 1,
+        MessageFlagIsReply   = 1 << 2,
     };
     Q_ENUM(MessageFlag)
     Q_DECLARE_FLAGS(MessageFlags, MessageFlag)
 
     enum MessageType {
-        MessageTypeUnsupported = 0x0000,
-        MessageTypeText        = 0x0001,
-        MessageTypePhoto       = 0x0002,
-        MessageTypeAudio       = 0x0004,
-        MessageTypeVideo       = 0x0008,
-        MessageTypeContact     = 0x0010,
-        MessageTypeDocument    = 0x0020,
-        MessageTypeGeo         = 0x0040,
-        MessageTypeWebPage     = 0x0080,
-        MessageTypeSticker     = 0x0100,
-        MessageTypeAnimation   = 0x0200,
-        MessageTypeAll         = 0xffff,
+        MessageTypeUnsupported = 0,
+        MessageTypeText        = 1 << 0,
+        MessageTypePhoto       = 1 << 1,
+        MessageTypeAudio       = 1 << 2,
+        MessageTypeVideo       = 1 << 3,
+        MessageTypeContact     = 1 << 4,
+        MessageTypeDocument    = 1 << 5,
+        MessageTypeGeo         = 1 << 6,
+        MessageTypeWebPage     = 1 << 7,
+        MessageTypeSticker     = 1 << 8,
+        MessageTypeAnimation   = 1 << 9,
+        MessageTypeAll         = 0xffff, // Up to 16 message types. Bump this value if needed.
     };
     Q_ENUM(MessageType)
     Q_DECLARE_FLAGS(MessageTypeFlags, MessageType)
