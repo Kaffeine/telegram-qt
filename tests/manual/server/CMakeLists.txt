@@ -16,7 +16,7 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
 
-if (DEVELOPER_BUILD)
+if(TELEGRAMQT_DEVELOPER_BUILD)
     list(APPEND QT_COMPONENTS DBus)
 endif()
 
@@ -37,7 +37,7 @@ target_link_libraries(TelegramTestServer
     test_keys_data
 )
 
-if (DEVELOPER_BUILD)
+if(TELEGRAMQT_DEVELOPER_BUILD)
     target_compile_definitions(TelegramTestServer PRIVATE
         DEVELOPER_BUILD
         QT_DEPRECATED_WARNINGS

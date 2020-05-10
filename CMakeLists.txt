@@ -15,7 +15,11 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
 include(GNUInstallDirs)
 include(FeatureSummary)
-include(CCache)
+include(ProjectOption)
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    include(CCache)
+endif()
 
 set(OVERRIDE_CXX_STANDARD 11 CACHE STRING "Compile with custom C++ standard version")
 set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
@@ -31,45 +35,39 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 set(CMAKE_AUTOMOC TRUE)
 
-option(BUILD_CLIENT "Build a client app" FALSE)
-option(BUILD_DOCUMENTATION "Enable generation of Qt Help (qch) file" FALSE)
-option(BUILD_GENERATOR "Build protocol code generator (useful for developers)" FALSE)
-option(BUILD_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
-option(BUILD_SERVER "Build server" FALSE)
-option(BUILD_SHARED_LIBS "Compile libraries as shared" TRUE)
-option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
+project_option(BUILD_CLIENT "Build a client app" FALSE)
+project_option(BUILD_DOCUMENTATION "Enable generation of Qt Help (qch) file" FALSE)
+project_option(BUILD_GENERATOR "Build protocol code generator (useful for developers)" FALSE)
+project_option(BUILD_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
+project_option(BUILD_SERVER "Build server" FALSE)
+project_option(BUILD_SHARED_LIBS "Compile libraries as shared" TRUE)
+project_option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
 
-option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
-option(EXPORT_INTERNAL_API "Export internal and unstable API" FALSE)
+project_option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
+project_option(EXPORT_INTERNAL_API "Export internal and unstable API" FALSE)
 
-if(DEVELOPER_BUILD)
-    set(EXPORT_INTERNAL_API TRUE)
-endif()
-
-if(EXPORT_INTERNAL_API)
+if(TELEGRAMQT_DEVELOPER_BUILD)
     set(TELEGRAMQT_EXPORT_INTERNAL_API TRUE)
-else()
-    set(TELEGRAMQT_EXPORT_INTERNAL_API FALSE)
 endif()
 
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
 
-if(BUILD_TESTS)
+if(TELEGRAMQT_BUILD_TESTS)
     list(APPEND QT_COMPONENTS Test)
 endif()
 
-if(BUILD_QML_IMPORT)
+if(TELEGRAMQT_BUILD_QML_IMPORT)
     list(APPEND QT_COMPONENTS Qml)
 endif()
 
-if(BUILD_SERVER)
-    if(NOT EXPORT_INTERNAL_API)
+if(TELEGRAMQT_BUILD_SERVER)
+    if(NOT TELEGRAMQT_EXPORT_INTERNAL_API)
         message(SEND_ERROR "Unable to build the server because the internal API export disabled")
     endif()
     # QtGui is used by the server to resize images
     list(APPEND QT_COMPONENTS Gui)
-    if(DEVELOPER_BUILD)
+    if(TELEGRAMQT_DEVELOPER_BUILD)
         # In Developer mode the server shows auth code via Notification DBus iface
         list(APPEND QT_COMPONENTS DBus)
     endif()
@@ -116,7 +114,7 @@ endif()
 # Add the source subdirectories
 add_subdirectory(TelegramQt)
 
-if(BUILD_QML_IMPORT)
+if(TELEGRAMQT_BUILD_QML_IMPORT)
     add_subdirectory(imports/TelegramQt)
     set(QML_IMPORT_PATH
             ${CMAKE_CURRENT_SOURCE_DIR}/imports
@@ -127,18 +125,18 @@ if(BUILD_QML_IMPORT)
     )
 endif()
 
-if(BUILD_CLIENT)
+if(TELEGRAMQT_BUILD_CLIENT)
     add_subdirectory(clients)
 endif()
 
-if(BUILD_TESTS)
-    if(NOT EXPORT_INTERNAL_API)
+if(TELEGRAMQT_BUILD_TESTS)
+    if(NOT TELEGRAMQT_EXPORT_INTERNAL_API)
         message(SEND_ERROR "Unable to the tests because the internal API export disabled")
     endif()
     enable_testing()
     add_subdirectory(TelegramQt/tests)
     add_subdirectory(tests/data)
-    if(BUILD_SERVER)
+    if(TELEGRAMQT_BUILD_SERVER)
         # All top-level tests are "client-server"
         add_subdirectory(tests)
     else()
@@ -146,11 +144,11 @@ if(BUILD_TESTS)
     endif()
 endif()
 
-if(BUILD_SERVER)
+if(TELEGRAMQT_BUILD_SERVER)
     add_subdirectory(server)
 endif()
 
-if(BUILD_GENERATOR)
+if(TELEGRAMQT_BUILD_GENERATOR)
     if(Qt5_VERSION VERSION_LESS "5.6.0")
         message(WARNING "Use Qt 5.6.0 or higher to build GeneratorNG")
     else()
@@ -158,12 +156,12 @@ if(BUILD_GENERATOR)
     endif()
 endif()
 
-if(BUILD_DOCUMENTATION)
+if(TELEGRAMQT_BUILD_DOCUMENTATION)
     add_subdirectory(doc)
 endif()
 
 message(STATUS "${PROJECT_NAME} configuration:")
-message(STATUS "  Export internal API: ${EXPORT_INTERNAL_API}")
+message(STATUS "  Export internal API: ${TELEGRAMQT_EXPORT_INTERNAL_API}")
 message(STATUS "  Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "  Qt: ${Qt5_VERSION} at ${_qt5Core_install_prefix}")
 

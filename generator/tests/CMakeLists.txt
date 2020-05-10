@@ -1,6 +1,4 @@
 
-enable_testing()
-
 add_executable(tst_generator
     tst_generator/tst_generator.cpp
     ../Generator.cpp

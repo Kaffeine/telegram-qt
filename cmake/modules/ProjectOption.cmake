@@ -1,0 +1,10 @@
+
+function(project_option OPTION_NAME OPTION_TEXT OPTION_VALUE)
+    string(TOUPPER "${PROJECT_NAME}" OPTION_PREFIX)
+    if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+        option(${OPTION_NAME} "${OPTION_TEXT}" ${OPTION_VALUE})
+        set(${OPTION_PREFIX}_${OPTION_NAME} ${${OPTION_NAME}} PARENT_SCOPE)
+    else()
+        option(${OPTION_PREFIX}_${OPTION_NAME} "${OPTION_TEXT}" ${OPTION_VALUE})
+    endif()
+endfunction()

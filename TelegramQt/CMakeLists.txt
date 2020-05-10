@@ -228,7 +228,7 @@ set(telegram_qt_public_HEADERS
 target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLTypesDebug.cpp) # 0.5 Mb
 target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLTypesDebug.hpp)
 
-if (DEVELOPER_BUILD)
+if(TELEGRAMQT_DEVELOPER_BUILD)
     target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLRpcDebug.cpp)
     target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE MTProto/TLRpcDebug.hpp)
     target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE DEVELOPER_BUILD)

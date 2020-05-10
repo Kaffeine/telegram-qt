@@ -98,7 +98,7 @@ target_link_libraries(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC
     TelegramQt${QT_VERSION_MAJOR}::Core
 )
 
-if(DEVELOPER_BUILD)
+if(TELEGRAMQT_DEVELOPER_BUILD)
     target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
         DEVELOPER_BUILD
         QT_DEPRECATED_WARNINGS

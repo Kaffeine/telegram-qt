@@ -1,4 +1,4 @@
-if (BUILD_QML_IMPORT)
+if(TELEGRAMQT_BUILD_QML_IMPORT)
     add_subdirectory(qml-client)
 endif()
 
