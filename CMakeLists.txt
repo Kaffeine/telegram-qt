@@ -15,6 +15,9 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
 include(GNUInstallDirs)
 include(FeatureSummary)
+
+# Local includes
+include(CompilerSettings)
 include(ProjectOption)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -28,10 +31,6 @@ set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
 set(CMAKE_CXX_STANDARD ${OVERRIDE_CXX_STANDARD})
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-set(CMAKE_C_VISIBILITY_PRESET hidden)
-set(CMAKE_CXX_VISIBILITY_PRESET hidden)
-set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
 set(CMAKE_AUTOMOC TRUE)
 
@@ -78,24 +77,6 @@ set(QT_MINUMUM_VERSION 5.5.0)
 find_package(Qt5 ${QT_MINUMUM_VERSION} REQUIRED COMPONENTS ${QT_COMPONENTS})
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=return-type")
-endif()
-
-if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT APPLE) OR
-        (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND NOT APPLE) OR
-        (CMAKE_CXX_COMPILER_ID STREQUAL "Intel" AND NOT WIN32))
-    # Linker warnings should be treated as errors
-    set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--fatal-warnings ${CMAKE_SHARED_LINKER_FLAGS}")
-    set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--fatal-warnings ${CMAKE_MODULE_LINKER_FLAGS}")
-
-    # Do not allow undefined symbols, even in non-symbolic shared libraries
-    set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_SHARED_LINKER_FLAGS}")
-    set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_MODULE_LINKER_FLAGS}")
-endif()
 
 if (NOT BUILD_VERSION)
     find_package(Git QUIET)
