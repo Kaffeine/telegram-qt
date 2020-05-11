@@ -52,9 +52,6 @@ else()
     set(TELEGRAMQT_EXPORT_INTERNAL_API FALSE)
 endif()
 
-option(ENABLE_COVERAGE_BUILD "Build the project with code-coverage support" FALSE)
-option(ENABLE_COVERAGE_HTML "Generate an HTML report for the code-coverage analysis result" FALSE)
-
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
 
@@ -100,13 +97,6 @@ if((CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT APPLE) OR
     # Do not allow undefined symbols, even in non-symbolic shared libraries
     set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_SHARED_LINKER_FLAGS}")
     set(CMAKE_MODULE_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_MODULE_LINKER_FLAGS}")
-endif()
-
-if(ENABLE_COVERAGE_BUILD)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-    set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-    SET(CMAKE_SHARED_LINKER_FLAGS="${CMAKE_SHARED_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
-    SET(CMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
 if (NOT BUILD_VERSION)
@@ -170,39 +160,6 @@ endif()
 
 if(BUILD_DOCUMENTATION)
     add_subdirectory(doc)
-endif()
-
-if(ENABLE_COVERAGE_BUILD)
-    # Code coverage
-    find_program(LCOV_PATH lcov)
-
-    set(coverage_full_info "${CMAKE_BINARY_DIR}/coverage-full.info")
-    set(coverage_info "${CMAKE_BINARY_DIR}/coverage.info")
-
-    add_custom_command(OUTPUT ${coverage_info}
-        COMMAND ${LCOV_PATH} --directory . --capture --output-file ${coverage_full_info}
-        COMMAND ${LCOV_PATH} --remove ${coverage_full_info}
-            '*/tests/*'
-            '*/server/*'
-            '/usr/*'
-            '/opt/*'
-            '*/moc_*.cpp'
-            --output-file ${coverage_info}
-        COMMAND ${LCOV_PATH} --list ${coverage_info}
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
-    )
-    add_custom_target(coverage DEPENDS ${coverage_info})
-
-    if(ENABLE_COVERAGE_HTML)
-        find_program(GENHTML_PATH genhtml)
-        add_custom_target(coverage_html
-            COMMAND ${GENHTML_PATH} -o coverage_report ${coverage_info}
-            DEPENDS coverage
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-            COMMENT "Generate HTML report for the coverage analysis"
-        )
-    endif()
 endif()
 
 message(STATUS "${PROJECT_NAME} configuration:")
