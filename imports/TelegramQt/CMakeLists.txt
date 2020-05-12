@@ -64,7 +64,7 @@ install(
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    COMPONENT Library
+    COMPONENT Runtime
 )
 
 install(
@@ -85,11 +85,13 @@ target_link_libraries(TelegramQmlPlugin
 install(
     TARGETS TelegramQmlPlugin
     DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
+    COMPONENT Runtime
 )
 
 install(
     FILES qmldir plugins.qmltypes
     DESTINATION ${INSTALL_QML_IMPORT_DIR}/TelegramQt
+    COMPONENT Runtime
 )
 
 if(TELEGRAMQT_DEVELOPER_BUILD)

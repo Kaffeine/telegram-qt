@@ -34,6 +34,7 @@ target_link_libraries(qml-client-qt${QT_VERSION_MAJOR} LINK_PUBLIC
 install(
     TARGETS qml-client-qt${QT_VERSION_MAJOR}
     DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT Runtime
 )
 
 message(STATUS "Hint: Add 'QML2_IMPORT_PATH=${CMAKE_INSTALL_FULL_LIBDIR}/qt${QT_VERSION_MAJOR}/qml' "

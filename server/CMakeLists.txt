@@ -113,3 +113,9 @@ add_executable(TelegramServer main.cpp)
 target_link_libraries(TelegramServer PUBLIC
     TelegramQt${QT_VERSION_MAJOR}::Server
 )
+
+install(
+    TARGETS TelegramServer
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT Runtime
+)

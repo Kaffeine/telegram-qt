@@ -48,3 +48,9 @@ if(TELEGRAMQT_DEVELOPER_BUILD)
         Qt5::DBus
     )
 endif()
+
+install(
+    TARGETS TelegramTestServer
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT Runtime
+)
