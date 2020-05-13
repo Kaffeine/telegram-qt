@@ -19,6 +19,8 @@
 #define TELEGRAM_SERVER_CLUSTER_HPP
 
 #include <QObject>
+
+#include <QHostAddress>
 #include <QVector>
 
 #include "DcConfiguration.hpp"
@@ -53,6 +55,8 @@ public:
     void setMessageService(MessageService *service);
     void setAuthorizationProvider(Authorization::Provider *provider);
 
+    void setListenAddress(const QHostAddress &address);
+
     DcConfiguration serverConfiguration() { return m_serverConfiguration; }
     void setServerConfiguration(const DcConfiguration &config);
 
@@ -75,6 +79,7 @@ protected:
     ServerConstructor m_constructor;
     QVector<Server*> m_serverInstances;
     DcConfiguration m_serverConfiguration;
+    QHostAddress m_listenAddress;
     RsaKey m_key;
     MessageService *m_messageService = nullptr;
     Authorization::Provider *m_authProvider = nullptr;

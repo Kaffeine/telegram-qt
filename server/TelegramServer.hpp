@@ -9,6 +9,7 @@
 #include "TelegramNamespace.hpp"
 
 #include <QHash>
+#include <QHostAddress>
 #include <QSet>
 #include <QVector>
 
@@ -41,6 +42,7 @@ public:
     explicit Server(QObject *parent = nullptr);
     ~Server() override;
 
+    void setListenAddress(const QHostAddress &address);
     void setDcOption(const DcOption &option);
 
     void setServerPrivateRsaKey(const Telegram::RsaKey &key);
@@ -142,6 +144,7 @@ protected:
 
 private:
     QTcpServer *m_serverSocket;
+    QHostAddress m_listenAddress;
     DcOption m_dcOption;
     Telegram::RsaKey m_key;
 

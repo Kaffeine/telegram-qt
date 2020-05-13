@@ -87,6 +87,11 @@ Server::~Server()
     qDeleteAll(m_rpcOperationFactories);
 }
 
+void Server::setListenAddress(const QHostAddress &address)
+{
+    m_listenAddress = address;
+}
+
 void Server::setDcOption(const DcOption &option)
 {
     m_dcOption = option;
@@ -106,13 +111,21 @@ bool Server::start()
         qCCritical(loggingCategoryServer).noquote().nospace() << "Unable to start server: Invalid (null) DC id.";
         return false;
     }
-    if (!m_serverSocket->listen(QHostAddress(m_dcOption.address), m_dcOption.port)) {
+
+    QHostAddress address = m_listenAddress;
+    if (address.isNull()) {
+        address = QHostAddress(m_dcOption.address);
+    }
+
+    if (!m_serverSocket->listen(address, m_dcOption.port)) {
         qCCritical(loggingCategoryServer).noquote().nospace() << "Unable to listen port " << m_dcOption.port
                                                               << " ("  << m_serverSocket->serverError() << ")";
         return false;
     }
     qCInfo(loggingCategoryServer).nospace().noquote() << "Start server (DC " << m_dcOption.id << ") "
                                                       << m_dcOption.address << ":" << m_dcOption.port
+                                                      << " (listening " << m_serverSocket->serverAddress().toString()
+                                                      << ":" << m_serverSocket->serverPort() << ")"
                                                       << "; Key:" << hex << showbase << m_key.fingerprint;
     return true;
 }

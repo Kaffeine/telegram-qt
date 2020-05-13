@@ -37,6 +37,11 @@ void LocalCluster::setAuthorizationProvider(Authorization::Provider *provider)
     m_authProvider = provider;
 }
 
+void LocalCluster::setListenAddress(const QHostAddress &address)
+{
+    m_listenAddress = address;
+}
+
 void LocalCluster::setServerConfiguration(const DcConfiguration &config)
 {
     m_serverConfiguration = config;
@@ -85,6 +90,7 @@ bool LocalCluster::start()
         Server *server = m_constructor(this);
         server->setServerConfiguration(m_serverConfiguration);
         server->setDcOption(dc);
+        server->setListenAddress(m_listenAddress);
         server->setServerPrivateRsaKey(m_key);
         server->setMessageService(m_messageService);
         server->setAuthorizationProvider(m_authProvider);
