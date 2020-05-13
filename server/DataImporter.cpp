@@ -27,7 +27,7 @@ void DataImporter::saveData()
     }
 }
 
-void Telegram::Server::DataImporter::loadData()
+void DataImporter::loadData()
 {
     if (!prepare()) {
         return;
