@@ -206,6 +206,7 @@ ExitCode internalMain(int argc, char *argv[])
     LocalCluster cluster;
     cluster.setServerPrivateRsaKey(privateKey);
     cluster.setServerConfiguration(dcConfig);
+    cluster.setListenAddress(QHostAddress::Any);
 
     ConstantAuthCodeProvider authProvider;
     cluster.setAuthorizationProvider(&authProvider);
