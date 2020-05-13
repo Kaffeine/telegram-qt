@@ -111,15 +111,15 @@ bool Server::start()
                                                               << " ("  << m_serverSocket->serverError() << ")";
         return false;
     }
-    qCInfo(loggingCategoryServer).nospace().noquote() << this << " start server (DC " << m_dcOption.id << ") "
-                                                      << "on " << m_dcOption.address << ":" << m_dcOption.port
+    qCInfo(loggingCategoryServer).nospace().noquote() << "Start server (DC " << m_dcOption.id << ") "
+                                                      << m_dcOption.address << ":" << m_dcOption.port
                                                       << "; Key:" << hex << showbase << m_key.fingerprint;
     return true;
 }
 
 void Server::stop()
 {
-    qCInfo(loggingCategoryServer).nospace().noquote() << this << " stop server (DC " << m_dcOption.id << ") "
+    qCInfo(loggingCategoryServer).nospace().noquote() << "Stop server (DC " << m_dcOption.id << ") "
                                                       << "on " << m_dcOption.address << ":" << m_dcOption.port;
     if (m_serverSocket) {
         m_serverSocket->close();
