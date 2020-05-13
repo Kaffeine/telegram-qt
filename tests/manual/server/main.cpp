@@ -194,7 +194,9 @@ ExitCode internalMain(int argc, char *argv[])
     for (quint32 i = 0; i < 3; ++i) {
         Telegram::DcOption dcOption;
         dcOption.id = i + 1;
-        // A DC that does not accepts any transport considered as invalid in some client.
+        // Do not raise this TcpOnly flag, because config should have info for all transports
+        // (otherwise it is considered invalid in some clients).
+
         // dcOption.flags = Telegram::DcOption::TcpOnly;
         dcOption.address = parser.value(ipAddressOption);
         dcOption.port = static_cast<quint16>(parser.value(portOption).toUInt() + i);
