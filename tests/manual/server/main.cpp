@@ -139,16 +139,16 @@ ExitCode internalMain(int argc, char *argv[])
     QCommandLineParser parser;
     parser.addHelpOption();
 
-    QCommandLineOption ipAddressOption(QStringList({ QLatin1String("a"), QLatin1String("address") }));
-    ipAddressOption.setValueName(QLatin1String("ip"));
-    ipAddressOption.setDefaultValue(QLatin1String("127.0.0.1"));
-    parser.addOption(ipAddressOption);
+    QCommandLineOption configAddressOption(QStringList({ QLatin1String("a"), QLatin1String("address") }));
+    configAddressOption.setValueName(QLatin1String("ip"));
+    configAddressOption.setDefaultValue(QLatin1String("127.0.0.1"));
+    parser.addOption(configAddressOption);
 
-    QCommandLineOption portOption(QStringList({ QLatin1String("p"), QLatin1String("port") }));
-    portOption.setDescription(QLatin1String("first port"));
-    portOption.setValueName(QLatin1String("port"));
-    portOption.setDefaultValue(QLatin1String("10443"));
-    parser.addOption(portOption);
+    QCommandLineOption configPortOption(QStringList({ QLatin1String("p"), QLatin1String("port") }));
+    configPortOption.setDescription(QLatin1String("first port"));
+    configPortOption.setValueName(QLatin1String("port"));
+    configPortOption.setDefaultValue(QLatin1String("10443"));
+    parser.addOption(configPortOption);
 
     QCommandLineOption generateDataOption(QStringList({ QLatin1String("g"), QLatin1String("generate") }));
     generateDataOption.setDescription(QLatin1String("Generate some data"));
@@ -198,8 +198,8 @@ ExitCode internalMain(int argc, char *argv[])
         // (otherwise it is considered invalid in some clients).
 
         // dcOption.flags = Telegram::DcOption::TcpOnly;
-        dcOption.address = parser.value(ipAddressOption);
-        dcOption.port = static_cast<quint16>(parser.value(portOption).toUInt() + i);
+        dcOption.address = parser.value(configAddressOption);
+        dcOption.port = static_cast<quint16>(parser.value(configPortOption).toUInt() + i);
         dcConfig.dcOptions.append(dcOption);
     }
 
