@@ -95,6 +95,7 @@ private slots:
     void getSelfUserDialog();
     void getDialogs();
     void getAllDialogs();
+    void sendMessage_data();
     void sendMessage();
     void getHistory_data();
     void getHistory();
@@ -440,10 +441,24 @@ void tst_MessagesApi::getAllDialogs()
     QCOMPARE(dialogList->peers().count(), dialogsCount);
 }
 
+void tst_MessagesApi::sendMessage_data()
+{
+    QTest::addColumn<UserData>("user1Data");
+    QTest::addColumn<UserData>("user2Data");
+
+    const quint32 dc1 = 1;
+
+    QTest::newRow("Within a DC")
+            << mkUserData(1, dc1)
+            << mkUserData(2, dc1)
+               ;
+}
+
 void tst_MessagesApi::sendMessage()
 {
-    const UserData user1Data = c_userWithPassword;
-    const UserData user2Data = c_user2;
+    QFETCH(UserData, user1Data);
+    QFETCH(UserData, user2Data);
+
     const DcOption clientDcOption = c_localDcOptions.first();
     const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
     const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
