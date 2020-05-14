@@ -683,14 +683,13 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
                 user->bumpDialogUnreadCount(notification.dialogPeer);
             }
 
-            if ((userId == fromUser->id()) && !notifications.isEmpty()) {
+            if (notifications.isEmpty() || userId != fromUser->id()) {
+                notifications.append(notification);
+            } else {
                 // Keep the sender Notification on the first place
                 notifications.append(notifications.constFirst());
                 notifications.first() = notification;
-                continue;
             }
-
-            notifications.append(notification);
         }
     }
 
