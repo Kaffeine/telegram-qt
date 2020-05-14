@@ -14,12 +14,22 @@ matrix:
          env:
            - DEVELOPER_BUILD=true
            - BUILD_SERVER=true
+           - BUILD_SHARED_LIBS=true
            - BUILD_TESTS=true
        - compiler: gcc
          # Production build
          env:
            - BUILD_CLIENT=true
            - BUILD_DOCUMENTATION=true
+           - BUILD_SHARED_LIBS=true
+       - compiler: gcc
+         # Static build with all components enabled
+         env:
+           - BUILD_SHARED_LIBS=false
+           - BUILD_CLIENT=true
+           - BUILD_SERVER=true
+           - BUILD_TESTS=true
+           - EXPORT_INTERNAL_API=true
 
 before_install:
   - sudo apt-add-repository -y ppa:beineri/opt-qt562-trusty
@@ -34,13 +44,18 @@ before_script:
   - if [ "${BUILD_CLIENT}" != "true" ]; then export BUILD_CLIENT="false"; fi
   - if [ "${BUILD_DOCUMENTATION}" != "true" ]; then export BUILD_DOCUMENTATION="false"; fi
   - if [ "${BUILD_SERVER}" != "true" ]; then export BUILD_SERVER="false"; fi
+  - if [ "${BUILD_SHARED_LIBS}" != "true" ]; then export BUILD_SHARED_LIBS="false"; fi
+  - if [ "${BUILD_TESTS}" != "true" ]; then export BUILD_TESTS="false"; fi
   - if [ "${DEVELOPER_BUILD}" != "true" ]; then export DEVELOPER_BUILD="false"; fi
+  - if [ "${EXPORT_INTERNAL_API}" != "true" ]; then export EXPORT_INTERNAL_API="false"; fi
   - cmake >
     -DBUILD_CLIENT=${BUILD_CLIENT}
     -DBUILD_DOCUMENTATION=${BUILD_DOCUMENTATION}
-    -DBUILD_TESTS=${BUILD_TESTS}
     -DBUILD_SERVER=${BUILD_SERVER}
+    -DBUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}
+    -DBUILD_TESTS=${BUILD_TESTS}
     -DDEVELOPER_BUILD=${DEVELOPER_BUILD}
+    -DEXPORT_INTERNAL_API=${EXPORT_INTERNAL_API}
     ../telegram-qt
 
 script:
