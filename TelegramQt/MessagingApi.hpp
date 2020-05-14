@@ -60,7 +60,7 @@ public:
     static quint32 messageActionValidPeriod();
     static quint32 messageActionRepeatInterval();
 
-    struct SendOptions {
+    struct TELEGRAMQT_EXPORT SendOptions {
         SendOptions();
 
         bool clearDraft() const { return m_clearDraft; }
