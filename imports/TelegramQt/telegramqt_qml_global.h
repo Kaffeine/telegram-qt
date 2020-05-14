@@ -20,7 +20,7 @@
 
 #include "telegramqt_global.h"
 
-#if defined(TELEGRAMQT_QML_LIBRARY)
+#if defined(TELEGRAMQT_BUILD_QML)
 #define TELEGRAMQT_QML_EXPORT Q_DECL_EXPORT
 #else
 #define TELEGRAMQT_QML_EXPORT Q_DECL_IMPORT

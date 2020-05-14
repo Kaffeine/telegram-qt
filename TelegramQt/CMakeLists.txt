@@ -2,7 +2,7 @@
 add_library(TelegramQt${QT_VERSION_MAJOR}Core)
 add_library(TelegramQt${QT_VERSION_MAJOR}::Core ALIAS TelegramQt${QT_VERSION_MAJOR}Core)
 
-target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE TELEGRAMQT_LIBRARY)
+target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE TELEGRAMQT_BUILD_CORE)
 
 if(TELEGRAMQT_EXPORT_INTERNAL_API)
     target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE TELEGRAMQT_EXPORT_INTERNAL_API)

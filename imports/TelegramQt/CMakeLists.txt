@@ -20,11 +20,12 @@ add_library(TelegramQt${QT_VERSION_MAJOR}Qml
     DeclarativeRsaKey.hpp
     DeclarativeSettings.cpp
     DeclarativeSettings.hpp
+    telegramqt_qml_global.h
 )
 add_library(TelegramQt${QT_VERSION_MAJOR}::Qml ALIAS TelegramQt${QT_VERSION_MAJOR}Qml)
 
 target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
-    TELEGRAMQT_QML_LIBRARY
+    TELEGRAMQT_BUILD_QML
 )
 
 target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
