@@ -22,15 +22,15 @@ include(ProjectOption)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CCache)
+
+    set(OVERRIDE_CXX_STANDARD 11 CACHE STRING "Compile with custom C++ standard version")
+    set(CMAKE_CXX_STANDARD ${OVERRIDE_CXX_STANDARD})
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+    set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
-set(OVERRIDE_CXX_STANDARD 11 CACHE STRING "Compile with custom C++ standard version")
 set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
     CACHE PATH "Custom QML import installation directory")
-
-set(CMAKE_CXX_STANDARD ${OVERRIDE_CXX_STANDARD})
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_AUTOMOC TRUE)
 
