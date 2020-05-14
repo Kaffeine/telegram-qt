@@ -447,10 +447,16 @@ void tst_MessagesApi::sendMessage_data()
     QTest::addColumn<UserData>("user2Data");
 
     const quint32 dc1 = 1;
+    const quint32 dc2 = 2;
 
     QTest::newRow("Within a DC")
             << mkUserData(1, dc1)
             << mkUserData(2, dc1)
+               ;
+
+    QTest::newRow("Different DCs")
+            << mkUserData(1, dc1)
+            << mkUserData(2, dc2)
                ;
 }
 
