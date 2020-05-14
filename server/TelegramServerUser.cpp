@@ -2,7 +2,6 @@
 
 #include "ApiUtils.hpp"
 #include "RandomGenerator.hpp"
-#include "ServerMessageData.hpp"
 #include "ServerUtils.hpp"
 #include "Session.hpp"
 #include "Utils.hpp"
@@ -14,13 +13,12 @@ namespace Telegram {
 
 namespace Server {
 
-quint32 PostBox::addMessage(MessageData *message)
+quint32 PostBox::addMessage(quint64 globalId)
 {
     ++m_lastMessageId;
     ++m_pts;
 
-    message->addReference(peer(), m_lastMessageId);
-    m_messages.insert(m_lastMessageId, message->globalId());
+    m_messages.insert(m_lastMessageId, globalId);
     return m_lastMessageId;
 }
 

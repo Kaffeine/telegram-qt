@@ -643,12 +643,14 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
     // so prepare the request date right on the start.
     const quint32 requestDate = Telegram::Utils::getCurrentTime();
     for (PostBox *box : boxes) {
-        const quint32 newMessageId = box->addMessage(messageData);
+        const quint32 newMessageId = box->addMessage(messageData->globalId());
         UpdateNotification notification;
         notification.type = UpdateNotification::Type::NewMessage;
         notification.date = requestDate;
         notification.messageId = newMessageId;
         notification.pts = box->pts();
+        messageService()->addMessageReference(messageData->globalId(), box->peer(), newMessageId);
+
         for (const quint32 userId : box->users()) {
             notification.userId = userId;
             if (targetPeer.type() == Peer::User) {

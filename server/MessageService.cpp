@@ -59,6 +59,15 @@ const MessageData *MessageService::getMessage(quint64 globalId)
     return &m_messages[globalId];
 }
 
+bool MessageService::addMessageReference(quint64 globalId, const Peer &peer, quint32 messageId)
+{
+    if (!m_messages.contains(globalId)) {
+        return false;
+    }
+    m_messages[globalId].addReference(peer, messageId);
+    return true;
+}
+
 quint64 MessageService::getMessageUniqueTs()
 {
     quint64 ts = Telegram::Utils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());

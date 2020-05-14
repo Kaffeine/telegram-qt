@@ -30,7 +30,7 @@ public:
     quint32 lastMessageId() const { return m_lastMessageId; }
     virtual QVector<quint32> users() const = 0;
 
-    quint32 addMessage(MessageData *message);
+    quint32 addMessage(quint64 globalId);
     quint64 getMessageGlobalId(quint32 messageId) const;
 
     QHash<quint32,quint64> getAllMessageKeys() const;

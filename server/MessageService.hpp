@@ -38,6 +38,8 @@ public:
     MessageData *replaceMessageContent(quint64 globalId, const MessageContent &content);
     const MessageData *getMessage(quint64 globalId);
 
+    bool addMessageReference(quint64 globalId, const Peer &peer, quint32 messageId);
+
 protected:
     quint64 getMessageUniqueTs();
 
