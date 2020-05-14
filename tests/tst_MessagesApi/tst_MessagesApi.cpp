@@ -95,7 +95,7 @@ private slots:
     void getSelfUserDialog();
     void getDialogs();
     void getAllDialogs();
-    void getMessage();
+    void sendMessage();
     void getHistory_data();
     void getHistory();
     void syncPeerDialogs();
@@ -440,7 +440,7 @@ void tst_MessagesApi::getAllDialogs()
     QCOMPARE(dialogList->peers().count(), dialogsCount);
 }
 
-void tst_MessagesApi::getMessage()
+void tst_MessagesApi::sendMessage()
 {
     const UserData user1Data = c_userWithPassword;
     const UserData user2Data = c_user2;
