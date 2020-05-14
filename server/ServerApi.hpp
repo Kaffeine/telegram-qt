@@ -58,6 +58,7 @@ public:
     quint32 userId = 0; // The Update recipient
     quint32 fromId = 0;
     quint32 messageId = 0;
+    quint64 messageDataId = 0;
     quint32 pts = 0;
     quint32 date = 0;
     Session *excludeSession = nullptr;

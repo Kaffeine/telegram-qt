@@ -33,6 +33,7 @@ class Session;
 class RemoteClientConnection;
 class RemoteServerConnection;
 class AbstractUser;
+class PostBox;
 class RpcOperationFactory;
 
 class Server : public QObject, public LocalServerApi
@@ -116,9 +117,10 @@ public:
 
     bool bakeUpdate(TLUpdate *update, const UpdateNotification &notification, QSet<Peer> *interestingPeers) const override;
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
-    void queueServerUpdates(const QVector<UpdateNotification> &notifications) override;
+    void queueServerUpdates(const QVector<UpdateNotification> &notificationsForServer) override;
 
     void insertUser(LocalUser *user);
+    bool isLocalBox(const PostBox *box) const;
 
 signals:
 

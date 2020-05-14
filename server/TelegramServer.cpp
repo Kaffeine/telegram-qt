@@ -643,15 +643,22 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
     // so prepare the request date right on the start.
     const quint32 requestDate = Telegram::Utils::getCurrentTime();
     for (PostBox *box : boxes) {
-        const quint32 newMessageId = box->addMessage(messageData->globalId());
         UpdateNotification notification;
         notification.type = UpdateNotification::Type::NewMessage;
         notification.date = requestDate;
-        notification.messageId = newMessageId;
-        notification.pts = box->pts();
-        messageService()->addMessageReference(messageData->globalId(), box->peer(), newMessageId);
+        notification.messageDataId = messageData->globalId();
+
+        if (isLocalBox(box)) {
+            const quint32 newMessageId = box->addMessage(notification.messageDataId);
+            messageService()->addMessageReference(notification.messageDataId, box->peer(), newMessageId);
+            notification.messageId = newMessageId;
+            notification.pts = box->pts();
+        }
 
         for (const quint32 userId : box->users()) {
+            // Box users:
+            // single user in User boxes
+            // a lot of users in Channel boxes
             notification.userId = userId;
             if (targetPeer.type() == Peer::User) {
                 if (userId == fromUser->id()) {
@@ -662,8 +669,22 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
             } else {
                 notification.dialogPeer = targetPeer;
             }
+
             LocalUser *user = getUser(userId);
-            if (!user) {
+            if (user) {
+                user->addNewMessage(notification.dialogPeer, notification.messageId, notification.messageDataId);
+                if (user != fromUser) {
+                    user->bumpDialogUnreadCount(notification.dialogPeer);
+                }
+
+                if (notifications.isEmpty() || userId != fromUser->id()) {
+                    notifications.append(notification);
+                } else {
+                    // Keep the sender Notification on the first place
+                    notifications.append(notifications.constFirst());
+                    notifications.first() = notification;
+                }
+            } else {
                 // User is not a local user
                 AbstractUser *remoteUser = getRemoteUser(userId);
                 if (!remoteUser) {
@@ -678,19 +699,6 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
                 //     remoteApi->messageService()->importMessage(messageData)
                 // }
                 remoteApi->queueServerUpdates({notification});
-                continue;
-            }
-            user->addNewMessage(notification.dialogPeer, newMessageId, messageData->date64());
-            if (user != fromUser) {
-                user->bumpDialogUnreadCount(notification.dialogPeer);
-            }
-
-            if (notifications.isEmpty() || userId != fromUser->id()) {
-                notifications.append(notification);
-            } else {
-                // Keep the sender Notification on the first place
-                notifications.append(notifications.constFirst());
-                notifications.first() = notification;
             }
         }
     }
@@ -1001,9 +1009,10 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
     }
 }
 
-void Server::queueServerUpdates(const QVector<UpdateNotification> &notifications)
+void Server::queueServerUpdates(const QVector<UpdateNotification> &notificationsForServer)
 {
-    for (const UpdateNotification &notification : notifications) {
+    QVector<UpdateNotification> notifications = notificationsForServer;
+    for (UpdateNotification &notification : notifications) {
         LocalUser *user = getUser(notification.userId);
         if (!user) {
             qCWarning(lcServerCrossUpdates) << CALL_INFO << "Invalid user!" << notification.userId;
@@ -1013,10 +1022,12 @@ void Server::queueServerUpdates(const QVector<UpdateNotification> &notifications
         switch (notification.type) {
         case UpdateNotification::Type::NewMessage: {
             PostBox *box = user->getPostBox();
-            quint64 globalId = box->getMessageGlobalId(notification.messageId);
-            const MessageData *messageData = messageService()->getMessage(globalId);
+            const quint32 newMessageId = box->addMessage(notification.messageDataId);
+            messageService()->addMessageReference(notification.messageDataId, box->peer(), newMessageId);
+            notification.messageId = newMessageId;
+            notification.pts = box->pts();
 
-            user->addNewMessage(notification.dialogPeer, notification.messageId, messageData->date64());
+            user->addNewMessage(notification.dialogPeer, notification.messageId, notification.messageDataId);
             user->bumpDialogUnreadCount(notification.dialogPeer);
         }
             break;
@@ -1036,6 +1047,16 @@ void Server::insertUser(LocalUser *user)
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
     m_users.insert(user->id(), user);
     m_phoneToUserId.insert(user->phoneNumber(), user->id());
+}
+
+bool Server::isLocalBox(const PostBox *box) const
+{
+    const Peer peer = box->peer();
+    if (peer.type() == Peer::Type::User) {
+        return getUser(peer.id());
+    }
+
+    return false;
 }
 
 PhoneStatus Server::getPhoneStatus(const QString &identifier) const
