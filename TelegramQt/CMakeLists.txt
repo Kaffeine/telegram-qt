@@ -17,6 +17,12 @@ else()
     endif()
 endif()
 
+if(NOT ${CMAKE_VERSION} VERSION_LESS 3.8)
+    target_compile_features(TelegramQt${QT_VERSION_MAJOR}Core PUBLIC
+        cxx_std_11
+    )
+endif()
+
 target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     AbridgedLength.cpp
     AbridgedLength.hpp
