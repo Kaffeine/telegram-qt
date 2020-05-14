@@ -4,8 +4,17 @@ add_library(TelegramQt${QT_VERSION_MAJOR}::Core ALIAS TelegramQt${QT_VERSION_MAJ
 
 target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE TELEGRAMQT_BUILD_CORE)
 
-if(TELEGRAMQT_EXPORT_INTERNAL_API)
-    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE TELEGRAMQT_EXPORT_INTERNAL_API)
+get_target_property(CORE_LIB_TYPE TelegramQt${QT_VERSION_MAJOR}Core TYPE)
+if("${CORE_LIB_TYPE}" STREQUAL "STATIC_LIBRARY")
+    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PUBLIC
+        TELEGRAMQT_STATIC_CORE
+    )
+else()
+    if(TELEGRAMQT_EXPORT_INTERNAL_API)
+        target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Core PUBLIC
+            TELEGRAMQT_ENABLE_CORE_INTERNAL_API
+        )
+    endif()
 endif()
 
 target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE

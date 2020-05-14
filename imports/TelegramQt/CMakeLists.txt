@@ -28,6 +28,13 @@ target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
     TELEGRAMQT_BUILD_QML
 )
 
+get_target_property(QML_LIB_TYPE TelegramQt${QT_VERSION_MAJOR}Qml TYPE)
+if("${QML_LIB_TYPE}" STREQUAL "STATIC_LIBRARY")
+    target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PUBLIC
+        TELEGRAMQT_QML_STATIC
+    )
+endif()
+
 target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
     QT_NO_CAST_TO_ASCII
     QT_NO_CAST_FROM_ASCII

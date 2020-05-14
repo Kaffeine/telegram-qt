@@ -20,10 +20,17 @@
 
 #include "telegramqt_global.h"
 
-#if defined(TELEGRAMQT_BUILD_QML)
-#define TELEGRAMQT_QML_EXPORT Q_DECL_EXPORT
+// TELEGRAMQT_BUILD_QML defined during the QML library build
+// TELEGRAMQT_STATIC_QML defined if the QML library build type is static
+
+#if defined(TELEGRAMQT_STATIC_QML)
+#  define TELEGRAMQT_QML_EXPORT
 #else
-#define TELEGRAMQT_QML_EXPORT Q_DECL_IMPORT
+#  if defined(TELEGRAMQT_BUILD_QML)
+#    define TELEGRAMQT_QML_EXPORT Q_DECL_EXPORT
+#  else
+#    define TELEGRAMQT_QML_EXPORT Q_DECL_IMPORT
+#  endif
 #endif
 
 #endif // TELEGRAMQT_QML_GLOBAL_H
