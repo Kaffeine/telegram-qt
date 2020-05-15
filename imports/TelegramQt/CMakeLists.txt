@@ -31,7 +31,7 @@ target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
 get_target_property(QML_LIB_TYPE TelegramQt${QT_VERSION_MAJOR}Qml TYPE)
 if("${QML_LIB_TYPE}" STREQUAL "STATIC_LIBRARY")
     target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PUBLIC
-        TELEGRAMQT_QML_STATIC
+        TELEGRAMQT_STATIC_QML
     )
 endif()
 

@@ -46,7 +46,7 @@
 // TELEGRAMQT_BUILD_CORE defined during the core library build
 // TELEGRAMQT_STATIC_CORE defined if the core library build type is static
 
-#if defined(TELEGRAMQT_STATIC)
+#if defined(TELEGRAMQT_STATIC_CORE)
 #  define TELEGRAMQT_EXPORT
 #else
 #  if defined(TELEGRAMQT_BUILD_CORE)
