@@ -1896,7 +1896,7 @@ bool Generator::resolveTypes()
 
 void Generator::generate()
 {
-    codeOfTLTypes.clear();
+    typesDefinitions.clear();
     codeStreamReadDeclarations.clear();
     codeStreamReadDefinitions.clear();
     codeStreamReadTemplateInstancing.clear();
@@ -2021,7 +2021,7 @@ void Generator::generate()
                 tlPtrsCode.append(QStringLiteral("using %1Ptr = TLPtr<%1>;\n").arg(type.name));
             }
         }
-        codeOfTLTypes.append(generateTLTypeDefinition(type, m_addSpecSources));
+        typesDefinitions.append(generateTLTypeDefinition(type, m_addSpecSources));
 
         codeStreamReadDeclarations.append(streamReadOperatorDeclaration(&type));
         codeStreamReadDefinitions.append(streamReadOperatorDefinition(&type));

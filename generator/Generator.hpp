@@ -291,7 +291,7 @@ public:
 
     QString tlStructCode;
     QString tlPtrsCode;
-    QString codeOfTLTypes;
+    QString typesDefinitions;
     QString codeStreamReadDeclarations;
     QString codeStreamReadDefinitions;
     QString codeStreamReadTemplateInstancing;
