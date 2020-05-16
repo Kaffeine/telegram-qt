@@ -214,6 +214,7 @@ public:
     static QString generateTLValuesDefinition(const Predicate *predicate);
     static QString generateTLTypeDefinition(const TLType &type, bool addSpecSources = false);
     static QString generateTLTypeMethods(const TLType &type);
+    static QStringList generateTLTypeComparisonCaseMethod(const TLSubType &subType);
     static QStringList generateTLTypeMemberFlags(const TLType &type);
     static QStringList generateTLTypeMemberGetters(const TLType &type);
     static QStringList generateTLTypeMembers(const TLType &type);

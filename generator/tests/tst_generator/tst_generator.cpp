@@ -102,6 +102,7 @@ static const QString c_typeHeaderCodeAccountPassword =
         "\n"
         "    bool isValid() const { return hasType(tlType); }\n"
         "    static bool hasType(const quint32 value);\n"
+        "    bool operator==(const TLAccountPassword &v) const;\n"
         "\n"
         "    QByteArray newSalt;\n"
         "    QString emailUnconfirmedPattern;\n"
@@ -122,7 +123,35 @@ static const QString c_typeSourceCodeAccountPassword =
         "        return false;\n"
         "    }\n"
         "}\n"
-        "\n";
+        "\n"
+
+        "bool TLAccountPassword::operator==(const TLAccountPassword &v) const\n"
+        "{\n"
+        "    if (tlType != v.tlType) {\n"
+        "        return false;\n"
+        "    }\n"
+        "\n"
+        "    switch (tlType) {\n"
+        "    case TLValue::AccountNoPassword:\n"
+        "        return true\n"
+        "                && newSalt == v.newSalt\n"
+        "                && emailUnconfirmedPattern == v.emailUnconfirmedPattern\n"
+        "                ;\n"
+        "    case TLValue::AccountPassword:\n"
+        "        return true\n"
+        "                && currentSalt == v.currentSalt\n"
+        "                && newSalt == v.newSalt\n"
+        "                && hint == v.hint\n"
+        "                && hasRecovery == v.hasRecovery\n"
+        "                && emailUnconfirmedPattern == v.emailUnconfirmedPattern\n"
+        "                ;\n"
+        "    default:\n"
+        "        return false;\n"
+        "    }\n"
+        "}\n"
+        "\n"
+
+        ;
 
 class tst_Generator : public QObject
 {

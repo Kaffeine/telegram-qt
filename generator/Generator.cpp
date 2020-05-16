@@ -541,6 +541,8 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 
     code.append(spacing + QStringLiteral("bool isValid() const { return hasType(tlType); }\n"));
     code.append(spacing + QStringLiteral("static bool hasType(const quint32 value);\n"));
+    code.append(spacing + QStringLiteral("bool operator==(const %1 &v) const;\n").arg(type.name));
+
     const QString memberFlags = joinLinesWithPrepend(generateTLTypeMemberFlags(type), doubleSpacing, QStringLiteral("\n"));
     if (!memberFlags.isEmpty()) {
         code.append(spacing + "enum Flags {\n");
@@ -591,6 +593,101 @@ QString Generator::generateTLTypeMethods(const TLType &type)
     stream << "}" << endl;
     stream << endl;
 
+    // bool TLAccountPassword::operator==(const TLAccountPassword &v) const
+    // {
+    //     if (tlType != v.tlType) {
+    //         return false;
+    //     }
+    //     switch (tlType) {
+    //     case TLValue::AccountPassword:
+    //         return true
+    //                 && newSalt == v.newSalt
+    //                 && emailUnconfirmedPattern == v.emailUnconfirmedPattern
+    //                 && currentSalt == v.currentSalt
+    //                 && hint == v.hint
+    //                 && hasRecovery == v.hasRecovery
+    //                 ;
+    //     default:
+    //         return true;
+    //     }
+    // }
+
+    // bool TLPeer::operator==(const TLPeer &v) {
+    //     if (tlType != v.tlType) {
+    //         return false;
+    //     }
+    //     switch (tlType) {
+    //     case TLValue::PeerUser:
+    //         return userId == v.userId;
+    //     case TLValue::PeerChat:
+    //         return chatId == v.chatId;
+    //     case TLValue::PeerChannel:
+    //         return channelId == v.channelId;
+    //     default:
+    //         // Object is not valid
+    //         return false;
+    //     }
+    // }
+
+    stream << "bool " << type.name << "::operator==(const " << type.name << " &v) const" << endl;
+    stream << "{" << endl;
+    stream << "    if (tlType != v.tlType) {" << endl;
+    stream << "        return false;" << endl;
+    stream << "    }" << endl;
+    stream << endl;
+
+    stream << "    switch (tlType) {" <<endl;
+
+    QHash<QString,int> implementationHash; // type name to implementation index map
+    QStringList implementations;
+    for (const TLSubType &subType : type.subTypes) {
+        const QStringList caseLines = generateTLTypeComparisonCaseMethod(subType);
+        const QString caseImplementation = Generator::joinLinesWithPrepend(caseLines, doubleSpacing, QLatin1String("\n"));
+        const int implementationIndex = implementations.indexOf(caseImplementation);
+        if (implementationIndex >= 0) {
+            implementationHash.insert(subType.name, implementationIndex);
+        } else {
+            implementations.append(caseImplementation);
+            implementationHash.insert(subType.name, implementations.count() - 1);
+        }
+    }
+
+    for (int i = 0; i < implementations.count(); ++i) {
+        foreach (const TLSubType &subType, type.subTypes) {
+            if (implementationHash.value(subType.name) == i) {
+                stream << "    case " << tlValueName << "::" << subType.name << ":" << endl;
+            }
+        }
+        stream << implementations.at(i);
+    }
+
+    stream << "    default:" <<endl;
+    stream << "        return false;" <<endl;
+    stream << "    }" <<endl;
+    stream << "}" << endl;
+    stream << endl;
+
+    return result;
+}
+
+QStringList Generator::generateTLTypeComparisonCaseMethod(const TLSubType &subType)
+{
+    if (subType.members.isEmpty()) {
+        return { QStringLiteral("return true;") };
+    }
+    if (subType.members.count() == 1) {
+        // oneline implementation
+        return { QStringLiteral("return %1 == v.%1;").arg(subType.members.constFirst().getAlias()) };
+    }
+    QStringList result;
+    result << QLatin1String("return true");
+    for (const TLParam &member : subType.members) {
+        if (!member.hasData()) {
+            continue;
+        }
+        result << QStringLiteral("        && %1 == v.%1").arg(member.getAlias());
+    }
+    result << QLatin1String("        ;");
     return result;
 }
 
