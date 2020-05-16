@@ -150,7 +150,60 @@ static const QString c_typeSourceCodeAccountPassword =
         "    }\n"
         "}\n"
         "\n"
+        ;
 
+const QStringList c_sourcesPeer =
+{
+    QStringLiteral("peerUser#9db1bc6d user_id:int = Peer;"),
+    QStringLiteral("peerChat#bad0e5bb chat_id:int = Peer;"),
+    QStringLiteral("peerChannel#bddde532 channel_id:int = Peer;"),
+};
+
+static const QString c_typeHeaderCodePeer =
+        "struct TELEGRAMQT_INTERNAL_EXPORT TLPeer {\n"
+        "    constexpr TLPeer() = default;\n"
+        "\n"
+        "    bool isValid() const { return hasType(tlType); }\n"
+        "    static bool hasType(const quint32 value);\n"
+        "    bool operator==(const TLPeer &v) const;\n"
+        "\n"
+        "    quint32 userId = 0;\n"
+        "    quint32 chatId = 0;\n"
+        "    quint32 channelId = 0;\n"
+        "    TLValue tlType = TLValue::PeerUser;\n"
+        "};\n\n";
+
+static const QString c_typeSourceCodePeer =
+        "bool TLPeer::hasType(const quint32 value)\n"
+        "{\n"
+        "    switch (value) {\n"
+        "    case TLValue::PeerUser:\n"
+        "    case TLValue::PeerChat:\n"
+        "    case TLValue::PeerChannel:\n"
+        "        return true;\n"
+        "    default:\n"
+        "        return false;\n"
+        "    }\n"
+        "}\n"
+        "\n"
+        "bool TLPeer::operator==(const TLPeer &v) const\n"
+        "{\n"
+        "    if (tlType != v.tlType) {\n"
+        "        return false;\n"
+        "    }\n"
+        "\n"
+        "    switch (tlType) {\n"
+        "    case TLValue::PeerUser:\n"
+        "        return userId == v.userId;\n"
+        "    case TLValue::PeerChat:\n"
+        "        return chatId == v.chatId;\n"
+        "    case TLValue::PeerChannel:\n"
+        "        return channelId == v.channelId;\n"
+        "    default:\n"
+        "        return false;\n"
+        "    }\n"
+        "}\n"
+        "\n"
         ;
 
 class tst_Generator : public QObject
@@ -534,6 +587,12 @@ void tst_Generator::generatedTlType_data()
             << c_typeHeaderCodeAccountPassword
             << c_typeSourceCodeAccountPassword
             << QStringLiteral("TLAccountPassword");
+
+    QTest::newRow("Peer")
+            << generateTextSpec(c_sourcesPeer)
+            << c_typeHeaderCodePeer
+            << c_typeSourceCodePeer
+            << QStringLiteral("TLPeer");
 }
 
 void tst_Generator::generatedTlType()
