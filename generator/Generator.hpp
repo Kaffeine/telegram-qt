@@ -212,6 +212,7 @@ public:
     static QString removeWord(QString input, QString word);
     static QString generateTLValuesDefinition(const Predicate *predicate);
     static QString generateTLTypeDefinition(const TLType &type, bool addSpecSources = false);
+    static QString generateTLTypeMethods(const TLType &type);
     static QStringList generateTLTypeMemberFlags(const TLType &type);
     static QStringList generateTLTypeMemberGetters(const TLType &type);
     static QStringList generateTLTypeMembers(const TLType &type);
@@ -292,6 +293,7 @@ public:
     QString tlStructCode;
     QString tlPtrsCode;
     QString typesDefinitions;
+    QString typesMethods;
     QString codeStreamReadDeclarations;
     QString codeStreamReadDefinitions;
     QString codeStreamReadTemplateInstancing;

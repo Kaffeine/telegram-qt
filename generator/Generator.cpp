@@ -531,19 +531,8 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
         code.append(specSource);
     }
 
-    const QString maybeCpp14ConstExpr = constExprType ? QStringLiteral("Q_DECL_RELAXED_CONSTEXPR ") : QString();
-    const QString isValid = QStringLiteral("bool isValid() const { return hasType(tlType); }\n");
-    code.append(spacing + maybeCpp14ConstExpr + isValid);
-    code.append(spacing + QStringLiteral("Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {\n"));
-    code.append(doubleSpacing + QStringLiteral("switch (value) {\n"));
-    code.append(joinLinesWithPrepend(thisTypeCases, doubleSpacing, QStringLiteral("\n")));
-    code.append(QStringLiteral(
-                               "            return true;\n"
-                               "        default:\n"
-                               "            return false;\n"
-                               "        };\n"
-                               "    }\n"));
-
+    code.append(spacing + QStringLiteral("bool isValid() const { return hasType(tlType); }\n"));
+    code.append(spacing + QStringLiteral("static bool hasType(const quint32 value);\n"));
     const QString memberFlags = joinLinesWithPrepend(generateTLTypeMemberFlags(type), doubleSpacing, QStringLiteral("\n"));
     if (!memberFlags.isEmpty()) {
         code.append(spacing + "enum Flags {\n");
@@ -555,11 +544,46 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
     } else {
         code.append(joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing, QStringLiteral("\n")));
     }
+    code.append(QLatin1Char('\n'));
     const QString members = joinLinesWithPrepend(generateTLTypeMembers(type), spacing, QStringLiteral("\n"));
     code.append(members);
     code.append(QString("};\n\n"));
 
     return code;
+}
+
+QString Generator::generateTLTypeMethods(const TLType &type)
+{
+    QString result;
+    QTextStream stream(&result, QIODevice::WriteOnly);
+
+    // bool TLAccountPassword::hasType(const quint32 value)
+    // {
+    //     switch (value) {
+    //     case TLValue::AccountNoPassword:
+    //     case TLValue::AccountPassword:
+    //         return true;
+    //     default:
+    //         return false;
+    //     };
+    // }
+
+    stream << "bool " << type.name << "::hasType(const quint32 value)" << endl;
+    stream << "{" << endl;
+    stream << "    switch (value) {" << endl;
+
+    for (const TLSubType &subType : type.subTypes) {
+        stream << "    case " << tlValueName << "::" << subType.name << ":" << endl;
+    }
+
+    stream << "        return true;" <<endl;
+    stream << "    default:" << endl;
+    stream << "        return false;" <<endl;
+    stream << "    }" << endl;
+    stream << "}" << endl;
+    stream << endl;
+
+    return result;
 }
 
 QStringList Generator::generateTLTypeMemberFlags(const TLType &type)
@@ -2022,6 +2046,7 @@ void Generator::generate()
             }
         }
         typesDefinitions.append(generateTLTypeDefinition(type, m_addSpecSources));
+        typesMethods.append(generateTLTypeMethods(type));
 
         codeStreamReadDeclarations.append(streamReadOperatorDeclaration(&type));
         codeStreamReadDefinitions.append(streamReadOperatorDefinition(&type));

@@ -101,15 +101,8 @@ static const QString c_typeHeaderCodeAccountPassword =
         "    TLAccountPassword() = default;\n"
         "\n"
         "    bool isValid() const { return hasType(tlType); }\n"
-        "    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {\n"
-        "        switch (value) {\n"
-        "        case TLValue::AccountNoPassword:\n"
-        "        case TLValue::AccountPassword:\n"
-        "            return true;\n"
-        "        default:\n"
-        "            return false;\n"
-        "        };\n"
-        "    }\n"
+        "    static bool hasType(const quint32 value);\n"
+        "\n"
         "    QByteArray newSalt;\n"
         "    QString emailUnconfirmedPattern;\n"
         "    QByteArray currentSalt;\n"
@@ -117,6 +110,19 @@ static const QString c_typeHeaderCodeAccountPassword =
         "    bool hasRecovery = false;\n"
         "    TLValue tlType = TLValue::AccountNoPassword;\n"
         "};\n\n";
+
+static const QString c_typeSourceCodeAccountPassword =
+        "bool TLAccountPassword::hasType(const quint32 value)\n"
+        "{\n"
+        "    switch (value) {\n"
+        "    case TLValue::AccountNoPassword:\n"
+        "    case TLValue::AccountPassword:\n"
+        "        return true;\n"
+        "    default:\n"
+        "        return false;\n"
+        "    }\n"
+        "}\n"
+        "\n";
 
 class tst_Generator : public QObject
 {
@@ -490,19 +496,22 @@ void tst_Generator::checkStreamReadOperator()
 void tst_Generator::generatedTlType_data()
 {
     QTest::addColumn<QByteArray>("textSpec");
-    QTest::addColumn<QString>("tlTypeCode");
+    QTest::addColumn<QString>("tlTypeHeaderCode");
+    QTest::addColumn<QString>("tlTypeSourceCode");
     QTest::addColumn<QString>("typeName");
 
     QTest::newRow("AccountPassword")
             << generateTextSpec(c_sourcesAccountPassword)
             << c_typeHeaderCodeAccountPassword
+            << c_typeSourceCodeAccountPassword
             << QStringLiteral("TLAccountPassword");
 }
 
 void tst_Generator::generatedTlType()
 {
     QFETCH(QByteArray, textSpec);
-    QFETCH(QString, tlTypeCode);
+    QFETCH(QString, tlTypeHeaderCode);
+    QFETCH(QString, tlTypeSourceCode);
     QFETCH(QString, typeName);
 
     Generator generator;
@@ -510,8 +519,11 @@ void tst_Generator::generatedTlType()
     QMap<QString, TLType> types = generator.types();
     QVERIFY(types.contains(typeName));
     const TLType type = types.value(typeName);
-    const QString definitions = Generator::generateTLTypeDefinition(type);
-    COMPARE_WITH_DUMP(definitions, tlTypeCode);
+    const QString headerCode = Generator::generateTLTypeDefinition(type);
+    COMPARE_WITH_DUMP(headerCode, tlTypeHeaderCode);
+
+    const QString sourceCode = Generator::generateTLTypeMethods(type);
+    COMPARE_WITH_DUMP(sourceCode, tlTypeSourceCode);
 }
 
 QTEST_APPLESS_MAIN(tst_Generator)

@@ -576,6 +576,11 @@ StatusCode generate(SchemaFormat format, const QString &specFileName)
     }
 
     {
+        OutputFile fileValues("MTProto/TLTypes.cpp");
+        QString completeTlCode = generator.typesMethods;
+        fileValues.replace("TLTypes", completeTlCode);
+    }
+    {
         OutputFile fileTelegramStreamHeader("MTProto/Stream.hpp");
         OutputFile fileTelegramStreamSource("MTProto/Stream.cpp");
         OutputFile fileTelegramStreamExtraOperatorsHeader("MTProto/StreamExtraOperators.hpp");
