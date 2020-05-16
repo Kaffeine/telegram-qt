@@ -1,28 +1,42 @@
 TelegramQt [![Build Status](https://travis-ci.org/Kaffeine/telegram-qt.svg?branch=master)](https://travis-ci.org/Kaffeine/telegram-qt)
 =======================
 
-Telegram binding for Qt
+TelegramQt provides C++ API for developing custom Telegram clients and servers.
+The project inspired by Qt and QXmpp with some ideas from Telepathy.
+TelegramQt focuses on the best possible developer experience.
+
+See also README.md in the 'server' directory.
 
 Requirements
 ============
 
-* CMake-2.8.12+
-* Qt 5.5.0+
+* CMake 3.6+
+* Qt 5.6+
 * OpenSSL
 * ZLib
 * A C++11 compliant compiler
 
-Installation
-============
+Building
+========
 
-    tar -xvf telegram-qt-x.y.z.tar.bz2
-    mkdir telegram-qt-build
-    cd telegram-qt-build
-    cmake ../telegram-qt-x.y.z -DCMAKE_INSTALL_PREFIX=/usr
-    make -j4
-    make install
+Build from command line:
 
-Default CMake installation prefix is /usr/local. Use CMAKE_INSTALL_PREFIX parameter to set a different prefix (e.g. -DCMAKE_INSTALL_PREFIX=/usr).
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build .
+
+Installing
+==========
+
+Install from command line (after building):
+
+    cmake --build . --target install
+
+Default CMake installation prefix is `/usr/local`. Use CMAKE_INSTALL_PREFIX
+parameter to set a different prefix (e.g. `-DCMAKE_INSTALL_PREFIX=/usr`).
+
+
 
 License
 =======
