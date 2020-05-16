@@ -20,6 +20,17 @@ include(FeatureSummary)
 include(CompilerSettings)
 include(ProjectOption)
 
+project_option(BUILD_CLIENT "Build a client app" FALSE)
+project_option(BUILD_DOCUMENTATION "Enable generation of Qt Help (qch) file" FALSE)
+project_option(BUILD_GENERATOR "Build protocol code generator (useful for developers)" FALSE)
+project_option(BUILD_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
+project_option(BUILD_SERVER "Build server" FALSE)
+project_option(BUILD_SHARED_LIBS "Compile libraries as shared" TRUE)
+project_option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
+
+project_option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
+project_option(EXPORT_INTERNAL_API "Export internal and unstable API" FALSE)
+
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CCache)
 
@@ -33,17 +44,6 @@ set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
     CACHE PATH "Custom QML import installation directory")
 
 set(CMAKE_AUTOMOC TRUE)
-
-project_option(BUILD_CLIENT "Build a client app" FALSE)
-project_option(BUILD_DOCUMENTATION "Enable generation of Qt Help (qch) file" FALSE)
-project_option(BUILD_GENERATOR "Build protocol code generator (useful for developers)" FALSE)
-project_option(BUILD_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
-project_option(BUILD_SERVER "Build server" FALSE)
-project_option(BUILD_SHARED_LIBS "Compile libraries as shared" TRUE)
-project_option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
-
-project_option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
-project_option(EXPORT_INTERNAL_API "Export internal and unstable API" FALSE)
 
 if(TELEGRAMQT_DEVELOPER_BUILD)
     set(TELEGRAMQT_EXPORT_INTERNAL_API TRUE)
