@@ -82,6 +82,34 @@ const QStringList c_sourcesPageBlock =
     QStringLiteral("pageBlockPhoto#e9c69982 photo_id:long caption:RichText = PageBlock;"),
 };
 
+const QStringList c_sourcesAccountPassword =
+{
+    QStringLiteral("account.noPassword#96dabc18 new_salt:bytes email_unconfirmed_pattern:string = account.Password;"),
+    QStringLiteral("account.password#7c18141c current_salt:bytes new_salt:bytes hint:string has_recovery:Bool email_unconfirmed_pattern:string = account.Password;"),
+};
+
+static const QString c_typeHeaderCodeAccountPassword =
+        "struct TELEGRAMQT_INTERNAL_EXPORT TLAccountPassword {\n"
+        "    TLAccountPassword() = default;\n"
+        "\n"
+        "    bool isValid() const { return hasType(tlType); }\n"
+        "    Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {\n"
+        "        switch (value) {\n"
+        "        case TLValue::AccountNoPassword:\n"
+        "        case TLValue::AccountPassword:\n"
+        "            return true;\n"
+        "        default:\n"
+        "            return false;\n"
+        "        };\n"
+        "    }\n"
+        "    QByteArray newSalt;\n"
+        "    QString emailUnconfirmedPattern;\n"
+        "    QByteArray currentSalt;\n"
+        "    QString hint;\n"
+        "    bool hasRecovery = false;\n"
+        "    TLValue tlType = TLValue::AccountNoPassword;\n"
+        "};\n\n";
+
 class tst_Generator : public QObject
 {
     Q_OBJECT
@@ -102,6 +130,8 @@ private slots:
     void predicateForCrc_data();
     void predicateForCrc();
     void checkStreamReadOperator();
+    void generatedTlType_data();
+    void generatedTlType();
 };
 
 tst_Generator::tst_Generator(QObject *parent) :
@@ -447,6 +477,33 @@ void tst_Generator::checkStreamReadOperator()
     QCOMPARE(generator.codeStreamReadDeclarations.toLatin1(), declarationsCode);
     qWarning().noquote() << generator.codeStreamReadDefinitions;
     QCOMPARE(generator.codeStreamReadDefinitions.toLatin1(), definitionsCode);
+}
+
+void tst_Generator::generatedTlType_data()
+{
+    QTest::addColumn<QByteArray>("textSpec");
+    QTest::addColumn<QString>("tlTypeCode");
+    QTest::addColumn<QString>("typeName");
+
+    QTest::newRow("AccountPassword")
+            << generateTextSpec(c_sourcesAccountPassword)
+            << c_typeHeaderCodeAccountPassword
+            << QStringLiteral("TLAccountPassword");
+}
+
+void tst_Generator::generatedTlType()
+{
+    QFETCH(QByteArray, textSpec);
+    QFETCH(QString, tlTypeCode);
+    QFETCH(QString, typeName);
+
+    Generator generator;
+    QVERIFY(generator.loadFromText(textSpec));
+    QMap<QString, TLType> types = generator.types();
+    QVERIFY(types.contains(typeName));
+    const TLType type = types.value(typeName);
+    const QString definitions = Generator::generateTLTypeDefinition(type);
+    QCOMPARE(definitions, tlTypeCode);
 }
 
 QTEST_APPLESS_MAIN(tst_Generator)
