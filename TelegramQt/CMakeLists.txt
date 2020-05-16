@@ -136,6 +136,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
 
 target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     MTProto/TLNumbers.hpp
+    MTProto/TLTypes.cpp
     MTProto/TLTypes.hpp
     MTProto/TLValues.cpp
     MTProto/TLValues.hpp
