@@ -477,7 +477,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
     QString code;
     code.append(QString("struct %1 %2 {\n").arg(c_internalExportMacro, type.name));
 
-    bool constExpr = true;
+    bool constExprType = true;
     static const QString specCommentPrefix = spacing + QStringLiteral("// ");
     QString specSource;
     QStringList thisTypeCases;
@@ -511,7 +511,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 
             addedMembers.append(member.getAlias());
             if (!podTypes.contains(member.type())) {
-                constExpr = false;
+                constExprType = false;
                 continue;
             }
 
@@ -522,7 +522,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
 
     const QString constructor = QStringLiteral("%1() = default;\n\n").arg(type.name);
     const QString constExprSpace = QStringLiteral("constexpr ");
-    if (constExpr) {
+    if (constExprType) {
         code.append(spacing + constExprSpace + constructor);
     } else {
         code.append(spacing + constructor);
@@ -531,7 +531,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
         code.append(specSource);
     }
 
-    const QString maybeCpp14ConstExpr = constExpr ? QStringLiteral("Q_DECL_RELAXED_CONSTEXPR ") : QString();
+    const QString maybeCpp14ConstExpr = constExprType ? QStringLiteral("Q_DECL_RELAXED_CONSTEXPR ") : QString();
     const QString isValid = QStringLiteral("bool isValid() const { return hasType(tlType); }\n");
     code.append(spacing + maybeCpp14ConstExpr + isValid);
     code.append(spacing + QStringLiteral("Q_DECL_RELAXED_CONSTEXPR static bool hasType(const quint32 value) {\n"));
@@ -550,7 +550,7 @@ QString Generator::generateTLTypeDefinition(const TLType &type, bool addSpecSour
         code.append(memberFlags);
         code.append(spacing + "};\n");
     }
-    if (constExpr) {
+    if (constExprType) {
         code.append(joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing + constExprSpace, QStringLiteral("\n")));
     } else {
         code.append(joinLinesWithPrepend(generateTLTypeMemberGetters(type), spacing, QStringLiteral("\n")));
