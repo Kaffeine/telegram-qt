@@ -89,6 +89,8 @@ struct TLParam {
     bool accessByPointer() const { return m_accessByPointer; }
     void setAccessByPointer(bool accessByPointer) { m_accessByPointer = accessByPointer; }
 
+    // Alias is a Type-wide unique name of the member.
+    // E.g. TLUpdate has data:DataJSON and data:bytes members.
     QString getAlias() const { return !m_alias.isEmpty() ? m_alias : m_name; }
     void setAlias(const QString &newAlias) { m_alias = newAlias; }
 
