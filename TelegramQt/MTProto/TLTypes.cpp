@@ -17,6 +17,22 @@
 
 #include "TLTypes.hpp"
 
+bool operator==(const TLPeer &left, const TLPeer &right) {
+    if (left.tlType != right.tlType) {
+        return false;
+    }
+    switch (left.tlType) {
+    case TLValue::PeerUser:
+        return left.userId == right.userId;
+    case TLValue::PeerChat:
+        return left.chatId == right.chatId;
+    case TLValue::PeerChannel:
+        return left.channelId == right.channelId;
+    }
+    // Object is not valid
+    return false;
+}
+
 // Generated TLTypes
 bool TLAccountDaysTTL::hasType(const quint32 value)
 {
