@@ -35,6 +35,13 @@ if("${QML_LIB_TYPE}" STREQUAL "STATIC_LIBRARY")
     )
 endif()
 
+if(TELEGRAMQT_ENABLE_IPO)
+    set_property(TARGET TelegramQt${QT_VERSION_MAJOR}Qml
+        PROPERTY
+            INTERPROCEDURAL_OPTIMIZATION TRUE
+    )
+endif()
+
 target_compile_definitions(TelegramQt${QT_VERSION_MAJOR}Qml PRIVATE
     QT_NO_CAST_TO_ASCII
     QT_NO_CAST_FROM_ASCII

@@ -17,6 +17,13 @@ else()
     endif()
 endif()
 
+if(TELEGRAMQT_ENABLE_IPO)
+    set_property(TARGET TelegramQt${QT_VERSION_MAJOR}Core
+        PROPERTY
+            INTERPROCEDURAL_OPTIMIZATION TRUE
+    )
+endif()
+
 if(NOT ${CMAKE_VERSION} VERSION_LESS 3.8)
     target_compile_features(TelegramQt${QT_VERSION_MAJOR}Core PUBLIC
         cxx_std_11

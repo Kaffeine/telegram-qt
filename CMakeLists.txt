@@ -31,6 +31,18 @@ project_option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
 project_option(DEVELOPER_BUILD "Enable extra debug codepaths, like asserts and extra output" FALSE)
 project_option(EXPORT_INTERNAL_API "Export internal and unstable API" FALSE)
 
+if(NOT ${CMAKE_VERSION} VERSION_LESS 3.9)
+    project_option(ENABLE_IPO "Enable interprocedural optimizations" FALSE)
+endif()
+
+if(TELEGRAMQT_ENABLE_IPO)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT ipo_supported OUTPUT ipo_output)
+    if(NOT ipo_supported)
+        message(SEND_ERROR "Unable to enable IPO: ${ipo_output}")
+    endif()
+endif()
+
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     include(CCache)
 
@@ -38,6 +50,10 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     set(CMAKE_CXX_STANDARD ${OVERRIDE_CXX_STANDARD})
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
     set(CMAKE_CXX_EXTENSIONS OFF)
+
+    if(TELEGRAMQT_ENABLE_IPO)
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    endif()
 endif()
 
 set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
