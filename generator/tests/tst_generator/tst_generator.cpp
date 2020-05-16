@@ -4,6 +4,14 @@
 
 #include "../Generator.hpp"
 
+#define COMPARE_WITH_DUMP(actual, expected) \
+do {\
+    if (!QTest::qCompare(actual, expected, #actual, #expected, __FILE__, __LINE__)) {\
+        qWarning().noquote() << "Actual dump:\n" << actual;\
+        return;\
+    }\
+} while (false)
+
 const QByteArray c_typesSection = QByteArrayLiteral("---types---");
 const QByteArray c_functionsSection = QByteArrayLiteral("---functions---");
 
@@ -503,7 +511,7 @@ void tst_Generator::generatedTlType()
     QVERIFY(types.contains(typeName));
     const TLType type = types.value(typeName);
     const QString definitions = Generator::generateTLTypeDefinition(type);
-    QCOMPARE(definitions, tlTypeCode);
+    COMPARE_WITH_DUMP(definitions, tlTypeCode);
 }
 
 QTEST_APPLESS_MAIN(tst_Generator)
