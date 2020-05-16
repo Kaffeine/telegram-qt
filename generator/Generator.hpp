@@ -95,6 +95,7 @@ struct TLParam {
     QString getName() const { return m_name; }
     void setName(const QString &newName) { m_name = newName; }
     bool dependOnFlag() const { return flagBit >= 0; }
+    bool hasData() const;
 
 protected:
     QString m_type;

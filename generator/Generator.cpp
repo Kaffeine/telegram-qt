@@ -277,7 +277,7 @@ QString Generator::formatMethodParams(const TLMethod &method)
     QString result;
 
     foreach (const TLParam &param, method.params) {
-        if (param.dependOnFlag() && (param.type() == tlTrueType)) {
+        if (!param.hasData()) {
             continue;
         }
 
@@ -467,6 +467,14 @@ void TLParam::setType(const QString &newType)
     m_bareType = Generator::getTypeOrVectorType(newType, &m_isVector);
 }
 
+bool TLParam::hasData() const
+{
+    if (dependOnFlag() && (type() == tlTrueType)) {
+        return false;
+    }
+    return true;
+}
+
 QString Generator::generateTLValuesDefinition(const Predicate *predicate)
 {
     return QString("%1 = 0x%2,\n").arg(predicate->nameFirstCapital()).arg(predicate->predicateId, 8, 0x10, QLatin1Char('0'));
@@ -648,7 +656,7 @@ QStringList Generator::generateTLTypeMembers(const TLType &type)
                 continue;
             }
             addedMembers.append(member.getAlias());
-            if (member.dependOnFlag() && (member.type() == tlTrueType)) {
+            if (!member.hasData()) {
                 continue; // No extra data behind the flag
             }
             if (member.accessByPointer()) {
