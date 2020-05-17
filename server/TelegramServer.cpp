@@ -550,6 +550,10 @@ PendingOperation *Server::exportAuthorization(quint32 dcId, quint32 userId, QByt
     }
 
     *outputAuthBytes = targetDc->getForeingUserAuthorization(userId);
+    if (outputAuthBytes->isEmpty()) {
+        return PendingOperation::failOperation(QLatin1String("Target DC can not authorize the user"));
+    }
+
     PendingOperation *operation = new PendingOperation(this);
     operation->setObjectName(QStringLiteral("ExportAuthOperation(user%1 from %2 to %3)")
                              .arg(userId).arg(m_dcOption.id).arg(dcId));
