@@ -587,6 +587,22 @@ AuthorizedUser *Server::getAuthorizedUser(quint32 userId, const QByteArray &auth
     return m_authorizedUsers.value(userId);
 }
 
+PendingOperation *Server::searchContacts(const QString &query, quint32 limit, QVector<Peer> *output)
+{
+    PendingOperation *operation = new PendingOperation(this);
+    operation->setObjectName(QStringLiteral("searchContacts(query: %1, limit: %2)")
+                             .arg(query).arg(limit));
+
+    const Peer peer = getPeerByUserName(query);
+    if (peer.isValid()) {
+        output->append(peer);
+    }
+
+    operation->finishLater();
+
+    return operation;
+}
+
 void Server::reportMessageRead(const MessageData *messageData)
 {
     const Peer senderPostBoxPeer = messageData->fromId()

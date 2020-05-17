@@ -51,6 +51,7 @@ public:
     virtual bool setUserName(LocalUser *user, const QString &newUsername, RpcError *error = nullptr) = 0;
     virtual bool setUserOnline(LocalUser *user, bool online, Session *fromSession = nullptr) = 0;
 
+    virtual PendingOperation *searchContacts(const QString &query, quint32 limit, QVector<Peer> *output) = 0;
     virtual PendingOperation *exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes) = 0;
     virtual QByteArray generateExportedAuthorization(quint32 userId) = 0;
     virtual AuthorizedUser *getAuthorizedUser(quint32 userId, const QByteArray &authBytes) = 0;

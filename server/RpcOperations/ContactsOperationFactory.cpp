@@ -320,17 +320,8 @@ void ContactsRpcOperation::runResolveUsername()
 void ContactsRpcOperation::runSearch()
 {
     MTProto::Functions::TLContactsSearch &arguments = m_search;
-    if (processNotImplementedMethod(TLValue::ContactsSearch)) {
-        return;
-    }
-    TLContactsFound result;
-    const Peer peer = api()->getPeerByUserName(arguments.q);
-    if (peer.isValid()) {
-        result.results = { Telegram::Utils::toTLPeer(peer) };
-        Utils::setupTLPeers(&result, { peer }, api(), layer()->getUser());
-    }
-
-    sendRpcReply(result);
+    PendingOperation *op = api()->searchContacts(arguments.q, arguments.limit, &m_searchResult);
+    op->connectToFinished(this, &ContactsRpcOperation::onContactsSearchFinished);
 }
 
 void ContactsRpcOperation::runUnblock()
@@ -347,6 +338,25 @@ void ContactsRpcOperation::runUnblock()
 void ContactsRpcOperation::setRunMethod(ContactsRpcOperation::RunMethod method)
 {
     m_runMethod = method;
+}
+
+void ContactsRpcOperation::onContactsSearchFinished()
+{
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+    QSet<Peer> peerSet;
+#else
+    const QSet<Peer> peerSet(m_searchResult.constBegin(), m_searchResult.constEnd());
+#endif
+    TLContactsFound result;
+    for (const Peer &peer : m_searchResult) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 14, 0)
+        peerSet.insert(peer);
+#endif
+        result.results.append(Telegram::Utils::toTLPeer(peer));
+    }
+    Utils::setupTLPeers(&result, peerSet, api(), layer()->getUser());
+
+    sendRpcReply(result);
 }
 
 ContactsRpcOperation::ProcessingMethod ContactsRpcOperation::getMethodForRpcFunction(TLValue function)

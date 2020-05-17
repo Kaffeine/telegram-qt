@@ -18,10 +18,9 @@
 #ifndef CONTACTS_OPERATION_FACTORY_HPP
 #define CONTACTS_OPERATION_FACTORY_HPP
 
+#include "Peer.hpp"
 #include "RpcOperationFactory.hpp"
 #include "ServerRpcOperation.hpp"
-
-#include <QObject>
 
 namespace Telegram {
 
@@ -79,6 +78,8 @@ protected:
 
     void setRunMethod(RunMethod method);
 
+    void onContactsSearchFinished();
+
     RunMethod m_runMethod = nullptr;
 
     // Generated RPC members
@@ -98,6 +99,8 @@ protected:
     MTProto::Functions::TLContactsSearch m_search;
     MTProto::Functions::TLContactsUnblock m_unblock;
     // End of generated RPC members
+
+    QVector<Peer> m_searchResult;
 };
 
 class ContactsOperationFactory : public RpcOperationFactory

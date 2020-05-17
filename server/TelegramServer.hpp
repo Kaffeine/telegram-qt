@@ -105,6 +105,8 @@ public:
     QByteArray generateExportedAuthorization(quint32 userId) override;
     AuthorizedUser *getAuthorizedUser(quint32 userId, const QByteArray &authBytes) override;
 
+    PendingOperation *searchContacts(const QString &query, quint32 limit, QVector<Peer> *output);
+
     void reportMessageRead(const MessageData *messageData) override;
 
     QVector<UpdateNotification> processMessage(MessageData *messageData) override;
