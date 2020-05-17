@@ -12,6 +12,7 @@ set(server_lib_SOURCES
     IMediaService.hpp
     LocalCluster.cpp
     LocalCluster.hpp
+    LocalServerApi.hpp
     MediaService.cpp
     MediaService.hpp
     MessageService.cpp

@@ -23,7 +23,7 @@
 #include "ServerRpcOperation_p.hpp"
 
 #include "IMediaService.hpp"
-#include "ServerApi.hpp"
+#include "LocalServerApi.hpp"
 #include "ServerMessageData.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"

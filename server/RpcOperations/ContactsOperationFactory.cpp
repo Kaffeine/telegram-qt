@@ -22,7 +22,7 @@
 #include "ServerRpcOperation_p.hpp"
 
 #include "ApiUtils.hpp"
-#include "ServerApi.hpp"
+#include "LocalServerApi.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
 #include "TelegramServerUser.hpp"

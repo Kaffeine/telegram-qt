@@ -1,6 +1,6 @@
 #include "RemoteServerConnection.hpp"
 
-#include "ServerApi.hpp"
+#include "LocalServerApi.hpp"
 #include "TelegramServerUser.hpp"
 
 namespace Telegram {

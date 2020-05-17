@@ -5,7 +5,7 @@
 
 #include "MTProto/TLTypes.hpp"
 #include "RsaKey.hpp"
-#include "ServerApi.hpp"
+#include "LocalServerApi.hpp"
 #include "TelegramNamespace.hpp"
 
 #include <QHash>

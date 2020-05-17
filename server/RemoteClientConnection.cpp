@@ -5,7 +5,7 @@
 #include "AuthService.hpp"
 #include "ConnectionError.hpp"
 #include "CTelegramTransport.hpp"
-#include "ServerApi.hpp"
+#include "LocalServerApi.hpp"
 #include "ServerDhLayer.hpp"
 #include "ServerRpcLayer.hpp"
 #include "TelegramServerUser.hpp"

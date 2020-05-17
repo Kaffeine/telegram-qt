@@ -8,7 +8,7 @@
 
 #include "AuthorizationProvider.hpp"
 
-#include "ServerApi.hpp"
+#include "LocalServerApi.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
 #include "Session.hpp"
