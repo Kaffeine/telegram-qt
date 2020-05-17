@@ -70,37 +70,40 @@ class AbstractServerApi
 public:
     virtual ~AbstractServerApi() = default;
 
-    virtual DcConfiguration serverConfiguration() const = 0;
     virtual quint32 dcId() const = 0;
     virtual PhoneStatus getPhoneStatus(const QString &identifier) const = 0;
     virtual bool identifierIsValid(const QString &identifier) const = 0; // Argument is 'phoneNumber'
     virtual QString normalizeIdentifier(const QString &identifier) const = 0;
 
-    virtual AuthService *authService() const = 0;
     virtual IMediaService *mediaService() const = 0;
     virtual MessageService *messageService() const = 0;
 
-    virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
-    virtual MessageRecipient *getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
     virtual MessageRecipient *getRecipient(const Peer &peer) const = 0;
 
     virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
-    virtual AbstractUser *getAbstractUser(const TLInputUser &inputUser, const LocalUser *applicant) const = 0;
-    virtual AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const = 0;
-    virtual Peer getPeerByUserName(const QString &userName) const = 0;
 
-    virtual bool bakeUpdate(TLUpdate *update, const UpdateNotification &notification, QSet<Peer> *interestingPeers) const = 0;
-    virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;
     virtual void queueServerUpdates(const QVector<UpdateNotification> &updates) = 0;
 };
 
 class LocalServerApi : public AbstractServerApi
 {
 public:
+    virtual AuthService *authService() const = 0;
+
+    virtual DcConfiguration serverConfiguration() const = 0;
     virtual LocalUser *addUser(const QString &identifier) = 0;
     virtual LocalUser *getUser(const QString &identifier) const = 0;
     virtual LocalUser *getUser(quint32 userId) const = 0;
+    virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
+
+    using AbstractServerApi::getRecipient;
+    virtual MessageRecipient *getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
+
+    using AbstractServerApi::getAbstractUser;
+    virtual AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const = 0;
+    virtual AbstractUser *getAbstractUser(const TLInputUser &inputUser, const LocalUser *applicant) const = 0;
+    virtual Peer getPeerByUserName(const QString &userName) const = 0;
 
     virtual bool bindClientConnectionSession(RemoteClientConnection *connection, quint64 sessionId) = 0;
     virtual Session *getSessionById(quint64 authId) const = 0;
@@ -123,6 +126,8 @@ public:
                                                       Session *excludeSession) const = 0;
 
     virtual AbstractUser *importUserContact(LocalUser *user, const UserContact &contact) = 0;
+    virtual bool bakeUpdate(TLUpdate *update, const UpdateNotification &notification, QSet<Peer> *interestingPeers) const = 0;
+    virtual void queueUpdates(const QVector<UpdateNotification> &updates) = 0;
 };
 
 } // Server namespace
