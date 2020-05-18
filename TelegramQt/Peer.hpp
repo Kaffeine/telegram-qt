@@ -91,4 +91,7 @@ inline uint qHash(const Peer &key, uint seed)
 
 } // Telegram namespace
 
+Q_DECLARE_METATYPE(Telegram::Peer)
+Q_DECLARE_METATYPE(Telegram::Peer::Type)
+
 #endif // TELEGRAM_PEER_HPP

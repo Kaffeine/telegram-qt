@@ -443,8 +443,6 @@ TELEGRAMQT_EXPORT QVector<quint32> toIdList(const Telegram::PeerList &peerList);
 } // Telegram namespace
 
 Q_DECLARE_METATYPE(Telegram::MessageAction)
-Q_DECLARE_METATYPE(Telegram::Peer)
-Q_DECLARE_METATYPE(Telegram::Peer::Type)
 Q_DECLARE_METATYPE(Telegram::PeerList)
 Q_DECLARE_METATYPE(Telegram::DcOption)
 Q_DECLARE_METATYPE(Telegram::Message)
