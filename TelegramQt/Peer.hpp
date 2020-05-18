@@ -94,4 +94,6 @@ inline uint qHash(const Peer &key, uint seed)
 Q_DECLARE_METATYPE(Telegram::Peer)
 Q_DECLARE_METATYPE(Telegram::Peer::Type)
 
+Q_DECLARE_TYPEINFO(Telegram::Peer, Q_PRIMITIVE_TYPE);
+
 #endif // TELEGRAM_PEER_HPP
