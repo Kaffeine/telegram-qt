@@ -1231,30 +1231,54 @@ QString Generator::generateFunctionStructs() const
 
 QString Generator::generateFunctionStruct(const TLMethod &method)
 {
-    QString code;
-    code.append(QStringLiteral("struct %1\n"
-                               "{\n"
-                               "    static constexpr %2 predicate = %2::%3;\n").arg(method.functionTypeName(), tlValueName, method.nameFirstCapital()));
     // struct TLAuthSendCode
     // {
     //     static constexpr TLValue predicate = TLValue::AuthSendCode;
-    QStringList arguments;
+    //     enum Flag {
+    //         AllowFlashcall = 1 << 0,
+    //         CurrentNumber = 1 << 0,
+    //     };
+    //     quint32 flags = 0;
+    //     QString phoneNumber;
+    //     bool currentNumber = false;
+    //     quint32 apiId = 0;
+    //     QString apiHash;
+    // };
+
+    QString code;
+    QTextStream stream(&code, QIODevice::WriteOnly);
+    stream << "struct " << method.functionTypeName() << endl;
+    stream << "{" << endl;
+    stream << "    static constexpr " << tlValueName << " predicate = "
+           << tlValueName << "::" << method.nameFirstCapital() << ";" << endl;
+
+    QMap<quint8,QString> memberFlags = method.getFlags();
+    if (!memberFlags.isEmpty()) {
+        stream << "    enum Flag {" << endl;
+
+        for (quint8 key : memberFlags.uniqueKeys()) {
+            for (const QString &value : memberFlags.values(key)) {
+                stream << "        " << value << " = 1 << " << key << ',' << endl;
+            }
+        }
+
+        stream << "    };" << endl;
+    }
+
     for (const TLParam &param : method.params) {
-        if (param.dependOnFlag() && (param.type() == tlTrueType)) {
+        if (!param.hasData()) {
             continue;
         }
 
         if (podTypes.contains(param.type())) {
             const QString initialValue = initTypesValues.at(podTypes.indexOf(param.type()));
-            arguments.append(QStringLiteral("%1 %2 = %3;").arg(param.type(), param.getAlias(), initialValue));
-        } else if (param.isVector()) {
-            arguments.append(QStringLiteral("%1<%2> %3;").arg(tlVectorType, param.bareType(), param.getAlias()));
+            stream << "    " << param.type() << ' ' << param.getAlias() << " = " << initialValue << ';' << endl;
         } else {
-            arguments.append(QStringLiteral("%1 %2;").arg(param.type(), param.getAlias()));
+            stream << "    " << param.type() << ' ' << param.getAlias() << ';' << endl;
         }
     }
-    code.append(joinLinesWithPrepend(arguments, spacing, QStringLiteral("\n")));
-    code.append(QStringLiteral("};\n"));
+
+    stream << "};" << endl;
     return code;
 }
 
