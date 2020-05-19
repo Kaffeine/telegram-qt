@@ -239,7 +239,7 @@ TLType tst_Generator::getSolvedType(const Generator &generator, const QString &t
 {
     const QString tName = Generator::formatType(typeName);
     for (const TLType solved : generator.solvedTypes()) {
-        if (solved.name == tName) {
+        if (solved.getName() == tName) {
             return solved;
         }
     }
@@ -340,7 +340,7 @@ void tst_Generator::checkTypeWithMemberConflicts()
     QVERIFY(generator.resolveTypes());
     QVERIFY(!generator.solvedTypes().isEmpty());
     const TLType solvedType = getSolvedType(generator, generatedTypeName);
-    QVERIFY(!solvedType.name.isEmpty());
+    QVERIFY(!solvedType.getName().isEmpty());
     const QStringList structMembers = Generator::generateTLTypeMembers(solvedType);
     static const QStringList checkList = {
         QStringLiteral("TLInputFile thumb;"),
@@ -370,7 +370,7 @@ void tst_Generator::typeWithMemberFlagsConflict()
     QVERIFY(generator.resolveTypes());
     QVERIFY(!generator.solvedTypes().isEmpty());
     const TLType solvedType = getSolvedType(generator, generatedTypeName);
-    QVERIFY(!solvedType.name.isEmpty());
+    QVERIFY(!solvedType.getName().isEmpty());
     const QStringList flags = Generator::generateTLTypeMemberFlags(solvedType);
     QCOMPARE(flags, c_inputMediaFlags);
 }
@@ -388,7 +388,7 @@ void tst_Generator::recursiveTypeMembers()
     QVERIFY(!generator.solvedTypes().isEmpty());
     const TLType solvedType = getSolvedType(generator, generatedTypeName);
 
-    QVERIFY(!solvedType.name.isEmpty());
+    QVERIFY(!solvedType.getName().isEmpty());
     const QStringList structMembers = Generator::generateTLTypeMembers(solvedType);
     static const QStringList checkList = {
         QStringLiteral("QString email;"),
@@ -420,7 +420,7 @@ void tst_Generator::doubleRecursiveTypeMembers()
     QVERIFY(generator.resolveTypes());
     QVERIFY(!generator.solvedTypes().isEmpty());
     const TLType solvedType = getSolvedType(generator, generatedTypeName);
-    QVERIFY(!solvedType.name.isEmpty());
+    QVERIFY(!solvedType.getName().isEmpty());
     const QStringList structMembers = Generator::generateTLTypeMembers(solvedType);
     static const QStringList checkList = {
         QStringLiteral("TLRichTextPtr text;"),

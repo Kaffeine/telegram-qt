@@ -30,18 +30,20 @@
 QT_FORWARD_DECLARE_CLASS(QJsonDocument)
 
 struct Name {
-    QString name;
-
-    QString nameFirstCapital() const {
-        if (name.isEmpty()) {
-            return QString();
-        }
-        QString capital = name;
-        capital[0] = capital.at(0).toUpper();
-        return capital;
+    Name() = default;
+    Name(const QString &n)
+        : m_name(n)
+    {
     }
+    virtual ~Name() = default;
 
-    virtual ~Name() { }
+    QString getName() const { return m_name; }
+    void setName(const QString &newName) { m_name = newName; }
+
+    QString nameFirstCapital() const;
+
+protected:
+    QString m_name;
 };
 
 struct TypedEntity : public Name
@@ -68,10 +70,15 @@ struct Predicate : public TypedEntity
     QString source; // The source from the spec
 };
 
-struct TLParam {
-    TLParam() { }
-    TLParam(const QString &newName, const QString &newType, qint8 newFlagBit = -1) :
-        flagBit(newFlagBit), m_name(newName) { setType(newType); }
+struct TLParam : public Name
+{
+    TLParam() = default;
+    TLParam(const QString &newName, const QString &newType, qint8 newFlagBit = -1)
+        : Name(newName)
+        , flagBit(newFlagBit)
+    {
+        setType(newType);
+    }
 
     qint8 flagBit = -1;
     QString flagMember;
@@ -94,8 +101,6 @@ struct TLParam {
     QString getAlias() const { return !m_alias.isEmpty() ? m_alias : m_name; }
     void setAlias(const QString &newAlias) { m_alias = newAlias; }
 
-    QString getName() const { return m_name; }
-    void setName(const QString &newName) { m_name = newName; }
     bool dependOnFlag() const { return flagBit >= 0; }
     bool hasData() const;
 
@@ -103,7 +108,6 @@ protected:
     QString m_type;
     QString m_bareType;
     QString m_alias;
-    QString m_name;
     QString m_flagName;
     bool m_isVector = false;
     bool m_accessByPointer = false;
@@ -111,14 +115,14 @@ protected:
 
 struct TLSubType : public Predicate {
     QString entityType() const override { return QStringLiteral("Value"); }
-    QString getEntityTLType() const override { return name; }
+    QString getEntityTLType() const override { return m_name; }
     QMap<quint8, QString> getBoolFlags() const;
     QList<TLParam> members;
 };
 
 struct TLType : public TypedEntity {
     QString entityType() const override { return QStringLiteral("Value"); }
-    QString getEntityTLType() const override { return name; }
+    QString getEntityTLType() const override { return m_name; }
 
     QMap<quint8, QString> getBoolFlags() const;
 

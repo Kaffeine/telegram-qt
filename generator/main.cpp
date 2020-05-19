@@ -194,9 +194,9 @@ QString preprocessFile(const QString &fileName)
 
 void debugType(const TLType &type)
 {
-    qDebug() << type.name;
+    qDebug() << type.getName();
     foreach (const TLSubType &subType, type.subTypes) {
-        qDebug() << "    " << subType.name;
+        qDebug() << "    " << subType.getName();
         foreach (const TLParam &member, subType.members) {
             qDebug() << "        " << member.type() << member.getAlias();
         }
