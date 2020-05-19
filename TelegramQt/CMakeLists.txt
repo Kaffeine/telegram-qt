@@ -149,6 +149,7 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Core PRIVATE
     MTProto/StreamExtraOperators.cpp # 0.2 Mb
     MTProto/StreamExtraOperators.hpp
     MTProto/Stream_p.hpp
+    MTProto/TLFunctions.hpp
     MTProto/TLNumbers.hpp
     MTProto/TLTypes.cpp
     MTProto/TLTypes.hpp
