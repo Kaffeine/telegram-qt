@@ -140,6 +140,7 @@ struct TLMethod : public Predicate {
     QString getEntityTLType() const override { return functionTypeName(); }
     QString functionTypeName() const;
     QString nameFromSecondWord() const;
+    QMap<quint8, QString> getFlags() const;
     QString type;
     QList< TLParam > params;
 };

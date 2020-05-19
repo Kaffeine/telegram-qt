@@ -2522,6 +2522,21 @@ QString TLMethod::nameFromSecondWord() const
     return words.join(QString());
 }
 
+QMap<quint8, QString> TLMethod::getFlags() const
+{
+    QMap<quint8,QString> memberFlags;
+
+    for (const TLParam &param : params) {
+        if (!param.dependOnFlag()) {
+            continue;
+        }
+
+        memberFlags.insertMulti(param.flagBit, param.flagName());
+    }
+
+    return memberFlags;
+}
+
 QString TypedEntity::variableName() const
 {
     QString varName = removePrefix(m_name);
