@@ -103,6 +103,7 @@ public:
     Namespace::ChatType getChatType(const Peer &peer) const;
 
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
+    PendingOperation *createChat(const QString &title, const QVector<quint32> &contacts);
 
     bool getMessage(Message *message, const Telegram::Peer &peer, quint32 messageId);
     bool getMessageMediaInfo(MessageMediaInfo *info, const Telegram::Peer &peer, quint32 messageId);

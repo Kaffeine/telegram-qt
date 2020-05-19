@@ -157,6 +157,14 @@ void MessagingApiPrivate::processMessageAction(const Peer peer, quint32 userId, 
     emit q->messageActionChanged(peer, userId, action);
 }
 
+void MessagingApiPrivate::onChatCreatedResult(MessagesRpcLayer::PendingUpdates *rpcOperation)
+{
+    TLUpdates result;
+    rpcOperation->getResult(&result);
+
+    backend()->updatesApi()->processUpdates(result);
+}
+
 void MessagingApiPrivate::onSendMessageResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation)
 {
     TLUpdates result;
@@ -276,6 +284,26 @@ PendingMessages *MessagingApiPrivate::getHistory(const Peer peer, const MessageF
                                                                                    options.hash);
     rpcOp->connectToFinished(this, &MessagingApiPrivate::onGetHistoryFinished, apiOp, rpcOp);
     return apiOp;
+}
+
+PendingOperation *MessagingApiPrivate::createChat(const QString &title, const QVector<quint32> &contacts)
+{
+    TLVector<TLInputUser> users;
+    for (quint32 userId : contacts) {
+        TLInputUser inputUser = dataInternalApi()->toInputUser(userId);
+        if (inputUser.tlType == TLValue::InputUserEmpty) {
+            const QString text = QLatin1String("Invalid contact for createChat()");
+            return PendingOperation::failOperation<PendingOperation>(text, this);
+        }
+        users.append(inputUser);
+    }
+
+    //const QString text = QLatin1String("Not implemented");
+    //return PendingOperation::failOperation<PendingOperation>(text, this);
+
+    MessagesRpcLayer::PendingUpdates *rpcOp = messagesLayer()->createChat(users, title);
+    rpcOp->connectToFinished(this, &MessagingApiPrivate::onChatCreatedResult, rpcOp);
+    return rpcOp;
 }
 
 /*!
@@ -462,6 +490,12 @@ PendingMessages *MessagingApi::getHistory(const Telegram::Peer peer, const Messa
 {
     Q_D(MessagingApi);
     return d->getHistory(peer, options);
+}
+
+PendingOperation *MessagingApi::createChat(const QString &title, const QVector<quint32> &contacts)
+{
+    Q_D(MessagingApi);
+    return d->createChat(title, contacts);
 }
 
 bool MessagingApi::getMessage(Message *message, const Peer &peer, quint32 messageId)

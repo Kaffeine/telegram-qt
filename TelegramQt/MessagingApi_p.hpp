@@ -86,6 +86,7 @@ public:
     void setMessageAction(const Peer peer, const Telegram::MessageAction &action);
     void processMessageAction(const Peer peer, quint32 userId, const MessageAction &action);
 
+    void onChatCreatedResult(MessagesRpcLayer::PendingUpdates *rpcOperation);
     void onSendMessageResult(quint64 randomMessageId, MessagesRpcLayer::PendingUpdates *rpcOperation);
     void onShortSentMessage(quint32 messageId);
     void onSentMessageIdResolved(quint64 randomMessageId, quint32 messageId);
@@ -105,6 +106,7 @@ public:
 
     PendingOperation *getDialogs();
     PendingMessages *getHistory(const Telegram::Peer peer, const MessageFetchOptions &options);
+    PendingOperation *createChat(const QString &title, const QVector<quint32> &contacts);
 
     MessagesRpcLayer *messagesLayer();
     ChannelsRpcLayer *channelsLayer();
