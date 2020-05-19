@@ -136,6 +136,10 @@ struct TLAccountResetNotifySettings
 struct TLAccountSendChangePhoneCode
 {
     static constexpr TLValue predicate = TLValue::AccountSendChangePhoneCode;
+    enum Flag {
+        CurrentNumber = 1 << 0,
+        AllowFlashcall = 1 << 0,
+    };
     quint32 flags = 0;
     QString phoneNumber;
     bool currentNumber = false;
@@ -144,6 +148,10 @@ struct TLAccountSendChangePhoneCode
 struct TLAccountSendConfirmPhoneCode
 {
     static constexpr TLValue predicate = TLValue::AccountSendConfirmPhoneCode;
+    enum Flag {
+        CurrentNumber = 1 << 0,
+        AllowFlashcall = 1 << 0,
+    };
     quint32 flags = 0;
     QString hash;
     bool currentNumber = false;
@@ -192,6 +200,11 @@ struct TLAccountUpdatePasswordSettings
 struct TLAccountUpdateProfile
 {
     static constexpr TLValue predicate = TLValue::AccountUpdateProfile;
+    enum Flag {
+        FirstName = 1 << 0,
+        LastName = 1 << 1,
+        About = 1 << 2,
+    };
     quint32 flags = 0;
     QString firstName;
     QString lastName;
@@ -297,6 +310,10 @@ struct TLAuthResetAuthorizations
 struct TLAuthSendCode
 {
     static constexpr TLValue predicate = TLValue::AuthSendCode;
+    enum Flag {
+        CurrentNumber = 1 << 0,
+        AllowFlashcall = 1 << 0,
+    };
     quint32 flags = 0;
     QString phoneNumber;
     bool currentNumber = false;
@@ -353,6 +370,10 @@ struct TLChannelsCheckUsername
 struct TLChannelsCreateChannel
 {
     static constexpr TLValue predicate = TLValue::ChannelsCreateChannel;
+    enum Flag {
+        Broadcast = 1 << 0,
+        Megagroup = 1 << 1,
+    };
     quint32 flags = 0;
     QString title;
     QString about;
@@ -438,6 +459,10 @@ struct TLChannelsExportMessageLink
 struct TLChannelsGetAdminLog
 {
     static constexpr TLValue predicate = TLValue::ChannelsGetAdminLog;
+    enum Flag {
+        EventsFilter = 1 << 0,
+        Admins = 1 << 1,
+    };
     quint32 flags = 0;
     TLInputChannel channel;
     QString q;
@@ -561,6 +586,9 @@ struct TLChannelsToggleSignatures
 struct TLChannelsUpdatePinnedMessage
 {
     static constexpr TLValue predicate = TLValue::ChannelsUpdatePinnedMessage;
+    enum Flag {
+        Silent = 1 << 0,
+    };
     quint32 flags = 0;
     TLInputChannel channel;
     quint32 id = 0;
@@ -617,6 +645,14 @@ struct TLContactsGetStatuses
 struct TLContactsGetTopPeers
 {
     static constexpr TLValue predicate = TLValue::ContactsGetTopPeers;
+    enum Flag {
+        Correspondents = 1 << 0,
+        BotsPm = 1 << 1,
+        BotsInline = 1 << 2,
+        PhoneCalls = 1 << 3,
+        Groups = 1 << 10,
+        Channels = 1 << 15,
+    };
     quint32 flags = 0;
     quint32 offset = 0;
     quint32 limit = 0;
@@ -775,6 +811,9 @@ struct TLMessagesCheckChatInvite
 struct TLMessagesClearRecentStickers
 {
     static constexpr TLValue predicate = TLValue::MessagesClearRecentStickers;
+    enum Flag {
+        Attached = 1 << 0,
+    };
     quint32 flags = 0;
 };
 
@@ -795,6 +834,9 @@ struct TLMessagesDeleteChatUser
 struct TLMessagesDeleteHistory
 {
     static constexpr TLValue predicate = TLValue::MessagesDeleteHistory;
+    enum Flag {
+        JustClear = 1 << 0,
+    };
     quint32 flags = 0;
     TLInputPeer peer;
     quint32 maxId = 0;
@@ -803,6 +845,9 @@ struct TLMessagesDeleteHistory
 struct TLMessagesDeleteMessages
 {
     static constexpr TLValue predicate = TLValue::MessagesDeleteMessages;
+    enum Flag {
+        Revoke = 1 << 0,
+    };
     quint32 flags = 0;
     TLVector<quint32> id;
 };
@@ -838,6 +883,14 @@ struct TLMessagesEditChatTitle
 struct TLMessagesEditInlineBotMessage
 {
     static constexpr TLValue predicate = TLValue::MessagesEditInlineBotMessage;
+    enum Flag {
+        NoWebpage = 1 << 1,
+        ReplyMarkup = 1 << 2,
+        Entities = 1 << 3,
+        Message = 1 << 11,
+        StopGeoLive = 1 << 12,
+        GeoPoint = 1 << 13,
+    };
     quint32 flags = 0;
     TLInputBotInlineMessageID id;
     QString message;
@@ -849,6 +902,14 @@ struct TLMessagesEditInlineBotMessage
 struct TLMessagesEditMessage
 {
     static constexpr TLValue predicate = TLValue::MessagesEditMessage;
+    enum Flag {
+        NoWebpage = 1 << 1,
+        ReplyMarkup = 1 << 2,
+        Entities = 1 << 3,
+        Message = 1 << 11,
+        StopGeoLive = 1 << 12,
+        GeoPoint = 1 << 13,
+    };
     quint32 flags = 0;
     TLInputPeer peer;
     quint32 id = 0;
@@ -882,6 +943,11 @@ struct TLMessagesForwardMessage
 struct TLMessagesForwardMessages
 {
     static constexpr TLValue predicate = TLValue::MessagesForwardMessages;
+    enum Flag {
+        Silent = 1 << 5,
+        Background = 1 << 6,
+        WithMyScore = 1 << 8,
+    };
     quint32 flags = 0;
     TLInputPeer fromPeer;
     TLVector<quint32> id;
@@ -909,6 +975,9 @@ struct TLMessagesGetAllStickers
 struct TLMessagesGetArchivedStickers
 {
     static constexpr TLValue predicate = TLValue::MessagesGetArchivedStickers;
+    enum Flag {
+        Masks = 1 << 0,
+    };
     quint32 flags = 0;
     quint64 offsetId = 0;
     quint32 limit = 0;
@@ -923,6 +992,10 @@ struct TLMessagesGetAttachedStickers
 struct TLMessagesGetBotCallbackAnswer
 {
     static constexpr TLValue predicate = TLValue::MessagesGetBotCallbackAnswer;
+    enum Flag {
+        Data = 1 << 0,
+        Game = 1 << 1,
+    };
     quint32 flags = 0;
     TLInputPeer peer;
     quint32 msgId = 0;
@@ -953,6 +1026,9 @@ struct TLMessagesGetDhConfig
 struct TLMessagesGetDialogs
 {
     static constexpr TLValue predicate = TLValue::MessagesGetDialogs;
+    enum Flag {
+        ExcludePinned = 1 << 0,
+    };
     quint32 flags = 0;
     quint32 offsetDate = 0;
     quint32 offsetId = 0;
@@ -1010,6 +1086,9 @@ struct TLMessagesGetHistory
 struct TLMessagesGetInlineBotResults
 {
     static constexpr TLValue predicate = TLValue::MessagesGetInlineBotResults;
+    enum Flag {
+        GeoPoint = 1 << 0,
+    };
     quint32 flags = 0;
     TLInputUser bot;
     TLInputPeer peer;
@@ -1079,6 +1158,9 @@ struct TLMessagesGetRecentLocations
 struct TLMessagesGetRecentStickers
 {
     static constexpr TLValue predicate = TLValue::MessagesGetRecentStickers;
+    enum Flag {
+        Attached = 1 << 0,
+    };
     quint32 flags = 0;
     quint32 hash = 0;
 };
@@ -1191,6 +1273,9 @@ struct TLMessagesReceivedQueue
 struct TLMessagesReorderPinnedDialogs
 {
     static constexpr TLValue predicate = TLValue::MessagesReorderPinnedDialogs;
+    enum Flag {
+        Force = 1 << 0,
+    };
     quint32 flags = 0;
     TLVector<TLInputPeer> order;
 };
@@ -1198,6 +1283,9 @@ struct TLMessagesReorderPinnedDialogs
 struct TLMessagesReorderStickerSets
 {
     static constexpr TLValue predicate = TLValue::MessagesReorderStickerSets;
+    enum Flag {
+        Masks = 1 << 0,
+    };
     quint32 flags = 0;
     TLVector<quint64> order;
 };
@@ -1225,6 +1313,11 @@ struct TLMessagesRequestEncryption
 struct TLMessagesSaveDraft
 {
     static constexpr TLValue predicate = TLValue::MessagesSaveDraft;
+    enum Flag {
+        ReplyToMsgId = 1 << 0,
+        NoWebpage = 1 << 1,
+        Entities = 1 << 3,
+    };
     quint32 flags = 0;
     quint32 replyToMsgId = 0;
     TLInputPeer peer;
@@ -1242,6 +1335,9 @@ struct TLMessagesSaveGif
 struct TLMessagesSaveRecentSticker
 {
     static constexpr TLValue predicate = TLValue::MessagesSaveRecentSticker;
+    enum Flag {
+        Attached = 1 << 0,
+    };
     quint32 flags = 0;
     TLInputDocument id;
     bool unsave = false;
@@ -1250,6 +1346,9 @@ struct TLMessagesSaveRecentSticker
 struct TLMessagesSearch
 {
     static constexpr TLValue predicate = TLValue::MessagesSearch;
+    enum Flag {
+        FromId = 1 << 0,
+    };
     quint32 flags = 0;
     TLInputPeer peer;
     QString q;
@@ -1309,6 +1408,12 @@ struct TLMessagesSendEncryptedService
 struct TLMessagesSendInlineBotResult
 {
     static constexpr TLValue predicate = TLValue::MessagesSendInlineBotResult;
+    enum Flag {
+        ReplyToMsgId = 1 << 0,
+        Silent = 1 << 5,
+        Background = 1 << 6,
+        ClearDraft = 1 << 7,
+    };
     quint32 flags = 0;
     TLInputPeer peer;
     quint32 replyToMsgId = 0;
@@ -1320,6 +1425,13 @@ struct TLMessagesSendInlineBotResult
 struct TLMessagesSendMedia
 {
     static constexpr TLValue predicate = TLValue::MessagesSendMedia;
+    enum Flag {
+        ReplyToMsgId = 1 << 0,
+        ReplyMarkup = 1 << 2,
+        Silent = 1 << 5,
+        Background = 1 << 6,
+        ClearDraft = 1 << 7,
+    };
     quint32 flags = 0;
     TLInputPeer peer;
     quint32 replyToMsgId = 0;
@@ -1331,6 +1443,15 @@ struct TLMessagesSendMedia
 struct TLMessagesSendMessage
 {
     static constexpr TLValue predicate = TLValue::MessagesSendMessage;
+    enum Flag {
+        ReplyToMsgId = 1 << 0,
+        NoWebpage = 1 << 1,
+        ReplyMarkup = 1 << 2,
+        Entities = 1 << 3,
+        Silent = 1 << 5,
+        Background = 1 << 6,
+        ClearDraft = 1 << 7,
+    };
     quint32 flags = 0;
     TLInputPeer peer;
     quint32 replyToMsgId = 0;
@@ -1351,6 +1472,11 @@ struct TLMessagesSendScreenshotNotification
 struct TLMessagesSetBotCallbackAnswer
 {
     static constexpr TLValue predicate = TLValue::MessagesSetBotCallbackAnswer;
+    enum Flag {
+        Message = 1 << 0,
+        Alert = 1 << 1,
+        Url = 1 << 2,
+    };
     quint32 flags = 0;
     quint64 queryId = 0;
     QString message;
@@ -1361,6 +1487,10 @@ struct TLMessagesSetBotCallbackAnswer
 struct TLMessagesSetBotPrecheckoutResults
 {
     static constexpr TLValue predicate = TLValue::MessagesSetBotPrecheckoutResults;
+    enum Flag {
+        Error = 1 << 0,
+        Success = 1 << 1,
+    };
     quint32 flags = 0;
     quint64 queryId = 0;
     QString error;
@@ -1369,6 +1499,10 @@ struct TLMessagesSetBotPrecheckoutResults
 struct TLMessagesSetBotShippingResults
 {
     static constexpr TLValue predicate = TLValue::MessagesSetBotShippingResults;
+    enum Flag {
+        Error = 1 << 0,
+        ShippingOptions = 1 << 1,
+    };
     quint32 flags = 0;
     quint64 queryId = 0;
     QString error;
@@ -1385,6 +1519,10 @@ struct TLMessagesSetEncryptedTyping
 struct TLMessagesSetGameScore
 {
     static constexpr TLValue predicate = TLValue::MessagesSetGameScore;
+    enum Flag {
+        EditMessage = 1 << 0,
+        Force = 1 << 1,
+    };
     quint32 flags = 0;
     TLInputPeer peer;
     quint32 id = 0;
@@ -1395,6 +1533,12 @@ struct TLMessagesSetGameScore
 struct TLMessagesSetInlineBotResults
 {
     static constexpr TLValue predicate = TLValue::MessagesSetInlineBotResults;
+    enum Flag {
+        Gallery = 1 << 0,
+        IsPrivate = 1 << 1,
+        NextOffset = 1 << 2,
+        SwitchPm = 1 << 3,
+    };
     quint32 flags = 0;
     quint64 queryId = 0;
     TLVector<TLInputBotInlineResult> results;
@@ -1406,6 +1550,10 @@ struct TLMessagesSetInlineBotResults
 struct TLMessagesSetInlineGameScore
 {
     static constexpr TLValue predicate = TLValue::MessagesSetInlineGameScore;
+    enum Flag {
+        EditMessage = 1 << 0,
+        Force = 1 << 1,
+    };
     quint32 flags = 0;
     TLInputBotInlineMessageID id;
     TLInputUser userId;
@@ -1438,6 +1586,9 @@ struct TLMessagesToggleChatAdmins
 struct TLMessagesToggleDialogPin
 {
     static constexpr TLValue predicate = TLValue::MessagesToggleDialogPin;
+    enum Flag {
+        Pinned = 1 << 0,
+    };
     quint32 flags = 0;
     TLInputPeer peer;
 };
@@ -1458,6 +1609,10 @@ struct TLMessagesUploadMedia
 struct TLPaymentsClearSavedInfo
 {
     static constexpr TLValue predicate = TLValue::PaymentsClearSavedInfo;
+    enum Flag {
+        Credentials = 1 << 0,
+        Info = 1 << 1,
+    };
     quint32 flags = 0;
 };
 
@@ -1481,6 +1636,10 @@ struct TLPaymentsGetSavedInfo
 struct TLPaymentsSendPaymentForm
 {
     static constexpr TLValue predicate = TLValue::PaymentsSendPaymentForm;
+    enum Flag {
+        RequestedInfoId = 1 << 0,
+        ShippingOptionId = 1 << 1,
+    };
     quint32 flags = 0;
     quint32 msgId = 0;
     QString requestedInfoId;
@@ -1491,6 +1650,9 @@ struct TLPaymentsSendPaymentForm
 struct TLPaymentsValidateRequestedInfo
 {
     static constexpr TLValue predicate = TLValue::PaymentsValidateRequestedInfo;
+    enum Flag {
+        Save = 1 << 0,
+    };
     quint32 flags = 0;
     quint32 msgId = 0;
     TLPaymentRequestedInfo info;
@@ -1601,6 +1763,9 @@ struct TLStickersChangeStickerPosition
 struct TLStickersCreateStickerSet
 {
     static constexpr TLValue predicate = TLValue::StickersCreateStickerSet;
+    enum Flag {
+        Masks = 1 << 0,
+    };
     quint32 flags = 0;
     TLInputUser userId;
     QString title;
@@ -1617,6 +1782,9 @@ struct TLStickersRemoveStickerFromSet
 struct TLUpdatesGetChannelDifference
 {
     static constexpr TLValue predicate = TLValue::UpdatesGetChannelDifference;
+    enum Flag {
+        Force = 1 << 0,
+    };
     quint32 flags = 0;
     TLInputChannel channel;
     TLChannelMessagesFilter filter;
@@ -1627,6 +1795,9 @@ struct TLUpdatesGetChannelDifference
 struct TLUpdatesGetDifference
 {
     static constexpr TLValue predicate = TLValue::UpdatesGetDifference;
+    enum Flag {
+        PtsTotalLimit = 1 << 0,
+    };
     quint32 flags = 0;
     quint32 pts = 0;
     quint32 ptsTotalLimit = 0;
