@@ -138,7 +138,9 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
         if (!peer.isValid()) {
             continue;
         }
-        if (peer.type() == Peer::User) {
+        switch (peer.type()) {
+        case Peer::User:
+        {
             users->append(TLUser());
             AbstractUser *user = api->getAbstractUser(peer.id());
             if (!user) {
@@ -146,8 +148,10 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
                 continue;
             }
             setupTLUser(&users->last(), user, forUser);
-        } else {
-            // TODO
+        }
+            break;
+        case Peer::Chat:
+        case Peer::Channel:
             return false;
         }
     }
