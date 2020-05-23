@@ -977,12 +977,6 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
         QSet<Peer> interestingPeers;
 
         TLUpdates updates;
-        TLUpdate &update = updates.update;
-        if (!bakeUpdate(&update, notification, &interestingPeers)) {
-            qCWarning(lcServerUpdates) << CALL_INFO << "Unable to prepare update";
-            continue;
-        }
-
         LocalUser *recipient = getUser(notification.userId);
         if (!recipient) {
             qCWarning(lcServerUpdates) << CALL_INFO << "Invalid user!" << notification.userId;
@@ -997,14 +991,21 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
         case UpdateNotification::Type::ReadInbox:
         case UpdateNotification::Type::ReadOutbox:
             updates.tlType = TLValue::Updates;
-            updates.seq = 0; // ??
-            // bakeUpdate modified the updates.update object inplace
-            updates.updates = { update };
+            updates.updates.resize(1);
+            if (!bakeUpdate(&updates.updates[0], notification, &interestingPeers)) {
+                qCWarning(lcServerUpdates) << CALL_INFO << "Unable to prepare update";
+                continue; // Omit the notification
+            }
             break;
         case UpdateNotification::Type::MessageAction:
         case UpdateNotification::Type::UpdateName:
         case UpdateNotification::Type::UpdateUserStatus:
             updates.tlType = TLValue::UpdateShort;
+            if (!bakeUpdate(&updates.update, notification, &interestingPeers)) {
+                qCWarning(lcServerUpdates) << CALL_INFO << "Unable to prepare update";
+                continue; // Omit the notification
+            }
+
             // bakeUpdate modified the updates.update object inplace
             break;
         case UpdateNotification::Type::Invalid:
