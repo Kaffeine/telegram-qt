@@ -96,16 +96,17 @@ public:
 
     enum MessageType {
         MessageTypeUnsupported = 0,
-        MessageTypeText        = 1 << 0,
-        MessageTypePhoto       = 1 << 1,
-        MessageTypeAudio       = 1 << 2,
-        MessageTypeVideo       = 1 << 3,
-        MessageTypeContact     = 1 << 4,
-        MessageTypeDocument    = 1 << 5,
-        MessageTypeGeo         = 1 << 6,
-        MessageTypeWebPage     = 1 << 7,
-        MessageTypeSticker     = 1 << 8,
-        MessageTypeAnimation   = 1 << 9,
+        MessageTypeService     = 1 << 0,
+        MessageTypeText        = 1 << 1,
+        MessageTypePhoto       = 1 << 2,
+        MessageTypeAudio       = 1 << 3,
+        MessageTypeVideo       = 1 << 4,
+        MessageTypeContact     = 1 << 5,
+        MessageTypeDocument    = 1 << 6,
+        MessageTypeGeo         = 1 << 7,
+        MessageTypeWebPage     = 1 << 8,
+        MessageTypeSticker     = 1 << 9,
+        MessageTypeAnimation   = 1 << 10,
         MessageTypeAll         = 0xffff, // Up to 16 message types. Bump this value if needed.
     };
     Q_ENUM(MessageType)

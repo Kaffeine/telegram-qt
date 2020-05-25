@@ -183,7 +183,11 @@ bool DataStorage::getMessage(Message *message, const Peer &peer, quint32 message
     privateData->reset();
     privateData->peer = peer;
     privateData->id = messageId;
-    privateData->type = Telegram::Utils::getPublicMessageType(media);
+    if (m->tlType == TLValue::MessageService) {
+        privateData->type = Telegram::Namespace::MessageTypeService;
+    } else {
+        privateData->type = Telegram::Utils::getPublicMessageType(media);
+    }
     privateData->fromId = m->fromId;
     privateData->timestamp = m->date;
     privateData->text = m->message;
