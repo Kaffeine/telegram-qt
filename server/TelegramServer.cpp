@@ -889,6 +889,12 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
         if (update->message.fromId) {
             interestingPeers->insert(Peer::fromUserId(update->message.fromId));
         }
+
+        if (messageData->isServiceMessage()) {
+            for (const Peer &peer : messageData->action().getPeers()) {
+                interestingPeers->insert(peer);
+            }
+        }
     }
         break;
     case UpdateNotification::Type::MessageAction:
