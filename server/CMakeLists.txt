@@ -9,6 +9,8 @@ set(server_lib_SOURCES
     DefaultAuthorizationProvider.hpp
     FunctionStreamOperators.cpp
     FunctionStreamOperators.hpp
+    GroupChat.cpp
+    GroupChat.hpp
     IMediaService.hpp
     LocalCluster.cpp
     LocalCluster.hpp
