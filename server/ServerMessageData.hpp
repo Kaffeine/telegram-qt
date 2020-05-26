@@ -92,9 +92,12 @@ class ServiceMessageAction
 public:
     enum class Type {
         Empty,
+        ChatCreate,
     };
 
     Type type = Type::Empty;
+    QString title;
+    TLVector<quint32> users;
 
     PeerList getPeers() const;
 };

@@ -146,7 +146,12 @@ bool MediaData::operator==(const MediaData &anotherMediaData) const
 
 PeerList ServiceMessageAction::getPeers() const
 {
-    return { };
+    PeerList peers;
+    peers.reserve(users.count());
+    for (const quint32 userId : users) {
+        peers.append(Peer::fromUserId(userId));
+    }
+    return peers;
 }
 
 } // Server namespace

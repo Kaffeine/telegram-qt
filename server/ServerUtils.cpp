@@ -199,6 +199,11 @@ static void setupServiceMessage(TLMessage *output, const MessageData *messageDat
     switch (messageData->action().type) {
     case ServiceMessageAction::Type::Empty:
         break;
+    case ServiceMessageAction::Type::ChatCreate:
+        output->action.tlType = TLValue::MessageActionChatCreate;
+        output->action.title = messageData->action().title;
+        output->action.users = messageData->action().users;
+        break;
     }
 
     output->flags = flags;
