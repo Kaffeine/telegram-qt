@@ -43,6 +43,16 @@ MessageData *MessageService::addMessage(quint32 fromId, Peer toPeer, const Messa
     return message;
 }
 
+MessageData *MessageService::addServiceMessage(quint32 fromId, Peer toPeer, const ServiceMessageAction &action)
+{
+    ++m_lastGlobalId;
+    m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, action));
+    MessageData *message = &m_messages[m_lastGlobalId];
+    message->setDate(Telegram::Utils::getCurrentTime());
+    message->setGlobalId(m_lastGlobalId);
+    return message;
+}
+
 MessageData *MessageService::replaceMessageContent(quint64 globalId, const MessageContent &content)
 {
     MessageData *message = &m_messages[globalId];

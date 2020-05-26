@@ -29,6 +29,13 @@ MessageData::MessageData(quint32 from, Peer to, const MessageContent &content)
 {
 }
 
+MessageData::MessageData(quint32 from, Peer to, const ServiceMessageAction &action)
+    : m_action(action)
+    , m_to(to)
+    , m_fromId(from)
+{
+}
+
 void MessageData::setGlobalId(quint64 id)
 {
     m_globalId = id;
@@ -62,6 +69,11 @@ void MessageData::setEditDate(quint32 date)
 bool MessageData::isMessageToSelf() const
 {
     return (m_to.type() == Peer::User) && (m_to.id() == m_fromId);
+}
+
+bool MessageData::isServiceMessage() const
+{
+    return m_action.type != ServiceMessageAction::Type::Empty;
 }
 
 void MessageData::addReference(const Peer &peer, quint32 messageId)
@@ -130,6 +142,11 @@ bool MediaData::operator==(const MediaData &anotherMediaData) const
 
     Q_UNREACHABLE();
     return false;
+}
+
+PeerList ServiceMessageAction::getPeers() const
+{
+    return { };
 }
 
 } // Server namespace

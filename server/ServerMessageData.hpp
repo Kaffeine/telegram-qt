@@ -87,11 +87,24 @@ protected:
     QString m_text;
 };
 
+class ServiceMessageAction
+{
+public:
+    enum class Type {
+        Empty,
+    };
+
+    Type type = Type::Empty;
+
+    PeerList getPeers() const;
+};
+
 class MessageData
 {
 public:
     MessageData() = default;
     MessageData(quint32 from, Peer to, const MessageContent &content);
+    MessageData(quint32 from, Peer to, const ServiceMessageAction &action);
 
     quint64 globalId() const { return m_globalId; }
     void setGlobalId(quint64 id);
@@ -105,10 +118,12 @@ public:
     quint32 editDate() const;
     void setEditDate(quint32 date);
 
+    const ServiceMessageAction &action() const { return m_action; }
     const MessageContent &content() const { return m_content; }
     void setContent(const MessageContent &newContent);
 
     bool isMessageToSelf() const;
+    bool isServiceMessage() const;
 
     void addReference(const Peer &peer, quint32 messageId);
     quint32 getReference(const Peer &peer) const { return m_references.value(peer); }
@@ -117,6 +132,7 @@ public:
 
 protected:
     MessageContent m_content;
+    ServiceMessageAction m_action;
     QHash<Peer, quint32> m_references;
     Peer m_to;
     quint64 m_globalId = 0;
