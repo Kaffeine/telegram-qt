@@ -973,7 +973,13 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
 
 void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 {
+    QVector<UpdateNotification> holdedUpdates;
     for (const UpdateNotification &notification : notifications) {
+        if (notification.joinWithNext) {
+            holdedUpdates.append(notification);
+            continue;
+        }
+
         QSet<Peer> interestingPeers;
 
         TLUpdates updates;
@@ -985,31 +991,47 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 
         updates.date = notification.date;
 
-        switch (notification.type) {
-        case UpdateNotification::Type::EditMessage:
-        case UpdateNotification::Type::NewMessage:
-        case UpdateNotification::Type::ReadInbox:
-        case UpdateNotification::Type::ReadOutbox:
-            updates.tlType = TLValue::Updates;
-            updates.updates.resize(1);
-            if (!bakeUpdate(&updates.updates[0], notification, &interestingPeers)) {
-                qCWarning(lcServerUpdates) << CALL_INFO << "Unable to prepare update";
-                continue; // Omit the notification
-            }
-            break;
-        case UpdateNotification::Type::MessageAction:
-        case UpdateNotification::Type::UpdateName:
-        case UpdateNotification::Type::UpdateUserStatus:
-            updates.tlType = TLValue::UpdateShort;
-            if (!bakeUpdate(&updates.update, notification, &interestingPeers)) {
-                qCWarning(lcServerUpdates) << CALL_INFO << "Unable to prepare update";
-                continue; // Omit the notification
-            }
+        if (holdedUpdates.isEmpty()) {
+            switch (notification.type) {
+            case UpdateNotification::Type::EditMessage:
+            case UpdateNotification::Type::NewMessage:
+            case UpdateNotification::Type::ReadInbox:
+            case UpdateNotification::Type::ReadOutbox:
+                updates.tlType = TLValue::Updates;
+                updates.updates.resize(1);
+                if (!bakeUpdate(&updates.updates[0], notification, &interestingPeers)) {
+                    qCWarning(lcServerUpdates) << CALL_INFO << "Unable to prepare update";
+                    continue; // Omit the notification
+                }
+                break;
+            case UpdateNotification::Type::MessageAction:
+            case UpdateNotification::Type::UpdateName:
+            case UpdateNotification::Type::UpdateUserStatus:
+                updates.tlType = TLValue::UpdateShort;
+                if (!bakeUpdate(&updates.update, notification, &interestingPeers)) {
+                    qCWarning(lcServerUpdates) << CALL_INFO << "Unable to prepare update";
+                    continue; // Omit the notification
+                }
 
-            // bakeUpdate modified the updates.update object inplace
-            break;
-        case UpdateNotification::Type::Invalid:
-            break;
+                // bakeUpdate modified the updates.update object inplace
+                break;
+            case UpdateNotification::Type::Invalid:
+                break;
+            }
+        } else {
+            // If holdedUpdates already had something...
+            holdedUpdates.append(notification);
+
+            updates.tlType = TLValue::Updates;
+            updates.updates.resize(holdedUpdates.count());
+            for (int i = 0; i < holdedUpdates.count(); ++i) {
+                const UpdateNotification &update = holdedUpdates[i];
+                if (!bakeUpdate(&updates.updates[i], update, &interestingPeers)) {
+                    qCWarning(lcServerUpdates) << CALL_INFO << "Unable to prepare update";
+                    continue;
+                }
+            }
+            holdedUpdates.clear();
         }
 
         switch (updates.tlType) {

@@ -47,6 +47,7 @@ public:
     quint32 pts = 0;
     quint32 date = 0;
     Session *excludeSession = nullptr;
+    bool joinWithNext = false;
     Type type = Type::Invalid;
 };
 
