@@ -318,8 +318,7 @@ MessageRecipient *Server::getRecipient(const TLInputPeer &peer, const LocalUser 
     case TLValue::InputPeerUser:
         return getAbstractUser(peer.userId);
     case TLValue::InputPeerChat:
-        // recipient = api()->getChat(peer.groupId, peer.accessHash);
-        return nullptr;
+        return getGroupChat(peer.chatId);
     case TLValue::InputPeerChannel:
         //recipient = api()->getChannel(peer.channelId, peer.accessHash);
         return nullptr;
@@ -337,6 +336,8 @@ MessageRecipient *Server::getRecipient(const Peer &peer) const
     switch (peer.type()) {
     case Peer::User:
         return getAbstractUser(peer.id());
+    case Peer::Chat:
+        return getGroupChat(peer.id());
     default:
         return nullptr;
     }
@@ -1312,6 +1313,12 @@ QVector<PostBox *> Server::getPostBoxes(const Peer &targetPeer, AbstractUser *ap
         boxes.append(toUser->getPostBox());
         if (applicant && applicant->id() != targetPeer.id()) {
             boxes.append(applicant->getPostBox());
+        }
+    }
+    if (targetPeer.type() == Peer::Chat) {
+        const GroupChat *groupChat = getGroupChat(targetPeer.id());
+        for (const quint32 userId : groupChat->memberIds()) {
+            boxes.append(getAbstractUser(userId)->getPostBox());
         }
     }
 
