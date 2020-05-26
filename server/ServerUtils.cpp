@@ -1,6 +1,7 @@
 #include "ServerUtils.hpp"
 
 #include "ApiUtils.hpp"
+#include "GroupChat.hpp"
 #include "ServerApi.hpp"
 #include "ServerMessageData.hpp"
 #include "ServerNamespace.hpp"
@@ -100,6 +101,24 @@ bool setupTLUserStatus(TLUserStatus *output, const AbstractUser *input, const Ab
     return true;
 }
 
+bool setupTLChat(TLChat *output, const GroupChat *input, const AbstractUser *forUser)
+{
+    output->tlType = TLValue::Chat;
+    output->id = input->id();
+    output->title = input->title();
+    output->date = input->date();
+    output->version = 1;
+    output->participantsCount = input->members().count();
+
+    quint32 flags = 0;
+    if (input->creatorId() == forUser->id()) {
+        output->flags |= TLChat::Creator;
+    }
+    output->flags = flags;
+
+    return true;
+}
+
 bool setupTLContactsLink(TLContactsLink *output, const AbstractUser *input, const AbstractUser *forUser)
 {
     setupTLUser(&output->user, input, forUser);
@@ -151,6 +170,16 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
         }
             break;
         case Peer::Chat:
+        {
+            chats->append(TLChat());
+            GroupChat *chat = api->getGroupChat(peer.id());
+            if (!chat) {
+                qWarning() << Q_FUNC_INFO << "Chat not found:" << peer.id();
+                continue;
+            }
+            setupTLChat(&chats->last(), chat, forUser);
+        }
+            break;
         case Peer::Channel:
             return false;
         }
