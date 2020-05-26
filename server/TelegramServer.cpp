@@ -1039,8 +1039,14 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 
 void Server::queueServerUpdates(const QVector<UpdateNotification> &notificationsForServer)
 {
-    QVector<UpdateNotification> notifications = notificationsForServer;
-    for (UpdateNotification &notification : notifications) {
+    QVector<UpdateNotification> notifications = processServerUpdates(notificationsForServer);
+    queueUpdates(notifications);
+}
+
+QVector<UpdateNotification> Server::processServerUpdates(const QVector<UpdateNotification> &notificationsForServer)
+{
+    QVector<UpdateNotification> userNotifications;
+    for (const UpdateNotification &notification : notificationsForServer) {
         LocalUser *user = getUser(notification.userId);
         if (!user) {
             qCWarning(lcServerCrossUpdates) << CALL_INFO << "Invalid user!" << notification.userId;
@@ -1049,25 +1055,30 @@ void Server::queueServerUpdates(const QVector<UpdateNotification> &notifications
 
         switch (notification.type) {
         case UpdateNotification::Type::NewMessage: {
+            UpdateNotification userUpdate = notification;
             PostBox *box = user->getPostBox();
-            const quint32 newMessageId = box->addMessage(notification.messageDataId);
-            messageService()->addMessageReference(notification.messageDataId, box->peer(), newMessageId);
-            notification.messageId = newMessageId;
-            notification.pts = box->pts();
+            const quint32 newMessageId = box->addMessage(userUpdate.messageDataId);
+            messageService()->addMessageReference(userUpdate.messageDataId, box->peer(), newMessageId);
+            userUpdate.messageId = newMessageId;
+            userUpdate.pts = box->pts();
 
-            user->addNewMessage(notification.dialogPeer, notification.messageId, notification.messageDataId);
-            user->bumpDialogUnreadCount(notification.dialogPeer);
+            user->addNewMessage(userUpdate.dialogPeer, userUpdate.messageId, userUpdate.messageDataId);
+            user->bumpDialogUnreadCount(userUpdate.dialogPeer);
+            userNotifications << userUpdate;
         }
             break;
         case UpdateNotification::Type::ReadOutbox:
+            // Notice: this method calls queueUpdates() on its own.
+            // TODO: Refactor
             reportLocalMessageRead(user, notification);
             break;
         default:
+            userNotifications << notification;
             break;
         }
     }
 
-    queueUpdates(notifications);
+    return userNotifications;
 }
 
 void Server::insertUser(LocalUser *user)

@@ -122,6 +122,7 @@ public:
     bool bakeUpdate(TLUpdate *update, const UpdateNotification &notification, QSet<Peer> *interestingPeers) const override;
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
     void queueServerUpdates(const QVector<UpdateNotification> &notificationsForServer) override;
+    QVector<UpdateNotification> processServerUpdates(const QVector<UpdateNotification> &notificationsForServer);
 
     void insertUser(LocalUser *user);
     bool isLocalBox(const PostBox *box) const;
