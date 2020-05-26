@@ -158,11 +158,9 @@ bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,
     return true;
 }
 
-bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 messageId,
-                    const AbstractUser *forUser)
+static void setupUserMessage(TLMessage *output, const MessageData *messageData, const AbstractUser *forUser)
 {
     output->tlType = TLValue::Message;
-    output->id = messageId;
 
     quint32 flags = 0;
     //if (!receiverInbox->isBroadcast()) {
@@ -170,13 +168,10 @@ bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 m
         flags |= TLMessage::FromId;
     //}
     output->message = messageData->content().text();
-    output->date = messageData->date();
     output->editDate = messageData->editDate();
     if (output->editDate) {
         flags |= TLMessage::EditDate;
     }
-
-    output->toId = Telegram::Utils::toTLPeer(messageData->toPeer());
 
     if (messageData->content().media().isValid()) {
         setupTLMessageMedia(&output->media, &messageData->content().media());
@@ -190,6 +185,37 @@ bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 m
         }
     }
     output->flags = flags;
+}
+
+static void setupServiceMessage(TLMessage *output, const MessageData *messageData, const AbstractUser *forUser)
+{
+    output->tlType = TLValue::MessageService;
+
+    quint32 flags = 0;
+    //if (!receiverInbox->isBroadcast()) {
+        output->fromId = messageData->fromId();
+        flags |= TLMessage::FromId;
+    //}
+    switch (messageData->action().type) {
+    case ServiceMessageAction::Type::Empty:
+        break;
+    }
+
+    output->flags = flags;
+}
+
+bool setupTLMessage(TLMessage *output, const MessageData *messageData, quint32 messageId,
+                    const AbstractUser *forUser)
+{
+    output->id = messageId;
+    output->date = messageData->date();
+    output->toId = Telegram::Utils::toTLPeer(messageData->toPeer());
+
+    if (messageData->isServiceMessage()) {
+        setupServiceMessage(output, messageData, forUser);
+    } else {
+        setupUserMessage(output, messageData, forUser);
+    }
 
     return true;
 }
