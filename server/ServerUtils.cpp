@@ -119,6 +119,40 @@ bool setupTLChat(TLChat *output, const GroupChat *input, const AbstractUser *for
     return true;
 }
 
+bool setupTLChatParticipants(TLChatParticipants *output, const GroupChat *input, const AbstractUser *forUser)
+{
+    const QVector<ChatMember> members = input->members();
+
+    output->tlType = TLValue::ChatParticipants;
+    output->chatId = input->id();
+    output->version = 1;
+    output->participants.reserve(members.count());
+    for (const ChatMember &member : members) {
+        output->participants.append(TLChatParticipant());
+        TLChatParticipant &participant = output->participants.last();
+        participant.userId = member.userId;
+        switch (member.role) {
+        case ChatMember::Role::Creator:
+            participant.tlType = TLValue::ChatParticipantCreator;
+            break;
+        case ChatMember::Role::Admin:
+            participant.tlType = TLValue::ChatParticipantAdmin;
+            participant.inviterId = member.inviterId;
+            participant.date = member.date;
+            break;
+        case ChatMember::Role::User:
+            participant.tlType = TLValue::ChatParticipant;
+            participant.inviterId = member.inviterId;
+            participant.date = member.date;
+            break;
+        case ChatMember::Role::Invalid:
+            break;
+        }
+    }
+
+    return true;
+}
+
 bool setupTLContactsLink(TLContactsLink *output, const AbstractUser *input, const AbstractUser *forUser)
 {
     setupTLUser(&output->user, input, forUser);

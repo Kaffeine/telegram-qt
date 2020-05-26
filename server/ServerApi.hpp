@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include "TelegramNamespace.hpp"
+#include "GroupChat.hpp"
 
 namespace Telegram {
 
@@ -12,6 +13,7 @@ namespace Server {
 class IMediaService;
 class Session;
 class AbstractUser;
+class GroupChat;
 class MessageRecipient;
 class MessageService;
 
@@ -28,6 +30,8 @@ struct UpdateNotification
 public:
     enum class Type {
         Invalid,
+        CreateChat,
+        ChatParticipants,
         NewMessage,
         EditMessage,
         MessageAction,
@@ -44,6 +48,7 @@ public:
     quint32 fromId = 0;
     quint32 messageId = 0;
     quint64 messageDataId = 0;
+    quint32 dcId = 0;
     quint32 pts = 0;
     quint32 date = 0;
     Session *excludeSession = nullptr;
@@ -66,6 +71,7 @@ public:
 
     virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
+    virtual GroupChat *getGroupChat(quint32 chatId) const = 0;
 
     virtual void queueServerUpdates(const QVector<UpdateNotification> &updates) = 0;
 };

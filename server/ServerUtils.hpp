@@ -26,6 +26,7 @@ void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages)
 bool setupTLUser(TLUser *output, const AbstractUser *input, const AbstractUser *forUser);
 bool setupTLUserStatus(TLUserStatus *output, const AbstractUser *input, const AbstractUser *forUser);
 bool setupTLChat(TLChat *output, const GroupChat *input, const AbstractUser *forUser);
+bool setupTLChatParticipants(TLChatParticipants *output, const GroupChat *input, const AbstractUser *forUser);
 bool setupTLContactsLink(TLContactsLink *output, const AbstractUser *input, const AbstractUser *forUser);
 bool setupTLUpdatesState(TLUpdatesState *output, const AbstractUser *forUser);
 bool setupTLPeers(TLVector<TLUser> *users, TLVector<TLChat> *chats,

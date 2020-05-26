@@ -33,6 +33,7 @@ class Session;
 class RemoteClientConnection;
 class RemoteServerConnection;
 class AbstractUser;
+class LocalGroupChat;
 class PostBox;
 class RpcOperationFactory;
 
@@ -79,6 +80,7 @@ public:
     AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const override;
     AbstractUser *getRemoteUser(quint32 userId) const;
     AbstractUser *getRemoteUser(const QString &identifier) const;
+    GroupChat *getGroupChat(quint32 chatId) const override;
 
     QVector<PostBox *> getPostBoxes(const Peer &targetPeer, AbstractUser *applicant = nullptr) const override;
 
@@ -102,6 +104,7 @@ public:
     bool usernameIsValid(const QString &username) const override;
     bool setUserName(LocalUser *user, const QString &newUsername, RpcError *error = nullptr) override;
     bool setUserOnline(LocalUser *user, bool online, Session *fromSession = nullptr) override;
+    GroupChat *createChat(LocalUser *user, const QString &title, const QVector<quint32> &members) override;
 
     PendingOperation *exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes) override;
     QByteArray generateExportedAuthorization(quint32 userId) override;
@@ -111,6 +114,7 @@ public:
 
     void reportMessageRead(const MessageData *messageData) override;
 
+    QVector<UpdateNotification> announceNewChat(const Peer &peer, Session *excludeSession) override;
     QVector<UpdateNotification> processMessage(MessageData *messageData) override;
     QVector<UpdateNotification> processMessageEdit(MessageData *messageData) override;
     QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
@@ -125,7 +129,10 @@ public:
     QVector<UpdateNotification> processServerUpdates(const QVector<UpdateNotification> &notificationsForServer);
 
     void insertUser(LocalUser *user);
+    void insertGroup(LocalGroupChat *chat);
     bool isLocalBox(const PostBox *box) const;
+
+    quint32 generateChatId();
 
 signals:
 
@@ -159,6 +166,7 @@ private:
     QSet<RemoteServerConnection*> m_remoteServers;
     QVector<RpcOperationFactory*> m_rpcOperationFactories;
     DcConfiguration m_dcConfiguration;
+    quint32 m_localGroupId = 0;
 
     // Session data
     QHash<quint32, QByteArray> m_exportedAuthorizations; // userId to auth bytes
@@ -167,6 +175,7 @@ private:
     // Data
     QHash<quint32, LocalUser*> m_users; // userId to User
     QHash<quint64, Session*> m_sessions; // Session id to Session
+    QHash<quint32, LocalGroupChat*> m_groups; // groupId to GroupChat
 
     // Maps for faster lookup
     QHash<QString, quint32> m_phoneToUserId;

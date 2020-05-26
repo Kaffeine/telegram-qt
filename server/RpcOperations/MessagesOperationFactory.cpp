@@ -22,8 +22,10 @@
 // TODO: Instead of this include, add a generated cpp with all needed template instances
 #include "ServerRpcOperation_p.hpp"
 
+#include "GroupChat.hpp"
 #include "IMediaService.hpp"
 #include "LocalServerApi.hpp"
+#include "RandomGenerator.hpp"
 #include "ServerMessageData.hpp"
 #include "ServerRpcLayer.hpp"
 #include "ServerUtils.hpp"
@@ -735,11 +737,56 @@ void MessagesRpcOperation::runClearRecentStickers()
 
 void MessagesRpcOperation::runCreateChat()
 {
-    // MTProto::Functions::TLMessagesCreateChat &arguments = m_createChat;
-    if (processNotImplementedMethod(TLValue::MessagesCreateChat)) {
+    MTProto::Functions::TLMessagesCreateChat &arguments = m_createChat;
+    LocalUser *selfUser = layer()->getUser();
+    QVector<quint32> members;
+    members.reserve(arguments.users.count());
+    for (const TLInputUser &inputUser : arguments.users) {
+        const AbstractUser *user = api()->getAbstractUser(inputUser, selfUser);
+        members.append(user->id());
+    }
+
+    const quint32 requestDate = Telegram::Utils::getCurrentTime();
+
+    GroupChat *groupChat = api()->createChat(selfUser, arguments.title, members);
+    const Peer targetPeer = groupChat->toPeer();
+
+    Session *excludeSession = layer()->session();
+    QVector<UpdateNotification> notifications = api()->announceNewChat(targetPeer, excludeSession);
+
+    QSet<Peer> interestingPeers;
+
+    if (notifications.count() != 2) {
+        qCritical() << "Unable to announce a chat";
+        sendRpcError(RpcError::UnknownReason);
         return;
     }
+    const UpdateNotification &participantsNotification = notifications.constFirst();
+    const UpdateNotification &newMessageNotification = notifications.constLast();
+
+    TLUpdate updateMessageId;
+    updateMessageId.tlType = TLValue::UpdateMessageID;
+    updateMessageId.quint32Id = newMessageNotification.messageId;
+    updateMessageId.randomId = RandomGenerator::instance()->generate<quint64>();
+
+    TLUpdate updateChatParticipants;
+    api()->bakeUpdate(&updateChatParticipants, participantsNotification, &interestingPeers);
+
+    TLUpdate updateNewMessage;
+    api()->bakeUpdate(&updateNewMessage, newMessageNotification, &interestingPeers);
+
+    // Bake updates
     TLUpdates result;
+    result.tlType = TLValue::Updates;
+    result.date = requestDate;
+
+    Utils::setupTLPeers(&result, interestingPeers, api(), selfUser);
+    result.seq = 0; // Sender seq number seems to always equal zero
+    result.updates = {
+        updateMessageId,
+        updateChatParticipants,
+        updateNewMessage,
+    };
     sendRpcReply(result);
 }
 

@@ -15,6 +15,7 @@
 #include "ServerUtils.hpp"
 #include "Session.hpp"
 #include "TelegramServerUser.hpp"
+#include "GroupChat.hpp"
 
 // Generated RPC Operation Factory includes
 #include "AccountOperationFactory.hpp"
@@ -538,6 +539,21 @@ bool Server::setUserOnline(LocalUser *user, bool online, Session *fromSession)
     return true;
 }
 
+GroupChat *Server::createChat(LocalUser *user, const QString &title, const QVector<quint32> &members)
+{
+    const quint32 date = Telegram::Utils::getCurrentTime();
+    const quint32 chatId = generateChatId();
+    LocalGroupChat *groupChat = new LocalGroupChat(chatId, dcId());
+    groupChat->setCreator(user->id());
+    groupChat->setTitle(title);
+    groupChat->inviteMembers(members, user->id(), date);
+    groupChat->setDate(date);
+
+    insertGroup(groupChat);
+
+    return groupChat;
+}
+
 PendingOperation *Server::exportAuthorization(quint32 dcId, quint32 userId, QByteArray *outputAuthBytes)
 {
     if (dcId == m_dcOption.id) {
@@ -630,6 +646,55 @@ void Server::reportMessageRead(const MessageData *messageData)
     // The sender is Local User
     LocalUser *messageSender = getUser(notification.userId);
     reportLocalMessageRead(messageSender, notification);
+}
+
+// Return updates for the chat creator
+QVector<UpdateNotification> Server::announceNewChat(const Peer &peer, Session *excludeSession)
+{
+    if (peer.type() != Peer::Chat) {
+        return { };
+    }
+
+    const GroupChat *groupChat = getGroupChat(peer.id());
+
+    ServiceMessageAction serviceAction;
+    serviceAction.type = ServiceMessageAction::Type::ChatCreate;
+    serviceAction.title = groupChat->title();
+    serviceAction.users = groupChat->memberIds();
+
+    MessageData *messageData = messageService()->addServiceMessage(groupChat->creatorId(), peer, serviceAction);
+    messageData->setDate(groupChat->date());
+
+    UpdateNotification notification;
+    notification.type = UpdateNotification::Type::CreateChat;
+    notification.date = groupChat->date();
+    notification.dcId = groupChat->dcId();
+    notification.messageDataId = messageData->globalId();
+    notification.excludeSession = excludeSession;
+    notification.dialogPeer = peer;
+
+    QVector<UpdateNotification> notificationsForCreator;
+    for (const ChatMember &member : groupChat->members()) {
+        AbstractUser *user = getAbstractUser(member.userId);
+        notification.userId = member.userId;
+
+        if (user->dcId() == dcId()) {
+            QVector<UpdateNotification> notifications = processServerUpdates({notification});
+            queueUpdates(notifications);
+            if (member.role == ChatMember::Role::Creator) {
+                notificationsForCreator = notifications;
+            }
+            continue;
+        }
+        RemoteServerConnection *remote = getRemoteServer(user->dcId());
+        if (!remote) {
+            continue;
+        }
+
+        remote->api()->queueServerUpdates({notification});
+    }
+
+    return notificationsForCreator;
 }
 
 /*
@@ -853,6 +918,20 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
     }
 
     switch (notification.type) {
+    case UpdateNotification::Type::ChatParticipants:
+    {
+        // This implementation is weak to race conditions.
+        // The right way is to get all update data from the notification
+        quint32 chatId = notification.dialogPeer.id();
+        GroupChat *groupChat = getGroupChat(chatId);
+        if (!groupChat) {
+            return false;
+        }
+
+        update->tlType = TLValue::UpdateChatParticipants;
+        Utils::setupTLChatParticipants(&update->participants, groupChat, nullptr);
+    }
+        break;
     case UpdateNotification::Type::NewMessage:
     case UpdateNotification::Type::EditMessage:
     {
@@ -955,6 +1034,7 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
         Utils::setupTLUserStatus(&update->status, interestingUser, recipient);
     }
         break;
+    case UpdateNotification::Type::CreateChat:
     case UpdateNotification::Type::Invalid:
         return false;
     }
@@ -988,6 +1068,7 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
             case UpdateNotification::Type::NewMessage:
             case UpdateNotification::Type::ReadInbox:
             case UpdateNotification::Type::ReadOutbox:
+            case UpdateNotification::Type::ChatParticipants:
                 updates.tlType = TLValue::Updates;
                 updates.updates.resize(1);
                 if (!bakeUpdate(&updates.updates[0], notification, &interestingPeers)) {
@@ -1006,6 +1087,9 @@ void Server::queueUpdates(const QVector<UpdateNotification> &notifications)
 
                 // bakeUpdate modified the updates.update object inplace
                 break;
+            case UpdateNotification::Type::CreateChat:
+                // This update should never occure in this switch.
+                // It is split to ChatParticipants and NewMessage instead.
             case UpdateNotification::Type::Invalid:
                 break;
             }
@@ -1060,6 +1144,29 @@ QVector<UpdateNotification> Server::processServerUpdates(const QVector<UpdateNot
         }
 
         switch (notification.type) {
+        case UpdateNotification::Type::CreateChat:
+        {
+            UpdateNotification participantsUpdate;
+            participantsUpdate.type = UpdateNotification::Type::ChatParticipants;
+            participantsUpdate.userId = notification.userId;
+            participantsUpdate.dialogPeer = notification.dialogPeer;
+            participantsUpdate.joinWithNext = true;
+            userNotifications << participantsUpdate;
+        }
+        {
+            UpdateNotification userUpdate = notification;
+            userUpdate.type = UpdateNotification::Type::NewMessage;
+            PostBox *box = user->getPostBox();
+            const quint32 newMessageId = box->addMessage(notification.messageDataId);
+            messageService()->addMessageReference(notification.messageDataId, box->peer(), newMessageId);
+            userUpdate.messageId = newMessageId;
+            userUpdate.pts = box->pts();
+
+            user->addNewMessage(userUpdate.dialogPeer, userUpdate.messageId, userUpdate.messageDataId);
+            user->bumpDialogUnreadCount(userUpdate.dialogPeer);
+            userNotifications << userUpdate;
+        }
+            break;
         case UpdateNotification::Type::NewMessage: {
             UpdateNotification userUpdate = notification;
             PostBox *box = user->getPostBox();
@@ -1094,6 +1201,17 @@ void Server::insertUser(LocalUser *user)
     m_phoneToUserId.insert(user->phoneNumber(), user->id());
 }
 
+void Server::insertGroup(LocalGroupChat *chat)
+{
+    qCDebug(loggingCategoryServerApi) << "insert group" << chat << chat->id();
+    m_groups.insert(chat->id(), chat);
+}
+
+GroupChat *Server::getGroupChat(quint32 chatId) const
+{
+    return m_groups.value(chatId);
+}
+
 bool Server::isLocalBox(const PostBox *box) const
 {
     const Peer peer = box->peer();
@@ -1102,6 +1220,11 @@ bool Server::isLocalBox(const PostBox *box) const
     }
 
     return false;
+}
+
+quint32 Server::generateChatId()
+{
+    return ++m_localGroupId;
 }
 
 PhoneStatus Server::getPhoneStatus(const QString &identifier) const
@@ -1169,6 +1292,7 @@ AbstractUser *Server::getRemoteUser(const QString &identifier) const
     }
     return nullptr;
 }
+
 
 QVector<PostBox *> Server::getPostBoxes(const Peer &targetPeer, AbstractUser *applicant) const
 {
