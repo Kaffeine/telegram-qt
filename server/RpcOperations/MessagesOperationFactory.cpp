@@ -1971,10 +1971,7 @@ void MessagesRpcOperation::runSetTyping()
         return;
     }
 
-    QVector<PostBox *> boxes = recipient->postBoxes();
-    if (targetPeer != selfUser->toPeer()) {
-        boxes.append(selfUser->getPostBox());
-    }
+    const QVector<PostBox *> boxes = api()->getPostBoxes(targetPeer, selfUser);
 
     QVector<UpdateNotification> notifications;
 

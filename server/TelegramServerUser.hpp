@@ -72,7 +72,6 @@ class MessageRecipient
 {
 public:
     virtual ~MessageRecipient() = default;
-    virtual QVector<PostBox *> postBoxes() = 0;
 
     virtual Peer toPeer() const = 0;
     TLPeer toTLPeer() const;
@@ -97,8 +96,6 @@ public:
 
     Peer toPeer() const override { return Peer::fromUserId(id()); }
     UserContact toContact() const;
-
-    QVector<PostBox *> postBoxes() override { return { getPostBox() }; }
 };
 
 class AuthorizedUser : public AbstractUser

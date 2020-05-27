@@ -80,6 +80,8 @@ public:
     AbstractUser *getRemoteUser(quint32 userId) const;
     AbstractUser *getRemoteUser(const QString &identifier) const;
 
+    QVector<PostBox *> getPostBoxes(const Peer &targetPeer, AbstractUser *applicant = nullptr) const override;
+
     RemoteServerConnection *getRemoteServer(quint32 dcId) const;
 
     Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const override;

@@ -23,6 +23,7 @@ class LocalUser;
 class RemoteClientConnection;
 class AbstractUser;
 class MessageData;
+class PostBox;
 struct UserContact;
 
 class LocalServerApi : public AbstractServerApi
@@ -38,6 +39,8 @@ public:
 
     using AbstractServerApi::getRecipient;
     virtual MessageRecipient *getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
+
+    virtual QVector<PostBox *> getPostBoxes(const Peer &targetPeer, AbstractUser *applicant = nullptr) const = 0;
 
     using AbstractServerApi::getAbstractUser;
     virtual AbstractUser *getAbstractUser(quint32 userId, quint64 accessHash, const LocalUser *applicant) const = 0;

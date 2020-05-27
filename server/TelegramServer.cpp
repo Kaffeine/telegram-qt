@@ -642,21 +642,7 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
 {
     const Peer targetPeer = messageData->toPeer();
     AbstractUser *fromUser = getUser(messageData->fromId());
-    MessageRecipient *recipient = getRecipient(messageData->toPeer());
-    QVector<PostBox *> boxes = recipient->postBoxes();
-    if ((targetPeer.type() == Peer::User) && !messageData->isMessageToSelf()) {
-        boxes.append(fromUser->getPostBox());
-    }
-    // Boxes:
-    // message to contact
-    //    Users (self and recipient (if not self))
-    //
-    // message to group chat
-    //    Users (each member)
-    //
-    // message to megagroup or broadcast
-    //    Channel (the channel)
-
+    QVector<PostBox *> boxes = getPostBoxes(targetPeer, fromUser);
     QVector<UpdateNotification> notifications;
 
     // Result and broadcasted Updates date seems to be always older than the message date,
@@ -730,8 +716,7 @@ QVector<UpdateNotification> Server::processMessageEdit(MessageData *messageData)
 {
     const Peer targetPeer = messageData->toPeer();
     AbstractUser *fromUser = getUser(messageData->fromId());
-    MessageRecipient *recipient = getRecipient(messageData->toPeer());
-    QVector<PostBox *> boxes = recipient->postBoxes();
+    QVector<PostBox *> boxes = getPostBoxes(targetPeer, fromUser);
     if ((targetPeer.type() == Peer::User) && !messageData->isMessageToSelf()) {
         boxes.append(fromUser->getPostBox());
     }
@@ -1166,6 +1151,30 @@ AbstractUser *Server::getRemoteUser(const QString &identifier) const
         }
     }
     return nullptr;
+}
+
+QVector<PostBox *> Server::getPostBoxes(const Peer &targetPeer, AbstractUser *applicant) const
+{
+    // Boxes:
+    // message to contact
+    //    Users (self and recipient (if not self))
+    //
+    // message to group chat
+    //    Users (each member)
+    //
+    // message to megagroup or broadcast
+    //    Channel (the channel)
+
+    QVector<PostBox *> boxes;
+    if (targetPeer.type() == Peer::User) {
+        AbstractUser *toUser = getAbstractUser(targetPeer.id());
+        boxes.append(toUser->getPostBox());
+        if (applicant && applicant->id() != targetPeer.id()) {
+            boxes.append(applicant->getPostBox());
+        }
+    }
+
+    return boxes;
 }
 
 RemoteServerConnection *Server::getRemoteServer(quint32 dcId) const
