@@ -37,7 +37,7 @@ public:
     virtual LocalUser *getUser(quint32 userId) const = 0;
     virtual Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
 
-    using AbstractServerApi::getRecipient;
+    virtual MessageRecipient *getRecipient(const Peer &peer) const = 0;
     virtual MessageRecipient *getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const = 0;
 
     virtual QVector<PostBox *> getPostBoxes(const Peer &targetPeer, AbstractUser *applicant = nullptr) const = 0;

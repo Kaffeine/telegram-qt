@@ -64,8 +64,6 @@ public:
     virtual IMediaService *mediaService() const = 0;
     virtual MessageService *messageService() const = 0;
 
-    virtual MessageRecipient *getRecipient(const Peer &peer) const = 0;
-
     virtual AbstractUser *getAbstractUser(quint32 userId) const = 0;
     virtual AbstractUser *getAbstractUser(const QString &identifier) const = 0;
 
