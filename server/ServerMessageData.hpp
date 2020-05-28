@@ -98,19 +98,15 @@ public:
 
     Peer toPeer() const { return m_to; }
     quint32 fromId() const { return m_fromId; }
+
     quint32 date() const;
+    void setDate(quint32 date);
+
     quint32 editDate() const;
+    void setEditDate(quint32 date);
 
     const MessageContent &content() const { return m_content; }
     void setContent(const MessageContent &newContent);
-
-    // Wanted for autotests
-    void setDate32(quint32 date);
-
-    quint64 date64() const { return m_date; }
-    // Needed for save/load and for autotests
-    void setDate64(quint64 date);
-    void setEditDate(quint32 date);
 
     bool isMessageToSelf() const;
 
@@ -124,7 +120,7 @@ protected:
     QHash<Peer, quint32> m_references;
     Peer m_to;
     quint64 m_globalId = 0;
-    quint64 m_date = 0;
+    quint32 m_date = 0;
     quint32 m_fromId = 0;
     quint32 m_editDate = 0;
 };

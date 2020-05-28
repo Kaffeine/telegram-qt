@@ -223,7 +223,7 @@ void tst_FilesApi::getDialogListPictures()
 
             Server::MessageData *data = serverApi->messageService()
                     ->addMessage(dialogN->userId(), user->toPeer(), QStringLiteral("mgs%1").arg(i + 1));
-            data->setDate32(baseDate - dialogsCount + i);
+            data->setDate(baseDate - dialogsCount + i);
             cluster.processMessage(data);
 
             // Upload an image

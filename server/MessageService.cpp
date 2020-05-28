@@ -38,7 +38,7 @@ MessageData *MessageService::addMessage(quint32 fromId, Peer toPeer, const Messa
     ++m_lastGlobalId;
     m_messages.insert(m_lastGlobalId, MessageData(fromId, toPeer, content));
     MessageData *message = &m_messages[m_lastGlobalId];
-    message->setDate64(getMessageUniqueTs());
+    message->setDate(Telegram::Utils::getCurrentTime());
     message->setGlobalId(m_lastGlobalId);
     return message;
 }
@@ -66,16 +66,6 @@ bool MessageService::addMessageReference(quint64 globalId, const Peer &peer, qui
     }
     m_messages[globalId].addReference(peer, messageId);
     return true;
-}
-
-quint64 MessageService::getMessageUniqueTs()
-{
-    quint64 ts = Telegram::Utils::formatTimeStamp(QDateTime::currentMSecsSinceEpoch());
-    if (ts <= m_lastTimestamp) {
-        ts = m_lastTimestamp + 1;
-    }
-    m_lastTimestamp = ts;
-    return ts;
 }
 
 } // Server namespace

@@ -36,8 +36,7 @@ void MessageData::setGlobalId(quint64 id)
 
 quint32 MessageData::date() const
 {
-    quint64 secs = m_date >> 32;
-    return static_cast<quint32>(secs);
+    return m_date;
 }
 
 quint32 MessageData::editDate() const
@@ -50,13 +49,7 @@ void MessageData::setContent(const MessageContent &newContent)
     m_content = newContent;
 }
 
-void MessageData::setDate32(quint32 date)
-{
-    m_date = date;
-    m_date = m_date << 32;
-}
-
-void MessageData::setDate64(quint64 date)
+void MessageData::setDate(quint32 date)
 {
     m_date = date;
 }

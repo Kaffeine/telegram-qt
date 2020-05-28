@@ -424,7 +424,7 @@ void tst_MessagesApi::getAllDialogs()
         QVERIFY(dialogN);
         Server::MessageData *data = serverApi->messageService()
                 ->addMessage(dialogN->userId(), user->toPeer(), QStringLiteral("mgs%1").arg(i + 1));
-        data->setDate32(baseDate - dialogsCount + i);
+        data->setDate(baseDate - dialogsCount + i);
         cluster.processMessage(data);
     }
 
@@ -754,7 +754,7 @@ void tst_MessagesApi::getHistory()
     for (int i = 0; i < messagesCount; ++i) {
         Server::MessageData *messageData = server->messageService()->addMessage(
                     user2->id(), user1->toPeer(), QString::number(i + 1));
-        messageData->setDate32(static_cast<quint32>(baseDate + i));
+        messageData->setDate(static_cast<quint32>(baseDate + i));
         cluster.processMessage(messageData);
     }
 

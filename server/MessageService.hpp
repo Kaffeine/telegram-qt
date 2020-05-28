@@ -41,11 +41,8 @@ public:
     bool addMessageReference(quint64 globalId, const Peer &peer, quint32 messageId);
 
 protected:
-    quint64 getMessageUniqueTs();
-
     QHash<quint64, MessageData> m_messages;
     quint64 m_lastGlobalId = 0;
-    quint64 m_lastTimestamp = 0;
 };
 
 } // Server namespaceMediaService
