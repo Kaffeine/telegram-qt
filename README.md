@@ -2,7 +2,7 @@ TelegramQt [![Build Status](https://travis-ci.org/Kaffeine/telegram-qt.svg?branc
 =======================
 
 TelegramQt provides C++ API for developing custom Telegram clients and servers.
-The project inspired by Qt and QXmpp with some ideas from Telepathy.
+The project is inspired by Qt and QXmpp with some ideas from Telepathy.
 TelegramQt focuses on the best possible developer experience.
 
 See also README.md in the 'server' directory.
