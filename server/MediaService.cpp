@@ -21,6 +21,7 @@
 #include "Debug_p.hpp"
 #include "RandomGenerator.hpp"
 
+#include <QBuffer>
 #include <QDir>
 #include <QImage>
 #include <QLoggingCategory>
@@ -242,6 +243,12 @@ ImageDescriptor MediaService::processImageFile(const UploadDescriptor &upload, c
         sizeDescriptor.size = fileDescriptor->size;
         sizeDescriptor.fileDescriptor = *fileDescriptor;
         sizeDescriptor.sizeType = maxDimension;
+
+        if (maxDimension == ImageSizeDescriptor::Small) {
+            QBuffer buffer(&sizeDescriptor.bytes);
+            buffer.open(QIODevice::WriteOnly);
+            sizedImage.save(&buffer, "PNG");
+        }
 
         result.sizes.append(sizeDescriptor);
 
