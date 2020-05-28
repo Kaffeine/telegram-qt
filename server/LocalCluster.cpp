@@ -5,6 +5,7 @@
 #include "MessageService.hpp"
 #include "TelegramServer.hpp"
 #include "TelegramServerUser.hpp"
+#include "FederalizationApi.hpp"
 
 #include "Debug_p.hpp"
 
@@ -42,6 +43,11 @@ void LocalCluster::setListenAddress(const QHostAddress &address)
     m_listenAddress = address;
 }
 
+void LocalCluster::addFederalization(FederalizationApi *api)
+{
+    m_federalizations.append(api);
+}
+
 void LocalCluster::setServerConfiguration(const DcConfiguration &config)
 {
     m_serverConfiguration = config;
@@ -74,6 +80,7 @@ bool LocalCluster::start()
         m_authProvider = new Authorization::DefaultProvider();
     }
 
+    quint32 maxDcId = 0;
     for (const DcOption &dc : m_serverConfiguration.dcOptions) {
         if (!dc.id) {
             qCCritical(lcCluster) << CALL_INFO << "Invalid configuration: DC id is null.";
@@ -86,6 +93,9 @@ bool LocalCluster::start()
         if (dc.address.isEmpty()) {
             qCCritical(lcCluster) << CALL_INFO << "Invalid configuration: Server address is not set.";
             return false;
+        }
+        if (dc.id > maxDcId) {
+            maxDcId = dc.id;
         }
         Server *server = m_constructor(this);
         server->setServerConfiguration(m_serverConfiguration);
@@ -113,6 +123,31 @@ bool LocalCluster::start()
             hasFails = true;
         }
     }
+
+    if (!hasFails) {
+        for (FederalizationApi *fed : m_federalizations) {
+            fed->setDcId(++maxDcId);
+            // fed->setDomain(m_listenAddress.toString());
+            fed->setDomain(QLatin1String("thost"));
+            fed->setListenAddress(m_listenAddress);
+
+            FederalizationGateway *federalizationGateWay = new FederalizationGateway(this);
+            federalizationGateWay->setApi(fed);
+
+            fed->setMessageService(m_messageService);
+
+            for (Server *peer : m_serverInstances) {
+                peer->addServerConnection(federalizationGateWay);
+
+                RemoteServerConnection *remote = new RemoteServerConnection(this); //fed
+                remote->setRemoteServer(peer);
+                fed->addServerConnection(remote);
+            }
+
+            fed->start();
+        }
+    }
+
     return !hasFails;
 }
 

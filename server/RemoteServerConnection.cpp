@@ -3,6 +3,8 @@
 #include "LocalServerApi.hpp"
 #include "TelegramServerUser.hpp"
 
+#include "PendingVariant.hpp"
+
 namespace Telegram {
 
 namespace Server {
@@ -40,6 +42,15 @@ AbstractServerApi *RemoteServerConnection::api()
 QByteArray RemoteServerConnection::getForeingUserAuthorization(quint32 userId)
 {
     return m_server->generateExportedAuthorization(userId);
+}
+
+PendingVariant *RemoteServerConnection::searchContacts(const QString &query, quint32 limit)
+{
+    Q_UNUSED(query)
+    Q_UNUSED(limit)
+    const QString text = QLatin1String("Not supported");
+
+    return PendingOperation::failOperation<PendingVariant>(text, this);
 }
 
 quint32 RemoteServerConnection::dcId() const

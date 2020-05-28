@@ -15,7 +15,8 @@ Item {
 
     readonly property bool compactMode: contentRoot.width < 520
 
-    property alias currentPeer: dialogView.currentPeer
+    property var currentPeer: Telegram.Namespace.emptyPeer()
+    //property alias currentPeer: dialogView.currentPeer
     property bool hasCurrentPeer: currentPeer && currentPeer.isValid()
     onCurrentPeerChanged: {
         console.log("Activated dialog (" + currentPeer.type + ", " + currentPeer.id + ")")
@@ -36,12 +37,29 @@ Item {
     RowLayout {
         id: contentRoot
         anchors.fill: mainScreen
-        DialogView {
-            id: dialogView
+
+        ColumnLayout {
+            id: leftColumn_
             Layout.preferredWidth: 320
             visible: compactMode ? !hasCurrentPeer : true
             Layout.fillHeight: true
             Layout.fillWidth: compactMode
+
+            TextField {
+                id: searchInput_
+                placeholderText: qsTr("Search")
+                Layout.fillWidth: true
+            }
+
+            DialogView {
+                id: dialogView
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                onCurrentPeerChanged: {
+                    telegramClient_.messagingApi.createChat2(searchInput_.text, currentPeer)
+                }
+            }
         }
 
         Item {

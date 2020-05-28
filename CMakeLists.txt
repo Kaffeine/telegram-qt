@@ -25,6 +25,7 @@ project_option(BUILD_DOCUMENTATION "Enable generation of Qt Help (qch) file" FAL
 project_option(BUILD_GENERATOR "Build protocol code generator (useful for developers)" FALSE)
 project_option(BUILD_QML_IMPORT "Enable compilation of qml import plugin" TRUE)
 project_option(BUILD_SERVER "Build server" FALSE)
+project_option(ENABLE_SERVER_PLUGINS "Enable server plugins (enable build and embed)" TRUE)
 project_option(BUILD_SHARED_LIBS "Compile libraries as shared" TRUE)
 project_option(BUILD_TESTS "Enable compilation of automated tests" FALSE)
 
@@ -65,8 +66,11 @@ endif()
 set(QT_VERSION_MAJOR "5")
 set(QT_COMPONENTS Core Network)
 
-set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt5/qml"
+set(INSTALL_QML_IMPORT_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt${QT_VERSION_MAJOR}/qml"
     CACHE PATH "Custom QML import installation directory")
+
+set(INSTALL_PLUGINS_DIR "${CMAKE_INSTALL_FULL_LIBDIR}/qt${QT_VERSION_MAJOR}/plugins/TelegramQt"
+    CACHE PATH "Custom plugins installation directory")
 
 if(TELEGRAMQT_BUILD_TESTS)
     list(APPEND QT_COMPONENTS Test)
@@ -75,6 +79,9 @@ endif()
 if(TELEGRAMQT_BUILD_QML_IMPORT)
     list(APPEND QT_COMPONENTS Qml)
 endif()
+
+# For XMPP server
+list(APPEND QT_COMPONENTS Xml)
 
 if(TELEGRAMQT_BUILD_SERVER)
     if(NOT TELEGRAMQT_EXPORT_INTERNAL_API)

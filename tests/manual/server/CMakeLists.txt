@@ -28,7 +28,8 @@ set(server_SOURCES
 )
 
 add_executable(TelegramTestServer ${server_SOURCES})
-target_link_libraries(TelegramTestServer
+
+target_link_libraries(TelegramTestServer PUBLIC
     Qt5::Core
     Qt5::Network
 
@@ -37,6 +38,12 @@ target_link_libraries(TelegramTestServer
     test_keys_data
 )
 
+if(TELEGRAMQT_ENABLE_SERVER_PLUGINS)
+    target_link_libraries(TelegramTestServer PUBLIC
+        TelegramQt${QT_VERSION_MAJOR}::PluginsLoader
+    )
+endif()
+
 if(TELEGRAMQT_DEVELOPER_BUILD)
     target_compile_definitions(TelegramTestServer PRIVATE
         DEVELOPER_BUILD
@@ -44,7 +51,7 @@ if(TELEGRAMQT_DEVELOPER_BUILD)
         USE_DBUS_NOTIFIER
     )
 
-    target_link_libraries(TelegramTestServer
+    target_link_libraries(TelegramTestServer PUBLIC
         Qt5::DBus
     )
 endif()

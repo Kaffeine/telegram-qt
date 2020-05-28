@@ -30,6 +30,8 @@ namespace Telegram {
 
 namespace Server {
 
+class FederalizationApi;
+
 namespace Authorization {
 
 class Provider;
@@ -57,6 +59,8 @@ public:
 
     void setListenAddress(const QHostAddress &address);
 
+    void addFederalization(FederalizationApi *api);
+
     DcConfiguration serverConfiguration() { return m_serverConfiguration; }
     void setServerConfiguration(const DcConfiguration &config);
 
@@ -83,6 +87,7 @@ protected:
     RsaKey m_key;
     MessageService *m_messageService = nullptr;
     Authorization::Provider *m_authProvider = nullptr;
+    QVector<FederalizationApi *> m_federalizations;
 };
 
 } // Server namespace

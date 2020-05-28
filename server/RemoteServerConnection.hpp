@@ -5,6 +5,8 @@
 
 namespace Telegram {
 
+class PendingVariant;
+
 namespace Server {
 
 class AbstractServerApi;
@@ -17,6 +19,8 @@ class AbstractServerConnection : public QObject
 public:
     explicit AbstractServerConnection(QObject *parent = nullptr);
 
+    virtual QStringList supportedSchemes() const { return {}; }
+
     virtual quint32 dcId() const = 0;
 
     virtual AbstractUser *getUser(const quint32 userId) const = 0;
@@ -24,6 +28,8 @@ public:
     virtual AbstractServerApi *api() = 0;
 
     virtual QByteArray getForeingUserAuthorization(quint32 userId) = 0;
+
+    virtual PendingVariant *searchContacts(const QString &query, quint32 limit) = 0;
 };
 
 class RemoteServerConnection : public AbstractServerConnection
@@ -41,6 +47,8 @@ public:
     AbstractServerApi *api();
 
     QByteArray getForeingUserAuthorization(quint32 userId);
+
+    PendingVariant *searchContacts(const QString &query, quint32 limit) override;
 
 protected:
     LocalServerApi *m_server = nullptr;

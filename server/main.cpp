@@ -19,9 +19,11 @@
 #include "TelegramServerUser.hpp"
 #include "DcConfiguration.hpp"
 #include "LocalCluster.hpp"
+#include "PluginsLoader.hpp"
 #include "Session.hpp"
 
 #include "Utils.hpp"
+
 #include <QCoreApplication>
 #include <QDebug>
 #include <QStandardPaths>
@@ -109,6 +111,10 @@ int main(int argc, char *argv[])
     cluster.setServerPrivateRsaKey(key);
     cluster.setServerConfiguration(config.serverConfiguration());
     cluster.setListenAddress(QHostAddress::Any);
+
+    for (FederalizationApi *api : PluginsLoader::federalizationApis()) {
+        cluster.addFederalization(api);
+    }
 
 #ifdef USE_DBUS_NOTIFIER
     DBusCodeAuthProvider authProvider;

@@ -5,6 +5,10 @@ set(server_lib_SOURCES
     AuthorizationProvider.hpp
     DefaultAuthorizationProvider.cpp
     DefaultAuthorizationProvider.hpp
+    FederalizationApi.cpp
+    FederalizationApi.hpp
+    FederalizationPlugin.cpp
+    FederalizationPlugin.hpp
     FunctionStreamOperators.cpp
     FunctionStreamOperators.hpp
     GroupChat.cpp
@@ -124,3 +128,39 @@ install(
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     COMPONENT Runtime
 )
+
+if(TELEGRAMQT_ENABLE_SERVER_PLUGINS)
+    add_library(TelegramQt${QT_VERSION_MAJOR}PluginsLoader STATIC
+        PluginsLoader.cpp
+        PluginsLoader.hpp
+    )
+    add_library(TelegramQt${QT_VERSION_MAJOR}::PluginsLoader ALIAS TelegramQt${QT_VERSION_MAJOR}PluginsLoader)
+
+    target_link_libraries(TelegramQt${QT_VERSION_MAJOR}PluginsLoader PUBLIC
+        Qt5::Core
+        TelegramQt${QT_VERSION_MAJOR}Server
+    )
+
+    target_include_directories(TelegramQt${QT_VERSION_MAJOR}PluginsLoader PUBLIC
+        ${CMAKE_CURRENT_BINARY_DIR}
+    )
+
+    add_subdirectory(plugins)
+
+    get_property(RegisteredPlugins
+        TARGET TelegramQt${QT_VERSION_MAJOR}PluginsLoader
+        PROPERTY RegisteredPlugins
+    )
+
+    foreach(REGISTERED_PLUGIN ${RegisteredPlugins})
+        target_link_libraries(TelegramQt${QT_VERSION_MAJOR}PluginsLoader PUBLIC
+            ${REGISTERED_PLUGIN}
+        )
+        set(LOADER_CONTENT "${LOADER_CONTENT}Q_IMPORT_PLUGIN(${REGISTERED_PLUGIN})\n")
+    endforeach()
+    file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/PluginsLoader_StaticList.cpp" "${LOADER_CONTENT}")
+
+    target_link_libraries(TelegramServer PUBLIC
+        TelegramQt${QT_VERSION_MAJOR}::PluginsLoader
+    )
+endif()

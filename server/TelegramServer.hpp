@@ -134,6 +134,8 @@ public:
     QVector<UpdateNotification> processServerUpdates(const QVector<UpdateNotification> &notificationsForServer);
     void processCreateChat(const UpdateNotification &notification);
 
+    void routeUpdates(const QVector<UpdateNotification> &notifications);
+
     void insertUser(LocalUser *user);
     void insertGroup(LocalGroupChat *chat);
     bool isLocalBox(const PostBox *box) const;

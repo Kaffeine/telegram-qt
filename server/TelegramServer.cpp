@@ -5,6 +5,7 @@
 #include "Debug_p.hpp"
 #include "MediaService.hpp"
 #include "MessageService.hpp"
+#include "PendingVariant.hpp"
 #include "RandomGenerator.hpp"
 #include "RemoteClientConnection.hpp"
 #include "RemoteServerConnection.hpp"
@@ -543,9 +544,10 @@ bool Server::setUserOnline(LocalUser *user, bool online, Session *fromSession)
         return false;
     }
 
-    const auto notifications = createUpdates(UpdateNotification::Type::UpdateUserStatus,
+    const QVector<UpdateNotification> notifications = createUpdates(UpdateNotification::Type::UpdateUserStatus,
                                              user, fromSession);
-    queueUpdates(notifications);
+    routeUpdates(notifications);
+
     return true;
 }
 
@@ -618,6 +620,31 @@ PendingOperation *Server::searchContacts(const QString &query, quint32 limit, QV
     PendingOperation *operation = new PendingOperation(this);
     operation->setObjectName(QStringLiteral("searchContacts(query: %1, limit: %2)")
                              .arg(query).arg(limit));
+
+    const QString scheme = query.section(QLatin1Char(':'), 0, 0);
+
+    for (AbstractServerConnection *server : m_remoteServers) {
+        if (server->supportedSchemes().contains(scheme)) {
+            PendingVariant *foreingRequest = server->searchContacts(query, limit);
+            connect(foreingRequest, &PendingVariant::finished, this, [operation, foreingRequest, output]() {
+                if (!foreingRequest->isSucceeded()) {
+                    qWarning() << "Search op failed" << foreingRequest->errorDetails();
+
+                    operation->finishLater();
+                    return;
+                }
+
+                const QVariant result = foreingRequest->result();
+                if (!result.isNull()) {
+                    PeerList peers = result.value<PeerList>();
+                    output->append(peers);
+                }
+                operation->finishLater();
+            });
+
+            return operation;
+        }
+    }
 
     const Peer peer = getPeerByUserName(query);
     if (peer.isValid()) {
@@ -1312,6 +1339,20 @@ void Server::processCreateChat(const UpdateNotification &notification)
     m_groups.insert(chatId, chat);
 }
 
+void Server::routeUpdates(const QVector<UpdateNotification> &notifications)
+{
+    for (const UpdateNotification &notification : notifications) {
+        AbstractUser *user = getAbstractUser(notification.userId);
+        if (user->dcId() == dcId()) {
+            queueServerUpdates({notification});
+        } else {
+            AbstractServerConnection *remoteServerConnection = getRemoteServer(user->dcId());
+            AbstractServerApi *remoteApi = remoteServerConnection->api();
+            remoteApi->queueServerUpdates({notification});
+        }
+    }
+}
+
 void Server::insertUser(LocalUser *user)
 {
     qCDebug(loggingCategoryServerApi) << Q_FUNC_INFO << user << user->phoneNumber() << user->id();
@@ -1332,6 +1373,9 @@ GroupChat *Server::getGroupChat(quint32 chatId) const
 
 bool Server::isLocalBox(const PostBox *box) const
 {
+    if (!box) {
+        return false;
+    }
     const Peer peer = box->peer();
     if (peer.type() == Peer::Type::User) {
         return getUser(peer.id());
@@ -1410,7 +1454,6 @@ AbstractUser *Server::getRemoteUser(const QString &identifier) const
     }
     return nullptr;
 }
-
 
 QVector<PostBox *> Server::getPostBoxes(const Peer &targetPeer, AbstractUser *applicant) const
 {

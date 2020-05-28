@@ -28,6 +28,7 @@
 #include "TelegramServerConfig.hpp"
 #include "TelegramServerUser.hpp"
 #include "Utils.hpp"
+#include "PluginsLoader.hpp"
 
 // Test
 #include "TestServerUtils.hpp"
@@ -42,6 +43,8 @@
 #include <QImage>
 #include <QStandardPaths>
 #include <QTimer>
+
+#include "FederalizationPlugin.hpp"
 
 using namespace Telegram::Server;
 
@@ -136,6 +139,8 @@ ExitCode internalMain(int argc, char *argv[])
         return ExitCode::RsaKeyError;
     }
 
+    Telegram::Server::PluginsLoader::setPluginsPaths({ QLatin1String("/home/user/prefix/telegram-qt/lib/qt5/plugins/TelegramQt/") });
+
     QCommandLineParser parser;
     parser.addHelpOption();
 
@@ -191,6 +196,8 @@ ExitCode internalMain(int argc, char *argv[])
     Telegram::DcConfiguration dcConfig = Config().serverConfiguration();
     dcConfig.dcOptions.clear();
 
+    QString address = parser.value(configAddressOption);
+
     for (quint32 i = 0; i < 3; ++i) {
         Telegram::DcOption dcOption;
         dcOption.id = i + 1;
@@ -206,7 +213,7 @@ ExitCode internalMain(int argc, char *argv[])
     LocalCluster cluster;
     cluster.setServerPrivateRsaKey(privateKey);
     cluster.setServerConfiguration(dcConfig);
-    cluster.setListenAddress(QHostAddress::Any);
+    cluster.setListenAddress(QHostAddress(QLatin1String("127.0.0.4")));
 
     ConstantAuthCodeProvider authProvider;
     cluster.setAuthorizationProvider(&authProvider);
@@ -221,6 +228,10 @@ ExitCode internalMain(int argc, char *argv[])
         qInfo() << "    Persistent file location:" << persistentKeyFilePath;
     } else {
         qWarning() << "Unable to save the RSA key in a persistent location.";
+    }
+
+    for (FederalizationApi *api : PluginsLoader::federalizationApis()) {
+        cluster.addFederalization(api);
     }
 
     if (!cluster.start()) {

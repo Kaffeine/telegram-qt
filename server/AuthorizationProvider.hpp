@@ -64,7 +64,7 @@ public:
 
 inline Provider::~Provider() { }
 
-}
+} // Authorization
 
 } // Server namespace
 
