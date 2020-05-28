@@ -91,6 +91,7 @@ private slots:
     void getSelfUserDialog();
     void getDialogs();
     void getAllDialogs();
+    void groupChatMessaging();
     void sendMessage_data();
     void sendMessage();
     void getHistory_data();
@@ -435,6 +436,346 @@ void tst_MessagesApi::getAllDialogs()
     TRY_VERIFY(dialogsReady->isFinished());
     QVERIFY(dialogsReady->isSucceeded());
     QCOMPARE(dialogList->peers().count(), dialogsCount);
+}
+
+void tst_MessagesApi::groupChatMessaging()
+{
+    const quint32 dc2 = 2;
+    const UserData user1Data = c_user1;
+    const UserData user2Data = c_user2;
+    const UserData user3Data = mkUserData(3000, dc2);
+    const DcOption clientDcOption = c_localDcOptions.first();
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+
+    // Prepare server
+    Test::AuthProvider authProvider;
+    Telegram::Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_localDcConfiguration);
+    QVERIFY(cluster.start());
+
+    Server::LocalUser *user1 = tryAddUser(&cluster, user1Data);
+    Server::LocalUser *user2 = tryAddUser(&cluster, user2Data);
+    Server::LocalUser *user3 = tryAddUser(&cluster, user3Data);
+    QVERIFY(user1 && user2 && user3);
+
+    const Client::ContactsApi::ContactInfo user2ContactInfo = toContactInfo(user2);
+    const Client::ContactsApi::ContactInfo user3ContactInfo = toContactInfo(user3);
+
+    // Prepare clients
+    Client::Client client1;
+    {
+        Test::setupClientHelper(&client1, user1Data, publicKey, clientDcOption);
+        Client::AuthOperation *signInOperation = nullptr;
+        signInHelper(&client1, user1Data, &authProvider, &signInOperation);
+        TRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
+        QCOMPARE(client1.accountStorage()->phoneNumber(), user1Data.phoneNumber);
+    }
+    TRY_VERIFY(client1.isSignedIn());
+
+    Client::Client client2;
+    {
+        Test::setupClientHelper(&client2, user2Data, publicKey, clientDcOption);
+        Client::AuthOperation *signInOperation = nullptr;
+        signInHelper(&client2, user2Data, &authProvider, &signInOperation);
+        TRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
+        QCOMPARE(client2.accountStorage()->phoneNumber(), user2Data.phoneNumber);
+    }
+    TRY_VERIFY(client2.isSignedIn());
+
+    Client::Client client3;
+    {
+        Test::setupClientHelper(&client3, user3Data, publicKey, clientDcOption);
+        Client::AuthOperation *signInOperation = nullptr;
+        signInHelper(&client3, user3Data, &authProvider, &signInOperation);
+        TRY_VERIFY2(signInOperation->isSucceeded(), "Unexpected sign in fail");
+        QCOMPARE(client3.accountStorage()->phoneNumber(), user3Data.phoneNumber);
+    }
+    TRY_VERIFY(client3.isSignedIn());
+
+    QSignalSpy client1MessageReceivedSpy(client1.messagingApi(), &Client::MessagingApi::messageReceived);
+    QSignalSpy client2MessageReceivedSpy(client2.messagingApi(), &Client::MessagingApi::messageReceived);
+    QSignalSpy client3MessageReceivedSpy(client3.messagingApi(), &Client::MessagingApi::messageReceived);
+
+    quint32 client1ExpectedMessageId = 0;
+    quint32 client2ExpectedMessageId = 0;
+    quint32 client3ExpectedMessageId = 0;
+
+    Client::PendingContactsOperation *addContactOperation = client1.contactsApi()->addContacts({
+                                                                                                   user2ContactInfo,
+                                                                                                   user3ContactInfo,
+                                                                                               });
+    TRY_VERIFY(addContactOperation->isFinished());
+    QVERIFY(addContactOperation->isSucceeded());
+    QCOMPARE(addContactOperation->peers().count(), 2);
+    const Telegram::Peer client2AsClient1Peer = addContactOperation->peers().constFirst();
+
+    // Check sent by client 1
+    {
+        const QString c_message1Text = QStringLiteral("1:1 hello");
+        QSignalSpy client1MessageSentSpy(client1.messagingApi(), &Client::MessagingApi::messageSent);
+        client1.messagingApi()->sendMessage(client2AsClient1Peer, c_message1Text);
+        TRY_COMPARE(client1MessageSentSpy.count(), 1);
+
+        ++client1ExpectedMessageId;
+        ++client2ExpectedMessageId;
+    }
+
+    // Check received back by client 1
+    {
+        // The sent message should be received as a proper Telegram::Message after the messageSent() signal
+        TRY_COMPARE(client1MessageReceivedSpy.count(), 1);
+        client1MessageReceivedSpy.clear();
+    }
+
+    // Check received by client 2
+    {
+        TRY_COMPARE(client2MessageReceivedSpy.count(), 1);
+        client2MessageReceivedSpy.clear();
+    }
+
+    const QString chatTitle = QLatin1String("new chat");
+    const QVector<quint32> invitedChatMembers = { user2->id(), user3->id() };
+    PendingOperation *createChatOperation = client1.messagingApi()->createChat(chatTitle, invitedChatMembers);
+    TRY_VERIFY(createChatOperation->isFinished());
+    QVERIFY(createChatOperation->isSucceeded());
+
+    ++client1ExpectedMessageId;
+    ++client2ExpectedMessageId;
+    ++client3ExpectedMessageId;
+
+    // Check received by client 1
+    Peer groupChat1Peer;
+    {
+        TRY_COMPARE(client1MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client1MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        const Peer groupChatPeer = receivedArgs.first().value<Peer>();
+        const quint32 messageId = receivedArgs.last().toUInt();
+        groupChat1Peer = groupChatPeer;
+
+        QCOMPARE(client1ExpectedMessageId, messageId);
+        Telegram::Message messageData;
+        client2.dataStorage()->getMessage(&messageData, groupChatPeer, messageId);
+        QCOMPARE(messageData.type(), Telegram::Namespace::MessageTypeService);
+    }
+
+    // Check received by client 2
+    {
+        TRY_COMPARE(client2MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client2MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        const Peer groupChatPeer = receivedArgs.first().value<Peer>();
+        const quint32 messageId = receivedArgs.last().toUInt();
+        QCOMPARE(client2ExpectedMessageId, messageId);
+        Telegram::Message messageData;
+        client2.dataStorage()->getMessage(&messageData, groupChatPeer, messageId);
+        QCOMPARE(messageData.type(), Telegram::Namespace::MessageTypeService);
+    }
+
+    // Check received by client 3
+    {
+        TRY_COMPARE(client3MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client3MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        const Peer groupChatPeer = receivedArgs.first().value<Peer>();
+        const quint32 messageId = receivedArgs.last().toUInt();
+        QCOMPARE(client3ExpectedMessageId, messageId);
+        Telegram::Message messageData;
+        client3.dataStorage()->getMessage(&messageData, groupChatPeer, messageId);
+
+        qWarning() << messageData.text();
+        QCOMPARE(messageData.type(), Telegram::Namespace::MessageTypeService);
+    }
+
+    // Checkpoint
+    QCOMPARE(client1ExpectedMessageId, 2u);
+    QCOMPARE(client2ExpectedMessageId, 2u);
+    QCOMPARE(client3ExpectedMessageId, 1u);
+
+    // Let the messaging begin
+    const QString c_groupChatMessageText1 = QStringLiteral("1:N hello");
+
+    // Check sent by client 1
+    {
+        QSignalSpy client1MessageSentSpy(client1.messagingApi(), &Client::MessagingApi::messageSent);
+        quint64 sentMessageId = client1.messagingApi()->sendMessage(groupChat1Peer, c_groupChatMessageText1);
+        TRY_COMPARE(client1MessageSentSpy.count(), 1);
+
+        ++client1ExpectedMessageId;
+        ++client2ExpectedMessageId;
+        ++client3ExpectedMessageId;
+
+        QList<QVariant> sentArgs = client1MessageSentSpy.takeFirst();
+        QCOMPARE(sentArgs.count(), 3); // messageSent has 'peer', 'random message id' and 'messageId' args
+        QVERIFY(sentMessageId);
+        QCOMPARE(sentArgs.takeFirst().value<Telegram::Peer>(), groupChat1Peer);
+        QCOMPARE(sentArgs.takeFirst().value<quint64>(), sentMessageId);
+        quint32 messageId = sentArgs.takeFirst().value<quint32>();
+        QCOMPARE(messageId, client1ExpectedMessageId);
+    }
+
+    // Check received back by client 1
+    {
+        // The sent message should be received as a proper Telegram::Message after the messageSent() signal
+        TRY_COMPARE(client1MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client1MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        const Peer groupChatPeer = receivedArgs.first().value<Peer>();
+        const quint32 messageId = receivedArgs.last().toUInt();
+        QCOMPARE(client1ExpectedMessageId, messageId);
+        Telegram::Message message;
+        client1.dataStorage()->getMessage(&message, groupChatPeer, messageId);
+        QCOMPARE(message.id(), client1ExpectedMessageId);
+        QCOMPARE(message.peer(), groupChatPeer);
+        QCOMPARE(message.text(), c_groupChatMessageText1);
+        QCOMPARE(message.fromUserId(), user1->userId());
+        QCOMPARE(message.forwardTimestamp(), 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagOut);
+        client1MessageReceivedSpy.clear();
+    }
+
+    // Check received by client 2
+    {
+        TRY_COMPARE(client2MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client2MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        const Peer groupChatPeer = receivedArgs.first().value<Peer>();
+        const quint32 messageId = receivedArgs.last().toUInt();
+        QCOMPARE(client2ExpectedMessageId, messageId);
+        Telegram::Message message;
+        client2.dataStorage()->getMessage(&message, groupChatPeer, messageId);
+        QCOMPARE(message.id(), messageId);
+        QCOMPARE(message.peer(), groupChatPeer);
+        QCOMPARE(message.text(), c_groupChatMessageText1);
+        QCOMPARE(message.fromUserId(), user1->userId());
+        QCOMPARE(message.forwardTimestamp(), 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagNone);
+        client2MessageReceivedSpy.clear();
+    }
+
+    // Check received by client 3
+    {
+        TRY_COMPARE(client3MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client3MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        const Peer groupChatPeer = receivedArgs.first().value<Peer>();
+        const quint32 messageId = receivedArgs.last().toUInt();
+        QCOMPARE(client3ExpectedMessageId, messageId);
+        Telegram::Message message;
+        client3.dataStorage()->getMessage(&message, groupChatPeer, messageId);
+        QCOMPARE(message.id(), messageId);
+        QCOMPARE(message.peer(), groupChatPeer);
+        QCOMPARE(message.text(), c_groupChatMessageText1);
+        QCOMPARE(message.fromUserId(), user1->userId());
+        QCOMPARE(message.forwardTimestamp(), 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagNone);
+        client3MessageReceivedSpy.clear();
+    }
+
+    // Checkpoint
+    QCOMPARE(client1ExpectedMessageId, 3u);
+    QCOMPARE(client2ExpectedMessageId, 3u);
+    QCOMPARE(client3ExpectedMessageId, 2u);
+
+    // Message from an another DC user
+    const QString c_groupChatMessageText2 = QStringLiteral("1:N hello cross DC");
+
+    // Check sent by client 3
+    {
+        QSignalSpy client3MessageSentSpy(client3.messagingApi(), &Client::MessagingApi::messageSent);
+        quint64 sentMessageId = client3.messagingApi()->sendMessage(groupChat1Peer, c_groupChatMessageText2);
+        TRY_COMPARE(client3MessageSentSpy.count(), 1);
+
+        ++client1ExpectedMessageId;
+        ++client2ExpectedMessageId;
+        ++client3ExpectedMessageId;
+
+        QList<QVariant> sentArgs = client3MessageSentSpy.takeFirst();
+        QCOMPARE(sentArgs.count(), 3); // messageSent has 'peer', 'random message id' and 'messageId' args
+        QVERIFY(sentMessageId);
+        QCOMPARE(sentArgs.takeFirst().value<Telegram::Peer>(), groupChat1Peer);
+        QCOMPARE(sentArgs.takeFirst().value<quint64>(), sentMessageId);
+        quint32 messageId = sentArgs.takeFirst().value<quint32>();
+        QCOMPARE(messageId, client3ExpectedMessageId);
+    }
+
+    // Check received by client 1
+    {
+        // The sent message should be received as a proper Telegram::Message after the messageSent() signal
+        TRY_COMPARE(client1MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client1MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        const Peer groupChatPeer = receivedArgs.first().value<Peer>();
+        const quint32 messageId = receivedArgs.last().toUInt();
+        QCOMPARE(client1ExpectedMessageId, messageId);
+        Telegram::Message message;
+        client1.dataStorage()->getMessage(&message, groupChatPeer, messageId);
+        QCOMPARE(message.id(), messageId);
+        QCOMPARE(message.peer(), groupChatPeer);
+        QCOMPARE(message.text(), c_groupChatMessageText2);
+        QCOMPARE(message.fromUserId(), user3->userId());
+        QCOMPARE(message.forwardTimestamp(), 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagNone);
+        client1MessageReceivedSpy.clear();
+    }
+
+    // Check received by client 2
+    {
+        TRY_COMPARE(client2MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client2MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        const Peer groupChatPeer = receivedArgs.first().value<Peer>();
+        const quint32 messageId = receivedArgs.last().toUInt();
+        QCOMPARE(client2ExpectedMessageId, messageId);
+        Telegram::Message message;
+        client2.dataStorage()->getMessage(&message, groupChatPeer, messageId);
+        QCOMPARE(message.id(), messageId);
+        QCOMPARE(message.peer(), groupChatPeer);
+        QCOMPARE(message.text(), c_groupChatMessageText2);
+        QCOMPARE(message.fromUserId(), user3->userId());
+        QCOMPARE(message.forwardTimestamp(), 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagNone);
+        client2MessageReceivedSpy.clear();
+    }
+
+    // Check received back by client 3
+    {
+        TRY_COMPARE(client3MessageReceivedSpy.count(), 1);
+        QList<QVariant> receivedArgs = client3MessageReceivedSpy.takeFirst();
+        QCOMPARE(receivedArgs.count(), 2); // messageReceived has 'peer' and 'messageId' args
+        const Peer groupChatPeer = receivedArgs.first().value<Peer>();
+        const quint32 messageId = receivedArgs.last().toUInt();
+        QCOMPARE(client3ExpectedMessageId, messageId);
+        Telegram::Message message;
+        client3.dataStorage()->getMessage(&message, groupChatPeer, messageId);
+        QCOMPARE(message.id(), messageId);
+        QCOMPARE(message.peer(), groupChatPeer);
+        QCOMPARE(message.text(), c_groupChatMessageText2);
+        QCOMPARE(message.fromUserId(), user3->userId());
+        QCOMPARE(message.forwardTimestamp(), 0u);
+        QCOMPARE(message.forwardFromPeer(), Peer());
+        QCOMPARE(message.type(), Namespace::MessageTypeText);
+        QCOMPARE(message.flags(), Namespace::MessageFlagOut);
+        client3MessageReceivedSpy.clear();
+    }
+
+    // Checkpoint
+    QCOMPARE(client1ExpectedMessageId, 4u);
+    QCOMPARE(client2ExpectedMessageId, 4u);
+    QCOMPARE(client3ExpectedMessageId, 3u);
 }
 
 void tst_MessagesApi::sendMessage_data()
