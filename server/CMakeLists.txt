@@ -19,6 +19,8 @@ set(server_lib_SOURCES
     MediaService.hpp
     MessageService.cpp
     MessageService.hpp
+    PendingVariant.cpp
+    PendingVariant.hpp
     RemoteClientConnection.cpp
     RemoteClientConnection.hpp
     RemoteClientConnectionHelper.cpp
