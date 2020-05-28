@@ -127,6 +127,9 @@ void JsonDataImporter::exportForServer(Server *server)
 void JsonDataImporter::importForServer(Server *server)
 {
     QFile data(m_baseDirectory + QStringLiteral("server%1.json").arg(server->dcId()));
+    if (!data.exists()) {
+        return;
+    }
     data.open(QIODevice::ReadOnly);
     const QJsonObject root = QJsonDocument::fromJson(data.readAll()).object();
 
