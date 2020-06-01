@@ -11,18 +11,33 @@ class AbstractServerApi;
 class AbstractUser;
 class LocalServerApi;
 
-class RemoteServerConnection : public QObject
+class AbstractServerConnection : public QObject
+{
+    Q_OBJECT
+public:
+    explicit AbstractServerConnection(QObject *parent = nullptr);
+
+    virtual quint32 dcId() const = 0;
+
+    virtual AbstractUser *getUser(const quint32 userId) const = 0;
+    virtual AbstractUser *getUser(const QString &identifier) const = 0;
+    virtual AbstractServerApi *api() = 0;
+
+    virtual QByteArray getForeingUserAuthorization(quint32 userId) = 0;
+};
+
+class RemoteServerConnection : public AbstractServerConnection
 {
     Q_OBJECT
 public:
     explicit RemoteServerConnection(QObject *parent = nullptr);
 
-    quint32 dcId() const;
+    quint32 dcId() const override;
 
     void setRemoteServer(LocalServerApi *remoteServer);
 
-    AbstractUser *getUser(const quint32 userId);
-    AbstractUser *getUser(const QString &identifier);
+    AbstractUser *getUser(const quint32 userId) const override;
+    AbstractUser *getUser(const QString &identifier) const override;
     AbstractServerApi *api();
 
     QByteArray getForeingUserAuthorization(quint32 userId);

@@ -7,8 +7,13 @@ namespace Telegram {
 
 namespace Server {
 
-RemoteServerConnection::RemoteServerConnection(QObject *parent)
+AbstractServerConnection::AbstractServerConnection(QObject *parent)
     : QObject(parent)
+{
+}
+
+RemoteServerConnection::RemoteServerConnection(QObject *parent)
+    : AbstractServerConnection(parent)
 {
 }
 
@@ -17,12 +22,12 @@ void RemoteServerConnection::setRemoteServer(LocalServerApi *remoteServer)
     m_server = remoteServer;
 }
 
-AbstractUser *RemoteServerConnection::getUser(const quint32 userId)
+AbstractUser *RemoteServerConnection::getUser(const quint32 userId) const
 {
     return m_server->getUser(userId);
 }
 
-AbstractUser *RemoteServerConnection::getUser(const QString &identifier)
+AbstractUser *RemoteServerConnection::getUser(const QString &identifier) const
 {
     return m_server->getUser(identifier);
 }

@@ -31,7 +31,7 @@ class LocalUser;
 class MediaService;
 class Session;
 class RemoteClientConnection;
-class RemoteServerConnection;
+class AbstractServerConnection;
 class AbstractUser;
 class LocalGroupChat;
 class PostBox;
@@ -54,7 +54,7 @@ public:
     void loadData();
 
     void setServerConfiguration(const DcConfiguration &config);
-    void addServerConnection(RemoteServerConnection *remoteServer);
+    void addServerConnection(AbstractServerConnection *remoteServer);
 
     QSet<RemoteClientConnection*> getConnections() { return m_activeConnections; }
 
@@ -84,7 +84,7 @@ public:
 
     QVector<PostBox *> getPostBoxes(const Peer &targetPeer, AbstractUser *applicant = nullptr) const override;
 
-    RemoteServerConnection *getRemoteServer(quint32 dcId) const;
+    AbstractServerConnection *getRemoteServer(quint32 dcId) const;
 
     Telegram::Peer getPeer(const TLInputPeer &peer, const LocalUser *applicant) const override;
     MessageRecipient *getRecipient(const TLInputPeer &peer, const LocalUser *applicant) const override;
@@ -168,7 +168,7 @@ private:
     Telegram::RsaKey m_key;
 
     QSet<RemoteClientConnection*> m_activeConnections;
-    QSet<RemoteServerConnection*> m_remoteServers;
+    QSet<AbstractServerConnection*> m_remoteServers;
     QVector<RpcOperationFactory*> m_rpcOperationFactories;
     DcConfiguration m_dcConfiguration;
     quint32 m_localGroupId = 0;

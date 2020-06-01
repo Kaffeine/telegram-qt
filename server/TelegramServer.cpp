@@ -163,7 +163,7 @@ void Server::setServerConfiguration(const DcConfiguration &config)
     m_dcConfiguration = config;
 }
 
-void Server::addServerConnection(RemoteServerConnection *remoteServer)
+void Server::addServerConnection(AbstractServerConnection *remoteServer)
 {
     m_remoteServers.insert(remoteServer);
 }
@@ -567,7 +567,7 @@ PendingOperation *Server::exportAuthorization(quint32 dcId, quint32 userId, QByt
         return PendingOperation::failOperation(QLatin1String("Invalid request: this DC is the target one"));
     }
 
-    RemoteServerConnection *targetDc = getRemoteServer(dcId);
+    AbstractServerConnection *targetDc = getRemoteServer(dcId);
     if (!targetDc) {
         return PendingOperation::failOperation(QLatin1String("Target DC is not available"));
     }
@@ -644,7 +644,7 @@ void Server::reportMessageRead(const MessageData *messageData)
     // The sender is Remote User
     AbstractUser *remoteUser = getAbstractUser(messageData->fromId());
     if (remoteUser->dcId() != dcId()) {
-        RemoteServerConnection *remoteServerConnection = getRemoteServer(remoteUser->dcId());
+        AbstractServerConnection *remoteServerConnection = getRemoteServer(remoteUser->dcId());
         AbstractServerApi *remoteApi = remoteServerConnection->api();
         remoteApi->queueServerUpdates({notification});
         return;
@@ -693,7 +693,7 @@ QVector<UpdateNotification> Server::announceNewChat(const Peer &peer, Session *e
             }
             continue;
         }
-        RemoteServerConnection *remote = getRemoteServer(user->dcId());
+        AbstractServerConnection *remote = getRemoteServer(user->dcId());
         if (!remote) {
             continue;
         }
@@ -713,7 +713,7 @@ QVector<UpdateNotification> Server::announceNewChat(const Peer &peer, Session *e
 QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
 {
     const Peer targetPeer = messageData->toPeer();
-    AbstractUser *fromUser = getUser(messageData->fromId());
+    AbstractUser *fromUser = getAbstractUser(messageData->fromId());
     QVector<PostBox *> boxes = getPostBoxes(targetPeer, fromUser);
     QVector<UpdateNotification> notifications;
 
@@ -771,7 +771,7 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
                                                         << userId;
                     continue;
                 }
-                RemoteServerConnection *remoteServerConnection = getRemoteServer(remoteUser->dcId());
+                AbstractServerConnection *remoteServerConnection = getRemoteServer(remoteUser->dcId());
                 AbstractServerApi *remoteApi = remoteServerConnection->api();
                 // if (!remoteApi->messageService()->hasMessage()) {
                 //     remoteApi->messageService()->importMessage(messageData)
@@ -836,7 +836,7 @@ QVector<UpdateNotification> Server::processMessageEdit(MessageData *messageData)
                                                         << userId;
                     continue;
                 }
-                RemoteServerConnection *remoteServerConnection = getRemoteServer(remoteUser->dcId());
+                AbstractServerConnection *remoteServerConnection = getRemoteServer(remoteUser->dcId());
                 AbstractServerApi *remoteApi = remoteServerConnection->api();
                 // if (!remoteApi->messageService()->hasMessage()) {
                 //     remoteApi->messageService()->importMessage(messageData)
@@ -1359,7 +1359,7 @@ AbstractUser *Server::getAbstractUser(const QString &identifier) const
 
 AbstractUser *Server::getRemoteUser(quint32 userId) const
 {
-    for (RemoteServerConnection *remoteServer : m_remoteServers) {
+    for (AbstractServerConnection *remoteServer : m_remoteServers) {
         AbstractUser *u = remoteServer->getUser(userId);
         if (u) {
             return u;
@@ -1370,7 +1370,7 @@ AbstractUser *Server::getRemoteUser(quint32 userId) const
 
 AbstractUser *Server::getRemoteUser(const QString &identifier) const
 {
-    for (RemoteServerConnection *remoteServer : m_remoteServers) {
+    for (AbstractServerConnection *remoteServer : m_remoteServers) {
         AbstractUser *u = remoteServer->getUser(identifier);
         if (u) {
             return u;
@@ -1410,9 +1410,9 @@ QVector<PostBox *> Server::getPostBoxes(const Peer &targetPeer, AbstractUser *ap
     return boxes;
 }
 
-RemoteServerConnection *Server::getRemoteServer(quint32 dcId) const
+AbstractServerConnection *Server::getRemoteServer(quint32 dcId) const
 {
-    for (RemoteServerConnection *remoteServer : m_remoteServers) {
+    for (AbstractServerConnection *remoteServer : m_remoteServers) {
         if (remoteServer->dcId() == dcId) {
             return remoteServer;
         }
