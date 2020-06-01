@@ -38,7 +38,13 @@ void LocalGroupChat::setCreator(quint32 creatorId)
 
 void LocalGroupChat::inviteMembers(const QVector<quint32> &members, quint32 inviterId, quint32 date)
 {
+    QVector<quint32> currentMembers = memberIds();
     for (quint32 userId : members) {
+        if (currentMembers.contains(userId)) {
+            qWarning(lcServerGroupChat) << "Unable to invite an already active member"
+                                        << userId << "of group" << m_id;
+            continue;
+        }
         ChatMember member;
         member.userId = userId;
         member.inviterId = inviterId;
