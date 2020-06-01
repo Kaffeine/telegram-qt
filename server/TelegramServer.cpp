@@ -1153,6 +1153,8 @@ QVector<UpdateNotification> Server::processServerUpdates(const QVector<UpdateNot
         switch (notification.type) {
         case UpdateNotification::Type::CreateChat:
         {
+            processCreateChat(notification);
+
             UpdateNotification participantsUpdate;
             participantsUpdate.type = UpdateNotification::Type::ChatParticipants;
             participantsUpdate.userId = notification.userId;
@@ -1199,6 +1201,27 @@ QVector<UpdateNotification> Server::processServerUpdates(const QVector<UpdateNot
     }
 
     return userNotifications;
+}
+
+void Server::processCreateChat(const UpdateNotification &notification)
+{
+    quint32 chatId = notification.dialogPeer.id();
+    if (getGroupChat(chatId)) {
+        // The chat already created
+        // Current implementation send one CreateChat notification for each user.
+        // (It is planned to have one CreateChat notification for each DC)
+        return;
+    }
+    LocalGroupChat *chat = new LocalGroupChat(chatId, notification.dcId);
+    chat->setDate(notification.date);
+
+    const MessageData *messageData = messageService()->getMessage(notification.messageDataId);
+    chat->setTitle(messageData->action().title);
+    chat->setCreator(messageData->fromId());
+    QVector<quint32> invitedMembers = messageData->action().users;
+    invitedMembers.removeOne(chat->creatorId());
+    chat->inviteMembers(invitedMembers, chat->creatorId(), chat->date());
+    m_groups.insert(chatId, chat);
 }
 
 void Server::insertUser(LocalUser *user)

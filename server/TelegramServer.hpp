@@ -127,6 +127,7 @@ public:
     void queueUpdates(const QVector<UpdateNotification> &notifications) override;
     void queueServerUpdates(const QVector<UpdateNotification> &notificationsForServer) override;
     QVector<UpdateNotification> processServerUpdates(const QVector<UpdateNotification> &notificationsForServer);
+    void processCreateChat(const UpdateNotification &notification);
 
     void insertUser(LocalUser *user);
     void insertGroup(LocalGroupChat *chat);
