@@ -317,8 +317,14 @@ MessageRecipient *Server::getRecipient(const TLInputPeer &peer, const LocalUser 
         return getAbstractUser(applicant->id());
     case TLValue::InputPeerUser:
         return getAbstractUser(peer.userId);
-    case TLValue::InputPeerChat:
-        return getGroupChat(peer.chatId);
+    case TLValue::InputPeerChat: {
+        GroupChat *chat = getGroupChat(peer.chatId);
+        if (!chat->memberIds().contains(applicant->userId())) {
+            // The applicant is not a member of the requested chat
+            return nullptr;
+        }
+        return chat;
+    }
     case TLValue::InputPeerChannel:
         //recipient = api()->getChannel(peer.channelId, peer.accessHash);
         return nullptr;
