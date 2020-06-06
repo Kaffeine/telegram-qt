@@ -1029,7 +1029,18 @@ bool Server::bakeUpdate(TLUpdate *update, const UpdateNotification &notification
         break;
     case UpdateNotification::Type::MessageAction:
     {
-        update->tlType = TLValue::UpdateUserTyping;
+        switch (notification.dialogPeer.type()) {
+        case Peer::User:
+            update->tlType = TLValue::UpdateUserTyping;
+            break;
+        case Peer::Chat:
+            update->tlType = TLValue::UpdateChatUserTyping;
+            update->chatId = notification.dialogPeer.id();
+            break;
+        case Peer::Channel:
+            // Invalid peer
+            break;
+        }
         update->userId = notification.fromId;
         // Note: action depends on Layer. Process this to support different layers.
         update->action = Telegram::Utils::toTL(notification.messageAction);
