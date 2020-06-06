@@ -15,6 +15,19 @@ namespace Server {
 
 namespace Utils {
 
+void getInterestingPeers(QSet<Peer> *peers, const TLChatFull &chatFull)
+{
+    if (chatFull.tlType == TLValue::ChatFull) {
+        peers->insert(Peer::fromChatId(chatFull.id));
+    } else if (chatFull.tlType == TLValue::ChannelFull) {
+        peers->insert(Peer::fromChannelId(chatFull.id));
+    }
+
+    for (const TLChatParticipant &participant : chatFull.participants.participants) {
+        peers->insert(Peer::fromUserId(participant.userId));
+    }
+}
+
 void getInterestingPeers(QSet<Peer> *peers, const TLVector<TLMessage> &messages)
 {
     for (const TLMessage &message : messages) {
@@ -115,6 +128,14 @@ bool setupTLChat(TLChat *output, const GroupChat *input, const AbstractUser *for
         output->flags |= TLChat::Creator;
     }
     output->flags = flags;
+
+    return true;
+}
+
+bool setupTLChatFull(TLChatFull *output, const GroupChat *input, const AbstractUser *forUser)
+{
+    output->id = input->id();
+    Utils::setupTLChatParticipants(&output->participants, input, forUser);
 
     return true;
 }
