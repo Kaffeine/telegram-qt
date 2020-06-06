@@ -2018,58 +2018,11 @@ void MessagesRpcOperation::runSetTyping()
         return;
     }
 
-    const QVector<PostBox *> boxes = api()->getPostBoxes(targetPeer, selfUser);
-
-    QVector<UpdateNotification> notifications;
-
-    // Result and broadcasted Updates date seems to be always older than the message date,
-    // so prepare the request date right on the start.
-    const quint32 requestDate = Telegram::Utils::getCurrentTime();
-    for (PostBox *box : boxes) {
-        UpdateNotification notification;
-        notification.type = UpdateNotification::Type::MessageAction;
-        notification.date = requestDate;
-        notification.fromId = selfUser->id();
-        notification.messageAction = Telegram::Utils::toPublic(arguments.action);
-
-        for (const quint32 userId : box->users()) {
-            // The Update recipient
-            notification.userId = userId;
-            if (targetPeer.type() == Peer::User) {
-                if (userId == selfUser->id()) {
-                    notification.dialogPeer = targetPeer;
-                } else {
-                    notification.dialogPeer = selfUser->toPeer();
-                }
-            } else {
-                notification.dialogPeer = targetPeer;
-            }
-
-            if ((userId == selfUser->id()) && !notifications.isEmpty()) {
-                // Keep the sender Notification on the first place
-                notifications.append(notifications.constFirst());
-                notifications.first() = notification;
-                continue;
-            }
-
-            notifications.append(notification);
-        }
-    }
-
-    UpdateNotification *selfNotification = nullptr;
-    for (UpdateNotification &notification : notifications) {
-        if (notification.userId == selfUser->id()) {
-            selfNotification = &notification;
-            break;
-        }
-    }
-
-    selfNotification->excludeSession = layer()->session();
+    const MessageAction action = Telegram::Utils::toPublic(arguments.action);
+    api()->processUserMessageAction(targetPeer, selfUser, action, layer()->session());
 
     bool result = true;
     sendRpcReply(result);
-
-    api()->queueUpdates(notifications);
 }
 
 void MessagesRpcOperation::runStartBot()

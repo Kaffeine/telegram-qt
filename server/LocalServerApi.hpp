@@ -66,6 +66,10 @@ public:
     virtual QVector<UpdateNotification> announceNewChat(const Peer &peer, Session *excludeSession) = 0;
     virtual QVector<UpdateNotification> processMessage(MessageData *messageData) = 0;
     virtual QVector<UpdateNotification> processMessageEdit(MessageData *messageData) = 0;
+    virtual void processUserMessageAction(const Peer &targetPeer,
+                                          LocalUser *applicant,
+                                          Telegram::MessageAction typingAction,
+                                          Session *excludeSession) = 0;
     virtual QVector<UpdateNotification> createUpdates(UpdateNotification::Type updateType,
                                                       LocalUser *applicant,
                                                       Session *excludeSession) const = 0;

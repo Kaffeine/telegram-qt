@@ -859,6 +859,50 @@ QVector<UpdateNotification> Server::processMessageEdit(MessageData *messageData)
     return notifications;
 }
 
+void Server::processUserMessageAction(const Peer &targetPeer,
+                                      LocalUser *applicant,
+                                      Telegram::MessageAction messageAction,
+                                      Session *excludeSession)
+{
+    const quint32 requestDate = Telegram::Utils::getCurrentTime();
+    const QVector<PostBox *> boxes = getPostBoxes(targetPeer, applicant);
+
+    for (PostBox *box : boxes) {
+        UpdateNotification notification;
+        notification.type = UpdateNotification::Type::MessageAction;
+        notification.date = requestDate;
+        notification.fromId = applicant->id();
+        notification.messageAction = messageAction;
+
+        for (const quint32 userId : box->users()) {
+            // The Update recipient
+            notification.userId = userId;
+            if (targetPeer.type() == Peer::User) {
+                if (userId == applicant->id()) {
+                    notification.dialogPeer = targetPeer;
+                } else {
+                    notification.dialogPeer = applicant->toPeer();
+                }
+            } else {
+                notification.dialogPeer = targetPeer;
+            }
+
+            if (userId == applicant->id()) {
+                notification.excludeSession = excludeSession;
+            }
+
+            AbstractUser *user = getAbstractUser(userId);
+            if (user->dcId() == dcId()) {
+                queueServerUpdates({notification});
+            } else {
+                AbstractServerConnection *remoteServerConnection = getRemoteServer(user->dcId());
+                AbstractServerApi *remoteApi = remoteServerConnection->api();
+                remoteApi->queueServerUpdates({notification});
+            }
+        }
+    }
+}
+
 QVector<UpdateNotification> Server::createUpdates(UpdateNotification::Type updateType,
                                                   LocalUser *applicant,
                                                   Session *excludeSession) const
@@ -1194,6 +1238,7 @@ QVector<UpdateNotification> Server::processServerUpdates(const QVector<UpdateNot
             // TODO: Refactor
             reportLocalMessageRead(user, notification);
             break;
+        case UpdateNotification::Type::MessageAction:
         default:
             userNotifications << notification;
             break;
