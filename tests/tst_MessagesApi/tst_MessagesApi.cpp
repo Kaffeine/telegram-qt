@@ -776,6 +776,92 @@ void tst_MessagesApi::groupChatMessaging()
     QCOMPARE(client1ExpectedMessageId, 4u);
     QCOMPARE(client2ExpectedMessageId, 4u);
     QCOMPARE(client3ExpectedMessageId, 3u);
+
+    // Check message actions
+    QSignalSpy client1MessageActionsSpy(client1.messagingApi(), &Client::MessagingApi::messageActionChanged);
+    QSignalSpy client2MessageActionsSpy(client2.messagingApi(), &Client::MessagingApi::messageActionChanged);
+    QSignalSpy client3MessageActionsSpy(client3.messagingApi(), &Client::MessagingApi::messageActionChanged);
+
+    // Typing from creator (user1)
+    client1.messagingApi()->setMessageAction(groupChat1Peer, Telegram::MessageAction::Type::Typing);
+
+    TRY_VERIFY(!client2MessageActionsSpy.isEmpty());
+    {
+        const QList<QVariant> receivedArgs = client2MessageActionsSpy.takeFirst();
+        const Peer peer = receivedArgs.first().value<Telegram::Peer>();
+        COMPARE_PEERS(peer, groupChat1Peer);
+        QCOMPARE(receivedArgs.at(1).value<quint32>(), user1->userId());
+    }
+
+    TRY_VERIFY(!client3MessageActionsSpy.isEmpty());
+    {
+        const QList<QVariant> receivedArgs = client3MessageActionsSpy.takeFirst();
+        const Peer peer = receivedArgs.first().value<Telegram::Peer>();
+        COMPARE_PEERS(peer, groupChat1Peer);
+        QCOMPARE(receivedArgs.at(1).value<quint32>(), user1->userId());
+    }
+    QVERIFY(client1MessageActionsSpy.isEmpty());
+    // onMessageActionTimeout
+    TRY_VERIFY(!client2MessageActionsSpy.isEmpty());
+    QCOMPARE(client2MessageActionsSpy.count(), 1);
+    client2MessageActionsSpy.clear();
+    TRY_VERIFY(!client3MessageActionsSpy.isEmpty());
+    QCOMPARE(client3MessageActionsSpy.count(), 1);
+    client3MessageActionsSpy.clear();
+
+    // Typing from a member on the chat DC (user2)
+    client2.messagingApi()->setMessageAction(groupChat1Peer, Telegram::MessageAction::Type::Typing);
+
+    TRY_VERIFY(!client1MessageActionsSpy.isEmpty());
+    {
+        const QList<QVariant> receivedArgs = client1MessageActionsSpy.takeFirst();
+        const Peer peer = receivedArgs.first().value<Telegram::Peer>();
+        COMPARE_PEERS(peer, groupChat1Peer);
+        QCOMPARE(receivedArgs.at(1).value<quint32>(), user2->userId());
+    }
+
+    TRY_VERIFY(!client3MessageActionsSpy.isEmpty());
+    {
+        const QList<QVariant> receivedArgs = client3MessageActionsSpy.takeFirst();
+        const Peer peer = receivedArgs.first().value<Telegram::Peer>();
+        COMPARE_PEERS(peer, groupChat1Peer);
+        QCOMPARE(receivedArgs.at(1).value<quint32>(), user2->userId());
+    }
+    QVERIFY(client2MessageActionsSpy.isEmpty());
+    // onMessageActionTimeout
+    TRY_VERIFY(!client1MessageActionsSpy.isEmpty());
+    QCOMPARE(client1MessageActionsSpy.count(), 1);
+    client1MessageActionsSpy.clear();
+    TRY_VERIFY(!client3MessageActionsSpy.isEmpty());
+    QCOMPARE(client3MessageActionsSpy.count(), 1);
+    client3MessageActionsSpy.clear();
+
+    // Typing from a member on a different chat DC (user3)
+    client3.messagingApi()->setMessageAction(groupChat1Peer, Telegram::MessageAction::Type::Typing);
+
+    TRY_VERIFY(!client1MessageActionsSpy.isEmpty());
+    {
+        const QList<QVariant> receivedArgs = client1MessageActionsSpy.takeFirst();
+        const Peer peer = receivedArgs.first().value<Telegram::Peer>();
+        COMPARE_PEERS(peer, groupChat1Peer);
+        QCOMPARE(receivedArgs.at(1).value<quint32>(), user3->userId());
+    }
+
+    TRY_VERIFY(!client2MessageActionsSpy.isEmpty());
+    {
+        const QList<QVariant> receivedArgs = client2MessageActionsSpy.takeFirst();
+        const Peer peer = receivedArgs.first().value<Telegram::Peer>();
+        COMPARE_PEERS(peer, groupChat1Peer);
+        QCOMPARE(receivedArgs.at(1).value<quint32>(), user3->userId());
+    }
+    QVERIFY(client3MessageActionsSpy.isEmpty());
+    // onMessageActionTimeout
+    TRY_VERIFY(!client1MessageActionsSpy.isEmpty());
+    QCOMPARE(client1MessageActionsSpy.count(), 1);
+    client1MessageActionsSpy.clear();
+    TRY_VERIFY(!client2MessageActionsSpy.isEmpty());
+    QCOMPARE(client2MessageActionsSpy.count(), 1);
+    client2MessageActionsSpy.clear();
 }
 
 void tst_MessagesApi::sendMessage_data()
