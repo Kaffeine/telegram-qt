@@ -1191,11 +1191,22 @@ void MessagesRpcOperation::runGetFeaturedStickers()
 
 void MessagesRpcOperation::runGetFullChat()
 {
-    // MTProto::Functions::TLMessagesGetFullChat &arguments = m_getFullChat;
-    if (processNotImplementedMethod(TLValue::MessagesGetFullChat)) {
+    MTProto::Functions::TLMessagesGetFullChat &arguments = m_getFullChat;
+    LocalUser *selfUser = layer()->getUser();
+
+    const GroupChat *groupChat = api()->getGroupChat(arguments.chatId);
+    if (!groupChat) {
+        sendRpcError(RpcError::PeerIdInvalid);
         return;
     }
+
+    QSet<Peer> interestingPeers;
     TLMessagesChatFull result;
+    interestingPeers.insert(Peer::fromUserId(groupChat->creatorId()));
+    Utils::setupTLChatFull(&result.fullChat, groupChat, selfUser);
+    Utils::getInterestingPeers(&interestingPeers, result.fullChat);
+    Utils::setupTLPeers(&result, interestingPeers, api(), selfUser);
+
     sendRpcReply(result);
 }
 
