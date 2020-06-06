@@ -1216,8 +1216,8 @@ void MessagesRpcOperation::runGetHistory()
     case TLValue::InputPeerEmpty:
     case TLValue::InputPeerSelf:
     case TLValue::InputPeerUser:
-        break;
     case TLValue::InputPeerChat:
+        break;
     case TLValue::InputPeerChannel:
     default:
         qCritical() << Q_FUNC_INFO << "Not implemented for requested peer" << arguments.peer.tlType;
