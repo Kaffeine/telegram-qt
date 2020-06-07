@@ -39,9 +39,12 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
 
     DataInternalApi *internal = dataInternalApi();
 
+    bool processed = true;
+
     switch (updates.tlType) {
     case TLValue::UpdatesTooLong:
         qCDebug(c_updatesLoggingCategory) << "Updates too long!";
+        processed = false;
         break;
     case TLValue::UpdateShortMessage:
     case TLValue::UpdateShortChatMessage:
@@ -83,18 +86,20 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
             shortMessage.fromId = updates.fromId;
         }
 
-        processUpdate(update);
+        processed = processUpdate(update);
     }
         break;
     case TLValue::UpdateShort:
-        processUpdate(updates.update);
+        processed = processUpdate(updates.update);
         break;
     case TLValue::UpdatesCombined:
         internal->processData(updates.users);
         internal->processData(updates.chats);
         qCDebug(c_updatesLoggingCategory) << Q_FUNC_INFO << "UpdatesCombined processing is not implemented yet.";
         for (int i = 0; i < updates.updates.count(); ++i) {
-            processUpdate(updates.updates.at(i));
+            if (!processUpdate(updates.updates.at(i))) {
+                processed = false;
+            }
         }
         break;
     case TLValue::Updates:
@@ -119,23 +124,23 @@ bool UpdatesInternalApi::processUpdates(const TLUpdates &updates)
 
             // Initial implementation
             for (int i = 0; i < updates.updates.count(); ++i) {
-                processUpdate(updates.updates.at(i));
+                if (!processUpdate(updates.updates.at(i))) {
+                    processed = false;
+                }
             }
         }
         break;
     case TLValue::UpdateShortSentMessage:
-    {
         messagingApi()->onShortSentMessage(updates.id);
         // TODO: Check that the follow state update is the right thing to do.
         // This fixes scenario: "send sendMessage" -> "receive UpdateShortSentMessage" -> "receive UpdateReadHistoryOutbox with update.pts == m_updatesState.pts + 2"
         // setUpdateState(m_updatesState.pts + 1, 0, 0);
-        return true;
-    }
         break;
     default:
+        processed = false;
         break;
     }
-    return false;
+    return processed;
 }
 
 bool UpdatesInternalApi::processUpdate(const TLUpdate &update)
