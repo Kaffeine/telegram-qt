@@ -751,7 +751,11 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
             LocalUser *user = getUser(userId);
             if (user) {
                 user->addNewMessage(notification.dialogPeer, notification.messageId, notification.messageDataId);
-                if (user != fromUser) {
+
+                if (user == fromUser) {
+                    UserDialog *dialog = user->getDialog(notification.dialogPeer);
+                    dialog->readInboxMaxId = notification.messageId;
+                } else {
                     user->bumpDialogUnreadCount(notification.dialogPeer);
                 }
 
