@@ -1562,12 +1562,6 @@ void MessagesRpcOperation::runReadHistory()
         return;
     }
 
-    MessageRecipient *receiverInbox = api()->getRecipient(arguments.peer, selfUser);
-    if (!receiverInbox) {
-        sendRpcError(RpcError::PeerIdInvalid);
-        return;
-    }
-
     const quint32 requestDate = Telegram::Utils::getCurrentTime();
     QVector<quint32> affectedMessages;
     quint32 maxId = qMax(selfUserDialog->topMessage, arguments.maxId);
@@ -1583,9 +1577,6 @@ void MessagesRpcOperation::runReadHistory()
         }
 
         const MessageData *messageData = api()->messageService()->getMessage(globalMessageId);
-        if (messageData->fromId() == selfUser->id()) {
-            continue;
-        }
         if (messageData->getDialogPeer(selfUser->id()) != targetPeer) {
             continue;
         }
