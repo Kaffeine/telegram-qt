@@ -52,8 +52,10 @@ Users:
 
 Messages:
 
+- messages.createChat
 - messages.editMessage
 - messages.getDialogs
+- messages.getFullChat (only for group chats, not for channels)
 - messages.getHistory
 - messages.readHistory
 - messages.sendMedia (contact and uploaded document)
