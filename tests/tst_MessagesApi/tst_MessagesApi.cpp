@@ -147,7 +147,7 @@ void tst_MessagesApi::getSelfUserDialog()
     {
         Server::MessageData *data = serverApi->messageService()
                 ->addMessage(user->userId(), user->toPeer(), c_messageText);
-        cluster.processMessage(data);
+        cluster.sendMessage(data);
     }
 
     // Prepare client
@@ -425,7 +425,7 @@ void tst_MessagesApi::getAllDialogs()
         Server::MessageData *data = serverApi->messageService()
                 ->addMessage(dialogN->userId(), user->toPeer(), QStringLiteral("mgs%1").arg(i + 1));
         data->setDate(baseDate - dialogsCount + i);
-        cluster.processMessage(data);
+        cluster.sendMessage(data);
     }
 
     // Prepare client
@@ -755,7 +755,7 @@ void tst_MessagesApi::getHistory()
         Server::MessageData *messageData = server->messageService()->addMessage(
                     user2->id(), user1->toPeer(), QString::number(i + 1));
         messageData->setDate(static_cast<quint32>(baseDate + i));
-        cluster.processMessage(messageData);
+        cluster.sendMessage(messageData);
     }
 
     // Prepare clients
@@ -823,7 +823,7 @@ void tst_MessagesApi::syncPeerDialogs()
     for (quint32 i = 0; i < c_lastId1; ++i) {
         Server::MessageData *messageData = server->messageService()->addMessage(
                     user2->id(), user1->toPeer(), QString::number(i + 1));
-        cluster.processMessage(messageData);
+        cluster.sendMessage(messageData);
         messagesVol1.append(c_lastId1 - i);
     }
 
@@ -876,7 +876,7 @@ void tst_MessagesApi::syncPeerDialogs()
     for (quint32 i = 0; i < (c_lastId2 - c_lastId1); ++i) {
         Server::MessageData *messageData = server->messageService()->addMessage(
                     user2->id(), user1->toPeer(), QString::number(i + c_lastId1 + 1));
-        cluster.processMessage(messageData);
+        cluster.sendMessage(messageData);
         messagesVol2.append(c_lastId2 - i);
     }
 
@@ -1025,7 +1025,7 @@ void tst_MessagesApi::syncPeerDialogs()
         const quint32 fromId = i %2 ? user2->id() : user3->id();
         Server::MessageData *messageData = server->messageService()->addMessage(
                     fromId, user1->toPeer(), QString::number(i + c_lastId2 + 1));
-        cluster.processMessage(messageData);
+        cluster.sendMessage(messageData);
 
         if (i % 2) {
             messagesVol3_1.append(c_lastId3 - i);
@@ -1097,7 +1097,7 @@ void tst_MessagesApi::syncPeerDialogs()
         const quint32 fromId = i %2 ? user2->id() : user3->id();
         Server::MessageData *messageData = server->messageService()->addMessage(
                     fromId, user1->toPeer(), QString::number(i + c_lastId3 + 1));
-        cluster.processMessage(messageData);
+        cluster.sendMessage(messageData);
 
         if (i % 2) {
             messagesVol4_1.append(c_lastId4 - i);
@@ -1155,13 +1155,11 @@ void tst_MessagesApi::syncPeerDialogs()
                     user3->id(), user1->toPeer(), QString::number(c_lastId4 + 2));
         Server::MessageData *message3Data = server->messageService()->addMessage(
                     user4->id(), user1->toPeer(), QString::number(c_lastId4 + 3));
-        QVector<Server::UpdateNotification> newUpdates;
-        newUpdates.append(server->processMessage(message1Data));
-        newUpdates.append(server->processMessage(message2Data));
-        newUpdates.append(server->processMessage(message3Data));
 
         QCOMPARE(receivedMessages.count(), 0);
-        server->queueUpdates(newUpdates);
+        cluster.sendMessage(message1Data);
+        cluster.sendMessage(message2Data);
+        cluster.sendMessage(message3Data);
 
         expectedMessages4[user2->toPeer()].prepend(c_lastId4 + 1);
         expectedMessages4[user3->toPeer()].prepend(c_lastId4 + 2);
@@ -1196,10 +1194,8 @@ void tst_MessagesApi::syncPeerDialogs()
                     user2->id(), user1->toPeer(), QString::number(c_lastId4 + 4));
         Server::MessageData *message5Data = server->messageService()->addMessage(
                     user3->id(), user1->toPeer(), QString::number(c_lastId4 + 5));
-        newUpdates.clear();
-        newUpdates.append(server->processMessage(message4Data));
-        newUpdates.append(server->processMessage(message5Data));
-        server->queueUpdates(newUpdates);
+        cluster.sendMessage(message4Data);
+        cluster.sendMessage(message5Data);
         TRY_COMPARE(receivedMessages.count(), 2);
 
         state6 = dataStorage->saveState();
@@ -1252,9 +1248,7 @@ void tst_MessagesApi::syncPeerDialogs()
         QCOMPARE(receivedMessages.count(), 0);
         Server::MessageData *messageData = server->messageService()->addMessage(
                     user4->id(), user1->toPeer(), QString::number(c_lastId5 + 1));
-
-        QVector<Server::UpdateNotification> newUpdates = { server->processMessage(messageData) };
-        server->queueUpdates(newUpdates);
+        cluster.sendMessage(messageData);
 
         TRY_COMPARE(receivedMessages.count(), 1);
         {

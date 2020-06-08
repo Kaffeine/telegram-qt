@@ -111,7 +111,7 @@ void generateDialogs(LocalCluster *cluster, const QString &userPhone, const int 
             const QString text = QStringLiteral("mgs%1 (d%2)").arg(messageIndex + 1).arg(dialogIndex);
             MessageData *data = serverApi->messageService()->addMessage(dialogN->userId(), user->toPeer(), text);
             data->setDate(data->date() - 60);
-            cluster->processMessage(data);
+            cluster->sendMessage(data);
         }
     }
 }

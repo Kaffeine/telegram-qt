@@ -73,7 +73,7 @@ public:
     Server *getServerInstance(quint32 dcId);
     AbstractServerApi *getServerApiInstance(quint32 dcId);
 
-    void processMessage(MessageData *messageData);
+    void sendMessage(MessageData *messageData);
 
 protected:
     ServerConstructor m_constructor;

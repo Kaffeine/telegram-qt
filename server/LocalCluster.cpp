@@ -163,7 +163,7 @@ AbstractServerApi *LocalCluster::getServerApiInstance(quint32 dcId)
     return getServerInstance(dcId);
 }
 
-void LocalCluster::processMessage(MessageData *messageData)
+void LocalCluster::sendMessage(MessageData *messageData)
 {
     if (messageData->fromId() == 0) {
         qCWarning(lcCluster) << CALL_INFO << "Unable to process message without a sender";
@@ -172,7 +172,8 @@ void LocalCluster::processMessage(MessageData *messageData)
     AbstractUser *user = m_serverInstances.first()->getAbstractUser(messageData->fromId());
 
     Server *server = getServerInstance(user->dcId());
-    server->processMessage(messageData);
+    QVector<UpdateNotification> updates = server->processMessage(messageData);
+    server->queueUpdates(updates);
 }
 
 } // Server namespace
