@@ -64,7 +64,7 @@ public:
 
     virtual QVector<quint32> getPeerWatchers(const Peer &peer) const = 0;
     virtual QVector<UpdateNotification> announceNewChat(const Peer &peer, Session *excludeSession) = 0;
-    virtual QVector<UpdateNotification> processMessage(MessageData *messageData) = 0;
+    virtual QVector<UpdateNotification> processMessage(MessageData *messageData, Session *excludeSession) = 0;
     virtual QVector<UpdateNotification> processMessageEdit(MessageData *messageData) = 0;
     virtual void processUserMessageAction(const Peer &targetPeer,
                                           LocalUser *applicant,

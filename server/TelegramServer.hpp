@@ -115,7 +115,7 @@ public:
     void reportMessageRead(const MessageData *messageData) override;
 
     QVector<UpdateNotification> announceNewChat(const Peer &peer, Session *excludeSession) override;
-    QVector<UpdateNotification> processMessage(MessageData *messageData) override;
+    QVector<UpdateNotification> processMessage(MessageData *messageData, Session *excludeSession) override;
     QVector<UpdateNotification> processMessageEdit(MessageData *messageData) override;
     void processUserMessageAction(const Peer &targetPeer,
                                   LocalUser *applicant,

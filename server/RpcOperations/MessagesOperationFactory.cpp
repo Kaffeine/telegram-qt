@@ -2091,31 +2091,31 @@ void MessagesRpcOperation::submitMessageData(MessageData *messageData, quint64 r
     }
 
     LocalUser *fromUser = layer()->getUser();
-    QVector<UpdateNotification> notifications = api()->processMessage(messageData);
 
-    UpdateNotification *selfNotification = nullptr;
-    for (UpdateNotification &notification : notifications) {
-        if (notification.userId == fromUser->id()) {
-            selfNotification = &notification;
-            break;
-        }
+    Session *excludeSession = layer()->session();
+    QVector<UpdateNotification> notifications = api()->processMessage(messageData, excludeSession);
+
+    if (notifications.count() != 1) {
+        qCritical() << "Unable to send a message";
+        sendRpcError(RpcError::UnknownReason);
+        return;
     }
 
-    selfNotification->excludeSession = layer()->session();
+    const UpdateNotification &newMessageNotification = notifications.constFirst();
 
     TLUpdate updateMessageId;
     updateMessageId.tlType = TLValue::UpdateMessageID;
-    updateMessageId.quint32Id = selfNotification->messageId;
+    updateMessageId.quint32Id = newMessageNotification.messageId;
     updateMessageId.randomId = randomId;
 
     QSet<Peer> interestingPeers;
     TLUpdate newMessageUpdate;
-    api()->bakeUpdate(&newMessageUpdate, *selfNotification, &interestingPeers);
+    api()->bakeUpdate(&newMessageUpdate, newMessageNotification, &interestingPeers);
 
     // Bake updates
     TLUpdates result;
     result.tlType = TLValue::Updates;
-    result.date = selfNotification->date;
+    result.date = newMessageNotification.date;
 
     Utils::setupTLPeers(&result, interestingPeers, api(), fromUser);
     result.seq = 0; // Sender seq number seems to always equal zero
@@ -2125,8 +2125,6 @@ void MessagesRpcOperation::submitMessageData(MessageData *messageData, quint64 r
         // maybe UpdateReadChannelInbox or UpdateReadHistoryInbox
     };
     sendRpcReply(result);
-
-    api()->queueUpdates(notifications);
 }
 
 MessagesRpcOperation::ProcessingMethod MessagesRpcOperation::getMethodForRpcFunction(TLValue function)

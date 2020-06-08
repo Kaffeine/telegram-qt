@@ -710,7 +710,7 @@ QVector<UpdateNotification> Server::announceNewChat(const Peer &peer, Session *e
 
     The sender notification (if any) will be the first one in the result list.
  */
-QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
+QVector<UpdateNotification> Server::processMessage(MessageData *messageData, Session *excludeSession)
 {
     const Peer targetPeer = messageData->toPeer();
     AbstractUser *fromUser = getAbstractUser(messageData->fromId());
@@ -759,12 +759,14 @@ QVector<UpdateNotification> Server::processMessage(MessageData *messageData)
                     user->bumpDialogUnreadCount(notification.dialogPeer);
                 }
 
-                if (notifications.isEmpty() || userId != fromUser->id()) {
-                    notifications.append(notification);
+                if (user->userId() == messageData->fromId()) {
+                    // Notifications for the sender
+                    notification.excludeSession = excludeSession;
+                    notifications = { notification };
+                    queueUpdates({notification});
+                    notification.excludeSession = nullptr;
                 } else {
-                    // Keep the sender Notification on the first place
-                    notifications.append(notifications.constFirst());
-                    notifications.first() = notification;
+                    queueUpdates({notification});
                 }
             } else {
                 // User is not a local user

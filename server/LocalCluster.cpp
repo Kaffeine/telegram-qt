@@ -172,8 +172,8 @@ void LocalCluster::sendMessage(MessageData *messageData)
     AbstractUser *user = m_serverInstances.first()->getAbstractUser(messageData->fromId());
 
     Server *server = getServerInstance(user->dcId());
-    QVector<UpdateNotification> updates = server->processMessage(messageData);
-    server->queueUpdates(updates);
+    Session *excludeClientSession = nullptr;
+    server->processMessage(messageData, excludeClientSession);
 }
 
 } // Server namespace
