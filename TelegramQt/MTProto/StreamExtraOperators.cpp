@@ -12,6 +12,10 @@ template Stream &Stream::operator<<(const QVector<TLStickerSetCovered> &v);
 template Stream &Stream::operator<<(const QVector<TLUser> &v);
 template Stream &Stream::operator<<(const QVector<TLSavedContact> &v);
 
+template Stream &Stream::operator<<(const QVector<TLDialogPeer> &v);
+template Stream &Stream::operator<<(const QVector<TLFileHash> &v);
+template Stream &Stream::operator<<(const QVector<TLSecureValue> &v);
+
 // Generated vector write templates instancing
 // End of generated vector write templates instancing
 
