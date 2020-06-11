@@ -96,6 +96,20 @@ void signInHelper(Telegram::Client::Client *client, const UserData &userData, Te
     }
 }
 
+class Client : public Telegram::Client::Client
+{
+public:
+    explicit Client(QObject *parent = nullptr)
+        : Telegram::Client::Client(parent)
+    {
+        setSettings(new Telegram::Client::Settings(this));
+        setAccountStorage(new Telegram::Client::AccountStorage(this));
+        setDataStorage(new Telegram::Client::InMemoryDataStorage(this));
+        setAppInformation(new Telegram::Client::AppInformation(this));
+        setupAppInfo(appInformation());
+    }
+};
+
 } // Test namespace
 
 } // Telegram namespace
