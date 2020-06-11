@@ -37,7 +37,7 @@ class ConnectOperation;
 class PingOperation;
 class BasePendingRpcResult;
 
-class ConnectionApiPrivate : public ClientApiPrivate
+class TELEGRAMQT_INTERNAL_EXPORT ConnectionApiPrivate : public ClientApiPrivate
 {
     Q_OBJECT
     Q_DECLARE_PUBLIC(ConnectionApi)
