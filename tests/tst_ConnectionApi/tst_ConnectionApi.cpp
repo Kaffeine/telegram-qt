@@ -73,6 +73,8 @@ static const UserData c_userWithPassword = []() {
     return userData;
 }();
 
+static const UserData c_user1 = mkUserData(1000, 1);
+
 static const Telegram::DcConfiguration c_customDcConfiguration = []() {
     Telegram::DcConfiguration configuration;
     {
@@ -458,7 +460,7 @@ void tst_ConnectionApi::registrationAuthError()
 
 void tst_ConnectionApi::reconnect()
 {
-    const UserData userData = c_userWithPassword;
+    const UserData userData = c_user1;
     const DcOption clientDcOption = c_localDcOptions.first();
 
     const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
@@ -595,7 +597,7 @@ void tst_ConnectionApi::reconnect()
 
 void tst_ConnectionApi::reconnectNow()
 {
-    const UserData userData = c_userWithPassword;
+    const UserData userData = c_user1;
     const DcOption clientDcOption = c_localDcOptions.first();
 
     const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
