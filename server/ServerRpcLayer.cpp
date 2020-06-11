@@ -234,22 +234,18 @@ bool RpcLayer::processInitConnection(const MTProto::Message &message)
     QString deviceInfo;
     QString osInfo;
     QString appVersion;
-#if TELEGRAMQT_LAYER >= 67
     QString systemLanguage;
     QString languagePack;
-#endif
     QString languageCode;
     stream >> appId;
     stream >> deviceInfo;
     stream >> osInfo;
     stream >> appVersion;
-#if TELEGRAMQT_LAYER >= 67
     if (activeLayerNumber() >= MTProto::LayerNumber67) {
         stream >> systemLanguage;
         // If the pack is not registered on server, raise CONNECTION_LANG_PACK_INVALID RPC Error
         stream >> languagePack;
     }
-#endif
     stream >> languageCode;
 
     qCDebug(c_serverRpcLayerCategory) << Q_FUNC_INFO << deviceInfo << osInfo << appId << appVersion << languageCode;
