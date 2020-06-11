@@ -35,7 +35,6 @@ template Stream &Stream::operator>>(QVector<TLImportedContact> &v);
 template Stream &Stream::operator>>(QVector<TLChat> &v);
 template Stream &Stream::operator>>(QVector<TLPeer> &v);
 template Stream &Stream::operator>>(QVector<TLDcOption> &v);
-template Stream &Stream::operator>>(QVector<TLDisabledFeature> &v);
 template Stream &Stream::operator>>(QVector<TLMessageEntity> &v);
 template Stream &Stream::operator>>(QVector<TLUpdate> &v);
 template Stream &Stream::operator>>(QVector<TLStickerSet> &v);

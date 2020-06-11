@@ -116,8 +116,9 @@ void UploadRpcOperation::runGetCdnFileHashes()
     if (processNotImplementedMethod(TLValue::UploadGetCdnFileHashes)) {
         return;
     }
-    QVector<TLCdnFileHash> result;
-    sendRpcReply(result);
+    // QVector<TLCdnFileHash> result;
+    // sendRpcReply(result);
+    sendRpcError(RpcError::UnknownReason);
 }
 
 void UploadRpcOperation::runGetFile()
@@ -194,7 +195,7 @@ void UploadRpcOperation::runGetFileHashes()
     if (processNotImplementedMethod(TLValue::UploadGetFileHashes)) {
         return;
     }
-    TLVector<TLFileHash> result;
+    QVector<TLFileHash> result;
     sendRpcReply(result);
 }
 
@@ -214,8 +215,9 @@ void UploadRpcOperation::runReuploadCdnFile()
     if (processNotImplementedMethod(TLValue::UploadReuploadCdnFile)) {
         return;
     }
-    QVector<TLCdnFileHash> result;
-    sendRpcReply(result);
+    // QVector<TLCdnFileHash> result;
+    // sendRpcReply(result);
+    sendRpcError(RpcError::UnknownReason);
 }
 
 void UploadRpcOperation::runSaveBigFilePart()
