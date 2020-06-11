@@ -4,6 +4,7 @@
 #include "FunctionStreamOperators.hpp"
 #include "IgnoredMessageNotification.hpp"
 #include "LocalServerApi.hpp"
+#include "MTProto/Layers.hpp"
 #include "MTProto/MessageHeader.hpp"
 #include "MTProto/Stream.hpp"
 #include "MTProto/StreamExtraOperators.hpp"

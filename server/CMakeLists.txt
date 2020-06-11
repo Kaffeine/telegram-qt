@@ -91,6 +91,10 @@ target_sources(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
     ${server_json_SOURCES}
 )
 
+target_sources(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE
+    MTProto/Layers.hpp
+)
+
 target_include_directories(TelegramQt${QT_VERSION_MAJOR}Server PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(TelegramQt${QT_VERSION_MAJOR}Server PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/RpcOperations)
 
