@@ -51,6 +51,11 @@ foreach(test_name
         TelegramQt${QT_VERSION_MAJOR}::Test
         test_keys_data
     )
+    if(TELEGRAMQT_EXPORT_INTERNAL_API)
+        target_compile_definitions(${test_name} PRIVATE
+            TEST_PRIVATE_API
+        )
+    endif()
 
     add_test(NAME ${test_name} COMMAND ${test_name} -maxwarnings 0)
 endforeach()

@@ -53,10 +53,6 @@
 #include "TestUserData.hpp"
 #include "TestUtils.hpp"
 
-#ifdef TELEGRAMQT_ENABLE_PRIVATE_API
-#define TEST_PRIVATE_API
-#endif
-
 #ifdef TEST_PRIVATE_API
 #include "DataStorage_p.hpp"
 #endif
