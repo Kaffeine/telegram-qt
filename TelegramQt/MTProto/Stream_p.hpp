@@ -99,6 +99,20 @@ Stream &Stream::operator<<(const TLVector<T*> &v)
     return *this;
 }
 
+template<typename T>
+Stream &Stream::operator<<(const TLPtr<T> &v)
+{
+    *this << *v;
+    return *this;
+}
+
+template<typename T>
+Stream &Stream::operator>>(TLPtr<T> &v)
+{
+    *this >> *v;
+    return *this;
+}
+
 } // MTProto namespace
 
 } // Telegram namespace

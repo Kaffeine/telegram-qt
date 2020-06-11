@@ -139,20 +139,6 @@ Stream &Stream::operator<<(const TLNumber<Size> &n)
     return *this;
 }
 
-template<typename T>
-Stream &Stream::operator<<(const TLPtr<T> &v)
-{
-    *this << *v;
-    return *this;
-}
-
-template<typename T>
-Stream &Stream::operator>>(TLPtr<T> &v)
-{
-    *this >> *v;
-    return *this;
-}
-
 // Generated read operators implementation
 Stream &Stream::operator>>(TLAccountDaysTTL &accountDaysTTLValue)
 {
