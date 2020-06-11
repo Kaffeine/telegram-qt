@@ -37,6 +37,10 @@
 #include "CTelegramTransport.hpp"
 #include "DcConfiguration.hpp"
 
+#ifdef TEST_PRIVATE_API
+#include "ConnectionApi_p.hpp"
+#endif
+
 // Server
 #include "TelegramServer.hpp"
 #include "RemoteClientConnection.hpp"
@@ -114,6 +118,10 @@ public:
 private slots:
     void initTestCase();
     void cleanupTestCase();
+#ifdef TEST_PRIVATE_API
+    void connectToServer_data();
+    void connectToServer();
+#endif
     void testClientConnection_data();
     void testClientConnection();
     void registrationAuthError();
@@ -146,6 +154,51 @@ void tst_ConnectionApi::cleanupTestCase()
 {
     QVERIFY(TestKeyData::cleanupKeyFiles());
 }
+
+#ifdef TEST_PRIVATE_API
+void tst_ConnectionApi::connectToServer_data()
+{
+    QTest::addColumn<Telegram::Client::Settings::SessionType>("sessionType");
+    QTest::addColumn<DcOption>("clientDcOption");
+
+    DcOption opt = c_localDcOptions.first();
+
+    QTest::newRow("Abridged (dc1)")
+            << Client::Settings::SessionType::Abridged
+            << opt;
+
+}
+
+void tst_ConnectionApi::connectToServer()
+{
+    QFETCH(Telegram::Client::Settings::SessionType, sessionType);
+    QFETCH(DcOption, clientDcOption);
+
+    const RsaKey publicKey = RsaKey::fromFile(TestKeyData::publicKeyFileName());
+    QVERIFY2(publicKey.isValid(), "Unable to read public RSA key");
+    const RsaKey privateKey = RsaKey::fromFile(TestKeyData::privateKeyFileName());
+    QVERIFY2(privateKey.isPrivate(), "Unable to read private RSA key");
+
+    Test::AuthProvider authProvider;
+    Telegram::Server::LocalCluster cluster;
+    cluster.setAuthorizationProvider(&authProvider);
+    cluster.setServerPrivateRsaKey(privateKey);
+    cluster.setServerConfiguration(c_customDcConfiguration);
+    QVERIFY(cluster.start());
+
+    Test::Client client;
+
+    client.settings()->setPreferedSessionType(sessionType);
+
+    QVERIFY(client.settings()->setServerConfiguration({clientDcOption}));
+    QVERIFY(client.settings()->setServerRsaKey(publicKey));
+
+    Client::ConnectionApi *connectionApi = client.connectionApi();
+    Client::ConnectionApiPrivate *privateApi = Client::ConnectionApiPrivate::get(connectionApi);
+    PendingOperation *connectOperation = privateApi->connectToServer({ clientDcOption });
+    TRY_VERIFY(connectOperation->isFinished());
+}
+#endif
 
 void tst_ConnectionApi::testClientConnection_data()
 {
